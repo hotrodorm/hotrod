@@ -1,0 +1,467 @@
+package org.hotrod.config;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.digester3.Digester;
+import org.apache.log4j.Logger;
+import org.hotrod.ant.ControlledException;
+import org.hotrod.ant.UncontrolledException;
+import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.FacetNotFoundException;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.metadata.DataSetMetadata;
+import org.hotrod.metadata.SelectDataSetMetadata;
+import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
+import org.nocrala.tools.database.tartarus.core.JdbcTable;
+
+public abstract class AbstractHotRodConfigTag {
+
+  private static final Logger log = Logger.getLogger(AbstractHotRodConfigTag.class);
+
+  protected String base;
+
+  private List<TableTag> tables = new ArrayList<TableTag>();
+  private List<ViewTag> views = new ArrayList<ViewTag>();
+  private List<CustomDAOTag> daos = new ArrayList<CustomDAOTag>();
+  private List<SelectTag> selects = new ArrayList<SelectTag>();
+  private List<FragmentTag> fragments = new ArrayList<FragmentTag>();
+  private List<FacetTag> facets = new ArrayList<FacetTag>();
+  private Map<String, FacetTag> assembledFacets = new HashMap<String, FacetTag>();
+
+  private FacetTag allFacets = null;
+
+  private Set<String> facetNames = null;
+  private Set<FacetTag> chosenFacets = null;
+
+  public AbstractHotRodConfigTag(final String base) {
+    this.base = base;
+  }
+
+  protected void validateCommon(final File file, final Set<String> alreadyLoadedFileNames, final File parentFile,
+      final DaosTag daosTag) throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
+
+    File basedir = file.getParentFile();
+
+    log.debug("init");
+
+    // DAOs
+
+    for (TableTag t : this.tables) {
+      t.validate(daosTag);
+    }
+
+    for (ViewTag v : this.views) {
+      v.validate(daosTag);
+    }
+
+    for (CustomDAOTag dao : this.daos) {
+      dao.validate(daosTag);
+    }
+
+    for (SelectTag s : this.selects) {
+      s.validate(daosTag);
+    }
+
+    for (FacetTag f : this.facets) {
+      f.validate(this, daosTag);
+    }
+
+    // Fragments
+
+    for (FragmentTag f : this.fragments) {
+      f.validate(basedir, alreadyLoadedFileNames, parentFile, daosTag);
+      this.mergeFragment(f.getConfig());
+    }
+
+    // Assemble facets
+
+    this.allFacets = new FacetTag();
+
+    this.allFacets.mergeOther(this.tables, this.views, this.daos, this.selects);
+
+    for (FacetTag f : this.facets) {
+      FacetTag af = this.assembledFacets.get(f.getName());
+      if (af == null) {
+        af = new FacetTag();
+        af.setName(f.getName());
+        this.assembledFacets.put(f.getName(), af);
+      }
+      af.mergeOther(f);
+      this.allFacets.mergeOther(f);
+    }
+
+    // display
+
+    if (log.isDebugEnabled()) {
+      logFacet(file, "[after] All", this.allFacets);
+      for (FacetTag f : this.facets) {
+        logFacet(file, f.getName(), f);
+      }
+    }
+
+  }
+
+  private void logFacet(final File file, final String name, final FacetTag f) {
+    log.debug("* LISTING " + name + " (" + file.getName() + ") ...");
+    for (TableTag t : f.getTables()) {
+      log.debug(" - tables: " + t.getName());
+    }
+    for (ViewTag v : f.getViews()) {
+      log.debug(" - views: " + v.getName());
+    }
+
+    for (CustomDAOTag dao : f.getDaos()) {
+      log.debug(" - daos: " + dao.getJavaClassName());
+    }
+
+    for (SelectTag s : f.getSelects()) {
+      log.debug(" - select '" + s.getJavaClassName() + "'");
+    }
+  }
+
+  private void mergeFragment(final AbstractHotRodConfigTag other) {
+    this.tables.addAll(other.tables);
+    this.views.addAll(other.views);
+    this.selects.addAll(other.selects);
+    this.daos.addAll(other.daos);
+    this.facets.addAll(other.facets);
+  }
+
+  protected void addCommonRules(final Digester d, final Class<? extends AbstractHotRodConfigTag> c) {
+
+    d.setValidating(true);
+
+    // base
+
+    d.addObjectCreate(base, c);
+
+    // daos
+
+    addDAORules(d, base);
+
+    // facet
+
+    d.addObjectCreate(base + "/facet", FacetTag.class);
+    d.addSetProperties(base + "/facet", "name", "name");
+    d.addSetNext(base + "/facet", "addFacet");
+
+    addDAORules(d, base + "/facet");
+
+    // fragment
+
+    d.addObjectCreate(base + "/fragment", FragmentTag.class);
+    d.addSetProperties(base + "/fragment", "file", "file");
+    d.addSetNext(base + "/fragment", "addFragment");
+
+  }
+
+  private void addDAORules(final Digester d, final String base) {
+
+    // table
+
+    d.addObjectCreate(base + "/table", TableTag.class);
+    d.addSetProperties(base + "/table", "name", "name");
+    d.addSetProperties(base + "/table", "java-name", "javaName");
+    d.addSetProperties(base + "/table", "column-seam", "columnSeam");
+    d.addSetNext(base + "/table", "addTable");
+
+    // auto-generated-key
+
+    d.addObjectCreate(base + "/table/auto-generated-column", AutoGeneratedColumnTag.class);
+    d.addSetProperties(base + "/table/auto-generated-column", "name", "name");
+    d.addSetProperties(base + "/table/auto-generated-column", "sequence", "sequence");
+    d.addSetProperties(base + "/table/auto-generated-column", "allows-specified-value", "allowsSpecifiedValue");
+    d.addSetNext(base + "/table/auto-generated-column", "setAutoGeneratedColumn");
+
+    // version-control-column
+
+    d.addObjectCreate(base + "/table/version-control-column", VersionControlColumnTag.class);
+    d.addSetProperties(base + "/table/version-control-column", "name", "name");
+    d.addSetNext(base + "/table/version-control-column", "setVersionControlColumn");
+
+    // table column
+
+    d.addObjectCreate(base + "/table/column", ColumnTag.class);
+    d.addSetProperties(base + "/table/column", "name", "name");
+    d.addSetProperties(base + "/table/column", "java-name", "javaName");
+    d.addSetProperties(base + "/table/column", "java-type", "javaType");
+    d.addSetProperties(base + "/table/column", "jdbc-type", "jdbcType");
+    d.addSetProperties(base + "/table/column", "is-lob", "isLOB");
+    d.addSetProperties(base + "/table/column", "initial-value", "sInitialValue");
+    d.addSetProperties(base + "/table/column", "min-value", "sMinValue");
+    d.addSetProperties(base + "/table/column", "max-value", "sMaxValue");
+    d.addSetNext(base + "/table/column", "addColumn");
+
+    // table sequence and update
+
+    addSequenceAndQuery(base, d, "table");
+
+    // view
+
+    d.addObjectCreate(base + "/view", ViewTag.class);
+    d.addSetProperties(base + "/view", "name", "name");
+    d.addSetProperties(base + "/view", "java-name", "javaName");
+    d.addSetNext(base + "/view", "addView");
+
+    // view column
+
+    d.addObjectCreate(base + "/view/column", ColumnTag.class);
+    d.addSetProperties(base + "/view/column", "name", "name");
+    d.addSetProperties(base + "/view/column", "java-name", "javaName");
+    d.addSetProperties(base + "/view/column", "java-type", "javaType");
+    d.addSetProperties(base + "/view/column", "jdbc-type", "jdbcType");
+    d.addSetNext(base + "/view/column", "addColumn");
+
+    // view sequence and update
+
+    addSequenceAndQuery(base, d, "view");
+
+    // dao
+
+    d.addObjectCreate(base + "/dao", CustomDAOTag.class);
+    d.addSetProperties(base + "/dao", "java-class-name", "javaClassName");
+    d.addSetNext(base + "/dao", "addDAO");
+
+    // dao sequence and update
+
+    addSequenceAndQuery(base, d, "dao");
+
+    // select
+
+    d.addObjectCreate(base + "/select", SelectTag.class);
+    d.addSetProperties(base + "/select", "java-class-name", "javaClassName");
+    d.addSetProperties(base + "/select", "complement-start", "complementStart");
+    d.addSetProperties(base + "/select", "complement-end", "complementEnd");
+    d.addSetNext(base + "/select", "addSelect");
+    d.addCallMethod(base + "/select", "setBody", 1);
+    d.addCallParam(base + "/select", 0);
+
+    // select column
+
+    d.addObjectCreate(base + "/select/column", ColumnTag.class);
+    d.addSetProperties(base + "/select/column", "name", "name");
+    d.addSetProperties(base + "/select/column", "java-type", "javaType");
+    d.addSetProperties(base + "/select/column", "jdbc-type", "jdbcType");
+    d.addSetNext(base + "/select/column", "addColumn");
+  }
+
+  private void addSequenceAndQuery(final String base, final Digester d, final String tag) {
+
+    // sequence
+
+    d.addObjectCreate(base + "/" + tag + "/sequence", SequenceTag.class);
+    d.addSetProperties(base + "/" + tag + "/sequence", "name", "name");
+    d.addSetProperties(base + "/" + tag + "/sequence", "java-method-name", "javaMethodName");
+    d.addSetNext(base + "/" + tag + "/sequence", "addSequence");
+
+    // query
+
+    d.addObjectCreate(base + "/" + tag + "/query", QueryTag.class);
+    d.addSetProperties(base + "/" + tag + "/query", "java-method-name", "javaMethodName");
+    d.addSetNext(base + "/" + tag + "/query", "addQuery");
+    d.addCallMethod(base + "/" + tag + "/query", "setBody", 1);
+    d.addCallParam(base + "/" + tag + "/query", 0);
+
+  }
+
+  public void validateAgainstDatabase(final JdbcDatabase db, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
+
+    for (TableTag t : this.getTables()) {
+      t.validateAgainstDatabase(db, adapter);
+    }
+
+    for (ViewTag v : this.getViews()) {
+      v.validateAgainstDatabase(db, adapter);
+    }
+
+  }
+
+  public TableTag getTableTag(final JdbcTable t) {
+    for (TableTag tag : this.getTables()) {
+      log.debug("table tag=" + tag.getName());
+      if (tag.getName().equalsIgnoreCase(t.getName())) {
+        return tag;
+      }
+    }
+    return null;
+  }
+
+  public boolean includesTable(final JdbcTable t) {
+    return this.getTableTag(t) != null;
+  }
+
+  public ViewTag getViewTag(final JdbcTable t) {
+    for (ViewTag tag : this.getViews()) {
+      if (tag.getName().equalsIgnoreCase(t.getName())) {
+        return tag;
+      }
+    }
+    return null;
+  }
+
+  public boolean includesView(final JdbcTable t) {
+    return this.getViewTag(t) != null;
+  }
+
+  // Setters (digester)
+
+  public void addTable(final TableTag table) {
+    this.tables.add(table);
+  }
+
+  public void addView(final ViewTag view) {
+    this.views.add(view);
+  }
+
+  public void addDAO(final CustomDAOTag dao) {
+    this.daos.add(dao);
+  }
+
+  public void addSelect(final SelectTag select) {
+    this.selects.add(select);
+  }
+
+  public void addFragment(final FragmentTag fragment) {
+    this.fragments.add(fragment);
+  }
+
+  public void addFacet(final FacetTag facet) {
+    this.facets.add(facet);
+  }
+
+  // Setters
+
+  public void setChosenFacets(final Set<String> facetNames) throws FacetNotFoundException {
+    this.facetNames = facetNames;
+    this.chosenFacets = new HashSet<FacetTag>();
+    for (String f : facetNames) {
+      FacetTag facet = this.assembledFacets.get(f);
+      if (facet == null) {
+        throw new FacetNotFoundException(f);
+      }
+      this.chosenFacets.add(facet);
+    }
+  }
+
+  // Getters
+
+  public Set<String> getFacetNames() {
+    return facetNames;
+  }
+
+  public List<TableTag> getTables() {
+    if (this.chosenFacets.isEmpty()) {
+      return this.allFacets.getTables();
+    } else {
+      List<TableTag> subset = new ArrayList<TableTag>();
+      for (FacetTag f : this.chosenFacets) {
+        subset.addAll(f.getTables());
+      }
+      return subset;
+    }
+  }
+
+  public List<TableTag> getAllTables() {
+    return this.allFacets.getTables();
+  }
+
+  public List<ViewTag> getViews() {
+    if (this.chosenFacets.isEmpty()) {
+      return this.allFacets.getViews();
+    } else {
+      List<ViewTag> subset = new ArrayList<ViewTag>();
+      for (FacetTag f : this.chosenFacets) {
+        subset.addAll(f.getViews());
+      }
+      return subset;
+    }
+  }
+
+  public List<ViewTag> getAllViews() {
+    return this.allFacets.getViews();
+  }
+
+  public List<CustomDAOTag> getDAOs() {
+    if (this.chosenFacets.isEmpty()) {
+      return this.allFacets.getDaos();
+    } else {
+      List<CustomDAOTag> subset = new ArrayList<CustomDAOTag>();
+      for (FacetTag f : this.chosenFacets) {
+        subset.addAll(f.getDaos());
+      }
+      return subset;
+    }
+  }
+
+  public List<CustomDAOTag> getAllDAOs() {
+    return this.allFacets.getDaos();
+  }
+
+  public List<SelectTag> getSelects() {
+    if (this.chosenFacets.isEmpty()) {
+      return this.allFacets.getSelects();
+    } else {
+      List<SelectTag> subset = new ArrayList<SelectTag>();
+      for (FacetTag f : this.chosenFacets) {
+        subset.addAll(f.getSelects());
+      }
+      return subset;
+    }
+  }
+
+  public List<SelectTag> getAllSelects() {
+    return this.allFacets.getSelects();
+  }
+
+  public List<FacetTag> getFacets() {
+    return facets;
+  }
+
+  public FacetTag getAssembledFacet(final String name) {
+    return assembledFacets.get(name);
+  }
+
+  public TableTag findTable(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
+    if (metadata == null) {
+      return null;
+    }
+    for (TableTag t : this.getTables()) {
+      if (adapter.isTableIdentifier(metadata.getIdentifier().getSQLIdentifier(), t.getName())) {
+        return t;
+      }
+    }
+    return null;
+  }
+
+  public ViewTag findView(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
+    if (metadata == null) {
+      return null;
+    }
+    for (ViewTag v : this.getViews()) {
+      if (adapter.isTableIdentifier(metadata.getIdentifier().getSQLIdentifier(), v.getName())) {
+        return v;
+      }
+    }
+    return null;
+  }
+
+  public SelectTag findSelect(final SelectDataSetMetadata metadata, final DatabaseAdapter adapter) {
+    if (metadata == null) {
+      return null;
+    }
+    for (SelectTag v : this.getSelects()) {
+      if (metadata.getSelectTag().getJavaClassName().equals(v.getJavaClassName())) {
+        return v;
+      }
+    }
+    return null;
+  }
+
+}

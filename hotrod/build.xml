@@ -1,0 +1,152 @@
+<project name="hotrod" default="clean-build" basedir=".">
+
+  <loadproperties srcFile="build.properties" />
+
+  <property name="projectName" value="hotrod" />
+
+  <property name="main.src.dir" value="src/main/java" />
+  <property name="runtime.src.dir" value="src/runtime/java" />
+
+  <property name="buildinfo.gen.dir" value="gen/buildinfo/java" />
+
+  <property name="metadata.dir" value="src/main/metadata" />
+  <property name="lib.dir" value="lib" />
+  <property name="build.dir" value="build" />
+  <property name="main.build.dir" value="build/java" />
+  <property name="buildinfo.build.dir" value="build/buildinfo" />
+  <property name="runtime.build.dir" value="build/test" />
+  <property name="dtd.build.dir" value="build/dtd" />
+  <property name="dist.dir" value="dist" />
+  <property name="release.dir" value="release" />
+
+  <target name="-init">
+    <mkdir dir="${main.build.dir}" />
+    <mkdir dir="${buildinfo.gen.dir}" />
+    <mkdir dir="${runtime.build.dir}" />
+    <mkdir dir="${dtd.build.dir}" />
+    <mkdir dir="${dist.dir}" />
+    <mkdir dir="${release.dir}" />
+    <loadproperties srcfile="build.properties" />
+    <loadproperties srcfile="conf/workbench.properties" />
+  </target>
+
+  <target name="clean" depends="-init">
+    <delete includeemptydirs="true">
+      <fileset dir="${build.dir}" includes="**/*" />
+      <fileset dir="${dist.dir}" includes="**/*" />
+      <fileset dir="${release.dir}" includes="**/*" />
+    </delete>
+    <antcall target="-init" />
+  </target>
+
+  <target name="gen-build-constants" depends="-init">
+    <taskdef name="generate-constant-class"
+             classname="org.nocrala.tools.sourcecode.ant.StringConstantsClassGeneratorAntTask"
+             classpath="lib/constant-class-generator-1.1.jar"
+             onerror="report" />
+    <mkdir dir="${buildinfo.gen.dir}/org/hotrod/buildinfo" />
+    <tstamp>
+      <format property="buildtime.timestamp" pattern="yyyyMMdd-HHmmss" />
+    </tstamp>
+    <generate-constant-class filename="${buildinfo.gen.dir}/org/hotrod/buildinfo/BuildConstants.java"
+                             packagename="org.hotrod.buildinfo"
+                             classname="BuildConstants">
+      <constant name="APPLICATION_VERSION" value="${version}" />
+      <constant name="BUILD_TIME_TIMESTAMP" value="${buildtime.timestamp}" />
+      <constant name="BUILD_TIME"
+                type="java.util.Date"
+                value="new java.text.SimpleDateFormat(&quot;yyyyMMdd-HHmmss&quot;).parse(&quot;${buildtime.timestamp}&quot;, new java.text.ParsePosition(0))" />
+    </generate-constant-class>
+  </target>
+
+  <target name="compile-runtime" depends="-init, gen-build-constants">
+    <javac destdir="${runtime.build.dir}"
+           debug="true"
+           deprecation="true"
+           source="1.6"
+           target="1.6"
+           includeantruntime="false"
+           includes="**/*.java"
+           fork="yes"
+           executable="${javac.compiler.exec}"
+           compiler="${java.compiler}">
+      <src path="${runtime.src.dir}" />
+      <src path="${buildinfo.gen.dir}" />
+      <classpath>
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/spring/spring-context-4.2.5.RELEASE.jar" />
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="compile-main" depends="-init, compile-runtime">
+    <javac srcdir="${main.src.dir}"
+           destdir="${main.build.dir}"
+           debug="true"
+           deprecation="true"
+           source="1.6"
+           target="1.6"
+           includeantruntime="false"
+           includes="**/*.java"
+           fork="yes"
+           executable="${javac.compiler.exec}"
+           compiler="${java.compiler}">
+      <src path="${main.src.dir}" />
+      <src path="${buildinfo.gen.dir}" />
+      <classpath>
+        <pathelement path="${runtime.build.dir}" />
+        <pathelement location="${lib.dir}/ant.jar" />
+        <pathelement location="${lib.dir}/jxl.jar" />
+        <pathelement location="${lib.dir}/commons-digester3-3.2-with-deps.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/tartarus-${tartarus.version}.jar" />
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="jar" depends="compile-runtime, compile-main">
+    <jar destfile="${dist.dir}/${projectName}-${version}-runtime.jar">
+      <fileset dir="${runtime.build.dir}" />
+      <zipfileset dir="${runtime.src.dir}" prefix="src" />
+    </jar>
+
+    <concat destfile="${dtd.build.dir}/hotrod.dtd">
+      <fileset file="src/main/xml/hotrod-head.dtd" />
+      <fileset file="src/main/xml/hotrod-common.dtd" />
+    </concat>
+    <concat destfile="${dtd.build.dir}/hotrod-fragment.dtd">
+      <fileset file="src/main/xml/hotrod-fragment-head.dtd" />
+      <fileset file="src/main/xml/hotrod-common.dtd" />
+    </concat>
+
+    <jar destfile="${dist.dir}/${projectName}-${version}.jar">
+      <fileset dir="${runtime.build.dir}" />
+      <fileset dir="${main.build.dir}" />
+      <zipfileset src="${lib.dir}/commons-digester3-3.2-with-deps.jar" />
+      <zipfileset src="${lib.dir}/jxl.jar" />
+      <zipfileset src="${lib.dir}/log4j-1.2.17.jar" />
+      <zipfileset src="${lib.dir}/tartarus-${tartarus.version}.jar" />
+      <fileset file="${dtd.build.dir}/hotrod.dtd" />
+      <fileset file="${dtd.build.dir}/hotrod-fragment.dtd" />
+      <fileset file="src/main/metadata/log4j.properties" />
+    </jar>
+  </target>
+
+  <target name="build" depends="jar" />
+
+  <target name="clean-build" depends="clean, build" />
+
+  <target name="release" depends="clean, build">
+    <zip destfile="${dist.dir}/quick-start-example.zip">
+      <fileset dir="docs/quick-start-example" excludes="build/**/*" />
+    </zip>
+    <zip destfile="${release.dir}/${projectName}-${version}.zip">
+      <zipfileset dir="${dist.dir}" includes="*.jar" prefix="lib" />
+      <fileset file="${dist.dir}/quick-start-example.zip" />
+      <zipfileset dir="docs/release-docs" prefix="" />
+      <zipfileset dir="${dist.dir}" includes="example.zip" prefix="docs" />
+    </zip>
+  </target>
+
+</project>

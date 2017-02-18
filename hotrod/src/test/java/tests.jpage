@@ -1,0 +1,5 @@
+String value = "ab\"c";
+// String asql = value.replaceAll("\"", java.util.regex.Matcher.quoteReplacement("\\\""));
+String asql = value.replaceAll("\"", "\\\\\"");
+System.out.println("asql="+asql);
+// System.out.println("rep="+java.util.regex.Matcher.quoteReplacement("\\\""));

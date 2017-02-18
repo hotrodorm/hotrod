@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<project name="example-1" basedir=".">
+
+  <!-- Properties -->
+
+  <property name="mybatis.version" value="3.3.0" />
+  <property name="h2.port" value="12345" />
+
+  <property name="jdbc.driverlibrary" value="lib/h2/h2-1.3.176.jar" />
+  <property name="jdbc.driverclass" value="org.h2.Driver" />
+  <property name="jdbc.url"
+            value="jdbc:h2:tcp://localhost:${h2.port}/db001;IFEXISTS=TRUE" />
+  <property name="jdbc.username" value="sa" />
+  <property name="jdbc.password" value="" />
+  <property name="jdbc.catalog" value="DB001" />
+  <property name="jdbc.schema" value="PUBLIC" />
+
+  <property name="hotrod.version" value="3.0-alpha1" />
+  <property name="hotrod.generator" value="MyBatis" />
+  <property name="hotrod.facet" value="" />
+
+  <!-- Tasks -->
+
+  <target name="setup">
+    <antcall target="start-h2-database" />
+    <antcall target="initialize-database" />
+  </target>
+
+  <target name="start-h2-database">
+    <condition property="h2.running">
+      <socket server="localhost" port="${h2.port}" />
+    </condition>
+    <antcall target="-issue-h2-start" />
+    <antcall target="-h2-already-started" />
+  </target>
+
+  <target name="-issue-h2-start" unless="h2.running">
+    <java classname="org.h2.tools.Server" fork="true" spawn="true">
+      <arg value="-tcp" />
+      <arg value="-tcpPort" />
+      <arg value="${h2.port}" />
+      <arg value="-baseDir" />
+      <arg value="database" />
+      <classpath>
+        <pathelement location="${jdbc.driverlibrary}" />
+      </classpath>
+    </java>
+    <echo message="[ H2 local database has been started ]" />
+  </target>
+
+  <target name="-h2-already-started" if="h2.running">
+    <echo message="[ H2 local database is already running ]" />
+  </target>
+
+  <target name="initialize-database">
+    <sql driver="${jdbc.driverclass}"
+         classpath="${jdbc.driverlibrary}"
+         url="${jdbc.url}"
+         userid="${jdbc.username}"
+         password="${jdbc.password}"
+         delimiter=";"
+         onerror="abort"
+         print="true"
+         showheaders="true"
+         showtrailers="true"
+         showWarnings="true">
+      <fileset file="prepare-database.sql" />
+    </sql>
+    <echo message="[ Database tables and data initialized ]" />
+  </target>
+
+  <target name="hotrod">
+
+    <delete dir="auto-generated" />
+    <mkdir dir="auto-generated/java" />
+    <mkdir dir="auto-generated/mappers" />
+    <echo message="" />
+
+    <taskdef name="hotrod" classname="org.hotrod.ant.HotRodAntTask">
+      <classpath>
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}.jar" />
+        <pathelement location="${jdbc.driverlibrary}" />
+      </classpath>
+    </taskdef>
+    <hotrod url="${jdbc.url}"
+            driverclass="${jdbc.driverclass}"
+            username="${jdbc.username}"
+            password="${jdbc.password}"
+            catalog="${jdbc.catalog}"
+            schema="${jdbc.schema}"
+            generator="${hotrod.generator}"
+            facet="${hotrod.facet}"
+            configfile="hotrod.xml"
+            display="list" />
+  </target>
+
+  <target name="run-example-01">
+
+    <delete dir="build" />
+    <mkdir dir="build" />
+
+    <javac destdir="build" includeantruntime="false" debug="true">
+      <src path="java" />
+      <src path="auto-generated/java" />
+      <classpath>
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+      </classpath>
+    </javac>
+
+    <echo message=" " />
+
+    <java classname="examples.Example01">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+      </classpath>
+    </java>
+
+  </target>
+
+  <target name="stop-h2-database">
+    <condition property="h2.running">
+      <socket server="localhost" port="${h2.port}" />
+    </condition>
+    <antcall target="-issue-h2-stop" />
+    <antcall target="-h2-already-stopped" />
+  </target>
+
+  <target name="-issue-h2-stop" if="h2.running">
+    <java classname="org.h2.tools.Server">
+      <arg value="-tcpShutdown" />
+      <arg value="tcp://localhost:${h2.port}" />
+      <classpath>
+        <pathelement location="${jdbc.driverlibrary}" />
+      </classpath>
+    </java>
+    <echo message="[ H2 local database has been stopped ]" />
+  </target>
+
+  <target name="-h2-already-stopped" unless="h2.running">
+    <echo message="[ H2 local database is already shut down ]" />
+  </target>
+
+</project>

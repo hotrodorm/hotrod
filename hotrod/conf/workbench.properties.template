@@ -1,0 +1,34 @@
+# --- 1.6 Java compiler executable --- 
+javac.compiler.exec=/my/full/path/to/jdk1.6.0_xx/bin/javac
+
+# --- See https://ant.apache.org/manual/Tasks/javac.html#compilervalues
+java.compiler=javac1.6
+
+# --- DB2 ---
+#db.src.dir=testdata/db2
+
+# --- Oracle ---
+#db.src.dir=testdata/oracle
+
+# --- PostgreSQL ---
+#db.src.dir=testdata/postgresql
+
+# --- Generator engine ---
+#generator=MyBatis
+#generator=SpringJDBC
+
+# --- HSQLDB ---
+#db.src.dir=testdata/myhsqldb2
+
+# --- MySQL ---
+#db.src.dir=testdata/mysql
+
+# --- MariaDB ---
+#db.src.dir=testdata/mariadb
+
+# --- SQL Server ---
+#db.src.dir=testdata/sqlserver
+
+# --- SAP ASE (Sybase) ---
+#db.src.dir=testdata/sap-ase
+

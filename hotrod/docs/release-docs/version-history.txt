@@ -1,0 +1,79 @@
+2.0
+---
+ * Added full support for MyBatis.
+ * Full foreign key relationships.
+ * Added mapping for DB2, Oracle, MySQL, Hypersonic, and Sybase.
+
+2.1
+---
+ * Adding support for PostgreSQL.
+ * MyBatis configuration template path is now relative to the main config file.
+ * Adding user-specified column java types (and JDBC types).
+
+2.2
+---
+ * Adding <view> tags to automate SQL views in addition to tables.
+ 
+2.3
+---
+ * Adding <select> tags to automate DAO generation (read only) for complex select
+   statements (with joins or any other elements).
+ * Better error messaging while generating DAOs for views and selects.
+ * Adding a Quick Start fully runnable example as part of the release.
+ * Adding first version of the full documentation.
+ 
+2.4
+---
+ * Allow multiple use of the same parameter in select statements. The first 
+   occurrence is considered the definition, and subsequent occurrences of
+   the parameter (same name) are considered references. The DAO only includes
+   a single parameter for each name.
+ * Error messages for malformed <select> statements now include the full 
+   "create view" statement to ease debugging.
+ * Fixing properties comments on DAO primitives.
+ * Multiple identical unique indexes on a table, as well as multiple identical
+   foreign keys are considered during the generation. It has been observed
+   that PostgreSQL allows the user to duplicate and record identical 
+   constraints. The DAO generator now considers this case and does not 
+   generate invalid java code.
+
+2.5
+---
+ * Support for lower case column names. All columns are now enclosed in double
+   quotes in the mappers files.
+   
+2.6
+---
+ * Support for MyBatis dynamic SQL. MyBatis dynamic SQL are automated as <select>
+   tags. Due to limitations in the XML parser (Digester), the content of the <select>
+   tag must be typed as a CDATA (i.e. enclosed in <![CDATA[ and ]]>). All dynamic
+   tags can use < and >, but the included SQL must use &lt; and &gt; instead.
+ * Fixed camel case java parameter names.
+    
+2.7
+---
+ * Version number pattern implemented for concurrency control of update and delete.
+ * Configurable DAO and primitives packages, as well as DAO prefix/suffix and 
+   primitives prefix/suffix.
+
+2.8
+---
+ * Documenting HyperSQL and MySQL database property types.
+ * Bug fix: Unique indexes on expressions are not used as exported keys (FK  
+   target) anymore.
+   
+2.9
+---
+ * Configuration file renamed to hotrod.
+ * Configuration file now supports fragments.
+ * Configuration file now supports <sequence> and <update> tags on all daos:
+   <table>, <view>, <select>, and <dao>
+ * MariaDB support added.
+ * Bug fix: the version control tag wasn't taken into consideration a corresponding
+   <column> tag if specified, resulting in mismatching java types in the primitives.
+  
+
+
+   
+  
+ 

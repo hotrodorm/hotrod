@@ -1,0 +1,116 @@
+The web site site has a left navigation bar.
+When any item is clicked that page is shown in the body of the page.
+The default page is the first one: Welcome to HotRod! 
+
+===============================
+
+* Welcome to HotRod!
+* Apache 2.0 License
+* Downloads
+* Quick Start
+  - Hello World MyBatis!      <-- Downloadable Eclipse Project (zip file). Should include ALL MyBatis examples anyway, with separate Ant tasks (to be run from Eclipse)
+  - Hello World Spring JDBC!  <-- Downloadable Eclipse Project (zip file). Should include ALL Spring JDBC examples anyway, with separate Ant tasks (to be run from Eclipse)
+* Source Code
+* MyBatis Generator
+  - Overview
+  - Examples
+    - Tables
+    - CRUD operations
+    - Select by Example
+    - Update by Example
+    - Delete by Example
+    - Select by Foreign Keys
+    - Select by Unique Indexes
+    - Views
+    - Sequences
+    - Custom Updates
+    - DAOs
+    - Custom Selects 
+    - Transactions
+    - Isolation Levels
+    - Optimistic Locking (Row Version Control)
+    - MyBatis Cheat Sheet  <-- One-page PDF with succinct examples for each case.
+* Spring JDBC Generator
+  - Overview
+  - Examples
+    - Tables
+    - CRUD operations
+    - Select by Example
+    - Update by Example
+    - Delete by Example
+    - Select by Criteria ?
+    - Update by Criteria ?
+    - Delete by Criteria ?
+    - Select by Foreign Keys ?
+    - Select by Unique Indexes ?
+    - Views ?
+    - Sequences ?
+    - Custom Updates ?
+    - DAOs ?
+    - Custom Selects ? 
+    - Transactions
+    - Isolation Levels ?
+    - Optimistic Locking (Row Version Control) ?
+    - Spring JDBC Cheat Sheet  <-- One-page PDF with succinct examples for each case.
+* Project Setup
+  - Overview
+  - Libraries
+  - Directory set up
+  - Ant tasks
+  - Runtime Library
+* Supported Databases & Types
+  - Oracle Database
+  - IBM DB2
+  - SAP ASE / Sybase
+  - Microsoft SQL Server
+  - PostgreSQL
+  - MySQL
+  - MariaDB
+  - HyperSQL (HSQLDB)
+  - H2
+* Configuration Reference
+  - Configuration Overview
+  - MyBatis Generator
+  - Spring JDBC Generator
+  - Tables
+  - Views
+  - Selects
+  - Updates
+  - Sequences
+  - DAOs 
+* Development Effort Using Hotrod
+  - Basic CRUD
+  - Elaborated Operations
+  - Complex SQL Selects
+  - Dynamic SQL
+  - Complex SQL Updates
+  - Stored Procedures Execution
+  - Low-Level JDBC
+* FAQ
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    

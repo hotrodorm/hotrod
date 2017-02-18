@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<project name="dao-generator" basedir=".">
+
+  <property name="daos.base.dir" value="src/main/java/com/company/daos" />
+  <property name="mappers.base.dir" value="src/mybatis/mappers" />
+
+  <target name="-init">
+    <loadproperties srcfile="database.properties" />
+    <mkdir dir="${daos.base.dir}/primitives" />
+    <mkdir dir="${mappers.base.dir}/primitives" />
+  </target>
+
+  <target name="generate-daos" depends="-init">
+    <delete includeemptydirs="true">
+      <fileset dir="${daos.base.dir}" includes="**/*" />
+      <fileset dir="${mappers.base.dir}" includes="**/*" />
+    </delete>
+    <antcall target="-init" />
+    <taskdef name="hotrod"
+             classname="org.hotrod.ant.HotRodAntTask">
+      <classpath>
+        <pathelement location="lib/empusa-mybatis-2.8.jar" />
+        <pathelement location="${driverclasspath}" />
+      </classpath>
+    </taskdef>
+    <hotrod driverclass="${driverclass}"
+              url="${url}"
+              username="${username}"
+              password="${password}"
+              catalog="${catalog}"
+              schema="${schema}"
+              configfile="hotrod-config.xml"
+              display="list" />
+  </target>
+
+  <target name="run-example1" depends="-init">
+    <mkdir dir="build" />
+    <delete includeemptydirs="true">
+      <fileset dir="build" includes="**/*" />
+    </delete>
+    <javac srcdir="src/main/java"
+           destdir="build"
+           includeantruntime="false"
+           includes="**/*.java">
+      <classpath>
+        <pathelement location="mybatis-3.3.0.jar" />
+        <pathelement location="empusa-mybatis-2.3-runtime.jar" />
+      </classpath>
+    </javac>
+    <java classname="com.company.logic.Example1">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="src/mybatis" />
+        <pathelement location="${driverclasspath}" />
+        <pathelement location="mybatis-3.3.0.jar" />
+        <pathelement location="empusa-mybatis-2.3-runtime.jar" />
+      </classpath>
+    </java>
+
+  </target>
+
+</project>

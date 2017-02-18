@@ -1,0 +1,48 @@
+HotRod development basics
+-------------------------
+
+In order to use the development environment you'll need to have a database running.
+
+
+1. Select the specific database you want to work with
+-----------------------------------------------------
+
+Create the file conf/workbench.properties copying it from conf/workbench.properties.template. Then
+set the property db.src.dir to the directory of the database configuration you want to use. For example
+if you want to use the (existing) configuration for PostgreSQL you can set it up as:
+
+  db.src.dir=/testdata/postgresql
+
+
+2. Build HotRod
+---------------
+
+Using Ant you can build HotRod typing:
+
+  ant clean-build
+  
+The resulting jar file will be ready at /dist
+
+
+3. Generate AOs/DOs using HotRod
+--------------------------------
+
+Using Ant type:
+
+  ant -f build-database.xml build-hotrod
+  
+All resulting AOs/DOs will be placed on /gen/empusamb/daos. 
+XML mappers files for MyBatis will be placed on /gen/empusamb/mapers.
+
+
+4. Run a simple application to test the AOs/DOs
+-----------------------------------------------
+
+Using Ant type:
+
+  ant -f build-test.xml test-select
+
+A few rows will be selected and displayed on the console.
+
+
+

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="simple.appConfig">
+
+<!-- 
+      CONFIG_ID as configId, 
+      CONFIG_NAME as configName, 
+      CONFIG_VALUE as configValue
+
+      config_id, config_name, config_value
+
+      config_id as configId, 
+      config_name as configName, 
+      config_value as configValue
+-->
+  <select id="selectAll" resultType="fulltest.appconfig.AppConfig">
+    select
+      CONFIG_ID as configId, 
+      CONFIG_NAME as configName, 
+      CONFIG_VALUE as configValue
+     from APPLICATION_CONFIG
+  </select>
+
+</mapper>

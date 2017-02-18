@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.daos.primitives.accountDebit">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    name as name,
+    id as id,
+    completed_at as completedAt,
+    amount as amount,
+    account_id as accountId
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.name as name,
+    ${alias}.id as id,
+    ${alias}.completed_at as completedAt,
+    ${alias}.amount as amount,
+    ${alias}.account_id as accountId
+  </sql>
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultType="com.company.daos.AccountDebitDAO">
+    select
+      <include refid="columns" />
+     from account_debit
+    <where>
+      <if test="p.name != null">
+        and name = #{p.name}
+      </if>
+      <if test="p.id != null">
+        and id = #{p.id}
+      </if>
+      <if test="p.completedAt != null">
+        and completed_at = #{p.completedAt}
+      </if>
+      <if test="p.amount != null">
+        and amount = #{p.amount}
+      </if>
+      <if test="p.accountId != null">
+        and account_id = #{p.accountId}
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+</mapper>

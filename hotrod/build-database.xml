@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<project name="hotrod-database" basedir=".">
+
+  <!-- Global Properties -->
+
+  <loadproperties srcFile="build.properties" />
+  <loadproperties srcFile="conf/workbench.properties" />
+
+  <target name="-init">
+    <loadproperties srcfile="${db.src.dir}/config.properties" />
+  </target>
+
+  <!-- ============== -->
+  <!-- Database build -->
+  <!-- ============== -->
+
+  <target name="build-database" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         delimiter=";"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/build-structure.sql" />
+    </sql>
+    <antcall target="build-data" />
+  </target>
+
+  <target name="clean-database" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         delimiter=";"
+         onerror="continue">
+      <fileset file="${db.src.dir}/${database}/clean-structure.sql" />
+    </sql>
+  </target>
+
+  <target name="build-data" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         delimiter=";"
+         autocommit="true"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/scenarios/${scenario}/build-data.sql" />
+    </sql>
+  </target>
+
+  <target name="clean-data" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         delimiter=";"
+         onerror="continue">
+      <fileset file="${db.src.dir}/${database}/scenarios/${scenario}/clean-data.sql" />
+    </sql>
+  </target>
+
+  <target name="rebuild-database" depends="clean-database, build-database" />
+
+  <target name="rebuild-data" depends="clean-data, build-data" />
+
+  <!-- ================= -->
+  <!-- HotRod generation -->
+  <!-- ================= -->
+
+  <target name="-init-hotrod" depends="-init">
+    <mkdir dir="gen/hotrod/mappers" />
+    <mkdir dir="gen/hotrod/daos" />
+  </target>
+
+  <target name="clean-hotrod" depends="-init-hotrod">
+    <delete includeemptydirs="true">
+      <fileset dir="gen/hotrod/mappers" includes="**/*" />
+      <fileset dir="gen/hotrod/daos" includes="**/*" />
+    </delete>
+  </target>
+
+  <target name="build-hotrod" depends="-init-hotrod">
+
+    <taskdef name="hotrod" classname="org.hotrod.ant.HotRodAntTask">
+      <classpath>
+        <pathelement location="dist/hotrod-${version}.jar" />
+        <pathelement location="${driverclasspath}" />
+      </classpath>
+    </taskdef>
+
+    <hotrod driverclass="${driverclass}"
+            url="${url}"
+            username="${username}"
+            password="${password}"
+            catalog="${catalog}"
+            schema="${schema}"
+            generator="${generator}"
+            facets="${facets}"
+            configfile="${db.src.dir}/hotrod.xml"
+            display="list" />
+
+  </target>
+
+  <target name="startup-hsqldb" depends="-init">
+    <!-- No output or errors are shown when spawn="true" -->
+    <!-- To see any errors and/or debug set spawn="false"; unfortunately this pauses Ant until the DB is shut down. -->
+    <exec executable="java" spawn="true">
+      <arg value="-cp" />
+      <arg value="lib/jdbc-drivers/hsqldb-2.2.9.jar" />
+      <arg value="org.hsqldb.server.Server" />
+      <arg value="--database.0" />
+      <arg value="file:gen/db/db1" />
+      <arg value="--dbname.0" />
+      <arg value="xdb" />
+    </exec>
+    <echo message="[ HSQLDB started ]" />
+  </target>
+
+  <target name="shutdown-hsqldb" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         delimiter=";"
+         failOnConnectionError="false"
+         onerror="continue">
+      SHUTDOWN
+    </sql>
+  </target>
+
+</project>

@@ -1,0 +1,13 @@
+NoSQL
+=====
+
+Mongodb
+Cassandra
+Hadoop
+
+RDBMS
+=====
+
+Teradata -- too dificult to install (even with VMWare)
+SQLite   -- similar to HyperSQL and H2
+

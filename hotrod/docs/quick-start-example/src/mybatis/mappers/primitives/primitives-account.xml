@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.daos.primitives.account">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id as id,
+    current_balance as currentBalance,
+    name as name,
+    created_on as createdOn
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id as id,
+    ${alias}.current_balance as currentBalance,
+    ${alias}.name as name,
+    ${alias}.created_on as createdOn
+  </sql>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultType="com.company.daos.AccountDAO">
+    select
+      <include refid="columns" />
+     from account
+     where
+      id = #{id}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultType="com.company.daos.AccountDAO">
+    select
+      <include refid="columns" />
+     from account
+    <where>
+      <if test="p.id != null">
+        and id = #{p.id}
+      </if>
+      <if test="p.currentBalance != null">
+        and current_balance = #{p.currentBalance}
+      </if>
+      <if test="p.name != null">
+        and name = #{p.name}
+      </if>
+      <if test="p.createdOn != null">
+        and created_on = #{p.createdOn}
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- insert -->
+
+  <insert id="insert">
+    <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+      select currval(pg_get_serial_sequence('account','id'))
+    </selectKey>
+    insert into account (current_balance, name, created_on)
+      values (#{currentBalance,jdbcType=DECIMAL}, #{name,jdbcType=VARCHAR}, #{createdOn,jdbcType=DATE})
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+   <![CDATA[
+    update account set
+      current_balance = #{currentBalance,jdbcType=DECIMAL},
+      name = #{name,jdbcType=VARCHAR},
+      created_on = #{createdOn,jdbcType=DATE}
+     where
+      id = #{id}
+   ]]>
+  </update>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update account
+    <set>
+      <if test="values.id != null">id = #{values.id,jdbcType=DECIMAL},</if>
+      <if test="values.currentBalance != null">current_balance = #{values.currentBalance,jdbcType=DECIMAL},</if>
+      <if test="values.name != null">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.createdOn != null">created_on = #{values.createdOn,jdbcType=DATE},</if>
+    </set>
+    <where>
+      <if test="filter.id != null">
+        and id = #{filter.id}
+      </if>
+      <if test="filter.currentBalance != null">
+        and current_balance = #{filter.currentBalance}
+      </if>
+      <if test="filter.name != null">
+        and name = #{filter.name}
+      </if>
+      <if test="filter.createdOn != null">
+        and created_on = #{filter.createdOn}
+      </if>
+    </where>
+  </update>
+
+  <!-- delete -->
+
+  <delete id="deleteByPK">
+   <![CDATA[
+    delete from account
+      where
+      id = #{id}
+   ]]>
+  </delete>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from account
+    <where>
+      <if test="id != null">
+        and id = #{id}
+      </if>
+      <if test="currentBalance != null">
+        and current_balance = #{currentBalance}
+      </if>
+      <if test="name != null">
+        and name = #{name}
+      </if>
+      <if test="createdOn != null">
+        and created_on = #{createdOn}
+      </if>
+    </where>
+  </delete>
+
+</mapper>

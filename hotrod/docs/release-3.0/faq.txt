@@ -1,0 +1,20 @@
+* FAQ
+  - What if I have a table/view/etc. with a name that is a reserved java word?
+  - Can I use nulls to select by Example?
+  - Can use parameters for an update or select?
+  - Can I run an exotic SQL tailored to my specific RDBMS?
+  - Can I read and update BLOBs and CLOBs?
+  - Can I sort the rows when using the selectByExample() method?
+  - Can I use case-insensitive sorting?
+  - Can I select rows related by foreign keys?
+  - What is "row version control" useful for?
+  - Which RDBMSs are supported?
+  - What if I don't know the catalog and schema for my dev database?
+  - What if I have two/three/multiple database schemas?
+  - Can I divide the HotRod configuration file in multiple sections?
+  - Is there a plug in for Eclipse?
+  - Does HotRod generate stored procedures for SQL in order to improve performance?
+  - What database column types are supported out of the box?
+  - I have table column with an exotic type not supported by HotRod. What do I do?
+  - Can I use auto-increment/identity PK columns?
+  - Can I use database sequences?

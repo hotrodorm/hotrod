@@ -1,0 +1,13 @@
+h3 {
+  color: blue;
+  font-size: 2em;
+}
+
+span {
+  font-family: arial, helvetica;
+  font-weight: bold;
+}
+
+a {
+  font-decoration: none;
+}

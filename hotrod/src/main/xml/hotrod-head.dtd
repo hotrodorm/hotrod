@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT hotrod (generators, (table | dao | view | select | fragment | facet)*)>
+
+<!ELEMENT generators (mybatis | spring-jdbc)+>
+
+<!ELEMENT mybatis (daos, mappers, mybatis-configuration-template, session-factory, select-generation, property*)>
+
+<!ELEMENT spring-jdbc (daos, config, select-generation)>
+
+<!ELEMENT daos EMPTY>
+<!ATTLIST daos gen-base-dir CDATA #REQUIRED>
+<!ATTLIST daos dao-package CDATA #REQUIRED>
+<!ATTLIST daos primitives-package CDATA #IMPLIED>
+<!ATTLIST daos dao-prefix CDATA #IMPLIED>
+<!ATTLIST daos dao-suffix CDATA #IMPLIED>
+<!ATTLIST daos primitives-prefix CDATA #IMPLIED>
+<!ATTLIST daos primitives-suffix CDATA #IMPLIED>
+
+<!ELEMENT mappers EMPTY>
+<!ATTLIST mappers gen-base-dir CDATA #REQUIRED>
+<!ATTLIST mappers relative-dir CDATA #REQUIRED>
+
+<!ELEMENT mybatis-configuration-template EMPTY>
+<!ATTLIST mybatis-configuration-template file CDATA #REQUIRED>
+
+<!ELEMENT session-factory EMPTY>
+<!ATTLIST session-factory singleton-full-class-name CDATA #REQUIRED>
+
+<!ELEMENT select-generation EMPTY>
+<!ATTLIST select-generation temp-view-base-name CDATA #REQUIRED>
+
+<!ELEMENT property EMPTY>
+<!ATTLIST property name CDATA #REQUIRED>
+<!ATTLIST property value CDATA #REQUIRED>
+
+<!ELEMENT config EMPTY>
+<!ATTLIST config gen-base-dir CDATA #REQUIRED>
+<!ATTLIST config relative-dir CDATA #REQUIRED>
+<!ATTLIST config prefix CDATA #REQUIRED>

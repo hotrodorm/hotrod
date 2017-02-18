@@ -1,0 +1,22 @@
+.java-code {
+  margin: 0em 0em 0em 0em;
+  counter-reset: line;
+}
+
+.java-code>p {
+  margin: 0em;
+  counter-increment: line;
+}
+
+.java-code>p:before {
+  font-family: monospace;
+  color: #b0b0b0;
+  padding: 0em 0.5em 0em 0em;
+  content: counter(line);
+  border-right: 3px solid #e0e0e0;
+  -webkit-user-select: none;
+  content: counter(line);
+  display: inline-block;
+  width: 25px;
+  text-align: right;
+}

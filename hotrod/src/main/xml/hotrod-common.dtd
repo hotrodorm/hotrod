@@ -1,0 +1,49 @@
+<!-- Hotrod common -->
+
+<!ELEMENT facet (table | dao | view | select)*>
+<!ATTLIST facet name CDATA #REQUIRED>
+
+<!ELEMENT table (auto-generated-column?, version-control-column?, column*, (sequence | query)*)>
+<!ATTLIST table name CDATA #REQUIRED>
+<!ATTLIST table java-name CDATA #IMPLIED>
+<!ATTLIST table column-seam CDATA #IMPLIED>
+
+<!ELEMENT dao ((sequence | query)*)>
+<!ATTLIST dao java-class-name CDATA #REQUIRED>
+
+<!ELEMENT sequence EMPTY>
+<!ATTLIST sequence name CDATA #REQUIRED>
+<!ATTLIST sequence java-method-name CDATA #IMPLIED>
+
+<!ELEMENT query (#PCDATA)>
+<!ATTLIST query java-method-name CDATA #REQUIRED>
+
+<!ELEMENT auto-generated-column EMPTY>
+<!ATTLIST auto-generated-column name CDATA #REQUIRED>
+<!ATTLIST auto-generated-column sequence CDATA #IMPLIED>
+<!ATTLIST auto-generated-column allows-specified-value CDATA #IMPLIED>
+
+<!ELEMENT version-control-column EMPTY>
+<!ATTLIST version-control-column name CDATA #REQUIRED>
+
+<!ELEMENT column EMPTY>
+<!ATTLIST column name CDATA #REQUIRED>
+<!ATTLIST column java-name CDATA #IMPLIED>
+<!ATTLIST column java-type CDATA #IMPLIED>
+<!ATTLIST column jdbc-type CDATA #IMPLIED>
+<!ATTLIST column is-lob CDATA #IMPLIED>
+<!ATTLIST column initial-value CDATA #IMPLIED>
+<!ATTLIST column min-value CDATA #IMPLIED>
+<!ATTLIST column max-value CDATA #IMPLIED>
+
+<!ELEMENT view (column*, (sequence | query)*)>
+<!ATTLIST view name CDATA #REQUIRED>
+<!ATTLIST view java-name CDATA #IMPLIED>
+
+<!ELEMENT select (#PCDATA | column)*>
+<!ATTLIST select java-class-name CDATA #REQUIRED>
+<!ATTLIST select complement-start CDATA #IMPLIED>
+<!ATTLIST select complement-end CDATA #IMPLIED>
+
+<!ELEMENT fragment EMPTY>
+<!ATTLIST fragment file CDATA #REQUIRED>

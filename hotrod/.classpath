@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/runtime/java"/>
+	<classpathentry kind="src" path="gen/buildinfo/java"/>
+	<classpathentry kind="src" path="testdata/h2/javatest"/>
+	<classpathentry kind="src" path="gen/hotrod/daos"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="lib/ant.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/tartarus-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/jxl.jar"/>
+	<classpathentry kind="lib" path="lib/commons-digester3-3.2-with-deps.jar"/>
+	<classpathentry kind="lib" path="lib/mybatis-3.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/spring/aopalliance.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-aop-4.2.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-beans-4.2.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-context-4.2.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-core-4.2.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-expression-4.2.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-jdbc-4.2.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-tx-4.2.5.RELEASE.jar"/>
+	<classpathentry kind="output" path="idebuild"/>
+</classpath>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.daos.primitives.transaction">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id as id,
+    completed_at as completedAt,
+    amount as amount,
+    account_id as accountId
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id as id,
+    ${alias}.completed_at as completedAt,
+    ${alias}.amount as amount,
+    ${alias}.account_id as accountId
+  </sql>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultType="com.company.daos.TransactionDAO">
+    select
+      <include refid="columns" />
+     from transaction
+     where
+      id = #{id}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultType="com.company.daos.TransactionDAO">
+    select
+      <include refid="columns" />
+     from transaction
+    <where>
+      <if test="p.id != null">
+        and id = #{p.id}
+      </if>
+      <if test="p.completedAt != null">
+        and completed_at = #{p.completedAt}
+      </if>
+      <if test="p.amount != null">
+        and amount = #{p.amount}
+      </if>
+      <if test="p.accountId != null">
+        and account_id = #{p.accountId}
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- insert -->
+
+  <insert id="insert">
+    <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+      select currval(pg_get_serial_sequence('transaction','id'))
+    </selectKey>
+    insert into transaction (completed_at, amount, account_id)
+      values (#{completedAt,jdbcType=DATE}, #{amount,jdbcType=DECIMAL}, #{accountId,jdbcType=DECIMAL})
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+   <![CDATA[
+    update transaction set
+      completed_at = #{completedAt,jdbcType=DATE},
+      amount = #{amount,jdbcType=DECIMAL},
+      account_id = #{accountId,jdbcType=DECIMAL}
+     where
+      id = #{id}
+   ]]>
+  </update>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update transaction
+    <set>
+      <if test="values.id != null">id = #{values.id,jdbcType=DECIMAL},</if>
+      <if test="values.completedAt != null">completed_at = #{values.completedAt,jdbcType=DATE},</if>
+      <if test="values.amount != null">amount = #{values.amount,jdbcType=DECIMAL},</if>
+      <if test="values.accountId != null">account_id = #{values.accountId,jdbcType=DECIMAL},</if>
+    </set>
+    <where>
+      <if test="filter.id != null">
+        and id = #{filter.id}
+      </if>
+      <if test="filter.completedAt != null">
+        and completed_at = #{filter.completedAt}
+      </if>
+      <if test="filter.amount != null">
+        and amount = #{filter.amount}
+      </if>
+      <if test="filter.accountId != null">
+        and account_id = #{filter.accountId}
+      </if>
+    </where>
+  </update>
+
+  <!-- delete -->
+
+  <delete id="deleteByPK">
+   <![CDATA[
+    delete from transaction
+      where
+      id = #{id}
+   ]]>
+  </delete>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from transaction
+    <where>
+      <if test="id != null">
+        and id = #{id}
+      </if>
+      <if test="completedAt != null">
+        and completed_at = #{completedAt}
+      </if>
+      <if test="amount != null">
+        and amount = #{amount}
+      </if>
+      <if test="accountId != null">
+        and account_id = #{accountId}
+      </if>
+    </where>
+  </delete>
+
+</mapper>

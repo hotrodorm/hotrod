@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="simpletests.dao">
+
+  <select id="selectAbc" resultType="dao.AbcDAO">
+    select * from abc where description = #{p.description}
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <select id="selectByExampleAbc" resultType="dao.AbcDAO">
+    select * from abc where description = #{p.description}
+    <where>
+      <if test="state != null">
+        and state = #{state}
+      </if>
+      <if test="title != null">
+        and title like #{title}
+      </if>
+      <if test="author != null and author.name != null">
+        and author_name like #{author.name}
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <insert id="insertAbc">
+    <selectKey keyProperty="id" resultType="int" order="BEFORE">
+      select seq.nextval from dual
+    </selectKey>
+    insert into Author (id,username,password,email,bio)
+    values
+    (#{id},#{username},#{password},#{email},#{bio})
+  </insert>
+
+  <insert id="insertAbc2">
+    <selectKey keyProperty="id" resultType="int" order="AFTER">
+      VALUES IDENTITY_VAL_LOCAL()
+    </selectKey>
+    insert into Author (id,username,password,email,bio)
+    values
+    (#{id},#{username},#{password},#{email},#{bio})
+  </insert>
+
+  <update id="updateByPK">
+    update Author set
+    username = #{username},
+    password =
+    #{password},
+    email =
+    #{email},
+    bio = #{bio}
+    where id = #{id}
+  </update>
+
+  <update id="updateByExample">
+    update Author
+    <set>
+      <if test="values.username != null">username=#{values.username},</if>
+      <if test="values.password != null">password=#{values.password},</if>
+    </set>    
+    <where>
+      <if test="filter.state != null">
+        and state = #{filter.state}
+      </if>
+      <if test="filter.title != null">
+        and title like #{filter.title}
+      </if>
+    </where>
+  </update>
+
+  <delete id="deleteByPK">
+    delete from Author where id = #{id}
+  </delete>
+  
+  <delete id="deleteByExample">
+    delete from Author
+    <where>
+      <if test="state != null">
+        and state = #{state}
+      </if>
+      <if test="title != null">
+        and title like #{title}
+      </if>
+    </where>
+  </delete>
+  
+
+</mapper>

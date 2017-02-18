@@ -1,0 +1,14 @@
+
+select ... from ... join ... {* where ... *}
+
+select ... from ... join ... {* group by ... *}
+
+select ... from ... join ... {* group by ... having ... *}
+
+select ... from ... join ... {* union ... *}
+
+select ... from ... join ... {* intersect ... *}
+
+select ... from ... join ... {* except ... *}
+
+select ... from ... join ... {* where ... group by ... having ... union ... intersect ... except ... *}

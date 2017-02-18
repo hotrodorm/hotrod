@@ -1,0 +1,2135 @@
+package org.hotrod.generator.mybatis;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+import org.hotrod.ant.Constants;
+import org.hotrod.ant.ControlledException;
+import org.hotrod.ant.UncontrolledException;
+import org.hotrod.config.AbstractCompositeDAOTag;
+import org.hotrod.config.MyBatisTag;
+import org.hotrod.config.SQLParameter;
+import org.hotrod.config.SequenceTag;
+import org.hotrod.config.QueryTag;
+import org.hotrod.database.PropertyType;
+import org.hotrod.database.PropertyType.ValueRange;
+import org.hotrod.exceptions.SequencesNotSupportedException;
+import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.hotrod.metadata.ColumnMetadata;
+import org.hotrod.metadata.DataSetMetadata;
+import org.hotrod.metadata.ForeignKeyMetadata;
+import org.hotrod.metadata.KeyMetadata;
+import org.hotrod.metadata.SelectParameterMetadata;
+import org.hotrod.metadata.VersionControlMetadata;
+import org.hotrod.runtime.exceptions.StaleDataException;
+import org.hotrod.runtime.interfaces.DaoForUpdate;
+import org.hotrod.runtime.interfaces.DaoWithOrder;
+import org.hotrod.runtime.interfaces.OrderBy;
+import org.hotrod.runtime.interfaces.Persistable;
+import org.hotrod.runtime.interfaces.Selectable;
+import org.hotrod.runtime.interfaces.UpdateByExampleDao;
+import org.hotrod.runtime.tx.TxDemarcator;
+import org.hotrod.runtime.tx.TxManager;
+import org.hotrod.runtime.util.ListWriter;
+import org.hotrod.utils.GenUtils;
+import org.hotrod.utils.JUtils;
+import org.hotrod.utils.SUtils;
+import org.hotrod.utils.identifiers.Identifier;
+import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
+import org.nocrala.tools.database.tartarus.core.JdbcKey;
+import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
+
+public class ObjectDAOPrimitives {
+
+  private static final Logger log = Logger.getLogger(ObjectDAOPrimitives.class);
+
+  public enum DAOType {
+    TABLE, VIEW, SELECT;
+  }
+
+  private AbstractCompositeDAOTag tag;
+  private DataSetMetadata metadata;
+  private DataSetLayout layout;
+  private MyBatisGenerator generator;
+  private DAOType type;
+  private MyBatisTag myBatisTag;
+
+  private ObjectDAO dao = null;
+  private MapperPrimitives mapPrimitives = null;
+
+  private Writer w;
+
+  public ObjectDAOPrimitives(final AbstractCompositeDAOTag tag, final DataSetMetadata metadata,
+      final DataSetLayout layout, final MyBatisGenerator generator, final DAOType type, final MyBatisTag myBatisTag) {
+    log.debug("init");
+    this.tag = tag;
+    this.metadata = metadata;
+    this.layout = layout;
+    this.generator = generator;
+    if (type == null) {
+      throw new RuntimeException("DAOType cannot be null.");
+    }
+    this.type = type;
+    this.myBatisTag = myBatisTag;
+  }
+
+  public boolean isTable() {
+    return this.type == DAOType.TABLE;
+  }
+
+  public boolean isView() {
+    return this.type == DAOType.VIEW;
+  }
+
+  public boolean isSelect() {
+    return this.type == DAOType.SELECT;
+  }
+
+  private String renderId() {
+    return this.isTable() ? "table '" + this.metadata.getIdentifier().getSQLIdentifier() + "'"
+        : this.isView() ? "view '" + this.metadata.getIdentifier().getSQLIdentifier() + "'"
+            : "select with java-class-name '" + this.tag.getJavaClassName() + "'";
+  }
+
+  public void setDao(final ObjectDAO dao) {
+    this.dao = dao;
+  }
+
+  public void setMapperPrimitives(final MapperPrimitives mapPrimitives) {
+    this.mapPrimitives = mapPrimitives;
+  }
+
+  public void generate() throws UncontrolledException, ControlledException {
+
+    String className = this.getClassName() + ".java";
+    this.layout.getDAOPrimitivePackage();
+    File prim = new File(this.layout.getDaoPrimitivePackageDir(), className);
+    this.w = null;
+
+    try {
+      this.w = new BufferedWriter(new FileWriter(prim));
+
+      writeClassHeader();
+
+      writeProperties();
+
+      if (this.isTable()) {
+        writeSelectByPK();
+        writeSelectByUI();
+      }
+
+      if (this.isSelect()) {
+        writeParameterizedSelect();
+      } else {
+        writeSelectByExampleAndOrder();
+      }
+
+      if (this.isTable()) {
+        writeSelectParentByFK();
+        writeSelectChildrenByFK();
+
+        writeInsert();
+
+        writeUpdateByPK();
+        writeUpdateByExample();
+
+        writeDeleteByPK();
+        writeDeleteByExample();
+      }
+
+      writeGettersAndSetters();
+      writeToString();
+
+      if (!this.isSelect()) {
+        writeOrderingEnum();
+
+        log.debug("SQL NAME=" + this.metadata.getIdentifier().getSQLIdentifier() + " this.tag=" + this.tag);
+        for (SequenceTag s : this.tag.getSequences()) {
+          log.debug("s.getName()=" + s.getName());
+          writeSelectSequence(s);
+        }
+
+        for (QueryTag q : this.tag.getQueries()) {
+          log.debug("q.getJavaMethodName()=" + q.getJavaMethodName());
+          writeQuery(q);
+        }
+
+      }
+
+      writeTxManager();
+
+      writePropertiesChangeLog();
+
+      writeClassFooter();
+
+    } catch (IOException e) {
+      throw new UncontrolledException(
+          "Could not generate DAO primitives class: could not write to file '" + prim.getName() + "'.", e);
+    } catch (UnresolvableDataTypeException e) {
+      throw new ControlledException("Could not generate DAO primitives for table '" + e.getTableName()
+          + "'. Could not handle columns '" + e.getColumnName() + "' type: " + e.getTypeName());
+    } catch (SequencesNotSupportedException e) {
+      throw new ControlledException("Could not generate DAO primitives for " + this.renderId() + ": " + e.getMessage());
+    } finally {
+      if (this.w != null) {
+        try {
+          this.w.close();
+        } catch (IOException e) {
+          throw new UncontrolledException(
+              "Could not generate DAO primitives class: could not close file '" + prim.getName() + "'.", e);
+        }
+      }
+    }
+
+  }
+
+  private void writeClassHeader() throws IOException {
+
+    // Comment
+
+    println("// Autogenerated by " + Constants.TOOL_NAME + " -- Do not edit.");
+    println();
+
+    // Package
+
+    println("package " + this.layout.getDAOPrimitivePackage().getPackage() + ";");
+    println();
+
+    // Imports
+
+    println("import java.io.Serializable;");
+    this.importCheckedException();
+    println("import java.util.List;");
+    println();
+    println("import org.apache.ibatis.session.SqlSession;");
+    println("import org.apache.ibatis.session.SqlSessionFactory;");
+    println("import " + TxManager.class.getName() + ";");
+    println("import " + TxDemarcator.class.getName() + ";");
+
+    if (this.metadata.getVersionControlMetadata() != null) {
+      println("import " + DaoForUpdate.class.getName() + ";");
+      println("import " + StaleDataException.class.getName() + ";");
+    }
+    if (!(this.isSelect())) {
+      println("import " + DaoWithOrder.class.getName() + ";");
+      if (this.isTable()) {
+        println("import " + UpdateByExampleDao.class.getName() + ";");
+      }
+      println("import " + OrderBy.class.getName() + ";");
+      if (this.isTable()) {
+        println("import " + Persistable.class.getName() + ";");
+      } else {
+        println("import " + Selectable.class.getName() + ";");
+      }
+    }
+    println();
+
+    Set<String> importedDaos = new HashSet<String>();
+
+    if (!this.isSelect()) {
+      importedDaos.add(this.getOrderByFullClassName());
+      println("import " + this.getOrderByFullClassName() + ";");
+    }
+
+    importedDaos.add(this.dao.getFullClassName());
+    println("import " + this.dao.getFullClassName() + ";");
+
+    for (ForeignKeyMetadata ik : this.metadata.getImportedFKs()) {
+      ObjectDAO rdao = this.generator.getDAO(ik.getRemote().getDataSet());
+      String fkc = rdao.getFullClassName();
+      if (!importedDaos.contains(fkc)) {
+        importedDaos.add(fkc);
+        println("import " + fkc + ";");
+      }
+    }
+
+    for (ForeignKeyMetadata ek : this.metadata.getExportedFKs()) {
+      ObjectDAO rdao = this.generator.getDAO(ek.getRemote().getDataSet());
+      String ikc = rdao.getFullClassName();
+      if (!importedDaos.contains(ikc)) {
+        importedDaos.add(ikc);
+        println("import " + ikc + ";");
+      }
+      ObjectDAOPrimitives prim = this.generator.getDAOPrimitives(ek.getRemote().getDataSet());
+      String ikco = prim.getOrderByFullClassName();
+      if (!importedDaos.contains(ikco)) {
+        importedDaos.add(ikco);
+        println("import " + ikco + ";");
+      }
+    }
+
+    println();
+
+    // Signature
+
+    println("public class " + this.getClassName());
+    print("    implements ");
+    if (!this.isSelect()) {
+      println((this.isTable() ? "Persistable" : "Selectable") + "<" + this.dao.getClassName() + ", "
+          + this.getOrderByClassName() + ">, ");
+    }
+    println("TxDemarcator, Serializable {");
+    println();
+
+    // Serial Version UID
+
+    println("  private static final long serialVersionUID = 1L;");
+    println();
+
+  }
+
+  private void writeProperties() throws IOException, UnresolvableDataTypeException {
+    println("  // DAO Properties (" + (this.isTable() ? "table" : (this.isView() ? "view" : "select")) + " columns)");
+    println();
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      println("  protected " + cm.getType().getJavaClassName() + " " + cm.getIdentifier().getJavaMemberIdentifier()
+          + " = null;" + (cm.getType().isLOB() ? " // it's a LOB type" : ""));
+    }
+    println();
+  }
+
+  /**
+   * <pre>
+   * 
+   * public static AbcDAO selectByPK(final Integer id) throws SQLException {
+   *   SqlSession sqlSession = null;
+   *   try {
+   *     sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
+   *     return selectByPK(sqlSession, id);
+   *   } finally {
+   *     if (sqlSession != null) {
+   *       sqlSession.close();
+   *     }
+   *   }
+   * }
+   * 
+   * public static AbcDAO selectByPK(final SqlSession sqlSession, final Integer id) throws SQLException {
+   *   AbcDAO pk = new AbcDAO();
+   *   pk.setId(id);
+   *   return sqlSession.selectOne(&quot;simpletests.dao.selectAbc&quot;, pk);
+   * }
+   * 
+   * </pre>
+   * 
+   */
+
+  private static final String SELECT_BY_PK_METHOD = "select";
+
+  private void writeSelectByPK() throws IOException, UnresolvableDataTypeException {
+    if (this.metadata.getPK() == null) {
+      println("  // no select by PK generated, since the table does not have a PK.");
+      println();
+      return;
+    }
+
+    String paramsSignature = toParametersSignature(this.metadata.getPK());
+    String paramsCall = toParametersCall(this.metadata.getPK());
+
+    println("  // select by primary key");
+    println();
+
+    print("  public static " + this.dao.getClassName() + " " + SELECT_BY_PK_METHOD + "(");
+    print(paramsSignature);
+    print(") ");
+    this.throwsCheckedException();
+    println("{");
+    retrieveSqlSession();
+    println("      return " + SELECT_BY_PK_METHOD + "(sqlSession, " + paramsCall + ");");
+    releaseSqlSession();
+    println("  }");
+    println();
+
+    println("  public static " + this.dao.getClassName() + " " + SELECT_BY_PK_METHOD + "(final SqlSession sqlSession, "
+        + paramsSignature + ")");
+    print("      ");
+    this.throwsCheckedException();
+    println("{");
+    for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
+      println("    if (" + cm.getIdentifier().getJavaMemberIdentifier() + " == null) return null;");
+    }
+    println("    " + this.dao.getClassName() + " pk = new " + this.dao.getClassName() + "();");
+    for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
+      println("    pk." + cm.getIdentifier().getSetter() + "(" + cm.getIdentifier().getJavaMemberIdentifier() + ");");
+    }
+
+    preCheckedException();
+    println("    return sqlSession.selectOne(\"" + this.mapPrimitives.getFullMapperIdSelectByPK() + "\", pk);");
+    postCheckedException();
+
+    println("  }");
+    println();
+  }
+
+  private void importCheckedException() throws IOException {
+    if (isCheckedPersistenceException()) {
+      println("import java.sql.SQLException;");
+    }
+  }
+
+  private void throwsCheckedException() throws IOException {
+    if (isCheckedPersistenceException()) {
+      print("throws SQLException ");
+    }
+  }
+
+  private boolean isCheckedPersistenceException() {
+    return this.myBatisTag.getProperties().isCheckedPersistenceException();
+  }
+
+  private void addCheckedException() throws IOException {
+    if (isCheckedPersistenceException()) {
+      print("SQLException");
+    }
+  }
+
+  private void preCheckedException() throws IOException {
+    if (isCheckedPersistenceException()) {
+      println("    try {");
+    }
+  }
+
+  private void postCheckedException() throws IOException {
+    if (isCheckedPersistenceException()) {
+      println("    } catch (Exception e) {");
+      println("      throw new SQLException(e);");
+      println("    }");
+    }
+  }
+
+  private void retrieveSqlSession() throws IOException {
+    retrieveSqlSession(0);
+  }
+
+  /**
+   * <pre>
+   *     TxManager txm = null;
+   *     try {
+   *       txm = getTxManager();
+   * </pre>
+   */
+  private void retrieveSqlSession(final int indent) throws IOException {
+    String f = SUtils.getFiller(' ', indent * 2);
+    println(f + "    TxManager txm = null;");
+    println(f + "    try {");
+    println(f + "      txm = getTxManager();");
+    println(f + "      SqlSession sqlSession = txm.getSqlSession();");
+  }
+
+  /**
+   * <pre>
+   * if (!txm.isTransactionOngoing()) {
+   *   txm.commit();
+   * }
+   * </pre>
+   */
+  private void commitSqlSession(final int indent) throws IOException {
+    String f = SUtils.getFiller(' ', indent * 2);
+    println(f + "    if (!txm.isTransactionOngoing()) {");
+    println(f + "      txm.commit();");
+    println(f + "    }");
+  }
+
+  private void releaseSqlSession() throws IOException {
+    releaseSqlSession(0);
+  }
+
+  /**
+   * <pre>
+   *     } finally {
+   *       if (txm != null && !txm.isTransactionOngoing()) {
+   *         txm.close();
+   *       }
+   *     }
+   * </pre>
+   */
+
+  private void releaseSqlSession(final int indent) throws IOException {
+    String f = SUtils.getFiller(' ', indent * 2);
+
+    if (this.isCheckedPersistenceException()) {
+      println(f + "    } catch (SQLException e) {");
+      println(f + "      throw e;");
+      println(f + "    } catch (Exception e) {");
+      println(f + "      throw new SQLException(e);");
+    }
+
+    println(f + "    } finally {");
+
+    if (this.isCheckedPersistenceException()) {
+      println(f + "      try {");
+      f = SUtils.getFiller(' ', (indent + 1) * 2);
+    }
+
+    println(f + "      if (txm != null && !txm.isTransactionOngoing()) {");
+    println(f + "        txm.close();");
+    println(f + "      }");
+    f = SUtils.getFiller(' ', indent * 2);
+
+    if (this.isCheckedPersistenceException()) {
+      println(f + "      } catch (Exception e) {");
+      println(f + "        throw new SQLException(e);");
+      println(f + "      }");
+    }
+
+    println(f + "    }");
+  }
+
+  /**
+   * <pre>
+   * 
+   * // Select by Unique Indexes
+   * 
+   * public static List&lt;AbcDAO&gt; selectByUISectionPage(final Integer section, final Integer page) throws SQLException {
+   *   SqlSession sqlSession = null;
+   *   try {
+   *     sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
+   *     return selectByUISectionPage(sqlSession, section, page);
+   *   } finally {
+   *     if (sqlSession != null) {
+   *       sqlSession.close();
+   *     }
+   *   }
+   * }
+   * 
+   * public static List&lt;AbcDAO&gt; selectByUISectionPage(final SqlSession sqlSession, final Integer section,
+   *     final Integer page) throws SQLException {
+   *   AbcDAO ui = new AbcDAO();
+   *   ui.setSection(section);
+   *   ui.setPage(page);
+   *   return sqlSession.selectList(&quot;simpletests.dao.selectAbc&quot;, ui);
+   * }
+   * 
+   * </pre>
+   * 
+   * @throws IOException
+   * @throws UnresolvableDataTypeException
+   */
+
+  private void writeSelectByUI() throws IOException, UnresolvableDataTypeException {
+    boolean first = true;
+
+    // Remove duplicated unique indexes/constraints that may be registered in
+    // the database. This behavior/bug has been observed in PostgreSQL.
+
+    Set<KeyMetadata> distinctConstraints = new LinkedHashSet<KeyMetadata>();
+    for (KeyMetadata ui : this.metadata.getUniqueIndexes()) {
+      distinctConstraints.add(ui);
+    }
+
+    // Generate the primitive method.
+
+    for (KeyMetadata ui : distinctConstraints) {
+      if (this.metadata.getPK() == null || !ui.equals(this.metadata.getPK())) {
+        if (first) {
+          first = false;
+          println("  // select by unique indexes");
+          println();
+        }
+
+        String paramsSignature = toParametersSignature(ui);
+        String paramsCall = toParametersCall(ui);
+        String camelCase = ui.toCamelCase(this.layout.getColumnSeam());
+
+        print("  public static " + this.dao.getClassName() + " selectByUI" + camelCase + "(" + paramsSignature + ") ");
+        this.throwsCheckedException();
+        println("{");
+        retrieveSqlSession();
+        println("      return selectByUI" + camelCase + "(sqlSession, " + paramsCall + ");");
+        releaseSqlSession();
+        println("  }");
+        println();
+
+        println("  public static " + this.dao.getClassName() + " selectByUI" + camelCase
+            + "(final SqlSession sqlSession, " + paramsSignature + ") ");
+        this.throwsCheckedException();
+        println("{");
+        for (ColumnMetadata cm : ui.getColumns()) {
+          println("    if (" + cm.getIdentifier().getJavaMemberIdentifier() + " == null) return null;");
+        }
+        println("    " + this.dao.getClassName() + " ui = new " + this.dao.getClassName() + "();");
+        for (ColumnMetadata cm : ui.getColumns()) {
+          println(
+              "    ui." + cm.getIdentifier().getSetter() + "(" + cm.getIdentifier().getJavaMemberIdentifier() + ");");
+        }
+
+        preCheckedException();
+        println("    return sqlSession.selectOne(\"" + this.mapPrimitives.getFullMapperIdSelectByUI(ui) + "\", ui);");
+        postCheckedException();
+
+        println("  }");
+        println();
+      }
+    }
+
+    if (first) {
+      println("  // select by unique indexes: no unique indexes found"
+          + (this.metadata.getPK() != null ? " (besides the PK)" : "") + " -- skipped");
+      println();
+    }
+  }
+
+  public static class TableKey {
+
+    private JdbcKey key;
+
+    public TableKey(final JdbcKey key) {
+      this.key = key;
+    }
+
+    public JdbcKey getKey() {
+      return key;
+    }
+
+    @Override
+    public int hashCode() {
+      return 1;
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+      if (this == other)
+        return true;
+      if (other == null)
+        return false;
+      if (getClass() != other.getClass())
+        return false;
+      TableKey o = (TableKey) other;
+      if (key == null) {
+        if (o.key != null)
+          return false;
+      } else if (o.key == null)
+        return false;
+      else {
+        if (this.key.getKeyColumns().size() != o.key.getKeyColumns().size()) {
+          return false;
+        }
+        for (int i = 0; i < this.key.getKeyColumns().size(); i++) {
+          JdbcKeyColumn tc = this.key.getKeyColumns().get(i);
+          JdbcKeyColumn oc = o.key.getKeyColumns().get(i);
+          if (tc.getColumnSequence() != oc.getColumnSequence()) {
+            return false;
+          }
+          if (!tc.getColumn().getName().equals(oc.getColumn().getName())) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+  }
+
+  /**
+   * 
+   * <pre>
+   * 
+   * // Select with filter and order
+   * 
+   * public static List<AccountDAO> selectByExample(final AccountDAO example, final AccountOrderBy... orderBies)
+   *     throws SQLException {
+   *   TxManager txm = null;
+   *   try {
+   *     txm = getTxManager();
+   *     SqlSession sqlSession = txm.getSqlSession();
+   *     return selectByExample(sqlSession, example, orderBies);
+   *   } finally {
+   *     if (txm != null && !txm.isTransactionOngoing()) {
+   *       txm.close();
+   *     }
+   *   }
+   * }
+   * 
+   * public static List<AccountDAO> selectByExample(final SqlSession sqlSession, final AccountDAO example,
+   *     final AccountOrderBy... orderBies) throws SQLException {
+   *   DaoWithOrder<AccountDAOPrimitives, AccountOrderBy> dwo = //
+   *       new DaoWithOrder<AccountDAOPrimitives, AccountOrderBy>(example, orderBies);
+   *   return sqlSession.selectList("hotrod.test.generation.primitives.account.selectByExample", dwo);
+   * }
+   * 
+   * </pre>
+   * 
+   * @throws IOException
+   */
+
+  private void writeSelectByExampleAndOrder() throws IOException {
+    println("  // select by example (with ordering)");
+    println();
+
+    println("  public static List<" + this.dao.getClassName() + "> selectByExample(final " + this.dao.getClassName()
+        + " example, final " + this.getOrderByClassName() + "... orderBies)");
+    print("      ");
+    this.throwsCheckedException();
+    println("{");
+    retrieveSqlSession();
+    println("      return selectByExample(sqlSession, example, orderBies);");
+    releaseSqlSession();
+    println("  }");
+    println();
+
+    println("  public static List<" + this.dao.getClassName() + "> selectByExample(final SqlSession sqlSession, final "
+        + this.dao.getClassName() + " example, final " + this.getOrderByClassName() + "... orderBies)");
+    print("      ");
+    this.throwsCheckedException();
+    println("{");
+    println("    DaoWithOrder<" + this.getClassName() + ", " + this.getOrderByClassName() + "> dwo = //");
+    println(
+        "    new DaoWithOrder<" + this.getClassName() + ", " + this.getOrderByClassName() + ">(example, orderBies);");
+    preCheckedException();
+    println("    return sqlSession.selectList(\"" + this.mapPrimitives.getFullMapperIdSelectByExample() + "\", dwo);");
+    postCheckedException();
+    println("  }");
+    println();
+  }
+
+  /**
+   * <pre>
+   * // parameterized select
+   * 
+   * public List&lt;CountryDAO&gt; select(final CountryDAOParameter parameters) throws SQLException {
+   *   TxManager txm = null;
+   *   try {
+   *     txm = getTxManager();
+   *     SqlSession sqlSession = txm.getSqlSession();
+   *     return select(sqlSession, parameters);
+   *   } finally {
+   *     if (txm != null &amp;&amp; !txm.isTransactionOngoing()) {
+   *       txm.close();
+   *     }
+   *   }
+   * }
+   * 
+   * public List&lt;CountryDAO&gt; select(final SqlSession sqlSession, final CountryDAOParameter parameters)
+   *     throws SQLException {
+   *   return sqlSession.selectList(&quot;com.company.daos.primitives.country.selectParameterized&quot;, parameters);
+   * }
+   * 
+   * public class CountryDAOParameter {
+   * 
+   *   private Integer id;
+   *   private String name;
+   * 
+   *   public CountryDAOParameter(final Integer id, final String name) {
+   *     this.id = id;
+   *     this.name = name;
+   *   }
+   * 
+   *   public Integer getId() {
+   *     return id;
+   *   }
+   * 
+   *   public String getName() {
+   *     return name;
+   *   }
+   * 
+   * }
+   * </pre>
+   * 
+   * @throws IOException
+   */
+
+  private void writeParameterizedSelect() throws IOException {
+
+    println("  // parameterized select");
+    println();
+    println(renderJavaComment(this.metadata.getAugmentedSQL()));
+    println();
+
+    String pd;
+    String pc;
+    {
+      ListWriter lwd = new ListWriter(", ");
+      ListWriter lwc = new ListWriter(", ");
+      for (SelectParameterMetadata pm : this.metadata.getParameterDefinitions()) {
+        lwd.add("final " + pm.getParameter().getJavaType() + " " + pm.getIdentifier().getJavaMemberIdentifier());
+        lwc.add(pm.getIdentifier().getJavaMemberIdentifier());
+      }
+      pd = lwd.toString();
+      pc = lwc.toString();
+    }
+
+    println("  public static List<" + this.dao.getClassName() + "> select(" + pd + ")");
+    print("      ");
+    this.throwsCheckedException();
+    print("{");
+    retrieveSqlSession();
+
+    println(
+        "      return select(sqlSession" + (this.metadata.getParameterDefinitions().isEmpty() ? "" : ", ") + pc + ");");
+    releaseSqlSession();
+    println("  }");
+    println();
+
+    print("  public static List<" + this.dao.getClassName() + "> select(final SqlSession sqlSession"
+        + (this.metadata.getParameterDefinitions().isEmpty() ? "" : ", "));
+    print(pd);
+    print(") ");
+    this.throwsCheckedException();
+    println("{");
+
+    print("    " + this.getParameterClassName() + " parameters = new " + this.getParameterClassName() + "(");
+    print(pc);
+    println(");");
+
+    preCheckedException();
+    println("    return sqlSession.selectList(");
+    println("        \"" + this.mapPrimitives.getFullMapperIdSelectParameterized() + "\", parameters);");
+    postCheckedException();
+
+    println("  }");
+
+    println();
+    println("  public static class " + this.getParameterClassName() + " {");
+    println("");
+    for (SelectParameterMetadata pm : this.metadata.getParameterDefinitions()) {
+      println(
+          "    private " + pm.getParameter().getJavaType() + " " + pm.getIdentifier().getJavaMemberIdentifier() + ";");
+    }
+    println("");
+    print("    public " + this.getParameterClassName() + "(");
+    print(pd);
+    println(") {");
+    for (SelectParameterMetadata pm : this.metadata.getParameterDefinitions()) {
+      println("      this." + pm.getIdentifier().getJavaMemberIdentifier() + " = "
+          + pm.getIdentifier().getJavaMemberIdentifier() + ";");
+    }
+    println("    }");
+    for (SelectParameterMetadata pm : this.metadata.getParameterDefinitions()) {
+      println("");
+      println("    public " + pm.getParameter().getJavaType() + " " + pm.getIdentifier().getGetter() + "() {");
+      println("      return " + pm.getIdentifier().getJavaMemberIdentifier() + ";");
+      println("    }");
+    }
+    println("");
+    println("  }");
+    println("");
+
+  }
+
+  public static String renderJavaComment(final String sentence) {
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("  /*\n");
+    sb.append("  * The SQL statement for this method is:\n");
+    sb.append("\n");
+
+    String rendered = sentence.replaceAll("\\*/", "\\*\\\\/");
+    if (!sentence.equals(rendered)) {
+      sb.append("Note: The string sequence star-slash has been replaced by *\\/ in this comment.\n\n");
+    }
+    sb.append(rendered);
+    sb.append("\n");
+    sb.append("\n");
+    sb.append("  */\n");
+
+    return sb.toString();
+  }
+
+  /**
+   * <pre>
+   * // Select parents by FKs
+   * 
+   * public class DefParentSelector {
+   * 
+   *   public DefDAO byFkId() throws SQLException {
+   *     SqlSession sqlSession = null;
+   *     try {
+   *       sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
+   *       return byFkId(sqlSession);
+   *     } finally {
+   *       if (sqlSession != null) {
+   *         sqlSession.close();
+   *       }
+   *     }
+   *   }
+   * 
+   *   public DefDAO byFkId(final SqlSession sqlSession) throws SQLException {
+   *     return DefDAOPrimitives.selectByUIAbcId(sqlSession, id);
+   *   }
+   * 
+   * }
+   * 
+   * public DefParentSelector selectParentDef() {
+   *   return new DefParentSelector();
+   * }
+   * </pre>
+   * 
+   * @throws IOException
+   * @throws ControlledException
+   */
+  private void writeSelectParentByFK() throws IOException, ControlledException {
+
+    // System.out.println("::: writeSelectParentByFK() - " +
+    // this.ds.getIdentifier().getSQLIdentifier());
+
+    List<ForeignKeyMetadata> fks = this.metadata.getImportedFKs();
+    if (fks.isEmpty()) {
+
+      println("  // select parents by imported FKs: no imported keys found -- skipped");
+      println();
+
+    } else {
+
+      println("  // select parents by imported FKs");
+      println();
+
+      // Sort by remote table.
+
+      // Also, get distinct foreign keys only, since multiple identical foreign
+      // keys can be registered in the database. This behavior/bug has been
+      // observed in PostgreSQL.
+
+      Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> fkSelectors = compileDistinctFKs(
+          this.metadata.getImportedFKs());
+
+      for (DataSetMetadata ds : fkSelectors.keySet()) {
+        ObjectDAO fd = this.generator.getDAO(ds);
+        ObjectDAOPrimitives fp = this.generator.getDAOPrimitives(ds);
+
+        String parentSelectorClassName = fd.getJavaClassIdentifier() + "ParentSelector";
+        println("  public class " + parentSelectorClassName + " {");
+        println();
+
+        for (ForeignKeyMetadata fkm : fkSelectors.get(ds)) {
+          String selectByCols = this.getSelectByColumns(fkm.getLocal());
+          print("    public " + fd.getClassName() + " " + selectByCols + "() ");
+          this.throwsCheckedException();
+          println("{");
+          retrieveSqlSession(1);
+          println("        return " + selectByCols + "(sqlSession);");
+          releaseSqlSession(1);
+          println("    }");
+          println();
+
+          String callParameters = renderCallParameters(fkm);
+
+          String selectMethod = fkm.pointsToPK() ? SELECT_BY_PK_METHOD : fp.getSelectByUI(fkm.getRemote());
+          print("    public " + fd.getClassName() + " " + selectByCols + "(final SqlSession sqlSession) ");
+          this.throwsCheckedException();
+          println("{");
+          println("      return " + fp.getClassName() + "." + selectMethod + "(sqlSession, " + callParameters + ");");
+          println("    }");
+          println();
+
+        }
+
+        println("  }");
+        println();
+
+        println("  public " + parentSelectorClassName + " selectParent" + fd.getJavaClassIdentifier() + "() {");
+        println("    return new " + parentSelectorClassName + "();");
+        println("  }");
+        println();
+
+      }
+
+    }
+
+  }
+
+  private Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> compileDistinctFKs(
+      final List<ForeignKeyMetadata> fks) {
+    Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> fkSelectors = new HashMap<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>>();
+    for (ForeignKeyMetadata fk : fks) {
+      DataSetMetadata ds = fk.getRemote().getDataSet();
+      LinkedHashSet<ForeignKeyMetadata> fkSelector = fkSelectors.get(ds);
+      if (fkSelector == null) {
+        fkSelector = new LinkedHashSet<ForeignKeyMetadata>();
+        fkSelectors.put(ds, fkSelector);
+      }
+      fkSelector.add(fk);
+    }
+    return fkSelectors;
+  }
+
+  public static class ForeignKey {
+
+    private JdbcForeignKey fk;
+
+    public ForeignKey(JdbcForeignKey fk) {
+      this.fk = fk;
+    }
+
+    public JdbcForeignKey getFk() {
+      return fk;
+    }
+
+    @Override
+    public int hashCode() {
+      return 1;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      ForeignKey other = (ForeignKey) obj;
+      if (fk == null) {
+        if (other.fk != null)
+          return false;
+      } else {
+        TableKey tlk = new TableKey(fk.getLocalKey());
+        TableKey olk = new TableKey(other.fk.getLocalKey());
+        if (!tlk.equals(olk))
+          return false;
+        if (!fk.getRemoteTable().getName().equals(other.fk.getRemoteTable().getName()))
+          return false;
+        TableKey trk = new TableKey(fk.getRemoteKey());
+        TableKey ork = new TableKey(other.fk.getRemoteKey());
+        if (!trk.equals(ork))
+          return false;
+      }
+      return true;
+    }
+
+  }
+
+  private String renderCallParameters(final ForeignKeyMetadata fk) throws ControlledException {
+    ListWriter lw = new ListWriter(", ");
+    for (int i = 0; i < fk.getLocal().getColumns().size(); i++) {
+      ColumnMetadata loCol = fk.getLocal().getColumns().get(i);
+      ColumnMetadata reCol = fk.getRemote().getColumns().get(i);
+      PropertyType loType = loCol.getType();
+      PropertyType reType = reCol.getType();
+      String param = GenUtils.convertPropertyType(loType.getJavaClassName(), reType.getJavaClassName(),
+          loCol.getIdentifier().getJavaMemberIdentifier());
+      lw.add(param);
+    }
+    return lw.toString();
+  }
+
+  /**
+   * <pre>
+   * // Select children by exported FKs
+   * 
+   * public class DefChildrenSelector {
+   * 
+   *   public List&lt;DefDAO&gt; byAbcSectionAbcPage(final DefDAOOrderBy... orderBies) throws SQLException {
+   *     SqlSession sqlSession = null;
+   *     try {
+   *       sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
+   *       return byAbcSectionAbcPage(sqlSession, orderBies);
+   *     } finally {
+   *       if (sqlSession != null) {
+   *         sqlSession.close();
+   *       }
+   *     }
+   *   }
+   * 
+   *   public List&lt;DefDAO&gt; byAbcSectionAbcPage(final SqlSession sqlSession, final DefDAOOrderBy... orderBies)
+   *       throws SQLException {
+   *     DefDAO example = new DefDAO();
+   *     example.setAbcSection(section);
+   *     example.setAbcPage(page);
+   *     return DefDAO.selectByExample(sqlSession, example, orderBies);
+   *   }
+   * 
+   * }
+   * 
+   * public DefChildrenSelector selectChildrenDef() {
+   *   return new DefChildrenSelector();
+   * }
+   * </pre>
+   * 
+   * @throws IOException
+   * @throws ControlledException
+   */
+
+  private void writeSelectChildrenByFK() throws IOException, ControlledException {
+
+    // System.out.println("::: writeSelectChildrenByFK() - " +
+    // this.ds.getIdentifier().getSQLIdentifier());
+
+    if (this.metadata.getExportedFKs().isEmpty()) {
+
+      println("  // select children by exported FKs: no exported keys found -- skipped");
+      println();
+
+    } else {
+
+      println("  // select children by exported FKs");
+      println();
+
+      // Sort by remote table.
+
+      // Also, get distinct foreign keys only, since multiple identical foreign
+      // keys can be registered in the database. This behavior has been observed
+      // in PostgreSQL.
+
+      Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> efkSelectors = compileDistinctFKs(
+          this.metadata.getExportedFKs());
+
+      for (DataSetMetadata ds : efkSelectors.keySet()) {
+
+        // System.out.println(">> remote=" +
+        // ds.getIdentifier().getSQLIdentifier());
+
+        ObjectDAO fd = this.generator.getDAO(ds);
+        ObjectDAOPrimitives fp = this.generator.getDAOPrimitives(ds);
+
+        String selectorName = fd.getJavaClassIdentifier() + "ChildrenSelector";
+        println("  public class " + selectorName + " {");
+        println();
+
+        for (ForeignKeyMetadata tfk : efkSelectors.get(ds)) {
+
+          String selectByCols = fp.getSelectByColumns(tfk.getRemote());
+
+          println("    public List<" + fd.getClassName() + "> " + selectByCols + "(final " + fp.getOrderByClassName()
+              + "... orderBies)");
+          print("        ");
+          this.throwsCheckedException();
+          println("{");
+          retrieveSqlSession(1);
+          println("        return " + selectByCols + "(sqlSession, orderBies);");
+          releaseSqlSession(1);
+          println("    }");
+          println();
+
+          println("    public List<" + fd.getClassName() + "> " + selectByCols + "(final SqlSession sqlSession, final "
+              + fp.getOrderByClassName() + "... orderBies)");
+          print("        ");
+          this.throwsCheckedException();
+          println("{");
+
+          println("      " + fd.getClassName() + " example = new " + fd.getClassName() + "();");
+
+          for (int i = 0; i < tfk.getLocal().getColumns().size(); i++) {
+            ColumnMetadata loCol = tfk.getLocal().getColumns().get(i);
+            ColumnMetadata reCol = tfk.getRemote().getColumns().get(i);
+            PropertyType loType = loCol.getType();
+            PropertyType reType = reCol.getType();
+            String param = GenUtils.convertPropertyType(loType.getJavaClassName(), reType.getJavaClassName(),
+                loCol.getIdentifier().getJavaMemberIdentifier());
+            println("      example.set" + reCol.getIdentifier().getJavaClassIdentifier() + "(" + param + ");");
+          }
+
+          println("      return " + fd.getClassName() + ".selectByExample(sqlSession, example, orderBies);");
+          println("    }");
+          println();
+
+        }
+
+        println("  }");
+        println();
+
+        println("  public " + getChildrenSelectorClass(fd) + " selectChildren" + fd.getJavaClassIdentifier() + "() {");
+        println("    return new " + getChildrenSelectorClass(fd) + "();");
+        println("  }");
+        println();
+      }
+
+    }
+
+  }
+
+  private String getChildrenSelectorClass(final ObjectDAO dao) {
+    return dao.getJavaClassIdentifier() + "ChildrenSelector";
+  }
+
+  /**
+   * <pre>
+   * 
+   * // Insert
+   * 
+   * public int insert() throws SQLException {
+   *   SqlSession sqlSession = null;
+   *   try {
+   *     sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
+   *     int rows = insert(sqlSession);
+   *     sqlSession.commit();
+   *     return rows;
+   *   } finally {
+   *     if (sqlSession != null) {
+   *       sqlSession.close();
+   *     }
+   *   }
+   * }
+   * 
+   * public int insert(final SqlSession sqlSession) throws SQLException {
+   *   this.versionControl = N; // only when there's version control defined
+   *   return sqlSession.insert(&quot;simpletests.dao.insertAbc&quot;, this);
+   * }
+   * 
+   * </pre>
+   * 
+   * @throws IOException
+   * @throws UnresolvableDataTypeException
+   * @throws ControlledException
+   */
+
+  private void writeInsert() throws IOException, UnresolvableDataTypeException {
+
+    println("  // insert");
+    println();
+
+    println("  @Override");
+    print("  public int insert() ");
+    this.throwsCheckedException();
+    println("{");
+    retrieveSqlSession();
+    println("      int rows = insert(sqlSession);");
+    commitSqlSession(1);
+    println("      return rows;");
+    releaseSqlSession();
+    println("  }");
+    println();
+
+    println("  @Override");
+    print("  public int insert(final SqlSession sqlSession) ");
+    this.throwsCheckedException();
+    println("{");
+
+    VersionControlMetadata vcm = this.metadata.getVersionControlMetadata();
+
+    if (this.isTable() && vcm != null) {
+      ColumnMetadata cm = vcm.getColumnMetadata();
+      println("    this." + cm.getIdentifier().getJavaMemberIdentifier() + " = "
+          + cm.getType().getValueRange().getInitialValue() + ";");
+    }
+
+    preCheckedException();
+    println("    return sqlSession.insert(\"" + this.mapPrimitives.getFullMapperIdInsert() + "\", this);");
+    postCheckedException();
+
+    println("  }");
+    println();
+
+  }
+
+  /**
+   * <pre>
+   * public int updateByPK() throws SQLException {
+   *   SqlSession sqlSession = null;
+   *   try {
+   *     sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
+   *     int rows = updateByPK(sqlSession);
+   *     sqlSession.commit();
+   *     return rows;
+   *   } finally {
+   *     if (sqlSession != null) {
+   *       sqlSession.close();
+   *     }
+   *   }
+   * }
+   * 
+   * public int updateByPK(final SqlSession sqlSession) throws SQLException {
+   *   return sqlSession.update(&quot;simpletests.dao.insertAbc&quot;, this);
+   * }
+   * 
+   * </pre>
+   */
+
+  /**
+   * <pre>
+   * public int update() throws SQLException, StaleDataException {
+   *   TxManager txm = null;
+   *   try {
+   *     txm = getTxManager();
+   *     SqlSession sqlSession = txm.getSqlSession();
+   *     int rows = update(sqlSession);
+   *     if (!txm.isTransactionOngoing()) {
+   *       txm.commit();
+   *     }
+   *     return rows;
+   *   } finally {
+   *     if (txm != null && !txm.isTransactionOngoing()) {
+   *       txm.close();
+   *     }
+   *   }
+   * }
+   * 
+   * public int update(final SqlSession sqlSession) throws SQLException, StaleDataException {
+   *   long currentVersion = this.versionControl;
+   *   DaoForUpdate<VehicleDAOPrimitives> u = new DaoForUpdate<VehicleDAOPrimitives>(this, currentVersion, -256, 255);
+   *   int rows = sqlSession.update("hotrod.test.generation.primitives.vehicle.updateByPK", u);
+   *   if (rows != 1) {
+   *     throw new StaleDataException("Could not update row on table VEHICLE with version " + currentVersion
+   *         + " since it had already been updated by other process.");
+   *   }
+   *   return rows;
+   * }
+   * </pre>
+   */
+
+  private static final String UPDATE_BY_PK_METHOD = "update";
+
+  private void writeUpdateByPK() throws IOException, UnresolvableDataTypeException {
+    if (this.metadata.getPK() == null) {
+      println("  // no update by PK generated, since the table does not have a PK.");
+      println();
+    } else {
+
+      boolean useVersionControl = this.metadata.getVersionControlMetadata() != null;
+
+      println("  // update by PK");
+      println();
+
+      print("  public int " + UPDATE_BY_PK_METHOD + "() ");
+      printExceptions(useVersionControl);
+      println("{");
+      retrieveSqlSession();
+      println("      int rows = " + UPDATE_BY_PK_METHOD + "(sqlSession);");
+      commitSqlSession(1);
+      println("      return rows;");
+      releaseSqlSession();
+      println("  }");
+      println();
+
+      if (useVersionControl) {
+        VersionControlMetadata vcm = this.metadata.getVersionControlMetadata();
+        ColumnMetadata cm = vcm.getColumnMetadata();
+        PropertyType pt = cm.getType();
+        ValueRange range = pt.getValueRange();
+        print("  public int " + UPDATE_BY_PK_METHOD + "(final SqlSession sqlSession) ");
+        printExceptions(useVersionControl);
+//        this.addCheckedException();
+//        println("StaleDataException {");
+        println("{");
+        println("    long currentVersion = this." + cm.getIdentifier().getJavaMemberIdentifier() + ";");
+        println("    DaoForUpdate<" + this.getClassName() + "> u = new DaoForUpdate<" + this.getClassName()
+            + ">(this, currentVersion, " + range.getMinValue() + ", " + range.getMaxValue() + ");");
+        println("    int rows = sqlSession.update(\"" + this.mapPrimitives.getFullMapperIdUpdateByPK() + "\", u);");
+        println("    if (rows != 1) {");
+        println("      throw new StaleDataException(\"Could not update row on table "
+            + this.metadata.getIdentifier().getSQLIdentifier() + " with version \" + currentVersion");
+        println("          + \" since it had already been updated by another process.\");");
+        println("    }");
+        println("    this." + cm.getIdentifier().getJavaMemberIdentifier() + " = (" + pt.getPrimitiveClassJavaType()
+            + ") u.getNextVersionValue();");
+        println("    return rows;");
+      } else {
+        print("  public int " + UPDATE_BY_PK_METHOD + "(final SqlSession sqlSession) ");
+        this.throwsCheckedException();
+        println("{");
+
+        for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
+          println("    if (this." + cm.getIdentifier().getJavaMemberIdentifier() + " == null) return 0;");
+        }
+
+        preCheckedException();
+        println("    return sqlSession.update(\"" + this.mapPrimitives.getFullMapperIdUpdateByPK() + "\", this);");
+        postCheckedException();
+      }
+
+      println("  }");
+      println();
+    }
+
+  }
+
+  /**
+   * <pre>
+   * public static int updateByExample(final AbcDAOPrimitives example, final AbcDAOPrimitives values)
+   *     throws SQLException {
+   *   SqlSession sqlSession = null;
+   *   try {
+   *     sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
+   *     int rows = AbcDAOPrimitives.updateByExample(sqlSession, example, values);
+   *     sqlSession.commit();
+   *     return rows;
+   *   } finally {
+   *     if (sqlSession != null) {
+   *       sqlSession.close();
+   *     }
+   *   }
+   * }
+   * 
+   * public static int updateByExample(final SqlSession sqlSession, final AbcDAOPrimitives example,
+   *     final AbcDAOPrimitives values) throws SQLException {
+   *   UpdateByExampleDao&lt;AbcDAOPrimitives&gt; fvd = //
+   *       new UpdateByExampleDao&lt;AbcDAOPrimitives&gt;(example, values);
+   *   return sqlSession.update(&quot;simpletests.dao.insertAbc&quot;, fvd);
+   * }
+   * 
+   * </pre>
+   * 
+   * @throws IOException
+   */
+  private void writeUpdateByExample() throws IOException {
+    println("  // update by example");
+    println();
+
+    print("  public static int updateByExample(final " + this.dao.getClassName() + " example, final "
+        + this.dao.getClassName() + " updateValues) ");
+    this.throwsCheckedException();
+    println("{");
+    retrieveSqlSession();
+    println("      int rows = " + this.dao.getClassName() + ".updateByExample(sqlSession, example, updateValues);");
+    commitSqlSession(1);
+    println("      return rows;");
+    releaseSqlSession();
+    println("  }");
+    println();
+
+    print("  public static int updateByExample(final SqlSession sqlSession, final " + this.dao.getClassName()
+        + " example, final " + this.dao.getClassName() + " updateValues) ");
+    this.throwsCheckedException();
+    println("{");
+    println("    UpdateByExampleDao<" + this.getClassName() + "> fvd = //");
+    println("      new UpdateByExampleDao<" + this.getClassName() + ">(example, updateValues);");
+
+    preCheckedException();
+    println("    return sqlSession.update(\"" + this.mapPrimitives.getFullMapperIdUpdateByExample() + "\", fvd);");
+    postCheckedException();
+
+    println("  }");
+    println();
+
+  }
+
+  /**
+   * <pre>
+   * public int deleteByPK() throws SQLException {
+   *   SqlSession sqlSession = null;
+   *   try {
+   *     sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
+   *     int rows = deleteByPK(sqlSession);
+   *     sqlSession.commit();
+   *     return rows;
+   *   } finally {
+   *     if (sqlSession != null) {
+   *       sqlSession.close();
+   *     }
+   *   }
+   * }
+   * 
+   * public int deleteByPK(final SqlSession sqlSession) throws SQLException {
+   *   return sqlSession.delete(&quot;simpletests.dao.insertAbc&quot;, this);
+   * }
+   * 
+   * public int delete(final SqlSession sqlSession) throws SQLException, StaleDataException {
+   *   int rows = sqlSession.delete("hotrod.test.generation.primitives.vehicle.deleteByPK", this);
+   *   if (rows != 1) {
+   *     throw new StaleDataException("Could not delete row on table VEHICLE with version " + this.versionControl
+   *         + " since it had already been updated or deleted by another process.");
+   *   }
+   *   return rows;
+   * }
+   * </pre>
+   * 
+   * @throws IOException
+   */
+
+  private static final String DELETE_BY_PK_METHOD = "delete";
+
+  private void writeDeleteByPK() throws IOException, UnresolvableDataTypeException {
+    if (this.metadata.getPK() == null) {
+      println("  // no delete by PK generated, since the table does not have a PK.");
+      println();
+    } else {
+
+      boolean useVersionControl = this.metadata.getVersionControlMetadata() != null;
+
+      println("  // delete by PK");
+      println();
+
+      print("  public int " + DELETE_BY_PK_METHOD + "() ");
+      printExceptions(useVersionControl);
+      println("{");
+      retrieveSqlSession();
+      println("      int rows = " + DELETE_BY_PK_METHOD + "(sqlSession);");
+      commitSqlSession(1);
+      println("      return rows;");
+      releaseSqlSession();
+      println("  }");
+      println();
+
+      if (useVersionControl) {
+        VersionControlMetadata vcm = this.metadata.getVersionControlMetadata();
+        ColumnMetadata cm = vcm.getColumnMetadata();
+        print("  public int " + DELETE_BY_PK_METHOD + "(final SqlSession sqlSession) ");
+        printExceptions(useVersionControl);
+        println("{");
+        println("    int rows = sqlSession.delete(\"" + this.mapPrimitives.getFullMapperIdDeleteByPK() + "\", this);");
+        println("    if (rows != 1) {");
+        println("      throw new StaleDataException(\"Could not delete row on table "
+            + this.metadata.getIdentifier().getSQLIdentifier() + " with version \" + this."
+            + cm.getIdentifier().getJavaMemberIdentifier());
+        println("          + \" since it had already been updated or deleted by another process.\");");
+        println("    }");
+        println("    return rows;");
+        println("  }");
+      } else {
+        print("  public int " + DELETE_BY_PK_METHOD + "(final SqlSession sqlSession) ");
+        this.throwsCheckedException();
+        println("{");
+
+        for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
+          println("    if (this." + cm.getIdentifier().getJavaMemberIdentifier() + " == null) return 0;");
+        }
+
+        preCheckedException();
+        println("    return sqlSession.delete(\"" + this.mapPrimitives.getFullMapperIdDeleteByPK() + "\", this);");
+        postCheckedException();
+
+        println("  }");
+      }
+      println();
+    }
+  }
+
+  private void printExceptions(boolean useVersionControl) throws IOException {
+    if (this.isCheckedPersistenceException() || useVersionControl) {
+      print("throws ");
+    }
+    this.addCheckedException();
+
+    if (useVersionControl) {
+      if (this.isCheckedPersistenceException()) {
+        print(", ");
+      }
+      print("StaleDataException");
+    }
+    if (this.isCheckedPersistenceException() || useVersionControl) {
+      print(" ");
+    }
+  }
+
+  /**
+   * <pre>
+   * public static int deleteByExample(final AccountDAO example) throws SQLException {
+   *   SqlSession sqlSession = null;
+   *   try {
+   *     sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
+   *     int rows = AccountDAO.deleteByExample(sqlSession, example);
+   *     sqlSession.commit();
+   *     return rows;
+   *   } finally {
+   *     if (sqlSession != null) {
+   *       sqlSession.close();
+   *     }
+   *   }
+   * }
+   * 
+   * public static int deleteByExample(final SqlSession sqlSession, final AccountDAO example) throws SQLException {
+   *   return sqlSession.delete(&quot;simpletests.dao.insertAbc&quot;, example);
+   * }
+   * </pre>
+   * 
+   * @throws IOException
+   */
+  private void writeDeleteByExample() throws IOException {
+    println("  // delete by example");
+    println();
+
+    print("  public static int deleteByExample(final " + this.dao.getClassName() + " example) ");
+    this.throwsCheckedException();
+    println("{");
+    retrieveSqlSession();
+    println("      int rows = " + this.dao.getClassName() + ".deleteByExample(sqlSession, example);");
+    commitSqlSession(1);
+    println("      return rows;");
+    releaseSqlSession();
+    println("  }");
+    println();
+
+    print("  public static int deleteByExample(final SqlSession sqlSession, final " + this.dao.getClassName()
+        + " example) ");
+    this.throwsCheckedException();
+    println("{");
+    println("    return sqlSession.delete(\"" + this.mapPrimitives.getFullMapperIdDeleteByExample() + "\", example);");
+    println("  }");
+    println();
+  }
+
+  /**
+   * <pre>
+   * // Getters &amp; Setters
+   * 
+   * public final java.lang.Integer getIdn() {
+   *   return this.idn;
+   * }
+   * 
+   * public final void setIdn(final java.lang.Integer idn) {
+   *   this.idn = idn;
+   * }
+   * </pre>
+   * 
+   * @throws IOException
+   * @throws UnresolvableDataTypeException
+   */
+  private void writeGettersAndSetters() throws IOException, UnresolvableDataTypeException {
+    println("  // getters & setters");
+    println();
+
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      PropertyType type = cm.getType();
+      String m = cm.getIdentifier().getJavaMemberIdentifier();
+
+      // Old implementation
+
+      println("  public final " + type.getJavaClassName() + " " + cm.getIdentifier().getGetter() + "() {");
+      println("    return this." + m + ";");
+      println("  }");
+      println();
+
+      String setter;
+      if (this.isSelect()) {
+        setter = "set" + cm.getIdentifier().getSQLIdentifier().toLowerCase();
+      } else {
+        setter = cm.getIdentifier().getSetter();
+      }
+
+      println("  public final void " + setter + "(final " + type.getJavaClassName() + " " + m + ") {");
+      println("    this." + m + " = " + m + ";");
+      String name = cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
+      println("    this.propertiesChangeLog." + name + " = true;");
+
+      println("  }");
+      println();
+
+    }
+
+  }
+
+  /**
+   * <pre>
+   * // toString
+   * 
+   * public String toString() {
+   *   java.lang.StringBuilder sb = new java.lang.StringBuilder(&quot;[&quot;);
+   *   sb.append(this.idn + &quot;, &quot;);
+   *   sb.append(this.id + &quot;, &quot;);
+   *   sb.append(this.volume + &quot;, &quot;);
+   *   sb.append(this.chapter + &quot;, &quot;);
+   *   sb.append(this.section + &quot;, &quot;);
+   *   sb.append(this.page + &quot;, &quot;);
+   *   sb.append(this.description + &quot;]&quot;);
+   *   return sb.toString();
+   * }
+   * </pre>
+   * 
+   * @throws IOException
+   * @throws UnresolvableDataTypeException
+   */
+  private void writeToString() throws IOException, UnresolvableDataTypeException {
+    println("  // to string");
+    println();
+
+    println("  public String toString() {");
+    println("    java.lang.StringBuilder sb = new java.lang.StringBuilder();");
+
+    if (this.myBatisTag.getProperties().isMultilineTostring()) {
+      println("    sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + \"\\n\");");
+
+      String prefix = "";
+      String elemPrefix = "    sb.append(";
+      String elemSuffix = "";
+      String separator = " + \"\\n\");\n";
+      String lastSeparator = separator;
+      String suffix = ");";
+      ListWriter lw = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
+      for (ColumnMetadata cm : this.metadata.getColumns()) {
+        String prop = cm.getIdentifier().getJavaMemberIdentifier();
+        lw.add("\"" + prop + "=\" + this." + prop);
+      }
+      println(lw.toString());
+
+    } else {
+      println("    sb.append(\"[\");");
+
+      String prefix = "";
+      String elemPrefix = "    sb.append(";
+      String elemSuffix = "";
+      String separator = " + \", \");\n";
+      String lastSeparator = separator;
+      String suffix = ");";
+      ListWriter lw = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
+      for (ColumnMetadata cm : this.metadata.getColumns()) {
+        String prop = cm.getIdentifier().getJavaMemberIdentifier();
+        lw.add("\"" + prop + "=\" + this." + prop);
+      }
+      println(lw.toString());
+
+      println("    sb.append(\"]\");");
+    }
+
+    println("    return sb.toString();");
+    println("  }");
+    println();
+
+  }
+
+  /**
+   * <pre>
+    NAME$CASEINSENSITIVE("\"ACCOUNT\"", "lower(\"NAME\")", true), //
+    NAME$CASEINSENSITIVE_STABLE_FORWARD("\"ACCOUNT\"", "lower(\"NAME\"), \"NAME\"", true), //
+    NAME$CASEINSENSITIVE_STABLE_REVERSE("\"ACCOUNT\"", "lower(\"NAME\"), \"NAME\"", false), //
+  
+    NAME$DESC_CASEINSENSITIVE("\"ACCOUNT\"", "lower(\"NAME\")", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("\"ACCOUNT\"", "lower(\"NAME\") DESC, \"NAME\"", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("\"ACCOUNT\"", "lower(\"NAME\") DESC, \"NAME\"", true), //
+   * </pre>
+   */
+
+  /**
+   * <pre>
+   * // DAO Ordering
+   * 
+   * public enum AbcDAOOrderBy implements OrderBy {
+   * 
+   *   IDN(&quot;ABC&quot;, &quot;IDN&quot;, true), //
+   *   IDN$DESC(&quot;ABC&quot;, &quot;IDN&quot;, false), //
+   *   ID(&quot;ABC&quot;, &quot;ID&quot;, true), //
+   *   ID$DESC(&quot;ABC&quot;, &quot;ID&quot;, false), //
+   *   VOLUME(&quot;ABC&quot;, &quot;VOLUME&quot;, true), //
+   *   VOLUME$DESC(&quot;ABC&quot;, &quot;VOLUME&quot;, false), //
+   *   CHAPTER(&quot;ABC&quot;, &quot;CHAPTER&quot;, true), //
+   *   CHAPTER$DESC(&quot;ABC&quot;, &quot;CHAPTER&quot;, false), //
+   *   SECTION(&quot;ABC&quot;, &quot;SECTION&quot;, true), //
+   *   SECTION$DESC(&quot;ABC&quot;, &quot;SECTION&quot;, false), //
+   *   PAGE(&quot;ABC&quot;, &quot;PAGE&quot;, true), //
+   *   PAGE$DESC(&quot;ABC&quot;, &quot;PAGE&quot;, false), //
+   *   DESCRIPTION(&quot;ABC&quot;, &quot;DESCRIPTION&quot;, true), //
+   *   DESCRIPTION$DESC(&quot;ABC&quot;, &quot;DESCRIPTION&quot;, false);
+   * 
+   *   private AbcDAOOrderBy(final String tableName, final String columnName, boolean ascending) {
+   *     this.tableName = tableName;
+   *     this.columnName = columnName;
+   *     this.ascending = ascending;
+   *   }
+   * 
+   *   private String tableName;
+   *   private String columnName;
+   *   private boolean ascending;
+   * 
+   *   public String getTableName() {
+   *     return this.tableName;
+   *   }
+   * 
+   *   public String getColumnName() {
+   *     return this.columnName;
+   *   }
+   * 
+   *   public boolean isAscending() {
+   *     return this.ascending;
+   *   }
+   * }
+   * </pre>
+   * 
+   * @throws IOException
+   */
+
+  private void writeOrderingEnum() throws IOException {
+    println("  // DAO ordering");
+    println();
+
+    println("  public enum " + this.getOrderByClassName() + " implements OrderBy {");
+    println();
+
+    ListWriter lw = new ListWriter(", //\n");
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String constantBase = cm.getIdentifier().getJavaConstantIdentifier();
+      String ti = JUtils.escapeJavaString(this.metadata.renderSQLIdentifier());
+      String ci = JUtils.escapeJavaString(cm.renderSQLIdentifier());
+      lw.add("    " + constantBase + "(\"" + ti + "\", \"" + ci + "\", true)");
+      lw.add("    " + constantBase + "$DESC(\"" + ti + "\", \"" + ci + "\", false)");
+      log.debug(
+          "*** " + cm.getColumnName() + " -> cm.isCaseSensitiveStringSortable()=" + cm.isCaseSensitiveStringSortable());
+      if (cm.isCaseSensitiveStringSortable()) {
+        String cici = JUtils.escapeJavaString(cm.renderForCaseInsensitiveOrderBy());
+
+        lw.add("    " + constantBase + "$CASEINSENSITIVE(\"" + ti + "\", \"" + cici + "\", true)");
+        lw.add("    " + constantBase + "$CASEINSENSITIVE_STABLE_FORWARD(\"" + ti + "\", \"" + cici + ", " + ci
+            + "\", true)");
+        lw.add("    " + constantBase + "$CASEINSENSITIVE_STABLE_REVERSE(\"" + ti + "\", \"" + cici + ", " + ci
+            + "\", false)");
+
+        lw.add("    " + constantBase + "$DESC_CASEINSENSITIVE(\"" + ti + "\", \"" + cici + "\", false)");
+        lw.add("    " + constantBase + "$DESC_CASEINSENSITIVE_STABLE_FORWARD(\"" + ti + "\", \"" + cici + ", " + ci
+            + "\", false)");
+        lw.add("    " + constantBase + "$DESC_CASEINSENSITIVE_STABLE_REVERSE(\"" + ti + "\", \"" + cici + ", " + ci
+            + "\", true)");
+
+      }
+    }
+    println(lw.toString() + ";");
+    println();
+
+    println("    private " + this.getOrderByClassName() + "(final String tableName, final String columnName,");
+    println("        boolean ascending) {");
+    println("      this.tableName = tableName;");
+    println("      this.columnName = columnName;");
+    println("      this.ascending = ascending;");
+    println("    }");
+    println();
+    println("    private String tableName;");
+    println("    private String columnName;");
+    println("    private boolean ascending;");
+    println();
+    println("    public String getTableName() {");
+    println("      return this.tableName;");
+    println("    }");
+    println();
+    println("    public String getColumnName() {");
+    println("      return this.columnName;");
+    println("    }");
+    println();
+    println("    public boolean isAscending() {");
+    println("      return this.ascending;");
+    println("    }");
+    println();
+    println("  }");
+    println();
+  }
+
+  /**
+   * <pre>
+   * public static long selectSequenceSeqCodes() throws SQLException {
+   *   TxManager txm = null;
+   *   try {
+   *     txm = getTxManager();
+   *     SqlSession sqlSession = txm.getSqlSession();
+   *     return selectSequenceSeqCodes(sqlSession);
+   *   } finally {
+   *     if (txm != null && !txm.isTransactionOngoing()) {
+   *       txm.close();
+   *     }
+   *   }
+   * }
+   * 
+   * public static long selectSequenceSeqCodes(final SqlSession sqlSession) {
+   *   return sqlSession.selectOne("hotrod.test.generation.primitives.account.sequenceSeqCodes");
+   * }
+   * </pre>
+   * 
+   * @throws IOException
+   * @throws SequencesNotSupportedException
+   */
+
+  private void writeSelectSequence(final SequenceTag tag) throws IOException, SequencesNotSupportedException {
+
+    println("  // sequence " + tag.getName());
+    println();
+    println(
+        ObjectDAOPrimitives.renderJavaComment(this.generator.getAdapter().renderSelectSequence(tag.getIdentifier())));
+    println();
+
+    println("  public static long " + tag.getJavaMethodName() + "()");
+    print("      ");
+    this.throwsCheckedException();
+    println("{");
+    retrieveSqlSession();
+    println("      return " + tag.getJavaMethodName() + "(sqlSession);");
+    releaseSqlSession();
+    println("  }");
+    println();
+
+    print("  public static long " + tag.getJavaMethodName() + "(final SqlSession sqlSession) ");
+    this.throwsCheckedException();
+    println("{");
+    preCheckedException();
+    println("    return (Long) sqlSession.selectOne(");
+    println("      \"" + this.mapPrimitives.getFullMapperIdSelectSequence(tag) + "\");");
+    postCheckedException();
+    println("  }");
+    println();
+
+  }
+
+  /**
+   * <pre>
+   * 
+   * public static int update-name() throws SQLException {
+   *   TxManager txm = null;
+   *   try {
+   *     txm = getTxManager();
+   *     SqlSession sqlSession = txm.getSqlSession();
+   *     return update-name(sqlSession);
+   *   } finally {
+   *     if (txm != null && !txm.isTransactionOngoing()) {
+   *       txm.close();
+   *     }
+   *   }
+   * }
+   * 
+   * public static int update-name(final SqlSession sqlSession) throws SQLException {
+   *   return sqlSession.update("hotrod.test.generation.primitives.account.sequenceSeqCodes");
+   * }
+   * 
+   * </pre>
+   * 
+   * @throws IOException
+   */
+
+  private void writeQuery(final QueryTag tag) throws IOException {
+
+    println("  // update " + tag.getJavaMethodName());
+    println();
+    println(ObjectDAOPrimitives.renderJavaComment(tag.getAugmentedSQL()));
+    println();
+
+    Identifier id = tag.getIdentifier();
+    String methodName = id.getJavaMemberIdentifier();
+
+    ListWriter pdef = new ListWriter(", ");
+    ListWriter pcall = new ListWriter(", ");
+    for (SQLParameter p : tag.getParameterDefinitions()) {
+      pdef.add("final " + p.getJavaType() + " " + p.getName());
+      pcall.add(p.getName());
+    }
+    String paramDef = pdef.toString();
+    String paramCall = pcall.toString();
+
+    // parameter class
+
+    if (!tag.getParameterDefinitions().isEmpty()) {
+      println("  public static class " + this.getParamClassName(tag) + " {");
+      for (SQLParameter p : tag.getParameterDefinitions()) {
+        println("    " + p.getJavaType() + " " + p.getName() + ";");
+      }
+      println("  }");
+      println();
+    }
+
+    // main method
+
+    print("  public static int " + methodName + "(");
+    print(paramDef);
+    print(") ");
+    this.throwsCheckedException();
+    println("{");
+    retrieveSqlSession();
+    print("      int rows = " + methodName + "(sqlSession");
+    if (!tag.getParameterDefinitions().isEmpty()) {
+      print(", " + paramCall);
+    }
+    println(");");
+    println("      if (!txm.isTransactionOngoing()) {");
+    println("        txm.commit();");
+    println("      }");
+    println("      return rows;");
+    releaseSqlSession();
+    println("  }");
+    println();
+
+    // core method
+
+    print("  public static int " + methodName + "(final SqlSession sqlSession");
+    if (!tag.getParameterDefinitions().isEmpty()) {
+      print(", " + paramDef);
+    }
+    print(") ");
+    this.throwsCheckedException();
+    println("{");
+    String objName = null;
+    if (!tag.getParameterDefinitions().isEmpty()) {
+      objName = provideObjectName(tag.getParameterDefinitions());
+      println("    " + this.getParamClassName(tag) + " " + objName + " = new " + this.getParamClassName(tag) + "();");
+      for (SQLParameter p : tag.getParameterDefinitions()) {
+        println("    " + objName + "." + p.getName() + " = " + p.getName() + ";");
+      }
+    }
+    preCheckedException();
+    println("    return sqlSession.update(");
+    print("      \"" + this.mapPrimitives.getFullMapperIdUpdate(tag) + "\"");
+    if (!tag.getParameterDefinitions().isEmpty()) {
+      print(", " + objName);
+    }
+    println(");");
+    postCheckedException();
+    println("  }");
+    println();
+
+  }
+
+  private String provideObjectName(final List<SQLParameter> params) {
+
+    Set<String> existing = new HashSet<String>();
+    for (SQLParameter p : params) {
+      existing.add(p.getName().toLowerCase());
+    }
+
+    int i = 0;
+    while (true) {
+      String candidate = "param" + i;
+      if (!existing.contains(candidate.toLowerCase())) {
+        return candidate;
+      }
+      i++;
+    }
+
+  }
+
+  /**
+   * <pre>
+   * // Transaction demarcation
+   * 
+   * private static TxManager txManager = null;
+   * 
+   * public static TxManager getTxManager() throws SQLException {
+   *   if (txManager == null) {
+   *     synchronized (AccountPrimitives.class) {
+   *       if (txManager == null) {
+   *         txManager = new TxManager(getSqlSessionFactory());
+   *       }
+   *     }
+   *   }
+   *   return txManager;
+   * }
+   * 
+   * public static SqlSessionFactory getSqlSessionFactory() throws SQLException {
+   *   return fulltest.FullTestDatabaseSessionFactory.getInstance().getSqlSessionFactory();
+   * }
+   * 
+   * public static SqlSession getSqlSession() throws SQLException {
+   *   return getSqlSessionFactory().openSession();
+   * }
+   * </pre>
+   */
+  private void writeTxManager() throws IOException {
+    println("  // Transaction demarcation");
+    println();
+    println("  private static TxManager txManager = null;");
+    println();
+    print("  public static TxManager getTxManager() ");
+    this.throwsCheckedException();
+    println("{");
+    println("    if (txManager == null) {");
+    println("      synchronized (" + this.getClassName() + ".class) {");
+    println("        if (txManager == null) {");
+    println("          txManager = new TxManager(getSqlSessionFactory());");
+    println("        }");
+    println("      }");
+    println("    }");
+    println("    return txManager;");
+    println("  }");
+    println();
+
+    print("  public static SqlSessionFactory getSqlSessionFactory() ");
+    this.throwsCheckedException();
+    println("{");
+
+    preCheckedException();
+    println("    return " + this.layout.getSessionFactoryGetter() + ";");
+    postCheckedException();
+
+    println("  }");
+    println();
+  }
+
+  /**
+   * <pre>
+   * // Properties change log
+   * 
+   * private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();
+   * 
+   * public class PropertiesChangeLog {
+   *   boolean idWasSet = false;
+   *   boolean nameWasSet = false;
+   *   boolean typeWasSet = false;
+   *   boolean currentBalanceWasSet = false;
+   *   boolean createdOnWasSet = false;
+   * }
+   * </pre>
+   * 
+   * @throws IOException
+   */
+  private void writePropertiesChangeLog() throws IOException {
+    println("  // Properties change log");
+    println();
+    println("  public PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();");
+    println();
+    println("  public class PropertiesChangeLog {");
+
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String name = cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
+      println("    public boolean " + name + " = false;");
+    }
+
+    println("  }");
+    println();
+
+  }
+
+  private void writeClassFooter() throws IOException {
+    println("}");
+  }
+
+  // Identifiers
+
+  public String getFullClassName() {
+    return this.layout.getDAOPrimitivePackage().getFullClassName(getClassName());
+  }
+
+  public String getOrderByFullClassName() {
+    return getFullClassName() + "." + getOrderByClassName();
+  }
+
+  private String getOrderByClassName() {
+    return this.metadata.getIdentifier().getJavaClassIdentifier() + "OrderBy";
+  }
+
+  public String getClassName() {
+    // DataSetIdentifier id = this.dm.getIdentifier();
+    // log.info(">>> id.wasJavaNameSpecified()=" + id.wasJavaNameSpecified() + "
+    // id.getJavaClassIdentifier()="
+    // + id.getJavaClassIdentifier());
+    // return id.wasJavaNameSpecified() ? id.getJavaClassIdentifier() :
+    // this.dm.generatePrimitivesName(id);
+
+    return this.metadata.generatePrimitivesName(this.metadata.getIdentifier());
+  }
+
+  public String getParameterClassName() {
+    return this.getClassName() + "Parameter";
+  }
+
+  public String getSelectByUI(final KeyMetadata ui) {
+    return "selectByUI" + ui.toCamelCase(this.layout.getColumnSeam());
+  }
+
+  public String getSelectByColumns(final KeyMetadata ui) {
+    return "by" + ui.toCamelCase(this.layout.getColumnSeam());
+  }
+
+  public String getParamClassName(final QueryTag u) {
+    return "Param" + u.getIdentifier().getJavaClassIdentifier();
+  }
+
+  // Helpers
+
+  public static String toParametersSignature(final KeyMetadata km) throws UnresolvableDataTypeException {
+    ListWriter lw = new ListWriter(", ");
+    for (ColumnMetadata cm : km.getColumns()) {
+      lw.add("final " + cm.getType().getJavaClassName() + " " + cm.getIdentifier().getJavaMemberIdentifier());
+    }
+    return lw.toString();
+  }
+
+  public static String toParametersCall(final KeyMetadata km) {
+    ListWriter lw = new ListWriter(", ");
+    for (ColumnMetadata cm : km.getColumns()) {
+      lw.add(cm.getIdentifier().getJavaMemberIdentifier());
+    }
+    return lw.toString();
+  }
+
+  private void print(final String txt) throws IOException {
+    this.w.write(txt);
+  }
+
+  private void println(final String txt) throws IOException {
+    this.w.write(txt);
+    println();
+  }
+
+  private void println() throws IOException {
+    this.w.write("\n");
+  }
+
+}
