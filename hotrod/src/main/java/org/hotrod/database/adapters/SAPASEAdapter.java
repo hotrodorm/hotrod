@@ -222,7 +222,7 @@ public class SAPASEAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public boolean useIdentityGeneratedKeysOnInsert() {
+  public boolean supportsJDBCGeneratedKeys() {
     return true;
   }
 

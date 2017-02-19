@@ -213,7 +213,7 @@ public class HsqlAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public boolean useIdentityGeneratedKeysOnInsert() {
+  public boolean supportsJDBCGeneratedKeys() {
     return false;
   }
 

@@ -94,8 +94,8 @@ public class MariaDBAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public boolean useIdentityGeneratedKeysOnInsert() {
-    return this.mysqlAdaper.useIdentityGeneratedKeysOnInsert();
+  public boolean supportsJDBCGeneratedKeys() {
+    return this.mysqlAdaper.supportsJDBCGeneratedKeys();
   }
 
   // Sorting

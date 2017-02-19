@@ -181,7 +181,7 @@ public class DB2Adapter extends DatabaseAdapter {
   }
 
   @Override
-  public boolean useIdentityGeneratedKeysOnInsert() {
+  public boolean supportsJDBCGeneratedKeys() {
     return false;
   }
 

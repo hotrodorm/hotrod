@@ -236,7 +236,7 @@ public class SQLServerAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public boolean useIdentityGeneratedKeysOnInsert() {
+  public boolean supportsJDBCGeneratedKeys() {
     return true;
   }
 

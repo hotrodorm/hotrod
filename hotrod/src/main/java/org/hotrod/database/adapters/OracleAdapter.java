@@ -238,7 +238,7 @@ public class OracleAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public boolean useIdentityGeneratedKeysOnInsert() {
+  public boolean supportsJDBCGeneratedKeys() {
     return false;
   }
 

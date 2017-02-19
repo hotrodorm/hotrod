@@ -138,7 +138,7 @@ public abstract class DatabaseAdapter {
 
   public abstract boolean isSerial(JdbcColumn c);
 
-  public abstract boolean useIdentityGeneratedKeysOnInsert();
+  public abstract boolean supportsJDBCGeneratedKeys();
 
   // Sorting
 
