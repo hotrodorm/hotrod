@@ -5,3 +5,5 @@
 /.ant-targets-build-database.xml
 /.ant-targets-build-test.xml
 /.ant-targets-build.xml
+/release/
+/.classpath
