@@ -15,6 +15,7 @@
   </generators>
 
   <table name="config_values" /> <!-- No PK -->
+
   <table name="properties" />
   <table name="parameters">
     <column name="level2" java-type="java.lang.Long" jdbc-type="NUMERIC" />

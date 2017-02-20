@@ -7,8 +7,11 @@ java.compiler=javac1.6
 # --- DB2 ---
 #db.src.dir=testdata/db2
 
-# --- Oracle ---
-#db.src.dir=testdata/oracle
+# --- Oracle 10g ---
+#db.src.dir=testdata/oracle-10g
+
+# --- Oracle 12c ---
+#db.src.dir=testdata/oracle-12c
 
 # --- PostgreSQL ---
 #db.src.dir=testdata/postgresql
