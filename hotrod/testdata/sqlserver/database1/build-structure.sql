@@ -32,11 +32,10 @@ create table config_values (
 );
 
 create table account (
-  id int not null,
+  id int primary key identity not null,
   name varchar(20) not null,
   current_balance int,
-  created_on datetime2 not null,
-  primary key (id)
+  created_on datetime2 not null
 );
 
 create table state_branch (
@@ -87,6 +86,8 @@ create table client (
   constraint fk_client_fed_branch foreign key (branch_id) -- dual fk #2
     references federal_branch (id)
 );
+
+create sequence seq_agent;
 
 create table agent (
   id int not null,

@@ -98,6 +98,11 @@ public class MariaDBAdapter extends DatabaseAdapter {
     return this.mysqlAdaper.supportsJDBCGeneratedKeys();
   }
 
+  @Override
+  public boolean supportsSpecifiedIdentityPKs() {
+    return this.mysqlAdaper.supportsSpecifiedIdentityPKs();
+  }
+
   // Sorting
 
   @Override

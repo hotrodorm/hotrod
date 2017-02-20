@@ -26,13 +26,13 @@ insert into account (id, current_balance, name, created_on) values (1234004, 500
 insert into account (id, current_balance, name, created_on) values (1234005, 45, 'CHK2301', '2015-9-1');
   
 insert into transaction (account_id, seq_id, time, amount, fed_branch_id) 
-  values (1234001, 1, 'Time 001', 100, 101);
+  values (1234001, 100, 'Time 001', 100, 101);
 insert into transaction (account_id, seq_id, time, amount, fed_branch_id) 
-  values (1234004, 2, 'Time 004', 150, 103);
+  values (1234004, 101, 'Time 004', 150, 103);
 insert into transaction (account_id, seq_id, time, amount, fed_branch_id) 
-  values (1234005, 4, 'Time 005', 160, 102);
+  values (1234005, 102, 'Time 005', 160, 102);
 insert into transaction (account_id, seq_id, time, amount, fed_branch_id) 
-  values (1234005, 15, 'Time 007', -110, 103);
+  values (1234005, 115, 'Time 007', -110, 103);
   
 insert into config_values(node, cell, name, verbatim) values(10, 100, 'prop1', 'value1');
 insert into config_values(node, cell, name, verbatim) values(10, 101, 'prop2', 'value2');
@@ -40,3 +40,12 @@ insert into config_values(node, cell, name, verbatim) values(20, 100, 'prop3', '
   
 insert into vehicle (name, mileage, version_number) values ('Volkswagen', 10000, 32765);
 insert into vehicle (name, mileage, version_number) values ('Ford', 25000, 15);
+
+insert into properties (application, name, prop_value) values ('app01', 'key1', 'value1');
+
+insert into state_branch (id, name) values (101, 'Fairfax');
+
+insert into client (id, national_id, name,              prop_name, referrer_id, friend_id, group_account_id, branch_id)
+ values            (12, 10,          'Peter Cantropus', 'key1',    12,          null,        1234001,          101);
+
+

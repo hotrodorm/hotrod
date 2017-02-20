@@ -140,6 +140,8 @@ public abstract class DatabaseAdapter {
 
   public abstract boolean supportsJDBCGeneratedKeys();
 
+  public abstract boolean supportsSpecifiedIdentityPKs();
+
   // Sorting
 
   /**

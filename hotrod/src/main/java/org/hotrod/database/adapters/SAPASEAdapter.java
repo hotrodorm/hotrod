@@ -226,6 +226,11 @@ public class SAPASEAdapter extends DatabaseAdapter {
     return true;
   }
 
+  @Override
+  public boolean supportsSpecifiedIdentityPKs() {
+    return false;
+  }
+
   // Sorting
 
   @Override

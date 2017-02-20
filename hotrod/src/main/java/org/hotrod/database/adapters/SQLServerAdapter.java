@@ -240,6 +240,11 @@ public class SQLServerAdapter extends DatabaseAdapter {
     return true;
   }
 
+  @Override
+  public boolean supportsSpecifiedIdentityPKs() {
+    return false;
+  }
+
   // Sorting
 
   private final static Set<String> CS_SORTABLE_STRING_TYPE_NAMES = new HashSet<String>();

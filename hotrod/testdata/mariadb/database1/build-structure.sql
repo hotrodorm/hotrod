@@ -52,8 +52,8 @@ create table federal_branch (
 );
 
 create table transaction (
-  account_id integer not null auto_increment,
-  seq_id integer not null,
+  account_id integer not null,
+  seq_id integer not null auto_increment,
   time varchar(16) not null,
   amount integer not null,
   fed_branch_id int,

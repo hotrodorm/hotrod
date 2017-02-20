@@ -17,6 +17,7 @@ drop table parameters;
 drop table log; 
 
 drop table agent; 
+drop sequence seq_agent;
 
 drop table test_identity;
 drop sequence seq_test;

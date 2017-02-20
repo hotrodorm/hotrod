@@ -36,7 +36,6 @@ create table config_values (
 alter table config_values add constraint cfgval_uc10 unique (name);
 alter table config_values add constraint cfgval_uc11 unique (name);
 
-
 create table account (
   id serial not null,
   current_balance integer not null,

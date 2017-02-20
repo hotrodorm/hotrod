@@ -453,9 +453,6 @@ public abstract class HotRodGenerator {
 
     display(sb.toString());
 
-    display("");
-    display("Generating MyBatis DAOs...");
-
   }
 
   private void validateDAONamesAndMethods(final HotRodConfigTag config)

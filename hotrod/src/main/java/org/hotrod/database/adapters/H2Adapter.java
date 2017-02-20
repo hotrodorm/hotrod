@@ -216,6 +216,11 @@ public class H2Adapter extends DatabaseAdapter {
     return true;
   }
 
+  @Override
+  public boolean supportsSpecifiedIdentityPKs() {
+    return true;
+  }
+
   // Sorting
 
   @Override

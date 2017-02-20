@@ -32,11 +32,10 @@ create table config_values (
 );
 
 create table account (
-  id integer not null,
+  id integer identity primary key not null,
   current_balance integer,
   name varchar(100) not null,
-  created_on timestamp not null,
-  primary key (id)
+  created_on timestamp not null
 );
 
 create table state_branch (
@@ -53,11 +52,10 @@ create table federal_branch (
 
 create table transaction (
   account_id integer not null,
-  seq_id integer not null,
+  seq_id integer identity primary key not null,
   time varchar(16) not null,
   amount integer not null,
   fed_branch_id bigint,
-  primary key (seq_id),
   constraint tx_account_id_time unique (account_id, time),
   constraint fk_tx_fed_branch foreign key (fed_branch_id)
     references federal_branch (id)
