@@ -3,6 +3,20 @@ HotRod development basics
 
 In order to use the development environment you'll need to have a database running.
 
+0. Set the classpath of the application
+---------------------------------------
+
+-> Step a) Create the conf/workbench.properties file:
+    * Use the conf/workbench.properties.template file as a template.
+    * Make sure you set the correct location of the java 6 compiler.
+
+-> Step b) Run the "clean-build" Ant task:
+    ant clean-build
+  
+-> Step c) Set the Eclipse classpath as shown in the screen shots:
+    * docs/ide-classpath/classpath1.png
+    * docs/ide-classpath/classpath2.png
+
 
 1. Select the specific database you want to work with
 -----------------------------------------------------
