@@ -1,0 +1,210 @@
+
+Example 01 - CRUD Operations on Tables
+
+ * Table VEHICLE:
+   * insert
+   * select by PK
+   * update by PK
+   * delete by PK
+
+Example 02 - Using Sequences and Identity PKs
+
+ * Table VEHICLE:
+   * insert using identity PK
+ * Table CLIENT:
+   * insert using a sequence
+ * Table BRANCH:
+   * insert using an optional identity PK
+ * Table DAILY_REPORT:
+   * insert with no auto-generated PK
+ * Table VISIT:
+   * insert with no PK
+
+Example 03 - Select by Example
+
+ * Table VEHICLE:
+   * select by example
+     - select by a single column (TYPE)
+     - select by multiple columns (BRAND + MODEL)
+     - select using null values (BRAND + MODEL + null BRANCH_ID)
+
+Example 04 - Update by Example
+
+ * Table VEHICLE:
+   * update by example
+     - single column update example (MILEAGE)
+     - multiple column update example (BRANCH, PRICE)
+     - update using null on example (MILEAGE) / (TYPE, BRANCH_ID)
+     - update using null on new values (BRANCH) / (TYPE, BRANCH_ID, SOLD)
+
+Example 05 - Delete by Example
+
+ * Table VEHICLE:
+   * delete by example
+     - delete using a single column criteria (SOLD)
+     - delete using a multiple column criteria (SOLD, BRANCH_ID)
+     - delete using null on the example (SOLD, BRANCH_ID)
+
+Example 06 - Navigating Foreign Keys
+
+ * Table VEHICLE to table BRANCH
+   * Navigate to parent
+
+ * Table BRANCH to table VEHICLE
+   * Navigate to children
+   
+ * Table CLIENT to table CLIENT
+   * Reflexive navigate to parent.
+
+ * Table CLIENT to table CLIENT
+   * Reflexive navigate to children.
+
+Example 07 - Select by Unique Indexes
+
+ * Table VEHICLE:
+   * select by unique index (single column)
+     - select by VIN
+     - select by ENGINE_NUMBER
+ * Table CLIENT:
+   * select by unique index (composite index):
+     - state + driver's license number
+
+Example 08 - Selecting on Views
+
+ * View CAR
+   * select by example
+
+Example 09 - Retrieving Sequence Values
+ * Sequence CLIENT_SEQ
+   * retrieve a value
+
+Example 10 - Custom SQL Queries
+
+ * Table CLIENT & table PURCHASE
+   * upgrade to VIP all clients who have bought at least N cars
+   * delete CLIENTs that haven't bought anything.
+
+Example 11 - Custom DAOs
+
+ * DAO DailyOperations
+   * query: updateDailyTotals()
+   * sequence: getPDFReportFileSequence()
+   * query: createDailyReport()
+   * query: closeDay()
+
+Example 12 - Regular SQL Selects
+
+ * Table VEHICLE & Table PURCHASE
+   * retrieve columns from multiple tables
+   * retrieve aggregated columns
+   * use subqueries
+
+Example 13 - Native SQL
+
+ * Table VEHICLE
+   * SELECT * FROM TEST LIMIT 100
+   * native function: SELECT ID, IFNULL(OWNER_NAME, 'N/A') FROM VEHICLE
+   * SELECT ... FOR UPDATE
+   * insert special types: INSERT INTO GEO_TABLE(THE_GEOM) VALUES ('POINT(500 505)'),
+   * recursive table:
+        CREATE TABLE FOLDER(ID INT PRIMARY KEY, NAME VARCHAR(255), PARENT INT);
+
+        INSERT INTO FOLDER VALUES(1, null, null), (2, 'src', 1),
+        (3, 'main', 2), (4, 'org', 3), (5, 'test', 2);
+
+        WITH LINK(ID, NAME, LEVEL) AS (
+            SELECT ID, NAME, 0 FROM FOLDER WHERE PARENT IS NULL
+            UNION ALL
+            SELECT FOLDER.ID, IFNULL(LINK.NAME || '/', '') || FOLDER.NAME, LEVEL + 1
+            FROM LINK INNER JOIN FOLDER ON LINK.ID = FOLDER.PARENT
+        )
+        SELECT NAME FROM LINK WHERE NAME IS NOT NULL ORDER BY ID;   
+  
+Example 14 - Dynamic SQL
+
+ * Table CLIENT, table PURCHASES
+   * select CLIENT with
+     - a minimum number of purchases
+     - from a specific state
+     - created in the last N days
+     
+ * Table CLIENT, table BRANCH
+   * update unsold VEHICLEs. Set:
+      - discount X dollars
+      - set MOVE_TO_BRANCH
+     filter by criteria:
+      - are from a specific BRANCH
+      - in a price range
+      - of a specific type
+
+Example 15 - Transactions & Isolation Levels
+
+ * Table VEHICLE, table PURCHASE, table CLIENT
+   - mark VEHICLE as sold
+   - insert a PURCHASE row
+   - increment CLIENT purchases by one and amount by the price
+
+Example 16 - Optimistic Locking (Row Version Control)
+
+ * Table CLIENT
+   - update CLIENT type
+
+Example 17 - Custom DAO Class Names
+
+ * Table DLY_RP002
+   - use it as DailyReportDAO to insert, delete, update, and by example.
+   - custom SQL queries and custom SELECTs still use the original name.
+
+Example 18 - Custom DAO Property Names
+
+ * Table DLY_RP002 with legacy column names.
+   - use it as DailyReportDAO to insert, delete, update, and by example.
+   - custom SQL queries and custom SELECTs still use the original name.
+
+Example 19 - Custom DAO Property Java Types
+
+ * Table DLY_RP002 with legacy column names.
+   - use it as DailyReportDAO to insert, delete, update, and by example.
+   - custom SQL queries and custom SELECTs still use the original name.
+
+Example 20 - Fragments
+
+ * Divide the configuration file into fragments:
+   - main fragment
+   - sales fragment
+   - accounting fragment
+
+Example 21 - Facets
+
+ * Regenerate only a subset of tables
+ 
+Example 22 - Including Existing MyBatis Mappers
+
+ * Existing MyBatis Mappers to select, insert, update, and delete
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

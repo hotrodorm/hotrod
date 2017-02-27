@@ -21,15 +21,7 @@ public class Example02 {
     int rows;
     Timestamp now = new Timestamp(System.currentTimeMillis());
 
-    // 1. Insert into a table with no PK
-
-    LogDAO l = new LogDAO();
-    l.setRecordedAt(now);
-    l.setMessage("This is a log line.");
-    rows = l.insert();
-    System.out.println("Log line added. Rows inserted=" + rows);
-
-    // 2. Insert into a table with identity-generated PK
+    // 1. Insert into a table with identity-generated PK
 
     VehicleDAO skoda = new VehicleDAO();
     skoda.setBrand("Skoda");
@@ -40,16 +32,29 @@ public class Example02 {
     rows = skoda.insert();
     System.out.println("New vehicle Skoda added. New ID=" + skoda.getId() + ". Rows inserted=" + rows);
 
-    // 3. Insert into a table with sequence-generated PK
+    // 2. Insert into a table with sequence-generated PK
+    
+    ClientDAO a;
+    
+    
+
+
+    // 3. Insert using an optional identity PK
+    
 
     BranchDAO b = new BranchDAO();
     b.setName("Wichita");
     rows = b.insert();
     System.out.println("Branch added. New ID=" + b.getId() + ". Rows inserted=" + rows);
 
-    // 4. Insert supplied PK for identity-generated PK
-    // Note: this variant is only supported by DB2, and cannot run in H2.
-    // See documentation for details.
+
+    // 4. Insert into a table with no PK
+
+    LogDAO l = new LogDAO();
+    l.setRecordedAt(now);
+    l.setMessage("This is a log line.");
+    rows = l.insert();
+    System.out.println("Log line added. Rows inserted=" + rows);
 
   }
 
