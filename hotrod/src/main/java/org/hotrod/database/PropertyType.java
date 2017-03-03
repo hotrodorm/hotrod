@@ -199,24 +199,6 @@ public class PropertyType {
     return isLOB;
   }
 
-  /** Use getJavaClassName() instead */
-  @Deprecated
-  public String getClassJavaType() {
-    return this.javaClassName;
-  }
-
-  /** Use getJDBCType() instead */
-  @Deprecated
-  public String getMappingJdbcType() {
-    return this.getJDBCType();
-  }
-
-  /** Use getJDBCShortType() instead */
-  @Deprecated
-  public String getJdbcTypeTail() {
-    return this.getJDBCShortType();
-  }
-
   // New methods
 
   /** Example: "java.lang.Integer" */

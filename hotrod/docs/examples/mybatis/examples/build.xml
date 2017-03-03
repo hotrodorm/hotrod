@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="example-1" basedir=".">
+<project name="hotrod-examples" basedir=".">
 
   <!-- Properties -->
 
@@ -15,9 +15,9 @@
   <property name="jdbc.catalog" value="DB001" />
   <property name="jdbc.schema" value="PUBLIC" />
 
-  <property name="hotrod.version" value="3.0-alpha1" />
+  <property name="hotrod.version" value="3.0.0" />
   <property name="hotrod.generator" value="MyBatis" />
-  <property name="hotrod.facet" value="" />
+  <property name="hotrod.facets" value="" />
 
   <!-- Tasks -->
 
@@ -89,38 +89,11 @@
             catalog="${jdbc.catalog}"
             schema="${jdbc.schema}"
             generator="${hotrod.generator}"
-            facet="${hotrod.facet}"
+            facets="${hotrod.facets}"
             configfile="hotrod.xml"
             display="list" />
   </target>
-
-  <target name="run-example-01">
-
-    <delete dir="build" />
-    <mkdir dir="build" />
-
-    <javac destdir="build" includeantruntime="false" debug="true">
-      <src path="java" />
-      <src path="auto-generated/java" />
-      <classpath>
-        <pathelement location="lib/hotrod/hotrod-${hotrod.version}.jar" />
-        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
-      </classpath>
-    </javac>
-
-    <echo message=" " />
-
-    <java classname="examples.Example01">
-      <classpath>
-        <pathelement path="build" />
-        <pathelement path="auto-generated/mappers" />
-        <pathelement location="${jdbc.driverlibrary}" />
-        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
-        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
-      </classpath>
-    </java>
-
-  </target>
+  
 
   <target name="stop-h2-database">
     <condition property="h2.running">
@@ -144,5 +117,158 @@
   <target name="-h2-already-stopped" unless="h2.running">
     <echo message="[ H2 local database is already shut down ]" />
   </target>
+  
+
+  <target name="compile">
+
+    <delete dir="build" />
+    <mkdir dir="build" />
+
+    <javac destdir="build" includeantruntime="false" debug="true">
+      <src path="java" />
+      <src path="auto-generated/java" />
+      <classpath>
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </javac>
+
+    <echo message=" " />
+
+  </target>
+
+  <target name="run-example-01" depends="initialize-database, compile">
+    <java classname="examples.Example01">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-02" depends="initialize-database, compile">
+    <java classname="examples.Example02">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-03" depends="initialize-database, compile">
+    <java classname="examples.Example03">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-04" depends="initialize-database, compile">
+    <java classname="examples.Example04">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-05" depends="initialize-database, compile">
+    <java classname="examples.Example05">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-06" depends="initialize-database, compile">
+    <java classname="examples.Example06">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-07" depends="initialize-database, compile">
+    <java classname="examples.Example07">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-08" depends="initialize-database, compile">
+    <java classname="examples.Example08">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-09" depends="initialize-database, compile">
+    <java classname="examples.Example09">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-10" depends="initialize-database, compile">
+    <java classname="examples.Example10">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+
+
 
 </project>

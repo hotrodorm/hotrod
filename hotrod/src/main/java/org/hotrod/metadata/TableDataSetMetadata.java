@@ -81,14 +81,22 @@ public class TableDataSetMetadata implements DataSetMetadata {
 
       this.importedFKs = new ArrayList<ForeignKeyMetadata>();
       for (JdbcForeignKey fk : this.t.getImportedFks()) {
+        TableTag remoteTableTag = this.config.getTableTag(fk.getRemoteTable());
+        if (remoteTableTag == null) {
+          throw new RuntimeException("Could not find the remote table for the imported FK on table=" + t.getName());
+        }
         this.importedFKs.add(new ForeignKeyMetadata(getKeyMetadata(fk.getLocalKey(), tableTag),
-            getKeyMetadata(fk.getRemoteKey(), tableTag), fk.pointsToPk(), fk.getRemoteTable()));
+            getKeyMetadata(fk.getRemoteKey(), remoteTableTag), fk.pointsToPk(), fk.getRemoteTable()));
       }
 
       this.exportedFKs = new ArrayList<ForeignKeyMetadata>();
       for (JdbcForeignKey fk : this.t.getExportedFks()) {
+        TableTag remoteTableTag = this.config.getTableTag(fk.getRemoteTable());
+        if (remoteTableTag == null) {
+          throw new RuntimeException("Could not find the remote table for the exported FK on table=" + t.getName());
+        }
         this.exportedFKs.add(new ForeignKeyMetadata(getKeyMetadata(fk.getLocalKey(), tableTag),
-            getKeyMetadata(fk.getRemoteKey(), tableTag), fk.pointsToPk(), fk.getRemoteTable()));
+            getKeyMetadata(fk.getRemoteKey(), remoteTableTag), fk.pointsToPk(), fk.getRemoteTable()));
       }
 
       this.nonPKCols = getColumnsMetadata(this.t.getNonPkColumns(), tableTag);
