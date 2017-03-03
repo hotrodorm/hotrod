@@ -69,7 +69,7 @@ Example 07 - Select by Unique Indexes
    * select by unique index (composite index):
      - state + driver's license number
 
-Example 08 - Selecting on Views
+Example 08 - Select on Views
 
  * View CAR
    * select by example
@@ -78,7 +78,7 @@ Example 09 - Retrieving Sequence Values
  * Sequence CLIENT_SEQ
    * retrieve a value
 
-Example 10 - Custom SQL Queries
+Example 10 - Regular SQL Queries
 
  * Table CLIENT & table PURCHASE
    * upgrade to VIP all clients who have bought at least N cars

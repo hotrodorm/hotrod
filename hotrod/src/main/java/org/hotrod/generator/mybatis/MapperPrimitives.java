@@ -722,15 +722,15 @@ public class MapperPrimitives {
    */
 
   private void writeQuery(final QueryTag u) throws IOException, SequencesNotSupportedException {
-    println("  <!-- update " + u.getJavaMethodName() + " -->");
+    println("  <!-- query " + u.getJavaMethodName() + " -->");
     println();
 
     println("  <update id=\"" + u.getIdentifier().getJavaMemberIdentifier() + "\">");
 
-    this.beginCData();
+    // this.beginCData();
     String sentence = u.renderSQLSentence(new MyBatisParameterRenderer());
     println("    " + sentence);
-    this.endCData();
+    // this.endCData();
     println("  </update>");
     println();
 

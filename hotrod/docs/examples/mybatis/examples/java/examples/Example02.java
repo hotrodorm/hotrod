@@ -11,7 +11,7 @@ import daos.VehicleDAO;
 import daos.VisitDAO;
 
 /**
- * Insert Using Sequences and Identity PKs
+ * Example 02 - Insert Using Sequences and Identity PKs
  * 
  * @author valarcon
  * 

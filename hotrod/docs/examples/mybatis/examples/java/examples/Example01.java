@@ -2,18 +2,11 @@ package examples;
 
 import java.sql.Date;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
-
-import org.nocrala.tools.texttablefmt.BorderStyle;
-import org.nocrala.tools.texttablefmt.CellStyle;
-import org.nocrala.tools.texttablefmt.CellStyle.HorizontalAlign;
-import org.nocrala.tools.texttablefmt.ShownBorders;
-import org.nocrala.tools.texttablefmt.Table;
 
 import daos.VehicleDAO;
 
 /**
- * CRUD Operations on Tables
+ * Example 01 - Basic CRUD Operations on Tables
  * 
  * @author valarcon
  * 
@@ -22,11 +15,11 @@ public class Example01 {
 
   public static void main(String[] args) throws SQLException {
 
-    System.out.println("=== Running Example 01 - CRUD Operations on Tables ===");
+    System.out.println("=== Running Example 01 - Basic CRUD Operations on Tables ===");
 
     // List all vehicles
 
-    listAllVehicles();
+    Utilities.displayAllVehicles("Example 01 - Basic CRUD Operations on Tables - Initial Data:");
     System.out.println(" ");
 
     // 1. Insert a vehicle
@@ -74,51 +67,9 @@ public class Example01 {
 
     // List all vehicles again
 
-    listAllVehicles();
+    Utilities.displayAllVehicles("Example 01 - Basic CRUD Operations on Tables - Final Data:");
     System.out.println("=== Example 01 Complete ===");
 
-  }
-
-  // Helper methods
-
-  private static void listAllVehicles() throws SQLException {
-    System.out.println(" ");
-    System.out.println("Listing of all vehicles:");
-
-    CellStyle RIGHT = new CellStyle(HorizontalAlign.right);
-    CellStyle CENTER = new CellStyle(HorizontalAlign.center);
-    DecimalFormat df = new DecimalFormat("#,##0");
-    DecimalFormat mf = new DecimalFormat("'$'#,##0");
-
-    Table t = new Table(11, BorderStyle.DESIGN_FORMAL, ShownBorders.HEADER_AND_COLUMNS);
-    t.addCell("ID");
-    t.addCell("Brand");
-    t.addCell("Model");
-    t.addCell("Type");
-    t.addCell("VIN");
-    t.addCell("Engine#");
-    t.addCell("Mileage");
-    t.addCell("Purchased");
-    t.addCell("Branch Id", CENTER);
-    t.addCell("List Price", RIGHT);
-    t.addCell("Sold?");
-
-    VehicleDAO example1 = new VehicleDAO();
-    for (VehicleDAO c : VehicleDAO.selectByExample(example1)) {
-      t.addCell("" + c.getId());
-      t.addCell(c.getBrand());
-      t.addCell(c.getModel());
-      t.addCell(c.getType());
-      t.addCell(c.getVin());
-      t.addCell(c.getEngineNumber());
-      t.addCell(df.format(c.getMileage()), RIGHT);
-      t.addCell("" + c.getPurchasedOn());
-      t.addCell("" + c.getBranchId(), CENTER);
-      t.addCell("" + (c.getListPrice() == null ? "null" : mf.format(c.getListPrice())), RIGHT);
-      t.addCell("" + c.isSold());
-    }
-
-    System.out.println(t.render());
   }
 
 }
