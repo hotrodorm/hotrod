@@ -70,7 +70,8 @@
 
   <target name="hotrod">
 
-    <delete dir="auto-generated" />
+    <delete dir="auto-generated/java/daos" />
+    <delete dir="auto-generated/mappers/primitives" />
     <mkdir dir="auto-generated/java" />
     <mkdir dir="auto-generated/mappers" />
     <echo message=" " level="info" />
@@ -94,7 +95,8 @@
 
   <target name="hotrod-version2">
 
-    <delete dir="auto-generated" />
+    <delete dir="auto-generated/java/daos" />
+    <delete dir="auto-generated/mappers/primitives" />
     <mkdir dir="auto-generated/java" />
     <mkdir dir="auto-generated/mappers" />
     <echo message=" " level="info" />
@@ -395,32 +397,6 @@
 
   <target name="run-example-19" depends="initialize-database, compile">
     <java classname="examples.Example19">
-      <classpath>
-        <pathelement path="build" />
-        <pathelement path="auto-generated/mappers" />
-        <pathelement location="${jdbc.driverlibrary}" />
-        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
-        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
-        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
-      </classpath>
-    </java>
-  </target>
-
-  <target name="run-example-20" depends="initialize-database, compile">
-    <java classname="examples.Example20">
-      <classpath>
-        <pathelement path="build" />
-        <pathelement path="auto-generated/mappers" />
-        <pathelement location="${jdbc.driverlibrary}" />
-        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
-        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
-        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
-      </classpath>
-    </java>
-  </target>
-
-  <target name="run-example-21" depends="initialize-database, compile">
-    <java classname="examples.Example21">
       <classpath>
         <pathelement path="build" />
         <pathelement path="auto-generated/mappers" />
