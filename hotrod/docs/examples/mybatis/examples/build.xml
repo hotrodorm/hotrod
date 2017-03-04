@@ -95,10 +95,6 @@
 
   <target name="hotrod-version2">
 
-    <delete dir="auto-generated/java/daos" />
-    <delete dir="auto-generated/mappers/primitives" />
-    <mkdir dir="auto-generated/java" />
-    <mkdir dir="auto-generated/mappers" />
     <echo message=" " level="info" />
 
     <taskdef name="hotrod" classname="org.hotrod.ant.HotRodAntTask">
