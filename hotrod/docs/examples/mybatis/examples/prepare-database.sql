@@ -31,15 +31,16 @@ drop table if exists preferred_colors;
 
 create table branch (
   id integer identity primary key not null,
-  name varchar(50) not null
+  name varchar(50) not null,
+  current_cash integer not null
 );
 
-insert into branch (id, name) values (101, 'Daytona');
-insert into branch (id, name) values (102, 'Chattanooga');
-insert into branch (id, name) values (103, 'Indianapolis');
-insert into branch (id, name) values (104, 'Ventura');
-insert into branch (id, name) values (105, 'Talladega');
-insert into branch (id, name) values (106, 'Costa Mesa');
+insert into branch (id, name, current_cash) values (101, 'Daytona', 15000);
+insert into branch (id, name, current_cash) values (102, 'Chattanooga', 6000);
+insert into branch (id, name, current_cash) values (103, 'Indianapolis', 18500);
+insert into branch (id, name, current_cash) values (104, 'Ventura', 4100);
+insert into branch (id, name, current_cash) values (105, 'Talladega', 9700);
+insert into branch (id, name, current_cash) values (106, 'Costa Mesa', 800);
 
 create table visit (
   recorded_at datetime not null,

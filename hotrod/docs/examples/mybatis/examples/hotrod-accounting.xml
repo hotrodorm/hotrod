@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod-fragment SYSTEM "hotrod-fragment.dtd">
+
+<hotrod-fragment>
+
+  <table name="daily_report">
+    <sequence name="pdf_report_file_seq" java-method-name="retrieveFileReportSequence" />
+  </table>
+
+  <table name="mt_vval002" java-name="VehicleValuationDAO">
+    <column name="if" java-name="valuationDate" />
+    <column name="sldbrid" java-name="branchId" />
+    <column name="$valuation" java-name="totalBranchValuation"
+      java-type="java.lang.Double" />
+  </table>
+
+  <facet name="version2">
+
+    <dao java-class-name="DailyOperations">
+
+      <sequence name="data_file_seq" />
+
+      <query java-method-name="closeDay">
+      <![CDATA[
+      insert into daily_report (report_date, branch_id, total_sold) direct
+        select purchase_date, v.branch_id, sum(final_price) from purchase p
+          join vehicle v on (v.id) = (p.vehicle_id)
+          where purchase_date = #{closingDate,javaType=java.sql.Date,jdbcType=DATE} 
+          group by v.branch_id, purchase_date
+      ]]>
+      </query>
+
+    </dao>
+
+  </facet>
+
+</hotrod-fragment>

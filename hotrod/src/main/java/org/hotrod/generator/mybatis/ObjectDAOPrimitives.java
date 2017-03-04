@@ -401,7 +401,7 @@ public class ObjectDAOPrimitives {
 
   private void postCheckedException() throws IOException {
     if (isCheckedPersistenceException()) {
-      println("    } catch (Exception e) {");
+      println("    } catch (RuntimeException e) {");
       println("      throw new SQLException(e);");
       println("    }");
     }
@@ -460,7 +460,7 @@ public class ObjectDAOPrimitives {
     if (this.isCheckedPersistenceException()) {
       println(f + "    } catch (SQLException e) {");
       println(f + "      throw e;");
-      println(f + "    } catch (Exception e) {");
+      println(f + "    } catch (RuntimeException e) {");
       println(f + "      throw new SQLException(e);");
     }
 
@@ -477,7 +477,7 @@ public class ObjectDAOPrimitives {
     f = SUtils.getFiller(' ', indent * 2);
 
     if (this.isCheckedPersistenceException()) {
-      println(f + "      } catch (Exception e) {");
+      println(f + "      } catch (RuntimeException e) {");
       println(f + "        throw new SQLException(e);");
       println(f + "      }");
     }

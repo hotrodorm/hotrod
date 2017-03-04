@@ -22,7 +22,7 @@ public class Example05 {
     // Example: Delete all MOTORCYCLES
 
     example = new VehicleDAO();
-    example.setType("MOTORCYCLE");
+    example.setType("TRUCK");
     rows = VehicleDAO.deleteByExample(example);
     Utilities.displayAllVehicles("1. Single Column Criteria Delete (" + rows + " rows deleted):");
 
@@ -31,7 +31,8 @@ public class Example05 {
 
     example = new VehicleDAO();
     example.setType("CAR");
-    example.setSold(true);
+    example.setSold(false);
+    example.setBranchId(101);
     rows = VehicleDAO.deleteByExample(example);
     Utilities.displayAllVehicles("2. Multiple Column Criteria Delete (" + rows + " rows deleted):");
 

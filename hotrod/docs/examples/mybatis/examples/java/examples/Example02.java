@@ -60,6 +60,7 @@ public class Example02 {
     BranchDAO b = new BranchDAO();
     b.setId(null); // null: the DB will generate the PK
     b.setName("Wichita");
+    b.setCurrentCash(0);
     rows = b.insert();
     System.out.println("3.a) Branch inserted (identity PK not specified). ID=" + b.getId() + ". Rows inserted=" + rows);
 
@@ -68,6 +69,7 @@ public class Example02 {
     b = new BranchDAO();
     b.setId(144); // specified value: this value will be used for the PK
     b.setName("Cincinnati");
+    b.setCurrentCash(0);
     rows = b.insert();
     System.out.println("3.b) Branch inserted (identity PK specified). ID=" + b.getId() + ". Rows inserted=" + rows);
 

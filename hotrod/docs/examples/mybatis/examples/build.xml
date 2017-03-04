@@ -17,7 +17,6 @@
 
   <property name="hotrod.version" value="1.0.0" />
   <property name="hotrod.generator" value="MyBatis" />
-  <property name="hotrod.facets" value="" />
 
   <!-- Tasks -->
 
@@ -89,8 +88,32 @@
             catalog="${jdbc.catalog}"
             schema="${jdbc.schema}"
             generator="${hotrod.generator}"
-            facets="${hotrod.facets}"
             configfile="hotrod.xml"
+            display="list" />
+  </target>
+
+  <target name="hotrod-version2">
+
+    <delete dir="auto-generated" />
+    <mkdir dir="auto-generated/java" />
+    <mkdir dir="auto-generated/mappers" />
+    <echo message=" " level="info" />
+
+    <taskdef name="hotrod" classname="org.hotrod.ant.HotRodAntTask">
+      <classpath>
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}.jar" />
+        <pathelement location="${jdbc.driverlibrary}" />
+      </classpath>
+    </taskdef>
+    <hotrod url="${jdbc.url}"
+            driverclass="${jdbc.driverclass}"
+            username="${jdbc.username}"
+            password="${jdbc.password}"
+            catalog="${jdbc.catalog}"
+            schema="${jdbc.schema}"
+            generator="${hotrod.generator}"
+            configfile="hotrod.xml"
+            facets="version2"
             display="list" />
   </target>
 
