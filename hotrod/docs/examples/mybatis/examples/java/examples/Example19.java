@@ -17,7 +17,7 @@ public class Example19 {
 
     System.out.println("=== Running Example 19 - Custom Property Java Types for DAOs ===");
 
-    // 1. 1. Insert using custom property Java types
+    // 1. Insert using custom property Java types
 
     // The table column "$valuation" used in Java as totalBranchValuation is
     // defined using the custom Java type java.lang.Double (See the hotrod.xml
