@@ -30,7 +30,7 @@ public class Example13 {
     }
 
     // 2. Using a Native SQL Function
-    // Example: retrieve non-VIP clients, with a maximum of 4 returned rows
+    // Example: using the IFNULL non-standard function
 
     List<VehiclePrice> vp = VehiclePrice.select("Yamaha");
     System.out.println(" ");

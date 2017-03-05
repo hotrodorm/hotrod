@@ -14,7 +14,7 @@
       java-type="java.lang.Double" />
   </table>
 
-  <facet name="version2">
+  <facet name="visits-dev">
 
     <dao java-class-name="DailyOperations">
 

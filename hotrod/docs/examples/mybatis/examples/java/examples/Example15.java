@@ -33,16 +33,16 @@ public class Example15 {
     System.out.println("2. Standard Transactions.");
 
     // 3. Custom Transactions (with isolation level)
-    // Example #3 is for documentation purposes only and does not work in H2 1.3
-    // Example #3 should work on advanced RDBMS such as DB2 or Oracle.
+    // Case #3 is for documentation purposes only and does not work in H2 1.3.x
+    // Case #3 should work on advanced RDBMS such as DB2 or Oracle.
 
     transferCustomTransaction(101, 102, 500);
     System.out.println(" ");
     System.out.println("3. Custom Transactions (with isolation level).");
 
     // 4. Interlaced Transactions
-    // Example #4 is for documentation purposes only and does not work in H2 1.3
-    // Example #4 should work on advanced RDBMS such as DB2 or Oracle.
+    // Case #4 is for documentation purposes only and does not work in H2 1.3.x
+    // Case #4 should work on advanced RDBMS such as DB2 or Oracle.
 
     transferInterlacedTransactions(101, 102, 500, 13, 104, 200);
     System.out.println(" ");

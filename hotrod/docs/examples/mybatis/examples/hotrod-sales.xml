@@ -3,7 +3,7 @@
 
 <hotrod-fragment>
 
-  <facet name="version2">
+  <facet name="visits-dev">
 
     <table name="visit" />
 
