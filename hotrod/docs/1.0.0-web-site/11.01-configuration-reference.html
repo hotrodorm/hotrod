@@ -110,12 +110,12 @@
       <li class="menu2"><a href="11.06-sequences.html">Sequences</a></li>
       <li class="menu2"><a href="11.07-sql-queries.html">SQL Queries</a></li>
       <li class="menu2"><a href="11.08-views.html">Views</a></li>
-      <li class="menu2"><a href="11.09-sql-selects.htmls">SQL Selects</a></li>
+      <li class="menu2"><a href="11.09-sql-selects.html">SQL Selects</a></li>
       <li class="menu2"><a href="11.10-dynamic-sql.html">Dynamic SQL</a></li>
       <li class="menu2"><a href="11.11-custom-daos.html">Custom DAOs </a></li>
       <li class="menu2"><a href="11.12-fragments.html">Fragments</a></li>
       <li class="menu2"><a href="11.13-facets.html">Facets</a></li>
-      <li class="menu2"><a href="11.14-existing-mybatis-mappers">Existing MyBatis
+      <li class="menu2"><a href="11.14-existing-mybatis-mappers.html">Existing MyBatis
           Mappers</a></li>
       <li><a href="12-faq.html">FAQ</a></li>
     </ul>
@@ -126,6 +126,60 @@
       <!-- Article Begin -->
       <!-- ============= -->
 
+<h1>Configuration Reference Overview</h1>
+
+<p>HotRod&#39;s Configuration File is a key aspect of the code generator. This file gathers more than a decade of experience of the authors on code generation for different projects with diverse needs.</p>
+
+<p>In it simplest form, the configuration file includes a list of the tables the application uses. You can generate a comprehensive persistence layer for MyBatis just by writing a few lines in the configuration file.</p>
+
+<p>In more advanced form, this file can specify multiple aspects of the code generation or add tweaks to it. It&#39;s not required for a developer to learn all the tweaks right from the beginning, but he/she will find them useful later on during the project when the need arises.</p>
+
+<p>When using it comprehensively, the configuration file can specify Java names and types for DAOs, add optimized SQL sentences, provide facets subset regeneration, add custom DAOs,&nbsp;&nbsp; divide it in separate areas, and other tweaks. These are advanced features useful for more optimized projects, when having multiple modules, or when having many developers.</p>
+
+<h2>The Main Structure</h2>
+
+<p>The configuration file includes a generators section that stipulates details on the whole code generation, and then the details of the database objects that will be considered on it.</p>
+
+<p>The header of the configuration file specifies the main directives to HotRod. Among others, it defines the directory structure for the generated files such as the DAO Java classes, MyBatis mappers, and MyBatis main configuration file.</p>
+
+<p>The example shown below, taken from the Hello World example application, depicts these sections:</p>
+
+
+<pre class="xml" style="background-color: #e7e7e7;">&lt;?xml version="1.0"?>
+&lt;!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+&lt;hotrod></pre>
+
+<pre class="xml" style="background-color: #ffefef;">  &lt;generators>
+    &lt;mybatis>
+      &lt;daos gen-base-dir="auto-generated/java" dao-package="daos" />
+      &lt;mappers gen-base-dir="auto-generated/mappers" relative-dir="persistence" />
+      &lt;mybatis-configuration-template file="mybatis-template.xml" />
+      &lt;session-factory singleton-full-class-name="sessionfactory.DatabaseSessionFactory" />
+      &lt;select-generation temp-view-base-name="hotrod_temp_view" />
+    &lt;/mybatis>
+  &lt;/generators></pre>
+
+
+<pre class="xml" style="background-color: #e6e6ff;">  &lt;table name="vehicle">
+    &lt;auto-generated-column name="id" />
+  &lt;/table></pre>
+
+
+<pre class="xml" style="background-color: #e7e7e7;">&lt;/hotrod></pre>
+
+
+<p>The gray section corresponds to boilerplate text and should be included verbatim. They correspond to the main XML structure and definition of the XML grammar.</p>
+
+<p>The section in red corresponds to the generators section. It provides details on how the generated code will be produced. There are two generators available in HotRod: the MyBatis Generator, and the Spring JDBC Generator.</p>
+
+<p>The section in blue includes the full list of database objects your application uses. In this case this section is very short and includes a single table. More developed applications include a bulk of definitions in here.</p>
+
+<p>For details on the MyBatis Generators options section see the MyBatis Generator section.</p>
+
+<p>For details on the list of database objects see the corresponding Configuration Reference section for Tables, Views, Selects, Custom DAOs, Updates, Sequences, Fragments and Facets.</p>
+
+<p>&nbsp;</p>
 
       <!-- =========== -->
       <!-- Article End -->

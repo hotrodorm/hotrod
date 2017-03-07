@@ -126,7 +126,13 @@ Data Table Formatting
 .data-table tr td:nth-child(1) {
   font-family: Courier, monospace;
   color: black;
+  width: 20%;
 }
+
+.data-table tr td:nth-child(3) {
+  width: 6%;
+}
+
 
 /*
 Column Type Table Formatting
@@ -178,4 +184,16 @@ kbd {
   padding: 3px 5px 3px 5px;
   background-color: #ffffc7;
   border: 1px solid #c0c0c0;
+}
+
+/* FAQ */
+
+.question {
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.answer {
+  margin-left: 40px;
 }

@@ -128,7 +128,7 @@
       <li class="menu2"><a href="11.07-sql-queries.html">SQL
           Queries</a></li>
       <li class="menu2"><a href="11.08-views.html">Views</a></li>
-      <li class="menu2"><a href="11.09-sql-selects.htmls">SQL
+      <li class="menu2"><a href="11.09-sql-selects.html">SQL
           Selects</a></li>
       <li class="menu2"><a href="11.10-dynamic-sql.html">Dynamic
           SQL</a></li>
@@ -136,7 +136,7 @@
           DAOs </a></li>
       <li class="menu2"><a href="11.12-fragments.html">Fragments</a></li>
       <li class="menu2"><a href="11.13-facets.html">Facets</a></li>
-      <li class="menu2"><a href="11.14-existing-mybatis-mappers">Existing
+      <li class="menu2"><a href="11.14-existing-mybatis-mappers.html">Existing
           MyBatis Mappers</a></li>
       <li><a href="12-faq.html">FAQ</a></li>
     </ul>
@@ -200,8 +200,8 @@
       <pre class="nohighlight">
 project/
 &nbsp; +- lib
-&nbsp;&nbsp;&nbsp; +- hotrod-3.0.0.jar
-&nbsp;&nbsp;&nbsp; +- hotrod-runtime-3.0.0.jar
+&nbsp;&nbsp;&nbsp; +- hotrod-1.0.0.jar
+&nbsp;&nbsp;&nbsp; +- hotrod-runtime-1.0.0.jar
 &nbsp;&nbsp;&nbsp; +- h2-1.3.176.jar
 &nbsp; build.xml
 &nbsp; hotrod.xml
@@ -237,7 +237,7 @@ project/
       <pre class="nohighlight">
 project/
 &nbsp; +- lib
-&nbsp;&nbsp;&nbsp; +- hotrod-3.0.0.jar
+&nbsp;&nbsp;&nbsp; +- hotrod-1.0.0.jar
 &nbsp; build.xml
 &nbsp; hotrod.xml
 &nbsp; mybatis-template.xml
@@ -257,7 +257,7 @@ project/
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +- mybatis-configuration.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +- primitives-book-dao.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +- lib
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +- hotrod-runtime-3.0.0.jar
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +- hotrod-runtime-1.0.0.jar
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +- h2-1.3.176.jar
 </pre>
 
@@ -276,7 +276,7 @@ project/
 
       <pre class="xml">    &lt;taskdef name="hotrod" classname="org.hotrod.ant.HotRodAntTask">
       &lt;classpath>
-        &lt;pathelement location="lib/hotrod-3.0.0.jar" />
+        &lt;pathelement location="lib/hotrod-1.0.0.jar" />
         &lt;pathelement location="lib/h2-1.3.176.jar" />
       &lt;/classpath>
     &lt;/taskdef></pre>

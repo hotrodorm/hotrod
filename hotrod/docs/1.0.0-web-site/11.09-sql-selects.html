@@ -115,7 +115,7 @@
       <li class="menu2"><a href="11.11-custom-daos.html">Custom DAOs </a></li>
       <li class="menu2"><a href="11.12-fragments.html">Fragments</a></li>
       <li class="menu2"><a href="11.13-facets.html">Facets</a></li>
-      <li class="menu2"><a href="11.14-existing-mybatis-mappers">Existing MyBatis
+      <li class="menu2"><a href="11.14-existing-mybatis-mappers.html">Existing MyBatis
           Mappers</a></li>
       <li><a href="12-faq.html">FAQ</a></li>
     </ul>
@@ -125,6 +125,256 @@
       <!-- ============= -->
       <!-- Article Begin -->
       <!-- ============= -->
+
+<h1>Selects Configuration Reference</h1>
+
+<p>The out of the box DAO database operation include the CRUD, the byExample methods as well as the search and navigation by primary key, unique indexes, and foreign keys.</p>
+
+<p>Even though, a whole lot can be done using these out of the box DAO methods, at some point more specialized SQL select methods are suitable to join multiple tables, group rows, or use database enhanced SQL syntax. The out of the box DAO methods can help only so much to deal with the increasing needs the application user starts to demand.</p>
+
+<p>HotRod provides a way of automating the execution of arbitrary SQL select statements by using <code>&lt;select&gt;</code> tags. A <code>&lt;select&gt;</code> tag produces a DAO whose properties are the columns returned by the SQL statement, fully typed and named, and that includes a single Java method that executes the specified SQL statement.</p>
+
+<p>Unlike the <code>&lt;query&gt;</code> tags, the <code>&lt;select&gt;</code> tags produce fully independent DAO classes and do not need to be included inside another DAO. In other words they are defined at the first level, just by the side of the <code>&lt;table&gt;</code>, <code>&lt;view&gt;</code>, or <code>&lt;dao&gt;</code> tags. The body of the <code>&lt;select&gt;</code> supports a single SQL select.</p>
+
+<h2>The &lt;select&gt; Tag</h2>
+
+<p>The <code>&lt;select&gt;</code> tag attributes are:</p>
+
+<table class="data-table">
+  <tbody>
+    <tr>
+      <th><strong>Attribute</strong></th>
+      <th><strong>Description</strong></th>
+      <th><strong>Required</strong></th>
+    </tr>
+    <tr>
+      <td>java-class-name</td>
+      <td>The name of the DAO Java class generated for this SQL statement. It must be a valid Java class name starting with an upper case letter. The name must be unique and different to all other names produced from a <code>&lt;table&gt;</code>, <code>&lt;view&gt;</code>, <code>&lt;select&gt;</code>, and/or <code>&lt;dao&gt;</code> tag since they live in the same namespace.</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>complement-start</td>
+      <td>The start delimiter for a complement SQL section, if different from <code>{*</code></td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>complement-end</td>
+      <td>The end delimiter for a complement SQL section, if different from <code>*}</code></td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Now, the following <code>&lt;select&gt;</code> tag illustrates a few features of the definition:</p>
+
+<pre class="xml">  &lt;select java-class-name="BigTransaction">
+  &lt;![CDATA[
+    select a.*, t.recorded_at, t.amount
+      from account a
+      join transaction t on (t.account_id) = (a.id)
+      where t.amount &gt; 100.00
+  ]]>
+  &lt;/select></pre>
+
+<p>This <code>&lt;select&gt;</code> tag will produce the <code>BigTransaction</code> DAO with a static <code>select()</code> method:</p>
+
+<pre class="java">  public static List<BigTransaction> select() { ... }</pre>
+
+<p>As you see the execution of the <code>select()</code> method return a <code>java.util.List</code> of the DAOs. Also note that, even though the name of the class does not end with DAO this class is still one, since it communicates with the database.</p>
+
+<p>It&#39;s important to note that the resulting columns of the SQL select must all have different names. This is necessary to produce the properties of the DAO java class. If you try to use a DAO with duplicate column names HotRod will stop the code generation and will show an error.</p>
+
+<h2>CDATA and XML entities</h2>
+
+<p>Please note the SQL statement above includes a <strong>greater than</strong> comparison in the last lines. Since the <code>&gt;</code> character is a reserved XML character it&#39;s escaped as <code>&amp;gt;</code>. If you forget to escape it, this character could be interpreted as a start or end of an XML tag, and you would be entering the realm of dynamic SQL (described later on in this section). That is why it&#39;s escaped to ensure it&#39;s interpreted as a simple number comparison rather than an XML tag.</p>
+
+<p>There are three reserved characters that need to be escaped. This means:</p>
+
+<ul>
+  <li>any <code>&lt;</code> must be escaped as <code>&amp;lt;</code></li>
+  <li>any <code>&gt;</code> character must be escaped as <code>&amp;gt;</code></li>
+  <li>any <code>&amp;</code> character must be escaped as <code>&amp;amp;</code></li>
+</ul>
+
+<p>Also, when using dynamic SQL (not this case) the SQL must be enclosed in a CDATA section&mdash;as shown in the example. In the case above there&#39;s no dynamic SQL, but it&#39;s still a good practice to do it, in case you later on decide to add dynamic tags to it.</p>
+
+<h2>Parameters</h2>
+
+<p>The <code>&lt;select&gt;</code> tag can also accept parameters to be applied into the SQL statement. For example, the SQL statement below receives 4 parameters:</p>
+
+<pre class="xml">  &lt;select java-class-name="RankedEmployee">
+  &lt;![CDATA[
+    select e.*, r.position from employee e
+      left join rank r on (r.employee_id) = (e.id)
+    {*
+    where r.year =
+        #{year,javaType=java.lang.Integer,jdbcType=NUMERIC}
+      and e.branch_id = 
+        #{branchId,javaType=java.lang.Long,jdbcType=NUMERIC}
+    order by r.position
+    *}
+  ]]>
+  &lt;/select></pre>
+
+<p>This tag will produce the DAO <code>RankedEmployee</code>. This name must be different to all other DAOs produced from a <code>&lt;table&gt;</code>, <code>&lt;view&gt;</code>, <code>&lt;select&gt;</code> and/or <code>&lt;dao&gt;</code> tag since they live in the same namespace. This DAO includes the static DAO java method:</p>
+
+<pre class="java">public class RandekEmployee {
+
+  public static List&lt;RandekEmployee> select(
+    java.lang.Integer year,
+    java.lang.Long branchId) { ... }  
+
+}</pre>
+
+<p>As you can see both parameters defined in the SQL select statement are included in the Java method.</p>
+
+<p>Each parameter definition takes the form:</p>
+
+<pre>  #{name,javaType=javatype,jdbcType=jdbctype}</pre>
+
+<p>We can see the definition has three sections separated by commas:</p>
+
+<ul>
+  <li>the first one includes the java parameter name.</li>
+  <li>the second one is the full class name of the java parameter.</li>
+  <li>finally, the last one is the JDBC type of the parameter as specified in the <code>java.sql.Types</code> class. As defined by the JDBC specification the JDBC type is needed for cases when the java parameter is null.</li>
+</ul>
+
+<p>If the same parameter needs to be inserted twice or more in the SQL statement, only the first occurence should have the &quot;full definition&quot; as shown above. The second and subsequent occurrences should include the &quot;short definition&quot; that only includes the name of it, as in:</p>
+
+<pre>  #{name}</pre>
+
+<p>In a <code>&lt;select&gt;</code> tag parameters can only be present in a complement SQL section, the sections enclosed in <code>{*</code> and <code>*}</code>. In the previous example you probably noticed the <code>where</code> and <code>order by</code> sections surrounded by <code>{*</code> and <code>*}</code>.</p>
+
+<h2>Complement SQL Section</h2>
+
+<p>The <code>{*</code> and <code>*}</code> delimiters mark which sections of the SQL are complements vs a foundational parts of it. HotRod requires the developer to differentiate these sections to retrieve the column metadata of the SQL select.</p>
+
+<p>The short explanation is that all parts of the SQL select starting from the <code>where</code> statement are to be enclosed by the <code>{*</code> and <code>*}</code> delimiters.</p>
+
+<p>The longer explanation: In order to automatically find out the full list of the columns the resulting tabular data the SQL select statement produces, HotRod uses the strategy of creating a temporary database view with it, and then retrieves the database view metadata. Of course, the temporary view must be created using a fully valid SQL <code>create view</code> statement and there is where the &ldquo;foundation&rdquo; and &ldquo;complement&rdquo; sections play a key role. The foundation sections of the SQL are used when creating the view, while complement SQL sections are ignored while creating it.</p>
+
+<p>Therefore, the foundation SQL section&mdash;that is all the SQL code outside the <code>{*</code> and <code>*}</code> delimiters&mdash;must be a valid SQL select statement that can be used to create a view. That is, it cannot have an <code>order by</code> or other SQL sections your database deems unfit for a view.</p>
+
+<p>The previous example would generate the following view:</p>
+
+<pre class="sql">  create view hotrod_temp_view_001 as
+
+    select e.*, r.position from employee e
+      left join rank r on (r.employee_id) = (e.id)</pre>
+
+<p>Note all the complement SQL sections included by <code>{*</code> and <code>*}</code> are excluded, so this SQL statement can actually be executed. Once the view is created the column metadata is easily retrieved, and the DAO Java class can be fully produced.</p>
+
+<p>Also, note the temporary view name is based on the configuration parameter <code>temp-view-base-name</code> on the header section of HotRod&#39;s configuration file.</p>
+
+<p>Please note the temporary view is created, used, and removed automatically by HotRod behind the scenes. Once the code generation is complete the view is automatically dropped.</p>
+
+<p>To decide which sections to mark as a complement SQL section consider the following examples:</p>
+
+<pre class="sql">  select ... from ... join ... {* where ... *}
+
+  select ... from ... join ... {* order by ... *}
+
+  select ... from ... join ... {* group by ... *}
+
+  select ... from ... join ... {* group by ... having ... *}
+
+  select ... from ... join ... {* union ... *}
+
+  select ... from ... join ... {* intersect ... *}
+
+  select ... from ... join ... {* except ... *}
+
+  select ... from ... join ... {* where ... order by ...
+      group by ... having ... union ... intersect ... except ... *}</pre>
+
+<p>That is, the SQL sections <code>select</code>, <code>from</code> and <code>join</code> sections are included, but everything else can be excluded.</p>
+
+<p>This is also valid for inner selects such as in:</p>
+
+<pre class="sql">  select amount from (
+    select sum(price) as amount from sales 
+      {* where sold_by = #{soldBy} *}
+  ) join ... {* where ... *}</pre>
+
+<p>Now, if the SQL statement happens to include the delimiters <code>{*</code> and/or <code>*}</code> you can specify custom delimiters using the <code>complement-start</code> and/or <code>complement-end</code> attributes of the <code>&lt;select&gt;</code> tag, as in:</p>
+
+<pre class="xml">  &lt;select java-class-name="RankedEmployee" 
+    complement-start="//*" complement-end="*//">
+  &lt;![CDATA[
+    select count(*), avg(sales_price) as price 
+      from property p
+      //*
+      where type like '{*' or classification = '*}'
+      *//
+  ]]>
+  &lt;/select></pre>
+
+<p>This way, the SQL sections will be correctly interpreted.</p>
+
+<h2>Columns</h2>
+
+<p>The resulting columns of the SQL select are automatically discovered by HotRod. Their Java names and Java types are based on the resulting name and database type of the column in the result set. This is because a column in the result set may not only correspond to a table or view column, but could also be a runtime expression with a name and valid column type.</p>
+
+<p>The result set column names must be all different to each other since they are used to produce the default DAO Java properties names.</p>
+
+<p>The result set columns are used to produce the default DAO Java properties types, using the same rules used when generating properties for the <code>&lt;table&gt;</code> and <code>&lt;view&gt;</code> tags.</p>
+
+<p>In most cases the names and types would be suitable for the application. However, if it happens the developer considers a different name or type is better suited for the application requirements he/she can override the default values using a <code>&lt;column&gt;</code> tag. This can be quite useful for cryptic column names, specially on legacy databases.</p>
+
+<p>A <code>&lt;column&gt;</code> tag can be specified for one or more columns of the result set. If no <code>&lt;column&gt;</code> tag is specified for a column, the default name and type produced by HotRod are used.</p>
+
+<p><code>&lt;column&gt;</code> tags need to be added outside the CDATA section. If added inside they don&#39;t have any effect while generating the DAO, and will most likely produce a runtime error.</p>
+
+<p>The example below shows a column tag superseding the default column name and type.</p>
+
+<pre class="xml">  &lt;select java-class-name="AvailableBook">
+    &lt;column name="bkcurpc" java-name="price" 
+      java-type="java.lang.Double" />
+  &lt;![CDATA[
+    select * from book 
+      {*
+      where available = 1
+      *}
+  ]]>
+  &lt;/select></pre>
+
+<p>Please note:</p>
+
+<ul>
+  <li>The <code>&lt;column&gt;</code> tag is placed outside the CDATA section.</li>
+  <li>The result set returns a column for the price with the cryptic name <code>bkcurpc</code> but the DAO will have a property (including getters and setters) with the name <code>price</code>.</li>
+  <li>The result set returns a <code>DECIMAL</code> column type with two decimals (not shown in the example) that HotRod would treat by default as a <code>java.math.BigDecimal</code>. The DAO, however, will use the type <code>java.lang.Double</code> overriding the default type.</li>
+  <li>Finally, the <code>java-name</code> and <code>java-type</code> attributes do not need to be specified simultaneously, and can be used separately as needed. For more details on how to use the <code>&lt;column&gt;</code> tag see the Configuration Reference section for Columns.</li>
+</ul>
+
+<h2>Dynamic SQL</h2>
+
+<p>So far, we have seen the <code>&lt;select&gt;</code> tag to apply parameter values to SQL statements and execute them. However, we haven&#39;t seen the SQL statement changing its internal structure.</p>
+
+<p>When using MyBatis, HotRod provides dynamic SQL capabilities, that allow the SQL statement to change at runtime depending on the specified parameter values.</p>
+
+<p>The following example shows a SQL select that adds fragments to the SQL statement to filter and order rows conditionally:</p>
+
+<pre class="xml">  &lt;select java-class-name="applyFreeShipping">
+  &lt;![CDATA[
+    select * from catalog
+      &lt;where>
+        &lt;if test="#{parentCatalog,javaType=java.lang.Long,jdbcType=NUMERIC} != null">
+          parent_catalog = #{parentCatalog}
+        &lt;/if>
+      &lt;/where>
+      &lt;if test="#{sort,javaType=java.lang.Boolean}">
+        order by catalog_name
+      &lt;/if>
+  ]]>
+  &lt;/select></pre>
+
+<p>The example above retrieves rows from the <code>CATALOG</code> table conditionally filtered by the <code>PARENT_CATALOG</code> column and conditionally sorted by <code>CATALOG_NAME</code>. Depending on the values provided at runtime for the <code>parentCatalog</code> and <code>sort</code> parameters, the SQL select statement will add each one of the sections enclosed in an <code>&lt;if&gt;</code> tag.</p>
+
+<p>When using MyBatis, the <code>&lt;select&gt;</code> tag (as well as the <code>&lt;query&gt;</code> tag) support dynamic SQL. For more details on how to use it, see the Configuration Reference section for Dynamic SQL.</p>
+
+<p>&nbsp;</p>
 
 
       <!-- =========== -->

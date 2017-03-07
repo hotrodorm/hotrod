@@ -110,12 +110,12 @@
       <li class="menu2"><a href="11.06-sequences.html">Sequences</a></li>
       <li class="menu2"><a href="11.07-sql-queries.html">SQL Queries</a></li>
       <li class="menu2"><a href="11.08-views.html">Views</a></li>
-      <li class="menu2"><a href="11.09-sql-selects.htmls">SQL Selects</a></li>
+      <li class="menu2"><a href="11.09-sql-selects.html">SQL Selects</a></li>
       <li class="menu2"><a href="11.10-dynamic-sql.html">Dynamic SQL</a></li>
       <li class="menu2"><a href="11.11-custom-daos.html">Custom DAOs </a></li>
       <li class="menu2"><a class="active" href="11.12-fragments.html">Fragments</a></li>
       <li class="menu2"><a href="11.13-facets.html">Facets</a></li>
-      <li class="menu2"><a href="11.14-existing-mybatis-mappers">Existing MyBatis
+      <li class="menu2"><a href="11.14-existing-mybatis-mappers.html">Existing MyBatis
           Mappers</a></li>
       <li><a href="12-faq.html">FAQ</a></li>
     </ul>
@@ -125,6 +125,129 @@
       <!-- ============= -->
       <!-- Article Begin -->
       <!-- ============= -->
+
+<h1>Fragments</h1>
+
+<p>The HotRod configuration file can be divided into many parts known as fragments. In short, these fragments help to modularize the configuration file and to reduce SCM repository&nbsp; conflicts when multiple developers try to commit changes at the same time.</p>
+
+<p>A simple small project usually has few tables and views, and a single or few developers. In this case the HotRod Configuration file will have a few lines and won&#39;t require much effort to modify it. It also won&#39;t create many repository conflicts either since there&#39;s not much to modify and there aren&#39;t many developers in the first place.</p>
+
+<p>However, when the project grows the HotRod configuration file may start to grow. It will grow moderately in terms of tables and views; it will mostly grow, however, when adding arbitrary SQL with the <code>&lt;select&gt;</code> and <code>&lt;update&gt;</code> tags. On one side these are bulky per se. But more importantly, their numbers can become very abundant.</p>
+
+<p>Additionally, the number of developers may also grow, and this can cause a large number of potential SCM repository conflicts while committing changes simultaneously.</p>
+
+<p>Also, when the database can naturally be divided into separate modules, the team may prefer to have the persistence separated by these modules. These way when the persistence changes for a module just that specific part of the configuration is modified and not the whole configuration file.</p>
+
+<p>Fragment files are included in the main configuration file&mdash;or in other fragments&mdash;by using the <code>&lt;fragment&gt;</code> tag. The <code>&lt;fragment&gt;</code> tag can be intermixed with the <code>&lt;table&gt;</code>, <code>&lt;view&gt;</code>, <code>&lt;select&gt;</code>, and <code>&lt;dao&gt;</code> tags as needed.</p>
+
+<p>Fragment files do not include the header section the main configuration file has. Also note the boilerplate initial lines are different from the main configuration file as well. Fragment files&#39; main tag is <code>hotrod-fragment</code> and not <code>hotrod</code>. Their grammar definition is different accordingly as shown in the <code>DOCTYPE</code> definition.</p>
+
+<h2>Inner Fragments</h2>
+
+<p>Fragments can also include fragments of their own. However, the whole tree/subtree of included files through fragments cannot include the same file more than once. This rule also prevents the existence of circular references. If this situation arises HotRod finds out, stops it execution, and shows an error message explaining the details.</p>
+
+<h2>Partial Code Generation</h2>
+
+<p>Fragments are not a way of producing partial code generation. They only allow a big configuration file to be separated (and stored in the repository) in multiple smaller files.</p>
+
+<p>In order to perform a HotRod partial generation the team must use facets. Facets identify subsections of the configuration file across all fragments. The HotRod Generator can be instructed to generate only one or a subset of facets, reducing the generation time significantly for large projects.</p>
+
+<p>For more details on facets see the Configuration Reference section for Facets.</p>
+
+<h2>Fragment Example</h2>
+
+<p>Now, the following configuration file is divided in four files. The main configuration file is shown below:</p>
+
+<pre class="xml">&lt;?xml version="1.0"?>
+&lt;!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+&lt;hotrod>
+
+  &lt;generators>
+    &lt;mybatis>
+      ...
+    &lt;/mybatis>
+  &lt;/generators>
+
+  &lt;table name="employee" />
+
+  &lt;fragment file="web-site/sales.xml" />
+
+  &lt;view name="department" />
+
+  &lt;fragment file="integrations/suppliers.xml" />
+  
+  &lt;select java-class-name="ExecutiveEmployee">
+  &lt;![CDATA[
+    select * from employee where is_executive = 1
+  ]]>
+  &lt;/select>
+
+&lt;/hotrod></pre>
+
+<p>The <code>sales.xml</code> fragment, located in the <code>web-site</code> subdirectory relative to the main configuration file, has the following content:</p>
+
+<pre class="xml">&lt;?xml version="1.0"?>
+&lt;!DOCTYPE hotrod-fragment SYSTEM "hotrod-fragment.dtd">
+
+&lt;hotrod-fragment>
+
+  &lt;table name="order" />
+  &lt;table name="gift_card" />
+
+  &lt;fragment file="categories-and-catalogs.xml" />
+
+  &lt;select java-class-name="ExpensiveOrder">
+  &lt;![CDATA[
+    select * from order where price &gt; 1000.00
+  ]]>
+  &lt;/select>
+
+&lt;/hotrod></pre>
+
+<p>The above file includes a couple of <code>&lt;table&gt;</code> definitions, a <code>&lt;select&gt;</code>, and also includes another fragment. All these tags can be intermixed as needed.</p>
+
+<p>The <code>categories-and-catalogs.xml</code> fragment referenced by the <code>sales.xml</code> fragment is located in the <code>sales</code> directory (not in the main folder), since its location is relative to the <code>sales.xml</code> fragment and it does not specify any relative directory. Its contents is shown below:</p>
+
+<pre class="xml">&lt;?xml version="1.0"?>
+&lt;!DOCTYPE hotrod-fragment SYSTEM "hotrod-fragment.dtd">
+
+&lt;hotrod-fragment>
+
+  &lt;table name="catalog" />
+  &lt;table name="subcatalog" />
+  &lt;table name="category" />
+  &lt;table name="subject" />
+
+&lt;/hotrod></pre>
+
+<p>The file above includes four tables probably relates to categories management.</p>
+
+<p>Finally, the <code>suppliers.xml</code> fragment is located in the <code>integrations</code> subdirectory relative to the main configuration file. Its contents is shown below:</p>
+
+<pre class="xml">&lt;?xml version="1.0"?>
+&lt;!DOCTYPE hotrod-fragment SYSTEM "hotrod-fragment.dtd">
+
+&lt;hotrod-fragment>
+
+  &lt;table name="supplier" />
+  &lt;table name="inventory" />
+  &lt;table name="invoices" />
+
+  &lt;select java-class-name="OutstandingInvoices30Days">
+  &lt;![CDATA[
+    select * from invoices 
+      where days_late between 30 and 60
+  ]]>
+  &lt;/select>
+
+&lt;/hotrod></pre>
+
+<p>As you see all the fragments can include <code>&lt;table&gt;</code>, <code>&lt;view&gt;</code>, <code>&lt;select&gt;</code>, <code>&lt;dao&gt;</code>, and <code>&lt;fragment&gt;</code> tags. You can intermix them as needed.</p>
+
+<p>The goal of the fragments is to make the whole configuration more manageable, specially when the project grows in number of database object (tables, views, sequences, etc), in terms of optimization, in terms of customized SQL code, number of developers, etc., or a combination of these.</p>
+
+<p>&nbsp;</p>
 
 
       <!-- =========== -->

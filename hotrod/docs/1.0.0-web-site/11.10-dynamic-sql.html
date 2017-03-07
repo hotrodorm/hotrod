@@ -110,12 +110,12 @@
       <li class="menu2"><a href="11.06-sequences.html">Sequences</a></li>
       <li class="menu2"><a href="11.07-sql-queries.html">SQL Queries</a></li>
       <li class="menu2"><a href="11.08-views.html">Views</a></li>
-      <li class="menu2"><a href="11.09-sql-selects.htmls">SQL Selects</a></li>
+      <li class="menu2"><a href="11.09-sql-selects.html">SQL Selects</a></li>
       <li class="menu2"><a class="active" href="11.10-dynamic-sql.html">Dynamic SQL</a></li>
       <li class="menu2"><a href="11.11-custom-daos.html">Custom DAOs </a></li>
       <li class="menu2"><a href="11.12-fragments.html">Fragments</a></li>
       <li class="menu2"><a href="11.13-facets.html">Facets</a></li>
-      <li class="menu2"><a href="11.14-existing-mybatis-mappers">Existing MyBatis
+      <li class="menu2"><a href="11.14-existing-mybatis-mappers.html">Existing MyBatis
           Mappers</a></li>
       <li><a href="12-faq.html">FAQ</a></li>
     </ul>
@@ -125,6 +125,93 @@
       <!-- ============= -->
       <!-- Article Begin -->
       <!-- ============= -->
+
+
+<h1>Dynamic SQL</h1>
+
+<p>When using MyBatis, HotRod leverages the MyBatis dynamic SQL capabilities to execute SQL statements that include or exclude fragments of SQL at runtime based on the parameter values provided by the application on each execution.</p>
+
+<p>While&mdash;accurately described on the MyBatis manual&mdash;&ldquo;working with Dynamic SQL will never be a party&rdquo;, the dynamic SQL strategy reduces considerably the amount of work the developer needs to do when writing heavily parameterized SQL.</p>
+
+<p>The example and description shown in this section uses a SQL <code>&lt;query&gt;</code> tag. However, all this functionality is valid as well for the <code>&lt;select&gt;</code> tags</p>
+
+<p>For details on the MyBatis dynamic syntax for SQL statements please see the MyBatis documentation. The one-sentence description is that MyBatis enhances the SQL definitions by allowing <code>&lt;if&gt;</code>, <code>&lt;choose&gt;</code>, <code>&lt;when&gt;</code>, <code>&lt;otherwise&gt;</code>, <code>&lt;trim&gt;</code>, <code>&lt;where&gt;</code>, <code>&lt;set&gt;</code>, and <code>&lt;foreach&gt;</code> tags to be added to it to transform and reshape the SQL sentence at runtime.</p>
+
+<p>The example below shows a SQL update whose structure changes dynamically:</p>
+
+<pre class="xml">    &lt;query java-method-name="addFreebiesToOrders">
+    &lt;![CDATA[
+      update purchase_order
+        &lt;set>
+          &lt;if test="#{discount,javaType=java.lang.Double,jdbcType=NUMERIC} != null">
+            discount = #{discount}
+          ,&lt;/if>
+          &lt;if test="#{extraQuantity,javaType=java.lang.Long,jdbcType=NUMERIC} != null">
+            quantity = quantity + #{extraQuantity}
+          ,&lt;/if>
+          &lt;if test="#{shippingType,javaType=java.lang.Integer,jdbcType=NUMERIC} != null">
+            shipping_type = #{shippingType}
+          ,&lt;/if>
+          &lt;if test="#{freeWarranty,javaType=java.lang.Integer,jdbcType=NUMERIC} != null">
+            free_warranty = #{freeWarranty}
+          ,&lt;/if>
+        &lt;/set>
+        &lt;where>
+          &lt;if test="#{widgetType,javaType=java.lang.Integer,jdbcType=NUMERIC} != null">
+            widget_type = #{widgetType}
+          &lt;/if>
+          &lt;if test="#{zipCode,javaType=java.lang.String,jdbcType=VARCHAR} != null">
+            AND zip_code = #{zipCode}
+          &lt;/if>
+          &lt;if test="#{orderDate,javaType=java.sql.Date,jdbcType=DATE} != null">
+            AND order_date &lt; #{orderDate}
+          &lt;/if>
+        &lt;/where>
+    ]]>
+    &lt;/query></pre>
+
+<p>This tag produces the static DAO java method:</p>
+
+<pre class="java">  public static int addFreebiesToOrders(
+    java.lang.Double discount,
+    java.lang.Long extraQuantity,
+    java.lang.Integer shippingType,
+    java.lang.Integer freeWarranty,
+    java.lang.Integer widgetType,
+    java.lang.String zipCode,
+    java.sql.Date orderDate) { ... }</pre>
+
+<p>In the example above, depending on which parameters are null or not, one or more freebies (a discount, extra quantity, better shipping, and/or free warranty) are given to the purchase orders. Also, the selection criteria can be any combination of widget type, zip code, and/or before a certain order date.</p>
+
+<p>In sum, there are 16 possible combinations of freebies, and there are 8 possible combinations for the selection criteria. The full combination of cases adds up to 128 different cases (16 &times; 8). That is, if you decided not to use dynamic SQL you would need to write 128 different SQL updates to provide the same functionality this single dynamic SQL update offers. In cases like this one is where dynamic SQL shines.</p>
+
+<p>Of course, it&#39;s not trivial to write the above dynamic SQL statement, but it&#39;s much less work than the alternative.</p>
+
+<h3>A Few Notes on the Dynamic SQL Syntax</h3>
+
+<p>Please note the CDATA section is needed for dynamic SQL. Otherwise the HotRod parser would try to interpret the dynamic tags as part of the HotRod configuration file.</p>
+
+<p>In the CDATA section, some reserved XML characters found outside the tag definitions&mdash;i.e. in the SQL statement per se&mdash;must be escaped as an XML entity. That is:</p>
+
+<ul>
+  <li>any <code>&lt;</code> must be escaped as <code>&amp;lt;</code></li>
+  <li>any <code>&gt;</code> character must be escaped as <code>&amp;gt;</code></li>
+  <li>any <code>&amp;</code> character must be escaped as <code>&amp;amp;</code></li>
+</ul>
+
+<p>For example, the date comparison shows the character &lt; being escaped. Let me repeat this once more: the character escaping only affects the SQL code and not the dynamic tags themselves.</p>
+
+<p>As in any non-dynamic SQL <code>&lt;query&gt;</code> tag the first time a parameter is used&mdash;regardless if it occurs inside a tag or in the SQL code&mdash;its full definition is required. All subsequent occurrences of the parameter use the simple form. For example, the first time the parameter <code>discount</code> is used it takes the full form:</p>
+
+<pre>  #{discount,javaType=java.lang.Double,jdbcType=NUMERIC}</pre>
+
+<p>Then, when used again it takes the simplified form:</p>
+
+<pre>  #{discount}</pre>
+
+<p>Finally, the dynamic SQL includes <code>&lt;set&gt;</code>, <code>&lt;if&gt;</code>, and <code>&lt;where&gt;</code> tags. These tags seem intuitive enough to use but they actually come with nice extras. If you re-read the example carefully, you may notice the commas that separate the set sections in the update are taken care of automatically by the <code>&lt;set&gt;</code> tag in all&mdash;I repeat ALL&mdash;parameter combinations. Also, the presence or absence of the <code>AND</code> SQL word is also managed automatically for you by the <code>&lt;where&gt;</code> tag. See the MyBatis manual for details on this.</p>
+
+<p>&nbsp;</p>
 
 
       <!-- =========== -->

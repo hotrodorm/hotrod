@@ -110,12 +110,12 @@
       <li class="menu2"><a href="11.06-sequences.html">Sequences</a></li>
       <li class="menu2"><a class="active" href="11.07-sql-queries.html">SQL Queries</a></li>
       <li class="menu2"><a href="11.08-views.html">Views</a></li>
-      <li class="menu2"><a href="11.09-sql-selects.htmls">SQL Selects</a></li>
+      <li class="menu2"><a href="11.09-sql-selects.html">SQL Selects</a></li>
       <li class="menu2"><a href="11.10-dynamic-sql.html">Dynamic SQL</a></li>
       <li class="menu2"><a href="11.11-custom-daos.html">Custom DAOs </a></li>
       <li class="menu2"><a href="11.12-fragments.html">Fragments</a></li>
       <li class="menu2"><a href="11.13-facets.html">Facets</a></li>
-      <li class="menu2"><a href="11.14-existing-mybatis-mappers">Existing MyBatis
+      <li class="menu2"><a href="11.14-existing-mybatis-mappers.html">Existing MyBatis
           Mappers</a></li>
       <li><a href="12-faq.html">FAQ</a></li>
     </ul>
@@ -125,6 +125,187 @@
       <!-- ============= -->
       <!-- Article Begin -->
       <!-- ============= -->
+
+<h1>Regular SQL Queries Configuration Reference</h1>
+
+<p>All but the most basic applications reach a point where arbitrary SQL queries need to be devised to perform database changes in an optimal manner.</p>
+
+<p>On very simple applications most of the persistence can be dealt with using the basic standard CRUD methods but sooner or later each application reaches a point where it needs to use more advanced custom made SQL statements. This is when the <code>&lt;query&gt;</code> tag comes into place by providing the developer with an easy way to execute any arbitrary SQL update, delete, or insert statements directly by calling a DAO class method.</p>
+
+<p>In HotRod one or more <code>&lt;query&gt;</code> tags can be added to any <code>&lt;table&gt;</code>, <code>&lt;view&gt;</code>, or <code>&lt;dao&gt;</code> tag to produce Java methods that execute the SQL statement included in the body of the <code>&lt;query&gt;</code> tag.</p>
+
+<h2>Typical uses</h2>
+
+<p>The <code>&lt;query&gt;</code> tag can be used to execute any &ldquo;regular SQL query&rdquo; that doesn&#39;t return a result set: that is, any valid JDBC query.</p>
+
+<p>Therefore, it can be used to execute common SQL such as:</p>
+
+<ul>
+  <li>Common DML SQL queries such as update, delete, insert.</li>
+  <li>Extra operations such as truncate tables, and run stored procedures.</li>
+</ul>
+
+<p>Uncommon SQL, highly unadvisable unless you know what you are doing.</p>
+
+<ul>
+  <li>Transaction manipulation (TCL).</li>
+  <li>Granting or revoking permissions on database objects.</li>
+  <li>DDL SQL such as create, drop, alter, etc.</li>
+  <li>Other.</li>
+</ul>
+
+<h2>The &lt;query&gt; Tag</h2>
+
+<p>The <code>&lt;query&gt;</code> tag attributes are:</p>
+
+<table class="data-table">
+  <tbody>
+    <tr>
+      <th><strong>Attribute</strong></th>
+      <th><strong>Description</strong></th>
+      <th><strong>Required</strong></th>
+    </tr>
+    <tr>
+      <td>java-method-name</td>
+      <td>The name of the DAO Java method that will execute the SQL statement. It must be a valid Java method name starting with a lower case letter.</td>
+      <td>Yes</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The body of the <code>&lt;query&gt;</code> supports a single SQL statement. It&#39;s recommended its body to be enclosed in a CDATA section. That is, an <code>&lt;query&gt;</code> tag could look like:</p>
+
+<pre class="xml">  &lt;table name="promotion">
+    ...
+
+    &lt;query java-method-name="applyAccountPromotion74">
+    &lt;![CDATA[
+      update account set balance = balance + 100
+        where type = 6
+    ]]>
+    &lt;/query>
+
+    ...
+  &lt;/table></pre>
+
+<p>This <code>&lt;query&gt;</code> tag (included in the <code>PROMOTION</code>&#39;s <code>&lt;table&gt;</code> tag) will produce the static method:</p>
+
+<pre class="java">  public static int applyAccountPromotion74() { ... }</pre>
+
+<p>in the <code>PromotionsDAO</code> java class. This method executes the included SQL update statement. It returns an <code>int</code> value that corresponds to the total number of affected database rows.</p>
+
+<h2>CDATA and XML entities</h2>
+
+<p>Please note the SQL statement above includes a <strong>greater than</strong> comparison in the last lines. Since the <code>&gt;</code> character is a reserved XML character it&#39;s escaped as <code>&amp;gt;</code>. If you forget to escape it, this character could be interpreted as a start or end of an XML tag, and you would be entering the realm of dynamic SQL (described later on in this section). That is why it&#39;s escaped to ensure it&#39;s interpreted as a simple number comparison rather than an XML tag.</p>
+
+<p>There are three reserved characters that need to be escaped. This means:</p>
+
+<ul>
+  <li>any <code>&lt;</code> must be escaped as <code>&amp;lt;</code></li>
+  <li>any <code>&gt;</code> character must be escaped as <code>&amp;gt;</code></li>
+  <li>any <code>&amp;</code> character must be escaped as <code>&amp;amp;</code></li>
+</ul>
+
+<p>Also, when using dynamic SQL (not this case) the SQL must be enclosed in a CDATA section&mdash;as shown in the example. In the case above there&#39;s no dynamic SQL, but it&#39;s still a good practice to do it, in case you later on decide to add dynamic tags to it.</p>
+
+<h2>Parameters</h2>
+
+<p>The <code>&lt;query&gt;</code> tag can also accept parameters to be applied into the SQL statement. For example, the SQL statement below receives 4 parameters:</p>
+
+<pre class="xml">    &lt;query java-method-name="applyAccountPromotion75">
+    &lt;![CDATA[
+      update account a set balance = balance +
+          #{reward,javaType=java.lang.Integer,jdbcType=NUMERIC}
+        where created_on 
+          between #{from,javaType=java.util.Date,jdbcType=TIMESTAMP}
+              and #{to,javaType=java.util.Date,jdbcType=TIMESTAMP}
+          and (select count(*) from transaction 
+                 where account_id = a.id) &gt;
+       #{minTransactions,javaType=java.lang.Integer,jdbcType=NUMERIC}
+    ]]>
+    &lt;/query></pre>
+
+<p>This tag will produce the static DAO java method:</p>
+
+<pre class="java">  public static int applyAccountPromotion75(
+    java.lang.Integer reward,
+    java.util.Date from,
+    java.util.Date to,
+    java.lang.Integer minTransactions) { ... }</pre>
+
+<p>All four parameters defined in the SQL statement are included in the corresponding Java method.</p>
+
+<p>Each parameter definition takes the form:</p>
+
+<pre>  #{name,javaType=javatype,jdbcType=jdbctype}</pre>
+
+<p>We can see the definition has three sections separated by commas:</p>
+
+<ul>
+  <li>the first one includes the java parameter name.</li>
+  <li>the second one is the full class name of the java parameter.</li>
+  <li>finally, the last one is the JDBC type of the parameter as specified in the <code>java.sql.Types</code> class. As defined by the JDBC specification the JDBC type is needed for cases when the java parameter is null.</li>
+</ul>
+
+<p>If the same parameter needs to be inserted twice or more in the SQL statement, only the first occurence should have the full definition as shown above. The second and subsequent occurrences should include the &quot;short definition&quot; that only includes the name of it, as in:</p>
+
+<pre>  #{name}</pre>
+
+<p>Also, it&#39;s important to mention that HotRod doesn&#39;t impose or require any relationship to exist between the SQL statement used by the <code>&lt;query&gt;</code> tag and the <code>&lt;table&gt;</code>, <code>&lt;view&gt;</code>, or <code>&lt;dao&gt;</code> tags that enclose it. The DAO Java classes produced by these tags only serve as containers to place the Java method that executes the SQL query.</p>
+
+<h2>Deleting and Inserting</h2>
+
+<p>The <code>&lt;query&gt;</code> tag can actually include any valid SQL statement that does not return tabular data. In particular, it can be used to execute SQL delete or SQL insert statements. For example, the definition below defines a more complex SQL delete:</p>
+
+<pre class="xml">  &lt;query java-method-name="wipeClosedAccounts">
+  &lt;![CDATA[
+    delete from account a
+      where state in ('CLOSED', 'REJECTED')
+        and account_type = 
+          #{type,javaType=java.lang.Integer,jdbcType=NUMERIC}
+        and last_activity &lt;
+          #{cutDate,javaType=java.util.Date,jdbcType=TIMESTAMP}
+  ]]>
+  &lt;/query></pre>
+
+<p>This tag will produce the static DAO java method:</p>
+
+<pre class="java">  public static int wipeClosedAccounts(
+    java.lang.Integer type,
+    java.util.Date cutDate) { ... }</pre>
+
+<p>This method will execute the specified SQL delete statement applying both parameter values, and will return the number of deleted rows as an <code>int</code>. Using the same strategy a SQL insert can be used to insert one or multiple rows using any valid combination of parameters, embedded SQL select statement, etc.</p>
+
+<h2>Dynamic SQL</h2>
+
+<p>So far, we have seen the <code>&lt;query&gt;</code> tag to apply parameter values to SQL statements and execute them. However, we haven&#39;t seen the SQL statement changing its structure.</p>
+
+<p>When using MyBatis, HotRod provides dynamic SQL capabilities.</p>
+
+<p>The following example shows how a SQL update conditionally adds conditions to the SQL statement:</p>
+
+<pre class="xml">  &lt;query java-method-name="applyFreeShipping">
+  &lt;![CDATA[
+    update outstanding_order set free_shipping = 1
+      &lt;where>
+        &lt;if test="#{region,javaType=java.lang.Long,jdbcType=NUMERIC} != null">
+          region = #{region}
+        &lt;/if>
+        &lt;if test="#{clientType,javaType=java.lang.Long,jdbcType=NUMERIC} != null">
+          AND type = #{clientType}
+        &lt;/if>
+        &lt;if test="#{productType,javaType=java.lang.String,jdbcType=VARCHAR} != null">
+          AND productType = #{productType}
+        &lt;/if>
+      &lt;/where>
+  ]]>
+  &lt;/query></pre>
+
+<p>The example above applies free shipping to order, depending on any combination of <code>region</code>, <code>clientType</code>, and/or <code>productType</code>. Depending on the non-null values provided at runtime, the SQL update statement will add (or not) each one of the sections enclosed in an <code>&lt;if&gt;</code> tag.</p>
+
+<p>The <code>&lt;query&gt;</code> tag (as well as the <code>&lt;select&gt;</code> tag) support dynamic SQL. For more details on how to use it, see the Configuration Reference section for Dynamic SQL.</p>
+
+<p>&nbsp;</p>
 
 
       <!-- =========== -->

@@ -110,12 +110,12 @@
       <li class="menu2"><a href="11.06-sequences.html">Sequences</a></li>
       <li class="menu2"><a href="11.07-sql-queries.html">SQL Queries</a></li>
       <li class="menu2"><a href="11.08-views.html">Views</a></li>
-      <li class="menu2"><a href="11.09-sql-selects.htmls">SQL Selects</a></li>
+      <li class="menu2"><a href="11.09-sql-selects.html">SQL Selects</a></li>
       <li class="menu2"><a href="11.10-dynamic-sql.html">Dynamic SQL</a></li>
       <li class="menu2"><a href="11.11-custom-daos.html">Custom DAOs </a></li>
       <li class="menu2"><a href="11.12-fragments.html">Fragments</a></li>
       <li class="menu2"><a href="11.13-facets.html">Facets</a></li>
-      <li class="menu2"><a href="11.14-existing-mybatis-mappers">Existing MyBatis
+      <li class="menu2"><a href="11.14-existing-mybatis-mappers.html">Existing MyBatis
           Mappers</a></li>
       <li><a href="12-faq.html">FAQ</a></li>
     </ul>
@@ -125,6 +125,113 @@
       <!-- ============= -->
       <!-- Article Begin -->
       <!-- ============= -->
+
+<h1>Column Configuration Reference</h1>
+
+<p>Columns are a central concept used in the DAO generation. Essentially all data sets retrieved from the database have a tabular form. When the data sets are retrieved each row is gathered as a single DAO (that is the DAO acting as a VO) and each column value for the row is placed in a DAO property.</p>
+
+<p>In the simplest form&mdash;when directly dumping the content of a table&mdash;each column corresponds to a column on the related table. For example, when using a SQL query such as:</p>
+
+<pre class="sql">  select * from vehicle</pre>
+
+<p>This SQL query will produce a tabular data with the exact columns the originating table VEHICLE has.</p>
+
+<p>However, when producing more elaborated SQL queries the resulting tabular data can have little resemblance to the originating database table. The following SQL query&mdash;based on the same table&mdash;returns a totally dissimilar tabular structure:</p>
+
+<pre class="sql">  select avg(mileage/age) as mpy, age 
+    from vehicle grouped by age</pre>
+
+<p>In this case the resulting tabular structure has two columns and bares little resemblance to the <code>VEHICLE</code> table.</p>
+
+<p>Columns are used by HotRod in the following cases:</p>
+
+<ul>
+  <li>For the basic CRUD operations of a database table. In this case each column has a one-to-one relationship with the related table. Each column produces a DAO property.</li>
+  <li>For read operations on a database view. In this case each column has a one-to-one relationship with the view column.</li>
+  <li>When running arbitrary SQL selects. In this case each column corresponds to a custom column from the resulting tabular data produced by the SQL select.</li>
+</ul>
+
+<p>Now, why are we delving into all these details? Well, it happens that while most columns are very straightforward to interpret and use, other ones can be quite tricky to deal with.</p>
+
+<p>Usually HotRod produces quite appropriate Java names and Java types for each column. However, in some cases the default names and/or types may not be the optimal ones according to the developer&#39;s expectations or needs. For example, the developer may consider some columns may be better interpreted by a different Java type (as a <code>java.lang.Double</code>, rather than as a <code>java.math.BigDecimal</code>) based on extra business knowledge that is entirely out of scope for HotRod.</p>
+
+<p>In other words, the default attributes HotRod provides in some cases may not be the exact ones the developer wants. To overcome this obstacle the configuration file allows the developer to override default values using the <code>&lt;column&gt;</code> tag.</p>
+
+<p>To find out how the <code>&lt;column&gt;</code> tag affects the <code>&lt;table&gt;</code> tag see the Configuration Reference section for the Tables.</p>
+
+<p>To find out how the <code>&lt;column&gt;</code> tag affects the <code>&lt;view&gt;</code> tag see the Configuration Reference section for the Views.</p>
+
+<p>To find out how the <code>&lt;column&gt;</code> tag affects the <code>&lt;select&gt;</code> tag see the Configuration Reference section for the Selects.</p>
+
+<h2>The &lt;column&gt; tag</h2>
+
+<p>In most cases the metadata retrieved from the database is suitable enough to perform the whole code generation. In these cases there&#39;s nothing the developer will be interested on tweaking for the resulting tabular data.</p>
+
+<p>There are, however, cases where the developer could change some settings. Typical cases are:</p>
+
+<ul>
+  <li>the column name of an old or legacy column is cryptic, so the developer wants to use a nicer/clearer name for the DAO property. Or maybe there&#39;s a misspelling; yes, it happens.</li>
+  <li>the default DAO property type for a column is not the one the developer prefers, and he/she wants to specify a different one.</li>
+  <li>the column has an obscure database type and HotRod does not offer any default Java property type for it. A <code>&lt;column&gt;</code> tag is necessary if the column needs to be used.</li>
+</ul>
+
+<p>The <code>&lt;column&gt;</code> tag attributes are:</p>
+
+<table class="data-table">
+  <tbody>
+    <tr>
+      <th><strong>Attribute</strong></th>
+      <th><strong>Description</strong></th>
+      <th><strong>Required</strong></th>
+    </tr>
+    <tr>
+      <td>name</td>
+      <td>The name of the table column.</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>java-name</td>
+      <td>The Java name for the DAO property corresponding to this column. If not specified, the code generator produces a Java name based on the table column name.</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>java-type</td>
+      <td>The Java type for the DAO property corresponding to this column. If not specified, the code generator produces a Java type according to the specifics of the database data type. See the Supported Databases &amp; Column Types section regarding your specific database for details on how the Java types are produced.</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>jdbc-type</td>
+      <td>Overrides the JDBC type provided by the database metadata. This is an advanced setting that you should provide only if you want to try how well different Java and/or JDBC types are handled by the JDBC driver when reading or writing data from and to the database. You probably would like to set this value only if you are having trouble with the JDBC driver, or when dealing with obscure database data types. Otherwise, stay away from this setting.</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>is-lob</td>
+      <td>Force the LOB flag for this column. Only use this value when dealing with obscure database data types HotRod fails to decide if they are or not LOB types. Valid values are <code>true</code> or <code>false</code>. Defaults to <code>false</code>.</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>initial-value</td>
+      <td>The initial value used on the version control column when inserting a new row. Must be an integer number, positive or negative. Defaults to zero.</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>max-value</td>
+      <td>The maximum value a version control column can reach when updating a row, before cycling down to the minimum value. Must be an integer number, positive or negative.</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>min-value</td>
+      <td>The minimum value a version control column is set to, after reaching its maximum value. Must be an integer number, positive or negative.</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The most common attributes that are tweaked are <code>java-name</code> (for oddly named columns) and <code>java-type</code> (for not clear cut column types).</p>
+
+<p>The rest of the attributes are well worked out most of the time by the code generator, so there rarely any need to openly override their values.</p>
+
+<p>&nbsp;</p>
 
 
       <!-- =========== -->
