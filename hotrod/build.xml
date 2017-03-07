@@ -138,15 +138,21 @@
   <target name="clean-build" depends="clean, build" />
 
   <target name="release" depends="clean, build">
+    <!--
     <zip destfile="${dist.dir}/quick-start-example.zip">
       <fileset dir="docs/quick-start-example" excludes="build/**/*" />
     </zip>
+    -->
     <zip destfile="${release.dir}/${projectName}-${version}.zip">
       <zipfileset dir="${dist.dir}" includes="*.jar" prefix="lib" />
+      <zipfileset dir="docs/examples/mybatis" includes="**/*" prefix="mybatis-examples" />
+      <fileset file="docs/README.txt" />
+    </zip>
+    <!--
       <fileset file="${dist.dir}/quick-start-example.zip" />
       <zipfileset dir="docs/release-docs" prefix="" />
       <zipfileset dir="${dist.dir}" includes="example.zip" prefix="docs" />
-    </zip>
+    -->
   </target>
 
 </project>
