@@ -25,7 +25,7 @@
       <td><img src="images/hotrod-logo-70.png"
         style="display: inline;" /></td>
       <td>
-        <p style="font-size: 30px; margin: 0; padding-left: 15px;">Automated
+        <p style="font-size: 30px; margin: 0; padding-left: 15px;">Advanced
           Database Persistence for Java</p>
         <p style="font-size: 18px; margin: 0; padding-left: 15px;">Examples
           &amp; Reference Manual</p>
@@ -125,6 +125,141 @@
       <!-- ============= -->
       <!-- Article Begin -->
       <!-- ============= -->
+
+<h1>Support for SAP Adaptive Server (ex-Sybase) database</h1>
+
+<p>The HotRod SAP ASE adapter automatically maps known database column types to DAO Java types. In most of the cases this default Java type is well suited to handle the database values. However, when needed the default Java type of a property can be overridden by a custom type if it&#39;s provided by the developer.</p>
+
+<h2>Default Java Types</h2>
+
+<p>If a custom Java type is not specified HotRod will use the following rules to decide which Java type to use for each SAP ASE column. In yellow is the DAO property type. In parenthesis the actual object type returned by the SAP ASE JDBC driver, that on occasions may be different.</p>
+
+<p>Please note that the Java types for the SAP ASE columns may vary depending on the specific version and variant of the RDBMS, the operating system where the database engine is running, and the JDBC driver version.</p>
+
+<table class="column-type-table">
+  <tbody>
+    <tr>
+      <th><strong>SAP ASE Column Type</strong></th>
+      <th><strong>Default Java Type</strong></th>
+    </tr>
+    <tr>
+      <td>BIT</td>
+      <td><kbd>java.lang.Byte</kbd></td>
+    </tr>
+    <tr>
+      <td>TINYINT</td>
+      <td><kbd>java.lang.Byte</kbd></td>
+    </tr>
+    <tr>
+      <td>UNSIGNED TINYINT</td>
+      <td><kbd>java.lang.Byte</kbd> *</td>
+    </tr>
+    <tr>
+      <td>SMALLINT</td>
+      <td><kbd>java.lang.Short</kbd></td>
+    </tr>
+    <tr>
+      <td>UNSIGNED SMALLINT</td>
+      <td><kbd>java.lang.Integer</kbd></td>
+    </tr>
+    <tr>
+      <td>INT,<br />
+      INTEGER</td>
+      <td><kbd>java.lang.Integer</kbd></td>
+    </tr>
+    <tr>
+      <td>UNSIGNED INT,<br />
+      UNSIGNED INTEGER</td>
+      <td><kbd>java.lang.Long</kbd></td>
+    </tr>
+    <tr>
+      <td>BIGINT</td>
+      <td><kbd>java.lang.Long</kbd></td>
+    </tr>
+    <tr>
+      <td>UNSIGNED BIGINT</td>
+      <td><kbd>java.math.BigInteger</kbd></td>
+    </tr>
+    <tr>
+      <td>DECIMAL(p,s),<br />
+      NUMERIC(p,s)</td>
+      <td>If neither p or s are specified, i.e. DECIMAL(18,0):
+      <ul>
+        <li><kbd>java.lang.Long</kbd></li>
+      </ul>
+      If s is specified and different from zero the Java type is:
+
+      <ul>
+        <li><kbd>java.math.BigDecimal</kbd></li>
+      </ul>
+      if s is not specified or it&#39;s zero:
+
+      <ul>
+        <li>if p &lt;= 2: <kbd>java.lang.Byte</kbd></li>
+        <li>if 2 &lt; p &lt;= 4: <kbd>java.lang.Short</kbd></li>
+        <li>if 4 &lt; p &lt;= 9: <kbd>java.lang.Integer</kbd></li>
+        <li>if 8 &lt; p &lt;= 18: <kbd>java.lang.Long</kbd></li>
+        <li>if p &gt; 18: <kbd>java.math.BigInteger</kbd></li>
+      </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>MONEY,<br />
+      SMALLMONEY</td>
+      <td><kbd>java.math.BigDecimal</kbd></td>
+    </tr>
+    <tr>
+      <td>FLOAT(n),<br />
+      REAL,<br />
+      DOUBLE PRECISION</td>
+      <td><kbd>java.lang.Double</kbd> **</td>
+    </tr>
+    <tr>
+      <td>CHAR(n),<br />
+      VARCHAR(n),<br />
+      UNICHAR(n),<br />
+      UNIVARCHAR(n),<br />
+      NCHAR(n),<br />
+      NVARCHAR(n),<br />
+      TEXT,<br />
+      UNITEXT,<br />
+      SYSNAME,<br />
+      LONGSYSNAME</td>
+      <td><kbd>java.lang.String</kbd></td>
+    </tr>
+    <tr>
+      <td>DATE</td>
+      <td><kbd>java.sql.Date</kbd></td>
+    </tr>
+    <tr>
+      <td>DATETIME,<br />
+      SMALLDATETIME,<br />
+      BIGDATETIME</td>
+      <td><kbd>java.sql.Timestamp</kbd></td>
+    </tr>
+    <tr>
+      <td>TIME,<br />
+      BIGTIME</td>
+      <td><kbd>java.sql.Timestamp</kbd></td>
+    </tr>
+    <tr>
+      <td>BINARY(n),<br />
+      VARBINARY(n|MAX),<br />
+      IMAGE</td>
+      <td><kbd>byte[]</kbd></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+* The SAP ASE JDBC driver does not provide information to differentiate <code>TINYINT</code> from <code>UNSIGNED TINYINT</code>. If you happen to have an <code>UNSIGNED TINYINT</code> column you may want to use the custom type <code>java.lang.Short</code> for it, instead of the default type <code>java.lang.Byte</code>. Or, try to avoid using the <code>UNSIGNED TINYINT</code> type altogether, if possible.<br />
+** The SAP ASE JDBC driver does not provide information to differentiate float of different precisions. <code>FLOAT</code> with precision 15 or less could be treated as a Java <code>java.lang.Float</code>. However, since there&rsquo;s no way to find out the precision of the FLOAT the default type is, regardless of their precision, <code>java.lang.Double</code>.</p>
+
+<h2>Custom Java Types</h2>
+
+<p>To override the default Java type see the reference section for the tables, views, and selects. The example Custom DAO Property Java Types shows a some cases where a custom type overrides the default type. To do it add a <code>&lt;column&gt;</code> tag in a <code>&lt;table&gt;</code>, <code>&lt;view&gt;</code>, or <code>&lt;select&gt;</code> definition.</p>
+
+<p>&nbsp;</p>
 
 
       <!-- =========== -->

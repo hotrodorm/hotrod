@@ -25,7 +25,7 @@
       <td><img src="images/hotrod-logo-70.png"
         style="display: inline;" /></td>
       <td>
-        <p style="font-size: 30px; margin: 0; padding-left: 15px;">Automated
+        <p style="font-size: 30px; margin: 0; padding-left: 15px;">Advanced
           Database Persistence for Java</p>
         <p style="font-size: 18px; margin: 0; padding-left: 15px;">Examples
           &amp; Reference Manual</p>
@@ -125,6 +125,141 @@
       <!-- ============= -->
       <!-- Article Begin -->
       <!-- ============= -->
+
+<h1>MyBatis Generator - How to Run the Examples</h1>
+
+<p>All examples are ready to be run using Apache Ant. They can be run from Eclipse or, if you prefer, from the command line.</p>
+
+<p>To run an example you must start the database and prepare the tables and data. Then you can use HotRod to generate all DAO classes. Finally you can run your application that uses the DAO classes.</p>
+
+<p>First, let&#39;s load the Ant <code>build.xml</code> file in Eclipse:</p>
+
+<ol>
+  <li>In Eclipse open the Ant view (<code>Window</code> -&gt; <code>Show View</code> -&gt; <code>Ant</code>). This opens the Ant window that is (for now) empty.</li>
+  <li>Find the <code>build.xml</code> file in the example folder and drag an drop it into the Ant window you just opened.</li>
+  <li>Expand the <code>build.xml</code> entry in the Ant window (click on the left arrow icon). Now you can see all the available tasks Ant can do for you (&ldquo;targets&rdquo; in Ant lingo). Don&#39;t click on them yet! Double-clicking will execute them.</li>
+</ol>
+
+<p>All examples run against a local H2 database. H2 is a full featured open source RDBMS. It can be easily started and stopped and makes the examples run more easily.</p>
+
+<h2>Start the H2 Database</h2>
+
+<p>To start the H2 database find the task <code>start-h2-database</code> and double-click on it. The console window will open and show something like:</p>
+
+<pre class="nohighlight">Buildfile: examples/mybatis/helloworld/build.xml
+start-h2-database:
+-issue-h2-start:
+     [echo] [ H2 local database has been started ]
+-h2-already-started:
+BUILD SUCCESSFUL
+Total time: 365 milliseconds</pre>
+
+<p>This means the database is now up and running! Yes running... but also empty. If you&#39;re not sure H2 is started, it&#39;s safe to run this task multiple times; if H2 is already up it won&#39;t start it again.</p>
+
+<h2>Prepare the Database Tables and Sample Data</h2>
+
+<p>To initialize the database tables and sample data find the task <code>initialize-database</code> and double click on it. The console window will open and show something like:</p>
+
+<pre class="nohighlight">Buildfile: examples/mybatis/helloworld/build.xml
+initialize-database:
+      [sql] Executing resource: examples/mybatis/helloworld/prepare-database.sql
+      [sql] 0 rows affected
+      [sql] 0 rows affected
+      [sql] 1 rows affected
+      [sql] 1 rows affected
+      [sql] 1 rows affected
+      [sql] 5 of 5 SQL statements executed successfully
+     [echo] [ Database tables and data initialized ]
+BUILD SUCCESSFUL
+Total time: 895 milliseconds</pre>
+
+<p>All tables and data are now created.</p>
+
+<h2>HotRod Generation</h2>
+
+<p>To run HotRod and generate all DAO classes find the task <code>hotrod</code> and double click on it. The console window will open and show something like:</p>
+
+<pre class="nohighlight">Buildfile: examples/mybatis/helloworld/build.xml
+hotrod:
+   [delete] Deleting directory examples/mybatis/helloworld/auto-generated
+    [mkdir] Created dir: examples/mybatis/helloworld/auto-generated/java
+    [mkdir] Created dir: examples/mybatis/helloworld/auto-generated/mappers
+   [hotrod] HotRod version 3.0 (build 20170124-131633)
+   [hotrod]  
+   [hotrod] Database URL: jdbc:h2:tcp://localhost:12345/db001;IFEXISTS=TRUE
+   [hotrod] Database Name: H2 - version 1.3 (1.3.176 (2014-04-05))
+   [hotrod] JDBC Driver: H2 JDBC Driver - version 1.3 (1.3.176 (2014-04-05))
+   [hotrod]  
+   [hotrod] HotRod Database Adapter: H2 Adapter
+   [hotrod] Database Catalog: DB001
+   [hotrod] Database Schema: PUBLIC
+   [hotrod]  
+   [hotrod] Generating all facets.
+   [hotrod]  
+   [hotrod] Table VEHICLE included.
+   [hotrod]  
+   [hotrod] Generating MyBatis DAOs for 1 table, 0 views, 0 DAOs (0 sequences, 0 updates), and 0 select queries...
+   [hotrod]  
+   [hotrod] MyBatis generation complete.
+BUILD SUCCESSFUL
+Total time: 882 milliseconds</pre>
+
+<p>HotRod connected to the database and generated all DAO classes for the tables specified in the configuration file.</p>
+
+<h2>Run an Example Application</h2>
+
+<p>Now all the DAOs (and MyBatis mappers) are ready to run your example application. Find the task for the example with the name <code>run-example-01</code> (change the number accordingly) and double click on it.</p>
+
+<p>The console window will show the output of the example:</p>
+
+<pre class="nohighlight">Buildfile: examples/mybatis/examples/build.xml
+run-example-01:
+   [delete] Deleting directory examples/mybatis/examples/build
+    [mkdir] Created dir: examples/mybatis/examples/build
+    [javac] Compiling 4 source files to examples/mybatis/examples/build
+     [echo]  
+     [java] List of all vehicles, before changes:
+     [java] ID, BRAND, MODEL, USED, CURRENT_MILEAGE, PURCHASED_ON
+     [java] [1, Kia, Soul, true, 28500, 2014-03-14]
+     [java] [2, Toyota, Tercel, false, 26, 2017-01-28]
+     [java] [3, DeLorean, DMC-12, true, 241689, 1982-11-17]
+     [java]  
+     [java] New vehicle Skoda added. New ID=4. Rows inserted=1
+     [java]  
+     [java] DeLorean found.
+     [java]  
+     [java] DeLorean updated. Rows updated=1
+     [java]  
+     [java] Toyota deleted.
+     [java]  
+     [java] List of all vehicles, after all changes:
+     [java] ID, BRAND, MODEL, USED, CURRENT_MILEAGE, PURCHASED_ON
+     [java] [1, Kia, Soul, true, 28500, 2014-03-14]
+     [java] [3, DeLorean, DMC-12, true, 270500, 1982-11-17]
+     [java] [4, Skoda, Octavia, false, 7, 2017-01-24]
+BUILD SUCCESSFUL
+Total time: 1 second</pre>
+
+<p>That&#39;s it! The example application ran as expected.</p>
+
+<h2>Stop the H2 database</h2>
+
+<p>You can run the example multiple times if needed. Once you&#39;re done with it, don&#39;t forget to shutdown the H2 database. Find the task <code>stop-h2-database</code> and double-click on it. The console window will open and show something like:</p>
+
+<pre class="nohighlight">Buildfile: examples/mybatis/examples/build.xml
+stop-h2-database:
+-issue-h2-stop:
+     [java] Shutting down TCP Server at tcp://localhost:12345
+     [echo] [ H2 local database has been stopped ]
+-h2-already-stopped:
+BUILD SUCCESSFUL
+Total time: 2 seconds</pre>
+
+<p>This means the database is now shut down. If you&#39;re not sure you stopped H2 it&#39;s safe to run this task multiple times; if H2 is already down it won&#39;t stop it again.</p>
+
+<p>Also, as a bonus the database data with all changes produced by the example is actually kept on disk. If you start H2 again you will see the data you modified in the previous session, and will remain there until you re-initialize the database again.</p>
+
+<p>&nbsp;</p>
 
 
       <!-- =========== -->
