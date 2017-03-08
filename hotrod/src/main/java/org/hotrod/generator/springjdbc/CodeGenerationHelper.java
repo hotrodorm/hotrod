@@ -56,7 +56,7 @@ public class CodeGenerationHelper {
     String q = (useQuotationMarks ? "\"" : "");
     for (ColumnMetadata cm : (excludePK ? ds.getNonPkColumns() : ds.getColumns())) {
       if (!cm.getType().isLOB() || includeLOB) {
-        String sqlColumn = q + cm.getTableName() + "." + cm.getColumnName() + q;
+        String sqlColumn = q + cm.getColumnName() + q;
         lw.add(sqlColumn);
       }
     }
