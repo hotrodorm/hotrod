@@ -50,13 +50,14 @@ public class CodeGenerationHelper {
   }
 
   public static String writeSQLColumns(DataSetMetadata ds, boolean excludePK, boolean useQuotationMarks,
-      boolean includeLOB) throws IOException {
+      boolean includeLOB, boolean includeTablename) throws IOException {
+    String tablenamePrefix = (includeTablename ? ds.getIdentifier().getSQLIdentifier() + "." : "");
     StringBuilder sb = new StringBuilder();
     ListWriter lw = new ListWriter(",");
     String q = (useQuotationMarks ? "\"" : "");
     for (ColumnMetadata cm : (excludePK ? ds.getNonPkColumns() : ds.getColumns())) {
       if (!cm.getType().isLOB() || includeLOB) {
-        String sqlColumn = q + cm.getColumnName() + q;
+        String sqlColumn = q + tablenamePrefix + cm.getColumnName() + q;
         lw.add(sqlColumn);
       }
     }

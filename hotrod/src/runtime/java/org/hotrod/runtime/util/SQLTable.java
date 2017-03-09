@@ -21,4 +21,9 @@ public class SQLTable {
     return alias;
   }
 
+  //Required for backward compatibility
+  @Override
+  public String toString() {
+    return name;
+  }
 }

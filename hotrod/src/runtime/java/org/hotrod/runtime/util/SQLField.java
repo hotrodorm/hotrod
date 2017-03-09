@@ -26,4 +26,9 @@ public class SQLField {
     return fieldName;
   }
 
+  //Required for backward compatibility
+  @Override
+  public String toString() {
+    return this.render();
+  }
 }
