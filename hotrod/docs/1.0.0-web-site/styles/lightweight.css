@@ -133,7 +133,6 @@ Data Table Formatting
   width: 6%;
 }
 
-
 /*
 Column Type Table Formatting
 */
@@ -180,14 +179,14 @@ Column Type Table Formatting
 }
 
 kbd {
-  font-size: 110%; border : 1px solid #c0c0c0;
+  font-size: 110%;
+  border: 1px solid #c0c0c0;
   padding: 3px 5px 3px 5px;
   background-color: #ffffc7;
   border: 1px solid #c0c0c0;
 }
 
 /* FAQ */
-
 .question {
   font-weight: bold;
   margin-top: 15px;
@@ -196,4 +195,29 @@ kbd {
 
 .answer {
   margin-left: 40px;
+}
+
+.hero-title {
+  width: 30%;
+  vertical-align: top;
+  text-align: right;
+  font-size: 140%;
+  color: #808080;
+  margin-top: 0;
+  padding-right: 30px;
+  font-style: italic;
+  font-weight: bold;
+  font-family: " Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-style: italic;
+  font-size: 140%;
+}
+
+.hero-desc {
+  width: 70%;
+  vertical-align: top;
+  margin-top: 0;
+}
+
+.hero-desc p {
+  margin-top: 0;
 }

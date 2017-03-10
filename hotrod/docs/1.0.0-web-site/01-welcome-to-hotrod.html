@@ -10,11 +10,11 @@
 <link rel="stylesheet" href="highlight/styles/vs.css">
 <script src="highlight/highlight.pack.js"></script>
 <script>
-  $(document).ready(function() {
-    $('pre').each(function(i, block) {
-      hljs.highlightBlock(block);
-    });
+ $(document).ready(function() {
+  $('pre').each(function(i, block) {
+   hljs.highlightBlock(block);
   });
+ });
 </script>
 
 </head>
@@ -54,8 +54,9 @@
           Generator</a></li>
       <li class="menu2"><a href="07.02-mybatis-cheat-sheet.html">MyBatis
           Cheat Sheet</a></li>
-      <li class="menu2"><a href="07.03-how-to-run-the-examples.html">How
-          to Run the Examples</a></li>
+      <li class="menu2"><a
+        href="07.03-how-to-run-the-examples.html">How to Run the
+          Examples</a></li>
       <li class="menu2"><a href="07.04-example01.html">Example
           1 - Basic CRUD Operations on Tables</a></li>
       <li class="menu2"><a href="07.04-example02.html">Example
@@ -134,8 +135,9 @@
           DAOs </a></li>
       <li class="menu2"><a href="11.12-fragments.html">Fragments</a></li>
       <li class="menu2"><a href="11.13-facets.html">Facets</a></li>
-      <li class="menu2"><a href="11.14-existing-mybatis-mappers.html">Existing
-          MyBatis Mappers</a></li>
+      <li class="menu2"><a
+        href="11.14-existing-mybatis-mappers.html">Existing MyBatis
+          Mappers</a></li>
       <li><a href="12-faq.html">FAQ</a></li>
     </ul>
 
@@ -147,7 +149,8 @@
 
       <h1>Welcome to HotRod!</h1>
 
-      <p>HotRod is a lightweight Java code generator for MyBatis.</p>
+      <p>HotRod is a lightweight ORM for MyBatis. It generates and
+        updates Java code and XML mappers automatically.</p>
 
       <p>HotRod is also developing support for Spring JDCB and this
         generator is in experimental mode as of version 1.0.0.</p>
@@ -159,49 +162,121 @@
         classes that expose simple Java methods to perform all
         interaction with the database.</p>
 
-      <p>All SQL code is supported&mdash;even native SQL and dynamic
-        SQL. The developer doesn&#39;t see any JDBC code anymore. Nada,
-        nil, zip!</p>
+      <table>
 
-      <p>All basic operations are made automatically available,
-        including CRUD, FK navigation, and byExample queries. When
-        complex, native, and/or dynamic SQL is needed the developer
-        provides the SQL statements and HotRod takes it from there,
-        automating all the rest.</p>
+        <tr>
+          <td class="hero-title">Simple Operations Available Out of
+            the Box</td>
+          <td class="hero-desc">
+            <p>All basic operations are made automatically
+              available, including CRUD (simple insert, select, update,
+              delete), foreign key navigation, selection using unique
+              indexes, and select, update, delete by example queries.</p>
+          </td>
+        </tr>
 
-      <p>HotRod is a lightweight O/R mapper. Its goal is to
-        dramatically cut down the development effort of the persistence
-        layer without entering the realm of heavyweight frameworks,
-        tools, or libraries. There is no inheritance, aggregation or
-        composition, no heavy objects, no entity EBJs, no obscure
-        caching, no byzantine layer of abstraction. All generated
-        DAOs/VOs stay close to the tables, views, and SQL statements for
-        easy understanding and debugging. Additionally it generates a
-        high performance persistence layer since it produces minimal SQL
-        queries, even when complex logic is needed.</p>
+        <tr>
+          <td class="hero-title">Full Standard SQL</td>
+          <td class="hero-desc">
+            <p>Yes, full-fledged standard (parameterized) SQL
+              statements are totally automated. The developer provides
+              the SQL, and HotRod takes care of the rest generating
+              fully-named, fully-typed Java classes.</p>
+          </td>
+        </tr>
 
-      <p>The MyBatis Generator produces all the DAOs, the mappers,
-        and the main MyBatis configuration file. The Spring JDBC
-        Generator (experimental) produces all the Java interfaces and
-        concrete classes needed to communicate with the database.</p>
+        <tr>
+          <td class="hero-title">Native SQL</td>
+          <td class="hero-desc">
+            <p>Yes, all tweaks of the native non-standard
+              (parameterized) SQL are supported: think using
+              non-standard functions, limit returned rows, hinting of
+              execution plans, in-memory storage, access uncommitted
+              data, etc. The developer provides the native SQL, and
+              HotRod takes care of the rest generating fully-named,
+              fully-typed Java classes.</p>
+          </td>
+        </tr>
 
-      <p>Additionally, all generated DAOs support adding custom
-        logic to them. Upon database changes they can be rapidly
-        regenerated without losing the custom logic.</p>
+        <tr>
+          <td class="hero-title">Dynamic SQL</td>
+          <td class="hero-desc">
+            <p>Add the capabilities of MyBatis Dynamic SQL to the
+              Standard and Native SQL, and it's a killing combination.
+              Dynamic SQL statements vary at runtime depending on the
+              received parameter values.</p>
+          </td>
+        </tr>
 
-      <p>HotRod includes simplified MyBatis transactions and
-        standard MyBatis transactions.</p>
+        <tr>
+          <td class="hero-title">No JDBC</td>
+          <td class="hero-desc">
+            <p>The developer doesn&#39;t see any JDBC code anymore.
+              Nada, nil, zip! Tables and views are abstracted as Java
+              classes. Columns become fully-typed Java properties. SQL
+              queries become parameterized Java methods. SQL selects
+              become Java classes.
+          </td>
+        </tr>
 
-      <p>HotRod is very flexible while generating the DAOs. Even
-        though it automates the names for the tables, views, sequences,
-        and columns, all of them can be overridden at will by the
-        developer using the configuration file. Likewise, HotRod
-        provides default java types for all database columns that can
-        also be overridden as needed.</p>
+        <tr>
+          <td class="hero-title">Great Development Speed</td>
+          <td class="hero-desc">
+            <p>HotRod focuses on speed Development Speed. Simple
+              database operations are automated out of the box. Complex
+              SQL is greatly automated ensuring fully typed, fully named
+              Java columns for all SQL selects.</p>
+          </td>
+        </tr>
 
-      <p>HotRod supports Oracle database, IBM DB2, SAP ASE
-        (ex-Sybase), Microsoft SQL Server, PostgreSQL, MySQL, MariaDB,
-        HyperSQL (HSQLDB), and H2 databases.</p>
+        <tr>
+          <td class="hero-title">Lightweight ORM</td>
+          <td class="hero-desc">
+            <p>Implements a straightforward lean O/R mapping that
+              promotes high database performance. Does not implement
+              table inheritance, aggregation or composition. It doesn't
+              use heavy objects, no entity EBJs, no obscure caching, no
+              Byzantine layer of abstraction.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="hero-title">Custom Logic</td>
+          <td class="hero-desc">
+            <p>All generated DAOs support adding custom logic to
+              them. Upon database changes they can be rapidly
+              regenerated without losing the custom logic.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="hero-title">Full Transaction Support</td>
+          <td class="hero-desc">
+            <p>Includes simplified MyBatis transactions and standard
+              MyBatis transactions, and JTA (if supported by the JDBC
+              driver and RDBMS).</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="hero-title">Flexible</td>
+          <td class="hero-desc">
+            <p>Default DAO names, properties, Java method names,
+              Java property types, etc. can be overridden by the
+              developer as needed.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="hero-title">Major Database Players</td>
+          <td class="hero-desc">
+            <p>HotRod supports Oracle database, IBM DB2, SAP ASE
+              (ex-Sybase), Microsoft SQL Server, PostgreSQL, MySQL,
+              MariaDB, HyperSQL (HSQLDB), and H2 databases.</p>
+          </td>
+        </tr>
+
+      </table>
 
       <!-- =========== -->
       <!-- Article End -->
