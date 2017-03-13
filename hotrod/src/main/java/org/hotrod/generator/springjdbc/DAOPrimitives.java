@@ -1149,8 +1149,10 @@ public class DAOPrimitives {
     }
     println("import org.hotrod.runtime.spring.ApplicationContextProvider;");
     if (this.isTable()) {
+      println("import org.hotrod.runtime.util.SQLField;");
       println("import org.hotrod.runtime.util.SQLJoin;");
       println("import org.hotrod.runtime.util.SQLLogicalExpression;");
+      println("import org.hotrod.runtime.util.SQLTable;");
       println("import org.springframework.dao.IncorrectResultSizeDataAccessException;");
     }
     println("import org.springframework.jdbc.core.JdbcTemplate;");
@@ -1258,10 +1260,12 @@ public class DAOPrimitives {
 
   private void writeJavaToDatabaseFieldMapper() throws IOException {
     println("  public static final String DBTABLE$NAME = \"" + ds.getIdentifier().getSQLIdentifier() + "\";");
+    println(
+        "  public static final SQLTable DB$TABLE = new SQLTable(\"" + ds.getIdentifier().getSQLIdentifier() + "\");");
     println();
     for (ColumnMetadata cm : this.ds.getColumns()) {
-      println("  public static final String DBFIELD$" + cm.getColumnName() + " = \"" + cm.getTableName() + "."
-          + cm.getColumnName() + "\";");
+      println("  public static final SQLField DBFIELD$" + cm.getColumnName() + " = new SQLField(DB$TABLE,\""
+          + cm.getColumnName() + "\");");
     }
     println();
 
@@ -1270,7 +1274,8 @@ public class DAOPrimitives {
     println("  static {");
 
     for (ColumnMetadata cm : this.ds.getColumns()) {
-      println("    dbFieldSqlTypeMapper.put(DBFIELD$" + cm.getColumnName() + ", " + cm.getType().getJDBCType() + ");");
+      println("    dbFieldSqlTypeMapper.put(DBFIELD$" + cm.getColumnName() + ".toString(), "
+          + cm.getType().getJDBCType() + ");");
     }
     println("  }");
     println();

@@ -4,13 +4,19 @@ public class SQLTable {
   private String name;
   private String alias;
 
+  @Deprecated
   public SQLTable(String name, String alias) {
     this.name = name;
     this.alias = alias;
   }
 
   public SQLTable(String name) {
-    this(name, null);
+    this.name = name;
+  }
+
+  public SQLTable(SQLTable table, String alias) {
+    this.name = table.getName();
+    this.alias = alias;
   }
 
   public String getName() {
@@ -21,9 +27,13 @@ public class SQLTable {
     return alias;
   }
 
-  //Required for backward compatibility
+  public SQLTable usingAlias(String alias) {
+    return new SQLTable(this.name, alias);
+  }
+
+  // Required for backward compatibility
   @Override
   public String toString() {
-    return name;
+    return alias != null ? alias : name;
   }
 }
