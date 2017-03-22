@@ -91,6 +91,7 @@ public class DAOPrimitives {
       if (this.isTable()) {
         writeJavaToDatabaseFieldMapper();
       }
+      writeVOClass();
       writeProperties();
 
       if (this.isTable()) {
@@ -456,21 +457,22 @@ public class DAOPrimitives {
     println("  // to string");
     println();
     println("  public String toString() {");
-    println("    StringBuilder sb = new StringBuilder();");
-    println("    sb.append(\"[\");");
-    ListWriter lw = new ListWriter(" + \", \");\n");
-    for (ColumnMetadata cm : this.ds.getColumns()) {
-      if (cm.getType().isLOB()) {
-        lw.add("    sb.append(\"" + cm.getIdentifier().getJavaMemberIdentifier() + ": \" + (this."
-            + cm.getIdentifier().getJavaMemberIdentifier() + " != null ? \"<LOB set>\" : null)");
-      } else {
-        lw.add("    sb.append(\"" + cm.getIdentifier().getJavaMemberIdentifier() + ": \" + this."
-            + cm.getIdentifier().getJavaMemberIdentifier());
-      }
-    }
-    println("    " + lw.toString() + ");");
-    println("    sb.append(\"]\");");
-    println("    return sb.toString();");
+//    println("    StringBuilder sb = new StringBuilder();");
+//    println("    sb.append(\"[\");");
+//    ListWriter lw = new ListWriter(" + \", \");\n");
+//    for (ColumnMetadata cm : this.ds.getColumns()) {
+//      if (cm.getType().isLOB()) {
+//        lw.add("    sb.append(\"" + cm.getIdentifier().getJavaMemberIdentifier() + ": \" + (this."
+//            + cm.getIdentifier().getJavaMemberIdentifier() + " != null ? \"<LOB set>\" : null)");
+//      } else {
+//        lw.add("    sb.append(\"" + cm.getIdentifier().getJavaMemberIdentifier() + ": \" + this."
+//            + cm.getIdentifier().getJavaMemberIdentifier());
+//      }
+//    }
+//    println("    " + lw.toString() + ");");
+//    println("    sb.append(\"]\");");
+//    println("    return sb.toString();");
+    println("    return this.vo.toString();");
     println("  }");
 
     println();
@@ -566,6 +568,66 @@ public class DAOPrimitives {
     println();
   }
 
+  private void writeVOClass() throws IOException, UnresolvableDataTypeException {
+    println("  // =================");
+    println("  // VO");
+    println("  // =================");
+    println();
+    println("  public class " + this.getVOName() + " {");
+
+    //properties
+    println("  // DAO Properties (" + (this.isTable() ? "table" : (this.isView() ? "view" : "select")) + " columns)");
+    println();
+    for (ColumnMetadata cm : this.ds.getColumns()) {
+      println("    private " + cm.getType().getJavaClassName() + " " + cm.getIdentifier().getJavaMemberIdentifier()
+          + " = null;");
+    }
+    println();
+
+    // getters/setters
+    for (ColumnMetadata cm : this.ds.getColumns()) {
+      PropertyType type = cm.getType();
+      String m = cm.getIdentifier().getJavaMemberIdentifier();
+
+      println("    public " + type.getJavaClassName() + " " + cm.getIdentifier().getGetter() + "() {");
+      println("      return this." + m + ";");
+      println("    }");
+      println();
+
+      println("    public final void " + cm.getIdentifier().getSetter() + "(final " + type.getJavaClassName() + " " + m
+          + ") {");
+      println("      this." + m + " = " + m + ";");
+      println("    }");
+      println();
+
+    }
+    // toString
+    println("    // to string");
+    println();
+    println("    public String toString() {");
+    println("      StringBuilder sb = new StringBuilder();");
+    println("      sb.append(\"[\");");
+    ListWriter lw = new ListWriter(" + \", \");\n");
+    for (ColumnMetadata cm : this.ds.getColumns()) {
+      if (cm.getType().isLOB()) {
+        lw.add("      sb.append(\"" + cm.getIdentifier().getJavaMemberIdentifier() + ": \" + (this."
+            + cm.getIdentifier().getJavaMemberIdentifier() + " != null ? \"<LOB set>\" : null)");
+      } else {
+        lw.add("      sb.append(\"" + cm.getIdentifier().getJavaMemberIdentifier() + ": \" + this."
+            + cm.getIdentifier().getJavaMemberIdentifier());
+      }
+    }
+    println(lw.toString() + ");");
+    println("      sb.append(\"]\");");
+    println("      return sb.toString();");
+    println("    }");
+    println("  }");
+  }
+
+  private String getVOName() {
+    return "VO";
+  }
+
   private void writeGettersAndSetters() throws IOException, UnresolvableDataTypeException {
     println("  // =================");
     println("  // Getters & Setters");
@@ -577,13 +639,15 @@ public class DAOPrimitives {
       String m = cm.getIdentifier().getJavaMemberIdentifier();
 
       println("  public " + type.getJavaClassName() + " " + cm.getIdentifier().getGetter() + "() {");
-      println("    return this." + m + ";");
+      // println("    return this." + m + ";");
+      println("    return this.vo." + cm.getIdentifier().getGetter() + "();");
       println("  }");
       println();
 
       println("  public final void " + cm.getIdentifier().getSetter() + "(final " + type.getJavaClassName() + " " + m
           + ") {");
-      println("    this." + m + " = " + m + ";");
+      // println("    this." + m + " = " + m + ";");
+      println("    this.vo." + cm.getIdentifier().getGetter() + "();");
       println("  }");
       println();
 
@@ -1192,12 +1256,13 @@ public class DAOPrimitives {
   }
 
   private void writeProperties() throws IOException, UnresolvableDataTypeException {
-    println("  // DAO Properties (" + (this.isTable() ? "table" : (this.isView() ? "view" : "select")) + " columns)");
-    println();
-    for (ColumnMetadata cm : this.ds.getColumns()) {
-      println("  private " + cm.getType().getJavaClassName() + " " + cm.getIdentifier().getJavaMemberIdentifier()
-          + " = null;");
-    }
+    println("  private VO vo = new VO();");
+//    println("  // DAO Properties (" + (this.isTable() ? "table" : (this.isView() ? "view" : "select")) + " columns)");
+//    println();
+//    for (ColumnMetadata cm : this.ds.getColumns()) {
+//      println("  private " + cm.getType().getJavaClassName() + " " + cm.getIdentifier().getJavaMemberIdentifier()
+//          + " = null;");
+//    }
     println();
   }
 
