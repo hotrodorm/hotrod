@@ -389,14 +389,6 @@ public class DAOPrimitives {
 
   }
 
-  // {
-  // byte[] v = (byte[])rs.getObject("METADATA");
-  // row.setMetadata(rs.wasNull() ? null : v);
-  // }
-  // if (domain.getMetadata() == null) {
-  // pst.setNull(1, java.sql.Types.BLOB);
-  // }
-
   private void writeMapper() throws IOException {
     println("  // ====================");
     println("  // Spring JDBC - Mapper");
@@ -457,21 +449,6 @@ public class DAOPrimitives {
     println("  // to string");
     println();
     println("  public String toString() {");
-//    println("    StringBuilder sb = new StringBuilder();");
-//    println("    sb.append(\"[\");");
-//    ListWriter lw = new ListWriter(" + \", \");\n");
-//    for (ColumnMetadata cm : this.ds.getColumns()) {
-//      if (cm.getType().isLOB()) {
-//        lw.add("    sb.append(\"" + cm.getIdentifier().getJavaMemberIdentifier() + ": \" + (this."
-//            + cm.getIdentifier().getJavaMemberIdentifier() + " != null ? \"<LOB set>\" : null)");
-//      } else {
-//        lw.add("    sb.append(\"" + cm.getIdentifier().getJavaMemberIdentifier() + ": \" + this."
-//            + cm.getIdentifier().getJavaMemberIdentifier());
-//      }
-//    }
-//    println("    " + lw.toString() + ");");
-//    println("    sb.append(\"]\");");
-//    println("    return sb.toString();");
     println("    return this.vo.toString();");
     println("  }");
 
@@ -575,7 +552,7 @@ public class DAOPrimitives {
     println();
     println("  public class " + this.getVOName() + " {");
 
-    //properties
+    // properties
     println("  // DAO Properties (" + (this.isTable() ? "table" : (this.isView() ? "view" : "select")) + " columns)");
     println();
     for (ColumnMetadata cm : this.ds.getColumns()) {
@@ -624,8 +601,8 @@ public class DAOPrimitives {
     println("  }");
   }
 
-  private String getVOName() {
-    return "VO";
+  public String getVOName() {
+    return "PrimitiveVO";
   }
 
   private void writeGettersAndSetters() throws IOException, UnresolvableDataTypeException {
@@ -639,15 +616,15 @@ public class DAOPrimitives {
       String m = cm.getIdentifier().getJavaMemberIdentifier();
 
       println("  public " + type.getJavaClassName() + " " + cm.getIdentifier().getGetter() + "() {");
-      // println("    return this." + m + ";");
+      // println(" return this." + m + ";");
       println("    return this.vo." + cm.getIdentifier().getGetter() + "();");
       println("  }");
       println();
 
       println("  public final void " + cm.getIdentifier().getSetter() + "(final " + type.getJavaClassName() + " " + m
           + ") {");
-      // println("    this." + m + " = " + m + ";");
-      println("    this.vo." + cm.getIdentifier().getGetter() + "();");
+      // println(" this." + m + " = " + m + ";");
+      println("    this.vo." + cm.getIdentifier().getSetter() + "();");
       println("  }");
       println();
 
@@ -1133,21 +1110,6 @@ public class DAOPrimitives {
 
   }
 
-  // private void writeSelectBySQL() throws IOException,
-  // UnresolvableDataTypeException {
-  // println(" public List<" + this.dao.getClassName() + "> selectBySQL(String
-  // sql, "
-  // + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies)
-  // {");
-  // println(" String sqlo = sql + OrderByRenderer.render(orderBies);");
-  // println(" return jdbcTemplateObject.query(sqlo, new " +
-  // this.ds.getIdentifier().getJavaClassIdentifier()
-  // + "Mapper());");
-  // println(" }");
-  // println();
-  //
-  // }
-
   private void writeSelectBySQL() throws IOException, UnresolvableDataTypeException {
     println(
         "    public List<" + this.dao.getClassName() + "> selectBySQL(List<SQLJoin> joins, SQLLogicalExpression where, "
@@ -1256,13 +1218,7 @@ public class DAOPrimitives {
   }
 
   private void writeProperties() throws IOException, UnresolvableDataTypeException {
-    println("  private VO vo = new VO();");
-//    println("  // DAO Properties (" + (this.isTable() ? "table" : (this.isView() ? "view" : "select")) + " columns)");
-//    println();
-//    for (ColumnMetadata cm : this.ds.getColumns()) {
-//      println("  private " + cm.getType().getJavaClassName() + " " + cm.getIdentifier().getJavaMemberIdentifier()
-//          + " = null;");
-//    }
+    println("  private " + this.getVOName() + " vo = new " + this.getVOName() + "();");
     println();
   }
 
@@ -1401,12 +1357,10 @@ public class DAOPrimitives {
   private void println(final String txt) throws IOException {
     this.w.write(txt);
     println();
-    // System.out.println(txt);
   }
 
   private void println() throws IOException {
     this.w.write("\n");
-    // System.out.println();
   }
 
 }
