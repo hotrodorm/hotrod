@@ -624,7 +624,7 @@ public class DAOPrimitives {
       println("  public final void " + cm.getIdentifier().getSetter() + "(final " + type.getJavaClassName() + " " + m
           + ") {");
       // println(" this." + m + " = " + m + ";");
-      println("    this.vo." + cm.getIdentifier().getSetter() + "();");
+      println("    this.vo." + cm.getIdentifier().getSetter() + "(" + m + ");");
       println("  }");
       println();
 
