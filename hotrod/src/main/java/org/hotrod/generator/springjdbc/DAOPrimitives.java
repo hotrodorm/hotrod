@@ -93,6 +93,7 @@ public class DAOPrimitives {
       }
       writeVOClass();
       writeProperties();
+      writeVOCloneMethods();
 
       if (this.isTable()) {
         writePersistenceMethods(hasPK);
@@ -547,13 +548,16 @@ public class DAOPrimitives {
 
   private void writeVOClass() throws IOException, UnresolvableDataTypeException {
     println("  // =================");
-    println("  // VO");
+    println("  // Primitive VO");
     println("  // =================");
     println();
-    println("  public class " + this.getVOName() + " {");
+    println("  public class " + this.getVOName() + " implements Serializable, Cloneable {");
+    println();
+    println("  private static final long serialVersionUID = 1L;\n\n");
+    println();
 
     // properties
-    println("  // DAO Properties (" + (this.isTable() ? "table" : (this.isView() ? "view" : "select")) + " columns)");
+    println("  // VO Properties (" + (this.isTable() ? "table" : (this.isView() ? "view" : "select")) + " columns)");
     println();
     for (ColumnMetadata cm : this.ds.getColumns()) {
       println("    private " + cm.getType().getJavaClassName() + " " + cm.getIdentifier().getJavaMemberIdentifier()
@@ -571,8 +575,8 @@ public class DAOPrimitives {
       println("    }");
       println();
 
-      println("    public final void " + cm.getIdentifier().getSetter() + "(final " + type.getJavaClassName() + " " + m
-          + ") {");
+      println(
+          "    public void " + cm.getIdentifier().getSetter() + "(final " + type.getJavaClassName() + " " + m + ") {");
       println("      this." + m + " = " + m + ";");
       println("    }");
       println();
@@ -580,7 +584,6 @@ public class DAOPrimitives {
     }
     // toString
     println("    // to string");
-    println();
     println("    public String toString() {");
     println("      StringBuilder sb = new StringBuilder();");
     println("      sb.append(\"[\");");
@@ -598,7 +601,9 @@ public class DAOPrimitives {
     println("      sb.append(\"]\");");
     println("      return sb.toString();");
     println("    }");
+
     println("  }");
+    println();
   }
 
   public String getVOName() {
@@ -606,9 +611,9 @@ public class DAOPrimitives {
   }
 
   private void writeGettersAndSetters() throws IOException, UnresolvableDataTypeException {
-    println("  // =================");
-    println("  // Getters & Setters");
-    println("  // =================");
+    println("  // =========================");
+    println("  // Adapted Getters & Setters");
+    println("  // =========================");
     println();
 
     for (ColumnMetadata cm : this.ds.getColumns()) {
@@ -621,8 +626,8 @@ public class DAOPrimitives {
       println("  }");
       println();
 
-      println("  public final void " + cm.getIdentifier().getSetter() + "(final " + type.getJavaClassName() + " " + m
-          + ") {");
+      println(
+          "  public void " + cm.getIdentifier().getSetter() + "(final " + type.getJavaClassName() + " " + m + ") {");
       // println(" this." + m + " = " + m + ";");
       println("    this.vo." + cm.getIdentifier().getSetter() + "(" + m + ");");
       println("  }");
@@ -1219,6 +1224,19 @@ public class DAOPrimitives {
 
   private void writeProperties() throws IOException, UnresolvableDataTypeException {
     println("  private " + this.getVOName() + " vo = new " + this.getVOName() + "();");
+    println();
+  }
+
+  private void writeVOCloneMethods() throws IOException, UnresolvableDataTypeException {
+    println("  protected " + this.getVOName() + " copyTo(" + this.getVOName() + " target) {");
+    for (ColumnMetadata cm : this.ds.getColumns()) {
+      println("    target." + cm.getIdentifier().getSetter() + "(this.vo." + cm.getIdentifier().getJavaMemberIdentifier()
+          + ");");
+    }
+    println();
+
+    println("    return target;");
+    println("  }");
     println();
   }
 
