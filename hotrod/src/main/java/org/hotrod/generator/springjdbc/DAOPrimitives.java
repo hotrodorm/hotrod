@@ -551,9 +551,9 @@ public class DAOPrimitives {
     println("  // Primitive VO");
     println("  // =================");
     println();
-    println("  public class " + this.getVOName() + " implements Serializable, Cloneable {");
+    println("  public class " + this.getVOName() + " implements Serializable {");
     println();
-    println("  private static final long serialVersionUID = 1L;\n\n");
+    println("  private static final long serialVersionUID = 1L;");
     println();
 
     // properties
@@ -1227,11 +1227,12 @@ public class DAOPrimitives {
     println();
   }
 
+  // FIXME clone char arrays content instead of copy reference to it.
   private void writeVOCloneMethods() throws IOException, UnresolvableDataTypeException {
     println("  protected " + this.getVOName() + " copyTo(" + this.getVOName() + " target) {");
     for (ColumnMetadata cm : this.ds.getColumns()) {
-      println("    target." + cm.getIdentifier().getSetter() + "(this.vo." + cm.getIdentifier().getJavaMemberIdentifier()
-          + ");");
+      println("    target." + cm.getIdentifier().getSetter() + "(this.vo."
+          + cm.getIdentifier().getJavaMemberIdentifier() + ");");
     }
     println();
 
