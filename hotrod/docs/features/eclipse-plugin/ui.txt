@@ -1,0 +1,35 @@
+ __________________                  _________
+| Package Explorer \                | HotRod  \ [+] [-] [>] [>>] [*>>] [X] [XX] 
+|                   \____________   |          \__________________________
+| +- src                         |  | > [_] hotrod-1.xml [Change JDBC]    |
+| +- hotrod-1.xml ------------------->    [_] Facet 1                     |   
+|                  drag & drop   |  |     [_] Facet 2                     |
+|                 into this view |  |     [_] Facet 3                     |
+|________________________________|  | > [_] hotrod-2.xml [Configure JDBC] |
+                                    |     [_] Facet 4                     |
+                                    |     [_] Facet 5                     |
+                                    |     [_] Facet 6                     |
+                                    |_____________________________________|
+                                 
+                                 Where:
+                                  >   Expands/Collapses a HotRod config file
+                                  [+] Selects all the facets
+                                  [-] Deselects all the facets
+                                  [>] Runs selected facets on all config files 
+                                  [>>] Runs all facets on all config files
+                                  [*>>] Cleans and runs all facets on all config files
+                                  [X] Removes a HotRod config file from the View
+                                  [XX] Removes all HotRod config files from the View
+                                  
+                                  All successful HotRod executions will update the Java source tree.
+                                  An unsuccessful Clean will also update the Java source tree.
+                                  
+Research how to:
+================
+
+ * Add a tree "form" that lists all the facets where we can select some of them.
+ * Drag and Drop one or more HotRod config files into the new view.
+ * Add functional buttons to the HotRod View tool bar.
+ * Set JDBC properties for each HotRod config file (driver class path, driver class, url, user, pass, catalog, schema, etc.)
+ * Dynamically load a JDBC driver classpath for each HotRod config file separately.
+ * Shows execution errors in an HotRod Error window. Or maybe just show the console, when there are errors.
