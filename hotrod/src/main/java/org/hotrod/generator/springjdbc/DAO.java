@@ -16,6 +16,8 @@ public class DAO {
 
   private DAOPrimitives daoPrimitives;
 
+  private Writer w = null;
+
   public DAO(final DataSetMetadata dsm, final DataSetLayout dsg) {
     this.dsm = dsm;
     this.dsg = dsg;
@@ -29,22 +31,37 @@ public class DAO {
     String sourceClassName = this.getClassName() + ".java";
     File dao = new File(this.dsg.getDAOPackageDir(), sourceClassName);
     if (!dao.exists()) {
-      Writer w = null;
 
       try {
         w = new BufferedWriter(new FileWriter(dao));
 
-        w.write("package " + this.dsg.getDAOPackage().getPackage() + ";\n\n");
+        println("package " + this.dsg.getDAOPackage().getPackage() + ";");
+        println();
+        println("import " + this.daoPrimitives.getFullClassName() + ";");
+        println();
+        println("public class " + this.getClassName() + " extends " + this.daoPrimitives.getClassName() + " {");
+        println();
+        println("  private static final long serialVersionUID = 1L;");
+        println();
+        println("  // =================");
+        println("  // VO");
+        println("  // =================");
+        println();
+        println("  public class " + this.getVOName() + " extends " + this.daoPrimitives.getClassName() + "."
+            + this.daoPrimitives.getVOName() + " {");
+        println("    private static final long serialVersionUID = 1L;");
+        println();
+        println("  }");
+        println();
 
-        w.write("import " + this.daoPrimitives.getFullClassName() + ";\n\n");
+        println("  public " + this.getVOName() + " get" + this.getVOName() + "() {");
+        println("    return (" + this.getVOName() + ") super.copyTo(new " + this.getVOName() + "());");
+        println("  }");
+        println();
 
-        w.write("public class " + this.getClassName() + " extends " + this.daoPrimitives.getClassName() + " {\n\n");
-
-        w.write("  private static final long serialVersionUID = 1L;\n\n");
-
-        w.write("  // Add custom code below.\n\n");
-
-        w.write("}\n");
+        println("  // Add custom code below.");
+        println();
+        println("}");
 
       } catch (IOException e) {
         throw new UncontrolledException(
@@ -62,6 +79,10 @@ public class DAO {
     }
   }
 
+  private String getVOName() {
+    return "VO";
+  }
+
   // Info
 
   public String getClassName() {
@@ -76,4 +97,13 @@ public class DAO {
     return this.dsm.getIdentifier().getJavaClassIdentifier();
   }
 
+  // FIXME duplicated code with DAOPrimitives
+  private void println(final String txt) throws IOException {
+    this.w.write(txt);
+    println();
+  }
+
+  private void println() throws IOException {
+    this.w.write("\n");
+  }
 }

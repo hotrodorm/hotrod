@@ -91,7 +91,9 @@ public class DAOPrimitives {
       if (this.isTable()) {
         writeJavaToDatabaseFieldMapper();
       }
+      writeVOClass();
       writeProperties();
+      writeVOCloneMethods();
 
       if (this.isTable()) {
         writePersistenceMethods(hasPK);
@@ -388,14 +390,6 @@ public class DAOPrimitives {
 
   }
 
-  // {
-  // byte[] v = (byte[])rs.getObject("METADATA");
-  // row.setMetadata(rs.wasNull() ? null : v);
-  // }
-  // if (domain.getMetadata() == null) {
-  // pst.setNull(1, java.sql.Types.BLOB);
-  // }
-
   private void writeMapper() throws IOException {
     println("  // ====================");
     println("  // Spring JDBC - Mapper");
@@ -456,21 +450,7 @@ public class DAOPrimitives {
     println("  // to string");
     println();
     println("  public String toString() {");
-    println("    StringBuilder sb = new StringBuilder();");
-    println("    sb.append(\"[\");");
-    ListWriter lw = new ListWriter(" + \", \");\n");
-    for (ColumnMetadata cm : this.ds.getColumns()) {
-      if (cm.getType().isLOB()) {
-        lw.add("    sb.append(\"" + cm.getIdentifier().getJavaMemberIdentifier() + ": \" + (this."
-            + cm.getIdentifier().getJavaMemberIdentifier() + " != null ? \"<LOB set>\" : null)");
-      } else {
-        lw.add("    sb.append(\"" + cm.getIdentifier().getJavaMemberIdentifier() + ": \" + this."
-            + cm.getIdentifier().getJavaMemberIdentifier());
-      }
-    }
-    println("    " + lw.toString() + ");");
-    println("    sb.append(\"]\");");
-    println("    return sb.toString();");
+    println("    return this.vo.toString();");
     println("  }");
 
     println();
@@ -566,10 +546,74 @@ public class DAOPrimitives {
     println();
   }
 
+  private void writeVOClass() throws IOException, UnresolvableDataTypeException {
+    println("  // =================");
+    println("  // Primitive VO");
+    println("  // =================");
+    println();
+    println("  public class " + this.getVOName() + " implements Serializable {");
+    println();
+    println("  private static final long serialVersionUID = 1L;");
+    println();
+
+    // properties
+    println("  // VO Properties (" + (this.isTable() ? "table" : (this.isView() ? "view" : "select")) + " columns)");
+    println();
+    for (ColumnMetadata cm : this.ds.getColumns()) {
+      println("    private " + cm.getType().getJavaClassName() + " " + cm.getIdentifier().getJavaMemberIdentifier()
+          + " = null;");
+    }
+    println();
+
+    // getters/setters
+    for (ColumnMetadata cm : this.ds.getColumns()) {
+      PropertyType type = cm.getType();
+      String m = cm.getIdentifier().getJavaMemberIdentifier();
+
+      println("    public " + type.getJavaClassName() + " " + cm.getIdentifier().getGetter() + "() {");
+      println("      return this." + m + ";");
+      println("    }");
+      println();
+
+      println(
+          "    public void " + cm.getIdentifier().getSetter() + "(final " + type.getJavaClassName() + " " + m + ") {");
+      println("      this." + m + " = " + m + ";");
+      println("    }");
+      println();
+
+    }
+    // toString
+    println("    // to string");
+    println("    public String toString() {");
+    println("      StringBuilder sb = new StringBuilder();");
+    println("      sb.append(\"[\");");
+    ListWriter lw = new ListWriter(" + \", \");\n");
+    for (ColumnMetadata cm : this.ds.getColumns()) {
+      if (cm.getType().isLOB()) {
+        lw.add("      sb.append(\"" + cm.getIdentifier().getJavaMemberIdentifier() + ": \" + (this."
+            + cm.getIdentifier().getJavaMemberIdentifier() + " != null ? \"<LOB set>\" : null)");
+      } else {
+        lw.add("      sb.append(\"" + cm.getIdentifier().getJavaMemberIdentifier() + ": \" + this."
+            + cm.getIdentifier().getJavaMemberIdentifier());
+      }
+    }
+    println(lw.toString() + ");");
+    println("      sb.append(\"]\");");
+    println("      return sb.toString();");
+    println("    }");
+
+    println("  }");
+    println();
+  }
+
+  public String getVOName() {
+    return "PrimitiveVO";
+  }
+
   private void writeGettersAndSetters() throws IOException, UnresolvableDataTypeException {
-    println("  // =================");
-    println("  // Getters & Setters");
-    println("  // =================");
+    println("  // =========================");
+    println("  // Adapted Getters & Setters");
+    println("  // =========================");
     println();
 
     for (ColumnMetadata cm : this.ds.getColumns()) {
@@ -577,13 +621,15 @@ public class DAOPrimitives {
       String m = cm.getIdentifier().getJavaMemberIdentifier();
 
       println("  public " + type.getJavaClassName() + " " + cm.getIdentifier().getGetter() + "() {");
-      println("    return this." + m + ";");
+      // println(" return this." + m + ";");
+      println("    return this.vo." + cm.getIdentifier().getGetter() + "();");
       println("  }");
       println();
 
-      println("  public final void " + cm.getIdentifier().getSetter() + "(final " + type.getJavaClassName() + " " + m
-          + ") {");
-      println("    this." + m + " = " + m + ";");
+      println(
+          "  public void " + cm.getIdentifier().getSetter() + "(final " + type.getJavaClassName() + " " + m + ") {");
+      // println(" this." + m + " = " + m + ";");
+      println("    this.vo." + cm.getIdentifier().getSetter() + "(" + m + ");");
       println("  }");
       println();
 
@@ -1069,21 +1115,6 @@ public class DAOPrimitives {
 
   }
 
-  // private void writeSelectBySQL() throws IOException,
-  // UnresolvableDataTypeException {
-  // println(" public List<" + this.dao.getClassName() + "> selectBySQL(String
-  // sql, "
-  // + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies)
-  // {");
-  // println(" String sqlo = sql + OrderByRenderer.render(orderBies);");
-  // println(" return jdbcTemplateObject.query(sqlo, new " +
-  // this.ds.getIdentifier().getJavaClassIdentifier()
-  // + "Mapper());");
-  // println(" }");
-  // println();
-  //
-  // }
-
   private void writeSelectBySQL() throws IOException, UnresolvableDataTypeException {
     println(
         "    public List<" + this.dao.getClassName() + "> selectBySQL(List<SQLJoin> joins, SQLLogicalExpression where, "
@@ -1149,8 +1180,10 @@ public class DAOPrimitives {
     }
     println("import org.hotrod.runtime.spring.ApplicationContextProvider;");
     if (this.isTable()) {
+      println("import org.hotrod.runtime.util.SQLField;");
       println("import org.hotrod.runtime.util.SQLJoin;");
       println("import org.hotrod.runtime.util.SQLLogicalExpression;");
+      println("import org.hotrod.runtime.util.SQLTable;");
       println("import org.springframework.dao.IncorrectResultSizeDataAccessException;");
     }
     println("import org.springframework.jdbc.core.JdbcTemplate;");
@@ -1190,12 +1223,21 @@ public class DAOPrimitives {
   }
 
   private void writeProperties() throws IOException, UnresolvableDataTypeException {
-    println("  // DAO Properties (" + (this.isTable() ? "table" : (this.isView() ? "view" : "select")) + " columns)");
+    println("  private " + this.getVOName() + " vo = new " + this.getVOName() + "();");
     println();
+  }
+
+  // FIXME clone char arrays content instead of copy reference to it.
+  private void writeVOCloneMethods() throws IOException, UnresolvableDataTypeException {
+    println("  protected " + this.getVOName() + " copyTo(" + this.getVOName() + " target) {");
     for (ColumnMetadata cm : this.ds.getColumns()) {
-      println("  private " + cm.getType().getJavaClassName() + " " + cm.getIdentifier().getJavaMemberIdentifier()
-          + " = null;");
+      println("    target." + cm.getIdentifier().getSetter() + "(this.vo."
+          + cm.getIdentifier().getJavaMemberIdentifier() + ");");
     }
+    println();
+
+    println("    return target;");
+    println("  }");
     println();
   }
 
@@ -1258,10 +1300,12 @@ public class DAOPrimitives {
 
   private void writeJavaToDatabaseFieldMapper() throws IOException {
     println("  public static final String DBTABLE$NAME = \"" + ds.getIdentifier().getSQLIdentifier() + "\";");
+    println(
+        "  public static final SQLTable DB$TABLE = new SQLTable(\"" + ds.getIdentifier().getSQLIdentifier() + "\");");
     println();
     for (ColumnMetadata cm : this.ds.getColumns()) {
-      println("  public static final String DBFIELD$" + cm.getColumnName() + " = \"" + cm.getTableName() + "."
-          + cm.getColumnName() + "\";");
+      println("  public static final SQLField DBFIELD$" + cm.getColumnName() + " = new SQLField(DB$TABLE,\""
+          + cm.getColumnName() + "\");");
     }
     println();
 
@@ -1270,7 +1314,8 @@ public class DAOPrimitives {
     println("  static {");
 
     for (ColumnMetadata cm : this.ds.getColumns()) {
-      println("    dbFieldSqlTypeMapper.put(DBFIELD$" + cm.getColumnName() + ", " + cm.getType().getJDBCType() + ");");
+      println("    dbFieldSqlTypeMapper.put(DBFIELD$" + cm.getColumnName() + ".toString(), "
+          + cm.getType().getJDBCType() + ");");
     }
     println("  }");
     println();
@@ -1331,12 +1376,10 @@ public class DAOPrimitives {
   private void println(final String txt) throws IOException {
     this.w.write(txt);
     println();
-    // System.out.println(txt);
   }
 
   private void println() throws IOException {
     this.w.write("\n");
-    // System.out.println();
   }
 
 }

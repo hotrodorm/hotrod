@@ -210,6 +210,10 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     d.addObjectCreate(base + "/generators/spring-jdbc/daos", DaosTag.class);
     d.addSetProperties(base + "/generators/spring-jdbc/daos", "gen-base-dir", "genBaseDir");
     d.addSetProperties(base + "/generators/spring-jdbc/daos", "dao-package", "sdaoPackage");
+    d.addSetProperties(base + "/generators/spring-jdbc/daos", "dao-prefix", "daoPrefix");
+    d.addSetProperties(base + "/generators/spring-jdbc/daos", "dao-suffix", "daoSuffix");
+    d.addSetProperties(base + "/generators/spring-jdbc/daos", "primitives-prefix", "primitivesPrefix");
+    d.addSetProperties(base + "/generators/spring-jdbc/daos", "primitives-suffix", "primitivesSuffix");
     d.addSetNext(base + "/generators/spring-jdbc/daos", "setDaos");
 
     // config
