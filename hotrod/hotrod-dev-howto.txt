@@ -59,4 +59,3 @@ Using Ant type:
 A few rows will be selected and displayed on the console.
 
 
-
