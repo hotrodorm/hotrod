@@ -1,0 +1,43 @@
+<h1>Example 11 - Custom DAOs</h1>
+
+<p>This example shows how to use custom DAOs. That is, DAO Java
+  classes not directly related to any table or view.</p>
+
+<p>Custom DAOs can be used to group any arbitrary number of related
+  or unrelated database sequence retrieval as well as Regular SQL
+  queries.</p>
+
+<h2>How to Run this example</h2>
+
+<p>
+  The <strong>Example 11</strong> is included in the download package.
+  To run this example please refer to the section How to Run the
+  Examples above.
+</p>
+
+<h2>Case #1: Retrieve a database sequence value</h2>
+
+<p>
+  A value is retrieved from the sequence
+  <code>DATA_FILE_SEQ</code>
+  using the method
+  <code>selectSequenceDataFileSeq()</code>
+  on the DAO
+  <code>DailyOperations</code>
+  that is not directly related to any table or view.
+</p>
+
+<h2>Case #2: Run a SQL update</h2>
+
+<p>
+  All the complexity of the SQL update is hidden from the Java code.
+  It&#39;s simply exposed as the
+  <code>closeDay(java.sql.Date closingDate)</code>
+  method on the
+  <code>DailyOperations</code>
+  Java class.
+</p>
+
+<p>&nbsp;</p>
+
+

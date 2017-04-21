@@ -1,0 +1,37 @@
+<h1>Example 19 - Custom DAO Property Types</h1>
+
+<p>This example shows how the DAO properties from tables, views, and
+  selects can be forced by the developer.</p>
+
+<p>HotRod automatically produces Java types according to the
+  database column type. Even though these Java types are usually
+  adecuate to accomodate database values, sometimes the developer may
+  have different preference. If this is the case, the type can be forced
+  by the developer by specifying it in the configuration file.</p>
+
+<h2>How to Run this example</h2>
+
+<p>
+  The <strong>Example 19</strong> is included in the download package.
+  To run this example please refer to the section How to Run the
+  Examples above.
+</p>
+
+<h2>Case #1: Using a Double rathen than a java.math.BigDecimal</h2>
+
+<p>
+  By default HotRod produces a column with the Java type
+  <code>java.math.BigDecimal</code>
+  for the column of type
+  <code>NUMERIC(10, 2)</code>
+  . However, in this case the developer prefers to treat this number as
+  a
+  <code>java.lang.Double</code>
+  and specifies it in the configuration file as shown below:
+</p>
+
+<pre class="xml">    &lt;column name="$valuation" java-name="totalBranchValuation"
+      java-type="java.lang.Double" /></pre>
+
+<p>&nbsp;</p>
+

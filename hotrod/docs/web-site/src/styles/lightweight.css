@@ -1,0 +1,223 @@
+h1 {
+  color: #900000;
+}
+
+h2 {
+  color: #900000;
+}
+
+h3 {
+  color: #303030;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #333;
+}
+
+.menu {
+  width: 20%;
+  position: absolute;
+  /*  outline: 1px solid; */
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+}
+
+.menu a {
+  display: block;
+  color: #303030;
+  padding: 4px 12px;
+  text-decoration: none;
+}
+
+.menu a.active {
+  background-color: #c00000;
+  color: white;
+}
+
+.menu a:hover {
+  background-color: #555555;
+  color: white;
+}
+
+.menu2 {
+  padding-left: 1em;
+  padding-right: 2em;
+  padding-left: 1.2em;
+  text-indent: -0.5em;
+}
+
+.article {
+  margin-left: 5px;
+  border-left: 2px solid #c0c0c0;
+  padding-left: 15px;
+  padding-right: 15px;
+  width: 80%;
+  height: 2350px;
+  /*  outline: 1px solid; */
+  position: absolute;
+  right: 0;
+  background: white;
+}
+
+p {
+  
+}
+
+pre {
+  border-radius: 10px;
+  border: 2px solid #e0e0e0;
+  padding-left: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.nohighlight {
+  color: #0000ff;
+  /*
+  background-color: #f6f4f9;
+  */
+}
+
+code {
+  font-family: Courier, monospace;
+  font-size: 110%;
+  color: #002192;
+  margin-left: 2px;
+}
+
+/*
+Data Table Formatting
+*/
+.data-table, .data-table td, .data-table th {
+  border: 1px solid black;
+}
+
+.data-table th {
+  background-color: #d0d0d0;
+  color: black;
+}
+
+.data-table {
+  border-collapse: collapse;
+  width: 98%;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+
+.data-table td {
+  vertical-align: top;
+}
+
+.data-table th, .data-table td {
+  padding: 8px;
+}
+
+.data-table tr:hover {
+  background-color: #f5f5f5
+}
+
+.data-table tr td:nth-child(3) {
+  text-align: center;
+}
+
+.data-table tr td:nth-child(1) {
+  font-family: Courier, monospace;
+  color: black;
+  width: 20%;
+}
+
+.data-table tr td:nth-child(3) {
+  width: 6%;
+}
+
+/*
+Column Type Table Formatting
+*/
+.column-type-table, .column-type-table td, .column-type-table th {
+  border: 1px solid black;
+}
+
+.column-type-table th {
+  background-color: #d0d0d0;
+  color: black;
+}
+
+.column-type-table {
+  border-collapse: collapse;
+  width: 98%;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+
+.column-type-table td {
+  vertical-align: top;
+}
+
+.column-type-table th, .column-type-table td {
+  padding: 8px;
+}
+
+.column-type-table tr:hover {
+  background-color: #f5f5f5
+}
+
+.column-type-table tr td:nth-child(1) {
+  font-family: Courier, monospace;
+  color: #002192;
+}
+
+.column-type-table ul {
+  margin: 0px;
+}
+
+.column-type-table ul li {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+kbd {
+  font-size: 110%;
+  border: 1px solid #c0c0c0;
+  padding: 3px 5px 3px 5px;
+  background-color: #ffffc7;
+  border: 1px solid #c0c0c0;
+}
+
+/* FAQ */
+.question {
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.answer {
+  margin-left: 40px;
+}
+
+.hero-title {
+  width: 30%;
+  vertical-align: top;
+  text-align: right;
+  font-size: 140%;
+  color: #808080;
+  margin-top: 0;
+  padding-right: 30px;
+  font-style: italic;
+  font-weight: bold;
+  font-family: " Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-style: italic;
+  font-size: 140%;
+}
+
+.hero-desc {
+  width: 70%;
+  vertical-align: top;
+  margin-top: 0;
+}
+
+.hero-desc p {
+  margin-top: 0;
+}

@@ -1,0 +1,123 @@
+<h1>Example 2 - Inserting on Tables using Sequences and Identity</h1>
+
+<p>This example shows the different ways of inserting on database
+  tables with or without PK and with or without autogeneration PKs.</p>
+
+<h2>How to Run this example</h2>
+
+<p>
+  The <strong>Example 02</strong> is included in the download package.
+  To run this example please refer to the section How to Run the
+  Examples above.
+</p>
+
+<h2>Case #1: Insert into a table with no PK</h2>
+
+<p>
+  When inserting into a table with no PK the insert takes a simple form
+  where you need to speficy the values of the columns you want in a DAO
+  object and then call the
+  <code>insert()</code>
+  method on it.
+</p>
+
+<p>
+  This is shown inserting into the table
+  <code>VISIT</code>
+  that does not have a PK.
+</p>
+
+<h2>Case #2: Insert into a table with PK, but no auto-generated PK</h2>
+
+<p>When inserting into a table with a PK but no autogeneration logic
+  for its values, you need to speficy the values for the PK column(s)
+  (simple or composite).</p>
+
+<p>
+  The configuration file does not include the
+  <code>&lt;auto-generated-column&gt;</code>
+  tag.
+</p>
+
+<p>
+  This is shown inserting into the table
+  <code>DAILY_REPORT</code>
+  that does have a composite PK (
+  <code>BRANCH_ID</code>
+  ,
+  <code>REPORT_DATE</code>
+  ) and there&#39;s no auto-generation logic for it.
+</p>
+
+<h2>Case #3: Insert into a table with auto-generated PK using
+  identity</h2>
+
+<p>When inserting into a table with an auto-generated PK using
+  identity database functionality, any value you speficy for the PK
+  column(s) are ignored. The database produces the value(s) and
+  this(ese) value(s) are populated back into the DAO object after
+  insertion (except for Oracle 12c, see reference section).</p>
+
+<p>The configuration file includes the following entry to define
+  it&#39;s an identity-generated PK:</p>
+
+<pre class="xml">    &lt;auto-generated-column name="id" /></pre>
+
+<p>
+  This is shown inserting into the table
+  <code>VEHICLE</code>
+  that does have a single column PK (
+  <code>ID</code>
+  ).
+</p>
+
+<h2>Case #4: Insert into a table with auto-generated PK using
+  sequence</h2>
+
+<p>When inserting into a table with an auto-generated PK using a
+  database sequence, any value you speficy for the PK column(s) are
+  ignored. The database produces the value(s) and this(ese) value(s) are
+  populated back into the DAO object after insertion.</p>
+
+<p>The configuration file includes the following entry to define its
+  a sequence-generated PK:</p>
+
+<pre class="xml">    &lt;auto-generated-column name="id" sequence="client_seq" /></pre>
+
+<p>
+  This is shown inserting into the table
+  <code>CLIENT</code>
+  .
+</p>
+
+<h2>Case #5: Insert into a table with auto-generated PK using
+  OPTIONAL identity</h2>
+
+<p>This case is different from case #3 since the developer can
+  actually specify the desired value for the PK.</p>
+
+<p>Most RDBMSs that support PK auto-generation, either as identity
+  PK or auto-increment columns, support this functionality.</p>
+
+<p>If left unspecified (null) the database will generate a new
+  value, and this value will be populated back into the DAO property
+  (except for Oracle 12c, see reference section).</p>
+
+<p>If the PK value(s) are specified its(their) value will be
+  honored.</p>
+
+<p>The configuration file includes the following entry to define
+  it&#39;s an identity-generated PK:</p>
+
+<pre class="xml">    &lt;auto-generated-column name="id" allows-specified-value="true" /></pre>
+
+<p>
+  This is shown inserting into the table
+  <code>BRANCH</code>
+  that does have a single column PK (
+  <code>ID</code>
+  ).
+</p>
+
+<p>&nbsp;</p>
+

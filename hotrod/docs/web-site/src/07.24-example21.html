@@ -1,0 +1,36 @@
+<h1>Example 21 - Facets</h1>
+
+<p>Facets allow the developer to perform partial regeneration the
+  DAOs source code.</p>
+
+<p>This can be useful when the database is large and/or slow to
+  respond. It usually happens you add a single column into a table and
+  would prefer to regenerate that specific table only instead of the
+  whole database.</p>
+
+<h2>How to Run this example</h2>
+
+<p>
+  The <strong>Example 21</strong> is included in the download package.
+  To run this example please refer to the section How to Run the
+  Examples above, but with a variation from the standard instructions:
+</p>
+
+<p>
+  Instead of running the
+  <code>hotrod</code>
+  Ant task, run the
+  <code>hotrod-visits-dev</code>
+  Ant task. HotRod will run much faster since it will only regenerate
+  the
+  <code>VISIT</code>
+  table and the
+  <code>DailyOperations</code>
+  DAO.
+</p>
+
+<p>Notice it doesn&#39;t matter where the facets are defined in
+  relation to the fragment files. All parts of the facets are combined
+  when the configuration file (and fragments) are read.</p>
+
+<p>&nbsp;</p>

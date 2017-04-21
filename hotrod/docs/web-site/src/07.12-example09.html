@@ -1,0 +1,58 @@
+<h1>Example 9 - Retrieving Sequence Values</h1>
+
+<p>This example shows how to retrieve database sequence values. Even
+  though most of the time sequences are used behind the scenes to insert
+  table rows, the need to use them for other purposes may arise, such as
+  for creating files, indentiying network communication and others.</p>
+
+<h2>How to Run this example</h2>
+
+<p>
+  The <strong>Example 09</strong> is included in the download package.
+  To run this example please refer to the section How to Run the
+  Examples above.
+</p>
+
+<h2>Case #1: Retrieve a sequence value</h2>
+
+<p>
+  This is demonstrated using the sequence
+  <code>CLIENT_SEQ</code>
+  . In order to do this the following extra tag is added to the
+  <code>CLIENT</code>
+  table definition:
+</p>
+
+<pre class="xml">    &lt;sequence name="client_seq" /></pre>
+
+<p>
+  This tag produces the new DAO method
+  <code>selectSequenceClientSeq()</code>
+  on the
+  <code>ClientDAO</code>
+  class.
+</p>
+
+<h2>Case #2: Retrieve a sequence value using custom method name</h2>
+
+<p>
+  This is demonstrated using the sequence
+  <code>PDF_REPORT_FILE_SEQ</code>
+  . In order to do this the following extra tag is added to the
+  <code>DAILY_REPORT</code>
+  table definition:
+</p>
+
+<pre class="xml">    &lt;sequence name="pdf_report_file_seq"
+          java-method-name="retrieveFileReportSequence" /></pre>
+
+<p>
+  This tag produces the new DAO method
+  <code>retrieveFileReportSequence()</code>
+  on the
+  <code>DailyReportDAO</code>
+  class.
+</p>
+
+<p>&nbsp;</p>
+

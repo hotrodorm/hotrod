@@ -1,0 +1,454 @@
+<h1>Hello World MyBatis!</h1>
+
+<p>This Hello World example describes how to run a simple Hello
+  World one-class application.</p>
+
+<p>It demonstrates an SQL insert into a table that uses a DAO class,
+  and goes step by step showing the details of how to set up the
+  application and run the example.</p>
+
+<p>For simplicity this Hello World demo runs as a command line Java
+  application but with minimal changes it can also run on a JEE web
+  container such as Tomcat, JBoss, Weblogic, or WebSphere.</p>
+
+<h2>Apache Ant</h2>
+
+<p>Apache Ant is used during the development of an application to
+  automate all tasks related to the HotRod. Ant is not needed when the
+  application is running or when deploying to a production environment.</p>
+
+<p>
+  This example uses Ant targets to run the database, to run the example,
+  and to list database data. To learn more about Apache Ant see <a
+    href="http://ant.apache.org">http://ant.apache.org</a>. Ant was
+  chosen since it can easily run java applications, and run other OS
+  level tasks such as starting and stopping the database. All the Ant
+  commands can be run from a terminal or within Eclipse IDE.
+</p>
+
+<p>
+  To run the tasks from Eclipse you&#39;ll need to open the Eclipse Ant
+  View (
+  <code>Window</code>
+  -&gt;
+  <code>Show View</code>
+  -&gt;
+  <code>Ant</code>
+  ), and then find the
+  <code>build.xml</code>
+  file for the Hello World example; drag and drop this file into the Ant
+  View. Once there, expand it (small arrow icon on the left) to see all
+  available tasks. To run any of them just double-click on it. The
+  console window will be opened and will show the results of the
+  execution.
+</p>
+
+<p>
+  To run the tasks from the command line you&#39;ll need to have Ant
+  installed at the OS level and in your path. Then make sure to move to
+  the home folder of the Hello World example before running any task.
+  For example, if you need to run the tasks
+  <code>start-h2-database</code>
+  , of the Hello World example type:
+</p>
+
+<p>
+<pre class="nohighlight">cd examples/mybatis/helloworld
+ant start-h2-database</pre>
+</p>
+
+<h2>Setting up the database</h2>
+
+<p>
+  This example uses a local H2 database. H2 was chosen since it&#39;s
+  very easy to run locally without any installation; a simple command
+  line launches it and it starts listening on a local network port for
+  any JDBC client. To learn more about H2 database see <a
+    href="http://www.h2database.com">http://www.h2database.com</a>.
+</p>
+
+<p>
+  To start H2 run the Ant task
+  <code>start-h2-database</code>
+  . Type (or double click on it if using the Eclipse Ant View):
+</p>
+
+<pre class="nohighlight">ant start-h2-database</pre>
+
+<p>The H2 database will start and you&#39;ll see an output like:</p>
+
+<pre class="nohighlight">Buildfile: build.xml
+stop-h2-database:
+-issue-h2-stop:
+     [java] Shutting down TCP Server at tcp://localhost:12345
+     [echo] [ H2 local database has been stopped ]
+-h2-already-stopped:
+BUILD SUCCESSFUL
+Total time: 3 seconds</pre>
+
+<p>If you&#39;re unsure you started the H2 database you can run this
+  command again. If it&#39;s already running it will find out and
+  won&#39;t start it again.</p>
+
+<p>To stop H2 run the Ant tasks stop-h2-database. Type (or double
+  click on it if using the Eclipse Ant View):</p>
+
+<pre class="nohighlight">ant stop-h2-database</pre>
+
+<p>The H2 database will be stopped and you&#39;ll see an output
+  like:</p>
+
+<p>
+<pre class="nohighlight">Buildfile: build.xml
+stop-h2-database:
+-issue-h2-stop:
+     [java] Shutting down TCP Server at tcp://localhost:12345
+     [echo] [ H2 local database has been stopped ]
+-h2-already-stopped:
+BUILD SUCCESSFUL
+Total time: 3 seconds</pre>
+</p>
+
+<p>Please start H2 again and leave it running:</p>
+
+<p>
+<pre class="nohighlight">ant start-h2-database</pre>
+</p>
+
+<p>
+  Now we will initialize the database; we&#39;ll create a table and
+  insert some data in it. We&#39;ll run the following SQL statements
+  (all included in the
+  <code>prepare-database.sql</code>
+  file):
+</p>
+
+<p>
+<pre class="sql">drop table if exists vehicle;
+
+create table vehicle (
+  id integer identity primary key not null,
+  brand varchar(30) not null,
+  model varchar(30) not null,
+  used boolean not null,
+  current_mileage integer not null,
+  purchased_on date
+);
+
+insert into vehicle (brand, model, used, current_mileage, purchased_on)
+  values ('Kia', 'Soul', true, '28500', '2014-03-14');
+
+insert into vehicle (brand, model, used, current_mileage, purchased_on)
+  values ('Toyota', 'Tercel', false, '26', '2017-01-28');
+  
+insert into vehicle (brand, model, used, current_mileage, purchased_on)
+  values ('DeLorean', 'DMC-12', true, '241689', '1982-11-17');</pre>
+</p>
+
+<p>As you see the table will be created and initialized with three
+  rows of data. To run these SQL statements run the Ant task
+  initialize-database. Type (or double click on it if using the Eclipse
+  Ant View):</p>
+
+<p>
+<pre class="nohighlight">ant initialize-database</pre>
+</p>
+
+<p>All SQL statements will be executed and you&#39;ll see an output
+  like:</p>
+
+<p>
+<pre class="nohighlight">Buildfile: build.xml
+initialize-database:
+      [sql] Executing resource: prepare-database.sql
+      [sql] 0 rows affected
+      [sql] 0 rows affected
+      [sql] 1 rows affected
+      [sql] 1 rows affected
+      [sql] 1 rows affected
+      [sql] 5 of 5 SQL statements executed successfully
+     [echo] [ Database tables and data initialized ]
+BUILD SUCCESSFUL
+Total time: 894 milliseconds</pre>
+</p>
+
+<p>
+  Well, with that the database is now ready. If you want to make sure
+  the table and data are there you can use your favorite tool to connect
+  to it and inspect it. Or, for simplicity, this example provides an Ant
+  task that lists the rows in the table. To list the data run the Ant
+  task
+  <code>list-data</code>
+  . Type (or double click on it if using the Eclipse Ant View):
+</p>
+
+<p>
+<pre class="nohighlight">ant list-data</pre>
+</p>
+
+<p>A simple SQL select will display all the data on the table, and
+  you&#39;ll see an output like:</p>
+
+<p>
+<pre class="nohighlight">Buildfile: build.xml
+list-data:
+      [sql] Executing commands
+      [sql] ID,BRAND,MODEL,USED,CURRENT_MILEAGE,PURCHASED_ON
+      [sql] 1,Kia,Soul,TRUE,28500,2014-03-14
+      [sql] 2,Toyota,Tercel,FALSE,26,2017-01-28
+      [sql] 3,DeLorean,DMC-12,TRUE,241689,1982-11-17
+      [sql] 0 rows affected
+      [sql] 1 of 1 SQL statements executed successfully
+BUILD SUCCESSFUL
+Total time: 789 milliseconds</pre>
+</p>
+
+<p>
+  The output is a little bit crude but is good enough for our purposes.
+  You can see three rows of data including the <strong>Kia Soul</strong>,
+  the <strong>Toyota</strong> <strong>Tercel</strong>, and the <strong>DeLorean
+    DMC-12</strong> in there. Congratulations! The database is now ready to be
+  used.
+</p>
+
+<h2>Generate the DAOs using HotRod</h2>
+
+<p>
+  HotRod will generate a DAO class to interact with the
+  <code>VEHICLE</code>
+  table. To do it HotRod needs:
+</p>
+
+<ul>
+  <li>A database running with the tables that will be generated.</li>
+  <li><code>hotrod.xml</code> - the HotRod configuration file.</li>
+  <li><code>mybatis-template.xml</code> - a template of the MyBatis
+    main configuration file, ready to be filled with the list of mapper
+    files.</li>
+  <li>The Ant task in the <code>build.xml</code> file.
+  </li>
+  <li>The <code>hotrod.jar</code> library.
+  </li>
+</ul>
+
+<p>
+  The
+  <code>hotrod.xml</code>
+  configuration file is in the home folder and looks like:
+</p>
+
+<pre class="xml">&lt;?xml version="1.0"?>
+&lt;!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+&lt;hotrod>
+
+  &lt;generators>
+    &lt;mybatis>
+      &lt;daos gen-base-dir="auto-generated/java" dao-package="daos" />
+      &lt;mappers gen-base-dir="auto-generated/mappers"
+          relative-dir="persistence" />
+      &lt;mybatis-configuration-template file="mybatis-template.xml" />
+      &lt;session-factory
+          singleton-full-class-name="sessionfactory.DatabaseSessionFactory" />
+      &lt;select-generation temp-view-base-name="hotrod_temp_view" />
+    &lt;/mybatis>
+  &lt;/generators>
+
+  &lt;table name="vehicle">
+    &lt;auto-generated-column name="id" />
+  &lt;/table>
+
+&lt;/hotrod></pre>
+
+<p>
+  In this example the
+  <code>&lt;generators&gt;</code>
+  tag includes the
+  <code>&lt;mybatis&gt;</code>
+  tag. The latter indicates the generated files will be placed into:
+</p>
+
+<ul>
+  <li><code>autogenerated/java</code> - all Java classes.</li>
+  <li><code>autogenerated/mappers</code> - all MyBatis mappers.</li>
+</ul>
+
+<p>
+  Finally, the
+  <code>&lt;table&gt;</code>
+  tag tells HotRod to include the table
+  <code>VEHICLE</code>
+  . Also, it specifies that the ID column is auto-generated as an
+  identity column.
+</p>
+
+<p>To generate the DAOs, use the Ant task hotrod. Type (or double
+  click on it if using the Eclipse Ant View):</p>
+
+<p>
+<pre class="nohighlight">ant hotrod</pre>
+</p>
+
+<p>HotRod retrieves the structure of the table VEHICLE and will
+  generate the DAOs. you&#39;ll see an output like:</p>
+
+<pre class="nohighlight">Buildfile: build.xml
+hotrod:
+   [delete] Deleting directory auto-generated
+    [mkdir] Created dir: auto-generated/java
+    [mkdir] Created dir: auto-generated/mappers
+   [hotrod] HotRod version 1.0.0 (build 20170128-221617)
+   [hotrod]  
+   [hotrod] Database URL: jdbc:h2:tcp://localhost:12345/db001;IFEXISTS=TRUE
+   [hotrod] Database Name: H2 - version 1.3 (1.3.176 (2014-04-05))
+   [hotrod] JDBC Driver: H2 JDBC Driver - version 1.3 (1.3.176 (2014-04-05))
+   [hotrod]  
+   [hotrod] HotRod Database Adapter: H2 Adapter
+   [hotrod] Database Catalog: DB001
+   [hotrod] Database Schema: PUBLIC
+   [hotrod]  
+   [hotrod] Generating all facets.
+   [hotrod]  
+   [hotrod] Table VEHICLE included.
+   [hotrod]  
+   [hotrod] Generating MyBatis DAOs for 1 table, 0 views, 0 DAOs (0 sequences, 0 updates), and 0 select queries...
+   [hotrod]  
+   [hotrod] MyBatis generation complete.
+BUILD SUCCESSFUL
+Total time: 887 milliseconds</pre>
+<p>HotRod generated the following files:</p>
+
+<ul>
+  <li><code>auto-generated/java/daos/primitives/VehicleDAOPrimitives.java</code>
+    - Abstract Java class that includes all the predefined methods to
+    insert, delete, update, and select data from the <code>VEHICLE</code>
+    table. One file is generated for each table. Do not modify this
+    class since it&#39;s automatically rewritten by HotRod every time
+    it&#39;s run, to reflect the latest changes of the database.</li>
+  <li><code>auto-generated/java/daos/VehicleDAO.java</code> - Java
+    class that extends from the <code>VehicleDAOPrimitives</code> class,
+    so the developer can add custom logic to the DAO. One file is
+    generated for each table. This source class is never rewritten by
+    HotRod, to preserve all the custom logic.</li>
+  <li><code>auto-generated/mappers/persistence/primitives/primitives-vehicle-dao.xml</code>
+    - MyBatis mapper file that includes all the SQL statements needed to
+    interact with the database. One file is generated for each table. Do
+    not modify this class since it&#39;s automatically rewritten by
+    HotRod every time it&#39;s run, to reflect the latest changes of the
+    database.</li>
+  <li>auto-generated/mappers/persistence/primitives/mybatis-configuration.xml
+    - MyBatis main configuration file. This is a single file in the
+    application. It&#39;s based in the <code>mybatis-template.xml</code>
+    file in the root of the example, but it now lists all the mapper
+    files just generated. Do not modify this class since it&#39;s
+    automatically rewritten by HotRod every time it&#39;s run. Modify
+    the template instead if you need to.
+  </li>
+</ul>
+
+<p>With these files all is ready to run the Hello World application.</p>
+
+<h2>Run the Hello World application</h2>
+
+<p>
+  All the DAOs are ready and the Hello World application now needs to
+  use them to insert a row into the database. The source code is in the
+  <code>java/examples/HelloWorld.java</code>
+  and includes the following lines of code:
+</p>
+
+<p>
+<pre class="java">
+    VehicleDAO skoda = new VehicleDAO();
+    skoda.setBrand("Skoda");
+    skoda.setModel("Octavia");
+    skoda.setUsed(false);
+    skoda.setCurrentMileage(7);
+    skoda.setPurchasedOn(new Date(System.currentTimeMillis()));
+    skoda.insert();
+    System.out.println("New vehicle Skoda added, with id " + skoda.getId() + ".");
+</pre>
+
+</p>
+
+<p>
+  First, a DAO object is instantiated to hold the values we want to
+  insert in the new table row. Then, we set each one of the values and
+  finally we execute the
+  <code>insert()</code>
+  method to insert the row.
+</p>
+
+<p>
+  Note the
+  <code>ID</code>
+  property was not set. It&#39;s not needed since this column is
+  auto-generated by the database. Since HotRod knows about it (as
+  previously shown in the configuration file) its value is automatically
+  retrieved upon insertion, and the
+  <code>ID</code>
+  property ends up with the newly created id value.
+</p>
+
+<p>
+  To run the Hello World example, use the Ant task
+  <code>helloworld</code>
+  . Type (or double click on it if using the Eclipse Ant View):
+</p>
+
+<p>
+<pre class="nohighlight">ant helloworld</pre>
+</p>
+
+<p>The output looks like:</p>
+
+<pre class="nohighlight">Buildfile: build.xml
+helloworld:
+   [delete] Deleting directory build
+    [mkdir] Created dir: build
+    [javac] Compiling 4 source files to build
+     [echo]  
+     [java] Example 1 - Hello World - Starting
+     [java] New vehicle Skoda added, with id 4.
+     [java] Example 1 - Hello World - Finished
+BUILD SUCCESSFUL
+Total time: 1 second</pre>
+
+<p>
+  The new row was added! To verify it&#39;s there you can use the
+  <code>list-data</code>
+  Ant task discussed earlier. Type (or double click on it if using the
+  Eclipse Ant View):
+</p>
+
+<pre class="nohighlight">ant list-data</pre>
+
+<p>The table now looks like:</p>
+
+<pre class="nohighlight">Buildfile: build.xml
+list-data:
+      [sql] Executing commands
+      [sql] ID,BRAND,MODEL,USED,CURRENT_MILEAGE,PURCHASED_ON
+      [sql] 1,Kia,Soul,TRUE,28500,2014-03-14
+      [sql] 2,Toyota,Tercel,FALSE,26,2017-01-28
+      [sql] 3,DeLorean,DMC-12,TRUE,241689,1982-11-17
+      [sql] 4,Skoda,Octavia,FALSE,7,2017-01-28
+      [sql] 0 rows affected
+      [sql] 1 of 1 SQL statements executed successfully
+BUILD SUCCESSFUL
+Total time: 756 milliseconds</pre>
+
+<p>
+  ...and there it is! A fourth row is now shown with the <u>Skoda
+    Octavia</u> vehicle. Incidentally, we can see its id actually has the
+  value 4.
+</p>
+
+<p>That&#39;s it! You have set up the HotRod application and
+  configuration, you created a database with a table, then you generated
+  the DAO classes using HotRod, and finally you ran the application.
+  Congratulations!</p>
+
+<p>Once done, don&#39;t forget to stop the H2 database! I always do.</p>
+
+<p>&nbsp;</p>

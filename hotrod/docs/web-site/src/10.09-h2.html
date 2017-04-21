@@ -1,0 +1,181 @@
+<h1>Support for H2 database</h1>
+
+<p>The HotRod H2 adapter automatically maps known database column
+  types to DAO Java types. In most of the cases this default Java type
+  is well suited to handle the database values. However, when needed the
+  default Java type of a property can be overridden by a custom type if
+  it&#39;s provided by the developer.</p>
+
+<h2>Default Java Types</h2>
+
+<p>If a custom Java type is not specified HotRod will use the
+  following rules to decide which Java type to use for each H2 column.
+  In yellow is the DAO property type. In parenthesis the actual object
+  type returned by the H2 JDBC driver, that on occasions may be
+  different.</p>
+
+<p>Please note that the Java types for the H2 columns may vary
+  depending on the specific version and variant of the RDBMS, the
+  operating system where the database engine is running, and the JDBC
+  driver version.</p>
+
+<table class="column-type-table">
+  <tbody>
+    <tr>
+      <th><strong>H2 Column Type</strong></th>
+      <th><strong>Default Java Type</strong></th>
+    </tr>
+    <tr>
+      <td>TINYINT</td>
+      <td><kbd>java.lang.Byte</kbd></td>
+    </tr>
+    <tr>
+      <td>SMALLINT,<br /> INT2,<br /> YEAR
+      </td>
+      <td><kbd>java.lang.Short</kbd></td>
+    </tr>
+    <tr>
+      <td>INTEGER,<br /> INT,<br /> MEDIUMINT,<br /> INT4,<br />
+        SIGNED,<br /> IDENTITY
+      </td>
+      <td><kbd>java.lang.Integer</kbd></td>
+    </tr>
+    <tr>
+      <td>BIGINT,<br /> INT8
+      </td>
+      <td><kbd>java.lang.Long</kbd></td>
+    </tr>
+    <tr>
+      <td>DECIMAL(p,s),<br /> DEC(p,s),<br /> NUMERIC(p,s),<br />
+        NUMBER(p,s)<br /> &nbsp;
+      </td>
+      <td>If neither p or s are specified:
+        <ul>
+          <li><kbd>java.math.BigInteger</kbd></li>
+        </ul> If s is specified and different from zero the Java type is:
+
+        <ul>
+          <li><kbd>java.math.BigDecimal</kbd></li>
+        </ul> if s is not specified or specified with a value of zero:
+
+        <ul>
+          <li>if p &lt;= 2: <kbd>java.lang.Byte</kbd></li>
+          <li>if 2 &lt; p &lt;= 4: <kbd>java.lang.Short</kbd></li>
+          <li>if 4 &lt; p &lt;= 9: <kbd>java.lang.Integer</kbd></li>
+          <li>if 8 &lt; p &lt;= 18: <kbd>java.lang.Long</kbd></li>
+          <li>if p &gt; 18: <kbd>java.math.BigInteger</kbd></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>REAL,<br /> FLOAT4
+      </td>
+      <td><kbd>java.lang.Float</kbd></td>
+    </tr>
+    <tr>
+      <td>DOUBLE,<br /> DOUBLE PRECISION,<br /> FLOAT,<br />
+        FLOAT8
+      </td>
+      <td><kbd>java.lang.Double</kbd></td>
+    </tr>
+    <tr>
+      <td>CHAR(n),<br /> CHARACTER(n),<br /> NCHAR(n)
+      </td>
+      <td><kbd>java.lang.String</kbd></td>
+    </tr>
+    <tr>
+      <td>VARCHAR(n),<br /> LONGVARCHAR(n),<br /> VARCHAR2(n),<br />
+        NVARCHAR(n),<br /> NVARCHAR2(n),<br />
+        VARCHAR_CASEINSENSITIVE(n),<br /> VARCHAR_INGNORECASE(n)
+      </td>
+      <td><kbd>java.lang.String</kbd></td>
+    </tr>
+    <tr>
+      <td>CLOB(n),<br /> NCLOB(n),<br /> TINYTEXT(n),<br />
+        TEXT(n),<br /> MEDIUMTEXT(n),<br /> LONGTEXT(n),<br />
+        NTEXT(n)
+      </td>
+      <td><kbd>java.lang.String</kbd></td>
+    </tr>
+    <tr>
+      <td>DATE</td>
+      <td><kbd>java.sql.Date</kbd></td>
+    </tr>
+    <tr>
+      <td>TIME</td>
+      <td><kbd>java.sql.Time</kbd></td>
+    </tr>
+    <tr>
+      <td>TIMESTAMP,<br /> DATETIME,<br /> SMALLDATETIME
+      </td>
+      <td><kbd>java.sql.Timestamp</kbd></td>
+    </tr>
+    <tr>
+      <td>BINARY(n),<br /> VARBINARY(n),<br /> LONGVARBINARY(n),<br />
+        RAW(n),<br /> BYTEA(n),<br /> BLOB(n),<br /> TINYBLOB(n),<br />
+        MEDIUMBLOB(n),<br /> LONGBLOB(n),<br /> IMAGE(n),<br />
+        OID(n)
+      </td>
+      <td><kbd>byte[]</kbd></td>
+    </tr>
+    <tr>
+      <td>BOOLEAN,<br /> BIT,<br /> BOOL
+      </td>
+      <td><kbd>java.lang.Boolean</kbd></td>
+    </tr>
+    <tr>
+      <td>UUID</td>
+      <td><kbd>byte[]</kbd> *</td>
+    </tr>
+    <tr>
+      <td>ARRAY</td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>GEOMETRY</td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>OTHER</td>
+      <td><kbd>byte[]</kbd> **</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  * Even when H2&#39;s documentation states that UUID can be mapped to
+  <code>java.util.UUID</code>
+  this seems to work only when writing a value into H2. When reading the
+  JDBC driver seems to produce a null value in all cases. A
+  <code>byte[]</code>
+  type, on the other hand, works consistently.
+</p>
+
+<p>
+  ** H2&#39;s documentation states that a
+  <code>java.lang.Object</code>
+  type can be used, but it does not work well in MyBatis. A
+  <code>byte[]</code>
+  type, on the other hand, works consistently.
+</p>
+
+<h2>Custom Java Types</h2>
+
+<p>
+  To override the default Java type see the reference section for the
+  tables, views, and selects. The <b>Example 19 - Custom DAO
+    Property Java Types</b> shows a case where a custom type overrides the
+  default type. To override the default type add a
+  <code>&lt;column&gt;</code>
+  tag in a
+  <code>&lt;table&gt;</code>
+  ,
+  <code>&lt;view&gt;</code>
+  , or
+  <code>&lt;select&gt;</code>
+  definition.
+</p>
+
+<p>&nbsp;</p>
+
+

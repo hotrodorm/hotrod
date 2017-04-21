@@ -1,0 +1,205 @@
+<h1>Support for Microsoft SQL Server database</h1>
+
+<p>The HotRod SQL Server adapter automatically maps known database
+  column types to DAO Java types. In most of the cases this default Java
+  type is well suited to handle the database values. However, when
+  needed the default Java type of a property can be overridden by a
+  custom type if it&#39;s provided by the developer.</p>
+
+<h2>Default Java Types</h2>
+
+<p>If a custom Java type is not specified HotRod will use the
+  following rules to decide which Java type to use for each SQL Server
+  column. In yellow is the DAO property type. In parenthesis the actual
+  object type returned by the SQL Server JDBC driver, that on occasions
+  may be different.</p>
+
+<p>Please note that the Java types for the SQL Server columns may
+  vary depending on the specific version and variant of the RDBMS, the
+  operating system where the database engine is running, and the JDBC
+  driver version.</p>
+
+<table class="column-type-table">
+  <tbody>
+    <tr>
+      <th><strong>SQL Server Column Type</strong></th>
+      <th><strong>Default Java Type</strong></th>
+    </tr>
+    <tr>
+      <td>BIT</td>
+      <td><kbd>java.lang.Byte</kbd></td>
+    </tr>
+    <tr>
+      <td>TINYINT</td>
+      <td><kbd>java.lang.Byte</kbd></td>
+    </tr>
+    <tr>
+      <td>SMALLINT</td>
+      <td><kbd>java.lang.Short</kbd></td>
+    </tr>
+    <tr>
+      <td>INT</td>
+      <td><kbd>java.lang.Integer</kbd></td>
+    </tr>
+    <tr>
+      <td>BIGINT</td>
+      <td><kbd>java.lang.Long</kbd></td>
+    </tr>
+    <tr>
+      <td>DECIMAL(p,s),<br /> DEC(p,s),<br /> NUMERIC(p,s)
+      </td>
+      <td>If neither p or s are specified, i.e. <code>DECIMAL(18,0</code>):
+        <ul>
+          <li><kbd>java.lang.Long</kbd></li>
+        </ul> If s is specified and different from zero the Java type is:
+
+        <ul>
+          <li><kbd>java.math.BigDecimal</kbd></li>
+        </ul> if s is not specified or it&#39;s zero:
+
+        <ul>
+          <li>if p &lt;= 2: <kbd>java.lang.Byte</kbd></li>
+          <li>if 2 &lt; p &lt;= 4: <kbd>java.lang.Short</kbd></li>
+          <li>if 4 &lt; p &lt;= 9: <kbd>java.lang.Integer</kbd></li>
+          <li>if 8 &lt; p &lt;= 18: <kbd>java.lang.Long</kbd></li>
+          <li>if p &gt; 18: <kbd>java.math.BigInteger</kbd></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>MONEY,<br /> SMALLMONEY
+      </td>
+      <td><kbd>java.math.BigDecimal</kbd></td>
+    </tr>
+    <tr>
+      <td>FLOAT(n)</td>
+      <td>If n is not specified, i.e. a <code>FLOAT(53)</code>:
+        <ul>
+          <li><kbd>java.lang.Double</kbd></li>
+        </ul> if n is specified:
+
+        <ul>
+          <li>if n &lt;= 24: <kbd>java.lang.Float</kbd></li>
+          <li>if n &gt;= 25: <kbd>java.lang.Double</kbd></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>REAL</td>
+      <td><kbd>java.lang.Float</kbd><br /> <strong>Note</strong>:
+        <code>REAL</code> is equivalent to <code>FLOAT(24)</code>,</td>
+    </tr>
+    <tr>
+      <td>CHAR(n),<br /> CHARACTER(n),<br /> VARCHAR(n|MAX),<br />
+        CHARVARYING(n|MAX),<br /> CHARACTERVARYING(n|MAX),<br />
+        NCHAR(n),<br /> NATIONAL CHAR(n),<br /> NATIONAL CHARACTER(n),<br />
+        NVARCHAR(n|MAX),<br /> NATIONAL CHAR VARYING(n|MAX),<br />
+        NATIONAL CHARACTER VARYING(n|MAX),<br /> TEXT,<br /> NTEXT
+      </td>
+      <td><kbd>java.lang.String</kbd></td>
+    </tr>
+    <tr>
+      <td>DATE</td>
+      <td><kbd>java.sql.Date</kbd></td>
+    </tr>
+    <tr>
+      <td>DATETIME,<br /> SMALLDATETIME
+      </td>
+      <td><kbd>java.util.Date</kbd></td>
+    </tr>
+    <tr>
+      <td>DATETIME2(n),<br /> DATETIMEOFFSET(n)
+      </td>
+      <td><kbd>java.sql.Timestamp</kbd></td>
+    </tr>
+    <tr>
+      <td>TIME(n)</td>
+      <td>If n is not specified, i.e. <code>TIME(7)</code>:
+        <ul>
+          <li><kbd>java.sql.Timestamp</kbd></li>
+        </ul> If n is specified:
+
+        <ul>
+          <li>If n &lt;=3: <kbd>java.sql.Time</kbd></li>
+          <li>If n &gt;=4: <kbd>java.sql.Timestamp</kbd></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>BINARY(n),<br /> VARBINARY(n|MAX),<br /> IMAGE
+      </td>
+      <td><kbd>byte[]</kbd></td>
+    </tr>
+    <tr>
+      <td>HIERARCHYID</td>
+      <td><kbd>byte[]</kbd></td>
+    </tr>
+    <tr>
+      <td>ROWVERSION</td>
+      <td><kbd>java.lang.Object</kbd> Cannot insert, nor update by
+        PK. Selects and deletes work normally. Rows can be
+        &ldquo;updated by example&rdquo; when excluding this column.</td>
+    </tr>
+    <tr>
+      <td>UNIQUEIDENTIFIER</td>
+      <td><kbd>java.lang.String</kbd></td>
+    </tr>
+    <tr>
+      <td>SQL_VARIANT</td>
+      <td>This type is not supported by the JDBC driver 4.0
+        provided by SQL Server. A workaround, at least to read it, is to
+        cast this column to a different supported type (maybe using a
+        view or a select) as in th expression: <code>CAST(&lt;column&gt;
+          AS &lt;type&gt;)</code>
+      </td>
+    </tr>
+    <tr>
+      <td>XML</td>
+      <td><kbd>java.lang.String</kbd> *</td>
+    </tr>
+    <tr>
+      <td>GEOGRAPHY</td>
+      <td><kbd>byte[]</kbd> **</td>
+    </tr>
+    <tr>
+      <td>GEOMETRY</td>
+      <td><kbd>byte[]</kbd> **</td>
+    </tr>
+    <tr>
+      <td>(pseudo column) &lt;col&gt; as &lt;expression&gt;</td>
+      <td>Type depends on expression type. Cannot insert, nor
+        update by PK. Selects and deletes work normally. Rows can be
+        &ldquo;updated by example&rdquo; when excluding this column.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  * Must be a well-formed XML String. Depending on the column definition
+  it may also need to be a valid XML String.<br /> ** These data types
+  represent well-formed binary data as specified by the
+  &ldquo;[MS-SSCLRT]: Microsoft SQL Server CLR Types Serialization
+  Formats&rdquo; document at
+  <code>https://msdn.microsoft.com/en-us/library/ee320529.aspx</code>
+  .
+</p>
+
+<h2>Custom Java Types</h2>
+
+<p>
+  To override the default Java type see the reference section for the
+  tables, views, and selects. The <b>Example 19 - Custom DAO
+    Property Java Types</b> shows a case where a custom type overrides the
+  default type. To override the default type add a
+  <code>&lt;column&gt;</code>
+  tag in a
+  <code>&lt;table&gt;</code>
+  ,
+  <code>&lt;view&gt;</code>
+  , or
+  <code>&lt;select&gt;</code>
+  definition.
+</p>
+
+<p>&nbsp;</p>
+

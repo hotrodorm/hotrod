@@ -1,0 +1,145 @@
+<h1>Support for IBM DB2 database</h1>
+
+<p>The HotRod DB2 adapter automatically maps known database column
+  types to DAO Java types. In most of the cases this default Java type
+  is well suited to handle the database values. However, when needed the
+  default Java type of a property can be overridden by a custom type if
+  it&#39;s provided by the developer.</p>
+
+<h2>Default Java Types</h2>
+
+<p>If a custom Java type is not specified HotRod will use the
+  following rules to decide which Java type to use for each Oracle
+  column. In yellow is the DAO property type. In parenthesis the actual
+  object type returned by the IBM DB2 JDBC driver, that on occasions may
+  be different.</p>
+
+<p>Please note that the Java types for the IBM DB2 columns may vary
+  depending on the specific version and variant of the RDBMS, the
+  operating system where the database engine is running, and the JDBC
+  driver version.</p>
+
+<table class="column-type-table">
+  <tbody>
+    <tr>
+      <th><strong>DB2 Column Type</strong></th>
+      <th><strong>Default Java Type</strong></th>
+    </tr>
+    <tr>
+      <td>SMALLINT</td>
+      <td><kbd>java.lang.Short</kbd></td>
+    </tr>
+    <tr>
+      <td>INTEGER,<br /> INT
+      </td>
+      <td><kbd>java.lang.Integer</kbd></td>
+    </tr>
+    <tr>
+      <td>BIGINT</td>
+      <td><kbd>java.lang.Long</kbd></td>
+    </tr>
+    <tr>
+      <td>DECIMAL(p,s),<br /> DEC(p,s),<br /> NUMERIC(p,s),<br />
+        NUM(p,s)
+      </td>
+      <td>If s is specified and different from zero the Java type
+        is:
+        <ul>
+          <li><kbd>java.math.BigDecimal</kbd></li>
+        </ul> if s is not specified or it&#39;s zero:
+
+        <ul>
+          <li>if p &lt;= 2: <kbd>java.lang.Byte</kbd></li>
+          <li>if 2 &lt; p &lt;= 4: <kbd>java.lang.Short</kbd></li>
+          <li>if 4 &lt; p &lt;= 9: <kbd>java.lang.Integer</kbd></li>
+          <li>if 8 &lt; p &lt;= 18: <kbd>java.lang.Long</kbd></li>
+          <li>if p &gt; 18: <kbd>java.math.BigInteger</kbd></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>DECFLOAT</td>
+      <td><kbd>java.math.BigDecimal</kbd></td>
+    </tr>
+    <tr>
+      <td>REAL</td>
+      <td><kbd>java.lang.Float</kbd></td>
+    </tr>
+    <tr>
+      <td>FLOAT,<br /> DOUBLE
+      </td>
+      <td><kbd>java.lang.Double</kbd></td>
+    </tr>
+    <tr>
+      <td>CHAR(n),<br /> CHARACTER(n),<br /> VARCHAR(n),<br />
+        CHARACTER VARYING(n),<br /> CLOB(n),<br /> GRAPHIC(n),<br />
+        NCHAR(n),<br /> VARGRAPHIC(n),<br /> NVARCHAR(n),<br />
+        DBCLOB(n),<br /> NCLOB(n),<br /> LONG VARCHAR,<br /> LONG
+        VARGRAPHIC
+      </td>
+      <td><kbd>java.lang.String</kbd></td>
+    </tr>
+    <tr>
+      <td>VARCHAR FOR BIT DATA,<br /> LONG VARCHAR FOR BIT DATA,<br />
+        CHAR(n) FOR BIT DATA,<br /> BLOB(n)
+      </td>
+      <td><kbd>byte[]</kbd></td>
+    </tr>
+    <tr>
+      <td>DATE</td>
+      <td><kbd>java.sql.Date</kbd></td>
+    </tr>
+    <tr>
+      <td>TIME</td>
+      <td><kbd>java.sql.Time</kbd></td>
+    </tr>
+    <tr>
+      <td>TIMESTAMP</td>
+      <td><kbd>java.sql.Timestamp</kbd></td>
+    </tr>
+    <tr>
+      <td>XML</td>
+      <td><kbd>java.lang.String</kbd></td>
+    </tr>
+    <tr>
+      <td>BOOLEAN (pseudo type)</td>
+      <td><kbd>java.lang.String</kbd></td>
+    </tr>
+    <tr>
+      <td>BINARY</td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>VARBINARY</td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>ROW</td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>ARRAY</td>
+      <td>No default HotRod data type</td>
+    </tr>
+  </tbody>
+</table>
+<h2>Custom Java Types</h2>
+
+<p>
+  To override the default Java type see the reference section for the
+  tables, views, and selects. The <b>Example 19 - Custom DAO
+    Property Java Types</b> shows a case where a custom type overrides the
+  default type. To override the default type add a
+  <code>&lt;column&gt;</code>
+  tag in a
+  <code>&lt;table&gt;</code>
+  ,
+  <code>&lt;view&gt;</code>
+  , or
+  <code>&lt;select&gt;</code>
+  definition.
+</p>
+
+<p>&nbsp;</p>
+
+

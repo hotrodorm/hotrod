@@ -1,0 +1,252 @@
+<h1>Example 1 - CRUD Operations on Tables</h1>
+
+<p>This example shows the basic out-of-the-box CRUD (create, read,
+  update, delete) operations on a table of the database. This example
+  shows how to operate on single rows identifying them by the PK
+  (primary key) of the table; the PK is auto-generated as an identity
+  key.</p>
+
+<p>However, if the table did not have a PK, then only the insert
+  operation would be available and the options to perform select,
+  update, and delete would be more limited. We could still use the
+  out-of-the-box select, update, and delete &ldquo;by example&rdquo;
+  operations described on examples further on.</p>
+
+<h2>DAO/VO class and its properties</h2>
+
+<p>For each table Hotrod generates a DAO class that combines the DAO
+  pattern (persistence methods) with the VO pattern (value object that
+  represents a row of a table).</p>
+
+<p>
+  This example uses the
+  <code>VEHICLE</code>
+  table to demonstrate the basic CRUD operations. HotRod created a DAO
+  class
+  <code>VehicleDAO</code>
+  for this table. Its name is configurable but defaults to the table
+  name with the DAO suffix.
+</p>
+
+<p>For each table column this class includes a property with a name
+  and a specific Java type. Both are configurable: the name defaults to
+  the column name in Java format, an the Java type defaults to a
+  suitable Java type for each column. This Java type heavily depends on
+  the specifics of the RDBMS.</p>
+
+<h2>How to Run this example</h2>
+
+<p>
+  The <strong>Example 01</strong> is included in the download package.
+  To run this example please refer to the section <a
+    href="http://How to Run the Examples">How to Run the Examples</a>
+  above.<br />
+</p>
+
+<h2>Insert</h2>
+
+<p>
+  In this example, the section below shows how to insert a new row in
+  the table
+  <code>VEHICLE</code>
+  :
+</p>
+
+<pre class="java">    VehicleDAO skoda = new VehicleDAO();
+    skoda.setBrand("Skoda");
+    skoda.setModel("Octavia");
+    skoda.setUsed(false);
+    skoda.setCurrentMileage(7);
+    skoda.setPurchasedOn(new Date(System.currentTimeMillis()));
+    int rows = skoda.insert();
+    System.out.println("New vehicle Skoda added. New ID=" + skoda.getId()
+      + ". Rows inserted=" + rows);</pre>
+
+<p>
+  The
+  <code>insert()</code>
+  method is always available, regardless if the table has or has not a
+  PK: you can always insert.
+</p>
+
+<p>
+  It first instantiates a new object of the class
+  <code>VehicleDAO</code>
+  , then it set the property values for the row we want to insert, and
+  finally it performs the
+  <code>insert()</code>
+  operation.
+</p>
+
+<p>There are a few things to note here:</p>
+
+<ul>
+  <li>This example does not include any transaction demarcation
+    (begin transaction and commit transaction). When no transaction
+    demarcation is specified, each database operation commits
+    automatically.</li>
+  <li>The PK property <code>ID</code> was not set before inserting
+    the row. Since HotRod was configured to treat this column as
+    auto-generated its value is ignored while inserting and is populated
+    right after the insert. In this case, the PK <code>ID</code> has the
+    value of the newly inserted PK.
+  </li>
+  <li>The <code>insert()</code> method returns the number of
+    affected rows.
+  </li>
+  <li>If the <code>insert()</code> operation fails by any reason an
+    Exception is thrown. By default the checked <code>SQLException</code>
+    is thrown, but can be also configured to throw the unchecked Mybatis
+    <code>PersistenceException</code>. See the MyBatis Generator Options
+    section.
+  </li>
+</ul>
+
+<h2>Select by PK</h2>
+
+<p>In this example, the section below shows how to select a row
+  using the PK.</p>
+
+<pre class="java">    VehicleDAO delorean = VehicleDAO.select(3);</pre>
+
+<p>
+  If the table has a PK, the DAO includes the
+  <code>select()</code>
+  method that retrieves a row by a PK value. This method is not present
+  if the table does not have a PK.
+</p>
+
+<p>There are a few things to note here:</p>
+
+<ul>
+  <li>The <code>select()</code> method is static, so it&#39;s used
+    from the DAO class itself.
+  </li>
+  <li>The <code>select()</code> method parameters are the PK
+    values. For a composite PK, multiple parameters are used as needed.
+  </li>
+  <li>The <code>select()</code> method returns a single DAO object.
+    If no row is found for the specified PK a null is returned.
+  </li>
+  <li>If the <code>select()</code> operation fails by any reason an
+    Exception is thrown. By default the checked <code>SQLException</code>
+    is thrown, but can be also configured to throw the unchecked Mybatis
+    <code>PersistenceException</code>. See the MyBatis Generator Options
+    section.
+  </li>
+</ul>
+
+<h2>Update by PK</h2>
+
+<p>In this example, the section below shows how to update a row
+  using the PK.</p>
+
+<pre class="java">    VehicleDAO delorean = VehicleDAO.select(3);
+
+    // Update by PK: set the mileage of the DeLorean to 270500
+
+    if (delorean != null) {
+      delorean.setCurrentMileage(270500);
+      rows = delorean.update();
+      System.out.println("DeLorean updated. Rows updated=" + rows);
+    } else {
+      System.out.println("Could not update DeLorean. Car not found.");
+    }</pre>
+
+<p>
+  If the table has a PK, the DAO includes the
+  <code>update()</code>
+  method that updates a row by the PK value. This method is not present
+  if the table does not have a PK. The key section of this example are
+  the two lines:
+</p>
+
+<pre class="java">      delorean.setCurrentMileage(270500);
+      rows = delorean.update();</pre>
+
+<p>This example retrieved a row using a Select by PK method (example
+  above), then modified one property, and finally updated the row.</p>
+
+<p>There are a few things to note here:</p>
+
+<ul>
+  <li>The <code>update()</code> method is not static. It operates
+    on an object, not the class itself. All the non-PK columns
+    (properties) are updated into the database row, including the
+    unmodified properties.
+  </li>
+  <li>In this example, since some time passes between the <code>select()</code>
+    and <code>update()</code> operations, it&#39;s technically possible
+    that the table row could have been updated in the mean time by
+    another process or thread. If so, the <code>update()</code>
+    operation will override the other process&#39; values, effectively
+    losing that information. To deal with this problem, you can use the
+    pessimistic locking strategy (row locks or table locks), or use
+    optimistic locking strategy (Row Version Control). The latter is
+    implemented by HotRod and is described later in the section <a
+    href="http://Optimistic Locking (Row Version Control)">Optimistic
+      Locking (Row Version Control)</a>.
+  </li>
+  <li>This example does not include any transaction demarcation
+    (begin transaction and commit transaction). When no transaction
+    demarcation is specified, each database operation commits
+    automatically.</li>
+  <li>The <code>update()</code> method returns the number of
+    affected rows. If there&#39;s no row for the specified PK values, it
+    returns a zero.
+  </li>
+  <li>If the <code>update()</code> operation fails by any reason an
+    Exception is thrown. By default the checked <code>SQLException</code>
+    is thrown, but can be also configured to throw the unchecked Mybatis
+    <code>PersistenceException</code>. See the MyBatis Generator Options
+    section.
+  </li>
+</ul>
+
+<h2>Delete By PK</h2>
+
+<p>In this example, the section below shows how to delete a row
+  using the PK.</p>
+
+<pre class="java">    VehicleDAO toyota = new VehicleDAO();
+    toyota.setId(2);
+    rows = toyota.delete();</pre>
+
+<p>
+  If the table has a PK, the DAO includes the
+  <code>delete()</code>
+  method that deleted a row by the PK value. This method is not present
+  if the table does not have a PK.
+</p>
+
+<p>
+  It first uses an object of the class
+  <code>VehicleDAO</code>
+  , the sets the PK columns (one or more), and finally deletes the row.
+</p>
+
+<p>There are a few things to note here:</p>
+
+<ul>
+  <li>The <code>delete()</code> method is not static. It operates
+    on an object, not the class itself. Only the PK columns are used.
+    All other columns are ignored.
+  </li>
+  <li>This example does not include any transaction demarcation
+    (begin transaction and commit transaction). When no transaction
+    demarcation is specified, each database operation commits
+    automatically.</li>
+  <li>The <code>delete()</code> method returns the number of
+    affected rows. If there&#39;s no row for the specified PK values, it
+    returns a zero.
+  </li>
+  <li>If the <code>delete()</code> operation fails by any reason an
+    Exception is thrown. By default the checked <code>SQLException</code>
+    is thrown, but can be also configured to throw the unchecked Mybatis
+    <code>PersistenceException</code>. See the MyBatis Generator Options
+    section.
+  </li>
+</ul>
+
+<p>&nbsp;</p>
+
