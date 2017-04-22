@@ -8,7 +8,7 @@ import daos.DailyReportDAO;
 /**
  * Example 09 - Retrieving Sequence Values
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example09 {

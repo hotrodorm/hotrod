@@ -8,7 +8,7 @@ import daos.VehicleValuationDAO;
 /**
  * Example 18 - Custom Property Names for DAOs
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example18 {

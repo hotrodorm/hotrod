@@ -36,21 +36,20 @@ public class Book {
     c.addArticle(numbers.getArticleNumber(), name, title);
   }
 
-  public String renderMenuFor(final String name, final String title) {
+  public String renderMenuFor(final String filename, final String title) {
     StringBuilder sb = new StringBuilder();
 
     sb.append("    <ul class=\"menu\">\n");
 
-    // <li><a href="02-apache-2.0-license.html">Apache 2.0 License</a></li>
-    // <li><a class="active" href="03-downloads.html">Downloads</a></li>
-
     for (Chapter c : this.chapters.values()) {
-      for (Article article : c.getArticles().values()) {
-        if (article.equals(name)) {
-          sb.append("      <li><a class=\"active\" href=\"" + article.getFilename() + "\">" + article.getTitle()
+      for (Integer articleNumber : c.getArticles().keySet()) {
+        Article article = c.getArticles().get(articleNumber);
+        String li = "<li" + (articleNumber.equals(0) ? "" : " class=\"menu2\"") + ">";
+        if (article.getFilename().equals(filename)) {
+          sb.append("      " + li + "<a class=\"active\" href=\"" + article.getFilename() + "\">" + article.getTitle()
               + "</a></li>\n");
         } else {
-          sb.append("      <li><a href=\"" + article.getFilename() + "\">" + article.getTitle() + "</a></li>\n");
+          sb.append("      " + li + "<a href=\"" + article.getFilename() + "\">" + article.getTitle() + "</a></li>\n");
         }
       }
     }
@@ -72,6 +71,7 @@ public class Book {
   private static class ChapterArticleNumbers {
 
     private Integer chapterNumber;
+
     private Integer articleNumber;
 
     public ChapterArticleNumbers(final String name) {
@@ -110,6 +110,41 @@ public class Book {
         return 0;
       }
     }
+
+    // Indexing
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((articleNumber == null) ? 0 : articleNumber.hashCode());
+      result = prime * result + ((chapterNumber == null) ? 0 : chapterNumber.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      ChapterArticleNumbers other = (ChapterArticleNumbers) obj;
+      if (articleNumber == null) {
+        if (other.articleNumber != null)
+          return false;
+      } else if (!articleNumber.equals(other.articleNumber))
+        return false;
+      if (chapterNumber == null) {
+        if (other.chapterNumber != null)
+          return false;
+      } else if (!chapterNumber.equals(other.chapterNumber))
+        return false;
+      return true;
+    }
+
+    // Getters
 
     public Integer getChapterNumber() {
       return chapterNumber;

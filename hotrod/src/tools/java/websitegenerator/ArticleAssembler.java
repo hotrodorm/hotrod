@@ -21,8 +21,8 @@ public class ArticleAssembler {
     this.templateFile = templateFile;
   }
 
-  public void assembleArticles()
-      throws DuplicateArticleException, CouldNotLoadTemplateException, CouldNotSaveArticleException {
+  public void assembleArticles() throws DuplicateArticleException, CouldNotLoadTemplateException,
+      CouldNotSaveArticleException, InvalidJavaIncludeException {
 
     // Load all articles
 
@@ -67,51 +67,51 @@ public class ArticleAssembler {
 
     for (Chapter c : book.getChapters().values()) {
       for (Article a : c.getArticles().values()) {
-        String name = a.getFilename();
+        String filename = a.getFilename();
         String content = template;
         try {
 
-          System.out.println("generating article '" + name + "'...");
+          System.out.println("generating article '" + filename + "'...");
 
-          String article = FUtils.loadFileAsString(new File(this.sourceDir, name));
+          String article = FUtils.loadFileAsString(new File(this.sourceDir, filename));
 
           // Add title
 
           String title = TitleFinder.findTitle(article, "(no title)");
           content = replaceToken(content, "${title}", title);
 
-          System.out.println("OK 1");
-
           // Add menu
 
-          String menu = book.renderMenuFor(name, title);
+          String menu = book.renderMenuFor(filename, title);
           content = replaceToken(content, "<menu />", menu);
-
-          System.out.println("OK 2");
 
           // Add article
 
           content = replaceToken(content, "<article />", article);
 
-          System.out.println("OK 3");
+          // Include java code
+
+          content = processJavaIncludes(content);
 
         } catch (FileNotFoundException e) {
-          throw new CouldNotLoadTemplateException("Article file '" + name + "' not found: " + e.getMessage());
+          throw new CouldNotLoadTemplateException("Article file '" + filename + "' not found: " + e.getMessage());
         } catch (UnsupportedEncodingException e) {
           throw new CouldNotLoadTemplateException(
-              "Invalid article file encoding for file '" + name + "': " + e.getMessage());
+              "Invalid article file encoding for file '" + filename + "': " + e.getMessage());
         } catch (IOException e) {
-          throw new CouldNotLoadTemplateException("Could not load article file '" + name + "': " + e.getMessage());
+          throw new CouldNotLoadTemplateException("Could not load article file '" + filename + "': " + e.getMessage());
+        } catch (InvalidJavaIncludeException e) {
+          throw new InvalidJavaIncludeException("Could not process article file '" + filename + "': " + e.getMessage());
         }
 
         // Save article
 
         try {
 
-          FUtils.saveStringToFile(new File(this.destDir, name), content);
+          FUtils.saveStringToFile(new File(this.destDir, filename), content);
 
         } catch (IOException e) {
-          throw new CouldNotSaveArticleException("Could not save article '" + name + "': " + e.getMessage());
+          throw new CouldNotSaveArticleException("Could not save article '" + filename + "': " + e.getMessage());
         }
 
       }
@@ -119,16 +119,57 @@ public class ArticleAssembler {
 
   }
 
+  private static final String JAVA_BEGIN = "<java-file name=\"";
+  private static final String JAVA_END = "\" />";
+
+  private String processJavaIncludes(final String content) throws InvalidJavaIncludeException {
+    int pos = 0;
+    int start;
+    int end;
+    StringBuilder sb = new StringBuilder();
+    while ((start = content.indexOf(JAVA_BEGIN, pos)) != -1) {
+      end = content.indexOf(JAVA_END, start + JAVA_BEGIN.length());
+      if (end == -1) {
+        throw new InvalidJavaIncludeException("Invalid java include: initial token found, but no end token found.");
+      }
+      System.out
+          .println("start=" + start + " end=" + end + " start + JAVA_BEGIN.length()=" + (start + JAVA_BEGIN.length()));
+      String javaFileName = content.substring(start + JAVA_BEGIN.length(), end);
+      File f = new File(javaFileName);
+      String javaSource;
+      try {
+        javaSource = FUtils.loadFileAsString(f);
+      } catch (FileNotFoundException e) {
+        throw new InvalidJavaIncludeException(
+            "Invalid java include: java file '" + f.getPath() + "' not found: " + e.getMessage());
+      } catch (UnsupportedEncodingException e) {
+        throw new InvalidJavaIncludeException(
+            "Invalid java include: unsupported encoding on java file '" + f.getPath() + "': " + e.getMessage());
+      } catch (IOException e) {
+        throw new InvalidJavaIncludeException(
+            "Invalid java include: could not read java file '" + f.getPath() + "': " + e.getMessage());
+      }
+      javaSource = javaSource.replaceAll("\\<", "\\&lt;");
+
+      sb.append(content.substring(pos, start));
+      sb.append("<pre class=\"java\">\n");
+      sb.append(javaSource);
+      sb.append("</pre>\n");
+
+      pos = end + JAVA_END.length();
+    }
+    sb.append(content.substring(pos));
+
+    return sb.toString();
+  }
+
   // Utilities
 
   private String replaceToken(final String template, final String token, final String value) {
     int idx = template.indexOf(token);
     if (idx == -1) {
-      System.out.println("token '" + token + "' not found.");
       return template;
     } else {
-      System.out.println(
-          "replacing '" + token + "' by '" + (value.length() < 100 ? value : value.substring(0, 100) + "...") + "'");
       return template.substring(0, idx) + value + template.substring(idx + token.length());
     }
   }
@@ -148,6 +189,16 @@ public class ArticleAssembler {
     private static final long serialVersionUID = 1L;
 
     public CouldNotSaveArticleException(String message) {
+      super(message);
+    }
+
+  }
+
+  public static class InvalidJavaIncludeException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+    public InvalidJavaIncludeException(String message) {
       super(message);
     }
 

@@ -9,7 +9,7 @@ import daos.primitives.VehicleDAOPrimitives.VehicleDAOOrderBy;
 /**
  * Example 03 - Select by Example
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example03 {

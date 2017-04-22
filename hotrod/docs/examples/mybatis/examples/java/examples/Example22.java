@@ -11,7 +11,7 @@ import daos.ClientDAO;
 /**
  * Example 22 - Including Existing MyBatis Mappers
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example22 {

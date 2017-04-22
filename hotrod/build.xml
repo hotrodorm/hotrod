@@ -19,6 +19,7 @@
   <property name="tools.build.dir" value="build/tools" />
   <property name="dtd.build.dir" value="build/dtd" />
   <property name="dist.dir" value="dist" />
+  <property name="website.dist.dir" value="dist/website" />
   <property name="release.dir" value="release" />
 
   <target name="-init">
@@ -28,6 +29,7 @@
     <mkdir dir="${tools.build.dir}" />
     <mkdir dir="${dtd.build.dir}" />
     <mkdir dir="${dist.dir}" />
+    <mkdir dir="${website.dist.dir}" />
     <mkdir dir="${release.dir}" />
     <loadproperties srcfile="build.properties" />
     <loadproperties srcfile="conf/workbench.properties" />
@@ -168,17 +170,20 @@
     <echo message="Assembling web site..." />
 
     <java classname="websitegenerator.Assembler">
+      <arg value="docs/web-site/src" />
+      <arg value="${website.dist.dir}" />
+      <arg value="docs/web-site/templates/template.html" />
       <classpath>
         <pathelement location="${tools.build.dir}" />
       </classpath>
     </java>
 
-    <copy todir="${dist.dir}">
+    <copy todir="${website.dist.dir}">
       <fileset dir="docs/web-site/src">
-        <exclude name="**/*.html"/>
+        <exclude name="**/*.html" />
       </fileset>
     </copy>
-    
+
     <echo message="Web site assembled." />
   </target>
 
@@ -198,17 +203,5 @@
       </classpath>
     </javac>
   </target>
-
-
-
-
-
-
-
-
-
-
-
-
 
 </project>

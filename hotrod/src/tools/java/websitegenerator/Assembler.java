@@ -10,9 +10,19 @@ public class Assembler {
 
   public static void main(final String[] args) {
 
-    File sourceDir = new File("docs/web-site/src");
-    File destDir = new File("dist");
-    File templateFile = new File("docs/web-site/templates/template.html");
+    if (args.length != 3) {
+      usage();
+      System.exit(1);
+      return;
+    }
+
+    File sourceDir = new File(args[0]);
+    File destDir = new File(args[1]);
+    File templateFile = new File(args[2]);
+
+    display("Source dir: " + sourceDir.getPath());
+    display("Dest dir: " + destDir.getPath());
+    display("Template file: " + templateFile.getPath());
 
     // Check source dir
 
@@ -30,18 +40,18 @@ public class Assembler {
     // Check dest dir
 
     if (!destDir.exists()) {
-      display("Dest dir '" + sourceDir.getAbsolutePath() + "' does not exist.");
+      display("Dest dir '" + destDir.getAbsolutePath() + "' does not exist.");
       System.exit(1);
       return;
     }
     if (!destDir.isDirectory()) {
-      display("Dest dir '" + sourceDir.getAbsolutePath() + "' must be a directory.");
+      display("Dest dir '" + destDir.getAbsolutePath() + "' must be a directory.");
       System.exit(1);
       return;
     }
     String[] files = destDir.list();
     if (files != null && files.length > 0) {
-      display("Dest dir '" + sourceDir.getAbsolutePath() + "' must be empty.");
+      display("Dest dir '" + destDir.getAbsolutePath() + "' must be empty.");
       System.exit(1);
       return;
     }
@@ -49,12 +59,12 @@ public class Assembler {
     // Check the template file
 
     if (!templateFile.exists()) {
-      display("Template file  '" + sourceDir.getAbsolutePath() + "' does not exist.");
+      display("Template file  '" + templateFile.getAbsolutePath() + "' does not exist.");
       System.exit(1);
       return;
     }
     if (!templateFile.isFile()) {
-      display("Template file '" + sourceDir.getAbsolutePath() + "' must be a normal file.");
+      display("Template file '" + templateFile.getAbsolutePath() + "' must be a normal file.");
       System.exit(1);
       return;
     }
@@ -84,6 +94,10 @@ public class Assembler {
 
     display("Assembling completed successfuly.");
 
+  }
+
+  private static void usage() {
+    display("Usage: assembler <source-dir> <dest-dir> <template-file>");
   }
 
   private static void display(final String txt) {

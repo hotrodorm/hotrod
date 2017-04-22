@@ -10,7 +10,7 @@ import daos.ClientDAO;
 /**
  * Example 16 - Optimistic Locking (Row Version Control)
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example16 {

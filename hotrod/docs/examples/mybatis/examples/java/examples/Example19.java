@@ -8,7 +8,7 @@ import daos.VehicleValuationDAO;
 /**
  * Example 19 - Custom Property Java Types for DAOs
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example19 {

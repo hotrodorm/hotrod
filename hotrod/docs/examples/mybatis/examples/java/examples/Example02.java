@@ -13,7 +13,7 @@ import daos.VisitDAO;
 /**
  * Example 02 - Insert Using Sequences and Identity PKs
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example02 {
