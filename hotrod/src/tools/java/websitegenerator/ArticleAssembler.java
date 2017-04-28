@@ -67,7 +67,7 @@ public class ArticleAssembler {
 
     for (Chapter c : book.getChapters().values()) {
       for (Article a : c.getArticles().values()) {
-        String filename = a.getFilename();
+        String filename = a.getFileName();
         String content = template;
         try {
 

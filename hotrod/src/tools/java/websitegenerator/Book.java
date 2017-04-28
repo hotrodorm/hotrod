@@ -18,22 +18,20 @@ public class Book {
     this.sourceDir = sourceDir;
   }
 
-  public void add(final String name)
+  public void add(final String filename)
       throws DuplicateArticleException, FileNotFoundException, UnsupportedEncodingException, IOException {
-    ChapterArticleNumbers numbers = new ChapterArticleNumbers(name);
-    Chapter c = this.chapters.get(numbers.getChapterNumber());
+
+    String articleContent = FUtils.loadFileAsString(new File(this.sourceDir, filename));
+    String title = TitleFinder.findTitle(articleContent, "(no title)");
+
+    Article a = new Article(filename, title);
+    Chapter c = this.chapters.get(a.getChapterNumber());
     if (c == null) {
-      c = new Chapter(numbers.getChapterNumber());
-      this.chapters.put(numbers.getChapterNumber(), c);
+      c = new Chapter(a.getChapterNumber());
+      this.chapters.put(a.getChapterNumber(), c);
     }
 
-    String article = FUtils.loadFileAsString(new File(this.sourceDir, name));
-
-    // Add title
-
-    String title = TitleFinder.findTitle(article, "(no title)");
-
-    c.addArticle(numbers.getArticleNumber(), name, title);
+    c.addArticle(a);
   }
 
   public String renderMenuFor(final String filename, final String title) {
@@ -43,13 +41,13 @@ public class Book {
 
     for (Chapter c : this.chapters.values()) {
       for (Integer articleNumber : c.getArticles().keySet()) {
-        Article article = c.getArticles().get(articleNumber);
+        Article a = c.getArticles().get(articleNumber);
         String li = "<li" + (articleNumber.equals(0) ? "" : " class=\"menu2\"") + ">";
-        if (article.getFilename().equals(filename)) {
-          sb.append("      " + li + "<a class=\"active\" href=\"" + article.getFilename() + "\">" + article.getTitle()
-              + "</a></li>\n");
+        if (a.getFileName().equals(filename)) {
+          sb.append(
+              "      " + li + "<a class=\"active\" href=\"" + a.getFileName() + "\">" + a.getTitle() + "</a></li>\n");
         } else {
-          sb.append("      " + li + "<a href=\"" + article.getFilename() + "\">" + article.getTitle() + "</a></li>\n");
+          sb.append("      " + li + "<a href=\"" + a.getFileName() + "\">" + a.getTitle() + "</a></li>\n");
         }
       }
     }
@@ -64,96 +62,6 @@ public class Book {
 
   public TreeMap<Integer, Chapter> getChapters() {
     return chapters;
-  }
-
-  // extra
-
-  private static class ChapterArticleNumbers {
-
-    private Integer chapterNumber;
-
-    private Integer articleNumber;
-
-    public ChapterArticleNumbers(final String name) {
-
-      if (name == null) {
-        this.chapterNumber = 0;
-        this.articleNumber = 0;
-        return;
-      }
-
-      int dash = name.indexOf('-');
-      if (dash == -1) {
-        this.chapterNumber = 0;
-        this.articleNumber = 0;
-        return;
-      }
-
-      String numbers = name.substring(0, dash);
-      int dot = numbers.indexOf('.');
-      if (dot == -1) {
-        this.chapterNumber = lenientParse(numbers);
-        this.articleNumber = 0;
-      } else {
-        this.chapterNumber = lenientParse(numbers.substring(0, dot));
-        this.articleNumber = lenientParse(numbers.substring(dot + 1));
-      }
-    }
-
-    private Integer lenientParse(final String txt) {
-      if (txt == null) {
-        return 0;
-      }
-      try {
-        return new Integer(txt);
-      } catch (NumberFormatException e) {
-        return 0;
-      }
-    }
-
-    // Indexing
-
-    @Override
-    public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((articleNumber == null) ? 0 : articleNumber.hashCode());
-      result = prime * result + ((chapterNumber == null) ? 0 : chapterNumber.hashCode());
-      return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj)
-        return true;
-      if (obj == null)
-        return false;
-      if (getClass() != obj.getClass())
-        return false;
-      ChapterArticleNumbers other = (ChapterArticleNumbers) obj;
-      if (articleNumber == null) {
-        if (other.articleNumber != null)
-          return false;
-      } else if (!articleNumber.equals(other.articleNumber))
-        return false;
-      if (chapterNumber == null) {
-        if (other.chapterNumber != null)
-          return false;
-      } else if (!chapterNumber.equals(other.chapterNumber))
-        return false;
-      return true;
-    }
-
-    // Getters
-
-    public Integer getChapterNumber() {
-      return chapterNumber;
-    }
-
-    public Integer getArticleNumber() {
-      return articleNumber;
-    }
-
   }
 
 }

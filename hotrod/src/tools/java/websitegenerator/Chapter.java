@@ -11,14 +11,23 @@ public class Chapter {
     this.chapterNumber = chapterNumber;
   }
 
-  public void addArticle(final Integer articleNumber, final String name, final String title)
-      throws DuplicateArticleException {
-    if (this.articles.containsKey(articleNumber)) {
+  public void addArticle(final Article a) throws DuplicateArticleException {
+    if (this.articles.containsKey(a.getArticleNumber())) {
       throw new DuplicateArticleException(
-          "Duplicate article " + this.chapterNumber + "." + articleNumber + " for file: " + name);
+          "Duplicate article " + this.chapterNumber + "." + a.getArticleNumber() + " for file: " + a.getFileName());
     }
-    Article a = new Article(title, name);
-    this.articles.put(articleNumber, a);
+    this.articles.put(a.getArticleNumber(), a);
+  }
+
+  public void renumber() {
+    TreeMap<Integer, Article> newArticles = new TreeMap<Integer, Article>();
+    int current = 10;
+    for (Integer n : this.articles.keySet()) {
+      Article a = this.articles.get(n);
+      a.setArticleNumber(current);
+      newArticles.put(a.getArticleNumber(), a);
+    }
+    this.articles = newArticles;
   }
 
   // Getters
