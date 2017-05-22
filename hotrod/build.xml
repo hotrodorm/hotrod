@@ -6,6 +6,7 @@
 
   <property name="main.src.dir" value="src/main/java" />
   <property name="runtime.src.dir" value="src/runtime/java" />
+  <property name="tools.src.dir" value="src/tools/java" />
 
   <property name="buildinfo.gen.dir" value="gen/buildinfo/java" />
 
@@ -15,16 +16,20 @@
   <property name="main.build.dir" value="build/java" />
   <property name="buildinfo.build.dir" value="build/buildinfo" />
   <property name="runtime.build.dir" value="build/test" />
+  <property name="tools.build.dir" value="build/tools" />
   <property name="dtd.build.dir" value="build/dtd" />
   <property name="dist.dir" value="dist" />
+  <property name="website.dist.dir" value="dist/website" />
   <property name="release.dir" value="release" />
 
   <target name="-init">
     <mkdir dir="${main.build.dir}" />
     <mkdir dir="${buildinfo.gen.dir}" />
     <mkdir dir="${runtime.build.dir}" />
+    <mkdir dir="${tools.build.dir}" />
     <mkdir dir="${dtd.build.dir}" />
     <mkdir dir="${dist.dir}" />
+    <mkdir dir="${website.dist.dir}" />
     <mkdir dir="${release.dir}" />
     <loadproperties srcfile="build.properties" />
     <loadproperties srcfile="conf/workbench.properties" />
@@ -145,7 +150,9 @@
     -->
     <zip destfile="${release.dir}/${projectName}-${version}.zip">
       <zipfileset dir="${dist.dir}" includes="*.jar" prefix="lib" />
-      <zipfileset dir="docs/examples/mybatis" includes="**/*" prefix="mybatis-examples" />
+      <zipfileset dir="docs/examples/mybatis"
+                  includes="**/*"
+                  prefix="mybatis-examples" />
       <fileset file="docs/README.txt" />
     </zip>
     <!--
@@ -153,6 +160,48 @@
       <zipfileset dir="docs/release-docs" prefix="" />
       <zipfileset dir="${dist.dir}" includes="example.zip" prefix="docs" />
     -->
+  </target>
+
+  <!-- =================== -->
+  <!-- Web Site Generation -->
+  <!-- =================== -->
+
+  <target name="generate-web-site" depends="clean, compile-tools">
+    <echo message="Assembling web site..." />
+
+    <java classname="websitegenerator.Assembler">
+      <arg value="docs/web-site/src" />
+      <arg value="${website.dist.dir}" />
+      <arg value="docs/web-site/templates/template.html" />
+      <classpath>
+        <pathelement location="${tools.build.dir}" />
+      </classpath>
+    </java>
+
+    <copy todir="${website.dist.dir}">
+      <fileset dir="docs/web-site/src">
+        <exclude name="**/*.html" />
+      </fileset>
+    </copy>
+
+    <echo message="Web site assembled." />
+  </target>
+
+  <target name="compile-tools" depends="-init">
+    <javac destdir="${tools.build.dir}"
+           debug="true"
+           deprecation="true"
+           source="1.6"
+           target="1.6"
+           includeantruntime="false"
+           includes="**/*.java"
+           fork="yes"
+           executable="${javac.compiler.exec}"
+           compiler="${java.compiler}">
+      <src path="${tools.src.dir}" />
+      <classpath>
+      </classpath>
+    </javac>
   </target>
 
 </project>

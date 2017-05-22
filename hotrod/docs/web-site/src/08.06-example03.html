@@ -1,0 +1,124 @@
+<h1>Example 3 - Select by Example</h1>
+
+<p>This example shows how to select rows from tables using the
+  out-of-the-box Select by Example functionality. This functionality is
+  available on all database tables (and views) even if they don&#39;t
+  have a PK.</p>
+  
+<h2>Example Source Code</h2>
+
+<java-file name="docs/examples/mybatis/examples/java/examples/Example03.java" />
+
+<h2>How to Run this example</h2>
+
+<p>The Example 03 is included in the download package. To run this
+  example please refer to the section How to Run the Examples above.</p>
+
+<h2>Case #1: Filtering by a single column</h2>
+
+<p>To select using a single column you must instantiate a new DAO to
+  use as the example and set the desired value on the property you want
+  to filter by. Leave the rest of the properties untouched.</p>
+
+<p>
+  This is demonstrated selecting from the table
+  <code>VEHICLE</code>
+  all the rows with type &#39;
+  <code>CAR</code>
+  &#39;.
+</p>
+
+<h2>Case #2: Filtering by multiple columns</h2>
+
+<p>To select using multiple columns you must instantiate a new DAO
+  to use as the example and set the desired values on the properties you
+  want to filter by. An AND logic condition is used to filter by all the
+  columns. Leave the rest of the properties untouched.</p>
+
+<p>
+  This is demonstrated selecting from the table
+  <code>VEHICLE</code>
+  all the rows with
+  <code>BRAND</code>
+  &#39;
+  <code>Toyota</code>
+  &#39; and
+  <code>MODEL</code>
+  &#39;
+  <code>Tercel</code>
+  &#39;.
+</p>
+
+<h2>Case #3: Using null values</h2>
+
+<p>To select using null values you must explicitly set the null
+  value into the properties(s) you want to filter by. An AND logic
+  condition is used to filter by all the columns. Leave the rest of the
+  properties untouched.</p>
+
+<p>
+  This is demonstrated selecting from the table
+  <code>VEHICLE</code>
+  all the rows with
+  <code>BRAND</code>
+  &#39;
+  <code>Toyota</code>
+  &#39; and
+  <code>MODEL</code>
+  &#39;
+  <code>Tercel</code>
+  &#39;, with a
+  <code>null</code>
+  value on the
+  <code>BRANCH_ID</code>
+  column.
+</p>
+
+<h2>Case #4: Adding ordering</h2>
+
+<p>
+  To specify the order of the returned columns you can add extra
+  parameters when calling the
+  <code>selectByExample()</code>
+  method.
+</p>
+
+<p>
+  This is demonstrated selecting from the table
+  <code>VEHICLE</code>
+  by adding values from the generated
+  <code>VehicleDAOOrderBy</code>
+  enum.
+</p>
+
+<h2>Case #5: Using case-insensitive ordering</h2>
+
+<p>Case-insensitive ordering is available for String-like columns.
+  The generated enum for the DAO includes a variant for
+  case-insensitivity.</p>
+
+<p>
+  This is demonstrated selecting from the table
+  <code>VEHICLE</code>
+  by adding values from the generated
+  <code>VehicleDAOOrderBy</code>
+  enum.
+</p>
+
+<h2>Case #6: Using stable case-insensitive ordering</h2>
+
+<p>Case-insensitive ordering is available for String-like columns.
+  The generated enum for the DAO includes a variant for stable
+  case-insensitivity. This variant sorts by the case-insensitive value,
+  and additionally sort by plain value.</p>
+
+<p>
+  This is demonstrated selecting from the table
+  <code>VEHICLE</code>
+  by adding values from the generated
+  <code>VehicleDAOOrderBy</code>
+  enum.
+</p>
+
+<p>&nbsp;</p>
+

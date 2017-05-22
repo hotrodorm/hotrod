@@ -8,7 +8,7 @@ import daos.VehicleDAO;
 /**
  * Example 04 - Update by Example
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example04 {

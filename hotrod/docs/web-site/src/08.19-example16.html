@@ -1,0 +1,53 @@
+<h1>Example 16 - Optimistic Locking (Row Version Control)</h1>
+
+<p>This example shows how to use optimistic locking strategy when
+  updating or deleting table rows.</p>
+  
+<h2>Example Source Code</h2>
+
+<java-file name="docs/examples/mybatis/examples/java/examples/Example16.java" />
+
+<h2>How to Run this example</h2>
+
+<p>The Example 16 is included in the download package. To run this
+  example please refer to the section How to Run the Examples above.</p>
+
+<h2>Case #1: Insert</h2>
+
+<p>
+  This case inserts a row into a table with row version control. Note
+  the value specified for the version control row (
+  <code>ROW_VERSION</code>
+  in this case, as specified in the configuration file) is ignored and
+  initialized at zero. The initial, maximum, and minimum values can be
+  configured (not this case).
+</p>
+
+<p>The insert operation is always successful.</p>
+
+<h2>Case #2: Successful update (no concurrency detected)</h2>
+
+<p>This case retrieves a table row and later tries to update it.
+  Since there&#39;s no other process or thread that updates it in the
+  mean time, the update succeeds.</p>
+
+<h2>Case #3: Failed update (concurrency detected)</h2>
+
+<p>This case retrieves a table row and later tries to update it.</p>
+
+<p>
+  In between another update takes place on the same row (and the
+  <code>ROW_VERSION</code>
+  value is incremented).
+</p>
+
+<p>
+  The update fails (since the
+  <code>ROW_VERSION</code>
+  column does not match anymore) by throwing a
+  <code>StaleDataException</code>
+  .
+</p>
+
+<p>&nbsp;</p>
+

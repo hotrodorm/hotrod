@@ -1,0 +1,5 @@
+
+base.AccountDAO                           base.primitives.AccountDAO        (persistence methods, Tx, OrderBy)
+base.primitives.AccountDAOPrimitives      base.primitives.AbstractAccountVO (properties, getters, setters)
+                                          base.AccountVO                    (custom logic)
+

@@ -1,0 +1,87 @@
+<h1>Sequences Configuration Reference</h1>
+
+<p>Database sequences are available on the majority of
+  databases&mdash;MySQL being a notable exception. Their purpose if to
+  provide unique numbers to identify database elements, usually table
+  rows.</p>
+
+<p>
+  Most of the time sequences are used to generate primary key values and
+  are used in tandem with SQL insert statements. HotRod&#39;s
+  <code>&lt;auto-generated-column&gt;</code>
+  tag on the
+  <code>&lt;table&gt;</code>
+  tag implements this functionality.
+</p>
+
+<p>However, some times the application may have a need to retrieve
+  sequential numbers for other purposes than immediately&mdash;or
+  ever&mdash;inserting a row into a table. It could be the row may be
+  eventually inserted after some other conditions are met, but the
+  sequence number is needed right away for some purpose. It could be
+  sequential numbers are needed to generate unique files in the file
+  system, or to send identification numbers over the network to
+  communicate with other applications.</p>
+
+<p>Whatever the need is, sequences can provide unique numeric values
+  to the Java application.</p>
+
+<p>
+  In HotRod one or more
+  <code>&lt;sequence&gt;</code>
+  tag can be added to any
+  <code>&lt;table&gt;</code>
+  ,
+  <code>&lt;view&gt;</code>
+  , or
+  <code>&lt;dao&gt;</code>
+  tag to produce Java methods that retrieve a sequence value from the
+  database sequence.
+</p>
+
+<p>
+  HotRod doesn&#39;t impose or require any relationship to exist between
+  the sequence used by the
+  <code>&lt;sequence&gt;</code>
+  tag and the
+  <code>&lt;table&gt;</code>
+  ,
+  <code>&lt;view&gt;</code>
+  , or
+  <code>&lt;dao&gt;</code>
+  tags. The DAO Java classes produced by these tags only serve as
+  containers to place the Java methods that retrieve the sequence
+  values.
+</p>
+
+<p>
+  The
+  <code>&lt;sequence&gt;</code>
+  tag attributes are:
+</p>
+
+<table class="data-table">
+  <tbody>
+    <tr>
+      <th><strong>Attribute</strong></th>
+      <th><strong>Description</strong></th>
+      <th><strong>Required</strong></th>
+    </tr>
+    <tr>
+      <td>name</td>
+      <td>The name of the database sequence.</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>java-method-name</td>
+      <td>The name of the DAO Java method that will retrieve the
+        sequence value, if different from the default name produced by
+        HotRod. The default method name takes the form <code>selectSequence&lt;name&gt;()</code>.
+      </td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+

@@ -1,0 +1,45 @@
+<h1>Example 20 - Fragments</h1>
+
+<p>This example shows how the HotRod configuration file can be
+  divided into separate files.</p>
+
+<p>There are varied reasons why to separate the HotRod configuration
+  file into smaller chunks:</p>
+
+<ul>
+  <li>Maybe it became just to largo to edit all at once.</li>
+  <li>Maybe it wouls be useful to separate in modules or
+    sub-modules.</li>
+  <li>Maybe there are many developers and they keep generating
+    repository conflicts since they are all updating the same unique
+    file simultaneously.</li>
+</ul>
+
+<p>Whichever the reason, the configuration file can be separated
+  into fragments. The main one has a slightly different format since it
+  includes the main configuration options for the generator. The
+  fragments include database objects only.</p>
+
+<p>Tables, views, selects, and custom DAOs, can grouped in any order
+  between these fragments.</p>
+
+<p>Fragment can include another sub-fragments, as long as there
+  aren&#39t any circular references.</p>
+
+<p>All the examples include a HotRod configuration separated in
+  three files:</p>
+
+<ul>
+  <li><code>hotrod.xml</code> (main configuration file)</li>
+  <li><code>hotrod-sales.xml</code> (fragment)</li>
+  <li><code>hotrod-accounting.xml</code> (fragment)</li>
+</ul>
+
+<h2>How to Run this example</h2>
+
+<p>This example is not runnable. Actually, all the examples use
+  behind the scenes this configuration so you&#39;ve been running it all
+  the time in the previous examples.</p>
+
+<p>&nbsp;</p>
+

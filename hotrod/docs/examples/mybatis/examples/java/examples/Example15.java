@@ -11,7 +11,7 @@ import daos.BranchDAO;
 /**
  * Example 15 - Transactions & Isolation Levels
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example15 {

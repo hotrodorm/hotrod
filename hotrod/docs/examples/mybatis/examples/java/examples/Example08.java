@@ -9,7 +9,7 @@ import daos.primitives.CarDAOPrimitives.CarDAOOrderBy;
 /**
  * Example 08 - Select on Views
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example08 {

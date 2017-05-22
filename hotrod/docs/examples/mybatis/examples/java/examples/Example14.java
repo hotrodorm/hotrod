@@ -10,7 +10,7 @@ import daos.primitives.GeneralOperations;
 /**
  * Example 14 - Dynamic SQL
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example14 {

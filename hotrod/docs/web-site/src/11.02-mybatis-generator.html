@@ -1,0 +1,281 @@
+<h1>MyBatis Generator Configuration</h1>
+
+<p>HotRod&#39;s MyBatis Generator generates all DAO classes,
+  mappers, and MyBatis configuration file ready to be used by your
+  application.</p>
+
+<p>The example shown below, taken from the Hello World example
+  application, shows a typical configuration for the MyBatis Generator:</p>
+
+<pre class="xml">&lt;?xml version="1.0"?>
+&lt;!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+&lt;hotrod>
+
+  &lt;generators>
+    &lt;mybatis>
+      &lt;daos gen-base-dir="auto-generated/java" dao-package="daos" />
+      &lt;mappers gen-base-dir="auto-generated/mappers" relative-dir="persistence" />
+      &lt;mybatis-configuration-template file="mybatis-template.xml" />
+      &lt;session-factory singleton-full-class-name="sessionfactory.DatabaseSessionFactory" />
+      &lt;select-generation temp-view-base-name="hotrod_temp_view" />
+    &lt;/mybatis>
+  &lt;/generators>
+
+  &lt;table name="vehicle">
+    &lt;auto-generated-column name="id" />
+  &lt;/table>
+
+&lt;/hotrod></pre>
+
+<p>
+  The
+  <code>&lt;mybatis&gt;</code>
+  tag is added inside the
+  <code>&lt;generators&gt;</code>
+  tag and includes all the configuration options the MyBatis Generator
+  needs to produce fully functional MyBatis code.
+</p>
+
+<h2>The &lt;mybatis&gt; Tag</h2>
+
+<p>
+  The
+  <code>&lt;mybatis&gt;</code>
+  tag provides the details of the MyBatis Generator. It includes:
+</p>
+
+<ul>
+  <li>a <code>&lt;daos&gt;</code> tag,
+  </li>
+  <li>a <code>&lt;mappers&gt;</code> tag,
+  </li>
+  <li>a <code>&lt;mybatis-configuration-template&gt;</code> tag,
+  </li>
+  <li>a <code>&lt;session-factory&gt;</code> tag, and
+  </li>
+  <li>a <code>&lt;select-generation&gt;</code> tag.
+  </li>
+</ul>
+
+<h2>The &lt;daos&gt; Tag</h2>
+
+<p>
+  The
+  <code>&lt;daos&gt;</code>
+  tag indicates where the DAO Java classes are going to be placed and
+  how their names are going to be produced. Its attributes are:
+</p>
+
+<table class="data-table">
+  <tbody>
+    <tr>
+      <th><strong>Attribute</strong></th>
+      <th><strong>Description</strong></th>
+      <th><strong>Required</strong></th>
+    </tr>
+    <tr>
+      <td>gen-base-dir</td>
+      <td>The base dir of the source Java classes. This is the base
+        dir where the Java packages will be created on.</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>dao-package</td>
+      <td>The base package of the DAO Java classes. The base
+        package adds directories to place the DAO Java classes inside
+        the <code>gen-base-dir</code> attribute.
+      </td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>primitives-package</td>
+      <td>Specifies the extra package added to the DAO primitive
+        Java classes. Defaults to: <code>primitives</code>
+      </td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>dao-prefix</td>
+      <td>Specifies the prefix to prepend to the DAO Java class
+        name. Defaults to an empty string, i.e. no prefix.</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>dao-suffix</td>
+      <td>Specifies the suffix to append to the DAO Java class
+        name. Defaults to: <code>DAO</code>
+      </td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>primitives-prefix</td>
+      <td>Specifies the prefix to prepend to the DAO Primitives
+        Java class name. Defaults to an empty string, i.e. no prefix.</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>primitives-suffix</td>
+      <td>Specifies the suffix to append to the DAO Primitives Java
+        class name. Defaults to: <code>Primitives</code>
+      </td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The &lt;mappers&gt; tag</h2>
+
+<p>
+  The
+  <code>&lt;mappers&gt;</code>
+  tag indicates where the mappers are going to be placed. Its attributes
+  are:
+</p>
+
+<table class="data-table">
+  <tbody>
+    <tr>
+      <th><strong>Attribute</strong></th>
+      <th><strong>Description</strong></th>
+      <th><strong>Required</strong></th>
+    </tr>
+    <tr>
+      <td>gen-base-dir</td>
+      <td>The base dir of the generated MyBatis mapper files.
+        Mapper files will be places in the <code>relative-dir</code>
+        directory based on this <code>gen-base-dir</code>.
+      </td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>relative-dir</td>
+      <td>This is the relative dir where the MyBatis mapper files
+        will be generated. This directory is relative to the <code>gen-base-dir</code>.
+        The <code>relative-dir</code> is the directory the main MyBatis
+        configuration file will use to reference the mapper files.
+      </td>
+      <td>Yes</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The &lt;mybatis-configuration-template&gt; tag</h2>
+
+<p>
+  The
+  <code>&lt;mybatis-configuration-template&gt;</code>
+  tag specifies which template file will be used to generate the main
+  MyBatis configuration file. Since the MyBatis configuration options
+  are abundant, HotRod&#39;s MyBatis Generator takes a template file
+  prepared by the developer and adds the full list of generated mappers
+  to it. The template file is not rewritten, but a new ready-to-use file
+  is produced in the mappers dir with the name
+  <code>mybatis-configuration.xml</code>
+  .
+</p>
+
+<p>
+  For details on the MyBatis configuration file please see the MyBatis
+  documentation. As a brief overview, this file specifies the data
+  source properties, as well as many MyBatis tweaks, and JDBC
+  properties. The template file, however, includes an empty
+  <code>&lt;mappers/&gt;</code>
+  tag that will be replaced will the full list of mappers in the
+  resulting from the code generation.
+</p>
+
+<p>
+  The attributes of the
+  <code>&lt;mybatis-configuration-template&gt;</code>
+  tag are:
+</p>
+
+<table class="data-table">
+  <tbody>
+    <tr>
+      <th><strong>Attribute</strong></th>
+      <th><strong>Description</strong></th>
+      <th><strong>Required</strong></th>
+    </tr>
+    <tr>
+      <td>file</td>
+      <td>The path and name of the MyBatis configuration template
+        file.</td>
+      <td>Yes</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The &lt;session-factory&gt; tag</h2>
+
+<p>
+  The
+  <code>&lt;session-factory&gt;</code>
+  tag specifies the Java singleton class the developer will provide to
+  produce MyBatis SQLSession objects all the DAOs need to operate. Its
+  attributes are:
+</p>
+
+<table class="data-table">
+  <tbody>
+    <tr>
+      <th><strong>Attribute</strong></th>
+      <th><strong>Description</strong></th>
+      <th><strong>Required</strong></th>
+    </tr>
+    <tr>
+      <td>singleton-full-class-name</td>
+      <td>The full class name of the singleton class that will be
+        used by the DAOs to produce SQLSession objects.</td>
+      <td>Yes</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>The &lt;select-generation&gt; tag</h2>
+
+<p>
+  The
+  <code>&lt;select-generation&gt;</code>
+  tag specifies the details of the temporary database views HotRod will
+  create to process the
+  <code>&lt;select&gt;</code>
+  tags. The full explanation is quite technical, but suffice is to say
+  that HotRod needs to create some temporary database views in the
+  development schemas (never in test or production) that are deleted
+  right away during the code generation. HotRod, however, needs a base
+  name to use when creating them so to avoid name conflicts with any
+  existing application view. Its attributes are:
+</p>
+
+<table class="data-table">
+  <tbody>
+    <tr>
+      <th><strong>Attribute</strong></th>
+      <th><strong>Description</strong></th>
+      <th><strong>Required</strong></th>
+    </tr>
+    <tr>
+      <td>temp-view-base-name</td>
+      <td>The base name to create temporary database views in the
+        development database. Choose a base name not used in your
+        database and that clearly indicates the purpose of the view,
+        such as <code>hotrod-temp-view</code>. All temp views will use
+        this value and append a consecutive number to it when created.
+      </td>
+      <td>Yes</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  Note: if you use the
+  <code>&lt;select&gt;</code>
+  tag your database user must have privileges to create and to drop
+  database views in the database schema where you are developing the
+  application.
+</p>
+
+<p>&nbsp;</p>
+

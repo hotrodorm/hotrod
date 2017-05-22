@@ -8,7 +8,7 @@ import daos.VehicleDAO;
 /**
  * Example 07 - Select by Unique Indexes
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example07 {

@@ -1,0 +1,110 @@
+<h1>Example 15 - Database Transactions</h1>
+
+<p>This example shows how to use database transactions.</p>
+
+<p>The DAOs for MyBatis operate by default in auto-commit mode. That
+  is, every single insert, delete, and update commits its execution
+  right away without need to specify it.</p>
+
+<p>However, when transactions are required to group multiple
+  database operations the DAOs provide a simple TxManager object that
+  allows the code to initiate, commit, rollback, and free transaction
+  resources.</p>
+
+<p>Since behind the scenes MyBatis is controlling all transactions,
+  many features of it are available such as locally controlled
+  transactions, or participation in external transactions using JTA.</p>
+
+<p>Transactions can also be linear or interleaved, the latter only
+  available if supported by the database and JDBC driver.</p>
+  
+<h2>Example Source Code</h2>
+
+<java-file name="docs/examples/mybatis/examples/java/examples/Example15.java" />
+
+<h2>How to Run this example</h2>
+
+<p>
+  The <strong>Example 15</strong> is included in the download package.
+  To run this example please refer to the section How to Run the
+  Examples above.
+</p>
+
+<h2>Case #1: No transaction</h2>
+
+<p>This case implements a cash transfer between two branches, that
+  requires to decrement the cash on one and increment it on the other
+  one.</p>
+
+<p>Both SQL updates are executed without any transaction
+  declaration. Since by default HotRod works in auto-commit mode, these
+  operations are independent and are committed immediately and
+  separately. A system crash could produce inconsistencies in the
+  database state.</p>
+
+<h2>Case #2: Standard transaction</h2>
+
+<p>This case implements a cash transfer between two branches, that
+  requires to decrement the cash on one and increment it on the other
+  one.</p>
+
+<p>
+  Both SQL updates are executed within a transaction. These operations
+  are not independent and are committed at once by the
+  <code>commit()</code>
+  method. A system crash will not produce inconsistencies in the
+  database state.
+</p>
+
+<h2>Case #3: Custom transaction</h2>
+
+<p>This case implements a cash transfer between two branches, that
+  requires to decrement the cash on one and increment it on the other
+  one.</p>
+
+<p>
+  The transaction raises the isolation level to
+  <code>SERIALIZABLE</code>
+  to prevent some level of concurrency in the database.
+</p>
+
+<p>
+  Both SQL updates are executed within a transaction. These operations
+  are not independent and are committed at once by the
+  <code>commit()</code>
+  method. A system crash will not produce inconsistencies in the
+  database state.
+</p>
+
+<p>
+  <strong>Note</strong>: Custom options on transaction may not be
+  supported by all databases.
+</p>
+
+<h2>Case #4: Interlaced transactions</h2>
+
+<p>This case implements TWO cash transfers between four branches IN
+  PARALLEL, that requires to decrement the cash on two of them and
+  increment it on the other two.</p>
+
+<p>
+  <strong>Note</strong>: Interlaced transactions are not common. You may
+  want to use them on specialized cases when you really want some fine
+  grained control over them. Even there, it&#39;s usually better to
+  leave these intricacies to the data source pooling solution or
+  application server.
+</p>
+
+<p>
+  <strong>Note</strong>: Interlaced transactions may not be supported by
+  all databases.
+</p>
+
+<p>All four SQL updates are executed intertwined in two SEPARATE
+  independent transactions.&nbsp; A system crash will not produce
+  inconsistencies in the database state. Also, a commit or rollback on
+  one of the transactions does not produce a commit or rollback on the
+  other one (they are fully independent).</p>
+
+<p>&nbsp;</p>
+

@@ -11,6 +11,7 @@ import java.util.Random;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.TransactionIsolationLevel;
+import org.hotrod.runtime.exceptions.StaleDataException;
 import org.hotrod.runtime.tx.TxDemarcator;
 import org.hotrod.runtime.tx.TxManager;
 
@@ -18,11 +19,11 @@ import hotrod.test.generation.AccountDAO;
 
 public class TransactionTests {
 
-  public static void main(final String[] args) throws IOException, SQLException {
+  public static void main(final String[] args) throws IOException, SQLException, StaleDataException {
     countProperties();
   }
 
-  private static void countProperties() throws SQLException {
+  private static void countProperties() throws SQLException, StaleDataException {
 
     noTransactions();
     // customMapperSqlSession();
@@ -33,7 +34,7 @@ public class TransactionTests {
 
   }
 
-  private static void noTransactions() throws SQLException {
+  private static void noTransactions() throws SQLException, StaleDataException {
     int deleted;
     Random random = new Random();
 
@@ -294,7 +295,7 @@ public class TransactionTests {
 
   }
 
-  private static void extraSimpleTx() throws SQLException {
+  private static void extraSimpleTx() throws SQLException, StaleDataException {
 
     TxManager txManager = null;
     try {

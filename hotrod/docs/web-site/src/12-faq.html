@@ -1,0 +1,14 @@
+<h1>FAQ</h1>
+
+<div class="question">Can I update on a view?</div>
+<div class="answer">No. The current version of HotRod support
+  retrieving data from a view but does not support updating on views.
+  RDBMS differ on which views can be updates but in general they allow
+  SQL inserts, updates, and deletes on simple views. HotRod may support
+  these operations in the future.</div>
+
+<div class="question">Can I run an exotic SQL that use
+  database-specific syntax?</div>
+<div class="answer">Yes. All SQL selects and updates can be
+  automated by HotRod. As long as the JDBC driver is able to run them,
+  HotRod can create the corresponding DAOs for it.</div>

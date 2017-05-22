@@ -8,7 +8,7 @@ import daos.primitives.DailyOperations;
 /**
  * Example 11 - Custom DAOs
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example11 {

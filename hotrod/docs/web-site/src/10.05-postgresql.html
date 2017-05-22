@@ -1,0 +1,209 @@
+<h1>PostgreSQL</h1>
+
+<p>The HotRod PostgreSQL adapter automatically maps known database
+  column types to DAO Java types. In most of the cases this default Java
+  type is well suited to handle the database values. However, when
+  needed the default Java type of a property can be overridden by a
+  custom type if it&#39;s provided by the developer.</p>
+
+<h2>Default Java Types</h2>
+
+<p>If a custom Java type is not specified HotRod will use the
+  following rules to decide which Java type to use for each PostgreSQL
+  column. In yellow is the DAO property type. In parenthesis the actual
+  object type returned by the PostgreSQL JDBC driver, that on occasions
+  may be different.</p>
+
+<p>Please note that the Java types for the PostgreSQL columns may
+  vary depending on the specific version and variant of the RDBMS, the
+  operating system where the database engine is running, and the JDBC
+  driver version.</p>
+
+<table class="column-type-table">
+  <tbody>
+    <tr>
+      <th><strong>PostgreSQL Column Type</strong></th>
+      <th><strong>Default Java Type</strong></th>
+    </tr>
+    <tr>
+      <td>SMALLINT,<br /> INT2,<br /> SMALLSERIAL
+      </td>
+      <td><kbd>java.lang.Short</kbd></td>
+    </tr>
+    <tr>
+      <td>INTEGER,<br /> INT,<br /> INT4,<br /> SERIAL
+      </td>
+      <td><kbd>java.lang.Integer</kbd></td>
+    </tr>
+    <tr>
+      <td>BIGINT,<br /> INT8,<br /> BIGSERIAL
+      </td>
+      <td><kbd>java.lang.Long</kbd></td>
+    </tr>
+    <tr>
+      <td>DECIMAL(p,s),<br /> NUMERIC(p,s)
+      </td>
+      <td>If neither p or s are specified:
+        <ul>
+          <li><kbd>java.math.BigDecimal</kbd></li>
+        </ul> If s is specified and different from zero the Java type is:
+
+        <ul>
+          <li><kbd>java.math.BigDecimal</kbd></li>
+        </ul> if s is not specified or specified with a value of zero:
+
+        <ul>
+          <li>if p &lt;= 2: <kbd>java.lang.Byte</kbd></li>
+          <li>if 2 &lt; p &lt;= 4: <kbd>java.lang.Short</kbd></li>
+          <li>if 4 &lt; p &lt;= 9: <kbd>java.lang.Integer</kbd></li>
+          <li>if 8 &lt; p &lt;= 18: <kbd>java.lang.Long</kbd></li>
+          <li>if p &gt; 18: <kbd>java.math.BigInteger</kbd></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>REAL</td>
+      <td><kbd>java.lang.Float</kbd></td>
+    </tr>
+    <tr>
+      <td>DOUBLE PRECISION</td>
+      <td><kbd>java.lang.Double</kbd></td>
+    </tr>
+    <tr>
+      <td>MONEY</td>
+      <td><kbd>java.math.BigDecimal</kbd></td>
+    </tr>
+    <tr>
+      <td>CHAR(n),<br /> CHARACTER(n),<br /> VARCHAR(n),<br />
+        CHARACTER VARYING(n),
+      </td>
+      <td><kbd>java.lang.String</kbd></td>
+    </tr>
+    <tr>
+      <td>TEXT</td>
+      <td><kbd>java.lang.String</kbd></td>
+    </tr>
+    <tr>
+      <td>BYTEA</td>
+      <td><kbd>byte[]</kbd></td>
+    </tr>
+    <tr>
+      <td>DATE</td>
+      <td><kbd>java.sql.Date</kbd></td>
+    </tr>
+    <tr>
+      <td>TIMESTAMP(n),<br /> TIMESTAMP(n) WITHOUT TIME ZONE,<br />
+        TIMESTAMPTZ(n),<br /> TIMESTAMP(n) WITH TIME ZONE
+      </td>
+      <td><kbd>java.sql.Timestamp</kbd></td>
+    </tr>
+    <tr>
+      <td>TIME(n),<br /> TIME(n) WITHOUT TIME ZONE,<br />
+        TIMETZ(n),<br /> TIME(n) WITH TIME ZONE
+      </td>
+      <td><kbd>java.sql.Timestamp</kbd> *</td>
+    </tr>
+    <tr>
+      <td>BOOLEAN,<br /> BOOL
+      </td>
+      <td><kbd>java.lang.Boolean</kbd></td>
+    </tr>
+    <tr>
+      <td>INTERVAL &lt;fields&gt; (n)</td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>XML</td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>POINT,<br /> LINE,<br /> LSEG,<br /> BOX,<br /> PATH,<br />
+        POLYGON,<br /> CIRCLE
+      </td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>CIDR,<br /> INET,<br /> MACADDR
+      </td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>BIT(n),<br /> BIT VARYING(n)
+      </td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>UUID</td>
+      <td><kbd>java.lang.Object</kbd> **</td>
+    </tr>
+    <tr>
+      <td>JSON,<br /> JSONB
+      </td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>(arrays, such as)<br /> INTEGER[],<br /> CHAR[][],<br />
+        INTEGER ARRAY
+      </td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>INT4RANGE,<br /> INT8RANGE,<br /> NUMRANGE,<br />
+        TSRANGE,<br /> TSTZRANGE,<br /> DATERANGE
+      </td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>(enum data types)</td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>(composite types)</td>
+      <td>No default HotRod data type</td>
+    </tr>
+    <tr>
+      <td>OID,<br /> REGPROC,<br /> REGPROCEDURE,<br /> REGOPER,<br />
+        REGOPERATOR,<br /> REGCLASS,<br /> REGTYPE,<br /> REGROLE,<br />
+        REGNAMESPACE,<br /> REGCONFIG,<br /> REGDICTIONARY
+      </td>
+      <td>No default HotRod data type</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  * In the special case of a precision of zero, a&nbsp;
+  <code>java.sql.Time</code>
+  type would be enough to store any time of the day without fractional
+  seconds. However, since the majority of cases will have a different
+  precision this type defaults to
+  <code>java.sql.Timestamp</code>
+  in all cases; this type can handle up to 9 decimal places.<br /> **
+  Even though, the
+  <code>java.util.UUID</code>
+  type is able to save a value into the database, apparently it cannot
+  read from the database into a Java program. Therefore, the
+  <code>java.lang.Object</code>
+  type is safer, but you&#39;ll need to cast it after retrieving a
+  value.
+</p>
+
+<h2>Custom Java Types</h2>
+
+<p>
+  To override the default Java type see the reference section for the
+  tables, views, and selects. The <b>Example 19 - Custom DAO
+    Property Java Types</b> shows a case where a custom type overrides the
+  default type. To override the default type add a
+  <code>&lt;column&gt;</code>
+  tag in a
+  <code>&lt;table&gt;</code>
+  ,
+  <code>&lt;view&gt;</code>
+  , or
+  <code>&lt;select&gt;</code>
+  definition.
+</p>
+
+<p>&nbsp;</p>
+

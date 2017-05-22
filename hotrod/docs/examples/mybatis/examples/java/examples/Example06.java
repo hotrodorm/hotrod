@@ -12,7 +12,7 @@ import daos.primitives.VehicleDAOPrimitives.VehicleDAOOrderBy;
 /**
  * Example 06 - Navigating Foreign Keys
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example06 {

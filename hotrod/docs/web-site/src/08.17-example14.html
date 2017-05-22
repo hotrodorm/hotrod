@@ -1,0 +1,109 @@
+
+<h1>Example 14 - Dynamic SQL</h1>
+
+<p>This example shows how to run dynamic SQL statements.</p>
+
+<p>Dynamic SQL is a powerful extension provided by the MyBatis
+  persistence layer. It can dramatically reduce the effort of developing
+  and debugging complex SQL statements that vary depending on the
+  runtime parameter values, all without writing any Java code.</p>
+
+<p>Dynamic SQL shares the syntax with Regular SQL and Native SQL.
+  They can be combined all at once when creating SQL statements.</p>
+
+<p>
+  SQL selects can include
+  <code>&lt;column&gt;</code>
+  tags to force the Java name and Java type of the result set. When
+  included they need to be included outside the CDATA section, if any.
+</p>
+  
+<h2>Example Source Code</h2>
+
+<java-file name="docs/examples/mybatis/examples/java/examples/Example14.java" />
+
+<h2>How to Run this example</h2>
+
+<p>
+  The <strong>Example 14</strong> is included in the download package.
+  To run this example please refer to the section How to Run the
+  Examples above.
+</p>
+
+<h2>Case #1: Searching by a dynamic criteria</h2>
+
+<p>The SQL select is extended using XML tags that define sections
+  that are dynamically included or excluded depending on the runtime
+  parameter values. The configuration file includes the following
+  section:</p>
+
+<pre class="xml">  &lt;select java-class-name="SearchedClient">
+  &lt;![CDATA[
+    select c.* from client c
+      {*
+      &lt;where>
+        &lt;if test="#{minPurchases,javaType=java.lang.Integer,jdbcType=NUMERIC} != null">
+          and (select count(*) from purchase p where p.client_id = c.id ) >= #{minPurchases}
+        &lt;/if>
+        &lt;if test="#{state,javaType=java.lang.String,jdbcType=VARCHAR} != null">
+          and c.state = #{state}
+        &lt;/if>
+        &lt;if test="#{createdSince,javaType=java.sql.Date,jdbcType=DATE} != null">
+          and created_at > #{createdSince}
+        &lt;/if>
+      &lt;/where>
+      *}
+  ]]>
+  &lt;/select></pre>
+
+<p>The example runs the SQL twice with different parameters to show
+  different sections being activated for each search.</p>
+
+<p>
+  The SQL select can be run using the
+  <code>select(Integer minPurchases, String state, java.sql.Date
+    createdSince)</code>
+  Java method on the DAO
+  <code>SearchedClient</code>
+  .
+</p>
+
+<h2>Case #2: Update using a dynamic criteria</h2>
+
+<p>The SQL update is extended using XML tags that define sections
+  that are dynamically included or excluded depending on the runtime
+  parameter values. The configuration file includes the following
+  section:</p>
+
+<pre class="xml">  &lt;query java-method-name="applyDiscountToVehicles">
+  &lt;![CDATA[
+    update vehicle set
+        list_price = list_price - #{discount,javaType=java.lang.Integer,jdbcType=NUMERIC}
+      &lt;where>
+        &lt;if test="#{unsold,javaType=java.lang.Boolean,jdbcType=BOOLEAN} != null">
+          and not sold
+        &lt;/if>
+        &lt;if test="#{minMileage,javaType=java.lang.Integer,jdbcType=NUMERIC} != null">
+          and mileage > #{minMileage}
+        &lt;/if>
+        &lt;if test="#{type,javaType=java.lang.String,jdbcType=VARCHAR} != null">
+          and type = #{type}
+        &lt;/if>
+      &lt;/where>
+  ]]>
+  &lt;/query></pre>
+
+<p>The example runs the SQL twice with different parameters to show
+  different sections being activated for the update.</p>
+
+<p>
+  The SQL update can be run using the
+  <code>applyDiscountToVehicle(Integer discount, Boolean unsold,
+    Integer mileage, String type</code>
+  ) Java method on the DAO
+  <code>GeneralOperations</code>
+  .
+</p>
+
+<p>&nbsp;</p>
+

@@ -9,7 +9,7 @@ public class SQLField {
     this.fieldName = fieldName;
   }
 
-  // Asume convención antigua del nombre de campo como <tablename>.<fieldname>
+  // Asume convenciÃ³n antigua del nombre de campo como <tablename>.<fieldname>
   @Deprecated
   public SQLField(String fieldName) {
     // extract tableName

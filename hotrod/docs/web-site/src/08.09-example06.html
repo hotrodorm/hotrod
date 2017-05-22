@@ -1,0 +1,121 @@
+<h1>Example 6 - Navigating Foreign Keys</h1>
+
+<p>This example shows how to navigate from one DAO object to obtain
+  related DAO object using the database foreign key relationships. This
+  functionality is available on all database tables that are related
+  using foreign keys.</p>
+  
+<h2>Example Source Code</h2>
+
+<java-file name="docs/examples/mybatis/examples/java/examples/Example06.java" />
+
+<h2>How to Run this example</h2>
+
+<p>
+  The <b>Example 06</b> is included in the download package. To run this
+  example please refer to the section How to Run the Examples above.
+</p>
+
+<h2>Case #1: Navigate to parent</h2>
+
+<p>
+  The retrieve the parent row use one of the out-of-the-box
+  <code>selectParentDAO()</code>
+  methods that returns a single row.
+</p>
+
+<p>
+  This is demonstrated navigating from the table
+  <code>VEHICLE</code>
+  to the table
+  <code>BRANCH</code>
+  .
+</p>
+
+<h2>Case #2: Navigate to children</h2>
+
+<p>
+  To retrieve children rows use one of the out-of-the-box
+  <code>selectChildrenDAO()</code>
+  methods that return a list of rows.
+</p>
+
+<p>
+  This is demonstrated navigating from the table
+  <code>BRANCH</code>
+  to the table
+  <code>VEHICLE</code>
+  .
+</p>
+
+<h2>Case #3: Navigate to children with ordering</h2>
+
+<p>
+  To retrieve children rows use one of the out-of-the-box
+  <code> selectChildrenDAO()</code>
+  methods that return a list of rows. Add extra parameters to the method
+  to specify the ordering.
+</p>
+
+<p>
+  This is demonstrated navigating from the table
+  <code>VEHICLE</code>
+  to the table
+  <code>BRANCH</code>
+  .
+</p>
+
+<h2>Case #4: Reflexive navigate to parent</h2>
+
+<p>
+  The retrieve the parent row use one of the out-of-the-box
+  <code>selectParentDAO()</code>
+  methods that returns a single row. There&#39;s no difference compared
+  to the navigation to a different table.
+</p>
+
+<p>
+  This is demonstrated navigating from the table
+  <code>CLIENT</code>
+  to the table
+  <code>CLIENT</code>
+  .
+</p>
+
+<h2>Case #5: Reflexive navigate to children</h2>
+
+<p>
+  To retrieve children rows use one of the out-of-the-box
+  <code>selectChildrenDAO()</code>
+  methods that return a list of rows. There&#39;s no difference compared
+  to the navigation to a different table.
+</p>
+
+<p>
+  This is demonstrated navigating from the table
+  <code>CLIENT</code>
+  to the table
+  <code>CLIENT</code>
+  .
+</p>
+
+<h2>Case #6: Reflexive navigate to children with ordering</h2>
+
+<p>
+  To retrieve children rows use one of the out-of-the-box
+  <code>selectChildrenDAO()</code>
+  methods that return a list of rows. Add extra parameters to the method
+  to specify the ordering. There&#39;s no difference compared to the
+  navigation to a different table.
+</p>
+
+<p>
+  This is demonstrated navigating from the table
+  <code>CLIENT</code>
+  to the table
+  <code>CLIENT</code>
+  .
+</p>
+
+<p>&nbsp;</p>
+

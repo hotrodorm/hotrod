@@ -1,0 +1,112 @@
+<h1>Ant Task</h1>
+
+<p>HotRod is run using an Ant Task. This can be run on the command
+  line or over any IDE such as Eclipse.</p>
+
+<p>
+  The HotRod Ant Task requires the HotRod library to be in the
+  classpath, as well as the JDBC driver of your particular database.
+  First, the task needs to be declared in the Ant file using a
+  <code>&lt;taskdef&gt;</code>
+  tag as in:
+</p>
+
+<pre class="xml">&lt;taskdef name="hotrod" classname="org.hotrod.ant.HotRodAntTask">
+      &lt;classpath>
+        &lt;pathelement location="lib/hotrod/hotrod-1.0.0.jar" />
+        &lt;pathelement location="lib/drivers/ojdbc6.jar" />
+      &lt;/classpath>
+    &lt;/taskdef></pre>
+
+<p>
+  Once the
+  <code>hotrod</code>
+  task is defined it can be used as in:
+</p>
+
+<pre class="xml">    &lt;hotrod url="jdbc:h2:tcp://localhost:12345/db001"
+            driverclass="org.h2.Driver"
+            username="sa"
+            password=""
+            catalog="DB001"
+            schema="PUBLIC"
+            generator="MyBatis"
+            configfile="hotrod.xml"
+            display="list" />
+</pre>
+<p>
+  The
+  <code>&lt;hotrod&gt;</code>
+  Ant task parameters are:
+</p>
+
+<table class="data-table">
+  <tbody>
+    <tr>
+      <th>Attribute</th>
+      <th>Description</th>
+      <th>Required</th>
+    </tr>
+    <tr>
+      <td>url</td>
+      <td>The JDBC URL to connect to the live database.</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>driverclass</td>
+      <td>The driver class of the JDBC driver.</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>username</td>
+      <td>The database username.</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>password</td>
+      <td>The database password.</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>catalog</td>
+      <td>The database catalog. If not known, leave it blank and
+        run HotRod to list all available values.</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>schema</td>
+      <td>The database schema. If not known, leave it blank and run
+        HotRod to list all available values.</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>generator</td>
+      <td>Currently the MyBatis generator is fully supported. The
+        SpringJDBC generator is in experimental mode.</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>configfile</td>
+      <td>The location of the configuration file that includes all
+        tables, view, SQL, etc.</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <td>facets</td>
+      <td>The comma-separated list of facets that will be included
+        in the code generation. If left blank, all facets are included.</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>display</td>
+      <td>Controls how much details the HotRod task shows when
+        running: list shows the list of the included database objects as
+        well as the summary;&nbsp; summary only includes the summary
+        line. Defaults to list.</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>&nbsp;</p>
+

@@ -8,7 +8,7 @@ import daos.VehicleDAO;
 /**
  * Example 01 - Basic CRUD Operations on Tables
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example01 {

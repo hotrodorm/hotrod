@@ -12,7 +12,7 @@ import daos.DailyTotal;
 /**
  * Example 12 - Regular SQL Selects
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example12 {

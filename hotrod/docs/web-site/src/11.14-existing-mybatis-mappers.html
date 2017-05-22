@@ -1,0 +1,94 @@
+<h1>Existing MyBatis Code</h1>
+
+<p>It may happen your project was already using MyBatis. If this is
+  the case, then your project already has a set of DAOs/VOs Java classes
+  and MyBatis mappers files. It may also happen you want to write your
+  own MyBatis mappers in special cases, where you think very high fine
+  tuning is necessary.</p>
+
+<p>In any case, HotRod can leverage these mappers and combine them
+  in the resulting MyBatis configuration file.</p>
+
+<p>Any DAOs/VOs manually written outside HotRod are fully available
+  by default to all the mappers. That is, the Java classes do not
+  require any special treatment, as long as the are available in the
+  classpath.</p>
+
+<p>
+  The mappers are a little bit different. HotRod can pick existing
+  mappers&mdash;without touching them&mdash;if they are placed in the
+  <code>custom</code>
+  subdirectory of the
+  <code>relative-dir</code>
+  attribute specified in the configuration file for the
+  <code>&lt;mapper&gt;</code>
+  tag. Any mapper file found in this directory will be added to the list
+  of mapper files in the resulting MyBatis configuration file.
+</p>
+
+<h2>Example</h2>
+
+<p>The explanation above is correct, though a little bit dry.
+  Let&#39;s try an example.</p>
+
+<pre class="xml">&lt;?xml version="1.0"?>
+&lt;!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+&lt;hotrod>
+
+  &lt;generators>
+    &lt;mybatis>
+      ...
+      &lt;mappers gen-base-dir="mybatis-mappers" relative-dir="persistence" />
+      ....
+    &lt;/mybatis>
+  &lt;/generators>
+
+  &lt;table name="book" />
+
+&lt;/hotrod></pre>
+
+<p>
+  Let&#39;s assume the directory structure of the project has a
+  <code>mybatis-mappers/persistence</code>
+  directory with a
+  <code>custom</code>
+  directory inside. Something like:
+</p>
+
+<pre>+- project/
+   +- mybatis-mappers/
+      +- persistence/
+         +- custom/
+            +- manga-queries.xml
+            +- fiction-queries.xml</pre>
+
+<p>
+  HotRod&#39;s generation will produce a mapper for the
+  <code>BOOK</code>
+  table. It will also include both existing mapper files
+  <code>manga-queries.xml</code>
+  , and
+  <code>fiction-queries.xml</code>
+  , since they are in the directory it inspects for existing MyBatis
+  mapper files. The resulting MyBatis configuration file will look like:
+</p>
+
+<pre class="xml">&lt;?xml version="1.0" encoding="UTF-8" ?>
+&lt;!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+&lt;configuration>
+
+  &lt;environments>
+    ...
+  &lt;/environments>
+
+  &lt;mappers>
+    &lt;mapper resource="persistence/primitives/primitives-book.xml" />
+    &lt;mapper resource="persistence/custom/manga-queries.xml" />
+    &lt;mapper resource="persistence/custom/fiction-queries.xml" />
+  &lt;/mappers>
+
+&lt;/configuration></pre>
+
+<p>&nbsp;</p>
+

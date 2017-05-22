@@ -1,0 +1,80 @@
+<h1>Example 18 - Custom DAO Property Names</h1>
+
+<p>This example shows how the DAO properties from tables and views
+  can have a custom user-specified names, rather than the equivalent
+  names coming directly from the database object.</p>
+  
+<h2>Example Source Code</h2>
+
+<java-file name="docs/examples/mybatis/examples/java/examples/Example18.java" />
+
+<h2>How to Run this example</h2>
+
+<p>The Example 18 is included in the download package. To run this
+  example please refer to the section How to Run the Examples above.</p>
+
+<h2>Case #1: Java reserved word</h2>
+
+<p>
+  If no alias is used for the column &quot;
+  <code>IF</code>
+  &quot;, it would generate the java property name &quot;
+  <code>if</code>
+  &quot;. This is actually a reserved word in Java and, therefore, the
+  DAO source code would be invalid. In this case the property MUST be
+  given a different java name.
+</p>
+
+<p>
+  In the configuration file the
+  <code>if</code>
+  property is given the java name
+  <code>valuationDate</code>
+  , as shown below:
+</p>
+
+<pre class="xml">    &lt;column name="if" java-name="valuationDate" /></pre>
+
+<h2>Case #2: Cryptic column name</h2>
+
+<p>
+  The column name &quot;
+  <code>SLDBRID</code>
+  &quot; is a little bit cryptic and probably comes from a legacy system
+  that we cannot modify. If we want to treat this column with a
+  different name within our java application we can specify it in the
+  configuration file as in:
+</p>
+
+<pre class="xml">    &lt;column name="sldbrid" java-name="branchId" /></pre>
+
+<p>
+  In this case it&#39;s much clearer for our Java application to use it
+  as
+  <code>branchId</code>
+  in all getters and setters.
+</p>
+
+<h2>Case #3: Safer Java identifier</h2>
+
+<p>
+  The column &ldquo;
+  <code>$valuation</code>
+  &rdquo; (probably from a legacy database) has a special character in
+  its name and could produce issues when interacting with the DAO
+  properties. It&#39;s better to give it a different java name so it can
+  be managed easily as shown below:
+</p>
+
+<pre class="xml">    &lt;column name="$valuation" java-name="totalBranchValuation" /></pre>
+
+<p>
+  The property name
+  <code>totalBranchValuation</code>
+  is much safer than &ldquo;
+  <code>$valuation</code>
+  &rdquo;.
+</p>
+
+<p>&nbsp;</p>
+

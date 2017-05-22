@@ -1,0 +1,56 @@
+<h1>Example 5 - Delete by Example</h1>
+
+<p>This example shows how to delete rows on tables using the
+  out-of-the-box Delete by Example functionality. This functionality is
+  available on all database tables even if they don&#39;t have a PK.</p>
+  
+<h2>Example Source Code</h2>
+
+<java-file name="docs/examples/mybatis/examples/java/examples/Example05.java" />
+
+<h2>How to Run this example</h2>
+
+<p>The Example 05 is included in the download package. To run this
+  example please refer to the section How to Run the Examples above.</p>
+
+<h2>Case #1: Filtering by a single column</h2>
+
+<p>To delete using a single column you must instantiate a new DAO to
+  use as the example and set the desired value on the property you want
+  to filter by. Leave the rest of the properties untouched.</p>
+
+<p>
+  This is demonstrated using the table
+  <code>VEHICLE</code>
+  .
+</p>
+
+<h2>Case #2: Filtering by multiple columns</h2>
+
+<p>To delete filtering by multiple columns you must instantiate a
+  new DAO to use as the example and set the desired values on the
+  properties you want to filter by. An AND logic condition is used to
+  filter by all the columns. Leave the rest of the properties untouched.</p>
+
+<p>
+  This is demonstrated using the table
+  <code>VEHICLE</code>
+  .
+</p>
+
+<h2>Case #3: Using null values to filter</h2>
+
+<p>To delete filtering using null values you must explicitly set the
+  null value into the properties(s) you want to filter by. An AND logic
+  condition is used to filter by all the columns. Leave the rest of the
+  properties untouched.</p>
+
+<p>
+  This is demonstrated using the table
+  <code>VEHICLE</code>
+  .
+</p>
+
+<p>&nbsp;</p>
+
+

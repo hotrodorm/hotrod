@@ -33,3 +33,7 @@ Research how to:
  * Set JDBC properties for each HotRod config file (driver class path, driver class, url, user, pass, catalog, schema, etc.)
  * Dynamically load a JDBC driver classpath for each HotRod config file separately.
  * Shows execution errors in an HotRod Error window. Or maybe just show the console, when there are errors.
+ * File listener: automatic reload when a config file changes.
+ * Reload the java source tree depending on some conditions.
+ 
+ 

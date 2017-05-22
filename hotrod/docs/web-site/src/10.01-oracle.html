@@ -1,0 +1,208 @@
+<h1>Oracle</h1>
+
+<p>The HotRod Oracle adapter automatically maps known database
+  column types to DAO Java types. In most of the cases this default Java
+  type is well suited to handle the database values. However, when
+  needed the default Java type of a property can be overridden by a
+  custom type if it&#39;s provided by the developer.</p>
+
+<h2>Default Java Types</h2>
+
+<p>If a custom Java type is not specified HotRod will use the
+  following rules to decide which Java type to use for each Oracle
+  column. In yellow is the DAO property type. In parenthesis the actual
+  object type returned by the Oracle JDBC driver, that on occasions may
+  be different.</p>
+
+<p>Please note that the Java types for the Oracle columns may vary
+  depending on the specific version and variant of the RDBMS, the
+  operating system where the database engine is running, and the JDBC
+  driver version.</p>
+
+<table class="column-type-table">
+  <tbody>
+    <tr>
+      <th>Oracle Column Type</th>
+      <th>Default Java Type</th>
+    </tr>
+    <tr>
+      <td>NUMBER(p,s),<br /> DECIMAL(p,s),<br /> DEC(p,s),<br />
+        NUMERIC(p,s),<br /> NUM(p,s)
+      </td>
+      <td>If neither p or s are specified:
+        <ul>
+          <li><kbd>java.math.BigDecimal</kbd></li>
+        </ul> If both are specified and s is different from zero the Java
+        type is:
+
+        <ul>
+          <li><kbd>java.math.BigDecimal</kbd></li>
+        </ul> if p is specified and s is not specified or specified with a
+        value of zero:
+
+        <ul>
+          <li>if p &lt;= 2: <kbd>java.lang.Byte</kbd></li>
+          <li>if 2 &lt; p &lt;= 4: <kbd>java.lang.Short</kbd></li>
+          <li>if 4 &lt; p &lt;= 9: <kbd>java.lang.Integer</kbd></li>
+          <li>if 8 &lt; p &lt;= 18: <kbd>java.lang.Long</kbd></li>
+          <li>if p &gt; 18: <kbd>java.math.BigInteger</kbd></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>SMALLINT,<br /> INTEGER,<br /> INT
+      </td>
+      <td><kbd>java.math.BigInteger</kbd><br /> <strong>Note</strong>:
+        <code>SMALLINT</code>, <code>INTEGER</code>, and <code>INT</code>
+        are equivalent to <code>NUMBER(38)</code>.</td>
+    </tr>
+    <tr>
+      <td>FLOAT(p)</td>
+      <td>if p is not specified (i.e. a 126-bit float):
+        <ul>
+          <li><kbd>java.math.BigDecimal</kbd></li>
+        </ul> if p is specified:
+
+        <ul>
+          <li>if p &lt;= 23: <kbd>java.lang.Float</kbd></li>
+          <li>if 24 &lt;= p &lt;= 52: <kbd>java.lang.Double</kbd></li>
+          <li>if p &gt;=53: <kbd>java.math.BigDecimal</kbd></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>REAL</td>
+      <td><kbd>java.math.BigDecimal</kbd><br /> <strong>Note</strong>:
+        <code>REAL</code> is equivalent to <code>FLOAT(63)</code>.</td>
+    </tr>
+    <tr>
+      <td>DOUBLE PRECISION</td>
+      <td><kbd>java.math.BigDecimal</kbd><br /> <strong>Note</strong>:
+        <code>DOUBLE PRECISION</code> is equivalent to <code>FLOAT(126)</code>.</td>
+    </tr>
+    <tr>
+      <td>BINARY_FLOAT</td>
+      <td><kbd>java.lang.Float</kbd></td>
+    </tr>
+    <tr>
+      <td>BINARY_DOUBLE</td>
+      <td><kbd>java.lang.Double</kbd></td>
+    </tr>
+    <tr>
+      <td>CHAR(n),<br /> VARCHAR(n),<br /> VARCHAR2(n),<br />
+        NCHAR(n),<br /> NVARCHAR2(n)
+      </td>
+      <td><kbd>java.lang.String</kbd></td>
+    </tr>
+    <tr>
+      <td>CLOB,<br /> NCLOB
+      </td>
+      <td><kbd>java.lang.String</kbd> *</td>
+    </tr>
+    <tr>
+      <td>LONG</td>
+      <td>No default java type **</td>
+    </tr>
+    <tr>
+      <td>RAW(n),<br /> LONG RAW
+      </td>
+      <td><kbd>byte[]</kbd></td>
+    </tr>
+    <tr>
+      <td>BLOB</td>
+      <td><kbd>byte[]</kbd> *</td>
+    </tr>
+    <tr>
+      <td>BFILE</td>
+      <td>No default java type **</td>
+    </tr>
+    <tr>
+      <td>DATE</td>
+      <td><kbd>java.util.Date</kbd></td>
+    </tr>
+    <tr>
+      <td>TIMESTAMP</td>
+      <td><kbd>java.sql.Timestamp</kbd></td>
+    </tr>
+    <tr>
+      <td>TIMESTAMP WITH TIME ZONE</td>
+      <td><kbd>java.sql.Timestamp</kbd></td>
+    </tr>
+    <tr>
+      <td>TIMESTAMP WITH LOCAL TIME ZONE</td>
+      <td><kbd>java.sql.Timestamp</kbd></td>
+    </tr>
+    <tr>
+      <td>ROWID</td>
+      <td><kbd>java.lang.String</kbd></td>
+    </tr>
+    <tr>
+      <td>UROWID</td>
+      <td><kbd>java.lang.Object</kbd> (oracle.sql.ROWID)</td>
+    </tr>
+    <tr>
+      <td>XMLTYPE</td>
+      <td>No default java type **</td>
+    </tr>
+    <tr>
+      <td>URITYPE</td>
+      <td><kbd>java.lang.Object</kbd> (oracle.sql.STRUCT)</td>
+    </tr>
+    <tr>
+      <td>INTERVAL YEAR TO MONTH</td>
+      <td><kbd>java.lang.Object</kbd> (oracle.sql.INTERVALYM)</td>
+    </tr>
+    <tr>
+      <td>INTERVAL DAY TO SECOND</td>
+      <td><kbd>java.lang.Object</kbd> (oracle.sql.INTERVALDS)</td>
+    </tr>
+    <tr>
+      <td>VARRAY(n)</td>
+      <td><kbd>java.lang.Object</kbd> (oracle.sql.ARRAY)</td>
+    </tr>
+    <tr>
+      <td>STRUCT</td>
+      <td><kbd>java.lang.Object</kbd> (oracle.sql.STRUCT)</td>
+    </tr>
+    <tr>
+      <td>REF</td>
+      <td><kbd>java.lang.Object</kbd></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  *
+  <code>LOB</code>
+  types are by default read all at once into memory as byte arrays. They
+  can also be read/written using streaming instead of loading them all
+  at once. To do this you&rsquo;ll need to write a custom MyBatis
+  <code>TypeHandler</code>
+  .
+</p>
+
+<p>
+  ** It may be possible to read/write from/to these columns using a
+  MyBatis custom
+  <code>TypeHandler</code>
+  . This is, however, not an out-of-the-box solution.
+</p>
+
+<h2>Custom Java Types</h2>
+
+<p>
+  To override the default Java type see the reference section for the
+  tables, views, and selects. The <b>Example 19 - Custom DAO
+    Property Java Types</b> shows a case where a custom type overrides the
+  default type. To override the default type add a
+  <code>&lt;column&gt;</code>
+  tag in a
+  <code>&lt;table&gt;</code>
+  ,
+  <code>&lt;view&gt;</code>
+  , or
+  <code>&lt;select&gt;</code>
+  definition.
+</p>
+
+<p>&nbsp;</p>

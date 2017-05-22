@@ -8,7 +8,7 @@ import daos.ClientDAO;
 /**
  * Example 10 - Regular SQL Queries
  * 
- * @author valarcon
+ * @author Vladimir Alarcon
  * 
  */
 public class Example10 {
