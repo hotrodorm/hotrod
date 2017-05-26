@@ -1,7 +1,5 @@
 package websitegenerator;
 
-import java.text.DecimalFormat;
-
 public class Article {
 
   private String filenname;
@@ -87,7 +85,18 @@ public class Article {
     return true;
   }
 
+  public String produceFileName(final ArticleNumberFormatter cf, final ArticleNumberFormatter af,
+      final boolean hasMultipleArticles) {
+    return cf.format(this.chapterNumber)
+        + (this.articleNumber.equals(0) && !hasMultipleArticles ? "" : "-" + af.format(this.articleNumber)) + "-"
+        + this.tail;
+  }
+
   // Setters
+
+  public void setChapterNumber(Integer chapterNumber) {
+    this.chapterNumber = chapterNumber;
+  }
 
   void setArticleNumber(final Integer n) {
     this.articleNumber = n;

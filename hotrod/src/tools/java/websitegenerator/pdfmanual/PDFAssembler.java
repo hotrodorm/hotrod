@@ -1,8 +1,13 @@
-package websitegenerator;
+package websitegenerator.pdfmanual;
 
 import java.io.File;
 
-public class Renumber {
+import websitegenerator.Chapter;
+import websitegenerator.ArticleAssembler.CouldNotLoadTemplateException;
+import websitegenerator.ArticleAssembler.CouldNotSaveArticleException;
+import websitegenerator.Chapter.DuplicateArticleException;
+
+public class PDFAssembler {
 
   public static void main(final String[] args) {
 
@@ -16,7 +21,7 @@ public class Renumber {
     File destDir = new File(args[1]);
 
     display("Source dir: " + sourceDir.getPath());
-    display("Source dir: " + destDir.getPath());
+    display("Dest dir: " + destDir.getPath());
 
     // Check source dir
 
@@ -26,7 +31,7 @@ public class Renumber {
       return;
     }
     if (!sourceDir.isDirectory()) {
-      display("Source dir '" + sourceDir.getAbsolutePath() + "' must be a directory.");
+      display("Source dir '" + sourceDir.getAbsolutePath() + "' must be adirectory.");
       System.exit(1);
       return;
     }
@@ -50,23 +55,27 @@ public class Renumber {
       return;
     }
 
-    // Renumber
+    // Run the assembler
 
     try {
-      ArticleRenumberer ar = new ArticleRenumberer(sourceDir, destDir);
-      ar.renumber();
+      PDFArticleAssembler aa = new PDFArticleAssembler(sourceDir, destDir);
+      aa.assembleArticles();
+    } catch (DuplicateArticleException e) {
+      display(e.getMessage());
+      System.exit(1);
+      return;
     } catch (Exception e) {
       e.printStackTrace();
       System.exit(1);
       return;
     }
 
-    display("Renumbering completed successfuly.");
+    display("Assembling completed successfuly.");
 
   }
 
   private static void usage() {
-    display("Usage: renumber <source-dir> <dest-dir>");
+    display("Usage: assembler <source-dir> <dest-dir> <template-file>");
   }
 
   private static void display(final String txt) {

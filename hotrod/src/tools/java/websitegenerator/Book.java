@@ -58,6 +58,18 @@ public class Book {
 
   }
 
+  public void renumber() {
+    int next = 10;
+    TreeMap<Integer, Chapter> newChapters = new TreeMap<Integer, Chapter>();
+    for (Chapter c : this.chapters.values()) {
+      c.setChapterNumber(next);
+      next += 10;
+      newChapters.put(c.getChapterNumber(), c);
+      c.renumber();
+    }
+    this.chapters = newChapters;
+  }
+
   // getters
 
   public TreeMap<Integer, Chapter> getChapters() {

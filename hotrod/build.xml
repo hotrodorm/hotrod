@@ -20,6 +20,8 @@
   <property name="dtd.build.dir" value="build/dtd" />
   <property name="dist.dir" value="dist" />
   <property name="website.dist.dir" value="dist/website" />
+  <property name="website.renumber.dist.dir" value="dist/website-renumber" />
+  <property name="website.pdfmanual.dist.dir" value="dist/website-pdfmanual" />
   <property name="release.dir" value="release" />
 
   <target name="-init">
@@ -166,7 +168,7 @@
   <!-- Web Site Generation -->
   <!-- =================== -->
 
-  <target name="generate-web-site" depends="clean, compile-tools">
+  <target name="web-site-generate" depends="clean, compile-tools">
     <echo message="Assembling web site..." />
 
     <java classname="websitegenerator.Assembler">
@@ -174,7 +176,7 @@
       <arg value="${website.dist.dir}" />
       <arg value="docs/web-site/templates/template.html" />
       <classpath>
-        <pathelement location="${tools.build.dir}" />
+        <pathelement path="${tools.build.dir}" />
       </classpath>
     </java>
 
@@ -185,6 +187,50 @@
     </copy>
 
     <echo message="Web site assembled." />
+  </target>
+
+  <target name="web-site-renumber" depends="clean, compile-tools">
+    <echo message="Renumbering web site..." />
+
+    <mkdir dir="${website.renumber.dist.dir}" />
+    <delete includeemptydirs="true">
+      <fileset dir="${website.renumber.dist.dir}" includes="**/*" />
+    </delete>
+
+    <java classname="websitegenerator.Renumber">
+      <arg value="docs/web-site/src" />
+      <arg value="${website.renumber.dist.dir}" />
+      <classpath>
+        <pathelement path="${tools.build.dir}" />
+        <pathelement location="lib/apache-commons/commons-io-2.5.jar" />
+      </classpath>
+    </java>
+
+    <echo message="Web site assembled." />
+  </target>
+
+  <target name="web-site-pdf-manual" depends="clean, compile-tools">
+    <echo message="Assembling PDF Manual..." />
+
+    <mkdir dir="${website.pdfmanual.dist.dir}" />
+    <delete includeemptydirs="true">
+      <fileset dir="${website.pdfmanual.dist.dir}" includes="**/*" />
+    </delete>
+
+    <java classname="websitegenerator.pdfmanual.PDFAssembler">
+      <arg value="docs/web-site/src" />
+      <arg value="${website.pdfmanual.dist.dir}" />
+      <classpath>
+        <pathelement path="${tools.build.dir}" />
+        <pathelement location="lib/apache-commons/commons-io-2.5.jar" />
+        <pathelement location="lib/itext/itextpdf-5.5.6.jar" />
+        <pathelement location="lib/itext/xmlworker-5.5.6.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+        <pathelement location="${lib.dir}/list-writer-1.0.jar" />
+      </classpath>
+    </java>
+
+    <echo message="PDF Manual assembled." />
   </target>
 
   <target name="compile-tools" depends="-init">
@@ -200,6 +246,11 @@
            compiler="${java.compiler}">
       <src path="${tools.src.dir}" />
       <classpath>
+        <pathelement location="lib/apache-commons/commons-io-2.5.jar" />
+        <pathelement location="lib/itext/itextpdf-5.5.6.jar" />
+        <pathelement location="lib/itext/xmlworker-5.5.6.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+        <pathelement location="${lib.dir}/list-writer-1.0.jar" />
       </classpath>
     </javac>
   </target>
