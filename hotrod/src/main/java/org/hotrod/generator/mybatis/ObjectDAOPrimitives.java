@@ -18,9 +18,9 @@ import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractCompositeDAOTag;
 import org.hotrod.config.MyBatisTag;
+import org.hotrod.config.QueryTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SequenceTag;
-import org.hotrod.config.QueryTag;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.SequencesNotSupportedException;
@@ -1622,23 +1622,30 @@ public class ObjectDAOPrimitives {
       println("  }");
       println();
 
-      String setter;
+      String setter = cm.getIdentifier().getSetter();
+      writeSetter(cm, type, m, setter, false);
+
       if (this.isSelect()) {
         setter = "set" + cm.getIdentifier().getSQLIdentifier().toLowerCase();
-      } else {
-        setter = cm.getIdentifier().getSetter();
+        writeSetter(cm, type, m, setter, true);
       }
-
-      println("  public final void " + setter + "(final " + type.getJavaClassName() + " " + m + ") {");
-      println("    this." + m + " = " + m + ";");
-      String name = cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
-      println("    this.propertiesChangeLog." + name + " = true;");
-
-      println("  }");
-      println();
 
     }
 
+  }
+
+  private void writeSetter(final ColumnMetadata cm, final PropertyType type, final String m, final String setter,
+      final boolean isExtra) throws IOException {
+    if (isExtra) {
+      println("  // (extra setter required because of MyBatis' default column name mapping)");
+    }
+    println("  public final void " + setter + "(final " + type.getJavaClassName() + " " + m + ") {");
+    println("    this." + m + " = " + m + ";");
+    String name = cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
+    println("    this.propertiesChangeLog." + name + " = true;");
+
+    println("  }");
+    println();
   }
 
   /**
