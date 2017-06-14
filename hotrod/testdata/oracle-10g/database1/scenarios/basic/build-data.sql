@@ -55,9 +55,9 @@ update types_other set stu1 = person_struct(123, to_date('2003/07/09', 'yyyy/mm/
 
 -- Quadrant
 
-insert into quadrant (region, area, caption, active) values (1, 12, 'Quadrant 1-12', 1);
-insert into quadrant (region, area, caption, active) values (1, 23, 'Quadrant 1-23', 0);
-insert into quadrant (region, area, caption, active) values (5, 1, 'Quadrant 5-1', 1);
-insert into quadrant (region, area, caption, active) values (14, 99, 'Quadrant 14-99', 0);
-insert into quadrant (region, area, caption, active) values (18, 86, 'Quadrant 18-86', 1);
+insert into quadrant (region, area, caption, active_state) values (1, 12, 'Quadrant 1-12', 1);
+insert into quadrant (region, area, caption, active_state) values (1, 23, 'Quadrant 1-23', 0);
+insert into quadrant (region, area, caption, active_state) values (5, 1, 'Quadrant 5-1', 1);
+insert into quadrant (region, area, caption, active_state) values (14, 99, 'Quadrant 14-99', 0);
+insert into quadrant (region, area, caption, active_state) values (18, 86, 'Quadrant 18-86', 1);
 

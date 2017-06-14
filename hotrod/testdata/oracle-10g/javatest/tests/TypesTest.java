@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
+import hotrod.test.generation.CurrentQuadrant;
 import hotrod.test.generation.QuadrantDAO;
 import hotrod.test.generation.TypesBinaryDAO;
 import hotrod.test.generation.TypesCharDAO;
@@ -176,16 +177,20 @@ public class TypesTest {
 
     // list = QuadrantDAO.selectByExample(new QuadrantDAO());
 
-    QuadrantDAO example = new QuadrantDAO();
-    example.setActive(true);
-    list = QuadrantDAO.selectByExample(example);
+//    QuadrantDAO example = new QuadrantDAO();
+//    example.setActive(true);
+//    list = QuadrantDAO.selectByExample(example);
+//
+//    for (QuadrantDAO q : list) {
+//      System.out.println("quandrant=" + q);
+//      // if (q.getRegion() > 10) {
+//      // q.setActive(!q.isActive());
+//      // q.update();
+//      // }
+//    }
 
-    for (QuadrantDAO q : list) {
-      System.out.println("quandrant=" + q);
-      // if (q.getRegion() > 10) {
-      // q.setActive(!q.isActive());
-      // q.update();
-      // }
+    for (CurrentQuadrant q : CurrentQuadrant.select()) {
+      System.out.println("quadrant=" + q);
     }
   }
 

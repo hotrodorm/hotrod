@@ -52,7 +52,7 @@
   </table>
 
   <table name="quadrant">
-    <column name="active" converter="boolean_stored_as_short" />
+    <column name="active_state" converter="boolean_stored_as_short" />
   </table>
    
   <table name="application_config" />
@@ -136,5 +136,13 @@
     </view>
 
   </facet>
+  
+  <select java-class-name="CurrentQuadrant" >
+    <column name="active_state" converter="boolean_stored_as_short" />
+  <![CDATA[
+    select * 
+      from quadrant
+  ]]></select>
+  
 
 </hotrod-fragment>

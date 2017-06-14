@@ -274,7 +274,7 @@ public class MapperPrimitives {
     String typeHandler = cm.getConverter() != null
         ? ("typeHandler=\"" + this.daoPrimitives.getTypeHandlerFullClassName(cm) + "\" ") : "";
     println("    <" + tagName + " property=\"" + cm.getIdentifier().getJavaMemberIdentifier() + "\" column='"
-        + cm.renderSQLIdentifier() + "' " + typeHandler + "/>");
+        + cm.getColumnName() + "' " + typeHandler + "/>");
   }
 
   private void writeSelectByPK() throws IOException {

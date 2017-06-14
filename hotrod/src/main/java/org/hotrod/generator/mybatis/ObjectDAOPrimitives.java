@@ -1631,8 +1631,6 @@ public class ObjectDAOPrimitives {
       PropertyType type = cm.getType();
       String m = cm.getIdentifier().getJavaMemberIdentifier();
 
-      // Old implementation
-
       println("  public final " + type.getJavaClassName() + " " + cm.getIdentifier().getGetter() + "() {");
       println("    return this." + m + ";");
       println("  }");
@@ -1640,11 +1638,6 @@ public class ObjectDAOPrimitives {
 
       String setter = cm.getIdentifier().getSetter();
       writeSetter(cm, type, m, setter, false);
-
-      if (this.isSelect()) {
-        setter = "set" + cm.getIdentifier().getSQLIdentifier().toLowerCase();
-        writeSetter(cm, type, m, setter, true);
-      }
 
     }
 
