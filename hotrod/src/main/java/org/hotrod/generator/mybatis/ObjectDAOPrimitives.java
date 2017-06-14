@@ -149,6 +149,9 @@ public class ObjectDAOPrimitives {
       }
 
       writeGettersAndSetters();
+
+      writeConverters();
+
       writeToString();
 
       if (!this.isSelect()) {
@@ -270,6 +273,19 @@ public class ObjectDAOPrimitives {
     }
 
     println();
+
+    if (this.usesConverters()) {
+
+      println("import java.sql.CallableStatement;");
+      println("import java.sql.PreparedStatement;");
+      println("import java.sql.ResultSet;");
+      println("import org.apache.ibatis.type.JdbcType;");
+      println("import org.apache.ibatis.type.TypeHandler;");
+      println("import org.hotrod.runtime.converter.TypeConverter;");
+
+      println();
+
+    }
 
     // Signature
 
@@ -1648,6 +1664,129 @@ public class ObjectDAOPrimitives {
     println();
   }
 
+  private boolean usesConverters() throws IOException {
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      if (cm.getConverter() != null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * <pre>
+   * 
+   * public class ActiveTypeHandler implements TypeHandler<Boolean> {
+   * 
+   *   private TypeConverter<Short, Boolean> converter = new BooleanShortConverter();
+   * 
+   *   &#64;Override
+   *   public Boolean getResult(final ResultSet rs, final String columnName) throws SQLException {
+   *     Short value = rs.getShort(columnName);
+   *     if (rs.wasNull()) {
+   *       value = null;
+   *     }
+   *     return this.converter.get(value);
+   *   }
+   * 
+   *   &#64;Override
+   *   public Boolean getResult(final ResultSet rs, final int columnIndex) throws SQLException {
+   *     Short value = rs.getShort(columnIndex);
+   *     if (rs.wasNull()) {
+   *       value = null;
+   *     }
+   *     return this.converter.get(value);
+   *   }
+   * 
+   *   &#64;Override
+   *   public Boolean getResult(final CallableStatement cs, final int columnIndex) throws SQLException {
+   *     Short value = cs.getShort(columnIndex);
+   *     if (cs.wasNull()) {
+   *       value = null;
+   *     }
+   *     return this.converter.get(value);
+   *   }
+   * 
+   *   &#64;Override
+   *   public void setParameter(final PreparedStatement ps, final int columnIndex, final Boolean v,
+   *       final JdbcType jdbcType) throws SQLException {
+   *     Short value = this.converter.set(v);
+   *     if (value == null) {
+   *       ps.setNull(columnIndex, jdbcType.TYPE_CODE);
+   *     } else {
+   *       ps.setShort(columnIndex, value);
+   *     }
+   *   }
+   * 
+   * }
+   * 
+   * </pre>
+   * 
+   * @throws IOException
+   */
+
+  private void writeConverters() throws IOException {
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      if (cm.getConverter() != null) {
+
+        String typeHandlerClassName = getTypeHandlerClassName(cm);
+        String interType = cm.getConverter().getJavaIntermediateType();
+        String type = cm.getConverter().getJavaType();
+        String setter = cm.getConverter().getJdbcSetterMethod();
+        String getter = cm.getConverter().getJdbcGetterMethod();
+        String converter = cm.getConverter().getJavaClass();
+
+        println("  // TypeHandler for column " + cm.getColumnName() + " using Converter " + converter + ".");
+        println();
+        println("  public static class " + typeHandlerClassName + " implements TypeHandler<" + type + "> {");
+        println();
+        println("    private TypeConverter<" + interType + ", " + type + "> converter = new " + converter + "();");
+        println();
+        println("    @Override");
+        println("    public " + type + " getResult(final ResultSet rs, final String columnName) throws SQLException {");
+        println("      " + interType + " value = rs." + getter + "(columnName);");
+        println("      if (rs.wasNull()) {");
+        println("        value = null;");
+        println("      }");
+        println("      return this.converter.get(value);");
+        println("    }");
+        println();
+        println("    @Override");
+        println("    public " + type + " getResult(final ResultSet rs, final int columnIndex) throws SQLException {");
+        println("      " + interType + " value = rs." + getter + "(columnIndex);");
+        println("      if (rs.wasNull()) {");
+        println("        value = null;");
+        println("      }");
+        println("      return this.converter.get(value);");
+        println("    }");
+        println();
+        println("    @Override");
+        println("    public " + type
+            + " getResult(final CallableStatement cs, final int columnIndex) throws SQLException {");
+        println("      " + interType + " value = cs." + getter + "(columnIndex);");
+        println("      if (cs.wasNull()) {");
+        println("        value = null;");
+        println("      }");
+        println("      return this.converter.get(value);");
+        println("    }");
+        println();
+        println("    @Override");
+        println("    public void setParameter(final PreparedStatement ps, final int columnIndex, final " + type
+            + " v, final JdbcType jdbcType)");
+        println("        throws SQLException {");
+        println("      " + interType + " value = this.converter.set(v);");
+        println("      if (value == null) {");
+        println("        ps.setNull(columnIndex, jdbcType.TYPE_CODE);");
+        println("      } else {");
+        println("        ps." + setter + "(columnIndex, value);");
+        println("      }");
+        println("    }");
+        println("  }");
+        println();
+      }
+    }
+  }
+
   /**
    * <pre>
    * // toString
@@ -2151,6 +2290,14 @@ public class ObjectDAOPrimitives {
 
   public String getParamClassName(final QueryTag u) {
     return "Param" + u.getIdentifier().getJavaClassIdentifier();
+  }
+
+  private String getTypeHandlerClassName(final ColumnMetadata cm) {
+    return cm.getIdentifier().getJavaClassIdentifier() + "TypeHandler";
+  }
+
+  public String getTypeHandlerFullClassName(final ColumnMetadata cm) {
+    return this.getFullClassName() + "$" + getTypeHandlerClassName(cm);
   }
 
   // Helpers

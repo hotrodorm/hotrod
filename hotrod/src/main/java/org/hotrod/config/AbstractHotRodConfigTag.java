@@ -43,8 +43,9 @@ public abstract class AbstractHotRodConfigTag {
     this.base = base;
   }
 
-  protected void validateCommon(final File file, final Set<String> alreadyLoadedFileNames, final File parentFile,
-      final DaosTag daosTag) throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
+  protected void validateCommon(final HotRodConfigTag config, final File file, final Set<String> alreadyLoadedFileNames,
+      final File parentFile, final DaosTag daosTag)
+      throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
 
     File basedir = file.getParentFile();
 
@@ -53,11 +54,11 @@ public abstract class AbstractHotRodConfigTag {
     // DAOs
 
     for (TableTag t : this.tables) {
-      t.validate(daosTag);
+      t.validate(daosTag, config);
     }
 
     for (ViewTag v : this.views) {
-      v.validate(daosTag);
+      v.validate(daosTag, config);
     }
 
     for (CustomDAOTag dao : this.daos) {
@@ -65,17 +66,17 @@ public abstract class AbstractHotRodConfigTag {
     }
 
     for (SelectTag s : this.selects) {
-      s.validate(daosTag);
+      s.validate(daosTag, config);
     }
 
     for (FacetTag f : this.facets) {
-      f.validate(this, daosTag);
+      f.validate(config, daosTag);
     }
 
     // Fragments
 
     for (FragmentTag f : this.fragments) {
-      f.validate(basedir, alreadyLoadedFileNames, parentFile, daosTag);
+      f.validate(config, basedir, alreadyLoadedFileNames, parentFile, daosTag);
       this.mergeFragment(f.getConfig());
     }
 
@@ -159,6 +160,15 @@ public abstract class AbstractHotRodConfigTag {
     d.addSetProperties(base + "/fragment", "file", "file");
     d.addSetNext(base + "/fragment", "addFragment");
 
+    // converter
+
+    d.addObjectCreate(base + "/converter", ConverterTag.class);
+    d.addSetProperties(base + "/converter", "name", "name");
+    d.addSetProperties(base + "/converter", "java-type", "javaType");
+    d.addSetProperties(base + "/converter", "class", "javaClass");
+    d.addSetProperties(base + "/converter", "java-intermediate-type", "javaIntermediateType");
+    d.addSetNext(base + "/converter", "addConverter");
+
   }
 
   private void addDAORules(final Digester d, final String base) {
@@ -191,6 +201,7 @@ public abstract class AbstractHotRodConfigTag {
     d.addSetProperties(base + "/table/column", "name", "name");
     d.addSetProperties(base + "/table/column", "java-name", "javaName");
     d.addSetProperties(base + "/table/column", "java-type", "javaType");
+    d.addSetProperties(base + "/table/column", "converter", "converter");
     d.addSetProperties(base + "/table/column", "jdbc-type", "jdbcType");
     d.addSetProperties(base + "/table/column", "is-lob", "isLOB");
     d.addSetProperties(base + "/table/column", "initial-value", "sInitialValue");

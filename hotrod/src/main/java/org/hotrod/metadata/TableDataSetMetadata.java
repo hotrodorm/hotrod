@@ -180,8 +180,9 @@ public class TableDataSetMetadata implements DataSetMetadata {
       throws UnresolvableDataTypeException {
     List<ColumnMetadata> lcm = new ArrayList<ColumnMetadata>();
     for (JdbcColumn c : cols) {
+      boolean belongsToPK = this.t.getPk() != null && keyIncludesColumn(this.t.getPk(), c);
       ColumnTag columnTag = tableTag.findColumnTag(c.getName(), this.adapter);
-      lcm.add(new ColumnMetadata(c, this.adapter, columnTag, false));
+      lcm.add(new ColumnMetadata(c, this.adapter, columnTag, false, belongsToPK));
     }
     return lcm;
   }
@@ -191,7 +192,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
     List<ColumnMetadata> lcm = new ArrayList<ColumnMetadata>();
     for (JdbcColumn c : cols) {
       ColumnTag columnTag = viewTag.findColumnTag(c.getName(), this.adapter);
-      lcm.add(new ColumnMetadata(c, this.adapter, columnTag, false));
+      lcm.add(new ColumnMetadata(c, this.adapter, columnTag, false, false));
     }
     return lcm;
   }
@@ -202,8 +203,9 @@ public class TableDataSetMetadata implements DataSetMetadata {
     } else {
       List<ColumnMetadata> lcm = new ArrayList<ColumnMetadata>();
       for (JdbcKeyColumn c : kc.getKeyColumns()) {
+        boolean belongsToPK = this.t.getPk() != null && keyIncludesColumn(this.t.getPk(), c.getColumn());
         ColumnTag columnTag = tableTag.findColumnTag(c.getColumn().getName(), this.adapter);
-        lcm.add(new ColumnMetadata(c.getColumn(), this.adapter, columnTag, false));
+        lcm.add(new ColumnMetadata(c.getColumn(), this.adapter, columnTag, false, belongsToPK));
       }
       return new KeyMetadata(this, lcm);
     }
@@ -216,10 +218,19 @@ public class TableDataSetMetadata implements DataSetMetadata {
       List<ColumnMetadata> lcm = new ArrayList<ColumnMetadata>();
       for (JdbcKeyColumn c : kc.getKeyColumns()) {
         ColumnTag columnTag = viewTag.findColumnTag(c.getColumn().getName(), this.adapter);
-        lcm.add(new ColumnMetadata(c.getColumn(), this.adapter, columnTag, false));
+        lcm.add(new ColumnMetadata(c.getColumn(), this.adapter, columnTag, false, false));
       }
       return new KeyMetadata(this, lcm);
     }
+  }
+
+  private boolean keyIncludesColumn(final JdbcKey key, final JdbcColumn c) {
+    for (JdbcKeyColumn kc : key.getKeyColumns()) {
+      if (kc.getColumn().getName().equals(c.getName())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private ColumnMetadata findColumnMetadata(final VersionControlColumnTag vct) {

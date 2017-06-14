@@ -15,10 +15,11 @@ public class FragmentTag {
   private String filename = null;
 
   private File file;
-  private HotRodFragmentConfigTag config;
+  private HotRodFragmentConfigTag fragmentConfig;
 
-  public void validate(final File baseDir, final Set<String> alreadyLoadedFileNames, final File parentFile,
-      final DaosTag daosTag) throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
+  public void validate(final HotRodConfigTag config, final File baseDir, final Set<String> alreadyLoadedFileNames,
+      final File parentFile, final DaosTag daosTag)
+      throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
 
     // file
 
@@ -36,7 +37,8 @@ public class FragmentTag {
           + "'. Must be a normal file, not a directory or other special file.");
     }
 
-    this.config = new HotRodFragmentConfigTag().load(this.file, alreadyLoadedFileNames, parentFile, daosTag);
+    this.fragmentConfig = new HotRodFragmentConfigTag().load(config, this.file, alreadyLoadedFileNames, parentFile,
+        daosTag);
 
   }
 
@@ -53,7 +55,7 @@ public class FragmentTag {
   }
 
   public HotRodFragmentConfigTag getConfig() {
-    return config;
+    return fragmentConfig;
   }
 
 }

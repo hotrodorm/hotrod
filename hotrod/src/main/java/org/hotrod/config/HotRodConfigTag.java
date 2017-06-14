@@ -7,6 +7,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.digester3.Digester;
@@ -29,6 +33,9 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
   }
 
   private GeneratorsTag generatorsTag = null;
+
+  private List<ConverterTag> converters = new ArrayList<ConverterTag>();
+  private Map<String, ConverterTag> convertersByName = null;
 
   public HotRodConfigTag load(final File f, final Set<String> alreadyLoadedFileNames, final File parentFile,
       final String generatorName) throws ControlledException, UncontrolledException {
@@ -94,7 +101,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
       DaosTag daosTag = config.getGenerators().getSelectedGeneratorTag().getDaos();
 
-      config.validateCommon(f, alreadyLoadedFileNames, f, daosTag);
+      config.validateCommon(config, f, alreadyLoadedFileNames, f, daosTag);
 
       // Complete
 
@@ -135,10 +142,22 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     log.debug("(1) this=" + this + " this.generatorsTag=" + this.generatorsTag);
   }
 
+  public void addConverter(final ConverterTag converter) {
+    this.converters.add(converter);
+  }
+
   // Getters
 
   public GeneratorsTag getGenerators() {
     return generatorsTag;
+  }
+
+  public List<ConverterTag> getConverters() {
+    return this.converters;
+  }
+
+  public ConverterTag getConverterTagByName(final String name) {
+    return this.convertersByName.get(name);
   }
 
   public void addExtraRules(final Digester d) {
@@ -234,8 +253,24 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   public void validate(final File basedir, final String generatorName)
       throws InvalidConfigurationFileException, GeneratorNotFoundException {
-    log.debug("(2) this=" + this + " this.layout=" + this.generatorsTag);
+
+    // Generators
+
     this.generatorsTag.validate(basedir, generatorName);
+
+    // Converters
+
+    this.convertersByName = new HashMap<String, ConverterTag>();
+
+    for (ConverterTag c : this.converters) {
+      c.validate();
+      if (this.convertersByName.containsKey(c.getName())) {
+        throw new InvalidConfigurationFileException(
+            "Duplicate converter name. There are multiple <converter> tags with the same name: '" + c.getName() + "'.");
+      }
+      this.convertersByName.put(c.getName(), c);
+    }
+
   }
 
   // Entity Resolver

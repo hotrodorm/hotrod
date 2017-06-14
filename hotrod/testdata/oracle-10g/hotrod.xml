@@ -26,6 +26,10 @@
     </spring-jdbc>
 
   </generators>
+  
+  <converter name="boolean_stored_as_short" java-type="java.lang.Boolean"
+    class="tests.typehandler.BooleanShortConverter"
+    java-intermediate-type="java.lang.Short" />
 
   <facet name="phase2">
 

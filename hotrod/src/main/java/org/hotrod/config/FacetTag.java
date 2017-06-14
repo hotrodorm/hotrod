@@ -19,8 +19,7 @@ public class FacetTag {
   private List<CustomDAOTag> daos = new ArrayList<CustomDAOTag>();
   private List<SelectTag> selects = new ArrayList<SelectTag>();
 
-  public void validate(final AbstractHotRodConfigTag config, final DaosTag daosTag)
-      throws InvalidConfigurationFileException {
+  public void validate(final HotRodConfigTag config, final DaosTag daosTag) throws InvalidConfigurationFileException {
 
     // name
 
@@ -32,11 +31,11 @@ public class FacetTag {
     // daos
 
     for (TableTag t : this.tables) {
-      t.validate(daosTag);
+      t.validate(daosTag, config);
     }
 
     for (ViewTag v : this.views) {
-      v.validate(daosTag);
+      v.validate(daosTag, config);
     }
 
     for (CustomDAOTag dao : this.daos) {
@@ -44,7 +43,7 @@ public class FacetTag {
     }
 
     for (SelectTag s : this.selects) {
-      s.validate(daosTag);
+      s.validate(daosTag, config);
     }
 
   }

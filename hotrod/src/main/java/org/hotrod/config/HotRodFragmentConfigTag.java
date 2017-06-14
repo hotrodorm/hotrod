@@ -27,8 +27,9 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
     super("hotrod-fragment");
   }
 
-  public HotRodFragmentConfigTag load(final File f, final Set<String> alreadyLoadedFileNames, final File parentFile,
-      final DaosTag daosTag) throws ControlledException, UncontrolledException {
+  public HotRodFragmentConfigTag load(final HotRodConfigTag config, final File f,
+      final Set<String> alreadyLoadedFileNames, final File parentFile, final DaosTag daosTag)
+      throws ControlledException, UncontrolledException {
 
     Reader reader = null;
 
@@ -70,7 +71,7 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
       // Parse the configuration file
 
       log.debug("[ Will parse ]");
-      HotRodFragmentConfigTag config = (HotRodFragmentConfigTag) d.parse(reader);
+      HotRodFragmentConfigTag fragmentConfig = (HotRodFragmentConfigTag) d.parse(reader);
       log.debug("[ Parsed ]");
 
       if (!errorHandler.isValid()) {
@@ -85,15 +86,15 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
 
       // Validation (specific)
 
-      config.validate(f.getParentFile());
+      fragmentConfig.validate(f.getParentFile());
 
       // Validation (common)
 
-      config.validateCommon(f, alreadyLoadedFileNames, f, daosTag);
+      fragmentConfig.validateCommon(config, f, alreadyLoadedFileNames, f, daosTag);
 
       // Complete
 
-      return config;
+      return fragmentConfig;
 
     } catch (InvalidConfigurationFileException e) {
       throw new ControlledException("Invalid configuration file '" + f.getAbsolutePath() + "': " + e.getMessage());

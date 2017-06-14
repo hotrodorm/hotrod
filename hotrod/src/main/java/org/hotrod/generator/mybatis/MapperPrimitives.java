@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractCompositeDAOTag;
@@ -25,12 +26,13 @@ import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
 import org.hotrod.runtime.util.ListWriter;
-import org.hotrod.utils.identifiers.ColumnIdentifier;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.exception.ReaderException;
 
 public class MapperPrimitives {
+
+  private static final Logger log = Logger.getLogger(MapperPrimitives.class);
 
   private DataSetMetadata metadata;
   private DataSetLayout layout;
@@ -47,6 +49,7 @@ public class MapperPrimitives {
   private String namespace;
 
   private ObjectDAO dao;
+  private ObjectDAOPrimitives daoPrimitives;
 
   private Writer w;
 
@@ -90,6 +93,8 @@ public class MapperPrimitives {
       writeHeader();
 
       writeColumns();
+
+      writeResultMap();
 
       if (this.isTable()) {
         writeSelectByPK();
@@ -224,6 +229,54 @@ public class MapperPrimitives {
 
   }
 
+  private static final String RESULT_MAP_NAME = "allColumns";
+
+  /**
+   * <pre>
+   * 
+   * <resultMap id="resultMap" type="hotrod.test.generation.QuadrantDAO">
+   *   <id property="region" column="region" />
+   *   <id property="area" column="area" />
+   *   <result property="caption" column="caption" />
+   *   <result property="active" column="active" typeHandler=
+  "tests.typehandler.BooleanShortTypeHandler" />
+   * </resultMap>
+   * 
+   * </pre>
+   * 
+   * @throws IOException
+   */
+
+  private void writeResultMap() throws IOException {
+    println("  <resultMap id=\"" + RESULT_MAP_NAME + "\" type=\"" + this.dao.getFullClassName() + "\">");
+
+    // First, only the ids
+
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      if (cm.belongsToPK()) {
+        renderResultMapColumn(cm, "id");
+      }
+    }
+
+    // Then, the non-ids
+
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      if (!cm.belongsToPK()) {
+        renderResultMapColumn(cm, "result");
+      }
+    }
+
+    println("  </resultMap>");
+    println();
+  }
+
+  private void renderResultMapColumn(final ColumnMetadata cm, final String tagName) throws IOException {
+    String typeHandler = cm.getConverter() != null
+        ? ("typeHandler=\"" + this.daoPrimitives.getTypeHandlerFullClassName(cm) + "\" ") : "";
+    println("    <" + tagName + " property=\"" + cm.getIdentifier().getJavaMemberIdentifier() + "\" column='"
+        + cm.renderSQLIdentifier() + "' " + typeHandler + "/>");
+  }
+
   private void writeSelectByPK() throws IOException {
     if (this.metadata.getPK() == null) {
       println("  <!-- select by PK: no mapping generated, since the table does not have a PK -->");
@@ -231,8 +284,7 @@ public class MapperPrimitives {
     } else {
       println("  <!-- select by PK -->");
       println();
-      println(
-          "  <select id=\"" + this.getMapperIdSelectByPK() + "\" resultType=\"" + this.dao.getFullClassName() + "\">");
+      println("  <select id=\"" + this.getMapperIdSelectByPK() + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
       println("    select");
       println("      <include refid=\"columns\" />");
       println("     from " + this.metadata.renderSQLIdentifier());
@@ -275,8 +327,7 @@ public class MapperPrimitives {
             println("  <!-- select by unique indexes -->");
             println();
           }
-          println("  <select id=\"" + this.getMapperIdSelectByUI(ui) + "\" resultType=\"" + this.dao.getFullClassName()
-              + "\">");
+          println("  <select id=\"" + this.getMapperIdSelectByUI(ui) + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
           println("    select");
           println("      <include refid=\"columns\" />");
           println("     from " + this.metadata.renderSQLIdentifier());
@@ -314,12 +365,11 @@ public class MapperPrimitives {
   private void writeSelectByExample() throws IOException {
     println("  <!-- select by example -->");
     println();
-    println("  <select id=\"" + this.getMapperIdSelectByExample() + "\" resultType=\"" + this.dao.getFullClassName()
-        + "\">");
+    println("  <select id=\"" + this.getMapperIdSelectByExample() + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
     println("    select");
     println("      <include refid=\"columns\" />");
     println("     from " + this.metadata.renderSQLIdentifier());
-    print(getWhereByExample("p."));
+    print(getWhereByExample("p"));
     println("    <if test=\"o != null\">");
     println("      order by ${o}");
     println("    </if>");
@@ -346,8 +396,7 @@ public class MapperPrimitives {
   private void writeSelectParameterized() throws IOException {
     println("  <!-- select parameterized -->");
     println();
-    println("  <select id=\"" + this.getMapperIdSelectParameterized() + "\" resultType=\"" + this.dao.getFullClassName()
-        + "\">");
+    println("  <select id=\"" + this.getMapperIdSelectParameterized() + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
     // println(" <![CDATA[");
 
     println(this.metadata.renderSQLSentence(new MyBatisParameterRenderer()));
@@ -399,8 +448,7 @@ public class MapperPrimitives {
     ListWriter lwp = new ListWriter(", ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       lw.add(cm.renderSQLIdentifier());
-      String jdbcType = ",jdbcType=" + cm.getType().getJDBCShortType();
-      lwp.add("#{" + cm.getIdentifier().getJavaMemberIdentifier() + jdbcType + "}");
+      lwp.add(renderParameterColumn(cm));
     }
     println("    insert into " + this.metadata.renderSQLIdentifier() + " (" + lw.toString() + ")");
     println("      values (" + lwp.toString() + ")");
@@ -434,8 +482,7 @@ public class MapperPrimitives {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (!agcm.getColumnMetadata().equals(cm)) {
         lw.add(cm.renderSQLIdentifier());
-        String jdbcType = ",jdbcType=" + cm.getType().getJDBCShortType();
-        lwp.add("#{" + cm.getIdentifier().getJavaMemberIdentifier() + jdbcType + "}");
+        lwp.add(renderParameterColumn(cm));
       }
     }
     println("    insert into " + this.metadata.renderSQLIdentifier() + " (" + lw.toString() + ")");
@@ -460,13 +507,26 @@ public class MapperPrimitives {
     ListWriter lwp = new ListWriter(", ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       lw.add(cm.renderSQLIdentifier());
-      String jdbcType = ",jdbcType=" + cm.getType().getJDBCShortType();
-      lwp.add("#{" + cm.getIdentifier().getJavaMemberIdentifier() + jdbcType + "}");
+      lwp.add(renderParameterColumn(cm));
     }
     println("    insert into " + this.metadata.renderSQLIdentifier() + " (" + lw.toString() + ")");
     println("      values (" + lwp.toString() + ")");
     println("  </insert>");
     println();
+  }
+
+  private String renderParameterColumn(final ColumnMetadata cm) {
+    return renderParameterColumn(cm, null);
+  }
+
+  private String renderParameterColumn(final ColumnMetadata cm, final String prefix) {
+    String name = (prefix != null ? (prefix + ".") : "") + cm.getIdentifier().getJavaMemberIdentifier();
+    String jdbcType = "jdbcType=" + cm.getType().getJDBCShortType();
+    String typeHandler = null;
+    if (cm.getConverter() != null) {
+      typeHandler = "typeHandler=" + this.daoPrimitives.getTypeHandlerFullClassName(cm);
+    }
+    return "#{" + name + "," + jdbcType + (typeHandler != null ? ("," + typeHandler) : "") + "}";
   }
 
   /**
@@ -508,35 +568,32 @@ public class MapperPrimitives {
 
       ListWriter lw = new ListWriter(",\n");
       for (ColumnMetadata cm : this.metadata.getNonPkColumns()) {
-        ColumnIdentifier ci = cm.getIdentifier();
-        String jdbcType = ",jdbcType=" + cm.getType().getJDBCShortType();
         String sqlColumn = cm.renderSQLIdentifier();
         if (useVersionControl) {
           if (useVersionControl && vcm.getColumnMetadata().equals(cm)) {
             lw.add("      " + sqlColumn + " = #{nextVersionValue}");
           } else {
-            lw.add("      " + sqlColumn + " = #{p." + ci.getJavaMemberIdentifier() + jdbcType + "}");
+            lw.add("      " + sqlColumn + " = " + renderParameterColumn(cm, "p"));
           }
         } else {
-          lw.add("      " + sqlColumn + " = #{" + ci.getJavaMemberIdentifier() + jdbcType + "}");
+          lw.add("      " + sqlColumn + " = " + renderParameterColumn(cm));
         }
       }
       println(lw.toString());
 
       println("     where");
       if (useVersionControl) {
-        println(getWhereByIndex(this.metadata.getPK(), "p."));
+        println(getWhereByIndex(this.metadata.getPK(), "p"));
       } else {
         println(getWhereByIndex(this.metadata.getPK()));
       }
 
       if (useVersionControl) {
         ColumnMetadata cm = vcm.getColumnMetadata();
-        String jdbcType = ",jdbcType=" + cm.getType().getJDBCShortType();
         String sqlColumn = cm.renderSQLIdentifier();
 
         println("     and");
-        println("      " + sqlColumn + " " + "= #{p." + cm.getIdentifier().getJavaMemberIdentifier() + jdbcType + "}");
+        println("      " + sqlColumn + " " + "= " + renderParameterColumn(cm));
 
       }
 
@@ -547,32 +604,32 @@ public class MapperPrimitives {
   }
 
   private String getWhereByIndex(final KeyMetadata km) throws IOException {
-    return getWhereByIndex(km, "");
+    return getWhereByIndex(km, null);
   }
 
   private String getWhereByIndex(final KeyMetadata km, final String prefix) throws IOException {
     ListWriter lw;
     lw = new ListWriter("\n      and ");
     for (ColumnMetadata cm : km.getColumns()) {
-      lw.add(cm.renderSQLIdentifier() + " = #{" + prefix + cm.getIdentifier().getJavaMemberIdentifier() + "}");
+      lw.add(cm.renderSQLIdentifier() + " = " + renderParameterColumn(cm, prefix));
     }
     return "      " + lw.toString();
   }
 
   private String getWhereByExample() throws IOException {
-    return getWhereByExample("");
+    return getWhereByExample(null);
   }
 
   private String getWhereByExample(final String prefix) throws IOException {
     StringBuilder sb = new StringBuilder();
     sb.append("    <where>\n");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      String jdbcType = ",jdbcType=" + cm.getType().getJDBCShortType();
-      String prop = prefix + cm.getIdentifier().getJavaMemberIdentifier();
-      String propWasSet = prefix + "propertiesChangeLog." + cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
+      String prompt = prefix != null ? (prefix + ".") : "";
+      String prop = prompt + cm.getIdentifier().getJavaMemberIdentifier();
+      String propWasSet = prompt + "propertiesChangeLog." + cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
 
       sb.append("      <if test=\"" + prop + " != null \">\n");
-      sb.append("        and " + cm.renderSQLIdentifier() + " = #{" + prop + jdbcType + "}\n");
+      sb.append("        and " + cm.renderSQLIdentifier() + " = " + renderParameterColumn(cm, prefix) + "\n");
       sb.append("      </if>\n");
 
       sb.append("      <if test=\"" + prop + " == null and " + propWasSet + "\">\n");
@@ -614,19 +671,17 @@ public class MapperPrimitives {
 
     println("    <set>");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      String jdbcType = ",jdbcType=" + cm.getType().getJDBCShortType();
-      String prop = cm.getIdentifier().getJavaMemberIdentifier();
       String propWasSet = "propertiesChangeLog." + cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
       if (cm.isVersionControlColumn()) {
         println("      " + cm.renderSQLIdentifier() + " = " + cm.renderSQLIdentifier() + " + 1,");
       } else {
-        println("      <if test=\"values." + propWasSet + "\">" + cm.renderSQLIdentifier() + " = #{values." + prop
-            + jdbcType + "},</if>");
+        println("      <if test=\"values." + propWasSet + "\">" + cm.renderSQLIdentifier() + " = "
+            + renderParameterColumn(cm, "values") + ",</if>");
       }
     }
     println("    </set>");
 
-    print(getWhereByExample("filter."));
+    print(getWhereByExample("filter"));
 
     println("  </update>");
     println();
@@ -660,10 +715,12 @@ public class MapperPrimitives {
 
       if (useVersionControl) {
         ColumnMetadata cm = vcm.getColumnMetadata();
-        String jdbcType = ",jdbcType=" + cm.getType().getJDBCShortType();
         println("     and");
-        println("      " + cm.renderSQLIdentifier() + " " + "= #{" + cm.getIdentifier().getJavaMemberIdentifier()
-            + jdbcType + "}");
+        println("      " + cm.renderSQLIdentifier() + " " + "= "
+
+            + renderParameterColumn(cm)
+
+        );
       }
 
       endCData();
@@ -870,8 +927,12 @@ public class MapperPrimitives {
 
   // Setters
 
-  public void setDao(ObjectDAO dao) {
+  public void setDao(final ObjectDAO dao) {
     this.dao = dao;
+  }
+
+  public void setDaoPrimitives(final ObjectDAOPrimitives daoPrimitives) {
+    this.daoPrimitives = daoPrimitives;
   }
 
 }

@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 
+import hotrod.test.generation.QuadrantDAO;
 import hotrod.test.generation.TypesBinaryDAO;
 import hotrod.test.generation.TypesCharDAO;
 import hotrod.test.generation.TypesDateTimeDAO;
@@ -21,12 +23,14 @@ public class TypesTest {
 
   private static void testTypes() throws SQLException {
 
-    numericTest();
+    // numericTest();
     // charTest();
     // dateTimeTest();
     // binaryTest();
     // extraTest();
     // otherTest();
+
+    typeHandlerTest();
 
   }
 
@@ -163,6 +167,25 @@ public class TypesTest {
   private static void extraTest() throws SQLException {
     for (TypesExtraDAO x : TypesExtraDAO.selectByExample(new TypesExtraDAO())) {
       System.out.println("extra=" + x);
+    }
+  }
+
+  private static void typeHandlerTest() throws SQLException {
+
+    List<QuadrantDAO> list;
+
+    // list = QuadrantDAO.selectByExample(new QuadrantDAO());
+
+    QuadrantDAO example = new QuadrantDAO();
+    example.setActive(true);
+    list = QuadrantDAO.selectByExample(example);
+
+    for (QuadrantDAO q : list) {
+      System.out.println("quandrant=" + q);
+      // if (q.getRegion() > 10) {
+      // q.setActive(!q.isActive());
+      // q.update();
+      // }
     }
   }
 

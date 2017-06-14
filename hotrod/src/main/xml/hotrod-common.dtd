@@ -30,6 +30,7 @@
 <!ATTLIST column name CDATA #REQUIRED>
 <!ATTLIST column java-name CDATA #IMPLIED>
 <!ATTLIST column java-type CDATA #IMPLIED>
+<!ATTLIST column converter CDATA #IMPLIED>
 <!ATTLIST column jdbc-type CDATA #IMPLIED>
 <!ATTLIST column is-lob CDATA #IMPLIED>
 <!ATTLIST column initial-value CDATA #IMPLIED>
@@ -47,3 +48,12 @@
 
 <!ELEMENT fragment EMPTY>
 <!ATTLIST fragment file CDATA #REQUIRED>
+
+<!ELEMENT converter EMPTY>
+<!ATTLIST converter name CDATA #REQUIRED>
+<!ATTLIST converter java-type CDATA #REQUIRED>
+<!ATTLIST converter java-intermediate-type CDATA #REQUIRED>
+<!ATTLIST converter class CDATA #REQUIRED>
+
+
+

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!ELEMENT hotrod (generators, (table | dao | view | select | fragment | facet)*)>
+<!ELEMENT hotrod (generators, (table | dao | view | select | fragment | facet | converter)*)>
 
 <!ELEMENT generators (mybatis | spring-jdbc)+>
 

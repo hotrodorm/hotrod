@@ -106,6 +106,7 @@ create table quadrant (
   region number(9) not null,
   area number(9) not null,
   caption varchar2(20),
+  active number(4) not null,
   primary key (region, area)
 );
 

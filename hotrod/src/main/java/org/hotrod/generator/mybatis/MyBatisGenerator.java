@@ -174,6 +174,7 @@ public class MyBatisGenerator extends HotRodGenerator {
     daoPrimitives.setMapperPrimitives(mapPrimitives);
 
     mapPrimitives.setDao(dao);
+    mapPrimitives.setDaoPrimitives(daoPrimitives);
 
     this.daos.put(metadata, dao);
     this.daoPrimitives.put(metadata, daoPrimitives);

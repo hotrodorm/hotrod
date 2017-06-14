@@ -34,7 +34,7 @@ public class ViewTag extends AbstractCompositeDAOTag {
 
   private DaosTag daosTag;
 
-  public void validate(final DaosTag daosTag) throws InvalidConfigurationFileException {
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config) throws InvalidConfigurationFileException {
     log.debug("validate");
 
     this.daosTag = daosTag;
@@ -73,8 +73,7 @@ public class ViewTag extends AbstractCompositeDAOTag {
 
     Set<ColumnTag> cols = new HashSet<ColumnTag>();
     for (ColumnTag c : this.columns) {
-      // System.out.println("VIEW COLUMN: "+c.toString());
-      c.validate(this.name);
+      c.validate(ViewTag.TAG_NAME, this.name, config);
       if (cols.contains(c)) {
         throw new InvalidConfigurationFileException(
             "Multiple <" + ColumnTag.TAG_NAME + "> tags with the same name on tag <" + TAG_NAME + "> for table '"

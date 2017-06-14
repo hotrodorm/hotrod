@@ -78,7 +78,6 @@
         <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
-        <pathelement location="${lib.dir}/jdbc-drivers/ojdbc6.jar" />
       </classpath>
     </java>
   </target>

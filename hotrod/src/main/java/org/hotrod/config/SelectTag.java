@@ -23,7 +23,7 @@ public class SelectTag extends AbstractSQLDAOTag {
 
   private DaosTag daosTag;
 
-  public void validate(final DaosTag daosTag) throws InvalidConfigurationFileException {
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config) throws InvalidConfigurationFileException {
 
     this.daosTag = daosTag;
 
@@ -40,7 +40,7 @@ public class SelectTag extends AbstractSQLDAOTag {
 
     Set<ColumnTag> cols = new HashSet<ColumnTag>();
     for (ColumnTag c : this.columns) {
-      c.validate(this.javaClassName);
+      c.validate(SelectTag.TAG_NAME, this.javaClassName, config);
       if (cols.contains(c)) {
         throw new InvalidConfigurationFileException("Multiple <" + ColumnTag.TAG_NAME
             + "> tags with the same name on tag <" + getTagName() + "> for query '" + this.javaClassName

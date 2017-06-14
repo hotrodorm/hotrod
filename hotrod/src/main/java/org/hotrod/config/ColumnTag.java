@@ -21,6 +21,7 @@ public class ColumnTag {
   private String name = null;
   private String javaName = null;
   private String javaType = null;
+  private String converter = null;
   private String jdbcType = null;
   private String sInitialValue = null;
   private String sMinValue = null;
@@ -30,38 +31,40 @@ public class ColumnTag {
   private JdbcColumn column;
   private boolean isLOB;
   private ValueRange valueRange;
+  private ConverterTag converterTag;
 
   // ToString
 
   public String toString() {
-    return "name=" + name + " javaName=" + this.javaName + " javaType=" + this.javaType + ", jdbcType=" + this.jdbcType
-        + ", sInitialValue=" + this.sInitialValue + " sMinValue=" + this.sMinValue + " sMaxValue=" + this.sMaxValue;
+    return "name=" + name + " javaName=" + this.javaName + " javaType=" + this.javaType + ", converter="
+        + this.converter + " jdbcType=" + this.jdbcType + ", sInitialValue=" + this.sInitialValue + " sMinValue="
+        + this.sMinValue + " sMaxValue=" + this.sMaxValue;
   }
 
-  public void validate(final String tableName) throws InvalidConfigurationFileException {
+  public void validate(final String enclosingTagName, final String enclosingName, final HotRodConfigTag config)
+      throws InvalidConfigurationFileException {
 
     log.debug("COLUMN DEF: " + this.toString());
 
     // name
 
     if (SUtils.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException("Attribute 'name' of tag <" + TAG_NAME + "> of <" + TableTag.TAG_NAME
-          + "> tag '" + tableName + "' cannot be empty. " + "Must specify a database column name.");
+      throw new InvalidConfigurationFileException("Attribute 'name' of tag <" + TAG_NAME + "> of <" + enclosingTagName
+          + "> tag '" + enclosingName + "' cannot be empty. " + "Must specify a database column name.");
     }
 
     // java-name
 
     if (this.javaName != null) {
-      // System.out.println(">>>>>>>>>>>>>> this.javaName=" + this.javaName);
       this.javaName = this.javaName.trim();
       if (SUtils.isEmpty(this.javaName)) {
         throw new InvalidConfigurationFileException(
             "Invalid 'java-name' attribute value of tag <" + TAG_NAME + "> for the column '" + this.name
-                + "' of table '" + tableName + "'. When specified, the value cannot be empty.");
+                + "' of table '" + enclosingName + "'. When specified, the value cannot be empty.");
       }
       if (!this.javaName.matches(VALID_JAVA_NAME_PATTERN)) {
         throw new InvalidConfigurationFileException("Invalid 'java-name' attribute value '" + this.javaName
-            + "' of tag <" + TAG_NAME + "> for the column '" + this.name + "' of table '" + tableName
+            + "' of tag <" + TAG_NAME + "> for the column '" + this.name + "' of table '" + enclosingName
             + "'. When specified, the java-name must start with an lower case letter, "
             + "and continue with any combination of letters, digits, underscores, or dollar signs.");
       }
@@ -72,9 +75,31 @@ public class ColumnTag {
     if (this.javaType != null) {
       if (SUtils.isEmpty(this.javaType)) {
         throw new InvalidConfigurationFileException("Attribute 'java-type' of tag <" + TAG_NAME + "> (table '"
-            + tableName + "', column '" + this.name + "') cannot be empty. " + "When specified, "
+            + enclosingName + "', column '" + this.name + "') cannot be empty. " + "When specified, "
             + "this attribute must specify a full java class name for the database column.");
       }
+    }
+
+    // converter
+
+    if (this.converter != null) {
+      if (this.javaType != null) {
+        throw new InvalidConfigurationFileException("Invalid attributes 'java-type' and 'converter' of tag <" + TAG_NAME
+            + "> for column '" + this.name + "' of <" + enclosingTagName + "> tag '" + enclosingName
+            + "': these attributes are mutually exclusive, so only one of them can be specified for a column definition.");
+      }
+      if (SUtils.isEmpty(this.converter)) {
+        throw new InvalidConfigurationFileException(
+            "Attribute 'converter' of tag <" + TAG_NAME + "> for column '" + this.name + "' of <" + enclosingTagName
+                + "> tag '" + enclosingName + "' cannot be empty. " + "Must specify a valid converter name.");
+      }
+      this.converterTag = config.getConverterTagByName(this.converter);
+      if (this.converterTag == null) {
+        throw new InvalidConfigurationFileException("Converter '" + this.converter + "' not found on tag <" + TAG_NAME
+            + "> for column '" + this.name + "' of <" + enclosingTagName + "> tag '" + enclosingName + "'.");
+      }
+    } else {
+      this.converterTag = null;
     }
 
     // jdbc-type
@@ -83,18 +108,18 @@ public class ColumnTag {
       if (this.javaType == null) {
         throw new InvalidConfigurationFileException(
             "jdbc-type attribute specified but no java-type attribute not found, for column '" + this.name
-                + "' of table '" + tableName + "'. "
+                + "' of table '" + enclosingName + "'. "
                 + "This jdbc-type attribute can only be specified if the java-type attribute is present.");
       }
       if (SUtils.isEmpty(this.jdbcType)) {
         throw new InvalidConfigurationFileException("Invalid jdbc-type value '" + this.jdbcType + "' on column '"
-            + this.name + "' of table '" + tableName + "': cannot be empty. "
+            + this.name + "' of table '" + enclosingName + "': cannot be empty. "
             + "When specified, the attribute 'jdbc-type' of the tag <" + TAG_NAME + "> must specify a valid JDBC type "
             + "as defined in the java class java.sql.Types. " + "Make sure you specify it in all uppercase letters.");
       }
       if (JdbcTypes.nameToCode(this.jdbcType) == null) {
         throw new InvalidConfigurationFileException("Invalid jdbc-type value '" + this.jdbcType + "' on column '"
-            + this.name + "' of table '" + tableName + "'. When specified, the attribute 'jdbc-type' of the tag <"
+            + this.name + "' of table '" + enclosingName + "'. When specified, the attribute 'jdbc-type' of the tag <"
             + TAG_NAME + "> must specify a valid JDBC type " + "as defined in the java class java.sql.Types. "
             + "Make sure you specify it in all uppercase letters.");
       }
@@ -110,7 +135,7 @@ public class ColumnTag {
       this.isLOB = false;
     } else {
       throw new InvalidConfigurationFileException("Invalid is-lob value '" + this.sIsLOB + "' on column '" + this.name
-          + "' of table '" + tableName + "'. When specified, the attribute 'is-lob' of the tag <" + TAG_NAME
+          + "' of table '" + enclosingName + "'. When specified, the attribute 'is-lob' of the tag <" + TAG_NAME
           + "> must be either 'true' or 'false'.");
     }
 
@@ -124,9 +149,10 @@ public class ColumnTag {
 
       if (this.sInitialValue == null || this.sMinValue == null || this.sMaxValue == null) {
 
-        throw new InvalidConfigurationFileException("Partially specified value range on tag <" + TAG_NAME + "> (table '"
-            + tableName + "', column '" + this.name + "'). " + "When specified, all three attributee 'initial-value', "
-            + "'min-value' and 'max-value' must be specified together, " + "but found only one or two of them.");
+        throw new InvalidConfigurationFileException(
+            "Partially specified value range on tag <" + TAG_NAME + "> (table '" + enclosingName + "', column '"
+                + this.name + "'). " + "When specified, all three attributee 'initial-value', "
+                + "'min-value' and 'max-value' must be specified together, " + "but found only one or two of them.");
 
       } else {
 
@@ -137,7 +163,7 @@ public class ColumnTag {
           initialValue = Long.parseLong(this.sInitialValue);
         } catch (NumberFormatException e) {
           throw new InvalidConfigurationFileException("Invalid value '" + this.sInitialValue
-              + "' for attribute 'initial-value' on tag <" + TAG_NAME + "> (table '" + tableName + "', column '"
+              + "' for attribute 'initial-value' on tag <" + TAG_NAME + "> (table '" + enclosingName + "', column '"
               + this.name + "'). When specified, it must be a numeric value in the range " + Long.MIN_VALUE + " to "
               + Long.MAX_VALUE + ".");
         }
@@ -149,8 +175,8 @@ public class ColumnTag {
           minValue = Long.parseLong(this.sMinValue);
         } catch (NumberFormatException e) {
           throw new InvalidConfigurationFileException("Invalid value '" + this.sMinValue
-              + "' for attribute 'min-value' on tag <" + TAG_NAME + "> (table '" + tableName + "', column '" + this.name
-              + "'). When specified, it must be a numeric value in the range " + Long.MIN_VALUE + " to "
+              + "' for attribute 'min-value' on tag <" + TAG_NAME + "> (table '" + enclosingName + "', column '"
+              + this.name + "'). When specified, it must be a numeric value in the range " + Long.MIN_VALUE + " to "
               + Long.MAX_VALUE + ".");
         }
 
@@ -161,8 +187,8 @@ public class ColumnTag {
           maxValue = Long.parseLong(this.sMaxValue);
         } catch (NumberFormatException e) {
           throw new InvalidConfigurationFileException("Invalid value '" + this.sMaxValue
-              + "' for attribute 'max-value' on tag <" + TAG_NAME + "> (table '" + tableName + "', column '" + this.name
-              + "'). When specified, it must be a numeric value in the range " + Long.MIN_VALUE + " to "
+              + "' for attribute 'max-value' on tag <" + TAG_NAME + "> (table '" + enclosingName + "', column '"
+              + this.name + "'). When specified, it must be a numeric value in the range " + Long.MIN_VALUE + " to "
               + Long.MAX_VALUE + ".");
         }
 
@@ -170,10 +196,6 @@ public class ColumnTag {
 
       }
     }
-
-    // if (this.name.equalsIgnoreCase("version_number")) {
-    // log.info("version_control column=" + this);
-    // }
 
   }
 
@@ -260,6 +282,10 @@ public class ColumnTag {
     this.sMaxValue = sMaxValue;
   }
 
+  public void setConverter(String converter) {
+    this.converter = converter;
+  }
+
   // Getters
 
   public String getName() {
@@ -284,6 +310,10 @@ public class ColumnTag {
 
   public ValueRange getValueRange() {
     return valueRange;
+  }
+
+  public ConverterTag getConverterTag() {
+    return converterTag;
   }
 
 }

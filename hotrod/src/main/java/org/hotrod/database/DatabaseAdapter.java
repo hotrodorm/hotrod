@@ -54,13 +54,11 @@ public abstract class DatabaseAdapter {
   public PropertyType resolveJavaType(final ColumnMetadata md) throws UnresolvableDataTypeException {
     ColumnTag columnTag = md.getTag();
     log.debug("columnTag=" + columnTag);
-    if (columnTag == null || columnTag.getJavaType() == null) {
+    if (columnTag == null || (columnTag.getJavaType() == null && columnTag.getConverterTag() == null)) {
       log.debug("No user-specified column type. Return adapter type.");
-      // No user-specified column type. Return adapter type.
       return getAdapterDefaultType(md);
     } else {
       log.debug("User-specified column type. Use it.");
-      // User-specified column type. Use it.
       JDBCType jdbcType;
       if (columnTag.getJdbcType() != null) {
         // User specified the JDBC type. Use the user's.
@@ -79,7 +77,11 @@ public abstract class DatabaseAdapter {
       if (range == null) {
         range = PropertyType.getDefaultValueRange(columnTag.getJavaType());
       }
-      return new PropertyType(columnTag.getJavaType(), jdbcType, columnTag.isLOB(), range);
+
+      String javaType = columnTag.getJavaType() != null ? columnTag.getJavaType()
+          : columnTag.getConverterTag().getJavaType();
+
+      return new PropertyType(javaType, jdbcType, columnTag.isLOB(), range);
     }
   }
 
