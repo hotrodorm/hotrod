@@ -1637,17 +1637,14 @@ public class ObjectDAOPrimitives {
       println();
 
       String setter = cm.getIdentifier().getSetter();
-      writeSetter(cm, type, m, setter, false);
+      writeSetter(cm, type, m, setter);
 
     }
 
   }
 
-  private void writeSetter(final ColumnMetadata cm, final PropertyType type, final String m, final String setter,
-      final boolean isExtra) throws IOException {
-    if (isExtra) {
-      println("  // (extra setter required because of MyBatis' default column name mapping)");
-    }
+  private void writeSetter(final ColumnMetadata cm, final PropertyType type, final String m, final String setter)
+      throws IOException {
     println("  public final void " + setter + "(final " + type.getJavaClassName() + " " + m + ") {");
     println("    this." + m + " = " + m + ";");
     String name = cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
