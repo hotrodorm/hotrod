@@ -95,8 +95,9 @@ public class ColumnTag {
       }
       this.converterTag = config.getConverterTagByName(this.converter);
       if (this.converterTag == null) {
-        throw new InvalidConfigurationFileException("Converter '" + this.converter + "' not found on tag <" + TAG_NAME
-            + "> for column '" + this.name + "' of <" + enclosingTagName + "> tag '" + enclosingName + "'.");
+        throw new InvalidConfigurationFileException(
+            "Undefined converter '" + this.converter + "'. The <" + TAG_NAME + "> tag for column '" + this.name
+                + "' of <" + enclosingTagName + "> tag '" + enclosingName + "' references it.");
       }
     } else {
       this.converterTag = null;

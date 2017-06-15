@@ -1,9 +1,11 @@
 package org.hotrod.config;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.SUtils;
 
 public class ConverterTag {
@@ -11,7 +13,7 @@ public class ConverterTag {
   static final String TAG_NAME = "converter";
 
   private static final String NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*";
-  private static final String FULL_CLASS_NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z][a-zA-Z0-9_]*)*";
+  private static final String FULL_CLASS_NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*(\\.[a-zA-Z][a-zA-Z0-9_]*)*(\\[\\])?";
 
   private String name = null;
   private String javaType = null;
@@ -57,9 +59,11 @@ public class ConverterTag {
     }
     Accessors gs = ACCESSORS.get(this.javaIntermediateType);
     if (gs == null) {
+
+      String types = ListWriter.render(new ArrayList<String>(ACCESSORS.keySet()), "", " - ", "\n", "", "", "");
       throw new InvalidConfigurationFileException("Unsupported java-intermediate-type '" + this.javaIntermediateType
           + "' on tag <" + TAG_NAME + "> with name '" + this.name
-          + "'. No simple JDBC getter and setter found for this type. " + "Please see the list of supported types.");
+          + "'. No simple JDBC getter and setter found for this type. " + "The supported types are:\n" + types);
     }
     this.jdbcGetterMethod = gs.getGetter();
     this.jdbcSetterMethod = gs.getSetter();
@@ -97,7 +101,7 @@ public class ConverterTag {
 
   }
 
-  private static Map<String, Accessors> ACCESSORS = new HashMap<String, Accessors>();
+  private static Map<String, Accessors> ACCESSORS = new LinkedHashMap<String, Accessors>();
   static {
 
     ACCESSORS.put("String", new Accessors("getString", "setString"));
