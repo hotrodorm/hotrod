@@ -106,11 +106,11 @@ public class ColumnTag {
     // jdbc-type
 
     if (this.jdbcType != null) {
-      if (this.javaType == null) {
+      if (this.javaType == null && this.converter == null) {
         throw new InvalidConfigurationFileException(
-            "jdbc-type attribute specified but no java-type attribute not found, for column '" + this.name
+            "jdbc-type attribute specified but no java-type attribute nor converter attibute found, for column '" + this.name
                 + "' of table '" + enclosingName + "'. "
-                + "This jdbc-type attribute can only be specified if the java-type attribute is present.");
+                + "The jdbc-type attribute can only be specified when the java-type attribute or the converter is present.");
       }
       if (SUtils.isEmpty(this.jdbcType)) {
         throw new InvalidConfigurationFileException("Invalid jdbc-type value '" + this.jdbcType + "' on column '"
