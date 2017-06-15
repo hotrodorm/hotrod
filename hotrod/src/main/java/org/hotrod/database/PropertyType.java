@@ -190,9 +190,12 @@ public class PropertyType {
   }
 
   public static boolean isBooleanType(final String typeName) {
-    return "java.lang.Boolean".equals(typeName) //
-        || "Boolean".equals(typeName) //
-        || "boolean".equals(typeName);
+    return
+    // The JavaBean specification only includes the primitive type boolean, and
+    // not the class java.lang.Boolean:
+    // "java.lang.Boolean".equals(typeName) || //
+    // "Boolean".equals(typeName) || //
+    "boolean".equals(typeName);
   }
 
   public boolean isLOB() {
