@@ -47,7 +47,7 @@ public class DAO {
         println("  // VO");
         println("  // =================");
         println();
-        println("  public class " + this.getVOName() + " extends " + this.daoPrimitives.getClassName() + "."
+        println("  public static class " + this.getVOName() + " extends " + this.daoPrimitives.getClassName() + "."
             + this.daoPrimitives.getVOName() + " {");
         println("    private static final long serialVersionUID = 1L;");
         println();

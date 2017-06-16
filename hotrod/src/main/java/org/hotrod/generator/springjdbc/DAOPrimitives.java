@@ -551,7 +551,7 @@ public class DAOPrimitives {
     println("  // Primitive VO");
     println("  // =================");
     println();
-    println("  public class " + this.getVOName() + " implements Serializable {");
+    println("  public static class " + this.getVOName() + " implements Serializable {");
     println();
     println("  private static final long serialVersionUID = 1L;");
     println();
