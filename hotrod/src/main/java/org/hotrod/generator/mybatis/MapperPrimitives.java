@@ -204,7 +204,9 @@ public class MapperPrimitives {
     StringBuilder sb = new StringBuilder("    ");
     ListWriter lw = new ListWriter(",\n    ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      lw.add(cm.renderSQLIdentifier() + " as " + cm.getIdentifier().getJavaMemberIdentifier());
+      lw.add(cm.renderSQLIdentifier()
+      // + " as " + cm.getIdentifier().getJavaMemberIdentifier()
+      );
     }
     sb.append(lw.toString());
     println(sb.toString());
@@ -219,7 +221,9 @@ public class MapperPrimitives {
     sb = new StringBuilder("    ");
     lw = new ListWriter(",\n    ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      lw.add("${alias}." + cm.renderSQLIdentifier() + " as " + cm.getIdentifier().getJavaMemberIdentifier());
+      lw.add("${alias}." + cm.renderSQLIdentifier()
+      // + " as " + cm.getIdentifier().getJavaMemberIdentifier()
+      );
     }
     sb.append(lw.toString());
     println(sb.toString());

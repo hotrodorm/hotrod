@@ -177,21 +177,21 @@ public class TypesTest {
 
     // list = QuadrantDAO.selectByExample(new QuadrantDAO());
 
-//    QuadrantDAO example = new QuadrantDAO();
-//    example.setActive(true);
-//    list = QuadrantDAO.selectByExample(example);
-//
-//    for (QuadrantDAO q : list) {
-//      System.out.println("quandrant=" + q);
-//      // if (q.getRegion() > 10) {
-//      // q.setActive(!q.isActive());
-//      // q.update();
-//      // }
-//    }
+    QuadrantDAO example = new QuadrantDAO();
+    example.setActiveState(true);
+    list = QuadrantDAO.selectByExample(example);
 
-    for (CurrentQuadrant q : CurrentQuadrant.select()) {
-      System.out.println("quadrant=" + q);
+    for (QuadrantDAO q : list) {
+      System.out.println("quandrant=" + q);
+      // if (q.getRegion() > 10) {
+      // q.setActive(!q.isActive());
+      // q.update();
+      // }
     }
+
+//    for (CurrentQuadrant q : CurrentQuadrant.select()) {
+//      System.out.println("quadrant=" + q);
+//    }
   }
 
   // Utils
