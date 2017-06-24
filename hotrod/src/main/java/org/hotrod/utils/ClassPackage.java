@@ -11,6 +11,11 @@ public class ClassPackage {
   private String pkg;
   private String[] names;
 
+  private ClassPackage(final String pkg, final String[] names) {
+    this.pkg = pkg;
+    this.names = names;
+  }
+
   public ClassPackage(final String pkg) throws InvalidPackageException {
     if (pkg == null) {
       throw new InvalidPackageException("Package cannot be empty.");
@@ -43,6 +48,15 @@ public class ClassPackage {
 
   public ClassPackage append(final String name) throws InvalidPackageException {
     return new ClassPackage(this.pkg + "." + name);
+  }
+
+  public ClassPackage append(final ClassPackage p) {
+    String[] allNames = AUtils.concat(this.names, p.names, new String[0]);
+    return new ClassPackage(this.pkg + "." + p.pkg, allNames);
+  }
+
+  public String toString() {
+    return "{package:" + this.pkg + "}";
   }
 
 }

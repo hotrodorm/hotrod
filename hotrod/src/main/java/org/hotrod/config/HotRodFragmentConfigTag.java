@@ -15,6 +15,8 @@ import org.hotrod.ant.Constants;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidPackageException;
+import org.hotrod.utils.ClassPackage;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -23,13 +25,23 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
 
   private static final Logger log = Logger.getLogger(HotRodFragmentConfigTag.class);
 
+  private static final String TAG_NAME = "hotrod-fragment";
+
+  private String sPackage = null;
+
+  private String filename;
+
+  private ClassPackage fragmentPackage;
+
   public HotRodFragmentConfigTag() {
-    super("hotrod-fragment");
+    super(TAG_NAME);
   }
 
   public HotRodFragmentConfigTag load(final HotRodConfigTag config, final File f,
       final Set<String> alreadyLoadedFileNames, final File parentFile, final DaosTag daosTag)
       throws ControlledException, UncontrolledException {
+
+    this.filename = f == null ? "<null>" : f.getPath();
 
     Reader reader = null;
 
@@ -90,7 +102,7 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
 
       // Validation (common)
 
-      fragmentConfig.validateCommon(config, f, alreadyLoadedFileNames, f, daosTag);
+      fragmentConfig.validateCommon(config, f, alreadyLoadedFileNames, f, daosTag, fragmentConfig);
 
       // Complete
 
@@ -123,14 +135,43 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
 
   // Setters (digester)
 
-  // Getters
-
-  public void addExtraRules(final Digester d) {
-    // No extra rules
+  public void setPackage(final String p) {
+    this.sPackage = p;
   }
 
+  // Getters
+
+  public ClassPackage getFragmentPackage() {
+    return fragmentPackage;
+  }
+
+  public String toString() {
+    return "{fragment-config:" + this.filename + "}";
+  }
+
+  // Validation
+
   public void validate(final File basedir) throws InvalidConfigurationFileException {
-    // No extra validation
+
+    // package
+
+    if (this.sPackage == null) {
+      this.fragmentPackage = null;
+    } else {
+      try {
+        this.fragmentPackage = new ClassPackage(this.sPackage);
+      } catch (InvalidPackageException e) {
+        throw new InvalidConfigurationFileException("Invalid package '" + this.sPackage
+            + "' on attribute 'package' of tag <" + TAG_NAME + ">: " + e.getMessage());
+      }
+    }
+
+  }
+
+  // Extra
+
+  public void addExtraRules(final Digester d) {
+    d.addSetProperties(super.base, "package", "package");
   }
 
   // Entity Resolver

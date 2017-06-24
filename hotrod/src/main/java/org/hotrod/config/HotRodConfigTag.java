@@ -101,7 +101,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
       DaosTag daosTag = config.getGenerators().getSelectedGeneratorTag().getDaos();
 
-      config.validateCommon(config, f, alreadyLoadedFileNames, f, daosTag);
+      config.validateCommon(config, f, alreadyLoadedFileNames, f, daosTag, null);
 
       // Complete
 
@@ -163,8 +163,6 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
   public void addExtraRules(final Digester d) {
 
     // layout
-
-    log.debug("rule: " + (base + "/generators"));
 
     d.addObjectCreate(base + "/generators", GeneratorsTag.class);
     d.addSetNext(base + "/generators", "setGenerators");

@@ -33,11 +33,17 @@ public class ViewTag extends AbstractCompositeDAOTag {
   private List<QueryTag> updates = new ArrayList<QueryTag>();
 
   private DaosTag daosTag;
+  private HotRodFragmentConfigTag fragmentConfig;
+  private ClassPackage fragmentPackage;
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config) throws InvalidConfigurationFileException {
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
     log.debug("validate");
 
     this.daosTag = daosTag;
+    this.fragmentConfig = fragmentConfig;
+    this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage() : null;
 
     String nameTitle = "name";
     String nameValue = this.name;
@@ -167,11 +173,15 @@ public class ViewTag extends AbstractCompositeDAOTag {
     return columns;
   }
 
+  public HotRodFragmentConfigTag getFragmentConfig() {
+    return fragmentConfig;
+  }
+
   // DAO Tag implementation
 
   @Override
   public ClassPackage getPackage() {
-    return this.daosTag.getDaoPackage();
+    return this.daosTag.getDaoPackage(this.fragmentPackage);
   }
 
   @Override

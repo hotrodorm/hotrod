@@ -12,32 +12,41 @@ import java.util.Set;
 import org.hotrod.ant.Constants;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
-import org.hotrod.config.AbstractCompositeDAOTag;
+import org.hotrod.config.CustomDAOTag;
+import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.QueryTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SequenceTag;
-import org.hotrod.config.QueryTag;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.runtime.tx.TxDemarcator;
 import org.hotrod.runtime.tx.TxManager;
 import org.hotrod.runtime.util.ListWriter;
+import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.SUtils;
 import org.hotrod.utils.identifiers.Identifier;
 
 public class CustomDAO {
 
   private DataSetLayout layout;
-  private AbstractCompositeDAOTag tag;
+  private CustomDAOTag tag;
 
   private MyBatisGenerator generator;
+
+  private ClassPackage fragmentPackage;
 
   private CustomDAOMapper mapper = null;
 
   private Writer w;
 
-  public CustomDAO(final AbstractCompositeDAOTag tag, final DataSetLayout layout, final MyBatisGenerator generator) {
+  public CustomDAO(final CustomDAOTag tag, final DataSetLayout layout, final MyBatisGenerator generator) {
     this.tag = tag;
     this.layout = layout;
     this.generator = generator;
+
+    HotRodFragmentConfigTag fragmentConfig = tag.getFragmentConfig();
+    this.fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
+        ? fragmentConfig.getFragmentPackage() : null;
+
   }
 
   public void setMapper(final CustomDAOMapper mapPrimitives) {
@@ -47,8 +56,7 @@ public class CustomDAO {
   public void generate() throws UncontrolledException, ControlledException {
 
     String className = this.getClassName() + ".java";
-    this.layout.getDAOPrimitivePackage();
-    File prim = new File(this.layout.getDaoPrimitivePackageDir(), className);
+    File prim = new File(this.layout.getDaoPrimitivePackageDir(this.fragmentPackage), className);
     this.w = null;
 
     try {
@@ -95,7 +103,7 @@ public class CustomDAO {
 
     // Package
 
-    println("package " + this.layout.getDAOPrimitivePackage().getPackage() + ";");
+    println("package " + this.layout.getDAOPrimitivePackage(this.fragmentPackage).getPackage() + ";");
     println();
 
     // Imports
@@ -378,7 +386,7 @@ public class CustomDAO {
   // Identifiers
 
   public String getFullClassName() {
-    return this.layout.getDAOPrimitivePackage().getFullClassName(getClassName());
+    return this.layout.getDAOPrimitivePackage(this.fragmentPackage).getFullClassName(getClassName());
   }
 
   public String getClassName() {

@@ -8,7 +8,9 @@ import java.io.Writer;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.UncontrolledException;
+import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.metadata.DataSetMetadata;
+import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 
 public class ObjectDAO {
@@ -18,11 +20,20 @@ public class ObjectDAO {
   private DataSetMetadata metadata;
   private DataSetLayout layout;
 
-  private ObjectDAOPrimitives daoPrimitives;
+  private HotRodFragmentConfigTag fragmentConfig;
+  private ClassPackage fragmentPackage;
 
-  public ObjectDAO(final DataSetMetadata dsm, final DataSetLayout dsg) {
-    this.metadata = dsm;
-    this.layout = dsg;
+  private ObjectDAOPrimitives daoPrimitives;
+  private ClassPackage classPackage;
+
+  public ObjectDAO(final DataSetMetadata metadata, final DataSetLayout layout) {
+    this.metadata = metadata;
+    this.layout = layout;
+    this.fragmentConfig = this.metadata.getFragmentConfig();
+    this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage() : null;
+
+    this.classPackage = this.layout.getDAOPackage(fragmentPackage);
   }
 
   public void setDaoPrimitives(final ObjectDAOPrimitives daoPrimitives) {
@@ -31,7 +42,12 @@ public class ObjectDAO {
 
   public void generate() throws UncontrolledException {
     String sourceClassName = this.getClassName() + ".java";
-    File dao = new File(this.layout.getDAOPackageDir(), sourceClassName);
+
+    ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage() : null;
+
+    File dir = this.layout.getDAOPackageDir(fragmentPackage);
+    File dao = new File(dir, sourceClassName);
     log.debug("dao file:" + dao.getAbsolutePath());
     if (!dao.exists()) {
       Writer w = null;
@@ -39,7 +55,7 @@ public class ObjectDAO {
       try {
         w = new BufferedWriter(new FileWriter(dao));
 
-        w.write("package " + this.layout.getDAOPackage().getPackage() + ";\n\n");
+        w.write("package " + this.classPackage.getPackage() + ";\n\n");
 
         w.write("import " + this.daoPrimitives.getFullClassName() + ";\n\n");
 
@@ -77,7 +93,7 @@ public class ObjectDAO {
   }
 
   public String getFullClassName() {
-    return this.layout.getDAOPackage().getFullClassName(this.getClassName());
+    return this.classPackage.getFullClassName(this.getClassName());
   }
 
   public String getJavaClassIdentifier() {

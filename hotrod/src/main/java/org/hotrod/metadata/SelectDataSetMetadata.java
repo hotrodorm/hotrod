@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -35,6 +36,7 @@ public class SelectDataSetMetadata implements DataSetMetadata {
   private SelectTag tag;
   private List<ColumnMetadata> columns;
   private String tempViewName;
+  private HotRodFragmentConfigTag fragmentConfig;
 
   private String reducedSelect;
   private String createView;
@@ -47,6 +49,7 @@ public class SelectDataSetMetadata implements DataSetMetadata {
     this.loc = loc;
     this.tag = tag;
     this.tempViewName = tempViewName;
+    this.fragmentConfig = tag.getFragmentConfig();
   }
 
   public void prepareViews(final Connection conn) throws SQLException {
@@ -292,6 +295,11 @@ public class SelectDataSetMetadata implements DataSetMetadata {
   @Override
   public String renderSQLIdentifier() {
     return "N/A";
+  }
+
+  @Override
+  public HotRodFragmentConfigTag getFragmentConfig() {
+    return this.fragmentConfig;
   }
 
 }

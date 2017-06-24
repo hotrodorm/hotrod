@@ -44,7 +44,7 @@ public abstract class AbstractHotRodConfigTag {
   }
 
   protected void validateCommon(final HotRodConfigTag config, final File file, final Set<String> alreadyLoadedFileNames,
-      final File parentFile, final DaosTag daosTag)
+      final File parentFile, final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
 
     File basedir = file.getParentFile();
@@ -54,23 +54,23 @@ public abstract class AbstractHotRodConfigTag {
     // DAOs
 
     for (TableTag t : this.tables) {
-      t.validate(daosTag, config);
+      t.validate(daosTag, config, fragmentConfig);
     }
 
     for (ViewTag v : this.views) {
-      v.validate(daosTag, config);
+      v.validate(daosTag, config, fragmentConfig);
     }
 
     for (CustomDAOTag dao : this.daos) {
-      dao.validate(daosTag);
+      dao.validate(daosTag, fragmentConfig);
     }
 
     for (SelectTag s : this.selects) {
-      s.validate(daosTag, config);
+      s.validate(daosTag, config, fragmentConfig);
     }
 
     for (FacetTag f : this.facets) {
-      f.validate(config, daosTag);
+      f.validate(config, daosTag, fragmentConfig);
     }
 
     // Fragments

@@ -17,6 +17,7 @@ import org.hotrod.ant.Constants;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractCompositeDAOTag;
+import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.QueryTag;
 import org.hotrod.config.SQLParameter;
@@ -42,6 +43,7 @@ import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.tx.TxDemarcator;
 import org.hotrod.runtime.tx.TxManager;
 import org.hotrod.runtime.util.ListWriter;
+import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.GenUtils;
 import org.hotrod.utils.JUtils;
 import org.hotrod.utils.SUtils;
@@ -64,6 +66,10 @@ public class ObjectDAOPrimitives {
   private MyBatisGenerator generator;
   private DAOType type;
   private MyBatisTag myBatisTag;
+  private HotRodFragmentConfigTag fragmentConfig;
+  private ClassPackage fragmentPackage;
+
+  private ClassPackage classPackage;
 
   private ObjectDAO dao = null;
   private MapperPrimitives mapPrimitives = null;
@@ -82,6 +88,11 @@ public class ObjectDAOPrimitives {
     }
     this.type = type;
     this.myBatisTag = myBatisTag;
+    this.fragmentConfig = metadata.getFragmentConfig();
+    this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage() : null;
+
+    this.classPackage = this.layout.getDAOPrimitivePackage(fragmentPackage);
   }
 
   public boolean isTable() {
@@ -113,12 +124,14 @@ public class ObjectDAOPrimitives {
   public void generate() throws UncontrolledException, ControlledException {
 
     String className = this.getClassName() + ".java";
-    this.layout.getDAOPrimitivePackage();
-    File prim = new File(this.layout.getDaoPrimitivePackageDir(), className);
+
+    File dir = this.layout.getDaoPrimitivePackageDir(this.fragmentPackage);
+    File f = new File(dir, className);
+
     this.w = null;
 
     try {
-      this.w = new BufferedWriter(new FileWriter(prim));
+      this.w = new BufferedWriter(new FileWriter(f));
 
       writeClassHeader();
 
@@ -178,7 +191,7 @@ public class ObjectDAOPrimitives {
 
     } catch (IOException e) {
       throw new UncontrolledException(
-          "Could not generate DAO primitives class: could not write to file '" + prim.getName() + "'.", e);
+          "Could not generate DAO primitives class: could not write to file '" + f.getName() + "'.", e);
     } catch (UnresolvableDataTypeException e) {
       throw new ControlledException("Could not generate DAO primitives for table '" + e.getTableName()
           + "'. Could not handle columns '" + e.getColumnName() + "' type: " + e.getTypeName());
@@ -190,7 +203,7 @@ public class ObjectDAOPrimitives {
           this.w.close();
         } catch (IOException e) {
           throw new UncontrolledException(
-              "Could not generate DAO primitives class: could not close file '" + prim.getName() + "'.", e);
+              "Could not generate DAO primitives class: could not close file '" + f.getName() + "'.", e);
         }
       }
     }
@@ -206,7 +219,7 @@ public class ObjectDAOPrimitives {
 
     // Package
 
-    println("package " + this.layout.getDAOPrimitivePackage().getPackage() + ";");
+    println("package " + this.classPackage.getPackage() + ";");
     println();
 
     // Imports
@@ -2244,7 +2257,7 @@ public class ObjectDAOPrimitives {
   // Identifiers
 
   public String getFullClassName() {
-    return this.layout.getDAOPrimitivePackage().getFullClassName(getClassName());
+    return this.classPackage.getFullClassName(getClassName());
   }
 
   public String getOrderByFullClassName() {

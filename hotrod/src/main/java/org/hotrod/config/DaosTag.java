@@ -34,14 +34,8 @@ public class DaosTag {
   private String primitivesSuffix = null;
 
   private File baseDir;
-  // private ClassPackage basePackage;
   private ClassPackage daoPackage;
-  private ClassPackage primitivesPackage;
-
-  private File daosDir;
-  private File primitivesDir;
-  private boolean daosDirVerified = false;
-  private boolean primitivesDirVerified = false;
+  private ClassPackage primitivesTailPackage;
 
   public void validate() throws InvalidConfigurationFileException {
 
@@ -69,26 +63,24 @@ public class DaosTag {
       throw new InvalidConfigurationFileException("Invalid package '" + this.sDaoPackage
           + "' on attribute 'dao-package' of tag <" + TAG_NAME + ">: " + e.getMessage());
     }
-    this.daosDir = this.daoPackage.getPackageDir(this.baseDir);
 
     // primitives-package
 
     if (this.sPrimitivesPackage == null) {
       try {
-        this.primitivesPackage = this.daoPackage.append(DEFAULT_PRIMITIVES_RELATIVE_PACKAGE);
+        this.primitivesTailPackage = new ClassPackage(DEFAULT_PRIMITIVES_RELATIVE_PACKAGE);
       } catch (InvalidPackageException e) {
         throw new InvalidConfigurationFileException(
             "Invalid 'primitives-package' attribute value on tag <" + TAG_NAME + ">: " + e.getMessage());
       }
     } else {
       try {
-        this.primitivesPackage = new ClassPackage(this.sPrimitivesPackage);
+        this.primitivesTailPackage = new ClassPackage(this.sPrimitivesPackage);
       } catch (InvalidPackageException e) {
         throw new InvalidConfigurationFileException("Invalid package '" + this.sPrimitivesPackage
             + "' on attribute 'primitives-package' of tag <" + TAG_NAME + ">: " + e.getMessage());
       }
     }
-    this.primitivesDir = this.primitivesPackage.getPackageDir(this.baseDir);
 
     // dao-prefix
 
@@ -183,32 +175,101 @@ public class DaosTag {
 
   // Getters
 
+  /**
+   * <pre>
+   * 
+   * Use instead:
+   * 
+   *   public ClassPackage getDaoPackage(final ClassPackage fragmentPackage)
+   * 
+   * </pre>
+   * 
+   * @return
+   */
+  @Deprecated
   public ClassPackage getDaoPackage() {
-    return daoPackage;
+    return this.getDaoPackage(null);
   }
 
-  public ClassPackage getPrimitivesPackage() {
-    return primitivesPackage;
+  public ClassPackage getDaoPackage(final ClassPackage fragmentPackage) {
+    if (fragmentPackage != null) {
+      return this.daoPackage.append(fragmentPackage);
+    } else {
+      return this.daoPackage;
+    }
   }
 
+  /**
+   * <pre>
+   * 
+   * Use instead:
+   * 
+   *   public File getDaosPackageDir(final ClassPackage fragmentPackage)
+   * 
+   * </pre>
+   * 
+   * @return
+   */
+  @Deprecated
   public File getDaosPackageDir() {
-    if (!this.daosDirVerified) {
-      if (!this.daosDir.exists()) {
-        this.daosDir.mkdirs();
-      }
-      this.daosDirVerified = true;
-    }
-    return daosDir;
+    return this.getDaosPackageDir(null);
   }
 
-  public File getPrimitivesPackageDir() {
-    if (!this.primitivesDirVerified) {
-      if (!this.primitivesDir.exists()) {
-        this.primitivesDir.mkdirs();
-      }
-      this.primitivesDirVerified = true;
+  public File getDaosPackageDir(final ClassPackage fragmentPackage) {
+    ClassPackage p = getDaoPackage(fragmentPackage);
+    File dir = p.getPackageDir(this.baseDir);
+    dir.mkdirs();
+    return dir;
+  }
+
+  /**
+   * <pre>
+   * 
+   * Use instead:
+   * 
+   *   public ClassPackage getPrimitivesPackage(final ClassPackage fragmentPackage)
+   * 
+   * </pre>
+   * 
+   * @return
+   */
+  @Deprecated
+  public ClassPackage getPrimitivesPackage() {
+    return this.getPrimitivesPackage(null);
+  }
+
+  public ClassPackage getPrimitivesPackage(final ClassPackage fragmentPackage) {
+    if (fragmentPackage != null) {
+      return this.daoPackage.append(fragmentPackage).append(this.primitivesTailPackage);
+    } else {
+      return this.daoPackage.append(this.primitivesTailPackage);
     }
-    return primitivesDir;
+  }
+
+  /**
+   * <pre>
+   * 
+   * Use instead:
+   * 
+   * public File getPrimitivesPackageDir(final ClassPackage fragmentPackage)
+   * 
+   * </pre>
+   * 
+   * @return
+   */
+  @Deprecated
+  public File getPrimitivesPackageDir() {
+    ClassPackage p = getPrimitivesPackage();
+    File dir = p.getPackageDir(this.baseDir);
+    dir.mkdirs();
+    return dir;
+  }
+
+  public File getPrimitivesPackageDir(final ClassPackage fragmentPackage) {
+    ClassPackage p = getPrimitivesPackage(fragmentPackage);
+    File dir = p.getPackageDir(this.baseDir);
+    dir.mkdirs();
+    return dir;
   }
 
 }

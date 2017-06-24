@@ -20,12 +20,18 @@ public class SelectTag extends AbstractSQLDAOTag {
 
   protected String javaClassName = null;
   protected List<ColumnTag> columns = new ArrayList<ColumnTag>();
+  private HotRodFragmentConfigTag fragmentConfig;
+  private ClassPackage fragmentPackage;
 
   private DaosTag daosTag;
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config) throws InvalidConfigurationFileException {
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
 
     this.daosTag = daosTag;
+    this.fragmentConfig = fragmentConfig;
+    this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage() : null;
 
     // name
 
@@ -111,12 +117,16 @@ public class SelectTag extends AbstractSQLDAOTag {
 
   @Override
   public ClassPackage getPackage() {
-    return this.daosTag.getDaoPackage();
+    return this.daosTag.getDaoPackage(this.fragmentPackage);
   }
 
   @Override
   public String getJavaClassName() {
     return this.javaClassName;
+  }
+
+  public HotRodFragmentConfigTag getFragmentConfig() {
+    return fragmentConfig;
   }
 
 }

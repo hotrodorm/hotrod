@@ -62,6 +62,7 @@
   <!-- -->
 
   <fragment file="hotrod-finances.xml" />
+  
   <fragment file="hotrod-core-and-types.xml" />
 
 </hotrod>

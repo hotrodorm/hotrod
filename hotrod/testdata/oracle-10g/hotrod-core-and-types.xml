@@ -61,7 +61,9 @@
   <table name="types_numeric" />
   <table name="types_char" />
   <table name="types_binary" />
+<!--   
   <table name="types_date_time" />
+-->
 
   <facet name="phase2">
 

@@ -15,11 +15,17 @@ public class CustomDAOTag extends AbstractCompositeDAOTag {
   private String javaClassName = null;
 
   private DaosTag daosTag;
+  private HotRodFragmentConfigTag fragmentConfig;
+  private ClassPackage fragmentPackage;
 
-  public void validate(final DaosTag daosTag) throws InvalidConfigurationFileException {
+  public void validate(final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig)
+      throws InvalidConfigurationFileException {
     log.debug("validate");
 
     this.daosTag = daosTag;
+    this.fragmentConfig = fragmentConfig;
+    this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage() : null;
 
     // java-class-name
 
@@ -52,12 +58,16 @@ public class CustomDAOTag extends AbstractCompositeDAOTag {
 
   @Override
   public ClassPackage getPackage() {
-    return this.daosTag.getDaoPackage();
+    return this.daosTag.getDaoPackage(this.fragmentPackage);
   }
 
   @Override
   public String getJavaClassName() {
     return this.javaClassName;
+  }
+
+  public HotRodFragmentConfigTag getFragmentConfig() {
+    return fragmentConfig;
   }
 
 }

@@ -3,12 +3,15 @@ package org.hotrod.config;
 import java.io.File;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.SUtils;
 
 public class FragmentTag {
+
+  private static final Logger log = Logger.getLogger(FragmentTag.class);
 
   static final String TAG_NAME = "fragment";
 
@@ -20,6 +23,8 @@ public class FragmentTag {
   public void validate(final HotRodConfigTag config, final File baseDir, final Set<String> alreadyLoadedFileNames,
       final File parentFile, final DaosTag daosTag)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
+
+    log.debug("init");
 
     // file
 

@@ -3,6 +3,7 @@ package org.hotrod.config;
 import java.io.File;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.SUtils;
 
 public class MappersTag {
@@ -16,11 +17,9 @@ public class MappersTag {
   private String sRelativeDir = null;
 
   private File baseDir;
-  private File fullDir;
+  private File fullRelativeDir;
 
-  private File primitivesDir;
   private File customDir;
-  private boolean primitivesDirVerified = false;
   private boolean customDirVerified = false;
 
   // Validate
@@ -30,49 +29,36 @@ public class MappersTag {
     // gen-base-dir
 
     if (SUtils.isEmpty(this.sGenBaseDir)) {
-      throw new InvalidConfigurationFileException(
-          "Attribute 'gen-base-dir' of tag <"
-              + TAG_NAME
-              + "> cannot be empty. "
-              + "Must specify the base dir to generate the MyBatis mapper files.");
+      throw new InvalidConfigurationFileException("Attribute 'gen-base-dir' of tag <" + TAG_NAME + "> cannot be empty. "
+          + "Must specify the base dir to generate the MyBatis mapper files.");
     }
     this.baseDir = new File(this.sGenBaseDir);
     if (!this.baseDir.exists()) {
-      throw new InvalidConfigurationFileException(
-          "Attribute 'gen-base-dir' of tag <" + TAG_NAME + "> with value '"
-              + this.sGenBaseDir + "' points to a non existent directory.");
+      throw new InvalidConfigurationFileException("Attribute 'gen-base-dir' of tag <" + TAG_NAME + "> with value '"
+          + this.sGenBaseDir + "' points to a non existent directory.");
     }
     if (!this.baseDir.isDirectory()) {
-      throw new InvalidConfigurationFileException(
-          "Attribute 'gen-base-dir' of tag <" + TAG_NAME + "> with value '"
-              + this.sGenBaseDir + "' points to an file system entry "
-              + "that is not a directory. ");
+      throw new InvalidConfigurationFileException("Attribute 'gen-base-dir' of tag <" + TAG_NAME + "> with value '"
+          + this.sGenBaseDir + "' points to an file system entry " + "that is not a directory. ");
     }
 
     // relative-dir
 
     if (SUtils.isEmpty(this.sRelativeDir)) {
-      throw new InvalidConfigurationFileException(
-          "Attribute 'base-dir' of tag <"
-              + TAG_NAME
-              + "> cannot be empty. "
-              + "Must specify the base dir to generate the MyBatis mapper files.");
+      throw new InvalidConfigurationFileException("Attribute 'relative-dir' of tag <" + TAG_NAME + "> cannot be empty. "
+          + "Must specify the base dir to generate the MyBatis mapper files.");
     }
-    this.fullDir = new File(this.baseDir, this.sRelativeDir);
-    if (!this.baseDir.exists()) {
-      throw new InvalidConfigurationFileException(
-          "Attribute 'base-dir' of tag <" + TAG_NAME + "> with value '"
-              + this.sRelativeDir + "' points to a non existent directory.");
+    this.fullRelativeDir = new File(this.baseDir, this.sRelativeDir);
+    if (!this.fullRelativeDir.exists()) {
+      throw new InvalidConfigurationFileException("Attribute 'relative-dir' of tag <" + TAG_NAME + "> with value '"
+          + this.sRelativeDir + "' points to a non existent directory.");
     }
-    if (!this.baseDir.isDirectory()) {
-      throw new InvalidConfigurationFileException(
-          "Attribute 'base-dir' of tag <" + TAG_NAME + "> with value '"
-              + this.sRelativeDir + "' points to an file system entry "
-              + "that is not a directory. ");
+    if (!this.fullRelativeDir.isDirectory()) {
+      throw new InvalidConfigurationFileException("Attribute 'relative-dir' of tag <" + TAG_NAME + "> with value '"
+          + this.sRelativeDir + "' points to an file system entry " + "that is not a directory. ");
     }
 
-    this.primitivesDir = new File(this.fullDir, PRIMITIVES_MAPPERS_DIR);
-    this.customDir = new File(this.fullDir, CUSTOM_MAPPERS_DIR);
+    this.customDir = new File(this.fullRelativeDir, CUSTOM_MAPPERS_DIR);
 
   }
 
@@ -89,13 +75,20 @@ public class MappersTag {
   // Getters
 
   public File getPrimitivesDir() {
-    if (!this.primitivesDirVerified) {
-      if (!this.primitivesDir.exists()) {
-        this.primitivesDir.mkdirs();
-      }
-      this.primitivesDirVerified = true;
+    return getPrimitivesDir(null);
+  }
+
+  public File getPrimitivesDir(final ClassPackage fragmentPackage) {
+    if (fragmentPackage != null) {
+      File fragmentDir = fragmentPackage.getPackageDir(this.fullRelativeDir);
+      File dir = new File(fragmentDir, PRIMITIVES_MAPPERS_DIR);
+      dir.mkdirs();
+      return dir;
+    } else {
+      File dir = new File(this.fullRelativeDir, PRIMITIVES_MAPPERS_DIR);
+      dir.mkdirs();
+      return dir;
     }
-    return primitivesDir;
   }
 
   public File getCustomDir() {

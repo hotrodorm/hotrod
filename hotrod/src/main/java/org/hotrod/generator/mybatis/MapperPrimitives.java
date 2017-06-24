@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractCompositeDAOTag;
+import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.QueryTag;
 import org.hotrod.config.SequenceTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -26,6 +27,7 @@ import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
 import org.hotrod.runtime.util.ListWriter;
+import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.exception.ReaderException;
@@ -36,6 +38,8 @@ public class MapperPrimitives {
 
   private DataSetMetadata metadata;
   private DataSetLayout layout;
+
+  private HotRodFragmentConfigTag fragmentConfig;
 
   private AbstractCompositeDAOTag tag;
 
@@ -55,8 +59,10 @@ public class MapperPrimitives {
 
   public MapperPrimitives(final AbstractCompositeDAOTag tag, final DataSetMetadata metadata, final DataSetLayout layout,
       final HotRodGenerator generator, final DAOType type, final DatabaseAdapter adapter) {
+    log.debug("init");
     this.tag = tag;
     this.metadata = metadata;
+    this.fragmentConfig = this.metadata.getFragmentConfig();
     this.layout = layout;
     this.generator = generator;
 
@@ -66,7 +72,10 @@ public class MapperPrimitives {
     this.type = type;
     this.adapter = adapter;
 
-    this.namespace = this.layout.getDAOPrimitivePackage().getPackage() + "."
+    ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage() : null;
+
+    this.namespace = this.layout.getDAOPrimitivePackage(fragmentPackage).getPackage() + "."
         + this.metadata.getIdentifier().getJavaMemberIdentifier();
   }
 
@@ -84,7 +93,11 @@ public class MapperPrimitives {
 
   public void generate() throws UncontrolledException, ControlledException {
     String sourceFileName = this.getSourceFileName();
-    File mapper = new File(this.layout.getMapperPrimitiveDir(), sourceFileName);
+
+    ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage() : null;
+
+    File mapper = new File(this.layout.getMapperPrimitiveDir(fragmentPackage), sourceFileName);
     this.w = null;
 
     try {

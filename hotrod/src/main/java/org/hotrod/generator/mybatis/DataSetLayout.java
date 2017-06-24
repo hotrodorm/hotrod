@@ -2,7 +2,9 @@ package org.hotrod.generator.mybatis;
 
 import java.io.File;
 
+import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.config.MappersTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.utils.ClassPackage;
@@ -10,13 +12,11 @@ import org.hotrod.utils.ClassPackage;
 public class DataSetLayout {
 
   private HotRodConfigTag config;
-  private File daoPackageDir;
-  private ClassPackage daoPackage;
-  private ClassPackage daoPrimitivePackage;
-  private File mapperPrimitiveDir;
-  private File daoPrimitivePackageDir;
   private String columnSeam;
   private String sessionFactoryGetter;
+
+  private DaosTag daos;
+  private MappersTag mappers;
 
   public DataSetLayout(final HotRodConfigTag config, final TableTag tag) {
     initialize(config);
@@ -32,32 +32,30 @@ public class DataSetLayout {
     this.config = config;
     MyBatisTag mybatis = (MyBatisTag) this.config.getGenerators().getSelectedGeneratorTag();
 
-    this.daoPackageDir = mybatis.getDaos().getDaosPackageDir();
-    this.daoPackage = mybatis.getDaos().getDaoPackage();
-    this.daoPrimitivePackage = mybatis.getDaos().getPrimitivesPackage();
-    this.mapperPrimitiveDir = mybatis.getMappers().getPrimitivesDir();
-    this.daoPrimitivePackageDir = mybatis.getDaos().getPrimitivesPackageDir();
+    this.daos = mybatis.getDaos();
+    this.mappers = mybatis.getMappers();
+
     this.sessionFactoryGetter = mybatis.getSessionFactory().getSessionFactoryGetter();
   }
 
-  public File getDAOPackageDir() {
-    return daoPackageDir;
+  public ClassPackage getDAOPackage(final ClassPackage fragmentPackage) {
+    return this.daos.getDaoPackage(fragmentPackage);
   }
 
-  public ClassPackage getDAOPackage() {
-    return daoPackage;
+  public File getDAOPackageDir(final ClassPackage fragmentPackage) {
+    return this.daos.getDaosPackageDir(fragmentPackage);
   }
 
-  public ClassPackage getDAOPrimitivePackage() {
-    return this.daoPrimitivePackage;
+  public ClassPackage getDAOPrimitivePackage(final ClassPackage fragmentPackage) {
+    return this.daos.getPrimitivesPackage(fragmentPackage);
   }
 
-  public File getMapperPrimitiveDir() {
-    return mapperPrimitiveDir;
+  public File getDaoPrimitivePackageDir(final ClassPackage fragmentPackage) {
+    return this.daos.getPrimitivesPackageDir(fragmentPackage);
   }
 
-  public File getDaoPrimitivePackageDir() {
-    return daoPrimitivePackageDir;
+  public File getMapperPrimitiveDir(final ClassPackage fragmentPackage) {
+    return this.mappers.getPrimitivesDir(fragmentPackage);
   }
 
   public String getColumnSeam() {
