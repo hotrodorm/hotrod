@@ -31,7 +31,7 @@ public class MyBatisGenerator extends HotRodGenerator {
   private LinkedHashMap<DataSetMetadata, ObjectDAO> daos = new LinkedHashMap<DataSetMetadata, ObjectDAO>();
   private LinkedHashMap<DataSetMetadata, ObjectDAOPrimitives> daoPrimitives = //
       new LinkedHashMap<DataSetMetadata, ObjectDAOPrimitives>();
-  private LinkedHashMap<DataSetMetadata, MapperPrimitives> mapPrimitives = //
+  private LinkedHashMap<DataSetMetadata, MapperPrimitives> mapperPrimitives = //
       new LinkedHashMap<DataSetMetadata, MapperPrimitives>();
   private MyBatisConfiguration myBatisConfig;
 
@@ -101,20 +101,25 @@ public class MyBatisGenerator extends HotRodGenerator {
       this.myBatisConfig.addMapperPrimitives(mapper);
     }
 
-    for (TableTag t : this.config.getAllTables()) {
-      Identifier id = new DataSetIdentifier(t.getName(), t.getJavaName());
-      this.myBatisConfig.addSourceFile(MapperPrimitives.getSourceFile(id));
+    for (MapperPrimitives mapper : this.mapperPrimitives.values()) {
+      String sourceFile = mapper.getRuntimeSourceFileName();
+      this.myBatisConfig.addSourceFile(sourceFile);
     }
 
-    for (ViewTag v : this.config.getAllViews()) {
-      Identifier id = new DataSetIdentifier(v.getName(), v.getJavaName());
-      this.myBatisConfig.addSourceFile(MapperPrimitives.getSourceFile(id));
-    }
-
-    for (SelectTag t : this.config.getAllSelects()) {
-      Identifier id = new DataSetIdentifier("s", t.getJavaClassName(), false);
-      this.myBatisConfig.addSourceFile(MapperPrimitives.getSourceFile(id));
-    }
+    // for (TableTag t : this.config.getAllTables()) {
+    // Identifier id = new DataSetIdentifier(t.getName(), t.getJavaName());
+    // this.myBatisConfig.addSourceFile(MapperPrimitives.getSourceFile(id));
+    // }
+    //
+    // for (ViewTag v : this.config.getAllViews()) {
+    // Identifier id = new DataSetIdentifier(v.getName(), v.getJavaName());
+    // this.myBatisConfig.addSourceFile(MapperPrimitives.getSourceFile(id));
+    // }
+    //
+    // for (SelectTag t : this.config.getAllSelects()) {
+    // Identifier id = new DataSetIdentifier("s", t.getJavaClassName(), false);
+    // this.myBatisConfig.addSourceFile(MapperPrimitives.getSourceFile(id));
+    // }
 
   }
 
@@ -178,7 +183,7 @@ public class MyBatisGenerator extends HotRodGenerator {
 
     this.daos.put(metadata, dao);
     this.daoPrimitives.put(metadata, daoPrimitives);
-    this.mapPrimitives.put(metadata, mapPrimitives);
+    this.mapperPrimitives.put(metadata, mapPrimitives);
   }
 
   @Override
@@ -195,7 +200,7 @@ public class MyBatisGenerator extends HotRodGenerator {
     for (ObjectDAOPrimitives p : this.daoPrimitives.values()) {
       p.generate();
     }
-    for (MapperPrimitives m : this.mapPrimitives.values()) {
+    for (MapperPrimitives m : this.mapperPrimitives.values()) {
       m.generate();
     }
     for (CustomDAO d : this.collectionsDAOs) {
@@ -219,7 +224,7 @@ public class MyBatisGenerator extends HotRodGenerator {
   }
 
   public MapperPrimitives getMapper(final DataSetMetadata dataSet) {
-    return this.mapPrimitives.get(dataSet);
+    return this.mapperPrimitives.get(dataSet);
   }
 
   // public DatabaseAdapter getAdapter() {

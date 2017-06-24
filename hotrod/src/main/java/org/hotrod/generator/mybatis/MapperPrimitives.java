@@ -40,6 +40,7 @@ public class MapperPrimitives {
   private DataSetLayout layout;
 
   private HotRodFragmentConfigTag fragmentConfig;
+  private ClassPackage fragmentPackage;
 
   private AbstractCompositeDAOTag tag;
 
@@ -62,7 +63,11 @@ public class MapperPrimitives {
     log.debug("init");
     this.tag = tag;
     this.metadata = metadata;
+
     this.fragmentConfig = this.metadata.getFragmentConfig();
+    this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage() : null;
+
     this.layout = layout;
     this.generator = generator;
 
@@ -72,10 +77,7 @@ public class MapperPrimitives {
     this.type = type;
     this.adapter = adapter;
 
-    ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
-        ? this.fragmentConfig.getFragmentPackage() : null;
-
-    this.namespace = this.layout.getDAOPrimitivePackage(fragmentPackage).getPackage() + "."
+    this.namespace = this.layout.getDAOPrimitivePackage(this.fragmentPackage).getPackage() + "."
         + this.metadata.getIdentifier().getJavaMemberIdentifier();
   }
 
@@ -815,6 +817,14 @@ public class MapperPrimitives {
   }
 
   // Info
+
+  public String getRuntimeSourceFileName() {
+    File dir = this.layout.getMapperRuntimeDir(this.fragmentPackage);
+    // log.info("dir=" + dir);
+    File source = new File(dir, this.getSourceFileName());
+    // log.info("source=" + source.getPath());
+    return source.getPath();
+  }
 
   public String getSourceFileName() {
     DataSetIdentifier id = this.metadata.getIdentifier();

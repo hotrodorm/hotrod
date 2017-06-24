@@ -177,7 +177,7 @@ public class TypesTest {
     // list = QuadrantDAO.selectByExample(new QuadrantDAO());
 
     QuadrantDAO example = new QuadrantDAO();
-    example.setActiveState(true);
+//    example.setActiveState(true);
     list = QuadrantDAO.selectByExample(example);
 
     for (QuadrantDAO q : list) {

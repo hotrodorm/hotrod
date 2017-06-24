@@ -58,6 +58,10 @@ public class DataSetLayout {
     return this.mappers.getPrimitivesDir(fragmentPackage);
   }
 
+  public File getMapperRuntimeDir(final ClassPackage fragmentPackage) {
+    return this.mappers.getRuntimeDir(fragmentPackage);
+  }
+
   public String getColumnSeam() {
     return columnSeam;
   }

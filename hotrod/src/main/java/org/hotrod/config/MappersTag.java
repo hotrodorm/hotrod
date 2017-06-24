@@ -91,6 +91,18 @@ public class MappersTag {
     }
   }
 
+  public File getRuntimeDir(final ClassPackage fragmentPackage) {
+    File relDir = new File(this.sRelativeDir);
+    if (fragmentPackage != null) {
+      File fragmentDir = fragmentPackage.getPackageDir(relDir);
+      File dir = new File(fragmentDir, PRIMITIVES_MAPPERS_DIR);
+      return dir;
+    } else {
+      File dir = new File(relDir, PRIMITIVES_MAPPERS_DIR);
+      return dir;
+    }
+  }
+
   public File getCustomDir() {
     if (!this.customDirVerified) {
       if (!this.customDir.exists()) {
