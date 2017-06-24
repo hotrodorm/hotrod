@@ -59,7 +59,7 @@ public class FragmentTag {
     return filename;
   }
 
-  public HotRodFragmentConfigTag getConfig() {
+  public HotRodFragmentConfigTag getFragmentConfig() {
     return fragmentConfig;
   }
 

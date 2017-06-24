@@ -77,7 +77,7 @@ public abstract class AbstractHotRodConfigTag {
 
     for (FragmentTag f : this.fragments) {
       f.validate(config, basedir, alreadyLoadedFileNames, parentFile, daosTag);
-      this.mergeFragment(f.getConfig());
+      this.mergeFragment(f.getFragmentConfig());
     }
 
     // Assemble facets
