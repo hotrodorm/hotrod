@@ -2,11 +2,15 @@ package org.hotrod.utils;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidPackageException;
 
 public class ClassPackage {
 
-  private static final String PACKAGE_CHUNK_PATTERN = "[a-zA-Z][a-zA-Z$_0-9]*";
+  private static final Logger log = Logger.getLogger(ClassPackage.class);
+
+  private static final String CHUNK_PATTERN = "[a-zA-Z][a-zA-Z$_0-9]*";
+  private static final String PACKAGE_PATTERN = CHUNK_PATTERN + "(\\." + CHUNK_PATTERN + ")*";
 
   private String pkg;
   private String[] names;
@@ -17,13 +21,23 @@ public class ClassPackage {
   }
 
   public ClassPackage(final String pkg) throws InvalidPackageException {
+
+    log.debug("init");
+
     if (pkg == null) {
       throw new InvalidPackageException("Package cannot be empty.");
     }
+
     this.pkg = pkg;
     this.names = pkg.split("\\.");
+
+    if (!pkg.matches(PACKAGE_PATTERN)) {
+      throw new InvalidPackageException(
+          "Package '" + this.pkg + "' is not valid. " + "Must contain alphanumeric or underscore characters only.");
+    }
+
     for (String name : this.names) {
-      if (!name.matches(PACKAGE_CHUNK_PATTERN)) {
+      if (!name.matches(CHUNK_PATTERN)) {
         throw new InvalidPackageException("Package section '" + name + "' of the package '" + this.pkg
             + "' is not valid. " + "Must contain alphanumeric or underscore characters only.");
       }

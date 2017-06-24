@@ -39,6 +39,8 @@ public class TableTag extends AbstractCompositeDAOTag {
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
 
+    log.debug("validate");
+
     this.daosTag = daosTag;
     this.fragmentConfig = fragmentConfig;
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null

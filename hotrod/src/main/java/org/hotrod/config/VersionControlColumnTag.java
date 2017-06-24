@@ -25,6 +25,8 @@ public class VersionControlColumnTag {
 
   public void validate() throws InvalidConfigurationFileException {
 
+    log.debug("validate");
+
     // name
 
     if (SUtils.isEmpty(this.name)) {

@@ -1,9 +1,6 @@
 package org.hotrod.utils;
 
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.runtime.util.ListWriter;
-import org.hotrod.utils.identifiers.DbIdentifier;
-import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
@@ -29,8 +26,6 @@ public class DbUtils {
     }
     return true;
   }
-
-
 
   public static JdbcTable findTable(final JdbcDatabase db, final String name, final DatabaseAdapter adapter) {
     for (JdbcTable t : db.getTables()) {

@@ -82,6 +82,7 @@
       <fileset dir="gen/hotrod/mappers" includes="**/*" />
       <fileset dir="gen/hotrod/daos" includes="**/*" />
     </delete>
+    <mkdir dir="gen/hotrod/mappers/persistence" />
   </target>
 
   <target name="build-hotrod" depends="-init-hotrod">

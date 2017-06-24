@@ -7,12 +7,12 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
-import hotrod.test.generation.QuadrantDAO;
 import hotrod.test.generation.TypesBinaryDAO;
 import hotrod.test.generation.TypesCharDAO;
 import hotrod.test.generation.TypesExtraDAO;
 import hotrod.test.generation.TypesNumericDAO;
 import hotrod.test.generation.TypesOtherDAO;
+import hotrod.test.generation.accounting.finances.QuadrantDAO;
 import hotrod.test.generation.accounting.finances.TypesDateTimeDAO;
 
 public class TypesTest {

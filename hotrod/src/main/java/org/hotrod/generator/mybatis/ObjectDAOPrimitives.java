@@ -262,27 +262,47 @@ public class ObjectDAOPrimitives {
     println("import " + this.dao.getFullClassName() + ";");
 
     for (ForeignKeyMetadata ik : this.metadata.getImportedFKs()) {
+
       ObjectDAO rdao = this.generator.getDAO(ik.getRemote().getDataSet());
       String fkc = rdao.getFullClassName();
       if (!importedDaos.contains(fkc)) {
         importedDaos.add(fkc);
         println("import " + fkc + ";");
       }
+
+      ObjectDAOPrimitives eprim = this.generator.getDAOPrimitives(ik.getRemote().getDataSet());
+      String eprimc = eprim.getFullClassName();
+      if (!importedDaos.contains(eprimc)) {
+        importedDaos.add(eprimc);
+        println("import " + eprimc + ";");
+      }
+
     }
 
     for (ForeignKeyMetadata ek : this.metadata.getExportedFKs()) {
+
       ObjectDAO rdao = this.generator.getDAO(ek.getRemote().getDataSet());
       String ikc = rdao.getFullClassName();
       if (!importedDaos.contains(ikc)) {
         importedDaos.add(ikc);
         println("import " + ikc + ";");
       }
+
       ObjectDAOPrimitives prim = this.generator.getDAOPrimitives(ek.getRemote().getDataSet());
       String ikco = prim.getOrderByFullClassName();
       if (!importedDaos.contains(ikco)) {
         importedDaos.add(ikco);
         println("import " + ikco + ";");
       }
+
+      // String ikpc = prim.getFullClassName();
+      // log.info("DAOPrim: "+ikpc + "
+      // m="+this.metadata.getIdentifier().getSQLIdentifier());
+      // if (!importedDaos.contains(ikpc)) {
+      // importedDaos.add(ikpc);
+      // println("import " + ikpc + ";");
+      // }
+
     }
 
     println();

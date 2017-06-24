@@ -117,13 +117,13 @@ public class CustomDAOMapper {
     println();
   }
 
-  private void beginCData() throws IOException {
-    println("   <![CDATA[");
-  }
-
-  private void endCData() throws IOException {
-    println("   ]]>");
-  }
+//  private void beginCData() throws IOException {
+//    println("   <![CDATA[");
+//  }
+//
+//  private void endCData() throws IOException {
+//    println("   ]]>");
+//  }
 
   /**
    * <pre>
