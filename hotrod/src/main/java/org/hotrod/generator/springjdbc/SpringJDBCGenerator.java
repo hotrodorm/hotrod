@@ -49,7 +49,7 @@ public class SpringJDBCGenerator extends HotRodGenerator {
 
     this.springJDBCConfiguration = new SpringJDBCConfiguration(this.config);
 
-    for (DataSetMetadata ds : this.dss) {
+    for (DataSetMetadata ds : this.tables) {
       addDaosAndMapper(ds, DAOType.TABLE);
     }
 

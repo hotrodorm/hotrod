@@ -12,7 +12,7 @@
 		</facet>
 
   <table name="quadrant">
-    <column name="active_state" converter="boolean_stored_as_short" />
+    <column name="active_state" converter="boolean_stored_as_number_4" />
   </table>
 
 		<facet name="seq">

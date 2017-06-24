@@ -27,7 +27,7 @@
 
   </generators>
   
-  <converter name="boolean_stored_as_short" java-type="java.lang.Boolean"
+  <converter name="boolean_stored_as_number_4" java-type="java.lang.Boolean"
     class="tests.typehandler.BooleanShortConverter"
     java-intermediate-type="java.lang.Short" />
 

@@ -9,7 +9,7 @@ public class BooleanByteaConverter implements TypeConverter<byte[], Boolean> {
     if (value == null) {
       return null;
     }
-    return value.length > 0;
+    return value.length > 0 && value[0] != 0;
   }
 
   @Override

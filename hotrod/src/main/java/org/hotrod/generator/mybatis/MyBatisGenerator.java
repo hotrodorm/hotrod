@@ -51,7 +51,7 @@ public class MyBatisGenerator extends HotRodGenerator {
 
     // Add tables
 
-    for (DataSetMetadata tm : this.dss) {
+    for (DataSetMetadata tm : this.tables) {
       log.debug("tm=" + tm.getIdentifier().getSQLIdentifier());
       addDaosAndMapper(tm, DAOType.TABLE);
 

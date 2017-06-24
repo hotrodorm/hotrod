@@ -58,7 +58,7 @@ public abstract class HotRodGenerator {
   protected DatabaseAdapter adapter = null;
   protected JdbcDatabase db = null;
 
-  protected LinkedHashSet<TableDataSetMetadata> dss = null;
+  protected LinkedHashSet<TableDataSetMetadata> tables = null;
   protected LinkedHashSet<TableDataSetMetadata> views = null;
   protected LinkedHashSet<SelectDataSetMetadata> selects = null;
 
@@ -189,7 +189,7 @@ public abstract class HotRodGenerator {
 
       logm("Prepare tables metadata.");
 
-      this.dss = new LinkedHashSet<TableDataSetMetadata>();
+      this.tables = new LinkedHashSet<TableDataSetMetadata>();
       for (JdbcTable t : this.db.getTables()) {
         TableDataSetMetadata tm;
         try {
@@ -197,7 +197,7 @@ public abstract class HotRodGenerator {
           tm = new TableDataSetMetadata(t, this.adapter, this.config);
           log.debug("*** tm=" + tm);
           validateIdentifier(sqlNames, "table", t.getName(), tm.getIdentifier());
-          this.dss.add(tm);
+          this.tables.add(tm);
         } catch (UnresolvableDataTypeException e) {
           ColumnMetadata m = e.getColumnMetadata();
 
@@ -209,8 +209,8 @@ public abstract class HotRodGenerator {
                   + m.getColumnName() + "' of table/view/select '" + m.getTableName() + "'.");
         }
       }
-      for (TableDataSetMetadata ds : this.dss) {
-        ds.linkReferencedDataSets(this.dss);
+      for (TableDataSetMetadata ds : this.tables) {
+        ds.linkReferencedDataSets(this.tables);
       }
 
       // Prepare views metadata
@@ -376,7 +376,7 @@ public abstract class HotRodGenerator {
 
       // tables
 
-      for (TableDataSetMetadata t : this.dss) {
+      for (TableDataSetMetadata t : this.tables) {
         display("Table " + t.getIdentifier().getSQLIdentifier() + " included.");
         for (SequenceTag s : t.getSequences()) {
           sequences++;
@@ -461,7 +461,7 @@ public abstract class HotRodGenerator {
     DAONamespace ns = new DAONamespace();
 
     try {
-      for (TableDataSetMetadata t : this.dss) {
+      for (TableDataSetMetadata t : this.tables) {
         ns.registerDAOTag(t.getDaoTag(), "table", t.getIdentifier().getSQLIdentifier());
       }
 
