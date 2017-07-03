@@ -86,6 +86,7 @@ public abstract class HotRodGenerator {
       String databaseVersion = null;
       String jdbcDriverName = null;
       String jdbcDriverVersion = null;
+      String jdbcSpecification = null;
 
       try {
         logm("Getting initial metadata.");
@@ -98,6 +99,10 @@ public abstract class HotRodGenerator {
         jdbcDriverName = dm.getDriverName();
         jdbcDriverVersion = dm.getDriverMajorVersion() + "." + dm.getDriverMinorVersion() + " (" + dm.getDriverVersion()
             + ")";
+
+        // Oracle DB reports a wrong JDBC Specification - will not use.
+        jdbcSpecification = dm.getJDBCMajorVersion() + "." + dm.getJDBCMinorVersion();
+
         logm("Initial metadata retrieval complete.");
 
       } catch (SQLException e) {

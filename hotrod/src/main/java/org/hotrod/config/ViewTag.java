@@ -71,8 +71,9 @@ public class ViewTag extends AbstractCompositeDAOTag {
       }
       nameTitle = "java-class-name";
       nameValue = this.javaClassName;
-    } else {
-      this.javaClassName = daosTag.generateDAOName(new DbIdentifier(this.name));
+      // } else {
+      // this.javaClassName = daosTag.generateDAOName(new
+      // DbIdentifier(this.name));
     }
 
     // columns

@@ -118,7 +118,7 @@
     </dao>
 
     <view name="types_extra" />
-
+ 
     <view name="tx_branch">
       <column name="amount" java-name="total" java-type="java.lang.Long" />
       <!-- <column name="non-existent" java-name="badColumn" /> <column name="amount" 
@@ -141,6 +141,7 @@
 
   </facet>
   
+<!--   
   <select java-class-name="CurrentQuadrant" >
     <column name="active_state" converter="boolean_stored_as_number_4" />
   <![CDATA[
@@ -148,5 +149,6 @@
       from quadrant
   ]]></select>
   
+-->  
 
 </hotrod-fragment>

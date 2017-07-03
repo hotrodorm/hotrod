@@ -283,11 +283,13 @@ public class SelectDataSetMetadata implements DataSetMetadata {
   }
 
   @Override
+  @Deprecated
   public String generateDAOName(final Identifier identifier) {
     return this.config.getGenerators().getSelectedGeneratorTag().getDaos().generateDAOName(identifier);
   }
 
   @Override
+  @Deprecated
   public String generatePrimitivesName(final Identifier identifier) {
     return this.config.getGenerators().getSelectedGeneratorTag().getDaos().generatePrimitivesName(identifier);
   }

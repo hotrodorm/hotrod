@@ -10,8 +10,10 @@ import org.hotrod.utils.identifiers.Identifier;
 
 public interface DataSetMetadata {
 
+  @Deprecated
   String generateDAOName(Identifier identifier);
 
+  @Deprecated
   String generatePrimitivesName(Identifier identifier);
 
   List<ColumnMetadata> getColumns();

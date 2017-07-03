@@ -194,7 +194,7 @@ public class CustomDAO {
     println("  // sequence " + tag.getName());
     println();
     println(
-        ObjectDAOPrimitives.renderJavaComment(this.generator.getAdapter().renderSelectSequence(tag.getIdentifier())));
+        ObjectDAO.renderJavaComment(this.generator.getAdapter().renderSelectSequence(tag.getIdentifier())));
     println();
 
     println("  public static long " + tag.getJavaMethodName() + "()");
@@ -242,7 +242,7 @@ public class CustomDAO {
 
     println("  // query " + tag.getJavaMethodName());
     println();
-    println(ObjectDAOPrimitives.renderJavaComment(tag.getAugmentedSQL()));
+    println(ObjectDAO.renderJavaComment(tag.getAugmentedSQL()));
     println();
 
     Identifier id = tag.getIdentifier();

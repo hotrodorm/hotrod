@@ -8,6 +8,19 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 
+/**
+ * <pre>
+ *
+ *     AbstractDAOTag < ------------------------------+
+ *      ^                                             |
+ *      |                                             |
+ *     AbstractCompositeDAOTag                    AbstractSQLDAOTag
+ *      ^          ^        ^                         ^        ^
+ *      |          |        |                         |        |
+ * CustomDAOTag  TableTag  ViewTag                SelectTag  QueryTag
+ * 
+ * </pre>
+ */
 public abstract class AbstractCompositeDAOTag extends AbstractDAOTag {
 
   private static final Logger log = Logger.getLogger(AbstractCompositeDAOTag.class);

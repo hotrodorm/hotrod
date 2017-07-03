@@ -46,7 +46,9 @@
                             and #{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
       *}
   ]]></select>
-
+<!-- 
+ -->
+ 
   </facet>
 
   <table name="test_sequence">
@@ -59,10 +61,8 @@
 
   </facet>
 
-  <!-- -->
-
   <fragment file="hotrod-finances.xml" />
-  
+   
   <fragment file="hotrod-core-and-types.xml" />
 
 </hotrod>

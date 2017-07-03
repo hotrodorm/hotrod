@@ -29,6 +29,7 @@
 
 				<table name="types_date_time" />
 
+<!-- 
 				<select java-class-name="AccountTx1" complement-start="{/*"
 						complement-end="*/}"><![CDATA[
     select a.* , t.*
@@ -39,11 +40,12 @@
                               and #{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
       */}
   ]]></select>
-
+-->
 		</facet>
 
 		<facet name="types">
 
+<!-- 
 				<select java-class-name="SelectTypesNumeric">
 						select * from types_numeric
 				</select>
@@ -63,7 +65,8 @@
 				<select java-class-name="SelectViewExtra">
 						select * from types_extra
 				</select>
-
+-->
+ 
 		</facet>
 
 </hotrod-fragment>

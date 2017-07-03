@@ -160,7 +160,7 @@ public class DaosTag {
 
   // Behavior
 
-  public String generateDAOName(Identifier identifier) {
+  public String generateDAOName(final Identifier identifier) {
     if (identifier.wasJavaNameSpecified()) {
       return identifier.getJavaClassIdentifier();
     } else {
@@ -171,6 +171,26 @@ public class DaosTag {
   public String generatePrimitivesName(final Identifier identifier) {
     log.debug("this.primitivesSuffix=" + this.primitivesSuffix);
     return this.primitivesPrefix + identifier.getJavaClassIdentifier() + this.primitivesSuffix;
+  }
+
+  public String generateAbstractVOName(final Identifier identifier) {
+    if (identifier.wasJavaNameSpecified()) {
+      // For this case new <dao> tag attributes are needed.
+      // Something like: abstract-vo-prefix & abstract-vo-suffix
+      return "Abstract" + identifier.getJavaClassIdentifier() + "VO";
+    } else {
+      return "Abstract" + identifier.getJavaClassIdentifier() + "VO";
+    }
+  }
+
+  public String generateVOName(final Identifier identifier) {
+    if (identifier.wasJavaNameSpecified()) {
+      // For this case new <dao> tag attributes are needed.
+      // Something like: vo-prefix & vo-suffix
+      return identifier.getJavaClassIdentifier() + "VO";
+    } else {
+      return identifier.getJavaClassIdentifier() + "VO";
+    }
   }
 
   // Getters
