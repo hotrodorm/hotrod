@@ -23,7 +23,7 @@ public class IfTag {
   private String test = null;
 
   @XmlMixed
-  @XmlElementRefs({ @XmlElementRef(type = IfTag.class) })
+  @XmlElementRefs({ @XmlElementRef(type = IfTag.class), @XmlElementRef(type = ChooseTag.class) })
   private List<Object> content = new ArrayList<Object>();
 
   // Getters & Setters
@@ -56,7 +56,12 @@ public class IfTag {
           IfTag s = (IfTag) obj;
           sb.append(s.render());
         } catch (ClassCastException e2) {
-          sb.append("" + obj);
+          try {
+            ChooseTag s = (ChooseTag) obj;
+            sb.append(s.render());
+          } catch (ClassCastException e3) {
+            sb.append("" + obj);
+          }
         }
       }
 

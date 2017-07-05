@@ -23,7 +23,7 @@ public class WhenTag {
   private String test = null;
 
   @XmlMixed
-  @XmlElementRefs({ @XmlElementRef(type = WhenTag.class) })
+  @XmlElementRefs({ @XmlElementRef(type = IfTag.class), @XmlElementRef(type = ChooseTag.class) })
   private List<Object> content = new ArrayList<Object>();
 
   // Getters & Setters
