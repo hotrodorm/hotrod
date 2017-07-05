@@ -11,21 +11,21 @@
     <if test="state">
       state = 'active'
       <!-- 
-       -->
-      <when>abc</when>
-      <!-- 
+         -->
       <choose>
         <when test="large">
           and size = 'L'
         </when>
         <when test="small">
           and size = 'S'
+          <if test="cond2">
+            and color = 'red'
+          </if>
         </when>
         <otherwise>
           and size = 'M'
         </otherwise>
       </choose>
-         -->
     </if>
     <if test="current_balance">
       balance between 100 and 200

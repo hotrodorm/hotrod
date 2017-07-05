@@ -1,22 +1,18 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
 <!-- 
+-->
   <xsd:group name="dynamic-segment">
     <xsd:choice>
       <xsd:element name="choose" type="choose-type" />
       <xsd:element name="if" type="if-type" />
     </xsd:choice>
   </xsd:group>
--->
 
   <xsd:element name="select">
     <xsd:complexType mixed="true">
-
-      <xsd:choice minOccurs="0" maxOccurs="unbounded">
-        <xsd:element name="if" type="if-type" />
-        <xsd:element name="otherwise" type="otherwise-type" />
-      </xsd:choice>
-
+      <xsd:group ref="dynamic-segment" minOccurs="0"
+        maxOccurs="unbounded" />
       <xsd:attribute name="name" type="xsd:string" use="required" />
       <xsd:attribute name="vo" type="xsd:string" use="required" />
     </xsd:complexType>
@@ -24,41 +20,33 @@
 
   <xsd:complexType name="otherwise-type" mixed="true">
   <!-- 
-    <xsd:group ref="dynamic-segment" minOccurs="0" maxOccurs="unbounded" />
      -->
+    <xsd:group ref="dynamic-segment" minOccurs="0" maxOccurs="unbounded" />
   </xsd:complexType>
 
   <xsd:complexType name="if-type" mixed="true">
   <!-- 
-    <xsd:group ref="dynamic-segment" minOccurs="0" maxOccurs="unbounded" />
     -->
-    <xsd:choice minOccurs="0" maxOccurs="unbounded">
-    <!-- 
-      <xsd:element name="choose" type="choose-type" />
-       -->
-      <xsd:element name="if" type="if-type" />
-      <xsd:element name="when" type="when-type" />
-    </xsd:choice>
+    <xsd:group ref="dynamic-segment" minOccurs="0" maxOccurs="unbounded" />
     <xsd:attribute name="test" type="xsd:string" use="required" />
   </xsd:complexType>
 
   <xsd:complexType name="choose-type" mixed="true">
   <!-- 
+  -->
     <xsd:sequence>
-      <xsd:element name="when" type="when" minOccurs="0"
+      <xsd:element name="when" type="when-type" minOccurs="0"
         maxOccurs="unbounded" />
       <xsd:element name="otherwise" type="otherwise-type"
         minOccurs="0" maxOccurs="1" />
     </xsd:sequence>
-  -->
   </xsd:complexType>
 
   <xsd:complexType name="when-type" mixed="true">
 <!-- 
+ -->
     <xsd:group ref="dynamic-segment" minOccurs="0" maxOccurs="unbounded" />
     <xsd:attribute name="test" type="xsd:string" use="required" />
- -->
   </xsd:complexType>
-
 
 </xsd:schema>
