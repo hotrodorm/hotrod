@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE encloser>
+
+<encloser>
+
+  <!-- 1. No Attributes, No Elements, No Text -->
+
+  <nanent />
+
+  <!-- 2. No Attributes, No Elements, TEXT -->
+
+  <naneyt>Hello!</naneyt>
+
+  <!-- 3. ATTRIBUTES, no Elements, no Text -->
+
+  <yanent myattribute="world" />
+
+  <!-- 4. No Attributes, ELEMENTS, no Text -->
+
+  <nayent>
+    <myelement />
+  </nayent>
+
+  <!-- 5. ATTRIBUTES, no Elements, TEXT -->
+
+  <yaneyt myattribute="world">Hello</yaneyt>
+
+  <!-- 6. ATTRIBUTES, ELEMENTS, no Text -->
+
+<!-- 
+ -->
+  <yayent myattribute="world">
+    <myelement />
+  </yayent>
+ 
+  <!-- 7. No Attributes, ELEMENTS, TEXT -->
+
+  <nayeyt>
+    Hello
+    <myelement />
+    World
+  </nayeyt>
+
+  <!-- 8. ATTRIBUTES, ELEMENTS, TEXT -->
+
+  <yayeyt myattribute="world">
+    Hello
+    <myelement />
+    World
+  </yayeyt>
+
+</encloser>

@@ -8,6 +8,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import xsdtests.case00.XMLLoader0;
 import xsdtests.case01.XMLLoader1;
 import xsdtests.case02.XMLLoader2;
 import xsdtests.case03.XMLLoader3;
@@ -26,19 +27,46 @@ public class XsdTests {
 
     System.out.println("=== XsdTests ===");
 
+    // --- 0. All cases combined
+    test0();
+
+    // --- 1. No Attributes, No Elements, No Text
     // test1();
+
+    // --- 2. No Attributes, No Elements, TEXT
     // test2();
+
+    // --- 3. ATTRIBUTES, no Elements, no Text
     // test3();
+
+    // --- 4. No Attributes, ELEMENTS, no Text
     // test4();
+
+    // --- 5. Attributes, no Elements, Text
     // test5();
+
+    // --- 6. Attributes, Elements, no Text
     // test6();
+
+    // --- 7. No Attributes, Elements, Text
     // test7();
+
+    // --- 8. Attributes, Elements, Text
     // test8();
+
+    // --- 9. Attributes, Multi Elements, Text
     // test9();
-    test10();
+
+    // --- 10. Recursive Tags
+    // test10();
 
     System.out.println("=== XsdTests Complete ===");
 
+  }
+
+  private static void test0() throws JAXBException, MalformedURLException, SAXException {
+    XMLLoader0 loader = new XMLLoader0();
+    loader.parse();
   }
 
   private static void test1() throws JAXBException, MalformedURLException, SAXException {

@@ -5,16 +5,20 @@
 
 <select name="searchedAccount" vo="AccountVO">
 
+  <bind name="pattern" value="'%' + _parameter.getTitle() + '%'" />
+
   select * from account
   <if test="conditional">
+    <!-- comment 1 -->
     where
     <if test="state">
       state = 'active'
-      <!-- 
-         -->
+
       <choose>
-        <when test="large">
-          and size = 'L'
+        <!-- comment 2 -->
+        <when test="large&lt;&amp;>'&quot;">
+          and size &lt;&amp; 15
+          and size &amp;lt; 30
         </when>
         <when test="small">
           and size = 'S'
@@ -26,10 +30,34 @@
           and size = 'M'
         </otherwise>
       </choose>
+
+      <foreach item="item" index="index" collection="list" open="("
+        separator="," close=")">
+        #{item}
+      </foreach>
+
     </if>
     <if test="current_balance">
       balance between 100 and 200
     </if>
+
+    <where>
+      <if test="cond2">and a = 10 </if>
+      <if test="cond3">and b = 12 </if>
+    </where>
+
+    <trim prefix="abc" prefixOverrides="AND |OR " suffix=","
+      suffixOverrides=")">
+      <if test="cond2">and a = 10 </if>
+      <if test="cond3">and b = 12 </if>
+    </trim>
+
+    <set>
+      <if test="abc">
+        Look.
+      </if>
+    </set>
+
   </if>
 
 </select>

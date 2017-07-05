@@ -1,4 +1,4 @@
-package xsdtests.case10;
+package xsdtests.case10.configuration.tags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,18 +9,34 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import xsdtests.case10.configuration.ConfigurationTag;
+import xsdtests.case10.dynamicsql.tags.BindTag;
+import xsdtests.case10.dynamicsql.tags.ChooseTag;
+import xsdtests.case10.dynamicsql.tags.DynamicSQLTag;
+import xsdtests.case10.dynamicsql.tags.ForEachTag;
+import xsdtests.case10.dynamicsql.tags.IfTag;
+import xsdtests.case10.dynamicsql.tags.TrimTag;
+import xsdtests.case10.dynamicsql.tags.WhereTag;
+
 @XmlRootElement(name = "select")
-public class SelectTag {
+public class SelectTag extends ConfigurationTag {
+
+  protected SelectTag() {
+    super("select");
+  }
 
   private String name = null;
   private String vo = null;
 
-  public SelectTag() {
-    System.out.println("[Constructor] " + SelectTag.class.getSimpleName());
-  }
-
   @XmlMixed
-  @XmlElementRefs({ @XmlElementRef(type = IfTag.class) })
+  @XmlElementRefs({ //
+      @XmlElementRef(type = IfTag.class), //
+      @XmlElementRef(type = ChooseTag.class), //
+      @XmlElementRef(type = WhereTag.class), //
+      @XmlElementRef(type = ForEachTag.class), //
+      @XmlElementRef(type = BindTag.class), //
+      @XmlElementRef(type = TrimTag.class) //
+  })
   private List<Object> content = new ArrayList<Object>();
 
   // Getters & Setters
@@ -51,7 +67,7 @@ public class SelectTag {
 
   public String render() {
     StringBuilder sb = new StringBuilder();
-    sb.append("<" + SelectTag.class.getSimpleName() + " name=" + this.name + " vo=" + this.vo + ">");
+    sb.append("<select name=\"" + this.name + "\" vo=\"" + this.vo + "\">");
 
     for (Object obj : this.content) {
 
@@ -60,24 +76,20 @@ public class SelectTag {
         sb.append(s);
       } catch (ClassCastException e1) {
         try {
-          IfTag s = (IfTag) obj;
-          sb.append(s.render());
+          DynamicSQLTag t = (DynamicSQLTag) obj;
+          sb.append(t.render());
         } catch (ClassCastException e2) {
-          sb.append("" + obj);
+          sb.append("[could not render tag of class: " + obj.getClass().getName() + " ]");
         }
       }
 
     }
 
-    sb.append("\n</" + SelectTag.class.getSimpleName() + ">\n");
+    sb.append("</select>");
 
     return sb.toString();
   }
 
   // toString
-
-  public String toString() {
-    return "{" + SelectTag.class.getSimpleName() + ": name=" + this.name + " vo=" + this.vo + "}";
-  }
 
 }

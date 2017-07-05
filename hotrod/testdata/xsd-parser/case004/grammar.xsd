@@ -2,6 +2,9 @@
 
   <!-- 4. No Attributes, ELEMENTS, no Text -->
 
+  <!-- The <employee> tag's body can include spaces, newlines, tabs, processing 
+    instructions, and CDATA with blanks, but no other text. -->
+
   <xsd:element name="employee">
     <xsd:complexType>
       <xsd:sequence>

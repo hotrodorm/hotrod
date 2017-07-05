@@ -1,0 +1,85 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <xsd:element name="encloser">
+    <xsd:complexType mixed="true">
+      <xsd:group ref="any-tag" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:complexType name="myelement-type" />
+
+  <xsd:group name="any-tag">
+    <xsd:choice>
+      <xsd:element name="nanent" type="nanent-type" />
+      <xsd:element name="naneyt" type="naneyt-type" />
+      <xsd:element name="nayent" type="nayent-type" />
+      <xsd:element name="nayeyt" type="nayeyt-type" />
+      <xsd:element name="yanent" type="yanent-type" />
+      <xsd:element name="yaneyt" type="yaneyt-type" />
+      <xsd:element name="yayent" type="yayent-type" />
+      <xsd:element name="yayeyt" type="yayeyt-type" />
+    </xsd:choice>
+  </xsd:group>
+
+  <!-- 1. No Attributes, No Elements, No Text -->
+
+  <xsd:complexType name="nanent-type" />
+
+  <!-- 2. No Attributes, No Elements, TEXT -->
+
+  <xsd:complexType name="naneyt-type" mixed="true" />
+
+  <!-- 3. ATTRIBUTES, no Elements, no Text -->
+
+  <xsd:complexType name="yanent-type">
+    <xsd:attribute name="myattribute" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- 4. No Attributes, ELEMENTS, no Text -->
+
+  <!-- The tag body can include spaces, newlines, tabs, processing instructions, 
+    and CDATA with blanks, but no other text. -->
+
+  <xsd:complexType name="nayent-type">
+    <xsd:sequence>
+      <xsd:element name="myelement" type="myelement-type" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- 5. ATTRIBUTES, no Elements, TEXT -->
+
+  <xsd:complexType name="yaneyt-type">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="myattribute" type="xsd:string" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!-- 6. ATTRIBUTES, ELEMENTS, no Text -->
+
+  <xsd:complexType name="yayent-type">
+    <xsd:sequence>
+      <xsd:element name="myelement" type="myelement-type" />
+    </xsd:sequence>
+    <xsd:attribute name="myattribute" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- 7. No Attributes, ELEMENTS, TEXT -->
+
+  <xsd:complexType name="nayeyt-type" mixed="true">
+    <xsd:sequence>
+      <xsd:element name="myelement" type="myelement-type" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- 8. ATTRIBUTES, ELEMENTS, TEXT -->
+
+  <xsd:complexType name="yayeyt-type" mixed="true">
+    <xsd:sequence>
+      <xsd:element name="myelement" type="myelement-type" />
+    </xsd:sequence>
+    <xsd:attribute name="myattribute" type="xsd:string" />
+  </xsd:complexType>
+
+</xsd:schema>

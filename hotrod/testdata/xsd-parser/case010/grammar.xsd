@@ -1,39 +1,41 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-<!-- 
--->
-  <xsd:group name="dynamic-segment">
-    <xsd:choice>
-      <xsd:element name="choose" type="choose-type" />
-      <xsd:element name="if" type="if-type" />
-    </xsd:choice>
-  </xsd:group>
+  <!-- 10. Recursive Tags -->
+
+  <!-- select -->
 
   <xsd:element name="select">
     <xsd:complexType mixed="true">
-      <xsd:group ref="dynamic-segment" minOccurs="0"
+      <xsd:group ref="leading-dynamic-tag" minOccurs="0"
         maxOccurs="unbounded" />
       <xsd:attribute name="name" type="xsd:string" use="required" />
       <xsd:attribute name="vo" type="xsd:string" use="required" />
     </xsd:complexType>
   </xsd:element>
 
-  <xsd:complexType name="otherwise-type" mixed="true">
-  <!-- 
-     -->
-    <xsd:group ref="dynamic-segment" minOccurs="0" maxOccurs="unbounded" />
-  </xsd:complexType>
+  <xsd:group name="leading-dynamic-tag">
+    <xsd:choice>
+      <xsd:element name="if" type="if-type" />
+      <xsd:element name="choose" type="choose-type" />
+      <xsd:element name="where" type="where-type" />
+      <xsd:element name="trim" type="trim-type" />
+      <xsd:element name="foreach" type="foreach-type" />
+      <xsd:element name="bind" type="bind-type" />
+      <xsd:element name="set" type="set-type" />
+    </xsd:choice>
+  </xsd:group>
+
+  <!-- if -->
 
   <xsd:complexType name="if-type" mixed="true">
-  <!-- 
-    -->
-    <xsd:group ref="dynamic-segment" minOccurs="0" maxOccurs="unbounded" />
+    <xsd:group ref="leading-dynamic-tag" minOccurs="0"
+      maxOccurs="unbounded" />
     <xsd:attribute name="test" type="xsd:string" use="required" />
   </xsd:complexType>
 
-  <xsd:complexType name="choose-type" mixed="true">
-  <!-- 
-  -->
+  <!-- choose -->
+
+  <xsd:complexType name="choose-type">
     <xsd:sequence>
       <xsd:element name="when" type="when-type" minOccurs="0"
         maxOccurs="unbounded" />
@@ -42,11 +44,67 @@
     </xsd:sequence>
   </xsd:complexType>
 
+  <!-- when -->
+
   <xsd:complexType name="when-type" mixed="true">
-<!-- 
- -->
-    <xsd:group ref="dynamic-segment" minOccurs="0" maxOccurs="unbounded" />
+    <xsd:group ref="leading-dynamic-tag" minOccurs="0"
+      maxOccurs="unbounded" />
     <xsd:attribute name="test" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- otherwise -->
+
+  <xsd:complexType name="otherwise-type" mixed="true">
+    <xsd:group ref="leading-dynamic-tag" minOccurs="0"
+      maxOccurs="unbounded" />
+  </xsd:complexType>
+
+  <!-- where -->
+
+  <xsd:complexType name="where-type">
+    <xsd:group ref="leading-dynamic-tag" minOccurs="0"
+      maxOccurs="unbounded" />
+  </xsd:complexType>
+
+  <!-- trim -->
+
+  <xsd:complexType name="trim-type">
+    <xsd:group ref="leading-dynamic-tag" minOccurs="0"
+      maxOccurs="unbounded" />
+    <xsd:attribute name="prefix" type="xsd:string" />
+    <xsd:attribute name="prefixOverrides" type="xsd:string" />
+    <xsd:attribute name="suffix" type="xsd:string" />
+    <xsd:attribute name="suffixOverrides" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- foreach -->
+
+  <xsd:complexType name="foreach-type">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="item" type="xsd:string" />
+        <xsd:attribute name="index" type="xsd:string" />
+        <xsd:attribute name="collection" type="xsd:string"
+          use="required" />
+        <xsd:attribute name="open" type="xsd:string" />
+        <xsd:attribute name="separator" type="xsd:string" />
+        <xsd:attribute name="close" type="xsd:string" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!-- bind -->
+
+  <xsd:complexType name="bind-type">
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="value" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- set -->
+
+  <xsd:complexType name="set-type">
+    <xsd:group ref="leading-dynamic-tag" minOccurs="0"
+      maxOccurs="unbounded" />
   </xsd:complexType>
 
 </xsd:schema>

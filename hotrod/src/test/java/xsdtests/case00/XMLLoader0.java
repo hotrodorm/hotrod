@@ -1,4 +1,4 @@
-package xsdtests.case10;
+package xsdtests.case00;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -14,11 +14,10 @@ import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 
 import xsdtests.StrictValidationEventHandler;
-import xsdtests.case10.configuration.tags.SelectTag;
 
-public class XMLLoader10 {
+public class XMLLoader0 {
 
-  private static final File dir = new File("testdata/xsd-parser/case010");
+  private static final File dir = new File("testdata/xsd-parser/case000");
 
   public void parse() throws JAXBException, MalformedURLException, SAXException {
     System.out.println("[--- Will parse now ---]\n");
@@ -26,16 +25,14 @@ public class XMLLoader10 {
     SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
     Schema schema = factory.newSchema(new StreamSource(new File(dir, "grammar.xsd")));
 
-    JAXBContext context = JAXBContext.newInstance(SelectTag.class);
+    JAXBContext context = JAXBContext.newInstance(Encloser.class);
     Unmarshaller unmarshaller = context.createUnmarshaller();
 
     unmarshaller.setEventHandler(new StrictValidationEventHandler());
     unmarshaller.setSchema(schema);
 
     File f = new File(dir, "file.xml");
-    SelectTag bean = (SelectTag) unmarshaller.unmarshal(f);
-
-    System.out.println("RENDERED=" + bean.render());
+    Encloser bean = (Encloser) unmarshaller.unmarshal(f);
 
     System.out.println("Bean: " + bean);
 
