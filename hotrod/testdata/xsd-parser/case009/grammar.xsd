@@ -1,0 +1,17 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+<!-- 9. Attributes, Multi Elements, Text -->
+
+  <xsd:element name="foo">
+    <xsd:complexType mixed="true">
+      <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+        <xsd:choice>
+          <xsd:element name="bar" type="xsd:string" />
+          <xsd:element name="wxyz" type="xsd:string" />
+        </xsd:choice>
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>

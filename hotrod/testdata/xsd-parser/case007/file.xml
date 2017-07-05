@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE foo>
+
+<!-- 7. No Attributes, Elements, Text -->
+
+<foo>
+  This is Line number 1
+  <bar />
+  This is Line number 2
+  <bar />
+  This is Line number 3
+</foo>

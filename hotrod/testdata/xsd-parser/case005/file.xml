@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!DOCTYPE employee>
+
+<!-- 5. Attributes, no Elements, Text -->
+
+<shoesize country="france">35</shoesize>
+

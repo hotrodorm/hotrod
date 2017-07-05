@@ -1,0 +1,9 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <!-- 1. No Attributes, No Elements, No Text -->
+
+  <xsd:element name="clusterable">
+    <xsd:complexType />
+  </xsd:element>
+
+</xsd:schema>

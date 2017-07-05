@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE foo [
+  <!ENTITY letterb "&#66;"> 
+  <!ELEMENT img EMPTY>
+  <!NOTATION gif PUBLIC "gif viewer">
+]>
+<foo name="qwerty">
+  <!-- This is 
+       a comment < > & -->
+  Hello World! > &apos; &#x0041; &letterb;
+  <bar>Again!</bar>
+  <![CDATA[ Bye World! < > & ]]>
+  <?Target This is the content?>
+  <bar />
+  Total
+  <bar>Finally.</bar>
+</foo>

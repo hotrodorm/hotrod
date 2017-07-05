@@ -1,0 +1,9 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <!-- 2. No Attributes, No Elements, TEXT -->
+
+  <xsd:element name="firstname">
+    <xsd:complexType mixed="true" />
+  </xsd:element>
+
+</xsd:schema>

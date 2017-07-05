@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE foo>
+
+<!-- 9. Attributes, Multi Elements, Text -->
+
+<foo name="Peter">
+  This is Line number 1
+  <bar />
+  This is Line number 2
+  <wxyz />
+  This is Line number 3
+  <bar />
+  This is Line number 4
+</foo>

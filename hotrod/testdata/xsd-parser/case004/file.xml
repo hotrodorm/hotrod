@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE shoesize>
+
+<!-- 4. No Attributes, ELEMENTS, no Text -->
+
+<employee>
+  <firstname>John</firstname>
+  <alias>El Chapo</alias>
+  <alias>The Turtle</alias>
+</employee> 
+
+   
+
+   

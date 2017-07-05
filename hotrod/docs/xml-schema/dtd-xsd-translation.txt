@@ -1,0 +1,203 @@
+Examples of translating DTD into XSD
+====================================
+
+
+1. No Attributes, No Elements, No Text
+--------------------------------------
+
+  <clusterable />
+
+  <!ELEMENT clusterable EMPTY>
+  
+  <xsd:element name="clusterable">
+    <xsd:complexType />
+  </xsd:element>
+  
+                               ====
+2. No Attributes, No Elements, TEXT
+-------------------------------====
+
+  <firstname>John</firstname>
+
+  <!ELEMENT firstname (#PCDATA)>
+
+  <xsd:element name="firstname">
+    <xsd:complexType mixed="true" />
+  </xsd:element>
+  
+   ==========
+3. ATTRIBUTES, no Elements, no Text
+---==========----------------------
+
+  <product prodid="1345" oldid="5678" />
+    
+  <!ELEMENT product EMPTY>
+  <!ATTLIST product prodid CDATA #REQUIRED>
+  <!ATTLIST product oldid CDATA #IMPLIED>
+
+  <xsd:element name="product">
+    <xsd:complexType>
+      <xsd:attribute name="prodid" type="xsd:positiveInteger" use="required" />
+      <xsd:attribute name="oldid" type="xsd:positiveInteger" />
+    </xsd:complexType>
+  </xsd:element>
+  
+                  ========
+4. No Attributes, ELEMENTS, no Text
+------------------========---------
+ 
+  <employee>
+    <firstname>John</firstname>
+    <alias>El Chapo</alias>
+    <alias>The Turtle</alias>
+  </employee> 
+
+  <!ELEMENT employee (firstname, alias*)>
+  <!ELEMENT firstname (#PCDATA)>
+  <!ELEMENT alias (#PCDATA)>
+
+  <xsd:element name="employee">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="firstname" type="xsd:string"/>
+        <xsd:element name="lastname" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element> 
+ 
+   ==========               ====
+5. Attributes, no Elements, Text
+---==========---------------====
+ 
+  <shoesize country="france">35</shoesize>
+
+  <!ELEMENT shoesize (#PCDATA)>
+  <!ATTLIST shoesize country CDATA #REQUIRED>
+  
+  <xsd:element name="shoesize">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:integer">
+          <xsd:attribute name="country" type="xsd:string" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>    
+
+   ==========  ========
+6. Attributes, Elements, no Text
+---==========--========---------
+
+  <employee branch="North">
+    <firstname>John</firstname>
+    <alias>El Chapo</alias>
+  </employee> 
+
+  <!ELEMENT employee (firstname, alias)>
+  <!ATTLIST employee branch CDATA #REQUIRED>
+  <!ELEMENT firstname (#PCDATA)>
+  <!ELEMENT alias (#PCDATA)>
+
+  <xsd:element name="employee">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="firstname" type="xsd:string"/>
+        <xsd:element name="lastname" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="branch" type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element> 
+
+                  ========  ====    
+7. No Attributes, Elements, Text
+------------------========--====
+
+  <foo>
+    This is Line number 1
+    <bar />
+    This is Line number 2
+    <bar />
+    This is Line number 3
+  </foo>
+
+  <xsd:element name="foo">
+    <xsd:complexType mixed="true">
+      <xsd:sequence>
+        <xsd:element name="bar" type="xsd:string" minOccurs="0"
+          maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+   ==========  ========  ====
+8. Attributes, Elements, Text
+---==========--========--====
+
+  <foo name="Peter">
+    This is Line number 1
+    <bar />
+    This is Line number 2
+    <bar />
+    This is Line number 3
+  </foo>
+
+  <xsd:element name="foo">
+    <xsd:complexType mixed="true">
+      <xsd:sequence>
+        <xsd:element name="bar" type="xsd:string" minOccurs="0"
+          maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+
+   ==========  ==============  ====
+9. Attributes, Multi Elements, Text
+---==========--==============--====
+
+  <foo name="Peter">
+    This is Line number 1
+    <bar />
+    This is Line number 2
+    <wxyz />
+    This is Line number 3
+    <bar />
+    This is Line number 4
+  </foo>
+
+  <xsd:element name="foo">
+    <xsd:complexType mixed="true">
+      <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+        <xsd:choice>
+          <xsd:element name="bar" type="xsd:string" />
+          <xsd:element name="wxyz" type="xsd:string" />
+        </xsd:choice>
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

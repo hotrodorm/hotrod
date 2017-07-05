@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE employee>
+
+<!-- 6. Attributes, Elements, no Text -->
+
+<employee branch="North">
+  <firstname>John</firstname>
+  <alias>Johnny</alias>
+  <alias>Jano</alias>
+  <alias>Juano</alias>
+</employee> 

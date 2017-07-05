@@ -1,0 +1,16 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <!-- 6. Attributes, Elements, no Text -->
+
+  <xsd:element name="employee">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="firstname" type="xsd:string" />
+        <xsd:element name="alias" type="xsd:string"
+          minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:attribute name="branch" type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>
