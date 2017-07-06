@@ -5,7 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.apache.log4j.Logger;
+import org.hotrod.config.tags.QueryTag;
+import org.hotrod.config.tags.SequenceTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 
 /**
@@ -23,12 +27,34 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
  */
 public abstract class AbstractCompositeDAOTag extends AbstractDAOTag {
 
+  // Constants
+
   private static final Logger log = Logger.getLogger(AbstractCompositeDAOTag.class);
+
+  // Properties
 
   private List<SequenceTag> sequences = new ArrayList<SequenceTag>();
   private List<QueryTag> queries = new ArrayList<QueryTag>();
 
-  // Validation
+  // Constructor
+
+  protected AbstractCompositeDAOTag(final String tagName) {
+    super(tagName);
+  }
+
+  // JAXB Setters
+
+  @XmlElement
+  public final void setSequence(final SequenceTag sequence) {
+    this.sequences.add(sequence);
+  }
+
+  @XmlElement
+  public final void setQuery(final QueryTag query) {
+    this.queries.add(query);
+  }
+
+  // Behavior
 
   protected void validate(final String tagName, final String nameTitle, final String nameValue)
       throws InvalidConfigurationFileException {
@@ -70,16 +96,6 @@ public abstract class AbstractCompositeDAOTag extends AbstractDAOTag {
       log.debug("* added '" + q.getJavaMethodName() + "'");
     }
 
-  }
-
-  // Setters (digester)
-
-  public final void addSequence(final SequenceTag sequence) {
-    this.sequences.add(sequence);
-  }
-
-  public final void addQuery(final QueryTag query) {
-    this.queries.add(query);
   }
 
   // Getters

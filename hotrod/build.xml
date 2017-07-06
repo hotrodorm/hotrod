@@ -17,7 +17,7 @@
   <property name="buildinfo.build.dir" value="build/buildinfo" />
   <property name="runtime.build.dir" value="build/test" />
   <property name="tools.build.dir" value="build/tools" />
-  <property name="dtd.build.dir" value="build/dtd" />
+  <property name="xsd.build.dir" value="build/xsd" />
   <property name="dist.dir" value="dist" />
   <property name="website.dist.dir" value="dist/website" />
   <property name="website.renumber.dist.dir" value="dist/website-renumber" />
@@ -29,7 +29,7 @@
     <mkdir dir="${buildinfo.gen.dir}" />
     <mkdir dir="${runtime.build.dir}" />
     <mkdir dir="${tools.build.dir}" />
-    <mkdir dir="${dtd.build.dir}" />
+    <mkdir dir="${xsd.build.dir}" />
     <mkdir dir="${dist.dir}" />
     <mkdir dir="${website.dist.dir}" />
     <mkdir dir="${release.dir}" />
@@ -104,7 +104,6 @@
         <pathelement path="${runtime.build.dir}" />
         <pathelement location="${lib.dir}/ant.jar" />
         <pathelement location="${lib.dir}/jxl.jar" />
-        <pathelement location="${lib.dir}/commons-digester3-3.2-with-deps.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/tartarus-${tartarus.version}.jar" />
@@ -112,30 +111,41 @@
     </javac>
   </target>
 
-  <target name="jar" depends="compile-runtime, compile-main">
+  <target name="prepare-xsd">
+
+    <loadfile property="common.xsd" srcFile="src/main/xml/hotrod-common.xsd" />
+
+    <copy file="src/main/xml/hotrod-primary-head.xsd"
+          tofile="${xsd.build.dir}/hotrod.xsd"
+          overwrite="true">
+      <filterset>
+        <filter token="common-xsd" value="${common.xsd}" />
+      </filterset>
+    </copy>
+
+    <copy file="src/main/xml/hotrod-fragment-head.xsd"
+          tofile="${xsd.build.dir}/hotrod-fragment.xsd"
+          overwrite="true">
+      <filterset>
+        <filter token="common-xsd" value="${common.xsd}" />
+      </filterset>
+    </copy>
+
+  </target>
+
+  <target name="jar" depends="compile-runtime, compile-main, prepare-xsd">
     <jar destfile="${dist.dir}/${projectName}-${version}-runtime.jar">
       <fileset dir="${runtime.build.dir}" />
       <zipfileset dir="${runtime.src.dir}" prefix="src" />
     </jar>
 
-    <concat destfile="${dtd.build.dir}/hotrod.dtd">
-      <fileset file="src/main/xml/hotrod-head.dtd" />
-      <fileset file="src/main/xml/hotrod-common.dtd" />
-    </concat>
-    <concat destfile="${dtd.build.dir}/hotrod-fragment.dtd">
-      <fileset file="src/main/xml/hotrod-fragment-head.dtd" />
-      <fileset file="src/main/xml/hotrod-common.dtd" />
-    </concat>
-
     <jar destfile="${dist.dir}/${projectName}-${version}.jar">
       <fileset dir="${runtime.build.dir}" />
       <fileset dir="${main.build.dir}" />
-      <zipfileset src="${lib.dir}/commons-digester3-3.2-with-deps.jar" />
-      <zipfileset src="${lib.dir}/jxl.jar" />
       <zipfileset src="${lib.dir}/log4j-1.2.17.jar" />
       <zipfileset src="${lib.dir}/tartarus-${tartarus.version}.jar" />
-      <fileset file="${dtd.build.dir}/hotrod.dtd" />
-      <fileset file="${dtd.build.dir}/hotrod-fragment.dtd" />
+      <fileset file="${xsd.build.dir}/hotrod.xsd" />
+      <fileset file="${xsd.build.dir}/hotrod-fragment.xsd" />
       <fileset file="src/main/metadata/log4j.properties" />
     </jar>
   </target>

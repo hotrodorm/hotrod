@@ -11,10 +11,10 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.hotrod.config.StrictValidationEventHandler;
 import org.xml.sax.SAXException;
 
-import xsdtests.StrictValidationEventHandler;
-import xsdtests.case10.configuration.tags.SelectTag;
+import xsdtests.case10.configuration.tags.NselectTag;
 
 public class XMLLoader10 {
 
@@ -26,14 +26,14 @@ public class XMLLoader10 {
     SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
     Schema schema = factory.newSchema(new StreamSource(new File(dir, "grammar.xsd")));
 
-    JAXBContext context = JAXBContext.newInstance(SelectTag.class);
+    JAXBContext context = JAXBContext.newInstance(NselectTag.class);
     Unmarshaller unmarshaller = context.createUnmarshaller();
 
     unmarshaller.setEventHandler(new StrictValidationEventHandler());
     unmarshaller.setSchema(schema);
 
     File f = new File(dir, "file.xml");
-    SelectTag bean = (SelectTag) unmarshaller.unmarshal(f);
+    NselectTag bean = (NselectTag) unmarshaller.unmarshal(f);
 
     System.out.println("RENDERED=" + bean.render());
 

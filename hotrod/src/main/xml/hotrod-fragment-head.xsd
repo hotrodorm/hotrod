@@ -1,0 +1,21 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <xsd:element name="hotrod-fragment">
+    <xsd:complexType>
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+          <xsd:element name="table" type="table-type" />
+          <xsd:element name="dao" type="dao-type" />
+          <xsd:element name="view" type="view-type" />
+          <xsd:element name="select" type="select-type" />
+          <xsd:element name="fragment" type="fragment-type" />
+          <xsd:element name="facet" type="facet-type" />
+          <xsd:element name="converter" type="converter-type" />
+        </xsd:choice>
+      <xsd:attribute name="package" type="xsd:string" />
+    </xsd:complexType>
+  </xsd:element>
+
+  @common-xsd@
+
+</xsd:schema>
+

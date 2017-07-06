@@ -1,15 +1,14 @@
 package org.hotrod.ant;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.hotrod.buildinfo.BuildConstants;
-import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.config.ConfigurationLoader;
+import org.hotrod.config.tags.HotRodConfigTag;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.utils.SUtils;
@@ -144,11 +143,9 @@ public class HotRodAntTask extends Task {
     DatabaseLocation loc = new DatabaseLocation(this.driverClass, this.url, this.username, this.password, this.catalog,
         this.schema);
 
-    Set<String> alreadyLoadedFileNames = new HashSet<String>();
-
-    HotRodConfigTag config;
+    HotRodConfigTag config = null;
     try {
-      config = new HotRodConfigTag().load(this.configFile, alreadyLoadedFileNames, null, this.generator);
+      config = ConfigurationLoader.loadPrimary(this.configFile, this.generator);
     } catch (ControlledException e) {
       throw new BuildException("\n" + e.getMessage());
     } catch (UncontrolledException e) {

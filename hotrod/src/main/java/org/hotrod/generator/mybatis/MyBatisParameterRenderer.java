@@ -1,6 +1,6 @@
 package org.hotrod.generator.mybatis;
 
-import org.hotrod.config.SQLParameter;
+import org.hotrod.config.sql.SQLParameter;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.utils.identifiers.JavaIdentifier;
 

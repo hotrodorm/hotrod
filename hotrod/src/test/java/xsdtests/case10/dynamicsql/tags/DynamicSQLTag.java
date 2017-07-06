@@ -7,10 +7,11 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 
-import xsdtests.case10.configuration.ConfigurationTag;
+import org.hotrod.config.AbstractConfigurationTag;
+
 import xsdtests.case10.configuration.TagAttribute;
 
-public abstract class DynamicSQLTag extends ConfigurationTag {
+public abstract class DynamicSQLTag extends AbstractConfigurationTag {
 
   // Properties
 
@@ -49,7 +50,7 @@ public abstract class DynamicSQLTag extends ConfigurationTag {
 
   public String renderTag(final TagAttribute... attributes) {
     StringBuilder sb = new StringBuilder();
-    sb.append(super.renderTagHeader(attributes));
+    sb.append(renderTagHeader(attributes));
     for (Object obj : this.content) {
       try {
         String s = (String) obj;
@@ -64,7 +65,37 @@ public abstract class DynamicSQLTag extends ConfigurationTag {
         }
       }
     }
-    sb.append(super.renderTagFooter());
+    sb.append(renderTagFooter());
+    return sb.toString();
+  }
+
+  public abstract String render();
+
+  protected String renderTagHeader(final TagAttribute... attributes) {
+    return renderHeader(false, attributes);
+  }
+
+  protected String renderEmptyTag(final TagAttribute... attributes) {
+    return renderHeader(true, attributes);
+  }
+
+  private String renderHeader(final boolean emptyTag, final TagAttribute... attributes) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("<" + super.getTagName());
+    for (TagAttribute a : attributes) {
+      String value = a.getValue();
+      if (value != null) {
+        value = value.replace("&", "&amp;").replace("<", "&lt;").replace("\"", "&quot;");
+        sb.append(" " + a.getName() + "=\"" + value + "\"");
+      }
+    }
+    sb.append(emptyTag ? " />" : ">");
+    return sb.toString();
+  }
+
+  protected String renderTagFooter() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("</" + super.getTagName() + ">");
     return sb.toString();
   }
 

@@ -1,8 +1,11 @@
 package org.hotrod.config;
 
+import org.hotrod.config.tags.PropertyTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 
 public class MyBatisProperties {
+
+  // Constants
 
   private static final String PROPERTY_CHECKED_PERSISTENCE_EXCEPTION = "checked.persistence.exception";
   private static final String PROPERTY_MULTILINE_TOSTRING = "multiline.tostring";
@@ -10,10 +13,12 @@ public class MyBatisProperties {
   private static final String TRUE = "true";
   private static final String FALSE = "false";
 
+  // Properties
+
   private boolean checkedPersistenceException = true;
   private boolean multilineTostring = true;
 
-  // Setter
+  // Setters
 
   public void set(final PropertyTag p) throws InvalidConfigurationFileException {
 
