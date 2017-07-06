@@ -8,10 +8,10 @@ import java.io.Writer;
 
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
-import org.hotrod.config.CustomDAOTag;
-import org.hotrod.config.HotRodFragmentConfigTag;
-import org.hotrod.config.QueryTag;
-import org.hotrod.config.SequenceTag;
+import org.hotrod.config.tags.CustomDAOTag;
+import org.hotrod.config.tags.HotRodFragmentConfigTag;
+import org.hotrod.config.tags.QueryTag;
+import org.hotrod.config.tags.SequenceTag;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.utils.ClassPackage;

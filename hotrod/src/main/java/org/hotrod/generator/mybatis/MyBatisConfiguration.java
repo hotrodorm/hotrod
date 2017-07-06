@@ -11,8 +11,8 @@ import java.util.List;
 
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
-import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.config.MyBatisTag;
+import org.hotrod.config.tags.HotRodConfigTag;
+import org.hotrod.config.tags.MyBatisTag;
 import org.hotrod.utils.SUtils;
 
 public class MyBatisConfiguration {

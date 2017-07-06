@@ -5,11 +5,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementRefs;
+import javax.xml.bind.annotation.XmlMixed;
+
 import org.apache.log4j.Logger;
+import org.hotrod.config.sql.AbstractSQLSection;
+import org.hotrod.config.sql.SQLComplementSection;
+import org.hotrod.config.sql.SQLFoundationSection;
+import org.hotrod.config.sql.SQLParameter;
+import org.hotrod.config.tags.ColumnTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.SUtils;
 
 public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
+
+  // Constants
 
   private static final Logger log = Logger.getLogger(AbstractSQLDAOTag.class);
 
@@ -19,14 +31,43 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
   public static final String COMPLEMENT_START_ATT = "complement-start";
   public static final String COMPLEMENT_END_ATT = "complement-end";
 
+  // Properties
+
   protected String complementStart = null;
   protected String complementEnd = null;
 
-  protected String body = null;
+  @XmlMixed
+  @XmlElementRefs({ @XmlElementRef(type = ColumnTag.class) })
+  private List<Object> content = new ArrayList<Object>();
+
+  // Simple parsing of the content
+  private List<ColumnTag> columns = new ArrayList<ColumnTag>();
+  private String text = null;
+
   private boolean alreadyValidated = false;
-  protected List<SQLSection> sections = new ArrayList<SQLSection>();
+  protected List<AbstractSQLSection> sections = new ArrayList<AbstractSQLSection>();
 
   protected String hashingName;
+
+  // Constructor
+
+  protected AbstractSQLDAOTag(final String tagName) {
+    super(tagName);
+  }
+
+  // JAXB Setters
+
+  @XmlAttribute(name = "complement-start")
+  public void setComplementStart(final String complementStart) {
+    this.complementStart = complementStart;
+  }
+
+  @XmlAttribute(name = "complement-end")
+  public void setComplementEnd(final String complementEnd) {
+    this.complementEnd = complementEnd;
+  }
+
+  // Validation
 
   public void validateCore(final String attName, final String name) throws InvalidConfigurationFileException {
 
@@ -60,35 +101,53 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
         }
       }
 
-      // body
+      // content
 
-      if (SUtils.isEmpty(this.body)) {
+      StringBuilder sb = new StringBuilder();
+      for (Object obj : this.content) {
+        try {
+          String s = (String) obj;
+          sb.append(s);
+        } catch (ClassCastException e1) {
+          try {
+            ColumnTag col = (ColumnTag) obj;
+            this.columns.add(col);
+          } catch (ClassCastException e2) {
+            throw new InvalidConfigurationFileException("The body of the tag <" + super.getTagName() + "> with "
+                + attName + " '" + name + "' has an invalid tag (" + obj.getClass().getName() + ").");
+          }
+        }
+      }
+      this.text = sb.toString();
+
+      if (SUtils.isEmpty(this.text)) {
         throw new InvalidConfigurationFileException(
             "The body of the tag <" + getTagName() + "> with " + attName + " '" + name + "' cannot be empty. "
                 + "Please add a SQL statement in the body of the <" + getTagName() + "> tag.");
       }
-      parseBody(attName, name);
+      parseBody(this.text, attName, name);
     }
 
     this.alreadyValidated = true;
 
   }
 
-  private void parseBody(final String attName, final String name) throws InvalidConfigurationFileException {
+  private void parseBody(final String body, final String attName, final String name)
+      throws InvalidConfigurationFileException {
 
     int pos = 0;
     int prefix;
     int suffix;
 
     log.debug("");
-    log.debug("body: " + this.body);
+    log.debug("body: " + body);
     log.debug(">> this.complementStart=" + this.complementStart);
     log.debug(">> this.complementEnd=" + this.complementEnd);
 
-    while (pos < this.body.length() && (prefix = this.body.indexOf(this.complementStart, pos)) != -1) {
+    while (pos < body.length() && (prefix = body.indexOf(this.complementStart, pos)) != -1) {
       log.debug("in 1: prefix=" + prefix);
       int paramStart = prefix + this.complementStart.length();
-      suffix = this.body.indexOf(this.complementEnd, paramStart);
+      suffix = body.indexOf(this.complementEnd, paramStart);
       if (suffix == -1) {
         throw new InvalidConfigurationFileException(
             "Invalid SQL statement as the body of the tag <" + getTagName() + "> with " + attName + " '" + name
@@ -96,13 +155,13 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
                 + this.complementStart + "' is not properly closed with '" + this.complementEnd + "'.");
       }
       log.debug("in 2");
-      this.sections.add(new SQLFoundationSection(this.body.substring(pos, prefix), this, attName, name));
-      this.sections.add(new SQLComplementSection(this.body.substring(paramStart, suffix), this, attName, name));
+      this.sections.add(new SQLFoundationSection(body.substring(pos, prefix), this, attName, name));
+      this.sections.add(new SQLComplementSection(body.substring(paramStart, suffix), this, attName, name));
       pos = suffix + this.complementEnd.length();
     }
     log.debug("out // pos=" + pos);
-    if (pos < this.body.length()) {
-      this.sections.add(new SQLFoundationSection(this.body.substring(pos), this, attName, name));
+    if (pos < body.length()) {
+      this.sections.add(new SQLFoundationSection(body.substring(pos), this, attName, name));
     }
     log.debug("finished. sections = " + this.sections.size());
 
@@ -144,7 +203,7 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
 
   public String getAugmentedSQL() {
     StringBuilder sb = new StringBuilder();
-    for (SQLSection s : this.sections) {
+    for (AbstractSQLSection s : this.sections) {
       sb.append(s.renderAugmentedSQL());
     }
     return sb.toString();
@@ -178,20 +237,6 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
     return true;
   }
 
-  // Setters (digester)
-
-  public void setComplementStart(final String complementStart) {
-    this.complementStart = complementStart;
-  }
-
-  public void setComplementEnd(final String complementEnd) {
-    this.complementEnd = complementEnd;
-  }
-
-  public void setBody(final String body) {
-    this.body = body;
-  }
-
   // Getters
 
   public String unescapeXml(final String txt) {
@@ -204,7 +249,7 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
 
   public List<SQLParameter> getParameterOccurrences() {
     List<SQLParameter> params = new ArrayList<SQLParameter>();
-    for (SQLSection s : this.sections) {
+    for (AbstractSQLSection s : this.sections) {
       params.addAll(s.getParameterOccurrences());
     }
     return params;
@@ -212,14 +257,10 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
 
   public List<SQLParameter> getParameterDefinitions() {
     List<SQLParameter> params = new ArrayList<SQLParameter>();
-    for (SQLSection s : this.sections) {
+    for (AbstractSQLSection s : this.sections) {
       params.addAll(s.getParameterDefinitions());
     }
     return params;
   }
-
-  // Abstract methods
-
-  protected abstract String getTagName();
 
 }

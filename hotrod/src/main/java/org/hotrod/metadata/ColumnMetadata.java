@@ -4,8 +4,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.ColumnTag;
-import org.hotrod.config.ConverterTag;
+import org.hotrod.config.tags.ColumnTag;
+import org.hotrod.config.tags.ConverterTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.UnresolvableDataTypeException;

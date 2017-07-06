@@ -17,12 +17,12 @@ import org.hotrod.ant.Constants;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractCompositeDAOTag;
-import org.hotrod.config.HotRodFragmentConfigTag;
-import org.hotrod.config.MyBatisTag;
-import org.hotrod.config.QueryTag;
-import org.hotrod.config.SQLParameter;
-import org.hotrod.config.SelectTag;
-import org.hotrod.config.SequenceTag;
+import org.hotrod.config.sql.SQLParameter;
+import org.hotrod.config.tags.HotRodFragmentConfigTag;
+import org.hotrod.config.tags.MyBatisTag;
+import org.hotrod.config.tags.QueryTag;
+import org.hotrod.config.tags.SelectTag;
+import org.hotrod.config.tags.SequenceTag;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.SequencesNotSupportedException;
@@ -56,11 +56,8 @@ public class ObjectDAO {
 
   private static final Logger log = Logger.getLogger(ObjectDAO.class);
 
-//  public enum DAOType {
-//    TABLE, VIEW, SELECT;
-//  }
-
   private AbstractCompositeDAOTag compositeTag;
+  @SuppressWarnings("unused")
   private SelectTag selectTag;
 
   private DataSetMetadata metadata;

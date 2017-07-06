@@ -8,8 +8,8 @@ import java.io.Writer;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.UncontrolledException;
-import org.hotrod.config.HotRodFragmentConfigTag;
-import org.hotrod.config.MyBatisTag;
+import org.hotrod.config.tags.HotRodFragmentConfigTag;
+import org.hotrod.config.tags.MyBatisTag;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.identifiers.DataSetIdentifier;

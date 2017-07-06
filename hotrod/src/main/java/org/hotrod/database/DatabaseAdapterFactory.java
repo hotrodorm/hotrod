@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
 import org.hotrod.ant.UncontrolledException;
-import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.config.tags.HotRodConfigTag;
 import org.hotrod.database.adapters.DB2Adapter;
 import org.hotrod.database.adapters.H2Adapter;
 import org.hotrod.database.adapters.HsqlAdapter;

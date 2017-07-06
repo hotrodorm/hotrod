@@ -11,9 +11,8 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.hotrod.config.StrictValidationEventHandler;
 import org.xml.sax.SAXException;
-
-import xsdtests.StrictValidationEventHandler;
 
 public class XMLLoader9 {
 

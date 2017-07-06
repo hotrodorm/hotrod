@@ -12,15 +12,15 @@ import org.hotrod.ant.Constants;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.ant.UncontrolledException;
-import org.hotrod.config.ColumnTag;
-import org.hotrod.config.CustomDAOTag;
-import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.config.QueryTag;
-import org.hotrod.config.SQLParameter;
-import org.hotrod.config.SelectTag;
-import org.hotrod.config.SequenceTag;
-import org.hotrod.config.TableTag;
-import org.hotrod.config.ViewTag;
+import org.hotrod.config.sql.SQLParameter;
+import org.hotrod.config.tags.ColumnTag;
+import org.hotrod.config.tags.CustomDAOTag;
+import org.hotrod.config.tags.HotRodConfigTag;
+import org.hotrod.config.tags.QueryTag;
+import org.hotrod.config.tags.SelectTag;
+import org.hotrod.config.tags.SequenceTag;
+import org.hotrod.config.tags.TableTag;
+import org.hotrod.config.tags.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.DatabaseAdapterFactory;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -86,6 +86,7 @@ public abstract class HotRodGenerator {
       String databaseVersion = null;
       String jdbcDriverName = null;
       String jdbcDriverVersion = null;
+      @SuppressWarnings("unused")
       String jdbcSpecification = null;
 
       try {
@@ -263,7 +264,7 @@ public abstract class HotRodGenerator {
           }
 
         } catch (SQLException e) {
-          throw new ControlledException("Failed to retrieve metadata for <" + SelectTag.TAG_NAME + "> query '"
+          throw new ControlledException("Failed to retrieve metadata for <" + new SelectTag().getTagName() + "> query '"
               + current.getJavaClassName() + "' while creating a temporary SQL view for it.\n" + "[ " + e.getMessage()
               + " ]\n" + "* Do all resulting columns have different and valid names?\n"
               + "* Is the trimmed create view SQL code below valid?\n" + "--- begin SQL ---\n" + sm.getCreateView()
@@ -318,8 +319,8 @@ public abstract class HotRodGenerator {
         }
 
       } catch (SQLException e) {
-        throw new UncontrolledException("Failed to retrieve metadata for <" + SelectTag.TAG_NAME + "> query with name '"
-            + currDs.getIdentifier().getSQLIdentifier() + "'.", e);
+        throw new UncontrolledException("Failed to retrieve metadata for <" + new SelectTag().getTagName()
+            + "> query with name '" + currDs.getIdentifier().getSQLIdentifier() + "'.", e);
       } catch (UnresolvableDataTypeException e) {
         throw new ControlledException(e.getMessage());
       } finally {
