@@ -5,7 +5,7 @@
 
   <!-- 1. No Attributes, No Elements, No Text -->
 
-  <nanent />
+  <nanent></nanent>
 
   <!-- 2. No Attributes, No Elements, TEXT -->
 
@@ -13,9 +13,10 @@
 
   <!-- 3. ATTRIBUTES, no Elements, no Text -->
 
-  <yanent myattribute="world" />
+  <yanent myattribute="world"></yanent>
 
   <!-- 4. No Attributes, ELEMENTS, no Text -->
+  <!-- ! Blank are allowed. -->
 
   <nayent>
     <myelement />
@@ -26,9 +27,8 @@
   <yaneyt myattribute="world">Hello</yaneyt>
 
   <!-- 6. ATTRIBUTES, ELEMENTS, no Text -->
+  <!-- ! Blank are allowed. -->
 
-<!-- 
- -->
   <yayent myattribute="world">
     <myelement />
   </yayent>

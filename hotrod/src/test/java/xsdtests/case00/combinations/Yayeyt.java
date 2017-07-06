@@ -10,9 +10,12 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import xsdtests.case00.Myelement;
+import xsdtests.case00.RendereableTag;
+import xsdtests.case00.RendererHelper;
+import xsdtests.case10.configuration.TagAttribute;
 
 @XmlRootElement
-public class Yayeyt {
+public class Yayeyt implements RendereableTag {
 
   private String myattribute;
 
@@ -33,6 +36,13 @@ public class Yayeyt {
 
   public List<Object> getContent() {
     return this.content;
+  }
+
+  // Rendering
+
+  @Override
+  public void render(final StringBuilder sb) {
+    RendererHelper.render("yayeyt", sb, this.content, new TagAttribute("myattribute", this.myattribute));
   }
 
 }
