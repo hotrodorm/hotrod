@@ -28,7 +28,7 @@ public class XsdTests {
     System.out.println("=== XsdTests ===");
 
     // --- 0. All cases combined
-    test0();
+    // test0();
 
     // --- 1. No Attributes, No Elements, No Text
     // test1();
@@ -57,8 +57,8 @@ public class XsdTests {
     // --- 9. Attributes, Multi Elements, Text
     // test9();
 
-    // --- 10. Recursive Tags
-    // test10();
+    // --- 10. Dynamic SQL
+    test10();
 
     System.out.println("=== XsdTests Complete ===");
 

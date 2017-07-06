@@ -18,7 +18,7 @@ import xsdtests.case00.combinations.Yayent;
 import xsdtests.case00.combinations.Yayeyt;
 
 @XmlRootElement
-public class Encloser {
+public class Encloser implements RendereableTag {
 
   @XmlMixed
   @XmlElementRefs({ //
@@ -32,5 +32,12 @@ public class Encloser {
       @XmlElementRef(type = Yayeyt.class), //
   })
   private List<Object> content = new ArrayList<Object>();
+
+  // Rendering
+
+  @Override
+  public void render(final StringBuilder sb) {
+    RendererHelper.render("encloser", sb, this.content);
+  }
 
 }

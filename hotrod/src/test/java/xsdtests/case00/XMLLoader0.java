@@ -36,6 +36,10 @@ public class XMLLoader0 {
 
     System.out.println("Bean: " + bean);
 
+    StringBuilder sb = new StringBuilder();
+    bean.render(sb);
+    System.out.println("Bean: " + sb.toString());
+
     System.out.println("\n[--- Parsed ---]");
   }
 

@@ -48,6 +48,7 @@
 
   <!-- 5. ATTRIBUTES, no Elements, TEXT -->
 
+<!-- 
   <xsd:complexType name="yaneyt-type">
     <xsd:simpleContent>
       <xsd:extension base="xsd:string">
@@ -55,7 +56,12 @@
       </xsd:extension>
     </xsd:simpleContent>
   </xsd:complexType>
+-->
 
+  <xsd:complexType name="yaneyt-type" mixed="true">
+    <xsd:attribute name="myattribute" type="xsd:string" />
+  </xsd:complexType>
+  
   <!-- 6. ATTRIBUTES, ELEMENTS, no Text -->
 
   <xsd:complexType name="yayent-type">

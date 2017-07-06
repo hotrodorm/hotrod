@@ -9,9 +9,11 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import xsdtests.case00.Myelement;
+import xsdtests.case00.RendereableTag;
+import xsdtests.case00.RendererHelper;
 
 @XmlRootElement
-public class Nayeyt {
+public class Nayeyt implements RendereableTag {
 
   @XmlMixed
   @XmlElementRefs({ @XmlElementRef(type = Myelement.class) })
@@ -21,6 +23,13 @@ public class Nayeyt {
 
   public List<Object> getContent() {
     return this.content;
+  }
+
+  // Rendering
+
+  @Override
+  public void render(final StringBuilder sb) {
+    RendererHelper.render("nayeyt", sb, this.content);
   }
 
 }

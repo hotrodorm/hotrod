@@ -1,6 +1,6 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-  <!-- 10. Recursive Tags -->
+  <!-- 10. Dynamic SQL -->
 
   <!-- select -->
 
@@ -79,18 +79,14 @@
 
   <!-- foreach -->
 
-  <xsd:complexType name="foreach-type">
-    <xsd:simpleContent>
-      <xsd:extension base="xsd:string">
-        <xsd:attribute name="item" type="xsd:string" />
-        <xsd:attribute name="index" type="xsd:string" />
-        <xsd:attribute name="collection" type="xsd:string"
-          use="required" />
-        <xsd:attribute name="open" type="xsd:string" />
-        <xsd:attribute name="separator" type="xsd:string" />
-        <xsd:attribute name="close" type="xsd:string" />
-      </xsd:extension>
-    </xsd:simpleContent>
+  <xsd:complexType name="foreach-type" mixed="true">
+    <xsd:attribute name="item" type="xsd:string" />
+    <xsd:attribute name="index" type="xsd:string" />
+    <xsd:attribute name="collection" type="xsd:string"
+      use="required" />
+    <xsd:attribute name="open" type="xsd:string" />
+    <xsd:attribute name="separator" type="xsd:string" />
+    <xsd:attribute name="close" type="xsd:string" />
   </xsd:complexType>
 
   <!-- bind -->

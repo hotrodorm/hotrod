@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE select>
 
-<!-- 10. Recursive Tags -->
+<!-- 10. Dynamic SQL -->
 
 <select name="searchedAccount" vo="AccountVO">
 
