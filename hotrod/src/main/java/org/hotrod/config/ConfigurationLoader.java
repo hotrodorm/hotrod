@@ -22,6 +22,7 @@ import org.hotrod.ant.UncontrolledException;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public class ConfigurationLoader {
 
@@ -102,8 +103,8 @@ public class ConfigurationLoader {
       return config;
 
     } catch (JAXBException e) {
-      throw new ControlledException("The configuration file '" + f.getPath() + "' is not valid. An error was found at "
-          + validationHandler.getLocation() + ":\n" + e.getMessage());
+      e.printStackTrace();
+      throw new ControlledException(renderJAXBErrorMessage(f, validationHandler, e));
 
     } catch (InvalidConfigurationFileException e) {
       throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
@@ -183,8 +184,7 @@ public class ConfigurationLoader {
       return fragmentConfig;
 
     } catch (JAXBException e) {
-      throw new ControlledException("The configuration file '" + f.getPath() + "' is not valid. An error was found at "
-          + validationHandler.getLocation() + ":\n" + e.getMessage());
+      throw new ControlledException(renderJAXBErrorMessage(f, validationHandler, e));
 
     } catch (InvalidConfigurationFileException e) {
       throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
@@ -199,6 +199,26 @@ public class ConfigurationLoader {
       }
     }
 
+  }
+
+  private static String renderJAXBErrorMessage(final File f, final StrictValidationEventHandler validationHandler,
+      final JAXBException e) {
+    if (e.getMessage() != null) {
+      return "The configuration file '" + f.getPath() + "' is not valid. An error was found at "
+          + validationHandler.getLocation() + ":\n" + e.getMessage();
+    } else if (e.getCause() != null) {
+      try {
+        SAXParseException pe = (SAXParseException) e.getCause();
+        return "The configuration file '" + f.getPath() + "' is invalid or non well-formed. An error was found at "
+            + validationHandler.getLocation() + ":\n" + pe.getMessage();
+      } catch (ClassCastException e2) {
+        return "The configuration file '" + f.getPath() + "' is incorrect. An error was found at "
+            + validationHandler.getLocation() + ":\n" + e.getCause().getMessage();
+      }
+    } else {
+      return "The configuration file '" + f.getPath() + "' is incorrect. An error was found at "
+          + validationHandler.getLocation() + ".";
+    }
   }
 
   // Loading Grammar
