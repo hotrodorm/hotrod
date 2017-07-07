@@ -11,11 +11,18 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 
 import org.apache.log4j.Logger;
+import org.hotrod.config.dynamicsql.BindTag;
+import org.hotrod.config.dynamicsql.ChooseTag;
+import org.hotrod.config.dynamicsql.DynamicSQLPart;
+import org.hotrod.config.dynamicsql.ForEachTag;
+import org.hotrod.config.dynamicsql.IfTag;
+import org.hotrod.config.dynamicsql.SetTag;
+import org.hotrod.config.dynamicsql.TrimTag;
+import org.hotrod.config.dynamicsql.VerbatimSQLPart;
+import org.hotrod.config.dynamicsql.WhereTag;
 import org.hotrod.config.sql.AbstractSQLSection;
 import org.hotrod.config.sql.SQLComplementSection;
 import org.hotrod.config.sql.SQLFoundationSection;
-import org.hotrod.config.sql.SQLParameter;
-import org.hotrod.config.tags.ColumnTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.SUtils;
 
@@ -36,16 +43,33 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
   protected String complementStart = null;
   protected String complementEnd = null;
 
+  // Properties - Primitive content parsing by JAXB
+
   @XmlMixed
-  @XmlElementRefs({ @XmlElementRef(type = ColumnTag.class) })
+  @XmlElementRefs({ //
+      @XmlElementRef(type = ColumnTag.class), //
+      @XmlElementRef(type = IfTag.class), //
+      @XmlElementRef(type = ChooseTag.class), //
+      @XmlElementRef(type = WhereTag.class), //
+      @XmlElementRef(type = ForEachTag.class), //
+      @XmlElementRef(type = BindTag.class), //
+      @XmlElementRef(type = SetTag.class), //
+      @XmlElementRef(type = TrimTag.class) //
+  })
   private List<Object> content = new ArrayList<Object>();
 
-  // Simple parsing of the content
-  private List<ColumnTag> columns = new ArrayList<ColumnTag>();
-  private String text = null;
+  // Properties - Complete content parsing
+
+  private List<ColumnTag> columns;
+  private List<DynamicSQLPart> parts;
+
+  // Properties - Backward compatible parsing (to be deprecated)
 
   private boolean alreadyValidated = false;
+  private String text;
   protected List<AbstractSQLSection> sections = new ArrayList<AbstractSQLSection>();
+
+  // Properties - Other
 
   protected String hashingName;
 
@@ -103,20 +127,31 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
 
       // content
 
-      StringBuilder sb = new StringBuilder();
+      this.columns = new ArrayList<ColumnTag>();
+      this.parts = new ArrayList<DynamicSQLPart>();
       for (Object obj : this.content) {
         try {
           String s = (String) obj;
-          sb.append(s);
+          this.parts.add(new VerbatimSQLPart(s));
         } catch (ClassCastException e1) {
           try {
             ColumnTag col = (ColumnTag) obj;
             this.columns.add(col);
           } catch (ClassCastException e2) {
-            throw new InvalidConfigurationFileException("The body of the tag <" + super.getTagName() + "> with "
-                + attName + " '" + name + "' has an invalid tag (" + obj.getClass().getName() + ").");
+            try {
+              DynamicSQLPart p = (DynamicSQLPart) obj;
+              this.parts.add(p);
+            } catch (ClassCastException e3) {
+              throw new InvalidConfigurationFileException("The body of the tag <" + super.getTagName() + "> with "
+                  + attName + " '" + name + "' has an invalid tag (of class '" + obj.getClass().getName() + "').");
+            }
           }
         }
+      }
+
+      StringBuilder sb = new StringBuilder();
+      for (DynamicSQLPart p : this.parts) {
+        sb.append(p.render());
       }
       this.text = sb.toString();
 

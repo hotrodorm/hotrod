@@ -4,9 +4,6 @@ import java.io.File;
 
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
-import org.hotrod.config.tags.DaosTag;
-import org.hotrod.config.tags.HotRodConfigTag;
-import org.hotrod.config.tags.SelectGenerationTag;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;

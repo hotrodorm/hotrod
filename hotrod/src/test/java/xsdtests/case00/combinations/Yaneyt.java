@@ -4,9 +4,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
 
+import org.hotrod.config.dynamicsql.TagAttribute;
+
 import xsdtests.case00.RendereableTag;
 import xsdtests.case00.RendererHelper;
-import xsdtests.case10.configuration.TagAttribute;
 
 @XmlRootElement
 public class Yaneyt implements RendereableTag {

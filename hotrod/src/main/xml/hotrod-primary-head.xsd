@@ -27,7 +27,7 @@
   <xsd:complexType name="mybatis-type">
     <xsd:sequence>
       <xsd:element name="daos" type="daos-type" />
-      <xsd:element name="mapper" type="mapper-type" />
+      <xsd:element name="mappers" type="mappers-type" />
       <xsd:element name="mybatis-configuration-template" type="mybatis-configuration-template-type" />
       <xsd:element name="session-factory" type="session-factory-type" />
       <xsd:element name="select-generation" type="select-generation-type" />

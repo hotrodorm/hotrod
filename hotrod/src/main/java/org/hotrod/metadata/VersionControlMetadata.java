@@ -1,6 +1,6 @@
 package org.hotrod.metadata;
 
-import org.hotrod.config.tags.VersionControlColumnTag;
+import org.hotrod.config.VersionControlColumnTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.utils.identifiers.ColumnIdentifier;

@@ -8,8 +8,6 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.tags.QueryTag;
-import org.hotrod.config.tags.SequenceTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 
 /**

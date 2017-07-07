@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+<!DOCTYPE hotrod>
 
 <hotrod>
 
@@ -38,6 +38,14 @@
 
   <facet name="phase2">
 
+<!--
+    <select java-class-name="AccountTx31">
+    <![CDATA[
+      select * from account a
+    ]]>
+    </select>
+
+ -->
     <select java-class-name="AccountTx3"><![CDATA[
     select *
       from account a
@@ -46,8 +54,6 @@
                             and #{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
       *}
   ]]></select>
-<!-- 
- -->
  
   </facet>
 
@@ -63,6 +69,8 @@
 
   <fragment file="hotrod-finances.xml" />
    
+<!--
+-->
   <fragment file="hotrod-core-and-types.xml" />
 
 </hotrod>

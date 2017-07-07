@@ -1,6 +1,6 @@
 package org.hotrod.generator;
 
-import org.hotrod.config.sql.SQLParameter;
+import org.hotrod.config.SQLParameter;
 
 public interface ParameterRenderer {
 

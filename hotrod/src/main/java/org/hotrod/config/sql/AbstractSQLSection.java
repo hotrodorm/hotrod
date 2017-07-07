@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.config.AbstractSQLDAOTag;
-import org.hotrod.config.tags.SelectTag;
+import org.hotrod.config.SQLParameter;
+import org.hotrod.config.SelectTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 
@@ -83,14 +84,16 @@ public abstract class AbstractSQLSection {
     return inTag;
   }
 
-  String getErrorMessage(final String txt, final AbstractSQLDAOTag tag, final String attName, final String name) {
+  public String getErrorMessage(final String txt, final AbstractSQLDAOTag tag, final String attName,
+      final String name) {
     return getErrorMessage(txt, tag, attName, name, null);
   }
 
-  String getErrorMessage(final String txt, final AbstractSQLDAOTag tag, final String attName, final String name,
+  public String getErrorMessage(final String txt, final AbstractSQLDAOTag tag, final String attName, final String name,
       final String extraMessage) {
-    return "Invalid select SQL query as the body of the tag <" + new SelectTag().getTagName()+ "> with " + attName + " '" + name
-        + "': invalid parameter section '" + txt + "'. Must containg one or more parameters with the form: " + PREFIX
+    return "Invalid select SQL query as the body of the tag <" + new SelectTag().getTagName() + "> with " + attName
+        + " '" + name + "': invalid parameter section '" + txt
+        + "'. Must containg one or more parameters with the form: " + PREFIX
         + "name,javaType=<JAVA-CLASS>,jdbcType=<JDBC-TYPE>" + SUFFIX
         + (extraMessage == null ? "" : " ; " + extraMessage);
   }

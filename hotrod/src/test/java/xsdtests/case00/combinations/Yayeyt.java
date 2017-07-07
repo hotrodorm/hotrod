@@ -9,10 +9,11 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hotrod.config.dynamicsql.TagAttribute;
+
 import xsdtests.case00.Myelement;
 import xsdtests.case00.RendereableTag;
 import xsdtests.case00.RendererHelper;
-import xsdtests.case10.configuration.TagAttribute;
 
 @XmlRootElement
 public class Yayeyt implements RendereableTag {

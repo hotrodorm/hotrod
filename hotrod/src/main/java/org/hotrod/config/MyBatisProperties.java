@@ -1,6 +1,5 @@
 package org.hotrod.config;
 
-import org.hotrod.config.tags.PropertyTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 
 public class MyBatisProperties {
