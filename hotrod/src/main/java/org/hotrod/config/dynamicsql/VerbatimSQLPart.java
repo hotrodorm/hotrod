@@ -11,7 +11,7 @@ public class VerbatimSQLPart extends DynamicSQLPart {
 
   @Override
   public String render() {
-    return this.text;
+    return this.text.replace("&", "&amp;").replace("<", "&lt;").replace("\"", "&quot;");
   }
 
 }

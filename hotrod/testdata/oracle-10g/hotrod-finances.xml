@@ -46,6 +46,14 @@
         order by created_on
         *}
     </select>
+
+    <select java-class-name="SearchedAccount2"><![CDATA[
+      select * from account
+        {*
+        where current_balance < #{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
+        *}
+      ]]>
+    </select>
   
   </facet>
 
