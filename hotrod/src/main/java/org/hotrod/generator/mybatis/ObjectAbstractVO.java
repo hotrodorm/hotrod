@@ -189,7 +189,7 @@ public class ObjectAbstractVO {
       ListWriter lw = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
       for (ColumnMetadata cm : this.metadata.getColumns()) {
         String prop = cm.getIdentifier().getJavaMemberIdentifier();
-        lw.add("\"" + prop + "=\" + this." + prop);
+        lw.add("\"- " + prop + "=\" + this." + prop);
       }
       println(lw.toString());
 
