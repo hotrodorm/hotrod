@@ -47,12 +47,11 @@
         *}
     </select>
 
-    <select java-class-name="SearchedAccount2"><![CDATA[
+    <select java-class-name="SearchedAccount2">
       select * from account
         {*
-        where current_balance < #{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
+        where current_balance &lt; #{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
         *}
-      ]]>
     </select>
   
   </facet>
