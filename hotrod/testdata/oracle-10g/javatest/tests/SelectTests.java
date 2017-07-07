@@ -5,8 +5,10 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import hotrod.test.generation.AccountTx3VO;
+import hotrod.test.generation.accounting.finances.SearchedAccount2VO;
 import hotrod.test.generation.accounting.finances.SearchedAccountVO;
 import hotrod.test.generation.accounting.finances.primitives.SearchedAccount;
+import hotrod.test.generation.accounting.finances.primitives.SearchedAccount2;
 import hotrod.test.generation.primitives.AccountTx3;
 import hotrod.test.generation.primitives.TxBranchDAO;
 
@@ -20,7 +22,8 @@ public class SelectTests {
     // selectTag();
     // tryInsertBadData();
     // selectViewSequenceAndQuery();
-    searchAccount();
+    // searchAccount();
+    searchAccount2();
     // selectAccountTx3();
   }
 
@@ -125,21 +128,25 @@ public class SelectTests {
   private static void selectAccountTx3() throws SQLException {
     System.out.println("AccountTx3:");
     System.out.println("===========");
-
     for (AccountTx3VO a : AccountTx3.select(200, 500)) {
       System.out.println("a=" + a);
     }
-
   }
 
   private static void searchAccount() throws SQLException {
     System.out.println("SearchedAccount:");
     System.out.println("================");
-
     for (SearchedAccountVO a : SearchedAccount.select("SAV", 150)) {
       System.out.println("a=" + a);
     }
+  }
 
+  private static void searchAccount2() throws SQLException {
+    System.out.println("SearchedAccount2:");
+    System.out.println("=================");
+    for (SearchedAccount2VO a : SearchedAccount2.select(150)) {
+      System.out.println("a=" + a);
+    }
   }
 
 }
