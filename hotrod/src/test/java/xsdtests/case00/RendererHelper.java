@@ -2,7 +2,7 @@ package xsdtests.case00;
 
 import java.util.List;
 
-import xsdtests.case10.configuration.TagAttribute;
+import org.hotrod.config.dynamicsql.TagAttribute;
 
 // This renderer is incomplete.
 // * It does not escape attribute values.

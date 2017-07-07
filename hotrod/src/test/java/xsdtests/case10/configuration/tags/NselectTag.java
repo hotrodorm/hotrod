@@ -10,14 +10,13 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.config.AbstractConfigurationTag;
-
-import xsdtests.case10.dynamicsql.tags.BindTag;
-import xsdtests.case10.dynamicsql.tags.ChooseTag;
-import xsdtests.case10.dynamicsql.tags.DynamicSQLTag;
-import xsdtests.case10.dynamicsql.tags.ForEachTag;
-import xsdtests.case10.dynamicsql.tags.IfTag;
-import xsdtests.case10.dynamicsql.tags.TrimTag;
-import xsdtests.case10.dynamicsql.tags.WhereTag;
+import org.hotrod.config.dynamicsql.BindTag;
+import org.hotrod.config.dynamicsql.ChooseTag;
+import org.hotrod.config.dynamicsql.DynamicSQLPart;
+import org.hotrod.config.dynamicsql.ForEachTag;
+import org.hotrod.config.dynamicsql.IfTag;
+import org.hotrod.config.dynamicsql.TrimTag;
+import org.hotrod.config.dynamicsql.WhereTag;
 
 @XmlRootElement(name = "select")
 public class NselectTag extends AbstractConfigurationTag {
@@ -77,7 +76,7 @@ public class NselectTag extends AbstractConfigurationTag {
         sb.append(s);
       } catch (ClassCastException e1) {
         try {
-          DynamicSQLTag t = (DynamicSQLTag) obj;
+          DynamicSQLPart t = (DynamicSQLPart) obj;
           sb.append(t.render());
         } catch (ClassCastException e2) {
           sb.append("[could not render tag of class: " + obj.getClass().getName() + " ]");

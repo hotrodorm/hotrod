@@ -8,7 +8,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.hotrod.buildinfo.BuildConstants;
 import org.hotrod.config.ConfigurationLoader;
-import org.hotrod.config.tags.HotRodConfigTag;
+import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.utils.SUtils;

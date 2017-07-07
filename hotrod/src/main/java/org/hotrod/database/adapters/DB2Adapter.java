@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.tags.HotRodConfigTag;
+import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;

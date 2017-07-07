@@ -19,9 +19,6 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
-import org.hotrod.config.tags.DaosTag;
-import org.hotrod.config.tags.HotRodConfigTag;
-import org.hotrod.config.tags.HotRodFragmentConfigTag;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.xml.sax.SAXException;
@@ -48,6 +45,7 @@ public class ConfigurationLoader {
     // Prepare the parser
 
     Unmarshaller unmarshaller = null;
+    StrictValidationEventHandler validationHandler = new StrictValidationEventHandler();
 
     try {
       Schema schema = getPrimarySchema();
@@ -55,7 +53,7 @@ public class ConfigurationLoader {
       JAXBContext context = JAXBContext.newInstance(HotRodConfigTag.class);
 
       unmarshaller = context.createUnmarshaller();
-      unmarshaller.setEventHandler(new StrictValidationEventHandler());
+      unmarshaller.setEventHandler(validationHandler);
       unmarshaller.setSchema(schema);
 
     } catch (SAXException e) {
@@ -104,7 +102,8 @@ public class ConfigurationLoader {
       return config;
 
     } catch (JAXBException e) {
-      throw new ControlledException("The configuration file '" + f.getPath() + "' is not valid:\n" + e.getMessage());
+      throw new ControlledException("The configuration file '" + f.getPath() + "' is not valid. An error was found at "
+          + validationHandler.getLocation() + ":\n" + e.getMessage());
 
     } catch (InvalidConfigurationFileException e) {
       throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
@@ -131,14 +130,15 @@ public class ConfigurationLoader {
     // Prepare the parser
 
     Unmarshaller unmarshaller = null;
+    StrictValidationEventHandler validationHandler = new StrictValidationEventHandler();
 
     try {
       Schema schema = getFragmentSchema();
 
-      JAXBContext context = JAXBContext.newInstance(HotRodConfigTag.class);
+      JAXBContext context = JAXBContext.newInstance(HotRodFragmentConfigTag.class);
 
       unmarshaller = context.createUnmarshaller();
-      unmarshaller.setEventHandler(new StrictValidationEventHandler());
+      unmarshaller.setEventHandler(validationHandler);
       unmarshaller.setSchema(schema);
 
     } catch (SAXException e) {
@@ -165,9 +165,9 @@ public class ConfigurationLoader {
       }
       String absPath = f.getAbsolutePath();
 
-      log.debug("[ Will parse ]");
+      log.debug("[ *** Will parse file=" + f.getPath() + " ]");
       HotRodFragmentConfigTag fragmentConfig = (HotRodFragmentConfigTag) unmarshaller.unmarshal(f);
-      log.debug("[ Parsed ]");
+      log.debug("[ *** Parsed ]");
 
       // Validation (specific)
 
@@ -183,7 +183,8 @@ public class ConfigurationLoader {
       return fragmentConfig;
 
     } catch (JAXBException e) {
-      throw new ControlledException("The configuration file '" + f.getPath() + "' is not valid:\n" + e.getMessage());
+      throw new ControlledException("The configuration file '" + f.getPath() + "' is not valid. An error was found at "
+          + validationHandler.getLocation() + ":\n" + e.getMessage());
 
     } catch (InvalidConfigurationFileException e) {
       throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());

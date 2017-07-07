@@ -1,6 +1,6 @@
 package org.hotrod.metadata;
 
-import org.hotrod.config.sql.SQLParameter;
+import org.hotrod.config.SQLParameter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.JavaIdentifier;

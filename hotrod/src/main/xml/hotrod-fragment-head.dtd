@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!ELEMENT hotrod-fragment (table | dao | view | select | fragment | facet | converter)*>
-<!ATTLIST hotrod-fragment package CDATA #IMPLIED>
-

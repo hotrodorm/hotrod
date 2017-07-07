@@ -2,11 +2,11 @@ package org.hotrod.generator.mybatis;
 
 import java.io.File;
 
-import org.hotrod.config.tags.DaosTag;
-import org.hotrod.config.tags.HotRodConfigTag;
-import org.hotrod.config.tags.MappersTag;
-import org.hotrod.config.tags.MyBatisTag;
-import org.hotrod.config.tags.TableTag;
+import org.hotrod.config.DaosTag;
+import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.config.MappersTag;
+import org.hotrod.config.MyBatisTag;
+import org.hotrod.config.TableTag;
 import org.hotrod.utils.ClassPackage;
 
 public class DataSetLayout {

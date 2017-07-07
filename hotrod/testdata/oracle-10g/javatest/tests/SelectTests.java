@@ -2,27 +2,28 @@ package tests;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Date;
 
 import hotrod.test.generation.AccountTx3VO;
+import hotrod.test.generation.accounting.finances.SearchedAccountVO;
+import hotrod.test.generation.accounting.finances.primitives.SearchedAccount;
 import hotrod.test.generation.primitives.AccountTx3;
+import hotrod.test.generation.primitives.TxBranchDAO;
 
 public class SelectTests {
 
   public static void main(final String[] args) throws IOException, SQLException {
-    // countProperties();
-    selectAccountTx3();
+    // selectByExample();
+    // selectByUI();
+    // selectSortedByName();
+    // selectByExampleWithNull();
+    // selectTag();
+    // tryInsertBadData();
+    // selectViewSequenceAndQuery();
+    searchAccount();
+    // selectAccountTx3();
   }
 
-  // private static void countProperties() throws SQLException {
-  // // selectByExample();
-  // // selectByUI();
-  // // selectSortedByName();
-  // // selectByExampleWithNull();
-  // // selectTag();
-  // // tryInsertBadData();
-  // selectViewSequenceAndQuery();
-  // }
-  //
   // private static void tryInsertBadData() throws SQLException {
   // AccountDAO a = new AccountDAO();
   // a.insert();
@@ -59,7 +60,7 @@ public class SelectTests {
   // }
   //
   // }
-  //
+
   // private static void selectSortedByName() throws SQLException {
   // AccountDAO example = new AccountDAO();
   //
@@ -95,7 +96,7 @@ public class SelectTests {
   // }
   //
   // }
-  //
+
   // private static void selectTag() throws SQLException {
   // System.out.println("AccountTx3:");
   // System.out.println("===========");
@@ -103,31 +104,39 @@ public class SelectTests {
   // System.out.println("--> AccountTx3 = " + a);
   // }
   // }
-  //
-  // private static void selectViewSequenceAndQuery() throws SQLException {
-  // System.out.println("TxBranch:");
-  // System.out.println("=========");
-  //
-  // long codeSeq = TxBranchDAO.getCodeSequence();
-  // System.out.println("codeSeq=" + codeSeq);
-  //
-  // Date from = new
-  // java.text.SimpleDateFormat("yyyyMMdd-HHmmss").parse("20160101-000000",
-  // new java.text.ParsePosition(0));
-  // Date to = new
-  // java.text.SimpleDateFormat("yyyyMMdd-HHmmss").parse("20170101-000000",
-  // new java.text.ParsePosition(0));
-  //
-  // int rows = TxBranchDAO.applyAccountPromotion74(10, from, to, -1);
-  // System.out.println("promotios rows=" + rows);
-  //
-  // }
+
+  private static void selectViewSequenceAndQuery() throws SQLException {
+    System.out.println("TxBranch:");
+    System.out.println("=========");
+
+    long codeSeq = TxBranchDAO.getCodeSequence();
+    System.out.println("codeSeq=" + codeSeq);
+
+    Date from = new java.text.SimpleDateFormat("yyyyMMdd-HHmmss").parse("20160101-000000",
+        new java.text.ParsePosition(0));
+    Date to = new java.text.SimpleDateFormat("yyyyMMdd-HHmmss").parse("20170101-000000",
+        new java.text.ParsePosition(0));
+
+    int rows = TxBranchDAO.applyAccountPromotion74(10, from, to, -1);
+    System.out.println("promotions rows=" + rows);
+
+  }
 
   private static void selectAccountTx3() throws SQLException {
     System.out.println("AccountTx3:");
     System.out.println("===========");
 
     for (AccountTx3VO a : AccountTx3.select(200, 500)) {
+      System.out.println("a=" + a);
+    }
+
+  }
+
+  private static void searchAccount() throws SQLException {
+    System.out.println("SearchedAccount:");
+    System.out.println("================");
+
+    for (SearchedAccountVO a : SearchedAccount.select("SAV", 150)) {
       System.out.println("a=" + a);
     }
 

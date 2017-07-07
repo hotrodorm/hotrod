@@ -1,6 +1,6 @@
 package org.hotrod.utils.identifiers;
 
-import org.hotrod.config.tags.ColumnTag;
+import org.hotrod.config.ColumnTag;
 import org.hotrod.database.PropertyType;
 
 public class ColumnIdentifier extends DbIdentifier {
