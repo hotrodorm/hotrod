@@ -86,8 +86,9 @@ public class SpringJDBCGenerator extends HotRodGenerator {
       }
       layout = new DataSetLayout(this.config, tag);
 
-      dao = new DAO(metadata, layout);
-      daoPrimitives = new DAOPrimitives(metadata, layout, this, type);
+      dao = new DAO(tag.getFragmentConfig(), metadata, layout);
+
+      daoPrimitives = new DAOPrimitives(tag.getFragmentConfig(), metadata, layout, this, type);
       springBean = new SpringBeanTable(metadata, daoPrimitives);
 
       // TODO Architecture: simplify mutual reference implementation.
@@ -107,8 +108,8 @@ public class SpringJDBCGenerator extends HotRodGenerator {
             "Could not find select tag for with java-class-name '" + sm.getSelectTag().getJavaClassName() + "'.");
       }
       layout = new DataSetLayout(this.config);
-      dao = new DAO(metadata, layout);
-      daoPrimitives = new DAOPrimitives(metadata, layout, this, type);
+      dao = new DAO(stag.getFragmentConfig(), metadata, layout);
+      daoPrimitives = new DAOPrimitives(stag.getFragmentConfig(), metadata, layout, this, type);
       springBean = new SpringBeanTable(metadata, daoPrimitives);
 
       // TODO Architecture: simplify mutual reference implementation.

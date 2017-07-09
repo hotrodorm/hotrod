@@ -2,6 +2,7 @@ package org.hotrod.generator.springjdbc;
 
 import java.io.File;
 
+import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.SpringJDBCTag;
 import org.hotrod.config.TableTag;
@@ -10,12 +11,13 @@ import org.hotrod.utils.ClassPackage;
 public class DataSetLayout {
 
   private HotRodConfigTag config;
-  private File daoPackageDir;
-  private ClassPackage daoPackage;
-  private ClassPackage daoPrimitivePackage;
-  private File daoPrimitivePackageDir;
+  // private File daoPackageDir;
+  // private ClassPackage daoPackage;
+  // private ClassPackage daoPrimitivePackage;
+  // private File daoPrimitivePackageDir;
   private String columnSeam;
   private String sessionFactoryGetter;
+  private DaosTag daos;
 
   public DataSetLayout(final HotRodConfigTag config, final TableTag tag) {
     initialize(config);
@@ -31,26 +33,29 @@ public class DataSetLayout {
     this.config = config;
     SpringJDBCTag springTag = (SpringJDBCTag) this.config.getGenerators().getSelectedGeneratorTag();
 
-    this.daoPackageDir = springTag.getDaos().getDaosPackageDir();
-    this.daoPackage = springTag.getDaos().getDaoPackage();
-    this.daoPrimitivePackage = springTag.getDaos().getPrimitivesPackage();
-    this.daoPrimitivePackageDir = springTag.getDaos().getPrimitivesPackageDir();
+    this.daos = springTag.getDaos();
+
+    // this.daoPackageDir = springTag.getDaos().getDaosPackageDir();
+    // this.daoPackage = springTag.getDaos().getDaoPackage();
+    // this.daoPrimitivePackage = springTag.getDaos().getPrimitivesPackage();
+    // this.daoPrimitivePackageDir =
+    // springTag.getDaos().getPrimitivesPackageDir();
   }
 
-  public File getDAOPackageDir() {
-    return daoPackageDir;
+  public ClassPackage getDAOPackage(final ClassPackage fragmentPackage) {
+    return this.daos.getDaoPackage(fragmentPackage);
   }
 
-  public ClassPackage getDAOPackage() {
-    return daoPackage;
+  public File getDAOPackageDir(final ClassPackage fragmentPackage) {
+    return this.daos.getDaosPackageDir(fragmentPackage);
   }
 
-  public ClassPackage getDAOPrimitivePackage() {
-    return this.daoPrimitivePackage;
+  public ClassPackage getDAOPrimitivePackage(final ClassPackage fragmentPackage) {
+    return this.daos.getPrimitivesPackage(fragmentPackage);
   }
 
-  public File getDaoPrimitivePackageDir() {
-    return daoPrimitivePackageDir;
+  public File getDaoPrimitivePackageDir(final ClassPackage fragmentPackage) {
+    return this.daos.getPrimitivesPackageDir(fragmentPackage);
   }
 
   public String getColumnSeam() {

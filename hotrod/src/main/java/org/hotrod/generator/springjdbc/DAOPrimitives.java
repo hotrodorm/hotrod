@@ -12,6 +12,7 @@ import java.util.Set;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.ConverterTag;
+import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
@@ -22,6 +23,7 @@ import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.runtime.util.ListWriter;
+import org.hotrod.utils.ClassPackage;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
 
@@ -33,6 +35,7 @@ public class DAOPrimitives {
   private DAOType type;
 
   private DAO dao = null;
+  private ClassPackage fragmentPackage;
 
   private Writer w;
 
@@ -40,8 +43,8 @@ public class DAOPrimitives {
 
   // FIXME manage versioned rows
   // FIXME implement unique index methods
-  public DAOPrimitives(final DataSetMetadata dataSet, final DataSetLayout dsg, final SpringJDBCGenerator generator,
-      final DAOType type) {
+  public DAOPrimitives(final HotRodFragmentConfigTag hrtag, final DataSetMetadata dataSet, final DataSetLayout dsg,
+      final SpringJDBCGenerator generator, final DAOType type) {
     this.ds = dataSet;
     this.dsg = dsg;
     this.generator = generator;
@@ -49,6 +52,8 @@ public class DAOPrimitives {
       throw new RuntimeException("DAOType cannot be null.");
     }
     this.type = type;
+
+    this.fragmentPackage = hrtag != null && hrtag.getFragmentPackage() != null ? hrtag.getFragmentPackage() : null;
   }
 
   public boolean isTable() {
@@ -70,8 +75,8 @@ public class DAOPrimitives {
   public void generate() throws UncontrolledException, ControlledException {
 
     String className = this.getClassName() + ".java";
-    this.dsg.getDAOPrimitivePackage();
-    File prim = new File(this.dsg.getDaoPrimitivePackageDir(), className);
+    this.dsg.getDAOPrimitivePackage(fragmentPackage);
+    File prim = new File(this.dsg.getDaoPrimitivePackageDir(fragmentPackage), className);
     this.w = null;
 
     for (ColumnMetadata cm : this.ds.getColumns()) {
@@ -1189,7 +1194,7 @@ public class DAOPrimitives {
 
     // Package
 
-    println("package " + this.dsg.getDAOPrimitivePackage().getPackage() + ";");
+    println("package " + this.dsg.getDAOPrimitivePackage(this.fragmentPackage).getPackage() + ";");
     println();
 
     // Imports
@@ -1359,7 +1364,7 @@ public class DAOPrimitives {
   // Identifiers
 
   public String getFullClassName() {
-    return this.dsg.getDAOPrimitivePackage().getFullClassName(getClassName());
+    return this.dsg.getDAOPrimitivePackage(fragmentPackage).getFullClassName(getClassName());
   }
 
   public String getOrderByFullClassName() {

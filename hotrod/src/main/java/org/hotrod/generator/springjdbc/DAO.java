@@ -7,20 +7,27 @@ import java.io.IOException;
 import java.io.Writer;
 
 import org.hotrod.ant.UncontrolledException;
+import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.metadata.DataSetMetadata;
+import org.hotrod.utils.ClassPackage;
 
 public class DAO {
 
   private DataSetMetadata dsm;
   private DataSetLayout dsg;
+  private ClassPackage fragmentPackage;
 
   private DAOPrimitives daoPrimitives;
 
   private Writer w = null;
 
-  public DAO(final DataSetMetadata dsm, final DataSetLayout dsg) {
+  public DAO(final HotRodFragmentConfigTag hrtag, final DataSetMetadata dsm, final DataSetLayout dsg) {
     this.dsm = dsm;
     this.dsg = dsg;
+    
+    this.fragmentPackage = hrtag != null && hrtag.getFragmentPackage() != null
+        ? hrtag.getFragmentPackage() : null;
   }
 
   public void setDaoPrimitives(final DAOPrimitives daoPrimitives) {
@@ -29,13 +36,13 @@ public class DAO {
 
   public void generate() throws UncontrolledException {
     String sourceClassName = this.getClassName() + ".java";
-    File dao = new File(this.dsg.getDAOPackageDir(), sourceClassName);
+    File dao = new File(this.dsg.getDAOPackageDir(fragmentPackage), sourceClassName);
     if (!dao.exists()) {
 
       try {
         w = new BufferedWriter(new FileWriter(dao));
 
-        println("package " + this.dsg.getDAOPackage().getPackage() + ";");
+        println("package " + this.dsg.getDAOPackage(fragmentPackage).getPackage() + ";");
         println();
         println("import " + this.daoPrimitives.getFullClassName() + ";");
         println();
@@ -90,7 +97,7 @@ public class DAO {
   }
 
   public String getFullClassName() {
-    return this.dsg.getDAOPackage().getFullClassName(this.getClassName());
+    return this.dsg.getDAOPackage(fragmentPackage).getFullClassName(this.getClassName());
   }
 
   public String getJavaClassIdentifier() {
