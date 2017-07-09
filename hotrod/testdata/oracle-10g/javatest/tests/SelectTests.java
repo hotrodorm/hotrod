@@ -2,19 +2,35 @@ package tests;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import hotrod.test.generation.AccountByIdsVO;
 import hotrod.test.generation.AccountTx3VO;
+import hotrod.test.generation.AccountVO;
 import hotrod.test.generation.accounting.finances.SearchedAccount2VO;
 import hotrod.test.generation.accounting.finances.SearchedAccountVO;
 import hotrod.test.generation.accounting.finances.primitives.SearchedAccount;
 import hotrod.test.generation.accounting.finances.primitives.SearchedAccount2;
+import hotrod.test.generation.primitives.AccountByIds;
+import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountTx3;
 import hotrod.test.generation.primitives.TxBranchDAO;
 
 public class SelectTests {
 
+  private static transient final Logger log = Logger.getLogger(SelectTests.class);
+
   public static void main(final String[] args) throws IOException, SQLException {
+
+    Logger.getLogger("hotrod.test.generation.accounting.finances.primitives.accountByType").setLevel(Level.DEBUG);
+
+    log.info("Starting tests");
+
     // selectByExample();
     // selectByUI();
     // selectSortedByName();
@@ -22,8 +38,10 @@ public class SelectTests {
     // selectTag();
     // tryInsertBadData();
     // selectViewSequenceAndQuery();
+//    searchAccounts();
+    searchAccountsByIds();
     // searchAccount();
-    searchAccount2();
+    // searchAccount2();
     // selectAccountTx3();
   }
 
@@ -123,6 +141,28 @@ public class SelectTests {
     int rows = TxBranchDAO.applyAccountPromotion74(10, from, to, -1);
     System.out.println("promotions rows=" + rows);
 
+  }
+
+  private static void searchAccounts() throws SQLException {
+    System.out.println("searchAccounts:");
+    System.out.println("===============");
+    AccountVO example = new AccountVO();
+    example.setId(10);
+    for (AccountVO a : AccountDAO.selectByExample(example)) {
+      System.out.println("a=" + a);
+    }
+  }
+
+  private static void searchAccountsByIds() throws SQLException {
+    System.out.println("searchAccountsByIds:");
+    System.out.println("====================");
+//    List<Integer> ids = new ArrayList<Integer>();
+//    ids.add(10);
+//    ids.add(20);
+//    ids.add(22);
+    for (AccountByIdsVO a : AccountByIds.select()) {
+      System.out.println("a=" + a);
+    }
   }
 
   private static void selectAccountTx3() throws SQLException {

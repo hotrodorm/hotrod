@@ -4,8 +4,8 @@ import org.hotrod.config.sql.AbstractSQLSection;
 import org.hotrod.config.sql.SQLChunk;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.JdbcTypes;
-import org.hotrod.utils.SUtils;
 
 public class SQLParameter implements SQLChunk {
 

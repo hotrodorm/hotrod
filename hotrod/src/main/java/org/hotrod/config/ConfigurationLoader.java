@@ -103,7 +103,6 @@ public class ConfigurationLoader {
       return config;
 
     } catch (JAXBException e) {
-      e.printStackTrace();
       throw new ControlledException(renderJAXBErrorMessage(f, validationHandler, e));
 
     } catch (InvalidConfigurationFileException e) {
@@ -205,15 +204,15 @@ public class ConfigurationLoader {
       final JAXBException e) {
     if (e.getMessage() != null) {
       return "The configuration file '" + f.getPath() + "' is not valid. An error was found at "
-          + validationHandler.getLocation() + ":\n" + e.getMessage();
+          + validationHandler.getLocation() + ":\n - " + e.getMessage();
     } else if (e.getCause() != null) {
       try {
         SAXParseException pe = (SAXParseException) e.getCause();
         return "The configuration file '" + f.getPath() + "' is invalid or non well-formed. An error was found at "
-            + validationHandler.getLocation() + ":\n" + pe.getMessage();
+            + validationHandler.getLocation() + ":\n - " + pe.getMessage();
       } catch (ClassCastException e2) {
         return "The configuration file '" + f.getPath() + "' is incorrect. An error was found at "
-            + validationHandler.getLocation() + ":\n" + e.getCause().getMessage();
+            + validationHandler.getLocation() + ":\n - " + e.getCause().getMessage();
       }
     } else {
       return "The configuration file '" + f.getPath() + "' is incorrect. An error was found at "

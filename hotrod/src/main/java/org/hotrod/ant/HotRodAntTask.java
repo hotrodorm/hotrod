@@ -11,7 +11,7 @@ import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.generator.HotRodGenerator;
-import org.hotrod.utils.SUtils;
+import org.hotrod.runtime.util.SUtils;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public class HotRodAntTask extends Task {

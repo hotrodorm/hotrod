@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.SUtils;
+import org.hotrod.runtime.util.SUtils;
 
 @XmlRootElement(name = "config")
 public class ConfigTag extends AbstractConfigurationTag {

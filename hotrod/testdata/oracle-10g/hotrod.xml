@@ -38,14 +38,28 @@
 
   <facet name="phase2">
 
+    <select java-class-name="AccountByIds">
+      select * from account
+        <complement>
+        where id in (10, 21)
+        </complement>
+    </select>
+
+        <!--  
+        <foreach item="item" index="index" collection="#{ids,javaType=java.util.List&lt;java.lang.Integer>,jdbcType=VARCHAR}"
+          open="(" separator="," close=")">
+          #{item}
+        </foreach>
+        -->
+  
 <!--
+ -->
     <select java-class-name="AccountTx31">
     <![CDATA[
       select * from account a
     ]]>
     </select>
 
- -->
     <select java-class-name="AccountTx3"><![CDATA[
     select *
       from account a
@@ -67,10 +81,10 @@
 
   </facet>
 
-  <fragment file="hotrod-finances.xml" />
-   
 <!--
 -->
+  <fragment file="hotrod-finances.xml" />
+   
   <fragment file="hotrod-core-and-types.xml" />
 
 </hotrod>

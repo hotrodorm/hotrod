@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.SUtils;
+import org.hotrod.runtime.util.SUtils;
 
 @XmlRootElement(name = "fragment")
 public class FragmentTag extends AbstractConfigurationTag {

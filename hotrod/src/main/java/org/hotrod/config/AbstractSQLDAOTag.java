@@ -24,7 +24,7 @@ import org.hotrod.config.sql.AbstractSQLSection;
 import org.hotrod.config.sql.SQLComplementSection;
 import org.hotrod.config.sql.SQLFoundationSection;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.SUtils;
+import org.hotrod.runtime.util.SUtils;
 
 public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
 
@@ -169,6 +169,8 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
 
   private void parseBody(final String body, final String attName, final String name)
       throws InvalidConfigurationFileException {
+
+//    log.info("body=" + body);
 
     int pos = 0;
     int prefix;

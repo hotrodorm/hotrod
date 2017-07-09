@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.ListWriter;
-import org.hotrod.utils.SUtils;
+import org.hotrod.runtime.util.SUtils;
 
 @XmlRootElement(name = "converter")
 public class ConverterTag extends AbstractConfigurationTag {

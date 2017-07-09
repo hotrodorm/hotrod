@@ -21,8 +21,8 @@ import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.runtime.tx.TxDemarcator;
 import org.hotrod.runtime.tx.TxManager;
 import org.hotrod.runtime.util.ListWriter;
+import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.SUtils;
 import org.hotrod.utils.identifiers.Identifier;
 
 public class CustomDAO {

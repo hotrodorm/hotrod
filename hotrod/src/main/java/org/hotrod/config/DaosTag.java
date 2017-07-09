@@ -8,8 +8,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidPackageException;
+import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.SUtils;
 import org.hotrod.utils.identifiers.Identifier;
 
 @XmlRootElement(name = "daos")

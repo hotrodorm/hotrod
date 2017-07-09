@@ -13,7 +13,7 @@ import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.MyBatisTag;
-import org.hotrod.utils.SUtils;
+import org.hotrod.runtime.util.SUtils;
 
 public class MyBatisConfiguration {
 

@@ -82,6 +82,8 @@
       <classpath>
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/spring/spring-context-4.2.5.RELEASE.jar" />
+        <pathelement location="${lib.dir}/apache-commons/commons-jexl3-3.1.jar" />
+        <pathelement location="${lib.dir}/apache-commons/commons-logging-1.2.jar" />
       </classpath>
     </javac>
   </target>

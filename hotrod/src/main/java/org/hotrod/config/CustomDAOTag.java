@@ -5,8 +5,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.SUtils;
 
 @XmlRootElement(name = "dao")
 public class CustomDAOTag extends AbstractCompositeDAOTag {

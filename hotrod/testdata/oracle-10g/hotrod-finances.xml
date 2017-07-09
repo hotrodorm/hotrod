@@ -53,7 +53,7 @@
         where current_balance &lt; #{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
         *}
     </select>
-  
+
   </facet>
 
 <!-- 

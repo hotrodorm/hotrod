@@ -13,8 +13,8 @@ import org.hotrod.config.sql.AbstractSQLSection;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.SUtils;
 
 @XmlRootElement(name = "select")
 public class SelectTag extends AbstractSQLDAOTag {

@@ -1,4 +1,4 @@
-package org.hotrod.utils;
+package org.hotrod.runtime.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -62,6 +62,26 @@ public class SUtils {
 
   public static boolean isLowerCase(final char c) {
     return c >= 'a' && c <= 'z';
+  }
+
+  public static boolean startsWithIgnoreCase(final String txt, final String prefix) {
+    if (txt == null || prefix == null) {
+      return false;
+    }
+    if (prefix.length() > txt.length()) {
+      return false;
+    }
+    return prefix.equalsIgnoreCase(txt.substring(0, prefix.length()));
+  }
+
+  public static boolean endsWithIgnoreCase(final String txt, final String suffix) {
+    if (txt == null || suffix == null) {
+      return false;
+    }
+    if (suffix.length() > txt.length()) {
+      return false;
+    }
+    return suffix.equalsIgnoreCase(txt.substring(txt.length() - suffix.length()));
   }
 
   public static String getFiller(final char c, final int length) {

@@ -106,6 +106,14 @@
     <xsd:attribute name="complement-start" type="xsd:string" />
     <xsd:attribute name="complement-end" type="xsd:string" />
   </xsd:complexType>
+  
+  <!-- complement -->
+
+  <xsd:complexType name="complement-type" mixed="true">
+    <xsd:sequence>
+      <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
 
   <!-- fragment -->
   
