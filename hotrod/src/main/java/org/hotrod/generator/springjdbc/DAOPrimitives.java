@@ -396,7 +396,7 @@ public class DAOPrimitives {
 
   }
 
-  private void writeMapper() throws IOException {
+  private void writeMapper() throws IOException, UnresolvableDataTypeException {
     println("  // ====================");
     println("  // Spring JDBC - Mapper");
     println("  // ====================");
@@ -412,17 +412,27 @@ public class DAOPrimitives {
         // TODO improve this
         println("        try {");
         println("          " + cm.getType().getJavaClassName() + " v = rs."
-            + CodeGenerationHelper.mapJavaType2JDBCGetter(cm.getType()) + "(\"" + cm.getColumnName() + "\");");
+            + CodeGenerationHelper.mapJavaType2JDBCGetter(cm.getType().getJavaClassName()) + "(\"" + cm.getColumnName()
+            + "\");");
         println("          row." + cm.getIdentifier().getSetter() + "(rs.wasNull() ? null : v);");
         println("        } catch (SQLException e) {");
         println("          //metadata discarded");
         println("        }");
 
       } else {
-
-        println("        " + cm.getType().getJavaClassName() + " v = rs."
-            + CodeGenerationHelper.mapJavaType2JDBCGetter(cm.getType()) + "(\"" + cm.getColumnName() + "\");");
-        println("        row." + cm.getIdentifier().getSetter() + "(rs.wasNull() ? null : v);");
+        ConverterTag cvt = cm.getConverter();
+        if (cvt != null) {
+          println("        " + cvt.getJavaIntermediateType() + " v = rs."
+              + CodeGenerationHelper.mapJavaType2JDBCGetter(cvt.getJavaIntermediateType()) + "(\"" + cm.getColumnName()
+              + "\");");
+          println("        row." + cm.getIdentifier().getSetter() + "(rs.wasNull() ? null : new " + cvt.getJavaClass()
+              + "().get(v));");
+        } else {
+          println("        " + cm.getType().getJavaClassName() + " v = rs."
+              + CodeGenerationHelper.mapJavaType2JDBCGetter(cm.getType().getJavaClassName()) + "(\""
+              + cm.getColumnName() + "\");");
+          println("        row." + cm.getIdentifier().getSetter() + "(rs.wasNull() ? null : v);");
+        }
       }
       println("      }");
     }
@@ -442,8 +452,14 @@ public class DAOPrimitives {
         println("      if (domain." + cm.getIdentifier().getGetter() + "() == null) {");
         println("        pst.setNull(" + i + ", " + cm.getType().getJDBCType() + ");");
         println("      } else {");
-        println("        pst." + CodeGenerationHelper.mapJavaType2JDBCSetter(cm.getType()) + "(" + i + ", domain."
-            + cm.getIdentifier().getGetter() + "());");
+        ConverterTag cvt = cm.getConverter();
+        if (cvt != null) {
+          println("        pst." + CodeGenerationHelper.mapJavaType2JDBCSetter(cvt.getJavaIntermediateType()) + "(" + i
+              + ", new " + cvt.getJavaClass() + "().set(domain." + cm.getIdentifier().getGetter() + "()));");
+        } else {
+          println("        pst." + CodeGenerationHelper.mapJavaType2JDBCSetter(cm.getType().getJavaClassName()) + "("
+              + i + ", domain." + cm.getIdentifier().getGetter() + "());");
+        }
         println("      }");
       }
       println("    }");
