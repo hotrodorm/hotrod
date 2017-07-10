@@ -5,6 +5,8 @@
 
   <generators>
 
+<!-- 
+-->
     <mybatis>
       <daos gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" />
       <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
@@ -12,9 +14,7 @@
         file="mybatis-config-template.xml" />
       <session-factory singleton-full-class-name="sessionfactory.DatabaseSessionFactory" />
       <select-generation temp-view-base-name="hotrod_temp_view" />
-      <!-- 
-      <property name="checked.persistence.exception" value="false" />
-       -->
+      <property name="checked.persistence.exception" value="true" />
       <property name="multiline.tostring" value="true" />
     </mybatis>
 
@@ -40,9 +40,9 @@
 
     <select java-class-name="AccountByIds">
       select * from account
-        <complement>
+        {*
         where id in (10, 21)
-        </complement>
+        *}
     </select>
 
         <!--  

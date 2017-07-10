@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
-import org.nocrala.tools.utils.string.ListWriter;
+import org.hotrod.runtime.util.ListWriter;
 
 import com.itextpdf.text.DocumentException;
 
@@ -54,7 +54,7 @@ public class PDFArticleAssembler {
     // Produce assembled articles
 
     String separator = "<p style='page-break-before:always;'>&nbsp;</p>";
-    ListWriter lw = new ListWriter(separator, separator);
+    ListWriter lw = new ListWriter(separator);
 
     for (Chapter c : book.getChapters().values()) {
       for (Article a : c.getArticles().values()) {

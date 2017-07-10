@@ -18,9 +18,9 @@
   </xsd:element>
 
   <xsd:complexType name="generators-type">
-    <xsd:all minOccurs="0">
-      <xsd:element name="mybatis" type="mybatis-type" />
-      <xsd:element name="spring-jdbc" type="spring-jdbc-type" />
+    <xsd:all>
+      <xsd:element name="mybatis" type="mybatis-type" minOccurs="0" />
+      <xsd:element name="spring-jdbc" type="spring-jdbc-type" minOccurs="0" />
     </xsd:all>
   </xsd:complexType>
 

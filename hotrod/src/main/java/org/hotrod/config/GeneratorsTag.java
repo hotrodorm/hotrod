@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
+import org.hotrod.ant.Constants;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 
@@ -56,7 +57,8 @@ public class GeneratorsTag extends AbstractConfigurationTag {
     }
     if (this.selectedGeneratorTag == null) {
       throw new GeneratorNotFoundException("No HotRod generator found with name '" + generatorName
-          + "'. Available generators are: " + MyBatisTag.GENERATOR_NAME + ", " + SpringJDBCTag.GENERATOR_NAME);
+          + "'. Check the generator tags specified inside the <generators> tag in the main " + Constants.TOOL_NAME
+          + " configuration file.");
     }
   }
 
