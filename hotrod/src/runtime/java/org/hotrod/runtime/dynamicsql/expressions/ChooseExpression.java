@@ -1,16 +1,20 @@
 package org.hotrod.runtime.dynamicsql.expressions;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
 
-public class ChooseExpression extends DynamicSQLExpression {
+public class ChooseExpression extends DynamicExpression {
 
-  private CollectionExpression otherwise;
+  private OtherwiseExpression otherwise;
 
   private WhenExpression[] whens;
 
-  public ChooseExpression(final CollectionExpression otherwise, final WhenExpression... whens) {
+  public ChooseExpression(final OtherwiseExpression otherwise, final WhenExpression... whens) {
     this.otherwise = otherwise;
     this.whens = whens;
   }
@@ -31,6 +35,14 @@ public class ChooseExpression extends DynamicSQLExpression {
     }
 
     return new EvaluationFeedback(this.otherwise != null);
+  }
+
+  @Override
+  public List<Object> getConstructorParameters() {
+    List<Object> params = new ArrayList<Object>();
+    params.add(this.otherwise);
+    params.addAll(Arrays.asList(this.whens));
+    return params;
   }
 
 }

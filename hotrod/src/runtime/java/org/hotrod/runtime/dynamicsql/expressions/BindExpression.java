@@ -1,18 +1,21 @@
 package org.hotrod.runtime.dynamicsql.expressions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.jexl3.JexlExpression;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
 
-public class BindExpression extends DynamicSQLExpression {
+public class BindExpression extends DynamicExpression {
 
   private String name;
   private JexlExpression value;
 
-  public BindExpression(final String name, final String valueExpr) {
+  public BindExpression(final String name, final String valueDefinition) {
     this.name = name;
-    this.value = JEXL_ENGINE.createExpression(valueExpr);
+    this.value = JEXL_ENGINE.createExpression(valueDefinition);
   }
 
   @Override
@@ -27,6 +30,16 @@ public class BindExpression extends DynamicSQLExpression {
     }
     variables.set(this.name, v);
     return new EvaluationFeedback(false);
+  }
+
+  @Override
+  public List<Object> getConstructorParameters() {
+    List<Object> params = new ArrayList<Object>();
+    List<String> stringParams = new ArrayList<String>();
+    stringParams.add(this.name);
+    stringParams.add(this.value.getSourceText());
+    params.add(stringParams);
+    return params;
   }
 
 }

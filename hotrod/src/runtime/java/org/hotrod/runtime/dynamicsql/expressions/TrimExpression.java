@@ -1,23 +1,27 @@
 package org.hotrod.runtime.dynamicsql.expressions;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
+import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 
-public class TrimExpression extends DynamicSQLExpression {
+public class TrimExpression extends DynamicExpression {
 
   private String prefix;
   private LinkedHashSet<String> prefixOverrides;
   private String suffix;
   private LinkedHashSet<String> suffixOverrides;
-  private DynamicSQLExpression[] expressions;
+  protected DynamicExpression[] expressions;
 
   public TrimExpression(final String prefix, final String prefixOverrides, final String suffix,
-      final String suffixOverrides, final DynamicSQLExpression... expressions) {
+      final String suffixOverrides, final DynamicExpression... expressions) {
     this.prefix = prefix;
     this.prefixOverrides = new LinkedHashSet<String>();
     if (prefixOverrides != null) {
@@ -29,13 +33,6 @@ public class TrimExpression extends DynamicSQLExpression {
       parseOverrides(suffixOverrides, this.suffixOverrides);
     }
     this.expressions = expressions;
-
-    // for (String po : this.prefixOverrides) {
-    // System.out.println("prefixOverrides='" + po + "'");
-    // }
-    // for (String so : this.suffixOverrides) {
-    // System.out.println("suffixOverrides='" + so + "'");
-    // }
   }
 
   private void parseOverrides(final String overrides, final Set<String> set) {
@@ -59,7 +56,7 @@ public class TrimExpression extends DynamicSQLExpression {
 
     StringBuilder sb = new StringBuilder();
     boolean contentRendered = false;
-    for (DynamicSQLExpression expr : this.expressions) {
+    for (DynamicExpression expr : this.expressions) {
       EvaluationFeedback feedback = expr.evaluate(sb, variables);
       contentRendered = contentRendered || feedback.wasContentRendered();
     }
@@ -113,6 +110,19 @@ public class TrimExpression extends DynamicSQLExpression {
       }
     }
     return null;
+  }
+
+  @Override
+  public List<Object> getConstructorParameters() {
+    List<Object> params = new ArrayList<Object>();
+    List<String> stringParams = new ArrayList<String>();
+    stringParams.add(this.prefix);
+    stringParams.add(ListWriter.render(this.prefixOverrides, "|"));
+    stringParams.add(this.suffix);
+    stringParams.add(ListWriter.render(this.suffixOverrides, "|"));
+    params.add(stringParams);
+    params.addAll(Arrays.asList(this.expressions));
+    return params;
   }
 
 }

@@ -91,6 +91,21 @@ public class SUtils {
     }
     return sb.toString();
   }
+  
+  public static String escapeJavaString(final String txt) {
+    if (txt == null) {
+      return null;
+    }
+    return txt //
+        .replace("\\", "\\\\") //
+        .replace("\"", "\\\"") //
+        .replace("\t", "\\t") //
+        .replace("\b", "\\b") //
+        .replace("\n", "\\n") //
+        .replace("\r", "\\r") //
+        .replace("\f", "\\f") //
+        ;
+  }
 
   public static String loadFileAsString(final File f) throws IOException {
     return loadFileAsString(f, null);

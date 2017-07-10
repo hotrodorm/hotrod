@@ -1,17 +1,21 @@
 package org.hotrod.runtime.dynamicsql.expressions;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.jexl3.JexlExpression;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
 
-public class IfExpression extends DynamicSQLExpression {
+public class IfExpression extends DynamicExpression {
 
   private JexlExpression condition;
 
-  private DynamicSQLExpression[] expressions;
+  private DynamicExpression[] expressions;
 
-  public IfExpression(final String condition, final DynamicSQLExpression... expressions) {
+  public IfExpression(final String condition, final DynamicExpression... expressions) {
     this.condition = JEXL_ENGINE.createExpression(condition);
     this.expressions = expressions;
   }
@@ -33,7 +37,7 @@ public class IfExpression extends DynamicSQLExpression {
     try {
       Boolean cond = (Boolean) obj;
       if (cond) {
-        for (DynamicSQLExpression expr : this.expressions) {
+        for (DynamicExpression expr : this.expressions) {
           expr.evaluate(out, variables);
         }
       }
@@ -43,6 +47,16 @@ public class IfExpression extends DynamicSQLExpression {
       throw new DynamicSQLEvaluationException("The condition on the <if> tag '" + this.condition.getSourceText()
           + "' must evaluate to a boolean value, but resulted in an object of class '" + obj.getClass() + "'.");
     }
+  }
+
+  @Override
+  public List<Object> getConstructorParameters() {
+    List<Object> params = new ArrayList<Object>();
+    List<String> stringParams = new ArrayList<String>();
+    stringParams.add(this.condition.getSourceText());
+    params.add(stringParams);
+    params.addAll(Arrays.asList(this.expressions));
+    return params;
   }
 
 }

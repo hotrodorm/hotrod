@@ -1,6 +1,7 @@
 package org.hotrod.runtime.util;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class ListWriter {
@@ -100,11 +101,15 @@ public class ListWriter {
     return render;
   }
 
-  public static String render(final List<String> list) {
+  public static String render(final Collection<String> list) {
     return render(list, "", "'", "'", ", ", ", ", "");
   }
 
-  public static String render(final List<String> list, final String prefix, final String elemPrefix,
+  public static String render(final Collection<String> list, final String separator) {
+    return render(list, "", "'", "'", separator, separator, "");
+  }
+
+  public static String render(final Collection<String> list, final String prefix, final String elemPrefix,
       final String elemSuffix, final String separator, final String lastSeparator, final String suffix) {
     ListWriter r = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
     for (String e : list) {
