@@ -26,6 +26,9 @@ drop sequence seq_codes;
 drop sequence seq_test;
 drop table test_sequence;
 
+drop table " !#$%)(*+,-.";
+
+
 -- =========
 -- All Types
 -- =========

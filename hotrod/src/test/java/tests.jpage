@@ -3,3 +3,6 @@ String value = "ab\"c";
 String asql = value.replaceAll("\"", "\\\\\"");
 System.out.println("asql="+asql);
 // System.out.println("rep="+java.util.regex.Matcher.quoteReplacement("\\\""));
+
+String txt = "\"\\";
+System.out.println("txt: "+ txt+ " escaped: "+txt.replace("\\", "\\\\").replace("\"", "\\\""));

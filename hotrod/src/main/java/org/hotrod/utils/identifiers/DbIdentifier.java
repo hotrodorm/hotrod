@@ -63,6 +63,9 @@ public class DbIdentifier extends Identifier {
       i++;
     }
     log.debug("chunks=" + javaChunks.length);
+    
+    this.SQLName = name;
+
   }
 
   public DbIdentifier(final String name, final String javaName) {

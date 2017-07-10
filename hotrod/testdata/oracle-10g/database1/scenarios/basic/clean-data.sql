@@ -1,1 +1,5 @@
-delete from APPLICATION_CONFIG;
+delete from application_config;
+
+delete from " !#$%)(*+,-.";
+
+delete from special2;

@@ -91,7 +91,7 @@ public class SUtils {
     }
     return sb.toString();
   }
-  
+
   public static String escapeJavaString(final String txt) {
     if (txt == null) {
       return null;
@@ -104,7 +104,29 @@ public class SUtils {
         .replace("\n", "\\n") //
         .replace("\r", "\\r") //
         .replace("\f", "\\f") //
-        ;
+    ;
+  }
+
+  public static String escapeXmlBody(final String txt) {
+    if (txt == null) {
+      return null;
+    }
+    return txt //
+        .replace("&", "&amp;") //
+        .replace("<", "&lt;") //
+    ;
+  }
+
+  public static String escapeXmlAttribute(final String txt) {
+    if (txt == null) {
+      return null;
+    }
+    return txt //
+        .replace("&", "&amp;") //
+        .replace("<", "&lt;") //
+        .replace("\"", "&quot;") //
+        .replace("'", "&apos;") //
+    ;
   }
 
   public static String loadFileAsString(final File f) throws IOException {

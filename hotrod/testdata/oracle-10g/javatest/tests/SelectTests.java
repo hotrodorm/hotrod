@@ -2,9 +2,7 @@ package tests;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -12,6 +10,7 @@ import org.apache.log4j.Logger;
 import hotrod.test.generation.AccountByIdsVO;
 import hotrod.test.generation.AccountTx3VO;
 import hotrod.test.generation.AccountVO;
+import hotrod.test.generation.HouseVO;
 import hotrod.test.generation.accounting.finances.SearchedAccount2VO;
 import hotrod.test.generation.accounting.finances.SearchedAccountVO;
 import hotrod.test.generation.accounting.finances.primitives.SearchedAccount;
@@ -19,6 +18,7 @@ import hotrod.test.generation.accounting.finances.primitives.SearchedAccount2;
 import hotrod.test.generation.primitives.AccountByIds;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountTx3;
+import hotrod.test.generation.primitives.House;
 import hotrod.test.generation.primitives.TxBranchDAO;
 
 public class SelectTests {
@@ -38,11 +38,12 @@ public class SelectTests {
     // selectTag();
     // tryInsertBadData();
     // selectViewSequenceAndQuery();
-//    searchAccounts();
-    searchAccountsByIds();
+    // searchAccounts();
+    // searchAccountsByIds();
     // searchAccount();
     // searchAccount2();
     // selectAccountTx3();
+    specialCharactersInNames();
   }
 
   // private static void tryInsertBadData() throws SQLException {
@@ -156,10 +157,10 @@ public class SelectTests {
   private static void searchAccountsByIds() throws SQLException {
     System.out.println("searchAccountsByIds:");
     System.out.println("====================");
-//    List<Integer> ids = new ArrayList<Integer>();
-//    ids.add(10);
-//    ids.add(20);
-//    ids.add(22);
+    // List<Integer> ids = new ArrayList<Integer>();
+    // ids.add(10);
+    // ids.add(20);
+    // ids.add(22);
     for (AccountByIdsVO a : AccountByIds.select()) {
       System.out.println("a=" + a);
     }
@@ -186,6 +187,21 @@ public class SelectTests {
     System.out.println("=================");
     for (SearchedAccount2VO a : SearchedAccount2.select(150)) {
       System.out.println("a=" + a);
+    }
+  }
+
+  private static void specialCharactersInNames() throws SQLException {
+    System.out.println("specialCharactersInNames:");
+    System.out.println("=========================");
+
+    // Special2VO s2 = Special2DAO.select(1);
+    // System.out.println("s2=" + s2);
+
+    // HouseVO h1 = House.select(1);
+    // System.out.println("h1=" + h1);
+
+    for (HouseVO h : House.selectByExample(new HouseVO())) {
+      System.out.println("h=" + h);
     }
   }
 

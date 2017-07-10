@@ -2,9 +2,12 @@ package org.hotrod.utils;
 
 public class JUtils {
 
-  // escapes double quotes for \"
+  // escapes:
+  // * \ for \\
+  // * double quotes for \"
+
   public static String escapeJavaString(final String txt) {
-    return txt == null ? null : txt.replaceAll("\"", "\\\\\"");
+    return txt == null ? null : txt.replace("\\", "\\\\").replace("\"", "\\\"");
   }
 
 }

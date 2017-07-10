@@ -223,5 +223,17 @@ create table types_other (
 create view types_extra (col1, col2) as 
   select num1, rowid from types_numeric;
 
+-- database objects with special character in their names
+
+-- The Oracle Database doesn't allow the ASCII characters semi-colon(;), apostrophe ('), or double quotes(")
+-- The Oracle JDBC driver crashes with a name that has a slash (/)
+-- MyBatis crashes when a column name has an equal sign (=) in it
+
+create table " !#$%)(*+,-." (
+  id number(6) not null primary key,
+  ":<>?&" varchar2(12) not null,
+  "@[\]^_" varchar2(12) not null,
+  "`{|}~" varchar2(12) not null
+);
 
   

@@ -28,6 +28,7 @@ import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
 import org.hotrod.runtime.util.ListWriter;
+import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
@@ -242,9 +243,7 @@ public class Mapper {
     StringBuilder sb = new StringBuilder("    ");
     ListWriter lw = new ListWriter(",\n    ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      lw.add(cm.renderSQLIdentifier()
-      // + " as " + cm.getIdentifier().getJavaMemberIdentifier()
-      );
+      lw.add(SUtils.escapeXmlBody(cm.renderSQLIdentifier()));
     }
     sb.append(lw.toString());
     println(sb.toString());
@@ -259,9 +258,7 @@ public class Mapper {
     sb = new StringBuilder("    ");
     lw = new ListWriter(",\n    ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      lw.add("${alias}." + cm.renderSQLIdentifier()
-      // + " as " + cm.getIdentifier().getJavaMemberIdentifier()
-      );
+      lw.add("${alias}." + SUtils.escapeXmlBody(cm.renderSQLIdentifier()));
     }
     sb.append(lw.toString());
     println(sb.toString());
@@ -316,7 +313,7 @@ public class Mapper {
     String typeHandler = cm.getConverter() != null
         ? ("typeHandler=\"" + this.dao.getTypeHandlerFullClassName(cm) + "\" ") : "";
     println("    <" + tagName + " property=\"" + cm.getIdentifier().getJavaMemberIdentifier() + "\" column='"
-        + cm.getColumnName() + "' " + typeHandler + "/>");
+        + SUtils.escapeXmlAttribute(cm.getColumnName()) + "' " + typeHandler + "/>");
   }
 
   private void writeSelectByPK() throws IOException {
@@ -329,20 +326,12 @@ public class Mapper {
       println("  <select id=\"" + this.getMapperIdSelectByPK() + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
       println("    select");
       println("      <include refid=\"columns\" />");
-      println("     from " + this.metadata.renderSQLIdentifier());
+      println("     from " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()));
       println("     where");
       println(getWhereByIndex(this.metadata.getPK()));
       println("  </select>");
       println();
     }
-  }
-
-  private void beginCData() throws IOException {
-    println("   <![CDATA[");
-  }
-
-  private void endCData() throws IOException {
-    println("   ]]>");
   }
 
   private void writeSelectByUI() throws IOException {
@@ -372,7 +361,7 @@ public class Mapper {
           println("  <select id=\"" + this.getMapperIdSelectByUI(ui) + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
           println("    select");
           println("      <include refid=\"columns\" />");
-          println("     from " + this.metadata.renderSQLIdentifier());
+          println("     from " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()));
           println("     where");
           println(getWhereByIndex(ui));
           println("  </select>");
@@ -410,7 +399,7 @@ public class Mapper {
     println("  <select id=\"" + this.getMapperIdSelectByExample() + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
     println("    select");
     println("      <include refid=\"columns\" />");
-    println("     from " + this.metadata.renderSQLIdentifier());
+    println("     from " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()));
     print(getWhereByExample("p"));
     println("    <if test=\"o != null\">");
     println("      order by ${o}");
@@ -441,7 +430,7 @@ public class Mapper {
     println("  <select id=\"" + this.getMapperIdSelectParameterized() + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
     // println(" <![CDATA[");
 
-    println(this.metadata.renderSQLSentence(new MyBatisParameterRenderer()));
+    println(SUtils.escapeXmlBody(this.metadata.renderSQLSentence(new MyBatisParameterRenderer())));
 
     // println(" ]]>");
     println("  </select>");
@@ -489,10 +478,11 @@ public class Mapper {
     ListWriter lw = new ListWriter(", ");
     ListWriter lwp = new ListWriter(", ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      lw.add(cm.renderSQLIdentifier());
+      lw.add(SUtils.escapeXmlBody(cm.renderSQLIdentifier()));
       lwp.add(renderParameterColumn(cm));
     }
-    println("    insert into " + this.metadata.renderSQLIdentifier() + " (" + lw.toString() + ")");
+    println(
+        "    insert into " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()) + " (" + lw.toString() + ")");
     println("      values (" + lwp.toString() + ")");
     println("  </insert>");
     println();
@@ -515,7 +505,7 @@ public class Mapper {
       println("    <selectKey keyProperty=\"" + agcm.getIdentifier().getJavaMemberIdentifier() + "\" resultType=\""
           + agcm.getColumnMetadata().getType().getJavaClassName() + "\" order=\""
           + (agcm.isIdentity() ? "AFTER" : "BEFORE") + "\">");
-      println("      " + this.metadata.getAutoGeneratedKeySentence(agcm));
+      println("      " + SUtils.escapeXmlBody(this.metadata.getAutoGeneratedKeySentence(agcm)));
       println("    </selectKey>");
     }
 
@@ -523,11 +513,12 @@ public class Mapper {
     ListWriter lwp = new ListWriter(", ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (!agcm.getColumnMetadata().equals(cm)) {
-        lw.add(cm.renderSQLIdentifier());
+        lw.add(SUtils.escapeXmlBody(cm.renderSQLIdentifier()));
         lwp.add(renderParameterColumn(cm));
       }
     }
-    println("    insert into " + this.metadata.renderSQLIdentifier() + " (" + lw.toString() + ")");
+    println(
+        "    insert into " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()) + " (" + lw.toString() + ")");
     println("      values (" + lwp.toString() + ")");
     println("  </insert>");
     println();
@@ -542,16 +533,17 @@ public class Mapper {
     println("    <selectKey keyProperty=\"" + agcm.getIdentifier().getJavaMemberIdentifier() + "\" resultType=\""
         + agcm.getColumnMetadata().getType().getJavaClassName() + "\" order=\""
         + (agcm.isIdentity() ? "AFTER" : "BEFORE") + "\">");
-    println("      " + this.metadata.getAutoGeneratedKeySentence(agcm));
+    println("      " + SUtils.escapeXmlBody(this.metadata.getAutoGeneratedKeySentence(agcm)));
     println("    </selectKey>");
 
     ListWriter lw = new ListWriter(", ");
     ListWriter lwp = new ListWriter(", ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      lw.add(cm.renderSQLIdentifier());
+      lw.add(SUtils.escapeXmlBody(cm.renderSQLIdentifier()));
       lwp.add(renderParameterColumn(cm));
     }
-    println("    insert into " + this.metadata.renderSQLIdentifier() + " (" + lw.toString() + ")");
+    println(
+        "    insert into " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()) + " (" + lw.toString() + ")");
     println("      values (" + lwp.toString() + ")");
     println("  </insert>");
     println();
@@ -605,20 +597,19 @@ public class Mapper {
       println("  <!-- update by PK -->");
       println();
       println("  <update id=\"" + this.getMapperIdUpdateByPK() + "\">");
-      beginCData();
-      println("    update " + this.metadata.renderSQLIdentifier() + " set");
+      println("    update " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()) + " set");
 
       ListWriter lw = new ListWriter(",\n");
       for (ColumnMetadata cm : this.metadata.getNonPkColumns()) {
         String sqlColumn = cm.renderSQLIdentifier();
         if (useVersionControl) {
           if (useVersionControl && vcm.getColumnMetadata().equals(cm)) {
-            lw.add("      " + sqlColumn + " = #{nextVersionValue}");
+            lw.add("      " + SUtils.escapeXmlBody(sqlColumn) + " = #{nextVersionValue}");
           } else {
-            lw.add("      " + sqlColumn + " = " + renderParameterColumn(cm, "p"));
+            lw.add("      " + SUtils.escapeXmlBody(sqlColumn) + " = " + renderParameterColumn(cm, "p"));
           }
         } else {
-          lw.add("      " + sqlColumn + " = " + renderParameterColumn(cm));
+          lw.add("      " + SUtils.escapeXmlBody(sqlColumn) + " = " + renderParameterColumn(cm));
         }
       }
       println(lw.toString());
@@ -635,11 +626,10 @@ public class Mapper {
         String sqlColumn = cm.renderSQLIdentifier();
 
         println("     and");
-        println("      " + sqlColumn + " " + "= " + renderParameterColumn(cm));
+        println("      " + SUtils.escapeXmlBody(sqlColumn) + " " + "= " + renderParameterColumn(cm));
 
       }
 
-      endCData();
       println("  </update>");
       println();
     }
@@ -653,7 +643,7 @@ public class Mapper {
     ListWriter lw;
     lw = new ListWriter("\n      and ");
     for (ColumnMetadata cm : km.getColumns()) {
-      lw.add(cm.renderSQLIdentifier() + " = " + renderParameterColumn(cm, prefix));
+      lw.add(SUtils.escapeXmlBody(cm.renderSQLIdentifier()) + " = " + renderParameterColumn(cm, prefix));
     }
     return "      " + lw.toString();
   }
@@ -671,11 +661,12 @@ public class Mapper {
       String propWasSet = prompt + "propertiesChangeLog." + cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
 
       sb.append("      <if test=\"" + prop + " != null \">\n");
-      sb.append("        and " + cm.renderSQLIdentifier() + " = " + renderParameterColumn(cm, prefix) + "\n");
+      sb.append("        and " + SUtils.escapeXmlBody(cm.renderSQLIdentifier()) + " = "
+          + renderParameterColumn(cm, prefix) + "\n");
       sb.append("      </if>\n");
 
       sb.append("      <if test=\"" + prop + " == null and " + propWasSet + "\">\n");
-      sb.append("        and " + cm.renderSQLIdentifier() + " is null\n");
+      sb.append("        and " + SUtils.escapeXmlBody(cm.renderSQLIdentifier()) + " is null\n");
       sb.append("      </if>\n");
 
     }
@@ -715,9 +706,10 @@ public class Mapper {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String propWasSet = "propertiesChangeLog." + cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
       if (cm.isVersionControlColumn()) {
-        println("      " + cm.renderSQLIdentifier() + " = " + cm.renderSQLIdentifier() + " + 1,");
+        println("      " + SUtils.escapeXmlBody(cm.renderSQLIdentifier()) + " = "
+            + SUtils.escapeXmlBody(cm.renderSQLIdentifier()) + " + 1,");
       } else {
-        println("      <if test=\"values." + propWasSet + "\">" + cm.renderSQLIdentifier() + " = "
+        println("      <if test=\"values." + propWasSet + "\">" + SUtils.escapeXmlBody(cm.renderSQLIdentifier()) + " = "
             + renderParameterColumn(cm, "values") + ",</if>");
       }
     }
@@ -747,8 +739,7 @@ public class Mapper {
       println("  <!-- delete -->");
       println();
       println("  <delete id=\"" + this.getMapperIdDeleteByPK() + "\">");
-      beginCData();
-      println("    delete from " + this.metadata.renderSQLIdentifier());
+      println("    delete from " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()));
       println("     where");
       println(getWhereByIndex(this.metadata.getPK()));
 
@@ -758,14 +749,9 @@ public class Mapper {
       if (useVersionControl) {
         ColumnMetadata cm = vcm.getColumnMetadata();
         println("     and");
-        println("      " + cm.renderSQLIdentifier() + " " + "= "
-
-            + renderParameterColumn(cm)
-
-        );
+        println("      " + SUtils.escapeXmlBody(cm.renderSQLIdentifier()) + " " + "= " + renderParameterColumn(cm));
       }
 
-      endCData();
       println("  </delete>");
       println();
     }
@@ -775,7 +761,7 @@ public class Mapper {
     println("  <!-- delete by example -->");
     println();
     println("  <delete id=\"" + this.getMapperIdDeleteByExample() + "\">");
-    println("    delete from " + this.metadata.renderSQLIdentifier());
+    println("    delete from " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()));
     print(getWhereByExample());
     println("  </delete>");
     println();
@@ -801,7 +787,7 @@ public class Mapper {
     println("  <select id=\"" + this.getMapperSelectSequence(seq) + "\" " + "resultType=\"java.lang.Long\">");
 
     String sentence = this.generator.getAdapter().renderSelectSequence(seq.getIdentifier());
-    println("    " + sentence);
+    println("    " + SUtils.escapeXmlBody(sentence));
     println("  </select>");
     println();
 
@@ -826,10 +812,8 @@ public class Mapper {
 
     println("  <update id=\"" + u.getIdentifier().getJavaMemberIdentifier() + "\">");
 
-    // this.beginCData();
     String sentence = u.renderSQLSentence(new MyBatisParameterRenderer());
-    println("    " + sentence);
-    // this.endCData();
+    println("    " + SUtils.escapeXmlBody(sentence));
     println("  </update>");
     println();
 

@@ -61,3 +61,9 @@ insert into quadrant (region, area, caption, active_state) values (5, 1, 'Quadra
 insert into quadrant (region, area, caption, active_state) values (14, 99, 'Quadrant 14-99', 0);
 insert into quadrant (region, area, caption, active_state) values (18, 86, 'Quadrant 18-86', 1);
 
+-- Special Characters
+
+insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`{|}~") values (1, 'red', 'kind 1', 'type 2');
+insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`{|}~") values (2, 'green', 'kind 3', 'type 4');
+insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`{|}~") values (3, 'blue', 'kind 5', 'type 6');
+
