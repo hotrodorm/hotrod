@@ -94,15 +94,20 @@ public class CodeGenerationHelper {
     return lw.toString();
   }
 
+  @Deprecated
   public static String mapJavaType2JDBCGetter(PropertyType pt) {
-    String[] s = pt.getJavaClassName().split("\\.");
+    return mapJavaType2JDBCGetter(pt.getJavaClassName());
+  }
+
+  public static String mapJavaType2JDBCGetter(String classname) {
+    String[] s = classname.split("\\.");
     String t = s[s.length - 1];
     if (s.length == 1) {
       if (t.equals("byte[]")) {
         return "getBytes";
       }
       throw new RuntimeException(
-          "Unsuported conversion from JabaType to JDBC getter. Java class name '" + pt.getJavaClassName() + "'.");
+          "Unsuported conversion from JabaType to JDBC getter. Java class name '" + classname + "'.");
     }
     if (t.equals("Integer")) {
       return "getInt";
@@ -110,15 +115,20 @@ public class CodeGenerationHelper {
     return "get" + t;
   }
 
+  @Deprecated
   public static String mapJavaType2JDBCSetter(PropertyType pt) {
-    String[] s = pt.getJavaClassName().split("\\.");
+    return mapJavaType2JDBCSetter(pt.getJavaClassName());
+  }
+
+  public static String mapJavaType2JDBCSetter(String classname) {
+    String[] s = classname.split("\\.");
     String t = s[s.length - 1];
     if (s.length == 1) {
       if (t.equals("byte[]")) {
         return "setBytes";
       }
       throw new RuntimeException(
-          "Unsuported conversion from JabaType to JDBC setter. Java class name '" + pt.getJavaClassName() + "'.");
+          "Unsuported conversion from JabaType to JDBC setter. Java class name '" + classname + "'.");
     }
     if (t.equals("Integer")) {
       return "setInt";
