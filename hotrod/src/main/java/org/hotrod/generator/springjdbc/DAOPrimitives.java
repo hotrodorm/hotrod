@@ -820,14 +820,28 @@ public class DAOPrimitives {
         + " example, SQLRenderer r, boolean includeLOB) {");
     if (!this.ds.getNonPkColumns().isEmpty()) {
       for (ColumnMetadata cm : this.ds.getNonPkColumns()) {
+        ConverterTag cvt = cm.getConverter();
         if (cm.getType().isLOB()) {
           println("      if (includeLOB) {");
-          println("        r.add(example." + cm.getIdentifier().getGetter() + "(), \"" + cm.getColumnName() + "\", "
-              + cm.getType().getJDBCType() + ");");
+
+          if (cvt != null) {
+            println("        r.add(new " + cvt.getJavaClass() + "().set(example." + cm.getIdentifier().getGetter()
+                + "()), \"" + cm.getColumnName() + "\", " + cm.getType().getJDBCType() + ");");
+          } else {
+            println("        r.add(example." + cm.getIdentifier().getGetter() + "(), \"" + cm.getColumnName() + "\", "
+                + cm.getType().getJDBCType() + ");");
+          }
+
           println("      }");
         } else {
-          println("      r.add(example." + cm.getIdentifier().getGetter() + "(), \"" + cm.getColumnName() + "\", "
-              + cm.getType().getJDBCType() + ");");
+          if (cvt != null) {
+            println("      r.add(new " + cvt.getJavaClass() + "().set(example." + cm.getIdentifier().getGetter()
+                + "()), \"" + cm.getColumnName() + "\", " + cm.getType().getJDBCType() + ");");
+          } else {
+            println("      r.add(example." + cm.getIdentifier().getGetter() + "(), \"" + cm.getColumnName() + "\", "
+                + cm.getType().getJDBCType() + ");");
+          }
+
         }
       }
     }
@@ -957,7 +971,12 @@ public class DAOPrimitives {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : this.ds.getNonPkColumns()) {
       if (!cm.getType().isLOB() || includeLobs) {
-        lw.add("dao." + cm.getIdentifier().getGetter() + "()");
+        ConverterTag cvt = cm.getConverter();
+        if (cvt != null) {
+          lw.add("new " + cvt.getJavaClass() + "().set(dao." + cm.getIdentifier().getGetter() + "())");
+        } else {
+          lw.add("dao." + cm.getIdentifier().getGetter() + "()");
+        }
       }
     }
     for (ColumnMetadata cm : this.ds.getPK().getColumns()) {
