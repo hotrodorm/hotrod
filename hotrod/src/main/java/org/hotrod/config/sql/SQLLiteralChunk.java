@@ -1,7 +1,9 @@
 package org.hotrod.config.sql;
 
+import org.hotrod.config.dynamicsql.SQLChunk;
 import org.hotrod.generator.ParameterRenderer;
 
+@Deprecated
 public class SQLLiteralChunk implements SQLChunk {
 
   private String literal;
@@ -19,9 +21,5 @@ public class SQLLiteralChunk implements SQLChunk {
     return this.literal;
   }
 
-  @Override
-  public String renderAugmentedSQL() {
-    return this.literal;
-  }
 
 }

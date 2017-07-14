@@ -8,6 +8,9 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 
 import org.hotrod.config.AbstractConfigurationTag;
+import org.hotrod.config.SQLParameter;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.ParameterRenderer;
 
 public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
@@ -27,6 +30,8 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
   })
   protected List<Object> content = new ArrayList<Object>();
 
+  protected List<DynamicSQLPart> parts = null;
+
   // Constructors
 
   protected DynamicSQLPart(final String tagName) {
@@ -44,9 +49,33 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
     return this.content;
   }
 
+  // Behavior
+
+  protected void validateParts(final String tagIdentification) throws InvalidConfigurationFileException {
+    this.parts = new ArrayList<DynamicSQLPart>();
+    for (Object obj : this.content) {
+      try {
+        String s = (String) obj;
+        this.parts.add(new ParameterisableSQLPart(s));
+      } catch (ClassCastException e1) {
+        try {
+          DynamicSQLPart p = (DynamicSQLPart) obj;
+          this.parts.add(p);
+        } catch (ClassCastException e2) {
+          throw new InvalidConfigurationFileException("Malformed content of the query " + tagIdentification
+              + ". Invalid tag of class " + obj.getClass().getName());
+        }
+      }
+    }
+  }
+
+  public abstract void validate(final String tagIdentification) throws InvalidConfigurationFileException;
+
+  public abstract List<SQLParameter> getParameters();
+
   // Rendering
 
-  protected String renderTag(final TagAttribute... attributes) {
+  protected String renderTag(final ParameterRenderer parameterRenderer, final TagAttribute... attributes) {
     StringBuilder sb = new StringBuilder();
     sb.append(renderTagHeader(attributes));
     for (Object obj : this.content) {
@@ -57,7 +86,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
       } catch (ClassCastException e1) {
         try {
           DynamicSQLPart s = (DynamicSQLPart) obj;
-          sb.append(s.render());
+          sb.append(s.renderSQLSentence(parameterRenderer));
         } catch (ClassCastException e2) {
           sb.append("[could not render object of class: " + obj.getClass().getName() + " ]");
         }
@@ -67,7 +96,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
     return sb.toString();
   }
 
-  public abstract String render();
+  public abstract String renderSQLSentence(ParameterRenderer parameterRenderer);
 
   protected String renderTagHeader(final TagAttribute... attributes) {
     return renderHeader(false, attributes);

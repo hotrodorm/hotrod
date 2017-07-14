@@ -16,13 +16,13 @@ import org.hotrod.config.dynamicsql.ChooseTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.config.dynamicsql.ForEachTag;
 import org.hotrod.config.dynamicsql.IfTag;
+import org.hotrod.config.dynamicsql.ParameterisableSQLPart;
 import org.hotrod.config.dynamicsql.SetTag;
 import org.hotrod.config.dynamicsql.TrimTag;
-import org.hotrod.config.dynamicsql.VerbatimSQLPart;
 import org.hotrod.config.dynamicsql.WhereTag;
-import org.hotrod.config.sql.AbstractSQLSection;
 import org.hotrod.config.sql.SQLComplementSection;
 import org.hotrod.config.sql.SQLFoundationSection;
+import org.hotrod.config.sql.SQLSection;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.SUtils;
 
@@ -67,7 +67,7 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
 
   private boolean alreadyValidated = false;
   private String text;
-  protected List<AbstractSQLSection> sections = new ArrayList<AbstractSQLSection>();
+  protected List<SQLSection> sections = new ArrayList<SQLSection>();
 
   // Properties - Other
 
@@ -132,7 +132,7 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
       for (Object obj : this.content) {
         try {
           String s = (String) obj;
-          this.parts.add(new VerbatimSQLPart(s));
+          this.parts.add(new ParameterisableSQLPart(s));
         } catch (ClassCastException e1) {
           try {
             ColumnTag col = (ColumnTag) obj;
@@ -151,7 +151,7 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
 
       StringBuilder sb = new StringBuilder();
       for (DynamicSQLPart p : this.parts) {
-        sb.append(p.render());
+        // sb.append(p.render());
       }
       this.text = sb.toString();
 
@@ -170,7 +170,7 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
   private void parseBody(final String body, final String attName, final String name)
       throws InvalidConfigurationFileException {
 
-//    log.info("body=" + body);
+    // log.info("body=" + body);
 
     int pos = 0;
     int prefix;
@@ -240,7 +240,7 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
 
   public String getAugmentedSQL() {
     StringBuilder sb = new StringBuilder();
-    for (AbstractSQLSection s : this.sections) {
+    for (SQLSection s : this.sections) {
       sb.append(s.renderAugmentedSQL());
     }
     return sb.toString();
@@ -276,6 +276,7 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
 
   // Getters
 
+  @Deprecated
   public String unescapeXml(final String txt) {
     return txt.replaceAll("&amp;", "&") //
         .replaceAll("&lt;", "<") //
@@ -286,7 +287,7 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
 
   public List<SQLParameter> getParameterOccurrences() {
     List<SQLParameter> params = new ArrayList<SQLParameter>();
-    for (AbstractSQLSection s : this.sections) {
+    for (SQLSection s : this.sections) {
       params.addAll(s.getParameterOccurrences());
     }
     return params;
@@ -294,7 +295,7 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
 
   public List<SQLParameter> getParameterDefinitions() {
     List<SQLParameter> params = new ArrayList<SQLParameter>();
-    for (AbstractSQLSection s : this.sections) {
+    for (SQLSection s : this.sections) {
       params.addAll(s.getParameterDefinitions());
     }
     return params;

@@ -4,7 +4,8 @@ import org.hotrod.config.AbstractSQLDAOTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 
-public class SQLComplementSection extends AbstractSQLSection {
+@Deprecated
+public class SQLComplementSection extends SQLSection {
 
   /**
    * <pre>

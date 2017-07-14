@@ -1,7 +1,6 @@
 package org.hotrod.config;
 
-import org.hotrod.config.sql.AbstractSQLSection;
-import org.hotrod.config.sql.SQLChunk;
+import org.hotrod.config.dynamicsql.SQLChunk;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.util.SUtils;
@@ -13,7 +12,10 @@ public class SQLParameter implements SQLChunk {
   private static final String JAVA_TYPE_PREFIX = "javaType=";
   private static final String JDBC_TYPE_PREFIX = "jdbcType=";
 
-  private String augmentedSQL;
+  public static final String PREFIX = "#{";
+  public static final String SUFFIX = "}";
+
+  private String paramDefinition;
   private String name;
   private boolean isDefinition;
   private SQLParameter definition;
@@ -21,14 +23,16 @@ public class SQLParameter implements SQLChunk {
   private String jdbcType;
   private boolean inTag;
 
-  public SQLParameter(final String augmentedSQL, final AbstractSQLDAOTag tag, final AbstractSQLSection sps, final boolean inTag,
-      final String attName, final String name) throws InvalidConfigurationFileException {
+  public SQLParameter(final String paramDefinition, final String tagIdentification, final boolean inTag)
+      throws InvalidConfigurationFileException {
 
-    this.augmentedSQL = augmentedSQL;
+    this.paramDefinition = paramDefinition;
 
-    String[] parts = augmentedSQL.split(",");
+    String[] parts = paramDefinition.split(",");
     if (parts == null || !(parts.length == 1 || parts.length == 3)) {
-      throw new InvalidConfigurationFileException(sps.getErrorMessage(augmentedSQL, tag, attName, name));
+      throw new InvalidConfigurationFileException(
+          getErrorMessage(paramDefinition, tagIdentification, "the parameter must take the form " + PREFIX
+              + "name,javaType=<JAVA-TYPE>,jdbcType=<JDBC-TYPE>" + SUFFIX + "."));
     }
 
     this.isDefinition = parts.length == 3;
@@ -39,9 +43,8 @@ public class SQLParameter implements SQLChunk {
 
     this.name = parts[0].trim();
     if (!this.name.matches(VALID_PARAM_PATTERN)) {
-      throw new InvalidConfigurationFileException(
-          sps.getErrorMessage(augmentedSQL, tag, attName, name, "invalid parameter name '" + this.name
-              + "': must start with a letter and " + "continue with letters digits or underscore."));
+      throw new InvalidConfigurationFileException(getErrorMessage(paramDefinition, tagIdentification,
+          "must start with a letter and " + "continue with letters digits or underscore."));
     }
 
     if (this.isDefinition) {
@@ -50,36 +53,31 @@ public class SQLParameter implements SQLChunk {
 
       String p1 = parts[1].trim();
       if (!p1.startsWith(JAVA_TYPE_PREFIX)) {
-        throw new InvalidConfigurationFileException(
-            sps.getErrorMessage(augmentedSQL, tag, attName, name, "invalid parameter javaType '" + this.name
-                + "': the second parameter must take the form " + "'javaType=<JAVA-CLASS>'."));
+        throw new InvalidConfigurationFileException(getErrorMessage(paramDefinition, tagIdentification,
+            "the second parameter must take the form " + "'javaType=<JAVA-CLASS>'."));
       }
       this.javaType = p1.substring(JAVA_TYPE_PREFIX.length());
       if (SUtils.isEmpty(this.javaType)) {
-        throw new InvalidConfigurationFileException(
-            sps.getErrorMessage(augmentedSQL, tag, attName, name, "invalid parameter javaType '" + this.name
-                + "': the second parameter must take the form " + "'javaType=<JAVA-CLASS>'."));
+        throw new InvalidConfigurationFileException(getErrorMessage(paramDefinition, tagIdentification,
+            "the second parameter must take the form " + "'javaType=<JAVA-CLASS>'."));
       }
 
       // jdbcType
 
       String p2 = parts[2].trim();
       if (!p2.startsWith(JDBC_TYPE_PREFIX)) {
-        throw new InvalidConfigurationFileException(
-            sps.getErrorMessage(augmentedSQL, tag, attName, name, "invalid parameter jdbcType '" + this.name
-                + "': the third parameter must take the form " + "'jdbcType=<JDBC-TYPE>'."));
+        throw new InvalidConfigurationFileException(getErrorMessage(paramDefinition, tagIdentification,
+            "the third parameter must take the form " + "'jdbcType=<JDBC-TYPE>'."));
       }
       this.jdbcType = p2.substring(JDBC_TYPE_PREFIX.length());
       if (SUtils.isEmpty(this.javaType)) {
-        throw new InvalidConfigurationFileException(
-            sps.getErrorMessage(augmentedSQL, tag, attName, name, "invalid parameter jdbcType '" + this.name
-                + "': the third parameter must take the form " + "'jdbcType=<JDBC-TYPE>'."));
+        throw new InvalidConfigurationFileException(getErrorMessage(paramDefinition, tagIdentification,
+            "the third parameter must take the form " + "'jdbcType=<JDBC-TYPE>'."));
       }
       Integer jdbcCode = JdbcTypes.nameToCode(this.jdbcType);
       if (jdbcCode == null) {
-        throw new InvalidConfigurationFileException(
-            sps.getErrorMessage(augmentedSQL, tag, attName, name, "invalid parameter jdbcType '" + this.name
-                + "': the third parameter must be a JDBC type " + "as in the class java.sql.Types."));
+        throw new InvalidConfigurationFileException(getErrorMessage(paramDefinition, tagIdentification,
+            "the third parameter must be a JDBC type as defined in the class java.sql.Types."));
       }
 
     } else {
@@ -87,6 +85,12 @@ public class SQLParameter implements SQLChunk {
       this.jdbcType = null;
     }
 
+  }
+
+  public String getErrorMessage(final String paramDefinition, final String tagIdentification,
+      final String extraMessage) {
+    return "Invalid parameter " + PREFIX + paramDefinition + SUFFIX + " in SQL query on the tag " + tagIdentification
+        + (extraMessage == null ? "." : ":\n" + extraMessage);
   }
 
   // Setters
@@ -126,11 +130,6 @@ public class SQLParameter implements SQLChunk {
   @Override
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
     return parameterRenderer.render(this);
-  }
-
-  @Override
-  public String renderAugmentedSQL() {
-    return "#{" + this.augmentedSQL + "}";
   }
 
 }

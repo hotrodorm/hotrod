@@ -4,7 +4,8 @@ import org.hotrod.config.AbstractSQLDAOTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 
-public class SQLFoundationSection extends AbstractSQLSection {
+@Deprecated
+public class SQLFoundationSection extends SQLSection {
 
   public SQLFoundationSection(final String txt, final AbstractSQLDAOTag tag, final String attName, final String name)
       throws InvalidConfigurationFileException {

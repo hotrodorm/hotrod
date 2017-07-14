@@ -6,10 +6,16 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementRefs;
+import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.sql.AbstractSQLSection;
+import org.hotrod.config.dynamicsql.ComplementTag;
+import org.hotrod.config.dynamicsql.DynamicSQLPart;
+import org.hotrod.config.dynamicsql.LiteralSQLPart;
+import org.hotrod.config.sql.SQLSection;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
@@ -27,7 +33,20 @@ public class SelectTag extends AbstractSQLDAOTag {
 
   protected String javaClassName = null;
 
+  // Properties - Primitive content parsing by JAXB
+
+  @XmlMixed
+  @XmlElementRefs({ //
+      @XmlElementRef(type = ColumnTag.class), //
+      @XmlElementRef(type = ComplementTag.class) //
+  })
+  private List<Object> content = new ArrayList<Object>();
+
+  // Properties - Parsed
+
   protected List<ColumnTag> columns = new ArrayList<ColumnTag>();
+  protected List<DynamicSQLPart> parts = new ArrayList<DynamicSQLPart>();
+
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
 
@@ -56,14 +75,37 @@ public class SelectTag extends AbstractSQLDAOTag {
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage() : null;
 
-    // name
+    // java-class-name
 
     if (SUtils.isEmpty(this.javaClassName)) {
       throw new InvalidConfigurationFileException("Attribute 'java-class-name' of tag <" + getTagName()
           + "> cannot be empty. " + "Must specify a unique query name, " + "different from table and view names.");
     }
 
-    super.validateCore("java-class-name", this.javaClassName);
+    // content text, columns, complement
+
+    this.columns = new ArrayList<ColumnTag>();
+    this.parts = new ArrayList<DynamicSQLPart>();
+    for (Object obj : this.content) {
+      try {
+        String s = (String) obj;
+        this.parts.add(new LiteralSQLPart(s));
+      } catch (ClassCastException e1) {
+        try {
+          ColumnTag col = (ColumnTag) obj;
+          this.columns.add(col);
+        } catch (ClassCastException e2) {
+          try {
+            ComplementTag p = (ComplementTag) obj;
+            this.parts.add(p);
+          } catch (ClassCastException e3) {
+            throw new InvalidConfigurationFileException(
+                "The body of the tag <" + super.getTagName() + "> with " + "java-class-name '" + this.javaClassName
+                    + "' has an invalid tag (of class '" + obj.getClass().getName() + "').");
+          }
+        }
+      }
+    }
 
     // columns
 
@@ -77,6 +119,14 @@ public class SelectTag extends AbstractSQLDAOTag {
       }
       cols.add(c);
     }
+
+    // content text and complement
+
+    for (DynamicSQLPart p : this.parts) {
+      p.validate("<select> with java-class-name '" + this.javaClassName + "'");
+    }
+
+    // all validations cleared
 
     this.declaredMethodNames.add("select");
 
@@ -108,7 +158,7 @@ public class SelectTag extends AbstractSQLDAOTag {
 
   public String getSQLFoundation(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
-    for (AbstractSQLSection s : this.sections) {
+    for (SQLSection s : this.sections) {
       String b = s.getSQLFoundation(parameterRenderer);
       if (b != null) {
         sb.append(unescapeXml(b));
@@ -119,7 +169,7 @@ public class SelectTag extends AbstractSQLDAOTag {
 
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
-    for (AbstractSQLSection s : this.sections) {
+    for (SQLSection s : this.sections) {
       sb.append(s.renderSQLSentence(parameterRenderer));
     }
     return sb.toString();

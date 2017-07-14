@@ -5,7 +5,7 @@
       <xsd:element name="table" type="table-type" />
       <xsd:element name="dao" type="dao-type" />
       <xsd:element name="view" type="view-type" />
-      <xsd:element name="select" type="select-type" />
+      <xsd:element name="select" type="select-dao-type" />
     </xsd:choice>
     <xsd:attribute name="name" type="xsd:string" use="required" />
   </xsd:complexType>
@@ -95,16 +95,14 @@
     <xsd:attribute name="java-name" type="xsd:string" />
   </xsd:complexType>
 
-  <!-- select -->
+  <!-- select (dao) -->
   
-  <xsd:complexType name="select-type" mixed="true">
+  <xsd:complexType name="select-dao-type" mixed="true">
     <xsd:sequence>
       <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
-      <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="complement" type="complement-type" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
     <xsd:attribute name="java-class-name" type="xsd:string" use="required" />
-    <xsd:attribute name="complement-start" type="xsd:string" />
-    <xsd:attribute name="complement-end" type="xsd:string" />
   </xsd:complexType>
   
   <!-- complement -->

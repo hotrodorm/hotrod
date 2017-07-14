@@ -6,13 +6,14 @@ import java.util.List;
 import org.hotrod.config.AbstractSQLDAOTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectTag;
+import org.hotrod.config.dynamicsql.SQLChunk;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 
 /**
  * <pre>
  * 
- * SQLSection
+ * AbstractSQLSection
  *  +- SQLFoundationSection
  *       List<SQLChunk>
  *       List<SQLParameter>
@@ -27,7 +28,8 @@ import org.hotrod.generator.ParameterRenderer;
  * 
  * </pre>
  */
-public abstract class AbstractSQLSection {
+@Deprecated
+public abstract class SQLSection {
 
   private static final String PREFIX = "#{";
   private static final String SUFFIX = "}";
@@ -35,7 +37,7 @@ public abstract class AbstractSQLSection {
   protected List<SQLChunk> chunks = new ArrayList<SQLChunk>();
   protected List<SQLParameter> params = new ArrayList<SQLParameter>();
 
-  public AbstractSQLSection(final String txt, final AbstractSQLDAOTag tag, final String attName, final String name)
+  public SQLSection(final String txt, final AbstractSQLDAOTag tag, final String attName, final String name)
       throws InvalidConfigurationFileException {
     int pos = 0;
     int prefix;
@@ -58,10 +60,10 @@ public abstract class AbstractSQLSection {
         throw new InvalidConfigurationFileException(getErrorMessage(txt, tag, attName, name));
       }
 
-      SQLParameter p = new SQLParameter(txt.substring(prefix + PREFIX.length(), suffix), tag, this, inTag, attName,
-          name);
-      this.chunks.add(p);
-      this.params.add(p);
+//      SQLParameter p = new SQLParameter(txt.substring(prefix + PREFIX.length(), suffix), tag, this, inTag, attName,
+//          name);
+//      this.chunks.add(p);
+//      this.params.add(p);
 
       pos = suffix + SUFFIX.length();
     }
@@ -130,7 +132,7 @@ public abstract class AbstractSQLSection {
   protected final String renderChunksSQL() {
     StringBuilder sb = new StringBuilder();
     for (SQLChunk c : this.chunks) {
-      sb.append(c.renderAugmentedSQL());
+//      sb.append(c.renderAugmentedSQL());
     }
     sb.append(" ");
     return sb.toString();

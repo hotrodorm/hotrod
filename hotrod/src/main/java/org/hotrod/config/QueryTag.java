@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.sql.AbstractSQLSection;
+import org.hotrod.config.sql.SQLSection;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.utils.ClassPackage;
@@ -69,7 +69,7 @@ public class QueryTag extends AbstractSQLDAOTag {
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
     log.debug("this.sections.size()=" + this.sections.size());
-    for (AbstractSQLSection s : this.sections) {
+    for (SQLSection s : this.sections) {
       sb.append(s.renderSQLSentence(parameterRenderer));
     }
     return sb.toString();

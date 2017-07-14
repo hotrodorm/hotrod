@@ -1,7 +1,13 @@
 package org.hotrod.config.dynamicsql;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.hotrod.config.SQLParameter;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.ParameterRenderer;
 
 @XmlRootElement(name = "trim")
 public class TrimTag extends DynamicSQLPart {
@@ -57,11 +63,23 @@ public class TrimTag extends DynamicSQLPart {
     this.suffixOverrides = suffixOverrides;
   }
 
+  // Behavior
+
+  @Override
+  public void validate(final String tagIdentification) throws InvalidConfigurationFileException {
+    // No validation necessary
+  }
+
+  @Override
+  public List<SQLParameter> getParameters() {
+    return null;
+  }
+
   // Rendering
 
   @Override
-  public String render() {
-    return super.renderTag( //
+  public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
+    return super.renderTag(parameterRenderer, //
         new TagAttribute("prefix", this.prefix), //
         new TagAttribute("prefixOverrides", this.prefixOverrides), //
         new TagAttribute("suffix", this.suffix), //

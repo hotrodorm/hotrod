@@ -2,30 +2,28 @@ package org.hotrod.config.dynamicsql;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.hotrod.config.SQLParameter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 
-@XmlRootElement(name = "choose")
-public class ChooseTag extends DynamicSQLPart {
+public class LiteralSQLPart extends DynamicSQLPart implements SQLChunk {
 
-  // Constructor
+  private String text;
 
-  public ChooseTag() {
-    super("choose");
+  public LiteralSQLPart(final String text) {
+    super("not-a-tag-but-sql-content");
+    this.text = text;
   }
-
-  // Properties
-
-  // Getters & Setters
 
   // Behavior
 
   @Override
   public void validate(final String tagIdentification) throws InvalidConfigurationFileException {
-    // No validation necessary
+    if (this.text != null && this.text.contains("#{")) {
+      throw new InvalidConfigurationFileException(
+          "Literal SQL text cannot include parameters, marked with #{ and }, found on the tag " + tagIdentification
+              + ".");
+    }
   }
 
   @Override
@@ -37,7 +35,7 @@ public class ChooseTag extends DynamicSQLPart {
 
   @Override
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
-    return super.renderTag(parameterRenderer);
+    return this.text;
   }
 
 }
