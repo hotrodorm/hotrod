@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
+import org.hotrod.config.dynamicsql.CollectionTag;
 import org.hotrod.config.dynamicsql.ComplementTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.config.dynamicsql.LiteralTextPart;
@@ -46,6 +47,7 @@ public class SelectTag extends AbstractDAOTag {
   protected List<ColumnTag> columns = null;
   protected List<DynamicSQLPart> parts = null;
   private List<LiteralTextPart> foundationParts = null;
+  private DynamicSQLPart aggregatedPart = null;
 
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
@@ -112,6 +114,12 @@ public class SelectTag extends AbstractDAOTag {
       }
     }
 
+    if (this.parts.size() != 1) {
+      this.aggregatedPart = new CollectionTag(this.parts);
+    } else {
+      this.aggregatedPart = this.parts.get(0);
+    }
+
     // columns
 
     Set<ColumnTag> cols = new HashSet<ColumnTag>();
@@ -175,6 +183,10 @@ public class SelectTag extends AbstractDAOTag {
       sb.append(p.renderTag(parameterRenderer));
     }
     return sb.toString();
+  }
+
+  public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer) {
+    return this.aggregatedPart.renderJavaExpression(margin, parameterRenderer);
   }
 
   public List<SQLParameter> getParameterOccurrences() {
