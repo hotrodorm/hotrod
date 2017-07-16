@@ -4,7 +4,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
 
+import org.hotrod.config.dynamicsql.ParameterisableTextPart;
 import org.hotrod.config.dynamicsql.TagAttribute;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 
 import xsdtests.case00.RendereableTag;
 import xsdtests.case00.RendererHelper;
@@ -38,8 +40,9 @@ public class Yaneyt implements RendereableTag {
   // Rendering
 
   @Override
-  public void render(final StringBuilder sb) {
-    RendererHelper.render("yaneyt", sb, this.body, new TagAttribute("myattribute", this.myattribute));
+  public void render(final StringBuilder sb) throws InvalidConfigurationFileException {
+    RendererHelper.render("yaneyt", sb, this.body,
+        new TagAttribute("myattribute", new ParameterisableTextPart(this.myattribute, "yaneyt")));
   }
 
 }

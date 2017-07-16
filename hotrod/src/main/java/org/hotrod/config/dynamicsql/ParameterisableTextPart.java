@@ -7,40 +7,46 @@ import org.apache.log4j.Logger;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 
-public class ParameterisableSQLPart extends DynamicSQLPart {
+public class ParameterisableTextPart extends DynamicSQLPart {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(ParameterisableSQLPart.class);
+  private static final Logger log = Logger.getLogger(ParameterisableTextPart.class);
 
   // Properties
+
+  private String txt;
 
   protected List<SQLChunk> chunks = new ArrayList<SQLChunk>();
   protected List<SQLParameter> params = new ArrayList<SQLParameter>();
 
-  private String txt;
-  private List<SQLParameter> parameters;
-
   // Constructor
 
-  public ParameterisableSQLPart(final String txt) {
+  public ParameterisableTextPart(final String txt, final String tagIdentification)
+      throws InvalidConfigurationFileException {
     super("not-a-tag-but-sql-content");
     log.debug("init");
     this.txt = txt;
+    this.validate(tagIdentification);
   }
 
   // Behavior
 
   @Override
-  public void validate(final String tagIdentification) throws InvalidConfigurationFileException {
+  protected void validateAttributes(final String tagIdentification) throws InvalidConfigurationFileException {
+    // No attributes; nothing to do
+  }
+
+  private void validate(final String tagIdentification) throws InvalidConfigurationFileException {
     int pos = 0;
     int prefix;
     int suffix;
 
     while (pos < this.txt.length() && (prefix = this.txt.indexOf(SQLParameter.PREFIX, pos)) != -1) {
 
-      LiteralSQLPart l = new LiteralSQLPart(this.txt.substring(pos, prefix));
+      LiteralTextPart l = new LiteralTextPart(this.txt.substring(pos, prefix));
       this.chunks.add(l);
 
       suffix = this.txt.indexOf(SQLParameter.SUFFIX, prefix + SQLParameter.PREFIX.length());
@@ -59,7 +65,7 @@ public class ParameterisableSQLPart extends DynamicSQLPart {
     }
 
     if (pos < this.txt.length()) {
-      LiteralSQLPart l = new LiteralSQLPart(this.txt.substring(pos));
+      LiteralTextPart l = new LiteralTextPart(this.txt.substring(pos));
       this.chunks.add(l);
     }
   }
@@ -71,16 +77,19 @@ public class ParameterisableSQLPart extends DynamicSQLPart {
         + (extraMessage == null ? "" : ":\n" + extraMessage);
   }
 
-  @Override
-  public List<SQLParameter> getParameters() {
-    return this.parameters;
-  }
-
   // Rendering
 
   @Override
-  public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
-    return this.txt;
+  protected TagAttribute[] getAttributes() {
+    TagAttribute[] atts = {};
+    return atts;
+  }
+
+  // Java Expression
+
+  @Override
+  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
+    throw new UnsupportedOperationException("This method should not be implemented.");
   }
 
 }

@@ -1,13 +1,12 @@
 package org.hotrod.config.dynamicsql;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.config.SQLParameter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.dynamicsql.expressions.BindExpression;
+import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 
 @XmlRootElement(name = "bind")
 public class BindTag extends DynamicSQLPart {
@@ -20,49 +19,54 @@ public class BindTag extends DynamicSQLPart {
 
   // Properties
 
-  private String name = null;
-  private String value = null;
+  private String nameText = null;
+  private String valueText = null;
 
-  // Getters & Setters
+  private ParameterisableTextPart name = null;
+  private ParameterisableTextPart value = null;
 
-  public String getName() {
-    return name;
-  }
+  // JAXB Setters
 
   @XmlAttribute
   public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getValue() {
-    return value;
+    this.nameText = name;
   }
 
   @XmlAttribute
   public void setValue(String value) {
-    this.value = value;
+    this.valueText = value;
   }
+
+  // Getters
 
   // Behavior
 
   @Override
-  public void validate(final String tagIdentification) throws InvalidConfigurationFileException {
-    // No validation necessary
-  }
-
-  @Override
-  public List<SQLParameter> getParameters() {
-    return null;
+  protected void validateAttributes(final String tagIdentification) throws InvalidConfigurationFileException {
+    this.name = this.nameText == null ? null : new ParameterisableTextPart(this.nameText, tagIdentification);
+    this.value = this.valueText == null ? null : new ParameterisableTextPart(this.valueText, tagIdentification);
   }
 
   // Rendering
 
   @Override
-  public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
-    return super.renderEmptyTag( //
+  protected TagAttribute[] getAttributes() {
+    TagAttribute[] atts = { //
         new TagAttribute("name", this.name), //
         new TagAttribute("value", this.value) //
-    );
+    };
+    return atts;
+  }
+
+  // Java Expression
+
+  @Override
+  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
+
+    String n = this.name.renderTag(parameterRenderer);
+    String v = this.value.renderTag(parameterRenderer);
+
+    return new BindExpression(n, v);
   }
 
 }

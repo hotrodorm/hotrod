@@ -16,7 +16,7 @@ import org.hotrod.config.dynamicsql.ChooseTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.config.dynamicsql.ForEachTag;
 import org.hotrod.config.dynamicsql.IfTag;
-import org.hotrod.config.dynamicsql.ParameterisableSQLPart;
+import org.hotrod.config.dynamicsql.ParameterisableTextPart;
 import org.hotrod.config.dynamicsql.SetTag;
 import org.hotrod.config.dynamicsql.TrimTag;
 import org.hotrod.config.dynamicsql.WhereTag;
@@ -26,6 +26,7 @@ import org.hotrod.config.sql.SQLSection;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.SUtils;
 
+@Deprecated
 public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
 
   // Constants
@@ -132,7 +133,7 @@ public abstract class AbstractSQLDAOTag extends AbstractDAOTag {
       for (Object obj : this.content) {
         try {
           String s = (String) obj;
-          this.parts.add(new ParameterisableSQLPart(s));
+          this.parts.add(new ParameterisableTextPart(s, "tagIdentification"));
         } catch (ClassCastException e1) {
           try {
             ColumnTag col = (ColumnTag) obj;

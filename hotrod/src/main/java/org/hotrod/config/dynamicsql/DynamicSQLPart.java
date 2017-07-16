@@ -11,6 +11,7 @@ import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 
 public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
@@ -51,33 +52,92 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   // Behavior
 
-  protected void validateParts(final String tagIdentification) throws InvalidConfigurationFileException {
+  public void validateContent(final String tagIdentification) throws InvalidConfigurationFileException {
+    List<SQLParameter> parameterDefinitions = new ArrayList<SQLParameter>();
+    this.retrievePartsAndValidate(tagIdentification, parameterDefinitions);
+  }
+
+  protected abstract void validateAttributes(String tagIdentification) throws InvalidConfigurationFileException;
+
+  protected final void retrievePartsAndValidate(final String tagIdentification,
+      final List<SQLParameter> parameterDefinitions) throws InvalidConfigurationFileException {
     this.parts = new ArrayList<DynamicSQLPart>();
     for (Object obj : this.content) {
+      DynamicSQLPart p = null;
       try {
         String s = (String) obj;
-        this.parts.add(new ParameterisableSQLPart(s));
+        p = new ParameterisableTextPart(s, tagIdentification);
       } catch (ClassCastException e1) {
         try {
-          DynamicSQLPart p = (DynamicSQLPart) obj;
-          this.parts.add(p);
+          p = (DynamicSQLPart) obj;
+          p.validateAttributes(tagIdentification);
         } catch (ClassCastException e2) {
-          throw new InvalidConfigurationFileException("Malformed content of the query " + tagIdentification
-              + ". Invalid tag of class " + obj.getClass().getName());
+          throw new InvalidConfigurationFileException("Malformed content of the query on tag " + tagIdentification
+              + ". Invalid inner tag of class " + obj.getClass().getName());
+        }
+      }
+      p.retrievePartsAndValidate(tagIdentification, parameterDefinitions);
+      this.parts.add(p);
+    }
+
+    for (SQLParameter p : this.getParameters()) {
+      SQLParameter definition = this.findDefinition(p, parameterDefinitions);
+      if (p.isDefinition()) {
+        if (definition == null) {
+          parameterDefinitions.add(p);
+        } else {
+          throw new InvalidConfigurationFileException("The body of the tag " + tagIdentification
+              + " has multiple parameter definitions with the same name: " + p.getName() + ".\n"
+              + "* If you want them to be different parameters, please choose a different names for each one;\n"
+              + "* If you want to use the same parameter multiple times, "
+              + "then the 'javaType' and/or 'jdbcType' can only be specified " + "on the first occurrence of it.");
+        }
+      } else {
+        if (definition != null) {
+          p.setDefinition(definition);
+        } else {
+          throw new InvalidConfigurationFileException(
+              "The body of the tag " + tagIdentification + " includes a parameter reference '" + p.getName()
+                  + "' but there's no parameter defined with that name yet.\n"
+                  + "The first time a parameter is specified, " + "it must be fully qualified with the 'javaType' and "
+                  + "'jdbcType' values (i.e. must be a parameter definition, rather than a parameter occurence).");
         }
       }
     }
+
   }
 
-  public abstract void validate(final String tagIdentification) throws InvalidConfigurationFileException;
+  public final List<SQLParameter> getParameters() {
+    List<SQLParameter> params = new ArrayList<SQLParameter>();
+    for (DynamicSQLPart p : this.parts) {
+      params.addAll(p.getParameters());
+    }
+    return params;
+  }
 
-  public abstract List<SQLParameter> getParameters();
+  protected SQLParameter findDefinition(final SQLParameter p, final List<SQLParameter> parameterDefinitions) {
+    for (SQLParameter pd : parameterDefinitions) {
+      if (p.getName().equals(pd.getName())) {
+        return pd;
+      }
+    }
+    return null;
+  }
+
+  // Java Expression Rendering
+
+  public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer) {
+    DynamicExpression expr = this.getJavaExpression(parameterRenderer);
+    return expr.renderConstructor(margin);
+  }
+
+  protected abstract DynamicExpression getJavaExpression(ParameterRenderer parameterRenderer);
 
   // Rendering
 
-  protected String renderTag(final ParameterRenderer parameterRenderer, final TagAttribute... attributes) {
+  public String renderTag(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
-    sb.append(renderTagHeader(attributes));
+    sb.append(renderTagHeader(parameterRenderer));
     for (Object obj : this.content) {
       try {
         String s = (String) obj;
@@ -86,7 +146,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
       } catch (ClassCastException e1) {
         try {
           DynamicSQLPart s = (DynamicSQLPart) obj;
-          sb.append(s.renderSQLSentence(parameterRenderer));
+          sb.append(s.renderTag(parameterRenderer));
         } catch (ClassCastException e2) {
           sb.append("[could not render object of class: " + obj.getClass().getName() + " ]");
         }
@@ -96,21 +156,28 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
     return sb.toString();
   }
 
-  public abstract String renderSQLSentence(ParameterRenderer parameterRenderer);
+  protected abstract TagAttribute[] getAttributes();
 
-  protected String renderTagHeader(final TagAttribute... attributes) {
-    return renderHeader(false, attributes);
+  // // TODO: remove
+  // @Deprecated
+  // public final String renderSQLSentence(final ParameterRenderer
+  // parameterRenderer) {
+  // return this.renderTag(parameterRenderer);
+  // }
+
+  protected String renderTagHeader(final ParameterRenderer parameterRenderer) {
+    return renderHeader(false, parameterRenderer);
   }
 
-  protected String renderEmptyTag(final TagAttribute... attributes) {
-    return renderHeader(true, attributes);
+  protected String renderEmptyTag(final ParameterRenderer parameterRenderer) {
+    return renderHeader(true, parameterRenderer);
   }
 
-  private String renderHeader(final boolean emptyTag, final TagAttribute... attributes) {
+  private String renderHeader(final boolean emptyTag, final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
     sb.append("<" + super.getTagName());
-    for (TagAttribute a : attributes) {
-      String value = a.getValue();
+    for (TagAttribute a : this.getAttributes()) {
+      String value = a.render(parameterRenderer);
       if (value != null) {
         value = value.replace("&", "&amp;").replace("<", "&lt;").replace("\"", "&quot;");
         sb.append(" " + a.getName() + "=\"" + value + "\"");

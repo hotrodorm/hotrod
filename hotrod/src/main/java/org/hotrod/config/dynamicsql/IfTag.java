@@ -1,13 +1,15 @@
 package org.hotrod.config.dynamicsql;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.config.SQLParameter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.runtime.dynamicsql.expressions.IfExpression;
 
 @XmlRootElement(name = "if")
 public class IfTag extends DynamicSQLPart {
@@ -20,38 +22,46 @@ public class IfTag extends DynamicSQLPart {
 
   // Properties
 
-  private String test = null;
+  private String testText = null;
+  private ParameterisableTextPart test = null;
 
-  // Getters & Setters
-
-  public String getTest() {
-    return test;
-  }
+  // JAXB Setters
 
   @XmlAttribute
   public void setTest(final String test) {
-    this.test = test;
+    this.testText = test;
   }
 
   // Behavior
 
-  @Override
-  public void validate(final String tagIdentification) throws InvalidConfigurationFileException {
-    // No validation necessary
-  }
-
-  @Override
-  public List<SQLParameter> getParameters() {
-    return null;
+  protected void validateAttributes(final String tagIdentification) throws InvalidConfigurationFileException {
+    if (this.testText == null) {
+      throw new InvalidConfigurationFileException(
+          "Invalid <if> tag included in the tag " + tagIdentification + ". The 'test' attribute must be specified.");
+    }
+    this.test = new ParameterisableTextPart(this.testText, tagIdentification);
   }
 
   // Rendering
 
   @Override
-  public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
-    return super.renderTag(parameterRenderer, //
-        new TagAttribute("test", this.test) //
-    );
+  protected TagAttribute[] getAttributes() {
+    TagAttribute[] atts = { new TagAttribute("test", this.test) };
+    return atts;
+  }
+
+  // Java Expression
+
+  @Override
+  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
+    String condition = this.test.renderTag(parameterRenderer);
+
+    List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
+    for (DynamicSQLPart p : super.parts) {
+      exps.add(p.getJavaExpression(parameterRenderer));
+    }
+
+    return new IfExpression(condition, exps.toArray(new DynamicExpression[0]));
   }
 
 }

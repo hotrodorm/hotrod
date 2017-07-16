@@ -79,7 +79,7 @@ public class NselectTag extends AbstractConfigurationTag {
       } catch (ClassCastException e1) {
         try {
           DynamicSQLPart t = (DynamicSQLPart) obj;
-          sb.append(t.renderSQLSentence(new ParameterRenderer() {
+          sb.append(t.renderTag(new ParameterRenderer() {
 
             @Override
             public String render(SQLParameter parameter) {

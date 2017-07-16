@@ -1,13 +1,12 @@
 package org.hotrod.config.dynamicsql;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.config.SQLParameter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.runtime.dynamicsql.expressions.ForEachExpression;
 
 @XmlRootElement(name = "foreach")
 public class ForEachTag extends DynamicSQLPart {
@@ -20,93 +19,98 @@ public class ForEachTag extends DynamicSQLPart {
 
   // Properties
 
-  private String item = null;
-  private String index = null;
-  private String collection = null;
-  private String open = null;
-  private String separator = null;
-  private String close = null;
+  private String itemText = null;
+  private String indexText = null;
+  private String collectionText = null;
+  private String openText = null;
+  private String separatorText = null;
+  private String closeText = null;
 
-  // Getters & Setters
+  private ParameterisableTextPart item = null;
+  private ParameterisableTextPart index = null;
+  private ParameterisableTextPart collection = null;
+  private ParameterisableTextPart open = null;
+  private ParameterisableTextPart separator = null;
+  private ParameterisableTextPart close = null;
 
-  public String getItem() {
-    return item;
-  }
+  // JAXB Setters
 
   @XmlAttribute
   public void setItem(final String item) {
-    this.item = item;
-  }
-
-  public String getIndex() {
-    return index;
+    this.itemText = item;
   }
 
   @XmlAttribute
   public void setIndex(final String index) {
-    this.index = index;
-  }
-
-  public String getCollection() {
-    return collection;
+    this.indexText = index;
   }
 
   @XmlAttribute
   public void setCollection(final String collection) {
-    this.collection = collection;
-  }
-
-  public String getOpen() {
-    return open;
+    this.collectionText = collection;
   }
 
   @XmlAttribute
   public void setOpen(final String open) {
-    this.open = open;
-  }
-
-  public String getSeparator() {
-    return separator;
+    this.openText = open;
   }
 
   @XmlAttribute
   public void setSeparator(final String separator) {
-    this.separator = separator;
-  }
-
-  public String getClose() {
-    return close;
+    this.separatorText = separator;
   }
 
   @XmlAttribute
   public void setClose(final String close) {
-    this.close = close;
+    this.closeText = close;
   }
+
+  // Getters
 
   // Behavior
 
   @Override
-  public void validate(final String tagIdentification) throws InvalidConfigurationFileException {
-    // No validation necessary
-  }
+  protected void validateAttributes(final String tagIdentification) throws InvalidConfigurationFileException {
+    this.item = this.itemText == null ? null : new ParameterisableTextPart(this.itemText, tagIdentification);
+    this.index = this.indexText == null ? null : new ParameterisableTextPart(this.indexText, tagIdentification);
+    this.collection = this.collectionText == null ? null
+        : new ParameterisableTextPart(this.collectionText, tagIdentification);
 
-  @Override
-  public List<SQLParameter> getParameters() {
-    return null;
+    this.open = this.openText == null ? null : new ParameterisableTextPart(this.openText, tagIdentification);
+    this.separator = this.separatorText == null ? null
+        : new ParameterisableTextPart(this.separatorText, tagIdentification);
+    this.close = this.closeText == null ? null : new ParameterisableTextPart(this.closeText, tagIdentification);
   }
 
   // Rendering
 
   @Override
-  public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
-    return super.renderTag(parameterRenderer, //
+  protected TagAttribute[] getAttributes() {
+    TagAttribute[] atts = { //
         new TagAttribute("item", this.item), //
         new TagAttribute("index", this.index), //
         new TagAttribute("collection", this.collection), //
         new TagAttribute("open", this.open), //
         new TagAttribute("separator", this.separator), //
         new TagAttribute("close", this.close) //
-    );
+    };
+    return atts;
+  }
+
+  // Java Expression
+
+  @Override
+  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
+
+    String it = this.item.renderTag(parameterRenderer);
+    String in = this.index.renderTag(parameterRenderer);
+    String co = this.collection.renderTag(parameterRenderer);
+
+    String op = this.open.renderTag(parameterRenderer);
+    String se = this.separator.renderTag(parameterRenderer);
+    String cl = this.close.renderTag(parameterRenderer);
+
+    return new ForEachExpression(it, in, co, op, se, cl);
   }
 
 }

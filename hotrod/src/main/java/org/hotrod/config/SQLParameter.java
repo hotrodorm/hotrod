@@ -15,7 +15,9 @@ public class SQLParameter implements SQLChunk {
   public static final String PREFIX = "#{";
   public static final String SUFFIX = "}";
 
+  @SuppressWarnings("unused")
   private String paramDefinition;
+
   private String name;
   private boolean isDefinition;
   private SQLParameter definition;

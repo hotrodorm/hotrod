@@ -14,8 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.log4j.Logger;
 import org.hotrod.config.dynamicsql.ComplementTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
-import org.hotrod.config.dynamicsql.LiteralSQLPart;
-import org.hotrod.config.sql.SQLSection;
+import org.hotrod.config.dynamicsql.LiteralTextPart;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
@@ -23,7 +22,7 @@ import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 
 @XmlRootElement(name = "select")
-public class SelectTag extends AbstractSQLDAOTag {
+public class SelectTag extends AbstractDAOTag {
 
   // Constants
 
@@ -44,8 +43,9 @@ public class SelectTag extends AbstractSQLDAOTag {
 
   // Properties - Parsed
 
-  protected List<ColumnTag> columns = new ArrayList<ColumnTag>();
-  protected List<DynamicSQLPart> parts = new ArrayList<DynamicSQLPart>();
+  protected List<ColumnTag> columns = null;
+  protected List<DynamicSQLPart> parts = null;
+  private List<LiteralTextPart> foundationParts = null;
 
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
@@ -86,10 +86,15 @@ public class SelectTag extends AbstractSQLDAOTag {
 
     this.columns = new ArrayList<ColumnTag>();
     this.parts = new ArrayList<DynamicSQLPart>();
+
+    this.foundationParts = new ArrayList<LiteralTextPart>();
+
     for (Object obj : this.content) {
       try {
         String s = (String) obj;
-        this.parts.add(new LiteralSQLPart(s));
+        LiteralTextPart p = new LiteralTextPart(s);
+        this.parts.add(p);
+        this.foundationParts.add(p);
       } catch (ClassCastException e1) {
         try {
           ColumnTag col = (ColumnTag) obj;
@@ -123,7 +128,7 @@ public class SelectTag extends AbstractSQLDAOTag {
     // content text and complement
 
     for (DynamicSQLPart p : this.parts) {
-      p.validate("<select> with java-class-name '" + this.javaClassName + "'");
+      p.validateContent("<select> with java-class-name '" + this.javaClassName + "'");
     }
 
     // all validations cleared
@@ -158,21 +163,38 @@ public class SelectTag extends AbstractSQLDAOTag {
 
   public String getSQLFoundation(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
-    for (SQLSection s : this.sections) {
-      String b = s.getSQLFoundation(parameterRenderer);
-      if (b != null) {
-        sb.append(unescapeXml(b));
-      }
+    for (LiteralTextPart tp : this.foundationParts) {
+      sb.append(tp.renderTag(parameterRenderer));
     }
     return sb.toString();
   }
 
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
-    for (SQLSection s : this.sections) {
-      sb.append(s.renderSQLSentence(parameterRenderer));
+    for (DynamicSQLPart p : this.parts) {
+      sb.append(p.renderTag(parameterRenderer));
     }
     return sb.toString();
+  }
+
+  public List<SQLParameter> getParameterOccurrences() {
+    List<SQLParameter> occurrences = new ArrayList<SQLParameter>();
+    for (DynamicSQLPart part : this.parts) {
+      occurrences.addAll(part.getParameters());
+    }
+    return occurrences;
+  }
+
+  public List<SQLParameter> getParameterDefinitions() {
+    List<SQLParameter> defs = new ArrayList<SQLParameter>();
+    for (DynamicSQLPart part : this.parts) {
+      for (SQLParameter p : part.getParameters()) {
+        if (p.isDefinition()) {
+          defs.add(p);
+        }
+      }
+    }
+    return defs;
   }
 
   // DAO Tag implementation

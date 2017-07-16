@@ -1,10 +1,26 @@
 package org.hotrod.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementRefs;
+import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.sql.SQLSection;
+import org.hotrod.config.dynamicsql.BindTag;
+import org.hotrod.config.dynamicsql.ChooseTag;
+import org.hotrod.config.dynamicsql.DynamicSQLPart;
+import org.hotrod.config.dynamicsql.ForEachTag;
+import org.hotrod.config.dynamicsql.IfTag;
+import org.hotrod.config.dynamicsql.LiteralTextPart;
+import org.hotrod.config.dynamicsql.OtherwiseTag;
+import org.hotrod.config.dynamicsql.SetTag;
+import org.hotrod.config.dynamicsql.TrimTag;
+import org.hotrod.config.dynamicsql.WhenTag;
+import org.hotrod.config.dynamicsql.WhereTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.utils.ClassPackage;
@@ -12,7 +28,7 @@ import org.hotrod.utils.identifiers.DbIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
 
 @XmlRootElement(name = "query")
-public class QueryTag extends AbstractSQLDAOTag {
+public class QueryTag extends AbstractDAOTag {
 
   // Constants
 
@@ -22,10 +38,31 @@ public class QueryTag extends AbstractSQLDAOTag {
 
   protected String javaMethodName = null;
 
+  // Properties - Primitive content parsing by JAXB
+
+  @XmlMixed
+  @XmlElementRefs({ //
+      @XmlElementRef(type = IfTag.class), //
+      @XmlElementRef(type = ChooseTag.class), //
+      @XmlElementRef(type = WhereTag.class), //
+      @XmlElementRef(type = WhenTag.class), //
+      @XmlElementRef(type = OtherwiseTag.class), //
+      @XmlElementRef(type = ForEachTag.class), //
+      @XmlElementRef(type = BindTag.class), //
+      @XmlElementRef(type = SetTag.class), //
+      @XmlElementRef(type = TrimTag.class) //
+  })
+  private List<Object> content = new ArrayList<Object>();
+
+  // Properties - Parsed
+
+  protected List<DynamicSQLPart> parts = null;
+
   // Constructor
 
   public QueryTag() {
     super("query");
+    log.debug("init");
   }
 
   // JAXB Setters
@@ -51,7 +88,29 @@ public class QueryTag extends AbstractSQLDAOTag {
           + "and continue with letters, digits, dollarsign, and/or underscores.");
     }
 
-    super.validateCore("java-method-name", this.javaMethodName);
+    String tagIdentification = "<" + super.getTagName() + "> with java-method-name '" + this.javaMethodName + "'";
+
+    // text, dynamic SQL tags
+
+    this.parts = new ArrayList<DynamicSQLPart>();
+
+    for (Object obj : this.content) {
+      DynamicSQLPart p;
+      try {
+        String s = (String) obj;
+        p = new LiteralTextPart(s);
+      } catch (ClassCastException e1) {
+        try {
+          p = (DynamicSQLPart) obj;
+        } catch (ClassCastException e2) {
+          throw new InvalidConfigurationFileException("The body of the tag " + tagIdentification
+              + " has an invalid tag (of class '" + obj.getClass().getName() + "').");
+        }
+      }
+      p.validateContent(tagIdentification);
+      this.parts.add(p);
+    }
+
   }
 
   // Getters
@@ -68,11 +127,34 @@ public class QueryTag extends AbstractSQLDAOTag {
 
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
-    log.debug("this.sections.size()=" + this.sections.size());
-    for (SQLSection s : this.sections) {
-      sb.append(s.renderSQLSentence(parameterRenderer));
+    for (DynamicSQLPart p : this.parts) {
+      sb.append(p.renderTag(parameterRenderer));
     }
     return sb.toString();
+  }
+
+  public List<SQLParameter> getParameterDefinitions() {
+    List<SQLParameter> defs = new ArrayList<SQLParameter>();
+    for (DynamicSQLPart part : this.parts) {
+      for (SQLParameter p : part.getParameters()) {
+        if (p.isDefinition()) {
+          defs.add(p);
+        }
+      }
+    }
+    return defs;
+  }
+
+  public String getAugmentedSQL() {
+    ParameterRenderer parameterRenderer = new ParameterRenderer() {
+
+      @Override
+      public String render(final SQLParameter parameter) {
+        return "#{" + parameter.getName() + "}";
+      }
+
+    };
+    return this.renderSQLSentence(parameterRenderer);
   }
 
   @Override
