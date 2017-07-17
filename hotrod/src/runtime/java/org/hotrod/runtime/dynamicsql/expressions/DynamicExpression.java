@@ -21,9 +21,13 @@ public abstract class DynamicExpression {
       throws DynamicSQLEvaluationException;
 
   public final String evaluate(final DynamicSQLParameters variables) throws DynamicSQLEvaluationException {
-    StringBuilder sb = new StringBuilder();
-    this.evaluate(sb, variables);
-    return sb.toString();
+    try {
+      StringBuilder sb = new StringBuilder();
+      this.evaluate(sb, variables);
+      return sb.toString();
+    } catch (RuntimeException e) {
+      throw new DynamicSQLEvaluationException("Could not evaluate expression: " + e.getMessage());
+    }
   }
 
   public abstract List<Object> getConstructorParameters();
