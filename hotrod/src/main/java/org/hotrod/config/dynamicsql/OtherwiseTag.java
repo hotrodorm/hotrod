@@ -22,11 +22,24 @@ public class OtherwiseTag extends DynamicSQLPart {
   // Behavior
 
   @Override
-  protected void validateAttributes(final String tagIdentification) throws InvalidConfigurationFileException {
+  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
     // No attributes; nothing to do
   }
 
+  @Override
+  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
+    // No extra validation on the body
+  }
+
   // Rendering
+
+  @Override
+  protected boolean shouldRenderTag() {
+    return true;
+  }
+
   @Override
   protected TagAttribute[] getAttributes() {
     TagAttribute[] atts = {};

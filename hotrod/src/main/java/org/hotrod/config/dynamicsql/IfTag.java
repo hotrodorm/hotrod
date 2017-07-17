@@ -34,15 +34,27 @@ public class IfTag extends DynamicSQLPart {
 
   // Behavior
 
-  protected void validateAttributes(final String tagIdentification) throws InvalidConfigurationFileException {
+  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
     if (this.testText == null) {
       throw new InvalidConfigurationFileException(
           "Invalid <if> tag included in the tag " + tagIdentification + ". The 'test' attribute must be specified.");
     }
-    this.test = new ParameterisableTextPart(this.testText, tagIdentification);
+    this.test = new ParameterisableTextPart(this.testText, tagIdentification, parameterDefinitions);
+  }
+
+  @Override
+  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
+    // No extra validation on the body
   }
 
   // Rendering
+
+  @Override
+  protected boolean shouldRenderTag() {
+    return true;
+  }
 
   @Override
   protected TagAttribute[] getAttributes() {
@@ -54,7 +66,7 @@ public class IfTag extends DynamicSQLPart {
 
   @Override
   protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
-    String condition = this.test.renderTag(parameterRenderer);
+    String condition = this.test.renderXML(parameterRenderer);
 
     List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
     for (DynamicSQLPart p : super.parts) {

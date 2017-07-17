@@ -3,6 +3,7 @@ package org.hotrod.config.dynamicsql;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hotrod.config.SQLParameter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
@@ -10,6 +11,8 @@ import org.hotrod.runtime.dynamicsql.expressions.ForEachExpression;
 
 @XmlRootElement(name = "foreach")
 public class ForEachTag extends DynamicSQLPart {
+
+  // Constants
 
   // Constructor
 
@@ -19,30 +22,29 @@ public class ForEachTag extends DynamicSQLPart {
 
   // Properties
 
-  private String itemText = null;
-  private String indexText = null;
+  private String item = null;
+  private String index = null;
   private String collectionText = null;
-  private String openText = null;
-  private String separatorText = null;
-  private String closeText = null;
+  private String open = null;
+  private String separator = null;
+  private String close = null;
 
-  private ParameterisableTextPart item = null;
-  private ParameterisableTextPart index = null;
   private ParameterisableTextPart collection = null;
-  private ParameterisableTextPart open = null;
-  private ParameterisableTextPart separator = null;
-  private ParameterisableTextPart close = null;
+
+  private SQLParameter itemParameter = null;
+  private SQLParameter indexParameter = null;
+  private SQLParameter body = null;
 
   // JAXB Setters
 
   @XmlAttribute
   public void setItem(final String item) {
-    this.itemText = item;
+    this.item = item;
   }
 
   @XmlAttribute
   public void setIndex(final String index) {
-    this.indexText = index;
+    this.index = index;
   }
 
   @XmlAttribute
@@ -52,17 +54,17 @@ public class ForEachTag extends DynamicSQLPart {
 
   @XmlAttribute
   public void setOpen(final String open) {
-    this.openText = open;
+    this.open = open;
   }
 
   @XmlAttribute
   public void setSeparator(final String separator) {
-    this.separatorText = separator;
+    this.separator = separator;
   }
 
   @XmlAttribute
   public void setClose(final String close) {
-    this.closeText = close;
+    this.close = close;
   }
 
   // Getters
@@ -70,29 +72,109 @@ public class ForEachTag extends DynamicSQLPart {
   // Behavior
 
   @Override
-  protected void validateAttributes(final String tagIdentification) throws InvalidConfigurationFileException {
-    this.item = this.itemText == null ? null : new ParameterisableTextPart(this.itemText, tagIdentification);
-    this.index = this.indexText == null ? null : new ParameterisableTextPart(this.indexText, tagIdentification);
-    this.collection = this.collectionText == null ? null
-        : new ParameterisableTextPart(this.collectionText, tagIdentification);
+  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
 
-    this.open = this.openText == null ? null : new ParameterisableTextPart(this.openText, tagIdentification);
-    this.separator = this.separatorText == null ? null
-        : new ParameterisableTextPart(this.separatorText, tagIdentification);
-    this.close = this.closeText == null ? null : new ParameterisableTextPart(this.closeText, tagIdentification);
+    if (this.item != null) {
+      SQLParameter p = new SQLParameter(this.item, tagIdentification);
+      if (parameterDefinitions.find(p) != null) {
+        throw new InvalidConfigurationFileException("Invalid <foreach> tag in the body of the tag " + tagIdentification
+            + ". The 'item' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
+      }
+      this.itemParameter = p;
+      parameterDefinitions.add(p);
+    } else {
+      this.itemParameter = null;
+    }
+
+    if (this.index != null) {
+      SQLParameter p = new SQLParameter(this.index, tagIdentification);
+      if (parameterDefinitions.find(p) != null) {
+        throw new InvalidConfigurationFileException("Invalid <foreach> tag in the body of the tag " + tagIdentification
+            + ". The 'index' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
+      }
+      this.indexParameter = p;
+      parameterDefinitions.add(p);
+    } else {
+      this.indexParameter = null;
+    }
+
+    this.collection = this.collectionText == null ? null
+        : new ParameterisableTextPart(this.collectionText, tagIdentification, parameterDefinitions);
+
+  }
+
+  @Override
+  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
+
+    for (DynamicSQLPart p : super.parts) {
+      try {
+        ParameterisableTextPart s = (ParameterisableTextPart) p;
+        for (SQLChunk ch : s.chunks) {
+          try {
+            LiteralTextPart literal = (LiteralTextPart) ch;
+            if (!literal.isEmpty()) {
+              throw new InvalidConfigurationFileException(
+                  "Invalid <foreach> tag included in the tag " + tagIdentification
+                      + ". The body of a <foreach> tag must include one variable occurrence in the form #{name}.");
+            }
+          } catch (ClassCastException e1) {
+            try {
+              SQLParameter param = (SQLParameter) ch;
+              if (this.body != null) {
+                throw new InvalidConfigurationFileException("Invalid <foreach> tag included in the tag "
+                    + tagIdentification
+                    + ". The body of a <foreach> tag must include one variable occurrence in the form #{name}, but found more than one.");
+              }
+              this.body = param;
+            } catch (ClassCastException e2) {
+              throw new InvalidConfigurationFileException(
+                  "Invalid <foreach> tag included in the tag " + tagIdentification
+                      + ". The body of a <foreach> tag must include one variable occurrence in the form #{name}.");
+            }
+          }
+        }
+      } catch (ClassCastException e3) {
+        throw new InvalidConfigurationFileException("Invalid <choose> tag included in the tag " + tagIdentification
+            + ". The body of a <foreach> tag must include one variable occurrence in the form #{name}, but found an object of class '"
+            + p.getClass().getName() + "'.");
+      }
+    }
+    if (this.body == null) {
+      throw new InvalidConfigurationFileException("Invalid <foreach> tag included in the tag " + tagIdentification
+          + ". The body of a <foreach> tag must include one variable occurrence in the form #{name}, but found none.");
+    }
+
+  }
+
+  @Override
+  protected void postTagValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
+    if (this.itemParameter != null) {
+      parameterDefinitions.remove(this.itemParameter);
+    }
+    if (this.indexParameter != null) {
+      parameterDefinitions.remove(this.indexParameter);
+    }
   }
 
   // Rendering
 
   @Override
+  protected boolean shouldRenderTag() {
+    return true;
+  }
+
+  @Override
   protected TagAttribute[] getAttributes() {
     TagAttribute[] atts = { //
-        new TagAttribute("item", this.item), //
-        new TagAttribute("index", this.index), //
+        new TagAttribute("item", new LiteralTextPart(this.item)), //
+        new TagAttribute("index", new LiteralTextPart(this.index)), //
         new TagAttribute("collection", this.collection), //
-        new TagAttribute("open", this.open), //
-        new TagAttribute("separator", this.separator), //
-        new TagAttribute("close", this.close) //
+        new TagAttribute("open", new LiteralTextPart(this.open)), //
+        new TagAttribute("separator", new LiteralTextPart(this.separator)), //
+        new TagAttribute("close", new LiteralTextPart(this.close)) //
     };
     return atts;
   }
@@ -101,16 +183,9 @@ public class ForEachTag extends DynamicSQLPart {
 
   @Override
   protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
-
-    String it = this.item.renderTag(parameterRenderer);
-    String in = this.index.renderTag(parameterRenderer);
-    String co = this.collection.renderTag(parameterRenderer);
-
-    String op = this.open.renderTag(parameterRenderer);
-    String se = this.separator.renderTag(parameterRenderer);
-    String cl = this.close.renderTag(parameterRenderer);
-
-    return new ForEachExpression(it, in, co, op, se, cl);
+    String coll = this.collection.renderStatic(parameterRenderer);
+    return new ForEachExpression(this.item, this.index, coll, this.open, this.separator, this.close,
+        this.body.getName());
   }
 
 }

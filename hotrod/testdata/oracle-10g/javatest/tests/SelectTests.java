@@ -39,11 +39,11 @@ public class SelectTests {
     // tryInsertBadData();
     // selectViewSequenceAndQuery();
     // searchAccounts();
-    // searchAccountsByIds();
+    searchAccountsByIds();
     // searchAccount();
     // searchAccount2();
     // selectAccountTx3();
-    specialCharactersInNames();
+    // specialCharactersInNames();
   }
 
   // private static void tryInsertBadData() throws SQLException {
@@ -161,7 +161,14 @@ public class SelectTests {
     // ids.add(10);
     // ids.add(20);
     // ids.add(22);
-    for (AccountByIdsVO a : AccountByIds.select()) {
+
+    String name = null;
+    String type = null;
+    Integer minBalance = null;
+    Integer maxBalance = null;
+    Integer sortType = null;
+
+    for (AccountByIdsVO a : AccountByIds.select(name, type, minBalance, maxBalance, sortType)) {
       System.out.println("a=" + a);
     }
   }

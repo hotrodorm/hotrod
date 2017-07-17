@@ -5,11 +5,19 @@ import org.hotrod.generator.ParameterRenderer;
 public class TagAttribute {
 
   private String name;
-  private ParameterisableTextPart value;
+  private LiteralTextPart lValue;
+  private ParameterisableTextPart pValue;
 
   public TagAttribute(final String name, final ParameterisableTextPart value) {
     this.name = name;
-    this.value = value;
+    this.lValue = null;
+    this.pValue = value;
+  }
+
+  public TagAttribute(final String name, final LiteralTextPart value) {
+    this.name = name;
+    this.lValue = value;
+    this.pValue = null;
   }
 
   public String getName() {
@@ -17,7 +25,11 @@ public class TagAttribute {
   }
 
   public String render(final ParameterRenderer parameterRenderer) {
-    return this.value == null ? null : this.value.renderTag(parameterRenderer);
+    if (this.lValue != null) {
+      return this.lValue.renderXML(parameterRenderer);
+    } else {
+      return this.pValue == null ? null : this.pValue.renderXML(parameterRenderer);
+    }
   }
 
 }

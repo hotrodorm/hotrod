@@ -19,7 +19,7 @@ public class IfExpression extends DynamicExpression {
   private DynamicExpression[] expressions;
 
   public IfExpression(final String condition, final DynamicExpression... expressions) {
-    log.info("condition=" + condition);
+    log.debug("init");
     this.condition = JEXL_ENGINE.createExpression(condition);
     this.expressions = expressions;
   }

@@ -1,6 +1,7 @@
 package org.hotrod.config.dynamicsql;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -59,17 +60,45 @@ public class TrimTag extends DynamicSQLPart {
   // Behavior
 
   @Override
-  protected void validateAttributes(final String tagIdentification) throws InvalidConfigurationFileException {
-    this.prefix = this.prefixText == null ? null : new ParameterisableTextPart(this.prefixText, tagIdentification);
+  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
+    this.prefix = this.prefixText == null ? null
+        : new ParameterisableTextPart(this.prefixText, tagIdentification, parameterDefinitions);
     this.prefixOverrides = this.prefixOverridesText == null ? null
-        : new ParameterisableTextPart(this.prefixOverridesText, tagIdentification);
+        : new ParameterisableTextPart(this.prefixOverridesText, tagIdentification, parameterDefinitions);
 
-    this.suffix = this.suffixText == null ? null : new ParameterisableTextPart(this.suffixText, tagIdentification);
+    this.suffix = this.suffixText == null ? null
+        : new ParameterisableTextPart(this.suffixText, tagIdentification, parameterDefinitions);
     this.suffixOverrides = this.suffixOverridesText == null ? null
-        : new ParameterisableTextPart(this.suffixOverridesText, tagIdentification);
+        : new ParameterisableTextPart(this.suffixOverridesText, tagIdentification, parameterDefinitions);
+  }
+
+  @Override
+  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
+
+    for (Iterator<DynamicSQLPart> it = super.parts.iterator(); it.hasNext();) {
+      DynamicSQLPart p = it.next();
+      try {
+        ParameterisableTextPart text = (ParameterisableTextPart) p;
+        if (!text.isEmpty()) {
+          throw new InvalidConfigurationFileException("Invalid <trim> tag included in the tag " + tagIdentification
+              + ". A <trim> tag can only include other tags, but no free text content in it.");
+        }
+        it.remove();
+      } catch (ClassCastException e3) {
+        // Nothing to do
+      }
+    }
+
   }
 
   // Rendering
+
+  @Override
+  protected boolean shouldRenderTag() {
+    return true;
+  }
 
   @Override
   protected TagAttribute[] getAttributes() {
@@ -87,10 +116,10 @@ public class TrimTag extends DynamicSQLPart {
   @Override
   protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
 
-    String prefix = this.prefix.renderTag(parameterRenderer);
-    String prefixOverrides = this.prefixOverrides.renderTag(parameterRenderer);
-    String suffix = this.suffix.renderTag(parameterRenderer);
-    String suffixOverrides = this.suffixOverrides.renderTag(parameterRenderer);
+    String prefix = this.prefix == null ? null : this.prefix.renderStatic(parameterRenderer);
+    String prefixOverrides = this.prefixOverrides == null ? null : this.prefixOverrides.renderStatic(parameterRenderer);
+    String suffix = this.suffix == null ? null : this.suffix.renderStatic(parameterRenderer);
+    String suffixOverrides = this.suffixOverrides == null ? null : this.suffixOverrides.renderStatic(parameterRenderer);
 
     List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
     for (DynamicSQLPart p : super.parts) {

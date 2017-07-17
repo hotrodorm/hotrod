@@ -8,6 +8,8 @@ import org.hotrod.utils.JdbcTypes;
 
 public class SQLParameter implements SQLChunk {
 
+  // Constants
+
   private static final String VALID_PARAM_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*";
   private static final String JAVA_TYPE_PREFIX = "javaType=";
   private static final String JDBC_TYPE_PREFIX = "jdbcType=";
@@ -15,19 +17,40 @@ public class SQLParameter implements SQLChunk {
   public static final String PREFIX = "#{";
   public static final String SUFFIX = "}";
 
+  private static enum VariableType {
+    PARAMETER_DEFINITION, //
+    PARAMETER_REFERENCE, //
+    VARIABLE
+  };
+
+  // Properties
+
   @SuppressWarnings("unused")
   private String paramDefinition;
 
   private String name;
-  private boolean isDefinition;
+  private VariableType type;
   private SQLParameter definition;
   private String javaType;
   private String jdbcType;
   private boolean inTag;
 
+  // Constructor
+
+  // Java Parameter
   public SQLParameter(final String paramDefinition, final String tagIdentification, final boolean inTag)
       throws InvalidConfigurationFileException {
+    initialize(paramDefinition, tagIdentification, inTag, false);
+  }
 
+  // Variable
+  public SQLParameter(final String paramDefinition, final String tagIdentification)
+      throws InvalidConfigurationFileException {
+    initialize(paramDefinition, tagIdentification, true, true);
+  }
+
+  private void initialize(final String paramDefinition, final String tagIdentification, final boolean inTag,
+      boolean isVariable) throws InvalidConfigurationFileException {
     this.paramDefinition = paramDefinition;
 
     String[] parts = paramDefinition.split(",");
@@ -37,7 +60,9 @@ public class SQLParameter implements SQLChunk {
               + "name,javaType=<JAVA-TYPE>,jdbcType=<JDBC-TYPE>" + SUFFIX + "."));
     }
 
-    this.isDefinition = parts.length == 3;
+    this.type = isVariable ? VariableType.VARIABLE
+        : (parts.length == 3 ? VariableType.PARAMETER_DEFINITION : VariableType.PARAMETER_REFERENCE);
+
     this.definition = null;
     this.inTag = inTag;
 
@@ -49,7 +74,7 @@ public class SQLParameter implements SQLChunk {
           "must start with a letter and " + "continue with letters digits or underscore."));
     }
 
-    if (this.isDefinition) {
+    if (this.type == VariableType.PARAMETER_DEFINITION) {
 
       // javaType
 
@@ -86,7 +111,6 @@ public class SQLParameter implements SQLChunk {
       this.javaType = null;
       this.jdbcType = null;
     }
-
   }
 
   public String getErrorMessage(final String paramDefinition, final String tagIdentification,
@@ -108,7 +132,11 @@ public class SQLParameter implements SQLChunk {
   }
 
   public boolean isDefinition() {
-    return isDefinition;
+    return this.type == VariableType.PARAMETER_DEFINITION;
+  }
+
+  public boolean isParameter() {
+    return this.type == VariableType.PARAMETER_DEFINITION || this.type == VariableType.PARAMETER_REFERENCE;
   }
 
   public SQLParameter getDefinition() {
@@ -130,8 +158,18 @@ public class SQLParameter implements SQLChunk {
   // Behavior
 
   @Override
-  public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
+  public String renderStatic(final ParameterRenderer parameterRenderer) {
     return parameterRenderer.render(this);
+  }
+
+  @Override
+  public String renderXML(final ParameterRenderer parameterRenderer) {
+    return parameterRenderer.render(this);
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return false;
   }
 
 }

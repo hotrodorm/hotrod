@@ -8,8 +8,7 @@
     <mybatis>
       <daos gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" />
       <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
-      <mybatis-configuration-template
-        file="mybatis-config-template.xml" />
+      <mybatis-configuration-template file="mybatis-config-template.xml" />
       <session-factory singleton-full-class-name="sessionfactory.DatabaseSessionFactory" />
       <select-generation temp-view-base-name="hotrod_temp_view" />
       <property name="checked.persistence.exception" value="true" />
@@ -18,20 +17,64 @@
 
     <spring-jdbc>
       <daos gen-base-dir="gen/hotrod-spring/daos" dao-package="hotrod.test.generation" />
-      <config gen-base-dir="gen/hotrod-spring/daos/"
-        relative-dir="config" prefix="prueba-hr-" />
+      <config gen-base-dir="gen/hotrod-spring/daos/" relative-dir="config" prefix="prueba-hr-" />
       <select-generation temp-view-base-name="unused" />
     </spring-jdbc>
 
   </generators>
 
   <select java-class-name="AccountByIds">
+    <column name="current_balance" java-type="java.lang.Double" />
+
     select * from account
-      <complement>
-      <if test="#{balance,javaType=java.lang.Integer,jdbcType=NUMERIC} != 123 &amp;&amp; #{balance} &lt; 200">
-        where id = #{id,javaType=java.lang.Integer,jdbcType=NUMERIC}
-      </if>
-      </complement>
+
+    <complement>
+
+      <bind name="namePattern" value="'%' + #{name,javaType=java.lang.String,jdbcType=VARCHAR} + '%'" />
+      <bind name="extraBalance" value="#{type,javaType=java.lang.String,jdbcType=VARCHAR} == 'CHK' ? 100 : 0" />
+
+      <where>
+        <if test="#{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} != null &amp;&amp; #{minBalance} > 10">
+          current_balance > #{minBalance} + #{extraBalance}
+        </if>
+        <if test="#{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} != null &amp;&amp; #{maxBalance} &lt; 500">
+          and current_balance &lt; #{maxBalance}
+        </if>
+        <if test="#{name} != null">
+          and name like #{namePattern}
+        </if>
+      </where>
+
+<!-- 
+ -->
+      <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+ 
+      <choose>
+        <when test="#{sortType,javaType=java.lang.Integer,jdbcType=NUMERIC} == 1">
+          order by type
+        </when>
+        <when test="#{sortType} == 2">
+          order by created_on
+        </when>
+        <otherwise>
+          order by id
+        </otherwise>
+      </choose>
+
+      <trim>
+        <if test="#{sortType} == 3">/* plan=1 //</if>
+        <if test="#{sortType} == 4">/* plan=1 //</if>
+      </trim>
+
+      <set>
+        <if test="#{sortType} == 3">/* plan=1 //</if>
+        <if test="#{sortType} == 4">/* plan=1 //</if>
+      </set>
+
+    </complement>
+
   </select>
 
 </hotrod>

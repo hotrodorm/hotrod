@@ -136,11 +136,8 @@ public class SelectTag extends AbstractDAOTag {
     // content text and complement
 
     for (DynamicSQLPart p : this.parts) {
-      p.validateContent("<select> with java-class-name '" + this.javaClassName + "'");
+      p.validate("<select> with java-class-name '" + this.javaClassName + "'");
     }
-
-    log.info("select '" + this.javaClassName + "': " + this.columns.size() + " columns, " + this.foundationParts.size()
-        + " foundation parts, " + this.parts.size() + " parts; aggregated part: " + this.aggregatedPart);
 
     // all validations cleared
 
@@ -175,8 +172,7 @@ public class SelectTag extends AbstractDAOTag {
   public String getSQLFoundation(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
     for (LiteralTextPart tp : this.foundationParts) {
-      log.info("f=" + tp.renderTag(parameterRenderer));
-      sb.append(tp.renderTag(parameterRenderer));
+      sb.append(tp.renderXML(parameterRenderer));
     }
     return sb.toString();
   }
@@ -184,13 +180,22 @@ public class SelectTag extends AbstractDAOTag {
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
     for (DynamicSQLPart p : this.parts) {
-      sb.append(p.renderTag(parameterRenderer));
+      String st = p.renderStatic(parameterRenderer);
+      // log.info("p=" + p + " st=" + st);
+      sb.append(st);
+    }
+    return sb.toString();
+  }
+
+  public String renderXML(final ParameterRenderer parameterRenderer) {
+    StringBuilder sb = new StringBuilder();
+    for (DynamicSQLPart p : this.parts) {
+      sb.append(p.renderXML(parameterRenderer));
     }
     return sb.toString();
   }
 
   public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer) {
-    log.info("this.aggregatedPart=" + this.aggregatedPart);
     return this.aggregatedPart.renderJavaExpression(margin, parameterRenderer);
   }
 

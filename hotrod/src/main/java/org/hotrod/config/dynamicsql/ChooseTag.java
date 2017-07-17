@@ -31,11 +31,14 @@ public class ChooseTag extends DynamicSQLPart {
   // Behavior
 
   @Override
-  protected void validateAttributes(final String tagIdentification) throws InvalidConfigurationFileException {
+  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
     // No attributes; nothing to do
+  }
 
-    // whens & otherwise
-
+  @Override
+  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
     this.whens = new ArrayList<WhenTag>();
     this.otherwise = null;
 
@@ -48,16 +51,29 @@ public class ChooseTag extends DynamicSQLPart {
           OtherwiseTag otherwise = (OtherwiseTag) p;
           this.otherwise = otherwise;
         } catch (ClassCastException e2) {
-          throw new InvalidConfigurationFileException("Invalid <choose> tag included in the tag " + tagIdentification
-              + ". A <choose> tag can only include <when> and <otherwise> tags, but found an object of class '"
-              + p.getClass().getName() + "'.");
+          try {
+            ParameterisableTextPart text = (ParameterisableTextPart) p;
+            if (!text.isEmpty()) {
+              throw new InvalidConfigurationFileException("Invalid <choose> tag included in the tag "
+                  + tagIdentification
+                  + ". A <choose> tag can only include <when> and <otherwise> tags in its body, but found extra text in it.");
+            }
+          } catch (ClassCastException e3) {
+            throw new InvalidConfigurationFileException("Invalid <choose> tag included in the tag " + tagIdentification
+                + ". A <choose> tag can only include <when> and <otherwise> tags, but found an object of class '"
+                + p.getClass().getName() + "'.");
+          }
         }
       }
     }
-
   }
 
   // Rendering
+
+  @Override
+  protected boolean shouldRenderTag() {
+    return true;
+  }
 
   @Override
   protected TagAttribute[] getAttributes() {

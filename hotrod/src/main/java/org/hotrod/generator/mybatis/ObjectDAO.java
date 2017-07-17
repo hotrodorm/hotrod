@@ -153,7 +153,9 @@ public class ObjectDAO {
       }
 
       if (this.isSelect()) {
-        writeSelectExpression();
+
+        writeSelectExpression(); // remove once tested
+
         writeParameterizedSelect();
       } else {
         writeSelectByExampleAndOrder();
@@ -175,6 +177,7 @@ public class ObjectDAO {
       writeConverters();
 
       if (this.compositeTag != null) {
+
         writeOrderingEnum();
 
         log.debug("SQL NAME=" + this.metadata.getIdentifier().getSQLIdentifier() + " this.tag=" + this.compositeTag);
@@ -725,19 +728,17 @@ public class ObjectDAO {
     println();
   }
 
-  // TODO:
+  // TODO: remove once tested
 
   private void writeSelectExpression() throws IOException {
     println("  public static final " + DynamicExpression.class.getName() + " JAVA_EXPRESSION =\n");
 
     ParameterRenderer parameterRenderer = new ParameterRenderer() {
-
       @Override
       public String render(final SQLParameter parameter) {
-        return "#[" + parameter.getName() + ",javaType=" + parameter.getJavaType() + ",jdbcType"
+        return "#[" + parameter.getName() + ",javaType=" + parameter.getJavaType() + ",jdbcType="
             + parameter.getJdbcType() + "]";
       }
-
     };
 
     println(this.selectTag.renderJavaExpression(4, parameterRenderer) + ";");

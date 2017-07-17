@@ -4,6 +4,10 @@ import org.hotrod.generator.ParameterRenderer;
 
 public interface SQLChunk {
 
-  String renderSQLSentence(ParameterRenderer parameterRenderer);
+  boolean isEmpty();
+
+  String renderStatic(ParameterRenderer parameterRenderer);
+
+  String renderXML(ParameterRenderer parameterRenderer);
 
 }

@@ -107,7 +107,7 @@ public class QueryTag extends AbstractDAOTag {
               + " has an invalid tag (of class '" + obj.getClass().getName() + "').");
         }
       }
-      p.validateContent(tagIdentification);
+      p.validate(tagIdentification);
       this.parts.add(p);
     }
 
@@ -128,7 +128,7 @@ public class QueryTag extends AbstractDAOTag {
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
     for (DynamicSQLPart p : this.parts) {
-      sb.append(p.renderTag(parameterRenderer));
+      sb.append(p.renderXML(parameterRenderer));
     }
     return sb.toString();
   }

@@ -25,22 +25,30 @@ public class ParameterisableTextPart extends DynamicSQLPart {
 
   // Constructor
 
-  public ParameterisableTextPart(final String txt, final String tagIdentification)
-      throws InvalidConfigurationFileException {
+  public ParameterisableTextPart(final String txt, final String tagIdentification,
+      final ParameterDefinitions parameterDefinitions) throws InvalidConfigurationFileException {
     super("not-a-tag-but-sql-content");
     log.debug("init");
     this.txt = txt;
-    this.validate(tagIdentification);
+    this.validate(tagIdentification, parameterDefinitions);
   }
 
   // Behavior
 
   @Override
-  protected void validateAttributes(final String tagIdentification) throws InvalidConfigurationFileException {
+  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
     // No attributes; nothing to do
   }
 
-  private void validate(final String tagIdentification) throws InvalidConfigurationFileException {
+  @Override
+  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
+    // No extra validation on the body
+  }
+
+  private void validate(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
     int pos = 0;
     int prefix;
     int suffix;
@@ -59,6 +67,30 @@ public class ParameterisableTextPart extends DynamicSQLPart {
 
       SQLParameter p = new SQLParameter(this.txt.substring(prefix + SQLParameter.PREFIX.length(), suffix),
           tagIdentification, false);
+
+      SQLParameter definition = parameterDefinitions.find(p);
+      if (p.isDefinition()) {
+        if (definition != null) {
+          throw new InvalidConfigurationFileException("The body of the tag " + tagIdentification
+              + " has multiple parameter definitions with the same name: " + p.getName() + ".\n"
+              + "* If you want them to be different parameters, please choose a different names for each one;\n"
+              + "* If you want to use the same parameter multiple times, "
+              + "then the 'javaType' and/or 'jdbcType' can only be specified " + "on the first occurrence of it.");
+        } else {
+          parameterDefinitions.add(p);
+        }
+      } else {
+        if (definition != null) {
+          p.setDefinition(definition);
+        } else {
+          throw new InvalidConfigurationFileException(
+              "The body of the tag " + tagIdentification + " includes a parameter reference '" + p.getName()
+                  + "' but there's no parameter defined with that name yet.\n"
+                  + "The first time a parameter is specified, " + "it must be fully qualified with the 'javaType' and "
+                  + "'jdbcType' values (i.e. must be a parameter definition, rather than a parameter occurrence).");
+        }
+      }
+
       this.chunks.add(p);
       this.params.add(p);
 
@@ -78,7 +110,21 @@ public class ParameterisableTextPart extends DynamicSQLPart {
         + (extraMessage == null ? "" : ":\n" + extraMessage);
   }
 
+  public boolean isEmpty() {
+    for (SQLChunk ch : this.chunks) {
+      if (!ch.isEmpty()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   // Rendering
+
+  @Override
+  protected boolean shouldRenderTag() {
+    return false;
+  }
 
   @Override
   protected TagAttribute[] getAttributes() {
@@ -87,7 +133,7 @@ public class ParameterisableTextPart extends DynamicSQLPart {
   }
 
   @Override
-  public String renderTag(final ParameterRenderer parameterRenderer) {
+  public String renderXML(final ParameterRenderer parameterRenderer) {
     ParameterRenderer conditionRenderer = new ParameterRenderer() {
       @Override
       public String render(SQLParameter parameter) {
@@ -96,9 +142,11 @@ public class ParameterisableTextPart extends DynamicSQLPart {
     };
     StringBuilder sb = new StringBuilder();
     for (SQLChunk ch : this.chunks) {
-      sb.append(ch.renderSQLSentence(conditionRenderer));
+      sb.append(ch.renderXML(conditionRenderer));
     }
-    return sb.toString();
+    String text = sb.toString();
+    // log.info("text=" + text);
+    return text;
   }
 
   // Java Expression
@@ -107,7 +155,7 @@ public class ParameterisableTextPart extends DynamicSQLPart {
   protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
     for (SQLChunk ch : this.chunks) {
-      sb.append(ch.renderSQLSentence(parameterRenderer));
+      sb.append(ch.renderStatic(parameterRenderer));
     }
     return new VerbatimExpression(sb.toString());
   }
