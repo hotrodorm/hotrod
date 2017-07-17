@@ -36,6 +36,7 @@ import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
+import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.StaleDataException;
 import org.hotrod.runtime.interfaces.DaoForUpdate;
 import org.hotrod.runtime.interfaces.DaoWithOrder;
@@ -727,7 +728,7 @@ public class ObjectDAO {
   // TODO:
 
   private void writeSelectExpression() throws IOException {
-    println("  private static final JAVA_EXPRESSION =\n");
+    println("  public static final " + DynamicExpression.class.getName() + " JAVA_EXPRESSION =\n");
 
     ParameterRenderer parameterRenderer = new ParameterRenderer() {
 
@@ -739,7 +740,7 @@ public class ObjectDAO {
 
     };
 
-    println(this.selectTag.renderJavaExpression(4, parameterRenderer));
+    println(this.selectTag.renderJavaExpression(4, parameterRenderer) + ";");
 
     println();
   }

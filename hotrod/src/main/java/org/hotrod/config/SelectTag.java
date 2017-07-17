@@ -139,6 +139,9 @@ public class SelectTag extends AbstractDAOTag {
       p.validateContent("<select> with java-class-name '" + this.javaClassName + "'");
     }
 
+    log.info("select '" + this.javaClassName + "': " + this.columns.size() + " columns, " + this.foundationParts.size()
+        + " foundation parts, " + this.parts.size() + " parts; aggregated part: " + this.aggregatedPart);
+
     // all validations cleared
 
     this.declaredMethodNames.add("select");
@@ -172,6 +175,7 @@ public class SelectTag extends AbstractDAOTag {
   public String getSQLFoundation(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
     for (LiteralTextPart tp : this.foundationParts) {
+      log.info("f=" + tp.renderTag(parameterRenderer));
       sb.append(tp.renderTag(parameterRenderer));
     }
     return sb.toString();
@@ -186,6 +190,7 @@ public class SelectTag extends AbstractDAOTag {
   }
 
   public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer) {
+    log.info("this.aggregatedPart=" + this.aggregatedPart);
     return this.aggregatedPart.renderJavaExpression(margin, parameterRenderer);
   }
 

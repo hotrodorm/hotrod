@@ -5,17 +5,21 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.jexl3.JexlExpression;
+import org.apache.log4j.Logger;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
 
 public class IfExpression extends DynamicExpression {
 
+  private static final Logger log = Logger.getLogger(IfExpression.class);
+
   private JexlExpression condition;
 
   private DynamicExpression[] expressions;
 
   public IfExpression(final String condition, final DynamicExpression... expressions) {
+    log.info("condition=" + condition);
     this.condition = JEXL_ENGINE.createExpression(condition);
     this.expressions = expressions;
   }

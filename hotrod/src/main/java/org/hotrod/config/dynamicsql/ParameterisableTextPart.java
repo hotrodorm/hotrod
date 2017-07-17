@@ -8,6 +8,7 @@ import org.hotrod.config.SQLParameter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.runtime.dynamicsql.expressions.VerbatimExpression;
 
 public class ParameterisableTextPart extends DynamicSQLPart {
 
@@ -85,11 +86,30 @@ public class ParameterisableTextPart extends DynamicSQLPart {
     return atts;
   }
 
+  @Override
+  public String renderTag(final ParameterRenderer parameterRenderer) {
+    ParameterRenderer conditionRenderer = new ParameterRenderer() {
+      @Override
+      public String render(SQLParameter parameter) {
+        return parameter.getName();
+      }
+    };
+    StringBuilder sb = new StringBuilder();
+    for (SQLChunk ch : this.chunks) {
+      sb.append(ch.renderSQLSentence(conditionRenderer));
+    }
+    return sb.toString();
+  }
+
   // Java Expression
 
   @Override
   protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
-    throw new UnsupportedOperationException("This method should not be implemented.");
+    StringBuilder sb = new StringBuilder();
+    for (SQLChunk ch : this.chunks) {
+      sb.append(ch.renderSQLSentence(parameterRenderer));
+    }
+    return new VerbatimExpression(sb.toString());
   }
 
 }

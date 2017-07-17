@@ -28,6 +28,11 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLChunk {
     return this.text;
   }
 
+  @Override
+  public String renderTag(final ParameterRenderer parameterRenderer) {
+    return this.text;
+  }
+
   // Java Expression
 
   @Override
