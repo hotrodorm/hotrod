@@ -392,8 +392,18 @@ public class DAOPrimitives {
     println("    return " + springBeanName + ".deleteByExample(example);");
     println("  }");
     println();
-    println();
 
+    println("  // refresh");
+    println();
+    println("  public void refresh() {");
+    ListWriter lw = new ListWriter(", ");
+    for (ColumnMetadata cm : this.ds.getPK().getColumns()) {
+      lw.add("this.vo." + cm.getIdentifier().getJavaMemberIdentifier());
+    }
+    println("    this.vo = select(" + lw.toString() + ").getVO();");
+    println("  }");
+    println();
+    println();
   }
 
   private void writeMapper() throws IOException, UnresolvableDataTypeException {
