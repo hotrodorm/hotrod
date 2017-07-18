@@ -44,13 +44,13 @@ public class SelectTests {
     // selectViewSequenceAndQuery();
     // searchAccounts();
 
-    // searchAccountsByIds();
-    evaluateAccountsByIds();
+//    searchAccountsByIds();
+    // evaluateAccountsByIds();
 
     // searchAccount();
     // searchAccount2();
     // selectAccountTx3();
-    // specialCharactersInNames();
+     specialCharactersInNames();
   }
 
   // private static void tryInsertBadData() throws SQLException {
@@ -147,6 +147,7 @@ public class SelectTests {
         new java.text.ParsePosition(0));
 
     int rows = TxBranchDAO.applyAccountPromotion74(10, from, to, -1);
+//    TxBranchDAO.applyAccountPromotion74()
     System.out.println("promotions rows=" + rows);
 
   }
@@ -164,38 +165,10 @@ public class SelectTests {
   private static void searchAccountsByIds() throws SQLException {
     System.out.println("searchAccountsByIds:");
     System.out.println("====================");
-    // List<Integer> ids = new ArrayList<Integer>();
-    // ids.add(10);
-    // ids.add(20);
-    // ids.add(22);
 
     String name = null;
-    String type = null;
-    Integer minBalance = null;
-    Integer maxBalance = null;
-
-    List<Integer> ids = new ArrayList<Integer>();
-    ids.add(5);
-    ids.add(6);
-    ids.add(7);
-    ids.add(8);
-    ids.add(9);
-    ids.add(10);
-
-    Integer sortType = null;
-
-    for (AccountByIdsVO a : AccountByIds.select(name, type, minBalance, maxBalance, ids, sortType)) {
-      System.out.println("a=" + a);
-    }
-  }
-
-  private static void evaluateAccountsByIds() throws SQLException, DynamicSQLEvaluationException {
-    System.out.println("searchAccountsByIds:");
-    System.out.println("====================");
-
-    String name = "abc";
-    String type = null;
-    Integer minBalance = null;
+    String type = "CHK";
+    Integer minBalance = 123;
     Integer maxBalance = null;
 
     List<Integer> ids = new ArrayList<Integer>();
@@ -206,20 +179,44 @@ public class SelectTests {
 //    ids.add(9);
 //    ids.add(10);
 
-    Integer sortType = 2;
+    Integer sortType = 1;
 
-    DynamicSQLParameters params = new DynamicSQLParameters();
-    params.set("name", name);
-    params.set("type", type);
-    params.set("minBalance", minBalance);
-    params.set("maxBalance", maxBalance);
-    params.set("ids", ids);
-    params.set("sortType", sortType);
-
-    String sql = AccountByIds.JAVA_EXPRESSION.evaluate(params);
-    System.out.println("sql=" + sql);
-
+    for (AccountByIdsVO a : AccountByIds.select(name, type, minBalance, maxBalance, ids, sortType)) {
+      System.out.println("a=" + a);
+    }
   }
+
+//  private static void evaluateAccountsByIds() throws SQLException, DynamicSQLEvaluationException {
+//    System.out.println("searchAccountsByIds:");
+//    System.out.println("====================");
+//
+//    String name = "abc";
+//    String type = null;
+//    Integer minBalance = null;
+//    Integer maxBalance = null;
+//
+//    List<Integer> ids = new ArrayList<Integer>();
+//    ids.add(5);
+//    ids.add(6);
+//    ids.add(7);
+//    ids.add(8);
+//    ids.add(9);
+//    ids.add(10);
+//
+//    Integer sortType = 2;
+//
+//    DynamicSQLParameters params = new DynamicSQLParameters();
+//    params.set("name", name);
+//    params.set("type", type);
+//    params.set("minBalance", minBalance);
+//    params.set("maxBalance", maxBalance);
+//    params.set("ids", ids);
+//    params.set("sortType", sortType);
+//
+//    String sql = AccountByIds.JAVA_EXPRESSION.evaluate(params);
+//    System.out.println("sql=" + sql);
+//
+//  }
 
   private static void selectAccountTx3() throws SQLException {
     System.out.println("AccountTx3:");

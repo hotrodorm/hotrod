@@ -18,7 +18,7 @@ public class VariableOccurrence implements SQLChunk {
   // Constructor
 
   public VariableOccurrence(final String name) {
-    log.info("init");
+    log.debug("init");
     this.name = name;
   }
 

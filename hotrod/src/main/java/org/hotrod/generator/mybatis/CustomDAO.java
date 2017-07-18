@@ -18,6 +18,7 @@ import org.hotrod.config.QueryTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SequenceTag;
 import org.hotrod.exceptions.SequencesNotSupportedException;
+import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.tx.TxDemarcator;
 import org.hotrod.runtime.tx.TxManager;
 import org.hotrod.runtime.util.ListWriter;
@@ -193,8 +194,7 @@ public class CustomDAO {
 
     println("  // sequence " + tag.getName());
     println();
-    println(
-        ObjectDAO.renderJavaComment(this.generator.getAdapter().renderSelectSequence(tag.getIdentifier())));
+    println(ObjectDAO.renderJavaComment(this.generator.getAdapter().renderSelectSequence(tag.getIdentifier())));
     println();
 
     println("  public static long " + tag.getJavaMethodName() + "()");
@@ -242,7 +242,16 @@ public class CustomDAO {
 
     println("  // query " + tag.getJavaMethodName());
     println();
-    println(ObjectDAO.renderJavaComment(tag.getAugmentedSQL()));
+
+    // println(ObjectDAO.renderJavaComment(tag.getAugmentedSQL()));
+    ParameterRenderer parameterRenderer = new ParameterRenderer() {
+      @Override
+      public String render(final SQLParameter parameter) {
+        return "#{" + parameter.getName() + "}";
+      }
+    };
+    println(ObjectDAO.renderJavaComment(tag.renderSQLSentence(parameterRenderer)));
+
     println();
 
     Identifier id = tag.getIdentifier();

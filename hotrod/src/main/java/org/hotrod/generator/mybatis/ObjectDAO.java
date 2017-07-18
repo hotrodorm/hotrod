@@ -154,7 +154,7 @@ public class ObjectDAO {
 
       if (this.isSelect()) {
 
-//        writeSelectExpression(); // remove once tested
+        // writeSelectExpression(); // remove once tested
 
         writeParameterizedSelect();
       } else {
@@ -728,22 +728,23 @@ public class ObjectDAO {
     println();
   }
 
-//  // TODO: remove once tested
-//
-//  private void writeSelectExpression() throws IOException {
-//    println("  public static final " + DynamicExpression.class.getName() + " JAVA_EXPRESSION =\n");
-//
-//    ParameterRenderer parameterRenderer = new ParameterRenderer() {
-//      @Override
-//      public String render(final SQLParameter parameter) {
-//        return "#" + parameter.getName() + "#";
-//      }
-//    };
-//
-//    println(this.selectTag.renderJavaExpression(4, parameterRenderer) + ";");
-//
-//    println();
-//  }
+  // // TODO: remove once tested
+  //
+  // private void writeSelectExpression() throws IOException {
+  // println(" public static final " + DynamicExpression.class.getName() + "
+  // JAVA_EXPRESSION =\n");
+  //
+  // ParameterRenderer parameterRenderer = new ParameterRenderer() {
+  // @Override
+  // public String render(final SQLParameter parameter) {
+  // return "#" + parameter.getName() + "#";
+  // }
+  // };
+  //
+  // println(this.selectTag.renderJavaExpression(4, parameterRenderer) + ";");
+  //
+  // println();
+  // }
 
   /**
    * <pre>
@@ -795,7 +796,7 @@ public class ObjectDAO {
 
     println("  // parameterized select");
     println();
-    
+
     ParameterRenderer parameterRenderer = new ParameterRenderer() {
       @Override
       public String render(final SQLParameter parameter) {
@@ -803,7 +804,7 @@ public class ObjectDAO {
       }
     };
     println(renderJavaComment(this.metadata.renderSQLSentence(parameterRenderer)));
-    
+
     println();
 
     String pd;
@@ -1975,11 +1976,22 @@ public class ObjectDAO {
    * @throws IOException
    */
 
+  // TODO
+
   private void writeQuery(final QueryTag tag) throws IOException {
 
     println("  // update " + tag.getJavaMethodName());
     println();
-    println(ObjectDAO.renderJavaComment(tag.getAugmentedSQL()));
+
+//     println(ObjectDAO.renderJavaComment(tag.getAugmentedSQL()));
+    ParameterRenderer parameterRenderer = new ParameterRenderer() {
+      @Override
+      public String render(final SQLParameter parameter) {
+        return "#{" + parameter.getName() + "}";
+      }
+    };
+    println(renderJavaComment(tag.renderSQLSentence(parameterRenderer)));
+
     println();
 
     Identifier id = tag.getIdentifier();

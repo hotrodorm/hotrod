@@ -104,17 +104,16 @@ public class ForEachTag extends DynamicSQLPart {
       this.indexParameter = null;
     }
 
-    log.info("this.collectionText=" + this.collectionText);
-
     this.collection = this.collectionText == null ? null
         : new ParameterisableTextPart(this.collectionText, tagIdentification, parameterDefinitions);
 
-    log.info("this.collection=" + this.collection.renderXML(new ParameterRenderer() {
-      @Override
-      public String render(final SQLParameter parameter) {
-        return "[[" + parameter.getName() + "]]";
-      }
-    }));
+    // log.info("this.collection=" + this.collection.renderXML(new
+    // ParameterRenderer() {
+    // @Override
+    // public String render(final SQLParameter parameter) {
+    // return "[[" + parameter.getName() + "]]";
+    // }
+    // }));
 
   }
 

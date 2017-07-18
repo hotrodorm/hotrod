@@ -13,10 +13,11 @@ import org.apache.log4j.Logger;
 import org.hotrod.config.dynamicsql.BindTag;
 import org.hotrod.config.dynamicsql.ChooseTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
+import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.dynamicsql.ForEachTag;
 import org.hotrod.config.dynamicsql.IfTag;
-import org.hotrod.config.dynamicsql.LiteralTextPart;
 import org.hotrod.config.dynamicsql.OtherwiseTag;
+import org.hotrod.config.dynamicsql.ParameterisableTextPart;
 import org.hotrod.config.dynamicsql.SetTag;
 import org.hotrod.config.dynamicsql.TrimTag;
 import org.hotrod.config.dynamicsql.WhenTag;
@@ -57,6 +58,7 @@ public class QueryTag extends AbstractDAOTag {
   // Properties - Parsed
 
   protected List<DynamicSQLPart> parts = null;
+  protected ParameterDefinitions parameterDefinitions = null;
 
   // Constructor
 
@@ -93,12 +95,13 @@ public class QueryTag extends AbstractDAOTag {
     // text, dynamic SQL tags
 
     this.parts = new ArrayList<DynamicSQLPart>();
+    this.parameterDefinitions = new ParameterDefinitions();
 
     for (Object obj : this.content) {
       DynamicSQLPart p;
       try {
         String s = (String) obj;
-        p = new LiteralTextPart(s);
+        p = new ParameterisableTextPart(s, tagIdentification, this.parameterDefinitions);
       } catch (ClassCastException e1) {
         try {
           p = (DynamicSQLPart) obj;
@@ -128,34 +131,26 @@ public class QueryTag extends AbstractDAOTag {
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
     for (DynamicSQLPart p : this.parts) {
-      sb.append(p.renderXML(parameterRenderer));
+      sb.append(p.renderStatic(parameterRenderer));
     }
     return sb.toString();
   }
 
   public List<SQLParameter> getParameterDefinitions() {
-    List<SQLParameter> defs = new ArrayList<SQLParameter>();
-    for (DynamicSQLPart part : this.parts) {
-      for (SQLParameter p : part.getParameters()) {
-        if (p.isDefinition()) {
-          defs.add(p);
-        }
-      }
-    }
-    return defs;
+    return this.parameterDefinitions.getDefinitions();
   }
 
-  public String getAugmentedSQL() {
-    ParameterRenderer parameterRenderer = new ParameterRenderer() {
-
-      @Override
-      public String render(final SQLParameter parameter) {
-        return "#{" + parameter.getName() + "}";
-      }
-
-    };
-    return this.renderSQLSentence(parameterRenderer);
-  }
+  // public String getAugmentedSQL() {
+  // ParameterRenderer parameterRenderer = new ParameterRenderer() {
+  //
+  // @Override
+  // public String render(final SQLParameter parameter) {
+  // return "#{" + parameter.getName() + "}";
+  // }
+  //
+  // };
+  // return this.renderSQLSentence(parameterRenderer);
+  // }
 
   @Override
   public ClassPackage getPackage() {

@@ -87,6 +87,56 @@
   </facet>
  -->
 
+  <select java-class-name="AccountByIds">
+    <column name="current_balance" java-type="java.lang.Double" />
+
+    select * from account
+
+    <complement>
+
+      <bind name="namePattern"
+        value="#{name,javaType=java.lang.String,jdbcType=VARCHAR} == null ? null: ('%' + #{name} + '%')" />
+      <bind name="extraBalance"
+        value="#{type,javaType=java.lang.String,jdbcType=VARCHAR} == 'CHK' ? 100 : 0" />
+
+      <where>
+        <if
+          test="#{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} != null &amp;&amp; #{minBalance} > 10">
+          current_balance > #{minBalance} + #{extraBalance}
+        </if>
+        <if
+          test="#{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} != null &amp;&amp; #{maxBalance} &lt; 500">
+          and current_balance &lt; #{maxBalance}
+        </if>
+        <if test="#{name} != null">
+          and name like '#{namePattern}'
+        </if>
+        <if
+          test="#{ids,javaType=java.util.List&lt;java.lang.Integer>,jdbcType=ARRAY} != null &amp;&amp; !empty #{ids}">
+          and id in
+          <foreach item="item" index="index" collection="#{ids}"
+            open="(" separator="," close=")">#{item}</foreach>
+        </if>
+      </where>
+
+      <choose>
+        <when
+          test="#{sortType,javaType=java.lang.Integer,jdbcType=NUMERIC} == 1">
+          order by type
+        </when>
+        <when test="#{sortType} == 2">
+          order by created_on
+        </when>
+        <otherwise>
+          order by id
+        </otherwise>
+      </choose>
+
+    </complement>
+
+  </select>
+
+
 <!--
   <fragment file="hotrod-finances.xml" />
    

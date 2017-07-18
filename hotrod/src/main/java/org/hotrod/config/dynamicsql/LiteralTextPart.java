@@ -20,7 +20,7 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLChunk {
 
   public LiteralTextPart(final String text) {
     super("not-a-tag-but-sql-content");
-    log.info("init");
+    log.debug("init");
     this.text = text;
   }
 
