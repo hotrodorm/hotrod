@@ -1,17 +1,16 @@
 package org.hotrod.config.dynamicsql;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.SelectTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.dynamicsql.expressions.VerbatimExpression;
+import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 
 public class LiteralTextPart extends DynamicSQLPart implements SQLChunk {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(SelectTag.class);
+  private static final Logger log = Logger.getLogger(LiteralTextPart.class);
 
   // Properties
 
@@ -21,8 +20,8 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLChunk {
 
   public LiteralTextPart(final String text) {
     super("not-a-tag-but-sql-content");
+    log.info("init");
     this.text = text;
-    // log.info("[constructor] text=" + text);
   }
 
   // Behavior
@@ -42,6 +41,10 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLChunk {
   @Override
   public boolean isEmpty() {
     return this.text == null || this.text.trim().isEmpty();
+  }
+
+  public LiteralTextPart concat(final LiteralTextPart other) {
+    return new LiteralTextPart(this.text + other.text);
   }
 
   // Rendering
@@ -65,8 +68,8 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLChunk {
   // Java Expression
 
   @Override
-  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
-    return new VerbatimExpression(this.text);
+  public DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
+    return new LiteralExpression(this.text);
   }
 
   @Override

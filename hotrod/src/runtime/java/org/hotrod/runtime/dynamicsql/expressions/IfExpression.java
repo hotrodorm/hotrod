@@ -15,7 +15,6 @@ public class IfExpression extends DynamicExpression {
   private static final Logger log = Logger.getLogger(IfExpression.class);
 
   private JexlExpression condition;
-
   private DynamicExpression[] expressions;
 
   public IfExpression(final String condition, final DynamicExpression... expressions) {

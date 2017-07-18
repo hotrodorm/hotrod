@@ -154,7 +154,7 @@ public class ObjectDAO {
 
       if (this.isSelect()) {
 
-        writeSelectExpression(); // remove once tested
+//        writeSelectExpression(); // remove once tested
 
         writeParameterizedSelect();
       } else {
@@ -728,23 +728,22 @@ public class ObjectDAO {
     println();
   }
 
-  // TODO: remove once tested
-
-  private void writeSelectExpression() throws IOException {
-    println("  public static final " + DynamicExpression.class.getName() + " JAVA_EXPRESSION =\n");
-
-    ParameterRenderer parameterRenderer = new ParameterRenderer() {
-      @Override
-      public String render(final SQLParameter parameter) {
-        return "#[" + parameter.getName() + ",javaType=" + parameter.getJavaType() + ",jdbcType="
-            + parameter.getJdbcType() + "]";
-      }
-    };
-
-    println(this.selectTag.renderJavaExpression(4, parameterRenderer) + ";");
-
-    println();
-  }
+//  // TODO: remove once tested
+//
+//  private void writeSelectExpression() throws IOException {
+//    println("  public static final " + DynamicExpression.class.getName() + " JAVA_EXPRESSION =\n");
+//
+//    ParameterRenderer parameterRenderer = new ParameterRenderer() {
+//      @Override
+//      public String render(final SQLParameter parameter) {
+//        return "#" + parameter.getName() + "#";
+//      }
+//    };
+//
+//    println(this.selectTag.renderJavaExpression(4, parameterRenderer) + ";");
+//
+//    println();
+//  }
 
   /**
    * <pre>
@@ -796,7 +795,15 @@ public class ObjectDAO {
 
     println("  // parameterized select");
     println();
-    println(renderJavaComment(this.metadata.getAugmentedSQL()));
+    
+    ParameterRenderer parameterRenderer = new ParameterRenderer() {
+      @Override
+      public String render(final SQLParameter parameter) {
+        return "#{" + parameter.getName() + "}";
+      }
+    };
+    println(renderJavaComment(this.metadata.renderSQLSentence(parameterRenderer)));
+    
     println();
 
     String pd;

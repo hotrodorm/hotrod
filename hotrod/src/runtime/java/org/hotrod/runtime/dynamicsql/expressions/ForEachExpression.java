@@ -1,6 +1,7 @@
 package org.hotrod.runtime.dynamicsql.expressions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -25,18 +26,20 @@ public class ForEachExpression extends DynamicExpression {
   private String open = null;
   private String separator = null;
   private String close = null;
-  private JexlExpression variable = null;
+  private DynamicExpression[] expressions = null;
 
   public ForEachExpression(final String item, final String index, final String collection, final String open,
-      final String separator, final String close, final String variable) {
+      final String separator, final String close, final DynamicExpression... expressions) {
     log.debug("init");
     this.item = item;
     this.index = index;
+    log.info("collection=" + collection);
     this.collection = JEXL_ENGINE.createExpression(collection);
+    log.info("this.collection=" + this.collection.getSourceText());
     this.open = open;
     this.separator = separator;
     this.close = close;
-    this.variable = JEXL_ENGINE.createExpression(variable);
+    this.expressions = expressions;
   }
 
   @Override
@@ -65,7 +68,7 @@ public class ForEachExpression extends DynamicExpression {
         if (this.item != null) {
           variables.set(this.item, elem);
         }
-        appendValue(variables, lw);
+        evaluateBody(variables, lw);
         i++;
       }
     } catch (ClassCastException e1) {
@@ -79,7 +82,7 @@ public class ForEachExpression extends DynamicExpression {
           if (this.item != null) {
             variables.set(this.item, elemValue);
           }
-          appendValue(variables, lw);
+          evaluateBody(variables, lw);
         }
       } catch (ClassCastException e2) {
         try {
@@ -91,7 +94,7 @@ public class ForEachExpression extends DynamicExpression {
             if (this.item != null) {
               variables.set(this.item, array[i]);
             }
-            appendValue(variables, lw);
+            evaluateBody(variables, lw);
           }
         } catch (ClassCastException e3) {
           throw new DynamicSQLEvaluationException(
@@ -124,14 +127,14 @@ public class ForEachExpression extends DynamicExpression {
     return new EvaluationFeedback(false);
   }
 
-  private void appendValue(final DynamicSQLParameters variables, final ListWriter lw) {
-    Object eval = this.variable.evaluate(variables);
-    try {
-      String s = (String) eval;
-      lw.add(s);
-    } catch (ClassCastException e) {
-      lw.add("{{could not add yet}}");
+  private void evaluateBody(final DynamicSQLParameters variables, final ListWriter lw)
+      throws DynamicSQLEvaluationException {
+    StringBuilder sb = new StringBuilder();
+    for (DynamicExpression expr : this.expressions) {
+      log.info("expr=" + expr);
+      expr.evaluate(sb, variables);
     }
+    lw.add(sb.toString());
   }
 
   @Override
@@ -144,8 +147,8 @@ public class ForEachExpression extends DynamicExpression {
     stringParams.add(this.open);
     stringParams.add(this.separator);
     stringParams.add(this.close);
-    stringParams.add(this.variable.getSourceText());
     params.add(stringParams);
+    params.addAll(Arrays.asList(this.expressions));
     return params;
   }
 

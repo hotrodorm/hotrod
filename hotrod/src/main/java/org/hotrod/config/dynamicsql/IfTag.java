@@ -66,7 +66,7 @@ public class IfTag extends DynamicSQLPart {
 
   @Override
   protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
-    String condition = this.test.renderXML(parameterRenderer);
+    String condition = this.test.renderStatic(parameterRenderer);
 
     List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
     for (DynamicSQLPart p : super.parts) {

@@ -1,8 +1,12 @@
 package org.hotrod.config.dynamicsql;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.log4j.Logger;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
@@ -13,6 +17,8 @@ import org.hotrod.runtime.dynamicsql.expressions.ForEachExpression;
 public class ForEachTag extends DynamicSQLPart {
 
   // Constants
+
+  private static final Logger log = Logger.getLogger(ForEachTag.class);
 
   // Constructor
 
@@ -33,7 +39,6 @@ public class ForEachTag extends DynamicSQLPart {
 
   private SQLParameter itemParameter = null;
   private SQLParameter indexParameter = null;
-  private SQLParameter body = null;
 
   // JAXB Setters
 
@@ -99,52 +104,70 @@ public class ForEachTag extends DynamicSQLPart {
       this.indexParameter = null;
     }
 
+    log.info("this.collectionText=" + this.collectionText);
+
     this.collection = this.collectionText == null ? null
         : new ParameterisableTextPart(this.collectionText, tagIdentification, parameterDefinitions);
+
+    log.info("this.collection=" + this.collection.renderXML(new ParameterRenderer() {
+      @Override
+      public String render(final SQLParameter parameter) {
+        return "[[" + parameter.getName() + "]]";
+      }
+    }));
 
   }
 
   @Override
   protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
+    // Nothing extra to validate
 
-    for (DynamicSQLPart p : super.parts) {
-      try {
-        ParameterisableTextPart s = (ParameterisableTextPart) p;
-        for (SQLChunk ch : s.chunks) {
-          try {
-            LiteralTextPart literal = (LiteralTextPart) ch;
-            if (!literal.isEmpty()) {
-              throw new InvalidConfigurationFileException(
-                  "Invalid <foreach> tag included in the tag " + tagIdentification
-                      + ". The body of a <foreach> tag must include one variable occurrence in the form #{name}.");
-            }
-          } catch (ClassCastException e1) {
-            try {
-              SQLParameter param = (SQLParameter) ch;
-              if (this.body != null) {
-                throw new InvalidConfigurationFileException("Invalid <foreach> tag included in the tag "
-                    + tagIdentification
-                    + ". The body of a <foreach> tag must include one variable occurrence in the form #{name}, but found more than one.");
-              }
-              this.body = param;
-            } catch (ClassCastException e2) {
-              throw new InvalidConfigurationFileException(
-                  "Invalid <foreach> tag included in the tag " + tagIdentification
-                      + ". The body of a <foreach> tag must include one variable occurrence in the form #{name}.");
-            }
-          }
-        }
-      } catch (ClassCastException e3) {
-        throw new InvalidConfigurationFileException("Invalid <choose> tag included in the tag " + tagIdentification
-            + ". The body of a <foreach> tag must include one variable occurrence in the form #{name}, but found an object of class '"
-            + p.getClass().getName() + "'.");
-      }
-    }
-    if (this.body == null) {
-      throw new InvalidConfigurationFileException("Invalid <foreach> tag included in the tag " + tagIdentification
-          + ". The body of a <foreach> tag must include one variable occurrence in the form #{name}, but found none.");
-    }
+    // for (DynamicSQLPart p : super.parts) {
+    // try {
+    // ParameterisableTextPart s = (ParameterisableTextPart) p;
+    // for (SQLChunk ch : s.chunks) {
+    // try {
+    // LiteralTextPart literal = (LiteralTextPart) ch;
+    // if (!literal.isEmpty()) {
+    // throw new InvalidConfigurationFileException(
+    // "Invalid <foreach> tag included in the tag " + tagIdentification
+    // + ". The body of a <foreach> tag must include one variable occurrence in
+    // the form #{name}.");
+    // }
+    // } catch (ClassCastException e1) {
+    // try {
+    // SQLParameter param = (SQLParameter) ch;
+    // if (this.body != null) {
+    // throw new InvalidConfigurationFileException("Invalid <foreach> tag
+    // included in the tag "
+    // + tagIdentification
+    // + ". The body of a <foreach> tag must include one variable occurrence in
+    // the form #{name}, but found more than one.");
+    // }
+    // this.body = param;
+    // } catch (ClassCastException e2) {
+    // throw new InvalidConfigurationFileException(
+    // "Invalid <foreach> tag included in the tag " + tagIdentification
+    // + ". The body of a <foreach> tag must include one variable occurrence in
+    // the form #{name}.");
+    // }
+    // }
+    // }
+    // } catch (ClassCastException e3) {
+    // throw new InvalidConfigurationFileException("Invalid <choose> tag
+    // included in the tag " + tagIdentification
+    // + ". The body of a <foreach> tag must include one variable occurrence in
+    // the form #{name}, but found an object of class '"
+    // + p.getClass().getName() + "'.");
+    // }
+    // }
+    // if (this.body == null) {
+    // throw new InvalidConfigurationFileException("Invalid <foreach> tag
+    // included in the tag " + tagIdentification
+    // + ". The body of a <foreach> tag must include one variable occurrence in
+    // the form #{name}, but found none.");
+    // }
 
   }
 
@@ -184,8 +207,14 @@ public class ForEachTag extends DynamicSQLPart {
   @Override
   protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
     String coll = this.collection.renderStatic(parameterRenderer);
+
+    List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
+    for (DynamicSQLPart p : super.parts) {
+      exps.add(p.getJavaExpression(parameterRenderer));
+    }
+
     return new ForEachExpression(this.item, this.index, coll, this.open, this.separator, this.close,
-        this.body.getName());
+        exps.toArray(new DynamicExpression[0]));
   }
 
 }

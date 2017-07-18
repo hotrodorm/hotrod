@@ -7,8 +7,9 @@ import org.apache.log4j.Logger;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.dynamicsql.expressions.CollectionExpression;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.dynamicsql.expressions.VerbatimExpression;
+import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 
 public class ParameterisableTextPart extends DynamicSQLPart {
 
@@ -21,7 +22,6 @@ public class ParameterisableTextPart extends DynamicSQLPart {
   private String txt;
 
   protected List<SQLChunk> chunks = new ArrayList<SQLChunk>();
-  protected List<SQLParameter> params = new ArrayList<SQLParameter>();
 
   // Constructor
 
@@ -79,9 +79,16 @@ public class ParameterisableTextPart extends DynamicSQLPart {
         } else {
           parameterDefinitions.add(p);
         }
+        this.chunks.add(p);
       } else {
         if (definition != null) {
-          p.setDefinition(definition);
+          if (definition.isVariable()) {
+            VariableOccurrence v = new VariableOccurrence(definition.getName());
+            this.chunks.add(v);
+          } else {
+            p.setDefinition(definition);
+            this.chunks.add(p);
+          }
         } else {
           throw new InvalidConfigurationFileException(
               "The body of the tag " + tagIdentification + " includes a parameter reference '" + p.getName()
@@ -90,9 +97,6 @@ public class ParameterisableTextPart extends DynamicSQLPart {
                   + "'jdbcType' values (i.e. must be a parameter definition, rather than a parameter occurrence).");
         }
       }
-
-      this.chunks.add(p);
-      this.params.add(p);
 
       pos = suffix + SQLParameter.SUFFIX.length();
     }
@@ -133,6 +137,22 @@ public class ParameterisableTextPart extends DynamicSQLPart {
   }
 
   @Override
+  public String renderStatic(final ParameterRenderer parameterRenderer) {
+    ParameterRenderer conditionRenderer = new ParameterRenderer() {
+      @Override
+      public String render(SQLParameter parameter) {
+        return parameter.getName();
+      }
+    };
+    StringBuilder sb = new StringBuilder();
+    for (SQLChunk ch : this.chunks) {
+      sb.append(ch.renderStatic(conditionRenderer));
+    }
+    String text = sb.toString();
+    return text;
+  }
+
+  @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
     ParameterRenderer conditionRenderer = new ParameterRenderer() {
       @Override
@@ -145,7 +165,6 @@ public class ParameterisableTextPart extends DynamicSQLPart {
       sb.append(ch.renderXML(conditionRenderer));
     }
     String text = sb.toString();
-    // log.info("text=" + text);
     return text;
   }
 
@@ -153,11 +172,32 @@ public class ParameterisableTextPart extends DynamicSQLPart {
 
   @Override
   protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
-    StringBuilder sb = new StringBuilder();
-    for (SQLChunk ch : this.chunks) {
-      sb.append(ch.renderStatic(parameterRenderer));
+
+    List<DynamicExpression> exprs = new ArrayList<DynamicExpression>();
+    LiteralExpression last = null;
+    for (SQLChunk p : this.chunks) {
+      DynamicExpression expr = p.getJavaExpression(parameterRenderer);
+      try {
+        LiteralExpression v = (LiteralExpression) expr;
+        if (last == null) {
+          last = v;
+        } else {
+          last = last.concat(v);
+        }
+      } catch (ClassCastException e) {
+        if (last != null) {
+          exprs.add(last);
+          last = null;
+        }
+        exprs.add(expr);
+      }
     }
-    return new VerbatimExpression(sb.toString());
+    if (last != null) {
+      exprs.add(last);
+    }
+
+    return new CollectionExpression(exprs.toArray(new DynamicExpression[0]));
+
   }
 
 }

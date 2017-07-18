@@ -257,19 +257,6 @@ public class SelectDataSetMetadata implements DataSetMetadata {
   }
 
   @Override
-  public String getAugmentedSQL() {
-    ParameterRenderer parameterRenderer = new ParameterRenderer() {
-
-      @Override
-      public String render(final SQLParameter parameter) {
-        return "#{" + parameter.getName() + "}";
-      }
-
-    };
-    return this.tag.renderSQLSentence(parameterRenderer);
-  }
-
-  @Override
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
     return this.tag.renderSQLSentence(parameterRenderer);
   }

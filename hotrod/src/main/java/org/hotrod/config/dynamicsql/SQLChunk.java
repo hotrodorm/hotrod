@@ -1,6 +1,7 @@
 package org.hotrod.config.dynamicsql;
 
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 
 public interface SQLChunk {
 
@@ -9,5 +10,7 @@ public interface SQLChunk {
   String renderStatic(ParameterRenderer parameterRenderer);
 
   String renderXML(ParameterRenderer parameterRenderer);
+
+  DynamicExpression getJavaExpression(ParameterRenderer parameterRenderer);
 
 }

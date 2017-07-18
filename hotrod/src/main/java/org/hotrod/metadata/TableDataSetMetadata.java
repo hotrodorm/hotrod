@@ -389,11 +389,6 @@ public class TableDataSetMetadata implements DataSetMetadata {
   }
 
   @Override
-  public String getAugmentedSQL() {
-    return null;
-  }
-
-  @Override
   public HotRodFragmentConfigTag getFragmentConfig() {
     return this.fragmentConfig;
   }

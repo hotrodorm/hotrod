@@ -8,7 +8,8 @@
     <mybatis>
       <daos gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" />
       <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
-      <mybatis-configuration-template file="mybatis-config-template.xml" />
+      <mybatis-configuration-template
+        file="mybatis-config-template.xml" />
       <session-factory singleton-full-class-name="sessionfactory.DatabaseSessionFactory" />
       <select-generation temp-view-base-name="hotrod_temp_view" />
       <property name="checked.persistence.exception" value="true" />
@@ -17,7 +18,8 @@
 
     <spring-jdbc>
       <daos gen-base-dir="gen/hotrod-spring/daos" dao-package="hotrod.test.generation" />
-      <config gen-base-dir="gen/hotrod-spring/daos/" relative-dir="config" prefix="prueba-hr-" />
+      <config gen-base-dir="gen/hotrod-spring/daos/"
+        relative-dir="config" prefix="prueba-hr-" />
       <select-generation temp-view-base-name="unused" />
     </spring-jdbc>
 
@@ -30,29 +32,34 @@
 
     <complement>
 
-      <bind name="namePattern" value="'%' + #{name,javaType=java.lang.String,jdbcType=VARCHAR} + '%'" />
-      <bind name="extraBalance" value="#{type,javaType=java.lang.String,jdbcType=VARCHAR} == 'CHK' ? 100 : 0" />
+      <bind name="namePattern"
+        value="#{name,javaType=java.lang.String,jdbcType=VARCHAR} == null ? null: ('%' + #{name} + '%')" />
+      <bind name="extraBalance"
+        value="#{type,javaType=java.lang.String,jdbcType=VARCHAR} == 'CHK' ? 100 : 0" />
 
       <where>
-        <if test="#{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} != null &amp;&amp; #{minBalance} > 10">
+        <if
+          test="#{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} != null &amp;&amp; #{minBalance} > 10">
           current_balance > #{minBalance} + #{extraBalance}
         </if>
-        <if test="#{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} != null &amp;&amp; #{maxBalance} &lt; 500">
+        <if
+          test="#{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} != null &amp;&amp; #{maxBalance} &lt; 500">
           and current_balance &lt; #{maxBalance}
         </if>
         <if test="#{name} != null">
-          and name like #{namePattern}
+          and name like '#{namePattern}'
+        </if>
+        <if
+          test="#{ids,javaType=java.util.List&lt;java.lang.Integer>,jdbcType=ARRAY} != null &amp;&amp; !empty #{ids}">
+          and id in
+          <foreach item="item" index="index" collection="#{ids}"
+            open="(" separator="," close=")">#{item}</foreach>
         </if>
       </where>
 
-<!-- 
- -->
-      <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
-        #{item}
-      </foreach>
- 
       <choose>
-        <when test="#{sortType,javaType=java.lang.Integer,jdbcType=NUMERIC} == 1">
+        <when
+          test="#{sortType,javaType=java.lang.Integer,jdbcType=NUMERIC} == 1">
           order by type
         </when>
         <when test="#{sortType} == 2">

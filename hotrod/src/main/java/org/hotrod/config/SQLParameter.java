@@ -3,6 +3,9 @@ package org.hotrod.config;
 import org.hotrod.config.dynamicsql.SQLChunk;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.runtime.dynamicsql.expressions.VariableExpression;
+import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.JdbcTypes;
 
@@ -135,8 +138,12 @@ public class SQLParameter implements SQLChunk {
     return this.type == VariableType.PARAMETER_DEFINITION;
   }
 
-  public boolean isParameter() {
-    return this.type == VariableType.PARAMETER_DEFINITION || this.type == VariableType.PARAMETER_REFERENCE;
+  public boolean isVariable() {
+    return this.type == VariableType.VARIABLE;
+  }
+
+  public boolean isParameterReference() {
+    return this.type == VariableType.PARAMETER_REFERENCE;
   }
 
   public SQLParameter getDefinition() {
@@ -165,6 +172,15 @@ public class SQLParameter implements SQLChunk {
   @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
     return parameterRenderer.render(this);
+  }
+
+  @Override
+  public DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
+    if (this.isVariable()) {
+      return new VariableExpression(this.name);
+    } else {
+      return new LiteralExpression(parameterRenderer.render(this));
+    }
   }
 
   @Override

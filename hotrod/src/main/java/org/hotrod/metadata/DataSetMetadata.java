@@ -36,9 +36,6 @@ public interface DataSetMetadata {
 
   List<SelectParameterMetadata> getParameterDefinitions();
 
-  String getAugmentedSQL(); // The whole SQL definition including {*segments*}
-                            // and #{parameters}
-
   String renderSQLSentence(ParameterRenderer parameterRenderer);
 
   String renderXML(ParameterRenderer parameterRenderer);
