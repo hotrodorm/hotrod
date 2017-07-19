@@ -3,10 +3,12 @@ package org.hotrod.runtime.dynamicsql.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlExpression;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
+import org.hotrod.runtime.exceptions.InvalidJexlExpressionException;
 
 public class BindExpression extends DynamicExpression {
 
@@ -15,7 +17,12 @@ public class BindExpression extends DynamicExpression {
 
   public BindExpression(final String name, final String valueDefinition) {
     this.name = name;
-    this.value = JEXL_ENGINE.createExpression(valueDefinition);
+    try {
+      this.value = JEXL_ENGINE.createExpression(valueDefinition);
+    } catch (JexlException e) {
+      throw new InvalidJexlExpressionException(
+          "Invalid expression on attribute value: " + valueDefinition + " (" + e.getMessage() + ")");
+    }
   }
 
   @Override

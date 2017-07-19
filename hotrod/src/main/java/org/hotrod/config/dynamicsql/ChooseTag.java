@@ -11,6 +11,7 @@ import org.hotrod.runtime.dynamicsql.expressions.ChooseExpression;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.OtherwiseExpression;
 import org.hotrod.runtime.dynamicsql.expressions.WhenExpression;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "choose")
 public class ChooseTag extends DynamicSQLPart {
@@ -84,18 +85,28 @@ public class ChooseTag extends DynamicSQLPart {
   // Java Expression
 
   @Override
-  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
+  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException {
 
-    List<WhenExpression> whenExps = new ArrayList<WhenExpression>();
-    for (WhenTag w : this.whens) {
-      WhenExpression we = (WhenExpression) w.getJavaExpression(parameterRenderer);
-      whenExps.add(we);
+    try {
+
+      List<WhenExpression> whenExps = new ArrayList<WhenExpression>();
+      for (WhenTag w : this.whens) {
+        WhenExpression we = (WhenExpression) w.getJavaExpression(parameterRenderer);
+        whenExps.add(we);
+      }
+
+      OtherwiseExpression o = this.otherwise == null ? null
+          : (OtherwiseExpression) this.otherwise.getJavaExpression(parameterRenderer);
+      return new ChooseExpression(o, whenExps.toArray(new WhenExpression[0]));
+
+    } catch (RuntimeException e) {
+      throw new InvalidJavaExpressionException(this.getSourceLocation(),
+          "Could not produce Java expression for tag <choose> on file '" + this.getSourceLocation().getFile().getPath()
+              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
+              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
     }
 
-    OtherwiseExpression o = this.otherwise == null ? null
-        : (OtherwiseExpression) this.otherwise.getJavaExpression(parameterRenderer);
-
-    return new ChooseExpression(o, whenExps.toArray(new WhenExpression[0]));
   }
 
 }

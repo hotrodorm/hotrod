@@ -2,6 +2,7 @@ package org.hotrod.config.dynamicsql;
 
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 public interface SQLChunk {
 
@@ -11,6 +12,6 @@ public interface SQLChunk {
 
   String renderXML(ParameterRenderer parameterRenderer);
 
-  DynamicExpression getJavaExpression(ParameterRenderer parameterRenderer);
+  DynamicExpression getJavaExpression(ParameterRenderer parameterRenderer) throws InvalidJavaExpressionException;
 
 }

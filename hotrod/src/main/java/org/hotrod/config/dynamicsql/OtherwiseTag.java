@@ -9,6 +9,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.OtherwiseExpression;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "otherwise")
 public class OtherwiseTag extends DynamicSQLPart {
@@ -49,14 +50,25 @@ public class OtherwiseTag extends DynamicSQLPart {
   // Java Expression
 
   @Override
-  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
+  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException {
 
-    List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
-    for (DynamicSQLPart p : super.parts) {
-      exps.add(p.getJavaExpression(parameterRenderer));
+    try {
+
+      List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
+      for (DynamicSQLPart p : super.parts) {
+        exps.add(p.getJavaExpression(parameterRenderer));
+      }
+
+      return new OtherwiseExpression(exps.toArray(new DynamicExpression[0]));
+
+    } catch (RuntimeException e) {
+      throw new InvalidJavaExpressionException(this.getSourceLocation(),
+          "Could not produce Java expression for tag <otherwise> on file '"
+              + this.getSourceLocation().getFile().getPath() + "' at line " + this.getSourceLocation().getLineNumber()
+              + ", col " + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
     }
 
-    return new OtherwiseExpression(exps.toArray(new DynamicExpression[0]));
   }
 
 }

@@ -11,6 +11,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.TrimExpression;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "trim")
 public class TrimTag extends DynamicSQLPart {
@@ -114,19 +115,33 @@ public class TrimTag extends DynamicSQLPart {
   // Java Expression
 
   @Override
-  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
+  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException {
 
-    String prefix = this.prefix == null ? null : this.prefix.renderStatic(parameterRenderer);
-    String prefixOverrides = this.prefixOverrides == null ? null : this.prefixOverrides.renderStatic(parameterRenderer);
-    String suffix = this.suffix == null ? null : this.suffix.renderStatic(parameterRenderer);
-    String suffixOverrides = this.suffixOverrides == null ? null : this.suffixOverrides.renderStatic(parameterRenderer);
+    try {
 
-    List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
-    for (DynamicSQLPart p : super.parts) {
-      exps.add(p.getJavaExpression(parameterRenderer));
+      String prefix = this.prefix == null ? null : this.prefix.renderStatic(parameterRenderer);
+      String prefixOverrides = this.prefixOverrides == null ? null
+          : this.prefixOverrides.renderStatic(parameterRenderer);
+      String suffix = this.suffix == null ? null : this.suffix.renderStatic(parameterRenderer);
+      String suffixOverrides = this.suffixOverrides == null ? null
+          : this.suffixOverrides.renderStatic(parameterRenderer);
+
+      List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
+      for (DynamicSQLPart p : super.parts) {
+        exps.add(p.getJavaExpression(parameterRenderer));
+      }
+
+      return new TrimExpression(prefix, prefixOverrides, suffix, suffixOverrides,
+          exps.toArray(new DynamicExpression[0]));
+
+    } catch (RuntimeException e) {
+      throw new InvalidJavaExpressionException(this.getSourceLocation(),
+          "Could not produce Java expression for tag <trim> on file '" + this.getSourceLocation().getFile().getPath()
+              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
+              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
     }
 
-    return new TrimExpression(prefix, prefixOverrides, suffix, suffixOverrides, exps.toArray(new DynamicExpression[0]));
   }
 
 }

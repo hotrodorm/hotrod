@@ -13,6 +13,7 @@ import org.hotrod.config.SQLParameter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
@@ -151,12 +152,14 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   // Java Expression Rendering
 
-  public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer) {
+  public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException {
     DynamicExpression expr = this.getJavaExpression(parameterRenderer);
     return expr.renderConstructor(margin);
   }
 
-  protected abstract DynamicExpression getJavaExpression(ParameterRenderer parameterRenderer);
+  protected abstract DynamicExpression getJavaExpression(ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException;
 
   // Simple Static (non-dynamic) Rendering
 

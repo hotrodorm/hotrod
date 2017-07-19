@@ -6,13 +6,19 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.WhenExpression;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "when")
 public class WhenTag extends DynamicSQLPart {
+
+  // Constants
+
+  private static final Logger log = Logger.getLogger(WhenTag.class);
 
   // Constructor
 
@@ -67,15 +73,26 @@ public class WhenTag extends DynamicSQLPart {
   // Java Expression
 
   @Override
-  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
-    String condition = this.test.renderXML(parameterRenderer);
+  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException {
 
-    List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
-    for (DynamicSQLPart p : super.parts) {
-      exps.add(p.getJavaExpression(parameterRenderer));
+    try {
+
+      String condition = this.test.renderXML(parameterRenderer);
+
+      List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
+      for (DynamicSQLPart p : super.parts) {
+        exps.add(p.getJavaExpression(parameterRenderer));
+      }
+
+      return new WhenExpression(condition, exps.toArray(new DynamicExpression[0]));
+
+    } catch (RuntimeException e) {
+      throw new InvalidJavaExpressionException(this.getSourceLocation(),
+          "Could not produce Java expression for tag <when> on file '" + this.getSourceLocation().getFile().getPath()
+              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
+              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
     }
-
-    return new WhenExpression(condition, exps.toArray(new DynamicExpression[0]));
   }
 
 }

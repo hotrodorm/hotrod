@@ -10,6 +10,7 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.CollectionExpression;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 public class ParameterisableTextPart extends DynamicSQLPart {
 
@@ -171,32 +172,42 @@ public class ParameterisableTextPart extends DynamicSQLPart {
   // Java Expression
 
   @Override
-  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
+  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException {
 
-    List<DynamicExpression> exprs = new ArrayList<DynamicExpression>();
-    LiteralExpression last = null;
-    for (SQLChunk p : this.chunks) {
-      DynamicExpression expr = p.getJavaExpression(parameterRenderer);
-      try {
-        LiteralExpression v = (LiteralExpression) expr;
-        if (last == null) {
-          last = v;
-        } else {
-          last = last.concat(v);
+    try {
+
+      List<DynamicExpression> exprs = new ArrayList<DynamicExpression>();
+      LiteralExpression last = null;
+      for (SQLChunk p : this.chunks) {
+        DynamicExpression expr = p.getJavaExpression(parameterRenderer);
+        try {
+          LiteralExpression v = (LiteralExpression) expr;
+          if (last == null) {
+            last = v;
+          } else {
+            last = last.concat(v);
+          }
+        } catch (ClassCastException e) {
+          if (last != null) {
+            exprs.add(last);
+            last = null;
+          }
+          exprs.add(expr);
         }
-      } catch (ClassCastException e) {
-        if (last != null) {
-          exprs.add(last);
-          last = null;
-        }
-        exprs.add(expr);
       }
-    }
-    if (last != null) {
-      exprs.add(last);
-    }
+      if (last != null) {
+        exprs.add(last);
+      }
 
-    return new CollectionExpression(exprs.toArray(new DynamicExpression[0]));
+      return new CollectionExpression(exprs.toArray(new DynamicExpression[0]));
+
+    } catch (RuntimeException e) {
+      throw new InvalidJavaExpressionException(this.getSourceLocation(),
+          "Could not produce Java expression for parameter or variable on file '"
+              + this.getSourceLocation().getFile().getPath() + "' at line " + this.getSourceLocation().getLineNumber()
+              + ", col " + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
+    }
 
   }
 

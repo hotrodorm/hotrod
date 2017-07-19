@@ -108,13 +108,13 @@
 
           <choose>
           <!-- comment 2 -->
-            <when test="large&lt;&amp;>'&quot;">
+            <when test="#{sdize,javaType=java.lang.String,jdbcType=VARCHAR} != 'M'">
               and size &lt;&amp; 15
               and size &amp;lt; 30
             </when>
-            <when test="small">
+            <when test="#{sdize} == 'S'">
               and size = 'S'
-              <if test="cond2">
+              <if test="#{color,javaType=java.lang.String,jdbcType=VARCHAR} != null">
                 and color = 'red'
               </if>
             </when>

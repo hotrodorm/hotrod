@@ -5,6 +5,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 public class LiteralTextPart extends DynamicSQLPart implements SQLChunk {
 
@@ -68,8 +69,20 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLChunk {
   // Java Expression
 
   @Override
-  public DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
-    return new LiteralExpression(this.text);
+  public DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException {
+
+    try {
+
+      return new LiteralExpression(this.text);
+
+    } catch (RuntimeException e) {
+      throw new InvalidJavaExpressionException(this.getSourceLocation(),
+          "Could not produce Java expression for literal text on file '" + this.getSourceLocation().getFile().getPath()
+              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
+              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
+    }
+
   }
 
   @Override

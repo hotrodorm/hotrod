@@ -5,11 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlExpression;
 import org.apache.log4j.Logger;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
+import org.hotrod.runtime.exceptions.InvalidJexlExpressionException;
 import org.hotrod.runtime.util.ListWriter;
 
 public class ForEachExpression extends DynamicExpression {
@@ -33,9 +35,13 @@ public class ForEachExpression extends DynamicExpression {
     log.debug("init");
     this.item = item;
     this.index = index;
-    log.info("collection=" + collection);
-    this.collection = JEXL_ENGINE.createExpression(collection);
-    log.info("this.collection=" + this.collection.getSourceText());
+    try {
+      this.collection = JEXL_ENGINE.createExpression(collection);
+    } catch (JexlException e) {
+      throw new InvalidJexlExpressionException(
+          "Invalid collection expression: " + collection + " (" + e.getMessage() + ")");
+    }
+
     this.open = open;
     this.separator = separator;
     this.close = close;

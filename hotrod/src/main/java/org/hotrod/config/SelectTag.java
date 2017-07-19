@@ -19,6 +19,7 @@ import org.hotrod.config.dynamicsql.LiteralTextPart;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 
@@ -195,7 +196,8 @@ public class SelectTag extends AbstractDAOTag {
     return sb.toString();
   }
 
-  public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer) {
+  public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException {
     return this.aggregatedPart.renderJavaExpression(margin, parameterRenderer);
   }
 

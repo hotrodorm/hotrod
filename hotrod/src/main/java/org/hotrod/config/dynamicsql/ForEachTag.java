@@ -12,6 +12,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.ForEachExpression;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "foreach")
 public class ForEachTag extends DynamicSQLPart {
@@ -204,16 +205,27 @@ public class ForEachTag extends DynamicSQLPart {
   // Java Expression
 
   @Override
-  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
-    String coll = this.collection.renderStatic(parameterRenderer);
+  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException {
 
-    List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
-    for (DynamicSQLPart p : super.parts) {
-      exps.add(p.getJavaExpression(parameterRenderer));
+    try {
+
+      String coll = this.collection.renderStatic(parameterRenderer);
+      List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
+      for (DynamicSQLPart p : super.parts) {
+        exps.add(p.getJavaExpression(parameterRenderer));
+      }
+
+      return new ForEachExpression(this.item, this.index, coll, this.open, this.separator, this.close,
+          exps.toArray(new DynamicExpression[0]));
+
+    } catch (RuntimeException e) {
+      throw new InvalidJavaExpressionException(this.getSourceLocation(),
+          "Could not produce Java expression for <foreach> tag on file '" + this.getSourceLocation().getFile().getPath()
+              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
+              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
     }
 
-    return new ForEachExpression(this.item, this.index, coll, this.open, this.separator, this.close,
-        exps.toArray(new DynamicExpression[0]));
   }
 
 }

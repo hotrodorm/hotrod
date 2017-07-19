@@ -15,7 +15,7 @@ public abstract class DynamicExpression {
   private static final int JEXL_CACHE_MAX_EXPRESSIONS = 200;
 
   protected static JexlEngine JEXL_ENGINE = new JexlBuilder().cache(JEXL_CACHE_MAX_EXPRESSIONS).strict(true)
-      .silent(false).create();
+      .debug(false).silent(false).create();
 
   abstract EvaluationFeedback evaluate(StringBuilder out, DynamicSQLParameters variables)
       throws DynamicSQLEvaluationException;

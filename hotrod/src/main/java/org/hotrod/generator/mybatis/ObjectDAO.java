@@ -37,6 +37,7 @@ import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.exceptions.StaleDataException;
 import org.hotrod.runtime.interfaces.DaoForUpdate;
 import org.hotrod.runtime.interfaces.DaoWithOrder;
@@ -154,7 +155,7 @@ public class ObjectDAO {
 
       if (this.isSelect()) {
 
-        // writeSelectExpression(); // remove once tested
+        writeSelectExpression(); // remove once tested
 
         writeParameterizedSelect();
       } else {
@@ -729,22 +730,25 @@ public class ObjectDAO {
   }
 
   // // TODO: remove once tested
-  //
-  // private void writeSelectExpression() throws IOException {
-  // println(" public static final " + DynamicExpression.class.getName() + "
-  // JAVA_EXPRESSION =\n");
-  //
-  // ParameterRenderer parameterRenderer = new ParameterRenderer() {
-  // @Override
-  // public String render(final SQLParameter parameter) {
-  // return "#" + parameter.getName() + "#";
-  // }
-  // };
-  //
-  // println(this.selectTag.renderJavaExpression(4, parameterRenderer) + ";");
-  //
-  // println();
-  // }
+
+  private void writeSelectExpression() throws IOException {
+    println(" public static final " + DynamicExpression.class.getName() + " JAVA_EXPRESSION =\n");
+
+    ParameterRenderer parameterRenderer = new ParameterRenderer() {
+      @Override
+      public String render(final SQLParameter parameter) {
+        return "#" + parameter.getName() + "#";
+      }
+    };
+
+    try {
+      println(this.selectTag.renderJavaExpression(4, parameterRenderer) + ";");
+    } catch (InvalidJavaExpressionException e) {
+      throw new IOException(e);
+    }
+
+    println();
+  }
 
   /**
    * <pre>
@@ -1983,7 +1987,7 @@ public class ObjectDAO {
     println("  // update " + tag.getJavaMethodName());
     println();
 
-//     println(ObjectDAO.renderJavaComment(tag.getAugmentedSQL()));
+    // println(ObjectDAO.renderJavaComment(tag.getAugmentedSQL()));
     ParameterRenderer parameterRenderer = new ParameterRenderer() {
       @Override
       public String render(final SQLParameter parameter) {

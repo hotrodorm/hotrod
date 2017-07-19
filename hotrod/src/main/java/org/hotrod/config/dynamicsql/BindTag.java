@@ -8,6 +8,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.BindExpression;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "bind")
 public class BindTag extends DynamicSQLPart {
@@ -94,12 +95,23 @@ public class BindTag extends DynamicSQLPart {
   // Java Expression
 
   @Override
-  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer) {
+  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException {
 
-    String n = this.name.renderXML(parameterRenderer);
-    String v = this.value.renderXML(parameterRenderer);
+    try {
 
-    return new BindExpression(n, v);
+      String n = this.name.renderXML(parameterRenderer);
+      String v = this.value.renderXML(parameterRenderer);
+
+      return new BindExpression(n, v);
+
+    } catch (RuntimeException e) {
+      throw new InvalidJavaExpressionException(this.getSourceLocation(),
+          "Could not produce Java expression for tag <bind> on file '" + this.getSourceLocation().getFile().getPath()
+              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
+              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
+    }
+
   }
 
 }
