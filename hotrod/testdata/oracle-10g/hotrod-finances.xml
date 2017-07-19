@@ -24,13 +24,10 @@
     <select java-class-name="AccountTx1">
       select a.* , t.*
       from account a, transaction t
-      where t.account_id =
-      a.id
       <complement>
-        and current_balance between
-        #{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
-        and
-        #{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
+        where t.account_id = a.id
+        and current_balance between #{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
+        and #{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
       </complement>
     </select>
 
@@ -38,12 +35,10 @@
       select * from account
       <complement>
         <where>
-          <if
-            test="#{type,javaType=java.lang.String,jdbcType=VARCHAR} != null">
+          <if test="#{type,javaType=java.lang.String,jdbcType=VARCHAR} != null">
             and type = #{type}
           </if>
-          <if
-            test="#{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} != null">
+          <if test="#{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} != null">
             and current_balance >= #{minBalance}
           </if>
         </where>
@@ -61,34 +56,32 @@
 
   </facet>
 
-<!-- 
--->
+  <facet name="types">
 
-<!-- 
-		<facet name="types">
+    <select java-class-name="SelectTypesNumeric">
+      select * from types_numeric
+    </select>
 
-				<select java-class-name="SelectTypesNumeric">
-						select * from types_numeric
-				</select>
+    <select java-class-name="SelectTypesChar">
+      select * from types_char
+    </select>
 
-				<select java-class-name="SelectTypesChar">
-						select * from types_char
-				</select>
+    <select java-class-name="SelectTypesBinary">
+      select * from types_binary
+    </select>
 
-				<select java-class-name="SelectTypesBinary">
-						select * from types_binary
-				</select>
+    <select java-class-name="SelectTypesDateTime">
+      select * from types_date_time
+    </select>
 
-				<select java-class-name="SelectTypesDateTime">
-						select * from types_date_time
-				</select>
+    <select java-class-name="SelectViewExtra">
+      select * from types_extra
+    </select>
 
-				<select java-class-name="SelectViewExtra">
-						select * from types_extra
-				</select>
- 
-		</facet>
--->
+  </facet>
+
+
+  <!-- This is a bad example to test special cases. Do not use as a reference. -->
 
   <select java-class-name="selectDynamic001">
 
@@ -97,17 +90,17 @@
     select * from account
 
     <complement>
-    
+
       <bind name="pattern" value="'%' + _parameter.getTitle() + '%'" />
 
       <if test="conditional">
-      <!-- comment 1 -->
+        <!-- comment 1 -->
         where
         <if test="state">
           state = 'active'
 
           <choose>
-          <!-- comment 2 -->
+            <!-- comment 2 -->
             <when test="#{sdize,javaType=java.lang.String,jdbcType=VARCHAR} != 'M'">
               and size &lt;&amp; 15
               and size &amp;lt; 30
@@ -123,8 +116,7 @@
             </otherwise>
           </choose>
 
-          <foreach item="item" index="index" collection="list"
-            open="(" separator="," close=")">
+          <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
             #{item}
           </foreach>
 
@@ -138,8 +130,7 @@
           <if test="cond3">and b = 12 </if>
         </where>
 
-        <trim prefix="abc" prefixOverrides="AND |OR " suffix=","
-          suffixOverrides=")">
+        <trim prefix="abc" prefixOverrides="AND |OR " suffix="," suffixOverrides=")">
           <if test="cond2">and a = 10 </if>
           <if test="cond3">and b = 12 </if>
         </trim>

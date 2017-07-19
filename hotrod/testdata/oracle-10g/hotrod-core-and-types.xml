@@ -59,7 +59,6 @@
     
   <table name="application_config" />
 
-
   <table name="types_numeric" />
   <table name="types_char" />
   <table name="types_binary" />
@@ -121,14 +120,12 @@
       <sequence name="seq_codes" java-method-name="getCodeSequence" />
 
       <query java-method-name="applyAccountPromotion74">
-      <![CDATA[
       update account a
         set current_balance = current_balance + #{reward,javaType=java.lang.Integer,jdbcType=NUMERIC}
         where created_on between #{from,javaType=java.util.Date,jdbcType=TIMESTAMP}
                              and #{to,javaType=java.util.Date,jdbcType=TIMESTAMP}
           and (select count(*) from transaction where account_id = a.id)
               > #{minTransactions,javaType=java.lang.Integer,jdbcType=NUMERIC}
-      ]]>
       </query>
 
     </view>
@@ -138,11 +135,9 @@
 <!--   
   <select java-class-name="CurrentQuadrant" >
     <column name="active_state" converter="boolean_stored_as_number_4" />
-  <![CDATA[
     select * 
       from quadrant
-  ]]></select>
-  
+  </select>
 -->  
 
 </hotrod-fragment>
