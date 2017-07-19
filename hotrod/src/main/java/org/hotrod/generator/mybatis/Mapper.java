@@ -428,14 +428,9 @@ public class Mapper {
     println("  <!-- select parameterized -->");
     println();
     println("  <select id=\"" + this.getMapperIdSelectParameterized() + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
-    // println(" <![CDATA[");
-
-    println(SUtils.escapeXmlBody(this.metadata.renderSQLSentence(new MyBatisParameterRenderer())));
-
-    // println(" ]]>");
+    println(this.metadata.renderXML(new MyBatisParameterRenderer()));
     println("  </select>");
     println();
-
   }
 
   /**

@@ -8,6 +8,8 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hotrod.exceptions.InvalidConfigurationFileException;
+
 import xsdtests.case00.Myelement;
 import xsdtests.case00.RendereableTag;
 import xsdtests.case00.RendererHelper;
@@ -28,7 +30,7 @@ public class Nayeyt implements RendereableTag {
   // Rendering
 
   @Override
-  public void render(final StringBuilder sb) {
+  public void render(final StringBuilder sb) throws InvalidConfigurationFileException {
     RendererHelper.render("nayeyt", sb, this.content);
   }
 

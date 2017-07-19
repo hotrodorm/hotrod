@@ -72,7 +72,6 @@ public abstract class HotRodGenerator {
 
     logm("Starting core generator.");
 
-    display("");
     display("Database URL: " + loc.getUrl());
 
     Connection conn = null;

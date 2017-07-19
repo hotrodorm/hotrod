@@ -12,13 +12,14 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.hotrod.config.StrictValidationEventHandler;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.xml.sax.SAXException;
 
 public class XMLLoader0 {
 
   private static final File dir = new File("testdata/xsd-parser/case000");
 
-  public void parse() throws JAXBException, MalformedURLException, SAXException {
+  public void parse() throws JAXBException, MalformedURLException, SAXException, InvalidConfigurationFileException {
     System.out.println("[--- Will parse now ---]\n");
 
     SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);

@@ -24,4 +24,8 @@ public class DynamicSQLParameters implements JexlContext {
     this.vars.put(name, value);
   }
 
+  public void remove(final String name) {
+    this.vars.remove(name);
+  }
+
 }

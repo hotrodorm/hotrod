@@ -3,6 +3,7 @@ package xsdtests.case00;
 import java.util.List;
 
 import org.hotrod.config.dynamicsql.TagAttribute;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 
 // This renderer is incomplete.
 // * It does not escape attribute values.
@@ -11,7 +12,7 @@ import org.hotrod.config.dynamicsql.TagAttribute;
 public class RendererHelper {
 
   public static void render(final String currentTag, final StringBuilder sb, final List<Object> content,
-      final TagAttribute... attributes) {
+      final TagAttribute... attributes) throws InvalidConfigurationFileException {
 
     renderHeader(currentTag, sb, attributes);
 
@@ -66,8 +67,8 @@ public class RendererHelper {
   public static void renderHeader(final String currentTag, final StringBuilder sb, final TagAttribute... attributes) {
     sb.append("<" + currentTag);
     for (TagAttribute a : attributes) {
-      if (a.getValue() != null) {
-        sb.append(" " + a.getName() + "=\"" + a.getValue() + "\"");
+      if (a.render(null) != null) {
+        sb.append(" " + a.getName() + "=\"" + a.render(null) + "\"");
       }
     }
     sb.append(">");

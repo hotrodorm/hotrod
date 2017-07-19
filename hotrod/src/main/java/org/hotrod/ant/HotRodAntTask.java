@@ -140,6 +140,9 @@ public class HotRodAntTask extends Task {
 
     validateParameters();
 
+    display("");
+    display("Configuration File: " + this.configFile);
+
     DatabaseLocation loc = new DatabaseLocation(this.driverClass, this.url, this.username, this.password, this.catalog,
         this.schema);
 

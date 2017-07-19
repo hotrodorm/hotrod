@@ -1,10 +1,25 @@
 package org.hotrod.config.dynamicsql;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.log4j.Logger;
+import org.hotrod.config.SQLParameter;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.runtime.dynamicsql.expressions.ForEachExpression;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
+
 @XmlRootElement(name = "foreach")
 public class ForEachTag extends DynamicSQLPart {
+
+  // Constants
+
+  private static final Logger log = Logger.getLogger(ForEachTag.class);
 
   // Constructor
 
@@ -16,24 +31,21 @@ public class ForEachTag extends DynamicSQLPart {
 
   private String item = null;
   private String index = null;
-  private String collection = null;
+  private String collectionText = null;
   private String open = null;
   private String separator = null;
   private String close = null;
 
-  // Getters & Setters
+  private ParameterisableTextPart collection = null;
 
-  public String getItem() {
-    return item;
-  }
+  private SQLParameter itemParameter = null;
+  private SQLParameter indexParameter = null;
+
+  // JAXB Setters
 
   @XmlAttribute
   public void setItem(final String item) {
     this.item = item;
-  }
-
-  public String getIndex() {
-    return index;
   }
 
   @XmlAttribute
@@ -41,17 +53,9 @@ public class ForEachTag extends DynamicSQLPart {
     this.index = index;
   }
 
-  public String getCollection() {
-    return collection;
-  }
-
   @XmlAttribute
   public void setCollection(final String collection) {
-    this.collection = collection;
-  }
-
-  public String getOpen() {
-    return open;
+    this.collectionText = collection;
   }
 
   @XmlAttribute
@@ -59,17 +63,9 @@ public class ForEachTag extends DynamicSQLPart {
     this.open = open;
   }
 
-  public String getSeparator() {
-    return separator;
-  }
-
   @XmlAttribute
   public void setSeparator(final String separator) {
     this.separator = separator;
-  }
-
-  public String getClose() {
-    return close;
   }
 
   @XmlAttribute
@@ -77,18 +73,159 @@ public class ForEachTag extends DynamicSQLPart {
     this.close = close;
   }
 
+  // Getters
+
+  // Behavior
+
+  @Override
+  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
+
+    if (this.item != null) {
+      SQLParameter p = new SQLParameter(this.item, tagIdentification);
+      if (parameterDefinitions.find(p) != null) {
+        throw new InvalidConfigurationFileException("Invalid <foreach> tag in the body of the tag " + tagIdentification
+            + ". The 'item' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
+      }
+      this.itemParameter = p;
+      parameterDefinitions.add(p);
+    } else {
+      this.itemParameter = null;
+    }
+
+    if (this.index != null) {
+      SQLParameter p = new SQLParameter(this.index, tagIdentification);
+      if (parameterDefinitions.find(p) != null) {
+        throw new InvalidConfigurationFileException("Invalid <foreach> tag in the body of the tag " + tagIdentification
+            + ". The 'index' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
+      }
+      this.indexParameter = p;
+      parameterDefinitions.add(p);
+    } else {
+      this.indexParameter = null;
+    }
+
+    this.collection = this.collectionText == null ? null
+        : new ParameterisableTextPart(this.collectionText, tagIdentification, parameterDefinitions);
+
+    // log.info("this.collection=" + this.collection.renderXML(new
+    // ParameterRenderer() {
+    // @Override
+    // public String render(final SQLParameter parameter) {
+    // return "[[" + parameter.getName() + "]]";
+    // }
+    // }));
+
+  }
+
+  @Override
+  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
+    // Nothing extra to validate
+
+    // for (DynamicSQLPart p : super.parts) {
+    // try {
+    // ParameterisableTextPart s = (ParameterisableTextPart) p;
+    // for (SQLChunk ch : s.chunks) {
+    // try {
+    // LiteralTextPart literal = (LiteralTextPart) ch;
+    // if (!literal.isEmpty()) {
+    // throw new InvalidConfigurationFileException(
+    // "Invalid <foreach> tag included in the tag " + tagIdentification
+    // + ". The body of a <foreach> tag must include one variable occurrence in
+    // the form #{name}.");
+    // }
+    // } catch (ClassCastException e1) {
+    // try {
+    // SQLParameter param = (SQLParameter) ch;
+    // if (this.body != null) {
+    // throw new InvalidConfigurationFileException("Invalid <foreach> tag
+    // included in the tag "
+    // + tagIdentification
+    // + ". The body of a <foreach> tag must include one variable occurrence in
+    // the form #{name}, but found more than one.");
+    // }
+    // this.body = param;
+    // } catch (ClassCastException e2) {
+    // throw new InvalidConfigurationFileException(
+    // "Invalid <foreach> tag included in the tag " + tagIdentification
+    // + ". The body of a <foreach> tag must include one variable occurrence in
+    // the form #{name}.");
+    // }
+    // }
+    // }
+    // } catch (ClassCastException e3) {
+    // throw new InvalidConfigurationFileException("Invalid <choose> tag
+    // included in the tag " + tagIdentification
+    // + ". The body of a <foreach> tag must include one variable occurrence in
+    // the form #{name}, but found an object of class '"
+    // + p.getClass().getName() + "'.");
+    // }
+    // }
+    // if (this.body == null) {
+    // throw new InvalidConfigurationFileException("Invalid <foreach> tag
+    // included in the tag " + tagIdentification
+    // + ". The body of a <foreach> tag must include one variable occurrence in
+    // the form #{name}, but found none.");
+    // }
+
+  }
+
+  @Override
+  protected void postTagValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
+    if (this.itemParameter != null) {
+      parameterDefinitions.remove(this.itemParameter);
+    }
+    if (this.indexParameter != null) {
+      parameterDefinitions.remove(this.indexParameter);
+    }
+  }
+
   // Rendering
 
   @Override
-  public String render() {
-    return super.renderTag( //
-        new TagAttribute("item", this.item), //
-        new TagAttribute("index", this.index), //
+  protected boolean shouldRenderTag() {
+    return true;
+  }
+
+  @Override
+  protected TagAttribute[] getAttributes() {
+    TagAttribute[] atts = { //
+        new TagAttribute("item", new LiteralTextPart(this.item)), //
+        new TagAttribute("index", new LiteralTextPart(this.index)), //
         new TagAttribute("collection", this.collection), //
-        new TagAttribute("open", this.open), //
-        new TagAttribute("separator", this.separator), //
-        new TagAttribute("close", this.close) //
-    );
+        new TagAttribute("open", new LiteralTextPart(this.open)), //
+        new TagAttribute("separator", new LiteralTextPart(this.separator)), //
+        new TagAttribute("close", new LiteralTextPart(this.close)) //
+    };
+    return atts;
+  }
+
+  // Java Expression
+
+  @Override
+  protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException {
+
+    try {
+
+      String coll = this.collection.renderStatic(parameterRenderer);
+      List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
+      for (DynamicSQLPart p : super.parts) {
+        exps.add(p.getJavaExpression(parameterRenderer));
+      }
+
+      return new ForEachExpression(this.item, this.index, coll, this.open, this.separator, this.close,
+          exps.toArray(new DynamicExpression[0]));
+
+    } catch (RuntimeException e) {
+      throw new InvalidJavaExpressionException(this.getSourceLocation(),
+          "Could not produce Java expression for <foreach> tag on file '" + this.getSourceLocation().getFile().getPath()
+              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
+              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
+    }
+
   }
 
 }

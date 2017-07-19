@@ -1,21 +1,35 @@
 package org.hotrod.config.dynamicsql;
 
+import org.hotrod.generator.ParameterRenderer;
+
 public class TagAttribute {
 
   private String name;
-  private String value;
+  private LiteralTextPart lValue;
+  private ParameterisableTextPart pValue;
 
-  public TagAttribute(final String name, final String value) {
+  public TagAttribute(final String name, final ParameterisableTextPart value) {
     this.name = name;
-    this.value = value;
+    this.lValue = null;
+    this.pValue = value;
+  }
+
+  public TagAttribute(final String name, final LiteralTextPart value) {
+    this.name = name;
+    this.lValue = value;
+    this.pValue = null;
   }
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
-  public String getValue() {
-    return value;
+  public String render(final ParameterRenderer parameterRenderer) {
+    if (this.lValue != null) {
+      return this.lValue.renderXML(parameterRenderer);
+    } else {
+      return this.pValue == null ? null : this.pValue.renderXML(parameterRenderer);
+    }
   }
 
 }

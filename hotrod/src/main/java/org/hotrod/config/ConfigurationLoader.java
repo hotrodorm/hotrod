@@ -1,6 +1,8 @@
 package org.hotrod.config;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -11,6 +13,9 @@ import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -19,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
+import org.hotrod.config.AbstractHotRodConfigTag.LocationListener;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.xml.sax.SAXException;
@@ -43,9 +49,23 @@ public class ConfigurationLoader {
   public static HotRodConfigTag loadPrimary(final File f, final String generatorName)
       throws ControlledException, UncontrolledException {
 
+    // Basic validation on the file
+
+    if (f == null) {
+      throw new ControlledException("Configuration file name is empty.");
+    }
+    if (!f.exists()) {
+      throw new ControlledException(Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
+    }
+    if (!f.isFile()) {
+      throw new ControlledException(Constants.TOOL_NAME + " configuration file '" + f.getPath()
+          + "' must be a normal file, not a directory or other special file.");
+    }
+
     // Prepare the parser
 
     Unmarshaller unmarshaller = null;
+    XMLStreamReader xsr = null;
     StrictValidationEventHandler validationHandler = new StrictValidationEventHandler();
 
     try {
@@ -57,10 +77,24 @@ public class ConfigurationLoader {
       unmarshaller.setEventHandler(validationHandler);
       unmarshaller.setSchema(schema);
 
+      XMLInputFactory xif = XMLInputFactory.newFactory();
+      FileInputStream xml = new FileInputStream(f);
+      xsr = xif.createXMLStreamReader(xml);
+      LocationListener locationListener = new LocationListener(f, xsr);
+      unmarshaller.setListener(locationListener);
+
     } catch (SAXException e) {
       throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
     } catch (JAXBException e) {
       throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
+    } catch (FileNotFoundException e) {
+      throw new ControlledException(Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
+    } catch (XMLStreamException e) {
+      String message = (e.getLocation() == null ? ""
+          : "[line " + e.getLocation().getLineNumber() + ", col " + e.getLocation().getColumnNumber() + "] ")
+          + e.getMessage();
+      throw new ControlledException(
+          Constants.TOOL_NAME + " configuration file '" + f.getPath() + "' is not well-formed: " + message);
     }
 
     // Parse the configuration file
@@ -69,20 +103,8 @@ public class ConfigurationLoader {
 
     try {
 
-      if (f == null) {
-        throw new ControlledException("Configuration file name is empty.");
-      }
-      if (!f.exists()) {
-        throw new ControlledException(Constants.TOOL_NAME + " configuration file not found: " + f.getAbsolutePath());
-      }
-      if (!f.isFile()) {
-        throw new ControlledException(Constants.TOOL_NAME + " configuration file '" + f.getAbsolutePath()
-            + "' must be a normal file, not a directory or other special file.");
-      }
-      String absPath = f.getAbsolutePath();
-
       log.debug("[ Will parse ]");
-      HotRodConfigTag config = (HotRodConfigTag) unmarshaller.unmarshal(f);
+      HotRodConfigTag config = (HotRodConfigTag) unmarshaller.unmarshal(xsr);
       log.debug("[ Parsed ]");
 
       // Validation (specific)
@@ -94,7 +116,7 @@ public class ConfigurationLoader {
       DaosTag daosTag = config.getGenerators().getSelectedGeneratorTag().getDaos();
 
       Set<String> alreadyLoadedFileNames = new HashSet<String>();
-      alreadyLoadedFileNames.add(absPath);
+      alreadyLoadedFileNames.add(f.getAbsolutePath());
 
       config.validateCommon(config, f, alreadyLoadedFileNames, f, daosTag, null);
 
@@ -127,9 +149,23 @@ public class ConfigurationLoader {
       final File parentFile, final Set<String> alreadyLoadedFileNames, final DaosTag daosTag)
       throws UncontrolledException, ControlledException {
 
+    // Basic file validation
+
+    if (f == null) {
+      throw new ControlledException("Configuration file name is empty.");
+    }
+    if (!f.exists()) {
+      throw new ControlledException(Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
+    }
+    if (!f.isFile()) {
+      throw new ControlledException(Constants.TOOL_NAME + " configuration file '" + f.getPath()
+          + "' must be a normal file, not a directory or other special file.");
+    }
+
     // Prepare the parser
 
     Unmarshaller unmarshaller = null;
+    XMLStreamReader xsr = null;
     StrictValidationEventHandler validationHandler = new StrictValidationEventHandler();
 
     try {
@@ -141,10 +177,24 @@ public class ConfigurationLoader {
       unmarshaller.setEventHandler(validationHandler);
       unmarshaller.setSchema(schema);
 
+      XMLInputFactory xif = XMLInputFactory.newFactory();
+      FileInputStream xml = new FileInputStream(f);
+      xsr = xif.createXMLStreamReader(xml);
+      LocationListener locationListener = new LocationListener(f, xsr);
+      unmarshaller.setListener(locationListener);
+
     } catch (SAXException e) {
       throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
     } catch (JAXBException e) {
       throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
+    } catch (FileNotFoundException e) {
+      throw new ControlledException(Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
+    } catch (XMLStreamException e) {
+      String message = (e.getLocation() == null ? ""
+          : "[line " + e.getLocation().getLineNumber() + ", col " + e.getLocation().getColumnNumber() + "] ")
+          + e.getMessage();
+      throw new ControlledException(
+          Constants.TOOL_NAME + " configuration file '" + f.getPath() + "' is not well-formed: " + message);
     }
 
     // Parse the configuration file
@@ -153,20 +203,8 @@ public class ConfigurationLoader {
 
     try {
 
-      if (f == null) {
-        throw new ControlledException("Configuration file name is empty.");
-      }
-      if (!f.exists()) {
-        throw new ControlledException(Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
-      }
-      if (!f.isFile()) {
-        throw new ControlledException(Constants.TOOL_NAME + " configuration file '" + f.getPath()
-            + "' must be a normal file, not a directory or other special file.");
-      }
-      String absPath = f.getAbsolutePath();
-
       log.debug("[ *** Will parse file=" + f.getPath() + " ]");
-      HotRodFragmentConfigTag fragmentConfig = (HotRodFragmentConfigTag) unmarshaller.unmarshal(f);
+      HotRodFragmentConfigTag fragmentConfig = (HotRodFragmentConfigTag) unmarshaller.unmarshal(xsr);
       log.debug("[ *** Parsed ]");
 
       // Validation (specific)
@@ -175,7 +213,7 @@ public class ConfigurationLoader {
 
       // Validation (common)
 
-      alreadyLoadedFileNames.add(absPath);
+      alreadyLoadedFileNames.add(f.getAbsolutePath());
       fragmentConfig.validateCommon(primaryConfig, f, alreadyLoadedFileNames, f, daosTag, fragmentConfig);
 
       // Complete

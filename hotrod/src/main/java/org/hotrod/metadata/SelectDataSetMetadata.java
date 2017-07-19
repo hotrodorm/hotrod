@@ -257,13 +257,13 @@ public class SelectDataSetMetadata implements DataSetMetadata {
   }
 
   @Override
-  public String getAugmentedSQL() {
-    return this.tag.getAugmentedSQL();
+  public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
+    return this.tag.renderSQLSentence(parameterRenderer);
   }
 
   @Override
-  public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
-    return this.tag.renderSQLSentence(parameterRenderer);
+  public String renderXML(final ParameterRenderer parameterRenderer) {
+    return this.tag.renderXML(parameterRenderer);
   }
 
   @Override

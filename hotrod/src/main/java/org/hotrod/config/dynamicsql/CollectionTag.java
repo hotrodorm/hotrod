@@ -3,45 +3,30 @@ package org.hotrod.config.dynamicsql;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.dynamicsql.expressions.CollectionExpression;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.dynamicsql.expressions.IfExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
-@XmlRootElement(name = "if")
-public class IfTag extends DynamicSQLPart {
+@XmlRootElement(name = "not-a-tag")
+public class CollectionTag extends DynamicSQLPart {
 
   // Constructor
 
-  public IfTag() {
-    super("if");
-  }
-
-  // Properties
-
-  private String testText = null;
-  private ParameterisableTextPart test = null;
-
-  // JAXB Setters
-
-  @XmlAttribute
-  public void setTest(final String test) {
-    this.testText = test;
+  public CollectionTag(final List<DynamicSQLPart> parts) {
+    super("not-a-tag");
+    super.parts = parts;
   }
 
   // Behavior
 
+  @Override
   protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
-    if (this.testText == null) {
-      throw new InvalidConfigurationFileException(
-          "Invalid <if> tag included in the tag " + tagIdentification + ". The 'test' attribute must be specified.");
-    }
-    this.test = new ParameterisableTextPart(this.testText, tagIdentification, parameterDefinitions);
+    // No attributes; nothing to do
   }
 
   @Override
@@ -54,12 +39,12 @@ public class IfTag extends DynamicSQLPart {
 
   @Override
   protected boolean shouldRenderTag() {
-    return true;
+    return false;
   }
 
   @Override
   protected TagAttribute[] getAttributes() {
-    TagAttribute[] atts = { new TagAttribute("test", this.test) };
+    TagAttribute[] atts = {};
     return atts;
   }
 
@@ -71,18 +56,16 @@ public class IfTag extends DynamicSQLPart {
 
     try {
 
-      String condition = this.test.renderStatic(parameterRenderer);
-
       List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
       for (DynamicSQLPart p : super.parts) {
         exps.add(p.getJavaExpression(parameterRenderer));
       }
 
-      return new IfExpression(condition, exps.toArray(new DynamicExpression[0]));
+      return new CollectionExpression(exps.toArray(new DynamicExpression[0]));
 
     } catch (RuntimeException e) {
       throw new InvalidJavaExpressionException(this.getSourceLocation(),
-          "Could not produce Java expression for <if> tag on file '" + this.getSourceLocation().getFile().getPath()
+          "Could not produce Java expression for XML tag on file '" + this.getSourceLocation().getFile().getPath()
               + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
               + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
     }

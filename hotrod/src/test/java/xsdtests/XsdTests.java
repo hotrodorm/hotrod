@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.xml.sax.SAXException;
 
 import xsdtests.case00.XMLLoader0;
@@ -64,7 +65,7 @@ public class XsdTests {
 
   }
 
-  private static void test0() throws JAXBException, MalformedURLException, SAXException {
+  private static void test0() throws JAXBException, MalformedURLException, SAXException, InvalidConfigurationFileException {
     XMLLoader0 loader = new XMLLoader0();
     loader.parse();
   }

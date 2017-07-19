@@ -7,13 +7,19 @@ import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
 
-public class VerbatimExpression extends DynamicExpression {
+public class LiteralExpression extends DynamicExpression {
+
+  // Properties
 
   private String verbatim;
 
-  public VerbatimExpression(final String verbatim) {
+  // Constructor
+
+  public LiteralExpression(final String verbatim) {
     this.verbatim = verbatim;
   }
+
+  // Behavior
 
   @Override
   public EvaluationFeedback evaluate(final StringBuilder out, final DynamicSQLParameters variables)
@@ -29,6 +35,10 @@ public class VerbatimExpression extends DynamicExpression {
     stringParams.add(this.verbatim);
     params.add(stringParams);
     return params;
+  }
+
+  public LiteralExpression concat(final LiteralExpression other) {
+    return new LiteralExpression(this.verbatim + other.verbatim);
   }
 
 }

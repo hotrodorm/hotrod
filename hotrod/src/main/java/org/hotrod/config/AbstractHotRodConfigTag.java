@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.Unmarshaller.Listener;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
@@ -18,6 +21,7 @@ import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
+import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
@@ -339,6 +343,53 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
       }
     }
     return null;
+  }
+
+  // Location Listener
+
+  public static interface SourceLocatable {
+
+    void setSourceLocation(SourceLocation location);
+
+    SourceLocation getSourceLocation();
+
+  }
+
+  public static class LocationListener extends Listener {
+
+    private File file;
+
+    private XMLStreamReader xsr;
+    private Map<Object, Location> locations;
+
+    public LocationListener(final File file, final XMLStreamReader xsr) {
+      this.file = file;
+      this.xsr = xsr;
+      this.locations = new HashMap<Object, Location>();
+    }
+
+    @Override
+    public void beforeUnmarshal(final Object target, final Object parent) {
+      Location location = this.xsr.getLocation();
+      this.locations.put(target, location);
+      try {
+        SourceLocatable locatable = (SourceLocatable) target;
+        SourceLocation sourceLocation = new SourceLocation(this.file, location.getLineNumber(),
+            location.getColumnNumber(), location.getCharacterOffset());
+        locatable.setSourceLocation(sourceLocation);
+      } catch (ClassCastException e) {
+        // Not a SourceLocatable; do nothing.
+      }
+    }
+
+    public File getFile() {
+      return this.file;
+    }
+
+    public Location getLocation(final Object obj) {
+      return this.locations.get(obj);
+    }
+
   }
 
 }

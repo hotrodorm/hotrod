@@ -14,44 +14,49 @@
   </table>
 
   <facet name="seq">
- 
+
   </facet>
 
   <facet name="phase2">
 
     <table name="types_date_time" />
 
-    <select java-class-name="AccountTx1" complement-start="{/*" complement-end="*/}"><![CDATA[
+    <select java-class-name="AccountTx1">
       select a.* , t.*
-        from account a, transaction t
-        where t.account_id = a.id
-        {/*
-        and current_balance between #{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
-                                and #{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
-        */}
-      ]]>
+      from account a, transaction t
+      where t.account_id =
+      a.id
+      <complement>
+        and current_balance between
+        #{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
+        and
+        #{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
+      </complement>
     </select>
 
     <select java-class-name="SearchedAccount">
       select * from account
-        {*
+      <complement>
         <where>
-          <if test="#{type,javaType=java.lang.String,jdbcType=VARCHAR} != null">
+          <if
+            test="#{type,javaType=java.lang.String,jdbcType=VARCHAR} != null">
             and type = #{type}
           </if>
-          <if test="#{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} != null">
+          <if
+            test="#{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} != null">
             and current_balance >= #{minBalance}
           </if>
         </where>
         order by created_on
-        *}
+      </complement>
     </select>
 
     <select java-class-name="SearchedAccount2">
       select * from account
-        {*
-        where current_balance &lt; #{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
-        *}
+      <complement>
+        where current_balance &lt;
+        #{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
+      </complement>
     </select>
 
   </facet>
@@ -86,67 +91,69 @@
 -->
 
   <select java-class-name="selectDynamic001">
-  
-    <column name="total" java-type="java.lang.Integer" />
+
+    <column name="current_balance" java-type="java.lang.Integer" />
 
     select * from account
 
-    {*
-    <bind name="pattern" value="'%' + _parameter.getTitle() + '%'" />
+    <complement>
+    
+      <bind name="pattern" value="'%' + _parameter.getTitle() + '%'" />
 
-    <if test="conditional">
+      <if test="conditional">
       <!-- comment 1 -->
-      where
-      <if test="state">
-        state = 'active'
-  
-        <choose>
+        where
+        <if test="state">
+          state = 'active'
+
+          <choose>
           <!-- comment 2 -->
-          <when test="large&lt;&amp;>'&quot;">
-            and size &lt;&amp; 15
-            and size &amp;lt; 30
-          </when>
-          <when test="small">
-            and size = 'S'
-            <if test="cond2">
-              and color = 'red'
-            </if>
-          </when>
-          <otherwise>
-            and size = 'M'
-          </otherwise>
-        </choose>
-  
-        <foreach item="item" index="index" collection="list" open="("
-          separator="," close=")">
-          #{item,javaType=java.lang.String,jdbcType=VARCHAR}
-        </foreach>
-  
-      </if>
-      <if test="current_balance">
-        balance between 100 and 200
-      </if>
-  
-      <where>
-        <if test="cond2">and a = 10 </if>
-        <if test="cond3">and b = 12 </if>
-      </where>
-  
-      <trim prefix="abc" prefixOverrides="AND |OR " suffix=","
-        suffixOverrides=")">
-        <if test="cond2">and a = 10 </if>
-        <if test="cond3">and b = 12 </if>
-      </trim>
-  
-      <set>
-        <if test="abc">
-          Look.
+            <when test="#{sdize,javaType=java.lang.String,jdbcType=VARCHAR} != 'M'">
+              and size &lt;&amp; 15
+              and size &amp;lt; 30
+            </when>
+            <when test="#{sdize} == 'S'">
+              and size = 'S'
+              <if test="#{color,javaType=java.lang.String,jdbcType=VARCHAR} != null">
+                and color = 'red'
+              </if>
+            </when>
+            <otherwise>
+              and size = 'M'
+            </otherwise>
+          </choose>
+
+          <foreach item="item" index="index" collection="list"
+            open="(" separator="," close=")">
+            #{item}
+          </foreach>
+
         </if>
-      </set>
-  
-    </if>
-    *}
-  
+        <if test="current_balance">
+          balance between 100 and 200
+        </if>
+
+        <where>
+          <if test="cond2">and a = 10 </if>
+          <if test="cond3">and b = 12 </if>
+        </where>
+
+        <trim prefix="abc" prefixOverrides="AND |OR " suffix=","
+          suffixOverrides=")">
+          <if test="cond2">and a = 10 </if>
+          <if test="cond3">and b = 12 </if>
+        </trim>
+
+        <set>
+          <if test="abc">
+            Look.
+          </if>
+        </set>
+
+      </if>
+
+    </complement>
+
   </select>
 
 </hotrod-fragment>
