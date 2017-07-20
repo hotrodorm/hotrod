@@ -98,19 +98,22 @@ public class BindTag extends DynamicSQLPart {
   protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
 
-    try {
+    throw new UnsupportedOperationException("The <foreach> and <bind> tags are not yet supported.");
 
-      String n = this.name.renderXML(parameterRenderer);
-      String v = this.value.renderXML(parameterRenderer);
-
-      return new BindExpression(n, v);
-
-    } catch (RuntimeException e) {
-      throw new InvalidJavaExpressionException(this.getSourceLocation(),
-          "Could not produce Java expression for tag <bind> on file '" + this.getSourceLocation().getFile().getPath()
-              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
-              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
-    }
+    // try {
+    //
+    // String n = this.name.renderXML(parameterRenderer);
+    // String v = this.value.renderXML(parameterRenderer);
+    //
+    // return new BindExpression(n, v);
+    //
+    // } catch (RuntimeException e) {
+    // throw new InvalidJavaExpressionException(this.getSourceLocation(),
+    // "Could not produce Java expression for tag <bind> on file '" +
+    // this.getSourceLocation().getFile().getPath()
+    // + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
+    // + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
+    // }
 
   }
 

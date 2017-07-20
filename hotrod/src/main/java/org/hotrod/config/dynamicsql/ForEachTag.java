@@ -108,67 +108,12 @@ public class ForEachTag extends DynamicSQLPart {
     this.collection = this.collectionText == null ? null
         : new ParameterisableTextPart(this.collectionText, tagIdentification, parameterDefinitions);
 
-    // log.info("this.collection=" + this.collection.renderXML(new
-    // ParameterRenderer() {
-    // @Override
-    // public String render(final SQLParameter parameter) {
-    // return "[[" + parameter.getName() + "]]";
-    // }
-    // }));
-
   }
 
   @Override
   protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     // Nothing extra to validate
-
-    // for (DynamicSQLPart p : super.parts) {
-    // try {
-    // ParameterisableTextPart s = (ParameterisableTextPart) p;
-    // for (SQLChunk ch : s.chunks) {
-    // try {
-    // LiteralTextPart literal = (LiteralTextPart) ch;
-    // if (!literal.isEmpty()) {
-    // throw new InvalidConfigurationFileException(
-    // "Invalid <foreach> tag included in the tag " + tagIdentification
-    // + ". The body of a <foreach> tag must include one variable occurrence in
-    // the form #{name}.");
-    // }
-    // } catch (ClassCastException e1) {
-    // try {
-    // SQLParameter param = (SQLParameter) ch;
-    // if (this.body != null) {
-    // throw new InvalidConfigurationFileException("Invalid <foreach> tag
-    // included in the tag "
-    // + tagIdentification
-    // + ". The body of a <foreach> tag must include one variable occurrence in
-    // the form #{name}, but found more than one.");
-    // }
-    // this.body = param;
-    // } catch (ClassCastException e2) {
-    // throw new InvalidConfigurationFileException(
-    // "Invalid <foreach> tag included in the tag " + tagIdentification
-    // + ". The body of a <foreach> tag must include one variable occurrence in
-    // the form #{name}.");
-    // }
-    // }
-    // }
-    // } catch (ClassCastException e3) {
-    // throw new InvalidConfigurationFileException("Invalid <choose> tag
-    // included in the tag " + tagIdentification
-    // + ". The body of a <foreach> tag must include one variable occurrence in
-    // the form #{name}, but found an object of class '"
-    // + p.getClass().getName() + "'.");
-    // }
-    // }
-    // if (this.body == null) {
-    // throw new InvalidConfigurationFileException("Invalid <foreach> tag
-    // included in the tag " + tagIdentification
-    // + ". The body of a <foreach> tag must include one variable occurrence in
-    // the form #{name}, but found none.");
-    // }
-
   }
 
   @Override
@@ -208,23 +153,27 @@ public class ForEachTag extends DynamicSQLPart {
   protected DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
 
-    try {
+    throw new UnsupportedOperationException("The <foreach> and <bind> tags are not yet supported.");
 
-      String coll = this.collection.renderStatic(parameterRenderer);
-      List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
-      for (DynamicSQLPart p : super.parts) {
-        exps.add(p.getJavaExpression(parameterRenderer));
-      }
-
-      return new ForEachExpression(this.item, this.index, coll, this.open, this.separator, this.close,
-          exps.toArray(new DynamicExpression[0]));
-
-    } catch (RuntimeException e) {
-      throw new InvalidJavaExpressionException(this.getSourceLocation(),
-          "Could not produce Java expression for <foreach> tag on file '" + this.getSourceLocation().getFile().getPath()
-              + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
-              + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
-    }
+    // try {
+    //
+    // String coll = this.collection.renderStatic(parameterRenderer);
+    // List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
+    // for (DynamicSQLPart p : super.parts) {
+    // exps.add(p.getJavaExpression(parameterRenderer));
+    // }
+    //
+    // return new ForEachExpression(this.item, this.index, coll, this.open,
+    // this.separator, this.close,
+    // exps.toArray(new DynamicExpression[0]));
+    //
+    // } catch (RuntimeException e) {
+    // throw new InvalidJavaExpressionException(this.getSourceLocation(),
+    // "Could not produce Java expression for <foreach> tag on file '" +
+    // this.getSourceLocation().getFile().getPath()
+    // + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
+    // + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
+    // }
 
   }
 
