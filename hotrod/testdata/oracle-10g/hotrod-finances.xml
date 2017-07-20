@@ -91,7 +91,9 @@
 
     <complement>
 
+<!--
       <bind name="pattern" value="'%' + _parameter.getTitle() + '%'" />
+-->
 
       <if test="conditional">
         <!-- comment 1 -->
@@ -116,9 +118,11 @@
             </otherwise>
           </choose>
 
+<!--
           <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
             #{item}
           </foreach>
+-->
 
         </if>
         <if test="current_balance">

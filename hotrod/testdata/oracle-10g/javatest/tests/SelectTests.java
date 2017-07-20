@@ -181,7 +181,7 @@ public class SelectTests {
 
     Integer sortType = 1;
 
-    for (AccountByIdsVO a : AccountByIds.select(name, type, minBalance, maxBalance, ids, sortType)) {
+    for (AccountByIdsVO a : AccountByIds.select(minBalance, maxBalance, ids, sortType)) {
       System.out.println("a=" + a);
     }
   }

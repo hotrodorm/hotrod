@@ -77,29 +77,33 @@
     select * from account
 
     <complement>
-
+<!-- 
       <bind name="namePattern"
         value="#{name,javaType=java.lang.String,jdbcType=VARCHAR} == null ? null: ('%' + #{name} + '%')" />
       <bind name="extraBalance"
         value="#{type,javaType=java.lang.String,jdbcType=VARCHAR} == 'CHK' ? 100 : 0" />
-
+-->
       <where>
         <if
           test="#{minBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} != null &amp;&amp; #{minBalance} > 10">
-          current_balance > #{minBalance} + #{extraBalance}
+          current_balance > #{minBalance} <!--  + #{extraBalance} --> 
         </if>
         <if
           test="#{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} != null &amp;&amp; #{maxBalance} &lt; 500">
           and current_balance &lt; #{maxBalance}
         </if>
+        <!-- 
         <if test="#{name} != null">
           and name like '#{namePattern}'
         </if>
+        -->
         <if
           test="#{ids,javaType=java.util.List&lt;java.lang.Integer>,jdbcType=ARRAY} != null &amp;&amp; !empty #{ids}">
           and id in
+<!--            
           <foreach item="item" index="index" collection="#{ids}"
             open="(" separator="," close=")">#{item}</foreach>
+-->            
         </if>
       </where>
 
