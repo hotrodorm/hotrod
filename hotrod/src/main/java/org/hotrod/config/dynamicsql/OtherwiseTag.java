@@ -1,8 +1,5 @@
 package org.hotrod.config.dynamicsql;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -23,13 +20,13 @@ public class OtherwiseTag extends DynamicSQLPart {
   // Behavior
 
   @Override
-  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void validateAttributes(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     // No attributes; nothing to do
   }
 
   @Override
-  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void specificBodyValidation(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     // No extra validation on the body
   }
@@ -55,12 +52,7 @@ public class OtherwiseTag extends DynamicSQLPart {
 
     try {
 
-      List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
-      for (DynamicSQLPart p : super.parts) {
-        exps.add(p.getJavaExpression(parameterRenderer));
-      }
-
-      return new OtherwiseExpression(exps.toArray(new DynamicExpression[0]));
+      return new OtherwiseExpression(toArray(this.parts, parameterRenderer));
 
     } catch (RuntimeException e) {
       throw new InvalidJavaExpressionException(this.getSourceLocation(),

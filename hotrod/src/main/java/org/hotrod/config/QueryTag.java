@@ -43,6 +43,7 @@ public class QueryTag extends AbstractDAOTag {
 
   @XmlMixed
   @XmlElementRefs({ //
+      @XmlElementRef(type = ParameterTag.class), //
       @XmlElementRef(type = IfTag.class), //
       @XmlElementRef(type = ChooseTag.class), //
       @XmlElementRef(type = WhereTag.class), //
@@ -81,37 +82,43 @@ public class QueryTag extends AbstractDAOTag {
     // method-name
 
     if (this.javaMethodName == null) {
-      throw new InvalidConfigurationFileException("Attribute 'java-method-name' of tag <" + getTagName()
-          + "> cannot be empty. " + "Must specify a unique name.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'java-method-name' of tag <"
+          + getTagName() + "> cannot be empty. " + "Must specify a unique name.");
     } else if (!this.javaMethodName.matches(SequenceTag.VALID_JAVA_METHOD_PATTERN)) {
-      throw new InvalidConfigurationFileException("Attribute 'java-method-name' of tag <" + super.getTagName()
-          + "> specifies '" + this.javaMethodName + "' but must specify a valid java method name. "
-          + "Valid method names must start with a lowercase letter, "
-          + "and continue with letters, digits, dollarsign, and/or underscores.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Attribute 'java-method-name' of tag <" + super.getTagName() + "> specifies '" + this.javaMethodName
+              + "' but must specify a valid java method name. "
+              + "Valid method names must start with a lowercase letter, "
+              + "and continue with letters, digits, dollarsign, and/or underscores.");
     }
 
-    String tagIdentification = "<" + super.getTagName() + "> with java-method-name '" + this.javaMethodName + "'";
-
-    // text, dynamic SQL tags
+    // content text, parameters, dynamic SQL tags
 
     this.parts = new ArrayList<DynamicSQLPart>();
     this.parameterDefinitions = new ParameterDefinitions();
 
     for (Object obj : this.content) {
-      DynamicSQLPart p;
       try {
-        String s = (String) obj;
-        p = new ParameterisableTextPart(s, tagIdentification, this.parameterDefinitions);
+        String s = (String) obj; // content text
+        DynamicSQLPart p = new ParameterisableTextPart(s, this.getSourceLocation(), this.parameterDefinitions);
+        p.validate(this.parameterDefinitions);
+        this.parts.add(p);
       } catch (ClassCastException e1) {
         try {
-          p = (DynamicSQLPart) obj;
+          ParameterTag param = (ParameterTag) obj; // parameter
+          param.validate();
+          this.parameterDefinitions.add(param);
         } catch (ClassCastException e2) {
-          throw new InvalidConfigurationFileException("The body of the tag " + tagIdentification
-              + " has an invalid tag (of class '" + obj.getClass().getName() + "').");
+          try {
+            DynamicSQLPart p = (DynamicSQLPart) obj; // dynamic SQL part
+            p.validate(this.parameterDefinitions);
+            this.parts.add(p);
+          } catch (ClassCastException e3) {
+            throw new InvalidConfigurationFileException(super.getSourceLocation(), "The body of the tag <"
+                + super.getTagName() + "> has an invalid tag (of class '" + obj.getClass().getName() + "').");
+          }
         }
       }
-      p.validate(tagIdentification);
-      this.parts.add(p);
     }
 
   }
@@ -136,21 +143,17 @@ public class QueryTag extends AbstractDAOTag {
     return sb.toString();
   }
 
-  public List<SQLParameter> getParameterDefinitions() {
-    return this.parameterDefinitions.getDefinitions();
+  public String renderXML(final ParameterRenderer parameterRenderer) {
+    StringBuilder sb = new StringBuilder();
+    for (DynamicSQLPart p : this.parts) {
+      sb.append(p.renderXML(parameterRenderer));
+    }
+    return sb.toString();
   }
 
-  // public String getAugmentedSQL() {
-  // ParameterRenderer parameterRenderer = new ParameterRenderer() {
-  //
-  // @Override
-  // public String render(final SQLParameter parameter) {
-  // return "#{" + parameter.getName() + "}";
-  // }
-  //
-  // };
-  // return this.renderSQLSentence(parameterRenderer);
-  // }
+  public List<ParameterTag> getParameterDefinitions() {
+    return this.parameterDefinitions.getDefinitions();
+  }
 
   @Override
   public ClassPackage getPackage() {

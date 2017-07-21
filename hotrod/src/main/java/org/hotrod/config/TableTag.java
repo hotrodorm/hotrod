@@ -98,8 +98,8 @@ public class TableTag extends AbstractCompositeDAOTag {
     // name
 
     if (SUtils.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException("Attribute 'name' of tag <" + super.getTagName()
-          + "> cannot be empty. " + "Must specify a database table name.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'name' of tag <"
+          + super.getTagName() + "> cannot be empty. " + "Must specify a database table name.");
     }
 
     // java-name
@@ -107,23 +107,20 @@ public class TableTag extends AbstractCompositeDAOTag {
     if (this.javaClassName != null) {
       this.javaClassName = this.javaClassName.trim();
       if (SUtils.isEmpty(this.javaClassName)) {
-        throw new InvalidConfigurationFileException("Invalid 'java-name' attribute value of tag <" + super.getTagName()
-            + "> for the table '" + this.name + "'. When specified, the value cannot be empty.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid 'java-name' attribute value of tag <" + super.getTagName() + "> for the table '" + this.name
+                + "'. When specified, the value cannot be empty.");
       }
       if (!this.javaClassName.matches(VALID_JAVA_NAME_PATTERN)) {
-        throw new InvalidConfigurationFileException("Invalid 'java-name' attribute value '" + this.javaClassName
-            + "' of tag <" + super.getTagName() + "> for the table '" + this.name
-            + "'. When specified, the java-name must start with an upper case letter, "
-            + "and continue with any combination of letters, digits, underscores, or dollar signs.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid 'java-name' attribute value '" + this.javaClassName + "' of tag <" + super.getTagName()
+                + ">. When specified, the java-name must start with an upper case letter, "
+                + "and continue with any combination of letters, digits, underscores, or dollar signs.");
       }
-      nameTitle = "java-class-name";
-      nameValue = this.javaClassName;
-      // } else {
-      // this.javaClassName = daosTag.generateDAOName(new
-      // DbIdentifier(this.name));
+
     }
 
-    // column-seam
+    // column-seam: no validation necessary
 
     // auto-generated columns
 
@@ -141,11 +138,12 @@ public class TableTag extends AbstractCompositeDAOTag {
 
     Set<ColumnTag> cols = new HashSet<ColumnTag>();
     for (ColumnTag c : this.columns) {
-      c.validate(super.getTagName(), this.name, config);
+      c.validate(config);
       if (cols.contains(c)) {
-        throw new InvalidConfigurationFileException("Multiple <" + new ColumnTag().getTagName()
-            + "> tags with the same name on tag <" + super.getTagName() + "> for table '" + this.name
-            + "'. You cannot specify the same column name " + "multiple times on a same table.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name on tag <" + super.getTagName()
+                + "> for table '" + this.name + "'. You cannot specify the same column name "
+                + "multiple times on a same table.");
       }
       cols.add(c);
     }
@@ -161,18 +159,19 @@ public class TableTag extends AbstractCompositeDAOTag {
 
     JdbcTable jt = this.findJdbcTable(db, adapter);
     if (jt == null) {
-      throw new InvalidConfigurationFileException("Could not find database table '" + this.name
-          + "' as specified in the <table> tag of the configuration file. "
-          + "\n\nPlease verify the specified database catalog and schema names are correct according to this database. "
-          + "You can try leaving the catalog/schema values empty, so " + Constants.TOOL_NAME
-          + " will list all available values.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Could not find database table '" + this.name
+              + "' as specified in the <table> tag of the configuration file. "
+              + "\n\nPlease verify the specified database catalog and schema names are correct according to this database. "
+              + "You can try leaving the catalog/schema values empty, so " + Constants.TOOL_NAME
+              + " will list all available values.");
     }
 
     for (ColumnTag ct : this.columns) {
       JdbcColumn jc = this.findJdbcColumn(ct.getName(), jt, adapter);
       if (jc == null) {
-        throw new InvalidConfigurationFileException("Could not find column '" + ct.getName() + "' on database table '"
-            + this.name + "', as specified in the <column> tag of the configuration file. ");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Could not find column '" + ct.getName()
+            + "' on database table '" + this.name + "', as specified in the <column> tag of the configuration file. ");
       }
     }
 

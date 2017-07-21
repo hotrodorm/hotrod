@@ -5,7 +5,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
 
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
-import org.hotrod.config.dynamicsql.ParameterisableTextPart;
 import org.hotrod.config.dynamicsql.TagAttribute;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 
@@ -43,8 +42,7 @@ public class Yaneyt implements RendereableTag {
   @Override
   public void render(final StringBuilder sb) throws InvalidConfigurationFileException {
     ParameterDefinitions defs = new ParameterDefinitions();
-    RendererHelper.render("yaneyt", sb, this.body,
-        new TagAttribute("myattribute", new ParameterisableTextPart(this.myattribute, "yaneyt", defs)));
+    RendererHelper.render("yaneyt", sb, this.body, new TagAttribute("myattribute", this.myattribute));
   }
 
 }

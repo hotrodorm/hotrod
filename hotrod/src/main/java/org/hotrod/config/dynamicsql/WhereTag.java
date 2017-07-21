@@ -1,8 +1,6 @@
 package org.hotrod.config.dynamicsql;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -35,13 +33,13 @@ public class WhereTag extends DynamicSQLPart {
   // Behavior
 
   @Override
-  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void validateAttributes(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     // No attributes; nothing to do
   }
 
   @Override
-  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void specificBodyValidation(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
 
     log.debug("extra validation");
@@ -51,10 +49,10 @@ public class WhereTag extends DynamicSQLPart {
       try {
         ParameterisableTextPart text = (ParameterisableTextPart) p;
         if (!text.isEmpty()) {
-          throw new InvalidConfigurationFileException("Invalid <where> tag included in the tag " + tagIdentification
-              + ". A <where> tag can only include other tags, but no free text content in it.");
+          throw new InvalidConfigurationFileException(super.getSourceLocation(),
+              "Invalid <where> tag. " + "A <where> tag can only include other tags, but no free text content in it.");
         }
-        it.remove();
+        // it.remove();
       } catch (ClassCastException e3) {
         // Nothing to do
       }
@@ -83,12 +81,7 @@ public class WhereTag extends DynamicSQLPart {
 
     try {
 
-      List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
-      for (DynamicSQLPart p : super.parts) {
-        exps.add(p.getJavaExpression(parameterRenderer));
-      }
-
-      return new WhereExpression(exps.toArray(new DynamicExpression[0]));
+      return new WhereExpression(toArray(this.parts, parameterRenderer));
 
     } catch (RuntimeException e) {
       throw new InvalidJavaExpressionException(this.getSourceLocation(),

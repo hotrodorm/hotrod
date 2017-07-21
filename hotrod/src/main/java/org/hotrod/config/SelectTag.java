@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.config.dynamicsql.CollectionTag;
 import org.hotrod.config.dynamicsql.ComplementTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
+import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.dynamicsql.LiteralTextPart;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -38,6 +39,7 @@ public class SelectTag extends AbstractDAOTag {
 
   @XmlMixed
   @XmlElementRefs({ //
+      @XmlElementRef(type = ParameterTag.class), //
       @XmlElementRef(type = ColumnTag.class), //
       @XmlElementRef(type = ComplementTag.class) //
   })
@@ -45,6 +47,7 @@ public class SelectTag extends AbstractDAOTag {
 
   // Properties - Parsed
 
+  protected ParameterDefinitions parameterDefinitions = null;
   protected List<ColumnTag> columns = null;
   protected List<DynamicSQLPart> parts = null;
   private List<LiteralTextPart> foundationParts = null;
@@ -81,12 +84,14 @@ public class SelectTag extends AbstractDAOTag {
     // java-class-name
 
     if (SUtils.isEmpty(this.javaClassName)) {
-      throw new InvalidConfigurationFileException("Attribute 'java-class-name' of tag <" + getTagName()
-          + "> cannot be empty. " + "Must specify a unique query name, " + "different from table and view names.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Attribute 'java-class-name' of tag <" + getTagName() + "> cannot be empty. "
+              + "Must specify a unique query name, " + "different from table and view names.");
     }
 
-    // content text, columns, complement
+    // content text, parameters, columns, complement
 
+    this.parameterDefinitions = new ParameterDefinitions();
     this.columns = new ArrayList<ColumnTag>();
     this.parts = new ArrayList<DynamicSQLPart>();
 
@@ -94,22 +99,27 @@ public class SelectTag extends AbstractDAOTag {
 
     for (Object obj : this.content) {
       try {
-        String s = (String) obj;
-        LiteralTextPart p = new LiteralTextPart(s);
+        String s = (String) obj; // content text
+        LiteralTextPart p = new LiteralTextPart(super.getSourceLocation(), s);
         this.parts.add(p);
         this.foundationParts.add(p);
       } catch (ClassCastException e1) {
         try {
-          ColumnTag col = (ColumnTag) obj;
-          this.columns.add(col);
+          ParameterTag param = (ParameterTag) obj; // parameter
+          param.validate();
+          this.parameterDefinitions.add(param);
         } catch (ClassCastException e2) {
           try {
-            ComplementTag p = (ComplementTag) obj;
-            this.parts.add(p);
+            ColumnTag col = (ColumnTag) obj; // column
+            this.columns.add(col);
           } catch (ClassCastException e3) {
-            throw new InvalidConfigurationFileException(
-                "The body of the tag <" + super.getTagName() + "> with " + "java-class-name '" + this.javaClassName
-                    + "' has an invalid tag (of class '" + obj.getClass().getName() + "').");
+            try {
+              ComplementTag p = (ComplementTag) obj; // complement
+              this.parts.add(p);
+            } catch (ClassCastException e4) {
+              throw new InvalidConfigurationFileException(super.getSourceLocation(), "The body of the tag <"
+                  + super.getTagName() + "> has an invalid tag (of class '" + obj.getClass().getName() + "').");
+            }
           }
         }
       }
@@ -125,11 +135,12 @@ public class SelectTag extends AbstractDAOTag {
 
     Set<ColumnTag> cols = new HashSet<ColumnTag>();
     for (ColumnTag c : this.columns) {
-      c.validate(super.getTagName(), this.javaClassName, config);
+      c.validate(config);
       if (cols.contains(c)) {
-        throw new InvalidConfigurationFileException("Multiple <" + new ColumnTag().getTagName()
-            + "> tags with the same name on tag <" + getTagName() + "> for query '" + this.javaClassName
-            + "'. You cannot specify the same column name " + "multiple times on the same query.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name on tag <" + getTagName()
+                + "> for query '" + this.javaClassName + "'. You cannot specify the same column name "
+                + "multiple times on the same query.");
       }
       cols.add(c);
     }
@@ -137,7 +148,7 @@ public class SelectTag extends AbstractDAOTag {
     // content text and complement
 
     for (DynamicSQLPart p : this.parts) {
-      p.validate("<select> with java-class-name '" + this.javaClassName + "'");
+      p.validate(this.parameterDefinitions);
     }
 
     // all validations cleared
@@ -173,16 +184,16 @@ public class SelectTag extends AbstractDAOTag {
   public String getSQLFoundation(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
     for (LiteralTextPart tp : this.foundationParts) {
-      sb.append(tp.renderXML(parameterRenderer));
+      sb.append(tp.renderStatic(null));
     }
-    return sb.toString();
+    String literal = sb.toString();
+    return literal;
   }
 
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
     for (DynamicSQLPart p : this.parts) {
       String st = p.renderStatic(parameterRenderer);
-      // log.info("p=" + p + " st=" + st);
       sb.append(st);
     }
     return sb.toString();
@@ -201,24 +212,8 @@ public class SelectTag extends AbstractDAOTag {
     return this.aggregatedPart.renderJavaExpression(margin, parameterRenderer);
   }
 
-  public List<SQLParameter> getParameterOccurrences() {
-    List<SQLParameter> occurrences = new ArrayList<SQLParameter>();
-    for (DynamicSQLPart part : this.parts) {
-      occurrences.addAll(part.getParameters());
-    }
-    return occurrences;
-  }
-
-  public List<SQLParameter> getParameterDefinitions() {
-    List<SQLParameter> defs = new ArrayList<SQLParameter>();
-    for (DynamicSQLPart part : this.parts) {
-      for (SQLParameter p : part.getParameters()) {
-        if (p.isDefinition()) {
-          defs.add(p);
-        }
-      }
-    }
-    return defs;
+  public List<ParameterTag> getParameterDefinitions() {
+    return this.parameterDefinitions.getDefinitions();
   }
 
   // DAO Tag implementation

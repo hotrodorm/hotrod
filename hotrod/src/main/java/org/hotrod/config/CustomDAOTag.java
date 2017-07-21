@@ -52,14 +52,16 @@ public class CustomDAOTag extends AbstractCompositeDAOTag {
     // java-class-name
 
     if (SUtils.isEmpty(this.javaClassName)) {
-      throw new InvalidConfigurationFileException("Attribute 'java-class-name' of tag <" + super.getTagName()
-          + "> cannot be empty. " + "You must specify a dao java class name.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'java-class-name' of tag <"
+          + super.getTagName() + "> cannot be empty. " + "You must specify a dao java class name.");
     }
     if (!this.javaClassName.matches(VALID_JAVA_CLASS_PATTERN)) {
-      throw new InvalidConfigurationFileException("Attribute 'java-class-name' of tag <" + super.getTagName()
-          + "> with value '" + this.javaClassName + "' must be a valid java class name. "
-          + "Valid java class names start with an uppercase letter and continue with "
-          + "letters, digits, dollar signs, and/or underscores.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Attribute 'java-class-name' of tag <" + super.getTagName() + "> must be a valid java class name, but found '"
+              + this.javaClassName
+              + "'. "
+              + "Valid java class names start with an uppercase letter and continue with "
+              + "letters, digits, dollar signs, and/or underscores.");
     }
 
     // sequences and updates

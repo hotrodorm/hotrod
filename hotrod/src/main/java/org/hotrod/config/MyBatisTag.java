@@ -57,7 +57,7 @@ public class MyBatisTag extends AbstractGeneratorTag {
     this.mappers = mappers;
   }
 
-  @XmlElement(name="mybatis-configuration-template")
+  @XmlElement(name = "mybatis-configuration-template")
   public void setTemplate(final TemplateTag template) {
     this.template = template;
   }
@@ -99,10 +99,10 @@ public class MyBatisTag extends AbstractGeneratorTag {
     for (PropertyTag p : this.propertyTags) {
       p.validate();
       if (names.contains(p.getName())) {
-        throw new InvalidConfigurationFileException("Property with name '" + p.getName()
+        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Property with name '" + p.getName()
             + "' cannot be specified more than once, but multiple occurrences found.");
       }
-      this.properties.set(p);
+      this.properties.set(super.getSourceLocation(), p);
     }
 
   }

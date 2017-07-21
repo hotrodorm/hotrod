@@ -1,6 +1,7 @@
 package org.hotrod.config.dynamicsql;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElementRef;
@@ -9,10 +10,11 @@ import javax.xml.bind.annotation.XmlMixed;
 
 import org.apache.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
-import org.hotrod.config.SQLParameter;
+import org.hotrod.config.ParameterTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 public abstract class DynamicSQLPart extends AbstractConfigurationTag {
@@ -39,8 +41,6 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   protected List<DynamicSQLPart> parts = null;
 
-  private ParameterDefinitions parameterDefinitions = null;
-
   // Constructors
 
   protected DynamicSQLPart(final String tagName) {
@@ -59,55 +59,46 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   public static class ParameterDefinitions {
 
-    private List<SQLParameter> definitions = new ArrayList<SQLParameter>();
+    private LinkedHashMap<String, ParameterTag> definitions = new LinkedHashMap<String, ParameterTag>();
 
-    public void add(final SQLParameter p) {
+    public void add(final ParameterTag p) throws InvalidConfigurationFileException {
       if (p == null) {
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("parameter cannot be null");
       }
-      this.definitions.add(p);
+      if (p.getName() == null) {
+        throw new IllegalArgumentException("parameter name cannot be null");
+      }
+      if (this.definitions.containsKey(p.getName())) {
+        throw new InvalidConfigurationFileException(p.getSourceLocation(),
+            "Duplicate parameter '" + p.getName() + "'. Please specify different names for each parameter.");
+      }
+      this.definitions.put(p.getName(), p);
     }
 
-    public SQLParameter find(final SQLParameter p) {
-      for (SQLParameter pd : this.definitions) {
-        if (p.getName().equals(pd.getName())) {
-          return pd;
-        }
-      }
-      return null;
+    public ParameterTag find(final String name) {
+      return this.definitions.get(name);
     }
 
-    public void remove(final SQLParameter p) {
-      for (int i = 0; i < this.definitions.size(); i++) {
-        SQLParameter pd = this.definitions.get(i);
-        if (p.getName().equals(pd.getName())) {
-          this.definitions.remove(i);
-          return;
-        }
-      }
+    public void remove(final ParameterTag p) {
+      this.definitions.remove(p.getName());
     }
 
-    public List<SQLParameter> getDefinitions() {
-      return definitions;
+    public List<ParameterTag> getDefinitions() {
+      return new ArrayList<ParameterTag>(this.definitions.values());
     }
 
   }
 
-  public void validate(final String tagIdentification) throws InvalidConfigurationFileException {
-    this.parameterDefinitions = new ParameterDefinitions();
-    this.retrievePartsAndValidate(tagIdentification, this.parameterDefinitions);
+  public void validate(final ParameterDefinitions parameterDefinitions) throws InvalidConfigurationFileException {
+    this.retrievePartsAndValidate(parameterDefinitions);
   }
 
-  public final List<SQLParameter> getParameters() {
-    return this.parameterDefinitions.getDefinitions();
-  }
-
-  protected final void retrievePartsAndValidate(final String tagIdentification,
-      final ParameterDefinitions parameterDefinitions) throws InvalidConfigurationFileException {
+  protected final void retrievePartsAndValidate(final ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
 
     // 1. Validate attributes
 
-    this.validateAttributes(tagIdentification, parameterDefinitions);
+    this.validateAttributes(parameterDefinitions);
 
     // 2. General body parsing & validation
 
@@ -116,14 +107,14 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
       DynamicSQLPart p = null;
       try {
         String s = (String) obj;
-        p = new ParameterisableTextPart(s, tagIdentification, parameterDefinitions);
+        p = new ParameterisableTextPart(s, this.getSourceLocation(), parameterDefinitions);
       } catch (ClassCastException e1) {
         try {
           p = (DynamicSQLPart) obj;
-          p.retrievePartsAndValidate(tagIdentification, parameterDefinitions);
+          p.retrievePartsAndValidate(parameterDefinitions);
         } catch (ClassCastException e2) {
-          throw new InvalidConfigurationFileException("Malformed content of the query on tag " + tagIdentification
-              + ". Invalid inner tag of class " + obj.getClass().getName());
+          throw new InvalidConfigurationFileException(super.getSourceLocation(),
+              "Malformed content of the <query> tag. Invalid inner tag of class " + obj.getClass().getName());
         }
       }
       this.parts.add(p);
@@ -131,21 +122,21 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
     // 3. Specific body validation
 
-    this.specificBodyValidation(tagIdentification, parameterDefinitions);
+    this.specificBodyValidation(parameterDefinitions);
 
     // 4. Post tag validation
 
-    this.postTagValidation(tagIdentification, parameterDefinitions);
+    this.postTagValidation(parameterDefinitions);
 
   }
 
-  protected abstract void validateAttributes(String tagIdentification, ParameterDefinitions parameterDefinitions)
+  protected abstract void validateAttributes(ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException;
 
-  protected abstract void specificBodyValidation(String tagIdentification, ParameterDefinitions parameterDefinitions)
+  protected abstract void specificBodyValidation(ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException;
 
-  protected void postTagValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void postTagValidation(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     // By default, nothing to do
   }
@@ -165,18 +156,8 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   public String renderStatic(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
-    for (Object obj : this.content) {
-      try {
-        String s = (String) obj;
-        sb.append(s);
-      } catch (ClassCastException e1) {
-        try {
-          DynamicSQLPart s = (DynamicSQLPart) obj;
-          sb.append(s.renderStatic(parameterRenderer));
-        } catch (ClassCastException e2) {
-          sb.append("[could not render object of class: " + obj.getClass().getName() + " ]");
-        }
-      }
+    for (DynamicSQLPart p : this.parts) {
+      sb.append(p.renderStatic(parameterRenderer));
     }
     String body = sb.toString();
 
@@ -202,20 +183,10 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
   protected abstract boolean shouldRenderTag();
 
   public String renderXML(final ParameterRenderer parameterRenderer) {
+
     StringBuilder sb = new StringBuilder();
-    for (Object obj : this.content) {
-      try {
-        String s = (String) obj;
-        s = s.replace("&", "&amp;").replace("<", "&lt;");
-        sb.append(s);
-      } catch (ClassCastException e1) {
-        try {
-          DynamicSQLPart s = (DynamicSQLPart) obj;
-          sb.append(s.renderXML(parameterRenderer));
-        } catch (ClassCastException e2) {
-          sb.append("[could not render object of class: " + obj.getClass().getName() + " ]");
-        }
-      }
+    for (DynamicSQLPart p : this.parts) {
+      sb.append(p.renderXML(parameterRenderer));
     }
     String body = sb.toString();
 
@@ -250,7 +221,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
     StringBuilder sb = new StringBuilder();
     sb.append("<" + super.getTagName());
     for (TagAttribute a : this.getAttributes()) {
-      String value = a.render(parameterRenderer);
+      String value = a.getValue();
       if (value != null) {
         value = value.replace("&", "&amp;").replace("<", "&lt;").replace("\"", "&quot;");
         sb.append(" " + a.getName() + "=\"" + value + "\"");
@@ -265,5 +236,72 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
     sb.append("</" + super.getTagName() + ">");
     return sb.toString();
   }
+
+  // Utils
+
+  protected DynamicExpression[] toArray(final List<DynamicSQLPart> parts, final ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException {
+    List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
+    LiteralExpression last = null;
+    for (DynamicSQLPart p : parts) {
+      DynamicExpression expr = p.getJavaExpression(parameterRenderer);
+      try {
+        LiteralExpression le = (LiteralExpression) expr;
+        if (last == null) {
+          last = le;
+        } else {
+          last.concat(le);
+        }
+      } catch (ClassCastException e) {
+        if (last != null) {
+          exps.add(last);
+          last = null;
+        }
+        exps.add(expr);
+      }
+    }
+    if (last != null) {
+      exps.add(last);
+    }
+    return exps.toArray(new DynamicExpression[0]);
+  }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
 }

@@ -42,16 +42,18 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
     // temp-view-base-name
 
     if (SUtils.isEmpty(this.tempViewBaseName)) {
-      throw new InvalidConfigurationFileException("Attribute '" + ATT_NAME + "' of tag <" + super.getTagName()
-          + "> cannot be empty. " + "Must specify a temporary view name, "
-          + "a name that is NOT used by any existing table, " + "view or any other database object on this database. "
-          + "A view with this name may be created and dropped " + "several times during the DAO generation.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Attribute '" + ATT_NAME + "' of tag <" + super.getTagName() + "> cannot be empty. "
+              + "Must specify a temporary view name, " + "a name that is NOT used by any existing table, "
+              + "view or any other database object on this database. "
+              + "A view with this name may be created and dropped " + "several times during the DAO generation.");
     }
     if (!this.tempViewBaseName.matches(VIEW_NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException("Attribute '" + ATT_NAME + "' of tag <" + super.getTagName()
-          + "> must be a valid view name. Specified value is '" + this.tempViewBaseName
-          + "' but must start with a letter, " + "and continue with one or more "
-          + "letters, digits, or undersore characters.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Attribute '" + ATT_NAME + "' of tag <" + super.getTagName()
+              + "> must be a valid view name. Specified value is '" + this.tempViewBaseName
+              + "' but must start with a letter, " + "and continue with one or more "
+              + "letters, digits, or undersore characters.");
     }
 
   }

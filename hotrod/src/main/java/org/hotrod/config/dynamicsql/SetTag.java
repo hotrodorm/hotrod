@@ -1,8 +1,6 @@
 package org.hotrod.config.dynamicsql;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -28,13 +26,13 @@ public class SetTag extends DynamicSQLPart {
   // Behavior
 
   @Override
-  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void validateAttributes(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     // No attributes; nothing to do
   }
 
   @Override
-  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void specificBodyValidation(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
 
     for (Iterator<DynamicSQLPart> it = super.parts.iterator(); it.hasNext();) {
@@ -42,10 +40,10 @@ public class SetTag extends DynamicSQLPart {
       try {
         ParameterisableTextPart text = (ParameterisableTextPart) p;
         if (!text.isEmpty()) {
-          throw new InvalidConfigurationFileException("Invalid <set> tag included in the tag " + tagIdentification
-              + ". A <set> tag can only include other tags, but no free text content in it.");
+          throw new InvalidConfigurationFileException(super.getSourceLocation(),
+              "Invalid <set> tag. " + "A <set> tag can only include other tags, but no free text content in it.");
         }
-        it.remove();
+//        it.remove();
       } catch (ClassCastException e3) {
         // Nothing to do
       }
@@ -74,12 +72,7 @@ public class SetTag extends DynamicSQLPart {
 
     try {
 
-      List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
-      for (DynamicSQLPart p : super.parts) {
-        exps.add(p.getJavaExpression(parameterRenderer));
-      }
-
-      return new SetExpression(exps.toArray(new DynamicExpression[0]));
+      return new SetExpression(toArray(this.parts, parameterRenderer));
 
     } catch (RuntimeException e) {
       throw new InvalidJavaExpressionException(this.getSourceLocation(),

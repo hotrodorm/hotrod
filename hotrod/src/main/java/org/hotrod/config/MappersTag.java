@@ -57,33 +57,37 @@ public class MappersTag extends AbstractConfigurationTag {
     // gen-base-dir
 
     if (SUtils.isEmpty(this.sGenBaseDir)) {
-      throw new InvalidConfigurationFileException("Attribute 'gen-base-dir' of tag <" + super.getTagName()
-          + "> cannot be empty. " + "Must specify the base dir to generate the MyBatis mapper files.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> cannot be empty. "
+              + "Must specify the base dir to generate the MyBatis mapper files.");
     }
     this.baseDir = new File(this.sGenBaseDir);
     if (!this.baseDir.exists()) {
-      throw new InvalidConfigurationFileException("Attribute 'gen-base-dir' of tag <" + super.getTagName()
-          + "> with value '" + this.sGenBaseDir + "' points to a non existent directory.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'gen-base-dir' of tag <"
+          + super.getTagName() + "> with value '" + this.sGenBaseDir + "' points to a non existent directory.");
     }
     if (!this.baseDir.isDirectory()) {
-      throw new InvalidConfigurationFileException("Attribute 'gen-base-dir' of tag <" + super.getTagName()
-          + "> with value '" + this.sGenBaseDir + "' points to an file system entry " + "that is not a directory. ");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> with value '" + this.sGenBaseDir
+              + "' points to an file system entry " + "that is not a directory. ");
     }
 
     // relative-dir
 
     if (SUtils.isEmpty(this.sRelativeDir)) {
-      throw new InvalidConfigurationFileException("Attribute 'relative-dir' of tag <" + super.getTagName()
-          + "> cannot be empty. " + "Must specify the base dir to generate the MyBatis mapper files.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Attribute 'relative-dir' of tag <" + super.getTagName() + "> cannot be empty. "
+              + "Must specify the base dir to generate the MyBatis mapper files.");
     }
     this.fullRelativeDir = new File(this.baseDir, this.sRelativeDir);
     if (!this.fullRelativeDir.exists()) {
-      throw new InvalidConfigurationFileException("Attribute 'relative-dir' of tag <" + super.getTagName()
-          + "> with value '" + this.sRelativeDir + "' points to a non existent directory.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'relative-dir' of tag <"
+          + super.getTagName() + "> with value '" + this.sRelativeDir + "' points to a non existent directory.");
     }
     if (!this.fullRelativeDir.isDirectory()) {
-      throw new InvalidConfigurationFileException("Attribute 'relative-dir' of tag <" + super.getTagName()
-          + "> with value '" + this.sRelativeDir + "' points to an file system entry " + "that is not a directory. ");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Attribute 'relative-dir' of tag <" + super.getTagName() + "> with value '" + this.sRelativeDir
+              + "' points to an file system entry " + "that is not a directory. ");
     }
 
     this.customDir = new File(this.fullRelativeDir, CUSTOM_MAPPERS_DIR);

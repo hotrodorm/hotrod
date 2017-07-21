@@ -27,6 +27,7 @@ import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractHotRodConfigTag.LocationListener;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -128,7 +129,13 @@ public class ConfigurationLoader {
       throw new ControlledException(renderJAXBErrorMessage(f, validationHandler, e));
 
     } catch (InvalidConfigurationFileException e) {
-      throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
+      SourceLocation loc = e.getSourceLocation();
+      if (loc == null) {
+        throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
+      } else {
+        throw new ControlledException("Invalid configuration file '" + loc.getFile().getPath() + "' (line "
+            + loc.getLineNumber() + ", col " + loc.getColumnNumber() + "): " + e.getMessage());
+      }
 
     } catch (GeneratorNotFoundException e) {
       throw new ControlledException(e.getMessage());
@@ -224,7 +231,13 @@ public class ConfigurationLoader {
       throw new ControlledException(renderJAXBErrorMessage(f, validationHandler, e));
 
     } catch (InvalidConfigurationFileException e) {
-      throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
+      SourceLocation loc = e.getSourceLocation();
+      if (loc == null) {
+        throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
+      } else {
+        throw new ControlledException("Invalid configuration file '" + loc.getFile().getPath() + "' (line "
+            + loc.getLineNumber() + ", col " + loc.getColumnNumber() + "): " + e.getMessage());
+      }
 
     } finally {
       if (reader != null) {

@@ -1,8 +1,5 @@
 package org.hotrod.config.dynamicsql;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -28,29 +25,25 @@ public class WhenTag extends DynamicSQLPart {
 
   // Properties
 
-  private String testText = null;
-  private ParameterisableTextPart test = null;
+  private String test = null;
 
   // JAXB Setters
 
   @XmlAttribute
   public void setTest(final String test) {
-    this.testText = test;
+    log.debug("init");
+    this.test = test;
   }
 
   // Behavior
 
-  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void validateAttributes(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
-    if (this.testText == null) {
-      throw new InvalidConfigurationFileException(
-          "Invalid <when> tag included in the tag " + tagIdentification + ". The 'test' attribute must be specified.");
-    }
-    this.test = new ParameterisableTextPart(this.testText, tagIdentification, parameterDefinitions);
+    // Nothing to do
   }
 
   @Override
-  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void specificBodyValidation(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     // No extra validation on the body
   }
@@ -78,14 +71,7 @@ public class WhenTag extends DynamicSQLPart {
 
     try {
 
-      String condition = this.test.renderXML(parameterRenderer);
-
-      List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
-      for (DynamicSQLPart p : super.parts) {
-        exps.add(p.getJavaExpression(parameterRenderer));
-      }
-
-      return new WhenExpression(condition, exps.toArray(new DynamicExpression[0]));
+      return new WhenExpression(this.test, toArray(this.parts, parameterRenderer));
 
     } catch (RuntimeException e) {
       throw new InvalidJavaExpressionException(this.getSourceLocation(),

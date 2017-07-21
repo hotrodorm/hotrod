@@ -16,24 +16,8 @@ public class MyBatisParameterRenderer implements ParameterRenderer {
    */
   @Override
   public String render(final SQLParameter parameter) {
-
-    JavaIdentifier id = new JavaIdentifier(
-        parameter.isDefinition() ? parameter.getName() : parameter.getDefinition().getName(), parameter.getJavaType());
-
-    if (parameter.isInTag()) {
-
-      // The parameter occurrence is used inside a MyBatis tag condition
-      // (i.e. dynamic SQL)
-      return id.getJavaMemberIdentifier();
-
-    } else {
-
-      // The parameter occurrence is a normal SQL parameter
-      String jdbcType = parameter.isDefinition() ? parameter.getJdbcType() : parameter.getDefinition().getJdbcType();
-      return "#{" + id.getJavaMemberIdentifier() + ",jdbcType=" + jdbcType + "}";
-
-    }
-
+    JavaIdentifier id = new JavaIdentifier(parameter.getName(), parameter.getJavaType());
+    return "#{" + id.getJavaMemberIdentifier() + ",jdbcType=" + parameter.getJdbcType() + "}";
   }
 
 }

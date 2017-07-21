@@ -50,17 +50,17 @@ public class FragmentTag extends AbstractConfigurationTag {
     // file
 
     if (SUtils.isEmpty(this.filename)) {
-      throw new InvalidConfigurationFileException(
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Attribute 'file' of tag <" + super.getTagName() + "> cannot be empty. " + "You must specify a file name.");
     }
     this.file = new File(baseDir, this.filename);
     if (!this.file.exists()) {
-      throw new InvalidConfigurationFileException(
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Could not find fragment file '" + this.file.getAbsolutePath() + "'.");
     }
     if (!this.file.isFile()) {
-      throw new InvalidConfigurationFileException("Invalid fragment file '" + this.file.getAbsolutePath()
-          + "'. Must be a normal file, not a directory or other special file.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid fragment file '"
+          + this.file.getAbsolutePath() + "'. Must be a normal file, not a directory or other special file.");
     }
 
     log.debug("Will load fragment '" + this.file.getName() + "'");

@@ -1,6 +1,6 @@
 package org.hotrod.metadata;
 
-import org.hotrod.config.SQLParameter;
+import org.hotrod.config.ParameterTag;
 import org.hotrod.database.PropertyType;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.JavaIdentifier;
@@ -8,9 +8,9 @@ import org.hotrod.utils.identifiers.JavaIdentifier;
 public class SelectParameterMetadata {
 
   private JavaIdentifier identifier;
-  private SQLParameter p;
+  private ParameterTag p;
 
-  public SelectParameterMetadata(final SQLParameter p) {
+  public SelectParameterMetadata(final ParameterTag p) {
     this.identifier = new JavaIdentifier(p.getName(), new PropertyType(p.getJavaType(), JDBCType.VARCHAR, false));
     this.p = p;
   }
@@ -21,7 +21,7 @@ public class SelectParameterMetadata {
     return identifier;
   }
 
-  public SQLParameter getParameter() {
+  public ParameterTag getParameter() {
     return p;
   }
 

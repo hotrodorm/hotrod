@@ -52,7 +52,7 @@ public class SequenceTag extends AbstractConfigurationTag {
     // name
 
     if (SUtils.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Attribute 'name' of tag <" + TAG_NAME + "> cannot be empty. " + "You must specify a sequence name.");
     }
 
@@ -62,10 +62,11 @@ public class SequenceTag extends AbstractConfigurationTag {
       this.javaMethodName = METHOD_PREFIX + this.getIdentifier().getJavaClassIdentifier();
     } else {
       if (!this.javaMethodName.matches(VALID_JAVA_METHOD_PATTERN)) {
-        throw new InvalidConfigurationFileException("Attribute 'java-method-name' of tag <" + TAG_NAME + "> specifies '"
-            + this.javaMethodName + "' but must specify a valid java method name. "
-            + "Valid method names must start with a lowercase letter, "
-            + "and continue with letters, digits, dollarsign, and/or underscores.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Attribute 'java-method-name' of tag <" + TAG_NAME + "> specifies '" + this.javaMethodName
+                + "' but must specify a valid java method name. "
+                + "Valid method names must start with a lowercase letter, "
+                + "and continue with letters, digits, dollarsign, and/or underscores.");
       }
     }
 

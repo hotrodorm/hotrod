@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -56,10 +57,9 @@ public class SelectDataSetMetadata implements DataSetMetadata {
 
     ParameterRenderer simpleParameterRenderer = new ParameterRenderer() {
       @Override
-      public String render(SQLParameter parameter) {
+      public String render(final SQLParameter parameter) {
         return "?";
       }
-
     };
 
     String select = this.tag.getSQLFoundation(simpleParameterRenderer);
@@ -241,7 +241,7 @@ public class SelectDataSetMetadata implements DataSetMetadata {
   @Override
   public List<SelectParameterMetadata> getParameters() {
     List<SelectParameterMetadata> pms = new ArrayList<SelectParameterMetadata>();
-    for (SQLParameter p : this.tag.getParameterOccurrences()) {
+    for (ParameterTag p : this.tag.getParameterDefinitions()) {
       pms.add(new SelectParameterMetadata(p));
     }
     return pms;
@@ -250,7 +250,7 @@ public class SelectDataSetMetadata implements DataSetMetadata {
   @Override
   public List<SelectParameterMetadata> getParameterDefinitions() {
     List<SelectParameterMetadata> pms = new ArrayList<SelectParameterMetadata>();
-    for (SQLParameter p : this.tag.getParameterDefinitions()) {
+    for (ParameterTag p : this.tag.getParameterDefinitions()) {
       pms.add(new SelectParameterMetadata(p));
     }
     return pms;

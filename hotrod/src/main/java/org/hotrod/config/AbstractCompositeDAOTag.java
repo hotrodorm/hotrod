@@ -66,14 +66,15 @@ public abstract class AbstractCompositeDAOTag extends AbstractDAOTag {
     for (SequenceTag s : sequences) {
       s.validate();
       if (seqNames.contains(s.getName())) {
-        throw new InvalidConfigurationFileException("Duplicate sequence with name '" + s.getName() + "' on " + tagId
-            + ". You cannot add the same sequence twice in the same <dao> tag.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Duplicate sequence with name '"
+            + s.getName() + "' on " + tagId + ". You cannot add the same sequence twice in the same <dao> tag.");
       }
       String method = s.getJavaMethodName();
       if (this.declaredMethodNames.contains(method)) {
-        throw new InvalidConfigurationFileException("Duplicate sequence method-name '" + method + "' on " + tagId
-            + ". Method names (either specified or implied) must be different inside a DAO. "
-            + "Please change the method-name.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Duplicate sequence method-name '" + method + "' on " + tagId
+                + ". Method names (either specified or implied) must be different inside a DAO. "
+                + "Please change the method-name.");
       }
       seqNames.add(s.getName());
       this.declaredMethodNames.add(method);
@@ -85,10 +86,11 @@ public abstract class AbstractCompositeDAOTag extends AbstractDAOTag {
     for (QueryTag q : this.queries) {
       q.validate();
       if (this.declaredMethodNames.contains(q.getJavaMethodName())) {
-        throw new InvalidConfigurationFileException("Duplicate java-method-name '" + q.getJavaMethodName() + "' on "
-            + tagId + ". You cannot add multiple queries or sequences with identical java-method-name "
-            + "(specified or implied) in the same <dao> tag. " + "For <query> tags they cannot have the same name, "
-            + "even if they have different parameters (different signature).");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Duplicate java-method-name '" + q.getJavaMethodName() + "' on " + tagId
+                + ". You cannot add multiple queries or sequences with identical java-method-name "
+                + "(specified or implied) in the same <dao> tag. " + "For <query> tags they cannot have the same name, "
+                + "even if they have different parameters (different signature).");
       }
       this.declaredMethodNames.add(q.getJavaMethodName());
       log.debug("* added '" + q.getJavaMethodName() + "'");

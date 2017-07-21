@@ -14,6 +14,7 @@ import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.CustomDAOTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.ParameterTag;
 import org.hotrod.config.QueryTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SequenceTag;
@@ -259,7 +260,7 @@ public class CustomDAO {
 
     ListWriter pdef = new ListWriter(", ");
     ListWriter pcall = new ListWriter(", ");
-    for (SQLParameter p : tag.getParameterDefinitions()) {
+    for (ParameterTag p : tag.getParameterDefinitions()) {
       pdef.add("final " + p.getJavaType() + " " + p.getName());
       pcall.add(p.getName());
     }
@@ -270,7 +271,7 @@ public class CustomDAO {
 
     if (!tag.getParameterDefinitions().isEmpty()) {
       println("  public static class " + this.getParamClassName(tag) + " {");
-      for (SQLParameter p : tag.getParameterDefinitions()) {
+      for (ParameterTag p : tag.getParameterDefinitions()) {
         println("    " + p.getJavaType() + " " + p.getName() + ";");
       }
       println("  }");
@@ -307,7 +308,7 @@ public class CustomDAO {
     if (!tag.getParameterDefinitions().isEmpty()) {
       objName = provideObjectName(tag.getParameterDefinitions());
       println("    " + this.getParamClassName(tag) + " " + objName + " = new " + this.getParamClassName(tag) + "();");
-      for (SQLParameter p : tag.getParameterDefinitions()) {
+      for (ParameterTag p : tag.getParameterDefinitions()) {
         println("    " + objName + "." + p.getName() + " = " + p.getName() + ";");
       }
     }
@@ -322,10 +323,10 @@ public class CustomDAO {
 
   }
 
-  private String provideObjectName(final List<SQLParameter> params) {
+  private String provideObjectName(final List<ParameterTag> definitions) {
 
     Set<String> existing = new HashSet<String>();
-    for (SQLParameter p : params) {
+    for (ParameterTag p : definitions) {
       existing.add(p.getName().toLowerCase());
     }
 

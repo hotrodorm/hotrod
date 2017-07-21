@@ -82,8 +82,8 @@ public class ViewTag extends AbstractCompositeDAOTag {
     // name
 
     if (SUtils.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException("Attribute 'name' of tag <" + super.getTagName()
-          + "> cannot be empty. " + "Must specify a database view name.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'name' of tag <"
+          + super.getTagName() + "> cannot be empty. " + "Must specify a database view name.");
     }
 
     // java-name
@@ -91,14 +91,16 @@ public class ViewTag extends AbstractCompositeDAOTag {
     if (this.javaClassName != null) {
       this.javaClassName = this.javaClassName.trim();
       if (SUtils.isEmpty(this.javaClassName)) {
-        throw new InvalidConfigurationFileException("Invalid 'java-name' attribute value of tag <" + super.getTagName()
-            + "> for the view '" + this.name + "'. When specified, the value cannot be empty.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid 'java-name' attribute value of tag <" + super.getTagName() + "> for the view '" + this.name
+                + "'. When specified, the value cannot be empty.");
       }
       if (!this.javaClassName.matches(TableTag.VALID_JAVA_NAME_PATTERN)) {
-        throw new InvalidConfigurationFileException("Invalid 'java-name' attribute value '" + this.javaClassName
-            + "' of tag <" + super.getTagName() + "> for the view '" + this.name
-            + "'. When specified, the java-name must start with an upper case letter, "
-            + "and continue with any combination of letters, digits, underscores, or dollar signs.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid 'java-name' attribute value '" + this.javaClassName + "' of tag <" + super.getTagName()
+                + "> for the view '" + this.name
+                + "'. When specified, the java-name must start with an upper case letter, "
+                + "and continue with any combination of letters, digits, underscores, or dollar signs.");
       }
       nameTitle = "java-class-name";
       nameValue = this.javaClassName;
@@ -108,11 +110,12 @@ public class ViewTag extends AbstractCompositeDAOTag {
 
     Set<ColumnTag> cols = new HashSet<ColumnTag>();
     for (ColumnTag c : this.columns) {
-      c.validate(super.getTagName(), this.name, config);
+      c.validate(config);
       if (cols.contains(c)) {
-        throw new InvalidConfigurationFileException("Multiple <" + new ColumnTag().getTagName()
-            + "> tags with the same name on tag <" + super.getTagName() + "> for table '" + this.name
-            + "'. You cannot specify the same column name " + "multiple times on a same view.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name on tag <" + super.getTagName()
+                + "> for table '" + this.name + "'. You cannot specify the same column name "
+                + "multiple times on a same view.");
       }
       cols.add(c);
     }
@@ -128,7 +131,7 @@ public class ViewTag extends AbstractCompositeDAOTag {
 
     JdbcTable v = this.findJdbcView(db, adapter);
     if (v == null) {
-      throw new InvalidConfigurationFileException(
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Could not find database view '" + this.name + "' as specified in the <view> tag of the configuration file. "
               + "\n\nPlease verify the specified database catalog and schema names are correct according to this database. "
               + "You can try leaving the catalog/schema values empty, so " + Constants.TOOL_NAME
@@ -138,8 +141,8 @@ public class ViewTag extends AbstractCompositeDAOTag {
     for (ColumnTag c : this.columns) {
       JdbcColumn jc = this.findJdbcColumn(c.getName(), v, adapter);
       if (jc == null) {
-        throw new InvalidConfigurationFileException("Could not find column '" + c.getName() + "' on database view '"
-            + this.name + "', as specified in the <column> tag of the configuration file. ");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Could not find column '" + c.getName()
+            + "' on database view '" + this.name + "', as specified in the <column> tag of the configuration file. ");
       }
     }
 

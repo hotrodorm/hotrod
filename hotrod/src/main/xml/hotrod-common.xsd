@@ -44,10 +44,19 @@
     <xsd:attribute name="java-method-name" type="xsd:string" />
   </xsd:complexType>
 
+  <!-- parameter -->
+
+  <xsd:complexType name="parameter-type">
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="java-type" type="xsd:string" use="required" />
+    <xsd:attribute name="jdbc-type" type="xsd:string" use="required" />
+  </xsd:complexType>
+
   <!-- query -->
   
   <xsd:complexType name="query-type" mixed="true">
     <xsd:sequence>
+      <xsd:element name="parameter" type="parameter-type" minOccurs="0" maxOccurs="unbounded" />
       <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
     <xsd:attribute name="java-method-name" type="xsd:string" use="required" />
@@ -99,6 +108,7 @@
   
   <xsd:complexType name="select-dao-type" mixed="true">
     <xsd:sequence>
+      <xsd:element name="parameter" type="parameter-type" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="complement" type="complement-type" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>

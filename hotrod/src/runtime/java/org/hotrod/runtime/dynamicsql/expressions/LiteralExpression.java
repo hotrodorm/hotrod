@@ -6,6 +6,7 @@ import java.util.List;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
+import org.hotrod.runtime.util.SUtils;
 
 public class LiteralExpression extends DynamicExpression {
 
@@ -13,10 +14,13 @@ public class LiteralExpression extends DynamicExpression {
 
   private String verbatim;
 
+  private boolean isBlanks;
+
   // Constructor
 
   public LiteralExpression(final String verbatim) {
     this.verbatim = verbatim;
+    this.isBlanks = SUtils.isEmpty(this.verbatim);
   }
 
   // Behavior
@@ -25,7 +29,7 @@ public class LiteralExpression extends DynamicExpression {
   public EvaluationFeedback evaluate(final StringBuilder out, final DynamicSQLParameters variables)
       throws DynamicSQLEvaluationException {
     out.append(this.verbatim);
-    return new EvaluationFeedback(true);
+    return new EvaluationFeedback(!this.isBlanks);
   }
 
   @Override

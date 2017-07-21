@@ -19,6 +19,7 @@ import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractCompositeDAOTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
+import org.hotrod.config.ParameterTag;
 import org.hotrod.config.QueryTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectTag;
@@ -60,7 +61,6 @@ public class ObjectDAO {
   private static final Logger log = Logger.getLogger(ObjectDAO.class);
 
   private AbstractCompositeDAOTag compositeTag;
-  @SuppressWarnings("unused")
   private SelectTag selectTag;
 
   private DataSetMetadata metadata;
@@ -731,7 +731,7 @@ public class ObjectDAO {
 
   // // TODO: remove once tested
 
-  private void writeSelectExpression() throws IOException {
+  private void writeSelectExpression() throws IOException, ControlledException {
     println(" public static final " + DynamicExpression.class.getName() + " JAVA_EXPRESSION =\n");
 
     ParameterRenderer parameterRenderer = new ParameterRenderer() {
@@ -744,7 +744,7 @@ public class ObjectDAO {
     try {
       println(this.selectTag.renderJavaExpression(4, parameterRenderer) + ";");
     } catch (InvalidJavaExpressionException e) {
-      throw new IOException(e);
+      throw new ControlledException("Invalid configuration file: " + e.getMessage());
     }
 
     println();
@@ -1987,14 +1987,14 @@ public class ObjectDAO {
     println("  // update " + tag.getJavaMethodName());
     println();
 
-    // println(ObjectDAO.renderJavaComment(tag.getAugmentedSQL()));
     ParameterRenderer parameterRenderer = new ParameterRenderer() {
       @Override
       public String render(final SQLParameter parameter) {
         return "#{" + parameter.getName() + "}";
       }
     };
-    println(renderJavaComment(tag.renderSQLSentence(parameterRenderer)));
+    String sentence = tag.renderSQLSentence(parameterRenderer);
+    println(renderJavaComment(sentence));
 
     println();
 
@@ -2003,7 +2003,7 @@ public class ObjectDAO {
 
     ListWriter pdef = new ListWriter(", ");
     ListWriter pcall = new ListWriter(", ");
-    for (SQLParameter p : tag.getParameterDefinitions()) {
+    for (ParameterTag p : tag.getParameterDefinitions()) {
       pdef.add("final " + p.getJavaType() + " " + p.getName());
       pcall.add(p.getName());
     }
@@ -2014,7 +2014,7 @@ public class ObjectDAO {
 
     if (!tag.getParameterDefinitions().isEmpty()) {
       println("  public static class " + this.getParamClassName(tag) + " {");
-      for (SQLParameter p : tag.getParameterDefinitions()) {
+      for (ParameterTag p : tag.getParameterDefinitions()) {
         println("    " + p.getJavaType() + " " + p.getName() + ";");
       }
       println("  }");
@@ -2055,7 +2055,7 @@ public class ObjectDAO {
     if (!tag.getParameterDefinitions().isEmpty()) {
       objName = provideObjectName(tag.getParameterDefinitions());
       println("    " + this.getParamClassName(tag) + " " + objName + " = new " + this.getParamClassName(tag) + "();");
-      for (SQLParameter p : tag.getParameterDefinitions()) {
+      for (ParameterTag p : tag.getParameterDefinitions()) {
         println("    " + objName + "." + p.getName() + " = " + p.getName() + ";");
       }
     }
@@ -2072,10 +2072,10 @@ public class ObjectDAO {
 
   }
 
-  private String provideObjectName(final List<SQLParameter> params) {
+  private String provideObjectName(final List<ParameterTag> definitions) {
 
     Set<String> existing = new HashSet<String>();
-    for (SQLParameter p : params) {
+    for (ParameterTag p : definitions) {
       existing.add(p.getName().toLowerCase());
     }
 

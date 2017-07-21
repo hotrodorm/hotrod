@@ -32,13 +32,13 @@ public class ChooseTag extends DynamicSQLPart {
   // Behavior
 
   @Override
-  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void validateAttributes(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     // No attributes; nothing to do
   }
 
   @Override
-  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void specificBodyValidation(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     this.whens = new ArrayList<WhenTag>();
     this.otherwise = null;
@@ -55,14 +55,15 @@ public class ChooseTag extends DynamicSQLPart {
           try {
             ParameterisableTextPart text = (ParameterisableTextPart) p;
             if (!text.isEmpty()) {
-              throw new InvalidConfigurationFileException("Invalid <choose> tag included in the tag "
-                  + tagIdentification
-                  + ". A <choose> tag can only include <when> and <otherwise> tags in its body, but found extra text in it.");
+              throw new InvalidConfigurationFileException(super.getSourceLocation(),
+                  "Invalid <choose> tag. " + "A <choose> tag can only include <when> and <otherwise> tags in its body, "
+                      + "but found extra text in it.");
             }
           } catch (ClassCastException e3) {
-            throw new InvalidConfigurationFileException("Invalid <choose> tag included in the tag " + tagIdentification
-                + ". A <choose> tag can only include <when> and <otherwise> tags, but found an object of class '"
-                + p.getClass().getName() + "'.");
+            throw new InvalidConfigurationFileException(super.getSourceLocation(),
+                "Invalid <choose> tag. "
+                    + "A <choose> tag can only include <when> and <otherwise> tags, but found an object of class '"
+                    + p.getClass().getName() + "'.");
           }
         }
       }

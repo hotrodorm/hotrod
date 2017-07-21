@@ -1,8 +1,6 @@
-String value = "ab\"c";
-// String asql = value.replaceAll("\"", java.util.regex.Matcher.quoteReplacement("\\\""));
-String asql = value.replaceAll("\"", "\\\\\"");
-System.out.println("asql="+asql);
-// System.out.println("rep="+java.util.regex.Matcher.quoteReplacement("\\\""));
-
-String txt = "\"\\";
-System.out.println("txt: "+ txt+ " escaped: "+txt.replace("\\", "\\\\").replace("\"", "\\\""));
+String VALID_JAVA_TYPE_PATTERN = "([a-z][a-zA-Z0-9_]*\\.)*[a-zA-Z][a-zA-Z0-9_$]*";
+//String VALID_JAVA_TYPE_PATTERN = "[a-zA-Z][a-zA-Z0-9_$]*";
+String type = "java.lang.Integer";
+System.out.println("type '"
+    + type
+    + "' "+(type.matches(VALID_JAVA_TYPE_PATTERN)?"matches!":"does not match :("));

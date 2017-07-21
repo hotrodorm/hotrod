@@ -13,6 +13,7 @@ import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.ConverterTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
@@ -151,10 +152,10 @@ public class DAOPrimitives {
         + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
 
     String params = null;
-    List<SQLParameter> pl = sm.getSelectTag().getParameterDefinitions();
+    List<ParameterTag> pl = sm.getSelectTag().getParameterDefinitions();
     if (pl != null && pl.size() > 0) {
       ListWriter lw = new ListWriter(", ");
-      for (SQLParameter p : pl) {
+      for (ParameterTag p : pl) {
         lw.add("final " + p.getJavaType() + " " + p.getName());
 
       }
@@ -171,7 +172,7 @@ public class DAOPrimitives {
     println("        .getBean(\"" + springBeanName + "\", " + springBeanClassName + ".class);");
     println("    Map<String,Object> params = new HashMap<String,Object>();");
     if (pl != null && pl.size() > 0) {
-      for (SQLParameter p : pl) {
+      for (ParameterTag p : pl) {
         println("    params.put(\"" + p.getName() + "\", " + p.getName() + ");");
       }
     }

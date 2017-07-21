@@ -806,9 +806,8 @@ public class Mapper {
     println();
 
     println("  <update id=\"" + u.getIdentifier().getJavaMemberIdentifier() + "\">");
-
-    String sentence = u.renderSQLSentence(new MyBatisParameterRenderer());
-    println("    " + SUtils.escapeXmlBody(sentence));
+    String sentence = u.renderXML(new MyBatisParameterRenderer());
+    println("    " + sentence);
     println("  </update>");
     println();
 

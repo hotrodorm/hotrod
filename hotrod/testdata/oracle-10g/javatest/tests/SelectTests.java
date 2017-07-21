@@ -6,10 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
-import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 
 import hotrod.test.generation.AccountByIdsVO;
 import hotrod.test.generation.AccountTx3VO;
@@ -24,14 +22,13 @@ import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountTx3;
 import hotrod.test.generation.primitives.House;
 import hotrod.test.generation.primitives.TxBranchDAO;
+import hotrod.test.generation.primitives.TypesOtherDAO;
 
 public class SelectTests {
 
   private static transient final Logger log = Logger.getLogger(SelectTests.class);
 
   public static void main(final String[] args) throws IOException, SQLException, DynamicSQLEvaluationException {
-
-    Logger.getLogger("hotrod.test.generation.accounting.finances.primitives.accountByType").setLevel(Level.DEBUG);
 
     log.info("Starting tests");
 
@@ -42,15 +39,18 @@ public class SelectTests {
     // selectTag();
     // tryInsertBadData();
     // selectViewSequenceAndQuery();
+
+//     apply74();
+
     // searchAccounts();
 
-//    searchAccountsByIds();
+    searchAccountsByIds();
     // evaluateAccountsByIds();
 
     // searchAccount();
     // searchAccount2();
     // selectAccountTx3();
-     specialCharactersInNames();
+    // specialCharactersInNames();
   }
 
   // private static void tryInsertBadData() throws SQLException {
@@ -141,13 +141,25 @@ public class SelectTests {
     long codeSeq = TxBranchDAO.getCodeSequence();
     System.out.println("codeSeq=" + codeSeq);
 
+  }
+
+  private static void apply74() throws SQLException {
+    System.out.println("Apply74:");
+    System.out.println("========");
+
+    Integer reward = 5;
+
     Date from = new java.text.SimpleDateFormat("yyyyMMdd-HHmmss").parse("20160101-000000",
         new java.text.ParsePosition(0));
     Date to = new java.text.SimpleDateFormat("yyyyMMdd-HHmmss").parse("20170101-000000",
         new java.text.ParsePosition(0));
 
-    int rows = TxBranchDAO.applyAccountPromotion74(10, from, to, -1);
-//    TxBranchDAO.applyAccountPromotion74()
+    Integer minBalance = 100;
+    Integer maxBalance = 300;
+    // String type = "CHK";
+    String type = null;
+
+    int rows = TypesOtherDAO.applyAccountPromotion74(reward, from, to, minBalance, maxBalance, type);
     System.out.println("promotions rows=" + rows);
 
   }
@@ -166,57 +178,60 @@ public class SelectTests {
     System.out.println("searchAccountsByIds:");
     System.out.println("====================");
 
-    String name = null;
-    String type = "CHK";
+//    String type = "CHK";
+     String type = null;
+    String namePattern = "%ACC%";
+    // String namePattern = null;
     Integer minBalance = 123;
     Integer maxBalance = null;
 
     List<Integer> ids = new ArrayList<Integer>();
-//    ids.add(5);
-//    ids.add(6);
-//    ids.add(7);
-//    ids.add(8);
-//    ids.add(9);
-//    ids.add(10);
+    // ids.add(5);
+    // ids.add(6);
+    // ids.add(7);
+    // ids.add(8);
+    // ids.add(9);
+    // ids.add(10);
 
-    Integer sortType = 1;
+    Integer sortType = null;
 
-    for (AccountByIdsVO a : AccountByIds.select(minBalance, maxBalance, ids, sortType)) {
+    for (AccountByIdsVO a : AccountByIds.select(ids, minBalance, maxBalance, namePattern, type, sortType)) {
       System.out.println("a=" + a);
     }
   }
 
-//  private static void evaluateAccountsByIds() throws SQLException, DynamicSQLEvaluationException {
-//    System.out.println("searchAccountsByIds:");
-//    System.out.println("====================");
-//
-//    String name = "abc";
-//    String type = null;
-//    Integer minBalance = null;
-//    Integer maxBalance = null;
-//
-//    List<Integer> ids = new ArrayList<Integer>();
-//    ids.add(5);
-//    ids.add(6);
-//    ids.add(7);
-//    ids.add(8);
-//    ids.add(9);
-//    ids.add(10);
-//
-//    Integer sortType = 2;
-//
-//    DynamicSQLParameters params = new DynamicSQLParameters();
-//    params.set("name", name);
-//    params.set("type", type);
-//    params.set("minBalance", minBalance);
-//    params.set("maxBalance", maxBalance);
-//    params.set("ids", ids);
-//    params.set("sortType", sortType);
-//
-//    String sql = AccountByIds.JAVA_EXPRESSION.evaluate(params);
-//    System.out.println("sql=" + sql);
-//
-//  }
+  // private static void evaluateAccountsByIds() throws SQLException,
+  // DynamicSQLEvaluationException {
+  // System.out.println("searchAccountsByIds:");
+  // System.out.println("====================");
+  //
+  // String name = "abc";
+  // String type = null;
+  // Integer minBalance = null;
+  // Integer maxBalance = null;
+  //
+  // List<Integer> ids = new ArrayList<Integer>();
+  // ids.add(5);
+  // ids.add(6);
+  // ids.add(7);
+  // ids.add(8);
+  // ids.add(9);
+  // ids.add(10);
+  //
+  // Integer sortType = 2;
+  //
+  // DynamicSQLParameters params = new DynamicSQLParameters();
+  // params.set("name", name);
+  // params.set("type", type);
+  // params.set("minBalance", minBalance);
+  // params.set("maxBalance", maxBalance);
+  // params.set("ids", ids);
+  // params.set("sortType", sortType);
+  //
+  // String sql = AccountByIds.JAVA_EXPRESSION.evaluate(params);
+  // System.out.println("sql=" + sql);
+  //
+  // }
 
   private static void selectAccountTx3() throws SQLException {
     System.out.println("AccountTx3:");
@@ -229,7 +244,7 @@ public class SelectTests {
   private static void searchAccount() throws SQLException {
     System.out.println("SearchedAccount:");
     System.out.println("================");
-    for (SearchedAccountVO a : SearchedAccount.select("SAV", 150)) {
+    for (SearchedAccountVO a : SearchedAccount.select(50, 150, 2)) {
       System.out.println("a=" + a);
     }
   }

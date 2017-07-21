@@ -67,8 +67,8 @@ public class RendererHelper {
   public static void renderHeader(final String currentTag, final StringBuilder sb, final TagAttribute... attributes) {
     sb.append("<" + currentTag);
     for (TagAttribute a : attributes) {
-      if (a.render(null) != null) {
-        sb.append(" " + a.getName() + "=\"" + a.render(null) + "\"");
+      if (a.getValue() != null) {
+        sb.append(" " + a.getName() + "=\"" + a.getValue() + "\"");
       }
     }
     sb.append(">");

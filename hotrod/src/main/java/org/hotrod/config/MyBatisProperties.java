@@ -1,6 +1,7 @@
 package org.hotrod.config;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.runtime.dynamicsql.SourceLocation;
 
 public class MyBatisProperties {
 
@@ -19,7 +20,7 @@ public class MyBatisProperties {
 
   // Setters
 
-  public void set(final PropertyTag p) throws InvalidConfigurationFileException {
+  public void set(final SourceLocation location, final PropertyTag p) throws InvalidConfigurationFileException {
 
     if (PROPERTY_CHECKED_PERSISTENCE_EXCEPTION.equals(p.getName())) {
       if (TRUE.equals(p.getValue())) {
@@ -27,7 +28,7 @@ public class MyBatisProperties {
       } else if (FALSE.equals(p.getValue())) {
         this.checkedPersistenceException = false;
       } else {
-        throw new InvalidConfigurationFileException(
+        throw new InvalidConfigurationFileException(location,
             "Invalid value '" + p.getValue() + "' for property '" + p.getName() + "'. Valid values are: true, false");
       }
     } else if (PROPERTY_MULTILINE_TOSTRING.equals(p.getName())) {
@@ -36,11 +37,11 @@ public class MyBatisProperties {
       } else if (FALSE.equals(p.getValue())) {
         this.multilineTostring = false;
       } else {
-        throw new InvalidConfigurationFileException(
+        throw new InvalidConfigurationFileException(location,
             "Invalid value '" + p.getValue() + "' for property '" + p.getName() + "'. Valid values are: true, false");
       }
     } else {
-      throw new InvalidConfigurationFileException(
+      throw new InvalidConfigurationFileException(location,
           "Invalid property name '" + p.getName() + "'. Valid property names are: " + getAllPropertyNames());
     }
 

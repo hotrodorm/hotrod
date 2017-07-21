@@ -41,8 +41,9 @@ public class SessionFactoryTag extends AbstractConfigurationTag {
     // singleton-full-class-name
 
     if (SUtils.isEmpty(this.singletonFullClassName)) {
-      throw new InvalidConfigurationFileException("Attribute '" + ATT_NAME + "' of tag <" + super.getTagName()
-          + "> cannot be empty. " + "Must specify the singleton " + "that provides the SessionFactory object.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Attribute '" + ATT_NAME + "' of tag <" + super.getTagName() + "> cannot be empty. "
+              + "Must specify the singleton " + "that provides the SessionFactory object.");
     }
 
   }

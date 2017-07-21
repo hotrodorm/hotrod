@@ -3,11 +3,13 @@ package org.hotrod.config.dynamicsql;
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
+import org.hotrod.runtime.util.SUtils;
 
-public class LiteralTextPart extends DynamicSQLPart implements SQLChunk {
+public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
 
   // Constants
 
@@ -15,40 +17,37 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLChunk {
 
   // Properties
 
+  private SourceLocation location;
   private String text;
 
   // Constructor
 
-  public LiteralTextPart(final String text) {
-    super("not-a-tag-but-sql-content");
+  public LiteralTextPart(final SourceLocation location, final String text) {
+    super("not-a-tag-but-literal-text");
     log.debug("init");
+    this.location = location;
     this.text = text;
   }
 
   // Behavior
 
   @Override
-  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
-      throws InvalidConfigurationFileException {
-    // No attributes; nothing to do
-  }
-
-  @Override
-  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void specificBodyValidation(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     // No extra validation on the body
   }
 
-  @Override
-  public boolean isEmpty() {
-    return this.text == null || this.text.trim().isEmpty();
-  }
-
   public LiteralTextPart concat(final LiteralTextPart other) {
-    return new LiteralTextPart(this.text + other.text);
+    return new LiteralTextPart(this.location, this.text + other.text);
   }
 
   // Rendering
+  
+  @Override
+  protected void validateAttributes(ParameterDefinitions parameterDefinitions)
+      throws InvalidConfigurationFileException {
+    // Nothing to validate. Not a tag.
+  }
 
   @Override
   protected boolean shouldRenderTag() {
@@ -56,16 +55,22 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLChunk {
   }
 
   @Override
+  protected TagAttribute[] getAttributes() {
+    return null;
+  }
+
+
+  @Override
   public String renderStatic(final ParameterRenderer parameterRenderer) {
-    // log.info("[renderStatic] this.text=" + this.text);
     return this.text;
   }
 
   @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
-    return this.text;
+    return SUtils.escapeXmlBody(this.text);
   }
 
+  
   // Java Expression
 
   @Override
@@ -86,9 +91,9 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLChunk {
   }
 
   @Override
-  protected TagAttribute[] getAttributes() {
-    TagAttribute[] atts = {};
-    return atts;
+  public boolean isEmpty() {
+    return this.text == null || this.text.trim().isEmpty();
   }
+
 
 }

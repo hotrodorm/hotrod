@@ -49,13 +49,14 @@ public class PropertyTag extends AbstractConfigurationTag {
     // name
 
     if (SUtils.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException("Attribute '" + ATT_NAME + "' of tag <" + super.getTagName()
-          + "> cannot be empty. " + "Must specify a property name.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute '" + ATT_NAME + "' of tag <"
+          + super.getTagName() + "> cannot be empty. " + "Must specify a property name.");
     }
     if (!this.name.matches(VIEW_NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException("Attribute '" + ATT_NAME + "' of tag <" + super.getTagName()
-          + "> must be a valid name. Specified value is '" + this.name + "' but must start with a letter, "
-          + "and continue with one or more " + "letters, digits, period, or underscore characters.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Attribute '" + ATT_NAME + "' of tag <" + super.getTagName() + "> must be a valid name. Specified value is '"
+              + this.name + "' but must start with a letter, " + "and continue with one or more "
+              + "letters, digits, period, or underscore characters.");
     }
 
     // value (no specific validation)

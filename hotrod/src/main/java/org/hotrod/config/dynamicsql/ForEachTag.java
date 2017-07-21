@@ -1,17 +1,13 @@
 package org.hotrod.config.dynamicsql;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.SQLParameter;
+import org.hotrod.config.ParameterTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.dynamicsql.expressions.ForEachExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "foreach")
@@ -31,15 +27,13 @@ public class ForEachTag extends DynamicSQLPart {
 
   private String item = null;
   private String index = null;
-  private String collectionText = null;
+  private String collection = null;
   private String open = null;
   private String separator = null;
   private String close = null;
 
-  private ParameterisableTextPart collection = null;
-
-  private SQLParameter itemParameter = null;
-  private SQLParameter indexParameter = null;
+  private ParameterTag itemParameter = null;
+  private ParameterTag indexParameter = null;
 
   // JAXB Setters
 
@@ -55,7 +49,7 @@ public class ForEachTag extends DynamicSQLPart {
 
   @XmlAttribute
   public void setCollection(final String collection) {
-    this.collectionText = collection;
+    this.collection = collection;
   }
 
   @XmlAttribute
@@ -78,46 +72,39 @@ public class ForEachTag extends DynamicSQLPart {
   // Behavior
 
   @Override
-  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void validateAttributes(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
 
+    log.debug("init");
+
     if (this.item != null) {
-      SQLParameter p = new SQLParameter(this.item, tagIdentification);
-      if (parameterDefinitions.find(p) != null) {
-        throw new InvalidConfigurationFileException("Invalid <foreach> tag in the body of the tag " + tagIdentification
-            + ". The 'item' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
+      if (parameterDefinitions.find(this.item) != null) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid <foreach> tag. "
+            + "The 'item' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
       }
-      this.itemParameter = p;
-      parameterDefinitions.add(p);
     } else {
       this.itemParameter = null;
     }
 
     if (this.index != null) {
-      SQLParameter p = new SQLParameter(this.index, tagIdentification);
-      if (parameterDefinitions.find(p) != null) {
-        throw new InvalidConfigurationFileException("Invalid <foreach> tag in the body of the tag " + tagIdentification
-            + ". The 'index' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
+      if (parameterDefinitions.find(this.index) != null) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid <foreach> tag. "
+            + "The 'index' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
       }
-      this.indexParameter = p;
-      parameterDefinitions.add(p);
     } else {
       this.indexParameter = null;
     }
 
-    this.collection = this.collectionText == null ? null
-        : new ParameterisableTextPart(this.collectionText, tagIdentification, parameterDefinitions);
-
   }
 
   @Override
-  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void specificBodyValidation(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     // Nothing extra to validate
   }
 
   @Override
-  protected void postTagValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void postTagValidation(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     if (this.itemParameter != null) {
       parameterDefinitions.remove(this.itemParameter);
@@ -137,12 +124,12 @@ public class ForEachTag extends DynamicSQLPart {
   @Override
   protected TagAttribute[] getAttributes() {
     TagAttribute[] atts = { //
-        new TagAttribute("item", new LiteralTextPart(this.item)), //
-        new TagAttribute("index", new LiteralTextPart(this.index)), //
+        new TagAttribute("item", this.item), //
+        new TagAttribute("index", this.index), //
         new TagAttribute("collection", this.collection), //
-        new TagAttribute("open", new LiteralTextPart(this.open)), //
-        new TagAttribute("separator", new LiteralTextPart(this.separator)), //
-        new TagAttribute("close", new LiteralTextPart(this.close)) //
+        new TagAttribute("open", this.open), //
+        new TagAttribute("separator", this.separator), //
+        new TagAttribute("close", this.close) //
     };
     return atts;
   }
@@ -155,25 +142,21 @@ public class ForEachTag extends DynamicSQLPart {
 
     throw new UnsupportedOperationException("The <foreach> and <bind> tags are not yet supported.");
 
-    // try {
-    //
-    // String coll = this.collection.renderStatic(parameterRenderer);
-    // List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
-    // for (DynamicSQLPart p : super.parts) {
-    // exps.add(p.getJavaExpression(parameterRenderer));
-    // }
-    //
-    // return new ForEachExpression(this.item, this.index, coll, this.open,
-    // this.separator, this.close,
-    // exps.toArray(new DynamicExpression[0]));
-    //
-    // } catch (RuntimeException e) {
-    // throw new InvalidJavaExpressionException(this.getSourceLocation(),
-    // "Could not produce Java expression for <foreach> tag on file '" +
-    // this.getSourceLocation().getFile().getPath()
-    // + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
-    // + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
-    // }
+    /**
+     * <pre>
+     *
+     * try {
+     * 
+     *   return new ForEachExpression(this.item, this.index, this.collection, this.open, this.separator, this.close,
+     *       toArray(this.parts, parameterRenderer));
+     * 
+     * } catch (RuntimeException e) {
+     *   throw new InvalidJavaExpressionException(this.getSourceLocation(),
+     *       "Could not produce Java expression on <foreach> tag: " + e.getMessage());
+     * }
+     * 
+     * </pre>
+     */
 
   }
 

@@ -3,10 +3,9 @@ package org.hotrod.config.dynamicsql;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.config.SQLParameter;
+import org.hotrod.config.ParameterTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.dynamicsql.expressions.BindExpression;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
@@ -19,11 +18,8 @@ public class BindTag extends DynamicSQLPart {
 
   // Properties
 
-  private String nameText = null;
-  private String valueText = null;
-
-  private LiteralTextPart name = null;
-  private ParameterisableTextPart value = null;
+  private String name = null;
+  private String value = null;
 
   // Constructor
 
@@ -34,13 +30,13 @@ public class BindTag extends DynamicSQLPart {
   // JAXB Setters
 
   @XmlAttribute
-  public void setName(String name) {
-    this.nameText = name;
+  public void setName(final String name) {
+    this.name = name;
   }
 
   @XmlAttribute
-  public void setValue(String value) {
-    this.valueText = value;
+  public void setValue(final String value) {
+    this.value = value;
   }
 
   // Getters
@@ -48,30 +44,27 @@ public class BindTag extends DynamicSQLPart {
   // Behavior
 
   @Override
-  protected void validateAttributes(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void validateAttributes(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
 
-    if (this.nameText == null) {
-      throw new InvalidConfigurationFileException("Invalid <bind> tag in the body of the tag " + tagIdentification
-          + ". The 'name' attribute in the <bind> tag must be specified.");
+    if (this.name == null) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Invalid <bind> tag. The 'name' attribute must be specified.");
     }
-    if (!this.nameText.matches(NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException("Invalid <bind> tag in the body of the tag " + tagIdentification
-          + ". The name must start with a letter and continue with alphanumeric caracters and/or underscores (_) but found '"
-          + this.nameText + "'");
+    if (!this.name.matches(NAME_PATTERN)) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Invalid <bind> tag. The 'name' attribute must start with a letter "
+              + "and continue with alphanumeric caracters and/or underscores (_) but found '" + this.name + "'");
     }
 
-    this.name = this.nameText == null ? null : new LiteralTextPart(this.nameText);
-    this.value = this.valueText == null ? null
-        : new ParameterisableTextPart(this.valueText, tagIdentification, parameterDefinitions);
-
-    SQLParameter p = new SQLParameter(this.nameText, tagIdentification);
+    ParameterTag p = new ParameterTag();
+    p.setName(this.name);
     parameterDefinitions.add(p);
 
   }
 
   @Override
-  protected void specificBodyValidation(final String tagIdentification, final ParameterDefinitions parameterDefinitions)
+  protected void specificBodyValidation(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     // No extra validation on the body
   }
@@ -100,20 +93,22 @@ public class BindTag extends DynamicSQLPart {
 
     throw new UnsupportedOperationException("The <foreach> and <bind> tags are not yet supported.");
 
-    // try {
-    //
-    // String n = this.name.renderXML(parameterRenderer);
-    // String v = this.value.renderXML(parameterRenderer);
-    //
-    // return new BindExpression(n, v);
-    //
-    // } catch (RuntimeException e) {
-    // throw new InvalidJavaExpressionException(this.getSourceLocation(),
-    // "Could not produce Java expression for tag <bind> on file '" +
-    // this.getSourceLocation().getFile().getPath()
-    // + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
-    // + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
-    // }
+    /**
+     * 
+     * <pre>
+     *
+     * try {
+     * 
+     *   return new BindExpression(this.name, this.value);
+     * 
+     * } catch (RuntimeException e) {
+     *   throw new InvalidJavaExpressionException(this.getSourceLocation(),
+     *       "Could not produce Java expression for tag <bind>: " + e.getMessage());
+     * }
+     * 
+     * </pre>
+     * 
+     */
 
   }
 

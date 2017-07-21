@@ -92,17 +92,17 @@ public class DaosTag extends AbstractConfigurationTag {
     // gen-base-dir
 
     if (SUtils.isEmpty(this.sGenBaseDir)) {
-      throw new InvalidConfigurationFileException("Attribute 'gen-base-dir' of tag <" + super.getTagName()
-          + "> cannot be empty. " + "Must specify the base dir to generate the DAO classes.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'gen-base-dir' of tag <"
+          + super.getTagName() + "> cannot be empty. " + "Must specify the base dir to generate the DAO classes.");
     }
     this.baseDir = new File(this.sGenBaseDir);
     if (!this.baseDir.exists()) {
-      throw new InvalidConfigurationFileException("Attribute 'gen-base-dir' of tag <" + super.getTagName()
-          + "> with value '" + this.sGenBaseDir + "' must point to an existing dir.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'gen-base-dir' of tag <"
+          + super.getTagName() + "> with value '" + this.sGenBaseDir + "' must point to an existing dir.");
     }
     if (!this.baseDir.isDirectory()) {
-      throw new InvalidConfigurationFileException("Attribute 'gen-base-dir' of tag <" + super.getTagName()
-          + "> with value '" + this.sGenBaseDir + "' is not a directory.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'gen-base-dir' of tag <"
+          + super.getTagName() + "> with value '" + this.sGenBaseDir + "' is not a directory.");
     }
 
     // dao-package
@@ -110,7 +110,7 @@ public class DaosTag extends AbstractConfigurationTag {
     try {
       this.daoPackage = new ClassPackage(this.sDaoPackage);
     } catch (InvalidPackageException e) {
-      throw new InvalidConfigurationFileException("Invalid package '" + this.sDaoPackage
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid package '" + this.sDaoPackage
           + "' on attribute 'dao-package' of tag <" + super.getTagName() + ">: " + e.getMessage());
     }
 
@@ -120,15 +120,16 @@ public class DaosTag extends AbstractConfigurationTag {
       try {
         this.primitivesTailPackage = new ClassPackage(DEFAULT_PRIMITIVES_RELATIVE_PACKAGE);
       } catch (InvalidPackageException e) {
-        throw new InvalidConfigurationFileException(
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
             "Invalid 'primitives-package' attribute value on tag <" + super.getTagName() + ">: " + e.getMessage());
       }
     } else {
       try {
         this.primitivesTailPackage = new ClassPackage(this.sPrimitivesPackage);
       } catch (InvalidPackageException e) {
-        throw new InvalidConfigurationFileException("Invalid package '" + this.sPrimitivesPackage
-            + "' on attribute 'primitives-package' of tag <" + super.getTagName() + ">: " + e.getMessage());
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid package '" + this.sPrimitivesPackage + "' on attribute 'primitives-package' of tag <"
+                + super.getTagName() + ">: " + e.getMessage());
       }
     }
 
@@ -138,8 +139,9 @@ public class DaosTag extends AbstractConfigurationTag {
       this.daoPrefix = DEFAULT_DAO_PREFIX;
     } else {
       if (!this.daoPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
-        throw new InvalidConfigurationFileException("Invalid dao-prefix value '" + this.daoPrefix
-            + "'. When specified, it can only include one or more letters, digits, or underscored (_).");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid dao-prefix value '" + this.daoPrefix
+                + "'. When specified, it can only include one or more letters, digits, or underscored (_).");
       }
     }
 
@@ -149,8 +151,9 @@ public class DaosTag extends AbstractConfigurationTag {
       this.daoSuffix = DEFAULT_DAO_SUFFIX;
     } else {
       if (!this.daoSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
-        throw new InvalidConfigurationFileException("Invalid dao-suffix value '" + this.daoSuffix
-            + "'. When specified, it can only include one or more letters, digits, or underscored (_).");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid dao-suffix value '" + this.daoSuffix
+                + "'. When specified, it can only include one or more letters, digits, or underscored (_).");
       }
     }
 
@@ -160,8 +163,9 @@ public class DaosTag extends AbstractConfigurationTag {
       this.primitivesPrefix = DEFAULT_PRIMITIVES_PREFIX;
     } else {
       if (!this.primitivesPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
-        throw new InvalidConfigurationFileException("Invalid primitives-prefix value '" + this.primitivesPrefix
-            + "'. When specified, it can only include one or more letters, digits, or underscored (_).");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid primitives-prefix value '" + this.primitivesPrefix
+                + "'. When specified, it can only include one or more letters, digits, or underscored (_).");
       }
     }
 
@@ -171,8 +175,9 @@ public class DaosTag extends AbstractConfigurationTag {
       this.primitivesSuffix = DEFAULT_PRIMITIVES_SUFFIX;
     } else {
       if (!this.primitivesSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
-        throw new InvalidConfigurationFileException("Invalid primitives-suffix value '" + this.primitivesSuffix
-            + "'. When specified, it can only include one or more letters, digits, or underscored (_).");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid primitives-suffix value '" + this.primitivesSuffix
+                + "'. When specified, it can only include one or more letters, digits, or underscored (_).");
       }
     }
 

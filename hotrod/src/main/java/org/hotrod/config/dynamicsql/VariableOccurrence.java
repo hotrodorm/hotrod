@@ -5,7 +5,7 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.VariableExpression;
 
-public class VariableOccurrence implements SQLChunk {
+public class VariableOccurrence implements SQLSegment {
 
   // Constants
 
@@ -26,7 +26,7 @@ public class VariableOccurrence implements SQLChunk {
 
   @Override
   public boolean isEmpty() {
-    return this.name == null || this.name.trim().isEmpty();
+    return false;
   }
 
   // Rendering
