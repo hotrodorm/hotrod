@@ -8,7 +8,7 @@ public class BooleanShortConverter implements TypeConverter<Short, Boolean> {
   private static final Short TRUE = 1;
 
   @Override
-  public Boolean get(final Short value) {
+  public Boolean decode(final Short value) {
     if (value == null) {
       return null;
     }
@@ -16,7 +16,7 @@ public class BooleanShortConverter implements TypeConverter<Short, Boolean> {
   }
 
   @Override
-  public Short set(final Boolean value) {
+  public Short encode(final Boolean value) {
     if (value == null) {
       return null;
     }

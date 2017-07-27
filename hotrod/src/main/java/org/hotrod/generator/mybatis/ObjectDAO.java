@@ -1732,7 +1732,8 @@ public class ObjectDAO {
         println();
         println("  public static class " + typeHandlerClassName + " implements TypeHandler<" + type + "> {");
         println();
-        println("    private TypeConverter<" + interType + ", " + type + "> converter = new " + converter + "();");
+        println(
+            "    private static TypeConverter<" + interType + ", " + type + "> CONVERTER = new " + converter + "();");
         println();
         println("    @Override");
         println("    public " + type + " getResult(final ResultSet rs, final String columnName) throws SQLException {");
@@ -1740,7 +1741,7 @@ public class ObjectDAO {
         println("      if (rs.wasNull()) {");
         println("        value = null;");
         println("      }");
-        println("      return this.converter.get(value);");
+        println("      return CONVERTER.decode(value);");
         println("    }");
         println();
         println("    @Override");
@@ -1749,7 +1750,7 @@ public class ObjectDAO {
         println("      if (rs.wasNull()) {");
         println("        value = null;");
         println("      }");
-        println("      return this.converter.get(value);");
+        println("      return CONVERTER.decode(value);");
         println("    }");
         println();
         println("    @Override");
@@ -1759,14 +1760,14 @@ public class ObjectDAO {
         println("      if (cs.wasNull()) {");
         println("        value = null;");
         println("      }");
-        println("      return this.converter.get(value);");
+        println("      return CONVERTER.decode(value);");
         println("    }");
         println();
         println("    @Override");
         println("    public void setParameter(final PreparedStatement ps, final int columnIndex, final " + type
             + " v, final JdbcType jdbcType)");
         println("        throws SQLException {");
-        println("      " + interType + " value = this.converter.set(v);");
+        println("      " + interType + " value = CONVERTER.encode(v);");
         println("      if (value == null) {");
         println("        ps.setNull(columnIndex, jdbcType.TYPE_CODE);");
         println("      } else {");

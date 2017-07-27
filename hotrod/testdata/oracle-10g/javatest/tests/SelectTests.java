@@ -13,8 +13,10 @@ import hotrod.test.generation.AccountByIdsVO;
 import hotrod.test.generation.AccountTx3VO;
 import hotrod.test.generation.AccountVO;
 import hotrod.test.generation.HouseVO;
+import hotrod.test.generation.accounting.finances.QuadrantVO;
 import hotrod.test.generation.accounting.finances.SearchedAccount2VO;
 import hotrod.test.generation.accounting.finances.SearchedAccountVO;
+import hotrod.test.generation.accounting.finances.primitives.QuadrantDAO;
 import hotrod.test.generation.accounting.finances.primitives.SearchedAccount;
 import hotrod.test.generation.accounting.finances.primitives.SearchedAccount2;
 import hotrod.test.generation.primitives.AccountByIds;
@@ -40,17 +42,20 @@ public class SelectTests {
     // tryInsertBadData();
     // selectViewSequenceAndQuery();
 
-//     apply74();
+    // apply74();
 
     // searchAccounts();
 
-    searchAccountsByIds();
+    // searchAccountsByIds();
     // evaluateAccountsByIds();
 
     // searchAccount();
     // searchAccount2();
     // selectAccountTx3();
     // specialCharactersInNames();
+
+    searchQuadrants();
+
   }
 
   // private static void tryInsertBadData() throws SQLException {
@@ -178,8 +183,8 @@ public class SelectTests {
     System.out.println("searchAccountsByIds:");
     System.out.println("====================");
 
-//    String type = "CHK";
-     String type = null;
+    // String type = "CHK";
+    String type = null;
     String namePattern = "%ACC%";
     // String namePattern = null;
     Integer minBalance = 123;
@@ -254,6 +259,14 @@ public class SelectTests {
     System.out.println("=================");
     for (SearchedAccount2VO a : SearchedAccount2.select(150)) {
       System.out.println("a=" + a);
+    }
+  }
+
+  private static void searchQuadrants() throws SQLException {
+    System.out.println("SearchedQuadrants:");
+    System.out.println("==================");
+    for (QuadrantVO q : QuadrantDAO.selectByExample(new QuadrantVO())) {
+      System.out.println("q=" + q);
     }
   }
 

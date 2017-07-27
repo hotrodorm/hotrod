@@ -1,0 +1,53 @@
+<hotrod>
+
+  <dao class="BlogSearchDAO">
+  
+  <select method-name="getAggregatedBlog" result-class="AggregatedBlogVO">
+  
+    <parameter name="blogId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+  
+    select /*+ GATHER_PLAN_STATISTICS */ /*+ APPEND */
+    <columns>
+      <vo table="blog" extended-class="BlogExtended"> b.*
+        <association table="author" property="author"> a.* </association>
+        <collection table="post" property="posts" extended-class="PostExtended"> p.*
+          <collection table="comment" property="comments"> c.* </collection>
+          <collection table="tag" property="tags"> t.* </collection>
+        </collection>
+        <association view="office" property="currentOffice" ids="id"> a.* </association>
+      </vo>
+      <properties>
+        (b.views / b.viewer_count) as temperature, 
+        (b.revenue / b.views) as profitability
+      </properties>
+    </columns>
+    from blog b
+      left outer join author a on (a.id) = (b.author_id)
+      left outer join post p on (p.blog_id) = (b.id)
+      left outer join comment c on (c.post_id) = (p.id)
+      left outer join post_tag pt on (pt.post_id) = (p.id)
+      left outer join tag t on (t.id) = (pt.tag_id)
+      left outer join office o on (p.office_id) = (o.id)
+    <complement>
+      where b.id = #{blogId}
+    </complement>
+      
+  </select>
+  
+  </dao>
+
+</hotrod>
+
+<!--
+
+* AggregatedBlogVO
+   * BlogExtended (extends BlogVO: +author +posts) blog;
+     * AuthorVO author;
+     * PostExtended (extends PostVO: +comments, +tags) posts;
+       * CommentVO
+       * TagVO
+   * OfficeVO currentOffice;
+   * temperature
+   * profitability
+
+ -->

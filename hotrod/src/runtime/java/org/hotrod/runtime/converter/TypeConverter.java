@@ -45,8 +45,8 @@ package org.hotrod.runtime.converter;
  */
 public interface TypeConverter<T, A> {
 
-  A get(T intermediateValue);
+  A decode(T intermediateValue);
 
-  T set(A applicationValue);
+  T encode(A applicationValue);
 
 }

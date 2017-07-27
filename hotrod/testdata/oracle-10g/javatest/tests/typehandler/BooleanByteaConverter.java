@@ -5,7 +5,7 @@ import org.hotrod.runtime.converter.TypeConverter;
 public class BooleanByteaConverter implements TypeConverter<byte[], Boolean> {
 
   @Override
-  public Boolean get(final byte[] value) {
+  public Boolean decode(final byte[] value) {
     if (value == null) {
       return null;
     }
@@ -13,7 +13,7 @@ public class BooleanByteaConverter implements TypeConverter<byte[], Boolean> {
   }
 
   @Override
-  public byte[] set(final Boolean value) {
+  public byte[] encode(final Boolean value) {
     if (value == null) {
       return null;
     }
