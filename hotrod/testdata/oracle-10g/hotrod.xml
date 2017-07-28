@@ -89,6 +89,17 @@
     </complement>
 
   </select>
+  
+  <select>
+  <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+  select
+      a.*, c.* 
+    from account a,
+    join client c on (c.id) = (a.client_id)
+    <complement>
+      where c.id = #{clientId}
+    </complement>
+  </select>
 
   <fragment file="hotrod-finances.xml" />
 

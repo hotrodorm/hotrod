@@ -1,3 +1,6 @@
+The HotRod "View":
+==================
+ 
  __________________                  _________
 | Package Explorer \                | HotRod  \ [+] [-] [>] [>>] [*>>] [X] [XX] 
 |                   \____________   |          \__________________________
@@ -21,8 +24,9 @@
                                   [X] Removes a HotRod config file from the View
                                   [XX] Removes all HotRod config files from the View
                                   
-                                  All successful HotRod executions will update the Java source tree.
-                                  An unsuccessful Clean will also update the Java source tree.
+                                  * Only main HotRod config files can be loaded, not fragments.
+                                  * All successful HotRod executions will update the Java source tree.
+                                  * An unsuccessful Clean will also update the Java source tree.
                                   
 Research how to:
 ================
