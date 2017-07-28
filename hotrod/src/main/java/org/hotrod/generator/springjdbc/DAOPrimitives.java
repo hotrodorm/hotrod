@@ -437,7 +437,7 @@ public class DAOPrimitives {
               + CodeGenerationHelper.mapJavaType2JDBCGetter(cvt.getJavaIntermediateType()) + "(\"" + cm.getColumnName()
               + "\");");
           println("        row." + cm.getIdentifier().getSetter() + "(rs.wasNull() ? null : new " + cvt.getJavaClass()
-              + "().get(v));");
+              + "().decode(v));");
         } else {
           println("        " + cm.getType().getJavaClassName() + " v = rs."
               + CodeGenerationHelper.mapJavaType2JDBCGetter(cm.getType().getJavaClassName()) + "(\""
@@ -466,7 +466,7 @@ public class DAOPrimitives {
         ConverterTag cvt = cm.getConverter();
         if (cvt != null) {
           println("        pst." + CodeGenerationHelper.mapJavaType2JDBCSetter(cvt.getJavaIntermediateType()) + "(" + i
-              + ", new " + cvt.getJavaClass() + "().set(domain." + cm.getIdentifier().getGetter() + "()));");
+              + ", new " + cvt.getJavaClass() + "().encode(domain." + cm.getIdentifier().getGetter() + "()));");
         } else {
           println("        pst." + CodeGenerationHelper.mapJavaType2JDBCSetter(cm.getType().getJavaClassName()) + "("
               + i + ", domain." + cm.getIdentifier().getGetter() + "());");
@@ -612,12 +612,12 @@ public class DAOPrimitives {
       ConverterTag cvt = cm.getConverter();
       if (cvt != null) {
         println("    public " + cvt.getJavaType() + " " + cm.getIdentifier().getGetter() + "() {");
-        println("      return new " + cvt.getJavaClass() + "().get(this." + m + ");");
+        println("      return new " + cvt.getJavaClass() + "().decode(this." + m + ");");
         println("    }");
         println();
 
         println("    public void " + cm.getIdentifier().getSetter() + "(final " + cvt.getJavaType() + " " + m + ") {");
-        println("      this." + m + " = new " + cvt.getJavaClass() + "().set(" + m + ");");
+        println("      this." + m + " = new " + cvt.getJavaClass() + "().encode(" + m + ");");
         println("    }");
       } else {
         println("    public " + type.getJavaClassName() + " " + cm.getIdentifier().getGetter() + "() {");
@@ -836,7 +836,7 @@ public class DAOPrimitives {
           println("      if (includeLOB) {");
 
           if (cvt != null) {
-            println("        r.add(new " + cvt.getJavaClass() + "().set(example." + cm.getIdentifier().getGetter()
+            println("        r.add(new " + cvt.getJavaClass() + "().decode(example." + cm.getIdentifier().getGetter()
                 + "()), \"" + cm.getColumnName() + "\", " + cm.getType().getJDBCType() + ");");
           } else {
             println("        r.add(example." + cm.getIdentifier().getGetter() + "(), \"" + cm.getColumnName() + "\", "
@@ -846,7 +846,7 @@ public class DAOPrimitives {
           println("      }");
         } else {
           if (cvt != null) {
-            println("      r.add(new " + cvt.getJavaClass() + "().set(example." + cm.getIdentifier().getGetter()
+            println("      r.add(new " + cvt.getJavaClass() + "().encode(example." + cm.getIdentifier().getGetter()
                 + "()), \"" + cm.getColumnName() + "\", " + cm.getType().getJDBCType() + ");");
           } else {
             println("      r.add(example." + cm.getIdentifier().getGetter() + "(), \"" + cm.getColumnName() + "\", "
@@ -984,7 +984,7 @@ public class DAOPrimitives {
       if (!cm.getType().isLOB() || includeLobs) {
         ConverterTag cvt = cm.getConverter();
         if (cvt != null) {
-          lw.add("new " + cvt.getJavaClass() + "().set(dao." + cm.getIdentifier().getGetter() + "())");
+          lw.add("new " + cvt.getJavaClass() + "().encode(dao." + cm.getIdentifier().getGetter() + "())");
         } else {
           lw.add("dao." + cm.getIdentifier().getGetter() + "()");
         }
