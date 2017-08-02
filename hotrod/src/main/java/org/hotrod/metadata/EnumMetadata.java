@@ -56,6 +56,10 @@ public class EnumMetadata {
     return this.tag.getName();
   }
 
+  public String getJdbcName() {
+    return this.tag.getJdbcName();
+  }
+
   public String getJavaClassName() {
     return this.tag.getJavaClassName();
   }

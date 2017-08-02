@@ -58,9 +58,9 @@ public class NonPersistentTag extends AbstractConfigurationTag {
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. " + "Must specify a non-empty name.");
     }
     if (!this.name.matches(VALID_JAVA_CONSTANT_IDENTIFIER)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Attribute 'name' of tag <" + super.getTagName() + "> must be a valid Java constant identifier. "
-              + "Must start with an uppercase letter, and continue with uppercase letters, digits, or underscores.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'name' of tag <"
+          + super.getTagName() + "> must be a valid Java constant identifier but found '" + this.name + "'. "
+          + "The name must start with an uppercase letter, and continue with uppercase letters, digits, or underscores.");
     }
 
   }

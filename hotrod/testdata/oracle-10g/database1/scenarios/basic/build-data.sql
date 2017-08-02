@@ -67,3 +67,10 @@ insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`{|}~") values (1, 'red', 'k
 insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`{|}~") values (2, 'green', 'kind 3', 'type 4');
 insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`{|}~") values (3, 'blue', 'kind 5', 'type 6');
 
+-- enum
+
+insert into employee_state (id, description) values (1, 'Enrolled');
+insert into employee_state (id, description) values (2, 'Accepted_OK');
+insert into employee_state (id, description) values (3, 'Pending Notification');
+insert into employee_state (id, description) values (4, 'Rejected, but can Reapply!');
+

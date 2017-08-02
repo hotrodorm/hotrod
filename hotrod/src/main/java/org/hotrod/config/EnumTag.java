@@ -579,6 +579,10 @@ public class EnumTag extends AbstractConfigurationTag {
     return name;
   }
 
+  public String getJdbcName() {
+    return this.table.getName();
+  }
+
   public List<EnumConstant> getEnumConstants() {
     List<EnumConstant> all = new ArrayList<EnumConstant>();
     all.addAll(this.tableConstants);

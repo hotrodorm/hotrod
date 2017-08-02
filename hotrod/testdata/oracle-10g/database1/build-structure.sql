@@ -236,4 +236,10 @@ create table " !#$%)(*+,-." (
   "`{|}~" varchar2(12) not null
 );
 
-  
+-- enum
+
+create table employee_state (
+  id number(6) primary key not null,
+  description varchar(40) not null
+)
+

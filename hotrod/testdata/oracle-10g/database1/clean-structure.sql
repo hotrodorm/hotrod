@@ -28,6 +28,8 @@ drop table test_sequence;
 
 drop table " !#$%)(*+,-.";
 
+drop table employee_state;
+
 
 -- =========
 -- All Types

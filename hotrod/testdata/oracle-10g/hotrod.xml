@@ -83,10 +83,10 @@
 
   </select>
 -->
-  
+
   <enum name="employee_state" class="EmployeeState" value-column="id" name-column="description">
-    <non-persistent value="100" name="NONE" />
-    <non-persistent value="101" name="DISMISSED" />
+    <non-persistent value="100" name="NONE_" />
+    <non-persistent value="101" name="ENROLLED" />
   </enum>
 
 <!--    
@@ -100,11 +100,11 @@
       where c.id = #{clientId}
     </complement>
   </select>
+-->
 
   <fragment file="hotrod-finances.xml" />
 
   <fragment file="hotrod-core-and-types.xml" />
--->
 
 </hotrod>
 

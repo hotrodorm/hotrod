@@ -136,10 +136,11 @@ public abstract class HotRodGenerator {
         this.db = new JdbcDatabase(this.loc, true, new TableFilter(this.config, this.adapter),
             new ViewFilter(this.config, this.adapter));
         logm("After retrieval 1.");
-        
-        // TODO: Try to reuse the database connection, instead of opening a new one
-        this.enumDb = new JdbcDatabase(this.loc, true, new EnumFilter(), null);
-        
+
+        // TODO: Try to reuse the database connection, instead of opening a new
+        // one
+        this.enumDb = new JdbcDatabase(this.loc, true, new EnumTableFilter(), new EnumViewFilter());
+
         logm("After retrieval 2.");
 
       } catch (ReaderException e) {
@@ -442,7 +443,7 @@ public abstract class HotRodGenerator {
       // enums
 
       for (EnumMetadata e : this.enums) {
-        display("Enum " + e.getName() + " included.");
+        display("Enum " + e.getJdbcName() + " included.");
       }
 
       // daos
@@ -691,7 +692,7 @@ public abstract class HotRodGenerator {
 
   // Enum Filter
 
-  public class EnumFilter implements JdbcTableFilter {
+  public class EnumTableFilter implements JdbcTableFilter {
 
     public boolean accepts(final String jdbcName) {
       for (EnumTag t : config.getEnums()) {
@@ -701,6 +702,15 @@ public abstract class HotRodGenerator {
       }
       return false;
     }
+
+  }
+
+  public class EnumViewFilter implements JdbcTableFilter {
+
+    public boolean accepts(final String jdbcName) {
+      return false;
+    }
+
   }
 
   public DatabaseAdapter getAdapter() {
