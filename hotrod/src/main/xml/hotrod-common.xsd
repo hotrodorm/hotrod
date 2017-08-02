@@ -5,6 +5,7 @@
       <xsd:element name="table" type="table-type" />
       <xsd:element name="dao" type="dao-type" />
       <xsd:element name="view" type="view-type" />
+      <xsd:element name="enum" type="enum-type" />
       <xsd:element name="select" type="select-dao-type" />
     </xsd:choice>
     <xsd:attribute name="name" type="xsd:string" use="required" />
@@ -102,6 +103,25 @@
     </xsd:sequence>
     <xsd:attribute name="name" type="xsd:string" use="required" />
     <xsd:attribute name="java-name" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- enum -->
+  
+  <xsd:complexType name="enum-type">
+    <xsd:sequence>
+      <xsd:element name="non-persistent" type="non-persistent-type" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="class" type="xsd:string" use="required" />
+    <xsd:attribute name="value-column" type="xsd:string" use="required" />
+    <xsd:attribute name="name-column" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- non-persistent -->
+  
+  <xsd:complexType name="non-persistent-type">
+    <xsd:attribute name="value" type="xsd:string" use="required" />
+    <xsd:attribute name="name" type="xsd:string" use="required" />
   </xsd:complexType>
 
   <!-- select (dao) -->

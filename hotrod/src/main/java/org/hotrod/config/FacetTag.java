@@ -23,6 +23,7 @@ public class FacetTag extends AbstractConfigurationTag {
   private String name = null;
   private List<TableTag> tables = new ArrayList<TableTag>();
   private List<ViewTag> views = new ArrayList<ViewTag>();
+  private List<EnumTag> enums = new ArrayList<EnumTag>();
   private List<CustomDAOTag> daos = new ArrayList<CustomDAOTag>();
   private List<SelectTag> selects = new ArrayList<SelectTag>();
 
@@ -47,6 +48,11 @@ public class FacetTag extends AbstractConfigurationTag {
   @XmlElement
   public void setView(final ViewTag view) {
     this.views.add(view);
+  }
+
+  @XmlElement
+  public void setEnum(final EnumTag e) {
+    this.enums.add(e);
   }
 
   @XmlElement
@@ -81,6 +87,10 @@ public class FacetTag extends AbstractConfigurationTag {
       v.validate(daosTag, config, fragmentConfig);
     }
 
+    for (EnumTag e : this.enums) {
+      e.validate(fragmentConfig);
+    }
+
     for (CustomDAOTag dao : this.daos) {
       dao.validate(daosTag, fragmentConfig);
     }
@@ -96,6 +106,7 @@ public class FacetTag extends AbstractConfigurationTag {
   public void mergeOther(final FacetTag other) {
     this.tables.addAll(other.tables);
     this.views.addAll(other.views);
+    this.enums.addAll(other.enums);
     this.daos.addAll(other.daos);
 
     this.selects.addAll(other.selects);
@@ -106,10 +117,11 @@ public class FacetTag extends AbstractConfigurationTag {
     log.debug("----> ---");
   }
 
-  public void mergeOther(final List<TableTag> tables, final List<ViewTag> views, final List<CustomDAOTag> daos,
-      final List<SelectTag> selects) {
+  public void mergeOther(final List<TableTag> tables, final List<ViewTag> views, final List<EnumTag> enums,
+      final List<CustomDAOTag> daos, final List<SelectTag> selects) {
     this.tables.addAll(tables);
     this.views.addAll(views);
+    this.enums.addAll(enums);
     this.daos.addAll(daos);
     this.selects.addAll(selects);
   }
@@ -126,6 +138,10 @@ public class FacetTag extends AbstractConfigurationTag {
 
   public List<ViewTag> getViews() {
     return views;
+  }
+
+  public List<EnumTag> getEnums() {
+    return this.enums;
   }
 
   public List<CustomDAOTag> getDaos() {

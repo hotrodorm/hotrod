@@ -35,6 +35,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
 
   private List<TableTag> tables = new ArrayList<TableTag>();
   private List<ViewTag> views = new ArrayList<ViewTag>();
+  private List<EnumTag> enums = new ArrayList<EnumTag>();
   private List<CustomDAOTag> daos = new ArrayList<CustomDAOTag>();
   private List<SelectTag> selects = new ArrayList<SelectTag>();
   private List<FragmentTag> fragments = new ArrayList<FragmentTag>();
@@ -52,139 +53,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     super(tagName);
   }
 
-  // Behavior
-
-  protected void validateCommon(final HotRodConfigTag config, final File file, final Set<String> alreadyLoadedFileNames,
-      final File parentFile, final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig)
-      throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
-
-    File basedir = file.getParentFile();
-
-    log.debug("init");
-
-    // DAOs
-
-    for (TableTag t : this.tables) {
-      t.validate(daosTag, config, fragmentConfig);
-    }
-
-    for (ViewTag v : this.views) {
-      v.validate(daosTag, config, fragmentConfig);
-    }
-
-    for (CustomDAOTag dao : this.daos) {
-      dao.validate(daosTag, fragmentConfig);
-    }
-
-    for (SelectTag s : this.selects) {
-      s.validate(daosTag, config, fragmentConfig);
-    }
-
-    for (FacetTag f : this.facets) {
-      f.validate(config, daosTag, fragmentConfig);
-    }
-
-    // Fragments
-
-    for (FragmentTag f : this.fragments) {
-      f.validate(config, basedir, alreadyLoadedFileNames, parentFile, daosTag);
-      this.mergeFragment(f.getFragmentConfig());
-    }
-
-    // Assemble facets
-
-    this.allFacets = new FacetTag();
-
-    this.allFacets.mergeOther(this.tables, this.views, this.daos, this.selects);
-
-    for (FacetTag f : this.facets) {
-      FacetTag af = this.assembledFacets.get(f.getName());
-      if (af == null) {
-        af = new FacetTag();
-        af.setName(f.getName());
-        this.assembledFacets.put(f.getName(), af);
-      }
-      af.mergeOther(f);
-      this.allFacets.mergeOther(f);
-    }
-
-    // display
-
-    if (log.isDebugEnabled()) {
-      logFacet(file, "[after] All", this.allFacets);
-      for (FacetTag f : this.facets) {
-        logFacet(file, f.getName(), f);
-      }
-    }
-
-  }
-
-  private void logFacet(final File file, final String name, final FacetTag f) {
-    log.debug("* LISTING " + name + " (" + file.getName() + ") ...");
-    for (TableTag t : f.getTables()) {
-      log.debug(" - tables: " + t.getName());
-    }
-    for (ViewTag v : f.getViews()) {
-      log.debug(" - views: " + v.getName());
-    }
-
-    for (CustomDAOTag dao : f.getDaos()) {
-      log.debug(" - daos: " + dao.getJavaClassName());
-    }
-
-    for (SelectTag s : f.getSelects()) {
-      log.debug(" - select '" + s.getJavaClassName() + "'");
-    }
-  }
-
-  private void mergeFragment(final AbstractHotRodConfigTag other) {
-    this.tables.addAll(other.tables);
-    this.views.addAll(other.views);
-    this.selects.addAll(other.selects);
-    this.daos.addAll(other.daos);
-    this.facets.addAll(other.facets);
-  }
-
-  public void validateAgainstDatabase(final JdbcDatabase db, final DatabaseAdapter adapter)
-      throws InvalidConfigurationFileException {
-
-    for (TableTag t : this.getTables()) {
-      t.validateAgainstDatabase(db, adapter);
-    }
-
-    for (ViewTag v : this.getViews()) {
-      v.validateAgainstDatabase(db, adapter);
-    }
-
-  }
-
-  public TableTag getTableTag(final JdbcTable t) {
-    for (TableTag tag : this.getTables()) {
-      log.debug("table tag=" + tag.getName());
-      if (tag.getName().equalsIgnoreCase(t.getName())) {
-        return tag;
-      }
-    }
-    return null;
-  }
-
-  public boolean includesTable(final JdbcTable t) {
-    return this.getTableTag(t) != null;
-  }
-
-  public ViewTag getViewTag(final JdbcTable t) {
-    for (ViewTag tag : this.getViews()) {
-      if (tag.getName().equalsIgnoreCase(t.getName())) {
-        return tag;
-      }
-    }
-    return null;
-  }
-
-  public boolean includesView(final JdbcTable t) {
-    return this.getViewTag(t) != null;
-  }
-
   // Setters (JAXB)
 
   @XmlElement
@@ -195,6 +63,11 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
   @XmlElement
   public void setView(final ViewTag view) {
     this.views.add(view);
+  }
+
+  @XmlElement
+  public void setEnum(final EnumTag e) {
+    this.enums.add(e);
   }
 
   @XmlElement(name = "dao")
@@ -229,6 +102,154 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
       }
       this.chosenFacets.add(facet);
     }
+  }
+
+  // Behavior
+
+  protected void validateCommon(final HotRodConfigTag config, final File file, final Set<String> alreadyLoadedFileNames,
+      final File parentFile, final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig)
+      throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
+
+    File basedir = file.getParentFile();
+
+    log.debug("init");
+
+    // DAOs
+
+    for (TableTag t : this.tables) {
+      t.validate(daosTag, config, fragmentConfig);
+    }
+
+    for (ViewTag v : this.views) {
+      v.validate(daosTag, config, fragmentConfig);
+    }
+
+    for (EnumTag e : this.enums) {
+      e.validate(fragmentConfig);
+    }
+
+    for (CustomDAOTag dao : this.daos) {
+      dao.validate(daosTag, fragmentConfig);
+    }
+
+    for (SelectTag s : this.selects) {
+      s.validate(daosTag, config, fragmentConfig);
+    }
+
+    for (FacetTag f : this.facets) {
+      f.validate(config, daosTag, fragmentConfig);
+    }
+
+    // Fragments
+
+    for (FragmentTag f : this.fragments) {
+      f.validate(config, basedir, alreadyLoadedFileNames, parentFile, daosTag);
+      this.mergeFragment(f.getFragmentConfig());
+    }
+
+    // Assemble facets
+
+    this.allFacets = new FacetTag();
+
+    this.allFacets.mergeOther(this.tables, this.views, this.enums, this.daos, this.selects);
+
+    for (FacetTag f : this.facets) {
+      FacetTag af = this.assembledFacets.get(f.getName());
+      if (af == null) {
+        af = new FacetTag();
+        af.setName(f.getName());
+        this.assembledFacets.put(f.getName(), af);
+      }
+      af.mergeOther(f);
+      this.allFacets.mergeOther(f);
+    }
+
+    // display
+
+    if (log.isDebugEnabled()) {
+      logFacet(file, "[after] All", this.allFacets);
+      for (FacetTag f : this.facets) {
+        logFacet(file, f.getName(), f);
+      }
+    }
+
+  }
+
+  private void logFacet(final File file, final String name, final FacetTag f) {
+    log.debug("* LISTING " + name + " (" + file.getName() + ") ...");
+
+    for (TableTag t : f.getTables()) {
+      log.debug(" - tables: " + t.getName());
+    }
+
+    for (ViewTag v : f.getViews()) {
+      log.debug(" - views: " + v.getName());
+    }
+
+    for (EnumTag e : f.getEnums()) {
+      log.debug(" - enum: " + e.getName());
+    }
+
+    for (CustomDAOTag dao : f.getDaos()) {
+      log.debug(" - daos: " + dao.getJavaClassName());
+    }
+
+    for (SelectTag s : f.getSelects()) {
+      log.debug(" - select '" + s.getJavaClassName() + "'");
+    }
+  }
+
+  private void mergeFragment(final AbstractHotRodConfigTag other) {
+    this.tables.addAll(other.tables);
+    this.views.addAll(other.views);
+    this.enums.addAll(other.enums);
+    this.selects.addAll(other.selects);
+    this.daos.addAll(other.daos);
+    this.facets.addAll(other.facets);
+  }
+
+  public void validateAgainstDatabase(final JdbcDatabase db, final JdbcDatabase enumDb, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
+
+    for (TableTag t : this.getTables()) {
+      t.validateAgainstDatabase(db, adapter);
+    }
+
+    for (ViewTag v : this.getViews()) {
+      v.validateAgainstDatabase(db, adapter);
+    }
+
+    for (EnumTag e : this.getEnums()) {
+      e.validateAgainstDatabase(enumDb, adapter);
+    }
+
+  }
+
+  public TableTag getTableTag(final JdbcTable t) {
+    for (TableTag tag : this.getTables()) {
+      log.debug("table tag=" + tag.getName());
+      if (tag.getName().equalsIgnoreCase(t.getName())) {
+        return tag;
+      }
+    }
+    return null;
+  }
+
+  public boolean includesTable(final JdbcTable t) {
+    return this.getTableTag(t) != null;
+  }
+
+  public ViewTag getViewTag(final JdbcTable t) {
+    for (ViewTag tag : this.getViews()) {
+      if (tag.getName().equalsIgnoreCase(t.getName())) {
+        return tag;
+      }
+    }
+    return null;
+  }
+
+  public boolean includesView(final JdbcTable t) {
+    return this.getViewTag(t) != null;
   }
 
   // Getters
@@ -267,6 +288,22 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
 
   public List<ViewTag> getAllViews() {
     return this.allFacets.getViews();
+  }
+
+  public List<EnumTag> getEnums() {
+    if (this.chosenFacets.isEmpty()) {
+      return this.allFacets.getEnums();
+    } else {
+      List<EnumTag> subset = new ArrayList<EnumTag>();
+      for (FacetTag f : this.chosenFacets) {
+        subset.addAll(f.getEnums());
+      }
+      return subset;
+    }
+  }
+
+  public List<EnumTag> getAllEnums() {
+    return this.allFacets.getEnums();
   }
 
   public List<CustomDAOTag> getDAOs() {
