@@ -241,5 +241,14 @@ create table " !#$%)(*+,-." (
 create table employee_state (
   id number(6) primary key not null,
   description varchar(40) not null
-)
+);
+
+create table employee (
+  id integer primary key not null,
+  name varchar(60) not null,
+  state_id number(6) not null,
+  hired_on date not null,
+  constraint fk_employee_state foreign key (state_id)
+    references employee_state (id)
+);
 

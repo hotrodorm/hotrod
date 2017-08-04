@@ -28,13 +28,13 @@ drop table test_sequence;
 
 drop table " !#$%)(*+,-.";
 
+drop table employee;
 drop table employee_state;
 
 
 -- =========
 -- All Types
 -- =========
-
 
 drop table types_numeric;
 drop table types_char;

@@ -24,6 +24,7 @@
          onerror="abort">
       <fileset file="${db.src.dir}/${database}/build-structure.sql" />
     </sql>
+    <antcall target="build-sp" />
     <antcall target="build-data" />
   </target>
 
@@ -36,6 +37,32 @@
          delimiter=";"
          onerror="continue">
       <fileset file="${db.src.dir}/${database}/clean-structure.sql" />
+    </sql>
+    <antcall target="clean-sp" />
+  </target>
+
+  <target name="build-sp" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         delimiter="//"
+         autocommit="true"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/build-sp.sql" />
+    </sql>
+  </target>
+
+  <target name="clean-sp" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         delimiter="//"
+         onerror="continue">
+      <fileset file="${db.src.dir}/${database}/clean-sp.sql" />
     </sql>
   </target>
 

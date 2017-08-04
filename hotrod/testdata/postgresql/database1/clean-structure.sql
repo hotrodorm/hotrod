@@ -35,3 +35,5 @@ drop table if exists types_other;
 drop TYPE if exists mood;
 drop TYPE if exists complex;
 
+drop table employee;
+drop table employee_state;
