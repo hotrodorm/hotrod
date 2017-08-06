@@ -2,8 +2,10 @@ package examples;
 
 import java.sql.SQLException;
 
-import daos.ClientDAO;
-import daos.VehicleDAO;
+import daos.ClientVO;
+import daos.VehicleVO;
+import daos.primitives.ClientDAO;
+import daos.primitives.VehicleDAO;
 
 /**
  * Example 07 - Select by Unique Indexes
@@ -20,7 +22,7 @@ public class Example07 {
     // 1. Select by Unique Index - Single Column
     // Example: Find the vehicle with VIN = VIN7492
 
-    VehicleDAO v1 = VehicleDAO.selectByUIVin("VIN7492");
+    VehicleVO v1 = VehicleDAO.selectByUIVin("VIN7492");
     if (v1 == null) {
       System.out.println("1. Select by Unique Index - Single Column - Vehicle not found.");
     } else {
@@ -30,7 +32,7 @@ public class Example07 {
     // 2. Select by Unique Index - Single Column
     // Example: Find the vehicle with ENGINE_NUMBER = EN102937
 
-    VehicleDAO v2 = VehicleDAO.selectByUIEngineNumber("EN102937");
+    VehicleVO v2 = VehicleDAO.selectByUIEngineNumber("EN102937");
     if (v2 == null) {
       System.out.println("2. Select by Unique Index - Single Column - Vehicle not found.");
     } else {
@@ -41,7 +43,7 @@ public class Example07 {
     // Example: Find the client from California state, and driver's license
     // C535893758
 
-    ClientDAO c1 = ClientDAO.selectByUIStateDriversLicense("CA", "C535893758");
+    ClientVO c1 = ClientDAO.selectByUIStateDriversLicense("CA", "C535893758");
     if (c1 == null) {
       System.out.println("3. Select by Unique Index - Multiple Columns - Client not found.");
     } else {

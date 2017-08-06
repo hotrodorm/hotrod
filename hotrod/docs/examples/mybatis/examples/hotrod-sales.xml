@@ -15,37 +15,43 @@
 
   <dao java-class-name="GeneralOperations">
 
-    <!-- Native SQL - Insert Special Column Type -->
+    <!-- Native SQL - Insert Special Column Type (ARRAY) -->
     <query java-method-name="insertPreferredColors">
-    <![CDATA[
+
+      <parameter name="id" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="color1" java-type="java.lang.String" jdbc-type="VARCHAR" />
+      <parameter name="color2" java-type="java.lang.String" jdbc-type="VARCHAR" />
+      <parameter name="color3" java-type="java.lang.String" jdbc-type="VARCHAR" />
+
       insert into preferred_colors (id, colors) values (
-        #{id,javaType=java.lang.Integer, jdbcType=NUMERIC},
-        (
-          #{color1,javaType=java.lang.String, jdbcType=VARCHAR},
-          #{color2,javaType=java.lang.String, jdbcType=VARCHAR},
-          #{color3,javaType=java.lang.String, jdbcType=VARCHAR}
-        )
+        #{id},
+        ( #{color1}, #{color2}, #{color3} )
       )
-    ]]>
+
     </query>
 
     <!-- Dynamic SQL - Update Unsold Vehicles -->
     <query java-method-name="applyDiscountToVehicles">
-    <![CDATA[
+
+      <parameter name="discount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="unsold" java-type="java.lang.Boolean" jdbc-type="BOOLEAN" />
+      <parameter name="minMileage" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="type" java-type="java.lang.String" jdbc-type="VARCHAR" />
+
       update vehicle set
-          list_price = list_price - #{discount,javaType=java.lang.Integer,jdbcType=NUMERIC}
+          list_price = list_price - #{discount}
         <where>
-          <if test="#{unsold,javaType=java.lang.Boolean,jdbcType=BOOLEAN} != null">
+          <if test="unsold != null">
             and not sold
           </if>
-          <if test="#{minMileage,javaType=java.lang.Integer,jdbcType=NUMERIC} != null">
+          <if test="minMileage != null">
             and mileage > #{minMileage}
           </if>
-          <if test="#{type,javaType=java.lang.String,jdbcType=VARCHAR} != null">
+          <if test="type != null">
             and type = #{type}
           </if>
         </where>
-    ]]>
+
     </query>
 
   </dao>

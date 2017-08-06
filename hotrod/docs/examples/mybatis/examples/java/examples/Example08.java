@@ -3,8 +3,9 @@ package examples;
 import java.sql.SQLException;
 import java.util.List;
 
-import daos.CarDAO;
-import daos.primitives.CarDAOPrimitives.CarDAOOrderBy;
+import daos.CarVO;
+import daos.primitives.CarDAO;
+import daos.primitives.CarDAO.CarOrderBy;
 
 /**
  * Example 08 - Select on Views
@@ -17,23 +18,23 @@ public class Example08 {
   public static void main(String[] args) throws SQLException {
 
     System.out.println("=== Running Example 08 - Select on Views ===");
-    CarDAO example;
+    CarVO example;
 
     // 1. Select by Example
     // Example: Find all vehicles of brand Toyota on the view CAR
 
-    example = new CarDAO();
+    example = new CarVO();
     example.setBrand("Toyota");
-    List<CarDAO> cars1 = CarDAO.selectByExample(example);
+    List<CarVO> cars1 = CarDAO.selectByExample(example);
     Utilities.displayCars("1. Select by Example:", cars1);
 
     // 2. Select by Example - Using Ordering
     // Example: Find all vehicles of brand Toyota on the view CAR, ordered by
     // model, then descending by mileage
 
-    example = new CarDAO();
+    example = new CarVO();
     example.setBrand("Toyota");
-    List<CarDAO> cars2 = CarDAO.selectByExample(example, CarDAOOrderBy.MODEL, CarDAOOrderBy.MILEAGE$DESC);
+    List<CarVO> cars2 = CarDAO.selectByExample(example, CarOrderBy.MODEL, CarOrderBy.MILEAGE$DESC);
     Utilities.displayCars("2. Select by Example - Using Ordering:", cars2);
 
     System.out.println(" ");

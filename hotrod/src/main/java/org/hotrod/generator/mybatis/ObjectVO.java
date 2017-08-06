@@ -41,7 +41,7 @@ public class ObjectVO {
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage() : null;
 
-    this.classPackage = this.layout.getDAOPackage(fragmentPackage);
+    this.classPackage = this.layout.getDAOPackage(this.fragmentPackage);
   }
 
   public void generate() throws UncontrolledException {

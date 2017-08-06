@@ -43,107 +43,108 @@
     </query>
 
     <query java-method-name="upgradeToVIP">
-    <![CDATA[
+      <parameter name="minPurchases" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
       update client c set vip = (
         select count(*) from purchase p where p.client_id = c.id
-      ) > #{minPurchases,javaType=java.lang.Integer,jdbcType=NUMERIC}
-    ]]>
+      ) > #{minPurchases}
     </query>
 
     <query java-method-name="deleteInactiveClients">
-    <![CDATA[
+      <parameter name="createdBefore" java-type="java.sql.Date" jdbc-type="DATE" />
       delete from client c 
         where (select count(*) from purchase p where p.client_id = c.id) = 0 
-        and #{createdBefore,javaType=java.sql.Date,jdbcType=DATE} >= created_at  
+        and #{createdBefore} >= created_at  
         and (select count(*) from client rf where rf.referred_by_id = c.id) = 0
-    ]]>
     </query>
 
   </table>
 
   <!-- Simple Select -->
   <select java-class-name="CreatedClient">
-    <![CDATA[
+    <parameter name="since" java-type="java.sql.Date" jdbc-type="DATE" />
+    <parameter name="until" java-type="java.sql.Date" jdbc-type="DATE" />
       select * from client
-        {* 
-        where created_at between #{since,javaType=java.sql.Date,jdbcType=DATE}
-                             and #{until,javaType=java.sql.Date,jdbcType=DATE}
-        *}
-    ]]>
+      <complement>
+        where created_at between #{since} and #{until}
+      </complement>
   </select>
 
   <!-- Select returns fully-typed columns from multiple tables -->
   <select java-class-name="ClientWithPurchase">
-    <![CDATA[
-      select p.*, c.vip, c.state from purchase p
+    <parameter name="purchaseDate" java-type="java.sql.Date" jdbc-type="DATE" />
+      select p.*, c.vip, c.state 
+        from purchase p
         join client c on (c.id) = (p.client_id)
-        {*
-        where p.purchase_date = #{purchaseDate,javaType=java.sql.Date,jdbcType=DATE}
-        *}
-    ]]>
+      <complement>
+        where p.purchase_date = #{purchaseDate}
+      </complement>
   </select>
 
   <!-- Select grouping data -->
   <select java-class-name="DailyTotal">
-    <![CDATA[
+    <parameter name="from" java-type="java.sql.Date" jdbc-type="DATE" />
+    <parameter name="to" java-type="java.sql.Date" jdbc-type="DATE" />
       select 
-          purchase_date, count(*) as number_of_purchases, sum(vehicle_price) as price, 
-          sum(extras_price) as extras, sum(discount) as discount, sum(tax) as taxes, sum(final_price) as revenue
+          purchase_date, 
+          count(*) as number_of_purchases, 
+          sum(vehicle_price) as price, 
+          sum(extras_price) as extras, 
+          sum(discount) as discount, 
+          sum(tax) as taxes, 
+          sum(final_price) as revenue
         from purchase
-        {*
-        where purchase_date between #{from,javaType=java.sql.Date,jdbcType=DATE}
-                                and #{to,javaType=java.sql.Date,jdbcType=DATE}
+      <complement>
+        where purchase_date between #{from} and #{to}
         group by purchase_date
-        *}
-    ]]>
+      </complement>
   </select>
 
   <!-- Select using sub queries -->
   <select java-class-name="ClientNeverOfferedDiscount">
-    <![CDATA[
-      select * from client where id not in (select client_id from purchase where discount > 0)
-    ]]>
+    select * from client
+    <complement>
+      where id not in (select client_id from purchase where discount > 0)
+    </complement>
   </select>
 
   <!-- Native SQL - Limiting rows at the DB level -->
   <select java-class-name="NonVIPClient">
-    <![CDATA[
-      select * from client
-        {* 
-        where vip = false
-        limit #{maxRows,javaType=java.lang.Integer,jdbcType=NUMERIC}
-        *}
-    ]]>
+    <parameter name="maxRows" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+    select * from client
+    <complement>
+      where vip = false
+      limit #{maxRows}
+    </complement>
   </select>
 
   <!-- Native SQL - Native Function -->
   <select java-class-name="VehiclePrice">
-    <![CDATA[
-      select id, ifnull(list_price, '0') as price from vehicle
-        {*
-        where brand = #{brandName,javaType=java.lang.String,jdbcType=VARCHAR}
-        *}
-    ]]>
+    <parameter name="brandName" java-type="java.lang.String" jdbc-type="VARCHAR" />
+    select id, ifnull(list_price, '0') as price from vehicle
+    <complement>
+      where brand = #{brandName}
+    </complement>
   </select>
 
   <!-- Dynamic SQL - Searching by Combined Conditions -->
   <select java-class-name="SearchedClient">
-    <![CDATA[
-      select c.* from client c
-        {*
-        <where>
-          <if test="#{minPurchases,javaType=java.lang.Integer,jdbcType=NUMERIC} != null">
-            and (select count(*) from purchase p where p.client_id = c.id ) >= #{minPurchases}
-          </if>
-          <if test="#{state,javaType=java.lang.String,jdbcType=VARCHAR} != null">
-            and c.state = #{state}
-          </if>
-          <if test="#{createdSince,javaType=java.sql.Date,jdbcType=DATE} != null">
-            and created_at > #{createdSince}
-          </if>
-        </where>
-        *}
-    ]]>
+    <parameter name="minPurchases" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+    <parameter name="state" java-type="java.lang.String" jdbc-type="VARCHAR" />
+    <parameter name="createdSince" java-type="java.sql.Date" jdbc-type="DATE" />
+    select c.* from client c
+    <complement>
+      <where>
+        <if test="minPurchases != null">
+          and (select count(*) from purchase p where p.client_id = c.id ) >= #{minPurchases}
+        </if>
+        <if test="state != null">
+          and c.state = #{state}
+        </if>
+        <if test="createdSince != null">
+          and created_at > #{createdSince}
+        </if>
+      </where>
+    </complement>
   </select>
 
   <fragment file="hotrod-sales.xml" />

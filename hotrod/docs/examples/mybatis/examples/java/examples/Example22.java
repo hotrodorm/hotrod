@@ -6,7 +6,8 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.tx.TxManager;
 
-import daos.ClientDAO;
+import daos.ClientVO;
+import daos.primitives.ClientDAO;
 
 /**
  * Example 22 - Including Existing MyBatis Mappers
@@ -25,9 +26,9 @@ public class Example22 {
 
     TxManager txm = ClientDAO.getTxManager();
     SqlSession sqlSession = txm.getSqlSession();
-    List<ClientDAO> clients = sqlSession.selectList("daos.custom.search.searchClient", "CA");
+    List<ClientVO> clients = sqlSession.selectList("daos.custom.search.searchClient", "CA");
     System.out.println("1. Use a standard MyBatis mapper query. Clients found=" + clients.size());
-    for (ClientDAO c : clients) {
+    for (ClientVO c : clients) {
       System.out.println(" ID=" + c.getId() + " - Name: " + c.getName());
     }
 

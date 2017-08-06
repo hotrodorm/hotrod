@@ -3,7 +3,8 @@ package examples;
 import java.sql.Date;
 import java.sql.SQLException;
 
-import daos.VehicleValuationDAO;
+import daos.VehicleValuationVO;
+import daos.primitives.VehicleValuationDAO;
 
 /**
  * Example 19 - Custom Property Java Types for DAOs
@@ -25,11 +26,11 @@ public class Example19 {
     // provided by default for this database column type.
 
     Date closingDate = Date.valueOf("2017-02-14");
-    VehicleValuationDAO v = new VehicleValuationDAO();
+    VehicleValuationVO v = new VehicleValuationVO();
     v.setValuationDate(closingDate);
     v.setBranchId(104);
     v.setTotalBranchValuation(156780.0); // It's a Double value!
-    v.insert();
+    VehicleValuationDAO.insert(v);
     System.out.println(" ");
     System.out.println("1. Insert using custom property Java types.");
 

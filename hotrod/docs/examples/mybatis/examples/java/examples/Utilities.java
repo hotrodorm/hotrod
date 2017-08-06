@@ -11,19 +11,22 @@ import org.nocrala.tools.texttablefmt.CellStyle.HorizontalAlign;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
-import daos.CarDAO;
-import daos.ClientDAO;
-import daos.VehicleDAO;
+import daos.CarVO;
+import daos.ClientVO;
+import daos.VehicleVO;
+import daos.primitives.CarDAO;
+import daos.primitives.ClientDAO;
+import daos.primitives.VehicleDAO;
 
 public class Utilities {
 
   // Table VEHICLE
 
   public static void displayAllVehicles(final String title) throws SQLException {
-    displayVehicles(title, VehicleDAO.selectByExample(new VehicleDAO()));
+    displayVehicles(title, VehicleDAO.selectByExample(new VehicleVO()));
   }
 
-  public static void displayVehicles(final String title, final List<VehicleDAO> vehicles) throws SQLException {
+  public static void displayVehicles(final String title, final List<VehicleVO> vehicles) throws SQLException {
     System.out.println(" ");
     System.out.println(title);
 
@@ -45,7 +48,7 @@ public class Utilities {
     t.addCell("List Price", RIGHT);
     t.addCell("Sold?");
 
-    for (VehicleDAO c : vehicles) {
+    for (VehicleVO c : vehicles) {
       t.addCell("" + c.getId());
       t.addCell(c.getBrand());
       t.addCell(c.getModel());
@@ -56,7 +59,7 @@ public class Utilities {
       t.addCell("" + c.getPurchasedOn());
       t.addCell("" + c.getBranchId(), CENTER);
       t.addCell("" + (c.getListPrice() == null ? "null" : mf.format(c.getListPrice())), RIGHT);
-      t.addCell("" + c.isSold());
+      t.addCell("" + c.getSold());
     }
 
     System.out.println(t.render());
@@ -65,10 +68,10 @@ public class Utilities {
   // View CAR
 
   public static void displayAllCars(final String title) throws SQLException {
-    displayCars(title, CarDAO.selectByExample(new CarDAO()));
+    displayCars(title, CarDAO.selectByExample(new CarVO()));
   }
 
-  public static void displayCars(final String title, final List<CarDAO> cars) throws SQLException {
+  public static void displayCars(final String title, final List<CarVO> cars) throws SQLException {
     System.out.println(" ");
     System.out.println(title);
 
@@ -90,7 +93,7 @@ public class Utilities {
     t.addCell("List Price", RIGHT);
     t.addCell("Sold?");
 
-    for (CarDAO c : cars) {
+    for (CarVO c : cars) {
       t.addCell("" + c.getId());
       t.addCell(c.getBrand());
       t.addCell(c.getModel());
@@ -101,7 +104,7 @@ public class Utilities {
       t.addCell("" + c.getPurchasedOn());
       t.addCell("" + c.getBranchId(), CENTER);
       t.addCell("" + (c.getListPrice() == null ? "null" : mf.format(c.getListPrice())), RIGHT);
-      t.addCell("" + c.isSold());
+      t.addCell("" + c.getSold());
     }
 
     System.out.println(t.render());
@@ -110,10 +113,10 @@ public class Utilities {
   // Table CLIENT
 
   public static void displayAllClients(final String title) throws SQLException {
-    displayClients(title, ClientDAO.selectByExample(new ClientDAO()));
+    displayClients(title, ClientDAO.selectByExample(new ClientVO()));
   }
 
-  public static void displayClients(final String title, final List<ClientDAO> clients) throws SQLException {
+  public static void displayClients(final String title, final List<ClientVO> clients) throws SQLException {
     System.out.println(" ");
     System.out.println(title);
 
@@ -134,14 +137,14 @@ public class Utilities {
     t.addCell("Created At");
     t.addCell("RV#");
 
-    for (ClientDAO c : clients) {
+    for (ClientVO c : clients) {
       t.addCell("" + c.getId());
       t.addCell(c.getName());
       t.addCell(c.getState());
       t.addCell(c.getDriversLicense());
       t.addCell("" + c.getReferredById());
       t.addCell(mf.format(c.getTotalPurchased()), RIGHT);
-      t.addCell("" + c.isVip());
+      t.addCell("" + c.getVip());
       t.addCell(tsf.format(c.getCreatedAt()));
       t.addCell("" + c.getRowVersion(), RIGHT);
     }

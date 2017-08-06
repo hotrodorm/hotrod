@@ -2,8 +2,8 @@ package examples;
 
 import java.sql.SQLException;
 
-import daos.ClientDAO;
-import daos.DailyReportDAO;
+import daos.primitives.ClientDAO;
+import daos.primitives.DailyReportDAO;
 
 /**
  * Example 09 - Retrieving Sequence Values

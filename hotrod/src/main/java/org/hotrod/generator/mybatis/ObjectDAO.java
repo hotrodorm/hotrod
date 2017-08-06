@@ -155,7 +155,7 @@ public class ObjectDAO {
 
       if (this.isSelect()) {
 
-        writeSelectExpression(); // remove once tested
+//        writeSelectExpression(); // remove once tested
 
         writeParameterizedSelect();
       } else {
@@ -326,7 +326,7 @@ public class ObjectDAO {
 
     // Signature
 
-    println("public class " + this.getClassName() + " implements Serializable {");
+    println("public abstract class " + this.getClassName() + " implements Serializable {");
     println();
 
     // Serial Version UID
@@ -925,7 +925,7 @@ public class ObjectDAO {
    * 
    * }
    * 
-   * public DefParentSelector selectParentDef() {
+   * public static DefParentSelector selectParentDef() {
    *   return new DefParentSelector();
    * }
    * </pre>
@@ -963,7 +963,7 @@ public class ObjectDAO {
         ObjectDAO dao = this.generator.getDAO(ds);
 
         String parentSelectorClassName = vo.getJavaClassIdentifier() + "ParentSelector";
-        println("  public class " + parentSelectorClassName + " {");
+        println("  public static class " + parentSelectorClassName + " {");
         println();
 
         for (ForeignKeyMetadata fkm : fkSelectors.get(ds)) {
@@ -993,7 +993,7 @@ public class ObjectDAO {
         println("  }");
         println();
 
-        println("  public " + parentSelectorClassName + " selectParent" + vo.getJavaClassIdentifier() + "() {");
+        println("  public static " + parentSelectorClassName + " selectParent" + vo.getJavaClassIdentifier() + "() {");
         println("    return new " + parentSelectorClassName + "();");
         println("  }");
         println();
@@ -1083,7 +1083,7 @@ public class ObjectDAO {
    * <pre>
    * // Select children by exported FKs
    * 
-   * public class DefChildrenSelector {
+   * public static class DefChildrenSelector {
    * 
    *   public List&lt;DefDAO&gt; byAbcSectionAbcPage(final DefDAOOrderBy... orderBies) throws SQLException {
    *     SqlSession sqlSession = null;
@@ -1107,7 +1107,7 @@ public class ObjectDAO {
    * 
    * }
    * 
-   * public DefChildrenSelector selectChildrenDef() {
+   * public static DefChildrenSelector selectChildrenDef() {
    *   return new DefChildrenSelector();
    * }
    * </pre>
@@ -1149,7 +1149,7 @@ public class ObjectDAO {
         ObjectDAO dao = this.generator.getDAO(ds);
 
         String selectorName = vo.getJavaClassIdentifier() + "ChildrenSelector";
-        println("  public class " + selectorName + " {");
+        println("  public static class " + selectorName + " {");
         println();
 
         for (ForeignKeyMetadata tfk : efkSelectors.get(ds)) {
@@ -1194,7 +1194,7 @@ public class ObjectDAO {
         println("  }");
         println();
 
-        println("  public " + getChildrenSelectorClass(vo) + " selectChildren" + vo.getJavaClassIdentifier() + "() {");
+        println("  public static " + getChildrenSelectorClass(vo) + " selectChildren" + vo.getJavaClassIdentifier() + "() {");
         println("    return new " + getChildrenSelectorClass(vo) + "();");
         println("  }");
         println();
@@ -1276,7 +1276,7 @@ public class ObjectDAO {
     } else {
       if (agcm.isIdentity()) {
         if (agcm.allowsSpecifiedValue()) {
-          println("    if (this." + agcm.getIdentifier().getJavaMemberIdentifier() + " == null) {");
+          println("    if (vo." + agcm.getIdentifier().getGetter() + "() == null) {");
           println("      return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertWithIdentity() + "\", vo);");
           println("    } else {");
           println("      return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsert() + "\", vo);");

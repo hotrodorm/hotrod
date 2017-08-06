@@ -208,13 +208,22 @@ public class DaosTag extends AbstractConfigurationTag {
     }
   }
 
+  private static final String DAO_SUFFIX = "DAO";
+
   public String generateVOName(final Identifier identifier) {
+    String daoName = identifier.getJavaClassIdentifier();
+    String name;
+    if (daoName.endsWith(DAO_SUFFIX)) {
+      name = daoName.substring(0, daoName.length() - DAO_SUFFIX.length()) + "VO";
+    } else {
+      name = daoName + "VO";
+    }
     if (identifier.wasJavaNameSpecified()) {
       // For this case new <dao> tag attributes are needed.
       // Something like: vo-prefix & vo-suffix
-      return identifier.getJavaClassIdentifier() + "VO";
+      return name;
     } else {
-      return identifier.getJavaClassIdentifier() + "VO";
+      return name;
     }
   }
 

@@ -3,7 +3,8 @@ package examples;
 import java.sql.Date;
 import java.sql.SQLException;
 
-import daos.VehicleValuationDAO;
+import daos.VehicleValuationVO;
+import daos.primitives.VehicleValuationDAO;
 
 /**
  * Example 18 - Custom Property Names for DAOs
@@ -24,10 +25,10 @@ public class Example18 {
 
     // Column "IF"
     // -----------
-    // If no alias is used for the first column "IF", it would generate the java
+    // If no alias is used for the column "IF", it would generate the java
     // property name "if". This is actually a reserved word in Java and,
     // therefore, the DAO source code would be invalid. In this case the
-    // property MUST be given a java name.
+    // property MUST be given a different java name.
 
     // Column "SLDBRID"
     // ----------------
@@ -42,11 +43,11 @@ public class Example18 {
     // as well. It's better to give it an easier java name: totalBranchValuation
 
     Date closingDate = Date.valueOf("2017-02-14");
-    VehicleValuationDAO v = new VehicleValuationDAO();
+    VehicleValuationVO v = new VehicleValuationVO();
     v.setValuationDate(closingDate); // column IF!
     v.setBranchId(104); // column SLDBRID!
     v.setTotalBranchValuation(156780.0); // column $valuation!
-    v.insert(); 
+    VehicleValuationDAO.insert(v);
     System.out.println(" ");
     System.out.println("1. Insert using alias names for properties in Java.");
 

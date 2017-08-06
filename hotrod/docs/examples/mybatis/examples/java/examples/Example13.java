@@ -3,9 +3,11 @@ package examples;
 import java.sql.SQLException;
 import java.util.List;
 
-import daos.NonVIPClient;
-import daos.VehiclePrice;
+import daos.NonVIPClientVO;
+import daos.VehiclePriceVO;
 import daos.primitives.GeneralOperations;
+import daos.primitives.NonVIPClient;
+import daos.primitives.VehiclePrice;
 
 /**
  * Example 13 - Native SQL
@@ -22,20 +24,20 @@ public class Example13 {
     // 1. Limiting the Number of Rows at the DB Level
     // Example: retrieve non-VIP clients, with a maximum of 4 returned rows
 
-    List<NonVIPClient> nv = NonVIPClient.select(4);
+    List<NonVIPClientVO> nv = NonVIPClient.select(4);
     System.out.println(" ");
     System.out.println("1. Limiting the Number of Rows at the DB Level - rows=" + nv.size());
-    for (NonVIPClient c : nv) {
+    for (NonVIPClientVO c : nv) {
       System.out.println(" client ID=" + c.getId());
     }
 
     // 2. Using a Native SQL Function
     // Example: using the IFNULL non-standard function
 
-    List<VehiclePrice> vp = VehiclePrice.select("Yamaha");
+    List<VehiclePriceVO> vp = VehiclePrice.select("Yamaha");
     System.out.println(" ");
     System.out.println("2. Using a Native SQL Function - rows=" + vp.size());
-    for (VehiclePrice v : vp) {
+    for (VehiclePriceVO v : vp) {
       System.out.println(" vehicle ID=" + v.getId() + "  price=" + v.getPrice());
     }
 

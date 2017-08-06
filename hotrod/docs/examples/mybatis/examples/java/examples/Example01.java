@@ -3,7 +3,8 @@ package examples;
 import java.sql.Date;
 import java.sql.SQLException;
 
-import daos.VehicleDAO;
+import daos.VehicleVO;
+import daos.primitives.VehicleDAO;
 
 /**
  * Example 01 - Basic CRUD Operations on Tables
@@ -24,7 +25,7 @@ public class Example01 {
 
     // 1. Insert a vehicle
 
-    VehicleDAO skoda = new VehicleDAO();
+    VehicleVO skoda = new VehicleVO();
     // skoda.setId(...); // ignored: the DB will generate the PK
     skoda.setBrand("Skoda");
     skoda.setModel("Octavia");
@@ -36,19 +37,19 @@ public class Example01 {
     skoda.setBranchId(102);
     skoda.setListPrice(22400);
     skoda.setSold(false);
-    int rows = skoda.insert();
+    int rows = VehicleDAO.insert(skoda);
     System.out.println("1. New vehicle Skoda added. New ID=" + skoda.getId() + ". Rows inserted=" + rows);
 
     // 2. Select by PK: retrieve the DeLorean row (id=3)
 
-    VehicleDAO delorean = VehicleDAO.select(3);
+    VehicleVO delorean = VehicleDAO.select(3);
     System.out.println("2. DeLorean " + (delorean == null ? "not " : "") + "found.");
 
     // 3. Update by PK: set the mileage of the DeLorean to 270500
 
     if (delorean != null) {
       delorean.setMileage(270500);
-      rows = delorean.update();
+      rows = VehicleDAO.update(delorean);
       System.out.println("3. DeLorean mileage updated. Rows updated=" + rows);
     } else {
       System.out.println("3. Could not update DeLorean. Car not found.");
@@ -56,9 +57,9 @@ public class Example01 {
 
     // 4. Delete by PK: delete the Peterbilt 379 (id=2)
 
-    VehicleDAO truck = new VehicleDAO();
+    VehicleVO truck = new VehicleVO();
     truck.setId(2); // set the PK value
-    rows = truck.delete(); // delete by PK
+    rows = VehicleDAO.delete(truck); // delete by PK
     if (rows > 0) {
       System.out.println("4. Peterbilt 379 deleted.");
     } else {

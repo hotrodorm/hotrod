@@ -3,7 +3,7 @@ package examples;
 import java.sql.Date;
 import java.sql.SQLException;
 
-import daos.ClientDAO;
+import daos.primitives.ClientDAO;
 
 /**
  * Example 10 - Regular SQL Queries

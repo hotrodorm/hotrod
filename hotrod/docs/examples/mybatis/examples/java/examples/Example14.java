@@ -4,8 +4,9 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
-import daos.SearchedClient;
+import daos.SearchedClientVO;
 import daos.primitives.GeneralOperations;
+import daos.primitives.SearchedClient;
 
 /**
  * Example 14 - Dynamic SQL
@@ -26,20 +27,20 @@ public class Example14 {
     // Example A: search clients from the VA state, created since 2017-01-13
 
     Date since = Date.valueOf("2017-01-13");
-    List<SearchedClient> c1 = SearchedClient.select(null, "VA", since);
+    List<SearchedClientVO> c1 = SearchedClient.select(null, "VA", since);
     System.out.println(" ");
     System.out.println("1.A. Searching by Combined Conditions (state. since) - rows=" + c1.size());
-    for (SearchedClient c : c1) {
+    for (SearchedClientVO c : c1) {
       System.out.println(" Client ID=" + c.getId());
     }
 
     // Example B: search clients with a minimum of 1 purchase, created since
     // 2017-01-13
 
-    List<SearchedClient> c2 = SearchedClient.select(1, null, since);
+    List<SearchedClientVO> c2 = SearchedClient.select(1, null, since);
     System.out.println(" ");
     System.out.println("1.B. Searching by Combined Conditions (#purchases, since) - rows=" + c2.size());
-    for (SearchedClient c : c2) {
+    for (SearchedClientVO c : c2) {
       System.out.println(" Client ID=" + c.getId());
     }
 

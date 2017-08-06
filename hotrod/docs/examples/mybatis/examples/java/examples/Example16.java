@@ -5,7 +5,8 @@ import java.sql.Timestamp;
 
 import org.hotrod.runtime.exceptions.StaleDataException;
 
-import daos.ClientDAO;
+import daos.ClientVO;
+import daos.primitives.ClientDAO;
 
 /**
  * Example 16 - Optimistic Locking (Row Version Control)
@@ -26,7 +27,7 @@ public class Example16 {
     // ----------------------------------
 
     System.out.println(" ");
-    ClientDAO c = new ClientDAO();
+    ClientVO c = new ClientVO();
     c.setCreatedAt(now);
     c.setName("John Silver");
     c.setState("WA");
@@ -35,7 +36,7 @@ public class Example16 {
     c.setTotalPurchased(0L);
     c.setVip(false);
     c.setRowVersion(12345L); // Ignored. Set to zero on insert
-    c.insert();
+    ClientDAO.insert(c);
     Integer id = c.getId();
     System.out.println("1. Insert with row version control.");
 
@@ -46,7 +47,7 @@ public class Example16 {
     System.out.println(" ");
     c.setReferredById(22);
     try {
-      c.update(); // should succeed
+      ClientDAO.update(c); // should succeed
       // Update succeeded; row hadn't been updated by another process.
       System.out.println("2. Update with row version control - Succeeded (expected behavior)");
     } catch (StaleDataException e) {
@@ -61,9 +62,9 @@ public class Example16 {
     System.out.println(" ");
 
     // 3.1. Meanwhile the row is updated (could be another process or thread).
-    ClientDAO example = new ClientDAO();
+    ClientVO example = new ClientVO();
     example.setId(id);
-    ClientDAO updateValues = new ClientDAO();
+    ClientVO updateValues = new ClientVO();
     updateValues.setDriversLicense("12345-67890");
     ClientDAO.updateByExample(example, updateValues); // always succeeds and
                                                       // increments the version
@@ -71,7 +72,7 @@ public class Example16 {
     // 3.2. Now we try to update the original row
     c.setState("NY");
     try {
-      c.update(); // should fail
+      ClientDAO.update(c); // should fail
       System.out.println("3. Update with row version control (with concurrency) - Succeeded (should not happen)");
     } catch (StaleDataException e) {
       System.out.println("3. Update with row version control (with concurrency) - Failed (expected behavior)");

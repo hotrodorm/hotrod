@@ -4,10 +4,14 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 
-import daos.ClientNeverOfferedDiscount;
-import daos.ClientWithPurchase;
-import daos.CreatedClient;
-import daos.DailyTotal;
+import daos.ClientNeverOfferedDiscountVO;
+import daos.ClientWithPurchaseVO;
+import daos.CreatedClientVO;
+import daos.DailyTotalVO;
+import daos.primitives.ClientNeverOfferedDiscount;
+import daos.primitives.ClientWithPurchase;
+import daos.primitives.CreatedClient;
+import daos.primitives.DailyTotal;
 
 /**
  * Example 12 - Regular SQL Selects
@@ -26,10 +30,10 @@ public class Example12 {
 
     Date since = Date.valueOf("2017-01-01");
     Date until = Date.valueOf("2017-03-31");
-    List<CreatedClient> c1 = CreatedClient.select(since, until);
+    List<CreatedClientVO> c1 = CreatedClient.select(since, until);
     System.out.println(" ");
     System.out.println("1. Simple Select - rows=" + c1.size());
-    for (CreatedClient c : c1) {
+    for (CreatedClientVO c : c1) {
       System.out.println(" client ID=" + c.getId());
     }
 
@@ -37,10 +41,10 @@ public class Example12 {
     // Example: clients with purchases on a specific date
 
     Date today = Date.valueOf("2017-02-28");
-    List<ClientWithPurchase> c2 = ClientWithPurchase.select(today);
+    List<ClientWithPurchaseVO> c2 = ClientWithPurchase.select(today);
     System.out.println(" ");
     System.out.println("2. Select Returns Fully-Typed Columns From Multiple Tables - rows=" + c2.size());
-    for (ClientWithPurchase c : c2) {
+    for (ClientWithPurchaseVO c : c2) {
       System.out.println(" client ID=" + c.getId());
     }
 
@@ -49,10 +53,10 @@ public class Example12 {
 
     Date from = Date.valueOf("2017-01-01");
     Date to = Date.valueOf("2017-03-31");
-    List<DailyTotal> totals = DailyTotal.select(from, to);
+    List<DailyTotalVO> totals = DailyTotal.select(from, to);
     System.out.println(" ");
     System.out.println("3. Select Grouping Data Adding Counter - rows=" + totals.size());
-    for (DailyTotal dt : totals) {
+    for (DailyTotalVO dt : totals) {
       System.out.println(" Date: " + dt.getPurchaseDate() + " - Number of Purchases=" + dt.getNumberOfPurchases()
           + " - Total Revenue=" + dt.getRevenue());
     }
@@ -60,10 +64,10 @@ public class Example12 {
     // 4. Select Using Sub Queries
     // Example: Client Never Offered a Discount
 
-    List<ClientNeverOfferedDiscount> c4 = ClientNeverOfferedDiscount.select();
+    List<ClientNeverOfferedDiscountVO> c4 = ClientNeverOfferedDiscount.select();
     System.out.println(" ");
     System.out.println("4. Select Using Sub Queries - rows=" + c4.size());
-    for (ClientNeverOfferedDiscount c : c4) {
+    for (ClientNeverOfferedDiscountVO c : c4) {
       System.out.println(" client ID=" + c.getId());
     }
 

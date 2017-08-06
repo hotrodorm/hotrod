@@ -21,13 +21,15 @@
       <sequence name="data_file_seq" />
 
       <query java-method-name="closeDay">
-      <![CDATA[
-      insert into daily_report (report_date, branch_id, total_sold) direct
-        select purchase_date, v.branch_id, sum(final_price) from purchase p
-          join vehicle v on (v.id) = (p.vehicle_id)
-          where purchase_date = #{closingDate,javaType=java.sql.Date,jdbcType=DATE} 
-          group by v.branch_id, purchase_date
-      ]]>
+       <parameter name="closingDate" java-type="java.sql.Date" jdbc-type="DATE" />
+
+        insert into daily_report (report_date, branch_id, total_sold) direct
+          select purchase_date, v.branch_id, sum(final_price) 
+            from purchase p
+            join vehicle v on (v.id) = (p.vehicle_id)
+            where purchase_date = #{closingDate} 
+            group by v.branch_id, purchase_date
+
       </query>
 
     </dao>
