@@ -8,18 +8,18 @@
   
     select /*+ GATHER_PLAN_STATISTICS */ /*+ APPEND */
     <columns>
-      <vo table="blog" extended-class="BlogExtended"> b.*
-        <association table="author" property="author"> a.* </association>
-        <collection table="post" property="posts" extended-class="PostExtended"> p.*
-          <collection table="comment" property="comments"> c.* </collection>
-          <collection table="tag" property="tags"> t.* </collection>
+      <vo table="blog" property="blog" class="BlogExtended" expression="b.*">
+        <association table="author" property="author" expression="a.*" />
+        <collection table="post" property="posts" class="PostExtended" expression="p.*">
+          <collection table="comment" property="comments" expression="c.*" />
+          <collection table="tag" property="tags" expression="t.*" />
         </collection>
-        <association view="office" property="currentOffice" ids="id"> a.* </association>
+        <association view="office" property="currentOffice" ids="id" expression="a.*" />
       </vo>
-      <properties>
+      <expressions>
         (b.views / b.viewer_count) as temperature, 
         (b.revenue / b.views) as profitability
-      </properties>
+      </expressions>
     </columns>
     from blog b
       left outer join author a on (a.id) = (b.author_id)
@@ -47,7 +47,30 @@
        * CommentVO
        * TagVO
    * OfficeVO currentOffice;
-   * temperature
-   * profitability
+   * Double temperature;
+   * Double profitability;
 
  -->
+ 
+ <!-- 
+    main
+    head
+    chief
+    * lead
+    leading
+    * primary
+    central
+    primal
+    fundamental
+    key
+    cardinal
+    pivotal
+    focal
+    
+    * unit
+    entity no!
+    * item
+    article
+    * element
+    entry
+  -->

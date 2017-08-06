@@ -67,3 +67,15 @@ insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`{|}~") values (1, 'red', 'k
 insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`{|}~") values (2, 'green', 'kind 3', 'type 4');
 insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`{|}~") values (3, 'blue', 'kind 5', 'type 6');
 
+-- enum
+
+alter trigger employee_state_read_only disable;
+insert into employee_state (id, description) values (1, 'Enrolled');
+insert into employee_state (id, description) values (2, 'Accepted_OK');
+insert into employee_state (id, description) values (3, 'Pending Notification');
+insert into employee_state (id, description) values (4, 'Rejected, but can Reapply!');
+alter trigger employee_state_read_only enable;
+
+insert into employee (id, name, state_id, hired_on) values (101, 'Peter', 2, to_date('2017-08-01', 'YYYY-MM-DD'));
+insert into employee (id, name, state_id, hired_on) values (102, 'Alice', 1, to_date('2017-07-15', 'YYYY-MM-DD'));
+insert into employee (id, name, state_id, hired_on) values (103, 'Donna', 4, to_date('2017-08-03', 'YYYY-MM-DD'));

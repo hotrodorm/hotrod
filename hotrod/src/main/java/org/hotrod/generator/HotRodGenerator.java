@@ -14,6 +14,7 @@ import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.CustomDAOTag;
+import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.QueryTag;
 import org.hotrod.config.SQLParameter;
@@ -29,6 +30,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassMethodException;
 import org.hotrod.metadata.ColumnMetadata;
+import org.hotrod.metadata.EnumMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.runtime.util.ListWriter;
@@ -57,9 +59,11 @@ public abstract class HotRodGenerator {
 
   protected DatabaseAdapter adapter = null;
   protected JdbcDatabase db = null;
+  protected JdbcDatabase enumDb = null;
 
   protected LinkedHashSet<TableDataSetMetadata> tables = null;
   protected LinkedHashSet<TableDataSetMetadata> views = null;
+  protected LinkedHashSet<EnumMetadata> enums = null;
   protected LinkedHashSet<SelectDataSetMetadata> selects = null;
 
   private Long lastLog = null;
@@ -133,6 +137,12 @@ public abstract class HotRodGenerator {
             new ViewFilter(this.config, this.adapter));
         logm("After retrieval 1.");
 
+        // TODO: Try to reuse the database connection, instead of opening a new
+        // one
+        this.enumDb = new JdbcDatabase(this.loc, true, new EnumTableFilter(), new EnumViewFilter());
+
+        logm("After retrieval 2.");
+
       } catch (ReaderException e) {
         throw new ControlledException(e.getMessage());
       } catch (SQLException e) {
@@ -178,10 +188,14 @@ public abstract class HotRodGenerator {
 
       try {
 
-        this.config.validateAgainstDatabase(this.db, this.adapter);
+        this.config.validateAgainstDatabase(this.db, this.enumDb, this.adapter);
 
       } catch (InvalidConfigurationFileException e) {
-        throw new ControlledException(e.getMessage());
+        String message = (e.getSourceLocation() == null ? ""
+            : "[file: " + e.getSourceLocation().getFile().getPath() + ", line " + e.getSourceLocation().getLineNumber()
+                + ", col " + e.getSourceLocation().getColumnNumber() + "] ")
+            + e.getMessage();
+        throw new ControlledException(message);
       }
 
       // Validate names
@@ -231,6 +245,17 @@ public abstract class HotRodGenerator {
         } catch (UnresolvableDataTypeException e) {
           throw new ControlledException(e.getMessage());
         }
+      }
+
+      // Prepare enums metadata
+
+      logm("Prepare enums metadata.");
+
+      this.enums = new LinkedHashSet<EnumMetadata>();
+      for (EnumTag e : this.config.getEnums()) {
+        EnumMetadata em = new EnumMetadata(e, this.adapter, this.config);
+        // TODO: validate duplicate names
+        this.enums.add(em);
       }
 
       // Prepare selects metadata - phase 1/2
@@ -415,6 +440,12 @@ public abstract class HotRodGenerator {
         }
       }
 
+      // enums
+
+      for (EnumMetadata e : this.enums) {
+        display("Enum " + e.getJdbcName() + " included.");
+      }
+
       // daos
 
       for (CustomDAOTag c : config.getDAOs()) {
@@ -449,6 +480,7 @@ public abstract class HotRodGenerator {
     sb.append("Total of: ");
     sb.append(this.db.getTables().size() + " " + (this.db.getTables().size() == 1 ? "table" : "tables") + ", ");
     sb.append(this.db.getViews().size() + " " + (this.db.getViews().size() == 1 ? "view" : "views") + ", ");
+    sb.append(this.enums.size() + " " + (this.enums.size() == 1 ? "enum" : "enums") + ", ");
     sb.append(this.config.getDAOs().size() + " " + (this.config.getDAOs().size() == 1 ? "DAO" : "DAOs") //
         + ", ");
     sb.append(sequences + " sequence" + (sequences == 1 ? "" : "s") + ", ");
@@ -602,6 +634,8 @@ public abstract class HotRodGenerator {
     System.out.println(SUtils.isEmpty(txt) ? " " : txt);
   }
 
+  // Table Filter
+
   public class TableFilter implements JdbcTableFilter {
 
     private Set<String> includedTables;
@@ -628,6 +662,8 @@ public abstract class HotRodGenerator {
     }
   }
 
+  // View Filter
+
   public class ViewFilter implements JdbcTableFilter {
 
     private Set<String> includedViews;
@@ -652,6 +688,29 @@ public abstract class HotRodGenerator {
       log.debug("view '" + jdbcName + "' rejected.");
       return false;
     }
+  }
+
+  // Enum Filter
+
+  public class EnumTableFilter implements JdbcTableFilter {
+
+    public boolean accepts(final String jdbcName) {
+      for (EnumTag t : config.getEnums()) {
+        if (adapter.isTableIdentifier(jdbcName, t.getName())) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+  }
+
+  public class EnumViewFilter implements JdbcTableFilter {
+
+    public boolean accepts(final String jdbcName) {
+      return false;
+    }
+
   }
 
   public DatabaseAdapter getAdapter() {

@@ -48,4 +48,17 @@ insert into state_branch (id, name) values (101, 'Fairfax');
 insert into client (id, national_id, name,              prop_name, referrer_id, friend_id, group_account_id, branch_id)
  values            (12, 10,          'Peter Cantropus', 'key1',    12,          null,        1234001,          101);
 
+-- enum
+
+alter table employee_state disable trigger employee_state_read_only;
+insert into employee_state (id, description) values (1, 'Enrolled');
+insert into employee_state (id, description) values (2, 'Accepted_OK');
+insert into employee_state (id, description) values (3, 'Pending Notification');
+insert into employee_state (id, description) values (4, 'Rejected, but can Reapply!');
+alter table employee_state enable trigger employee_state_read_only;
+
+insert into employee (id, name, state_id, hired_on) values (101, 'Peter', 2, '2017-08-01');
+insert into employee (id, name, state_id, hired_on) values (102, 'Alice', 1, '2017-07-15');
+insert into employee (id, name, state_id, hired_on) values (103, 'Donna', 4, '2017-08-03');
+
 

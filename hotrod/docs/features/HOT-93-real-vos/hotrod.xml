@@ -1,0 +1,84 @@
+<hotrod>
+
+<!-- Caso 1 -->
+
+<select>
+  <column name="tipo" converter="tipo_cuenta_converter" />
+  <column name="pers_tipo" converter="tipo_persona_converter" />
+  <column name="activa" converter="boolean_converter" />
+  <parameter name="idCliente" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+  select
+      c.*,
+      p.id "pers_id", p.nombre, p.tipo "pers_tipo" 
+    from cuenta c
+    join persona p on (p.id) = (c.id_persona)
+    <complement>
+      where c.id = #{idCliente}
+    </complement>
+</select>
+
+<!-- Caso 2 -->
+
+<select>
+  <parameter name="idCliente" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+  select
+    <columns>
+      <vo table="cuenta" property="cuenta" expression="c.*" />
+      <vo table="persona" property="persona" expression="p.*" />
+    </columns>
+    from cuenta c
+    join persona p on (p.id) = (c.id_persona)
+    <complement>
+      where c.id = #{idCliente}
+    </complement>
+</select>
+
+<!-- Caso 5 -->
+
+<select>
+  <parameter name="idCliente" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+  select
+    <columns>
+      <vo table="cuenta" property="cuenta" expression="c.*">
+        <collection table="transaccion" property="transacciones" expression="t.*" />
+      </vo>
+    </columns>
+    from cuenta c
+    join transaccion t on (t.id_cuenta) = (c.id)
+    <complement>
+      where c.id = #{idCliente}
+    </complement>
+</select>
+
+<!-- Caso 6 -->
+
+<select>
+  <parameter name="idCliente" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+  select
+    <columns>
+      <vo table="cuenta" property="cuenta" expression="c.*">
+        <association table="persona" property="persona" expression="p.*" />
+      </vo>
+    </columns>
+    from cuenta c
+    join persona p on (p.id) = (c.id_persona)
+    <complement>
+      where c.id = #{idCliente}
+    </complement>
+</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</hotrod>

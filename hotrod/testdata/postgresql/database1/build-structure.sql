@@ -246,3 +246,20 @@ create table types_other (
   ran6 daterange
 );  
 
+-- enum (ideally read-only)
+
+create table employee_state (
+  id integer primary key not null,
+  description varchar(40) not null
+);
+
+create table employee (
+  id integer primary key not null,
+  name varchar(60) not null,
+  state_id integer not null,
+  hired_on date not null,
+  constraint fk_employee_state foreign key (state_id)
+    references employee_state (id)
+);
+
+
