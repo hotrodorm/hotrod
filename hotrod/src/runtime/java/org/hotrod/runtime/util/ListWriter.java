@@ -107,11 +107,11 @@ public class ListWriter {
   }
 
   public static String render(final Collection<String> collection) {
-    return render(collection, "", "'", "'", ", ", ", ", "");
+    return render(collection, "", "", "", ", ", ", ", "");
   }
 
   public static String render(final Collection<String> collection, final String separator) {
-    return render(collection, "", "'", "'", separator, separator, "");
+    return render(collection, "", "", "", separator, separator, "");
   }
 
   public static String render(final Collection<String> collection, final String prefix, final String elemPrefix,
