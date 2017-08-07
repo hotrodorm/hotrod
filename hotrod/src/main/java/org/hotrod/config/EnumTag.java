@@ -355,13 +355,15 @@ public class EnumTag extends AbstractConfigurationTag {
 
     if (this.table.getPk() == null) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Enum table '" + this.name + "' does not have a primary key. A primary key is mandatory on an enum table.");
+          "Enum table '" + this.name + "' does not have a primary key. "
+              + "A primary key is required on a table that is being used in an <" + super.getTagName() + "> tag.");
     }
     if (this.table.getPk().getKeyColumns().size() != 1) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Enum table '" + this.name + "' should not have a composite primary key. "
-              + "A single-column primary key is mandatory on an enum table, but this one has "
-              + this.table.getPk().getKeyColumns().size() + " columns in the primary key..");
+              + "A single-column primary key is required on a table that is being used in an <" + super.getTagName()
+              + "> tag, but this one has " + this.table.getPk().getKeyColumns().size()
+              + " columns in the primary key.");
     }
 
     this.valueColumn = this.table.getPk().getKeyColumns().get(0).getColumn();
