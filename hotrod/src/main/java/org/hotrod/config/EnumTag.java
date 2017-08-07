@@ -45,7 +45,6 @@ public class EnumTag extends AbstractConfigurationTag {
 
   private String name = null;
   private String javaClassName = null;
-  private String valueCol = null;
   private String nameCol = null;
   private List<NonPersistentTag> nonPersistents = new ArrayList<NonPersistentTag>();
 
@@ -78,11 +77,6 @@ public class EnumTag extends AbstractConfigurationTag {
   @XmlAttribute(name = "class")
   public void setJavaClass(final String javaClass) {
     this.javaClassName = javaClass;
-  }
-
-  @XmlAttribute(name = "value-column")
-  public void setValueCol(final String valueCol) {
-    this.valueCol = valueCol;
   }
 
   @XmlAttribute(name = "name-column")
@@ -119,14 +113,6 @@ public class EnumTag extends AbstractConfigurationTag {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Attribute 'class' of tag <" + super.getTagName() + "> is not a valid Java class name. "
               + "Must start with an upper case letter, and continue with letters, digits, and/or underscores.");
-    }
-
-    // value-column
-
-    if (SUtils.isEmpty(this.valueCol)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Attribute 'value-column' of tag <" + super.getTagName() + "> cannot be empty. "
-              + "Must specify the column name of the table, that will be used to identify each value for the enum.");
     }
 
     // name-column
@@ -367,12 +353,18 @@ public class EnumTag extends AbstractConfigurationTag {
           + "' as specified in the attribute 'name' of the tag <" + super.getTagName() + ">.");
     }
 
-    this.valueColumn = DbUtils.findColumn(this.table, this.valueCol, adapter);
-    if (this.valueColumn == null) {
+    if (this.table.getPk() == null) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Could not find table column '" + this.valueCol + "' on table '" + this.name
-              + "' as specified in the attribute 'value-column' of the tag <" + super.getTagName() + ">.");
+          "Enum table '" + this.name + "' does not have a primary key. A primary key is mandatory on an enum table.");
     }
+    if (this.table.getPk().getKeyColumns().size() != 1) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Enum table '" + this.name + "' should not have a composite primary key. "
+              + "A single-column primary key is mandatory on an enum table, but this one has "
+              + this.table.getPk().getKeyColumns().size() + " columns in the primary key..");
+    }
+
+    this.valueColumn = this.table.getPk().getKeyColumns().get(0).getColumn();
 
     this.nameColumn = DbUtils.findColumn(this.table, this.nameCol, adapter);
     if (this.nameColumn == null) {
@@ -389,14 +381,14 @@ public class EnumTag extends AbstractConfigurationTag {
       type = adapter.getAdapterDefaultType(cm);
     } catch (UnresolvableDataTypeException e) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Could not resolve a suitable Java type for the column '" + this.valueCol + "' on table '" + this.name
-              + "' as specified in the attribute 'value-column' of the tag <" + super.getTagName() + ">.");
+          "Could not resolve a suitable Java type for the column '" + this.valueColumn.getName() + "' on table '"
+              + this.name + "' as specified in the attribute 'value-column' of the tag <" + super.getTagName() + ">.");
     }
 
     this.valueType = type.getJavaClassName();
     if (!VALID_VALUE_TYPES.containsKey(this.valueType)) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Invalid Java type for the column '" + this.valueCol + "' on table '" + this.name
+          "Invalid Java type for the column '" + this.valueColumn.getName() + "' on table '" + this.name
               + "' as specified in the attribute 'value-column' of the tag <" + super.getTagName()
               + ">. The column must be readable as (i.e. must correspond to) one of the following Java types:\n"
               + ListWriter.render(VALID_VALUE_TYPES.keySet(), "", " - ", "", "\n", ""));
@@ -442,7 +434,7 @@ public class EnumTag extends AbstractConfigurationTag {
     this.tableConstants = new ArrayList<EnumConstant>();
 
     Identifier tableId = new DbIdentifier(this.name);
-    Identifier valueId = new DbIdentifier(this.valueCol);
+    Identifier valueId = new DbIdentifier(this.valueColumn.getName());
     Identifier nameId = new DbIdentifier(this.nameCol);
 
     String sql = "select " + valueId.getSQLIdentifier() + ", " + nameId.getSQLIdentifier() + " from "

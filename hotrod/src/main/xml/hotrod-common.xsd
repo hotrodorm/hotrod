@@ -113,7 +113,6 @@
     </xsd:sequence>
     <xsd:attribute name="name" type="xsd:string" use="required" />
     <xsd:attribute name="class" type="xsd:string" use="required" />
-    <xsd:attribute name="value-column" type="xsd:string" use="required" />
     <xsd:attribute name="name-column" type="xsd:string" use="required" />
   </xsd:complexType>
 
