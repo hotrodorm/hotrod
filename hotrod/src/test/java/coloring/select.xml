@@ -1,0 +1,34 @@
+<!-- This is a comment -->
+
+<select method-name="getAggregatedBlog" result-class="AggregatedBlogVO">
+
+  <parameter name="blogId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+  select /*+ GATHER_PLAN_STATISTICS */ /*+ APPEND */
+  <columns>
+    <vo table="blog" property="blog" class="BlogExtended" expression="b.*">
+      <association table="author" property="author" expression="a.*" />
+      <collection table="post" property="posts" class="PostExtended" expression="p.*">
+        <collection table="comment" property="comments" expression="c.*" />
+        <collection table="tag" property="tags" expression="t.*" />
+      </collection>
+      <association view="office" property="currentOffice" ids="id" expression="a.*" />
+    </vo>
+    <expressions>
+      (b.views / b.viewer_count) as temperature,
+      (b.revenue / b.views) as profitability
+    </expressions>
+  </columns>
+  from blog b
+  left outer join author a on (a.id) = (b.author_id)
+  left outer join post p on (p.blog_id) = (b.id)
+  left outer join comment c on (c.post_id) = (p.id)
+  left outer join post_tag pt on (pt.post_id) = (p.id)
+  left outer join tag t on (t.id) = (pt.tag_id)
+  left outer join office o on (p.office_id) = (o.id)
+  <complement>
+    where b.id = #{blogId}
+  </complement>
+
+</select>
+  
