@@ -263,6 +263,97 @@
     </java>
   </target>
 
+  <target name="run-example-crud-09" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud09">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-crud-10" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud10">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-crud-11" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud11">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-crud-12" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud12">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-crud-13" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud13">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-crud-14" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud14">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-crud-15" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud15">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
   <!-- ========= -->
   <!-- Old cases -->
   <!-- ========= -->
