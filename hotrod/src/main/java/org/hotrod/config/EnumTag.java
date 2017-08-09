@@ -45,19 +45,17 @@ public class EnumTag extends AbstractConfigurationTag {
 
   private String name = null;
   private String javaClassName = null;
-  private String valueCol = null;
   private String nameCol = null;
   private List<NonPersistentTag> nonPersistents = new ArrayList<NonPersistentTag>();
 
   private JdbcTable table = null;
-  private JdbcColumn valueColumn = null;
-  private JdbcColumn nameColumn = null;
+  private EnumColumn valueColumn = null;
+  private EnumColumn nameColumn = null;
 
   private List<EnumConstant> tableConstants = new ArrayList<EnumConstant>();
   private List<EnumConstant> npConstants = new ArrayList<EnumConstant>();
 
-  private String valueType = null;
-  private ValueTypeManager<?> valueTypeManager = null;
+  private LinkedHashMap<JdbcColumn, EnumColumn> extraColumns = null;
 
   private HotRodFragmentConfigTag fragmentConfig = null;
 
@@ -78,11 +76,6 @@ public class EnumTag extends AbstractConfigurationTag {
   @XmlAttribute(name = "class")
   public void setJavaClass(final String javaClass) {
     this.javaClassName = javaClass;
-  }
-
-  @XmlAttribute(name = "value-column")
-  public void setValueCol(final String valueCol) {
-    this.valueCol = valueCol;
   }
 
   @XmlAttribute(name = "name-column")
@@ -119,14 +112,6 @@ public class EnumTag extends AbstractConfigurationTag {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Attribute 'class' of tag <" + super.getTagName() + "> is not a valid Java class name. "
               + "Must start with an upper case letter, and continue with letters, digits, and/or underscores.");
-    }
-
-    // value-column
-
-    if (SUtils.isEmpty(this.valueCol)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Attribute 'value-column' of tag <" + super.getTagName() + "> cannot be empty. "
-              + "Must specify the column name of the table, that will be used to identify each value for the enum.");
     }
 
     // name-column
@@ -166,7 +151,7 @@ public class EnumTag extends AbstractConfigurationTag {
 
       @Override
       public String renderJavaValue(final Object obj) {
-        return "" + obj;
+        return obj == null ? "null" : "(byte) " + obj;
       }
 
       @Override
@@ -184,7 +169,7 @@ public class EnumTag extends AbstractConfigurationTag {
 
       @Override
       public String renderJavaValue(final Object obj) {
-        return "" + obj;
+        return obj == null ? "null" : "(short) " + obj;
       }
 
       @Override
@@ -202,7 +187,7 @@ public class EnumTag extends AbstractConfigurationTag {
 
       @Override
       public String renderJavaValue(final Object obj) {
-        return "" + obj;
+        return obj == null ? "null" : "" + obj;
       }
 
       @Override
@@ -220,7 +205,7 @@ public class EnumTag extends AbstractConfigurationTag {
 
       @Override
       public String renderJavaValue(final Object obj) {
-        return "" + obj;
+        return obj == null ? "null" : "" + obj + "L";
       }
 
       @Override
@@ -238,7 +223,7 @@ public class EnumTag extends AbstractConfigurationTag {
 
       @Override
       public String renderJavaValue(final Object obj) {
-        return "" + obj;
+        return obj == null ? "null" : "" + obj;
       }
 
       @Override
@@ -256,7 +241,7 @@ public class EnumTag extends AbstractConfigurationTag {
 
       @Override
       public String renderJavaValue(final Object obj) {
-        return "" + obj;
+        return obj == null ? "null" : "" + obj + "f";
       }
 
       @Override
@@ -274,7 +259,7 @@ public class EnumTag extends AbstractConfigurationTag {
 
       @Override
       public String renderJavaValue(final Object obj) {
-        return "new java.math.BigDecimal(\"" + obj.toString() + "\")";
+        return obj == null ? "null" : "new java.math.BigDecimal(\"" + obj.toString() + "\")";
       }
 
       @Override
@@ -293,7 +278,7 @@ public class EnumTag extends AbstractConfigurationTag {
 
       @Override
       public String renderJavaValue(final Object obj) {
-        return "\"" + SUtils.escapeJavaString((String) obj) + "\"";
+        return obj == null ? "null" : "\"" + SUtils.escapeJavaString((String) obj) + "\"";
       }
 
       @Override
@@ -311,7 +296,7 @@ public class EnumTag extends AbstractConfigurationTag {
 
       @Override
       public String renderJavaValue(final Object obj) {
-        return "" + obj;
+        return obj == null ? "null" : "" + obj;
       }
 
       @Override
@@ -356,10 +341,55 @@ public class EnumTag extends AbstractConfigurationTag {
       }
 
     });
+    VALID_VALUE_TYPES.put(java.util.Date.class.getName(), new ValueTypeManager<java.util.Date>() {
+      @Override
+      public java.util.Date getFromResultSet(ResultSet rs, int columnIndex) throws SQLException {
+        Timestamp v = rs.getTimestamp(columnIndex);
+        return rs.wasNull() ? null : v;
+      }
+
+      @Override
+      public String renderJavaValue(final Object obj) {
+        java.util.Date d = (java.util.Date) obj;
+        return obj == null ? "null" : "new java.util.Date(" + d.getTime() + "L)";
+      }
+
+      @Override
+      public String getValueClassName() {
+        return java.util.Date.class.getName();
+      }
+
+    });
+  }
+
+  private static class EnumColumn {
+
+    private JdbcColumn column;
+    private ValueTypeManager<?> valueTypeManager;
+
+    public EnumColumn(final JdbcColumn column, final ValueTypeManager<?> valueTypeManager) {
+      this.column = column;
+      this.valueTypeManager = valueTypeManager;
+    }
+
+    public JdbcColumn getColumn() {
+      return column;
+    }
+
+    public ValueTypeManager<?> getValueTypeManager() {
+      return valueTypeManager;
+    }
+
+    public EnumProperty getProperty() {
+      Identifier id = new DbIdentifier(this.column.getName());
+      return new EnumProperty(this.valueTypeManager.getValueClassName(), id.getJavaMemberIdentifier());
+    }
   }
 
   public void validateAgainstDatabase(final JdbcDatabase db, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
+
+    // Validate the table existence
 
     this.table = DbUtils.findTable(db, this.name, adapter);
     if (this.table == null) {
@@ -367,48 +397,54 @@ public class EnumTag extends AbstractConfigurationTag {
           + "' as specified in the attribute 'name' of the tag <" + super.getTagName() + ">.");
     }
 
-    this.valueColumn = DbUtils.findColumn(this.table, this.valueCol, adapter);
-    if (this.valueColumn == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Could not find table column '" + this.valueCol + "' on table '" + this.name
-              + "' as specified in the attribute 'value-column' of the tag <" + super.getTagName() + ">.");
+    // Get the list of columns
+
+    this.extraColumns = new LinkedHashMap<JdbcColumn, EnumColumn>();
+
+    for (JdbcColumn c : this.table.getColumns()) {
+      ValueTypeManager<?> m = resolveValueTypeManager(c, adapter);
+      this.extraColumns.put(c, new EnumColumn(c, m));
     }
 
-    this.nameColumn = DbUtils.findColumn(this.table, this.nameCol, adapter);
-    if (this.nameColumn == null) {
+    // Validate the single-column PK
+
+    if (this.table.getPk() == null) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Could not find table column '" + this.nameCol + "' on table '" + this.name
+          "Enum table '" + this.name + "' does not have a primary key. "
+              + "A primary key is required on a table that is being used in an <" + super.getTagName() + "> tag.");
+    }
+    if (this.table.getPk().getKeyColumns().size() != 1) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Enum table '" + this.name + "' should not have a composite primary key. "
+              + "A single-column primary key is required on a table that is being used in an <" + super.getTagName()
+              + "> tag, but this one has " + this.table.getPk().getKeyColumns().size()
+              + " columns in the primary key.");
+    }
+
+    JdbcColumn pkCol = this.table.getPk().getKeyColumns().get(0).getColumn();
+    this.valueColumn = this.extraColumns.get(pkCol);
+    this.extraColumns.remove(pkCol);
+
+    // Validate the name column
+
+    JdbcColumn nameCol = DbUtils.findColumn(this.table, this.nameCol, adapter);
+    if (nameCol == null) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Could not find column '" + this.nameCol + "' on table '" + this.name
               + "' as specified in the attribute 'name-column' of the tag <" + super.getTagName() + ">.");
     }
 
+    this.nameColumn = this.extraColumns.get(nameCol);
+    this.extraColumns.remove(nameCol);
+
     // Retrieve values
-
-    PropertyType type;
-    try {
-      ColumnMetadata cm = new ColumnMetadata(this.valueColumn, adapter, null, false, false);
-      type = adapter.getAdapterDefaultType(cm);
-    } catch (UnresolvableDataTypeException e) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Could not resolve a suitable Java type for the column '" + this.valueCol + "' on table '" + this.name
-              + "' as specified in the attribute 'value-column' of the tag <" + super.getTagName() + ">.");
-    }
-
-    this.valueType = type.getJavaClassName();
-    if (!VALID_VALUE_TYPES.containsKey(this.valueType)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Invalid Java type for the column '" + this.valueCol + "' on table '" + this.name
-              + "' as specified in the attribute 'value-column' of the tag <" + super.getTagName()
-              + ">. The column must be readable as (i.e. must correspond to) one of the following Java types:\n"
-              + ListWriter.render(VALID_VALUE_TYPES.keySet(), "", " - ", "", "\n", ""));
-    }
-    this.valueTypeManager = VALID_VALUE_TYPES.get(this.valueType);
 
     this.retrieveTableValues(db);
 
     // Retrieve non-persistent values
 
     for (NonPersistentTag np : this.nonPersistents) {
-      this.npConstants.add(new EnumConstant(np.getValue(), np.getName(), np.getName()));
+      this.npConstants.add(new EnumConstant(np.getName(), np.getValue(), np.getName(), this.extraColumns.size()));
     }
 
     // Check there are no repeated Java constant names
@@ -442,11 +478,20 @@ public class EnumTag extends AbstractConfigurationTag {
     this.tableConstants = new ArrayList<EnumConstant>();
 
     Identifier tableId = new DbIdentifier(this.name);
-    Identifier valueId = new DbIdentifier(this.valueCol);
-    Identifier nameId = new DbIdentifier(this.nameCol);
 
-    String sql = "select " + valueId.getSQLIdentifier() + ", " + nameId.getSQLIdentifier() + " from "
-        + tableId.getSQLIdentifier() + " order by " + valueId.getSQLIdentifier();
+    Identifier valueId = new DbIdentifier(this.valueColumn.getColumn().getName());
+    Identifier nameId = new DbIdentifier(this.nameColumn.getColumn().getName());
+
+    ListWriter lw = new ListWriter(", ");
+    lw.add(valueId.getSQLIdentifier());
+    lw.add(nameId.getSQLIdentifier());
+    for (EnumColumn ec : this.extraColumns.values()) {
+      Identifier id = new DbIdentifier(ec.getColumn().getName());
+      lw.add(id.getSQLIdentifier());
+    }
+
+    String sql = "select " + lw.toString() + " from " + tableId.getSQLIdentifier() + " order by "
+        + valueId.getSQLIdentifier();
 
     // log.info("SQL=" + sql);
 
@@ -459,12 +504,27 @@ public class EnumTag extends AbstractConfigurationTag {
       rs = st.executeQuery();
       // log.info("[SQL executed]");
       while (rs.next()) {
-        Object value = this.valueTypeManager.getFromResultSet(rs, 1);
+        Object value = this.valueColumn.getValueTypeManager().getFromResultSet(rs, 1);
         String name = rs.getString(2);
+        if (SUtils.isEmpty(name)) {
+          throw new InvalidConfigurationFileException(super.getSourceLocation(),
+              "Invalid enum constant name from table '" + this.name + "' on the <" + super.getTagName() + "> tag. "
+                  + "A en empty value was read from the column '" + this.nameCol + "'. "
+                  + "If a column is used for the enum constant names, it cannot have null or empty values.");
+        }
         String javaConstantName = new TitleIdentifier(name).getJavaConstantName();
-        // log.info("value=" + value + " name=" + name + " constant=" +
-        // javaConstantName);
-        this.tableConstants.add(new EnumConstant(value, name, javaConstantName));
+
+        List<String> literalValues = new ArrayList<String>();
+
+        literalValues.add(this.valueColumn.getValueTypeManager().renderJavaValue(value));
+        literalValues.add(this.nameColumn.getValueTypeManager().renderJavaValue(name));
+        int col = 3;
+        for (EnumColumn ec : this.extraColumns.values()) {
+          Object v = ec.getValueTypeManager().getFromResultSet(rs, col++);
+          literalValues.add(ec.getValueTypeManager().renderJavaValue(v));
+        }
+
+        this.tableConstants.add(new EnumConstant(javaConstantName, literalValues));
       }
     } catch (SQLException e) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
@@ -494,28 +554,57 @@ public class EnumTag extends AbstractConfigurationTag {
     }
   }
 
+  private ValueTypeManager<?> resolveValueTypeManager(final JdbcColumn c, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
+    PropertyType type;
+    try {
+      ColumnMetadata cm = new ColumnMetadata(c, adapter, null, false, false);
+      type = adapter.getAdapterDefaultType(cm);
+    } catch (UnresolvableDataTypeException e) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Could not resolve a suitable Java type for the column '" + c.getName() + "' on table '" + this.name + "'.");
+    }
+
+    String valueType = type.getJavaClassName();
+    if (!VALID_VALUE_TYPES.containsKey(valueType)) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Invalid Java type '" + valueType + "' for the column '" + c.getName() + "' on table '" + this.name
+              + "'. The column must be readable as (i.e. must correspond to) one of the following Java types:\n"
+              + ListWriter.render(VALID_VALUE_TYPES.keySet(), "", " - ", "", "\n", ""));
+    }
+    return VALID_VALUE_TYPES.get(valueType);
+
+  }
+
   public static class EnumConstant {
 
-    private Object value;
-    private String title;
     private String javaConstantName;
+    private List<String> javaLiteralValues;
 
-    public EnumConstant(final Object value, final String title, final String javaConstantName) {
-      this.value = value;
-      this.title = title;
+    // From database
+    public EnumConstant(final String javaConstantName, final List<String> javaLiteralValue) {
       this.javaConstantName = javaConstantName;
+      this.javaLiteralValues = javaLiteralValue;
     }
 
-    public Object getValue() {
-      return value;
-    }
-
-    public String getTitle() {
-      return title;
+    // From <non-persistent> tag
+    public EnumConstant(final String javaConstantName, final String javaLiteralValue, final String javaLiteralName,
+        final int numberOfExtraColumns) {
+      this.javaConstantName = javaConstantName;
+      this.javaLiteralValues = new ArrayList<String>();
+      this.javaLiteralValues.add(javaLiteralValue);
+      this.javaLiteralValues.add("\"" + SUtils.escapeJavaString(javaLiteralName) + "\"");
+      for (int i = 0; i < numberOfExtraColumns; i++) {
+        this.javaLiteralValues.add("null");
+      }
     }
 
     public String getJavaConstantName() {
       return javaConstantName;
+    }
+
+    public List<String> getJavaLiteralValues() {
+      return javaLiteralValues;
     }
 
   }
@@ -598,8 +687,38 @@ public class EnumTag extends AbstractConfigurationTag {
     return javaClassName;
   }
 
-  public ValueTypeManager<?> getValueTypeManager() {
-    return valueTypeManager;
+  public static class EnumProperty {
+
+    private String className;
+    private String name;
+
+    public EnumProperty(final String className, final String name) {
+      this.className = className;
+      this.name = name;
+    }
+
+    public String getClassName() {
+      return className;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public String getGetter() {
+      return "get" + SUtils.capitalizeFirst(this.name);
+    }
+
+  }
+
+  public List<EnumProperty> getProperties() {
+    List<EnumProperty> props = new ArrayList<EnumProperty>();
+    props.add(this.valueColumn.getProperty());
+    props.add(this.nameColumn.getProperty());
+    for (EnumColumn ec : this.extraColumns.values()) {
+      props.add(ec.getProperty());
+    }
+    return props;
   }
 
 }

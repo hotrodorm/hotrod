@@ -240,7 +240,9 @@ create table " !#$%)(*+,-." (
 
 create table employee_state (
   id number(6) primary key not null,
-  description varchar(40) not null
+  since date,
+  description varchar(40) not null,
+  active number(4) not null
 );
 
 create table employee (

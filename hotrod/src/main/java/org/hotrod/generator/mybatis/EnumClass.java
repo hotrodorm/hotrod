@@ -11,10 +11,10 @@ import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag.EnumConstant;
+import org.hotrod.config.EnumTag.EnumProperty;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.metadata.EnumMetadata;
 import org.hotrod.runtime.util.ListWriter;
-import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 
 public class EnumClass {
@@ -55,7 +55,8 @@ public class EnumClass {
   public void generate() throws UncontrolledException, ControlledException {
     String sourceClassName = this.getClassName() + ".java";
 
-    String valueClassName = this.metadata.getValueTypeManager().getValueClassName();
+    // String valueClassName =
+    // this.metadata.getValueTypeManager().getValueClassName();
 
     File dir = this.daos.getPrimitivesPackageDir(this.fragmentPackage);
     File ec = new File(dir, sourceClassName);
@@ -73,35 +74,38 @@ public class EnumClass {
       // prefix, elemPrefix, elemSuffix, separator, suffix
       ListWriter lw = new ListWriter("", "  ", "", ", //\n", ";");
       for (EnumConstant c : this.metadata.getEnumConstants()) {
-        lw.add(c.getJavaConstantName() + "(" + this.metadata.getValueTypeManager().renderJavaValue(c.getValue())
-            + ", \"" + SUtils.escapeJavaString(c.getTitle()) + "\")");
+        lw.add(c.getJavaConstantName() + "(" + ListWriter.render(c.getJavaLiteralValues(), ", ") + ")");
       }
       println(lw.toString());
       println();
 
       println("  // Properties (table columns)");
       println();
-      println("  private " + valueClassName + " value;");
-      println("  private String name;");
+      for (EnumProperty p : this.metadata.getProperties()) {
+        println("  private " + p.getClassName() + " " + p.getName() + ";");
+      }
       println();
 
+      ListWriter params = new ListWriter(", ");
+      for (EnumProperty p : this.metadata.getProperties()) {
+        params.add("final " + p.getClassName() + " " + p.getName());
+      }
       println("  // Constructor");
       println();
-      println("  private " + this.getClassName() + "(final " + valueClassName + " value, final String name) {");
-      println("    this.value = value;");
-      println("    this.name = name;");
+      println("  private " + this.getClassName() + "(" + params.toString() + ") {");
+      for (EnumProperty p : this.metadata.getProperties()) {
+        println("    this." + p.getName() + " = " + p.getName() + ";");
+      }
       println("  }");
       println();
 
       println("  // Getters");
-      println();
-      println("  public " + valueClassName + " getValue() {");
-      println("    return value;");
-      println("  }");
-      println();
-      println("  public String getName() {");
-      println("    return name;");
-      println("  }");
+      for (EnumProperty p : this.metadata.getProperties()) {
+        println();
+        println("  public " + p.getClassName() + " " + p.getGetter() + "() {");
+        println("    return this." + p.getName() + ";");
+        println("  }");
+      }
       println();
 
       println("}");

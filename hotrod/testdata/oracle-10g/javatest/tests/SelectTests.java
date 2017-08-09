@@ -22,6 +22,7 @@ import hotrod.test.generation.accounting.finances.primitives.SearchedAccount2;
 import hotrod.test.generation.primitives.AccountByIds;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountTx3;
+import hotrod.test.generation.primitives.EmployeeState;
 import hotrod.test.generation.primitives.House;
 import hotrod.test.generation.primitives.TxBranchDAO;
 import hotrod.test.generation.primitives.TypesOtherDAO;
@@ -54,8 +55,9 @@ public class SelectTests {
     // selectAccountTx3();
     // specialCharactersInNames();
 
-    searchQuadrants();
+    // searchQuadrants();
 
+    showEnumValues();
   }
 
   // private static void tryInsertBadData() throws SQLException {
@@ -267,6 +269,14 @@ public class SelectTests {
     System.out.println("==================");
     for (QuadrantVO q : QuadrantDAO.selectByExample(new QuadrantVO())) {
       System.out.println("q=" + q);
+    }
+  }
+
+  private static void showEnumValues() throws SQLException {
+    System.out.println("showEnumValues:");
+    System.out.println("===============");
+    for (EmployeeState s : EmployeeState.values()) {
+      System.out.println("s=" + s.getId() + " | " + s.getDescription() + " | " + s.getSince() + " | " + s.getActive());
     }
   }
 

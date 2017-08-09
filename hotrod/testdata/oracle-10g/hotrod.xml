@@ -84,9 +84,9 @@
   </select>
 -->
 
-  <enum name="employee_state" class="EmployeeState" value-column="id" name-column="description">
-    <non-persistent value="100" name="NONE_" />
-    <non-persistent value="101" name="ENROLLED" />
+  <enum name="employee_state" class="EmployeeState" name-column="description">
+    <non-persistent value="100" name="NONE" />
+    <non-persistent value="101" name="ALL" />
   </enum>
 
 <!--    

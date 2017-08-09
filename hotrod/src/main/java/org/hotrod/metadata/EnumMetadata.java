@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.EnumTag.EnumConstant;
-import org.hotrod.config.EnumTag.ValueTypeManager;
+import org.hotrod.config.EnumTag.EnumProperty;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -72,8 +72,8 @@ public class EnumMetadata {
     return this.tag.getFragmentConfig();
   }
 
-  public ValueTypeManager<?> getValueTypeManager() {
-    return this.tag.getValueTypeManager();
+  public List<EnumProperty> getProperties() {
+    return this.tag.getProperties();
   }
 
 }

@@ -70,10 +70,10 @@ insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`{|}~") values (3, 'blue', '
 -- enum
 
 alter trigger employee_state_read_only disable;
-insert into employee_state (id, description) values (1, 'Enrolled');
-insert into employee_state (id, description) values (2, 'Accepted_OK');
-insert into employee_state (id, description) values (3, 'Pending Notification');
-insert into employee_state (id, description) values (4, 'Rejected, but can Reapply!');
+insert into employee_state (id, since, description, active) values (1, to_date('2015-06-17', 'YYYY-MM-DD'), 'Enrolled', 1);
+insert into employee_state (id, since, description, active) values (2, null, 'Accepted_OK', 1);
+insert into employee_state (id, since, description, active) values (3, to_date('2016-04-29', 'YYYY-MM-DD'), 'Pending Notification', 0);
+insert into employee_state (id, since, description, active) values (4, to_date('2017-03-01', 'YYYY-MM-DD'), 'Rejected, but can Reapply!', 1);
 alter trigger employee_state_read_only enable;
 
 insert into employee (id, name, state_id, hired_on) values (101, 'Peter', 2, to_date('2017-08-01', 'YYYY-MM-DD'));

@@ -42,6 +42,13 @@ public class SUtils {
     return sb.toString();
   }
 
+  public static String capitalizeFirst(final String txt) {
+    if (txt == null) {
+      return null;
+    }
+    return txt.substring(0, 1).toUpperCase() + txt.substring(1);
+  }
+
   public static boolean startsWithUpperCaseLetter(final String txt) {
     if (txt == null || txt.isEmpty()) {
       return false;
