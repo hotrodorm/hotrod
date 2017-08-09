@@ -44,11 +44,13 @@
         <pathelement location="${jdbc.driverlibrary}" />
       </classpath>
     </java>
-    <echo message="[ H2 local database has been started - listening on port ${h2.port} ]" level="info" />
+    <echo message="[ H2 local database has been started - listening on port ${h2.port} ]"
+          level="info" />
   </target>
 
   <target name="-h2-already-started" if="h2.running">
-    <echo message="[ H2 local database is already running - listening on port ${h2.port} ]" level="info" />
+    <echo message="[ H2 local database is already running - listening on port ${h2.port} ]"
+          level="info" />
   </target>
 
   <target name="initialize-database">
@@ -157,8 +159,8 @@
 
   </target>
 
-  <target name="run-example-01" depends="initialize-database, compile">
-    <java classname="examples.Example01">
+  <target name="run-example-crud-01" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud01">
       <classpath>
         <pathelement path="build" />
         <pathelement path="auto-generated/mappers" />
@@ -169,6 +171,101 @@
       </classpath>
     </java>
   </target>
+
+  <target name="run-example-crud-02" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud02">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-crud-03" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud03">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-crud-04" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud04">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-crud-05" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud05">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-crud-06" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud06">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-crud-07" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud07">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="run-example-crud-08" depends="initialize-database, compile">
+    <java classname="examples.crud.ExampleCrud08">
+      <classpath>
+        <pathelement path="build" />
+        <pathelement path="auto-generated/mappers" />
+        <pathelement location="${jdbc.driverlibrary}" />
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}-runtime.jar" />
+        <pathelement location="lib/mybatis/mybatis-${mybatis.version}.jar" />
+        <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <!-- ========= -->
+  <!-- Old cases -->
+  <!-- ========= -->
 
   <target name="run-example-02" depends="initialize-database, compile">
     <java classname="examples.Example02">

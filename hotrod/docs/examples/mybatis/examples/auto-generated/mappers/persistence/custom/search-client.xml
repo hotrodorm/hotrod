@@ -5,7 +5,7 @@
 
 <mapper namespace="daos.custom.search">
 
-  <select id="searchClient" resultType="daos.ClientDAO">
+  <select id="searchClient" resultType="daos.ClientVO">
     select id, name from client where state = #{value} and created_at > '2017-01-01'
   </select>
 
