@@ -34,13 +34,13 @@
   <facet name="phase2">
 
   </facet>
+-->
 
   <table name=" !#$%)(*+,-." java-name="House">
     <column name=":&lt;>?&amp;" java-name="color" />
     <column name="@[\]^_" java-name="kind" />
     <column name="`{|}~" java-name="type" />
   </table>
-
 
   <select java-class-name="AccountByIds">
 
@@ -82,7 +82,6 @@
     </complement>
 
   </select>
--->
 
   <enum name="employee_state" class="EmployeeState" name-column="description">
     <non-persistent value="100" name="NONE" />

@@ -20,12 +20,16 @@ insert into APPLICATION_CONFIG
 insert into federal_branch (id, name) values (101, 'Virginia');
 insert into federal_branch (id, name) values (102, 'Maryland');
 insert into federal_branch (id, name) values (103, 'Delaware');
+
 insert into transaction (account_id, seq_id, time, amount, fed_branch_id) 
   values (1234001, 1, 'Time 001', 100, 101);
 insert into transaction (account_id, seq_id, time, amount, fed_branch_id) 
   values (1234004, 2, 'Time 004', 150, 103);
 insert into transaction (account_id, seq_id, time, amount, fed_branch_id) 
   values (1234005, 4, 'Time 005', 160, 102);
+
+drop sequence seq_transaction;  
+create sequence seq_transaction start with 10;
   
 insert into account (id, name, type, current_balance, created_on, row_version) values (1, 'ACC2', 'CHK', 50, to_date('2016-01-01','YYYY-MM-DD'), 0);
 insert into account (id, name, type, current_balance, created_on, row_version) values (2, 'ACC123', 'SAV', 150, to_date('2016-02-01','YYYY-MM-DD'), 0);
@@ -38,7 +42,7 @@ insert into account (id, name, type, current_balance, created_on, row_version) v
 insert into account (id, name, type, current_balance, created_on, row_version) values (20, 'aCC123', 'SAV', 150, to_date('2016-02-01','YYYY-MM-DD'), 0);
 insert into account (id, name, type, current_balance, created_on, row_version) values (21, 'acc123', 'SAV', 150, to_date('2016-02-01','YYYY-MM-DD'), 0);
 insert into account (id, name, type, current_balance, created_on, row_version) values (22, 'acC123', 'SAV', 150, to_date('2016-02-01','YYYY-MM-DD'), 0);
-
+insert into account (id, name, type, current_balance, created_on, row_version) values (25, 'ACC732', 'CHK', 21050, to_date('2014-08-15','YYYY-MM-DD'), 0);
 
 -- =====
 -- Types

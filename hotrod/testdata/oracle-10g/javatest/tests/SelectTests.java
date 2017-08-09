@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 
 import hotrod.test.generation.AccountByIdsVO;
-import hotrod.test.generation.AccountTx3VO;
 import hotrod.test.generation.AccountVO;
 import hotrod.test.generation.HouseVO;
 import hotrod.test.generation.accounting.finances.QuadrantVO;
@@ -21,7 +20,6 @@ import hotrod.test.generation.accounting.finances.primitives.SearchedAccount;
 import hotrod.test.generation.accounting.finances.primitives.SearchedAccount2;
 import hotrod.test.generation.primitives.AccountByIds;
 import hotrod.test.generation.primitives.AccountDAO;
-import hotrod.test.generation.primitives.AccountTx3;
 import hotrod.test.generation.primitives.EmployeeState;
 import hotrod.test.generation.primitives.House;
 import hotrod.test.generation.primitives.TxBranchDAO;
@@ -240,13 +238,13 @@ public class SelectTests {
   //
   // }
 
-  private static void selectAccountTx3() throws SQLException {
-    System.out.println("AccountTx3:");
-    System.out.println("===========");
-    for (AccountTx3VO a : AccountTx3.select(200, 500)) {
-      System.out.println("a=" + a);
-    }
-  }
+  // private static void selectAccountTx3() throws SQLException {
+  // System.out.println("AccountTx3:");
+  // System.out.println("===========");
+  // for (AccountTx3VO a : AccountTx3.select(200, 500)) {
+  // System.out.println("a=" + a);
+  // }
+  // }
 
   private static void searchAccount() throws SQLException {
     System.out.println("SearchedAccount:");

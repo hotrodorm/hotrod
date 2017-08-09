@@ -16,7 +16,7 @@ create index param_i2 on parameters (name);
 create table properties (
   application varchar(20),
   name varchar(50) not null,
-  prop_value varchar(80),
+  prop_value varchar(80) default '<no-initial-value>',
   constraint props_name_uc unique (name)
 );
 
@@ -26,7 +26,7 @@ create table config_values (
   node integer not null,
   cell integer not null,
   name varchar(20) not null,
-  verbatim varchar(50),
+  verbatim varchar(50) default '{no-verbatim}',
   constraint cfgval_uc1 unique (node, cell),
   constraint cfgval_uc2 unique (name)
 );
@@ -34,7 +34,7 @@ create table config_values (
 create table account (
   id integer not null auto_increment,
   current_balance integer,
-  name varchar(100) not null,
+  name varchar(100) not null default 'ACCOUNT',
   created_on datetime not null,
   primary key (id)
 );
@@ -55,7 +55,7 @@ create table transaction (
   account_id integer not null,
   seq_id integer not null auto_increment,
   time varchar(16) not null,
-  amount integer not null,
+  amount integer not null default -1,
   fed_branch_id int,
   primary key (seq_id),
   constraint tx_account_id_time unique (account_id, time),
@@ -249,9 +249,24 @@ create table types_other (
   primary key (id)
 );
 
+-- enum
 
-    
-    
+create table employee_state (
+  id integer primary key not null,
+  since date,
+  description varchar(40) not null,
+  active integer not null
+);
+
+create table employee (
+  id integer primary key not null,
+  name varchar(60) not null,
+  state_id integer not null,
+  hired_on date not null,
+  constraint fk_employee_state foreign key (state_id)
+    references employee_state (id)
+);
+
     
     
     

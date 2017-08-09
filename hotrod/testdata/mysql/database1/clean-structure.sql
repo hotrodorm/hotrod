@@ -26,4 +26,7 @@ drop table types_date_time;
 drop table types_binary;
 drop table types_other;
 
+-- enum
 
+drop table employee;
+drop table employee_state;

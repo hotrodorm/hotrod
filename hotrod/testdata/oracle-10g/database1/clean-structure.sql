@@ -10,6 +10,7 @@ drop table transaction;
 drop table federal_branch; 
 drop table state_branch; 
 drop table account; 
+drop view hefty_account;
 
 drop table config_values; 
 drop table properties; 

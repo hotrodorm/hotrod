@@ -29,6 +29,15 @@ public class ListWriter {
     initialize(prefix, elemPrefix, elemSuffix, separator, separator, suffix);
   }
 
+  public ListWriter(final String elemPrefix, final String elemSuffix, final String separator,
+      final String lastSeparator) {
+    initialize(null, elemPrefix, elemSuffix, separator, lastSeparator, null);
+  }
+
+  public ListWriter(final String elemPrefix, final String elemSuffix, final String separator) {
+    initialize(null, elemPrefix, elemSuffix, separator, separator, null);
+  }
+
   public ListWriter(final String separator) {
     initialize("", "", "", separator, separator, "");
   }

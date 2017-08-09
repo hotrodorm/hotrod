@@ -67,79 +67,65 @@
   </view>
 
   <select java-class-name="AccountTx0DAO">
-  <![CDATA[
     select a.* , t.*
     from account a, transaction t
     where t.account_id = a.id
         and a.current_balance &lt; 1000
-    ]]>
   </select>
 
   <select java-class-name="AccountTx1DAO">
-    <column name="account_id" java-type="java.lang.Long"
-      jdbc-type="NUMERIC" />
-    <![CDATA[
+    <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+    <parameter name="minAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+    <column name="account_id" java-type="java.lang.Long" jdbc-type="NUMERIC" />
  		select a.* , t.*
 		  from account a, transaction t
 		  where t.account_id = a.id
-        {*
-			  and a.current_balance &lt;= 
-			    #{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
-			  and t.amount &gt;= 
-			    #{minAmount,javaType=java.lang.Integer,jdbcType=NUMERIC}
-        *}
-    	order by a.current_balance
-    ]]>
+      <complement>
+			  and a.current_balance &lt;= #{maxBalance}
+			  and t.amount &gt;= #{minAmount}
+      order by a.current_balance
+      </complement>
   </select>
 
-  <select java-class-name="BigAccountTxDAO" complement-start="[+-"
-    complement-end="**)">
-	<![CDATA[
+  <select java-class-name="BigAccountTxDAO">
+    <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+    <parameter name="minTxAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 		select a.* , t.*
-		from account a, transaction t
-		where t.account_id = a.id
-  		[+-
-      and a.current_balance &lt;= #{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
-  		**)
-  		
-		  [+-
-      and t.amount &gt;= #{minTxAmount,javaType=java.lang.Integer,jdbcType=NUMERIC}
-	  	**)
-		]]>
+  	  from account a, transaction t
+	    where t.account_id = a.id
+      <complement>
+        and a.current_balance &lt;= #{maxBalance}
+        and t.amount &gt;= #{minTxAmount}
+      </complement>
   </select>
 
   <select java-class-name="UnusualTxDAO">
-  <![CDATA[
+    <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+    <parameter name="minAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+    <parameter name="maxRows" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+    <parameter name="offset" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
     select a.* , t.*
-    from account a, transaction t
-    where t.account_id = a.id
-      {*
-      and a.current_balance &lt;= #{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC}
-      and t.amount &gt;= #{minAmount,javaType=java.lang.Integer,jdbcType=NUMERIC}
-      order by a.id, t.seq_id
-      limit #{maxRows,javaType=java.lang.Integer,jdbcType=NUMERIC}
-      offset #{offset,javaType=java.lang.Integer,jdbcType=NUMERIC}
-      *}
-    ]]>
+      from account a, transaction t
+      where t.account_id = a.id
+      <complement>
+        and a.current_balance &lt;= #{maxBalance}
+        and t.amount &gt;= #{minAmount}
+        order by a.id, t.seq_id
+        limit #{maxRows}
+        offset #{offset}
+      </complement>
   </select>
 
-  <!-- <select name="bad_select"> <![CDATA[ select a.* , t.* from account 
-    a transaction t where t.account_id = a.id {* and a.current_balance <= #{maxBalance,javaType=java.lang.Integer,jdbcType=NUMERIC} 
-    and t.amount >= #{minAmount,javaType=java.lang.Integer,jdbcType=NUMERIC} 
-    order by a.id, t.seq_id limit #{maxRows,javaType=java.lang.Integer,jdbcType=NUMERIC} 
-    offset #{offset,javaType=java.lang.Integer,jdbcType=NUMERIC} *} ]]> </select> -->
-
   <select java-class-name="MultParamSelectDAO">
-  <![CDATA[
+    <parameter name="maxAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
     select a.* , t.*
-    from account a, transaction t
-    where t.account_id = a.id
-      {*
-      and a.current_balance &lt;= #{max_amount,javaType=java.lang.Integer,jdbcType=NUMERIC}
-      and t.amount &lt;= #{max_amount}
-      order by a.id, t.seq_id
-      *}
-    ]]>
+      from account a, transaction t
+      where t.account_id = a.id
+      <complement>
+        and a.current_balance &lt;= #{maxAmount}
+        and t.amount &lt;= #{maxAmount}
+        order by a.id, t.seq_id
+      </complement>
   </select>
 
 </hotrod>

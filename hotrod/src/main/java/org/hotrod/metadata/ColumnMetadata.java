@@ -1,8 +1,5 @@
 package org.hotrod.metadata;
 
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.ConverterTag;

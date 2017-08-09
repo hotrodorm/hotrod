@@ -97,6 +97,20 @@
     </java>
   </target>
 
+  <target name="test-update-views" depends="clean-build">
+    <java classname="tests.UpdateViewsTests" fork="yes">
+      <classpath>
+        <pathelement path="${test.build.dir}" />
+        <pathelement path="gen/hotrod/mappers" />
+        <pathelement path="${db.src.dir}" />
+        <pathelement location="${driverclasspath}" />
+        <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+      </classpath>
+    </java>
+  </target>
+
   <target name="test-version-control" depends="clean-build">
     <java classname="tests.VersionControlTests" fork="yes">
       <classpath>

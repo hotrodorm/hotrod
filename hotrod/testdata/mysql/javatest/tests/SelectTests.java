@@ -3,11 +3,16 @@ package tests;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import hotrod.test.generation.AccountTx0DAO;
-import hotrod.test.generation.AccountTx1DAO;
-import hotrod.test.generation.BigAccountTxDAO;
-import hotrod.test.generation.ConfigValuesDAO;
-import hotrod.test.generation.MultParamSelectDAO;
+import hotrod.test.generation.AccountTx0VO;
+import hotrod.test.generation.AccountTx1VO;
+import hotrod.test.generation.BigAccountTxVO;
+import hotrod.test.generation.ConfigValuesVO;
+import hotrod.test.generation.MultParamSelectVO;
+import hotrod.test.generation.primitives.AccountTx0DAO;
+import hotrod.test.generation.primitives.AccountTx1DAO;
+import hotrod.test.generation.primitives.BigAccountTxDAO;
+import hotrod.test.generation.primitives.ConfigValuesDAO;
+import hotrod.test.generation.primitives.MultParamSelectDAO;
 
 public class SelectTests {
 
@@ -26,21 +31,21 @@ public class SelectTests {
 
     {
       System.out.println("--- a0 ---");
-      for (AccountTx0DAO a0 : AccountTx0DAO.select()) {
+      for (AccountTx0VO a0 : AccountTx0DAO.select()) {
         System.out.println("a0: " + a0);
       }
     }
 
     {
       System.out.println("--- a1 ---");
-      for (AccountTx1DAO a1 : AccountTx1DAO.select(200, 0)) {
+      for (AccountTx1VO a1 : AccountTx1DAO.select(200, 0)) {
         System.out.println("a1: " + a1);
       }
     }
 
     {
       System.out.println("--- big account tx ---");
-      for (BigAccountTxDAO ba : BigAccountTxDAO.select(200, 0)) {
+      for (BigAccountTxVO ba : BigAccountTxDAO.select(200, 0)) {
         System.out.println("ba: " + ba);
       }
     }
@@ -48,9 +53,9 @@ public class SelectTests {
   }
 
   private static void selectByUI() throws SQLException {
-    ConfigValuesDAO example = new ConfigValuesDAO();
+    ConfigValuesVO example = new ConfigValuesVO();
     example.setName("prop3");
-    for (ConfigValuesDAO v : ConfigValuesDAO.selectByExample(example)) {
+    for (ConfigValuesVO v : ConfigValuesDAO.selectByExample(example)) {
       System.out.println("v: " + v);
     }
 
@@ -60,7 +65,7 @@ public class SelectTests {
     // }
 
     System.out.println("===");
-    for (MultParamSelectDAO mp : MultParamSelectDAO.select(160)) {
+    for (MultParamSelectVO mp : MultParamSelectDAO.select(160)) {
       System.out.println("mp=" + mp);
     }
 

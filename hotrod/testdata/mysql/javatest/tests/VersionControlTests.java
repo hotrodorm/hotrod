@@ -5,7 +5,8 @@ import java.sql.SQLException;
 
 import org.hotrod.runtime.exceptions.StaleDataException;
 
-import hotrod.test.generation.VehicleDAO;
+import hotrod.test.generation.VehicleVO;
+import hotrod.test.generation.primitives.VehicleDAO;
 
 public class VersionControlTests {
 
@@ -23,22 +24,22 @@ public class VersionControlTests {
   }
 
   private static void insert() throws SQLException {
-    VehicleDAO v = new VehicleDAO();
+    VehicleVO v = new VehicleVO();
     v.setName("Fiat - " + System.currentTimeMillis());
     v.setMileage(500);
     v.setVersionNumber((short) 1000); // ignored
-    v.insert();
+    VehicleDAO.insert(v);
 
     System.out.println("Inserted with id=" + v.getId() + ", version_number=" + v.getVersionNumber());
   }
 
   private static void updateMultipleTimes() throws SQLException, StaleDataException {
-    VehicleDAO v;
+    VehicleVO v;
     v = VehicleDAO.select(1);
 
     for (int i = 0; i < 10; i++) {
       v.setMileage(v.getMileage() + 1);
-      v.update();
+      VehicleDAO.update(v);
     }
 
     System.out.println("updat 10 times.");
@@ -46,20 +47,20 @@ public class VersionControlTests {
   }
 
   private static void updateWithCyclingVersionNumber() throws SQLException, StaleDataException {
-    VehicleDAO v = VehicleDAO.select(1);
+    VehicleVO v = VehicleDAO.select(1);
 
     System.out.println("updating with cycling.");
 
     for (int i = 0; i < 2; i++) {
       v.setMileage(v.getMileage() + 1);
-      v.update();
+      VehicleDAO.update(v);
     }
 
     System.out.println("Updated.");
   }
 
   private static void delete() throws SQLException, StaleDataException {
-    VehicleDAO v = VehicleDAO.select(1);
+    VehicleVO v = VehicleDAO.select(1);
 
     System.out.println("Will delete in 5s...");
 
@@ -70,7 +71,7 @@ public class VersionControlTests {
       e.printStackTrace();
     }
 
-    v.delete();
+    VehicleDAO.delete(v);
 
     System.out.println("Deleted.");
   }

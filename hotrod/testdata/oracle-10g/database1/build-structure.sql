@@ -26,7 +26,7 @@ create table config_values (
   node number(9) not null,
   cell number(9) not null,
   name varchar2(20) not null,
-  verbatim varchar2(50),
+  verbatim varchar2(50) default '{no-verbatim}',
   constraint cfgval_uc1 unique (node, cell),
   constraint cfgval_uc2 unique (name)
 );
@@ -36,10 +36,13 @@ create table account (
   name varchar2(20) not null,
   type varchar2(10) not null,
   current_balance number(9),
-  created_on date not null,
+  created_on date,
   row_version number(9) not null,
   primary key (id)
 );
+
+create view hefty_account as
+  select * from account where current_balance >= 10000;
 
 create table state_branch (
   id number(9) not null,
@@ -57,7 +60,7 @@ create table transaction (
   account_id number(9) not null,
   seq_id number(9) not null,
   time varchar2(16) not null,
-  amount number(9) not null,
+  amount number(9) default -1 not null,
   fed_branch_id number(18),
   primary key (seq_id),
   constraint tx_account_id_time unique (account_id, time),
@@ -134,6 +137,7 @@ create view tx_branch (account_id, branch_id, branch_name, amount) as
 select t.account_id, b.id, b.name, t.amount from transaction t, federal_branch b 
   where t.fed_branch_id = b.id
   order by t.amount;
+
 
 create sequence seq_test;
 
