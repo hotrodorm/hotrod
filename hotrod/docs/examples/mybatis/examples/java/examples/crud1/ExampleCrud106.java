@@ -1,4 +1,4 @@
-package examples.crud;
+package examples.crud1;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -7,12 +7,12 @@ import daos.DailyReportVO;
 import daos.primitives.DailyReportDAO;
 
 /**
- * Example CRUD 06 - Insert without Autogeneration
+ * Example CRUD 106 - Insert without Autogeneration
  * 
  * @author Vladimir Alarcon
  * 
  */
-public class ExampleCrud06 {
+public class ExampleCrud106 {
 
   public static void main(String[] args) throws SQLException {
 

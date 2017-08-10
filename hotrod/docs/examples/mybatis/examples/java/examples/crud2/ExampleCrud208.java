@@ -1,4 +1,4 @@
-package examples.crud;
+package examples.crud2;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -9,12 +9,12 @@ import daos.primitives.CarDAO.CarOrderBy;
 import examples.Utilities;
 
 /**
- * Example CRUD 15 - Select on Views
+ * Example CRUD 208 - Select on Views
  * 
  * @author Vladimir Alarcon
  * 
  */
-public class ExampleCrud15 {
+public class ExampleCrud208 {
 
   public static void main(String[] args) throws SQLException {
 
@@ -26,7 +26,7 @@ public class ExampleCrud15 {
     example = new CarVO();
     example.setBrand("Toyota");
     List<CarVO> cars1 = CarDAO.selectByExample(example);
-    Utilities.displayCars("1. Select by Example:", cars1);
+    Utilities.displayCars("1. Select by Example - get all Toyota cars:", cars1);
 
     // 2. Select by Example - Using Ordering
     // Example: Find all vehicles of brand Toyota on the view CAR, ordered by
@@ -35,7 +35,8 @@ public class ExampleCrud15 {
     example = new CarVO();
     example.setBrand("Toyota");
     List<CarVO> cars2 = CarDAO.selectByExample(example, CarOrderBy.MODEL, CarOrderBy.MILEAGE$DESC);
-    Utilities.displayCars("2. Select by Example - Using Ordering:", cars2);
+    Utilities.displayCars(
+        "2. Select by Example using ordering - " + "get all Toyota cars, ordered by model, and mileage (desc):", cars2);
 
   }
 

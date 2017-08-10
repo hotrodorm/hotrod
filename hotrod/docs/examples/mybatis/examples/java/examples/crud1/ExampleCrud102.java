@@ -1,4 +1,4 @@
-package examples.crud;
+package examples.crud1;
 
 import java.sql.SQLException;
 
@@ -6,12 +6,12 @@ import daos.VehicleVO;
 import daos.primitives.VehicleDAO;
 
 /**
- * Example CRUD 02 - Update by Primary Key
+ * Example CRUD 102 - Update by Primary Key
  * 
  * @author Vladimir Alarcon
  * 
  */
-public class ExampleCrud02 {
+public class ExampleCrud102 {
 
   public static void main(String[] args) throws SQLException {
 

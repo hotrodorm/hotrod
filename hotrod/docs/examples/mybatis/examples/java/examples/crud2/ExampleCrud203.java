@@ -1,4 +1,4 @@
-package examples.crud;
+package examples.crud2;
 
 import java.sql.SQLException;
 
@@ -7,12 +7,12 @@ import daos.primitives.VehicleDAO;
 import examples.Utilities;
 
 /**
- * Example CRUD 11 - Delete By Example
+ * Example CRUD 203 - Delete By Example
  * 
  * @author Vladimir Alarcon
  * 
  */
-public class ExampleCrud11 {
+public class ExampleCrud203 {
 
   public static void main(String[] args) throws SQLException {
 
@@ -20,7 +20,7 @@ public class ExampleCrud11 {
     int rows;
 
     // 1. Single Column Criteria Delete
-    // Example: Delete all MOTORCYCLES
+    // Example: Delete all trucks
 
     example = new VehicleVO();
     example.setType("TRUCK");
@@ -28,7 +28,7 @@ public class ExampleCrud11 {
     Utilities.displayAllVehicles("1. Single Column Criteria Delete (" + rows + " rows deleted):");
 
     // 2. Multiple Column Criteria Delete
-    // Example: Delete all sold cars
+    // Example: Delete all unsold cars on branch 101
 
     example = new VehicleVO();
     example.setType("CAR");
@@ -38,7 +38,7 @@ public class ExampleCrud11 {
     Utilities.displayAllVehicles("2. Multiple Column Criteria Delete (" + rows + " rows deleted):");
 
     // 3. Delete Using Null Values on Criteria
-    // Example: Delete all unsold cars without a branch_id
+    // Example: Delete all unsold cars without a branch
 
     example = new VehicleVO();
     example.setSold(false);

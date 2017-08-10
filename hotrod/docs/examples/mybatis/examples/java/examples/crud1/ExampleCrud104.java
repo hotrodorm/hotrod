@@ -1,4 +1,4 @@
-package examples.crud;
+package examples.crud1;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -7,12 +7,12 @@ import daos.VehicleVO;
 import daos.primitives.VehicleDAO;
 
 /**
- * Example CRUD 04 - Insert with Identity PK
+ * Example CRUD 104 - Insert with Identity PK
  * 
  * @author Vladimir Alarcon
  * 
  */
-public class ExampleCrud04 {
+public class ExampleCrud104 {
 
   public static void main(String[] args) throws SQLException {
 

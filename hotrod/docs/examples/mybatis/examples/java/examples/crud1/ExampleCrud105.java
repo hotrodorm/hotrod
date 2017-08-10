@@ -1,4 +1,4 @@
-package examples.crud;
+package examples.crud1;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -7,12 +7,12 @@ import daos.ClientVO;
 import daos.primitives.ClientDAO;
 
 /**
- * Example CRUD 05 - Insert using a Sequence
+ * Example CRUD 105 - Insert using a Sequence
  * 
  * @author Vladimir Alarcon
  * 
  */
-public class ExampleCrud05 {
+public class ExampleCrud105 {
 
   public static void main(String[] args) throws SQLException {
 

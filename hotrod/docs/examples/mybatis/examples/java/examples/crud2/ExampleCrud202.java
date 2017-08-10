@@ -1,22 +1,22 @@
-package examples;
+package examples.crud2;
 
 import java.sql.Date;
 import java.sql.SQLException;
 
 import daos.VehicleVO;
 import daos.primitives.VehicleDAO;
+import examples.Utilities;
 
 /**
- * Example 04 - Update by Example
+ * Example CRUD 202 - Update By Example
  * 
  * @author Vladimir Alarcon
  * 
  */
-public class Example04 {
+public class ExampleCrud202 {
 
   public static void main(String[] args) throws SQLException {
 
-    System.out.println("=== Running Example 04 - Update by Example ===");
     VehicleVO example;
     VehicleVO updateValues;
     int rows;
@@ -26,7 +26,7 @@ public class Example04 {
     // Example: Set mileage to 10 to all cars on branch 101.
 
     example = new VehicleVO();
-    example.setBranchId(103); // search branch_id = 103
+    example.setBranchId(101); // search branch_id = 101
     updateValues = new VehicleVO();
     updateValues.setMileage(10); // set mileage to 10
     rows = VehicleDAO.updateByExample(example, updateValues);
@@ -57,7 +57,7 @@ public class Example04 {
     rows = VehicleDAO.updateByExample(example, updateValues);
     Utilities.displayAllVehicles("3. Searching & Update Using Null Values (" + rows + " rows updated):");
 
-    // 4. Update with no condition (all rows)
+    // 4. Update with no filter condition (all rows)
     // Set Purchase Date to 2017-01-01 to all vehicles
 
     example = new VehicleVO();
@@ -65,9 +65,6 @@ public class Example04 {
     updateValues.setPurchasedOn(Date.valueOf("2017-01-01"));
     rows = VehicleDAO.updateByExample(example, updateValues);
     Utilities.displayAllVehicles("4. Update with no condition, i.e all rows (" + rows + " rows updated):");
-
-    System.out.println(" ");
-    System.out.println("=== Example 04 Complete ===");
 
   }
 

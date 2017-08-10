@@ -1,4 +1,4 @@
-package examples.crud;
+package examples.crud1;
 
 import java.sql.SQLException;
 
@@ -6,12 +6,12 @@ import daos.BranchVO;
 import daos.primitives.BranchDAO;
 
 /**
- * Example CRUD 08 - Insert using Optional Identity
+ * Example CRUD 108 - Insert using Optional Identity
  * 
  * @author Vladimir Alarcon
  * 
  */
-public class ExampleCrud08 {
+public class ExampleCrud108 {
 
   public static void main(String[] args) throws SQLException {
 

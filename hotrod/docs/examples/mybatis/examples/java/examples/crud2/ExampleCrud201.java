@@ -1,4 +1,4 @@
-package examples.crud;
+package examples.crud2;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -9,12 +9,12 @@ import daos.primitives.VehicleDAO.VehicleOrderBy;
 import examples.Utilities;
 
 /**
- * Example CRUD 09 - Select By Example
+ * Example CRUD 201 - Select By Example
  * 
  * @author Vladimir Alarcon
  * 
  */
-public class ExampleCrud09 {
+public class ExampleCrud201 {
 
   public static void main(String[] args) throws SQLException {
 
@@ -40,7 +40,7 @@ public class ExampleCrud09 {
     example = new VehicleVO();
     example.setBrand("Toyota");
     example.setModel("Tercel");
-    example.setBranchId(null); // This forces to search for null branch_id
+    example.setBranchId(null); // This forces to search for a null branch_id
     List<VehicleVO> tercelNoBranch = VehicleDAO.selectByExample(example);
     Utilities.displayVehicles("3. Select All Vehicles 'Toyota Tercel' with no branch:", tercelNoBranch);
 

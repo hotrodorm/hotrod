@@ -32,7 +32,7 @@ drop table if exists preferred_colors;
 create table branch (
   id integer identity primary key not null,
   name varchar(50) not null,
-  current_cash integer not null
+  current_cash integer default 0 not null
 );
 
 insert into branch (id, name, current_cash) values (101, 'Daytona', 15000);
@@ -45,7 +45,7 @@ insert into branch (id, name, current_cash) values (106, 'Costa Mesa', 800);
 create table visit (
   recorded_at datetime not null,
   branch_id integer not null,
-  notes varchar(1000) not null,
+  notes varchar(1000) default '(no notes taken)' not null,
   constraint fk_visit_branch foreign key (branch_id) references branch (id),
 );
 
@@ -57,10 +57,10 @@ create table vehicle (
   vin varchar(20) not null,
   engine_number varchar(30) not null,
   mileage integer,
-  purchased_on date not null,
+  purchased_on date default current_date() not null,
   branch_id integer,
   list_price integer,
-  sold boolean not null,
+  sold boolean default false not null,
   constraint fk_vehicle_branch foreign key (branch_id) references branch (id),
   constraint vehicle_uq_vin unique (vin),
   constraint vehicle_uq_en unique (engine_number)
@@ -97,6 +97,10 @@ insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_
   values ('Kia', 'Rio', 'CAR', 'VIN4401', 'EN102881', 28500, '2016-03-14', 104, 14900, true);
 
 create view car as select * from vehicle where type = 'CAR';
+
+-- create trigger car_view_updatable instead of insert, update, delete on car for each row 
+--   call "examples.triggers.UpdatableCarViewTrigger";
+
 create view truck as select * from vehicle where type = 'TRUCK';
 create view motorcycle as select * from vehicle where type = 'MOTORCYCLE';
 
@@ -171,7 +175,7 @@ create sequence pdf_report_file_seq start with 60;
 create table daily_report (
   report_date date not null,
   branch_id integer not null,
-  total_sold bigint not null,
+  total_sold bigint default 0 not null,
   primary key (report_date, branch_id),
   constraint fk_report_branch foreign key (branch_id) references branch (id)
 );

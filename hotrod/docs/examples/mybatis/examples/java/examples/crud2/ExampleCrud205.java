@@ -1,4 +1,4 @@
-package examples;
+package examples.crud2;
 
 import java.sql.SQLException;
 
@@ -8,25 +8,23 @@ import daos.primitives.ClientDAO;
 import daos.primitives.VehicleDAO;
 
 /**
- * Example 07 - Select by Unique Indexes
+ * Example CRUD 205 - Select By Unique Constraint
  * 
  * @author Vladimir Alarcon
  * 
  */
-public class Example07 {
+public class ExampleCrud205 {
 
   public static void main(String[] args) throws SQLException {
-
-    System.out.println("=== Running Example 07 - Select by Unique Indexes ===");
 
     // 1. Select by Unique Index - Single Column
     // Example: Find the vehicle with VIN = VIN7492
 
     VehicleVO v1 = VehicleDAO.selectByUIVin("VIN7492");
     if (v1 == null) {
-      System.out.println("1. Select by Unique Index - Single Column - Vehicle not found.");
+      System.out.println("1. Select by Unique Index (single column) - Vehicle not found.");
     } else {
-      System.out.println("1. Select by Unique Index - Single Column - ID=" + v1.getId());
+      System.out.println("1. Select by Unique Index (single column) - ID=" + v1.getId());
     }
 
     // 2. Select by Unique Index - Single Column
@@ -34,24 +32,21 @@ public class Example07 {
 
     VehicleVO v2 = VehicleDAO.selectByUIEngineNumber("EN102937");
     if (v2 == null) {
-      System.out.println("2. Select by Unique Index - Single Column - Vehicle not found.");
+      System.out.println("2. Select by Unique Index (single column) - Vehicle not found.");
     } else {
-      System.out.println("2. Select by Unique Index - Single Column - ID=" + v2.getId());
+      System.out.println("2. Select by Unique Index (single column) - ID=" + v2.getId());
     }
 
-    // 3. Select by Unique Index - Multiple Columns
+    // 3. Select by Unique Composite Index
     // Example: Find the client from California state, and driver's license
     // C535893758
 
     ClientVO c1 = ClientDAO.selectByUIStateDriversLicense("CA", "C535893758");
     if (c1 == null) {
-      System.out.println("3. Select by Unique Index - Multiple Columns - Client not found.");
+      System.out.println("3. Select by Unique Composite Index - Client not found.");
     } else {
-      System.out.println("3. Select by Unique Index - Multiple Columns - Client: " + c1.getName());
+      System.out.println("3. Select by Unique Composite Index - Client: " + c1.getName());
     }
-
-    System.out.println(" ");
-    System.out.println("=== Example 07 Complete ===");
 
   }
 
