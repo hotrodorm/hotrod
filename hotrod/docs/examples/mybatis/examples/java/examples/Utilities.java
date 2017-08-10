@@ -11,12 +11,18 @@ import org.nocrala.tools.texttablefmt.CellStyle.HorizontalAlign;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
+import daos.BranchVO;
 import daos.CarVO;
 import daos.ClientVO;
+import daos.DailyReportVO;
 import daos.VehicleVO;
+import daos.VisitVO;
+import daos.primitives.BranchDAO;
 import daos.primitives.CarDAO;
 import daos.primitives.ClientDAO;
+import daos.primitives.DailyReportDAO;
 import daos.primitives.VehicleDAO;
+import daos.primitives.VisitDAO;
 
 public class Utilities {
 
@@ -48,18 +54,18 @@ public class Utilities {
     t.addCell("List Price", RIGHT);
     t.addCell("Sold?");
 
-    for (VehicleVO c : vehicles) {
-      t.addCell("" + c.getId());
-      t.addCell(c.getBrand());
-      t.addCell(c.getModel());
-      t.addCell(c.getType());
-      t.addCell(c.getVin());
-      t.addCell(c.getEngineNumber());
-      t.addCell(df.format(c.getMileage()), RIGHT);
-      t.addCell("" + c.getPurchasedOn());
-      t.addCell("" + c.getBranchId(), CENTER);
-      t.addCell("" + (c.getListPrice() == null ? "null" : mf.format(c.getListPrice())), RIGHT);
-      t.addCell("" + c.getSold());
+    for (VehicleVO v : vehicles) {
+      t.addCell("" + v.getId());
+      t.addCell(v.getBrand());
+      t.addCell(v.getModel());
+      t.addCell(v.getType());
+      t.addCell(v.getVin());
+      t.addCell(v.getEngineNumber());
+      t.addCell(df.format(v.getMileage()), RIGHT);
+      t.addCell("" + v.getPurchasedOn());
+      t.addCell("" + v.getBranchId(), CENTER);
+      t.addCell("" + (v.getListPrice() == null ? "null" : mf.format(v.getListPrice())), RIGHT);
+      t.addCell("" + v.getSold());
     }
 
     System.out.println(t.render());
@@ -121,8 +127,6 @@ public class Utilities {
     System.out.println(title);
 
     CellStyle RIGHT = new CellStyle(HorizontalAlign.right);
-    CellStyle CENTER = new CellStyle(HorizontalAlign.center);
-    DecimalFormat df = new DecimalFormat("#,##0");
     DecimalFormat mf = new DecimalFormat("'$'#,##0");
     SimpleDateFormat tsf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -147,6 +151,88 @@ public class Utilities {
       t.addCell("" + c.getVip());
       t.addCell(tsf.format(c.getCreatedAt()));
       t.addCell("" + c.getRowVersion(), RIGHT);
+    }
+
+    System.out.println(t.render());
+  }
+
+  // Table DAILY_REPORT
+
+  public static void displayAllDailyReports(final String title) throws SQLException {
+    displayDailyReports(title, DailyReportDAO.selectByExample(new DailyReportVO()));
+  }
+
+  public static void displayDailyReports(final String title, final List<DailyReportVO> reports) throws SQLException {
+    System.out.println(" ");
+    System.out.println(title);
+
+    CellStyle RIGHT = new CellStyle(HorizontalAlign.right);
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    DecimalFormat mf = new DecimalFormat("'$'#,##0");
+
+    Table t = new Table(3, BorderStyle.DESIGN_FORMAL, ShownBorders.HEADER_AND_COLUMNS);
+    t.addCell("Report Date");
+    t.addCell("Branch ID", RIGHT);
+    t.addCell("Total Sold", RIGHT);
+
+    for (DailyReportVO r : reports) {
+      t.addCell(df.format(r.getReportDate()));
+      t.addCell("" + r.getBranchId(), RIGHT);
+      t.addCell(mf.format(r.getTotalSold()), RIGHT);
+    }
+
+    System.out.println(t.render());
+  }
+
+  // Table VISITS
+
+  public static void displayAllVisits(final String title) throws SQLException {
+    displayVisits(title, VisitDAO.selectByExample(new VisitVO()));
+  }
+
+  public static void displayVisits(final String title, final List<VisitVO> visits) throws SQLException {
+    System.out.println(" ");
+    System.out.println(title);
+
+    CellStyle RIGHT = new CellStyle(HorizontalAlign.right);
+    SimpleDateFormat tsf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    Table t = new Table(3, BorderStyle.DESIGN_FORMAL, ShownBorders.HEADER_AND_COLUMNS);
+    t.addCell("Recorded At");
+    t.addCell("Branch ID", RIGHT);
+    t.addCell("Notes");
+
+    for (VisitVO v : visits) {
+      t.addCell(tsf.format(v.getRecordedAt()));
+      t.addCell("" + v.getBranchId(), RIGHT);
+      t.addCell(v.getNotes());
+    }
+
+    System.out.println(t.render());
+  }
+
+  // Table BRANCH
+
+  public static void displayAllBranches(final String title) throws SQLException {
+    displayBranches(title, BranchDAO.selectByExample(new BranchVO()));
+  }
+
+  public static void displayBranches(final String title, final List<BranchVO> branches) throws SQLException {
+    System.out.println(" ");
+    System.out.println(title);
+
+    CellStyle RIGHT = new CellStyle(HorizontalAlign.right);
+    DecimalFormat mf = new DecimalFormat("'$'#,##0");
+
+    Table t = new Table(3, BorderStyle.DESIGN_FORMAL, ShownBorders.HEADER_AND_COLUMNS);
+    t.addCell("ID");
+    t.addCell("Name");
+    t.addCell("Current Cash", RIGHT);
+
+    for (BranchVO b : branches) {
+      t.addCell("" + b.getId());
+      t.addCell(b.getName());
+      t.addCell(mf.format(b.getCurrentCash()), RIGHT);
     }
 
     System.out.println(t.render());
