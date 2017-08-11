@@ -36,8 +36,9 @@
   <target name="-issue-h2-start" depends="compile" unless="h2.running">
     <!--
     <java classname="org.h2.tools.Server" fork="true" spawn="true">
-    -->
     <java classname="org.h2.tools.Server">
+    -->
+    <java classname="org.h2.tools.Server" fork="true" spawn="true">
       <arg value="-tcp" />
       <arg value="-tcpPort" />
       <arg value="${h2.port}" />

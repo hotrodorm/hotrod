@@ -19,6 +19,7 @@ drop view if exists motorcycle;
 drop table if exists vehicle;
 drop table if exists client;
 drop sequence if exists client_seq;
+drop table if exists origination_type;
 drop table if exists branch;
 drop table if exists purchase;
 drop sequence if exists pdf_report_file_seq;
@@ -102,12 +103,28 @@ create trigger car_view_updatable instead of insert, update, delete on car for e
   call "examples.triggers.UpdatableCarViewTrigger";
 
 insert into car (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
-  values ('Daewoo', 'Fast', 'CAR', 'VIN4477', 'EN1023881', 1100, '2010-03-17', 104, 3200, false);
--- delete from car where id = 3;
--- update car set mileage = 1234 where id = 1;
+   values ('Daewoo', 'Leganza', 'CAR', 'VIN4477', 'EN1023881', 1100, '2010-03-17', 104, 3200, false);
+
+delete from car where id = 3;
+
+update car set mileage = 1234 where id = 1;
 
 create view truck as select * from vehicle where type = 'TRUCK';
 create view motorcycle as select * from vehicle where type = 'MOTORCYCLE';
+
+create table origination_type (
+  id integer identity not null primary key,
+  description varchar(50) not null,
+  allow_upsale integer not null,
+  channel_name varchar(30) not null,
+  since date not null
+);
+
+insert into origination_type (id, description, allow_upsale, channel_name, since) values (101, 'In House', 0, 'Internal', '2015-01-01');
+insert into origination_type (id, description, allow_upsale, channel_name, since) values (102, 'Individual walk-in', 1, 'Walk In', '2015-01-01');
+insert into origination_type (id, description, allow_upsale, channel_name, since) values (103, 'Individual referral', 1, 'Referral', '2015-03-15');
+insert into origination_type (id, description, allow_upsale, channel_name, since) values (104, 'Competitor referral', 1, 'Competitor', '2017-04-29');
+insert into origination_type (id, description, allow_upsale, channel_name, since) values (105, 'Wholesale client', 0, 'B2B', '2017-07-04');
 
 create table client (
   id integer primary key not null,
@@ -118,8 +135,10 @@ create table client (
   referred_by_id integer,
   total_purchased bigint,
   vip boolean default false,
+  orig_type integer default 102 not null,
   row_version bigint not null,
   constraint fk_client_referred_by foreign key (referred_by_id) references client (id),
+  constraint fk_client_origination foreign key (orig_type) references origination_type (id),
   constraint client_uq_sdl unique (state, drivers_license)
 );
 

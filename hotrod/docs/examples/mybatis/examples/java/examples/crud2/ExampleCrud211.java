@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import daos.CarVO;
 import daos.primitives.CarDAO;
+import examples.Utilities;
 
 /**
  * Example CRUD 211 - Insert on Views
@@ -31,7 +32,7 @@ public class ExampleCrud211 {
     v.setListPrice(22400);
     v.setSold(false);
     int rows = CarDAO.insertByExample(v);
-    System.out.println("1. Car inserted by example. rows=" + rows);
+    Utilities.displayAllCars("1. Car inserted by example. rows=" + rows);
 
   }
 
