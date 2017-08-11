@@ -12,7 +12,7 @@
 
       <dataSource type="POOLED">
         <property name="driver" value="org.h2.Driver" />
-        <property name="url" value="jdbc:h2:tcp://localhost:12345/db001;IFEXISTS=TRUE" />
+        <property name="url" value="jdbc:h2:tcp://localhost:12345/db001;IFEXISTS=TRUE;MVCC=true" />
         <property name="username" value="sa" />
         <property name="password" value="" />
       </dataSource>

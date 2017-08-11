@@ -9,7 +9,7 @@
   <property name="jdbc.driverlibrary" value="lib/h2/h2-1.3.176.jar" />
   <property name="jdbc.driverclass" value="org.h2.Driver" />
   <property name="jdbc.url"
-            value="jdbc:h2:tcp://localhost:${h2.port}/db001;IFEXISTS=TRUE" />
+            value="jdbc:h2:tcp://localhost:${h2.port}/db001;IFEXISTS=TRUE;MVCC=true" />
   <property name="jdbc.username" value="sa" />
   <property name="jdbc.password" value="" />
   <property name="jdbc.catalog" value="DB001" />
@@ -33,14 +33,18 @@
     <antcall target="-h2-already-started" />
   </target>
 
-  <target name="-issue-h2-start" unless="h2.running">
+  <target name="-issue-h2-start" depends="compile" unless="h2.running">
+    <!--
     <java classname="org.h2.tools.Server" fork="true" spawn="true">
+    -->
+    <java classname="org.h2.tools.Server">
       <arg value="-tcp" />
       <arg value="-tcpPort" />
       <arg value="${h2.port}" />
       <arg value="-baseDir" />
       <arg value="database" />
       <classpath>
+        <pathelement location="build" />
         <pathelement location="${jdbc.driverlibrary}" />
       </classpath>
     </java>
