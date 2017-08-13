@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 
 import org.h2.tools.TriggerAdapter;
 
@@ -21,7 +20,9 @@ public class UpdatableCarViewTrigger extends TriggerAdapter {
     log("schemaName=" + schemaName + " triggerName=" + triggerName + " tableName=" + tableName + " before=" + before
         + " type=" + type);
     this.delete = conn.prepareStatement("delete from vehicle where id = ?");
-    this.insert = conn.prepareStatement("insert into vehicle values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    this.insert = conn.prepareStatement(
+        "insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold) "
+            + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     this.update = conn.prepareStatement("update vehicle set "
         + "brand = ?, model = ?, type = ?, vin = ?, engine_number = ?, mileage = ?, purchased_on = ?, branch_id = ?, list_price = ?, sold = ? "
         + "where id = ?");
@@ -36,95 +37,80 @@ public class UpdatableCarViewTrigger extends TriggerAdapter {
       // DELETE
 
       if (oldRow != null && newRow == null && oldRow.next()) {
+
         int id = oldRow.getInt(1);
         this.delete.setInt(1, id);
         this.delete.execute();
+
         log("Vehicle #" + id + " deleted");
+
       }
 
       // UPDATE
 
       if (oldRow != null && newRow != null && oldRow.next() && newRow.next()) {
+
         int rcol = 1;
+        Integer id = JdbcUtil.getIntObj(newRow, rcol++);
+        String brand = JdbcUtil.getString(newRow, rcol++);
+        String model = JdbcUtil.getString(newRow, rcol++);
+        String vin = JdbcUtil.getString(newRow, rcol++);
+        String engineNumber = JdbcUtil.getString(newRow, rcol++);
+        Integer mileage = JdbcUtil.getIntObj(newRow, rcol++);
+        Date purchasedOn = JdbcUtil.getSQLDate(newRow, rcol++);
+        Integer branchId = JdbcUtil.getIntObj(newRow, rcol++);
+        Integer listPrice = JdbcUtil.getIntObj(newRow, rcol++);
+        Boolean sold = JdbcUtil.getBooleanObj(newRow, rcol++);
 
-        int id = newRow.getInt(rcol++);
-        String brand = newRow.getString(rcol++);
-        String model = newRow.getString(rcol++);
-        String type = newRow.getString(rcol++);
-        String vin = newRow.getString(rcol++);
-        String engineNumber = newRow.getString(rcol++);
-
-        Integer mileage = newRow.getInt(rcol++);
-        if (newRow.wasNull()) {
-          mileage = null;
-        }
-
-        Date purchasedOn = newRow.getDate(rcol++);
-
-        Integer branchId = newRow.getInt(rcol++);
-        if (newRow.wasNull()) {
-          branchId = null;
-        }
-
-        Integer listPrice = newRow.getInt(rcol++);
-        if (newRow.wasNull()) {
-          listPrice = null;
-        }
-
-        Boolean sold = newRow.getBoolean(rcol++);
-
-        int ucol = 1;
-        this.update.setString(ucol++, brand);
-        this.update.setString(ucol++, model);
-        this.update.setString(ucol++, type);
-        this.update.setString(ucol++, vin);
-        this.update.setString(ucol++, engineNumber);
-
-        if (mileage != null) {
-          this.update.setInt(ucol++, mileage);
-        } else {
-          this.update.setNull(ucol++, Types.NUMERIC);
-        }
-
-        this.update.setDate(ucol++, purchasedOn);
-
-        if (branchId != null) {
-          this.update.setInt(ucol++, branchId);
-        } else {
-          this.update.setNull(ucol++, Types.NUMERIC);
-        }
-
-        if (listPrice != null) {
-          this.update.setInt(ucol++, listPrice);
-        } else {
-          this.update.setNull(ucol++, Types.NUMERIC);
-        }
-
-        this.update.setBoolean(ucol++, sold);
-
-        this.update.setInt(ucol++, id);
+        int icol = 1;
+        JdbcUtil.setString(this.update, icol++, brand);
+        JdbcUtil.setString(this.update, icol++, model);
+        JdbcUtil.setString(this.update, icol++, "CAR");
+        JdbcUtil.setString(this.update, icol++, vin);
+        JdbcUtil.setString(this.update, icol++, engineNumber);
+        JdbcUtil.setInt(this.update, icol++, mileage);
+        JdbcUtil.setSQLDate(this.update, icol++, purchasedOn);
+        JdbcUtil.setInt(this.update, icol++, branchId);
+        JdbcUtil.setInt(this.update, icol++, listPrice);
+        JdbcUtil.setBoolean(this.update, icol++, sold);
+        JdbcUtil.setInt(this.update, icol++, id);
         this.update.execute();
+
         log("Vehicle #" + id + " updated");
+
       }
 
       // INSERT
 
       if (oldRow == null && newRow != null && newRow.next()) {
-        int col = 1;
-        int id = newRow.getInt(col);
-        this.insert.setInt(col++, id);
-        this.insert.setString(col, newRow.getString(col++));
-        this.insert.setString(col, newRow.getString(col++));
-        this.insert.setString(col, newRow.getString(col++));
-        this.insert.setString(col, newRow.getString(col++));
-        this.insert.setString(col, newRow.getString(col++));
-        this.insert.setInt(col, newRow.getInt(col++));
-        this.insert.setDate(col, newRow.getDate(col++));
-        this.insert.setInt(col, newRow.getInt(col++));
-        this.insert.setInt(col, newRow.getInt(col++));
-        this.insert.setBoolean(col, newRow.getBoolean(col++));
+
+        int rcol = 1;
+        Integer id = JdbcUtil.getIntObj(newRow, rcol++);
+        String brand = JdbcUtil.getString(newRow, rcol++);
+        String model = JdbcUtil.getString(newRow, rcol++);
+        String vin = JdbcUtil.getString(newRow, rcol++);
+        String engineNumber = JdbcUtil.getString(newRow, rcol++);
+        Integer mileage = JdbcUtil.getIntObj(newRow, rcol++);
+        Date purchasedOn = JdbcUtil.getSQLDate(newRow, rcol++);
+        Integer branchId = JdbcUtil.getIntObj(newRow, rcol++);
+        Integer listPrice = JdbcUtil.getIntObj(newRow, rcol++);
+        Boolean sold = JdbcUtil.getBooleanObj(newRow, rcol++);
+
+        int icol = 1;
+        JdbcUtil.setString(this.insert, icol++, brand);
+        JdbcUtil.setString(this.insert, icol++, model);
+        JdbcUtil.setString(this.insert, icol++, "CAR");
+        JdbcUtil.setString(this.insert, icol++, vin);
+        JdbcUtil.setString(this.insert, icol++, engineNumber);
+        JdbcUtil.setInt(this.insert, icol++, mileage);
+        JdbcUtil.setSQLDate(this.insert, icol++, purchasedOn);
+        JdbcUtil.setInt(this.insert, icol++, branchId);
+        JdbcUtil.setInt(this.insert, icol++, listPrice);
+        JdbcUtil.setBoolean(this.insert, icol++, sold);
         this.insert.execute();
+
         log("Vehicle inserted");
+
       }
 
     } catch (RuntimeException e) {

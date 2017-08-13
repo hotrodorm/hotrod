@@ -33,11 +33,7 @@
     <antcall target="-h2-already-started" />
   </target>
 
-  <target name="-issue-h2-start" depends="compile" unless="h2.running">
-    <!--
-    <java classname="org.h2.tools.Server" fork="true" spawn="true">
-    <java classname="org.h2.tools.Server">
-    -->
+  <target name="-issue-h2-start" depends="compile-triggers" unless="h2.running">
     <java classname="org.h2.tools.Server" fork="true" spawn="true">
       <arg value="-tcp" />
       <arg value="-tcpPort" />
@@ -156,9 +152,23 @@
     <pathelement location="lib/extras/text-table-formatter-1.1.2.jar" />
   </path>
 
-  <target name="compile">
+  <target name="clean">
     <delete dir="build" />
     <mkdir dir="build" />
+  </target>
+
+  <target name="compile-triggers" depends="clean">
+    <javac destdir="build" includeantruntime="false" debug="true">
+      <src path="java" />
+      <include name="examples/triggers/**" />
+      <classpath refid="examples.path" />
+      <classpath>
+        <pathelement location="lib/hotrod/hotrod-${hotrod.version}.jar" />
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="compile" depends="clean">
     <javac destdir="build" includeantruntime="false" debug="true">
       <src path="java" />
       <src path="auto-generated/java" />

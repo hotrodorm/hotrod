@@ -97,16 +97,18 @@ insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_
 insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
   values ('Kia', 'Rio', 'CAR', 'VIN4401', 'EN102881', 28500, '2016-03-14', 104, 14900, true);
 
-create view car as select * from vehicle where type = 'CAR';
+create view car as
+  select id, brand, model, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold 
+    from vehicle where type = 'CAR';
 
 create trigger car_view_updatable instead of insert, update, delete on car for each row 
   call "examples.triggers.UpdatableCarViewTrigger";
 
-insert into car (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
-   values ('Daewoo', 'Leganza', 'CAR', 'VIN4477', 'EN1023881', 1100, '2010-03-17', 104, 3200, false);
+insert into car (brand, model, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
+  values ('Daewoo', 'Fast', 'VIN4477', 'EN1023881', 1100, '2010-03-17', 104, 3200, false);
 
 delete from car where id = 3;
-
+  
 update car set mileage = 1234 where id = 1;
 
 create view truck as select * from vehicle where type = 'TRUCK';
