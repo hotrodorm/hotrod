@@ -3,32 +3,29 @@ package org.hotrod.metadata;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hotrod.ant.ControlledException;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.EnumTag.EnumConstant;
 import org.hotrod.config.EnumTag.EnumProperty;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
-public class EnumMetadata {
+public class EnumDataSetMetadata extends TableDataSetMetadata {
 
-  private static final Logger log = Logger.getLogger(EnumMetadata.class);
+  private static final Logger log = Logger.getLogger(EnumDataSetMetadata.class);
 
   private EnumTag tag;
-  @SuppressWarnings("unused")
-  private HotRodConfigTag config;
-  @SuppressWarnings("unused")
-  private DatabaseAdapter adapter;
 
   // Constructor
 
-  public EnumMetadata(final EnumTag tag, final DatabaseAdapter adapter, final HotRodConfigTag config) {
-
+  public EnumDataSetMetadata(final EnumTag tag, final JdbcTable t, final DatabaseAdapter adapter, final HotRodConfigTag config)
+      throws UnresolvableDataTypeException, ControlledException {
+    super(tag, t, adapter, config);
     log.debug("init");
     this.tag = tag;
-    this.config = config;
-    this.adapter = adapter;
-
   }
 
   // Indexing methods
@@ -46,7 +43,7 @@ public class EnumMetadata {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    EnumMetadata other = (EnumMetadata) obj;
+    EnumDataSetMetadata other = (EnumDataSetMetadata) obj;
     return this.tag.equals(other);
   }
 

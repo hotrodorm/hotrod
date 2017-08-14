@@ -12,7 +12,6 @@ import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
-import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.metadata.ColumnMetadata;
@@ -26,7 +25,8 @@ public class ObjectAbstractVO {
 
   private DataSetMetadata metadata;
   private DataSetLayout layout;
-  private DAOType type;
+  private MyBatisGenerator generator;
+  private DAOType daoType;
   private MyBatisTag myBatisTag;
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
@@ -37,15 +37,16 @@ public class ObjectAbstractVO {
 
   // Constructor
 
-  public ObjectAbstractVO(final DataSetMetadata metadata, final DataSetLayout layout, final DAOType type,
-      final MyBatisTag myBatisTag) {
+  public ObjectAbstractVO(final DataSetMetadata metadata, final DataSetLayout layout, final MyBatisGenerator generator,
+      final DAOType daoType, final MyBatisTag myBatisTag) {
     log.debug("init");
     this.metadata = metadata;
     this.layout = layout;
-    if (type == null) {
+    this.generator = generator;
+    if (daoType == null) {
       throw new RuntimeException("VOType cannot be null.");
     }
-    this.type = type;
+    this.daoType = daoType;
     this.myBatisTag = myBatisTag;
     this.fragmentConfig = metadata.getFragmentConfig();
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
@@ -130,13 +131,19 @@ public class ObjectAbstractVO {
 
   private void writeProperties() throws IOException, UnresolvableDataTypeException {
     println("  // VO Properties ("
-        + (this.type == DAOType.TABLE ? "table" : this.type == DAOType.VIEW ? "view" : "select") + " columns)");
+        + (this.daoType == DAOType.TABLE ? "table" : this.daoType == DAOType.VIEW ? "view" : "select") + " columns)");
     println();
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      println("  protected " + cm.getType().getJavaClassName() + " " + cm.getIdentifier().getJavaMemberIdentifier()
-          + " = null;" + (cm.getType().isLOB() ? " // it's a LOB type" : ""));
+      String javaType = resolveType(cm);
+      println("  protected " + javaType + " " + cm.getIdentifier().getJavaMemberIdentifier() + " = null;"
+          + (cm.getType().isLOB() ? " // it's a LOB type" : ""));
     }
     println();
+  }
+
+  private String resolveType(final ColumnMetadata cm) {
+    EnumClass ec = this.generator.getEnum(cm.getEnumMetadata());
+    return ec != null ? ec.getFullClassName() : cm.getType().getJavaClassName();
   }
 
   private void writeGettersAndSetters() throws IOException, UnresolvableDataTypeException {
@@ -144,28 +151,27 @@ public class ObjectAbstractVO {
     println();
 
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      PropertyType type = cm.getType();
+      String javaType = resolveType(cm);
       String m = cm.getIdentifier().getJavaMemberIdentifier();
 
-      println("  public final " + type.getJavaClassName() + " " + cm.getIdentifier().getGetter() + "() {");
+      println("  public final " + javaType + " " + cm.getIdentifier().getGetter() + "() {");
       println("    return this." + m + ";");
       println("  }");
       println();
 
       String setter = cm.getIdentifier().getSetter();
-      writeSetter(cm, type, m, setter);
+      writeSetter(cm, javaType, m, setter);
 
     }
 
   }
 
-  private void writeSetter(final ColumnMetadata cm, final PropertyType type, final String m, final String setter)
+  private void writeSetter(final ColumnMetadata cm, final String javaType, final String m, final String setter)
       throws IOException {
-    println("  public final void " + setter + "(final " + type.getJavaClassName() + " " + m + ") {");
+    println("  public final void " + setter + "(final " + javaType + " " + m + ") {");
     println("    this." + m + " = " + m + ";");
     String name = cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
     println("    this.propertiesChangeLog." + name + " = true;");
-
     println("  }");
     println();
   }

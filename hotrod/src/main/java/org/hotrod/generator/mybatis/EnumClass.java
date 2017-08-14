@@ -13,7 +13,7 @@ import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag.EnumConstant;
 import org.hotrod.config.EnumTag.EnumProperty;
 import org.hotrod.config.HotRodFragmentConfigTag;
-import org.hotrod.metadata.EnumMetadata;
+import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ClassPackage;
 
@@ -25,7 +25,8 @@ public class EnumClass {
 
   // Properties
 
-  private EnumMetadata metadata;
+  private EnumDataSetMetadata metadata;
+  private DataSetLayout layout;
 
   private DaosTag daos;
   @SuppressWarnings("unused")
@@ -34,13 +35,18 @@ public class EnumClass {
   private ClassPackage fragmentPackage;
 
   private ClassPackage primitivesPackage;
+
+  private ClassPackage classPackage;
+
   private Writer w;
 
   // Constructor
 
-  public EnumClass(final EnumMetadata metadata, final DaosTag daos, final MyBatisGenerator generator) {
+  public EnumClass(final EnumDataSetMetadata metadata, final DataSetLayout layout, final DaosTag daos,
+      final MyBatisGenerator generator) {
     log.debug("init");
     this.metadata = metadata;
+    this.layout = layout;
     this.daos = daos;
     this.generator = generator;
 
@@ -48,6 +54,9 @@ public class EnumClass {
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage() : null;
     this.primitivesPackage = this.daos.getPrimitivesPackage(this.fragmentPackage);
+
+    this.classPackage = this.layout.getDAOPrimitivePackage(this.fragmentPackage);
+
   }
 
   // Behavior
@@ -130,6 +139,10 @@ public class EnumClass {
 
   public String getClassName() {
     return this.metadata.getJavaClassName();
+  }
+
+  public String getFullClassName() {
+    return this.classPackage.getFullClassName(this.getClassName());
   }
 
   // Utilities

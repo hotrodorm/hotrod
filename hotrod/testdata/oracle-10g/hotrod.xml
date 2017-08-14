@@ -83,11 +83,6 @@
 
   </select>
 
-  <enum name="employee_state" name-column="description">
-    <non-persistent value="100" name="NONE" />
-    <non-persistent value="101" name="ALL" />
-  </enum>
-
 <!--    
   <select>
   <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />

@@ -11,6 +11,7 @@ import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.metadata.DataSetMetadata;
+import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 
@@ -20,6 +21,7 @@ public class ObjectVO {
 
   private DataSetMetadata metadata;
   private DataSetLayout layout;
+  private MyBatisGenerator generator;
   private ObjectAbstractVO abstractVO;
   private MyBatisTag myBatisTag;
 
@@ -28,12 +30,13 @@ public class ObjectVO {
 
   private ClassPackage classPackage;
 
-  public ObjectVO(final DataSetMetadata metadata, final DataSetLayout layout, final ObjectAbstractVO abstractVO,
-      final MyBatisTag myBatisTag) {
+  public ObjectVO(final DataSetMetadata metadata, final DataSetLayout layout, final MyBatisGenerator generator,
+      final ObjectAbstractVO abstractVO, final MyBatisTag myBatisTag) {
     log.debug("init");
 
     this.metadata = metadata;
     this.layout = layout;
+    this.generator = generator;
     this.abstractVO = abstractVO;
     this.myBatisTag = myBatisTag;
 
@@ -62,6 +65,17 @@ public class ObjectVO {
         w.write("package " + this.classPackage.getPackage() + ";\n\n");
 
         w.write("import " + this.abstractVO.getFullClassName() + ";\n\n");
+
+        ImportedClasses ic = new ImportedClasses();
+        for (ForeignKeyMetadata ik : this.metadata.getImportedFKs()) {
+          EnumClass ec = this.generator.getEnum(ik.getRemote().getDataSet());
+          if (ec != null) {
+            ic.add(ec.getFullClassName());
+          }
+        }
+        for (String c : ic.getClasses()) {
+          w.write("import " + c + ";\n");
+        }
 
         w.write("public class " + this.getClassName() + " extends " + this.abstractVO.getClassName() + " {\n\n");
 

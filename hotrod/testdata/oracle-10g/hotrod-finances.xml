@@ -17,6 +17,8 @@
 
   </facet>
 
+  <table name="employee" />
+
   <facet name="phase2">
 
     <table name="types_date_time" />

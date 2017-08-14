@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -30,7 +31,8 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassMethodException;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.metadata.EnumMetadata;
+import org.hotrod.metadata.DataSetMetadataFactory;
+import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.runtime.util.ListWriter;
@@ -59,11 +61,10 @@ public abstract class HotRodGenerator {
 
   protected DatabaseAdapter adapter = null;
   protected JdbcDatabase db = null;
-  protected JdbcDatabase enumDb = null;
 
   protected LinkedHashSet<TableDataSetMetadata> tables = null;
   protected LinkedHashSet<TableDataSetMetadata> views = null;
-  protected LinkedHashSet<EnumMetadata> enums = null;
+  protected LinkedHashSet<EnumDataSetMetadata> enums = null;
   protected LinkedHashSet<SelectDataSetMetadata> selects = null;
 
   private Long lastLog = null;
@@ -133,15 +134,9 @@ public abstract class HotRodGenerator {
 
       try {
         logm("Ready for database objects retrieval.");
-        this.db = new JdbcDatabase(this.loc, true, new TableFilter(this.config, this.adapter),
+        this.db = new JdbcDatabase(this.loc, true, new TableFilter(this.adapter),
             new ViewFilter(this.config, this.adapter));
         logm("After retrieval 1.");
-
-        // TODO: Try to reuse the database connection, instead of opening a new
-        // one
-        this.enumDb = new JdbcDatabase(this.loc, true, new EnumTableFilter(), new EnumViewFilter());
-
-        logm("After retrieval 2.");
 
       } catch (ReaderException e) {
         throw new ControlledException(e.getMessage());
@@ -188,7 +183,7 @@ public abstract class HotRodGenerator {
 
       try {
 
-        this.config.validateAgainstDatabase(this.db, this.enumDb, this.adapter);
+        this.config.validateAgainstDatabase(this.db, this.adapter);
 
       } catch (InvalidConfigurationFileException e) {
         String message = (e.getSourceLocation() == null ? ""
@@ -213,7 +208,7 @@ public abstract class HotRodGenerator {
         TableDataSetMetadata tm;
         try {
           log.debug("t.getName()=" + t.getName());
-          tm = new TableDataSetMetadata(t, this.adapter, this.config);
+          tm = DataSetMetadataFactory.getMetadata(t, this.adapter, config);
           log.debug("*** tm=" + tm);
           validateIdentifier(sqlNames, "table", t.getName(), tm.getIdentifier());
           this.tables.add(tm);
@@ -228,9 +223,35 @@ public abstract class HotRodGenerator {
                   + m.getColumnName() + "' of table/view/select '" + m.getTableName() + "'.");
         }
       }
+      
       for (TableDataSetMetadata ds : this.tables) {
         ds.linkReferencedDataSets(this.tables);
       }
+
+      // Prepare enums metadata
+
+      logm("Prepare enums metadata.");
+
+      this.enums = new LinkedHashSet<EnumDataSetMetadata>();
+
+      for (Iterator<TableDataSetMetadata> it = this.tables.iterator(); it.hasNext();) {
+        TableDataSetMetadata ds = it.next();
+        try {
+          EnumDataSetMetadata em = (EnumDataSetMetadata) ds;
+          // It's an enum - move it to the enum set.
+          this.enums.add(em);
+          it.remove();
+        } catch (ClassCastException e) {
+          // Not an enum - nothing to do.
+        }
+      }
+      
+      // Set EnumMetadata to ColumnMetadata
+      
+      for (TableDataSetMetadata ds : this.tables) {
+        ds.linkEnumMetadata(this.enums);
+      }
+
 
       // Prepare views metadata
 
@@ -239,7 +260,9 @@ public abstract class HotRodGenerator {
       this.views = new LinkedHashSet<TableDataSetMetadata>();
       for (JdbcTable v : this.db.getViews()) {
         try {
-          TableDataSetMetadata vm = new TableDataSetMetadata(v, this.adapter, this.config);
+
+          TableDataSetMetadata vm = DataSetMetadataFactory.getMetadata(v, this.adapter, config);
+
           validateIdentifier(sqlNames, "view", v.getName(), vm.getIdentifier());
           this.views.add(vm);
         } catch (UnresolvableDataTypeException e) {
@@ -247,23 +270,11 @@ public abstract class HotRodGenerator {
         }
       }
 
-      // Prepare enums metadata
-
-      logm("Prepare enums metadata.");
-
-      this.enums = new LinkedHashSet<EnumMetadata>();
-      for (EnumTag e : this.config.getEnums()) {
-        EnumMetadata em = new EnumMetadata(e, this.adapter, this.config);
-        // TODO: validate duplicate names
-        this.enums.add(em);
-      }
-
       // Prepare selects metadata - phase 1/2
 
       logm("Prepare selects metadata - phase 1.");
 
       this.selects = new LinkedHashSet<SelectDataSetMetadata>();
-      log.debug(">>>>>>>>>>>>>>>>>>> this.config.getSelects().size()=" + this.config.getSelects().size());
       if (!this.config.getSelects().isEmpty()) {
 
         SelectTag current = null;
@@ -442,7 +453,7 @@ public abstract class HotRodGenerator {
 
       // enums
 
-      for (EnumMetadata e : this.enums) {
+      for (EnumDataSetMetadata e : this.enums) {
         display("Enum " + e.getJdbcName() + " included.");
       }
 
@@ -638,14 +649,9 @@ public abstract class HotRodGenerator {
 
   public class TableFilter implements JdbcTableFilter {
 
-    private Set<String> includedTables;
     private DatabaseAdapter adapter;
 
-    public TableFilter(final HotRodConfigTag config, final DatabaseAdapter adapter) {
-      this.includedTables = new HashSet<String>();
-      for (TableTag t : config.getTables()) {
-        this.includedTables.add(t.getName());
-      }
+    public TableFilter(final DatabaseAdapter adapter) {
       this.adapter = adapter;
     }
 
@@ -657,7 +663,14 @@ public abstract class HotRodGenerator {
           return true;
         }
       }
-      log.debug("table '" + jdbcName + "' rejected.");
+      for (EnumTag e : config.getEnums()) {
+        if (this.adapter.isTableIdentifier(jdbcName, e.getName())) {
+          log.debug("enum '" + jdbcName + "' accepted.");
+          return true;
+        }
+      }
+
+      log.debug("table/enum '" + jdbcName + "' rejected.");
       return false;
     }
   }
@@ -688,29 +701,6 @@ public abstract class HotRodGenerator {
       log.debug("view '" + jdbcName + "' rejected.");
       return false;
     }
-  }
-
-  // Enum Filter
-
-  public class EnumTableFilter implements JdbcTableFilter {
-
-    public boolean accepts(final String jdbcName) {
-      for (EnumTag t : config.getEnums()) {
-        if (adapter.isTableIdentifier(jdbcName, t.getName())) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-  }
-
-  public class EnumViewFilter implements JdbcTableFilter {
-
-    public boolean accepts(final String jdbcName) {
-      return false;
-    }
-
   }
 
   public DatabaseAdapter getAdapter() {

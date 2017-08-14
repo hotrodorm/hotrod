@@ -16,10 +16,10 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
  *     AbstractDAOTag < ------------------------------+
  *      ^                                             |
  *      |                                             |
- *     AbstractCompositeDAOTag                    AbstractSQLDAOTag
- *      ^          ^        ^                         ^        ^
- *      |          |        |                         |        |
- * CustomDAOTag  TableTag  ViewTag                SelectTag  QueryTag
+ *     AbstractCompositeDAOTag <-----+            AbstractSQLDAOTag
+ *      ^          ^        ^        |                ^        ^
+ *      |          |        |        |                |        |
+ * CustomDAOTag  TableTag  ViewTag  EnumTag       SelectTag  QueryTag
  * 
  * </pre>
  */

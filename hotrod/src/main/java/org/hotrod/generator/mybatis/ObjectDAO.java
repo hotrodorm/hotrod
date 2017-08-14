@@ -267,20 +267,27 @@ public class ObjectDAO {
 
     for (ForeignKeyMetadata ik : this.metadata.getImportedFKs()) {
 
+      String fkc;
       ObjectVO rvo = this.generator.getVO(ik.getRemote().getDataSet());
-      String fkc = rvo.getFullClassName();
-      // log.info("fkc="+fkc);
-      if (!importedDaos.contains(fkc)) {
-        importedDaos.add(fkc);
-        println("import " + fkc + ";");
-      }
-
-      ObjectDAO dao = this.generator.getDAO(ik.getRemote().getDataSet());
-      String daoc = dao.getFullClassName();
-      // log.info(" -> daoc="+daoc);
-      if (!importedDaos.contains(daoc)) {
-        importedDaos.add(daoc);
-        println("import " + daoc + ";");
+      if (rvo != null) {
+        fkc = rvo.getFullClassName();
+        if (!importedDaos.contains(fkc)) {
+          importedDaos.add(fkc);
+          println("import " + fkc + ";");
+        }
+        ObjectDAO dao = this.generator.getDAO(ik.getRemote().getDataSet());
+        String daoc = dao.getFullClassName();
+        if (!importedDaos.contains(daoc)) {
+          importedDaos.add(daoc);
+          println("import " + daoc + ";");
+        }
+      } else {
+        EnumClass ec = this.generator.getEnum(ik.getRemote().getDataSet());
+        fkc = ec.getFullClassName();
+        if (!importedDaos.contains(fkc)) {
+          importedDaos.add(fkc);
+          println("import " + fkc + ";");
+        }
       }
 
     }
@@ -963,44 +970,49 @@ public class ObjectDAO {
 
       for (DataSetMetadata ds : fkSelectors.keySet()) {
         ObjectVO vo = this.generator.getVO(ds);
-        ObjectDAO dao = this.generator.getDAO(ds);
+        if (vo != null) { // points to a table, not an enum
+          ObjectDAO dao = this.generator.getDAO(ds);
 
-        String parentSelectorClassName = vo.getJavaClassIdentifier() + "ParentSelector";
-        println("  public static class " + parentSelectorClassName + " {");
-        println();
-
-        for (ForeignKeyMetadata fkm : fkSelectors.get(ds)) {
-          String selectByCols = this.getSelectByColumns(fkm.getLocal());
-          print("    public " + vo.getClassName() + " " + selectByCols + "(final " + this.vo.getClassName() + " vo) ");
-          this.throwsCheckedException();
-          println("{");
-          retrieveSqlSession(1);
-          println("        return " + selectByCols + "(sqlSession, vo);");
-          releaseSqlSession(1);
-          println("    }");
+          String parentSelectorClassName = vo.getJavaClassIdentifier() + "ParentSelector";
+          println("  public static class " + parentSelectorClassName + " {");
           println();
 
-          String callParameters = renderCallParameters(fkm);
+          for (ForeignKeyMetadata fkm : fkSelectors.get(ds)) {
+            String selectByCols = this.getSelectByColumns(fkm.getLocal());
+            print(
+                "    public " + vo.getClassName() + " " + selectByCols + "(final " + this.vo.getClassName() + " vo) ");
+            this.throwsCheckedException();
+            println("{");
+            retrieveSqlSession(1);
+            println("        return " + selectByCols + "(sqlSession, vo);");
+            releaseSqlSession(1);
+            println("    }");
+            println();
 
-          String selectMethod = fkm.pointsToPK() ? SELECT_BY_PK_METHOD : dao.getSelectByUI(fkm.getRemote());
-          print("    public " + vo.getClassName() + " " + selectByCols + "(final SqlSession sqlSession, final "
-              + this.vo.getClassName() + " vo) ");
-          this.throwsCheckedException();
-          println("{");
-          println("      return " + dao.getClassName() + "." + selectMethod + "(sqlSession, " + callParameters + ");");
-          println("    }");
+            String callParameters = renderCallParameters(fkm);
+
+            String selectMethod = fkm.pointsToPK() ? SELECT_BY_PK_METHOD : dao.getSelectByUI(fkm.getRemote());
+            print("    public " + vo.getClassName() + " " + selectByCols + "(final SqlSession sqlSession, final "
+                + this.vo.getClassName() + " vo) ");
+            this.throwsCheckedException();
+            println("{");
+            println(
+                "      return " + dao.getClassName() + "." + selectMethod + "(sqlSession, " + callParameters + ");");
+            println("    }");
+            println();
+
+          }
+
+          println("  }");
+          println();
+
+          println(
+              "  public static " + parentSelectorClassName + " selectParent" + vo.getJavaClassIdentifier() + "() {");
+          println("    return new " + parentSelectorClassName + "();");
+          println("  }");
           println();
 
         }
-
-        println("  }");
-        println();
-
-        println("  public static " + parentSelectorClassName + " selectParent" + vo.getJavaClassIdentifier() + "() {");
-        println("    return new " + parentSelectorClassName + "();");
-        println("  }");
-        println();
-
       }
 
     }

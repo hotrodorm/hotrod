@@ -140,7 +140,8 @@ public class SelectDataSetMetadata implements DataSetMetadata {
         JdbcColumn c = this.db.retrieveColumn(rs, tempViewName);
         ColumnTag columnTag = this.tag.findColumnTag(c.getName(), this.adapter);
         log.debug("c=" + c.getName() + " / col: " + columnTag);
-        ColumnMetadata cm = new ColumnMetadata(c, this.tag.getJavaClassName(), this.adapter, columnTag, false, false);
+        ColumnMetadata cm = new ColumnMetadata(this, c, this.tag.getJavaClassName(), this.adapter, columnTag, false,
+            false);
         log.debug(" --> type=" + cm.getType());
         this.columns.add(cm);
       }

@@ -25,6 +25,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.DbUtils;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.DbIdentifier;
@@ -34,7 +35,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 @XmlRootElement(name = "enum")
-public class EnumTag extends AbstractConfigurationTag {
+public class EnumTag extends AbstractCompositeDAOTag {
 
   // Constants
 
@@ -58,7 +59,9 @@ public class EnumTag extends AbstractConfigurationTag {
 
   private LinkedHashMap<JdbcColumn, EnumColumn> extraColumns = null;
 
+  private DaosTag daosTag;
   private HotRodFragmentConfigTag fragmentConfig = null;
+  private ClassPackage fragmentPackage;
 
   // Constructor
 
@@ -91,9 +94,13 @@ public class EnumTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate(final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
+  public void validate(final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig)
+      throws InvalidConfigurationFileException {
 
+    this.daosTag = daosTag;
     this.fragmentConfig = fragmentConfig;
+    this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage() : null;
 
     // name
 
@@ -557,7 +564,7 @@ public class EnumTag extends AbstractConfigurationTag {
       throws InvalidConfigurationFileException {
     PropertyType type;
     try {
-      ColumnMetadata cm = new ColumnMetadata(c, adapter, null, false, false);
+      ColumnMetadata cm = new ColumnMetadata(null, c, adapter, null, false, false);
       type = adapter.getAdapterDefaultType(cm);
     } catch (UnresolvableDataTypeException e) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
@@ -661,6 +668,12 @@ public class EnumTag extends AbstractConfigurationTag {
     return true;
   }
 
+  // Finders
+
+  public ColumnTag findColumnTag(final String jdbcName, final DatabaseAdapter adapter) {
+    return null;
+  }
+
   // Getters
 
   public String getName() {
@@ -680,14 +693,6 @@ public class EnumTag extends AbstractConfigurationTag {
 
   public HotRodFragmentConfigTag getFragmentConfig() {
     return fragmentConfig;
-  }
-
-  public String getJavaClassName() {
-    if (this.javaClassName == null) {
-      return new DataSetIdentifier(this.name).getJavaClassIdentifier();
-    } else {
-      return new DataSetIdentifier(this.name, this.javaClassName).getJavaClassIdentifier();
-    }
   }
 
   public static class EnumProperty {
@@ -722,6 +727,22 @@ public class EnumTag extends AbstractConfigurationTag {
       props.add(ec.getProperty());
     }
     return props;
+  }
+
+  // DAO Tag implementation
+
+  @Override
+  public ClassPackage getPackage() {
+    return this.daosTag.getDaoPackage(this.fragmentPackage);
+  }
+
+  @Override
+  public String getJavaClassName() {
+    if (this.javaClassName == null) {
+      return new DataSetIdentifier(this.name).getJavaClassIdentifier();
+    } else {
+      return new DataSetIdentifier(this.name, this.javaClassName).getJavaClassIdentifier();
+    }
   }
 
 }

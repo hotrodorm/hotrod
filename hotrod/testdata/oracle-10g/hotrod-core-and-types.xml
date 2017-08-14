@@ -5,6 +5,11 @@
 
   <table name="config_values"/>
 
+  <enum name="employee_state" name-column="description">
+    <non-persistent value="100" name="NONE" />
+    <non-persistent value="101" name="ALL" />
+  </enum>
+
   <table name="properties" java-name="Property" />
   <table name="parameters">
     <column name="level2" java-name="level" java-type="java.lang.Long"

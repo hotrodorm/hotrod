@@ -125,7 +125,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     }
 
     for (EnumTag e : this.enums) {
-      e.validate(fragmentConfig);
+      e.validate(daosTag, fragmentConfig);
     }
 
     for (CustomDAOTag dao : this.daos) {
@@ -208,7 +208,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     this.facets.addAll(other.facets);
   }
 
-  public void validateAgainstDatabase(final JdbcDatabase db, final JdbcDatabase enumDb, final DatabaseAdapter adapter)
+  public void validateAgainstDatabase(final JdbcDatabase db, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
     for (TableTag t : this.getTables()) {
@@ -220,7 +220,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     }
 
     for (EnumTag e : this.getEnums()) {
-      e.validateAgainstDatabase(enumDb, adapter);
+      e.validateAgainstDatabase(db, adapter);
     }
 
   }
@@ -237,6 +237,20 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
 
   public boolean includesTable(final JdbcTable t) {
     return this.getTableTag(t) != null;
+  }
+
+  public EnumTag getEnumTag(final JdbcTable t) {
+    for (EnumTag tag : this.getEnums()) {
+      log.debug("enum tag=" + tag.getName());
+      if (tag.getName().equalsIgnoreCase(t.getName())) {
+        return tag;
+      }
+    }
+    return null;
+  }
+
+  public boolean includesEnum(final JdbcTable t) {
+    return this.getEnumTag(t) != null;
   }
 
   public ViewTag getViewTag(final JdbcTable t) {
