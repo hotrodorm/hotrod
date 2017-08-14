@@ -26,6 +26,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.DbUtils;
+import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.DbIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -73,7 +74,7 @@ public class EnumTag extends AbstractConfigurationTag {
     this.name = column;
   }
 
-  @XmlAttribute(name = "class")
+  @XmlAttribute(name = "java-name")
   public void setJavaClass(final String javaClass) {
     this.javaClassName = javaClass;
   }
@@ -101,17 +102,15 @@ public class EnumTag extends AbstractConfigurationTag {
           + super.getTagName() + "> cannot be empty. " + "Must specify the name of a database table.");
     }
 
-    // class
+    // java-name
 
-    if (SUtils.isEmpty(this.javaClassName)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Attribute 'class' of tag <" + super.getTagName() + "> cannot be empty. "
-              + "Must specify the name of the enum class to be generated, including the full package.");
-    }
-    if (!this.javaClassName.matches(CLASS_NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Attribute 'class' of tag <" + super.getTagName() + "> is not a valid Java class name. "
-              + "Must start with an upper case letter, and continue with letters, digits, and/or underscores.");
+    if (!SUtils.isEmpty(this.javaClassName)) {
+      if (!this.javaClassName.matches(CLASS_NAME_PATTERN)) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "The attribute 'java-name' of tag <" + super.getTagName() + "> with value '" + this.javaClassName
+                + "' is not a valid Java class name. " + "When specified, it must start with an upper case letter, "
+                + "and continue with letters, digits, and/or underscores.");
+      }
     }
 
     // name-column
@@ -684,7 +683,11 @@ public class EnumTag extends AbstractConfigurationTag {
   }
 
   public String getJavaClassName() {
-    return javaClassName;
+    if (this.javaClassName == null) {
+      return new DataSetIdentifier(this.name).getJavaClassIdentifier();
+    } else {
+      return new DataSetIdentifier(this.name, this.javaClassName).getJavaClassIdentifier();
+    }
   }
 
   public static class EnumProperty {

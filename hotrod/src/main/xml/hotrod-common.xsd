@@ -112,7 +112,7 @@
       <xsd:element name="non-persistent" type="non-persistent-type" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
     <xsd:attribute name="name" type="xsd:string" use="required" />
-    <xsd:attribute name="class" type="xsd:string" use="required" />
+    <xsd:attribute name="java-name" type="xsd:string" />
     <xsd:attribute name="name-column" type="xsd:string" use="required" />
   </xsd:complexType>
 
