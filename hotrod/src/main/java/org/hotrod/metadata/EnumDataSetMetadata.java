@@ -21,8 +21,8 @@ public class EnumDataSetMetadata extends TableDataSetMetadata {
 
   // Constructor
 
-  public EnumDataSetMetadata(final EnumTag tag, final JdbcTable t, final DatabaseAdapter adapter, final HotRodConfigTag config)
-      throws UnresolvableDataTypeException, ControlledException {
+  public EnumDataSetMetadata(final EnumTag tag, final JdbcTable t, final DatabaseAdapter adapter,
+      final HotRodConfigTag config) throws UnresolvableDataTypeException, ControlledException {
     super(tag, t, adapter, config);
     log.debug("init");
     this.tag = tag;
