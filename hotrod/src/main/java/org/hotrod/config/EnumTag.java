@@ -486,6 +486,10 @@ public class EnumTag extends AbstractCompositeDAOTag {
 
   }
 
+  public EnumProperty getValueColumn() {
+    return this.valueColumn.getProperty();
+  }
+
   public List<EnumProperty> getProperties() {
     List<EnumProperty> props = new ArrayList<EnumProperty>();
     props.add(this.valueColumn.getProperty());

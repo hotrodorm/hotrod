@@ -230,11 +230,21 @@ public class TableDataSetMetadata implements DataSetMetadata {
     for (ForeignKeyMetadata ifk : this.importedFKs) {
       try {
         EnumDataSetMetadata em = (EnumDataSetMetadata) ifk.getRemote().getDataSet();
-        for (ColumnMetadata cm : ifk.getLocal().getColumns()) {
-          cm.setEnumMetadata(em);
-          for (ColumnMetadata tcm : this.cols) {
-            if (tcm.getColumnName().equals(cm.getColumnName())) {
-              tcm.setEnumMetadata(em);
+        for (ColumnMetadata icm : ifk.getLocal().getColumns()) {
+          icm.setEnumMetadata(em);
+          for (ColumnMetadata cm : this.cols) {
+            if (cm.getColumnName().equals(icm.getColumnName())) {
+              cm.setEnumMetadata(em);
+            }
+          }
+          for (ColumnMetadata cm : this.pk.getColumns()) {
+            if (cm.getColumnName().equals(icm.getColumnName())) {
+              cm.setEnumMetadata(em);
+            }
+          }
+          for (ColumnMetadata cm : this.nonPKCols) {
+            if (cm.getColumnName().equals(icm.getColumnName())) {
+              cm.setEnumMetadata(em);
             }
           }
         }

@@ -31,3 +31,9 @@ drop sequence seq_agent;
 drop table special_columns;
 
 drop table vehicle;
+
+-- unsupported multi-reference FKs
+
+drop table house;
+drop table house_type;
+

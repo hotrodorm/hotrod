@@ -69,6 +69,10 @@ public class EnumDataSetMetadata extends TableDataSetMetadata {
     return this.tag.getFragmentConfig();
   }
 
+  public EnumProperty getValueColumn() {
+    return this.tag.getValueColumn();
+  }
+
   public List<EnumProperty> getProperties() {
     return this.tag.getProperties();
   }

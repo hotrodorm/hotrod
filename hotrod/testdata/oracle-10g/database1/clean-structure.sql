@@ -17,6 +17,7 @@ drop table properties;
 drop table parameters; 
 drop table log; 
 
+drop table deputy;
 drop table agent; 
 
 drop sequence seq_agent;
@@ -27,11 +28,20 @@ drop sequence seq_codes;
 drop sequence seq_test;
 drop table test_sequence;
 
+-- database objects with special character in their names
+
 drop table " !#$%)(*+,-.";
+
+-- enum
 
 drop table employee;
 drop table employee_state;
+drop table employee_interim;
 
+-- unsupported multi-reference FKs
+
+drop table house;
+drop table house_type;
 
 -- =========
 -- All Types

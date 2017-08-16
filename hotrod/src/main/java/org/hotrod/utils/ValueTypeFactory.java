@@ -17,6 +17,10 @@ public class ValueTypeFactory {
 
     T getFromResultSet(ResultSet rs, int columnIndex) throws SQLException;
 
+    String renderJdbcGetter(String jdbcObject, String jdbcParameter);
+
+    String renderJdbcSetter(String jdbcObject, String columnIndex, String jdbcParameter, String transientVar);
+
     String renderJavaValue(Object obj);
 
     String getValueClassName();
@@ -41,6 +45,17 @@ public class ValueTypeFactory {
       }
 
       @Override
+      public String renderJdbcGetter(final String jdbcObject, final String jdbcParameter) {
+        return jdbcObject + ".getByte(" + jdbcParameter + ")";
+      }
+
+      @Override
+      public String renderJdbcSetter(final String jdbcObject, final String columnIndex, final String jdbcParameter,
+          final String transientVar) {
+        return jdbcObject + ".setByte(" + columnIndex + ", " + jdbcParameter + ");";
+      }
+
+      @Override
       public String renderJavaValue(final Object obj) {
         return obj == null ? "null" : "(byte) " + obj;
       }
@@ -56,6 +71,17 @@ public class ValueTypeFactory {
       public Short getFromResultSet(ResultSet rs, int columnIndex) throws SQLException {
         short v = rs.getShort(columnIndex);
         return rs.wasNull() ? null : v;
+      }
+
+      @Override
+      public String renderJdbcGetter(final String jdbcObject, final String jdbcParameter) {
+        return jdbcObject + ".getShort(" + jdbcParameter + ")";
+      }
+
+      @Override
+      public String renderJdbcSetter(final String jdbcObject, final String columnIndex, final String jdbcParameter,
+          final String transientVar) {
+        return jdbcObject + ".setShort(" + columnIndex + ", " + jdbcParameter + ");";
       }
 
       @Override
@@ -77,6 +103,17 @@ public class ValueTypeFactory {
       }
 
       @Override
+      public String renderJdbcGetter(final String jdbcObject, final String jdbcParameter) {
+        return jdbcObject + ".getInt(" + jdbcParameter + ")";
+      }
+
+      @Override
+      public String renderJdbcSetter(final String jdbcObject, final String columnIndex, final String jdbcParameter,
+          final String transientVar) {
+        return jdbcObject + ".setInt(" + columnIndex + ", " + jdbcParameter + ");";
+      }
+
+      @Override
       public String renderJavaValue(final Object obj) {
         return obj == null ? "null" : "" + obj;
       }
@@ -92,6 +129,17 @@ public class ValueTypeFactory {
       public Long getFromResultSet(ResultSet rs, int columnIndex) throws SQLException {
         long v = rs.getLong(columnIndex);
         return rs.wasNull() ? null : v;
+      }
+
+      @Override
+      public String renderJdbcGetter(final String jdbcObject, final String jdbcParameter) {
+        return jdbcObject + ".getLong(" + jdbcParameter + ")";
+      }
+
+      @Override
+      public String renderJdbcSetter(final String jdbcObject, final String columnIndex, final String jdbcParameter,
+          final String transientVar) {
+        return jdbcObject + ".setLong(" + columnIndex + ", " + jdbcParameter + ");";
       }
 
       @Override
@@ -113,6 +161,17 @@ public class ValueTypeFactory {
       }
 
       @Override
+      public String renderJdbcGetter(final String jdbcObject, final String jdbcParameter) {
+        return jdbcObject + ".getDouble(" + jdbcParameter + ")";
+      }
+
+      @Override
+      public String renderJdbcSetter(final String jdbcObject, final String columnIndex, final String jdbcParameter,
+          final String transientVar) {
+        return jdbcObject + ".setDouble(" + columnIndex + ", " + jdbcParameter + ");";
+      }
+
+      @Override
       public String renderJavaValue(final Object obj) {
         return obj == null ? "null" : "" + obj;
       }
@@ -131,6 +190,17 @@ public class ValueTypeFactory {
       }
 
       @Override
+      public String renderJdbcGetter(final String jdbcObject, final String jdbcParameter) {
+        return jdbcObject + ".getFloat(" + jdbcParameter + ")";
+      }
+
+      @Override
+      public String renderJdbcSetter(final String jdbcObject, final String columnIndex, final String jdbcParameter,
+          final String transientVar) {
+        return jdbcObject + ".setFloat(" + columnIndex + ", " + jdbcParameter + ");";
+      }
+
+      @Override
       public String renderJavaValue(final Object obj) {
         return obj == null ? "null" : "" + obj + "f";
       }
@@ -146,6 +216,17 @@ public class ValueTypeFactory {
       public BigDecimal getFromResultSet(ResultSet rs, int columnIndex) throws SQLException {
         BigDecimal v = rs.getBigDecimal(columnIndex);
         return rs.wasNull() ? null : v;
+      }
+
+      @Override
+      public String renderJdbcGetter(final String jdbcObject, final String jdbcParameter) {
+        return jdbcObject + ".getBigDecimal(" + jdbcParameter + ")";
+      }
+
+      @Override
+      public String renderJdbcSetter(final String jdbcObject, final String columnIndex, final String jdbcParameter,
+          final String transientVar) {
+        return jdbcObject + ".setBigDecimal(" + columnIndex + ", " + jdbcParameter + ");";
       }
 
       @Override
@@ -168,6 +249,17 @@ public class ValueTypeFactory {
       }
 
       @Override
+      public String renderJdbcGetter(final String jdbcObject, final String jdbcParameter) {
+        return jdbcObject + ".getString(" + jdbcParameter + ")";
+      }
+
+      @Override
+      public String renderJdbcSetter(final String jdbcObject, final String columnIndex, final String jdbcParameter,
+          final String transientVar) {
+        return jdbcObject + ".setString(" + columnIndex + ", " + jdbcParameter + ");";
+      }
+
+      @Override
       public String renderJavaValue(final Object obj) {
         return obj == null ? "null" : "\"" + SUtils.escapeJavaString((String) obj) + "\"";
       }
@@ -183,6 +275,17 @@ public class ValueTypeFactory {
       public Boolean getFromResultSet(ResultSet rs, int columnIndex) throws SQLException {
         boolean v = rs.getBoolean(columnIndex);
         return rs.wasNull() ? null : v;
+      }
+
+      @Override
+      public String renderJdbcGetter(final String jdbcObject, final String jdbcParameter) {
+        return jdbcObject + ".getBoolean(" + jdbcParameter + ")";
+      }
+
+      @Override
+      public String renderJdbcSetter(final String jdbcObject, final String columnIndex, final String jdbcParameter,
+          final String transientVar) {
+        return jdbcObject + ".setBoolean(" + columnIndex + ", " + jdbcParameter + ");";
       }
 
       @Override
@@ -204,6 +307,17 @@ public class ValueTypeFactory {
       }
 
       @Override
+      public String renderJdbcGetter(final String jdbcObject, final String jdbcParameter) {
+        return jdbcObject + ".getDate(" + jdbcParameter + ")";
+      }
+
+      @Override
+      public String renderJdbcSetter(final String jdbcObject, final String columnIndex, final String jdbcParameter,
+          final String transientVar) {
+        return jdbcObject + ".setDate(" + columnIndex + ", " + jdbcParameter + ");";
+      }
+
+      @Override
       public String renderJavaValue(final Object obj) {
         return obj == null ? "null" : "java.sql.Date.valueOf(\"" + obj.toString() + "\")";
       }
@@ -222,6 +336,17 @@ public class ValueTypeFactory {
       }
 
       @Override
+      public String renderJdbcGetter(final String jdbcObject, final String jdbcParameter) {
+        return jdbcObject + ".getTimestamp(" + jdbcParameter + ")";
+      }
+
+      @Override
+      public String renderJdbcSetter(final String jdbcObject, final String columnIndex, final String jdbcParameter,
+          final String transientVar) {
+        return jdbcObject + ".setTimestamp(" + columnIndex + ", " + jdbcParameter + ");";
+      }
+
+      @Override
       public String renderJavaValue(final Object obj) {
         return obj == null ? "null" : "java.sql.Timestamp.valueOf(\"" + obj.toString() + "\")";
       }
@@ -237,6 +362,18 @@ public class ValueTypeFactory {
       public java.util.Date getFromResultSet(ResultSet rs, int columnIndex) throws SQLException {
         Timestamp v = rs.getTimestamp(columnIndex);
         return rs.wasNull() ? null : v;
+      }
+
+      @Override
+      public String renderJdbcGetter(final String jdbcObject, final String jdbcParameter) {
+        return jdbcObject + ".getTimestamp(" + jdbcParameter + ")";
+      }
+
+      @Override
+      public String renderJdbcSetter(final String jdbcObject, final String columnIndex, final String jdbcParameter,
+          final String transientVar) {
+        return jdbcObject + ".setTimestamp(" + columnIndex + ", new java.sql.Timestamp(" + jdbcParameter
+            + ".getTime()));";
       }
 
       @Override

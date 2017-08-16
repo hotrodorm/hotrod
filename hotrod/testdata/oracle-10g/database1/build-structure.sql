@@ -105,6 +105,13 @@ create table agent (
   primary key (id)
 );
 
+create table deputy (
+  id number(12) primary key not null,
+  title varchar2(50) not null,
+  agent_id number(12) not null,
+  constraint fk_deputy_agent foreign key (agent_id) references agent (id)
+);
+
 create table quadrant (
   region number(9) not null,
   area number(9) not null,
@@ -249,12 +256,42 @@ create table employee_state (
   active number(4) not null
 );
 
+create table employee_interim (
+  start_date date primary key not null,
+  caption varchar2(100) not null
+);
+
 create table employee (
   id integer primary key not null,
   name varchar(60) not null,
   state_id number(6) not null,
+  initial_state_id number(10) not null,
   hired_on date not null,
-  constraint fk_employee_state foreign key (state_id)
-    references employee_state (id)
+  classification date not null,
+  constraint fk_employee_state foreign key (state_id) references employee_state (id),
+  constraint fk_employee_state_initial foreign key (initial_state_id) references employee_state (id),
+  constraint fk_employee_classification foreign key (classification) references employee_interim (start_date)
 );
+
+-- unsupported multi-reference FKs
+
+create table house_type (
+  local_code number(6) primary key not null,
+  name varchar(40) not null,
+  federal_code number(6) not null,
+  long_description varchar(1000) not null,
+  state_code number(6) not null,
+  constraint ht_ordinal unique (federal_code),
+  constraint ht_numeral unique (state_code)
+);
+
+create table house (
+  house_id number(12) primary key not null,
+  address varchar(200) not null,
+  type number(6) not null,
+  constraint fk_house_t1 foreign key (type) references house_type (local_code),
+  constraint fk_house_t2 foreign key (type) references house_type (federal_code),
+  constraint fk_house_t3 foreign key (type) references house_type (state_code)
+);
+
 

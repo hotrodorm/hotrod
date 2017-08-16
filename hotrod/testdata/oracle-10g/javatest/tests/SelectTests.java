@@ -12,9 +12,11 @@ import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import hotrod.test.generation.AccountByIdsVO;
 import hotrod.test.generation.AccountVO;
 import hotrod.test.generation.HouseVO;
+import hotrod.test.generation.accounting.finances.EmployeeVO;
 import hotrod.test.generation.accounting.finances.QuadrantVO;
 import hotrod.test.generation.accounting.finances.SearchedAccount2VO;
 import hotrod.test.generation.accounting.finances.SearchedAccountVO;
+import hotrod.test.generation.accounting.finances.primitives.EmployeeDAO;
 import hotrod.test.generation.accounting.finances.primitives.QuadrantDAO;
 import hotrod.test.generation.accounting.finances.primitives.SearchedAccount;
 import hotrod.test.generation.accounting.finances.primitives.SearchedAccount2;
@@ -55,7 +57,9 @@ public class SelectTests {
 
     // searchQuadrants();
 
-    showEnumValues();
+    // showEnumValues();
+
+    showEmployees();
   }
 
   // private static void tryInsertBadData() throws SQLException {
@@ -275,6 +279,16 @@ public class SelectTests {
     System.out.println("===============");
     for (EmployeeState s : EmployeeState.values()) {
       System.out.println("s=" + s.getId() + " | " + s.getDescription() + " | " + s.getSince() + " | " + s.getActive());
+    }
+  }
+
+  private static void showEmployees() throws SQLException {
+    System.out.println("showEmployees:");
+    System.out.println("==============");
+    for (EmployeeVO e : EmployeeDAO.selectByExample(new EmployeeVO())) {
+      System.out.println("e=" + e);
+      e.setStateId(EmployeeState.PENDING_NOTIFICATION);
+      EmployeeDAO.update(e);
     }
   }
 

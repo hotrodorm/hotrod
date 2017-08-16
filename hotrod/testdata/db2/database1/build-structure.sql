@@ -275,7 +275,26 @@ create table special_columns (
   primary key (id)
 );
 
+-- unsupported multi-reference FKs
 
+create table house_type (
+  local_code integer primary key not null,
+  name varchar(40) not null,
+  federal_code integer not null,
+  long_description varchar(1000) not null,
+  state_code integer not null,
+  constraint ht_ordinal unique (federal_code),
+  constraint ht_numeral unique (state_code)
+);
+
+create table house (
+  house_id bigint primary key not null,
+  address varchar(200) not null,
+  type integer not null,
+  constraint fk_house_t1 foreign key (type) references house_type (local_code),
+  constraint fk_house_t2 foreign key (type) references house_type (federal_code),
+  constraint fk_house_t3 foreign key (type) references house_type (state_code)
+);
 
 
 

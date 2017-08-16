@@ -123,6 +123,11 @@ public class ListWriter {
     return render(collection, "", "", "", separator, separator, "");
   }
 
+  public static String render(final Collection<String> collection, final String elemPrefix, final String elemSuffix,
+      final String separator, final String lastSeparator) {
+    return render(collection, "", elemPrefix, elemSuffix, separator, lastSeparator, "");
+  }
+
   public static String render(final Collection<String> collection, final String prefix, final String elemPrefix,
       final String elemSuffix, final String separator, final String lastSeparator, final String suffix) {
     ListWriter r = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
@@ -130,6 +135,11 @@ public class ListWriter {
       r.add(e);
     }
     return r.toString();
+  }
+
+  public static String render(final Collection<String> collection, final String elemPrefix, final String elemSuffix,
+      final String separator) {
+    return render(collection, "", elemPrefix, elemSuffix, separator, "");
   }
 
   public static String render(final Collection<String> collection, final String prefix, final String elemPrefix,

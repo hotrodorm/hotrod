@@ -117,7 +117,7 @@ public class EnumClass {
       }
       println();
 
-      writeTypeHandler();
+      writeCodec();
 
       println("}");
 
@@ -137,78 +137,29 @@ public class EnumClass {
 
   }
 
-  private void writeTypeHandler() throws IOException {
+  private void writeCodec() throws IOException {
 
-    // println(" // TypeHandler");
-    // println();
-    // println(" public static class EnumTypeHandler implements TypeHandler<" +
-    // this.getClassName() + "> {");
-    // println("");
-    // println(" @Override");
-    // println(" public " + this.getClassName()
-    // + " getResult(final ResultSet rs, final String columnName) throws
-    // SQLException {");
-    // println(" java.lang.Integer value = rs.getInt(columnName);");
-    // println(" if (rs.wasNull()) {");
-    // println(" value = null;");
-    // println(" }");
-    // println(" return decode(value);");
-    // println(" }");
-    // println();
-    // println(" @Override");
-    // println(" public " + this.getClassName()
-    // + " getResult(final ResultSet rs, final int columnIndex) throws
-    // SQLException {");
-    // println(" java.lang.Integer value = rs.getInt(columnIndex);");
-    // println(" if (rs.wasNull()) {");
-    // println(" value = null;");
-    // println(" }");
-    // println(" return decode(value);");
-    // println(" }");
-    // println();
-    // println(" @Override");
-    // println(" public " + this.getClassName()
-    // + " getResult(final CallableStatement cs, final int columnIndex) throws
-    // SQLException {");
-    // println(" java.lang.Integer value = cs.getInt(columnIndex);");
-    // println(" if (cs.wasNull()) {");
-    // println(" value = null;");
-    // println(" }");
-    // println(" return decode(value);");
-    // println(" }");
-    // println();
-    // println(" @Override");
-    // println(" public void setParameter(final PreparedStatement ps, final int
-    // columnIndex, final "
-    // + this.getClassName() + " v,");
-    // println(" final JdbcType jdbcType) throws SQLException {");
-    // println(" java.lang.Integer value = encode(v);");
-    // println(" if (value == null) {");
-    // println(" ps.setNull(columnIndex, jdbcType.TYPE_CODE);");
-    // println(" } else {");
-    // println(" ps.setInt(columnIndex, value);");
-    // println(" }");
-    // println(" }");
-    // println();
+    EnumProperty valueColumn = this.metadata.getValueColumn();
 
     println("  // Encode & Decode");
     println();
-    println("  public static " + this.getClassName() + " decode(final Integer value) {");
+    println("  public static " + this.getClassName() + " decode(final " + valueColumn.getClassName() + " value) {");
     println("    if (value == null) {");
     println("      return null;");
     println("    }");
     println("    for (" + this.getClassName() + " e : " + this.getClassName() + ".values()) {");
-    println("      if (e.id.equals(value)) {");
+    println("      if (e." + valueColumn.getName() + ".equals(value)) {");
     println("        return e;");
     println("      }");
     println("    }");
     println("    throw new IllegalArgumentException(");
-    println("        \"Invalid " + this.getClassName()
-        + " id value (\" + value + \"). There's no enum constant for this value.\");");
+    println("        \"Invalid " + this.metadata.getIdentifier().getSQLIdentifier() + " " + valueColumn.getName()
+        + " value (\" + value + \"). There's no enum constant for this value.\\n\\n"
+        + "***** Maybe the <enum> table data has changed, and the <enum> table needs to be regenerated *****\\n\");");
     println("  }");
     println();
-    println("  public static Integer encode(final " + this.getClassName() + " e) {");
-    println("    return e == null ? null : e.id;");
+    println("  public static " + valueColumn.getClassName() + " encode(final " + this.getClassName() + " e) {");
+    println("    return e == null ? null : e." + valueColumn.getName() + ";");
     println("  }");
     println();
 
@@ -222,6 +173,10 @@ public class EnumClass {
 
   public String getFullClassName() {
     return this.classPackage.getFullClassName(this.getClassName());
+  }
+
+  public EnumProperty getValueColumn() {
+    return this.metadata.getValueColumn();
   }
 
   // Utilities

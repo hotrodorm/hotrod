@@ -51,6 +51,8 @@ import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.GenUtils;
 import org.hotrod.utils.JUtils;
+import org.hotrod.utils.ValueTypeFactory;
+import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
@@ -66,7 +68,7 @@ public class ObjectDAO {
   private DataSetMetadata metadata;
   private DataSetLayout layout;
   private MyBatisGenerator generator;
-  private DAOType type;
+  private DAOType daoType;
   private MyBatisTag myBatisTag;
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
@@ -104,7 +106,7 @@ public class ObjectDAO {
     if (type == null) {
       throw new RuntimeException("DAOType cannot be null.");
     }
-    this.type = type;
+    this.daoType = type;
     this.myBatisTag = myBatisTag;
     this.vo = vo;
     this.mapper = mapper;
@@ -117,15 +119,15 @@ public class ObjectDAO {
   }
 
   public boolean isTable() {
-    return this.type == DAOType.TABLE;
+    return this.daoType == DAOType.TABLE;
   }
 
   public boolean isView() {
-    return this.type == DAOType.VIEW;
+    return this.daoType == DAOType.VIEW;
   }
 
   public boolean isSelect() {
-    return this.type == DAOType.SELECT;
+    return this.daoType == DAOType.SELECT;
   }
 
   private String renderId() {
@@ -177,6 +179,8 @@ public class ObjectDAO {
         writeUpdateByExample();
         writeDeleteByExample();
       }
+
+      writeEnumTypeHandlers();
 
       writeConverters();
 
@@ -242,6 +246,8 @@ public class ObjectDAO {
     println();
     println("import org.apache.ibatis.session.SqlSession;");
     println("import org.apache.ibatis.session.SqlSessionFactory;");
+
+    println();
     println("import " + TxManager.class.getName() + ";");
 
     if (this.metadata.getVersionControlMetadata() != null) {
@@ -321,7 +327,7 @@ public class ObjectDAO {
 
     println();
 
-    if (this.usesConverters()) {
+    if (this.usesConverters() || hasFKPointingToEnum()) {
 
       println("import java.sql.CallableStatement;");
       println("import java.sql.PreparedStatement;");
@@ -741,6 +747,7 @@ public class ObjectDAO {
 
   // // TODO: remove once tested
 
+  @SuppressWarnings("unused")
   private void writeSelectExpression() throws IOException, ControlledException {
     println(" public static final " + DynamicExpression.class.getName() + " JAVA_EXPRESSION =\n");
 
@@ -1012,6 +1019,20 @@ public class ObjectDAO {
           println("  }");
           println();
 
+        } else {
+          EnumClass ec = this.generator.getEnum(ds);
+          if (ec != null) {
+            for (ForeignKeyMetadata fkm : fkSelectors.get(ds)) {
+              ListWriter lw = new ListWriter(", ");
+              for (ColumnMetadata cm : fkm.getLocal().getColumns()) {
+                lw.add(cm.getColumnName());
+              }
+              println("  // --- no select parent for FK column" + (fkm.getLocal().getColumns().size() > 1 ? "s" : "")
+                  + " (" + lw.toString() + ") since it points to the enum table "
+                  + fkm.getRemote().getDataSet().renderSQLIdentifier());
+              println();
+            }
+          }
         }
       }
 
@@ -1731,6 +1752,103 @@ public class ObjectDAO {
     return false;
   }
 
+  private boolean hasFKPointingToEnum() throws IOException {
+    for (ForeignKeyMetadata fk : this.metadata.getImportedFKs()) {
+      DataSetMetadata ds = fk.getRemote().getDataSet();
+      EnumClass ec = this.generator.getEnum(ds);
+      if (ec != null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private void writeEnumTypeHandlers() throws ControlledException, IOException {
+
+    for (ForeignKeyMetadata fkm : this.metadata.getImportedFKs()) {
+      DataSetMetadata ds = fkm.getRemote().getDataSet();
+      EnumClass ec = this.generator.getEnum(ds);
+
+      if (ec != null) { // FKs point to an enum
+
+        for (ColumnMetadata cm : fkm.getLocal().getColumns()) {
+
+          // TODO: generate the TypeHandler
+
+          String typeHandlerClassName = getTypeHandlerClassName(cm);
+          String interType = cm.getType().getJavaClassName();
+          String type = ec.getFullClassName();
+
+          ValueTypeManager<?> tm = ValueTypeFactory.getValueManager(interType);
+          if (tm == null) {
+            throw new ControlledException("Could not generate DAO primitives for table '"
+                + this.metadata.getIdentifier().getSQLIdentifier() + "'. Foreign key column '" + cm.getColumnName()
+                + "' point to an enum type and must be of one of the following simple types:\n"
+                + ListWriter.render(ValueTypeFactory.getSupportedTypes(), " - ", "", "\n"));
+          }
+
+          println("  // TypeHandler for enum-FK column " + cm.getColumnName() + ".");
+          println();
+          println("  public static class " + typeHandlerClassName + " implements TypeHandler<" + type + "> {");
+          println();
+          println("    @Override");
+          println(
+              "    public " + type + " getResult(final ResultSet rs, final String columnName) throws SQLException {");
+          println("      " + interType + " value = " + tm.renderJdbcGetter("rs", "columnName") + ";");
+          println("      if (rs.wasNull()) {");
+          println("        value = null;");
+          println("      }");
+          println("      return " + type + ".decode("
+              + GenUtils.convertPropertyType(interType, ec.getValueColumn().getClassName(), "value") + ");");
+
+          println("    }");
+          println();
+          println("    @Override");
+          println("    public " + type + " getResult(final ResultSet rs, final int columnIndex) throws SQLException {");
+          println("      " + interType + " value = " + tm.renderJdbcGetter("rs", "columnIndex") + ";");
+          println("      if (rs.wasNull()) {");
+          println("        value = null;");
+          println("      }");
+          println("      return " + type + ".decode("
+              + GenUtils.convertPropertyType(interType, ec.getValueColumn().getClassName(), "value") + ");");
+          println("    }");
+          println();
+          println("    @Override");
+          println("    public " + type
+              + " getResult(final CallableStatement cs, final int columnIndex) throws SQLException {");
+          println("      " + interType + " value = " + tm.renderJdbcGetter("cs", "columnIndex") + ";");
+          println("      if (cs.wasNull()) {");
+          println("        value = null;");
+          println("      }");
+          println("      return " + type + ".decode("
+              + GenUtils.convertPropertyType(interType, ec.getValueColumn().getClassName(), "value") + ");");
+          println("    }");
+          println();
+          println("    @Override");
+          println("    public void setParameter(final PreparedStatement ps, final int columnIndex, final " + type
+              + " v, final JdbcType jdbcType)");
+          println("        throws SQLException {");
+          println("      " + ec.getValueColumn().getClassName() + " importedValue = " + type + ".encode(v);");
+          println("      " + interType + " localValue = "
+              + GenUtils.convertPropertyType(ec.getValueColumn().getClassName(), interType, "importedValue") + ";");
+
+          println("      if (localValue == null) {");
+          println("        ps.setNull(columnIndex, jdbcType.TYPE_CODE);");
+          println("      } else {");
+          println("        " + tm.renderJdbcSetter("ps", "columnIndex", "localValue", "param"));
+          println("      }");
+          println("    }");
+          println();
+          println("  }");
+          println();
+
+        }
+      }
+
+    }
+
+  }
+
   /**
    * <pre>
    * 
@@ -1840,6 +1958,7 @@ public class ObjectDAO {
         println("        ps." + setter + "(columnIndex, value);");
         println("      }");
         println("    }");
+        println();
         println("  }");
         println();
       }
@@ -2046,8 +2165,6 @@ public class ObjectDAO {
    * 
    * @throws IOException
    */
-
-  // TODO
 
   private void writeQuery(final QueryTag tag) throws IOException {
 
