@@ -1,0 +1,273 @@
+create table log (
+  recorded_at date,
+  notes varchar(100)
+);
+
+create table parameters (
+  system integer,
+  level2 integer,
+  name varchar(50),
+  value varchar(100)
+);
+
+create index param_i1 on parameters (system, level2);
+create index param_i2 on parameters (name);
+
+create table properties (
+  application varchar(20),
+  name varchar(50) not null,
+  prop_value varchar(80),
+  constraint props_name_uc unique (name)
+);
+
+create index properties_i1 on properties (application);
+
+create table config_values (
+  node integer not null,
+  cell integer not null,
+  name varchar(20) not null,
+  verbatim varchar(50) default '{no-verbatim}',
+  constraint cfgval_uc1 unique (node, cell),
+  constraint cfgval_uc2 unique (name)
+);
+
+create table account (
+  id integer not null,
+  name varchar(20) not null,
+  type varchar(10) not null,
+  current_balance integer,
+  created_on date,
+  row_version integer not null,
+  primary key (id)
+);
+
+create view hefty_account as
+  select * from account where current_balance >= 10000;
+
+create table state_branch (
+  id integer not null,
+  name varchar(30) not null,
+  primary key (id)
+);
+
+create table federal_branch (
+  id integer not null,
+  name varchar(30) not null,
+  primary key (id)
+);
+
+create table "transaction" (
+  account_id integer not null,
+  seq_id integer not null,
+  time varchar(16) not null,
+  amount integer default -1 not null,
+  fed_branch_id integer,
+  primary key (seq_id),
+  constraint tx_account_id_time unique (account_id, time),
+  constraint fk_tx_fed_branch foreign key (fed_branch_id)
+    references federal_branch (id)
+);
+
+create table client (
+  id integer not null,
+  national_id integer not null,
+  name varchar(40) not null,
+  prop_name varchar(50) not null,
+  referrer_id integer,
+  friend_id integer,
+  group_account_id integer,
+  branch_id integer,
+  constraint client_nat_id unique (national_id),
+  primary key (id),
+  constraint fk_client_properties foreign key (prop_name)  -- to other UI
+    references properties (name),
+  constraint fk_client_referrer foreign key (referrer_id) -- to self PK
+    references client (id),
+  constraint fk_client_friend foreign key (friend_id) -- to self UI
+    references client (national_id),
+  constraint fk_client_gaccount foreign key (group_account_id) -- to other PK
+    references account (id),
+  constraint fk_client_st_branch foreign key (branch_id) -- dual fk #1
+    references state_branch (id),
+  constraint fk_client_fed_branch foreign key (branch_id) -- dual fk #2
+    references federal_branch (id)
+);
+
+create sequence seq_agent;
+create sequence seq_account;
+create sequence seq_transaction;
+create sequence seq_codes;
+
+create table agent (
+  id integer not null,
+  name varchar(40) not null,
+  client_id bigint,
+  primary key (id)
+);
+
+create table deputy (
+  id bigint primary key not null,
+  title varchar(50) not null,
+  agent_id integer not null,
+  constraint fk_deputy_agent foreign key (agent_id) references agent (id)
+);
+
+create table quadrant (
+  region integer not null,
+  area integer not null,
+  caption varchar(20),
+  active_state smallint not null,
+  primary key (region, area)
+);
+
+create table codes (
+  id integer not null,
+  account integer not null,
+  version_name integer not null,
+  account_version integer not null,
+  name integer not null,
+  constraint fk_codes_q1 foreign key (account, version_name) 
+    references quadrant (region, area),
+  constraint fk_codes_q2 foreign key (account_version, name) 
+    references quadrant (region, area),
+  constraint cd_q1 unique (account, version_name),
+  constraint cd_q2 unique (account_version, name)
+);
+
+create table application_config (
+  config_id integer not null,
+  config_name varchar(150),
+  config_value varchar(250)
+);
+
+create view tx_branch (account_id, branch_id, branch_name, amount) as
+select t.account_id, b.id, b.name, t.amount from "transaction" t, federal_branch b 
+  where t.fed_branch_id = b.id
+  order by t.amount;
+
+create sequence seq_test;
+
+create table test_sequence (
+  id integer not null,
+  name varchar(20)
+);
+
+-- database objects with special character in their names
+
+create table " !#$%)(*+,-." (
+  id integer not null primary key,
+  ":<>?&" varchar(12) not null,
+  "@[\]^_" varchar(12) not null,
+  "`{|}~" varchar(12) not null
+);
+
+-- enum
+
+create table employee_state (
+  id integer primary key not null,
+  since date,
+  description varchar(40) not null,
+  active smallint not null
+);
+
+create table employee_interim (
+  start_date date primary key not null,
+  caption varchar(100) not null
+);
+
+create table employee (
+  id integer primary key not null,
+  name varchar(60) not null,
+  state_id integer not null,
+  initial_state_id integer not null,
+  hired_on date not null,
+  classification date not null,
+  constraint fk_employee_state foreign key (state_id) references employee_state (id),
+  constraint fk_employee_state_initial foreign key (initial_state_id) references employee_state (id),
+  constraint fk_employee_classification foreign key (classification) references employee_interim (start_date)
+);
+
+-- unsupported multi-reference FKs
+
+create table house_type (
+  local_code integer primary key not null,
+  name varchar(40) not null,
+  federal_code integer not null,
+  long_description varchar(1000) not null,
+  state_code integer not null,
+  constraint ht_ordinal unique (federal_code),
+  constraint ht_numeral unique (state_code)
+);
+
+create table house (
+  house_id bigint primary key not null,
+  address varchar(200) not null,
+  type integer not null,
+  constraint fk_house_t1 foreign key (type) references house_type (local_code),
+  constraint fk_house_t2 foreign key (type) references house_type (federal_code),
+  constraint fk_house_t3 foreign key (type) references house_type (state_code)
+);
+
+-- =========
+-- All Types
+-- =========
+
+create table types_numeric (
+  id integer not null primary key,
+  
+-- numeric, decimal
+  num1 numeric(2), -- java.math.BigDecimal -- default scale is 0
+  num2 numeric(4),
+  num3 numeric(9),
+  num4 numeric(18),
+  num5 numeric(31), -- max precision is 31
+  num7 numeric(6,2),
+  num8 numeric(10,2),
+  num9 numeric, -- numeric(5,0) -- default precision is 5
+
+  num10 smallint,
+  num11 integer, -- INTEGER | INT
+  num12 bigint,
+
+  num20 float, -- FLOAT(53) -- java.lang.Double
+  num21 float(23), -- REAL -- java.lang.Float
+  num22 float(24), -- DOUBLE -- java.lang.Double
+  num23 real, -- java.lang.Float
+  num24 double -- DOUBLE | DOUBLE PRECISION -- java.lang.Double
+  
+);
+
+create table types_char (
+  id integer not null primary key,
+  
+  cha1 char(10), -- CHAR | CHARACTER -- max 254 chars
+  cha2 varchar(20), -- VARCHAR | CHAR VARYING | CHARACTER VARYING -- max 32672 chars 
+  cha3 long varchar, -- no size allowed -- max 32700
+  cha4 clob -- CLOB | CHARACTER LARGE OBJECT -- max 2,147,483,647 chars
+);
+
+create table types_date_time (
+  id integer not null primary key,
+  
+  dat1 date, -- date without time
+  dat2 time, -- time wihtout date -- seconds precision
+  dat3 timestamp -- date and time -- nanosecond precision
+);
+
+create table types_binary (
+  id integer not null primary key,
+  
+  bin1 blob, -- BLOB | BINARY LARGE OBJECT -- max 2,147,483,647 chars
+  bin2 varchar(1000) for bit data, -- { VARCHAR | CHAR VARYING | CHARACTER VARYING } (length) FOR BIT DATA -- max 32672 bytes
+  bin3 long varchar for bit data, -- no size allowed -- max 32700 chars
+  bin4 char(200) for bit data -- { CHAR | CHARACTER } [(length)] FOR BIT DATA -- max 254 bytes
+);
+
+create table types_other (
+  id integer not null primary key,
+
+  boo1 boolean,
+  -- obj1 object, -- Type OBJECT does not exist
+  xml1 xml -- (?) retrieve as: XMLSERIALIZE (xml1 as CLOB)
+);
+

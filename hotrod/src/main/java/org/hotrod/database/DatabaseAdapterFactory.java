@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.database.adapters.ApacheDerbyAdapter;
 import org.hotrod.database.adapters.DB2Adapter;
 import org.hotrod.database.adapters.H2Adapter;
 import org.hotrod.database.adapters.HsqlAdapter;
@@ -79,6 +80,8 @@ public final class DatabaseAdapterFactory {
         return new PostgreSQLAdapter(config, dm);
       } else if (name.startsWith("Microsoft SQL Server")) {
         return new SQLServerAdapter(config, dm);
+      } else if (uName.startsWith("APACHE DERBY")) {
+        return new ApacheDerbyAdapter(config, dm);
       } else {
         throw new UnrecognizedDatabaseException(
             "Could not resolve the database adapter. " + "The product name reported by the JDBC driver '" + name
