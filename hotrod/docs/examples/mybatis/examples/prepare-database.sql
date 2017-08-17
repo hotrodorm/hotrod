@@ -55,64 +55,65 @@ create table vehicle (
   brand varchar(30) not null,
   model varchar(30) not null,
   type varchar(15) not null check type in ('CAR', 'TRUCK', 'MOTORCYCLE'),
-  vin varchar(20) not null,
-  engine_number varchar(30) not null,
   mileage integer,
   purchased_on date default current_date() not null,
   branch_id integer,
   list_price integer,
   sold boolean default false not null,
-  constraint fk_vehicle_branch foreign key (branch_id) references branch (id),
-  constraint vehicle_uq_vin unique (vin),
-  constraint vehicle_uq_en unique (engine_number)
+  constraint fk_vehicle_branch foreign key (branch_id) references branch (id)
 );
 
-insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
-  values ('Kia', 'Soul', 'CAR', 'VIN1207', 'EN102934', 28500, '2016-03-14', 101, 10500, true);
+insert into vehicle (brand, model, type, mileage, purchased_on, branch_id, list_price, sold)
+  values ('Kia', 'Soul', 'CAR', 28500, '2016-03-14', 101, 10500, true);
 
-insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
-  values ('Peterbilt', '379', 'TRUCK', 'VIN1023', 'EN102935', 84500, '2016-02-22', 102, 115000, false);
+insert into vehicle (brand, model, type, mileage, purchased_on, branch_id, list_price, sold)
+  values ('Peterbilt', '379', 'TRUCK', 84500, '2016-02-22', 102, 115000, false);
 
-insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
-  values ('Toyota', 'Tercel', 'CAR', 'VIN9144', 'EN102936', 26, '2017-01-28', 103, null, false);
+insert into vehicle (brand, model, type, mileage, purchased_on, branch_id, list_price, sold)
+  values ('Toyota', 'Tercel', 'CAR', 26, '2017-01-28', 103, null, false);
 
-insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
-  values ('Kenworth', 'K100', 'TRUCK', 'VIN1377', 'EN102937', 15, '2017-02-17', 101, 138000, false);
+insert into vehicle (brand, model, type, mileage, purchased_on, branch_id, list_price, sold)
+  values ('Kenworth', 'K100', 'TRUCK', 15, '2017-02-17', 101, 138000, false);
   
-insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
-  values ('DeLorean', 'DMC-12', 'CAR', 'VIN7492', 'EN102938', 241689, '2015-11-17', 101, 26800, false);
+insert into vehicle (brand, model, type, mileage, purchased_on, branch_id, list_price, sold)
+  values ('DeLorean', 'DMC-12', 'CAR', 241689, '2015-11-17', 101, 26800, false);
 
-insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
-  values ('Yamaha', 'YZ250F', 'MOTORCYCLE', 'VIN3958', 'EN102939', 45600, '2017-02-17', 105, 7490, true);
+insert into vehicle (brand, model, type, mileage, purchased_on, branch_id, list_price, sold)
+  values ('Yamaha', 'YZ250F', 'MOTORCYCLE', 45600, '2017-02-17', 105, 7490, true);
 
-  insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
-  values ('Yamaha', 'YZ125', 'MOTORCYCLE', 'VIN4190', 'EN102112', 33127, '2017-01-05', 105, 6290, false);
+insert into vehicle (brand, model, type, mileage, purchased_on, branch_id, list_price, sold)
+  values ('Yamaha', 'YZ125', 'MOTORCYCLE', 33127, '2017-01-05', 105, 6290, false);
 
-insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
-  values ('Toyota', 'Yaris', 'CAR', 'VIN5543', 'EN1023255', 95000, '2016-11-17', null, null, false);
+insert into vehicle (brand, model, type, mileage, purchased_on, branch_id, list_price, sold)
+  values ('Toyota', 'Yaris', 'CAR', 95000, '2016-11-17', null, null, false);
 
-insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
-  values ('Toyota', 'Tercel', 'CAR', 'VIN12563', 'EN028821', 56000, '2016-12-18', null, null, false);
+insert into vehicle (brand, model, type, mileage, purchased_on, branch_id, list_price, sold)
+  values ('Toyota', 'Tercel', 'CAR', 56000, '2016-12-18', null, null, false);
 
-insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
-  values ('Kia', 'Rio', 'CAR', 'VIN4401', 'EN102881', 28500, '2016-03-14', 104, 14900, true);
+insert into vehicle (brand, model, type, mileage, purchased_on, branch_id, list_price, sold)
+  values ('Kia', 'Rio', 'CAR', 28500, '2016-03-14', 104, 14900, true);
 
 create view car as
-  select id, brand, model, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold 
+  select id, brand, model, mileage, purchased_on, branch_id, list_price, sold 
     from vehicle where type = 'CAR';
 
 create trigger car_view_updatable instead of insert, update, delete on car for each row 
   call "examples.triggers.UpdatableCarViewTrigger";
 
-insert into car (brand, model, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold)
-  values ('Daewoo', 'Fast', 'VIN4477', 'EN1023881', 1100, '2010-03-17', 104, 3200, false);
+insert into car (brand, model, mileage, purchased_on, branch_id, list_price, sold)
+  values ('Daewoo', 'Lanos', 1100, '2010-03-17', 104, 3200, false);
 
-delete from car where id = 3;
+-- delete from car where id = 3;
   
-update car set mileage = 1234 where id = 1;
+-- update car set mileage = 1234 where id = 1;
 
-create view truck as select * from vehicle where type = 'TRUCK';
-create view motorcycle as select * from vehicle where type = 'MOTORCYCLE';
+create view truck as
+  select id, brand, model, mileage, purchased_on, branch_id, list_price, sold 
+    from vehicle where type = 'TRUCK';
+    
+create view motorcycle as 
+  select id, brand, model, mileage, purchased_on, branch_id, list_price, sold 
+    from vehicle where type = 'MOTORCYCLE';
 
 create table origination_type (
   id integer identity not null primary key,
