@@ -41,13 +41,11 @@ public class Utilities {
     DecimalFormat df = new DecimalFormat("#,##0");
     DecimalFormat mf = new DecimalFormat("'$'#,##0");
 
-    Table t = new Table(11, BorderStyle.DESIGN_FORMAL, ShownBorders.HEADER_AND_COLUMNS);
+    Table t = new Table(9, BorderStyle.DESIGN_FORMAL, ShownBorders.HEADER_AND_COLUMNS);
     t.addCell("ID");
     t.addCell("Brand");
     t.addCell("Model");
     t.addCell("Type");
-    t.addCell("VIN");
-    t.addCell("Engine#");
     t.addCell("Mileage");
     t.addCell("Purchased");
     t.addCell("Branch Id", CENTER);
@@ -59,8 +57,6 @@ public class Utilities {
       t.addCell(v.getBrand());
       t.addCell(v.getModel());
       t.addCell(v.getType());
-      t.addCell(v.getVin());
-      t.addCell(v.getEngineNumber());
       t.addCell(df.format(v.getMileage()), RIGHT);
       t.addCell("" + v.getPurchasedOn());
       t.addCell("" + v.getBranchId(), CENTER);
@@ -82,20 +78,16 @@ public class Utilities {
     System.out.println(title);
 
     CellStyle RIGHT = new CellStyle(HorizontalAlign.right);
-    CellStyle CENTER = new CellStyle(HorizontalAlign.center);
     DecimalFormat df = new DecimalFormat("#,##0");
     DecimalFormat mf = new DecimalFormat("'$'#,##0");
 
-    Table t = new Table(11, BorderStyle.DESIGN_FORMAL, ShownBorders.HEADER_AND_COLUMNS);
+    Table t = new Table(8, BorderStyle.DESIGN_FORMAL, ShownBorders.HEADER_AND_COLUMNS);
     t.addCell("ID");
     t.addCell("Brand");
     t.addCell("Model");
-    t.addCell("Type");
-    t.addCell("VIN");
-    t.addCell("Engine#");
     t.addCell("Mileage");
     t.addCell("Purchased");
-    t.addCell("Branch Id", CENTER);
+    t.addCell("Branch Id", RIGHT);
     t.addCell("List Price", RIGHT);
     t.addCell("Sold?");
 
@@ -103,12 +95,9 @@ public class Utilities {
       t.addCell("" + c.getId());
       t.addCell(c.getBrand());
       t.addCell(c.getModel());
-      t.addCell(c.getType());
-      t.addCell(c.getVin());
-      t.addCell(c.getEngineNumber());
       t.addCell(df.format(c.getMileage()), RIGHT);
       t.addCell("" + c.getPurchasedOn());
-      t.addCell("" + c.getBranchId(), CENTER);
+      t.addCell("" + c.getBranchId(), RIGHT);
       t.addCell("" + (c.getListPrice() == null ? "null" : mf.format(c.getListPrice())), RIGHT);
       t.addCell("" + c.getSold());
     }

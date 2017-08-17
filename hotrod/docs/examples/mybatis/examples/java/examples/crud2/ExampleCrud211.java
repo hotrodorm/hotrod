@@ -23,9 +23,6 @@ public class ExampleCrud211 {
     v.setId(123);
     v.setBrand("Skoda");
     v.setModel("Octavia");
-    v.setType("CAR");
-    v.setVin("VN4408");
-    v.setEngineNumber("EN9401");
     v.setMileage(12100);
     v.setPurchasedOn(Date.valueOf("2016-10-11"));
     v.setBranchId(102);

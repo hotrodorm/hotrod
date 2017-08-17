@@ -35,8 +35,6 @@ public class ExampleCrud204 {
     v.setBrand("Skoda");
     v.setModel("Octavia");
     v.setType("CAR");
-    v.setVin("VN4408");
-    v.setEngineNumber("EN9401");
     v.setMileage(12100);
     // v.setPurchasedOn(...); // unset - will use table default (today)
     v.setBranchId(102);

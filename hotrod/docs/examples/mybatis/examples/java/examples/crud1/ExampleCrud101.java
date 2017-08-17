@@ -14,8 +14,8 @@ import daos.primitives.VehicleDAO;
 public class ExampleCrud101 {
 
   public static void main(String[] args) throws SQLException {
-    VehicleVO car = VehicleDAO.select(3);
-    System.out.println("car=" + car);
+    VehicleVO vehicle = VehicleDAO.select(10);
+    System.out.println("vehicle=" + vehicle);
   }
 
 }

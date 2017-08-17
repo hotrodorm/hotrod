@@ -21,10 +21,10 @@ public class UpdatableCarViewTrigger extends TriggerAdapter {
         + " type=" + type);
     this.delete = conn.prepareStatement("delete from vehicle where id = ?");
     this.insert = conn.prepareStatement(
-        "insert into vehicle (brand, model, type, vin, engine_number, mileage, purchased_on, branch_id, list_price, sold) "
-            + "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        "insert into vehicle (brand, model, type, mileage, purchased_on, branch_id, list_price, sold) "
+            + "values (?, ?, ?, ?, ?, ?, ?, ?)");
     this.update = conn.prepareStatement("update vehicle set "
-        + "brand = ?, model = ?, type = ?, vin = ?, engine_number = ?, mileage = ?, purchased_on = ?, branch_id = ?, list_price = ?, sold = ? "
+        + "brand = ?, model = ?, type = ?, mileage = ?, purchased_on = ?, branch_id = ?, list_price = ?, sold = ? "
         + "where id = ?");
     super.init(conn, schemaName, triggerName, tableName, before, type);
   }
@@ -54,8 +54,6 @@ public class UpdatableCarViewTrigger extends TriggerAdapter {
         Integer id = JdbcUtil.getIntObj(newRow, rcol++);
         String brand = JdbcUtil.getString(newRow, rcol++);
         String model = JdbcUtil.getString(newRow, rcol++);
-        String vin = JdbcUtil.getString(newRow, rcol++);
-        String engineNumber = JdbcUtil.getString(newRow, rcol++);
         Integer mileage = JdbcUtil.getIntObj(newRow, rcol++);
         Date purchasedOn = JdbcUtil.getSQLDate(newRow, rcol++);
         Integer branchId = JdbcUtil.getIntObj(newRow, rcol++);
@@ -66,8 +64,6 @@ public class UpdatableCarViewTrigger extends TriggerAdapter {
         JdbcUtil.setString(this.update, icol++, brand);
         JdbcUtil.setString(this.update, icol++, model);
         JdbcUtil.setString(this.update, icol++, "CAR");
-        JdbcUtil.setString(this.update, icol++, vin);
-        JdbcUtil.setString(this.update, icol++, engineNumber);
         JdbcUtil.setInt(this.update, icol++, mileage);
         JdbcUtil.setSQLDate(this.update, icol++, purchasedOn);
         JdbcUtil.setInt(this.update, icol++, branchId);
@@ -88,8 +84,6 @@ public class UpdatableCarViewTrigger extends TriggerAdapter {
         Integer id = JdbcUtil.getIntObj(newRow, rcol++);
         String brand = JdbcUtil.getString(newRow, rcol++);
         String model = JdbcUtil.getString(newRow, rcol++);
-        String vin = JdbcUtil.getString(newRow, rcol++);
-        String engineNumber = JdbcUtil.getString(newRow, rcol++);
         Integer mileage = JdbcUtil.getIntObj(newRow, rcol++);
         Date purchasedOn = JdbcUtil.getSQLDate(newRow, rcol++);
         Integer branchId = JdbcUtil.getIntObj(newRow, rcol++);
@@ -100,8 +94,6 @@ public class UpdatableCarViewTrigger extends TriggerAdapter {
         JdbcUtil.setString(this.insert, icol++, brand);
         JdbcUtil.setString(this.insert, icol++, model);
         JdbcUtil.setString(this.insert, icol++, "CAR");
-        JdbcUtil.setString(this.insert, icol++, vin);
-        JdbcUtil.setString(this.insert, icol++, engineNumber);
         JdbcUtil.setInt(this.insert, icol++, mileage);
         JdbcUtil.setSQLDate(this.insert, icol++, purchasedOn);
         JdbcUtil.setInt(this.insert, icol++, branchId);
