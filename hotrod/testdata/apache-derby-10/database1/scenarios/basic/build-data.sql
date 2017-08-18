@@ -48,8 +48,6 @@ insert into account (id, name, type, current_balance, created_on, row_version) v
 -- Types
 -- =====
 
-insert into types_other (id) values(1);
-
 -- Quadrant
 
 insert into quadrant (region, area, caption, active_state) values (1, 12, 'Quadrant 1-12', 1);

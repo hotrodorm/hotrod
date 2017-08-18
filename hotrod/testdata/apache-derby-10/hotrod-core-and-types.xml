@@ -3,11 +3,14 @@
 
 <hotrod-fragment>
 
-  <table name="config_values"/>
 
   <enum name="employee_state" name-column="description" />
   
   <enum name="employee_interim" name-column="caption" />
+  
+  <table name="employee" />
+
+  <table name="config_values"/>
 
   <table name="properties" java-name="Property" />
 
@@ -136,8 +139,6 @@
 
     <view name="tx_branch">
       <column name="amount" java-name="total" java-type="java.lang.Long" />
-      <!-- <column name="non-existent" java-name="badColumn" /> <column name="amount" 
-        java-type="java.lang.Long" jdbc-type="NUMERIC" /> -->
 
       <sequence name="seq_codes" java-method-name="getCodeSequence" />
 

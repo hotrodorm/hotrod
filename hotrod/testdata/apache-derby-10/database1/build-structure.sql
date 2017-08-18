@@ -260,14 +260,19 @@ create table types_binary (
   bin1 blob, -- BLOB | BINARY LARGE OBJECT -- max 2,147,483,647 chars
   bin2 varchar(1000) for bit data, -- { VARCHAR | CHAR VARYING | CHARACTER VARYING } (length) FOR BIT DATA -- max 32672 bytes
   bin3 long varchar for bit data, -- no size allowed -- max 32700 chars
-  bin4 char(200) for bit data -- { CHAR | CHARACTER } [(length)] FOR BIT DATA -- max 254 bytes
+  bin4 char(10) for bit data -- { CHAR | CHARACTER } [(length)] FOR BIT DATA -- max 254 bytes
 );
 
 create table types_other (
   id integer not null primary key,
 
-  boo1 boolean,
+  boo1 boolean
   -- obj1 object, -- Type OBJECT does not exist
-  xml1 xml -- (?) retrieve as: XMLSERIALIZE (xml1 as CLOB)
+  --xml1 xml -- not supported, needs more research
 );
+
+-- The following examples show a workaround to read/write an XML column:
+--   insert into types_other (id, boo1, xml1) values (4, false, xmlparse(document cast ('<abc/>' as clob) preserve whitespace));
+--   select id, boo1, xmlserialize(xml1 as clob) from types_other;
+
 
