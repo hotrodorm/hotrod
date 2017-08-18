@@ -22,8 +22,6 @@ drop table deputy;
 drop table agent; 
 
 drop sequence seq_agent restrict;
-drop sequence seq_account restrict;
-drop sequence seq_transaction restrict;
 drop sequence seq_codes restrict;
 
 drop sequence seq_test restrict;

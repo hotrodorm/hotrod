@@ -28,21 +28,20 @@ insert into "transaction" (account_id, seq_id, time, amount, fed_branch_id)
 insert into "transaction" (account_id, seq_id, time, amount, fed_branch_id) 
   values (1234005, 4, 'Time 005', 160, 102);
 
-drop sequence seq_transaction restrict;  
-create sequence seq_transaction start with 10;
+alter table "transaction" alter column seq_id restart with 5;  
   
-insert into account (id, name, type, current_balance, created_on, row_version) values (1, 'ACC2', 'CHK', 50, date('2016-01-01'), 0);
-insert into account (id, name, type, current_balance, created_on, row_version) values (2, 'ACC123', 'SAV', 150, date('2016-02-01'), 0);
-insert into account (id, name, type, current_balance, created_on, row_version) values (3, 'ACC201', 'CHK', 250, date('2016-03-01'), 0);
-insert into account (id, name, type, current_balance, created_on, row_version) values (4, 'ACC500', 'SAV', 350, date('2016-04-01'), 0);
-insert into account (id, name, type, current_balance, created_on, row_version) values (8, 'ACC8', 'CHK', null, date('2016-01-01'), 0);
-insert into account (id, name, type, current_balance, created_on, row_version) values (9, 'ACC9', 'SAV', null, date('2016-01-02'), 0);
-insert into account (id, name, type, current_balance, created_on, row_version) values (10, 'SAV0001', 'SAV',  100, date('2016-01-01'), 0);
-insert into account (id, name, type, current_balance, created_on, row_version) values (11, 'ACC11', 'CHK', null, date('2016-01-03'), 0);
-insert into account (id, name, type, current_balance, created_on, row_version) values (20, 'aCC123', 'SAV', 150, date('2016-02-01'), 0);
-insert into account (id, name, type, current_balance, created_on, row_version) values (21, 'acc123', 'SAV', 150, date('2016-02-01'), 0);
-insert into account (id, name, type, current_balance, created_on, row_version) values (22, 'acC123', 'SAV', 150, date('2016-02-01'), 0);
-insert into account (id, name, type, current_balance, created_on, row_version) values (25, 'ACC732', 'CHK', 21050, date('2014-08-15'), 0);
+insert into account (name, type, current_balance, created_on, row_version) values ('ACC2', 'CHK', 50, date('2016-01-01'), 0);
+insert into account (name, type, current_balance, created_on, row_version) values ('ACC123', 'SAV', 150, date('2016-02-01'), 0);
+insert into account (name, type, current_balance, created_on, row_version) values ('ACC201', 'CHK', 250, date('2016-03-01'), 0);
+insert into account (name, type, current_balance, created_on, row_version) values ('ACC500', 'SAV', 350, date('2016-04-01'), 0);
+insert into account (name, type, current_balance, created_on, row_version) values ('ACC8', 'CHK', null, date('2016-01-01'), 0);
+insert into account (name, type, current_balance, created_on, row_version) values ('ACC9', 'SAV', null, date('2016-01-02'), 0);
+insert into account (name, type, current_balance, created_on, row_version) values ('SAV0001', 'SAV',  100, date('2016-01-01'), 0);
+insert into account (name, type, current_balance, created_on, row_version) values ('ACC11', 'CHK', null, date('2016-01-03'), 0);
+insert into account (name, type, current_balance, created_on, row_version) values ('aCC123', 'SAV', 150, date('2016-02-01'), 0);
+insert into account (name, type, current_balance, created_on, row_version) values ('acc123', 'SAV', 150, date('2016-02-01'), 0);
+insert into account (name, type, current_balance, created_on, row_version) values ('acC123', 'SAV', 150, date('2016-02-01'), 0);
+insert into account (name, type, current_balance, created_on, row_version) values ('ACC732', 'CHK', 21050, date('2014-08-15'), 0);
 
 -- =====
 -- Types

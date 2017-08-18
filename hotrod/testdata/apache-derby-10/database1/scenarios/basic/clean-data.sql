@@ -15,3 +15,13 @@ delete from employee_interim;
 delete from types_other;
 
 delete from quadrant;
+
+-- restart sequences
+
+drop sequence seq_agent restrict;
+drop sequence seq_codes restrict;
+drop sequence seq_test restrict;
+
+create sequence seq_agent;
+create sequence seq_codes;
+create sequence seq_test;
