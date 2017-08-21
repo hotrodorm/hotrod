@@ -268,4 +268,68 @@
     </javac>
   </target>
 
+  <!-- ================= -->
+  <!-- Remote deployment -->
+  <!-- ================= -->
+
+  <target name="release-upload-dbscripts" depends="release">
+
+    <taskdef name="sshrun"
+             classname="org.nocrala.tools.security.ssh.run.SshRunAntTask"
+             onerror="fail">
+      <classpath>
+        <pathelement location="lib/ssh/ant-sshutils-1.2.jar" />
+        <pathelement location="lib/ssh/jsch-0.1.53.jar" />
+      </classpath>
+    </taskdef>
+
+    <property name="scripts.dir"
+              value="${database.scripts.basedir}/${version}" />
+    <sshrun host="${database.upload.host}"
+            username="${database.upload.username}"
+            password="${database.upload.password}"
+            trust="true">
+      <![CDATA[
+      
+      if [ ! -d "#{database.scripts.basedir}" ]; then
+        echo "ERROR: Could not upload the database scripts to the unix server."
+        echo " - The database base dir #{database.scripts.basedir} does not exist."
+        exit 1
+      fi
+
+      if [ -d "#{scripts.dir}" ]; then
+        echo "ERROR: Could not upload the database scripts to the unix server."
+        echo " - The database scripts dir #{scripts.dir} already exists. Can only upload to a new (non-existent) directory."
+        exit 1
+      fi
+      
+      mkdir #{scripts.dir}
+      
+      ]]>
+    </sshrun>
+    
+  </target>
+  
+  <target name="upload" depends="-init">
+    
+    <loadproperties srcfile="${db.src.dir}/config.properties" />
+
+    <taskdef name="scpupload"
+             classname="org.nocrala.tools.security.ssh.upload.SshUploadAntTask"
+             onerror="fail">
+      <classpath>
+        <pathelement location="lib/ssh/ant-sshutils-1.2.jar" />
+        <pathelement location="lib/ssh/jsch-0.1.53.jar" />
+      </classpath>
+    </taskdef>
+
+    <scpupload host="${database.upload.host}"
+               username="${database.upload.username}"
+               password="${database.upload.password}"
+               trust="true"
+               localfilename="testdata/b.sql"
+               remotefilename="build-structure.sql" />
+    
+    </target>
+
 </project>
