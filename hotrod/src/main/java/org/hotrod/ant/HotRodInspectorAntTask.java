@@ -9,6 +9,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.JdbcTypes;
+import org.nocrala.tools.database.tartarus.connectors.DatabaseConnectorFactory.UnsupportedDatabaseException;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
@@ -131,6 +132,9 @@ public class HotRodInspectorAntTask extends Task {
       e.printStackTrace();
       throw new BuildException(e.getMessage());
     } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+      throw new BuildException(e.getMessage());
+    } catch (UnsupportedDatabaseException e) {
       e.printStackTrace();
       throw new BuildException(e.getMessage());
     }

@@ -552,12 +552,12 @@ Find if column is identity :
 create table test_identity0 (
   id int not null primary key,
   name varchar(100)
-);
+)
 
 create table test_identity1 (
   id int identity not null primary key,
   name varchar(100)
-);
+)
 
 insert into test_identity1 (name) values ('Chicago') -- succeeds
 

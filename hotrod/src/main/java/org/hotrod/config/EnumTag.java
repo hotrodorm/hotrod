@@ -1,5 +1,6 @@
 package org.hotrod.config;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -158,7 +159,7 @@ public class EnumTag extends AbstractCompositeDAOTag {
     }
   }
 
-  public void validateAgainstDatabase(final JdbcDatabase db, final DatabaseAdapter adapter)
+  public void validateAgainstDatabase(final JdbcDatabase db, final Connection conn, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
     // Validate the table existence
@@ -211,7 +212,7 @@ public class EnumTag extends AbstractCompositeDAOTag {
 
     // Retrieve values
 
-    this.retrieveTableValues(db);
+    this.retrieveTableValues(db, conn);
 
     // Retrieve non-persistent values
 
@@ -245,7 +246,8 @@ public class EnumTag extends AbstractCompositeDAOTag {
 
   }
 
-  private void retrieveTableValues(final JdbcDatabase db) throws InvalidConfigurationFileException {
+  private void retrieveTableValues(final JdbcDatabase db, final Connection conn)
+      throws InvalidConfigurationFileException {
 
     this.tableConstants = new ArrayList<EnumConstant>();
 
@@ -271,7 +273,7 @@ public class EnumTag extends AbstractCompositeDAOTag {
     ResultSet rs = null;
 
     try {
-      st = db.getDatabaseMetaData().getConnection().prepareStatement(sql);
+      st = conn.prepareStatement(sql);
       // log.info("[SQL prepared]");
       rs = st.executeQuery();
       // log.info("[SQL executed]");

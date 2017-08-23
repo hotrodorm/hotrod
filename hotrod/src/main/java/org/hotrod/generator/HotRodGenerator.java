@@ -40,7 +40,9 @@ import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
+import org.nocrala.tools.database.tartarus.core.DatabaseObjectFilter;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
+import org.nocrala.tools.database.tartarus.core.JdbcDatabase.DatabaseConnectionVersion;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 import org.nocrala.tools.database.tartarus.core.JdbcTableFilter;
 import org.nocrala.tools.database.tartarus.exception.CatalogNotSupportedException;
@@ -86,36 +88,20 @@ public abstract class HotRodGenerator {
       conn = this.loc.getConnection();
       logm("Connection open.");
 
-      String databaseName = null;
-      String databaseVersion = null;
-      String jdbcDriverName = null;
-      String jdbcDriverVersion = null;
-      @SuppressWarnings("unused")
-      String jdbcSpecification = null;
+      DatabaseConnectionVersion cv;
 
       try {
         logm("Getting initial metadata.");
-        DatabaseMetaData dm = conn.getMetaData();
-        logm("Initial metadata retrieval started.");
-
-        databaseName = dm.getDatabaseProductName();
-        databaseVersion = dm.getDatabaseMajorVersion() + "." + dm.getDatabaseMinorVersion() + " ("
-            + dm.getDatabaseProductVersion() + ")";
-        jdbcDriverName = dm.getDriverName();
-        jdbcDriverVersion = dm.getDriverMajorVersion() + "." + dm.getDriverMinorVersion() + " (" + dm.getDriverVersion()
-            + ")";
-
-        // Oracle DB reports a wrong JDBC Specification - will not use.
-        jdbcSpecification = dm.getJDBCMajorVersion() + "." + dm.getJDBCMinorVersion();
-
-        logm("Initial metadata retrieval complete.");
+        cv = new DatabaseConnectionVersion(conn.getMetaData());
+        logm("Metadata retrieval complete.");
 
       } catch (SQLException e) {
         throw new UncontrolledException("Could not retrieve database metadata.", e);
       }
 
-      display("Database Name: " + databaseName + " - version " + databaseVersion);
-      display("JDBC Driver: " + jdbcDriverName + " - version " + jdbcDriverVersion);
+      display("Database Name: " + cv.renderDatabaseName());
+      display("JDBC Driver: " + cv.renderJDBCDriverName());
+      display("JDBC Specification: " + cv.renderJDBCSpecification());
 
       display("");
 
@@ -134,8 +120,12 @@ public abstract class HotRodGenerator {
 
       try {
         logm("Ready for database objects retrieval.");
-        this.db = new JdbcDatabase(this.loc, true, new TableFilter(this.adapter),
+
+        DatabaseObjectFilter filter = new DatabaseObjectFilter(new TableFilter(this.adapter),
             new ViewFilter(this.config, this.adapter));
+
+        this.db = new JdbcDatabase(this.loc, true, filter);
+
         logm("After retrieval 1.");
 
       } catch (ReaderException e) {
@@ -183,7 +173,7 @@ public abstract class HotRodGenerator {
 
       try {
 
-        this.config.validateAgainstDatabase(this.db, this.adapter);
+        this.config.validateAgainstDatabase(this.db, conn, this.adapter);
 
       } catch (InvalidConfigurationFileException e) {
         String message = (e.getSourceLocation() == null ? ""
@@ -223,7 +213,7 @@ public abstract class HotRodGenerator {
                   + m.getColumnName() + "' of table/view/select '" + m.getTableName() + "'.");
         }
       }
-      
+
       for (TableDataSetMetadata ds : this.tables) {
         ds.linkReferencedDataSets(this.tables);
       }
@@ -245,13 +235,12 @@ public abstract class HotRodGenerator {
           // Not an enum - nothing to do.
         }
       }
-      
+
       // Set EnumMetadata to ColumnMetadata
-      
+
       for (TableDataSetMetadata ds : this.tables) {
         ds.linkEnumMetadata(this.enums);
       }
-
 
       // Prepare views metadata
 

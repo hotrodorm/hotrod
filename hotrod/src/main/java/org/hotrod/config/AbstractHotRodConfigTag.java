@@ -1,6 +1,7 @@
 package org.hotrod.config;
 
 import java.io.File;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -208,7 +209,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     this.facets.addAll(other.facets);
   }
 
-  public void validateAgainstDatabase(final JdbcDatabase db, final DatabaseAdapter adapter)
+  public void validateAgainstDatabase(final JdbcDatabase db, final Connection conn, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
     for (TableTag t : this.getTables()) {
@@ -220,7 +221,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     }
 
     for (EnumTag e : this.getEnums()) {
-      e.validateAgainstDatabase(db, adapter);
+      e.validateAgainstDatabase(db, conn, adapter);
     }
 
   }
