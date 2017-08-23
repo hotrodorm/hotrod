@@ -51,4 +51,10 @@ update types_other set oth2 = httpuritype.createuri('http://www.oracle.com') whe
 update types_other set names = namearray('Vine', 'Vidi', 'Vincere') where id = 1;
 update types_other set stu1 = person_struct(123, to_date('2003/07/09', 'yyyy/mm/dd')) where id = 1;
 
+-- Insert with identity
+
+-- insert into account (name, type, current_balance, created_on, row_version) 
+--    values ('AC_123456', 'SAV', 150, to_date('2016-02-01','YYYY-MM-DD'), 0) returning id into :inserted_value;
+
+-- select inserted_value from dual;
 
