@@ -49,7 +49,7 @@ insert into account (id, name, type, current_balance, created_on, row_version) v
 -- =====
 
 insert into types_other (id) values(1);
-update types_other set row1 = 'AAAMaHAAEAAAAIHAAZ' where id = 1;
+-- update types_other set row1 = 'AAAMaHAAEAAAAIHAAZ' where id = 1;
 update types_other set itv2 = TO_YMINTERVAL('01-02') where id = 1;
 update types_other set itv4 = TO_DSINTERVAL('2 10:20:30.456') where id = 1;
 -- update types_other set oth1 = XMLType('<Warehouse whNo="100"><Building>Owned</Building></Warehouse>') where id = 1;

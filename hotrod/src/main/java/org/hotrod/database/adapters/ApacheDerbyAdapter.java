@@ -199,11 +199,6 @@ public class ApacheDerbyAdapter extends DatabaseAdapter {
     return false;
   }
 
-  @Override
-  public boolean supportsSpecifiedIdentityPKs() {
-    return true;
-  }
-
   // Sorting
 
   @Override

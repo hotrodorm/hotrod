@@ -25,6 +25,7 @@
     </xsd:sequence>
     <xsd:attribute name="name" type="xsd:string" use="required" />
     <xsd:attribute name="java-name" type="xsd:string" />
+    <xsd:attribute name="sequence" type="xsd:string" />
     <xsd:attribute name="column-seam" type="xsd:string" />
   </xsd:complexType>
 
@@ -68,7 +69,7 @@
   <xsd:complexType name="auto-generated-column-type">
     <xsd:attribute name="name" type="xsd:string" use="required" />
     <xsd:attribute name="sequence" type="xsd:string" />
-    <xsd:attribute name="allows-specified-value" type="xsd:string" />
+    <xsd:attribute name="always" type="xsd:string" />
   </xsd:complexType>
 
   <!-- version-control-column -->

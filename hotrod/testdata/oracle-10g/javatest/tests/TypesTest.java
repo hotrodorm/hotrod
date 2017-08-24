@@ -157,7 +157,7 @@ public class TypesTest {
     // 'yyyy/mm/dd')) where id = 1;
 
     for (TypesOtherVO x : TypesOtherDAO.selectByExample(new TypesOtherVO())) {
-      System.out.println("binary-row1=" + renderObject(x.getRow1()));
+//      System.out.println("binary-row1=" + renderObject(x.getRow1()));
       System.out.println("binary-itv2=" + renderObject(x.getItv2()));
       System.out.println("binary-itv4=" + renderObject(x.getItv4()));
       // System.out.println("binary-oth1="+ renderObject(x.getOth1()));

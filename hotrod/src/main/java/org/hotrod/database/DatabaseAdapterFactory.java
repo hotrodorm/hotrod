@@ -11,9 +11,9 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.database.adapters.ApacheDerbyAdapter;
 import org.hotrod.database.adapters.DB2Adapter;
 import org.hotrod.database.adapters.H2Adapter;
-import org.hotrod.database.adapters.HsqlAdapter;
+import org.hotrod.database.adapters.HyperSQLAdapter;
 import org.hotrod.database.adapters.MariaDBAdapter;
-import org.hotrod.database.adapters.MysqlAdapter;
+import org.hotrod.database.adapters.MySQLAdapter;
 import org.hotrod.database.adapters.OracleAdapter;
 import org.hotrod.database.adapters.PostgreSQLAdapter;
 import org.hotrod.database.adapters.SAPASEAdapter;
@@ -62,7 +62,7 @@ public final class DatabaseAdapterFactory {
       if (name.equalsIgnoreCase("ORACLE")) {
         return new OracleAdapter(config, dm);
       } else if (uName.startsWith("HSQL")) {
-        return new HsqlAdapter(config, dm);
+        return new HyperSQLAdapter(config, dm);
       } else if (uName.startsWith("H2")) {
         return new H2Adapter(config, dm);
       } else if (uName.startsWith("MYSQL")) {
@@ -70,7 +70,7 @@ public final class DatabaseAdapterFactory {
         if (productVersion != null && productVersion.contains("mariadb")) {
           return new MariaDBAdapter(config, dm);
         } else {
-          return new MysqlAdapter(config, dm);
+          return new MySQLAdapter(config, dm);
         }
       } else if (uName.startsWith("ADAPTIVE SERVER ENTERPRISE")) {
         return new SAPASEAdapter(config, dm);

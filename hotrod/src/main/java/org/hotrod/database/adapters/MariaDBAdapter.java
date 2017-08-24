@@ -19,12 +19,12 @@ public class MariaDBAdapter extends DatabaseAdapter {
 
   private static Logger log = Logger.getLogger(MariaDBAdapter.class);
 
-  private MysqlAdapter mysqlAdaper;
+  private MySQLAdapter mysqlAdaper;
 
   public MariaDBAdapter(final HotRodConfigTag config, final DatabaseMetaData dm) throws SQLException {
     super(config, dm);
     log.debug("init");
-    this.mysqlAdaper = new MysqlAdapter(config, dm);
+    this.mysqlAdaper = new MySQLAdapter(config, dm);
   }
 
   @Override
@@ -96,11 +96,6 @@ public class MariaDBAdapter extends DatabaseAdapter {
   @Override
   public boolean supportsJDBCGeneratedKeys() {
     return this.mysqlAdaper.supportsJDBCGeneratedKeys();
-  }
-
-  @Override
-  public boolean supportsSpecifiedIdentityPKs() {
-    return this.mysqlAdaper.supportsSpecifiedIdentityPKs();
   }
 
   // Sorting

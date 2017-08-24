@@ -240,11 +240,6 @@ public class SQLServerAdapter extends DatabaseAdapter {
     return true;
   }
 
-  @Override
-  public boolean supportsSpecifiedIdentityPKs() {
-    return false;
-  }
-
   // Sorting
 
   private final static Set<String> CS_SORTABLE_STRING_TYPE_NAMES = new HashSet<String>();
@@ -253,8 +248,6 @@ public class SQLServerAdapter extends DatabaseAdapter {
     CS_SORTABLE_STRING_TYPE_NAMES.add("varchar");
     CS_SORTABLE_STRING_TYPE_NAMES.add("nchar");
     CS_SORTABLE_STRING_TYPE_NAMES.add("nvarchar");
-    // CS_SORTABLE_STRING_TYPE_NAMES.add("text"); // cannot sort
-    // CS_SORTABLE_STRING_TYPE_NAMES.add("ntext"); // cannot sort
   }
 
   @Override

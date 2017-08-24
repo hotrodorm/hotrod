@@ -16,7 +16,7 @@
 
   <target name="build-database" depends="-init">
     <sql driver="${driverclass}"
-         classpath="${driverclasspath}"
+         classpath="${db.src.dir}/${driverclasspath}"
          url="${url}"
          userid="${username}"
          password="${password}"
@@ -30,7 +30,7 @@
 
   <target name="clean-database" depends="-init">
     <sql driver="${driverclass}"
-         classpath="${driverclasspath}"
+         classpath="${db.src.dir}/${driverclasspath}"
          url="${url}"
          userid="${username}"
          password="${password}"
@@ -43,7 +43,7 @@
 
   <target name="build-sp" depends="-init">
     <sql driver="${driverclass}"
-         classpath="${driverclasspath}"
+         classpath="${db.src.dir}/${driverclasspath}"
          url="${url}"
          userid="${username}"
          password="${password}"
@@ -57,7 +57,7 @@
   <target name="clean-sp" depends="-init">
     <echo message="[clean ]" />
     <sql driver="${driverclass}"
-         classpath="${driverclasspath}"
+         classpath="${db.src.dir}/${driverclasspath}"
          url="${url}"
          userid="${username}"
          password="${password}"
@@ -69,7 +69,7 @@
 
   <target name="build-data" depends="-init">
     <sql driver="${driverclass}"
-         classpath="${driverclasspath}"
+         classpath="${db.src.dir}/${driverclasspath}"
          url="${url}"
          userid="${username}"
          password="${password}"
@@ -82,7 +82,7 @@
 
   <target name="clean-data" depends="-init">
     <sql driver="${driverclass}"
-         classpath="${driverclasspath}"
+         classpath="${db.src.dir}/${driverclasspath}"
          url="${url}"
          userid="${username}"
          password="${password}"
@@ -118,7 +118,7 @@
     <taskdef name="hotrod" classname="org.hotrod.ant.HotRodAntTask">
       <classpath>
         <pathelement location="dist/hotrod-${version}.jar" />
-        <pathelement location="${driverclasspath}" />
+        <pathelement location="${db.src.dir}/${driverclasspath}" />
         <pathelement location="lib/apache-commons/commons-jexl3-3.1.jar" />
         <pathelement location="lib/apache-commons/commons-logging-1.2.jar" />
       </classpath>
@@ -135,34 +135,6 @@
             configfile="${db.src.dir}/hotrod.xml"
             display="list" />
 
-  </target>
-
-  <target name="startup-hsqldb" depends="-init">
-    <!-- No output or errors are shown when spawn="true" -->
-    <!-- To see any errors and/or debug set spawn="false"; unfortunately this pauses Ant until the DB is shut down. -->
-    <exec executable="java" spawn="true">
-      <arg value="-cp" />
-      <arg value="lib/jdbc-drivers/hsqldb-2.2.9.jar" />
-      <arg value="org.hsqldb.server.Server" />
-      <arg value="--database.0" />
-      <arg value="file:gen/db/db1" />
-      <arg value="--dbname.0" />
-      <arg value="xdb" />
-    </exec>
-    <echo message="[ HSQLDB started ]" />
-  </target>
-
-  <target name="shutdown-hsqldb" depends="-init">
-    <sql driver="${driverclass}"
-         classpath="${driverclasspath}"
-         url="${url}"
-         userid="${username}"
-         password="${password}"
-         delimiter=";"
-         failOnConnectionError="false"
-         onerror="continue">
-      SHUTDOWN
-    </sql>
   </target>
 
 </project>

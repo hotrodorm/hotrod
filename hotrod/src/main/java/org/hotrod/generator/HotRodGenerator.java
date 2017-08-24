@@ -1,7 +1,6 @@
 package org.hotrod.generator;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -100,8 +99,7 @@ public abstract class HotRodGenerator {
       }
 
       display("Database Name: " + cv.renderDatabaseName());
-      display("JDBC Driver: " + cv.renderJDBCDriverName());
-      display("JDBC Specification: " + cv.renderJDBCSpecification());
+      display("JDBC Driver: " + cv.renderJDBCDriverName() + " - implements JDBC Specification " + cv.renderJDBCSpecification());
 
       display("");
 

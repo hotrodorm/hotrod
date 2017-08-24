@@ -6,12 +6,18 @@ import java.math.BigInteger;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import hotrod.test.generation.TypesBinaryDAO;
-import hotrod.test.generation.TypesCharDAO;
-import hotrod.test.generation.TypesDateTimeDAO;
-import hotrod.test.generation.TypesExtraDAO;
-import hotrod.test.generation.TypesNumericDAO;
-import hotrod.test.generation.TypesOtherDAO;
+import hotrod.test.generation.TypesBinaryVO;
+import hotrod.test.generation.TypesCharVO;
+import hotrod.test.generation.TypesDateTimeVO;
+import hotrod.test.generation.TypesExtraVO;
+import hotrod.test.generation.TypesNumericVO;
+import hotrod.test.generation.TypesOtherVO;
+import hotrod.test.generation.primitives.TypesBinaryDAO;
+import hotrod.test.generation.primitives.TypesCharDAO;
+import hotrod.test.generation.primitives.TypesDateTimeDAO;
+import hotrod.test.generation.primitives.TypesExtraDAO;
+import hotrod.test.generation.primitives.TypesNumericDAO;
+import hotrod.test.generation.primitives.TypesOtherDAO;
 
 public class TypesTest {
 
@@ -31,9 +37,9 @@ public class TypesTest {
   }
 
   private static void numericTest() throws SQLException {
-    TypesNumericDAO.deleteByExample(new TypesNumericDAO());
+    TypesNumericDAO.deleteByExample(new TypesNumericVO());
 
-    TypesNumericDAO n = new TypesNumericDAO();
+    TypesNumericVO n = new TypesNumericVO();
     n.setId(1);
 
     n.setNum1((byte) 12);
@@ -55,17 +61,17 @@ public class TypesTest {
     n.setNum21(BigInteger.TEN);
     n.setNum22(BigInteger.TEN);
 
-    n.insert();
+    TypesNumericDAO.insert(n);
 
-    for (TypesNumericDAO x : TypesNumericDAO.selectByExample(new TypesNumericDAO())) {
+    for (TypesNumericVO x : TypesNumericDAO.selectByExample(new TypesNumericVO())) {
       System.out.println("numeric=" + x);
     }
   }
 
   private static void charTest() throws SQLException {
-    TypesCharDAO.deleteByExample(new TypesCharDAO());
+    TypesCharDAO.deleteByExample(new TypesCharVO());
 
-    TypesCharDAO c = new TypesCharDAO();
+    TypesCharVO c = new TypesCharVO();
     c.setId(1);
 
     c.setCha1("a");
@@ -81,46 +87,46 @@ public class TypesTest {
     // byte[] b3 = new byte[] { 7, 8, 9 };
     // c.setCha10(b3);
 
-    c.insert();
+    TypesCharDAO.insert(c);
 
-    for (TypesCharDAO x : TypesCharDAO.selectByExample(new TypesCharDAO())) {
+    for (TypesCharVO x : TypesCharDAO.selectByExample(new TypesCharVO())) {
       System.out.println("char=" + x);
     }
   }
 
   private static void dateTimeTest() throws SQLException {
-    TypesDateTimeDAO.deleteByExample(new TypesDateTimeDAO());
+    TypesDateTimeDAO.deleteByExample(new TypesDateTimeVO());
 
-    TypesDateTimeDAO d = new TypesDateTimeDAO();
+    TypesDateTimeVO d = new TypesDateTimeVO();
     d.setId(1);
 
     d.setDat1(new java.sql.Date(System.currentTimeMillis()));
     d.setDat2(new Timestamp(System.currentTimeMillis()));
     d.setDat3(new Timestamp(System.currentTimeMillis()));
     d.setDat4(new Timestamp(System.currentTimeMillis()));
-    d.insert();
+    TypesDateTimeDAO.insert(d);
 
-    for (TypesDateTimeDAO x : TypesDateTimeDAO.selectByExample(new TypesDateTimeDAO())) {
+    for (TypesDateTimeVO x : TypesDateTimeDAO.selectByExample(new TypesDateTimeVO())) {
       System.out.println("date/time=" + x);
     }
   }
 
   private static void binaryTest() throws SQLException {
-    TypesBinaryDAO.deleteByExample(new TypesBinaryDAO());
+    TypesBinaryDAO.deleteByExample(new TypesBinaryVO());
 
     byte[] b1 = new byte[] { 1, 2, 3 };
     byte[] b2 = new byte[] { 4, 5, 6 };
     byte[] b3 = new byte[] { 7, 8, 9 };
 
-    TypesBinaryDAO b = new TypesBinaryDAO();
+    TypesBinaryVO b = new TypesBinaryVO();
     b.setId(1);
 
     b.setBin1(b1);
     b.setBin2(b2);
     b.setBin3(b3);
-    b.insert();
+    TypesBinaryDAO.insert(b);
 
-    for (TypesBinaryDAO x : TypesBinaryDAO.selectByExample(new TypesBinaryDAO())) {
+    for (TypesBinaryVO x : TypesBinaryDAO.selectByExample(new TypesBinaryVO())) {
       System.out.println("binary=" //
           + " [" + renderBA(x.getBin1()) + "], " //
           + " [" + renderBA(x.getBin2()) + "], " //
@@ -144,8 +150,8 @@ public class TypesTest {
     // update types_other set stu1 = person_struct(123, to_date('2003/07/09',
     // 'yyyy/mm/dd')) where id = 1;
 
-    for (TypesOtherDAO x : TypesOtherDAO.selectByExample(new TypesOtherDAO())) {
-      System.out.println("binary-row1=" + renderObject(x.getRow1()));
+    for (TypesOtherVO x : TypesOtherDAO.selectByExample(new TypesOtherVO())) {
+      // System.out.println("binary-row1=" + renderObject(x.getRow1()));
       System.out.println("binary-itv2=" + renderObject(x.getItv2()));
       System.out.println("binary-itv4=" + renderObject(x.getItv4()));
       // System.out.println("binary-oth1="+ renderObject(x.getOth1()));
@@ -161,7 +167,7 @@ public class TypesTest {
   }
 
   private static void extraTest() throws SQLException {
-    for (TypesExtraDAO x : TypesExtraDAO.selectByExample(new TypesExtraDAO())) {
+    for (TypesExtraVO x : TypesExtraDAO.selectByExample(new TypesExtraVO())) {
       System.out.println("extra=" + x);
     }
   }

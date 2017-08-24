@@ -207,7 +207,7 @@ create type person_struct as object (id number(6), date_of_birth date);
 create table types_other (
   id number(9) not null primary key,
   
-  row1 UROWID,
+--  row1 UROWID, -- not supported by this version of MyBatis?
   itv2 interval year to month,
   itv4 interval day to second,
 --  oth1 XMLType, -- not supported by this version of MyBatis?

@@ -3,10 +3,14 @@ package tests;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import hotrod.test.generation.AccountDAO;
-import hotrod.test.generation.AgentDAO;
-import hotrod.test.generation.ConfigValuesDAO;
-import hotrod.test.generation.TransactionDAO;
+import hotrod.test.generation.AccountVO;
+import hotrod.test.generation.AgentVO;
+import hotrod.test.generation.ConfigValuesVO;
+import hotrod.test.generation.TransactionVO;
+import hotrod.test.generation.primitives.AccountDAO;
+import hotrod.test.generation.primitives.AgentDAO;
+import hotrod.test.generation.primitives.ConfigValuesDAO;
+import hotrod.test.generation.primitives.TransactionDAO;
 
 public class InsertTests {
 
@@ -19,19 +23,19 @@ public class InsertTests {
 
   private static void insertNoPK() throws SQLException {
 
-    ConfigValuesDAO example = new ConfigValuesDAO();
+    ConfigValuesVO example = new ConfigValuesVO();
 
     // ConfigValuesDAO.deleteByExample(example);
 
-    ConfigValuesDAO c = new ConfigValuesDAO();
+    ConfigValuesVO c = new ConfigValuesVO();
     Integer cell = getTimeInt() % 1000000;
     c.setNode(123);
     c.setCell(cell);
     c.setName("Cell #" + cell);
     c.setVerbatim("Local description");
-    c.insert();
+    ConfigValuesDAO.insert(c);
 
-    for (ConfigValuesDAO l : ConfigValuesDAO.selectByExample(example)) {
+    for (ConfigValuesVO l : ConfigValuesDAO.selectByExample(example)) {
       System.out.println("-> config=" + l);
     }
 
@@ -39,16 +43,16 @@ public class InsertTests {
 
   private static void insertWithSequence() throws SQLException {
 
-    AgentDAO example = new AgentDAO();
+    AgentVO example = new AgentVO();
     // AgentDAO.deleteByExample(example);
 
-    AgentDAO a = new AgentDAO();
+    AgentVO a = new AgentVO();
     int time = getTimeInt() % 1000000;
     a.setName("Agent 007 - #" + time);
     a.setClientId(1001L);
-    a.insert();
+    AgentDAO.insert(a);
 
-    for (AgentDAO l : AgentDAO.selectByExample(example)) {
+    for (AgentVO l : AgentDAO.selectByExample(example)) {
       System.out.println("-> agent=" + l);
     }
 
@@ -56,21 +60,21 @@ public class InsertTests {
 
   private static void insertWithIdentity() throws SQLException {
 
-    AccountDAO example = new AccountDAO();
+    AccountVO example = new AccountVO();
     // AccountDAO.deleteByExample(example);
 
-    AccountDAO c = new AccountDAO();
+    AccountVO c = new AccountVO();
     int time = getTimeInt();
     c.setName("Account #" + time);
     c.setCurrentBalance(100);
     c.setType("CHK");
     c.setCreatedOn(new Timestamp(System.currentTimeMillis()));
     c.setRowVersion(1);
-    c.insert();
+    AccountDAO.insert(c);
 
     System.out.println("============> ID=" + c.getId());
 
-    for (AccountDAO l : AccountDAO.selectByExample(example)) {
+    for (AccountVO l : AccountDAO.selectByExample(example)) {
       System.out.println("-> account=" + l);
     }
 
@@ -78,33 +82,33 @@ public class InsertTests {
 
   private static void insertWithOptionalIdentity() throws SQLException {
 
-    TransactionDAO example = new TransactionDAO();
+    TransactionVO example = new TransactionVO();
     // AccountDAO.deleteByExample(example);
 
     { // no PK
-      TransactionDAO t = new TransactionDAO();
+      TransactionVO t = new TransactionVO();
       int time = getTimeInt();
       t.setAccountId(3);
       t.setTime("time #" + time);
       t.setAmount(200);
       t.setFedBranchId(101L);
-      t.insert();
+      TransactionDAO.insert(t);
       System.out.println("============> SEQ_ID=" + t.getSeqId());
     }
 
     { // with PK
-      TransactionDAO t = new TransactionDAO();
+      TransactionVO t = new TransactionVO();
       int time = getTimeInt() % 1000000;
       t.setAccountId(1);
       t.setSeqId(time);
       t.setTime("time #" + time);
       t.setAmount(300);
       t.setFedBranchId(102L);
-      t.insert();
+      TransactionDAO.insert(t);
       System.out.println("============> SEQ_ID=" + t.getSeqId());
     }
 
-    for (TransactionDAO l : TransactionDAO.selectByExample(example)) {
+    for (TransactionVO l : TransactionDAO.selectByExample(example)) {
       System.out.println("-> tx=" + l);
     }
 

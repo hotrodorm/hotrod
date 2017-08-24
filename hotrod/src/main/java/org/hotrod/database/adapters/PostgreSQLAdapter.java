@@ -257,11 +257,6 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
     return false;
   }
 
-  @Override
-  public boolean supportsSpecifiedIdentityPKs() {
-    return true;
-  }
-
   // Sorting
 
   private final static Set<String> CS_SORTABLE_STRING_TYPE_NAMES = new HashSet<String>();

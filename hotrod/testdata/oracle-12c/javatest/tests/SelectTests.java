@@ -1,14 +1,18 @@
 package tests;
 
 import java.io.IOException;
-import java.util.Date;
 import java.sql.SQLException;
+import java.util.Date;
 
-import hotrod.test.generation.AccountDAO;
-import hotrod.test.generation.AccountTx3;
-import hotrod.test.generation.ConfigValuesDAO;
-import hotrod.test.generation.TxBranchDAO;
-import hotrod.test.generation.primitives.AccountDAOPrimitives.AccountDAOOrderBy;
+import hotrod.test.generation.AccountTx3VO;
+import hotrod.test.generation.AccountVO;
+import hotrod.test.generation.ConfigValuesVO;
+import hotrod.test.generation.TxBranchVO;
+import hotrod.test.generation.primitives.AccountDAO;
+import hotrod.test.generation.primitives.AccountDAO.AccountOrderBy;
+import hotrod.test.generation.primitives.AccountTx3;
+import hotrod.test.generation.primitives.ConfigValuesDAO;
+import hotrod.test.generation.primitives.TxBranchDAO;
 
 public class SelectTests {
 
@@ -27,66 +31,62 @@ public class SelectTests {
   }
 
   private static void tryInsertBadData() throws SQLException {
-    AccountDAO a = new AccountDAO();
-    a.insert();
+    AccountVO a = new AccountVO();
+    AccountDAO.insert(a);
   }
 
   private static void selectByExample() throws SQLException {
-    TxBranchDAO example = new TxBranchDAO();
+    TxBranchVO example = new TxBranchVO();
     example.setBranchId(103);
-    for (TxBranchDAO tb : TxBranchDAO.selectByExample(example)) {
+    for (TxBranchVO tb : TxBranchDAO.selectByExample(example)) {
       System.out.println("tb=" + tb);
     }
   }
 
   private static void selectByUI() throws SQLException {
-    ConfigValuesDAO example = new ConfigValuesDAO();
+    ConfigValuesVO example = new ConfigValuesVO();
     example.setName("prop3");
-    for (ConfigValuesDAO v : ConfigValuesDAO.selectByExample(example)) {
+    for (ConfigValuesVO v : ConfigValuesDAO.selectByExample(example)) {
       System.out.println("v: " + v);
     }
 
-    // System.out.println("===");
-    // for (MultParamSelectDAO mp : MultParamSelectDAO.select(100)) {
-    // System.out.println("mp=" + mp);
-    // }
   }
 
   private static void selectByExampleWithNull() throws SQLException {
-    AccountDAO example = new AccountDAO();
+    AccountVO example = new AccountVO();
     example.setType("CHK");
     example.setCurrentBalance(null);
 
-    for (AccountDAO a : AccountDAO.selectByExample(example)) {
+    for (AccountVO a : AccountDAO.selectByExample(example)) {
       System.out.println(a);
     }
 
   }
 
   private static void selectSortedByName() throws SQLException {
-    AccountDAO example = new AccountDAO();
+    AccountVO example = new AccountVO();
 
     System.out.println();
     System.out.println("--- All accounts (sorted by name) ---");
-    for (AccountDAO a : AccountDAO.selectByExample(example, AccountDAOOrderBy.NAME)) {
+    for (AccountVO a : AccountDAO.selectByExample(example, AccountOrderBy.NAME)) {
       System.out.println("1: " + a);
     }
 
     System.out.println();
     System.out.println("--- All accounts (sorted by name, case insensitive) ---");
-    for (AccountDAO a : AccountDAO.selectByExample(example, AccountDAOOrderBy.NAME$CASEINSENSITIVE)) {
+    for (AccountVO a : AccountDAO.selectByExample(example, AccountOrderBy.NAME$CASEINSENSITIVE)) {
       System.out.println("2: " + a);
     }
 
     System.out.println();
     System.out.println("--- All accounts (sorted by name, case insensitive, stable forward) ---");
-    for (AccountDAO a : AccountDAO.selectByExample(example, AccountDAOOrderBy.NAME$CASEINSENSITIVE_STABLE_FORWARD)) {
+    for (AccountVO a : AccountDAO.selectByExample(example, AccountOrderBy.NAME$CASEINSENSITIVE_STABLE_FORWARD)) {
       System.out.println("3: " + a);
     }
 
     System.out.println();
     System.out.println("--- All accounts (sorted by name, case insensitive, stable reverse) ---");
-    for (AccountDAO a : AccountDAO.selectByExample(example, AccountDAOOrderBy.NAME$CASEINSENSITIVE_STABLE_REVERSE)) {
+    for (AccountVO a : AccountDAO.selectByExample(example, AccountOrderBy.NAME$CASEINSENSITIVE_STABLE_REVERSE)) {
       System.out.println("4: " + a);
     }
 
@@ -95,7 +95,7 @@ public class SelectTests {
   private static void selectTag() throws SQLException {
     System.out.println("AccountTx3:");
     System.out.println("===========");
-    for (AccountTx3 a : AccountTx3.select(50, 300)) {
+    for (AccountTx3VO a : AccountTx3.select(50, 300)) {
       System.out.println("--> AccountTx3 = " + a);
     }
   }
@@ -112,7 +112,7 @@ public class SelectTests {
     Date to = new java.text.SimpleDateFormat("yyyyMMdd-HHmmss").parse("20170101-000000",
         new java.text.ParsePosition(0));
 
-    int rows = TxBranchDAO.applyAccountPromotion74(10, from, to, -1);
+    int rows = TxBranchDAO.applyAccountPromotion75(10, from, to, -1);
     System.out.println("promotios rows=" + rows);
 
   }

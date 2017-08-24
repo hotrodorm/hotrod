@@ -95,7 +95,7 @@ public class ViewTag extends AbstractCompositeDAOTag {
             "Invalid 'java-name' attribute value of tag <" + super.getTagName() + "> for the view '" + this.name
                 + "'. When specified, the value cannot be empty.");
       }
-      if (!this.javaClassName.matches(TableTag.VALID_JAVA_NAME_PATTERN)) {
+      if (!this.javaClassName.matches(TableTag.JAVA_CLASS_NAME_PATTERN)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
             "Invalid 'java-name' attribute value '" + this.javaClassName + "' of tag <" + super.getTagName()
                 + "> for the view '" + this.name
