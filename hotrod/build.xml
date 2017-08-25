@@ -5,6 +5,7 @@
   <property name="projectName" value="hotrod" />
 
   <property name="main.src.dir" value="src/main/java" />
+  <property name="test.src.dir" value="src/test/java" />
   <property name="runtime.src.dir" value="src/runtime/java" />
   <property name="tools.src.dir" value="src/tools/java" />
 
@@ -14,6 +15,7 @@
   <property name="lib.dir" value="lib" />
   <property name="build.dir" value="build" />
   <property name="main.build.dir" value="build/java" />
+  <property name="test.build.dir" value="build/test" />
   <property name="buildinfo.build.dir" value="build/buildinfo" />
   <property name="runtime.build.dir" value="build/test" />
   <property name="tools.build.dir" value="build/tools" />
@@ -26,6 +28,7 @@
 
   <target name="-init">
     <mkdir dir="${main.build.dir}" />
+    <mkdir dir="${test.build.dir}" />
     <mkdir dir="${buildinfo.gen.dir}" />
     <mkdir dir="${runtime.build.dir}" />
     <mkdir dir="${tools.build.dir}" />
@@ -307,11 +310,11 @@
       
       ]]>
     </sshrun>
-    
+
   </target>
-  
+
   <target name="upload" depends="-init">
-    
+
     <loadproperties srcfile="${db.src.dir}/config.properties" />
 
     <taskdef name="scpupload"
@@ -329,7 +332,53 @@
                trust="true"
                localfilename="testdata/b.sql"
                remotefilename="build-structure.sql" />
-    
-    </target>
+
+  </target>
+
+  <!-- ========== -->
+  <!-- Main Tests -->
+  <!-- ========== -->
+
+  <target name="compile-test" depends="build">
+    <javac destdir="${test.build.dir}"
+           debug="true"
+           deprecation="true"
+           source="1.6"
+           target="1.6"
+           includeantruntime="false"
+           includes="**/*.java"
+           fork="yes"
+           executable="${javac.compiler.exec}"
+           compiler="${java.compiler}">
+      <src path="${test.src.dir}" />
+      <classpath>
+        <pathelement location="${lib.dir}/ant.jar" />
+        <pathelement location="${dist.dir}/${projectName}-${version}.jar" />
+        <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="test-generated-keys" depends="clean, compile-test">
+    <loadproperties srcfile="${db.src.dir}/config.properties" />
+    <java classname="jdbc.generatedkeys.GeneratedKeys" fork="yes">
+      <arg value="${driverclass}" />
+      <arg value="${url}" />
+      <arg value="${username}" />
+      <arg value="${password}" />
+      <classpath>
+        <pathelement path="${test.build.dir}" />
+        <pathelement path="${db.src.dir}" />
+        <pathelement location="${db.src.dir}/${driverclasspath}" />
+        <pathelement location="${lib.dir}/ant.jar" />
+        <pathelement location="${dist.dir}/${projectName}-${version}.jar" />
+        <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+      </classpath>
+    </java>
+  </target>
 
 </project>

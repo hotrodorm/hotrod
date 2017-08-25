@@ -298,6 +298,49 @@ select
     and column_name = 'ID'
 
 ==========================
+=== MariaDB 5.5        ===
+==========================
+
+drop table test_identity0;
+drop table test_identity1;
+drop table test_identity10;
+
+create table test_identity0 (
+  id integer not null primary key,
+  name varchar(100)
+);
+
+create table test_identity1 (
+  id int not null primary key auto_increment,
+  name varchar(100)
+);
+
+insert into test_identity1 (name) values ('Chicago'); -- succeeds
+
+insert into test_identity1 (id, name) values (4, 'Denver'); -- succeeds
+
+insert into test_identity1 (id, name) values (null, 'Kansas'); -- succeeds
+
+insert into test_identity1 (id, name) values (default, 'Oregon'); -- succeeds
+
+select * from test_identity1;
+
+-- 1, Chicago
+-- 4, Denver
+-- 5, Kansas
+-- 6, Oregon
+
+
+create table test_identity10 (
+  id int not null primary key auto_increment,
+  id2 int not null auto_increment,
+  name varchar(100)
+);
+-- Error: (conn:32) Incorrect table definition; there can be only one auto column and it must be defined as a key
+-- SQLState:  42000
+-- ErrorCode: 1075
+
+==========================
 === MySQL 5.5          ===
 ==========================
 Allows identity            : yes
@@ -306,6 +349,7 @@ Find if column is identity : yes
 --------------------------
 
 drop table test_identity1;
+drop table test_identity10;
 
 create table test_identity1 (
   id int not null primary key auto_increment,

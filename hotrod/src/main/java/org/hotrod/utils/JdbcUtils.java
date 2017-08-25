@@ -19,10 +19,8 @@ public final class JdbcUtils {
   private JdbcUtils() {
   }
 
-  public static Connection buildStandAloneConnection(
-      final String dbDriverClassName, final String dbUrl,
-      final String username, final String password) throws SQLException,
-      ClassNotFoundException {
+  public static Connection buildStandAloneConnection(final String dbDriverClassName, final String dbUrl,
+      final String username, final String password) throws SQLException, ClassNotFoundException {
 
     logger.debug("dbDriverClassName=" + dbDriverClassName);
     Class.forName(dbDriverClassName);
@@ -44,6 +42,16 @@ public final class JdbcUtils {
     }
   }
 
+  public static void closeDbResources(final Statement s) {
+    if (s != null) {
+      try {
+        s.close();
+      } catch (SQLException e) {
+        logger.error("Cannot close Statement.", e);
+      }
+    }
+  }
+
   public static void closeDbResources(final Connection conn, /* */
       final Statement s) {
     if (s != null) {
@@ -56,8 +64,7 @@ public final class JdbcUtils {
     closeDbResources(conn);
   }
 
-  public static void closeDbResources(final Connection conn, final Statement s,
-      final ResultSet rs) {
+  public static void closeDbResources(final Connection conn, final Statement s, final ResultSet rs) {
     if (rs != null) {
       try {
         rs.close();
@@ -66,6 +73,17 @@ public final class JdbcUtils {
       }
     }
     closeDbResources(conn, s);
+  }
+
+  public static void closeDbResources(final Statement s, final ResultSet rs) {
+    if (rs != null) {
+      try {
+        rs.close();
+      } catch (SQLException e) {
+        logger.error("Cannot close ResultSet.", e);
+      }
+    }
+    closeDbResources(s);
   }
 
   public static void closeDbResources(final ResultSet rs) {
@@ -78,8 +96,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static Long getLongObj(final ResultSet rs, final int col)
-      throws SQLException {
+  public static Long getLongObj(final ResultSet rs, final int col) throws SQLException {
     long value = rs.getLong(col);
     if (rs.wasNull()) {
       return null;
@@ -88,8 +105,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static long getLong(final ResultSet rs, final int col)
-      throws SQLException {
+  public static long getLong(final ResultSet rs, final int col) throws SQLException {
     long value = rs.getLong(col);
     if (rs.wasNull()) {
       throw new SQLException("Not null value expected on column " + col + ".");
@@ -98,8 +114,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static Double getDoubleObj(final ResultSet rs, final int col)
-      throws SQLException {
+  public static Double getDoubleObj(final ResultSet rs, final int col) throws SQLException {
     double value = rs.getDouble(col);
     if (rs.wasNull()) {
       return null;
@@ -108,8 +123,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static double getDouble(final ResultSet rs, final int col)
-      throws SQLException {
+  public static double getDouble(final ResultSet rs, final int col) throws SQLException {
     double value = rs.getDouble(col);
     if (rs.wasNull()) {
       throw new SQLException("Not null value expected on column " + col + ".");
@@ -118,8 +132,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static Integer getIntObj(final ResultSet rs, final int col)
-      throws SQLException {
+  public static Integer getIntObj(final ResultSet rs, final int col) throws SQLException {
     int value = rs.getInt(col);
     if (rs.wasNull()) {
       return null;
@@ -128,8 +141,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static int getInt(final ResultSet rs, final int col)
-      throws SQLException {
+  public static int getInt(final ResultSet rs, final int col) throws SQLException {
     int value = rs.getInt(col);
     if (rs.wasNull()) {
       throw new SQLException("Not null value expected on column " + col + ".");
@@ -138,8 +150,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static Short getShortObj(final ResultSet rs, final int col)
-      throws SQLException {
+  public static Short getShortObj(final ResultSet rs, final int col) throws SQLException {
     short value = rs.getShort(col);
     if (rs.wasNull()) {
       return null;
@@ -148,8 +159,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static short getShort(final ResultSet rs, final int col)
-      throws SQLException {
+  public static short getShort(final ResultSet rs, final int col) throws SQLException {
     short value = rs.getShort(col);
     if (rs.wasNull()) {
       throw new SQLException("Not null value expected on column " + col + ".");
@@ -158,8 +168,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static Boolean getBooleanObj(final ResultSet rs, final int col)
-      throws SQLException {
+  public static Boolean getBooleanObj(final ResultSet rs, final int col) throws SQLException {
     String value = rs.getString(col);
     if (rs.wasNull()) {
       return null;
@@ -168,8 +177,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static boolean getBoolean(final ResultSet rs, final int col)
-      throws SQLException {
+  public static boolean getBoolean(final ResultSet rs, final int col) throws SQLException {
     String value = rs.getString(col);
     if (rs.wasNull()) {
       throw new SQLException("Not null value expected on column " + col + ".");
@@ -178,8 +186,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static Date getDate(final ResultSet rs, final int col)
-      throws SQLException {
+  public static Date getDate(final ResultSet rs, final int col) throws SQLException {
     Timestamp value = rs.getTimestamp(col);
     if (rs.wasNull()) {
       return null;
@@ -188,8 +195,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static String getString(final ResultSet rs, final int col)
-      throws SQLException {
+  public static String getString(final ResultSet rs, final int col) throws SQLException {
     String value = rs.getString(col);
     if (rs.wasNull()) {
       return null;
@@ -198,8 +204,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static Object getObject(final ResultSet rs, final int col)
-      throws SQLException {
+  public static Object getObject(final ResultSet rs, final int col) throws SQLException {
     Object value = rs.getObject(col);
     if (rs.wasNull()) {
       return null;
@@ -208,8 +213,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static void setLong(final PreparedStatement st, final int col,
-      final Long value) throws SQLException {
+  public static void setLong(final PreparedStatement st, final int col, final Long value) throws SQLException {
     if (value == null) {
       st.setObject(col, null, Types.NUMERIC);
     } else {
@@ -217,13 +221,11 @@ public final class JdbcUtils {
     }
   }
 
-  public static void setLong(final PreparedStatement st, final int col,
-      final long value) throws SQLException {
+  public static void setLong(final PreparedStatement st, final int col, final long value) throws SQLException {
     setLong(st, col, new Long(value));
   }
 
-  public static void setDouble(final PreparedStatement st, final int col,
-      final Double value) throws SQLException {
+  public static void setDouble(final PreparedStatement st, final int col, final Double value) throws SQLException {
     if (value == null) {
       st.setObject(col, null, Types.NUMERIC);
     } else {
@@ -231,13 +233,11 @@ public final class JdbcUtils {
     }
   }
 
-  public static void setDouble(final PreparedStatement st, final int col,
-      final double value) throws SQLException {
+  public static void setDouble(final PreparedStatement st, final int col, final double value) throws SQLException {
     setDouble(st, col, new Double(value));
   }
 
-  public static void setInt(final PreparedStatement st, final int col,
-      final Integer value) throws SQLException {
+  public static void setInt(final PreparedStatement st, final int col, final Integer value) throws SQLException {
     if (value == null) {
       st.setObject(col, null, Types.NUMERIC);
     } else {
@@ -245,13 +245,11 @@ public final class JdbcUtils {
     }
   }
 
-  public static void setInt(final PreparedStatement st, final int col,
-      final int value) throws SQLException {
+  public static void setInt(final PreparedStatement st, final int col, final int value) throws SQLException {
     setInt(st, col, new Integer(value));
   }
 
-  public static void setBoolean(final PreparedStatement st, final int col,
-      final Boolean value) throws SQLException {
+  public static void setBoolean(final PreparedStatement st, final int col, final Boolean value) throws SQLException {
     if (value == null) {
       st.setObject(col, null, Types.VARCHAR);
     } else {
@@ -259,13 +257,11 @@ public final class JdbcUtils {
     }
   }
 
-  public static void setBoolean(final PreparedStatement st, final int col,
-      final boolean value) throws SQLException {
+  public static void setBoolean(final PreparedStatement st, final int col, final boolean value) throws SQLException {
     setBoolean(st, col, new Boolean(value));
   }
 
-  public static void setDate(final PreparedStatement st, final int col,
-      final Date value) throws SQLException {
+  public static void setDate(final PreparedStatement st, final int col, final Date value) throws SQLException {
     if (value == null) {
       st.setObject(col, null, Types.TIMESTAMP);
     } else {
@@ -273,8 +269,7 @@ public final class JdbcUtils {
     }
   }
 
-  public static void setString(final PreparedStatement st, final int col,
-      final String txt) throws SQLException {
+  public static void setString(final PreparedStatement st, final int col, final String txt) throws SQLException {
     if (txt == null) {
       st.setObject(col, null, Types.VARCHAR);
     } else {

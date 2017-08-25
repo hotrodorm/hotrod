@@ -139,6 +139,24 @@ create table vehicle (
 
 create unique index vehicle_unique on vehicle (upper(name));
 
+-- ======================
+-- Auto-generated columns 
+-- ======================
+
+create table test_identity1 (
+  id integer not null generated always as identity,
+  name varchar(20) not null
+);
+
+create sequence gen_seq1;
+create sequence gen_seq2;
+
+create table test_mixed1 (
+  id integer not null generated always as identity,
+  name varchar(20) not null,
+  extra_id1 integer not null,
+  extra_id2 integer not null
+);
 
 -- ============
 -- Column Types

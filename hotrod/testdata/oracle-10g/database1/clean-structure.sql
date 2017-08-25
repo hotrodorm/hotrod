@@ -23,9 +23,11 @@ drop table agent;
 drop sequence seq_agent;
 drop sequence seq_account;
 drop sequence seq_transaction;
+
 drop sequence seq_codes;
 
 drop sequence seq_test;
+drop sequence seq_test_external;
 drop table test_sequence;
 
 -- database objects with special character in their names

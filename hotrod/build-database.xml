@@ -55,7 +55,6 @@
   </target>
 
   <target name="clean-sp" depends="-init">
-    <echo message="[clean ]" />
     <sql driver="${driverclass}"
          classpath="${db.src.dir}/${driverclasspath}"
          url="${url}"

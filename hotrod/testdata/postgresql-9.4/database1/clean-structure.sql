@@ -22,9 +22,15 @@ drop sequence if exists seq_agent;
 
 drop table if exists vehicle;
 
--- =========
+-- Auto-generated columns 
+
+drop table if exists test_sequence1;
+drop table if exists test_identity1;
+drop sequence if exists gen_seq1;
+drop sequence if exists gen_seq2;
+drop table if exists test_mixed1;
+
 -- All Types
--- =========
 
 drop table if exists types_numeric;
 drop table if exists types_char;
@@ -32,8 +38,8 @@ drop table if exists types_binary;
 drop table if exists types_date_time;
 drop table if exists types_other;  
 
-drop TYPE if exists mood;
-drop TYPE if exists complex;
+drop type if exists mood;
+drop type if exists complex;
 
-drop table employee;
-drop table employee_state;
+drop table if exists employee;
+drop table if exists employee_state;

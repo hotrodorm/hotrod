@@ -27,6 +27,8 @@ drop sequence seq_codes restrict;
 drop sequence seq_test restrict;
 drop table test_sequence;
 
+drop table test_identity1 (
+
 -- database objects with special character in their names
 
 drop table " !#$%)(*+,-.";

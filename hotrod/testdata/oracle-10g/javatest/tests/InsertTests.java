@@ -7,8 +7,10 @@ import org.apache.log4j.Logger;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 
 import hotrod.test.generation.ConfigValuesVO;
+import hotrod.test.generation.TestSequenceVO;
 import hotrod.test.generation.TransactionVO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
+import hotrod.test.generation.primitives.TestSequenceDAO;
 import hotrod.test.generation.primitives.TransactionDAO;
 
 public class InsertTests {
@@ -19,11 +21,11 @@ public class InsertTests {
 
     log.info("Starting insert tests");
 
-    // insertUsingSequence();
+    insertUsingSequence();
     // insertByExampleUsingSequence();
 
     // insertNoAutogeneration();
-    insertByExampleNoAutogeneration();
+    // insertByExampleNoAutogeneration();
   }
 
   private static void insertUsingSequence() throws SQLException {
@@ -31,17 +33,13 @@ public class InsertTests {
     System.out.println("insertUsingSequence:");
     System.out.println("====================");
 
-    TransactionVO t = new TransactionVO();
-    t.setAccountId(1234001);
-    t.setSeqId(0);
-    t.setTime("123");
-    t.setAmount(200);
-    t.setFedBranchId(102L);
+    TestSequenceVO r = new TestSequenceVO();
+    r.setName("Name 1");
+    r.setExternalId(1234L);
+    TestSequenceDAO.insert(r);
 
-    TransactionDAO.insert(t);
-
-    for (TransactionVO tx : TransactionDAO.selectByExample(new TransactionVO())) {
-      System.out.println("tx=" + tx);
+    for (TestSequenceVO row : TestSequenceDAO.selectByExample(new TestSequenceVO())) {
+      System.out.println("row=" + row);
     }
   }
 

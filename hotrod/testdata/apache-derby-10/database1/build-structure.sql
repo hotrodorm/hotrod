@@ -150,6 +150,11 @@ create table test_sequence (
   name varchar(20)
 );
 
+create table test_identity1 (
+  id integer not null generated always as identity,
+  name varchar(20) not null
+);
+
 -- database objects with special character in their names
 
 create table " !#$%)(*+,-." (

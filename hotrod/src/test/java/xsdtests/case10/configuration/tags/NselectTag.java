@@ -21,11 +21,12 @@ import org.hotrod.config.dynamicsql.WhereTag;
 import org.hotrod.generator.ParameterRenderer;
 
 @XmlRootElement(name = "select")
-public class NselectTag extends AbstractConfigurationTag {
+public class NselectTag {
+//  public class NselectTag extends AbstractConfigurationTag {
 
-  protected NselectTag() {
-    super("select");
-  }
+//  protected NselectTag() {
+//    super("select");
+//  }
 
   private String name = null;
   private String vo = null;

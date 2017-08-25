@@ -147,10 +147,12 @@ select t.account_id, b.id, b.name, t.amount from transaction t, federal_branch b
 
 
 create sequence seq_test;
+create sequence seq_test_external;
 
 create table test_sequence (
-  id number(9) not null,
-  name varchar(20)
+  id number(9) primary key not null,
+  name varchar(20),
+  external_id number(12) not null
 );
 
 -- =========

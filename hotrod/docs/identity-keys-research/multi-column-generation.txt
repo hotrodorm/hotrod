@@ -1,0 +1,14 @@
+  <insert id="insert">
+    <selectKey keyProperty="id,externalId" resultType="hotrod.test.generation.TestSequenceVO" order="BEFORE">
+      select seq_test.nextval id,seq_test_external.nextval externalId from dual
+    </selectKey>
+    insert into "TEST_SEQUENCE" (
+        "ID",
+        "NAME",
+        "EXTERNAL_ID"
+      ) values (
+        #{id,jdbcType=DECIMAL},
+        #{name,jdbcType=VARCHAR},
+        #{externalId,jdbcType=DECIMAL}
+      )
+  </insert>

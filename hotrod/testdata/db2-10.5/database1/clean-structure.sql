@@ -32,6 +32,13 @@ drop table special_columns;
 
 drop table vehicle;
 
+-- Auto-generated columns 
+
+drop table test_identity1;
+drop sequence gen_seq1;
+drop sequence gen_seq2;
+drop table test_mixed1;
+
 -- unsupported multi-reference FKs
 
 drop table house;
