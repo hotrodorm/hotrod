@@ -34,11 +34,15 @@ drop table vehicle;
 
 -- Auto-generated columns 
 
+drop table test_sequence1;
 drop table test_sequence2;
 drop table test_identity1;
 drop sequence gen_seq1;
 drop sequence gen_seq2;
+drop table test_default1;
+drop table test_default2;
 drop table test_mixed1;
+drop table test_seq_ide_def1;
 
 -- unsupported multi-reference FKs
 

@@ -137,6 +137,17 @@ create table test_identity1 (
 
 sp_chgattribute test_identity1, 'identity_burn_max', 0, '50';
 
+create table test_default1 (
+  name varchar(40) not null,
+  price int default 1000 not null 
+);
+
+create table test_default2 (
+  name varchar(40) not null,
+  price integer default 1000 not null,
+  branch_id int default 123 not null
+);
+
 -- =====
 -- Types
 -- =====

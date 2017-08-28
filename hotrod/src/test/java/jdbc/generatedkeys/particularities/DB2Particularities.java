@@ -2,8 +2,8 @@ package jdbc.generatedkeys.particularities;
 
 import java.util.List;
 
+import jdbc.generatedkeys.InsertRetriever;
 import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.DatabaseParticularities;
-import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.RetrievalType;
 
 public class DB2Particularities implements DatabaseParticularities {
 
@@ -23,12 +23,12 @@ public class DB2Particularities implements DatabaseParticularities {
 
   @Override
   public boolean combinesSequences() {
-    return false;
+    return true;
   }
 
   @Override
   public String inlineSequenceOnInsert(final String sequenceName) {
-    throw new UnsupportedOperationException("In DB2 inline sequences values on inserts cannot be retrieved.");
+    return "next value for " + sequenceName;
   }
 
   // Identities
@@ -47,19 +47,25 @@ public class DB2Particularities implements DatabaseParticularities {
 
   @Override
   public boolean combinesDefaults() {
-    return false;
+    return true;
   }
 
   // Retrieval
 
   @Override
-  public RetrievalType getRetrievalType() {
-    return RetrievalType.REQUEST_COLUMNS_2;
+  public InsertRetriever getInsertRetriever() {
+    // return InsertRetriever.RETURN_GENERATED_KEYS_1; // works i
+    return InsertRetriever.RETURN_COLUMN_NAMES_2; // works s+i+d
+    // return InsertRetriever.RETURN_COLUMN_INDEXES_3; // works s+i+d
+    // return InsertRetriever.QUERY_RETURNING_COLUMNS_4; // fails
+    // return InsertRetriever.QUERY_SELECT_5; // works s+i+d
   }
 
   @Override
   public String getReturningCoda(final List<String> columnNames) {
-    throw new UnsupportedOperationException("In DB2 the generated keys cannot be retrieved as queries.");
+    // throw new UnsupportedOperationException("In DB2 the generated keys cannot
+    // be retrieved as queries.");
+    return InsertRetriever.getCoda(columnNames);
   }
 
 }

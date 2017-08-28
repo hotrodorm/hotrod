@@ -2,8 +2,8 @@ package jdbc.generatedkeys.particularities;
 
 import java.util.List;
 
+import jdbc.generatedkeys.InsertRetriever;
 import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.DatabaseParticularities;
-import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.RetrievalType;
 
 public class MySQLParticularities implements DatabaseParticularities {
 
@@ -53,13 +53,17 @@ public class MySQLParticularities implements DatabaseParticularities {
   // Retrieval
 
   @Override
-  public RetrievalType getRetrievalType() {
-    return RetrievalType.REQUEST_COLUMNS_2;
+  public InsertRetriever getInsertRetriever() {
+    // return InsertRetriever.RETURN_GENERATED_KEYS_1; // works
+    return InsertRetriever.RETURN_COLUMN_NAMES_2; // works
+    // return InsertRetriever.RETURN_COLUMN_INDEXES_3; // works
+    // return InsertRetriever.QUERY_RETURNING_COLUMNS_4; // fails
   }
 
   @Override
   public String getReturningCoda(final List<String> columnNames) {
-    throw new UnsupportedOperationException("Not supported.");
+    // throw new UnsupportedOperationException("Not supported.");
+    return InsertRetriever.getCoda(columnNames);
   }
 
 }

@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.hotrod.runtime.util.ListWriter;
 
+import jdbc.generatedkeys.InsertRetriever;
 import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.DatabaseParticularities;
-import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.RetrievalType;
 
 public class PostgreSQLParticularities implements DatabaseParticularities {
 
@@ -55,8 +55,12 @@ public class PostgreSQLParticularities implements DatabaseParticularities {
   // Retrieval
 
   @Override
-  public RetrievalType getRetrievalType() {
-    return RetrievalType.QUERY_RETURNING_COLUMNS_3;
+  public InsertRetriever getInsertRetriever() {
+    // Maybe it's useful: this options returns the whole row, not just the keys.
+    // return InsertRetriever.RETURN_GENERATED_KEYS_1; // fails
+    return InsertRetriever.RETURN_COLUMN_NAMES_2; // works
+    // return InsertRetriever.RETURN_COLUMN_INDEXES_3; // fails
+    // return InsertRetriever.QUERY_RETURNING_COLUMNS_4; // works
   }
 
   @Override

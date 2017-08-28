@@ -2,8 +2,8 @@ package jdbc.generatedkeys.particularities;
 
 import java.util.List;
 
+import jdbc.generatedkeys.InsertRetriever;
 import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.DatabaseParticularities;
-import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.RetrievalType;
 
 public class SAPASEParticularities implements DatabaseParticularities {
 
@@ -28,7 +28,7 @@ public class SAPASEParticularities implements DatabaseParticularities {
 
   @Override
   public String inlineSequenceOnInsert(final String sequenceName) {
-    throw new UnsupportedOperationException("MySQL does not have sequences.");
+    throw new UnsupportedOperationException("SAP ASE does not have sequences.");
   }
 
   // Identities
@@ -53,14 +53,18 @@ public class SAPASEParticularities implements DatabaseParticularities {
   // Retrieval
 
   @Override
-  public RetrievalType getRetrievalType() {
-    // return RetrievalType.GET_GENERATED_KEYS1; // works!
-    return RetrievalType.REQUEST_COLUMNS_2; // works!
+  public InsertRetriever getInsertRetriever() {
+//     return InsertRetriever.RETURN_GENERATED_KEYS_1; // works i
+//     return InsertRetriever.RETURN_COLUMN_NAMES_2; // works i
+     return InsertRetriever.RETURN_COLUMN_INDEXES_3; // works i
+    // return InsertRetriever.QUERY_RETURNING_COLUMNS_4; // fails
+//    return InsertRetriever.QUERY_SELECT_5; // fails
   }
 
   @Override
   public String getReturningCoda(final List<String> columnNames) {
-    throw new UnsupportedOperationException("Not supported.");
+    // throw new UnsupportedOperationException("Not supported.");
+    return InsertRetriever.getCoda(columnNames);
   }
 
 }

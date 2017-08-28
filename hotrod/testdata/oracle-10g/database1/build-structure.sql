@@ -163,6 +163,17 @@ create table test_sequence2 (
 create sequence gen_seq1 start with 100;
 create sequence gen_seq2 start with 200;
 
+create table test_default1 (
+  name varchar(40) not null,
+  price number(9) default 1000 not null 
+);
+
+create table test_default2 (
+  name varchar(40) not null,
+  price number(9) default 1000 not null,
+  branch_id number(9) default 123 not null
+);
+
 -- =========
 -- All Types
 -- =========

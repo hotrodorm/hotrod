@@ -150,6 +150,17 @@ create table test_identity1 (
 
 alter table test_identity1 auto_increment = 50;
 
+create table test_default1 (
+  name varchar(40) not null,
+  price integer default 1000 not null 
+);
+
+create table test_default2 (
+  name varchar(40) not null,
+  price integer default 1000 not null,
+  branch_id integer default 123 not null
+);
+
 -- ==================
 -- === Data Types ===    
 -- ==================

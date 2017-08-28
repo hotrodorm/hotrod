@@ -2,8 +2,8 @@ package jdbc.generatedkeys.particularities;
 
 import java.util.List;
 
+import jdbc.generatedkeys.InsertRetriever;
 import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.DatabaseParticularities;
-import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.RetrievalType;
 
 public class SQLServerParticularities implements DatabaseParticularities {
 
@@ -16,7 +16,7 @@ public class SQLServerParticularities implements DatabaseParticularities {
 
   @Override
   public boolean combinesMultipleValues() {
-    return false;
+    return true;
   }
 
   // Sequences
@@ -47,20 +47,35 @@ public class SQLServerParticularities implements DatabaseParticularities {
 
   @Override
   public boolean combinesDefaults() {
-    return false;
+    return true;
   }
 
   // Retrieval
 
   @Override
-  public RetrievalType getRetrievalType() {
-    // return RetrievalType.GET_GENERATED_KEYS1; // works for identities!
-    return RetrievalType.REQUEST_COLUMNS_2; // works for identities!
+  public InsertRetriever getInsertRetriever() {
+
+    // works only for identities
+    // return InsertRetriever.RETURN_GENERATED_KEYS_1; // works i
+
+    // works only for identities
+    // return InsertRetriever.RETURN_COLUMN_NAMES_2; // works i
+
+    // works only for identities
+    // return InsertRetriever.RETURN_COLUMN_INDEXES_3; // works i
+
+    // return InsertRetriever.QUERY_RETURNING_COLUMNS_4; // crashes
+
+    // return InsertRetriever.QUERY_SELECT_5; // crashes
+
+    return InsertRetriever.QUERY_OUTPUT_6; // works s+i+d
+
   }
 
   @Override
   public String getReturningCoda(final List<String> columnNames) {
-    throw new UnsupportedOperationException("Not supported.");
+    // throw new UnsupportedOperationException("Not supported.");
+    return InsertRetriever.getCoda(columnNames);
   }
 
 }

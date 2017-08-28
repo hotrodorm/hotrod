@@ -3,14 +3,15 @@ package jdbc.generatedkeys;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.hotrod.utils.JdbcUtils;
 
+import jdbc.generatedkeys.InsertRetriever.DataColumn;
+import jdbc.generatedkeys.InsertRetriever.DefaultColumn;
+import jdbc.generatedkeys.InsertRetriever.IdentityColumn;
+import jdbc.generatedkeys.InsertRetriever.SequenceColumn;
+import jdbc.generatedkeys.InsertRetriever.Table;
 import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory;
 import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.DatabaseParticularities;
 
@@ -44,8 +45,7 @@ public class GeneratedKeys {
           getIdentityExample(conn, p);
         }
 
-        if (p.combinesIdentities() && p.supportsMultipleIdentities()
-            && p.combinesMultipleValues()) {
+        if (p.combinesIdentities() && p.supportsMultipleIdentities() && p.combinesMultipleValues()) {
           getMultipleIdentitiesExample(conn, p);
         }
 
@@ -57,13 +57,11 @@ public class GeneratedKeys {
           getMultipleDefaultsExample(conn, p);
         }
 
-        if (p.combinesSequences() && p.combinesIdentities()
-            && p.combinesMultipleValues()) {
+        if (p.combinesSequences() && p.combinesIdentities() && p.combinesMultipleValues()) {
           getSequencesIdentityExample(conn, p);
         }
 
-        if (p.combinesSequences() && p.combinesIdentities()
-            && p.combinesDefaults() && p.combinesMultipleValues()) {
+        if (p.combinesSequences() && p.combinesIdentities() && p.combinesDefaults() && p.combinesMultipleValues()) {
           getSequencesIdentityDefaultsExample(conn, p);
         }
 
@@ -81,20 +79,13 @@ public class GeneratedKeys {
 
     SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
-    String tableName = "test_sequence1";
-
-    Map<String, String> sequenceColumns = new LinkedHashMap<String, String>();
-    sequenceColumns.put("id1", "gen_seq1");
-
-    List<String> identityColumns = new ArrayList<String>();
-
-    List<String> defaultColumns = new ArrayList<String>();
-
-    Map<String, String> dataColumns = new LinkedHashMap<String, String>();
-    dataColumns.put("name", "Chicago " + df.format(new Date()));
+    Table t = new Table("test_sequence1", //
+        new SequenceColumn("id1", "gen_seq1"), //
+        new DataColumn("name", "Chicago " + df.format(new Date())));
 
     System.out.println("=== Single Sequence ===");
-    KeyRetriever.insert(conn, p, tableName, sequenceColumns, identityColumns, defaultColumns, dataColumns);
+    p.getInsertRetriever().insert(conn, p, t);
+
   }
 
   private static void getMultipleSequencesExample(final Connection conn, final DatabaseParticularities p)
@@ -102,21 +93,14 @@ public class GeneratedKeys {
 
     SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
-    String tableName = "test_sequence2";
-
-    Map<String, String> sequenceColumns = new LinkedHashMap<String, String>();
-    sequenceColumns.put("id1", "gen_seq1");
-    sequenceColumns.put("id2", "gen_seq2");
-
-    List<String> identityColumns = new ArrayList<String>();
-
-    List<String> defaultColumns = new ArrayList<String>();
-
-    Map<String, String> dataColumns = new LinkedHashMap<String, String>();
-    dataColumns.put("name", "Chicago " + df.format(new Date()));
+    Table t = new Table("test_sequence2", //
+        new SequenceColumn("id1", "gen_seq1"), //
+        new SequenceColumn("id2", "gen_seq2"), //
+        new DataColumn("name", "Chicago " + df.format(new Date())));
 
     System.out.println("=== Multiple Sequences ===");
-    KeyRetriever.insert(conn, p, tableName, sequenceColumns, identityColumns, defaultColumns, dataColumns);
+    p.getInsertRetriever().insert(conn, p, t);
+
   }
 
   // Identity
@@ -126,20 +110,13 @@ public class GeneratedKeys {
 
     SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
-    String tableName = "test_identity1";
-
-    Map<String, String> sequenceColumns = new LinkedHashMap<String, String>();
-
-    List<String> identityColumns = new ArrayList<String>();
-    identityColumns.add("id");
-
-    List<String> defaultColumns = new ArrayList<String>();
-
-    Map<String, String> dataColumns = new LinkedHashMap<String, String>();
-    dataColumns.put("name", "Chicago " + df.format(new Date()));
+    Table t = new Table("test_identity1", //
+        new IdentityColumn("id"), //
+        new DataColumn("name", "Chicago " + df.format(new Date())));
 
     System.out.println("=== Single Identity ===");
-    KeyRetriever.insert(conn, p, tableName, sequenceColumns, identityColumns, defaultColumns, dataColumns);
+    p.getInsertRetriever().insert(conn, p, t);
+
   }
 
   private static void getMultipleIdentitiesExample(final Connection conn, final DatabaseParticularities p)
@@ -147,21 +124,14 @@ public class GeneratedKeys {
 
     SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
-    String tableName = "test_identity2";
-
-    Map<String, String> sequenceColumns = new LinkedHashMap<String, String>();
-
-    List<String> identityColumns = new ArrayList<String>();
-    identityColumns.add("id");
-    identityColumns.add("id2");
-
-    List<String> defaultColumns = new ArrayList<String>();
-
-    Map<String, String> dataColumns = new LinkedHashMap<String, String>();
-    dataColumns.put("name", "Chicago " + df.format(new Date()));
+    Table t = new Table("test_identity2", //
+        new IdentityColumn("id"), //
+        new IdentityColumn("id2"), //
+        new DataColumn("name", "Chicago " + df.format(new Date())));
 
     System.out.println("=== Multiple Identities ===");
-    KeyRetriever.insert(conn, p, tableName, sequenceColumns, identityColumns, defaultColumns, dataColumns);
+    p.getInsertRetriever().insert(conn, p, t);
+
   }
 
   // Default
@@ -171,20 +141,14 @@ public class GeneratedKeys {
 
     SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
-    String tableName = "test_default1";
-
-    Map<String, String> sequenceColumns = new LinkedHashMap<String, String>();
-
-    List<String> identityColumns = new ArrayList<String>();
-
-    List<String> defaultColumns = new ArrayList<String>();
-    defaultColumns.add("price");
-
-    Map<String, String> dataColumns = new LinkedHashMap<String, String>();
-    dataColumns.put("name", "Chicago " + df.format(new Date()));
+    Table t = new Table("test_default1", //
+        new DataColumn("name", "Chicago " + df.format(new Date())), //
+        new DefaultColumn("price") //
+    );
 
     System.out.println("=== Single Default ===");
-    KeyRetriever.insert(conn, p, tableName, sequenceColumns, identityColumns, defaultColumns, dataColumns);
+    p.getInsertRetriever().insert(conn, p, t);
+
   }
 
   private static void getMultipleDefaultsExample(final Connection conn, final DatabaseParticularities p)
@@ -192,21 +156,15 @@ public class GeneratedKeys {
 
     SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
-    String tableName = "test_default2";
-
-    Map<String, String> sequenceColumns = new LinkedHashMap<String, String>();
-
-    List<String> identityColumns = new ArrayList<String>();
-
-    List<String> defaultColumns = new ArrayList<String>();
-    defaultColumns.add("price");
-    defaultColumns.add("branch_id");
-
-    Map<String, String> dataColumns = new LinkedHashMap<String, String>();
-    dataColumns.put("name", "Chicago " + df.format(new Date()));
+    Table t = new Table("test_default2", //
+        new DataColumn("name", "Chicago " + df.format(new Date())), //
+        new DefaultColumn("price"), //
+        new DefaultColumn("branch_id") //
+    );
 
     System.out.println("=== Multiple Defaults ===");
-    KeyRetriever.insert(conn, p, tableName, sequenceColumns, identityColumns, defaultColumns, dataColumns);
+    p.getInsertRetriever().insert(conn, p, t);
+
   }
 
   // Sequence & Identity
@@ -216,22 +174,16 @@ public class GeneratedKeys {
 
     SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
-    String tableName = "test_mixed1";
-
-    Map<String, String> sequenceColumns = new LinkedHashMap<String, String>();
-    sequenceColumns.put("extra_id1", "gen_seq1");
-    sequenceColumns.put("extra_id2", "gen_seq2");
-
-    List<String> identityColumns = new ArrayList<String>();
-    identityColumns.add("id");
-
-    List<String> defaultColumns = new ArrayList<String>();
-
-    Map<String, String> dataColumns = new LinkedHashMap<String, String>();
-    dataColumns.put("name", "Chicago " + df.format(new Date()));
+    Table t = new Table("test_mixed1", //
+        new IdentityColumn("id"), //
+        new DataColumn("name", "Chicago " + df.format(new Date())), //
+        new SequenceColumn("extra_id1", "gen_seq1"), //
+        new SequenceColumn("extra_id2", "gen_seq2") //
+    );
 
     System.out.println("=== Sequences & Identity ===");
-    KeyRetriever.insert(conn, p, tableName, sequenceColumns, identityColumns, defaultColumns, dataColumns);
+    p.getInsertRetriever().insert(conn, p, t);
+
   }
 
   // Sequences, Identity, and Defaults
@@ -241,24 +193,18 @@ public class GeneratedKeys {
 
     SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
-    String tableName = "test_seq_ide_def1";
-
-    Map<String, String> sequenceColumns = new LinkedHashMap<String, String>();
-    sequenceColumns.put("extra_id1", "gen_seq1");
-    sequenceColumns.put("extra_id2", "gen_seq2");
-
-    List<String> identityColumns = new ArrayList<String>();
-    identityColumns.add("id");
-
-    List<String> defaultColumns = new ArrayList<String>();
-    defaultColumns.add("price");
-    defaultColumns.add("branch_id");
-
-    Map<String, String> dataColumns = new LinkedHashMap<String, String>();
-    dataColumns.put("name", "Chicago " + df.format(new Date()));
+    Table t = new Table("test_seq_ide_def1", //
+        new IdentityColumn("id"), //
+        new DataColumn("name", "Chicago " + df.format(new Date())), //
+        new SequenceColumn("extra_id1", "gen_seq1"), //
+        new SequenceColumn("extra_id2", "gen_seq2"), //
+        new DefaultColumn("price"), //
+        new DefaultColumn("branch_id") //
+    );
 
     System.out.println("=== Sequences, Identity, and Defaults ===");
-    KeyRetriever.insert(conn, p, tableName, sequenceColumns, identityColumns, defaultColumns, dataColumns);
+    p.getInsertRetriever().insert(conn, p, t);
+
   }
 
   // Utilities

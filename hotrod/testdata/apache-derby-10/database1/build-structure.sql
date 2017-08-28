@@ -217,10 +217,15 @@ create table test_sequence2 (
 create sequence gen_seq1 start with 100;
 create sequence gen_seq2 start with 200;
 
+create table test_default1 (
+  name varchar(40) not null,
+  price integer default 1000 not null 
+);
+
 create table test_default2 (
   name varchar(40) not null,
-  price integer not null default 1000,
-  recorded date not null default current_date
+  price integer default 1000 not null,
+  branch_id integer default 123 not null
 );
 
 create table test_identity1 (
@@ -238,6 +243,15 @@ create table test_mixed1 (
 );
 
 alter table test_mixed1 alter id restart with 70;
+
+create table test_seq_ide_def1 (
+  id integer not null generated always as identity,
+  name varchar(40) not null,
+  extra_id1 integer not null,
+  extra_id2 integer not null,
+  price integer default 1000 not null,
+  branch_id integer default 123 not null
+);
 
 -- =========
 -- All Types

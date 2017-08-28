@@ -2,8 +2,8 @@ package jdbc.generatedkeys.particularities;
 
 import java.util.List;
 
+import jdbc.generatedkeys.InsertRetriever;
 import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.DatabaseParticularities;
-import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.RetrievalType;
 
 public class ApacheDerbyParticularities implements DatabaseParticularities {
 
@@ -53,18 +53,18 @@ public class ApacheDerbyParticularities implements DatabaseParticularities {
   // Retrieval
 
   @Override
-  public RetrievalType getRetrievalType() {
-    return RetrievalType.RETURN_GENERATED_KEYS_1;
+  public InsertRetriever getInsertRetriever() {
+//     return InsertRetriever.RETURN_GENERATED_KEYS_1; // works i
+     return InsertRetriever.RETURN_COLUMN_NAMES_2; // works i
+    // return InsertRetriever.RETURN_COLUMN_INDEXES_3; // works i
+    // return InsertRetriever.QUERY_RETURNING_COLUMNS_4; // fails
+    // return InsertRetriever.QUERY_SELECT_5; // fails
   }
 
   @Override
   public String getReturningCoda(final List<String> columnNames) {
-    throw new UnsupportedOperationException("Unsupported.");
-    // ListWriter lw = new ListWriter(", ");
-    // for (String col : columnNames) {
-    // lw.add(col);
-    // }
-    // return " returning " + lw.toString();
+    // throw new UnsupportedOperationException("Unsupported.");
+    return InsertRetriever.getCoda(columnNames);
   }
 
 }

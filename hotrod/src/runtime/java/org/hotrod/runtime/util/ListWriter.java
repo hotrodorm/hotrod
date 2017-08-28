@@ -103,9 +103,9 @@ public class ListWriter {
 
   // Utility methods
 
-  public static String render(final String[] array) {
-    List<String> asList = Arrays.asList("");
-    return render(asList);
+  public static String render(final String[] array, final String separator) {
+    List<String> asList = Arrays.asList(array);
+    return render(asList, separator);
   }
 
   public static String render(final String[] array, final String prefix, final String elemPrefix,
@@ -113,10 +113,6 @@ public class ListWriter {
     List<String> asList = Arrays.asList(array);
     String render = render(asList, prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
     return render;
-  }
-
-  public static String render(final Collection<String> collection) {
-    return render(collection, "", "", "", ", ", ", ", "");
   }
 
   public static String render(final Collection<String> collection, final String separator) {

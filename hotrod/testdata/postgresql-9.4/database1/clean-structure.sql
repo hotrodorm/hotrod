@@ -30,8 +30,10 @@ drop table if exists test_identity1;
 drop sequence if exists gen_seq1;
 drop sequence if exists gen_seq2;
 drop table if exists test_mixed1;
-
+drop table if exists test_seq_ide_def1;
 drop table if exists test_identity2;
+drop table if exists test_default1;
+drop table if exists test_default2;
 
 -- All Types
 

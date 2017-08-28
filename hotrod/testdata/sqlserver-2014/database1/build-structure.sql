@@ -162,6 +162,26 @@ create table test_mixed1 (
 
 dbcc checkident('[test_mixed1]', reseed, 70);
 
+create table test_seq_ide_def1 (
+  id int identity not null,
+  name varchar(40) not null,
+  extra_id1 integer not null,
+  extra_id2 integer not null,
+  price integer default 1000 not null,
+  branch_id integer default 123 not null
+);
+
+create table test_default1 (
+  name varchar(40) not null,
+  price int default 1000 not null 
+);
+
+create table test_default2 (
+  name varchar(40) not null,
+  price int default 1000 not null,
+  branch_id int default 123 not null
+);
+
 -- =====
 -- Types
 -- =====

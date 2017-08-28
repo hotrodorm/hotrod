@@ -4,6 +4,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.List;
 
+import jdbc.generatedkeys.InsertRetriever;
+
 public class DatabaseParticularitiesFactory {
 
   public enum RetrievalType {
@@ -36,7 +38,7 @@ public class DatabaseParticularitiesFactory {
 
     // Retrieval
 
-    RetrievalType getRetrievalType();
+    InsertRetriever getInsertRetriever();
 
     String getReturningCoda(List<String> columnNames);
 

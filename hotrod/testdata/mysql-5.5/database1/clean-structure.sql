@@ -29,6 +29,8 @@ drop table types_other;
 -- Auto-generated columns 
 
 drop table test_identity1;
+drop table test_default1;
+drop table test_default2;
 
 -- enum
 
