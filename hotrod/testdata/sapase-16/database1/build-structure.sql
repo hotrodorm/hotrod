@@ -126,10 +126,16 @@ create view tx_branch (account_id, branch_id, branch_name, amount) as
 select t.account_id, b.id, b.name, t.amount from transaction2 t, federal_branch b 
   where t.fed_branch_id = b.id;
 
-create table test_identity (
-  id int identity not null primary key,
-  name varchar(20)
+-- ======================
+-- Auto-generated columns 
+-- ======================
+
+create table test_identity1 (
+  id int identity not null,
+  name varchar(40) not null
 );
+
+sp_chgattribute test_identity1, 'identity_burn_max', 0, '50';
 
 -- =====
 -- Types

@@ -19,9 +19,14 @@ drop table log;
 drop table agent; 
 drop sequence seq_agent;
 
-drop table test_identity;
-drop sequence seq_test;
-drop table test_sequence;
+-- Auto-generated columns 
+
+drop table test_sequence1;
+drop table test_sequence2;
+drop sequence gen_seq1;
+drop sequence gen_seq2;
+drop table test_identity1;
+drop table test_mixed1;
 
 -- Types
 

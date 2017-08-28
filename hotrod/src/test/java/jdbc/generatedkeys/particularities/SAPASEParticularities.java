@@ -5,18 +5,18 @@ import java.util.List;
 import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.DatabaseParticularities;
 import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.RetrievalType;
 
-public class DB2Particularities implements DatabaseParticularities {
+public class SAPASEParticularities implements DatabaseParticularities {
 
   // General
 
   @Override
   public String getName() {
-    return "DB2";
+    return "SAP Adaptive Server Enterprise";
   }
 
   @Override
   public boolean combinesMultipleValues() {
-    return true;
+    return false;
   }
 
   // Sequences
@@ -28,7 +28,7 @@ public class DB2Particularities implements DatabaseParticularities {
 
   @Override
   public String inlineSequenceOnInsert(final String sequenceName) {
-    throw new UnsupportedOperationException("In DB2 inline sequences values on inserts cannot be retrieved.");
+    throw new UnsupportedOperationException("MySQL does not have sequences.");
   }
 
   // Identities
@@ -54,12 +54,13 @@ public class DB2Particularities implements DatabaseParticularities {
 
   @Override
   public RetrievalType getRetrievalType() {
-    return RetrievalType.REQUEST_COLUMNS_2;
+    // return RetrievalType.GET_GENERATED_KEYS1; // works!
+    return RetrievalType.REQUEST_COLUMNS_2; // works!
   }
 
   @Override
   public String getReturningCoda(final List<String> columnNames) {
-    throw new UnsupportedOperationException("In DB2 the generated keys cannot be retrieved as queries.");
+    throw new UnsupportedOperationException("Not supported.");
   }
 
 }

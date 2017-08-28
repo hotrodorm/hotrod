@@ -25,10 +25,13 @@ drop table if exists vehicle;
 -- Auto-generated columns 
 
 drop table if exists test_sequence1;
+drop table if exists test_sequence2;
 drop table if exists test_identity1;
 drop sequence if exists gen_seq1;
 drop sequence if exists gen_seq2;
 drop table if exists test_mixed1;
+
+drop table if exists test_identity2;
 
 -- All Types
 

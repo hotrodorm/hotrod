@@ -19,15 +19,19 @@ drop table parameters;
 drop table log; 
 
 drop table deputy;
-drop table agent; 
-
+drop table agent;
 drop sequence seq_agent restrict;
 drop sequence seq_codes restrict;
 
-drop sequence seq_test restrict;
-drop table test_sequence;
+-- Auto-generated columns 
 
-drop table test_identity1 (
+drop table test_sequence1;
+drop table test_sequence2;
+drop sequence gen_seq1 restrict;
+drop sequence gen_seq2 restrict;
+drop table test_default2;
+drop table test_identity1;
+drop table test_mixed1;
 
 -- database objects with special character in their names
 

@@ -146,6 +146,36 @@ create view tx_branch
     where t.fed_branch_id = b.id
     order by t.amount;
 
+-- ======================
+-- Auto-generated columns 
+-- ======================
+
+create table test_sequence1 (
+  id1 int not null,
+  name varchar(40) not null
+);
+    
+create table test_sequence2 (
+  id1 int not null,
+  id2 int not null,
+  name varchar(40) not null
+);
+
+create table test_identity1 (
+  id integer identity(50) primary key not null,
+  name varchar(40) not null
+);
+
+create sequence gen_seq1 start with 100;
+create sequence gen_seq2 start with 200;
+
+create table test_mixed1 (
+  id integer identity primary key not null,
+  name varchar(40) not null,
+  extra_id1 integer not null,
+  extra_id2 integer not null
+);
+
 -- =====
 -- Types  
 -- =====

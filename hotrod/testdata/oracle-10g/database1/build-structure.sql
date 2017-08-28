@@ -145,15 +145,23 @@ select t.account_id, b.id, b.name, t.amount from transaction t, federal_branch b
   where t.fed_branch_id = b.id
   order by t.amount;
 
+-- ======================
+-- Auto-generated columns 
+-- ======================
 
-create sequence seq_test;
-create sequence seq_test_external;
-
-create table test_sequence (
-  id number(9) primary key not null,
-  name varchar(20),
-  external_id number(12) not null
+create table test_sequence1 (
+  id1 int not null,
+  name varchar(40) not null
 );
+
+create table test_sequence2 (
+  id1 int not null,
+  id2 int not null,
+  name varchar(40) not null
+);
+
+create sequence gen_seq1 start with 100;
+create sequence gen_seq2 start with 200;
 
 -- =========
 -- All Types

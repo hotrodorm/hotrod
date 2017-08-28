@@ -143,18 +143,6 @@ select t.account_id, b.id, b.name, t.amount from "transaction" t, federal_branch
   where t.fed_branch_id = b.id
   order by t.amount;
 
-create sequence seq_test;
-
-create table test_sequence (
-  id integer not null,
-  name varchar(20)
-);
-
-create table test_identity1 (
-  id integer not null generated always as identity,
-  name varchar(20) not null
-);
-
 -- database objects with special character in their names
 
 create table " !#$%)(*+,-." (
@@ -210,6 +198,46 @@ create table house (
   constraint fk_house_t2 foreign key (type) references house_type (federal_code),
   constraint fk_house_t3 foreign key (type) references house_type (state_code)
 );
+
+-- ======================
+-- Auto-generated columns 
+-- ======================
+
+create table test_sequence1 (
+  id1 integer not null,
+  name varchar(40) not null
+);
+
+create table test_sequence2 (
+  id1 integer not null,
+  id2 integer not null,
+  name varchar(40) not null
+);
+
+create sequence gen_seq1 start with 100;
+create sequence gen_seq2 start with 200;
+
+create table test_default2 (
+  name varchar(40) not null,
+  price integer not null default 1000,
+  recorded date not null default current_date
+);
+
+create table test_identity1 (
+  id integer not null generated always as identity,
+  name varchar(40) not null
+);
+
+alter table test_identity1 alter id restart with 50;
+
+create table test_mixed1 (
+  id integer not null generated always as identity,
+  name varchar(40) not null,
+  extra_id1 integer not null,
+  extra_id2 integer not null
+);
+
+alter table test_mixed1 alter id restart with 70;
 
 -- =========
 -- All Types

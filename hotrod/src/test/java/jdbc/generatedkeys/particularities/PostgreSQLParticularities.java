@@ -5,9 +5,11 @@ import java.util.List;
 import org.hotrod.runtime.util.ListWriter;
 
 import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.DatabaseParticularities;
-import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.PostRetrievalType;
+import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.RetrievalType;
 
 public class PostgreSQLParticularities implements DatabaseParticularities {
+
+  // General
 
   @Override
   public String getName() {
@@ -15,8 +17,14 @@ public class PostgreSQLParticularities implements DatabaseParticularities {
   }
 
   @Override
-  public boolean canRetrieveSequencesAsPartOfTheInsert() {
-    // Use insert (...) values (...) returning col1, col2, col3, ...
+  public boolean combinesMultipleValues() {
+    return true;
+  }
+
+  // Sequences
+
+  @Override
+  public boolean combinesSequences() {
     return true;
   }
 
@@ -25,18 +33,34 @@ public class PostgreSQLParticularities implements DatabaseParticularities {
     return "nextval('" + sequenceName + "')";
   }
 
+  // Identities
+
   @Override
-  public boolean canRetrieveIdentitiesAsPartOfTheInsert() {
+  public boolean supportsMultipleIdentities() {
     return true;
   }
 
   @Override
-  public PostRetrievalType getPostRetrievalType() {
-    return PostRetrievalType.AS_QUERY;
+  public boolean combinesIdentities() {
+    return true;
+  }
+
+  // Defaults
+
+  @Override
+  public boolean combinesDefaults() {
+    return true;
+  }
+
+  // Retrieval
+
+  @Override
+  public RetrievalType getRetrievalType() {
+    return RetrievalType.QUERY_RETURNING_COLUMNS_3;
   }
 
   @Override
-  public String getAsQueryCoda(final List<String> columnNames) {
+  public String getReturningCoda(final List<String> columnNames) {
     ListWriter lw = new ListWriter(", ");
     for (String col : columnNames) {
       lw.add(col);

@@ -26,13 +26,16 @@ drop sequence seq_transaction;
 
 drop sequence seq_codes;
 
-drop sequence seq_test;
-drop sequence seq_test_external;
-drop table test_sequence;
-
 -- database objects with special character in their names
 
 drop table " !#$%)(*+,-.";
+
+-- Auto-generated columns 
+
+drop table test_sequence1;
+drop table test_sequence2;
+drop sequence gen_seq1;
+drop sequence gen_seq2;
 
 -- enum
 

@@ -18,7 +18,9 @@ drop table log;
 
 drop table agent; 
 
-drop table test_identity;
+-- Auto-generated columns 
+
+drop table test_identity1;
 
 -- Types
 

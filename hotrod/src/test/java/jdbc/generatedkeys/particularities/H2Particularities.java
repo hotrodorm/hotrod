@@ -5,30 +5,30 @@ import java.util.List;
 import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.DatabaseParticularities;
 import jdbc.generatedkeys.particularities.DatabaseParticularitiesFactory.RetrievalType;
 
-public class DB2Particularities implements DatabaseParticularities {
+public class H2Particularities implements DatabaseParticularities {
 
   // General
 
   @Override
   public String getName() {
-    return "DB2";
+    return "H2";
   }
 
   @Override
   public boolean combinesMultipleValues() {
-    return true;
+    return false;
   }
 
   // Sequences
 
   @Override
   public boolean combinesSequences() {
-    return false;
+    return true;
   }
 
   @Override
   public String inlineSequenceOnInsert(final String sequenceName) {
-    throw new UnsupportedOperationException("In DB2 inline sequences values on inserts cannot be retrieved.");
+    return sequenceName + ".nextval";
   }
 
   // Identities
@@ -59,7 +59,7 @@ public class DB2Particularities implements DatabaseParticularities {
 
   @Override
   public String getReturningCoda(final List<String> columnNames) {
-    throw new UnsupportedOperationException("In DB2 the generated keys cannot be retrieved as queries.");
+    throw new UnsupportedOperationException("In H2 the generated keys cannot be retrieved as queries.");
   }
 
 }

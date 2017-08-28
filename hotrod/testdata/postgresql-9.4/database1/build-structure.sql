@@ -162,6 +162,11 @@ create unique index vehicle_unique on vehicle (upper(name));
 
 create table test_sequence1 (
   id1 int not null,
+  name varchar(40) not null
+);
+
+create table test_sequence2 (
+  id1 int not null,
   id2 int not null,
   name varchar(40) not null
 );
@@ -171,8 +176,16 @@ create table test_identity1 (
   name varchar(40) not null
 );
 
-create sequence gen_seq1 start 100;
-create sequence gen_seq2 start 200;
+create table test_identity2 (
+  id serial not null,
+  id2 serial not null,
+  name varchar(40) not null
+);
+
+alter sequence test_identity2_id2_seq restart 50;
+
+create sequence gen_seq1 restart 100;
+create sequence gen_seq2 restart 200;
 
 create table test_mixed1 (
   id serial not null,

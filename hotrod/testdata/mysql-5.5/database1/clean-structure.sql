@@ -26,6 +26,10 @@ drop table types_date_time;
 drop table types_binary;
 drop table types_other;
 
+-- Auto-generated columns 
+
+drop table test_identity1;
+
 -- enum
 
 drop table employee;

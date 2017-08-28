@@ -21,13 +21,25 @@ drop table agent;
 drop sequence seq_agent;
 drop sequence seq_codes;
 
-drop sequence seq_test;
-drop table test_sequence;
+-- Auto-generated columns 
+
+drop table test_sequence1;
+drop table test_sequence2;
+
+drop table test_identity1;
+
+drop sequence gen_seq1;
+drop sequence gen_seq2;
+
+drop table test_mixed1;
+drop table test_seq_ide_def1;
+
+drop table test_default1;
+drop table test_default2;
 
 -- =========
 -- All Types
 -- =========
-
 
 drop table types_numeric;
 drop table types_char;

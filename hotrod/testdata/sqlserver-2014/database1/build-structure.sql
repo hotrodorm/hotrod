@@ -127,20 +127,41 @@ create view tx_branch (account_id, branch_id, branch_name, amount) as
 select t.account_id, b.id, b.name, t.amount from transaction2 t, federal_branch b 
   where t.fed_branch_id = b.id;
 
-create table test_identity (
-  id int not null primary key identity,
-  name varchar(20)
+-- ======================
+-- Auto-generated columns 
+-- ======================
+
+create table test_sequence1 (
+  id1 int not null,
+  name varchar(40) not null
 );
 
-create sequence seq_test;
-
-create table test_sequence (
-  id int not null,
-  name varchar(20)
+create table test_sequence2 (
+  id1 int not null,
+  id2 int not null,
+  name varchar(40) not null
 );
 
+create sequence gen_seq1 start with 100;
 
-  
+create sequence gen_seq2 start with 200;
+
+create table test_identity1 (
+  id int identity not null,
+  name varchar(40) not null
+);
+
+dbcc checkident('[test_identity1]', reseed, 50);
+
+create table test_mixed1 (
+  id int identity not null,
+  name varchar(40) not null,
+  extra_id1 integer not null,
+  extra_id2 integer not null
+);
+
+dbcc checkident('[test_mixed1]', reseed, 70);
+
 -- =====
 -- Types
 -- =====

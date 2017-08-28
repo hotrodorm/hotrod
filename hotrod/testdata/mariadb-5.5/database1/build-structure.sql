@@ -139,6 +139,17 @@ create view tx_branch
     where t.fed_branch_id = b.id
     order by t.amount;
 
+-- ======================
+-- Auto-generated columns 
+-- ======================
+
+create table test_identity1 (
+  id integer not null primary key auto_increment,
+  name varchar(40) not null
+);
+
+alter table test_identity1 auto_increment = 50;
+
 -- ==================
 -- === Data Types ===    
 -- ==================

@@ -34,6 +34,7 @@ drop table vehicle;
 
 -- Auto-generated columns 
 
+drop table test_sequence2;
 drop table test_identity1;
 drop sequence gen_seq1;
 drop sequence gen_seq2;

@@ -143,16 +143,27 @@ create unique index vehicle_unique on vehicle (upper(name));
 -- Auto-generated columns 
 -- ======================
 
+create table test_sequence2 (
+  id1 int not null,
+  id2 int not null,
+  name varchar(40) not null
+);
+
+create sequence gen_seq1 start with 100;
+create sequence gen_seq2 start with 200;
+
 create table test_identity1 (
   id integer not null generated always as identity,
   name varchar(20) not null
 );
 
+alter table test_identity1 alter column id restart with 50;
+
 create sequence gen_seq1;
 create sequence gen_seq2;
 
 create table test_mixed1 (
-  id integer not null generated always as identity,
+  id integer not null generated always as identity (start with 50),
   name varchar(20) not null,
   extra_id1 integer not null,
   extra_id2 integer not null
