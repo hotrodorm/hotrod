@@ -6,10 +6,12 @@ import java.sql.Timestamp;
 import hotrod.test.generation.AccountVO;
 import hotrod.test.generation.AgentVO;
 import hotrod.test.generation.ConfigValuesVO;
+import hotrod.test.generation.TestSeqIdeDef1VO;
 import hotrod.test.generation.TransactionVO;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AgentDAO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
+import hotrod.test.generation.primitives.TestSeqIdeDef1DAO;
 import hotrod.test.generation.primitives.TransactionDAO;
 
 public class InsertTests {
@@ -18,7 +20,8 @@ public class InsertTests {
     // insertNoPK();
     // insertWithSequence();
     // insertWithIdentity();
-    insertWithOptionalIdentity();
+    // insertWithOptionalIdentity();
+    insertWithSequenceIdentityDefault();
   }
 
   private static void insertNoPK() throws SQLException {
@@ -112,6 +115,16 @@ public class InsertTests {
       System.out.println("-> tx=" + l);
     }
 
+  }
+
+  private static void insertWithSequenceIdentityDefault() throws SQLException {
+    TestSeqIdeDef1VO row = new TestSeqIdeDef1VO();
+    row.setName("Toronto");
+    row.setExtraId1(500);
+    row.setExtraId2(600);
+    TestSeqIdeDef1DAO.insert(row);
+    
+    System.out.println("row=" + row);
   }
 
   // Utilities

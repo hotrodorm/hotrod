@@ -5,6 +5,8 @@
 
   <table name="config_values"/>
 
+  <enum name="employee_state" name-column="description" />
+
   <table name="properties" java-name="Property" />
   <table name="parameters">
     <column name="level2" java-name="level" java-type="java.lang.Long"
@@ -31,12 +33,23 @@
 
   <table name="quadrant" />
   <table name="application_config" />
+  
+  <table name="test_seq_ide_def1" />
 
   <table name="types_numeric" />
   <table name="types_char" />
   <table name="types_binary" />
   <table name="types_date_time" />
-  <table name="types_other" />
+  <table name="types_other">
+      <query java-method-name="applyAccountPromotion74">
+        <parameter name="reward" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+        <parameter name="minBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+        <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+        update account a
+          set current_balance = current_balance + #{reward}
+          where current_balance between #{minBalance} and #{maxBalance}
+      </query>
+  </table>
 
   <facet name="phase2">
 

@@ -9,7 +9,7 @@
     <non-persistent value="100" name="NONE" />
     <non-persistent value="101" name="ALL" />
   </enum>
-  
+
   <enum name="employee_interim" name-column="caption" />
 
   <table name="properties" java-name="Property" />

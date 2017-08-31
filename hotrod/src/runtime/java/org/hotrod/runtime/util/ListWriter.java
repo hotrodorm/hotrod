@@ -19,14 +19,16 @@ public class ListWriter {
   private StringBuilder sb;
   private String result;
 
-  public ListWriter(final String prefix, final String elemPrefix, final String elemSuffix, final String separator,
-      final String lastSeparator, final String suffix) {
-    initialize(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
+  public ListWriter(final String separator) {
+    initialize("", "", "", separator, separator, "");
   }
 
-  public ListWriter(final String prefix, final String elemPrefix, final String elemSuffix, final String separator,
-      final String suffix) {
-    initialize(prefix, elemPrefix, elemSuffix, separator, separator, suffix);
+  public ListWriter(final String separator, final String lastSeparator) {
+    initialize("", "", "", separator, lastSeparator, "");
+  }
+
+  public ListWriter(final String elemPrefix, final String elemSuffix, final String separator) {
+    initialize(null, elemPrefix, elemSuffix, separator, separator, null);
   }
 
   public ListWriter(final String elemPrefix, final String elemSuffix, final String separator,
@@ -34,16 +36,14 @@ public class ListWriter {
     initialize(null, elemPrefix, elemSuffix, separator, lastSeparator, null);
   }
 
-  public ListWriter(final String elemPrefix, final String elemSuffix, final String separator) {
-    initialize(null, elemPrefix, elemSuffix, separator, separator, null);
+  public ListWriter(final String prefix, final String elemPrefix, final String elemSuffix, final String separator,
+      final String suffix) {
+    initialize(prefix, elemPrefix, elemSuffix, separator, separator, suffix);
   }
 
-  public ListWriter(final String separator) {
-    initialize("", "", "", separator, separator, "");
-  }
-
-  public ListWriter(final String separator, final String lastSeparator) {
-    initialize("", "", "", separator, lastSeparator, "");
+  public ListWriter(final String prefix, final String elemPrefix, final String elemSuffix, final String separator,
+      final String lastSeparator, final String suffix) {
+    initialize(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
   }
 
   private void initialize(final String prefix, final String elemPrefix, final String elemSuffix, final String separator,
@@ -101,7 +101,11 @@ public class ListWriter {
     return this.result;
   }
 
-  // Utility methods
+  public int getCount() {
+    return this.added;
+  }
+
+  // Array renderers
 
   public static String render(final String[] array, final String separator) {
     List<String> asList = Arrays.asList(array);
@@ -111,17 +115,28 @@ public class ListWriter {
   public static String render(final String[] array, final String prefix, final String elemPrefix,
       final String elemSuffix, final String separator, final String lastSeparator, final String suffix) {
     List<String> asList = Arrays.asList(array);
-    String render = render(asList, prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
-    return render;
+    return render(asList, prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
   }
+
+  // Collection renderers
 
   public static String render(final Collection<String> collection, final String separator) {
     return render(collection, "", "", "", separator, separator, "");
   }
 
   public static String render(final Collection<String> collection, final String elemPrefix, final String elemSuffix,
+      final String separator) {
+    return render(collection, "", elemPrefix, elemSuffix, separator, "");
+  }
+
+  public static String render(final Collection<String> collection, final String elemPrefix, final String elemSuffix,
       final String separator, final String lastSeparator) {
     return render(collection, "", elemPrefix, elemSuffix, separator, lastSeparator, "");
+  }
+
+  public static String render(final Collection<String> collection, final String prefix, final String elemPrefix,
+      final String elemSuffix, final String separator, final String suffix) {
+    return render(collection, prefix, elemPrefix, elemSuffix, separator, separator, suffix);
   }
 
   public static String render(final Collection<String> collection, final String prefix, final String elemPrefix,
@@ -131,20 +146,6 @@ public class ListWriter {
       r.add(e);
     }
     return r.toString();
-  }
-
-  public static String render(final Collection<String> collection, final String elemPrefix, final String elemSuffix,
-      final String separator) {
-    return render(collection, "", elemPrefix, elemSuffix, separator, "");
-  }
-
-  public static String render(final Collection<String> collection, final String prefix, final String elemPrefix,
-      final String elemSuffix, final String separator, final String suffix) {
-    return render(collection, prefix, elemPrefix, elemSuffix, separator, separator, suffix);
-  }
-
-  public int getCount() {
-    return this.added;
   }
 
 }

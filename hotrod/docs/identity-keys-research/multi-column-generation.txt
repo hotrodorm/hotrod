@@ -12,3 +12,44 @@
         #{externalId,jdbcType=DECIMAL}
       )
   </insert>
+
+<!-- WORKS! Retrieves identity, sequences, and default columns -->
+  <insert id="insertWithIdentity" useGeneratedKeys="true" 
+      keyProperty="id,extraId1,extraId2,price,branchId" 
+      keyColumn="id,extra_id1,extra_id2,price,branch_id">
+    insert into "TEST_SEQ_IDE_DEF1" (
+        "NAME",
+        "EXTRA_ID1",
+        "EXTRA_ID2"
+      ) values (
+        #{name,jdbcType=VARCHAR},
+        gen_seq1.nextval,
+        gen_seq2.nextval
+      )
+  </insert>
+
+<!-- Does not work. MyBatis does not accept multiple "select key" and/or useGeneratedKeys="true" attribute -->  
+  
+  <insert id="insertWithIdentity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <selectKey keyProperty="extraId1,extraId2" resultType="hotrod.test.generation.TestSeqIdeDef1VO" order="BEFORE">
+      select gen_seq1.nextval extraId1, gen_seq2.nextval extraId2 from dual
+    </selectKey>
+    <!--
+    -->
+
+    <!-- 
+    <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+      select null from dual
+    </selectKey>
+    -->
+    insert into "TEST_SEQ_IDE_DEF1" (
+        "NAME",
+        "EXTRA_ID1",
+        "EXTRA_ID2"
+      ) values (
+        #{name,jdbcType=VARCHAR},
+        #{extraId1,jdbcType=DECIMAL},
+        #{extraId2,jdbcType=DECIMAL}
+      )
+  </insert>
+  

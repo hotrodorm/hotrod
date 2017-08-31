@@ -7,10 +7,10 @@ import org.apache.log4j.Logger;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 
 import hotrod.test.generation.ConfigValuesVO;
-import hotrod.test.generation.TestSequenceVO;
+import hotrod.test.generation.TestSequence1VO;
 import hotrod.test.generation.TransactionVO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
-import hotrod.test.generation.primitives.TestSequenceDAO;
+import hotrod.test.generation.primitives.TestSequence1DAO;
 import hotrod.test.generation.primitives.TransactionDAO;
 
 public class InsertTests {
@@ -33,12 +33,11 @@ public class InsertTests {
     System.out.println("insertUsingSequence:");
     System.out.println("====================");
 
-    TestSequenceVO r = new TestSequenceVO();
+    TestSequence1VO r = new TestSequence1VO();
     r.setName("Name 1");
-    r.setExternalId(1234L);
-    TestSequenceDAO.insert(r);
+    TestSequence1DAO.insert(r);
 
-    for (TestSequenceVO row : TestSequenceDAO.selectByExample(new TestSequenceVO())) {
+    for (TestSequence1VO row : TestSequence1DAO.selectByExample(new TestSequence1VO())) {
       System.out.println("row=" + row);
     }
   }

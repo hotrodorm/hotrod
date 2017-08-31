@@ -2,28 +2,15 @@ package tests;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 
-import hotrod.test.generation.AccountByIdsVO;
 import hotrod.test.generation.AccountVO;
-import hotrod.test.generation.HouseVO;
-import hotrod.test.generation.accounting.finances.EmployeeVO;
-import hotrod.test.generation.accounting.finances.QuadrantVO;
-import hotrod.test.generation.accounting.finances.SearchedAccount2VO;
-import hotrod.test.generation.accounting.finances.SearchedAccountVO;
-import hotrod.test.generation.accounting.finances.primitives.EmployeeDAO;
-import hotrod.test.generation.accounting.finances.primitives.QuadrantDAO;
-import hotrod.test.generation.accounting.finances.primitives.SearchedAccount;
-import hotrod.test.generation.accounting.finances.primitives.SearchedAccount2;
-import hotrod.test.generation.primitives.AccountByIds;
+import hotrod.test.generation.QuadrantVO;
 import hotrod.test.generation.primitives.AccountDAO;
-import hotrod.test.generation.primitives.EmployeeState;
-import hotrod.test.generation.primitives.House;
+import hotrod.test.generation.primitives.QuadrantDAO;
 import hotrod.test.generation.primitives.TxBranchDAO;
 import hotrod.test.generation.primitives.TypesOtherDAO;
 
@@ -168,7 +155,7 @@ public class SelectTests {
     // String type = "CHK";
     String type = null;
 
-    int rows = TypesOtherDAO.applyAccountPromotion74(reward, from, to, minBalance, maxBalance, type);
+    int rows = TypesOtherDAO.applyAccountPromotion74(reward, minBalance, maxBalance);
     System.out.println("promotions rows=" + rows);
 
   }
@@ -179,32 +166,6 @@ public class SelectTests {
     AccountVO example = new AccountVO();
     example.setId(10);
     for (AccountVO a : AccountDAO.selectByExample(example)) {
-      System.out.println("a=" + a);
-    }
-  }
-
-  private static void searchAccountsByIds() throws SQLException {
-    System.out.println("searchAccountsByIds:");
-    System.out.println("====================");
-
-    // String type = "CHK";
-    String type = null;
-    String namePattern = "%ACC%";
-    // String namePattern = null;
-    Integer minBalance = 123;
-    Integer maxBalance = null;
-
-    List<Integer> ids = new ArrayList<Integer>();
-    // ids.add(5);
-    // ids.add(6);
-    // ids.add(7);
-    // ids.add(8);
-    // ids.add(9);
-    // ids.add(10);
-
-    Integer sortType = null;
-
-    for (AccountByIdsVO a : AccountByIds.select(ids, minBalance, maxBalance, namePattern, type, sortType)) {
       System.out.println("a=" + a);
     }
   }
@@ -249,22 +210,6 @@ public class SelectTests {
   // System.out.println("a=" + a);
   // }
   // }
-
-  private static void searchAccount() throws SQLException {
-    System.out.println("SearchedAccount:");
-    System.out.println("================");
-    for (SearchedAccountVO a : SearchedAccount.select(50, 150, 2)) {
-      System.out.println("a=" + a);
-    }
-  }
-
-  private static void searchAccount2() throws SQLException {
-    System.out.println("SearchedAccount2:");
-    System.out.println("=================");
-    for (SearchedAccount2VO a : SearchedAccount2.select(150)) {
-      System.out.println("a=" + a);
-    }
-  }
 
   private static void searchQuadrants() throws SQLException {
     System.out.println("SearchedQuadrants:");

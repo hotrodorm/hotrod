@@ -37,9 +37,7 @@ drop table test_seq_ide_def1;
 drop table test_default1;
 drop table test_default2;
 
--- =========
 -- All Types
--- =========
 
 drop table types_numeric;
 drop table types_char;
@@ -50,3 +48,8 @@ drop table types_other;
 drop type namearray;
 drop type person_struct;
 
+-- enum
+
+drop table employee;
+drop table employee_state;
+drop table employee_interim;
