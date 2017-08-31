@@ -54,7 +54,7 @@ import org.hotrod.utils.JUtils;
 import org.hotrod.utils.ValueTypeFactory;
 import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
 import org.hotrod.utils.identifiers.Identifier;
-import org.nocrala.tools.database.tartarus.core.JdbcColumn.IdentityType;
+import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
@@ -1313,7 +1313,7 @@ public class ObjectDAO {
       println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsert() + "\", vo);");
     } else {
       if (agcm.isIdentity()) {
-        if (agcm.getIdentityType() == IdentityType.BY_DEFAULT) {
+        if (agcm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
           // Identity BY_DEFAULT
           println("    if (vo." + agcm.getIdentifier().getGetter() + "() == null) {");
           println("      return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertWithIdentity() + "\", vo);");
@@ -1507,7 +1507,7 @@ public class ObjectDAO {
       println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExample() + "\", example);");
     } else {
       if (agcm.isIdentity()) {
-        if (agcm.getIdentityType() == IdentityType.BY_DEFAULT) {
+        if (agcm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
           // Identity BY_DEFAULT
           println("    if (example." + agcm.getIdentifier().getGetter() + "() == null) {");
           println("      return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExampleWithIdentity()
