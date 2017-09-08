@@ -1595,7 +1595,7 @@ public class ObjectDAO {
 
     if (sequences == 0 || identities == 0 || (this.generator.getAdapter().getInsertIntegration().integratesIdentities()
         && this.generator.getAdapter().getInsertIntegration().integratesSequences())) {
-      println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsert() + "\", example);");
+      println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExample() + "\", example);");
     } else {
       println("    " + this.vo.getClassName() + " sequences = sqlSession.selectOne(\""
           + this.mapper.getFullMapperIdSequencesPreFetch() + "\");");
@@ -1605,7 +1605,7 @@ public class ObjectDAO {
           println("    example." + prop + " = sequences." + prop + ";");
         }
       }
-      println("    int rows = sqlSession.insert(\"" + this.mapper.getFullMapperIdInsert() + "\", example);");
+      println("    int rows = sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExample() + "\", example);");
       if (!this.generator.getAdapter().getInsertIntegration().integratesIdentities()) {
         println("    " + this.vo.getClassName() + " identities = sqlSession.selectOne(\""
             + this.mapper.getFullMapperIdIdentitiesPostFetch() + "\");");

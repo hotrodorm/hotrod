@@ -537,8 +537,8 @@ public class Mapper {
     if (queryColumns.getCount() != 0) {
       print("output " + queryColumns.toString() + "\n        ");
     }
-    print("values (");
-    print("      <trim prefixOverrides=\", \">\n" + values.toString() + "      </trim>\n");
+    println("values (");
+    println("      <trim prefixOverrides=\", \">\n" + values.toString() + "      </trim>");
     println("      )");
   }
 
