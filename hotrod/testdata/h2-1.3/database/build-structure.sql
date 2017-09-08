@@ -176,6 +176,15 @@ create table test_mixed1 (
   extra_id2 integer not null
 );
 
+create table test_seq_ide_def1 (
+  id integer identity not null,
+  name varchar(40) not null,
+  extra_id1 integer not null,
+  extra_id2 integer not null,
+  price integer default 1000 not null,
+  branch_id integer default 123 not null
+);
+
 -- =====
 -- Types  
 -- =====

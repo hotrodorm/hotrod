@@ -265,7 +265,7 @@ create table " !#$%)(*+,-." (
   id number(6) not null primary key,
   ":<>?&" varchar2(12) not null,
   "@[\]^_" varchar2(12) not null,
-  "`{|}~" varchar2(12) not null
+  "`|~" varchar2(12) not null
 );
 
 -- enum

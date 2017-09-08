@@ -31,7 +31,7 @@ java.compiler=javac1.6
 # --- PostgreSQL 9.4 ---
 #db.src.dir=testdata/postgresql-9.4
 
-# --- SAP ASE (Sybase) ---
+# --- SAP ASE 16 (ex-Sybase) ---
 #db.src.dir=testdata/sapase-16
 
 # --- SQL Server 2014 ---

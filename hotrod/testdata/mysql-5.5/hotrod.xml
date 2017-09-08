@@ -41,6 +41,8 @@
     <column name="version_number" java-type="java.lang.Short"
       jdbc-type="NUMERIC" initial-value="4" min-value="-7" max-value="7" />
   </table>
+  
+  <table name="test_identity1" />
 
   <table name="types_numeric" />
   <table name="types_char" />

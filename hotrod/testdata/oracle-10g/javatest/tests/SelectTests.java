@@ -8,9 +8,14 @@ import org.apache.log4j.Logger;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 
 import hotrod.test.generation.AccountVO;
-import hotrod.test.generation.QuadrantVO;
+import hotrod.test.generation.HouseVO;
+import hotrod.test.generation.accounting.finances.EmployeeVO;
+import hotrod.test.generation.accounting.finances.QuadrantVO;
+import hotrod.test.generation.accounting.finances.primitives.EmployeeDAO;
+import hotrod.test.generation.accounting.finances.primitives.QuadrantDAO;
 import hotrod.test.generation.primitives.AccountDAO;
-import hotrod.test.generation.primitives.QuadrantDAO;
+import hotrod.test.generation.primitives.EmployeeState;
+import hotrod.test.generation.primitives.House;
 import hotrod.test.generation.primitives.TxBranchDAO;
 import hotrod.test.generation.primitives.TypesOtherDAO;
 
@@ -155,7 +160,7 @@ public class SelectTests {
     // String type = "CHK";
     String type = null;
 
-    int rows = TypesOtherDAO.applyAccountPromotion74(reward, minBalance, maxBalance);
+    int rows = TypesOtherDAO.applyAccountPromotion74(reward, from, to, minBalance, maxBalance, type);
     System.out.println("promotions rows=" + rows);
 
   }

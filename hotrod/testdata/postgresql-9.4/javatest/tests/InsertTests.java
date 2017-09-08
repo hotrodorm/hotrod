@@ -2,23 +2,29 @@ package tests;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 import hotrod.test.generation.AccountVO;
 import hotrod.test.generation.AgentVO;
 import hotrod.test.generation.ConfigValuesVO;
+import hotrod.test.generation.TestIdentity1VO;
+import hotrod.test.generation.TestSeqIdeDef1VO;
 import hotrod.test.generation.TransactionVO;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AgentDAO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
+import hotrod.test.generation.primitives.TestIdentity1DAO;
+import hotrod.test.generation.primitives.TestSeqIdeDef1DAO;
 import hotrod.test.generation.primitives.TransactionDAO;
 
 public class InsertTests {
 
   public static void main(final String[] args) throws SQLException {
-    insertNoPK();
-    insertWithSequence();
-    insertWithIdentity();
-    insertWithOptionalIdentity();
+    // insertNoPK();
+    // insertWithSequence();
+    // insertWithIdentity();
+    // insertWithOptionalIdentity();
+    insertMixed();
   }
 
   private static void insertNoPK() throws SQLException {
@@ -108,10 +114,49 @@ public class InsertTests {
 
   }
 
+
+  private static void insertMixed() throws SQLException {
+
+    String time = getTime();
+    int timeInt = getTimeInt();
+
+    TestSeqIdeDef1VO example = new TestSeqIdeDef1VO();
+    // AgentDAO.deleteByExample(example);
+
+    TestSeqIdeDef1VO a = new TestSeqIdeDef1VO();
+    a.setName("Caption 007 - " + time);
+    a.setPrice(50000);
+    a.setBranchId(123456);
+
+    TestSeqIdeDef1DAO.insert(a);
+    System.out.println("[inserted] mixed=" + a);
+
+    // Optional Identity (default)
+
+    TestIdentity1VO ti1 = new TestIdentity1VO();
+    ti1.setName("Title (default) " + time);
+    TestIdentity1DAO.insert(ti1);
+    System.out.println("[inserted] optional identity=" + ti1);
+
+    // Optional Identity (specified)
+
+    TestIdentity1VO ti2 = new TestIdentity1VO();
+    ti2.setId(timeInt);
+    ti2.setName("Title (specified) " + time);
+    TestIdentity1DAO.insert(ti2);
+    System.out.println("[inserted] optional identity=" + ti2);
+
+  }
+
   // Utilities
 
   private static int getTimeInt() {
     return (int) (System.currentTimeMillis() % ((long) Integer.MAX_VALUE));
   }
+
+  private static String getTime() {
+    return new SimpleDateFormat("HH:mm:ss").format(new java.util.Date());
+  }
+
 
 }

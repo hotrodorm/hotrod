@@ -8,6 +8,7 @@ import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.utils.identifiers.ColumnIdentifier;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
+import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 
 public class ColumnMetadata {
 
@@ -20,10 +21,13 @@ public class ColumnMetadata {
 
   private boolean belongsToPK;
 
+  private AutogenerationType autogenerationType;
+
   private int dataType;
   private String typeName;
   private Integer columnSize;
   private Integer decimalDigits;
+  private String columnDefault;
 
   private EnumDataSetMetadata enumMetadata;
 
@@ -52,15 +56,17 @@ public class ColumnMetadata {
     this.columnName = c.getName();
     this.tableName = c.getTable().getName();
     this.belongsToPK = belongsToPK;
+    this.autogenerationType = c.getAutogenerationType();
     this.dataType = c.getDataType();
     this.typeName = c.getTypeName();
     this.columnSize = c.getColumnSize();
     this.decimalDigits = c.getDecimalDigits();
+    this.columnDefault = c.getColumnDef();
     this.enumMetadata = null;
 
     this.adapter = adapter;
     this.tag = columnTag;
-    this.type = this.adapter.resolveJavaType(this);
+    this.type = this.adapter.resolveJavaType(this, this.tag);
     this.identifier = new ColumnIdentifier(this.columnName, this.type, columnTag);
     this.isVersionControlColumn = isVersionControlColumn;
   }
@@ -78,15 +84,17 @@ public class ColumnMetadata {
     this.columnName = c.getName();
     this.tableName = selectName;
     this.belongsToPK = belongsToPK;
+    this.autogenerationType = c.getAutogenerationType();
     this.dataType = c.getDataType();
     this.typeName = c.getTypeName();
     this.columnSize = c.getColumnSize();
     this.decimalDigits = c.getDecimalDigits();
+    this.columnDefault = c.getColumnDef();
     this.enumMetadata = null;
 
     this.adapter = adapter;
     this.tag = columnTag;
-    this.type = this.adapter.resolveJavaType(this);
+    this.type = this.adapter.resolveJavaType(this, this.tag);
     this.identifier = new ColumnIdentifier(this.columnName, this.type, columnTag);
     this.isVersionControlColumn = isVersionControlColumn;
   }
@@ -164,7 +172,7 @@ public class ColumnMetadata {
   }
 
   public String renderSQLIdentifier() {
-    return this.adapter.quoteSQLName(this.columnName);
+    return this.adapter.renderSQLName(this.columnName);
   }
 
   // Getters
@@ -197,8 +205,8 @@ public class ColumnMetadata {
     return decimalDigits;
   }
 
-  public ColumnTag getTag() {
-    return tag;
+  public String getColumnDefault() {
+    return columnDefault;
   }
 
   public boolean isVersionControlColumn() {
@@ -215,6 +223,23 @@ public class ColumnMetadata {
 
   public EnumDataSetMetadata getEnumMetadata() {
     return enumMetadata;
+  }
+
+  public String getSequence() {
+    return this.tag == null ? null : this.tag.getSequence();
+  }
+
+  public String getCanonicalSequence() {
+    return this.tag == null ? null : this.adapter.canonizeName(this.tag.getSequence(), false);
+  }
+
+  public String renderSQLSequence() {
+    return this.tag == null || this.tag.getSequence() == null ? null
+        : this.adapter.renderSQLName(this.getCanonicalSequence());
+  }
+
+  public AutogenerationType getAutogenerationType() {
+    return this.autogenerationType;
   }
 
   // Setters

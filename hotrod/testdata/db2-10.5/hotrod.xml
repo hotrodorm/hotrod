@@ -30,12 +30,21 @@
   <table name="federal_branch" />
   <table name="client" />
 
-  <table name="agent" sequence="seq_agent" /> <!-- sequence-generated PK -->
+  <table name="agent"> <!-- sequence-generated PK -->
+    <column name="id" sequence="seq_agent" />
+  </table>
 
   <table name="codes" column-seam="_" />
   <table name="quadrant" />
 
   <table name="application_config" />
+  
+  <table name="test_seq_ide_def1">
+    <column name="extra_id1" sequence="gen_seq1" />
+    <column name="extra_id2" sequence="gen_seq2" />
+  </table>
+
+  <table name="test_identity1" />
 
   <table name="types_char" />
   <table name="types_numeric" />

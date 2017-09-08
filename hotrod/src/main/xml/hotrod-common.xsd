@@ -25,7 +25,6 @@
     </xsd:sequence>
     <xsd:attribute name="name" type="xsd:string" use="required" />
     <xsd:attribute name="java-name" type="xsd:string" />
-    <xsd:attribute name="sequence" type="xsd:string" />
     <xsd:attribute name="column-seam" type="xsd:string" />
   </xsd:complexType>
 
@@ -86,6 +85,7 @@
     <xsd:attribute name="java-type" type="xsd:string" />
     <xsd:attribute name="converter" type="xsd:string" />
     <xsd:attribute name="jdbc-type" type="xsd:string" />
+    <xsd:attribute name="sequence" type="xsd:string" />
     <xsd:attribute name="is-lob" type="xsd:string" />
     <xsd:attribute name="initial-value" type="xsd:string" />
     <xsd:attribute name="min-value" type="xsd:string" />

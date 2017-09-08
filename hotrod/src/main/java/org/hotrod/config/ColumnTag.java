@@ -29,6 +29,7 @@ public class ColumnTag extends AbstractConfigurationTag {
   private String javaType = null;
   private String converter = null;
   private String jdbcType = null;
+  private String sequence = null;
   private String sInitialValue = null;
   private String sMinValue = null;
   private String sMaxValue = null;
@@ -62,9 +63,19 @@ public class ColumnTag extends AbstractConfigurationTag {
     this.javaType = javaType;
   }
 
+  @XmlAttribute
+  public void setConverter(final String converter) {
+    this.converter = converter;
+  }
+
   @XmlAttribute(name = "jdbc-type")
   public void setJdbcType(final String jdbcType) {
     this.jdbcType = jdbcType;
+  }
+
+  @XmlAttribute(name = "sequence")
+  public void setSequence(final String sequence) {
+    this.sequence = sequence;
   }
 
   @XmlAttribute(name = "is-lob")
@@ -85,11 +96,6 @@ public class ColumnTag extends AbstractConfigurationTag {
   @XmlAttribute(name = "max-value")
   public void setsMaxValue(String sMaxValue) {
     this.sMaxValue = sMaxValue;
-  }
-
-  @XmlAttribute
-  public void setConverter(String converter) {
-    this.converter = converter;
   }
 
   // Behavior
@@ -177,6 +183,17 @@ public class ColumnTag extends AbstractConfigurationTag {
       }
     }
 
+    // sequence
+
+    if (this.sequence != null) {
+      if (SUtils.isEmpty(this.sequence)) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Attribute 'sequence' of tag <" + super.getTagName() + "> cannot be empty. " + "When specified, "
+                + "this attribute must specify the name of the database sequence "
+                + "that generates values for this column.");
+      }
+    }
+
     // is-lob
 
     if (this.sIsLOB == null) {
@@ -202,9 +219,8 @@ public class ColumnTag extends AbstractConfigurationTag {
       if (this.sInitialValue == null || this.sMinValue == null || this.sMaxValue == null) {
 
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "Partially specified value range on tag <" + super.getTagName() + ">. When a range is specified, "
-                + "all three attributee 'initial-value', " + "'min-value' and 'max-value' must be specified together, "
-                + "but found only one or two of them.");
+            "Invalid partially specified value range on tag <" + super.getTagName() + ">. When a range is specified, "
+                + "all three attributee 'initial-value', " + "'min-value' and 'max-value' must be specified.");
 
       } else {
 
@@ -251,13 +267,19 @@ public class ColumnTag extends AbstractConfigurationTag {
 
   }
 
-  public void populateJdbcElements(final JdbcDatabase db, final DatabaseAdapter adapter, final JdbcTable t,
-      final String tableName) throws InvalidConfigurationFileException {
+  void populateJdbcElements(final JdbcDatabase db, final DatabaseAdapter adapter, final JdbcTable t)
+      throws InvalidConfigurationFileException {
     this.column = findJdbcColumn(db, adapter, t);
-    if (this.column == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Could not find column '" + tableName + "' on table '" + this.name
-              + "' as specified in the the attribute 'name' of tag <" + super.getTagName() + ">.");
+  }
+
+  public void validateAgainstDatabase(final JdbcDatabase db, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
+    if (this.sequence != null) {
+      if (this.column.getAutogenerationType() != null && this.column.getAutogenerationType().isIdentity()) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid 'sequence' attribute on column '" + this.name
+                + "'. The 'sequence' attribute cannot be specified on identity or auto_increment columns.");
+      }
     }
   }
 
@@ -319,6 +341,10 @@ public class ColumnTag extends AbstractConfigurationTag {
     return jdbcType;
   }
 
+  public String getSequence() {
+    return sequence;
+  }
+
   public boolean isLOB() {
     return isLOB;
   }
@@ -331,12 +357,16 @@ public class ColumnTag extends AbstractConfigurationTag {
     return converterTag;
   }
 
+  public JdbcColumn getJdbcColumn() {
+    return column;
+  }
+
   // ToString
 
   public String toString() {
     return "name=" + name + " javaName=" + this.javaName + " javaType=" + this.javaType + ", converter="
-        + this.converter + " jdbcType=" + this.jdbcType + ", sInitialValue=" + this.sInitialValue + " sMinValue="
-        + this.sMinValue + " sMaxValue=" + this.sMaxValue;
+        + this.converter + " jdbcType=" + this.jdbcType + " sequence=" + this.sequence + ", sInitialValue="
+        + this.sInitialValue + " sMinValue=" + this.sMinValue + " sMaxValue=" + this.sMaxValue;
   }
 
 }

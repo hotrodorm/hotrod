@@ -282,7 +282,9 @@ public abstract class HotRodGenerator {
                 .getTempViewBaseName();
             sm = new SelectDataSetMetadata(this.db, this.adapter, this.loc, s, tempViewNameBase + (i++), this.config);
             this.selects.add(sm);
+            log.debug("prepareView() will be called...");
             sm.prepareViews(conn);
+            log.debug("prepareView() complete.");
           }
 
         } catch (SQLException e) {

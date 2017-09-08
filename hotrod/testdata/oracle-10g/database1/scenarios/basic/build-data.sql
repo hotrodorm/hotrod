@@ -67,9 +67,9 @@ insert into quadrant (region, area, caption, active_state) values (18, 86, 'Quad
 
 -- Special Characters
 
-insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`{|}~") values (1, 'red', 'kind 1', 'type 2');
-insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`{|}~") values (2, 'green', 'kind 3', 'type 4');
-insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`{|}~") values (3, 'blue', 'kind 5', 'type 6');
+insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`|~") values (1, 'red', 'kind 1', 'type 2');
+insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`|~") values (2, 'green', 'kind 3', 'type 4');
+insert into " !#$%)(*+,-." (id, ":<>?&", "@[\]^_", "`|~") values (3, 'blue', 'kind 5', 'type 6');
 
 -- enum
 

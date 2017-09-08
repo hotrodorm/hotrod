@@ -39,7 +39,7 @@
   <table name=" !#$%)(*+,-." java-name="House">
     <column name=":&lt;>?&amp;" java-name="color" />
     <column name="@[\]^_" java-name="kind" />
-    <column name="`{|}~" java-name="type" />
+    <column name="`|~" java-name="type" />
   </table>
 
   <select java-class-name="AccountByIds">

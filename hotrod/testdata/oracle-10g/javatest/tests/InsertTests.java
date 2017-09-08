@@ -2,15 +2,18 @@ package tests;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
 import org.apache.log4j.Logger;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 
 import hotrod.test.generation.ConfigValuesVO;
 import hotrod.test.generation.TestSequence1VO;
+import hotrod.test.generation.TestSequence2VO;
 import hotrod.test.generation.TransactionVO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
 import hotrod.test.generation.primitives.TestSequence1DAO;
+import hotrod.test.generation.primitives.TestSequence2DAO;
 import hotrod.test.generation.primitives.TransactionDAO;
 
 public class InsertTests {
@@ -21,11 +24,12 @@ public class InsertTests {
 
     log.info("Starting insert tests");
 
-    insertUsingSequence();
+    // insertUsingSequence();
     // insertByExampleUsingSequence();
 
     // insertNoAutogeneration();
     // insertByExampleNoAutogeneration();
+    insertMixed();
   }
 
   private static void insertUsingSequence() throws SQLException {
@@ -101,6 +105,30 @@ public class InsertTests {
     for (ConfigValuesVO v : ConfigValuesDAO.selectByExample(new ConfigValuesVO())) {
       System.out.println("v=" + v);
     }
+  }
+
+  private static void insertMixed() throws SQLException {
+
+    String time = getTime();
+    int timeInt = getTimeInt();
+
+    // Test sequences
+
+    TestSequence2VO ti1 = new TestSequence2VO();
+    ti1.setName("Title (default) " + time);
+    TestSequence2DAO.insert(ti1);
+    System.out.println("[inserted] sequence test=" + ti1);
+
+  }
+
+  // Utilities
+
+  private static int getTimeInt() {
+    return (int) (System.currentTimeMillis() % (1000000000L));
+  }
+
+  private static String getTime() {
+    return new SimpleDateFormat("HH:mm:ss").format(new java.util.Date());
   }
 
 }
