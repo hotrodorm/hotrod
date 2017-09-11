@@ -150,26 +150,34 @@ select t.account_id, b.id, b.name, t.amount from transaction t, federal_branch b
 -- ======================
 
 create table test_sequence1 (
-  id1 int not null,
-  name varchar(40) not null
+  id1 number(9) not null,
+  name varchar2(40) not null
 );
 
 create table test_sequence2 (
-  id1 int not null,
-  id2 int not null,
-  name varchar(40) not null
+  id1 number(9) not null,
+  id2 number(9) not null,
+  name varchar2(40) not null
 );
 
 create sequence gen_seq1 start with 100;
 create sequence gen_seq2 start with 200;
 
 create table test_default1 (
-  name varchar(40) not null,
+  name varchar2(40) not null,
   price number(9) default 1000 not null 
 );
 
 create table test_default2 (
-  name varchar(40) not null,
+  name varchar2(40) not null,
+  price number(9) default 1000 not null,
+  branch_id number(9) default 123 not null
+);
+
+create table test_mixed (
+  name varchar2(40) not null,
+  extra_id1 number(9) not null,
+  extra_id2 number(9) not null,
   price number(9) default 1000 not null,
   branch_id number(9) default 123 not null
 );

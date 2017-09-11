@@ -173,8 +173,11 @@ public class ObjectDAO {
         writeDeleteByPK();
       }
 
-      if (this.isTable() || this.isView()) {
+      if (this.isView()) {
         writeInsertByExample();
+      }
+
+      if (this.isTable() || this.isView()) {
         writeUpdateByExample();
         writeDeleteByExample();
       }
@@ -1277,27 +1280,88 @@ public class ObjectDAO {
 
   private void writeInsert() throws IOException, UnresolvableDataTypeException {
 
+    // Count auto-generated columns
+
+    int sequences = 0;
+    int identities = 0;
+    int defaults = 0;
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      if (cm.getSequence() != null) {
+        sequences++;
+      }
+      if (cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity()) {
+        identities++;
+      }
+      if (cm.getColumnDefault() != null) {
+        defaults++;
+      }
+    }
+
+    boolean integratesSequences = this.generator.getAdapter().getInsertIntegration().integratesSequences();
+    boolean integratesIdentities = this.generator.getAdapter().getInsertIntegration().integratesIdentities();
+    boolean integratesDefaults = this.generator.getAdapter().getInsertIntegration().integratesDefaults();
+
+    boolean extraInsert = integratesSequences && integratesDefaults && defaults != 0;
+
+    //                          | integrates identities 
+    //                          |   false    |   true
+    // -------------------------+------------+-------------
+    // has identities :  false  |     T      |     T
+    //                :  true   |     F      |     T
+    //
+    // ! has identities || integrates identities
+
     println("  // insert");
     println();
 
-    print("  public static int insert(final " + this.vo.getClassName() + " vo) ");
+    if (extraInsert) {
+
+      print("  public static int insert(final " + this.vo.getClassName() + " vo) ");
+      this.throwsCheckedException();
+      println("{");
+      println("    return insert(vo, false);");
+      println("  }");
+      println();
+
+      print("  public static int insert(final SqlSession sqlSession, final " + this.vo.getClassName() + " vo) ");
+      this.throwsCheckedException();
+      println("{");
+      println("    return insert(sqlSession, vo, false);");
+      println("  }");
+      println();
+
+    }
+
+    print("  public static int insert(final " + this.vo.getClassName() + " vo");
+    if (extraInsert) {
+      print(", final boolean retrieveDefaults");
+    }
+    print(") ");
     this.throwsCheckedException();
     println("{");
     retrieveSqlSession();
-    println("      int rows = insert(sqlSession, vo);");
+    if (extraInsert) {
+      println("      int rows = insert(sqlSession, vo, retrieveDefaults);");
+    } else {
+      println("      int rows = insert(sqlSession, vo);");
+    }
     commitSqlSession(1);
     println("      return rows;");
     releaseSqlSession();
     println("  }");
     println();
 
-    print("  public static int insert(final SqlSession sqlSession, final " + this.vo.getClassName() + " vo) ");
+    print("  public static int insert(final SqlSession sqlSession, final " + this.vo.getClassName() + " vo");
+    if (extraInsert) {
+      print(", final boolean retrieveDefaults");
+    }
+    print(") ");
     this.throwsCheckedException();
     println("{");
 
     VersionControlMetadata vcm = this.metadata.getVersionControlMetadata();
 
-    if (this.isTable() && vcm != null) {
+    if (vcm != null) {
       ColumnMetadata cm = vcm.getColumnMetadata();
       String literalValue = renderNumericLiteral(cm.getType().getValueRange().getInitialValue(),
           cm.getType().getJavaClassName());
@@ -1306,59 +1370,51 @@ public class ObjectDAO {
 
     preCheckedException();
 
-    // Count auto-generated columns
+    // Decide on the mapper id
 
-    int sequences = 0;
-    int identities = 0;
-    for (ColumnMetadata cm : this.metadata.getColumns()) {
-      if (cm.getSequence() != null) {
-        sequences++;
-      }
-      if (cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity()) {
-        identities++;
-      }
+    if (extraInsert) {
+      println("    String id = retrieveDefaults ? \"" + this.mapper.getFullMapperIdInsertRetrievingDefaults()
+          + "\" : \"" + this.mapper.getFullMapperIdInsert() + "\";");
+    } else {
+      println("    String id = \"" + this.mapper.getFullMapperIdInsert() + "\";");
     }
 
     // Choose insert variant
 
-    boolean integratesSequences = this.generator.getAdapter().getInsertIntegration().integratesSequences();
-    boolean integratesIdentities = this.generator.getAdapter().getInsertIntegration().integratesIdentities();
-
     if (identities == 0) {
       if (sequences == 0) { // no sequences, no identities
-        println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsert() + "\", vo);");
+        println("    return sqlSession.insert(id, vo);");
       } else { // sequences only
         if (integratesSequences) {
-          writeInsertIntegrated(true, false);
+          writeInsertIntegrated(true, false, extraInsert);
           println("    return rows;");
         } else {
-          println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsert() + "\", vo);");
+          println("    return sqlSession.insert(id, vo);");
         }
       }
     } else {
       if (sequences == 0) { // identities only
         if (integratesIdentities) {
-          writeInsertIntegrated(false, true);
+          writeInsertIntegrated(false, true, extraInsert);
           println("    return rows;");
         } else {
-          println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsert() + "\", vo);");
+          println("    return sqlSession.insert(id, vo);");
         }
       } else { // sequences & identities
-
         if (integratesSequences && integratesIdentities) {
-          writeInsertIntegrated(true, true);
+          writeInsertIntegrated(true, true, extraInsert);
           println("    return rows;");
         } else if (integratesIdentities) {
           writeSequencesPreFetch();
-          writeInsertIntegrated(false, true);
+          writeInsertIntegrated(false, true, extraInsert);
           println("    return rows;");
         } else if (integratesSequences) {
-          writeInsertIntegrated(true, false);
+          writeInsertIntegrated(true, false, extraInsert);
           writeIdentitiesPostFetch();
           println("    return rows;");
         } else {
           writeSequencesPreFetch();
-          println("    int rows = sqlSession.insert(\"" + this.mapper.getFullMapperIdInsert() + "\", vo);");
+          println("    int rows = sqlSession.insert(id, vo);");
           writeIdentitiesPostFetch();
           println("    return rows;");
         }
@@ -1373,21 +1429,24 @@ public class ObjectDAO {
 
   }
 
-  private void writeInsertIntegrated(final boolean integratesSequences, final boolean integratesIdentities)
-      throws IOException {
+  private void writeInsertIntegrated(final boolean integratesSequences, final boolean integratesIdentities,
+      final boolean extraInsert) throws IOException {
     if (this.generator.getAdapter().integratesUsingQuery()) {
-      println("    " + this.vo.getClassName() + " values = sqlSession.selectOne(\""
-          + this.mapper.getFullMapperIdInsert() + "\", vo);");
+      println("    " + this.vo.getClassName() + " values = sqlSession.selectOne(id, vo);");
       println("    int rows = 1;");
       for (ColumnMetadata cm : this.metadata.getColumns()) {
+        String prop = cm.getIdentifier().getJavaMemberIdentifier();
         if (cm.getSequence() != null && integratesSequences
             || cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity() && integratesIdentities) {
-          String prop = cm.getIdentifier().getJavaMemberIdentifier();
           println("    vo." + prop + " = values." + prop + ";");
+        } else if (extraInsert) {
+          println("    if (retrieveDefaults) {");
+          println("      vo." + prop + " = values." + prop + ";");
+          println("    }");
         }
       }
     } else {
-      println("    int rows = sqlSession.insert(\"" + this.mapper.getFullMapperIdInsert() + "\", vo);");
+      println("    int rows = sqlSession.insert(id, vo);");
     }
   }
 
@@ -1578,75 +1637,9 @@ public class ObjectDAO {
 
     preCheckedException();
 
-    // Count auto-generated columns
-
-    int sequences = 0;
-    int identities = 0;
-    for (ColumnMetadata cm : this.metadata.getColumns()) {
-      if (cm.getSequence() != null) {
-        sequences++;
-      }
-      if (cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity()) {
-        identities++;
-      }
-    }
-
     // Choose insert variant
 
-    if (sequences == 0 || identities == 0 || (this.generator.getAdapter().getInsertIntegration().integratesIdentities()
-        && this.generator.getAdapter().getInsertIntegration().integratesSequences())) {
-      println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExample() + "\", example);");
-    } else {
-      println("    " + this.vo.getClassName() + " sequences = sqlSession.selectOne(\""
-          + this.mapper.getFullMapperIdSequencesPreFetch() + "\");");
-      for (ColumnMetadata cm : this.metadata.getColumns()) {
-        if (cm.getSequence() != null) {
-          String prop = cm.getIdentifier().getJavaMemberIdentifier();
-          println("    example." + prop + " = sequences." + prop + ";");
-        }
-      }
-      println("    int rows = sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExample() + "\", example);");
-      if (!this.generator.getAdapter().getInsertIntegration().integratesIdentities()) {
-        println("    " + this.vo.getClassName() + " identities = sqlSession.selectOne(\""
-            + this.mapper.getFullMapperIdIdentitiesPostFetch() + "\");");
-        for (ColumnMetadata cm : this.metadata.getColumns()) {
-          if (cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity()) {
-            String prop = cm.getIdentifier().getJavaMemberIdentifier();
-            println("    example." + prop + " = identities." + prop + ";");
-          }
-        }
-      }
-      println("    return rows;");
-    }
-
-    /**
-     * <pre>
-     * AutoGeneratedColumnMetadata agcm = this.metadata.getAutoGeneratedColumnMetadata();
-     * if (agcm == null) {
-     *   println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExample() + "\", example);");
-     * } else {
-     *   if (agcm.isIdentity()) {
-     *     if (agcm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
-     *       // Identity BY_DEFAULT
-     *       println("    if (example." + agcm.getIdentifier().getGetter() + "() == null) {");
-     *       println("      return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExampleWithIdentity()
-     *           + "\", example);");
-     *       println("    } else {");
-     *       println(
-     *           "      return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExample() + "\", example);");
-     *       println("    }");
-     *     } else {
-     *       // Identity ALWAYS
-     *       println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExampleWithIdentity()
-     *           + "\", example);");
-     *     }
-     *   } else {
-     *     // Sequence
-     *     println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExample() + "\", example);");
-     *   }
-     * }
-     * </pre>
-     */
+    println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExample() + "\", example);");
 
     postCheckedException();
 

@@ -47,6 +47,7 @@
 
   <table name="test_identity" /> <!-- identity always PK -->
  
+  <!-- 
 	<select java-class-name="AccountTxDAO">
     select a.* , t.*
       from account a, transaction2 t
@@ -70,5 +71,6 @@
 	<select java-class-name="SelectTDateTimeDAO">
 		select * from types_date_time
 	</select>
+  -->
   
 </hotrod>

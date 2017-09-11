@@ -77,6 +77,11 @@
     <column name="id2" sequence="gen_seq2" />
   </table>
   
+  <table name="test_mixed">
+    <column name="extra_id1" sequence="gen_seq1" />
+    <column name="extra_id2" sequence="gen_seq2" />
+  </table>
+  
   <table name="types_numeric" />
   <table name="types_char" />
   <table name="types_binary" />

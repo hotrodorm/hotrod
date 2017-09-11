@@ -161,6 +161,13 @@ create table test_default2 (
   branch_id integer default 123 not null
 );
 
+create table test_mixed1 (
+  id integer not null primary key auto_increment,
+  name varchar(40) not null,
+  price integer default 1000 not null,
+  branch_id integer default 123 not null
+);
+
 -- ==================
 -- === Data Types ===    
 -- ==================

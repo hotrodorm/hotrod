@@ -148,6 +148,13 @@ create table test_default2 (
   branch_id int default 123 not null
 );
 
+create table test_mixed1 (
+  id int identity not null,
+  name varchar(40) not null,
+  price integer default 1000 not null,
+  branch_id int default 123 not null
+);
+
 -- =====
 -- Types
 -- =====

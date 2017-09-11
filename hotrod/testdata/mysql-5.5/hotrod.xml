@@ -43,6 +43,8 @@
   </table>
   
   <table name="test_identity1" />
+  
+  <table name="test_mixed1" />  
 
   <table name="types_numeric" />
   <table name="types_char" />
