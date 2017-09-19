@@ -21,6 +21,7 @@
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
         <xsd:element name="sequence" type="sequence-type" />
         <xsd:element name="query" type="query-type" />
+        <xsd:element name="select" type="select-method-type" />
       </xsd:choice>
     </xsd:sequence>
     <xsd:attribute name="name" type="xsd:string" use="required" />
@@ -34,6 +35,7 @@
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
       <xsd:element name="sequence" type="sequence-type" />
       <xsd:element name="query" type="query-type" />
+      <xsd:element name="select" type="select-method-type" />
     </xsd:choice>
     <xsd:attribute name="java-class-name" type="xsd:string" use="required" />
   </xsd:complexType>
@@ -100,6 +102,7 @@
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
         <xsd:element name="sequence" type="sequence-type" />
         <xsd:element name="query" type="query-type" />
+        <xsd:element name="select" type="select-method-type" />
       </xsd:choice>
     </xsd:sequence>
     <xsd:attribute name="name" type="xsd:string" use="required" />
@@ -134,7 +137,80 @@
     </xsd:sequence>
     <xsd:attribute name="java-class-name" type="xsd:string" use="required" />
   </xsd:complexType>
-  
+
+  <!-- ====== -->
+  <!-- SELECT -->
+  <!-- ====== -->
+
+  <!-- select method - main tag -->
+
+  <xsd:complexType name="select-method-type" mixed="true">
+    <xsd:sequence>
+      <xsd:element name="parameter" type="parameter-type" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="complement" type="complement-type" />
+        <xsd:element name="columns" type="columns-type" />
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute name="method" type="xsd:string" use="required" />
+    <xsd:attribute name="multiple-rows" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- select method - columns -->
+
+  <xsd:complexType name="columns-type">
+    <xsd:choice minOccurs="1" maxOccurs="unbounded">
+      <xsd:element name="vo" type="vo-type" />
+      <xsd:element name="expressions" type="expressions-type" />
+    </xsd:choice>
+    <xsd:attribute name="class" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- select method - vo -->
+
+  <xsd:complexType name="vo-type" mixed="true">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="collection" type="collection-type" />
+      <xsd:element name="association" type="association-type" />
+    </xsd:choice>
+    <xsd:attribute name="table" type="xsd:string" />
+    <xsd:attribute name="view" type="xsd:string" />
+    <xsd:attribute name="property" type="xsd:string" />
+    <xsd:attribute name="prefix" type="xsd:string" />
+    <xsd:attribute name="extended-class" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- select method - collection -->
+
+  <xsd:complexType name="collection-type" mixed="true">
+    <xsd:sequence>
+      <xsd:element name="collection" type="collection-type" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="table" type="xsd:string" />
+    <xsd:attribute name="view" type="xsd:string" />
+    <xsd:attribute name="property" type="xsd:string" />
+    <xsd:attribute name="extended-class" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- select method - association -->
+
+  <xsd:complexType name="association-type" mixed="true">
+    <xsd:sequence>
+      <xsd:element name="association" type="association-type" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="table" type="xsd:string" />
+    <xsd:attribute name="view" type="xsd:string" />
+    <xsd:attribute name="property" type="xsd:string" />
+    <xsd:attribute name="extended-class" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- select method - expressions -->
+
+  <xsd:complexType name="expressions-type" mixed="true">
+    <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
+  </xsd:complexType>
+
   <!-- complement -->
 
   <xsd:complexType name="complement-type" mixed="true">

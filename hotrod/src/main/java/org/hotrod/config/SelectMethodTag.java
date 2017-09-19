@@ -1,0 +1,213 @@
+package org.hotrod.config;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementRefs;
+import javax.xml.bind.annotation.XmlMixed;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.apache.log4j.Logger;
+import org.hotrod.config.dynamicsql.CollectionTag;
+import org.hotrod.config.dynamicsql.ComplementTag;
+import org.hotrod.config.dynamicsql.DynamicSQLPart;
+import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
+import org.hotrod.config.dynamicsql.LiteralTextPart;
+import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
+import org.hotrod.runtime.util.SUtils;
+
+@XmlRootElement(name = "select")
+public class SelectMethodTag extends AbstractConfigurationTag {
+
+  // Constants
+
+  private static final Logger log = Logger.getLogger(SelectMethodTag.class);
+
+  // Properties
+
+  protected String javaClassName = null;
+
+  // Properties - Primitive content parsing by JAXB
+
+  @XmlMixed
+  @XmlElementRefs({ //
+      @XmlElementRef(type = ParameterTag.class), //
+      @XmlElementRef(type = ColumnTag.class), //
+      @XmlElementRef(type = ComplementTag.class), //
+      @XmlElementRef(type = ColumnsTag.class) //
+  })
+  private List<Object> content = new ArrayList<Object>();
+
+  // Properties - Parsed
+
+  protected ParameterDefinitions parameterDefinitions = null;
+  protected List<ColumnTag> columns = null;
+  protected List<DynamicSQLPart> parts = null;
+  private List<LiteralTextPart> foundationParts = null;
+  private DynamicSQLPart aggregatedPart = null;
+  private ColumnsTag structuredColumns = null;
+
+  // Constructor
+
+  public SelectMethodTag() {
+    super("select");
+  }
+
+  // JAXB Setters
+
+  @XmlAttribute(name = "java-class-name")
+  public void setJavaClassName(final String javaClassName) {
+    this.javaClassName = javaClassName;
+  }
+
+  // Behavior
+
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
+
+    // java-class-name
+
+    if (SUtils.isEmpty(this.javaClassName)) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Attribute 'java-class-name' of tag <" + getTagName() + "> cannot be empty. "
+              + "Must specify a unique query name, " + "different from table and view names.");
+    }
+
+    // content text, parameters, columns, complement
+
+    this.parameterDefinitions = new ParameterDefinitions();
+    this.columns = new ArrayList<ColumnTag>();
+    this.parts = new ArrayList<DynamicSQLPart>();
+
+    this.foundationParts = new ArrayList<LiteralTextPart>();
+
+    for (Object obj : this.content) {
+      try {
+        String s = (String) obj; // content text
+        LiteralTextPart p = new LiteralTextPart(super.getSourceLocation(), s);
+        this.parts.add(p);
+        this.foundationParts.add(p);
+      } catch (ClassCastException e1) {
+        try {
+          ParameterTag param = (ParameterTag) obj; // parameter
+          param.validate();
+          this.parameterDefinitions.add(param);
+        } catch (ClassCastException e2) {
+          try {
+            ColumnTag col = (ColumnTag) obj; // column
+            this.columns.add(col);
+          } catch (ClassCastException e3) {
+            try {
+              ComplementTag p = (ComplementTag) obj; // complement
+              this.parts.add(p);
+            } catch (ClassCastException e4) {
+              try {
+                ColumnsTag p = (ColumnsTag) obj; // columns
+                this.structuredColumns = p;
+              } catch (ClassCastException e5) {
+                throw new InvalidConfigurationFileException(super.getSourceLocation(), "The body of the tag <"
+                    + super.getTagName() + "> has an invalid tag (of class '" + obj.getClass().getName() + "').");
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (this.parts.size() != 1) {
+      this.aggregatedPart = new CollectionTag(this.parts);
+    } else {
+      this.aggregatedPart = this.parts.get(0);
+    }
+
+    // columns
+
+    Set<ColumnTag> cols = new HashSet<ColumnTag>();
+    for (ColumnTag c : this.columns) {
+      c.validate(config);
+      if (cols.contains(c)) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name on tag <" + getTagName()
+                + "> for query '" + this.javaClassName + "'. You cannot specify the same column name "
+                + "multiple times on the same query.");
+      }
+      cols.add(c);
+    }
+
+    // content text and complement
+
+    for (DynamicSQLPart p : this.parts) {
+      p.validate(this.parameterDefinitions);
+    }
+
+    // all validations cleared
+
+    log.debug("columns=" + this.columns.size());
+  }
+
+  // Getters
+
+  // Columns
+
+  public ColumnTag findColumnTag(final String columnName, final DatabaseAdapter adapter) {
+    for (ColumnTag ct : this.columns) {
+      if (ct.isName(columnName, adapter)) {
+        return ct;
+      }
+    }
+    return null;
+  }
+
+  public void addColumn(final ColumnTag c) {
+    this.columns.add(c);
+  }
+
+  // Rendering
+
+  public List<ColumnTag> getColumns() {
+    return columns;
+  }
+
+  public String getSQLFoundation(final ParameterRenderer parameterRenderer) {
+    StringBuilder sb = new StringBuilder();
+    for (LiteralTextPart tp : this.foundationParts) {
+      sb.append(tp.renderStatic(null));
+    }
+    String literal = sb.toString();
+    return literal;
+  }
+
+  public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
+    StringBuilder sb = new StringBuilder();
+    for (DynamicSQLPart p : this.parts) {
+      String st = p.renderStatic(parameterRenderer);
+      sb.append(st);
+    }
+    return sb.toString();
+  }
+
+  public String renderXML(final ParameterRenderer parameterRenderer) {
+    StringBuilder sb = new StringBuilder();
+    for (DynamicSQLPart p : this.parts) {
+      sb.append(p.renderXML(parameterRenderer));
+    }
+    return sb.toString();
+  }
+
+  public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException {
+    return this.aggregatedPart.renderJavaExpression(margin, parameterRenderer);
+  }
+
+  public List<ParameterTag> getParameterDefinitions() {
+    return this.parameterDefinitions.getDefinitions();
+  }
+
+}

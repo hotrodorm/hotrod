@@ -10,11 +10,11 @@ import org.hotrod.utils.identifiers.DbIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
 
 @XmlRootElement(name = "sequence")
-public class SequenceTag extends AbstractConfigurationTag {
+public class SequenceMethodTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(SequenceTag.class);
+  private static final Logger log = Logger.getLogger(SequenceMethodTag.class);
 
   static final String TAG_NAME = "sequence";
 
@@ -28,7 +28,7 @@ public class SequenceTag extends AbstractConfigurationTag {
 
   // Constructor
 
-  public SequenceTag() {
+  public SequenceMethodTag() {
     super("sequence");
     log.debug("init");
   }

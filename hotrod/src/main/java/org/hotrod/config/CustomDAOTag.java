@@ -9,7 +9,7 @@ import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 
 @XmlRootElement(name = "dao")
-public class CustomDAOTag extends AbstractCompositeDAOTag {
+public class CustomDAOTag extends AbstractDAOTag {
 
   // Constants
 

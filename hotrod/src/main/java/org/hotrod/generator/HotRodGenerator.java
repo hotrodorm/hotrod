@@ -16,10 +16,10 @@ import org.hotrod.config.ColumnTag;
 import org.hotrod.config.CustomDAOTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.config.QueryTag;
+import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectTag;
-import org.hotrod.config.SequenceTag;
+import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -408,13 +408,13 @@ public abstract class HotRodGenerator {
 
       for (TableDataSetMetadata t : this.tables) {
         display("Table " + t.getIdentifier().getSQLIdentifier() + " included.");
-        for (SequenceTag s : t.getSequences()) {
+        for (SequenceMethodTag s : t.getSequences()) {
           sequences++;
           if (this.displayMode == DisplayMode.LIST) {
             display(" - Sequence " + s.getName() + " included.");
           }
         }
-        for (QueryTag q : t.getQueries()) {
+        for (QueryMethodTag q : t.getQueries()) {
           queries++;
           if (this.displayMode == DisplayMode.LIST) {
             display(" - Query " + q.getJavaMethodName() + " included.");
@@ -426,13 +426,13 @@ public abstract class HotRodGenerator {
 
       for (TableDataSetMetadata v : this.views) {
         display("View " + v.getIdentifier().getSQLIdentifier() + " included.");
-        for (SequenceTag s : v.getSequences()) {
+        for (SequenceMethodTag s : v.getSequences()) {
           sequences++;
           if (this.displayMode == DisplayMode.LIST) {
             display(" - Sequence " + s.getName() + " included.");
           }
         }
-        for (QueryTag q : v.getQueries()) {
+        for (QueryMethodTag q : v.getQueries()) {
           queries++;
           if (this.displayMode == DisplayMode.LIST) {
             display(" - Query " + q.getJavaMethodName() + " included.");
@@ -452,13 +452,13 @@ public abstract class HotRodGenerator {
         if (this.displayMode == DisplayMode.LIST) {
           display("DAO " + c.getJavaClassName() + " included.");
         }
-        for (SequenceTag s : c.getSequences()) {
+        for (SequenceMethodTag s : c.getSequences()) {
           sequences++;
           if (this.displayMode == DisplayMode.LIST) {
             display(" - Sequence " + s.getName() + " included.");
           }
         }
-        for (QueryTag q : c.getQueries()) {
+        for (QueryMethodTag q : c.getQueries()) {
           queries++;
           if (this.displayMode == DisplayMode.LIST) {
             display(" - Query " + q.getJavaMethodName() + " included.");

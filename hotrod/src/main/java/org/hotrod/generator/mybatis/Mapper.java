@@ -13,11 +13,11 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
-import org.hotrod.config.AbstractCompositeDAOTag;
+import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
-import org.hotrod.config.QueryTag;
+import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SelectTag;
-import org.hotrod.config.SequenceTag;
+import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
@@ -46,7 +46,7 @@ public class Mapper {
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
 
-  private AbstractCompositeDAOTag compositeTag;
+  private AbstractDAOTag compositeTag;
   @SuppressWarnings("unused")
   private SelectTag selectTag;
 
@@ -63,7 +63,7 @@ public class Mapper {
 
   private Writer w;
 
-  public Mapper(final AbstractCompositeDAOTag compositeTag, final DataSetMetadata metadata, final DataSetLayout layout,
+  public Mapper(final AbstractDAOTag compositeTag, final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo) {
     log.debug("init");
     this.compositeTag = compositeTag;
@@ -160,7 +160,7 @@ public class Mapper {
 
       if (this.compositeTag != null) {
 
-        for (SequenceTag s : this.compositeTag.getSequences()) {
+        for (SequenceMethodTag s : this.compositeTag.getSequences()) {
           try {
             writeSelectSequence(s);
           } catch (SequencesNotSupportedException e) {
@@ -169,7 +169,7 @@ public class Mapper {
           }
         }
 
-        for (QueryTag q : this.compositeTag.getQueries()) {
+        for (QueryMethodTag q : this.compositeTag.getQueries()) {
           try {
             writeQuery(q);
           } catch (SequencesNotSupportedException e) {
@@ -1026,7 +1026,7 @@ public class Mapper {
    * @throws SequencesNotSupportedException
    */
 
-  private void writeSelectSequence(final SequenceTag seq) throws IOException, SequencesNotSupportedException {
+  private void writeSelectSequence(final SequenceMethodTag seq) throws IOException, SequencesNotSupportedException {
     println("  <!-- select sequence " + seq.getName() + " -->");
     println();
     println("  <select id=\"" + this.getMapperSelectSequence(seq) + "\" " + "resultType=\"java.lang.Long\">");
@@ -1050,7 +1050,7 @@ public class Mapper {
    * 
    */
 
-  private void writeQuery(final QueryTag u) throws IOException, SequencesNotSupportedException {
+  private void writeQuery(final QueryMethodTag u) throws IOException, SequencesNotSupportedException {
     println("  <!-- query " + u.getJavaMethodName() + " -->");
     println();
 
@@ -1091,11 +1091,11 @@ public class Mapper {
     ;
   }
 
-  public String getFullMapperIdSelectSequence(final SequenceTag s) {
+  public String getFullMapperIdSelectSequence(final SequenceMethodTag s) {
     return this.namespace + "." + getMapperSelectSequence(s);
   }
 
-  public String getMapperSelectSequence(final SequenceTag s) {
+  public String getMapperSelectSequence(final SequenceMethodTag s) {
     return "selectSequence" + s.getIdentifier().getJavaClassIdentifier();
   }
 
@@ -1209,11 +1209,11 @@ public class Mapper {
     return this.namespace;
   }
 
-  public String getFullMapperIdUpdate(final QueryTag u) {
+  public String getFullMapperIdUpdate(final QueryMethodTag u) {
     return this.namespace + "." + getMapperSelectSequence(u);
   }
 
-  public String getMapperSelectSequence(final QueryTag u) {
+  public String getMapperSelectSequence(final QueryMethodTag u) {
     return u.getIdentifier().getJavaMemberIdentifier();
   }
 

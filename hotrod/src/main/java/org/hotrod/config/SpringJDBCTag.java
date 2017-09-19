@@ -19,7 +19,7 @@ public class SpringJDBCTag extends AbstractGeneratorTag {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(SequenceTag.class);
+  private static final Logger log = Logger.getLogger(SequenceMethodTag.class);
 
   public static final String GENERATOR_NAME = "SpringJDBC";
 

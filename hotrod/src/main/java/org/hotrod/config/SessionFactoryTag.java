@@ -12,7 +12,7 @@ public class SessionFactoryTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(SequenceTag.class);
+  private static final Logger log = Logger.getLogger(SequenceMethodTag.class);
 
   private static final String ATT_NAME = "singleton-full-class-name";
 

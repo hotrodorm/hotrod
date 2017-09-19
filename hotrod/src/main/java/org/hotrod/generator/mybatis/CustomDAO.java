@@ -15,9 +15,9 @@ import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.CustomDAOTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.ParameterTag;
-import org.hotrod.config.QueryTag;
+import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
-import org.hotrod.config.SequenceTag;
+import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.tx.TxDemarcator;
@@ -66,11 +66,11 @@ public class CustomDAO {
 
       writeClassHeader();
 
-      for (SequenceTag s : this.tag.getSequences()) {
+      for (SequenceMethodTag s : this.tag.getSequences()) {
         writeSelectSequence(s);
       }
 
-      for (QueryTag q : this.tag.getQueries()) {
+      for (QueryMethodTag q : this.tag.getQueries()) {
         writeQuery(q);
       }
 
@@ -191,7 +191,7 @@ public class CustomDAO {
    * @throws SequencesNotSupportedException
    */
 
-  private void writeSelectSequence(final SequenceTag tag) throws IOException, SequencesNotSupportedException {
+  private void writeSelectSequence(final SequenceMethodTag tag) throws IOException, SequencesNotSupportedException {
 
     println("  // sequence " + tag.getName());
     println();
@@ -239,7 +239,7 @@ public class CustomDAO {
    * @throws IOException
    */
 
-  private void writeQuery(final QueryTag tag) throws IOException {
+  private void writeQuery(final QueryMethodTag tag) throws IOException {
 
     println("  // query " + tag.getJavaMethodName());
     println();
@@ -403,11 +403,11 @@ public class CustomDAO {
     return this.tag.getJavaClassName();
   }
 
-  public String getFullParamClassName(final QueryTag u) {
+  public String getFullParamClassName(final QueryMethodTag u) {
     return this.getFullClassName() + "." + this.getParamClassName(u);
   }
 
-  public String getParamClassName(final QueryTag u) {
+  public String getParamClassName(final QueryMethodTag u) {
     return "Param" + u.getIdentifier().getJavaClassIdentifier();
   }
 

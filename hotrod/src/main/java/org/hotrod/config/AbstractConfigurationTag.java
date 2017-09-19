@@ -1,9 +1,8 @@
 package org.hotrod.config;
 
-import org.hotrod.config.AbstractHotRodConfigTag.SourceLocatable;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 
-public abstract class AbstractConfigurationTag implements SourceLocatable {
+public abstract class AbstractConfigurationTag {
 
   // Properties
 
@@ -31,12 +30,10 @@ public abstract class AbstractConfigurationTag implements SourceLocatable {
 
   private SourceLocation location = null;
 
-  @Override
   public void setSourceLocation(final SourceLocation location) {
     this.location = location;
   }
 
-  @Override
   public SourceLocation getSourceLocation() {
     return this.location;
   }

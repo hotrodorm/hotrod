@@ -399,14 +399,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
 
   // Location Listener
 
-  public static interface SourceLocatable {
-
-    void setSourceLocation(SourceLocation location);
-
-    SourceLocation getSourceLocation();
-
-  }
-
   public static class LocationListener extends Listener {
 
     private File file;
@@ -425,7 +417,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
       Location location = this.xsr.getLocation();
       this.locations.put(target, location);
       try {
-        SourceLocatable locatable = (SourceLocatable) target;
+        AbstractConfigurationTag locatable = (AbstractConfigurationTag) target;
         SourceLocation sourceLocation = new SourceLocation(this.file, location.getLineNumber(),
             location.getColumnNumber(), location.getCharacterOffset());
         locatable.setSourceLocation(sourceLocation);

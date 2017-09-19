@@ -24,16 +24,15 @@ import org.hotrod.config.dynamicsql.WhenTag;
 import org.hotrod.config.dynamicsql.WhereTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.identifiers.DbIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
 
 @XmlRootElement(name = "query")
-public class QueryTag extends AbstractDAOTag {
+public class QueryMethodTag extends AbstractConfigurationTag {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(QueryTag.class);
+  private static final Logger log = Logger.getLogger(QueryMethodTag.class);
 
   // Properties
 
@@ -63,7 +62,7 @@ public class QueryTag extends AbstractDAOTag {
 
   // Constructor
 
-  public QueryTag() {
+  public QueryMethodTag() {
     super("query");
     log.debug("init");
   }
@@ -84,7 +83,7 @@ public class QueryTag extends AbstractDAOTag {
     if (this.javaMethodName == null) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'java-method-name' of tag <"
           + getTagName() + "> cannot be empty. " + "Must specify a unique name.");
-    } else if (!this.javaMethodName.matches(SequenceTag.VALID_JAVA_METHOD_PATTERN)) {
+    } else if (!this.javaMethodName.matches(SequenceMethodTag.VALID_JAVA_METHOD_PATTERN)) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Attribute 'java-method-name' of tag <" + super.getTagName() + "> specifies '" + this.javaMethodName
               + "' but must specify a valid java method name. "
@@ -153,18 +152,6 @@ public class QueryTag extends AbstractDAOTag {
 
   public List<ParameterTag> getParameterDefinitions() {
     return this.parameterDefinitions.getDefinitions();
-  }
-
-  @Override
-  public ClassPackage getPackage() {
-    // Unused
-    return null;
-  }
-
-  @Override
-  public String getJavaClassName() {
-    // Unused
-    return null;
   }
 
 }

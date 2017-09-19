@@ -16,14 +16,14 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
-import org.hotrod.config.AbstractCompositeDAOTag;
+import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.ParameterTag;
-import org.hotrod.config.QueryTag;
+import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectTag;
-import org.hotrod.config.SequenceTag;
+import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.SequencesNotSupportedException;
@@ -61,7 +61,7 @@ public class ObjectDAO {
 
   private static final Logger log = Logger.getLogger(ObjectDAO.class);
 
-  private AbstractCompositeDAOTag compositeTag;
+  private AbstractDAOTag compositeTag;
   private SelectTag selectTag;
 
   private DataSetMetadata metadata;
@@ -79,7 +79,7 @@ public class ObjectDAO {
 
   private Writer w;
 
-  public ObjectDAO(final AbstractCompositeDAOTag compositeTag, final DataSetMetadata metadata,
+  public ObjectDAO(final AbstractDAOTag compositeTag, final DataSetMetadata metadata,
       final DataSetLayout layout, final MyBatisGenerator generator, final DAOType type, final MyBatisTag myBatisTag,
       final ObjectVO vo, final Mapper mapper) {
     log.debug("init");
@@ -191,12 +191,12 @@ public class ObjectDAO {
         writeOrderingEnum();
 
         log.debug("SQL NAME=" + this.metadata.getIdentifier().getSQLIdentifier() + " this.tag=" + this.compositeTag);
-        for (SequenceTag s : this.compositeTag.getSequences()) {
+        for (SequenceMethodTag s : this.compositeTag.getSequences()) {
           log.debug("s.getName()=" + s.getName());
           writeSelectSequence(s);
         }
 
-        for (QueryTag q : this.compositeTag.getQueries()) {
+        for (QueryMethodTag q : this.compositeTag.getQueries()) {
           log.debug("q.getJavaMethodName()=" + q.getJavaMethodName());
           writeQuery(q);
         }
@@ -2232,7 +2232,7 @@ public class ObjectDAO {
    * @throws SequencesNotSupportedException
    */
 
-  private void writeSelectSequence(final SequenceTag tag) throws IOException, SequencesNotSupportedException {
+  private void writeSelectSequence(final SequenceMethodTag tag) throws IOException, SequencesNotSupportedException {
 
     println("  // sequence " + tag.getName());
     println();
@@ -2286,7 +2286,7 @@ public class ObjectDAO {
    * @throws IOException
    */
 
-  private void writeQuery(final QueryTag tag) throws IOException {
+  private void writeQuery(final QueryMethodTag tag) throws IOException {
 
     println("  // update " + tag.getJavaMethodName());
     println();
@@ -2485,7 +2485,7 @@ public class ObjectDAO {
     return "by" + ui.toCamelCase(this.layout.getColumnSeam());
   }
 
-  public String getParamClassName(final QueryTag u) {
+  public String getParamClassName(final QueryMethodTag u) {
     return "Param" + u.getIdentifier().getJavaClassIdentifier();
   }
 

@@ -21,7 +21,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 @XmlRootElement(name = "view")
-public class ViewTag extends AbstractCompositeDAOTag {
+public class ViewTag extends AbstractDAOTag {
 
   // Constants
 
@@ -34,9 +34,9 @@ public class ViewTag extends AbstractCompositeDAOTag {
   private List<ColumnTag> columns = new ArrayList<ColumnTag>();
 
   @SuppressWarnings("unused")
-  private List<SequenceTag> sequences = new ArrayList<SequenceTag>();
+  private List<SequenceMethodTag> sequences = new ArrayList<SequenceMethodTag>();
   @SuppressWarnings("unused")
-  private List<QueryTag> updates = new ArrayList<QueryTag>();
+  private List<QueryMethodTag> updates = new ArrayList<QueryMethodTag>();
 
   private DaosTag daosTag;
   private HotRodFragmentConfigTag fragmentConfig;

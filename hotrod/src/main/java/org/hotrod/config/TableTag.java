@@ -20,7 +20,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 @XmlRootElement(name = "table")
-public class TableTag extends AbstractCompositeDAOTag {
+public class TableTag extends AbstractDAOTag {
 
   // Constants
 
@@ -116,7 +116,6 @@ public class TableTag extends AbstractCompositeDAOTag {
                 + ">. When specified, the java-name must start with an upper case letter, "
                 + "and continue with any combination of letters, digits, underscores, or dollar signs.");
       }
-
     }
 
     // column-seam: no validation necessary
