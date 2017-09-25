@@ -11,6 +11,7 @@ import tests.ac.EnhancedBranchVO;
 import tests.ac.EnhancedLeafVO;
 import tests.ac.ExtendedBranchVO;
 import tests.ac.ExtendedTreeVO;
+import tests.ac.FlowerVO;
 import tests.ac.LeafVO;
 import tests.ac.TreeVO;
 
@@ -18,8 +19,11 @@ public class SelectTests {
 
   public static void main(final String[] args) throws SQLException {
     // showAccounts();
+
     // selectAssociation();
-    selectCollection();
+    // selectAssociationMixed();
+    // selectCollection();
+    selectCollectionMixed();
   }
 
   private static void showAccounts() throws SQLException {
@@ -57,6 +61,30 @@ public class SelectTests {
 
   }
 
+  private static void selectAssociationMixed() throws SQLException {
+    System.out.println("Enhanced Leaves (mixed associations):");
+    System.out.println("=====================================");
+    SqlSession session = AccountDAO.getTxManager().getSqlSession();
+    List<EnhancedLeafVO> leaves = session
+        .selectList("hotrod.test.generation.primitives.account.selectEnhancedLeafMixed");
+
+    for (EnhancedLeafVO leaf : leaves) {
+      System.out.println("leaf=" + leaf);
+      EnhancedBranchVO b = leaf.getBranch();
+      if (b != null) {
+        System.out.println("  -> branch=" + b);
+        TreeVO t = b.getTree();
+        if (t != null) {
+          System.out.println("    -> tree=" + t);
+        }
+        for (FlowerVO f : b.getFlowers()) {
+          System.out.println("    -> flower=" + f);
+        }
+      }
+    }
+
+  }
+
   private static void selectCollection() throws SQLException {
     System.out.println("Trees (collections):");
     System.out.println("====================");
@@ -67,6 +95,28 @@ public class SelectTests {
       System.out.println("tree=" + tree);
       for (ExtendedBranchVO branch : tree.getBranches()) {
         System.out.println(" -> branch=" + branch);
+        for (LeafVO leaf : branch.getLeaves()) {
+          System.out.println("     -> leaf=" + leaf);
+        }
+      }
+    }
+
+  }
+
+  private static void selectCollectionMixed() throws SQLException {
+    System.out.println("Trees (mixed collections):");
+    System.out.println("==========================");
+    SqlSession session = AccountDAO.getTxManager().getSqlSession();
+    List<ExtendedTreeVO> trees = session
+        .selectList("hotrod.test.generation.primitives.account.selectExtendedTreeMixed");
+
+    for (ExtendedTreeVO tree : trees) {
+      System.out.println("tree=" + tree);
+      for (ExtendedBranchVO branch : tree.getBranches()) {
+        System.out.println(" -> branch=" + branch);
+        if (branch.getBranchType() != null) {
+          System.out.println("     -> type=" + branch.getBranchType());
+        }
         for (LeafVO leaf : branch.getLeaves()) {
           System.out.println("     -> leaf=" + leaf);
         }

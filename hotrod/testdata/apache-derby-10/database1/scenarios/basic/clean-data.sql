@@ -18,8 +18,10 @@ delete from quadrant;
 
 -- Associations & Collections
 
+delete from flower;
 delete from leaf;
 delete from branch;
+delete from branch_type;
 delete from tree;
 
 -- restart sequences

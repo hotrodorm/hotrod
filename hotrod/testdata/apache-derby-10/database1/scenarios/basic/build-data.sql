@@ -52,12 +52,16 @@ insert into tree (id, name) values (11, 'Sauce');
 insert into tree (id, name) values (12, 'Pino');
 insert into tree (id, name) values (13, 'Rauli');
 
-insert into branch (id, name, tree_id) values (301, 'Left Branch', 10);
-insert into branch (id, name, tree_id) values (302, 'Center Branch', 10);
-insert into branch (id, name, tree_id) values (303, 'Right Branch', 10);
-insert into branch (id, name, tree_id) values (401, 'Main Branch', 11);
-insert into branch (id, name, tree_id) values (501, 'Solo Branch', 13);
-insert into branch (id, name, tree_id) values (502, 'Dangling Branch', null);
+insert into branch_type (id, name) values (50, 'Permanent');
+insert into branch_type (id, name) values (51, 'Prunable');
+insert into branch_type (id, name) values (53, 'Temporary');
+
+insert into branch (id, name, tree_id, branch_type_id) values (301, 'Left Branch', 10, 50);
+insert into branch (id, name, tree_id, branch_type_id) values (302, 'Center Branch', 10, 51);
+insert into branch (id, name, tree_id, branch_type_id) values (303, 'Right Branch', 10, 53);
+insert into branch (id, name, tree_id, branch_type_id) values (401, 'Main Branch', 11, 50);
+insert into branch (id, name, tree_id, branch_type_id) values (501, 'Solo Branch', 13, 51);
+insert into branch (id, name, tree_id, branch_type_id) values (502, 'Dangling Branch', null, 53);
 
 insert into leaf (id, weight, color, branch_id) values (600, 5, 'green 1', 301);
 insert into leaf (id, weight, color, branch_id) values (601, 7, 'green 2', 301);
@@ -71,6 +75,10 @@ insert into leaf (id, weight, color, branch_id) values (704, 4, 'red 1', 502);
 
 insert into leaf (id, weight, color, branch_id) values (710, 2, 'black 1', null);
 
+insert into flower (id, size, branch_id) values (800, 15.4, 301);
+insert into flower (id, size, branch_id) values (801, 7.0, 301);
+
+insert into flower (id, size, branch_id) values (810, 9, 502);
 
 -- =====
 -- Types

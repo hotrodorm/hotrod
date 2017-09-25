@@ -262,11 +262,18 @@ create table tree (
   name varchar(40) not null
 );
 
+create table branch_type (
+  id integer primary key not null,
+  name varchar(40) not null
+);  
+
 create table branch (
   id integer primary key not null, 
   name varchar(40) not null,
   tree_id integer,
-  constraint fk_branch_tree foreign key (tree_id) references tree (id)
+  branch_type_id integer,
+  constraint fk_branch_tree foreign key (tree_id) references tree (id),
+  constraint fk_branch_type foreign key (branch_type_id) references branch_type (id)
 );
 
 create table leaf (
@@ -277,6 +284,13 @@ create table leaf (
   constraint fk_leaf_branch foreign key (branch_id) references branch (id)
 );
 
+create table flower (
+  id integer primary key not null,
+  size double not null,
+  branch_id integer,
+  constraint fk_flower_branch foreign key (branch_id) references branch (id)
+);
+ 
 -- =========
 -- All Types
 -- =========

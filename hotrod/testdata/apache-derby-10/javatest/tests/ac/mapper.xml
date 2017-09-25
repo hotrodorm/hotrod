@@ -34,6 +34,46 @@
       left join tree t on b.tree_id = t.id
   </select>
 
+  <resultMap id="enhancedLeafMixedVOMap" type="tests.ac.EnhancedLeafVO">
+
+    <id property="id" column="id" />
+    <result property="weight" column="weight" />
+    <result property="color" column="color" />
+    <result property="branchId" column="branch_id" />
+
+    <association property="branch" javaType="tests.ac.EnhancedBranchVO">
+
+      <id property="id" column="b_id" />
+      <result property="name" column="b_name" />
+      <result property="treeId" column="b_tree_id" />
+
+      <association property="tree" javaType="tests.ac.TreeVO">
+        <id property="id" column="t_id" />
+        <result property="name" column="t_name" />
+      </association>
+      
+      <collection property="flowers" ofType="tests.ac.FlowerVO">
+        <id property="id" column="f_id" />
+        <result property="size" column="f_size" />
+        <result property="branchId" column="f_branch_id" />
+      </collection>
+
+    </association>
+
+  </resultMap>
+  
+  <select id="selectEnhancedLeafMixed" resultMap="enhancedLeafMixedVOMap">
+    select
+        l.id, l.weight, l.color, l.branch_id,
+        b.id as b_id, b.name as b_name, b.tree_id as b_tree_id,
+        t.id as t_id, t.name as t_name,
+        f.id as f_id, f.size as f_size, f.branch_id as f_branch_id
+      from leaf l
+      left join branch b on l.branch_id = b.id
+      left join tree t on b.tree_id = t.id
+      left join flower f on f.branch_id = b.id
+  </select>
+
   <!-- COLLECTIONS -->
 
   <resultMap id="extendedTreeVOMap" type="tests.ac.ExtendedTreeVO">
@@ -66,6 +106,45 @@
       from tree t
       left join branch b on b.tree_id = t.id
       left join leaf l on l.branch_id = b.id
+  </select>
+
+  <resultMap id="extendedTreeMixedVOMap" type="tests.ac.ExtendedTreeVO">
+
+    <id property="id" column="id" />
+    <result property="name" column="name" />
+
+    <collection property="branches" ofType="tests.ac.ExtendedBranchVO">
+
+      <id property="id" column="b_id" />
+      <result property="name" column="b_name" />
+      <result property="treeId" column="b_tree_id" />
+
+      <association property="branchType" javaType="tests.ac.BranchTypeVO">
+        <id property="id" column="y_id" />
+        <result property="name" column="y_name" />
+      </association>
+
+      <collection property="leaves" ofType="tests.ac.LeafVO">
+        <id property="id" column="l_id" />
+        <result property="weight" column="l_weight" />
+        <result property="color" column="l_color" />
+        <result property="branchId" column="l_branch_id" />
+      </collection>
+
+    </collection>
+
+  </resultMap>
+  
+  <select id="selectExtendedTreeMixed" resultMap="extendedTreeMixedVOMap">
+    select 
+        t.id, t.name,
+        b.id as b_id, b.name as b_name, b.tree_id as b_tree_id,
+        l.id as l_id, l.weight as l_weight, l.color as l_color, l.branch_id as l_branch_id,
+        y.id as y_id, y.name as y_name
+      from tree t
+      left join branch b on b.tree_id = t.id
+      left join leaf l on l.branch_id = b.id
+      left join branch_type y on b.branch_type_id = y.id
   </select>
 
 </mapper>
