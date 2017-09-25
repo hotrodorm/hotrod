@@ -16,6 +16,12 @@ delete from types_other;
 
 delete from quadrant;
 
+-- Associations & Collections
+
+delete from leaf;
+delete from branch;
+delete from tree;
+
 -- restart sequences
 
 drop sequence seq_agent restrict;

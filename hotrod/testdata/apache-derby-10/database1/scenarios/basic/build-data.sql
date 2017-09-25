@@ -43,6 +43,35 @@ insert into account (name, type, current_balance, created_on, row_version) value
 insert into account (name, type, current_balance, created_on, row_version) values ('acC123', 'SAV', 150, date('2016-02-01'), 0);
 insert into account (name, type, current_balance, created_on, row_version) values ('ACC732', 'CHK', 21050, date('2014-08-15'), 0);
 
+-- ==========================
+-- Associations & Collections
+-- ==========================
+
+insert into tree (id, name) values (10, 'Alamo');
+insert into tree (id, name) values (11, 'Sauce');
+insert into tree (id, name) values (12, 'Pino');
+insert into tree (id, name) values (13, 'Rauli');
+
+insert into branch (id, name, tree_id) values (301, 'Left Branch', 10);
+insert into branch (id, name, tree_id) values (302, 'Center Branch', 10);
+insert into branch (id, name, tree_id) values (303, 'Right Branch', 10);
+insert into branch (id, name, tree_id) values (401, 'Main Branch', 11);
+insert into branch (id, name, tree_id) values (501, 'Solo Branch', 13);
+insert into branch (id, name, tree_id) values (502, 'Dangling Branch', null);
+
+insert into leaf (id, weight, color, branch_id) values (600, 5, 'green 1', 301);
+insert into leaf (id, weight, color, branch_id) values (601, 7, 'green 2', 301);
+insert into leaf (id, weight, color, branch_id) values (602, 8, 'green 3', 301);
+
+insert into leaf (id, weight, color, branch_id) values (603, 10, 'yellow 1', 302);
+
+insert into leaf (id, weight, color, branch_id) values (703, 4, 'orange 1', 501);
+
+insert into leaf (id, weight, color, branch_id) values (704, 4, 'red 1', 502);
+
+insert into leaf (id, weight, color, branch_id) values (710, 2, 'black 1', null);
+
+
 -- =====
 -- Types
 -- =====

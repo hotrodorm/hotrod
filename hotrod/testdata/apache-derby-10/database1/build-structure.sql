@@ -253,6 +253,30 @@ create table test_seq_ide_def1 (
   branch_id integer default 123 not null
 );
 
+-- ==========================
+-- Associations & Collections
+-- ==========================
+
+create table tree (
+  id integer primary key not null, 
+  name varchar(40) not null
+);
+
+create table branch (
+  id integer primary key not null, 
+  name varchar(40) not null,
+  tree_id integer,
+  constraint fk_branch_tree foreign key (tree_id) references tree (id)
+);
+
+create table leaf (
+  id integer primary key not null,
+  weight double not null,
+  color varchar(40) not null,
+  branch_id integer,
+  constraint fk_leaf_branch foreign key (branch_id) references branch (id)
+);
+
 -- =========
 -- All Types
 -- =========

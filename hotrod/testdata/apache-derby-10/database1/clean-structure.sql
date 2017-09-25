@@ -35,6 +35,12 @@ drop table test_identity1;
 drop table test_mixed1;
 drop table test_seq_ide_def1;
 
+-- Associations & Collections
+
+drop table leaf;
+drop table branch;
+drop table tree;
+
 -- database objects with special character in their names
 
 drop table " !#$%)(*+,-.";
