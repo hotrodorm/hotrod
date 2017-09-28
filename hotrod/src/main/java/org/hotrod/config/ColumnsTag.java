@@ -53,21 +53,37 @@ public class ColumnsTag extends AbstractConfigurationTag {
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
 
+    boolean singleVO = this.vos.size() == 1 && this.expressions.isEmpty();
+
     // vo-class
 
     if (this.voClass != null) {
+      if (singleVO) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid 'vo-class' attribute on the <" + this.getTagName() + "> tag. "
+                + "This attribute must not be specified "
+                + "when the <columns> tag includes a single <vo> tag and no <expressions> tags.");
+      }
       if (!this.voClass.matches(Patterns.VALID_JAVA_CLASS)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
             "Invalid Java class '" + this.voClass
-                + "' specified in the vo-class attribute. When specified, the vo-class must start with an upper case letter, "
+                + "' specified in the 'vo-class' attribute. When specified, the vo-class must start with an upper case letter, "
                 + "and continue with any combination of letters, digits, or underscores.");
+      }
+    } else {
+      if (!singleVO) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Missing 'vo-class' attribute on the <" + this.getTagName() + "> tag. "
+                + "This attribute can be ommitted when "
+                + "there's an inner <columns> tag that includes a single <vo> tag and no <expressions> tags. "
+                + "The 'vo-class' attribute must be specified otherwise.");
       }
     }
 
     // vos
 
     for (VOTag vo : this.vos) {
-       vo.validate(daosTag, config, fragmentConfig);
+      vo.validate(daosTag, config, fragmentConfig, singleVO);
     }
 
     // expressions

@@ -73,7 +73,7 @@
       </complement>
 
     </select>
-    
+
     <!-- Case 2 - Select returns multiple VOs -->
 
     <select method="findAccountWithPerson">
@@ -83,7 +83,7 @@
       select
       <columns vo-class="AccountPersonVO">
         <vo table="account" property="account"> a.* </vo>
-        <vo table="person" property="person" prefix="p" />
+        <vo table="person" property="person" prefix="p"></vo>
       </columns>
       from account a
       join person p on (p.id) = (c.person_id)
@@ -93,7 +93,7 @@
 
     </select>
     
-    <!-- 3 - Select returns a single VO -->
+    <!-- 3 - Select returns a single VO and no expressions -->
 
     <select method="findRetirementAccount">
 
@@ -123,11 +123,10 @@
       <columns vo-class="ValuatedAccountVO">
         <vo table="account" property="account"> a.* </vo>
         <vo table="person" property="person" prefix="p" />
-        <!--  
-        -->
         <expressions>
           (c.balance / decode(c.type, 1,15, 2,8, 3,100) as tier_score,
-          (c.balance / decode(p.type, 1,3, 2,17, 3,5) as rank_score
+          (c.balance / decode(p.type, 1,3, 2,17, 3,5) as
+          rank_score
         </expressions>
       </columns>
       from account a

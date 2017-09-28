@@ -80,57 +80,14 @@ public class SelectMethodTag extends AbstractConfigurationTag {
   }
 
   @XmlAttribute(name = "multiple-rows")
-  public void setMultipleRows(final String sMultipleRows) {
-    this.sMultipleRows = sMultipleRows;
+  public void setHasMultipleRows(final String mr) {
+    this.sMultipleRows = mr;
   }
 
   // Behavior
 
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
-
-    // method
-
-    if (SUtils.isEmpty(this.method)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'method' of tag <"
-          + getTagName() + "> cannot be empty. " + "A unique java method name was expected for the DAO class.");
-    }
-    if (!this.method.matches(Patterns.VALID_JAVA_METHOD)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Invalid method name '" + this.method + "' on tag <" + super.getTagName()
-              + ">. A Java method name must start with a lowercase letter, "
-              + "and continue with letters, digits, dollarsign, and/or underscores.");
-    }
-
-    // vo-class
-
-    if (this.voClass != null) {
-      if (SUtils.isEmpty(this.voClass)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "When specified, the 'vo-class' attribute cannot be empty.");
-      }
-      if (!this.voClass.matches(Patterns.VALID_JAVA_CLASS)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "Invalid vo-class attribute with value '" + this.voClass + "' on tag <" + super.getTagName()
-                + ">. A Java class name must start with an uppercase letter, "
-                + "and continue with letters, digits, dollarsign, and/or underscores.");
-      }
-    }
-
-    // multiple-rows
-
-    if (this.sMultipleRows == null) {
-      this.multipleRows = MULTIPLE_ROWS_DEFAULT;
-    } else {
-      if (this.sMultipleRows.equals(MULTIPLE_ROWS_TRUE)) {
-        this.multipleRows = true;
-      } else if (this.sMultipleRows.equals(MULTIPLE_ROWS_FALSE)) {
-        this.multipleRows = false;
-      } else {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "When specified, the 'multiple-rows' attribute must either be true or false.");
-      }
-    }
 
     // Sort: content parts, columns, parameters, complements
 
@@ -176,6 +133,60 @@ public class SelectMethodTag extends AbstractConfigurationTag {
       this.aggregatedPart = new CollectionOfPartsTag(this.parts);
     } else {
       this.aggregatedPart = this.parts.get(0);
+    }
+
+    // method
+
+    if (SUtils.isEmpty(this.method)) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'method' of tag <"
+          + getTagName() + "> cannot be empty. " + "A unique Java method name was expected for the DAO class.");
+    }
+    if (!this.method.matches(Patterns.VALID_JAVA_METHOD)) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Invalid method name '" + this.method + "' on tag <" + super.getTagName()
+              + ">. A Java method name must start with a lower case letter, "
+              + "and continue with letters, digits, and/or underscores.");
+    }
+
+    // vo-class
+
+    if (this.voClass == null) {
+      if (this.structuredColumns == null) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Missing vo-class attribute on the <" + this.getTagName()
+                + "> tag. The vo-class attribute must be specified when no inner <columns> tag is present.");
+      }
+    } else {
+      if (this.structuredColumns != null) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid vo-class attribute. "
+            + "When the vo-class attribute is specified no inner <columns> tag can be used. Use one or the other but not both.");
+      }
+      if (SUtils.isEmpty(this.voClass)) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "When specified, the 'vo-class' attribute cannot be empty.");
+      }
+      if (!this.voClass.matches(Patterns.VALID_JAVA_CLASS)) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid vo-class attribute with value '" + this.voClass + "' on tag <" + super.getTagName()
+                + ">. A Java class name must start with an upper case letter, "
+                + "and continue with letters, digits, and/or underscores.");
+      }
+    }
+
+    // multiple-rows
+
+    if (this.sMultipleRows == null) {
+      this.multipleRows = MULTIPLE_ROWS_DEFAULT;
+    } else {
+      if (this.sMultipleRows.equals(MULTIPLE_ROWS_TRUE)) {
+        this.multipleRows = true;
+      } else if (this.sMultipleRows.equals(MULTIPLE_ROWS_FALSE)) {
+        this.multipleRows = false;
+      } else {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid 'multiple-rows' attribute with value '" + this.sMultipleRows
+                + "'. When specified, the 'multiple-rows' attribute must either be 'true' or 'false'.");
+      }
     }
 
     // columns

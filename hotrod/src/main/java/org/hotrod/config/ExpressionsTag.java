@@ -43,7 +43,7 @@ public class ExpressionsTag extends AbstractConfigurationTag {
 
     log.debug("validate");
 
-    // Sort: columns and expressions
+    // Sort: expressions
 
     for (Object obj : this.content) {
       try {
@@ -63,8 +63,8 @@ public class ExpressionsTag extends AbstractConfigurationTag {
     // expressions in body
 
     if (SUtils.isEmpty(this.expressions)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid empty <" + super.getTagName()
-          + "> tag. " + "When specified, it must include a comma-separated list of expressions.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Invalid empty <" + super.getTagName() + "> tag. " + "When specified this tag must not be empty.");
     }
 
   }

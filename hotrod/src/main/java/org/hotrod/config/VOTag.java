@@ -35,8 +35,8 @@ public class VOTag extends AbstractConfigurationTag {
   private String view = null;
   private String property = null;
   private String prefix = null;
-  private String extendedClass = null;
-  private String body = "";
+  private String extendedVOClass = null;
+  private String body = null;
   private List<CollectionTag> collections = new ArrayList<CollectionTag>();
   private List<AssociationTag> associations = new ArrayList<AssociationTag>();
 
@@ -72,15 +72,15 @@ public class VOTag extends AbstractConfigurationTag {
     this.prefix = prefix;
   }
 
-  @XmlAttribute(name = "extended-class")
-  public void setExtendedClass(final String extendedClass) {
-    this.extendedClass = extendedClass;
+  @XmlAttribute(name = "extended-vo-class")
+  public void setExtendedClass(final String extendedVOClass) {
+    this.extendedVOClass = extendedVOClass;
   }
 
   // Behavior
 
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
+      final HotRodFragmentConfigTag fragmentConfig, final boolean singleVO) throws InvalidConfigurationFileException {
 
     log.debug("validate");
 
@@ -89,6 +89,9 @@ public class VOTag extends AbstractConfigurationTag {
     for (Object obj : this.content) {
       try {
         String s = (String) obj; // content part
+        if (this.body == null) {
+          this.body = "";
+        }
         if (!SUtils.isEmpty(s)) {
           if (!this.body.isEmpty()) {
             this.body = this.body + " ";
@@ -115,43 +118,96 @@ public class VOTag extends AbstractConfigurationTag {
 
     if (this.table == null && this.view == null) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid <" + super.getTagName()
-          + "> tag: must specify the 'table' or the 'view' attribute, but none was specified.");
+          + "> tag. Must specify the 'table' or the 'view' attribute, but none was specified.");
     }
     if (this.table != null && this.view != null) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Invalid <" + super.getTagName() + "> tag: cannot specify both the 'table' and 'view' attributes.");
+          "Invalid <" + super.getTagName() + "> tag. Cannot specify both the 'table' and 'view' attributes.");
+    }
+    if (this.table != null && SUtils.isEmpty(this.table)) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid 'table' attribute on the <"
+          + super.getTagName() + "> tag. When specified this attribute must not be empty.");
+    }
+    if (this.view != null && SUtils.isEmpty(this.view)) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid 'view' attribute on the <"
+          + super.getTagName() + "> tag. When specified this attribute must not be empty.");
     }
 
     // property
 
-    if (this.property != null) {
+    if (this.property == null) {
+      if (!singleVO) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Missing 'property' attribute on <" + super.getTagName() + "> tag. This attribute can only be ommitted "
+                + "when the <columns> tag includes a single '<vo> tag and no <expressions> tag.");
+      }
+    } else {
+      if (singleVO) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "The 'property' attribute on the <" + super.getTagName()
+                + "> tag should not be specified. This attribute should be ommitted "
+                + "when the <columns> tag includes a single <vo> tag and no <expressions> tag.");
+      }
       if (!this.property.matches(Patterns.VALID_JAVA_PROPERTY)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid property value '"
-            + this.property + "' on <" + super.getTagName() + "> tag. Must be a valid Java property name.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid property value '" + this.property + "' on <" + super.getTagName()
+                + "> tag. A Java property name must start with a lower case letter, "
+                + "and continue with letters, digits, and/or underscores.");
       }
     }
 
-    // prefix -- nothing to validate
+    // prefix
+
+    if (this.prefix != null) {
+      if (SUtils.isEmpty(this.prefix)) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "When specified the 'prefix' attribute should not be empty.");
+      }
+    }
 
     // extended-class
 
-    if (this.extendedClass != null) {
-      if (!this.extendedClass.matches(Patterns.VALID_JAVA_CLASS)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid extended-class value '"
-            + this.extendedClass + "' on <" + super.getTagName() + "> tag. Must be a valid Java class name.");
+    if (this.extendedVOClass == null) {
+      if (!this.associations.isEmpty() || !this.collections.isEmpty()) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "The extended-vo-class attribute must be specified when the <" + super.getTagName()
+                + "> tag includes one or more <association> and/or <colection> tags.");
+      }
+    } else {
+      if (this.associations.isEmpty() && this.collections.isEmpty()) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "The extended-vo-class attribute must not be specified when the <" + super.getTagName()
+                + "> tag does not include any <association> or <colection> tags.");
+      }
+      if (!this.extendedVOClass.matches(Patterns.VALID_JAVA_CLASS)) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid extended-vo-class value '" + this.extendedVOClass + "' on <" + super.getTagName()
+                + "> tag. A Java class name must start with an upper case letter, "
+                + "and continue with letters, digits, and/or underscores.");
+      }
+    }
+
+    // body
+
+    if (this.body != null) {
+      if (SUtils.isEmpty(this.body)) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "When the tag <" + this.getTagName()
+                + "> has a body, this body should include a comma-separated list of columns or a wild card (*). "
+                + "To include all columns leave the body empty, or simply remove the body altogether.");
       }
     }
 
     // collections
 
     for (CollectionTag c : this.collections) {
-      c.validate(daosTag, config, fragmentConfig);
+      c.validate(daosTag, config, fragmentConfig, false);
     }
 
     // associations
 
     for (AssociationTag a : this.associations) {
-      a.validate(daosTag, config, fragmentConfig);
+      a.validate(daosTag, config, fragmentConfig, false);
     }
 
   }
@@ -174,8 +230,8 @@ public class VOTag extends AbstractConfigurationTag {
     return prefix;
   }
 
-  public String getExtendedClass() {
-    return extendedClass;
+  public String getExtendedVOClass() {
+    return extendedVOClass;
   }
 
   public String getBody() {
