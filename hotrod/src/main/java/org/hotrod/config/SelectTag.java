@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.dynamicsql.CollectionTag;
+import org.hotrod.config.dynamicsql.CollectionOfPartsTag;
 import org.hotrod.config.dynamicsql.ComplementTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
@@ -126,7 +126,7 @@ public class SelectTag extends AbstractDAOTag {
     }
 
     if (this.parts.size() != 1) {
-      this.aggregatedPart = new CollectionTag(this.parts);
+      this.aggregatedPart = new CollectionOfPartsTag(this.parts);
     } else {
       this.aggregatedPart = this.parts.get(0);
     }

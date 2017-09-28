@@ -131,7 +131,7 @@
             schema="${schema}"
             generator="${generator}"
             facets="${facets}"
-            configfile="${db.src.dir}/hotrod.xml"
+            configfile="${db.src.dir}/${hotrod.config.xml}"
             display="list" />
 
   </target>

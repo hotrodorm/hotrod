@@ -15,8 +15,6 @@ public class CustomDAOTag extends AbstractDAOTag {
 
   private static final Logger log = Logger.getLogger(CustomDAOTag.class);
 
-  private static final String VALID_JAVA_CLASS_PATTERN = "[A-Z][a-zA-Z0-9_$]*";
-
   // Properties
 
   private String javaClassName = null;
@@ -40,8 +38,8 @@ public class CustomDAOTag extends AbstractDAOTag {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig)
-      throws InvalidConfigurationFileException {
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
     log.debug("validate");
 
     this.daosTag = daosTag;
@@ -55,18 +53,16 @@ public class CustomDAOTag extends AbstractDAOTag {
       throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'java-class-name' of tag <"
           + super.getTagName() + "> cannot be empty. " + "You must specify a dao java class name.");
     }
-    if (!this.javaClassName.matches(VALID_JAVA_CLASS_PATTERN)) {
+    if (!this.javaClassName.matches(Patterns.VALID_JAVA_CLASS)) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Attribute 'java-class-name' of tag <" + super.getTagName() + "> must be a valid java class name, but found '"
-              + this.javaClassName
-              + "'. "
-              + "Valid java class names start with an uppercase letter and continue with "
+              + this.javaClassName + "'. " + "Valid java class names start with an uppercase letter and continue with "
               + "letters, digits, dollar signs, and/or underscores.");
     }
 
-    // sequences and updates
+    // sequences, queries, selects
 
-    super.validate(super.getTagName(), "java-class-name", this.javaClassName);
+    super.validate(daosTag, config, fragmentConfig);
 
   }
 

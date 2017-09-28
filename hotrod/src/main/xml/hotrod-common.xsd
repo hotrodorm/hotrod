@@ -138,9 +138,9 @@
     <xsd:attribute name="java-class-name" type="xsd:string" use="required" />
   </xsd:complexType>
 
-  <!-- ====== -->
-  <!-- SELECT -->
-  <!-- ====== -->
+  <!-- ============= -->
+  <!-- SELECT METHOD -->
+  <!-- ============= -->
 
   <!-- select method - main tag -->
 
@@ -154,18 +154,23 @@
       </xsd:choice>
     </xsd:sequence>
     <xsd:attribute name="method" type="xsd:string" use="required" />
+    <xsd:attribute name="vo-class" type="xsd:string" />
     <xsd:attribute name="multiple-rows" type="xsd:string" />
   </xsd:complexType>
 
   <!-- select method - columns -->
 
   <xsd:complexType name="columns-type">
-    <xsd:choice minOccurs="1" maxOccurs="unbounded">
-      <xsd:element name="vo" type="vo-type" />
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
       <xsd:element name="expressions" type="expressions-type" />
+      <xsd:element name="vo" type="vo-type" />
     </xsd:choice>
-    <xsd:attribute name="class" type="xsd:string" />
+    <xsd:attribute name="vo-class" type="xsd:string" />
   </xsd:complexType>
+
+  <!-- select method - expressions -->
+
+  <xsd:complexType name="expressions-type" mixed="true"/>
 
   <!-- select method - vo -->
 
@@ -178,37 +183,35 @@
     <xsd:attribute name="view" type="xsd:string" />
     <xsd:attribute name="property" type="xsd:string" />
     <xsd:attribute name="prefix" type="xsd:string" />
-    <xsd:attribute name="extended-class" type="xsd:string" />
+    <xsd:attribute name="extended-vo-class" type="xsd:string" />
   </xsd:complexType>
 
   <!-- select method - collection -->
 
   <xsd:complexType name="collection-type" mixed="true">
-    <xsd:sequence>
-      <xsd:element name="collection" type="collection-type" minOccurs="0" maxOccurs="unbounded" />
-    </xsd:sequence>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="collection" type="collection-type" />
+      <xsd:element name="association" type="association-type" />
+    </xsd:choice>
     <xsd:attribute name="table" type="xsd:string" />
     <xsd:attribute name="view" type="xsd:string" />
     <xsd:attribute name="property" type="xsd:string" />
-    <xsd:attribute name="extended-class" type="xsd:string" />
+    <xsd:attribute name="prefix" type="xsd:string" />
+    <xsd:attribute name="extended-vo-class" type="xsd:string" />
   </xsd:complexType>
 
   <!-- select method - association -->
 
   <xsd:complexType name="association-type" mixed="true">
-    <xsd:sequence>
-      <xsd:element name="association" type="association-type" minOccurs="0" maxOccurs="unbounded" />
-    </xsd:sequence>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="collection" type="collection-type" />
+      <xsd:element name="association" type="association-type" />
+    </xsd:choice>
     <xsd:attribute name="table" type="xsd:string" />
     <xsd:attribute name="view" type="xsd:string" />
     <xsd:attribute name="property" type="xsd:string" />
-    <xsd:attribute name="extended-class" type="xsd:string" />
-  </xsd:complexType>
-
-  <!-- select method - expressions -->
-
-  <xsd:complexType name="expressions-type" mixed="true">
-    <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
+    <xsd:attribute name="prefix" type="xsd:string" />
+    <xsd:attribute name="extended-vo-class" type="xsd:string" />
   </xsd:complexType>
 
   <!-- complement -->

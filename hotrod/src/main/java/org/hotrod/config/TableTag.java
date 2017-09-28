@@ -26,8 +26,6 @@ public class TableTag extends AbstractDAOTag {
 
   private static final Logger log = Logger.getLogger(TableTag.class);
 
-  static final String JAVA_CLASS_NAME_PATTERN = "[A-Z][a-zA-Z0-9_$]*";
-
   // Properties
 
   private String name = null;
@@ -91,9 +89,6 @@ public class TableTag extends AbstractDAOTag {
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage() : null;
 
-    String nameTitle = "name";
-    String nameValue = this.name;
-
     // name
 
     if (SUtils.isEmpty(this.name)) {
@@ -110,7 +105,7 @@ public class TableTag extends AbstractDAOTag {
             "Invalid 'java-name' attribute value of tag <" + super.getTagName() + "> for the table '" + this.name
                 + "'. When specified, the value cannot be empty.");
       }
-      if (!this.javaClassName.matches(JAVA_CLASS_NAME_PATTERN)) {
+      if (!this.javaClassName.matches(Patterns.VALID_JAVA_CLASS)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
             "Invalid 'java-name' attribute value '" + this.javaClassName + "' of tag <" + super.getTagName()
                 + ">. When specified, the java-name must start with an upper case letter, "
@@ -146,9 +141,9 @@ public class TableTag extends AbstractDAOTag {
       cols.add(c);
     }
 
-    // sequences and updates
+    // sequences, queries, and selects
 
-    super.validate(super.getTagName(), nameTitle, nameValue);
+    super.validate(daosTag, config, fragmentConfig);
 
   }
 

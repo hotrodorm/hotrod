@@ -290,7 +290,7 @@ create table flower (
   branch_id integer,
   constraint fk_flower_branch foreign key (branch_id) references branch (id)
 );
- 
+
 -- =========
 -- All Types
 -- =========

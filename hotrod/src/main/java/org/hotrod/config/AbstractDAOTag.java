@@ -65,46 +65,48 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  protected void validate(final String tagName, final String nameTitle, final String nameValue)
-      throws InvalidConfigurationFileException {
+  protected void validate(final DaosTag daosTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
 
     // sequences
 
     Set<String> seqNames = new HashSet<String>();
 
-    String tagId = "tag <" + tagName + "> with " + nameTitle + " '" + nameValue + "'";
-
     for (SequenceMethodTag s : sequences) {
       s.validate();
       if (seqNames.contains(s.getName())) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Duplicate sequence with name '"
-            + s.getName() + "' on " + tagId + ". You cannot add the same sequence twice in the same <dao> tag.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Duplicate sequence with name '" + s.getName() + "'.");
       }
       String method = s.getJavaMethodName();
       if (this.declaredMethodNames.contains(method)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "Duplicate sequence method-name '" + method + "' on " + tagId
-                + ". Method names (either specified or implied) must be different inside a DAO. "
-                + "Please change the method-name.");
+            "Duplicate sequence method-name '" + method + "'.");
       }
       seqNames.add(s.getName());
       this.declaredMethodNames.add(method);
       log.debug("* added '" + method + "'");
     }
 
-    // updates
+    // queries
 
     for (QueryMethodTag q : this.queries) {
       q.validate();
       if (this.declaredMethodNames.contains(q.getJavaMethodName())) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "Duplicate java-method-name '" + q.getJavaMethodName() + "' on " + tagId
-                + ". You cannot add multiple queries or sequences with identical java-method-name "
+            "Duplicate java-method-name '" + q.getJavaMethodName()
+                + "'. cannot add multiple queries or sequences with identical java-method-name "
                 + "(specified or implied) in the same <dao> tag. " + "For <query> tags they cannot have the same name, "
                 + "even if they have different parameters (different signature).");
       }
       this.declaredMethodNames.add(q.getJavaMethodName());
       log.debug("* added '" + q.getJavaMethodName() + "'");
+    }
+
+    // selects
+
+    for (SelectMethodTag s : this.selects) {
+      s.validate(daosTag, config, fragmentConfig);
     }
 
   }

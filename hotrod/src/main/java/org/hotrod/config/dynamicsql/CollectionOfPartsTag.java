@@ -11,11 +11,11 @@ import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "not-a-tag")
-public class CollectionTag extends DynamicSQLPart {
+public class CollectionOfPartsTag extends DynamicSQLPart {
 
   // Constructor
 
-  public CollectionTag(final List<DynamicSQLPart> parts) {
+  public CollectionOfPartsTag(final List<DynamicSQLPart> parts) {
     super("not-a-tag");
     super.parts = parts;
   }

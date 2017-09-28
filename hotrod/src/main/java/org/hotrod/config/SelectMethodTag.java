@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.dynamicsql.CollectionTag;
+import org.hotrod.config.dynamicsql.CollectionOfPartsTag;
 import org.hotrod.config.dynamicsql.ComplementTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
@@ -30,9 +30,15 @@ public class SelectMethodTag extends AbstractConfigurationTag {
 
   private static final Logger log = Logger.getLogger(SelectMethodTag.class);
 
+  private static final String MULTIPLE_ROWS_FALSE = "false";
+  private static final String MULTIPLE_ROWS_TRUE = "true";
+  private static final boolean MULTIPLE_ROWS_DEFAULT = true;
+
   // Properties
 
-  protected String javaClassName = null;
+  private String method = null;
+  private String voClass = null;
+  private String sMultipleRows = null;
 
   // Properties - Primitive content parsing by JAXB
 
@@ -47,7 +53,8 @@ public class SelectMethodTag extends AbstractConfigurationTag {
 
   // Properties - Parsed
 
-  protected ParameterDefinitions parameterDefinitions = null;
+  private boolean multipleRows;
+  protected ParameterDefinitions parameters = null;
   protected List<ColumnTag> columns = null;
   protected List<DynamicSQLPart> parts = null;
   private List<LiteralTextPart> foundationParts = null;
@@ -62,9 +69,19 @@ public class SelectMethodTag extends AbstractConfigurationTag {
 
   // JAXB Setters
 
-  @XmlAttribute(name = "java-class-name")
-  public void setJavaClassName(final String javaClassName) {
-    this.javaClassName = javaClassName;
+  @XmlAttribute
+  public void setMethod(final String method) {
+    this.method = method;
+  }
+
+  @XmlAttribute(name = "vo-class")
+  public void setVoClass(final String voClass) {
+    this.voClass = voClass;
+  }
+
+  @XmlAttribute(name = "multiple-rows")
+  public void setMultipleRows(final String sMultipleRows) {
+    this.sMultipleRows = sMultipleRows;
   }
 
   // Behavior
@@ -72,33 +89,67 @@ public class SelectMethodTag extends AbstractConfigurationTag {
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
 
-    // java-class-name
+    // method
 
-    if (SUtils.isEmpty(this.javaClassName)) {
+    if (SUtils.isEmpty(this.method)) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'method' of tag <"
+          + getTagName() + "> cannot be empty. " + "A unique java method name was expected for the DAO class.");
+    }
+    if (!this.method.matches(Patterns.VALID_JAVA_METHOD)) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Attribute 'java-class-name' of tag <" + getTagName() + "> cannot be empty. "
-              + "Must specify a unique query name, " + "different from table and view names.");
+          "Invalid method name '" + this.method + "' on tag <" + super.getTagName()
+              + ">. A Java method name must start with a lowercase letter, "
+              + "and continue with letters, digits, dollarsign, and/or underscores.");
     }
 
-    // content text, parameters, columns, complement
+    // vo-class
 
-    this.parameterDefinitions = new ParameterDefinitions();
-    this.columns = new ArrayList<ColumnTag>();
+    if (this.voClass != null) {
+      if (SUtils.isEmpty(this.voClass)) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "When specified, the 'vo-class' attribute cannot be empty.");
+      }
+      if (!this.voClass.matches(Patterns.VALID_JAVA_CLASS)) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Invalid vo-class attribute with value '" + this.voClass + "' on tag <" + super.getTagName()
+                + ">. A Java class name must start with an uppercase letter, "
+                + "and continue with letters, digits, dollarsign, and/or underscores.");
+      }
+    }
+
+    // multiple-rows
+
+    if (this.sMultipleRows == null) {
+      this.multipleRows = MULTIPLE_ROWS_DEFAULT;
+    } else {
+      if (this.sMultipleRows.equals(MULTIPLE_ROWS_TRUE)) {
+        this.multipleRows = true;
+      } else if (this.sMultipleRows.equals(MULTIPLE_ROWS_FALSE)) {
+        this.multipleRows = false;
+      } else {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "When specified, the 'multiple-rows' attribute must either be true or false.");
+      }
+    }
+
+    // Sort: content parts, columns, parameters, complements
+
     this.parts = new ArrayList<DynamicSQLPart>();
-
     this.foundationParts = new ArrayList<LiteralTextPart>();
+
+    this.columns = new ArrayList<ColumnTag>();
+    this.parameters = new ParameterDefinitions();
 
     for (Object obj : this.content) {
       try {
-        String s = (String) obj; // content text
+        String s = (String) obj; // content part
         LiteralTextPart p = new LiteralTextPart(super.getSourceLocation(), s);
         this.parts.add(p);
         this.foundationParts.add(p);
       } catch (ClassCastException e1) {
         try {
           ParameterTag param = (ParameterTag) obj; // parameter
-          param.validate();
-          this.parameterDefinitions.add(param);
+          this.parameters.add(param);
         } catch (ClassCastException e2) {
           try {
             ColumnTag col = (ColumnTag) obj; // column
@@ -122,7 +173,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
     }
 
     if (this.parts.size() != 1) {
-      this.aggregatedPart = new CollectionTag(this.parts);
+      this.aggregatedPart = new CollectionOfPartsTag(this.parts);
     } else {
       this.aggregatedPart = this.parts.get(0);
     }
@@ -134,17 +185,26 @@ public class SelectMethodTag extends AbstractConfigurationTag {
       c.validate(config);
       if (cols.contains(c)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name on tag <" + getTagName()
-                + "> for query '" + this.javaClassName + "'. You cannot specify the same column name "
-                + "multiple times on the same query.");
+            "Multiple <" + new ColumnTag().getTagName() + "> tags for the same column '" + c.getName() + "' on tag <"
+                + getTagName() + ">.");
       }
       cols.add(c);
     }
 
-    // content text and complement
+    // parameters
+
+    this.parameters.validate();
+
+    // content parts and complement
 
     for (DynamicSQLPart p : this.parts) {
-      p.validate(this.parameterDefinitions);
+      p.validate(this.parameters);
+    }
+
+    // structured columns
+
+    if (this.structuredColumns != null) {
+      this.structuredColumns.validate(daosTag, config, fragmentConfig);
     }
 
     // all validations cleared
@@ -153,6 +213,34 @@ public class SelectMethodTag extends AbstractConfigurationTag {
   }
 
   // Getters
+
+  public String getMethod() {
+    return method;
+  }
+
+  public String getVoClass() {
+    return voClass;
+  }
+
+  public boolean isMultipleRows() {
+    return multipleRows;
+  }
+
+  public ParameterDefinitions getParameters() {
+    return parameters;
+  }
+
+  public List<DynamicSQLPart> getParts() {
+    return parts;
+  }
+
+  public List<LiteralTextPart> getFoundationParts() {
+    return foundationParts;
+  }
+
+  public ColumnsTag getStructuredColumns() {
+    return structuredColumns;
+  }
 
   // Columns
 
@@ -207,7 +295,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
   }
 
   public List<ParameterTag> getParameterDefinitions() {
-    return this.parameterDefinitions.getDefinitions();
+    return this.parameters.getDefinitions();
   }
 
 }

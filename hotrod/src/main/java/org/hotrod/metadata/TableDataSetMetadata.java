@@ -13,6 +13,7 @@ import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.QueryMethodTag;
+import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.VersionControlColumnTag;
@@ -52,6 +53,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
 
   private List<SequenceMethodTag> sequences = new ArrayList<SequenceMethodTag>();
   private List<QueryMethodTag> queries = new ArrayList<QueryMethodTag>();
+  private List<SelectMethodTag> selects = new ArrayList<SelectMethodTag>();
 
   private HotRodFragmentConfigTag fragmentConfig;
 
@@ -139,6 +141,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
 
     this.sequences = tableTag.getSequences();
     this.queries = tableTag.getQueries();
+    this.selects = tableTag.getSelects();
 
   }
 
@@ -473,6 +476,10 @@ public class TableDataSetMetadata implements DataSetMetadata {
 
   public List<QueryMethodTag> getQueries() {
     return queries;
+  }
+
+  public List<SelectMethodTag> getSelects() {
+    return selects;
   }
 
   @Override

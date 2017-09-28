@@ -1,0 +1,237 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod>
+
+<hotrod>
+
+  <generators>
+
+    <mybatis>
+      <daos gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" />
+      <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
+      <mybatis-configuration-template file="mybatis-config-template.xml" />
+      <session-factory singleton-full-class-name="sessionfactory.DatabaseSessionFactory" />
+      <select-generation temp-view-base-name="hotrod_temp_view" />
+      <property name="checked.persistence.exception" value="true" />
+      <property name="multiline.tostring" value="true" />
+    </mybatis>
+
+    <spring-jdbc>
+      <daos gen-base-dir="gen/hotrod-spring/daos" dao-package="hotrod.test.generation" />
+      <config gen-base-dir="gen/hotrod-spring/daos/" relative-dir="config" prefix="prueba-hr-" />
+      <select-generation temp-view-base-name="unused" />
+    </spring-jdbc>
+
+  </generators>
+
+  <!-- Converters -->
+
+  <converter name="person_type" java-type="selects.enums.PersonType" class="selects.converters.PersonTypeConverter"
+    java-intermediate-type="java.lang.Short" />
+  <converter name="account_type" java-type="selects.enums.AccountType" class="selects.converters.AccountTypeConverter"
+    java-intermediate-type="java.lang.Short" />
+  <converter name="account_status" java-type="selects.enums.AccountStatus" class="selects.converters.AccountStatusConverter"
+    java-intermediate-type="java.lang.Short" />
+  <converter name="transaction_type" java-type="selects.enums.TransactionType" class="selects.converters.TransactionTypeConverter"
+    java-intermediate-type="java.lang.Short" />
+
+  <!-- Tables -->
+
+  <table name="person">
+    <column name="type" converter="person_type" />
+  </table>
+
+  <table name="account">
+    <column name="type" converter="account_type" />
+    <column name="active" converter="account_status" />
+  </table>
+
+  <table name="transaction">
+    <column name="type" converter="transaction_type" />
+  </table>
+
+  <!-- DAOs -->
+
+  <dao java-class-name="SelectsDAO">
+
+    <!-- Case 1 - Flat Join -->
+
+    <select method="findAccountWithPersonFlat" vo-class="AccountPersonFlatVO">
+
+      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      <column name="type" converter="account_type" />
+      <column name="person_type" converter="person_type" />
+      <column name="active" converter="account_status" />
+
+      select
+      a.*,
+      p.id "person_id", p.name, p.type "person_type"
+      from account a
+      join person p on (p.id) = (a.person_id)
+      <complement>
+        where a.id = #{clientId}
+      </complement>
+
+    </select>
+    
+    <!-- Case 2 - Select returns multiple VOs -->
+
+    <select method="findAccountWithPerson">
+
+      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      select
+      <columns vo-class="AccountPersonVO">
+        <vo table="account" property="account"> a.* </vo>
+        <vo table="person" property="person" prefix="p" />
+      </columns>
+      from account a
+      join person p on (p.id) = (c.person_id)
+      <complement>
+        where a.id = #{clientId}
+      </complement>
+
+    </select>
+    
+    <!-- 3 - Select returns a single VO -->
+
+    <select method="findRetirementAccount">
+
+      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      select
+      <columns>
+        <vo table="account"> a.* </vo>
+      </columns>
+      from account a
+      <complement>
+        where a.id = #{clientId}
+        and (type = 1 and account_number like 'RET-%'
+        or type = 3 and account_number like
+        'IRA-%')
+      </complement>
+
+    </select>
+    
+    <!-- 4 - Extra columns -->
+
+    <select method="findValuatedAccount">
+
+      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      select
+      <columns vo-class="ValuatedAccountVO">
+        <vo table="account" property="account"> a.* </vo>
+        <vo table="person" property="person" prefix="p" />
+        <!--  
+        -->
+        <expressions>
+          (c.balance / decode(c.type, 1,15, 2,8, 3,100) as tier_score,
+          (c.balance / decode(p.type, 1,3, 2,17, 3,5) as rank_score
+        </expressions>
+      </columns>
+      from account a
+      join person p on (p.id) = (a.person_id)
+      <complement>
+        where a.id = #{clientId}
+      </complement>
+
+    </select>
+
+    <!-- 5 - Collections -->
+
+    <select method="findAccountWithTransactions">
+
+      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      select
+      <columns>
+        <vo table="cuenta" extended-vo-class="AccountWithTransactionsVO">
+          a.*
+          <collection table="transaccion" property="transacciones"> t.* </collection>
+        </vo>
+      </columns>
+      from account a
+      join transaction t on (t.account_id) = (a.id)
+      <complement>
+        where a.id = #{clientId}
+      </complement>
+
+    </select>
+
+    <!-- 6 - Associations -->
+
+    <select method="findVIPAccount">
+
+      <parameter name="type" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="minBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      select
+      <columns>
+        <vo table="account" extended-vo-class="VIPAccountVO">
+          a.*
+          <association table="person" property="person"> p.* </association>
+        </vo>
+      </columns>
+      from account a
+      join person p on (p.id) = (c.person_id)
+      <complement>
+        where a.type = #{type} and p.balance >= #{minBalance}
+      </complement>
+
+    </select>
+
+    <!-- 7 - Collections and associations combined -->
+
+    <select method="findExtendedPerson">
+
+      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      select
+      <columns>
+        <vo table="person" extended-vo-class="ExtendedPersonVO">
+          p.*
+          <collection table="account" property="accounts" extended-vo-class="AccountWithTransactionsVO">
+            a.*
+            <collection table="transaction" property="transactions" prefix="t">
+              *
+            </collection>
+          </collection>
+          <association table="category" property="category" prefix="c">
+            *
+          </association>
+        </vo>
+      </columns>
+      from person p
+      join account a on (a.person_id) = (c.id)
+      join transaction t on (t.account_id) = (a.id)
+      join category c on
+      a.category_id = c.id
+      <complement>
+        where a.id = #{clientId}
+      </complement>
+
+    </select>
+
+    <!-- Case 9 - Select returns a single row -->
+
+    <select method="findSingleExpandedAccount" multiple-rows="false">
+
+      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      select
+      <columns vo-class="ExpandedAccountVO">
+        <vo table="account" property="account"> a.* </vo>
+        <vo table="person" property="person" prefix="p" />
+      </columns>
+      from account a
+      left join person p on (p.id) = (c.person_id)
+      <complement>
+        where a.id = #{clientId}
+      </complement>
+
+    </select>
+
+  </dao>
+
+</hotrod>

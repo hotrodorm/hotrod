@@ -83,7 +83,7 @@ public class QueryMethodTag extends AbstractConfigurationTag {
     if (this.javaMethodName == null) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'java-method-name' of tag <"
           + getTagName() + "> cannot be empty. " + "Must specify a unique name.");
-    } else if (!this.javaMethodName.matches(SequenceMethodTag.VALID_JAVA_METHOD_PATTERN)) {
+    } else if (!this.javaMethodName.matches(Patterns.VALID_JAVA_METHOD)) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Attribute 'java-method-name' of tag <" + super.getTagName() + "> specifies '" + this.javaMethodName
               + "' but must specify a valid java method name. "

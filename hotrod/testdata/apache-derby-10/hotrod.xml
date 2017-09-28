@@ -28,5 +28,7 @@
 
   <fragment file="hotrod-core-and-types.xml" />
 
+  <fragment file="selects.xml" />
+
 </hotrod>
 

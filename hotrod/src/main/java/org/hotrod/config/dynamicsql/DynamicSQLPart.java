@@ -59,20 +59,25 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   public static class ParameterDefinitions {
 
+    private List<ParameterTag> params = new ArrayList<ParameterTag>();
+
     private LinkedHashMap<String, ParameterTag> definitions = new LinkedHashMap<String, ParameterTag>();
 
     public void add(final ParameterTag p) throws InvalidConfigurationFileException {
-      if (p == null) {
-        throw new IllegalArgumentException("parameter cannot be null");
+      this.params.add(p);
+    }
+
+    public void validate() throws InvalidConfigurationFileException {
+      for (ParameterTag p : this.params) {
+        log.debug("p.getName()=" + p.getName());
+        p.validate();
+        if (this.definitions.containsKey(p.getName())) {
+          throw new InvalidConfigurationFileException(p.getSourceLocation(),
+              "Duplicate parameter '" + p.getName() + "'. Please specify different names for each parameter.");
+        }
+        this.definitions.put(p.getName(), p);
       }
-      if (p.getName() == null) {
-        throw new IllegalArgumentException("parameter name cannot be null");
-      }
-      if (this.definitions.containsKey(p.getName())) {
-        throw new InvalidConfigurationFileException(p.getSourceLocation(),
-            "Duplicate parameter '" + p.getName() + "'. Please specify different names for each parameter.");
-      }
-      this.definitions.put(p.getName(), p);
+      this.params = null;
     }
 
     public ParameterTag find(final String name) {

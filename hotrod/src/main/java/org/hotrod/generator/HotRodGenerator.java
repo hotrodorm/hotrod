@@ -18,6 +18,7 @@ import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
+import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SelectTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
@@ -99,7 +100,8 @@ public abstract class HotRodGenerator {
       }
 
       display("Database Name: " + cv.renderDatabaseName());
-      display("JDBC Driver: " + cv.renderJDBCDriverName() + " - implements JDBC Specification " + cv.renderJDBCSpecification());
+      display("JDBC Driver: " + cv.renderJDBCDriverName() + " - implements JDBC Specification "
+          + cv.renderJDBCSpecification());
 
       display("");
 
@@ -390,6 +392,7 @@ public abstract class HotRodGenerator {
 
     int sequences = 0;
     int queries = 0;
+    int selectMethods = 0;
 
     if (config.getFacetNames().isEmpty()) {
       display("Generating all facets.");
@@ -420,6 +423,12 @@ public abstract class HotRodGenerator {
             display(" - Query " + q.getJavaMethodName() + " included.");
           }
         }
+        for (SelectMethodTag s : t.getSelects()) {
+          selectMethods++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Select " + s.getMethod() + " included.");
+          }
+        }
       }
 
       // views
@@ -436,6 +445,12 @@ public abstract class HotRodGenerator {
           queries++;
           if (this.displayMode == DisplayMode.LIST) {
             display(" - Query " + q.getJavaMethodName() + " included.");
+          }
+        }
+        for (SelectMethodTag s : v.getSelects()) {
+          selectMethods++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Select " + s.getMethod() + " included.");
           }
         }
       }
@@ -464,6 +479,12 @@ public abstract class HotRodGenerator {
             display(" - Query " + q.getJavaMethodName() + " included.");
           }
         }
+        for (SelectMethodTag s : c.getSelects()) {
+          selectMethods++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Select " + s.getMethod() + " included.");
+          }
+        }
       }
 
       // selects
@@ -485,8 +506,8 @@ public abstract class HotRodGenerator {
         + ", ");
     sb.append(sequences + " sequence" + (sequences == 1 ? "" : "s") + ", ");
     sb.append(queries + " " + (queries == 1 ? "query" : "queries") + ", ");
-    sb.append(
-        "and " + config.getSelects().size() + " " + (config.getSelects().size() == 1 ? "select" : "selects") + ".");
+    int totalSelects = config.getSelects().size() + selectMethods;
+    sb.append("and " + totalSelects + " " + (totalSelects == 1 ? "select" : "selects") + ".");
 
     display(sb.toString());
 

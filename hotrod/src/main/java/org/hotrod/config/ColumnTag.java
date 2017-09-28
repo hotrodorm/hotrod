@@ -20,8 +20,6 @@ public class ColumnTag extends AbstractConfigurationTag {
 
   private static final Logger log = Logger.getLogger(ColumnTag.class);
 
-  static final String VALID_JAVA_NAME_PATTERN = "[a-z][a-zA-Z0-9_$]*";
-
   // Properties
 
   private String name = null;
@@ -120,7 +118,7 @@ public class ColumnTag extends AbstractConfigurationTag {
             "Invalid 'java-name' attribute value of tag <" + super.getTagName() + ">. "
                 + "When specified, the value cannot be empty.");
       }
-      if (!this.javaName.matches(VALID_JAVA_NAME_PATTERN)) {
+      if (!this.javaName.matches(Patterns.VALID_JAVA_PROPERTY)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
             "Invalid 'java-name' attribute value '" + this.javaName + "' of tag <" + super.getTagName()
                 + ">. When specified, the java-name must start with an lower case letter, "

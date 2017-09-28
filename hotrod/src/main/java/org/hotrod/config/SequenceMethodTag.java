@@ -19,7 +19,6 @@ public class SequenceMethodTag extends AbstractConfigurationTag {
   static final String TAG_NAME = "sequence";
 
   private static final String METHOD_PREFIX = "selectSequence";
-  static final String VALID_JAVA_METHOD_PATTERN = "[a-z][a-zA-Z0-9_$]*";
 
   // Properties
 
@@ -61,7 +60,7 @@ public class SequenceMethodTag extends AbstractConfigurationTag {
     if (this.javaMethodName == null) {
       this.javaMethodName = METHOD_PREFIX + this.getIdentifier().getJavaClassIdentifier();
     } else {
-      if (!this.javaMethodName.matches(VALID_JAVA_METHOD_PATTERN)) {
+      if (!this.javaMethodName.matches(Patterns.VALID_JAVA_METHOD)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
             "Attribute 'java-method-name' of tag <" + TAG_NAME + "> specifies '" + this.javaMethodName
                 + "' but must specify a valid java method name. "

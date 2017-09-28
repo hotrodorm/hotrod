@@ -33,11 +33,6 @@ public class ViewTag extends AbstractDAOTag {
   private String javaClassName = null;
   private List<ColumnTag> columns = new ArrayList<ColumnTag>();
 
-  @SuppressWarnings("unused")
-  private List<SequenceMethodTag> sequences = new ArrayList<SequenceMethodTag>();
-  @SuppressWarnings("unused")
-  private List<QueryMethodTag> updates = new ArrayList<QueryMethodTag>();
-
   private DaosTag daosTag;
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
@@ -76,9 +71,6 @@ public class ViewTag extends AbstractDAOTag {
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage() : null;
 
-    String nameTitle = "name";
-    String nameValue = this.name;
-
     // name
 
     if (SUtils.isEmpty(this.name)) {
@@ -95,15 +87,13 @@ public class ViewTag extends AbstractDAOTag {
             "Invalid 'java-name' attribute value of tag <" + super.getTagName() + "> for the view '" + this.name
                 + "'. When specified, the value cannot be empty.");
       }
-      if (!this.javaClassName.matches(TableTag.JAVA_CLASS_NAME_PATTERN)) {
+      if (!this.javaClassName.matches(Patterns.VALID_JAVA_CLASS)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
             "Invalid 'java-name' attribute value '" + this.javaClassName + "' of tag <" + super.getTagName()
                 + "> for the view '" + this.name
                 + "'. When specified, the java-name must start with an upper case letter, "
                 + "and continue with any combination of letters, digits, underscores, or dollar signs.");
       }
-      nameTitle = "java-class-name";
-      nameValue = this.javaClassName;
     }
 
     // columns
@@ -120,9 +110,9 @@ public class ViewTag extends AbstractDAOTag {
       cols.add(c);
     }
 
-    // sequences and updates
+    // sequences, queries, and selects
 
-    super.validate(super.getTagName(), nameTitle, nameValue);
+    super.validate(daosTag, config, fragmentConfig);
 
   }
 

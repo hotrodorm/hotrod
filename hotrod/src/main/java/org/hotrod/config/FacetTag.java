@@ -92,7 +92,7 @@ public class FacetTag extends AbstractConfigurationTag {
     }
 
     for (CustomDAOTag dao : this.daos) {
-      dao.validate(daosTag, fragmentConfig);
+      dao.validate(daosTag, config, fragmentConfig);
     }
 
     for (SelectTag s : this.selects) {
