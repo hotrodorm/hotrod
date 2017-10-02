@@ -181,8 +181,9 @@
     </xsd:choice>
     <xsd:attribute name="table" type="xsd:string" />
     <xsd:attribute name="view" type="xsd:string" />
+    <xsd:attribute name="id" type="xsd:string" />
     <xsd:attribute name="property" type="xsd:string" />
-    <xsd:attribute name="prefix" type="xsd:string" />
+    <xsd:attribute name="alias" type="xsd:string" />
     <xsd:attribute name="extended-vo-class" type="xsd:string" />
   </xsd:complexType>
 
@@ -195,8 +196,9 @@
     </xsd:choice>
     <xsd:attribute name="table" type="xsd:string" />
     <xsd:attribute name="view" type="xsd:string" />
+    <xsd:attribute name="id" type="xsd:string" />
     <xsd:attribute name="property" type="xsd:string" />
-    <xsd:attribute name="prefix" type="xsd:string" />
+    <xsd:attribute name="alias" type="xsd:string" />
     <xsd:attribute name="extended-vo-class" type="xsd:string" />
   </xsd:complexType>
 
@@ -209,8 +211,9 @@
     </xsd:choice>
     <xsd:attribute name="table" type="xsd:string" />
     <xsd:attribute name="view" type="xsd:string" />
+    <xsd:attribute name="id" type="xsd:string" />
     <xsd:attribute name="property" type="xsd:string" />
-    <xsd:attribute name="prefix" type="xsd:string" />
+    <xsd:attribute name="alias" type="xsd:string" />
     <xsd:attribute name="extended-vo-class" type="xsd:string" />
   </xsd:complexType>
 

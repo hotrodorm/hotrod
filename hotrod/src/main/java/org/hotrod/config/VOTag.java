@@ -34,7 +34,7 @@ public class VOTag extends AbstractConfigurationTag {
   private String table = null;
   private String view = null;
   private String property = null;
-  private String prefix = null;
+  private String alias = null;
   private String extendedVOClass = null;
   private String body = null;
   private List<CollectionTag> collections = new ArrayList<CollectionTag>();
@@ -68,8 +68,8 @@ public class VOTag extends AbstractConfigurationTag {
   }
 
   @XmlAttribute
-  public void setPrefix(final String prefix) {
-    this.prefix = prefix;
+  public void setAlias(final String alias) {
+    this.alias = alias;
   }
 
   @XmlAttribute(name = "extended-vo-class")
@@ -156,12 +156,12 @@ public class VOTag extends AbstractConfigurationTag {
       }
     }
 
-    // prefix
+    // alias
 
-    if (this.prefix != null) {
-      if (SUtils.isEmpty(this.prefix)) {
+    if (this.alias != null) {
+      if (SUtils.isEmpty(this.alias)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "When specified the 'prefix' attribute should not be empty.");
+            "When specified, the 'alias' attribute should not be empty.");
       }
     }
 
@@ -190,6 +190,11 @@ public class VOTag extends AbstractConfigurationTag {
     // body
 
     if (this.body != null) {
+      if (this.alias != null) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "When the tag <" + this.getTagName() + "> has a body, it cannot have an 'alias' attribute. "
+                + "Use the 'alias' attribute only when you want to include all the columns of the table or view.");
+      }
       if (SUtils.isEmpty(this.body)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
             "When the tag <" + this.getTagName()
@@ -226,8 +231,8 @@ public class VOTag extends AbstractConfigurationTag {
     return property;
   }
 
-  public String getPrefix() {
-    return prefix;
+  public String getAlias() {
+    return alias;
   }
 
   public String getExtendedVOClass() {
