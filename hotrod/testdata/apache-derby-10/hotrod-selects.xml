@@ -216,7 +216,7 @@
 
       select
       <columns>
-        <vo table="log" id="recorded_by, recorded_at"> 
+        <vo table="log" id="recorded_by, recorded_at" extended-vo-class="LogWithOfficeVO"> 
           l.*
           <association view="view_office" id="office_id" property="office" alias="o" />
         </vo>

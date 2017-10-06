@@ -15,11 +15,15 @@ import org.apache.log4j.Logger;
 import org.hotrod.config.dynamicsql.CollectionOfPartsTag;
 import org.hotrod.config.dynamicsql.ComplementTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
-import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
-import org.hotrod.config.dynamicsql.LiteralTextPart;
+import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;Part;
+import org.hotrod.config.sqlcolumns.ColumnsProd
+import org.hotrod.config.sqlcolumns.ColumnsProducerTag;
+import org.hotrod.config.dynamicsql.LiteralTextucerTag;
+import org.hotrod.config.sqlcolumns.ColumnsTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.metadata.SelectMethodDataSetMetadata;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.util.SUtils;
 
@@ -39,6 +43,8 @@ public class SelectMethodTag extends AbstractConfigurationTag {
   private String method = null;
   private String voClass = null;
   private String sMultipleRows = null;
+
+  private SelectMethodDataSetMetadata dataSetMetadata = null;
 
   // Properties - Primitive content parsing by JAXB
 
@@ -60,6 +66,8 @@ public class SelectMethodTag extends AbstractConfigurationTag {
   private List<LiteralTextPart> foundationParts = null;
   private DynamicSQLPart aggregatedPart = null;
   private ColumnsTag structuredColumns = null;
+
+  private HotRodFragmentConfigTag fragmentConfig = null;
 
   // Constructor
 
@@ -88,6 +96,8 @@ public class SelectMethodTag extends AbstractConfigurationTag {
 
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
+
+    this.fragmentConfig = fragmentConfig;
 
     // Sort: content parts, columns, parameters, complements
 
@@ -223,6 +233,10 @@ public class SelectMethodTag extends AbstractConfigurationTag {
     log.debug("columns=" + this.columns.size());
   }
 
+  public void setDataSetMetadata(final SelectMethodDataSetMetadata dataSetMetadata) {
+    this.dataSetMetadata = dataSetMetadata;
+  }
+
   // Getters
 
   public String getMethod() {
@@ -253,6 +267,14 @@ public class SelectMethodTag extends AbstractConfigurationTag {
     return structuredColumns;
   }
 
+  public SelectMethodDataSetMetadata getDataSetMetadata() {
+    return dataSetMetadata;
+  }
+
+  public HotRodFragmentConfigTag getFragmentConfig() {
+    return fragmentConfig;
+  }
+
   // Columns
 
   public ColumnTag findColumnTag(final String columnName, final DatabaseAdapter adapter) {
@@ -275,6 +297,24 @@ public class SelectMethodTag extends AbstractConfigurationTag {
   }
 
   public String getSQLFoundation(final ParameterRenderer parameterRenderer) {
+    StringBuilder sb = new StringBuilder();
+    for (LiteralTextPart tp : this.foundationParts) {
+      sb.append(tp.renderStatic(null));
+    }
+    String literal = sb.toString();
+    return literal;
+  }
+
+  // public String getSQLSubset(final ParameterRenderer parameterRenderer) {
+  // StringBuilder sb = new StringBuilder();
+  // for (LiteralTextPart tp : this.foundationParts) {
+  // sb.append(tp.renderStatic(null));
+  // }
+  // String literal = sb.toString();
+  // return literal;
+  // }
+
+  public String renderSQLAngle(final ParameterRenderer parameterRenderer, final ColumnsProducerTag rc) {
     StringBuilder sb = new StringBuilder();
     for (LiteralTextPart tp : this.foundationParts) {
       sb.append(tp.renderStatic(null));

@@ -162,8 +162,8 @@
 
   <xsd:complexType name="columns-type">
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="expressions" type="expressions-type" />
       <xsd:element name="vo" type="vo-type" />
+      <xsd:element name="expressions" type="expressions-type" />
     </xsd:choice>
     <xsd:attribute name="vo-class" type="xsd:string" />
   </xsd:complexType>
@@ -178,6 +178,7 @@
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
       <xsd:element name="collection" type="collection-type" />
       <xsd:element name="association" type="association-type" />
+      <xsd:element name="expressions" type="expressions-type" />
     </xsd:choice>
     <xsd:attribute name="table" type="xsd:string" />
     <xsd:attribute name="view" type="xsd:string" />
@@ -193,6 +194,7 @@
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
       <xsd:element name="collection" type="collection-type" />
       <xsd:element name="association" type="association-type" />
+      <xsd:element name="expressions" type="expressions-type" />
     </xsd:choice>
     <xsd:attribute name="table" type="xsd:string" />
     <xsd:attribute name="view" type="xsd:string" />
@@ -208,6 +210,7 @@
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
       <xsd:element name="collection" type="collection-type" />
       <xsd:element name="association" type="association-type" />
+      <xsd:element name="expressions" type="expressions-type" />
     </xsd:choice>
     <xsd:attribute name="table" type="xsd:string" />
     <xsd:attribute name="view" type="xsd:string" />

@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.AbstractConfigurationTag;
+import org.hotrod.config.EnhancedSQLTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
@@ -17,7 +17,7 @@ import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
-public abstract class DynamicSQLPart extends AbstractConfigurationTag {
+public abstract class DynamicSQLPart extends EnhancedSQLTag {
 
   // Constants
 

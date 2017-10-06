@@ -23,6 +23,9 @@ import org.hotrod.config.SelectTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
+import org.hotrod.config.sqlcolumns.ColumnsTag;
+import org.hotrod.config.sqlcolumns.ExpressionsTag;
+import org.hotrod.config.sqlcolumns.VOTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.DatabaseAdapterFactory;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -34,7 +37,9 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadataFactory;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
+import org.hotrod.metadata.SelectMethodDataSetMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
+import org.hotrod.metadata.VOMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.JdbcTypes;
@@ -259,6 +264,72 @@ public abstract class HotRodGenerator {
         }
       }
 
+      // Process select methods on <table> and <view> tags
+
+      for (TableDataSetMetadata tm : this.tables) {
+        for (SelectMethodTag smt : tm.getSelects()) {
+          ColumnsTag ct = smt.getStructuredColumns();
+          if (ct == null) {
+
+            // Case 1 - Unstructured columns
+
+            String tempViewName = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
+                .getNextTempViewName();
+            SelectMethodDataSetMetadata sm = new SelectMethodDataSetMetadata(this.db, this.adapter, this.loc, smt,
+                tempViewName, this.config);
+            smt.setDataSetMetadata(sm);
+            sm.prepareUnstructuredView(conn);
+
+          } else {
+
+            // Retrieve the VO class
+            
+            ct.prepareViews();
+            
+            
+
+            String voClass;
+            if (ct.getVos().size() == 1 && ct.getExpressions().isEmpty()) {
+              voClass = ct.getVoClass();
+            } else {
+              VOTag singleVO = ct.getVos().get(0);
+              if (singleVO.getAssociations().isEmpty() && singleVO.getCollections().isEmpty()) {
+                if (singleVO.getTable() != null) {
+                  TableDataSetMetadata vom = this.findTableMetadata(singleVO.getTable());
+                  voClass = vom.getIdentifier().getJavaClassIdentifier();
+                } else {
+                  TableDataSetMetadata vom = this.findViewMetadata(singleVO.getView());
+                  voClass = vom.getIdentifier().getJavaClassIdentifier();
+                }
+              } else {
+                voClass = singleVO.getExtendedVOClass();
+              }
+            }
+
+            // Retrieve the VO columns
+
+            for (VOTag voTag : ct.getVos()) {
+
+            }
+
+            for (ExpressionsTag expressionsTag : ct.getExpressions()) {
+
+            }
+
+            // TODO:
+
+          }
+        }
+      }
+
+      for (TableDataSetMetadata tm : this.views) {
+        // TODO
+      }
+
+      for (TableDataSetMetadata tm : this.enums) {
+        // TODO
+      }
+
       // Prepare selects metadata - phase 1/2
 
       logm("Prepare selects metadata - phase 1.");
@@ -271,7 +342,6 @@ public abstract class HotRodGenerator {
 
         try {
 
-          int i = 0;
           for (SelectTag s : this.config.getSelects()) {
             log.debug("::: select '" + s.getJavaClassName() + "': " + s.renderSQLSentence(new ParameterRenderer() {
               @Override
@@ -280,9 +350,9 @@ public abstract class HotRodGenerator {
               }
             }));
             current = s;
-            String tempViewNameBase = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
-                .getTempViewBaseName();
-            sm = new SelectDataSetMetadata(this.db, this.adapter, this.loc, s, tempViewNameBase + (i++), this.config);
+            String tempViewName = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
+                .getNextTempViewName();
+            sm = new SelectDataSetMetadata(this.db, this.adapter, this.loc, s, tempViewName, this.config);
             this.selects.add(sm);
             log.debug("prepareView() will be called...");
             sm.prepareViews(conn);
@@ -385,6 +455,23 @@ public abstract class HotRodGenerator {
     logm("Metadata initialized.");
 
     displayGenerationMetadata(config);
+
+  }
+
+  // TODO
+
+  private VOMetadata prepareTempView(final VOTag voTag) {
+    String tempViewName = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
+        .getNextTempViewName();
+
+    SelectMethodDataSetMetadata sm = new SelectMethodDataSetMetadata(this.db, this.adapter, this.loc, smt, tempViewName,
+        this.config);
+    smt.setDataSetMetadata(sm);
+    sm.prepareUnstructuredView(conn);
+
+  }
+
+  private String prepareTempView(final ExpressionsTag expressionsTag) {
 
   }
 
@@ -621,7 +708,25 @@ public abstract class HotRodGenerator {
   // }
   // return null;
   // }
-  //
+
+  public TableDataSetMetadata findTableMetadata(final String name) {
+    for (TableDataSetMetadata tm : this.tables) {
+      if (this.adapter.isTableIdentifier(tm.getIdentifier().getSQLIdentifier(), name)) {
+        return tm;
+      }
+    }
+    return null;
+  }
+
+  public TableDataSetMetadata findViewMetadata(final String name) {
+    for (TableDataSetMetadata tm : this.views) {
+      if (this.adapter.isTableIdentifier(tm.getIdentifier().getSQLIdentifier(), name)) {
+        return tm;
+      }
+    }
+    return null;
+  }
+
   // private JdbcTable findJdbcView(final String name, final JdbcDatabase jd) {
   // for (JdbcTable jt : jd.getViews()) {
   // if (this.adapter.isTableIdentifier(jt.getName(), name)) {

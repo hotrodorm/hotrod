@@ -1,4 +1,4 @@
-package org.hotrod.config;
+package org.hotrod.config.sqlcolumns;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

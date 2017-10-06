@@ -20,6 +20,7 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
   // Properties
 
   private String tempViewBaseName = null;
+  private int folio = 0;
 
   // Constructor
 
@@ -60,8 +61,8 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
 
   // Getters
 
-  public String getTempViewBaseName() {
-    return tempViewBaseName;
+  public synchronized String getNextTempViewName() {
+    return this.tempViewBaseName + (this.folio++);
   }
 
 }

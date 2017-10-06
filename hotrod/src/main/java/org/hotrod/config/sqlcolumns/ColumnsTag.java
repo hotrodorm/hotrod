@@ -1,5 +1,6 @@
-package org.hotrod.config;
+package org.hotrod.config.sqlcolumns;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,10 +9,22 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
+import org.hotrod.config.AbstractConfigurationTag;
+import org.hotrod.config.DaosTag;
+import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.Patterns;
+import org.hotrod.config.SelectGenerationTag;
+import org.hotrod.config.SelectMethodTag;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
+import org.hotrod.utils.ColumnsPrefixGenerator;
+import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
+import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 
 @XmlRootElement(name = "columns")
-public class ColumnsTag extends AbstractConfigurationTag {
+public class ColumnsTag extends ColumnsProducerTag {
 
   // Constants
 
@@ -23,6 +36,8 @@ public class ColumnsTag extends AbstractConfigurationTag {
 
   private List<VOTag> vos = new ArrayList<VOTag>();
   private List<ExpressionsTag> expressions = new ArrayList<ExpressionsTag>();
+  private List<CollectionTag> collections = new ArrayList<CollectionTag>();
+  private List<AssociationTag> associations = new ArrayList<AssociationTag>();
 
   // Constructor
 
@@ -46,6 +61,16 @@ public class ColumnsTag extends AbstractConfigurationTag {
   @XmlElement(name = "expressions")
   public void setExpressionsTag(final ExpressionsTag exps) {
     this.expressions.add(exps);
+  }
+
+  @XmlElement(name = "collection")
+  public void setCollectionTag(final CollectionTag collection) {
+    this.collections.add(collection);
+  }
+
+  @XmlElement(name = "association")
+  public void setAssociationTag(final AssociationTag association) {
+    this.associations.add(association);
   }
 
   // Behavior
@@ -91,6 +116,54 @@ public class ColumnsTag extends AbstractConfigurationTag {
     for (ExpressionsTag exp : this.expressions) {
       exp.validate(config);
     }
+
+  }
+
+  // Meta data gathering
+
+  private boolean existingVO;
+  private String computedVOClass;
+
+  public void prepareRetrieval(final SelectMethodTag selectTag, final DatabaseAdapter adapter, final JdbcDatabase db,
+      final DatabaseLocation loc, final SelectGenerationTag selectGenerationTag,
+      final ColumnsProducerTag columnsProducerTag, final ColumnsPrefixGenerator columnsPrefixGenerator,
+      final Connection conn1) throws InvalidSQLException {
+
+    if (this.vos.size() == 1 && this.collections.isEmpty() && this.associations.isEmpty()
+        && this.expressions.isEmpty()) {
+
+      VOTag singleVO = this.vos.get(0);
+      singleVO.prepareRetrieval(selectTag, adapter, db, loc, selectGenerationTag, columnsProducerTag,
+          columnsPrefixGenerator, conn1);
+
+      // this.existingVO = singleVO.getExistingVO();
+      // this.computedVOClass = singleVO.getComputedVOClass();
+
+    } else {
+
+      for (ExpressionsTag exp : this.expressions) {
+        exp.prepareRetrieval(selectTag, adapter, db, loc, selectGenerationTag, columnsProducerTag,
+            columnsPrefixGenerator, conn1);
+      }
+
+      for (CollectionTag c : this.collections) {
+        c.prepareRetrieval(selectTag, adapter, db, loc, selectGenerationTag, columnsProducerTag, columnsPrefixGenerator,
+            conn1);
+
+      }
+
+      for (AssociationTag a : this.associations) {
+        a.prepareRetrieval(selectTag, adapter, db, loc, selectGenerationTag, columnsProducerTag, columnsPrefixGenerator,
+            conn1);
+
+      }
+
+    }
+
+  }
+
+  @Override
+  public void retrieve() {
 
   }
 

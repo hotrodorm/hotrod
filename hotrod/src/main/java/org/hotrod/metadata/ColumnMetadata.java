@@ -16,6 +16,7 @@ public class ColumnMetadata {
 
   private DataSetMetadata dataSet;
 
+  private JdbcColumn c;
   private String columnName;
   private String tableName;
 
@@ -53,6 +54,7 @@ public class ColumnMetadata {
       throws UnresolvableDataTypeException {
     log.debug("init");
     this.dataSet = dataSet;
+    this.c = c;
     this.columnName = c.getName();
     this.tableName = c.getTable().getName();
     this.belongsToPK = belongsToPK;
@@ -75,12 +77,35 @@ public class ColumnMetadata {
     this.enumMetadata = enumMetadata;
   }
 
+  // From another ColumnMetadata object
+
+  protected ColumnMetadata(final ColumnMetadata cm) {
+    this.dataSet = cm.dataSet;
+    this.c = cm.c;
+    this.columnName = cm.columnName;
+    this.tableName = cm.tableName;
+    this.belongsToPK = cm.belongsToPK;
+    this.autogenerationType = cm.autogenerationType;
+    this.dataType = cm.dataType;
+    this.typeName = cm.typeName;
+    this.columnSize = cm.columnSize;
+    this.decimalDigits = cm.decimalDigits;
+    this.columnDefault = cm.columnDefault;
+    this.enumMetadata = cm.enumMetadata;
+    this.adapter = cm.adapter;
+    this.tag = cm.tag;
+    this.type = cm.type;
+    this.identifier = cm.identifier;
+    this.isVersionControlColumn = cm.isVersionControlColumn;
+  }
+
   // From a <select> tag
 
   public ColumnMetadata(final DataSetMetadata dataSet, final JdbcColumn c, final String selectName,
       final DatabaseAdapter adapter, final ColumnTag columnTag, final boolean isVersionControlColumn,
       final boolean belongsToPK) throws UnresolvableDataTypeException {
     this.dataSet = dataSet;
+    this.c = c;
     this.columnName = c.getName();
     this.tableName = selectName;
     this.belongsToPK = belongsToPK;
@@ -98,27 +123,6 @@ public class ColumnMetadata {
     this.identifier = new ColumnIdentifier(this.columnName, this.type, columnTag);
     this.isVersionControlColumn = isVersionControlColumn;
   }
-
-  // public ColumnMetadata(final String queryName, final ResultSetMetaData md,
-  // final int col,
-  // final DatabaseAdapter adapter, final boolean isVersionControlColumn, final
-  // boolean belongsToPK)
-  // throws SQLException, UnresolvableDataTypeException {
-  // this.columnName = md.getColumnLabel(col) != null ? md.getColumnLabel(col) :
-  // md.getColumnName(col);
-  // this.tableName = queryName;
-  // this.belongsToPK = belongsToPK;
-  // this.dataType = md.getColumnType(col);
-  // this.typeName = md.getColumnTypeName(col);
-  // this.columnSize = md.getPrecision(col);
-  // this.decimalDigits = md.getScale(col);
-  //
-  // this.adapter = adapter;
-  // this.tag = findTag(adapter);
-  // this.type = this.adapter.resolveJavaType(this);
-  // this.identifier = new ColumnIdentifier(this.columnName, this.type, null);
-  // this.isVersionControlColumn = isVersionControlColumn;
-  // }
 
   // Indexing methods
 
