@@ -12,7 +12,7 @@ import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
-import org.hotrod.config.sqlcolumns.ColumnsProvider;
+import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ParameterRenderer;
@@ -101,7 +101,7 @@ public class ColumnsMetadataRetriever {
 
     // 2. Create or replace the view.
 
-    log.debug("prepare view - will create view: " + createViewSQL);
+    log.info("prepare view - will create view: " + createViewSQL);
 
     {
       PreparedStatement ps = null;

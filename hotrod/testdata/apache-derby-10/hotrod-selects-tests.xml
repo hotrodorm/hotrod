@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod-fragment>
+
+<hotrod-fragment>
+
+  <!-- DAOs -->
+
+  <dao java-class-name="SelectsDAO">
+
+    <!-- Case 2 - Select returns multiple VOs -->
+
+    <select method="findAccountWithPerson">
+
+      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      select
+      <columns vo="AccountPersonVO">
+        <vo table="account" property="account"> a.* </vo>
+        <vo table="person" property="person" alias="p"></vo>
+        <expressions> 
+          a.balance * a.type as initial_load,
+          p.id + p.type as score
+        </expressions>
+      </columns>
+      from account a
+      join person p on (p.id) = (a.person_id)
+      <complement>
+        where a.id = #{clientId}
+      </complement>
+
+    </select>
+
+  </dao>
+
+</hotrod-fragment>

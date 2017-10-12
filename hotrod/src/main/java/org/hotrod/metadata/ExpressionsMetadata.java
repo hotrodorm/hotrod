@@ -1,6 +1,6 @@
 package org.hotrod.metadata;
 
-import org.hotrod.config.sqlcolumns.ExpressionsTag;
+import org.hotrod.config.structuredcolumns.ExpressionsTag;
 
 public class ExpressionsMetadata {
 

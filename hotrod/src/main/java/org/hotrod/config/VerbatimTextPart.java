@@ -2,7 +2,7 @@ package org.hotrod.config;
 
 import org.apache.log4j.Logger;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
-import org.hotrod.config.sqlcolumns.ColumnsProvider;
+import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;

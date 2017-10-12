@@ -3,8 +3,8 @@ package org.hotrod.metadata;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrod.config.sqlcolumns.ExpressionsTag;
-import org.hotrod.config.sqlcolumns.VOTag;
+import org.hotrod.config.structuredcolumns.ExpressionsTag;
+import org.hotrod.config.structuredcolumns.VOTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.utils.ColumnsPrefixGenerator;
@@ -16,7 +16,7 @@ public class VOMetadata {
   private DatabaseAdapter adapter;
 
   private Identifier identifier;
-  private String extendedVoClass;
+  private String vo;
 
   private List<StructuredColumnMetadata> columns;
   private List<ExpressionsMetadata> expressions;
@@ -37,7 +37,7 @@ public class VOMetadata {
     this.adapter = adapter;
 
     this.identifier = dm.getIdentifier();
-    this.extendedVoClass = tag.getExtendedVOClass();
+    this.vo = tag.getVO();
 
     String prefix = prefixGenerator.next();
     this.columns = new ArrayList<StructuredColumnMetadata>();

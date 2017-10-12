@@ -1,4 +1,4 @@
-package org.hotrod.config.sqlcolumns;
+package org.hotrod.config.structuredcolumns;
 
 import java.sql.Connection;
 import java.util.List;

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod>
+
+<hotrod>
+
+  <generators>
+
+    <mybatis>
+      <daos gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" />
+      <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
+      <mybatis-configuration-template file="mybatis-config-template.xml" />
+      <session-factory singleton-full-class-name="sessionfactory.DatabaseSessionFactory" />
+      <select-generation temp-view-base-name="hotrod_temp_view" />
+      <property name="checked.persistence.exception" value="true" />
+      <property name="multiline.tostring" value="true" />
+    </mybatis>
+
+    <spring-jdbc>
+      <daos gen-base-dir="gen/hotrod-spring/daos" dao-package="hotrod.test.generation" />
+      <config gen-base-dir="gen/hotrod-spring/daos/" relative-dir="config" prefix="prueba-hr-" />
+      <select-generation temp-view-base-name="unused" />
+    </spring-jdbc>
+
+  </generators>
+
+  <!-- Converters -->
+
+  <converter name="person_type" java-type="selects.enums.PersonType" class="selects.converters.PersonTypeConverter"
+    java-intermediate-type="java.lang.Short" />
+  <converter name="account_type" java-type="selects.enums.AccountType" class="selects.converters.AccountTypeConverter"
+    java-intermediate-type="java.lang.Short" />
+  <converter name="account_status" java-type="selects.enums.AccountStatus" class="selects.converters.AccountStatusConverter"
+    java-intermediate-type="java.lang.Short" />
+  <converter name="transaction_type" java-type="selects.enums.TransactionType" class="selects.converters.TransactionTypeConverter"
+    java-intermediate-type="java.lang.Short" />
+
+  <!-- Tables -->
+
+  <table name="person">
+    <column name="type" converter="person_type" />
+  </table>
+
+  <table name="account">
+    <column name="type" converter="account_type" />
+    <column name="active" converter="account_status" />
+  </table>
+
+  <table name="transaction">
+    <column name="type" converter="transaction_type" />
+  </table>
+
+  <fragment file="hotrod-selects-tests.xml" />
+
+</hotrod>

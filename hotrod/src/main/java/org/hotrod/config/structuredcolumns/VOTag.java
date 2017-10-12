@@ -1,4 +1,4 @@
-package org.hotrod.config.sqlcolumns;
+package org.hotrod.config.structuredcolumns;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -23,7 +23,9 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
+import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
@@ -65,7 +67,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   private List<AssociationTag> associations = new ArrayList<AssociationTag>();
 
   private boolean existingVO;
-  private String voClass;
+  private String vo;
 
   private ColumnsMetadataRetriever cmr;
 
@@ -309,23 +311,23 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     if (this.expressions.isEmpty() && this.collections.isEmpty() && this.associations.isEmpty()) {
 
       this.existingVO = true;
-      this.voClass = this.table != null ? this.tableMetadata.getIdentifier().getJavaClassIdentifier()
+      this.vo = this.table != null ? this.tableMetadata.getIdentifier().getJavaClassIdentifier()
           : this.viewMetadata.getIdentifier().getJavaClassIdentifier();
 
       String b = this.compileBody();
-      if (this.body.isEmpty() || b.equals("*")) {
-        // all columns from the dataset
-
-      } else {
-        // specific columns
+      log.info("b=" + b);
+      if (this.body.isEmpty() || b.equals("*")) { // all columns
+        this.cmr = null;
+      } else { // specific columns
         this.cmr = new ColumnsMetadataRetriever(selectTag, adapter, db, loc, selectGenerationTag, this,
             columnsPrefixGenerator);
+        this.cmr.prepareRetrieval(conn1);
       }
 
     } else {
 
       this.existingVO = false;
-      this.voClass = this.extendedVO;
+      this.vo = this.extendedVO;
 
       for (ExpressionsTag exp : this.expressions) {
         exp.gatherMetadataPhase1(selectTag, adapter, db, loc, selectGenerationTag, columnsPrefixGenerator, conn1);
@@ -346,6 +348,10 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   @Override
   public void gatherMetadataPhase2(final Connection conn2)
       throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException {
+
+    if (this.cmr != null) {
+      this.cmr.retrieve(conn2);
+    }
 
     for (ExpressionsTag exp : this.expressions) {
       exp.gatherMetadataPhase2(conn2);
@@ -405,8 +411,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     return alias;
   }
 
-  public String getExtendedVOClass() {
-    return extendedVO;
+  public String getVO() {
+    return this.vo;
   }
 
   public List<CollectionTag> getCollections() {
@@ -419,6 +425,21 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   public List<ExpressionsTag> getExpressions() {
     return expressions;
+  }
+
+  @Override
+  public String renderColumns() {
+    ListWriter w = new ListWriter(",\n  ");
+    if (this.tableMetadata != null) {
+      for (ColumnMetadata cm : this.tableMetadata.getColumns()) {
+        w.add(cm.renderSQLIdentifier());
+      }
+    } else {
+      for (ColumnMetadata cm : this.viewMetadata.getColumns()) {
+        w.add(cm.renderSQLIdentifier());
+      }
+    }
+    return w.toString();
   }
 
 }

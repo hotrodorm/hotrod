@@ -1,4 +1,4 @@
-package org.hotrod.config.sqlcolumns;
+package org.hotrod.config.structuredcolumns;
 
 import java.sql.Connection;
 
@@ -30,5 +30,7 @@ public interface ColumnsProvider {
 
   void gatherMetadataPhase2(final Connection conn2)
       throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException;
+
+  String renderColumns();
 
 }

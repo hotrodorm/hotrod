@@ -72,11 +72,8 @@ public class CustomDAOTag extends AbstractDAOTag {
   public void validateAgainstDatabase(final HotRodGenerator generator, final Connection conn)
       throws InvalidConfigurationFileException {
 
-    // TODO: add validations to <select> methods
-
     for (SelectMethodTag s : this.getSelects()) {
-      // s.va
-
+      s.validateAgainstDatabase(generator);
     }
 
   }

@@ -1,4 +1,4 @@
-package org.hotrod.config.sqlcolumns;
+package org.hotrod.config.structuredcolumns;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -110,12 +110,23 @@ public class ColumnsTag extends EnhancedSQLTag implements ColumnsProvider {
       exp.validateAgainstDatabase(generator);
     }
 
+    // associations
+
+    for (AssociationTag a : this.associations) {
+      a.validateAgainstDatabase(generator);
+    }
+
+    // expressions
+
+    for (ExpressionsTag exp : this.expressions) {
+      exp.validateAgainstDatabase(generator);
+    }
+
   }
 
   @Override
   public String renderSQLAngle(final DatabaseAdapter adapter, final ColumnsProvider cp) {
-    // TODO Auto-generated method stub
-    return null;
+    return cp.renderColumns();
   }
 
   @Override
@@ -265,6 +276,11 @@ public class ColumnsTag extends EnhancedSQLTag implements ColumnsProvider {
 
   public List<ExpressionsTag> getExpressions() {
     return expressions;
+  }
+
+  @Override
+  public String renderColumns() {
+    return null;
   }
 
 }

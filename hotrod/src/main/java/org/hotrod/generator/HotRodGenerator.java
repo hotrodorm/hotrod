@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -24,9 +25,7 @@ import org.hotrod.config.SelectTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
-import org.hotrod.config.sqlcolumns.ColumnsTag;
-import org.hotrod.config.sqlcolumns.ExpressionsTag;
-import org.hotrod.config.sqlcolumns.VOTag;
+import org.hotrod.config.structuredcolumns.ColumnsTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.DatabaseAdapterFactory;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -35,6 +34,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassMethodException;
 import org.hotrod.metadata.ColumnMetadata;
+import org.hotrod.metadata.DAOMetadata;
 import org.hotrod.metadata.DataSetMetadataFactory;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
@@ -76,6 +76,7 @@ public abstract class HotRodGenerator {
   protected LinkedHashSet<TableDataSetMetadata> views = null;
   protected LinkedHashSet<EnumDataSetMetadata> enums = null;
   protected LinkedHashSet<SelectDataSetMetadata> selects = null;
+  protected LinkedHashSet<DAOMetadata> daos = null;
 
   private Long lastLog = null;
 
@@ -90,6 +91,7 @@ public abstract class HotRodGenerator {
     display("Database URL: " + loc.getUrl());
 
     Connection conn = null;
+    int selectCount = 0;
 
     try {
       logm("Opening connection...");
@@ -179,25 +181,13 @@ public abstract class HotRodGenerator {
         throw new UncontrolledException("Could not retrieve database metadata using JDBC URL " + loc.getUrl(), e);
       }
 
-      try {
-
-        this.config.validateAgainstDatabase(this, conn);
-
-      } catch (InvalidConfigurationFileException e) {
-        String message = (e.getSourceLocation() == null ? ""
-            : "[file: " + e.getSourceLocation().getFile().getPath() + ", line " + e.getSourceLocation().getLineNumber()
-                + ", col " + e.getSourceLocation().getColumnNumber() + "] ")
-            + e.getMessage();
-        throw new ControlledException(message);
-      }
-
       // Validate names
 
       logm("Validate Names.");
 
       Set<String> sqlNames = new HashSet<String>();
 
-      // Prepare tables metadata
+      // Prepare tables meta data
 
       logm("Prepare tables metadata.");
 
@@ -226,7 +216,7 @@ public abstract class HotRodGenerator {
         ds.linkReferencedDataSets(this.tables);
       }
 
-      // Prepare enums metadata
+      // Prepare enums meta data
 
       logm("Prepare enums metadata.");
 
@@ -250,7 +240,7 @@ public abstract class HotRodGenerator {
         ds.linkEnumMetadata(this.enums);
       }
 
-      // Prepare views metadata
+      // Prepare views meta data
 
       logm("Prepare views metadata.");
 
@@ -267,86 +257,55 @@ public abstract class HotRodGenerator {
         }
       }
 
-      // Process select methods on <table> and <view> tags
+      // Prepare DAOs meta data
+
+      this.daos = new LinkedHashSet<DAOMetadata>();
+      for (CustomDAOTag tag : config.getDAOs()) {
+        DAOMetadata dm = new DAOMetadata(tag, this.adapter, config, tag.getFragmentConfig());
+        this.daos.add(dm);
+      }
+
+      // Validate against the database
+
+      try {
+
+        this.config.validateAgainstDatabase(this, conn);
+
+      } catch (InvalidConfigurationFileException e) {
+        String message = (e.getSourceLocation() == null ? ""
+            : "[file: " + e.getSourceLocation().getFile().getPath() + ", line " + e.getSourceLocation().getLineNumber()
+                + ", col " + e.getSourceLocation().getColumnNumber() + "] ")
+            + e.getMessage();
+        throw new ControlledException(message);
+      }
+
+      // Prepare <select> methods meta data - phase 1
 
       for (TableDataSetMetadata tm : this.tables) {
-        for (SelectMethodTag smt : tm.getSelects()) {
-          ColumnsTag ct = smt.getStructuredColumns();
-          if (ct == null) {
-
-            // Case 1 - Unstructured columns
-
-            String tempViewName = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
-                .getNextTempViewName();
-            SelectMethodDataSetMetadata sm = new SelectMethodDataSetMetadata(this.db, this.adapter, this.loc, smt,
-                tempViewName, this.config);
-            smt.setDataSetMetadata(sm);
-            sm.prepareUnstructuredView(conn);
-
-          } else {
-
-            // Retrieve the VO class
-
-            SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
-                .getSelectGeneration();
-            ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator();
-
-            try {
-              ct.gatherMetadataPhase1(smt, this.adapter, this.db, loc, selectGenerationTag, columnsPrefixGenerator,
-                  conn);
-            } catch (InvalidSQLException e) {
-              throw new ControlledException("Could not retrieve metadata for <" + smt.getTagName() + "> on "
-                  + smt.getSourceLocation().render() + "; could not create temporary SQL view for it.\n" + "[ "
-                  + e.getMessage() + " ]\n" + "* Do all resulting columns have different and valid names?\n"
-                  + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
-                  + "\n--- end SQL ---");
-            }
-
-            String voClass;
-            if (ct.getVos().size() == 1 && ct.getExpressions().isEmpty()) {
-              voClass = ct.getVoClass();
-            } else {
-              VOTag singleVO = ct.getVos().get(0);
-              if (singleVO.getAssociations().isEmpty() && singleVO.getCollections().isEmpty()) {
-                if (singleVO.getTable() != null) {
-                  TableDataSetMetadata vom = this.findTableMetadata(singleVO.getTable());
-                  voClass = vom.getIdentifier().getJavaClassIdentifier();
-                } else {
-                  TableDataSetMetadata vom = this.findViewMetadata(singleVO.getView());
-                  voClass = vom.getIdentifier().getJavaClassIdentifier();
-                }
-              } else {
-                voClass = singleVO.getExtendedVOClass();
-              }
-            }
-
-            // Retrieve the VO columns
-
-            for (VOTag voTag : ct.getVos()) {
-
-            }
-
-            for (ExpressionsTag expressionsTag : ct.getExpressions()) {
-
-            }
-
-            // TODO:
-
-          }
-        }
+        gatherSelectsMetadataPhase1(loc, conn, tm.getSelects());
+        selectCount += tm.getSelects().size();
       }
 
-      for (TableDataSetMetadata tm : this.views) {
-        // TODO
+      for (TableDataSetMetadata vm : this.views) {
+        gatherSelectsMetadataPhase1(loc, conn, vm.getSelects());
+        selectCount += vm.getSelects().size();
       }
 
-      for (TableDataSetMetadata tm : this.enums) {
-        // TODO
+      for (TableDataSetMetadata em : this.enums) {
+        gatherSelectsMetadataPhase1(loc, conn, em.getSelects());
+        selectCount += em.getSelects().size();
       }
 
-      // Prepare selects metadata - phase 1/2
+      for (DAOMetadata dm : this.daos) {
+        gatherSelectsMetadataPhase1(loc, conn, dm.getSelects());
+        selectCount += dm.getSelects().size();
+      }
+
+      // Prepare <select> DAOs meta data - phase 1
 
       logm("Prepare selects metadata - phase 1.");
+
+      selectCount += this.config.getSelects().size();
 
       this.selects = new LinkedHashSet<SelectDataSetMetadata>();
       if (!this.config.getSelects().isEmpty()) {
@@ -398,9 +357,10 @@ public abstract class HotRodGenerator {
       }
     }
 
-    // Prepare selects metadata - phase 2/2
+    // Prepare <select> DAOs meta data - phase 2
 
-    if (!this.config.getSelects().isEmpty()) {
+    log.info("ret 1");
+    if (selectCount > 0) {
 
       logm("Prepare selects metadata - phase 2.");
 
@@ -409,9 +369,28 @@ public abstract class HotRodGenerator {
       Connection conn2 = null;
       try {
 
+        log.info("ret 2");
         logm("Opening connection (selects)...");
         conn2 = this.loc.getConnection();
         logm("Connection open (selects).");
+        log.info("ret 3");
+
+        for (TableDataSetMetadata tm : this.tables) {
+          gatherSelectsMetadataPhase2(conn2, tm.getSelects());
+        }
+
+        for (TableDataSetMetadata vm : this.views) {
+          gatherSelectsMetadataPhase2(conn2, vm.getSelects());
+        }
+
+        for (TableDataSetMetadata em : this.enums) {
+          gatherSelectsMetadataPhase2(conn2, em.getSelects());
+        }
+
+        for (DAOMetadata dm : this.daos) {
+          gatherSelectsMetadataPhase2(conn2, dm.getSelects());
+        }
+
         for (SelectDataSetMetadata ds : this.selects) {
           currDs = ds;
           ds.retrieveColumnsMetadata(conn2);
@@ -470,6 +449,92 @@ public abstract class HotRodGenerator {
 
     displayGenerationMetadata(config);
 
+  }
+
+  private void gatherSelectsMetadataPhase1(final DatabaseLocation loc, final Connection conn1,
+      final List<SelectMethodTag> selects) throws ControlledException, UncontrolledException {
+    for (SelectMethodTag selectTag : selects) {
+      ColumnsTag ct = selectTag.getStructuredColumns();
+      if (ct == null) {
+
+        // Unstructured columns
+
+        String tempViewName = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
+            .getNextTempViewName();
+        SelectMethodDataSetMetadata sm = new SelectMethodDataSetMetadata(this.db, this.adapter, this.loc, selectTag,
+            tempViewName, this.config);
+        selectTag.setDataSetMetadata(sm);
+
+        try {
+          sm.prepareUnstructuredView(conn1);
+        } catch (SQLException e) {
+          throw new UncontrolledException("Failed to retrieve metadata for <" + new SelectMethodTag().getTagName()
+              + "> with method '" + selectTag.getMethod() + "'.", e);
+        }
+
+      } else {
+
+        // Structured columns
+
+        SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
+            .getSelectGeneration();
+        ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator();
+
+        try {
+          log.info("ct.gatherMetadataPhase1()");
+          ct.gatherMetadataPhase1(selectTag, this.adapter, this.db, loc, selectGenerationTag, columnsPrefixGenerator,
+              conn1);
+        } catch (InvalidSQLException e) {
+          throw new ControlledException("Could not retrieve metadata for <" + selectTag.getTagName() + "> on "
+              + selectTag.getSourceLocation().render() + "; could not create temporary SQL view for it.\n" + "[ "
+              + e.getMessage() + " ]\n" + "* Do all resulting columns have different and valid names?\n"
+              + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
+              + "\n--- end SQL ---");
+        }
+
+      }
+    }
+  }
+
+  private void gatherSelectsMetadataPhase2(final Connection conn2, final List<SelectMethodTag> selects)
+      throws ControlledException, UncontrolledException {
+    for (SelectMethodTag selectTag : selects) {
+      ColumnsTag ct = selectTag.getStructuredColumns();
+      if (ct == null) {
+
+        // Unstructured columns
+
+        try {
+          selectTag.getDataSetMetadata().retrieveColumnsMetadata(conn2);
+        } catch (SQLException e) {
+          throw new UncontrolledException("Failed to retrieve metadata for <" + new SelectMethodTag().getTagName()
+              + "> with method '" + selectTag.getMethod() + "'.", e);
+
+        } catch (UnresolvableDataTypeException e) {
+          throw new ControlledException("Failed to retrieve metadata for <" + new SelectMethodTag().getTagName()
+              + "> with method '" + selectTag.getMethod() + "': could not find suitable Java property type for column '"
+              + e.getColumnName() + "'.");
+        }
+
+      } else {
+
+        // Structured columns
+
+        try {
+          log.info("ct.gatherMetadataPhase2()");
+          ct.gatherMetadataPhase2(conn2);
+        } catch (InvalidSQLException e) {
+          throw new ControlledException("Could not retrieve metadata for <" + selectTag.getTagName() + "> on "
+              + selectTag.getSourceLocation().render() + ". Is the create view SQL code below valid?\n"
+              + "--- begin SQL ---\n" + e.getInvalidSQL() + "\n--- end SQL ---");
+        } catch (UnresolvableDataTypeException e) {
+          throw new ControlledException("Failed to retrieve metadata for <" + new SelectMethodTag().getTagName()
+              + "> with method '" + selectTag.getMethod() + "': could not find suitable Java property type for column '"
+              + e.getColumnName() + "'.");
+        }
+
+      }
+    }
   }
 
   private void displayGenerationMetadata(final HotRodConfigTag config) {

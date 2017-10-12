@@ -14,7 +14,7 @@ import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectMethodTag;
-import org.hotrod.config.sqlcolumns.VOTag;
+import org.hotrod.config.structuredcolumns.VOTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ParameterRenderer;

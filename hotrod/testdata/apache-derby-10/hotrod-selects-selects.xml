@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
 <!DOCTYPE hotrod-fragment>
 
-<hotrod-fragment package="accounting.finances">
+<hotrod-fragment>
 
-  <dao java-class-name="SelectsDAOBad">
+  <!-- DAOs -->
+
+  <dao java-class-name="SelectsDAO">
 
     <!-- Case 1 - Flat Join -->
 
-    <select method="case1" vo-class="AccountPersonFlatVO">
+    <select method="findAccountWithPersonFlat" vo="AccountPersonFlatVO">
 
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
@@ -28,12 +30,12 @@
 
     <!-- Case 2 - Select returns multiple VOs -->
 
-    <select method="case2">
+    <select method="findAccountWithPerson">
 
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
-      <columns vo-class="AccountPersonVO">
+      <columns vo="AccountPersonVO">
         <vo table="account" property="account"> a.* </vo>
         <vo table="person" property="person" alias="p"></vo>
       </columns>
@@ -47,7 +49,7 @@
     
     <!-- 3 - Select returns a single VO and no expressions -->
 
-    <select method="case3">
+    <select method="findRetirementAccount">
 
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
@@ -67,12 +69,12 @@
     
     <!-- 4 - Extra columns -->
 
-    <select method="case4">
+    <select method="findValuatedAccount">
 
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
-      <columns vo-class="ValuatedAccountVO">
+      <columns vo="ValuatedAccountVO">
         <vo table="account" property="account"> a.* </vo>
         <vo table="person" property="person" alias="p" />
         <expressions>
@@ -91,13 +93,13 @@
 
     <!-- 5 - Collections -->
 
-    <select method="case5">
+    <select method="findAccountWithTransactions">
 
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
       <columns>
-        <vo table="cuenta" extended-vo-class="AccountWithTransactionsVO">
+        <vo table="cuenta" extended-vo="AccountWithTransactionsVO">
           a.*
           <collection table="transaccion" property="transacciones"> t.* </collection>
         </vo>
@@ -112,14 +114,14 @@
 
     <!-- 6 - Associations -->
 
-    <select method="case6">
+    <select method="findVIPAccount">
 
       <parameter name="type" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
       <parameter name="minBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
       <columns>
-        <vo table="account" extended-vo-class="VIPAccountVO">
+        <vo table="account" extended-vo="VIPAccountVO">
           a.*
           <association table="person" property="person"> p.* </association>
         </vo>
@@ -134,15 +136,15 @@
 
     <!-- 7 - Collections and associations combined -->
 
-    <select method="case7">
+    <select method="findExtendedPerson">
 
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
       <columns>
-        <vo table="person" extended-vo-class="ExtendedPersonVO">
+        <vo table="person" extended-vo="ExtendedPersonVO">
           p.*
-          <collection table="account" property="accounts" extended-vo-class="AccountWithTransactionsVO">
+          <collection table="account" property="accounts" extended-vo="AccountWithTransactionsVO">
             a.*
             <collection table="transaction" property="transactions" alias="t" />
           </collection>
@@ -162,13 +164,13 @@
 
     <!-- Case 8 - Associations & collections without PKs -->
 
-    <select method="case8" multiple-rows="false">
+    <select method="findSingleExpandedAccount" multiple-rows="false">
 
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
       <columns>
-        <vo table="log" id="recorded_by, recorded_at" extended-vo-class="LogWithOfficeVO">
+        <vo table="log" id="recorded_by, recorded_at" extended-vo="LogWithOfficeVO">
           l.*
           <association view="view_office" id="office_id" property="office" alias="o" />
         </vo>
@@ -180,12 +182,12 @@
 
     <!-- Case 9 - Select returns a single row -->
 
-    <select method="case9" multiple-rows="false">
+    <select method="findSingleExpandedAccount" multiple-rows="false">
 
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
-      <columns vo-class="ExpandedAccountVO">
+      <columns vo="ExpandedAccountVO">
         <vo table="account" property="account"> a.* </vo>
         <vo table="person" property="person" alias="p" />
       </columns>

@@ -1,4 +1,4 @@
-package org.hotrod.config.sqlcolumns;
+package org.hotrod.config.structuredcolumns;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -71,6 +71,7 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
     for (Object obj : this.content) {
       try {
         String s = (String) obj; // content part
+        log.info("*** s=" + s);
         if (!SUtils.isEmpty(s)) {
           if (!this.expressions.isEmpty()) {
             this.expressions = this.expressions + " ";
@@ -112,12 +113,21 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
   public void gatherMetadataPhase2(final Connection conn2)
       throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException {
     this.columnsMetadata = this.columnsRetriever.retrieve(conn2);
+    for (StructuredColumnMetadata m : this.columnsMetadata) {
+      log.info(". Column Metadata: " + m.getAlias() + " -> " + m.getColumnName() + " (" + m.getType().getJavaClassName()
+          + ")");
+    }
   }
 
   // Getters
 
   public String getExpressions() {
     return expressions;
+  }
+
+  @Override
+  public String renderColumns() {
+    return this.expressions;
   }
 
 }
