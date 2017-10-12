@@ -79,9 +79,9 @@ public class ObjectDAO {
 
   private Writer w;
 
-  public ObjectDAO(final AbstractDAOTag compositeTag, final DataSetMetadata metadata,
-      final DataSetLayout layout, final MyBatisGenerator generator, final DAOType type, final MyBatisTag myBatisTag,
-      final ObjectVO vo, final Mapper mapper) {
+  public ObjectDAO(final AbstractDAOTag compositeTag, final DataSetMetadata metadata, final DataSetLayout layout,
+      final MyBatisGenerator generator, final DAOType type, final MyBatisTag myBatisTag, final ObjectVO vo,
+      final Mapper mapper) {
     log.debug("init");
     this.compositeTag = compositeTag;
     this.selectTag = null;
@@ -760,11 +760,12 @@ public class ObjectDAO {
       }
     };
 
-    try {
-      println(this.selectTag.renderJavaExpression(4, parameterRenderer) + ";");
-    } catch (InvalidJavaExpressionException e) {
-      throw new ControlledException("Invalid configuration file: " + e.getMessage());
-    }
+    // try {
+    // println(this.selectTag.renderJavaExpression(4, parameterRenderer) + ";");
+    // } catch (InvalidJavaExpressionException e) {
+    // throw new ControlledException("Invalid configuration file: " +
+    // e.getMessage());
+    // }
 
     println();
   }
@@ -1303,11 +1304,11 @@ public class ObjectDAO {
 
     boolean extraInsert = integratesSequences && integratesDefaults && defaults != 0;
 
-    //                          | integrates identities 
-    //                          |   false    |   true
+    // | integrates identities
+    // | false | true
     // -------------------------+------------+-------------
-    // has identities :  false  |     T      |     T
-    //                :  true   |     F      |     T
+    // has identities : false | T | T
+    // : true | F | T
     //
     // ! has identities || integrates identities
 

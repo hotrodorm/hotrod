@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.utils.ClassPackage;
 
 /**
@@ -18,9 +19,9 @@ import org.hotrod.utils.ClassPackage;
  *     AbstractConfigurationTag <-----------------------------------------+
  *      ^                                                 ^               |
  *      |                                                 |               |
- *     AbstractDAOTag <--------------------------+        |               |
- *      ^          ^        ^        ^           |        |               |
- *      |          |        |        |           |        |               |
+ *     AbstractDAOTag <---------------............        |               |
+ *      ^          ^        ^        ^           .        |               |
+ *      |          |        |        |           .        |               |
  * CustomDAOTag  TableTag  ViewTag  EnumTag  SelectTag  QueryMethodTag  SelectMethodTag
  * 
  * </pre>
@@ -91,7 +92,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
     // queries
 
     for (QueryMethodTag q : this.queries) {
-      q.validate();
+      q.validate(daosTag, config, fragmentConfig);
       if (this.declaredMethodNames.contains(q.getJavaMethodName())) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
             "Duplicate java-method-name '" + q.getJavaMethodName()

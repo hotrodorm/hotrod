@@ -16,6 +16,7 @@ import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
+import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -174,6 +175,11 @@ public class HyperSQLAdapter extends DatabaseAdapter {
   public String renderIdentitiesPostfetch(final List<ColumnMetadata> identityGeneratedColumns)
       throws IdentitiesPostFetchNotSupportedException {
     return "call identity()";
+  }
+
+  @Override
+  public String renderAliasedSelectColumn(final StructuredColumnMetadata cm) {
+    return cm.renderSQLIdentifier() + " as " + this.renderSQLName(cm.getAlias());
   }
 
   // @Override

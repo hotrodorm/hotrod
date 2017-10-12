@@ -12,7 +12,7 @@ import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
-import org.hotrod.config.sqlcolumns.ColumnsProducerTag;
+import org.hotrod.config.sqlcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ParameterRenderer;
@@ -37,7 +37,7 @@ public class ColumnsMetadataRetriever {
   private JdbcDatabase db;
   private DatabaseLocation loc;
   private SelectGenerationTag selectGenerationTag;
-  private ColumnsProducerTag columnsProducerTag;
+  private ColumnsProvider columnsProvider;
   private String aliasPrefix;
 
   private String tempViewName;
@@ -45,14 +45,14 @@ public class ColumnsMetadataRetriever {
   // Constructor
 
   public ColumnsMetadataRetriever(final SelectMethodTag selectTag, final DatabaseAdapter adapter, final JdbcDatabase db,
-      final DatabaseLocation loc, final SelectGenerationTag selectGenerationTag,
-      final ColumnsProducerTag columnsProducerTag, final ColumnsPrefixGenerator columnsPrefixGenerator) {
+      final DatabaseLocation loc, final SelectGenerationTag selectGenerationTag, final ColumnsProvider columnsProvider,
+      final ColumnsPrefixGenerator columnsPrefixGenerator) {
     this.selectTag = selectTag;
     this.adapter = adapter;
     this.db = db;
     this.loc = loc;
     this.selectGenerationTag = selectGenerationTag;
-    this.columnsProducerTag = columnsProducerTag;
+    this.columnsProvider = columnsProvider;
     this.aliasPrefix = columnsPrefixGenerator.next();
   }
 
@@ -71,7 +71,7 @@ public class ColumnsMetadataRetriever {
 
     log.debug("prepare view 1");
 
-    String sqlAngle = this.selectTag.renderSQLAngle(JDBCParameterRenderer, this.columnsProducerTag);
+    String sqlAngle = this.selectTag.renderSQLAngle(JDBCParameterRenderer, this.columnsProvider, this.adapter);
     sqlAngle = clean(sqlAngle);
 
     this.tempViewName = this.selectGenerationTag.getNextTempViewName();

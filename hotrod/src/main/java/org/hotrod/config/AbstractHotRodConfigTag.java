@@ -20,10 +20,10 @@ import org.hotrod.ant.UncontrolledException;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
-import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
@@ -209,19 +209,23 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     this.facets.addAll(other.facets);
   }
 
-  public void validateAgainstDatabase(final JdbcDatabase db, final Connection conn, final DatabaseAdapter adapter)
+  public void validateAgainstDatabase(final HotRodGenerator generator, final Connection conn)
       throws InvalidConfigurationFileException {
 
     for (TableTag t : this.getTables()) {
-      t.validateAgainstDatabase(db, adapter);
+      t.validateAgainstDatabase(generator);
     }
 
     for (ViewTag v : this.getViews()) {
-      v.validateAgainstDatabase(db, adapter);
+      v.validateAgainstDatabase(generator);
     }
 
     for (EnumTag e : this.getEnums()) {
-      e.validateAgainstDatabase(db, conn, adapter);
+      e.validateAgainstDatabase(generator, conn);
+    }
+
+    for (CustomDAOTag d : this.getDAOs()) {
+      d.validateAgainstDatabase(generator, conn);
     }
 
   }

@@ -154,7 +154,7 @@
       </xsd:choice>
     </xsd:sequence>
     <xsd:attribute name="method" type="xsd:string" use="required" />
-    <xsd:attribute name="vo-class" type="xsd:string" />
+    <xsd:attribute name="vo" type="xsd:string" />
     <xsd:attribute name="multiple-rows" type="xsd:string" />
   </xsd:complexType>
 
@@ -164,8 +164,10 @@
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
       <xsd:element name="vo" type="vo-type" />
       <xsd:element name="expressions" type="expressions-type" />
+      <xsd:element name="association" type="association-type" />
+      <xsd:element name="collection" type="collection-type" />
     </xsd:choice>
-    <xsd:attribute name="vo-class" type="xsd:string" />
+    <xsd:attribute name="vo" type="xsd:string" />
   </xsd:complexType>
 
   <!-- select method - expressions -->
@@ -176,48 +178,48 @@
 
   <xsd:complexType name="vo-type" mixed="true">
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="collection" type="collection-type" />
-      <xsd:element name="association" type="association-type" />
       <xsd:element name="expressions" type="expressions-type" />
+      <xsd:element name="association" type="association-type" />
+      <xsd:element name="collection" type="collection-type" />
     </xsd:choice>
     <xsd:attribute name="table" type="xsd:string" />
     <xsd:attribute name="view" type="xsd:string" />
     <xsd:attribute name="id" type="xsd:string" />
     <xsd:attribute name="property" type="xsd:string" />
     <xsd:attribute name="alias" type="xsd:string" />
-    <xsd:attribute name="extended-vo-class" type="xsd:string" />
+    <xsd:attribute name="extended-vo" type="xsd:string" />
   </xsd:complexType>
 
   <!-- select method - collection -->
 
   <xsd:complexType name="collection-type" mixed="true">
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="collection" type="collection-type" />
-      <xsd:element name="association" type="association-type" />
       <xsd:element name="expressions" type="expressions-type" />
+      <xsd:element name="association" type="association-type" />
+      <xsd:element name="collection" type="collection-type" />
     </xsd:choice>
     <xsd:attribute name="table" type="xsd:string" />
     <xsd:attribute name="view" type="xsd:string" />
     <xsd:attribute name="id" type="xsd:string" />
     <xsd:attribute name="property" type="xsd:string" />
     <xsd:attribute name="alias" type="xsd:string" />
-    <xsd:attribute name="extended-vo-class" type="xsd:string" />
+    <xsd:attribute name="extended-vo" type="xsd:string" />
   </xsd:complexType>
 
   <!-- select method - association -->
 
   <xsd:complexType name="association-type" mixed="true">
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="collection" type="collection-type" />
-      <xsd:element name="association" type="association-type" />
       <xsd:element name="expressions" type="expressions-type" />
+      <xsd:element name="association" type="association-type" />
+      <xsd:element name="collection" type="collection-type" />
     </xsd:choice>
     <xsd:attribute name="table" type="xsd:string" />
     <xsd:attribute name="view" type="xsd:string" />
     <xsd:attribute name="id" type="xsd:string" />
     <xsd:attribute name="property" type="xsd:string" />
     <xsd:attribute name="alias" type="xsd:string" />
-    <xsd:attribute name="extended-vo-class" type="xsd:string" />
+    <xsd:attribute name="extended-vo" type="xsd:string" />
   </xsd:complexType>
 
   <!-- complement -->

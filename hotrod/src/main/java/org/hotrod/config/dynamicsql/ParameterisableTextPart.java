@@ -136,16 +136,6 @@ public class ParameterisableTextPart extends DynamicSQLPart {
   }
 
   @Override
-  public String renderStatic(final ParameterRenderer parameterRenderer) {
-    StringBuilder sb = new StringBuilder();
-    for (SQLSegment s : this.segments) {
-      sb.append(s.renderStatic(parameterRenderer));
-    }
-    String text = sb.toString();
-    return text;
-  }
-
-  @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
     for (SQLSegment s : this.segments) {

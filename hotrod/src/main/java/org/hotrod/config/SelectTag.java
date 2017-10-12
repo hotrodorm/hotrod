@@ -13,7 +13,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
 import org.hotrod.config.dynamicsql.CollectionOfPartsTag;
-import org.hotrod.config.dynamicsql.ComplementTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.dynamicsql.LiteralTextPart;
@@ -114,7 +113,7 @@ public class SelectTag extends AbstractDAOTag {
             this.columns.add(col);
           } catch (ClassCastException e3) {
             try {
-              ComplementTag p = (ComplementTag) obj; // complement
+              ComplementDAOTag p = (ComplementDAOTag) obj; // complement
               this.parts.add(p);
             } catch (ClassCastException e4) {
               throw new InvalidConfigurationFileException(super.getSourceLocation(), "The body of the tag <"
@@ -148,7 +147,7 @@ public class SelectTag extends AbstractDAOTag {
     // content text and complement
 
     for (DynamicSQLPart p : this.parts) {
-      p.validate(this.parameterDefinitions);
+      p.validate(daosTag, config, fragmentConfig, this.parameterDefinitions);
     }
 
     // all validations cleared
@@ -207,10 +206,11 @@ public class SelectTag extends AbstractDAOTag {
     return sb.toString();
   }
 
-  public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-    return this.aggregatedPart.renderJavaExpression(margin, parameterRenderer);
-  }
+//  public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer)
+//      throws InvalidJavaExpressionException {
+//    // return this.aggregatedPart.renderJavaExpression(margin,
+//    // parameterRenderer);
+//  }
 
   public List<ParameterTag> getParameterDefinitions() {
     return this.parameterDefinitions.getDefinitions();

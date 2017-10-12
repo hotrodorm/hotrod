@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.UncontrolledException;
+import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
@@ -24,13 +25,14 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 
 @XmlRootElement(name = "vo")
-public class VOTag extends ColumnsProducerTag {
+public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   // Constants
 
@@ -52,7 +54,7 @@ public class VOTag extends ColumnsProducerTag {
   private String view = null;
   private String property = null;
   private String alias = null;
-  private String extendedVOClass = null;
+  private String extendedVO = null;
   private List<String> body = null;
 
   private TableDataSetMetadata tableMetadata;
@@ -64,6 +66,8 @@ public class VOTag extends ColumnsProducerTag {
 
   private boolean existingVO;
   private String voClass;
+
+  private ColumnsMetadataRetriever cmr;
 
   // Constructors
 
@@ -97,15 +101,16 @@ public class VOTag extends ColumnsProducerTag {
     this.alias = alias;
   }
 
-  @XmlAttribute(name = "extended-vo-class")
-  public void setExtendedClass(final String extendedVOClass) {
-    this.extendedVOClass = extendedVOClass;
+  @XmlAttribute(name = "extended-vo")
+  public void setExtendedVO(final String extendedVO) {
+    this.extendedVO = extendedVO;
   }
 
   // Behavior
 
+  @Override
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final boolean singleVO, final HotRodGenerator generator)
+      final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult)
       throws InvalidConfigurationFileException {
 
     log.debug("validate");
@@ -156,39 +161,31 @@ public class VOTag extends ColumnsProducerTag {
         throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid 'table' attribute on the <"
             + super.getTagName() + "> tag. When specified this attribute must not be empty.");
       }
-      this.tableMetadata = generator.findTableMetadata(this.table);
-      if (this.tableMetadata == null) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Could not find table '" + this.table
-            + "', specified by the 'table' attribute on the <" + super.getTagName() + "> tag.");
-      }
-      this.viewMetadata = null;
     } else {
       if (SUtils.isEmpty(this.view)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid 'view' attribute on the <"
             + super.getTagName() + "> tag. When specified this attribute must not be empty.");
-      }
-      this.tableMetadata = null;
-      this.viewMetadata = generator.findViewMetadata(this.view);
-      if (this.viewMetadata == null) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Could not find view '" + this.table
-            + "', specified by the 'view' attribute on the <" + super.getTagName() + "> tag.");
       }
     }
 
     // property
 
     if (this.property == null) {
-      if (!singleVO) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "Missing 'property' attribute on <" + super.getTagName() + "> tag. This attribute can only be ommitted "
-                + "when the <columns> tag includes a single '<vo> tag and no <expressions> tag.");
+      if (!singleVOResult) {
+        if (super.getTagName().equals("vo")) {
+          throw new InvalidConfigurationFileException(super.getSourceLocation(), "Missing 'property' attribute on <"
+              + super.getTagName() + "> tag. This attribute can only be omitted "
+              + "when the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags.");
+        } else {
+          throw new InvalidConfigurationFileException(super.getSourceLocation(),
+              "Missing required 'property' attribute on <" + super.getTagName() + "> tag.");
+        }
       }
     } else {
-      if (singleVO) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "The 'property' attribute on the <" + super.getTagName()
-                + "> tag should not be specified. This attribute should be ommitted "
-                + "when the <columns> tag includes a single <vo> tag and no <expressions> tag.");
+      if (singleVOResult) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(), "The 'property' attribute on the <"
+            + super.getTagName() + "> tag should not be specified. This attribute should be omitted "
+            + "when the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags.");
       }
       if (!this.property.matches(Patterns.VALID_JAVA_PROPERTY)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
@@ -207,23 +204,23 @@ public class VOTag extends ColumnsProducerTag {
       }
     }
 
-    // extended-class
+    // extended-vo
 
-    if (this.extendedVOClass == null) {
+    if (this.extendedVO == null) {
       if (!this.associations.isEmpty() || !this.collections.isEmpty() || !this.expressions.isEmpty()) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "The 'extended-vo-class' attribute must be specified when the <" + super.getTagName()
+            "The 'extended-vo' attribute must be specified when the <" + super.getTagName()
                 + "> tag includes one or more <association>, <colection>, and/or <expressions> tags.");
       }
     } else {
       if (this.associations.isEmpty() && this.collections.isEmpty() && this.expressions.isEmpty()) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "The 'extended-vo-class' attribute must not be specified when the <" + super.getTagName()
+            "The 'extended-vo' attribute must not be specified when the <" + super.getTagName()
                 + "> tag does not include any <association>, <colection>, or <expressions> tags.");
       }
-      if (!this.extendedVOClass.matches(Patterns.VALID_JAVA_CLASS)) {
+      if (!this.extendedVO.matches(Patterns.VALID_JAVA_CLASS)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "Invalid extended-vo-class value '" + this.extendedVOClass + "' on <" + super.getTagName()
+            "Invalid 'extended-vo' attribute value '" + this.extendedVO + "' on the <" + super.getTagName()
                 + "> tag. A Java class name must start with an upper case letter, "
                 + "and continue with letters, digits, and/or underscores.");
       }
@@ -238,27 +235,66 @@ public class VOTag extends ColumnsProducerTag {
       }
     } else {
       if (this.alias != null) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "When a <" + this.getTagName()
-            + "> tag includes a list of columns in its body, it cannot specify an 'alias' attribute.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "When a <" + this.getTagName()
+                + "> tag includes a list of columns in its body, it cannot specify an 'alias' attribute. "
+                + "Remove either the body of the <" + this.getTagName() + "> tag or the 'alias' attribute.");
       }
-    }
-
-    // collections
-
-    for (CollectionTag c : this.collections) {
-      c.validate(daosTag, config, fragmentConfig, false, generator);
-    }
-
-    // associations
-
-    for (AssociationTag a : this.associations) {
-      a.validate(daosTag, config, fragmentConfig, false, generator);
     }
 
     // expressions
 
     for (ExpressionsTag exp : this.expressions) {
-      exp.validate(config);
+      exp.validate(daosTag, config, fragmentConfig, false);
+    }
+
+    // associations
+
+    for (AssociationTag a : this.associations) {
+      a.validate(daosTag, config, fragmentConfig, false);
+    }
+
+    // collections
+
+    for (CollectionTag c : this.collections) {
+      c.validate(daosTag, config, fragmentConfig, false);
+    }
+
+  }
+
+  public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
+    if (this.table != null) {
+      this.tableMetadata = generator.findTableMetadata(this.table);
+      if (this.tableMetadata == null) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Could not find table '" + this.table
+            + "', specified by the 'table' attribute on the <" + super.getTagName() + "> tag.");
+      }
+      this.viewMetadata = null;
+    } else {
+      this.viewMetadata = generator.findViewMetadata(this.view);
+      if (this.viewMetadata == null) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Could not find view '" + this.table
+            + "', specified by the 'view' attribute on the <" + super.getTagName() + "> tag.");
+      }
+      this.tableMetadata = null;
+    }
+
+    // collections
+
+    for (CollectionTag c : this.collections) {
+      c.validateAgainstDatabase(generator);
+    }
+
+    // associations
+
+    for (AssociationTag a : this.associations) {
+      a.validateAgainstDatabase(generator);
+    }
+
+    // expressions
+
+    for (ExpressionsTag exp : this.expressions) {
+      exp.validateAgainstDatabase(generator);
     }
 
   }
@@ -273,19 +309,23 @@ public class VOTag extends ColumnsProducerTag {
     if (this.expressions.isEmpty() && this.collections.isEmpty() && this.associations.isEmpty()) {
 
       this.existingVO = true;
-      this.voClass = this.table == null ? this.tableMetadata.getIdentifier().getJavaClassIdentifier()
+      this.voClass = this.table != null ? this.tableMetadata.getIdentifier().getJavaClassIdentifier()
           : this.viewMetadata.getIdentifier().getJavaClassIdentifier();
 
-      if (this.body.isEmpty()) {
+      String b = this.compileBody();
+      if (this.body.isEmpty() || b.equals("*")) {
+        // all columns from the dataset
 
       } else {
-
+        // specific columns
+        this.cmr = new ColumnsMetadataRetriever(selectTag, adapter, db, loc, selectGenerationTag, this,
+            columnsPrefixGenerator);
       }
 
     } else {
 
       this.existingVO = false;
-      this.voClass = this.extendedVOClass;
+      this.voClass = this.extendedVO;
 
       for (ExpressionsTag exp : this.expressions) {
         exp.gatherMetadataPhase1(selectTag, adapter, db, loc, selectGenerationTag, columnsPrefixGenerator, conn1);
@@ -321,6 +361,32 @@ public class VOTag extends ColumnsProducerTag {
 
   }
 
+  // Utilities
+
+  private String compileBody() {
+    if (this.body == null) {
+      return null;
+    }
+    StringBuilder sb = new StringBuilder();
+    boolean endedWithComma = false;
+    boolean first = true;
+    for (String s : this.body) {
+      String t = s.trim();
+      if (!t.isEmpty()) {
+        if (first) {
+          first = false;
+        } else {
+          if (!t.startsWith(",") && !endedWithComma) {
+            sb.append(", ");
+          }
+          sb.append(t);
+        }
+        endedWithComma = t.endsWith(",");
+      }
+    }
+    return sb.toString();
+  }
+
   // Getters
 
   public String getTable() {
@@ -340,7 +406,7 @@ public class VOTag extends ColumnsProducerTag {
   }
 
   public String getExtendedVOClass() {
-    return extendedVOClass;
+    return extendedVO;
   }
 
   public List<CollectionTag> getCollections() {

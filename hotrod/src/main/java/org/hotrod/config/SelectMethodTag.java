@@ -12,16 +12,12 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.dynamicsql.CollectionOfPartsTag;
-import org.hotrod.config.dynamicsql.ComplementTag;
-import org.hotrod.config.dynamicsql.DynamicSQLPart;
-import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;Part;
-import org.hotrod.config.sqlcolumns.ColumnsProd
-import org.hotrod.config.sqlcolumns.ColumnsProducerTag;
-import org.hotrod.config.dynamicsql.LiteralTextucerTag;
+import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
+import org.hotrod.config.sqlcolumns.ColumnsProvider;
 import org.hotrod.config.sqlcolumns.ColumnsTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.SelectMethodDataSetMetadata;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
@@ -41,7 +37,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
   // Properties
 
   private String method = null;
-  private String voClass = null;
+  private String vo = null;
   private String sMultipleRows = null;
 
   private SelectMethodDataSetMetadata dataSetMetadata = null;
@@ -62,9 +58,8 @@ public class SelectMethodTag extends AbstractConfigurationTag {
   private boolean multipleRows;
   protected ParameterDefinitions parameters = null;
   protected List<ColumnTag> columns = null;
-  protected List<DynamicSQLPart> parts = null;
-  private List<LiteralTextPart> foundationParts = null;
-  private DynamicSQLPart aggregatedPart = null;
+  protected List<EnhancedSQLTag> parts = null;
+  private EnhancedSQLTag aggregatedPart = null;
   private ColumnsTag structuredColumns = null;
 
   private HotRodFragmentConfigTag fragmentConfig = null;
@@ -82,9 +77,9 @@ public class SelectMethodTag extends AbstractConfigurationTag {
     this.method = method;
   }
 
-  @XmlAttribute(name = "vo-class")
-  public void setVoClass(final String voClass) {
-    this.voClass = voClass;
+  @XmlAttribute(name = "vo")
+  public void setVO(final String vo) {
+    this.vo = vo;
   }
 
   @XmlAttribute(name = "multiple-rows")
@@ -101,8 +96,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
 
     // Sort: content parts, columns, parameters, complements
 
-    this.parts = new ArrayList<DynamicSQLPart>();
-    this.foundationParts = new ArrayList<LiteralTextPart>();
+    this.parts = new ArrayList<EnhancedSQLTag>();
 
     this.columns = new ArrayList<ColumnTag>();
     this.parameters = new ParameterDefinitions();
@@ -110,9 +104,9 @@ public class SelectMethodTag extends AbstractConfigurationTag {
     for (Object obj : this.content) {
       try {
         String s = (String) obj; // content part
-        LiteralTextPart p = new LiteralTextPart(super.getSourceLocation(), s);
+        VerbatimTextPart p = new VerbatimTextPart(s);
         this.parts.add(p);
-        this.foundationParts.add(p);
+        // this.foundationParts.add(p);
       } catch (ClassCastException e1) {
         try {
           ParameterTag param = (ParameterTag) obj; // parameter
@@ -129,6 +123,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
               try {
                 ColumnsTag p = (ColumnsTag) obj; // columns
                 this.structuredColumns = p;
+                this.parts.add(p);
               } catch (ClassCastException e5) {
                 throw new InvalidConfigurationFileException(super.getSourceLocation(), "The body of the tag <"
                     + super.getTagName() + "> has an invalid tag (of class '" + obj.getClass().getName() + "').");
@@ -140,7 +135,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
     }
 
     if (this.parts.size() != 1) {
-      this.aggregatedPart = new CollectionOfPartsTag(this.parts);
+      this.aggregatedPart = new SequenceOfParts(this.parts);
     } else {
       this.aggregatedPart = this.parts.get(0);
     }
@@ -158,26 +153,26 @@ public class SelectMethodTag extends AbstractConfigurationTag {
               + "and continue with letters, digits, and/or underscores.");
     }
 
-    // vo-class
+    // vo
 
-    if (this.voClass == null) {
+    if (this.vo == null) {
       if (this.structuredColumns == null) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "Missing vo-class attribute on the <" + this.getTagName()
-                + "> tag. The vo-class attribute must be specified when no inner <columns> tag is present.");
+            "Missing 'vo' attribute in the <" + this.getTagName()
+                + "> tag. The 'vo' attribute must be specified when no inner <columns> tag is present.");
       }
     } else {
       if (this.structuredColumns != null) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid vo-class attribute. "
-            + "When the vo-class attribute is specified no inner <columns> tag can be used. Use one or the other but not both.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid 'vo' attribute. "
+            + "When the 'vo' attribute is specified no inner <columns> tag can be used. Use one or the other but not both.");
       }
-      if (SUtils.isEmpty(this.voClass)) {
+      if (SUtils.isEmpty(this.vo)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "When specified, the 'vo-class' attribute cannot be empty.");
+            "When specified, the 'vo' attribute cannot be empty.");
       }
-      if (!this.voClass.matches(Patterns.VALID_JAVA_CLASS)) {
+      if (!this.vo.matches(Patterns.VALID_JAVA_CLASS)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "Invalid vo-class attribute with value '" + this.voClass + "' on tag <" + super.getTagName()
+            "Invalid 'vo' attribute with value '" + this.vo + "' in the tag <" + super.getTagName()
                 + ">. A Java class name must start with an upper case letter, "
                 + "and continue with letters, digits, and/or underscores.");
       }
@@ -199,7 +194,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
       }
     }
 
-    // columns
+    // <column> tags
 
     Set<ColumnTag> cols = new HashSet<ColumnTag>();
     for (ColumnTag c : this.columns) {
@@ -212,25 +207,25 @@ public class SelectMethodTag extends AbstractConfigurationTag {
       cols.add(c);
     }
 
-    // parameters
+    // <parameter> tags
 
     this.parameters.validate();
 
-    // content parts and complement
+    // Literal SQL, <columns>, <complement> tags
 
-    for (DynamicSQLPart p : this.parts) {
-      p.validate(this.parameters);
-    }
-
-    // structured columns
-
-    if (this.structuredColumns != null) {
-      this.structuredColumns.validate(daosTag, config, fragmentConfig);
+    for (EnhancedSQLTag p : this.parts) {
+      p.validate(daosTag, config, fragmentConfig, this.parameters);
     }
 
     // all validations cleared
 
     log.debug("columns=" + this.columns.size());
+  }
+
+  public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
+    for (EnhancedSQLTag p : this.parts) {
+      p.validateAgainstDatabase(generator);
+    }
   }
 
   public void setDataSetMetadata(final SelectMethodDataSetMetadata dataSetMetadata) {
@@ -243,8 +238,8 @@ public class SelectMethodTag extends AbstractConfigurationTag {
     return method;
   }
 
-  public String getVoClass() {
-    return voClass;
+  public String getVO() {
+    return vo;
   }
 
   public boolean isMultipleRows() {
@@ -255,12 +250,8 @@ public class SelectMethodTag extends AbstractConfigurationTag {
     return parameters;
   }
 
-  public List<DynamicSQLPart> getParts() {
+  public List<EnhancedSQLTag> getParts() {
     return parts;
-  }
-
-  public List<LiteralTextPart> getFoundationParts() {
-    return foundationParts;
   }
 
   public ColumnsTag getStructuredColumns() {
@@ -296,28 +287,11 @@ public class SelectMethodTag extends AbstractConfigurationTag {
     return columns;
   }
 
-  public String getSQLFoundation(final ParameterRenderer parameterRenderer) {
+  public String renderSQLAngle(final ParameterRenderer parameterRenderer, final ColumnsProvider cp,
+      final DatabaseAdapter adapter) {
     StringBuilder sb = new StringBuilder();
-    for (LiteralTextPart tp : this.foundationParts) {
-      sb.append(tp.renderStatic(null));
-    }
-    String literal = sb.toString();
-    return literal;
-  }
-
-  // public String getSQLSubset(final ParameterRenderer parameterRenderer) {
-  // StringBuilder sb = new StringBuilder();
-  // for (LiteralTextPart tp : this.foundationParts) {
-  // sb.append(tp.renderStatic(null));
-  // }
-  // String literal = sb.toString();
-  // return literal;
-  // }
-
-  public String renderSQLAngle(final ParameterRenderer parameterRenderer, final ColumnsProducerTag rc) {
-    StringBuilder sb = new StringBuilder();
-    for (LiteralTextPart tp : this.foundationParts) {
-      sb.append(tp.renderStatic(null));
+    for (EnhancedSQLTag p : this.parts) {
+      sb.append(p.renderSQLAngle(adapter, cp));
     }
     String literal = sb.toString();
     return literal;
@@ -325,7 +299,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
 
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
-    for (DynamicSQLPart p : this.parts) {
+    for (EnhancedSQLTag p : this.parts) {
       String st = p.renderStatic(parameterRenderer);
       sb.append(st);
     }
@@ -334,7 +308,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
 
   public String renderXML(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
-    for (DynamicSQLPart p : this.parts) {
+    for (EnhancedSQLTag p : this.parts) {
       sb.append(p.renderXML(parameterRenderer));
     }
     return sb.toString();

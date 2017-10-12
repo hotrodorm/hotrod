@@ -76,7 +76,8 @@ public class QueryMethodTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate() throws InvalidConfigurationFileException {
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
 
     // method-name
 
@@ -100,7 +101,7 @@ public class QueryMethodTag extends AbstractConfigurationTag {
       try {
         String s = (String) obj; // content text
         DynamicSQLPart p = new ParameterisableTextPart(s, this.getSourceLocation(), this.parameterDefinitions);
-        p.validate(this.parameterDefinitions);
+        p.validate(daosTag, config, fragmentConfig, this.parameterDefinitions);
         this.parts.add(p);
       } catch (ClassCastException e1) {
         try {
@@ -110,7 +111,7 @@ public class QueryMethodTag extends AbstractConfigurationTag {
         } catch (ClassCastException e2) {
           try {
             DynamicSQLPart p = (DynamicSQLPart) obj; // dynamic SQL part
-            p.validate(this.parameterDefinitions);
+            p.validate(daosTag, config, fragmentConfig, this.parameterDefinitions);
             this.parts.add(p);
           } catch (ClassCastException e3) {
             throw new InvalidConfigurationFileException(super.getSourceLocation(), "The body of the tag <"

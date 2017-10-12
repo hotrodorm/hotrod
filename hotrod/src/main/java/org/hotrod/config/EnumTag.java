@@ -19,11 +19,11 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.DbUtils;
 import org.hotrod.utils.ValueTypeFactory;
 import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
@@ -159,12 +159,12 @@ public class EnumTag extends AbstractDAOTag {
     }
   }
 
-  public void validateAgainstDatabase(final JdbcDatabase db, final Connection conn, final DatabaseAdapter adapter)
+  public void validateAgainstDatabase(final HotRodGenerator generator, final Connection conn)
       throws InvalidConfigurationFileException {
 
     // Validate the table existence
 
-    this.table = DbUtils.findTable(db, this.name, adapter);
+    this.table = generator.findJdbcTable(this.name);
     if (this.table == null) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(), "Could not find table '" + this.name
           + "' as specified in the attribute 'name' of the tag <" + super.getTagName() + ">.");
@@ -175,7 +175,7 @@ public class EnumTag extends AbstractDAOTag {
     this.extraColumns = new LinkedHashMap<JdbcColumn, EnumColumn>();
 
     for (JdbcColumn c : this.table.getColumns()) {
-      ValueTypeManager<?> m = resolveValueTypeManager(c, adapter);
+      ValueTypeManager<?> m = resolveValueTypeManager(c, generator.getAdapter());
       this.extraColumns.put(c, new EnumColumn(c, m));
     }
 
@@ -200,7 +200,7 @@ public class EnumTag extends AbstractDAOTag {
 
     // Validate the name column
 
-    JdbcColumn nameCol = DbUtils.findColumn(this.table, this.nameCol, adapter);
+    JdbcColumn nameCol = generator.findJdbcColumn(this.table, this.nameCol);
     if (nameCol == null) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Could not find column '" + this.nameCol + "' on table '" + this.name
@@ -212,7 +212,7 @@ public class EnumTag extends AbstractDAOTag {
 
     // Retrieve values
 
-    this.retrieveTableValues(db, conn);
+    this.retrieveTableValues(generator.getJdbcDatabase(), conn);
 
     // Retrieve non-persistent values
 

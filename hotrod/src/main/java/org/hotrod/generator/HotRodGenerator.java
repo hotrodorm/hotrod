@@ -18,6 +18,7 @@ import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
+import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SelectTag;
 import org.hotrod.config.SequenceMethodTag;
@@ -39,13 +40,15 @@ import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.metadata.SelectMethodDataSetMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
-import org.hotrod.metadata.VOMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
+import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.DatabaseObjectFilter;
+import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase.DatabaseConnectionVersion;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
@@ -178,7 +181,7 @@ public abstract class HotRodGenerator {
 
       try {
 
-        this.config.validateAgainstDatabase(this.db, conn, this.adapter);
+        this.config.validateAgainstDatabase(this, conn);
 
       } catch (InvalidConfigurationFileException e) {
         String message = (e.getSourceLocation() == null ? ""
@@ -283,10 +286,21 @@ public abstract class HotRodGenerator {
           } else {
 
             // Retrieve the VO class
-            
-            ct.prepareViews();
-            
-            
+
+            SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
+                .getSelectGeneration();
+            ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator();
+
+            try {
+              ct.gatherMetadataPhase1(smt, this.adapter, this.db, loc, selectGenerationTag, columnsPrefixGenerator,
+                  conn);
+            } catch (InvalidSQLException e) {
+              throw new ControlledException("Could not retrieve metadata for <" + smt.getTagName() + "> on "
+                  + smt.getSourceLocation().render() + "; could not create temporary SQL view for it.\n" + "[ "
+                  + e.getMessage() + " ]\n" + "* Do all resulting columns have different and valid names?\n"
+                  + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
+                  + "\n--- end SQL ---");
+            }
 
             String voClass;
             if (ct.getVos().size() == 1 && ct.getExpressions().isEmpty()) {
@@ -455,23 +469,6 @@ public abstract class HotRodGenerator {
     logm("Metadata initialized.");
 
     displayGenerationMetadata(config);
-
-  }
-
-  // TODO
-
-  private VOMetadata prepareTempView(final VOTag voTag) {
-    String tempViewName = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
-        .getNextTempViewName();
-
-    SelectMethodDataSetMetadata sm = new SelectMethodDataSetMetadata(this.db, this.adapter, this.loc, smt, tempViewName,
-        this.config);
-    smt.setDataSetMetadata(sm);
-    sm.prepareUnstructuredView(conn);
-
-  }
-
-  private String prepareTempView(final ExpressionsTag expressionsTag) {
 
   }
 
@@ -718,6 +715,33 @@ public abstract class HotRodGenerator {
     return null;
   }
 
+  public JdbcTable findJdbcTable(final String name) {
+    for (JdbcTable t : this.db.getTables()) {
+      if (this.adapter.isTableIdentifier(t.getName(), name)) {
+        return t;
+      }
+    }
+    return null;
+  }
+
+  public JdbcTable findJdbcView(final String name) {
+    for (JdbcTable t : this.db.getViews()) {
+      if (this.adapter.isTableIdentifier(t.getName(), name)) {
+        return t;
+      }
+    }
+    return null;
+  }
+
+  public JdbcColumn findJdbcColumn(final JdbcTable t, final String name) {
+    for (JdbcColumn c : t.getColumns()) {
+      if (this.adapter.isColumnIdentifier(c.getName(), name)) {
+        return c;
+      }
+    }
+    return null;
+  }
+
   public TableDataSetMetadata findViewMetadata(final String name) {
     for (TableDataSetMetadata tm : this.views) {
       if (this.adapter.isTableIdentifier(tm.getIdentifier().getSQLIdentifier(), name)) {
@@ -820,6 +844,10 @@ public abstract class HotRodGenerator {
 
   public DatabaseAdapter getAdapter() {
     return adapter;
+  }
+
+  public JdbcDatabase getJdbcDatabase() {
+    return this.db;
   }
 
   // Abstract methods

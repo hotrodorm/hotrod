@@ -4,12 +4,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.runtime.util.SUtils;
-import org.hotrod.utils.DbUtils;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
-import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
@@ -56,14 +54,14 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
 
   }
 
-  public void validateAgainstDatabase(final JdbcDatabase db, final DatabaseAdapter adapter, final String name,
-      final JdbcTable t) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final HotRodGenerator generator, final String name, final JdbcTable t)
+      throws InvalidConfigurationFileException {
 
     this.jdbcTable = t;
 
     // Check the optimistic locking column exists
 
-    this.jdbcColumn = DbUtils.findColumn(this.jdbcTable, this.name, adapter);
+    this.jdbcColumn = generator.findJdbcColumn(this.jdbcTable, this.name);
     if (this.jdbcColumn == null) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Could not find column '" + this.name + "' for table '" + name
@@ -72,7 +70,7 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
 
     // Check the optimistic locking column is integer-like
 
-    if (!adapter.isSerial(this.jdbcColumn)) {
+    if (generator.getAdapter().isSerial(this.jdbcColumn)) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid type for version control columm '"
           + this.name + "' on table '" + name + ". ' A version control column must be of an integer-like number type.");
     }

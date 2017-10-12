@@ -10,26 +10,35 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.UncontrolledException;
+import org.hotrod.config.AbstractConfigurationTag;
+import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 
 @XmlRootElement(name = "expressions")
-public class ExpressionsTag extends ColumnsProducerTag {
+public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   // Constants
 
   private static final Logger log = Logger.getLogger(ExpressionsTag.class);
 
   // Properties
+
+  protected ColumnsMetadataRetriever columnsRetriever;
+  private List<StructuredColumnMetadata> columnsMetadata;
 
   // Properties - Primitive content parsing by JAXB
 
@@ -50,7 +59,10 @@ public class ExpressionsTag extends ColumnsProducerTag {
 
   // Behavior
 
-  public void validate(final HotRodConfigTag config) throws InvalidConfigurationFileException {
+  @Override
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult)
+      throws InvalidConfigurationFileException {
 
     log.debug("validate");
 
@@ -80,19 +92,26 @@ public class ExpressionsTag extends ColumnsProducerTag {
 
   }
 
+  @Override
+  public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
+    // Nothing to do
+  }
+
   // Meta data gathering
 
   @Override
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final DatabaseAdapter adapter,
       final JdbcDatabase db, final DatabaseLocation loc, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final Connection conn1) throws InvalidSQLException {
-    super.prepareRetrieval(selectTag, adapter, db, loc, selectGenerationTag, columnsPrefixGenerator, conn1);
+    this.columnsRetriever = new ColumnsMetadataRetriever(selectTag, adapter, db, loc, selectGenerationTag, this,
+        columnsPrefixGenerator);
+    this.columnsRetriever.prepareRetrieval(conn1);
   }
 
   @Override
   public void gatherMetadataPhase2(final Connection conn2)
       throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException {
-    super.retrieve(conn2);
+    this.columnsMetadata = this.columnsRetriever.retrieve(conn2);
   }
 
   // Getters

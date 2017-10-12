@@ -13,11 +13,11 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
-import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 @XmlRootElement(name = "view")
@@ -116,10 +116,9 @@ public class ViewTag extends AbstractDAOTag {
 
   }
 
-  public void validateAgainstDatabase(final JdbcDatabase db, final DatabaseAdapter adapter)
-      throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
 
-    JdbcTable v = this.findJdbcView(db, adapter);
+    JdbcTable v = generator.findJdbcTable(this.name);
     if (v == null) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Could not find database view '" + this.name + "' as specified in the <view> tag of the configuration file. "
@@ -129,7 +128,7 @@ public class ViewTag extends AbstractDAOTag {
     }
 
     for (ColumnTag c : this.columns) {
-      JdbcColumn jc = this.findJdbcColumn(c.getName(), v, adapter);
+      JdbcColumn jc = generator.findJdbcColumn(v, c.getName());
       if (jc == null) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(), "Could not find column '" + c.getName()
             + "' on database view '" + this.name + "', as specified in the <column> tag of the configuration file. ");
@@ -139,24 +138,6 @@ public class ViewTag extends AbstractDAOTag {
   }
 
   // Search
-
-  private JdbcTable findJdbcView(final JdbcDatabase db, final DatabaseAdapter adapter) {
-    for (JdbcTable v : db.getViews()) {
-      if (adapter.isTableIdentifier(v.getName(), this.name)) {
-        return v;
-      }
-    }
-    return null;
-  }
-
-  private JdbcColumn findJdbcColumn(final String name, final JdbcTable t, final DatabaseAdapter adapter) {
-    for (JdbcColumn jc : t.getColumns()) {
-      if (adapter.isColumnIdentifier(jc.getName(), name)) {
-        return jc;
-      }
-    }
-    return null;
-  }
 
   public ColumnTag findColumnTag(final String columnName, final DatabaseAdapter adapter) {
     for (ColumnTag ct : this.columns) {

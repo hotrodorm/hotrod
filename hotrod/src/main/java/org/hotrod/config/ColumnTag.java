@@ -7,10 +7,10 @@ import org.apache.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.JdbcTypes;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
-import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 @XmlRootElement(name = "column")
@@ -265,13 +265,12 @@ public class ColumnTag extends AbstractConfigurationTag {
 
   }
 
-  void populateJdbcElements(final JdbcDatabase db, final DatabaseAdapter adapter, final JdbcTable t)
+  void populateJdbcElements(final HotRodGenerator generator, final JdbcTable t)
       throws InvalidConfigurationFileException {
-    this.column = findJdbcColumn(db, adapter, t);
+    this.column = generator.findJdbcColumn(t, this.name);
   }
 
-  public void validateAgainstDatabase(final JdbcDatabase db, final DatabaseAdapter adapter)
-      throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
     if (this.sequence != null) {
       if (this.column.getAutogenerationType() != null && this.column.getAutogenerationType().isIdentity()) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
@@ -279,15 +278,6 @@ public class ColumnTag extends AbstractConfigurationTag {
                 + "'. The 'sequence' attribute cannot be specified on identity or auto_increment columns.");
       }
     }
-  }
-
-  private JdbcColumn findJdbcColumn(final JdbcDatabase db, final DatabaseAdapter adapter, final JdbcTable t) {
-    for (JdbcColumn c : t.getColumns()) {
-      if (adapter.isColumnIdentifier(c.getName(), this.name)) {
-        return c;
-      }
-    }
-    return null;
   }
 
   public boolean isName(final String jdbcName, final DatabaseAdapter adapter) {

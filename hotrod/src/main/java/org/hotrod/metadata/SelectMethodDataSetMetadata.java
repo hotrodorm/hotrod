@@ -66,7 +66,8 @@ public class SelectMethodDataSetMetadata implements DataSetMetadata {
 
     log.debug("prepare view 1");
 
-    String foundation = this.tag.getSQLFoundation(JDBCParameterRenderer);
+    // String foundation = this.tag.getSQLFoundation(JDBCParameterRenderer);
+    String foundation = this.tag.renderSQLSentence(JDBCParameterRenderer);
     this.cleanedUpFoundation = cleanUpSQL(foundation);
     this.createView = this.adapter.createOrReplaceView(this.tempViewName, this.cleanedUpFoundation);
     String dropView = this.adapter.dropView(this.tempViewName);
@@ -111,7 +112,7 @@ public class SelectMethodDataSetMetadata implements DataSetMetadata {
 
   }
 
-  public void prepareSubsetView(final Connection conn, final VOTag voTag ) throws SQLException {
+  public void prepareSubsetView(final Connection conn, final VOTag voTag) throws SQLException {
 
     log.debug("prepare view 0");
 
@@ -127,11 +128,11 @@ public class SelectMethodDataSetMetadata implements DataSetMetadata {
     String tempViewName = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
         .getNextTempViewName();
 
-    
-    String subsetSQL = this.tag.getSQLFoundation(JDBCParameterRenderer);
-    
-   String cleanedUpSubset= cleanUpSQL(subsetSQL);
-String createView = this.adapter.createOrReplaceView(tempViewName, cleanedUpSubset);
+    // String subsetSQL = this.tag.getSQLFoundation(JDBCParameterRenderer);
+    String subsetSQL = this.tag.renderSQLSentence(JDBCParameterRenderer);
+
+    String cleanedUpSubset = cleanUpSQL(subsetSQL);
+    String createView = this.adapter.createOrReplaceView(tempViewName, cleanedUpSubset);
     String dropView = this.adapter.dropView(tempViewName);
 
     // 1. Drop (if exists) the view.

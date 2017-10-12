@@ -1,10 +1,13 @@
 package org.hotrod.config;
 
+import java.sql.Connection;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 
@@ -63,6 +66,18 @@ public class CustomDAOTag extends AbstractDAOTag {
     // sequences, queries, selects
 
     super.validate(daosTag, config, fragmentConfig);
+
+  }
+
+  public void validateAgainstDatabase(final HotRodGenerator generator, final Connection conn)
+      throws InvalidConfigurationFileException {
+
+    // TODO: add validations to <select> methods
+
+    for (SelectMethodTag s : this.getSelects()) {
+      // s.va
+
+    }
 
   }
 

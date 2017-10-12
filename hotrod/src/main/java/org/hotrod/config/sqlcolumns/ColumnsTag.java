@@ -9,22 +9,29 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.AbstractConfigurationTag;
+import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.DaosTag;
+import org.hotrod.config.EnhancedSQLTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.Patterns;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
+import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
+import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 
 @XmlRootElement(name = "columns")
-public class ColumnsTag extends ColumnsProducerTag {
+public class ColumnsTag extends EnhancedSQLTag implements ColumnsProvider {
 
   // Constants
 
@@ -32,7 +39,7 @@ public class ColumnsTag extends ColumnsProducerTag {
 
   // Properties
 
-  private String voClass = null;
+  private String vo = null;
 
   private List<VOTag> vos = new ArrayList<VOTag>();
   private List<ExpressionsTag> expressions = new ArrayList<ExpressionsTag>();
@@ -48,9 +55,9 @@ public class ColumnsTag extends ColumnsProducerTag {
 
   // JAXB Setters
 
-  @XmlAttribute(name = "vo-class")
-  public void setVoClass(final String voClass) {
-    this.voClass = voClass;
+  @XmlAttribute(name = "vo")
+  public void setVoClass(final String vo) {
+    this.vo = vo;
   }
 
   @XmlElement(name = "vo")
@@ -75,87 +82,145 @@ public class ColumnsTag extends ColumnsProducerTag {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
+  // ========================
+  // EnhancedSQL sub-classing
+  // ========================
 
-    boolean singleVO = this.vos.size() == 1 && this.expressions.isEmpty();
+  @Override
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig, ParameterDefinitions parameters)
+      throws InvalidConfigurationFileException {
+    boolean singleVOResult = this.vos.size() == 1 && this.expressions.isEmpty() && this.associations.isEmpty()
+        && this.collections.isEmpty();
+    this.validate(daosTag, config, fragmentConfig, singleVOResult);
+  }
+
+  @Override
+  public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
+
+    // vos
+
+    for (VOTag vo : this.vos) {
+      vo.validateAgainstDatabase(generator);
+    }
+
+    // expressions
+
+    for (ExpressionsTag exp : this.expressions) {
+      exp.validateAgainstDatabase(generator);
+    }
+
+  }
+
+  @Override
+  public String renderSQLAngle(final DatabaseAdapter adapter, final ColumnsProvider cp) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String renderStatic(final ParameterRenderer parameterRenderer) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String renderXML(final ParameterRenderer parameterRenderer) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  // ========================
+  // ColumnProvider interface
+  // ========================
+
+  @Override
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult)
+      throws InvalidConfigurationFileException {
 
     // vo-class
 
-    if (this.voClass != null) {
-      if (singleVO) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "Invalid 'vo-class' attribute on the <" + this.getTagName() + "> tag. "
-                + "This attribute must not be specified "
-                + "when the <columns> tag includes a single <vo> tag and no <expressions> tags.");
+    boolean includesSingleVO = this.vos.size() == 1 && this.expressions.isEmpty() && this.associations.isEmpty()
+        && this.collections.isEmpty();
+
+    if (this.vo != null) {
+      if (includesSingleVO) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid 'vo' attribute on the <"
+            + this.getTagName() + "> tag. " + "This attribute should not be specified "
+            + "when the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags (this case).");
       }
-      if (!this.voClass.matches(Patterns.VALID_JAVA_CLASS)) {
+      if (!this.vo.matches(Patterns.VALID_JAVA_CLASS)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "Invalid Java class '" + this.voClass
-                + "' specified in the 'vo-class' attribute. When specified, the vo-class must start with an upper case letter, "
+            "Invalid Java class '" + this.vo
+                + "' specified in the 'vo' attribute. When specified, the vo-class must start with an upper case letter, "
                 + "and continue with any combination of letters, digits, or underscores.");
       }
     } else {
-      if (!singleVO) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "Missing 'vo-class' attribute on the <" + this.getTagName() + "> tag. "
-                + "This attribute can be ommitted when "
-                + "there's an inner <columns> tag that includes a single <vo> tag and no <expressions> tags. "
-                + "The 'vo-class' attribute must be specified otherwise.");
+      if (!includesSingleVO) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Missing 'vo' attribute in the <"
+            + this.getTagName() + "> tag. " + "This attribute can only be omitted when "
+            + "the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags.");
       }
     }
 
     // vos
 
     for (VOTag vo : this.vos) {
-      vo.validate(daosTag, config, fragmentConfig, singleVO);
+      vo.validate(daosTag, config, fragmentConfig, singleVOResult);
     }
 
     // expressions
 
     for (ExpressionsTag exp : this.expressions) {
-      exp.validate(config);
+      exp.validate(daosTag, config, fragmentConfig, singleVOResult);
+    }
+
+    // associations
+
+    for (AssociationTag a : this.associations) {
+      a.validate(daosTag, config, fragmentConfig, false);
+    }
+
+    // collections
+
+    for (CollectionTag c : this.collections) {
+      c.validate(daosTag, config, fragmentConfig, false);
     }
 
   }
 
-  // Meta data gathering
-
   private boolean existingVO;
   private String computedVOClass;
 
-  public void prepareRetrieval(final SelectMethodTag selectTag, final DatabaseAdapter adapter, final JdbcDatabase db,
-      final DatabaseLocation loc, final SelectGenerationTag selectGenerationTag,
-      final ColumnsProducerTag columnsProducerTag, final ColumnsPrefixGenerator columnsPrefixGenerator,
-      final Connection conn1) throws InvalidSQLException {
+  @Override
+  public void gatherMetadataPhase1(final SelectMethodTag selectTag, final DatabaseAdapter adapter,
+      final JdbcDatabase db, final DatabaseLocation loc, final SelectGenerationTag selectGenerationTag,
+      final ColumnsPrefixGenerator columnsPrefixGenerator, final Connection conn1) throws InvalidSQLException {
 
     if (this.vos.size() == 1 && this.collections.isEmpty() && this.associations.isEmpty()
         && this.expressions.isEmpty()) {
 
       VOTag singleVO = this.vos.get(0);
-      singleVO.prepareRetrieval(selectTag, adapter, db, loc, selectGenerationTag, columnsProducerTag,
-          columnsPrefixGenerator, conn1);
-
-      // this.existingVO = singleVO.getExistingVO();
-      // this.computedVOClass = singleVO.getComputedVOClass();
+      singleVO.gatherMetadataPhase1(selectTag, adapter, db, loc, selectGenerationTag, columnsPrefixGenerator, conn1);
 
     } else {
 
       for (ExpressionsTag exp : this.expressions) {
-        exp.prepareRetrieval(selectTag, adapter, db, loc, selectGenerationTag, columnsProducerTag,
-            columnsPrefixGenerator, conn1);
+        exp.gatherMetadataPhase1(selectTag, adapter, db, loc, selectGenerationTag, columnsPrefixGenerator, conn1);
       }
-
       for (CollectionTag c : this.collections) {
-        c.prepareRetrieval(selectTag, adapter, db, loc, selectGenerationTag, columnsProducerTag, columnsPrefixGenerator,
-            conn1);
-
+        c.gatherMetadataPhase1(selectTag, adapter, db, loc, selectGenerationTag, columnsPrefixGenerator, conn1);
       }
-
       for (AssociationTag a : this.associations) {
-        a.prepareRetrieval(selectTag, adapter, db, loc, selectGenerationTag, columnsProducerTag, columnsPrefixGenerator,
-            conn1);
-
+        a.gatherMetadataPhase1(selectTag, adapter, db, loc, selectGenerationTag, columnsPrefixGenerator, conn1);
       }
 
     }
@@ -163,14 +228,35 @@ public class ColumnsTag extends ColumnsProducerTag {
   }
 
   @Override
-  public void retrieve() {
+  public void gatherMetadataPhase2(final Connection conn2)
+      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException {
+
+    if (this.vos.size() == 1 && this.collections.isEmpty() && this.associations.isEmpty()
+        && this.expressions.isEmpty()) {
+
+      VOTag singleVO = this.vos.get(0);
+      singleVO.gatherMetadataPhase2(conn2);
+
+    } else {
+
+      for (ExpressionsTag exp : this.expressions) {
+        exp.gatherMetadataPhase2(conn2);
+      }
+      for (CollectionTag c : this.collections) {
+        c.gatherMetadataPhase2(conn2);
+      }
+      for (AssociationTag a : this.associations) {
+        a.gatherMetadataPhase2(conn2);
+      }
+
+    }
 
   }
 
   // Getters
 
   public String getVoClass() {
-    return voClass;
+    return vo;
   }
 
   public List<VOTag> getVos() {

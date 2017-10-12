@@ -33,6 +33,10 @@ public class SourceLocation {
     return characterOffset;
   }
 
+  public String render() {
+    return "file '" + this.file.getPath() + "' (line " + this.lineNumber + ", col " + this.columnNumber + ")";
+  }
+
   public String toString() {
     return "[file '" + this.file.getPath() + "': line " + this.lineNumber + ", col " + this.columnNumber + " (char "
         + this.characterOffset + ")]";

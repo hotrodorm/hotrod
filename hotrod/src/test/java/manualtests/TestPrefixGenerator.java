@@ -1,11 +1,11 @@
 package manualtests;
 
-import org.hotrod.metadata.VOMetadata.PrefixGenerator;
+import org.hotrod.utils.ColumnsPrefixGenerator;
 
 public class TestPrefixGenerator {
 
   public static void main(final String[] args) {
-    PrefixGenerator g = new PrefixGenerator();
+    ColumnsPrefixGenerator g = new ColumnsPrefixGenerator();
     for (int i = 0; i < 26 * 28; i++) {
       System.out.println("prefix: " + g.next());
     }

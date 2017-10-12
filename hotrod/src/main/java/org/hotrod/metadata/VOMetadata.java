@@ -7,11 +7,12 @@ import org.hotrod.config.sqlcolumns.ExpressionsTag;
 import org.hotrod.config.sqlcolumns.VOTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.identifiers.Identifier;
 
 public class VOMetadata {
 
-  private PrefixGenerator prefixGenerator;
+  private ColumnsPrefixGenerator prefixGenerator;
   private DatabaseAdapter adapter;
 
   private Identifier identifier;
@@ -26,7 +27,7 @@ public class VOMetadata {
   // final PrefixGenerator prefixGenerator,
   // final DatabaseAdapter adapter) {
 
-  public VOMetadata(final VOTag tag, final HotRodGenerator generator, final PrefixGenerator prefixGenerator,
+  public VOMetadata(final VOTag tag, final HotRodGenerator generator, final ColumnsPrefixGenerator prefixGenerator,
       final DatabaseAdapter adapter) {
 
     TableDataSetMetadata dm = tag.getTable() != null ? generator.findTableMetadata(tag.getTable())

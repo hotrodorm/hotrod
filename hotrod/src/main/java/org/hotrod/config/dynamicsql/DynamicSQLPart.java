@@ -9,15 +9,19 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.EnhancedSQLTag;
+import org.hotrod.config.AbstractConfigurationTag;
+import org.hotrod.config.DaosTag;
+import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
-public abstract class DynamicSQLPart extends EnhancedSQLTag {
+public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   // Constants
 
@@ -39,7 +43,7 @@ public abstract class DynamicSQLPart extends EnhancedSQLTag {
   })
   protected List<Object> content = new ArrayList<Object>();
 
-  protected List<DynamicSQLPart> parts = null;
+  protected List<DynamicSQLPart> parts;
 
   // Constructors
 
@@ -53,52 +57,15 @@ public abstract class DynamicSQLPart extends EnhancedSQLTag {
     super("<dynamic-sql-tag>");
   }
 
-  // Getters
+  // Validation
 
-  // Behavior
-
-  public static class ParameterDefinitions {
-
-    private List<ParameterTag> params = new ArrayList<ParameterTag>();
-
-    private LinkedHashMap<String, ParameterTag> definitions = new LinkedHashMap<String, ParameterTag>();
-
-    public void add(final ParameterTag p) throws InvalidConfigurationFileException {
-      this.params.add(p);
-    }
-
-    public void validate() throws InvalidConfigurationFileException {
-      for (ParameterTag p : this.params) {
-        log.debug("p.getName()=" + p.getName());
-        p.validate();
-        if (this.definitions.containsKey(p.getName())) {
-          throw new InvalidConfigurationFileException(p.getSourceLocation(),
-              "Duplicate parameter '" + p.getName() + "'. Please specify different names for each parameter.");
-        }
-        this.definitions.put(p.getName(), p);
-      }
-      this.params = null;
-    }
-
-    public ParameterTag find(final String name) {
-      return this.definitions.get(name);
-    }
-
-    public void remove(final ParameterTag p) {
-      this.definitions.remove(p.getName());
-    }
-
-    public List<ParameterTag> getDefinitions() {
-      return new ArrayList<ParameterTag>(this.definitions.values());
-    }
-
+  public final void validate(final DaosTag daosTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig, final ParameterDefinitions parameters)
+      throws InvalidConfigurationFileException {
+    retrievePartsAndValidate(parameters);
   }
 
-  public void validate(final ParameterDefinitions parameterDefinitions) throws InvalidConfigurationFileException {
-    this.retrievePartsAndValidate(parameterDefinitions);
-  }
-
-  protected final void retrievePartsAndValidate(final ParameterDefinitions parameterDefinitions)
+  public void retrievePartsAndValidate(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
 
     // 1. Validate attributes
@@ -146,16 +113,50 @@ public abstract class DynamicSQLPart extends EnhancedSQLTag {
     // By default, nothing to do
   }
 
-  // Java Expression Rendering
-
-  public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException {
-    DynamicExpression expr = this.getJavaExpression(parameterRenderer);
-    return expr.renderConstructor(margin);
+  public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
+    // Nothing to do
   }
 
-  protected abstract DynamicExpression getJavaExpression(ParameterRenderer parameterRenderer)
-      throws InvalidJavaExpressionException;
+  // Getters
+
+  // Behavior
+
+  public static class ParameterDefinitions {
+
+    private List<ParameterTag> params = new ArrayList<ParameterTag>();
+
+    private LinkedHashMap<String, ParameterTag> definitions = new LinkedHashMap<String, ParameterTag>();
+
+    public void add(final ParameterTag p) throws InvalidConfigurationFileException {
+      this.params.add(p);
+    }
+
+    public void validate() throws InvalidConfigurationFileException {
+      for (ParameterTag p : this.params) {
+        log.debug("p.getName()=" + p.getName());
+        p.validate();
+        if (this.definitions.containsKey(p.getName())) {
+          throw new InvalidConfigurationFileException(p.getSourceLocation(),
+              "Duplicate parameter '" + p.getName() + "'. Please specify different names for each parameter.");
+        }
+        this.definitions.put(p.getName(), p);
+      }
+      this.params = null;
+    }
+
+    public ParameterTag find(final String name) {
+      return this.definitions.get(name);
+    }
+
+    public void remove(final ParameterTag p) {
+      this.definitions.remove(p.getName());
+    }
+
+    public List<ParameterTag> getDefinitions() {
+      return new ArrayList<ParameterTag>(this.definitions.values());
+    }
+
+  }
 
   // Simple Static (non-dynamic) Rendering
 
@@ -242,6 +243,9 @@ public abstract class DynamicSQLPart extends EnhancedSQLTag {
     return sb.toString();
   }
 
+  protected abstract DynamicExpression getJavaExpression(ParameterRenderer parameterRenderer)
+      throws InvalidJavaExpressionException;
+
   // Utils
 
   protected DynamicExpression[] toArray(final List<DynamicSQLPart> parts, final ParameterRenderer parameterRenderer)
@@ -270,43 +274,5 @@ public abstract class DynamicSQLPart extends EnhancedSQLTag {
     }
     return exps.toArray(new DynamicExpression[0]);
   }
-
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
 
 }
