@@ -15,7 +15,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
-import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.metadata.AllottedColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
@@ -28,7 +28,7 @@ public abstract class ColumnsProducerTag extends AbstractConfigurationTag {
   // Properties
 
   protected ColumnsMetadataRetriever columnsRetriever;
-  private List<StructuredColumnMetadata> columnsMetadata;
+  private List<AllottedColumnMetadata> columnsMetadata;
 
   // Constructor
 
@@ -76,7 +76,7 @@ public abstract class ColumnsProducerTag extends AbstractConfigurationTag {
 
   // List of columns
 
-  public final List<StructuredColumnMetadata> getColumnsMetadata() {
+  public final List<AllottedColumnMetadata> getColumnsMetadata() {
     return columnsMetadata;
   }
 
@@ -84,7 +84,7 @@ public abstract class ColumnsProducerTag extends AbstractConfigurationTag {
 
   public final String renderSQLAngle(final DatabaseAdapter adapter, final ColumnsProducerTag cp) {
     ListWriter w = new ListWriter(", ");
-    for (StructuredColumnMetadata scm : cp.getColumnsMetadata()) {
+    for (AllottedColumnMetadata scm : cp.getColumnsMetadata()) {
       w.add(adapter.renderAliasedSelectColumn(scm));
     }
     return w.toString();

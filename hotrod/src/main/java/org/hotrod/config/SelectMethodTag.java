@@ -19,7 +19,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.metadata.SelectMethodDataSetMetadata;
+import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.util.SUtils;
 
@@ -40,7 +40,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
   private String vo = null;
   private String sMultipleRows = null;
 
-  private SelectMethodDataSetMetadata dataSetMetadata = null;
+  private SelectMethodMetadata metadata = null;
 
   // Properties - Primitive content parsing by JAXB
 
@@ -58,8 +58,8 @@ public class SelectMethodTag extends AbstractConfigurationTag {
   private boolean multipleRows;
   protected ParameterDefinitions parameters = null;
   protected List<ColumnTag> columns = null;
-  protected List<EnhancedSQLTag> parts = null;
-  private EnhancedSQLTag aggregatedPart = null;
+  protected List<EnhancedSQLPart> parts = null;
+  private EnhancedSQLPart aggregatedPart = null;
   private ColumnsTag structuredColumns = null;
 
   private HotRodFragmentConfigTag fragmentConfig = null;
@@ -96,7 +96,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
 
     // Sort: content parts, columns, parameters, complements
 
-    this.parts = new ArrayList<EnhancedSQLTag>();
+    this.parts = new ArrayList<EnhancedSQLPart>();
 
     this.columns = new ArrayList<ColumnTag>();
     this.parameters = new ParameterDefinitions();
@@ -213,7 +213,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
 
     // Literal SQL, <columns>, <complement> tags
 
-    for (EnhancedSQLTag p : this.parts) {
+    for (EnhancedSQLPart p : this.parts) {
       p.validate(daosTag, config, fragmentConfig, this.parameters);
     }
 
@@ -223,13 +223,14 @@ public class SelectMethodTag extends AbstractConfigurationTag {
   }
 
   public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
-    for (EnhancedSQLTag p : this.parts) {
+    for (EnhancedSQLPart p : this.parts) {
       p.validateAgainstDatabase(generator);
     }
   }
 
-  public void setDataSetMetadata(final SelectMethodDataSetMetadata dataSetMetadata) {
-    this.dataSetMetadata = dataSetMetadata;
+  @Deprecated
+  public void setDataSetMetadata(final SelectMethodMetadata dataSetMetadata) {
+    this.metadata = dataSetMetadata;
   }
 
   // Getters
@@ -250,7 +251,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
     return parameters;
   }
 
-  public List<EnhancedSQLTag> getParts() {
+  public List<EnhancedSQLPart> getParts() {
     return parts;
   }
 
@@ -258,8 +259,9 @@ public class SelectMethodTag extends AbstractConfigurationTag {
     return structuredColumns;
   }
 
-  public SelectMethodDataSetMetadata getDataSetMetadata() {
-    return dataSetMetadata;
+  @Deprecated
+  public SelectMethodMetadata getDataSetMetadata() {
+    return metadata;
   }
 
   public HotRodFragmentConfigTag getFragmentConfig() {
@@ -290,7 +292,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
   public String renderSQLAngle(final ParameterRenderer parameterRenderer, final ColumnsProvider cp,
       final DatabaseAdapter adapter) {
     StringBuilder sb = new StringBuilder();
-    for (EnhancedSQLTag p : this.parts) {
+    for (EnhancedSQLPart p : this.parts) {
       sb.append(p.renderSQLAngle(adapter, cp));
     }
     String literal = sb.toString();
@@ -299,7 +301,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
 
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
-    for (EnhancedSQLTag p : this.parts) {
+    for (EnhancedSQLPart p : this.parts) {
       String st = p.renderStatic(parameterRenderer);
       sb.append(st);
     }
@@ -308,7 +310,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
 
   public String renderXML(final ParameterRenderer parameterRenderer) {
     StringBuilder sb = new StringBuilder();
-    for (EnhancedSQLTag p : this.parts) {
+    for (EnhancedSQLPart p : this.parts) {
       sb.append(p.renderXML(parameterRenderer));
     }
     return sb.toString();

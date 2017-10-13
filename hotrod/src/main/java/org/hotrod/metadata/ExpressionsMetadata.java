@@ -1,13 +1,17 @@
 package org.hotrod.metadata;
 
-import org.hotrod.config.structuredcolumns.ExpressionsTag;
+import java.util.List;
 
 public class ExpressionsMetadata {
 
-  private ExpressionsTag et;
+  private List<AllottedColumnMetadata> columns;
 
-  public ExpressionsMetadata(final ExpressionsTag et) {
-    this.et = et;
+  public ExpressionsMetadata(final List<AllottedColumnMetadata> columns) {
+    this.columns = columns;
+  }
+
+  public List<AllottedColumnMetadata> getColumns() {
+    return this.columns;
   }
 
 }

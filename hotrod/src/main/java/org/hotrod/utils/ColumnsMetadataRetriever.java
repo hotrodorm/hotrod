@@ -17,7 +17,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.metadata.AllottedColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -122,12 +122,12 @@ public class ColumnsMetadataRetriever {
 
   }
 
-  public List<StructuredColumnMetadata> retrieve(final Connection conn2)
+  public List<AllottedColumnMetadata> retrieve(final Connection conn2)
       throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException {
 
     String dropViewSQL = this.adapter.dropView(this.tempViewName);
 
-    List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
+    List<AllottedColumnMetadata> columns = new ArrayList<AllottedColumnMetadata>();
 
     {
       PreparedStatement ps = null;
@@ -146,7 +146,7 @@ public class ColumnsMetadataRetriever {
           ColumnMetadata cm = new ColumnMetadata(null, c, this.selectTag.getMethod(), this.adapter, null, false, false);
 
           String alias = this.aliasPrefix + cm.getColumnName();
-          StructuredColumnMetadata scm = new StructuredColumnMetadata(cm, alias);
+          AllottedColumnMetadata scm = new AllottedColumnMetadata(cm, alias);
           columns.add(scm);
         }
 

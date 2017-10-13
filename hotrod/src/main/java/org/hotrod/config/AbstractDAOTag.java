@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.utils.ClassPackage;
 
 /**

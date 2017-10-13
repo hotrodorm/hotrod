@@ -16,17 +16,15 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
-import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
-import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.metadata.AllottedColumnMetadata;
+import org.hotrod.metadata.ExpressionsMetadata;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
-import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
-import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 
 @XmlRootElement(name = "expressions")
 public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsProvider {
@@ -38,7 +36,9 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
   // Properties
 
   protected ColumnsMetadataRetriever columnsRetriever;
-  private List<StructuredColumnMetadata> columnsMetadata;
+  private List<AllottedColumnMetadata> columnsMetadata;
+
+  private HotRodGenerator generator;
 
   // Properties - Primitive content parsing by JAXB
 
@@ -95,17 +95,16 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
 
   @Override
   public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
-    // Nothing to do
+    this.generator = generator;
   }
 
   // Meta data gathering
 
   @Override
-  public void gatherMetadataPhase1(final SelectMethodTag selectTag, final DatabaseAdapter adapter,
-      final JdbcDatabase db, final DatabaseLocation loc, final SelectGenerationTag selectGenerationTag,
+  public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final Connection conn1) throws InvalidSQLException {
-    this.columnsRetriever = new ColumnsMetadataRetriever(selectTag, adapter, db, loc, selectGenerationTag, this,
-        columnsPrefixGenerator);
+    this.columnsRetriever = new ColumnsMetadataRetriever(selectTag, this.generator.getAdapter(),
+        this.generator.getJdbcDatabase(), this.generator.getLoc(), selectGenerationTag, this, columnsPrefixGenerator);
     this.columnsRetriever.prepareRetrieval(conn1);
   }
 
@@ -113,7 +112,7 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
   public void gatherMetadataPhase2(final Connection conn2)
       throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException {
     this.columnsMetadata = this.columnsRetriever.retrieve(conn2);
-    for (StructuredColumnMetadata m : this.columnsMetadata) {
+    for (AllottedColumnMetadata m : this.columnsMetadata) {
       log.info(". Column Metadata: " + m.getAlias() + " -> " + m.getColumnName() + " (" + m.getType().getJavaClassName()
           + ")");
     }
@@ -121,8 +120,8 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
 
   // Getters
 
-  public String getExpressions() {
-    return expressions;
+  public ExpressionsMetadata getExpressionsMetadata() {
+    return new ExpressionsMetadata(this.columnsMetadata);
   }
 
   @Override

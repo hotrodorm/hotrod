@@ -12,7 +12,7 @@ import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.util.SUtils;
 
-public class VerbatimTextPart extends EnhancedSQLTag {
+public class VerbatimTextPart extends EnhancedSQLPart {
 
   // Constants
 

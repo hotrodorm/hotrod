@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.log4j.Logger;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.DaosTag;
-import org.hotrod.config.EnhancedSQLTag;
+import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.Patterns;
@@ -27,11 +27,9 @@ import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
-import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
-import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 
 @XmlRootElement(name = "columns")
-public class ColumnsTag extends EnhancedSQLTag implements ColumnsProvider {
+public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   // Constants
 
@@ -45,6 +43,8 @@ public class ColumnsTag extends EnhancedSQLTag implements ColumnsProvider {
   private List<ExpressionsTag> expressions = new ArrayList<ExpressionsTag>();
   private List<CollectionTag> collections = new ArrayList<CollectionTag>();
   private List<AssociationTag> associations = new ArrayList<AssociationTag>();
+
+  private HotRodGenerator generator;
 
   // Constructor
 
@@ -97,6 +97,8 @@ public class ColumnsTag extends EnhancedSQLTag implements ColumnsProvider {
 
   @Override
   public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
+
+    this.generator = generator;
 
     // vos
 
@@ -212,26 +214,25 @@ public class ColumnsTag extends EnhancedSQLTag implements ColumnsProvider {
   private String computedVOClass;
 
   @Override
-  public void gatherMetadataPhase1(final SelectMethodTag selectTag, final DatabaseAdapter adapter,
-      final JdbcDatabase db, final DatabaseLocation loc, final SelectGenerationTag selectGenerationTag,
+  public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final Connection conn1) throws InvalidSQLException {
 
     if (this.vos.size() == 1 && this.collections.isEmpty() && this.associations.isEmpty()
         && this.expressions.isEmpty()) {
 
       VOTag singleVO = this.vos.get(0);
-      singleVO.gatherMetadataPhase1(selectTag, adapter, db, loc, selectGenerationTag, columnsPrefixGenerator, conn1);
+      singleVO.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
 
     } else {
 
       for (ExpressionsTag exp : this.expressions) {
-        exp.gatherMetadataPhase1(selectTag, adapter, db, loc, selectGenerationTag, columnsPrefixGenerator, conn1);
+        exp.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
       }
       for (CollectionTag c : this.collections) {
-        c.gatherMetadataPhase1(selectTag, adapter, db, loc, selectGenerationTag, columnsPrefixGenerator, conn1);
+        c.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
       }
       for (AssociationTag a : this.associations) {
-        a.gatherMetadataPhase1(selectTag, adapter, db, loc, selectGenerationTag, columnsPrefixGenerator, conn1);
+        a.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
       }
 
     }

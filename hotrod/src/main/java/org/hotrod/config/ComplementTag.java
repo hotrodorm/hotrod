@@ -29,7 +29,7 @@ import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "complement")
-public class ComplementTag extends EnhancedSQLTag {
+public class ComplementTag extends EnhancedSQLPart {
 
   // Properties
 

@@ -25,7 +25,7 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
-public abstract class EnhancedSQLTag extends AbstractConfigurationTag {
+public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
   // Properties
 
@@ -43,11 +43,11 @@ public abstract class EnhancedSQLTag extends AbstractConfigurationTag {
   })
   protected List<Object> content = new ArrayList<Object>();
 
-  protected List<EnhancedSQLTag> eparts = null;
+  protected List<EnhancedSQLPart> eparts = null;
 
   // Constructor
 
-  protected EnhancedSQLTag(final String tagName) {
+  protected EnhancedSQLPart(final String tagName) {
     super(tagName);
   }
 

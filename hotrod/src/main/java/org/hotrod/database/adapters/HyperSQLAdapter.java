@@ -16,7 +16,7 @@ import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.metadata.AllottedColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -178,7 +178,7 @@ public class HyperSQLAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderAliasedSelectColumn(final StructuredColumnMetadata cm) {
+  public String renderAliasedSelectColumn(final AllottedColumnMetadata cm) {
     return cm.renderSQLIdentifier() + " as " + this.renderSQLName(cm.getAlias());
   }
 

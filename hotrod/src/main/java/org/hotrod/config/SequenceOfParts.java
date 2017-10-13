@@ -17,11 +17,11 @@ import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 
 @XmlRootElement(name = "not-a-tag")
-public class SequenceOfParts extends EnhancedSQLTag {
+public class SequenceOfParts extends EnhancedSQLPart {
 
   // Constructor
 
-  public SequenceOfParts(final List<EnhancedSQLTag> parts) {
+  public SequenceOfParts(final List<EnhancedSQLPart> parts) {
     super("not-a-tag");
     super.eparts = parts;
   }
@@ -49,11 +49,11 @@ public class SequenceOfParts extends EnhancedSQLTag {
 
   }
 
-  private DynamicExpression[] toArray(final List<EnhancedSQLTag> parts, final ParameterRenderer parameterRenderer)
+  private DynamicExpression[] toArray(final List<EnhancedSQLPart> parts, final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
     List<DynamicExpression> exps = new ArrayList<DynamicExpression>();
     LiteralExpression last = null;
-    for (EnhancedSQLTag p : parts) {
+    for (EnhancedSQLPart p : parts) {
       DynamicExpression expr = p.getJavaExpression(parameterRenderer);
       try {
         LiteralExpression le = (LiteralExpression) expr;

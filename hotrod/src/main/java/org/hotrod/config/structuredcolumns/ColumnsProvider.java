@@ -8,14 +8,11 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
-import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
-import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
-import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 
 public interface ColumnsProvider {
 
@@ -24,9 +21,8 @@ public interface ColumnsProvider {
 
   void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException;
 
-  void gatherMetadataPhase1(SelectMethodTag selectTag, DatabaseAdapter adapter, JdbcDatabase db, DatabaseLocation loc,
-      SelectGenerationTag selectGenerationTag, ColumnsPrefixGenerator columnsPrefixGenerator, Connection conn1)
-      throws InvalidSQLException;
+  void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
+      final ColumnsPrefixGenerator columnsPrefixGenerator, Connection conn1) throws InvalidSQLException;
 
   void gatherMetadataPhase2(final Connection conn2)
       throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException;

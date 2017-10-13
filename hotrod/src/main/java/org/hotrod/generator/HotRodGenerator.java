@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -19,13 +18,11 @@ import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
-import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SelectTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
-import org.hotrod.config.structuredcolumns.ColumnsTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.DatabaseAdapterFactory;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -38,12 +35,10 @@ import org.hotrod.metadata.DAOMetadata;
 import org.hotrod.metadata.DataSetMetadataFactory;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
-import org.hotrod.metadata.SelectMethodDataSetMetadata;
+import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
-import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
-import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -91,7 +86,7 @@ public abstract class HotRodGenerator {
     display("Database URL: " + loc.getUrl());
 
     Connection conn = null;
-    int selectCount = 0;
+    boolean hasSelects = false;
 
     try {
       logm("Opening connection...");
@@ -282,30 +277,40 @@ public abstract class HotRodGenerator {
       // Prepare <select> methods meta data - phase 1
 
       for (TableDataSetMetadata tm : this.tables) {
-        gatherSelectsMetadataPhase1(loc, conn, tm.getSelects());
-        selectCount += tm.getSelects().size();
+        tm.gatherSelectsMetadataPhase1(this, conn);
+        if (tm.hasSelects()) {
+          hasSelects = true;
+        }
       }
 
       for (TableDataSetMetadata vm : this.views) {
-        gatherSelectsMetadataPhase1(loc, conn, vm.getSelects());
-        selectCount += vm.getSelects().size();
+        vm.gatherSelectsMetadataPhase1(this, conn);
+        if (vm.hasSelects()) {
+          hasSelects = true;
+        }
       }
 
       for (TableDataSetMetadata em : this.enums) {
-        gatherSelectsMetadataPhase1(loc, conn, em.getSelects());
-        selectCount += em.getSelects().size();
+        em.gatherSelectsMetadataPhase1(this, conn);
+        if (em.hasSelects()) {
+          hasSelects = true;
+        }
       }
 
       for (DAOMetadata dm : this.daos) {
-        gatherSelectsMetadataPhase1(loc, conn, dm.getSelects());
-        selectCount += dm.getSelects().size();
+        dm.gatherSelectsMetadataPhase1(this, conn);
+        if (dm.hasSelects()) {
+          hasSelects = true;
+        }
       }
 
       // Prepare <select> DAOs meta data - phase 1
 
       logm("Prepare selects metadata - phase 1.");
 
-      selectCount += this.config.getSelects().size();
+      if (!this.config.getSelects().isEmpty()) {
+        hasSelects = true;
+      }
 
       this.selects = new LinkedHashSet<SelectDataSetMetadata>();
       if (!this.config.getSelects().isEmpty()) {
@@ -360,7 +365,7 @@ public abstract class HotRodGenerator {
     // Prepare <select> DAOs meta data - phase 2
 
     log.info("ret 1");
-    if (selectCount > 0) {
+    if (hasSelects) {
 
       logm("Prepare selects metadata - phase 2.");
 
@@ -376,19 +381,19 @@ public abstract class HotRodGenerator {
         log.info("ret 3");
 
         for (TableDataSetMetadata tm : this.tables) {
-          gatherSelectsMetadataPhase2(conn2, tm.getSelects());
+          tm.gatherSelectsMetadataPhase2(conn2);
         }
 
         for (TableDataSetMetadata vm : this.views) {
-          gatherSelectsMetadataPhase2(conn2, vm.getSelects());
+          vm.gatherSelectsMetadataPhase2(conn2);
         }
 
         for (TableDataSetMetadata em : this.enums) {
-          gatherSelectsMetadataPhase2(conn2, em.getSelects());
+          em.gatherSelectsMetadataPhase2(conn2);
         }
 
         for (DAOMetadata dm : this.daos) {
-          gatherSelectsMetadataPhase2(conn2, dm.getSelects());
+          dm.gatherSelectsMetadataPhase2(conn2);
         }
 
         for (SelectDataSetMetadata ds : this.selects) {
@@ -451,92 +456,6 @@ public abstract class HotRodGenerator {
 
   }
 
-  private void gatherSelectsMetadataPhase1(final DatabaseLocation loc, final Connection conn1,
-      final List<SelectMethodTag> selects) throws ControlledException, UncontrolledException {
-    for (SelectMethodTag selectTag : selects) {
-      ColumnsTag ct = selectTag.getStructuredColumns();
-      if (ct == null) {
-
-        // Unstructured columns
-
-        String tempViewName = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
-            .getNextTempViewName();
-        SelectMethodDataSetMetadata sm = new SelectMethodDataSetMetadata(this.db, this.adapter, this.loc, selectTag,
-            tempViewName, this.config);
-        selectTag.setDataSetMetadata(sm);
-
-        try {
-          sm.prepareUnstructuredView(conn1);
-        } catch (SQLException e) {
-          throw new UncontrolledException("Failed to retrieve metadata for <" + new SelectMethodTag().getTagName()
-              + "> with method '" + selectTag.getMethod() + "'.", e);
-        }
-
-      } else {
-
-        // Structured columns
-
-        SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
-            .getSelectGeneration();
-        ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator();
-
-        try {
-          log.info("ct.gatherMetadataPhase1()");
-          ct.gatherMetadataPhase1(selectTag, this.adapter, this.db, loc, selectGenerationTag, columnsPrefixGenerator,
-              conn1);
-        } catch (InvalidSQLException e) {
-          throw new ControlledException("Could not retrieve metadata for <" + selectTag.getTagName() + "> on "
-              + selectTag.getSourceLocation().render() + "; could not create temporary SQL view for it.\n" + "[ "
-              + e.getMessage() + " ]\n" + "* Do all resulting columns have different and valid names?\n"
-              + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
-              + "\n--- end SQL ---");
-        }
-
-      }
-    }
-  }
-
-  private void gatherSelectsMetadataPhase2(final Connection conn2, final List<SelectMethodTag> selects)
-      throws ControlledException, UncontrolledException {
-    for (SelectMethodTag selectTag : selects) {
-      ColumnsTag ct = selectTag.getStructuredColumns();
-      if (ct == null) {
-
-        // Unstructured columns
-
-        try {
-          selectTag.getDataSetMetadata().retrieveColumnsMetadata(conn2);
-        } catch (SQLException e) {
-          throw new UncontrolledException("Failed to retrieve metadata for <" + new SelectMethodTag().getTagName()
-              + "> with method '" + selectTag.getMethod() + "'.", e);
-
-        } catch (UnresolvableDataTypeException e) {
-          throw new ControlledException("Failed to retrieve metadata for <" + new SelectMethodTag().getTagName()
-              + "> with method '" + selectTag.getMethod() + "': could not find suitable Java property type for column '"
-              + e.getColumnName() + "'.");
-        }
-
-      } else {
-
-        // Structured columns
-
-        try {
-          log.info("ct.gatherMetadataPhase2()");
-          ct.gatherMetadataPhase2(conn2);
-        } catch (InvalidSQLException e) {
-          throw new ControlledException("Could not retrieve metadata for <" + selectTag.getTagName() + "> on "
-              + selectTag.getSourceLocation().render() + ". Is the create view SQL code below valid?\n"
-              + "--- begin SQL ---\n" + e.getInvalidSQL() + "\n--- end SQL ---");
-        } catch (UnresolvableDataTypeException e) {
-          throw new ControlledException("Failed to retrieve metadata for <" + new SelectMethodTag().getTagName()
-              + "> with method '" + selectTag.getMethod() + "': could not find suitable Java property type for column '"
-              + e.getColumnName() + "'.");
-        }
-
-      }
-    }
-  }
-
   private void displayGenerationMetadata(final HotRodConfigTag config) {
 
     int sequences = 0;
@@ -572,7 +491,7 @@ public abstract class HotRodGenerator {
             display(" - Query " + q.getJavaMethodName() + " included.");
           }
         }
-        for (SelectMethodTag s : t.getSelects()) {
+        for (SelectMethodMetadata s : t.getSelectsMetadata()) {
           selectMethods++;
           if (this.displayMode == DisplayMode.LIST) {
             display(" - Select " + s.getMethod() + " included.");
@@ -596,7 +515,7 @@ public abstract class HotRodGenerator {
             display(" - Query " + q.getJavaMethodName() + " included.");
           }
         }
-        for (SelectMethodTag s : v.getSelects()) {
+        for (SelectMethodMetadata s : v.getSelectsMetadata()) {
           selectMethods++;
           if (this.displayMode == DisplayMode.LIST) {
             display(" - Select " + s.getMethod() + " included.");
@@ -611,6 +530,10 @@ public abstract class HotRodGenerator {
       }
 
       // daos
+
+      for (DAOMetadata d : this.daos) {
+        d.get
+      }
 
       for (CustomDAOTag c : config.getDAOs()) {
         if (this.displayMode == DisplayMode.LIST) {
@@ -908,11 +831,15 @@ public abstract class HotRodGenerator {
   }
 
   public DatabaseAdapter getAdapter() {
-    return adapter;
+    return this.adapter;
   }
 
   public JdbcDatabase getJdbcDatabase() {
     return this.db;
+  }
+
+  public DatabaseLocation getLoc() {
+    return this.loc;
   }
 
   // Abstract methods

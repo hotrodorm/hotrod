@@ -19,19 +19,17 @@ import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.Patterns;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
-import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
+import org.hotrod.metadata.VOMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
-import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
-import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 
 @XmlRootElement(name = "vo")
 public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
@@ -65,6 +63,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   private List<ExpressionsTag> expressions = new ArrayList<ExpressionsTag>();
   private List<CollectionTag> collections = new ArrayList<CollectionTag>();
   private List<AssociationTag> associations = new ArrayList<AssociationTag>();
+
+  private HotRodGenerator generator;
 
   private boolean existingVO;
   private String vo;
@@ -265,6 +265,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   }
 
   public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
+    this.generator = generator;
     if (this.table != null) {
       this.tableMetadata = generator.findTableMetadata(this.table);
       if (this.tableMetadata == null) {
@@ -304,8 +305,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   // Meta data gathering
 
   @Override
-  public void gatherMetadataPhase1(final SelectMethodTag selectTag, final DatabaseAdapter adapter,
-      final JdbcDatabase db, final DatabaseLocation loc, final SelectGenerationTag selectGenerationTag,
+  public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final Connection conn1) throws InvalidSQLException {
 
     if (this.expressions.isEmpty() && this.collections.isEmpty() && this.associations.isEmpty()) {
@@ -319,7 +319,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       if (this.body.isEmpty() || b.equals("*")) { // all columns
         this.cmr = null;
       } else { // specific columns
-        this.cmr = new ColumnsMetadataRetriever(selectTag, adapter, db, loc, selectGenerationTag, this,
+        this.cmr = new ColumnsMetadataRetriever(selectTag, this.generator.getAdapter(),
+            this.generator.getJdbcDatabase(), this.generator.getLoc(), selectGenerationTag, this,
             columnsPrefixGenerator);
         this.cmr.prepareRetrieval(conn1);
       }
@@ -330,15 +331,15 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       this.vo = this.extendedVO;
 
       for (ExpressionsTag exp : this.expressions) {
-        exp.gatherMetadataPhase1(selectTag, adapter, db, loc, selectGenerationTag, columnsPrefixGenerator, conn1);
+        exp.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
       }
 
       for (CollectionTag c : this.collections) {
-        c.gatherMetadataPhase1(selectTag, adapter, db, loc, selectGenerationTag, columnsPrefixGenerator, conn1);
+        c.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
       }
 
       for (AssociationTag a : this.associations) {
-        a.gatherMetadataPhase1(selectTag, adapter, db, loc, selectGenerationTag, columnsPrefixGenerator, conn1);
+        a.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
       }
 
     }
@@ -426,6 +427,14 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   public List<ExpressionsTag> getExpressions() {
     return expressions;
   }
+
+  // Meta data
+
+  public VOMetadata getMetadata() {
+    return new VOMetadata(this);
+  }
+
+  // Angle rendering
 
   @Override
   public String renderColumns() {
