@@ -19,7 +19,7 @@ import org.hotrod.config.SelectMethodTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
-import org.hotrod.metadata.AllottedColumnMetadata;
+import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.ExpressionsMetadata;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ColumnsMetadataRetriever;
@@ -36,7 +36,7 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
   // Properties
 
   protected ColumnsMetadataRetriever columnsRetriever;
-  private List<AllottedColumnMetadata> columnsMetadata;
+  private List<StructuredColumnMetadata> columnsMetadata;
 
   private HotRodGenerator generator;
 
@@ -71,7 +71,7 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
     for (Object obj : this.content) {
       try {
         String s = (String) obj; // content part
-        log.info("*** s=" + s);
+        log.debug("*** s=" + s);
         if (!SUtils.isEmpty(s)) {
           if (!this.expressions.isEmpty()) {
             this.expressions = this.expressions + " ";
@@ -112,9 +112,9 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
   public void gatherMetadataPhase2(final Connection conn2)
       throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException {
     this.columnsMetadata = this.columnsRetriever.retrieve(conn2);
-    for (AllottedColumnMetadata m : this.columnsMetadata) {
-      log.info(". Column Metadata: " + m.getAlias() + " -> " + m.getColumnName() + " (" + m.getType().getJavaClassName()
-          + ")");
+    for (StructuredColumnMetadata m : this.columnsMetadata) {
+      log.debug(". Column Metadata: " + m.getColumnAlias() + " -> " + m.getColumnName() + " ("
+          + m.getType().getJavaClassName() + ")");
     }
   }
 

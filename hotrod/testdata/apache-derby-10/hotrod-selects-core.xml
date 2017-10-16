@@ -49,6 +49,8 @@
     <column name="type" converter="transaction_type" />
   </table>
 
+  <table name="category" />
+
   <fragment file="hotrod-selects-tests.xml" />
 
 </hotrod>

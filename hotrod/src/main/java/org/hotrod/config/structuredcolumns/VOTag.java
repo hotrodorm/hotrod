@@ -2,7 +2,9 @@ package org.hotrod.config.structuredcolumns;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
@@ -11,6 +13,7 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
+import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosTag;
@@ -23,6 +26,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.metadata.ColumnMetadata;
+import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.runtime.util.ListWriter;
@@ -66,10 +70,13 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   private HotRodGenerator generator;
 
-  private boolean existingVO;
-  private String vo;
+  private String compiledBody;
+  private boolean useAllColumns;
 
   private ColumnsMetadataRetriever cmr;
+  private String aliasPrefix;
+
+  private List<StructuredColumnMetadata> columns;
 
   // Constructors
 
@@ -308,50 +315,76 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final Connection conn1) throws InvalidSQLException {
 
-    if (this.expressions.isEmpty() && this.collections.isEmpty() && this.associations.isEmpty()) {
+    // body
 
-      this.existingVO = true;
-      this.vo = this.table != null ? this.tableMetadata.getIdentifier().getJavaClassIdentifier()
-          : this.viewMetadata.getIdentifier().getJavaClassIdentifier();
+    this.compiledBody = this.compileBody();
+    this.useAllColumns = this.body.isEmpty() || this.compiledBody.equals("*");
+    log.debug("this.compiledBody=" + this.compiledBody + " this.useAllColumns=" + this.useAllColumns);
 
-      String b = this.compileBody();
-      log.info("b=" + b);
-      if (this.body.isEmpty() || b.equals("*")) { // all columns
-        this.cmr = null;
-      } else { // specific columns
-        this.cmr = new ColumnsMetadataRetriever(selectTag, this.generator.getAdapter(),
-            this.generator.getJdbcDatabase(), this.generator.getLoc(), selectGenerationTag, this,
-            columnsPrefixGenerator);
-        this.cmr.prepareRetrieval(conn1);
-      }
+    if (this.useAllColumns) { // all columns
+      this.cmr = null;
+      this.aliasPrefix = columnsPrefixGenerator.next();
+    } else { // specific columns
+      this.cmr = new ColumnsMetadataRetriever(selectTag, this.generator.getAdapter(), this.generator.getJdbcDatabase(),
+          this.generator.getLoc(), selectGenerationTag, this, columnsPrefixGenerator);
+      this.cmr.prepareRetrieval(conn1);
+    }
 
-    } else {
+    // expressions, collections, associations
 
-      this.existingVO = false;
-      this.vo = this.extendedVO;
+    for (ExpressionsTag exp : this.expressions) {
+      exp.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
+    }
 
-      for (ExpressionsTag exp : this.expressions) {
-        exp.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
-      }
+    for (CollectionTag c : this.collections) {
+      c.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
+    }
 
-      for (CollectionTag c : this.collections) {
-        c.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
-      }
-
-      for (AssociationTag a : this.associations) {
-        a.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
-      }
-
+    for (AssociationTag a : this.associations) {
+      a.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
     }
 
   }
 
   @Override
   public void gatherMetadataPhase2(final Connection conn2)
-      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException {
+      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException, ControlledException {
 
-    if (this.cmr != null) {
-      this.cmr.retrieve(conn2);
+    if (this.useAllColumns) { // all columns
+      if (this.tableMetadata != null) {
+        this.columns = StructuredColumnMetadata.promote(this.tableMetadata.getColumns(), this.aliasPrefix);
+      } else {
+        this.columns = StructuredColumnMetadata.promote(this.viewMetadata.getColumns(), this.aliasPrefix);
+      }
+    } else { // specific columns
+
+      Map<String, ColumnMetadata> voColumns = new HashMap<String, ColumnMetadata>();
+      if (this.tableMetadata != null) {
+        for (ColumnMetadata cm : this.tableMetadata.getColumns()) {
+          voColumns.put(cm.getColumnName(), cm);
+        }
+      } else {
+        for (ColumnMetadata cm : this.viewMetadata.getColumns()) {
+          voColumns.put(cm.getColumnName(), cm);
+        }
+      }
+
+      this.columns = new ArrayList<StructuredColumnMetadata>();
+      List<StructuredColumnMetadata> retrieved = this.cmr.retrieve(conn2);
+      for (StructuredColumnMetadata rc : retrieved) {
+        ColumnMetadata found = voColumns.get(rc.getColumnName());
+        if (found == null) {
+          throw new ControlledException(
+              "Invalid column '" + rc.getColumnName() + "' in the body of the <" + this.getTagName() + "> tag at "
+                  + super.getSourceLocation().render() + ".\n" + "There's no column '" + rc.getColumnName()
+                  + "' in the " + (this.tableMetadata != null ? "table" : "view") + " '" + (this.tableMetadata != null
+                      ? this.tableMetadata.renderSQLIdentifier() : this.viewMetadata.renderSQLIdentifier())
+                  + "'.");
+        }
+        StructuredColumnMetadata assembled = new StructuredColumnMetadata(found, rc.getColumnAlias());
+        this.columns.add(assembled);
+      }
+
     }
 
     for (ExpressionsTag exp : this.expressions) {
@@ -372,12 +405,14 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   private String compileBody() {
     if (this.body == null) {
+      log.debug("[body is null] ");
       return null;
     }
     StringBuilder sb = new StringBuilder();
     boolean endedWithComma = false;
     boolean first = true;
     for (String s : this.body) {
+      log.debug("[body part] " + s);
       String t = s.trim();
       if (!t.isEmpty()) {
         if (first) {
@@ -386,8 +421,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
           if (!t.startsWith(",") && !endedWithComma) {
             sb.append(", ");
           }
-          sb.append(t);
         }
+        sb.append(t);
         endedWithComma = t.endsWith(",");
       }
     }
@@ -412,8 +447,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     return alias;
   }
 
-  public String getVO() {
-    return this.vo;
+  public String getExtendedVO() {
+    return extendedVO;
   }
 
   public List<CollectionTag> getCollections() {
@@ -428,7 +463,19 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     return expressions;
   }
 
+  public List<StructuredColumnMetadata> getColumns() {
+    return columns;
+  }
+
   // Meta data
+
+  public TableDataSetMetadata getTableMetadata() {
+    return tableMetadata;
+  }
+
+  public TableDataSetMetadata getViewMetadata() {
+    return viewMetadata;
+  }
 
   public VOMetadata getMetadata() {
     return new VOMetadata(this);
@@ -438,17 +485,21 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   @Override
   public String renderColumns() {
-    ListWriter w = new ListWriter(",\n  ");
-    if (this.tableMetadata != null) {
-      for (ColumnMetadata cm : this.tableMetadata.getColumns()) {
-        w.add(cm.renderSQLIdentifier());
+    if (this.useAllColumns) { // all columns
+      ListWriter w = new ListWriter(",\n  ");
+      if (this.tableMetadata != null) {
+        for (ColumnMetadata cm : this.tableMetadata.getColumns()) {
+          w.add(cm.renderSQLIdentifier());
+        }
+      } else {
+        for (ColumnMetadata cm : this.viewMetadata.getColumns()) {
+          w.add(cm.renderSQLIdentifier());
+        }
       }
-    } else {
-      for (ColumnMetadata cm : this.viewMetadata.getColumns()) {
-        w.add(cm.renderSQLIdentifier());
-      }
+      return w.toString();
+    } else { // specified columns only
+      return this.compiledBody;
     }
-    return w.toString();
   }
 
 }

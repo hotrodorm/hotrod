@@ -4,13 +4,13 @@ import java.util.List;
 
 public class ExpressionsMetadata {
 
-  private List<AllottedColumnMetadata> columns;
+  private List<StructuredColumnMetadata> columns;
 
-  public ExpressionsMetadata(final List<AllottedColumnMetadata> columns) {
+  public ExpressionsMetadata(final List<StructuredColumnMetadata> columns) {
     this.columns = columns;
   }
 
-  public List<AllottedColumnMetadata> getColumns() {
+  public List<StructuredColumnMetadata> getColumns() {
     return this.columns;
   }
 

@@ -16,7 +16,7 @@ import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.metadata.AllottedColumnMetadata;
+import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.Identifier;
@@ -64,6 +64,10 @@ public abstract class DatabaseAdapter {
       return this.defaults;
     }
 
+  }
+
+  public static enum UnescapedSQLCase {
+    LOWER_CASE, UPPER_CASE, ANY_CASE;
   }
 
   public DatabaseAdapter(final HotRodConfigTag config, final DatabaseMetaData dm) throws SQLException {
@@ -196,7 +200,9 @@ public abstract class DatabaseAdapter {
 
   public abstract boolean isSerial(JdbcColumn c);
 
-  public abstract String renderAliasedSelectColumn(AllottedColumnMetadata cm);
+  public abstract String renderAliasedSelectColumn(StructuredColumnMetadata cm);
+
+  public abstract UnescapedSQLCase getUnescapedSQLCase();
 
   // Sorting
 

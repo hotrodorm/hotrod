@@ -16,7 +16,7 @@ import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.metadata.AllottedColumnMetadata;
+import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.Identifier;
@@ -230,8 +230,8 @@ public class OracleAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderAliasedSelectColumn(final AllottedColumnMetadata cm) {
-    return cm.renderSQLIdentifier() + " as " + this.renderSQLName(cm.getAlias());
+  public String renderAliasedSelectColumn(final StructuredColumnMetadata cm) {
+    return cm.renderSQLIdentifier() + " as " + this.renderSQLName(cm.getColumnAlias());
   }
 
   // @Override
@@ -338,6 +338,11 @@ public class OracleAdapter extends DatabaseAdapter {
       return true;
     }
     return minorVersion >= 1;
+  }
+
+  @Override
+  public UnescapedSQLCase getUnescapedSQLCase() {
+    return UnescapedSQLCase.UPPER_CASE;
   }
 
 }

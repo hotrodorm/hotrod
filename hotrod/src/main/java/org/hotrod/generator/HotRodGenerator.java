@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -18,7 +19,6 @@ import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
-import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SelectTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
@@ -34,9 +34,12 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DAOMetadata;
 import org.hotrod.metadata.DataSetMetadataFactory;
 import org.hotrod.metadata.EnumDataSetMetadata;
+import org.hotrod.metadata.ExpressionsMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
+import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
+import org.hotrod.metadata.VOMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.JdbcTypes;
@@ -229,7 +232,7 @@ public abstract class HotRodGenerator {
         }
       }
 
-      // Set EnumMetadata to ColumnMetadata
+      // Link EnumMetadata to ColumnMetadata
 
       for (TableDataSetMetadata ds : this.tables) {
         ds.linkEnumMetadata(this.enums);
@@ -364,7 +367,7 @@ public abstract class HotRodGenerator {
 
     // Prepare <select> DAOs meta data - phase 2
 
-    log.info("ret 1");
+    log.debug("ret 1");
     if (hasSelects) {
 
       logm("Prepare selects metadata - phase 2.");
@@ -374,11 +377,11 @@ public abstract class HotRodGenerator {
       Connection conn2 = null;
       try {
 
-        log.info("ret 2");
+        log.debug("ret 2");
         logm("Opening connection (selects)...");
         conn2 = this.loc.getConnection();
         logm("Connection open (selects).");
-        log.info("ret 3");
+        log.debug("ret 3");
 
         for (TableDataSetMetadata tm : this.tables) {
           tm.gatherSelectsMetadataPhase2(conn2);
@@ -448,12 +451,114 @@ public abstract class HotRodGenerator {
           + "or may have been computed based on the SQL names (as in the <sequence> tag).");
     }
 
-    // Display the retrieved metadata
+    // Display the retrieved meta data
 
     logm("Metadata initialized.");
 
     displayGenerationMetadata(config);
 
+    logSelectMethodMetadata();
+
+  }
+
+  private void logSelectMethodMetadata() {
+    for (DAOMetadata d : this.daos) {
+      for (SelectMethodMetadata s : d.getSelectsMetadata()) {
+        display("=== Select method " + s.getMethod() + " [" + (s.isStructured() ? "structured" : "non-structured")
+            + "] ===");
+        if (s.isStructured()) {
+          logVOs(s.getStructuredColumns().getVOs(), 0);
+          logExpressions(s.getStructuredColumns().getExpressions(), 0);
+          logCollections(s.getStructuredColumns().getCollections(), 0);
+        } else {
+          for (ColumnMetadata cm : s.getNonStructuredColumns()) {
+            display("   + " + cm.getColumnName() + " (" + cm.getType().getJavaClassName() + ")");
+          }
+        }
+        display("--- end select method ---");
+      }
+    }
+  }
+
+  private void logExpressions(final List<ExpressionsMetadata> expressions, final int level) {
+    String filler = SUtils.getFiller(' ', level);
+    for (ExpressionsMetadata exp : expressions) {
+      for (StructuredColumnMetadata cm : exp.getColumns()) {
+        display("   " + filler + "+ [expr] " + cm.getColumnName() + " (" + cm.getType().getJavaClassName() + ") --> "
+            + cm.getColumnAlias());
+      }
+    }
+  }
+
+  private void logCollections(final List<VOMetadata> collections, final int level) {
+    String filler = SUtils.getFiller(' ', level);
+    for (VOMetadata c : collections) {
+      boolean extendsVO = c.getExtendedVO() != null;
+      String based = c.getTableMetadata() != null ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
+          + c.getTableMetadata().getIdentifier().getSQLIdentifier() + (extendsVO ? " <as> " + c.getExtendedVO() : "")
+          : (extendsVO ? "<extends>" : "<corresponds to>") + " view "
+              + c.getViewMetadata().getIdentifier().getSQLIdentifier()
+              + (extendsVO ? " <as> " + c.getExtendedVO() : "");
+      String property = c.getProperty() != null ? "<property> " + c.getProperty() : "<main-vo>";
+      display("   " + filler + "+ " + property + " [collection] " + based);
+      logColumns(c.getColumns(), level + 2);
+      logExpressions(c.getExpressions(), level + 2);
+      logCollections(c.getCollections(), level + 2);
+      logAssociations(c.getAssociations(), level + 2);
+    }
+  }
+
+  private void logAssociations(final List<VOMetadata> associations, final int level) {
+    String filler = SUtils.getFiller(' ', level);
+    for (VOMetadata a : associations) {
+
+      boolean extendsVO = a.getExtendedVO() != null;
+      String based = a.getTableMetadata() != null ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
+          + a.getTableMetadata().getIdentifier().getSQLIdentifier() + (extendsVO ? " <as> " + a.getExtendedVO() : "")
+          : (extendsVO ? "<extends>" : "<corresponds to>") + " view "
+              + a.getViewMetadata().getIdentifier().getSQLIdentifier()
+              + (extendsVO ? " <as> " + a.getExtendedVO() : "");
+
+      String property = a.getProperty() != null ? "<property> " + a.getProperty() : "<main-vo>";
+
+      display("   " + filler + "+ " + property + " [association] " + based);
+      logColumns(a.getColumns(), level + 2);
+      logExpressions(a.getExpressions(), level + 2);
+      logCollections(a.getCollections(), level + 2);
+      logAssociations(a.getAssociations(), level + 2);
+    }
+  }
+
+  private void logVOs(final List<VOMetadata> vos, final int level) {
+    String filler = SUtils.getFiller(' ', level);
+    for (VOMetadata vo : vos) {
+
+      boolean extendsVO = vo.getExtendedVO() != null;
+      String based = vo.getTableMetadata() != null
+          ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
+              + vo.getTableMetadata().getIdentifier().getSQLIdentifier() + " @" + vo.getTableMetadata()
+              + (extendsVO ? " <as> " + vo.getExtendedVO() : "")
+          : (extendsVO ? "<extends>" : "<corresponds to>") + " view "
+              + vo.getViewMetadata().getIdentifier().getSQLIdentifier() + " @" + vo.getViewMetadata()
+              + (extendsVO ? " <as> " + vo.getExtendedVO() : "");
+
+      String property = vo.getProperty() != null ? "<property> " + vo.getProperty() : "<main-single-vo>";
+      display("   " + filler + "+ " + property + " [vo] " + based);
+      logColumns(vo.getColumns(), level + 2);
+      logExpressions(vo.getExpressions(), level + 2);
+      logCollections(vo.getCollections(), level + 2);
+      logAssociations(vo.getAssociations(), level + 2);
+    }
+  }
+
+  private void logColumns(final List<StructuredColumnMetadata> columns, final int level) {
+    String filler = SUtils.getFiller(' ', level);
+    for (StructuredColumnMetadata cm : columns) {
+      display("   " + filler
+          + "+ " + cm.getColumnName() + " (" + (cm.getConverter() != null
+              ? "<converted-to> " + cm.getConverter().getJavaType() : "<nc> " + cm.getType().getJavaClassName())
+          + ") --> " + cm.getColumnAlias());
+    }
   }
 
   private void displayGenerationMetadata(final HotRodConfigTag config) {
@@ -532,28 +637,25 @@ public abstract class HotRodGenerator {
       // daos
 
       for (DAOMetadata d : this.daos) {
-        d.get
-      }
-
-      for (CustomDAOTag c : config.getDAOs()) {
         if (this.displayMode == DisplayMode.LIST) {
-          display("DAO " + c.getJavaClassName() + " included.");
+          display("DAO " + d.getJavaClassName() + " included.");
         }
-        for (SequenceMethodTag s : c.getSequences()) {
+        for (SequenceMethodTag s : d.getSequences()) {
           sequences++;
           if (this.displayMode == DisplayMode.LIST) {
             display(" - Sequence " + s.getName() + " included.");
           }
         }
-        for (QueryMethodTag q : c.getQueries()) {
+        for (QueryMethodTag q : d.getQueries()) {
           queries++;
           if (this.displayMode == DisplayMode.LIST) {
             display(" - Query " + q.getJavaMethodName() + " included.");
           }
         }
-        for (SelectMethodTag s : c.getSelects()) {
+        for (SelectMethodMetadata s : d.getSelectsMetadata()) {
           selectMethods++;
           if (this.displayMode == DisplayMode.LIST) {
+            log.debug("s=" + s);
             display(" - Select " + s.getMethod() + " included.");
           }
         }

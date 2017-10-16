@@ -8,17 +8,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hotrod.ant.ControlledException;
+import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
+import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.util.ListWriter;
+import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
+import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -34,36 +39,120 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   // Properties
 
+  private boolean structured;
+
+  private HotRodGenerator generator;
   private JdbcDatabase db;
   private HotRodConfigTag config;
   private DatabaseAdapter adapter;
   private DatabaseLocation loc;
   private SelectMethodTag tag;
-  private String tempViewName;
-  private HotRodFragmentConfigTag fragmentConfig;
+  private SelectGenerationTag selectGenerationTag;
+  private ColumnsPrefixGenerator columnsPrefixGenerator;
 
-  private List<ColumnMetadata> flatColumns;
-  private List<StructuredColumnsMetadata> structuredColumns;
+  private HotRodFragmentConfigTag fragmentConfig;
+  private List<ColumnMetadata> unstructuredColumns;
+  private StructuredColumnsMetadata structuredColumns;
 
   private String cleanedUpFoundation;
+  private String tempViewName;
   private String createView;
 
-  // Constructors
+  // Constructor
 
-  public SelectMethodMetadata(final HotRodGenerator generator, final SelectMethodTag tag, final String tempViewName,
-      final HotRodConfigTag config) {
+  public SelectMethodMetadata(final HotRodGenerator generator, final SelectMethodTag tag, final HotRodConfigTag config,
+      final SelectGenerationTag selectGenerationTag, final ColumnsPrefixGenerator columnsPrefixGenerator) {
+    this.generator = generator;
     this.db = generator.getJdbcDatabase();
     this.config = config;
     this.adapter = generator.getAdapter();
     this.loc = generator.getLoc();
     this.tag = tag;
-    this.tempViewName = tempViewName;
+    this.selectGenerationTag = selectGenerationTag;
+    this.columnsPrefixGenerator = columnsPrefixGenerator;
+
     this.fragmentConfig = tag.getFragmentConfig();
+    this.structured = this.tag.getStructuredColumns() != null;
+    this.unstructuredColumns = null;
+    this.structuredColumns = null;
   }
 
   // Behavior
 
-  public void prepareFlatColumnsRetrieval(final Connection conn) throws SQLException {
+  public void gatherMetadataPhase1(final Connection conn1) throws UncontrolledException, ControlledException {
+
+    if (!this.structured) {
+
+      // Unstructured columns
+
+      try {
+        prepareUnstructuredColumnsRetrieval(conn1);
+      } catch (SQLException e) {
+        throw new UncontrolledException("Failed to retrieve metadata for <" + new SelectMethodTag().getTagName()
+            + "> with method '" + this.tag.getMethod() + "'.", e);
+      }
+
+    } else {
+
+      // Structured columns
+
+      try {
+        log.debug("Phase 1");
+        this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, this.selectGenerationTag,
+            this.columnsPrefixGenerator, conn1);
+      } catch (InvalidSQLException e) {
+        throw new ControlledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + "> on "
+            + this.tag.getSourceLocation().render() + "; could not create temporary SQL view for it.\n" + "[ "
+            + e.getMessage() + " ]\n" + "* Do all resulting columns have different and valid names?\n"
+            + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
+            + "\n--- end SQL ---");
+      }
+
+    }
+
+  }
+
+  public void gatherMetadataPhase2(final Connection conn2) throws UncontrolledException, ControlledException {
+
+    if (!this.structured) {
+
+      // Unstructured columns
+
+      try {
+        retrieveFlatColumnsMetadata(conn2);
+      } catch (SQLException e) {
+        throw new UncontrolledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
+            + "> at " + this.tag.getSourceLocation().render(), e);
+      } catch (UnresolvableDataTypeException e) {
+        throw new ControlledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + "> at "
+            + this.tag.getSourceLocation().render() + ": could not find suitable Java type for column '"
+            + e.getColumnName() + "' ");
+      }
+
+    } else {
+
+      // Structured columns
+
+      try {
+        log.debug("Phase 2");
+        this.tag.getStructuredColumns().gatherMetadataPhase2(conn2);
+      } catch (InvalidSQLException e) {
+        throw new ControlledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + "> at "
+            + this.tag.getSourceLocation().render() + "; could not create temporary SQL view for it.\n" + "[ "
+            + e.getMessage() + " ]\n" + "* Do all resulting columns have different and valid names?\n"
+            + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
+            + "\n--- end SQL ---");
+      } catch (UnresolvableDataTypeException e) {
+        throw new ControlledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + "> at "
+            + this.tag.getSourceLocation().render() + ": could not find suitable Java type for column '"
+            + e.getColumnName() + "' ");
+      }
+
+    }
+
+  }
+
+  public void prepareUnstructuredColumnsRetrieval(final Connection conn) throws SQLException {
 
     log.debug("prepare view 0");
 
@@ -79,6 +168,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
     // String foundation = this.tag.getSQLFoundation(JDBCParameterRenderer);
     String foundation = this.tag.renderSQLSentence(JDBCParameterRenderer);
     this.cleanedUpFoundation = cleanUpSQL(foundation);
+    this.tempViewName = this.selectGenerationTag.getNextTempViewName();
     this.createView = this.adapter.createOrReplaceView(this.tempViewName, this.cleanedUpFoundation);
     String dropView = this.adapter.dropView(this.tempViewName);
 
@@ -122,72 +212,6 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   }
 
-  // public void prepareSubsetView(final Connection conn, final VOTag voTag)
-  // throws SQLException {
-  //
-  // log.debug("prepare view 0");
-  //
-  // ParameterRenderer JDBCParameterRenderer = new ParameterRenderer() {
-  // @Override
-  // public String render(final SQLParameter parameter) {
-  // return "?";
-  // }
-  // };
-  //
-  // log.debug("prepare view 1");
-  //
-  // String tempViewName =
-  // this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
-  // .getNextTempViewName();
-  //
-  // // String subsetSQL = this.tag.getSQLFoundation(JDBCParameterRenderer);
-  // String subsetSQL = this.tag.renderSQLSentence(JDBCParameterRenderer);
-  //
-  // String cleanedUpSubset = cleanUpSQL(subsetSQL);
-  // String createView = this.adapter.createOrReplaceView(tempViewName,
-  // cleanedUpSubset);
-  // String dropView = this.adapter.dropView(tempViewName);
-  //
-  // // 1. Drop (if exists) the view.
-  //
-  // log.debug("prepare view - will drop view: " + dropView);
-  //
-  // {
-  // PreparedStatement ps = null;
-  // try {
-  // ps = conn.prepareStatement(dropView);
-  // log.debug("prepare view - will execute drop view");
-  // ps.execute();
-  // log.debug("prepare view - view dropped");
-  //
-  // } catch (Exception e) {
-  // log.debug("prepare view - exception while dropping view", e);
-  // // Ignore this exception
-  // } finally {
-  // JdbcUtil.closeDbResources(ps);
-  // }
-  // }
-  //
-  // // 2. Create or replace the view.
-  //
-  // log.debug("prepare view - will create view: " + this.createView);
-  //
-  // {
-  // PreparedStatement ps = null;
-  // try {
-  // ps = conn.prepareStatement(this.createView);
-  // log.debug("prepare view - will execute create view");
-  // ps.execute();
-  // log.debug("prepare view - view created");
-  //
-  // } finally {
-  // log.debug("prepare view - will close resources");
-  // JdbcUtil.closeDbResources(ps);
-  // }
-  // }
-  //
-  // }
-
   private String cleanUpSQL(final String select) {
     ListWriter lw = new ListWriter("\n");
     String[] lines = select.split("\n");
@@ -220,14 +244,14 @@ public class SelectMethodMetadata implements DataSetMetadata {
     try {
       String viewJdbcName = this.adapter.formatJdbcTableName(this.tempViewName);
       rs = conn.getMetaData().getColumns(this.loc.getDefaultCatalog(), this.loc.getDefaultSchema(), viewJdbcName, null);
-      this.flatColumns = new ArrayList<ColumnMetadata>();
+      this.unstructuredColumns = new ArrayList<ColumnMetadata>();
       while (rs.next()) {
         JdbcColumn c = this.db.retrieveColumn(rs, this.tempViewName);
         ColumnTag columnTag = this.tag.findColumnTag(c.getName(), this.adapter);
         log.debug("c=" + c.getName() + " / col: " + columnTag);
         ColumnMetadata cm = new ColumnMetadata(this, c, this.tag.getMethod(), this.adapter, columnTag, false, false);
         log.debug(" --> type=" + cm.getType());
-        this.flatColumns.add(cm);
+        this.unstructuredColumns.add(cm);
       }
 
     } finally {
@@ -278,17 +302,27 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   // Getters
 
+  public boolean isStructured() {
+    return structured;
+  }
+
+  public List<ColumnMetadata> getNonStructuredColumns() {
+    return this.unstructuredColumns;
+  }
+
+  public StructuredColumnsMetadata getStructuredColumns() {
+    return this.tag.getStructuredColumns().getMetadata();
+  }
+
+  // Other getters
+
   public String getMethod() {
     return this.tag.getMethod();
   }
 
-  public String getReducedSelect() {
-    return cleanedUpFoundation;
-  }
-
-  public SelectMethodTag getSelectMethodTag() {
-    return tag;
-  }
+  // public SourceLocation getSourceLocation() {
+  // return this.tag.getSourceLocation();
+  // }
 
   public String getCreateView() {
     return createView;
@@ -296,12 +330,12 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   @Override
   public List<ColumnMetadata> getColumns() {
-    return this.flatColumns;
+    return this.unstructuredColumns;
   }
 
   @Override
   public List<ColumnMetadata> getNonPkColumns() {
-    return this.flatColumns;
+    return this.unstructuredColumns;
   }
 
   @Override

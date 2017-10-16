@@ -17,7 +17,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.metadata.AllottedColumnMetadata;
+import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -72,6 +72,7 @@ public class ColumnsMetadataRetriever {
     log.debug("prepare view 1");
 
     String sqlAngle = this.selectTag.renderSQLAngle(JDBCParameterRenderer, this.columnsProvider, this.adapter);
+    log.debug("------> sqlAngle=" + sqlAngle);
     sqlAngle = clean(sqlAngle);
 
     this.tempViewName = this.selectGenerationTag.getNextTempViewName();
@@ -101,7 +102,7 @@ public class ColumnsMetadataRetriever {
 
     // 2. Create or replace the view.
 
-    log.info("prepare view - will create view: " + createViewSQL);
+    log.debug("prepare view - will create view: " + createViewSQL);
 
     {
       PreparedStatement ps = null;
@@ -122,12 +123,12 @@ public class ColumnsMetadataRetriever {
 
   }
 
-  public List<AllottedColumnMetadata> retrieve(final Connection conn2)
+  public List<StructuredColumnMetadata> retrieve(final Connection conn2)
       throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException {
 
     String dropViewSQL = this.adapter.dropView(this.tempViewName);
 
-    List<AllottedColumnMetadata> columns = new ArrayList<AllottedColumnMetadata>();
+    List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
 
     {
       PreparedStatement ps = null;
@@ -146,7 +147,7 @@ public class ColumnsMetadataRetriever {
           ColumnMetadata cm = new ColumnMetadata(null, c, this.selectTag.getMethod(), this.adapter, null, false, false);
 
           String alias = this.aliasPrefix + cm.getColumnName();
-          AllottedColumnMetadata scm = new AllottedColumnMetadata(cm, alias);
+          StructuredColumnMetadata scm = new StructuredColumnMetadata(cm, alias);
           columns.add(scm);
         }
 

@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
+import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnhancedSQLPart;
@@ -23,6 +24,9 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.metadata.ExpressionsMetadata;
+import org.hotrod.metadata.StructuredColumnsMetadata;
+import org.hotrod.metadata.VOMetadata;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
@@ -42,9 +46,10 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   private List<VOTag> vos = new ArrayList<VOTag>();
   private List<ExpressionsTag> expressions = new ArrayList<ExpressionsTag>();
   private List<CollectionTag> collections = new ArrayList<CollectionTag>();
-  private List<AssociationTag> associations = new ArrayList<AssociationTag>();
 
   private HotRodGenerator generator;
+
+  private StructuredColumnsMetadata metadata;
 
   // Constructor
 
@@ -75,11 +80,6 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     this.collections.add(collection);
   }
 
-  @XmlElement(name = "association")
-  public void setAssociationTag(final AssociationTag association) {
-    this.associations.add(association);
-  }
-
   // Behavior
 
   // ========================
@@ -90,8 +90,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, ParameterDefinitions parameters)
       throws InvalidConfigurationFileException {
-    boolean singleVOResult = this.vos.size() == 1 && this.expressions.isEmpty() && this.associations.isEmpty()
-        && this.collections.isEmpty();
+    boolean singleVOResult = this.vos.size() == 1 && this.expressions.isEmpty() && this.collections.isEmpty();
     this.validate(daosTag, config, fragmentConfig, singleVOResult);
   }
 
@@ -110,12 +109,6 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
     for (ExpressionsTag exp : this.expressions) {
       exp.validateAgainstDatabase(generator);
-    }
-
-    // associations
-
-    for (AssociationTag a : this.associations) {
-      a.validateAgainstDatabase(generator);
     }
 
     // expressions
@@ -161,8 +154,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
     // vo-class
 
-    boolean includesSingleVO = this.vos.size() == 1 && this.expressions.isEmpty() && this.associations.isEmpty()
-        && this.collections.isEmpty();
+    boolean includesSingleVO = this.vos.size() == 1 && this.expressions.isEmpty() && this.collections.isEmpty();
 
     if (this.vo != null) {
       if (includesSingleVO) {
@@ -196,12 +188,6 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
       exp.validate(daosTag, config, fragmentConfig, singleVOResult);
     }
 
-    // associations
-
-    for (AssociationTag a : this.associations) {
-      a.validate(daosTag, config, fragmentConfig, false);
-    }
-
     // collections
 
     for (CollectionTag c : this.collections) {
@@ -217,51 +203,73 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final Connection conn1) throws InvalidSQLException {
 
-    if (this.vos.size() == 1 && this.collections.isEmpty() && this.associations.isEmpty()
-        && this.expressions.isEmpty()) {
+    // if (this.vos.size() == 1 && this.collections.isEmpty() &&
+    // this.expressions.isEmpty()) {
+    //
+    // VOTag singleVO = this.vos.get(0);
+    // singleVO.gatherMetadataPhase1(selectTag, selectGenerationTag,
+    // columnsPrefixGenerator, conn1);
+    //
+    // } else {
 
-      VOTag singleVO = this.vos.get(0);
-      singleVO.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
-
-    } else {
-
-      for (ExpressionsTag exp : this.expressions) {
-        exp.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
-      }
-      for (CollectionTag c : this.collections) {
-        c.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
-      }
-      for (AssociationTag a : this.associations) {
-        a.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
-      }
-
+    for (VOTag vo : this.vos) {
+      vo.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
     }
+    for (ExpressionsTag exp : this.expressions) {
+      exp.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
+    }
+    for (CollectionTag c : this.collections) {
+      c.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
+    }
+
+    // }
 
   }
 
   @Override
   public void gatherMetadataPhase2(final Connection conn2)
-      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException {
+      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException, ControlledException {
 
-    if (this.vos.size() == 1 && this.collections.isEmpty() && this.associations.isEmpty()
-        && this.expressions.isEmpty()) {
+    // if (this.vos.size() == 1 && this.collections.isEmpty() &&
+    // this.expressions.isEmpty()) {
+    //
+    // VOTag singleVO = this.vos.get(0);
+    // singleVO.gatherMetadataPhase2(conn2);
+    //
+    // } else {
 
-      VOTag singleVO = this.vos.get(0);
-      singleVO.gatherMetadataPhase2(conn2);
+    // Retrieve
 
-    } else {
-
-      for (ExpressionsTag exp : this.expressions) {
-        exp.gatherMetadataPhase2(conn2);
-      }
-      for (CollectionTag c : this.collections) {
-        c.gatherMetadataPhase2(conn2);
-      }
-      for (AssociationTag a : this.associations) {
-        a.gatherMetadataPhase2(conn2);
-      }
-
+    for (VOTag vo : this.vos) {
+      vo.gatherMetadataPhase2(conn2);
     }
+    for (ExpressionsTag exp : this.expressions) {
+      exp.gatherMetadataPhase2(conn2);
+    }
+    for (CollectionTag c : this.collections) {
+      c.gatherMetadataPhase2(conn2);
+    }
+
+    // Assemble
+
+    List<ExpressionsMetadata> expressions = new ArrayList<ExpressionsMetadata>();
+    for (ExpressionsTag t : this.expressions) {
+      expressions.add(t.getExpressionsMetadata());
+    }
+
+    List<VOMetadata> collections = new ArrayList<VOMetadata>();
+    for (VOTag t : this.collections) {
+      collections.add(t.getMetadata());
+    }
+
+    List<VOMetadata> vos = new ArrayList<VOMetadata>();
+    for (VOTag t : this.vos) {
+      vos.add(t.getMetadata());
+    }
+
+    this.metadata = new StructuredColumnsMetadata(expressions, collections, vos);
+
+    // }
 
   }
 
@@ -277,6 +285,10 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   public List<ExpressionsTag> getExpressions() {
     return expressions;
+  }
+
+  public StructuredColumnsMetadata getMetadata() {
+    return metadata;
   }
 
   @Override

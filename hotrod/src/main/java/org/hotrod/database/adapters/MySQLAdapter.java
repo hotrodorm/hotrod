@@ -13,12 +13,13 @@ import org.apache.log4j.Logger;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
+import org.hotrod.database.DatabaseAdapter.UnescapedSQLCase;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.metadata.AllottedColumnMetadata;
+import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
@@ -178,8 +179,8 @@ public class MySQLAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderAliasedSelectColumn(final AllottedColumnMetadata cm) {
-    return cm.renderSQLIdentifier() + " as " + this.renderSQLName(cm.getAlias());
+  public String renderAliasedSelectColumn(final StructuredColumnMetadata cm) {
+    return cm.renderSQLIdentifier() + " as " + this.renderSQLName(cm.getColumnAlias());
   }
 
   // @Override
@@ -298,6 +299,11 @@ public class MySQLAdapter extends DatabaseAdapter {
   @Override
   public String renderForCaseInsensitiveOrderBy(final ColumnMetadata cm) {
     return "lower(" + cm.renderSQLIdentifier() + ")";
+  }
+
+  @Override
+  public UnescapedSQLCase getUnescapedSQLCase() {
+    return UnescapedSQLCase.ANY_CASE;
   }
 
 }

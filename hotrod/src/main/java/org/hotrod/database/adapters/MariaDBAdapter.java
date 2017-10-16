@@ -12,7 +12,7 @@ import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.metadata.AllottedColumnMetadata;
+import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
@@ -86,7 +86,7 @@ public class MariaDBAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderAliasedSelectColumn(final AllottedColumnMetadata cm) {
+  public String renderAliasedSelectColumn(final StructuredColumnMetadata cm) {
     return this.mysqlAdaper.renderAliasedSelectColumn(cm);
   }
 
@@ -163,6 +163,11 @@ public class MariaDBAdapter extends DatabaseAdapter {
   @Override
   public String renderForCaseInsensitiveOrderBy(final ColumnMetadata cm) {
     return this.mysqlAdaper.renderForCaseInsensitiveOrderBy(cm);
+  }
+
+  @Override
+  public UnescapedSQLCase getUnescapedSQLCase() {
+    return this.mysqlAdaper.getUnescapedSQLCase();
   }
 
 }

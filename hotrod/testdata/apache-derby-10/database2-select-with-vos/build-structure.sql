@@ -1,14 +1,17 @@
-create table person (
-  id integer primary key not null,
-  name varchar(30) not null,
-  type smallint not null -- 1:individual, 2:commercial, 3:government
-);
 
 create table category (
   id integer primary key not null,
   name varchar(40) not null,
   percent_interest numeric(5,2) not null,
   interest_free_days integer not null
+);
+
+create table person (
+  id integer primary key not null,
+  name varchar(30) not null,
+  type smallint not null, -- 1:individual, 2:commercial, 3:government
+  category_id integer not null,
+  constraint fk_person_category foreign key (category_id) references category (id)
 );
 
 create table account (

@@ -2,6 +2,7 @@ package org.hotrod.config.structuredcolumns;
 
 import java.sql.Connection;
 
+import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
@@ -25,7 +26,7 @@ public interface ColumnsProvider {
       final ColumnsPrefixGenerator columnsPrefixGenerator, Connection conn1) throws InvalidSQLException;
 
   void gatherMetadataPhase2(final Connection conn2)
-      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException;
+      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException, ControlledException;
 
   String renderColumns();
 

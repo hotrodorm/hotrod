@@ -1,7 +1,6 @@
 package org.hotrod.metadata;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +14,8 @@ import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SequenceMethodTag;
-import org.hotrod.config.structuredcolumns.ColumnsTag;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
-import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 
 public class DAOMetadata {
@@ -58,95 +54,41 @@ public class DAOMetadata {
 
   }
 
-  // Select Method meta data gathering
+  // Select Methods meta data gathering
 
   public void gatherSelectsMetadataPhase1(final HotRodGenerator generator, final Connection conn1)
       throws ControlledException, UncontrolledException {
+    this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     for (SelectMethodTag selectTag : this.selects) {
-      ColumnsTag ct = selectTag.getStructuredColumns();
-      if (ct == null) {
-
-        // Unstructured columns
-
-        String tempViewName = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
-            .getNextTempViewName();
-        SelectMethodMetadata sm = new SelectMethodMetadata(generator, selectTag, tempViewName,
-            this.config);
-        selectTag.setDataSetMetadata(sm);
-
-        try {
-          sm.prepareFlatColumnsRetrieval(conn1);
-        } catch (SQLException e) {
-          throw new UncontrolledException("Failed to retrieve metadata for <" + new SelectMethodTag().getTagName()
-              + "> with method '" + selectTag.getMethod() + "'.", e);
-        }
-
-      } else {
-
-        // Structured columns
-
-        SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
-            .getSelectGeneration();
-        ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator();
-
-        try {
-          log.info("ct.gatherMetadataPhase1()");
-          ct.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
-        } catch (InvalidSQLException e) {
-          throw new ControlledException("Could not retrieve metadata for <" + selectTag.getTagName() + "> on "
-              + selectTag.getSourceLocation().render() + "; could not create temporary SQL view for it.\n" + "[ "
-              + e.getMessage() + " ]\n" + "* Do all resulting columns have different and valid names?\n"
-              + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
-              + "\n--- end SQL ---");
-        }
-
-      }
+      SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
+          .getSelectGeneration();
+      ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
+      SelectMethodMetadata sm = new SelectMethodMetadata(generator, selectTag, this.config, selectGenerationTag,
+          columnsPrefixGenerator);
+      this.selectsMetadata.add(sm);
+      sm.gatherMetadataPhase1(conn1);
     }
   }
 
   public void gatherSelectsMetadataPhase2(final Connection conn2) throws ControlledException, UncontrolledException {
-    this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
-    for (SelectMethodTag selectTag : this.selects) {
-      SelectMethodMetadata sm = selectTag.getDataSetMetadata();
-      this.selectsMetadata.add(sm);
-      if (selectTag.getStructuredColumns() == null) {
-
-        // Unstructured columns
-
-        try {
-          sm.retrieveFlatColumnsMetadata(conn2);
-        } catch (SQLException e) {
-          throw new UncontrolledException("Failed to retrieve metadata for <" + new SelectMethodTag().getTagName()
-              + "> with method '" + selectTag.getMethod() + "'.", e);
-
-        } catch (UnresolvableDataTypeException e) {
-          throw new ControlledException("Failed to retrieve metadata for <" + new SelectMethodTag().getTagName()
-              + "> with method '" + selectTag.getMethod() + "': could not find suitable Java property type for column '"
-              + e.getColumnName() + "'.");
-        }
-
-      } else {
-
-        // Structured columns
-
-        try {
-          log.info("ct.gatherMetadataPhase2()");
-          selectTag.getStructuredColumns().gatherMetadataPhase2(conn2);
-        } catch (InvalidSQLException e) {
-          throw new ControlledException("Could not retrieve metadata for <" + selectTag.getTagName() + "> on "
-              + selectTag.getSourceLocation().render() + ". Is the create view SQL code below valid?\n"
-              + "--- begin SQL ---\n" + e.getInvalidSQL() + "\n--- end SQL ---");
-        } catch (UnresolvableDataTypeException e) {
-          throw new ControlledException("Failed to retrieve metadata for <" + new SelectMethodTag().getTagName()
-              + "> with method '" + selectTag.getMethod() + "': could not find suitable Java property type for column '"
-              + e.getColumnName() + "'.");
-        }
-
-      }
+    for (SelectMethodMetadata sm : this.selectsMetadata) {
+      // try {
+      sm.gatherMetadataPhase2(conn2);
+      // } catch (UnresolvableDataTypeException e) {
+      // throw new ControlledException("Failed to retrieve metadata for <" + new
+      // SelectMethodTag().getTagName() + "> at "
+      // + sm.getSourceLocation().render() + ": could not find suitable Java
+      // property type for column '"
+      // + e.getColumnName() + "'.");
+      // }
     }
   }
 
   // Getters
+
+  public String getJavaClassName() {
+    return this.tag.getJavaClassName();
+  }
 
   public List<SequenceMethodTag> getSequences() {
     return sequences;
