@@ -38,6 +38,7 @@ import org.hotrod.metadata.ExpressionsMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.runtime.util.ListWriter;
@@ -465,11 +466,19 @@ public abstract class HotRodGenerator {
     for (DAOMetadata d : this.daos) {
       for (SelectMethodMetadata s : d.getSelectsMetadata()) {
         display("=== Select method " + s.getMethod() + " [" + (s.isStructured() ? "structured" : "non-structured")
-            + "] ===");
+            + "] " + (s.isMultipleRows() ? "<multiple-rows-return>" : "<single-row-return>") + " ===");
         if (s.isStructured()) {
-          logVOs(s.getStructuredColumns().getVOs(), 0);
-          logExpressions(s.getStructuredColumns().getExpressions(), 0);
-          logCollections(s.getStructuredColumns().getCollections(), 0);
+          StructuredColumnsMetadata sc = s.getStructuredColumns();
+          if (sc.getVO() == null) {
+            logVOs(sc.getVOs(), 0);
+            logExpressions(sc.getExpressions(), 0);
+            logCollections(sc.getCollections(), 0);
+          } else {
+            display("    + <main-single-vo> (new) " + sc.getVO());
+            logVOs(sc.getVOs(), 2);
+            logExpressions(sc.getExpressions(), 2);
+            logCollections(sc.getCollections(), 2);
+          }
         } else {
           for (ColumnMetadata cm : s.getNonStructuredColumns()) {
             display("   + " + cm.getColumnName() + " (" + cm.getType().getJavaClassName() + ")");
@@ -484,8 +493,10 @@ public abstract class HotRodGenerator {
     String filler = SUtils.getFiller(' ', level);
     for (ExpressionsMetadata exp : expressions) {
       for (StructuredColumnMetadata cm : exp.getColumns()) {
-        display("   " + filler + "+ [expr] " + cm.getColumnName() + " (" + cm.getType().getJavaClassName() + ") --> "
-            + cm.getColumnAlias());
+        display("   " + filler + "+ [expr] "
+            + cm.getColumnName() + " (" + (cm.getConverter() != null
+                ? "<converted-to> " + cm.getConverter().getJavaType() : cm.getType().getJavaClassName())
+            + ") --> " + cm.getColumnAlias());
       }
     }
   }
@@ -534,12 +545,10 @@ public abstract class HotRodGenerator {
     for (VOMetadata vo : vos) {
 
       boolean extendsVO = vo.getExtendedVO() != null;
-      String based = vo.getTableMetadata() != null
-          ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
-              + vo.getTableMetadata().getIdentifier().getSQLIdentifier() + " @" + vo.getTableMetadata()
-              + (extendsVO ? " <as> " + vo.getExtendedVO() : "")
+      String based = vo.getTableMetadata() != null ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
+          + vo.getTableMetadata().getIdentifier().getSQLIdentifier() + (extendsVO ? " <as> " + vo.getExtendedVO() : "")
           : (extendsVO ? "<extends>" : "<corresponds to>") + " view "
-              + vo.getViewMetadata().getIdentifier().getSQLIdentifier() + " @" + vo.getViewMetadata()
+              + vo.getViewMetadata().getIdentifier().getSQLIdentifier()
               + (extendsVO ? " <as> " + vo.getExtendedVO() : "");
 
       String property = vo.getProperty() != null ? "<property> " + vo.getProperty() : "<main-single-vo>";
@@ -556,7 +565,7 @@ public abstract class HotRodGenerator {
     for (StructuredColumnMetadata cm : columns) {
       display("   " + filler
           + "+ " + cm.getColumnName() + " (" + (cm.getConverter() != null
-              ? "<converted-to> " + cm.getConverter().getJavaType() : "<nc> " + cm.getType().getJavaClassName())
+              ? "<converted-to> " + cm.getConverter().getJavaType() : cm.getType().getJavaClassName())
           + ") --> " + cm.getColumnAlias());
     }
   }

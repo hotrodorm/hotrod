@@ -172,7 +172,11 @@
 
   <!-- select method - expressions -->
 
-  <xsd:complexType name="expressions-type" mixed="true"/>
+  <xsd:complexType name="expressions-type" mixed="true">
+    <xsd:sequence>
+      <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
 
   <!-- select method - vo -->
 

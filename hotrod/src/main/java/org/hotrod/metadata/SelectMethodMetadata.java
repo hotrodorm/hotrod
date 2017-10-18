@@ -424,4 +424,8 @@ public class SelectMethodMetadata implements DataSetMetadata {
     return this.fragmentConfig;
   }
 
+  public boolean isMultipleRows() {
+    return this.tag.isMultipleRows();
+  }
+
 }

@@ -51,6 +51,12 @@
 
   <table name="category" />
 
+  <table name="log" />
+
+  <view name="north_office" />
+<!-- 
+-->
+
   <fragment file="hotrod-selects-tests.xml" />
 
 </hotrod>

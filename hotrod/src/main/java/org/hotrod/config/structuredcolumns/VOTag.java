@@ -2,6 +2,7 @@ package org.hotrod.config.structuredcolumns;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,8 @@ import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.Patterns;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
+import org.hotrod.config.TableTag;
+import org.hotrod.config.ViewTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
@@ -56,10 +59,13 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   private String table = null;
   private String view = null;
+  private String id = null;
   private String property = null;
   private String alias = null;
   private String extendedVO = null;
   private List<String> body = null;
+
+  private List<String> idNames;
 
   private TableDataSetMetadata tableMetadata;
   private TableDataSetMetadata viewMetadata;
@@ -98,6 +104,11 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   @XmlAttribute
   public void setView(final String view) {
     this.view = view;
+  }
+
+  @XmlAttribute
+  public void setId(final String id) {
+    this.id = id;
   }
 
   @XmlAttribute
@@ -176,6 +187,10 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
             + super.getTagName() + "> tag. When specified this attribute must not be empty.");
       }
     }
+
+    // id
+
+    this.idNames = this.id == null ? new ArrayList<String>() : Arrays.asList(this.id.split(","));
 
     // property
 
@@ -276,15 +291,17 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     if (this.table != null) {
       this.tableMetadata = generator.findTableMetadata(this.table);
       if (this.tableMetadata == null) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Could not find table '" + this.table
-            + "', specified by the 'table' attribute on the <" + super.getTagName() + "> tag.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Could not find <" + new TableTag().getTagName() + "> tag in the configuration file for the table '"
+                + this.table + "', specified by the 'table' attribute on the <" + super.getTagName() + "> tag.");
       }
       this.viewMetadata = null;
     } else {
       this.viewMetadata = generator.findViewMetadata(this.view);
       if (this.viewMetadata == null) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Could not find view '" + this.table
-            + "', specified by the 'view' attribute on the <" + super.getTagName() + "> tag.");
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "Could not find <" + new ViewTag().getTagName() + "> tag in the configuration file for the view '"
+                + this.view + "', specified by the 'view' attribute on the <" + super.getTagName() + "> tag.");
       }
       this.tableMetadata = null;
     }
@@ -351,11 +368,17 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException, ControlledException {
 
     if (this.useAllColumns) { // all columns
+
       if (this.tableMetadata != null) {
         this.columns = StructuredColumnMetadata.promote(this.tableMetadata.getColumns(), this.aliasPrefix);
+        // this.ids = this.tableMetadata.getPK() == null ? new
+        // ArrayList<ColumnMetadata>()
+        // : this.tableMetadata.getPK().getColumns();
       } else {
         this.columns = StructuredColumnMetadata.promote(this.viewMetadata.getColumns(), this.aliasPrefix);
+
       }
+
     } else { // specific columns
 
       Map<String, ColumnMetadata> voColumns = new HashMap<String, ColumnMetadata>();
@@ -437,6 +460,10 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   public String getView() {
     return view;
+  }
+
+  public String getId() {
+    return id;
   }
 
   public String getProperty() {

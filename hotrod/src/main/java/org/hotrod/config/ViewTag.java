@@ -118,7 +118,7 @@ public class ViewTag extends AbstractDAOTag {
 
   public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
 
-    JdbcTable v = generator.findJdbcTable(this.name);
+    JdbcTable v = generator.findJdbcView(this.name);
     if (v == null) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Could not find database view '" + this.name + "' as specified in the <view> tag of the configuration file. "

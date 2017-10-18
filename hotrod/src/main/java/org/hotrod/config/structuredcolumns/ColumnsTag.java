@@ -47,6 +47,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   private List<ExpressionsTag> expressions = new ArrayList<ExpressionsTag>();
   private List<CollectionTag> collections = new ArrayList<CollectionTag>();
 
+  @SuppressWarnings("unused")
   private HotRodGenerator generator;
 
   private StructuredColumnsMetadata metadata;
@@ -152,7 +153,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
       final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult)
       throws InvalidConfigurationFileException {
 
-    // vo-class
+    // vo
 
     boolean includesSingleVO = this.vos.size() == 1 && this.expressions.isEmpty() && this.collections.isEmpty();
 
@@ -196,21 +197,9 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   }
 
-  private boolean existingVO;
-  private String computedVOClass;
-
   @Override
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final Connection conn1) throws InvalidSQLException {
-
-    // if (this.vos.size() == 1 && this.collections.isEmpty() &&
-    // this.expressions.isEmpty()) {
-    //
-    // VOTag singleVO = this.vos.get(0);
-    // singleVO.gatherMetadataPhase1(selectTag, selectGenerationTag,
-    // columnsPrefixGenerator, conn1);
-    //
-    // } else {
 
     for (VOTag vo : this.vos) {
       vo.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
@@ -222,21 +211,11 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
       c.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
     }
 
-    // }
-
   }
 
   @Override
   public void gatherMetadataPhase2(final Connection conn2)
       throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException, ControlledException {
-
-    // if (this.vos.size() == 1 && this.collections.isEmpty() &&
-    // this.expressions.isEmpty()) {
-    //
-    // VOTag singleVO = this.vos.get(0);
-    // singleVO.gatherMetadataPhase2(conn2);
-    //
-    // } else {
 
     // Retrieve
 
@@ -267,24 +246,22 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
       vos.add(t.getMetadata());
     }
 
-    this.metadata = new StructuredColumnsMetadata(expressions, collections, vos);
-
-    // }
+    this.metadata = new StructuredColumnsMetadata(this.vo, expressions, collections, vos);
 
   }
 
   // Getters
 
-  public String getVoClass() {
-    return vo;
-  }
-
-  public List<VOTag> getVos() {
+  public List<VOTag> getVOs() {
     return vos;
   }
 
   public List<ExpressionsTag> getExpressions() {
     return expressions;
+  }
+
+  public List<CollectionTag> getCollections() {
+    return collections;
   }
 
   public StructuredColumnsMetadata getMetadata() {

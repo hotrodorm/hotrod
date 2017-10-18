@@ -124,6 +124,15 @@ public class ColumnMetadata {
     this.isVersionControlColumn = isVersionControlColumn;
   }
 
+  // Applying a column tag to a column meta data
+
+  public static ColumnMetadata applyColumnTag(final ColumnMetadata cm, final ColumnTag tag) throws UnresolvableDataTypeException {
+    ColumnMetadata m2 = new ColumnMetadata(cm);
+    m2.tag = tag;
+    m2.type = m2.adapter.resolveJavaType(m2, tag);
+    return m2;
+  }
+
   // Indexing methods
 
   @Override

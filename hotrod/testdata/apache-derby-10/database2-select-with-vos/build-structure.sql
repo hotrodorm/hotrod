@@ -32,3 +32,22 @@ create table "transaction" (
   type smallint not null, -- 0:cashier, 1:online, 2:ATM, 3:third party
   constraint fk2 foreign key (account_id) references account (id)
 );
+
+create table log (
+  recorded_at timestamp not null,
+  note varchar(5000) not null,
+  recorded_by varchar(20) not null,
+  office_id integer
+);
+
+create table office (
+  id integer primary key not null,
+  name varchar(40) not null,
+  region varchar(10) not null check (region in ('NORTH', 'SOUTH', 'EAST'))
+);
+
+create view north_office as select * from office where region = 'NORTH';
+
+  
+  
+  
