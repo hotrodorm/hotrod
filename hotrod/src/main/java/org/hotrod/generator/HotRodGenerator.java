@@ -421,6 +421,12 @@ public abstract class HotRodGenerator {
             + "> query with name '" + currDs.getIdentifier().getSQLIdentifier() + "'.", e);
       } catch (UnresolvableDataTypeException e) {
         throw new ControlledException(e.getMessage());
+      } catch (InvalidConfigurationFileException e) {
+        String message = (e.getSourceLocation() == null ? ""
+            : "[file: " + e.getSourceLocation().getFile().getPath() + ", line " + e.getSourceLocation().getLineNumber()
+                + ", col " + e.getSourceLocation().getColumnNumber() + "] ")
+            + e.getMessage();
+        throw new ControlledException(message);
       } finally {
         if (conn2 != null) {
           try {

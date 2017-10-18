@@ -147,7 +147,7 @@ public class ColumnsMetadataRetriever {
           ColumnMetadata cm = new ColumnMetadata(null, c, this.selectTag.getMethod(), this.adapter, null, false, false);
 
           String alias = this.aliasPrefix + cm.getColumnName();
-          StructuredColumnMetadata scm = new StructuredColumnMetadata(cm, alias);
+          StructuredColumnMetadata scm = new StructuredColumnMetadata(cm, alias, false);
           columns.add(scm);
         }
 

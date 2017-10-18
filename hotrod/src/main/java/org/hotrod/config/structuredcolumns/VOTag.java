@@ -2,10 +2,11 @@ package org.hotrod.config.structuredcolumns;
 
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
@@ -30,6 +31,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.metadata.StructuredColumnMetadata.IdColumnNotFoundException;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.runtime.util.ListWriter;
@@ -65,7 +67,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   private String extendedVO = null;
   private List<String> body = null;
 
-  private List<String> idNames;
+  private Set<String> idNames;
 
   private TableDataSetMetadata tableMetadata;
   private TableDataSetMetadata viewMetadata;
@@ -190,7 +192,18 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     // id
 
-    this.idNames = this.id == null ? new ArrayList<String>() : Arrays.asList(this.id.split(","));
+    this.idNames = new HashSet<String>();
+    if (this.id != null) {
+      for (String idName : this.id.split(",")) {
+        if (this.idNames.contains(idName)) {
+          throw new InvalidConfigurationFileException(super.getSourceLocation(), "Duplicate column '" + idName
+              + "' on the 'id' attribute. The comma-separated list of column names should not include the same column more than once.");
+        }
+        this.idNames.add(idName);
+      }
+    }
+
+    // this.idNames;
 
     // property
 
@@ -364,51 +377,96 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   }
 
   @Override
-  public void gatherMetadataPhase2(final Connection conn2)
-      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException, ControlledException {
+  public void gatherMetadataPhase2(final Connection conn2) throws InvalidSQLException, UncontrolledException,
+      UnresolvableDataTypeException, ControlledException, InvalidConfigurationFileException {
 
-    if (this.useAllColumns) { // all columns
+    boolean requiresIds = this.incorporateCollections();
 
-      if (this.tableMetadata != null) {
-        this.columns = StructuredColumnMetadata.promote(this.tableMetadata.getColumns(), this.aliasPrefix);
-        // this.ids = this.tableMetadata.getPK() == null ? new
-        // ArrayList<ColumnMetadata>()
-        // : this.tableMetadata.getPK().getColumns();
-      } else {
-        this.columns = StructuredColumnMetadata.promote(this.viewMetadata.getColumns(), this.aliasPrefix);
+    if (this.useAllColumns) { // 1. All columns
+
+      if (this.tableMetadata != null) { // 1.a Based on a table
+
+        if (this.tableMetadata.getPK() != null) { // 1.a.1 Table with a PK
+
+          if (!this.idNames.isEmpty()) {
+            throw new InvalidConfigurationFileException(super.getSourceLocation(),
+                "'id' attribute should not be specified on tag <" + this.getTagName() + ">.\n"
+                    + "When a table with a PK is used, "
+                    + "the 'id' attribute cannot be specified and is automatically set to the table PK.");
+          }
+          this.columns = StructuredColumnMetadata.promote(this.tableMetadata.getColumns(), this.aliasPrefix);
+
+        } else { // 1.a.2 Table without a PK
+
+          if (requiresIds && this.idNames.isEmpty()) {
+            throw new InvalidConfigurationFileException(super.getSourceLocation(),
+                "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
+                    + "> uses a table with no PK (the table " + this.tableMetadata.getIdentifier().getSQLIdentifier()
+                    + " in this case) and includes other <collection> tags, "
+                    + "the 'id' attribute must specify the row-identifying columns (i.e. an 'acting' unique key).");
+          }
+          try {
+            this.columns = StructuredColumnMetadata.promote(this.tableMetadata.getColumns(), this.aliasPrefix,
+                this.idNames);
+          } catch (IdColumnNotFoundException e) {
+            throw new InvalidConfigurationFileException(super.getSourceLocation(),
+                "Could not find column '" + e.getIdName() + "' on the table '"
+                    + this.viewMetadata.getIdentifier().getSQLIdentifier() + "' as specified on the 'id' attribute.");
+          }
+
+        }
+
+      } else { // 1.b Based on a view
+
+        if (requiresIds && this.idNames.isEmpty()) {
+          throw new InvalidConfigurationFileException(super.getSourceLocation(),
+              "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
+                  + "> uses a view and includes other <collection> tags, "
+                  + "the 'id' attribute must specify the row-identifying columns (i.e. an 'acting' unique key).");
+        }
+        try {
+          this.columns = StructuredColumnMetadata.promote(this.viewMetadata.getColumns(), this.aliasPrefix,
+              this.idNames);
+        } catch (IdColumnNotFoundException e) {
+          throw new InvalidConfigurationFileException(super.getSourceLocation(),
+              "Could not find column '" + e.getIdName() + "' on the view '"
+                  + this.viewMetadata.getIdentifier().getSQLIdentifier() + "' as specified on the 'id' attribute.");
+        }
 
       }
 
-    } else { // specific columns
+    } else { // 2. Specific columns
 
-      Map<String, ColumnMetadata> voColumns = new HashMap<String, ColumnMetadata>();
-      if (this.tableMetadata != null) {
+      Map<String, ColumnMetadata> voColumns = new HashMap<String, ColumnMetadata>(); -- fix this
+
+      if (this.tableMetadata != null) { // 2.a Based on a table
+
         for (ColumnMetadata cm : this.tableMetadata.getColumns()) {
           voColumns.put(cm.getColumnName(), cm);
         }
-      } else {
+
+        if (this.tableMetadata.getPK() != null) { // 2.a.1 Table with a PK
+
+          this.columns = retrieveColumns(conn2, voColumns);
+
+        } else { // 2.a.2 Table without a PK
+
+          this.columns = retrieveColumns(conn2, voColumns);
+
+        }
+
+      } else { // 2.b Based on a view
+
         for (ColumnMetadata cm : this.viewMetadata.getColumns()) {
           voColumns.put(cm.getColumnName(), cm);
         }
-      }
+        this.columns = retrieveColumns(conn2, voColumns);
 
-      this.columns = new ArrayList<StructuredColumnMetadata>();
-      List<StructuredColumnMetadata> retrieved = this.cmr.retrieve(conn2);
-      for (StructuredColumnMetadata rc : retrieved) {
-        ColumnMetadata found = voColumns.get(rc.getColumnName());
-        if (found == null) {
-          throw new ControlledException(
-              "Invalid column '" + rc.getColumnName() + "' in the body of the <" + this.getTagName() + "> tag at "
-                  + super.getSourceLocation().render() + ".\n" + "There's no column '" + rc.getColumnName()
-                  + "' in the " + (this.tableMetadata != null ? "table" : "view") + " '" + (this.tableMetadata != null
-                      ? this.tableMetadata.renderSQLIdentifier() : this.viewMetadata.renderSQLIdentifier())
-                  + "'.");
-        }
-        StructuredColumnMetadata assembled = new StructuredColumnMetadata(found, rc.getColumnAlias());
-        this.columns.add(assembled);
       }
 
     }
+
+    // 3. Retrieve inner expressions, collections, and associations
 
     for (ExpressionsTag exp : this.expressions) {
       exp.gatherMetadataPhase2(conn2);
@@ -422,6 +480,40 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       a.gatherMetadataPhase2(conn2);
     }
 
+  }
+
+  private List<StructuredColumnMetadata> retrieveColumns(final Connection conn2,
+      final Map<String, ColumnMetadata> voColumns)
+      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException, ControlledException {
+    List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
+    List<StructuredColumnMetadata> retrieved = this.cmr.retrieve(conn2);
+    for (StructuredColumnMetadata rc : retrieved) {
+      ColumnMetadata found = voColumns.get(rc.getColumnName());
+      if (found == null) {
+        throw new ControlledException(
+            "Invalid column '" + rc.getColumnName() + "' in the body of the <" + this.getTagName() + "> tag at "
+                + super.getSourceLocation().render() + ".\n" + "There's no column '" + rc.getColumnName() + "' in the "
+                + (this.tableMetadata != null ? "table" : "view") + " '" + (this.tableMetadata != null
+                    ? this.tableMetadata.renderSQLIdentifier() : this.viewMetadata.renderSQLIdentifier())
+                + "'.");
+      }
+      StructuredColumnMetadata assembled = new StructuredColumnMetadata(found, rc.getColumnAlias(),
+          found.belongsToPK());
+      columns.add(assembled);
+    }
+    return columns;
+  }
+
+  public boolean incorporateCollections() {
+    if (!this.collections.isEmpty()) {
+      return true;
+    }
+    for (AssociationTag a : this.associations) {
+      if (a.incorporateCollections()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   // Utilities

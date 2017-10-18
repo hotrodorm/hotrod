@@ -15,6 +15,7 @@ import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 
@@ -70,17 +71,10 @@ public class DAOMetadata {
     }
   }
 
-  public void gatherSelectsMetadataPhase2(final Connection conn2) throws ControlledException, UncontrolledException {
+  public void gatherSelectsMetadataPhase2(final Connection conn2)
+      throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
     for (SelectMethodMetadata sm : this.selectsMetadata) {
-      // try {
       sm.gatherMetadataPhase2(conn2);
-      // } catch (UnresolvableDataTypeException e) {
-      // throw new ControlledException("Failed to retrieve metadata for <" + new
-      // SelectMethodTag().getTagName() + "> at "
-      // + sm.getSourceLocation().render() + ": could not find suitable Java
-      // property type for column '"
-      // + e.getColumnName() + "'.");
-      // }
     }
   }
 

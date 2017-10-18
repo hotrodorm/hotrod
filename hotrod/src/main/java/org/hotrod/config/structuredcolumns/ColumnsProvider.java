@@ -25,8 +25,8 @@ public interface ColumnsProvider {
   void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, Connection conn1) throws InvalidSQLException;
 
-  void gatherMetadataPhase2(final Connection conn2)
-      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException, ControlledException;
+  void gatherMetadataPhase2(final Connection conn2) throws InvalidSQLException, UncontrolledException,
+      UnresolvableDataTypeException, ControlledException, InvalidConfigurationFileException;
 
   String renderColumns();
 

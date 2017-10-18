@@ -126,7 +126,8 @@ public class ColumnMetadata {
 
   // Applying a column tag to a column meta data
 
-  public static ColumnMetadata applyColumnTag(final ColumnMetadata cm, final ColumnTag tag) throws UnresolvableDataTypeException {
+  public static ColumnMetadata applyColumnTag(final ColumnMetadata cm, final ColumnTag tag)
+      throws UnresolvableDataTypeException {
     ColumnMetadata m2 = new ColumnMetadata(cm);
     m2.tag = tag;
     m2.type = m2.adapter.resolveJavaType(m2, tag);
@@ -186,6 +187,13 @@ public class ColumnMetadata {
 
   public String renderSQLIdentifier() {
     return this.adapter.renderSQLName(this.columnName);
+  }
+
+  public boolean isConfigurationName(final String configurationName) {
+    if (configurationName == null) {
+      return false;
+    }
+    return this.adapter.isColumnIdentifier(this.columnName, configurationName);
   }
 
   // Getters

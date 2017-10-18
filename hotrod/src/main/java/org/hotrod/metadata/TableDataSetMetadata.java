@@ -22,6 +22,7 @@ import org.hotrod.config.TableTag;
 import org.hotrod.config.VersionControlColumnTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
@@ -279,17 +280,10 @@ public class TableDataSetMetadata implements DataSetMetadata {
     }
   }
 
-  public void gatherSelectsMetadataPhase2(final Connection conn2) throws ControlledException, UncontrolledException {
+  public void gatherSelectsMetadataPhase2(final Connection conn2)
+      throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
     for (SelectMethodMetadata sm : this.selectsMetadata) {
-      // try {
       sm.gatherMetadataPhase2(conn2);
-      // } catch (UnresolvableDataTypeException e) {
-      // throw new ControlledException("Failed to retrieve metadata for <" + new
-      // SelectMethodTag().getTagName() + "> at "
-      // + sm.getSourceLocation().render() + ": could not find suitable Java
-      // property type for column '"
-      // + e.getColumnName() + "'.");
-      // }
     }
   }
 

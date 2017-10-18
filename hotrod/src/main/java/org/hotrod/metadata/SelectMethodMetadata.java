@@ -18,6 +18,7 @@ import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
@@ -112,7 +113,8 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   }
 
-  public void gatherMetadataPhase2(final Connection conn2) throws UncontrolledException, ControlledException {
+  public void gatherMetadataPhase2(final Connection conn2)
+      throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
 
     if (!this.structured) {
 
