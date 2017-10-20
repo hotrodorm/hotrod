@@ -45,7 +45,6 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   private List<VOTag> vos = new ArrayList<VOTag>();
   private List<ExpressionsTag> expressions = new ArrayList<ExpressionsTag>();
-  private List<CollectionTag> collections = new ArrayList<CollectionTag>();
 
   @SuppressWarnings("unused")
   private HotRodGenerator generator;
@@ -76,11 +75,6 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     this.expressions.add(exps);
   }
 
-  @XmlElement(name = "collection")
-  public void setCollectionTag(final CollectionTag collection) {
-    this.collections.add(collection);
-  }
-
   // Behavior
 
   // ========================
@@ -91,7 +85,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, ParameterDefinitions parameters)
       throws InvalidConfigurationFileException {
-    boolean singleVOResult = this.vos.size() == 1 && this.expressions.isEmpty() && this.collections.isEmpty();
+    boolean singleVOResult = this.vos.size() == 1 && this.expressions.isEmpty();
     this.validate(daosTag, config, fragmentConfig, singleVOResult);
   }
 
@@ -155,7 +149,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
     // vo
 
-    boolean includesSingleVO = this.vos.size() == 1 && this.expressions.isEmpty() && this.collections.isEmpty();
+    boolean includesSingleVO = this.vos.size() == 1 && this.expressions.isEmpty();
 
     if (this.vo != null) {
       if (includesSingleVO) {
@@ -189,12 +183,6 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
       exp.validate(daosTag, config, fragmentConfig, singleVOResult);
     }
 
-    // collections
-
-    for (CollectionTag c : this.collections) {
-      c.validate(daosTag, config, fragmentConfig, false);
-    }
-
   }
 
   @Override
@@ -206,9 +194,6 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     }
     for (ExpressionsTag exp : this.expressions) {
       exp.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
-    }
-    for (CollectionTag c : this.collections) {
-      c.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
     }
 
   }
@@ -225,9 +210,6 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     for (ExpressionsTag exp : this.expressions) {
       exp.gatherMetadataPhase2(conn2);
     }
-    for (CollectionTag c : this.collections) {
-      c.gatherMetadataPhase2(conn2);
-    }
 
     // Assemble
 
@@ -236,17 +218,12 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
       expressions.add(t.getExpressionsMetadata());
     }
 
-    List<VOMetadata> collections = new ArrayList<VOMetadata>();
-    for (VOTag t : this.collections) {
-      collections.add(t.getMetadata());
-    }
-
     List<VOMetadata> vos = new ArrayList<VOMetadata>();
     for (VOTag t : this.vos) {
       vos.add(t.getMetadata());
     }
 
-    this.metadata = new StructuredColumnsMetadata(this.vo, expressions, collections, vos);
+    this.metadata = new StructuredColumnsMetadata(this.vo, expressions, vos);
 
   }
 
@@ -258,10 +235,6 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   public List<ExpressionsTag> getExpressions() {
     return expressions;
-  }
-
-  public List<CollectionTag> getCollections() {
-    return collections;
   }
 
   public StructuredColumnsMetadata getMetadata() {

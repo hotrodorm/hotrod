@@ -38,7 +38,7 @@
       <columns vo="AccountPersonVO">
         <vo table="account" property="account"> a.* </vo>
         <vo table="person" property="person" alias="p"></vo>
-        <expressions> 
+        <expressions>
           <column name="initial_load" java-type="java.lang.Double" />
           a.balance * a.type as initial_load,
           p.id + p.type as score
@@ -174,9 +174,8 @@
 
       select
       <columns>
-        <vo table="log" id="recorded_by, recorded_at" extended-vo="LogWithOfficeVO">
-          l.*
-          <association view="north_office" id="office_id" property="office" alias="o" />
+        <vo table="log" id="recorded_by,recorded_at" extended-vo="LogWithOfficeVO" alias="l">
+          <collection view="north_office" id="id" property="office" alias="o" />
         </vo>
       </columns>
       from log l
@@ -202,6 +201,43 @@
       </complement>
 
     </select>
+
+    <!-- Case 10 - Ids -->
+
+    <select method="findSingleExpandedAccount" multiple-rows="false">
+
+      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      select
+      <columns>
+        <vo view="north_office" id="name,region" extended-vo="OfficeWithLogVO">
+          o.*
+          <collection table="log" property="office" alias="l" />
+        </vo>
+      </columns>
+      from north_office o
+      left join log l on l.office_id = o.id
+
+    </select>
+
+    <!-- Case 11 - Invalid JDBC type for an id column -->
+
+<!--
+    <select method="findExtendedDocument">
+
+      <parameter name="id" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      select
+      <columns>
+        <vo table="document" id="content" extended-vo="DocWithCommentVO" alias="d">
+          <collection table="doc_comment" property="comment" alias="c" />
+        </vo>
+      </columns>
+      from document d
+      left doc_comment c on c.doc_id = d.id
+
+    </select>
+-->
 
   </dao>
 

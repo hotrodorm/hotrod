@@ -54,6 +54,10 @@
   <table name="log" />
 
   <view name="north_office" />
+
+  <table name="document" />
+  
+  <table name="doc_comment" />
 <!-- 
 -->
 

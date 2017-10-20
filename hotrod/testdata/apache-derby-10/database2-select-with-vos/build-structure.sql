@@ -48,6 +48,14 @@ create table office (
 
 create view north_office as select * from office where region = 'NORTH';
 
+create table document (
+  id integer primary key not null,
+  content xml not null
+);
   
-  
-  
+create table doc_comment (
+  id integer primary key not null,
+  doc_id integer not null,
+  notes varchar(1000) not null
+);
+

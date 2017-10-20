@@ -165,7 +165,6 @@
       <xsd:element name="vo" type="vo-type" />
       <xsd:element name="expressions" type="expressions-type" />
       <xsd:element name="association" type="association-type" />
-      <xsd:element name="collection" type="collection-type" />
     </xsd:choice>
     <xsd:attribute name="vo" type="xsd:string" />
   </xsd:complexType>

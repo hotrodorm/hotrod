@@ -184,4 +184,26 @@ public class SUtils {
     return count;
   }
 
+  public static String alignRight(final String txt, final int width) {
+    if (txt == null) {
+      return null;
+    }
+    if (txt.length() >= width) {
+      return txt;
+    }
+    String filler = getFiller(' ', width - txt.length());
+    return filler + txt;
+  }
+
+  public static String alignLeft(final String txt, final int width) {
+    if (txt == null) {
+      return null;
+    }
+    if (txt.length() >= width) {
+      return txt;
+    }
+    String filler = getFiller(' ', width - txt.length());
+    return txt + filler;
+  }
+
 }

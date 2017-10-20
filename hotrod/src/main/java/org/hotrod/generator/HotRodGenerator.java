@@ -41,6 +41,11 @@ import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
+import org.hotrod.metadata.VORegistry;
+import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
+import org.hotrod.metadata.VORegistry.StructuredVOClass;
+import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
+import org.hotrod.metadata.VORegistry.VOClass;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.JdbcTypes;
@@ -76,6 +81,8 @@ public abstract class HotRodGenerator {
   protected LinkedHashSet<EnumDataSetMetadata> enums = null;
   protected LinkedHashSet<SelectDataSetMetadata> selects = null;
   protected LinkedHashSet<DAOMetadata> daos = null;
+
+  private VORegistry voRegistry = new VORegistry();
 
   private Long lastLog = null;
 
@@ -199,6 +206,10 @@ public abstract class HotRodGenerator {
           log.debug("*** tm=" + tm);
           validateIdentifier(sqlNames, "table", t.getName(), tm.getIdentifier());
           this.tables.add(tm);
+
+          VOClass vo = new VOClass(tm.getFragmentConfig().getFragmentPackage(), t);
+          this.voRegistry.addVO(vo);
+
         } catch (UnresolvableDataTypeException e) {
           ColumnMetadata m = e.getColumnMetadata();
 
@@ -208,6 +219,12 @@ public abstract class HotRodGenerator {
               "Unrecognized column data type (reported as '" + m.getTypeName() + "', JDBC type " + m.getDataType() + " "
                   + (typeName == null ? "(non-standard JDBC type)" : "'" + typeName + "'") + ") on column '"
                   + m.getColumnName() + "' of table/view/select '" + m.getTableName() + "'.");
+
+        } catch (VOAlreadyExistsException e) {
+          throw new ControlledException("Duplicate table with name '" + t.getName() + "'.");
+        } catch (StructuredVOAlreadyExistsException e) {
+          throw new ControlledException("Duplicate table with name '" + t.getName() + "'.");
+
         }
       }
 
@@ -251,8 +268,18 @@ public abstract class HotRodGenerator {
 
           validateIdentifier(sqlNames, "view", v.getName(), vm.getIdentifier());
           this.views.add(vm);
+
+          VOClass vo = new VOClass(vm.getFragmentConfig().getFragmentPackage(), v);
+          this.voRegistry.addVO(vo);
+
         } catch (UnresolvableDataTypeException e) {
           throw new ControlledException(e.getMessage());
+
+        } catch (VOAlreadyExistsException e) {
+          throw new ControlledException("Duplicate view with name '" + v.getName() + "'.");
+        } catch (StructuredVOAlreadyExistsException e) {
+          throw new ControlledException("Duplicate view with name '" + v.getName() + "'.");
+
         }
       }
 
@@ -478,16 +505,15 @@ public abstract class HotRodGenerator {
           if (sc.getVO() == null) {
             logVOs(sc.getVOs(), 0);
             logExpressions(sc.getExpressions(), 0);
-            logCollections(sc.getCollections(), 0);
           } else {
             display("    + <main-single-vo> (new) " + sc.getVO());
             logVOs(sc.getVOs(), 2);
             logExpressions(sc.getExpressions(), 2);
-            logCollections(sc.getCollections(), 2);
           }
         } else {
           for (ColumnMetadata cm : s.getNonStructuredColumns()) {
-            display("   + " + cm.getColumnName() + " (" + cm.getType().getJavaClassName() + ")");
+            display(
+                "   - " + cm.getIdentifier().getJavaMemberIdentifier() + " (" + cm.getType().getJavaClassName() + ")");
           }
         }
         display("--- end select method ---");
@@ -499,8 +525,8 @@ public abstract class HotRodGenerator {
     String filler = SUtils.getFiller(' ', level);
     for (ExpressionsMetadata exp : expressions) {
       for (StructuredColumnMetadata cm : exp.getColumns()) {
-        display("   " + filler + "+ [expr] "
-            + cm.getColumnName() + " (" + (cm.getConverter() != null
+        display("   " + filler + "+ "
+            + cm.getIdentifier().getJavaMemberIdentifier() + " [expr] (" + (cm.getConverter() != null
                 ? "<converted-to> " + cm.getConverter().getJavaType() : cm.getType().getJavaClassName())
             + ") --> " + cm.getColumnAlias());
       }
@@ -516,7 +542,7 @@ public abstract class HotRodGenerator {
           : (extendsVO ? "<extends>" : "<corresponds to>") + " view "
               + c.getViewMetadata().getIdentifier().getSQLIdentifier()
               + (extendsVO ? " <as> " + c.getExtendedVO() : "");
-      String property = c.getProperty() != null ? "<property> " + c.getProperty() : "<main-vo>";
+      String property = c.getProperty() != null ? c.getProperty() : "<main-vo>";
       display("   " + filler + "+ " + property + " [collection] " + based);
       logColumns(c.getColumns(), level + 2);
       logExpressions(c.getExpressions(), level + 2);
@@ -536,7 +562,7 @@ public abstract class HotRodGenerator {
               + a.getViewMetadata().getIdentifier().getSQLIdentifier()
               + (extendsVO ? " <as> " + a.getExtendedVO() : "");
 
-      String property = a.getProperty() != null ? "<property> " + a.getProperty() : "<main-vo>";
+      String property = a.getProperty() != null ? a.getProperty() : "<main-vo>";
 
       display("   " + filler + "+ " + property + " [association] " + based);
       logColumns(a.getColumns(), level + 2);
@@ -557,7 +583,7 @@ public abstract class HotRodGenerator {
               + vo.getViewMetadata().getIdentifier().getSQLIdentifier()
               + (extendsVO ? " <as> " + vo.getExtendedVO() : "");
 
-      String property = vo.getProperty() != null ? "<property> " + vo.getProperty() : "<main-single-vo>";
+      String property = vo.getProperty() != null ? vo.getProperty() : "<main-single-vo>";
       display("   " + filler + "+ " + property + " [vo] " + based);
       logColumns(vo.getColumns(), level + 2);
       logExpressions(vo.getExpressions(), level + 2);
@@ -567,10 +593,10 @@ public abstract class HotRodGenerator {
   }
 
   private void logColumns(final List<StructuredColumnMetadata> columns, final int level) {
-    String filler = SUtils.getFiller(' ', level);
+    String indent = SUtils.getFiller(' ', level);
     for (StructuredColumnMetadata cm : columns) {
-      display("   " + filler
-          + "+ " + cm.getColumnName() + " (" + (cm.getConverter() != null
+      display("   " + indent + "- " + cm.getIdentifier().getJavaMemberIdentifier()
+          + (cm.isId() ? " <<id>>" : "") + " (" + (cm.getConverter() != null
               ? "<converted-to> " + cm.getConverter().getJavaType() : cm.getType().getJavaClassName())
           + ") --> " + cm.getColumnAlias());
     }
@@ -946,6 +972,19 @@ public abstract class HotRodGenerator {
       return false;
     }
   }
+
+  // VO Registry
+
+  public void register(final VOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
+    this.voRegistry.addVO(voClass);
+  }
+
+  public void register(final StructuredVOClass structuredVOClass)
+      throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
+    this.voRegistry.addVO(structuredVOClass);
+  }
+
+  // Getters
 
   public DatabaseAdapter getAdapter() {
     return this.adapter;

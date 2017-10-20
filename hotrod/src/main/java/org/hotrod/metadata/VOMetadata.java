@@ -13,7 +13,7 @@ public class VOMetadata {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(VOTag.class);
+  private static final Logger log = Logger.getLogger(VOMetadata.class);
 
   // Properties
 

@@ -1,0 +1,326 @@
+package org.hotrod.metadata;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.hotrod.utils.ClassPackage;
+import org.nocrala.tools.database.tartarus.core.JdbcTable;
+
+public class VORegistry {
+
+  private LinkedHashMap<ClassPackage, FragmentRegistry> fragmentsByPackage = new LinkedHashMap<ClassPackage, FragmentRegistry>();
+
+  // Behavior
+
+  public void addVO(final VOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
+    ClassPackage classPackage = voClass.getClassPackage();
+    FragmentRegistry f = this.fragmentsByPackage.get(classPackage);
+    if (f == null) {
+      f = new FragmentRegistry(classPackage);
+      this.fragmentsByPackage.put(classPackage, f);
+    }
+    f.addVO(voClass);
+  }
+
+  public void addVO(final StructuredVOClass structuredVOClass)
+      throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
+    ClassPackage classPackage = structuredVOClass.getClassPackage();
+    FragmentRegistry f = this.fragmentsByPackage.get(classPackage);
+    if (f == null) {
+      f = new FragmentRegistry(classPackage);
+      this.fragmentsByPackage.put(classPackage, f);
+    }
+    f.addVO(structuredVOClass);
+  }
+
+  // Getters
+
+  public List<FragmentRegistry> getFragments() {
+    return new ArrayList<FragmentRegistry>(this.fragmentsByPackage.values());
+  }
+
+  // Classes
+
+  public static class FragmentRegistry {
+
+    // Properties
+
+    private ClassPackage classPackage;
+    private LinkedHashMap<String, VOClass> vosByName;
+    private LinkedHashMap<String, StructuredVOClass> structuredVOsByName;
+
+    // Constructor
+
+    public FragmentRegistry(final ClassPackage classPackage) {
+      this.classPackage = classPackage;
+      this.structuredVOsByName = new LinkedHashMap<String, StructuredVOClass>();
+      this.vosByName = new LinkedHashMap<String, VOClass>();
+    }
+
+    // Behavior
+
+    public void addVO(final VOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
+      if (this.vosByName.containsKey(voClass.getName())) {
+        throw new VOAlreadyExistsException();
+      }
+      if (this.structuredVOsByName.containsKey(voClass.getName())) {
+        throw new StructuredVOAlreadyExistsException();
+      }
+      this.vosByName.put(voClass.getName(), voClass);
+    }
+
+    public void addVO(final StructuredVOClass voClass)
+        throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
+      if (this.vosByName.containsKey(voClass.getName())) {
+        throw new VOAlreadyExistsException();
+      }
+      if (this.structuredVOsByName.containsKey(voClass.getName())) {
+        StructuredVOClass other = this.structuredVOsByName.get(voClass.getName());
+        if (!voClass.equals(other)) {
+          throw new StructuredVOAlreadyExistsException();
+        }
+      }
+      this.structuredVOsByName.put(voClass.getName(), voClass);
+    }
+
+    // Getters
+
+    public ClassPackage getClassPackage() {
+      return classPackage;
+    }
+
+    public List<VOClass> getVOs() {
+      return new ArrayList<VOClass>(this.vosByName.values());
+    }
+
+    public List<StructuredVOClass> getStructuredVOs() {
+      return new ArrayList<StructuredVOClass>(this.structuredVOsByName.values());
+    }
+
+  }
+
+  public static class VOClass {
+
+    // Properties
+
+    private ClassPackage classPackage;
+    private String name;
+    private LinkedHashMap<String, ColumnMetadata> columnsByName;
+
+    // Constructor
+
+    public VOClass(final ClassPackage classPackage, final JdbcTable t) {
+
+    }
+
+    public VOClass(final ClassPackage classPackage, final String name, final List<ColumnMetadata> columns) {
+      this.classPackage = classPackage;
+      this.name = name;
+      this.columnsByName = new LinkedHashMap<String, ColumnMetadata>();
+      for (ColumnMetadata c : columns) {
+        this.columnsByName.put(c.getColumnName(), c);
+      }
+    }
+
+    // Behavior
+
+    public boolean equals(final VOClass o) {
+      if (o == null) {
+        return false;
+      }
+      VOClass other;
+      try {
+        other = (VOClass) o;
+      } catch (ClassCastException e) {
+        return false;
+      }
+      if (!this.classPackage.equals(other.classPackage)) {
+        return false;
+      }
+      if (!this.name.equals(other.name)) {
+        return false;
+      }
+
+      // compare columns
+
+      for (String name : this.columnsByName.keySet()) {
+        ColumnMetadata c1 = this.columnsByName.get(name);
+        ColumnMetadata c2 = other.columnsByName.get(name);
+        if (c2 == null) {
+          return false;
+        }
+        if (!equivalentColumns(c1, c2)) {
+          return false;
+        }
+      }
+
+      for (String name : other.columnsByName.keySet()) {
+        ColumnMetadata c1 = other.columnsByName.get(name);
+        ColumnMetadata c2 = this.columnsByName.get(name);
+        if (c2 == null) {
+          return false;
+        }
+        if (!equivalentColumns(c1, c2)) {
+          return false;
+        }
+      }
+
+      // all comparisons cleared
+
+      return true;
+    }
+
+    // Getters
+
+    public ClassPackage getClassPackage() {
+      return classPackage;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public LinkedHashMap<String, ColumnMetadata> getColumnsByName() {
+      return columnsByName;
+    }
+
+  }
+
+  public static class StructuredVOClass {
+
+    // Properties
+
+    private ClassPackage classPackage;
+    private String name;
+    private VOClass extendsVO;
+    private LinkedHashMap<String, StructuredColumnMetadata> columnsByName;
+
+    // Constructor
+
+    public StructuredVOClass(final ClassPackage classPackage, final String name, final VOClass extendsVO,
+        final List<StructuredColumnMetadata> columns) {
+      this.classPackage = classPackage;
+      this.name = name;
+      this.extendsVO = extendsVO;
+      this.columnsByName = new LinkedHashMap<String, StructuredColumnMetadata>();
+      for (StructuredColumnMetadata c : columns) {
+        this.columnsByName.put(c.getColumnName(), c);
+      }
+    }
+
+    // Behavior
+
+    public boolean equals(final Object o) {
+      if (o == null) {
+        return false;
+      }
+      StructuredVOClass other;
+      try {
+        other = (StructuredVOClass) o;
+      } catch (ClassCastException e) {
+        return false;
+      }
+      if (!this.classPackage.equals(other.classPackage)) {
+        return false;
+      }
+      if (!this.name.equals(other.name)) {
+        return false;
+      }
+      if (this.extendsVO == null) {
+        if (other.extendsVO != null) {
+          return false;
+        }
+      } else {
+        if (!this.extendsVO.equals(other.extendsVO)) {
+          return false;
+        }
+      }
+
+      // compare columns
+
+      for (String name : this.columnsByName.keySet()) {
+        StructuredColumnMetadata c1 = this.columnsByName.get(name);
+        StructuredColumnMetadata c2 = other.columnsByName.get(name);
+        if (c2 == null) {
+          return false;
+        }
+        if (!equivalentColumns(c1, c2)) {
+          return false;
+        }
+      }
+
+      for (String name : other.columnsByName.keySet()) {
+        StructuredColumnMetadata c1 = other.columnsByName.get(name);
+        StructuredColumnMetadata c2 = this.columnsByName.get(name);
+        if (c2 == null) {
+          return false;
+        }
+        if (!equivalentColumns(c1, c2)) {
+          return false;
+        }
+      }
+
+      // all comparisons cleared
+
+      return true;
+    }
+
+    // Getters
+
+    public ClassPackage getClassPackage() {
+      return classPackage;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public VOClass getExtendsVO() {
+      return extendsVO;
+    }
+
+    public LinkedHashMap<String, StructuredColumnMetadata> getColumnsByName() {
+      return columnsByName;
+    }
+
+  }
+
+  // Utilities
+
+  public static boolean equivalentColumns(final ColumnMetadata c1, final ColumnMetadata c2) {
+    if (!c1.getColumnName().equals(c2.getColumnName())) {
+      return false;
+    }
+    if (c1.getDataType() != c2.getDataType()) {
+      return false;
+    }
+    if (!c1.getType().getJavaClassName().equals(c2.getType().getJavaClassName())) {
+      return false;
+    }
+    return true;
+  }
+
+  // Exceptions
+
+  public static class VOAlreadyExistsException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+    public VOAlreadyExistsException() {
+      super();
+    }
+
+  }
+
+  public static class StructuredVOAlreadyExistsException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+    public StructuredVOAlreadyExistsException() {
+      super();
+    }
+
+  }
+
+}

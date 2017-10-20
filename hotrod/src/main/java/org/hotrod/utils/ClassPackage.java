@@ -1,6 +1,7 @@
 package org.hotrod.utils;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidPackageException;
@@ -69,8 +70,40 @@ public class ClassPackage {
     return new ClassPackage(this.pkg + "." + p.pkg, allNames);
   }
 
+  // toString
+
   public String toString() {
     return "{package:" + this.pkg + "}";
+  }
+
+  // Indexable
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + Arrays.hashCode(names);
+    result = prime * result + ((pkg == null) ? 0 : pkg.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    ClassPackage other = (ClassPackage) obj;
+    if (!Arrays.equals(names, other.names))
+      return false;
+    if (pkg == null) {
+      if (other.pkg != null)
+        return false;
+    } else if (!pkg.equals(other.pkg))
+      return false;
+    return true;
   }
 
 }
