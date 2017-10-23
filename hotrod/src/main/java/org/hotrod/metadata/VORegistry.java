@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.hotrod.utils.ClassPackage;
-import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public class VORegistry {
 
@@ -34,6 +33,16 @@ public class VORegistry {
     f.addVO(structuredVOClass);
   }
 
+  public VOClass findVOClass(final TableDataSetMetadata name) {
+    for (FragmentRegistry f : this.fragmentsByPackage.values()) {
+      VOClass vo = f.findVOClass(name);
+      if (vo != null) {
+        return vo;
+      }
+    }
+    return null;
+  }
+
   // Getters
 
   public List<FragmentRegistry> getFragments() {
@@ -47,6 +56,7 @@ public class VORegistry {
     // Properties
 
     private ClassPackage classPackage;
+    private LinkedHashMap<DataSetMetadata, VOClass> vosByMetadata;
     private LinkedHashMap<String, VOClass> vosByName;
     private LinkedHashMap<String, StructuredVOClass> structuredVOsByName;
 
@@ -64,9 +74,13 @@ public class VORegistry {
       if (this.vosByName.containsKey(voClass.getName())) {
         throw new VOAlreadyExistsException();
       }
+      if (this.vosByMetadata.containsKey(voClass.getMetadata())) {
+        throw new VOAlreadyExistsException();
+      }
       if (this.structuredVOsByName.containsKey(voClass.getName())) {
         throw new StructuredVOAlreadyExistsException();
       }
+      this.vosByMetadata.put(voClass.getMetadata(), voClass);
       this.vosByName.put(voClass.getName(), voClass);
     }
 
@@ -82,6 +96,10 @@ public class VORegistry {
         }
       }
       this.structuredVOsByName.put(voClass.getName(), voClass);
+    }
+
+    public VOClass findVOClass(final TableDataSetMetadata name) {
+      return this.vosByMetadata.get(name);
     }
 
     // Getters
@@ -104,17 +122,16 @@ public class VORegistry {
 
     // Properties
 
+    private DataSetMetadata metadata;
     private ClassPackage classPackage;
     private String name;
     private LinkedHashMap<String, ColumnMetadata> columnsByName;
 
     // Constructor
 
-    public VOClass(final ClassPackage classPackage, final JdbcTable t) {
-
-    }
-
-    public VOClass(final ClassPackage classPackage, final String name, final List<ColumnMetadata> columns) {
+    public VOClass(final DataSetMetadata metadata, final ClassPackage classPackage, final String name,
+        final List<ColumnMetadata> columns) {
+      this.metadata = metadata;
       this.classPackage = classPackage;
       this.name = name;
       this.columnsByName = new LinkedHashMap<String, ColumnMetadata>();
@@ -172,6 +189,10 @@ public class VORegistry {
     }
 
     // Getters
+
+    public DataSetMetadata getMetadata() {
+      return metadata;
+    }
 
     public ClassPackage getClassPackage() {
       return classPackage;

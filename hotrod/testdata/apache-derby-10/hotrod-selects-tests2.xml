@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod-fragment>
+
+<hotrod-fragment>
+
+  <table name="person">
+    <column name="type" converter="person_type" />
+
+    <!-- Case 1 - Flat Join -->
+
+    <select method="findAccountWithPersonFlat" vo="AccountPersonFlatVO">
+
+      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      <column name="type" converter="account_type" />
+      <column name="person_type" converter="person_type" />
+      <column name="active" converter="account_status" />
+
+      select
+      a.*,
+      p.id "person_id", p.name, p.type "person_type"
+      from account a
+      join person p on (p.id) = (a.person_id)
+      <complement>
+        where a.id = #{clientId}
+      </complement>
+
+    </select>
+
+  </table>
+
+</hotrod-fragment>

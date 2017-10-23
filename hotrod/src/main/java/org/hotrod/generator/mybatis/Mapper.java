@@ -27,6 +27,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.KeyMetadata;
+import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
@@ -1215,6 +1216,14 @@ public class Mapper {
 
   public String getMapperSelectSequence(final QueryMethodTag u) {
     return u.getIdentifier().getJavaMemberIdentifier();
+  }
+
+  public String getMapperIdSelectMethod(final SelectMethodMetadata sm) {
+    return sm.getMethod();
+  }
+
+  public String getFullMapperIdSelectMethod(final SelectMethodMetadata sm) {
+    return this.namespace + "." + getMapperIdSelectMethod(sm);
   }
 
   // Helpers

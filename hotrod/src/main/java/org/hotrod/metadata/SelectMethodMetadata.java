@@ -22,7 +22,9 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.metadata.VORegistry.VOClass;
 import org.hotrod.runtime.util.ListWriter;
+import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
@@ -316,6 +318,10 @@ public class SelectMethodMetadata implements DataSetMetadata {
     return this.tag.getStructuredColumns().getMetadata();
   }
 
+  public String getVO() {
+    return this.tag.getVO();
+  }
+
   // Other getters
 
   public String getMethod() {
@@ -347,8 +353,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   @Override
   public DataSetIdentifier getIdentifier() {
-    throw new UnsupportedOperationException("Identifier is not supported for a <select> method tag.");
-    // return new DataSetIdentifier("s", this.tag.getJavaClassName(), false);
+    return new DataSetIdentifier("m", this.getMethod(), false);
   }
 
   @Override
@@ -428,6 +433,71 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   public boolean isMultipleRows() {
     return this.tag.isMultipleRows();
+  }
+
+  @Override
+  @Deprecated
+  public List<SelectMethodMetadata> getSelectsMetadata() {
+    // Should not be used
+    throw new UnsupportedOperationException("This operation should not be used.");
+  }
+
+  public HotRodGenerator getGenerator() {
+    return generator;
+  }
+
+  public SelectMethodReturnType getReturnType(final ClassPackage currentClassPackage) {
+    return new SelectMethodReturnType(this, currentClassPackage);
+  }
+
+  // Classes
+
+  public static class SelectMethodReturnType {
+
+    private VOClass soloVO;
+    private VOMetadata connectedVO;
+
+    private boolean multipleRows;
+
+    // private ClassPackage returnVOPackage; // primitives.accounting
+    // private String returnVOType; // AccountPersonVO
+    // private String returnType; // List<AccountPersonVO>
+    // private boolean newVO;
+    // private VOMetadata extendsVO;
+
+    public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage currentClassPackage) {
+      if (sm.isStructured()) { // structured columns
+        StructuredColumnsMetadata scols = sm.getStructuredColumns();
+        if (scols.getVO() == null) { // inner VO
+          this.soloVO = null;
+          this.connectedVO = scols.getVOs().get(0);
+        } else { // columns vo (specified in the <columns> tag)
+          this.soloVO = new VOClass(sm, currentClassPackage, scols.getVO(), sm.getColumns());
+          this.connectedVO = null;
+        }
+      } else { // non-structured columns
+        this.soloVO = new VOClass(sm, currentClassPackage, sm.getVO(), sm.getColumns());
+        this.connectedVO = null;
+      }
+      this.multipleRows = sm.isMultipleRows();
+    }
+
+    public ClassPackage getReturnVOPackage() { // primitives.accounting
+      return this.soloVO != null ? this.soloVO.getClassPackage() : this.connectedVO.getClassPackage();
+    }
+
+    public String getReturnVOType() { // AccountPersonVO
+      return this.soloVO != null ? this.soloVO.getName() : this.connectedVO.getName();
+    }
+
+    public String getReturnType() { // List<AccountPersonVO>
+      return this.multipleRows ? "List<" + getReturnVOType() + ">" : getReturnVOType();
+    }
+
+    public String getVOFullClassName() { // primitives.accounting.AccountPersonVO
+      return this.getReturnVOPackage().getFullClassName(getReturnVOType());
+    }
+
   }
 
 }

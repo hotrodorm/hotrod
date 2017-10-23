@@ -24,6 +24,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.ExpressionsMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.VOMetadata;
@@ -40,6 +41,10 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   private static final Logger log = Logger.getLogger(ColumnsTag.class);
 
   // Properties
+
+  private DaosTag daosTag;
+  private DataSetLayout layout;
+  private HotRodFragmentConfigTag fragmentConfig;
 
   private String vo = null;
 
@@ -85,6 +90,11 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, ParameterDefinitions parameters)
       throws InvalidConfigurationFileException {
+
+    this.daosTag = daosTag;
+    this.layout = new DataSetLayout(config);
+    this.fragmentConfig = fragmentConfig;
+
     boolean singleVOResult = this.vos.size() == 1 && this.expressions.isEmpty();
     this.validate(daosTag, config, fragmentConfig, singleVOResult);
   }
@@ -220,7 +230,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
     List<VOMetadata> vos = new ArrayList<VOMetadata>();
     for (VOTag t : this.vos) {
-      vos.add(t.getMetadata());
+      vos.add(t.getMetadata(this.layout, this.fragmentConfig, this.daosTag));
     }
 
     this.metadata = new StructuredColumnsMetadata(this.vo, expressions, vos);

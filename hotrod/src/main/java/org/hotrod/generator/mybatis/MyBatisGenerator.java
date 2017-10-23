@@ -3,6 +3,7 @@ package org.hotrod.generator.mybatis;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
@@ -10,6 +11,7 @@ import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.CustomDAOTag;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.SelectTag;
 import org.hotrod.config.TableTag;
@@ -19,8 +21,12 @@ import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
+import org.hotrod.metadata.SelectMethodMetadata;
+import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
 import org.hotrod.metadata.TableDataSetMetadata;
+import org.hotrod.metadata.VORegistry.VOClass;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
+import org.hotrod.utils.ClassPackage;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public class MyBatisGenerator extends HotRodGenerator {
@@ -38,6 +44,10 @@ public class MyBatisGenerator extends HotRodGenerator {
 
   private List<CustomDAO> customDAOs = new ArrayList<CustomDAO>();
   private List<CustomDAOMapper> customMappers = new ArrayList<CustomDAOMapper>();
+
+  // TODO
+  private Map<TableDataSetMetadata, VOClass> tableVOs;
+  private Map<TableDataSetMetadata, VOClass> viewVOs;
 
   public MyBatisGenerator(final DatabaseLocation loc, final HotRodConfigTag config, final DisplayMode displayMode)
       throws UncontrolledException, ControlledException {
@@ -166,6 +176,21 @@ public class MyBatisGenerator extends HotRodGenerator {
     this.vos.put(metadata, vo);
     this.mappers.put(metadata, mapper);
     this.daos.put(metadata, dao);
+
+  }
+
+  private void addSelectVOs(final SelectMethodMetadata sm) throws ControlledException {
+
+    MyBatisTag myBatisTag = (MyBatisTag) this.config.getGenerators().getSelectedGeneratorTag();
+
+    DataSetLayout layout = new DataSetLayout(this.config);
+
+    HotRodFragmentConfigTag fragmentConfig = sm.getFragmentConfig();
+    ClassPackage fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
+        ? fragmentConfig.getFragmentPackage() : null;
+    SelectMethodReturnType rt = sm.getReturnType(layout.getDAOPrimitivePackage(fragmentPackage));
+
+    // TODO
 
   }
 

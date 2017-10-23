@@ -30,6 +30,7 @@ import org.hotrod.config.ViewTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata.IdColumnNotFoundException;
@@ -671,6 +672,10 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   // Getters
 
+  public HotRodGenerator getGenerator() {
+    return generator;
+  }
+
   public String getTable() {
     return table;
   }
@@ -721,8 +726,9 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     return viewMetadata;
   }
 
-  public VOMetadata getMetadata() {
-    return new VOMetadata(this);
+  public VOMetadata getMetadata(final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig,
+      final DaosTag daosTag) throws InvalidConfigurationFileException {
+    return new VOMetadata(this, layout, fragmentConfig, daosTag);
   }
 
   // Angle rendering

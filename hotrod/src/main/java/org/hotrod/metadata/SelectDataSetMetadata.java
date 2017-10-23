@@ -311,4 +311,10 @@ public class SelectDataSetMetadata implements DataSetMetadata {
     return this.fragmentConfig;
   }
 
+  @Override
+  public List<SelectMethodMetadata> getSelectsMetadata() {
+    // Nothing to return
+    return null;
+  }
+
 }

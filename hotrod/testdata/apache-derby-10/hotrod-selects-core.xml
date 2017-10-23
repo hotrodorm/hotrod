@@ -36,10 +36,6 @@
 
   <!-- Tables -->
 
-  <table name="person">
-    <column name="type" converter="person_type" />
-  </table>
-
   <table name="account">
     <column name="type" converter="account_type" />
     <column name="active" converter="account_status" />
@@ -56,11 +52,13 @@
   <view name="north_office" />
 
   <table name="document" />
-  
+
   <table name="doc_comment" />
+
 <!-- 
+  <fragment file="hotrod-selects-tests.xml" />
 -->
 
-  <fragment file="hotrod-selects-tests.xml" />
+  <fragment file="hotrod-selects-tests2.xml" />
 
 </hotrod>

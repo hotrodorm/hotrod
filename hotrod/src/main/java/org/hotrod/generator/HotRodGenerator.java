@@ -15,6 +15,7 @@ import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.CustomDAOTag;
+import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.QueryMethodTag;
@@ -30,6 +31,7 @@ import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassMethodException;
+import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DAOMetadata;
 import org.hotrod.metadata.DataSetMetadataFactory;
@@ -43,11 +45,11 @@ import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
-import org.hotrod.metadata.VORegistry.StructuredVOClass;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOClass;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -197,6 +199,9 @@ public abstract class HotRodGenerator {
 
       logm("Prepare tables metadata.");
 
+      DataSetLayout layout = new DataSetLayout(this.config);
+      DaosTag daosTag = this.config.getGenerators().getSelectedGeneratorTag().getDaos();
+
       this.tables = new LinkedHashSet<TableDataSetMetadata>();
       for (JdbcTable t : this.db.getTables()) {
         TableDataSetMetadata tm;
@@ -207,7 +212,13 @@ public abstract class HotRodGenerator {
           validateIdentifier(sqlNames, "table", t.getName(), tm.getIdentifier());
           this.tables.add(tm);
 
-          VOClass vo = new VOClass(tm.getFragmentConfig().getFragmentPackage(), t);
+          ClassPackage fragmentPackage = tm.getFragmentConfig() != null
+              && tm.getFragmentConfig().getFragmentPackage() != null ? tm.getFragmentConfig().getFragmentPackage()
+                  : null;
+          ClassPackage classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
+          String voName = daosTag.generateVOName(tm.getIdentifier());
+          VOClass vo = new VOClass(tm, classPackage, voName, tm.getColumns());
+          log.info("--> adding VO: " + vo.getName());
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {
@@ -269,7 +280,12 @@ public abstract class HotRodGenerator {
           validateIdentifier(sqlNames, "view", v.getName(), vm.getIdentifier());
           this.views.add(vm);
 
-          VOClass vo = new VOClass(vm.getFragmentConfig().getFragmentPackage(), v);
+          ClassPackage fragmentPackage = vm.getFragmentConfig() != null
+              && vm.getFragmentConfig().getFragmentPackage() != null ? vm.getFragmentConfig().getFragmentPackage()
+                  : null;
+          ClassPackage classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
+          String voName = daosTag.generateVOName(vm.getIdentifier());
+          VOClass vo = new VOClass(vm, classPackage, voName, vm.getColumns());
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {
@@ -497,11 +513,12 @@ public abstract class HotRodGenerator {
 
   private void logSelectMethodMetadata() {
     for (DAOMetadata d : this.daos) {
-      for (SelectMethodMetadata s : d.getSelectsMetadata()) {
-        display("=== Select method " + s.getMethod() + " [" + (s.isStructured() ? "structured" : "non-structured")
-            + "] " + (s.isMultipleRows() ? "<multiple-rows-return>" : "<single-row-return>") + " ===");
-        if (s.isStructured()) {
-          StructuredColumnsMetadata sc = s.getStructuredColumns();
+      for (SelectMethodMetadata sm : d.getSelectsMetadata()) {
+        display("=== Select method " + sm.getMethod() + " [" + (sm.isStructured() ? "structured" : "non-structured")
+            + "] " + (sm.getVO() != null ? "returns " + sm.getVO() + " " : "")
+            + (sm.isMultipleRows() ? "<multiple-rows-return>" : "<single-row-return>") + " ===");
+        if (sm.isStructured()) {
+          StructuredColumnsMetadata sc = sm.getStructuredColumns();
           if (sc.getVO() == null) {
             logVOs(sc.getVOs(), 0);
             logExpressions(sc.getExpressions(), 0);
@@ -511,7 +528,7 @@ public abstract class HotRodGenerator {
             logExpressions(sc.getExpressions(), 2);
           }
         } else {
-          for (ColumnMetadata cm : s.getNonStructuredColumns()) {
+          for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
             display(
                 "   - " + cm.getIdentifier().getJavaMemberIdentifier() + " (" + cm.getType().getJavaClassName() + ")");
           }
@@ -536,12 +553,12 @@ public abstract class HotRodGenerator {
   private void logCollections(final List<VOMetadata> collections, final int level) {
     String filler = SUtils.getFiller(' ', level);
     for (VOMetadata c : collections) {
-      boolean extendsVO = c.getExtendedVO() != null;
+      boolean extendsVO = c.getSuperClass() != null;
       String based = c.getTableMetadata() != null ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
-          + c.getTableMetadata().getIdentifier().getSQLIdentifier() + (extendsVO ? " <as> " + c.getExtendedVO() : "")
+          + c.getTableMetadata().getIdentifier().getSQLIdentifier() + (extendsVO ? " <as> " + c.getSuperClass() : "")
           : (extendsVO ? "<extends>" : "<corresponds to>") + " view "
               + c.getViewMetadata().getIdentifier().getSQLIdentifier()
-              + (extendsVO ? " <as> " + c.getExtendedVO() : "");
+              + (extendsVO ? " <as> " + c.getSuperClass() : "");
       String property = c.getProperty() != null ? c.getProperty() : "<main-vo>";
       display("   " + filler + "+ " + property + " [collection] " + based);
       logColumns(c.getColumns(), level + 2);
@@ -555,12 +572,12 @@ public abstract class HotRodGenerator {
     String filler = SUtils.getFiller(' ', level);
     for (VOMetadata a : associations) {
 
-      boolean extendsVO = a.getExtendedVO() != null;
+      boolean extendsVO = a.getSuperClass() != null;
       String based = a.getTableMetadata() != null ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
-          + a.getTableMetadata().getIdentifier().getSQLIdentifier() + (extendsVO ? " <as> " + a.getExtendedVO() : "")
+          + a.getTableMetadata().getIdentifier().getSQLIdentifier() + (extendsVO ? " <as> " + a.getSuperClass() : "")
           : (extendsVO ? "<extends>" : "<corresponds to>") + " view "
               + a.getViewMetadata().getIdentifier().getSQLIdentifier()
-              + (extendsVO ? " <as> " + a.getExtendedVO() : "");
+              + (extendsVO ? " <as> " + a.getSuperClass() : "");
 
       String property = a.getProperty() != null ? a.getProperty() : "<main-vo>";
 
@@ -576,12 +593,15 @@ public abstract class HotRodGenerator {
     String filler = SUtils.getFiller(' ', level);
     for (VOMetadata vo : vos) {
 
-      boolean extendsVO = vo.getExtendedVO() != null;
+      boolean extendsVO = vo.getSuperClass() != null;
+      String baseVO = vo.getTableMetadata() != null ? vo.getTableMetadata().getIdentifier().getJavaClassIdentifier()
+          : vo.getViewMetadata().getIdentifier().getJavaClassIdentifier();
+
       String based = vo.getTableMetadata() != null ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
-          + vo.getTableMetadata().getIdentifier().getSQLIdentifier() + (extendsVO ? " <as> " + vo.getExtendedVO() : "")
+          + vo.getTableMetadata().getIdentifier().getSQLIdentifier() + (extendsVO ? " <as> " + vo.getSuperClass() : "")
           : (extendsVO ? "<extends>" : "<corresponds to>") + " view "
               + vo.getViewMetadata().getIdentifier().getSQLIdentifier()
-              + (extendsVO ? " <as> " + vo.getExtendedVO() : "");
+              + (extendsVO ? " <as> " + vo.getSuperClass() : "");
 
       String property = vo.getProperty() != null ? vo.getProperty() : "<main-single-vo>";
       display("   " + filler + "+ " + property + " [vo] " + based);
@@ -975,13 +995,8 @@ public abstract class HotRodGenerator {
 
   // VO Registry
 
-  public void register(final VOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
-    this.voRegistry.addVO(voClass);
-  }
-
-  public void register(final StructuredVOClass structuredVOClass)
-      throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
-    this.voRegistry.addVO(structuredVOClass);
+  public VORegistry getVORegistry() {
+    return voRegistry;
   }
 
   // Getters

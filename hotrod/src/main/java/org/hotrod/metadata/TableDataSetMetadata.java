@@ -380,7 +380,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
     return null;
   }
 
-  // Indexing methods
+  // Indexable
 
   @Override
   public int hashCode() {
@@ -413,6 +413,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
 
   // Getters
 
+  @Override
   public List<SelectMethodMetadata> getSelectsMetadata() {
     return selectsMetadata;
   }

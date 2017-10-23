@@ -45,4 +45,6 @@ public interface DataSetMetadata {
 
   HotRodFragmentConfigTag getFragmentConfig();
 
+  List<SelectMethodMetadata> getSelectsMetadata();
+
 }

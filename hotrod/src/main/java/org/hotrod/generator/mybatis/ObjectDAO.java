@@ -34,10 +34,11 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.metadata.KeyMetadata;
+import org.hotrod.metadata.SelectMethodMetadata;
+import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
 import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
-import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.exceptions.StaleDataException;
 import org.hotrod.runtime.interfaces.DaoForUpdate;
 import org.hotrod.runtime.interfaces.DaoWithOrder;
@@ -49,6 +50,7 @@ import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.GenUtils;
+import org.hotrod.utils.ImportsRenderer;
 import org.hotrod.utils.JUtils;
 import org.hotrod.utils.ValueTypeFactory;
 import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
@@ -59,7 +61,11 @@ import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
 
 public class ObjectDAO {
 
+  // Constants
+
   private static final Logger log = Logger.getLogger(ObjectDAO.class);
+
+  // Properties
 
   private AbstractDAOTag compositeTag;
   private SelectTag selectTag;
@@ -79,6 +85,8 @@ public class ObjectDAO {
 
   private Writer w;
 
+  // Constructors
+
   public ObjectDAO(final AbstractDAOTag compositeTag, final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisGenerator generator, final DAOType type, final MyBatisTag myBatisTag, final ObjectVO vo,
       final Mapper mapper) {
@@ -96,6 +104,8 @@ public class ObjectDAO {
     this.selectTag = selectTag;
     initialize(metadata, layout, generator, type, myBatisTag, vo, mapper);
   }
+
+  // Behavior
 
   private void initialize(final DataSetMetadata metadata, final DataSetLayout layout, final MyBatisGenerator generator,
       final DAOType type, final MyBatisTag myBatisTag, final ObjectVO vo, final Mapper mapper) {
@@ -201,6 +211,10 @@ public class ObjectDAO {
           writeQuery(q);
         }
 
+        for (SelectMethodMetadata s : this.metadata.getSelectsMetadata()) {
+          writeSelect(s);
+        }
+
       }
 
       writeTxManager();
@@ -242,36 +256,37 @@ public class ObjectDAO {
 
     // Imports
 
-    println("import java.io.Serializable;");
-    this.importCheckedException();
-    println("import java.util.List;");
-    println();
-    println("import org.apache.ibatis.session.SqlSession;");
-    println("import org.apache.ibatis.session.SqlSessionFactory;");
+    ImportsRenderer imports = new ImportsRenderer();
 
-    println();
-    println("import " + TxManager.class.getName() + ";");
+    imports.add("java.io.Serializable");
+    if (isCheckedPersistenceException()) {
+      imports.add("java.sql.SQLException");
+    }
+    imports.add("java.util.List");
+    imports.newLine();
+    imports.add("org.apache.ibatis.session.SqlSession");
+    imports.add("org.apache.ibatis.session.SqlSessionFactory");
+    imports.newLine();
+    imports.add(TxManager.class);
 
     if (this.metadata.getVersionControlMetadata() != null) {
-      println("import " + DaoForUpdate.class.getName() + ";");
-      println("import " + StaleDataException.class.getName() + ";");
+      imports.add(DaoForUpdate.class);
+      imports.add(StaleDataException.class);
     }
     if (!this.isSelect()) {
-      println("import " + DaoWithOrder.class.getName() + ";");
+      imports.add(DaoWithOrder.class);
       if (this.isTable() || this.isView()) {
-        println("import " + UpdateByExampleDao.class.getName() + ";");
+        imports.add(UpdateByExampleDao.class);
       }
-      println("import " + OrderBy.class.getName() + ";");
+      imports.add(OrderBy.class);
       if (!this.isTable()) {
-        println("import " + Selectable.class.getName() + ";");
+        imports.add(Selectable.class);
       }
     }
-    println();
 
-    Set<String> importedDaos = new HashSet<String>();
+    imports.newLine();
 
-    importedDaos.add(this.vo.getFullClassName());
-    println("import " + this.vo.getFullClassName() + ";");
+    imports.add(this.vo.getFullClassName());
 
     for (ForeignKeyMetadata ik : this.metadata.getImportedFKs()) {
 
@@ -279,68 +294,52 @@ public class ObjectDAO {
       ObjectVO rvo = this.generator.getVO(ik.getRemote().getDataSet());
       if (rvo != null) {
         fkc = rvo.getFullClassName();
-        if (!importedDaos.contains(fkc)) {
-          importedDaos.add(fkc);
-          println("import " + fkc + ";");
-        }
+        imports.add(fkc);
         ObjectDAO dao = this.generator.getDAO(ik.getRemote().getDataSet());
         String daoc = dao.getFullClassName();
-        if (!importedDaos.contains(daoc)) {
-          importedDaos.add(daoc);
-          println("import " + daoc + ";");
-        }
+        imports.add(daoc);
       } else {
         EnumClass ec = this.generator.getEnum(ik.getRemote().getDataSet());
         fkc = ec.getFullClassName();
-        if (!importedDaos.contains(fkc)) {
-          importedDaos.add(fkc);
-          println("import " + fkc + ";");
-        }
+        imports.add(fkc);
       }
 
     }
 
     for (ForeignKeyMetadata ek : this.metadata.getExportedFKs()) {
-
       ObjectVO rvo = this.generator.getVO(ek.getRemote().getDataSet());
-      String ikc = rvo.getFullClassName();
-      if (!importedDaos.contains(ikc)) {
-        importedDaos.add(ikc);
-        println("import " + ikc + ";");
-      }
+      imports.add(rvo.getFullClassName());
 
       ObjectDAO dao = this.generator.getDAO(ek.getRemote().getDataSet());
-      String ikorder = dao.getOrderByFullClassName();
-      log.debug("ikco=" + ikorder);
-      if (!importedDaos.contains(ikorder)) {
-        importedDaos.add(ikorder);
-        println("import " + ikorder + ";");
-      } else {
-        log.debug("======= already imported ================");
-      }
-
-      String ikdao = dao.getFullClassName();
-      if (!importedDaos.contains(ikdao)) {
-        importedDaos.add(ikdao);
-        println("import " + ikdao + ";");
-      }
-
+      imports.add(dao.getOrderByFullClassName());
+      imports.add(dao.getFullClassName());
     }
 
-    println();
+    imports.newLine();
+    imports.comment("[ now, for the selects... ]");
+
+    for (SelectMethodMetadata sm : this.metadata.getSelectsMetadata()) {
+      SelectMethodReturnType rt = sm.getReturnType(this.classPackage);
+      imports.add(rt.getVOFullClassName());
+    }
+
+    imports.comment("[ selects done. ]");
+    imports.newLine();
 
     if (this.usesConverters() || hasFKPointingToEnum()) {
 
-      println("import java.sql.CallableStatement;");
-      println("import java.sql.PreparedStatement;");
-      println("import java.sql.ResultSet;");
-      println("import org.apache.ibatis.type.JdbcType;");
-      println("import org.apache.ibatis.type.TypeHandler;");
-      println("import org.hotrod.runtime.converter.TypeConverter;");
+      imports.add("java.sql.CallableStatement");
+      imports.add("java.sql.PreparedStatement");
+      imports.add("java.sql.ResultSet");
+      imports.add("org.apache.ibatis.type.JdbcType");
+      imports.add("org.apache.ibatis.type.TypeHandler");
+      imports.add("org.hotrod.runtime.converter.TypeConverter");
 
-      println();
+      imports.newLine();
 
     }
+
+    this.w.write(imports.render());
 
     // Signature
 
@@ -424,12 +423,6 @@ public class ObjectDAO {
 
     println("  }");
     println();
-  }
-
-  private void importCheckedException() throws IOException {
-    if (isCheckedPersistenceException()) {
-      println("import java.sql.SQLException;");
-    }
   }
 
   private void throwsCheckedException() throws IOException {
@@ -2395,6 +2388,146 @@ public class ObjectDAO {
 
   }
 
+  private String provideParamObjectName(final List<SelectParameterMetadata> definitions) {
+
+    Set<String> existing = new HashSet<String>();
+    for (SelectParameterMetadata p : definitions) {
+      existing.add(p.getParameter().getName().toLowerCase());
+    }
+
+    int i = 0;
+    while (true) {
+      String candidate = "param" + i;
+      if (!existing.contains(candidate.toLowerCase())) {
+        return candidate;
+      }
+      i++;
+    }
+
+  }
+
+  // Select Method Tag
+
+  /**
+   * <pre>
+   * 
+   * public static int update-name() throws SQLException {
+   *   TxManager txm = null;
+   *   try {
+   *     txm = getTxManager();
+   *     SqlSession sqlSession = txm.getSqlSession();
+   *     return update-name(sqlSession);
+   *   } finally {
+   *     if (txm != null && !txm.isTransactionOngoing()) {
+   *       txm.close();
+   *     }
+   *   }
+   * }
+   * 
+   * public static int update-name(final SqlSession sqlSession) throws SQLException {
+   *   return sqlSession.update("hotrod.test.generation.primitives.account.sequenceSeqCodes");
+   * }
+   * 
+   * </pre>
+   * 
+   * @throws IOException
+   */
+
+  private void writeSelect(final SelectMethodMetadata sm) throws IOException {
+
+    println("  // select method: " + sm.getMethod());
+    println();
+
+    SelectMethodReturnType rt = sm.getReturnType(this.classPackage);
+
+    // render comment
+
+    ParameterRenderer parameterRenderer = new ParameterRenderer() {
+      @Override
+      public String render(final SQLParameter parameter) {
+        return "#{" + parameter.getName() + "}";
+      }
+    };
+    String sentence = sm.renderSQLSentence(parameterRenderer);
+    println(renderJavaComment(sentence));
+
+    println();
+
+    String methodName = sm.getMethod();
+
+    ListWriter pdef = new ListWriter(", ");
+    ListWriter pcall = new ListWriter(", ");
+    for (SelectParameterMetadata p : sm.getParameterDefinitions()) {
+      String name = p.getParameter().getName();
+      pdef.add("final " + p.getParameter().getJavaType() + " " + name);
+      pcall.add(name);
+    }
+    String paramDef = pdef.toString();
+    String paramCall = pcall.toString();
+
+    // parameter class
+
+    if (!sm.getParameterDefinitions().isEmpty()) {
+      println("  public static class " + this.getParamClassName(sm) + " {");
+      for (SelectParameterMetadata p : sm.getParameterDefinitions()) {
+        println("    " + p.getParameter().getJavaType() + " " + p.getParameter().getName() + ";");
+      }
+      println("  }");
+      println();
+    }
+
+    // main method
+
+    print("  public static " + rt.getReturnType() + " " + methodName + "(");
+    print(paramDef);
+    print(") ");
+    this.throwsCheckedException();
+    println("{");
+    retrieveSqlSession();
+    print("      " + rt.getReturnType() + " result = " + methodName + "(sqlSession");
+    if (!sm.getParameterDefinitions().isEmpty()) {
+      print(", " + paramCall);
+    }
+    println(");");
+    println("      if (!txm.isTransactionOngoing()) {");
+    println("        txm.commit();");
+    println("      }");
+    println("      return result;");
+    releaseSqlSession();
+    println("  }");
+    println();
+
+    // core method
+
+    print("  public static " + rt.getReturnType() + " " + methodName + "(final SqlSession sqlSession");
+    if (!sm.getParameterDefinitions().isEmpty()) {
+      print(", " + paramDef);
+    }
+    print(") ");
+    this.throwsCheckedException();
+    println("{");
+    String objName = null;
+    if (!sm.getParameterDefinitions().isEmpty()) {
+      objName = provideParamObjectName(sm.getParameterDefinitions());
+      println("    " + this.getParamClassName(sm) + " " + objName + " = new " + this.getParamClassName(sm) + "();");
+      for (SelectParameterMetadata p : sm.getParameterDefinitions()) {
+        println("    " + objName + "." + p.getParameter().getName() + " = " + p.getParameter().getName() + ";");
+      }
+    }
+    preCheckedException();
+
+    String myBatisSelectMethod = sm.isMultipleRows() ? "selectList" : "selectOne";
+    print("    return sqlSession." + myBatisSelectMethod + "(\"" + this.mapper.getFullMapperIdSelectMethod(sm) + "\"");
+    if (!sm.getParameterDefinitions().isEmpty()) {
+      print(", " + objName);
+    }
+    println(");");
+    postCheckedException();
+    println("  }");
+    println();
+
+  }
+
   /**
    * <pre>
    * // Transaction demarcation
@@ -2488,6 +2621,10 @@ public class ObjectDAO {
 
   public String getParamClassName(final QueryMethodTag u) {
     return "Param" + u.getIdentifier().getJavaClassIdentifier();
+  }
+
+  public String getParamClassName(final SelectMethodMetadata sm) {
+    return "Param" + sm.getIdentifier().getJavaClassIdentifier();
   }
 
   private String getTypeHandlerClassName(final ColumnMetadata cm) {
