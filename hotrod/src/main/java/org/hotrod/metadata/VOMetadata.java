@@ -1,6 +1,7 @@
 package org.hotrod.metadata;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -87,6 +88,53 @@ public class VOMetadata {
       }
     }
 
+  }
+
+  // Registration
+
+  public void register(final LinkedHashSet<VOMetadata> connectedVOs) {
+    if (this.superClass != null) {
+      connectedVOs.add(this);
+    }
+    for (VOMetadata vo : this.associations) {
+      vo.register(connectedVOs);
+    }
+    for (VOMetadata vo : this.collections) {
+      vo.register(connectedVOs);
+    }
+  }
+
+  // Indexable
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((classPackage == null) ? 0 : classPackage.hashCode());
+    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    VOMetadata other = (VOMetadata) obj;
+    if (classPackage == null) {
+      if (other.classPackage != null)
+        return false;
+    } else if (!classPackage.equals(other.classPackage))
+      return false;
+    if (name == null) {
+      if (other.name != null)
+        return false;
+    } else if (!name.equals(other.name))
+      return false;
+    return true;
   }
 
   // Utilities

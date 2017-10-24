@@ -459,12 +459,6 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
     private boolean multipleRows;
 
-    // private ClassPackage returnVOPackage; // primitives.accounting
-    // private String returnVOType; // AccountPersonVO
-    // private String returnType; // List<AccountPersonVO>
-    // private boolean newVO;
-    // private VOMetadata extendsVO;
-
     public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage currentClassPackage) {
       if (sm.isStructured()) { // structured columns
         StructuredColumnsMetadata scols = sm.getStructuredColumns();
@@ -482,11 +476,25 @@ public class SelectMethodMetadata implements DataSetMetadata {
       this.multipleRows = sm.isMultipleRows();
     }
 
-    public ClassPackage getReturnVOPackage() { // primitives.accounting
+    public VOClass getSoloVO() {
+      return soloVO;
+    }
+
+    public VOMetadata getConnectedVO() {
+      return connectedVO;
+    }
+
+    public boolean isMultipleRows() {
+      return multipleRows;
+    }
+
+    // Simpler methods
+
+    private ClassPackage getReturnVOPackage() { // primitives.accounting
       return this.soloVO != null ? this.soloVO.getClassPackage() : this.connectedVO.getClassPackage();
     }
 
-    public String getReturnVOType() { // AccountPersonVO
+    private String getReturnVOType() { // AccountPersonVO
       return this.soloVO != null ? this.soloVO.getName() : this.connectedVO.getName();
     }
 
