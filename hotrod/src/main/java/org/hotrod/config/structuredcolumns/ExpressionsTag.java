@@ -196,4 +196,8 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
     return this.expressions;
   }
 
+  public List<StructuredColumnMetadata> getColumnsMetadata() {
+    return columnsMetadata;
+  }
+
 }

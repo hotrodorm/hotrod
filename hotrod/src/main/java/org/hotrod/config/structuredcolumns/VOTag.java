@@ -87,7 +87,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   private ColumnsMetadataRetriever cmr;
   private String aliasPrefix;
 
-  private List<StructuredColumnMetadata> columns;
+  private List<StructuredColumnMetadata> inheritedColumns;
+  private List<StructuredColumnMetadata> declaredColumns;
 
   // Constructors
 
@@ -211,8 +212,6 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
             + "' for 'id' attribute. " + "Must specify a comma-separated list of column names.");
       }
     }
-
-    // this.idNames;
 
     // property
 
@@ -440,8 +439,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
           if (!this.idNames.isEmpty()) {
             try {
-              this.columns = StructuredColumnMetadata.promote(this.tableMetadata.getColumns(), this.aliasPrefix,
-                  this.idNames);
+              this.inheritedColumns = StructuredColumnMetadata.promote(this.tableMetadata.getColumns(),
+                  this.aliasPrefix, this.idNames);
             } catch (IdColumnNotFoundException e) {
               throw new InvalidConfigurationFileException(super.getSourceLocation(),
                   "Could not find column '" + e.getIdName() + "' on the table '"
@@ -449,7 +448,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
                       + "' as specified on the 'id' attribute.");
             }
           } else {
-            this.columns = StructuredColumnMetadata.promote(this.tableMetadata.getColumns(), this.aliasPrefix);
+            this.inheritedColumns = StructuredColumnMetadata.promote(this.tableMetadata.getColumns(), this.aliasPrefix);
           }
 
         } else { // 1.a.2 Table without a PK
@@ -462,7 +461,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
                 + "the 'id' attribute must specify the row-identifying columns for the table (i.e. an acting unique key for the table).");
           }
           try {
-            this.columns = StructuredColumnMetadata.promote(this.tableMetadata.getColumns(), this.aliasPrefix,
+            this.inheritedColumns = StructuredColumnMetadata.promote(this.tableMetadata.getColumns(), this.aliasPrefix,
                 this.idNames);
           } catch (IdColumnNotFoundException e) {
             throw new InvalidConfigurationFileException(super.getSourceLocation(),
@@ -481,7 +480,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
               + "the 'id' attribute must specify the row-identifying columns for the view (i.e. an acting unique key for the view).");
         }
         try {
-          this.columns = StructuredColumnMetadata.promote(this.viewMetadata.getColumns(), this.aliasPrefix,
+          this.inheritedColumns = StructuredColumnMetadata.promote(this.viewMetadata.getColumns(), this.aliasPrefix,
               this.idNames);
         } catch (IdColumnNotFoundException e) {
           throw new InvalidConfigurationFileException(super.getSourceLocation(),
@@ -491,7 +490,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
       }
 
-      for (StructuredColumnMetadata c : this.columns) {
+      for (StructuredColumnMetadata c : this.inheritedColumns) {
         if (c.isId()) {
           validateIdJDBCType(c);
         }
@@ -503,17 +502,17 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
         if (this.tableMetadata.getPK() != null) { // 2.a.1 Table with a PK
 
-          this.columns = retrieveSpecificColumns(conn2, this.tableMetadata, requiresIds);
+          this.inheritedColumns = retrieveSpecificColumns(conn2, this.tableMetadata, requiresIds);
 
         } else { // 2.a.2 Table without a PK
 
-          this.columns = retrieveSpecificColumns(conn2, this.tableMetadata, requiresIds);
+          this.inheritedColumns = retrieveSpecificColumns(conn2, this.tableMetadata, requiresIds);
 
         }
 
       } else { // 2.b Based on a view
 
-        this.columns = retrieveSpecificColumns(conn2, this.viewMetadata, requiresIds);
+        this.inheritedColumns = retrieveSpecificColumns(conn2, this.viewMetadata, requiresIds);
 
       }
 
@@ -521,8 +520,11 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     // 3. Retrieve inner expressions, collections, and associations
 
+    this.declaredColumns = new ArrayList<StructuredColumnMetadata>();
+
     for (ExpressionsTag exp : this.expressions) {
       exp.gatherMetadataPhase2(conn2);
+      this.declaredColumns.addAll(exp.getColumnsMetadata());
     }
 
     for (CollectionTag c : this.collections) {
@@ -712,8 +714,12 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     return expressions;
   }
 
-  public List<StructuredColumnMetadata> getColumns() {
-    return columns;
+  public List<StructuredColumnMetadata> getInheritedColumns() {
+    return inheritedColumns;
+  }
+
+  public List<StructuredColumnMetadata> getDeclaredColumns() {
+    return declaredColumns;
   }
 
   // Meta data

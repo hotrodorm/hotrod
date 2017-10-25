@@ -561,7 +561,7 @@ public abstract class HotRodGenerator {
               + (extendsVO ? " <as> " + c.getSuperClass() : "");
       String property = c.getProperty() != null ? c.getProperty() : "<main-vo>";
       display("   " + filler + "+ " + property + " [collection] " + based);
-      logColumns(c.getColumns(), level + 2);
+      logColumns(c.getDeclaredColumns(), level + 2);
       logExpressions(c.getExpressions(), level + 2);
       logCollections(c.getCollections(), level + 2);
       logAssociations(c.getAssociations(), level + 2);
@@ -582,7 +582,7 @@ public abstract class HotRodGenerator {
       String property = a.getProperty() != null ? a.getProperty() : "<main-vo>";
 
       display("   " + filler + "+ " + property + " [association] " + based);
-      logColumns(a.getColumns(), level + 2);
+      logColumns(a.getDeclaredColumns(), level + 2);
       logExpressions(a.getExpressions(), level + 2);
       logCollections(a.getCollections(), level + 2);
       logAssociations(a.getAssociations(), level + 2);
@@ -605,7 +605,7 @@ public abstract class HotRodGenerator {
 
       String property = vo.getProperty() != null ? vo.getProperty() : "<main-single-vo>";
       display("   " + filler + "+ " + property + " [vo] " + based);
-      logColumns(vo.getColumns(), level + 2);
+      logColumns(vo.getDeclaredColumns(), level + 2);
       logExpressions(vo.getExpressions(), level + 2);
       logCollections(vo.getCollections(), level + 2);
       logAssociations(vo.getAssociations(), level + 2);

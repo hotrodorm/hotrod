@@ -1,0 +1,108 @@
+package org.hotrod.generator.mybatis;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+
+import org.apache.log4j.Logger;
+import org.hotrod.ant.UncontrolledException;
+import org.hotrod.metadata.VOMetadata;
+import org.hotrod.metadata.VORegistry.VOClass;
+import org.hotrod.utils.ClassPackage;
+
+public class SelectVO {
+
+  private static final Logger log = Logger.getLogger(SelectVO.class);
+
+  private DataSetLayout layout;
+
+  private String className;
+  private ClassPackage classPackage;
+
+  private SelectAbstractVO abstractVO;
+
+  // private DataSetMetadata metadata;
+  // private MyBatisGenerator generator;
+  // private MyBatisTag myBatisTag;
+  //
+  // private HotRodFragmentConfigTag fragmentConfig;
+  // private ClassPackage fragmentPackage;
+  //
+  // private ClassPackage classPackage;
+
+  public SelectVO(final VOClass soloVO, final SelectAbstractVO abstractVO, final DataSetLayout layout) {
+    log.debug("init");
+    this.layout = layout;
+    this.className = soloVO.getName();
+    this.classPackage = soloVO.getClassPackage();
+    this.abstractVO = abstractVO;
+  }
+
+  public SelectVO(final VOMetadata vo, final SelectAbstractVO abstractVO, final DataSetLayout layout) {
+    this.layout = layout;
+    this.className = vo.getName();
+    this.classPackage = vo.getClassPackage();
+    this.abstractVO = abstractVO;
+  }
+
+  public void generate() throws UncontrolledException {
+    String sourceClassName = this.className + ".java";
+
+    File dir = this.layout.getDAOPackageDir(this.classPackage);
+    File vo = new File(dir, sourceClassName);
+    log.debug("vo file:" + vo.getAbsolutePath());
+    if (!vo.exists()) {
+      Writer w = null;
+
+      try {
+        w = new BufferedWriter(new FileWriter(vo));
+
+        w.write("package " + this.classPackage.getPackage() + ";\n\n");
+
+        w.write("import " + this.abstractVO.getFullClassName() + ";\n\n");
+
+        w.write("public class " + this.className + " extends " + this.abstractVO.getName() + " {\n\n");
+
+        w.write("  private static final long serialVersionUID = 1L;\n\n");
+
+        w.write("  // Add custom code below.\n\n");
+
+        w.write("}\n");
+
+      } catch (IOException e) {
+        throw new UncontrolledException("Could not generate VO class: could not write to file '" + vo.getName() + "'.",
+            e);
+      } finally {
+        if (w != null) {
+          try {
+            w.close();
+          } catch (IOException e) {
+            throw new UncontrolledException("Could not generate VO class: could not close file '" + vo.getName() + "'.",
+                e);
+          }
+        }
+      }
+    }
+  }
+
+  // Info
+
+  // public String getClassName() {
+  // DataSetIdentifier id = this.metadata.getIdentifier();
+  // log.debug("id.wasJavaNameSpecified()=" + id.wasJavaNameSpecified());
+  // String name = this.myBatisTag.getDaos().generateVOName(id);
+  // log.debug("name=" + name);
+  // return name;
+  // }
+
+  // public String getFullClassName() {
+  // return this.classPackage.getFullClassName(this.getClassName());
+  // }
+
+  // public String getJavaClassIdentifier() {
+  // return this.metadata.getIdentifier().getJavaClassIdentifier();
+  // }
+
+}

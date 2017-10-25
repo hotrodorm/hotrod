@@ -13,6 +13,7 @@ import org.hotrod.config.MyBatisTag;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.ImportsRenderer;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 
 public class ObjectVO {
@@ -66,16 +67,14 @@ public class ObjectVO {
 
         w.write("import " + this.abstractVO.getFullClassName() + ";\n\n");
 
-        ImportedClasses ic = new ImportedClasses();
+        ImportsRenderer ic = new ImportsRenderer();
         for (ForeignKeyMetadata ik : this.metadata.getImportedFKs()) {
           EnumClass ec = this.generator.getEnum(ik.getRemote().getDataSet());
           if (ec != null) {
             ic.add(ec.getFullClassName());
           }
         }
-        for (String c : ic.getClasses()) {
-          w.write("import " + c + ";\n");
-        }
+        w.write(ic.render());
 
         w.write("public class " + this.getClassName() + " extends " + this.abstractVO.getClassName() + " {\n\n");
 

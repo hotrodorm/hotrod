@@ -1,18 +1,21 @@
 package org.hotrod.metadata;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.structuredcolumns.AssociationTag;
 import org.hotrod.config.structuredcolumns.CollectionTag;
 import org.hotrod.config.structuredcolumns.ExpressionsTag;
 import org.hotrod.config.structuredcolumns.VOTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.mybatis.DataSetLayout;
+import org.hotrod.generator.mybatis.SelectAbstractVO;
+import org.hotrod.generator.mybatis.SelectVO;
 import org.hotrod.metadata.VORegistry.VOClass;
 import org.hotrod.utils.ClassPackage;
 
@@ -34,9 +37,12 @@ public class VOMetadata {
 
   private TableDataSetMetadata tableMetadata;
   private TableDataSetMetadata viewMetadata;
-  private List<StructuredColumnMetadata> columns;
   private String alias;
   private String property;
+
+  private List<StructuredColumnMetadata> declaredColumns;
+  private List<VOMember> associationMembers;
+  private List<VOMember> collectionMembers;
 
   // Constructors
 
@@ -46,7 +52,7 @@ public class VOMetadata {
 
     this.tableMetadata = tag.getTableMetadata();
     this.viewMetadata = tag.getViewMetadata();
-    this.columns = tag.getColumns();
+    this.declaredColumns = tag.getDeclaredColumns();
     this.alias = tag.getAlias();
     this.property = tag.getProperty();
 
@@ -56,13 +62,21 @@ public class VOMetadata {
     }
 
     this.associations = new ArrayList<VOMetadata>();
+    this.associationMembers = new ArrayList<VOMember>();
     for (AssociationTag a : tag.getAssociations()) {
-      this.associations.add(a.getMetadata(layout, fragmentConfig, daosTag));
+      VOMetadata am = a.getMetadata(layout, fragmentConfig, daosTag);
+      this.associations.add(am);
+      VOMember m = new VOMember(a.getProperty(), am.getClassPackage(), am.getName());
+      this.associationMembers.add(m);
     }
 
     this.collections = new ArrayList<VOMetadata>();
+    this.collectionMembers = new ArrayList<VOMember>();
     for (CollectionTag c : tag.getCollections()) {
-      this.collections.add(c.getMetadata(layout, fragmentConfig, daosTag));
+      VOMetadata com = c.getMetadata(layout, fragmentConfig, daosTag);
+      this.collections.add(com);
+      VOMember m = new VOMember(c.getProperty(), com.getClassPackage(), com.getName());
+      this.collectionMembers.add(m);
     }
 
     // package & class name
@@ -92,15 +106,18 @@ public class VOMetadata {
 
   // Registration
 
-  public void register(final LinkedHashSet<VOMetadata> connectedVOs) {
+  public void register(final Set<SelectAbstractVO> abstractSelectVOs, final Set<SelectVO> selectVOs,
+      final DataSetLayout layout, final MyBatisTag myBatisTag) {
     if (this.superClass != null) {
-      connectedVOs.add(this);
+      SelectAbstractVO abstractVO = new SelectAbstractVO(this, layout, myBatisTag);
+      abstractSelectVOs.add(abstractVO);
+      selectVOs.add(new SelectVO(this, abstractVO, layout));
     }
     for (VOMetadata vo : this.associations) {
-      vo.register(connectedVOs);
+      vo.register(abstractSelectVOs, selectVOs, layout, myBatisTag);
     }
     for (VOMetadata vo : this.collections) {
-      vo.register(connectedVOs);
+      vo.register(abstractSelectVOs, selectVOs, layout, myBatisTag);
     }
   }
 
@@ -167,8 +184,8 @@ public class VOMetadata {
     return viewMetadata;
   }
 
-  public List<StructuredColumnMetadata> getColumns() {
-    return columns;
+  public List<StructuredColumnMetadata> getDeclaredColumns() {
+    return declaredColumns;
   }
 
   public String getAlias() {
@@ -189,6 +206,46 @@ public class VOMetadata {
 
   public String getName() {
     return name;
+  }
+
+  public List<VOMember> getAssociationMembers() {
+    return associationMembers;
+  }
+
+  public List<VOMember> getCollectionMembers() {
+    return collectionMembers;
+  }
+
+  // Classes
+
+  public static class VOMember {
+
+    private String property;
+    private ClassPackage classPackage;
+    private String name;
+
+    public VOMember(final String property, final ClassPackage classPackage, final String name) {
+      this.property = property;
+      this.classPackage = classPackage;
+      this.name = name;
+    }
+
+    public String getProperty() {
+      return property;
+    }
+
+    public ClassPackage getClassPackage() {
+      return classPackage;
+    }
+
+    public String getName() {
+      return name;
+    }
+    
+    public String renderFullClassName() {
+      return this.classPackage.getFullClassName(this.name);
+    }
+
   }
 
 }

@@ -59,8 +59,8 @@ public class MyBatisGenerator extends HotRodGenerator {
     // Load and validate the configuration file
 
     this.myBatisConfig = new MyBatisConfiguration(this.config);
-
     this.myBatisTag = (MyBatisTag) this.config.getGenerators().getSelectedGeneratorTag();
+    DataSetLayout layout = new DataSetLayout(this.config);
 
     // Add tables
 
@@ -75,7 +75,7 @@ public class MyBatisGenerator extends HotRodGenerator {
             + "Use <column> tags with a 'sequence' attribute instead.");
       }
       for (SelectMethodMetadata sm : tm.getSelectsMetadata()) {
-        addSelectVOs(sm);
+        addSelectVOs(sm, layout);
       }
     }
 
@@ -84,7 +84,7 @@ public class MyBatisGenerator extends HotRodGenerator {
     for (TableDataSetMetadata vm : this.views) {
       addDaosAndMapper(vm, DAOType.VIEW);
       for (SelectMethodMetadata sm : vm.getSelectsMetadata()) {
-        addSelectVOs(sm);
+        addSelectVOs(sm, layout);
       }
     }
 
@@ -102,8 +102,6 @@ public class MyBatisGenerator extends HotRodGenerator {
 
     // Add custom DAOs
 
-    DataSetLayout layout = new DataSetLayout(this.config);
-
     for (CustomDAOTag tag : this.config.getDAOs()) {
       CustomDAO dao = new CustomDAO(tag, layout, this);
       CustomDAOMapper mapper = new CustomDAOMapper(tag, layout, this);
@@ -115,7 +113,7 @@ public class MyBatisGenerator extends HotRodGenerator {
 
     for (DAOMetadata dm : super.daos) {
       for (SelectMethodMetadata sm : dm.getSelectsMetadata()) {
-        addSelectVOs(sm);
+        addSelectVOs(sm, layout);
       }
     }
 
@@ -189,12 +187,12 @@ public class MyBatisGenerator extends HotRodGenerator {
 
   }
 
-  private LinkedHashSet<VOClass> soloVOs = new LinkedHashSet<VOClass>();
-  private LinkedHashSet<VOMetadata> connectedVOs = new LinkedHashSet<VOMetadata>();
+  private LinkedHashSet<SelectAbstractVO> abstractSelectVOs = new LinkedHashSet<SelectAbstractVO>();
+  private LinkedHashSet<SelectVO> selectVOs = new LinkedHashSet<SelectVO>();
 
-  private void addSelectVOs(final SelectMethodMetadata sm) throws ControlledException {
+  private void addSelectVOs(final SelectMethodMetadata sm, final DataSetLayout layout) throws ControlledException {
 
-    DataSetLayout layout = new DataSetLayout(this.config);
+    // DataSetLayout layout = new DataSetLayout(this.config);
     HotRodFragmentConfigTag fragmentConfig = sm.getFragmentConfig();
     ClassPackage fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
         ? fragmentConfig.getFragmentPackage() : null;
@@ -204,14 +202,16 @@ public class MyBatisGenerator extends HotRodGenerator {
 
     VOClass soloVO = rt.getSoloVO();
     if (soloVO != null) {
-      this.soloVOs.add(soloVO);
+      SelectAbstractVO abstractVO = new SelectAbstractVO(soloVO, layout, this.myBatisTag);
+      this.abstractSelectVOs.add(abstractVO);
+      this.selectVOs.add(new SelectVO(soloVO, abstractVO, layout));
     }
 
     // connected VOs (all)
 
     if (sm.getStructuredColumns() != null) {
       for (VOMetadata vo : sm.getStructuredColumns().getVOs()) {
-        vo.register(this.connectedVOs);
+        vo.register(this.abstractSelectVOs, this.selectVOs, layout, this.myBatisTag);
       }
     }
 
@@ -254,6 +254,14 @@ public class MyBatisGenerator extends HotRodGenerator {
     }
 
     for (ObjectVO vo : this.vos.values()) {
+      vo.generate();
+    }
+
+    for (SelectAbstractVO avo : this.abstractSelectVOs) {
+      avo.generate();
+    }
+
+    for (SelectVO vo : this.selectVOs) {
       vo.generate();
     }
 
