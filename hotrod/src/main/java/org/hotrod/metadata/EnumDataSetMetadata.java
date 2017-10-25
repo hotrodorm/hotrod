@@ -11,6 +11,7 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.hotrod.generator.mybatis.DataSetLayout;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public class EnumDataSetMetadata extends TableDataSetMetadata {
@@ -22,8 +23,9 @@ public class EnumDataSetMetadata extends TableDataSetMetadata {
   // Constructor
 
   public EnumDataSetMetadata(final EnumTag tag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config) throws UnresolvableDataTypeException, ControlledException {
-    super(tag, t, adapter, config);
+      final HotRodConfigTag config, final DataSetLayout layout)
+      throws UnresolvableDataTypeException, ControlledException {
+    super(tag, t, adapter, config, layout);
     log.debug("init");
     this.tag = tag;
   }

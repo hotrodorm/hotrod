@@ -17,6 +17,7 @@ import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 
 public class DAOMetadata {
@@ -57,24 +58,24 @@ public class DAOMetadata {
 
   // Select Methods meta data gathering
 
-  public void gatherSelectsMetadataPhase1(final HotRodGenerator generator, final Connection conn1)
-      throws ControlledException, UncontrolledException {
+  public void gatherSelectsMetadataPhase1(final HotRodGenerator generator, final Connection conn1,
+      final DataSetLayout layout) throws ControlledException, UncontrolledException {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     for (SelectMethodTag selectTag : this.selects) {
       SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
           .getSelectGeneration();
       ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
       SelectMethodMetadata sm = new SelectMethodMetadata(generator, selectTag, this.config, selectGenerationTag,
-          columnsPrefixGenerator);
+          columnsPrefixGenerator, layout);
       this.selectsMetadata.add(sm);
       sm.gatherMetadataPhase1(conn1);
     }
   }
 
-  public void gatherSelectsMetadataPhase2(final Connection conn2)
+  public void gatherSelectsMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
       throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
     for (SelectMethodMetadata sm : this.selectsMetadata) {
-      sm.gatherMetadataPhase2(conn2);
+      sm.gatherMetadataPhase2(conn2, voRegistry);
     }
   }
 

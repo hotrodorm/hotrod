@@ -241,7 +241,7 @@ public class VOMetadata {
     public String getName() {
       return name;
     }
-    
+
     public String renderFullClassName() {
       return this.classPackage.getFullClassName(this.name);
     }

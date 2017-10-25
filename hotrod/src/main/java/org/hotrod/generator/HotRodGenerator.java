@@ -207,7 +207,7 @@ public abstract class HotRodGenerator {
         TableDataSetMetadata tm;
         try {
           log.debug("t.getName()=" + t.getName());
-          tm = DataSetMetadataFactory.getMetadata(t, this.adapter, config);
+          tm = DataSetMetadataFactory.getMetadata(t, this.adapter, config, layout);
           log.debug("*** tm=" + tm);
           validateIdentifier(sqlNames, "table", t.getName(), tm.getIdentifier());
           this.tables.add(tm);
@@ -218,7 +218,6 @@ public abstract class HotRodGenerator {
           ClassPackage classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
           String voName = daosTag.generateVOName(tm.getIdentifier());
           VOClass vo = new VOClass(tm, classPackage, voName, tm.getColumns());
-          log.info("--> adding VO: " + vo.getName());
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {
@@ -275,7 +274,7 @@ public abstract class HotRodGenerator {
       for (JdbcTable v : this.db.getViews()) {
         try {
 
-          TableDataSetMetadata vm = DataSetMetadataFactory.getMetadata(v, this.adapter, config);
+          TableDataSetMetadata vm = DataSetMetadataFactory.getMetadata(v, this.adapter, config, layout);
 
           validateIdentifier(sqlNames, "view", v.getName(), vm.getIdentifier());
           this.views.add(vm);
@@ -324,28 +323,28 @@ public abstract class HotRodGenerator {
       // Prepare <select> methods meta data - phase 1
 
       for (TableDataSetMetadata tm : this.tables) {
-        tm.gatherSelectsMetadataPhase1(this, conn);
+        tm.gatherSelectsMetadataPhase1(this, conn, layout);
         if (tm.hasSelects()) {
           hasSelects = true;
         }
       }
 
       for (TableDataSetMetadata vm : this.views) {
-        vm.gatherSelectsMetadataPhase1(this, conn);
+        vm.gatherSelectsMetadataPhase1(this, conn, layout);
         if (vm.hasSelects()) {
           hasSelects = true;
         }
       }
 
       for (TableDataSetMetadata em : this.enums) {
-        em.gatherSelectsMetadataPhase1(this, conn);
+        em.gatherSelectsMetadataPhase1(this, conn, layout);
         if (em.hasSelects()) {
           hasSelects = true;
         }
       }
 
       for (DAOMetadata dm : this.daos) {
-        dm.gatherSelectsMetadataPhase1(this, conn);
+        dm.gatherSelectsMetadataPhase1(this, conn, layout);
         if (dm.hasSelects()) {
           hasSelects = true;
         }
@@ -428,19 +427,19 @@ public abstract class HotRodGenerator {
         log.debug("ret 3");
 
         for (TableDataSetMetadata tm : this.tables) {
-          tm.gatherSelectsMetadataPhase2(conn2);
+          tm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
         }
 
         for (TableDataSetMetadata vm : this.views) {
-          vm.gatherSelectsMetadataPhase2(conn2);
+          vm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
         }
 
         for (TableDataSetMetadata em : this.enums) {
-          em.gatherSelectsMetadataPhase2(conn2);
+          em.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
         }
 
         for (DAOMetadata dm : this.daos) {
-          dm.gatherSelectsMetadataPhase2(conn2);
+          dm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
         }
 
         for (SelectDataSetMetadata ds : this.selects) {

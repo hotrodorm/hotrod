@@ -4,9 +4,16 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.hotrod.utils.ClassPackage;
 
 public class VORegistry {
+
+  // Constants
+
+  private static final Logger log = Logger.getLogger(VORegistry.class);
+
+  // Properties
 
   private LinkedHashMap<ClassPackage, FragmentRegistry> fragmentsByPackage = new LinkedHashMap<ClassPackage, FragmentRegistry>();
 
@@ -64,16 +71,20 @@ public class VORegistry {
 
     public FragmentRegistry(final ClassPackage classPackage) {
       this.classPackage = classPackage;
-      this.structuredVOsByName = new LinkedHashMap<String, StructuredVOClass>();
+      this.vosByMetadata = new LinkedHashMap<DataSetMetadata, VOClass>();
       this.vosByName = new LinkedHashMap<String, VOClass>();
+      this.structuredVOsByName = new LinkedHashMap<String, StructuredVOClass>();
     }
 
     // Behavior
 
     public void addVO(final VOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
+      log.info("voClass=" + voClass.getClassPackage().getPackage() + " / " + voClass.getName());
       if (this.vosByName.containsKey(voClass.getName())) {
         throw new VOAlreadyExistsException();
       }
+      // log.info("this.vosByMetadata=" + this.vosByMetadata);
+      // log.info("voClass=" + voClass);
       if (this.vosByMetadata.containsKey(voClass.getMetadata())) {
         throw new VOAlreadyExistsException();
       }
@@ -86,6 +97,7 @@ public class VORegistry {
 
     public void addVO(final StructuredVOClass voClass)
         throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
+      log.info("[structured] voClass=" + voClass.getClassPackage().getPackage() + " / " + voClass.getName());
       if (this.vosByName.containsKey(voClass.getName())) {
         throw new VOAlreadyExistsException();
       }

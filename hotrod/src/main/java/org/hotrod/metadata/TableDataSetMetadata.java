@@ -26,6 +26,8 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.generator.mybatis.DataSetLayout;
+import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
@@ -64,17 +66,23 @@ public class TableDataSetMetadata implements DataSetMetadata {
   private List<SelectMethodMetadata> selectsMetadata;
 
   private HotRodFragmentConfigTag fragmentConfig;
+  private ClassPackage classPackage;
 
   // Table constructor
 
   protected TableDataSetMetadata(final TableTag tableTag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config) throws UnresolvableDataTypeException, ControlledException {
+      final HotRodConfigTag config, final DataSetLayout layout)
+      throws UnresolvableDataTypeException, ControlledException {
     this.t = t;
     this.config = config;
     this.adapter = adapter;
 
     this.daoTag = tableTag;
     this.fragmentConfig = tableTag.getFragmentConfig();
+
+    ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage() : null;
+    this.classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
 
     this.cols = getColumnsMetadata(this.t.getColumns(), tableTag);
     this.pk = getKeyMetadata(this.t.getPk(), tableTag);
@@ -156,13 +164,18 @@ public class TableDataSetMetadata implements DataSetMetadata {
   // Enum Constructor
 
   protected TableDataSetMetadata(final EnumTag enumTag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config) throws UnresolvableDataTypeException, ControlledException {
+      final HotRodConfigTag config, final DataSetLayout layout)
+      throws UnresolvableDataTypeException, ControlledException {
     this.t = t;
     this.config = config;
     this.adapter = adapter;
 
     this.daoTag = enumTag;
     this.fragmentConfig = enumTag.getFragmentConfig();
+
+    ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage() : null;
+    this.classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
 
     this.cols = getColumnsMetadata(this.t.getColumns(), enumTag);
     this.pk = null;
@@ -185,7 +198,8 @@ public class TableDataSetMetadata implements DataSetMetadata {
   // View Constructor
 
   protected TableDataSetMetadata(final ViewTag viewTag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config) throws UnresolvableDataTypeException, ControlledException {
+      final HotRodConfigTag config, final DataSetLayout layout)
+      throws UnresolvableDataTypeException, ControlledException {
 
     this.t = t;
     this.config = config;
@@ -193,6 +207,10 @@ public class TableDataSetMetadata implements DataSetMetadata {
 
     this.daoTag = viewTag;
     this.fragmentConfig = viewTag.getFragmentConfig();
+
+    ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage() : null;
+    this.classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
 
     this.cols = getColumnsMetadata(this.t.getColumns(), viewTag);
     this.pk = null;
@@ -266,24 +284,24 @@ public class TableDataSetMetadata implements DataSetMetadata {
 
   // Select Methods meta data gathering
 
-  public void gatherSelectsMetadataPhase1(final HotRodGenerator generator, final Connection conn1)
-      throws ControlledException, UncontrolledException {
+  public void gatherSelectsMetadataPhase1(final HotRodGenerator generator, final Connection conn1,
+      final DataSetLayout layout) throws ControlledException, UncontrolledException {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     for (SelectMethodTag selectTag : this.selects) {
       SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
           .getSelectGeneration();
       ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
       SelectMethodMetadata sm = new SelectMethodMetadata(generator, selectTag, this.config, selectGenerationTag,
-          columnsPrefixGenerator);
+          columnsPrefixGenerator, layout);
       this.selectsMetadata.add(sm);
       sm.gatherMetadataPhase1(conn1);
     }
   }
 
-  public void gatherSelectsMetadataPhase2(final Connection conn2)
+  public void gatherSelectsMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
       throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
     for (SelectMethodMetadata sm : this.selectsMetadata) {
-      sm.gatherMetadataPhase2(conn2);
+      sm.gatherMetadataPhase2(conn2, voRegistry);
     }
   }
 

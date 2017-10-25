@@ -22,6 +22,9 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.generator.mybatis.DataSetLayout;
+import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
+import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOClass;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ClassPackage;
@@ -61,10 +64,13 @@ public class SelectMethodMetadata implements DataSetMetadata {
   private String tempViewName;
   private String createView;
 
+  private ClassPackage classPackage;
+
   // Constructor
 
   public SelectMethodMetadata(final HotRodGenerator generator, final SelectMethodTag tag, final HotRodConfigTag config,
-      final SelectGenerationTag selectGenerationTag, final ColumnsPrefixGenerator columnsPrefixGenerator) {
+      final SelectGenerationTag selectGenerationTag, final ColumnsPrefixGenerator columnsPrefixGenerator,
+      final DataSetLayout layout) {
     this.generator = generator;
     this.db = generator.getJdbcDatabase();
     this.config = config;
@@ -78,6 +84,11 @@ public class SelectMethodMetadata implements DataSetMetadata {
     this.structured = this.tag.getStructuredColumns() != null;
     this.unstructuredColumns = null;
     this.structuredColumns = null;
+
+    ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage() : null;
+    this.classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
+
   }
 
   // Behavior
@@ -115,7 +126,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   }
 
-  public void gatherMetadataPhase2(final Connection conn2)
+  public void gatherMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
 
     if (!this.structured) {
@@ -131,6 +142,15 @@ public class SelectMethodMetadata implements DataSetMetadata {
         throw new ControlledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + "> at "
             + this.tag.getSourceLocation().render() + ": could not find suitable Java type for column '"
             + e.getColumnName() + "' ");
+      }
+
+      VOClass vo = new VOClass(null, this.classPackage, this.tag.getVO(), this.unstructuredColumns);
+      try {
+        voRegistry.addVO(vo);
+      } catch (VOAlreadyExistsException e) {
+        throw new InvalidConfigurationFileException(this.tag.getSourceLocation(), "Duplicate VO name 'x'.");
+      } catch (StructuredVOAlreadyExistsException e) {
+        throw new InvalidConfigurationFileException(this.tag.getSourceLocation(), "Duplicate VO name 'x'.");
       }
 
     } else {
@@ -315,7 +335,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
   }
 
   public StructuredColumnsMetadata getStructuredColumns() {
-    return this.tag.getStructuredColumns().getMetadata();
+    return this.tag.getStructuredColumns() == null ? null : this.tag.getStructuredColumns().getMetadata();
   }
 
   public String getVO() {
@@ -327,10 +347,6 @@ public class SelectMethodMetadata implements DataSetMetadata {
   public String getMethod() {
     return this.tag.getMethod();
   }
-
-  // public SourceLocation getSourceLocation() {
-  // return this.tag.getSourceLocation();
-  // }
 
   public String getCreateView() {
     return createView;
