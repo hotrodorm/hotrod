@@ -40,6 +40,7 @@ public class VOMetadata {
   private String alias;
   private String property;
 
+  private List<StructuredColumnMetadata> inheritedColumns;
   private List<StructuredColumnMetadata> declaredColumns;
   private List<VOMember> associationMembers;
   private List<VOMember> collectionMembers;
@@ -52,6 +53,7 @@ public class VOMetadata {
 
     this.tableMetadata = tag.getTableMetadata();
     this.viewMetadata = tag.getViewMetadata();
+    this.inheritedColumns = tag.getInheritedColumns();
     this.declaredColumns = tag.getDeclaredColumns();
     this.alias = tag.getAlias();
     this.property = tag.getProperty();
@@ -83,7 +85,6 @@ public class VOMetadata {
 
     if (tag.getExtendedVO() != null) { // extended VO from a table or view
       this.classPackage = getVOClassPackage(layout, fragmentConfig);
-      log.info("}}}} 1 this.classPackage=" + this.classPackage);
       this.name = tag.getExtendedVO();
       this.superClass = tag.getGenerator().getVORegistry()
           .findVOClass(this.tableMetadata != null ? this.tableMetadata : this.viewMetadata);
@@ -96,11 +97,9 @@ public class VOMetadata {
       this.superClass = null;
       if (this.tableMetadata != null) {
         this.classPackage = getVOClassPackage(layout, this.tableMetadata.getFragmentConfig());
-        log.info("}}}} 2 this.classPackage=" + this.classPackage);
         this.name = daosTag.generateVOName(this.tableMetadata.getIdentifier());
       } else {
         this.classPackage = getVOClassPackage(layout, this.viewMetadata.getFragmentConfig());
-        log.info("}}}} 3 this.classPackage=" + this.classPackage);
         this.name = daosTag.generateVOName(this.viewMetadata.getIdentifier());
       }
     }
@@ -185,6 +184,10 @@ public class VOMetadata {
 
   public TableDataSetMetadata getViewMetadata() {
     return viewMetadata;
+  }
+
+  public List<StructuredColumnMetadata> getInheritedColumns() {
+    return inheritedColumns;
   }
 
   public List<StructuredColumnMetadata> getDeclaredColumns() {

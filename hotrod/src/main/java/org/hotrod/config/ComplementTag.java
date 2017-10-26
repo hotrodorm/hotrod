@@ -8,11 +8,11 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.log4j.Logger;
 import org.hotrod.config.dynamicsql.BindTag;
 import org.hotrod.config.dynamicsql.ChooseTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
-import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.config.dynamicsql.ForEachTag;
 import org.hotrod.config.dynamicsql.IfTag;
 import org.hotrod.config.dynamicsql.OtherwiseTag;
@@ -21,6 +21,7 @@ import org.hotrod.config.dynamicsql.SetTag;
 import org.hotrod.config.dynamicsql.TrimTag;
 import org.hotrod.config.dynamicsql.WhenTag;
 import org.hotrod.config.dynamicsql.WhereTag;
+import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
@@ -31,7 +32,11 @@ import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 @XmlRootElement(name = "complement")
 public class ComplementTag extends EnhancedSQLPart {
 
-  // Properties
+  // Constants
+
+  private static final Logger log = Logger.getLogger(ComplementTag.class);
+
+  // Properties - Primitive content parsing by JAXB
 
   @XmlMixed
   @XmlElementRefs({ //
@@ -47,6 +52,8 @@ public class ComplementTag extends EnhancedSQLPart {
   })
   protected List<Object> content = new ArrayList<Object>();
 
+  // Properties - Parsed
+
   private List<DynamicSQLPart> parts;
 
   // Constructor
@@ -60,8 +67,11 @@ public class ComplementTag extends EnhancedSQLPart {
       final HotRodFragmentConfigTag fragmentConfig, final ParameterDefinitions parameters)
       throws InvalidConfigurationFileException {
 
+    log.info("VALIDATE: start - this.content.size()=" + this.content.size());
+
     this.parts = new ArrayList<DynamicSQLPart>();
     for (Object obj : this.content) {
+      log.info("obj: " + obj.getClass().getName());
       DynamicSQLPart p = null;
       try {
         String s = (String) obj;
@@ -76,7 +86,9 @@ public class ComplementTag extends EnhancedSQLPart {
         }
       }
       this.parts.add(p);
+      log.info("VALIDATE: add - " + p.getClass().getName());
     }
+    log.info("VALIDATE: total=" + this.parts.size());
 
   }
 
@@ -97,8 +109,10 @@ public class ComplementTag extends EnhancedSQLPart {
 
   @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
+    log.info("[complement]");
     StringBuilder sb = new StringBuilder();
     for (DynamicSQLPart p : this.parts) {
+      log.info("DynamicSQLPart: " + p.getClass().getName());
       sb.append(p.renderXML(parameterRenderer));
     }
     return sb.toString();

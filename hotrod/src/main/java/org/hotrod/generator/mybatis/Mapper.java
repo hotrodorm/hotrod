@@ -26,8 +26,13 @@ import org.hotrod.generator.DAOType;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
+import org.hotrod.metadata.ExpressionsMetadata;
 import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
+import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
+import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.metadata.StructuredColumnsMetadata;
+import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
@@ -177,6 +182,10 @@ public class Mapper {
             throw new ControlledException(
                 "Could not generate mapper for query '" + q.getJavaMethodName() + "' onto file: " + e.getMessage());
           }
+        }
+
+        for (SelectMethodMetadata sm : this.metadata.getSelectsMetadata()) {
+          writeSelectMethod(sm);
         }
 
       }
@@ -329,7 +338,8 @@ public class Mapper {
       }
     }
 
-    println("    <" + tagName + " property=\"" + cm.getIdentifier().getJavaMemberIdentifier() + "\" column='"
+    String indent = SUtils.getFiller(' ', 4);
+    println(indent + "<" + tagName + " property=\"" + cm.getIdentifier().getJavaMemberIdentifier() + "\" column='"
         + SUtils.escapeXmlAttribute(cm.getColumnName()) + "' " + typeHandler + "/>");
 
   }
@@ -1063,6 +1073,122 @@ public class Mapper {
 
   }
 
+  // TODO: implement
+
+  private void writeSelectMethod(final SelectMethodMetadata sm) throws IOException {
+    println("  <!-- select method: " + sm.getMethod() + " -->");
+    println();
+
+    // result map
+
+    String resultMapName = this.getResultMapName(sm);
+    SelectMethodReturnType rt = sm.getReturnType(this.fragmentPackage);
+
+    println("  <resultMap id=\"" + resultMapName + "\" type=\"" + rt.getVOFullClassName() + "\">");
+
+    if (!sm.isStructured()) {
+
+      for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
+        renderResultMapColumn(cm, "result");
+      }
+
+    } else {
+
+      StructuredColumnsMetadata scm = sm.getStructuredColumns();
+
+      boolean soloVO = scm.getExpressions().isEmpty() && scm.getVOs().size() == 1;
+      if (soloVO) {
+        VOMetadata vo = scm.getVOs().get(0);
+        log.info("vo.getClass()=" + vo.getName());
+        renderResultMapLevel(vo.getInheritedColumns(), vo.getDeclaredColumns(), vo.getExpressions(),
+            vo.getAssociations(), vo.getCollections(), 0);
+      } else {
+        renderResultMapLevel(null, null, scm.getExpressions(), scm.getVOs(), null, 0);
+      }
+
+    }
+
+    println("  </resultMap>");
+    println();
+
+    // mapper
+
+    String mapperId = this.getMapperIdSelectMethod(sm);
+    println("  <select id=\"" + mapperId + "\" resultMap=\"" + resultMapName + "\">");
+    println(sm.renderXML(new MyBatisParameterRenderer()));
+    println("  </select>");
+    println();
+  }
+
+  private void renderResultMapLevel(final List<StructuredColumnMetadata> inheritedColumns,
+      final List<StructuredColumnMetadata> declaredColumns, final List<ExpressionsMetadata> expressions,
+      final List<VOMetadata> associations, final List<VOMetadata> collections, final int level) throws IOException {
+
+    // Main VO columns
+
+    if (inheritedColumns != null) {
+      for (StructuredColumnMetadata m : inheritedColumns) {
+        if (m.isId()) {
+          renderSelectResultMapColumn(m, "id", level);
+        }
+      }
+      for (StructuredColumnMetadata m : inheritedColumns) {
+        if (!m.isId()) {
+          renderSelectResultMapColumn(m, "result", level);
+        }
+      }
+    }
+
+    // Expression columns
+
+    for (StructuredColumnMetadata m : declaredColumns) {
+      renderSelectResultMapColumn(m, "result", level);
+    }
+
+    // Associations
+
+    String indent = SUtils.getFiller(' ', 4 + (level * 2));
+
+    for (VOMetadata a : associations) {
+      println(indent + "<association property=\"" + a.getProperty() + "\">");
+      renderResultMapLevel(a.getInheritedColumns(), a.getDeclaredColumns(), a.getExpressions(), a.getAssociations(),
+          a.getCollections(), level + 1);
+      println(indent + "</association>");
+    }
+
+    // Collections
+
+    if (collections != null) {
+      for (VOMetadata c : collections) {
+        println(indent + "<collection property=\"" + c.getProperty() + "\">");
+        renderResultMapLevel(c.getInheritedColumns(), c.getDeclaredColumns(), c.getExpressions(), c.getAssociations(),
+            c.getCollections(), level + 1);
+        println(indent + "</collection>");
+      }
+    }
+
+  }
+
+  private void renderSelectResultMapColumn(final StructuredColumnMetadata cm, final String tagName, final int level)
+      throws IOException {
+
+    String typeHandler = "";
+    if (cm.getConverter() != null) {
+      typeHandler = "typeHandler=\"" + this.dao.getTypeHandlerFullClassName(cm) + "\" ";
+    } else {
+      EnumDataSetMetadata ds = cm.getEnumMetadata();
+      EnumClass ec = this.generator.getEnum(ds);
+      if (ec != null) {
+        typeHandler = "typeHandler=\"" + this.dao.getTypeHandlerFullClassName(cm) + "\" ";
+      }
+    }
+
+    String indent = SUtils.getFiller(' ', 4 + (level * 2));
+    println(indent + "<" + tagName + " property=\"" + cm.getIdentifier().getJavaMemberIdentifier() + "\" column=\""
+        + SUtils.escapeXmlAttribute(cm.getColumnAlias()) + "\" " + typeHandler + "/>");
+
+  }
+
   private void writeFooter() throws IOException {
     println("</mapper>");
   }
@@ -1223,7 +1349,11 @@ public class Mapper {
   }
 
   public String getFullMapperIdSelectMethod(final SelectMethodMetadata sm) {
-    return this.namespace + "." + getMapperIdSelectMethod(sm);
+    return this.namespace + ".select_" + getMapperIdSelectMethod(sm);
+  }
+
+  private String getResultMapName(final SelectMethodMetadata sm) {
+    return "result_map_select_" + sm.getMethod();
   }
 
   // Helpers

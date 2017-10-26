@@ -167,6 +167,9 @@
             <collection table="transaction" property="transactions" alias="t" />
           </collection>
           <association table="category" property="category" alias="c" />
+          <expressions>
+            p.id + 1 as next_id
+          </expressions>
         </vo>
       </columns>
       from person p

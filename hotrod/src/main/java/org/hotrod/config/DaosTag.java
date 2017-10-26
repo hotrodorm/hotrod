@@ -274,19 +274,15 @@ public class DaosTag extends AbstractConfigurationTag {
   }
 
   public File getDaosPackageDir(final ClassPackage fragmentPackage) {
-    log.info("this.baseDir=" + this.baseDir.getPath());
-    log.info("fragmentPackage=" + fragmentPackage);
     ClassPackage p = getDaoPackage(fragmentPackage);
     File dir = p.getPackageDir(this.baseDir);
     dir.mkdirs();
-    log.info("*** dir=" + dir.getPath());
     return dir;
   }
 
   public File getVOPackageDir(final ClassPackage p) {
     File dir = p.getPackageDir(this.baseDir);
     dir.mkdirs();
-    log.info("*** dir=" + dir.getPath());
     return dir;
   }
 
@@ -294,7 +290,6 @@ public class DaosTag extends AbstractConfigurationTag {
     ClassPackage full = getPrimitivesVOPackage(p);
     File dir = full.getPackageDir(this.baseDir);
     dir.mkdirs();
-    log.info("*** dir=" + dir.getPath());
     return dir;
   }
 

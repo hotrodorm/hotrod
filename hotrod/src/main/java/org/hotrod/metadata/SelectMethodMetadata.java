@@ -130,8 +130,6 @@ public class SelectMethodMetadata implements DataSetMetadata {
   public void gatherMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
 
-    log.info("::: this.structured=" + this.structured);
-
     if (!this.structured) {
 
       // Non-structured columns
@@ -418,9 +416,45 @@ public class SelectMethodMetadata implements DataSetMetadata {
     return this.tag.renderSQLSentence(parameterRenderer);
   }
 
+  // TODO: implement this method correctly.
+
   @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
-    return this.tag.renderXML(parameterRenderer);
+    if (!this.isStructured()) {
+      log.info("non-structured");
+      ListWriter w = new ListWriter("    ", "", ",\n");
+      for (ColumnMetadata cm : this.nonStructuredColumns) {
+        w.add(cm.renderSQLIdentifier());
+      }
+      return w.toString();
+    } else {
+      log.info("structured");
+      ListWriter w = new ListWriter("    ", "", ",\n");
+      for (VOMetadata vo : this.structuredColumns.getVOs()) {
+        renderXMLVO(vo, w);
+      }
+      for (ExpressionsMetadata exp : this.structuredColumns.getExpressions()) {
+        for (StructuredColumnMetadata m : exp.getColumns()) {
+          w.add(m.renderSQLIdentifier() + " as " + m.getColumnAlias());
+        }
+      }
+      return w.toString();
+    }
+  }
+
+  private void renderXMLVO(final VOMetadata vo, final ListWriter w) {
+    for (VOMetadata a : vo.getAssociations()) {
+      renderXMLVO(a, w);
+    }
+    for (VOMetadata c : vo.getCollections()) {
+      renderXMLVO(c, w);
+    }
+    for (ExpressionsMetadata exp : this.structuredColumns.getExpressions()) {
+      for (StructuredColumnMetadata m : exp.getColumns()) {
+        w.add(m.renderSQLIdentifier() + " as " + m.getColumnAlias());
+      }
+    }
+
   }
 
   @Override

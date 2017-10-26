@@ -101,7 +101,6 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   @Override
   public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
-    log.info(">>>>>>>>>>>>>> generator=" + generator);
 
     this.generator = generator;
 
@@ -132,13 +131,13 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   @Override
   public String renderStatic(final ParameterRenderer parameterRenderer) {
-    // TODO Auto-generated method stub
-    return null;
+    return "... structured columns here...";
   }
 
   @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
-    // TODO Auto-generated method stub
+    log.info("structured");
+    // TODO
     return null;
   }
 

@@ -80,7 +80,6 @@ public class VORegistry {
     // Behavior
 
     public void addVO(final VOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
-      log.info("voClass=" + voClass.getClassPackage().getPackage() + " / " + voClass.getName());
       if (this.vosByName.containsKey(voClass.getName())) {
         throw new VOAlreadyExistsException();
       }

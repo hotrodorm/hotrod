@@ -365,7 +365,6 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       this.cmr = null;
       this.aliasPrefix = columnsPrefixGenerator.next();
     } else { // specific columns
-      log.info("this.generator="+this.generator);
       this.cmr = new ColumnsMetadataRetriever(selectTag, this.generator.getAdapter(), this.generator.getJdbcDatabase(),
           this.generator.getLoc(), selectGenerationTag, this, columnsPrefixGenerator);
       this.cmr.prepareRetrieval(conn1);

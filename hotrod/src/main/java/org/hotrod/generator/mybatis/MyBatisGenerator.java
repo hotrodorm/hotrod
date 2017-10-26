@@ -196,9 +196,7 @@ public class MyBatisGenerator extends HotRodGenerator {
     HotRodFragmentConfigTag fragmentConfig = sm.getFragmentConfig();
     ClassPackage fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
         ? fragmentConfig.getFragmentPackage() : null;
-    log.info("!!! fragmentPackage=" + fragmentPackage);
     ClassPackage daoPackage = layout.getDAOPackage(fragmentPackage);
-    log.info("daoPackage=" + daoPackage);
     SelectMethodReturnType rt = sm.getReturnType(daoPackage);
 
     // solo VO

@@ -106,7 +106,6 @@ public class SelectMethodTag extends AbstractConfigurationTag {
         String s = (String) obj; // content part
         VerbatimTextPart p = new VerbatimTextPart(s);
         this.parts.add(p);
-        // this.foundationParts.add(p);
       } catch (ClassCastException e1) {
         try {
           ParameterTag param = (ParameterTag) obj; // parameter
@@ -214,6 +213,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
     // Literal SQL, <columns>, <complement> tags
 
     for (EnhancedSQLPart p : this.parts) {
+      log.info("VAL p: " + p.getClass().getName());
       p.validate(daosTag, config, fragmentConfig, this.parameters);
     }
 
@@ -309,8 +309,10 @@ public class SelectMethodTag extends AbstractConfigurationTag {
   }
 
   public String renderXML(final ParameterRenderer parameterRenderer) {
+    log.info("renderXML()");
     StringBuilder sb = new StringBuilder();
     for (EnhancedSQLPart p : this.parts) {
+      log.info("p: " + p.getClass().getName());
       sb.append(p.renderXML(parameterRenderer));
     }
     return sb.toString();

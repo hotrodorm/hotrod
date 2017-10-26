@@ -38,7 +38,6 @@ public class SelectVO {
     this.layout = layout;
     this.className = soloVO.getName();
     this.classPackage = soloVO.getClassPackage();
-    log.info("this.classPackage=" + this.classPackage + " name=" + this.className);
     this.abstractVO = abstractVO;
   }
 
@@ -54,9 +53,7 @@ public class SelectVO {
 
     File dir = this.layout.getVOPackageDir(this.classPackage);
 
-    log.info("dir=" + dir.getPath());
     File vo = new File(dir, sourceClassName);
-    log.info("vo file:" + vo.getAbsolutePath());
     if (!vo.exists()) {
       Writer w = null;
 
