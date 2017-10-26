@@ -23,6 +23,7 @@ public class SelectVO {
 
   private SelectAbstractVO abstractVO;
 
+  // TODO: remove
   // private DataSetMetadata metadata;
   // private MyBatisGenerator generator;
   // private MyBatisTag myBatisTag;
@@ -37,6 +38,7 @@ public class SelectVO {
     this.layout = layout;
     this.className = soloVO.getName();
     this.classPackage = soloVO.getClassPackage();
+    log.info("this.classPackage=" + this.classPackage + " name=" + this.className);
     this.abstractVO = abstractVO;
   }
 
@@ -50,9 +52,11 @@ public class SelectVO {
   public void generate() throws UncontrolledException {
     String sourceClassName = this.className + ".java";
 
-    File dir = this.layout.getDAOPackageDir(this.classPackage);
+    File dir = this.layout.getVOPackageDir(this.classPackage);
+
+    log.info("dir=" + dir.getPath());
     File vo = new File(dir, sourceClassName);
-    log.debug("vo file:" + vo.getAbsolutePath());
+    log.info("vo file:" + vo.getAbsolutePath());
     if (!vo.exists()) {
       Writer w = null;
 

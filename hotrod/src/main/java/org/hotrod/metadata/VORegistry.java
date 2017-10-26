@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hotrod.metadata.VOMetadata.VOMember;
 import org.hotrod.utils.ClassPackage;
 
 public class VORegistry {
@@ -138,11 +139,22 @@ public class VORegistry {
     private ClassPackage classPackage;
     private String name;
     private LinkedHashMap<String, ColumnMetadata> columnsByName;
+    private List<VOMember> associations;
 
     // Constructor
 
     public VOClass(final DataSetMetadata metadata, final ClassPackage classPackage, final String name,
         final List<ColumnMetadata> columns) {
+      initialize(metadata, classPackage, name, columns, new ArrayList<VOMember>());
+    }
+
+    public VOClass(final DataSetMetadata metadata, final ClassPackage classPackage, final String name,
+        final List<ColumnMetadata> columns, final List<VOMember> associations) {
+      initialize(metadata, classPackage, name, columns, associations);
+    }
+
+    private void initialize(final DataSetMetadata metadata, final ClassPackage classPackage, final String name,
+        final List<ColumnMetadata> columns, final List<VOMember> associations) {
       this.metadata = metadata;
       this.classPackage = classPackage;
       this.name = name;
@@ -150,6 +162,7 @@ public class VORegistry {
       for (ColumnMetadata c : columns) {
         this.columnsByName.put(c.getColumnName(), c);
       }
+      this.associations = associations;
     }
 
     // Behavior
@@ -216,6 +229,10 @@ public class VORegistry {
 
     public LinkedHashMap<String, ColumnMetadata> getColumnsByName() {
       return columnsByName;
+    }
+
+    public List<VOMember> getAssociations() {
+      return associations;
     }
 
   }

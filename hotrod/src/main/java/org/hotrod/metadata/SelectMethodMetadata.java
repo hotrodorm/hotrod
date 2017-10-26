@@ -23,6 +23,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.mybatis.DataSetLayout;
+import org.hotrod.metadata.VOMetadata.VOMember;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOClass;
@@ -57,7 +58,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
   private ColumnsPrefixGenerator columnsPrefixGenerator;
 
   private HotRodFragmentConfigTag fragmentConfig;
-  private List<ColumnMetadata> unstructuredColumns;
+  private List<ColumnMetadata> nonStructuredColumns;
   private StructuredColumnsMetadata structuredColumns;
 
   private String cleanedUpFoundation;
@@ -82,7 +83,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
     this.fragmentConfig = tag.getFragmentConfig();
     this.structured = this.tag.getStructuredColumns() != null;
-    this.unstructuredColumns = null;
+    this.nonStructuredColumns = null;
     this.structuredColumns = null;
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
@@ -129,12 +130,15 @@ public class SelectMethodMetadata implements DataSetMetadata {
   public void gatherMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
 
+    log.info("::: this.structured=" + this.structured);
+
     if (!this.structured) {
 
-      // Unstructured columns
+      // Non-structured columns
 
       try {
         retrieveFlatColumnsMetadata(conn2);
+
       } catch (SQLException e) {
         throw new UncontrolledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
             + "> at " + this.tag.getSourceLocation().render(), e);
@@ -144,7 +148,8 @@ public class SelectMethodMetadata implements DataSetMetadata {
             + e.getColumnName() + "' ");
       }
 
-      VOClass vo = new VOClass(null, this.classPackage, this.tag.getVO(), this.unstructuredColumns);
+      List<VOMember> associations = new ArrayList<VOMember>();
+      VOClass vo = new VOClass(null, this.classPackage, this.tag.getVO(), this.nonStructuredColumns, associations);
       try {
         voRegistry.addVO(vo);
       } catch (VOAlreadyExistsException e) {
@@ -160,6 +165,8 @@ public class SelectMethodMetadata implements DataSetMetadata {
       try {
         log.debug("Phase 2");
         this.tag.getStructuredColumns().gatherMetadataPhase2(conn2);
+        this.structuredColumns = this.tag.getStructuredColumns().getMetadata();
+
       } catch (InvalidSQLException e) {
         throw new ControlledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + "> at "
             + this.tag.getSourceLocation().render() + "; could not create temporary SQL view for it.\n" + "[ "
@@ -259,7 +266,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
     return reassembled;
   }
 
-  public void retrieveFlatColumnsMetadata(final Connection conn) throws SQLException, UnresolvableDataTypeException {
+  public void retrieveFlatColumnsMetadata(final Connection conn2) throws SQLException, UnresolvableDataTypeException {
 
     // 1. Retrieve the temp view column's metadata
 
@@ -267,15 +274,16 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
     try {
       String viewJdbcName = this.adapter.formatJdbcTableName(this.tempViewName);
-      rs = conn.getMetaData().getColumns(this.loc.getDefaultCatalog(), this.loc.getDefaultSchema(), viewJdbcName, null);
-      this.unstructuredColumns = new ArrayList<ColumnMetadata>();
+      rs = conn2.getMetaData().getColumns(this.loc.getDefaultCatalog(), this.loc.getDefaultSchema(), viewJdbcName,
+          null);
+      this.nonStructuredColumns = new ArrayList<ColumnMetadata>();
       while (rs.next()) {
         JdbcColumn c = this.db.retrieveColumn(rs, this.tempViewName);
         ColumnTag columnTag = this.tag.findColumnTag(c.getName(), this.adapter);
         log.debug("c=" + c.getName() + " / col: " + columnTag);
         ColumnMetadata cm = new ColumnMetadata(this, c, this.tag.getMethod(), this.adapter, columnTag, false, false);
         log.debug(" --> type=" + cm.getType());
-        this.unstructuredColumns.add(cm);
+        this.nonStructuredColumns.add(cm);
       }
 
     } finally {
@@ -288,7 +296,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
     try {
       String dropView = this.adapter.dropView(this.tempViewName);
-      ps = conn.prepareStatement(dropView);
+      ps = conn2.prepareStatement(dropView);
       ps.execute();
 
     } finally {
@@ -331,7 +339,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
   }
 
   public List<ColumnMetadata> getNonStructuredColumns() {
-    return this.unstructuredColumns;
+    return this.nonStructuredColumns;
   }
 
   public StructuredColumnsMetadata getStructuredColumns() {
@@ -354,12 +362,12 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   @Override
   public List<ColumnMetadata> getColumns() {
-    return this.unstructuredColumns;
+    return this.nonStructuredColumns;
   }
 
   @Override
   public List<ColumnMetadata> getNonPkColumns() {
-    return this.unstructuredColumns;
+    return this.nonStructuredColumns;
   }
 
   @Override
@@ -462,8 +470,8 @@ public class SelectMethodMetadata implements DataSetMetadata {
     return generator;
   }
 
-  public SelectMethodReturnType getReturnType(final ClassPackage currentClassPackage) {
-    return new SelectMethodReturnType(this, currentClassPackage);
+  public SelectMethodReturnType getReturnType(final ClassPackage voClassPackage) {
+    return new SelectMethodReturnType(this, voClassPackage);
   }
 
   // Classes
@@ -475,18 +483,25 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
     private boolean multipleRows;
 
-    public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage currentClassPackage) {
+    public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage voClassPackage) {
       if (sm.isStructured()) { // structured columns
         StructuredColumnsMetadata scols = sm.getStructuredColumns();
         if (scols.getVO() == null) { // inner VO
           this.soloVO = null;
           this.connectedVO = scols.getVOs().get(0);
-        } else { // columns vo (specified in the <columns> tag)
-          this.soloVO = new VOClass(sm, currentClassPackage, scols.getVO(), sm.getColumns());
+        } else { // columns VO (specified in the <columns> tag)
+          List<VOMember> associations = new ArrayList<VOMember>();
+          for (VOMetadata vo : sm.getStructuredColumns().getVOs()) {
+            VOMember m = new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName());
+            associations.add(m);
+          }
+          this.soloVO = new VOClass(sm, voClassPackage, scols.getVO(),
+              sm.getStructuredColumns().getExpressionsColumns(), associations);
           this.connectedVO = null;
         }
       } else { // non-structured columns
-        this.soloVO = new VOClass(sm, currentClassPackage, sm.getVO(), sm.getColumns());
+        List<VOMember> associations = new ArrayList<VOMember>();
+        this.soloVO = new VOClass(sm, voClassPackage, sm.getVO(), sm.getColumns(), associations);
         this.connectedVO = null;
       }
       this.multipleRows = sm.isMultipleRows();

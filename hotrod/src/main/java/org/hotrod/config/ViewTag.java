@@ -135,6 +135,10 @@ public class ViewTag extends AbstractDAOTag {
       }
     }
 
+    for (SelectMethodTag s : this.getSelects()) {
+      s.validateAgainstDatabase(generator);
+    }
+
   }
 
   // Search

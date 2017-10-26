@@ -188,6 +188,10 @@ public class TableTag extends AbstractDAOTag {
       this.versionControlColumn.validateAgainstDatabase(generator, this.name, jt);
     }
 
+    for (SelectMethodTag s : this.getSelects()) {
+      s.validateAgainstDatabase(generator);
+    }
+
   }
 
   // Search

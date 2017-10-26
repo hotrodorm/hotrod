@@ -101,6 +101,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   @Override
   public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
+    log.info(">>>>>>>>>>>>>> generator=" + generator);
 
     this.generator = generator;
 

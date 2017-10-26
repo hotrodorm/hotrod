@@ -42,6 +42,10 @@ public class DataSetLayout {
     return this.daos.getDaoPackage(fragmentPackage);
   }
 
+//  public ClassPackage getVOPackage(final ClassPackage fragmentPackage) {
+//    return this.daos.getVOPackage(fragmentPackage);
+//  }
+
   public File getDAOPackageDir(final ClassPackage fragmentPackage) {
     return this.daos.getDaosPackageDir(fragmentPackage);
   }
@@ -68,6 +72,16 @@ public class DataSetLayout {
 
   public String getSessionFactoryGetter() {
     return sessionFactoryGetter;
+  }
+
+  // ClassPackage methods
+
+  public File getVOPackageDir(final ClassPackage classPackage) {
+    return this.daos.getVOPackageDir(classPackage);
+  }
+
+  public ClassPackage getPrimitivesVOPackage(final ClassPackage classPackage) {
+    return this.daos.getPrimitivesVOPackage(classPackage);
   }
 
 }

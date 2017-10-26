@@ -239,7 +239,7 @@
       <columns>
         <vo view="north_office" id="name,region" extended-vo="OfficeWithLogVO">
           o.*
-          <collection table="log" property="office" alias="l" />
+          <collection table="log" property="logs" alias="l" />
         </vo>
       </columns>
       from north_office o

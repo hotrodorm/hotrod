@@ -5,11 +5,16 @@ import org.hotrod.database.PropertyType;
 
 public class ColumnIdentifier extends DbIdentifier {
 
-  private PropertyType type;
+  private boolean isBooleanType;
 
   public ColumnIdentifier(final String name, final PropertyType type, final ColumnTag columnTag) {
     super(name, columnTag == null ? null : columnTag.getJavaName());
-    this.type = type;
+    this.isBooleanType = type.isBooleanType();
+  }
+
+  public ColumnIdentifier(final String name, final String typeName) {
+    super(name, null);
+    this.isBooleanType = "boolean".equals(typeName);
   }
 
   public String getJavaMemberIdentifier() {
@@ -25,7 +30,7 @@ public class ColumnIdentifier extends DbIdentifier {
   }
 
   public String getGetter() {
-    return (this.type.isBooleanType() ? "is" : "get")
+    return (this.isBooleanType ? "is" : "get")
         + (startsWithLowerUpperCase() ? this.getJavaMemberIdentifier() : this.getJavaClassIdentifier());
   }
 

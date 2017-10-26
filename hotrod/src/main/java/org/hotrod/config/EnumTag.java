@@ -244,6 +244,10 @@ public class EnumTag extends AbstractDAOTag {
       javaConstantNames.add(c.getJavaConstantName());
     }
 
+    for (SelectMethodTag s : this.getSelects()) {
+      s.validateAgainstDatabase(generator);
+    }
+
   }
 
   private void retrieveTableValues(final JdbcDatabase db, final Connection conn)

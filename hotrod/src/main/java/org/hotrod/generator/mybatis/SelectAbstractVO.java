@@ -21,10 +21,15 @@ import org.hotrod.metadata.VORegistry.VOClass;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ImportsRenderer;
+import org.hotrod.utils.identifiers.ColumnIdentifier;
 
 public class SelectAbstractVO {
 
+  // Constants
+
   private static final Logger log = Logger.getLogger(SelectAbstractVO.class);
+
+  // Properties
 
   private MyBatisTag myBatisTag;
   private DataSetLayout layout;
@@ -38,24 +43,26 @@ public class SelectAbstractVO {
 
   private Writer w;
 
-  // Constructor
+  // Constructors
 
   public SelectAbstractVO(final VOClass soloVO, final DataSetLayout layout, final MyBatisTag myBatisTag) {
     log.debug("init");
     this.myBatisTag = myBatisTag;
     this.layout = layout;
-    this.name = soloVO.getName();
-    this.classPackage = soloVO.getClassPackage();
+    this.name = this.myBatisTag.getDaos().generateAbstractVOName(soloVO.getName());
+    this.classPackage = this.myBatisTag.getDaos().getPrimitivesVOPackage(soloVO.getClassPackage());
+    // log.info(">>> [abstract] this.classPackage=" + this.classPackage);
+
     this.columns = new ArrayList<ColumnMetadata>(soloVO.getColumnsByName().values());
-    this.associationMembers = new ArrayList<VOMember>();
+    this.associationMembers = soloVO.getAssociations();
     this.collectionMembers = new ArrayList<VOMember>();
   }
 
   public SelectAbstractVO(final VOMetadata vo, final DataSetLayout layout, final MyBatisTag myBatisTag) {
     this.myBatisTag = myBatisTag;
     this.layout = layout;
-    this.name = vo.getName();
-    this.classPackage = vo.getClassPackage();
+    this.name = this.myBatisTag.getDaos().generateAbstractVOName(vo.getName());
+    this.classPackage = this.myBatisTag.getDaos().getPrimitivesVOPackage(vo.getClassPackage());
     this.columns = new ArrayList<ColumnMetadata>();
     for (ColumnMetadata cm : vo.getDeclaredColumns()) {
       this.columns.add(cm);
@@ -70,9 +77,8 @@ public class SelectAbstractVO {
 
     String className = this.name + ".java";
 
-    File dir = this.layout.getDaoPrimitivePackageDir(this.classPackage);
+    File dir = this.layout.getVOPackageDir(this.classPackage);
     File f = new File(dir, className);
-
     this.w = null;
 
     try {
@@ -125,6 +131,9 @@ public class SelectAbstractVO {
 
     ImportsRenderer imports = new ImportsRenderer();
     imports.add("java.io.Serializable");
+    if (!this.collectionMembers.isEmpty()) {
+      imports.add("java.util.List");
+    }
     imports.newLine();
 
     for (VOMember a : this.associationMembers) {
@@ -141,7 +150,7 @@ public class SelectAbstractVO {
 
     // Signature
 
-    println("public class " + this.getName() + " implements Serializable {");
+    println("public abstract class " + this.getName() + " implements Serializable {");
     println();
 
     // Serial Version UID
@@ -152,34 +161,36 @@ public class SelectAbstractVO {
   }
 
   private void writeProperties() throws IOException {
-    println("  // Plain properties (from expressions)");
-    println();
 
-    for (ColumnMetadata cm : this.columns) {
-      String javaType = cm.getType().getJavaClassName();
-      println("  protected " + javaType + " " + cm.getIdentifier().getJavaMemberIdentifier() + " = null;"
-          + (cm.getType().isLOB() ? " // it's a LOB type" : ""));
+    if (!this.columns.isEmpty()) {
+      println("  // Declared properties");
+      println();
+      for (ColumnMetadata cm : this.columns) {
+        String javaType = cm.getType().getJavaClassName();
+        println("  protected " + javaType + " " + cm.getIdentifier().getJavaMemberIdentifier() + " = null;"
+            + (cm.getType().isLOB() ? " // it's a LOB type" : ""));
+      }
+      println();
     }
 
     if (!this.associationMembers.isEmpty()) {
-      println();
       println("  // Association properties");
       println();
-    }
-    for (VOMember a : this.associationMembers) {
-      println("  protected " + a.getName() + " " + a.getProperty() + " = null;");
+      for (VOMember a : this.associationMembers) {
+        println("  protected " + a.getName() + " " + a.getProperty() + " = null;");
+      }
+      println();
     }
 
     if (!this.collectionMembers.isEmpty()) {
-      println();
       println("  // Collection properties");
       println();
-    }
-    for (VOMember c : this.collectionMembers) {
-      println("  protected " + c.getName() + " " + c.getProperty() + " = null;");
+      for (VOMember c : this.collectionMembers) {
+        println("  protected List<" + c.getName() + "> " + c.getProperty() + " = null;");
+      }
+      println();
     }
 
-    println();
   }
 
   private void writeGettersAndSetters() throws IOException, UnresolvableDataTypeException {
@@ -188,26 +199,55 @@ public class SelectAbstractVO {
 
     for (ColumnMetadata cm : this.columns) {
       String javaType = cm.getType().getJavaClassName();
-      String m = cm.getIdentifier().getJavaMemberIdentifier();
+      String property = cm.getIdentifier().getJavaMemberIdentifier();
 
       println("  public final " + javaType + " " + cm.getIdentifier().getGetter() + "() {");
-      println("    return this." + m + ";");
+      println("    return this." + property + ";");
       println("  }");
       println();
 
       String setter = cm.getIdentifier().getSetter();
-      writeSetter(cm, javaType, m, setter);
+      writeSetter(property, javaType, setter, true);
+    }
 
+    for (VOMember a : this.associationMembers) {
+      String javaType = a.getFullClassName();
+      String property = a.getProperty();
+      ColumnIdentifier ci = new ColumnIdentifier(property, a.getFullClassName());
+
+      println("  public final " + javaType + " " + ci.getGetter() + "() {");
+      println("    return this." + property + ";");
+      println("  }");
+      println();
+
+      String setter = ci.getSetter();
+      writeSetter(property, javaType, setter, false);
+    }
+
+    for (VOMember c : this.collectionMembers) {
+      String javaType = c.getFullClassName();
+      String property = c.getProperty();
+      ColumnIdentifier ci = new ColumnIdentifier(property, c.getFullClassName());
+
+      println("  public final List<" + javaType + "> " + ci.getGetter() + "() {");
+      println("    return this." + property + ";");
+      println("  }");
+      println();
+
+      String setter = ci.getSetter();
+      writeSetter(property, "List<" + javaType + ">", setter, false);
     }
 
   }
 
-  private void writeSetter(final ColumnMetadata cm, final String javaType, final String m, final String setter)
-      throws IOException {
-    println("  public final void " + setter + "(final " + javaType + " " + m + ") {");
-    println("    this." + m + " = " + m + ";");
-    String name = cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
-    println("    this.propertiesChangeLog." + name + " = true;");
+  private void writeSetter(final String property, final String javaType, final String setter,
+      final boolean recordChanges) throws IOException {
+    println("  public final void " + setter + "(final " + javaType + " " + property + ") {");
+    println("    this." + property + " = " + property + ";");
+    String name = property + "WasSet";
+    if (recordChanges) {
+      println("    this.propertiesChangeLog." + name + " = true;");
+    }
     println("  }");
     println();
   }
@@ -222,34 +262,38 @@ public class SelectAbstractVO {
     if (this.myBatisTag.getProperties().isMultilineTostring()) {
       println("    sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + \"\\n\");");
 
-      String prefix = "";
-      String elemPrefix = "    sb.append(";
-      String elemSuffix = "";
-      String separator = " + \"\\n\");\n";
-      String lastSeparator = separator;
-      String suffix = ");";
-      ListWriter lw = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
-      for (ColumnMetadata cm : this.columns) {
-        String prop = cm.getIdentifier().getJavaMemberIdentifier();
-        lw.add("\"- " + prop + "=\" + this." + prop);
+      if (!this.columns.isEmpty()) {
+        String prefix = "";
+        String elemPrefix = "    sb.append(";
+        String elemSuffix = "";
+        String separator = " + \"\\n\");\n";
+        String lastSeparator = separator;
+        String suffix = ");";
+        ListWriter lw = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
+        for (ColumnMetadata cm : this.columns) {
+          String prop = cm.getIdentifier().getJavaMemberIdentifier();
+          lw.add("\"- " + prop + "=\" + this." + prop);
+        }
+        println(lw.toString());
       }
-      println(lw.toString());
 
     } else {
       println("    sb.append(\"[\");");
 
-      String prefix = "";
-      String elemPrefix = "    sb.append(";
-      String elemSuffix = "";
-      String separator = " + \", \");\n";
-      String lastSeparator = separator;
-      String suffix = ");";
-      ListWriter lw = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
-      for (ColumnMetadata cm : this.columns) {
-        String prop = cm.getIdentifier().getJavaMemberIdentifier();
-        lw.add("\"" + prop + "=\" + this." + prop);
+      if (!this.columns.isEmpty()) {
+        String prefix = "";
+        String elemPrefix = "    sb.append(";
+        String elemSuffix = "";
+        String separator = " + \", \");\n";
+        String lastSeparator = separator;
+        String suffix = ");";
+        ListWriter lw = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
+        for (ColumnMetadata cm : this.columns) {
+          String prop = cm.getIdentifier().getJavaMemberIdentifier();
+          lw.add("\"" + prop + "=\" + this." + prop);
+        }
+        println(lw.toString());
       }
-      println(lw.toString());
 
       println("    sb.append(\"]\");");
     }

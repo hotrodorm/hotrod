@@ -34,4 +34,12 @@ public class StructuredColumnsMetadata {
     return vos;
   }
 
+  public List<ColumnMetadata> getExpressionsColumns() {
+    List<ColumnMetadata> columns = new ArrayList<ColumnMetadata>();
+    for (ExpressionsMetadata exp : this.expressions) {
+      columns.addAll(exp.getColumns());
+    }
+    return columns;
+  }
+
 }

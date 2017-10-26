@@ -82,7 +82,8 @@ public class VOMetadata {
     // package & class name
 
     if (tag.getExtendedVO() != null) { // extended VO from a table or view
-      this.classPackage = getClassPackage(layout, fragmentConfig);
+      this.classPackage = getVOClassPackage(layout, fragmentConfig);
+      log.info("}}}} 1 this.classPackage=" + this.classPackage);
       this.name = tag.getExtendedVO();
       this.superClass = tag.getGenerator().getVORegistry()
           .findVOClass(this.tableMetadata != null ? this.tableMetadata : this.viewMetadata);
@@ -94,10 +95,12 @@ public class VOMetadata {
     } else { // it's a table or view VO
       this.superClass = null;
       if (this.tableMetadata != null) {
-        this.classPackage = getClassPackage(layout, this.tableMetadata.getFragmentConfig());
+        this.classPackage = getVOClassPackage(layout, this.tableMetadata.getFragmentConfig());
+        log.info("}}}} 2 this.classPackage=" + this.classPackage);
         this.name = daosTag.generateVOName(this.tableMetadata.getIdentifier());
       } else {
-        this.classPackage = getClassPackage(layout, this.viewMetadata.getFragmentConfig());
+        this.classPackage = getVOClassPackage(layout, this.viewMetadata.getFragmentConfig());
+        log.info("}}}} 3 this.classPackage=" + this.classPackage);
         this.name = daosTag.generateVOName(this.viewMetadata.getIdentifier());
       }
     }
@@ -156,10 +159,10 @@ public class VOMetadata {
 
   // Utilities
 
-  private ClassPackage getClassPackage(final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig) {
+  private ClassPackage getVOClassPackage(final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig) {
     ClassPackage fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
         ? fragmentConfig.getFragmentPackage() : null;
-    return layout.getDAOPrimitivePackage(fragmentPackage);
+    return layout.getDAOPackage(fragmentPackage);
   }
 
   // Getters
@@ -240,6 +243,10 @@ public class VOMetadata {
 
     public String getName() {
       return name;
+    }
+
+    public String getFullClassName() {
+      return this.classPackage.getFullClassName(this.name);
     }
 
     public String renderFullClassName() {

@@ -319,7 +319,8 @@ public class ObjectDAO {
     imports.comment("[ now, for the selects... ]");
 
     for (SelectMethodMetadata sm : this.metadata.getSelectsMetadata()) {
-      SelectMethodReturnType rt = sm.getReturnType(this.classPackage);
+      ClassPackage voPackage = this.myBatisTag.getDaos().getDaoPackage(this.fragmentPackage);
+      SelectMethodReturnType rt = sm.getReturnType(voPackage);
       imports.add(rt.getVOFullClassName());
     }
 

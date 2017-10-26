@@ -208,6 +208,10 @@ public class DaosTag extends AbstractConfigurationTag {
     }
   }
 
+  public String generateAbstractVOName(final String voName) {
+    return "Abstract" + voName;
+  }
+
   private static final String DAO_SUFFIX = "DAO";
 
   public String generateVOName(final Identifier identifier) {
@@ -270,10 +274,32 @@ public class DaosTag extends AbstractConfigurationTag {
   }
 
   public File getDaosPackageDir(final ClassPackage fragmentPackage) {
+    log.info("this.baseDir=" + this.baseDir.getPath());
+    log.info("fragmentPackage=" + fragmentPackage);
     ClassPackage p = getDaoPackage(fragmentPackage);
     File dir = p.getPackageDir(this.baseDir);
     dir.mkdirs();
+    log.info("*** dir=" + dir.getPath());
     return dir;
+  }
+
+  public File getVOPackageDir(final ClassPackage p) {
+    File dir = p.getPackageDir(this.baseDir);
+    dir.mkdirs();
+    log.info("*** dir=" + dir.getPath());
+    return dir;
+  }
+
+  public File getPrimitivesVOPackageDir(final ClassPackage p) {
+    ClassPackage full = getPrimitivesVOPackage(p);
+    File dir = full.getPackageDir(this.baseDir);
+    dir.mkdirs();
+    log.info("*** dir=" + dir.getPath());
+    return dir;
+  }
+
+  public ClassPackage getPrimitivesVOPackage(final ClassPackage p) {
+    return p.append(this.primitivesTailPackage);
   }
 
   /**
