@@ -67,13 +67,17 @@ public class Mapper {
   private ObjectVO vo;
   private ObjectDAO dao;
 
+  private EntityDAORegistry entityDAORegistry;
+
   private Writer w;
 
   public Mapper(final AbstractDAOTag compositeTag, final DataSetMetadata metadata, final DataSetLayout layout,
-      final MyBatisGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo) {
+      final MyBatisGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo,
+      final EntityDAORegistry daoRegistry) {
     log.debug("init");
     this.compositeTag = compositeTag;
     this.selectTag = null;
+    this.entityDAORegistry = daoRegistry;
     initialize(metadata, layout, generator, type, adapter, vo);
   }
 
@@ -82,6 +86,7 @@ public class Mapper {
     log.debug("init");
     this.compositeTag = null;
     this.selectTag = selectTag;
+    this.entityDAORegistry = null;
     initialize(metadata, layout, generator, type, adapter, vo);
   }
 
@@ -1100,10 +1105,18 @@ public class Mapper {
       if (soloVO) {
         VOMetadata vo = scm.getVOs().get(0);
         log.info("vo.getClass()=" + vo.getName());
+
+        log.info("DAO Registry: " + this.entityDAORegistry);
+
+        String entityFullClassName = vo.getSuperClass() != null ? vo.getSuperClass().getFullClassName()
+            : vo.getFullClassName();
+
+        ObjectDAO dao = this.entityDAORegistry.findEntityDAO(entityFullClassName);
+        log.info("vo=" + vo.getName() + " entityFullClassName=" + entityFullClassName + " dao=" + dao);
         renderResultMapLevel(vo.getInheritedColumns(), vo.getDeclaredColumns(), vo.getExpressions(),
-            vo.getAssociations(), vo.getCollections(), 0);
+            vo.getAssociations(), vo.getCollections(), dao, 0);
       } else {
-        renderResultMapLevel(null, null, scm.getExpressions(), scm.getVOs(), null, 0);
+        renderResultMapLevel(null, null, scm.getExpressions(), scm.getVOs(), null, null, 0);
       }
 
     }
@@ -1122,19 +1135,20 @@ public class Mapper {
 
   private void renderResultMapLevel(final List<StructuredColumnMetadata> inheritedColumns,
       final List<StructuredColumnMetadata> declaredColumns, final List<ExpressionsMetadata> expressions,
-      final List<VOMetadata> associations, final List<VOMetadata> collections, final int level) throws IOException {
+      final List<VOMetadata> associations, final List<VOMetadata> collections, final ObjectDAO dao, final int level)
+      throws IOException {
 
     // Main VO columns
 
     if (inheritedColumns != null) {
       for (StructuredColumnMetadata m : inheritedColumns) {
         if (m.isId()) {
-          renderSelectResultMapColumn(m, "id", level);
+          renderSelectResultMapColumn(m, "id", dao, level);
         }
       }
       for (StructuredColumnMetadata m : inheritedColumns) {
         if (!m.isId()) {
-          renderSelectResultMapColumn(m, "result", level);
+          renderSelectResultMapColumn(m, "result", dao, level);
         }
       }
     }
@@ -1142,7 +1156,7 @@ public class Mapper {
     // Expression columns
 
     for (StructuredColumnMetadata m : declaredColumns) {
-      renderSelectResultMapColumn(m, "result", level);
+      renderSelectResultMapColumn(m, "result", dao, level);
     }
 
     // Associations
@@ -1151,8 +1165,12 @@ public class Mapper {
 
     for (VOMetadata a : associations) {
       println(indent + "<association property=\"" + a.getProperty() + "\">");
+      String entityFullClassName = a.getSuperClass() != null ? a.getSuperClass().getFullClassName()
+          : a.getFullClassName();
+      ObjectDAO aDAO = entityDAORegistry.findEntityDAO(entityFullClassName);
+      log.info("(a) vo=" + a.getName() + " entityFullClassName=" + entityFullClassName);
       renderResultMapLevel(a.getInheritedColumns(), a.getDeclaredColumns(), a.getExpressions(), a.getAssociations(),
-          a.getCollections(), level + 1);
+          a.getCollections(), aDAO, level + 1);
       println(indent + "</association>");
     }
 
@@ -1161,25 +1179,29 @@ public class Mapper {
     if (collections != null) {
       for (VOMetadata c : collections) {
         println(indent + "<collection property=\"" + c.getProperty() + "\">");
+        String entityFullClassName = c.getSuperClass() != null ? c.getSuperClass().getFullClassName()
+            : c.getFullClassName();
+        ObjectDAO cDAO = entityDAORegistry.findEntityDAO(entityFullClassName);
+        log.info("(c) vo=" + c.getName() + " entityFullClassName=" + entityFullClassName);
         renderResultMapLevel(c.getInheritedColumns(), c.getDeclaredColumns(), c.getExpressions(), c.getAssociations(),
-            c.getCollections(), level + 1);
+            c.getCollections(), cDAO, level + 1);
         println(indent + "</collection>");
       }
     }
 
   }
 
-  private void renderSelectResultMapColumn(final StructuredColumnMetadata cm, final String tagName, final int level)
-      throws IOException {
+  private void renderSelectResultMapColumn(final StructuredColumnMetadata cm, final String tagName, final ObjectDAO dao,
+      final int level) throws IOException {
 
     String typeHandler = "";
     if (cm.getConverter() != null) {
-      typeHandler = "typeHandler=\"" + this.dao.getTypeHandlerFullClassName(cm) + "\" ";
+      typeHandler = "typeHandler=\"" + dao.getTypeHandlerFullClassName(cm) + "\" ";
     } else {
       EnumDataSetMetadata ds = cm.getEnumMetadata();
       EnumClass ec = this.generator.getEnum(ds);
       if (ec != null) {
-        typeHandler = "typeHandler=\"" + this.dao.getTypeHandlerFullClassName(cm) + "\" ";
+        typeHandler = "typeHandler=\"" + dao.getTypeHandlerFullClassName(cm) + "\" ";
       }
     }
 
@@ -1345,11 +1367,11 @@ public class Mapper {
   }
 
   public String getMapperIdSelectMethod(final SelectMethodMetadata sm) {
-    return sm.getMethod();
+    return "select_" + sm.getMethod();
   }
 
   public String getFullMapperIdSelectMethod(final SelectMethodMetadata sm) {
-    return this.namespace + ".select_" + getMapperIdSelectMethod(sm);
+    return this.namespace + "." + this.getMapperIdSelectMethod(sm);
   }
 
   private String getResultMapName(final SelectMethodMetadata sm) {

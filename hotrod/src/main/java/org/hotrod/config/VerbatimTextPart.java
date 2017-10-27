@@ -52,8 +52,8 @@ public class VerbatimTextPart extends EnhancedSQLPart {
   }
 
   @Override
-  public String renderXML(final ParameterRenderer parameterRenderer) {
-    return SUtils.escapeXmlBody(this.text);
+  public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
+    formatter.add(SUtils.escapeXmlBody(this.text));
   }
 
   @Override

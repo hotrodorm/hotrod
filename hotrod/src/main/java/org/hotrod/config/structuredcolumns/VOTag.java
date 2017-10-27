@@ -242,12 +242,17 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     // alias
 
-    if (this.alias != null) {
-      if (SUtils.isEmpty(this.alias)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "When specified, the 'alias' attribute should not be empty. "
-                + "It should specify the corresponding table or view SQL alias.");
-      }
+    if (this.alias == null) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "The 'alias' attribute must be specified. "
+              + "It indicates the table or view alias as it appears in the SQL FROM statement "
+              + "(for example, the 'p' when typing the column 'p.city_name').");
+    }
+    if (SUtils.isEmpty(this.alias)) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "The 'alias' attribute must be non-empty. "
+              + "It indicates the table or view alias as it appears in the SQL FROM statement "
+              + "(for example, the 'p' when typing the column 'p.city_name').");
     }
 
     // extended-vo
@@ -272,22 +277,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       }
     }
 
-    // body
-
-    if (this.body.isEmpty()) {
-      if (this.alias == null) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "When a <" + this.getTagName()
-            + "> tag does not include a list of columns in its body, "
-            + "it must specify the 'alias' attribute that indicates the SQL alias for the corresponding table or view. ");
-      }
-    } else {
-      if (this.alias != null) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "When a <" + this.getTagName()
-                + "> tag includes a list of columns in its body, it cannot specify an 'alias' attribute. "
-                + "Remove either the body of the <" + this.getTagName() + "> tag or the 'alias' attribute.");
-      }
-    }
+    // body - nothing to validate
 
     // expressions
 
@@ -366,7 +356,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       this.aliasPrefix = columnsPrefixGenerator.next();
     } else { // specific columns
       this.cmr = new ColumnsMetadataRetriever(selectTag, this.generator.getAdapter(), this.generator.getJdbcDatabase(),
-          this.generator.getLoc(), selectGenerationTag, this, columnsPrefixGenerator);
+          this.generator.getLoc(), selectGenerationTag, this, this.alias, columnsPrefixGenerator);
       this.cmr.prepareRetrieval(conn1);
     }
 
@@ -429,7 +419,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   public void gatherMetadataPhase2(final Connection conn2) throws InvalidSQLException, UncontrolledException,
       UnresolvableDataTypeException, ControlledException, InvalidConfigurationFileException {
 
-    boolean requiresIds = this.incorporateCollections();
+    boolean requiresIds = this.incorporatesCollections();
 
     if (this.useAllColumns) { // 1. All columns
 
@@ -439,7 +429,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
           if (!this.idNames.isEmpty()) {
             try {
-              this.inheritedColumns = StructuredColumnMetadata.promote(this.tableMetadata.getColumns(),
+              this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.tableMetadata.getColumns(),
                   this.aliasPrefix, this.idNames);
             } catch (IdColumnNotFoundException e) {
               throw new InvalidConfigurationFileException(super.getSourceLocation(),
@@ -448,7 +438,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
                       + "' as specified on the 'id' attribute.");
             }
           } else {
-            this.inheritedColumns = StructuredColumnMetadata.promote(this.tableMetadata.getColumns(), this.aliasPrefix);
+            this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.tableMetadata.getColumns(),
+                this.aliasPrefix);
           }
 
         } else { // 1.a.2 Table without a PK
@@ -461,8 +452,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
                 + "the 'id' attribute must specify the row-identifying columns for the table (i.e. an acting unique key for the table).");
           }
           try {
-            this.inheritedColumns = StructuredColumnMetadata.promote(this.tableMetadata.getColumns(), this.aliasPrefix,
-                this.idNames);
+            this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.tableMetadata.getColumns(),
+                this.aliasPrefix, this.idNames);
           } catch (IdColumnNotFoundException e) {
             throw new InvalidConfigurationFileException(super.getSourceLocation(),
                 "Could not find column '" + e.getIdName() + "' on the table '"
@@ -480,8 +471,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
               + "the 'id' attribute must specify the row-identifying columns for the view (i.e. an acting unique key for the view).");
         }
         try {
-          this.inheritedColumns = StructuredColumnMetadata.promote(this.viewMetadata.getColumns(), this.aliasPrefix,
-              this.idNames);
+          this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.viewMetadata.getColumns(),
+              this.aliasPrefix, this.idNames);
         } catch (IdColumnNotFoundException e) {
           throw new InvalidConfigurationFileException(super.getSourceLocation(),
               "Could not find column '" + e.getIdName() + "' on the view '"
@@ -591,7 +582,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       if (isId) {
         validateIdJDBCType(baseColumn);
       }
-      StructuredColumnMetadata sc = new StructuredColumnMetadata(baseColumn, r.getColumnAlias(), isId);
+      StructuredColumnMetadata sc = new StructuredColumnMetadata(baseColumn, this.alias, r.getColumnAlias(), isId);
       metadata.add(sc);
     }
     return metadata;
@@ -632,12 +623,12 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     return false;
   }
 
-  public boolean incorporateCollections() {
+  public boolean incorporatesCollections() {
     if (!this.collections.isEmpty()) {
       return true;
     }
     for (AssociationTag a : this.associations) {
-      if (a.incorporateCollections()) {
+      if (a.incorporatesCollections()) {
         return true;
       }
     }
@@ -735,6 +726,25 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   public VOMetadata getMetadata(final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig,
       final DaosTag daosTag) throws InvalidConfigurationFileException {
     return new VOMetadata(this, layout, fragmentConfig, daosTag);
+  }
+
+  // Rendering
+
+  public List<String> gelAliasedSQLColumns() {
+    List<String> columns = new ArrayList<String>();
+    for (StructuredColumnMetadata m : this.inheritedColumns) {
+      columns.add(m.renderAliasedSQLColumn());
+    }
+    for (StructuredColumnMetadata m : this.declaredColumns) { // expressions
+      columns.add(m.renderAliasedSQLColumn());
+    }
+    for (AssociationTag a : this.associations) {
+      columns.addAll(a.gelAliasedSQLColumns());
+    }
+    for (CollectionTag a : this.collections) {
+      columns.addAll(a.gelAliasedSQLColumns());
+    }
+    return columns;
   }
 
   // Angle rendering

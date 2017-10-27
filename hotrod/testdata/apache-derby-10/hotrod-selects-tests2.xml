@@ -4,6 +4,7 @@
 <hotrod-fragment>
 
   <table name="person">
+  
     <column name="type" converter="person_type" />
 
     <!-- Case 1 - Flat Join -->
@@ -160,9 +161,9 @@
 
       select
       <columns>
-        <vo table="person" extended-vo="ExtendedPersonVO">
+        <vo table="person" extended-vo="ExtendedPersonVO" alias="p">
           p.*
-          <collection table="account" property="accounts" extended-vo="AccountWithTransactionsVO">
+          <collection table="account" property="accounts" extended-vo="AccountWithTransactionsVO" alias="a">
             a.*
             <collection table="transaction" property="transactions" alias="t" />
           </collection>

@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.ColumnTag;
+import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.ParameterTag;
@@ -416,45 +417,14 @@ public class SelectMethodMetadata implements DataSetMetadata {
     return this.tag.renderSQLSentence(parameterRenderer);
   }
 
-  // TODO: implement this method correctly.
+  // TODO: implement this method correctly; I think it's good now.
 
   @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
-    if (!this.isStructured()) {
-      log.info("non-structured");
-      ListWriter w = new ListWriter("    ", "", ",\n");
-      for (ColumnMetadata cm : this.nonStructuredColumns) {
-        w.add(cm.renderSQLIdentifier());
-      }
-      return w.toString();
-    } else {
-      log.info("structured");
-      ListWriter w = new ListWriter("    ", "", ",\n");
-      for (VOMetadata vo : this.structuredColumns.getVOs()) {
-        renderXMLVO(vo, w);
-      }
-      for (ExpressionsMetadata exp : this.structuredColumns.getExpressions()) {
-        for (StructuredColumnMetadata m : exp.getColumns()) {
-          w.add(m.renderSQLIdentifier() + " as " + m.getColumnAlias());
-        }
-      }
-      return w.toString();
-    }
-  }
-
-  private void renderXMLVO(final VOMetadata vo, final ListWriter w) {
-    for (VOMetadata a : vo.getAssociations()) {
-      renderXMLVO(a, w);
-    }
-    for (VOMetadata c : vo.getCollections()) {
-      renderXMLVO(c, w);
-    }
-    for (ExpressionsMetadata exp : this.structuredColumns.getExpressions()) {
-      for (StructuredColumnMetadata m : exp.getColumns()) {
-        w.add(m.renderSQLIdentifier() + " as " + m.getColumnAlias());
-      }
-    }
-
+    log.info("renderXML()");
+    SQLFormatter formatter = new SQLFormatter();
+    this.tag.renderXML(formatter, parameterRenderer);
+    return formatter.toString();
   }
 
   @Override

@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import hotrod.test.generation.AccountVO;
 import hotrod.test.generation.primitives.AccountDAO;
+import selects.structuredvos.StructuredTests;
 import tests.ac.EnhancedBranchVO;
 import tests.ac.EnhancedLeafVO;
 import tests.ac.ExtendedBranchVO;
@@ -23,7 +24,11 @@ public class SelectTests {
     // selectAssociation();
     // selectAssociationMixed();
     // selectCollection();
-    selectCollectionMixed();
+    // selectCollectionMixed();
+
+    StructuredTests st = new StructuredTests();
+    st.run();
+
   }
 
   private static void showAccounts() throws SQLException {

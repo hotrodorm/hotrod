@@ -157,6 +157,8 @@ public class VORegistry {
       this.metadata = metadata;
       this.classPackage = classPackage;
       this.name = name;
+      log.info("*** ADDING VOCLASS: " + this.classPackage.getFullClassName(this.name));
+      // throw new IllegalArgumentException("");
       this.columnsByName = new LinkedHashMap<String, ColumnMetadata>();
       for (ColumnMetadata c : columns) {
         this.columnsByName.put(c.getColumnName(), c);
@@ -232,6 +234,10 @@ public class VORegistry {
 
     public List<VOMember> getAssociations() {
       return associations;
+    }
+
+    public String getFullClassName() {
+      return this.classPackage.getFullClassName(this.name);
     }
 
   }

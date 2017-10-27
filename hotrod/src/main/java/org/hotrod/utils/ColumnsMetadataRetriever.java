@@ -38,6 +38,7 @@ public class ColumnsMetadataRetriever {
   private DatabaseLocation loc;
   private SelectGenerationTag selectGenerationTag;
   private ColumnsProvider columnsProvider;
+  private String entityPrefix;
   private String aliasPrefix;
 
   private String tempViewName;
@@ -46,13 +47,14 @@ public class ColumnsMetadataRetriever {
 
   public ColumnsMetadataRetriever(final SelectMethodTag selectTag, final DatabaseAdapter adapter, final JdbcDatabase db,
       final DatabaseLocation loc, final SelectGenerationTag selectGenerationTag, final ColumnsProvider columnsProvider,
-      final ColumnsPrefixGenerator columnsPrefixGenerator) {
+      final String entityPrefix, final ColumnsPrefixGenerator columnsPrefixGenerator) {
     this.selectTag = selectTag;
     this.adapter = adapter;
     this.db = db;
     this.loc = loc;
     this.selectGenerationTag = selectGenerationTag;
     this.columnsProvider = columnsProvider;
+    this.entityPrefix = entityPrefix;
     this.aliasPrefix = columnsPrefixGenerator.next();
   }
 
@@ -147,7 +149,7 @@ public class ColumnsMetadataRetriever {
           ColumnMetadata cm = new ColumnMetadata(null, c, this.selectTag.getMethod(), this.adapter, null, false, false);
 
           String alias = this.aliasPrefix + cm.getColumnName();
-          StructuredColumnMetadata scm = new StructuredColumnMetadata(cm, alias, false);
+          StructuredColumnMetadata scm = new StructuredColumnMetadata(cm, this.entityPrefix, alias, false);
           columns.add(scm);
         }
 

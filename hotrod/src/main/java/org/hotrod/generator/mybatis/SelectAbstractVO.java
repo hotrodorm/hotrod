@@ -41,6 +41,9 @@ public class SelectAbstractVO {
   private List<VOMember> associationMembers;
   private List<VOMember> collectionMembers;
 
+  private String superClassName;
+  private ClassPackage superClassPackage;
+
   private Writer w;
 
   // Constructors
@@ -56,6 +59,9 @@ public class SelectAbstractVO {
     this.columns = new ArrayList<ColumnMetadata>(soloVO.getColumnsByName().values());
     this.associationMembers = soloVO.getAssociations();
     this.collectionMembers = new ArrayList<VOMember>();
+
+    this.superClassPackage = null;
+    this.superClassName = null;
   }
 
   public SelectAbstractVO(final VOMetadata vo, final DataSetLayout layout, final MyBatisTag myBatisTag) {
@@ -69,6 +75,9 @@ public class SelectAbstractVO {
     }
     this.associationMembers = vo.getAssociationMembers();
     this.collectionMembers = vo.getCollectionMembers();
+
+    this.superClassPackage = vo.getSuperClass().getClassPackage();
+    this.superClassName = vo.getSuperClass().getName();
   }
 
   // Getters
@@ -130,7 +139,11 @@ public class SelectAbstractVO {
     // Imports
 
     ImportsRenderer imports = new ImportsRenderer();
-    imports.add("java.io.Serializable");
+    if (this.superClassName == null) {
+      imports.add("java.io.Serializable");
+    } else {
+      imports.add(this.superClassPackage.getFullClassName(this.superClassName));
+    }
     if (!this.collectionMembers.isEmpty()) {
       imports.add("java.util.List");
     }
@@ -150,7 +163,9 @@ public class SelectAbstractVO {
 
     // Signature
 
-    println("public abstract class " + this.getName() + " implements Serializable {");
+    String hierarchy = this.superClassName == null ? " implements Serializable" : " extends " + this.superClassName;
+
+    println("public abstract class " + this.getName() + hierarchy + " {");
     println();
 
     // Serial Version UID

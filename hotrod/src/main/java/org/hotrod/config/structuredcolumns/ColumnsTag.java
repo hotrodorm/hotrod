@@ -26,10 +26,13 @@ import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.ExpressionsMetadata;
+import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
+import org.hotrod.runtime.util.ListWriter;
+import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 
@@ -116,12 +119,6 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
       exp.validateAgainstDatabase(generator);
     }
 
-    // expressions
-
-    for (ExpressionsTag exp : this.expressions) {
-      exp.validateAgainstDatabase(generator);
-    }
-
   }
 
   @Override
@@ -135,10 +132,22 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   }
 
   @Override
-  public String renderXML(final ParameterRenderer parameterRenderer) {
+  public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
     log.info("structured");
-    // TODO
-    return null;
+
+    List<String> columns = new ArrayList<String>();
+    for (VOTag vo : this.vos) {
+      columns.addAll(vo.gelAliasedSQLColumns());
+    }
+
+    for (ExpressionsTag exp : this.expressions) {
+      for (StructuredColumnMetadata m : exp.getColumnsMetadata()) {
+        columns.add(m.renderAliasedSQLColumn());
+      }
+    }
+
+    String indent = SUtils.getFiller(' ', formatter.getCurrentIndent() + 2);
+    formatter.add(ListWriter.render(columns, indent, "", ",\n"));
   }
 
   @Override

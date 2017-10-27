@@ -108,14 +108,14 @@ public class ComplementTag extends EnhancedSQLPart {
   }
 
   @Override
-  public String renderXML(final ParameterRenderer parameterRenderer) {
+  public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
     log.info("[complement]");
     StringBuilder sb = new StringBuilder();
     for (DynamicSQLPart p : this.parts) {
       log.info("DynamicSQLPart: " + p.getClass().getName());
       sb.append(p.renderXML(parameterRenderer));
     }
-    return sb.toString();
+    formatter.add(sb.toString());
   }
 
   @Override

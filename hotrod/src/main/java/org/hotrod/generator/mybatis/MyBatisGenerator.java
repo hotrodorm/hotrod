@@ -44,6 +44,8 @@ public class MyBatisGenerator extends HotRodGenerator {
   private LinkedHashMap<EnumDataSetMetadata, EnumClass> enumClasses = new LinkedHashMap<EnumDataSetMetadata, EnumClass>();
   private MyBatisConfiguration myBatisConfig;
 
+  private EntityDAORegistry entityDAORegistry = new EntityDAORegistry();
+
   private List<CustomDAO> customDAOs = new ArrayList<CustomDAO>();
   private List<CustomDAOMapper> customMappers = new ArrayList<CustomDAOMapper>();
 
@@ -153,8 +155,9 @@ public class MyBatisGenerator extends HotRodGenerator {
 
       abstractVO = new ObjectAbstractVO(metadata, layout, this, DAOType.TABLE, myBatisTag);
       vo = new ObjectVO(metadata, layout, this, abstractVO, myBatisTag);
-      mapper = new Mapper(ttag, metadata, layout, this, type, this.adapter, vo);
+      mapper = new Mapper(ttag, metadata, layout, this, type, this.adapter, vo, this.entityDAORegistry);
       dao = new ObjectDAO(ttag, metadata, layout, this, type, myBatisTag, vo, mapper);
+      this.entityDAORegistry.add(vo.getFullClassName(), dao);
       mapper.setDao(dao);
 
       break;
@@ -169,8 +172,9 @@ public class MyBatisGenerator extends HotRodGenerator {
 
       abstractVO = new ObjectAbstractVO(metadata, layout, this, DAOType.VIEW, myBatisTag);
       vo = new ObjectVO(metadata, layout, this, abstractVO, myBatisTag);
-      mapper = new Mapper(vtag, metadata, layout, this, type, this.adapter, vo);
+      mapper = new Mapper(vtag, metadata, layout, this, type, this.adapter, vo, this.entityDAORegistry);
       dao = new ObjectDAO(vtag, metadata, layout, this, type, myBatisTag, vo, mapper);
+      this.entityDAORegistry.add(vo.getFullClassName(), dao);
       mapper.setDao(dao);
 
       break;

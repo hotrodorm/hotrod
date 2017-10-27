@@ -38,6 +38,8 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
 
   // Properties
 
+  private List<Expression> expressions;
+
   protected ColumnsMetadataRetriever columnsRetriever;
   private List<StructuredColumnMetadata> columnsMetadata;
 
@@ -53,7 +55,7 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
 
   private List<ColumnTag> columns = null;
 
-  private String expressions;
+  private String literalContent;
 
   // Constructor
 
@@ -65,6 +67,7 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
 
   // Behavior
 
+  // final DatabaseAdapter adapter
   @Override
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult)
@@ -74,17 +77,28 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
 
     // Sort: expressions
 
-    this.expressions = "";
+    this.expressions = new ArrayList<Expression>();
+    this.literalContent = "";
     this.columns = new ArrayList<ColumnTag>();
     for (Object obj : this.content) {
       try {
         String s = (String) obj; // content part
         log.debug("*** s=" + s);
         if (!SUtils.isEmpty(s)) {
-          if (!this.expressions.isEmpty()) {
-            this.expressions = this.expressions + " ";
+          if (!this.literalContent.isEmpty()) {
+            this.literalContent = this.literalContent + " ";
           }
-          this.expressions = this.expressions + s;
+          this.literalContent = this.literalContent + s;
+          try {
+            List<Expression> es = Expression.parse(s);
+            this.expressions.addAll(es);
+          } catch (WildCardNotSupportedException e) {
+            throw new InvalidConfigurationFileException(super.getSourceLocation(),
+                "The wildcard symbol '*' is not supported in the body of an <" + super.getTagName() + "> tag. .");
+          } catch (ColumnAliasNotFoundException e) {
+            throw new InvalidConfigurationFileException(super.getSourceLocation(),
+                "Expression without an alias. The expression '" + e.getExpression() + "' must declare a name alias.");
+          }
         }
       } catch (ClassCastException e1) {
         try {
@@ -99,7 +113,7 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
 
     // expressions in body
 
-    if (SUtils.isEmpty(this.expressions)) {
+    if (SUtils.isEmpty(this.literalContent)) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Invalid empty <" + super.getTagName() + "> tag. " + "When specified this tag must not be empty.");
     }
@@ -123,7 +137,8 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final Connection conn1) throws InvalidSQLException {
     this.columnsRetriever = new ColumnsMetadataRetriever(selectTag, this.generator.getAdapter(),
-        this.generator.getJdbcDatabase(), this.generator.getLoc(), selectGenerationTag, this, columnsPrefixGenerator);
+        this.generator.getJdbcDatabase(), this.generator.getLoc(), selectGenerationTag, this, null,
+        columnsPrefixGenerator);
     this.columnsRetriever.prepareRetrieval(conn1);
   }
 
@@ -165,6 +180,27 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
       }
     }
 
+    // apply new namespaced alias to the expressions
+
+    for (Expression e : this.expressions) {
+      StructuredColumnMetadata m = findColumn(e.getOriginalName());
+      if (m == null) {
+        throw new ControlledException(
+            "Invalid <" + super.getTagName() + "> tag. Could not find column '" + e.getOriginalName() + "'.");
+      }
+      e.setNewNamespacedAlias(m.getColumnAlias());
+      m.setFormula(e.getFormula());
+    }
+
+  }
+
+  private StructuredColumnMetadata findColumn(final String originalName) {
+    for (StructuredColumnMetadata m : this.columnsMetadata) {
+      if (this.generator.getAdapter().isColumnIdentifier(m.getColumnName(), originalName)) {
+        return m;
+      }
+    }
+    return null;
   }
 
   private StructuredColumnMetadata findExpression(final String configName, final List<StructuredColumnMetadata> exps) {
@@ -185,6 +221,19 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
     return null;
   }
 
+  // Rendering
+
+  // TODO
+
+  public List<String> gelAliasedSQLColumns() {
+    List<String> columns = new ArrayList<String>();
+    for (Expression e : this.expressions) {
+      log.info("=================== e.getFormula()=" + e.getFormula());
+      columns.add(e.getFormula() + " as " + e.getNewNamespacedAlias());
+    }
+    return columns;
+  }
+
   // Getters
 
   public ExpressionsMetadata getExpressionsMetadata() {
@@ -193,11 +242,108 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
 
   @Override
   public String renderColumns() {
-    return this.expressions;
+    return this.literalContent;
   }
 
   public List<StructuredColumnMetadata> getColumnsMetadata() {
     return columnsMetadata;
+  }
+
+  // Classes
+
+  private static class Expression {
+
+    private static final String AS = " as ";
+
+    private String formula;
+    private String originalName;
+    private String newNamespacedAlias;
+
+    public Expression(final String formula, final String originalName) {
+      this.formula = formula;
+      this.originalName = originalName;
+    }
+
+    public static List<Expression> parse(final String literal)
+        throws WildCardNotSupportedException, ColumnAliasNotFoundException {
+      List<Expression> exps = new ArrayList<Expression>();
+      if (literal != null) {
+        boolean inString = false;
+        int start = 0;
+        int i = start;
+        while (i < literal.length()) {
+          if (!inString && literal.charAt(i) == '*') {
+            throw new WildCardNotSupportedException();
+          }
+          if (literal.charAt(i) == '\'') {
+            inString = !inString;
+          }
+          if (!inString && literal.charAt(i) == ',') {
+            String one = literal.substring(start, i);
+            if (!SUtils.isEmpty(one)) {
+              Expression e = parseOne(one);
+              exps.add(e);
+            }
+            start = i + 1;
+            i = start;
+          } else {
+            i++;
+          }
+        }
+        String lastOne = literal.substring(start, i);
+        if (!SUtils.isEmpty(lastOne)) {
+          Expression e = parseOne(lastOne);
+          exps.add(e);
+        }
+      }
+      return exps;
+    }
+
+    private static Expression parseOne(final String one) throws ColumnAliasNotFoundException {
+      int idx = one.toLowerCase().lastIndexOf(AS);
+      if (idx == -1) {
+        throw new ColumnAliasNotFoundException(one);
+      } else {
+        return new Expression(one.substring(0, idx).trim(), one.substring(idx + AS.length()).trim());
+      }
+    }
+
+    public String getFormula() {
+      return formula;
+    }
+
+    public String getOriginalName() {
+      return originalName;
+    }
+
+    public String getNewNamespacedAlias() {
+      return newNamespacedAlias;
+    }
+
+    public void setNewNamespacedAlias(String newNamespacedAlias) {
+      this.newNamespacedAlias = newNamespacedAlias;
+    }
+
+  }
+
+  private static class ColumnAliasNotFoundException extends Exception {
+    private static final long serialVersionUID = 1L;
+
+    private String expression;
+
+    public ColumnAliasNotFoundException(final String expression) {
+      super();
+      this.expression = expression;
+    }
+
+    public String getExpression() {
+      return expression;
+    }
+
+  }
+
+  private static class WildCardNotSupportedException extends Exception {
+    private static final long serialVersionUID = 1L;
   }
 
 }

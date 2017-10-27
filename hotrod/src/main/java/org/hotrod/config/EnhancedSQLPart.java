@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlMixed;
 import org.hotrod.config.dynamicsql.BindTag;
 import org.hotrod.config.dynamicsql.ChooseTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
-import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.config.dynamicsql.ForEachTag;
 import org.hotrod.config.dynamicsql.IfTag;
 import org.hotrod.config.dynamicsql.OtherwiseTag;
@@ -18,12 +17,15 @@ import org.hotrod.config.dynamicsql.SetTag;
 import org.hotrod.config.dynamicsql.TrimTag;
 import org.hotrod.config.dynamicsql.WhenTag;
 import org.hotrod.config.dynamicsql.WhereTag;
+import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
+import org.hotrod.runtime.util.ListWriter;
+import org.hotrod.runtime.util.SUtils;
 
 public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
@@ -68,7 +70,7 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
   public abstract String renderStatic(final ParameterRenderer parameterRenderer);
 
-  public abstract String renderXML(final ParameterRenderer parameterRenderer);
+  public abstract void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer);
 
   // Java Expression Rendering
 
@@ -80,5 +82,40 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
   public abstract DynamicExpression getJavaExpression(ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException;
+
+  // Rendering
+
+  public static class SQLFormatter {
+
+    private List<String> lines = new ArrayList<String>();
+
+    public void add(final String line) {
+      if (line == null) {
+        return;
+      }
+      if (line.contains("\n")) {
+        for (String l : line.split("\n")) {
+          this.lines.add(l);
+        }
+      } else {
+        this.lines.add(line);
+      }
+    }
+
+    public int getCurrentIndent() {
+      return this.lines.isEmpty() ? 0 : this.lines.get(this.lines.size() - 1).length();
+    }
+
+    public String toString() {
+      ListWriter w = new ListWriter("\n");
+      for (String line : this.lines) {
+        if (!SUtils.isEmpty(line)) {
+          w.add(line);
+        }
+      }
+      return w.toString();
+    }
+
+  }
 
 }

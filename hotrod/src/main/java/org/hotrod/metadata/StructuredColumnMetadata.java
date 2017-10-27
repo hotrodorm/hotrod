@@ -11,14 +11,19 @@ public class StructuredColumnMetadata extends ColumnMetadata {
 
   // Properties
 
+  private String entityPrefix;
   private String columnAlias;
+  private String formula;
   private boolean id;
 
   // Constructor
 
-  public StructuredColumnMetadata(final ColumnMetadata cm, final String columnAlias, final boolean id) {
+  public StructuredColumnMetadata(final ColumnMetadata cm, final String entityPrefix, final String columnAlias,
+      final boolean id) {
     super(cm);
+    this.entityPrefix = entityPrefix;
     this.columnAlias = columnAlias;
+    this.formula = null;
     this.id = id;
   }
 
@@ -27,7 +32,13 @@ public class StructuredColumnMetadata extends ColumnMetadata {
   public static StructuredColumnMetadata applyColumnTag(final StructuredColumnMetadata orig, final ColumnTag t)
       throws UnresolvableDataTypeException {
     ColumnMetadata cm = ColumnMetadata.applyColumnTag(orig, t);
-    return new StructuredColumnMetadata(cm, orig.columnAlias, orig.id);
+    return new StructuredColumnMetadata(cm, orig.entityPrefix, orig.columnAlias, orig.id);
+  }
+
+  // Setters
+
+  public void setFormula(String formula) {
+    this.formula = formula;
   }
 
   // Getters
@@ -36,26 +47,42 @@ public class StructuredColumnMetadata extends ColumnMetadata {
     return columnAlias;
   }
 
+  public String getFormula() {
+    return formula;
+  }
+
   public boolean isId() {
     return id;
   }
 
+  // Rendering
+
+  public String renderAliasedSQLColumn() {
+    if (this.formula == null) {
+      return this.entityPrefix + "." + super.renderSQLIdentifier() + " as " + this.columnAlias;
+    } else {
+      return this.formula + " as " + this.columnAlias;
+    }
+  }
+
   // Utilities
 
-  public static List<StructuredColumnMetadata> promote(final List<ColumnMetadata> cols, final String aliasPrefix) {
+  public static List<StructuredColumnMetadata> promote(final String entityPrefix, final List<ColumnMetadata> cols,
+      final String aliasPrefix) {
     if (aliasPrefix == null) {
       throw new IllegalArgumentException("aliasPrefix cannot be null!");
     }
     List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
     for (ColumnMetadata cm : cols) {
-      StructuredColumnMetadata m = new StructuredColumnMetadata(cm, aliasPrefix + cm.getColumnName(), cm.belongsToPK());
+      StructuredColumnMetadata m = new StructuredColumnMetadata(cm, entityPrefix, aliasPrefix + cm.getColumnName(),
+          cm.belongsToPK());
       columns.add(m);
     }
     return columns;
   }
 
-  public static List<StructuredColumnMetadata> promote(final List<ColumnMetadata> cols, final String aliasPrefix,
-      final Set<String> idNames) throws IdColumnNotFoundException {
+  public static List<StructuredColumnMetadata> promote(final String entityPrefix, final List<ColumnMetadata> cols,
+      final String aliasPrefix, final Set<String> idNames) throws IdColumnNotFoundException {
     if (aliasPrefix == null) {
       throw new IllegalArgumentException("aliasPrefix cannot be null!");
     }
@@ -69,7 +96,7 @@ public class StructuredColumnMetadata extends ColumnMetadata {
     List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
     for (ColumnMetadata cm : cols) {
       boolean id = columnIsId(cm, idNames);
-      StructuredColumnMetadata m = new StructuredColumnMetadata(cm, aliasPrefix + cm.getColumnName(), id);
+      StructuredColumnMetadata m = new StructuredColumnMetadata(cm, entityPrefix, aliasPrefix + cm.getColumnName(), id);
       columns.add(m);
     }
     return columns;

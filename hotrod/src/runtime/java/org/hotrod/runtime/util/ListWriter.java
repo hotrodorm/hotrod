@@ -64,7 +64,7 @@ public class ListWriter {
     this.sb.append(this.prefix);
   }
 
-  public synchronized void add(final String txt) {
+  public void add(final String txt) {
     if (this.result != null) {
       throw new IllegalStateException("The String was already rendered and cannot be modified.");
     }
@@ -90,7 +90,7 @@ public class ListWriter {
     this.rendered++;
   }
 
-  public synchronized String toString() {
+  public String toString() {
     if (this.result == null) {
       if (this.last != null) {
         renderElement(this.last, true);
@@ -105,7 +105,11 @@ public class ListWriter {
     return this.added;
   }
 
-  // Array renderers
+  public boolean isEmpty() {
+    return this.added == 0;
+  }
+
+  // Static array renderers
 
   public static String render(final String[] array, final String separator) {
     List<String> asList = Arrays.asList(array);
@@ -118,7 +122,7 @@ public class ListWriter {
     return render(asList, prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
   }
 
-  // Collection renderers
+  // Static collection renderers
 
   public static String render(final Collection<String> collection, final String separator) {
     return render(collection, "", "", "", separator, separator, "");

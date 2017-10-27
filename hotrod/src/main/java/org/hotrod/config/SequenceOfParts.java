@@ -77,8 +77,9 @@ public class SequenceOfParts extends EnhancedSQLPart {
   }
 
   @Override
-  public void validate(DaosTag daosTag, HotRodConfigTag config, HotRodFragmentConfigTag fragmentConfig,
-      ParameterDefinitions parameters) throws InvalidConfigurationFileException {
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig, final ParameterDefinitions parameters)
+      throws InvalidConfigurationFileException {
     // Nothing to do
   }
 
@@ -100,9 +101,10 @@ public class SequenceOfParts extends EnhancedSQLPart {
   }
 
   @Override
-  public String renderXML(ParameterRenderer parameterRenderer) {
-    // TODO Auto-generated method stub
-    return null;
+  public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
+    for (EnhancedSQLPart p : super.eparts) {
+      p.renderXML(formatter, parameterRenderer);
+    }
   }
 
 }

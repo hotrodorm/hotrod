@@ -215,9 +215,9 @@ public abstract class HotRodGenerator {
           ClassPackage fragmentPackage = tm.getFragmentConfig() != null
               && tm.getFragmentConfig().getFragmentPackage() != null ? tm.getFragmentConfig().getFragmentPackage()
                   : null;
-          ClassPackage classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
+          ClassPackage classPackage = layout.getDAOPackage(fragmentPackage);
           String voName = daosTag.generateVOName(tm.getIdentifier());
-          VOClass vo = new VOClass(tm, classPackage, voName, tm.getColumns());
+          VOClass vo = new VOClass(tm, classPackage, voName, tm.getColumns(), null);
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {
@@ -284,7 +284,7 @@ public abstract class HotRodGenerator {
                   : null;
           ClassPackage classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
           String voName = daosTag.generateVOName(vm.getIdentifier());
-          VOClass vo = new VOClass(vm, classPackage, voName, vm.getColumns());
+          VOClass vo = new VOClass(vm, classPackage, voName, vm.getColumns(), null);
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {

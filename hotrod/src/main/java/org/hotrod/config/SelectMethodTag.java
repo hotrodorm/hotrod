@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
+import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.config.structuredcolumns.ColumnsTag;
@@ -308,14 +309,10 @@ public class SelectMethodTag extends AbstractConfigurationTag {
     return sb.toString();
   }
 
-  public String renderXML(final ParameterRenderer parameterRenderer) {
-    log.info("renderXML()");
-    StringBuilder sb = new StringBuilder();
+  public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
     for (EnhancedSQLPart p : this.parts) {
-      log.info("p: " + p.getClass().getName());
-      sb.append(p.renderXML(parameterRenderer));
+      p.renderXML(formatter, parameterRenderer);
     }
-    return sb.toString();
   }
 
   public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer)
