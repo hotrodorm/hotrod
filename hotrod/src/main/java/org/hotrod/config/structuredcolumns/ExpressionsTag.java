@@ -92,9 +92,6 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
           try {
             List<Expression> es = Expression.parse(s);
             this.expressions.addAll(es);
-          } catch (WildCardNotSupportedException e) {
-            throw new InvalidConfigurationFileException(super.getSourceLocation(),
-                "The wildcard symbol '*' is not supported in the body of an <" + super.getTagName() + "> tag. .");
           } catch (ColumnAliasNotFoundException e) {
             throw new InvalidConfigurationFileException(super.getSourceLocation(),
                 "Expression without an alias. The expression '" + e.getExpression() + "' must declare a name alias.");
@@ -264,17 +261,13 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
       this.originalName = originalName;
     }
 
-    public static List<Expression> parse(final String literal)
-        throws WildCardNotSupportedException, ColumnAliasNotFoundException {
+    public static List<Expression> parse(final String literal) throws ColumnAliasNotFoundException {
       List<Expression> exps = new ArrayList<Expression>();
       if (literal != null) {
         boolean inString = false;
         int start = 0;
         int i = start;
         while (i < literal.length()) {
-          if (!inString && literal.charAt(i) == '*') {
-            throw new WildCardNotSupportedException();
-          }
           if (literal.charAt(i) == '\'') {
             inString = !inString;
           }
@@ -340,10 +333,6 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
       return expression;
     }
 
-  }
-
-  private static class WildCardNotSupportedException extends Exception {
-    private static final long serialVersionUID = 1L;
   }
 
 }

@@ -190,6 +190,7 @@ public class Mapper {
         }
 
         for (SelectMethodMetadata sm : this.metadata.getSelectsMetadata()) {
+          log.info("Generating method: " + sm.getMethod());
           writeSelectMethod(sm);
         }
 
@@ -1164,7 +1165,8 @@ public class Mapper {
     String indent = SUtils.getFiller(' ', 4 + (level * 2));
 
     for (VOMetadata a : associations) {
-      println(indent + "<association property=\"" + a.getProperty() + "\">");
+
+      println(indent + "<association property=\"" + a.getProperty() + "\" javaType=\"" + a.getFullClassName() + "\">");
       String entityFullClassName = a.getSuperClass() != null ? a.getSuperClass().getFullClassName()
           : a.getFullClassName();
       ObjectDAO aDAO = entityDAORegistry.findEntityDAO(entityFullClassName);
@@ -1178,7 +1180,7 @@ public class Mapper {
 
     if (collections != null) {
       for (VOMetadata c : collections) {
-        println(indent + "<collection property=\"" + c.getProperty() + "\">");
+        println(indent + "<collection property=\"" + c.getProperty() + "\" ofType=\"" + c.getFullClassName() + "\">");
         String entityFullClassName = c.getSuperClass() != null ? c.getSuperClass().getFullClassName()
             : c.getFullClassName();
         ObjectDAO cDAO = entityDAORegistry.findEntityDAO(entityFullClassName);

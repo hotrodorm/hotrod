@@ -18,7 +18,7 @@ public class StructuredTests {
     List<ExtendedPersonVO> list = PersonDAO.findExtendedPerson(100);
     System.out.println("=== Extended Persons ===");
     for (ExtendedPersonVO ep : list) {
-      System.out.println("a=" + ep);
+      System.out.println("ep=" + ep);
     }
   }
 

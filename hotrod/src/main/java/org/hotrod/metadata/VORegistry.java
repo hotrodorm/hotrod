@@ -157,7 +157,8 @@ public class VORegistry {
       this.metadata = metadata;
       this.classPackage = classPackage;
       this.name = name;
-      log.info("*** ADDING VOCLASS: " + this.classPackage.getFullClassName(this.name));
+      // log.info("*** ADDING VOCLASS: " +
+      // this.classPackage.getFullClassName(this.name));
       // throw new IllegalArgumentException("");
       this.columnsByName = new LinkedHashMap<String, ColumnMetadata>();
       for (ColumnMetadata c : columns) {
