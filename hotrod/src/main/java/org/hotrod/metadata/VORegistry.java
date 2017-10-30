@@ -30,16 +30,16 @@ public class VORegistry {
     f.addVO(voClass);
   }
 
-  public void addVO(final StructuredVOClass structuredVOClass)
-      throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
-    ClassPackage classPackage = structuredVOClass.getClassPackage();
-    FragmentRegistry f = this.fragmentsByPackage.get(classPackage);
-    if (f == null) {
-      f = new FragmentRegistry(classPackage);
-      this.fragmentsByPackage.put(classPackage, f);
-    }
-    f.addVO(structuredVOClass);
-  }
+//  public void addVO(final StructuredVOClass structuredVOClass)
+//      throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
+//    ClassPackage classPackage = structuredVOClass.getClassPackage();
+//    FragmentRegistry f = this.fragmentsByPackage.get(classPackage);
+//    if (f == null) {
+//      f = new FragmentRegistry(classPackage);
+//      this.fragmentsByPackage.put(classPackage, f);
+//    }
+//    f.addVO(structuredVOClass);
+//  }
 
   public VOClass findVOClass(final TableDataSetMetadata name) {
     for (FragmentRegistry f : this.fragmentsByPackage.values()) {
@@ -213,6 +213,13 @@ public class VORegistry {
       // all comparisons cleared
 
       return true;
+    }
+
+    // toString
+
+    public String toString() {
+      return "{VOClass: " + (this.classPackage == null ? "<no-package>" : this.classPackage.getPackage()) + " / "
+          + this.name + "}";
     }
 
     // Getters

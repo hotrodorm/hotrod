@@ -282,7 +282,7 @@ public abstract class HotRodGenerator {
           ClassPackage fragmentPackage = vm.getFragmentConfig() != null
               && vm.getFragmentConfig().getFragmentPackage() != null ? vm.getFragmentConfig().getFragmentPackage()
                   : null;
-          ClassPackage classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
+          ClassPackage classPackage = layout.getDAOPackage(fragmentPackage);
           String voName = daosTag.generateVOName(vm.getIdentifier());
           VOClass vo = new VOClass(vm, classPackage, voName, vm.getColumns(), null);
           this.voRegistry.addVO(vo);

@@ -421,7 +421,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
-    log.info("renderXML()");
+    // log.info("renderXML()");
     SQLFormatter formatter = new SQLFormatter();
     this.tag.renderXML(formatter, parameterRenderer);
     return formatter.toString();

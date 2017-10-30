@@ -2021,63 +2021,66 @@ public class ObjectDAO {
       if (cm.getConverter() != null) {
 
         String typeHandlerClassName = getTypeHandlerClassName(cm);
-        String interType = cm.getConverter().getJavaIntermediateType();
-        String type = cm.getConverter().getJavaType();
-        String setter = cm.getConverter().getJdbcSetterMethod();
-        String getter = cm.getConverter().getJdbcGetterMethod();
-        String converter = cm.getConverter().getJavaClass();
-
-        println("  // TypeHandler for column " + cm.getColumnName() + " using Converter " + converter + ".");
-        println();
-        println("  public static class " + typeHandlerClassName + " implements TypeHandler<" + type + "> {");
-        println();
-        println(
-            "    private static TypeConverter<" + interType + ", " + type + "> CONVERTER = new " + converter + "();");
-        println();
-        println("    @Override");
-        println("    public " + type + " getResult(final ResultSet rs, final String columnName) throws SQLException {");
-        println("      " + interType + " value = rs." + getter + "(columnName);");
-        println("      if (rs.wasNull()) {");
-        println("        value = null;");
-        println("      }");
-        println("      return CONVERTER.decode(value);");
-        println("    }");
-        println();
-        println("    @Override");
-        println("    public " + type + " getResult(final ResultSet rs, final int columnIndex) throws SQLException {");
-        println("      " + interType + " value = rs." + getter + "(columnIndex);");
-        println("      if (rs.wasNull()) {");
-        println("        value = null;");
-        println("      }");
-        println("      return CONVERTER.decode(value);");
-        println("    }");
-        println();
-        println("    @Override");
-        println("    public " + type
-            + " getResult(final CallableStatement cs, final int columnIndex) throws SQLException {");
-        println("      " + interType + " value = cs." + getter + "(columnIndex);");
-        println("      if (cs.wasNull()) {");
-        println("        value = null;");
-        println("      }");
-        println("      return CONVERTER.decode(value);");
-        println("    }");
-        println();
-        println("    @Override");
-        println("    public void setParameter(final PreparedStatement ps, final int columnIndex, final " + type
-            + " v, final JdbcType jdbcType)");
-        println("        throws SQLException {");
-        println("      " + interType + " value = CONVERTER.encode(v);");
-        println("      if (value == null) {");
-        println("        ps.setNull(columnIndex, jdbcType.TYPE_CODE);");
-        println("      } else {");
-        println("        ps." + setter + "(columnIndex, value);");
-        println("      }");
-        println("    }");
-        println();
-        println("  }");
-        println();
+        writeTypeHandler(cm, typeHandlerClassName);
       }
     }
+  }
+
+  private void writeTypeHandler(final ColumnMetadata cm, final String typeHandlerClassName) throws IOException {
+    String interType = cm.getConverter().getJavaIntermediateType();
+    String type = cm.getConverter().getJavaType();
+    String setter = cm.getConverter().getJdbcSetterMethod();
+    String getter = cm.getConverter().getJdbcGetterMethod();
+    String converter = cm.getConverter().getJavaClass();
+
+    println("  // TypeHandler for column " + cm.getColumnName() + " using Converter " + converter + ".");
+    println();
+    println("  public static class " + typeHandlerClassName + " implements TypeHandler<" + type + "> {");
+    println();
+    println("    private static TypeConverter<" + interType + ", " + type + "> CONVERTER = new " + converter + "();");
+    println();
+    println("    @Override");
+    println("    public " + type + " getResult(final ResultSet rs, final String columnName) throws SQLException {");
+    println("      " + interType + " value = rs." + getter + "(columnName);");
+    println("      if (rs.wasNull()) {");
+    println("        value = null;");
+    println("      }");
+    println("      return CONVERTER.decode(value);");
+    println("    }");
+    println();
+    println("    @Override");
+    println("    public " + type + " getResult(final ResultSet rs, final int columnIndex) throws SQLException {");
+    println("      " + interType + " value = rs." + getter + "(columnIndex);");
+    println("      if (rs.wasNull()) {");
+    println("        value = null;");
+    println("      }");
+    println("      return CONVERTER.decode(value);");
+    println("    }");
+    println();
+    println("    @Override");
+    println(
+        "    public " + type + " getResult(final CallableStatement cs, final int columnIndex) throws SQLException {");
+    println("      " + interType + " value = cs." + getter + "(columnIndex);");
+    println("      if (cs.wasNull()) {");
+    println("        value = null;");
+    println("      }");
+    println("      return CONVERTER.decode(value);");
+    println("    }");
+    println();
+    println("    @Override");
+    println("    public void setParameter(final PreparedStatement ps, final int columnIndex, final " + type
+        + " v, final JdbcType jdbcType)");
+    println("        throws SQLException {");
+    println("      " + interType + " value = CONVERTER.encode(v);");
+    println("      if (value == null) {");
+    println("        ps.setNull(columnIndex, jdbcType.TYPE_CODE);");
+    println("      } else {");
+    println("        ps." + setter + "(columnIndex, value);");
+    println("      }");
+    println("    }");
+    println();
+    println("  }");
+    println();
   }
 
   /**
@@ -2518,7 +2521,8 @@ public class ObjectDAO {
     preCheckedException();
 
     String myBatisSelectMethod = sm.isMultipleRows() ? "selectList" : "selectOne";
-    print("    return sqlSession." + myBatisSelectMethod + "(\"" + this.mapper.getFullMapperIdSelectMethod(sm) + "\"");
+    print(
+        "    return sqlSession." + myBatisSelectMethod + "(\"" + this.mapper.getFullSelectMethodStatementId(sm) + "\"");
     if (!sm.getParameterDefinitions().isEmpty()) {
       print(", " + objName);
     }
@@ -2526,6 +2530,17 @@ public class ObjectDAO {
     postCheckedException();
     println("  }");
     println();
+
+    // non-structured VO type handlers
+
+    if (!sm.isStructured()) {
+      for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
+        if (cm.getConverter() != null) {
+          String typeHandlerClassName = this.getTypeHandlerClassName(sm, cm);
+          this.writeTypeHandler(cm, typeHandlerClassName);
+        }
+      }
+    }
 
   }
 
@@ -2634,6 +2649,14 @@ public class ObjectDAO {
 
   public String getTypeHandlerFullClassName(final ColumnMetadata cm) {
     return this.getFullClassName() + "$" + getTypeHandlerClassName(cm);
+  }
+
+  private String getTypeHandlerClassName(final SelectMethodMetadata sm, final ColumnMetadata cm) {
+    return sm.getMethod() + "_" + cm.getIdentifier().getJavaClassIdentifier() + "TypeHandler";
+  }
+
+  public String getTypeHandlerFullClassName(final SelectMethodMetadata sm, final ColumnMetadata cm) {
+    return this.getFullClassName() + "$" + getTypeHandlerClassName(sm, cm);
   }
 
   // Helpers

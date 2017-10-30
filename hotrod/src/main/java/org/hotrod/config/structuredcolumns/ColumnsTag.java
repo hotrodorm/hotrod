@@ -133,16 +133,24 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   @Override
   public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
-    log.info("structured");
+    // log.info("structured");
+
+    // log.info("vos=" + this.vos.size() + " expressions=" +
+    // this.expressions.size());
 
     List<String> columns = new ArrayList<String>();
     for (VOTag vo : this.vos) {
+      // log.info("vo=" + vo);
       columns.addAll(vo.gelAliasedSQLColumns());
     }
 
     for (ExpressionsTag exp : this.expressions) {
+      // log.info("exp=" + exp + " exp.getColumnsMetadata().size()=" +
+      // exp.getColumnsMetadata().size());
       for (StructuredColumnMetadata m : exp.getColumnsMetadata()) {
-        columns.add(m.renderAliasedSQLColumn());
+        String aliasedSQLColumn = m.renderAliasedSQLColumn();
+        // log.info(" + aliasedSQLColumn=" + aliasedSQLColumn);
+        columns.add(aliasedSQLColumn);
       }
     }
 
@@ -233,8 +241,8 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     // Assemble
 
     List<ExpressionsMetadata> expressions = new ArrayList<ExpressionsMetadata>();
-    for (ExpressionsTag t : this.expressions) {
-      expressions.add(t.getExpressionsMetadata());
+    for (ExpressionsTag tag : this.expressions) {
+      expressions.add(tag.getExpressionsMetadata());
     }
 
     List<VOMetadata> vos = new ArrayList<VOMetadata>();

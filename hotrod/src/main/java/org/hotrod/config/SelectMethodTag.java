@@ -214,7 +214,7 @@ public class SelectMethodTag extends AbstractConfigurationTag {
     // Literal SQL, <columns>, <complement> tags
 
     for (EnhancedSQLPart p : this.parts) {
-      log.info("VAL p: " + p.getClass().getName());
+      // log.info("VAL p: " + p.getClass().getName());
       p.validate(daosTag, config, fragmentConfig, this.parameters);
     }
 

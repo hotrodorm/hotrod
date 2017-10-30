@@ -99,6 +99,17 @@ public class SUtils {
     return sb.toString();
   }
 
+  public static String indent(final String txt, final int indent) {
+    if (txt == null) {
+      return null;
+    }
+    ListWriter w = new ListWriter(getFiller(' ', indent), "", "\n");
+    for (String line : txt.split("\n")) {
+      w.add(line);
+    }
+    return w.toString();
+  }
+
   public static String escapeJavaString(final String txt) {
     if (txt == null) {
       return null;

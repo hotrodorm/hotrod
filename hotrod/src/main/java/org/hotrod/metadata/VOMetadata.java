@@ -86,9 +86,13 @@ public class VOMetadata {
     if (tag.getExtendedVO() != null) { // extended VO from a table or view
       this.classPackage = getVOClassPackage(layout, fragmentConfig);
       this.name = tag.getExtendedVO();
-      log.info("[EXTENDED VO]: " + this.classPackage.getFullClassName(this.name));
+      // log.info("[EXTENDED VO]: " +
+      // this.classPackage.getFullClassName(this.name));
       this.superClass = tag.getGenerator().getVORegistry()
           .findVOClass(this.tableMetadata != null ? this.tableMetadata : this.viewMetadata);
+
+      // log.info("vo=" + this.name + " this.superClass=" + this.superClass);
+
       if (this.superClass == null) {
         throw new InvalidConfigurationFileException(tag.getSourceLocation(),
             "Invalid 'extended-vo' attribute with value '" + tag.getExtendedVO()
@@ -99,11 +103,13 @@ public class VOMetadata {
       if (this.tableMetadata != null) {
         this.classPackage = getVOClassPackage(layout, this.tableMetadata.getFragmentConfig());
         this.name = daosTag.generateVOName(this.tableMetadata.getIdentifier());
-        log.info("[TABLE VO]: " + this.classPackage.getFullClassName(this.name));
+        // log.info("[TABLE VO]: " +
+        // this.classPackage.getFullClassName(this.name));
       } else {
         this.classPackage = getVOClassPackage(layout, this.viewMetadata.getFragmentConfig());
         this.name = daosTag.generateVOName(this.viewMetadata.getIdentifier());
-        log.info("[VIEW VO]: " + this.classPackage.getFullClassName(this.name));
+        // log.info("[VIEW VO]: " +
+        // this.classPackage.getFullClassName(this.name));
       }
     }
 
@@ -165,6 +171,13 @@ public class VOMetadata {
     ClassPackage fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
         ? fragmentConfig.getFragmentPackage() : null;
     return layout.getDAOPackage(fragmentPackage);
+  }
+
+  // toString
+
+  public String toString() {
+    return "{VOMetadata: " + (this.classPackage == null ? "<no-package>" : this.classPackage.getPackage()) + " / "
+        + this.name + "}";
   }
 
   // Getters

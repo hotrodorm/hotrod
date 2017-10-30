@@ -231,6 +231,12 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
     return columns;
   }
 
+  // toString
+
+  public String toString() {
+    return "{ExpressionsTag: count=" + this.expressions.size() + "}";
+  }
+
   // Getters
 
   public ExpressionsMetadata getExpressionsMetadata() {

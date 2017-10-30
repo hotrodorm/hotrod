@@ -26,7 +26,6 @@ import org.hotrod.generator.DAOType;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
-import org.hotrod.metadata.ExpressionsMetadata;
 import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
@@ -190,7 +189,7 @@ public class Mapper {
         }
 
         for (SelectMethodMetadata sm : this.metadata.getSelectsMetadata()) {
-          log.info("Generating method: " + sm.getMethod());
+          // log.info("Generating method: " + sm.getMethod());
           writeSelectMethod(sm);
         }
 
@@ -345,8 +344,28 @@ public class Mapper {
     }
 
     String indent = SUtils.getFiller(' ', 4);
-    println(indent + "<" + tagName + " property=\"" + cm.getIdentifier().getJavaMemberIdentifier() + "\" column='"
-        + SUtils.escapeXmlAttribute(cm.getColumnName()) + "' " + typeHandler + "/>");
+    println(indent + "<" + tagName + " property=\"" + cm.getIdentifier().getJavaMemberIdentifier() + "\" column=\""
+        + SUtils.escapeXmlAttribute(cm.getColumnName()) + "\" " + typeHandler + "/>");
+
+  }
+
+  private void renderResultMapColumn(final SelectMethodMetadata sm, final ColumnMetadata cm, final String tagName)
+      throws IOException {
+
+    String typeHandler = "";
+    if (cm.getConverter() != null) {
+      typeHandler = "typeHandler=\"" + this.dao.getTypeHandlerFullClassName(sm, cm) + "\" ";
+    } else {
+      EnumDataSetMetadata ds = cm.getEnumMetadata();
+      EnumClass ec = this.generator.getEnum(ds);
+      if (ec != null) {
+        typeHandler = "typeHandler=\"" + this.dao.getTypeHandlerFullClassName(sm, cm) + "\" ";
+      }
+    }
+
+    String indent = SUtils.getFiller(' ', 4);
+    println(indent + "<" + tagName + " property=\"" + cm.getIdentifier().getJavaMemberIdentifier() + "\" column=\""
+        + SUtils.escapeXmlAttribute(cm.getColumnName()) + "\" " + typeHandler + "/>");
 
   }
 
@@ -1088,14 +1107,16 @@ public class Mapper {
     // result map
 
     String resultMapName = this.getResultMapName(sm);
-    SelectMethodReturnType rt = sm.getReturnType(this.fragmentPackage);
+
+    SelectMethodReturnType rt = sm.getReturnType(this.layout.getDAOPackage(this.fragmentPackage));
 
     println("  <resultMap id=\"" + resultMapName + "\" type=\"" + rt.getVOFullClassName() + "\">");
 
     if (!sm.isStructured()) {
+      // log.info("non-structured");
 
       for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
-        renderResultMapColumn(cm, "result");
+        renderResultMapColumn(sm, cm, "result");
       }
 
     } else {
@@ -1103,21 +1124,22 @@ public class Mapper {
       StructuredColumnsMetadata scm = sm.getStructuredColumns();
 
       boolean soloVO = scm.getExpressions().isEmpty() && scm.getVOs().size() == 1;
+      // log.info("structured. soloVO=" + soloVO);
       if (soloVO) {
         VOMetadata vo = scm.getVOs().get(0);
-        log.info("vo.getClass()=" + vo.getName());
-
-        log.info("DAO Registry: " + this.entityDAORegistry);
+        // log.info("vo.getClass()=" + vo.getName());
+        // log.info("DAO Registry: " + this.entityDAORegistry);
 
         String entityFullClassName = vo.getSuperClass() != null ? vo.getSuperClass().getFullClassName()
             : vo.getFullClassName();
 
         ObjectDAO dao = this.entityDAORegistry.findEntityDAO(entityFullClassName);
-        log.info("vo=" + vo.getName() + " entityFullClassName=" + entityFullClassName + " dao=" + dao);
-        renderResultMapLevel(vo.getInheritedColumns(), vo.getDeclaredColumns(), vo.getExpressions(),
-            vo.getAssociations(), vo.getCollections(), dao, 0);
+        // log.info("vo=" + vo.getName() + " entityFullClassName=" +
+        // entityFullClassName + " dao=" + dao);
+        renderResultMapLevel(vo.getInheritedColumns(), vo.getDeclaredColumns(), vo.getAssociations(),
+            vo.getCollections(), dao, 0);
       } else {
-        renderResultMapLevel(null, null, scm.getExpressions(), scm.getVOs(), null, null, 0);
+        renderResultMapLevel(null, scm.getColumnsMetadata(), scm.getVOs(), null, null, 0);
       }
 
     }
@@ -1125,19 +1147,19 @@ public class Mapper {
     println("  </resultMap>");
     println();
 
-    // mapper
+    // statement
 
-    String mapperId = this.getMapperIdSelectMethod(sm);
-    println("  <select id=\"" + mapperId + "\" resultMap=\"" + resultMapName + "\">");
+    String statementId = this.getSelectMethodStatementId(sm);
+
+    println("  <select id=\"" + statementId + "\" resultMap=\"" + resultMapName + "\">");
     println(sm.renderXML(new MyBatisParameterRenderer()));
     println("  </select>");
     println();
   }
 
   private void renderResultMapLevel(final List<StructuredColumnMetadata> inheritedColumns,
-      final List<StructuredColumnMetadata> declaredColumns, final List<ExpressionsMetadata> expressions,
-      final List<VOMetadata> associations, final List<VOMetadata> collections, final ObjectDAO dao, final int level)
-      throws IOException {
+      final List<StructuredColumnMetadata> declaredColumns, final List<VOMetadata> associations,
+      final List<VOMetadata> collections, final ObjectDAO dao, final int level) throws IOException {
 
     // Main VO columns
 
@@ -1156,8 +1178,10 @@ public class Mapper {
 
     // Expression columns
 
-    for (StructuredColumnMetadata m : declaredColumns) {
-      renderSelectResultMapColumn(m, "result", dao, level);
+    if (declaredColumns != null) {
+      for (StructuredColumnMetadata m : declaredColumns) {
+        renderSelectResultMapColumn(m, "result", dao, level);
+      }
     }
 
     // Associations
@@ -1170,9 +1194,10 @@ public class Mapper {
       String entityFullClassName = a.getSuperClass() != null ? a.getSuperClass().getFullClassName()
           : a.getFullClassName();
       ObjectDAO aDAO = entityDAORegistry.findEntityDAO(entityFullClassName);
-      log.info("(a) vo=" + a.getName() + " entityFullClassName=" + entityFullClassName);
-      renderResultMapLevel(a.getInheritedColumns(), a.getDeclaredColumns(), a.getExpressions(), a.getAssociations(),
-          a.getCollections(), aDAO, level + 1);
+      // log.info("(a) vo=" + a.getName() + " entityFullClassName=" +
+      // entityFullClassName);
+      renderResultMapLevel(a.getInheritedColumns(), a.getDeclaredColumns(), a.getAssociations(), a.getCollections(),
+          aDAO, level + 1);
       println(indent + "</association>");
     }
 
@@ -1184,9 +1209,10 @@ public class Mapper {
         String entityFullClassName = c.getSuperClass() != null ? c.getSuperClass().getFullClassName()
             : c.getFullClassName();
         ObjectDAO cDAO = entityDAORegistry.findEntityDAO(entityFullClassName);
-        log.info("(c) vo=" + c.getName() + " entityFullClassName=" + entityFullClassName);
-        renderResultMapLevel(c.getInheritedColumns(), c.getDeclaredColumns(), c.getExpressions(), c.getAssociations(),
-            c.getCollections(), cDAO, level + 1);
+        // log.info("(c) vo=" + c.getName() + " entityFullClassName=" +
+        // entityFullClassName);
+        renderResultMapLevel(c.getInheritedColumns(), c.getDeclaredColumns(), c.getAssociations(), c.getCollections(),
+            cDAO, level + 1);
         println(indent + "</collection>");
       }
     }
@@ -1368,12 +1394,12 @@ public class Mapper {
     return u.getIdentifier().getJavaMemberIdentifier();
   }
 
-  public String getMapperIdSelectMethod(final SelectMethodMetadata sm) {
+  public String getSelectMethodStatementId(final SelectMethodMetadata sm) {
     return "select_" + sm.getMethod();
   }
 
-  public String getFullMapperIdSelectMethod(final SelectMethodMetadata sm) {
-    return this.namespace + "." + this.getMapperIdSelectMethod(sm);
+  public String getFullSelectMethodStatementId(final SelectMethodMetadata sm) {
+    return this.namespace + "." + this.getSelectMethodStatementId(sm);
   }
 
   private String getResultMapName(final SelectMethodMetadata sm) {

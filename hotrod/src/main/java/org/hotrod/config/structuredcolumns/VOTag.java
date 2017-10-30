@@ -635,6 +635,13 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     return false;
   }
 
+  // toString
+
+  public String toString() {
+    return "{VOTag: " + (this.tableMetadata != null ? "table=" + this.table : "view=" + this.view) + ", property="
+        + this.property + "}";
+  }
+
   // Utilities
 
   private String compileBody() {

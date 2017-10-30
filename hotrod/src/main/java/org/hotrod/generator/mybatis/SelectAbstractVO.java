@@ -275,7 +275,9 @@ public class SelectAbstractVO {
     println("    java.lang.StringBuilder sb = new java.lang.StringBuilder();");
 
     if (this.myBatisTag.getProperties().isMultilineTostring()) {
-      println("    sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + \"\\n\");");
+      println("    sb.append(super.toString());");
+      // println(" sb.append( getClass().getName() + '@' +
+      // Integer.toHexString(hashCode()) + \"\\n\");");
 
       if (!this.columns.isEmpty()) {
         String prefix = "";
@@ -293,6 +295,7 @@ public class SelectAbstractVO {
       }
 
     } else {
+      println("    sb.append(super.toString());");
       println("    sb.append(\"[\");");
 
       if (!this.columns.isEmpty()) {

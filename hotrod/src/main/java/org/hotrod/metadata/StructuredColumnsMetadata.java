@@ -42,4 +42,12 @@ public class StructuredColumnsMetadata {
     return columns;
   }
 
+  public List<StructuredColumnMetadata> getColumnsMetadata() {
+    List<StructuredColumnMetadata> m = new ArrayList<StructuredColumnMetadata>();
+    for (ExpressionsMetadata em : this.expressions) {
+      m.addAll(em.getColumns());
+    }
+    return m;
+  }
+
 }
