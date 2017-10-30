@@ -3,20 +3,7 @@ package org.hotrod.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlElementRefs;
-import javax.xml.bind.annotation.XmlMixed;
-
-import org.hotrod.config.dynamicsql.BindTag;
-import org.hotrod.config.dynamicsql.ChooseTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
-import org.hotrod.config.dynamicsql.ForEachTag;
-import org.hotrod.config.dynamicsql.IfTag;
-import org.hotrod.config.dynamicsql.OtherwiseTag;
-import org.hotrod.config.dynamicsql.SetTag;
-import org.hotrod.config.dynamicsql.TrimTag;
-import org.hotrod.config.dynamicsql.WhenTag;
-import org.hotrod.config.dynamicsql.WhereTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -31,18 +18,6 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
   // Properties
 
-  @XmlMixed
-  @XmlElementRefs({ //
-      @XmlElementRef(type = IfTag.class), //
-      @XmlElementRef(type = ChooseTag.class), //
-      @XmlElementRef(type = WhereTag.class), //
-      @XmlElementRef(type = WhenTag.class), //
-      @XmlElementRef(type = OtherwiseTag.class), //
-      @XmlElementRef(type = ForEachTag.class), //
-      @XmlElementRef(type = BindTag.class), //
-      @XmlElementRef(type = SetTag.class), //
-      @XmlElementRef(type = TrimTag.class) //
-  })
   protected List<Object> content = new ArrayList<Object>();
 
   protected List<EnhancedSQLPart> eparts = null;

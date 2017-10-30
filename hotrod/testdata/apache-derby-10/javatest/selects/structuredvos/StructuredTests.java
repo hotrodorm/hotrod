@@ -39,7 +39,7 @@ public class StructuredTests {
 
   private static void test1() throws SQLException {
     System.out.println("=== Extended Persons ===");
-    for (AccountPersonFlatVO ap : PersonDAO.findAccountWithPersonFlat(100)) {
+    for (AccountPersonFlatVO ap : PersonDAO.findAccountWithPersonFlat(50)) {
       System.out.println("ap=" + ap);
     }
   }
@@ -48,7 +48,7 @@ public class StructuredTests {
 
   private static void test2() throws SQLException {
     System.out.println("=== Account With Person ===");
-    for (AccountPersonVO ap : PersonDAO.findAccountWithPerson(100)) {
+    for (AccountPersonVO ap : PersonDAO.findAccountWithPerson(500)) {
       printObject(ap, 2);
       printObject(ap.getAccount(), 4);
       printObject(ap.getPerson(), 4);
@@ -59,7 +59,7 @@ public class StructuredTests {
 
   private static void test3() throws SQLException {
     System.out.println("=== Retirement Account ===");
-    for (AccountVO a : PersonDAO.findRetirementAccount(100)) {
+    for (AccountVO a : PersonDAO.findRetirementAccount(50)) {
       printObject(a, 2);
     }
   }
@@ -68,7 +68,7 @@ public class StructuredTests {
 
   private static void test4() throws SQLException {
     System.out.println("=== Valuated Account ===");
-    for (ValuatedAccountVO va : PersonDAO.findValuatedAccount(100)) {
+    for (ValuatedAccountVO va : PersonDAO.findValuatedAccount(50)) {
       printObject(va, 2);
       printObject(va.getAccount(), 4);
       printObject(va.getPerson(), 4);
@@ -79,7 +79,7 @@ public class StructuredTests {
 
   private static void test5() throws SQLException {
     System.out.println("=== Account With Transaction ===");
-    for (AccountWithTransactionsVO at : PersonDAO.findAccountWithTransactions(100)) {
+    for (AccountWithTransactionsVO at : PersonDAO.findAccountWithTransactions(500)) {
       printObject(at, 2);
       for (TransactionVO t : at.getTransactions()) {
         printObject(t, 4);

@@ -4,7 +4,7 @@
 <hotrod-fragment>
 
   <table name="person">
-  
+
     <column name="type" converter="person_type" />
     
     <!-- Good: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 -->
@@ -28,7 +28,9 @@
       from account a
       join person p on (p.id) = (a.person_id)
       <complement>
-        where a.id = #{clientId}
+        <if test="clientId != null">
+          where a.id = #{clientId}
+        </if>
       </complement>
 
     </select>
@@ -54,7 +56,9 @@
       from account a
       join person p on (p.id) = (a.person_id)
       <complement>
-        where a.id = #{clientId}
+        <if test="clientId != null">
+          where a.id = #{clientId}
+        </if>
       </complement>
 
     </select>
@@ -96,13 +100,16 @@
         <expressions>
           <column name="rank_score" java-type="java.lang.Double" />
           (a.balance / case when a.type = 1 then 15 when a.type = 2 then 8 when a.type = 3 then 100 end) as tier_score,
-          (a.balance / case when p.type = 1 then 3 when p.type = 2 then 17 when p.type = 3 then 5 end) as rank_score
+          (a.balance
+          / case when p.type = 1 then 3 when p.type = 2 then 17 when p.type = 3 then 5 end) as rank_score
         </expressions>
       </columns>
       from account a
       join person p on (p.id) = (a.person_id)
       <complement>
-        where a.id = #{clientId}
+        <if test="clientId != null">
+          where a.id = #{clientId}
+        </if>
       </complement>
 
     </select>
@@ -125,7 +132,9 @@
       from account a
       join "transaction" t on (t.account_id) = (a.id)
       <complement>
-        where a.id = #{clientId}
+        <if test="clientId != null">
+          where a.id = #{clientId}
+        </if>
       </complement>
 
     </select>
@@ -149,7 +158,14 @@
       from account a
       join person p on (p.id) = (a.person_id)
       <complement>
-        where a.type = #{type} and p.balance >= #{minBalance}
+        <where>
+          <if test="type != null">
+            and a.type = #{type}
+          </if>
+          <if test="minBalance != null">
+            and p.balance >= #{minBalance}
+          </if>
+        </where>
       </complement>
 
     </select>
@@ -177,10 +193,13 @@
       from person p
       left join account a on (a.person_id) = (p.id)
       left join "transaction" t on (t.account_id) = (a.id)
-      join category c on
+      join category
+      c on
       p.category_id = c.id
       <complement>
-        where a.id = #{clientId}
+        <if test="clientId != null">
+          where a.id = #{clientId}
+        </if>
       </complement>
 
     </select>
@@ -220,7 +239,9 @@
       from account a
       left join person p on (p.id) = (a.person_id)
       <complement>
-        where a.id = #{clientId}
+        <if test="clientId != null">
+          where a.id = #{clientId}
+        </if>
       </complement>
 
     </select>
