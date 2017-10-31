@@ -9,7 +9,7 @@ import java.io.Writer;
 import org.apache.log4j.Logger;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.metadata.VOMetadata;
-import org.hotrod.metadata.VORegistry.VOClass;
+import org.hotrod.metadata.VORegistry.StructuredVOClass;
 import org.hotrod.utils.ClassPackage;
 
 public class SelectVO {
@@ -33,7 +33,7 @@ public class SelectVO {
   //
   // private ClassPackage classPackage;
 
-  public SelectVO(final VOClass soloVO, final SelectAbstractVO abstractVO, final DataSetLayout layout) {
+  public SelectVO(final StructuredVOClass soloVO, final SelectAbstractVO abstractVO, final DataSetLayout layout) {
     log.debug("init");
     this.layout = layout;
     this.className = soloVO.getName();

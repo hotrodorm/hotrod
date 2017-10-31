@@ -240,7 +240,7 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
   // Getters
 
   public ExpressionsMetadata getExpressionsMetadata() {
-    return new ExpressionsMetadata(this.columnsMetadata);
+    return new ExpressionsMetadata(this, this.columnsMetadata);
   }
 
   @Override

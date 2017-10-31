@@ -165,6 +165,8 @@ public class DB2Adapter extends DatabaseAdapter {
   public String renderAliasedSelectColumn(final StructuredColumnMetadata cm) {
     return cm.renderSQLIdentifier() + " as " + this.renderSQLName(cm.getColumnAlias());
   }
+  
+  // TODO: clean up
 
   // @Override
   // public boolean supportsJDBCGeneratedKeys() {
@@ -217,7 +219,7 @@ public class DB2Adapter extends DatabaseAdapter {
 
   @Override
   public String createOrReplaceView(final String viewName, final String select) {
-    return "create view " + viewName + " as " + select;
+    return "create view " + viewName + " as\n" + select;
   }
 
   @Override

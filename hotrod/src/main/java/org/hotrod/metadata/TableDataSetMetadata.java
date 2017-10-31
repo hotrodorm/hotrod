@@ -242,6 +242,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
 
     this.sequences = viewTag.getSequences();
     this.queries = viewTag.getQueries();
+    this.selects = viewTag.getSelects();
 
   }
 
@@ -301,6 +302,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
   public void gatherSelectsMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
       throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
     for (SelectMethodMetadata sm : this.selectsMetadata) {
+      log.info("... method: " + sm.getMethod());
       sm.gatherMetadataPhase2(conn2, voRegistry);
     }
   }

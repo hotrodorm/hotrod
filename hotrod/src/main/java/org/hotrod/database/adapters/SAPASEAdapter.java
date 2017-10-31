@@ -198,6 +198,8 @@ public class SAPASEAdapter extends DatabaseAdapter {
     return cm.renderSQLIdentifier() + " as " + this.renderSQLName(cm.getColumnAlias());
   }
 
+  // TODO: clean up
+
   // @Override
   // public boolean supportsJDBCGeneratedKeys() {
   // return true;
@@ -256,7 +258,7 @@ public class SAPASEAdapter extends DatabaseAdapter {
 
   @Override
   public String createOrReplaceView(final String viewName, final String select) {
-    return "create view " + viewName + " as " + select;
+    return "create view " + viewName + " as\n" + select;
   }
 
   @Override

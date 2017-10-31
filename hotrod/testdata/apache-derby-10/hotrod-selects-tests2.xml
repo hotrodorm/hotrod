@@ -7,9 +7,6 @@
 
     <column name="type" converter="person_type" />
     
-    <!-- Good: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 -->
-    <!-- Bad: none -->
-
     <!-- Case 1 - Flat Join -->
 
     <!--
@@ -34,7 +31,7 @@
       </complement>
 
     </select>
-    
+
     <!-- Case 2 - Select returns multiple VOs -->
 
     <!--

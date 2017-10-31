@@ -1,6 +1,7 @@
 package org.hotrod.metadata;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +17,11 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.generator.mybatis.SelectAbstractVO;
 import org.hotrod.generator.mybatis.SelectVO;
+import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
+import org.hotrod.metadata.VORegistry.StructuredVOClass;
+import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOClass;
+import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ClassPackage;
 
 public class VOMetadata {
@@ -26,6 +31,8 @@ public class VOMetadata {
   private static final Logger log = Logger.getLogger(VOMetadata.class);
 
   // Properties
+
+  private VOTag tag;
 
   private ClassPackage classPackage;
   private String name;
@@ -50,6 +57,8 @@ public class VOMetadata {
   public VOMetadata(final VOTag tag, final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig,
       final DaosTag daosTag) throws InvalidConfigurationFileException {
     log.debug("init");
+
+    this.tag = tag;
 
     this.tableMetadata = tag.getTableMetadata();
     this.viewMetadata = tag.getViewMetadata();
@@ -132,6 +141,73 @@ public class VOMetadata {
     }
   }
 
+  public void registerVOs(final ClassPackage classPackage, final VORegistry voRegistry)
+      throws VOAlreadyExistsException, StructuredVOAlreadyExistsException, DuplicatePropertyNameException {
+
+    Set<String> members = new HashSet<String>();
+    List<StructuredColumnMetadata> columns = compileColumns(members);
+
+    StructuredVOClass voClass = new StructuredVOClass(classPackage, this.name, this.superClass, columns,
+        this.tag.getSourceLocation());
+
+    // log.info("name=" + name + " superClass=" + this.superClass);
+    if (this.superClass != null) {
+      voRegistry.addVO(voClass);
+    }
+
+    for (VOMetadata vo : this.associations) {
+      if (members.contains(vo.getProperty())) {
+        throw new DuplicatePropertyNameException(vo.getProperty(), vo.getSourceLocation());
+      }
+      members.add(vo.getProperty());
+      vo.registerVOs(classPackage, voRegistry);
+    }
+    for (VOMetadata vo : this.collections) {
+      if (members.contains(vo.getProperty())) {
+        throw new DuplicatePropertyNameException(vo.getProperty(), vo.getSourceLocation());
+      }
+      members.add(vo.getProperty());
+      vo.registerVOs(classPackage, voRegistry);
+    }
+  }
+
+  private List<StructuredColumnMetadata> compileColumns(final Set<String> members)
+      throws DuplicatePropertyNameException {
+    List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
+    for (ExpressionsMetadata em : this.getExpressions()) {
+      for (StructuredColumnMetadata cm : em.getColumns()) {
+        String memberName = cm.getIdentifier().getJavaMemberIdentifier();
+        if (members.contains(memberName)) {
+          throw new DuplicatePropertyNameException(memberName, em.getSourceLocation());
+        }
+        columns.add(cm);
+      }
+    }
+    return columns;
+  }
+
+  public static class DuplicatePropertyNameException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+    private String propertyName;
+    private SourceLocation location;
+
+    public DuplicatePropertyNameException(final String propertyName, final SourceLocation location) {
+      this.propertyName = propertyName;
+      this.location = location;
+    }
+
+    public String getPropertyName() {
+      return this.propertyName;
+    }
+
+    public SourceLocation getLocation() {
+      return this.location;
+    }
+
+  }
+
   // Indexable
 
   @Override
@@ -178,6 +254,10 @@ public class VOMetadata {
   public String toString() {
     return "{VOMetadata: " + (this.classPackage == null ? "<no-package>" : this.classPackage.getPackage()) + " / "
         + this.name + "}";
+  }
+
+  public SourceLocation getSourceLocation() {
+    return this.tag.getSourceLocation();
   }
 
   // Getters

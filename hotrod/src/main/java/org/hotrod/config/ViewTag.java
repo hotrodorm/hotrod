@@ -135,7 +135,9 @@ public class ViewTag extends AbstractDAOTag {
       }
     }
 
+    log.info("VIEW methods: " + this.getSelects().size());
     for (SelectMethodTag s : this.getSelects()) {
+      log.info("validate s: " + s.getMethod());
       s.validateAgainstDatabase(generator);
     }
 

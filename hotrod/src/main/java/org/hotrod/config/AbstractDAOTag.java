@@ -60,6 +60,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
   @XmlElement
   public final void setSelect(final SelectMethodTag select) {
+    log.info("ADDING SELECT METHOD: " + select.getMethod());
     this.selects.add(select);
   }
 
@@ -105,8 +106,17 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
     // selects
 
+    Set<String> methodNames = new HashSet<String>();
+
     for (SelectMethodTag s : this.selects) {
       s.validate(daosTag, config, fragmentConfig);
+
+      if (methodNames.contains(s.getMethod())) {
+        throw new InvalidConfigurationFileException(s.getSourceLocation(),
+            "Duplicate method name '" + s.getMethod() + "' on <" + s.getTagName() + "> tag.");
+      }
+      methodNames.add(s.getMethod());
+
     }
 
   }

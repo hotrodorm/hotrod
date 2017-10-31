@@ -90,6 +90,8 @@ public class MariaDBAdapter extends DatabaseAdapter {
     return this.mysqlAdaper.renderAliasedSelectColumn(cm);
   }
 
+  // TODO: clean up
+
   // @Override
   // public boolean supportsJDBCGeneratedKeys() {
   // return this.mysqlAdaper.supportsJDBCGeneratedKeys();

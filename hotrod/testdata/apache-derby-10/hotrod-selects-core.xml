@@ -49,16 +49,14 @@
 
   <table name="log" />
 
-  <view name="north_office" />
-
   <!-- table name="document" /-->
 
-  <table name="doc_comment" />
 
 <!-- 
   <fragment file="hotrod-selects-tests.xml" />
 -->
 
   <fragment file="hotrod-selects-tests2.xml" />
+  <fragment file="hotrod-selects-tests3.xml" />
 
 </hotrod>

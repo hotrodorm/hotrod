@@ -18,16 +18,19 @@ import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
+import org.hotrod.config.SelectTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.mybatis.DataSetLayout;
+import org.hotrod.metadata.VOMetadata.DuplicatePropertyNameException;
 import org.hotrod.metadata.VOMetadata.VOMember;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
+import org.hotrod.metadata.VORegistry.StructuredVOClass;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
-import org.hotrod.metadata.VORegistry.VOClass;
+import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
@@ -89,7 +92,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage() : null;
-    this.classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
+    this.classPackage = layout.getDAOPackage(fragmentPackage);
 
   }
 
@@ -103,9 +106,12 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
       try {
         prepareUnstructuredColumnsRetrieval(conn1);
-      } catch (SQLException e) {
-        throw new UncontrolledException("Failed to retrieve metadata for <" + new SelectMethodTag().getTagName()
-            + "> with method '" + this.tag.getMethod() + "'.", e);
+      } catch (InvalidSQLException e) {
+        throw new ControlledException(
+            "Error in " + this.tag.getSourceLocation().render() + ":\n" + "Could not retrieve metadata for <"
+                + new SelectTag().getTagName() + "> tag while creating a temporary SQL view for it.\n" + "* "
+                + e.getCause().getMessage() + "\n" + "* Is the create view SQL code below valid?\n"
+                + "--- begin SQL ---\n" + e.getInvalidSQL() + "\n--- end SQL ---");
       }
 
     } else {
@@ -117,11 +123,11 @@ public class SelectMethodMetadata implements DataSetMetadata {
         this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, this.selectGenerationTag,
             this.columnsPrefixGenerator, conn1);
       } catch (InvalidSQLException e) {
-        throw new ControlledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + "> on "
-            + this.tag.getSourceLocation().render() + "; could not create temporary SQL view for it.\n" + "[ "
-            + e.getMessage() + " ]\n" + "* Do all resulting columns have different and valid names?\n"
-            + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
-            + "\n--- end SQL ---");
+        throw new ControlledException(
+            "Error in " + this.tag.getSourceLocation().render() + ":\n" + "Could not retrieve metadata for <"
+                + this.tag.getTagName() + "> tag while creating the temporary SQL view for it.\n" + "* "
+                + e.getCause().getMessage() + "\n" + "* Is the create view SQL code below valid?\n"
+                + "--- begin SQL ---\n" + e.getInvalidSQL() + "\n--- end SQL ---");
       }
 
     }
@@ -147,14 +153,20 @@ public class SelectMethodMetadata implements DataSetMetadata {
             + e.getColumnName() + "' ");
       }
 
-      List<VOMember> associations = new ArrayList<VOMember>();
-      VOClass vo = new VOClass(null, this.classPackage, this.tag.getVO(), this.nonStructuredColumns, associations);
+      List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
+      StructuredVOClass vo = new StructuredVOClass(this.classPackage, this.tag.getVO(), null, columns,
+          this.tag.getSourceLocation());
       try {
+        log.info("--> Adding VO: " + vo);
         voRegistry.addVO(vo);
       } catch (VOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(this.tag.getSourceLocation(), "Duplicate VO name 'x'.");
+        throw new InvalidConfigurationFileException(vo.getLocation(),
+            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getLocation().render() + ".");
       } catch (StructuredVOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(this.tag.getSourceLocation(), "Duplicate VO name 'x'.");
+        throw new InvalidConfigurationFileException(vo.getLocation(),
+            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getLocation().render() + ".");
       }
 
     } else {
@@ -165,6 +177,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
         log.debug("Phase 2");
         this.tag.getStructuredColumns().gatherMetadataPhase2(conn2);
         this.structuredColumns = this.tag.getStructuredColumns().getMetadata();
+        this.structuredColumns.registerVOs(this.classPackage, voRegistry);
 
       } catch (InvalidSQLException e) {
         throw new ControlledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + "> at "
@@ -176,13 +189,26 @@ public class SelectMethodMetadata implements DataSetMetadata {
         throw new ControlledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + "> at "
             + this.tag.getSourceLocation().render() + ": could not find suitable Java type for column '"
             + e.getColumnName() + "' ");
+      } catch (VOAlreadyExistsException e) {
+        throw new InvalidConfigurationFileException(e.getThisLocation(),
+            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getLocation().render() + ".");
+      } catch (StructuredVOAlreadyExistsException e) {
+        throw new InvalidConfigurationFileException(e.getThisLocation(),
+            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getLocation().render() + ".");
+      } catch (DuplicatePropertyNameException e) {
+        throw new InvalidConfigurationFileException(e.getLocation(),
+            "Duplicate property name '" + e.getPropertyName()
+                + "'. This property name has already been used by another "
+                + "VO property, <association> tag, or <collection> tag in this VO.");
       }
 
     }
 
   }
 
-  public void prepareUnstructuredColumnsRetrieval(final Connection conn) throws SQLException {
+  public void prepareUnstructuredColumnsRetrieval(final Connection conn) throws InvalidSQLException {
 
     log.debug("prepare view 0");
 
@@ -234,6 +260,8 @@ public class SelectMethodMetadata implements DataSetMetadata {
         ps.execute();
         log.debug("prepare view - view created");
 
+      } catch (SQLException e) {
+        throw new InvalidSQLException(this.createView, e);
       } finally {
         log.debug("prepare view - will close resources");
         JdbcUtil.closeDbResources(ps);
@@ -475,22 +503,23 @@ public class SelectMethodMetadata implements DataSetMetadata {
   }
 
   public SelectMethodReturnType getReturnType(final ClassPackage voClassPackage) {
-    return new SelectMethodReturnType(this, voClassPackage);
+    return new SelectMethodReturnType(this, voClassPackage, this.tag.getSourceLocation());
   }
 
   // Classes
 
   public static class SelectMethodReturnType {
 
-    private VOClass soloVO;
+    private StructuredVOClass soloVO;
     private VOMetadata connectedVO;
 
     private boolean multipleRows;
 
-    public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage voClassPackage) {
+    public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage voClassPackage,
+        final SourceLocation location) {
       if (sm.isStructured()) { // structured columns
         StructuredColumnsMetadata scols = sm.getStructuredColumns();
-        if (scols.getVO() == null) { // inner VO
+        if (scols.getVOClass() == null) { // inner VO
           this.soloVO = null;
           this.connectedVO = scols.getVOs().get(0);
         } else { // columns VO (specified in the <columns> tag)
@@ -499,19 +528,24 @@ public class SelectMethodMetadata implements DataSetMetadata {
             VOMember m = new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName());
             associations.add(m);
           }
-          this.soloVO = new VOClass(sm, voClassPackage, scols.getVO(),
-              sm.getStructuredColumns().getExpressionsColumns(), associations);
+
+          this.soloVO = scols.getVOClass();
+          // new VOClass(sm, voClassPackage, scols.getVO(),
+          // sm.getStructuredColumns().getExpressionsColumns(), associations);
           this.connectedVO = null;
         }
       } else { // non-structured columns
-        List<VOMember> associations = new ArrayList<VOMember>();
-        this.soloVO = new VOClass(sm, voClassPackage, sm.getVO(), sm.getColumns(), associations);
+
+        // TODO: last parameter columns should not be empty?
+        List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
+        this.soloVO = new StructuredVOClass(voClassPackage, sm.getVO(), null, columns, location);
+
         this.connectedVO = null;
       }
       this.multipleRows = sm.isMultipleRows();
     }
 
-    public VOClass getSoloVO() {
+    public StructuredVOClass getSoloVO() {
       return soloVO;
     }
 

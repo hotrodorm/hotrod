@@ -21,6 +21,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.SelectMethodMetadata;
+import org.hotrod.metadata.VORegistry;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.util.SUtils;
 

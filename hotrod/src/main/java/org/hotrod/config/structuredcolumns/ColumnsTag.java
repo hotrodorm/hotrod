@@ -29,10 +29,12 @@ import org.hotrod.metadata.ExpressionsMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.VOMetadata;
+import org.hotrod.metadata.VORegistry.VOClass;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 
@@ -56,6 +58,9 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   @SuppressWarnings("unused")
   private HotRodGenerator generator;
+
+  private boolean singleVOResult;
+  private VOClass voClass;
 
   private StructuredColumnsMetadata metadata;
 
@@ -98,8 +103,9 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     this.layout = new DataSetLayout(config);
     this.fragmentConfig = fragmentConfig;
 
-    boolean singleVOResult = this.vos.size() == 1 && this.expressions.isEmpty();
-    this.validate(daosTag, config, fragmentConfig, singleVOResult);
+    this.singleVOResult = this.vos.size() == 1 && this.expressions.isEmpty();
+    this.validate(daosTag, config, fragmentConfig, this.singleVOResult);
+
   }
 
   @Override
@@ -133,23 +139,15 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   @Override
   public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
-    // log.info("structured");
-
-    // log.info("vos=" + this.vos.size() + " expressions=" +
-    // this.expressions.size());
 
     List<String> columns = new ArrayList<String>();
     for (VOTag vo : this.vos) {
-      // log.info("vo=" + vo);
       columns.addAll(vo.gelAliasedSQLColumns());
     }
 
     for (ExpressionsTag exp : this.expressions) {
-      // log.info("exp=" + exp + " exp.getColumnsMetadata().size()=" +
-      // exp.getColumnsMetadata().size());
       for (StructuredColumnMetadata m : exp.getColumnsMetadata()) {
         String aliasedSQLColumn = m.renderAliasedSQLColumn();
-        // log.info(" + aliasedSQLColumn=" + aliasedSQLColumn);
         columns.add(aliasedSQLColumn);
       }
     }
@@ -250,8 +248,17 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
       vos.add(t.getMetadata(this.layout, this.fragmentConfig, this.daosTag));
     }
 
-    this.metadata = new StructuredColumnsMetadata(this.vo, expressions, vos);
+    ClassPackage classPackage = getVOClassPackage(this.layout, this.fragmentConfig);
+    this.metadata = new StructuredColumnsMetadata(this, classPackage, this.singleVOResult, this.vo, expressions, vos);
 
+  }
+
+  // Utilities
+
+  private ClassPackage getVOClassPackage(final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig) {
+    ClassPackage fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
+        ? fragmentConfig.getFragmentPackage() : null;
+    return layout.getDAOPackage(fragmentPackage);
   }
 
   // Getters
