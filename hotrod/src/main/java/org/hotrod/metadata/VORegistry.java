@@ -1,10 +1,13 @@
 package org.hotrod.metadata;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hotrod.metadata.VOMetadata.DuplicatePropertyNameException;
 import org.hotrod.metadata.VOMetadata.VOMember;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ClassPackage;
@@ -21,7 +24,8 @@ public class VORegistry {
 
   // Behavior
 
-  public void addVO(final VOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
+  // From <table> and <view>
+  public void addVO(final EntityVOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
     log.debug("add");
     ClassPackage classPackage = voClass.getClassPackage();
     FragmentRegistry f = this.fragmentsByPackage.get(classPackage);
@@ -32,7 +36,8 @@ public class VORegistry {
     f.addVO(voClass);
   }
 
-  public void addVO(final StructuredVOClass structuredVOClass)
+  // From <select> tags
+  public void addVO(final SelectVOClass structuredVOClass)
       throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
     ClassPackage classPackage = structuredVOClass.getClassPackage();
     FragmentRegistry f = this.fragmentsByPackage.get(classPackage);
@@ -43,9 +48,9 @@ public class VORegistry {
     f.addVO(structuredVOClass);
   }
 
-  public VOClass findVOClass(final TableDataSetMetadata name) {
+  public EntityVOClass findEntityVOClass(final TableDataSetMetadata name) {
     for (FragmentRegistry f : this.fragmentsByPackage.values()) {
-      VOClass vo = f.findVOClass(name);
+      EntityVOClass vo = f.findEntityVOClass(name);
       if (vo != null) {
         return vo;
       }
@@ -66,24 +71,24 @@ public class VORegistry {
     // Properties
 
     private ClassPackage classPackage;
-    private LinkedHashMap<DataSetMetadata, VOClass> vosByMetadata;
-    private LinkedHashMap<String, VOClass> vosByName;
-    private LinkedHashMap<String, StructuredVOClass> structuredVOsByName;
+    private LinkedHashMap<DataSetMetadata, EntityVOClass> vosByMetadata;
+    private LinkedHashMap<String, EntityVOClass> vosByName;
+    private LinkedHashMap<String, SelectVOClass> structuredVOsByName;
 
     // Constructor
 
     public FragmentRegistry(final ClassPackage classPackage) {
       this.classPackage = classPackage;
-      this.vosByMetadata = new LinkedHashMap<DataSetMetadata, VOClass>();
-      this.vosByName = new LinkedHashMap<String, VOClass>();
-      this.structuredVOsByName = new LinkedHashMap<String, StructuredVOClass>();
+      this.vosByMetadata = new LinkedHashMap<DataSetMetadata, EntityVOClass>();
+      this.vosByName = new LinkedHashMap<String, EntityVOClass>();
+      this.structuredVOsByName = new LinkedHashMap<String, SelectVOClass>();
     }
 
     // Behavior
 
-    public void addVO(final VOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
+    public void addVO(final EntityVOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
       {
-        VOClass other = this.vosByName.get(voClass.getName());
+        EntityVOClass other = this.vosByName.get(voClass.getName());
         if (other != null) {
           throw new VOAlreadyExistsException(voClass, other);
         }
@@ -97,7 +102,7 @@ public class VORegistry {
       }
 
       {
-        StructuredVOClass other = this.structuredVOsByName.get(voClass.getName());
+        SelectVOClass other = this.structuredVOsByName.get(voClass.getName());
         if (other != null) {
           throw new StructuredVOAlreadyExistsException(voClass, other);
         }
@@ -108,15 +113,14 @@ public class VORegistry {
       }
     }
 
-    public void addVO(final StructuredVOClass voClass)
-        throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
-      log.info("[structured] fragment=" + this.classPackage.getPackage() + " voClass="
+    public void addVO(final SelectVOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
+      log.debug("[structured] fragment=" + this.classPackage.getPackage() + " voClass="
           + voClass.getClassPackage().getPackage() + " / " + voClass.getName() + " "
           + this.vosByName.containsKey(voClass.getName()) + "/"
           + this.structuredVOsByName.containsKey(voClass.getName()));
 
       {
-        VOClass other = this.vosByName.get(voClass.getName());
+        EntityVOClass other = this.vosByName.get(voClass.getName());
         if (other != null) {
           throw new VOAlreadyExistsException(voClass, other);
         }
@@ -124,14 +128,14 @@ public class VORegistry {
 
       {
         if (this.structuredVOsByName.containsKey(voClass.getName())) {
-          StructuredVOClass other = this.structuredVOsByName.get(voClass.getName());
+          SelectVOClass other = this.structuredVOsByName.get(voClass.getName());
           throw new StructuredVOAlreadyExistsException(voClass, other);
         }
         this.structuredVOsByName.put(voClass.getName(), voClass);
       }
     }
 
-    public VOClass findVOClass(final TableDataSetMetadata name) {
+    public EntityVOClass findEntityVOClass(final TableDataSetMetadata name) {
       return this.vosByMetadata.get(name);
     }
 
@@ -141,17 +145,17 @@ public class VORegistry {
       return classPackage;
     }
 
-    public List<VOClass> getVOs() {
-      return new ArrayList<VOClass>(this.vosByName.values());
+    public List<EntityVOClass> getVOs() {
+      return new ArrayList<EntityVOClass>(this.vosByName.values());
     }
 
-    public List<StructuredVOClass> getStructuredVOs() {
-      return new ArrayList<StructuredVOClass>(this.structuredVOsByName.values());
+    public List<SelectVOClass> getStructuredVOs() {
+      return new ArrayList<SelectVOClass>(this.structuredVOsByName.values());
     }
 
   }
 
-  public static class VOClass {
+  public static class EntityVOClass {
 
     // Properties
 
@@ -159,23 +163,17 @@ public class VORegistry {
     private ClassPackage classPackage;
     private String name;
     private LinkedHashMap<String, ColumnMetadata> columnsByName;
-    private List<VOMember> associations;
     private SourceLocation location;
 
     // Constructor
 
-    public VOClass(final DataSetMetadata metadata, final ClassPackage classPackage, final String name,
+    public EntityVOClass(final DataSetMetadata metadata, final ClassPackage classPackage, final String name,
         final List<ColumnMetadata> columns, final SourceLocation location) {
-      initialize(metadata, classPackage, name, columns, new ArrayList<VOMember>(), location);
-    }
+      this.location = location;
+      if (this.location == null) {
+        throw new IllegalArgumentException("location cannot be null");
+      }
 
-    public VOClass(final DataSetMetadata metadata, final ClassPackage classPackage, final String name,
-        final List<ColumnMetadata> columns, final List<VOMember> associations, final SourceLocation location) {
-      initialize(metadata, classPackage, name, columns, associations, location);
-    }
-
-    private void initialize(final DataSetMetadata metadata, final ClassPackage classPackage, final String name,
-        final List<ColumnMetadata> columns, final List<VOMember> associations, SourceLocation location) {
       this.metadata = metadata;
       this.classPackage = classPackage;
       this.name = name;
@@ -183,22 +181,17 @@ public class VORegistry {
       for (ColumnMetadata c : columns) {
         this.columnsByName.put(c.getColumnName(), c);
       }
-      this.associations = associations;
-      this.location = location;
-      if (this.location == null) {
-        throw new IllegalArgumentException("location cannot be null");
-      }
     }
 
     // Behavior
 
-    public boolean equals(final VOClass o) {
+    public boolean equals(final EntityVOClass o) {
       if (o == null) {
         return false;
       }
-      VOClass other;
+      EntityVOClass other;
       try {
-        other = (VOClass) o;
+        other = (EntityVOClass) o;
       } catch (ClassCastException e) {
         return false;
       }
@@ -263,10 +256,6 @@ public class VORegistry {
       return columnsByName;
     }
 
-    public List<VOMember> getAssociations() {
-      return associations;
-    }
-
     public String getFullClassName() {
       return this.classPackage.getFullClassName(this.name);
     }
@@ -277,31 +266,63 @@ public class VORegistry {
 
   }
 
-  public static class StructuredVOClass {
+  public static class SelectVOClass {
 
     // Properties
 
     private ClassPackage classPackage;
     private String name;
-    private VOClass extendsVO;
+    private EntityVOClass extendsEntityVO;
     private LinkedHashMap<String, StructuredColumnMetadata> columnsByName;
+    private List<VOMember> associations;
+    private List<VOMember> collections;
     private SourceLocation location;
 
     // Constructor
 
-    public StructuredVOClass(final ClassPackage classPackage, final String name, final VOClass extendsVO,
-        final List<StructuredColumnMetadata> columns, final SourceLocation location) {
-      this.classPackage = classPackage;
-      this.name = name;
-      this.extendsVO = extendsVO;
-      this.columnsByName = new LinkedHashMap<String, StructuredColumnMetadata>();
-      for (StructuredColumnMetadata c : columns) {
-        this.columnsByName.put(c.getColumnName(), c);
-      }
+    public SelectVOClass(final ClassPackage classPackage, final String name, final EntityVOClass extendsEntityVO,
+        final List<StructuredColumnMetadata> columns, final List<VOMember> associations,
+        final List<VOMember> collections, final SourceLocation location) throws DuplicatePropertyNameException {
+
       this.location = location;
       if (this.location == null) {
         throw new IllegalArgumentException("location cannot be null");
       }
+
+      Set<String> properties = new HashSet<String>();
+
+      this.classPackage = classPackage;
+      this.name = name;
+      this.extendsEntityVO = extendsEntityVO;
+
+      this.columnsByName = new LinkedHashMap<String, StructuredColumnMetadata>();
+      for (StructuredColumnMetadata cm : columns) {
+        String property = cm.getIdentifier().getJavaMemberIdentifier();
+        if (properties.contains(property)) {
+          throw new DuplicatePropertyNameException(property, location);
+        }
+        properties.add(property);
+        this.columnsByName.put(cm.getColumnName(), cm);
+      }
+
+      this.associations = associations;
+      for (VOMember a : this.associations) {
+        String property = a.getProperty();
+        if (properties.contains(property)) {
+          throw new DuplicatePropertyNameException(property, location);
+        }
+        properties.add(property);
+      }
+
+      this.collections = collections;
+      for (VOMember c : this.collections) {
+        String property = c.getProperty();
+        if (properties.contains(property)) {
+          throw new DuplicatePropertyNameException(property, location);
+        }
+        properties.add(property);
+      }
+
     }
 
     // Behavior
@@ -310,9 +331,9 @@ public class VORegistry {
       if (o == null) {
         return false;
       }
-      StructuredVOClass other;
+      SelectVOClass other;
       try {
-        other = (StructuredVOClass) o;
+        other = (SelectVOClass) o;
       } catch (ClassCastException e) {
         return false;
       }
@@ -322,12 +343,12 @@ public class VORegistry {
       if (!this.name.equals(other.name)) {
         return false;
       }
-      if (this.extendsVO == null) {
-        if (other.extendsVO != null) {
+      if (this.extendsEntityVO == null) {
+        if (other.extendsEntityVO != null) {
           return false;
         }
       } else {
-        if (!this.extendsVO.equals(other.extendsVO)) {
+        if (!this.extendsEntityVO.equals(other.extendsEntityVO)) {
           return false;
         }
       }
@@ -371,12 +392,16 @@ public class VORegistry {
       return name;
     }
 
-    public VOClass getExtendsVO() {
-      return extendsVO;
+    public EntityVOClass getExtendsEntityVO() {
+      return extendsEntityVO;
     }
 
     public LinkedHashMap<String, StructuredColumnMetadata> getColumnsByName() {
       return columnsByName;
+    }
+
+    public List<VOMember> getAssociations() {
+      return associations;
     }
 
     public SourceLocation getLocation() {
@@ -406,25 +431,25 @@ public class VORegistry {
 
     private static final long serialVersionUID = 1L;
 
-    private VOClass thisOne;
-    private StructuredVOClass thisOneSt;
-    private VOClass otherOne;
+    private EntityVOClass thisOne;
+    private SelectVOClass thisOneSt;
+    private EntityVOClass otherOne;
 
-    public VOAlreadyExistsException(VOClass thisOne, final VOClass otherOne) {
+    public VOAlreadyExistsException(EntityVOClass thisOne, final EntityVOClass otherOne) {
       super();
       this.thisOne = thisOne;
       this.thisOneSt = null;
       this.otherOne = otherOne;
     }
 
-    public VOAlreadyExistsException(StructuredVOClass thisOneSt, final VOClass otherOne) {
+    public VOAlreadyExistsException(SelectVOClass thisOneSt, final EntityVOClass otherOne) {
       super();
       this.thisOne = null;
       this.thisOneSt = thisOneSt;
       this.otherOne = otherOne;
     }
 
-    public VOClass getOtherOne() {
+    public EntityVOClass getOtherOne() {
       return otherOne;
     }
 
@@ -446,25 +471,25 @@ public class VORegistry {
 
     private static final long serialVersionUID = 1L;
 
-    private VOClass thisOne;
-    private StructuredVOClass thisOneSt;
-    private StructuredVOClass otherOne;
+    private EntityVOClass thisOne;
+    private SelectVOClass thisOneSt;
+    private SelectVOClass otherOne;
 
-    public StructuredVOAlreadyExistsException(final VOClass thisOne, final StructuredVOClass otherOne) {
+    public StructuredVOAlreadyExistsException(final EntityVOClass thisOne, final SelectVOClass otherOne) {
       super();
       this.thisOne = thisOne;
       this.thisOneSt = null;
       this.otherOne = otherOne;
     }
 
-    public StructuredVOAlreadyExistsException(final StructuredVOClass thisOneSt, final StructuredVOClass otherOne) {
+    public StructuredVOAlreadyExistsException(final SelectVOClass thisOneSt, final SelectVOClass otherOne) {
       super();
       this.thisOne = null;
       this.thisOneSt = thisOneSt;
       this.otherOne = otherOne;
     }
 
-    public StructuredVOClass getOtherOne() {
+    public SelectVOClass getOtherOne() {
       return otherOne;
     }
 

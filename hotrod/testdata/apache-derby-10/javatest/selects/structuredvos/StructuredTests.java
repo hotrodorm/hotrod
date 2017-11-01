@@ -8,6 +8,7 @@ import org.hotrod.runtime.util.SUtils;
 import hotrod.test.generation.AccountPersonFlatVO;
 import hotrod.test.generation.AccountPersonVO;
 import hotrod.test.generation.AccountVO;
+import hotrod.test.generation.AccountWithTransactions2VO;
 import hotrod.test.generation.AccountWithTransactionsVO;
 import hotrod.test.generation.ExpandedAccountVO;
 import hotrod.test.generation.ExtendedPersonVO;
@@ -105,7 +106,7 @@ public class StructuredTests {
     for (ExtendedPersonVO ep : list) {
       printObject(ep, 0);
       printObject(ep.getCategory(), 2);
-      for (AccountWithTransactionsVO at : ep.getAccounts()) {
+      for (AccountWithTransactions2VO at : ep.getAccounts()) {
         printObject(at, 2);
         for (TransactionVO t : at.getTransactions()) {
           printObject(t, 4);

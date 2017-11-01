@@ -26,7 +26,7 @@ import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
-import org.hotrod.metadata.VORegistry.StructuredVOClass;
+import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ClassPackage;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -205,11 +205,12 @@ public class MyBatisGenerator extends HotRodGenerator {
 
     // solo VO
 
-    StructuredVOClass soloVO = rt.getSoloVO();
+    SelectVOClass soloVO = rt.getSoloVO();
     if (soloVO != null) {
       SelectAbstractVO abstractVO = new SelectAbstractVO(soloVO, layout, this.myBatisTag);
       this.abstractSelectVOs.add(abstractVO);
-      this.selectVOs.add(new SelectVO(soloVO, abstractVO, layout));
+      SelectVO vo = new SelectVO(soloVO, abstractVO, layout);
+      this.selectVOs.add(vo);
     }
 
     // connected VOs (all)

@@ -40,7 +40,7 @@
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
-      <columns vo="AccountPersonVO">
+      <columns vo="AccountPersonVO3">
         <vo table="account" property="account" alias="a"> a.* </vo>
         <vo table="person" property="person" alias="p"></vo>
         <expressions>

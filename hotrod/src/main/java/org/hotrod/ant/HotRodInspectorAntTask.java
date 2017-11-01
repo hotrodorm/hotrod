@@ -242,14 +242,11 @@ public class HotRodInspectorAntTask extends Task {
       wb.close();
 
     } catch (RowsExceededException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      throw new BuildException(e);
     } catch (WriteException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      throw new BuildException(e);
     } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      throw new BuildException(e);
     }
 
   }

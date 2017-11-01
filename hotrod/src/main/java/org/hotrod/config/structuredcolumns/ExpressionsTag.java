@@ -220,12 +220,9 @@ public class ExpressionsTag extends AbstractConfigurationTag implements ColumnsP
 
   // Rendering
 
-  // TODO
-
   public List<String> gelAliasedSQLColumns() {
     List<String> columns = new ArrayList<String>();
     for (Expression e : this.expressions) {
-      log.info("=================== e.getFormula()=" + e.getFormula());
       columns.add(e.getFormula() + " as " + e.getNewNamespacedAlias());
     }
     return columns;

@@ -302,7 +302,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
   public void gatherSelectsMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
       throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
     for (SelectMethodMetadata sm : this.selectsMetadata) {
-      log.info("... method: " + sm.getMethod());
+      log.debug("... method: " + sm.getMethod());
       sm.gatherMetadataPhase2(conn2, voRegistry);
     }
   }

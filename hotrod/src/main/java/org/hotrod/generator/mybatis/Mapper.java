@@ -1098,8 +1098,6 @@ public class Mapper {
 
   }
 
-  // TODO: implement
-
   private void writeSelectMethod(final SelectMethodMetadata sm) throws IOException {
     println("  <!-- select method: " + sm.getMethod() + " -->");
     println();
@@ -1113,7 +1111,6 @@ public class Mapper {
     println("  <resultMap id=\"" + resultMapName + "\" type=\"" + rt.getVOFullClassName() + "\">");
 
     if (!sm.isStructured()) {
-      // log.info("non-structured");
 
       for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
         renderResultMapColumn(sm, cm, "result");
@@ -1124,18 +1121,13 @@ public class Mapper {
       StructuredColumnsMetadata scm = sm.getStructuredColumns();
 
       boolean soloVO = scm.getExpressions().isEmpty() && scm.getVOs().size() == 1;
-      // log.info("structured. soloVO=" + soloVO);
       if (soloVO) {
         VOMetadata vo = scm.getVOs().get(0);
-        // log.info("vo.getClass()=" + vo.getName());
-        // log.info("DAO Registry: " + this.entityDAORegistry);
 
         String entityFullClassName = vo.getSuperClass() != null ? vo.getSuperClass().getFullClassName()
             : vo.getFullClassName();
 
         ObjectDAO dao = this.entityDAORegistry.findEntityDAO(entityFullClassName);
-        // log.info("vo=" + vo.getName() + " entityFullClassName=" +
-        // entityFullClassName + " dao=" + dao);
         renderResultMapLevel(vo.getInheritedColumns(), vo.getDeclaredColumns(), vo.getAssociations(),
             vo.getCollections(), dao, 0);
       } else {
@@ -1194,8 +1186,6 @@ public class Mapper {
       String entityFullClassName = a.getSuperClass() != null ? a.getSuperClass().getFullClassName()
           : a.getFullClassName();
       ObjectDAO aDAO = entityDAORegistry.findEntityDAO(entityFullClassName);
-      // log.info("(a) vo=" + a.getName() + " entityFullClassName=" +
-      // entityFullClassName);
       renderResultMapLevel(a.getInheritedColumns(), a.getDeclaredColumns(), a.getAssociations(), a.getCollections(),
           aDAO, level + 1);
       println(indent + "</association>");
@@ -1209,8 +1199,6 @@ public class Mapper {
         String entityFullClassName = c.getSuperClass() != null ? c.getSuperClass().getFullClassName()
             : c.getFullClassName();
         ObjectDAO cDAO = entityDAORegistry.findEntityDAO(entityFullClassName);
-        // log.info("(c) vo=" + c.getName() + " entityFullClassName=" +
-        // entityFullClassName);
         renderResultMapLevel(c.getInheritedColumns(), c.getDeclaredColumns(), c.getAssociations(), c.getCollections(),
             cDAO, level + 1);
         println(indent + "</collection>");
@@ -1247,9 +1235,7 @@ public class Mapper {
 
   public String getRuntimeSourceFileName() {
     File dir = this.layout.getMapperRuntimeDir(this.fragmentPackage);
-    // log.info("dir=" + dir);
     File source = new File(dir, this.getSourceFileName());
-    // log.info("source=" + source.getPath());
     return source.getPath();
   }
 

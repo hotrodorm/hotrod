@@ -29,7 +29,6 @@ import org.hotrod.metadata.ExpressionsMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.VOMetadata;
-import org.hotrod.metadata.VORegistry.VOClass;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.util.ListWriter;
@@ -59,8 +58,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   @SuppressWarnings("unused")
   private HotRodGenerator generator;
 
-  private boolean singleVOResult;
-  private VOClass voClass;
+  private boolean connectedVOResult;
 
   private StructuredColumnsMetadata metadata;
 
@@ -103,8 +101,8 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     this.layout = new DataSetLayout(config);
     this.fragmentConfig = fragmentConfig;
 
-    this.singleVOResult = this.vos.size() == 1 && this.expressions.isEmpty();
-    this.validate(daosTag, config, fragmentConfig, this.singleVOResult);
+    this.connectedVOResult = this.vos.size() == 1 && this.expressions.isEmpty();
+    this.validate(daosTag, config, fragmentConfig, this.connectedVOResult);
 
   }
 
@@ -159,7 +157,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   @Override
   public DynamicExpression getJavaExpression(final ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
-    // TODO Auto-generated method stub
+    // XXX: Pending. Develop only when/if it's needed.
     return null;
   }
 
@@ -249,7 +247,9 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     }
 
     ClassPackage classPackage = getVOClassPackage(this.layout, this.fragmentConfig);
-    this.metadata = new StructuredColumnsMetadata(this, classPackage, this.singleVOResult, this.vo, expressions, vos);
+
+    this.metadata = new StructuredColumnsMetadata(this, classPackage, !this.connectedVOResult, this.vo, expressions,
+        vos);
 
   }
 

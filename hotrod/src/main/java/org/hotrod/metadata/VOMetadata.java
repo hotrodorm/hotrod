@@ -1,7 +1,6 @@
 package org.hotrod.metadata;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,10 +16,10 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.generator.mybatis.SelectAbstractVO;
 import org.hotrod.generator.mybatis.SelectVO;
+import org.hotrod.metadata.VORegistry.EntityVOClass;
+import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
-import org.hotrod.metadata.VORegistry.StructuredVOClass;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
-import org.hotrod.metadata.VORegistry.VOClass;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ClassPackage;
 
@@ -36,7 +35,7 @@ public class VOMetadata {
 
   private ClassPackage classPackage;
   private String name;
-  private VOClass superClass;
+  private EntityVOClass entityVOSuperClass;
 
   private List<ExpressionsMetadata> expressions;
   private List<VOMetadata> associations;
@@ -95,30 +94,21 @@ public class VOMetadata {
     if (tag.getExtendedVO() != null) { // extended VO from a table or view
       this.classPackage = getVOClassPackage(layout, fragmentConfig);
       this.name = tag.getExtendedVO();
-      // log.info("[EXTENDED VO]: " +
-      // this.classPackage.getFullClassName(this.name));
-      this.superClass = tag.getGenerator().getVORegistry()
-          .findVOClass(this.tableMetadata != null ? this.tableMetadata : this.viewMetadata);
-
-      // log.info("vo=" + this.name + " this.superClass=" + this.superClass);
-
-      if (this.superClass == null) {
+      this.entityVOSuperClass = tag.getGenerator().getVORegistry()
+          .findEntityVOClass(this.tableMetadata != null ? this.tableMetadata : this.viewMetadata);
+      if (this.entityVOSuperClass == null) {
         throw new InvalidConfigurationFileException(tag.getSourceLocation(),
             "Invalid 'extended-vo' attribute with value '" + tag.getExtendedVO()
                 + "'. There's no table or view VO with that name.");
       }
     } else { // it's a table or view VO
-      this.superClass = null;
+      this.entityVOSuperClass = null;
       if (this.tableMetadata != null) {
         this.classPackage = getVOClassPackage(layout, this.tableMetadata.getFragmentConfig());
         this.name = daosTag.generateVOName(this.tableMetadata.getIdentifier());
-        // log.info("[TABLE VO]: " +
-        // this.classPackage.getFullClassName(this.name));
       } else {
         this.classPackage = getVOClassPackage(layout, this.viewMetadata.getFragmentConfig());
         this.name = daosTag.generateVOName(this.viewMetadata.getIdentifier());
-        // log.info("[VIEW VO]: " +
-        // this.classPackage.getFullClassName(this.name));
       }
     }
 
@@ -128,15 +118,18 @@ public class VOMetadata {
 
   public void register(final Set<SelectAbstractVO> abstractSelectVOs, final Set<SelectVO> selectVOs,
       final DataSetLayout layout, final MyBatisTag myBatisTag) {
-    if (this.superClass != null) {
+    log.debug("VO " + this.name);
+    if (this.entityVOSuperClass != null) {
       SelectAbstractVO abstractVO = new SelectAbstractVO(this, layout, myBatisTag);
       abstractSelectVOs.add(abstractVO);
       selectVOs.add(new SelectVO(this, abstractVO, layout));
     }
     for (VOMetadata vo : this.associations) {
+      log.debug("+ property " + vo.getProperty() + " (" + vo.getName() + ")");
       vo.register(abstractSelectVOs, selectVOs, layout, myBatisTag);
     }
     for (VOMetadata vo : this.collections) {
+      log.debug("+ property " + vo.getProperty() + " (List<" + vo.getName() + ">)");
       vo.register(abstractSelectVOs, selectVOs, layout, myBatisTag);
     }
   }
@@ -144,46 +137,37 @@ public class VOMetadata {
   public void registerVOs(final ClassPackage classPackage, final VORegistry voRegistry)
       throws VOAlreadyExistsException, StructuredVOAlreadyExistsException, DuplicatePropertyNameException {
 
-    Set<String> members = new HashSet<String>();
-    List<StructuredColumnMetadata> columns = compileColumns(members);
+    List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
+    for (ExpressionsMetadata em : this.getExpressions()) {
+      columns.addAll(em.getColumns());
+    }
 
-    StructuredVOClass voClass = new StructuredVOClass(classPackage, this.name, this.superClass, columns,
-        this.tag.getSourceLocation());
+    if (this.entityVOSuperClass != null) {
+      for (ColumnMetadata cm : this.entityVOSuperClass.getColumnsByName().values()) {
+        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false);
+        columns.add(m);
+      }
+    }
 
-    // log.info("name=" + name + " superClass=" + this.superClass);
-    if (this.superClass != null) {
+    List<VOMember> associations = new ArrayList<VOMember>();
+    for (VOMetadata vo : this.associations) {
+      vo.registerVOs(classPackage, voRegistry);
+      associations.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty()));
+    }
+
+    List<VOMember> collections = new ArrayList<VOMember>();
+
+    for (VOMetadata vo : this.collections) {
+      vo.registerVOs(classPackage, voRegistry);
+      collections.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty()));
+    }
+
+    if (this.entityVOSuperClass != null) {
+      SelectVOClass voClass = new SelectVOClass(classPackage, this.name, this.entityVOSuperClass, columns, associations,
+          collections, this.tag.getSourceLocation());
       voRegistry.addVO(voClass);
     }
 
-    for (VOMetadata vo : this.associations) {
-      if (members.contains(vo.getProperty())) {
-        throw new DuplicatePropertyNameException(vo.getProperty(), vo.getSourceLocation());
-      }
-      members.add(vo.getProperty());
-      vo.registerVOs(classPackage, voRegistry);
-    }
-    for (VOMetadata vo : this.collections) {
-      if (members.contains(vo.getProperty())) {
-        throw new DuplicatePropertyNameException(vo.getProperty(), vo.getSourceLocation());
-      }
-      members.add(vo.getProperty());
-      vo.registerVOs(classPackage, voRegistry);
-    }
-  }
-
-  private List<StructuredColumnMetadata> compileColumns(final Set<String> members)
-      throws DuplicatePropertyNameException {
-    List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
-    for (ExpressionsMetadata em : this.getExpressions()) {
-      for (StructuredColumnMetadata cm : em.getColumns()) {
-        String memberName = cm.getIdentifier().getJavaMemberIdentifier();
-        if (members.contains(memberName)) {
-          throw new DuplicatePropertyNameException(memberName, em.getSourceLocation());
-        }
-        columns.add(cm);
-      }
-    }
-    return columns;
   }
 
   public static class DuplicatePropertyNameException extends Exception {
@@ -298,8 +282,8 @@ public class VOMetadata {
     return this.property;
   }
 
-  public VOClass getSuperClass() {
-    return this.superClass;
+  public EntityVOClass getSuperClass() {
+    return this.entityVOSuperClass;
   }
 
   public ClassPackage getClassPackage() {

@@ -741,7 +741,7 @@ public class ObjectDAO {
     println();
   }
 
-  // TODO: remove once tested
+  // XXX: This method is only used for internal testing
 
   @SuppressWarnings("unused")
   private void writeSelectExpression() throws IOException, ControlledException {

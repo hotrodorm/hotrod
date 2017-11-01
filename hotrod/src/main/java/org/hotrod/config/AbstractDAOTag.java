@@ -60,7 +60,6 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
   @XmlElement
   public final void setSelect(final SelectMethodTag select) {
-    log.info("ADDING SELECT METHOD: " + select.getMethod());
     this.selects.add(select);
   }
 

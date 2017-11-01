@@ -46,7 +46,7 @@ import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
-import org.hotrod.metadata.VORegistry.VOClass;
+import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
@@ -217,7 +217,7 @@ public abstract class HotRodGenerator {
                   : null;
           ClassPackage classPackage = layout.getDAOPackage(fragmentPackage);
           String voName = daosTag.generateVOName(tm.getIdentifier());
-          VOClass vo = new VOClass(tm, classPackage, voName, tm.getColumns(), tm.getDaoTag().getSourceLocation());
+          EntityVOClass vo = new EntityVOClass(tm, classPackage, voName, tm.getColumns(), tm.getDaoTag().getSourceLocation());
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {
@@ -284,7 +284,7 @@ public abstract class HotRodGenerator {
                   : null;
           ClassPackage classPackage = layout.getDAOPackage(fragmentPackage);
           String voName = daosTag.generateVOName(vm.getIdentifier());
-          VOClass vo = new VOClass(vm, classPackage, voName, vm.getColumns(), vm.getDaoTag().getSourceLocation());
+          EntityVOClass vo = new EntityVOClass(vm, classPackage, voName, vm.getColumns(), vm.getDaoTag().getSourceLocation());
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {
@@ -331,8 +331,6 @@ public abstract class HotRodGenerator {
 
       for (TableDataSetMetadata vm : this.views) {
         vm.gatherSelectsMetadataPhase1(this, conn, layout);
-        log.info(
-            "View " + vm.getIdentifier().getSQLIdentifier() + " has " + vm.getSelectsMetadata().size() + " methods.");
         if (vm.hasSelects()) {
           hasSelects = true;
         }
@@ -429,12 +427,14 @@ public abstract class HotRodGenerator {
         log.debug("ret 3");
 
         for (TableDataSetMetadata tm : this.tables) {
-          log.info("gather2 on table " + tm.getIdentifier().getSQLIdentifier());
+          // log.info("gather2 on table " +
+          // tm.getIdentifier().getSQLIdentifier());
           tm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
         }
 
         for (TableDataSetMetadata vm : this.views) {
-          log.info("gather2 on view " + vm.getIdentifier().getSQLIdentifier());
+          // log.info("gather2 on view " +
+          // vm.getIdentifier().getSQLIdentifier());
           vm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
         }
 
@@ -443,7 +443,7 @@ public abstract class HotRodGenerator {
         }
 
         for (DAOMetadata dm : this.daos) {
-          log.info("gather2 on DAO " + dm.getJavaClassName());
+          // log.info("gather2 on DAO " + dm.getJavaClassName());
           dm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
         }
 
@@ -523,11 +523,11 @@ public abstract class HotRodGenerator {
             + (sm.isMultipleRows() ? "<multiple-rows-return>" : "<single-row-return>") + " ===");
         if (sm.isStructured()) {
           StructuredColumnsMetadata sc = sm.getStructuredColumns();
-          if (sc.getVOClass() == null) {
+          if (sc.getSoloVOClass() == null) {
             logVOs(sc.getVOs(), 0);
             logExpressions(sc.getExpressions(), 0);
           } else {
-            display("    + <main-single-vo> (new) " + sc.getVOClass());
+            display("    + <main-single-vo> (new) " + sc.getSoloVOClass());
             logVOs(sc.getVOs(), 2);
             logExpressions(sc.getExpressions(), 2);
           }

@@ -67,11 +67,8 @@ public class ComplementTag extends EnhancedSQLPart {
       final HotRodFragmentConfigTag fragmentConfig, final ParameterDefinitions parameters)
       throws InvalidConfigurationFileException {
 
-    // log.info("VALIDATE: start - this.content.size()=" + this.content.size());
-
     this.parts = new ArrayList<DynamicSQLPart>();
     for (Object obj : this.content) {
-      // log.info("obj: " + obj.getClass().getName());
       DynamicSQLPart p = null;
       try {
         String s = (String) obj;
@@ -86,9 +83,7 @@ public class ComplementTag extends EnhancedSQLPart {
         }
       }
       this.parts.add(p);
-      // log.info("VALIDATE: add - " + p.getClass().getName());
     }
-    // log.info("VALIDATE: total=" + this.parts.size());
 
   }
 
@@ -109,10 +104,8 @@ public class ComplementTag extends EnhancedSQLPart {
 
   @Override
   public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
-    // log.info("[complement]");
     StringBuilder sb = new StringBuilder();
     for (DynamicSQLPart p : this.parts) {
-      // log.info("DynamicSQLPart: " + p.getClass().getName());
       sb.append(p.renderXML(parameterRenderer));
     }
     formatter.add(sb.toString());
@@ -121,7 +114,7 @@ public class ComplementTag extends EnhancedSQLPart {
   @Override
   public DynamicExpression getJavaExpression(ParameterRenderer parameterRenderer)
       throws InvalidJavaExpressionException {
-    // TODO Auto-generated method stub
+    // XXX: Pending. Develop only when/if it's needed.
     return null;
   }
 

@@ -27,8 +27,8 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.VOMetadata.DuplicatePropertyNameException;
 import org.hotrod.metadata.VOMetadata.VOMember;
+import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
-import org.hotrod.metadata.VORegistry.StructuredVOClass;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.runtime.util.ListWriter;
@@ -70,6 +70,8 @@ public class SelectMethodMetadata implements DataSetMetadata {
   private String createView;
 
   private ClassPackage classPackage;
+
+  private SelectMethodReturnType selectMethodReturnType;
 
   // Constructor
 
@@ -154,10 +156,19 @@ public class SelectMethodMetadata implements DataSetMetadata {
       }
 
       List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
-      StructuredVOClass vo = new StructuredVOClass(this.classPackage, this.tag.getVO(), null, columns,
-          this.tag.getSourceLocation());
+      for (ColumnMetadata cm : this.nonStructuredColumns) {
+        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false);
+        columns.add(m);
+      }
+
+      List<VOMember> associations = new ArrayList<VOMember>();
+      List<VOMember> collections = new ArrayList<VOMember>();
+
+      SelectVOClass vo = null;
       try {
-        log.info("--> Adding VO: " + vo);
+        vo = new SelectVOClass(this.classPackage, this.tag.getVO(), null, columns, associations, collections,
+            this.tag.getSourceLocation());
+        log.debug("--> Adding VO: " + vo);
         voRegistry.addVO(vo);
       } catch (VOAlreadyExistsException e) {
         throw new InvalidConfigurationFileException(vo.getLocation(),
@@ -167,6 +178,9 @@ public class SelectMethodMetadata implements DataSetMetadata {
         throw new InvalidConfigurationFileException(vo.getLocation(),
             "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
                 + "'. This VO name is already being used in " + e.getOtherOne().getLocation().render() + ".");
+      } catch (DuplicatePropertyNameException e) {
+        throw new InvalidConfigurationFileException(vo.getLocation(), "Duplicate VO property '" + e.getPropertyName()
+            + "'. This property name is already being used by another column, <association>, or <collection>.");
       }
 
     } else {
@@ -200,11 +214,13 @@ public class SelectMethodMetadata implements DataSetMetadata {
       } catch (DuplicatePropertyNameException e) {
         throw new InvalidConfigurationFileException(e.getLocation(),
             "Duplicate property name '" + e.getPropertyName()
-                + "'. This property name has already been used by another "
-                + "VO property, <association> tag, or <collection> tag in this VO.");
+                + "'. This property name is being used in an <expression> tag, <association> tag, "
+                + "<collection> tag, and/or by a property on the <table> or <view> it subclasses.");
       }
 
     }
+
+    this.selectMethodReturnType = new SelectMethodReturnType(this, this.classPackage, this.tag.getSourceLocation());
 
   }
 
@@ -445,11 +461,8 @@ public class SelectMethodMetadata implements DataSetMetadata {
     return this.tag.renderSQLSentence(parameterRenderer);
   }
 
-  // TODO: implement this method correctly; I think it's good now.
-
   @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
-    // log.info("renderXML()");
     SQLFormatter formatter = new SQLFormatter();
     this.tag.renderXML(formatter, parameterRenderer);
     return formatter.toString();
@@ -503,49 +516,53 @@ public class SelectMethodMetadata implements DataSetMetadata {
   }
 
   public SelectMethodReturnType getReturnType(final ClassPackage voClassPackage) {
-    return new SelectMethodReturnType(this, voClassPackage, this.tag.getSourceLocation());
+    return this.selectMethodReturnType;
   }
 
   // Classes
 
   public static class SelectMethodReturnType {
 
-    private StructuredVOClass soloVO;
+    private SelectVOClass soloVO;
     private VOMetadata connectedVO;
 
     private boolean multipleRows;
 
     public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage voClassPackage,
-        final SourceLocation location) {
+        final SourceLocation location) throws InvalidConfigurationFileException {
       if (sm.isStructured()) { // structured columns
         StructuredColumnsMetadata scols = sm.getStructuredColumns();
-        if (scols.getVOClass() == null) { // inner VO
+        if (scols.getSoloVOClass() == null) { // it's a connected VO
           this.soloVO = null;
           this.connectedVO = scols.getVOs().get(0);
-        } else { // columns VO (specified in the <columns> tag)
+        } else { // solo VO from a <columns> tag
           List<VOMember> associations = new ArrayList<VOMember>();
           for (VOMetadata vo : sm.getStructuredColumns().getVOs()) {
             VOMember m = new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName());
             associations.add(m);
           }
-
-          this.soloVO = scols.getVOClass();
-          // new VOClass(sm, voClassPackage, scols.getVO(),
-          // sm.getStructuredColumns().getExpressionsColumns(), associations);
+          this.soloVO = scols.getSoloVOClass();
           this.connectedVO = null;
         }
-      } else { // non-structured columns
+      } else { // solo VO from non-structured columns
 
-        // TODO: last parameter columns should not be empty?
         List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
-        this.soloVO = new StructuredVOClass(voClassPackage, sm.getVO(), null, columns, location);
+        List<VOMember> associations = new ArrayList<VOMember>();
+        List<VOMember> collections = new ArrayList<VOMember>();
+        try {
+          this.soloVO = new SelectVOClass(voClassPackage, sm.getVO(), null, columns, associations, collections,
+              location);
+        } catch (DuplicatePropertyNameException e) {
+          throw new InvalidConfigurationFileException(location, "Duplicate VO property '" + e.getPropertyName()
+              + "'. This property name is already being used by another column, <association>, or <collection>.");
+        }
 
         this.connectedVO = null;
       }
       this.multipleRows = sm.isMultipleRows();
     }
 
-    public StructuredVOClass getSoloVO() {
+    public SelectVOClass getSoloVO() {
       return soloVO;
     }
 

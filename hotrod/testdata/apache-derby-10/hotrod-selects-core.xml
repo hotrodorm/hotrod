@@ -57,6 +57,9 @@
 -->
 
   <fragment file="hotrod-selects-tests2.xml" />
+
+  <!--
+  -->
   <fragment file="hotrod-selects-tests3.xml" />
 
 </hotrod>

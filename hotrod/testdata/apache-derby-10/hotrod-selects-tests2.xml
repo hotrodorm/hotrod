@@ -166,7 +166,8 @@
       </complement>
 
     </select>
-    
+
+
     <!-- Case 7 - Collections and associations combined -->
 
     <!--
@@ -178,7 +179,7 @@
       select
       <columns>
         <vo table="person" extended-vo="ExtendedPersonVO" alias="p">
-          <collection table="account" property="accounts" extended-vo="AccountWithTransactionsVO" alias="a">
+          <collection table="account" property="accounts" extended-vo="AccountWithTransactions2VO" alias="a">
             <collection table="transaction" property="transactions" alias="t" />
           </collection>
           <association table="category" property="category" alias="c" />

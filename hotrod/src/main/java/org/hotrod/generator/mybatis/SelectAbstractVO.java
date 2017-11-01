@@ -17,7 +17,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VOMetadata.VOMember;
-import org.hotrod.metadata.VORegistry.StructuredVOClass;
+import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ImportsRenderer;
@@ -48,7 +48,7 @@ public class SelectAbstractVO {
 
   // Constructors
 
-  public SelectAbstractVO(final StructuredVOClass soloVO, final DataSetLayout layout, final MyBatisTag myBatisTag) {
+  public SelectAbstractVO(final SelectVOClass soloVO, final DataSetLayout layout, final MyBatisTag myBatisTag) {
     log.debug("init");
     this.myBatisTag = myBatisTag;
     this.layout = layout;
@@ -57,9 +57,7 @@ public class SelectAbstractVO {
 
     this.columns = new ArrayList<ColumnMetadata>(soloVO.getColumnsByName().values());
 
-    // TODO: SEVERE: Fix associations and collections
-    // this.associationMembers = soloVO.getAssociations();
-    this.associationMembers = new ArrayList<VOMember>();
+    this.associationMembers = soloVO.getAssociations();
     this.collectionMembers = new ArrayList<VOMember>();
 
     this.superClassPackage = null;
