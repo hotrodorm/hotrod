@@ -1,4 +1,4 @@
-DB2:
+DB2: 
  * TIMESTAMP(n)
    n is the number of fractional digits (0-12)
    n defaults to 6
