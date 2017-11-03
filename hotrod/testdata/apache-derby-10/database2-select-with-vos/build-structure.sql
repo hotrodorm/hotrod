@@ -59,3 +59,35 @@ create table doc_comment (
   notes varchar(1000) not null
 );
 
+-- Car Example
+
+create table brand (
+  id integer primary key not null 
+    generated always as identity,
+  name varchar(40) not null,
+  unique (name)
+);
+
+create table car (
+  id integer primary key not null 
+    generated always as identity,
+  brand_id integer not null,
+  type varchar(10) not null,
+  constraint fk_car_brand foreign key
+    (brand_id) references brand (id)
+);
+
+create view van as
+  select * from car where type = 'VAN';
+  
+create table repair (
+  id integer primary key not null,
+  repaired_on timestamp not null,
+  car_id integer not null,
+  constraint fk_repair_car foreign key 
+    (car_id) references car (id)
+);
+    
+    
+
+

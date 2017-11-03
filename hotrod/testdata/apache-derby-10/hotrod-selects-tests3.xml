@@ -13,7 +13,8 @@
 
       select
       <columns vo="AccountPersonVO2">
-        <vo table="account" property="account" alias="a" extended-vo="AccountRewrittenVO"> a.* 
+        <vo table="account" property="account" alias="a" extended-vo="AccountRewrittenVO">
+          a.*
           <expressions>
             a.person_id + a.type as prop0
           </expressions>
@@ -39,7 +40,39 @@
 
     </select>
 
+    <select method="findAssesedCarVO">
+
+      <parameter name="brandId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      select
+      <columns>
+        <vo table="car" alias="c" extended-vo="AssessedCarVO">
+          <association table="brand" property="brand" alias="b" />
+          <collection table="repair" property="repairs" alias="r" />
+          <expressions>
+            b.id * c.id + 71 as score,
+            length(b.name) + length(c.type) as tier
+          </expressions>
+        </vo>
+      </columns>
+      from car c
+      join brand b on b.id = c.brand_id
+      left join repair r on r.car_id = c.id
+      <complement>
+        <where>
+          <if test="brandId != null">
+            and b.type = #{brandId}
+          </if>
+        </where>
+      </complement>
+
+    </select>
+
+
   </view>
+
+  <table name="car" />
+
 
   <table name="doc_comment">
 
