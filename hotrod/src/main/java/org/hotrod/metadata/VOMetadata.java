@@ -20,6 +20,8 @@ import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
+import org.hotrod.metadata.VORegistry.VOProperty;
+import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ClassPackage;
 
@@ -76,7 +78,7 @@ public class VOMetadata {
     for (AssociationTag a : tag.getAssociations()) {
       VOMetadata am = a.getMetadata(layout, fragmentConfig, daosTag);
       this.associations.add(am);
-      VOMember m = new VOMember(a.getProperty(), am.getClassPackage(), am.getName());
+      VOMember m = new VOMember(a.getProperty(), am.getClassPackage(), am.getName(), a.getSourceLocation());
       this.associationMembers.add(m);
     }
 
@@ -85,7 +87,7 @@ public class VOMetadata {
     for (CollectionTag c : tag.getCollections()) {
       VOMetadata com = c.getMetadata(layout, fragmentConfig, daosTag);
       this.collections.add(com);
-      VOMember m = new VOMember(c.getProperty(), com.getClassPackage(), com.getName());
+      VOMember m = new VOMember(c.getProperty(), com.getClassPackage(), com.getName(), c.getSourceLocation());
       this.collectionMembers.add(m);
     }
 
@@ -134,38 +136,57 @@ public class VOMetadata {
     }
   }
 
-  public void registerVOs(final ClassPackage classPackage, final VORegistry voRegistry)
+  public void registerSubTreeVOs(final ClassPackage classPackage, final VORegistry voRegistry)
       throws VOAlreadyExistsException, StructuredVOAlreadyExistsException, DuplicatePropertyNameException {
 
-    List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
-    for (ExpressionsMetadata em : this.getExpressions()) {
-      columns.addAll(em.getColumns());
-    }
+    if (this.entityVOSuperClass != null) { // new VO (extends an entity VO)
 
-    if (this.entityVOSuperClass != null) {
+      List<VOProperty> properties = new ArrayList<VOProperty>();
+
+      // Entity VO properties
+
       for (ColumnMetadata cm : this.entityVOSuperClass.getColumnsByName().values()) {
         StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false);
-        columns.add(m);
+        properties.add(new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), m, EnclosingTagType.ENTITY_VO,
+            this.entityVOSuperClass.getLocation()));
       }
-    }
 
-    List<VOMember> associations = new ArrayList<VOMember>();
-    for (VOMetadata vo : this.associations) {
-      vo.registerVOs(classPackage, voRegistry);
-      associations.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty()));
-    }
+      // Expressions properties
 
-    List<VOMember> collections = new ArrayList<VOMember>();
+      for (ExpressionsMetadata em : this.getExpressions()) {
+        for (StructuredColumnMetadata cm : em.getColumns()) {
+          properties.add(new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), cm, EnclosingTagType.EXPRESSIONS,
+              em.getSourceLocation()));
+        }
+      }
 
-    for (VOMetadata vo : this.collections) {
-      vo.registerVOs(classPackage, voRegistry);
-      collections.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty()));
-    }
+      // Association properties
 
-    if (this.entityVOSuperClass != null) {
-      SelectVOClass voClass = new SelectVOClass(classPackage, this.name, this.entityVOSuperClass, columns, associations,
-          collections, this.tag.getSourceLocation());
+      List<VOMember> associationMembers = new ArrayList<VOMember>();
+      for (VOMetadata vo : this.associations) {
+        associationMembers.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty(), vo.getSourceLocation()));
+      }
+
+      // Collection properties
+
+      List<VOMember> collectionMembers = new ArrayList<VOMember>();
+      for (VOMetadata vo : this.collections) {
+        collectionMembers.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty(), vo.getSourceLocation()));
+      }
+
+      SelectVOClass voClass = new SelectVOClass(classPackage, this.name, this.entityVOSuperClass, properties,
+          associationMembers, collectionMembers, this.tag.getSourceLocation());
       voRegistry.addVO(voClass);
+
+    }
+
+    // Register sub tree
+
+    for (VOMetadata vo : this.associations) {
+      vo.registerSubTreeVOs(classPackage, voRegistry);
+    }
+    for (VOMetadata vo : this.collections) {
+      vo.registerSubTreeVOs(classPackage, voRegistry);
     }
 
   }
@@ -174,20 +195,54 @@ public class VOMetadata {
 
     private static final long serialVersionUID = 1L;
 
-    private String propertyName;
-    private SourceLocation location;
+    private VOProperty duplicate;
+    private VOProperty initial;
 
-    public DuplicatePropertyNameException(final String propertyName, final SourceLocation location) {
-      this.propertyName = propertyName;
-      this.location = location;
+    public DuplicatePropertyNameException(final VOProperty duplicate, final VOProperty initial) {
+      this.duplicate = duplicate;
+      this.initial = initial;
     }
 
-    public String getPropertyName() {
-      return this.propertyName;
+    public static long getSerialversionuid() {
+      return serialVersionUID;
     }
 
-    public SourceLocation getLocation() {
-      return this.location;
+    public VOProperty getDuplicate() {
+      return duplicate;
+    }
+
+    public VOProperty getInitial() {
+      return initial;
+    }
+
+    public String renderMessage() {
+      String existing;
+      switch (this.initial.getSourceTagType()) {
+      case NON_STRUCTURED_SELECT:
+        existing = "This property name is already being used by a property (related to a database column) of the non-structured select in "
+            + this.initial.getSourceTagLocation().render();
+        break;
+      case ENTITY_VO:
+        existing = "This property name is already being used by a property (column) of the entity VO it is subclassing defined in "
+            + this.initial.getSourceTagLocation().render();
+        break;
+      case EXPRESSIONS:
+        existing = "This property name is also being used by a property of an expression defined in "
+            + this.initial.getSourceTagLocation().render();
+        break;
+      case ASSOCIATION:
+        existing = "This property name is also being used by the property name of an association defined in "
+            + this.initial.getSourceTagLocation().render();
+        break;
+      case COLLECTION:
+        existing = "This property name is also being used by the property name of a collection defined in "
+            + this.initial.getSourceTagLocation().render();
+        break;
+      default:
+        existing = "<undefined>";
+        break;
+      }
+      return "Duplicate VO property '" + this.duplicate.getName() + "'. " + existing + ".";
     }
 
   }
@@ -313,11 +368,14 @@ public class VOMetadata {
     private String property;
     private ClassPackage classPackage;
     private String name;
+    private SourceLocation sourceTagLocation;
 
-    public VOMember(final String property, final ClassPackage classPackage, final String name) {
+    public VOMember(final String property, final ClassPackage classPackage, final String name,
+        final SourceLocation sourceTagLocation) {
       this.property = property;
       this.classPackage = classPackage;
       this.name = name;
+      this.sourceTagLocation = sourceTagLocation;
     }
 
     public String getProperty() {
@@ -330,6 +388,10 @@ public class VOMetadata {
 
     public String getName() {
       return name;
+    }
+
+    public SourceLocation getSourceTagLocation() {
+      return sourceTagLocation;
     }
 
     public String getFullClassName() {

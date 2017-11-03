@@ -13,7 +13,15 @@
 
       select
       <columns vo="AccountPersonVO2">
-        <vo table="account" property="account" alias="a"> a.* </vo>
+        <vo table="account" property="account" alias="a" extended-vo="AccountRewrittenVO"> a.* 
+          <expressions>
+            a.person_id + a.type as prop0
+          </expressions>
+          <association table="log" property="prop1" alias="l" />
+          <association table="transaction" property="prop2" alias="t" />
+          <collection table="transaction" property="prop3" alias="t" />
+          <collection table="log" property="prop4" alias="l" />
+        </vo>
         <vo table="person" property="person" alias="p"></vo>
         <expressions>
           <column name="initial_load" java-type="java.lang.Double" />

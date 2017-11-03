@@ -48,6 +48,7 @@ public class SelectAbstractVO {
 
   // Constructors
 
+  // From a solo VO
   public SelectAbstractVO(final SelectVOClass soloVO, final DataSetLayout layout, final MyBatisTag myBatisTag) {
     log.debug("init");
     this.myBatisTag = myBatisTag;
@@ -56,6 +57,7 @@ public class SelectAbstractVO {
     this.classPackage = this.myBatisTag.getDaos().getPrimitivesVOPackage(soloVO.getClassPackage());
 
     this.columns = new ArrayList<ColumnMetadata>(soloVO.getColumnsByName().values());
+    log.debug("Name: " + this.name + " this.columns.size()=" + this.columns.size());
 
     this.associationMembers = soloVO.getAssociations();
     this.collectionMembers = new ArrayList<VOMember>();
@@ -64,6 +66,7 @@ public class SelectAbstractVO {
     this.superClassName = null;
   }
 
+  // From a connected VO
   public SelectAbstractVO(final VOMetadata vo, final DataSetLayout layout, final MyBatisTag myBatisTag) {
     this.myBatisTag = myBatisTag;
     this.layout = layout;
@@ -275,7 +278,7 @@ public class SelectAbstractVO {
     println("    java.lang.StringBuilder sb = new java.lang.StringBuilder();");
 
     if (this.myBatisTag.getProperties().isMultilineTostring()) {
-      println("    sb.append(super.toString());");
+      println("    sb.append(super.toString() + \"\\n\");");
       // println(" sb.append( getClass().getName() + '@' +
       // Integer.toHexString(hashCode()) + \"\\n\");");
 
@@ -295,7 +298,7 @@ public class SelectAbstractVO {
       }
 
     } else {
-      println("    sb.append(super.toString());");
+      println("    sb.append(super.toString() + \"\\n\");");
       println("    sb.append(\"[\");");
 
       if (!this.columns.isEmpty()) {

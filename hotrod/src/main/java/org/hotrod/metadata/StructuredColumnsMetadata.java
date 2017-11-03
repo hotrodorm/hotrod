@@ -1,9 +1,7 @@
 package org.hotrod.metadata;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hotrod.config.structuredcolumns.ColumnsTag;
@@ -12,6 +10,8 @@ import org.hotrod.metadata.VOMetadata.VOMember;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
+import org.hotrod.metadata.VORegistry.VOProperty;
+import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.utils.ClassPackage;
 
 public class StructuredColumnsMetadata {
@@ -45,46 +45,45 @@ public class StructuredColumnsMetadata {
   public void registerVOs(final ClassPackage classPackage, final VORegistry voRegistry)
       throws VOAlreadyExistsException, StructuredVOAlreadyExistsException, DuplicatePropertyNameException {
 
-    Set<String> members = new HashSet<String>();
-    List<StructuredColumnMetadata> columns = compileColumns(members);
+    List<VOProperty> properties = new ArrayList<VOProperty>();
+    log.debug("this.vos.size()=" + this.vos.size());
+
+    // Expressions properties
+
+    for (ExpressionsMetadata em : this.getExpressions()) {
+      for (StructuredColumnMetadata cm : em.getColumns()) {
+        properties.add(new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), cm, EnclosingTagType.EXPRESSIONS,
+            em.getSourceLocation()));
+      }
+    }
+
+    log.debug("this.getExpressions().size()=" + this.getExpressions().size());
+    log.debug("properties.size()=" + properties.size());
+    log.debug("this.vo=" + this.vo + " this.isSoloVO=" + this.isSoloVO);
 
     if (this.isSoloVO) { // solo VO
+
       List<VOMember> associations = new ArrayList<VOMember>();
       for (VOMetadata vo : this.vos) {
-        VOMember m = new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName());
-        associations.add(m);
+        associations.add(new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName(), vo.getSourceLocation()));
       }
+
       List<VOMember> collections = new ArrayList<VOMember>();
-      this.soloVOClass = new SelectVOClass(classPackage, this.vo, null, columns, associations, collections,
+
+      this.soloVOClass = new SelectVOClass(classPackage, this.vo, null, properties, associations, collections,
           this.tag.getSourceLocation());
       voRegistry.addVO(this.soloVOClass);
+
     } else { // connected VO
       this.soloVOClass = null;
     }
 
+    // Register sub tree
+
     for (VOMetadata vo : this.vos) {
-      if (members.contains(vo.getProperty())) {
-        throw new DuplicatePropertyNameException(vo.getProperty(), vo.getSourceLocation());
-      }
-      members.add(vo.getProperty());
-      vo.registerVOs(classPackage, voRegistry);
+      vo.registerSubTreeVOs(classPackage, voRegistry);
     }
 
-  }
-
-  private List<StructuredColumnMetadata> compileColumns(final Set<String> members)
-      throws DuplicatePropertyNameException {
-    List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
-    for (ExpressionsMetadata em : this.getExpressions()) {
-      for (StructuredColumnMetadata cm : em.getColumns()) {
-        String memberName = cm.getIdentifier().getJavaMemberIdentifier();
-        if (members.contains(memberName)) {
-          throw new DuplicatePropertyNameException(memberName, em.getSourceLocation());
-        }
-        columns.add(cm);
-      }
-    }
-    return columns;
   }
 
   // Getters

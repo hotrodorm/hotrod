@@ -24,13 +24,13 @@ import hotrod.test.generation.primitives.PersonDAO;
 public class StructuredTests {
 
   public void run() throws SQLException {
-    test1();
+    // test1();
     // test2();
     // test3();
     // test4();
     // test5();
     // test6();
-    // test7();
+    test7();
     // test8();
     // test9();
     // test10();
@@ -40,7 +40,7 @@ public class StructuredTests {
 
   private static void test1() throws SQLException {
     System.out.println("=== Extended Persons ===");
-    for (AccountPersonFlatVO ap : PersonDAO.findAccountWithPersonFlat(50)) {
+    for (AccountPersonFlatVO ap : PersonDAO.findAccountWithPersonFlat(null)) {
       System.out.println("ap=" + ap);
     }
   }
@@ -49,7 +49,7 @@ public class StructuredTests {
 
   private static void test2() throws SQLException {
     System.out.println("=== Account With Person ===");
-    for (AccountPersonVO ap : PersonDAO.findAccountWithPerson(500)) {
+    for (AccountPersonVO ap : PersonDAO.findAccountWithPerson(51)) {
       printObject(ap, 2);
       printObject(ap.getAccount(), 4);
       printObject(ap.getPerson(), 4);
@@ -60,7 +60,7 @@ public class StructuredTests {
 
   private static void test3() throws SQLException {
     System.out.println("=== Retirement Account ===");
-    for (AccountVO a : PersonDAO.findRetirementAccount(50)) {
+    for (AccountVO a : PersonDAO.findRetirementAccount(null)) {
       printObject(a, 2);
     }
   }
@@ -69,7 +69,7 @@ public class StructuredTests {
 
   private static void test4() throws SQLException {
     System.out.println("=== Valuated Account ===");
-    for (ValuatedAccountVO va : PersonDAO.findValuatedAccount(50)) {
+    for (ValuatedAccountVO va : PersonDAO.findValuatedAccount(null)) {
       printObject(va, 2);
       printObject(va.getAccount(), 4);
       printObject(va.getPerson(), 4);
@@ -80,7 +80,7 @@ public class StructuredTests {
 
   private static void test5() throws SQLException {
     System.out.println("=== Account With Transaction ===");
-    for (AccountWithTransactionsVO at : PersonDAO.findAccountWithTransactions(500)) {
+    for (AccountWithTransactionsVO at : PersonDAO.findAccountWithTransactions(null)) {
       printObject(at, 2);
       for (TransactionVO t : at.getTransactions()) {
         printObject(t, 4);
@@ -92,7 +92,7 @@ public class StructuredTests {
 
   private static void test6() throws SQLException {
     System.out.println("=== VIP Account ===");
-    for (VIPAccountVO va : PersonDAO.findVIPAccount(4, 500)) {
+    for (VIPAccountVO va : PersonDAO.findVIPAccount(3, 500)) {
       printObject(va, 2);
       printObject(va.getPerson(), 4);
     }
@@ -101,7 +101,7 @@ public class StructuredTests {
   // Case 7 - Collections and associations combined
 
   private static void test7() throws SQLException {
-    List<ExtendedPersonVO> list = PersonDAO.findExtendedPerson(100);
+    List<ExtendedPersonVO> list = PersonDAO.findExtendedPerson(null);
     System.out.println("=== Extended Person ===");
     for (ExtendedPersonVO ep : list) {
       printObject(ep, 0);
@@ -119,7 +119,7 @@ public class StructuredTests {
 
   private static void test8() throws SQLException {
     System.out.println("=== Single Expanded Account ===");
-    LogWithOfficeVO lo = PersonDAO.findSingleExpandedAccount(100);
+    LogWithOfficeVO lo = PersonDAO.findSingleExpandedAccount();
     if (lo != null) {
       printObject(lo, 2);
       for (NorthOfficeVO no : lo.getOffice()) {
@@ -132,16 +132,20 @@ public class StructuredTests {
 
   private static void test9() throws SQLException {
     System.out.println("=== Single Expanded Account 2 ===");
-    ExpandedAccountVO ea = PersonDAO.findSingleExpandedAccount2(100);
-    printObject(ea.getAccount(), 2);
-    printObject(ea.getPerson(), 2);
+    ExpandedAccountVO ea = PersonDAO.findSingleExpandedAccount2(53);
+    if (ea != null) {
+      printObject(ea.getAccount(), 2);
+      printObject(ea.getPerson(), 2);
+    } else {
+      System.out.println("<no row found>");
+    }
   }
 
   // Case 10 - Ids
 
   private static void test10() throws SQLException {
     System.out.println("=== Single Expanded Account 3 ===");
-    OfficeWithLogVO lo = PersonDAO.findSingleExpandedAccount3(100);
+    OfficeWithLogVO lo = PersonDAO.findSingleExpandedAccount3("Nebraska");
     printObject(lo, 0);
     for (LogVO l : lo.getLogs()) {
       printObject(l, 2);

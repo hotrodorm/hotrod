@@ -13,7 +13,7 @@
     -->
     <select method="findAccountWithPersonFlat" vo="AccountPersonFlatVO">
 
-      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="accountId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       <column name="type" converter="account_type" />
       <column name="person_type" converter="person_type" />
@@ -25,8 +25,8 @@
       from account a
       join person p on (p.id) = (a.person_id)
       <complement>
-        <if test="clientId != null">
-          where a.id = #{clientId}
+        <if test="accountId != null">
+          where a.id = #{accountId}
         </if>
       </complement>
 
@@ -38,7 +38,7 @@
     -->
     <select method="findAccountWithPerson">
 
-      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="accountId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
       <columns vo="AccountPersonVO">
@@ -53,8 +53,8 @@
       from account a
       join person p on (p.id) = (a.person_id)
       <complement>
-        <if test="clientId != null">
-          where a.id = #{clientId}
+        <if test="accountId != null">
+          where a.id = #{accountId}
         </if>
       </complement>
 
@@ -66,7 +66,7 @@
     -->
     <select method="findRetirementAccount">
 
-      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="accountId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
       <columns>
@@ -74,10 +74,13 @@
       </columns>
       from account a
       <complement>
-        where a.id = #{clientId}
-        and (type = 1 and account_number like 'RET-%'
+        where
+        (type = 1 and account_number like 'RET-%'
         or type = 3 and account_number like
         'IRA-%')
+        <if test="accountId != null">
+          and a.id = #{accountId}
+        </if>
       </complement>
 
     </select>
@@ -88,7 +91,7 @@
     -->
     <select method="findValuatedAccount">
 
-      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="accountId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
       <columns vo="ValuatedAccountVO">
@@ -104,8 +107,8 @@
       from account a
       join person p on (p.id) = (a.person_id)
       <complement>
-        <if test="clientId != null">
-          where a.id = #{clientId}
+        <if test="accountId != null">
+          where a.id = #{accountId}
         </if>
       </complement>
 
@@ -117,7 +120,7 @@
     -->
     <select method="findAccountWithTransactions">
 
-      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="accountId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
       <columns>
@@ -129,8 +132,8 @@
       from account a
       join "transaction" t on (t.account_id) = (a.id)
       <complement>
-        <if test="clientId != null">
-          where a.id = #{clientId}
+        <if test="accountId != null">
+          where a.id = #{accountId}
         </if>
       </complement>
 
@@ -160,13 +163,12 @@
             and a.type = #{type}
           </if>
           <if test="minBalance != null">
-            and p.balance >= #{minBalance}
+            and a.balance >= #{minBalance}
           </if>
         </where>
       </complement>
 
     </select>
-
 
     <!-- Case 7 - Collections and associations combined -->
 
@@ -174,7 +176,7 @@
     -->
     <select method="findExtendedPerson">
 
-      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="accountId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
       <columns>
@@ -195,8 +197,8 @@
       c on
       p.category_id = c.id
       <complement>
-        <if test="clientId != null">
-          where a.id = #{clientId}
+        <if test="accountId != null">
+          where a.id = #{accountId}
         </if>
       </complement>
 
@@ -207,9 +209,6 @@
     <!--
     -->
     <select method="findSingleExpandedAccount" multiple-rows="false">
-
-      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-
       select
       <columns>
         <vo table="log" id="recorded_by,recorded_at" extended-vo="LogWithOfficeVO" alias="l">
@@ -218,7 +217,6 @@
       </columns>
       from log l
       left join north_office o on l.office_id = o.id
-
     </select>
 
     <!-- Case 9 - Select returns a single row -->
@@ -227,7 +225,7 @@
     -->
     <select method="findSingleExpandedAccount2" multiple-rows="false">
 
-      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="accountId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
       <columns vo="ExpandedAccountVO">
@@ -237,9 +235,7 @@
       from account a
       left join person p on (p.id) = (a.person_id)
       <complement>
-        <if test="clientId != null">
-          where a.id = #{clientId}
-        </if>
+        where a.id = #{accountId}
       </complement>
 
     </select>
@@ -250,7 +246,7 @@
     -->
     <select method="findSingleExpandedAccount3" multiple-rows="false">
 
-      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="officeName" java-type="java.lang.String" jdbc-type="VARCHAR" />
 
       select
       <columns>
@@ -260,7 +256,11 @@
       </columns>
       from north_office o
       left join log l on l.office_id = o.id
-      where o.name = 'Nebraska'
+      <complement>
+        <if test="officeName != null">
+          where o.name = #{officeName}
+        </if>
+      </complement>
     </select>
 
   </table>

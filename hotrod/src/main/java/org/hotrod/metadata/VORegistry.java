@@ -1,17 +1,27 @@
 package org.hotrod.metadata;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hotrod.metadata.VOMetadata.DuplicatePropertyNameException;
 import org.hotrod.metadata.VOMetadata.VOMember;
+import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ClassPackage;
 
+/*
+ * <pre>
+ * 
+ * - table                                        -->  EntityVOClass
+ * - view                                         -->  EntityVOClass
+ * - select - non-structured vo ::= solo VO       -->  SelectVOClass
+ * - select - columns vo        ::= solo VO       -->  SelectVOClass
+ * - select - inner vo          ::= connected VO  -->  SelectVOClass
+ * 
+ * </pre>
+ */
 public class VORegistry {
 
   // Constants
@@ -281,46 +291,37 @@ public class VORegistry {
     // Constructor
 
     public SelectVOClass(final ClassPackage classPackage, final String name, final EntityVOClass extendsEntityVO,
-        final List<StructuredColumnMetadata> columns, final List<VOMember> associations,
-        final List<VOMember> collections, final SourceLocation location) throws DuplicatePropertyNameException {
+        final List<VOProperty> properties, final List<VOMember> associations, final List<VOMember> collections,
+        final SourceLocation location) throws DuplicatePropertyNameException {
 
       this.location = location;
       if (this.location == null) {
         throw new IllegalArgumentException("location cannot be null");
       }
 
-      Set<String> properties = new HashSet<String>();
+      VOPropertiesRegistry reg = new VOPropertiesRegistry(name);
 
       this.classPackage = classPackage;
       this.name = name;
       this.extendsEntityVO = extendsEntityVO;
 
       this.columnsByName = new LinkedHashMap<String, StructuredColumnMetadata>();
-      for (StructuredColumnMetadata cm : columns) {
-        String property = cm.getIdentifier().getJavaMemberIdentifier();
-        if (properties.contains(property)) {
-          throw new DuplicatePropertyNameException(property, location);
+      for (VOProperty p : properties) {
+        reg.add(p);
+        StructuredColumnMetadata cm = p.getMetadata();
+        if (cm != null) {
+          this.columnsByName.put(cm.getColumnName(), cm);
         }
-        properties.add(property);
-        this.columnsByName.put(cm.getColumnName(), cm);
       }
 
       this.associations = associations;
       for (VOMember a : this.associations) {
-        String property = a.getProperty();
-        if (properties.contains(property)) {
-          throw new DuplicatePropertyNameException(property, location);
-        }
-        properties.add(property);
+        reg.add(new VOProperty(a.getProperty(), null, EnclosingTagType.ASSOCIATION, a.getSourceTagLocation()));
       }
 
       this.collections = collections;
       for (VOMember c : this.collections) {
-        String property = c.getProperty();
-        if (properties.contains(property)) {
-          throw new DuplicatePropertyNameException(property, location);
-        }
-        properties.add(property);
+        reg.add(new VOProperty(c.getProperty(), null, EnclosingTagType.COLLECTION, c.getSourceTagLocation()));
       }
 
     }
@@ -406,6 +407,70 @@ public class VORegistry {
 
     public SourceLocation getLocation() {
       return location;
+    }
+
+  }
+
+  public static class VOPropertiesRegistry {
+
+    private String name;
+    private List<VOProperty> properties = new ArrayList<VOProperty>();
+
+    public VOPropertiesRegistry(final String name) {
+      this.name = name;
+      log.debug("--- Properties '" + this.name + "' ---");
+    }
+
+    public void add(final VOProperty property) throws DuplicatePropertyNameException {
+      log.debug(" " + this.name + " [" + this.properties.size() + "] + " + property);
+      for (VOProperty existing : this.properties) {
+        if (existing.getName().equals(property.getName())) {
+          throw new DuplicatePropertyNameException(property, existing);
+        }
+      }
+      this.properties.add(property);
+    }
+
+  }
+
+  public static class VOProperty {
+
+    public static enum EnclosingTagType {
+      NON_STRUCTURED_SELECT, ENTITY_VO, EXPRESSIONS, ASSOCIATION, COLLECTION
+    };
+
+    private String name;
+    private StructuredColumnMetadata cm;
+    private EnclosingTagType sourceTagType;
+    private SourceLocation sourceTagLocation;
+
+    public VOProperty(final String name, final StructuredColumnMetadata cm, final EnclosingTagType sourceTagType,
+        final SourceLocation sourceTagLocation) {
+      this.name = name;
+      this.cm = cm;
+      this.sourceTagType = sourceTagType;
+      this.sourceTagLocation = sourceTagLocation;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public StructuredColumnMetadata getMetadata() {
+      return cm;
+    }
+
+    public EnclosingTagType getSourceTagType() {
+      return sourceTagType;
+    }
+
+    public SourceLocation getSourceTagLocation() {
+      return sourceTagLocation;
+    }
+
+    public String toString() {
+      return "{name=" + this.name + ", SQL-name=" + (this.cm == null ? "null" : cm.getColumnName()) + ", tag-type="
+          + this.sourceTagType + "}";
     }
 
   }

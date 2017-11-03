@@ -101,7 +101,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     this.layout = new DataSetLayout(config);
     this.fragmentConfig = fragmentConfig;
 
-    this.connectedVOResult = this.vos.size() == 1 && this.expressions.isEmpty();
+    this.connectedVOResult = this.vo == null && this.vos.size() == 1 && this.expressions.isEmpty();
     this.validate(daosTag, config, fragmentConfig, this.connectedVOResult);
 
   }
