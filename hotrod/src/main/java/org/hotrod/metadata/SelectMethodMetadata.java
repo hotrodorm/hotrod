@@ -160,7 +160,8 @@ public class SelectMethodMetadata implements DataSetMetadata {
       List<VOProperty> properties = new ArrayList<VOProperty>();
 
       for (ColumnMetadata cm : this.nonStructuredColumns) {
-        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false);
+        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false,
+            this.tag.getSourceLocation());
         properties.add(new VOProperty(m.getIdentifier().getJavaMemberIdentifier(), m,
             EnclosingTagType.NON_STRUCTURED_SELECT, this.tag.getSourceLocation()));
       }
@@ -348,7 +349,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   }
 
-  // Indexing methods
+  // Indexable
 
   @Override
   public int hashCode() {
@@ -551,7 +552,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
         List<VOProperty> properties = new ArrayList<VOProperty>();
         for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
-          StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false);
+          StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false, null);
           VOProperty p = new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), m,
               EnclosingTagType.NON_STRUCTURED_SELECT, sm.tag.getSourceLocation());
           properties.add(p);

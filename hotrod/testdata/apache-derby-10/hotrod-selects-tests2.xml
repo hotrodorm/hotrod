@@ -44,11 +44,8 @@
       <columns vo="AccountPersonVO">
         <vo table="account" property="account" alias="a"> a.* </vo>
         <vo table="person" property="person" alias="p"></vo>
-        <expressions>
-          <column name="initial_load" java-type="java.lang.Double" />
-          a.balance * a.type as initial_load,
-          p.id + p.type as score
-        </expressions>
+        <expression property="initialLoad" class="java.lang.Double"> a.balance * a.type </expression>
+        <expression property="score"> p.id + p.type </expression>
       </columns>
       from account a
       join person p on (p.id) = (a.person_id)
@@ -97,12 +94,15 @@
       <columns vo="ValuatedAccountVO">
         <vo table="account" property="account" alias="a"> a.* </vo>
         <vo table="person" property="person" alias="p" />
-        <expressions>
-          <column name="rank_score" java-type="java.lang.Double" />
-          (a.balance / case when a.type = 1 then 15 when a.type = 2 then 8 when a.type = 3 then 100 end) as tier_score,
+        <expression property="tierScore" class="java.lang.Double">
+          (a.balance / case when a.type = 1 then 15 when a.type = 2 then 8 when
+          a.type = 3 then 100 end)
+        </expression>
+        <expression property="rankScore">
           (a.balance
-          / case when p.type = 1 then 3 when p.type = 2 then 17 when p.type = 3 then 5 end) as rank_score
-        </expressions>
+          / case when p.type = 1 then 3 when p.type = 2 then 17 when p.type = 3 then 5
+          end)
+        </expression>
       </columns>
       from account a
       join person p on (p.id) = (a.person_id)
@@ -185,9 +185,9 @@
             <collection table="transaction" property="transactions" alias="t" />
           </collection>
           <association table="category" property="category" alias="c" />
-          <expressions>
-            p.id + 1 as next_id
-          </expressions>
+          <expression property="nextId">
+            p.id + 1 
+          </expression>
         </vo>
       </columns>
       from person p

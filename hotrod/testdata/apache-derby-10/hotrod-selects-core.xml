@@ -33,6 +33,10 @@
     java-intermediate-type="java.lang.Short" />
   <converter name="transaction_type" java-type="selects.enums.TransactionType" class="selects.converters.TransactionTypeConverter"
     java-intermediate-type="java.lang.Short" />
+  <converter name="short_boolean_converter" java-type="java.lang.Boolean" class="selects.converters.ShortBooleanConverter"
+    java-intermediate-type="java.lang.Short" />
+  <converter name="string_boolean_converter" java-type="java.lang.Boolean" class="selects.converters.StringBooleanConverter"
+    java-intermediate-type="java.lang.String" />
 
   <!-- Tables -->
 
@@ -52,16 +56,14 @@
   <!-- table name="document" /-->
 
 
-<!-- 
+  <!-- 
   <fragment file="hotrod-selects-tests.xml" />
--->
+  -->
 
   <fragment file="hotrod-selects-tests2.xml" />
-
-  <!--
-  -->
   <fragment file="hotrod-selects-tests3.xml" />
-
+<!--
+-->
   <fragment file="hotrod-selects-tests4.xml" />
 
 </hotrod>

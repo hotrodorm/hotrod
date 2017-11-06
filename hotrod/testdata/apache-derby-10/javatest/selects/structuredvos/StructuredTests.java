@@ -10,6 +10,7 @@ import hotrod.test.generation.AccountPersonVO;
 import hotrod.test.generation.AccountVO;
 import hotrod.test.generation.AccountWithTransactions2VO;
 import hotrod.test.generation.AccountWithTransactionsVO;
+import hotrod.test.generation.AssessedCarVO;
 import hotrod.test.generation.ExpandedAccountVO;
 import hotrod.test.generation.ExtendedPersonVO;
 import hotrod.test.generation.LogVO;
@@ -19,6 +20,7 @@ import hotrod.test.generation.OfficeWithLogVO;
 import hotrod.test.generation.TransactionVO;
 import hotrod.test.generation.VIPAccountVO;
 import hotrod.test.generation.ValuatedAccountVO;
+import hotrod.test.generation.primitives.CarDAO;
 import hotrod.test.generation.primitives.PersonDAO;
 
 public class StructuredTests {
@@ -30,10 +32,11 @@ public class StructuredTests {
     // test4();
     // test5();
     // test6();
-    test7();
+    // test7();
     // test8();
     // test9();
     // test10();
+    test11();
   }
 
   // Case 1 - Flat Join
@@ -152,6 +155,13 @@ public class StructuredTests {
     }
   }
 
+  private static void test11() throws SQLException {
+    System.out.println("=== Assessed Cars ===");
+    for (AssessedCarVO ac : CarDAO.findAssessedCarVO(123)) {
+      printObject(ac, 0);
+    }
+
+  }
   // Utilitites
 
   private static void printObject(final Object obj, final int indent) {

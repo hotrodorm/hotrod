@@ -8,7 +8,6 @@ import hotrod.test.generation.BrandVO;
 import hotrod.test.generation.CarVO;
 import hotrod.test.generation.primitives.BrandDAO;
 import hotrod.test.generation.primitives.CarDAO;
-import hotrod.test.generation.primitives.NorthOfficeDAO;
 
 public class Examples {
 
@@ -37,7 +36,7 @@ public class Examples {
 
     // Select by example
     CarVO example = new CarVO();
-    example.setType("TRUCK");
+//    example.setType("TRUCK");
     List<CarVO> trucks = CarDAO.selectByExample(example);
 
     // Update by example
@@ -61,7 +60,7 @@ public class Examples {
 
     // =========================================
 
-    List<AssessedCarVO> assessed = NorthOfficeDAO.findAssesedCarVO(123);
+    List<AssessedCarVO> assessed = CarDAO.findAssessedCarVO(123);
 
     // =========================================
 

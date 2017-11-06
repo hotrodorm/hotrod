@@ -73,6 +73,7 @@ public class SelectAbstractVO {
     this.name = this.myBatisTag.getDaos().generateAbstractVOName(vo.getName());
     this.classPackage = this.myBatisTag.getDaos().getPrimitivesVOPackage(vo.getClassPackage());
     this.columns = new ArrayList<ColumnMetadata>();
+    log.debug("vo.getDeclaredColumns().size()=" + vo.getDeclaredColumns().size());
     for (ColumnMetadata cm : vo.getDeclaredColumns()) {
       this.columns.add(cm);
     }
@@ -180,8 +181,10 @@ public class SelectAbstractVO {
 
   private void writeProperties() throws IOException {
 
+    log.debug("class=" + this.getName() + " this.columns.size()=" + this.columns.size());
+
     if (!this.columns.isEmpty()) {
-      println("  // Declared properties");
+      println("  // Expression properties");
       println();
       for (ColumnMetadata cm : this.columns) {
         String javaType = cm.getType().getJavaClassName();

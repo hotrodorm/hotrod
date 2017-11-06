@@ -25,7 +25,6 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.mybatis.DataSetLayout;
-import org.hotrod.metadata.ExpressionsMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.VOMetadata;
@@ -53,7 +52,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   private String vo = null;
 
   private List<VOTag> vos = new ArrayList<VOTag>();
-  private List<ExpressionsTag> expressions = new ArrayList<ExpressionsTag>();
+  private Expressions expressions = new Expressions();
 
   @SuppressWarnings("unused")
   private HotRodGenerator generator;
@@ -81,9 +80,9 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     this.vos.add(vo);
   }
 
-  @XmlElement(name = "expressions")
-  public void setExpressionsTag(final ExpressionsTag exps) {
-    this.expressions.add(exps);
+  @XmlElement(name = "expression")
+  public void setExpressionsTag(final ExpressionTag exp) {
+    this.expressions.addExpression(exp);
   }
 
   // Behavior
@@ -119,9 +118,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
     // expressions
 
-    for (ExpressionsTag exp : this.expressions) {
-      exp.validateAgainstDatabase(generator);
-    }
+    this.expressions.validateAgainstDatabase(generator);
 
   }
 
@@ -143,11 +140,9 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
       columns.addAll(vo.gelAliasedSQLColumns());
     }
 
-    for (ExpressionsTag exp : this.expressions) {
-      for (StructuredColumnMetadata m : exp.getColumnsMetadata()) {
-        String aliasedSQLColumn = m.renderAliasedSQLColumn();
-        columns.add(aliasedSQLColumn);
-      }
+    for (StructuredColumnMetadata m : this.expressions.getMetadata()) {
+      String aliasedSQLColumn = m.renderAliasedSQLColumn();
+      columns.add(aliasedSQLColumn);
     }
 
     String indent = SUtils.getFiller(' ', formatter.getCurrentIndent() + 2);
@@ -202,9 +197,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
     // expressions
 
-    for (ExpressionsTag exp : this.expressions) {
-      exp.validate(daosTag, config, fragmentConfig, singleVOResult);
-    }
+    this.expressions.validate(daosTag, config, fragmentConfig, singleVOResult);
 
   }
 
@@ -215,9 +208,8 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     for (VOTag vo : this.vos) {
       vo.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
     }
-    for (ExpressionsTag exp : this.expressions) {
-      exp.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
-    }
+    log.debug("EXPRESSIONS from ColumnsTag... this=" + this);
+    this.expressions.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
 
   }
 
@@ -230,16 +222,9 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     for (VOTag vo : this.vos) {
       vo.gatherMetadataPhase2(conn2);
     }
-    for (ExpressionsTag exp : this.expressions) {
-      exp.gatherMetadataPhase2(conn2);
-    }
+    this.expressions.gatherMetadataPhase2(conn2);
 
     // Assemble
-
-    List<ExpressionsMetadata> expressions = new ArrayList<ExpressionsMetadata>();
-    for (ExpressionsTag tag : this.expressions) {
-      expressions.add(tag.getExpressionsMetadata());
-    }
 
     List<VOMetadata> vos = new ArrayList<VOMetadata>();
     for (VOTag t : this.vos) {
@@ -248,8 +233,8 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
     ClassPackage classPackage = getVOClassPackage(this.layout, this.fragmentConfig);
 
-    this.metadata = new StructuredColumnsMetadata(this, classPackage, !this.connectedVOResult, this.vo, expressions,
-        vos);
+    this.metadata = new StructuredColumnsMetadata(this, classPackage, !this.connectedVOResult, this.vo,
+        this.expressions, vos);
 
   }
 
@@ -267,9 +252,10 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     return vos;
   }
 
-  public List<ExpressionsTag> getExpressions() {
-    return expressions;
-  }
+  // TODO: remove
+  // public List<ExpressionTag> getExpressions() {
+  // return expressions;
+  // }
 
   public StructuredColumnsMetadata getMetadata() {
     return metadata;

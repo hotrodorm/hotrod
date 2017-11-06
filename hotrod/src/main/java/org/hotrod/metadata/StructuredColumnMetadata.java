@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.hotrod.config.ColumnTag;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.hotrod.runtime.dynamicsql.SourceLocation;
 
 public class StructuredColumnMetadata extends ColumnMetadata {
 
@@ -15,24 +16,26 @@ public class StructuredColumnMetadata extends ColumnMetadata {
   private String columnAlias;
   private String formula;
   private boolean id;
+  private SourceLocation sourceLocation;
 
   // Constructor
 
   public StructuredColumnMetadata(final ColumnMetadata cm, final String entityPrefix, final String columnAlias,
-      final boolean id) {
+      final boolean id, final SourceLocation sourceLocation) {
     super(cm);
     this.entityPrefix = entityPrefix;
     this.columnAlias = columnAlias;
     this.formula = null;
     this.id = id;
+    this.sourceLocation = sourceLocation;
   }
 
   // Behavior
 
-  public static StructuredColumnMetadata applyColumnTag(final StructuredColumnMetadata orig, final ColumnTag t)
-      throws UnresolvableDataTypeException {
+  public static StructuredColumnMetadata applyColumnTag(final StructuredColumnMetadata orig, final ColumnTag t,
+      final SourceLocation location) throws UnresolvableDataTypeException {
     ColumnMetadata cm = ColumnMetadata.applyColumnTag(orig, t);
-    return new StructuredColumnMetadata(cm, orig.entityPrefix, orig.columnAlias, orig.id);
+    return new StructuredColumnMetadata(cm, orig.entityPrefix, orig.columnAlias, orig.id, location);
   }
 
   // Setters
@@ -55,6 +58,10 @@ public class StructuredColumnMetadata extends ColumnMetadata {
     return id;
   }
 
+  public SourceLocation getSourceLocation() {
+    return sourceLocation;
+  }
+
   // Rendering
 
   public String renderAliasedSQLColumn() {
@@ -75,7 +82,7 @@ public class StructuredColumnMetadata extends ColumnMetadata {
     List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
     for (ColumnMetadata cm : cols) {
       StructuredColumnMetadata m = new StructuredColumnMetadata(cm, entityPrefix, aliasPrefix + cm.getColumnName(),
-          cm.belongsToPK());
+          cm.belongsToPK(), null);
       columns.add(m);
     }
     return columns;
@@ -96,7 +103,8 @@ public class StructuredColumnMetadata extends ColumnMetadata {
     List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
     for (ColumnMetadata cm : cols) {
       boolean id = columnIsId(cm, idNames);
-      StructuredColumnMetadata m = new StructuredColumnMetadata(cm, entityPrefix, aliasPrefix + cm.getColumnName(), id);
+      StructuredColumnMetadata m = new StructuredColumnMetadata(cm, entityPrefix, aliasPrefix + cm.getColumnName(), id,
+          null);
       columns.add(m);
     }
     return columns;

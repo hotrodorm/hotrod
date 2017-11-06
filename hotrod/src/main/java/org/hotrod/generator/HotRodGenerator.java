@@ -36,7 +36,6 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DAOMetadata;
 import org.hotrod.metadata.DataSetMetadataFactory;
 import org.hotrod.metadata.EnumDataSetMetadata;
-import org.hotrod.metadata.ExpressionsMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -44,9 +43,9 @@ import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry;
+import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
-import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
@@ -217,7 +216,8 @@ public abstract class HotRodGenerator {
                   : null;
           ClassPackage classPackage = layout.getDAOPackage(fragmentPackage);
           String voName = daosTag.generateVOName(tm.getIdentifier());
-          EntityVOClass vo = new EntityVOClass(tm, classPackage, voName, tm.getColumns(), tm.getDaoTag().getSourceLocation());
+          EntityVOClass vo = new EntityVOClass(tm, classPackage, voName, tm.getColumns(),
+              tm.getDaoTag().getSourceLocation());
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {
@@ -284,7 +284,8 @@ public abstract class HotRodGenerator {
                   : null;
           ClassPackage classPackage = layout.getDAOPackage(fragmentPackage);
           String voName = daosTag.generateVOName(vm.getIdentifier());
-          EntityVOClass vo = new EntityVOClass(vm, classPackage, voName, vm.getColumns(), vm.getDaoTag().getSourceLocation());
+          EntityVOClass vo = new EntityVOClass(vm, classPackage, voName, vm.getColumns(),
+              vm.getDaoTag().getSourceLocation());
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {
@@ -525,11 +526,11 @@ public abstract class HotRodGenerator {
           StructuredColumnsMetadata sc = sm.getStructuredColumns();
           if (sc.getSoloVOClass() == null) {
             logVOs(sc.getVOs(), 0);
-            logExpressions(sc.getExpressions(), 0);
+            logExpressions(sc.getExpressions().getMetadata(), 0);
           } else {
             display("    + <main-single-vo> (new) " + sc.getSoloVOClass());
             logVOs(sc.getVOs(), 2);
-            logExpressions(sc.getExpressions(), 2);
+            logExpressions(sc.getExpressions().getMetadata(), 2);
           }
         } else {
           for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
@@ -542,15 +543,13 @@ public abstract class HotRodGenerator {
     }
   }
 
-  private void logExpressions(final List<ExpressionsMetadata> expressions, final int level) {
+  private void logExpressions(final List<StructuredColumnMetadata> expressions, final int level) {
     String filler = SUtils.getFiller(' ', level);
-    for (ExpressionsMetadata exp : expressions) {
-      for (StructuredColumnMetadata cm : exp.getColumns()) {
-        display("   " + filler + "+ "
-            + cm.getIdentifier().getJavaMemberIdentifier() + " [expr] (" + (cm.getConverter() != null
-                ? "<converted-to> " + cm.getConverter().getJavaType() : cm.getType().getJavaClassName())
-            + ") --> " + cm.getColumnAlias());
-      }
+    for (StructuredColumnMetadata cm : expressions) {
+      display("   " + filler + "+ "
+          + cm.getIdentifier().getJavaMemberIdentifier() + " [expr] (" + (cm.getConverter() != null
+              ? "<converted-to> " + cm.getConverter().getJavaType() : cm.getType().getJavaClassName())
+          + ") --> " + cm.getColumnAlias());
     }
   }
 
@@ -566,7 +565,7 @@ public abstract class HotRodGenerator {
       String property = c.getProperty() != null ? c.getProperty() : "<main-vo>";
       display("   " + filler + "+ " + property + " [collection] " + based);
       logColumns(c.getDeclaredColumns(), level + 2);
-      logExpressions(c.getExpressions(), level + 2);
+      logExpressions(c.getExpressions().getMetadata(), level + 2);
       logCollections(c.getCollections(), level + 2);
       logAssociations(c.getAssociations(), level + 2);
     }
@@ -587,7 +586,7 @@ public abstract class HotRodGenerator {
 
       display("   " + filler + "+ " + property + " [association] " + based);
       logColumns(a.getDeclaredColumns(), level + 2);
-      logExpressions(a.getExpressions(), level + 2);
+      logExpressions(a.getExpressions().getMetadata(), level + 2);
       logCollections(a.getCollections(), level + 2);
       logAssociations(a.getAssociations(), level + 2);
     }
@@ -610,7 +609,7 @@ public abstract class HotRodGenerator {
       String property = vo.getProperty() != null ? vo.getProperty() : "<main-single-vo>";
       display("   " + filler + "+ " + property + " [vo] " + based);
       logColumns(vo.getDeclaredColumns(), level + 2);
-      logExpressions(vo.getExpressions(), level + 2);
+      logExpressions(vo.getExpressions().getMetadata(), level + 2);
       logCollections(vo.getCollections(), level + 2);
       logAssociations(vo.getAssociations(), level + 2);
     }

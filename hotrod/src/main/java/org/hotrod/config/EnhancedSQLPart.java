@@ -64,16 +64,16 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
     private List<String> lines = new ArrayList<String>();
 
-    public void add(final String line) {
-      if (line == null) {
+    public void add(final String txt) {
+      if (txt == null) {
         return;
       }
-      if (line.contains("\n")) {
-        for (String l : line.split("\n")) {
+      if (txt.contains("\n")) {
+        for (String l : txt.split("\n")) {
           this.lines.add(l);
         }
       } else {
-        this.lines.add(line);
+        this.lines.add(txt);
       }
     }
 

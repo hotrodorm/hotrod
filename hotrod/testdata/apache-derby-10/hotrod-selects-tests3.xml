@@ -15,20 +15,17 @@
       <columns vo="AccountPersonVO2">
         <vo table="account" property="account" alias="a" extended-vo="AccountRewrittenVO">
           a.*
-          <expressions>
-            a.person_id + a.type as prop0
-          </expressions>
+          <expression property="prop0">
+            a.person_id + a.type
+          </expression>
           <association table="log" property="prop1" alias="l" />
           <association table="transaction" property="prop2" alias="t" />
           <collection table="transaction" property="prop3" alias="t" />
           <collection table="log" property="prop4" alias="l" />
         </vo>
         <vo table="person" property="person" alias="p"></vo>
-        <expressions>
-          <column name="initial_load" java-type="java.lang.Double" />
-          a.balance * a.type as initial_load,
-          p.id + p.type as score
-        </expressions>
+        <expression property="initialLoad" class="java.lang.Double"> a.balance * a.type </expression>
+        <expression property="score"> p.id + p.type </expression>
       </columns>
       from account a
       join person p on (p.id) = (a.person_id)
@@ -40,39 +37,7 @@
 
     </select>
 
-    <select method="findAssesedCarVO">
-
-      <parameter name="brandId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-
-      select
-      <columns>
-        <vo table="car" alias="c" extended-vo="AssessedCarVO">
-          <association table="brand" property="brand" alias="b" />
-          <collection table="repair" property="repairs" alias="r" />
-          <expressions>
-            b.id * c.id + 71 as score,
-            length(b.name) + length(c.type) as tier
-          </expressions>
-        </vo>
-      </columns>
-      from car c
-      join brand b on b.id = c.brand_id
-      left join repair r on r.car_id = c.id
-      <complement>
-        <where>
-          <if test="brandId != null">
-            and b.type = #{brandId}
-          </if>
-        </where>
-      </complement>
-
-    </select>
-
-
   </view>
-
-  <table name="car" />
-
 
   <table name="doc_comment">
 
@@ -84,11 +49,8 @@
       <columns vo="AccountPersonVO3">
         <vo table="account" property="account" alias="a"> a.* </vo>
         <vo table="person" property="person" alias="p"></vo>
-        <expressions>
-          <column name="initial_load" java-type="java.lang.Double" />
-          a.balance * a.type as initial_load,
-          p.id + p.type as score
-        </expressions>
+        <expression property="initialLoad" class="java.lang.Double"> a.balance * a.type </expression>
+        <expression property="score"> p.id + p.type </expression>
       </columns>
       from account a
       join person p on (p.id) = (a.person_id)
@@ -101,6 +63,5 @@
     </select>
 
   </table>
-
 
 </hotrod-fragment>

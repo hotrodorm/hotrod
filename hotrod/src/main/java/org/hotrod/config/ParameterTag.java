@@ -77,7 +77,7 @@ public class ParameterTag extends AbstractConfigurationTag {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "invalid <parameter> tag -- the 'java-type' attribute cannot be blank.");
     }
-    if (!this.javaType.matches(Patterns.VALID_TYPE)) {
+    if (!this.javaType.matches(Patterns.VALID_JAVA_TYPE)) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "invalid <parameter> tag -- "
               + "the 'java-type' attribute must start with a letter and continue with letters, digits, and/or underscores, but found '"

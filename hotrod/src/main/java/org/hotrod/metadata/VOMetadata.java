@@ -10,7 +10,7 @@ import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.structuredcolumns.AssociationTag;
 import org.hotrod.config.structuredcolumns.CollectionTag;
-import org.hotrod.config.structuredcolumns.ExpressionsTag;
+import org.hotrod.config.structuredcolumns.Expressions;
 import org.hotrod.config.structuredcolumns.VOTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.mybatis.DataSetLayout;
@@ -39,7 +39,6 @@ public class VOMetadata {
   private String name;
   private EntityVOClass entityVOSuperClass;
 
-  private List<ExpressionsMetadata> expressions;
   private List<VOMetadata> associations;
   private List<VOMetadata> collections;
 
@@ -65,13 +64,9 @@ public class VOMetadata {
     this.viewMetadata = tag.getViewMetadata();
     this.inheritedColumns = tag.getInheritedColumns();
     this.declaredColumns = tag.getDeclaredColumns();
+    log.debug("DEC COLUMNS=" + this.declaredColumns.size());
     this.alias = tag.getAlias();
     this.property = tag.getProperty();
-
-    this.expressions = new ArrayList<ExpressionsMetadata>();
-    for (ExpressionsTag e : tag.getExpressions()) {
-      this.expressions.add(e.getExpressionsMetadata());
-    }
 
     this.associations = new ArrayList<VOMetadata>();
     this.associationMembers = new ArrayList<VOMember>();
@@ -146,18 +141,17 @@ public class VOMetadata {
       // Entity VO properties
 
       for (ColumnMetadata cm : this.entityVOSuperClass.getColumnsByName().values()) {
-        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false);
+        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false,
+            this.tag.getSourceLocation());
         properties.add(new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), m, EnclosingTagType.ENTITY_VO,
             this.entityVOSuperClass.getLocation()));
       }
 
       // Expressions properties
 
-      for (ExpressionsMetadata em : this.getExpressions()) {
-        for (StructuredColumnMetadata cm : em.getColumns()) {
-          properties.add(new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), cm, EnclosingTagType.EXPRESSIONS,
-              em.getSourceLocation()));
-        }
+      for (StructuredColumnMetadata cm : this.tag.getExpressions().getMetadata()) {
+        properties.add(new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), cm, EnclosingTagType.EXPRESSIONS,
+            cm.getSourceLocation()));
       }
 
       // Association properties
@@ -301,10 +295,6 @@ public class VOMetadata {
 
   // Getters
 
-  public List<ExpressionsMetadata> getExpressions() {
-    return expressions;
-  }
-
   public List<VOMetadata> getAssociations() {
     return associations;
   }
@@ -347,6 +337,10 @@ public class VOMetadata {
 
   public String getName() {
     return name;
+  }
+
+  public Expressions getExpressions() {
+    return this.tag.getExpressions();
   }
 
   public List<VOMember> getAssociationMembers() {

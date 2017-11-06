@@ -163,25 +163,25 @@
   <xsd:complexType name="columns-type">
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
       <xsd:element name="vo" type="vo-type" />
-      <xsd:element name="expressions" type="expressions-type" />
+      <xsd:element name="expression" type="expression-type" />
       <xsd:element name="association" type="association-type" />
     </xsd:choice>
     <xsd:attribute name="vo" type="xsd:string" />
   </xsd:complexType>
 
-  <!-- select method - expressions -->
+  <!-- select method - expression -->
 
-  <xsd:complexType name="expressions-type" mixed="true">
-    <xsd:sequence>
-      <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
-    </xsd:sequence>
+  <xsd:complexType name="expression-type" mixed="true">
+    <xsd:attribute name="property" type="xsd:string" use="required" />
+    <xsd:attribute name="class" type="xsd:string" />
+    <xsd:attribute name="converter" type="xsd:string" />
   </xsd:complexType>
 
   <!-- select method - vo -->
 
   <xsd:complexType name="vo-type" mixed="true">
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="expressions" type="expressions-type" />
+      <xsd:element name="expression" type="expression-type" />
       <xsd:element name="association" type="association-type" />
       <xsd:element name="collection" type="collection-type" />
     </xsd:choice>
@@ -197,7 +197,7 @@
 
   <xsd:complexType name="collection-type" mixed="true">
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="expressions" type="expressions-type" />
+      <xsd:element name="expression" type="expression-type" />
       <xsd:element name="association" type="association-type" />
       <xsd:element name="collection" type="collection-type" />
     </xsd:choice>
@@ -213,7 +213,7 @@
 
   <xsd:complexType name="association-type" mixed="true">
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
-      <xsd:element name="expressions" type="expressions-type" />
+      <xsd:element name="expression" type="expression-type" />
       <xsd:element name="association" type="association-type" />
       <xsd:element name="collection" type="collection-type" />
     </xsd:choice>

@@ -58,7 +58,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   @XmlElementRefs({ //
       @XmlElementRef(type = CollectionTag.class), //
       @XmlElementRef(type = AssociationTag.class), //
-      @XmlElementRef(type = ExpressionsTag.class) //
+      @XmlElementRef(type = ExpressionTag.class) //
   })
   private List<Object> content = new ArrayList<Object>();
 
@@ -75,9 +75,10 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   private TableDataSetMetadata tableMetadata;
   private TableDataSetMetadata viewMetadata;
 
-  private List<ExpressionsTag> expressions = new ArrayList<ExpressionsTag>();
   private List<CollectionTag> collections = new ArrayList<CollectionTag>();
   private List<AssociationTag> associations = new ArrayList<AssociationTag>();
+
+  private Expressions expressions = new Expressions();
 
   private HotRodGenerator generator;
 
@@ -161,8 +162,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
             this.associations.add(a);
           } catch (ClassCastException e3) {
             try {
-              ExpressionsTag expr = (ExpressionsTag) obj; // expressions
-              this.expressions.add(expr);
+              ExpressionTag exp = (ExpressionTag) obj; // expressions
+              this.expressions.addExpression(exp);
             } catch (ClassCastException e4) {
               throw new InvalidConfigurationFileException(super.getSourceLocation(), "The body of the tag <"
                   + super.getTagName() + "> has an invalid tag (of class '" + obj.getClass().getName() + "').");
@@ -281,9 +282,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     // expressions
 
-    for (ExpressionsTag exp : this.expressions) {
-      exp.validate(daosTag, config, fragmentConfig, false);
-    }
+    this.expressions.validate(daosTag, config, fragmentConfig, singleVOResult);
 
     // associations
 
@@ -333,9 +332,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     // expressions
 
-    for (ExpressionsTag exp : this.expressions) {
-      exp.validateAgainstDatabase(generator);
-    }
+    this.expressions.validateAgainstDatabase(generator);
 
   }
 
@@ -362,9 +359,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     // expressions, collections, associations
 
-    for (ExpressionsTag exp : this.expressions) {
-      exp.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
-    }
+    this.expressions.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
 
     for (CollectionTag c : this.collections) {
       c.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
@@ -511,12 +506,9 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     // 3. Retrieve inner expressions, collections, and associations
 
-    this.declaredColumns = new ArrayList<StructuredColumnMetadata>();
-
-    for (ExpressionsTag exp : this.expressions) {
-      exp.gatherMetadataPhase2(conn2);
-      this.declaredColumns.addAll(exp.getColumnsMetadata());
-    }
+    this.expressions.gatherMetadataPhase2(conn2);
+    this.declaredColumns = this.expressions.getMetadata();
+    log.debug("DECLARED COLUMNS=" + this.declaredColumns.size());
 
     for (CollectionTag c : this.collections) {
       c.gatherMetadataPhase2(conn2);
@@ -582,7 +574,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       if (isId) {
         validateIdJDBCType(baseColumn);
       }
-      StructuredColumnMetadata sc = new StructuredColumnMetadata(baseColumn, this.alias, r.getColumnAlias(), isId);
+      StructuredColumnMetadata sc = new StructuredColumnMetadata(baseColumn, this.alias, r.getColumnAlias(), isId,
+          this.getSourceLocation());
       metadata.add(sc);
     }
     return metadata;
@@ -708,8 +701,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     return associations;
   }
 
-  public List<ExpressionsTag> getExpressions() {
-    return expressions;
+  public Expressions getExpressions() {
+    return this.expressions;
   }
 
   public List<StructuredColumnMetadata> getInheritedColumns() {

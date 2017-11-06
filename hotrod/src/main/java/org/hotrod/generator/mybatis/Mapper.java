@@ -1128,10 +1128,10 @@ public class Mapper {
             : vo.getFullClassName();
 
         ObjectDAO dao = this.entityDAORegistry.findEntityDAO(entityFullClassName);
-        renderResultMapLevel(vo.getInheritedColumns(), vo.getDeclaredColumns(), vo.getAssociations(),
+        renderResultMapLevel(sm, vo.getInheritedColumns(), vo.getDeclaredColumns(), vo.getAssociations(),
             vo.getCollections(), dao, 0);
       } else {
-        renderResultMapLevel(null, scm.getColumnsMetadata(), scm.getVOs(), null, null, 0);
+        renderResultMapLevel(sm, null, scm.getColumnsMetadata(), scm.getVOs(), null, null, 0);
       }
 
     }
@@ -1149,21 +1149,22 @@ public class Mapper {
     println();
   }
 
-  private void renderResultMapLevel(final List<StructuredColumnMetadata> inheritedColumns,
-      final List<StructuredColumnMetadata> declaredColumns, final List<VOMetadata> associations,
-      final List<VOMetadata> collections, final ObjectDAO dao, final int level) throws IOException {
+  private void renderResultMapLevel(final SelectMethodMetadata sm,
+      final List<StructuredColumnMetadata> inheritedColumns, final List<StructuredColumnMetadata> declaredColumns,
+      final List<VOMetadata> associations, final List<VOMetadata> collections, final ObjectDAO dao, final int level)
+      throws IOException {
 
     // Main VO columns
 
     if (inheritedColumns != null) {
       for (StructuredColumnMetadata m : inheritedColumns) {
         if (m.isId()) {
-          renderSelectResultMapColumn(m, "id", dao, level);
+          renderSelectResultMapColumn(sm, m, "id", dao, level);
         }
       }
       for (StructuredColumnMetadata m : inheritedColumns) {
         if (!m.isId()) {
-          renderSelectResultMapColumn(m, "result", dao, level);
+          renderSelectResultMapColumn(sm, m, "result", dao, level);
         }
       }
     }
@@ -1172,7 +1173,7 @@ public class Mapper {
 
     if (declaredColumns != null) {
       for (StructuredColumnMetadata m : declaredColumns) {
-        renderSelectResultMapColumn(m, "result", dao, level);
+        renderSelectResultMapColumn(sm, m, "result", dao, level);
       }
     }
 
@@ -1186,7 +1187,7 @@ public class Mapper {
       String entityFullClassName = a.getSuperClass() != null ? a.getSuperClass().getFullClassName()
           : a.getFullClassName();
       ObjectDAO aDAO = entityDAORegistry.findEntityDAO(entityFullClassName);
-      renderResultMapLevel(a.getInheritedColumns(), a.getDeclaredColumns(), a.getAssociations(), a.getCollections(),
+      renderResultMapLevel(sm, a.getInheritedColumns(), a.getDeclaredColumns(), a.getAssociations(), a.getCollections(),
           aDAO, level + 1);
       println(indent + "</association>");
     }
@@ -1199,20 +1200,21 @@ public class Mapper {
         String entityFullClassName = c.getSuperClass() != null ? c.getSuperClass().getFullClassName()
             : c.getFullClassName();
         ObjectDAO cDAO = entityDAORegistry.findEntityDAO(entityFullClassName);
-        renderResultMapLevel(c.getInheritedColumns(), c.getDeclaredColumns(), c.getAssociations(), c.getCollections(),
-            cDAO, level + 1);
+        renderResultMapLevel(sm, c.getInheritedColumns(), c.getDeclaredColumns(), c.getAssociations(),
+            c.getCollections(), cDAO, level + 1);
         println(indent + "</collection>");
       }
     }
 
   }
 
-  private void renderSelectResultMapColumn(final StructuredColumnMetadata cm, final String tagName, final ObjectDAO dao,
-      final int level) throws IOException {
+  private void renderSelectResultMapColumn(final SelectMethodMetadata sm, final StructuredColumnMetadata cm,
+      final String tagName, final ObjectDAO dao, final int level) throws IOException {
 
     String typeHandler = "";
     if (cm.getConverter() != null) {
-      typeHandler = "typeHandler=\"" + dao.getTypeHandlerFullClassName(cm) + "\" ";
+      log.debug("converter=" + cm.getConverter().getName() + " cm=" + cm.getColumnName());
+      typeHandler = "typeHandler=\"" + dao.getTypeHandlerFullClassName(sm, cm) + "\" ";
     } else {
       EnumDataSetMetadata ds = cm.getEnumMetadata();
       EnumClass ec = this.generator.getEnum(ds);

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hotrod.config.structuredcolumns.ColumnsTag;
+import org.hotrod.config.structuredcolumns.Expressions;
 import org.hotrod.metadata.VOMetadata.DuplicatePropertyNameException;
 import org.hotrod.metadata.VOMetadata.VOMember;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
@@ -25,7 +26,7 @@ public class StructuredColumnsMetadata {
   private ColumnsTag tag;
   private boolean isSoloVO;
   private String vo;
-  private List<ExpressionsMetadata> expressions = new ArrayList<ExpressionsMetadata>();
+  private Expressions expressions;
   private List<VOMetadata> vos = new ArrayList<VOMetadata>();
 
   private SelectVOClass soloVOClass;
@@ -33,7 +34,7 @@ public class StructuredColumnsMetadata {
   // Constructor
 
   public StructuredColumnsMetadata(final ColumnsTag tag, final ClassPackage classPackage, final boolean isSoloVO,
-      final String soloVOClassName, final List<ExpressionsMetadata> expressions, final List<VOMetadata> vos) {
+      final String soloVOClassName, final Expressions expressions, final List<VOMetadata> vos) {
     log.debug("init");
     this.tag = tag;
     this.isSoloVO = isSoloVO;
@@ -50,16 +51,10 @@ public class StructuredColumnsMetadata {
 
     // Expressions properties
 
-    for (ExpressionsMetadata em : this.getExpressions()) {
-      for (StructuredColumnMetadata cm : em.getColumns()) {
-        properties.add(new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), cm, EnclosingTagType.EXPRESSIONS,
-            em.getSourceLocation()));
-      }
+    for (StructuredColumnMetadata cm : this.expressions.getMetadata()) {
+      properties.add(new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), cm, EnclosingTagType.EXPRESSIONS,
+          cm.getSourceLocation()));
     }
-
-    log.debug("this.getExpressions().size()=" + this.getExpressions().size());
-    log.debug("properties.size()=" + properties.size());
-    log.debug("this.vo=" + this.vo + " this.isSoloVO=" + this.isSoloVO);
 
     if (this.isSoloVO) { // solo VO
 
@@ -88,7 +83,7 @@ public class StructuredColumnsMetadata {
 
   // Getters
 
-  public List<ExpressionsMetadata> getExpressions() {
+  public Expressions getExpressions() {
     return expressions;
   }
 
@@ -100,20 +95,8 @@ public class StructuredColumnsMetadata {
     return soloVOClass;
   }
 
-  public List<ColumnMetadata> getExpressionsColumns() {
-    List<ColumnMetadata> columns = new ArrayList<ColumnMetadata>();
-    for (ExpressionsMetadata exp : this.expressions) {
-      columns.addAll(exp.getColumns());
-    }
-    return columns;
-  }
-
   public List<StructuredColumnMetadata> getColumnsMetadata() {
-    List<StructuredColumnMetadata> m = new ArrayList<StructuredColumnMetadata>();
-    for (ExpressionsMetadata em : this.expressions) {
-      m.addAll(em.getColumns());
-    }
-    return m;
+    return this.expressions.getMetadata();
   }
 
 }

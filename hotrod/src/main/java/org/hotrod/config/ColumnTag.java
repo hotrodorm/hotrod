@@ -66,6 +66,10 @@ public class ColumnTag extends AbstractConfigurationTag {
     this.converter = converter;
   }
 
+  public void setConverterTag(final ConverterTag converterTag) {
+    this.converterTag = converterTag;
+  }
+
   @XmlAttribute(name = "jdbc-type")
   public void setJdbcType(final String jdbcType) {
     this.jdbcType = jdbcType;

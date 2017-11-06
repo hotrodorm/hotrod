@@ -21,7 +21,6 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.SelectMethodMetadata;
-import org.hotrod.metadata.VORegistry;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.util.SUtils;
 
@@ -298,7 +297,9 @@ public class SelectMethodTag extends AbstractConfigurationTag {
       sb.append(p.renderSQLAngle(adapter, cp));
     }
     String literal = sb.toString();
-    return literal;
+    SQLFormatter formatter = new SQLFormatter();
+    formatter.add(literal);
+    return formatter.toString();
   }
 
   public String renderSQLSentence(final ParameterRenderer parameterRenderer) {

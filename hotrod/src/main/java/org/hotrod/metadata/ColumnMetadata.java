@@ -131,10 +131,11 @@ public class ColumnMetadata {
     ColumnMetadata m2 = new ColumnMetadata(cm);
     m2.tag = tag;
     m2.type = m2.adapter.resolveJavaType(m2, tag);
+    m2.identifier = new ColumnIdentifier(m2.columnName, m2.type, tag);
     return m2;
   }
 
-  // Indexing methods
+  // Indexable
 
   @Override
   public int hashCode() {

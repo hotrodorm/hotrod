@@ -1866,6 +1866,9 @@ public class ObjectDAO {
         return true;
       }
     }
+    if (!this.selectTypeHandlerNames.isEmpty()) {
+      return true;
+    }
     return false;
   }
 
@@ -2017,23 +2020,40 @@ public class ObjectDAO {
    */
 
   private void writeConverters() throws IOException {
+
+    // Entity columns converters
+
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (cm.getConverter() != null) {
-
         String typeHandlerClassName = getTypeHandlerClassName(cm);
-        writeTypeHandler(cm, typeHandlerClassName);
+        writeTypeHandler(null, cm, typeHandlerClassName);
       }
     }
+
+    // Select columns converters
+
+    log.debug("DAO=" + this.getClassName() + " select converters=" + this.selectTypeHandlerNames.size());
+
+    for (Map<ColumnMetadata, String> selectTypeHandlers : this.selectTypeHandlers.values()) {
+      for (ColumnMetadata cm : selectTypeHandlers.keySet()) {
+        String thName = selectTypeHandlers.get(cm);
+        log.debug("WRITING TYPEHANDLER '" + thName + "'");
+        writeTypeHandler("", cm, thName);
+      }
+    }
+
   }
 
-  private void writeTypeHandler(final ColumnMetadata cm, final String typeHandlerClassName) throws IOException {
+  private void writeTypeHandler(final String property, final ColumnMetadata cm, final String typeHandlerClassName)
+      throws IOException {
     String interType = cm.getConverter().getJavaIntermediateType();
     String type = cm.getConverter().getJavaType();
     String setter = cm.getConverter().getJdbcSetterMethod();
     String getter = cm.getConverter().getJdbcGetterMethod();
     String converter = cm.getConverter().getJavaClass();
 
-    println("  // TypeHandler for column " + cm.getColumnName() + " using Converter " + converter + ".");
+    println("  // TypeHandler for " + (property != null ? "property " + property : "column " + cm.getColumnName())
+        + " using Converter " + converter + ".");
     println();
     println("  public static class " + typeHandlerClassName + " implements TypeHandler<" + type + "> {");
     println();
@@ -2531,16 +2551,16 @@ public class ObjectDAO {
     println("  }");
     println();
 
-    // non-structured VO type handlers
-
-    if (!sm.isStructured()) {
-      for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
-        if (cm.getConverter() != null) {
-          String typeHandlerClassName = this.getTypeHandlerClassName(sm, cm);
-          this.writeTypeHandler(cm, typeHandlerClassName);
-        }
-      }
-    }
+    // // non-structured VO type handlers
+    //
+    // if (!sm.isStructured()) {
+    // for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
+    // if (cm.getConverter() != null) {
+    // String typeHandlerClassName = this.getTypeHandlerClassName(sm, cm);
+    // this.writeTypeHandler(null, cm, typeHandlerClassName);
+    // }
+    // }
+    // }
 
   }
 
@@ -2651,8 +2671,44 @@ public class ObjectDAO {
     return this.getFullClassName() + "$" + getTypeHandlerClassName(cm);
   }
 
+  private Map<SelectMethodMetadata, Map<ColumnMetadata, String>> selectTypeHandlers = new HashMap<SelectMethodMetadata, Map<ColumnMetadata, String>>();
+  private Set<String> selectTypeHandlerNames = new HashSet<String>();
+
   private String getTypeHandlerClassName(final SelectMethodMetadata sm, final ColumnMetadata cm) {
-    return sm.getMethod() + "_" + cm.getIdentifier().getJavaClassIdentifier() + "TypeHandler";
+    log.debug("sm=" + sm.getMethod() + " # " + cm.getColumnName());
+    String thName = null;
+    Map<ColumnMetadata, String> typeHandlers = this.selectTypeHandlers.get(sm);
+    if (typeHandlers != null) {
+      thName = typeHandlers.get(cm);
+    }
+    boolean added = false;
+    if (thName == null) {
+      String base = sm.getMethod() + "_" + cm.getIdentifier().getJavaClassIdentifier() + "TypeHandler";
+      thName = findNextAvailableThName(base);
+      if (typeHandlers == null) {
+        typeHandlers = new HashMap<ColumnMetadata, String>();
+        this.selectTypeHandlers.put(sm, typeHandlers);
+      }
+      typeHandlers.put(cm, thName);
+      this.selectTypeHandlerNames.add(thName);
+      added = true;
+    }
+    log.debug(this.getClassName() + " / " + cm.getColumnName() + " - TypeHandler=" + thName + " added=" + added
+        + " total=" + this.selectTypeHandlerNames.size());
+    return thName;
+  }
+
+  private String findNextAvailableThName(final String baseName) {
+    if (!this.selectTypeHandlerNames.contains(baseName)) {
+      return baseName;
+    }
+    for (int i = 2; i < Integer.MAX_VALUE; i++) {
+      String candidate = baseName + i;
+      if (!this.selectTypeHandlerNames.contains(candidate)) {
+        return candidate;
+      }
+    }
+    return null;
   }
 
   public String getTypeHandlerFullClassName(final SelectMethodMetadata sm, final ColumnMetadata cm) {

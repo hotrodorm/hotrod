@@ -7,34 +7,76 @@
 
   <table name="car">
   
-    <select method="findAssesedCarVO">
+    <select method="findAssessedCarVO">
 
       <parameter name="brandId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
       <columns>
         <vo table="car" alias="c" extended-vo="AssessedCarVO">
-          <association table="brand" property="brand" alias="b" />
-          <collection table="repair" property="repairs" alias="r" />
-          <expressions>
-            b.id * c.id + 71 as score,
-            length(b.name) + length(c.type) as tier
-          </expressions>
+          <association property="brand" table="brand" alias="b" />
+          <collection property="repairs" table="repair" alias="r" extended-vo="RepairsExtVO">
+            <expression property="vip" converter="short_boolean_converter"> length(b.name) </expression>
+          </collection>
+          <expression property="score" class="java.lang.Double"> b.id * c.id + 71 </expression>
+          <expression property="tier"> length(b.name) + length(c.type) </expression>
+          <expression property="vip" converter="short_boolean_converter"> length(b.name) </expression>
         </vo>
       </columns>
       from car c
       join brand b on b.id = c.brand_id
-      left join repair r on r.car_id c.id
+      left join repair r on r.car_id = c.id
       <complement>
         <where>
-        <if test="brandId != null">
-          and b.type = #{brandId}
-        </if>
+          <if test="brandId != null">
+            and b.id = #{brandId}
+          </if>
         </where>
       </complement>
 
     </select>
+
+    <select method="findFlatCarVO" vo="FlatCarVO">
     
+      <column name="vip" converter="short_boolean_converter" />
+      
+      select
+      c.*,
+      length(b.name) as vip
+      from car c
+      join brand b on b.id = c.brand_id
+      left join repair r on r.car_id = c.id
+
+    </select>
+
+<!--
+    <select method="findAssessedCarVO">
+
+      <parameter name="brandId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      select
+      <columns vo="AllowedCarVO">
+        <vo property="allowedCar" table="car" alias="c" extended-vo="AssessedCarVO">
+          <association property="brand" table="brand" alias="b" />
+          <collection property="repairs" table="repair" alias="r" />
+        </vo>
+        <expression property="score" class="java.lang.Double"> b.id * c.id + 71 </expression>
+        <expression property="tier"> length(b.name) + length(c.type) </expression>
+      </columns>
+      from car c
+      join brand b on b.id = c.brand_id
+      left join repair r on r.car_id = c.id
+      <complement>
+        <where>
+          <if test="brandId != null">
+            and b.type = #{brandId}
+          </if>
+        </where>
+      </complement>
+
+    </select>
+-->
+
   </table>
 
   <view name="van" />

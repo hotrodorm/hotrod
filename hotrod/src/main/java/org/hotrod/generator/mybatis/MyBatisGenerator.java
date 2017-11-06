@@ -271,12 +271,12 @@ public class MyBatisGenerator extends HotRodGenerator {
       vo.generate();
     }
 
-    for (ObjectDAO dao : this.daos.values()) {
-      dao.generate();
-    }
-
     for (Mapper mapper : this.mappers.values()) {
       mapper.generate();
+    }
+
+    for (ObjectDAO dao : this.daos.values()) {
+      dao.generate();
     }
 
     // Enums
