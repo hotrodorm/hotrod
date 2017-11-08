@@ -2,7 +2,9 @@ package org.hotrod.config.structuredcolumns;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -50,6 +52,9 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   private HotRodFragmentConfigTag fragmentConfig;
 
   private String vo = null;
+  private String id = null;
+
+  private Set<String> idNames = new HashSet<String>();
 
   private List<VOTag> vos = new ArrayList<VOTag>();
   private Expressions expressions = new Expressions();
@@ -73,6 +78,11 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   @XmlAttribute(name = "vo")
   public void setVoClass(final String vo) {
     this.vo = vo;
+  }
+
+  @XmlAttribute(name = "id")
+  public void setId(final String id) {
+    this.id = id;
   }
 
   @XmlElement(name = "vo")
@@ -160,9 +170,8 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   // ColumnProvider interface
   // ========================
 
-  @Override
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult)
+      final HotRodFragmentConfigTag fragmentConfig, final boolean connectedVOResult)
       throws InvalidConfigurationFileException {
 
     // vo
@@ -181,23 +190,47 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
                 + "' specified in the 'vo' attribute. When specified, the vo-class must start with an upper case letter, "
                 + "and continue with any combination of letters, digits, or underscores.");
       }
-    } else {
+      if (this.id == null) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "The 'id' attribute must be specified when the 'vo' attribute is specified. "
+                + "It includes the comma-separated list of properties that identify a row.");
+      }
+      for (String id : this.id.split(",")) {
+        if (!id.isEmpty()) {
+          this.idNames.add(id);
+        }
+      }
+      if (this.idNames.isEmpty()) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "The 'id' attribute should not be empty. " + "It must be specified when the 'vo' attribute is specified; "
+                + "it includes the comma-separated list of properties that identify a row.");
+      }
+    } else { // vo == null
       if (!includesSingleVO) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(), "Missing 'vo' attribute in the <"
             + this.getTagName() + "> tag. " + "This attribute can only be omitted when "
             + "the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags.");
+      }
+      if (this.id != null) {
+        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            "'id' attribute cannot be specified when the 'vo' attribute is not specified.");
       }
     }
 
     // vos
 
     for (VOTag vo : this.vos) {
-      vo.validate(daosTag, config, fragmentConfig, singleVOResult);
+      vo.validate(daosTag, config, fragmentConfig, connectedVOResult);
     }
 
     // expressions
 
-    this.expressions.validate(daosTag, config, fragmentConfig, singleVOResult);
+    Set<String> ids = new HashSet<String>(this.idNames);
+    this.expressions.validate(daosTag, config, fragmentConfig, connectedVOResult, ids);
+    if (!ids.isEmpty()) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid id property '"
+          + ids.iterator().next() + "'. Could not find any <expression> tag with this property name.");
+    }
 
   }
 

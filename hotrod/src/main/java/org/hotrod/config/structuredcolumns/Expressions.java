@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
@@ -56,12 +57,11 @@ public class Expressions implements ColumnsProvider {
     return this.expressions.isEmpty();
   }
 
-  @Override
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult)
+      final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult, final Set<String> idNames)
       throws InvalidConfigurationFileException {
     for (ExpressionTag tag : this.expressions) {
-      tag.validate(daosTag, config, fragmentConfig, singleVOResult);
+      tag.validate(daosTag, config, fragmentConfig, singleVOResult, idNames);
     }
   }
 
@@ -126,8 +126,8 @@ public class Expressions implements ColumnsProvider {
         }
         log.debug("******** java-name=" + ct.getJavaName() + " java-type=" + ct.getJavaType());
         cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag.getSourceLocation());
+        cm.setId(tag.isId());
         cm.setFormula(tag.getBody());
-
         tag.setMetadata(cm);
       }
     }

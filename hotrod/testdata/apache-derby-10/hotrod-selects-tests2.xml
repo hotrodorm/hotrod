@@ -41,9 +41,10 @@
       <parameter name="accountId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
-      <columns vo="AccountPersonVO">
+      <columns vo="AccountPersonVO" id="personId">
         <vo table="account" property="account" alias="a"> a.* </vo>
         <vo table="person" property="person" alias="p"></vo>
+        <expression property="personId"> p.id </expression>
         <expression property="initialLoad" class="java.lang.Double"> a.balance * a.type </expression>
         <expression property="score"> p.id + p.type </expression>
       </columns>
@@ -91,7 +92,8 @@
       <parameter name="accountId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
-      <columns vo="ValuatedAccountVO">
+      <columns vo="ValuatedAccountVO" id="accountId">
+        <expression property="accountId"> a.id </expression>
         <vo table="account" property="account" alias="a"> a.* </vo>
         <vo table="person" property="person" alias="p" />
         <expression property="tierScore" class="java.lang.Double">
@@ -186,7 +188,7 @@
           </collection>
           <association table="category" property="category" alias="c" />
           <expression property="nextId">
-            p.id + 1 
+            p.id + 1
           </expression>
         </vo>
       </columns>
@@ -228,7 +230,8 @@
       <parameter name="accountId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
-      <columns vo="ExpandedAccountVO">
+      <columns vo="ExpandedAccountVO" id="accountId">
+        <expression property="accountId"> a.id </expression>
         <vo table="account" property="account" alias="a"> a.* </vo>
         <vo table="person" property="person" alias="p" />
       </columns>
@@ -261,6 +264,46 @@
           where o.name = #{officeName}
         </if>
       </complement>
+    </select>
+
+    <!-- Case 11 - Multiple tests -->
+
+    <!--
+    -->
+    <select method="findFullPerson">
+
+      <parameter name="accountId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      select
+      <columns vo="FullPersonVO" id="personId">
+      <!-- 
+        <expression property="pi">
+          3.1415926536
+        </expression>
+         -->
+        <expression property="personId" class="java.lang.Double"> p.id </expression>
+        <vo table="person" property="person" extended-vo="ExtraPersonVO" alias="p">
+          <collection table="account" property="accounts" extended-vo="FullAccountVO" alias="a">
+            <collection table="transaction" property="transactions" alias="t" />
+          </collection>
+          <expression property="nextId">
+            p.id + 1
+          </expression>
+        </vo>
+        <vo table="category" property="category" alias="c" />
+      </columns>
+      from person p
+      left join account a on (a.person_id) = (p.id)
+      left join "transaction" t on (t.account_id) = (a.id)
+      join category
+      c on
+      p.category_id = c.id
+      <complement>
+        <if test="accountId != null">
+          where a.id = #{accountId}
+        </if>
+      </complement>
+
     </select>
 
   </table>

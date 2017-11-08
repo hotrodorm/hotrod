@@ -1173,7 +1173,7 @@ public class Mapper {
 
     if (declaredColumns != null) {
       for (StructuredColumnMetadata m : declaredColumns) {
-        renderSelectResultMapColumn(sm, m, "result", dao, level);
+        renderSelectResultMapColumn(sm, m, m.isId() ? "id" : "result", dao, level);
       }
     }
 

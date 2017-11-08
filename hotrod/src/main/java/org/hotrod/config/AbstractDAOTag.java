@@ -72,7 +72,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
     Set<String> seqNames = new HashSet<String>();
 
-    for (SequenceMethodTag s : sequences) {
+    for (SequenceMethodTag s : this.sequences) {
       s.validate();
       if (seqNames.contains(s.getName())) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),

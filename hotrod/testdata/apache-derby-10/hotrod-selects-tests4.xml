@@ -6,7 +6,7 @@
   <table name="brand" />
 
   <table name="car">
-  
+
     <select method="findAssessedCarVO">
 
       <parameter name="brandId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
@@ -37,7 +37,7 @@
     </select>
 
     <select method="findFlatCarVO" vo="FlatCarVO">
-    
+
       <column name="vip" converter="short_boolean_converter" />
       
       select

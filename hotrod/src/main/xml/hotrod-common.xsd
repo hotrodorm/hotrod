@@ -167,6 +167,7 @@
       <xsd:element name="association" type="association-type" />
     </xsd:choice>
     <xsd:attribute name="vo" type="xsd:string" />
+    <xsd:attribute name="id" type="xsd:string" />
   </xsd:complexType>
 
   <!-- select method - expression -->

@@ -2,6 +2,7 @@ package org.hotrod.config.structuredcolumns;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlMixed;
@@ -30,6 +31,8 @@ public class ExpressionTag extends AbstractConfigurationTag {
   private String property = null;
   private String className = null;
   private String converter = null;
+
+  private boolean isId = false;
 
   private ConverterTag converterTag;
   private StructuredColumnMetadata metadata;
@@ -69,7 +72,7 @@ public class ExpressionTag extends AbstractConfigurationTag {
   // Behavior
 
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult)
+      final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult, final Set<String> ids)
       throws InvalidConfigurationFileException {
 
     log.debug("validate");
@@ -119,6 +122,9 @@ public class ExpressionTag extends AbstractConfigurationTag {
               + "> tag. A Java property name must start with a lower case letter, "
               + "and continue with letters, digits, and/or underscores.");
     }
+    if (ids != null) {
+      this.isId = ids.remove(this.property);
+    }
 
     // class
 
@@ -167,6 +173,8 @@ public class ExpressionTag extends AbstractConfigurationTag {
     }
     this.body = b;
   }
+
+  // TODO: remove this section
 
   // Meta data gathering
 
@@ -320,7 +328,13 @@ public class ExpressionTag extends AbstractConfigurationTag {
     return tempAlias;
   }
 
+  public boolean isId() {
+    return isId;
+  }
+
   // Classes
+
+  // TODO: remove this class
 
   @Deprecated
   private static class Expression {

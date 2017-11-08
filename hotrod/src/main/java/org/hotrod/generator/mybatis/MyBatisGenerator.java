@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.ant.UncontrolledException;
-import org.hotrod.config.CustomDAOTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
@@ -104,13 +103,14 @@ public class MyBatisGenerator extends HotRodGenerator {
 
     // Add custom DAOs
 
-    for (CustomDAOTag tag : this.config.getDAOs()) {
-      CustomDAO dao = new CustomDAO(tag, layout, this);
-      CustomDAOMapper mapper = new CustomDAOMapper(tag, layout, this);
+    for (DAOMetadata dm : super.daos) {
+      CustomDAO dao = new CustomDAO(dm, layout, this, this.config, this.myBatisTag);
+      CustomDAOMapper mapper = new CustomDAOMapper(dm, layout, this, this.entityDAORegistry);
       dao.setMapper(mapper);
       mapper.setDao(dao);
       this.customDAOs.add(dao);
       this.customMappers.add(mapper);
+      this.myBatisConfig.addMapperPrimitives(mapper);
     }
 
     for (DAOMetadata dm : super.daos) {
@@ -120,11 +120,6 @@ public class MyBatisGenerator extends HotRodGenerator {
     }
 
     // Prepare MyBatis Configuration File list
-
-    for (CustomDAOTag tag : this.config.getAllDAOs()) {
-      CustomDAOMapper mapper = new CustomDAOMapper(tag, layout, this);
-      this.myBatisConfig.addMapperPrimitives(mapper);
-    }
 
     for (Mapper mapper : this.mappers.values()) {
       String sourceFile = mapper.getRuntimeSourceFileName();

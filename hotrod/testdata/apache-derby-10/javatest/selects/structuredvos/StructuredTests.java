@@ -7,12 +7,14 @@ import org.hotrod.runtime.util.SUtils;
 
 import hotrod.test.generation.AccountPersonFlatVO;
 import hotrod.test.generation.AccountPersonVO;
+import hotrod.test.generation.AccountPersonVO4;
 import hotrod.test.generation.AccountVO;
 import hotrod.test.generation.AccountWithTransactions2VO;
 import hotrod.test.generation.AccountWithTransactionsVO;
-import hotrod.test.generation.AssessedCarVO;
 import hotrod.test.generation.ExpandedAccountVO;
 import hotrod.test.generation.ExtendedPersonVO;
+import hotrod.test.generation.FullAccountVO;
+import hotrod.test.generation.FullPersonVO;
 import hotrod.test.generation.LogVO;
 import hotrod.test.generation.LogWithOfficeVO;
 import hotrod.test.generation.NorthOfficeVO;
@@ -20,8 +22,8 @@ import hotrod.test.generation.OfficeWithLogVO;
 import hotrod.test.generation.TransactionVO;
 import hotrod.test.generation.VIPAccountVO;
 import hotrod.test.generation.ValuatedAccountVO;
-import hotrod.test.generation.primitives.CarDAO;
 import hotrod.test.generation.primitives.PersonDAO;
+import hotrod.test.generation.primitives.Test2;
 
 public class StructuredTests {
 
@@ -32,11 +34,12 @@ public class StructuredTests {
     // test4();
     // test5();
     // test6();
-    // test7();
+    test7();
     // test8();
     // test9();
     // test10();
-    test11();
+    // test11();
+    // test12(); // bad test
   }
 
   // Case 1 - Flat Join
@@ -52,7 +55,7 @@ public class StructuredTests {
 
   private static void test2() throws SQLException {
     System.out.println("=== Account With Person ===");
-    for (AccountPersonVO ap : PersonDAO.findAccountWithPerson(51)) {
+    for (AccountPersonVO ap : PersonDAO.findAccountWithPerson(null)) {
       printObject(ap, 2);
       printObject(ap.getAccount(), 4);
       printObject(ap.getPerson(), 4);
@@ -155,13 +158,39 @@ public class StructuredTests {
     }
   }
 
-  private static void test11() throws SQLException {
-    System.out.println("=== Assessed Cars ===");
-    for (AssessedCarVO ac : CarDAO.findAssessedCarVO(123)) {
-      printObject(ac, 0);
-    }
+  // Case 11 - Multiples tests
 
+  private static void test11() throws SQLException {
+    System.out.println("=== Full Person ===");
+    List<FullPersonVO> persons = PersonDAO.findFullPerson(null);
+    System.out.println(" --> persons=" + persons.size());
+    for (FullPersonVO ep : persons) {
+      printObject(ep, 0);
+      printObject(ep.getCategory(), 2);
+      printObject(ep.getPerson(), 2);
+      System.out.println(" --> accounts=" + ep.getPerson().getAccounts().size());
+      for (FullAccountVO at : ep.getPerson().getAccounts()) {
+        printObject(at, 2);
+        for (TransactionVO t : at.getTransactions()) {
+          printObject(t, 4);
+        }
+      }
+    }
   }
+
+  // Case 12 - Multiples tests
+
+  private static void test12() throws SQLException {
+    System.out.println("=== Full Person ===");
+    List<AccountPersonVO4> persons = Test2.findAP(null);
+    System.out.println(" --> persons=" + persons.size());
+    for (AccountPersonVO4 ep : persons) {
+      printObject(ep, 0);
+      printObject(ep.getAccount(), 2);
+      printObject(ep.getPerson(), 2);
+    }
+  }
+
   // Utilitites
 
   private static void printObject(final Object obj, final int indent) {

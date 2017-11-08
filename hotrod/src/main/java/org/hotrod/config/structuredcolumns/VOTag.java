@@ -135,7 +135,6 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   // Behavior
 
-  @Override
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final boolean singleVOResult)
       throws InvalidConfigurationFileException {
@@ -282,7 +281,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     // expressions
 
-    this.expressions.validate(daosTag, config, fragmentConfig, singleVOResult);
+    this.expressions.validate(daosTag, config, fragmentConfig, singleVOResult, null);
 
     // associations
 

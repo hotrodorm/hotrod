@@ -122,10 +122,10 @@ public class MyBatisConfiguration {
       sb.append("    <mapper resource=\"" + sourceFile + "\" />\n");
     }
 
-//    for (CustomDAOMapper m : this.collectionMappers) {
-//      sb.append("    <mapper resource=\"" + this.mybatisTag.getMappers().getRelativePrimitivesDir() + "/"
-//          + m.getSourceFileName() + "\" />\n");
-//    }
+    for (CustomDAOMapper m : this.collectionMappers) {
+      sb.append("    <mapper resource=\"" + this.mybatisTag.getMappers().getRelativePrimitivesDir() + "/"
+          + m.getSourceFileName() + "\" />\n");
+    }
 
     for (String m : this.mapperCustom) {
       sb.append("    <mapper resource=\"" + this.mybatisTag.getMappers().getRelativeCustomDir() + "/" + m + "\" />\n");

@@ -5,49 +5,71 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
-import org.hotrod.config.CustomDAOTag;
+import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.metadata.ColumnMetadata;
+import org.hotrod.metadata.DAOMetadata;
+import org.hotrod.metadata.SelectMethodMetadata;
+import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
+import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.runtime.tx.TxDemarcator;
 import org.hotrod.runtime.tx.TxManager;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.ImportsRenderer;
 import org.hotrod.utils.identifiers.Identifier;
 
 public class CustomDAO {
 
-  private DataSetLayout layout;
-  private CustomDAOTag tag;
+  private static final Logger log = Logger.getLogger(CustomDAO.class);
 
+  private DataSetLayout layout;
+  private DAOMetadata dm;
   private MyBatisGenerator generator;
+  private MyBatisTag myBatisTag;
 
   private ClassPackage fragmentPackage;
 
   private CustomDAOMapper mapper = null;
 
+  private DAOMetadata metadata;
+  private ClassPackage classPackage;
+
   private Writer w;
 
-  public CustomDAO(final CustomDAOTag tag, final DataSetLayout layout, final MyBatisGenerator generator) {
-    this.tag = tag;
+  public CustomDAO(final DAOMetadata dm, final DataSetLayout layout, final MyBatisGenerator generator,
+      final HotRodConfigTag config, final MyBatisTag myBatisTag) {
+    this.dm = dm;
     this.layout = layout;
     this.generator = generator;
+    this.myBatisTag = myBatisTag;
 
-    HotRodFragmentConfigTag fragmentConfig = tag.getFragmentConfig();
+    HotRodFragmentConfigTag fragmentConfig = this.dm.getFragmentConfig();
+
+    this.metadata = dm;
+
     this.fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
         ? fragmentConfig.getFragmentPackage() : null;
+
+    this.classPackage = this.layout.getDAOPrimitivePackage(this.fragmentPackage);
 
   }
 
@@ -56,6 +78,8 @@ public class CustomDAO {
   }
 
   public void generate() throws UncontrolledException, ControlledException {
+
+    log.info("generating DAO '" + this.dm.getJavaClassName() + "'.");
 
     String className = this.getClassName() + ".java";
     File prim = new File(this.layout.getDaoPrimitivePackageDir(this.fragmentPackage), className);
@@ -66,13 +90,20 @@ public class CustomDAO {
 
       writeClassHeader();
 
-      for (SequenceMethodTag s : this.tag.getSequences()) {
+      for (SequenceMethodTag s : this.dm.getSequences()) {
         writeSelectSequence(s);
       }
 
-      for (QueryMethodTag q : this.tag.getQueries()) {
+      for (QueryMethodTag q : this.dm.getQueries()) {
         writeQuery(q);
       }
+
+      log.info("this.metadata=" + this.metadata);
+      for (SelectMethodMetadata s : this.metadata.getSelectsMetadata()) {
+        writeSelect(s);
+      }
+
+      // writeConverters();
 
       writeTxManager();
 
@@ -105,18 +136,34 @@ public class CustomDAO {
 
     // Package
 
-    println("package " + this.layout.getDAOPrimitivePackage(this.fragmentPackage).getPackage() + ";");
+    println("package " + this.classPackage.getPackage() + ";");
     println();
 
     // Imports
 
-    println("import java.sql.SQLException;");
-    println();
-    println("import org.apache.ibatis.session.SqlSession;");
-    println("import org.apache.ibatis.session.SqlSessionFactory;");
-    println("import " + TxManager.class.getName() + ";");
-    println("import " + TxDemarcator.class.getName() + ";");
-    println();
+    ImportsRenderer imports = new ImportsRenderer();
+
+    imports.add(java.sql.SQLException.class);
+    imports.newLine();
+
+    imports.add("org.apache.ibatis.session.SqlSession");
+    imports.add("org.apache.ibatis.session.SqlSessionFactory");
+    imports.add(TxManager.class);
+    imports.add(TxDemarcator.class);
+
+    imports.newLine();
+    imports.add(java.util.List.class);
+    imports.newLine();
+
+    for (SelectMethodMetadata sm : this.metadata.getSelectsMetadata()) {
+      SelectMethodReturnType rt = sm.getReturnType(this.classPackage);
+      imports.add(rt.getVOFullClassName());
+    }
+    if (!this.metadata.getSelectsMetadata().isEmpty()) {
+      imports.newLine();
+    }
+
+    this.w.write(imports.render());
 
     // Class Signature
 
@@ -341,6 +388,229 @@ public class CustomDAO {
 
   }
 
+  private void writeSelect(final SelectMethodMetadata sm) throws IOException {
+
+    println("  // select method: " + sm.getMethod());
+    println();
+
+    SelectMethodReturnType rt = sm.getReturnType(this.classPackage);
+
+    // render comment
+
+    ParameterRenderer parameterRenderer = new ParameterRenderer() {
+      @Override
+      public String render(final SQLParameter parameter) {
+        return "#{" + parameter.getName() + "}";
+      }
+    };
+    String sentence = sm.renderSQLSentence(parameterRenderer);
+    println(ObjectDAO.renderJavaComment(sentence));
+
+    println();
+
+    String methodName = sm.getMethod();
+
+    ListWriter pdef = new ListWriter(", ");
+    ListWriter pcall = new ListWriter(", ");
+    for (SelectParameterMetadata p : sm.getParameterDefinitions()) {
+      String name = p.getParameter().getName();
+      pdef.add("final " + p.getParameter().getJavaType() + " " + name);
+      pcall.add(name);
+    }
+    String paramDef = pdef.toString();
+    String paramCall = pcall.toString();
+
+    // parameter class
+
+    if (!sm.getParameterDefinitions().isEmpty()) {
+      println("  public static class " + this.getParamClassName(sm) + " {");
+      for (SelectParameterMetadata p : sm.getParameterDefinitions()) {
+        println("    " + p.getParameter().getJavaType() + " " + p.getParameter().getName() + ";");
+      }
+      println("  }");
+      println();
+    }
+
+    // main method
+
+    print("  public static " + rt.getReturnType() + " " + methodName + "(");
+    print(paramDef);
+    print(") ");
+    this.throwsCheckedException();
+    println("{");
+    retrieveSqlSession();
+    print("      " + rt.getReturnType() + " result = " + methodName + "(sqlSession");
+    if (!sm.getParameterDefinitions().isEmpty()) {
+      print(", " + paramCall);
+    }
+    println(");");
+    println("      if (!txm.isTransactionOngoing()) {");
+    println("        txm.commit();");
+    println("      }");
+    println("      return result;");
+    releaseSqlSession();
+    println("  }");
+    println();
+
+    // core method
+
+    print("  public static " + rt.getReturnType() + " " + methodName + "(final SqlSession sqlSession");
+    if (!sm.getParameterDefinitions().isEmpty()) {
+      print(", " + paramDef);
+    }
+    print(") ");
+    this.throwsCheckedException();
+    println("{");
+    String objName = null;
+    if (!sm.getParameterDefinitions().isEmpty()) {
+      objName = provideParamObjectName(sm.getParameterDefinitions());
+      println("    " + this.getParamClassName(sm) + " " + objName + " = new " + this.getParamClassName(sm) + "();");
+      for (SelectParameterMetadata p : sm.getParameterDefinitions()) {
+        println("    " + objName + "." + p.getParameter().getName() + " = " + p.getParameter().getName() + ";");
+      }
+    }
+    preCheckedException();
+
+    String myBatisSelectMethod = sm.isMultipleRows() ? "selectList" : "selectOne";
+    print(
+        "    return sqlSession." + myBatisSelectMethod + "(\"" + this.mapper.getFullSelectMethodStatementId(sm) + "\"");
+    if (!sm.getParameterDefinitions().isEmpty()) {
+      print(", " + objName);
+    }
+    println(");");
+    postCheckedException();
+    println("  }");
+    println();
+
+  }
+
+  private void throwsCheckedException() throws IOException {
+    if (isCheckedPersistenceException()) {
+      print("throws SQLException ");
+    }
+  }
+
+  private boolean isCheckedPersistenceException() {
+    return this.myBatisTag.getProperties().isCheckedPersistenceException();
+  }
+
+  private void addCheckedException() throws IOException {
+    if (isCheckedPersistenceException()) {
+      print("SQLException");
+    }
+  }
+
+  private void preCheckedException() throws IOException {
+    if (isCheckedPersistenceException()) {
+      println("    try {");
+    }
+  }
+
+  private void postCheckedException() throws IOException {
+    if (isCheckedPersistenceException()) {
+      println("    } catch (RuntimeException e) {");
+      println("      throw new SQLException(e);");
+      println("    }");
+    }
+  }
+
+  public String getParamClassName(final SelectMethodMetadata sm) {
+    return "Param" + sm.getIdentifier().getJavaClassIdentifier();
+  }
+
+  private String provideParamObjectName(final List<SelectParameterMetadata> definitions) {
+
+    Set<String> existing = new HashSet<String>();
+    for (SelectParameterMetadata p : definitions) {
+      existing.add(p.getParameter().getName().toLowerCase());
+    }
+
+    int i = 0;
+    while (true) {
+      String candidate = "param" + i;
+      if (!existing.contains(candidate.toLowerCase())) {
+        return candidate;
+      }
+      i++;
+    }
+
+  }
+
+  private void writeConverters() throws IOException {
+
+    // Select columns converters
+
+    log.debug("DAO=" + this.getClassName() + " select converters=" + this.selectTypeHandlerNames.size());
+
+    for (Map<ColumnMetadata, String> selectTypeHandlers : this.selectTypeHandlers.values()) {
+      for (ColumnMetadata cm : selectTypeHandlers.keySet()) {
+        String thName = selectTypeHandlers.get(cm);
+        log.debug("WRITING TYPEHANDLER '" + thName + "'");
+        writeTypeHandler("", cm, thName);
+      }
+    }
+
+  }
+
+  private void writeTypeHandler(final String property, final ColumnMetadata cm, final String typeHandlerClassName)
+      throws IOException {
+    String interType = cm.getConverter().getJavaIntermediateType();
+    String type = cm.getConverter().getJavaType();
+    String setter = cm.getConverter().getJdbcSetterMethod();
+    String getter = cm.getConverter().getJdbcGetterMethod();
+    String converter = cm.getConverter().getJavaClass();
+
+    println("  // TypeHandler for " + (property != null ? "property " + property : "column " + cm.getColumnName())
+        + " using Converter " + converter + ".");
+    println();
+    println("  public static class " + typeHandlerClassName + " implements TypeHandler<" + type + "> {");
+    println();
+    println("    private static TypeConverter<" + interType + ", " + type + "> CONVERTER = new " + converter + "();");
+    println();
+    println("    @Override");
+    println("    public " + type + " getResult(final ResultSet rs, final String columnName) throws SQLException {");
+    println("      " + interType + " value = rs." + getter + "(columnName);");
+    println("      if (rs.wasNull()) {");
+    println("        value = null;");
+    println("      }");
+    println("      return CONVERTER.decode(value);");
+    println("    }");
+    println();
+    println("    @Override");
+    println("    public " + type + " getResult(final ResultSet rs, final int columnIndex) throws SQLException {");
+    println("      " + interType + " value = rs." + getter + "(columnIndex);");
+    println("      if (rs.wasNull()) {");
+    println("        value = null;");
+    println("      }");
+    println("      return CONVERTER.decode(value);");
+    println("    }");
+    println();
+    println("    @Override");
+    println(
+        "    public " + type + " getResult(final CallableStatement cs, final int columnIndex) throws SQLException {");
+    println("      " + interType + " value = cs." + getter + "(columnIndex);");
+    println("      if (cs.wasNull()) {");
+    println("        value = null;");
+    println("      }");
+    println("      return CONVERTER.decode(value);");
+    println("    }");
+    println();
+    println("    @Override");
+    println("    public void setParameter(final PreparedStatement ps, final int columnIndex, final " + type
+        + " v, final JdbcType jdbcType)");
+    println("        throws SQLException {");
+    println("      " + interType + " value = CONVERTER.encode(v);");
+    println("      if (value == null) {");
+    println("        ps.setNull(columnIndex, jdbcType.TYPE_CODE);");
+    println("      } else {");
+    println("        ps." + setter + "(columnIndex, value);");
+    println("      }");
+    println("    }");
+    println();
+    println("  }");
+    println();
+  }
+
   /**
    * <pre>
    * // Transaction demarcation
@@ -400,7 +670,7 @@ public class CustomDAO {
   }
 
   public String getClassName() {
-    return this.tag.getJavaClassName();
+    return this.dm.getJavaClassName();
   }
 
   public String getFullParamClassName(final QueryMethodTag u) {
@@ -409,6 +679,50 @@ public class CustomDAO {
 
   public String getParamClassName(final QueryMethodTag u) {
     return "Param" + u.getIdentifier().getJavaClassIdentifier();
+  }
+
+  private Map<SelectMethodMetadata, Map<ColumnMetadata, String>> selectTypeHandlers = new HashMap<SelectMethodMetadata, Map<ColumnMetadata, String>>();
+  private Set<String> selectTypeHandlerNames = new HashSet<String>();
+
+  private String getTypeHandlerClassName(final SelectMethodMetadata sm, final ColumnMetadata cm) {
+    log.debug("sm=" + sm.getMethod() + " # " + cm.getColumnName());
+    String thName = null;
+    Map<ColumnMetadata, String> typeHandlers = this.selectTypeHandlers.get(sm);
+    if (typeHandlers != null) {
+      thName = typeHandlers.get(cm);
+    }
+    boolean added = false;
+    if (thName == null) {
+      String base = sm.getMethod() + "_" + cm.getIdentifier().getJavaClassIdentifier() + "TypeHandler";
+      thName = findNextAvailableThName(base);
+      if (typeHandlers == null) {
+        typeHandlers = new HashMap<ColumnMetadata, String>();
+        this.selectTypeHandlers.put(sm, typeHandlers);
+      }
+      typeHandlers.put(cm, thName);
+      this.selectTypeHandlerNames.add(thName);
+      added = true;
+    }
+    log.debug(this.getClassName() + " / " + cm.getColumnName() + " - TypeHandler=" + thName + " added=" + added
+        + " total=" + this.selectTypeHandlerNames.size());
+    return thName;
+  }
+
+  private String findNextAvailableThName(final String baseName) {
+    if (!this.selectTypeHandlerNames.contains(baseName)) {
+      return baseName;
+    }
+    for (int i = 2; i < Integer.MAX_VALUE; i++) {
+      String candidate = baseName + i;
+      if (!this.selectTypeHandlerNames.contains(candidate)) {
+        return candidate;
+      }
+    }
+    return null;
+  }
+
+  public String getTypeHandlerFullClassName(final SelectMethodMetadata sm, final ColumnMetadata cm) {
+    return this.getFullClassName() + "$" + getTypeHandlerClassName(sm, cm);
   }
 
   // Helpers

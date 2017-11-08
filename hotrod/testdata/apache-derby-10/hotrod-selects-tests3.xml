@@ -12,7 +12,8 @@
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
-      <columns vo="AccountPersonVO2">
+      <columns vo="AccountPersonVO2" id="accountId">
+        <expression property="accountId"> a.id </expression>
         <vo table="account" property="account" alias="a" extended-vo="AccountRewrittenVO">
           a.*
           <expression property="prop0">
@@ -46,7 +47,9 @@
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
       select
-      <columns vo="AccountPersonVO3">
+      <columns vo="AccountPersonVO3" id="accountId,personId">
+        <expression property="accountId"> a.id </expression>
+        <expression property="personId"> p.id </expression>
         <vo table="account" property="account" alias="a"> a.* </vo>
         <vo table="person" property="person" alias="p"></vo>
         <expression property="initialLoad" class="java.lang.Double"> a.balance * a.type </expression>
@@ -63,5 +66,33 @@
     </select>
 
   </table>
+
+  <dao java-class-name="Test2">
+
+    <select method="findAP">
+
+      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+
+      select
+      <columns vo="AccountPersonVO4" id="accountId,personId">
+        <expression property="accountId"> a.id </expression>
+        <expression property="personId"> p.id </expression>
+        <vo table="account" property="account" alias="a"> a.* </vo>
+        <vo table="person" property="person" alias="p"></vo>
+        <expression property="initialLoad" class="java.lang.Double"> a.balance * a.type </expression>
+        <expression property="score"> p.id + p.type </expression>
+      </columns>
+      from account a
+      join person p on (p.id) = (a.person_id)
+      <complement>
+        <if test="clientId != null">
+          where a.id = #{clientId}
+        </if>
+      </complement>
+
+    </select>
+
+  </dao>
+
 
 </hotrod-fragment>

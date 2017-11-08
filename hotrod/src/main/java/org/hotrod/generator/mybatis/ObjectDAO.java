@@ -2551,6 +2551,7 @@ public class ObjectDAO {
     println("  }");
     println();
 
+    // TODO: remove
     // // non-structured VO type handlers
     //
     // if (!sm.isStructured()) {

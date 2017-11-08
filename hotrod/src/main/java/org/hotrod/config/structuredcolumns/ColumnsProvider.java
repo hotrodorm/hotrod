@@ -17,8 +17,9 @@ import org.hotrod.utils.ColumnsPrefixGenerator;
 
 public interface ColumnsProvider {
 
-  void validate(final DaosTag daosTag, final HotRodConfigTag config, final HotRodFragmentConfigTag fragmentConfig,
-      final boolean singleVOResult) throws InvalidConfigurationFileException;
+  // void validate(final DaosTag daosTag, final HotRodConfigTag config, final
+  // HotRodFragmentConfigTag fragmentConfig,
+  // final boolean singleVOResult) throws InvalidConfigurationFileException;
 
   void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException;
 

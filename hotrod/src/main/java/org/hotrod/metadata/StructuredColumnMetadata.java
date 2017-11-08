@@ -40,7 +40,11 @@ public class StructuredColumnMetadata extends ColumnMetadata {
 
   // Setters
 
-  public void setFormula(String formula) {
+  public void setId(final boolean id) {
+    this.id = id;
+  }
+
+  public void setFormula(final String formula) {
     this.formula = formula;
   }
 
