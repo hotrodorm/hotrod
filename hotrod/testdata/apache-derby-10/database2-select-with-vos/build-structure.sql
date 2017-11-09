@@ -21,7 +21,7 @@ create table account (
   type smallint not null, -- 1:checking, 2:savings, 3:investments; 4:retirement
   active smallint not null, -- 0:inactive, 1:active
   balance numeric(14,2) not null,
-  constraint fk1 foreign key (person_id) references person (id)
+  constraint fk100 foreign key (person_id) references person (id)
 );
 
 create table "transaction" (
@@ -30,7 +30,7 @@ create table "transaction" (
   amount numeric(10,2) not null,
   account_id integer not null,
   type smallint not null, -- 0:cashier, 1:online, 2:ATM, 3:third party
-  constraint fk2 foreign key (account_id) references account (id)
+  constraint fk200 foreign key (account_id) references account (id)
 );
 
 create table log (
@@ -61,31 +61,30 @@ create table doc_comment (
 
 -- Car Example
 
+create table kind (
+  id int primary key,
+  caption varchar(60)
+);
+
 create table brand (
-  id integer primary key not null 
-    generated always as identity,
-  name varchar(40) not null,
-  unique (name)
+  id int primary key generated always as identity,
+  name varchar(40) not null unique,
+  kind_id int constraint fk1 references kind
 );
 
 create table car (
-  id integer primary key not null 
-    generated always as identity,
-  brand_id integer not null,
-  type varchar(10) not null,
-  constraint fk_car_brand foreign key
-    (brand_id) references brand (id)
+  id int primary key generated always as identity,
+  brand_id int constraint fk2 references brand,
+  type varchar(10)
 );
 
 create view van as
   select * from car where type = 'VAN';
   
 create table repair (
-  id integer primary key not null,
-  repaired_on timestamp not null,
-  car_id integer not null,
-  constraint fk_repair_car foreign key 
-    (car_id) references car (id)
+  id int primary key,
+  repaired_on timestamp,
+  car_id int constraint fk3 references car
 );
     
     

@@ -3,24 +3,20 @@
 
 <hotrod-fragment>
 
+  <enum name="kind" name-column="caption" />
+  
   <table name="brand" />
 
   <table name="car">
 
-    <select method="findAssessedCarVO">
-
-      <parameter name="brandId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-
+    <select method="findAssessedCar">
+      <parameter name="brandId" java-type="java.lang.Integer" />
       select
       <columns>
         <vo table="car" alias="c" extended-vo="AssessedCarVO">
           <association property="brand" table="brand" alias="b" />
-          <collection property="repairs" table="repair" alias="r" extended-vo="RepairsExtVO">
-            <expression property="vip" converter="short_boolean_converter"> length(b.name) </expression>
-          </collection>
-          <expression property="score" class="java.lang.Double"> b.id * c.id + 71 </expression>
-          <expression property="tier"> length(b.name) + length(c.type) </expression>
-          <expression property="vip" converter="short_boolean_converter"> length(b.name) </expression>
+          <collection property="repairs" table="repair" alias="r" />
+          <expression property="score"> b.id * c.id + 71 </expression>
         </vo>
       </columns>
       from car c
@@ -33,9 +29,34 @@
           </if>
         </where>
       </complement>
-
     </select>
 
+  </table>
+
+  <table name="car">
+
+    <select method="findExtendedCar" vo="ExtendedCarVO">
+      <parameter name="brandId" java-type="java.lang.Integer" />
+      select
+        c.*,
+        b.name,
+        r.id as repaired_id, 
+        r.repaired_on, r.card_id
+      from car c
+      join brand b on b.id = c.brand_id
+      left join repair r on r.car_id = c.id
+      <complement>
+        <where>
+          <if test="brandId != null">
+            and b.id = #{brandId}
+          </if>
+        </where>
+      </complement>
+    </select>
+
+  </table>
+  
+<!--
     <select method="findFlatCarVO" vo="FlatCarVO">
 
       <column name="vip" converter="short_boolean_converter" />
@@ -49,7 +70,6 @@
 
     </select>
 
-<!--
     <select method="findAssessedCarVO">
 
       <parameter name="brandId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
@@ -77,7 +97,6 @@
     </select>
 -->
 
-  </table>
 
   <view name="van" />
 

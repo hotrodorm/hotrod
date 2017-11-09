@@ -13,12 +13,6 @@ public class Examples {
 
   public static void main(final String[] args) throws SQLException {
 
-    // Insert
-    BrandVO b = new BrandVO();
-    b.setName("Volvo");
-    BrandDAO.insert(b);
-    System.out.println("id=" + b.getId());
-
     // Select by PK
     BrandVO fiat = BrandDAO.select(17);
 
@@ -26,17 +20,23 @@ public class Examples {
     BrandVO volvo = BrandDAO.selectByUIName("Volvo");
 
     // Update
-    fiat.setName("FIAT");
+    fiat.setName("Fiat");
     BrandDAO.update(fiat);
 
     // Delete by PK
     BrandDAO.delete(volvo);
 
+    // Insert
+    BrandVO b = new BrandVO();
+    b.setName("Toyota");
+    BrandDAO.insert(b);
+    System.out.println("id=" + b.getId());
+
     // =========================================
 
     // Select by example
     CarVO example = new CarVO();
-//    example.setType("TRUCK");
+    example.setType("TRUCK");
     List<CarVO> trucks = CarDAO.selectByExample(example);
 
     // Update by example

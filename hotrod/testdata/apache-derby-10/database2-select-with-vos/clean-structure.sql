@@ -16,3 +16,4 @@ drop table repair;
 drop view van;
 drop table car;
 drop table brand;
+drop table kind;
