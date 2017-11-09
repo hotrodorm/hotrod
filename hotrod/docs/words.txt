@@ -1,0 +1,23 @@
+New ideas for HotRod (alain):
+
+1. Allow null behavior to be configurable in "by example" functionality.
+2. Updating "Structured Selects" trees.
+3. Assess if annotations can be of use instead of code generation.
+
+-------------------------------
+
+https://www.visualthesaurus.com/app/view
+ fundamental
+ concrete
+ RICH
+ PRODUCTIVE -> successful
+            -> fertile        
+ ESSENTIAL           
+ CONCEPTIONAL
+ lucid, coherent
+ FUNDAMENTAL
+ foundational
+ PRACTICAL
+ APPLIED ***
+
+
