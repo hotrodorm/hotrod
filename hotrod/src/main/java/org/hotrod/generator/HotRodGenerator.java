@@ -14,13 +14,13 @@ import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.ColumnTag;
-import org.hotrod.config.CustomDAOTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.config.PlainDAOTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
-import org.hotrod.config.SelectTag;
+import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
@@ -33,9 +33,9 @@ import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassMethodException;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.metadata.DAOMetadata;
 import org.hotrod.metadata.DataSetMetadataFactory;
 import org.hotrod.metadata.EnumDataSetMetadata;
+import org.hotrod.metadata.PlainDAOMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -81,7 +81,7 @@ public abstract class HotRodGenerator {
   protected LinkedHashSet<TableDataSetMetadata> views = null;
   protected LinkedHashSet<EnumDataSetMetadata> enums = null;
   protected LinkedHashSet<SelectDataSetMetadata> selects = null;
-  protected LinkedHashSet<DAOMetadata> daos = null;
+  protected LinkedHashSet<PlainDAOMetadata> daos = null;
 
   private VORegistry voRegistry = new VORegistry();
 
@@ -301,9 +301,9 @@ public abstract class HotRodGenerator {
 
       // Prepare DAOs meta data
 
-      this.daos = new LinkedHashSet<DAOMetadata>();
-      for (CustomDAOTag tag : config.getDAOs()) {
-        DAOMetadata dm = new DAOMetadata(tag, this.adapter, config, tag.getFragmentConfig());
+      this.daos = new LinkedHashSet<PlainDAOMetadata>();
+      for (PlainDAOTag tag : config.getDAOs()) {
+        PlainDAOMetadata dm = new PlainDAOMetadata(tag, this.adapter, config, tag.getFragmentConfig());
         this.daos.add(dm);
       }
 
@@ -344,7 +344,7 @@ public abstract class HotRodGenerator {
         }
       }
 
-      for (DAOMetadata dm : this.daos) {
+      for (PlainDAOMetadata dm : this.daos) {
         dm.gatherSelectsMetadataPhase1(this, conn, layout);
         if (dm.hasSelects()) {
           hasSelects = true;
@@ -362,12 +362,12 @@ public abstract class HotRodGenerator {
       this.selects = new LinkedHashSet<SelectDataSetMetadata>();
       if (!this.config.getSelects().isEmpty()) {
 
-        SelectTag current = null;
+        SelectClassTag current = null;
         SelectDataSetMetadata sm = null;
 
         try {
 
-          for (SelectTag s : this.config.getSelects()) {
+          for (SelectClassTag s : this.config.getSelects()) {
             log.debug("::: select '" + s.getJavaClassName() + "': " + s.renderSQLSentence(new ParameterRenderer() {
               @Override
               public String render(SQLParameter parameter) {
@@ -385,7 +385,7 @@ public abstract class HotRodGenerator {
           }
 
         } catch (SQLException e) {
-          throw new ControlledException("Failed to retrieve metadata for <" + new SelectTag().getTagName() + "> query '"
+          throw new ControlledException("Failed to retrieve metadata for <" + new SelectClassTag().getTagName() + "> query '"
               + current.getJavaClassName() + "' while creating a temporary SQL view for it.\n" + "[ " + e.getMessage()
               + " ]\n" + "* Do all resulting columns have different and valid names?\n"
               + "* Is the trimmed create view SQL code below valid?\n" + "--- begin SQL ---\n" + sm.getCreateView()
@@ -443,7 +443,7 @@ public abstract class HotRodGenerator {
           em.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
         }
 
-        for (DAOMetadata dm : this.daos) {
+        for (PlainDAOMetadata dm : this.daos) {
           // log.info("gather2 on DAO " + dm.getJavaClassName());
           dm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
         }
@@ -465,7 +465,7 @@ public abstract class HotRodGenerator {
         }
 
       } catch (SQLException e) {
-        throw new UncontrolledException("Failed to retrieve metadata for <" + new SelectTag().getTagName()
+        throw new UncontrolledException("Failed to retrieve metadata for <" + new SelectClassTag().getTagName()
             + "> query with name '" + currDs.getIdentifier().getSQLIdentifier() + "'.", e);
       } catch (UnresolvableDataTypeException e) {
         throw new ControlledException(e.getMessage());
@@ -512,12 +512,12 @@ public abstract class HotRodGenerator {
 
     displayGenerationMetadata(config);
 
-    logSelectMethodMetadata();
+    // logSelectMethodMetadata(); // keep for debugginh purposes only
 
   }
 
   private void logSelectMethodMetadata() {
-    for (DAOMetadata d : this.daos) {
+    for (PlainDAOMetadata d : this.daos) {
       for (SelectMethodMetadata sm : d.getSelectsMetadata()) {
         display("=== Select method " + sm.getMethod() + " [" + (sm.isStructured() ? "structured" : "non-structured")
             + "] " + (sm.getVO() != null ? "returns " + sm.getVO() + " " : "")
@@ -597,8 +597,6 @@ public abstract class HotRodGenerator {
     for (VOMetadata vo : vos) {
 
       boolean extendsVO = vo.getSuperClass() != null;
-      String baseVO = vo.getTableMetadata() != null ? vo.getTableMetadata().getIdentifier().getJavaClassIdentifier()
-          : vo.getViewMetadata().getIdentifier().getJavaClassIdentifier();
 
       String based = vo.getTableMetadata() != null ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
           + vo.getTableMetadata().getIdentifier().getSQLIdentifier() + (extendsVO ? " <as> " + vo.getSuperClass() : "")
@@ -700,7 +698,7 @@ public abstract class HotRodGenerator {
 
       // daos
 
-      for (DAOMetadata d : this.daos) {
+      for (PlainDAOMetadata d : this.daos) {
         if (this.displayMode == DisplayMode.LIST) {
           display("DAO " + d.getJavaClassName() + " included.");
         }
@@ -727,7 +725,7 @@ public abstract class HotRodGenerator {
 
       // selects
 
-      for (SelectTag q : config.getSelects()) {
+      for (SelectClassTag q : config.getSelects()) {
         display("Select " + q.getJavaClassName() + " included.");
       }
 
@@ -765,11 +763,11 @@ public abstract class HotRodGenerator {
         ns.registerDAOTag(v.getDaoTag(), "view", v.getIdentifier().getSQLIdentifier());
       }
 
-      for (SelectTag s : config.getSelects()) {
+      for (SelectClassTag s : config.getSelects()) {
         ns.registerDAOTag(s, "select", s.getJavaClassName());
       }
 
-      for (CustomDAOTag c : config.getDAOs()) {
+      for (PlainDAOTag c : config.getDAOs()) {
         ns.registerDAOTag(c, "dao", c.getJavaClassName());
       }
     } catch (DuplicateDAOClassException e) {

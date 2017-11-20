@@ -60,6 +60,7 @@ public class ComplementTag extends EnhancedSQLPart {
 
   public ComplementTag() {
     super("complement");
+    log.debug("init");
   }
 
   @Override

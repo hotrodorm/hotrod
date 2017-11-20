@@ -16,7 +16,7 @@ import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.QueryMethodTag;
-import org.hotrod.config.SelectTag;
+import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
@@ -53,7 +53,7 @@ public class Mapper {
 
   private AbstractDAOTag compositeTag;
   @SuppressWarnings("unused")
-  private SelectTag selectTag;
+  private SelectClassTag selectTag;
 
   private MyBatisGenerator generator;
 
@@ -80,7 +80,7 @@ public class Mapper {
     initialize(metadata, layout, generator, type, adapter, vo);
   }
 
-  public Mapper(final SelectTag selectTag, final DataSetMetadata metadata, final DataSetLayout layout,
+  public Mapper(final SelectClassTag selectTag, final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo) {
     log.debug("init");
     this.compositeTag = null;
@@ -127,6 +127,10 @@ public class Mapper {
     return this.type == DAOType.SELECT;
   }
 
+  private boolean isPlain() {
+    return this.type == DAOType.PLAIN;
+  }
+
   public void generate() throws UncontrolledException, ControlledException {
     String sourceFileName = this.getSourceFileName();
 
@@ -143,30 +147,34 @@ public class Mapper {
 
       writeColumns();
 
-      writeResultMap();
+      if (!this.isPlain()) {
 
-      if (this.isTable()) {
-        writeSelectByPK();
-        writeSelectByUI();
-      }
+        writeResultMap();
 
-      if (this.isSelect()) {
-        writeSelectParameterized();
-      } else {
-        writeSelectByExample();
-      }
+        if (this.isTable()) {
+          writeSelectByPK();
+          writeSelectByUI();
+        }
 
-      if (this.isTable()) {
-        writeInsert();
-        writeUpdateByPK();
-        writeDeleteByPK();
-      }
+        if (this.isSelect()) {
+          writeSelectParameterized();
+        } else {
+          writeSelectByExample();
+        }
 
-      if (this.isView()) {
-        writeInsertByExample();
+        if (this.isTable()) {
+          writeInsert();
+          writeUpdateByPK();
+          writeDeleteByPK();
+        }
+
+        if (this.isView()) {
+          writeInsertByExample();
+        }
+        writeUpdateByExample();
+        writeDeleteByExample();
+
       }
-      writeUpdateByExample();
-      writeDeleteByExample();
 
       if (this.compositeTag != null) {
 

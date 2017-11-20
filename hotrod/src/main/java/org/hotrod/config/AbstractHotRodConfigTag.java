@@ -37,8 +37,8 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
   private List<TableTag> tables = new ArrayList<TableTag>();
   private List<ViewTag> views = new ArrayList<ViewTag>();
   private List<EnumTag> enums = new ArrayList<EnumTag>();
-  private List<CustomDAOTag> daos = new ArrayList<CustomDAOTag>();
-  private List<SelectTag> selects = new ArrayList<SelectTag>();
+  private List<PlainDAOTag> daos = new ArrayList<PlainDAOTag>();
+  private List<SelectClassTag> selects = new ArrayList<SelectClassTag>();
   private List<FragmentTag> fragments = new ArrayList<FragmentTag>();
   private List<FacetTag> facets = new ArrayList<FacetTag>();
   private Map<String, FacetTag> assembledFacets = new HashMap<String, FacetTag>();
@@ -72,12 +72,12 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
   }
 
   @XmlElement(name = "dao")
-  public void setDAO(final CustomDAOTag dao) {
+  public void setDAO(final PlainDAOTag dao) {
     this.daos.add(dao);
   }
 
   @XmlElement
-  public void setSelect(final SelectTag select) {
+  public void setSelect(final SelectClassTag select) {
     this.selects.add(select);
   }
 
@@ -129,11 +129,11 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
       e.validate(daosTag, fragmentConfig);
     }
 
-    for (CustomDAOTag dao : this.daos) {
+    for (PlainDAOTag dao : this.daos) {
       dao.validate(daosTag, config, fragmentConfig);
     }
 
-    for (SelectTag s : this.selects) {
+    for (SelectClassTag s : this.selects) {
       s.validate(daosTag, config, fragmentConfig);
     }
 
@@ -191,11 +191,11 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
       log.debug(" - enum: " + e.getName());
     }
 
-    for (CustomDAOTag dao : f.getDaos()) {
+    for (PlainDAOTag dao : f.getDaos()) {
       log.debug(" - daos: " + dao.getJavaClassName());
     }
 
-    for (SelectTag s : f.getSelects()) {
+    for (SelectClassTag s : f.getSelects()) {
       log.debug(" - select '" + s.getJavaClassName() + "'");
     }
   }
@@ -224,7 +224,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
       e.validateAgainstDatabase(generator, conn);
     }
 
-    for (CustomDAOTag d : this.getDAOs()) {
+    for (PlainDAOTag d : this.getDAOs()) {
       d.validateAgainstDatabase(generator, conn);
     }
 
@@ -325,11 +325,11 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     return this.allFacets.getEnums();
   }
 
-  public List<CustomDAOTag> getDAOs() {
+  public List<PlainDAOTag> getDAOs() {
     if (this.chosenFacets.isEmpty()) {
       return this.allFacets.getDaos();
     } else {
-      List<CustomDAOTag> subset = new ArrayList<CustomDAOTag>();
+      List<PlainDAOTag> subset = new ArrayList<PlainDAOTag>();
       for (FacetTag f : this.chosenFacets) {
         subset.addAll(f.getDaos());
       }
@@ -337,15 +337,15 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     }
   }
 
-  public List<CustomDAOTag> getAllDAOs() {
+  public List<PlainDAOTag> getAllDAOs() {
     return this.allFacets.getDaos();
   }
 
-  public List<SelectTag> getSelects() {
+  public List<SelectClassTag> getSelects() {
     if (this.chosenFacets.isEmpty()) {
       return this.allFacets.getSelects();
     } else {
-      List<SelectTag> subset = new ArrayList<SelectTag>();
+      List<SelectClassTag> subset = new ArrayList<SelectClassTag>();
       for (FacetTag f : this.chosenFacets) {
         subset.addAll(f.getSelects());
       }
@@ -353,7 +353,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     }
   }
 
-  public List<SelectTag> getAllSelects() {
+  public List<SelectClassTag> getAllSelects() {
     return this.allFacets.getSelects();
   }
 
@@ -389,11 +389,11 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     return null;
   }
 
-  public SelectTag findSelect(final SelectDataSetMetadata metadata, final DatabaseAdapter adapter) {
+  public SelectClassTag findSelect(final SelectDataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;
     }
-    for (SelectTag v : this.getSelects()) {
+    for (SelectClassTag v : this.getSelects()) {
       if (metadata.getSelectTag().getJavaClassName().equals(v.getJavaClassName())) {
         return v;
       }

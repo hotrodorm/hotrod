@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
-import org.hotrod.config.SelectTag;
+import org.hotrod.config.SelectClassTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ParameterRenderer;
@@ -33,7 +34,7 @@ public class SelectDataSetMetadata implements DataSetMetadata {
   private HotRodConfigTag config;
   private DatabaseAdapter adapter;
   private DatabaseLocation loc;
-  private SelectTag tag;
+  private SelectClassTag tag;
   private List<ColumnMetadata> columns;
   private String tempViewName;
   private HotRodFragmentConfigTag fragmentConfig;
@@ -42,7 +43,7 @@ public class SelectDataSetMetadata implements DataSetMetadata {
   private String createView;
 
   public SelectDataSetMetadata(final JdbcDatabase db, final DatabaseAdapter adapter, final DatabaseLocation loc,
-      final SelectTag tag, final String tempViewName, final HotRodConfigTag config) {
+      final SelectClassTag tag, final String tempViewName, final HotRodConfigTag config) {
     this.db = db;
     this.config = config;
     this.adapter = adapter;
@@ -208,7 +209,7 @@ public class SelectDataSetMetadata implements DataSetMetadata {
     return reducedSelect;
   }
 
-  public SelectTag getSelectTag() {
+  public SelectClassTag getSelectTag() {
     return tag;
   }
 
@@ -315,6 +316,11 @@ public class SelectDataSetMetadata implements DataSetMetadata {
   public List<SelectMethodMetadata> getSelectsMetadata() {
     // Nothing to return
     return null;
+  }
+
+  @Override
+  public AbstractDAOTag getDaoTag() {
+    return this.tag;
   }
 
 }

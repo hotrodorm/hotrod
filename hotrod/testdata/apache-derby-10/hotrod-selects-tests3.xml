@@ -67,7 +67,7 @@
 
   </table>
 
-  <dao java-class-name="Test2">
+  <dao class="Test2">
 
     <select method="findAP">
 
@@ -93,6 +93,5 @@
     </select>
 
   </dao>
-
 
 </hotrod-fragment>

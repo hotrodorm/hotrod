@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
+import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
 import org.hotrod.config.HotRodConfigTag;
@@ -18,7 +19,7 @@ import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
-import org.hotrod.config.SelectTag;
+import org.hotrod.config.SelectClassTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
@@ -113,7 +114,7 @@ public class SelectMethodMetadata implements DataSetMetadata {
       } catch (InvalidSQLException e) {
         throw new ControlledException(
             "Error in " + this.tag.getSourceLocation().render() + ":\n" + "Could not retrieve metadata for <"
-                + new SelectTag().getTagName() + "> tag while creating a temporary SQL view for it.\n" + "* "
+                + new SelectClassTag().getTagName() + "> tag while creating a temporary SQL view for it.\n" + "* "
                 + e.getCause().getMessage() + "\n" + "* Is the create view SQL code below valid?\n"
                 + "--- begin SQL ---\n" + e.getInvalidSQL() + "\n--- end SQL ---");
       }
@@ -601,6 +602,11 @@ public class SelectMethodMetadata implements DataSetMetadata {
       return this.getReturnVOPackage().getFullClassName(getReturnVOType());
     }
 
+  }
+
+  @Override
+  public AbstractDAOTag getDaoTag() {
+    throw new UnsupportedOperationException("This operation is not supported ina select method tag.");
   }
 
 }

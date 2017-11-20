@@ -24,8 +24,8 @@ public class FacetTag extends AbstractConfigurationTag {
   private List<TableTag> tables = new ArrayList<TableTag>();
   private List<ViewTag> views = new ArrayList<ViewTag>();
   private List<EnumTag> enums = new ArrayList<EnumTag>();
-  private List<CustomDAOTag> daos = new ArrayList<CustomDAOTag>();
-  private List<SelectTag> selects = new ArrayList<SelectTag>();
+  private List<PlainDAOTag> daos = new ArrayList<PlainDAOTag>();
+  private List<SelectClassTag> selects = new ArrayList<SelectClassTag>();
 
   // Constructor
 
@@ -56,12 +56,12 @@ public class FacetTag extends AbstractConfigurationTag {
   }
 
   @XmlElement
-  public void setDao(final CustomDAOTag dao) {
+  public void setDao(final PlainDAOTag dao) {
     this.daos.add(dao);
   }
 
   @XmlElement
-  public void setSelect(final SelectTag select) {
+  public void setSelect(final SelectClassTag select) {
     this.selects.add(select);
   }
 
@@ -91,11 +91,11 @@ public class FacetTag extends AbstractConfigurationTag {
       e.validate(daosTag, fragmentConfig);
     }
 
-    for (CustomDAOTag dao : this.daos) {
+    for (PlainDAOTag dao : this.daos) {
       dao.validate(daosTag, config, fragmentConfig);
     }
 
-    for (SelectTag s : this.selects) {
+    for (SelectClassTag s : this.selects) {
       s.validate(daosTag, config, fragmentConfig);
     }
 
@@ -111,14 +111,14 @@ public class FacetTag extends AbstractConfigurationTag {
 
     this.selects.addAll(other.selects);
     log.debug("----> SELECTS (facet: " + this.name + ")");
-    for (SelectTag s : this.selects) {
+    for (SelectClassTag s : this.selects) {
       log.debug("----> select " + s.getJavaClassName());
     }
     log.debug("----> ---");
   }
 
   public void mergeOther(final List<TableTag> tables, final List<ViewTag> views, final List<EnumTag> enums,
-      final List<CustomDAOTag> daos, final List<SelectTag> selects) {
+      final List<PlainDAOTag> daos, final List<SelectClassTag> selects) {
     this.tables.addAll(tables);
     this.views.addAll(views);
     this.enums.addAll(enums);
@@ -144,11 +144,11 @@ public class FacetTag extends AbstractConfigurationTag {
     return this.enums;
   }
 
-  public List<CustomDAOTag> getDaos() {
+  public List<PlainDAOTag> getDaos() {
     return daos;
   }
 
-  public List<SelectTag> getSelects() {
+  public List<SelectClassTag> getSelects() {
     return selects;
   }
 

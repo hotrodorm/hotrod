@@ -285,11 +285,6 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     return vos;
   }
 
-  // TODO: remove
-  // public List<ExpressionTag> getExpressions() {
-  // return expressions;
-  // }
-
   public StructuredColumnsMetadata getMetadata() {
     return metadata;
   }

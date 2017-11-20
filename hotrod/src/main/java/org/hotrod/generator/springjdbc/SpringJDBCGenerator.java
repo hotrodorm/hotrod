@@ -16,12 +16,11 @@ import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.ConfigTag;
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.config.SelectTag;
+import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SpringJDBCTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.HotRodGenerator;
-import org.hotrod.generator.mybatis.CustomDAO;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -34,8 +33,6 @@ public class SpringJDBCGenerator extends HotRodGenerator {
       new LinkedHashMap<DataSetMetadata, DAOPrimitives>();
   private List<SpringBean> beans = new ArrayList<SpringBean>();
   private SpringJDBCConfiguration springJDBCConfiguration;
-
-  private List<CustomDAO> collectionsDAOs = new ArrayList<CustomDAO>();
 
   public SpringJDBCGenerator(final DatabaseLocation loc, final HotRodConfigTag config, final DisplayMode displayMode)
       throws UncontrolledException, ControlledException {
@@ -102,7 +99,7 @@ public class SpringJDBCGenerator extends HotRodGenerator {
 
     case SELECT:
       SelectDataSetMetadata sm = (SelectDataSetMetadata) metadata;
-      SelectTag stag = this.config.findSelect(sm, this.adapter);
+      SelectClassTag stag = this.config.findSelect(sm, this.adapter);
       if (stag == null) {
         throw new ControlledException(
             "Could not find select tag for with java-class-name '" + sm.getSelectTag().getJavaClassName() + "'.");

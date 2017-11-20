@@ -22,7 +22,6 @@ import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
-import org.hotrod.config.SelectTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
@@ -67,8 +66,7 @@ public class ObjectDAO {
 
   // Properties
 
-  private AbstractDAOTag compositeTag;
-  private SelectTag selectTag;
+  private AbstractDAOTag tag;
 
   private DataSetMetadata metadata;
   private DataSetLayout layout;
@@ -87,28 +85,11 @@ public class ObjectDAO {
 
   // Constructors
 
-  public ObjectDAO(final AbstractDAOTag compositeTag, final DataSetMetadata metadata, final DataSetLayout layout,
+  public ObjectDAO(final AbstractDAOTag tag, final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisGenerator generator, final DAOType type, final MyBatisTag myBatisTag, final ObjectVO vo,
       final Mapper mapper) {
     log.debug("init");
-    this.compositeTag = compositeTag;
-    this.selectTag = null;
-    initialize(metadata, layout, generator, type, myBatisTag, vo, mapper);
-  }
-
-  public ObjectDAO(final SelectTag selectTag, final DataSetMetadata metadata, final DataSetLayout layout,
-      final MyBatisGenerator generator, final DAOType type, final MyBatisTag myBatisTag, final ObjectVO vo,
-      final Mapper mapper) {
-    log.debug("init");
-    this.compositeTag = null;
-    this.selectTag = selectTag;
-    initialize(metadata, layout, generator, type, myBatisTag, vo, mapper);
-  }
-
-  // Behavior
-
-  private void initialize(final DataSetMetadata metadata, final DataSetLayout layout, final MyBatisGenerator generator,
-      final DAOType type, final MyBatisTag myBatisTag, final ObjectVO vo, final Mapper mapper) {
+    this.tag = tag;
     this.metadata = metadata;
     this.layout = layout;
     this.generator = generator;
@@ -127,6 +108,8 @@ public class ObjectDAO {
     this.classPackage = this.layout.getDAOPrimitivePackage(this.fragmentPackage);
   }
 
+  // Behavior
+
   public boolean isTable() {
     return this.daoType == DAOType.TABLE;
   }
@@ -139,10 +122,8 @@ public class ObjectDAO {
     return this.daoType == DAOType.SELECT;
   }
 
-  private String renderId() {
-    return this.isTable() ? "table '" + this.metadata.getIdentifier().getSQLIdentifier() + "'"
-        : this.isView() ? "view '" + this.metadata.getIdentifier().getSQLIdentifier() + "'"
-            : "select with java-class-name '" + this.compositeTag.getJavaClassName() + "'";
+  public boolean isPlain() {
+    return this.daoType == DAOType.PLAIN;
   }
 
   public void generate() throws UncontrolledException, ControlledException {
@@ -159,54 +140,58 @@ public class ObjectDAO {
 
       writeClassHeader();
 
-      if (this.isTable()) {
-        writeSelectByPK();
-        writeSelectByUI();
-      }
+      if (!this.isPlain()) {
 
-      if (this.isSelect()) {
+        if (this.isTable()) {
+          writeSelectByPK();
+          writeSelectByUI();
+        }
 
-        // writeSelectExpression(); // remove once tested
+        if (this.isSelect()) {
 
-        writeParameterizedSelect();
-      } else {
-        writeSelectByExampleAndOrder();
-      }
+          // writeSelectExpression(); // remove once tested
 
-      if (this.isTable()) {
-        writeSelectParentByFK();
-        writeSelectChildrenByFK();
+          writeParameterizedSelect();
+        } else {
+          writeSelectByExampleAndOrder();
+        }
 
-        writeInsert();
+        if (this.isTable()) {
+          writeSelectParentByFK();
+          writeSelectChildrenByFK();
 
-        writeUpdateByPK();
-        writeDeleteByPK();
-      }
+          writeInsert();
 
-      if (this.isView()) {
-        writeInsertByExample();
-      }
+          writeUpdateByPK();
+          writeDeleteByPK();
+        }
 
-      if (this.isTable() || this.isView()) {
-        writeUpdateByExample();
-        writeDeleteByExample();
-      }
+        if (this.isView()) {
+          writeInsertByExample();
+        }
 
-      writeEnumTypeHandlers();
+        if (this.isTable() || this.isView()) {
+          writeUpdateByExample();
+          writeDeleteByExample();
+        }
 
-      writeConverters();
+        writeEnumTypeHandlers();
 
-      if (this.compositeTag != null) {
+        writeConverters();
 
         writeOrderingEnum();
 
-        log.debug("SQL NAME=" + this.metadata.getIdentifier().getSQLIdentifier() + " this.tag=" + this.compositeTag);
-        for (SequenceMethodTag s : this.compositeTag.getSequences()) {
+      }
+
+      if (this.tag != null) {
+
+        log.debug("SQL NAME=" + this.metadata.getIdentifier().getSQLIdentifier() + " this.tag=" + this.tag);
+        for (SequenceMethodTag s : this.tag.getSequences()) {
           log.debug("s.getName()=" + s.getName());
           writeSelectSequence(s);
         }
 
-        for (QueryMethodTag q : this.compositeTag.getQueries()) {
+        for (QueryMethodTag q : this.tag.getQueries()) {
           log.debug("q.getJavaMethodName()=" + q.getJavaMethodName());
           writeQuery(q);
         }
@@ -222,13 +207,18 @@ public class ObjectDAO {
       writeClassFooter();
 
     } catch (IOException e) {
+
       throw new UncontrolledException(
-          "Could not generate DAO primitives class: could not write to file '" + f.getName() + "'.", e);
+          "Could not generate DAO primitives class for DAO defined in the <" + this.tag.getTagName() + "> tag in "
+              + this.tag.getSourceLocation().render() + ":\n" + "could not write to file '" + f.getName() + "'.",
+          e);
     } catch (UnresolvableDataTypeException e) {
-      throw new ControlledException("Could not generate DAO primitives for table '" + e.getTableName()
-          + "'. Could not handle columns '" + e.getColumnName() + "' type: " + e.getTypeName());
+      throw new ControlledException("Could not generate DAO primitives class for DAO defined in the <"
+          + this.tag.getTagName() + "> tag in " + this.tag.getSourceLocation().render() + ":\n"
+          + "'could not handle columns '" + e.getColumnName() + "' type: " + e.getTypeName());
     } catch (SequencesNotSupportedException e) {
-      throw new ControlledException("Could not generate DAO primitives for " + this.renderId() + ": " + e.getMessage());
+      throw new ControlledException("Could not generate DAO primitives class for DAO defined in the <"
+          + this.tag.getTagName() + "> tag in " + this.tag.getSourceLocation().render() + ":\n" + e.getMessage());
     } finally {
       if (this.w != null) {
         try {
@@ -286,7 +276,9 @@ public class ObjectDAO {
 
     imports.newLine();
 
-    imports.add(this.vo.getFullClassName());
+    if (this.vo != null) {
+      imports.add(this.vo.getFullClassName());
+    }
 
     for (ForeignKeyMetadata ik : this.metadata.getImportedFKs()) {
 
@@ -316,7 +308,7 @@ public class ObjectDAO {
     }
 
     imports.newLine();
-    imports.comment("[ now, for the selects... ]");
+    // imports.comment("[ now, for the selects... ]");
 
     for (SelectMethodMetadata sm : this.metadata.getSelectsMetadata()) {
       ClassPackage voPackage = this.myBatisTag.getDaos().getDaoPackage(this.fragmentPackage);
@@ -324,7 +316,7 @@ public class ObjectDAO {
       imports.add(rt.getVOFullClassName());
     }
 
-    imports.comment("[ selects done. ]");
+    // imports.comment("[ selects done. ]");
     imports.newLine();
 
     if (this.usesConverters() || hasFKPointingToEnum()) {
@@ -2550,18 +2542,6 @@ public class ObjectDAO {
     postCheckedException();
     println("  }");
     println();
-
-    // TODO: remove
-    // // non-structured VO type handlers
-    //
-    // if (!sm.isStructured()) {
-    // for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
-    // if (cm.getConverter() != null) {
-    // String typeHandlerClassName = this.getTypeHandlerClassName(sm, cm);
-    // this.writeTypeHandler(null, cm, typeHandlerClassName);
-    // }
-    // }
-    // }
 
   }
 

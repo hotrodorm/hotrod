@@ -12,23 +12,21 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.dynamicsql.CollectionOfPartsTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.dynamicsql.LiteralTextPart;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 
 @XmlRootElement(name = "select")
-public class SelectTag extends AbstractDAOTag {
+public class SelectClassTag extends AbstractDAOTag {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(SelectTag.class);
+  private static final Logger log = Logger.getLogger(SelectClassTag.class);
 
   // Properties
 
@@ -50,7 +48,6 @@ public class SelectTag extends AbstractDAOTag {
   protected List<ColumnTag> columns = null;
   protected List<DynamicSQLPart> parts = null;
   private List<LiteralTextPart> foundationParts = null;
-  private DynamicSQLPart aggregatedPart = null;
 
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
@@ -59,7 +56,7 @@ public class SelectTag extends AbstractDAOTag {
 
   // Constructor
 
-  public SelectTag() {
+  public SelectClassTag() {
     super("select");
   }
 
@@ -122,12 +119,6 @@ public class SelectTag extends AbstractDAOTag {
           }
         }
       }
-    }
-
-    if (this.parts.size() != 1) {
-      this.aggregatedPart = new CollectionOfPartsTag(this.parts);
-    } else {
-      this.aggregatedPart = this.parts.get(0);
     }
 
     // columns
@@ -206,11 +197,12 @@ public class SelectTag extends AbstractDAOTag {
     return sb.toString();
   }
 
-//  public String renderJavaExpression(final int margin, final ParameterRenderer parameterRenderer)
-//      throws InvalidJavaExpressionException {
-//    // return this.aggregatedPart.renderJavaExpression(margin,
-//    // parameterRenderer);
-//  }
+  // public String renderJavaExpression(final int margin, final
+  // ParameterRenderer parameterRenderer)
+  // throws InvalidJavaExpressionException {
+  // // return this.aggregatedPart.renderJavaExpression(margin,
+  // // parameterRenderer);
+  // }
 
   public List<ParameterTag> getParameterDefinitions() {
     return this.parameterDefinitions.getDefinitions();

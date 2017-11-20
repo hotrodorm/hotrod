@@ -66,6 +66,8 @@ public class TableDataSetMetadata implements DataSetMetadata {
   private List<SelectMethodMetadata> selectsMetadata;
 
   private HotRodFragmentConfigTag fragmentConfig;
+
+  @SuppressWarnings("unused")
   private ClassPackage classPackage;
 
   // Table constructor
@@ -438,6 +440,7 @@ public class TableDataSetMetadata implements DataSetMetadata {
     return selectsMetadata;
   }
 
+  @Override
   public AbstractDAOTag getDaoTag() {
     return daoTag;
   }

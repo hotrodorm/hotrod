@@ -12,11 +12,11 @@ import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 
 @XmlRootElement(name = "dao")
-public class CustomDAOTag extends AbstractDAOTag {
+public class PlainDAOTag extends AbstractDAOTag {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(CustomDAOTag.class);
+  private static final Logger log = Logger.getLogger(PlainDAOTag.class);
 
   // Properties
 
@@ -28,13 +28,13 @@ public class CustomDAOTag extends AbstractDAOTag {
 
   // Constructor
 
-  public CustomDAOTag() {
+  public PlainDAOTag() {
     super("dao");
   }
 
   // JAXB Setters
 
-  @XmlAttribute(name = "java-class-name")
+  @XmlAttribute(name = "class")
   public void setJavaClassName(final String javaClassName) {
     this.javaClassName = javaClassName;
   }
@@ -50,15 +50,15 @@ public class CustomDAOTag extends AbstractDAOTag {
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage() : null;
 
-    // java-class-name
+    // class
 
     if (SUtils.isEmpty(this.javaClassName)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'java-class-name' of tag <"
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'class' of tag <"
           + super.getTagName() + "> cannot be empty. " + "You must specify a dao java class name.");
     }
     if (!this.javaClassName.matches(Patterns.VALID_JAVA_CLASS)) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Attribute 'java-class-name' of tag <" + super.getTagName() + "> must be a valid java class name, but found '"
+          "Attribute 'class' of tag <" + super.getTagName() + "> must be a valid java class name, but found '"
               + this.javaClassName + "'. " + "Valid java class names start with an uppercase letter and continue with "
               + "letters, digits, dollar signs, and/or underscores.");
     }

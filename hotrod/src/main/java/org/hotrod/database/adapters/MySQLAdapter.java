@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
-import org.hotrod.database.DatabaseAdapter.UnescapedSQLCase;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;

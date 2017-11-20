@@ -17,11 +17,10 @@ import org.hotrod.runtime.util.SUtils;
 
 public class MyBatisConfiguration {
 
-  private static final String MAPPERS_INSERTION = "<mappers/>";
+  private static final String MAPPERS_INSERTION_TOKEN = "<mappers/>";
 
   private HotRodConfigTag config;
   private List<String> sourceFiles;
-  private List<CustomDAOMapper> collectionMappers;
   private List<String> mapperCustom;
 
   private MyBatisTag mybatisTag;
@@ -32,16 +31,11 @@ public class MyBatisConfiguration {
     this.config = config;
     this.mybatisTag = (MyBatisTag) this.config.getGenerators().getSelectedGeneratorTag();
     this.sourceFiles = new ArrayList<String>();
-    this.collectionMappers = new ArrayList<CustomDAOMapper>();
     this.mapperCustom = new ArrayList<String>();
   }
 
   public void addSourceFile(final String sourceFile) {
     this.sourceFiles.add(sourceFile);
-  }
-
-  public void addMapperPrimitives(final CustomDAOMapper mapper) {
-    this.collectionMappers.add(mapper);
   }
 
   private void gatherCustomMappers() {
@@ -73,16 +67,16 @@ public class MyBatisConfiguration {
           + "could not read the template file '" + templateFile.getPath() + "': " + e.getMessage());
     }
 
-    int count = SUtils.countMatches(template, MAPPERS_INSERTION);
+    int count = SUtils.countMatches(template, MAPPERS_INSERTION_TOKEN);
 
     if (count == 0) {
-      throw new ControlledException(
-          "Could not generate the MyBatis main configuration file: " + "didn't find the placeholder "
-              + MAPPERS_INSERTION + " to insert the mappers in the template file '" + templateFile.getPath() + "'.");
+      throw new ControlledException("Could not generate the MyBatis main configuration file: "
+          + "didn't find the placeholder " + MAPPERS_INSERTION_TOKEN + " to insert the mappers in the template file '"
+          + templateFile.getPath() + "'.");
     }
     if (count > 1) {
       throw new ControlledException("Could not generate the MyBatis main configuration file: "
-          + "expected only one placeholder " + MAPPERS_INSERTION + " to insert the mappers in the template file '"
+          + "expected only one placeholder " + MAPPERS_INSERTION_TOKEN + " to insert the mappers in the template file '"
           + templateFile.getPath() + "', but found " + count + ".");
     }
 
@@ -95,7 +89,7 @@ public class MyBatisConfiguration {
       this.w = new BufferedWriter(new FileWriter(mbconfig));
 
       String mappers = prepareMappers();
-      String result = template.replace(MAPPERS_INSERTION, mappers);
+      String result = template.replace(MAPPERS_INSERTION_TOKEN, mappers);
       this.w.write(result);
 
     } catch (IOException e) {
@@ -120,11 +114,6 @@ public class MyBatisConfiguration {
 
     for (String sourceFile : this.sourceFiles) {
       sb.append("    <mapper resource=\"" + sourceFile + "\" />\n");
-    }
-
-    for (CustomDAOMapper m : this.collectionMappers) {
-      sb.append("    <mapper resource=\"" + this.mybatisTag.getMappers().getRelativePrimitivesDir() + "/"
-          + m.getSourceFileName() + "\" />\n");
     }
 
     for (String m : this.mapperCustom) {

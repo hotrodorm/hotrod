@@ -2,6 +2,7 @@ package org.hotrod.metadata;
 
 import java.util.List;
 
+import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
@@ -14,6 +15,8 @@ public interface DataSetMetadata {
 
   @Deprecated
   String generatePrimitivesName(Identifier identifier);
+
+  AbstractDAOTag getDaoTag();
 
   List<ColumnMetadata> getColumns();
 

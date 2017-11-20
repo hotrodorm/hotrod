@@ -1,5 +1,5 @@
 package org.hotrod.generator;
 
 public enum DAOType {
-	TABLE, VIEW, SELECT;
+	TABLE, VIEW, SELECT, PLAIN;
 }
