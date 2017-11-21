@@ -36,7 +36,7 @@ public class QueryMethodTag extends AbstractConfigurationTag {
 
   // Properties
 
-  protected String javaMethodName = null;
+  protected String method = null;
 
   // Properties - Primitive content parsing by JAXB
 
@@ -58,7 +58,7 @@ public class QueryMethodTag extends AbstractConfigurationTag {
   // Properties - Parsed
 
   protected List<DynamicSQLPart> parts = null;
-  protected ParameterDefinitions parameterDefinitions = null;
+  protected ParameterDefinitions parameters = null;
 
   // Constructor
 
@@ -69,9 +69,9 @@ public class QueryMethodTag extends AbstractConfigurationTag {
 
   // JAXB Setters
 
-  @XmlAttribute(name = "java-method-name")
-  public void setJavaMethodName(String javaMethodName) {
-    this.javaMethodName = javaMethodName;
+  @XmlAttribute(name = "method")
+  public void setMethod(final String method) {
+    this.method = method;
   }
 
   // Behavior
@@ -79,14 +79,14 @@ public class QueryMethodTag extends AbstractConfigurationTag {
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
 
-    // method-name
+    // method
 
-    if (this.javaMethodName == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'java-method-name' of tag <"
-          + getTagName() + "> cannot be empty. " + "Must specify a unique name.");
-    } else if (!this.javaMethodName.matches(Patterns.VALID_JAVA_METHOD)) {
+    if (this.method == null) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Attribute 'java-method-name' of tag <" + super.getTagName() + "> specifies '" + this.javaMethodName
+          "Attribute 'method' of tag <" + getTagName() + "> cannot be empty. " + "Must specify a unique name.");
+    } else if (!this.method.matches(Patterns.VALID_JAVA_METHOD)) {
+      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          "Attribute 'method' of tag <" + super.getTagName() + "> specifies '" + this.method
               + "' but must specify a valid java method name. "
               + "Valid method names must start with a lowercase letter, "
               + "and continue with letters, digits, dollarsign, and/or underscores.");
@@ -95,23 +95,23 @@ public class QueryMethodTag extends AbstractConfigurationTag {
     // content text, parameters, dynamic SQL tags
 
     this.parts = new ArrayList<DynamicSQLPart>();
-    this.parameterDefinitions = new ParameterDefinitions();
+    this.parameters = new ParameterDefinitions();
 
     for (Object obj : this.content) {
       try {
         String s = (String) obj; // content text
-        DynamicSQLPart p = new ParameterisableTextPart(s, this.getSourceLocation(), this.parameterDefinitions);
-        p.validate(daosTag, config, fragmentConfig, this.parameterDefinitions);
+        DynamicSQLPart p = new ParameterisableTextPart(s, this.getSourceLocation(), this.parameters);
+        p.validate(daosTag, config, fragmentConfig, this.parameters);
         this.parts.add(p);
       } catch (ClassCastException e1) {
         try {
-          ParameterTag param = (ParameterTag) obj; // parameter
-          param.validate();
-          this.parameterDefinitions.add(param);
+          ParameterTag p = (ParameterTag) obj; // parameter
+          p.validate();
+          this.parameters.add(p);
         } catch (ClassCastException e2) {
           try {
             DynamicSQLPart p = (DynamicSQLPart) obj; // dynamic SQL part
-            p.validate(daosTag, config, fragmentConfig, this.parameterDefinitions);
+            p.validate(daosTag, config, fragmentConfig, this.parameters);
             this.parts.add(p);
           } catch (ClassCastException e3) {
             throw new InvalidConfigurationFileException(super.getSourceLocation(), "The body of the tag <"
@@ -125,12 +125,12 @@ public class QueryMethodTag extends AbstractConfigurationTag {
 
   // Getters
 
-  public String getJavaMethodName() {
-    return javaMethodName;
+  public String getMethod() {
+    return method;
   }
 
   public Identifier getIdentifier() {
-    return new DbIdentifier("a", this.javaMethodName);
+    return new DbIdentifier("a", this.method);
   }
 
   // Rendering
@@ -152,7 +152,7 @@ public class QueryMethodTag extends AbstractConfigurationTag {
   }
 
   public List<ParameterTag> getParameterDefinitions() {
-    return this.parameterDefinitions.getDefinitions();
+    return this.parameters.getDefinitions();
   }
 
 }

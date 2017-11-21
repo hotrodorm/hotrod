@@ -23,7 +23,7 @@ public class SequenceMethodTag extends AbstractConfigurationTag {
   // Properties
 
   private String name = null;
-  private String javaMethodName = null;
+  private String method = null;
 
   // Constructor
 
@@ -39,9 +39,9 @@ public class SequenceMethodTag extends AbstractConfigurationTag {
     this.name = name;
   }
 
-  @XmlAttribute(name = "java-method-name")
-  public void setJavaMethodName(final String javaMethodName) {
-    this.javaMethodName = javaMethodName;
+  @XmlAttribute(name = "method")
+  public void setMethod(final String method) {
+    this.method = method;
   }
 
   // Behavior
@@ -55,14 +55,14 @@ public class SequenceMethodTag extends AbstractConfigurationTag {
           "Attribute 'name' of tag <" + TAG_NAME + "> cannot be empty. " + "You must specify a sequence name.");
     }
 
-    // method-name
+    // method
 
-    if (this.javaMethodName == null) {
-      this.javaMethodName = METHOD_PREFIX + this.getIdentifier().getJavaClassIdentifier();
+    if (this.method == null) {
+      this.method = METHOD_PREFIX + this.getIdentifier().getJavaClassIdentifier();
     } else {
-      if (!this.javaMethodName.matches(Patterns.VALID_JAVA_METHOD)) {
+      if (!this.method.matches(Patterns.VALID_JAVA_METHOD)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "Attribute 'java-method-name' of tag <" + TAG_NAME + "> specifies '" + this.javaMethodName
+            "Attribute 'method' of tag <" + TAG_NAME + "> specifies '" + this.method
                 + "' but must specify a valid java method name. "
                 + "Valid method names must start with a lowercase letter, "
                 + "and continue with letters, digits, dollarsign, and/or underscores.");
@@ -77,8 +77,8 @@ public class SequenceMethodTag extends AbstractConfigurationTag {
     return name;
   }
 
-  public String getJavaMethodName() {
-    return javaMethodName;
+  public String getMethod() {
+    return method;
   }
 
   public Identifier getIdentifier() {

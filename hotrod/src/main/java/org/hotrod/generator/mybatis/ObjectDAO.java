@@ -118,10 +118,6 @@ public class ObjectDAO {
     return this.daoType == DAOType.VIEW;
   }
 
-  public boolean isSelect() {
-    return this.daoType == DAOType.SELECT;
-  }
-
   public boolean isPlain() {
     return this.daoType == DAOType.PLAIN;
   }
@@ -147,14 +143,7 @@ public class ObjectDAO {
           writeSelectByUI();
         }
 
-        if (this.isSelect()) {
-
-          // writeSelectExpression(); // remove once tested
-
-          writeParameterizedSelect();
-        } else {
-          writeSelectByExampleAndOrder();
-        }
+        writeSelectByExampleAndOrder();
 
         if (this.isTable()) {
           writeSelectParentByFK();
@@ -192,11 +181,12 @@ public class ObjectDAO {
         }
 
         for (QueryMethodTag q : this.tag.getQueries()) {
-          log.debug("q.getJavaMethodName()=" + q.getJavaMethodName());
+          log.debug("q.getJavaMethodName()=" + q.getMethod());
           writeQuery(q);
         }
 
         for (SelectMethodMetadata s : this.metadata.getSelectsMetadata()) {
+          // writeSelectExpression(); // remove once tested
           writeSelect(s);
         }
 
@@ -263,15 +253,13 @@ public class ObjectDAO {
       imports.add(DaoForUpdate.class);
       imports.add(StaleDataException.class);
     }
-    if (!this.isSelect()) {
-      imports.add(DaoWithOrder.class);
-      if (this.isTable() || this.isView()) {
-        imports.add(UpdateByExampleDao.class);
-      }
-      imports.add(OrderBy.class);
-      if (!this.isTable()) {
-        imports.add(Selectable.class);
-      }
+    imports.add(DaoWithOrder.class);
+    if (this.isTable() || this.isView()) {
+      imports.add(UpdateByExampleDao.class);
+    }
+    imports.add(OrderBy.class);
+    if (!this.isTable()) {
+      imports.add(Selectable.class);
     }
 
     imports.newLine();
@@ -754,138 +742,6 @@ public class ObjectDAO {
     // }
 
     println();
-  }
-
-  /**
-   * <pre>
-   * // parameterized select
-   * 
-   * public List&lt;CountryDAO&gt; select(final CountryDAOParameter parameters) throws SQLException {
-   *   TxManager txm = null;
-   *   try {
-   *     txm = getTxManager();
-   *     SqlSession sqlSession = txm.getSqlSession();
-   *     return select(sqlSession, parameters);
-   *   } finally {
-   *     if (txm != null &amp;&amp; !txm.isTransactionOngoing()) {
-   *       txm.close();
-   *     }
-   *   }
-   * }
-   * 
-   * public List&lt;CountryDAO&gt; select(final SqlSession sqlSession, final CountryDAOParameter parameters)
-   *     throws SQLException {
-   *   return sqlSession.selectList(&quot;com.company.daos.primitives.country.selectParameterized&quot;, parameters);
-   * }
-   * 
-   * public class CountryDAOParameter {
-   * 
-   *   private Integer id;
-   *   private String name;
-   * 
-   *   public CountryDAOParameter(final Integer id, final String name) {
-   *     this.id = id;
-   *     this.name = name;
-   *   }
-   * 
-   *   public Integer getId() {
-   *     return id;
-   *   }
-   * 
-   *   public String getName() {
-   *     return name;
-   *   }
-   * 
-   * }
-   * </pre>
-   * 
-   * @throws IOException
-   */
-
-  private void writeParameterizedSelect() throws IOException {
-
-    println("  // parameterized select");
-    println();
-
-    ParameterRenderer parameterRenderer = new ParameterRenderer() {
-      @Override
-      public String render(final SQLParameter parameter) {
-        return "#{" + parameter.getName() + "}";
-      }
-    };
-    println(renderJavaComment(this.metadata.renderSQLSentence(parameterRenderer)));
-
-    println();
-
-    String pd;
-    String pc;
-    {
-      ListWriter lwd = new ListWriter(", ");
-      ListWriter lwc = new ListWriter(", ");
-      for (SelectParameterMetadata pm : this.metadata.getParameterDefinitions()) {
-        lwd.add("final " + pm.getParameter().getJavaType() + " " + pm.getIdentifier().getJavaMemberIdentifier());
-        lwc.add(pm.getIdentifier().getJavaMemberIdentifier());
-      }
-      pd = lwd.toString();
-      pc = lwc.toString();
-    }
-
-    println("  public static List<" + this.vo.getClassName() + "> select(" + pd + ")");
-    print("      ");
-    this.throwsCheckedException();
-    print("{");
-    retrieveSqlSession();
-
-    println(
-        "      return select(sqlSession" + (this.metadata.getParameterDefinitions().isEmpty() ? "" : ", ") + pc + ");");
-    releaseSqlSession();
-    println("  }");
-    println();
-
-    print("  public static List<" + this.vo.getClassName() + "> select(final SqlSession sqlSession"
-        + (this.metadata.getParameterDefinitions().isEmpty() ? "" : ", "));
-    print(pd);
-    print(") ");
-    this.throwsCheckedException();
-    println("{");
-
-    print("    " + this.getParameterClassName() + " parameters = new " + this.getParameterClassName() + "(");
-    print(pc);
-    println(");");
-
-    preCheckedException();
-    println("    return sqlSession.selectList(");
-    println("        \"" + this.mapper.getFullMapperIdSelectParameterized() + "\", parameters);");
-    postCheckedException();
-
-    println("  }");
-
-    println();
-    println("  public static class " + this.getParameterClassName() + " {");
-    println("");
-    for (SelectParameterMetadata pm : this.metadata.getParameterDefinitions()) {
-      println(
-          "    private " + pm.getParameter().getJavaType() + " " + pm.getIdentifier().getJavaMemberIdentifier() + ";");
-    }
-    println("");
-    print("    public " + this.getParameterClassName() + "(");
-    print(pd);
-    println(") {");
-    for (SelectParameterMetadata pm : this.metadata.getParameterDefinitions()) {
-      println("      this." + pm.getIdentifier().getJavaMemberIdentifier() + " = "
-          + pm.getIdentifier().getJavaMemberIdentifier() + ";");
-    }
-    println("    }");
-    for (SelectParameterMetadata pm : this.metadata.getParameterDefinitions()) {
-      println("");
-      println("    public " + pm.getParameter().getJavaType() + " " + pm.getIdentifier().getGetter() + "() {");
-      println("      return " + pm.getIdentifier().getJavaMemberIdentifier() + ";");
-      println("    }");
-    }
-    println("");
-    println("  }");
-    println("");
-
   }
 
   public static String renderJavaComment(final String sentence) {
@@ -2249,17 +2105,17 @@ public class ObjectDAO {
     println(ObjectDAO.renderJavaComment(this.generator.getAdapter().renderSelectSequence(tag.getIdentifier())));
     println();
 
-    println("  public static long " + tag.getJavaMethodName() + "()");
+    println("  public static long " + tag.getMethod() + "()");
     print("      ");
     this.throwsCheckedException();
     println("{");
     retrieveSqlSession();
-    println("      return " + tag.getJavaMethodName() + "(sqlSession);");
+    println("      return " + tag.getMethod() + "(sqlSession);");
     releaseSqlSession();
     println("  }");
     println();
 
-    print("  public static long " + tag.getJavaMethodName() + "(final SqlSession sqlSession) ");
+    print("  public static long " + tag.getMethod() + "(final SqlSession sqlSession) ");
     this.throwsCheckedException();
     println("{");
     preCheckedException();
@@ -2298,7 +2154,7 @@ public class ObjectDAO {
 
   private void writeQuery(final QueryMethodTag tag) throws IOException {
 
-    println("  // update " + tag.getJavaMethodName());
+    println("  // update " + tag.getMethod());
     println();
 
     ParameterRenderer parameterRenderer = new ParameterRenderer() {

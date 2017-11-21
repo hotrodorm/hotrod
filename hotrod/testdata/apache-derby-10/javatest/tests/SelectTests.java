@@ -7,7 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import hotrod.test.generation.AccountVO;
 import hotrod.test.generation.primitives.AccountDAO;
-import selects.structuredvos.StructuredTests;
+import hotrod.test.generation.primitives.TypesOtherDAO;
 import tests.ac.EnhancedBranchVO;
 import tests.ac.EnhancedLeafVO;
 import tests.ac.ExtendedBranchVO;
@@ -20,14 +20,16 @@ public class SelectTests {
 
   public static void main(final String[] args) throws SQLException {
     // showAccounts();
+    // promotion74();
+    getSequence();
 
     // selectAssociation();
     // selectAssociationMixed();
     // selectCollection();
     // selectCollectionMixed();
 
-    StructuredTests st = new StructuredTests();
-    st.run();
+    // StructuredTests st = new StructuredTests();
+    // st.run();
 
   }
 
@@ -37,6 +39,20 @@ public class SelectTests {
     for (AccountVO a : AccountDAO.selectByExample(new AccountVO())) {
       System.out.println("a=" + a);
     }
+  }
+
+  private static void promotion74() throws SQLException {
+    System.out.println("Apply Promotion 74:");
+    System.out.println("===================");
+    int rows = TypesOtherDAO.applyAccountPromotion74(4, null, null, 200, null, "CHK");
+    System.out.println(rows + " row(s) updated.");
+  }
+
+  private static void getSequence() throws SQLException {
+    System.out.println("Get Sequence:");
+    System.out.println("=============");
+    long seq = TypesOtherDAO.getCodeSequence();
+    System.out.println("-> seq " + seq);
   }
 
   private static void selectAssociation() throws SQLException {

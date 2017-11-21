@@ -123,10 +123,6 @@ public class Mapper {
     return this.type == DAOType.VIEW;
   }
 
-  private boolean isSelect() {
-    return this.type == DAOType.SELECT;
-  }
-
   private boolean isPlain() {
     return this.type == DAOType.PLAIN;
   }
@@ -156,11 +152,7 @@ public class Mapper {
           writeSelectByUI();
         }
 
-        if (this.isSelect()) {
-          writeSelectParameterized();
-        } else {
-          writeSelectByExample();
-        }
+        writeSelectByExample();
 
         if (this.isTable()) {
           writeInsert();
@@ -192,7 +184,7 @@ public class Mapper {
             writeQuery(q);
           } catch (SequencesNotSupportedException e) {
             throw new ControlledException(
-                "Could not generate mapper for query '" + q.getJavaMethodName() + "' onto file: " + e.getMessage());
+                "Could not generate mapper for query '" + q.getMethod() + "' onto file: " + e.getMessage());
           }
         }
 
@@ -465,31 +457,6 @@ public class Mapper {
     println("    <if test=\"o != null\">");
     println("      order by ${o}");
     println("    </if>");
-    println("  </select>");
-    println();
-  }
-
-  /**
-   * <pre>
-   * 
-   *   <!-- select parameterized -->
-   * 
-   *   <select id="selectParameterized" resultType=
-  "com.company.daos.CountryDAO">
-   *     select blah, blah, blah
-   *       where id = #{id,jdbcType=NUMERIC}
-   *        and name = #{name,jdbcType=VARCHAR}
-   *       order by name
-   *   </select>
-   * 
-   * </pre>
-   */
-
-  private void writeSelectParameterized() throws IOException {
-    println("  <!-- select parameterized -->");
-    println();
-    println("  <select id=\"" + this.getMapperIdSelectParameterized() + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
-    println(this.metadata.renderXML(new MyBatisParameterRenderer()));
     println("  </select>");
     println();
   }
@@ -1095,7 +1062,7 @@ public class Mapper {
    */
 
   private void writeQuery(final QueryMethodTag u) throws IOException, SequencesNotSupportedException {
-    println("  <!-- query " + u.getJavaMethodName() + " -->");
+    println("  <!-- query " + u.getMethod() + " -->");
     println();
 
     println("  <update id=\"" + u.getIdentifier().getJavaMemberIdentifier() + "\">");

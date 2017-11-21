@@ -26,7 +26,9 @@
   <table name="log" />
 
   <table name="account"> <!-- identity always PK -->
+  <!--  
     <version-control-column name="row_version" />
+    -->
   </table>
 
   <view name="hefty_account" />
@@ -71,12 +73,12 @@
 
     <table name="types_other">
 
-      <sequence name="seq_codes" java-method-name="getCodeSequence" />
+      <sequence name="seq_codes" method="getCodeSequence" />
 
       <sequence name="seq_name" />
-      <sequence name="seq_name2" java-method-name="getSeqName" />
+      <sequence name="seq_name2" method="getSeqName" />
 
-      <query java-method-name="applyAccountPromotion74">
+      <query method="applyAccountPromotion74">
 
         <parameter name="reward" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
         <parameter name="from" java-type="java.util.Date" jdbc-type="TIMESTAMP" />
@@ -109,13 +111,13 @@
 
     </table>
 
-    <dao java-class-name="Promotions">
+    <dao class="Promotions">
 
       <sequence name="seq_agent" />
 
-      <sequence name="seq_codes" java-method-name="getCodeSequence" />
+      <sequence name="seq_codes" method="getCodeSequence" />
 
-      <query java-method-name="applyAccountPromotion74">
+      <query method="applyAccountPromotion74">
 
         <parameter name="reward" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
         <parameter name="from" java-type="java.util.Date" jdbc-type="TIMESTAMP" />
@@ -132,7 +134,7 @@
 
       </query>
 
-      <query java-method-name="applyAccountPromotion75">
+      <query method="applyAccountPromotion75">
 
         <parameter name="reward" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
         <parameter name="minBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
@@ -150,9 +152,9 @@
     <view name="tx_branch">
       <column name="amount" java-name="total" java-type="java.lang.Long" />
 
-      <sequence name="seq_codes" java-method-name="getCodeSequence" />
+      <sequence name="seq_codes" method="getCodeSequence" />
 
-      <query java-method-name="applyAccountPromotion74">
+      <query method="applyAccountPromotion74">
 
         <parameter name="reward" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
         <parameter name="from" java-type="java.util.Date" jdbc-type="TIMESTAMP" />

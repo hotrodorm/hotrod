@@ -129,19 +129,12 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
     public void add(final ParameterTag p) throws InvalidConfigurationFileException {
       this.params.add(p);
-    }
 
-    public void validate() throws InvalidConfigurationFileException {
-      for (ParameterTag p : this.params) {
-        log.debug("p.getName()=" + p.getName());
-        p.validate();
-        if (this.definitions.containsKey(p.getName())) {
-          throw new InvalidConfigurationFileException(p.getSourceLocation(),
-              "Duplicate parameter '" + p.getName() + "'. Please specify different names for each parameter.");
-        }
-        this.definitions.put(p.getName(), p);
+      if (this.definitions.containsKey(p.getName())) {
+        throw new InvalidConfigurationFileException(p.getSourceLocation(),
+            "Duplicate parameter name '" + p.getName() + "'. Please specify a different name for each parameter.");
       }
-      this.params = null;
+      this.definitions.put(p.getName(), p);
     }
 
     public ParameterTag find(final String name) {

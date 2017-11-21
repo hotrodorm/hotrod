@@ -78,7 +78,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
             "Duplicate sequence with name '" + s.getName() + "'.");
       }
-      String method = s.getJavaMethodName();
+      String method = s.getMethod();
       if (this.declaredMethodNames.contains(method)) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
             "Duplicate sequence method-name '" + method + "'.");
@@ -92,15 +92,15 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
 
     for (QueryMethodTag q : this.queries) {
       q.validate(daosTag, config, fragmentConfig);
-      if (this.declaredMethodNames.contains(q.getJavaMethodName())) {
+      if (this.declaredMethodNames.contains(q.getMethod())) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "Duplicate java-method-name '" + q.getJavaMethodName()
+            "Duplicate java-method-name '" + q.getMethod()
                 + "'. cannot add multiple queries or sequences with identical java-method-name "
                 + "(specified or implied) in the same <dao> tag. " + "For <query> tags they cannot have the same name, "
                 + "even if they have different parameters (different signature).");
       }
-      this.declaredMethodNames.add(q.getJavaMethodName());
-      log.debug("* added '" + q.getJavaMethodName() + "'");
+      this.declaredMethodNames.add(q.getMethod());
+      log.debug("* added '" + q.getMethod() + "'");
     }
 
     // selects

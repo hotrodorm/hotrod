@@ -655,7 +655,7 @@ public abstract class HotRodGenerator {
         for (QueryMethodTag q : t.getQueries()) {
           queries++;
           if (this.displayMode == DisplayMode.LIST) {
-            display(" - Query " + q.getJavaMethodName() + " included.");
+            display(" - Query " + q.getMethod() + " included.");
           }
         }
         for (SelectMethodMetadata s : t.getSelectsMetadata()) {
@@ -679,7 +679,7 @@ public abstract class HotRodGenerator {
         for (QueryMethodTag q : v.getQueries()) {
           queries++;
           if (this.displayMode == DisplayMode.LIST) {
-            display(" - Query " + q.getJavaMethodName() + " included.");
+            display(" - Query " + q.getMethod() + " included.");
           }
         }
         for (SelectMethodMetadata s : v.getSelectsMetadata()) {
@@ -711,7 +711,7 @@ public abstract class HotRodGenerator {
         for (QueryMethodTag q : d.getQueries()) {
           queries++;
           if (this.displayMode == DisplayMode.LIST) {
-            display(" - Query " + q.getJavaMethodName() + " included.");
+            display(" - Query " + q.getMethod() + " included.");
           }
         }
         for (SelectMethodMetadata s : d.getSelectsMetadata()) {

@@ -54,6 +54,9 @@ public class ParameterisableTextPart extends DynamicSQLPart {
 
   private void validate(final SourceLocation location, final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
+
+    super.retrievePartsAndValidate(parameterDefinitions);
+
     int pos = 0;
     int prefix;
     int suffix;
@@ -85,6 +88,7 @@ public class ParameterisableTextPart extends DynamicSQLPart {
       }
 
       ParameterTag definition = parameterDefinitions.find(name);
+
       if (definition != null) {
         SQLParameter p = new SQLParameter(name, location, false);
         p.setDefinition(definition);
