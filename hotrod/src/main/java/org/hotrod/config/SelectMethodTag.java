@@ -207,10 +207,6 @@ public class SelectMethodTag extends AbstractConfigurationTag {
       cols.add(c);
     }
 
-    // TODO: no longer necessary since it's done as the parameters are added
-    // // <parameter> tags
-    // this.parameters.validate();
-
     // Literal SQL, <columns>, <complement> tags
 
     for (EnhancedSQLPart p : this.parts) {
