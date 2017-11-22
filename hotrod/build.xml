@@ -357,6 +357,7 @@
         <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+        <pathelement location="${lib.dir}/junit.jar" />
       </classpath>
     </javac>
   </target>
@@ -379,6 +380,60 @@
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
       </classpath>
     </java>
+  </target>
+
+  <!-- ============= -->
+  <!-- Lines of code -->
+  <!-- ============= -->
+
+  <target name="loc-counter">
+    <taskdef name="loc"
+             classname="loc.LocCounterAntTask"
+             classpath="${lib.dir}/loc.jar" />
+    <tstamp>
+      <format property="now" pattern="yyyy.MM.dd-HH.mm" />
+    </tstamp>
+    <loc>
+      <consolereport />
+      <!--
+      <htmlfilereport filename="reports/loc/locreport-${now}.html" />
+      -->
+      <module name="HotRod" basedir=".">
+        <axis path="src/main/java" ext="java" />
+        <axis path="src/runtime/java" ext="java" />
+        <axis path="src/test/java" ext="java" />
+
+        <axis path="src/main/metadata" ext="properties" />
+        <axis path="src/main/xml" ext="xsd" />
+
+        <axis path="testdata" ext="sql" />
+        <axis path="testdata" ext="xml" />
+      </module>
+    </loc>
+  </target>
+
+  <!-- =============== -->
+  <!-- AUTOMATED TESTS -->
+  <!-- =============== -->
+
+  <target name="automatedtests" depends="clean-build, compile-test">
+    <mkdir dir="tests" />
+    <property name="junit.log" value="tests/automated-tests.log" />
+    <record name="${junit.log}" action="start" />
+    <echo message="[ Automated tests starting... log file: ${junit.log} ]"
+          level="info" />
+    <java classname="automatedtests.AllAutomatedTests" failonerror="true">
+      <classpath>
+        <pathelement path="${test.src.dir}/../metadata" />
+        <pathelement path="${test.build.dir}" />
+        <pathelement path="${main.build.dir}" />
+        <pathelement path="${gen.build.dir}" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+        <pathelement location="${lib.dir}/junit.jar" />
+      </classpath>
+    </java>
+    <echo message="[ Automated tests finished ]" level="info" />
+    <record name="${junit.log}" action="stop" />
   </target>
 
 </project>

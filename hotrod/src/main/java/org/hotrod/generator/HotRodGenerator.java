@@ -545,10 +545,11 @@ public abstract class HotRodGenerator {
 
     displayGenerationMetadata(config);
 
-    // logSelectMethodMetadata(); // keep for debugginh purposes only
+    // logSelectMethodMetadata(); // keep for debugging purposes only
 
   }
 
+  @SuppressWarnings("unused")
   private void logSelectMethodMetadata() {
     for (PlainDAOMetadata d : this.daos) {
       for (SelectMethodMetadata sm : d.getSelectsMetadata()) {

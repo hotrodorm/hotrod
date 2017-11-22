@@ -130,6 +130,7 @@ public class TypesTest {
 
   // Utils
 
+  @SuppressWarnings("unused")
   private static String renderObject(final Object obj) {
     if (obj == null) {
       return "null";
@@ -137,6 +138,7 @@ public class TypesTest {
     return obj + " (" + obj.getClass().getName() + ")";
   }
 
+  @SuppressWarnings("unused")
   private static String renderBA(final byte[] ba) {
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < ba.length; i++) {

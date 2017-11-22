@@ -141,10 +141,12 @@ public class InsertTests {
 
   // Utilities
 
+  @SuppressWarnings("unused")
   private static int getTimeInt() {
     return (int) (System.currentTimeMillis() % ((long) Integer.MAX_VALUE));
   }
 
+  @SuppressWarnings("unused")
   private static String getTime() {
     return new SimpleDateFormat("HH:mm:ss").format(new java.util.Date());
   }

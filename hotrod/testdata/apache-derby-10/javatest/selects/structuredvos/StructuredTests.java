@@ -172,6 +172,7 @@ public class StructuredTests {
 
   // Utilitites
 
+  @SuppressWarnings("unused")
   private static void printObject(final Object obj, final int indent) {
     if (obj == null) {
       System.out.println(SUtils.getFiller(' ', indent) + "null");
