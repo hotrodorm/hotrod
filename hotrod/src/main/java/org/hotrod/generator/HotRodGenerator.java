@@ -266,6 +266,39 @@ public abstract class HotRodGenerator {
         ds.linkEnumMetadata(this.enums);
       }
 
+      // Check tables and enums duplicate names
+
+      Set<String> tablesAndEnumsCanonicalNames = new HashSet<String>();
+
+      for (TableTag tt : config.getTables()) {
+        String canonicalName = this.adapter.canonizeName(tt.getName(), false);
+        if (tablesAndEnumsCanonicalNames.contains(canonicalName)) {
+          throw new ControlledException(tt.getSourceLocation(), "Duplicate database <table> name '" + canonicalName
+              + "'. This table is already defined in the configuration file(s).");
+        }
+        tablesAndEnumsCanonicalNames.add(canonicalName);
+      }
+
+      for (EnumTag et : config.getEnums()) {
+        String canonicalName = this.adapter.canonizeName(et.getName(), false);
+        if (tablesAndEnumsCanonicalNames.contains(canonicalName)) {
+          throw new ControlledException(et.getSourceLocation(), "Duplicate database <enum> name '" + canonicalName
+              + "'. This enum is already defined in the configuration file(s), as a <table> or <enum>.");
+        }
+        tablesAndEnumsCanonicalNames.add(canonicalName);
+      }
+
+      Set<String> viewsCanonicalNames = new HashSet<String>();
+
+      for (ViewTag vt : config.getViews()) {
+        String canonicalName = this.adapter.canonizeName(vt.getName(), false);
+        if (viewsCanonicalNames.contains(canonicalName)) {
+          throw new ControlledException(vt.getSourceLocation(), "Duplicate database <view> name '" + canonicalName
+              + "'. This enum is already defined in the configuration file(s).");
+        }
+        viewsCanonicalNames.add(canonicalName);
+      }
+
       // Prepare views meta data
 
       logm("Prepare views metadata.");
@@ -385,9 +418,9 @@ public abstract class HotRodGenerator {
           }
 
         } catch (SQLException e) {
-          throw new ControlledException("Failed to retrieve metadata for <" + new SelectClassTag().getTagName() + "> query '"
-              + current.getJavaClassName() + "' while creating a temporary SQL view for it.\n" + "[ " + e.getMessage()
-              + " ]\n" + "* Do all resulting columns have different and valid names?\n"
+          throw new ControlledException("Failed to retrieve metadata for <" + new SelectClassTag().getTagName()
+              + "> query '" + current.getJavaClassName() + "' while creating a temporary SQL view for it.\n" + "[ "
+              + e.getMessage() + " ]\n" + "* Do all resulting columns have different and valid names?\n"
               + "* Is the trimmed create view SQL code below valid?\n" + "--- begin SQL ---\n" + sm.getCreateView()
               + "\n--- end SQL ---");
         }

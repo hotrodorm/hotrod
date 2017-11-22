@@ -177,7 +177,13 @@ public class HotRodAntTask extends Task {
       log.debug("Generation complete.");
 
     } catch (ControlledException e) {
-      throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code:\n" + e.getMessage());
+      if (e.getLocation() == null) {
+        throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code:\n" + e.getMessage());
+      } else {
+        throw new BuildException(
+            Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "
+                + e.getLocation().render() + ":\n" + e.getMessage());
+      }
     } catch (UncontrolledException e) {
       e.printStackTrace();
       throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
