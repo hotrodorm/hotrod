@@ -24,23 +24,30 @@ public class Examples {
 //    b.setName("Toyota");
 //    BrandDAO.insert(b);
 //    System.out.println("id=" + b.getId());
-//
+
 //    // =========================================
 //
-//    // Select by example
+//    // Select by example - Find vans with no brand ID
 //    CarVO example = new CarVO();
-//    example.setType("TRUCK");
-//    List<CarVO> trucks = CarDAO.selectByExample(example);
+//    example.setType("VAN");
+//    example.setBrandId(null);
+//    List<CarVO> vans = CarDAO.selectByExample(example);
 //
-//    // Update by example
+//    // Update by example - Set brand ID 17 to vans 
+//    //                     with no brand ID
 //    CarVO newValues = new CarVO();
 //    newValues.setBrandId(17);
 //    CarDAO.updateByExample(example, newValues);
 //
-//    // Delete by example
+//    // Delete by example - Delete all coupe 
+//    //                     with no brand ID
 //    example = new CarVO();
-//    example.setBrandId(17);
+//    example.setType("COUPE");
+//    example.setBrandId(null);
 //    CarDAO.deleteByExample(example);
+//    
+//    List<CarVO> vans2 = vans; 
+    
 //
 //    // =========================================
 //

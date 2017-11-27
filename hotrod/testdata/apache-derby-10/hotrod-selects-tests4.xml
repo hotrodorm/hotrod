@@ -31,17 +31,18 @@
       </complement>
     </select>
 
+<!--
   </table>
 
   <table name="car">
-
+  -->
     <select method="findExtendedCar" vo="ExtendedCarVO">
       <parameter name="brandId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
       select
         c.*,
         b.name,
         r.id as repaired_id, 
-        r.repaired_on, r.card_id
+        r.repaired_on, r.car_id
       from car c
       join brand b on b.id = c.brand_id
       left join repair r on r.car_id = c.id
