@@ -47,6 +47,7 @@
          url="${url}"
          userid="${username}"
          password="${password}"
+         keepformat="true"
          delimiter="//"
          autocommit="true"
          onerror="abort">
@@ -60,9 +61,46 @@
          url="${url}"
          userid="${username}"
          password="${password}"
+         keepformat="true"
          delimiter="//"
          onerror="continue">
       <fileset file="${db.src.dir}/${database}/clean-sp.sql" />
+    </sql>
+  </target>
+
+  <target name="run-sp" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         delimiter="//"
+         autocommit="true"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/run-sp.sql" />
+    </sql>
+  </target>
+
+  <target name="run-sp2" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+      
+         delimiter="//"
+      
+         autocommit="true"
+      
+         print="true"
+         showheaders="true"
+         showtrailers="true"
+      
+         onerror="abort">
+      begin
+          dbms_output.put_line ('Hello World 1');
+      end;
+      //
     </sql>
   </target>
 
