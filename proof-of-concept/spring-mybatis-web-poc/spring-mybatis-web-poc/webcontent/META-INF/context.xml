@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<Context antiResourceLocking="true">
+
+  <Manager pathname="" />
+
+  <Resource name="jdbc/myDatasource1" auth="Container" type="javax.sql.DataSource"
+    maxActive="100" maxIdle="30" maxWait="10000" driverClassName="org.apache.derby.jdbc.ClientDriver"
+    url="jdbc:derby://192.168.56.27:1527/hotrod" username="schema1"
+    password="b" />
+
+</Context>

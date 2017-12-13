@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myapp1.cuenta">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    ID,
+    NUMERO,
+    TIPO,
+    SALDO,
+    CREADA_EN
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.ID,
+    ${alias}.NUMERO,
+    ${alias}.TIPO,
+    ${alias}.SALDO,
+    ${alias}.CREADA_EN
+  </sql>
+
+  <resultMap id="allColumns" type="com.myapp1.generado.vos.CuentaVO">
+    <id property="id" column="ID" />
+    <result property="numero" column="NUMERO" />
+    <result property="tipo" column="TIPO" />
+    <result property="saldo" column="SALDO" />
+    <result property="creadaEn" column="CREADA_EN" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from CUENTA
+     where
+      ID = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from CUENTA
+    <where>
+      <if test="p.id != null ">
+        and ID = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
+        and ID is null
+      </if>
+      <if test="p.numero != null ">
+        and NUMERO = #{p.numero,jdbcType=VARCHAR}
+      </if>
+      <if test="p.numero == null and p.propertiesChangeLog.numeroWasSet">
+        and NUMERO is null
+      </if>
+      <if test="p.tipo != null ">
+        and TIPO = #{p.tipo,jdbcType=VARCHAR}
+      </if>
+      <if test="p.tipo == null and p.propertiesChangeLog.tipoWasSet">
+        and TIPO is null
+      </if>
+      <if test="p.saldo != null ">
+        and SALDO = #{p.saldo,jdbcType=INTEGER}
+      </if>
+      <if test="p.saldo == null and p.propertiesChangeLog.saldoWasSet">
+        and SALDO is null
+      </if>
+      <if test="p.creadaEn != null ">
+        and CREADA_EN = #{p.creadaEn,jdbcType=DATE}
+      </if>
+      <if test="p.creadaEn == null and p.propertiesChangeLog.creadaEnWasSet">
+        and CREADA_EN is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- insert (does not integrate sequences, and integrates identities) -->
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="ID">
+    insert into CUENTA (
+      <trim prefixOverrides=", ">
+        <if test="true">, NUMERO</if>
+        <if test="true">, TIPO</if>
+        <if test="true">, SALDO</if>
+        <if test="true">, CREADA_EN</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{numero,jdbcType=VARCHAR}</if>
+        <if test="true">, #{tipo,jdbcType=VARCHAR}</if>
+        <if test="true">, #{saldo,jdbcType=INTEGER}</if>
+        <if test="true">, #{creadaEn,jdbcType=DATE}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update CUENTA set
+      NUMERO = #{numero,jdbcType=VARCHAR},
+      TIPO = #{tipo,jdbcType=VARCHAR},
+      SALDO = #{saldo,jdbcType=INTEGER},
+      CREADA_EN = #{creadaEn,jdbcType=DATE}
+     where
+      ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from CUENTA
+     where
+      ID = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update CUENTA
+    <set>
+      <if test="values.propertiesChangeLog.idWasSet">ID = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.numeroWasSet">NUMERO = #{values.numero,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.tipoWasSet">TIPO = #{values.tipo,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.saldoWasSet">SALDO = #{values.saldo,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.creadaEnWasSet">CREADA_EN = #{values.creadaEn,jdbcType=DATE},</if>
+    </set>
+    <where>
+      <if test="filter.id != null ">
+        and ID = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
+        and ID is null
+      </if>
+      <if test="filter.numero != null ">
+        and NUMERO = #{filter.numero,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.numero == null and filter.propertiesChangeLog.numeroWasSet">
+        and NUMERO is null
+      </if>
+      <if test="filter.tipo != null ">
+        and TIPO = #{filter.tipo,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.tipo == null and filter.propertiesChangeLog.tipoWasSet">
+        and TIPO is null
+      </if>
+      <if test="filter.saldo != null ">
+        and SALDO = #{filter.saldo,jdbcType=INTEGER}
+      </if>
+      <if test="filter.saldo == null and filter.propertiesChangeLog.saldoWasSet">
+        and SALDO is null
+      </if>
+      <if test="filter.creadaEn != null ">
+        and CREADA_EN = #{filter.creadaEn,jdbcType=DATE}
+      </if>
+      <if test="filter.creadaEn == null and filter.propertiesChangeLog.creadaEnWasSet">
+        and CREADA_EN is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from CUENTA
+    <where>
+      <if test="id != null ">
+        and ID = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and propertiesChangeLog.idWasSet">
+        and ID is null
+      </if>
+      <if test="numero != null ">
+        and NUMERO = #{numero,jdbcType=VARCHAR}
+      </if>
+      <if test="numero == null and propertiesChangeLog.numeroWasSet">
+        and NUMERO is null
+      </if>
+      <if test="tipo != null ">
+        and TIPO = #{tipo,jdbcType=VARCHAR}
+      </if>
+      <if test="tipo == null and propertiesChangeLog.tipoWasSet">
+        and TIPO is null
+      </if>
+      <if test="saldo != null ">
+        and SALDO = #{saldo,jdbcType=INTEGER}
+      </if>
+      <if test="saldo == null and propertiesChangeLog.saldoWasSet">
+        and SALDO is null
+      </if>
+      <if test="creadaEn != null ">
+        and CREADA_EN = #{creadaEn,jdbcType=DATE}
+      </if>
+      <if test="creadaEn == null and propertiesChangeLog.creadaEnWasSet">
+        and CREADA_EN is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>
