@@ -1,0 +1,20 @@
+1. Packaging the plugin
+=======================
+
+-> File -> Export
+-> Deployable plug-ins and fragments -> Next
+
+ [X] hotrod-eclipse-plugin (1.0.0-qualifier)
+ Destination (tab)
+ (o) Directory
+ [Browse] (and pick a directory)
+ [Finish]
+ 
+This generates a plugin directory with a jar file.
+
+2. Deploying the plugin
+=======================
+
+* Copy the jar file to the <ECLIPSE_HOME>/plugins directory.
+* Restart Eclipse.
+
