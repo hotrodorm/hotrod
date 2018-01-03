@@ -1,0 +1,65 @@
+The HotRod "View":
+==================
+ 
+ __________________                  _________
+| Package Explorer \                | HotRod  \ [<>] [Auto] [>] [X] [XX]  ---+
+|                   \____________   |          \______________________       |
+| +- src                         |  | + *hotrod-1.xml [Change JDBC]   |      |
+| +- hotrod-1.xml ------------------->  |  T customer                 |      |
+|                  drag & drop   |  |   | *V supplier                 |      |
+|                 into this view |  |   | *D OrdersDAO                |      |
+|________________________________|  |   + *hotrod-fragment-1.xml      |      |
+                                    |   |   T product                 |      |
+                                    |   |   V hot_deal                |      |
+                                    |   |  *D AccountingDAO           |      |
+                                    |   + *hotrod-fragment-1.xml      |      |
+                                    |       T client                  |   ___V______________
+                                    | + *hotrod-2.xml [Configure JDBC]|  | Console          \
+                                    |     Table 4                     |  |                   \______________________________________
+                                    |     View 5                      |  | Invalid HotRod Generation:                               |
+                                    |    *DAO 6                       |  | persistence/hotrod-1.xml:98: Table 'customer' not found. |
+                                    |_________________________________|  |                                                          |
+                                                                         |__________________________________________________________|
+
+                                 Where:
+                                  [<>]   Regenerate All.
+                                  [Auto] Turns Auto Regeneration mode on/off.
+                                  [>]    Regenerate autodetected changes only when Auto is off.
+                                  [X]    Removes a HotRod config file from the view.
+                                  [XX]   Removes all HotRod config files from the view.
+                                  *      Signifies "dirty" state -- needs regeneration.
+
+                                  * T/V/D are icons that correspond to "Table", "View", and "DAO".
+                                  * Dirty state icons will be mostly useful when Auto mode is off, to let the user know a regeneration is needed.
+                                  * Dirty state icons will remain there on failure for failed/non-executed DAOs. Completed ones will be cleared.
+                                  * Dirty state icons will be shown on DAO parents also, such as fragments and main config file.
+                                  * Only main HotRod config files can be loaded, not fragments.
+                                  * Fragments are loaded in a subtree below the main HotRod config file.
+                                  * Fragments cannot be loaded by themselves.
+                                  * A successful HotRod execution will update the Java source tree.
+                                  * An unsuccessful HotRod execution will also update the Java source tree.
+                                  * An unsuccessful HotRod execution will open the Console View and will show the error(s).
+ 
+         
+Research how to:
+================
+ * Add a tree "form" that lists all the fragments, with DAO state indicators.
+ * Drag and Drop one or more HotRod config files into the new view.
+ * Add functional buttons to the HotRod View tool bar.
+ * Set JDBC properties for each HotRod config file (driver class path, driver class, url, user, pass, catalog, schema, etc.)
+ * Dynamically load a JDBC driver classpath for each HotRod config file separately.
+ * Shows execution errors in the Console View.
+ * File listener: automatic reload when a config file changes. Mark all dirty DAOs.
+ * Reload the affected java source trees on success and failure conditions.
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  
