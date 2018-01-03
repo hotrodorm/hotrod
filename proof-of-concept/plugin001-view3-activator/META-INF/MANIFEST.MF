@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: test001x
-Bundle-SymbolicName: plugin001-view3-activator;singleton:=true
+Bundle-SymbolicName: hotrod-eclipse-plugin-poc001;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: plugin001_view3_activator.Activator
 Require-Bundle: org.eclipse.ui,

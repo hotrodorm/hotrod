@@ -10,7 +10,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "plugin001-view3-activator"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "hotrod-eclipse-plugin-poc001"; //$NON-NLS-1$
 
 	// The shared instance
 	private static Activator plugin;
