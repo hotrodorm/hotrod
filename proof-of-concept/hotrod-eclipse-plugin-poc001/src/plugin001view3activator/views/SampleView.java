@@ -1,6 +1,7 @@
 package plugin001view3activator.views;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
@@ -18,6 +19,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -88,6 +90,9 @@ public class SampleView extends ViewPart {
 
   private IMenuManager menuManager = null;
 
+  private TreeObject to1;
+  private ConfigFile p1;
+
   // Constructor
 
   public SampleView() {
@@ -102,6 +107,7 @@ public class SampleView extends ViewPart {
     this.autoOff = Activator.getImageDescriptor(AUTO_GEN_OFF_ICON_PATH);
     this.regenerateChanges = Activator.getImageDescriptor(REGEN_CHANGES_ICON_PATH);
     this.JDBCProperties = Activator.getImageDescriptor(JDBC_PROPERTIES_ICON_PATH);
+
   }
 
   private Image getImage(final String imagePath) {
@@ -118,6 +124,7 @@ public class SampleView extends ViewPart {
 
     public TreeObject(String name) {
       this.name = name;
+      this.parent = null;
     }
 
     public String getName() {
@@ -139,6 +146,15 @@ public class SampleView extends ViewPart {
     public <T> T getAdapter(Class<T> key) {
       return null;
     }
+
+    public TreeObject findRoot() {
+      if (this.parent == null) {
+        return this;
+      } else {
+        return this.parent.findRoot();
+      }
+    }
+
   }
 
   class TableDAO extends TreeObject {
@@ -146,6 +162,14 @@ public class SampleView extends ViewPart {
     public TableDAO(String name) {
       super(name);
     }
+
+
+//    public void setName(final String name) {
+//      this.name = name;
+//      if (this.parent!= null) {
+//        this.parent.
+//      }
+//    }
 
   }
 
@@ -167,36 +191,84 @@ public class SampleView extends ViewPart {
 
   abstract class ConfigFile extends TreeObject {
 
-    private ArrayList<TreeObject> children;
+    private List<TreeObject> children;
+    private ViewContentProvider listener;
+    private TreeViewer viewer;
 
-    public ConfigFile(String name) {
+    public ConfigFile(final String name) {
       super(name);
       this.children = new ArrayList<TreeObject>();
+      this.listener = null;
+      this.viewer = null;
     }
 
-    public void addChild(TreeObject child) {
-      children.add(child);
+    public void addChild(final TreeObject child) {
+      this.children.add(child);
       child.setParent(this);
+      if (this.listener != null) {
+        this.listener.add(child);
+      } else {
+        if (this.viewer != null) {
+          this.viewer.refresh(this, true);
+        }
+      }
     }
 
-    public void removeChild(TreeObject child) {
-      children.remove(child);
+    public void updateChild() {
+      if (this.viewer != null) {
+        this.viewer.refresh(this, true);
+      }
+    }
+
+    public void removeChild(final TreeObject child) {
+      this.children.remove(child);
       child.setParent(null);
+      if (this.listener != null) {
+        this.listener.remove(child);
+      } else {
+        if (this.viewer != null) {
+          this.viewer.refresh(this, true);
+        }
+      }
     }
 
     public TreeObject[] getChildren() {
-      return (TreeObject[]) children.toArray(new TreeObject[children.size()]);
+      return (TreeObject[]) this.children.toArray(new TreeObject[0]);
     }
 
     public boolean hasChildren() {
-      return children.size() > 0;
+      return this.children.size() > 0;
+    }
+
+    public void removeListener(final ViewContentProvider listener) {
+      this.listener = null;
+    }
+
+    public void addListener(final ViewContentProvider listener) {
+      this.listener = listener;
+    }
+
+    public void setViewer(final TreeViewer viewer) {
+      this.viewer = viewer;
+      for (TreeObject to : this.children) {
+        try {
+          ConfigFile f = (ConfigFile) to;
+          f.setViewer(viewer);
+        } catch (ClassCastException e) {
+          // not a config file -- skip.
+        }
+      }
+    }
+
+    public Viewer getViewer() {
+      return viewer;
     }
 
   }
 
   class MainConfigFile extends ConfigFile {
 
-    public MainConfigFile(String name) {
+    public MainConfigFile(final String name, final TreeViewer viewer) {
       super(name);
     }
 
@@ -213,51 +285,99 @@ public class SampleView extends ViewPart {
   class ViewContentProvider implements ITreeContentProvider {
 
     private ConfigFile invisibleRoot;
+    protected TreeViewer viewer;
 
-    public Object[] getElements(Object parent) {
-      if (parent.equals(getViewSite())) {
-        if (invisibleRoot == null)
-          initialize();
+    @Override
+    public Object[] getElements(final Object inputElement) {
+      if (inputElement.equals(getViewSite())) {
+        if (invisibleRoot == null) {
+          initialize(this.viewer);
+        }
         return getChildren(invisibleRoot);
       }
-      return getChildren(parent);
+      return getChildren(inputElement);
     }
 
-    public Object getParent(Object child) {
+    @Override
+    public Object getParent(final Object child) {
       if (child instanceof TreeObject) {
         return ((TreeObject) child).getParent();
       }
       return null;
     }
 
-    public Object[] getChildren(Object parent) {
+    @Override
+    public boolean hasChildren(final Object parent) {
+      if (parent instanceof ConfigFile)
+        return ((ConfigFile) parent).hasChildren();
+      return false;
+    }
+
+    @Override
+    public Object[] getChildren(final Object parent) {
       if (parent instanceof ConfigFile) {
         return ((ConfigFile) parent).getChildren();
       }
       return new Object[0];
     }
 
-    public boolean hasChildren(Object parent) {
-      if (parent instanceof ConfigFile)
-        return ((ConfigFile) parent).hasChildren();
-      return false;
+    @Override
+    public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
+      this.viewer = (TreeViewer) viewer;
+      System.out.println("oldInput: " + oldInput);
+      if (oldInput != null) {
+        if (oldInput instanceof ConfigFile) {
+          removeListenerFrom((ConfigFile) oldInput);
+        }
+      }
+      System.out.println("newInput: " + newInput);
+      if (newInput != null) {
+        System.out.println("  -> class=" + newInput.getClass().getName());
+        // ViewSite vs = (ViewSite) newInput;
+        if (newInput instanceof ConfigFile) {
+          System.out.println("  -> listener to: specific configFile");
+          addListenerTo((ConfigFile) newInput);
+        }
+      }
+    }
+
+    protected void removeListenerFrom(final ConfigFile file) {
+      file.removeListener(this);
+    }
+
+    protected void addListenerTo(final ConfigFile file) {
+      file.addListener(this);
+    }
+
+    public void add(final TreeObject child) {
+      System.out.println("- add event.");
+      System.out.println("  -> child=" + child);
+      // Object movingBox = ((Model)event.receiver()).getParent();
+      // viewer.refresh(movingBox, false);
+      this.viewer.refresh();
+    }
+
+    public void remove(final TreeObject child) {
+      System.out.println("- remove event.");
+      System.out.println("  -> child=" + child);
+      this.viewer.refresh();
     }
 
     /*
      * We will set up a dummy model to initialize tree heararchy. In a real
      * code, you will connect to a real model and expose its hierarchy.
      */
-    private void initialize() {
+    private void initialize(final TreeViewer viewer) {
       FragmentConfigFile f1 = new FragmentConfigFile("hotrod-fragment-1.xml");
       f1.addChild(new TableDAO("product"));
-      f1.addChild(new ViewDAO("hot_deal"));
+      f1.addChild(new ViewDAO("hot_product"));
       f1.addChild(new CustomDAO("AccountingDAO"));
 
       FragmentConfigFile f2 = new FragmentConfigFile("hotrod-fragment-2.xml");
       f2.addChild(new TableDAO("client"));
 
-      MainConfigFile p1 = new MainConfigFile("hotrod-1.xml");
-      TreeObject to1 = new TableDAO("customer");
+      p1 = new MainConfigFile("> hotrod-1.xml", viewer);
+      to1 = new TableDAO("customer");
       TreeObject to2 = new ViewDAO("supplier");
       TreeObject to3 = new CustomDAO("OrdersDAO");
       p1.addChild(to1);
@@ -266,13 +386,15 @@ public class SampleView extends ViewPart {
       p1.addChild(f1);
       p1.addChild(f2);
 
-      MainConfigFile p2 = new MainConfigFile("hotrod-2.xml");
+      MainConfigFile p2 = new MainConfigFile("hotrod-2.xml", viewer);
       TreeObject to4 = new TableDAO("employee");
       p2.addChild(to4);
 
-      invisibleRoot = new MainConfigFile("");
+      invisibleRoot = new MainConfigFile("", viewer);
       invisibleRoot.addChild(p1);
       invisibleRoot.addChild(p2);
+
+      invisibleRoot.setViewer(viewer);
 
     }
   }
@@ -399,7 +521,10 @@ public class SampleView extends ViewPart {
     actionRegenerateChanges = new Action() {
       public void run() {
         // showMessage("Regenerated Changes - executed");
-        System.out.println("This is an example of an error message.");
+        System.out.println("*** Adding a table...");
+        p1.addChild(new TableDAO("new-table..."));
+        to1.name = "> " + to1.name;
+        System.out.println("*** table added.");
       }
     };
     actionRegenerateChanges.setText("Regenerate Changes");
@@ -448,6 +573,7 @@ public class SampleView extends ViewPart {
 
     actionJDBCProperties = new Action() {
       public void run() {
+        to1.name = "customer (refreshed)";
         showMessage("JDBC Properties - executed");
       }
     };
