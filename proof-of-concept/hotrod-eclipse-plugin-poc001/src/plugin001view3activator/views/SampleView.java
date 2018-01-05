@@ -30,6 +30,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import plugin001_view3_activator.Activator;
+import plugin001view3activator.views.tree.HotRodLabelProvider;
+import plugin001view3activator.views.tree.HotRodViewContentProvider;
 
 /**
  * This sample class demonstrates how to plug-in a new workbench view. The view
@@ -163,13 +165,12 @@ public class SampleView extends ViewPart {
       super(name);
     }
 
-
-//    public void setName(final String name) {
-//      this.name = name;
-//      if (this.parent!= null) {
-//        this.parent.
-//      }
-//    }
+    // public void setName(final String name) {
+    // this.name = name;
+    // if (this.parent!= null) {
+    // this.parent.
+    // }
+    // }
 
   }
 
@@ -438,9 +439,12 @@ public class SampleView extends ViewPart {
   public void createPartControl(Composite parent) {
     viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 
-    viewer.setContentProvider(new ViewContentProvider());
+    // viewer.setContentProvider(new ViewContentProvider());
+    viewer.setContentProvider(new HotRodViewContentProvider(this));
+
     viewer.setInput(getViewSite());
-    viewer.setLabelProvider(new ViewLabelProvider());
+    // viewer.setLabelProvider(new ViewLabelProvider());
+    viewer.setLabelProvider(new HotRodLabelProvider());
 
     // Create the help context id for the viewer's control
     PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "plugin001-view3-activator.viewer");
