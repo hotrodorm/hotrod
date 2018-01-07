@@ -26,69 +26,67 @@ import org.hotrod.eclipseplugin.elements.TableElement;
 
 public class HotRodView extends ViewPart {
 
-  private static final String REGEN_ALL_ICON_PATH = "icons/regen-all3-16.png";
+  private static final String GEN_ALL_ICON_PATH = "icons/gen-all6-16.png";
   private static final String AUTO_GEN_ON_ICON_PATH = "icons/auto-on1-16.png";
   private static final String AUTO_GEN_OFF_ICON_PATH = "icons/auto-off1-16.png";
-  private static final String REGEN_CHANGES_ICON_PATH = "icons/regen-chg1-16.png";
+  private static final String GEN_CHANGES_ICON_PATH = "icons/gen-chg1-16.png";
+  private static final String GEN_SELECTION_ICON_PATH = "icons/gen-sel1-16.png";
   private static final String JDBC_PROPERTIES_ICON_PATH = "icons/jdbc2-16.png";
 
   /**
-   * The ID of the view as specified by the extension.
+   * The ID of the view as specified by the extension. // public static final
+   * String ID = "plugin001view3activator.views.HotRodView";
    */
-  public static final String ID = "plugin001view3activator.views.HotRodView";
 
   private TreeViewer viewer;
   private Action doubleClickAction;
 
-  private Action actionRegenerateAll;
+  private Action actionGenerateAll;
+  private Action actionGenerateChanges;
+  private Action actionGenerateSelection;
   private Action actionAutoOnOff;
-  private Action actionRegenerateChanges;
   private Action actionRemoveFile;
   private Action actionRemoveAllFiles;
   private Action actionJDBCProperties;
 
-  private ImageDescriptor regenerateAll;
-  private boolean autoRegenerate = false;
+  private boolean autoGenerate = false;
   private ImageDescriptor autoOn;
   private ImageDescriptor autoOff;
-  private ImageDescriptor regenerateChanges;
+  private ImageDescriptor generateAll;
+  private ImageDescriptor generateChanges;
+  private ImageDescriptor generateSelection;
   private ImageDescriptor JDBCProperties;
 
-  private IMenuManager menuManager = null;
+  private IMenuManager contextMenu = null;
 
   private HotRodViewContentProvider hotRodViewContentProvider;
 
   // Constructor
 
   public HotRodView() {
-    this.regenerateAll = Activator.getImageDescriptor(REGEN_ALL_ICON_PATH);
     this.autoOn = Activator.getImageDescriptor(AUTO_GEN_ON_ICON_PATH);
     this.autoOff = Activator.getImageDescriptor(AUTO_GEN_OFF_ICON_PATH);
-    this.regenerateChanges = Activator.getImageDescriptor(REGEN_CHANGES_ICON_PATH);
+    this.generateAll = Activator.getImageDescriptor(GEN_ALL_ICON_PATH);
+    this.generateChanges = Activator.getImageDescriptor(GEN_CHANGES_ICON_PATH);
+    this.generateSelection = Activator.getImageDescriptor(GEN_SELECTION_ICON_PATH);
     this.JDBCProperties = Activator.getImageDescriptor(JDBC_PROPERTIES_ICON_PATH);
-
   }
 
-  /**
-   * This is a callback that will allow us to create the viewer and initialize
-   * it.
-   */
   public void createPartControl(final Composite parent) {
-    viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+    this.viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 
     this.hotRodViewContentProvider = new HotRodViewContentProvider(this);
-    viewer.setContentProvider(this.hotRodViewContentProvider);
+    this.viewer.setContentProvider(this.hotRodViewContentProvider);
 
-    viewer.setInput(getViewSite());
-    viewer.setLabelProvider(new HotRodLabelProvider());
+    this.viewer.setInput(getViewSite());
+    this.viewer.setLabelProvider(new HotRodLabelProvider());
 
-    // Create the help context id for the viewer's control
-    PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "plugin001-view3-activator.viewer");
     getSite().setSelectionProvider(this.viewer);
+
     makeActions();
-    hookContextMenu();
-    hookDoubleClickAction();
-    contributeToActionBars();
+    configureToolBar();
+    configureContextMenu();
+    configureDoubleClickAction();
 
     // TreeMouseListener mouseListener = new TreeMouseListener(this.viewer);
     // viewer.getTree().addMouseTrackListener(mouseListener);
@@ -96,7 +94,40 @@ public class HotRodView extends ViewPart {
     this.hotRodViewContentProvider.setRefresh(true);
   }
 
-  private void hookContextMenu() {
+  private void configureToolBar() {
+    IActionBars bars = getViewSite().getActionBars();
+
+    // Tool bar
+
+    IToolBarManager toolBar = bars.getToolBarManager();
+    toolBar.add(actionGenerateAll);
+    toolBar.add(actionGenerateChanges);
+    toolBar.add(actionGenerateSelection);
+    toolBar.add(actionAutoOnOff);
+    toolBar.add(new Separator());
+    toolBar.add(actionRemoveFile);
+    toolBar.add(actionRemoveAllFiles);
+    toolBar.add(new Separator());
+    toolBar.add(actionJDBCProperties);
+
+    // This is the Down Arrow at the end of the tool bar
+
+    IMenuManager menu = bars.getMenuManager();
+    menu.add(actionGenerateAll);
+    menu.add(actionGenerateChanges);
+    menu.add(actionGenerateSelection);
+    menu.add(actionAutoOnOff);
+    menu.add(new Separator());
+    menu.add(actionRemoveFile);
+    menu.add(actionRemoveAllFiles);
+    menu.add(new Separator());
+    menu.add(actionJDBCProperties);
+
+  }
+
+  // This is the right-click context menu
+
+  private void configureContextMenu() {
     MenuManager menuMgr = new MenuManager("#PopupMenu");
     menuMgr.setRemoveAllWhenShown(true);
     menuMgr.addMenuListener(new IMenuListener() {
@@ -105,98 +136,100 @@ public class HotRodView extends ViewPart {
       }
     });
     Menu menu = menuMgr.createContextMenu(viewer.getControl());
-    viewer.getControl().setMenu(menu);
+    this.viewer.getControl().setMenu(menu);
     getSite().registerContextMenu(menuMgr, viewer);
   }
 
-  private void contributeToActionBars() {
-    IActionBars bars = getViewSite().getActionBars();
-    fillLocalPullDown(bars.getMenuManager());
-    fillLocalToolBar(bars.getToolBarManager());
+  private void fillContextMenu(final IMenuManager contextMenu) {
+    contextMenu.add(actionGenerateAll);
+    contextMenu.add(actionGenerateChanges);
+    contextMenu.add(actionGenerateSelection);
+    contextMenu.add(actionAutoOnOff);
+    contextMenu.add(new Separator());
+    contextMenu.add(actionRemoveFile);
+    contextMenu.add(actionRemoveAllFiles);
+    contextMenu.add(new Separator());
+    contextMenu.add(actionJDBCProperties);
+    this.contextMenu = contextMenu;
   }
 
-  // This is the Down Arrow at the end of the tool bar
-  private void fillLocalPullDown(IMenuManager manager) {
-    manager.add(actionRegenerateAll);
-    manager.add(actionRegenerateChanges);
-    manager.add(actionAutoOnOff);
-    manager.add(new Separator());
-    manager.add(actionRemoveFile);
-    manager.add(actionRemoveAllFiles);
-    manager.add(new Separator());
-    manager.add(actionJDBCProperties);
+  private void configureDoubleClickAction() {
+    viewer.addDoubleClickListener(new IDoubleClickListener() {
+      public void doubleClick(DoubleClickEvent event) {
+        doubleClickAction.run();
+      }
+    });
   }
 
-  // This is the right-click context menu
-  private void fillContextMenu(IMenuManager manager) {
-    manager.add(actionRegenerateAll);
-    manager.add(actionRegenerateChanges);
-    manager.add(actionAutoOnOff);
-    manager.add(new Separator());
-    manager.add(actionRemoveFile);
-    manager.add(actionRemoveAllFiles);
-    manager.add(new Separator());
-    manager.add(actionJDBCProperties);
-    this.menuManager = manager;
-  }
-
-  // This is the tool bar
-  private void fillLocalToolBar(IToolBarManager manager) {
-    manager.add(actionRegenerateAll);
-    manager.add(actionRegenerateChanges);
-    manager.add(actionAutoOnOff);
-    manager.add(new Separator());
-    manager.add(actionRemoveFile);
-    manager.add(actionRemoveAllFiles);
-    manager.add(new Separator());
-    manager.add(actionJDBCProperties);
-  }
+  // Utilities
 
   private void makeActions() {
 
-    actionRegenerateAll = new Action() {
+    // Generate All
+
+    actionGenerateAll = new Action() {
       public void run() {
-        showMessage("Regenerate All - executed");
+        showMessage("Generate All - executed");
       }
     };
-    actionRegenerateAll.setText("Regenerate All");
-    actionRegenerateAll.setToolTipText("Regenerate All");
-    actionRegenerateAll.setImageDescriptor(this.regenerateAll);
+    actionGenerateAll.setText("Generate All");
+    actionGenerateAll.setToolTipText("Generate All");
+    actionGenerateAll.setImageDescriptor(this.generateAll);
 
-    actionRegenerateChanges = new Action() {
+    // Generate Changes
+
+    actionGenerateChanges = new Action() {
       public void run() {
-        // showMessage("Regenerated Changes - executed");
-        System.out.println("*** Adding a table...");
+        // showMessage("Generate Changes - executed");
+        // System.out.println("*** Adding a table...");
         hotRodViewContentProvider.getMainConfigs().get(0).addChild(new TableElement("new_table", true));
 
         // p1.addChild(new TableDAO("new-table..."));
         // to1.name = "> " + to1.name;
-        System.out.println("*** table added.");
+        // System.out.println("*** table added.");
       }
     };
-    actionRegenerateChanges.setText("Regenerate Changes");
-    actionRegenerateChanges.setToolTipText("Regenerate Changes");
-    actionRegenerateChanges.setImageDescriptor(this.regenerateChanges);
+    actionGenerateChanges.setText("Generate Changes");
+    actionGenerateChanges.setToolTipText("Generate Changes");
+    actionGenerateChanges.setImageDescriptor(this.generateChanges);
+
+    // Generate Selection
+
+    actionGenerateSelection = new Action() {
+      public void run() {
+        showMessage("Generate Selection - executed");
+      }
+    };
+    actionGenerateSelection.setText("Generate Selection");
+    actionGenerateSelection.setToolTipText("Generate Selection");
+    actionGenerateSelection.setImageDescriptor(this.generateSelection);
+
+    // Auto On/Off
 
     actionAutoOnOff = new Action() {
       public void run() {
-        autoRegenerate = !autoRegenerate;
-        String text = "Auto Regenerate (" + (autoRegenerate ? "On" : "Off") + ")";
+        autoGenerate = !autoGenerate;
+        String text = "Auto Generate (" + (autoGenerate ? "On" : "Off") + ")";
         actionAutoOnOff.setText(text);
-        actionAutoOnOff.setChecked(autoRegenerate);
+        actionAutoOnOff.setChecked(autoGenerate);
         actionAutoOnOff.setToolTipText(text);
-        actionAutoOnOff.setImageDescriptor(autoRegenerate ? autoOn : autoOff);
-        actionRegenerateChanges.setEnabled(!autoRegenerate);
-        if (menuManager != null) {
-          menuManager.update();
+        actionAutoOnOff.setImageDescriptor(autoGenerate ? autoOn : autoOff);
+
+        actionGenerateChanges.setEnabled(!autoGenerate);
+        actionGenerateSelection.setEnabled(!autoGenerate);
+
+        if (contextMenu != null) {
+          contextMenu.update();
         }
       }
     };
-    String text = "Auto Regenerate (" + (autoRegenerate ? "On" : "Off") + ")";
+    String text = "Auto Generate (" + (autoGenerate ? "On" : "Off") + ")";
     actionAutoOnOff.setText(text);
-    actionAutoOnOff.setChecked(autoRegenerate);
+    actionAutoOnOff.setChecked(autoGenerate);
     actionAutoOnOff.setToolTipText(text);
-    actionAutoOnOff.setImageDescriptor(autoRegenerate ? autoOn : autoOff);
+    actionAutoOnOff.setImageDescriptor(autoGenerate ? autoOn : autoOff);
+
+    // Remove File
 
     actionRemoveFile = new Action() {
       public void run() {
@@ -208,6 +241,8 @@ public class HotRodView extends ViewPart {
     actionRemoveFile.setImageDescriptor(
         PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_REMOVE));
 
+    // Remove All Files
+
     actionRemoveAllFiles = new Action() {
       public void run() {
         showMessage("Remove All Files - executed");
@@ -217,6 +252,8 @@ public class HotRodView extends ViewPart {
     actionRemoveAllFiles.setToolTipText("Remove All Files");
     actionRemoveAllFiles.setImageDescriptor(
         PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_REMOVEALL));
+
+    // Configure JDBC Properties
 
     actionJDBCProperties = new Action() {
       public void run() {
@@ -236,14 +273,6 @@ public class HotRodView extends ViewPart {
       }
     };
 
-  }
-
-  private void hookDoubleClickAction() {
-    viewer.addDoubleClickListener(new IDoubleClickListener() {
-      public void doubleClick(DoubleClickEvent event) {
-        doubleClickAction.run();
-      }
-    });
   }
 
   private void showMessage(String message) {

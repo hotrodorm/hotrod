@@ -19,6 +19,11 @@ public class ViewElement extends TreeContainerElement {
   }
 
   @Override
+  public String getLabel() {
+    return super.getLabel() + " (view)";
+  }
+
+  @Override
   public String getTooltip() {
     return "View " + super.getLabel();
   }

@@ -68,8 +68,6 @@ public abstract class TreeElement implements IAdaptable {
   // Tree display
 
   public String getLabel() {
-    // return (this.modified ? "> " : "") + this.name + " (" + "modified=" +
-    // this.modified + ")";
     return (this.modified ? "> " : "") + this.name;
   }
 

@@ -16,6 +16,11 @@ public class DAOElement extends TreeContainerElement {
   }
 
   @Override
+  public String getLabel() {
+    return super.getLabel() + " (dao)";
+  }
+
+  @Override
   public String getTooltip() {
     return "DAO " + super.getLabel();
   }

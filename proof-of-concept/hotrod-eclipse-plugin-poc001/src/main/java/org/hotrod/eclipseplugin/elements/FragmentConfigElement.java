@@ -12,7 +12,7 @@ public class FragmentConfigElement extends TreeContainerElement {
 
   @Override
   public String getIconPath() {
-    return "icons/fragment1-16.png";
+    return "icons/fragment8-16.png";
   }
 
   @Override

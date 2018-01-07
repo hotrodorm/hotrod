@@ -17,6 +17,11 @@ public class TableElement extends TreeContainerElement {
   }
 
   @Override
+  public String getLabel() {
+    return super.getLabel() + " (table)";
+  }
+
+  @Override
   public String getTooltip() {
     return "Table " + super.getLabel();
   }
