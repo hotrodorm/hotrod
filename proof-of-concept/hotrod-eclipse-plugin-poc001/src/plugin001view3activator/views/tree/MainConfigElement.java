@@ -33,4 +33,9 @@ public class MainConfigElement extends TreeContainerElement {
     return this.provider.getViewer();
   }
 
+  @Override
+  public String getTooltip() {
+    return "HotRod Main Configuration file " + super.getLabel();
+  }
+
 }

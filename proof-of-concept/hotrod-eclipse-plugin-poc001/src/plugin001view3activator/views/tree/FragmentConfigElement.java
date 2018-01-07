@@ -15,4 +15,9 @@ public class FragmentConfigElement extends TreeContainerElement {
     return "icons/fragment1-16.png";
   }
 
+  @Override
+  public String getTooltip() {
+    return "HotRod fragment file " + super.getLabel();
+  }
+
 }

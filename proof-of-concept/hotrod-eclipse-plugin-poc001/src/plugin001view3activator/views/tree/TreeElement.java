@@ -68,7 +68,9 @@ public abstract class TreeElement implements IAdaptable {
   // Tree display
 
   public String getLabel() {
-    return (this.modified ? "> " : "") + this.name + " (" + "modified=" + this.modified + ")";
+    // return (this.modified ? "> " : "") + this.name + " (" + "modified=" +
+    // this.modified + ")";
+    return (this.modified ? "> " : "") + this.name;
   }
 
   public abstract String getIconPath();
@@ -76,6 +78,8 @@ public abstract class TreeElement implements IAdaptable {
   public Image getImage() {
     return ImageCache.getImage(this.getIconPath());
   }
+
+  public abstract String getTooltip();
 
   // Indexable
 

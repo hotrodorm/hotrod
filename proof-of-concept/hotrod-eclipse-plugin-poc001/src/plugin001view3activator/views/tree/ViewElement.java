@@ -1,6 +1,6 @@
 package plugin001view3activator.views.tree;
 
-public class ViewElement extends TreeLeafElement {
+public class ViewElement extends TreeContainerElement {
 
   public ViewElement(final String name, final boolean modified) {
     super(name, modified);
@@ -12,7 +12,15 @@ public class ViewElement extends TreeLeafElement {
 
   @Override
   public String getIconPath() {
-    return "icons/view4-16.png";
+    // return "icons/view5-16.png";
+    return "icons/view6-16.png";
+    // return "icons/view7-16.png";
+    // return "icons/view9-16.png";
+  }
+
+  @Override
+  public String getTooltip() {
+    return "View " + super.getLabel();
   }
 
 }

@@ -1,6 +1,6 @@
 package plugin001view3activator.views.tree;
 
-public class DAOElement extends TreeLeafElement {
+public class DAOElement extends TreeContainerElement {
 
   public DAOElement(final String name, final boolean modified) {
     super(name, modified);
@@ -13,6 +13,11 @@ public class DAOElement extends TreeLeafElement {
   @Override
   public String getIconPath() {
     return "icons/dao3-16.png";
+  }
+
+  @Override
+  public String getTooltip() {
+    return "DAO " + super.getLabel();
   }
 
 }

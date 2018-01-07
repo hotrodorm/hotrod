@@ -7,6 +7,9 @@ import plugin001view3activator.views.tree.DAOElement;
 import plugin001view3activator.views.tree.FragmentConfigElement;
 import plugin001view3activator.views.tree.HotRodViewContentProvider;
 import plugin001view3activator.views.tree.MainConfigElement;
+import plugin001view3activator.views.tree.QueryElement;
+import plugin001view3activator.views.tree.SelectElement;
+import plugin001view3activator.views.tree.SequenceElement;
 import plugin001view3activator.views.tree.TableElement;
 import plugin001view3activator.views.tree.ViewElement;
 
@@ -19,18 +22,47 @@ public class ConfigProducer {
   // Constructor
 
   public ConfigProducer(final HotRodViewContentProvider provider) {
+
     FragmentConfigElement f1 = new FragmentConfigElement("hotrod-fragment-1.xml");
-    f1.addChild(new TableElement("product"));
-    f1.addChild(new ViewElement("hot_product"));
-    f1.addChild(new DAOElement("AccountingDAO"));
+
+    f1.addChild(new TableElement("customer"));
+
+    f1.addChild(new ViewElement("new_supplier"));
+
+    DAOElement d1 = new DAOElement("AccountingDAO");
+    f1.addChild(d1);
+    d1.addChild(new SelectElement("retrieveRevenueByLine"));
+    d1.addChild(new SelectElement("retrieveCostByRegion"));
 
     FragmentConfigElement f2 = new FragmentConfigElement("hotrod-fragment-2.xml");
     f2.addChild(new TableElement("client"));
 
     MainConfigElement c1 = new MainConfigElement("hotrod-1.xml", provider);
-    c1.addChild(new TableElement("customer"));
-    c1.addChild(new ViewElement("new_supplier"));
-    c1.addChild(new DAOElement("OrdersDAO"));
+
+    TableElement t1 = new TableElement("product");
+    c1.addChild(t1);
+    t1.addChild(new SequenceElement("selectSequenceId"));
+    t1.addChild(new QueryElement("applyPromotion74"));
+    t1.addChild(new SelectElement("getVIPProducts"));
+    t1.addChild(new SelectElement("getProductSummary"));
+    t1.addChild(new QueryElement("applyPromotion75"));
+    t1.addChild(new SelectElement("getCountryProductTree"));
+
+    ViewElement v1 = new ViewElement("hot_product");
+    c1.addChild(v1);
+    v1.addChild(new SelectElement("getBranchHotProducts"));
+    v1.addChild(new QueryElement("addHotProduct"));
+    v1.addChild(new QueryElement("removeHotProduct"));
+    v1.addChild(new SelectElement("getRegionHotProducts"));
+
+    DAOElement d2 = new DAOElement("OrdersDAO");
+    c1.addChild(d2);
+    d2.addChild(new QueryElement("chargeOrder"));
+    d2.addChild(new QueryElement("cancelOrder"));
+    d2.addChild(new QueryElement("fulfillOrder"));
+    d2.addChild(new QueryElement("closeOrder"));
+    d2.addChild(new QueryElement("reopenOrder"));
+
     c1.addChild(f1);
     c1.addChild(f2);
 

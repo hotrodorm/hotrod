@@ -25,6 +25,7 @@ import plugin001_view3_activator.Activator;
 import plugin001view3activator.views.tree.HotRodLabelProvider;
 import plugin001view3activator.views.tree.HotRodViewContentProvider;
 import plugin001view3activator.views.tree.TableElement;
+import plugin001view3activator.views.tree.TreeMouseListener;
 
 public class HotRodView extends ViewPart {
 
@@ -91,6 +92,9 @@ public class HotRodView extends ViewPart {
     hookContextMenu();
     hookDoubleClickAction();
     contributeToActionBars();
+
+    // TreeMouseListener mouseListener = new TreeMouseListener(this.viewer);
+    // viewer.getTree().addMouseTrackListener(mouseListener);
 
     this.hotRodViewContentProvider.setRefresh(true);
   }
