@@ -1,4 +1,4 @@
-package plugin001view3activator.views.tree;
+package org.hotrod.eclipseplugin.elements;
 
 import java.util.List;
 
@@ -6,8 +6,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.part.ViewPart;
-
-import plugin001view3activator.views.config.ConfigProducer;
+import org.hotrod.eclipseplugin.config.ConfigProducer;
 
 public class HotRodViewContentProvider implements ITreeContentProvider {
 

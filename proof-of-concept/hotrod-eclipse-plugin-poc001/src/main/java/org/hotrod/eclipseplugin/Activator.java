@@ -1,4 +1,4 @@
-package plugin001_view3_activator;
+package org.hotrod.eclipseplugin;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;

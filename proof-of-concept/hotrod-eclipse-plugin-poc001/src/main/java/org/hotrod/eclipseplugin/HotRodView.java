@@ -1,4 +1,4 @@
-package plugin001view3activator.views;
+package org.hotrod.eclipseplugin;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -20,12 +20,9 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-
-import plugin001_view3_activator.Activator;
-import plugin001view3activator.views.tree.HotRodLabelProvider;
-import plugin001view3activator.views.tree.HotRodViewContentProvider;
-import plugin001view3activator.views.tree.TableElement;
-import plugin001view3activator.views.tree.TreeMouseListener;
+import org.hotrod.eclipseplugin.elements.HotRodLabelProvider;
+import org.hotrod.eclipseplugin.elements.HotRodViewContentProvider;
+import org.hotrod.eclipseplugin.elements.TableElement;
 
 public class HotRodView extends ViewPart {
 

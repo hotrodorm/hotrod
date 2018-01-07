@@ -1,12 +1,11 @@
-package plugin001view3activator.views.tree;
+package org.hotrod.eclipseplugin.elements;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
-
-import plugin001_view3_activator.Activator;
+import org.hotrod.eclipseplugin.Activator;
 
 public class ImageCache {
 

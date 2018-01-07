@@ -1,4 +1,4 @@
-package plugin001view3activator.views.tree;
+package org.hotrod.eclipseplugin.elements;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.events.MouseEvent;

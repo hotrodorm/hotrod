@@ -12,8 +12,8 @@
             name="HotRod"
             icon="icons/hotrod1-16.png"
             category="hotrod-category"
-            class="plugin001view3activator.views.HotRodView"
-            id="plugin001view3activator.views.HotRodView">
+            class="org.hotrod.eclipseplugin.HotRodView"
+            id="org.hotrod.eclipseplugin.HotRodView">
       </view>
    </extension>
    <extension
@@ -24,7 +24,7 @@
                ratio="0.5"
                relative="org.eclipse.ui.views.ProblemView"
                relationship="right"
-               id="plugin001view3activator.views.HotRodView">
+               id="org.hotrod.eclipseplugin.HotRodView">
          </view>
       </perspectiveExtension>
    </extension>

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: hotrod-category
 Bundle-SymbolicName: hotrod-eclipse-plugin-poc001;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: plugin001_view3_activator.Activator
+Bundle-Activator: org.hotrod.eclipseplugin.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -1,17 +1,17 @@
-package plugin001view3activator.views.config;
+package org.hotrod.eclipseplugin.config;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import plugin001view3activator.views.tree.DAOElement;
-import plugin001view3activator.views.tree.FragmentConfigElement;
-import plugin001view3activator.views.tree.HotRodViewContentProvider;
-import plugin001view3activator.views.tree.MainConfigElement;
-import plugin001view3activator.views.tree.QueryElement;
-import plugin001view3activator.views.tree.SelectElement;
-import plugin001view3activator.views.tree.SequenceElement;
-import plugin001view3activator.views.tree.TableElement;
-import plugin001view3activator.views.tree.ViewElement;
+import org.hotrod.eclipseplugin.elements.DAOElement;
+import org.hotrod.eclipseplugin.elements.FragmentConfigElement;
+import org.hotrod.eclipseplugin.elements.HotRodViewContentProvider;
+import org.hotrod.eclipseplugin.elements.MainConfigElement;
+import org.hotrod.eclipseplugin.elements.QueryElement;
+import org.hotrod.eclipseplugin.elements.SelectElement;
+import org.hotrod.eclipseplugin.elements.SequenceElement;
+import org.hotrod.eclipseplugin.elements.TableElement;
+import org.hotrod.eclipseplugin.elements.ViewElement;
 
 public class ConfigProducer {
 

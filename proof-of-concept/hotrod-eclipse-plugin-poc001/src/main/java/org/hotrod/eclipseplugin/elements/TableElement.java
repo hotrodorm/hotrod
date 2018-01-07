@@ -1,4 +1,4 @@
-package plugin001view3activator.views.tree;
+package org.hotrod.eclipseplugin.elements;
 
 public class TableElement extends TreeContainerElement {
 
