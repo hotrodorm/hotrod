@@ -1,13 +1,20 @@
 package org.hotrod.eclipseplugin.elements;
 
+import org.hotrod.eclipseplugin.domain.ConfigItem;
+import org.hotrod.eclipseplugin.domain.FragmentConfigFile;
+import org.hotrod.eclipseplugin.elements.ElementFactory.InvalidConfigurationItemException;
+
 public class FragmentConfigElement extends TreeContainerElement {
 
-  public FragmentConfigElement(final String name, final boolean modified) {
-    super(name, modified);
-  }
+  private FragmentConfigFile fragment;
 
-  public FragmentConfigElement(final String name) {
-    super(name, false);
+  public FragmentConfigElement(final FragmentConfigFile fragment) throws InvalidConfigurationItemException {
+    super(fragment.getFileName(), false);
+    this.fragment = fragment;
+    for (ConfigItem item : this.fragment.getConfigItems()) {
+      TreeElement element = ElementFactory.getElement(item);
+      super.addChild(element);
+    }
   }
 
   @Override

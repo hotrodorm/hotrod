@@ -1,6 +1,5 @@
 package org.hotrod.eclipseplugin;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.hotrod.eclipseplugin.elements.HotRodLabelProvider;
 import org.hotrod.eclipseplugin.elements.HotRodViewContentProvider;
-import org.hotrod.eclipseplugin.elements.TableElement;
 
 public class HotRodView extends ViewPart {
 
@@ -79,9 +77,9 @@ public class HotRodView extends ViewPart {
   public void createPartControl(final Composite parent) {
     this.viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 
-    List<File> files = new ArrayList<File>();
-    files.add(new File("hotrod-1.xml"));
-    files.add(new File("hotrod-2.xml"));
+    List<String> files = new ArrayList<String>();
+    files.add("hotrod-1.xml");
+    files.add("hotrod-2.xml");
 
     this.hotRodViewContentProvider = new HotRodViewContentProvider(this, files);
     this.viewer.setContentProvider(this.hotRodViewContentProvider);
@@ -189,8 +187,9 @@ public class HotRodView extends ViewPart {
     actionGenerateChanges = new Action() {
       public void run() {
         // showMessage("Generate Changes - executed");
-        // System.out.println("*** Adding a table...");
-        hotRodViewContentProvider.getMainConfigs().get(0).addChild(new TableElement("new_table", true));
+        System.out.println("*** Adding a table... (not implemented anymore)");
+        // hotRodViewContentProvider.getMainConfigs().get(0).addChild(new
+        // TableElement("new_table", true));
 
         // p1.addChild(new TableDAO("new-table..."));
         // to1.name = "> " + to1.name;

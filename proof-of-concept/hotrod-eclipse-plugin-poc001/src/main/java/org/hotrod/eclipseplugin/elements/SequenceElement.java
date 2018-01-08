@@ -1,13 +1,14 @@
 package org.hotrod.eclipseplugin.elements;
 
+import org.hotrod.eclipseplugin.domain.SequenceMethod;
+
 public class SequenceElement extends TreeLeafElement {
 
-  public SequenceElement(final String name, final boolean modified) {
-    super(name, modified);
-  }
+  private SequenceMethod method;
 
-  public SequenceElement(final String name) {
-    super(name, false);
+  public SequenceElement(final SequenceMethod method) {
+    super(method.getName(), false);
+    this.method = method;
   }
 
   @Override

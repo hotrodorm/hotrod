@@ -1,13 +1,20 @@
 package org.hotrod.eclipseplugin.elements;
 
+import org.hotrod.eclipseplugin.domain.EnumDAO;
+import org.hotrod.eclipseplugin.domain.Method;
+import org.hotrod.eclipseplugin.elements.ElementFactory.InvalidConfigurationItemException;
+
 public class EnumElement extends TreeContainerElement {
 
-  public EnumElement(final String name, final boolean modified) {
-    super(name, modified);
-  }
+  private EnumDAO enumDAO;
 
-  public EnumElement(final String name) {
-    super(name, false);
+  public EnumElement(final EnumDAO enumDAO) throws InvalidConfigurationItemException {
+    super(enumDAO.getName(), false);
+    this.enumDAO = enumDAO;
+    for (Method m : this.enumDAO.getMethods()) {
+      TreeLeafElement leaf = ElementFactory.getMethodElement(m);
+      super.addChild(leaf);
+    }
   }
 
   @Override

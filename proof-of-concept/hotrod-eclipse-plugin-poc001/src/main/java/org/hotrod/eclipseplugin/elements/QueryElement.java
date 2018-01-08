@@ -1,13 +1,14 @@
 package org.hotrod.eclipseplugin.elements;
 
+import org.hotrod.eclipseplugin.domain.QueryMethod;
+
 public class QueryElement extends TreeLeafElement {
 
-  public QueryElement(final String name, final boolean modified) {
-    super(name, modified);
-  }
+  private QueryMethod method;
 
-  public QueryElement(final String name) {
-    super(name, false);
+  public QueryElement(final QueryMethod method) {
+    super(method.getName(), false);
+    this.method = method;
   }
 
   @Override

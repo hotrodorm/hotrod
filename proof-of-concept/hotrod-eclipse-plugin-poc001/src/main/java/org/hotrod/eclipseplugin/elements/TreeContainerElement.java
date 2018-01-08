@@ -12,13 +12,13 @@ public abstract class TreeContainerElement extends TreeElement {
     this.children = new ArrayList<TreeElement>();
   }
 
-  public void addChild(final TreeElement child) {
+  void addChild(final TreeElement child) {
     child.setParent(this);
     this.children.add(child);
     this.setModified();
   }
 
-  public void removeChild(final TreeElement child) {
+  void removeChild(final TreeElement child) {
     this.children.remove(child);
     child.setParent(null);
     this.setModified();

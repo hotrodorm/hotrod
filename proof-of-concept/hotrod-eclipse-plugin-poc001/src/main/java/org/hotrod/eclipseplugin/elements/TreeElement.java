@@ -59,7 +59,6 @@ public abstract class TreeElement implements IAdaptable {
 
   public void refreshView() {
     TreeViewer viewer = this.getViewer();
-    System.out.println("refreshView(): this.viewer=" + viewer);
     if (viewer != null) {
       viewer.refresh(this, true);
     }

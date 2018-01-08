@@ -1,16 +1,24 @@
 package org.hotrod.eclipseplugin.domain;
 
+import org.hotrod.eclipseplugin.domain.loader.ConfigFileLoader.NameContent;
+
 public class SelectMethod implements Method {
 
   private String name;
+  private String content;
 
-  public SelectMethod(String name) {
+  public SelectMethod(final NameContent nc) {
     super();
-    this.name = name;
+    this.name = nc.getName();
+    this.content = nc.getContent();
   }
 
   public String getName() {
     return name;
+  }
+
+  public String getContent() {
+    return content;
   }
 
   // Indexable
@@ -19,6 +27,7 @@ public class SelectMethod implements Method {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+    result = prime * result + ((content == null) ? 0 : content.hashCode());
     result = prime * result + ((name == null) ? 0 : name.hashCode());
     return result;
   }
@@ -32,6 +41,11 @@ public class SelectMethod implements Method {
     if (getClass() != obj.getClass())
       return false;
     SelectMethod other = (SelectMethod) obj;
+    if (content == null) {
+      if (other.content != null)
+        return false;
+    } else if (!content.equals(other.content))
+      return false;
     if (name == null) {
       if (other.name != null)
         return false;

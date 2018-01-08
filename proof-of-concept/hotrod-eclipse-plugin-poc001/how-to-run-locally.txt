@@ -1,0 +1,21 @@
+To run the HotRod Eclipse plugin locally for demo purposes:
+
+The first time:
+---------------
+
+ -> right-click on the project
+ -> Run As -> Run Configurations...
+ 
+  On the left side select:
+   -> Eclipse Application
+     -> Eclipse Application
+  On the right side:
+    Location: ${project_loc}/test-workspace
+  -> Run
+
+From the second time on:
+------------------------
+ -> right-click on the project
+ -> Run As -> Eclipse Application
+  
+ 

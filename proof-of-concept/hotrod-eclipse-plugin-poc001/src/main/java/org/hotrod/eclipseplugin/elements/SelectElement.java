@@ -1,18 +1,18 @@
 package org.hotrod.eclipseplugin.elements;
 
+import org.hotrod.eclipseplugin.domain.SelectMethod;
+
 public class SelectElement extends TreeLeafElement {
 
-  public SelectElement(final String name, final boolean modified) {
-    super(name, modified);
-  }
+  private SelectMethod method;
 
-  public SelectElement(final String name) {
-    super(name, false);
+  public SelectElement(final SelectMethod method) {
+    super(method.getName(), false);
+    this.method = method;
   }
 
   @Override
   public String getIconPath() {
-    System.out.println("get SELECT icon path.");
     return "icons/sql-select8-16.png";
   }
 

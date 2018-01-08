@@ -1,24 +1,16 @@
 package org.hotrod.eclipseplugin.domain;
 
-import org.hotrod.eclipseplugin.domain.loader.ConfigFileLoader.NameContent;
-
-public class QueryMethod implements Method {
+public class EnumDAO extends DAO {
 
   private String name;
-  private String content;
 
-  public QueryMethod(final NameContent nc) {
+  public EnumDAO(final String name) {
     super();
-    this.name = nc.getName();
-    this.content = nc.getContent();
+    this.name = name;
   }
 
   public String getName() {
     return name;
-  }
-
-  public String getContent() {
-    return content;
   }
 
   // Indexable
@@ -26,8 +18,7 @@ public class QueryMethod implements Method {
   @Override
   public int hashCode() {
     final int prime = 31;
-    int result = 1;
-    result = prime * result + ((content == null) ? 0 : content.hashCode());
+    int result = super.hashCode();
     result = prime * result + ((name == null) ? 0 : name.hashCode());
     return result;
   }
@@ -36,16 +27,11 @@ public class QueryMethod implements Method {
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
-    if (obj == null)
+    if (!super.equals(obj))
       return false;
     if (getClass() != obj.getClass())
       return false;
-    QueryMethod other = (QueryMethod) obj;
-    if (content == null) {
-      if (other.content != null)
-        return false;
-    } else if (!content.equals(other.content))
-      return false;
+    EnumDAO other = (EnumDAO) obj;
     if (name == null) {
       if (other.name != null)
         return false;

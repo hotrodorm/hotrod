@@ -1,0 +1,10 @@
+settings: settings 1
+
+table: customer
+
+view: supplier
+
+executor: AccountingDAO
+  select: retrieveRevenueByLine
+  select: retrieveCostByRegion
+

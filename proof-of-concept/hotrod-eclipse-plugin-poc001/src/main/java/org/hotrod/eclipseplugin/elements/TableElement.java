@@ -1,13 +1,20 @@
 package org.hotrod.eclipseplugin.elements;
 
+import org.hotrod.eclipseplugin.domain.Method;
+import org.hotrod.eclipseplugin.domain.TableDAO;
+import org.hotrod.eclipseplugin.elements.ElementFactory.InvalidConfigurationItemException;
+
 public class TableElement extends TreeContainerElement {
 
-  public TableElement(final String name, final boolean modified) {
-    super(name, modified);
-  }
+  private TableDAO tableDAO;
 
-  public TableElement(final String name) {
-    super(name, false);
+  public TableElement(final TableDAO tableDAO) throws InvalidConfigurationItemException {
+    super(tableDAO.getName(), false);
+    this.tableDAO = tableDAO;
+    for (Method m : this.tableDAO.getMethods()) {
+      TreeLeafElement leaf = ElementFactory.getMethodElement(m);
+      super.addChild(leaf);
+    }
   }
 
   @Override

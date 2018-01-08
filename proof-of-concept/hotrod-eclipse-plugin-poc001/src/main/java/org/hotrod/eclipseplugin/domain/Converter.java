@@ -2,16 +2,22 @@ package org.hotrod.eclipseplugin.domain;
 
 import org.hotrod.eclipseplugin.domain.loader.ConfigFileLoader.NameContent;
 
-public class QueryMethod implements Method {
+public class Converter implements ConfigItem {
+
+  // Properties
 
   private String name;
   private String content;
 
-  public QueryMethod(final NameContent nc) {
+  // Constructor
+
+  public Converter(final NameContent nc) {
     super();
     this.name = nc.getName();
     this.content = nc.getContent();
   }
+
+  // Getters
 
   public String getName() {
     return name;
@@ -40,7 +46,7 @@ public class QueryMethod implements Method {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    QueryMethod other = (QueryMethod) obj;
+    Converter other = (Converter) obj;
     if (content == null) {
       if (other.content != null)
         return false;

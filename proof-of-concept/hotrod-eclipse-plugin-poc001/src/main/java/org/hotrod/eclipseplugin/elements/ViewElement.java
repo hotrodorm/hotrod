@@ -1,13 +1,20 @@
 package org.hotrod.eclipseplugin.elements;
 
+import org.hotrod.eclipseplugin.domain.Method;
+import org.hotrod.eclipseplugin.domain.ViewDAO;
+import org.hotrod.eclipseplugin.elements.ElementFactory.InvalidConfigurationItemException;
+
 public class ViewElement extends TreeContainerElement {
 
-  public ViewElement(final String name, final boolean modified) {
-    super(name, modified);
-  }
+  private ViewDAO viewDAO;
 
-  public ViewElement(final String name) {
-    super(name, false);
+  public ViewElement(final ViewDAO viewDAO) throws InvalidConfigurationItemException {
+    super(viewDAO.getName(), false);
+    this.viewDAO = viewDAO;
+    for (Method m : this.viewDAO.getMethods()) {
+      TreeLeafElement leaf = ElementFactory.getMethodElement(m);
+      super.addChild(leaf);
+    }
   }
 
   @Override

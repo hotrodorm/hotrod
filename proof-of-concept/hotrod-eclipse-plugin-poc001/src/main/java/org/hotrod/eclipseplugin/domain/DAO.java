@@ -3,7 +3,7 @@ package org.hotrod.eclipseplugin.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class DAO {
+public abstract class DAO implements ConfigItem {
 
   // Properties
 

@@ -1,13 +1,14 @@
 package org.hotrod.eclipseplugin.elements;
 
+import org.hotrod.eclipseplugin.domain.Settings;
+
 public class SettingsElement extends TreeLeafElement {
 
-  public SettingsElement(final boolean modified) {
-    super("", modified);
-  }
+  private Settings settings;
 
-  public SettingsElement() {
-    super("", false);
+  public SettingsElement(final Settings settings) {
+    super(settings.getName(), false);
+    this.settings = settings;
   }
 
   @Override

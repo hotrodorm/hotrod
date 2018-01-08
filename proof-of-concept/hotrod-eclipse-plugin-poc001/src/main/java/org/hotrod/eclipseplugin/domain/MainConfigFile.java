@@ -7,20 +7,20 @@ public class MainConfigFile {
 
   // Properties
 
-  private String fileName;
-  private List<DAO> daos = new ArrayList<DAO>();
+  protected String fileName;
+  protected List<ConfigItem> items = new ArrayList<ConfigItem>();
 
   // Constructor
 
-  public MainConfigFile(String fileName) {
+  public MainConfigFile(final String fileName) {
     super();
     this.fileName = fileName;
   }
 
   // Populate
 
-  public void addDAO(final DAO d) {
-    this.daos.add(d);
+  public void addConfigItem(final ConfigItem item) {
+    this.items.add(item);
   }
 
   // Getters
@@ -29,8 +29,8 @@ public class MainConfigFile {
     return fileName;
   }
 
-  public List<DAO> getDAOs() {
-    return this.daos;
+  public List<ConfigItem> getConfigItems() {
+    return this.items;
   }
 
 }

@@ -1,13 +1,14 @@
 package org.hotrod.eclipseplugin.elements;
 
+import org.hotrod.eclipseplugin.domain.Converter;
+
 public class ConverterElement extends TreeLeafElement {
 
-  public ConverterElement(final String name, final boolean modified) {
-    super(name, modified);
-  }
+  private Converter converter;
 
-  public ConverterElement(final String name) {
-    super(name, false);
+  public ConverterElement(final Converter converter) {
+    super(converter.getName(), false);
+    this.converter = converter;
   }
 
   @Override

@@ -1,0 +1,43 @@
+settings: settings 1
+
+table: product2
+  query: applyPromotion74
+  select: getVIPProducs
+  select: getProductSummary
+  sequence: selectSequenceProduct
+  query: applyPromotion75
+  select: getCountryProductTree
+
+view: hot_product
+  select: getBranchHotProducts
+  query: addHotProduct
+  sequence: selectSequenceOrder
+  sequence: selectSequenceSKU
+  query: removeHotProduct
+  select: getRegionHotProducts
+
+enum: region
+  select: getMonthlySummary
+  query: closeMonth
+  sequence: selectSequenceMonthId
+  select: getAnnualSummary
+
+table: catalog
+  select: getCategories
+  query: refreshCategories
+
+converter: boolean-as-int
+
+converter: region-type
+
+executor: OrdersDAO
+  query: chargeOrder
+  query: cancelOrder
+  query: fulfillOrder
+  query: closeOrder
+  query: reopenOrder
+  sequence: selectSequenceGlobalId
+
+fragment: hotrod-fragment-1.xml
+
+fragment: hotrod-fragment-2.xml
