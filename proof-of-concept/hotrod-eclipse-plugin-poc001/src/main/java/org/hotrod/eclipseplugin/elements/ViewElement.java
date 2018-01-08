@@ -12,7 +12,10 @@ public class ViewElement extends TreeContainerElement {
 
   @Override
   public String getIconPath() {
-    return "icons/view6-16.png";
+    // return "icons/view6-16.png";
+
+    // return "icons/view20-16.png";
+    return "icons/view21-16.png";
 
     // return "icons/animate/ani2.png";
 
@@ -23,7 +26,7 @@ public class ViewElement extends TreeContainerElement {
 
   @Override
   public String getLabel() {
-    return super.getLabel() + " (view)";
+    return super.getLabel() + " -- view";
   }
 
   @Override

@@ -18,7 +18,7 @@ public class SequenceElement extends TreeLeafElement {
 
   @Override
   public String getLabel() {
-    return super.getLabel() + "()";
+    return super.getLabel() + "() -- retrieve sequence value";
   }
 
   @Override

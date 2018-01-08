@@ -18,7 +18,7 @@ public class SelectElement extends TreeLeafElement {
 
   @Override
   public String getLabel() {
-    return super.getLabel() + "()";
+    return super.getLabel() + "() -- SQL select";
   }
 
   @Override

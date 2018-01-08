@@ -13,12 +13,15 @@ public class TableElement extends TreeContainerElement {
   @Override
   public String getIconPath() {
     // return "icons/table2-16.png";
-    return "icons/table1-16.png";
+    // return "icons/table1-16.png";
+
+    // return "icons/table20-16.png";
+    return "icons/table21-16.png";
   }
 
   @Override
   public String getLabel() {
-    return super.getLabel() + " (table)";
+    return super.getLabel() + " -- table";
   }
 
   @Override
