@@ -12,8 +12,11 @@ public class ViewElement extends TreeContainerElement {
 
   @Override
   public String getIconPath() {
-    // return "icons/view5-16.png";
     return "icons/view6-16.png";
+
+    // return "icons/animate/ani2.png";
+
+    // return "icons/view5-16.png";
     // return "icons/view7-16.png";
     // return "icons/view9-16.png";
   }

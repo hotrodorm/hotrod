@@ -1,5 +1,9 @@
 package org.hotrod.eclipseplugin;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -75,7 +79,11 @@ public class HotRodView extends ViewPart {
   public void createPartControl(final Composite parent) {
     this.viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 
-    this.hotRodViewContentProvider = new HotRodViewContentProvider(this);
+    List<File> files = new ArrayList<File>();
+    files.add(new File("hotrod-1.xml"));
+    files.add(new File("hotrod-2.xml"));
+
+    this.hotRodViewContentProvider = new HotRodViewContentProvider(this, files);
     this.viewer.setContentProvider(this.hotRodViewContentProvider);
 
     this.viewer.setInput(getViewSite());

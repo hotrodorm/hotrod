@@ -1,5 +1,6 @@
 package org.hotrod.eclipseplugin.elements;
 
+import java.io.File;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -11,13 +12,15 @@ import org.hotrod.eclipseplugin.config.ConfigProducer;
 public class HotRodViewContentProvider implements ITreeContentProvider {
 
   private ViewPart viewPart;
+  private List<File> files;
   private List<MainConfigElement> mainConfigs;
   private TreeViewer viewer;
   private boolean refresh;
 
-  public HotRodViewContentProvider(final ViewPart viewPart) {
+  public HotRodViewContentProvider(final ViewPart viewPart, final List<File> files) {
     super();
     this.viewPart = viewPart;
+    this.files = files;
     this.mainConfigs = null;
     this.viewer = null;
     this.refresh = false;
@@ -27,7 +30,7 @@ public class HotRodViewContentProvider implements ITreeContentProvider {
   public Object[] getElements(final Object inputElement) {
     if (inputElement.equals(this.viewPart.getViewSite())) {
       if (this.mainConfigs == null) {
-        ConfigProducer p = new ConfigProducer(this);
+        ConfigProducer p = new ConfigProducer(this, this.files);
         this.mainConfigs = p.getConfigs();
       }
       return this.mainConfigs.toArray(new MainConfigElement[0]);

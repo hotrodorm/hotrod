@@ -1,8 +1,13 @@
 package org.hotrod.eclipseplugin.config;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hotrod.eclipseplugin.domain.MainConfigFile;
+import org.hotrod.eclipseplugin.domain.loader.ConfigFileLoader;
+import org.hotrod.eclipseplugin.domain.loader.FaultyConfigFileException;
+import org.hotrod.eclipseplugin.domain.loader.UnreadableConfigFileException;
 import org.hotrod.eclipseplugin.elements.DAOElement;
 import org.hotrod.eclipseplugin.elements.FragmentConfigElement;
 import org.hotrod.eclipseplugin.elements.HotRodViewContentProvider;
@@ -17,12 +22,32 @@ public class ConfigProducer {
 
   // Properties
 
+  public static final boolean USE_INTERNAL_CONFIG = true;
+
   private List<MainConfigElement> mainConfigs = null;
 
   // Constructor
 
-  public ConfigProducer(final HotRodViewContentProvider provider) {
+  public ConfigProducer(final HotRodViewContentProvider provider, final List<File> files) {
+    if (USE_INTERNAL_CONFIG) {
+      generateInternalConfig(provider);
+    } else {
+      this.mainConfigs = new ArrayList<MainConfigElement>();
+      for (File f : files) {
+        try {
+          MainConfigFile config = ConfigFileLoader.loadMainConfigFile(f);
+          // MainConfigElement configElement = new MainConfigElement();
+          // this.mainConfigs.add(config);
+        } catch (UnreadableConfigFileException e) {
+          e.printStackTrace();
+        } catch (FaultyConfigFileException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  }
 
+  private void generateInternalConfig(final HotRodViewContentProvider provider) {
     FragmentConfigElement f1 = new FragmentConfigElement("hotrod-fragment-1.xml");
 
     f1.addChild(new TableElement("customer"));
@@ -74,7 +99,6 @@ public class ConfigProducer {
     this.mainConfigs.add(c2);
 
     setUnmodified();
-
   }
 
   public void setUnmodified() {
