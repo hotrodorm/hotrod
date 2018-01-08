@@ -7,11 +7,17 @@ The first time:
  -> Run As -> Run Configurations...
  
   On the left side select:
-   -> Eclipse Application
-     -> Eclipse Application
+    -> Eclipse Application
+      -> Eclipse Application
+     
   On the right side:
     Location: ${project_loc}/test-workspace
-  -> Run
+    
+  Then:
+    -> Run
+    
+  A new Eclipse instance is started and takes a few seconds to be ready: this new instance includes the plugin. Once loaded:
+    -> Window -> Show View -> Other... -> HotRod Category -> HotRod
 
 From the second time on:
 ------------------------
