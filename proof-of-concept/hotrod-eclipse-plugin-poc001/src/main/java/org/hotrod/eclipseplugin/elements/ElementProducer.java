@@ -1,6 +1,5 @@
 package org.hotrod.eclipseplugin.elements;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,21 +10,21 @@ import org.hotrod.eclipseplugin.domain.loader.FaultyConfigFileException;
 import org.hotrod.eclipseplugin.domain.loader.UnreadableConfigFileException;
 import org.hotrod.eclipseplugin.elements.ElementFactory.InvalidConfigurationItemException;
 
-public class ConfigProducer {
+public class ElementProducer {
 
   // Properties
 
   public static final boolean USE_INTERNAL_CONFIG = false;
 
-  private List<MainConfigElement> mainConfigs = null;
+  private List<MainConfigElement> mainConfigElements = null;
 
   // Constructor
 
-  public ConfigProducer(final HotRodViewContentProvider provider, final List<String> fileNames) {
+  public ElementProducer(final HotRodViewContentProvider provider, final List<String> fileNames) {
     if (USE_INTERNAL_CONFIG) {
       generateInternalConfig(provider);
     } else {
-      this.mainConfigs = new ArrayList<MainConfigElement>();
+      this.mainConfigElements = new ArrayList<MainConfigElement>();
       for (String fileName : fileNames) {
         try {
           MainConfigFile config = ConfigFileLoader.loadConfigFile(null, fileName, MainConfigFile.class);
@@ -34,7 +33,7 @@ public class ConfigProducer {
             TreeElement element = ElementFactory.getElement(item);
             mainConfigElement.addChild(element);
           }
-          this.mainConfigs.add(mainConfigElement);
+          this.mainConfigElements.add(mainConfigElement);
         } catch (UnreadableConfigFileException e) {
           e.printStackTrace();
         } catch (FaultyConfigFileException e) {
@@ -128,13 +127,13 @@ public class ConfigProducer {
   }
 
   public void setUnmodified() {
-    for (MainConfigElement e : this.mainConfigs) {
+    for (MainConfigElement e : this.mainConfigElements) {
       e.setUnmodified();
     }
   }
 
   public List<MainConfigElement> getConfigs() {
-    return this.mainConfigs;
+    return this.mainConfigElements;
   }
 
 }

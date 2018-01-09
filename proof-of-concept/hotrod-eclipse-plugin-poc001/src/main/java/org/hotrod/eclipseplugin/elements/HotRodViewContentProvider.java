@@ -30,7 +30,7 @@ public class HotRodViewContentProvider implements ITreeContentProvider {
     if (inputElement.equals(this.viewPart.getViewSite())) {
       if (this.mainConfigs == null) {
         System.out.println("will load");
-        ConfigProducer p = new ConfigProducer(this, this.files);
+        ElementProducer p = new ElementProducer(this, this.files);
         System.out.println("loaded 1");
         this.mainConfigs = p.getConfigs();
         System.out.println("loaded 2");
