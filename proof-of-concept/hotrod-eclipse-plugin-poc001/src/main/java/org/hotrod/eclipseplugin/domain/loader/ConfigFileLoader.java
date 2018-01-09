@@ -6,6 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.hotrod.eclipseplugin.domain.ConfigItem;
 import org.hotrod.eclipseplugin.domain.Converter;
@@ -24,21 +29,33 @@ import org.hotrod.eclipseplugin.domain.ViewDAO;
 
 public class ConfigFileLoader {
 
-  public static <T extends MainConfigFile> T loadConfigFile(final String fileName, final Class<T> c)
-      throws UnreadableConfigFileException, FaultyConfigFileException {
+  public static <T extends MainConfigFile> T loadConfigFile(final File includerFile, final String fileName,
+      final Class<T> c) throws UnreadableConfigFileException, FaultyConfigFileException {
+
+    // Resolve file system location of the configuration file
+
+    File f;
+
+    if (includerFile == null) {
+      IWorkspace workspace = ResourcesPlugin.getWorkspace();
+      IProject myProject = workspace.getRoot().getProject("project002");
+      if (myProject.exists() && !myProject.isOpen()) {
+        try {
+          myProject.open(null);
+        } catch (CoreException e) {
+          throw new UnreadableConfigFileException("Could not open project: " + e.getMessage());
+        }
+      }
+      IFile fileResource = myProject.getFile(fileName);
+      IPath path = fileResource.getLocation();
+      f = path.toFile();
+    } else {
+      f = new File(includerFile.getParentFile(), fileName);
+    }
+
+    // Read the configuration file
 
     BufferedReader r = null;
-
-    // org.eclipse.core.resources.IResource a;
-
-    IPath path = org.eclipse.core.resources.ResourcesPlugin.getWorkspace().getRoot().getLocation();
-    // IPath path =
-    // org.eclipse.core.resources.ResourcesPlugin.getWorkspace().getRoot()
-    IPath filePath = path.append(fileName);
-    File f = filePath.toFile();
-    System.out.println("READING f=" + f.getPath() + " / " + f.getAbsolutePath());
-
-    // System.out.println("ipath=" + path);
 
     try {
 
@@ -56,7 +73,7 @@ public class ConfigFileLoader {
             if (item instanceof FragmentConfigFile) {
               FragmentConfigFile fc = (FragmentConfigFile) item;
               System.out.println("--> will load fragment: " + fc.getFileName());
-              fc = loadConfigFile(fc.getFileName(), FragmentConfigFile.class);
+              fc = loadConfigFile(f, fc.getFileName(), FragmentConfigFile.class);
               config.addConfigItem(fc);
               currentItem = fc;
             } else {

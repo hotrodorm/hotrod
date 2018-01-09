@@ -1,10 +1,7 @@
-settings: settings 1
-
-table: customer
-
-view: supplier
+table: client
 
 executor: AccountingDAO
   select: retrieveRevenueByLine
   select: retrieveCostByRegion
 
+fragment: hotrod-fragment-3.xml

@@ -78,8 +78,8 @@ public class HotRodView extends ViewPart {
     this.viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 
     List<String> files = new ArrayList<String>();
-    files.add("hotrod-1.xml");
-    files.add("hotrod-2.xml");
+    files.add("config/hotrod/hotrod-1.xml");
+    files.add("config/hotrod/hotrod-2.xml");
 
     this.hotRodViewContentProvider = new HotRodViewContentProvider(this, files);
     this.viewer.setContentProvider(this.hotRodViewContentProvider);

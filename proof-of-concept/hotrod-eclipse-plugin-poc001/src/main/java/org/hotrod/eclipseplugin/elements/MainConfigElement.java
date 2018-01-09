@@ -8,11 +8,6 @@ public class MainConfigElement extends TreeContainerElement {
 
   // Constructors
 
-  public MainConfigElement(final String name, final HotRodViewContentProvider provider, final boolean modified) {
-    super(name, modified);
-    this.provider = provider;
-  }
-
   public MainConfigElement(final String name, final HotRodViewContentProvider provider) {
     super(name, false);
     this.provider = provider;

@@ -40,4 +40,4 @@ executor: OrdersDAO
 
 fragment: hotrod-fragment-1.xml
 
-fragment: hotrod-fragment-2.xml
+fragment: accounting/hotrod-fragment-2.xml

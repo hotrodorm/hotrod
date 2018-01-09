@@ -27,9 +27,9 @@ public class ConfigProducer {
     } else {
       this.mainConfigs = new ArrayList<MainConfigElement>();
       for (String fileName : fileNames) {
-        MainConfigElement mainConfigElement = new MainConfigElement(fileName, provider);
         try {
-          MainConfigFile config = ConfigFileLoader.loadConfigFile(fileName, MainConfigFile.class);
+          MainConfigFile config = ConfigFileLoader.loadConfigFile(null, fileName, MainConfigFile.class);
+          MainConfigElement mainConfigElement = new MainConfigElement(config.getShortName(), provider);
           for (ConfigItem item : config.getConfigItems()) {
             TreeElement element = ElementFactory.getElement(item);
             mainConfigElement.addChild(element);

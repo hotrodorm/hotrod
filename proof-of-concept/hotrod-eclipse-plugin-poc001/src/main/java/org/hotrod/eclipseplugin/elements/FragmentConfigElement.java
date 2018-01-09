@@ -9,7 +9,7 @@ public class FragmentConfigElement extends TreeContainerElement {
   private FragmentConfigFile fragment;
 
   public FragmentConfigElement(final FragmentConfigFile fragment) throws InvalidConfigurationItemException {
-    super(fragment.getFileName(), false);
+    super(fragment.getShortName(), false);
     this.fragment = fragment;
     for (ConfigItem item : this.fragment.getConfigItems()) {
       TreeElement element = ElementFactory.getElement(item);
