@@ -1,31 +1,31 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class TreeContainerElement extends TreeElement {
+public abstract class AbstractContainerFace extends AbstractFace {
 
-  private List<TreeElement> children;
+  private List<AbstractFace> children;
 
-  public TreeContainerElement(final String name, final boolean modified) {
+  public AbstractContainerFace(final String name, final boolean modified) {
     super(name, modified);
-    this.children = new ArrayList<TreeElement>();
+    this.children = new ArrayList<AbstractFace>();
   }
 
-  void addChild(final TreeElement child) {
+  void addChild(final AbstractFace child) {
     child.setParent(this);
     this.children.add(child);
     this.setModified();
   }
 
-  void removeChild(final TreeElement child) {
+  void removeChild(final AbstractFace child) {
     this.children.remove(child);
     child.setParent(null);
     this.setModified();
   }
 
-  public TreeElement[] getChildren() {
-    return this.children.toArray(new TreeElement[0]);
+  public AbstractFace[] getChildren() {
+    return this.children.toArray(new AbstractFace[0]);
   }
 
   public boolean hasChildren() {
@@ -41,7 +41,7 @@ public abstract class TreeContainerElement extends TreeElement {
   @Override
   public void unmodifySubtree() {
     super.modified = false;
-    for (TreeElement te : this.children) {
+    for (AbstractFace te : this.children) {
       te.setUnmodified();
     }
   }

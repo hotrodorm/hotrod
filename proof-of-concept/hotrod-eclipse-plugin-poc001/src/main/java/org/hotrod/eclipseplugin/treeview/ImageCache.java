@@ -1,4 +1,4 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import java.util.HashMap;
 import java.util.Map;

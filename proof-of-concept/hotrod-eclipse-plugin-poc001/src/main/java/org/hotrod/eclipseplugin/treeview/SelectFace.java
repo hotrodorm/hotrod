@@ -1,12 +1,12 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.eclipseplugin.domain.SelectMethod;
 
-public class SelectElement extends TreeLeafElement {
+public class SelectFace extends AbstractLeafFace {
 
   private SelectMethod method;
 
-  public SelectElement(final SelectMethod method) {
+  public SelectFace(final SelectMethod method) {
     super(method.getName(), false);
     this.method = method;
   }

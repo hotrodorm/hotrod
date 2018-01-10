@@ -1,4 +1,4 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.eclipseplugin.domain.ConfigItem;
 import org.hotrod.eclipseplugin.domain.Converter;
@@ -13,48 +13,48 @@ import org.hotrod.eclipseplugin.domain.Settings;
 import org.hotrod.eclipseplugin.domain.TableDAO;
 import org.hotrod.eclipseplugin.domain.ViewDAO;
 
-public class ElementFactory {
+public class FaceFactory {
 
-  public static TreeElement getElement(final ConfigItem item) throws InvalidConfigurationItemException {
+  public static AbstractFace getElement(final ConfigItem item) throws InvalidConfigurationItemException {
     if (item == null) {
       throw new InvalidConfigurationItemException("Cannot produce a configuration item from a null value.");
     }
     if (item instanceof Settings) {
-      return new SettingsElement((Settings) item);
+      return new SettingsFace((Settings) item);
     }
     if (item instanceof TableDAO) {
-      return new TableElement((TableDAO) item);
+      return new TableFace((TableDAO) item);
     }
     if (item instanceof ViewDAO) {
-      return new ViewElement((ViewDAO) item);
+      return new ViewFace((ViewDAO) item);
     }
     if (item instanceof EnumDAO) {
-      return new EnumElement((EnumDAO) item);
+      return new EnumFace((EnumDAO) item);
     }
     if (item instanceof ExecutorDAO) {
-      return new ExecutorElement((ExecutorDAO) item);
+      return new ExecutorFace((ExecutorDAO) item);
     }
     if (item instanceof Converter) {
-      return new ConverterElement((Converter) item);
+      return new ConverterFace((Converter) item);
     }
     if (item instanceof FragmentConfigFile) {
-      return new FragmentConfigElement((FragmentConfigFile) item);
+      return new FragmentConfigFace((FragmentConfigFile) item);
     }
     throw new InvalidConfigurationItemException("Unknown configuration item type '" + item.getClass().getName() + "'.");
   }
 
-  public static TreeLeafElement getMethodElement(final Method m) throws InvalidConfigurationItemException {
+  public static AbstractLeafFace getMethodElement(final Method m) throws InvalidConfigurationItemException {
     if (m == null) {
       throw new InvalidConfigurationItemException("Cannot produce a method element from a null value.");
     }
     if (m instanceof SequenceMethod) {
-      return new SequenceElement((SequenceMethod) m);
+      return new SequenceFace((SequenceMethod) m);
     }
     if (m instanceof QueryMethod) {
-      return new QueryElement((QueryMethod) m);
+      return new QueryFace((QueryMethod) m);
     }
     if (m instanceof SelectMethod) {
-      return new SelectElement((SelectMethod) m);
+      return new SelectFace((SelectMethod) m);
     }
     throw new InvalidConfigurationItemException("Unknown configuration method type '" + m.getClass().getName() + "'.");
   }

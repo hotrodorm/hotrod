@@ -1,4 +1,4 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.events.MouseEvent;
@@ -27,8 +27,8 @@ public class TreeMouseListener implements MouseTrackListener {
   public void mouseHover(final MouseEvent event) {
 
     TreeItem item = this.viewer.getTree().getItem(new Point(event.x, event.y));
-    if (item != null && item.getData() instanceof TreeElement) {
-      TreeElement element = (TreeElement) item.getData();
+    if (item != null && item.getData() instanceof AbstractFace) {
+      AbstractFace element = (AbstractFace) item.getData();
       this.viewer.getTree().setToolTipText(element.getTooltip());
 //      if (selectedElement.getResourceType() == MyResourceType.APP_GROUP
 //          || selectedElement.getResourceType() == MyResourceType.DATA) {

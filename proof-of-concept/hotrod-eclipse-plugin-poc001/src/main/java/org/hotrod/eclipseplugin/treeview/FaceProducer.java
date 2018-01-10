@@ -1,4 +1,4 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,29 +8,29 @@ import org.hotrod.eclipseplugin.domain.MainConfigFile;
 import org.hotrod.eclipseplugin.domain.loader.ConfigFileLoader;
 import org.hotrod.eclipseplugin.domain.loader.FaultyConfigFileException;
 import org.hotrod.eclipseplugin.domain.loader.UnreadableConfigFileException;
-import org.hotrod.eclipseplugin.elements.ElementFactory.InvalidConfigurationItemException;
+import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
-public class ElementProducer {
+public class FaceProducer {
 
   // Properties
 
   public static final boolean USE_INTERNAL_CONFIG = false;
 
-  private List<MainConfigElement> mainConfigElements = null;
+  private List<MainConfigFace> mainConfigElements = null;
 
   // Constructor
 
-  public ElementProducer(final HotRodViewContentProvider provider, final List<String> fileNames) {
+  public FaceProducer(final HotRodViewContentProvider provider, final List<String> fileNames) {
     if (USE_INTERNAL_CONFIG) {
       generateInternalConfig(provider);
     } else {
-      this.mainConfigElements = new ArrayList<MainConfigElement>();
+      this.mainConfigElements = new ArrayList<MainConfigFace>();
       for (String fileName : fileNames) {
         try {
           MainConfigFile config = ConfigFileLoader.loadConfigFile(null, fileName, MainConfigFile.class);
-          MainConfigElement mainConfigElement = new MainConfigElement(config.getShortName(), provider);
+          MainConfigFace mainConfigElement = new MainConfigFace(config.getShortName(), provider);
           for (ConfigItem item : config.getConfigItems()) {
-            TreeElement element = ElementFactory.getElement(item);
+            AbstractFace element = FaceFactory.getElement(item);
             mainConfigElement.addChild(element);
           }
           this.mainConfigElements.add(mainConfigElement);
@@ -127,12 +127,12 @@ public class ElementProducer {
   }
 
   public void setUnmodified() {
-    for (MainConfigElement e : this.mainConfigElements) {
+    for (MainConfigFace e : this.mainConfigElements) {
       e.setUnmodified();
     }
   }
 
-  public List<MainConfigElement> getConfigs() {
+  public List<MainConfigFace> getConfigs() {
     return this.mainConfigElements;
   }
 

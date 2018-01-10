@@ -1,12 +1,12 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.eclipseplugin.domain.Converter;
 
-public class ConverterElement extends TreeLeafElement {
+public class ConverterFace extends AbstractLeafFace {
 
   private Converter converter;
 
-  public ConverterElement(final Converter converter) {
+  public ConverterFace(final Converter converter) {
     super(converter.getName(), false);
     this.converter = converter;
   }

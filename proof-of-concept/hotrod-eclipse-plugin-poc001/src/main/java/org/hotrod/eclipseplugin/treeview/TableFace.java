@@ -1,18 +1,18 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.eclipseplugin.domain.Method;
 import org.hotrod.eclipseplugin.domain.TableDAO;
-import org.hotrod.eclipseplugin.elements.ElementFactory.InvalidConfigurationItemException;
+import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
-public class TableElement extends TreeContainerElement {
+public class TableFace extends AbstractContainerFace {
 
   private TableDAO tableDAO;
 
-  public TableElement(final TableDAO tableDAO) throws InvalidConfigurationItemException {
+  public TableFace(final TableDAO tableDAO) throws InvalidConfigurationItemException {
     super(tableDAO.getName(), false);
     this.tableDAO = tableDAO;
     for (Method m : this.tableDAO.getMethods()) {
-      TreeLeafElement leaf = ElementFactory.getMethodElement(m);
+      AbstractLeafFace leaf = FaceFactory.getMethodElement(m);
       super.addChild(leaf);
     }
   }

@@ -1,8 +1,8 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
-public abstract class TreeLeafElement extends TreeElement {
+public abstract class AbstractLeafFace extends AbstractFace {
 
-  public TreeLeafElement(final String name, final boolean modified) {
+  public AbstractLeafFace(final String name, final boolean modified) {
     super(name, modified);
   }
 

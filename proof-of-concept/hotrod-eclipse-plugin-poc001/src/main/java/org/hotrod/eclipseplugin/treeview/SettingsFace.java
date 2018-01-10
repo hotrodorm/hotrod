@@ -1,12 +1,12 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.eclipseplugin.domain.Settings;
 
-public class SettingsElement extends TreeLeafElement {
+public class SettingsFace extends AbstractLeafFace {
 
   private Settings settings;
 
-  public SettingsElement(final Settings settings) {
+  public SettingsFace(final Settings settings) {
     super(settings.getName(), false);
     this.settings = settings;
   }

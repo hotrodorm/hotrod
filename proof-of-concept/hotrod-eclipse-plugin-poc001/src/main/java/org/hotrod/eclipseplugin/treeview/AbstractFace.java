@@ -1,20 +1,20 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
 
-public abstract class TreeElement implements IAdaptable {
+public abstract class AbstractFace implements IAdaptable {
 
   private static int nextElementId = 0;
 
   private String name;
   protected boolean modified;
-  private TreeContainerElement parent;
+  private AbstractContainerFace parent;
   private int id;
 
-  public TreeElement(final String name, final boolean modified) {
-    synchronized (TreeElement.class) {
+  public AbstractFace(final String name, final boolean modified) {
+    synchronized (AbstractFace.class) {
       this.id = nextElementId++;
     }
     this.name = name;
@@ -40,7 +40,7 @@ public abstract class TreeElement implements IAdaptable {
     }
   }
 
-  public TreeContainerElement getParent() {
+  public AbstractContainerFace getParent() {
     return this.parent;
   }
 
@@ -49,7 +49,7 @@ public abstract class TreeElement implements IAdaptable {
     return null;
   }
 
-  public void setParent(final TreeContainerElement parent) {
+  public void setParent(final AbstractContainerFace parent) {
     this.parent = parent;
   }
 
@@ -96,7 +96,7 @@ public abstract class TreeElement implements IAdaptable {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    TreeElement other = (TreeElement) obj;
+    AbstractFace other = (AbstractFace) obj;
     if (id != other.id)
       return false;
     return true;

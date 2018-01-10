@@ -17,6 +17,12 @@ The first time:
     -> Run
     
   A new Eclipse instance is started and takes a few seconds to be ready: this new instance includes the plugin. Once loaded:
+  
+  Import the project "project002" in this (testing) workspace:
+    -> File -> Import... -> Existing Projects into Workspace -> [Next] 
+    -> [Browse] -> "project002" -> [OK]
+    
+  Once the project002 is imported, open the HotRod View:
     -> Window -> Show View -> Other... -> HotRod Category -> HotRod
 
 From the second time on:

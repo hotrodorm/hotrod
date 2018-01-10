@@ -1,18 +1,18 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.eclipseplugin.domain.Method;
 import org.hotrod.eclipseplugin.domain.ViewDAO;
-import org.hotrod.eclipseplugin.elements.ElementFactory.InvalidConfigurationItemException;
+import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
-public class ViewElement extends TreeContainerElement {
+public class ViewFace extends AbstractContainerFace {
 
   private ViewDAO viewDAO;
 
-  public ViewElement(final ViewDAO viewDAO) throws InvalidConfigurationItemException {
+  public ViewFace(final ViewDAO viewDAO) throws InvalidConfigurationItemException {
     super(viewDAO.getName(), false);
     this.viewDAO = viewDAO;
     for (Method m : this.viewDAO.getMethods()) {
-      TreeLeafElement leaf = ElementFactory.getMethodElement(m);
+      AbstractLeafFace leaf = FaceFactory.getMethodElement(m);
       super.addChild(leaf);
     }
   }

@@ -1,5 +1,6 @@
 package org.hotrod.eclipseplugin;
 
+import java.awt.dnd.DropTarget;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,14 +18,15 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.hotrod.eclipseplugin.elements.HotRodLabelProvider;
-import org.hotrod.eclipseplugin.elements.HotRodViewContentProvider;
+import org.hotrod.eclipseplugin.treeview.HotRodLabelProvider;
+import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 
 public class HotRodView extends ViewPart {
 
@@ -74,6 +76,7 @@ public class HotRodView extends ViewPart {
     this.JDBCProperties = Activator.getImageDescriptor(JDBC_PROPERTIES_ICON_PATH);
   }
 
+  @Override
   public void createPartControl(final Composite parent) {
     this.viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 
@@ -81,7 +84,13 @@ public class HotRodView extends ViewPart {
     files.add("config/hotrod/hotrod-1.xml");
     files.add("config/hotrod/hotrod-2.xml");
 
+    // int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
+    // DropTarget target = new DropTarget(this.viewer, operations);
+    //
+    // org.eclipse.swt.dnd.
+
     this.hotRodViewContentProvider = new HotRodViewContentProvider(this, files);
+
     this.viewer.setContentProvider(this.hotRodViewContentProvider);
 
     this.viewer.setInput(getViewSite());
@@ -137,6 +146,7 @@ public class HotRodView extends ViewPart {
     MenuManager menuMgr = new MenuManager("#PopupMenu");
     menuMgr.setRemoveAllWhenShown(true);
     menuMgr.addMenuListener(new IMenuListener() {
+      @Override
       public void menuAboutToShow(IMenuManager manager) {
         HotRodView.this.fillContextMenu(manager);
       }
@@ -161,6 +171,7 @@ public class HotRodView extends ViewPart {
 
   private void configureDoubleClickAction() {
     viewer.addDoubleClickListener(new IDoubleClickListener() {
+      @Override
       public void doubleClick(DoubleClickEvent event) {
         doubleClickAction.run();
       }
@@ -174,6 +185,7 @@ public class HotRodView extends ViewPart {
     // Generate All
 
     actionGenerateAll = new Action() {
+      @Override
       public void run() {
         showMessage("Generate All - executed");
       }
@@ -185,6 +197,7 @@ public class HotRodView extends ViewPart {
     // Generate Changes
 
     actionGenerateChanges = new Action() {
+      @Override
       public void run() {
         // showMessage("Generate Changes - executed");
         System.out.println("*** Adding a table... (not implemented anymore)");
@@ -203,6 +216,7 @@ public class HotRodView extends ViewPart {
     // Generate Selection
 
     actionGenerateSelection = new Action() {
+      @Override
       public void run() {
         showMessage("Generate Selection - executed");
       }
@@ -214,6 +228,7 @@ public class HotRodView extends ViewPart {
     // Auto On/Off
 
     actionAutoOnOff = new Action() {
+      @Override
       public void run() {
         autoGenerate = !autoGenerate;
         String text = "Auto Generate (" + (autoGenerate ? "On" : "Off") + ")";
@@ -239,6 +254,7 @@ public class HotRodView extends ViewPart {
     // Remove File
 
     actionRemoveFile = new Action() {
+      @Override
       public void run() {
         showMessage("Remove File - executed");
       }
@@ -251,6 +267,7 @@ public class HotRodView extends ViewPart {
     // Remove All Files
 
     actionRemoveAllFiles = new Action() {
+      @Override
       public void run() {
         showMessage("Remove All Files - executed");
       }
@@ -263,6 +280,7 @@ public class HotRodView extends ViewPart {
     // Configure JDBC Properties
 
     actionJDBCProperties = new Action() {
+      @Override
       public void run() {
         // to1.name = "customer (refreshed)";
         showMessage("JDBC Properties - executed");
@@ -273,6 +291,7 @@ public class HotRodView extends ViewPart {
     actionJDBCProperties.setImageDescriptor(this.JDBCProperties);
 
     doubleClickAction = new Action() {
+      @Override
       public void run() {
         ISelection selection = viewer.getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
@@ -289,6 +308,7 @@ public class HotRodView extends ViewPart {
   /**
    * Passing the focus request to the viewer's control.
    */
+  @Override
   public void setFocus() {
     viewer.getControl().setFocus();
   }

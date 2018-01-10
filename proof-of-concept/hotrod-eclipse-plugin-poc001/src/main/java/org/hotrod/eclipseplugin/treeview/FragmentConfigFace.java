@@ -1,18 +1,18 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.eclipseplugin.domain.ConfigItem;
 import org.hotrod.eclipseplugin.domain.FragmentConfigFile;
-import org.hotrod.eclipseplugin.elements.ElementFactory.InvalidConfigurationItemException;
+import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
-public class FragmentConfigElement extends TreeContainerElement {
+public class FragmentConfigFace extends AbstractContainerFace {
 
   private FragmentConfigFile fragment;
 
-  public FragmentConfigElement(final FragmentConfigFile fragment) throws InvalidConfigurationItemException {
+  public FragmentConfigFace(final FragmentConfigFile fragment) throws InvalidConfigurationItemException {
     super(fragment.getShortName(), false);
     this.fragment = fragment;
     for (ConfigItem item : this.fragment.getConfigItems()) {
-      TreeElement element = ElementFactory.getElement(item);
+      AbstractFace element = FaceFactory.getElement(item);
       super.addChild(element);
     }
   }

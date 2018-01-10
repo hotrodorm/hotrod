@@ -1,14 +1,14 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import org.eclipse.jface.viewers.TreeViewer;
 
-public class MainConfigElement extends TreeContainerElement {
+public class MainConfigFace extends AbstractContainerFace {
 
   private HotRodViewContentProvider provider;
 
   // Constructors
 
-  public MainConfigElement(final String name, final HotRodViewContentProvider provider) {
+  public MainConfigFace(final String name, final HotRodViewContentProvider provider) {
     super(name, false);
     this.provider = provider;
   }

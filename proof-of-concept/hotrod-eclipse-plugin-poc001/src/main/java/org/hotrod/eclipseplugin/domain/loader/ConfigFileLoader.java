@@ -46,8 +46,11 @@ public class ConfigFileLoader {
           throw new UnreadableConfigFileException("Could not open project: " + e.getMessage());
         }
       }
+      // System.out.println("fileName=" + fileName);
       IFile fileResource = myProject.getFile(fileName);
+      // System.out.println("fileResource=" + fileResource);
       IPath path = fileResource.getLocation();
+      // System.out.println("path=" + path);
       f = path.toFile();
     } else {
       f = new File(includerFile.getParentFile(), fileName);

@@ -1,6 +1,5 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
-import java.io.File;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -12,7 +11,7 @@ public class HotRodViewContentProvider implements ITreeContentProvider {
 
   private ViewPart viewPart;
   private List<String> files;
-  private List<MainConfigElement> mainConfigs;
+  private List<MainConfigFace> mainConfigs;
   private TreeViewer viewer;
   private boolean refresh;
 
@@ -23,43 +22,45 @@ public class HotRodViewContentProvider implements ITreeContentProvider {
     this.mainConfigs = null;
     this.viewer = null;
     this.refresh = false;
+    initializeTree();
+  }
+
+  private void initializeTree() {
+    System.out.println("will load");
+    FaceProducer p = new FaceProducer(this, this.files);
+    System.out.println("loaded 1");
+    this.mainConfigs = p.getConfigs();
+    System.out.println("loaded 2");
   }
 
   @Override
   public Object[] getElements(final Object inputElement) {
     if (inputElement.equals(this.viewPart.getViewSite())) {
-      if (this.mainConfigs == null) {
-        System.out.println("will load");
-        ElementProducer p = new ElementProducer(this, this.files);
-        System.out.println("loaded 1");
-        this.mainConfigs = p.getConfigs();
-        System.out.println("loaded 2");
-      }
-      return this.mainConfigs.toArray(new MainConfigElement[0]);
+      return this.mainConfigs.toArray(new MainConfigFace[0]);
     }
     return getChildren(inputElement);
   }
 
   @Override
   public Object getParent(final Object child) {
-    if (child instanceof TreeElement) {
-      return ((TreeElement) child).getParent();
+    if (child instanceof AbstractFace) {
+      return ((AbstractFace) child).getParent();
     }
     return null;
   }
 
   @Override
   public boolean hasChildren(final Object parent) {
-    if (parent instanceof TreeContainerElement) {
-      return ((TreeContainerElement) parent).hasChildren();
+    if (parent instanceof AbstractContainerFace) {
+      return ((AbstractContainerFace) parent).hasChildren();
     }
     return false;
   }
 
   @Override
   public Object[] getChildren(final Object parent) {
-    if (parent instanceof TreeContainerElement) {
-      return ((TreeContainerElement) parent).getChildren();
+    if (parent instanceof AbstractContainerFace) {
+      return ((AbstractContainerFace) parent).getChildren();
     }
     return new Object[0];
   }
@@ -81,7 +82,7 @@ public class HotRodViewContentProvider implements ITreeContentProvider {
     return this.refresh ? this.viewer : null;
   }
 
-  public List<MainConfigElement> getMainConfigs() {
+  public List<MainConfigFace> getMainConfigs() {
     return this.mainConfigs;
   }
 

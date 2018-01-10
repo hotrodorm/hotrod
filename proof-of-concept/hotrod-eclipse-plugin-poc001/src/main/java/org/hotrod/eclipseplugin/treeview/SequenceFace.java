@@ -1,12 +1,12 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.eclipseplugin.domain.SequenceMethod;
 
-public class SequenceElement extends TreeLeafElement {
+public class SequenceFace extends AbstractLeafFace {
 
   private SequenceMethod method;
 
-  public SequenceElement(final SequenceMethod method) {
+  public SequenceFace(final SequenceMethod method) {
     super(method.getName(), false);
     this.method = method;
   }

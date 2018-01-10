@@ -1,12 +1,12 @@
-package org.hotrod.eclipseplugin.elements;
+package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.eclipseplugin.domain.QueryMethod;
 
-public class QueryElement extends TreeLeafElement {
+public class QueryFace extends AbstractLeafFace {
 
   private QueryMethod method;
 
-  public QueryElement(final QueryMethod method) {
+  public QueryFace(final QueryMethod method) {
     super(method.getName(), false);
     this.method = method;
   }
