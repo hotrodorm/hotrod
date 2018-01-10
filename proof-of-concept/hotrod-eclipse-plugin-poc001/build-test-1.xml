@@ -1,0 +1,9 @@
+<project name="test-ant-file1" default="build" basedir=".">
+
+  <target name="clean" />
+
+  <target name="build" />
+
+  <target name="clean-build" depends="clean, build" />
+
+</project>

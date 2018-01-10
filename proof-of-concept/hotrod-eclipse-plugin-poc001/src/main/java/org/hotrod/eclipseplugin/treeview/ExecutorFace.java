@@ -23,8 +23,8 @@ public class ExecutorFace extends AbstractContainerFace {
   }
 
   @Override
-  public String getLabel() {
-    return super.getLabel() + " -- executor";
+  public String getDecoration() {
+    return "executor";
   }
 
   @Override

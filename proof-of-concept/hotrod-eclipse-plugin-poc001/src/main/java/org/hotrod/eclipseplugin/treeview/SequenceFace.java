@@ -2,7 +2,7 @@ package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.eclipseplugin.domain.SequenceMethod;
 
-public class SequenceFace extends AbstractLeafFace {
+public class SequenceFace extends AbstractMethodFace {
 
   private SequenceMethod method;
 
@@ -18,8 +18,8 @@ public class SequenceFace extends AbstractLeafFace {
   }
 
   @Override
-  public String getLabel() {
-    return super.getLabel() + "() -- retrieve sequence value";
+  public String getDecoration() {
+    return "sequence retriever";
   }
 
   @Override

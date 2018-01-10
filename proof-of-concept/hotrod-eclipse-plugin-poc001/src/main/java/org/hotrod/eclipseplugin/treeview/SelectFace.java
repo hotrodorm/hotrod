@@ -2,7 +2,7 @@ package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.eclipseplugin.domain.SelectMethod;
 
-public class SelectFace extends AbstractLeafFace {
+public class SelectFace extends AbstractMethodFace {
 
   private SelectMethod method;
 
@@ -17,8 +17,8 @@ public class SelectFace extends AbstractLeafFace {
   }
 
   @Override
-  public String getLabel() {
-    return super.getLabel() + "() -- SQL select";
+  public String getDecoration() {
+    return "select";
   }
 
   @Override

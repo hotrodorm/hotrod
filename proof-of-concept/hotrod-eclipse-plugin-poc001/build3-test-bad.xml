@@ -1,0 +1,7 @@
+<projedfd fdfd ct name="test-ant-file2" default="build" basedir=".">
+
+  <target name="clean" />
+
+  <target name="build" />
+
+</projedfd>

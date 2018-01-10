@@ -1,42 +1,31 @@
 package org.hotrod.eclipseplugin.treeview;
 
-import java.util.List;
-
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.part.ViewPart;
+import org.hotrod.eclipseplugin.LoadedConfigurationFiles;
 
 public class HotRodViewContentProvider implements ITreeContentProvider {
 
   private ViewPart viewPart;
-  private List<String> files;
-  private List<MainConfigFace> mainConfigs;
   private TreeViewer viewer;
-  private boolean refresh;
+  private boolean visible;
 
-  public HotRodViewContentProvider(final ViewPart viewPart, final List<String> files) {
+  private LoadedConfigurationFiles files;
+
+  public HotRodViewContentProvider(final ViewPart viewPart) {
     super();
     this.viewPart = viewPart;
-    this.files = files;
-    this.mainConfigs = null;
     this.viewer = null;
-    this.refresh = false;
-    initializeTree();
-  }
-
-  private void initializeTree() {
-    System.out.println("will load");
-    FaceProducer p = new FaceProducer(this, this.files);
-    System.out.println("loaded 1");
-    this.mainConfigs = p.getConfigs();
-    System.out.println("loaded 2");
+    this.visible = false;
+    this.files = new LoadedConfigurationFiles(this);
   }
 
   @Override
   public Object[] getElements(final Object inputElement) {
     if (inputElement.equals(this.viewPart.getViewSite())) {
-      return this.mainConfigs.toArray(new MainConfigFace[0]);
+      return this.files.getLoadedFiles().toArray(new MainConfigFace[0]);
     }
     return getChildren(inputElement);
   }
@@ -72,18 +61,25 @@ public class HotRodViewContentProvider implements ITreeContentProvider {
     System.out.println("oldInput: " + oldInput + " newInput: " + newInput);
   }
 
-  public void setRefresh(final boolean refresh) {
-    this.refresh = refresh;
+  public void setVisible(final boolean visible) {
+    this.visible = visible;
+  }
+
+  public void refresh() {
+    TreeViewer v = this.getViewer();
+    if (v != null) {
+      v.refresh();
+    }
   }
 
   // Getters
 
   public TreeViewer getViewer() {
-    return this.refresh ? this.viewer : null;
+    return this.visible ? this.viewer : null;
   }
 
-  public List<MainConfigFace> getMainConfigs() {
-    return this.mainConfigs;
+  public LoadedConfigurationFiles getFiles() {
+    return this.files;
   }
 
 }

@@ -1,5 +1,6 @@
 package org.hotrod.eclipseplugin.treeview;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,39 +15,55 @@ public class FaceProducer {
 
   // Properties
 
-  public static final boolean USE_INTERNAL_CONFIG = false;
+//  public static final boolean USE_INTERNAL_CONFIG = false;
 
-  private List<MainConfigFace> mainConfigElements = null;
+//  private List<MainConfigFace> mainConfigElements = null;
 
   // Constructor
 
-  public FaceProducer(final HotRodViewContentProvider provider, final List<String> fileNames) {
-    if (USE_INTERNAL_CONFIG) {
-      generateInternalConfig(provider);
-    } else {
-      this.mainConfigElements = new ArrayList<MainConfigFace>();
-      for (String fileName : fileNames) {
-        try {
-          MainConfigFile config = ConfigFileLoader.loadConfigFile(null, fileName, MainConfigFile.class);
-          MainConfigFace mainConfigElement = new MainConfigFace(config.getShortName(), provider);
-          for (ConfigItem item : config.getConfigItems()) {
-            AbstractFace element = FaceFactory.getElement(item);
-            mainConfigElement.addChild(element);
-          }
-          this.mainConfigElements.add(mainConfigElement);
-        } catch (UnreadableConfigFileException e) {
-          e.printStackTrace();
-        } catch (FaultyConfigFileException e) {
-          e.printStackTrace();
-        } catch (InvalidConfigurationItemException e) {
-          e.printStackTrace();
-        }
+//  public FaceProducer(final HotRodViewContentProvider provider, final List<String> fileNames) {
+//    if (USE_INTERNAL_CONFIG) {
+//      generateInternalConfig(provider);
+//    } else {
+//      this.mainConfigElements = new ArrayList<MainConfigFace>();
+//      for (String fileName : fileNames) {
+//        load(provider, fileName);
+//      }
+//    }
+//    setUnmodified();
+//  }
+
+  public static MainConfigFace load(final HotRodViewContentProvider provider, final String fullPathName) {
+    File f = new File(fullPathName);
+    MainConfigFace mainConfigFace = new MainConfigFace(f.getName(), f.getParent(), provider);
+
+    MainConfigFile config;
+    try {
+      config = ConfigFileLoader.loadMainFile(fullPathName);
+      mainConfigFace.setValid(true);
+    } catch (UnreadableConfigFileException e) {
+      mainConfigFace.setValid(false);
+      return mainConfigFace;
+    } catch (FaultyConfigFileException e) {
+      mainConfigFace.setValid(false);
+      return mainConfigFace;
+    }
+    for (ConfigItem item : config.getConfigItems()) {
+      try {
+        AbstractFace face = FaceFactory.getFace(item);
+        mainConfigFace.addChild(face);
+      } catch (InvalidConfigurationItemException e) {
+        mainConfigFace = new MainConfigFace(f.getName(), f.getParent(), provider);
+        mainConfigFace.setValid(false);
+        return mainConfigFace;
       }
     }
-    setUnmodified();
+    mainConfigFace.setValid(true);
+    mainConfigFace.setUnmodified();
+    return mainConfigFace;
   }
 
-  private void generateInternalConfig(final HotRodViewContentProvider provider) {
+//  private void generateInternalConfig(final HotRodViewContentProvider provider) {
     // FragmentConfigElement f1 = new
     // FragmentConfigElement("hotrod-fragment-1.xml");
     //
@@ -124,16 +141,16 @@ public class FaceProducer {
     // this.mainConfigs.add(c2);
     //
     // setUnmodified();
-  }
+//  }
 
-  public void setUnmodified() {
-    for (MainConfigFace e : this.mainConfigElements) {
-      e.setUnmodified();
-    }
-  }
+//  public void setUnmodified() {
+//    for (MainConfigFace e : this.mainConfigElements) {
+//      e.setUnmodified();
+//    }
+//  }
 
-  public List<MainConfigFace> getConfigs() {
-    return this.mainConfigElements;
-  }
+//  public List<MainConfigFace> getConfigs() {
+//    return this.mainConfigElements;
+//  }
 
 }

@@ -6,12 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.hotrod.eclipseplugin.domain.ConfigItem;
 import org.hotrod.eclipseplugin.domain.Converter;
 import org.hotrod.eclipseplugin.domain.DAO;
@@ -29,32 +23,33 @@ import org.hotrod.eclipseplugin.domain.ViewDAO;
 
 public class ConfigFileLoader {
 
-  public static <T extends MainConfigFile> T loadConfigFile(final File includerFile, final String fileName,
-      final Class<T> c) throws UnreadableConfigFileException, FaultyConfigFileException {
+  // Load main file
+
+  public static MainConfigFile loadMainFile(final String fullPathName)
+      throws UnreadableConfigFileException, FaultyConfigFileException {
 
     // Resolve file system location of the configuration file
 
-    File f;
+    // File f;
+    //
+    // IWorkspace workspace = ResourcesPlugin.getWorkspace();
+    // IProject myProject = workspace.getRoot().getProject("project002");
+    // if (myProject.exists() && !myProject.isOpen()) {
+    // try {
+    // myProject.open(null);
+    // } catch (CoreException e) {
+    // throw new UnreadableConfigFileException("Could not open project: " +
+    // e.getMessage());
+    // }
+    // }
+    // // System.out.println("fileName=" + fileName);
+    // IFile fileResource = myProject.getFile(fullPathName);
+    // // System.out.println("fileResource=" + fileResource);
+    // IPath path = fileResource.getLocation();
+    // // System.out.println("path=" + path);
+    // f = path.toFile();
 
-    if (includerFile == null) {
-      IWorkspace workspace = ResourcesPlugin.getWorkspace();
-      IProject myProject = workspace.getRoot().getProject("project002");
-      if (myProject.exists() && !myProject.isOpen()) {
-        try {
-          myProject.open(null);
-        } catch (CoreException e) {
-          throw new UnreadableConfigFileException("Could not open project: " + e.getMessage());
-        }
-      }
-      // System.out.println("fileName=" + fileName);
-      IFile fileResource = myProject.getFile(fileName);
-      // System.out.println("fileResource=" + fileResource);
-      IPath path = fileResource.getLocation();
-      // System.out.println("path=" + path);
-      f = path.toFile();
-    } else {
-      f = new File(includerFile.getParentFile(), fileName);
-    }
+    File f = new File(fullPathName);
 
     // Read the configuration file
 
@@ -64,7 +59,7 @@ public class ConfigFileLoader {
 
       r = new BufferedReader(new FileReader(f));
 
-      FragmentConfigFile config = new FragmentConfigFile(fileName);
+      MainConfigFile config = new MainConfigFile(fullPathName);
       ConfigItem currentItem = null;
 
       String line = null;
@@ -76,7 +71,7 @@ public class ConfigFileLoader {
             if (item instanceof FragmentConfigFile) {
               FragmentConfigFile fc = (FragmentConfigFile) item;
               System.out.println("--> will load fragment: " + fc.getFileName());
-              fc = loadConfigFile(f, fc.getFileName(), FragmentConfigFile.class);
+              fc = loadFragmentFile(f, fc.getFileName());
               config.addConfigItem(fc);
               currentItem = fc;
             } else {
@@ -104,7 +99,106 @@ public class ConfigFileLoader {
         lineNumber++;
       }
 
-      return c.cast(config);
+      return config;
+
+    } catch (FileNotFoundException e) {
+      throw new UnreadableConfigFileException("File " + f.getPath() + " does not exist.");
+    } catch (IOException e) {
+      throw new UnreadableConfigFileException("Could not read file " + f.getPath() + ": " + e.getMessage());
+    } finally {
+      if (r != null) {
+        try {
+          r.close();
+        } catch (IOException e) {
+          // Ignore
+        }
+      }
+    }
+
+  }
+
+  // Load fragment
+
+  public static FragmentConfigFile loadFragmentFile(final File includerFile, final String relativePathName)
+      throws UnreadableConfigFileException, FaultyConfigFileException {
+
+    // Resolve file system location of the configuration file
+
+    // File f;
+    //
+    // if (includerFile == null) {
+    // IWorkspace workspace = ResourcesPlugin.getWorkspace();
+    // IProject myProject = workspace.getRoot().getProject("project002");
+    // if (myProject.exists() && !myProject.isOpen()) {
+    // try {
+    // myProject.open(null);
+    // } catch (CoreException e) {
+    // throw new UnreadableConfigFileException("Could not open project: " +
+    // e.getMessage());
+    // }
+    // }
+    // // System.out.println("fileName=" + fileName);
+    // IFile fileResource = myProject.getFile(relativePathName);
+    // // System.out.println("fileResource=" + fileResource);
+    // IPath path = fileResource.getLocation();
+    // // System.out.println("path=" + path);
+    // f = path.toFile();
+    // } else {
+    // f = new File(includerFile.getParentFile(), relativePathName);
+    // }
+
+    File includerFolder = includerFile.getParentFile();
+    File f = new File(includerFolder, relativePathName);
+
+    // Read the configuration file
+
+    BufferedReader r = null;
+
+    try {
+
+      r = new BufferedReader(new FileReader(f));
+
+      FragmentConfigFile config = new FragmentConfigFile(relativePathName);
+      ConfigItem currentItem = null;
+
+      String line = null;
+      int lineNumber = 1;
+      while ((line = r.readLine()) != null) {
+        if (!line.trim().isEmpty()) {
+          ConfigItem item = tryReadingItem(line, lineNumber);
+          if (item != null) {
+            if (item instanceof FragmentConfigFile) {
+              FragmentConfigFile fc = (FragmentConfigFile) item;
+              System.out.println("--> will load fragment: " + fc.getFileName());
+              fc = loadFragmentFile(f, fc.getFileName());
+              config.addConfigItem(fc);
+              currentItem = fc;
+            } else {
+              config.addConfigItem(item);
+              currentItem = item;
+            }
+          } else {
+            Method m = tryReadingMethod(line, lineNumber);
+            if (m != null) {
+              if (currentItem == null) {
+                throw new FaultyConfigFileException(lineNumber, "There's no DAO to include this method in.");
+              } else {
+                try {
+                  DAO d = (DAO) currentItem;
+                  d.addMethod(m);
+                } catch (ClassCastException e) {
+                  throw new FaultyConfigFileException(lineNumber, "The previous item cannot include methods.");
+                }
+              }
+            } else {
+              throw new FaultyConfigFileException(lineNumber, "Invalid line: " + line);
+            }
+          }
+        }
+        lineNumber++;
+      }
+
+      return config;
 
     } catch (FileNotFoundException e) {
       throw new UnreadableConfigFileException("File " + f.getPath() + " does not exist.");

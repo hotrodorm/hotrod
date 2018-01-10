@@ -2,7 +2,7 @@ package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.eclipseplugin.domain.QueryMethod;
 
-public class QueryFace extends AbstractLeafFace {
+public class QueryFace extends AbstractMethodFace {
 
   private QueryMethod method;
 
@@ -18,8 +18,8 @@ public class QueryFace extends AbstractLeafFace {
   }
 
   @Override
-  public String getLabel() {
-    return super.getLabel() + "() -- SQL query";
+  public String getDecoration() {
+    return "query";
   }
 
   @Override

@@ -8,16 +8,18 @@ public class MainConfigFile {
 
   // Properties
 
-  protected String fileName;
+  protected String fullPathName;
+  protected String folder;
   protected String shortName;
   protected List<ConfigItem> items = new ArrayList<ConfigItem>();
 
   // Constructor
 
-  public MainConfigFile(final String fileName) {
+  public MainConfigFile(final String fullPathName) {
     super();
-    this.fileName = fileName;
-    this.shortName = new File(fileName).getName();
+    this.fullPathName = fullPathName;
+    this.folder = new File(fullPathName).getParent();
+    this.shortName = new File(fullPathName).getName();
   }
 
   // Populate
@@ -29,7 +31,11 @@ public class MainConfigFile {
   // Getters
 
   public String getFileName() {
-    return this.fileName;
+    return this.fullPathName;
+  }
+
+  public String getFolder() {
+    return folder;
   }
 
   public String getShortName() {

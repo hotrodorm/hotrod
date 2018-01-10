@@ -27,8 +27,8 @@ public class TableFace extends AbstractContainerFace {
   }
 
   @Override
-  public String getLabel() {
-    return super.getLabel() + " -- table";
+  public String getDecoration() {
+    return "table";
   }
 
   @Override

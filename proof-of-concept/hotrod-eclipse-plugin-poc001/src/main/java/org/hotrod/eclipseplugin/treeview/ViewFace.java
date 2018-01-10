@@ -32,8 +32,8 @@ public class ViewFace extends AbstractContainerFace {
   }
 
   @Override
-  public String getLabel() {
-    return super.getLabel() + " -- view";
+  public String getDecoration() {
+    return "view";
   }
 
   @Override

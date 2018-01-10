@@ -53,6 +53,10 @@ public abstract class AbstractFace implements IAdaptable {
     this.parent = parent;
   }
 
+  public String getName() {
+    return name;
+  }
+
   public TreeViewer getViewer() {
     return this.parent != null ? this.parent.getViewer() : null;
   }
@@ -66,9 +70,11 @@ public abstract class AbstractFace implements IAdaptable {
 
   // Tree display
 
-  public String getLabel() {
+  public final String getLabel() {
     return (this.modified ? "> " : "") + this.name;
   }
+
+  public abstract String getDecoration();
 
   public abstract String getIconPath();
 

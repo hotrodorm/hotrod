@@ -17,8 +17,8 @@ public class SettingsFace extends AbstractLeafFace {
   }
 
   @Override
-  public String getLabel() {
-    return "Settings";
+  public String getDecoration() {
+    return "settings";
   }
 
   @Override

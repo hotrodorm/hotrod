@@ -17,8 +17,8 @@ public class ConverterFace extends AbstractLeafFace {
   }
 
   @Override
-  public String getLabel() {
-    return super.getLabel() + " -- converter";
+  public String getDecoration() {
+    return "converter";
   }
 
   @Override

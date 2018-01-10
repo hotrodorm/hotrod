@@ -1,9 +1,5 @@
 package org.hotrod.eclipseplugin;
 
-import java.awt.dnd.DropTarget;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -19,6 +15,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
@@ -80,16 +78,13 @@ public class HotRodView extends ViewPart {
   public void createPartControl(final Composite parent) {
     this.viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 
-    List<String> files = new ArrayList<String>();
-    files.add("config/hotrod/hotrod-1.xml");
-    files.add("config/hotrod/hotrod-2.xml");
+    this.hotRodViewContentProvider = new HotRodViewContentProvider(this);
 
-    // int operations = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT;
-    // DropTarget target = new DropTarget(this.viewer, operations);
-    //
-    // org.eclipse.swt.dnd.
-
-    this.hotRodViewContentProvider = new HotRodViewContentProvider(this, files);
+    int operations = DND.DROP_COPY | DND.DROP_MOVE;
+    Transfer[] transfers = new Transfer[] { FileTransfer.getInstance() };
+    HotRodDropTargetListener listener = new HotRodDropTargetListener(this.viewer,
+        this.hotRodViewContentProvider.getFiles());
+    this.viewer.addDropSupport(operations, transfers, listener);
 
     this.viewer.setContentProvider(this.hotRodViewContentProvider);
 
@@ -106,7 +101,7 @@ public class HotRodView extends ViewPart {
     // TreeMouseListener mouseListener = new TreeMouseListener(this.viewer);
     // viewer.getTree().addMouseTrackListener(mouseListener);
 
-    this.hotRodViewContentProvider.setRefresh(true);
+    this.hotRodViewContentProvider.setVisible(true);
   }
 
   private void configureToolBar() {
@@ -270,6 +265,7 @@ public class HotRodView extends ViewPart {
       @Override
       public void run() {
         showMessage("Remove All Files - executed");
+        hotRodViewContentProvider.getFiles().removeAll();
       }
     };
     actionRemoveAllFiles.setText("Remove All Files");

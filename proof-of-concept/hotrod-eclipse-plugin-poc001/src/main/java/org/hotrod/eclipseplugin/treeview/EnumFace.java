@@ -26,8 +26,8 @@ public class EnumFace extends AbstractContainerFace {
   }
 
   @Override
-  public String getLabel() {
-    return super.getLabel() + " -- enum";
+  public String getDecoration() {
+    return "enum";
   }
 
   @Override

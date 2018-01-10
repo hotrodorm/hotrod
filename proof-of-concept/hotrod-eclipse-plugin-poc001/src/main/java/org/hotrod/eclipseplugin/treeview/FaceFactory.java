@@ -15,7 +15,7 @@ import org.hotrod.eclipseplugin.domain.ViewDAO;
 
 public class FaceFactory {
 
-  public static AbstractFace getElement(final ConfigItem item) throws InvalidConfigurationItemException {
+  public static AbstractFace getFace(final ConfigItem item) throws InvalidConfigurationItemException {
     if (item == null) {
       throw new InvalidConfigurationItemException("Cannot produce a configuration item from a null value.");
     }
