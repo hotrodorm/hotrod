@@ -1,5 +1,6 @@
 package org.hotrod.eclipseplugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,24 +27,27 @@ public class LoadedConfigurationFiles {
 
   // File changes
 
-  public void addFile(final String fullPathName) {
-    if (fullPathName != null && fullPathName.endsWith(VALID_HOTROD_EXTENSION)) {
-      if (!this.loadedFiles.containsKey(fullPathName)) {
-        System.out.println("adding file: " + fullPathName);
-        MainConfigFace face = FaceProducer.load(this.provider, fullPathName);
-        String key = fullPathName;
-        System.out.println("face '" + key + "' [" + face.getPath() + "]: valid=" + face.isValid());
-        this.loadedFiles.put(key, face);
-        this.provider.refresh();
+  public void addFile(final File f) {
+    if (f != null && f.getName().endsWith(VALID_HOTROD_EXTENSION) && f.isFile()) {
+      String absolutePath = f.getAbsolutePath();
+      if (!this.loadedFiles.containsKey(absolutePath)) {
+        // System.out.println("adding file: " + absolutePath);
+        MainConfigFace face = FaceProducer.load(this.provider, f);
+        // System.out.println("face '" + absolutePath + "' [" + face.getPath() +
+        // "]: valid=" + face.isValid());
+        if (face != null) {
+          this.loadedFiles.put(absolutePath, face);
+          this.provider.refresh();
+        }
       }
     }
   }
 
+  public void remove(final MainConfigFace face) {
+    this.loadedFiles.remove(face.getAbsolutePath());
+  }
+
   public void removeAll() {
-    for (MainConfigFace f : this.loadedFiles.values()) {
-      // TODO: perform a proper unload to free resources
-      // f.unload();
-    }
     this.loadedFiles.clear();
     this.provider.refresh();
   }

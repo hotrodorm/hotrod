@@ -20,38 +20,14 @@ import org.hotrod.eclipseplugin.domain.SequenceMethod;
 import org.hotrod.eclipseplugin.domain.Settings;
 import org.hotrod.eclipseplugin.domain.TableDAO;
 import org.hotrod.eclipseplugin.domain.ViewDAO;
+import org.hotrod.eclipseplugin.treeview.FaceProducer.RelativeProjectPath;
 
 public class ConfigFileLoader {
 
   // Load main file
 
-  public static MainConfigFile loadMainFile(final String fullPathName)
+  public static MainConfigFile loadMainFile(final File f, final RelativeProjectPath path)
       throws UnreadableConfigFileException, FaultyConfigFileException {
-
-    // Resolve file system location of the configuration file
-
-    // File f;
-    //
-    // IWorkspace workspace = ResourcesPlugin.getWorkspace();
-    // IProject myProject = workspace.getRoot().getProject("project002");
-    // if (myProject.exists() && !myProject.isOpen()) {
-    // try {
-    // myProject.open(null);
-    // } catch (CoreException e) {
-    // throw new UnreadableConfigFileException("Could not open project: " +
-    // e.getMessage());
-    // }
-    // }
-    // // System.out.println("fileName=" + fileName);
-    // IFile fileResource = myProject.getFile(fullPathName);
-    // // System.out.println("fileResource=" + fileResource);
-    // IPath path = fileResource.getLocation();
-    // // System.out.println("path=" + path);
-    // f = path.toFile();
-
-    File f = new File(fullPathName);
-
-    // Read the configuration file
 
     BufferedReader r = null;
 
@@ -59,7 +35,7 @@ public class ConfigFileLoader {
 
       r = new BufferedReader(new FileReader(f));
 
-      MainConfigFile config = new MainConfigFile(fullPathName);
+      MainConfigFile config = new MainConfigFile(f, path);
       ConfigItem currentItem = null;
 
       String line = null;
@@ -70,8 +46,14 @@ public class ConfigFileLoader {
           if (item != null) {
             if (item instanceof FragmentConfigFile) {
               FragmentConfigFile fc = (FragmentConfigFile) item;
-              System.out.println("--> will load fragment: " + fc.getFileName());
-              fc = loadFragmentFile(f, fc.getFileName());
+              System.out.println("--> will load fragment: " + fc.getIncluderRelativePath());
+              try {
+                fc = loadFragmentFile(f, path, fc.getIncluderRelativePath());
+              } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
+              System.out.println("--> fragment loaded");
               config.addConfigItem(fc);
               currentItem = fc;
             } else {
@@ -102,8 +84,10 @@ public class ConfigFileLoader {
       return config;
 
     } catch (FileNotFoundException e) {
+      e.printStackTrace();
       throw new UnreadableConfigFileException("File " + f.getPath() + " does not exist.");
     } catch (IOException e) {
+      e.printStackTrace();
       throw new UnreadableConfigFileException("Could not read file " + f.getPath() + ": " + e.getMessage());
     } finally {
       if (r != null) {
@@ -119,8 +103,8 @@ public class ConfigFileLoader {
 
   // Load fragment
 
-  public static FragmentConfigFile loadFragmentFile(final File includerFile, final String relativePathName)
-      throws UnreadableConfigFileException, FaultyConfigFileException {
+  public static FragmentConfigFile loadFragmentFile(final File includerFile, final RelativeProjectPath path,
+      final String relativePathName) throws UnreadableConfigFileException, FaultyConfigFileException {
 
     // Resolve file system location of the configuration file
 
@@ -150,6 +134,9 @@ public class ConfigFileLoader {
     File includerFolder = includerFile.getParentFile();
     File f = new File(includerFolder, relativePathName);
 
+    RelativeProjectPath relPath = RelativeProjectPath.findRelativePath(path.getProject(), f);
+    System.out.println("======> relPath=" + relPath.getRelativePath());
+
     // Read the configuration file
 
     BufferedReader r = null;
@@ -158,7 +145,8 @@ public class ConfigFileLoader {
 
       r = new BufferedReader(new FileReader(f));
 
-      FragmentConfigFile config = new FragmentConfigFile(relativePathName);
+      // FIXME
+      FragmentConfigFile config = new FragmentConfigFile(f, relPath, relativePathName);
       ConfigItem currentItem = null;
 
       String line = null;
@@ -169,8 +157,8 @@ public class ConfigFileLoader {
           if (item != null) {
             if (item instanceof FragmentConfigFile) {
               FragmentConfigFile fc = (FragmentConfigFile) item;
-              System.out.println("--> will load fragment: " + fc.getFileName());
-              fc = loadFragmentFile(f, fc.getFileName());
+              System.out.println("--> will load fragment: " + fc.getIncluderRelativePath());
+              fc = loadFragmentFile(f, relPath, fc.getIncluderRelativePath());
               config.addConfigItem(fc);
               currentItem = fc;
             } else {
@@ -215,6 +203,8 @@ public class ConfigFileLoader {
     }
 
   }
+
+  // Simple parser
 
   private static final String SETTINGS_PROMPT = "settings:";
   private static final String TABLE_DAO_PROMPT = "table:";
@@ -261,11 +251,14 @@ public class ConfigFileLoader {
       NameContent nc = new NameContent(line, SETTINGS_PROMPT);
       return new Settings(nc);
     } else if (line.startsWith(FRAGMENT_PROMPT)) {
-      String fileName = line.substring(FRAGMENT_PROMPT.length()).trim();
-      if (fileName.isEmpty()) {
+      String relativeFileName = line.substring(FRAGMENT_PROMPT.length()).trim();
+      if (relativeFileName.isEmpty()) {
         throw new FaultyConfigFileException(lineNumber, "The fragment dao must have a name.");
       }
-      return new FragmentConfigFile(fileName);
+      File fragment = new File(relativeFileName);
+      System.out.println("[FRAGMENT] relativeFileName=" + relativeFileName + " file=" + fragment.getPath());
+      // FIXME
+      return new FragmentConfigFile(fragment, null, relativeFileName);
     } else {
       return null;
     }

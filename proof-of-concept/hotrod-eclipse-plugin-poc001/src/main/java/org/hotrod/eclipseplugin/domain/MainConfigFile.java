@@ -4,10 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hotrod.eclipseplugin.treeview.FaceProducer.RelativeProjectPath;
+
 public class MainConfigFile {
 
   // Properties
 
+  protected RelativeProjectPath relativeProjectPath;
   protected String fullPathName;
   protected String folder;
   protected String shortName;
@@ -15,11 +18,12 @@ public class MainConfigFile {
 
   // Constructor
 
-  public MainConfigFile(final String fullPathName) {
+  public MainConfigFile(final File f, final RelativeProjectPath relativeProjectPath) {
     super();
-    this.fullPathName = fullPathName;
-    this.folder = new File(fullPathName).getParent();
-    this.shortName = new File(fullPathName).getName();
+    this.relativeProjectPath = relativeProjectPath;
+    this.fullPathName = f.getAbsolutePath();
+    this.folder = f.getParent();
+    this.shortName = f.getName();
   }
 
   // Populate
@@ -36,6 +40,10 @@ public class MainConfigFile {
 
   public String getFolder() {
     return folder;
+  }
+
+  public RelativeProjectPath getRelativeProjectPath() {
+    return relativeProjectPath;
   }
 
   public String getShortName() {

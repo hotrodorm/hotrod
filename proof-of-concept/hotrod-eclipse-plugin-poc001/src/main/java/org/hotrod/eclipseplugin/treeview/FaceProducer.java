@@ -1,9 +1,11 @@
 package org.hotrod.eclipseplugin.treeview;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.hotrod.eclipseplugin.domain.ConfigItem;
 import org.hotrod.eclipseplugin.domain.MainConfigFile;
 import org.hotrod.eclipseplugin.domain.loader.ConfigFileLoader;
@@ -13,33 +15,20 @@ import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemExc
 
 public class FaceProducer {
 
-  // Properties
+  public static MainConfigFace load(final HotRodViewContentProvider provider, final File f) {
 
-//  public static final boolean USE_INTERNAL_CONFIG = false;
+    RelativeProjectPath path = RelativeProjectPath.findProjectPath(f);
+    if (path == null) {
+      return null;
+    }
 
-//  private List<MainConfigFace> mainConfigElements = null;
+    MainConfigFace mainConfigFace = new MainConfigFace(f, path, provider);
 
-  // Constructor
-
-//  public FaceProducer(final HotRodViewContentProvider provider, final List<String> fileNames) {
-//    if (USE_INTERNAL_CONFIG) {
-//      generateInternalConfig(provider);
-//    } else {
-//      this.mainConfigElements = new ArrayList<MainConfigFace>();
-//      for (String fileName : fileNames) {
-//        load(provider, fileName);
-//      }
-//    }
-//    setUnmodified();
-//  }
-
-  public static MainConfigFace load(final HotRodViewContentProvider provider, final String fullPathName) {
-    File f = new File(fullPathName);
-    MainConfigFace mainConfigFace = new MainConfigFace(f.getName(), f.getParent(), provider);
+    // Load the file
 
     MainConfigFile config;
     try {
-      config = ConfigFileLoader.loadMainFile(fullPathName);
+      config = ConfigFileLoader.loadMainFile(f, path);
       mainConfigFace.setValid(true);
     } catch (UnreadableConfigFileException e) {
       mainConfigFace.setValid(false);
@@ -48,109 +37,92 @@ public class FaceProducer {
       mainConfigFace.setValid(false);
       return mainConfigFace;
     }
+
+    // Assemble the view
+
     for (ConfigItem item : config.getConfigItems()) {
       try {
         AbstractFace face = FaceFactory.getFace(item);
         mainConfigFace.addChild(face);
       } catch (InvalidConfigurationItemException e) {
-        mainConfigFace = new MainConfigFace(f.getName(), f.getParent(), provider);
+        mainConfigFace = new MainConfigFace(f, path, provider);
         mainConfigFace.setValid(false);
         return mainConfigFace;
       }
     }
     mainConfigFace.setValid(true);
     mainConfigFace.setUnmodified();
+
     return mainConfigFace;
   }
 
-//  private void generateInternalConfig(final HotRodViewContentProvider provider) {
-    // FragmentConfigElement f1 = new
-    // FragmentConfigElement("hotrod-fragment-1.xml");
-    //
-    // f1.addChild(new TableElement("customer"));
-    //
-    // f1.addChild(new ViewElement("new_supplier"));
-    //
-    // ExecutorElement d1 = new ExecutorElement("AccountingDAO");
-    // f1.addChild(d1);
-    // d1.addChild(new SelectElement("retrieveRevenueByLine"));
-    // d1.addChild(new SelectElement("retrieveCostByRegion"));
-    //
-    // FragmentConfigElement f2 = new
-    // FragmentConfigElement("hotrod-fragment-2.xml");
-    // f2.addChild(new TableElement("client"));
-    //
-    // MainConfigElement c1 = new MainConfigElement("hotrod-1.xml", provider);
-    //
-    // c1.addChild(new SettingsElement());
-    //
-    // TableElement t1 = new TableElement("product");
-    // c1.addChild(t1);
-    // t1.addChild(new QueryElement("applyPromotion74"));
-    // t1.addChild(new SelectElement("getVIPProducts"));
-    // t1.addChild(new SelectElement("getProductSummary"));
-    // t1.addChild(new SequenceElement("selectSequenceProduct"));
-    // t1.addChild(new QueryElement("applyPromotion75"));
-    // t1.addChild(new SelectElement("getCountryProductTree"));
-    //
-    // ViewElement v1 = new ViewElement("hot_product");
-    // c1.addChild(v1);
-    // v1.addChild(new SelectElement("getBranchHotProducts"));
-    // v1.addChild(new QueryElement("addHotProduct"));
-    // v1.addChild(new SequenceElement("selectSequenceOrder"));
-    // v1.addChild(new SequenceElement("selectSequenceSKU"));
-    // v1.addChild(new QueryElement("removeHotProduct"));
-    // v1.addChild(new SelectElement("getRegionHotProducts"));
-    //
-    // EnumElement e1 = new EnumElement("region");
-    // c1.addChild(e1);
-    // e1.addChild(new SelectElement("getMonthlySummary"));
-    // e1.addChild(new QueryElement("closeMonth"));
-    // e1.addChild(new SequenceElement("selectSequenceMonthId"));
-    // e1.addChild(new SelectElement("getAnnualSummary"));
-    //
-    // TableElement t2 = new TableElement("catalog");
-    // c1.addChild(t2);
-    // t2.addChild(new SelectElement("getCategories"));
-    // t2.addChild(new QueryElement("refresh"));
-    //
-    // ConverterElement conv1 = new ConverterElement("boolean-as-int");
-    // c1.addChild(conv1);
-    //
-    // ConverterElement conv2 = new ConverterElement("region-type");
-    // c1.addChild(conv2);
-    //
-    // ExecutorElement d2 = new ExecutorElement("OrdersDAO");
-    // c1.addChild(d2);
-    // d2.addChild(new QueryElement("chargeOrder"));
-    // d2.addChild(new QueryElement("cancelOrder"));
-    // d2.addChild(new QueryElement("fulfillOrder"));
-    // d2.addChild(new QueryElement("closeOrder"));
-    // d2.addChild(new QueryElement("reopenOrder"));
-    // d2.addChild(new SequenceElement("selectSequenceGlobalId"));
-    //
-    // c1.addChild(f1);
-    // c1.addChild(f2);
-    //
-    // MainConfigElement c2 = new MainConfigElement("hotrod-2.xml", provider);
-    // c2.addChild(new SettingsElement());
-    // c2.addChild(new TableElement("employee"));
-    //
-    // this.mainConfigs = new ArrayList<MainConfigElement>();
-    // this.mainConfigs.add(c1);
-    // this.mainConfigs.add(c2);
-    //
-    // setUnmodified();
-//  }
+  // Utilities
 
-//  public void setUnmodified() {
-//    for (MainConfigFace e : this.mainConfigElements) {
-//      e.setUnmodified();
-//    }
-//  }
+  public static class RelativeProjectPath {
 
-//  public List<MainConfigFace> getConfigs() {
-//    return this.mainConfigElements;
-//  }
+    private IProject project;
+    private String relativePath;
+    private String fileName;
+
+    public RelativeProjectPath(final IProject project, final String relativePath, final String fileName) {
+      this.project = project;
+      this.relativePath = relativePath;
+      this.fileName = fileName;
+      System.out.println("***    relativePath=" + relativePath);
+    }
+
+    public IProject getProject() {
+      return project;
+    }
+
+    public String getRelativePath() {
+      return relativePath;
+    }
+
+    public String getFileName() {
+      return fileName;
+    }
+
+    // Utilities
+
+    public static RelativeProjectPath findRelativePath(final IProject project, final File f) {
+      String parentPath = f.getParent();
+      String fileName = f.getName();
+
+      IPath projectIPath = project.getLocation();
+      String projectPath = projectIPath.toFile().getAbsolutePath();
+      String head = projectPath + File.separator;
+      if (parentPath.equals(projectPath)) {
+        return new RelativeProjectPath(project, "", fileName);
+      }
+      if (parentPath.startsWith(head)) {
+        String relativePath = parentPath.substring(head.length());
+        return new RelativeProjectPath(project, relativePath, fileName);
+      }
+      return null;
+    }
+
+    public static RelativeProjectPath findProjectPath(final File f) {
+      String parentPath = f.getParent();
+      String fileName = f.getName();
+      IWorkspace workspace = ResourcesPlugin.getWorkspace();
+      for (IProject project : workspace.getRoot().getProjects()) {
+        if (project.exists() && project.isOpen()) {
+          IPath projectIPath = project.getLocation();
+          String projectPath = projectIPath.toFile().getAbsolutePath();
+          String head = projectPath + File.separator;
+          if (parentPath.equals(projectPath)) {
+            return new RelativeProjectPath(project, "", fileName);
+          }
+          if (parentPath.startsWith(head)) {
+            String relativePath = parentPath.substring(head.length());
+            return new RelativeProjectPath(project, relativePath, fileName);
+          }
+        }
+      }
+      return null;
+    }
+
+  }
 
 }

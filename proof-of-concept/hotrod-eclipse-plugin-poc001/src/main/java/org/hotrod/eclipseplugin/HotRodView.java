@@ -1,5 +1,8 @@
 package org.hotrod.eclipseplugin;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -12,6 +15,7 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -23,8 +27,10 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.hotrod.eclipseplugin.treeview.AbstractFace;
 import org.hotrod.eclipseplugin.treeview.HotRodLabelProvider;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
+import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 
 public class HotRodView extends ViewPart {
 
@@ -251,7 +257,24 @@ public class HotRodView extends ViewPart {
     actionRemoveFile = new Action() {
       @Override
       public void run() {
-        showMessage("Remove File - executed");
+
+        // System.out.println("--- Removing selection...");
+
+        TreeSelection selection = (TreeSelection) viewer.getSelection();
+        Set<MainConfigFace> mainConfigFaces = new HashSet<MainConfigFace>();
+        for (Object obj : selection.toList()) {
+          // System.out.println("SELECTION: obj=" + obj + (obj != null ? " (" +
+          // obj.getClass().getName() + ")" : ""));
+          AbstractFace face = (AbstractFace) obj;
+          mainConfigFaces.add(face.getMainConfigFace());
+        }
+        for (MainConfigFace f : mainConfigFaces) {
+          // System.out.println(" --> removing face: " + f.getAbsolutePath());
+          f.remove();
+        }
+
+        // showMessage("Remove File - executed");
+        // System.out.println("--- Removing selection COMPLETED");
       }
     };
     actionRemoveFile.setText("Remove File");
@@ -264,7 +287,7 @@ public class HotRodView extends ViewPart {
     actionRemoveAllFiles = new Action() {
       @Override
       public void run() {
-        showMessage("Remove All Files - executed");
+        // showMessage("Remove All Files - executed");
         hotRodViewContentProvider.getFiles().removeAll();
       }
     };

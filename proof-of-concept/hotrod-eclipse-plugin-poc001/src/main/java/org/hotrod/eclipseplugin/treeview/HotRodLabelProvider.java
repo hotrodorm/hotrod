@@ -33,12 +33,14 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
       try {
         MainConfigFace face = (MainConfigFace) obj; // main config
         styledString = new StyledString(face.getLabel());
-        styledString.append("  [config/hotrod]", StyledString.DECORATIONS_STYLER);
+        String relativePath = face.getRelativePath().isEmpty() ? "." : face.getRelativePath();
+        styledString.append(" [" + relativePath + "]", StyledString.DECORATIONS_STYLER);
       } catch (ClassCastException e2) {
         try {
           FragmentConfigFace fragmentFace = (FragmentConfigFace) obj; // fragment
           styledString = new StyledString(fragmentFace.getLabel());
-          styledString.append("  [.]", StyledString.DECORATIONS_STYLER);
+          String relativePath = fragmentFace.getRelativePath().isEmpty() ? "." : fragmentFace.getRelativePath();
+          styledString.append("  [" + relativePath + "]", StyledString.DECORATIONS_STYLER);
         } catch (ClassCastException e3) {
           try {
             AbstractMethodFace face = (AbstractMethodFace) obj; // method

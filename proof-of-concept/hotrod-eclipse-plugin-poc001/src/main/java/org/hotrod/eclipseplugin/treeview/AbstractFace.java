@@ -61,6 +61,14 @@ public abstract class AbstractFace implements IAdaptable {
     return this.parent != null ? this.parent.getViewer() : null;
   }
 
+  public MainConfigFace getMainConfigFace() {
+    return this.parent.getMainConfigFace();
+  }
+
+  public HotRodViewContentProvider getProvider() {
+    return this.parent != null ? this.parent.getProvider() : null;
+  }
+
   public void refreshView() {
     TreeViewer viewer = this.getViewer();
     if (viewer != null) {
