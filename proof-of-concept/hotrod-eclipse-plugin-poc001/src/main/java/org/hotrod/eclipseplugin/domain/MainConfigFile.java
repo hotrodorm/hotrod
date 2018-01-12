@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrod.eclipseplugin.treeview.FaceProducer.RelativeProjectPath;
+import org.hotrod.eclipseplugin.domain.loader.FaceProducer.RelativeProjectPath;
 
 public class MainConfigFile {
 

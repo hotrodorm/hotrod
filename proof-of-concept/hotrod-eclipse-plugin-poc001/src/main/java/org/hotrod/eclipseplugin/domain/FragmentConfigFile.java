@@ -2,7 +2,7 @@ package org.hotrod.eclipseplugin.domain;
 
 import java.io.File;
 
-import org.hotrod.eclipseplugin.treeview.FaceProducer.RelativeProjectPath;
+import org.hotrod.eclipseplugin.domain.loader.FaceProducer.RelativeProjectPath;
 
 public class FragmentConfigFile extends MainConfigFile implements ConfigItem {
 

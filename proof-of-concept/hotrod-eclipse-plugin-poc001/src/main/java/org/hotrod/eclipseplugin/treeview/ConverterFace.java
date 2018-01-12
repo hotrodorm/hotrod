@@ -2,12 +2,12 @@ package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.eclipseplugin.domain.Converter;
 
-public class ConverterFace extends AbstractLeafFace {
+public class ConverterFace extends AbstractFace {
 
   private Converter converter;
 
   public ConverterFace(final Converter converter) {
-    super(converter.getName(), false);
+    super(converter.getName());
     this.converter = converter;
   }
 
@@ -23,7 +23,7 @@ public class ConverterFace extends AbstractLeafFace {
 
   @Override
   public String getTooltip() {
-    return "Converter " + super.getLabel();
+    return "Converter " + super.getName();
   }
 
 }

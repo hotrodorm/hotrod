@@ -4,15 +4,15 @@ import org.hotrod.eclipseplugin.domain.ExecutorDAO;
 import org.hotrod.eclipseplugin.domain.Method;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
-public class ExecutorFace extends AbstractContainerFace {
+public class ExecutorFace extends AbstractFace {
 
   private ExecutorDAO executorDAO;
 
   public ExecutorFace(final ExecutorDAO executorDAO) throws InvalidConfigurationItemException {
-    super(executorDAO.getName(), false);
+    super(executorDAO.getName());
     this.executorDAO = executorDAO;
     for (Method m : this.executorDAO.getMethods()) {
-      AbstractLeafFace leaf = FaceFactory.getMethodElement(m);
+      AbstractFace leaf = FaceFactory.getMethodElement(m);
       super.addChild(leaf);
     }
   }
@@ -29,7 +29,7 @@ public class ExecutorFace extends AbstractContainerFace {
 
   @Override
   public String getTooltip() {
-    return "Executor " + super.getLabel();
+    return "Executor " + super.getName();
   }
 
 }

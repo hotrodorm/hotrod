@@ -43,7 +43,7 @@ public class FaceFactory {
     throw new InvalidConfigurationItemException("Unknown configuration item type '" + item.getClass().getName() + "'.");
   }
 
-  public static AbstractLeafFace getMethodElement(final Method m) throws InvalidConfigurationItemException {
+  public static AbstractFace getMethodElement(final Method m) throws InvalidConfigurationItemException {
     if (m == null) {
       throw new InvalidConfigurationItemException("Cannot produce a method element from a null value.");
     }

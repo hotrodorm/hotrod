@@ -7,7 +7,7 @@ public class SelectFace extends AbstractMethodFace {
   private SelectMethod method;
 
   public SelectFace(final SelectMethod method) {
-    super(method.getName(), false);
+    super(method.getName());
     this.method = method;
   }
 
@@ -23,7 +23,7 @@ public class SelectFace extends AbstractMethodFace {
 
   @Override
   public String getTooltip() {
-    return "SQL select " + super.getLabel();
+    return "SQL select " + super.getName();
   }
 
 }

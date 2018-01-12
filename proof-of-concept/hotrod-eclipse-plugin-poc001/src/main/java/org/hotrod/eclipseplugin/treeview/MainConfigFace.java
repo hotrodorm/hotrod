@@ -4,9 +4,9 @@ import java.io.File;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.hotrod.eclipseplugin.treeview.FaceProducer.RelativeProjectPath;
+import org.hotrod.eclipseplugin.domain.loader.FaceProducer.RelativeProjectPath;
 
-public class MainConfigFace extends AbstractContainerFace implements Comparable<MainConfigFace> {
+public class MainConfigFace extends AbstractFace implements Comparable<MainConfigFace> {
 
   private HotRodViewContentProvider provider;
   private String absolutePath;
@@ -17,7 +17,7 @@ public class MainConfigFace extends AbstractContainerFace implements Comparable<
   // Constructors
 
   public MainConfigFace(final File f, final RelativeProjectPath path, final HotRodViewContentProvider provider) {
-    super(path.getFileName(), false);
+    super(path.getFileName());
     this.absolutePath = f.getAbsolutePath();
     this.project = path.getProject();
     this.relativePath = path.getRelativePath();
@@ -74,7 +74,7 @@ public class MainConfigFace extends AbstractContainerFace implements Comparable<
 
   @Override
   public String getTooltip() {
-    return "HotRod Main Configuration file " + super.getLabel();
+    return "HotRod Configuration File " + super.getName();
   }
 
   @Override

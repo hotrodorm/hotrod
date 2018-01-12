@@ -1,9 +1,9 @@
 package org.hotrod.eclipseplugin.treeview;
 
-public abstract class AbstractMethodFace extends AbstractLeafFace {
+public abstract class AbstractMethodFace extends AbstractFace {
 
-  public AbstractMethodFace(final String name, final boolean modified) {
-    super(name, modified);
+  public AbstractMethodFace(final String name) {
+    super(name);
   }
 
 }

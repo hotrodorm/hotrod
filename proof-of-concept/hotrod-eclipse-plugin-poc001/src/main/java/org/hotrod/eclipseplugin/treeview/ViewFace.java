@@ -4,15 +4,15 @@ import org.hotrod.eclipseplugin.domain.Method;
 import org.hotrod.eclipseplugin.domain.ViewDAO;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
-public class ViewFace extends AbstractContainerFace {
+public class ViewFace extends AbstractFace {
 
   private ViewDAO viewDAO;
 
   public ViewFace(final ViewDAO viewDAO) throws InvalidConfigurationItemException {
-    super(viewDAO.getName(), false);
+    super(viewDAO.getName());
     this.viewDAO = viewDAO;
     for (Method m : this.viewDAO.getMethods()) {
-      AbstractLeafFace leaf = FaceFactory.getMethodElement(m);
+      AbstractFace leaf = FaceFactory.getMethodElement(m);
       super.addChild(leaf);
     }
   }
@@ -38,7 +38,7 @@ public class ViewFace extends AbstractContainerFace {
 
   @Override
   public String getTooltip() {
-    return "View " + super.getLabel();
+    return "View " + super.getName();
   }
 
 }

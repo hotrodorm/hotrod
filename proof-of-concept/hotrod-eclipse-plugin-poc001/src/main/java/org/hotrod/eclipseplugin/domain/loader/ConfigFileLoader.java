@@ -20,7 +20,7 @@ import org.hotrod.eclipseplugin.domain.SequenceMethod;
 import org.hotrod.eclipseplugin.domain.Settings;
 import org.hotrod.eclipseplugin.domain.TableDAO;
 import org.hotrod.eclipseplugin.domain.ViewDAO;
-import org.hotrod.eclipseplugin.treeview.FaceProducer.RelativeProjectPath;
+import org.hotrod.eclipseplugin.domain.loader.FaceProducer.RelativeProjectPath;
 
 public class ConfigFileLoader {
 
@@ -41,7 +41,7 @@ public class ConfigFileLoader {
       String line = null;
       int lineNumber = 1;
       while ((line = r.readLine()) != null) {
-        if (!line.trim().isEmpty()) {
+        if (!line.trim().isEmpty() && !line.trim().startsWith("#")) {
           ConfigItem item = tryReadingItem(line, lineNumber);
           if (item != null) {
             if (item instanceof FragmentConfigFile) {
@@ -145,14 +145,13 @@ public class ConfigFileLoader {
 
       r = new BufferedReader(new FileReader(f));
 
-      // FIXME
       FragmentConfigFile config = new FragmentConfigFile(f, relPath, relativePathName);
       ConfigItem currentItem = null;
 
       String line = null;
       int lineNumber = 1;
       while ((line = r.readLine()) != null) {
-        if (!line.trim().isEmpty()) {
+        if (!line.trim().isEmpty() && !line.trim().startsWith("#")) {
           ConfigItem item = tryReadingItem(line, lineNumber);
           if (item != null) {
             if (item instanceof FragmentConfigFile) {

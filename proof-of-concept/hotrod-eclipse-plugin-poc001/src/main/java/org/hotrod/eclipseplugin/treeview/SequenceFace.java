@@ -7,7 +7,7 @@ public class SequenceFace extends AbstractMethodFace {
   private SequenceMethod method;
 
   public SequenceFace(final SequenceMethod method) {
-    super(method.getName(), false);
+    super(method.getName());
     this.method = method;
   }
 
@@ -24,7 +24,7 @@ public class SequenceFace extends AbstractMethodFace {
 
   @Override
   public String getTooltip() {
-    return "Get SQL sequence " + super.getLabel();
+    return "Get SQL sequence " + super.getName();
   }
 
 }

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.hotrod.eclipseplugin.treeview.FaceProducer;
+import org.hotrod.eclipseplugin.domain.loader.FaceProducer;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 

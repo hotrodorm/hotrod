@@ -1,12 +1,12 @@
-settings: settings 1
+settings: settings
 
-table: product2
+table: product
   query: applyPromotion74
   select: getVIPProducs
   select: getProductSummary
   sequence: selectSequenceProduct
-  query: applyPromotion75
-  select: getCountryProductTree
+  # query: applyPromotion75
+  # select: getCountryProductTree
 
 view: hot_product
   select: getBranchHotProducts
@@ -33,10 +33,10 @@ converter: region-type
 executor: OrdersDAO
   query: chargeOrder
   query: cancelOrder
-  query: fulfillOrder
-  query: closeOrder
-  query: reopenOrder
-  sequence: selectSequenceGlobalId
+  # query: fulfillOrder
+  # query: closeOrder
+  # query: reopenOrder
+  # sequence: selectSequenceGlobalId
 
 fragment: hotrod-fragment-1.xml
 

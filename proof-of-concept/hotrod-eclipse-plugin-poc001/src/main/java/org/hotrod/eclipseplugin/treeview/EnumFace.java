@@ -4,15 +4,15 @@ import org.hotrod.eclipseplugin.domain.EnumDAO;
 import org.hotrod.eclipseplugin.domain.Method;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
-public class EnumFace extends AbstractContainerFace {
+public class EnumFace extends AbstractFace {
 
   private EnumDAO enumDAO;
 
   public EnumFace(final EnumDAO enumDAO) throws InvalidConfigurationItemException {
-    super(enumDAO.getName(), false);
+    super(enumDAO.getName());
     this.enumDAO = enumDAO;
     for (Method m : this.enumDAO.getMethods()) {
-      AbstractLeafFace leaf = FaceFactory.getMethodElement(m);
+      AbstractFace leaf = FaceFactory.getMethodElement(m);
       super.addChild(leaf);
     }
   }
@@ -32,7 +32,7 @@ public class EnumFace extends AbstractContainerFace {
 
   @Override
   public String getTooltip() {
-    return "Table " + super.getLabel();
+    return "Table " + super.getName();
   }
 
 }

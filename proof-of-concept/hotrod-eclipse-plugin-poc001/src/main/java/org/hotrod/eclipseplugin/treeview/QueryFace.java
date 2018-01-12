@@ -7,7 +7,7 @@ public class QueryFace extends AbstractMethodFace {
   private QueryMethod method;
 
   public QueryFace(final QueryMethod method) {
-    super(method.getName(), false);
+    super(method.getName());
     this.method = method;
   }
 
@@ -24,7 +24,7 @@ public class QueryFace extends AbstractMethodFace {
 
   @Override
   public String getTooltip() {
-    return "SQL query " + super.getLabel();
+    return "SQL query " + super.getName();
   }
 
 }

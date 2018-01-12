@@ -1,4 +1,4 @@
-package org.hotrod.eclipseplugin.treeview;
+package org.hotrod.eclipseplugin.domain.loader;
 
 import java.io.File;
 
@@ -8,10 +8,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.hotrod.eclipseplugin.domain.ConfigItem;
 import org.hotrod.eclipseplugin.domain.MainConfigFile;
-import org.hotrod.eclipseplugin.domain.loader.ConfigFileLoader;
-import org.hotrod.eclipseplugin.domain.loader.FaultyConfigFileException;
-import org.hotrod.eclipseplugin.domain.loader.UnreadableConfigFileException;
+import org.hotrod.eclipseplugin.treeview.AbstractFace;
+import org.hotrod.eclipseplugin.treeview.FaceFactory;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
+import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
+import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 
 public class FaceProducer {
 
@@ -51,7 +52,17 @@ public class FaceProducer {
       }
     }
     mainConfigFace.setValid(true);
-    mainConfigFace.setUnmodified();
+    mainConfigFace.setUnchanged();
+
+    // // TODO: remove
+     if (f.getName().equals("hotrod-1.xml")) {
+     System.out.println("MODIFYING...");
+//     mainConfigFace.getChildren().get(0).setDeleted();
+     mainConfigFace.getChildren()[0].setDeleted();
+//     mainConfigFace.getChildren()[1].setModified();
+//     mainConfigFace.getChildren()[2].setAdded();
+//     mainConfigFace.getChildren()[2].setGenerating(true);
+     }
 
     return mainConfigFace;
   }

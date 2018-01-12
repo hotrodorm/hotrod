@@ -40,16 +40,16 @@ public class HotRodViewContentProvider implements ITreeContentProvider {
 
   @Override
   public boolean hasChildren(final Object parent) {
-    if (parent instanceof AbstractContainerFace) {
-      return ((AbstractContainerFace) parent).hasChildren();
+    if (parent instanceof AbstractFace) {
+      return ((AbstractFace) parent).hasChildren();
     }
     return false;
   }
 
   @Override
   public Object[] getChildren(final Object parent) {
-    if (parent instanceof AbstractContainerFace) {
-      return ((AbstractContainerFace) parent).getChildren();
+    if (parent instanceof AbstractFace) {
+      return ((AbstractFace) parent).getChildren();
     }
     return new Object[0];
   }

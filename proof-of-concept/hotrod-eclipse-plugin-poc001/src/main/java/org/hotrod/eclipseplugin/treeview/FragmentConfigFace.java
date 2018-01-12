@@ -6,14 +6,14 @@ import org.hotrod.eclipseplugin.domain.ConfigItem;
 import org.hotrod.eclipseplugin.domain.FragmentConfigFile;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
-public class FragmentConfigFace extends AbstractContainerFace {
+public class FragmentConfigFace extends AbstractFace {
 
   private static final boolean SHOW_PROJECT_RELATIVE_PATH = true;
 
   private FragmentConfigFile fragment;
 
   public FragmentConfigFace(final FragmentConfigFile fragment) throws InvalidConfigurationItemException {
-    super(fragment.getShortName(), false);
+    super(fragment.getShortName());
     this.fragment = fragment;
     for (ConfigItem item : this.fragment.getConfigItems()) {
       AbstractFace element = FaceFactory.getFace(item);
@@ -44,7 +44,7 @@ public class FragmentConfigFace extends AbstractContainerFace {
 
   @Override
   public String getTooltip() {
-    return "HotRod fragment file " + super.getLabel();
+    return "HotRod fragment file " + super.getName();
   }
 
 }
