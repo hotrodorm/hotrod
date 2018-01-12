@@ -3,6 +3,8 @@ package org.hotrod.eclipseplugin;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -69,6 +71,8 @@ public class HotRodView extends ViewPart {
 
   private HotRodViewContentProvider hotRodViewContentProvider;
 
+  private IResourceChangeListener fileSystemListener;
+
   // Constructor
 
   public HotRodView() {
@@ -107,7 +111,15 @@ public class HotRodView extends ViewPart {
     // TreeMouseListener mouseListener = new TreeMouseListener(this.viewer);
     // viewer.getTree().addMouseTrackListener(mouseListener);
 
+    // this.fileSystemListener = new FileSystemChangesTestListener();
+    this.fileSystemListener = new FileSystemChangesListener(this.hotRodViewContentProvider.getFiles());
+    ResourcesPlugin.getWorkspace().addResourceChangeListener(this.fileSystemListener);
+
     this.hotRodViewContentProvider.setVisible(true);
+  }
+
+  public void dispose() {
+    ResourcesPlugin.getWorkspace().removeResourceChangeListener(this.fileSystemListener);
   }
 
   private void configureToolBar() {
@@ -331,4 +343,5 @@ public class HotRodView extends ViewPart {
   public void setFocus() {
     viewer.getControl().setFocus();
   }
+
 }

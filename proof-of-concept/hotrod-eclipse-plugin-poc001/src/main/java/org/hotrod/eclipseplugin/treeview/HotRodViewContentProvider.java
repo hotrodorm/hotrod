@@ -67,7 +67,6 @@ public class HotRodViewContentProvider implements ITreeContentProvider {
 
   public void removeFace(final MainConfigFace face) {
     this.files.remove(face);
-    this.refresh();
   }
 
   public void refresh() {

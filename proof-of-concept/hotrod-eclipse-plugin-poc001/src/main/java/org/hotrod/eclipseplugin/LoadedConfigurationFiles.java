@@ -7,11 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.hotrod.eclipseplugin.FileSystemChangesListener.FileChangeListener;
 import org.hotrod.eclipseplugin.domain.loader.FaceProducer;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 
-public class LoadedConfigurationFiles {
+public class LoadedConfigurationFiles implements FileChangeListener {
 
   private static final String VALID_HOTROD_EXTENSION = ".xml";
 
@@ -45,6 +46,17 @@ public class LoadedConfigurationFiles {
 
   public void remove(final MainConfigFace face) {
     this.loadedFiles.remove(face.getAbsolutePath());
+    this.provider.refresh();
+  }
+
+  public void reload(final MainConfigFace face) {
+    File f = new File(face.getAbsolutePath());
+    MainConfigFace nf = FaceProducer.load(this.provider, f);
+    if (nf != null) {
+      this.remove(face);
+      this.loadedFiles.put(nf.getAbsolutePath(), nf);
+      this.provider.refresh();
+    }
   }
 
   public void removeAll() {
@@ -58,6 +70,42 @@ public class LoadedConfigurationFiles {
     ArrayList<MainConfigFace> list = new ArrayList<MainConfigFace>(loadedFiles.values());
     Collections.sort(list);
     return list;
+  }
+
+  // FileChangesListener
+
+  @Override
+  public void informFileAdded(final File f) {
+    System.out.println("  --> received file added: " + f.getAbsolutePath());
+    // Ignore
+  }
+
+  @Override
+  public void informFileRemoved(final File f) {
+    System.out.println("  --> received file removed: " + f.getAbsolutePath());
+    String fullPathName = f.getAbsolutePath();
+    printLoadedFiles();
+    if (this.loadedFiles.containsKey(fullPathName)) {
+      System.out.println("  >> Found to remove");
+      this.remove(this.loadedFiles.get(fullPathName));
+    } else {
+      System.out.println("  >> NOT Found to remove");
+    }
+  }
+
+  @Override
+  public void informFileChanged(final File f) {
+    System.out.println("  --> received file changed: " + f.getAbsolutePath());
+    String fullPathName = f.getAbsolutePath();
+    if (this.loadedFiles.containsKey(fullPathName)) {
+      this.reload(this.loadedFiles.get(fullPathName));
+    }
+  }
+
+  private void printLoadedFiles() {
+    for (String p : this.loadedFiles.keySet()) {
+      System.out.println("## currently loaded: " + p);
+    }
   }
 
 }
