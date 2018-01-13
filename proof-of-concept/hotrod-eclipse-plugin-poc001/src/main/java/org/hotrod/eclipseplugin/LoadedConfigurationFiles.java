@@ -1,12 +1,19 @@
 package org.hotrod.eclipseplugin;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.hotrod.eclipseplugin.FileSystemChangesListener.FileChangeListener;
 import org.hotrod.eclipseplugin.domain.loader.FaceProducer;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
@@ -39,6 +46,35 @@ public class LoadedConfigurationFiles implements FileChangeListener {
         if (face != null) {
           this.loadedFiles.put(absolutePath, face);
           this.provider.refresh();
+
+          // TODO: remove
+          // Create a file
+          try {
+            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("project002");
+            String name = "f-" + System.currentTimeMillis() + ".txt";
+            IFile ifile = project.getFile(name);
+
+            byte[] bytes = "File contents".getBytes();
+            InputStream source = new ByteArrayInputStream(bytes);
+            ifile.create(source, IResource.NONE, null);
+          } catch (CoreException e) {
+            e.printStackTrace();
+          }
+
+          // TODO: remove
+          // update a file
+          try {
+            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("project002");
+            String name = "existing-file.txt";
+            IFile ifile = project.getFile(name);
+
+            byte[] bytes = ("File contents at " + System.currentTimeMillis()).getBytes();
+            InputStream source = new ByteArrayInputStream(bytes);
+            ifile.setContents(source, IResource.FORCE, null);
+          } catch (CoreException e) {
+            e.printStackTrace();
+          }
+
         }
       }
     }
