@@ -43,15 +43,15 @@ The HotRod "View":
          
 Research how to:
 ================
- * Add a tree "form" that lists all the fragments, with DAO state indicators.
- * Drag and Drop one or more HotRod config files into the new view.
- * Add functional buttons to the HotRod View tool bar.
+ * [DONE] Add a tree "form" that lists all the fragments, with DAO state indicators.
+ * [DONE] Drag and Drop one or more HotRod config files into the new view.
+ * [DONE] Add functional buttons to the HotRod View tool bar.
+ * [DONE] File listener: automatic reload when a config file changes. Mark all dirty DAOs.
+ * [DONE] Reload the affected java source trees on success and failure conditions.
+ * Shows execution errors in the Console View.
+ * Double on a tree face loads the source file at the specific line. 
  * Set JDBC properties for each HotRod config file (driver class path, driver class, url, user, pass, catalog, schema, etc.)
  * Dynamically load a JDBC driver classpath for each HotRod config file separately.
- * Shows execution errors in the Console View.
- * File listener: automatic reload when a config file changes. Mark all dirty DAOs.
- * Reload the affected java source trees on success and failure conditions.
- 
  
  
  
