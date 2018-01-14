@@ -82,7 +82,6 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
   public void remove(final MainConfigFace face) {
     this.loadedFiles.remove(face.getAbsolutePath());
-    this.provider.refresh();
   }
 
   public void reload(final MainConfigFace face) {
@@ -91,13 +90,11 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     if (nf != null) {
       this.remove(face);
       this.loadedFiles.put(nf.getAbsolutePath(), nf);
-      this.provider.refresh();
     }
   }
 
   public void removeAll() {
     this.loadedFiles.clear();
-    this.provider.refresh();
   }
 
   // Getters
@@ -111,31 +108,36 @@ public class LoadedConfigurationFiles implements FileChangeListener {
   // FileChangesListener
 
   @Override
-  public void informFileAdded(final File f) {
+  public boolean informFileAdded(final File f) {
     System.out.println("  --> received file added: " + f.getAbsolutePath());
-    // Ignore
+    // Ignore new file
+    return false;
   }
 
   @Override
-  public void informFileRemoved(final File f) {
+  public boolean informFileRemoved(final File f) {
     System.out.println("  --> received file removed: " + f.getAbsolutePath());
     String fullPathName = f.getAbsolutePath();
     printLoadedFiles();
     if (this.loadedFiles.containsKey(fullPathName)) {
       System.out.println("  >> Found to remove");
       this.remove(this.loadedFiles.get(fullPathName));
+      return true;
     } else {
       System.out.println("  >> NOT Found to remove");
+      return false;
     }
   }
 
   @Override
-  public void informFileChanged(final File f) {
+  public boolean informFileChanged(final File f) {
     System.out.println("  --> received file changed: " + f.getAbsolutePath());
     String fullPathName = f.getAbsolutePath();
     if (this.loadedFiles.containsKey(fullPathName)) {
       this.reload(this.loadedFiles.get(fullPathName));
+      return true;
     }
+    return false;
   }
 
   private void printLoadedFiles() {

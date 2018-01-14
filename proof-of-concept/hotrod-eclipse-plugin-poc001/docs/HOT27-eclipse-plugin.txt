@@ -47,7 +47,7 @@ Research how to:
  * [DONE] Drag and Drop one or more HotRod config files into the new view.
  * [DONE] Add functional buttons to the HotRod View tool bar.
  * [DONE] File listener: automatic reload when a config file changes. Mark all dirty DAOs.
- * [DONE] Reload the affected java source trees on success and failure conditions.
+ * [DONE] Auto reload the modified files (java source, xml, etc.) on success and failure conditions.
  * Shows execution errors in the Console View.
  * Double on a tree face loads the source file at the specific line. 
  * Set JDBC properties for each HotRod config file (driver class path, driver class, url, user, pass, catalog, schema, etc.)

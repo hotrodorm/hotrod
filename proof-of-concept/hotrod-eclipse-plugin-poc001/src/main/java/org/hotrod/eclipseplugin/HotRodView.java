@@ -112,7 +112,8 @@ public class HotRodView extends ViewPart {
     // viewer.getTree().addMouseTrackListener(mouseListener);
 
     // this.fileSystemListener = new FileSystemChangesTestListener();
-    this.fileSystemListener = new FileSystemChangesListener(this.hotRodViewContentProvider.getFiles());
+    this.fileSystemListener = new FileSystemChangesListener(this.hotRodViewContentProvider,
+        this.hotRodViewContentProvider.getFiles());
     ResourcesPlugin.getWorkspace().addResourceChangeListener(this.fileSystemListener);
 
     this.hotRodViewContentProvider.setVisible(true);
@@ -284,6 +285,7 @@ public class HotRodView extends ViewPart {
           // System.out.println(" --> removing face: " + f.getAbsolutePath());
           f.remove();
         }
+        hotRodViewContentProvider.refresh();
 
         // showMessage("Remove File - executed");
         // System.out.println("--- Removing selection COMPLETED");
@@ -301,6 +303,7 @@ public class HotRodView extends ViewPart {
       public void run() {
         // showMessage("Remove All Files - executed");
         hotRodViewContentProvider.getFiles().removeAll();
+        hotRodViewContentProvider.refresh();
       }
     };
     actionRemoveAllFiles.setText("Remove All Files");

@@ -6,45 +6,54 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
+import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 
 public class FileSystemChangesListener implements IResourceChangeListener {
 
-  private FileChangeListener listener = null;
+  private HotRodViewContentProvider provider;
+  private FileChangeListener listener;
 
-  public FileSystemChangesListener(final FileChangeListener listener) {
+  public FileSystemChangesListener(final HotRodViewContentProvider provider, final FileChangeListener listener) {
+    this.provider = provider;
     this.listener = listener;
   }
 
   @Override
   public void resourceChanged(final IResourceChangeEvent event) {
     if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
-      printFileChanges(event.getDelta());
+      boolean refresh = processFileChanges(event.getDelta());
+      if (refresh) {
+        this.provider.refresh();
+      }
     }
   }
 
-  private void printFileChanges(final IResourceDelta delta) {
+  private boolean processFileChanges(final IResourceDelta delta) {
     System.out.println("*** kind=" + renderDeltaKind(delta.getKind()) + " type="
         + renderResourceType(delta.getResource().getType()) + " r=" + delta.getResource().getLocation());
     int kind = delta.getKind();
+    boolean refresh = false;
     if (kind == IResourceDelta.ADDED || kind == IResourceDelta.REMOVED || kind == IResourceDelta.CHANGED) {
       IResource r = delta.getResource();
       if (r.getType() == IResource.FILE) {
+        File file = r.getLocation().toFile();
         switch (kind) {
         case IResourceDelta.ADDED:
-          this.listener.informFileAdded(r.getLocation().toFile());
+          refresh = refresh | this.listener.informFileAdded(file);
           break;
         case IResourceDelta.REMOVED:
-          this.listener.informFileRemoved(r.getLocation().toFile());
+          refresh = refresh | this.listener.informFileRemoved(file);
           break;
         case IResourceDelta.CHANGED:
-          this.listener.informFileChanged(r.getLocation().toFile());
+          refresh = refresh | this.listener.informFileChanged(file);
           break;
         }
       }
       for (IResourceDelta d : delta.getAffectedChildren()) {
-        printFileChanges(d);
+        refresh = refresh | processFileChanges(d);
       }
     }
+    return refresh;
   }
 
   private String renderDeltaKind(final int kind) {
@@ -81,11 +90,11 @@ public class FileSystemChangesListener implements IResourceChangeListener {
 
   public static interface FileChangeListener {
 
-    void informFileAdded(File f);
+    boolean informFileAdded(File f);
 
-    void informFileRemoved(File f);
+    boolean informFileRemoved(File f);
 
-    void informFileChanged(File f);
+    boolean informFileChanged(File f);
   }
 
 }

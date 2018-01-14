@@ -3,6 +3,7 @@ package org.hotrod.eclipseplugin.treeview;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
 import org.hotrod.eclipseplugin.LoadedConfigurationFiles;
 
@@ -72,7 +73,17 @@ public class HotRodViewContentProvider implements ITreeContentProvider {
   public void refresh() {
     TreeViewer v = this.getViewer();
     if (v != null) {
-      v.refresh();
+
+      // Make sure the refresh happens in the singleton UI thread, even when
+      // responding to non-UI events (e.g. file changes). Use:
+      // Display.getDefault().syncExec(...)
+      Display.getDefault().syncExec(new Runnable() {
+        @Override
+        public void run() {
+          getViewer().refresh();
+        }
+      });
+
     }
   }
 
