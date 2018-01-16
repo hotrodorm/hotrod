@@ -4,8 +4,8 @@ public class EnumDAO extends DAO {
 
   private String name;
 
-  public EnumDAO(final String name) {
-    super();
+  public EnumDAO(final String name, final int lineNumber) {
+    super(lineNumber);
     this.name = name;
   }
 

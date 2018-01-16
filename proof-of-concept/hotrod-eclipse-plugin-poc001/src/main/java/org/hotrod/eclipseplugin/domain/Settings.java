@@ -8,13 +8,14 @@ public class Settings implements ConfigItem {
 
   private String name;
   private String content;
+  private int lineNumber;
 
   // Constructor
 
-  public Settings(final NameContent nc) {
-    super();
+  public Settings(final NameContent nc, final int lineNumber) {
     this.name = nc.getName();
     this.content = nc.getContent();
+    this.lineNumber = lineNumber;
   }
 
   // Getters
@@ -58,6 +59,11 @@ public class Settings implements ConfigItem {
     } else if (!name.equals(other.name))
       return false;
     return true;
+  }
+
+  @Override
+  public int getLineNumber() {
+    return this.lineNumber;
   }
 
 }

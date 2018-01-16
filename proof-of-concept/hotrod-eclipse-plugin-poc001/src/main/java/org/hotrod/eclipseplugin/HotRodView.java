@@ -1,10 +1,16 @@
 package org.hotrod.eclipseplugin;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -13,23 +19,37 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.hotrod.eclipseplugin.treeview.AbstractFace;
+import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
 import org.hotrod.eclipseplugin.treeview.HotRodLabelProvider;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
@@ -99,7 +119,7 @@ public class HotRodView extends ViewPart {
     this.viewer.setContentProvider(this.hotRodViewContentProvider);
 
     this.viewer.setInput(getViewSite());
-    this.viewer.setLabelProvider(new HotRodLabelProvider());
+    this.viewer.setLabelProvider(new HotRodLabelProvider(parent));
 
     getSite().setSelectionProvider(this.viewer);
 
@@ -117,6 +137,152 @@ public class HotRodView extends ViewPart {
     ResourcesPlugin.getWorkspace().addResourceChangeListener(this.fileSystemListener);
 
     this.hotRodViewContentProvider.setVisible(true);
+
+    // Test mouse down
+
+    // this.viewer.addTreeListener(listener);
+    //
+    // this.viewer.addListener(SWT.MouseDown, new Listener() {
+    // public void handleEvent(Event event) {
+    // Point point = new Point(event.x, event.y);
+    // TreeItem item = viewer.getItem(point);
+    // if (item != null) {
+    // System.out.println("Mouse down: " + item);
+    // }
+    // }
+    // });
+
+    MouseClickListener mouseListener = new MouseClickListener(this.viewer);
+    this.viewer.getControl().addMouseListener(mouseListener);
+
+  }
+
+  interface LinkOpener {
+    void openLink(Object rowObject);
+  }
+
+  private final class MouseClickListener extends MouseAdapter {
+
+    private final TreeViewer myViewer;
+
+    public MouseClickListener(final TreeViewer viewer) {
+      myViewer = viewer;
+    }
+
+    @Override
+    public void mouseDown(final MouseEvent e) {
+      Point point = new Point(e.x, e.y);
+      ViewerCell cell = myViewer.getCell(point);
+      // if (cell != null && cell.getColumnIndex() == columnIndex) {
+      // Rectangle rect = cell.getTextBounds();
+      // rect.width = cell.getText().length() * charWidth;
+      // if (rect.contains(point))
+      // System.out.println("Cell="+cell);
+
+      if (cell != null) {
+        Object obj = cell.getElement();
+        try {
+          ErrorMessageFace em = (ErrorMessageFace) obj; // error message face
+          System.out.println("THIS IS an error message!");
+
+          // =================================================
+
+          try {
+
+            String filePath = em.getFile(); // "file path" ;
+
+            // filePath = "project002/hotrod-6-bad.xml";
+            filePath = "/home/valarcon/git/hotrod/proof-of-concept/hotrod-eclipse-plugin-poc001/test-workspace/project002/hotrod-7-bad.xml";
+
+//            int lineNumber = em.getLineNumber();
+            int lineNumber = 3;
+
+            System.out.println("... opening: filePath=" + filePath + " line=" + lineNumber);
+
+            IPath fromOSString = Path.fromOSString(filePath);
+            IFile inputFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(fromOSString);
+            System.out.println("... opening: inputFile=" + inputFile);
+
+            if (inputFile != null) {
+
+              // openAsTextFile(line, inputFile);
+              openAsXMLFile(inputFile, lineNumber);
+
+            }
+
+          } catch (PartInitException e1) {
+            // TODO Auto-generated catch block
+            System.out.println("Could not open the text editor.");
+            // e1.printStackTrace();
+            // } catch (BadLocationException e1) {
+            // System.out.println("Line does not exist.");
+            // // TODO Auto-generated catch block
+            // // e1.printStackTrace();
+          } catch (CoreException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+          }
+
+          // ==================================================
+
+        } catch (ClassCastException e2) {
+          System.out.println("Not a mainconfigfile.");
+        }
+      }
+    }
+
+    private void openAsTextFile(int line, IFile inputFile) throws PartInitException, BadLocationException {
+      IWorkbenchPage page1 = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+      IEditorPart openEditor11 = IDE.openEditor(page1, inputFile);
+
+      // org.eclipse.ui.texteditor.ITextEditor a;
+      // org.eclipse.ui.texteditor.ITextEditor2 a2;
+      // org.eclipse.ui.texteditor.ITextEditor3 a3;
+      // org.eclipse.ui.texteditor.ITextEditor4 a4;
+      // org.eclipse.ui.texteditor.ITextEditor5 a5;
+
+      System.out.println("... opening: openEditor11=" + openEditor11);
+
+      // org.eclipse.wst.xml.ui.internal.tabletree.XMLMultiPageEditorPart
+      // ep =
+      // (org.eclipse.wst.xml.ui.internal.tabletree.XMLMultiPageEditorPart)openEditor11;
+      // ep.getEditorSite().getWorkbenchWindow()
+
+      if (openEditor11 instanceof ITextEditor) {
+        System.out.println("... opening: ITextEditor");
+        ITextEditor textEditor = (ITextEditor) openEditor11;
+        IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+        textEditor.selectAndReveal(document.getLineOffset(line - 1), document.getLineLength(line - 1));
+        // } else if (openEditor11 instanceof MultiPageEditorPart) {
+        // System.out.println("... opening: MultiPageEditorPart");
+        // MultiPageEditorPart textEditor = (MultiPageEditorPart)
+        // openEditor11;
+        // textEditor.
+        // IDocument document =
+        // textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+        // textEditor.selectAndReveal(document.getLineOffset(line - 1),
+        // document.getLineLength(line - 1));
+      }
+
+      // org.eclipse.wst.xml.ui.internal.tabletree.XMLMultiPageEditorPart
+      // org.eclipse.ui.part.MultiPageEditorPart
+    }
+
+  }
+
+  private void openAsXMLFile(final IFile ifile, final int lineNumber) throws CoreException {
+
+    IWorkbench wb = PlatformUI.getWorkbench();
+    IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+    IWorkbenchPage page = win.getActivePage();
+
+    IMarker marker;
+    marker = ifile.createMarker(IMarker.TEXT);
+    HashMap<String, Object> map = new HashMap<String, Object>();
+    map.put(IMarker.LINE_NUMBER, lineNumber);
+    marker.setAttributes(map);
+    IDE.openEditor(page, marker);
+    marker.delete();
   }
 
   public void dispose() {

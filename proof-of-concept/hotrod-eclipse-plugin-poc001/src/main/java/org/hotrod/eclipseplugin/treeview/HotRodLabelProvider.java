@@ -4,17 +4,28 @@ import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.TextStyle;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 
 public class HotRodLabelProvider extends StyledCellLabelProvider {
 
+  private Composite parent;
+
   private static Styler changeStyler = null;
+
+  public HotRodLabelProvider(final Composite parent) {
+    super();
+    this.parent = parent;
+  }
 
   private void initializeStyler() {
     if (HotRodLabelProvider.changeStyler == null) {
@@ -74,6 +85,32 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
           MainConfigFace c = (MainConfigFace) obj; // main config
           String relativePath = c.getRelativePath().isEmpty() ? "." : c.getRelativePath();
           label.append(" [" + relativePath + "]", StyledString.DECORATIONS_STYLER);
+
+          // org.eclipse.ui.forms.widgets.Hyperlink.Hyperlink hl;
+
+          // =========================================================================
+
+//          Hyperlink link = new Hyperlink(this.parent, SWT.FILL | SWT.READ_ONLY);
+//          link.setText("My HyperLink");
+
+//          /* make text look like a link */
+//          StyledString text = new StyledString();
+//
+//          String caption = "1234567890";
+//
+//          StyleRange myStyledRange = new StyleRange(0, caption.length(),
+//              Display.getCurrent().getSystemColor(SWT.COLOR_BLUE), null);
+//          myStyledRange.underline = true;
+//          text.append(caption, StyledString.DECORATIONS_STYLER);
+//          cell.setText(text.toString());
+//
+//          StyleRange[] range = { myStyledRange };
+//          cell.setStyleRanges(range);
+//
+//          super.update(cell);
+
+          // =========================================================================
+
         } catch (ClassCastException e2) {
           try {
             FragmentConfigFace f = (FragmentConfigFace) obj; // fragment
@@ -102,5 +139,29 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
     super.update(cell);
   }
+
+  // private void listen() {
+  // styledText.addListener(SWT.MouseDown, event -> {
+  // // It is up to the application to determine when and how a link should be
+  // activated.
+  // // In this snippet links are activated on mouse down when the control key
+  // is held down
+  // if ((event.stateMask & SWT.MOD1) != 0) {
+  // int offset = styledText.getOffsetAtPoint(new Point (event.x, event.y));
+  // if (offset != -1) {
+  // StyleRange style1 = null;
+  // try {
+  // style1 = styledText.getStyleRangeAtOffset(offset);
+  // } catch (IllegalArgumentException e) {
+  // // no character under event.x, event.y
+  // }
+  // if (style1 != null && style1.underline && style1.underlineStyle ==
+  // SWT.UNDERLINE_LINK) {
+  // System.out.println("Click on a Link");
+  // }
+  // }
+  // }
+  // });
+  // }
 
 }

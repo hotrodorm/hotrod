@@ -4,8 +4,8 @@ public class ViewDAO extends DAO {
 
   private String name;
 
-  public ViewDAO(String name) {
-    super();
+  public ViewDAO(String name, final int lineNumber) {
+    super(lineNumber);
     this.name = name;
   }
 

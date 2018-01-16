@@ -8,13 +8,15 @@ public class Converter implements ConfigItem {
 
   private String name;
   private String content;
+  private int lineNumber;
 
   // Constructor
 
-  public Converter(final NameContent nc) {
+  public Converter(final NameContent nc, final int lineNumber) {
     super();
     this.name = nc.getName();
     this.content = nc.getContent();
+    this.lineNumber = lineNumber;
   }
 
   // Getters
@@ -58,6 +60,11 @@ public class Converter implements ConfigItem {
     } else if (!name.equals(other.name))
       return false;
     return true;
+  }
+
+  @Override
+  public int getLineNumber() {
+    return lineNumber;
   }
 
 }

@@ -17,7 +17,8 @@ public class FaceFactory {
 
   public static AbstractFace getFace(final ConfigItem item) throws InvalidConfigurationItemException {
     if (item == null) {
-      throw new InvalidConfigurationItemException("Cannot produce a configuration item from a null value.");
+      throw new InvalidConfigurationItemException(item.getLineNumber(),
+          "Cannot produce a configuration item from a null value.");
     }
     if (item instanceof Settings) {
       return new SettingsFace((Settings) item);
@@ -40,12 +41,14 @@ public class FaceFactory {
     if (item instanceof FragmentConfigFile) {
       return new FragmentConfigFace((FragmentConfigFile) item);
     }
-    throw new InvalidConfigurationItemException("Unknown configuration item type '" + item.getClass().getName() + "'.");
+    throw new InvalidConfigurationItemException(item.getLineNumber(),
+        "Unknown configuration item type '" + item.getClass().getName() + "'.");
   }
 
   public static AbstractFace getMethodElement(final Method m) throws InvalidConfigurationItemException {
     if (m == null) {
-      throw new InvalidConfigurationItemException("Cannot produce a method element from a null value.");
+      throw new InvalidConfigurationItemException(m.getLineNumber(),
+          "Cannot produce a method element from a null value.");
     }
     if (m instanceof SequenceMethod) {
       return new SequenceFace((SequenceMethod) m);
@@ -56,15 +59,23 @@ public class FaceFactory {
     if (m instanceof SelectMethod) {
       return new SelectFace((SelectMethod) m);
     }
-    throw new InvalidConfigurationItemException("Unknown configuration method type '" + m.getClass().getName() + "'.");
+    throw new InvalidConfigurationItemException(m.getLineNumber(),
+        "Unknown configuration method type '" + m.getClass().getName() + "'.");
   }
 
   public static class InvalidConfigurationItemException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
-    public InvalidConfigurationItemException(final String message) {
+    private int lineNumber;
+
+    public InvalidConfigurationItemException(final int lineNumber, final String message) {
       super(message);
+      this.lineNumber = lineNumber;
+    }
+
+    public int getLineNumber() {
+      return lineNumber;
     }
 
   }

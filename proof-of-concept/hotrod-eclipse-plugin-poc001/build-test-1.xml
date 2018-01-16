@@ -2,7 +2,9 @@
 
   <target name="clean" />
 
-  <target name="build" />
+  <target name="build" >
+    <fail message="this is a fail mesage" />
+  </target>
 
   <target name="clean-build" depends="clean, build" />
 

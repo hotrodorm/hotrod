@@ -7,7 +7,14 @@ public abstract class DAO implements ConfigItem {
 
   // Properties
 
+  private int lineNumber;
   protected List<Method> methods = new ArrayList<Method>();
+
+  // Constructor
+
+  public DAO(final int lineNumber) {
+    this.lineNumber = lineNumber;
+  }
 
   // Populate
 
@@ -44,6 +51,11 @@ public abstract class DAO implements ConfigItem {
     } else if (!methods.equals(other.methods))
       return false;
     return true;
+  }
+
+  @Override
+  public int getLineNumber() {
+    return lineNumber;
   }
 
 }

@@ -4,8 +4,8 @@ public class ExecutorDAO extends DAO {
 
   private String name;
 
-  public ExecutorDAO(String name) {
-    super();
+  public ExecutorDAO(String name, final int lineNumber) {
+    super(lineNumber);
     this.name = name;
   }
 

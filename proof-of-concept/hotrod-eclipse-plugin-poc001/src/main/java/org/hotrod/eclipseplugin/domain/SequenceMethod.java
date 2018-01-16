@@ -6,11 +6,12 @@ public class SequenceMethod implements Method {
 
   private String name;
   private String content;
+  private int lineNumber;
 
-  public SequenceMethod(final NameContent nc) {
-    super();
+  public SequenceMethod(final NameContent nc, final int lineNumber) {
     this.name = nc.getName();
     this.content = nc.getContent();
+    this.lineNumber = lineNumber;
   }
 
   public String getName() {
@@ -52,6 +53,11 @@ public class SequenceMethod implements Method {
     } else if (!name.equals(other.name))
       return false;
     return true;
+  }
+
+  @Override
+  public int getLineNumber() {
+    return lineNumber;
   }
 
 }

@@ -25,8 +25,13 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
     this.valid = false;
   }
 
-  public void setValid(boolean valid) {
-    this.valid = valid;
+  public void setValid() {
+    this.valid = true;
+  }
+
+  public void setInvalid(final ErrorMessageFace errorMessage) {
+    this.valid = false;
+    this.addChild(errorMessage);
   }
 
   // Getters

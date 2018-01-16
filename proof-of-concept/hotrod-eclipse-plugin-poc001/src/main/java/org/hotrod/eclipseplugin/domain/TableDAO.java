@@ -4,8 +4,8 @@ public class TableDAO extends DAO {
 
   private String name;
 
-  public TableDAO(final String name) {
-    super();
+  public TableDAO(final String name, final int lineNumber) {
+    super(lineNumber);
     this.name = name;
   }
 
