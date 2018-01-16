@@ -1,11 +1,14 @@
 package org.hotrod.eclipseplugin;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -48,6 +51,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.hotrod.eclipseplugin.jdbc.DynamicallyLoadedDriver;
+import org.hotrod.eclipseplugin.jdbc.SQLRunner;
 import org.hotrod.eclipseplugin.treeview.AbstractFace;
 import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
 import org.hotrod.eclipseplugin.treeview.HotRodLabelProvider;
@@ -194,7 +199,7 @@ public class HotRodView extends ViewPart {
             // filePath = "project002/hotrod-6-bad.xml";
             filePath = "/home/valarcon/git/hotrod/proof-of-concept/hotrod-eclipse-plugin-poc001/test-workspace/project002/hotrod-7-bad.xml";
 
-//            int lineNumber = em.getLineNumber();
+            // int lineNumber = em.getLineNumber();
             int lineNumber = 3;
 
             System.out.println("... opening: filePath=" + filePath + " line=" + lineNumber);
@@ -480,10 +485,25 @@ public class HotRodView extends ViewPart {
     // Configure JDBC Properties
 
     actionJDBCProperties = new Action() {
+
       @Override
       public void run() {
-        // to1.name = "customer (refreshed)";
-        showMessage("JDBC Properties - executed");
+
+        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("project002");
+        String driverClassName = "org.postgresql.Driver";
+        String driverClassPath = "lib/jdbc-drivers/postgresql-9.4-1205.jdbc4.jar";
+
+        try {
+          DynamicallyLoadedDriver driver = new DynamicallyLoadedDriver(project, driverClassPath, driverClassName);
+          Connection conn = driver.getConnection("jdbc:postgresql://192.168.56.46:5432/postgres", "postgres",
+              "mypassword");
+          SQLRunner.run(conn);
+
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+
+        // showMessage("JDBC Properties - executed");
       }
     };
     actionJDBCProperties.setText("JDBC Properties ");

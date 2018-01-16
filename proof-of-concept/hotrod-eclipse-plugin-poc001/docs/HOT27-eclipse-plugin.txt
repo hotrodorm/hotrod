@@ -52,7 +52,11 @@ Research how to:
  * [DONE] Clicking on the error open the file editor at the specific line.
  * Double click on a tree face loads the source file at the specific line. 
  * Set JDBC properties for each HotRod config file (driver class path, driver class, url, user, pass, catalog, schema, etc.)
- * Dynamically load a JDBC driver classpath for each HotRod config file separately.
+ * [DONE] Dynamically load a JDBC driver classpath for each HotRod config file separately.
+ * Open a new dialog window to specify the JDBC driver (classpath, class name) and the connection properties (url, username, password).
+ * Make the plugin run in Java 6 and 7. Currently it only works in Java 8.
+ * Package the eclipse plugin using Ant.
+ 
  
  
  
