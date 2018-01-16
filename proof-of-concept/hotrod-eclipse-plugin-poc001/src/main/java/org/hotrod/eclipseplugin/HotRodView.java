@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -40,6 +41,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISharedImages;
@@ -52,6 +54,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.hotrod.eclipseplugin.jdbc.DynamicallyLoadedDriver;
+import org.hotrod.eclipseplugin.jdbc.JDBCPropertiesDialog;
 import org.hotrod.eclipseplugin.jdbc.SQLRunner;
 import org.hotrod.eclipseplugin.treeview.AbstractFace;
 import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
@@ -489,18 +492,29 @@ public class HotRodView extends ViewPart {
       @Override
       public void run() {
 
-        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("project002");
-        String driverClassName = "org.postgresql.Driver";
-        String driverClassPath = "lib/jdbc-drivers/postgresql-9.4-1205.jdbc4.jar";
+        if (false) {
+          IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("project002");
+          String driverClassPath = "lib/jdbc-drivers/postgresql-9.4-1205.jdbc4.jar";
+          String driverClassName = "org.postgresql.Driver";
 
-        try {
-          DynamicallyLoadedDriver driver = new DynamicallyLoadedDriver(project, driverClassPath, driverClassName);
-          Connection conn = driver.getConnection("jdbc:postgresql://192.168.56.46:5432/postgres", "postgres",
-              "mypassword");
-          SQLRunner.run(conn);
+          try {
+            DynamicallyLoadedDriver driver = new DynamicallyLoadedDriver(project, driverClassPath, driverClassName);
+            Connection conn = driver.getConnection("jdbc:postgresql://192.168.56.46:5432/postgres", "postgres",
+                "mypassword");
+            SQLRunner.run(conn);
 
-        } catch (SQLException e) {
-          e.printStackTrace();
+          } catch (SQLException e) {
+            e.printStackTrace();
+          }
+        }
+
+        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+
+        JDBCPropertiesDialog dialog = new JDBCPropertiesDialog(shell);
+        dialog.create();
+        if (dialog.open() == Window.OK) {
+          System.out.println(dialog.getFirstName());
+          System.out.println(dialog.getLastName());
         }
 
         // showMessage("JDBC Properties - executed");
