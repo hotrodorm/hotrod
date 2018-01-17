@@ -3,14 +3,10 @@ package org.hotrod.eclipseplugin.jdbc;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -85,19 +81,20 @@ public class JDBCPropertiesDialog extends TitleAreaDialog {
       this.fieldDriverClassPath.setLayoutData(layoutData);
     }
 
-//    Button browse = new Button(container, SWT.PUSH);
-//    browse.setText("Browse ...");
-//    browse.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 0));
-//    browse.addSelectionListener(new SelectionAdapter() {
-//      public void widgetSelected(SelectionEvent e) {
-//        DirectoryDialog dialog = new DirectoryDialog(parentShell, SWT.NULL);
-//        String path = dialog.open();
-//        if (path != null) {
-//          // do stuff with path
-//        }
-//      }
-//
-//    });
+    // Button browse = new Button(container, SWT.PUSH);
+    // browse.setText("Browse ...");
+    // browse.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
+    // 0));
+    // browse.addSelectionListener(new SelectionAdapter() {
+    // public void widgetSelected(SelectionEvent e) {
+    // DirectoryDialog dialog = new DirectoryDialog(parentShell, SWT.NULL);
+    // String path = dialog.open();
+    // if (path != null) {
+    // // do stuff with path
+    // }
+    // }
+    //
+    // });
 
     // Driver Class Name
 

@@ -32,6 +32,7 @@ import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -55,6 +56,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.hotrod.eclipseplugin.jdbc.DynamicallyLoadedDriver;
 import org.hotrod.eclipseplugin.jdbc.JDBCPropertiesDialog;
+import org.hotrod.eclipseplugin.jdbc.JDBCPropertiesWizard;
 import org.hotrod.eclipseplugin.jdbc.SQLRunner;
 import org.hotrod.eclipseplugin.treeview.AbstractFace;
 import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
@@ -510,11 +512,19 @@ public class HotRodView extends ViewPart {
 
         Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 
-        JDBCPropertiesDialog dialog = new JDBCPropertiesDialog(shell);
-        dialog.create();
-        if (dialog.open() == Window.OK) {
-          System.out.println(dialog.getFirstName());
-          System.out.println(dialog.getLastName());
+        if (false) {
+          JDBCPropertiesDialog dialog = new JDBCPropertiesDialog(shell);
+          dialog.create();
+          if (dialog.open() == Window.OK) {
+            System.out.println(dialog.getFirstName());
+            System.out.println(dialog.getLastName());
+          }
+        }
+
+        {
+          WizardDialog dialog = new WizardDialog(shell, new JDBCPropertiesWizard(null));
+          dialog.open();
+
         }
 
         // showMessage("JDBC Properties - executed");
