@@ -44,6 +44,10 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
     return absolutePath;
   }
 
+  public IProject getProject() {
+    return project;
+  }
+
   public String getRelativePath() {
     return relativePath;
   }

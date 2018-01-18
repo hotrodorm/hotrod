@@ -16,16 +16,18 @@ import org.eclipse.core.resources.IProject;
 public class DriverFiles {
 
   private static Set<DriverFileLocation> driverFiles = new HashSet<DriverFileLocation>();
+  private static URLClassLoader loader = null;
 
-  public static synchronized DriverFileLocation load(final IProject project, final String driverClassPath)
-      throws SQLException {
+  public static synchronized void load(final IProject project, final String driverClassPath) throws SQLException {
+    System.out.println("[DriverFiles] starting...");
     DriverFileLocation df = new DriverFileLocation(project, driverClassPath);
 
     // Return the existing one if already loaded
 
     for (DriverFileLocation existing : driverFiles) {
       if (existing.equals(df)) {
-        return existing;
+        System.out.println("[DriverFiles] already exists.");
+        return;
       }
     }
 
@@ -33,17 +35,21 @@ public class DriverFiles {
 
     IFile ifile = project.getFile(driverClassPath);
     File file = ifile.getLocation().toFile();
+    System.out.println("[DriverFiles] file=" + file.getPath());
     if (!file.exists()) {
       throw new SQLException("Could not load JDBC driver. File not found at " + file.getPath());
     }
 
-    final URLClassLoader loader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-    df.classLoader = loader;
+    if (loader == null) {
+      loader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+    }
 
     try {
       Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
       method.setAccessible(true);
       method.invoke(loader, file.toURI().toURL());
+      System.out.println("[DriverFiles] added!");
+
     } catch (SecurityException e) {
       throw new SQLException("Could not load JDBC driver " + file.getPath(), e);
     } catch (IllegalArgumentException e) {
@@ -59,14 +65,16 @@ public class DriverFiles {
     }
 
     driverFiles.add(df);
-    return df;
+  }
+
+  public static synchronized URLClassLoader getClassLoader() {
+    return loader;
   }
 
   public static class DriverFileLocation {
 
     private IProject project;
     private String driverClassPath;
-    private URLClassLoader classLoader;
 
     public DriverFileLocation(final IProject project, final String driverClassPath) {
       this.project = project;
@@ -82,10 +90,6 @@ public class DriverFiles {
     }
 
     // Indexable
-
-    public URLClassLoader getClassLoader() {
-      return classLoader;
-    }
 
     @Override
     public int hashCode() {

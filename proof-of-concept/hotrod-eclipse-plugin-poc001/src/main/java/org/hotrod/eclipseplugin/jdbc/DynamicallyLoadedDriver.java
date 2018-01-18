@@ -5,6 +5,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 import org.eclipse.core.resources.IProject;
@@ -13,23 +14,29 @@ import org.hotrod.eclipseplugin.jdbc.DriverFiles.DriverFileLocation;
 public class DynamicallyLoadedDriver {
 
   private IProject project;
-  private String driverClassPath;
+  private List<String> driverClassPathEntries;
   private String driverClassName;
 
-  public DynamicallyLoadedDriver(final IProject project, final String driverClassPath, final String driverClassName)
-      throws SQLException {
+  public DynamicallyLoadedDriver(final IProject project, final List<String> driverClassPathEntries,
+      final String driverClassName) throws SQLException {
+    System.out.println("[DLD] starting...");
     this.project = project;
-    this.driverClassPath = driverClassPath;
+    this.driverClassPathEntries = driverClassPathEntries;
     this.driverClassName = driverClassName;
 
     // Load/retrieve driver file location
 
-    DriverFileLocation fl = DriverFiles.load(project, driverClassPath);
+    for (String classPathEntry : this.driverClassPathEntries) {
+      System.out.println("[DLD] classPathEntry=" + classPathEntry);
+      DriverFiles.load(this.project, classPathEntry);
+    }
 
     try {
-      Class<?> classToLoad = Class.forName(this.driverClassName, true, fl.getClassLoader());
+      System.out.println("[DLD] will load class: " + this.driverClassName);
+      Class<?> classToLoad = Class.forName(this.driverClassName, true, DriverFiles.getClassLoader());
       Driver driver = (Driver) classToLoad.newInstance();
       DriverManager.registerDriver(new DriverProxy(driver));
+      System.out.println("[DLD] loaded.");
     } catch (ClassNotFoundException e) {
       throw new SQLException("Could not load JDBC driver. Class " + this.driverClassName + " not found");
     } catch (InstantiationException e) {
