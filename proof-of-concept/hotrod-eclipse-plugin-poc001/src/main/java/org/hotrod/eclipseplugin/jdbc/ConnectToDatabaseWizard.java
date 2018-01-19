@@ -7,14 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -34,11 +31,12 @@ import org.eclipse.swt.widgets.Text;
 import org.hotrod.eclipseplugin.jdbc.LocalProperties.CouldNotLoadPropertiesException;
 import org.hotrod.eclipseplugin.jdbc.LocalProperties.CouldNotSavePropertiesException;
 import org.hotrod.eclipseplugin.jdbc.LocalProperties.FileProperties;
+import org.hotrod.eclipseplugin.jdbc.NavigationAwareWizardDialog.NavigationAwareWizard;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 import org.hotrod.eclipseplugin.utils.FUtil;
 import org.hotrod.eclipseplugin.utils.SUtil;
 
-public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWizard {
+public class ConnectToDatabaseWizard extends NavigationAwareWizard {
 
   private MainConfigFace mainConfigFace;
   private Shell shell;
@@ -60,28 +58,32 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
   private List<String> availableCatalogs = null;
   private List<String> availableSchemas = null;
 
-  private String selectionMessage = null;
-
   private boolean onLastPage = false;
 
   private static String[] AVAILABLE_GENERATORS = { "MyBatis", "Spring JDBC", "MyBatis Spring" };
-  private static Set<String> AVAILABLE_GENERATORS_SET = new HashSet<String>(Arrays.asList(AVAILABLE_GENERATORS));
 
   public ConnectToDatabaseWizard(final MainConfigFace mainConfigFace, final Shell shell) {
     super();
     this.mainConfigFace = mainConfigFace;
     this.shell = shell;
     try {
+      System.out.println("[X1] will load properties");
       this.properties = LocalProperties.load(this.mainConfigFace.getProject());
+      System.out.println("[X1] properties loaded");
     } catch (CouldNotLoadPropertiesException e) {
+      System.out.println("[X1] Could not load properties");
       MessageDialog.openError(this.shell, "Invalid HotRod Plugin's properties file",
           "Error: " + e.getMessage() + "\n\nWill load an empty properties file that will overwrite the existing one.");
       this.properties = new LocalProperties(this.mainConfigFace.getProject());
     }
 
-    this.fileProperties = this.properties.getFileProperties(this.mainConfigFace.getRelativePath());
+    this.fileProperties = this.properties.getFileProperties(this.mainConfigFace.getRelativeFileName());
+    System.out.println("[X1] this.fileProperties=" + this.fileProperties + " (rel file name="
+        + this.mainConfigFace.getRelativeFileName() + ")");
+
     if (this.fileProperties == null) {
-      this.fileProperties = new FileProperties(this.mainConfigFace.getRelativePath());
+      this.fileProperties = new FileProperties(this.mainConfigFace.getRelativeFileName());
+      this.properties.addFileProperties(this.mainConfigFace.getRelativeFileName(), this.fileProperties);
     }
 
     this.driverPage = new DriverPage();
@@ -94,6 +96,7 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
   @Override
   public void preprocessBackButton(final IWizardPage currentPage) {
     System.out.println("... preprocessBackButton() currentPage=" + currentPage);
+    // this.clearMessages();
     if (currentPage == this.confirmationPage) {
       this.onLastPage = false;
     }
@@ -103,7 +106,11 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
   public void preprocessNextButton(final IWizardPage currentPage) {
     System.out.println("... preprocessNextButton()");
 
+    // this.clearMessages();
+
     if (currentPage == this.driverPage) {
+
+      this.driverPage.clearMessage();
 
       // Next on the Driver Page
 
@@ -125,6 +132,8 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
 
       // Next on the Connection Page
 
+      this.connectionPage.clearMessage();
+
       System.out.println("... --> on ConnectionPage");
 
       this.connection = null;
@@ -135,6 +144,7 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
         String password = this.connectionPage.getFieldPassword().getText();
         this.connection = this.driver.getConnection(url, username, password);
         retrieveCatalogsAndSchemas();
+        System.out.println("this.availableCatalogs.size()=" + this.availableCatalogs.size());
         this.selectionPage.updateAvailableCatalogsAndSchemas();
         System.out.println("... --> conn, success");
 
@@ -156,26 +166,7 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
 
       // Next on the Selection Page
 
-      this.selectionMessage = null;
-
-      if (this.availableCatalogs != null) {
-        if (!this.availableCatalogs.contains(this.selectionPage.getFieldCatalog().getText())) {
-          this.selectionMessage = "Invalid catalog name.";
-          return;
-        }
-      }
-
-      if (this.availableSchemas != null) {
-        if (!this.availableSchemas.contains(this.selectionPage.getFieldSchema().getText())) {
-          this.selectionMessage = "Invalid schema name.";
-          return;
-        }
-      }
-
-      if (!AVAILABLE_GENERATORS_SET.contains(this.selectionPage.getFieldGenerator().getText())) {
-        this.selectionMessage = "Invalid generator name.";
-        return;
-      }
+      this.selectionPage.clearMessage();
 
       this.onLastPage = true;
 
@@ -188,15 +179,21 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
 
     // Catalogs
 
+    System.out.println("[CATALOGS] dm.supportsCatalogsInTableDefinitions()=" + dm.supportsCatalogsInTableDefinitions());
+
     if (dm.supportsCatalogsInTableDefinitions()) {
       ResultSet rs = null;
       try {
         this.availableCatalogs = new ArrayList<String>();
+        System.out.println("[CATALOGS] 1");
         rs = dm.getCatalogs();
+        System.out.println("[CATALOGS] 2");
         while (rs.next()) {
+          System.out.println("[CATALOGS] read one");
           String catalog = rs.getString(1);
           this.availableCatalogs.add(catalog);
         }
+        System.out.println("[CATALOGS] finished!");
       } finally {
         if (rs != null) {
           try {
@@ -232,49 +229,9 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
 
   }
 
-  // private WizardProperties loadProperties() {
-  // WizardProperties p = new WizardProperties();
-  //
-  // p.driverClassPathJars = new ArrayList<String>();
-  // p.driverClassPathJars.add("lib/jdbc/postgres-1.1.jar");
-  // p.driverClassPathJars.add("lib/my-license.jar");
-  //
-  // p.driverClassName = "my.postgres.driver.DriverClassName";
-  //
-  // p.url = "jdbc:derby://192.168.56.26:1527/hotrod;create=true";
-  // // p.url = "";
-  // p.username = "myusername";
-  // p.password = "mypassword";
-  //
-  // p.catalog = "cat001";
-  // p.availableCatalogs = new ArrayList<String>();
-  // p.availableCatalogs.add("catalog1");
-  // p.availableCatalogs.add("util");
-  // p.availableCatalogs.add("system");
-  // p.availableCatalogs.add("admin");
-  // p.availableCatalogs.add("cat001");
-  //
-  // p.schema = "STAGING";
-  // p.availableSchemas = new ArrayList<String>();
-  // p.availableSchemas.add("MAIN");
-  // p.availableSchemas.add("PROD");
-  // p.availableSchemas.add("DEV1");
-  // p.availableSchemas.add("DEV2");
-  // p.availableSchemas.add("STAGING");
-  // p.availableSchemas.add("QA");
-  //
-  // p.generator = "MyBatis Spring";
-  // p.availableGenerators = new ArrayList<String>();
-  // p.availableGenerators.add("MyBatis");
-  // p.availableGenerators.add("Spring JDBC");
-  // p.availableGenerators.add("MyBatis Spring");
-  //
-  // return p;
-  // }
-
   @Override
   public String getWindowTitle() {
-    return "Connect to the database";
+    return "Connect to database";
   }
 
   @Override
@@ -291,7 +248,15 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
   }
 
   @Override
+  public boolean canFinish() {
+    return this.onLastPage;
+  }
+
+  @Override
   public boolean performFinish() {
+    this.driverPage.retrieveValues();
+    this.connectionPage.retrieveValues();
+    this.selectionPage.retrieveValues();
     try {
       this.properties.save();
     } catch (CouldNotSavePropertiesException e) {
@@ -301,18 +266,7 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
     return true;
   }
 
-  @Override
-  public boolean canFinish() {
-    // boolean complete =
-    // !SUtil.isEmpty(this.driverPage.getFieldDriverClassName().getText()) //
-    // && !SUtil.isEmpty(this.connectionPage.getFieldURL().getText()) //
-    // ;
-    // boolean finish = complete && this.onLastPage;
-    // System.out
-    // .println("[canFinish()]: complete=" + complete + " onLastPage=" +
-    // this.onLastPage + " -> finish=" + finish);
-    return this.onLastPage;
-  }
+  // TODO: Nothing to do; just a marker.
 
   // =======================
   // === Page 1 - Driver ===
@@ -333,12 +287,16 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
       setDescription("Add the JDBC driver jar file(s) and specify the driver class name");
     }
 
+    public void clearMessage() {
+      this.setErrorMessage(null);
+    }
+
     @Override
     public void createControl(final Composite parent) {
       this.container = new Composite(parent, SWT.NONE);
       {
         GridLayout layout = new GridLayout();
-        layout.numColumns = 5;
+        layout.numColumns = 3;
         this.container.setLayout(layout);
       }
 
@@ -347,19 +305,30 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
       Label label = new Label(this.container, SWT.NONE);
       label.setText("Driver jar files:");
       {
-        GridData gridData = new GridData(GridData.FILL, GridData.CENTER, true, false);
-        gridData.horizontalSpan = 5;
+        GridData gridData = new GridData();
+        gridData.horizontalSpan = 3;
         label.setLayoutData(gridData);
       }
 
       this.fieldClassPathEntries = new org.eclipse.swt.widgets.List(this.container,
           SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
       {
-        GridData gridData = new GridData(GridData.FILL, GridData.VERTICAL_ALIGN_BEGINNING, true, true);
-        gridData.horizontalSpan = 4;
+        // GridData gridData = new GridData(GridData.FILL, GridData.FILL, true,
+        // true);
+        // GridData gridData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+        GridData gridData = new GridData();
+        gridData.horizontalSpan = 2;
         gridData.verticalSpan = 2;
-        gridData.minimumHeight = 172;
-        gridData.verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
+        // gridData.minimumHeight = 172;
+        // gridData.widthHint = 400;
+        gridData.heightHint = 172;
+        // gridData.heightHint = 40;
+        gridData.horizontalAlignment = GridData.FILL;
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.verticalAlignment = GridData.FILL_VERTICAL; // stays up
+        // gridData.verticalAlignment = GridData.GRAB_VERTICAL; // moves down
+        // gridData.verticalAlignment = GridData.VERTICAL_ALIGN_FILL; // stays
+        // up
         this.fieldClassPathEntries.setLayoutData(gridData);
       }
       for (String entryPath : fileProperties.getDriverClassPathEntries()) {
@@ -368,7 +337,10 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
 
       Button addJar = new Button(this.container, SWT.PUSH);
       {
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
+        // GridData gridData = new GridData(GridData.BEGINNING,
+        // GridData.VERTICAL_ALIGN_BEGINNING, false, false);
+        GridData gridData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+        gridData.widthHint = 65;
         addJar.setLayoutData(gridData);
       }
       addJar.setText("Add...");
@@ -390,10 +362,15 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
             System.out.println("fileName=" + fileName);
             File f = new File(folder, fileName);
             File relFile = FUtil.getRelativeFile(f, baseFolder);
-            if (relFile != null) {
-              fieldClassPathEntries.add(relFile.getPath());
-            } else {
-              fieldClassPathEntries.add(f.getPath());
+            String newPath = relFile != null ? relFile.getPath() : f.getPath();
+            boolean alreadyIncluded = false;
+            for (String existing : fieldClassPathEntries.getItems()) {
+              if (existing.equals(newPath)) {
+                alreadyIncluded = true;
+              }
+            }
+            if (!alreadyIncluded) {
+              fieldClassPathEntries.add(newPath);
             }
           }
         }
@@ -401,7 +378,8 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
 
       Button deleteJar = new Button(this.container, SWT.PUSH);
       {
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
+        GridData gridData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+        gridData.widthHint = 65;
         deleteJar.setLayoutData(gridData);
       }
       deleteJar.setText("Delete");
@@ -427,22 +405,22 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
 
       Label label1 = new Label(this.container, SWT.NONE);
       label1.setText("Driver class name:");
-      {
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING, GridData.VERTICAL_ALIGN_BEGINNING, true,
-            true);
-        gridData.verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
-        label1.setLayoutData(gridData);
-      }
+      // {
+      // GridData gridData = new GridData();
+      // gridData.verticalAlignment = GridData.VERTICAL_ALIGN_BEGINNING;
+      // label1.setLayoutData(gridData);
+      // }
 
       this.fieldDriverClassName = new Text(this.container, SWT.BORDER | SWT.SINGLE);
       {
-        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        GridData gridData = new GridData(GridData.FILL, GridData.CENTER, true, false);
         // GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL,
         // GridData.CENTER, true, true);
-        // gridData.horizontalSpan = 4;
-        gridData.grabExcessHorizontalSpace = true;
+        gridData.horizontalSpan = 2;
+        // gridData.widthHint = 500;
         this.fieldDriverClassName.setLayoutData(gridData);
       }
+
       this.fieldDriverClassName.setText(fileProperties.getDriverClassName());
       this.fieldDriverClassName.addKeyListener(new KeyListener() {
 
@@ -482,20 +460,20 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
       if (driver != null || driverException == null) {
         return super.getNextPage();
       } else {
-        this.setErrorMessage(driverException.getMessage());
+        // this.setErrorMessage(driverException.getMessage());
+        this.setErrorMessage(driverException.getMessage()
+            + " This is a long long long long long long long long long long long long long long long long long long long long long long long long long "
+            + "long long long long long long long long long long long long long long long long long long long long long long long long long long long message.");
         return driverPage;
       }
 
     }
 
-    // Getters
+    // Retrieve values
 
-    public org.eclipse.swt.widgets.List getFieldJars() {
-      return fieldClassPathEntries;
-    }
-
-    public Text getFieldDriverClassName() {
-      return fieldDriverClassName;
+    public void retrieveValues() {
+      fileProperties.setDriverClassPathEntries(Arrays.asList(this.fieldClassPathEntries.getItems()));
+      fileProperties.setDriverClassName(this.fieldDriverClassName.getText());
     }
 
   }
@@ -514,9 +492,13 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
     private Text fieldPassword;
 
     public ConnectionPage() {
-      super("Connection Properties");
-      setTitle("Connection Properties");
+      super("Database connection Properties");
+      setTitle("Database connection Properties");
       setDescription("Specify the JDBC connection properties");
+    }
+
+    public void clearMessage() {
+      this.setErrorMessage(null);
     }
 
     @Override
@@ -537,12 +519,9 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
       this.fieldURL = new Text(this.container, SWT.BORDER | SWT.SINGLE);
       this.fieldURL.setText(fileProperties.getUrl());
       {
-        // GridData gridData = new GridData(GridData.FILL, GridData.CENTER,
-        // true, false);
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-        // gridData.horizontalSpan = 3;
-        // gridData.minimumWidth = 280;
-        gridData.widthHint = 400;
+        // GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+        GridData gridData = new GridData(GridData.FILL, GridData.CENTER, true, false);
+        // gridData.widthHint = 460;
         this.fieldURL.setLayoutData(gridData);
       }
       this.fieldURL.addKeyListener(new KeyListener() {
@@ -565,6 +544,11 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
       label2.setText("Username:");
 
       this.fieldUsername = new Text(this.container, SWT.BORDER | SWT.SINGLE);
+      {
+        GridData gridData = new GridData();
+        gridData.widthHint = 150;
+        this.fieldUsername.setLayoutData(gridData);
+      }
       this.fieldUsername.setText(fileProperties.getUsername());
 
       // Password
@@ -573,6 +557,11 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
       label3.setText("Password:");
 
       this.fieldPassword = new Text(this.container, SWT.BORDER | SWT.SINGLE);
+      {
+        GridData gridData = new GridData();
+        gridData.widthHint = 150;
+        this.fieldPassword.setLayoutData(gridData);
+      }
       this.fieldPassword.setText(fileProperties.getPassword());
 
       // Page assembled
@@ -615,6 +604,14 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
       return fieldPassword;
     }
 
+    // Retrieve values
+
+    public void retrieveValues() {
+      fileProperties.setUrl(this.fieldURL.getText());
+      fileProperties.setUsername(this.fieldUsername.getText());
+      fileProperties.setPassword(this.fieldPassword.getText());
+    }
+
   }
 
   // ==========================
@@ -636,7 +633,11 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
       super("Select the database schema");
       System.out.println("[[ SelectionPage ]]");
       setTitle("Select the database schema");
-      setDescription("Pick a database schema and a generator");
+      setDescription("Pick a database catalog, schema and/or generator");
+    }
+
+    public void clearMessage() {
+      this.setErrorMessage(null);
     }
 
     @Override
@@ -654,21 +655,30 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
 
       this.labelCatalog = new Label(this.container, SWT.NONE);
       this.labelCatalog.setText("Catalog:");
-      this.fieldCatalog = new Combo(this.container, SWT.NULL);
-      this.fieldCatalog.setText(fileProperties.getCatalog());
+      this.fieldCatalog = new Combo(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
+      {
+        GridData gridData = new GridData();
+        gridData.widthHint = 200;
+        this.fieldCatalog.setLayoutData(gridData);
+      }
 
       // Schema
 
       this.labelSchema = new Label(this.container, SWT.NONE);
       this.labelSchema.setText("Schema:");
-      this.fieldSchema = new Combo(this.container, SWT.NULL);
-      this.fieldSchema.setText(fileProperties.getSchema());
+      this.fieldSchema = new Combo(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
+      {
+        GridData gridData = new GridData();
+        gridData.widthHint = 200;
+        this.fieldSchema.setLayoutData(gridData);
+      }
+      System.out.println("[X3] fileProperties.getSchema()=" + fileProperties.getSchema());
 
       // Generator
 
       Label label3 = new Label(this.container, SWT.NONE);
       label3.setText("Generator:");
-      this.fieldGenerator = new Combo(this.container, SWT.NULL);
+      this.fieldGenerator = new Combo(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
       this.fieldGenerator.setItems(AVAILABLE_GENERATORS);
       this.fieldGenerator.setText(fileProperties.getGenerator());
 
@@ -680,24 +690,27 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
     }
 
     public void updateAvailableCatalogsAndSchemas() {
+
       if (availableCatalogs != null) {
-        this.labelCatalog.setVisible(true);
         this.fieldCatalog.setItems(availableCatalogs.toArray(new String[0]));
-        this.fieldCatalog.setVisible(true);
+        this.fieldCatalog.setEnabled(true);
       } else {
-        this.labelCatalog.setVisible(false);
+        fileProperties.setCatalog("");
         this.fieldCatalog.setItems(new String[0]);
-        this.fieldCatalog.setVisible(false);
+        this.fieldCatalog.setEnabled(false);
       }
+      this.fieldCatalog.setText(fileProperties.getCatalog());
+
       if (availableSchemas != null) {
-        this.labelSchema.setVisible(true);
         this.fieldSchema.setItems(availableSchemas.toArray(new String[0]));
-        this.fieldSchema.setVisible(true);
+        this.fieldSchema.setEnabled(true);
       } else {
-        this.labelSchema.setVisible(false);
+        fileProperties.setSchema("");
         this.fieldSchema.setItems(new String[0]);
-        this.fieldSchema.setVisible(false);
+        this.fieldSchema.setEnabled(false);
       }
+      this.fieldSchema.setText(fileProperties.getSchema());
+
     }
 
     private void validate() {
@@ -710,17 +723,14 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
 
     @Override
     public IWizardPage getNextPage() {
-      if (selectionMessage == null) {
-        return super.getNextPage();
-      } else {
-        this.setErrorMessage(selectionMessage);
-        return selectionPage;
-      }
+      return super.getNextPage();
     }
 
-    public Combo getFieldCatalog() {
-      return fieldCatalog;
-    }
+    // Getters
+
+    // public Combo getFieldCatalog() {
+    // return fieldCatalog;
+    // }
 
     public Combo getFieldSchema() {
       return fieldSchema;
@@ -728,6 +738,14 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
 
     public Combo getFieldGenerator() {
       return fieldGenerator;
+    }
+
+    // Retrieve values
+
+    public void retrieveValues() {
+      fileProperties.setCatalog(this.fieldCatalog.getText());
+      fileProperties.setSchema(this.fieldSchema.getText());
+      fileProperties.setGenerator(this.fieldGenerator.getText());
     }
 
   }
@@ -749,6 +767,10 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
       setDescription("Save all changes.");
     }
 
+    public void clearMessage() {
+      this.setErrorMessage(null);
+    }
+
     @Override
     public void createControl(final Composite parent) {
       System.out.println("[[ ConfirmationPage ]] - createControls()");
@@ -756,7 +778,6 @@ public class ConnectToDatabaseWizard extends Wizard implements NavigationAwareWi
       this.container = new Composite(parent, SWT.NONE);
       {
         GridLayout layout = new GridLayout();
-        // layout.numColumns = 2;
         this.container.setLayout(layout);
       }
 

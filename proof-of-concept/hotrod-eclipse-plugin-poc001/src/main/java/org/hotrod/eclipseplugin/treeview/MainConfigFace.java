@@ -10,8 +10,7 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   private HotRodViewContentProvider provider;
   private String absolutePath;
-  private IProject project;
-  private String relativePath;
+  private RelativeProjectPath path;
   private boolean valid;
 
   // Constructors
@@ -19,8 +18,7 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
   public MainConfigFace(final File f, final RelativeProjectPath path, final HotRodViewContentProvider provider) {
     super(path.getFileName());
     this.absolutePath = f.getAbsolutePath();
-    this.project = path.getProject();
-    this.relativePath = path.getRelativePath();
+    this.path = path;
     this.provider = provider;
     this.valid = false;
   }
@@ -45,11 +43,15 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
   }
 
   public IProject getProject() {
-    return project;
+    return this.path.getProject();
   }
 
   public String getRelativePath() {
-    return relativePath;
+    return this.path.getRelativePath();
+  }
+
+  public String getRelativeFileName() {
+    return this.path.getRelativeFileName();
   }
 
   @Override

@@ -64,20 +64,20 @@ public class ConfigFileLoader {
             Method m = tryReadingMethod(path, line, lineNumber);
             if (m != null) {
               if (currentItem == null) {
-                throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber,
+                throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber,
                     "There's no DAO to include this method in.");
               } else {
                 try {
                   DAO d = (DAO) currentItem;
                   d.addMethod(m);
                 } catch (ClassCastException e) {
-                  throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber,
+                  throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber,
                       "The previous item cannot include methods.");
                 }
               }
             } else {
-              System.out.println("FaultyConfigFileException: path.getRelativePathName()=" + path.getRelativePathName());
-              throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber, "Invalid line: " + line);
+              System.out.println("FaultyConfigFileException: path.getRelativePathName()=" + path.getRelativeFileName());
+              throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "Invalid line: " + line);
             }
           }
         }
@@ -173,19 +173,19 @@ public class ConfigFileLoader {
             Method m = tryReadingMethod(path, line, lineNumber);
             if (m != null) {
               if (currentItem == null) {
-                throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber,
+                throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber,
                     "There's no DAO to include this method in.");
               } else {
                 try {
                   DAO d = (DAO) currentItem;
                   d.addMethod(m);
                 } catch (ClassCastException e) {
-                  throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber,
+                  throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber,
                       "The previous item cannot include methods.");
                 }
               }
             } else {
-              throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber, "Invalid line: " + line);
+              throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "Invalid line: " + line);
             }
           }
         }
@@ -226,31 +226,31 @@ public class ConfigFileLoader {
     if (line.startsWith(TABLE_DAO_PROMPT)) {
       String name = line.substring(TABLE_DAO_PROMPT.length()).trim();
       if (name.isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber, "The table must have a name.");
+        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The table must have a name.");
       }
       return new TableDAO(name, lineNumber);
     } else if (line.startsWith(VIEW_DAO_PROMPT)) {
       String name = line.substring(VIEW_DAO_PROMPT.length()).trim();
       if (name.isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber, "The view must have a name.");
+        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The view must have a name.");
       }
       return new ViewDAO(name, lineNumber);
     } else if (line.startsWith(ENUM_DAO_PROMPT)) {
       String name = line.substring(ENUM_DAO_PROMPT.length()).trim();
       if (name.isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber, "The enum must have a name.");
+        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The enum must have a name.");
       }
       return new EnumDAO(name, lineNumber);
     } else if (line.startsWith(EXECUTOR_DAO_PROMPT)) {
       String name = line.substring(EXECUTOR_DAO_PROMPT.length()).trim();
       if (name.isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber, "The executor must have a name.");
+        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The executor must have a name.");
       }
       return new ExecutorDAO(name, lineNumber);
     } else if (line.startsWith(CONVERTER_PROMPT)) {
       NameContent nc = new NameContent(line, CONVERTER_PROMPT);
       if (nc.getName().isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber, "The converter must have a name.");
+        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The converter must have a name.");
       }
       return new Converter(nc, lineNumber);
     } else if (line.startsWith(SETTINGS_PROMPT)) {
@@ -259,7 +259,7 @@ public class ConfigFileLoader {
     } else if (line.startsWith(FRAGMENT_PROMPT)) {
       String relativeFileName = line.substring(FRAGMENT_PROMPT.length()).trim();
       if (relativeFileName.isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber,
+        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber,
             "The fragment dao must have a name.");
       }
       File fragment = new File(relativeFileName);
@@ -281,19 +281,19 @@ public class ConfigFileLoader {
     if (line.startsWith(SEQUENCE_METHOD_PROMPT)) {
       NameContent nc = new NameContent(line, SEQUENCE_METHOD_PROMPT);
       if (nc.getName().isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber, "The sequence must have a name.");
+        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The sequence must have a name.");
       }
       return new SequenceMethod(nc, lineNumber);
     } else if (line.startsWith(QUERY_METHOD_PROMPT)) {
       NameContent nc = new NameContent(line, QUERY_METHOD_PROMPT);
       if (nc.getName().isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber, "The query must have a name.");
+        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The query must have a name.");
       }
       return new QueryMethod(nc, lineNumber);
     } else if (line.startsWith(SELECT_METHOD_PROMPT)) {
       NameContent nc = new NameContent(line, SELECT_METHOD_PROMPT);
       if (nc.getName().isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativePathName(), lineNumber, "The select dao must have a name.");
+        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The select dao must have a name.");
       }
       return new SelectMethod(nc, lineNumber);
     } else {

@@ -23,7 +23,7 @@ public class FaceProducer {
     if (path == null) {
       return null;
     }
-    System.out.println("*** f=" + f.getPath() + " path.getRelativePathName()=" + path.getRelativePathName());
+    System.out.println("*** f=" + f.getPath() + " path.getRelativePathName()=" + path.getRelativeFileName());
 
     MainConfigFace mainConfigFace = new MainConfigFace(f, path, provider);
 
@@ -34,12 +34,12 @@ public class FaceProducer {
       config = ConfigFileLoader.loadMainFile(f, path);
       mainConfigFace.setValid();
     } catch (UnreadableConfigFileException e) {
-      mainConfigFace.setInvalid(new ErrorMessageFace(null, path.getRelativePathName(), 1, "Unreadable file."));
+      mainConfigFace.setInvalid(new ErrorMessageFace(null, path.getRelativeFileName(), 1, "Unreadable file."));
       return mainConfigFace;
     } catch (FaultyConfigFileException e) {
       System.out.println("FaultyConfigFileException: " + e.getFileName() + ":" + e.getLineNumber());
       mainConfigFace
-          .setInvalid(new ErrorMessageFace(null, path.getRelativePathName(), e.getLineNumber(), e.getMessage()));
+          .setInvalid(new ErrorMessageFace(null, path.getRelativeFileName(), e.getLineNumber(), e.getMessage()));
       return mainConfigFace;
     }
 
@@ -52,7 +52,7 @@ public class FaceProducer {
       } catch (InvalidConfigurationItemException e) {
         mainConfigFace = new MainConfigFace(f, path, provider);
         mainConfigFace
-            .setInvalid(new ErrorMessageFace(null, path.getRelativePathName(), e.getLineNumber(), e.getMessage()));
+            .setInvalid(new ErrorMessageFace(null, path.getRelativeFileName(), e.getLineNumber(), e.getMessage()));
         return mainConfigFace;
       }
     }
@@ -99,7 +99,7 @@ public class FaceProducer {
       return fileName;
     }
 
-    public String getRelativePathName() {
+    public String getRelativeFileName() {
       File file;
       if (this.relativePath == null || this.relativePath.isEmpty()) {
         file = new File(this.fileName);

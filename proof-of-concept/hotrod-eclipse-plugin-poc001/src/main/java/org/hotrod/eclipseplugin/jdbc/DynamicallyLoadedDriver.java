@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.eclipse.core.resources.IProject;
-import org.hotrod.eclipseplugin.jdbc.DriverFiles.DriverFileLocation;
 
 public class DynamicallyLoadedDriver {
 

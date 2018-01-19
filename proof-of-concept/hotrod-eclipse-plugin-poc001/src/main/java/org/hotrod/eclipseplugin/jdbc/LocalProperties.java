@@ -8,18 +8,21 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.core.resources.IProject;
+import org.hotrod.eclipseplugin.utils.ClassPathEncoder;
 import org.hotrod.eclipseplugin.utils.SUtil;
 
 public class LocalProperties {
 
   private static final String CONFIG_FILE_NAME = "hotrod.local.properties";
+
+  public static final String FORMAT_ATT = "format";
+  public static final String CURRENT_FORMAT = "F1";
 
   public static final String FILENAME_ATT = "filename";
   public static final String DRIVERCLASSPATH_ATT = "driverclasspath";
@@ -32,6 +35,7 @@ public class LocalProperties {
   public static final String GENERATOR_ATT = "generator";
 
   private IProject project;
+  private String format;
   private LinkedHashMap<String, FileProperties> files;
 
   public LocalProperties(final IProject project) {
@@ -39,21 +43,31 @@ public class LocalProperties {
     this.files = new LinkedHashMap<String, FileProperties>();
   }
 
-  private LocalProperties(final IProject project, final LinkedHashMap<String, FileProperties> files) {
+  private LocalProperties(final IProject project, final String format,
+      final LinkedHashMap<String, FileProperties> files) {
     this.project = project;
+    this.format = format;
     this.files = files;
   }
 
   // Getters
 
   public FileProperties getFileProperties(final String fileName) {
-    return null;
+    System.out.println("[X2] this.files.size()=" + this.files.size());
+    return this.files.get(fileName);
+  }
+
+  public void addFileProperties(final String fileName, final FileProperties fileProperties) {
+    this.files.put(fileName, fileProperties);
   }
 
   // Persistence
 
   public static LocalProperties load(final IProject project) throws CouldNotLoadPropertiesException {
     File f = new File(project.getLocation().toFile(), CONFIG_FILE_NAME);
+
+    String format = null;
+
     if (f.exists()) {
       BufferedReader r = null;
       try {
@@ -66,30 +80,39 @@ public class LocalProperties {
         Map<String, FileProperties> properties = new LinkedHashMap<String, FileProperties>();
 
         for (String name : p.stringPropertyNames()) {
-          int dot = name.indexOf('.');
-          if (dot == -1) {
-            throw new CouldNotLoadPropertiesException(
-                "Invalid property name '" + name + "'. A property name must have the form 'file.attribute'.");
-          }
 
-          String file = name.substring(0, dot).trim();
-          if (file.isEmpty()) {
-            throw new CouldNotLoadPropertiesException(
-                "Invalid property name '" + name + "'. A property name must have the form 'file.attribute'.");
-          }
+          if (FORMAT_ATT.equals(name)) {
 
-          String attribute = name.substring(dot + 1).trim();
-          if (attribute.isEmpty()) {
-            throw new CouldNotLoadPropertiesException(
-                "Invalid property name '" + name + "'. A property name must have the form 'file.attribute'.");
-          }
+            format = p.getProperty(name);
 
-          FileProperties fileProperties = properties.get(file);
-          if (fileProperties == null) {
-            fileProperties = new FileProperties("");
-            properties.put(file, fileProperties);
+          } else {
+
+            int dot = name.indexOf('.');
+            if (dot == -1) {
+              throw new CouldNotLoadPropertiesException(
+                  "Invalid property name '" + name + "'. A property name must have the form 'file.attribute'.");
+            }
+
+            String file = name.substring(0, dot).trim();
+            if (file.isEmpty()) {
+              throw new CouldNotLoadPropertiesException(
+                  "Invalid property name '" + name + "'. A property name must have the form 'file.attribute'.");
+            }
+
+            String attribute = name.substring(dot + 1).trim();
+            if (attribute.isEmpty()) {
+              throw new CouldNotLoadPropertiesException(
+                  "Invalid property name '" + name + "'. A property name must have the form 'file.attribute'.");
+            }
+
+            FileProperties fileProperties = properties.get(file);
+            if (fileProperties == null) {
+              fileProperties = new FileProperties("");
+              properties.put(file, fileProperties);
+            }
+            fileProperties.set(name, attribute, p.getProperty(name));
+
           }
-          fileProperties.set(name, attribute, p.getProperty(name));
 
         }
 
@@ -102,7 +125,7 @@ public class LocalProperties {
           files.put(fileProperties.fileName, fileProperties);
         }
 
-        return new LocalProperties(project, files);
+        return new LocalProperties(project, CURRENT_FORMAT, files);
 
       } catch (FileNotFoundException e) {
         throw new CouldNotLoadPropertiesException(e.getMessage());
@@ -118,7 +141,7 @@ public class LocalProperties {
         }
       }
     } else {
-      return new LocalProperties(project, new LinkedHashMap<String, FileProperties>());
+      return new LocalProperties(project, format, new LinkedHashMap<String, FileProperties>());
     }
   }
 
@@ -129,18 +152,18 @@ public class LocalProperties {
       w = new BufferedWriter(new FileWriter(f));
 
       w.write("# HotRot local configuration file for the Eclipse Plugin.\n");
+      w.write("# This file usually has per-developer values. " + "It's typically not stored in the SCM repository.\n");
+
       w.write("\n");
-      w.write("# This file usually has per-developer values and, therefore, "
-          + "is typically not stored in the SCM repository.\n");
-      w.write("\n");
+      w.write("format=" + CURRENT_FORMAT + "\n");
 
       int i = 1;
       for (FileProperties fp : this.files.values()) {
         String file = "file" + i;
         w.write("\n");
-        w.write("# Properties for file " + fp.fileName + ":\n");
+        w.write("# Properties for file: " + fp.fileName + "\n");
         w.write(file + "." + FILENAME_ATT + "=" + fp.fileName + "\n");
-        w.write(file + "." + DRIVERCLASSPATH_ATT + "=" + fp.renderClassPath() + "\n");
+        w.write(file + "." + DRIVERCLASSPATH_ATT + "=" + ClassPathEncoder.encode(fp.driverClassPathEntries) + "\n");
         w.write(file + "." + DRIVERCLASSNAME_ATT + "=" + fp.driverClassName + "\n");
         w.write(file + "." + URL_ATT + "=" + fp.url + "\n");
         w.write(file + "." + USERNAME_ATT + "=" + fp.username + "\n");
@@ -198,7 +221,7 @@ public class LocalProperties {
       if (FILENAME_ATT.equals(attribute)) {
         this.fileName = value;
       } else if (DRIVERCLASSPATH_ATT.equals(attribute)) {
-        this.driverClassPathEntries = Arrays.asList(value.split(":"));
+        this.driverClassPathEntries = ClassPathEncoder.decode(value);
       } else if (DRIVERCLASSNAME_ATT.equals(attribute)) {
         this.driverClassName = value;
       } else if (URL_ATT.equals(attribute)) {
@@ -259,20 +282,6 @@ public class LocalProperties {
         throw new CouldNotLoadPropertiesException(
             "Incomplete file '" + file + "'. Property '" + file + "." + GENERATOR_ATT + "' not found.");
       }
-    }
-
-    public String renderClassPath() {
-      StringBuilder sb = new StringBuilder();
-      boolean first = true;
-      for (String entry : this.driverClassPathEntries) {
-        if (first) {
-          first = false;
-        } else {
-          sb.append(":");
-        }
-        sb.append(entry);
-      }
-      return sb.toString();
     }
 
     // Setters & Getters

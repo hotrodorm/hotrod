@@ -9,7 +9,8 @@ public class AllAutomatedTests {
   public static Test suite() {
     TestSuite ts = new TestSuite();
 
-    ts.addTestSuite(FileUtilsTests.class);
+    // ts.addTestSuite(FileUtilsTests.class);
+    ts.addTestSuite(EncoderTests.class);
 
     return ts;
   }

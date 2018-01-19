@@ -12,15 +12,16 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.hotrod.eclipseplugin.utils.FUtil;
 
 public class DriverFiles {
 
   private static Set<DriverFileLocation> driverFiles = new HashSet<DriverFileLocation>();
   private static URLClassLoader loader = null;
 
-  public static synchronized void load(final IProject project, final String driverClassPath) throws SQLException {
+  public static synchronized void load(final IProject project, final String driverClassPathEntry) throws SQLException {
     System.out.println("[DriverFiles] starting...");
-    DriverFileLocation df = new DriverFileLocation(project, driverClassPath);
+    DriverFileLocation df = new DriverFileLocation(project, driverClassPathEntry);
 
     // Return the existing one if already loaded
 
@@ -33,8 +34,12 @@ public class DriverFiles {
 
     // Otherwise, load the new driver
 
-    IFile ifile = project.getFile(driverClassPath);
-    File file = ifile.getLocation().toFile();
+    File file = new File(driverClassPathEntry);
+    if (!FUtil.isAbsolute(file)) {
+      IFile ifile = project.getFile(driverClassPathEntry);
+      file = ifile.getLocation().toFile();
+    }
+
     System.out.println("[DriverFiles] file=" + file.getPath());
     if (!file.exists()) {
       throw new SQLException("Could not load JDBC driver. File not found at " + file.getPath());
