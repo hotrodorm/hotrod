@@ -20,14 +20,14 @@ public class DriverFiles {
   private static URLClassLoader loader = null;
 
   public static synchronized void load(final IProject project, final String driverClassPathEntry) throws SQLException {
-    System.out.println("[DriverFiles] starting...");
+    log("[DriverFiles] starting...");
     DriverFileLocation df = new DriverFileLocation(project, driverClassPathEntry);
 
     // Return the existing one if already loaded
 
     for (DriverFileLocation existing : driverFiles) {
       if (existing.equals(df)) {
-        System.out.println("[DriverFiles] already exists.");
+        log("[DriverFiles] already exists.");
         return;
       }
     }
@@ -40,7 +40,7 @@ public class DriverFiles {
       file = ifile.getLocation().toFile();
     }
 
-    System.out.println("[DriverFiles] file=" + file.getPath());
+    log("[DriverFiles] file=" + file.getPath());
     if (!file.exists()) {
       throw new SQLException("Could not load JDBC driver. File not found at " + file.getPath());
     }
@@ -53,7 +53,7 @@ public class DriverFiles {
       Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
       method.setAccessible(true);
       method.invoke(loader, file.toURI().toURL());
-      System.out.println("[DriverFiles] added!");
+      log("[DriverFiles] added!");
 
     } catch (SecurityException e) {
       throw new SQLException("Could not load JDBC driver " + file.getPath(), e);
@@ -127,6 +127,10 @@ public class DriverFiles {
       return true;
     }
 
+  }
+
+  public static void log(final String txt) {
+    // System.out.println(txt);
   }
 
 }

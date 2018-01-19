@@ -19,7 +19,7 @@ import org.hotrod.eclipseplugin.utils.SUtil;
 
 public class LocalProperties {
 
-  private static final String CONFIG_FILE_NAME = "hotrod.local.properties";
+  public static final String CONFIG_FILE_NAME = "hotrod.local.properties";
 
   public static final String FORMAT_ATT = "format";
   public static final String CURRENT_FORMAT = "F1";

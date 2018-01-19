@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -36,7 +37,7 @@ import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 import org.hotrod.eclipseplugin.utils.FUtil;
 import org.hotrod.eclipseplugin.utils.SUtil;
 
-public class ConnectToDatabaseWizard extends NavigationAwareWizard {
+public class DatabasePropertiesWizard extends NavigationAwareWizard {
 
   private MainConfigFace mainConfigFace;
   private Shell shell;
@@ -62,23 +63,18 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
 
   private static String[] AVAILABLE_GENERATORS = { "MyBatis", "Spring JDBC", "MyBatis Spring" };
 
-  public ConnectToDatabaseWizard(final MainConfigFace mainConfigFace, final Shell shell) {
+  public DatabasePropertiesWizard(final MainConfigFace mainConfigFace, final LocalProperties properties,
+      final Shell shell) {
     super();
+
     this.mainConfigFace = mainConfigFace;
+    this.properties = properties;
     this.shell = shell;
-    try {
-      System.out.println("[X1] will load properties");
-      this.properties = LocalProperties.load(this.mainConfigFace.getProject());
-      System.out.println("[X1] properties loaded");
-    } catch (CouldNotLoadPropertiesException e) {
-      System.out.println("[X1] Could not load properties");
-      MessageDialog.openError(this.shell, "Invalid HotRod Plugin's properties file",
-          "Error: " + e.getMessage() + "\n\nWill load an empty properties file that will overwrite the existing one.");
-      this.properties = new LocalProperties(this.mainConfigFace.getProject());
-    }
+
+    TrayDialog.setDialogHelpAvailable(false);
 
     this.fileProperties = this.properties.getFileProperties(this.mainConfigFace.getRelativeFileName());
-    System.out.println("[X1] this.fileProperties=" + this.fileProperties + " (rel file name="
+    log("[X1] this.fileProperties=" + this.fileProperties + " (rel file name="
         + this.mainConfigFace.getRelativeFileName() + ")");
 
     if (this.fileProperties == null) {
@@ -95,7 +91,7 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
 
   @Override
   public void preprocessBackButton(final IWizardPage currentPage) {
-    System.out.println("... preprocessBackButton() currentPage=" + currentPage);
+    log("... preprocessBackButton() currentPage=" + currentPage);
     // this.clearMessages();
     if (currentPage == this.confirmationPage) {
       this.onLastPage = false;
@@ -104,7 +100,7 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
 
   @Override
   public void preprocessNextButton(final IWizardPage currentPage) {
-    System.out.println("... preprocessNextButton()");
+    log("... preprocessNextButton()");
 
     // this.clearMessages();
 
@@ -116,16 +112,16 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
 
       this.driver = null;
       this.driverException = null;
-      System.out.println("... --> on DriverPage");
+      log("... --> on DriverPage");
       IProject project = this.mainConfigFace.getProject();
       List<String> driverClassPath = Arrays.asList(this.driverPage.fieldClassPathEntries.getItems());
       String driverClassName = this.driverPage.fieldDriverClassName.getText();
       try {
         this.driver = new DynamicallyLoadedDriver(project, driverClassPath, driverClassName);
-        System.out.println("... --> driver, success");
+        log("... --> driver, success");
       } catch (SQLException e) {
         this.driverException = e;
-        System.out.println("... --> driver, failure");
+        log("... --> driver, failure");
       }
 
     } else if (currentPage == this.connectionPage) {
@@ -134,7 +130,7 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
 
       this.connectionPage.clearMessage();
 
-      System.out.println("... --> on ConnectionPage");
+      log("... --> on ConnectionPage");
 
       this.connection = null;
       this.connectionException = null;
@@ -144,9 +140,10 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
         String password = this.connectionPage.getFieldPassword().getText();
         this.connection = this.driver.getConnection(url, username, password);
         retrieveCatalogsAndSchemas();
-        System.out.println("this.availableCatalogs.size()=" + this.availableCatalogs.size());
+        log("this.availableCatalogs.size()="
+            + (this.availableCatalogs == null ? "null" : this.availableCatalogs.size()));
         this.selectionPage.updateAvailableCatalogsAndSchemas();
-        System.out.println("... --> conn, success");
+        log("... --> conn, success");
 
       } catch (SQLException e) {
         if (this.connection != null) {
@@ -159,7 +156,7 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
           }
         }
         this.connectionException = e;
-        System.out.println("... --> conn, failure");
+        log("... --> conn, failure");
       }
 
     } else if (currentPage == this.selectionPage) {
@@ -179,21 +176,21 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
 
     // Catalogs
 
-    System.out.println("[CATALOGS] dm.supportsCatalogsInTableDefinitions()=" + dm.supportsCatalogsInTableDefinitions());
+    log("[CATALOGS] dm.supportsCatalogsInTableDefinitions()=" + dm.supportsCatalogsInTableDefinitions());
 
     if (dm.supportsCatalogsInTableDefinitions()) {
       ResultSet rs = null;
       try {
         this.availableCatalogs = new ArrayList<String>();
-        System.out.println("[CATALOGS] 1");
+        log("[CATALOGS] 1");
         rs = dm.getCatalogs();
-        System.out.println("[CATALOGS] 2");
+        log("[CATALOGS] 2");
         while (rs.next()) {
-          System.out.println("[CATALOGS] read one");
+          log("[CATALOGS] read one");
           String catalog = rs.getString(1);
           this.availableCatalogs.add(catalog);
         }
-        System.out.println("[CATALOGS] finished!");
+        log("[CATALOGS] finished!");
       } finally {
         if (rs != null) {
           try {
@@ -231,7 +228,7 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
 
   @Override
   public String getWindowTitle() {
-    return "Connect to database";
+    return "Database Properties";
   }
 
   @Override
@@ -284,7 +281,7 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
     public DriverPage() {
       super("Select the JDBC driver");
       setTitle("Select the JDBC driver");
-      setDescription("Add the JDBC driver jar file(s) and specify the driver class name");
+      setDescription("Add the JDBC driver jar file(s) and specify the driver class name.");
     }
 
     public void clearMessage() {
@@ -352,14 +349,14 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
           fileDialog.setFilterExtensions(FILTER_EXTS);
           File baseFolder = mainConfigFace.getProject().getLocation().toFile();
           String basePath = baseFolder.getPath();
-          System.out.println("--- basePath=" + basePath);
+          log("--- basePath=" + basePath);
           fileDialog.setFilterPath(basePath);
           fileDialog.open();
           String path = fileDialog.getFilterPath();
           File folder = new File(path);
-          System.out.println("path=" + path);
+          log("path=" + path);
           for (String fileName : fileDialog.getFileNames()) {
-            System.out.println("fileName=" + fileName);
+            log("fileName=" + fileName);
             File f = new File(folder, fileName);
             File relFile = FUtil.getRelativeFile(f, baseFolder);
             String newPath = relFile != null ? relFile.getPath() : f.getPath();
@@ -387,16 +384,16 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
 
         @Override
         public void widgetSelected(final SelectionEvent event) {
-          System.out.println("-> [deleteJar] selected.");
+          log("-> [deleteJar] selected.");
           for (String fileName : fieldClassPathEntries.getSelection()) {
-            System.out.println(" * deleting: " + fileName);
+            log(" * deleting: " + fileName);
             fieldClassPathEntries.remove(fileName);
           }
         }
 
         @Override
         public void widgetDefaultSelected(final SelectionEvent event) {
-          System.out.println("-> [deleteJar] default selected.");
+          log("-> [deleteJar] default selected.");
         }
 
       });
@@ -455,15 +452,12 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
     @Override
     public IWizardPage getNextPage() {
 
-      System.out.println("*** getNextPage()");
+      log("*** getNextPage()");
 
       if (driver != null || driverException == null) {
         return super.getNextPage();
       } else {
-        // this.setErrorMessage(driverException.getMessage());
-        this.setErrorMessage(driverException.getMessage()
-            + " This is a long long long long long long long long long long long long long long long long long long long long long long long long long "
-            + "long long long long long long long long long long long long long long long long long long long long long long long long long long long message.");
+        this.setErrorMessage(driverException.getMessage());
         return driverPage;
       }
 
@@ -492,9 +486,9 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
     private Text fieldPassword;
 
     public ConnectionPage() {
-      super("Database connection Properties");
-      setTitle("Database connection Properties");
-      setDescription("Specify the JDBC connection properties");
+      super("Set the Connection Properties");
+      setTitle("Set the Connection Properties");
+      setDescription("Specify which database you want to connect to.");
     }
 
     public void clearMessage() {
@@ -630,10 +624,10 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
     private Combo fieldGenerator;
 
     public SelectionPage() {
-      super("Select the database schema");
-      System.out.println("[[ SelectionPage ]]");
-      setTitle("Select the database schema");
-      setDescription("Pick a database catalog, schema and/or generator");
+      super("Select the default database schema");
+      log("[[ SelectionPage ]]");
+      setTitle("Select the default database schema");
+      setDescription("Choose which database catalog and/or schema you will use by default.");
     }
 
     public void clearMessage() {
@@ -642,7 +636,7 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
 
     @Override
     public void createControl(final Composite parent) {
-      System.out.println("[[ SelectionPage ]] - createControls()");
+      log("[[ SelectionPage ]] - createControls()");
 
       this.container = new Composite(parent, SWT.NONE);
       {
@@ -658,7 +652,7 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
       this.fieldCatalog = new Combo(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
       {
         GridData gridData = new GridData();
-        gridData.widthHint = 200;
+        gridData.widthHint = 250;
         this.fieldCatalog.setLayoutData(gridData);
       }
 
@@ -669,10 +663,10 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
       this.fieldSchema = new Combo(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
       {
         GridData gridData = new GridData();
-        gridData.widthHint = 200;
+        gridData.widthHint = 250;
         this.fieldSchema.setLayoutData(gridData);
       }
-      System.out.println("[X3] fileProperties.getSchema()=" + fileProperties.getSchema());
+      log("[X3] fileProperties.getSchema()=" + fileProperties.getSchema());
 
       // Generator
 
@@ -761,10 +755,10 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
     private Composite container;
 
     public ConfirmationPage() {
-      super("Save the database connection");
-      System.out.println("[[ ConfirmationPage ]]");
-      setTitle("Save the database connection");
-      setDescription("Save all changes.");
+      super("Save the Database Properties");
+      log("[[ ConfirmationPage ]]");
+      setTitle("Save the Database Properties");
+      setDescription("Save your database connection details to a local file.");
     }
 
     public void clearMessage() {
@@ -773,7 +767,7 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
 
     @Override
     public void createControl(final Composite parent) {
-      System.out.println("[[ ConfirmationPage ]] - createControls()");
+      log("[[ ConfirmationPage ]] - createControls()");
 
       this.container = new Composite(parent, SWT.NONE);
       {
@@ -793,10 +787,14 @@ public class ConnectToDatabaseWizard extends NavigationAwareWizard {
 
     @Override
     public IWizardPage getPreviousPage() {
-      System.out.println("[Last] getPreviousPage()");
+      log("[Last] getPreviousPage()");
       return super.getPreviousPage();
     }
 
+  }
+
+  public static void log(final String txt) {
+    // System.out.println(txt);
   }
 
 }

@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -29,7 +28,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -51,9 +49,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.hotrod.eclipseplugin.jdbc.ConnectToDatabaseWizard;
-import org.hotrod.eclipseplugin.jdbc.JDBCPropertiesDialog;
+import org.hotrod.eclipseplugin.jdbc.DatabasePropertiesWizard;
+import org.hotrod.eclipseplugin.jdbc.LocalProperties;
 import org.hotrod.eclipseplugin.jdbc.NavigationAwareWizardDialog;
+import org.hotrod.eclipseplugin.jdbc.LocalProperties.CouldNotLoadPropertiesException;
 import org.hotrod.eclipseplugin.treeview.AbstractFace;
 import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
 import org.hotrod.eclipseplugin.treeview.HotRodLabelProvider;
@@ -68,6 +67,8 @@ public class HotRodView extends ViewPart {
   private static final String GEN_CHANGES_ICON_PATH = "icons/gen-chg1-16.png";
   private static final String GEN_SELECTION_ICON_PATH = "icons/gen-sel1-16.png";
   private static final String CONNECT_TO_DATABASE_ICON_PATH = "icons/connect-to-database2-16.png";
+  private static final String CONNECTED_ICON_PATH = "icons/connected2-16.png";
+  private static final String DISCONNECTED_ICON_PATH = "icons/disconnected1-16.png";
 
   /**
    * The ID of the view as specified by the extension. // public static final
@@ -84,14 +85,18 @@ public class HotRodView extends ViewPart {
   private Action actionRemoveFile;
   private Action actionRemoveAllFiles;
   private Action actionConnectToDatabase;
+  private Action actionDatabaseProperties;
 
   private boolean autoGenerate = false;
+  private boolean fileConnected = false;
   private ImageDescriptor autoOn;
   private ImageDescriptor autoOff;
   private ImageDescriptor generateAll;
   private ImageDescriptor generateChanges;
   private ImageDescriptor generateSelection;
-  private ImageDescriptor connectToDatabase;
+  private ImageDescriptor databaseProperties;
+  private ImageDescriptor connected;
+  private ImageDescriptor disconnected;
 
   private IMenuManager contextMenu = null;
 
@@ -107,7 +112,9 @@ public class HotRodView extends ViewPart {
     this.generateAll = Activator.getImageDescriptor(GEN_ALL_ICON_PATH);
     this.generateChanges = Activator.getImageDescriptor(GEN_CHANGES_ICON_PATH);
     this.generateSelection = Activator.getImageDescriptor(GEN_SELECTION_ICON_PATH);
-    this.connectToDatabase = Activator.getImageDescriptor(CONNECT_TO_DATABASE_ICON_PATH);
+    this.databaseProperties = Activator.getImageDescriptor(CONNECT_TO_DATABASE_ICON_PATH);
+    this.connected = Activator.getImageDescriptor(CONNECTED_ICON_PATH);
+    this.disconnected = Activator.getImageDescriptor(DISCONNECTED_ICON_PATH);
   }
 
   @Override
@@ -304,12 +311,13 @@ public class HotRodView extends ViewPart {
     toolBar.add(actionGenerateAll);
     toolBar.add(actionGenerateChanges);
     toolBar.add(actionGenerateSelection);
+    toolBar.add(new Separator());
     toolBar.add(actionAutoOnOff);
+    toolBar.add(actionConnectToDatabase);
+    toolBar.add(actionDatabaseProperties);
     toolBar.add(new Separator());
     toolBar.add(actionRemoveFile);
     toolBar.add(actionRemoveAllFiles);
-    toolBar.add(new Separator());
-    toolBar.add(actionConnectToDatabase);
 
     // This is the Down Arrow at the end of the tool bar
 
@@ -317,12 +325,13 @@ public class HotRodView extends ViewPart {
     menu.add(actionGenerateAll);
     menu.add(actionGenerateChanges);
     menu.add(actionGenerateSelection);
+    menu.add(new Separator());
     menu.add(actionAutoOnOff);
+    menu.add(actionConnectToDatabase);
+    menu.add(actionDatabaseProperties);
     menu.add(new Separator());
     menu.add(actionRemoveFile);
     menu.add(actionRemoveAllFiles);
-    menu.add(new Separator());
-    menu.add(actionConnectToDatabase);
 
   }
 
@@ -346,12 +355,13 @@ public class HotRodView extends ViewPart {
     contextMenu.add(actionGenerateAll);
     contextMenu.add(actionGenerateChanges);
     contextMenu.add(actionGenerateSelection);
+    contextMenu.add(new Separator());
     contextMenu.add(actionAutoOnOff);
+    contextMenu.add(actionConnectToDatabase);
+    contextMenu.add(actionDatabaseProperties);
     contextMenu.add(new Separator());
     contextMenu.add(actionRemoveFile);
     contextMenu.add(actionRemoveAllFiles);
-    contextMenu.add(new Separator());
-    contextMenu.add(actionConnectToDatabase);
     this.contextMenu = contextMenu;
   }
 
@@ -483,70 +493,75 @@ public class HotRodView extends ViewPart {
     actionRemoveAllFiles.setImageDescriptor(
         PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_REMOVEALL));
 
-    // Configure JDBC Properties
+    // Connect to Database
 
     actionConnectToDatabase = new Action() {
+      @Override
+      public void run() {
+        fileConnected = !fileConnected;
+        String text = fileConnected ? "Connected to database" : "Disconnected from database";
+        actionConnectToDatabase.setText(text);
+        actionConnectToDatabase.setChecked(fileConnected);
+        actionConnectToDatabase.setToolTipText(text);
+        actionConnectToDatabase.setImageDescriptor(fileConnected ? connected : disconnected);
+
+        // actionGenerateChanges.setEnabled(!autoGenerate);
+        // actionGenerateSelection.setEnabled(!autoGenerate);
+
+        if (contextMenu != null) {
+          contextMenu.update();
+        }
+      }
+    };
+    actionConnectToDatabase.setText(text);
+    actionConnectToDatabase.setChecked(fileConnected);
+    actionConnectToDatabase.setToolTipText(fileConnected ? "Connected to database" : "Disconnected from database");
+    actionConnectToDatabase.setImageDescriptor(fileConnected ? connected : disconnected);
+
+    // Database Properties
+
+    actionDatabaseProperties = new Action() {
 
       @Override
       public void run() {
-
-        if (false) {
-          IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("project002");
-          String driverClassPath = "lib/jdbc-drivers/postgresql-9.4-1205.jdbc4.jar";
-          String driverClassName = "org.postgresql.Driver";
-
-          // try {
-          // DynamicallyLoadedDriver driver = new
-          // DynamicallyLoadedDriver(project, driverClassPath, driverClassName);
-          // Connection conn =
-          // driver.getConnection("jdbc:postgresql://192.168.56.46:5432/postgres",
-          // "postgres",
-          // "mypassword");
-          // SQLRunner.run(conn);
-          //
-          // } catch (SQLException e) {
-          // e.printStackTrace();
-          // }
-        }
-
         Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        TreeSelection selection = (TreeSelection) viewer.getSelection();
+        if (selection.toList().isEmpty()) {
+          showMessage("Please select a HotRod configuration file and then press Connect to database...");
+        } else if (selection.toList().size() > 1) {
+          showMessage("Please select only one HotRod configuration file and then press Connect to database...");
+        } else {
+          AbstractFace face = (AbstractFace) selection.toList().get(0);
+          MainConfigFace mainConfigFace = face.getMainConfigFace();
 
-        if (false) {
-          JDBCPropertiesDialog dialog = new JDBCPropertiesDialog(shell);
-          dialog.create();
-          if (dialog.open() == Window.OK) {
-            System.out.println(dialog.getFirstName());
-            System.out.println(dialog.getLastName());
-          }
-        }
+          try {
+            // log("[X1] will load properties");
+            LocalProperties properties = LocalProperties.load(mainConfigFace.getProject());
+            // log("[X1] properties loaded");
 
-        {
-          TreeSelection selection = (TreeSelection) viewer.getSelection();
-          if (selection.toList().isEmpty()) {
-            showMessage("Please select a HotRod configuration file and then press Connect to database...");
-          } else if (selection.toList().size() > 1) {
-            showMessage("Please select only one HotRod configuration file and then press Connect to database...");
-          } else {
-            AbstractFace face = (AbstractFace) selection.toList().get(0);
-            MainConfigFace mainConfigFace = face.getMainConfigFace();
-
-            ConnectToDatabaseWizard wizard = new ConnectToDatabaseWizard(mainConfigFace,
+            DatabasePropertiesWizard wizard = new DatabasePropertiesWizard(mainConfigFace, properties,
                 viewer.getControl().getShell());
             NavigationAwareWizardDialog dialog = new NavigationAwareWizardDialog(shell, wizard);
             dialog.open();
-
-            // WizardDialog dialog = new WizardDialog(shell, wizard);
-            // dialog.open();
             hotRodViewContentProvider.refresh();
-          }
-        }
 
-        // showMessage("JDBC Properties - executed");
+          } catch (CouldNotLoadPropertiesException e) {
+            // log("[X1] Could not load properties");
+            MessageDialog.openError(shell, "Invalid HotRod Plugin's properties file",
+                "Invalid HotRod Plugin's properties file: " + LocalProperties.CONFIG_FILE_NAME + "\n\nError: "
+                    + e.getMessage()
+                    + "\n\nPlease manually restore this file, or remove it to create a new one from scratch.");
+          }
+
+        }
       }
+
     };
-    actionConnectToDatabase.setText("Connect to database...");
-    actionConnectToDatabase.setToolTipText("Connect to database...");
-    actionConnectToDatabase.setImageDescriptor(this.connectToDatabase);
+    actionDatabaseProperties.setText("Database properties...");
+    actionDatabaseProperties.setToolTipText("Database properties...");
+    actionDatabaseProperties.setImageDescriptor(this.databaseProperties);
+
+    // Double click
 
     doubleClickAction = new Action() {
       @Override

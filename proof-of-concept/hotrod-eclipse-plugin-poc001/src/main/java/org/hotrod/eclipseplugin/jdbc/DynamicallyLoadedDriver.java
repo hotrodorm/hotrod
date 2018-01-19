@@ -18,7 +18,7 @@ public class DynamicallyLoadedDriver {
 
   public DynamicallyLoadedDriver(final IProject project, final List<String> driverClassPathEntries,
       final String driverClassName) throws SQLException {
-    System.out.println("[DLD] starting...");
+    log("[DLD] starting...");
     this.project = project;
     this.driverClassPathEntries = driverClassPathEntries;
     this.driverClassName = driverClassName;
@@ -26,16 +26,16 @@ public class DynamicallyLoadedDriver {
     // Load/retrieve driver file location
 
     for (String classPathEntry : this.driverClassPathEntries) {
-      System.out.println("[DLD] classPathEntry=" + classPathEntry);
+      log("[DLD] classPathEntry=" + classPathEntry);
       DriverFiles.load(this.project, classPathEntry);
     }
 
     try {
-      System.out.println("[DLD] will load class: " + this.driverClassName);
+      log("[DLD] will load class: " + this.driverClassName);
       Class<?> classToLoad = Class.forName(this.driverClassName, true, DriverFiles.getClassLoader());
       Driver driver = (Driver) classToLoad.newInstance();
       DriverManager.registerDriver(new DriverProxy(driver));
-      System.out.println("[DLD] loaded.");
+      log("[DLD] loaded.");
     } catch (ClassNotFoundException e) {
       throw new SQLException("Could not load JDBC driver. Class " + this.driverClassName + " not found");
     } catch (InstantiationException e) {
@@ -90,6 +90,10 @@ public class DynamicallyLoadedDriver {
       return this.driver.jdbcCompliant();
     }
 
+  }
+
+  public static void log(final String txt) {
+    // System.out.println(txt);
   }
 
 }
