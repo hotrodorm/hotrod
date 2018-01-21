@@ -58,8 +58,8 @@ public class HotRodViewContentProvider implements ITreeContentProvider {
   @Override
   public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
     this.viewer = (TreeViewer) viewer;
-    // System.out.println("viewer= " + this.viewer);
-    // System.out.println("oldInput: " + oldInput + " newInput: " + newInput);
+    // log("viewer= " + this.viewer);
+    // log("oldInput: " + oldInput + " newInput: " + newInput);
   }
 
   public void setVisible(final boolean visible) {

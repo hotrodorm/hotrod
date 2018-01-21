@@ -20,16 +20,17 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.hotrod.eclipseplugin.jdbc.LocalProperties.CouldNotLoadPropertiesException;
 import org.hotrod.eclipseplugin.jdbc.LocalProperties.CouldNotSavePropertiesException;
 import org.hotrod.eclipseplugin.jdbc.LocalProperties.FileProperties;
 import org.hotrod.eclipseplugin.jdbc.NavigationAwareWizardDialog.NavigationAwareWizard;
@@ -90,6 +91,24 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
   }
 
   @Override
+  public String getWindowTitle() {
+    return "Configure Database Connection";
+  }
+
+  @Override
+  public void addPages() {
+    addPage(this.driverPage);
+    addPage(this.connectionPage);
+    addPage(this.selectionPage);
+    addPage(this.confirmationPage);
+  }
+
+  @Override
+  public boolean isHelpAvailable() {
+    return false;
+  }
+
+  @Override
   public void preprocessBackButton(final IWizardPage currentPage) {
     log("... preprocessBackButton() currentPage=" + currentPage);
     // this.clearMessages();
@@ -138,7 +157,10 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
         String url = this.connectionPage.getFieldURL().getText();
         String username = this.connectionPage.getFieldUsername().getText();
         String password = this.connectionPage.getFieldPassword().getText();
+
+        setCursorBusy(true);
         this.connection = this.driver.getConnection(url, username, password);
+
         retrieveCatalogsAndSchemas();
         log("this.availableCatalogs.size()="
             + (this.availableCatalogs == null ? "null" : this.availableCatalogs.size()));
@@ -157,6 +179,8 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
         }
         this.connectionException = e;
         log("... --> conn, failure");
+      } finally {
+        setCursorBusy(false);
       }
 
     } else if (currentPage == this.selectionPage) {
@@ -169,6 +193,18 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
 
     }
 
+  }
+
+  private Cursor cursor = null;
+
+  private void setCursorBusy(final boolean busy) {
+    if (this.cursor != null) {
+      this.cursor.dispose();
+    }
+    Display display = Display.getCurrent();
+    this.cursor = busy ? new Cursor(display, SWT.CURSOR_WAIT) : new Cursor(display, SWT.CURSOR_ARROW);
+    this.getShell().setCursor(this.cursor);
+    // this.shell.setCursor(this.cursor);
   }
 
   private void retrieveCatalogsAndSchemas() throws SQLException {
@@ -224,24 +260,6 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
       }
     }
 
-  }
-
-  @Override
-  public String getWindowTitle() {
-    return "Database Properties";
-  }
-
-  @Override
-  public void addPages() {
-    addPage(this.driverPage);
-    addPage(this.connectionPage);
-    addPage(this.selectionPage);
-    addPage(this.confirmationPage);
-  }
-
-  @Override
-  public boolean isHelpAvailable() {
-    return false;
   }
 
   @Override
@@ -486,8 +504,8 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
     private Text fieldPassword;
 
     public ConnectionPage() {
-      super("Set the Connection Properties");
-      setTitle("Set the Connection Properties");
+      super("Select a database");
+      setTitle("Select a database");
       setDescription("Specify which database you want to connect to.");
     }
 
@@ -627,7 +645,7 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
       super("Select the default database schema");
       log("[[ SelectionPage ]]");
       setTitle("Select the default database schema");
-      setDescription("Choose which database catalog and/or schema you will use by default.");
+      setDescription("Choose the default database catalog and/or schema.");
     }
 
     public void clearMessage() {
@@ -755,9 +773,9 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
     private Composite container;
 
     public ConfirmationPage() {
-      super("Save the Database Properties");
+      super("Save the database connection");
       log("[[ ConfirmationPage ]]");
-      setTitle("Save the Database Properties");
+      setTitle("Save the database connection");
       setDescription("Save your database connection details to a local file.");
     }
 

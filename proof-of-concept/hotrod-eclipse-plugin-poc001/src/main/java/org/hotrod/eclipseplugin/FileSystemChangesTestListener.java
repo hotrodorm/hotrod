@@ -9,12 +9,12 @@ public class FileSystemChangesTestListener implements IResourceChangeListener {
 
   @Override
   public void resourceChanged(final IResourceChangeEvent event) {
-    System.out.println("--- Something changed ---");
+    log("--- Something changed ---");
     if (event.getResource() != null) {
-      System.out.println("Change detected on: " + event.getResource().getFullPath());
+      log("Change detected on: " + event.getResource().getFullPath());
     } else {
-      System.out.println("Other change detected: build-kind=" + event.getBuildKind() + " type="
-          + renderEventType(event.getType()) + " source=" + event.getSource() + " delta=" + event.getDelta());
+      log("Other change detected: build-kind=" + event.getBuildKind() + " type=" + renderEventType(event.getType())
+          + " source=" + event.getSource() + " delta=" + event.getDelta());
       if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
         IResourceDelta delta = event.getDelta();
         printDelta(delta, "");
@@ -23,17 +23,16 @@ public class FileSystemChangesTestListener implements IResourceChangeListener {
   }
 
   private void printDelta(final IResourceDelta delta, final String indent) {
-    System.out.println(
-        indent + "delta kind=" + renderDeltaKind(delta.getKind()) + " flags=" + renderDeltaFlags(delta.getFlags())
-            + " full-path=" + delta.getFullPath() + " rel-path=" + delta.getProjectRelativePath());
+    log(indent + "delta kind=" + renderDeltaKind(delta.getKind()) + " flags=" + renderDeltaFlags(delta.getFlags())
+        + " full-path=" + delta.getFullPath() + " rel-path=" + delta.getProjectRelativePath());
 
     IResource r = delta.getResource();
-    System.out.println(indent + " -> r=" + r);
-    System.out.println(indent + " -> type=" + renderResourceType(r.getType()));
-    System.out.println(indent + " -> location=" + r.getLocation());
-    System.out.println(indent + " -> name=" + r.getName());
-    System.out.println(indent + " -> full-path=" + r.getFullPath());
-    System.out.println(indent + " -> rel-path=" + r.getProjectRelativePath());
+    log(indent + " -> r=" + r);
+    log(indent + " -> type=" + renderResourceType(r.getType()));
+    log(indent + " -> location=" + r.getLocation());
+    log(indent + " -> name=" + r.getName());
+    log(indent + " -> full-path=" + r.getFullPath());
+    log(indent + " -> rel-path=" + r.getProjectRelativePath());
     for (IResourceDelta d : delta.getAffectedChildren()) {
       printDelta(d, indent + ". ");
     }
@@ -134,6 +133,10 @@ public class FileSystemChangesTestListener implements IResourceChangeListener {
     }
 
     return sb.toString();
+  }
+
+  private void log(final String txt) {
+    // System.out.println(txt);
   }
 
 }

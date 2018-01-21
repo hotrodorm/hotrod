@@ -46,14 +46,14 @@ public class ConfigFileLoader {
           if (item != null) {
             if (item instanceof FragmentConfigFile) {
               FragmentConfigFile fc = (FragmentConfigFile) item;
-              System.out.println("--> will load fragment: " + fc.getIncluderRelativePath());
+              log("--> will load fragment: " + fc.getIncluderRelativePath());
               try {
                 fc = loadFragmentFile(f, path, fc.getIncluderRelativePath());
               } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
               }
-              System.out.println("--> fragment loaded");
+              log("--> fragment loaded");
               config.addConfigItem(fc);
               currentItem = fc;
             } else {
@@ -76,7 +76,7 @@ public class ConfigFileLoader {
                 }
               }
             } else {
-              System.out.println("FaultyConfigFileException: path.getRelativePathName()=" + path.getRelativeFileName());
+              log("FaultyConfigFileException: path.getRelativePathName()=" + path.getRelativeFileName());
               throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "Invalid line: " + line);
             }
           }
@@ -126,11 +126,11 @@ public class ConfigFileLoader {
     // e.getMessage());
     // }
     // }
-    // // System.out.println("fileName=" + fileName);
+    // // log("fileName=" + fileName);
     // IFile fileResource = myProject.getFile(relativePathName);
-    // // System.out.println("fileResource=" + fileResource);
+    // // log("fileResource=" + fileResource);
     // IPath path = fileResource.getLocation();
-    // // System.out.println("path=" + path);
+    // // log("path=" + path);
     // f = path.toFile();
     // } else {
     // f = new File(includerFile.getParentFile(), relativePathName);
@@ -140,7 +140,7 @@ public class ConfigFileLoader {
     File f = new File(includerFolder, relativePathName);
 
     RelativeProjectPath relPath = RelativeProjectPath.findRelativePath(path.getProject(), f);
-    System.out.println("======> relPath=" + relPath.getRelativePath());
+    log("======> relPath=" + relPath.getRelativePath());
 
     // Read the configuration file
 
@@ -161,7 +161,7 @@ public class ConfigFileLoader {
           if (item != null) {
             if (item instanceof FragmentConfigFile) {
               FragmentConfigFile fc = (FragmentConfigFile) item;
-              System.out.println("--> will load fragment: " + fc.getIncluderRelativePath());
+              log("--> will load fragment: " + fc.getIncluderRelativePath());
               fc = loadFragmentFile(f, relPath, fc.getIncluderRelativePath());
               config.addConfigItem(fc);
               currentItem = fc;
@@ -263,7 +263,7 @@ public class ConfigFileLoader {
             "The fragment dao must have a name.");
       }
       File fragment = new File(relativeFileName);
-      System.out.println("[FRAGMENT] relativeFileName=" + relativeFileName + " file=" + fragment.getPath());
+      log("[FRAGMENT] relativeFileName=" + relativeFileName + " file=" + fragment.getPath());
       // FIXME
       return new FragmentConfigFile(fragment, null, relativeFileName, lineNumber);
     } else {
@@ -326,6 +326,10 @@ public class ConfigFileLoader {
       return content;
     }
 
+  }
+
+  public static void log(final String txt) {
+    // System.out.println(txt);
   }
 
 }

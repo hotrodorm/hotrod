@@ -23,7 +23,7 @@ public class FaceProducer {
     if (path == null) {
       return null;
     }
-    System.out.println("*** f=" + f.getPath() + " path.getRelativePathName()=" + path.getRelativeFileName());
+    log("*** f=" + f.getPath() + " path.getRelativePathName()=" + path.getRelativeFileName());
 
     MainConfigFace mainConfigFace = new MainConfigFace(f, path, provider);
 
@@ -37,7 +37,7 @@ public class FaceProducer {
       mainConfigFace.setInvalid(new ErrorMessageFace(null, path.getRelativeFileName(), 1, "Unreadable file."));
       return mainConfigFace;
     } catch (FaultyConfigFileException e) {
-      System.out.println("FaultyConfigFileException: " + e.getFileName() + ":" + e.getLineNumber());
+      log("FaultyConfigFileException: " + e.getFileName() + ":" + e.getLineNumber());
       mainConfigFace
           .setInvalid(new ErrorMessageFace(null, path.getRelativeFileName(), e.getLineNumber(), e.getMessage()));
       return mainConfigFace;
@@ -61,7 +61,7 @@ public class FaceProducer {
 
     // // TODO: remove
     if (f.getName().equals("hotrod-1.xml")) {
-      System.out.println("MODIFYING...");
+      log("MODIFYING...");
       // mainConfigFace.getChildren().get(0).setDeleted();
       mainConfigFace.getChildren()[0].setDeleted();
       // mainConfigFace.getChildren()[1].setModified();
@@ -84,7 +84,7 @@ public class FaceProducer {
       this.project = project;
       this.relativePath = relativePath;
       this.fileName = fileName;
-      System.out.println("***    relativePath=" + relativePath);
+      log("***    relativePath=" + relativePath);
     }
 
     public IProject getProject() {
@@ -107,7 +107,7 @@ public class FaceProducer {
         File folder = new File(this.relativePath);
         file = new File(folder, this.fileName);
       }
-      System.out.println(
+      log(
           "/// this.relativePath=" + this.relativePath + " this.fileName=" + this.fileName + " file=" + file.getPath());
       return file.getPath();
     }
@@ -140,13 +140,13 @@ public class FaceProducer {
           IPath projectIPath = project.getLocation();
           String projectPath = projectIPath.toFile().getAbsolutePath();
           String head = projectPath + File.separator;
-          System.out.println(">>> projectPath=" + projectPath);
+          log(">>> projectPath=" + projectPath);
           if (parentPath.equals(projectPath)) {
-            System.out.println(">>> -> equals");
+            log(">>> -> equals");
             return new RelativeProjectPath(project, "", fileName);
           }
           if (parentPath.startsWith(head)) {
-            System.out.println(">>> -> starts");
+            log(">>> -> starts");
             String relativePath = parentPath.substring(head.length());
             return new RelativeProjectPath(project, relativePath, fileName);
           }
@@ -155,6 +155,10 @@ public class FaceProducer {
       return null;
     }
 
+  }
+
+  public static void log(final String txt) {
+    // System.out.println(txt);
   }
 
 }

@@ -29,8 +29,8 @@ public class FileSystemChangesListener implements IResourceChangeListener {
   }
 
   private boolean processFileChanges(final IResourceDelta delta) {
-    System.out.println("*** kind=" + renderDeltaKind(delta.getKind()) + " type="
-        + renderResourceType(delta.getResource().getType()) + " r=" + delta.getResource().getLocation());
+    log("*** kind=" + renderDeltaKind(delta.getKind()) + " type=" + renderResourceType(delta.getResource().getType())
+        + " r=" + delta.getResource().getLocation());
     int kind = delta.getKind();
     boolean refresh = false;
     if (kind == IResourceDelta.ADDED || kind == IResourceDelta.REMOVED || kind == IResourceDelta.CHANGED) {
@@ -95,6 +95,11 @@ public class FileSystemChangesListener implements IResourceChangeListener {
     boolean informFileRemoved(File f);
 
     boolean informFileChanged(File f);
+
+  }
+
+  private void log(final String txt) {
+    // System.out.println(txt);
   }
 
 }

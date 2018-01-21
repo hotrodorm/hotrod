@@ -51,8 +51,8 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.hotrod.eclipseplugin.jdbc.DatabasePropertiesWizard;
 import org.hotrod.eclipseplugin.jdbc.LocalProperties;
-import org.hotrod.eclipseplugin.jdbc.NavigationAwareWizardDialog;
 import org.hotrod.eclipseplugin.jdbc.LocalProperties.CouldNotLoadPropertiesException;
+import org.hotrod.eclipseplugin.jdbc.NavigationAwareWizardDialog;
 import org.hotrod.eclipseplugin.treeview.AbstractFace;
 import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
 import org.hotrod.eclipseplugin.treeview.HotRodLabelProvider;
@@ -80,12 +80,12 @@ public class HotRodView extends ViewPart {
 
   private Action actionGenerateAll;
   private Action actionGenerateChanges;
-  private Action actionGenerateSelection;
+  private Action actionGenerateSelected;
   private Action actionAutoOnOff;
   private Action actionRemoveFile;
   private Action actionRemoveAllFiles;
   private Action actionConnectToDatabase;
-  private Action actionDatabaseProperties;
+  private Action actionConfigureDatabaseConnection;
 
   private boolean autoGenerate = false;
   private boolean fileConnected = false;
@@ -94,7 +94,7 @@ public class HotRodView extends ViewPart {
   private ImageDescriptor generateAll;
   private ImageDescriptor generateChanges;
   private ImageDescriptor generateSelection;
-  private ImageDescriptor databaseProperties;
+  private ImageDescriptor configureDatabaseConnection;
   private ImageDescriptor connected;
   private ImageDescriptor disconnected;
 
@@ -112,7 +112,7 @@ public class HotRodView extends ViewPart {
     this.generateAll = Activator.getImageDescriptor(GEN_ALL_ICON_PATH);
     this.generateChanges = Activator.getImageDescriptor(GEN_CHANGES_ICON_PATH);
     this.generateSelection = Activator.getImageDescriptor(GEN_SELECTION_ICON_PATH);
-    this.databaseProperties = Activator.getImageDescriptor(CONNECT_TO_DATABASE_ICON_PATH);
+    this.configureDatabaseConnection = Activator.getImageDescriptor(CONNECT_TO_DATABASE_ICON_PATH);
     this.connected = Activator.getImageDescriptor(CONNECTED_ICON_PATH);
     this.disconnected = Activator.getImageDescriptor(DISCONNECTED_ICON_PATH);
   }
@@ -160,7 +160,7 @@ public class HotRodView extends ViewPart {
     // Point point = new Point(event.x, event.y);
     // TreeItem item = viewer.getItem(point);
     // if (item != null) {
-    // System.out.println("Mouse down: " + item);
+    // log("Mouse down: " + item);
     // }
     // }
     // });
@@ -190,13 +190,13 @@ public class HotRodView extends ViewPart {
       // Rectangle rect = cell.getTextBounds();
       // rect.width = cell.getText().length() * charWidth;
       // if (rect.contains(point))
-      // System.out.println("Cell="+cell);
+      // log("Cell="+cell);
 
       if (cell != null) {
         Object obj = cell.getElement();
         try {
           ErrorMessageFace em = (ErrorMessageFace) obj; // error message face
-          System.out.println("THIS IS an error message!");
+          log("THIS IS an error message!");
 
           // =================================================
 
@@ -210,11 +210,11 @@ public class HotRodView extends ViewPart {
             // int lineNumber = em.getLineNumber();
             int lineNumber = 3;
 
-            System.out.println("... opening: filePath=" + filePath + " line=" + lineNumber);
+            log("... opening: filePath=" + filePath + " line=" + lineNumber);
 
             IPath fromOSString = Path.fromOSString(filePath);
             IFile inputFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(fromOSString);
-            System.out.println("... opening: inputFile=" + inputFile);
+            log("... opening: inputFile=" + inputFile);
 
             if (inputFile != null) {
 
@@ -225,10 +225,10 @@ public class HotRodView extends ViewPart {
 
           } catch (PartInitException e1) {
             // TODO Auto-generated catch block
-            System.out.println("Could not open the text editor.");
+            log("Could not open the text editor.");
             // e1.printStackTrace();
             // } catch (BadLocationException e1) {
-            // System.out.println("Line does not exist.");
+            // log("Line does not exist.");
             // // TODO Auto-generated catch block
             // // e1.printStackTrace();
           } catch (CoreException e1) {
@@ -239,7 +239,7 @@ public class HotRodView extends ViewPart {
           // ==================================================
 
         } catch (ClassCastException e2) {
-          System.out.println("Not a mainconfigfile.");
+          log("Not a mainconfigfile.");
         }
       }
     }
@@ -254,7 +254,7 @@ public class HotRodView extends ViewPart {
       // org.eclipse.ui.texteditor.ITextEditor4 a4;
       // org.eclipse.ui.texteditor.ITextEditor5 a5;
 
-      System.out.println("... opening: openEditor11=" + openEditor11);
+      log("... opening: openEditor11=" + openEditor11);
 
       // org.eclipse.wst.xml.ui.internal.tabletree.XMLMultiPageEditorPart
       // ep =
@@ -262,12 +262,12 @@ public class HotRodView extends ViewPart {
       // ep.getEditorSite().getWorkbenchWindow()
 
       if (openEditor11 instanceof ITextEditor) {
-        System.out.println("... opening: ITextEditor");
+        log("... opening: ITextEditor");
         ITextEditor textEditor = (ITextEditor) openEditor11;
         IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
         textEditor.selectAndReveal(document.getLineOffset(line - 1), document.getLineLength(line - 1));
         // } else if (openEditor11 instanceof MultiPageEditorPart) {
-        // System.out.println("... opening: MultiPageEditorPart");
+        // log("... opening: MultiPageEditorPart");
         // MultiPageEditorPart textEditor = (MultiPageEditorPart)
         // openEditor11;
         // textEditor.
@@ -310,11 +310,11 @@ public class HotRodView extends ViewPart {
     IToolBarManager toolBar = bars.getToolBarManager();
     toolBar.add(actionGenerateAll);
     toolBar.add(actionGenerateChanges);
-    toolBar.add(actionGenerateSelection);
+    toolBar.add(actionGenerateSelected);
     toolBar.add(new Separator());
     toolBar.add(actionAutoOnOff);
     toolBar.add(actionConnectToDatabase);
-    toolBar.add(actionDatabaseProperties);
+    toolBar.add(actionConfigureDatabaseConnection);
     toolBar.add(new Separator());
     toolBar.add(actionRemoveFile);
     toolBar.add(actionRemoveAllFiles);
@@ -324,11 +324,11 @@ public class HotRodView extends ViewPart {
     IMenuManager menu = bars.getMenuManager();
     menu.add(actionGenerateAll);
     menu.add(actionGenerateChanges);
-    menu.add(actionGenerateSelection);
+    menu.add(actionGenerateSelected);
     menu.add(new Separator());
     menu.add(actionAutoOnOff);
     menu.add(actionConnectToDatabase);
-    menu.add(actionDatabaseProperties);
+    menu.add(actionConfigureDatabaseConnection);
     menu.add(new Separator());
     menu.add(actionRemoveFile);
     menu.add(actionRemoveAllFiles);
@@ -354,11 +354,11 @@ public class HotRodView extends ViewPart {
   private void fillContextMenu(final IMenuManager contextMenu) {
     contextMenu.add(actionGenerateAll);
     contextMenu.add(actionGenerateChanges);
-    contextMenu.add(actionGenerateSelection);
+    contextMenu.add(actionGenerateSelected);
     contextMenu.add(new Separator());
     contextMenu.add(actionAutoOnOff);
     contextMenu.add(actionConnectToDatabase);
-    contextMenu.add(actionDatabaseProperties);
+    contextMenu.add(actionConfigureDatabaseConnection);
     contextMenu.add(new Separator());
     contextMenu.add(actionRemoveFile);
     contextMenu.add(actionRemoveAllFiles);
@@ -396,13 +396,13 @@ public class HotRodView extends ViewPart {
       @Override
       public void run() {
         // showMessage("Generate Changes - executed");
-        System.out.println("*** Adding a table... (not implemented anymore)");
+        log("*** Adding a table... (not implemented anymore)");
         // hotRodViewContentProvider.getMainConfigs().get(0).addChild(new
         // TableElement("new_table", true));
 
         // p1.addChild(new TableDAO("new-table..."));
         // to1.name = "> " + to1.name;
-        // System.out.println("*** table added.");
+        // log("*** table added.");
       }
     };
     actionGenerateChanges.setText("Generate Changes");
@@ -411,15 +411,15 @@ public class HotRodView extends ViewPart {
 
     // Generate Selection
 
-    actionGenerateSelection = new Action() {
+    actionGenerateSelected = new Action() {
       @Override
       public void run() {
-        showMessage("Generate Selection - executed");
+        showMessage("Generate Selected - executed");
       }
     };
-    actionGenerateSelection.setText("Generate Selection");
-    actionGenerateSelection.setToolTipText("Generate Selection");
-    actionGenerateSelection.setImageDescriptor(this.generateSelection);
+    actionGenerateSelected.setText("Generate Selected");
+    actionGenerateSelected.setToolTipText("Generate Selected");
+    actionGenerateSelected.setImageDescriptor(this.generateSelection);
 
     // Auto On/Off
 
@@ -434,7 +434,7 @@ public class HotRodView extends ViewPart {
         actionAutoOnOff.setImageDescriptor(autoGenerate ? autoOn : autoOff);
 
         actionGenerateChanges.setEnabled(!autoGenerate);
-        actionGenerateSelection.setEnabled(!autoGenerate);
+        actionGenerateSelected.setEnabled(!autoGenerate);
 
         if (contextMenu != null) {
           contextMenu.update();
@@ -447,59 +447,13 @@ public class HotRodView extends ViewPart {
     actionAutoOnOff.setToolTipText(text);
     actionAutoOnOff.setImageDescriptor(autoGenerate ? autoOn : autoOff);
 
-    // Remove File
-
-    actionRemoveFile = new Action() {
-      @Override
-      public void run() {
-
-        // System.out.println("--- Removing selection...");
-
-        TreeSelection selection = (TreeSelection) viewer.getSelection();
-        Set<MainConfigFace> mainConfigFaces = new HashSet<MainConfigFace>();
-        for (Object obj : selection.toList()) {
-          // System.out.println("SELECTION: obj=" + obj + (obj != null ? " (" +
-          // obj.getClass().getName() + ")" : ""));
-          AbstractFace face = (AbstractFace) obj;
-          mainConfigFaces.add(face.getMainConfigFace());
-        }
-        for (MainConfigFace f : mainConfigFaces) {
-          // System.out.println(" --> removing face: " + f.getAbsolutePath());
-          f.remove();
-        }
-        hotRodViewContentProvider.refresh();
-
-        // showMessage("Remove File - executed");
-        // System.out.println("--- Removing selection COMPLETED");
-      }
-    };
-    actionRemoveFile.setText("Remove File");
-    actionRemoveFile.setToolTipText("Remove File");
-    actionRemoveFile.setImageDescriptor(
-        PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_REMOVE));
-
-    // Remove All Files
-
-    actionRemoveAllFiles = new Action() {
-      @Override
-      public void run() {
-        // showMessage("Remove All Files - executed");
-        hotRodViewContentProvider.getFiles().removeAll();
-        hotRodViewContentProvider.refresh();
-      }
-    };
-    actionRemoveAllFiles.setText("Remove All Files");
-    actionRemoveAllFiles.setToolTipText("Remove All Files");
-    actionRemoveAllFiles.setImageDescriptor(
-        PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_REMOVEALL));
-
     // Connect to Database
 
     actionConnectToDatabase = new Action() {
       @Override
       public void run() {
         fileConnected = !fileConnected;
-        String text = fileConnected ? "Connected to database" : "Disconnected from database";
+        String text = fileConnected ? "Disconnect from database" : "Connect to database";
         actionConnectToDatabase.setText(text);
         actionConnectToDatabase.setChecked(fileConnected);
         actionConnectToDatabase.setToolTipText(text);
@@ -513,23 +467,25 @@ public class HotRodView extends ViewPart {
         }
       }
     };
-    actionConnectToDatabase.setText(text);
+    String t1 = fileConnected ? "Disconnect from database" : "Connect to database";
+    actionConnectToDatabase.setText(t1);
     actionConnectToDatabase.setChecked(fileConnected);
-    actionConnectToDatabase.setToolTipText(fileConnected ? "Connected to database" : "Disconnected from database");
+    actionConnectToDatabase.setToolTipText(t1);
     actionConnectToDatabase.setImageDescriptor(fileConnected ? connected : disconnected);
 
-    // Database Properties
+    // Configure Database Connection
 
-    actionDatabaseProperties = new Action() {
+    actionConfigureDatabaseConnection = new Action() {
 
       @Override
       public void run() {
         Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
         TreeSelection selection = (TreeSelection) viewer.getSelection();
         if (selection.toList().isEmpty()) {
-          showMessage("Please select a HotRod configuration file and then press Connect to database...");
+          showMessage("Please select a HotRod configuration file and then press Configure database connection...");
         } else if (selection.toList().size() > 1) {
-          showMessage("Please select only one HotRod configuration file and then press Connect to database...");
+          showMessage(
+              "Please select only one HotRod configuration file and then press Configure database connection...");
         } else {
           AbstractFace face = (AbstractFace) selection.toList().get(0);
           MainConfigFace mainConfigFace = face.getMainConfigFace();
@@ -557,9 +513,55 @@ public class HotRodView extends ViewPart {
       }
 
     };
-    actionDatabaseProperties.setText("Database properties...");
-    actionDatabaseProperties.setToolTipText("Database properties...");
-    actionDatabaseProperties.setImageDescriptor(this.databaseProperties);
+    actionConfigureDatabaseConnection.setText("Configure database connection...");
+    actionConfigureDatabaseConnection.setToolTipText("Configure database connection...");
+    actionConfigureDatabaseConnection.setImageDescriptor(this.configureDatabaseConnection);
+
+    // Remove File
+
+    actionRemoveFile = new Action() {
+      @Override
+      public void run() {
+
+        // log("--- Removing selection...");
+
+        TreeSelection selection = (TreeSelection) viewer.getSelection();
+        Set<MainConfigFace> mainConfigFaces = new HashSet<MainConfigFace>();
+        for (Object obj : selection.toList()) {
+          // log("SELECTION: obj=" + obj + (obj != null ? " (" +
+          // obj.getClass().getName() + ")" : ""));
+          AbstractFace face = (AbstractFace) obj;
+          mainConfigFaces.add(face.getMainConfigFace());
+        }
+        for (MainConfigFace f : mainConfigFaces) {
+          // log(" --> removing face: " + f.getAbsolutePath());
+          f.remove();
+        }
+        hotRodViewContentProvider.refresh();
+
+        // showMessage("Remove File - executed");
+        // log("--- Removing selection COMPLETED");
+      }
+    };
+    actionRemoveFile.setText("Remove File");
+    actionRemoveFile.setToolTipText("Remove File");
+    actionRemoveFile.setImageDescriptor(
+        PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_REMOVE));
+
+    // Remove All Files
+
+    actionRemoveAllFiles = new Action() {
+      @Override
+      public void run() {
+        // showMessage("Remove All Files - executed");
+        hotRodViewContentProvider.getFiles().removeAll();
+        hotRodViewContentProvider.refresh();
+      }
+    };
+    actionRemoveAllFiles.setText("Remove All Files");
+    actionRemoveAllFiles.setToolTipText("Remove All Files");
+    actionRemoveAllFiles.setImageDescriptor(
+        PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_REMOVEALL));
 
     // Double click
 
@@ -584,6 +586,10 @@ public class HotRodView extends ViewPart {
   @Override
   public void setFocus() {
     viewer.getControl().setFocus();
+  }
+
+  private void log(final String txt) {
+    // System.out.println(txt);
   }
 
 }

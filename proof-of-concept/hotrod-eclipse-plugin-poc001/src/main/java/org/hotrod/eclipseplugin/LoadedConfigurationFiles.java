@@ -39,9 +39,9 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     if (f != null && f.getName().endsWith(VALID_HOTROD_EXTENSION) && f.isFile()) {
       String absolutePath = f.getAbsolutePath();
       if (!this.loadedFiles.containsKey(absolutePath)) {
-        // System.out.println("adding file: " + absolutePath);
+        // log("adding file: " + absolutePath);
         MainConfigFace face = FaceProducer.load(this.provider, f);
-        // System.out.println("face '" + absolutePath + "' [" + face.getPath() +
+        // log("face '" + absolutePath + "' [" + face.getPath() +
         // "]: valid=" + face.isValid());
         if (face != null) {
           this.loadedFiles.put(absolutePath, face);
@@ -109,29 +109,29 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
   @Override
   public boolean informFileAdded(final File f) {
-    System.out.println("  --> received file added: " + f.getAbsolutePath());
+    log("  --> received file added: " + f.getAbsolutePath());
     // Ignore new file
     return false;
   }
 
   @Override
   public boolean informFileRemoved(final File f) {
-    System.out.println("  --> received file removed: " + f.getAbsolutePath());
+    log("  --> received file removed: " + f.getAbsolutePath());
     String fullPathName = f.getAbsolutePath();
     printLoadedFiles();
     if (this.loadedFiles.containsKey(fullPathName)) {
-      System.out.println("  >> Found to remove");
+      log("  >> Found to remove");
       this.remove(this.loadedFiles.get(fullPathName));
       return true;
     } else {
-      System.out.println("  >> NOT Found to remove");
+      log("  >> NOT Found to remove");
       return false;
     }
   }
 
   @Override
   public boolean informFileChanged(final File f) {
-    System.out.println("  --> received file changed: " + f.getAbsolutePath());
+    log("  --> received file changed: " + f.getAbsolutePath());
     String fullPathName = f.getAbsolutePath();
     if (this.loadedFiles.containsKey(fullPathName)) {
       this.reload(this.loadedFiles.get(fullPathName));
@@ -142,8 +142,12 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
   private void printLoadedFiles() {
     for (String p : this.loadedFiles.keySet()) {
-      System.out.println("## currently loaded: " + p);
+      log("## currently loaded: " + p);
     }
+  }
+
+  private void log(final String txt) {
+    // System.out.println(txt);
   }
 
 }
