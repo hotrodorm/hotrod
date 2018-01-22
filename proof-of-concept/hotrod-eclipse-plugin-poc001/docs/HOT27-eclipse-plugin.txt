@@ -58,6 +58,7 @@ Research how to:
  * Add the text "connected" disconnected to each main config file. The "generate" buttons will be disabled when not connected.
  * Make the plugin run in Java 6 and 7. Currently it only works in Java 8.
  * Package the eclipse plugin using Ant.
+ * Load JDBC drivers in separate class loaders.
  
  
  
