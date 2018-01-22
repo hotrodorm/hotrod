@@ -1,0 +1,17 @@
+Oracle index hint syntax is tricky because of the index hint syntax is incorrect it is treated 
+as a comment and not implemented.  Here is an example of the correct syntax for an index hint:
+
+  select /*+ index(customer cust_primary_key_idx) */ * from customer;
+
+
+Also note that if you alias the table, you must use the alias in the index hint:
+
+  select /*+ index(c cust_primary_key_idx) */ * from customer c;
+
+
+Also, be vary of issuing hints that conflict with an index hint. In this index hint example, the 
+full hint is not consistent with an index hint:
+
+  select /*+ full(c) index(c cust_primary_key_idx) */ * from customer c;
+  
+  

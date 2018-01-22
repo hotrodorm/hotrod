@@ -1,0 +1,18 @@
+Prepare the explain plan functionality on your user. You'll need to do this only the first time this specific user performs the explain plan funcitonality. SSH to the database server. Then:
+
+* Connect to the database:
+ db2 connect to empusa
+ 
+* Initialize DB2's explain tables:
+ db2 -tf sqllib/misc/EXPLAIN.DDL
+
+Now, through JDBC (or SQL) run the explain command on your SQL. For example:
+
+ explain plan for     
+ select t.*, a.current_balance, a.name as account_name, b.name as branch_name
+   from transaction t
+   join account a on t.account_id = a.id
+   join federal_branch b on t.fed_branch_id = b.id
+   where a.current_balance >= 200 
+     and t.amount < 100
+

@@ -1,0 +1,38 @@
+Force the use of an index in SQL:
+
+Force? - No, never.
+
+The best you can do is 'Suggest' that you want DB2 to use a particular index. You can do
+this in many ways, including:
+
+ * Coding redundant predicates to make DB2 think your index is better than it really is.
+ * Changing catalog/runstats statistics to make the index look more attractive than the others.
+ * Using optimizer hints to suggest a particular index.
+
+Note, though, that NONE of these will guarantee use of your chosen index in the future.
+
+There are a few things that you can try that have been discussed on the list in the past. 
+Probably the best would be to use opthints.
+
+Using "selectivity":
+--------------------
+Selectivity hints the optimizer how good a condition is to filter rows. 
+
+A selectivity close to 0.0 means the condition select very few rows. A selectivity close to 1.0
+means the condition select almost all rows. Example:
+
+  create index i1 on T1 (x);
+  create index i2 on T2 (y);
+  create index i3 on T3 (z);
+
+  SELECT c1, c2, c3, FROM T1, T2, T3
+    WHERE T1.x = T2.x AND
+      T2.y=T3.y AND
+      T1.x >= ? selectivity 0.00001 AND
+      T2.y gt; ? selectivity 0.5 AND
+      T3.z = ? selectivity 0.2 AND
+      T3.w = ?
+      
+* Will most likely use the index in T1.x
+* Will not use the index on T2.y
+* May use the index on T3.z      
