@@ -195,6 +195,17 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
 
   }
 
+  @Override
+  public void preprocessClose(final IWizardPage currentPage) {
+    if (this.driver != null) {
+      try {
+        this.driver.close();
+      } catch (SQLException e) {
+        // Ignore
+      }
+    }
+  }
+
   private Cursor cursor = null;
 
   private void setCursorBusy(final boolean busy) {

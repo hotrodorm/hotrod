@@ -1,5 +1,6 @@
 package org.hotrod.eclipseplugin.jdbc;
 
+import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -16,6 +17,11 @@ public class DynamicallyLoadedDriver {
   private List<String> driverClassPathEntries;
   private String driverClassName;
 
+  private static final boolean USE_SEPARATE_CLASS_LOADER = true;
+
+  private URLClassLoader classLoader;
+  private DriverProxy driverProxy;
+
   public DynamicallyLoadedDriver(final IProject project, final List<String> driverClassPathEntries,
       final String driverClassName) throws SQLException {
     log("[DLD] starting...");
@@ -25,16 +31,23 @@ public class DynamicallyLoadedDriver {
 
     // Load/retrieve driver file location
 
-    for (String classPathEntry : this.driverClassPathEntries) {
-      log("[DLD] classPathEntry=" + classPathEntry);
-      DriverFiles.load(this.project, classPathEntry);
+    if (USE_SEPARATE_CLASS_LOADER) {
+      SeparateDriverLoader dl = new SeparateDriverLoader(this.project, this.driverClassPathEntries);
+      this.classLoader = dl.getLoader();
+    } else {
+      for (String classPathEntry : this.driverClassPathEntries) {
+        log("[DLD] classPathEntry=" + classPathEntry);
+        DriverFiles.load(this.project, classPathEntry);
+      }
+      this.classLoader = DriverFiles.getClassLoader();
     }
 
     try {
       log("[DLD] will load class: " + this.driverClassName);
-      Class<?> classToLoad = Class.forName(this.driverClassName, true, DriverFiles.getClassLoader());
+      Class<?> classToLoad = Class.forName(this.driverClassName, true, classLoader);
       Driver driver = (Driver) classToLoad.newInstance();
-      DriverManager.registerDriver(new DriverProxy(driver));
+      this.driverProxy = new DriverProxy(driver);
+      DriverManager.registerDriver(this.driverProxy);
       log("[DLD] loaded.");
     } catch (ClassNotFoundException e) {
       throw new SQLException("Could not load JDBC driver. Class " + this.driverClassName + " not found");
@@ -48,6 +61,10 @@ public class DynamicallyLoadedDriver {
 
   public Connection getConnection(final String url, final String username, final String password) throws SQLException {
     return DriverManager.getConnection(url, username, password);
+  }
+
+  public void close() throws SQLException {
+    DriverManager.deregisterDriver(this.driverProxy);
   }
 
   // Utility classes

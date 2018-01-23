@@ -26,6 +26,12 @@ public class NavigationAwareWizardDialog extends WizardDialog {
     super.backPressed();
   }
 
+  @Override
+  public boolean close() {
+    this.wizard.preprocessClose(this.getCurrentPage());
+    return super.close();
+  }
+
   public static abstract class NavigationAwareWizard extends Wizard {
 
     public NavigationAwareWizard() {
@@ -35,6 +41,8 @@ public class NavigationAwareWizardDialog extends WizardDialog {
     public abstract void preprocessBackButton(IWizardPage currentPage);
 
     public abstract void preprocessNextButton(IWizardPage currentPage);
+
+    public abstract void preprocessClose(IWizardPage currentPage);
 
   }
 
