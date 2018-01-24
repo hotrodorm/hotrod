@@ -6,8 +6,10 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IProject;
 
@@ -105,6 +107,11 @@ public class DynamicallyLoadedDriver {
     @Override
     public boolean jdbcCompliant() {
       return this.driver.jdbcCompliant();
+    }
+
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+      return this.driver.getParentLogger();
     }
 
   }

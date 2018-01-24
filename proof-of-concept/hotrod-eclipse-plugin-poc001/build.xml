@@ -1,0 +1,119 @@
+<project name="hotrod-eclipse-plugin" default="clean-build" basedir=".">
+
+  <loadproperties srcFile="build.properties" />
+
+  <property name="projectName" value="hotrod-eclipse-plugin" />
+
+  <property name="main.src.dir" value="src/main/java" />
+  <property name="test.src.dir" value="src/test/java" />
+
+  <property name="lib.dir" value="lib" />
+  <property name="build.dir" value="build" />
+  <property name="main.build.dir" value="build/java" />
+  <property name="test.build.dir" value="build/test" />
+  <property name="dist.dir" value="dist" />
+
+  <property name="jar.name" value="org.hotrod.eclipseplugin" />
+
+  <target name="-init">
+    <mkdir dir="${main.build.dir}" />
+    <mkdir dir="${test.build.dir}" />
+    <mkdir dir="${dist.dir}" />
+    <loadproperties srcfile="conf/workbench.properties" />
+  </target>
+
+  <target name="clean" depends="-init">
+    <delete includeemptydirs="true">
+      <fileset dir="${build.dir}" includes="**/*" />
+      <fileset dir="${dist.dir}" includes="**/*" />
+    </delete>
+    <antcall target="-init" />
+  </target>
+
+  <path id="eclipse.plugin.classpath">
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui_3.108.0.v20160518-1929.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.swt_3.105.0.v20160603-0902.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.swt.gtk.linux.x86_64_3.105.0.v20160603-0902.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.jface_3.12.0.v20160518-1929.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.core.commands_3.8.0.v20160316-1921.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui.workbench_3.108.0.v20160602-1232.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.e4.ui.workbench3_0.13.100.v20160506-0759.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.core.runtime_3.12.0.v20160606-1342.jar" />
+    <pathelement location="${eclipse.plugin.dir}/javax.inject_1.0.0.v20091030.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.osgi_3.11.0.v20160603-1336.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.osgi.compatibility.state_1.0.200.v20160504-1419.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.wst.jsdt.nashorn.extension_1.0.0.v201605131737.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.equinox.common_3.8.0.v20160509-1230.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.core.jobs_3.8.0.v20160509-0411.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.equinox.registry_3.6.100.v20160223-2218.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.equinox.preferences_3.6.0.v20160120-1756.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.core.contenttype_3.5.100.v20160418-1621.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.equinox.app_1.3.400.v20150715-1528.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui.forms_3.7.0.v20160518-1929.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui.ide_3.12.0.v20160601-1609.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui.editors_3.10.0.v20160505-0931.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.core.filebuffers_3.6.0.v20160503-1849.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.jface.text_3.11.0.v20160505-1301.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.text_3.6.0.v20160503-1849.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.wst.xml.ui_1.1.700.v201604272318.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.core.resources_3.11.0.v20160503-1608.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui.views_3.8.100.v20160518-1929.jar" />
+    <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui.workbench.texteditor_3.10.0.v20160530-2011.jar" />
+  </path>
+
+  <target name="compile" depends="-init">
+    <javac destdir="${main.build.dir}"
+           debug="true"
+           deprecation="true"
+           includeantruntime="false"
+           includes="**/*.java">
+      <src path="${main.src.dir}" />
+      <classpath>
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui_3.108.0.v20160518-1929.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.swt_3.105.0.v20160603-0902.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.swt.gtk.linux.x86_64_3.105.0.v20160603-0902.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.jface_3.12.0.v20160518-1929.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.core.commands_3.8.0.v20160316-1921.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui.workbench_3.108.0.v20160602-1232.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.e4.ui.workbench3_0.13.100.v20160506-0759.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.core.runtime_3.12.0.v20160606-1342.jar" />
+        <pathelement location="${eclipse.plugin.dir}/javax.inject_1.0.0.v20091030.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.osgi_3.11.0.v20160603-1336.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.osgi.compatibility.state_1.0.200.v20160504-1419.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.wst.jsdt.nashorn.extension_1.0.0.v201605131737.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.equinox.common_3.8.0.v20160509-1230.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.core.jobs_3.8.0.v20160509-0411.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.equinox.registry_3.6.100.v20160223-2218.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.equinox.preferences_3.6.0.v20160120-1756.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.core.contenttype_3.5.100.v20160418-1621.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.equinox.app_1.3.400.v20150715-1528.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui.forms_3.7.0.v20160518-1929.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui.ide_3.12.0.v20160601-1609.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui.editors_3.10.0.v20160505-0931.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.core.filebuffers_3.6.0.v20160503-1849.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.jface.text_3.11.0.v20160505-1301.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.text_3.6.0.v20160503-1849.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.wst.xml.ui_1.1.700.v201604272318.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.core.resources_3.11.0.v20160503-1608.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui.views_3.8.100.v20160518-1929.jar" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui.workbench.texteditor_3.10.0.v20160530-2011.jar" />
+        
+        <!--
+        <path refid="eclipse.plugin.classpath" />
+        <pathelement location="${eclipse.plugin.dir}/org.eclipse.jface_3.12.0.v20160518-1929.jar" />
+        -->
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="jar" depends="compile">
+    <jar destfile="${dist.dir}/${jar.name}.jar">
+      <fileset dir="${main.build.dir}" />
+    </jar>
+  </target>
+
+  <target name="build" depends="jar" />
+
+  <target name="clean-build" depends="clean, build" />
+
+</project>

@@ -1,0 +1,7 @@
+# --- 1.6 Java compiler executable --- 
+javac.compiler.exec=/home/valarcon/apps/jdk1.6.0_34/bin/javac
+
+# --- See https://ant.apache.org/manual/Tasks/javac.html#compilervalues
+java.compiler=javac1.6
+
+
