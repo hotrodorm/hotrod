@@ -7,11 +7,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import org.eclipse.core.resources.IProject;
 import org.hotrod.eclipseplugin.utils.ClassPathEncoder;
@@ -36,15 +37,14 @@ public class LocalProperties {
 
   private IProject project;
   private String format;
-  private LinkedHashMap<String, FileProperties> files;
+  private TreeMap<String, FileProperties> files;
 
   public LocalProperties(final IProject project) {
     this.project = project;
-    this.files = new LinkedHashMap<String, FileProperties>();
+    this.files = new TreeMap<String, FileProperties>();
   }
 
-  private LocalProperties(final IProject project, final String format,
-      final LinkedHashMap<String, FileProperties> files) {
+  private LocalProperties(final IProject project, final String format, final TreeMap<String, FileProperties> files) {
     this.project = project;
     this.format = format;
     this.files = files;
@@ -77,7 +77,7 @@ public class LocalProperties {
 
         // 1. Assemble file properties
 
-        Map<String, FileProperties> properties = new LinkedHashMap<String, FileProperties>();
+        Map<String, FileProperties> properties = new TreeMap<String, FileProperties>();
 
         for (String name : p.stringPropertyNames()) {
 
@@ -118,7 +118,7 @@ public class LocalProperties {
 
         // 2. Validate each file & assemble collection
 
-        LinkedHashMap<String, FileProperties> files = new LinkedHashMap<String, FileProperties>();
+        TreeMap<String, FileProperties> files = new TreeMap<String, FileProperties>();
         for (String file : properties.keySet()) {
           FileProperties fileProperties = properties.get(file);
           fileProperties.validate(file);
@@ -141,7 +141,7 @@ public class LocalProperties {
         }
       }
     } else {
-      return new LocalProperties(project, format, new LinkedHashMap<String, FileProperties>());
+      return new LocalProperties(project, format, new TreeMap<String, FileProperties>());
     }
   }
 
@@ -158,8 +158,12 @@ public class LocalProperties {
       w.write("format=" + CURRENT_FORMAT + "\n");
 
       int i = 1;
-      for (FileProperties fp : this.files.values()) {
-        String file = "file" + i;
+
+      DecimalFormat df = new DecimalFormat("000");
+
+      for (String key : this.files.keySet()) {
+        FileProperties fp = this.files.get(key);
+        String file = "file" + df.format(i);
         w.write("\n");
         w.write("# Properties for file: " + fp.fileName + "\n");
         w.write(file + "." + FILENAME_ATT + "=" + fp.fileName + "\n");
