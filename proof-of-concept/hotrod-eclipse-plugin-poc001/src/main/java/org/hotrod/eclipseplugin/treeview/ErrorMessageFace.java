@@ -1,25 +1,30 @@
 package org.hotrod.eclipseplugin.treeview;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
+import org.hotrod.eclipseplugin.domain.loader.FaceProducer.RelativeProjectPath;
 
-public class ErrorMessageFace extends AbstractMethodFace {
+public class ErrorMessageFace extends AbstractFace {
 
-  private IProject project;
-  private String file;
+  private RelativeProjectPath path;
+
   private int line;
   private String message;
 
-  public ErrorMessageFace(final IProject project, final String file, final int line, final String message) {
-    super("Error at " + file + ":" + line + ":\n" + message);
-    this.project = project;
-    this.file = file;
+  public ErrorMessageFace(final RelativeProjectPath path, final int line, final String message) {
+    super(path.getRelativeFileName() + ":" + line + ":\n" + message);
+    // System.out.println("[ErrorMessageFace] message=" + message);
+    this.path = path;
     this.line = line;
     this.message = message;
   }
 
   @Override
   public String getIconPath() {
-    return "icons/sql-query6-16.png";
+    // return "icons/sql-query6-16.png";
+    return "icons/transparent.png";
   }
 
   @Override
@@ -35,11 +40,14 @@ public class ErrorMessageFace extends AbstractMethodFace {
   // Extra getters
 
   public IProject getProject() {
-    return project;
+    return this.path.getProject();
   }
 
-  public String getFile() {
-    return file;
+  public String getAbsolutePath() {
+    IPath location = this.path.getProject().getLocation();
+    File projectDir = location.toFile();
+    File f = new File(projectDir, this.path.getRelativeFileName());
+    return f.getAbsolutePath();
   }
 
   public int getLineNumber() {

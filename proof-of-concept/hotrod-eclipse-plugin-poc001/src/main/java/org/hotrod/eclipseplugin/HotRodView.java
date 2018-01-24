@@ -194,6 +194,7 @@ public class HotRodView extends ViewPart {
 
       if (cell != null) {
         Object obj = cell.getElement();
+
         try {
           ErrorMessageFace em = (ErrorMessageFace) obj; // error message face
           log("THIS IS an error message!");
@@ -201,15 +202,8 @@ public class HotRodView extends ViewPart {
           // =================================================
 
           try {
-
-            String filePath = em.getFile(); // "file path" ;
-
-            // filePath = "project002/hotrod-6-bad.xml";
-            filePath = "/home/valarcon/git/hotrod/proof-of-concept/hotrod-eclipse-plugin-poc001/test-workspace/project002/hotrod-7-bad.xml";
-
-            // int lineNumber = em.getLineNumber();
-            int lineNumber = 3;
-
+            String filePath = em.getAbsolutePath();
+            int lineNumber = em.getLineNumber();
             log("... opening: filePath=" + filePath + " line=" + lineNumber);
 
             IPath fromOSString = Path.fromOSString(filePath);
@@ -241,6 +235,7 @@ public class HotRodView extends ViewPart {
         } catch (ClassCastException e2) {
           log("Not a mainconfigfile.");
         }
+
       }
     }
 
@@ -576,7 +571,7 @@ public class HotRodView extends ViewPart {
 
   }
 
-  private void showMessage(String message) {
+  private void showMessage(final String message) {
     MessageDialog.openInformation(viewer.getControl().getShell(), "Sample View 2", message);
   }
 
@@ -589,7 +584,7 @@ public class HotRodView extends ViewPart {
   }
 
   private void log(final String txt) {
-    // System.out.println(txt);
+    // System.out.println("[HotRodView] " + txt);
   }
 
 }

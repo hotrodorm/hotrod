@@ -6,12 +6,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.hotrod.eclipseplugin.domain.ConfigItem;
 import org.hotrod.eclipseplugin.domain.MainConfigFile;
-import org.hotrod.eclipseplugin.treeview.AbstractFace;
 import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
-import org.hotrod.eclipseplugin.treeview.FaceFactory;
-import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 
@@ -25,60 +21,43 @@ public class FaceProducer {
     }
     log("*** f=" + f.getPath() + " path.getRelativePathName()=" + path.getRelativeFileName());
 
-    MainConfigFace mainConfigFace = new MainConfigFace(f, path, provider);
-
     // Load the file
 
     MainConfigFile config;
     try {
       config = ConfigFileLoader.loadMainFile(f, path);
-      mainConfigFace.setValid();
-    } catch (UnreadableConfigFileException e) {
-      mainConfigFace.setInvalid(new ErrorMessageFace(null, path.getRelativeFileName(), 1, "Unreadable file."));
-      return mainConfigFace;
+      return new MainConfigFace(f, path, provider, config);
+      // } catch (UnreadableConfigFileException e) {
+      // return new MainConfigFace(f, path, provider, new ErrorMessageFace(path,
+      // 1, "Unreadable file."));
     } catch (FaultyConfigFileException e) {
-      log("FaultyConfigFileException: " + e.getFileName() + ":" + e.getLineNumber());
-      mainConfigFace
-          .setInvalid(new ErrorMessageFace(null, path.getRelativeFileName(), e.getLineNumber(), e.getMessage()));
-      return mainConfigFace;
+      // e.printStackTrace();
+      log("*** FaultyConfigFileException: path=" + e.getPath());
+      return new MainConfigFace(f, path, provider,
+          new ErrorMessageFace(e.getPath(), e.getLineNumber(), e.getMessage()));
     }
 
     // Assemble the view
 
-    for (ConfigItem item : config.getConfigItems()) {
-      try {
-        AbstractFace face = FaceFactory.getFace(item);
-        mainConfigFace.addChild(face);
-      } catch (InvalidConfigurationItemException e) {
-        mainConfigFace = new MainConfigFace(f, path, provider);
-        mainConfigFace
-            .setInvalid(new ErrorMessageFace(null, path.getRelativeFileName(), e.getLineNumber(), e.getMessage()));
-        return mainConfigFace;
-      }
-    }
-    mainConfigFace.setValid();
-    mainConfigFace.setUnchanged();
+    // // // TODO: remove
+    // if (f.getName().equals("hotrod-1.xml")) {
+    // log("MODIFYING...");
+    // // mainConfigFace.getChildren().get(0).setDeleted();
+    // mainConfigFace.getChildren()[0].setDeleted();
+    // // mainConfigFace.getChildren()[1].setModified();
+    // // mainConfigFace.getChildren()[2].setAdded();
+    // // mainConfigFace.getChildren()[2].setGenerating(true);
+    // }
 
-    // // TODO: remove
-    if (f.getName().equals("hotrod-1.xml")) {
-      log("MODIFYING...");
-      // mainConfigFace.getChildren().get(0).setDeleted();
-      mainConfigFace.getChildren()[0].setDeleted();
-      // mainConfigFace.getChildren()[1].setModified();
-      // mainConfigFace.getChildren()[2].setAdded();
-      // mainConfigFace.getChildren()[2].setGenerating(true);
-    }
-
-    return mainConfigFace;
   }
 
   // Utilities
 
   public static class RelativeProjectPath {
 
-    private IProject project;
-    private String relativePath;
-    private String fileName;
+    private IProject project; // the project
+    private String relativePath; // the relative path (only folders)
+    private String fileName; // the simple file name
 
     public RelativeProjectPath(final IProject project, final String relativePath, final String fileName) {
       this.project = project;
@@ -107,8 +86,7 @@ public class FaceProducer {
         File folder = new File(this.relativePath);
         file = new File(folder, this.fileName);
       }
-      log(
-          "/// this.relativePath=" + this.relativePath + " this.fileName=" + this.fileName + " file=" + file.getPath());
+      log("/// this.relativePath=" + this.relativePath + " this.fileName=" + this.fileName + " file=" + file.getPath());
       return file.getPath();
     }
 
@@ -153,6 +131,11 @@ public class FaceProducer {
         }
       }
       return null;
+    }
+
+    public String toString() {
+      return "[ " + this.project.getLocation().toFile().getPath() + " ! " + this.relativePath + " / " + this.fileName
+          + " ]";
     }
 
   }

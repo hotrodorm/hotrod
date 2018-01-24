@@ -39,26 +39,27 @@ The HotRod "View":
                                   * A successful HotRod execution will update the Java source tree.
                                   * An unsuccessful HotRod execution will also update the Java source tree.
                                   * An unsuccessful HotRod execution will open the Console View and will show the error(s).
- 
-         
+
+
 Research how to:
 ================
  * [DONE] Add a tree "form" that lists all the fragments, with DAO state indicators.
  * [DONE] Drag and Drop one or more HotRod config files into the new view.
  * [DONE] Add functional buttons to the HotRod View tool bar.
- * [DONE] File listener: automatic reload when a config file changes. Mark all dirty DAOs.
+ * [DONE] File listener: automatic reload when a config file changes.
  * [DONE] Auto reload the modified files (java source, xml, etc.) on success and failure conditions.
  * [DONE] Shows execution errors in the Console View.
  * [DONE] Clicking on the error open the file editor at the specific line.
- * Double click on a tree face loads the source file at the specific line. 
  * [DONE] Set JDBC properties for each HotRod config file (driver class path, driver class, url, user, pass, catalog, schema, etc.)
  * [DONE] Dynamically load a JDBC driver classpath for each HotRod config file separately.
  * [DONE] Open a new dialog window to specify the JDBC driver (classpath, class name) and the connection properties (url, username, password).
+ * [DONE] Load JDBC drivers in separate class loaders.
  * Add a connect/disconnect button in the tool bar, that changes per configuration file.
  * Add the text "connected" disconnected to each main config file. The "generate" buttons will be disabled when not connected.
- * Make the plugin run in Java 6 and 7. Currently it only works in Java 8.
- * Package the eclipse plugin using Ant.
- * [DONE] Load JDBC drivers in separate class loaders.
+ * Refresh/reload a file computes differences.
+ * Double click on a tree face loads the source file at the specific line.
+ * [POSTPONED] Package the eclipse plugin using Ant.
+ * [POSTPONED] Make the plugin run in Java 6 and 7. Currently it only works in Java 8.
  
  
  

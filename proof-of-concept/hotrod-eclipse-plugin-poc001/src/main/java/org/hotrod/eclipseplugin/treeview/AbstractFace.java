@@ -67,6 +67,10 @@ public abstract class AbstractFace implements IAdaptable {
     this.setModified();
   }
 
+  public void removeAllChildren() {
+    this.children.clear();
+  }
+
   public void addChild(final AbstractFace child) {
     child.setParent(this);
     this.children.add(child);
@@ -188,7 +192,8 @@ public abstract class AbstractFace implements IAdaptable {
   // Tree display
 
   public final ChangeStatus getStatus() {
-    return this.aggregatedStatus;
+    // return this.aggregatedStatus;
+    return ChangeStatus.UNCHANGED;
   }
 
   public abstract String getDecoration();

@@ -4,39 +4,57 @@ import java.io.File;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.hotrod.eclipseplugin.domain.ConfigItem;
+import org.hotrod.eclipseplugin.domain.MainConfigFile;
 import org.hotrod.eclipseplugin.domain.loader.FaceProducer.RelativeProjectPath;
+import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
 public class MainConfigFace extends AbstractFace implements Comparable<MainConfigFace> {
 
-  private HotRodViewContentProvider provider;
   private String absolutePath;
   private RelativeProjectPath path;
-  private boolean valid;
+  private HotRodViewContentProvider provider;
+  private MainConfigFile config;
 
   // Constructors
 
-  public MainConfigFace(final File f, final RelativeProjectPath path, final HotRodViewContentProvider provider) {
+  public MainConfigFace(final File f, final RelativeProjectPath path, final HotRodViewContentProvider provider,
+      final MainConfigFile config) {
     super(path.getFileName());
     this.absolutePath = f.getAbsolutePath();
     this.path = path;
     this.provider = provider;
-    this.valid = false;
+    this.config = config;
+
+    for (ConfigItem item : config.getConfigItems()) {
+      try {
+        AbstractFace face = FaceFactory.getFace(item);
+        this.addChild(face);
+      } catch (InvalidConfigurationItemException e) {
+        this.config = null;
+        this.removeAllChildren();
+        this.addChild(new ErrorMessageFace(path, e.getLineNumber(), e.getMessage()));
+        return;
+      }
+    }
+    this.setUnchanged();
   }
 
-  public void setValid() {
-    this.valid = true;
-  }
-
-  public void setInvalid(final ErrorMessageFace errorMessage) {
-    this.valid = false;
-    this.addChild(errorMessage);
+  public MainConfigFace(final File f, final RelativeProjectPath path, final HotRodViewContentProvider provider,
+      final ErrorMessageFace errorMessageFace) {
+    super(path.getFileName());
+    this.absolutePath = f.getAbsolutePath();
+    this.path = path;
+    this.provider = provider;
+    this.config = null;
+    this.addChild(errorMessageFace);
   }
 
   // Getters
 
-  public boolean isValid() {
-    return valid;
-  }
+  // public boolean isValid() {
+  // return valid;
+  // }
 
   public String getAbsolutePath() {
     return absolutePath;
@@ -80,7 +98,7 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   @Override
   public String getIconPath() {
-    return this.valid ? "icons/main-config5-16.png" : "icons/main-config5-bad-16.png";
+    return this.config != null ? "icons/main-config5-16.png" : "icons/main-config5-bad-16.png";
   }
 
   @Override

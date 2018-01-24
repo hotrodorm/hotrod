@@ -27,7 +27,7 @@ public class ConfigFileLoader {
   // Load main file
 
   public static MainConfigFile loadMainFile(final File f, final RelativeProjectPath path)
-      throws UnreadableConfigFileException, FaultyConfigFileException {
+      throws FaultyConfigFileException {
 
     BufferedReader r = null;
 
@@ -38,46 +38,53 @@ public class ConfigFileLoader {
       MainConfigFile config = new MainConfigFile(f, path);
       ConfigItem currentItem = null;
 
+      boolean headerWasRead = false;
+
       String line = null;
       int lineNumber = 1;
       while ((line = r.readLine()) != null) {
         if (!line.trim().isEmpty() && !line.trim().startsWith("#")) {
-          ConfigItem item = tryReadingItem(path, line, lineNumber);
-          if (item != null) {
-            if (item instanceof FragmentConfigFile) {
-              FragmentConfigFile fc = (FragmentConfigFile) item;
-              log("--> will load fragment: " + fc.getIncluderRelativePath());
-              try {
-                fc = loadFragmentFile(f, path, fc.getIncluderRelativePath());
-              } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-              }
-              log("--> fragment loaded");
-              config.addConfigItem(fc);
-              currentItem = fc;
+          if (!headerWasRead) {
+            if ("HOTROD-CONFIG".equals(line.trim())) {
+              headerWasRead = true;
             } else {
-              config.addConfigItem(item);
-              currentItem = item;
+              throw new FaultyConfigFileException(path, lineNumber,
+                  "This is not a main HotRod config file: missing header.");
             }
           } else {
-            Method m = tryReadingMethod(path, line, lineNumber);
-            if (m != null) {
-              if (currentItem == null) {
-                throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber,
-                    "There's no DAO to include this method in.");
-              } else {
+            ConfigItem item = tryReadingItem(path, line, lineNumber);
+            if (item != null) {
+              if (item instanceof FragmentConfigFile) {
+                FragmentConfigFile fc = (FragmentConfigFile) item;
+                log("--> will load fragment: " + fc.getIncluderRelativePath());
                 try {
-                  DAO d = (DAO) currentItem;
-                  d.addMethod(m);
-                } catch (ClassCastException e) {
-                  throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber,
-                      "The previous item cannot include methods.");
+                  fc = loadFragmentFile(f, path, fc.getIncluderRelativePath());
+                } catch (UnreadableConfigFileException e) {
+                  throw new FaultyConfigFileException(path, lineNumber, e.getMessage());
                 }
+                config.addConfigItem(fc);
+                currentItem = fc;
+              } else {
+                config.addConfigItem(item);
+                currentItem = item;
               }
             } else {
-              log("FaultyConfigFileException: path.getRelativePathName()=" + path.getRelativeFileName());
-              throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "Invalid line: " + line);
+              Method m = tryReadingMethod(path, line, lineNumber);
+              if (m != null) {
+                if (currentItem == null) {
+                  throw new FaultyConfigFileException(path, lineNumber, "There's no DAO to include this method in.");
+                } else {
+                  try {
+                    DAO d = (DAO) currentItem;
+                    d.addMethod(m);
+                  } catch (ClassCastException e) {
+                    throw new FaultyConfigFileException(path, lineNumber, "The previous item cannot include methods.");
+                  }
+                }
+              } else {
+                log("FaultyConfigFileException: path=" + path);
+                throw new FaultyConfigFileException(path, lineNumber, "Invalid line: " + line);
+              }
             }
           }
         }
@@ -87,13 +94,9 @@ public class ConfigFileLoader {
       return config;
 
     } catch (FileNotFoundException e) {
-      // TODO: fix
-      e.printStackTrace();
-      throw new UnreadableConfigFileException("File " + f.getPath() + " does not exist.");
+      throw new FaultyConfigFileException(path, 1, "File " + f.getPath() + " not found.");
     } catch (IOException e) {
-      // TODO: fix
-      e.printStackTrace();
-      throw new UnreadableConfigFileException("Could not read file " + f.getPath() + ": " + e.getMessage());
+      throw new FaultyConfigFileException(path, 1, "Could not read file " + f.getPath() + ":\n" + e.getMessage());
     } finally {
       if (r != null) {
         try {
@@ -108,8 +111,8 @@ public class ConfigFileLoader {
 
   // Load fragment
 
-  public static FragmentConfigFile loadFragmentFile(final File includerFile, final RelativeProjectPath path,
-      final String relativePathName) throws UnreadableConfigFileException, FaultyConfigFileException {
+  public static FragmentConfigFile loadFragmentFile(final File includerFile, final RelativeProjectPath includersPath,
+      final String relativePathName) throws FaultyConfigFileException, UnreadableConfigFileException {
 
     // Resolve file system location of the configuration file
 
@@ -139,8 +142,8 @@ public class ConfigFileLoader {
     File includerFolder = includerFile.getParentFile();
     File f = new File(includerFolder, relativePathName);
 
-    RelativeProjectPath relPath = RelativeProjectPath.findRelativePath(path.getProject(), f);
-    log("======> relPath=" + relPath.getRelativePath());
+    RelativeProjectPath fragmentPath = RelativeProjectPath.findRelativePath(includersPath.getProject(), f);
+    log("======> relPath=" + fragmentPath.getRelativePath());
 
     // Read the configuration file
 
@@ -150,42 +153,57 @@ public class ConfigFileLoader {
 
       r = new BufferedReader(new FileReader(f));
 
-      FragmentConfigFile config = new FragmentConfigFile(f, relPath, relativePathName, 1);
+      FragmentConfigFile config = new FragmentConfigFile(f, fragmentPath, relativePathName, 1);
       ConfigItem currentItem = null;
 
+      boolean headerWasRead = false;
       String line = null;
       int lineNumber = 1;
       while ((line = r.readLine()) != null) {
         if (!line.trim().isEmpty() && !line.trim().startsWith("#")) {
-          ConfigItem item = tryReadingItem(path, line, lineNumber);
-          if (item != null) {
-            if (item instanceof FragmentConfigFile) {
-              FragmentConfigFile fc = (FragmentConfigFile) item;
-              log("--> will load fragment: " + fc.getIncluderRelativePath());
-              fc = loadFragmentFile(f, relPath, fc.getIncluderRelativePath());
-              config.addConfigItem(fc);
-              currentItem = fc;
+          if (!headerWasRead) {
+            if ("HOTROD-FRAGMENT-CONFIG".equals(line)) {
+              headerWasRead = true;
             } else {
-              config.addConfigItem(item);
-              currentItem = item;
+              throw new FaultyConfigFileException(fragmentPath, lineNumber,
+                  "This is not a fragment HotRod config file: missing header.");
             }
           } else {
-            Method m = tryReadingMethod(path, line, lineNumber);
-            if (m != null) {
-              if (currentItem == null) {
-                throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber,
-                    "There's no DAO to include this method in.");
-              } else {
+            ConfigItem item = tryReadingItem(fragmentPath, line, lineNumber);
+            if (item != null) {
+              if (item instanceof FragmentConfigFile) {
+                FragmentConfigFile fc = (FragmentConfigFile) item;
+                log("--> will load fragment: " + fc.getIncluderRelativePath());
                 try {
-                  DAO d = (DAO) currentItem;
-                  d.addMethod(m);
-                } catch (ClassCastException e) {
-                  throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber,
-                      "The previous item cannot include methods.");
+                  fc = loadFragmentFile(f, fragmentPath, fc.getIncluderRelativePath());
+                  config.addConfigItem(fc);
+                  currentItem = fc;
+                } catch (UnreadableConfigFileException e) {
+                  throw new FaultyConfigFileException(fragmentPath, lineNumber, e.getMessage());
                 }
+              } else {
+                config.addConfigItem(item);
+                currentItem = item;
               }
             } else {
-              throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "Invalid line: " + line);
+              Method m = tryReadingMethod(fragmentPath, line, lineNumber);
+              if (m != null) {
+                if (currentItem == null) {
+                  throw new FaultyConfigFileException(fragmentPath, lineNumber,
+                      "There's no DAO to include this method in.");
+                } else {
+                  try {
+                    DAO d = (DAO) currentItem;
+                    d.addMethod(m);
+                  } catch (ClassCastException e) {
+                    throw new FaultyConfigFileException(fragmentPath, lineNumber,
+                        "The previous item cannot include methods.");
+                  }
+                }
+              } else {
+                // System.out.println("[as] fragmentPath=" + fragmentPath);
+                throw new FaultyConfigFileException(fragmentPath, lineNumber, "Invalid line: " + line);
+              }
             }
           }
         }
@@ -195,9 +213,9 @@ public class ConfigFileLoader {
       return config;
 
     } catch (FileNotFoundException e) {
-      throw new UnreadableConfigFileException("File " + f.getPath() + " does not exist.");
+      throw new UnreadableConfigFileException("File " + relativePathName + " not found.");
     } catch (IOException e) {
-      throw new UnreadableConfigFileException("Could not read file " + f.getPath() + ": " + e.getMessage());
+      throw new UnreadableConfigFileException("Could not read file " + relativePathName + ":\n" + e.getMessage());
     } finally {
       if (r != null) {
         try {
@@ -226,31 +244,31 @@ public class ConfigFileLoader {
     if (line.startsWith(TABLE_DAO_PROMPT)) {
       String name = line.substring(TABLE_DAO_PROMPT.length()).trim();
       if (name.isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The table must have a name.");
+        throw new FaultyConfigFileException(path, lineNumber, "The table must have a name.");
       }
       return new TableDAO(name, lineNumber);
     } else if (line.startsWith(VIEW_DAO_PROMPT)) {
       String name = line.substring(VIEW_DAO_PROMPT.length()).trim();
       if (name.isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The view must have a name.");
+        throw new FaultyConfigFileException(path, lineNumber, "The view must have a name.");
       }
       return new ViewDAO(name, lineNumber);
     } else if (line.startsWith(ENUM_DAO_PROMPT)) {
       String name = line.substring(ENUM_DAO_PROMPT.length()).trim();
       if (name.isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The enum must have a name.");
+        throw new FaultyConfigFileException(path, lineNumber, "The enum must have a name.");
       }
       return new EnumDAO(name, lineNumber);
     } else if (line.startsWith(EXECUTOR_DAO_PROMPT)) {
       String name = line.substring(EXECUTOR_DAO_PROMPT.length()).trim();
       if (name.isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The executor must have a name.");
+        throw new FaultyConfigFileException(path, lineNumber, "The executor must have a name.");
       }
       return new ExecutorDAO(name, lineNumber);
     } else if (line.startsWith(CONVERTER_PROMPT)) {
       NameContent nc = new NameContent(line, CONVERTER_PROMPT);
       if (nc.getName().isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The converter must have a name.");
+        throw new FaultyConfigFileException(path, lineNumber, "The converter must have a name.");
       }
       return new Converter(nc, lineNumber);
     } else if (line.startsWith(SETTINGS_PROMPT)) {
@@ -259,8 +277,7 @@ public class ConfigFileLoader {
     } else if (line.startsWith(FRAGMENT_PROMPT)) {
       String relativeFileName = line.substring(FRAGMENT_PROMPT.length()).trim();
       if (relativeFileName.isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber,
-            "The fragment dao must have a name.");
+        throw new FaultyConfigFileException(path, lineNumber, "The fragment dao must have a name.");
       }
       File fragment = new File(relativeFileName);
       log("[FRAGMENT] relativeFileName=" + relativeFileName + " file=" + fragment.getPath());
@@ -281,19 +298,19 @@ public class ConfigFileLoader {
     if (line.startsWith(SEQUENCE_METHOD_PROMPT)) {
       NameContent nc = new NameContent(line, SEQUENCE_METHOD_PROMPT);
       if (nc.getName().isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The sequence must have a name.");
+        throw new FaultyConfigFileException(path, lineNumber, "The sequence must have a name.");
       }
       return new SequenceMethod(nc, lineNumber);
     } else if (line.startsWith(QUERY_METHOD_PROMPT)) {
       NameContent nc = new NameContent(line, QUERY_METHOD_PROMPT);
       if (nc.getName().isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The query must have a name.");
+        throw new FaultyConfigFileException(path, lineNumber, "The query must have a name.");
       }
       return new QueryMethod(nc, lineNumber);
     } else if (line.startsWith(SELECT_METHOD_PROMPT)) {
       NameContent nc = new NameContent(line, SELECT_METHOD_PROMPT);
       if (nc.getName().isEmpty()) {
-        throw new FaultyConfigFileException(path.getRelativeFileName(), lineNumber, "The select dao must have a name.");
+        throw new FaultyConfigFileException(path, lineNumber, "The select dao must have a name.");
       }
       return new SelectMethod(nc, lineNumber);
     } else {

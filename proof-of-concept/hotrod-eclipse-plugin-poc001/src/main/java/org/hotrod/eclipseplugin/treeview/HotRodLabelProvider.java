@@ -4,8 +4,6 @@ import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
@@ -14,7 +12,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 
 public class HotRodLabelProvider extends StyledCellLabelProvider {
 
@@ -90,24 +87,25 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
           // =========================================================================
 
-//          Hyperlink link = new Hyperlink(this.parent, SWT.FILL | SWT.READ_ONLY);
-//          link.setText("My HyperLink");
+          // Hyperlink link = new Hyperlink(this.parent, SWT.FILL |
+          // SWT.READ_ONLY);
+          // link.setText("My HyperLink");
 
-//          /* make text look like a link */
-//          StyledString text = new StyledString();
-//
-//          String caption = "1234567890";
-//
-//          StyleRange myStyledRange = new StyleRange(0, caption.length(),
-//              Display.getCurrent().getSystemColor(SWT.COLOR_BLUE), null);
-//          myStyledRange.underline = true;
-//          text.append(caption, StyledString.DECORATIONS_STYLER);
-//          cell.setText(text.toString());
-//
-//          StyleRange[] range = { myStyledRange };
-//          cell.setStyleRanges(range);
-//
-//          super.update(cell);
+          // /* make text look like a link */
+          // StyledString text = new StyledString();
+          //
+          // String caption = "1234567890";
+          //
+          // StyleRange myStyledRange = new StyleRange(0, caption.length(),
+          // Display.getCurrent().getSystemColor(SWT.COLOR_BLUE), null);
+          // myStyledRange.underline = true;
+          // text.append(caption, StyledString.DECORATIONS_STYLER);
+          // cell.setText(text.toString());
+          //
+          // StyleRange[] range = { myStyledRange };
+          // cell.setStyleRanges(range);
+          //
+          // super.update(cell);
 
           // =========================================================================
 
@@ -122,7 +120,11 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
               label.append("()");
               label.append(" " + m.getDecoration(), StyledString.DECORATIONS_STYLER);
             } catch (ClassCastException e4) { // any other face
-              label.append(" " + face.getDecoration(), StyledString.DECORATIONS_STYLER);
+              try {
+                ErrorMessageFace m = (ErrorMessageFace) obj; // error message
+              } catch (ClassCastException e5) { // any other face
+                label.append(" " + face.getDecoration(), StyledString.DECORATIONS_STYLER);
+              }
             }
           }
         }
