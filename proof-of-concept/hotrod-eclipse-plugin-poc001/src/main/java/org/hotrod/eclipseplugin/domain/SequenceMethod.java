@@ -2,16 +2,15 @@ package org.hotrod.eclipseplugin.domain;
 
 import org.hotrod.eclipseplugin.domain.loader.ConfigFileLoader.NameContent;
 
-public class SequenceMethod implements Method {
+public class SequenceMethod extends Method {
 
   private String name;
   private String content;
-  private int lineNumber;
 
   public SequenceMethod(final NameContent nc, final int lineNumber) {
+    super(lineNumber);
     this.name = nc.getName();
     this.content = nc.getContent();
-    this.lineNumber = lineNumber;
   }
 
   public String getName() {
@@ -55,9 +54,30 @@ public class SequenceMethod implements Method {
     return true;
   }
 
+  // Computing item changes
+
+  // Checks if it's the same ID; the other properties do not matter
   @Override
-  public int getLineNumber() {
-    return lineNumber;
+  public boolean sameID(final ConfigItem fresh) {
+    try {
+      SequenceMethod f = (SequenceMethod) fresh;
+      return this.name.equals(f.name) && this.content.equals(f.content);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  // Copy non-ID properties; informs if there were any changes.
+  @Override
+  public boolean copyProperties(final ConfigItem fresh) {
+    try {
+      SequenceMethod f = (SequenceMethod) fresh;
+      boolean hasChanges = !this.content.equals(f.content);
+      this.content = f.content;
+      return hasChanges;
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

@@ -1,7 +1,9 @@
+HOTROD-FRAGMENT-CONFIG
+
 table: client
 
 executor: AccountingDAO
-  select: retrieveRevenueByLine
+  select: retrieveRevenueByLine2
   select: retrieveCostByRegion
 
 fragment: hotrod-fragment-3.xml

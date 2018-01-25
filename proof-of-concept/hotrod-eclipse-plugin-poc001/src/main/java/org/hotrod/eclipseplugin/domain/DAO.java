@@ -3,17 +3,16 @@ package org.hotrod.eclipseplugin.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class DAO implements ConfigItem {
+public abstract class DAO extends ConfigItem {
 
   // Properties
 
-  private int lineNumber;
   protected List<Method> methods = new ArrayList<Method>();
 
   // Constructor
 
   public DAO(final int lineNumber) {
-    this.lineNumber = lineNumber;
+    super(lineNumber);
   }
 
   // Populate
@@ -51,11 +50,6 @@ public abstract class DAO implements ConfigItem {
     } else if (!methods.equals(other.methods))
       return false;
     return true;
-  }
-
-  @Override
-  public int getLineNumber() {
-    return lineNumber;
   }
 
 }

@@ -4,11 +4,8 @@ import org.hotrod.eclipseplugin.domain.SequenceMethod;
 
 public class SequenceFace extends AbstractMethodFace {
 
-  private SequenceMethod method;
-
   public SequenceFace(final SequenceMethod method) {
-    super(method.getName());
-    this.method = method;
+    super(method.getName(), method);
   }
 
   @Override

@@ -6,12 +6,9 @@ import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemExc
 
 public class ViewFace extends AbstractFace {
 
-  private ViewDAO viewDAO;
-
   public ViewFace(final ViewDAO viewDAO) throws InvalidConfigurationItemException {
-    super(viewDAO.getName());
-    this.viewDAO = viewDAO;
-    for (Method m : this.viewDAO.getMethods()) {
+    super(viewDAO.getName(), viewDAO);
+    for (Method m : viewDAO.getMethods()) {
       AbstractFace leaf = FaceFactory.getMethodElement(m);
       super.addChild(leaf);
     }

@@ -4,11 +4,8 @@ import org.hotrod.eclipseplugin.domain.QueryMethod;
 
 public class QueryFace extends AbstractMethodFace {
 
-  private QueryMethod method;
-
   public QueryFace(final QueryMethod method) {
-    super(method.getName());
-    this.method = method;
+    super(method.getName(), method);
   }
 
   @Override

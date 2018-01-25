@@ -2,21 +2,19 @@ package org.hotrod.eclipseplugin.domain;
 
 import org.hotrod.eclipseplugin.domain.loader.ConfigFileLoader.NameContent;
 
-public class Converter implements ConfigItem {
+public class Converter extends ConfigItem {
 
   // Properties
 
   private String name;
   private String content;
-  private int lineNumber;
 
   // Constructor
 
   public Converter(final NameContent nc, final int lineNumber) {
-    super();
+    super(lineNumber);
     this.name = nc.getName();
     this.content = nc.getContent();
-    this.lineNumber = lineNumber;
   }
 
   // Getters
@@ -62,9 +60,28 @@ public class Converter implements ConfigItem {
     return true;
   }
 
+  // Checks if it's the same ID; the other properties do not matter
   @Override
-  public int getLineNumber() {
-    return lineNumber;
+  public boolean sameID(final ConfigItem fresh) {
+    try {
+      Converter f = (Converter) fresh;
+      return this.name.equals(f.name);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  // Copy non-ID properties; informs if there were any changes.
+  @Override
+  public boolean copyProperties(final ConfigItem fresh) {
+    try {
+      Converter f = (Converter) fresh;
+      boolean hasChanges = !this.content.equals(f.content);
+      this.content = f.content;
+      return hasChanges;
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

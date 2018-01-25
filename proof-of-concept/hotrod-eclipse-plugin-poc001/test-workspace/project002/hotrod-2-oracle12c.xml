@@ -1,7 +1,9 @@
 
 HOTROD-CONFIG
 
-settings: settings 5
+settings: settings : cache=optimistic
 
 table: employee
+table: company
+table: department
 

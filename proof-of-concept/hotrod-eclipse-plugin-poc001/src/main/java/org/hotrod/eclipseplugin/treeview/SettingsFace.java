@@ -4,11 +4,8 @@ import org.hotrod.eclipseplugin.domain.Settings;
 
 public class SettingsFace extends AbstractFace {
 
-  private Settings settings;
-
   public SettingsFace(final Settings settings) {
-    super(settings.getName());
-    this.settings = settings;
+    super(settings.getName(), settings);
   }
 
   @Override

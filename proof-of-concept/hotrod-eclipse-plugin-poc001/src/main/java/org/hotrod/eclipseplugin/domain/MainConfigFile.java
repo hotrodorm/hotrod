@@ -1,12 +1,10 @@
 package org.hotrod.eclipseplugin.domain;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.hotrod.eclipseplugin.domain.loader.FaceProducer.RelativeProjectPath;
 
-public class MainConfigFile {
+public class MainConfigFile extends ConfigItem {
 
   // Properties
 
@@ -14,12 +12,20 @@ public class MainConfigFile {
   protected String fullPathName;
   protected String folder;
   protected String shortName;
-  protected List<ConfigItem> items = new ArrayList<ConfigItem>();
 
   // Constructor
 
   public MainConfigFile(final File f, final RelativeProjectPath relativeProjectPath) {
-    super();
+    super(0);
+    initialize(f, relativeProjectPath);
+  }
+
+  public MainConfigFile(final File f, final RelativeProjectPath relativeProjectPath, final int lineNumber) {
+    super(lineNumber);
+    initialize(f, relativeProjectPath);
+  }
+
+  private void initialize(final File f, final RelativeProjectPath relativeProjectPath) {
     this.relativeProjectPath = relativeProjectPath;
     this.fullPathName = f.getAbsolutePath();
     this.folder = f.getParent();
@@ -29,7 +35,7 @@ public class MainConfigFile {
   // Populate
 
   public void addConfigItem(final ConfigItem item) {
-    this.items.add(item);
+    this.getSubItems().add(item);
   }
 
   // Getters
@@ -50,8 +56,17 @@ public class MainConfigFile {
     return this.shortName;
   }
 
-  public List<ConfigItem> getConfigItems() {
-    return this.items;
+  // Compute item changes
+
+  @Override
+  public boolean sameID(final ConfigItem fresh) {
+    return true;
+  }
+
+  // Copy non-ID properties; informs if there were any changes.
+  @Override
+  public boolean copyProperties(final ConfigItem fresh) {
+    return false;
   }
 
 }

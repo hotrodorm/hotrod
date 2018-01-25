@@ -1,12 +1,16 @@
 package org.hotrod.eclipseplugin.domain;
 
+import org.hotrod.eclipseplugin.domain.loader.ConfigFileLoader.NameContent;
+
 public class EnumDAO extends DAO {
 
   private String name;
+  private String content;
 
-  public EnumDAO(final String name, final int lineNumber) {
+  public EnumDAO(final NameContent nc, final int lineNumber) {
     super(lineNumber);
-    this.name = name;
+    this.name = nc.getName();
+    this.content = nc.getContent();
   }
 
   public String getName() {
@@ -38,6 +42,32 @@ public class EnumDAO extends DAO {
     } else if (!name.equals(other.name))
       return false;
     return true;
+  }
+
+  // Computing item changes
+
+  // Checks if it's the same ID; the other properties do not matter
+  @Override
+  public boolean sameID(final ConfigItem fresh) {
+    try {
+      EnumDAO f = (EnumDAO) fresh;
+      return this.name.equals(f.name);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  // Copy non-ID properties; informs if there were any changes.
+  @Override
+  public boolean copyProperties(final ConfigItem fresh) {
+    try {
+      EnumDAO f = (EnumDAO) fresh;
+      boolean hasChanges = !this.content.equals(f.content);
+      this.content = f.content;
+      return hasChanges;
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

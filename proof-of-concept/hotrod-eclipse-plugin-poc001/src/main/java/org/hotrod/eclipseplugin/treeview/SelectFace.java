@@ -4,11 +4,8 @@ import org.hotrod.eclipseplugin.domain.SelectMethod;
 
 public class SelectFace extends AbstractMethodFace {
 
-  private SelectMethod method;
-
   public SelectFace(final SelectMethod method) {
-    super(method.getName());
-    this.method = method;
+    super(method.getName(), method);
   }
 
   @Override

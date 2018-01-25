@@ -6,12 +6,9 @@ import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemExc
 
 public class EnumFace extends AbstractFace {
 
-  private EnumDAO enumDAO;
-
   public EnumFace(final EnumDAO enumDAO) throws InvalidConfigurationItemException {
-    super(enumDAO.getName());
-    this.enumDAO = enumDAO;
-    for (Method m : this.enumDAO.getMethods()) {
+    super(enumDAO.getName(), enumDAO);
+    for (Method m : enumDAO.getMethods()) {
       AbstractFace leaf = FaceFactory.getMethodElement(m);
       super.addChild(leaf);
     }

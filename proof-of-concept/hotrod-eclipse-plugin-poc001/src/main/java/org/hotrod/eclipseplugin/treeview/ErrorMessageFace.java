@@ -14,7 +14,7 @@ public class ErrorMessageFace extends AbstractFace {
   private String message;
 
   public ErrorMessageFace(final RelativeProjectPath path, final int line, final String message) {
-    super(path.getRelativeFileName() + ":" + line + ":\n" + message);
+    super(path.getRelativeFileName() + ":" + line + ":\n" + message, null);
     // System.out.println("[ErrorMessageFace] message=" + message);
     this.path = path;
     this.line = line;

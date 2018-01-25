@@ -1,8 +1,11 @@
 
 HOTROD-CONFIG
 
-settings: settings 2b
+settings: settings one : prop1=value3
 
-table: income
-view: revenue
-
+enum: branch : class=Branch2DAO
+table: income : optimistic-lock=true
+view: revenue : can-update=false
+enum: balance
+view: last_year
+table: revenue_yoy

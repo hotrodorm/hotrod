@@ -1,7 +1,9 @@
 package org.hotrod.eclipseplugin.domain;
 
-public interface Method {
+public abstract class Method extends ConfigItem {
 
-  int getLineNumber();
+  protected Method(final int lineNumber) {
+    super(lineNumber);
+  }
 
 }

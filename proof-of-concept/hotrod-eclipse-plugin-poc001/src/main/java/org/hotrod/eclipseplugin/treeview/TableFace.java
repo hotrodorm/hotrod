@@ -6,12 +6,9 @@ import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemExc
 
 public class TableFace extends AbstractFace {
 
-  private TableDAO tableDAO;
-
   public TableFace(final TableDAO tableDAO) throws InvalidConfigurationItemException {
-    super(tableDAO.getName());
-    this.tableDAO = tableDAO;
-    for (Method m : this.tableDAO.getMethods()) {
+    super(tableDAO.getName(), tableDAO);
+    for (Method m : tableDAO.getMethods()) {
       AbstractFace leaf = FaceFactory.getMethodElement(m);
       super.addChild(leaf);
     }

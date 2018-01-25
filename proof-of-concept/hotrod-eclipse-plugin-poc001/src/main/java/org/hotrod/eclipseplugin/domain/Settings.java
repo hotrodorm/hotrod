@@ -2,20 +2,19 @@ package org.hotrod.eclipseplugin.domain;
 
 import org.hotrod.eclipseplugin.domain.loader.ConfigFileLoader.NameContent;
 
-public class Settings implements ConfigItem {
+public class Settings extends ConfigItem {
 
   // Properties
 
   private String name;
   private String content;
-  private int lineNumber;
 
   // Constructor
 
   public Settings(final NameContent nc, final int lineNumber) {
+    super(lineNumber);
     this.name = nc.getName();
     this.content = nc.getContent();
-    this.lineNumber = lineNumber;
   }
 
   // Getters
@@ -61,9 +60,31 @@ public class Settings implements ConfigItem {
     return true;
   }
 
+  // Computing item changes
+
+  // Checks if it's the same ID; the other properties do not matter
   @Override
-  public int getLineNumber() {
-    return this.lineNumber;
+  public boolean sameID(final ConfigItem fresh) {
+    try {
+      Settings f = (Settings) fresh;
+      boolean equals = this.name.equals(f.name);
+      return equals;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  // Copy non-ID properties; informs if there were any changes.
+  @Override
+  public boolean copyProperties(final ConfigItem fresh) {
+    try {
+      Settings f = (Settings) fresh;
+      boolean hasChanges = !this.content.equals(f.content);
+      this.content = f.content;
+      return hasChanges;
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

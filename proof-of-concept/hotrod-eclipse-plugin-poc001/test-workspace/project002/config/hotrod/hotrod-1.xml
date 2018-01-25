@@ -1,11 +1,21 @@
+HOTROD-CONFIG
+
 settings: settings
 
+table: sku : cache=true
+  select: getAllSKUs
+  select: getOldSKUs
+  query: promoteCheapSKUs
+
+table: item
+  query: downgradeIncompleteItems
+  
 table: product
   query: applyPromotion74
   select: getVIPProducs
   select: getProductSummary
   sequence: selectSequenceProduct
-  # query: applyPromotion75
+  query: applyPromotion75
   # select: getCountryProductTree
 
 view: hot_product
@@ -33,10 +43,11 @@ converter: region-type
 executor: OrdersDAO
   query: chargeOrder
   query: cancelOrder
-  # query: fulfillOrder
-  # query: closeOrder
-  # query: reopenOrder
-  # sequence: selectSequenceGlobalId
+  query: fulfillOrder
+  query: closeOrder
+  query: reopenOrder
+  select: retrieveStaleOrders
+  sequence: selectSequenceGlobalId
 
 fragment: hotrod-fragment-1.xml
 

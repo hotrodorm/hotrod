@@ -23,15 +23,12 @@ public class FaceProducer {
 
     // Load the file
 
-    MainConfigFile config;
+    MainConfigFile config = null;
     try {
       config = ConfigFileLoader.loadMainFile(f, path);
+      log("*** main file loaded: path=");
       return new MainConfigFace(f, path, provider, config);
-      // } catch (UnreadableConfigFileException e) {
-      // return new MainConfigFace(f, path, provider, new ErrorMessageFace(path,
-      // 1, "Unreadable file."));
     } catch (FaultyConfigFileException e) {
-      // e.printStackTrace();
       log("*** FaultyConfigFileException: path=" + e.getPath());
       return new MainConfigFace(f, path, provider,
           new ErrorMessageFace(e.getPath(), e.getLineNumber(), e.getMessage()));
@@ -141,7 +138,7 @@ public class FaceProducer {
   }
 
   public static void log(final String txt) {
-    // System.out.println(txt);
+    System.out.println("[" + FaceProducer.class.getName() + "] " + txt);
   }
 
 }

@@ -1,3 +1,5 @@
+HOTROD-FRAGMENT-CONFIG
+
 table: payment_provider
 
 executor: PaymentDAO

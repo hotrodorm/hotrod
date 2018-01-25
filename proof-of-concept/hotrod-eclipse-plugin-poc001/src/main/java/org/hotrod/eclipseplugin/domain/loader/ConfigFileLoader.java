@@ -242,29 +242,30 @@ public class ConfigFileLoader {
       throws FaultyConfigFileException {
     String line = rawLine.trim();
     if (line.startsWith(TABLE_DAO_PROMPT)) {
-      String name = line.substring(TABLE_DAO_PROMPT.length()).trim();
-      if (name.isEmpty()) {
+      NameContent nc = new NameContent(line, TABLE_DAO_PROMPT);
+      log("nc.getName()=" + nc.getName()+" nc.getName().isEmpty()="+nc.getName().isEmpty());
+      if (nc.getName().isEmpty()) {
         throw new FaultyConfigFileException(path, lineNumber, "The table must have a name.");
       }
-      return new TableDAO(name, lineNumber);
+      return new TableDAO(nc, lineNumber);
     } else if (line.startsWith(VIEW_DAO_PROMPT)) {
-      String name = line.substring(VIEW_DAO_PROMPT.length()).trim();
-      if (name.isEmpty()) {
+      NameContent nc = new NameContent(line, VIEW_DAO_PROMPT);
+      if (nc.getName().isEmpty()) {
         throw new FaultyConfigFileException(path, lineNumber, "The view must have a name.");
       }
-      return new ViewDAO(name, lineNumber);
+      return new ViewDAO(nc, lineNumber);
     } else if (line.startsWith(ENUM_DAO_PROMPT)) {
-      String name = line.substring(ENUM_DAO_PROMPT.length()).trim();
-      if (name.isEmpty()) {
+      NameContent nc = new NameContent(line, ENUM_DAO_PROMPT);
+      if (nc.getName().isEmpty()) {
         throw new FaultyConfigFileException(path, lineNumber, "The enum must have a name.");
       }
-      return new EnumDAO(name, lineNumber);
+      return new EnumDAO(nc, lineNumber);
     } else if (line.startsWith(EXECUTOR_DAO_PROMPT)) {
-      String name = line.substring(EXECUTOR_DAO_PROMPT.length()).trim();
-      if (name.isEmpty()) {
+      NameContent nc = new NameContent(line, EXECUTOR_DAO_PROMPT);
+      if (nc.getName().isEmpty()) {
         throw new FaultyConfigFileException(path, lineNumber, "The executor must have a name.");
       }
-      return new ExecutorDAO(name, lineNumber);
+      return new ExecutorDAO(nc, lineNumber);
     } else if (line.startsWith(CONVERTER_PROMPT)) {
       NameContent nc = new NameContent(line, CONVERTER_PROMPT);
       if (nc.getName().isEmpty()) {
@@ -273,6 +274,9 @@ public class ConfigFileLoader {
       return new Converter(nc, lineNumber);
     } else if (line.startsWith(SETTINGS_PROMPT)) {
       NameContent nc = new NameContent(line, SETTINGS_PROMPT);
+      if (nc.getName().isEmpty()) {
+        throw new FaultyConfigFileException(path, lineNumber, "The settings must have a name.");
+      }
       return new Settings(nc, lineNumber);
     } else if (line.startsWith(FRAGMENT_PROMPT)) {
       String relativeFileName = line.substring(FRAGMENT_PROMPT.length()).trim();
@@ -346,7 +350,7 @@ public class ConfigFileLoader {
   }
 
   public static void log(final String txt) {
-    // System.out.println(txt);
+    System.out.println("[" + ConfigFileLoader.class.getName() + "] " + txt);
   }
 
 }

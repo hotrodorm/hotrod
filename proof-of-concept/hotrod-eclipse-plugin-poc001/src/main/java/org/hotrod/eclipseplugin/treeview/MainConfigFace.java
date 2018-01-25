@@ -20,13 +20,13 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   public MainConfigFace(final File f, final RelativeProjectPath path, final HotRodViewContentProvider provider,
       final MainConfigFile config) {
-    super(path.getFileName());
+    super(path.getFileName(), config);
     this.absolutePath = f.getAbsolutePath();
     this.path = path;
     this.provider = provider;
     this.config = config;
 
-    for (ConfigItem item : config.getConfigItems()) {
+    for (ConfigItem item : config.getSubItems()) {
       try {
         AbstractFace face = FaceFactory.getFace(item);
         this.addChild(face);
@@ -37,12 +37,11 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
         return;
       }
     }
-    this.setUnchanged();
   }
 
   public MainConfigFace(final File f, final RelativeProjectPath path, final HotRodViewContentProvider provider,
       final ErrorMessageFace errorMessageFace) {
-    super(path.getFileName());
+    super(path.getFileName(), null);
     this.absolutePath = f.getAbsolutePath();
     this.path = path;
     this.provider = provider;
@@ -50,11 +49,13 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
     this.addChild(errorMessageFace);
   }
 
-  // Getters
+  // Behavior
 
-  // public boolean isValid() {
-  // return valid;
+  // public void applyFreshVersion(final MainConfigFace fresh) {
+  // super.computeChangesFrom(fresh);
   // }
+
+  // Getters
 
   public String getAbsolutePath() {
     return absolutePath;

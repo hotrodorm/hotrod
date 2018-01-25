@@ -4,11 +4,8 @@ import org.hotrod.eclipseplugin.domain.Converter;
 
 public class ConverterFace extends AbstractFace {
 
-  private Converter converter;
-
   public ConverterFace(final Converter converter) {
-    super(converter.getName());
-    this.converter = converter;
+    super(converter.getName(), converter);
   }
 
   @Override

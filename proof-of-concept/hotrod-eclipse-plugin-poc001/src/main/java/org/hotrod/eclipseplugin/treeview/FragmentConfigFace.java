@@ -1,21 +1,17 @@
 package org.hotrod.eclipseplugin.treeview;
 
-import java.io.File;
-
 import org.hotrod.eclipseplugin.domain.ConfigItem;
 import org.hotrod.eclipseplugin.domain.FragmentConfigFile;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
 public class FragmentConfigFace extends AbstractFace {
 
-  private static final boolean SHOW_PROJECT_RELATIVE_PATH = true;
-
-  private FragmentConfigFile fragment;
+  private String relativePath;
 
   public FragmentConfigFace(final FragmentConfigFile fragment) throws InvalidConfigurationItemException {
-    super(fragment.getShortName());
-    this.fragment = fragment;
-    for (ConfigItem item : this.fragment.getConfigItems()) {
+    super(fragment.getShortName(), fragment);
+    this.relativePath = fragment.getRelativeProjectPath().getRelativePath();
+    for (ConfigItem item : fragment.getSubItems()) {
       AbstractFace element = FaceFactory.getFace(item);
       super.addChild(element);
     }
@@ -27,12 +23,7 @@ public class FragmentConfigFace extends AbstractFace {
   }
 
   public String getRelativePath() {
-    if (SHOW_PROJECT_RELATIVE_PATH) {
-      return this.fragment.getRelativeProjectPath().getRelativePath();
-    } else {
-      String parent = new File(this.fragment.getIncluderRelativePath()).getParent();
-      return parent != null ? parent : "";
-    }
+    return this.relativePath;
   }
 
   @Override
