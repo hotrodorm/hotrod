@@ -1,0 +1,17 @@
+HOTROD-FRAGMENT-CONFIG
+
+table: customer
+
+table: supplier
+  query: getRankedSuppliers
+
+executor: SuppliersDAO
+  query: closeFulfilledOrders
+  select: listOpenOrders
+ 
+view: new_supplier
+
+enum: supplier_type
+
+
+

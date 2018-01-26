@@ -1,0 +1,12 @@
+
+HOTROD-CONFIG
+
+settings: settings
+
+table: income : optimistic-locking=false
+view: revenue : abc=def
+table: expense
+table: profit
+enum: branch
+table: net_profit
+

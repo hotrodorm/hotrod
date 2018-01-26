@@ -1,0 +1,10 @@
+
+HOTROD-CONFIG
+
+settings: settings : cache=optimistic4
+
+table: region : lock=true
+table: company
+#table: state
+table: city
+

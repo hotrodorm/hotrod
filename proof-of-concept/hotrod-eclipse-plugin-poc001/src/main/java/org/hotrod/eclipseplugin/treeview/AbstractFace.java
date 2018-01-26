@@ -1,6 +1,7 @@
 package org.hotrod.eclipseplugin.treeview;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -196,6 +197,31 @@ public abstract class AbstractFace implements IAdaptable {
 
   // Tree display
 
+  private ItemStatus treeStatus = null;
+
+  public final ItemStatus getTreeStatus() {
+    System.out.println("[AbstractFace] 0 name=" + this.name + " this.getStatus()=" + this.getStatus()
+        + " this.treeStatus=" + this.treeStatus);
+    if (this.treeStatus == null) {
+      System.out.println("[AbstractFace] 1");
+      if (this.getStatus() == ItemStatus.MODIFIED) {
+        System.out.println("[AbstractFace] 2");
+        this.treeStatus = ItemStatus.MODIFIED;
+      } else {
+        System.out.println("[AbstractFace] 3");
+        boolean changed = false;
+        for (AbstractFace c : this.children) {
+          if (c.getTreeStatus() != ItemStatus.UNAFFECTED) {
+            changed = true;
+          }
+        }
+        this.treeStatus = changed ? ItemStatus.MODIFIED : this.getStatus();
+      }
+    }
+    System.out.println("[AbstractFace] 4 this.treeStatus=" + this.treeStatus);
+    return this.treeStatus;
+  }
+
   public final ItemStatus getStatus() {
     return this.item == null ? ItemStatus.UNAFFECTED : this.item.getStatus();
   }
@@ -234,12 +260,20 @@ public abstract class AbstractFace implements IAdaptable {
     return true;
   }
 
+  private final void unsetTreeStatus() {
+    this.treeStatus = null;
+    if (this.parent != null) {
+      this.parent.unsetTreeStatus();
+    }
+  }
+
   public final void applyChangesFrom(final AbstractFace fresh) {
 
     // own changes
 
     if (this.item.copyProperties(fresh.item)) {
       this.item.setStatus(ItemStatus.MODIFIED);
+      this.unsetTreeStatus();
     }
 
     // sub item changes
@@ -248,22 +282,32 @@ public abstract class AbstractFace implements IAdaptable {
     this.children.clear();
 
     for (AbstractFace f : fresh.children) {
-      AbstractFace e = findFace(f, existing);
+      AbstractFace e = extractChildren(f, existing);
       if (e != null) {
         e.applyChangesFrom(f);
         this.children.add(e);
+        e.parent = this;
       } else {
         this.children.add(f);
+        f.parent = this;
+        f.unsetTreeStatus();
         if (f.item != null) {
           f.item.setStatus(ItemStatus.ADDED);
         }
       }
     }
+    System.out
+        .println("[AbstractFace] applyChangesFrom() name=" + this.name + " existing.isEmpty()=" + existing.isEmpty());
+    if (!existing.isEmpty()) { // some children were removed
+      this.unsetTreeStatus();
+      this.treeStatus = ItemStatus.MODIFIED;
+    }
 
   }
 
-  private AbstractFace findFace(final AbstractFace f, final List<AbstractFace> existing) {
-    for (AbstractFace e : existing) {
+  private AbstractFace extractChildren(final AbstractFace f, final List<AbstractFace> existing) {
+    for (Iterator<AbstractFace> it = existing.iterator(); it.hasNext();) {
+      AbstractFace e = it.next();
       if (f.item == null) {
         System.out.println("f.item is null!");
       }
@@ -271,6 +315,7 @@ public abstract class AbstractFace implements IAdaptable {
         System.out.println("e.item is null!");
       }
       if (f.item.sameID(e.item)) {
+        it.remove();
         return e;
       }
     }
