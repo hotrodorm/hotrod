@@ -677,7 +677,7 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
       // Catalog
 
       this.labelCatalog = new Label(this.container, SWT.NONE);
-      this.labelCatalog.setText("Catalog:");
+      this.labelCatalog.setText("Default catalog:");
       this.fieldCatalog = new Combo(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
       {
         GridData gridData = new GridData();
@@ -688,7 +688,7 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
       // Schema
 
       this.labelSchema = new Label(this.container, SWT.NONE);
-      this.labelSchema.setText("Schema:");
+      this.labelSchema.setText("Default schema:");
       this.fieldSchema = new Combo(this.container, SWT.DROP_DOWN | SWT.READ_ONLY);
       {
         GridData gridData = new GridData();
