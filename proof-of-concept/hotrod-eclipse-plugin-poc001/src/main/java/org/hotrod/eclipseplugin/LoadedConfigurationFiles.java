@@ -84,11 +84,11 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     this.loadedFiles.remove(face.getAbsolutePath());
   }
 
-  public void reload(final MainConfigFace existingFace) {
-    String absolutePath = existingFace.getAbsolutePath();
-    File f = new File(absolutePath);
+  private void reload(final MainConfigFace baselineFace) {
+    String absPath = baselineFace.getAbsolutePath();
+    File f = new File(absPath);
     MainConfigFace newFace = FaceProducer.load(this.provider, f);
-    existingFace.applyChangesFrom(newFace);
+    baselineFace.applyChangesFrom(newFace);
   }
 
   public void removeAll() {
