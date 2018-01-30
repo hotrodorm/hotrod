@@ -18,6 +18,29 @@ import org.eclipse.core.resources.IProject;
 import org.hotrod.eclipseplugin.utils.ClassPathEncoder;
 import org.hotrod.eclipseplugin.utils.SUtil;
 
+/**
+ * <pre>
+ *            local config cache <-------------+
+ *                    |                        |
+ *                    |                        |
+ * [DRAG & DROP LOAD] |                        | (save)
+ *                    |                        |
+ *                    V           (update)     |
+ *              Baseline-Config <-----------+  |
+ *                        \                 |  |
+ *               (combine) \                |  |
+ *                          *-> face --> [GENERATE]
+ *               (combine) /
+ *                        /
+ *                New-Config
+ *                    ^
+ *                    |
+ *                    | [FILE CHANGE DETECTED]
+ *                    |
+ *               config files
+ * 
+ * </pre>
+ */
 public class LocalProperties {
 
   public static final String CONFIG_FILE_NAME = "hotrod.local.properties";
