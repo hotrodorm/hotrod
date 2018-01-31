@@ -15,30 +15,34 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import org.eclipse.core.resources.IProject;
+import org.hotrod.eclipseplugin.domain.MainConfigFile;
 import org.hotrod.eclipseplugin.utils.ClassPathEncoder;
+import org.hotrod.eclipseplugin.utils.ObjectPropertyCodec;
+import org.hotrod.eclipseplugin.utils.ObjectPropertyCodec.CouldNotDecodeException;
+import org.hotrod.eclipseplugin.utils.ObjectPropertyCodec.CouldNotEncodeException;
 import org.hotrod.eclipseplugin.utils.SUtil;
 
 /**
  * <pre>
- *            local config cache <-------------+
- *                    |                        |
- *                    |                        |
- * [DRAG & DROP LOAD] |                        | (save)
- *                    |                        |
- *                    V           (update)     |
- *              Baseline-Config <-----------+  |
- *                        \                 |  |
- *               (combine) \                |  |
- *                          *-> face --> [GENERATE]
- *               (combine) /
- *                        /
- *                New-Config
+ *                                             (save)
+ *   local config cache <--------------------------------------------------------+
+ *          |                                                                    |
+ *          V                                                                    |
+ *    [DRAG & DROP LOAD]                                                         |
+ *       |     |                               (update)                          |
+ *       |     +-> "cached" config <------------------------------------------+  |
+ *       |                \                                                   |  |
+ *       |                 \                                                  |  |
+ *       |                  *-> "correlated" config --> Eclipse Plugin --> [GENERATE]
+ *       |                 /                   \
+ *       |                /                     \
+ *       +-----> "file" config                   *--> ...another client...
  *                    ^
  *                    |
- *                    | [FILE CHANGE DETECTED]
+ *           [FILE CHANGE DETECTED]
  *                    |
- *               config files
- * 
+ *                config file
+ *
  * </pre>
  */
 public class LocalProperties {
@@ -57,6 +61,8 @@ public class LocalProperties {
   public static final String CATALOG_ATT = "catalog";
   public static final String SCHEMA_ATT = "schema";
   public static final String GENERATOR_ATT = "generator";
+
+  public static final String CACHE_PREFIX_ATT = "cache-";
 
   private IProject project;
   private String format;
@@ -103,10 +109,11 @@ public class LocalProperties {
         Map<String, FileProperties> properties = new TreeMap<String, FileProperties>();
 
         for (String name : p.stringPropertyNames()) {
+          String value = p.getProperty(name);
 
           if (FORMAT_ATT.equals(name)) {
 
-            format = p.getProperty(name);
+            format = value;
 
           } else {
 
@@ -133,7 +140,7 @@ public class LocalProperties {
               fileProperties = new FileProperties("");
               properties.put(file, fileProperties);
             }
-            fileProperties.set(name, attribute, p.getProperty(name));
+            fileProperties.set(name, attribute, value);
 
           }
 
@@ -182,7 +189,7 @@ public class LocalProperties {
 
       int i = 1;
 
-      DecimalFormat df = new DecimalFormat("000");
+      DecimalFormat df = new DecimalFormat("0000");
 
       for (String key : this.files.keySet()) {
         FileProperties fp = this.files.get(key);
@@ -198,12 +205,24 @@ public class LocalProperties {
         w.write(file + "." + CATALOG_ATT + "=" + fp.catalog + "\n");
         w.write(file + "." + SCHEMA_ATT + "=" + fp.schema + "\n");
         w.write(file + "." + GENERATOR_ATT + "=" + fp.generator + "\n");
+
+        TreeMap<Integer, String> slicedCache = fp.getSlicedCache();
+        if (slicedCache != null) {
+          int sliceNumber = 0;
+          for (String value : slicedCache.values()) {
+            String attribute = CACHE_PREFIX_ATT + df.format(sliceNumber);
+            w.write(file + "." + attribute + "=" + value + "\n");
+            sliceNumber++;
+          }
+        }
+
         i++;
       }
 
     } catch (IOException e) {
       throw new CouldNotSavePropertiesException(e.getMessage());
-
+    } catch (CouldNotEncodeException e) {
+      throw new CouldNotSavePropertiesException(e.getMessage());
     } finally {
       if (w != null) {
         try {
@@ -217,6 +236,8 @@ public class LocalProperties {
 
   public static class FileProperties {
 
+    private static final int MAX_VALUE_LENGTH = 80;
+
     private String fileName = null;
     private List<String> driverClassPathEntries = null;
     private String driverClassName = null;
@@ -226,6 +247,9 @@ public class LocalProperties {
     private String catalog = null;
     private String schema = null;
     private String generator = null;
+
+    private TreeMap<Integer, String> cache = new TreeMap<Integer, String>();
+    private MainConfigFile cachedConfigFile = null;
 
     private List<String> availableCatalogs;
     private List<String> availableSchemas;
@@ -263,6 +287,13 @@ public class LocalProperties {
         this.schema = value;
       } else if (GENERATOR_ATT.equals(attribute)) {
         this.generator = value;
+      } else if (attribute.startsWith(CACHE_PREFIX_ATT)) {
+        try {
+          Integer index = new Integer(attribute.substring(CACHE_PREFIX_ATT.length()));
+          this.cache.put(index, value);
+        } catch (NumberFormatException e) {
+          throw new CouldNotLoadPropertiesException("Unrecognized property name '" + name + "'.");
+        }
       } else {
         throw new CouldNotLoadPropertiesException("Unrecognized property name '" + name + "'.");
       }
@@ -308,6 +339,23 @@ public class LocalProperties {
       if (this.generator == null) {
         throw new CouldNotLoadPropertiesException(
             "Incomplete file '" + file + "'. Property '" + file + "." + GENERATOR_ATT + "' not found.");
+      }
+
+      // Reassemble the cached config file
+
+      try {
+        this.cachedConfigFile = ObjectPropertyCodec.decode(this.cache, MainConfigFile.class);
+      } catch (CouldNotDecodeException e) {
+        throw new CouldNotLoadPropertiesException("Invalid file cache on file '" + file + "': " + e.getMessage());
+      }
+
+    }
+
+    public TreeMap<Integer, String> getSlicedCache() throws CouldNotEncodeException {
+      if (this.cachedConfigFile == null) {
+        return null;
+      } else {
+        return ObjectPropertyCodec.encode(this.cachedConfigFile, MAX_VALUE_LENGTH);
       }
     }
 
@@ -399,6 +447,14 @@ public class LocalProperties {
 
     public void setAvailableSchemas(List<String> availableSchemas) {
       this.availableSchemas = availableSchemas;
+    }
+
+    public MainConfigFile getCachedConfigFile() {
+      return cachedConfigFile;
+    }
+
+    public void setCachedConfigFile(MainConfigFile cachedConfigFile) {
+      this.cachedConfigFile = cachedConfigFile;
     }
 
   }

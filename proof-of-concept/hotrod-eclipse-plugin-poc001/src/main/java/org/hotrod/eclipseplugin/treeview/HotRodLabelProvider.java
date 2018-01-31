@@ -66,7 +66,27 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
       // String prefix = face.getTreeStatus().getPrefix() + ":" +
       // face.getStatus().getPrefix();
-      String prefix = face.getTreeStatus().getPrefix();
+
+      String prefix;
+      switch (face.getTreeStatus()) {
+      case UNAFFECTED:
+        prefix = "";
+        break;
+      case MODIFIED:
+        prefix = "> ";
+        break;
+      case ADDED:
+        prefix = "+ ";
+        break;
+      case DELETED:
+        prefix = "- ";
+        break;
+      default:
+        prefix = "";
+        break;
+      }
+
+      // String prefix = face.getTreeStatus().getPrefix();
       if (prefix != null) {
         // label.append(prefix, HotRodLabelProvider.changeStyler);
         label.append(prefix, StyledString.DECORATIONS_STYLER);

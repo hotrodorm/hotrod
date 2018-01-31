@@ -6,21 +6,7 @@ import java.util.List;
 public abstract class ConfigItem {
 
   public enum ItemStatus {
-    UNAFFECTED(""), MODIFIED("> "), ADDED("+ ");
-
-    private String prefix;
-
-    /**
-     * @param prefix
-     */
-    private ItemStatus(String prefix) {
-      this.prefix = prefix;
-    }
-
-    public String getPrefix() {
-      return prefix;
-    }
-
+    UNAFFECTED, MODIFIED, ADDED, DELETED;
   }
 
   private final int lineNumber;

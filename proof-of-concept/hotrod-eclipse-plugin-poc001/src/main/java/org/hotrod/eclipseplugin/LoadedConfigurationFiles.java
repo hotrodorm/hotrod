@@ -15,7 +15,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.hotrod.eclipseplugin.FileSystemChangesListener.FileChangeListener;
+import org.hotrod.eclipseplugin.domain.MainConfigFile;
+import org.hotrod.eclipseplugin.domain.loader.ConfigFileLoader;
 import org.hotrod.eclipseplugin.domain.loader.FaceProducer;
+import org.hotrod.eclipseplugin.domain.loader.FaceProducer.RelativeProjectPath;
+import org.hotrod.eclipseplugin.domain.loader.FaultyConfigFileException;
+import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 
@@ -39,44 +44,73 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     if (f != null && f.getName().endsWith(VALID_HOTROD_EXTENSION) && f.isFile()) {
       String absolutePath = f.getAbsolutePath();
       if (!this.loadedFiles.containsKey(absolutePath)) {
-        // log("adding file: " + absolutePath);
-        MainConfigFace face = FaceProducer.load(this.provider, f);
-        // log("face '" + absolutePath + "' [" + face.getPath() +
-        // "]: valid=" + face.isValid());
-        if (face != null) {
-          this.loadedFiles.put(absolutePath, face);
-          this.provider.refresh();
 
-          // TODO: remove
-          // Create a file
+        // MainConfigFace face = FaceProducer.load(this.provider, f);
+
+        RelativeProjectPath path = RelativeProjectPath.findProjectPath(f);
+        if (path != null) {
           try {
-            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("project002");
-            String name = "f-" + System.currentTimeMillis() + ".txt";
-            IFile ifile = project.getFile(name);
+            
+            // 1. Load the config file
+            
+            MainConfigFile config = ConfigFileLoader.loadMainFile(f, path);
+            
+            // 2. Load the local properties
+            
+            
+            
+            // 3. Correlate them
+            
+            // 4. Assemble a face & refresh
 
-            byte[] bytes = "File contents".getBytes();
-            InputStream source = new ByteArrayInputStream(bytes);
-            ifile.create(source, IResource.NONE, null);
-          } catch (CoreException e) {
-            e.printStackTrace();
-          }
+            MainConfigFace face = new MainConfigFace(f, path, provider, config);
+            this.loadedFiles.put(absolutePath, face);
+            this.provider.refresh();
+            // fileGenerationProofOfConcept();
 
-          // TODO: remove
-          // update a file
-          try {
-            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("project002");
-            String name = "existing-file.txt";
-            IFile ifile = project.getFile(name);
-
-            byte[] bytes = ("File contents at " + System.currentTimeMillis()).getBytes();
-            InputStream source = new ByteArrayInputStream(bytes);
-            ifile.setContents(source, IResource.FORCE, null);
-          } catch (CoreException e) {
-            e.printStackTrace();
+          } catch (FaultyConfigFileException e) {
+            MainConfigFace face = new MainConfigFace(f, path, provider,
+                new ErrorMessageFace(e.getPath(), e.getLineNumber(), e.getMessage()));
+            this.loadedFiles.put(absolutePath, face);
+            this.provider.refresh();
           }
 
         }
+
       }
+    }
+  }
+
+  // TODO: remove once fully implemented.
+
+  private void fileGenerationProofOfConcept() {
+    // TODO: remove
+    // Create a file
+    try {
+      IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("project002");
+      String name = "f-" + System.currentTimeMillis() + ".txt";
+      IFile ifile = project.getFile(name);
+
+      byte[] bytes = "File contents".getBytes();
+      InputStream source = new ByteArrayInputStream(bytes);
+      ifile.create(source, IResource.NONE, null);
+      ifile.delete(false, null);
+    } catch (CoreException e) {
+      e.printStackTrace();
+    }
+
+    // TODO: remove
+    // update a file
+    try {
+      IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("project002");
+      String name = "existing-file.txt";
+      IFile ifile = project.getFile(name);
+
+      byte[] bytes = ("File contents at " + System.currentTimeMillis()).getBytes();
+      InputStream source = new ByteArrayInputStream(bytes);
+      ifile.setContents(source, IResource.FORCE, null);
+    } catch (CoreException e) {
+      e.printStackTrace();
     }
   }
 
