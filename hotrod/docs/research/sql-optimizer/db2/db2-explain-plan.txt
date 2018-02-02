@@ -1,0 +1,101 @@
+Prepare the explain plan functionality on your user. You'll need to do this only the first time 
+this specific user performs the explain plan funcitonality. SSH to the database server. Then:
+
+* Connect to the database:
+ db2 connect to empusa
+ 
+* Initialize DB2's explain tables:
+ db2 -tf sqllib/misc/EXPLAIN.DDL
+
+* [UNTESTED] Alternative way to create the tables (untested) through JDBC:
+ CALL SYSPROC.SYSINSTALLOBJECTS('EXPLAIN', 'C', CAST (NULL AS VARCHAR(128)), CAST (NULL AS VARCHAR(128)))
+
+Now, through JDBC (or SQL) run the explain command on your SQL. For example:
+
+Recording the execution cost:
+-----------------------------
+
+explain plan for     
+ select t.*, a.current_balance, a.name as account_name, b.name as branch_name
+   from transaction t
+   join account a on t.account_id = a.id
+   join federal_branch b on t.fed_branch_id = b.id
+   where a.current_balance >= 200 
+     and t.amount < 100
+
+Showing the execution cost tree using SQL:
+------------------------------------------
+
+with node_cost as (
+select s.stream_id,
+    case when s.source_type = 'D' then '[' || s.object_name || ']' else trim(so.operator_type) end as source,
+    case when s.target_type = 'D' then '[' || s.object_name || ']' else trim(to.operator_type) end as target,
+    s.source_type, s.source_id, s.target_type, s.target_id, s.object_name,
+    so.operator_id as source_op_id, so.operator_type as source_op_type, so.total_cost as source_op_cost,
+    to.operator_id as target_op_id, to.operator_type as target_op_type, to.total_cost as target_op_cost
+  from explain_stream s
+  left outer join explain_operator so on so.operator_id = s.source_id
+  left outer join explain_operator to on to.operator_id = s.target_id
+union
+select 0, 'RETURN', null, 'O', operator_id, null, null, null, operator_id, 'RETURN', total_cost, null, null, null
+  from explain_operator
+  where operator_type = 'RETURN'
+)
+select
+    -- level,
+    repeat('.  ', stream_id + level - 1 - stream_id ) || case when source_op_cost is null then '' else '$' || cast(source_op_cost as bigint) || ' ' end || source as path
+    -- sys_connect_by_path(source, ' > ') as path2,
+    -- level,
+    --n.*
+  from node_cost n
+  start with source_op_type = 'RETURN'
+  connect by prior source_id = target_id
+
+Returns:
+--------
+
+  $20 RETURN
+  .  $20 NLJOIN
+  .  .  $13 NLJOIN
+  .  .  .  $6 TBSCAN
+  .  .  .  .  [ACCOUNT]
+  .  .  .  $6 FETCH
+  .  .  .  .  $0 IXSCAN
+  .  .  .  .  .  [TX_ACCOUNT_ID_TIME]
+  .  .  .  .  [TRANSACTION]
+  .  .  $6 FETCH
+  .  .  .  $0 IXSCAN
+  .  .  .  .  [SQL170907171843060]
+  .  .  .  [FEDERAL_BRANCH]
+
+
+Where:
+------
+  [object-name]
+  DELETE  Delete
+  EISCAN  Extended Index Scan
+  FETCH   Fetch
+  FILTER  Filter rows
+  GENROW  Generate Row
+  GRPBY   Group By
+  HSJOIN  Hash Join
+  INSERT  Insert
+  IXAND   Dynamic Bitmap Index ANDing
+  IXSCAN  Relational index scan
+  MSJOIN  Merge Scan Join
+  NLJOIN  Nested loop Join
+  RETURN  Result
+  RIDSCN  Row Identifier (RID) Scan
+  RPD     Remote PushDown
+  SHIP    Ship query to remote system
+  SORT    Sort
+  TBSCAN  Table Scan
+  TEMP    Temporary Table Construction
+  TQ      Table Queue
+  UNION   Union
+  UNIQUE  Duplicate Elimination
+  UPDATE  Update
+  XISCAN  Index scan over XML data
+  XSCAN   XML document navigation scan
+  XANDOR  Index ANDing and ORing over XML data
+
