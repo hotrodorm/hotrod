@@ -1,3 +1,9 @@
+-- By default DB2 has them diabled. If you try a hierarchical query you'll receieve an error like:
+--     Error: DB2 SQL Error: SQLCODE=-104, SQLSTATE=42601, SQLERRMC=id;1
+--     connect by prior;<space>,
+-- To enable hierarchical queries:
+--     db2set -g DB2_COMPATIBILITY_VECTOR=8
+
 create table tree_node (
   id integer primary key not null,
   name varchar(20) not null,

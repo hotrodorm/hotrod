@@ -15,7 +15,11 @@ Now, through JDBC (or SQL) run the explain command on your SQL. For example:
 Recording the execution cost:
 -----------------------------
 
-explain plan for     
+* First, choose a unique name to identify the query. For example 'myapp.query001'. Use this name in the queries. 
+
+delete from explain_statement where querytag='myapp.query001';
+
+explain plan set querytag='myapp.query001' for     
  select t.*, a.current_balance, a.name as account_name, b.name as branch_name
    from transaction t
    join account a on t.account_id = a.id
@@ -26,27 +30,45 @@ explain plan for
 Showing the execution cost tree using SQL:
 ------------------------------------------
 
-with node_cost as (
+with statement as (
+  select * from explain_statement where querytag='myapp.query001'
+),
+node_cost as (
 select s.stream_id,
     case when s.source_type = 'D' then '[' || s.object_name || ']' else trim(so.operator_type) end as source,
     case when s.target_type = 'D' then '[' || s.object_name || ']' else trim(to.operator_type) end as target,
     s.source_type, s.source_id, s.target_type, s.target_id, s.object_name,
-    so.operator_id as source_op_id, so.operator_type as source_op_type, so.total_cost as source_op_cost,
-    to.operator_id as target_op_id, to.operator_type as target_op_type, to.total_cost as target_op_cost
-  from explain_stream s
-  left outer join explain_operator so on so.operator_id = s.source_id
-  left outer join explain_operator to on to.operator_id = s.target_id
+    so.operator_id as source_op_id, so.operator_type as source_op_type, so.total_cost as source_op_cost, so.io_cost as source_op_io_cost, so.cpu_cost as source_op_cpu_cost,
+    to.operator_id as target_op_id, to.operator_type as target_op_type, to.total_cost as target_op_cost, to.io_cost as target_op_io_cost, to.cpu_cost as target_op_cpu_cost
+  from statement st
+  join explain_stream s on 
+    (st.explain_requester, st.explain_time, st.source_name, st.source_schema, st.source_version, st.explain_level, st.stmtno, st.sectno) = 
+    (s.explain_requester, s.explain_time, s.source_name, s.source_schema, s.source_version, s.explain_level, s.stmtno, s.sectno )
+  left outer join explain_operator so on
+    (so.operator_id, so.explain_requester, so.explain_time, so.source_name, so.source_schema, so.source_version, so.explain_level, so.stmtno, so.sectno) = 
+    (s.source_id, s.explain_requester, s.explain_time, s.source_name, s.source_schema, s.source_version, s.explain_level, s.stmtno, s.sectno )
+  left outer join explain_operator to on
+    (to.operator_id, to.explain_requester, to.explain_time, to.source_name, to.source_schema, to.source_version, to.explain_level, to.stmtno, to.sectno) = 
+    (s.target_id, s.explain_requester, s.explain_time, s.source_name, s.source_schema, s.source_version, s.explain_level, s.stmtno, s.sectno )
 union
-select 0, 'RETURN', null, 'O', operator_id, null, null, null, operator_id, 'RETURN', total_cost, null, null, null
-  from explain_operator
-  where operator_type = 'RETURN'
+select 0, 'RETURN', null, 'O', so.operator_id, null, null, null, so.operator_id, 'RETURN', so.total_cost, so.io_cost, so.cpu_cost, null, null, null, null, null
+  from statement st
+  join explain_operator so on
+    (so.explain_requester, so.explain_time, so.source_name, so.source_schema, so.source_version, so.explain_level, so.stmtno, so.sectno) = 
+    (st.explain_requester, st.explain_time, st.source_name, st.source_schema, st.source_version, st.explain_level, st.stmtno, st.sectno )
+  where so.operator_type = 'RETURN'
 )
 select
     -- level,
-    repeat('.  ', stream_id + level - 1 - stream_id ) || case when source_op_cost is null then '' else '$' || cast(source_op_cost as bigint) || ' ' end || source as path
+    repeat('.  ', stream_id + level - 1 - stream_id ) || 
+    case when source_op_cost is null then '' else '$' || cast(source_op_cost as bigint) || ' ' end ||
+    source ||
+    case when source_op_io_cost is null then '' else ' (' || cast(source_op_io_cost as bigint) || ' io)' end ||
+    case when source_op_cpu_cost is null then '' else ' (' || cast(source_op_cpu_cost as bigint) || ' cpu)' end
+    as path,
     -- sys_connect_by_path(source, ' > ') as path2,
     -- level,
-    --n.*
+    n.*
   from node_cost n
   start with source_op_type = 'RETURN'
   connect by prior source_id = target_id
@@ -54,18 +76,18 @@ select
 Returns:
 --------
 
-  $20 RETURN
-  .  $20 NLJOIN
-  .  .  $13 NLJOIN
-  .  .  .  $6 TBSCAN
+  $20 RETURN (3 io) (176250 cpu)
+  .  $20 NLJOIN (3 io) (176250 cpu)
+  .  .  $13 NLJOIN (2 io) (119100 cpu)
+  .  .  .  $6 TBSCAN (1 io) (58816 cpu)
   .  .  .  .  [ACCOUNT]
-  .  .  .  $6 FETCH
-  .  .  .  .  $0 IXSCAN
+  .  .  .  $6 FETCH (1 io) (60284 cpu)
+  .  .  .  .  $0 IXSCAN (0 io) (44116 cpu)
   .  .  .  .  .  [TX_ACCOUNT_ID_TIME]
   .  .  .  .  [TRANSACTION]
-  .  .  $6 FETCH
-  .  .  .  $0 IXSCAN
-  .  .  .  .  [SQL170907171843060]
+  .  .  $6 FETCH (1 io) (57150 cpu)
+  .  .  .  $0 IXSCAN (0 io) (42330 cpu)
+  .  .  .  .  [SQL170826101531560]
   .  .  .  [FEDERAL_BRANCH]
 
 
