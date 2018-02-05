@@ -1,4 +1,4 @@
--- By default DB2 has them diabled. If you try a hierarchical query you'll receieve an error like:
+-- By default DB2 has them disabled. If you try a hierarchical query you'll receive an error like:
 --     Error: DB2 SQL Error: SQLCODE=-104, SQLSTATE=42601, SQLERRMC=id;1
 --     connect by prior;<space>,
 -- To enable hierarchical queries:
