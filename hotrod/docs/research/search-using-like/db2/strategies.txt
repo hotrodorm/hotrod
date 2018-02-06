@@ -1,4 +1,4 @@
-On big tables searhc using a like condition can be very expensive. There are four tyypical cases:
+On big tables search using a like condition can be very expensive. There are four typical cases:
 
 Case 1. The % wildcard is at the end.
 -------------------------------------
@@ -30,7 +30,7 @@ the reverse value of the original column. Something like 'reverse_last_name' as 
   create index reverse_last on <table> (reverse_last_name);
  
 Since DB2 does not have a reverse() function built-in, we can pre-create one as shown below (for 
-a limit of 100 character strings):
+a limit of 100-character strings):
 
   create function reverse (
     instring varchar(100)
@@ -65,7 +65,7 @@ Then, a search to find the last  characters to match 'rdson' would look like:
 Case 3. The % wildcard is in the middle. 
 ----------------------------------------
 
-Yu can use both indexes to narrow the search quite a bit, assumming you have a few characters 
+You can use both indexes to narrow the search quite a bit, assumming you have a few characters 
 on each end (ideally at least three on one of them).
 
 Case 4. The % wild card is at both ends. 
