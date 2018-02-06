@@ -131,6 +131,8 @@
 
   <target name="rebuild-database" depends="clean-database, build-database" />
 
+  <target name="rebuild-sp" depends="clean-sp, build-sp" />
+
   <target name="rebuild-data" depends="clean-data, build-data" />
 
   <!-- ================= -->

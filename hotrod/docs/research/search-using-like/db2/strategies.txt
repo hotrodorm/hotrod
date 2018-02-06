@@ -1,0 +1,76 @@
+On big tables searhc using a like condition can be very expensive. There are four tyypical cases:
+
+Case 1. The % wildcard is at the end.
+-------------------------------------
+
+In this case, create an index that uses the column we can instruct/influence the SQL
+optimizer to use the index and perform a "range scan" on the index. If we are able to supply
+at least a few characters (ideally 3 at least, but more is better) the range will be small
+enough to be fast.
+
+  create index normal_last on <table> (last_name);
+
+Then, a search to find the first characters to match 'richa' would look like:
+
+  select * from <table> where last_name like 'richa%';
+
+Case 2. The % wild card is at the beginning.
+--------------------------------------------
+
+If this search is really that important, then we could create an extra column on the table with
+the reverse value of the original column. Something like 'reverse_last_name' as shown below:
+
+  create table <table> (
+    id integer primary key not null,
+    last_name varchar(30) not null,
+    sales bigint not null,
+    reverse_last_name generated always as (reverse(last_name))
+  );
+
+  create index reverse_last on <table> (reverse_last_name);
+ 
+Since DB2 does not have a reverse() function built-in, we can pre-create one as shown below (for 
+a limit of 100 character strings):
+
+  create function reverse (
+    instring varchar(100)
+  )
+    returns varchar(100)
+    contains sql deterministic no external action
+    language sql
+  begin
+  declare outputstring varchar(100);
+  declare stringlength int;
+  declare loopcounter int;
+  declare charatpos varchar(1);
+  if (instring is null) then
+    return null;
+  else          
+    set outputstring = '';
+    set stringlength = length(instring); 
+    set loopcounter = stringlength;
+    while (loopcounter >= 1) do
+       set outputstring = outputstring || substr (instring, loopcounter, 1);
+       set loopcounter = loopcounter - 1;
+    end while;
+    return outputstring;
+  end if;
+  end  
+  //
+
+Then, a search to find the last  characters to match 'rdson' would look like:
+
+  select * from <table> where reverse_last_name like reverse('rdson') || '%';
+  
+Case 3. The % wildcard is in the middle. 
+----------------------------------------
+
+Yu can use both indexes to narrow the search quite a bit, assumming you have a few characters 
+on each end (ideally at least three on one of them).
+
+Case 4. The % wild card is at both ends. 
+----------------------------------------
+
+This is the worst case scenario, and there's no easy solution. A full table scan will probably 
+be the only solution, and won't be fast on a big table/row-range.
+ 
