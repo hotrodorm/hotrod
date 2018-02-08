@@ -1,6 +1,8 @@
 -- By default DB2 has them disabled. If you try a hierarchical query you'll receive an error like:
 --     Error: DB2 SQL Error: SQLCODE=-104, SQLSTATE=42601, SQLERRMC=id;1
 --     connect by prior;<space>,
+-- To list current DB2 settings:
+--     db2set -all
 -- To enable hierarchical queries:
 --     db2set -g DB2_COMPATIBILITY_VECTOR=8
 

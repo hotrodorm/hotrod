@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<project name="hotrod-optimizer" basedir=".">
+
+  <loadproperties srcFile="build.properties" />
+  <loadproperties srcFile="conf/workbench.properties" />
+
+  <property name="test.src.dir" value="src/test/java" />
+  <property name="test.build.dir" value="build/test" />
+
+  <target name="-init">
+    <loadproperties srcfile="${db.src.dir}/config.properties" />
+  </target>
+
+  <target name="compile" depends="-init">
+    <javac destdir="${test.build.dir}"
+           debug="true"
+           deprecation="true"
+           includeantruntime="false"
+           includes="**/*.java">
+      <src path="${test.src.dir}" />
+      <classpath>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="populate" depends="-init, compile">
+    <java classname="optimizer.DataPopulator">
+      <arg value="${driverclass}" />
+      <arg value="${url}" />
+      <arg value="${username}" />
+      <arg value="${password}" />
+      <classpath>
+        <pathelement location="${test.build.dir}" />
+        <pathelement path="${db.src.dir}/${driverclasspath}" />
+      </classpath>
+    </java>
+  </target>
+
+</project>

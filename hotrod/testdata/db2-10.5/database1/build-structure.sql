@@ -347,6 +347,13 @@ create table house (
   constraint fk_house_t3 foreign key (type) references house_type (state_code)
 );
 
+-- search using like
+
+create table supplier (
+  id integer primary key not null,
+  last_name varchar(30) not null,
+  sales bigint not null
+);
 
 
 

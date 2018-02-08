@@ -1,0 +1,119 @@
+H2 1.4 optmizer seems to work like this:
+ * H2's optimizer never uses more than one index per join.     
+ * The join order is based on cost. 
+ * However, LIKE always has the cost of a full table scan.
+ * H2's optimizer uses indexes when:
+   * Walking by equality.
+   * Searching ranges (integer, date)
+   * Does not use indexes when using LIKE.
+ * Starting on H2 1.4 the 
+     USE INDEX (index1, index2, ...) 
+   can be added right after each table instance declaration (in the FROM section) 
+   to specify which indexes you want to use. 
+ * To get the estimated selectivity of a filter you can run (DOES NOT WORK!):
+     select selectivity(purchased_on between '' and '') from customer;
+ * It wasn't clear to me how to use the SELECTIVITY column property. Per the manual:
+     "SELECTIVITY sets the selectivity (1-100) for a column. Setting the selectivity 
+     to 0 means the default value. Selectivity is used by the cost based optimizer 
+     to calculate the estimated cost of an index. Selectivity 100 means values are 
+     unique, 10 means every distinct value appears 10 times on average."
+ * Running EXPLAIN ANALYZE from time to time is supposed to refresh the selectivity.
+   Not verified.
+   
+Conclusion:
+===========
+ * The join order seems to be not even close to optimal in the SQL below. It uses:
+      -> order -> order_item -> product -> customer -> shipment -> address -> code(oc) -> code(ic)
+   Cost: 829    + 2458        + 2458     + 829       + 27        + 27       + 27        + 27 = 6682 read rows
+ * The best path should be similar to:
+      -> customer -> order -> code(oc) -> order_item -> code(ic) -> product -> shipment -> address
+   Cost: 106       + 270    + 9         + 27          + 27        + 27       + 27        + 27 = 520 read rows
+
+=== Retrieve the execution plan (no SQL execution) ===
+
+explain plan for
+select
+    c.phone_number, c.first_name, c.last_name, c.address_id,
+    a.id, a.line1, a.line2, a.city, a.state, a.zip_code,
+    i.deferred_shipment_date, i.quantity, ic.caption, oc.caption,
+    p.description, s.shipped_on
+  from
+    "order" o
+    join order_item i on i.order_id = o.id
+    left join product p on i.product_id = p.id
+    join customer c on c.id = o.customer_id
+    left join shipment s on s.id = o.shipment_id
+    left join address a on a.id = s.address_id
+    join code oc on oc.id = o.status_code
+    join code ic on ic.id = i.status_code
+  where
+        c.last_name like 'Be%'
+    and c.first_name like 'Jo%'
+    and oc.type = 'ORDER'
+    and ic.type = 'ITEM'
+    and o.placed > '2017-11-15'
+  order by
+    c.id, o.id desc, s.id, i.id
+
+SELECT
+    C.PHONE_NUMBER,
+    C.FIRST_NAME,
+    C.LAST_NAME,
+    C.ADDRESS_ID,
+    A.ID,
+    A.LINE1,
+    A.LINE2,
+    A.CITY,
+    A.STATE,
+    A.ZIP_CODE,
+    I.DEFERRED_SHIPMENT_DATE,
+    I.QUANTITY,
+    IC.CAPTION,
+    OC.CAPTION,
+    P.DESCRIPTION,
+    S.SHIPPED_ON
+FROM PUBLIC."order" O
+    /* PUBLIC.IX_ORDER_PLACED: PLACED > DATE '2017-11-15' */
+    /* WHERE O.PLACED > DATE '2017-11-15'
+    */
+INNER JOIN PUBLIC.ORDER_ITEM I
+    /* PUBLIC.FK_ITEM_ORDER_INDEX_4: ORDER_ID = O.ID
+        AND ORDER_ID = O.ID
+     */
+    ON 1=1
+    /* WHERE I.ORDER_ID = O.ID
+    */
+LEFT OUTER JOIN PUBLIC.PRODUCT P
+    /* PUBLIC.PRIMARY_KEY_18: ID = I.PRODUCT_ID */
+    ON I.PRODUCT_ID = P.ID
+INNER JOIN PUBLIC.CUSTOMER C
+    /* PUBLIC.PRIMARY_KEY_52: ID = O.CUSTOMER_ID */
+    ON C.ID = O.CUSTOMER_ID
+    /* WHERE (UPPER(C.LAST_NAME) LIKE 'ANDE%')
+        AND (UPPER(C.FIRST_NAME) LIKE 'JO%')
+    */
+LEFT OUTER JOIN PUBLIC.SHIPMENT S
+    /* PUBLIC.PRIMARY_KEY_FD: ID = O.SHIPMENT_ID */
+    ON S.ID = O.SHIPMENT_ID
+LEFT OUTER JOIN PUBLIC.ADDRESS A
+    /* PUBLIC.PRIMARY_KEY_E6: ID = S.ADDRESS_ID */
+    ON A.ID = S.ADDRESS_ID
+INNER JOIN PUBLIC.CODE OC
+    /* PUBLIC.PRIMARY_KEY_1F: ID = O.STATUS_CODE */
+    ON OC.ID = O.STATUS_CODE
+    /* WHERE OC.TYPE = 'ORDER'
+    */
+INNER JOIN PUBLIC.CODE IC
+    /* PUBLIC.PRIMARY_KEY_1F: ID = I.STATUS_CODE */
+    ON IC.ID = I.STATUS_CODE
+    /* WHERE IC.TYPE = 'ITEM'
+    */
+WHERE (I.ORDER_ID = O.ID)
+    AND ((O.PLACED > DATE '2017-11-15')
+    AND ((IC.TYPE = 'ITEM')
+    AND ((OC.TYPE = 'ORDER')
+    AND ((UPPER(C.LAST_NAME) LIKE 'ANDE%')
+    AND (UPPER(C.FIRST_NAME) LIKE 'JO%')))))
+ORDER BY =C.ID, =O.ID DESC, =S.ID, =I.ID
+
+    

@@ -1,1 +1,0 @@
-delete from APPLICATION_CONFIG;

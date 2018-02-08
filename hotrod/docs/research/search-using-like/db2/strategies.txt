@@ -8,28 +8,28 @@ optimizer to use the index and perform a "range scan" on the index. If we are ab
 at least a few characters (ideally 3 at least, but more is better) the range will be small
 enough to be fast.
 
-  create index normal_last on <table> (last_name);
+  create table supplier (
+    id integer primary key not null,
+    last_name varchar(30) not null,
+    sales bigint not null
+  );
+
+  create index supplier_last on supplier (last_name);
 
 Then, a search to find the first characters to match 'richa' would look like:
 
-  select * from <table> where last_name like 'richa%';
+  select * from supplier where last_name like 'richa%';
 
 Case 2. The % wild card is at the beginning.
 --------------------------------------------
 
-If this search is really that important, then we could create an extra column on the table with
-the reverse value of the original column. Something like 'reverse_last_name' as shown below:
+If this search is really that important, then we can create "virtual column" and search using 
+an index on it. I repeat, do this only if this is really important, since you are actually
+somewhat modifying the table structure just to make a query fast. This should be a carefully
+taken decision.
 
-  create table <table> (
-    id integer primary key not null,
-    last_name varchar(30) not null,
-    sales bigint not null,
-    reverse_last_name generated always as (reverse(last_name))
-  );
-
-  create index reverse_last on <table> (reverse_last_name);
- 
-Since DB2 does not have a reverse() function built-in, we can pre-create one as shown below (for 
+If you're sure you want to do it, first create a new function to reverse a string of characters.
+Since DB2 does not have a reverse() function built-in, we can create one as shown below (for 
 a limit of 100-character strings):
 
   create function reverse (
@@ -58,9 +58,23 @@ a limit of 100-character strings):
   end  
   //
 
-Then, a search to find the last  characters to match 'rdson' would look like:
+Then, add the virtual column that will store the reverse last_name value and create an index, as in:
 
-  select * from <table> where reverse_last_name like reverse('rdson') || '%';
+  set integrity for supplier off;
+  
+  alter table supplier add column 
+    reverse_last_name generated always as (reverse(last_name))
+  ;
+  
+  set integrity for supplier immediate checked force generated;
+
+  create index supplier_reverse_last on supplier (reverse_last_name);
+
+Then, a search to find the last_name ending characters to match 'rdson' will perform a range 
+scan on the index and, therefore, will be much faster than a full/partial table scan. This search 
+would look like:
+
+  select * from supplier where reverse_last_name like reverse('rdson') || '%';
   
 Case 3. The % wildcard is in the middle. 
 ----------------------------------------
