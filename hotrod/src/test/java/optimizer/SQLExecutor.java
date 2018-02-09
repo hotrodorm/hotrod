@@ -70,7 +70,7 @@ public class SQLExecutor {
 
   public static void setPassword(String pASS) {
     PASS = pASS;
-    System.out.println("password=" + PASS);
+    // System.out.println("password=" + PASS);
   }
 
 }

@@ -23,11 +23,14 @@ public class ProductsPopulator {
   }
 
   public void truncate() throws SQLException {
+    ConsoleProgress cp = new ConsoleProgress("Deleting Products", 1);
     SQLExecutor.executeUpdate("delete from product");
+    cp.complete();
   }
 
   public void populate() throws SQLException {
     PreparedStatement st = null;
+    ConsoleProgress cp = new ConsoleProgress("Adding Products", TOTAL);
     try {
       String sql = "insert into product (id, description) values (?, ?)";
       st = SQLExecutor.getConnection().prepareStatement(sql);
@@ -42,7 +45,9 @@ public class ProductsPopulator {
         st.setString(col++, description);
 
         st.execute();
+        cp.update(id);
       }
+      cp.complete();
 
     } finally {
       if (st != null) {

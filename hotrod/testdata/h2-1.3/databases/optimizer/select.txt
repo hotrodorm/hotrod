@@ -1,3 +1,6 @@
+H2 Optimizer Results
+====================
+
 H2 1.4 optimizer seems to work like this:
  * H2's optimizer never uses more than one index per join.     
  * The join order is based on cost. 
@@ -19,17 +22,124 @@ H2 1.4 optimizer seems to work like this:
      unique, 10 means every distinct value appears 10 times on average."
  * Running EXPLAIN ANALYZE from time to time is supposed to refresh the selectivity.
    Not verified.
+ * The optimizer didn't use the index below to reduce the query cost:
+     order_item (order_id, status_code)
+ * The optimizer could not be fooled and "pushed" to use a different join order using
+   artifical join dependency, as explained in section "4.1.4 Preventing Join Orders You 
+   Do Not Want", changing the join condition to:
+     join order_item i on i.order_id = o.id + 0 * oc.id
+   It seems it's too dumb to use it.
    
-Conclusion:
-===========
- * The join order seems to be not even close to optimal in the SQL below. It uses:
-      -> order -> order_item -> product -> customer -> shipment -> address -> code(oc) -> code(ic)
-   Cost: 829    + 2458        + 2458     + 829       + 27        + 27       + 27        + 27 = 6682 read rows
- * The best path should be similar to:
-      -> customer -> order -> code(oc) -> order_item -> code(ic) -> product -> shipment -> address
-   Cost: 106       + 270    + 9         + 27          + 27        + 27       + 27        + 27 = 520 read rows
+1. Optimizer use of index equality
+----------------------------------
 
-=== Retrieve the execution plan (no SQL execution) ===
+The optimizer DOES EXECUTE an "Index Range Scan" as shown below.
+
+explain plan for
+select * from "order" o 
+  where o.id between 22501 and 22704 -- selectivity = 204 / 50000 = 0.004
+
+SELECT
+    O.ID,
+    O.CUSTOMER_ID,
+    O.PLACED,
+    O.SHIPMENT_ID,
+    O.STATUS_CODE
+FROM PUBLIC."order" O
+    /* PUBLIC.PRIMARY_KEY_6: ID >= 22501
+        AND ID <= 22704
+     */
+    /* WHERE (O.ID >= 22501)
+        AND (O.ID <= 22704)
+    */
+WHERE (O.ID >= 22501)
+    AND (O.ID <= 22704)
+
+2. Optimizer use of index range
+-------------------------------
+
+The optimizer DOES EXECUTE an "Index Range Scan" as shown below.
+
+explain plan for
+select * from "order" o 
+  where o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+
+SELECT
+    O.ID,
+    O.CUSTOMER_ID,
+    O.PLACED,
+    O.SHIPMENT_ID,
+    O.STATUS_CODE
+FROM PUBLIC."order" O
+    /* PUBLIC.IX_ORDER_PLACED: PLACED > DATE '2017-11-15' */
+    /* WHERE O.PLACED > DATE '2017-11-15'
+    */
+WHERE O.PLACED > DATE '2017-11-15'
+
+3. Dual index usage
+-------------------
+
+The optimizer DOES NOT EXECUTE an "Index Range Scan" as shown below.
+
+explain plan for
+select * from "order" o 
+  where o.placed > '2018-02-01' -- selectivity =  82 / 50000 = 0.0016
+    or o.placed < '2012-10-21'  -- selectivity = 176 / 50000 = 0.0035
+    -- total selectivity = 0.0016 + 0.0035 = 0.0051 
+    
+SELECT
+    O.ID,
+    O.CUSTOMER_ID,
+    O.PLACED,
+    O.SHIPMENT_ID,
+    O.STATUS_CODE
+FROM PUBLIC."order" O
+    /* PUBLIC."order".tableScan */
+    /* WHERE (O.PLACED > DATE '2018-02-01')
+        OR (O.PLACED < DATE '2012-10-21')
+    */
+WHERE (O.PLACED > DATE '2018-02-01')
+    OR (O.PLACED < DATE '2012-10-21')
+
+4. Use index for like operator
+------------------------------
+
+The optimizer DOES EXECUTE an "Index Range Scan" for the first criterion but not the second one.
+
+select * from customer 
+  where first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    -- estimated selectivity = 0.053 * 0.052 = 0.0028
+    -- real selectivity      = 84 / 3000 = 0.0028
+
+SELECT
+    CUSTOMER.ID,
+    CUSTOMER.FIRST_NAME,
+    CUSTOMER.LAST_NAME,
+    CUSTOMER.PHONE_NUMBER,
+    CUSTOMER.ADDRESS_ID
+FROM PUBLIC.CUSTOMER
+    /* PUBLIC.IX_CUSTOMER_FIRST: FIRST_NAME >= 'JO'
+        AND FIRST_NAME < 'JP'
+     */
+    /* WHERE (FIRST_NAME LIKE 'JO%')
+        AND (LAST_NAME LIKE 'CO%')
+    */
+WHERE (FIRST_NAME LIKE 'JO%')
+    AND (LAST_NAME LIKE 'CO%')   
+
+5. Optimal join order
+---------------------
+
+The optimizer did not choose the best join order.
+
+ * The chose join order seems to be not even close to optimal in the SQL below. It uses:
+      -> order -> order_item -> product -> customer -> shipment -> address -> code(oc) -> code(ic)
+   Cost: 2038   + 6289        + 6289     + 6289      + 10        + 10       + 10        + 6 = 20945 rows read.
+   
+ * The best join path appears to be:
+      -> customer -> order -> code(oc) -> order_item -> code(ic) -> product -> shipment -> address
+   Cost: 84        + 3      + 9         + 10          + 10        + 6        + 6         + 6 = 134 rows read.
 
 explain plan for
 select
@@ -47,11 +157,11 @@ select
     join code oc on oc.id = o.status_code
     join code ic on ic.id = i.status_code
   where
-        c.last_name like 'BE%'
-    and c.first_name like 'JO%'
-    and oc.type = 'ORDER'
-    and ic.type = 'ITEM'
-    and o.placed > '2017-11-15'
+        c.first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and c.last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    and oc.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and ic.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
   order by
     c.id, o.id desc, s.id, i.id
 
@@ -89,8 +199,8 @@ LEFT OUTER JOIN PUBLIC.PRODUCT P
 INNER JOIN PUBLIC.CUSTOMER C
     /* PUBLIC.PRIMARY_KEY_52: ID = O.CUSTOMER_ID */
     ON C.ID = O.CUSTOMER_ID
-    /* WHERE (UPPER(C.LAST_NAME) LIKE 'ANDE%')
-        AND (UPPER(C.FIRST_NAME) LIKE 'JO%')
+    /* WHERE (C.FIRST_NAME LIKE 'JO%')
+        AND (C.LAST_NAME LIKE 'CO%')
     */
 LEFT OUTER JOIN PUBLIC.SHIPMENT S
     /* PUBLIC.PRIMARY_KEY_FD: ID = O.SHIPMENT_ID */
@@ -112,8 +222,66 @@ WHERE (I.ORDER_ID = O.ID)
     AND ((O.PLACED > DATE '2017-11-15')
     AND ((IC.TYPE = 'ITEM')
     AND ((OC.TYPE = 'ORDER')
-    AND ((UPPER(C.LAST_NAME) LIKE 'ANDE%')
-    AND (UPPER(C.FIRST_NAME) LIKE 'JO%')))))
+    AND ((C.FIRST_NAME LIKE 'JO%')
+    AND (C.LAST_NAME LIKE 'CO%')))))
 ORDER BY =C.ID, =O.ID DESC, =S.ID, =I.ID
 
+Bad Plan Cost:
+==============
+
+select count(*) from "order" o where o.placed > '2017-11-15'
+
+select count(*) 
+  from "order" o 
+    join order_item i on i.order_id = o.id
+  where o.placed > '2017-11-15'
+
+select count(*) 
+  from "order" o 
+    join order_item i on i.order_id = o.id
+    left join product p on i.product_id = p.id
+  where o.placed > '2017-11-15'
+
+select count(*) 
+  from "order" o 
+    join order_item i on i.order_id = o.id
+    left join product p on i.product_id = p.id
+    join customer c on c.id = o.customer_id
+  where o.placed > '2017-11-15'
+
+select count(*) 
+  from "order" o 
+    join order_item i on i.order_id = o.id
+    left join product p on i.product_id = p.id
+    join customer c on c.id = o.customer_id
+    left join shipment s on s.id = o.shipment_id
+  where o.placed > '2017-11-15'
+    and c.first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and c.last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+
+select count(*) 
+  from "order" o 
+    join order_item i on i.order_id = o.id
+    left join product p on i.product_id = p.id
+    join customer c on c.id = o.customer_id
+    left join shipment s on s.id = o.shipment_id
+    left join address a on a.id = s.address_id
+  where o.placed > '2017-11-15'
+    and c.first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and c.last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+
+select count(*) 
+  from "order" o 
+    join order_item i on i.order_id = o.id
+    left join product p on i.product_id = p.id
+    join customer c on c.id = o.customer_id
+    left join shipment s on s.id = o.shipment_id
+    left join address a on a.id = s.address_id
+    join code oc on oc.id = o.status_code
+    join code ic on ic.id = i.status_code
+  where o.placed > '2017-11-15'
+    and c.first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and c.last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    and oc.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    
     

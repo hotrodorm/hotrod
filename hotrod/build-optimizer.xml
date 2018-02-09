@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <project name="hotrod-optimizer" basedir=".">
 
+  <property name="database" value="databases/optimizer" />
+
   <loadproperties srcFile="build.properties" />
   <loadproperties srcFile="conf/workbench.properties" />
 
@@ -36,5 +38,33 @@
       </classpath>
     </java>
   </target>
+
+  <!-- Build database -->
+
+  <target name="build-structure" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         delimiter=";"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/build-structure.sql" />
+    </sql>
+  </target>
+
+  <target name="clean-structure" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         delimiter=";"
+         onerror="continue">
+      <fileset file="${db.src.dir}/${database}/clean-structure.sql" />
+    </sql>
+  </target>
+
+  <target name="rebuild-structure" depends="clean-structure, build-structure" />
 
 </project>

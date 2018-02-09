@@ -29,11 +29,14 @@ public class AddressesPopulator {
   }
 
   public void truncate() throws SQLException {
+    ConsoleProgress cp = new ConsoleProgress("Deleting Addresses", 1);
     SQLExecutor.executeUpdate("delete from address");
+    cp.complete();
   }
 
   public void populate() throws SQLException {
     PreparedStatement st = null;
+    ConsoleProgress cp = new ConsoleProgress("Adding Addresses", TOTAL);
     try {
       String sql = "insert into address (id, line1, line2, city, state, zip_code) values (?, ?, ?, ?, ?, ?)";
       st = SQLExecutor.getConnection().prepareStatement(sql);
@@ -56,7 +59,9 @@ public class AddressesPopulator {
         st.setString(col++, zipCode);
 
         st.execute();
+        cp.update(id);
       }
+      cp.complete();
 
     } finally {
       if (st != null) {

@@ -22,12 +22,15 @@ public class OrderItemsPopulator {
   }
 
   public void truncate() throws SQLException {
+    ConsoleProgress cp = new ConsoleProgress("Deleting Order Items", 1);
     SQLExecutor.executeUpdate("delete from order_item");
+    cp.complete();
   }
 
   public void populate(final ProductsPopulator productsPopulator, final CodesPopulator codesPopulator)
       throws SQLException {
     PreparedStatement st = null;
+    ConsoleProgress cp = new ConsoleProgress("Adding Order Items", OrdersPopulator.TOTAL);
     try {
       String sql = "insert into order_item (id, order_id, product_id, quantity, status_code, deferred_shipment_date) values (?, ?, ?, ?, ?, ?)";
       st = SQLExecutor.getConnection().prepareStatement(sql);
@@ -67,7 +70,10 @@ public class OrderItemsPopulator {
 
           orderItemId++;
         }
+        cp.update(orderId);
       }
+
+      cp.complete();
 
     } finally {
       if (st != null) {

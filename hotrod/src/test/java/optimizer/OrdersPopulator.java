@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class OrdersPopulator {
 
-  public static final int TOTAL = 20000;
+  public static final int TOTAL = 50000;
 
   private static final Date START_DATE = Date.valueOf("2012-10-14");
   private static final Date END_DATE = Date.valueOf("2018-02-05");
@@ -22,12 +22,15 @@ public class OrdersPopulator {
   }
 
   public void truncate() throws SQLException {
+    ConsoleProgress cp = new ConsoleProgress("Deleting Orders", 1);
     SQLExecutor.executeUpdate("delete from \"order\"");
+    cp.complete();
   }
 
   public void populate(final CustomersPopulator customersPopulator, final ShipmentsPopulator shipmentsPopulator,
       final CodesPopulator codesPopulator) throws SQLException {
     PreparedStatement st = null;
+    ConsoleProgress cp = new ConsoleProgress("Adding Order", TOTAL);
     try {
       String sql = "insert into \"order\" (id, customer_id, placed, shipment_id, status_code) values (?, ?, ?, ?, ?)";
       st = SQLExecutor.getConnection().prepareStatement(sql);
@@ -55,7 +58,10 @@ public class OrdersPopulator {
         st.setInt(col++, statusCode);
 
         st.execute();
+
+        cp.update(id);
       }
+      cp.complete();
 
     } finally {
       if (st != null) {

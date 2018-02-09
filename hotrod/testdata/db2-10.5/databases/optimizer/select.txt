@@ -1,0 +1,303 @@
+DB2 Optimizer Results
+=====================
+
+DB2's optimizer seems to work like this:
+ * The join order is based on cost (uses a Cost-based Optimizer).
+ * For the optimizer to have better estimates on the join order cost, the statistics
+   need to be up to date for each table. Run the following command on each table:
+     call sysproc.admin_cmd('runstats on table <my_table> with distribution on all columns and detailed indexes all');
+ * Of course, the existence of an index speeds up the execution.
+ * However, DB2 does not always use the index. Sometimes it favors a Full Table Scan over 
+   an Index Scan, as shown in case #2 below. It seems the optmizer expects a very low
+   index selectivity in order to use the index. In this case it ignored the index when
+   the selectitivty was 0.041, but used it when the selectivity was 0.026.
+ * The optimizer could be fooled and "pushed" to use a different join order using
+   artifical join dependency, as explained in section "4.1.4 Preventing Join Orders You 
+   Do Not Want", changing the join condition to:
+     join order_item i on i.order_id = o.id + 0 * oc.id
+ * DB2 chose a near-optimal execution plan; the only missing step was to delay a FETCH
+   to filter the index result first, as described in the case #5 below. 
+   
+1. Optimizer use of index equality
+----------------------------------
+
+The optimizer DOES EXECUTE an "Index Range Scan" as shown below.
+
+explain plan set querytag='full' for
+select * from "order" o 
+  where o.id between 22501 and 22704 -- selectivity = 204 / 50000 = 0.004
+
+$17 RETURN (2 io) (654045 cpu)
+.  $17 FETCH (2 io) (654045 cpu)
+.  .  $6 IXSCAN (1 io) (446993 cpu)
+.  .  .  [SQL180209140444880] order (+ID)
+.  .  [order]
+
+2. Optimizer use of index range
+-------------------------------
+
+The optimizer DOES NOT EXECUTE an "Index Range Scan" as shown below. It seems
+the optimizer considers the Table Scan is cheaper than an Index Scan due to the 
+distribution.
+
+explain plan set querytag='full' for
+select * from "order" o 
+  where o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+
+$376 RETURN (388 io) (110793360 cpu)
+.  $376 TBSCAN (388 io) (110793360 cpu)
+.  .  [order]
+
+If we change the filter condition, the optimizer now PERFORMS an Index Scan.
+
+explain plan set querytag='full' for
+select count(*) from "order" o 
+  where o.placed > '2017-12-15' -- selectivity = 1279 / 50000 = 0.026
+
+$24 RETURN (3 io) (2635103 cpu)
+.  $24 GRPBY (3 io) (2634213 cpu)
+.  .  $23 IXSCAN (3 io) (2305396 cpu)
+.  .  .  [IX_ORDER_PLACED] order (+PLACED)
+
+3. Dual index usage
+-------------------
+
+The optimizer PERFORMS two "Index Range Scan"s, followed by a "sort" and a 
+"Row ID Scan". 
+
+explain plan set querytag='full' for
+select * from "order" o 
+  where o.placed > '2018-02-01' -- selectivity =  82 / 50000 = 0.0016
+    or o.placed < '2012-10-21'  -- selectivity = 176 / 50000 = 0.0035
+    -- total selectivity = 0.0016 + 0.0035 = 0.0051 
+    
+$140 RETURN (139 io) (2173166 cpu)
+.  $140 FETCH (139 io) (2173166 cpu)
+.  .  $13 RIDSCN (2 io) (758465 cpu)
+.  .  .  $6 SORT (1 io) (255607 cpu)
+.  .  .  .  $6 IXSCAN (1 io) (210878 cpu)
+.  .  .  .  .  [IX_ORDER_PLACED] order (+PLACED)
+.  .  .  $6 SORT (1 io) (504270 cpu)
+.  .  .  .  $6 IXSCAN (1 io) (366524 cpu)
+.  .  .  .  .  [IX_ORDER_PLACED] order (+PLACED)
+.  .  [order]
+
+4. Use index for like operator
+------------------------------
+
+The optimizer PERFORMS two "Index Range Scan"s, followed by an "Index AND" (ANDing of the 
+results of multiple index scans), followed by a "sort", and "Row ID Scan".
+
+explain plan set querytag='full' for
+select * from customer 
+  where first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    -- estimated selectivity = 0.053 * 0.052 = 0.0028
+    -- real selectivity      = 84 / 3000 = 0.0028
+
+$53 RETURN (35 io) (3062792 cpu)
+.  $53 FETCH (35 io) (3062792 cpu)
+.  .  $24 RIDSCN (3 io) (2814097 cpu)
+.  .  .  $24 SORT (3 io) (2812810 cpu)
+.  .  .  .  $24 IXAND (3 io) (2802981 cpu)
+.  .  .  .  .  $7 IXSCAN (1 io) (835085 cpu)
+.  .  .  .  .  .  [IX_CUSTOMER_FIRST] CUSTOMER (+FIRST_NAME)
+.  .  .  .  .  $17 IXSCAN (2 io) (1755936 cpu)
+.  .  .  .  .  .  [IX_CUSTOMER_LAST] CUSTOMER (+LAST_NAME)
+.  .  [CUSTOMER]
+
+5. Full Test of the Join order
+------------------------------
+
+The optimizer did not choose the best join order.
+
+ * The chosen join order seems to be optimal or close to optimal. It uses:
+      -> customer -> order -> code(oc) -> order_item -> code(ic) -> product -> shipment -> address
+   Cost: ... 
+   
+   Note: Even though the plan seems optimal, there's still one improvement DB2 does not produce. Right after
+         reading the code(oc) table, the optimizer reads the order_item index using an IXSCAN (22) and 
+         performs a FETCH (21) over order_item. However, it seems it could be better to delay this FETCH (22)
+         for later since the NLJOIN (7) could potentially filter out many index entries. If this is the case
+         the FETCH on the order_item table (with the highest cardinality) could potentially be reduced quite 
+         a bit.
+   
+ * The best join path appears to be:
+      -> customer -> order -> code(oc) -> order_item -> code(ic) -> product -> shipment -> address
+   Cost: 84        + 3      + 9         + 10          + 10        + 6        + 6         + 6 = 134 rows read.
+
+explain plan for
+select
+    c.phone_number, c.first_name, c.last_name, c.address_id,
+    a.id, a.line1, a.line2, a.city, a.state, a.zip_code,
+    i.deferred_shipment_date, i.quantity, ic.caption, oc.caption,
+    p.description, s.shipped_on
+  from
+    "order" o
+    join order_item i on i.order_id = o.id
+    left join product p on i.product_id = p.id
+    join customer c on c.id = o.customer_id
+    left join shipment s on s.id = o.shipment_id
+    left join address a on a.id = s.address_id
+    join code oc on oc.id = o.status_code
+    join code ic on ic.id = i.status_code
+  where
+        c.first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and c.last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    and oc.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and ic.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+  order by
+    c.id, o.id desc, s.id, i.id
+
+The join order is read by higher depth first; at same depth, use the latter first.
+
+$246 RETURN (63 io) (3808126 cpu)
+.  $246 NLJOIN (63 io) (3808126 cpu)
+.  .  $233 TBSCAN (61 io) (3735876 cpu)
+.  .  .  $233 SORT (61 io) (3734225 cpu)
+.  .  .  .  $233 NLJOIN (61 io) (3731102 cpu)
+.  .  .  .  .  $219 NLJOIN (59 io) (3645013 cpu)
+.  .  .  .  .  .  $206 NLJOIN (57 io) (3570826 cpu)
+.  .  .  .  .  .  .  $199 NLJOIN (56 io) (3512942 cpu)
+.  .  .  .  .  .  .  .  $185 NLJOIN (54 io) (3422477 cpu)
+.  .  .  .  .  .  .  .  .  $179 NLJOIN (53 io) (3365388 cpu)
+.  .  .  .  .  .  .  .  .  .  $53 FETCH (35 io) (3062792 cpu)
+.  .  .  .  .  .  .  .  .  .  .  $24 RIDSCN (3 io) (2814097 cpu)
+.  .  .  .  .  .  .  .  .  .  .  .  $24 SORT (3 io) (2812810 cpu)
+.  .  .  .  .  .  .  .  .  .  .  .  .  $24 IXAND (3 io) (2802981 cpu)
+.  .  .  .  .  .  .  .  .  .  .  .  .  .  $7 IXSCAN (1 io) (835085 cpu)
+.  .  .  .  .  .  .  .  .  .  .  .  .  .  .  [IX_CUSTOMER_FIRST] CUSTOMER (+FIRST_NAME)
+.  .  .  .  .  .  .  .  .  .  .  .  .  .  $17 IXSCAN (2 io) (1755936 cpu)
+.  .  .  .  .  .  .  .  .  .  .  .  .  .  .  [IX_CUSTOMER_LAST] CUSTOMER (+LAST_NAME)
+.  .  .  .  .  .  .  .  .  .  .  [CUSTOMER]
+.  .  .  .  .  .  .  .  .  .  $14 FETCH (2 io) (73636 cpu)
+.  .  .  .  .  .  .  .  .  .  .  $13 IXSCAN (2 io) (71789 cpu)
+.  .  .  .  .  .  .  .  .  .  .  .  [IX_ORDER_CUSTOMER_PLACED] order (+CUSTOMER_ID+PLACED)
+.  .  .  .  .  .  .  .  .  .  .  [order]
+.  .  .  .  .  .  .  .  .  $6 FETCH (1 io) (57089 cpu)
+.  .  .  .  .  .  .  .  .  .  $0 IXSCAN (0 io) (41824 cpu)
+.  .  .  .  .  .  .  .  .  .  .  [SQL180209140441890] CODE (+ID)
+.  .  .  .  .  .  .  .  .  .  [CODE]
+.  .  .  .  .  .  .  .  $20 FETCH (3 io) (93864 cpu)
+.  .  .  .  .  .  .  .  .  $13 IXSCAN (2 io) (77226 cpu)
+.  .  .  .  .  .  .  .  .  .  [IX_ORDER_ID_STATUS] ORDER_ITEM (+ORDER_ID+STATUS_CODE)
+.  .  .  .  .  .  .  .  .  [ORDER_ITEM]
+.  .  .  .  .  .  .  $6 FETCH (1 io) (57884 cpu)
+.  .  .  .  .  .  .  .  $0 IXSCAN (0 io) (41824 cpu)
+.  .  .  .  .  .  .  .  .  [SQL180209140441890] CODE (+ID)
+.  .  .  .  .  .  .  .  [CODE]
+.  .  .  .  .  .  $13 FETCH (2 io) (74186 cpu)
+.  .  .  .  .  .  .  $6 IXSCAN (1 io) (59366 cpu)
+.  .  .  .  .  .  .  .  [SQL180209140443620] PRODUCT (+ID)
+.  .  .  .  .  .  .  [PRODUCT]
+.  .  .  .  .  $13 FETCH (2 io) (86089 cpu)
+.  .  .  .  .  .  $6 IXSCAN (1 io) (71269 cpu)
+.  .  .  .  .  .  .  [SQL180209140443030] SHIPMENT (+ID)
+.  .  .  .  .  .  [SHIPMENT]
+.  .  $13 FETCH (2 io) (72250 cpu)
+.  .  .  $6 IXSCAN (1 io) (57430 cpu)
+.  .  .  .  [SQL180209140442490] ADDRESS (+ID)
+.  .  .  [ADDRESS]
+
+
+
+Or, in "db2exfmt" format:
+
+                                                                                                                                                                                              Rows 
+                                                                                                                                                                                             RETURN
+                                                                                                                                                                                             (   1)
+                                                                                                                                                                                              Cost 
+                                                                                                                                                                                               I/O 
+                                                                                                                                                                                               |
+                                                                                                                                                                                            0.455387 
+                                                                                                                                                                                            >^NLJOIN
+                                                                                                                                                                                            (   2)
+                                                                                                                                                                                             246.993 
+                                                                                                                                                                                             63.7837 
+                                                                                                                                                                                       /-------+--------\
+                                                                                                                                                                                  0.455387                 1 
+                                                                                                                                                                                   TBSCAN               FETCH 
+                                                                                                                                                                                   (   3)               (  29)
+                                                                                                                                                                                   233.442              13.5505 
+                                                                                                                                                                                   61.7837                 2 
+                                                                                                                                                                                     |                /---+----\
+                                                                                                                                                                                  0.455387           1          1800 
+                                                                                                                                                                                   SORT           IXSCAN   TABLE: USER1   
+                                                                                                                                                                                   (   4)         (  30)       ADDRESS
+                                                                                                                                                                                   233.442        6.78128        Q11
+                                                                                                                                                                                   61.7837           1 
+                                                                                                                                                                                     |              |
+                                                                                                                                                                                  0.455387         1800 
+                                                                                                                                                                                  >^NLJOIN    INDEX: SYSIBM  
+                                                                                                                                                                                  (   5)    SQL180209140442490
+                                                                                                                                                                                   233.441          Q11
+                                                                                                                                                                                   61.7837 
+                                                                                                                                                       /-----------------------------+-----------------------------\
+                                                                                                                                                  0.455387                                                            1 
+                                                                                                                                                  >^NLJOIN                                                         FETCH 
+                                                                                                                                                  (   6)                                                           (  27)
+                                                                                                                                                   219.887                                                         13.5544 
+                                                                                                                                                   59.7837                                                            2 
+                                                                                                                        /----------------------------+-----------------------------\                             /---+---\
+                                                                                                                   0.455387                                                           1                         1         19000 
+                                                                                                                    ^NLJOIN                                                        FETCH                     IXSCAN  TABLE: USER1   
+                                                                                                                    (   7)                                                         (  25)                    (  28)     SHIPMENT
+                                                                                                                    206.336                                                        13.551                    6.7852        Q9
+                                                                                                                    57.7837                                                           2                         1 
+                                                                                          /---------------------------+----------------------------\                             /---+----\                    |
+                                                                                     0.910774                                                        0.5                        1          4300               19000 
+                                                                                      NLJOIN                                                       FETCH                     IXSCAN   TABLE: USER1       INDEX: SYSIBM  
+                                                                                      (   8)                                                       (  23)                    (  26)       PRODUCT      SQL180209140443030
+                                                                                      199.554                                                      6.7814                    6.78183        Q7                 Q9
+                                                                                      56.7837                                                         1                         1 
+                                                              /-------------------------+-------------------------\                             /----+----\                    |
+                                                         0.303814                                                 2.9978                       1             8                4300 
+                                                          ^NLJOIN                                                 FETCH                     IXSCAN    TABLE: USER1       INDEX: SYSIBM  
+                                                          (   9)                                                  (  21)                    (  24)         CODE        SQL180209140443620
+                                                          185.999                                                 20.3216                  0.0118532        Q5                 Q7
+                                                          54.7837                                                    3                         0 
+                                       /--------------------+---------------------\                             /---+----\                    |
+                                  0.607628                                          0.5                     2.9978       149890                8 
+                                   NLJOIN                                         FETCH                     IXSCAN   TABLE: USER1       INDEX: SYSIBM  
+                                   (  10)                                         (  19)                    (  22)     ORDER_ITEM     SQL180209140441890
+                                   179.217                                        6.78118                   13.5519        Q3                 Q5
+                                   53.7837                                           1                         2 
+                         /-----------+-----------\                             /----+----\                    |
+                     9.0123                     0.0674221                     1             8               149890 
+                     FETCH                       FETCH                     IXSCAN    TABLE: USER1       INDEX: USER1   
+                     (  11)                      (  17)                    (  20)         CODE        IX_ORDER_ID_STATUS
+                     53.0846                     14.007                   0.0118532        Q2                 Q3
+                     35.1515                     2.06742                      0 
+                   /---+----\                 /----+----\                    |
+               9.0123        30000       0.0674221       50000                8 
+               RIDSCN   TABLE: USER1      IXSCAN    TABLE: USER1       INDEX: SYSIBM  
+               (  12)      CUSTOMER       (  18)         order       SQL180209140441890
+               24.8503        Q4          13.5503         Q1                 Q2
+               3.55547                       2 
+                 |                          |
+               9.0123                      50000 
+               SORT                   INDEX: USER1   
+               (  13)            IX_ORDER_CUSTOMER_PLACED
+               24.8499                      Q1
+               3.55547 
+                 |
+               9.0123 
+               IXAND 
+               (  14)
+               24.8471 
+               3.55547 
+          /------+-------\
+      352.668            766.64 
+      IXSCAN             IXSCAN
+      (  15)             (  16)
+      7.00167            17.7854 
+         1               2.55547 
+        |                  |
+       30000              30000 
+  INDEX: USER1       INDEX: USER1   
+ IX_CUSTOMER_FIRST  IX_CUSTOMER_LAST
+        Q4                 Q4
+
+    
+    

@@ -23,6 +23,8 @@ public class DataPopulator {
 
       Random random = new Random(PSEUDO_RANDOM_SEED);
 
+      System.out.println("[Starting Data Populator]");
+
       CodesPopulator codes = new CodesPopulator(random);
       AddressesPopulator adresses = new AddressesPopulator(random);
       CustomersPopulator customers = new CustomersPopulator(random);
@@ -50,6 +52,8 @@ public class DataPopulator {
       products.populate();
       orders.populate(customers, shipments, codes);
       items.populate(products, codes);
+
+      System.out.println("[Data Populator Complete]");
 
     }
 
