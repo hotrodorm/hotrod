@@ -8,9 +8,9 @@ public class CustomersPopulator {
 
   private static final int TOTAL = 8000;
 
-  private static final String[] FIRST_NAME = { "John", "Peter", "Alan", "Mary", "Ann", "Susie", "Oscar", "Leticia" };
-  private static final String[] LAST_NAME = { "Bell", "Martinez", "Orman", "Rivers", "Sellers", "Manet", "Poppins",
-      "Riverdale" };
+  private static final String[] FIRST_NAME = { "JOHN", "PETER", "ALAN", "MARY", "ANN", "SUSIE", "OSCAR", "LETICIA" };
+  private static final String[] LAST_NAME = { "BELL", "MARTINEZ", "ORMAN", "RIVERS", "SELLERS", "MANET", "POPPINS",
+      "RIVERDALE" };
 
   private Random random;
 
@@ -28,7 +28,7 @@ public class CustomersPopulator {
       String sql = "insert into customer (id, first_name, last_name, phone_number, address_id) values (?, ?, ?, ?, ?)";
       st = SQLExecutor.getConnection().prepareStatement(sql);
 
-      for (int i = 0; i < TOTAL; i++) {
+      for (int id = 0; id < TOTAL; id++) {
 
         String firstName = FIRST_NAME[random.nextInt(FIRST_NAME.length)];
         String lastName = LAST_NAME[random.nextInt(LAST_NAME.length)];
@@ -36,7 +36,7 @@ public class CustomersPopulator {
         int addressId = addressesPopulator.getRandomId();
 
         int col = 1;
-        st.setInt(col++, i);
+        st.setInt(col++, id);
         st.setString(col++, firstName);
         st.setString(col++, lastName);
         st.setString(col++, "" + phoneNumber);

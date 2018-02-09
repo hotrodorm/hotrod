@@ -1,4 +1,4 @@
-H2 1.4 optmizer seems to work like this:
+H2 1.4 optimizer seems to work like this:
  * H2's optimizer never uses more than one index per join.     
  * The join order is based on cost. 
  * However, LIKE always has the cost of a full table scan.
@@ -47,8 +47,8 @@ select
     join code oc on oc.id = o.status_code
     join code ic on ic.id = i.status_code
   where
-        c.last_name like 'Be%'
-    and c.first_name like 'Jo%'
+        c.last_name like 'BE%'
+    and c.first_name like 'JO%'
     and oc.type = 'ORDER'
     and ic.type = 'ITEM'
     and o.placed > '2017-11-15'

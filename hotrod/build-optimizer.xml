@@ -16,9 +16,10 @@
            debug="true"
            deprecation="true"
            includeantruntime="false"
-           includes="**/*.java">
+           includes="optimizer/**/*.java">
       <src path="${test.src.dir}" />
       <classpath>
+        <pathelement path="lib/junit.jar" />
       </classpath>
     </javac>
   </target>
