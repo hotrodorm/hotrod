@@ -67,4 +67,6 @@
 
   <target name="rebuild-structure" depends="clean-structure, build-structure" />
 
+  <target name="rebuild-structure-populate" depends="clean-structure, build-structure, populate" />
+
 </project>

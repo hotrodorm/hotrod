@@ -30,8 +30,8 @@ H2 1.4 optimizer seems to work like this:
      join order_item i on i.order_id = o.id + 0 * oc.id
    It seems it's too dumb to use it.
    
-1. Optimizer use of index equality
-----------------------------------
+1.1 Optimizer use of index equality
+-----------------------------------
 
 The optimizer DOES EXECUTE an "Index Range Scan" as shown below.
 
@@ -55,8 +55,8 @@ FROM PUBLIC."order" O
 WHERE (O.ID >= 22501)
     AND (O.ID <= 22704)
 
-2. Optimizer use of index range
--------------------------------
+1.2. Optimizer use of index range
+---------------------------------
 
 The optimizer DOES EXECUTE an "Index Range Scan" as shown below.
 
@@ -76,8 +76,8 @@ FROM PUBLIC."order" O
     */
 WHERE O.PLACED > DATE '2017-11-15'
 
-3. Dual index usage
--------------------
+1.3. Dual index usage
+---------------------
 
 The optimizer DOES NOT EXECUTE an "Index Range Scan" as shown below.
 
@@ -101,8 +101,8 @@ FROM PUBLIC."order" O
 WHERE (O.PLACED > DATE '2018-02-01')
     OR (O.PLACED < DATE '2012-10-21')
 
-4. Use index for like operator
-------------------------------
+1.4. Use index for like operator
+--------------------------------
 
 The optimizer DOES EXECUTE an "Index Range Scan" for the first criterion but not the second one.
 
@@ -126,9 +126,101 @@ FROM PUBLIC.CUSTOMER
         AND (LAST_NAME LIKE 'CO%')
     */
 WHERE (FIRST_NAME LIKE 'JO%')
-    AND (LAST_NAME LIKE 'CO%')   
+    AND (LAST_NAME LIKE 'CO%')
 
-5. Optimal join order
+2.1 Influence join order:
+-------------------------
+
+The join order WAS CHANGED by using the technique a) "4.1.4 Preventing Join Orders You 
+Do Not Want", and also by b) changing the order the tables are located in the FROM 
+section (not 100% foolproof). a) is shown below:
+
+explain plan for
+select
+    c.phone_number, c.first_name, c.last_name, c.address_id,
+    o.placed, 
+    oc.caption
+  from
+    "order" o
+    join customer c on c.id = o.customer_id
+    join code oc on oc.id = o.status_code
+  where
+        c.first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and c.last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    and o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+
+SELECT
+    C.PHONE_NUMBER,
+    C.FIRST_NAME,
+    C.LAST_NAME,
+    C.ADDRESS_ID,
+    O.PLACED,
+    OC.CAPTION
+FROM PUBLIC.CODE OC
+    /* PUBLIC.CODE.tableScan */
+INNER JOIN PUBLIC."order" O
+    /* PUBLIC.FK_ORDER_STATUS_INDEX_6: STATUS_CODE = OC.ID */
+    ON 1=1
+    /* WHERE (O.PLACED > DATE '2017-11-15')
+        AND (OC.ID = O.STATUS_CODE)
+    */
+INNER JOIN PUBLIC.CUSTOMER C
+    /* PUBLIC.PRIMARY_KEY_52: ID = O.CUSTOMER_ID
+        AND ID = O.CUSTOMER_ID
+     */
+    ON 1=1
+WHERE ((OC.ID = O.STATUS_CODE)
+    AND (C.ID = O.CUSTOMER_ID))
+    AND ((O.PLACED > DATE '2017-11-15')
+    AND ((C.FIRST_NAME LIKE 'JO%')
+    AND (C.LAST_NAME LIKE 'CO%')))
+    
+explain plan for
+select
+    c.phone_number, c.first_name, c.last_name, c.address_id,
+    o.placed, 
+    oc.caption
+  from
+    "order" o
+    join customer c on c.id = o.customer_id
+    join code oc on oc.id = o.status_code + 0 * c.id
+  where
+        c.first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and c.last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    and o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+    
+SELECT
+    C.PHONE_NUMBER,
+    C.FIRST_NAME,
+    C.LAST_NAME,
+    C.ADDRESS_ID,
+    O.PLACED,
+    OC.CAPTION
+FROM PUBLIC.CUSTOMER C
+    /* PUBLIC.IX_CUSTOMER_FIRST: FIRST_NAME >= 'JO'
+        AND FIRST_NAME < 'JP'
+     */
+    /* WHERE (C.FIRST_NAME LIKE 'JO%')
+        AND (C.LAST_NAME LIKE 'CO%')
+    */
+INNER JOIN PUBLIC."order" O
+    /* PUBLIC.FK_ORDER_CUSTOMER_INDEX_6: CUSTOMER_ID = C.ID */
+    ON 1=1
+    /* WHERE (O.PLACED > DATE '2017-11-15')
+        AND (C.ID = O.CUSTOMER_ID)
+    */
+INNER JOIN PUBLIC.CODE OC
+    /* PUBLIC.PRIMARY_KEY_1F: ID = (O.STATUS_CODE + (0 * C.ID))
+        AND ID = (O.STATUS_CODE + (0 * C.ID))
+     */
+    ON 1=1
+WHERE ((O.PLACED > DATE '2017-11-15')
+    AND ((C.FIRST_NAME LIKE 'JO%')
+    AND (C.LAST_NAME LIKE 'CO%')))
+    AND ((C.ID = O.CUSTOMER_ID)
+    AND (OC.ID = (O.STATUS_CODE + (0 * C.ID))))
+
+3. Optimal join order
 ---------------------
 
 The optimizer did not choose the best join order.

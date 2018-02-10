@@ -8,16 +8,16 @@ DB2's optimizer seems to work like this:
      call sysproc.admin_cmd('runstats on table <my_table> with distribution on all columns and detailed indexes all');
  * Of course, the existence of an index speeds up the execution.
  * However, DB2 does not always use the index. Sometimes it favors a Full Table Scan over 
-   an Index Scan, as shown in case #2 below. It seems the optmizer expects a very low
+   an Index Scan, as shown in case #2 below. It seems the optimizer expects a very low
    index selectivity in order to use the index. In this case it ignored the index when
-   the selectitivty was 0.041, but used it when the selectivity was 0.026.
+   the selectivity was 0.041, but used it when the selectivity was 0.026.
  * The optimizer could be fooled and "pushed" to use a different join order using
-   artifical join dependency, as explained in section "4.1.4 Preventing Join Orders You 
+   artificial join dependency, as explained in section "4.1.4 Preventing Join Orders You 
    Do Not Want", changing the join condition to:
      join order_item i on i.order_id = o.id + 0 * oc.id
  * DB2 chose a near-optimal execution plan; the only missing step was to delay a FETCH
    to filter the index result first, as described in the case #5 below. 
-   
+
 1. Optimizer use of index equality
 ----------------------------------
 

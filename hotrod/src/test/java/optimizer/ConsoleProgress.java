@@ -33,13 +33,13 @@ public class ConsoleProgress {
   }
 
   private void displayStart() {
-    System.out.print(this.title //
+    System.out.println(this.title //
         // + " {" + new Date() + "}" //
-        + ": 0%");
+        + ": 0%...");
   }
 
   private void displayUpdate(final double current) {
-    System.out.print(" " + Math.round(100 * current / this.total) + "%");
+    System.out.println(" " + Math.round(100 * current / this.total) + "%...");
   }
 
   public void complete() {
