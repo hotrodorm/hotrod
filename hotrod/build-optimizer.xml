@@ -37,6 +37,7 @@
         <pathelement path="${db.src.dir}/${driverclasspath}" />
       </classpath>
     </java>
+    <antcall target="update-optimizer-stats" />
   </target>
 
   <!-- Build database -->
@@ -50,6 +51,18 @@
          delimiter=";"
          onerror="abort">
       <fileset file="${db.src.dir}/${database}/build-structure.sql" />
+    </sql>
+  </target>
+
+  <target name="update-optimizer-stats" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         delimiter=";"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/update-optimizer-stats.sql" />
     </sql>
   </target>
 

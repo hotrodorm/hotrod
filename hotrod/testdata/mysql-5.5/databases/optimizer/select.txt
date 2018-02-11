@@ -1,0 +1,130 @@
+MySQL Optimizer Results
+=======================
+
+MySQL's optimizer seems to work like this:
+ * The join order is based on cost (uses a Cost-based Optimizer).
+ * For the optimizer to have better estimates on the join order cost, the statistics
+   need to be up to date for each table. 
+ * Of course, the existence of an index speeds up the execution.
+ * MySQL chose a great execution plan. However the plan detail is scarce. It's not clear
+   if it's using all maximum optimizations from it. 
+ * [PENDING] No tests to change the join order were performed.
+
+1. Optimizer use of index equality
+----------------------------------
+
+The optimizer DOES EXECUTE an "Index Range Scan" as shown below.
+
+explain
+select * from `order` o 
+  where o.id between 22501 and 22704 -- selectivity = 204 / 50000 = 0.004
+
+ID SELECT_TYPE TABLE TYPE  POSSIBLE_KEYS KEY     KEY_LEN REF    ROWS EXTRA
+-- ----------- ----- ----- ------------- ------- ------- ------ ---- -----------
+1  SIMPLE      o     range PRIMARY       PRIMARY 4       <null>  204 Using where
+
+
+2. Optimizer use of index range
+-------------------------------
+
+The optimizer PERFORMS an "Index Range Scan" as shown below.
+
+explain
+select * from `order` o 
+  where o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+
+ID SELECT_TYPE TABLE TYPE  POSSIBLE_KEYS   KEY             KEY_LEN REF    ROWS EXTRA
+-- ----------- ----- ----- --------------- --------------- ------- ------ ---- -----------
+1  SIMPLE      o     range ix_order_placed ix_order_placed 3       <null> 2037 Using where
+
+
+3. Dual index usage
+-------------------
+
+The optimizer PERFORMS a dual "Index Range Scan". It somehow combines both index scans,
+or it it a single complex one? It's not clear from the plan.
+
+explain
+select * from `order` o 
+  where o.placed > '2018-02-01' -- selectivity =  82 / 50000 = 0.0016
+    or o.placed < '2012-10-21'  -- selectivity = 176 / 50000 = 0.0035
+    -- total selectivity = 0.0016 + 0.0035 = 0.0051 
+
+ID SELECT_TYPE TABLE TYPE  POSSIBLE_KEYS   KEY             KEY_LEN REF    ROWS EXTRA
+-- ----------- ----- ----- --------------- --------------- ------- ------ ---- -----------
+1  SIMPLE      o     range ix_order_placed ix_order_placed 3       <null>  258 Using where
+
+    
+4. Use index for like operator
+------------------------------
+
+The optimizer PERFORMS a dual "Index Range Scan". It somehow combines both index scans,
+or it it a single complex one? It's not clear from the plan.
+
+explain
+select * from customer 
+  where first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    -- estimated selectivity = 0.053 * 0.052 = 0.0028
+    -- real selectivity      = 84 / 3000 = 0.0028
+
+ID SELECT_TYPE TABLE    TYPE  POSSIBLE_KEYS                      KEY              KEY_LEN REF    ROWS EXTRA
+-- ----------- -------- ----- ---------------------------------- ---------------- ------- ------ ---- -----------
+1  SIMPLE      customer range ix_customer_first,ix_customer_last ix_customer_last 22      <null> 1549 Using where
+
+5. Full Test of the Join order
+------------------------------
+
+The optimizer did not choose the best join order.
+
+ * The chosen join order does not seem to be optimal or close to optimal. It uses:
+     -> (tbscan + hash) customer -> (ixscan) order -> code (oc) -> shipment -> address -> order_item -> code(ic) -> product
+   Cost: ... 
+   
+   Note: The plan is not horrible, but it's decent. There's improvement to be made in the join order.
+         The optimizer should have chosen first "order_item" instead of "code(oc)".
+   
+ * The best join path appears to be:
+      -> customer -> order -> code(oc) -> order_item -> code(ic) -> product -> shipment -> address
+   Cost: 84        + 3      + 9         + 10          + 10        + 6        + 6         + 6 = 134 rows read.
+
+explain
+select
+    c.phone_number, c.first_name, c.last_name, c.address_id,
+    a.id, a.line1, a.line2, a.city, a.state, a.zip_code,
+    i.deferred_shipment_date, i.quantity, ic.caption, oc.caption,
+    p.description, s.shipped_on
+  from
+    `order` o
+    join order_item i on i.order_id = o.id
+    left join product p on i.product_id = p.id
+    join customer c on c.id = o.customer_id
+    left join shipment s on s.id = o.shipment_id
+    left join address a on a.id = s.address_id
+    join code oc on oc.id = o.status_code
+    join code ic on ic.id = i.status_code
+  where
+        c.first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and c.last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    and oc.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and ic.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+  order by
+    c.id, o.id desc, s.id, i.id
+
+The join order is read by higher depth first; at same depth, use the latter first.
+
+ID SELECT_TYPE TABLE TYPE   POSSIBLE_KEYS                                                    KEY                      KEY_LEN REF                     ROWS EXTRA
+-- ----------- ----- ------ ---------------------------------------------------------------- ------------------------ ------- ----------------------- ---- -----------
+1  SIMPLE      c     range  PRIMARY,ix_customer_first,ix_customer_last                       ix_customer_last         22      <null>                  1549 Using where; Using temporary; Using filesort
+1  SIMPLE      o     ref    PRIMARY,fk_order_status,ix_order_placed,ix_order_customer_placed ix_order_customer_placed 4       database1.c.id             1 Using where
+1  SIMPLE      oc    eq_ref PRIMARY                                                          PRIMARY                  4       database1.o.status_code    1 Using where
+1  SIMPLE      i     ref    fk_item_status,ix_order_id_status                                ix_order_id_status       4       database1.o.id             1 
+1  SIMPLE      ic    eq_ref PRIMARY                                                          PRIMARY                  4       database1.i.status_code    1 Using where
+1  SIMPLE      p     eq_ref PRIMARY                                                          PRIMARY                  4       database1.i.product_id     1 
+1  SIMPLE      s     eq_ref PRIMARY                                                          PRIMARY                  4       database1.o.shipment_id    1 
+1  SIMPLE      a     eq_ref PRIMARY                                                          PRIMARY                  4       database1.s.address_id     1 
+
+
+
+    

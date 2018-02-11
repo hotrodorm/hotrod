@@ -16,14 +16,16 @@ public class OrdersPopulator {
       .round((1.0f * END_DATE.getTime() - START_DATE.getTime()) / (1000.0f * 60 * 60 * 24));
 
   private Random random;
+  private String quoteString;
 
-  public OrdersPopulator(final Random random) {
+  public OrdersPopulator(final Random random) throws SQLException {
     this.random = random;
+    this.quoteString = SQLExecutor.getConnection().getMetaData().getIdentifierQuoteString();
   }
 
   public void truncate() throws SQLException {
     ConsoleProgress cp = new ConsoleProgress("Deleting Orders", 1);
-    SQLExecutor.executeUpdate("delete from \"order\"");
+    SQLExecutor.executeUpdate("delete from " + this.quoteString + "order" + this.quoteString + "");
     cp.complete();
   }
 
@@ -32,7 +34,8 @@ public class OrdersPopulator {
     PreparedStatement st = null;
     ConsoleProgress cp = new ConsoleProgress("Adding Order", TOTAL);
     try {
-      String sql = "insert into \"order\" (id, customer_id, placed, shipment_id, status_code) values (?, ?, ?, ?, ?)";
+      String sql = "insert into " + this.quoteString + "order" + this.quoteString
+          + " (id, customer_id, placed, shipment_id, status_code) values (?, ?, ?, ?, ?)";
       st = SQLExecutor.getConnection().prepareStatement(sql);
 
       for (int id = 0; id < TOTAL; id++) {
