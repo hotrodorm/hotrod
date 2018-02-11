@@ -3,6 +3,7 @@ package optimizer;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -42,7 +43,8 @@ public class OrderItemsPopulator {
         int itemsInOrder = 1 + random.nextInt(AVG_ITEMS_PER_ORDER * 2 - 1);
 
         for (int m = 0; m < itemsInOrder; m++) {
-          int productId = productsPopulator.getRandomId();
+
+          Integer productId = random.nextDouble() > 0.7 ? productsPopulator.getRandomId() : null;
           int quantity = random.nextBoolean() ? random.nextInt(2) : random.nextInt(100);
           int statusCode = codesPopulator.getRandomItemId();
 
@@ -61,7 +63,13 @@ public class OrderItemsPopulator {
           int col = 1;
           st.setInt(col++, orderItemId);
           st.setInt(col++, orderId);
-          st.setInt(col++, productId);
+
+          if (productId != null) {
+            st.setInt(col++, productId);
+          } else {
+            st.setNull(col++, Types.NUMERIC);
+          }
+
           st.setInt(col++, quantity);
           st.setInt(col++, statusCode);
           st.setDate(col++, deferredShipmentDate);

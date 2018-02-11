@@ -3,6 +3,7 @@ package optimizer;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -49,7 +50,7 @@ public class OrdersPopulator {
         java.util.Date d = cal.getTime();
         Date placed = new Date(d.getTime());
 
-        int shipmentId = shipmentsPopulator.getRandomId();
+        Integer shipmentId = random.nextDouble() < 0.8 ? shipmentsPopulator.getRandomId() : null;
 
         int statusCode = codesPopulator.getRandomOrderId();
 
@@ -57,7 +58,11 @@ public class OrdersPopulator {
         st.setInt(col++, id);
         st.setInt(col++, customerId);
         st.setDate(col++, placed);
-        st.setInt(col++, shipmentId);
+        if (shipmentId != null) {
+          st.setInt(col++, shipmentId);
+        } else {
+          st.setNull(col++, Types.NUMERIC);
+        }
         st.setInt(col++, statusCode);
 
         st.execute();

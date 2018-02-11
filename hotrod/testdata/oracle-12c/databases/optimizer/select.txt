@@ -1,0 +1,205 @@
+Oracle Optimizer Results
+========================
+
+[TBD]
+
+=== Prepare the explain plan ===
+
+  drop table plan_table;
+
+The table will be recreated when then next explain plan instruction is executed.
+
+=== Retrieve the execution plan ===
+
+  select plan_table_output from table(dbms_xplan.display('plan_table',null,'typical'));
+
+===================================
+
+1. Optimizer use of index equality
+----------------------------------
+
+The optimizer DOES EXECUTE an "Index Range Scan" as shown below.
+
+explain plan for
+select * from "order" o 
+  where o.id between 22501 and 22704 -- selectivity = 204 / 50000 = 0.004
+
+Plan hash value: 3740535496
+ 
+----------------------------------------------------------------------------------------------------
+| Id  | Operation                           | Name         | Rows  | Bytes | Cost (%CPU)| Time     |
+----------------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT                    |              |   205 |  5125 |     3   (0)| 00:00:01 |
+|   1 |  TABLE ACCESS BY INDEX ROWID BATCHED| order        |   205 |  5125 |     3   (0)| 00:00:01 |
+|*  2 |   INDEX RANGE SCAN                  | SYS_C0011917 |   205 |       |     2   (0)| 00:00:01 |
+----------------------------------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   2 - access("O"."ID">=22501 AND "O"."ID"<=22704)
+
+
+2. Optimizer use of index range
+-------------------------------
+
+The optimizer PERFORMS an "Index Range Scan" as shown below.
+
+explain plan for 
+select * from "order" o 
+  where o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+
+Plan hash value: 4013182227
+ 
+-------------------------------------------------------------------------------------------------------
+| Id  | Operation                           | Name            | Rows  | Bytes | Cost (%CPU)| Time     |
+-------------------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT                    |                 |  2500 | 62500 |    67   (0)| 00:00:01 |
+|   1 |  TABLE ACCESS BY INDEX ROWID BATCHED| order           |  2500 | 62500 |    67   (0)| 00:00:01 |
+|*  2 |   INDEX RANGE SCAN                  | IX_ORDER_PLACED |   450 |       |     3   (0)| 00:00:01 |
+-------------------------------------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   2 - access("O"."PLACED">'2017-11-15')
+
+
+3. Dual index usage
+-------------------
+
+The optimizer DOES NOT PERFORM a dual "Index Range Scan", but a simple full table scan.
+
+explain plan for 
+select * from "order" o 
+  where o.placed > '2018-02-01' -- selectivity =  82 / 50000 = 0.0016
+    or o.placed < '2012-10-21'  -- selectivity = 176 / 50000 = 0.0035
+    -- total selectivity = 0.0016 + 0.0035 = 0.0051 
+
+Plan hash value: 3891176426
+ 
+---------------------------------------------------------------------------
+| Id  | Operation         | Name  | Rows  | Bytes | Cost (%CPU)| Time     |
+---------------------------------------------------------------------------
+|   0 | SELECT STATEMENT  |       |  4875 |   119K|    69   (2)| 00:00:01 |
+|*  1 |  TABLE ACCESS FULL| order |  4875 |   119K|    69   (2)| 00:00:01 |
+---------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   1 - filter("O"."PLACED">'2018-02-01' OR "O"."PLACED"<'2012-10-21')
+
+    
+4. Use index for like operator
+------------------------------
+
+The optimizer DOES NOT PERFORM a dual "Index Range Scan", but a simple full table scan.
+
+explain plan for 
+select * from customer 
+  where first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    -- estimated selectivity = 0.053 * 0.052 = 0.0028
+    -- real selectivity      = 84 / 3000 = 0.0028
+
+Plan hash value: 2844954298
+ 
+------------------------------------------------------------------------------
+| Id  | Operation         | Name     | Rows  | Bytes | Cost (%CPU)| Time     |
+------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT  |          |     2 |    68 |    68   (0)| 00:00:01 |
+|*  1 |  TABLE ACCESS FULL| CUSTOMER |     2 |    68 |    68   (0)| 00:00:01 |
+------------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   1 - filter("FIRST_NAME" LIKE 'JO%' AND "LAST_NAME" LIKE 'CO%')
+
+5. Full Test of the Join order
+------------------------------
+
+The optimizer did not choose the best join order.
+
+ * The chosen join order does not seem to be optimal or close to optimal. It uses:
+     -> order -> customer -> code -> shipment -> address -> order_item -> product -> code
+   Cost: ... 
+   
+ * The best join path appears to be:
+      -> customer -> order -> code(oc) -> order_item -> code(ic) -> product -> shipment -> address
+   Cost: 84        + 3      + 9         + 10          + 10        + 6        + 6         + 6 = 134 rows read.
+
+explain plan for
+select
+    c.phone_number, c.first_name, c.last_name, c.address_id,
+    a.id, a.line1, a.line2, a.city, a.state, a.zip_code,
+    i.deferred_shipment_date, i.quantity, ic.caption, oc.caption,
+    p.description, s.shipped_on
+  from
+    "order" o
+    join order_item i on i.order_id = o.id
+    left join product p on i.product_id = p.id
+    join customer c on c.id = o.customer_id
+    left join shipment s on s.id = o.shipment_id
+    left join address a on a.id = s.address_id
+    join code oc on oc.id = o.status_code
+    join code ic on ic.id = i.status_code
+  where
+        c.first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and c.last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    and oc.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and ic.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+  order by
+    c.id, o.id desc, s.id, i.id
+
+The join order is read by higher depth first; at same depth, use the latter first.
+
+Plan hash value: 163002883
+ 
+------------------------------------------------------------------------------------------------------------------------
+| Id  | Operation                                   | Name                     | Rows  | Bytes | Cost (%CPU)| Time     |
+------------------------------------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT                            |                          |     5 |  1050 |    88   (2)| 00:00:01 |
+|   1 |  SORT ORDER BY                              |                          |     5 |  1050 |    88   (2)| 00:00:01 |
+|*  2 |   HASH JOIN                                 |                          |     5 |  1050 |    87   (0)| 00:00:01 |
+|   3 |    NESTED LOOPS OUTER                       |                          |     5 |   940 |    84   (0)| 00:00:01 |
+|   4 |     NESTED LOOPS                            |                          |     5 |   820 |    82   (0)| 00:00:01 |
+|   5 |      NESTED LOOPS OUTER                     |                          |     2 |   288 |    78   (0)| 00:00:01 |
+|   6 |       NESTED LOOPS OUTER                    |                          |     2 |   194 |    76   (0)| 00:00:01 |
+|   7 |        NESTED LOOPS                         |                          |     2 |   162 |    74   (0)| 00:00:01 |
+|   8 |         NESTED LOOPS                        |                          |     2 |   118 |    72   (0)| 00:00:01 |
+|*  9 |          TABLE ACCESS FULL                  | CUSTOMER                 |     2 |    68 |    68   (0)| 00:00:01 |
+|  10 |          TABLE ACCESS BY INDEX ROWID BATCHED| order                    |     1 |    25 |     2   (0)| 00:00:01 |
+|* 11 |           INDEX RANGE SCAN                  | IX_ORDER_CUSTOMER_PLACED |     1 |       |     1   (0)| 00:00:01 |
+|* 12 |         TABLE ACCESS BY INDEX ROWID         | CODE                     |     1 |    22 |     1   (0)| 00:00:01 |
+|* 13 |          INDEX UNIQUE SCAN                  | SYS_C0011895             |     1 |       |     0   (0)| 00:00:01 |
+|  14 |        TABLE ACCESS BY INDEX ROWID          | SHIPMENT                 |     1 |    16 |     1   (0)| 00:00:01 |
+|* 15 |         INDEX UNIQUE SCAN                   | SYS_C0011901             |     1 |       |     0   (0)| 00:00:01 |
+|  16 |       TABLE ACCESS BY INDEX ROWID           | ADDRESS                  |     1 |    47 |     1   (0)| 00:00:01 |
+|* 17 |        INDEX UNIQUE SCAN                    | SYS_C0011898             |     1 |       |     0   (0)| 00:00:01 |
+|  18 |      TABLE ACCESS BY INDEX ROWID BATCHED    | ORDER_ITEM               |     3 |    60 |     2   (0)| 00:00:01 |
+|* 19 |       INDEX RANGE SCAN                      | IX_ORDER_ID_STATUS       |     3 |       |     1   (0)| 00:00:01 |
+|  20 |     TABLE ACCESS BY INDEX ROWID             | PRODUCT                  |     1 |    24 |     1   (0)| 00:00:01 |
+|* 21 |      INDEX UNIQUE SCAN                      | SYS_C0011905             |     1 |       |     0   (0)| 00:00:01 |
+|* 22 |    TABLE ACCESS FULL                        | CODE                     |     4 |    88 |     3   (0)| 00:00:01 |
+------------------------------------------------------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   2 - access("IC"."ID"="I"."STATUS_CODE")
+   9 - filter("C"."FIRST_NAME" LIKE 'JO%' AND "C"."LAST_NAME" LIKE 'CO%')
+  11 - access("C"."ID"="O"."CUSTOMER_ID" AND "O"."PLACED">'2017-11-15')
+  12 - filter("OC"."TYPE"='CLOSED')
+  13 - access("OC"."ID"="O"."STATUS_CODE")
+  15 - access("S"."ID"(+)="O"."SHIPMENT_ID")
+  17 - access("A"."ID"(+)="S"."ADDRESS_ID")
+  19 - access("I"."ORDER_ID"="O"."ID")
+  21 - access("I"."PRODUCT_ID"="P"."ID"(+))
+  22 - filter("IC"."TYPE"='CLOSED')
+
+
+
+    
