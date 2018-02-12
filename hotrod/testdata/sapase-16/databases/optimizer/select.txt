@@ -1,0 +1,122 @@
+SAP ASE Optimizer Results
+=========================
+
+COULD NOT RUN ANY TEST AGAINST SAP ASE, SINCE IT DOES NOT RESPOND ANYMORE!
+
+[TBD]
+
+===================================
+
+1. Optimizer use of index equality
+----------------------------------
+
+The optimizer DOES EXECUTE an "Index Range Scan" as shown below.
+
+set showplan_text on;
+
+select * from "order" o 
+  where o.id between 22501 and 22704 -- selectivity = 204 / 50000 = 0.004
+
+  |--Clustered Index Seek(OBJECT:([master].[dbo].[order].[PK__order__3213E83F86A15232] AS [o]), SEEK:([o].[id] >= CONVERT_IMPLICIT(int,[@1],0) AND [o].[id] <= CONVERT_IMPLICIT(int,[@2],0)) ORDERED FORWARD)
+
+2. Optimizer use of index range
+-------------------------------
+
+The optimizer PERFORMS an "Index Range Scan" as shown below.
+
+set showplan_text on;
+
+select * from "order" o 
+  where o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+
+  |--Clustered Index Scan(OBJECT:([master].[dbo].[order].[PK__order__3213E83F86A15232] AS [o]), WHERE:([master].[dbo].[order].[placed] as [o].[placed]>'2017-11-15'))
+
+3. Dual index usage
+-------------------
+
+The optimizer DOES NOT PERFORM a dual "Index Range Scan", but a simple full table scan.
+
+set showplan_text on;
+
+select * from "order" o 
+  where o.placed > '2018-02-01' -- selectivity =  82 / 50000 = 0.0016
+    or o.placed < '2012-10-21'  -- selectivity = 176 / 50000 = 0.0035
+    -- total selectivity = 0.0016 + 0.0035 = 0.0051 
+
+  |--Clustered Index Scan(OBJECT:([master].[dbo].[order].[PK__order__3213E83F86A15232] AS [o]), WHERE:([master].[dbo].[order].[placed] as [o].[placed]<'2012-10-21' OR [master].[dbo].[order].[placed] as [o].[placed]>'2018-02-01'))
+    
+4. Use index for like operator
+------------------------------
+
+The optimizer DOES NOT PERFORM a dual "Index Range Scan", but a simple full table scan.
+
+set showplan_text on;
+
+select * from customer 
+  where first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    -- estimated selectivity = 0.053 * 0.052 = 0.0028
+    -- real selectivity      = 84 / 3000 = 0.0028
+
+  |--Clustered Index Scan(OBJECT:([master].[dbo].[customer].[PK__customer__3213E83F395372FE]), WHERE:([master].[dbo].[customer].[first_name] like 'JO%' AND [master].[dbo].[customer].[last_name] like 'CO%'))
+
+5. Full Test of the Join order
+------------------------------
+
+The optimizer did not choose the best join order.
+
+ * The chosen join order does not seem to be optimal or close to optimal. It uses:
+     -> order -> customer -> code -> shipment -> address -> order_item -> product -> code
+   Cost: ... 
+   
+ * The best join path appears to be:
+      -> customer -> order -> code(oc) -> order_item -> code(ic) -> product -> shipment -> address
+   Cost: 84        + 3      + 9         + 10          + 10        + 6        + 6         + 6 = 134 rows read.
+
+set showplan_text on;
+
+select
+    c.phone_number, c.first_name, c.last_name, c.address_id,
+    a.id, a.line1, a.line2, a.city, a.state, a.zip_code,
+    i.deferred_shipment_date, i.quantity, ic.caption, oc.caption,
+    p.description, s.shipped_on
+  from
+    "order" o
+    join order_item i on i.order_id = o.id
+    left join product p on i.product_id = p.id
+    join customer c on c.id = o.customer_id
+    left join shipment s on s.id = o.shipment_id
+    left join address a on a.id = s.address_id
+    join code oc on oc.id = o.status_code
+    join code ic on ic.id = i.status_code
+  where
+        c.first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and c.last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    and oc.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and ic.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+  order by
+    c.id, o.id desc, s.id, i.id
+
+  |--Nested Loops(Left Outer Join, OUTER REFERENCES:([s].[address_id], [Expr1013]) WITH ORDERED PREFETCH)
+       |--Sort(ORDER BY:([o].[customer_id] ASC, [o].[id] DESC, [s].[id] ASC, [i].[id] ASC))
+       |    |--Nested Loops(Left Outer Join, OUTER REFERENCES:([o].[shipment_id], [Expr1012]) WITH UNORDERED PREFETCH)
+       |         |--Nested Loops(Left Outer Join, OUTER REFERENCES:([i].[product_id], [Expr1011]) WITH UNORDERED PREFETCH)
+       |         |    |--Nested Loops(Inner Join, OUTER REFERENCES:([o].[status_code]))
+       |         |    |    |--Nested Loops(Inner Join, OUTER REFERENCES:([i].[status_code]))
+       |         |    |    |    |--Nested Loops(Inner Join, OUTER REFERENCES:([i].[id], [Expr1010]) WITH UNORDERED PREFETCH)
+       |         |    |    |    |    |--Nested Loops(Inner Join, OUTER REFERENCES:([o].[id], [Expr1009]) WITH UNORDERED PREFETCH)
+       |         |    |    |    |    |    |--Hash Match(Inner Join, HASH:([c].[id])=([o].[customer_id]))
+       |         |    |    |    |    |    |    |--Clustered Index Scan(OBJECT:([master].[dbo].[customer].[PK__customer__3213E83F395372FE] AS [c]), WHERE:([master].[dbo].[customer].[first_name] as [c].[first_name] like 'JO%' AND [master].[dbo].[customer].[last_name] as [c].[last_name] like 'CO%'))
+       |         |    |    |    |    |    |    |--Clustered Index Scan(OBJECT:([master].[dbo].[order].[PK__order__3213E83F86A15232] AS [o]), WHERE:([master].[dbo].[order].[placed] as [o].[placed]>'2017-11-15'))
+       |         |    |    |    |    |    |--Index Seek(OBJECT:([master].[dbo].[order_item].[ix_order_id_status] AS [i]), SEEK:([i].[order_id]=[master].[dbo].[order].[id] as [o].[id]) ORDERED FORWARD)
+       |         |    |    |    |    |--Clustered Index Seek(OBJECT:([master].[dbo].[order_item].[PK__order_it__3213E83F08710BAA] AS [i]), SEEK:([i].[id]=[master].[dbo].[order_item].[id] as [i].[id]) LOOKUP ORDERED FORWARD)
+       |         |    |    |    |--Clustered Index Seek(OBJECT:([master].[dbo].[code].[PK__code__3213E83FEA27D5DE] AS [ic]), SEEK:([ic].[id]=[master].[dbo].[order_item].[status_code] as [i].[status_code]),  WHERE:([master].[dbo].[code].[type] as [ic].[type]='CLOSED') ORDERED FORWARD)
+       |         |    |    |--Clustered Index Seek(OBJECT:([master].[dbo].[code].[PK__code__3213E83FEA27D5DE] AS [oc]), SEEK:([oc].[id]=[master].[dbo].[order].[status_code] as [o].[status_code]),  WHERE:([master].[dbo].[code].[type] as [oc].[type]='CLOSED') ORDERED FORWARD)
+       |         |    |--Clustered Index Seek(OBJECT:([master].[dbo].[product].[PK__product__3213E83FC176AF36] AS [p]), SEEK:([p].[id]=[master].[dbo].[order_item].[product_id] as [i].[product_id]) ORDERED FORWARD)
+       |         |--Clustered Index Seek(OBJECT:([master].[dbo].[shipment].[PK__shipment__3213E83F9ACA7E0C] AS [s]), SEEK:([s].[id]=[master].[dbo].[order].[shipment_id] as [o].[shipment_id]) ORDERED FORWARD)
+       |--Clustered Index Seek(OBJECT:([master].[dbo].[address].[PK__address__3213E83FFA12694B] AS [a]), SEEK:([a].[id]=[master].[dbo].[shipment].[address_id] as [s].[address_id]) ORDERED FORWARD)
+
+
+
+    
