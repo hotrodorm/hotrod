@@ -1,0 +1,4 @@
+1. Equality against a value.
+2. NULL or not NULL.
+3. Equality against a subquery: ANY, ALL, SOME
+4. Inequality
