@@ -27,11 +27,25 @@ explain plan set querytag='full' for
 select * from "order" o 
   where o.id between 22501 and 22704 -- selectivity = 204 / 50000 = 0.004
 
-$17 RETURN (2 io) (654045 cpu)
-.  $17 FETCH (2 io) (654045 cpu)
-.  .  $6 IXSCAN (1 io) (446993 cpu)
-.  .  .  [SQL180209140444880] order (+ID)
-.  .  [order]
+  $17 RETURN (2 io) (654045 cpu)
+  .  $17 FETCH (2 io) (654045 cpu)
+  .  .  $6 IXSCAN (1 io) (446993 cpu)
+  .  .  .  [SQL180214131321950]
+  .  .  [order]
+
+explain plan set querytag='full' for
+select * from "order" o 
+  where o.id between ? and ? -- unknown selectivity when creating the SQL plan
+
+  $13 RETURN (2 io) (424255 cpu)
+  .  $13 NLJOIN (2 io) (424255 cpu)
+  .  .  $0 TBSCAN (0 io) (565 cpu)
+  .  .  .  [GENROW]
+  .  .  $13 FETCH (2 io) (423690 cpu)
+  .  .  .  $6 IXSCAN (1 io) (301265 cpu)
+  .  .  .  .  [SQL180214131321950]
+  .  .  .  [order]
+
 
 2. Optimizer use of index range
 -------------------------------
@@ -44,9 +58,9 @@ explain plan set querytag='full' for
 select * from "order" o 
   where o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
 
-$376 RETURN (388 io) (110793360 cpu)
-.  $376 TBSCAN (388 io) (110793360 cpu)
-.  .  [order]
+  $376 RETURN (388 io) (110793360 cpu)
+  .  $376 TBSCAN (388 io) (110793360 cpu)
+  .  .  [order]
 
 If we change the filter condition, the optimizer now PERFORMS an Index Scan.
 
@@ -54,10 +68,20 @@ explain plan set querytag='full' for
 select count(*) from "order" o 
   where o.placed > '2017-12-15' -- selectivity = 1279 / 50000 = 0.026
 
-$24 RETURN (3 io) (2635103 cpu)
-.  $24 GRPBY (3 io) (2634213 cpu)
-.  .  $23 IXSCAN (3 io) (2305396 cpu)
-.  .  .  [IX_ORDER_PLACED] order (+PLACED)
+  $24 RETURN (3 io) (2677486 cpu)
+  .  $24 GRPBY (3 io) (2676596 cpu)
+  .  .  $24 IXSCAN (3 io) (2342418 cpu)
+  .  .  .  [IX_ORDER_PLACED]
+
+explain plan set querytag='full' for
+select count(*) from "order" o
+  where o.placed > ? -- unknown selectivity when creating the SQL plan
+
+  $38 RETURN (5 io) (4135177 cpu)
+  .  $38 GRPBY (5 io) (4134287 cpu)
+  .  .  $38 IXSCAN (5 io) (3613407 cpu)
+  .  .  .  [IX_ORDER_PLACED]
+
 
 3. Dual index usage
 -------------------
@@ -70,17 +94,27 @@ select * from "order" o
   where o.placed > '2018-02-01' -- selectivity =  82 / 50000 = 0.0016
     or o.placed < '2012-10-21'  -- selectivity = 176 / 50000 = 0.0035
     -- total selectivity = 0.0016 + 0.0035 = 0.0051 
-    
-$140 RETURN (139 io) (2173166 cpu)
-.  $140 FETCH (139 io) (2173166 cpu)
-.  .  $13 RIDSCN (2 io) (758465 cpu)
-.  .  .  $6 SORT (1 io) (255607 cpu)
-.  .  .  .  $6 IXSCAN (1 io) (210878 cpu)
-.  .  .  .  .  [IX_ORDER_PLACED] order (+PLACED)
-.  .  .  $6 SORT (1 io) (504270 cpu)
-.  .  .  .  $6 IXSCAN (1 io) (366524 cpu)
-.  .  .  .  .  [IX_ORDER_PLACED] order (+PLACED)
-.  .  [order]
+
+  $147 RETURN (148 io) (2303250 cpu)
+  .  $147 FETCH (148 io) (2303250 cpu)
+  .  .  $13 RIDSCN (2 io) (802089 cpu)
+  .  .  .  $6 SORT (1 io) (258992 cpu)
+  .  .  .  .  $6 IXSCAN (1 io) (213172 cpu)
+  .  .  .  .  .  [IX_ORDER_PLACED]
+  .  .  .  $6 SORT (1 io) (544510 cpu)
+  .  .  .  .  $6 IXSCAN (1 io) (392456 cpu)
+  .  .  .  .  .  [IX_ORDER_PLACED]
+  .  .  [order]
+
+explain plan set querytag='full' for
+select * from "order" o 
+  where o.placed > ? -- unknown selectivity when creating the SQL plan
+    or o.placed < ? -- unknown selectivity when creating the SQL plan
+
+  $387 RETURN (388 io) (149645376 cpu)
+  .  $387 TBSCAN (388 io) (149645376 cpu)
+  .  .  [order]
+
 
 4. Use index for like operator
 ------------------------------
@@ -95,16 +129,33 @@ select * from customer
     -- estimated selectivity = 0.053 * 0.052 = 0.0028
     -- real selectivity      = 84 / 3000 = 0.0028
 
-$53 RETURN (35 io) (3062792 cpu)
-.  $53 FETCH (35 io) (3062792 cpu)
-.  .  $24 RIDSCN (3 io) (2814097 cpu)
-.  .  .  $24 SORT (3 io) (2812810 cpu)
-.  .  .  .  $24 IXAND (3 io) (2802981 cpu)
-.  .  .  .  .  $7 IXSCAN (1 io) (835085 cpu)
-.  .  .  .  .  .  [IX_CUSTOMER_FIRST] CUSTOMER (+FIRST_NAME)
-.  .  .  .  .  $17 IXSCAN (2 io) (1755936 cpu)
-.  .  .  .  .  .  [IX_CUSTOMER_LAST] CUSTOMER (+LAST_NAME)
-.  .  [CUSTOMER]
+  $53 RETURN (35 io) (3062792 cpu)
+  .  $53 FETCH (35 io) (3062792 cpu)
+  .  .  $24 RIDSCN (3 io) (2814097 cpu)
+  .  .  .  $24 SORT (3 io) (2812810 cpu)
+  .  .  .  .  $24 IXAND (3 io) (2802981 cpu)
+  .  .  .  .  .  $7 IXSCAN (1 io) (835085 cpu)
+  .  .  .  .  .  .  [IX_CUSTOMER_FIRST]
+  .  .  .  .  .  $17 IXSCAN (2 io) (1755936 cpu)
+  .  .  .  .  .  .  [IX_CUSTOMER_LAST]
+  .  .  [CUSTOMER]
+
+explain plan set querytag='full' for
+select * from customer 
+  where first_name like ? -- unknown selectivity when creating the SQL plan
+    and last_name like ? -- unknown selectivity when creating the SQL plan
+
+  $122 RETURN (73 io) (9761299 cpu)
+  .  $122 FETCH (73 io) (9761299 cpu)
+  .  .  $58 RIDSCN (8 io) (8931802 cpu)
+  .  .  .  $58 SORT (8 io) (8930515 cpu)
+  .  .  .  .  $58 IXAND (8 io) (8858055 cpu)
+  .  .  .  .  .  $21 IXSCAN (2 io) (3446663 cpu)
+  .  .  .  .  .  .  [IX_CUSTOMER_FIRST]
+  .  .  .  .  .  $37 IXSCAN (5 io) (4868732 cpu)
+  .  .  .  .  .  .  [IX_CUSTOMER_LAST]
+  .  .  [CUSTOMER]
+
 
 5. Full Test of the Join order
 ------------------------------
@@ -126,7 +177,7 @@ The optimizer did not choose the best join order.
       -> customer -> order -> code(oc) -> order_item -> code(ic) -> product -> shipment -> address
    Cost: 84        + 3      + 9         + 10          + 10        + 6        + 6         + 6 = 134 rows read.
 
-explain plan for
+explain plan set querytag='full' for
 select
     c.phone_number, c.first_name, c.last_name, c.address_id,
     a.id, a.line1, a.line2, a.city, a.state, a.zip_code,
@@ -152,55 +203,53 @@ select
 
 The join order is read by higher depth first; at same depth, use the latter first.
 
-$246 RETURN (63 io) (3808126 cpu)
-.  $246 NLJOIN (63 io) (3808126 cpu)
-.  .  $233 TBSCAN (61 io) (3735876 cpu)
-.  .  .  $233 SORT (61 io) (3734225 cpu)
-.  .  .  .  $233 NLJOIN (61 io) (3731102 cpu)
-.  .  .  .  .  $219 NLJOIN (59 io) (3645013 cpu)
-.  .  .  .  .  .  $206 NLJOIN (57 io) (3570826 cpu)
-.  .  .  .  .  .  .  $199 NLJOIN (56 io) (3512942 cpu)
-.  .  .  .  .  .  .  .  $185 NLJOIN (54 io) (3422477 cpu)
-.  .  .  .  .  .  .  .  .  $179 NLJOIN (53 io) (3365388 cpu)
-.  .  .  .  .  .  .  .  .  .  $53 FETCH (35 io) (3062792 cpu)
-.  .  .  .  .  .  .  .  .  .  .  $24 RIDSCN (3 io) (2814097 cpu)
-.  .  .  .  .  .  .  .  .  .  .  .  $24 SORT (3 io) (2812810 cpu)
-.  .  .  .  .  .  .  .  .  .  .  .  .  $24 IXAND (3 io) (2802981 cpu)
-.  .  .  .  .  .  .  .  .  .  .  .  .  .  $7 IXSCAN (1 io) (835085 cpu)
-.  .  .  .  .  .  .  .  .  .  .  .  .  .  .  [IX_CUSTOMER_FIRST] CUSTOMER (+FIRST_NAME)
-.  .  .  .  .  .  .  .  .  .  .  .  .  .  $17 IXSCAN (2 io) (1755936 cpu)
-.  .  .  .  .  .  .  .  .  .  .  .  .  .  .  [IX_CUSTOMER_LAST] CUSTOMER (+LAST_NAME)
-.  .  .  .  .  .  .  .  .  .  .  [CUSTOMER]
-.  .  .  .  .  .  .  .  .  .  $14 FETCH (2 io) (73636 cpu)
-.  .  .  .  .  .  .  .  .  .  .  $13 IXSCAN (2 io) (71789 cpu)
-.  .  .  .  .  .  .  .  .  .  .  .  [IX_ORDER_CUSTOMER_PLACED] order (+CUSTOMER_ID+PLACED)
-.  .  .  .  .  .  .  .  .  .  .  [order]
-.  .  .  .  .  .  .  .  .  $6 FETCH (1 io) (57089 cpu)
-.  .  .  .  .  .  .  .  .  .  $0 IXSCAN (0 io) (41824 cpu)
-.  .  .  .  .  .  .  .  .  .  .  [SQL180209140441890] CODE (+ID)
-.  .  .  .  .  .  .  .  .  .  [CODE]
-.  .  .  .  .  .  .  .  $20 FETCH (3 io) (93864 cpu)
-.  .  .  .  .  .  .  .  .  $13 IXSCAN (2 io) (77226 cpu)
-.  .  .  .  .  .  .  .  .  .  [IX_ORDER_ID_STATUS] ORDER_ITEM (+ORDER_ID+STATUS_CODE)
-.  .  .  .  .  .  .  .  .  [ORDER_ITEM]
-.  .  .  .  .  .  .  $6 FETCH (1 io) (57884 cpu)
-.  .  .  .  .  .  .  .  $0 IXSCAN (0 io) (41824 cpu)
-.  .  .  .  .  .  .  .  .  [SQL180209140441890] CODE (+ID)
-.  .  .  .  .  .  .  .  [CODE]
-.  .  .  .  .  .  $13 FETCH (2 io) (74186 cpu)
-.  .  .  .  .  .  .  $6 IXSCAN (1 io) (59366 cpu)
-.  .  .  .  .  .  .  .  [SQL180209140443620] PRODUCT (+ID)
-.  .  .  .  .  .  .  [PRODUCT]
-.  .  .  .  .  $13 FETCH (2 io) (86089 cpu)
-.  .  .  .  .  .  $6 IXSCAN (1 io) (71269 cpu)
-.  .  .  .  .  .  .  [SQL180209140443030] SHIPMENT (+ID)
-.  .  .  .  .  .  [SHIPMENT]
-.  .  $13 FETCH (2 io) (72250 cpu)
-.  .  .  $6 IXSCAN (1 io) (57430 cpu)
-.  .  .  .  [SQL180209140442490] ADDRESS (+ID)
-.  .  .  [ADDRESS]
-
-
+  $247 RETURN (63 io) (3808627 cpu)
+  .  $247 NLJOIN (63 io) (3808627 cpu)
+  .  .  $233 TBSCAN (61 io) (3736377 cpu)
+  .  .  .  $233 SORT (61 io) (3734724 cpu)
+  .  .  .  .  $233 NLJOIN (61 io) (3731596 cpu)
+  .  .  .  .  .  $219 NLJOIN (59 io) (3645506 cpu)
+  .  .  .  .  .  .  $206 NLJOIN (57 io) (3571323 cpu)
+  .  .  .  .  .  .  .  $199 NLJOIN (56 io) (3513439 cpu)
+  .  .  .  .  .  .  .  .  $186 NLJOIN (54 io) (3422890 cpu)
+  .  .  .  .  .  .  .  .  .  $179 NLJOIN (53 io) (3365801 cpu)
+  .  .  .  .  .  .  .  .  .  .  $53 FETCH (35 io) (3062792 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  $24 RIDSCN (3 io) (2814097 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  .  $24 SORT (3 io) (2812810 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  .  .  $24 IXAND (3 io) (2802981 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  .  .  .  $7 IXSCAN (1 io) (835085 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  [IX_CUSTOMER_FIRST]
+  .  .  .  .  .  .  .  .  .  .  .  .  .  .  $17 IXSCAN (2 io) (1755936 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  [IX_CUSTOMER_LAST]
+  .  .  .  .  .  .  .  .  .  .  .  [CUSTOMER]
+  .  .  .  .  .  .  .  .  .  .  $14 FETCH (2 io) (73682 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  $13 IXSCAN (2 io) (71819 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  .  [IX_ORDER_CUSTOMER_PLACED]
+  .  .  .  .  .  .  .  .  .  .  .  [order]
+  .  .  .  .  .  .  .  .  .  $6 FETCH (1 io) (57089 cpu)
+  .  .  .  .  .  .  .  .  .  .  $0 IXSCAN (0 io) (41824 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  [SQL180214131320440]
+  .  .  .  .  .  .  .  .  .  .  [CODE]
+  .  .  .  .  .  .  .  .  $20 FETCH (3 io) (93948 cpu)
+  .  .  .  .  .  .  .  .  .  $13 IXSCAN (2 io) (77317 cpu)
+  .  .  .  .  .  .  .  .  .  .  [IX_ORDER_ID_STATUS]
+  .  .  .  .  .  .  .  .  .  [ORDER_ITEM]
+  .  .  .  .  .  .  .  $6 FETCH (1 io) (57884 cpu)
+  .  .  .  .  .  .  .  .  $0 IXSCAN (0 io) (41824 cpu)
+  .  .  .  .  .  .  .  .  .  [SQL180214131320440]
+  .  .  .  .  .  .  .  .  [CODE]
+  .  .  .  .  .  .  $13 FETCH (1 io) (74183 cpu)
+  .  .  .  .  .  .  .  $6 IXSCAN (1 io) (59366 cpu)
+  .  .  .  .  .  .  .  .  [SQL180214131321360]
+  .  .  .  .  .  .  .  [PRODUCT]
+  .  .  .  .  .  $13 FETCH (2 io) (86089 cpu)
+  .  .  .  .  .  .  $6 IXSCAN (1 io) (71269 cpu)
+  .  .  .  .  .  .  .  [SQL180214131321080]
+  .  .  .  .  .  .  [SHIPMENT]
+  .  .  $13 FETCH (2 io) (72250 cpu)
+  .  .  .  $6 IXSCAN (1 io) (57430 cpu)
+  .  .  .  .  [SQL180214131320750]
+  .  .  .  [ADDRESS]
 
 Or, in "db2exfmt" format:
 
@@ -300,4 +349,68 @@ Or, in "db2exfmt" format:
         Q4                 Q4
 
     
+
+explain plan set querytag='full' for
+select
+    c.phone_number, c.first_name, c.last_name, c.address_id,
+    a.id, a.line1, a.line2, a.city, a.state, a.zip_code,
+    i.deferred_shipment_date, i.quantity, ic.caption, oc.caption,
+    p.description, s.shipped_on
+  from
+    "order" o
+    join order_item i on i.order_id = o.id
+    left join product p on i.product_id = p.id
+    join customer c on c.id = o.customer_id
+    left join shipment s on s.id = o.shipment_id
+    left join address a on a.id = s.address_id
+    join code oc on oc.id = o.status_code
+    join code ic on ic.id = i.status_code
+  where
+        c.first_name like ? -- unknown selectivity when creating the SQL plan
+    and c.last_name like ? -- unknown selectivity when creating the SQL plan
+    and oc.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and ic.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and o.placed > ? -- unknown selectivity when creating the SQL plan
+  order by
+    c.id, o.id desc, s.id, i.id
+    
+  $673 RETURN (521 io) (130014848 cpu)
+  .  $673 NLJOIN (521 io) (130014848 cpu)
+  .  .  $632 TBSCAN (515 io) (129867784 cpu)
+  .  .  .  $632 SORT (515 io) (129865488 cpu)
+  .  .  .  .  $632 NLJOIN (515 io) (129858032 cpu)
+  .  .  .  .  .  $591 HSJOIN (509 io) (129668984 cpu)
+  .  .  .  .  .  .  $37 TBSCAN (40 io) (7695165 cpu)
+  .  .  .  .  .  .  .  [PRODUCT]
+  .  .  .  .  .  .  $553 HSJOIN (469 io) (121223320 cpu)
+  .  .  .  .  .  .  .  $546 NLJOIN (468 io) (121149856 cpu)
+  .  .  .  .  .  .  .  .  $505 HSJOIN (462 io) (121005600 cpu)
+  .  .  .  .  .  .  .  .  .  $498 HSJOIN (461 io) (120933880 cpu)
+  .  .  .  .  .  .  .  .  .  .  $376 TBSCAN (388 io) (110793360 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  [order]
+  .  .  .  .  .  .  .  .  .  .  $122 FETCH (73 io) (9761299 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  $58 RIDSCN (8 io) (8931802 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  .  $58 SORT (8 io) (8930515 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  .  .  $58 IXAND (8 io) (8858055 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  .  .  .  $21 IXSCAN (2 io) (3446663 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  [IX_CUSTOMER_FIRST]
+  .  .  .  .  .  .  .  .  .  .  .  .  .  .  $37 IXSCAN (5 io) (4868732 cpu)
+  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  [IX_CUSTOMER_LAST]
+  .  .  .  .  .  .  .  .  .  .  .  [CUSTOMER]
+  .  .  .  .  .  .  .  .  .  $6 TBSCAN (1 io) (69651 cpu)
+  .  .  .  .  .  .  .  .  .  .  [CODE]
+  .  .  .  .  .  .  .  .  $20 FETCH (3 io) (93948 cpu)
+  .  .  .  .  .  .  .  .  .  $13 IXSCAN (2 io) (77317 cpu)
+  .  .  .  .  .  .  .  .  .  .  [IX_ORDER_ID_STATUS]
+  .  .  .  .  .  .  .  .  .  [ORDER_ITEM]
+  .  .  .  .  .  .  .  $6 TBSCAN (1 io) (69651 cpu)
+  .  .  .  .  .  .  .  .  [CODE]
+  .  .  .  .  .  $13 FETCH (2 io) (86089 cpu)
+  .  .  .  .  .  .  $6 IXSCAN (1 io) (71269 cpu)
+  .  .  .  .  .  .  .  [SQL180214131321080]
+  .  .  .  .  .  .  [SHIPMENT]
+  .  .  $13 FETCH (2 io) (72250 cpu)
+  .  .  .  $6 IXSCAN (1 io) (57430 cpu)
+  .  .  .  .  [SQL180214131320750]
+  .  .  .  [ADDRESS]
     
