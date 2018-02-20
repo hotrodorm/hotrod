@@ -1,0 +1,201 @@
+Apache Derby Optimizer Results
+==============================
+
+[TBD]
+   
+How to get an explain plan
+--------------------------
+
+In Apache Derby there's no way of getting an explain plan without running the SQL query. You'll need to run it to get the explain plan. 
+
+Also, there are no hierarchical queries in Derby. The script below can show a tree of up to 40 level deep. The steps are:
+
+  call syscs_util.syscs_set_xplain_schema('SCHEMA1'); -- set your schema, so Derby will store the plan in your schema.
+  call syscs_util.syscs_set_runtimestatistics(0); -- turn off stats
+  call syscs_util.syscs_set_statistics_timing(0); -- turn off timings
+  delete from sysxplain_statements;
+  delete from sysxplain_resultsets;
+  delete from sysxplain_resultset_timings;
+  delete from sysxplain_statement_timings;
+  delete from sysxplain_scan_props;
+  delete from sysxplain_sort_props;
+  call syscs_util.syscs_set_statistics_timing(1); -- turn on timings
+  call syscs_util.syscs_set_runtimestatistics(1); -- turn on stats: all SQL will be logged now
+  drop table sysxplain_resultsets_extended; -- Ignore the error, when the table does not exist. I will be created in the next steps.
+  
+  [Run your SQL here]
+
+  call syscs_util.syscs_set_runtimestatistics(0); -- turn off stats; otherwise, to stop loggin of the next SQL.
+  drop table sysxplain_resultsets_extended;
+  create table sysxplain_resultsets_extended as select 1 as tlevel, r.* from sysxplain_resultsets r with no data;
+  alter table sysxplain_resultsets_extended alter column tlevel null;
+  insert into sysxplain_resultsets_extended select 0, r.* from sysxplain_resultsets r;
+  update sysxplain_resultsets_extended set tlevel = null;
+  update sysxplain_resultsets_extended set tlevel = 1 where parent_rs_id is null;
+  -- run many times until there are no more rows updated (i.e. one per tree level)  
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  update sysxplain_resultsets_extended c set tlevel = (select tlevel + 1 from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null) where c.tlevel is null and c.parent_rs_id in (select rs_id from sysxplain_resultsets_extended where rs_id = c.parent_rs_id and tlevel is not null);
+  select
+      substr('. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ', 1, tlevel * 2 - 2) || r.op_identifier
+      || case when s.scan_object_name is null then '' else ' (' || case when t.tablename is null then case when ti.tablename is null then '' else ti.tablename || '.[IDX]' end else t.tablename || '.[' || c.type || 'K]' end || s.scan_object_name || ')' end
+      || ' - ' || rtrim(cast (cast (rt.execute_time as char(10)) as varchar(10))) || ' ms' 
+      || ' - ' || rtrim(cast (cast (r.seen_rows as char(10)) as varchar(10))) || ' rows'
+      as op
+      -- , r.*
+    from sysxplain_resultsets_extended r
+    left join sysxplain_scan_props s on s.scan_rs_id = r.scan_rs_id
+    left join sys.sysconstraints c on c.constraintname = s.scan_object_name
+    left join sys.systables t on t.tableid = c.tableid
+    left join sysxplain_resultset_timings rt on rt.timing_id = r.timing_id
+    left join sys.sysconglomerates co on co.conglomeratename = s.scan_object_name
+    left join sys.systables ti on ti.tableid = co.tableid
+
+Tables:
+  sysxplain_statements
+  sysxplain_statement_timings
+  sysxplain_resultsets
+  sysxplain_resultset_timings
+  sysxplain_scan_props
+  sysxplain_sort_props
+  sysxplain_resultsets_extended -- my custom table to shwo the plan
+   
+1.1 Optimizer use of index equality
+-----------------------------------
+
+The optimizer DOES EXECUTE an "Index Range Scan" as shown below.
+
+select * from "order" o 
+  where o.id between 22501 and 22704 -- selectivity = 204 / 50000 = 0.004
+
+  ROWIDSCAN - 5 ms - 204 rows
+  . CONSTRAINTSCAN (order.[PK]SQL180216161916020) - 1 ms - 204 rows
+
+1.2. Optimizer use of index range
+---------------------------------
+
+The optimizer DOES EXECUTE an "Index Range Scan" as shown below.
+
+select * from "order" o 
+  where o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+
+  TABLESCAN (order) - 410 ms - 2086 rows
+
+1.3. Dual index usage
+---------------------
+
+The optimizer DOES NOT EXECUTE an "Index Range Scan" as shown below.
+
+select * from "order" o 
+  where o.placed > '2018-02-01' -- selectivity =  82 / 50000 = 0.0016
+    or o.placed < '2012-10-21'  -- selectivity = 176 / 50000 = 0.0035
+    -- total selectivity = 0.0016 + 0.0035 = 0.0051 
+
+  TABLESCAN (order) - 415 ms - 243 rows
+
+1.4. Use index for like operator
+--------------------------------
+
+The optimizer DOES EXECUTE an "Index Range Scan" for the first criterion but not the second one.
+
+select * from customer 
+  where first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    -- estimated selectivity = 0.053 * 0.052 = 0.0028
+    -- real selectivity      = 84 / 3000 = 0.0028
+
+  PROJECT-FILTER - 16 ms - 1589 rows
+  . ROWIDSCAN - 73 ms - 1589 rows
+  . . INDEXSCAN (CUSTOMER.[IDX]IX_CUSTOMER_FIRST) - 13 ms - 1589 rows
+
+2.1 Influence join order:
+-------------------------
+
+[TBD]
+
+3. Optimal join order
+---------------------
+
+select
+    c.phone_number, c.first_name, c.last_name, c.address_id,
+    a.id, a.line1, a.line2, a.city, a.state, a.zip_code,
+    i.deferred_shipment_date, i.quantity, ic.caption, oc.caption,
+    p.description, s.shipped_on
+  from
+    "order" o
+    join order_item i on i.order_id = o.id
+    left join product p on i.product_id = p.id
+    join customer c on c.id = o.customer_id
+    left join shipment s on s.id = o.shipment_id
+    left join address a on a.id = s.address_id
+    join code oc on oc.id = o.status_code
+    join code ic on ic.id = i.status_code
+  where
+        c.first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and c.last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    and oc.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and ic.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+  order by
+    c.id, o.id desc, s.id, i.id
+
+  PROJECTION - 0 ms - 4 rows
+  . SORT - 3 ms - 0 rows
+  . . PROJECTION - 0 ms - 4 rows
+  . . . HASHJOIN - 0 ms - 5 rows
+  . . . . HASHJOIN - 0 ms - 14 rows
+  . . . . . FILTER - 191 ms - 149507 rows
+  . . . . . . LOHASHJOIN - 152 ms - 149507 rows
+  . . . . . . . LOHASHJOIN - 161 ms - 149507 rows
+  . . . . . . . . NLJOIN - 128 ms - 149507 rows
+  . . . . . . . . . LOHASHJOIN - 132 ms - 149507 rows
+  . . . . . . . . . . NLJOIN - 122 ms - 50000 rows
+  . . . . . . . . . . . TABLESCAN (order) - 57 ms - 50000 rows
+  . . . . . . . . . . . ROWIDSCAN - 556 ms - 149507 rows
+  . . . . . . . . . . . . CONSTRAINTSCAN (ORDER_ITEM.[FK]FK_ITEM_ORDER) - 645 ms - 149507 rows
+  . . . . . . . . . . HASHSCAN (PRODUCT) - 137 ms - 44986 rows
+  . . . . . . . . . ROWIDSCAN - 472 ms - 149507 rows
+  . . . . . . . . . . CONSTRAINTSCAN (CUSTOMER.[PK]SQL180216161915970) - 1568 ms - 149507 rows
+  . . . . . . . . HASHSCAN (SHIPMENT) - 210 ms - 119396 rows
+  . . . . . . . HASHSCAN (ADDRESS) - 121 ms - 119396 rows
+  . . . . . HASHSCAN (CODE) - 0 ms - 5 rows
+  . . . . HASHSCAN (CODE) - 2 ms - 4 rows
+    
+    
