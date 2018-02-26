@@ -5,11 +5,13 @@
   <property name="projectName" value="hotrod-eclipse-plugin" />
 
   <property name="main.src.dir" value="src/main/java" />
+  <property name="eclipseplugin.src.dir" value="src/eclipseplugin/java" />
   <property name="test.src.dir" value="src/test/java" />
 
   <property name="lib.dir" value="lib" />
   <property name="build.dir" value="build" />
   <property name="main.build.dir" value="build/java" />
+  <property name="eclipseplugin.build.dir" value="build/eclipseplugin" />
   <property name="test.build.dir" value="build/test" />
   <property name="dist.dir" value="dist" />
 
@@ -62,6 +64,7 @@
   </path>
 
   <target name="compile" depends="-init">
+
     <javac destdir="${main.build.dir}"
            debug="true"
            deprecation="true"
@@ -69,6 +72,18 @@
            includes="**/*.java">
       <src path="${main.src.dir}" />
       <classpath>
+      </classpath>
+    </javac>
+
+    <javac destdir="${eclipseplugin.build.dir}"
+           debug="true"
+           deprecation="true"
+           includeantruntime="false"
+           includes="**/*.java">
+      <src path="${eclipseplugin.src.dir}" />
+      <classpath>
+        <pathelement path="${main.build.dir}" />
+        
         <pathelement location="${eclipse.plugin.dir}/org.eclipse.ui_3.108.0.v20160518-1929.jar" />
         <pathelement location="${eclipse.plugin.dir}/org.eclipse.swt_3.105.0.v20160603-0902.jar" />
         <pathelement location="${eclipse.plugin.dir}/org.eclipse.swt.gtk.linux.x86_64_3.105.0.v20160603-0902.jar" />
@@ -104,6 +119,7 @@
         -->
       </classpath>
     </javac>
+    
   </target>
 
   <target name="jar" depends="compile">
