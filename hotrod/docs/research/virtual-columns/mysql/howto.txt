@@ -1,0 +1,13 @@
+MySQL supports virtual columns since version 5.7. 
+
+Indexes can almost always be created on virtual columns. The only exception is a 
+virtual column that acts as a PK. In this case the virtual column must be "stored"
+in order to create an index on it.
+
+First, create the persistent virtual column:
+
+ alter table customer add reverse_last_name varchar(20) generated always as (reverse(last_name)) virtual;
+
+Then, add the index:
+
+ alter table customer add customer_reverse_last (reverse_last_name);

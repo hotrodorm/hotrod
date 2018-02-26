@@ -1,0 +1,10 @@
+A virtual column can be generated in DB2
+ -- call sysproc.admin_cmd('reorg table customer');
+
+ set integrity for customer off;
+
+ alter table customer add column reverse_last_name generated always as (substr(last_name, 1, 4));
+
+ set integrity for customer immediate checked force generated;
+
+ 

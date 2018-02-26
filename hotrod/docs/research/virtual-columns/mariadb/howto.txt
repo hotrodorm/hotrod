@@ -1,0 +1,10 @@
+Indexes can be created on virtual columns as long as they are persistent. That is the computed value of the columns is actually saved in the table structure.
+
+First, create the persistent virtual column:
+
+ alter table customer add column (reverse_last_name varchar(20) as (reverse(last_name)) persistent);
+
+Then, add the index:
+
+ create index customer_reverse_last on customer (reverse_last_name);
+

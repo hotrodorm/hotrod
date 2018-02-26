@@ -1,0 +1,9 @@
+SQL Server supports virtual columns:
+
+ alter table customer add reverse_last_name generated always as (reverse(last_name));
+
+An index can also be added to the virtual column:
+
+ create index ix_customer_rev_last on customer (reverse_last_name);
+
+ 

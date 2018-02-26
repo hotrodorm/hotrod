@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="hotrod-optimizer" basedir="."> 
+<project name="hotrod-optimizer" basedir=".">
 
   <property name="database" value="databases/optimizer" />
 
@@ -52,6 +52,44 @@
          onerror="abort">
       <fileset file="${db.src.dir}/${database}/build-structure.sql" />
     </sql>
+    <!--
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         keepformat="true"
+         delimiter="//"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/build-procedures.sql" />
+    </sql>
+    -->
+  </target>
+
+  <target name="build-procedures" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         keepformat="true"
+         delimiter="//"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/build-procedures.sql" />
+    </sql>
+  </target>
+
+  <target name="clean-procedures" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         keepformat="true"
+         delimiter="//"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/clean-procedures.sql" />
+    </sql>
   </target>
 
   <target name="update-optimizer-stats" depends="-init">
@@ -80,6 +118,7 @@
 
   <target name="rebuild-structure" depends="clean-structure, build-structure" />
 
-  <target name="rebuild-structure-populate" depends="clean-structure, build-structure, populate" />
+  <target name="rebuild-structure-populate"
+          depends="clean-structure, build-structure, populate" />
 
 </project>
