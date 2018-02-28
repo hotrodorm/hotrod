@@ -11,6 +11,7 @@ import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "fragment")
 public class FragmentTag extends AbstractConfigurationTag {
@@ -78,6 +79,44 @@ public class FragmentTag extends AbstractConfigurationTag {
 
   public HotRodFragmentConfigTag getFragmentConfig() {
     return fragmentConfig;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      FragmentTag f = (FragmentTag) fresh;
+      return this.filename.equals(f.filename);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      FragmentTag f = (FragmentTag) fresh;
+      boolean different = !same(fresh);
+
+      this.filename = f.filename;
+      this.file = f.file;
+      this.fragmentConfig = f.fragmentConfig;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      FragmentTag f = (FragmentTag) fresh;
+      return Compare.same(this.filename, f.filename);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

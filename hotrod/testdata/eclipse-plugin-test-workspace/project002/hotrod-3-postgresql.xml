@@ -1,0 +1,14 @@
+
+HOTROD-CONFIG
+
+settings: settings : prop1=value1
+
+table: income : cache=true
+table: net_income : optmistic-lock : enabled
+  query: updateEBITDA
+  query: closeMonth
+  select: listEntries
+enum: branch
+table: expense
+view: revenue
+

@@ -130,4 +130,11 @@ public class ComplementDAOTag extends DynamicSQLPart {
     return null;
   }
 
+  // Merging logic
+
+  @Override
+  protected boolean sameProperties(final DynamicSQLPart fresh) {
+    return true;
+  }
+
 }

@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "non-persistent")
 public class NonPersistentTag extends AbstractConfigurationTag {
@@ -73,6 +74,44 @@ public class NonPersistentTag extends AbstractConfigurationTag {
 
   public String getName() {
     return name;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      NonPersistentTag f = (NonPersistentTag) fresh;
+      return this.value.equals(f.value);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      NonPersistentTag f = (NonPersistentTag) fresh;
+      boolean different = !same(fresh);
+
+      this.name = f.name;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      NonPersistentTag f = (NonPersistentTag) fresh;
+      return //
+      Compare.same(this.value, f.value) && //
+          Compare.same(this.name, f.name);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

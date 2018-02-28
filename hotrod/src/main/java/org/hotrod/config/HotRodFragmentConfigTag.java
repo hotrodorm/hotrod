@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidPackageException;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "hotrod-fragment")
 public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
@@ -66,6 +67,39 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
       }
     }
 
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    return true;
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      HotRodFragmentConfigTag f = (HotRodFragmentConfigTag) fresh;
+      boolean different = !same(fresh);
+
+      this.sPackage = f.sPackage;
+      this.filename = f.filename;
+      this.fragmentPackage = f.fragmentPackage;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      HotRodFragmentConfigTag f = (HotRodFragmentConfigTag) fresh;
+      return Compare.same(this.sPackage, f.sPackage);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

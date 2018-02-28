@@ -10,6 +10,9 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.Compare;
+
+// TODO: rename to ExecutorDAOTag
 
 @XmlRootElement(name = "dao")
 public class PlainDAOTag extends AbstractDAOTag {
@@ -92,6 +95,45 @@ public class PlainDAOTag extends AbstractDAOTag {
 
   public HotRodFragmentConfigTag getFragmentConfig() {
     return fragmentConfig;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      PlainDAOTag f = (PlainDAOTag) fresh;
+      return this.javaClassName.equals(f.javaClassName);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      PlainDAOTag f = (PlainDAOTag) fresh;
+      boolean different = !same(fresh);
+
+      this.javaClassName = f.javaClassName;
+      this.daosTag = f.daosTag;
+      this.fragmentConfig = f.fragmentConfig;
+      this.fragmentPackage = f.fragmentPackage;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      PlainDAOTag f = (PlainDAOTag) fresh;
+      return Compare.same(this.javaClassName, f.javaClassName);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

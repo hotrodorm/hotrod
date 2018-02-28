@@ -12,6 +12,7 @@ import org.hotrod.ant.UncontrolledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.springjdbc.SpringJDBCGenerator;
+import org.hotrod.utils.Compare;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 @XmlRootElement(name = "spring-jdbc")
@@ -89,6 +90,43 @@ public class SpringJDBCTag extends AbstractGeneratorTag {
   @Override
   public String getName() {
     return GENERATOR_NAME;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    return true;
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      SpringJDBCTag f = (SpringJDBCTag) fresh;
+      boolean different = !same(fresh);
+
+      this.daos = f.daos;
+      this.config = f.config;
+      this.selectGeneration = f.selectGeneration;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      SpringJDBCTag f = (SpringJDBCTag) fresh;
+      return //
+      Compare.same(this.daos, f.daos) && //
+          Compare.same(this.config, f.config) && //
+          Compare.same(this.selectGeneration, f.selectGeneration) //
+      ;
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

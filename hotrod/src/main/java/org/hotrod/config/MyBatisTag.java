@@ -16,6 +16,7 @@ import org.hotrod.ant.UncontrolledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.mybatis.MyBatisGenerator;
+import org.hotrod.utils.Compare;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 @XmlRootElement(name = "mybatis")
@@ -141,6 +142,50 @@ public class MyBatisTag extends AbstractGeneratorTag {
   public HotRodGenerator getGenerator(final DatabaseLocation loc, final HotRodConfigTag config,
       final DisplayMode displayMode) throws UncontrolledException, ControlledException {
     return new MyBatisGenerator(loc, config, displayMode);
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    return true;
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      MyBatisTag f = (MyBatisTag) fresh;
+      boolean different = !same(fresh);
+
+      this.daos = f.daos;
+      this.mappers = f.mappers;
+      this.template = f.template;
+      this.sessionFactory = f.sessionFactory;
+      this.selectGeneration = f.selectGeneration;
+      this.propertyTags = f.propertyTags;
+      this.properties = f.properties;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      MyBatisTag f = (MyBatisTag) fresh;
+      return //
+      Compare.same(this.daos, f.daos) && //
+          Compare.same(this.mappers, f.mappers) && //
+          Compare.same(this.template, f.template) && //
+          Compare.same(this.sessionFactory, f.sessionFactory) && //
+          Compare.same(this.selectGeneration, f.selectGeneration) && //
+          Compare.same(this.propertyTags, f.propertyTags) //
+      ;
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

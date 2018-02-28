@@ -24,6 +24,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.Compare;
 import org.hotrod.utils.ValueTypeFactory;
 import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
@@ -519,6 +520,59 @@ public class EnumTag extends AbstractDAOTag {
       return new DataSetIdentifier(this.name).getJavaClassIdentifier();
     } else {
       return new DataSetIdentifier(this.name, this.javaClassName).getJavaClassIdentifier();
+    }
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      EnumTag f = (EnumTag) fresh;
+      return this.name.equals(f.name);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      EnumTag f = (EnumTag) fresh;
+      boolean different = !same(fresh);
+
+      this.javaClassName = f.javaClassName;
+      this.nameCol = f.nameCol;
+      this.nonPersistents = f.nonPersistents;
+      this.table = f.table;
+      this.valueColumn = f.valueColumn;
+      this.nameColumn = f.nameColumn;
+      this.tableConstants = f.tableConstants;
+      this.npConstants = f.npConstants;
+      this.extraColumns = f.extraColumns;
+      this.daosTag = f.daosTag;
+      this.fragmentConfig = f.fragmentConfig;
+      this.fragmentPackage = f.fragmentPackage;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      EnumTag f = (EnumTag) fresh;
+      boolean same = //
+          Compare.same(this.name, f.name) && //
+              Compare.same(this.javaClassName, f.javaClassName) && //
+              Compare.same(this.nameCol, f.nameCol) && //
+              Compare.same(this.nonPersistents, f.nonPersistents);
+
+      return same;
+    } catch (ClassCastException e) {
+      return false;
     }
   }
 

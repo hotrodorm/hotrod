@@ -43,7 +43,7 @@ public class SetTag extends DynamicSQLPart {
           throw new InvalidConfigurationFileException(super.getSourceLocation(),
               "Invalid <set> tag. " + "A <set> tag can only include other tags, but no free text content in it.");
         }
-//        it.remove();
+        // it.remove();
       } catch (ClassCastException e3) {
         // Nothing to do
       }
@@ -81,6 +81,13 @@ public class SetTag extends DynamicSQLPart {
               + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
     }
 
+  }
+
+  // Merging logic
+
+  @Override
+  protected boolean sameProperties(final DynamicSQLPart fresh) {
+    return true;
   }
 
 }

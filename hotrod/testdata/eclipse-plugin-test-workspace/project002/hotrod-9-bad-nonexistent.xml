@@ -1,0 +1,8 @@
+
+HOTROD-CONFIG
+
+settings: settings
+
+table: tower
+
+fragment: hotrod-fragment-91-bad.xml

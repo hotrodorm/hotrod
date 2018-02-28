@@ -3,11 +3,13 @@ package org.hotrod.config.dynamicsql;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "bind")
 public class BindTag extends DynamicSQLPart {
@@ -110,6 +112,20 @@ public class BindTag extends DynamicSQLPart {
      * 
      */
 
+  }
+
+  // Merging logic
+
+  @Override
+  protected boolean sameProperties(final DynamicSQLPart fresh) {
+    try {
+      BindTag f = (BindTag) fresh;
+      return //
+      Compare.same(this.name, f.name) && //
+          Compare.same(this.value, f.value);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

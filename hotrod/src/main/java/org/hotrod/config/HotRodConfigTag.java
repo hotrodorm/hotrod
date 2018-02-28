@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.utils.Compare;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -106,6 +107,43 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
       return new InputSource(is);
     }
 
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    return true;
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      HotRodConfigTag f = (HotRodConfigTag) fresh;
+      boolean different = !same(fresh);
+
+      this.generatorsTag = f.generatorsTag;
+      this.converters = f.converters;
+      this.convertersByName = f.convertersByName;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      HotRodConfigTag f = (HotRodConfigTag) fresh;
+      return //
+      Compare.same(this.generatorsTag, f.generatorsTag) && //
+          Compare.same(this.converters, f.converters) && //
+          Compare.same(this.convertersByName, f.convertersByName) //
+      ;
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

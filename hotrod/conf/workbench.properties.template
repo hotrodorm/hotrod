@@ -1,41 +1,44 @@
 # --- 1.6 Java compiler executable --- 
-javac.compiler.exec=/my/full/path/to/jdk1.6.0_xx/bin/javac
+javac.compiler.exec=/home/valarcon/apps/jdk1.6.0_34/bin/javac
 
 # --- See https://ant.apache.org/manual/Tasks/javac.html#compilervalues
 java.compiler=javac1.6
 
-# --- Apache Derby 10 ---
-#db.src.dir=testdata/apache-derby-10
-
-# --- DB2 10.5 ---
-#db.src.dir=testdata/db2-10.5
-
-# --- H2 1.3 ---
-#db.src.dir=testdata/h2-1.3
-
-# --- HyperSQL (HSQLDB) 2.2 ---
-#db.src.dir=testdata/hypersql-2.2
-
-# --- MariaDB 5.5 ---
-#db.src.dir=testdata/mariadb-5.5
-
-# --- MySQL 5.5 ---
-#db.src.dir=testdata/mysql-5.5
+# =================
+# === DATABASES ===
+# =================
 
 # --- Oracle 10g ---
-#db.src.dir=testdata/oracle-10g
+#db.src.dir=testdata/databases/oracle-10g
 
 # --- Oracle 12c ---
-#db.src.dir=testdata/oracle-12c
+#db.src.dir=testdata/databases/oracle-12c
+
+# --- DB2 10.5 ---
+#db.src.dir=testdata/databases/db2-10.5
 
 # --- PostgreSQL 9.4 ---
-#db.src.dir=testdata/postgresql-9.4
+#db.src.dir=testdata/databases/postgresql-9.4
 
-# --- SAP ASE 16 (ex-Sybase) ---
-#db.src.dir=testdata/sapase-16
+# --- MariaDB 5.5 ---
+#db.src.dir=testdata/databases/mariadb-5.5
 
 # --- SQL Server 2014 ---
-#db.src.dir=testdata/sqlserver-2014
+#db.src.dir=testdata/databases/sqlserver-2014
 
+# --- SAP ASE 16 (ex-Sybase) ---
+#db.src.dir=testdata/databases/sapase-16
+
+# --- MySQL 5.5 ---
+#db.src.dir=testdata/databases/mysql-5.5
+
+# --- Apache Derby 10 ---
+#db.src.dir=testdata/databases/apache-derby-10
+
+# --- HyperSQL (HSQLDB) 2.2 ---
+#db.src.dir=testdata/databases/hypersql-2.2
+
+# --- H2 1.3 ---
+#db.src.dir=testdata/databases/h2-1.3
 
 

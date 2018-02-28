@@ -18,6 +18,7 @@ import org.hotrod.config.Patterns;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "expression")
 public class ExpressionTag extends AbstractConfigurationTag {
@@ -220,6 +221,48 @@ public class ExpressionTag extends AbstractConfigurationTag {
 
   public boolean isId() {
     return isId;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    return true;
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      ExpressionTag f = (ExpressionTag) fresh;
+      boolean different = !same(fresh);
+
+      this.property = f.property;
+      this.className = f.className;
+      this.converter = f.converter;
+      this.isId = f.isId;
+      this.converterTag = f.converterTag;
+      this.metadata = f.metadata;
+      this.tempAlias = f.tempAlias;
+      this.namespacedAlias = f.namespacedAlias;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      ExpressionTag f = (ExpressionTag) fresh;
+      return //
+      Compare.same(this.property, f.property) && //
+          Compare.same(this.className, f.className) && //
+          Compare.same(this.converter, f.converter) //
+      ;
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

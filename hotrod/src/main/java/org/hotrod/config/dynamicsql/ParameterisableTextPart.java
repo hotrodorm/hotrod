@@ -13,6 +13,7 @@ import org.hotrod.runtime.dynamicsql.expressions.CollectionExpression;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
+import org.hotrod.utils.Compare;
 
 public class ParameterisableTextPart extends DynamicSQLPart {
 
@@ -191,6 +192,18 @@ public class ParameterisableTextPart extends DynamicSQLPart {
               + ", col " + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
     }
 
+  }
+
+  // Merging logic
+
+  @Override
+  protected boolean sameProperties(final DynamicSQLPart fresh) {
+    try {
+      ParameterisableTextPart f = (ParameterisableTextPart) fresh;
+      return Compare.same(this.txt, f.txt);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.Compare;
 import org.hotrod.utils.identifiers.DbIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
 
@@ -119,6 +120,47 @@ public class ParameterTag extends AbstractConfigurationTag {
 
   public Identifier getIdentifier() {
     return new DbIdentifier(this.name);
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      ParameterTag f = (ParameterTag) fresh;
+      return this.name.equals(f.name);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      ParameterTag f = (ParameterTag) fresh;
+      boolean different = !same(fresh);
+
+      this.javaType = f.javaType;
+      this.jdbcType = f.jdbcType;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      ParameterTag f = (ParameterTag) fresh;
+      return //
+      Compare.same(this.name, f.name) && //
+          Compare.same(this.javaType, f.javaType) && //
+          Compare.same(this.jdbcType, f.jdbcType) //
+      ;
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

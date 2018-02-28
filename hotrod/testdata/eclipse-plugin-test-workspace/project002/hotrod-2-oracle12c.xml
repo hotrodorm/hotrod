@@ -1,0 +1,9 @@
+
+HOTROD-CONFIG
+
+settings: settings : cache=optimistic
+
+table: employee
+table: company
+table: department
+

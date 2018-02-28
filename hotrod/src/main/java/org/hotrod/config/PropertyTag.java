@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.Compare;
 
 public class PropertyTag extends AbstractConfigurationTag {
 
@@ -71,6 +72,45 @@ public class PropertyTag extends AbstractConfigurationTag {
 
   public String getValue() {
     return value;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      PropertyTag f = (PropertyTag) fresh;
+      return this.name.equals(f.name);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      PropertyTag f = (PropertyTag) fresh;
+      boolean different = !same(fresh);
+
+      this.value = f.value;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      PropertyTag f = (PropertyTag) fresh;
+      return //
+      Compare.same(this.name, f.name) && //
+          Compare.same(this.value, f.value) //
+      ;
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

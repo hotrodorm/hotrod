@@ -9,6 +9,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "foreach")
 public class ForEachTag extends DynamicSQLPart {
@@ -158,6 +159,24 @@ public class ForEachTag extends DynamicSQLPart {
      * </pre>
      */
 
+  }
+
+  // Merging logic
+
+  @Override
+  protected boolean sameProperties(final DynamicSQLPart fresh) {
+    try {
+      ForEachTag f = (ForEachTag) fresh;
+      return //
+      Compare.same(this.item, f.item) && //
+          Compare.same(this.index, f.index) && //
+          Compare.same(this.collection, f.collection) && //
+          Compare.same(this.open, f.open) && //
+          Compare.same(this.separator, f.separator) && //
+          Compare.same(this.close, f.close);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

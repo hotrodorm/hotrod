@@ -8,6 +8,7 @@ import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.Compare;
 
 public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
 
@@ -42,7 +43,7 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
   }
 
   // Rendering
-  
+
   @Override
   protected void validateAttributes(ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
@@ -59,7 +60,6 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
     return null;
   }
 
-
   @Override
   public String renderStatic(final ParameterRenderer parameterRenderer) {
     return this.text;
@@ -70,7 +70,6 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
     return SUtils.escapeXmlBody(this.text);
   }
 
-  
   // Java Expression
 
   @Override
@@ -95,5 +94,16 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
     return this.text == null || this.text.trim().isEmpty();
   }
 
+  // Merging logic
+
+  @Override
+  protected boolean sameProperties(final DynamicSQLPart fresh) {
+    try {
+      LiteralTextPart f = (LiteralTextPart) fresh;
+      return Compare.same(this.text, f.text);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
 
 }

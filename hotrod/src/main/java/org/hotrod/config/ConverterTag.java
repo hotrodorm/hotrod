@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "converter")
 public class ConverterTag extends AbstractConfigurationTag {
@@ -101,8 +102,7 @@ public class ConverterTag extends AbstractConfigurationTag {
       String types = ListWriter.render(new ArrayList<String>(ACCESSORS.keySet()), "", " - ", "\n", "", "", "");
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Unsupported java-intermediate-type '" + this.javaIntermediateType + "' on tag <" + super.getTagName()
-              + ">. No simple JDBC getter and setter found for this type. "
-              + "The supported types are:\n" + types);
+              + ">. No simple JDBC getter and setter found for this type. " + "The supported types are:\n" + types);
     }
     this.jdbcGetterMethod = gs.getGetter();
     this.jdbcSetterMethod = gs.getSetter();
@@ -204,6 +204,49 @@ public class ConverterTag extends AbstractConfigurationTag {
 
   public String getJdbcSetterMethod() {
     return jdbcSetterMethod;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      ConverterTag f = (ConverterTag) fresh;
+      return this.name.equals(f.name);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      ConverterTag f = (ConverterTag) fresh;
+      boolean different = !same(fresh);
+      this.javaType = f.javaType;
+      this.javaIntermediateType = f.javaIntermediateType;
+      this.javaClass = f.javaClass;
+      this.jdbcGetterMethod = f.jdbcGetterMethod;
+      this.jdbcSetterMethod = f.jdbcSetterMethod;
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      ConverterTag f = (ConverterTag) fresh;
+      return //
+      Compare.same(this.name, f.name) && //
+          Compare.same(this.javaType, f.javaType) && //
+          Compare.same(this.javaIntermediateType, f.javaIntermediateType) && //
+          Compare.same(this.javaClass, f.javaClass) //
+      ;
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

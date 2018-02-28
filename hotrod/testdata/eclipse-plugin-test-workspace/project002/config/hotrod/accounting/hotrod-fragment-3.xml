@@ -1,0 +1,11 @@
+HOTROD-FRAGMENT-CONFIG
+
+table: payment_provider
+
+executor: PaymentDAO
+  select: tryOrderPayment
+  select: retryOrderPayment
+
+executor: PaymentProviderDAO
+  select: registerPaymentProvider
+  select: removePaymentProvider

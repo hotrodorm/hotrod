@@ -41,6 +41,7 @@ import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
+import org.hotrod.utils.Compare;
 import org.hotrod.utils.JdbcTypes;
 
 @XmlRootElement(name = "vo")
@@ -764,6 +765,68 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       return w.toString();
     } else { // specified columns only
       return this.compiledBody;
+    }
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      VOTag f = (VOTag) fresh;
+      return Compare.same(this.table, f.table) && Compare.same(this.view, f.view);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      VOTag f = (VOTag) fresh;
+      boolean different = !same(fresh);
+
+      this.table = f.table;
+      this.view = f.view;
+      this.id = f.id;
+      this.property = f.property;
+      this.alias = f.alias;
+      this.extendedVO = f.extendedVO;
+      this.body = f.body;
+      this.idNames = f.idNames;
+      this.tableMetadata = f.tableMetadata;
+      this.viewMetadata = f.viewMetadata;
+      this.collections = f.collections;
+      this.associations = f.associations;
+      this.expressions = f.expressions;
+      this.generator = f.generator;
+      this.compiledBody = f.compiledBody;
+      this.useAllColumns = f.useAllColumns;
+      this.cmr = f.cmr;
+      this.aliasPrefix = f.aliasPrefix;
+      this.inheritedColumns = f.inheritedColumns;
+      this.declaredColumns = f.declaredColumns;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      VOTag f = (VOTag) fresh;
+      return //
+      Compare.same(this.table, f.table) && //
+          Compare.same(this.view, f.view) && //
+          Compare.same(this.id, f.id) && //
+          Compare.same(this.property, f.property) && //
+          Compare.same(this.alias, f.alias) && //
+          Compare.same(this.extendedVO, f.extendedVO) && //
+          Compare.same(this.body, f.body);
+    } catch (ClassCastException e) {
+      return false;
     }
   }
 

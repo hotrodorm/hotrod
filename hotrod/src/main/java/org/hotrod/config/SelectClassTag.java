@@ -20,6 +20,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "select")
 public class SelectClassTag extends AbstractDAOTag {
@@ -222,6 +223,53 @@ public class SelectClassTag extends AbstractDAOTag {
 
   public HotRodFragmentConfigTag getFragmentConfig() {
     return fragmentConfig;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      SelectClassTag f = (SelectClassTag) fresh;
+      return this.javaClassName.equals(f.javaClassName);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      SelectClassTag f = (SelectClassTag) fresh;
+      boolean different = !same(fresh);
+
+      this.parameterDefinitions = f.parameterDefinitions;
+      this.columns = f.columns;
+      this.parts = f.parts;
+      this.foundationParts = f.foundationParts;
+      this.fragmentConfig = f.fragmentConfig;
+      this.fragmentPackage = f.fragmentPackage;
+      this.daosTag = f.daosTag;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      SelectClassTag f = (SelectClassTag) fresh;
+      return //
+      Compare.same(this.javaClassName, f.javaClassName) && //
+          Compare.same(this.parameterDefinitions, f.parameterDefinitions) && //
+          Compare.same(this.columns, f.columns) && //
+          Compare.same(this.parts, f.parts) && //
+          Compare.same(this.foundationParts, f.foundationParts);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

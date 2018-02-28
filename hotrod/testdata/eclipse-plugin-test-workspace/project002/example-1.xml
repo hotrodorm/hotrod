@@ -1,0 +1,13 @@
+
+HOTROD-CONFIG
+
+settings: settings : cache=optimistic4
+
+table: region : lock=true
+table: company : asda
+table: state
+table: continent
+table: city
+table: country
+
+

@@ -8,6 +8,7 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.IfExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "if")
 public class IfTag extends DynamicSQLPart {
@@ -75,6 +76,18 @@ public class IfTag extends DynamicSQLPart {
               + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
     }
 
+  }
+
+  // Merging logic
+
+  @Override
+  protected boolean sameProperties(final DynamicSQLPart fresh) {
+    try {
+      IfTag f = (IfTag) fresh;
+      return Compare.same(this.test, f.test);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

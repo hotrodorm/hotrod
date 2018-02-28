@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "mappers")
 public class MappersTag extends AbstractConfigurationTag {
@@ -141,6 +142,43 @@ public class MappersTag extends AbstractConfigurationTag {
 
   public String getRelativePrimitivesDir() {
     return sRelativeDir + "/" + PRIMITIVES_MAPPERS_DIR;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    return true;
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      MappersTag f = (MappersTag) fresh;
+      boolean different = !same(fresh);
+
+      this.sGenBaseDir = f.sGenBaseDir;
+      this.sRelativeDir = f.sRelativeDir;
+      this.baseDir = f.baseDir;
+      this.fullRelativeDir = f.fullRelativeDir;
+      this.customDir = f.customDir;
+      this.customDirVerified = f.customDirVerified;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      MappersTag f = (MappersTag) fresh;
+      return Compare.same(this.sGenBaseDir, f.sGenBaseDir) && //
+          Compare.same(this.sRelativeDir, f.sRelativeDir);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

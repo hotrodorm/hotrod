@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "generators")
 public class GeneratorsTag extends AbstractConfigurationTag {
@@ -66,6 +67,37 @@ public class GeneratorsTag extends AbstractConfigurationTag {
 
   public AbstractGeneratorTag getSelectedGeneratorTag() {
     return this.selectedGeneratorTag;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    return true;
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      GeneratorsTag f = (GeneratorsTag) fresh;
+      boolean different = !same(fresh);
+
+      this.generators = f.generators;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      GeneratorsTag f = (GeneratorsTag) fresh;
+      return Compare.same(this.generators, f.generators);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

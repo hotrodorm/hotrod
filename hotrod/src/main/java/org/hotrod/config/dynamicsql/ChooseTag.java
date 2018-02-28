@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.ChooseExpression;
@@ -12,6 +13,7 @@ import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.OtherwiseExpression;
 import org.hotrod.runtime.dynamicsql.expressions.WhenExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "choose")
 public class ChooseTag extends DynamicSQLPart {
@@ -108,6 +110,20 @@ public class ChooseTag extends DynamicSQLPart {
               + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
     }
 
+  }
+
+  // Merging logic
+
+  @Override
+  protected boolean sameProperties(final DynamicSQLPart fresh) {
+    try {
+      ChooseTag f = (ChooseTag) fresh;
+      return //
+      Compare.same(this.otherwise, f.otherwise) && //
+          Compare.same(this.whens, f.whens);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

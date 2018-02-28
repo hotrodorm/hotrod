@@ -1,0 +1,9 @@
+
+HOTROD-FRAGMENT-CONFIG
+
+settings: settings
+
+table: king
+
+fragment: hotrod-fragment-non-existent.xml
+

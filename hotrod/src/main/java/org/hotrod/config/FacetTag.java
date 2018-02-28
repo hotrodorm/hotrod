@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "facet")
 public class FacetTag extends AbstractConfigurationTag {
@@ -183,6 +184,51 @@ public class FacetTag extends AbstractConfigurationTag {
     } else if (!name.equals(other.name))
       return false;
     return true;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      FacetTag f = (FacetTag) fresh;
+      return this.name.equals(f.name);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      FacetTag f = (FacetTag) fresh;
+      boolean different = !same(fresh);
+
+      this.tables = f.tables;
+      this.views = f.views;
+      this.enums = f.enums;
+      this.daos = f.daos;
+      this.selects = f.selects;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      FacetTag f = (FacetTag) fresh;
+      return //
+      Compare.same(this.tables, f.tables) && //
+          Compare.same(this.views, f.views) && //
+          Compare.same(this.enums, f.enums) && //
+          Compare.same(this.daos, f.daos) && //
+          Compare.same(this.selects, f.selects);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "mybatis-configuration-template")
 public class TemplateTag extends AbstractConfigurationTag {
@@ -54,8 +55,8 @@ public class TemplateTag extends AbstractConfigurationTag {
               + "> with value '" + this.sFile + "' points to a non-existing file.");
     }
     if (!this.file.isFile()) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Attribute 'file' of tag <" + super.getTagName() + "> with value '" + this.sFile + "' is not a regular file.");
+      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'file' of tag <"
+          + super.getTagName() + "> with value '" + this.sFile + "' is not a regular file.");
     }
 
   }
@@ -64,6 +65,38 @@ public class TemplateTag extends AbstractConfigurationTag {
 
   public File getFile() {
     return file;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    return true;
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      TemplateTag f = (TemplateTag) fresh;
+      boolean different = !same(fresh);
+
+      this.sFile = f.sFile;
+      this.file = f.file;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      TemplateTag f = (TemplateTag) fresh;
+      return Compare.same(this.sFile, f.sFile);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

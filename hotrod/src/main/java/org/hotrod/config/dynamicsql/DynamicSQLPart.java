@@ -20,6 +20,7 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
+import org.hotrod.utils.Compare;
 
 public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
@@ -267,5 +268,44 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
     }
     return exps.toArray(new DynamicExpression[0]);
   }
+
+  // Merging logic
+
+  @Override
+  public final boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      this.getClass().cast(fresh); // Check it's the correct subclass
+      return true;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public final boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      DynamicSQLPart f = (DynamicSQLPart) fresh;
+      boolean different = !same(fresh);
+
+      this.parts = f.parts;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public final boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      DynamicSQLPart f = (DynamicSQLPart) fresh;
+      this.getClass().cast(fresh); // Check it's the correct subclass
+      return sameProperties(f) && Compare.same(this.parts, f.parts);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  protected abstract boolean sameProperties(DynamicSQLPart fresh);
 
 }

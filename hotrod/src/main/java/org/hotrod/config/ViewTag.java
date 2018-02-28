@@ -16,6 +16,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.Compare;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
@@ -183,6 +184,50 @@ public class ViewTag extends AbstractDAOTag {
       return new DataSetIdentifier(this.name).getJavaClassIdentifier();
     } else {
       return new DataSetIdentifier(this.name, this.javaClassName).getJavaClassIdentifier();
+    }
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      ViewTag f = (ViewTag) fresh;
+      return this.name.equals(f.name);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      ViewTag f = (ViewTag) fresh;
+      boolean different = !same(fresh);
+
+      this.javaClassName = f.javaClassName;
+      this.columns = f.columns;
+      this.daosTag = f.daosTag;
+      this.fragmentConfig = f.fragmentConfig;
+      this.fragmentPackage = f.fragmentPackage;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      ViewTag f = (ViewTag) fresh;
+      return //
+      Compare.same(this.name, f.name) && //
+          Compare.same(this.javaClassName, f.javaClassName) && //
+          Compare.same(this.columns, f.columns) //
+      ;
+    } catch (ClassCastException e) {
+      return false;
     }
   }
 

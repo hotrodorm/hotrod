@@ -10,6 +10,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidPackageException;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.Compare;
 import org.hotrod.utils.identifiers.Identifier;
 
 @XmlRootElement(name = "daos")
@@ -345,6 +346,57 @@ public class DaosTag extends AbstractConfigurationTag {
     File dir = p.getPackageDir(this.baseDir);
     dir.mkdirs();
     return dir;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    return true;
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      DaosTag f = (DaosTag) fresh;
+      boolean different = !same(fresh);
+
+      this.sGenBaseDir = f.sGenBaseDir;
+      this.sDaoPackage = f.sDaoPackage;
+      this.sPrimitivesPackage = f.sPrimitivesPackage;
+      this.daoPrefix = f.daoPrefix;
+      this.daoSuffix = f.daoSuffix;
+      this.primitivesPrefix = f.primitivesPrefix;
+      this.primitivesSuffix = f.primitivesSuffix;
+      this.baseDir = f.baseDir;
+      this.daoPackage = f.daoPackage;
+      this.primitivesTailPackage = f.primitivesTailPackage;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      DaosTag f = (DaosTag) fresh;
+      return //
+      Compare.same(this.sGenBaseDir, f.sGenBaseDir) && //
+          Compare.same(this.sDaoPackage, f.sDaoPackage) && //
+          Compare.same(this.sPrimitivesPackage, f.sPrimitivesPackage) && //
+          Compare.same(this.daoPrefix, f.daoPrefix) && //
+          Compare.same(this.daoSuffix, f.daoSuffix) && //
+          Compare.same(this.primitivesPrefix, f.primitivesPrefix) && //
+          Compare.same(this.primitivesSuffix, f.primitivesSuffix) && //
+          Compare.same(this.sGenBaseDir, f.sGenBaseDir) && //
+          Compare.same(this.sGenBaseDir, f.sGenBaseDir) && //
+          Compare.same(this.sGenBaseDir, f.sGenBaseDir) && //
+          Compare.same(this.sGenBaseDir, f.sGenBaseDir);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

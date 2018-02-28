@@ -1,0 +1,9 @@
+
+HOTROD-CONFIG
+
+settings: settings
+
+table: tower
+
+fragment:
+hotrod-fragment-non-existent2.xml

@@ -28,6 +28,7 @@ import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "complement")
 public class ComplementTag extends EnhancedSQLPart {
@@ -117,6 +118,36 @@ public class ComplementTag extends EnhancedSQLPart {
       throws InvalidJavaExpressionException {
     // XXX: Pending. Develop only when/if it's needed.
     return null;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    return true;
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      ComplementTag f = (ComplementTag) fresh;
+      boolean different = !same(fresh);
+      this.content = f.content;
+      this.parts = f.parts;
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      ComplementTag f = (ComplementTag) fresh;
+      return Compare.same(this.parts, f.parts);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

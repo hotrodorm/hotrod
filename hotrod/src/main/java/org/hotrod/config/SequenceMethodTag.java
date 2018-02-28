@@ -6,11 +6,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.Compare;
 import org.hotrod.utils.identifiers.DbIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
 
 @XmlRootElement(name = "sequence")
-public class SequenceMethodTag extends AbstractConfigurationTag {
+public class SequenceMethodTag extends AbstractMethodTag {
 
   // Constants
 
@@ -83,6 +84,44 @@ public class SequenceMethodTag extends AbstractConfigurationTag {
 
   public Identifier getIdentifier() {
     return new DbIdentifier(this.name);
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      SequenceMethodTag f = (SequenceMethodTag) fresh;
+      return this.name.equals(f.name);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      SequenceMethodTag f = (SequenceMethodTag) fresh;
+      boolean different = !same(fresh);
+
+      this.method = f.method;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      SequenceMethodTag f = (SequenceMethodTag) fresh;
+      return //
+      Compare.same(this.name, f.name) && //
+          Compare.same(this.method, f.method);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

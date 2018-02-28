@@ -1,0 +1,9 @@
+
+HOTROD-CONFIG
+
+settings: settings
+
+table: ship
+view: transport
+
+fragment: hotrod-fragment-8-bad.xml

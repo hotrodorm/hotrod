@@ -15,13 +15,13 @@ import org.hotrod.utils.ClassPackage;
 /**
  * <pre>
  *
- *     AbstractConfigurationTag <-----------------------------------------+
- *      ^                                                 ^               |
- *      |                                                 |               |
- *     AbstractDAOTag <---------------............        |               |
- *      ^          ^        ^        ^           .        |               |
- *      |          |        |        |           .        |               |
- * CustomDAOTag  TableTag  ViewTag  EnumTag  SelectTag  QueryMethodTag  SelectMethodTag
+ *     AbstractConfigurationTag <-----------------------------------+
+ *      ^                                                           |
+ *      |                                                           |
+ *     AbstractDAOTag <---------------............           AbstractMethodTag <-----------+
+ *      ^          ^        ^        ^           .              ^         ^                |
+ *      |          |        |        |           .              |         |                |
+ * CustomDAOTag  TableTag  ViewTag  EnumTag  SelectTag  QueryMethodTag  SelectMethodTag  SequenceMethodTag
  * 
  * </pre>
  */
@@ -121,6 +121,14 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag {
   }
 
   // Getters
+
+  public final List<AbstractMethodTag> getMethods() {
+    List<AbstractMethodTag> methods = new ArrayList<AbstractMethodTag>();
+    methods.addAll(this.sequences);
+    methods.addAll(this.queries);
+    methods.addAll(this.selects);
+    return methods;
+  }
 
   public final List<SequenceMethodTag> getSequences() {
     return sequences;

@@ -23,9 +23,10 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "select")
-public class SelectMethodTag extends AbstractConfigurationTag {
+public class SelectMethodTag extends AbstractMethodTag {
 
   // Constants
 
@@ -320,6 +321,60 @@ public class SelectMethodTag extends AbstractConfigurationTag {
 
   public List<ParameterTag> getParameterDefinitions() {
     return this.parameters.getDefinitions();
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      SelectMethodTag f = (SelectMethodTag) fresh;
+      return this.method.equals(f.method);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      SelectMethodTag f = (SelectMethodTag) fresh;
+      boolean different = !same(fresh);
+
+      this.vo = f.vo;
+      this.sMultipleRows = f.sMultipleRows;
+      this.metadata = f.metadata;
+      this.multipleRows = f.multipleRows;
+      this.parameters = f.parameters;
+      this.columns = f.columns;
+      this.parts = f.parts;
+      this.aggregatedPart = f.aggregatedPart;
+      this.structuredColumns = f.structuredColumns;
+      this.fragmentConfig = f.fragmentConfig;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      SelectMethodTag f = (SelectMethodTag) fresh;
+      return //
+      Compare.same(this.method, f.method) && //
+          Compare.same(this.vo, f.vo) && //
+          Compare.same(this.sMultipleRows, f.sMultipleRows) && //
+          Compare.same(this.parameters, f.parameters) && //
+          Compare.same(this.columns, f.columns) && //
+          Compare.same(this.parts, f.parts) && //
+          Compare.same(this.aggregatedPart, f.aggregatedPart) && //
+          Compare.same(this.structuredColumns, f.structuredColumns) && //
+          Compare.same(this.fragmentConfig, f.fragmentConfig);
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }
