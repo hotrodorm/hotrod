@@ -6,7 +6,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.eclipseplugin.FaceProducer.RelativeProjectPath;
+import org.hotrod.eclipseplugin.RelativeProjectPath;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
 public class MainConfigFace extends AbstractFace implements Comparable<MainConfigFace> {

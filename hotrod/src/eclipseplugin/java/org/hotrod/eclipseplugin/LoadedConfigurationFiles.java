@@ -18,7 +18,6 @@ import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.eclipseplugin.FaceProducer.RelativeProjectPath;
 import org.hotrod.eclipseplugin.FileSystemChangesListener.FileChangeListener;
 import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
