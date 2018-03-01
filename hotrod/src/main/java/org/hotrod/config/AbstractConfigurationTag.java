@@ -7,7 +7,7 @@ import org.hotrod.runtime.dynamicsql.SourceLocation;
 
 public abstract class AbstractConfigurationTag {
 
-  public enum ItemStatus {
+  public enum TagStatus {
     UNAFFECTED, MODIFIED, ADDED, DELETED;
   }
 
@@ -15,14 +15,14 @@ public abstract class AbstractConfigurationTag {
 
   private String tagName;
 
-  private ItemStatus status;
-  private List<AbstractConfigurationTag> subTags;
+  private TagStatus status;
+  protected List<AbstractConfigurationTag> subTags;
 
   // Constructor
 
   protected AbstractConfigurationTag(final String tagName) {
     this.tagName = tagName;
-    this.status = ItemStatus.UNAFFECTED;
+    this.status = TagStatus.UNAFFECTED;
     this.subTags = new ArrayList<AbstractConfigurationTag>();
   }
 
@@ -38,11 +38,11 @@ public abstract class AbstractConfigurationTag {
     return tagName;
   }
 
-  public ItemStatus getStatus() {
+  public TagStatus getStatus() {
     return status;
   }
 
-  public void setStatus(ItemStatus status) {
+  public void setStatus(TagStatus status) {
     this.status = status;
   }
 

@@ -31,6 +31,7 @@ public class HotRodAntTask extends Task {
   private String facetsList = null;
   private String generator = null;
 
+  private File projectBaseDir;
   private File configFile;
   private DisplayMode displayMode;
 
@@ -88,13 +89,14 @@ public class HotRodAntTask extends Task {
 
     // configfile
 
+    this.projectBaseDir = new File(".");
     if (this.configFileName == null) {
       throw new BuildException("configfile attribute must be specified.");
     }
     if (SUtils.isEmpty(this.configFileName)) {
       throw new BuildException("configfile attribute cannot be empty.");
     }
-    this.configFile = new File(this.configFileName);
+    this.configFile = new File(this.projectBaseDir, this.configFileName);
     if (!this.configFile.exists()) {
       throw new BuildException(Constants.TOOL_NAME + " parameter: " + "Config file '"
           + this.configFile.getAbsolutePath() + "' does not exist.");
@@ -148,7 +150,7 @@ public class HotRodAntTask extends Task {
 
     HotRodConfigTag config = null;
     try {
-      config = ConfigurationLoader.loadPrimary(this.configFile, this.generator);
+      config = ConfigurationLoader.loadPrimary(this.projectBaseDir, this.configFile, this.generator);
     } catch (ControlledException e) {
       throw new BuildException("\n" + e.getMessage());
     } catch (UncontrolledException e) {

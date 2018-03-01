@@ -66,12 +66,13 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     return this.convertersByName.get(name);
   }
 
-  public void validate(final File basedir, final String generatorName)
+  public void validate(final File basedir, final File parentDir, final String generatorName)
       throws InvalidConfigurationFileException, GeneratorNotFoundException {
 
     // Generators
 
-    this.generatorsTag.validate(basedir, generatorName);
+    this.generatorsTag.validate(basedir, parentDir, generatorName);
+    super.subTags.add(this.generatorsTag);
 
     // Converters
 
@@ -79,6 +80,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
     for (ConverterTag c : this.converters) {
       c.validate();
+      super.subTags.add(c);
       if (this.convertersByName.containsKey(c.getName())) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
             "Duplicate converter name. There are multiple <converter> tags with the same name: '" + c.getName() + "'.");

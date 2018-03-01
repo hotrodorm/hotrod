@@ -6,10 +6,8 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IProject;
 
@@ -26,7 +24,7 @@ public class DynamicallyLoadedDriver {
 
   public DynamicallyLoadedDriver(final IProject project, final List<String> driverClassPathEntries,
       final String driverClassName) throws SQLException {
-    log("[DLD] starting...");
+    log("starting...");
     this.project = project;
     this.driverClassPathEntries = driverClassPathEntries;
     this.driverClassName = driverClassName;
@@ -38,19 +36,19 @@ public class DynamicallyLoadedDriver {
       this.classLoader = dl.getLoader();
     } else {
       for (String classPathEntry : this.driverClassPathEntries) {
-        log("[DLD] classPathEntry=" + classPathEntry);
+        log("classPathEntry=" + classPathEntry);
         DriverFiles.load(this.project, classPathEntry);
       }
       this.classLoader = DriverFiles.getClassLoader();
     }
 
     try {
-      log("[DLD] will load class: " + this.driverClassName);
+      log("will load class: " + this.driverClassName);
       Class<?> classToLoad = Class.forName(this.driverClassName, true, classLoader);
       Driver driver = (Driver) classToLoad.newInstance();
       this.driverProxy = new DriverProxy(driver);
       DriverManager.registerDriver(this.driverProxy);
-      log("[DLD] loaded.");
+      log("loaded.");
     } catch (ClassNotFoundException e) {
       throw new SQLException("Could not load JDBC driver. Class " + this.driverClassName + " not found");
     } catch (InstantiationException e) {
@@ -120,8 +118,9 @@ public class DynamicallyLoadedDriver {
 
   }
 
-  public static void log(final String txt) {
-    // System.out.println(txt);
+  private static void log(final String txt) {
+    System.out.println("[" + new Object() {
+    }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

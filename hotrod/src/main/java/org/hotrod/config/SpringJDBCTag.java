@@ -57,10 +57,10 @@ public class SpringJDBCTag extends AbstractGeneratorTag {
   // Behavior
 
   @Override
-  public void validate(final File basedir) throws InvalidConfigurationFileException {
-    this.daos.validate();
-    this.config.validate();
-    this.selectGeneration.validate();
+  public void validate(final File basedir, final File parentDir) throws InvalidConfigurationFileException {
+    this.daos.validate(basedir);
+    this.config.validate(basedir);
+    this.selectGeneration.validate(basedir);
   }
 
   // Getters

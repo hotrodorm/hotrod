@@ -22,6 +22,7 @@ import org.hotrod.eclipseplugin.FileSystemChangesListener.FileChangeListener;
 import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
+import org.nocrala.tools.utils.Log;
 
 public class LoadedConfigurationFiles implements FileChangeListener {
 
@@ -52,8 +53,11 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
             // 1. Load the config file
 
+            log("Will load file.");
+
             // TODO: fix generator value. Should be configurable
-            HotRodConfigTag config = ConfigurationLoader.loadPrimary(f, "MyBatis");
+            HotRodConfigTag config = ConfigurationLoader.loadPrimary(path.getProject().getLocation().toFile(), f,
+                "MyBatis");
 
             // 2. Load the local properties
 
@@ -73,11 +77,13 @@ public class LoadedConfigurationFiles implements FileChangeListener {
             // this.loadedFiles.put(absolutePath, face);
             // this.provider.refresh();
           } catch (ControlledException e) {
+            log("Failed to load file: ", e);
             MainConfigFace face = new MainConfigFace(f, path, this.provider,
                 new ErrorMessageFace(e.getLocation(), e.getMessage()));
             this.loadedFiles.put(absolutePath, face);
             this.provider.refresh();
           } catch (UncontrolledException e) {
+            log("Failed to load file: ", e);
             MainConfigFace face = new MainConfigFace(f, path, this.provider,
                 new ErrorMessageFace(null, e.getMessage()));
             this.loadedFiles.put(absolutePath, face);
@@ -102,7 +108,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     try {
 
       // TODO: fix generator value. Should be configurable
-      HotRodConfigTag config = ConfigurationLoader.loadPrimary(f, "MyBatis");
+      HotRodConfigTag config = ConfigurationLoader.loadPrimary(path.getProject().getLocation().toFile(), f, "MyBatis");
       MainConfigFace face = new MainConfigFace(f, path, this.provider, config);
       return face;
 
@@ -158,6 +164,8 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     String absPath = baselineFace.getAbsolutePath();
     File f = new File(absPath);
     MainConfigFace newFace = load(f);
+    System.out.println("[X123] File changed - Apply changes");
+    // TODO: apply changes
     baselineFace.applyChangesFrom(newFace);
   }
 
@@ -214,8 +222,17 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     }
   }
 
-  private void log(final String txt) {
-    // System.out.println(txt);
+  private static void log(final String txt) {
+    System.out.println("[" + new Object() {
+    }.getClass().getEnclosingClass().getName() + "] " + txt);
+  }
+
+  private static void log(final String txt, final Throwable t) {
+    System.out.println("[" + new Object() {
+    }.getClass().getEnclosingClass().getName() + "] " + txt);
+    if (t != null) {
+      t.printStackTrace(System.out);
+    }
   }
 
 }

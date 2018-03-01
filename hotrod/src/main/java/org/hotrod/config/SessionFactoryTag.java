@@ -1,5 +1,7 @@
 package org.hotrod.config;
 
+import java.io.File;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -37,7 +39,7 @@ public class SessionFactoryTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate() throws InvalidConfigurationFileException {
+  public void validate(final File basedir) throws InvalidConfigurationFileException {
 
     // singleton-full-class-name
 

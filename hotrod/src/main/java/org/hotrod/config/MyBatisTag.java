@@ -87,12 +87,13 @@ public class MyBatisTag extends AbstractGeneratorTag {
 
   // Validate
 
-  public void validate(final File basedir) throws InvalidConfigurationFileException {
-    this.daos.validate();
-    this.mappers.validate();
-    this.template.validate(basedir);
-    this.sessionFactory.validate();
-    this.selectGeneration.validate();
+  @Override
+  public void validate(final File basedir, final File parentDir) throws InvalidConfigurationFileException {
+    this.daos.validate(basedir);
+    this.mappers.validate(basedir);
+    this.template.validate(basedir, parentDir);
+    this.sessionFactory.validate(basedir);
+    this.selectGeneration.validate(basedir);
 
     // Properties
 

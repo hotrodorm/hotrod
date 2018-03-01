@@ -6,7 +6,7 @@ import org.hotrod.config.ConverterTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.FragmentTag;
 import org.hotrod.config.GeneratorsTag;
-import org.hotrod.config.PlainDAOTag;
+import org.hotrod.config.ExecutorTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SequenceMethodTag;
@@ -32,8 +32,8 @@ public class FaceFactory {
     if (tag instanceof EnumTag) {
       return new EnumFace((EnumTag) tag);
     }
-    if (tag instanceof PlainDAOTag) {
-      return new ExecutorFace((PlainDAOTag) tag);
+    if (tag instanceof ExecutorTag) {
+      return new ExecutorFace((ExecutorTag) tag);
     }
     if (tag instanceof ConverterTag) {
       return new ConverterFace((ConverterTag) tag);

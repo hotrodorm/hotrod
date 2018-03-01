@@ -1,5 +1,342 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
+
+  <!-- facet -->
+  
+  <xsd:complexType name="facet-type">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="table" type="table-type" />
+      <xsd:element name="dao" type="dao-type" />
+      <xsd:element name="view" type="view-type" />
+      <xsd:element name="enum" type="enum-type" />
+      <xsd:element name="select" type="select-dao-type" />
+    </xsd:choice>
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- table -->
+  
+  <xsd:complexType name="table-type">
+    <xsd:sequence>
+      <xsd:element name="auto-generated-column" type="auto-generated-column-type" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="version-control-column" type="version-control-column-type" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="sequence" type="sequence-type" />
+        <xsd:element name="query" type="query-type" />
+        <xsd:element name="select" type="select-method-type" />
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="java-name" type="xsd:string" />
+    <xsd:attribute name="column-seam" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- dao -->
+  
+  <xsd:complexType name="dao-type">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="sequence" type="sequence-type" />
+      <xsd:element name="query" type="query-type" />
+      <xsd:element name="select" type="select-method-type" />
+    </xsd:choice>
+    <xsd:attribute name="class" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- sequence -->
+
+  <xsd:complexType name="sequence-type">
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="method" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- parameter -->
+
+  <xsd:complexType name="parameter-type">
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="java-type" type="xsd:string" use="required" />
+    <xsd:attribute name="jdbc-type" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- query -->
+  
+  <xsd:complexType name="query-type" mixed="true">
+    <xsd:sequence>
+      <xsd:element name="parameter" type="parameter-type" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="method" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- auto-generated-column -->
+
+  <xsd:complexType name="auto-generated-column-type">
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="sequence" type="xsd:string" />
+    <xsd:attribute name="always" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- version-control-column -->
+  
+  <xsd:complexType name="version-control-column-type">
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- column -->
+  
+  <xsd:complexType name="column-type">
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="java-name" type="xsd:string" />
+    <xsd:attribute name="java-type" type="xsd:string" />
+    <xsd:attribute name="converter" type="xsd:string" />
+    <xsd:attribute name="jdbc-type" type="xsd:string" />
+    <xsd:attribute name="sequence" type="xsd:string" />
+    <xsd:attribute name="is-lob" type="xsd:string" />
+    <xsd:attribute name="initial-value" type="xsd:string" />
+    <xsd:attribute name="min-value" type="xsd:string" />
+    <xsd:attribute name="max-value" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- view -->
+  
+  <xsd:complexType name="view-type">
+    <xsd:sequence>
+      <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="sequence" type="sequence-type" />
+        <xsd:element name="query" type="query-type" />
+        <xsd:element name="select" type="select-method-type" />
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="java-name" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- enum -->
+  
+  <xsd:complexType name="enum-type">
+    <xsd:sequence>
+      <xsd:element name="non-persistent" type="non-persistent-type" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="java-name" type="xsd:string" />
+    <xsd:attribute name="name-column" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- non-persistent -->
+  
+  <xsd:complexType name="non-persistent-type">
+    <xsd:attribute name="value" type="xsd:string" use="required" />
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- select (dao) -->
+  
+  <xsd:complexType name="select-dao-type" mixed="true">
+    <xsd:sequence>
+      <xsd:element name="parameter" type="parameter-type" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="complement" type="complement-type" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="java-class-name" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- ============= -->
+  <!-- SELECT METHOD -->
+  <!-- ============= -->
+
+  <!-- select method - main tag -->
+
+  <xsd:complexType name="select-method-type" mixed="true">
+    <xsd:sequence>
+      <xsd:element name="parameter" type="parameter-type" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="complement" type="complement-type" />
+        <xsd:element name="columns" type="columns-type" />
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute name="method" type="xsd:string" use="required" />
+    <xsd:attribute name="vo" type="xsd:string" />
+    <xsd:attribute name="multiple-rows" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- select method - columns -->
+
+  <xsd:complexType name="columns-type">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="vo" type="vo-type" />
+      <xsd:element name="expression" type="expression-type" />
+      <xsd:element name="association" type="association-type" />
+    </xsd:choice>
+    <xsd:attribute name="vo" type="xsd:string" />
+    <xsd:attribute name="id" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- select method - expression -->
+
+  <xsd:complexType name="expression-type" mixed="true">
+    <xsd:attribute name="property" type="xsd:string" use="required" />
+    <xsd:attribute name="class" type="xsd:string" />
+    <xsd:attribute name="converter" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- select method - vo -->
+
+  <xsd:complexType name="vo-type" mixed="true">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="expression" type="expression-type" />
+      <xsd:element name="association" type="association-type" />
+      <xsd:element name="collection" type="collection-type" />
+    </xsd:choice>
+    <xsd:attribute name="table" type="xsd:string" />
+    <xsd:attribute name="view" type="xsd:string" />
+    <xsd:attribute name="id" type="xsd:string" />
+    <xsd:attribute name="property" type="xsd:string" />
+    <xsd:attribute name="alias" type="xsd:string" />
+    <xsd:attribute name="extended-vo" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- select method - collection -->
+
+  <xsd:complexType name="collection-type" mixed="true">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="expression" type="expression-type" />
+      <xsd:element name="association" type="association-type" />
+      <xsd:element name="collection" type="collection-type" />
+    </xsd:choice>
+    <xsd:attribute name="table" type="xsd:string" />
+    <xsd:attribute name="view" type="xsd:string" />
+    <xsd:attribute name="id" type="xsd:string" />
+    <xsd:attribute name="property" type="xsd:string" />
+    <xsd:attribute name="alias" type="xsd:string" />
+    <xsd:attribute name="extended-vo" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- select method - association -->
+
+  <xsd:complexType name="association-type" mixed="true">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="expression" type="expression-type" />
+      <xsd:element name="association" type="association-type" />
+      <xsd:element name="collection" type="collection-type" />
+    </xsd:choice>
+    <xsd:attribute name="table" type="xsd:string" />
+    <xsd:attribute name="view" type="xsd:string" />
+    <xsd:attribute name="id" type="xsd:string" />
+    <xsd:attribute name="property" type="xsd:string" />
+    <xsd:attribute name="alias" type="xsd:string" />
+    <xsd:attribute name="extended-vo" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- complement -->
+
+  <xsd:complexType name="complement-type" mixed="true">
+    <xsd:sequence>
+      <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- fragment -->
+  
+  <xsd:complexType name="fragment-type">
+    <xsd:attribute name="file" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- converter -->
+  
+  <xsd:complexType name="converter-type">
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="java-type" type="xsd:string" use="required" />
+    <xsd:attribute name="java-intermediate-type" type="xsd:string" use="required" />
+    <xsd:attribute name="class" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- =========== -->
+  <!-- Dynamic SQL -->
+  <!-- =========== -->
+
+  <xsd:group name="leading-dynamicsql-tag">
+    <xsd:choice>
+      <xsd:element name="if" type="if-type" />
+      <xsd:element name="choose" type="choose-type" />
+      <xsd:element name="where" type="where-type" />
+      <xsd:element name="trim" type="trim-type" />
+      <xsd:element name="foreach" type="foreach-type" />
+      <xsd:element name="bind" type="bind-type" />
+      <xsd:element name="set" type="set-type" />
+    </xsd:choice>
+  </xsd:group>
+
+  <!-- if -->
+
+  <xsd:complexType name="if-type" mixed="true">
+    <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
+    <xsd:attribute name="test" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- choose -->
+
+  <xsd:complexType name="choose-type">
+    <xsd:sequence>
+      <xsd:element name="when" type="when-type" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="otherwise" type="otherwise-type" minOccurs="0" maxOccurs="1" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- when -->
+
+  <xsd:complexType name="when-type" mixed="true">
+    <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
+    <xsd:attribute name="test" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- otherwise -->
+
+  <xsd:complexType name="otherwise-type" mixed="true">
+    <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
+  </xsd:complexType>
+
+  <!-- where -->
+
+  <xsd:complexType name="where-type">
+    <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
+  </xsd:complexType>
+
+  <!-- trim -->
+
+  <xsd:complexType name="trim-type">
+    <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
+    <xsd:attribute name="prefix" type="xsd:string" />
+    <xsd:attribute name="prefixOverrides" type="xsd:string" />
+    <xsd:attribute name="suffix" type="xsd:string" />
+    <xsd:attribute name="suffixOverrides" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- foreach -->
+
+  <xsd:complexType name="foreach-type" mixed="true">
+    <xsd:attribute name="item" type="xsd:string" />
+    <xsd:attribute name="index" type="xsd:string" />
+    <xsd:attribute name="collection" type="xsd:string" use="required" />
+    <xsd:attribute name="open" type="xsd:string" />
+    <xsd:attribute name="separator" type="xsd:string" />
+    <xsd:attribute name="close" type="xsd:string" />
+  </xsd:complexType>
+
+  <!-- bind -->
+
+  <xsd:complexType name="bind-type">
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="value" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+  <!-- set -->
+
+  <xsd:complexType name="set-type">
+    <xsd:group ref="leading-dynamicsql-tag" minOccurs="0" maxOccurs="unbounded" />
+  </xsd:complexType>
+ 
   <xsd:element name="hotrod">
     <xsd:complexType>
       <xsd:sequence>
@@ -82,36 +419,7 @@
     <xsd:attribute name="prefix" type="xsd:string" use="required" />
   </xsd:complexType>
 
-  @common-xsd@
-
 </xsd:schema>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

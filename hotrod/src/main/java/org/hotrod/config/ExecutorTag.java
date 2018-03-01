@@ -12,14 +12,12 @@ import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
 
-// TODO: rename to ExecutorDAOTag
-
 @XmlRootElement(name = "dao")
-public class PlainDAOTag extends AbstractDAOTag {
+public class ExecutorTag extends AbstractDAOTag {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(PlainDAOTag.class);
+  private static final Logger log = Logger.getLogger(ExecutorTag.class);
 
   // Properties
 
@@ -31,7 +29,7 @@ public class PlainDAOTag extends AbstractDAOTag {
 
   // Constructor
 
-  public PlainDAOTag() {
+  public ExecutorTag() {
     super("dao");
   }
 
@@ -102,7 +100,7 @@ public class PlainDAOTag extends AbstractDAOTag {
   @Override
   public boolean sameKey(final AbstractConfigurationTag fresh) {
     try {
-      PlainDAOTag f = (PlainDAOTag) fresh;
+      ExecutorTag f = (ExecutorTag) fresh;
       return this.javaClassName.equals(f.javaClassName);
     } catch (ClassCastException e) {
       return false;
@@ -112,7 +110,7 @@ public class PlainDAOTag extends AbstractDAOTag {
   @Override
   public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
     try {
-      PlainDAOTag f = (PlainDAOTag) fresh;
+      ExecutorTag f = (ExecutorTag) fresh;
       boolean different = !same(fresh);
 
       this.javaClassName = f.javaClassName;
@@ -129,7 +127,7 @@ public class PlainDAOTag extends AbstractDAOTag {
   @Override
   public boolean same(final AbstractConfigurationTag fresh) {
     try {
-      PlainDAOTag f = (PlainDAOTag) fresh;
+      ExecutorTag f = (ExecutorTag) fresh;
       return Compare.same(this.javaClassName, f.javaClassName);
     } catch (ClassCastException e) {
       return false;

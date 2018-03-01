@@ -415,11 +415,13 @@ public final class JdbcUtil {
   }
 
   private static void log(final String txt) {
-    System.out.println("[JdbcUtil] - " + txt);
+    System.out.println("[" + new Object() {
+    }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
   private static void log(final String txt, final Throwable t) {
-    System.out.println("[JdbcUtil] ERROR - " + txt + ":");
+    System.out.println("[" + new Object() {
+    }.getClass().getEnclosingClass().getName() + "] ERROR - " + txt + ":");
     t.printStackTrace();
   }
 

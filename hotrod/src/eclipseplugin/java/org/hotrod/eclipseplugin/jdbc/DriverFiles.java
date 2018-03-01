@@ -129,8 +129,9 @@ public class DriverFiles {
 
   }
 
-  public static void log(final String txt) {
-    // System.out.println(txt);
+  private static void log(final String txt) {
+    System.out.println("[" + new Object() {
+    }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

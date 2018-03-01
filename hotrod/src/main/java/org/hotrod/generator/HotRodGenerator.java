@@ -17,7 +17,7 @@ import org.hotrod.config.ColumnTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.config.PlainDAOTag;
+import org.hotrod.config.ExecutorTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectClassTag;
@@ -335,7 +335,7 @@ public abstract class HotRodGenerator {
       // Prepare DAOs meta data
 
       this.daos = new LinkedHashSet<PlainDAOMetadata>();
-      for (PlainDAOTag tag : config.getDAOs()) {
+      for (ExecutorTag tag : config.getDAOs()) {
         PlainDAOMetadata dm = new PlainDAOMetadata(tag, this.adapter, config, tag.getFragmentConfig());
         this.daos.add(dm);
       }
@@ -801,7 +801,7 @@ public abstract class HotRodGenerator {
         ns.registerDAOTag(s, "select", s.getJavaClassName());
       }
 
-      for (PlainDAOTag c : config.getDAOs()) {
+      for (ExecutorTag c : config.getDAOs()) {
         ns.registerDAOTag(c, "dao", c.getJavaClassName());
       }
     } catch (DuplicateDAOClassException e) {

@@ -53,7 +53,7 @@ public class MappersTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate() throws InvalidConfigurationFileException {
+  public void validate(final File basedir) throws InvalidConfigurationFileException {
 
     // gen-base-dir
 
@@ -62,7 +62,7 @@ public class MappersTag extends AbstractConfigurationTag {
           "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> cannot be empty. "
               + "Must specify the base dir to generate the MyBatis mapper files.");
     }
-    this.baseDir = new File(this.sGenBaseDir);
+    this.baseDir = new File(basedir, this.sGenBaseDir);
     if (!this.baseDir.exists()) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'gen-base-dir' of tag <"
           + super.getTagName() + "> with value '" + this.sGenBaseDir + "' points to a non existent directory.");

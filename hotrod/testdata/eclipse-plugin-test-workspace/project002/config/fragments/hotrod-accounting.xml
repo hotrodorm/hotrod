@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod-fragment>
+
+<hotrod-fragment>
+
+  <table name="agent"> <!-- sequence-generated PK -->
+    <column name="id" sequence="seq_agent" />
+  </table>
+
+  <fragment file="folder2/hotrod-finances.xml" />
+
+</hotrod-fragment>

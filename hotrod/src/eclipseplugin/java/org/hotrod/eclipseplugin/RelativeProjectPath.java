@@ -92,8 +92,9 @@ public class RelativeProjectPath {
         + " ]";
   }
 
-  public static void log(final String txt) {
-    System.out.println("[" + RelativeProjectPath.class.getName() + "] " + txt);
+  private static void log(final String txt) {
+    System.out.println("[" + new Object() {
+    }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

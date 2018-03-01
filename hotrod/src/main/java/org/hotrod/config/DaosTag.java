@@ -88,7 +88,7 @@ public class DaosTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate() throws InvalidConfigurationFileException {
+  public void validate(final File basedir) throws InvalidConfigurationFileException {
 
     // gen-base-dir
 
@@ -96,7 +96,8 @@ public class DaosTag extends AbstractConfigurationTag {
       throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'gen-base-dir' of tag <"
           + super.getTagName() + "> cannot be empty. " + "Must specify the base dir to generate the DAO classes.");
     }
-    this.baseDir = new File(this.sGenBaseDir);
+    this.baseDir = new File(basedir, this.sGenBaseDir);
+    log.debug("this.baseDir=" + this.baseDir + " , " + this.baseDir.getAbsolutePath());
     if (!this.baseDir.exists()) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'gen-base-dir' of tag <"
           + super.getTagName() + "> with value '" + this.sGenBaseDir + "' must point to an existing dir.");

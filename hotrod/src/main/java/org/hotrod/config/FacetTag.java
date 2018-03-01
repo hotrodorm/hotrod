@@ -25,7 +25,7 @@ public class FacetTag extends AbstractConfigurationTag {
   private List<TableTag> tables = new ArrayList<TableTag>();
   private List<ViewTag> views = new ArrayList<ViewTag>();
   private List<EnumTag> enums = new ArrayList<EnumTag>();
-  private List<PlainDAOTag> daos = new ArrayList<PlainDAOTag>();
+  private List<ExecutorTag> daos = new ArrayList<ExecutorTag>();
   private List<SelectClassTag> selects = new ArrayList<SelectClassTag>();
 
   // Constructor
@@ -57,7 +57,7 @@ public class FacetTag extends AbstractConfigurationTag {
   }
 
   @XmlElement
-  public void setDao(final PlainDAOTag dao) {
+  public void setDao(final ExecutorTag dao) {
     this.daos.add(dao);
   }
 
@@ -92,7 +92,7 @@ public class FacetTag extends AbstractConfigurationTag {
       e.validate(daosTag, fragmentConfig);
     }
 
-    for (PlainDAOTag dao : this.daos) {
+    for (ExecutorTag dao : this.daos) {
       dao.validate(daosTag, config, fragmentConfig);
     }
 
@@ -119,7 +119,7 @@ public class FacetTag extends AbstractConfigurationTag {
   }
 
   public void mergeOther(final List<TableTag> tables, final List<ViewTag> views, final List<EnumTag> enums,
-      final List<PlainDAOTag> daos, final List<SelectClassTag> selects) {
+      final List<ExecutorTag> daos, final List<SelectClassTag> selects) {
     this.tables.addAll(tables);
     this.views.addAll(views);
     this.enums.addAll(enums);
@@ -145,7 +145,7 @@ public class FacetTag extends AbstractConfigurationTag {
     return this.enums;
   }
 
-  public List<PlainDAOTag> getDaos() {
+  public List<ExecutorTag> getDaos() {
     return daos;
   }
 

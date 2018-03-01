@@ -233,7 +233,8 @@ public class HotRodView extends ViewPart {
           // ==================================================
 
         } catch (ClassCastException e2) {
-          log("Not a mainconfigfile.");
+          // ignore
+          // log("Not an error message face.");
         }
 
       }
@@ -583,8 +584,9 @@ public class HotRodView extends ViewPart {
     viewer.getControl().setFocus();
   }
 
-  private void log(final String txt) {
-    // System.out.println("[HotRodView] " + txt);
+  private static void log(final String txt) {
+    System.out.println("[" + new Object() {
+    }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

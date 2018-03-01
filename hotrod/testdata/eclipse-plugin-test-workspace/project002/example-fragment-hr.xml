@@ -1,9 +1,0 @@
-HOTROD-FRAGMENT-CONFIG
-
-table: employee
-
-table: department
-
-view: new_employee
-  query: assignDepartment
-

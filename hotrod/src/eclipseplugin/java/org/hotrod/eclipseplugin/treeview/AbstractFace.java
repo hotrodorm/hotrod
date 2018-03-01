@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
 import org.hotrod.config.AbstractConfigurationTag;
-import org.hotrod.config.AbstractConfigurationTag.ItemStatus;
+import org.hotrod.config.AbstractConfigurationTag.TagStatus;
 
 public abstract class AbstractFace implements IAdaptable {
 
@@ -197,33 +197,32 @@ public abstract class AbstractFace implements IAdaptable {
 
   // Tree display
 
-  private ItemStatus treeStatus = null;
+  private TagStatus treeStatus = null;
 
-  public final ItemStatus getTreeStatus() {
-    System.out.println("[AbstractFace] 0 name=" + this.name + " this.getStatus()=" + this.getStatus()
-        + " this.treeStatus=" + this.treeStatus);
+  public final TagStatus getTreeStatus() {
+    log("0 name=" + this.name + " this.getStatus()=" + this.getStatus() + " this.treeStatus=" + this.treeStatus);
     if (this.treeStatus == null) {
-      System.out.println("[AbstractFace] 1");
-      if (this.getStatus() == ItemStatus.MODIFIED) {
-        System.out.println("[AbstractFace] 2");
-        this.treeStatus = ItemStatus.MODIFIED;
+      log("1");
+      if (this.getStatus() == TagStatus.MODIFIED) {
+        log("2");
+        this.treeStatus = TagStatus.MODIFIED;
       } else {
-        System.out.println("[AbstractFace] 3");
+        log("3");
         boolean changed = false;
         for (AbstractFace c : this.children) {
-          if (c.getTreeStatus() != ItemStatus.UNAFFECTED) {
+          if (c.getTreeStatus() != TagStatus.UNAFFECTED) {
             changed = true;
           }
         }
-        this.treeStatus = changed ? ItemStatus.MODIFIED : this.getStatus();
+        this.treeStatus = changed ? TagStatus.MODIFIED : this.getStatus();
       }
     }
-    System.out.println("[AbstractFace] 4 this.treeStatus=" + this.treeStatus);
+    log("4 this.treeStatus=" + this.treeStatus);
     return this.treeStatus;
   }
 
-  public final ItemStatus getStatus() {
-    return this.tag == null ? ItemStatus.UNAFFECTED : this.tag.getStatus();
+  public final TagStatus getStatus() {
+    return this.tag == null ? TagStatus.UNAFFECTED : this.tag.getStatus();
   }
 
   public abstract String getDecoration();
@@ -272,7 +271,7 @@ public abstract class AbstractFace implements IAdaptable {
     // own changes
 
     if (this.tag.copyNonKeyProperties(fresh.tag)) {
-      this.tag.setStatus(ItemStatus.MODIFIED);
+      this.tag.setStatus(TagStatus.MODIFIED);
       this.unsetTreeStatus();
     }
 
@@ -292,15 +291,14 @@ public abstract class AbstractFace implements IAdaptable {
         f.parent = this;
         f.unsetTreeStatus();
         if (f.tag != null) {
-          f.tag.setStatus(ItemStatus.ADDED);
+          f.tag.setStatus(TagStatus.ADDED);
         }
       }
     }
-    System.out
-        .println("[AbstractFace] applyChangesFrom() name=" + this.name + " existing.isEmpty()=" + existing.isEmpty());
+    log("applyChangesFrom() name=" + this.name + " existing.isEmpty()=" + existing.isEmpty());
     if (!existing.isEmpty()) { // some children were removed
       this.unsetTreeStatus();
-      this.treeStatus = ItemStatus.MODIFIED;
+      this.treeStatus = TagStatus.MODIFIED;
     }
 
   }
@@ -320,6 +318,11 @@ public abstract class AbstractFace implements IAdaptable {
       }
     }
     return null;
+  }
+
+  private static void log(final String txt) {
+    // System.out.println("[" + new Object() {
+    // }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

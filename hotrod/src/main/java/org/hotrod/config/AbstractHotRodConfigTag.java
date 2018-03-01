@@ -3,6 +3,8 @@ package org.hotrod.config;
 import java.io.File;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +39,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
   private List<TableTag> tables = new ArrayList<TableTag>();
   private List<ViewTag> views = new ArrayList<ViewTag>();
   private List<EnumTag> enums = new ArrayList<EnumTag>();
-  private List<PlainDAOTag> daos = new ArrayList<PlainDAOTag>();
+  private List<ExecutorTag> executors = new ArrayList<ExecutorTag>();
   private List<SelectClassTag> selects = new ArrayList<SelectClassTag>();
   private List<FragmentTag> fragments = new ArrayList<FragmentTag>();
   private List<FacetTag> facets = new ArrayList<FacetTag>();
@@ -72,8 +74,8 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
   }
 
   @XmlElement(name = "dao")
-  public void setDAO(final PlainDAOTag dao) {
-    this.daos.add(dao);
+  public void setDAO(final ExecutorTag dao) {
+    this.executors.add(dao);
   }
 
   @XmlElement
@@ -111,48 +113,85 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
       final File parentFile, final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
 
-    File basedir = file.getParentFile();
-
     log.debug("init");
+
+    File parentDir = file.getParentFile();
 
     // DAOs
 
     for (TableTag t : this.tables) {
       t.validate(daosTag, config, fragmentConfig);
     }
-
-    for (ViewTag v : this.views) {
-      v.validate(daosTag, config, fragmentConfig);
-    }
+    Collections.sort(this.tables, new Comparator<TableTag>() {
+      @Override
+      public int compare(final TableTag a, final TableTag b) {
+        return a.getName().compareTo(b.getName());
+      }
+    });
+    super.subTags.addAll(this.tables);
 
     for (EnumTag e : this.enums) {
       e.validate(daosTag, fragmentConfig);
     }
+    Collections.sort(this.enums, new Comparator<EnumTag>() {
+      @Override
+      public int compare(final EnumTag a, final EnumTag b) {
+        return a.getName().compareTo(b.getName());
+      }
+    });
+    super.subTags.addAll(this.enums);
 
-    for (PlainDAOTag dao : this.daos) {
-      dao.validate(daosTag, config, fragmentConfig);
+    for (ViewTag v : this.views) {
+      v.validate(daosTag, config, fragmentConfig);
     }
+    Collections.sort(this.views, new Comparator<ViewTag>() {
+      @Override
+      public int compare(final ViewTag a, final ViewTag b) {
+        return a.getName().compareTo(b.getName());
+      }
+    });
+    super.subTags.addAll(this.views);
+
+    for (ExecutorTag x : this.executors) {
+      x.validate(daosTag, config, fragmentConfig);
+    }
+    Collections.sort(this.executors, new Comparator<ExecutorTag>() {
+      @Override
+      public int compare(final ExecutorTag a, final ExecutorTag b) {
+        return a.getJavaClassName().compareTo(b.getJavaClassName());
+      }
+    });
+    super.subTags.addAll(this.executors);
 
     for (SelectClassTag s : this.selects) {
       s.validate(daosTag, config, fragmentConfig);
     }
+    Collections.sort(this.selects, new Comparator<SelectClassTag>() {
+      @Override
+      public int compare(final SelectClassTag a, final SelectClassTag b) {
+        return a.getJavaClassName().compareTo(b.getJavaClassName());
+      }
+    });
+    super.subTags.addAll(this.selects);
 
     for (FacetTag f : this.facets) {
       f.validate(config, daosTag, fragmentConfig);
     }
+    super.subTags.addAll(this.facets);
 
     // Fragments
 
     for (FragmentTag f : this.fragments) {
-      f.validate(config, basedir, alreadyLoadedFileNames, parentFile, daosTag);
+      f.validate(config, parentDir, alreadyLoadedFileNames, parentFile, daosTag);
       this.mergeFragment(f.getFragmentConfig());
+      super.subTags.add(f);
     }
 
     // Assemble facets
 
     this.allFacets = new FacetTag();
 
-    this.allFacets.mergeOther(this.tables, this.views, this.enums, this.daos, this.selects);
+    this.allFacets.mergeOther(this.tables, this.views, this.enums, this.executors, this.selects);
 
     for (FacetTag f : this.facets) {
       FacetTag af = this.assembledFacets.get(f.getName());
@@ -191,7 +230,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
       log.debug(" - enum: " + e.getName());
     }
 
-    for (PlainDAOTag dao : f.getDaos()) {
+    for (ExecutorTag dao : f.getDaos()) {
       log.debug(" - daos: " + dao.getJavaClassName());
     }
 
@@ -205,7 +244,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     this.views.addAll(other.views);
     this.enums.addAll(other.enums);
     this.selects.addAll(other.selects);
-    this.daos.addAll(other.daos);
+    this.executors.addAll(other.executors);
     this.facets.addAll(other.facets);
   }
 
@@ -224,7 +263,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
       e.validateAgainstDatabase(generator, conn);
     }
 
-    for (PlainDAOTag d : this.getDAOs()) {
+    for (ExecutorTag d : this.getDAOs()) {
       d.validateAgainstDatabase(generator, conn);
     }
 
@@ -325,11 +364,11 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     return this.allFacets.getEnums();
   }
 
-  public List<PlainDAOTag> getDAOs() {
+  public List<ExecutorTag> getDAOs() {
     if (this.chosenFacets.isEmpty()) {
       return this.allFacets.getDaos();
     } else {
-      List<PlainDAOTag> subset = new ArrayList<PlainDAOTag>();
+      List<ExecutorTag> subset = new ArrayList<ExecutorTag>();
       for (FacetTag f : this.chosenFacets) {
         subset.addAll(f.getDaos());
       }
@@ -337,7 +376,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     }
   }
 
-  public List<PlainDAOTag> getAllDAOs() {
+  public List<ExecutorTag> getAllDAOs() {
     return this.allFacets.getDaos();
   }
 

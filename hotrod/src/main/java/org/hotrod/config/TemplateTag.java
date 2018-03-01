@@ -39,7 +39,7 @@ public class TemplateTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate(final File basedir) throws InvalidConfigurationFileException {
+  public void validate(final File basedir, final File parentDir) throws InvalidConfigurationFileException {
 
     // file
 
@@ -48,7 +48,7 @@ public class TemplateTag extends AbstractConfigurationTag {
           "MyBatis configuration template not found. " + "Attribute 'file' of tag <" + super.getTagName()
               + "> cannot be empty. " + "Must specify the MyBatis configuration template file.");
     }
-    this.file = new File(basedir, this.sFile);
+    this.file = new File(parentDir, this.sFile);
     if (!this.file.exists()) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "MyBatis configuration template not found. " + "Attribute 'file' of tag <" + super.getTagName()

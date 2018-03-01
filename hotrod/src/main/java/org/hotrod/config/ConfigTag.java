@@ -45,7 +45,7 @@ public class ConfigTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate() throws InvalidConfigurationFileException {
+  public void validate(final File basedir) throws InvalidConfigurationFileException {
 
     // gen-base-dir
 
@@ -53,7 +53,7 @@ public class ConfigTag extends AbstractConfigurationTag {
       throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'gen-base-dir' of tag <"
           + super.getTagName() + "> cannot be empty. " + "Must specify the base dir.");
     }
-    this.genBaseDir = new File(this.sGenBaseDir);
+    this.genBaseDir = new File(basedir, this.sGenBaseDir);
     if (!this.genBaseDir.exists()) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'gen-base-dir' of tag <"
           + super.getTagName() + "> with value '" + this.sGenBaseDir + "' must point to an existing dir.");

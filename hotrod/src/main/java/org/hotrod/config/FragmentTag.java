@@ -42,7 +42,7 @@ public class FragmentTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate(final HotRodConfigTag primaryConfig, final File baseDir,
+  public void validate(final HotRodConfigTag primaryConfig, final File parentDir,
       final Set<String> alreadyLoadedFileNames, final File parentFile, final DaosTag daosTag)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
 
@@ -54,7 +54,7 @@ public class FragmentTag extends AbstractConfigurationTag {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Attribute 'file' of tag <" + super.getTagName() + "> cannot be empty. " + "You must specify a file name.");
     }
-    this.file = new File(baseDir, this.filename);
+    this.file = new File(parentDir, this.filename);
     if (!this.file.exists()) {
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Could not find fragment file '" + this.file.getAbsolutePath() + "'.");
@@ -68,6 +68,7 @@ public class FragmentTag extends AbstractConfigurationTag {
     this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.file, parentFile, alreadyLoadedFileNames,
         daosTag);
     log.debug("Fragment loaded.");
+    this.subTags.addAll(this.fragmentConfig.subTags);
 
   }
 

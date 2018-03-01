@@ -47,12 +47,12 @@ public class GeneratorsTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate(final File basedir, final String generatorName)
+  public void validate(final File basedir, final File parentDir, final String generatorName)
       throws InvalidConfigurationFileException, GeneratorNotFoundException {
     for (AbstractGeneratorTag g : this.generators) {
       if (g.getName().equals(generatorName)) {
         this.selectedGeneratorTag = g;
-        g.validate(basedir);
+        g.validate(basedir, parentDir);
         return;
       }
     }

@@ -37,8 +37,11 @@ public class ConfigurationLoader {
 
   private static final Logger log = Logger.getLogger(ConfigurationLoader.class);
 
-  private static final String PRIMARY_XSD_PATH = "/hotrod.xsd";
-  private static final String FRAGMENT_XSD_PATH = "/hotrod-fragment.xsd";
+  // private static final String PRIMARY_XSD_PATH = "/hotrod.xsd";
+  // private static final String FRAGMENT_XSD_PATH = "/hotrod-fragment.xsd";
+
+  private static final String PRIMARY_XSD_PATH = "/src/main/xml/hotrod-primary-head.xsd";
+  private static final String FRAGMENT_XSD_PATH = "/src/main/xml/hotrod-fragment-head.xsd";
 
   // Static properties
 
@@ -47,7 +50,7 @@ public class ConfigurationLoader {
 
   // Behavior
 
-  public static HotRodConfigTag loadPrimary(final File f, final String generatorName)
+  public static HotRodConfigTag loadPrimary(final File projectBaseDir, final File f, final String generatorName)
       throws ControlledException, UncontrolledException {
 
     // Basic validation on the file
@@ -110,7 +113,11 @@ public class ConfigurationLoader {
 
       // Validation (specific)
 
-      config.validate(f.getParentFile(), generatorName);
+      log.info("projectBaseDir=" + projectBaseDir + " :: " + projectBaseDir.getAbsolutePath());
+      File parentDir = f.getParentFile();
+      log.info("parentFile=" + parentDir + " :: " + parentDir.getAbsolutePath());
+
+      config.validate(projectBaseDir, parentDir, generatorName);
 
       // Validation (common)
 

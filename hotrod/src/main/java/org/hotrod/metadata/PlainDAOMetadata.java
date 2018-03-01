@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractDAOTag;
-import org.hotrod.config.PlainDAOTag;
+import org.hotrod.config.ExecutorTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.QueryMethodTag;
@@ -34,7 +34,7 @@ public class PlainDAOMetadata implements DataSetMetadata {
 
   protected HotRodConfigTag config;
   protected DatabaseAdapter adapter;
-  private PlainDAOTag tag;
+  private ExecutorTag tag;
 
   private List<SequenceMethodTag> sequences = new ArrayList<SequenceMethodTag>();
   private List<QueryMethodTag> queries = new ArrayList<QueryMethodTag>();
@@ -46,7 +46,7 @@ public class PlainDAOMetadata implements DataSetMetadata {
 
   // Constructor
 
-  public PlainDAOMetadata(final PlainDAOTag tag, final DatabaseAdapter adapter, final HotRodConfigTag config,
+  public PlainDAOMetadata(final ExecutorTag tag, final DatabaseAdapter adapter, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig) {
     log.debug("init");
     this.tag = tag;

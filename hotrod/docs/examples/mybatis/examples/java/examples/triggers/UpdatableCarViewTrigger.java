@@ -115,8 +115,9 @@ public class UpdatableCarViewTrigger extends TriggerAdapter {
 
   }
 
-  private void log(final String txt) {
-    System.out.println("[UpdatableCarViewTrigger] - " + txt);
+  private static void log(final String txt) {
+    System.out.println("[" + new Object() {
+    }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }
