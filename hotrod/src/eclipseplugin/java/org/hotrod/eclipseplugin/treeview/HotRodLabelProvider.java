@@ -68,7 +68,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
       // face.getStatus().getPrefix();
 
       String prefix;
-      switch (face.getTreeStatus()) {
+      switch (face.getStatus()) {
       case UNAFFECTED:
         prefix = "";
         break;

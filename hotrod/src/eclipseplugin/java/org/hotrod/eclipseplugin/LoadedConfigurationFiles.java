@@ -16,13 +16,17 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
+import org.hotrod.config.AbstractConfigurationTag;
+import org.hotrod.config.AbstractConfigurationTag.TagStatus;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.eclipseplugin.FileSystemChangesListener.FileChangeListener;
+import org.hotrod.eclipseplugin.ProjectProperties.FileProperties;
 import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
-import org.nocrala.tools.utils.Log;
+import org.hotrod.eclipseplugin.utils.Correlator;
+import org.hotrod.eclipseplugin.utils.Correlator.CorrelatedEntry;
 
 public class LoadedConfigurationFiles implements FileChangeListener {
 
@@ -51,23 +55,45 @@ public class LoadedConfigurationFiles implements FileChangeListener {
         if (path != null) {
           try {
 
-            // 1. Load the config file
+            // 1. Load the cached config
 
-            log("Will load file.");
+            ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(path.getProject());
+            FileProperties fileProperties = projectProperties.getFileProperties(path.getRelativeFileName());
+
+            // 2. Load the config file
 
             // TODO: fix generator value. Should be configurable
             HotRodConfigTag config = ConfigurationLoader.loadPrimary(path.getProject().getLocation().toFile(), f,
                 "MyBatis");
 
-            // 2. Load the local properties
-
             // 3. Correlate them
+
+            if (fileProperties == null) {
+
+              // assume all in sync
+              config.setTreeStatus(TagStatus.UNAFFECTED);
+
+            } else {
+
+              // correlate them
+              HotRodConfigTag cachedConfigFile = fileProperties.getCachedConfigFile();
+              log("cachedConfigFile=" + cachedConfigFile);
+              if (cachedConfigFile == null) {
+                config.setTreeStatus(TagStatus.ADDED);
+              } else {
+                correlate(config, cachedConfigFile);
+              }
+
+              log("[1] config.getStatus()=" + config.getStatus());
+
+            }
 
             // 4. Assemble a face & refresh
 
-            MainConfigFace face = new MainConfigFace(f, path, provider, config);
+            MainConfigFace face = new MainConfigFace(f, path, this.provider, config);
             this.loadedFiles.put(absolutePath, face);
             this.provider.refresh();
+            log("[2] config.getStatus()=" + config.getStatus());
             // fileGenerationProofOfConcept();
 
             // } catch (FaultyConfigFileException e) {
@@ -94,6 +120,27 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
       }
     }
+  }
+
+  private boolean correlate(final AbstractConfigurationTag left, final AbstractConfigurationTag right) {
+    boolean different = left.copyNonKeyProperties(right);
+    for (CorrelatedEntry<AbstractConfigurationTag> entry : Correlator.correlateSorted(left.getSubTags(),
+        right.getSubTags())) {
+      AbstractConfigurationTag l = entry.getLeft(); // file
+      AbstractConfigurationTag r = entry.getRight(); // cache
+      if (l != null) {
+        if (r != null) {
+          if (correlate(l, r)) {
+            different = true;
+          }
+        } else {
+          different = true;
+          l.setTreeStatus(TagStatus.ADDED);
+        }
+      }
+    }
+    left.setStatus(different ? TagStatus.MODIFIED : TagStatus.UNAFFECTED);
+    return different;
   }
 
   public MainConfigFace load(final File f) {

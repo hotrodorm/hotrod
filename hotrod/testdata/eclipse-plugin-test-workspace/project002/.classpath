@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="gen/hotrod/daos"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="lib" path="lib/mybatis/mybatis-3.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/hotrod-2.0.0-runtime.jar"/>
+	<classpathentry kind="output" path="idebuild"/>
 </classpath>

@@ -31,9 +31,9 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.hotrod.eclipseplugin.LocalProperties;
-import org.hotrod.eclipseplugin.LocalProperties.CouldNotSavePropertiesException;
-import org.hotrod.eclipseplugin.LocalProperties.FileProperties;
+import org.hotrod.eclipseplugin.ProjectProperties;
+import org.hotrod.eclipseplugin.ProjectProperties.CouldNotSavePropertiesException;
+import org.hotrod.eclipseplugin.ProjectProperties.FileProperties;
 import org.hotrod.eclipseplugin.jdbc.NavigationAwareWizardDialog.NavigationAwareWizard;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 import org.hotrod.eclipseplugin.utils.FUtil;
@@ -44,7 +44,7 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
   private MainConfigFace mainConfigFace;
   private Shell shell;
 
-  private LocalProperties properties;
+  private ProjectProperties properties;
   private FileProperties fileProperties;
 
   protected DriverPage driverPage;
@@ -65,7 +65,7 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
 
   private static String[] AVAILABLE_GENERATORS = { "MyBatis", "Spring JDBC", "MyBatis Spring" };
 
-  public DatabasePropertiesWizard(final MainConfigFace mainConfigFace, final LocalProperties properties,
+  public DatabasePropertiesWizard(final MainConfigFace mainConfigFace, final ProjectProperties properties,
       final Shell shell) {
     super();
 

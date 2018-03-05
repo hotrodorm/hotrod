@@ -146,7 +146,7 @@ public class HotRodAntTask extends Task {
     display("Configuration File: " + this.configFile);
 
     DatabaseLocation loc = new DatabaseLocation(this.driverClass, this.url, this.username, this.password, this.catalog,
-        this.schema);
+        this.schema, null);
 
     HotRodConfigTag config = null;
     try {

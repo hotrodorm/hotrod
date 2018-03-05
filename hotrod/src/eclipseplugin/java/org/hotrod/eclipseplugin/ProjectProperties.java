@@ -24,6 +24,8 @@ import org.hotrod.eclipseplugin.utils.SUtil;
 
 /**
  * <pre>
+ *    File Properties Graph
+ *    =====================
  *                                             (save)
  *   local config cache <--------------------------------------------------------+
  *          |                                                                    |
@@ -45,7 +47,7 @@ import org.hotrod.eclipseplugin.utils.SUtil;
  *
  * </pre>
  */
-public class LocalProperties {
+public class ProjectProperties {
 
   public static final String CONFIG_FILE_NAME = "hotrod.local.properties";
 
@@ -68,12 +70,12 @@ public class LocalProperties {
   private String format;
   private TreeMap<String, FileProperties> files;
 
-  public LocalProperties(final IProject project) {
+  public ProjectProperties(final IProject project) {
     this.project = project;
     this.files = new TreeMap<String, FileProperties>();
   }
 
-  private LocalProperties(final IProject project, final String format, final TreeMap<String, FileProperties> files) {
+  private ProjectProperties(final IProject project, final String format, final TreeMap<String, FileProperties> files) {
     this.project = project;
     this.format = format;
     this.files = files;
@@ -92,7 +94,7 @@ public class LocalProperties {
 
   // Persistence
 
-  public static LocalProperties load(final IProject project) throws CouldNotLoadPropertiesException {
+  public static ProjectProperties load(final IProject project) throws CouldNotLoadPropertiesException {
     File f = new File(project.getLocation().toFile(), CONFIG_FILE_NAME);
 
     String format = null;
@@ -155,7 +157,7 @@ public class LocalProperties {
           files.put(fileProperties.fileName, fileProperties);
         }
 
-        return new LocalProperties(project, CURRENT_FORMAT, files);
+        return new ProjectProperties(project, CURRENT_FORMAT, files);
 
       } catch (FileNotFoundException e) {
         throw new CouldNotLoadPropertiesException(e.getMessage());
@@ -171,8 +173,12 @@ public class LocalProperties {
         }
       }
     } else {
-      return new LocalProperties(project, format, new TreeMap<String, FileProperties>());
+      return new ProjectProperties(project, format, new TreeMap<String, FileProperties>());
     }
+  }
+
+  public static ProjectProperties newEmptyProperties(final IProject project) {
+    return new ProjectProperties(project, CURRENT_FORMAT, new TreeMap<String, FileProperties>());
   }
 
   public void save() throws CouldNotSavePropertiesException {

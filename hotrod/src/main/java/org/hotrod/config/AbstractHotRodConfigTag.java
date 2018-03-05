@@ -47,8 +47,8 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
 
   private FacetTag allFacets = null;
 
-  private Set<String> facetNames = null;
-  private Set<FacetTag> chosenFacets = null;
+  private Set<String> facetNames = new HashSet<String>();
+  private Set<FacetTag> chosenFacets = new HashSet<FacetTag>();
 
   // Constructor
 
@@ -74,8 +74,8 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
   }
 
   @XmlElement(name = "dao")
-  public void setDAO(final ExecutorTag dao) {
-    this.executors.add(dao);
+  public void setExecutor(final ExecutorTag executor) {
+    this.executors.add(executor);
   }
 
   @XmlElement
@@ -230,7 +230,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
       log.debug(" - enum: " + e.getName());
     }
 
-    for (ExecutorTag dao : f.getDaos()) {
+    for (ExecutorTag dao : f.getExecutors()) {
       log.debug(" - daos: " + dao.getJavaClassName());
     }
 
@@ -263,7 +263,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
       e.validateAgainstDatabase(generator, conn);
     }
 
-    for (ExecutorTag d : this.getDAOs()) {
+    for (ExecutorTag d : this.getExecutors()) {
       d.validateAgainstDatabase(generator, conn);
     }
 
@@ -364,20 +364,20 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     return this.allFacets.getEnums();
   }
 
-  public List<ExecutorTag> getDAOs() {
+  public List<ExecutorTag> getExecutors() {
     if (this.chosenFacets.isEmpty()) {
-      return this.allFacets.getDaos();
+      return this.allFacets.getExecutors();
     } else {
       List<ExecutorTag> subset = new ArrayList<ExecutorTag>();
       for (FacetTag f : this.chosenFacets) {
-        subset.addAll(f.getDaos());
+        subset.addAll(f.getExecutors());
       }
       return subset;
     }
   }
 
-  public List<ExecutorTag> getAllDAOs() {
-    return this.allFacets.getDaos();
+  public List<ExecutorTag> getAllExecutors() {
+    return this.allFacets.getExecutors();
   }
 
   public List<SelectClassTag> getSelects() {

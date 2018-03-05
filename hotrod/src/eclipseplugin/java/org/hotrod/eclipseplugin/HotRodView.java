@@ -1,11 +1,16 @@
 package org.hotrod.eclipseplugin;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -49,15 +54,22 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.hotrod.ant.Constants;
+import org.hotrod.ant.ControlledException;
+import org.hotrod.ant.HotRodAntTask.DisplayMode;
+import org.hotrod.ant.UncontrolledException;
+import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.eclipseplugin.ProjectProperties.FileProperties;
 import org.hotrod.eclipseplugin.jdbc.DatabasePropertiesWizard;
-import org.hotrod.eclipseplugin.LocalProperties;
-import org.hotrod.eclipseplugin.LocalProperties.CouldNotLoadPropertiesException;
 import org.hotrod.eclipseplugin.jdbc.NavigationAwareWizardDialog;
 import org.hotrod.eclipseplugin.treeview.AbstractFace;
 import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
 import org.hotrod.eclipseplugin.treeview.HotRodLabelProvider;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
+import org.hotrod.eclipseplugin.utils.FUtil;
+import org.hotrod.generator.HotRodGenerator;
+import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public class HotRodView extends ViewPart {
 
@@ -379,7 +391,38 @@ public class HotRodView extends ViewPart {
     actionGenerateAll = new Action() {
       @Override
       public void run() {
-        showMessage("Generate All - executed");
+        log("[generateall - starting]");
+
+        // TODO: implement generate all
+
+        TreeSelection selection = (TreeSelection) viewer.getSelection();
+        if (selection.toList().isEmpty()) {
+          showMessage("Please select a HotRod configuration file and then press Generate All...");
+        } else if (selection.toList().size() > 1) {
+          showMessage("Please select only one HotRod configuration file and then press Generate All...");
+        } else {
+
+          AbstractFace face = (AbstractFace) selection.toList().get(0);
+          MainConfigFace mainConfigFace = face.getMainConfigFace();
+          ProjectProperties projectProperties = ProjectPropertiesCache
+              .getProjectProperties(mainConfigFace.getProject());
+          if (projectProperties == null) {
+            showMessage("Project properties are not yet configured");
+          } else {
+            log("file=" + mainConfigFace.getRelativeFileName());
+            FileProperties fileProperties = projectProperties.getFileProperties(mainConfigFace.getRelativeFileName());
+            if (fileProperties == null) {
+              showMessage("File properties are not yet configured");
+            } else {
+              log("generating all - starting");
+              generateAll(mainConfigFace.getConfig(), fileProperties, mainConfigFace.getProject());
+              log("generating all - complete");
+            }
+          }
+
+        }
+
+        log("[generateall - finished]");
       }
     };
     actionGenerateAll.setText("Generate All");
@@ -486,24 +529,30 @@ public class HotRodView extends ViewPart {
           AbstractFace face = (AbstractFace) selection.toList().get(0);
           MainConfigFace mainConfigFace = face.getMainConfigFace();
 
-          try {
-            // log("[X1] will load properties");
-            LocalProperties properties = LocalProperties.load(mainConfigFace.getProject());
-            // log("[X1] properties loaded");
+          // try {
+          // log("[X1] will load properties");
+          ProjectProperties projectProperties =
+              // ProjectProperties.load(mainConfigFace.getProject());
+              ProjectPropertiesCache.getProjectProperties(mainConfigFace.getProject());
 
-            DatabasePropertiesWizard wizard = new DatabasePropertiesWizard(mainConfigFace, properties,
-                viewer.getControl().getShell());
-            NavigationAwareWizardDialog dialog = new NavigationAwareWizardDialog(shell, wizard);
-            dialog.open();
-            hotRodViewContentProvider.refresh();
+          // log("[X1] properties loaded");
 
-          } catch (CouldNotLoadPropertiesException e) {
-            // log("[X1] Could not load properties");
-            MessageDialog.openError(shell, "Invalid HotRod Plugin's properties file",
-                "Invalid HotRod Plugin's properties file: " + LocalProperties.CONFIG_FILE_NAME + "\n\nError: "
-                    + e.getMessage()
-                    + "\n\nPlease manually restore this file, or remove it to create a new one from scratch.");
-          }
+          DatabasePropertiesWizard wizard = new DatabasePropertiesWizard(mainConfigFace, projectProperties,
+              viewer.getControl().getShell());
+          NavigationAwareWizardDialog dialog = new NavigationAwareWizardDialog(shell, wizard);
+          dialog.open();
+          hotRodViewContentProvider.refresh();
+
+          // } catch (CouldNotLoadPropertiesException e) {
+          // // log("[X1] Could not load properties");
+          // MessageDialog.openError(shell, "Invalid HotRod Plugin's properties
+          // file",
+          // "Invalid HotRod Plugin's properties file: " +
+          // ProjectProperties.CONFIG_FILE_NAME + "\n\nError: "
+          // + e.getMessage()
+          // + "\n\nPlease manually restore this file, or remove it to create a
+          // new one from scratch.");
+          // }
 
         }
       }
@@ -582,6 +631,54 @@ public class HotRodView extends ViewPart {
   @Override
   public void setFocus() {
     viewer.getControl().setFocus();
+  }
+
+  // Generation
+
+  private void generateAll(final HotRodConfigTag config, final FileProperties fileProperties, final IProject project) {
+
+    File projectDir = project.getLocation().toFile();
+
+    List<String> classPath = new ArrayList<String>();
+    for (String p : fileProperties.getDriverClassPathEntries()) {
+      if (FUtil.isAbsolute(new File(p))) {
+        classPath.add(p);
+      } else {
+        File f = new File(projectDir, p);
+        classPath.add(f.getAbsolutePath());
+      }
+    }
+
+    DatabaseLocation loc = new DatabaseLocation(fileProperties.getDriverClassName(), fileProperties.getUrl(),
+        fileProperties.getUsername(), fileProperties.getPassword(), fileProperties.getCatalog(),
+        fileProperties.getSchema(), classPath);
+
+    try {
+      HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().getGenerator(loc, config, DisplayMode.LIST);
+      log("Generator instantiated.");
+
+      g.prepareGeneration();
+      log("Generation prepared.");
+
+      g.generate();
+      log("Generation complete.");
+
+    } catch (ControlledException e) {
+      if (e.getLocation() == null) {
+        throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code:\n" + e.getMessage());
+      } else {
+        throw new BuildException(
+            Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "
+                + e.getLocation().render() + ":\n" + e.getMessage());
+      }
+    } catch (UncontrolledException e) {
+      e.printStackTrace();
+      throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
+    } catch (Throwable t) {
+      t.printStackTrace();
+      throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
+    }
+
   }
 
   private static void log(final String txt) {

@@ -197,29 +197,30 @@ public abstract class AbstractFace implements IAdaptable {
 
   // Tree display
 
-  private TagStatus treeStatus = null;
+  // private TagStatus treeStatus = null;
 
-  public final TagStatus getTreeStatus() {
-    log("0 name=" + this.name + " this.getStatus()=" + this.getStatus() + " this.treeStatus=" + this.treeStatus);
-    if (this.treeStatus == null) {
-      log("1");
-      if (this.getStatus() == TagStatus.MODIFIED) {
-        log("2");
-        this.treeStatus = TagStatus.MODIFIED;
-      } else {
-        log("3");
-        boolean changed = false;
-        for (AbstractFace c : this.children) {
-          if (c.getTreeStatus() != TagStatus.UNAFFECTED) {
-            changed = true;
-          }
-        }
-        this.treeStatus = changed ? TagStatus.MODIFIED : this.getStatus();
-      }
-    }
-    log("4 this.treeStatus=" + this.treeStatus);
-    return this.treeStatus;
-  }
+  // public final TagStatus getTreeStatus() {
+  // log("0 name=" + this.name + " this.getStatus()=" + this.getStatus() + "
+  // this.treeStatus=" + this.treeStatus);
+  // if (this.treeStatus == null) {
+  // log("1");
+  // if (this.getStatus() == TagStatus.MODIFIED) {
+  // log("2");
+  // this.treeStatus = TagStatus.MODIFIED;
+  // } else {
+  // log("3");
+  // boolean changed = false;
+  // for (AbstractFace c : this.children) {
+  // if (c.getTreeStatus() != TagStatus.UNAFFECTED) {
+  // changed = true;
+  // }
+  // }
+  // this.treeStatus = changed ? TagStatus.MODIFIED : this.getStatus();
+  // }
+  // }
+  // log("4 this.treeStatus=" + this.treeStatus);
+  // return this.treeStatus;
+  // }
 
   public final TagStatus getStatus() {
     return this.tag == null ? TagStatus.UNAFFECTED : this.tag.getStatus();
@@ -259,12 +260,12 @@ public abstract class AbstractFace implements IAdaptable {
     return true;
   }
 
-  private final void unsetTreeStatus() {
-    this.treeStatus = null;
-    if (this.parent != null) {
-      this.parent.unsetTreeStatus();
-    }
-  }
+  // private final void unsetTreeStatus() {
+  // this.treeStatus = null;
+  // if (this.parent != null) {
+  // this.parent.unsetTreeStatus();
+  // }
+  // }
 
   public final void applyChangesFrom(final AbstractFace fresh) {
 
@@ -272,7 +273,7 @@ public abstract class AbstractFace implements IAdaptable {
 
     if (this.tag.copyNonKeyProperties(fresh.tag)) {
       this.tag.setStatus(TagStatus.MODIFIED);
-      this.unsetTreeStatus();
+      // this.unsetTreeStatus();
     }
 
     // sub item changes
@@ -289,17 +290,17 @@ public abstract class AbstractFace implements IAdaptable {
       } else {
         this.children.add(f);
         f.parent = this;
-        f.unsetTreeStatus();
+        // f.unsetTreeStatus();
         if (f.tag != null) {
           f.tag.setStatus(TagStatus.ADDED);
         }
       }
     }
     log("applyChangesFrom() name=" + this.name + " existing.isEmpty()=" + existing.isEmpty());
-    if (!existing.isEmpty()) { // some children were removed
-      this.unsetTreeStatus();
-      this.treeStatus = TagStatus.MODIFIED;
-    }
+    // if (!existing.isEmpty()) { // some children were removed
+    // this.unsetTreeStatus();
+    // this.treeStatus = TagStatus.MODIFIED;
+    // }
 
   }
 

@@ -335,7 +335,7 @@ public abstract class HotRodGenerator {
       // Prepare DAOs meta data
 
       this.daos = new LinkedHashSet<PlainDAOMetadata>();
-      for (ExecutorTag tag : config.getDAOs()) {
+      for (ExecutorTag tag : config.getExecutors()) {
         PlainDAOMetadata dm = new PlainDAOMetadata(tag, this.adapter, config, tag.getFragmentConfig());
         this.daos.add(dm);
       }
@@ -772,7 +772,7 @@ public abstract class HotRodGenerator {
     sb.append(this.db.getTables().size() + " " + (this.db.getTables().size() == 1 ? "table" : "tables") + ", ");
     sb.append(this.db.getViews().size() + " " + (this.db.getViews().size() == 1 ? "view" : "views") + ", ");
     sb.append(this.enums.size() + " " + (this.enums.size() == 1 ? "enum" : "enums") + ", ");
-    sb.append(this.config.getDAOs().size() + " " + (this.config.getDAOs().size() == 1 ? "DAO" : "DAOs") //
+    sb.append(this.config.getExecutors().size() + " " + (this.config.getExecutors().size() == 1 ? "DAO" : "DAOs") //
         + ", ");
     sb.append(sequences + " sequence" + (sequences == 1 ? "" : "s") + ", ");
     sb.append(queries + " " + (queries == 1 ? "query" : "queries") + ", ");
@@ -801,7 +801,7 @@ public abstract class HotRodGenerator {
         ns.registerDAOTag(s, "select", s.getJavaClassName());
       }
 
-      for (ExecutorTag c : config.getDAOs()) {
+      for (ExecutorTag c : config.getExecutors()) {
         ns.registerDAOTag(c, "dao", c.getJavaClassName());
       }
     } catch (DuplicateDAOClassException e) {

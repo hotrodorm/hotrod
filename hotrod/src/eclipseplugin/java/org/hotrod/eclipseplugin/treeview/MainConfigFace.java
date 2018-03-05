@@ -99,7 +99,8 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   @Override
   public String getIconPath() {
-    return this.config != null ? "eclipse-plugin/icons/main-config5-16.png" : "eclipse-plugin/icons/main-config5-bad-16.png";
+    return this.config != null ? "eclipse-plugin/icons/main-config5-16.png"
+        : "eclipse-plugin/icons/main-config5-bad-16.png";
   }
 
   @Override
@@ -110,6 +111,10 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
   @Override
   public int compareTo(final MainConfigFace other) {
     return this.getName().compareTo(other.getName());
+  }
+
+  public HotRodConfigTag getConfig() {
+    return config;
   }
 
   // Indexable

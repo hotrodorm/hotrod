@@ -118,7 +118,7 @@ public class HotRodInspectorAntTask extends Task {
     // Assemble database location
 
     DatabaseLocation loc = new DatabaseLocation(this.driverClass, this.url, this.username, this.password, this.catalog,
-        this.schema);
+        this.schema, null);
 
     // Load the database metadata
 

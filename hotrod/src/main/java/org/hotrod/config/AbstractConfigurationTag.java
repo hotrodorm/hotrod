@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 
-public abstract class AbstractConfigurationTag {
+public abstract class AbstractConfigurationTag implements Comparable<AbstractConfigurationTag> {
 
   public enum TagStatus {
     UNAFFECTED, MODIFIED, ADDED, DELETED;
@@ -42,8 +42,15 @@ public abstract class AbstractConfigurationTag {
     return status;
   }
 
-  public void setStatus(TagStatus status) {
+  public void setStatus(final TagStatus status) {
     this.status = status;
+  }
+
+  public void setTreeStatus(final TagStatus status) {
+    this.status = status;
+    for (AbstractConfigurationTag subTag : this.subTags) {
+      subTag.setTreeStatus(status);
+    }
   }
 
   public List<AbstractConfigurationTag> getSubTags() {
@@ -60,6 +67,17 @@ public abstract class AbstractConfigurationTag {
 
   public SourceLocation getSourceLocation() {
     return this.location;
+  }
+
+  // Comparable
+
+  @Override
+  public int compareTo(final AbstractConfigurationTag o) {
+    if (this.same(o)) {
+      return 0;
+    }
+    int v = this.tagName.compareTo(o.tagName);
+    return v == 0 ? -1 : v;
   }
 
   // Abstract methods for computing item changes

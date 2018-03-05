@@ -145,7 +145,7 @@ public class FacetTag extends AbstractConfigurationTag {
     return this.enums;
   }
 
-  public List<ExecutorTag> getDaos() {
+  public List<ExecutorTag> getExecutors() {
     return daos;
   }
 
