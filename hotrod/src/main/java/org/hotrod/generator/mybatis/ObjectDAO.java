@@ -1,10 +1,7 @@
 package org.hotrod.generator.mybatis;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -28,6 +25,8 @@ import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAOType;
+import org.hotrod.generator.FileGenerator;
+import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
@@ -81,7 +80,7 @@ public class ObjectDAO {
   private ObjectVO vo = null;
   private Mapper mapper = null;
 
-  private Writer w;
+  private TextWriter w;
 
   // Constructors
 
@@ -122,7 +121,7 @@ public class ObjectDAO {
     return this.daoType == DAOType.PLAIN;
   }
 
-  public void generate() throws UncontrolledException, ControlledException {
+  public void generate(final FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
 
     String className = this.getClassName() + ".java";
 
@@ -132,7 +131,7 @@ public class ObjectDAO {
     this.w = null;
 
     try {
-      this.w = new BufferedWriter(new FileWriter(f));
+      this.w = fileGenerator.createWriter(f);
 
       writeClassHeader();
 

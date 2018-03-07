@@ -67,8 +67,11 @@ import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
 import org.hotrod.eclipseplugin.treeview.HotRodLabelProvider;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
+import org.hotrod.eclipseplugin.utils.EclipseFileGenerator;
 import org.hotrod.eclipseplugin.utils.FUtil;
+import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.LiveGenerator;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public class HotRodView extends ViewPart {
@@ -660,7 +663,18 @@ public class HotRodView extends ViewPart {
       g.prepareGeneration();
       log("Generation prepared.");
 
-      g.generate();
+      try {
+        LiveGenerator liveGenerator = (LiveGenerator) g;
+
+        // a live generator
+        FileGenerator fg = new EclipseFileGenerator(project);
+        liveGenerator.generate(fg);
+
+      } catch (ClassCastException e) {
+        // not a live generator
+        g.generate();
+      }
+
       log("Generation complete.");
 
     } catch (ControlledException e) {

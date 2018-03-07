@@ -1,11 +1,8 @@
 package org.hotrod.generator.mybatis;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +10,8 @@ import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.MyBatisTag;
+import org.hotrod.generator.FileGenerator;
+import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.runtime.util.SUtils;
 
 public class MyBatisConfiguration {
@@ -25,7 +24,7 @@ public class MyBatisConfiguration {
 
   private MyBatisTag mybatisTag;
 
-  private Writer w;
+  private TextWriter w;
 
   public MyBatisConfiguration(final HotRodConfigTag config) {
     this.config = config;
@@ -51,7 +50,7 @@ public class MyBatisConfiguration {
     }
   }
 
-  public void generate() throws UncontrolledException, ControlledException {
+  public void generate(final FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
 
     File templateFile = this.mybatisTag.getTemplate().getFile();
     if (!templateFile.exists()) {
@@ -86,7 +85,7 @@ public class MyBatisConfiguration {
     this.w = null;
 
     try {
-      this.w = new BufferedWriter(new FileWriter(mbconfig));
+      this.w = fileGenerator.createWriter(mbconfig);
 
       String mappers = prepareMappers();
       String result = template.replace(MAPPERS_INSERTION_TOKEN, mappers);

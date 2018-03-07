@@ -93,8 +93,8 @@ public class RelativeProjectPath {
   }
 
   private static void log(final String txt) {
-    System.out.println("[" + new Object() {
-    }.getClass().getEnclosingClass().getName() + "] " + txt);
+    // System.out.println("[" + new Object() {
+    // }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

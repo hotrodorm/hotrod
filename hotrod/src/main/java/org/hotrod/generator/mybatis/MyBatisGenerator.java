@@ -14,7 +14,9 @@ import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.generator.DAOType;
+import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.LiveGenerator;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.PlainDAOMetadata;
@@ -25,9 +27,10 @@ import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.LocalFileGenerator;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
-public class MyBatisGenerator extends HotRodGenerator {
+public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
 
   private static transient final Logger log = Logger.getLogger(MyBatisGenerator.class);
 
@@ -224,50 +227,53 @@ public class MyBatisGenerator extends HotRodGenerator {
 
   @Override
   public void generate() throws UncontrolledException, ControlledException {
-
     display("");
     display("Generating MyBatis DAOs & VOs...");
+    LocalFileGenerator fg = new LocalFileGenerator();
+    this.generate(fg);
+    display("");
+    display("MyBatis generation complete.");
+  }
+
+  @Override
+  public void generate(final FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
 
     // Abstract VOs, VOs, DAOs, and Mappers for <table> & <view> tags
 
     for (ObjectAbstractVO abstractVO : this.abstractVos.values()) {
-      abstractVO.generate();
+      abstractVO.generate(fileGenerator);
     }
 
     for (ObjectVO vo : this.vos.values()) {
-      vo.generate();
+      vo.generate(fileGenerator);
     }
 
     for (SelectAbstractVO avo : this.abstractSelectVOs) {
-      avo.generate();
+      avo.generate(fileGenerator);
     }
 
     for (SelectVO vo : this.selectVOs) {
-      vo.generate();
+      vo.generate(fileGenerator);
     }
 
     for (Mapper mapper : this.mappers.values()) {
-      mapper.generate();
+      mapper.generate(fileGenerator);
     }
 
     for (ObjectDAO dao : this.daos.values()) {
-      dao.generate();
+      dao.generate(fileGenerator);
     }
 
     // Enums
 
     for (EnumClass ec : this.enumClasses.values()) {
-      ec.generate();
+      ec.generate(fileGenerator);
     }
 
     // MyBatis Main configuration file
 
-    this.myBatisConfig.generate();
+    this.myBatisConfig.generate(fileGenerator);
 
-    // Generation complete
-
-    display("");
-    display("MyBatis generation complete.");
   }
 
   public ObjectVO getVO(final DataSetMetadata dataSet) {

@@ -10,8 +10,11 @@ import org.hotrod.buildinfo.BuildConstants;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.exceptions.FacetNotFoundException;
+import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.LiveGenerator;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.LocalFileGenerator;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public class HotRodAntTask extends Task {
@@ -175,7 +178,18 @@ public class HotRodAntTask extends Task {
       g.prepareGeneration();
       log.debug("Generation prepared.");
 
-      g.generate();
+      try {
+        LiveGenerator liveGenerator = (LiveGenerator) g;
+
+        // a live generator
+        FileGenerator fg = new LocalFileGenerator();
+        liveGenerator.generate(fg);
+
+      } catch (ClassCastException e) {
+        // not a live generator
+        g.generate();
+      }
+
       log.debug("Generation complete.");
 
     } catch (ControlledException e) {

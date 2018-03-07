@@ -1,10 +1,7 @@
 package org.hotrod.generator.mybatis;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -23,6 +20,8 @@ import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAOType;
+import org.hotrod.generator.FileGenerator;
+import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
@@ -68,7 +67,7 @@ public class Mapper {
 
   private EntityDAORegistry entityDAORegistry;
 
-  private Writer w;
+  private TextWriter w;
 
   public Mapper(final AbstractDAOTag compositeTag, final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo,
@@ -127,7 +126,7 @@ public class Mapper {
     return this.type == DAOType.PLAIN;
   }
 
-  public void generate() throws UncontrolledException, ControlledException {
+  public void generate(final FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
     String sourceFileName = this.getSourceFileName();
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
@@ -137,7 +136,7 @@ public class Mapper {
     this.w = null;
 
     try {
-      this.w = new BufferedWriter(new FileWriter(mapper));
+      this.w = fileGenerator.createWriter(mapper);
 
       writeHeader();
 

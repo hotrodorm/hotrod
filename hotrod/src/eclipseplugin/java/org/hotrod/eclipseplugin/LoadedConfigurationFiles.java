@@ -270,8 +270,8 @@ public class LoadedConfigurationFiles implements FileChangeListener {
   }
 
   private static void log(final String txt) {
-    System.out.println("[" + new Object() {
-    }.getClass().getEnclosingClass().getName() + "] " + txt);
+    // System.out.println("[" + new Object() {
+    // }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
   private static void log(final String txt, final Throwable t) {

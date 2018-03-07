@@ -1,13 +1,12 @@
 package org.hotrod.generator.mybatis;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.UncontrolledException;
+import org.hotrod.generator.FileGenerator;
+import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.utils.ClassPackage;
@@ -38,17 +37,17 @@ public class SelectVO {
     this.abstractVO = abstractVO;
   }
 
-  public void generate() throws UncontrolledException {
+  public void generate(final FileGenerator fileGenerator) throws UncontrolledException {
     String sourceClassName = this.className + ".java";
 
     File dir = this.layout.getVOPackageDir(this.classPackage);
 
     File vo = new File(dir, sourceClassName);
     if (!vo.exists()) {
-      Writer w = null;
+      TextWriter w = null;
 
       try {
-        w = new BufferedWriter(new FileWriter(vo));
+        w = fileGenerator.createWriter(vo);
 
         w.write("package " + this.classPackage.getPackage() + ";\n\n");
 

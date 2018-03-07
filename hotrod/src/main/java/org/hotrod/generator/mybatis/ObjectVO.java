@@ -1,15 +1,14 @@
 package org.hotrod.generator.mybatis;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
+import org.hotrod.generator.FileGenerator;
+import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.utils.ClassPackage;
@@ -48,7 +47,7 @@ public class ObjectVO {
     this.classPackage = this.layout.getDAOPackage(this.fragmentPackage);
   }
 
-  public void generate() throws UncontrolledException {
+  public void generate(final FileGenerator fileGenerator) throws UncontrolledException {
     String sourceClassName = this.getClassName() + ".java";
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
@@ -58,10 +57,10 @@ public class ObjectVO {
     File vo = new File(dir, sourceClassName);
     log.debug("vo file:" + vo.getAbsolutePath());
     if (!vo.exists()) {
-      Writer w = null;
+      TextWriter w = null;
 
       try {
-        w = new BufferedWriter(new FileWriter(vo));
+        w = fileGenerator.createWriter(vo);
 
         w.write("package " + this.classPackage.getPackage() + ";\n\n");
 

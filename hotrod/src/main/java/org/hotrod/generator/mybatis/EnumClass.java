@@ -1,10 +1,7 @@
 package org.hotrod.generator.mybatis;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
@@ -13,6 +10,8 @@ import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag.EnumConstant;
 import org.hotrod.config.EnumTag.EnumProperty;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.generator.FileGenerator;
+import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ClassPackage;
@@ -38,7 +37,7 @@ public class EnumClass {
 
   private ClassPackage classPackage;
 
-  private Writer w;
+  private TextWriter w;
 
   // Constructor
 
@@ -61,7 +60,7 @@ public class EnumClass {
 
   // Behavior
 
-  public void generate() throws UncontrolledException, ControlledException {
+  public void generate(final FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
     String sourceClassName = this.getClassName() + ".java";
 
     // String valueClassName =
@@ -72,7 +71,7 @@ public class EnumClass {
     this.w = null;
 
     try {
-      this.w = new BufferedWriter(new FileWriter(ec));
+      this.w = fileGenerator.createWriter(ec);
 
       println("package " + this.primitivesPackage.getPackage() + ";");
       println();
