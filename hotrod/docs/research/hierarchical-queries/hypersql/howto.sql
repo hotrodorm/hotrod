@@ -1,6 +1,5 @@
 -- Limitations:
 -- ============
---  * The documentation says views cannot be created with hierarchical queries, but I could do it (H2 1.4).
 --  * Need to define a query table different to any other database object (table, view, etc.) name. 
 --  * May need to define extra columns wih different names to other columns in the table(s).
 --  * Can only use "union all". Simple "union" is not allowed.
@@ -24,22 +23,22 @@ insert into tree_node (id, name, parent_id) values (7, '1a7', 2);
 --  * The first select is NOT recursive and defines the root(s) of the tree.
 --  * The second select is recursive and populate the remaining levels of the tree.
 
-with node (id, parent_id, name, level) as (
+with recursive node (id, parent_id, name, level) as (
   select id, parent_id, name, 1 from tree_node where parent_id is null
-  union all
-  select t.id, t.parent_id, t.name, a.level + 1
-    from node a join tree_node t on t.parent_id = a.id
+  union
+  select t.id, t.parent_id, t.name, node.level + 1
+    from node join tree_node t on t.parent_id = node.id
 )
 select id, parent_id, name, level from node 
 
 -- 2. Enhanced hierarchical select. Note:
 --  * Adds the extra column breadcrumbs: sorts the rows and show the tree in a clearer way.
 --  * Returns the root ancestor of every row.
-
-with node (id, parent_id, name, level, breadcrumbs, root_id) as (
-  select id, parent_id, name, 1, to_char(id, '0000'), id from tree_node where parent_id is null
-  union all
-  select t.id, t.parent_id, t.name, a.level + 1, a.breadcrumbs || '.' || to_char(t.id, '0000'), a.root_id
-    from node a join tree_node t on t.parent_id = a.id
+  
+with recursive node (id, parent_id, name, level, breadcrumbs, root_id) as (
+  select id, parent_id, name, 1, rpad(lpad(id, 4, '0'), 100), id + 0 from tree_node where parent_id is null
+  union
+  select t.id, t.parent_id, t.name, node.level + 1, left(trim(node.breadcrumbs) || '.' || lpad(t.id, 4, '0'), 100), node.root_id
+    from node join tree_node t on t.parent_id = node.id
 )
 select repeat('.  ', level - 1) || name, id, parent_id, name, level, breadcrumbs, root_id from node order by breadcrumbs
