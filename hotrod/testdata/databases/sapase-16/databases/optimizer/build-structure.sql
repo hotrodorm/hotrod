@@ -42,7 +42,7 @@ create table "order" (
   id integer primary key not null,
   customer_id integer not null,
   placed date not null,
-  shipment_id integer,
+  shipment_id integer null,
   status_code integer not null,
   constraint fk_order_customer foreign key (customer_id) references customer (id),
   constraint fk_order_shipment foreign key (shipment_id) references shipment (id),
@@ -56,11 +56,11 @@ create index ix_order_customer_placed on "order" (customer_id, placed);
 create table order_item (
   id integer primary key not null,
   order_id integer not null,
-  product_id integer,
+  product_id integer null,
   quantity integer not null,
   status_code integer not null,
-  deferred_shipment_date date,
-  constraint fk_item_order foreign key (order_id) references "order" (id),
+  deferred_shipment_date date null,
+  -- constraint fk_item_order foreign key (order_id) references "order" (id),
   constraint fk_order_product foreign key (product_id) references product (id),
   constraint fk_item_status foreign key (status_code) references code (id)
 );

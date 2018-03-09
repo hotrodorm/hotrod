@@ -5,3 +5,5 @@ drop table customer;
 drop table product;
 drop table shipment;
 drop table address;
+
+drop function appendlength;

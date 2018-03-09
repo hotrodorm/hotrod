@@ -12,45 +12,113 @@ COULD NOT RUN ANY TEST AGAINST SAP ASE, SINCE IT DOES NOT RESPOND ANYMORE!
 
 The optimizer DOES EXECUTE an "Index Range Scan" as shown below.
 
-set showplan_text on;
+set showplan on
 
 select * from "order" o 
   where o.id between 22501 and 22704 -- selectivity = 204 / 50000 = 0.004
 
-  |--Clustered Index Seek(OBJECT:([master].[dbo].[order].[PK__order__3213E83F86A15232] AS [o]), SEEK:([o].[id] >= CONVERT_IMPLICIT(int,[@1],0) AND [o].[id] <= CONVERT_IMPLICIT(int,[@2],0)) ORDERED FORWARD)
+SQLWarning: ErrorCode:   6289 SQLState: 01ZZZ --- QUERY PLAN FOR STATEMENT 1 (at line 1).
+SQLWarning: ErrorCode:  10283 SQLState: 01ZZZ --- Optimized using Serial Mode
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6201 SQLState: 01ZZZ --- STEP 1
+SQLWarning: ErrorCode:  10262 SQLState: 01ZZZ --- The type of query is SELECT.
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 1 operator(s) under root
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |ROOT:EMIT Operator (VA = 1)
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |SCAN Operator (VA = 0)
+SQLWarning: ErrorCode:   6215 SQLState: 01ZZZ --- |   |  FROM TABLE
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |  "order"
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |  o
+SQLWarning: ErrorCode:   6224 SQLState: 01ZZZ --- |   |  Using Clustered Index.
+SQLWarning: ErrorCode:   6225 SQLState: 01ZZZ --- |   |  Index : order_id_8500990381
+SQLWarning: ErrorCode:   6276 SQLState: 01ZZZ --- |   |  Forward Scan.
+SQLWarning: ErrorCode:   6281 SQLState: 01ZZZ --- |   |  Positioning by key.
+SQLWarning: ErrorCode:   6287 SQLState: 01ZZZ --- |   |  Keys are:
+SQLWarning: ErrorCode:   6288 SQLState: 01ZZZ --- |   |    id ASC
+SQLWarning: ErrorCode:  10240 SQLState: 01ZZZ --- |   |  Using I/O Size 2 Kbytes for data pages.
+SQLWarning: ErrorCode:  10239 SQLState: 01ZZZ --- |   |  With LRU Buffer Replacement Strategy for data pages.
 
 2. Optimizer use of index range
 -------------------------------
 
 The optimizer PERFORMS an "Index Range Scan" as shown below.
 
-set showplan_text on;
+set showplan on
 
 select * from "order" o 
   where o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
 
-  |--Clustered Index Scan(OBJECT:([master].[dbo].[order].[PK__order__3213E83F86A15232] AS [o]), WHERE:([master].[dbo].[order].[placed] as [o].[placed]>'2017-11-15'))
+SQLWarning: ErrorCode:   6289 SQLState: 01ZZZ --- QUERY PLAN FOR STATEMENT 1 (at line 1).
+SQLWarning: ErrorCode:  10283 SQLState: 01ZZZ --- Optimized using Serial Mode
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6201 SQLState: 01ZZZ --- STEP 1
+SQLWarning: ErrorCode:  10262 SQLState: 01ZZZ --- The type of query is SELECT.
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 1 operator(s) under root
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |ROOT:EMIT Operator (VA = 1)
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |SCAN Operator (VA = 0)
+SQLWarning: ErrorCode:   6215 SQLState: 01ZZZ --- |   |  FROM TABLE
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |  "order"
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |  o
+SQLWarning: ErrorCode:   6225 SQLState: 01ZZZ --- |   |  Index : ix_order_placed
+SQLWarning: ErrorCode:   6276 SQLState: 01ZZZ --- |   |  Forward Scan.
+SQLWarning: ErrorCode:   6281 SQLState: 01ZZZ --- |   |  Positioning by key.
+SQLWarning: ErrorCode:   6287 SQLState: 01ZZZ --- |   |  Keys are:
+SQLWarning: ErrorCode:   6288 SQLState: 01ZZZ --- |   |    placed ASC
+SQLWarning: ErrorCode:   6272 SQLState: 01ZZZ --- |   |  Using I/O Size 2 Kbytes for index leaf pages.
+SQLWarning: ErrorCode:   6273 SQLState: 01ZZZ --- |   |  With LRU Buffer Replacement Strategy for index leaf pages.
+SQLWarning: ErrorCode:  10240 SQLState: 01ZZZ --- |   |  Using I/O Size 2 Kbytes for data pages.
+SQLWarning: ErrorCode:  10239 SQLState: 01ZZZ --- |   |  With LRU Buffer Replacement Strategy for data pages.
 
 3. Dual index usage
 -------------------
 
 The optimizer DOES NOT PERFORM a dual "Index Range Scan", but a simple full table scan.
 
-set showplan_text on;
+set showplan on
 
 select * from "order" o 
   where o.placed > '2018-02-01' -- selectivity =  82 / 50000 = 0.0016
     or o.placed < '2012-10-21'  -- selectivity = 176 / 50000 = 0.0035
     -- total selectivity = 0.0016 + 0.0035 = 0.0051 
 
-  |--Clustered Index Scan(OBJECT:([master].[dbo].[order].[PK__order__3213E83F86A15232] AS [o]), WHERE:([master].[dbo].[order].[placed] as [o].[placed]<'2012-10-21' OR [master].[dbo].[order].[placed] as [o].[placed]>'2018-02-01'))
+SQLWarning: ErrorCode:   6289 SQLState: 01ZZZ --- QUERY PLAN FOR STATEMENT 1 (at line 1).
+SQLWarning: ErrorCode:  10283 SQLState: 01ZZZ --- Optimized using Serial Mode
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6201 SQLState: 01ZZZ --- STEP 1
+SQLWarning: ErrorCode:  10262 SQLState: 01ZZZ --- The type of query is SELECT.
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 2 operator(s) under root
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |ROOT:EMIT Operator (VA = 2)
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |RESTRICT Operator (VA = 1)(0)(0)(0)(7)(0)
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |SCAN Operator (VA = 0)
+SQLWarning: ErrorCode:   6215 SQLState: 01ZZZ --- |   |   |  FROM TABLE
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |  "order"
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |  o
+SQLWarning: ErrorCode:   6225 SQLState: 01ZZZ --- |   |   |  Index : ix_order_placed
+SQLWarning: ErrorCode:   6276 SQLState: 01ZZZ --- |   |   |  Forward Scan.
+SQLWarning: ErrorCode:   6282 SQLState: 01ZZZ --- |   |   |  Positioning at index start.
+SQLWarning: ErrorCode:   6272 SQLState: 01ZZZ --- |   |   |  Using I/O Size 2 Kbytes for index leaf pages.
+SQLWarning: ErrorCode:   6273 SQLState: 01ZZZ --- |   |   |  With LRU Buffer Replacement Strategy for index leaf pages.
+SQLWarning: ErrorCode:  10240 SQLState: 01ZZZ --- |   |   |  Using I/O Size 2 Kbytes for data pages.
+SQLWarning: ErrorCode:  10239 SQLState: 01ZZZ --- |   |   |  With LRU Buffer Replacement Strategy for data pages.
     
 4. Use index for like operator
 ------------------------------
 
 The optimizer DOES NOT PERFORM a dual "Index Range Scan", but a simple full table scan.
 
-set showplan_text on;
+set showplan on
 
 select * from customer 
   where first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
@@ -58,7 +126,31 @@ select * from customer
     -- estimated selectivity = 0.053 * 0.052 = 0.0028
     -- real selectivity      = 84 / 3000 = 0.0028
 
-  |--Clustered Index Scan(OBJECT:([master].[dbo].[customer].[PK__customer__3213E83F395372FE]), WHERE:([master].[dbo].[customer].[first_name] like 'JO%' AND [master].[dbo].[customer].[last_name] like 'CO%'))
+SQLWarning: ErrorCode:   6289 SQLState: 01ZZZ --- QUERY PLAN FOR STATEMENT 1 (at line 1).
+SQLWarning: ErrorCode:  10283 SQLState: 01ZZZ --- Optimized using Serial Mode
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6201 SQLState: 01ZZZ --- STEP 1
+SQLWarning: ErrorCode:  10262 SQLState: 01ZZZ --- The type of query is SELECT.
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 2 operator(s) under root
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |ROOT:EMIT Operator (VA = 2)
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |RESTRICT Operator (VA = 1)(0)(0)(0)(11)(0)
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |SCAN Operator (VA = 0)
+SQLWarning: ErrorCode:   6215 SQLState: 01ZZZ --- |   |   |  FROM TABLE
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |  customer
+SQLWarning: ErrorCode:   6225 SQLState: 01ZZZ --- |   |   |  Index : ix_customer_last
+SQLWarning: ErrorCode:   6276 SQLState: 01ZZZ --- |   |   |  Forward Scan.
+SQLWarning: ErrorCode:   6281 SQLState: 01ZZZ --- |   |   |  Positioning by key.
+SQLWarning: ErrorCode:   6287 SQLState: 01ZZZ --- |   |   |  Keys are:
+SQLWarning: ErrorCode:   6288 SQLState: 01ZZZ --- |   |   |    last_name ASC
+SQLWarning: ErrorCode:   6272 SQLState: 01ZZZ --- |   |   |  Using I/O Size 2 Kbytes for index leaf pages.
+SQLWarning: ErrorCode:   6273 SQLState: 01ZZZ --- |   |   |  With LRU Buffer Replacement Strategy for index leaf pages.
+SQLWarning: ErrorCode:  10240 SQLState: 01ZZZ --- |   |   |  Using I/O Size 2 Kbytes for data pages.
+SQLWarning: ErrorCode:  10239 SQLState: 01ZZZ --- |   |   |  With LRU Buffer Replacement Strategy for data pages.
 
 5. Full Test of the Join order
 ------------------------------
@@ -73,7 +165,7 @@ The optimizer did not choose the best join order.
       -> customer -> order -> code(oc) -> order_item -> code(ic) -> product -> shipment -> address
    Cost: 84        + 3      + 9         + 10          + 10        + 6        + 6         + 6 = 134 rows read.
 
-set showplan_text on;
+set showplan on
 
 select
     c.phone_number, c.first_name, c.last_name, c.address_id,
@@ -98,24 +190,138 @@ select
   order by
     c.id, o.id desc, s.id, i.id
 
-  |--Nested Loops(Left Outer Join, OUTER REFERENCES:([s].[address_id], [Expr1013]) WITH ORDERED PREFETCH)
-       |--Sort(ORDER BY:([o].[customer_id] ASC, [o].[id] DESC, [s].[id] ASC, [i].[id] ASC))
-       |    |--Nested Loops(Left Outer Join, OUTER REFERENCES:([o].[shipment_id], [Expr1012]) WITH UNORDERED PREFETCH)
-       |         |--Nested Loops(Left Outer Join, OUTER REFERENCES:([i].[product_id], [Expr1011]) WITH UNORDERED PREFETCH)
-       |         |    |--Nested Loops(Inner Join, OUTER REFERENCES:([o].[status_code]))
-       |         |    |    |--Nested Loops(Inner Join, OUTER REFERENCES:([i].[status_code]))
-       |         |    |    |    |--Nested Loops(Inner Join, OUTER REFERENCES:([i].[id], [Expr1010]) WITH UNORDERED PREFETCH)
-       |         |    |    |    |    |--Nested Loops(Inner Join, OUTER REFERENCES:([o].[id], [Expr1009]) WITH UNORDERED PREFETCH)
-       |         |    |    |    |    |    |--Hash Match(Inner Join, HASH:([c].[id])=([o].[customer_id]))
-       |         |    |    |    |    |    |    |--Clustered Index Scan(OBJECT:([master].[dbo].[customer].[PK__customer__3213E83F395372FE] AS [c]), WHERE:([master].[dbo].[customer].[first_name] as [c].[first_name] like 'JO%' AND [master].[dbo].[customer].[last_name] as [c].[last_name] like 'CO%'))
-       |         |    |    |    |    |    |    |--Clustered Index Scan(OBJECT:([master].[dbo].[order].[PK__order__3213E83F86A15232] AS [o]), WHERE:([master].[dbo].[order].[placed] as [o].[placed]>'2017-11-15'))
-       |         |    |    |    |    |    |--Index Seek(OBJECT:([master].[dbo].[order_item].[ix_order_id_status] AS [i]), SEEK:([i].[order_id]=[master].[dbo].[order].[id] as [o].[id]) ORDERED FORWARD)
-       |         |    |    |    |    |--Clustered Index Seek(OBJECT:([master].[dbo].[order_item].[PK__order_it__3213E83F08710BAA] AS [i]), SEEK:([i].[id]=[master].[dbo].[order_item].[id] as [i].[id]) LOOKUP ORDERED FORWARD)
-       |         |    |    |    |--Clustered Index Seek(OBJECT:([master].[dbo].[code].[PK__code__3213E83FEA27D5DE] AS [ic]), SEEK:([ic].[id]=[master].[dbo].[order_item].[status_code] as [i].[status_code]),  WHERE:([master].[dbo].[code].[type] as [ic].[type]='CLOSED') ORDERED FORWARD)
-       |         |    |    |--Clustered Index Seek(OBJECT:([master].[dbo].[code].[PK__code__3213E83FEA27D5DE] AS [oc]), SEEK:([oc].[id]=[master].[dbo].[order].[status_code] as [o].[status_code]),  WHERE:([master].[dbo].[code].[type] as [oc].[type]='CLOSED') ORDERED FORWARD)
-       |         |    |--Clustered Index Seek(OBJECT:([master].[dbo].[product].[PK__product__3213E83FC176AF36] AS [p]), SEEK:([p].[id]=[master].[dbo].[order_item].[product_id] as [i].[product_id]) ORDERED FORWARD)
-       |         |--Clustered Index Seek(OBJECT:([master].[dbo].[shipment].[PK__shipment__3213E83F9ACA7E0C] AS [s]), SEEK:([s].[id]=[master].[dbo].[order].[shipment_id] as [o].[shipment_id]) ORDERED FORWARD)
-       |--Clustered Index Seek(OBJECT:([master].[dbo].[address].[PK__address__3213E83FFA12694B] AS [a]), SEEK:([a].[id]=[master].[dbo].[shipment].[address_id] as [s].[address_id]) ORDERED FORWARD)
+SQLWarning: ErrorCode:   6289 SQLState: 01ZZZ --- QUERY PLAN FOR STATEMENT 1 (at line 1).
+SQLWarning: ErrorCode:  10283 SQLState: 01ZZZ --- Optimized using Serial Mode
+SQLWarning: ErrorCode:  10284 SQLState: 01ZZZ --- Optimizer timed out 1 time(s) while generating this plan, Timeout Limit: 10
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6201 SQLState: 01ZZZ --- STEP 1
+SQLWarning: ErrorCode:  10262 SQLState: 01ZZZ --- The type of query is SELECT.
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 16 operator(s) under root
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- 
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |ROOT:EMIT Operator (VA = 16)
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |RESTRICT Operator (VA = 15)(0)(0)(0)(0)(6)
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |SORT  Operator (VA = 14)
+SQLWarning: ErrorCode:  10263 SQLState: 01ZZZ --- |   |   | Using Worktable1 for internal storage.
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |NESTED LOOP JOIN Operator (VA = 13) (Join Type: Left Outer Join)
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |N-ARY NESTED LOOP JOIN Operator (VA = 11) has 4 children.
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |NESTED LOOP JOIN Operator (VA = 7) (Join Type: Left Outer Join)
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |   |NESTED LOOP JOIN Operator (VA = 5) (Join Type: Inner Join)
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |NESTED LOOP JOIN Operator (VA = 2) (Join Type: Left Outer Join)
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |SCAN Operator (VA = 0)
+SQLWarning: ErrorCode:   6215 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  FROM TABLE
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  "order"
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  o
+SQLWarning: ErrorCode:   6225 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Index : ix_order_placed
+SQLWarning: ErrorCode:   6276 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Forward Scan.
+SQLWarning: ErrorCode:   6281 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Positioning by key.
+SQLWarning: ErrorCode:   6287 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Keys are:
+SQLWarning: ErrorCode:   6288 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |    placed ASC
+SQLWarning: ErrorCode:   6272 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Using I/O Size 2 Kbytes for index leaf pages.
+SQLWarning: ErrorCode:   6273 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  With LRU Buffer Replacement Strategy for index leaf pages.
+SQLWarning: ErrorCode:  10240 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Using I/O Size 2 Kbytes for data pages.
+SQLWarning: ErrorCode:  10239 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  With LRU Buffer Replacement Strategy for data pages.
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |SCAN Operator (VA = 1)
+SQLWarning: ErrorCode:   6215 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  FROM TABLE
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  shipment
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  s
+SQLWarning: ErrorCode:   6224 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Using Clustered Index.
+SQLWarning: ErrorCode:   6225 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Index : shipment_id_6900984681
+SQLWarning: ErrorCode:   6276 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Forward Scan.
+SQLWarning: ErrorCode:   6281 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Positioning by key.
+SQLWarning: ErrorCode:   6287 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Keys are:
+SQLWarning: ErrorCode:   6288 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |    id ASC
+SQLWarning: ErrorCode:  10240 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Using I/O Size 2 Kbytes for data pages.
+SQLWarning: ErrorCode:  10239 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  With LRU Buffer Replacement Strategy for data pages.
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |RESTRICT Operator (VA = 4)(0)(0)(0)(11)(0)
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |SCAN Operator (VA = 3)
+SQLWarning: ErrorCode:   6215 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  FROM TABLE
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  customer
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  c
+SQLWarning: ErrorCode:   6224 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Using Clustered Index.
+SQLWarning: ErrorCode:   6225 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Index : customer_id_7700987531
+SQLWarning: ErrorCode:   6276 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Forward Scan.
+SQLWarning: ErrorCode:   6281 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Positioning by key.
+SQLWarning: ErrorCode:   6287 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Keys are:
+SQLWarning: ErrorCode:   6288 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |    id ASC
+SQLWarning: ErrorCode:  10240 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  Using I/O Size 2 Kbytes for data pages.
+SQLWarning: ErrorCode:  10239 SQLState: 01ZZZ --- |   |   |   |   |   |   |   |   |  With LRU Buffer Replacement Strategy for data pages.
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |   |SCAN Operator (VA = 6)
+SQLWarning: ErrorCode:   6215 SQLState: 01ZZZ --- |   |   |   |   |   |   |  FROM TABLE
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |   |   |  address
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |   |   |  a
+SQLWarning: ErrorCode:   6224 SQLState: 01ZZZ --- |   |   |   |   |   |   |  Using Clustered Index.
+SQLWarning: ErrorCode:   6225 SQLState: 01ZZZ --- |   |   |   |   |   |   |  Index : address_id_6580983541
+SQLWarning: ErrorCode:   6276 SQLState: 01ZZZ --- |   |   |   |   |   |   |  Forward Scan.
+SQLWarning: ErrorCode:   6281 SQLState: 01ZZZ --- |   |   |   |   |   |   |  Positioning by key.
+SQLWarning: ErrorCode:   6287 SQLState: 01ZZZ --- |   |   |   |   |   |   |  Keys are:
+SQLWarning: ErrorCode:   6288 SQLState: 01ZZZ --- |   |   |   |   |   |   |    id ASC
+SQLWarning: ErrorCode:  10240 SQLState: 01ZZZ --- |   |   |   |   |   |   |  Using I/O Size 2 Kbytes for data pages.
+SQLWarning: ErrorCode:  10239 SQLState: 01ZZZ --- |   |   |   |   |   |   |  With LRU Buffer Replacement Strategy for data pages.
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |SCAN Operator (VA = 8)
+SQLWarning: ErrorCode:   6215 SQLState: 01ZZZ --- |   |   |   |   |   |  FROM TABLE
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |   |  code
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |   |  ic
+SQLWarning: ErrorCode:   6223 SQLState: 01ZZZ --- |   |   |   |   |   |  Table Scan.
+SQLWarning: ErrorCode:   6276 SQLState: 01ZZZ --- |   |   |   |   |   |  Forward Scan.
+SQLWarning: ErrorCode:   6278 SQLState: 01ZZZ --- |   |   |   |   |   |  Positioning at start of table.
+SQLWarning: ErrorCode:  10240 SQLState: 01ZZZ --- |   |   |   |   |   |  Using I/O Size 2 Kbytes for data pages.
+SQLWarning: ErrorCode:  10239 SQLState: 01ZZZ --- |   |   |   |   |   |  With LRU Buffer Replacement Strategy for data pages.
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |SCAN Operator (VA = 9)
+SQLWarning: ErrorCode:   6215 SQLState: 01ZZZ --- |   |   |   |   |   |  FROM TABLE
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |   |  order_item
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |   |  i
+SQLWarning: ErrorCode:   6225 SQLState: 01ZZZ --- |   |   |   |   |   |  Index : ix_order_id_status
+SQLWarning: ErrorCode:   6276 SQLState: 01ZZZ --- |   |   |   |   |   |  Forward Scan.
+SQLWarning: ErrorCode:   6281 SQLState: 01ZZZ --- |   |   |   |   |   |  Positioning by key.
+SQLWarning: ErrorCode:   6287 SQLState: 01ZZZ --- |   |   |   |   |   |  Keys are:
+SQLWarning: ErrorCode:   6288 SQLState: 01ZZZ --- |   |   |   |   |   |    order_id ASC
+SQLWarning: ErrorCode:   6288 SQLState: 01ZZZ --- |   |   |   |   |   |    status_code ASC
+SQLWarning: ErrorCode:   6272 SQLState: 01ZZZ --- |   |   |   |   |   |  Using I/O Size 2 Kbytes for index leaf pages.
+SQLWarning: ErrorCode:   6273 SQLState: 01ZZZ --- |   |   |   |   |   |  With LRU Buffer Replacement Strategy for index leaf pages.
+SQLWarning: ErrorCode:  10240 SQLState: 01ZZZ --- |   |   |   |   |   |  Using I/O Size 2 Kbytes for data pages.
+SQLWarning: ErrorCode:  10239 SQLState: 01ZZZ --- |   |   |   |   |   |  With LRU Buffer Replacement Strategy for data pages.
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |   |SCAN Operator (VA = 10)
+SQLWarning: ErrorCode:   6215 SQLState: 01ZZZ --- |   |   |   |   |   |  FROM TABLE
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |   |  code
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |   |  oc
+SQLWarning: ErrorCode:   6224 SQLState: 01ZZZ --- |   |   |   |   |   |  Using Clustered Index.
+SQLWarning: ErrorCode:   6225 SQLState: 01ZZZ --- |   |   |   |   |   |  Index : code_id_6260982401
+SQLWarning: ErrorCode:   6276 SQLState: 01ZZZ --- |   |   |   |   |   |  Forward Scan.
+SQLWarning: ErrorCode:   6281 SQLState: 01ZZZ --- |   |   |   |   |   |  Positioning by key.
+SQLWarning: ErrorCode:   6287 SQLState: 01ZZZ --- |   |   |   |   |   |  Keys are:
+SQLWarning: ErrorCode:   6288 SQLState: 01ZZZ --- |   |   |   |   |   |    id ASC
+SQLWarning: ErrorCode:  10240 SQLState: 01ZZZ --- |   |   |   |   |   |  Using I/O Size 2 Kbytes for data pages.
+SQLWarning: ErrorCode:  10239 SQLState: 01ZZZ --- |   |   |   |   |   |  With LRU Buffer Replacement Strategy for data pages.
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |
+SQLWarning: ErrorCode:   6248 SQLState: 01ZZZ --- |   |   |   |   |SCAN Operator (VA = 12)
+SQLWarning: ErrorCode:   6215 SQLState: 01ZZZ --- |   |   |   |   |  FROM TABLE
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |  product
+SQLWarning: ErrorCode:   6217 SQLState: 01ZZZ --- |   |   |   |   |  p
+SQLWarning: ErrorCode:   6224 SQLState: 01ZZZ --- |   |   |   |   |  Using Clustered Index.
+SQLWarning: ErrorCode:   6225 SQLState: 01ZZZ --- |   |   |   |   |  Index : product_id_7380986391
+SQLWarning: ErrorCode:   6276 SQLState: 01ZZZ --- |   |   |   |   |  Forward Scan.
+SQLWarning: ErrorCode:   6281 SQLState: 01ZZZ --- |   |   |   |   |  Positioning by key.
+SQLWarning: ErrorCode:   6287 SQLState: 01ZZZ --- |   |   |   |   |  Keys are:
+SQLWarning: ErrorCode:   6288 SQLState: 01ZZZ --- |   |   |   |   |    id ASC
+SQLWarning: ErrorCode:  10240 SQLState: 01ZZZ --- |   |   |   |   |  Using I/O Size 2 Kbytes for data pages.
+SQLWarning: ErrorCode:  10239 SQLState: 01ZZZ --- |   |   |   |   |  With LRU Buffer Replacement Strategy for data pages.
 
 
 

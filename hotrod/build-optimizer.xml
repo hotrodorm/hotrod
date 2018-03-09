@@ -66,6 +66,19 @@
     -->
   </target>
 
+  <target name="build-preliminary-procedures" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         keepformat="true"
+         delimiter="//"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/build-preliminary-procedures.sql" />
+    </sql>
+  </target>
+
   <target name="build-procedures" depends="-init">
     <sql driver="${driverclass}"
          classpath="${db.src.dir}/${driverclasspath}"
