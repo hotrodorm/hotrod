@@ -11,8 +11,8 @@ select * from (
   select * from customer order by last_name, first_name, address_id
 ) where rownum <= 20
 
--- Paginated Queries
--- =================
+-- Standard Pagination Queries
+-- ===========================
 -- * VERY IMPORTANT: You must make sure you use an ORDER BY clause to ensure a stable order of the rows. Otherwise, the pagination may become unpredictable.
 -- * The syntax is tricky since it names an intermediate table and also an extra pseudo column.
 -- * We need to make sure the table and column names are unique. I purposedly chose very exotic names to avoid names conflict.
