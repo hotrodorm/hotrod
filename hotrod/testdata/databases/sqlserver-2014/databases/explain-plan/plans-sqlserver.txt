@@ -1,0 +1,121 @@
+-- 1. Full Table Scan
+-- ==================
+
+select * from payment where amount < 100;
+
+  |--Clustered Index Scan(OBJECT:([master].[dbo].[payment].[PK__payment__3213E83F2C37D6E4]), WHERE:([master].[dbo].[payment].[amount]<(100.00)))
+
+
+-- 2. Index Only Scan
+-- ==================
+
+create index ix1_placed_status_amount on payment (placed_at, status, amount);
+
+select count(*) from payment where amount = 1;
+
+  |--Compute Scalar(DEFINE:([Expr1002]=CONVERT_IMPLICIT(int,[Expr1006],0)))
+       |--Stream Aggregate(DEFINE:([Expr1006]=Count(*)))
+            |--Index Scan(OBJECT:([master].[dbo].[payment].[ix4_status_amount]),  WHERE:([master].[dbo].[payment].[amount]=(1.00)))
+
+
+-- 3. Index Data Scan
+-- ==================
+
+select amount from payment where amount <= 2;
+
+  |--Index Scan(OBJECT:([master].[dbo].[payment].[ix4_status_amount]),  WHERE:([master].[dbo].[payment].[amount]<=(2.00)))
+  
+
+-- 4. Index Full Scan
+-- ==================
+
+select placed_at, status, amount from payment order by placed_at, status, amount;
+
+  |--Index Scan(OBJECT:([master].[dbo].[payment].[ix1_placed_status_amount]), ORDERED FORWARD)
+  
+
+-- 5. Index Range Scan
+-- ===================
+
+select amount from payment where placed_at between '2017-05-01' and '2017-05-31' and status = 1;
+
+  |--Index Seek(
+       OBJECT:([master].[dbo].[payment].[ix1_placed_status_amount]), 
+       SEEK:(
+         ([master].[dbo].[payment].[placed_at], [master].[dbo].[payment].[status]) >= ('2017-05-01', (1.)) 
+         AND ([master].[dbo].[payment].[placed_at], [master].[dbo].[payment].[status]) <= ('2017-05-31', (1.))
+       ),  
+       WHERE:([master].[dbo].[payment].[status]=(1.)) 
+       ORDERED FORWARD
+     )                 
+
+-- 6. Index Range Scan (reverse)
+-- =============================
+
+select id from payment where status = 1 and amount < 20;
+
+  |--Index Seek(
+       OBJECT:([master].[dbo].[payment].[ix4_status_amount]), 
+       SEEK:(
+         [master].[dbo].[payment].[status]=CONVERT_IMPLICIT(decimal(3,0),[@1],0) 
+         AND [master].[dbo].[payment].[amount] < CONVERT_IMPLICIT(decimal(14,2),[@2],0)
+       ) ORDERED FORWARD
+     )
+
+-- 7. Index Unique Scan
+-- ====================
+
+create unique index ix2_processor_id on payment (payment_processor_id);
+
+select amount from payment where payment_processor_id = 'ax33-4r5y44-ww-00192387';
+
+  |--Nested Loops(Inner Join, OUTER REFERENCES:([master].[dbo].[payment].[id]))
+       |--Index Seek(
+            OBJECT:([master].[dbo].[payment].[ix2_processor_id]), 
+            SEEK:([master].[dbo].[payment].[payment_processor_id]=[@1]) 
+            ORDERED FORWARD
+          )
+       |--Clustered Index Seek(
+            OBJECT:([master].[dbo].[payment].[PK__payment__3213E83F2C37D6E4]), 
+            SEEK:([master].[dbo].[payment].[id]=[master].[dbo].[payment].[id]) 
+            LOOKUP ORDERED FORWARD
+          )
+
+
+-- 8. Index Merge
+-- ==============
+
+create index ix3_charged on payment (charged_at);
+
+select count(*) from payment where charged_at > '2018-02-03' or charged_at < '2012-10-15';
+
+  |--Compute Scalar(DEFINE:([Expr1002]=CONVERT_IMPLICIT(int,[Expr1003],0)))
+       |--Stream Aggregate(DEFINE:([Expr1003]=Count(*)))
+            |--Index Seek(
+                 OBJECT:([master].[dbo].[payment].[ix3_charged]), 
+                 SEEK:(
+                   [master].[dbo].[payment].[charged_at] < '2012-10-15' 
+                   OR [master].[dbo].[payment].[charged_at] > '2018-02-03'
+                 ) 
+                 ORDERED FORWARD
+               )
+
+select count(*) from payment where charged_at > '2018-02-03' or placed_at < '2012-10-15' or charged_at < '2012-10-15';
+
+  |--Compute Scalar(DEFINE:([Expr1002]=CONVERT_IMPLICIT(int,[Expr1005],0)))
+       |--Stream Aggregate(DEFINE:([Expr1005]=Count(*)))
+            |--Sort(DISTINCT ORDER BY:([master].[dbo].[payment].[id] ASC))
+                 |--Concatenation
+                      |--Index Seek(OBJECT:([master].[dbo].[payment].[ix3_charged]), SEEK:([master].[dbo].[payment].[charged_at] > '2018-02-03') ORDERED FORWARD)
+                      |--Index Seek(OBJECT:([master].[dbo].[payment].[ix1_placed_status_amount]), SEEK:([master].[dbo].[payment].[placed_at] < '2012-10-15') ORDERED FORWARD)
+                      |--Index Seek(OBJECT:([master].[dbo].[payment].[ix3_charged]), SEEK:([master].[dbo].[payment].[charged_at] < '2012-10-15') ORDERED FORWARD)
+
+
+
+
+
+
+
+
+
+

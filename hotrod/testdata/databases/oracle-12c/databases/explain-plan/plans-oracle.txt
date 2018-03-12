@@ -1,0 +1,166 @@
+-- 1. Full Table Scan
+-- ==================
+
+select * from payment where amount < 100;
+
+Plan hash value: 684176532
+ 
+-----------------------------------------------------------------------------
+| Id  | Operation         | Name    | Rows  | Bytes | Cost (%CPU)| Time     |
+-----------------------------------------------------------------------------
+|   0 | SELECT STATEMENT  |         |  4878 |   247K|    23   (0)| 00:00:01 |
+|*  1 |  TABLE ACCESS FULL| PAYMENT |  4878 |   247K|    23   (0)| 00:00:01 |
+-----------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   1 - filter("AMOUNT"<100)
+
+-- 2. Index Only Scan
+-- ==================
+
+create index ix1_placed_status_amount on payment (placed_at, status, amount);
+
+select count(*) from payment where amount = 1;
+
+Plan hash value: 474503385
+ 
+--------------------------------------------------------------------------------------
+| Id  | Operation        | Name              | Rows  | Bytes | Cost (%CPU)| Time     |
+--------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT |                   |     1 |     5 |     5   (0)| 00:00:01 |
+|   1 |  SORT AGGREGATE  |                   |     1 |     5 |            |          |
+|*  2 |   INDEX SKIP SCAN| IX4_STATUS_AMOUNT |     2 |    10 |     5   (0)| 00:00:01 |
+--------------------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   2 - access("AMOUNT"=1)
+       filter("AMOUNT"=1)
+
+
+-- 3. Index Data Scan
+-- ==================
+
+select amount from payment where amount <= 2;
+
+Plan hash value: 4202200174
+ 
+------------------------------------------------------------------------------------------
+| Id  | Operation            | Name              | Rows  | Bytes | Cost (%CPU)| Time     |
+------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT     |                   |    99 |   495 |    10   (0)| 00:00:01 |
+|*  1 |  INDEX FAST FULL SCAN| IX4_STATUS_AMOUNT |    99 |   495 |    10   (0)| 00:00:01 |
+------------------------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   1 - filter("AMOUNT"<=2)
+
+-- 4. Index Full Scan
+-- ==================
+
+select placed_at, status, amount from payment order by placed_at, status, amount;
+
+Plan hash value: 2074647782
+ 
+---------------------------------------------------------------------------------------------
+| Id  | Operation        | Name                     | Rows  | Bytes | Cost (%CPU)| Time     |
+---------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT |                          | 10000 |   156K|    49   (0)| 00:00:01 |
+|   1 |  INDEX FULL SCAN | IX1_PLACED_STATUS_AMOUNT | 10000 |   156K|    49   (0)| 00:00:01 |
+---------------------------------------------------------------------------------------------
+
+-- 5. Index Range Scan
+-- ===================
+
+  select amount from payment where placed_at between '2017-05-01' and '2017-05-31' and status = 1;
+
+Plan hash value: 74548998
+ 
+----------------------------------------------------------------------------------------------
+| Id  | Operation         | Name                     | Rows  | Bytes | Cost (%CPU)| Time     |
+----------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT  |                          |     6 |    96 |     2   (0)| 00:00:01 |
+|*  1 |  FILTER           |                          |       |       |            |          |
+|*  2 |   INDEX RANGE SCAN| IX1_PLACED_STATUS_AMOUNT |     6 |    96 |     2   (0)| 00:00:01 |
+----------------------------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   1 - filter(TO_DATE('2017-05-31')>=TO_DATE('2017-05-01'))
+   2 - access("PLACED_AT">='2017-05-01' AND "STATUS"=1 AND "PLACED_AT"<='2017-05-31')
+       filter("STATUS"=1)
+
+-- 6. Index Range Scan (reverse)
+-- =============================
+
+select amount from payment where status = 1 and amount < 20;
+
+Plan hash value: 268759288
+ 
+--------------------------------------------------------------------------------------
+| Id  | Operation        | Name              | Rows  | Bytes | Cost (%CPU)| Time     |
+--------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT |                   |   244 |  1952 |     2   (0)| 00:00:01 |
+|*  1 |  INDEX RANGE SCAN| IX4_STATUS_AMOUNT |   244 |  1952 |     2   (0)| 00:00:01 |
+--------------------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   1 - access("STATUS"=1 AND "AMOUNT"<20)
+
+-- 7. Index Unique Scan
+-- ====================
+
+create unique index ix2_processor_id on payment (payment_processor_id);
+
+select amount from payment where payment_processor_id = 'ax33-4r5y44-ww-00192387';
+
+Plan hash value: 704956198
+ 
+------------------------------------------------------------------------------------------------
+| Id  | Operation                   | Name             | Rows  | Bytes | Cost (%CPU)| Time     |
+------------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT            |                  |     1 |    30 |     2   (0)| 00:00:01 |
+|   1 |  TABLE ACCESS BY INDEX ROWID| PAYMENT          |     1 |    30 |     2   (0)| 00:00:01 |
+|*  2 |   INDEX UNIQUE SCAN         | IX2_PROCESSOR_ID |     1 |       |     1   (0)| 00:00:01 |
+------------------------------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   2 - access("PAYMENT_PROCESSOR_ID"='ax33-4r5y44-ww-00192387')
+
+-- 8. Index Merge
+-- ==============
+
+create index ix3_charged on payment (charged_at);
+
+select count(*) from payment where charged_at > '2018-02-03' or charged_at < '2012-10-15';
+
+Plan hash value: 2411336277
+ 
+----------------------------------------------------------------------------------
+| Id  | Operation          | Name        | Rows  | Bytes | Cost (%CPU)| Time     |
+----------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT   |             |     1 |     8 |     4   (0)| 00:00:01 |
+|   1 |  SORT AGGREGATE    |             |     1 |     8 |            |          |
+|   2 |   CONCATENATION    |             |       |       |            |          |
+|*  3 |    INDEX RANGE SCAN| IX3_CHARGED |   500 |  4000 |     2   (0)| 00:00:01 |
+|*  4 |    INDEX RANGE SCAN| IX3_CHARGED |   475 |  3800 |     2   (0)| 00:00:01 |
+----------------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   3 - access("CHARGED_AT"<'2012-10-15')
+   4 - access("CHARGED_AT">'2018-02-03')
+       filter(LNNVL("CHARGED_AT"<'2012-10-15'))
+
+       

@@ -20,17 +20,17 @@ java.compiler=javac1.6
 # --- PostgreSQL 9.4 ---
 #db.src.dir=testdata/databases/postgresql-9.4
 
-# --- MariaDB 5.5 ---
-#db.src.dir=testdata/databases/mariadb-5.5
-
 # --- SQL Server 2014 ---
 #db.src.dir=testdata/databases/sqlserver-2014
 
-# --- SAP ASE 16 (ex-Sybase) ---
-#db.src.dir=testdata/databases/sapase-16
+# --- MariaDB 5.5 ---
+#db.src.dir=testdata/databases/mariadb-5.5
 
 # --- MySQL 5.5 ---
 #db.src.dir=testdata/databases/mysql-5.5
+
+# --- SAP ASE 16 (ex-Sybase) ---
+#db.src.dir=testdata/databases/sapase-16
 
 # --- Apache Derby 10 ---
 #db.src.dir=testdata/databases/apache-derby-10

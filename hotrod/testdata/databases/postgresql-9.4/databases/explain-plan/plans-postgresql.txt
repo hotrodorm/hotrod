@@ -1,0 +1,87 @@
+-- 1. Full Table Scan
+-- ==================
+
+select * from payment where amount < 100;
+
+Seq Scan on public.payment  (cost=0.00..228.00 rows=7437 width=47)
+  Filter: (payment.amount < 100::numeric)
+
+-- 2. Index Only Scan - FAILED
+-- ===========================
+
+create index ix1_placed_status_amount on payment (placed_at, status, amount);
+
+select count(*) from payment where amount = 1;
+
+Aggregate  (cost=228.00..228.01 rows=1 width=0)
+  ->  Seq Scan on payment  (cost=0.00..228.00 rows=2 width=0)
+        Filter: (amount = 1::numeric)
+
+
+-- 3. Index Data Scan - FAILED
+-- ===========================
+
+select amount from payment where amount <= 2;
+
+Seq Scan on payment  (cost=0.00..228.00 rows=1929 width=6)
+  Filter: (amount <= 2::numeric)
+
+
+-- 4. Index Full Scan
+-- ==================
+
+select placed_at, status, amount from payment order by placed_at, status, amount;
+
+Index Only Scan using ix1_placed_status_amount on payment  (cost=0.29..774.18 rows=10000 width=14)
+
+-- 5. Index Range Scan
+-- ===================
+
+select amount from payment where placed_at between '2017-05-01' and '2017-05-31' and status = 1;
+
+Bitmap Heap Scan on payment  (cost=6.14..82.77 rows=38 width=6)
+  Recheck Cond: ((placed_at >= '2017-05-01'::date) AND (placed_at <= '2017-05-31'::date) AND (status = 1::numeric))
+  ->  Bitmap Index Scan on ix1_placed_status_amount  (cost=0.00..6.13 rows=38 width=0)
+        Index Cond: ((placed_at >= '2017-05-01'::date) AND (placed_at <= '2017-05-31'::date) AND (status = 1::numeric))
+
+
+-- 6. Index Range Scan (reverse)
+-- =============================
+
+select id from payment where status = 1 and amount < 20;
+
+Bitmap Heap Scan on payment  (cost=38.52..162.36 rows=1389 width=4)
+  Recheck Cond: ((status = 1::numeric) AND (amount < 20::numeric))
+  ->  Bitmap Index Scan on ix4_status_amount  (cost=0.00..38.17 rows=1389 width=0)
+        Index Cond: ((status = 1::numeric) AND (amount < 20::numeric))
+
+
+-- 7. Index Unique Scan
+-- ====================
+
+create unique index ix2_processor_id on payment (payment_processor_id);
+
+select amount from payment where payment_processor_id = 'ax33-4r5y44-ww-00192387';
+
+Index Scan using ix2_processor_id on payment  (cost=0.29..8.30 rows=1 width=6)
+  Index Cond: ((payment_processor_id)::text = 'ax33-4r5y44-ww-00192387'::text)
+
+
+-- 8. Index Merge
+-- ==============
+
+create index ix3_charged on payment (charged_at);
+
+select count(*) from payment where charged_at > '2018-02-03' or placed_at < '2012-10-15' or charged_at < '2012-10-15';
+
+Aggregate  (cost=71.02..71.03 rows=1 width=0)
+  ->  Bitmap Heap Scan on payment  (cost=13.05..70.96 rows=24 width=0)
+        Recheck Cond: ((charged_at > '2018-02-03'::date) OR (placed_at < '2012-10-15'::date) OR (charged_at < '2012-10-15'::date))
+        ->  BitmapOr  (cost=13.05..13.05 rows=24 width=0)
+              ->  Bitmap Index Scan on ix3_charged  (cost=0.00..4.33 rows=6 width=0)
+                    Index Cond: (charged_at > '2018-02-03'::date)
+              ->  Bitmap Index Scan on ix1_placed_status_amount  (cost=0.00..4.32 rows=4 width=0)
+                    Index Cond: (placed_at < '2012-10-15'::date)
+              ->  Bitmap Index Scan on ix3_charged  (cost=0.00..4.38 rows=13 width=0)
+                    Index Cond: (charged_at < '2012-10-15'::date)
+

@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<project name="hotrod-explain-plan" basedir=".">
+
+  <property name="database" value="databases/explain-plan" />
+
+  <loadproperties srcFile="build.properties" />
+  <loadproperties srcFile="conf/workbench.properties" />
+
+  <property name="test.src.dir" value="src/test/java" />
+  <property name="test.build.dir" value="build/test" />
+
+  <target name="-init">
+    <loadproperties srcfile="${db.src.dir}/config.properties" />
+  </target>
+
+  <target name="compile" depends="-init">
+    <javac destdir="${test.build.dir}"
+           debug="true"
+           deprecation="true"
+           includeantruntime="false"
+           includes="explainplan/**/*.java">
+      <src path="${test.src.dir}" />
+      <classpath>
+        <pathelement path="lib/junit.jar" />
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="populate" depends="-init, compile">
+    <java classname="explainplan.DataPopulator" fork="true">
+      <arg value="${driverclass}" />
+      <arg value="${url}" />
+      <arg value="${username}" />
+      <arg value="${password}" />
+      <classpath>
+        <pathelement location="${test.build.dir}" />
+        <pathelement path="${db.src.dir}/${driverclasspath}" />
+      </classpath>
+    </java>
+    <antcall target="update-optimizer-stats" />
+  </target>
+
+  <!-- Build database -->
+
+  <target name="build-structure" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         delimiter=";"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/build-structure.sql" />
+    </sql>
+    <!--
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         keepformat="true"
+         delimiter="//"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/build-procedures.sql" />
+    </sql>
+    -->
+  </target>
+
+  <target name="build-preliminary-procedures" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         keepformat="true"
+         delimiter="//"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/build-preliminary-procedures.sql" />
+    </sql>
+  </target>
+
+  <target name="build-procedures" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         keepformat="true"
+         delimiter="//"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/build-procedures.sql" />
+    </sql>
+  </target>
+
+  <target name="clean-procedures" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         keepformat="true"
+         delimiter="//"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/clean-procedures.sql" />
+    </sql>
+  </target>
+
+  <target name="update-optimizer-stats" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         delimiter=";"
+         onerror="abort">
+      <fileset file="${db.src.dir}/${database}/update-optimizer-stats.sql" />
+    </sql>
+  </target>
+
+  <target name="clean-structure" depends="-init">
+    <sql driver="${driverclass}"
+         classpath="${db.src.dir}/${driverclasspath}"
+         url="${url}"
+         userid="${username}"
+         password="${password}"
+         delimiter=";"
+         onerror="continue">
+      <fileset file="${db.src.dir}/${database}/clean-structure.sql" />
+    </sql>
+  </target>
+
+  <target name="rebuild-structure" depends="clean-structure, build-structure" />
+
+  <target name="rebuild-structure-populate"
+          depends="clean-structure, build-structure, populate" />
+
+</project>

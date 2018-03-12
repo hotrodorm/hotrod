@@ -1,0 +1,214 @@
+-- 1. Full Table Scan
+-- ==================
+
+select * from payment where amount < 100;
+
+$154 RETURN (167 io) (22745766 cpu)
+.  $154 TBSCAN (167 io) (22745766 cpu)
+.  .  [PAYMENT]
+
+ID | Operation       |                    Rows | Cost
+ 1 | RETURN          |                         |  154
+ 2 |  TBSCAN PAYMENT | 7356 of 10000 ( 73.56%) |  154
+
+Predicate Information
+ 2 - SARG (Q1.AMOUNT < 100)                                                               
+
+
+-- 2. Index Only Scan
+-- ==================
+
+create index ix1_placed_status_amount on payment (placed_at, status, amount);
+
+select count(*) from payment where amount = 1;
+
+$60 RETURN (9 io) (333803 cpu)
+.  $60 GRPBY (9 io) (332913 cpu)
+.  .  $60 IXSCAN (9 io) (332030 cpu)
+.  .  .  [IX4_STATUS_AMOUNT]
+
+ID | Operation                  |                 Rows | Cost
+ 1 | RETURN                     |                      |   60
+ 2 |  GRPBY (COMPLETE)          |     1 of 2 ( 50.00%) |   60
+ 3 |   IXSCAN IX4_STATUS_AMOUNT | 2 of 10000 (   .02%) |   60
+
+Predicate Information
+ 3 -     START (Q1.AMOUNT = +000000000001.00)                                                  
+          STOP (Q1.AMOUNT = +000000000001.00)                                                  
+     GAP_START Positioning predicate                                                           
+      GAP_STOP Positioning predicate                                                           
+
+
+-- 3. Index Data Scan
+-- ==================
+
+select amount from payment where amount <= 2;
+
+$118 RETURN (17 io) (3991073 cpu)
+.  $118 IXSCAN (17 io) (3991073 cpu)
+.  .  [IX4_STATUS_AMOUNT]
+
+ID | Operation                 |                    Rows | Cost
+ 1 | RETURN                    |                         |  118
+ 2 |  IXSCAN IX4_STATUS_AMOUNT | 2065 of 10000 ( 20.65%) |  118
+
+Predicate Information
+ 2 -     START Non-Positioning predicate                                                       
+          STOP (Q1.AMOUNT <= 2)                                                                
+     GAP_START Positioning predicate                                                           
+      GAP_STOP Positioning predicate                                                           
+
+
+-- 4. Index Full Scan - FAILED
+-- ===========================
+
+Apparently DB2 does not run an Index Full Scan:
+
+select placed_at, status, amount from payment order by placed_at, status, amount;
+
+$162 RETURN (167 io) (50597808 cpu)
+.  $162 TBSCAN (167 io) (50597808 cpu)
+.  .  $162 SORT (167 io) (50596520 cpu)
+.  .  .  $153 TBSCAN (167 io) (18295766 cpu)
+.  .  .  .  [PAYMENT]
+
+ID | Operation         |                     Rows | Cost
+ 1 | RETURN            |                          |  162
+ 2 |  TBSCAN           | 10000 of 10000 (100.00%) |  162
+ 3 |   SORT            | 10000 of 10000 (100.00%) |  162
+ 4 |    TBSCAN PAYMENT | 10000 of 10000 (100.00%) |  153
+
+Predicate Information
+
+
+-- 5. Index Range Scan
+-- ===================
+
+select amount from payment where placed_at between '2017-05-01' and '2017-05-31' and status = 1;
+
+$9 RETURN (1 io) (435953 cpu)
+.  $9 IXSCAN (1 io) (435953 cpu)
+.  .  [IX1_PLACED_STATUS_AMOUNT]
+
+ID | Operation                        |                  Rows | Cost
+ 1 | RETURN                           |                       |    9
+ 2 |  IXSCAN IX1_PLACED_STATUS_AMOUNT | 42 of 10000 (   .42%) |    9
+
+Predicate Information
+ 2 - START ('2017-05-01' <= Q1.PLACED_AT)                                                  
+     START (Q1.STATUS = +01.)                                                              
+      STOP (Q1.STATUS = +01.)                                                              
+      STOP (Q1.PLACED_AT <= '2017-05-31')                                                  
+      SARG (Q1.STATUS = +01.)                                                              
+
+
+-- 6. Index Range Scan (reverse)
+-- =============================
+
+select id from payment where status = 1 and amount < 20;
+
+$156 RETURN (167 io) (28692046 cpu)
+.  $156 TBSCAN (167 io) (28692046 cpu)
+.  .  [PAYMENT]
+
+ID | Operation       |                    Rows | Cost
+ 1 | RETURN          |                         |  156
+ 2 |  TBSCAN PAYMENT | 1402 of 10000 ( 14.02%) |  156
+
+Predicate Information
+ 2 - SARG (Q1.AMOUNT < 20)                                                                
+     SARG (Q1.STATUS = +01.)                                                              
+
+
+-- 7. Index Unique Scan
+-- ====================
+
+create unique index ix2_processor_id on payment (payment_processor_id);
+
+select amount from payment where payment_processor_id = 'ax33-4r5y44-ww-00192387';
+
+$20 RETURN (3 io) (86087 cpu)
+.  $20 FETCH (3 io) (86087 cpu)
+.  .  $13 IXSCAN (2 io) (71267 cpu)
+.  .  .  [IX2_PROCESSOR_ID]
+.  .  [PAYMENT]
+
+ID | Operation                 |                 Rows | Cost
+ 1 | RETURN                    |                      |   20
+ 2 |  FETCH PAYMENT            |     1 of 1 (100.00%) |   20
+ 3 |   IXSCAN IX2_PROCESSOR_ID | 1 of 10000 (   .01%) |   13
+
+Predicate Information
+ 3 - START (Q1.PAYMENT_PROCESSOR_ID = 'ax33-4r5y44-ww-00192387')                           
+      STOP (Q1.PAYMENT_PROCESSOR_ID = 'ax33-4r5y44-ww-00192387')                           
+
+
+-- 8. Index Merge
+-- ==============
+
+create index ix3_charged on payment (charged_at);
+
+select count(*) from payment where charged_at > '2018-02-03' or charged_at < '2012-10-15';
+
+$41 RETURN (33 io) (407585 cpu)
+.  $41 GRPBY (33 io) (406695 cpu)
+.  .  $41 FETCH (33 io) (401387 cpu)
+.  .  .  $13 RIDSCN (2 io) (156457 cpu)
+.  .  .  .  $6 SORT (1 io) (74501 cpu)
+.  .  .  .  .  $6 IXSCAN (1 io) (71523 cpu)
+.  .  .  .  .  .  [IX3_CHARGED]
+.  .  .  .  $6 SORT (1 io) (83368 cpu)
+.  .  .  .  .  $6 IXSCAN (1 io) (77327 cpu)
+.  .  .  .  .  .  [IX3_CHARGED]
+.  .  .  [PAYMENT]
+
+ID | Operation               |                  Rows | Cost
+ 1 | RETURN                  |                       |   41
+ 2 |  GRPBY (COMPLETE)       |     1 of 20 (  5.00%) |   41
+ 3 |   FETCH PAYMENT         |    20 of 20 (100.00%) |   41
+ 4 |    RIDSCN               |               20 of 5 |   13
+ 5 |     SORT (UNIQUE)       |      5 of 5 (100.00%) |    6
+ 6 |      IXSCAN IX3_CHARGED |  5 of 10000 (   .05%) |    6
+ 7 |     SORT (UNIQUE)       |    14 of 14 (100.00%) |    6
+ 8 |      IXSCAN IX3_CHARGED | 14 of 10000 (   .14%) |    6
+
+Predicate Information
+ 3 - SARG ((Q1.CHARGED_AT > '2018-02-03') OR (Q1.CHARGED_AT < '2012-10-15'))              
+ 6 - START (Q1.CHARGED_AT > '2018-02-03')                                                  
+ 8 - STOP (Q1.CHARGED_AT < '2012-10-15')                                                  
+
+select count(*) from payment where charged_at > '2018-02-03' or placed_at < '2012-10-15' or charged_at < '2012-10-15';
+
+$48 RETURN (34 io) (525277 cpu)
+.  $48 GRPBY (34 io) (524387 cpu)
+.  .  $48 FETCH (34 io) (516585 cpu)
+.  .  .  $20 RIDSCN (3 io) (227597 cpu)
+.  .  .  .  $6 SORT (1 io) (74501 cpu)
+.  .  .  .  .  $6 IXSCAN (1 io) (71523 cpu)
+.  .  .  .  .  .  [IX3_CHARGED]
+.  .  .  .  $6 SORT (1 io) (73840 cpu)
+.  .  .  .  .  $6 IXSCAN (1 io) (69646 cpu)
+.  .  .  .  .  .  [IX1_PLACED_STATUS_AMOUNT]
+.  .  .  .  $6 SORT (1 io) (83368 cpu)
+.  .  .  .  .  $6 IXSCAN (1 io) (77327 cpu)
+.  .  .  .  .  .  [IX3_CHARGED]
+.  .  .  [PAYMENT]
+
+ID | Operation                            |                  Rows | Cost
+ 1 | RETURN                               |                       |   48
+ 2 |  GRPBY (COMPLETE)                    |     1 of 29 (  3.45%) |   48
+ 3 |   FETCH PAYMENT                      |    29 of 29 (100.00%) |   48
+ 4 |    RIDSCN                            |               29 of 5 |   20
+ 5 |     SORT (UNIQUE)                    |      5 of 5 (100.00%) |    6
+ 6 |      IXSCAN IX3_CHARGED              |  5 of 10000 (   .05%) |    6
+ 7 |     SORT (UNIQUE)                    |    10 of 10 (100.00%) |    6
+ 8 |      IXSCAN IX1_PLACED_STATUS_AMOUNT | 10 of 10000 (   .10%) |    6
+ 9 |     SORT (UNIQUE)                    |    14 of 14 (100.00%) |    6
+10 |      IXSCAN IX3_CHARGED              | 14 of 10000 (   .14%) |    6
+
+Predicate Information
+  3 - SARG (((Q1.CHARGED_AT > '2018-02-03') OR (Q1.PLACED_AT < '2012-10-15')) OR (Q1.CHARGE
+  6 - START (Q1.CHARGED_AT > '2018-02-03')                                                  
+  8 - STOP (Q1.PLACED_AT < '2012-10-15')                                                   
+ 10 - STOP (Q1.CHARGED_AT < '2012-10-15')                                                  
+
