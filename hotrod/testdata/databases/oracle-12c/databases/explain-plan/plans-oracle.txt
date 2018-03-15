@@ -77,7 +77,7 @@ Plan hash value: 2074647782
 -- 5. Index Range Scan
 -- ===================
 
-  select amount from payment where placed_at between '2017-05-01' and '2017-05-31' and status = 1;
+select amount from payment where placed_at between '2017-05-01' and '2017-05-31' and status = 1;
 
 Plan hash value: 74548998
  
