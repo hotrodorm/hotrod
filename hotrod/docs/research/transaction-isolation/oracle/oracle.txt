@@ -1,0 +1,44 @@
+Isolation Level: Read Committed
+===============================
+
+Initial Balance: 50
+                                               Timeline
+                                               --------
+(start transaction / autocommit = off)            |
+                                                  | (start transaction / autocommit = off)
+alter session set isolation_level=read committed  |
+                                                  | alter session set isolation_level=read committed
+select balance from account where id = 1          |
+                                                  | select balance from account where id = 1
+update account set balance = 51 where id = 1      |
+                                                  | update account set balance = 52 where id = 1
+                                                  |  -- waits...
+                                                  |
+commit                                            |  -- update completes.
+                                                  | commit
+
+End Balance is: 52
+
+Isolation Level: Serializable
+=============================
+
+Initial Balance: 50
+                                               Timeline
+                                               --------
+(start transaction / autocommit = off)            |
+                                                  | (start transaction / autocommit = off)
+alter session set isolation_level=serializable    |
+                                                  | alter session set isolation_level=serializable
+select balance from account where id = 1          |
+                                                  | select balance from account where id = 1
+update account set balance = 51 where id = 1      |
+                                                  | update account set balance = 52 where id = 1
+                                                  |  -- waits...
+                                                  | 
+commit                                            |  -- Error: ORA-08177: can't serialize access for this transaction
+
+End Balance is: 51
+
+
+
+

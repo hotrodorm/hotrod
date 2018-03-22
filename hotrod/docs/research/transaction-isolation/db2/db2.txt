@@ -1,0 +1,86 @@
+Initial Balance: 50
+
+Isolation Level: Read Uncommitted
+=================================
+                                               Timeline
+                                               --------
+(start transaction / autocommit = off)            |
+                                                  | (start transaction / autocommit = off)
+set isolation ur;                                 |
+                                                  | set isolation ur;
+select balance from account where id = 1          |
+                                                  | select balance from account where id = 1
+update account set balance = 51 where id = 1      |
+                                                  | update account set balance = 52 where id = 1
+                                                  |  -- waits...
+                                                  |
+commit                                            |  -- update completes                                                 
+                                                  | commit
+End Balance is: 52
+
+Isolation Level: Cursor Stability
+=================================
+
+                                               Timeline
+                                               --------
+(start transaction / autocommit = off)            |
+                                                  | (start transaction / autocommit = off)
+set isolation cs;                                 |
+                                                  | set isolation cs;
+select balance from account where id = 1          |
+                                                  | select balance from account where id = 1
+update account set balance = 51 where id = 1      |
+                                                  | update account set balance = 52 where id = 1
+                                                  |  -- waits...
+                                                  |
+commit                                            |  -- update completes                                                 
+                                                  | commit
+End Balance is: 52
+
+Isolation Level: Repeatable Read
+================================
+
+                                               Timeline
+                                               --------
+(start transaction / autocommit = off)            |
+                                                  | (start transaction / autocommit = off)
+set isolation rr                                  |
+                                                  | set isolation rr
+select balance from account where id = 1          |
+                                                  | select balance from account where id = 1
+update account set balance = 51 where id = 1      |
+ -- waits...                                      |
+                                                  | update account set balance = 52 where id = 1
+                                                  |  -- waits...
+                                                  | 
+ -- (deadlock) Error: DB2 SQL Error:              |  -- update completes
+    SQLCODE=-911, SQLSTATE=40001, SQLERRMC=2,     |
+                                                  | commit
+
+End Balance is: 52
+
+Isolation Level: Read Stability
+===============================
+
+                                               Timeline
+                                               --------
+(start transaction / autocommit = off)            |
+                                                  | (start transaction / autocommit = off)
+set isolation rs                                  |
+                                                  | set isolation rs
+select balance from account where id = 1          |
+                                                  | select balance from account where id = 1
+update account set balance = 51 where id = 1      |
+ -- waits...                                      |
+                                                  | update account set balance = 52 where id = 1
+                                                  |  -- waits...
+                                                  | 
+ -- (deadlock) Error: DB2 SQL Error:              |  -- update completes
+    SQLCODE=-911, SQLSTATE=40001, SQLERRMC=2,     |
+                                                  | commit
+
+End Balance is: 52
+
+
+
+

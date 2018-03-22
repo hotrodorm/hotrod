@@ -1,0 +1,82 @@
+Initial Balance: 50
+
+Isolation Level: Read Uncommitted
+=================================
+                                               Timeline
+                                               --------
+(start transaction / autocommit = off)            |
+                                                  | (start transaction / autocommit = off)
+set transaction isolation level read uncommitted  |
+                                                  | set transaction isolation level read uncommitted
+select balance from account where id = 1          |
+                                                  | select balance from account where id = 1
+update account set balance = 51 where id = 1      |
+                                                  | update account set balance = 52 where id = 1
+                                                  |  -- waits...
+                                                  |
+commit                                            |  -- update completes
+                                                  |
+                                                  | commit
+End Balance is: 52
+
+Isolation Level: Read Committed
+===============================
+
+                                               Timeline
+                                               --------
+(start transaction / autocommit = off)            |
+                                                  | (start transaction / autocommit = off)
+set transaction isolation level read committed    |
+                                                  | set transaction isolation level read committed
+select balance from account where id = 1          |
+                                                  | select balance from account where id = 1
+update account set balance = 51 where id = 1      |
+                                                  | update account set balance = 52 where id = 1
+                                                  |  -- waits...
+                                                  |
+commit                                            |  -- update completes
+                                                  |
+                                                  | commit
+End Balance is: 52
+
+Isolation Level: Repeatable Read
+================================
+
+                                               Timeline
+                                               --------
+(start transaction / autocommit = off)            |
+                                                  | (start transaction / autocommit = off)
+set transaction isolation level repeatable read   |
+                                                  | set transaction isolation level repeatable read
+select balance from account where id = 1          |
+                                                  | select balance from account where id = 1
+update account set balance = 51 where id = 1      |
+                                                  | update account set balance = 52 where id = 1
+                                                  |  -- waits...
+                                                  |
+commit                                            |  -- update completes
+                                                  |
+                                                  | commit
+End Balance is: 52
+
+Isolation Level: Serializable
+=============================
+
+                                               Timeline
+                                               --------
+(start transaction / autocommit = off)            |
+                                                  | (start transaction / autocommit = off)
+set transaction isolation level serializable      |
+                                                  | set transaction isolation level serializable
+select balance from account where id = 1          |
+                                                  | select balance from account where id = 1
+update account set balance = 51 where id = 1      |
+                                                  | update account set balance = 52 where id = 1
+                                                  |  -- Error: Deadlock found when trying to get lock; try restarting transaction
+commit                                            |  
+
+End Balance is: 51
+
+
+
+
