@@ -70,7 +70,7 @@ public class ExecutorTag extends AbstractDAOTag {
 
   }
 
-  public void validateAgainstDatabase(final HotRodGenerator generator, final Connection conn)
+  public void validateAgainstDatabase(final HotRodGenerator generator)
       throws InvalidConfigurationFileException {
 
     for (SelectMethodTag s : this.getSelects()) {

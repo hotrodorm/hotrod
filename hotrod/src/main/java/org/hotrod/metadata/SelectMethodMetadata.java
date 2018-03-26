@@ -17,9 +17,9 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
+import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
-import org.hotrod.config.SelectClassTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
@@ -98,6 +98,8 @@ public class SelectMethodMetadata implements DataSetMetadata {
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage() : null;
     this.classPackage = layout.getDAOPackage(fragmentPackage);
+
+    this.selectMethodReturnType = null;
 
   }
 
@@ -519,6 +521,10 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   public SelectMethodReturnType getReturnType(final ClassPackage voClassPackage) {
     return this.selectMethodReturnType;
+  }
+
+  public boolean metadataComplete() {
+    return this.selectMethodReturnType != null;
   }
 
   // Classes

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IFile;
@@ -69,6 +71,7 @@ import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 import org.hotrod.eclipseplugin.utils.EclipseFileGenerator;
 import org.hotrod.eclipseplugin.utils.FUtil;
+import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.LiveGenerator;
@@ -418,7 +421,8 @@ public class HotRodView extends ViewPart {
               showMessage("File properties are not yet configured");
             } else {
               log("generating all - starting");
-              generateAll(mainConfigFace.getConfig(), fileProperties, mainConfigFace.getProject());
+              mainConfigFace.getConfig().setBranchGenerate(true);
+              generate(mainConfigFace.getConfig(), fileProperties, mainConfigFace.getProject());
               log("generating all - complete");
             }
           }
@@ -454,10 +458,79 @@ public class HotRodView extends ViewPart {
     // Generate Selection
 
     actionGenerateSelected = new Action() {
+
       @Override
       public void run() {
         showMessage("Generate Selected - executed");
+
+        // TODO: generate selected
+
+        for (MainConfigFace face : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+          face.getConfig().setBranchGenerate(false);
+        }
+
+        TreeSelection selection = (TreeSelection) viewer.getSelection();
+        if (!selection.toList().isEmpty()) {
+
+          // Separate faces per file, and remove child duplicates.
+
+          TreeMap<MainConfigFace, TreeSet<AbstractFace>> targets = new TreeMap<MainConfigFace, TreeSet<AbstractFace>>();
+          for (Object obj : (List<?>) selection.toList()) {
+            AbstractFace currentFace = (AbstractFace) obj;
+            MainConfigFace mainFace = currentFace.getMainConfigFace();
+            currentFace.getTag().setGenerate(true);
+            TreeSet<AbstractFace> distinctFaces = targets.get(mainFace);
+            if (distinctFaces == null) {
+              distinctFaces = new TreeSet<AbstractFace>();
+              targets.put(mainFace, distinctFaces);
+            }
+            if (!parentIncluded(currentFace, distinctFaces)) {
+              distinctFaces.add(currentFace);
+            }
+          }
+
+          // Verify all file properties are set up
+
+          for (MainConfigFace mf : targets.keySet()) {
+            ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
+            if (projectProperties == null) {
+              showMessage("The file '" + mf.getRelativeFileName()
+                  + "' has not yet been configured. Please click on Configure File and try again.");
+            } else {
+              FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
+              if (fileProperties == null) {
+                showMessage("The file '" + mf.getRelativeFileName()
+                    + "' has not yet been configured. Please click on Configure File and try again.");
+              }
+            }
+          }
+
+          // Generate targets per file
+
+          for (MainConfigFace mf : targets.keySet()) {
+            ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
+            FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
+            generateSelected(mf.getConfig(), fileProperties, mf.getProject());
+          }
+
+        }
+        log("[generate Selected - finished]");
+
       }
+
+      private boolean parentIncluded(final AbstractFace f, final TreeSet<AbstractFace> distinctFaces) {
+        AbstractFace current = f;
+        while (current != null) {
+          for (AbstractFace d : distinctFaces) {
+            if (f.equals(d)) {
+              return true;
+            }
+          }
+          current = current.getParent();
+        }
+        return false;
+      }
+
     };
     actionGenerateSelected.setText("Generate Selected");
     actionGenerateSelected.setToolTipText("Generate Selected");
@@ -638,7 +711,7 @@ public class HotRodView extends ViewPart {
 
   // Generation
 
-  private void generateAll(final HotRodConfigTag config, final FileProperties fileProperties, final IProject project) {
+  private void generate(final HotRodConfigTag config, final FileProperties fileProperties, final IProject project) {
 
     File projectDir = project.getLocation().toFile();
 
@@ -657,7 +730,8 @@ public class HotRodView extends ViewPart {
         fileProperties.getSchema(), classPath);
 
     try {
-      HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().getGenerator(loc, config, DisplayMode.LIST);
+      HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(loc, config,
+          DisplayMode.LIST);
       log("Generator instantiated.");
 
       g.prepareGeneration();
@@ -672,6 +746,75 @@ public class HotRodView extends ViewPart {
 
       } catch (ClassCastException e) {
         // not a live generator
+        g.generate();
+      }
+
+      log("Generation complete.");
+
+    } catch (ControlledException e) {
+      if (e.getLocation() == null) {
+        throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code:\n" + e.getMessage());
+      } else {
+        throw new BuildException(
+            Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "
+                + e.getLocation().render() + ":\n" + e.getMessage());
+      }
+    } catch (UncontrolledException e) {
+      e.printStackTrace();
+      throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
+    } catch (Throwable t) {
+      t.printStackTrace();
+      throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
+    }
+
+  }
+
+  private void generateSelected(final HotRodConfigTag config, final FileProperties fileProperties,
+      final IProject project) {
+
+    File projectDir = project.getLocation().toFile();
+
+    List<String> classPath = new ArrayList<String>();
+    for (String p : fileProperties.getDriverClassPathEntries()) {
+      if (FUtil.isAbsolute(new File(p))) {
+        classPath.add(p);
+      } else {
+        File f = new File(projectDir, p);
+        classPath.add(f.getAbsolutePath());
+      }
+    }
+
+    DatabaseLocation loc = new DatabaseLocation(fileProperties.getDriverClassName(), fileProperties.getUrl(),
+        fileProperties.getUsername(), fileProperties.getPassword(), fileProperties.getCatalog(),
+        fileProperties.getSchema(), classPath);
+
+    try {
+
+      // TODO: Retrieve this value from the cache.
+      CachedMetadata cachedMetadata = null;
+
+      HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
+          config, DisplayMode.LIST);
+      log("Generator instantiated.");
+
+      try {
+        LiveGenerator liveGenerator = (LiveGenerator) g;
+
+        // a live generator
+
+        g.prepareGeneration();
+        log("Generation prepared.");
+
+        FileGenerator fg = new EclipseFileGenerator(project);
+        liveGenerator.generate(fg);
+
+      } catch (ClassCastException e) {
+
+        // a batch generator
+
+        g.prepareGeneration();
+        log("Generation prepared.");
+
         g.generate();
       }
 

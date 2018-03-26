@@ -20,35 +20,6 @@ public abstract class AbstractFace implements IAdaptable {
 
   private AbstractConfigurationTag tag;
 
-  // public static enum ChangeStatus {
-  //
-  // // UNCHANGED(null), //
-  // // MODIFIED("> "), //
-  // // ADDED("+ "), //
-  // // DELETED("- ");
-  //
-  // // UNCHANGED(null), //
-  // // MODIFIED("\u2734 \u2731 \u2605 \u2736 \u2b51 \u2b52 "), //
-  // // ADDED("\u2795 + \uff0b \u2795 "), //
-  // // DELETED("\u24e7 \u274c \u2716 \u2715 ");
-  //
-  // UNCHANGED(null), //
-  // MODIFIED("\u2736 "), //
-  // ADDED("+ "), //
-  // DELETED("\u2715 ");
-  //
-  // private String prefix;
-  //
-  // private ChangeStatus(final String prefix) {
-  // this.prefix = prefix;
-  // }
-  //
-  // public String getPrefix() {
-  // return prefix;
-  // }
-  //
-  // }
-
   private String name;
   private boolean generating;
   private AbstractFace parent;
@@ -319,6 +290,10 @@ public abstract class AbstractFace implements IAdaptable {
       }
     }
     return null;
+  }
+
+  public AbstractConfigurationTag getTag() {
+    return tag;
   }
 
   private static void log(final String txt) {

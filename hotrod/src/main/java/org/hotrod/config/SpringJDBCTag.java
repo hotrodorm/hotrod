@@ -10,6 +10,7 @@ import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.springjdbc.SpringJDBCGenerator;
 import org.hotrod.utils.Compare;
@@ -77,9 +78,17 @@ public class SpringJDBCTag extends AbstractGeneratorTag {
   // Produce Generator Instance
 
   @Override
-  public HotRodGenerator getGenerator(final DatabaseLocation loc, final HotRodConfigTag config,
+  public HotRodGenerator instantiateGenerator(final DatabaseLocation loc, final HotRodConfigTag config,
       final DisplayMode displayMode) throws UncontrolledException, ControlledException {
+    config.setBranchGenerate(true);
     return new SpringJDBCGenerator(loc, config, displayMode);
+  }
+
+  @Override
+  public HotRodGenerator instantiateGenerator(final CachedMetadata cachedMetadata, DatabaseLocation loc,
+      HotRodConfigTag config, DisplayMode displayMode) throws UncontrolledException, ControlledException {
+    // Ignore cachedMetadata & selectedTags (for now)
+    return this.instantiateGenerator(loc, config, displayMode);
   }
 
   @Override

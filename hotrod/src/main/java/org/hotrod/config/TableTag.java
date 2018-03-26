@@ -21,7 +21,7 @@ import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 @XmlRootElement(name = "table")
-public class TableTag extends AbstractDAOTag {
+public class TableTag extends AbstractEntityDAOTag {
 
   // Constants
 

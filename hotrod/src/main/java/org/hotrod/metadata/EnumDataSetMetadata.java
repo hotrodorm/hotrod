@@ -1,6 +1,7 @@
 package org.hotrod.metadata;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
@@ -23,9 +24,9 @@ public class EnumDataSetMetadata extends TableDataSetMetadata {
   // Constructor
 
   public EnumDataSetMetadata(final EnumTag tag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config, final DataSetLayout layout)
+      final HotRodConfigTag config, final DataSetLayout layout, final Map<String, SelectMethodMetadata> selectsMetadata)
       throws UnresolvableDataTypeException, ControlledException {
-    super(tag, t, adapter, config, layout);
+    super(tag, t, adapter, config, layout, selectsMetadata);
     log.debug("init");
     this.tag = tag;
   }

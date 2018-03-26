@@ -264,7 +264,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     }
 
     for (ExecutorTag d : this.getExecutors()) {
-      d.validateAgainstDatabase(generator, conn);
+      d.validateAgainstDatabase(generator);
     }
 
   }

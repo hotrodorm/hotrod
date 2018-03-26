@@ -35,7 +35,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 @XmlRootElement(name = "enum")
-public class EnumTag extends AbstractDAOTag {
+public class EnumTag extends AbstractEntityDAOTag {
 
   // Constants
 

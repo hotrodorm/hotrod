@@ -2,24 +2,27 @@ package org.hotrod.generator.mybatis;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.ant.UncontrolledException;
+import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
+import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
-import org.hotrod.metadata.PlainDAOMetadata;
+import org.hotrod.metadata.ExecutorDAOMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
 import org.hotrod.metadata.TableDataSetMetadata;
@@ -45,9 +48,9 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
 
   private EntityDAORegistry entityDAORegistry = new EntityDAORegistry();
 
-  public MyBatisGenerator(final DatabaseLocation loc, final HotRodConfigTag config, final DisplayMode displayMode)
-      throws UncontrolledException, ControlledException {
-    super(loc, config, displayMode);
+  public MyBatisGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc, final HotRodConfigTag config,
+      final DisplayMode displayMode) throws UncontrolledException, ControlledException {
+    super(cachedMetadata, loc, config, displayMode);
   }
 
   @Override
@@ -103,7 +106,7 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
 
     // Add plain DAOs
 
-    for (PlainDAOMetadata dm : super.daos) {
+    for (ExecutorDAOMetadata dm : super.executors) {
       addDaosAndMapper(dm, DAOType.PLAIN);
       for (SelectMethodMetadata sm : dm.getSelectsMetadata()) {
         addSelectVOs(sm, layout);
@@ -225,7 +228,7 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
 
   }
 
-  @Override
+  @Override // HotRodGenerator
   public void generate() throws UncontrolledException, ControlledException {
     display("");
     display("Generating MyBatis DAOs & VOs...");
@@ -235,7 +238,7 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
     display("MyBatis generation complete.");
   }
 
-  @Override
+  @Override // LiveGenerator
   public void generate(final FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
 
     // Abstract VOs, VOs, DAOs, and Mappers for <table> & <view> tags

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -13,11 +14,13 @@ import org.hotrod.ant.Constants;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.ant.UncontrolledException;
+import org.hotrod.config.AbstractConfigurationTag;
+import org.hotrod.config.AbstractEntityDAOTag;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag;
-import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.ExecutorTag;
+import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectClassTag;
@@ -35,7 +38,7 @@ import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadataFactory;
 import org.hotrod.metadata.EnumDataSetMetadata;
-import org.hotrod.metadata.PlainDAOMetadata;
+import org.hotrod.metadata.ExecutorDAOMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -81,14 +84,14 @@ public abstract class HotRodGenerator {
   protected LinkedHashSet<TableDataSetMetadata> views = null;
   protected LinkedHashSet<EnumDataSetMetadata> enums = null;
   protected LinkedHashSet<SelectDataSetMetadata> selects = null;
-  protected LinkedHashSet<PlainDAOMetadata> daos = null;
+  protected LinkedHashSet<ExecutorDAOMetadata> executors = null;
 
   private VORegistry voRegistry = new VORegistry();
 
   private Long lastLog = null;
 
-  public HotRodGenerator(final DatabaseLocation loc, final HotRodConfigTag config, final DisplayMode displayMode)
-      throws UncontrolledException, ControlledException {
+  public HotRodGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc, final HotRodConfigTag config,
+      final DisplayMode displayMode) throws UncontrolledException, ControlledException {
     this.loc = loc;
     this.config = config;
     this.displayMode = displayMode;
@@ -98,12 +101,17 @@ public abstract class HotRodGenerator {
     display("Database URL: " + loc.getUrl());
 
     Connection conn = null;
-    boolean hasSelects = false;
+    boolean retrieveSelectMetadata = false;
 
     try {
+
+      // Get Connection
+
       logm("Opening connection...");
       conn = this.loc.getConnection();
       logm("Connection open.");
+
+      // Database Version
 
       DatabaseConnectionVersion cv;
 
@@ -120,6 +128,8 @@ public abstract class HotRodGenerator {
       display("JDBC Driver: " + cv.renderJDBCDriverName() + " - implements JDBC Specification "
           + cv.renderJDBCSpecification());
 
+      // Database Adapter
+
       display("");
 
       try {
@@ -135,57 +145,90 @@ public abstract class HotRodGenerator {
       display("Database Schema: " + (this.adapter.supportsSchema() ? loc.getDefaultSchema() : "(not supported)"));
       display("");
 
-      try {
-        logm("Ready for database objects retrieval.");
+      // Decide about using cached or fresh database objects
 
-        DatabaseObjectFilter filter = new DatabaseObjectFilter(new TableFilter(this.adapter),
-            new ViewFilter(this.config, this.adapter));
+      JdbcDatabase cachedDatabase = cachedMetadata == null ? null : cachedMetadata.getCachedDatabase();
 
-        this.db = new JdbcDatabase(this.loc, true, filter);
+      boolean retrieveFreshDatabaseObjects = false;
+      if (cachedDatabase == null) {
+        retrieveFreshDatabaseObjects = true;
+      } else {
+        for (AbstractConfigurationTag tag : config.getTagsToGenerate()) {
+          try {
+            @SuppressWarnings("unused")
+            AbstractEntityDAOTag entity = (AbstractEntityDAOTag) tag;
+            // An entity was modified -- refresh metadata
+            retrieveFreshDatabaseObjects = true;
+          } catch (ClassCastException e) {
+            // Not an entity DAO -- ignore.
+          }
+        }
+      }
 
-        logm("After retrieval 1.");
+      if (!retrieveFreshDatabaseObjects) {
 
-      } catch (ReaderException e) {
-        throw new ControlledException(e.getMessage());
-      } catch (SQLException e) {
-        throw new UncontrolledException("Could not retrieve database metadata.", e);
-      } catch (CatalogNotSupportedException e) {
-        throw new ControlledException("A catalog name was specified for the database with the value '"
-            + loc.getDefaultCatalog() + "', " + "but this database does not support catalogs through the JDBC driver. "
-            + "Please specify it with an empty value.");
-      } catch (InvalidCatalogException e) {
-        StringBuilder sb = new StringBuilder();
-        if (loc.getDefaultCatalog() == null) {
-          sb.append(
-              "This database requires a catalog name. Please specify in " + Constants.TOOL_NAME + "'s Ant task.\n\n");
-        } else {
-          sb.append(
-              "The specified catalog name '" + loc.getDefaultCatalog() + "' does not exist in this database.\n\n");
+        this.db = cachedDatabase;
+
+      } else {
+
+        // Retrieve database objects
+
+        try {
+          logm("Ready for database objects retrieval.");
+
+          DatabaseObjectFilter filter = new DatabaseObjectFilter(new TableFilter(this.adapter),
+              new ViewFilter(this.config, this.adapter));
+
+          // TODO: Use the existing connection instead of opening a new one.
+          this.db = new JdbcDatabase(this.loc, true, filter);
+
+          logm("After retrieval 1.");
+
+        } catch (ReaderException e) {
+          throw new ControlledException(e.getMessage());
+        } catch (SQLException e) {
+          throw new UncontrolledException("Could not retrieve database metadata.", e);
+        } catch (CatalogNotSupportedException e) {
+          throw new ControlledException(
+              "A catalog name was specified for the database with the value '" + loc.getDefaultCatalog() + "', "
+                  + "but this database does not support catalogs through the JDBC driver. "
+                  + "Please specify it with an empty value.");
+        } catch (InvalidCatalogException e) {
+          StringBuilder sb = new StringBuilder();
+          if (loc.getDefaultCatalog() == null) {
+            sb.append(
+                "This database requires a catalog name. Please specify in " + Constants.TOOL_NAME + "'s Ant task.\n\n");
+          } else {
+            sb.append(
+                "The specified catalog name '" + loc.getDefaultCatalog() + "' does not exist in this database.\n\n");
+          }
+          sb.append("The available catalogs are:\n");
+          for (String c : e.getExistingCatalogs()) {
+            sb.append("  " + c + "\n");
+          }
+          throw new ControlledException(sb.toString());
+        } catch (SchemaNotSupportedException e) {
+          throw new ControlledException("A schema name was specified for the database with the value '"
+              + loc.getDefaultSchema() + "', " + "but this database does not support schemas through the JDBC driver. "
+              + "Please specify it with an empty value.");
+        } catch (InvalidSchemaException e) {
+          StringBuilder sb = new StringBuilder();
+          if (loc.getDefaultSchema() == null) {
+            sb.append(
+                "This database requires a schema name. Please specify in " + Constants.TOOL_NAME + "'s Ant task.\n\n");
+          } else {
+            sb.append(
+                "The specified schema name '" + loc.getDefaultSchema() + "' does not exist in this database.\n\n");
+          }
+          sb.append("The available schemas are:\n");
+          for (String s : e.getExistingSchemas()) {
+            sb.append("  " + s + "\n");
+          }
+          throw new ControlledException(sb.toString());
+        } catch (Exception e) {
+          throw new UncontrolledException("Could not retrieve database metadata using JDBC URL " + loc.getUrl(), e);
         }
-        sb.append("The available catalogs are:\n");
-        for (String c : e.getExistingCatalogs()) {
-          sb.append("  " + c + "\n");
-        }
-        throw new ControlledException(sb.toString());
-      } catch (SchemaNotSupportedException e) {
-        throw new ControlledException("A schema name was specified for the database with the value '"
-            + loc.getDefaultSchema() + "', " + "but this database does not support schemas through the JDBC driver. "
-            + "Please specify it with an empty value.");
-      } catch (InvalidSchemaException e) {
-        StringBuilder sb = new StringBuilder();
-        if (loc.getDefaultSchema() == null) {
-          sb.append(
-              "This database requires a schema name. Please specify in " + Constants.TOOL_NAME + "'s Ant task.\n\n");
-        } else {
-          sb.append("The specified schema name '" + loc.getDefaultSchema() + "' does not exist in this database.\n\n");
-        }
-        sb.append("The available schemas are:\n");
-        for (String s : e.getExistingSchemas()) {
-          sb.append("  " + s + "\n");
-        }
-        throw new ControlledException(sb.toString());
-      } catch (Exception e) {
-        throw new UncontrolledException("Could not retrieve database metadata using JDBC URL " + loc.getUrl(), e);
+
       }
 
       // Validate names
@@ -203,10 +246,9 @@ public abstract class HotRodGenerator {
 
       this.tables = new LinkedHashSet<TableDataSetMetadata>();
       for (JdbcTable t : this.db.getTables()) {
-        TableDataSetMetadata tm;
         try {
           log.debug("t.getName()=" + t.getName());
-          tm = DataSetMetadataFactory.getMetadata(t, this.adapter, config, layout);
+          TableDataSetMetadata tm = DataSetMetadataFactory.getMetadata(t, this.adapter, config, layout, cachedMetadata);
           log.debug("*** tm=" + tm);
           validateIdentifier(sqlNames, "table", t.getName(), tm.getIdentifier());
           this.tables.add(tm);
@@ -307,7 +349,7 @@ public abstract class HotRodGenerator {
       for (JdbcTable v : this.db.getViews()) {
         try {
 
-          TableDataSetMetadata vm = DataSetMetadataFactory.getMetadata(v, this.adapter, config, layout);
+          TableDataSetMetadata vm = DataSetMetadataFactory.getMetadata(v, this.adapter, config, layout, cachedMetadata);
 
           validateIdentifier(sqlNames, "view", v.getName(), vm.getIdentifier());
           this.views.add(vm);
@@ -332,55 +374,63 @@ public abstract class HotRodGenerator {
         }
       }
 
-      // Prepare DAOs meta data
+      // Prepare executor DAOs meta data
 
-      this.daos = new LinkedHashSet<PlainDAOMetadata>();
+      Map<String, Map<String, SelectMethodMetadata>> allDAOsSelectMetadata = cachedMetadata.getSelectMetadata();
+
+      this.executors = new LinkedHashSet<ExecutorDAOMetadata>();
       for (ExecutorTag tag : config.getExecutors()) {
-        PlainDAOMetadata dm = new PlainDAOMetadata(tag, this.adapter, config, tag.getFragmentConfig());
-        this.daos.add(dm);
+
+        Map<String, SelectMethodMetadata> selectsMetadata = allDAOsSelectMetadata == null ? null
+            : allDAOsSelectMetadata.get(tag.getJavaClassName());
+
+        ExecutorDAOMetadata dm = new ExecutorDAOMetadata(tag, this.adapter, config, tag.getFragmentConfig(),
+            selectsMetadata);
+        this.executors.add(dm);
       }
 
       // Validate against the database
 
-      try {
-
-        this.config.validateAgainstDatabase(this, conn);
-
-      } catch (InvalidConfigurationFileException e) {
-        String message = (e.getSourceLocation() == null ? ""
-            : "[file: " + e.getSourceLocation().getFile().getPath() + ", line " + e.getSourceLocation().getLineNumber()
-                + ", col " + e.getSourceLocation().getColumnNumber() + "] ")
-            + e.getMessage();
-        throw new ControlledException(message);
+      // TODO: make sure the cache includes enum values from table rows.
+      if (retrieveFreshDatabaseObjects) {
+        try {
+          this.config.validateAgainstDatabase(this, conn);
+        } catch (InvalidConfigurationFileException e) {
+          String message = (e.getSourceLocation() == null ? ""
+              : "[file: " + e.getSourceLocation().getFile().getPath() + ", line "
+                  + e.getSourceLocation().getLineNumber() + ", col " + e.getSourceLocation().getColumnNumber() + "] ")
+              + e.getMessage();
+          throw new ControlledException(message);
+        }
       }
 
       // Prepare <select> methods meta data - phase 1
 
       for (TableDataSetMetadata tm : this.tables) {
-        tm.gatherSelectsMetadataPhase1(this, conn, layout);
-        if (tm.hasSelects()) {
-          hasSelects = true;
+        boolean retrieving = tm.gatherSelectsMetadataPhase1(this, conn, layout);
+        if (retrieving) {
+          retrieveSelectMetadata = true;
         }
       }
 
       for (TableDataSetMetadata vm : this.views) {
-        vm.gatherSelectsMetadataPhase1(this, conn, layout);
-        if (vm.hasSelects()) {
-          hasSelects = true;
+        boolean retrieving = vm.gatherSelectsMetadataPhase1(this, conn, layout);
+        if (retrieving) {
+          retrieveSelectMetadata = true;
         }
       }
 
       for (TableDataSetMetadata em : this.enums) {
-        em.gatherSelectsMetadataPhase1(this, conn, layout);
-        if (em.hasSelects()) {
-          hasSelects = true;
+        boolean retrieving = em.gatherSelectsMetadataPhase1(this, conn, layout);
+        if (retrieving) {
+          retrieveSelectMetadata = true;
         }
       }
 
-      for (PlainDAOMetadata dm : this.daos) {
-        dm.gatherSelectsMetadataPhase1(this, conn, layout);
-        if (dm.hasSelects()) {
-          hasSelects = true;
+      for (ExecutorDAOMetadata dm : this.executors) {
+        boolean retrieving = dm.gatherSelectsMetadataPhase1(this, conn, layout);
+        if (retrieving) {
+          retrieveSelectMetadata = true;
         }
       }
 
@@ -389,7 +439,7 @@ public abstract class HotRodGenerator {
       logm("Prepare selects metadata - phase 1.");
 
       if (!this.config.getSelects().isEmpty()) {
-        hasSelects = true;
+        retrieveSelectMetadata = true;
       }
 
       this.selects = new LinkedHashSet<SelectDataSetMetadata>();
@@ -445,7 +495,7 @@ public abstract class HotRodGenerator {
     // Prepare <select> DAOs meta data - phase 2
 
     log.debug("ret 1");
-    if (hasSelects) {
+    if (retrieveSelectMetadata) {
 
       logm("Prepare selects metadata - phase 2.");
 
@@ -476,7 +526,7 @@ public abstract class HotRodGenerator {
           em.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
         }
 
-        for (PlainDAOMetadata dm : this.daos) {
+        for (ExecutorDAOMetadata dm : this.executors) {
           // log.info("gather2 on DAO " + dm.getJavaClassName());
           dm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
         }
@@ -551,7 +601,7 @@ public abstract class HotRodGenerator {
 
   @SuppressWarnings("unused")
   private void logSelectMethodMetadata() {
-    for (PlainDAOMetadata d : this.daos) {
+    for (ExecutorDAOMetadata d : this.executors) {
       for (SelectMethodMetadata sm : d.getSelectsMetadata()) {
         display("=== Select method " + sm.getMethod() + " [" + (sm.isStructured() ? "structured" : "non-structured")
             + "] " + (sm.getVO() != null ? "returns " + sm.getVO() + " " : "")
@@ -732,7 +782,7 @@ public abstract class HotRodGenerator {
 
       // daos
 
-      for (PlainDAOMetadata d : this.daos) {
+      for (ExecutorDAOMetadata d : this.executors) {
         if (this.displayMode == DisplayMode.LIST) {
           display("DAO " + d.getJavaClassName() + " included.");
         }

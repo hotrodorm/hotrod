@@ -3,6 +3,7 @@ package org.hotrod.metadata;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
@@ -24,11 +25,11 @@ import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
 
-public class PlainDAOMetadata implements DataSetMetadata {
+public class ExecutorDAOMetadata implements DataSetMetadata {
 
   // Constants
 
-  private static final Logger log = Logger.getLogger(PlainDAOMetadata.class);
+  private static final Logger log = Logger.getLogger(ExecutorDAOMetadata.class);
 
   // Properties
 
@@ -40,19 +41,22 @@ public class PlainDAOMetadata implements DataSetMetadata {
   private List<QueryMethodTag> queries = new ArrayList<QueryMethodTag>();
   private List<SelectMethodTag> selects = new ArrayList<SelectMethodTag>();
 
+  private Map<String, SelectMethodMetadata> cachedSelectsMetadata;
   private List<SelectMethodMetadata> selectsMetadata;
 
   private HotRodFragmentConfigTag fragmentConfig;
 
   // Constructor
 
-  public PlainDAOMetadata(final ExecutorTag tag, final DatabaseAdapter adapter, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig) {
+  public ExecutorDAOMetadata(final ExecutorTag tag, final DatabaseAdapter adapter, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig, final Map<String, SelectMethodMetadata> cachedSelectsMetadata) {
     log.debug("init");
     this.tag = tag;
     this.config = config;
     this.adapter = adapter;
     this.fragmentConfig = fragmentConfig;
+
+    this.cachedSelectsMetadata = cachedSelectsMetadata;
 
     this.sequences = this.tag.getSequences();
     this.queries = this.tag.getQueries();
@@ -62,24 +66,41 @@ public class PlainDAOMetadata implements DataSetMetadata {
 
   // Select Methods meta data gathering
 
-  public void gatherSelectsMetadataPhase1(final HotRodGenerator generator, final Connection conn1,
+  public boolean gatherSelectsMetadataPhase1(final HotRodGenerator generator, final Connection conn1,
       final DataSetLayout layout) throws ControlledException, UncontrolledException {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
+    boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
-      SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
-          .getSelectGeneration();
-      ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
-      SelectMethodMetadata sm = new SelectMethodMetadata(generator, selectTag, this.config, selectGenerationTag,
-          columnsPrefixGenerator, layout);
-      this.selectsMetadata.add(sm);
-      sm.gatherMetadataPhase1(conn1);
+
+      SelectMethodMetadata cachedSm = this.cachedSelectsMetadata.get(selectTag.getMethod());
+      if (cachedSm != null && !selectTag.getGenerate()) {
+
+        // use the cached metadata
+        this.selectsMetadata.add(cachedSm);
+
+      } else {
+
+        // retrieve fresh metadata
+        needsToRetrieveMetadata = true;
+        SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
+            .getSelectGeneration();
+        ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
+        SelectMethodMetadata sm = new SelectMethodMetadata(generator, selectTag, this.config, selectGenerationTag,
+            columnsPrefixGenerator, layout);
+        this.selectsMetadata.add(sm);
+        sm.gatherMetadataPhase1(conn1);
+
+      }
     }
+    return needsToRetrieveMetadata;
   }
 
   public void gatherSelectsMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
       throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
     for (SelectMethodMetadata sm : this.selectsMetadata) {
-      sm.gatherMetadataPhase2(conn2, voRegistry);
+      if (!sm.metadataComplete()) {
+        sm.gatherMetadataPhase2(conn2, voRegistry);
+      }
     }
   }
 

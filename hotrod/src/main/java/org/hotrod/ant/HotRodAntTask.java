@@ -172,21 +172,25 @@ public class HotRodAntTask extends Task {
     }
 
     try {
-      HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().getGenerator(loc, config, this.displayMode);
+      HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(loc, config,
+          this.displayMode);
       log.debug("Generator instantiated.");
 
-      g.prepareGeneration();
-      log.debug("Generation prepared.");
-
       try {
+
         LiveGenerator liveGenerator = (LiveGenerator) g;
 
         // a live generator
+
+        g.prepareGeneration();
         FileGenerator fg = new LocalFileGenerator();
         liveGenerator.generate(fg);
 
       } catch (ClassCastException e) {
-        // not a live generator
+
+        // a batch generator
+
+        g.prepareGeneration();
         g.generate();
       }
 

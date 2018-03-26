@@ -18,6 +18,8 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   private TagStatus status;
   protected List<AbstractConfigurationTag> subTags;
 
+  private boolean generate = false;
+
   // Constructor
 
   protected AbstractConfigurationTag(final String tagName) {
@@ -55,6 +57,50 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
 
   public List<AbstractConfigurationTag> getSubTags() {
     return subTags;
+  }
+
+  // Generation mark
+
+  public boolean getGenerate() {
+    return generate;
+  }
+
+  public void setGenerate(boolean generate) {
+    this.generate = generate;
+  }
+
+  public void setBranchGenerate(boolean generate) {
+    this.generate = generate;
+    for (AbstractConfigurationTag subTag : this.subTags) {
+      subTag.setBranchGenerate(generate);
+    }
+  }
+
+  public boolean includesGenerate() {
+    if (this.generate) {
+      return true;
+    }
+    for (AbstractConfigurationTag subTag : this.subTags) {
+      if (subTag.includesGenerate()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public List<AbstractConfigurationTag> getTagsToGenerate() {
+    List<AbstractConfigurationTag> list = new ArrayList<AbstractConfigurationTag>();
+    this.addTagsToGenerate(list);
+    return list;
+  }
+
+  private void addTagsToGenerate(final List<AbstractConfigurationTag> list) {
+    if (this.generate) {
+      list.add(this);
+    }
+    for (AbstractConfigurationTag subTag : this.subTags) {
+      subTag.addTagsToGenerate(list);
+    }
   }
 
   // XmlLocatable

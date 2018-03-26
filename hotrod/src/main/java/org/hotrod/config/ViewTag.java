@@ -22,7 +22,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 @XmlRootElement(name = "view")
-public class ViewTag extends AbstractDAOTag {
+public class ViewTag extends AbstractEntityDAOTag {
 
   // Constants
 
