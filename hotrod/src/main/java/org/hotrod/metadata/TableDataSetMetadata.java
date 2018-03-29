@@ -258,19 +258,19 @@ public class TableDataSetMetadata implements DataSetMetadata {
 
   }
 
-  public void linkReferencedDataSets(final Set<TableDataSetMetadata> dss) {
+  public void linkReferencedTableMetadata(final Set<TableDataSetMetadata> dss) {
     for (ForeignKeyMetadata fk : this.importedFKs) {
-      fk.linkReferencedDataSet(dss);
+      fk.linkReferencedTableMetadata(dss);
     }
     for (ForeignKeyMetadata fk : this.exportedFKs) {
-      fk.linkReferencedDataSet(dss);
+      fk.linkReferencedTableMetadata(dss);
     }
   }
 
   public void linkEnumMetadata(final Set<EnumDataSetMetadata> enums) {
     for (ForeignKeyMetadata ifk : this.importedFKs) {
       try {
-        EnumDataSetMetadata em = (EnumDataSetMetadata) ifk.getRemote().getDataSet();
+        EnumDataSetMetadata em = (EnumDataSetMetadata) ifk.getRemote().getTableMetadata();
         for (ColumnMetadata icm : ifk.getLocal().getColumns()) {
           icm.setEnumMetadata(em);
           for (ColumnMetadata cm : this.cols) {
@@ -303,7 +303,12 @@ public class TableDataSetMetadata implements DataSetMetadata {
     boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
       SelectMethodMetadata cachedSm = this.cachedSelectsMetadata.get(selectTag.getMethod());
-      if (cachedSm != null && !selectTag.getGenerate()) {
+
+      if (referencesAMarkedEntity(selectTag.getReferencedEntities())) {
+        selectTag.markGenerate(true);
+      }
+
+      if (cachedSm != null && !selectTag.getGenerateMark()) {
 
         // use the cached metadata
         this.selectsMetadata.add(cachedSm);
@@ -323,6 +328,15 @@ public class TableDataSetMetadata implements DataSetMetadata {
       }
     }
     return needsToRetrieveMetadata;
+  }
+
+  private boolean referencesAMarkedEntity(final Set<TableDataSetMetadata> referencedEntities) {
+    for (TableDataSetMetadata referencedEntity : referencedEntities) {
+      if (referencedEntity.getDaoTag().getGenerateMark()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public void gatherSelectsMetadataPhase2(final Connection conn2, final VORegistry voRegistry)

@@ -270,15 +270,15 @@ public class ObjectDAO {
     for (ForeignKeyMetadata ik : this.metadata.getImportedFKs()) {
 
       String fkc;
-      ObjectVO rvo = this.generator.getVO(ik.getRemote().getDataSet());
+      ObjectVO rvo = this.generator.getVO(ik.getRemote().getTableMetadata());
       if (rvo != null) {
         fkc = rvo.getFullClassName();
         imports.add(fkc);
-        ObjectDAO dao = this.generator.getDAO(ik.getRemote().getDataSet());
+        ObjectDAO dao = this.generator.getDAO(ik.getRemote().getTableMetadata());
         String daoc = dao.getFullClassName();
         imports.add(daoc);
       } else {
-        EnumClass ec = this.generator.getEnum(ik.getRemote().getDataSet());
+        EnumClass ec = this.generator.getEnum(ik.getRemote().getTableMetadata());
         fkc = ec.getFullClassName();
         imports.add(fkc);
       }
@@ -286,10 +286,10 @@ public class ObjectDAO {
     }
 
     for (ForeignKeyMetadata ek : this.metadata.getExportedFKs()) {
-      ObjectVO rvo = this.generator.getVO(ek.getRemote().getDataSet());
+      ObjectVO rvo = this.generator.getVO(ek.getRemote().getTableMetadata());
       imports.add(rvo.getFullClassName());
 
-      ObjectDAO dao = this.generator.getDAO(ek.getRemote().getDataSet());
+      ObjectDAO dao = this.generator.getDAO(ek.getRemote().getTableMetadata());
       imports.add(dao.getOrderByFullClassName());
       imports.add(dao.getFullClassName());
     }
@@ -873,7 +873,7 @@ public class ObjectDAO {
               }
               println("  // --- no select parent for FK column" + (fkm.getLocal().getColumns().size() > 1 ? "s" : "")
                   + " (" + lw.toString() + ") since it points to the enum table "
-                  + fkm.getRemote().getDataSet().renderSQLIdentifier());
+                  + fkm.getRemote().getTableMetadata().renderSQLIdentifier());
               println();
             }
           }
@@ -888,7 +888,7 @@ public class ObjectDAO {
       final List<ForeignKeyMetadata> fks) {
     Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> fkSelectors = new HashMap<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>>();
     for (ForeignKeyMetadata fk : fks) {
-      DataSetMetadata ds = fk.getRemote().getDataSet();
+      DataSetMetadata ds = fk.getRemote().getTableMetadata();
       LinkedHashSet<ForeignKeyMetadata> fkSelector = fkSelectors.get(ds);
       if (fkSelector == null) {
         fkSelector = new LinkedHashSet<ForeignKeyMetadata>();
@@ -1721,7 +1721,7 @@ public class ObjectDAO {
 
   private boolean hasFKPointingToEnum() throws IOException {
     for (ForeignKeyMetadata fk : this.metadata.getImportedFKs()) {
-      DataSetMetadata ds = fk.getRemote().getDataSet();
+      DataSetMetadata ds = fk.getRemote().getTableMetadata();
       EnumClass ec = this.generator.getEnum(ds);
       if (ec != null) {
         return true;
@@ -1733,7 +1733,7 @@ public class ObjectDAO {
   private void writeEnumTypeHandlers() throws ControlledException, IOException {
 
     for (ForeignKeyMetadata fkm : this.metadata.getImportedFKs()) {
-      DataSetMetadata ds = fkm.getRemote().getDataSet();
+      DataSetMetadata ds = fkm.getRemote().getTableMetadata();
       EnumClass ec = this.generator.getEnum(ds);
 
       if (ec != null) { // FKs point to an enum

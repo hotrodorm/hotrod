@@ -29,6 +29,7 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
+import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
@@ -269,6 +270,14 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     this.metadata = new StructuredColumnsMetadata(this, classPackage, !this.connectedVOResult, this.vo,
         this.expressions, vos);
 
+  }
+
+  public Set<TableDataSetMetadata> getReferencedEntities() {
+    Set<TableDataSetMetadata> entities = new HashSet<TableDataSetMetadata>();
+    for (VOTag a : this.vos) {
+      entities.addAll(a.getReferencedEntities());
+    }
+    return entities;
   }
 
   // Utilities

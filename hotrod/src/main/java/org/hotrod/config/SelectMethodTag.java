@@ -21,6 +21,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.SelectMethodMetadata;
+import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.Compare;
@@ -321,6 +322,14 @@ public class SelectMethodTag extends AbstractMethodTag {
 
   public List<ParameterTag> getParameterDefinitions() {
     return this.parameters.getDefinitions();
+  }
+
+  public Set<TableDataSetMetadata> getReferencedEntities() {
+    if (this.structuredColumns == null) {
+      return new HashSet<TableDataSetMetadata>();
+    } else {
+      return this.structuredColumns.getReferencedEntities();
+    }
   }
 
   // Merging logic

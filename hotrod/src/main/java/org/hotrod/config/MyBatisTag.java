@@ -143,13 +143,14 @@ public class MyBatisTag extends AbstractGeneratorTag {
   @Override
   public HotRodGenerator instantiateGenerator(final DatabaseLocation loc, final HotRodConfigTag config,
       final DisplayMode displayMode) throws UncontrolledException, ControlledException {
-    return new MyBatisGenerator(null, loc, config, displayMode);
+    return new MyBatisGenerator(null, loc, config, displayMode, false);
   }
 
   @Override
   public HotRodGenerator instantiateGenerator(final CachedMetadata cachedMetadata, DatabaseLocation loc,
-      HotRodConfigTag config, DisplayMode displayMode) throws UncontrolledException, ControlledException {
-    return new MyBatisGenerator(cachedMetadata, loc, config, displayMode);
+      HotRodConfigTag config, DisplayMode displayMode, final boolean incrementalMode)
+      throws UncontrolledException, ControlledException {
+    return new MyBatisGenerator(cachedMetadata, loc, config, displayMode, incrementalMode);
   }
 
   // Merging logic

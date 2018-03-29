@@ -39,6 +39,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadataFactory;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.ExecutorDAOMetadata;
+import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -91,10 +92,15 @@ public abstract class HotRodGenerator {
   private Long lastLog = null;
 
   public HotRodGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc, final HotRodConfigTag config,
-      final DisplayMode displayMode) throws UncontrolledException, ControlledException {
+      final DisplayMode displayMode, final boolean incrementalMode) throws UncontrolledException, ControlledException {
+
     this.loc = loc;
     this.config = config;
     this.displayMode = displayMode;
+
+    if (!incrementalMode) {
+      config.markGenerateSubtree(true);
+    }
 
     logm("Starting core generator.");
 
@@ -150,17 +156,21 @@ public abstract class HotRodGenerator {
       JdbcDatabase cachedDatabase = cachedMetadata == null ? null : cachedMetadata.getCachedDatabase();
 
       boolean retrieveFreshDatabaseObjects = false;
-      if (cachedDatabase == null) {
+      if (!incrementalMode) {
         retrieveFreshDatabaseObjects = true;
       } else {
-        for (AbstractConfigurationTag tag : config.getTagsToGenerate()) {
-          try {
-            @SuppressWarnings("unused")
-            AbstractEntityDAOTag entity = (AbstractEntityDAOTag) tag;
-            // An entity was modified -- refresh metadata
-            retrieveFreshDatabaseObjects = true;
-          } catch (ClassCastException e) {
-            // Not an entity DAO -- ignore.
+        if (cachedDatabase == null) {
+          retrieveFreshDatabaseObjects = true;
+        } else {
+          for (AbstractConfigurationTag tag : config.getTagsToGenerate()) {
+            try {
+              @SuppressWarnings("unused")
+              AbstractEntityDAOTag entity = (AbstractEntityDAOTag) tag;
+              // An entity was modified -- refresh metadata
+              retrieveFreshDatabaseObjects = true;
+            } catch (ClassCastException e) {
+              // Not an entity DAO -- ignore.
+            }
           }
         }
       }
@@ -280,11 +290,22 @@ public abstract class HotRodGenerator {
         }
       }
 
-      for (TableDataSetMetadata ds : this.tables) {
-        ds.linkReferencedDataSets(this.tables);
+      // Link meta data by foreign keys
+
+      for (TableDataSetMetadata tm : this.tables) {
+        tm.linkReferencedTableMetadata(this.tables);
       }
 
-      // Prepare enums meta data
+      // Propagate generation to related db changes (if incremental generation)
+
+      if (incrementalMode) {
+        Set<TableDataSetMetadata> alreadyWalked = new HashSet<TableDataSetMetadata>();
+        for (TableDataSetMetadata tm : this.tables) {
+          propagateGeneration(tm, alreadyWalked);
+        }
+      }
+
+      // Separate enums metadata from tables'
 
       logm("Prepare enums metadata.");
 
@@ -597,6 +618,20 @@ public abstract class HotRodGenerator {
 
     // logSelectMethodMetadata(); // keep for debugging purposes only
 
+  }
+
+  private void propagateGeneration(final TableDataSetMetadata tm, final Set<TableDataSetMetadata> alreadyWalked) {
+    if (!alreadyWalked.contains(tm)) {
+      alreadyWalked.add(tm);
+      if (tm.getDaoTag().getGenerateMark()) {
+        for (ForeignKeyMetadata efk : tm.getExportedFKs()) {
+          propagateGeneration(efk.getRemote().getTableMetadata(), alreadyWalked);
+        }
+        for (ForeignKeyMetadata ifk : tm.getImportedFKs()) {
+          propagateGeneration(ifk.getRemote().getTableMetadata(), alreadyWalked);
+        }
+      }
+    }
   }
 
   @SuppressWarnings("unused")

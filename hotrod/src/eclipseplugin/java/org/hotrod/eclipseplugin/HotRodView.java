@@ -4,10 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IFile;
@@ -421,7 +420,7 @@ public class HotRodView extends ViewPart {
               showMessage("File properties are not yet configured");
             } else {
               log("generating all - starting");
-              mainConfigFace.getConfig().setBranchGenerate(true);
+              mainConfigFace.getConfig().markGenerateSubtree(true);
               generate(mainConfigFace.getConfig(), fileProperties, mainConfigFace.getProject());
               log("generating all - complete");
             }
@@ -465,33 +464,27 @@ public class HotRodView extends ViewPart {
 
         // TODO: generate selected
 
+        // Remove the generate mark in all files
+
         for (MainConfigFace face : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-          face.getConfig().setBranchGenerate(false);
+          face.getConfig().markGenerateSubtree(false);
         }
 
         TreeSelection selection = (TreeSelection) viewer.getSelection();
         if (!selection.toList().isEmpty()) {
 
-          // Separate faces per file, and remove child duplicates.
+          // Mark selection for generation and identify main faces
 
-          TreeMap<MainConfigFace, TreeSet<AbstractFace>> targets = new TreeMap<MainConfigFace, TreeSet<AbstractFace>>();
+          LinkedHashSet<MainConfigFace> mainFaces = new LinkedHashSet<MainConfigFace>();
           for (Object obj : (List<?>) selection.toList()) {
-            AbstractFace currentFace = (AbstractFace) obj;
-            MainConfigFace mainFace = currentFace.getMainConfigFace();
-            currentFace.getTag().setGenerate(true);
-            TreeSet<AbstractFace> distinctFaces = targets.get(mainFace);
-            if (distinctFaces == null) {
-              distinctFaces = new TreeSet<AbstractFace>();
-              targets.put(mainFace, distinctFaces);
-            }
-            if (!parentIncluded(currentFace, distinctFaces)) {
-              distinctFaces.add(currentFace);
-            }
+            AbstractFace selectedFace = (AbstractFace) obj;
+            selectedFace.getTag().markGenerate(true);
+            mainFaces.add(selectedFace.getMainConfigFace());
           }
 
-          // Verify all file properties are set up
+          // Verify file properties are set up for all faces
 
-          for (MainConfigFace mf : targets.keySet()) {
+          for (MainConfigFace mf : mainFaces) {
             ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
             if (projectProperties == null) {
               showMessage("The file '" + mf.getRelativeFileName()
@@ -505,9 +498,9 @@ public class HotRodView extends ViewPart {
             }
           }
 
-          // Generate targets per file
+          // Generate all main faces
 
-          for (MainConfigFace mf : targets.keySet()) {
+          for (MainConfigFace mf : mainFaces) {
             ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
             FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
             generateSelected(mf.getConfig(), fileProperties, mf.getProject());
@@ -516,19 +509,6 @@ public class HotRodView extends ViewPart {
         }
         log("[generate Selected - finished]");
 
-      }
-
-      private boolean parentIncluded(final AbstractFace f, final TreeSet<AbstractFace> distinctFaces) {
-        AbstractFace current = f;
-        while (current != null) {
-          for (AbstractFace d : distinctFaces) {
-            if (f.equals(d)) {
-              return true;
-            }
-          }
-          current = current.getParent();
-        }
-        return false;
       }
 
     };
@@ -794,7 +774,7 @@ public class HotRodView extends ViewPart {
       CachedMetadata cachedMetadata = null;
 
       HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
-          config, DisplayMode.LIST);
+          config, DisplayMode.LIST, true);
       log("Generator instantiated.");
 
       try {

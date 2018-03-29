@@ -49,8 +49,8 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
   private EntityDAORegistry entityDAORegistry = new EntityDAORegistry();
 
   public MyBatisGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc, final HotRodConfigTag config,
-      final DisplayMode displayMode) throws UncontrolledException, ControlledException {
-    super(cachedMetadata, loc, config, displayMode);
+      final DisplayMode displayMode, final boolean incrementalMode) throws UncontrolledException, ControlledException {
+    super(cachedMetadata, loc, config, displayMode, incrementalMode);
   }
 
   @Override

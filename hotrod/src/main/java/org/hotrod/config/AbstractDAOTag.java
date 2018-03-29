@@ -15,13 +15,13 @@ import org.hotrod.utils.ClassPackage;
 /**
  * <pre>
  *
- *     AbstractConfigurationTag <-----------------------------------+
- *      ^                                                           |
- *      |                                                           |
- *     AbstractDAOTag <------------............            AbstractMethodTag <-----------+
- *      ^                         ^           .               ^         ^                |
- *      |                         |           .               |         |                |
- *     AbstractEntityDAOTag  CustomDAOTag   SelectTag  QueryMethodTag  SelectMethodTag  SequenceMethodTag
+ *     AbstractConfigurationTag <------------------------------------+
+ *      ^                                                            |
+ *      |                                                            |
+ *     AbstractDAOTag <------------.............             AbstractMethodTag <-----------+
+ *      ^                         ^            .                ^         ^                |
+ *      |                         |            .                |         |                |
+ *     AbstractEntityDAOTag  ExecutorDAOTag  SelectTag  QueryMethodTag  SelectMethodTag  SequenceMethodTag
  *      ^       ^        ^      
  *      |       |        |      
  *   TableTag  ViewTag  EnumTag  

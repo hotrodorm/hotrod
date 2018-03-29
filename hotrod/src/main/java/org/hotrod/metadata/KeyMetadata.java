@@ -6,22 +6,22 @@ import org.hotrod.runtime.util.ListWriter;
 
 public class KeyMetadata {
 
-  private DataSetMetadata dataSet;
+  private TableDataSetMetadata tableMetadata;
   private List<ColumnMetadata> columns;
 
-  public KeyMetadata(final DataSetMetadata dataSet, final List<ColumnMetadata> columns) {
-    this.dataSet = dataSet;
+  public KeyMetadata(final TableDataSetMetadata dataSet, final List<ColumnMetadata> columns) {
+    this.tableMetadata = dataSet;
     this.columns = columns;
   }
 
-  void linkReferencedDataSet(final TableDataSetMetadata tds) {
-    this.dataSet = tds;
+  void linkReferencedDataSet(final TableDataSetMetadata tableMetadata) {
+    this.tableMetadata = tableMetadata;
   }
 
   // Getters
 
-  public DataSetMetadata getDataSet() {
-    return dataSet;
+  public TableDataSetMetadata getTableMetadata() {
+    return tableMetadata;
   }
 
   public List<ColumnMetadata> getColumns() {
@@ -34,7 +34,7 @@ public class KeyMetadata {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((dataSet == null) ? 0 : dataSet.hashCode());
+    result = prime * result + ((tableMetadata == null) ? 0 : tableMetadata.hashCode());
     return result;
   }
 
@@ -47,10 +47,10 @@ public class KeyMetadata {
     if (getClass() != obj.getClass())
       return false;
     KeyMetadata other = (KeyMetadata) obj;
-    if (dataSet == null) {
-      if (other.dataSet != null)
+    if (tableMetadata == null) {
+      if (other.tableMetadata != null)
         return false;
-    } else if (!dataSet.equals(other.dataSet))
+    } else if (!tableMetadata.equals(other.tableMetadata))
       return false;
     return equals(this.columns, other.columns);
   }

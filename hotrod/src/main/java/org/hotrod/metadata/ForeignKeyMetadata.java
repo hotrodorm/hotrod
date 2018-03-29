@@ -33,13 +33,13 @@ public class ForeignKeyMetadata {
     return pointsToPK;
   }
 
-  void linkReferencedDataSet(final Set<TableDataSetMetadata> dss) {
-    for (TableDataSetMetadata tds : dss) {
-      if (tds.correspondsToJdbcTable(this.remoteTable)) {
+  void linkReferencedTableMetadata(final Set<TableDataSetMetadata> tableMetadata) {
+    for (TableDataSetMetadata tm : tableMetadata) {
+      if (tm.correspondsToJdbcTable(this.remoteTable)) {
         // System.out.println(
         // " + this.remoteTable=" + this.remoteTable.getName() + " tds=" +
         // tds.getIdentifier().getSQLIdentifier());
-        remote.linkReferencedDataSet(tds);
+        remote.linkReferencedDataSet(tm);
         return;
       }
     }

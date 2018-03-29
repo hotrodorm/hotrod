@@ -68,7 +68,7 @@ public class ObjectVO {
 
         ImportsRenderer ic = new ImportsRenderer();
         for (ForeignKeyMetadata ik : this.metadata.getImportedFKs()) {
-          EnumClass ec = this.generator.getEnum(ik.getRemote().getDataSet());
+          EnumClass ec = this.generator.getEnum(ik.getRemote().getTableMetadata());
           if (ec != null) {
             ic.add(ec.getFullClassName());
           }

@@ -36,7 +36,7 @@ public class SpringJDBCGenerator extends HotRodGenerator {
 
   public SpringJDBCGenerator(final DatabaseLocation loc, final HotRodConfigTag config, final DisplayMode displayMode)
       throws UncontrolledException, ControlledException {
-    super(null, loc, config, displayMode);
+    super(null, loc, config, displayMode, false);
   }
 
   @Override

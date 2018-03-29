@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
@@ -62,6 +63,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata {
     this.queries = this.tag.getQueries();
     this.selects = this.tag.getSelects();
 
+    this.selectsMetadata = null;
   }
 
   // Select Methods meta data gathering
@@ -73,7 +75,12 @@ public class ExecutorDAOMetadata implements DataSetMetadata {
     for (SelectMethodTag selectTag : this.selects) {
 
       SelectMethodMetadata cachedSm = this.cachedSelectsMetadata.get(selectTag.getMethod());
-      if (cachedSm != null && !selectTag.getGenerate()) {
+
+      if (referencesAMarkedEntity(selectTag.getReferencedEntities())) {
+        selectTag.markGenerate(true);
+      }
+
+      if (cachedSm != null && !selectTag.getGenerateMark()) {
 
         // use the cached metadata
         this.selectsMetadata.add(cachedSm);
@@ -93,6 +100,15 @@ public class ExecutorDAOMetadata implements DataSetMetadata {
       }
     }
     return needsToRetrieveMetadata;
+  }
+
+  private boolean referencesAMarkedEntity(final Set<TableDataSetMetadata> referencedEntities) {
+    for (TableDataSetMetadata referencedEntity : referencedEntities) {
+      if (referencedEntity.getDaoTag().getGenerateMark()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public void gatherSelectsMetadataPhase2(final Connection conn2, final VORegistry voRegistry)

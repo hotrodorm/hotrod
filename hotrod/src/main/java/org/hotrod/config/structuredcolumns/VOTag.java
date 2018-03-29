@@ -723,6 +723,23 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     return viewMetadata;
   }
 
+  public Set<TableDataSetMetadata> getReferencedEntities() {
+    Set<TableDataSetMetadata> entities = new HashSet<TableDataSetMetadata>();
+    if (this.tableMetadata != null) {
+      entities.add(this.tableMetadata);
+    }
+    if (this.viewMetadata != null) {
+      entities.add(this.viewMetadata);
+    }
+    for (VOTag a : this.associations) {
+      entities.addAll(a.getReferencedEntities());
+    }
+    for (VOTag a : this.collections) {
+      entities.addAll(a.getReferencedEntities());
+    }
+    return entities;
+  }
+
   public VOMetadata getMetadata(final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig,
       final DaosTag daosTag) throws InvalidConfigurationFileException {
     return new VOMetadata(this, layout, fragmentConfig, daosTag);

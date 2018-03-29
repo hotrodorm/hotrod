@@ -61,27 +61,27 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
 
   // Generation mark
 
-  public boolean getGenerate() {
-    return generate;
+  public boolean getGenerateMark() {
+    return this.generate;
   }
 
-  public void setGenerate(boolean generate) {
+  public void markGenerate(boolean generate) {
     this.generate = generate;
   }
 
-  public void setBranchGenerate(boolean generate) {
+  public void markGenerateSubtree(boolean generate) {
     this.generate = generate;
     for (AbstractConfigurationTag subTag : this.subTags) {
-      subTag.setBranchGenerate(generate);
+      subTag.markGenerateSubtree(generate);
     }
   }
 
-  public boolean includesGenerate() {
+  public boolean subtreeIncludesGenerateMark() {
     if (this.generate) {
       return true;
     }
     for (AbstractConfigurationTag subTag : this.subTags) {
-      if (subTag.includesGenerate()) {
+      if (subTag.subtreeIncludesGenerateMark()) {
         return true;
       }
     }
