@@ -35,6 +35,7 @@ public class EclipseFileGenerator implements FileGenerator {
 
     private EclipseTextWriter(final File f) throws IOException {
       RelativeProjectPath rp = RelativeProjectPath.findRelativePath(project, f);
+      log("opening: " + f.getAbsolutePath());
       if (rp == null) {
         this.w = new BufferedWriter(new FileWriter(f));
         this.ifile = null;
@@ -56,6 +57,7 @@ public class EclipseFileGenerator implements FileGenerator {
 
     @Override
     public void close() throws IOException {
+      log("closing...");
       if (this.ifile != null) {
         try {
           ByteArrayInputStream bis = new ByteArrayInputStream(this.bos.toByteArray());
@@ -72,6 +74,10 @@ public class EclipseFileGenerator implements FileGenerator {
       }
     }
 
+  }
+
+  private static void log(final String txt) {
+    // System.out.println("[EclipseFileGenerator] - " + txt);
   }
 
 }

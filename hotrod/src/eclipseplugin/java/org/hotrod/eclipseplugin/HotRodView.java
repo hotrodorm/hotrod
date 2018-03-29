@@ -460,7 +460,7 @@ public class HotRodView extends ViewPart {
 
       @Override
       public void run() {
-        showMessage("Generate Selected - executed");
+        // showMessage("Generate Selected - executed");
 
         // TODO: generate selected
 
@@ -484,26 +484,31 @@ public class HotRodView extends ViewPart {
 
           // Verify file properties are set up for all faces
 
+          boolean allConfigured = true;
           for (MainConfigFace mf : mainFaces) {
             ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
             if (projectProperties == null) {
               showMessage("The file '" + mf.getRelativeFileName()
                   + "' has not yet been configured. Please click on Configure File and try again.");
+              allConfigured = false;
             } else {
               FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
               if (fileProperties == null) {
                 showMessage("The file '" + mf.getRelativeFileName()
                     + "' has not yet been configured. Please click on Configure File and try again.");
+                allConfigured = false;
               }
             }
           }
 
           // Generate all main faces
 
-          for (MainConfigFace mf : mainFaces) {
-            ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
-            FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
-            generateSelected(mf.getConfig(), fileProperties, mf.getProject());
+          if (allConfigured) {
+            for (MainConfigFace mf : mainFaces) {
+              ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
+              FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
+              generateSelected(mf.getConfig(), fileProperties, mf.getProject());
+            }
           }
 
         }

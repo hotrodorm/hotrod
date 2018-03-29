@@ -397,7 +397,8 @@ public abstract class HotRodGenerator {
 
       // Prepare executor DAOs meta data
 
-      Map<String, Map<String, SelectMethodMetadata>> allDAOsSelectMetadata = cachedMetadata.getSelectMetadata();
+      Map<String, Map<String, SelectMethodMetadata>> allDAOsSelectMetadata = cachedMetadata == null ? null
+          : cachedMetadata.getSelectMetadata();
 
       this.executors = new LinkedHashSet<ExecutorDAOMetadata>();
       for (ExecutorTag tag : config.getExecutors()) {

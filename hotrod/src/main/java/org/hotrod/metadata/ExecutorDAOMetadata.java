@@ -74,7 +74,8 @@ public class ExecutorDAOMetadata implements DataSetMetadata {
     boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
 
-      SelectMethodMetadata cachedSm = this.cachedSelectsMetadata.get(selectTag.getMethod());
+      SelectMethodMetadata cachedSm = this.cachedSelectsMetadata == null ? null
+          : this.cachedSelectsMetadata.get(selectTag.getMethod());
 
       if (referencesAMarkedEntity(selectTag.getReferencedEntities())) {
         selectTag.markGenerate(true);

@@ -21,8 +21,9 @@ public abstract class DataSetMetadataFactory {
       final HotRodConfigTag config, final DataSetLayout layout, final CachedMetadata cachedMetadata)
       throws UnresolvableDataTypeException, ControlledException {
 
-    JdbcDatabase cachedDB = cachedMetadata.getCachedDatabase();
-    Map<String, Map<String, SelectMethodMetadata>> allDAOsSelectMetadata = cachedMetadata.getSelectMetadata();
+    JdbcDatabase cachedDB = cachedMetadata == null ? null : cachedMetadata.getCachedDatabase();
+    Map<String, Map<String, SelectMethodMetadata>> allDAOsSelectMetadata = cachedMetadata == null ? null
+        : cachedMetadata.getSelectMetadata();
 
     TableTag tableTag = config.getTableTag(t);
     if (tableTag != null) {
