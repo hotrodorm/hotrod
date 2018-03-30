@@ -15,6 +15,8 @@ import org.hotrod.utils.Compare;
 @XmlRootElement(name = "trim")
 public class TrimTag extends DynamicSQLPart {
 
+  private static final long serialVersionUID = 1L;
+
   // Constructor
 
   public TrimTag() {

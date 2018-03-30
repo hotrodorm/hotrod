@@ -33,6 +33,8 @@ import org.hotrod.utils.Compare;
 @XmlRootElement(name = "complement")
 public class ComplementTag extends EnhancedSQLPart {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(ComplementTag.class);
@@ -51,7 +53,7 @@ public class ComplementTag extends EnhancedSQLPart {
       @XmlElementRef(type = SetTag.class), //
       @XmlElementRef(type = TrimTag.class) //
   })
-  protected List<Object> content = new ArrayList<Object>();
+  protected transient List<Object> content = new ArrayList<Object>();
 
   // Properties - Parsed
 

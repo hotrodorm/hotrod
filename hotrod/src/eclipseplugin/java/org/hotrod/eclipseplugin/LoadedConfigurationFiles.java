@@ -76,7 +76,8 @@ public class LoadedConfigurationFiles implements FileChangeListener {
             } else {
 
               // correlate them
-              HotRodConfigTag cachedConfigFile = fileProperties.getCachedConfigFile();
+              HotRodConfigTag cachedConfigFile = fileProperties.getCachedMetadata() == null ? null
+                  : fileProperties.getCachedMetadata().getConfig();
               log("cachedConfigFile=" + cachedConfigFile);
               if (cachedConfigFile == null) {
                 config.setTreeStatus(TagStatus.ADDED);

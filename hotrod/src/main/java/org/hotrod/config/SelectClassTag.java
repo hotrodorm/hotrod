@@ -25,6 +25,8 @@ import org.hotrod.utils.Compare;
 @XmlRootElement(name = "select")
 public class SelectClassTag extends AbstractDAOTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(SelectClassTag.class);
@@ -41,7 +43,7 @@ public class SelectClassTag extends AbstractDAOTag {
       @XmlElementRef(type = ColumnTag.class), //
       @XmlElementRef(type = ComplementTag.class) //
   })
-  private List<Object> content = new ArrayList<Object>();
+  private transient List<Object> content = new ArrayList<Object>();
 
   // Properties - Parsed
 

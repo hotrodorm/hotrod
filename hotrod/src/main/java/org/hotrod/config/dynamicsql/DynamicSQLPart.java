@@ -1,5 +1,6 @@
 package org.hotrod.config.dynamicsql;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,6 +25,8 @@ import org.hotrod.utils.Compare;
 
 public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(DynamicSQLPart.class);
@@ -42,7 +45,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
       @XmlElementRef(type = SetTag.class), //
       @XmlElementRef(type = TrimTag.class) //
   })
-  protected List<Object> content = new ArrayList<Object>();
+  protected transient List<Object> content = new ArrayList<Object>();
 
   protected List<DynamicSQLPart> parts;
 
@@ -122,7 +125,9 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   // Behavior
 
-  public static class ParameterDefinitions {
+  public static class ParameterDefinitions implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private List<ParameterTag> params = new ArrayList<ParameterTag>();
 

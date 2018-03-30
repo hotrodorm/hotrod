@@ -16,6 +16,8 @@ import org.hotrod.utils.Compare;
 @XmlRootElement(name = "fragment")
 public class FragmentTag extends AbstractConfigurationTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(FragmentTag.class);

@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 @XmlRootElement(name = "association")
 public class AssociationTag extends VOTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(AssociationTag.class);

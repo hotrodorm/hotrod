@@ -13,6 +13,8 @@ import org.hotrod.utils.identifiers.Identifier;
 @XmlRootElement(name = "parameter")
 public class ParameterTag extends AbstractConfigurationTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(ParameterTag.class);

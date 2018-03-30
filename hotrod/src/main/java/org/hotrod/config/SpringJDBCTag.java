@@ -19,6 +19,8 @@ import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 @XmlRootElement(name = "spring-jdbc")
 public class SpringJDBCTag extends AbstractGeneratorTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(SequenceMethodTag.class);

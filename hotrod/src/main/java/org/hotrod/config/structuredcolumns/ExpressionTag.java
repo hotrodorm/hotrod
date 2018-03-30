@@ -23,6 +23,8 @@ import org.hotrod.utils.Compare;
 @XmlRootElement(name = "expression")
 public class ExpressionTag extends AbstractConfigurationTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(ExpressionTag.class);
@@ -36,14 +38,14 @@ public class ExpressionTag extends AbstractConfigurationTag {
   private boolean isId = false;
 
   private ConverterTag converterTag;
-  private StructuredColumnMetadata metadata;
+  private transient StructuredColumnMetadata metadata;
   private String tempAlias = null;
   private String namespacedAlias;
 
   // Properties - Primitive content parsing by JAXB
 
   @XmlMixed
-  private List<Object> content = new ArrayList<Object>();
+  private transient List<Object> content = new ArrayList<Object>();
 
   private String body;
 

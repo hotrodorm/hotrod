@@ -11,6 +11,8 @@ import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 @XmlRootElement(name = "otherwise")
 public class OtherwiseTag extends DynamicSQLPart {
 
+  private static final long serialVersionUID = 1L;
+
   // Constructor
 
   public OtherwiseTag() {

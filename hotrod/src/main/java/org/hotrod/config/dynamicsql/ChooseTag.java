@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.ChooseExpression;
@@ -17,6 +16,8 @@ import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "choose")
 public class ChooseTag extends DynamicSQLPart {
+
+  private static final long serialVersionUID = 1L;
 
   // Constructor
 

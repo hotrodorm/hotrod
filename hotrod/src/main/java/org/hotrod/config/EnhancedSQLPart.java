@@ -17,9 +17,11 @@ import org.hotrod.utils.Compare;
 
 public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Properties
 
-  protected List<Object> content = new ArrayList<Object>();
+  protected transient List<Object> content = new ArrayList<Object>();
 
   protected List<EnhancedSQLPart> eparts = null;
 

@@ -29,6 +29,8 @@ import org.hotrod.utils.Compare;
 @XmlRootElement(name = "select")
 public class SelectMethodTag extends AbstractMethodTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(SelectMethodTag.class);
@@ -54,7 +56,7 @@ public class SelectMethodTag extends AbstractMethodTag {
       @XmlElementRef(type = ComplementTag.class), //
       @XmlElementRef(type = ColumnsTag.class) //
   })
-  private List<Object> content = new ArrayList<Object>();
+  private transient List<Object> content = new ArrayList<Object>();
 
   // Properties - Parsed
 

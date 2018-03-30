@@ -9,6 +9,8 @@ import org.hotrod.utils.Compare;
 
 public class PropertyTag extends AbstractConfigurationTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(PropertyTag.class);

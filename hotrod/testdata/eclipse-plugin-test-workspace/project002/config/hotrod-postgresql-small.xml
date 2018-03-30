@@ -46,10 +46,8 @@
 		</select>
 
 		<select method="findValuatedAccount">
-
 			<parameter name="clientId" java-type="java.lang.Integer"
 				jdbc-type="NUMERIC" />
-
 			select
 			<columns>
         <vo table="account" extended-vo="ValuatedAccountVO" alias="a">

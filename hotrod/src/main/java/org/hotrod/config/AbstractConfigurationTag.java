@@ -1,11 +1,14 @@
 package org.hotrod.config;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 
-public abstract class AbstractConfigurationTag implements Comparable<AbstractConfigurationTag> {
+public abstract class AbstractConfigurationTag implements Comparable<AbstractConfigurationTag>, Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   public enum TagStatus {
     UNAFFECTED, MODIFIED, ADDED, DELETED;

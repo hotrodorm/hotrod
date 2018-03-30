@@ -30,6 +30,8 @@ import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(AbstractHotRodConfigTag.class);

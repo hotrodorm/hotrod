@@ -14,6 +14,8 @@ import org.hotrod.utils.Compare;
 @XmlRootElement(name = "mappers")
 public class MappersTag extends AbstractConfigurationTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(MappersTag.class);

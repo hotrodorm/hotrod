@@ -3,7 +3,6 @@ package org.hotrod.config.dynamicsql;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
@@ -13,6 +12,8 @@ import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "bind")
 public class BindTag extends DynamicSQLPart {
+
+  private static final long serialVersionUID = 1L;
 
   // Constants
 

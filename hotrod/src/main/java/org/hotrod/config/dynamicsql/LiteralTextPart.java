@@ -12,6 +12,8 @@ import org.hotrod.utils.Compare;
 
 public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(LiteralTextPart.class);

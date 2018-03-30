@@ -4,27 +4,37 @@ import java.io.IOException;
 import java.util.List;
 import java.util.TreeMap;
 
+import org.apache.log4j.Logger;
+
 public class ObjectPropertyCodec {
+
+  private static final Logger log = Logger.getLogger(ObjectPropertyCodec.class);
 
   public static <T> TreeMap<Integer, String> encode(final T t, final int maxValueLength)
       throws CouldNotEncodeException {
+    log.info("encode 1");
     TreeMap<Integer, String> parts = new TreeMap<Integer, String>();
     if (t == null) {
       return parts;
     }
+    log.info("encode 2");
     byte[] blob;
     try {
       blob = SerialUtils.serialize(t);
     } catch (IOException e) {
+      log.error("IO Exception", e);
       throw new CouldNotEncodeException(e.getMessage());
     }
+    log.info("encode 3");
     String encoded = Base64.encodeBytes(blob);
     List<String> slices = SUtil.slice(encoded, maxValueLength);
     int index = 0;
+    log.info("encode 4");
     for (String slice : slices) {
       parts.put(index, slice);
       index++;
     }
+    log.info("encode 5");
     return parts;
   }
 

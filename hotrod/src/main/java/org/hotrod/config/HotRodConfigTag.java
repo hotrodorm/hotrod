@@ -22,6 +22,8 @@ import org.xml.sax.SAXException;
 @XmlRootElement(name = "hotrod")
 public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(HotRodConfigTag.class);

@@ -13,6 +13,8 @@ import org.hotrod.utils.Compare;
 @XmlRootElement(name = "if")
 public class IfTag extends DynamicSQLPart {
 
+  private static final long serialVersionUID = 1L;
+
   // Constructor
 
   public IfTag() {

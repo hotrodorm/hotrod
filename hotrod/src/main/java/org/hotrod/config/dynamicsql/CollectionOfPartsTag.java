@@ -13,6 +13,8 @@ import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 @XmlRootElement(name = "not-a-tag")
 public class CollectionOfPartsTag extends DynamicSQLPart {
 
+  private static final long serialVersionUID = 1L;
+
   // Constructor
 
   public CollectionOfPartsTag(final List<DynamicSQLPart> parts) {

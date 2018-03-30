@@ -1,7 +1,6 @@
 package org.hotrod.config;
 
 import java.io.File;
-import java.util.List;
 
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
@@ -12,6 +11,8 @@ import org.hotrod.generator.HotRodGenerator;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
+
+  private static final long serialVersionUID = 1L;
 
   // Constructor
 

@@ -24,6 +24,8 @@ import org.nocrala.tools.database.tartarus.core.JdbcTable;
 @XmlRootElement(name = "view")
 public class ViewTag extends AbstractEntityDAOTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(ViewTag.class);

@@ -14,6 +14,8 @@ import org.hotrod.runtime.util.SUtils;
 
 public class VerbatimTextPart extends EnhancedSQLPart {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(VerbatimTextPart.class);

@@ -24,12 +24,14 @@ import org.hotrod.utils.ClassPackage;
  *     AbstractEntityDAOTag  ExecutorDAOTag  SelectTag  QueryMethodTag  SelectMethodTag  SequenceMethodTag
  *      ^       ^        ^      
  *      |       |        |      
- *   TableTag  ViewTag  EnumTag  
+ *   TableTag  ViewTag  EnumTag
  * 
  * </pre>
  */
 
 public abstract class AbstractDAOTag extends AbstractConfigurationTag {
+
+  private static final long serialVersionUID = 1L;
 
   // Constants
 

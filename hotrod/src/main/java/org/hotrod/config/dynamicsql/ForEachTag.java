@@ -14,6 +14,8 @@ import org.hotrod.utils.Compare;
 @XmlRootElement(name = "foreach")
 public class ForEachTag extends DynamicSQLPart {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(ForEachTag.class);

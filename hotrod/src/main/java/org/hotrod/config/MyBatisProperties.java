@@ -1,9 +1,13 @@
 package org.hotrod.config;
 
+import java.io.Serializable;
+
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 
-public class MyBatisProperties {
+public class MyBatisProperties implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   // Constants
 

@@ -99,6 +99,14 @@ public class SUtils {
     return sb.toString();
   }
 
+  public static String getFiller(final String filler, final int length) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < length; i++) {
+      sb.append(filler);
+    }
+    return sb.toString();
+  }
+
   public static String indent(final String txt, final int indent) {
     if (txt == null) {
       return null;

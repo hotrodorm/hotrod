@@ -1,7 +1,5 @@
 package org.hotrod.config;
 
-import java.sql.Connection;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -14,6 +12,8 @@ import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "dao")
 public class ExecutorTag extends AbstractDAOTag {
+
+  private static final long serialVersionUID = 1L;
 
   // Constants
 
@@ -70,8 +70,7 @@ public class ExecutorTag extends AbstractDAOTag {
 
   }
 
-  public void validateAgainstDatabase(final HotRodGenerator generator)
-      throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
 
     for (SelectMethodTag s : this.getSelects()) {
       s.validateAgainstDatabase(generator);

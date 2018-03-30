@@ -19,6 +19,8 @@ import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 @XmlRootElement(name = "not-a-tag")
 public class SequenceOfParts extends EnhancedSQLPart {
 
+  private static final long serialVersionUID = 1L;
+
   // Constructor
 
   public SequenceOfParts(final List<EnhancedSQLPart> parts) {

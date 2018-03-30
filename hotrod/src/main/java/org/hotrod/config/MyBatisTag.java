@@ -23,6 +23,8 @@ import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 @XmlRootElement(name = "mybatis")
 public class MyBatisTag extends AbstractGeneratorTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(MyBatisTag.class);

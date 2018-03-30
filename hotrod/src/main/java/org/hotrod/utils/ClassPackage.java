@@ -1,12 +1,15 @@
 package org.hotrod.utils;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidPackageException;
 
-public class ClassPackage {
+public class ClassPackage implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(ClassPackage.class);
 

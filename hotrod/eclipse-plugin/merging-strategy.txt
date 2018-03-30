@@ -1,0 +1,79 @@
+
+  Loaded        Cached (generated)
+  ------        ------------------
+  
+    +-------[LOAD]-------+      |
+    |                    |      | Case 1: Loading File for the First Time
+    V                    V      |
+  config1           (no-cache)  |
+        \            /
+         \          /           
+    +--[GENERATE-PART]---+      |
+    |                    |      | Case 2: Partial Generate Without Cache
+    V                    V      |
+  config1            config-X   |
+        \            
+         \          
+    +---[GENERATE-ALL]---+      |
+    |                    |      | Case 3: Full Generate
+    V                    V      |
+  config1            config1    |
+    |                    |
+    |                    |
+[RELOAD-FILE-CHANGES] <--|      |
+    |                    |      | Case 4: File Reload
+    V                    V      |
+  config2            config1    |
+        \            /
+         \          /
+    +--[GENERATE-PART]---+      |
+    |                    |      | Case 5: Partial Generate With Existing Cache
+    V                    V      |
+  config2            config-Y   |
+    |                /   |
+    |               /    | 
+[RELOAD-FILE-CHANGES] <--|      |
+    |   /                |      | Case 6: File Reload With Unsynced Cache
+    V  /                 V      |
+  config3            config-Y   |
+        \            /
+         \          /
+    +--[GENERATE-PART]---+      |
+    |                    |      | Case 7: Partial Generate With Unsynced Cache
+    V                    V      |
+  config3            config-Z   |
+        \           
+         \         
+    +---[GENERATE-ALL]---+      |
+    |                    |      | -- Case 3*: Full Generate
+    V                    V      |
+  config3            config3    |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+List<Object> content
+
+
+
+
+
+
+
+
+
+
+
+
+
+

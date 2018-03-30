@@ -31,6 +31,8 @@ import org.hotrod.utils.identifiers.Identifier;
 @XmlRootElement(name = "query")
 public class QueryMethodTag extends AbstractMethodTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(QueryMethodTag.class);
@@ -54,7 +56,7 @@ public class QueryMethodTag extends AbstractMethodTag {
       @XmlElementRef(type = SetTag.class), //
       @XmlElementRef(type = TrimTag.class) //
   })
-  private List<Object> content = new ArrayList<Object>();
+  private transient List<Object> content = new ArrayList<Object>();
 
   // Properties - Parsed
 

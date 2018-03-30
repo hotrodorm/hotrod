@@ -15,6 +15,8 @@ import org.hotrod.utils.Compare;
 @XmlRootElement(name = "facet")
 public class FacetTag extends AbstractConfigurationTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(FacetTag.class);

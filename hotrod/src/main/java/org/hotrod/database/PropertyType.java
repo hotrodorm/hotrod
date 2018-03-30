@@ -1,5 +1,7 @@
 package org.hotrod.database;
 
+import java.io.Serializable;
+
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
@@ -15,7 +17,9 @@ public class PropertyType {
   private JDBCType jdbcType;
   private boolean isLOB;
 
-  public static class ValueRange {
+  public static class ValueRange implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public static ValueRange BYTE_RANGE = new ValueRange(0, Byte.MIN_VALUE, Byte.MAX_VALUE);
     public static ValueRange SHORT_RANGE = new ValueRange(0, Short.MIN_VALUE, Short.MAX_VALUE);

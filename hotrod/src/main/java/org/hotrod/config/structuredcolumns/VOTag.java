@@ -47,6 +47,8 @@ import org.hotrod.utils.JdbcTypes;
 @XmlRootElement(name = "vo")
 public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(VOTag.class);
@@ -61,7 +63,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       @XmlElementRef(type = AssociationTag.class), //
       @XmlElementRef(type = ExpressionTag.class) //
   })
-  private List<Object> content = new ArrayList<Object>();
+  private transient List<Object> content = new ArrayList<Object>();
 
   private String table = null;
   private String view = null;

@@ -13,6 +13,8 @@ import org.hotrod.utils.Compare;
 @XmlRootElement(name = "mybatis-configuration-template")
 public class TemplateTag extends AbstractConfigurationTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(TemplateTag.class);

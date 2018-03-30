@@ -14,13 +14,14 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
-import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.eclipseplugin.utils.ClassPathEncoder;
 import org.hotrod.eclipseplugin.utils.ObjectPropertyCodec;
 import org.hotrod.eclipseplugin.utils.ObjectPropertyCodec.CouldNotDecodeException;
 import org.hotrod.eclipseplugin.utils.ObjectPropertyCodec.CouldNotEncodeException;
 import org.hotrod.eclipseplugin.utils.SUtil;
+import org.hotrod.generator.CachedMetadata;
 
 /**
  * <pre>
@@ -48,6 +49,8 @@ import org.hotrod.eclipseplugin.utils.SUtil;
  * </pre>
  */
 public class ProjectProperties {
+
+  private static final Logger log = Logger.getLogger(ProjectProperties.class);
 
   public static final String CONFIG_FILE_NAME = "hotrod.local.properties";
 
@@ -142,7 +145,7 @@ public class ProjectProperties {
               fileProperties = new FileProperties("");
               properties.put(file, fileProperties);
             }
-            fileProperties.set(name, attribute, value);
+            fileProperties.populate(name, attribute, value);
 
           }
 
@@ -228,6 +231,7 @@ public class ProjectProperties {
     } catch (IOException e) {
       throw new CouldNotSavePropertiesException(e.getMessage());
     } catch (CouldNotEncodeException e) {
+      log.error("Could not encode", e);
       throw new CouldNotSavePropertiesException(e.getMessage());
     } finally {
       if (w != null) {
@@ -255,7 +259,7 @@ public class ProjectProperties {
     private String generator = null;
 
     private TreeMap<Integer, String> cache = new TreeMap<Integer, String>();
-    private HotRodConfigTag cachedConfigFile = null;
+    private CachedMetadata cachedMetadata = null;
 
     private List<String> availableCatalogs;
     private List<String> availableSchemas;
@@ -273,7 +277,7 @@ public class ProjectProperties {
       this.generator = "";
     }
 
-    public void set(final String name, final String attribute, final String value)
+    private void populate(final String name, final String attribute, final String value)
         throws CouldNotLoadPropertiesException {
       if (FILENAME_ATT.equals(attribute)) {
         this.fileName = value;
@@ -350,18 +354,21 @@ public class ProjectProperties {
       // Reassemble the cached config file
 
       try {
-        this.cachedConfigFile = ObjectPropertyCodec.decode(this.cache, HotRodConfigTag.class);
+        this.cachedMetadata = ObjectPropertyCodec.decode(this.cache, CachedMetadata.class);
       } catch (CouldNotDecodeException e) {
-        throw new CouldNotLoadPropertiesException("Invalid file cache on file '" + file + "': " + e.getMessage());
+        throw new CouldNotLoadPropertiesException("Invalid cache on file '" + file + "': " + e.getMessage());
       }
 
     }
 
     public TreeMap<Integer, String> getSlicedCache() throws CouldNotEncodeException {
-      if (this.cachedConfigFile == null) {
+      log.debug("this.cachedMetadata=" + this.cachedMetadata);
+      if (this.cachedMetadata == null) {
+        log.debug("slice 1");
         return null;
       } else {
-        return ObjectPropertyCodec.encode(this.cachedConfigFile, MAX_VALUE_LENGTH);
+        log.debug("slice 2");
+        return ObjectPropertyCodec.encode(this.cachedMetadata, MAX_VALUE_LENGTH);
       }
     }
 
@@ -455,12 +462,12 @@ public class ProjectProperties {
       this.availableSchemas = availableSchemas;
     }
 
-    public HotRodConfigTag getCachedConfigFile() {
-      return cachedConfigFile;
+    public CachedMetadata getCachedMetadata() {
+      return cachedMetadata;
     }
 
-    public void setCachedConfigFile(HotRodConfigTag cachedConfigFile) {
-      this.cachedConfigFile = cachedConfigFile;
+    public void setCachedMetadata(CachedMetadata cachedMetadata) {
+      this.cachedMetadata = cachedMetadata;
     }
 
   }

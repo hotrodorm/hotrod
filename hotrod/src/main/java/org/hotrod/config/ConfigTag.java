@@ -12,6 +12,8 @@ import org.hotrod.utils.Compare;
 @XmlRootElement(name = "config")
 public class ConfigTag extends AbstractConfigurationTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Properties
 
   private String sGenBaseDir = null;

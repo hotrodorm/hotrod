@@ -1,5 +1,6 @@
 package org.hotrod.config;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,6 +37,8 @@ import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 @XmlRootElement(name = "enum")
 public class EnumTag extends AbstractEntityDAOTag {
+
+  private static final long serialVersionUID = 1L;
 
   // Constants
 
@@ -136,7 +139,9 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   }
 
-  private static class EnumColumn {
+  private static class EnumColumn implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private JdbcColumn column;
     private ValueTypeManager<?> valueTypeManager;
@@ -356,7 +361,9 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   }
 
-  public static class EnumConstant {
+  public static class EnumConstant implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String javaConstantName;
     private List<String> javaLiteralValues;

@@ -42,6 +42,8 @@ import org.hotrod.utils.ColumnsPrefixGenerator;
 @XmlRootElement(name = "columns")
 public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(ColumnsTag.class);

@@ -28,6 +28,8 @@ import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 @XmlRootElement(name = "complement")
 public class ComplementDAOTag extends DynamicSQLPart {
 
+  private static final long serialVersionUID = 1L;
+
   // Properties
 
   @XmlMixed
@@ -42,7 +44,7 @@ public class ComplementDAOTag extends DynamicSQLPart {
       @XmlElementRef(type = SetTag.class), //
       @XmlElementRef(type = TrimTag.class) //
   })
-  protected List<Object> content = new ArrayList<Object>();
+  protected transient List<Object> content = new ArrayList<Object>();
 
   private List<DynamicSQLPart> parts;
 

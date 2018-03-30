@@ -17,6 +17,8 @@ import org.nocrala.tools.database.tartarus.core.JdbcTable;
 @XmlRootElement(name = "column")
 public class ColumnTag extends AbstractConfigurationTag {
 
+  private static final long serialVersionUID = 1L;
+
   // Constants
 
   private static final Logger log = Logger.getLogger(ColumnTag.class);
