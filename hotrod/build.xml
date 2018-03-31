@@ -400,6 +400,7 @@
       -->
       <module name="HotRod" basedir=".">
         <axis path="src/main/java" ext="java" />
+        <axis path="src/eclipseplugin/java" ext="java" />
         <axis path="src/runtime/java" ext="java" />
         <axis path="src/test/java" ext="java" />
 
