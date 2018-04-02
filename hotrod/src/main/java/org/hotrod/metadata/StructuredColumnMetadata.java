@@ -1,5 +1,6 @@
 package org.hotrod.metadata;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -8,7 +9,9 @@ import org.hotrod.config.ColumnTag;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 
-public class StructuredColumnMetadata extends ColumnMetadata {
+public class StructuredColumnMetadata extends ColumnMetadata implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   // Properties
 

@@ -1,5 +1,6 @@
 package org.hotrod.metadata;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,7 +46,9 @@ import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
 
-public class SelectMethodMetadata implements DataSetMetadata {
+public class SelectMethodMetadata implements DataSetMetadata, Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   // Constants
 
@@ -55,22 +58,22 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   private boolean structured;
 
-  private HotRodGenerator generator;
-  private JdbcDatabase db;
-  private HotRodConfigTag config;
-  private DatabaseAdapter adapter;
-  private DatabaseLocation loc;
-  private SelectMethodTag tag;
-  private SelectGenerationTag selectGenerationTag;
-  private ColumnsPrefixGenerator columnsPrefixGenerator;
+  private transient HotRodGenerator generator;
+  private transient JdbcDatabase db;
+  private transient HotRodConfigTag config;
+  private transient DatabaseAdapter adapter;
+  private transient DatabaseLocation loc;
+  private transient SelectMethodTag tag;
+  private transient SelectGenerationTag selectGenerationTag;
+  private transient ColumnsPrefixGenerator columnsPrefixGenerator;
 
-  private HotRodFragmentConfigTag fragmentConfig;
+  private transient HotRodFragmentConfigTag fragmentConfig;
   private List<ColumnMetadata> nonStructuredColumns;
   private StructuredColumnsMetadata structuredColumns;
 
-  private String cleanedUpFoundation;
-  private String tempViewName;
-  private String createView;
+  private transient String cleanedUpFoundation;
+  private transient String tempViewName;
+  private transient String createView;
 
   private ClassPackage classPackage;
 
@@ -529,10 +532,12 @@ public class SelectMethodMetadata implements DataSetMetadata {
 
   // Classes
 
-  public static class SelectMethodReturnType {
+  public static class SelectMethodReturnType implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private SelectVOClass soloVO;
-    private VOMetadata connectedVO;
+    private transient VOMetadata connectedVO;
 
     private boolean multipleRows;
 

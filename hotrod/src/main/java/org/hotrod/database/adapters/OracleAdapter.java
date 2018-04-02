@@ -24,6 +24,8 @@ import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class OracleAdapter extends DatabaseAdapter {
 
+  private static final long serialVersionUID = 1L;
+
   private static Logger log = Logger.getLogger(OracleAdapter.class);
 
   private boolean isOracle12cOrNewer;

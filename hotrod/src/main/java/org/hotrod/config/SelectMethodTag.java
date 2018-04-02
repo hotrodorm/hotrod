@@ -49,6 +49,9 @@ public class SelectMethodTag extends AbstractMethodTag {
 
   // Properties - Primitive content parsing by JAXB
 
+  // TODO: make this property transient. JAXB fails when doing so with the
+  // message: Transient field "content" cannot have any JAXB annotations.
+
   @XmlMixed
   @XmlElementRefs({ //
       @XmlElementRef(type = ParameterTag.class), //
@@ -56,7 +59,7 @@ public class SelectMethodTag extends AbstractMethodTag {
       @XmlElementRef(type = ComplementTag.class), //
       @XmlElementRef(type = ColumnsTag.class) //
   })
-  private transient List<Object> content = new ArrayList<Object>();
+  private List<Object> content = new ArrayList<Object>();
 
   // Properties - Parsed
 

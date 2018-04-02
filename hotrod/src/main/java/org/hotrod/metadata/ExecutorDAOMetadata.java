@@ -1,5 +1,6 @@
 package org.hotrod.metadata;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,9 @@ import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
 
-public class ExecutorDAOMetadata implements DataSetMetadata {
+public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   // Constants
 
@@ -34,8 +37,8 @@ public class ExecutorDAOMetadata implements DataSetMetadata {
 
   // Properties
 
-  protected HotRodConfigTag config;
-  protected DatabaseAdapter adapter;
+  protected transient HotRodConfigTag config;
+  protected transient DatabaseAdapter adapter;
   private ExecutorTag tag;
 
   private List<SequenceMethodTag> sequences = new ArrayList<SequenceMethodTag>();

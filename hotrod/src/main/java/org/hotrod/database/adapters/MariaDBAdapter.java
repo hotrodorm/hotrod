@@ -18,6 +18,8 @@ import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class MariaDBAdapter extends DatabaseAdapter {
 
+  private static final long serialVersionUID = 1L;
+
   private static Logger log = Logger.getLogger(MariaDBAdapter.class);
 
   private MySQLAdapter mysqlAdaper;

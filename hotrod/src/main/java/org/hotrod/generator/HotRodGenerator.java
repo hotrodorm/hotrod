@@ -2,6 +2,7 @@ package org.hotrod.generator;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -19,6 +20,7 @@ import org.hotrod.config.AbstractEntityDAOTag;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag;
+import org.hotrod.config.EnumTag.EnumConstant;
 import org.hotrod.config.ExecutorTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.QueryMethodTag;
@@ -81,6 +83,8 @@ public abstract class HotRodGenerator {
   protected DatabaseAdapter adapter = null;
   protected JdbcDatabase db = null;
 
+  protected CachedMetadata cachedMetadata = null;
+
   protected LinkedHashSet<TableDataSetMetadata> tables = null;
   protected LinkedHashSet<TableDataSetMetadata> views = null;
   protected LinkedHashSet<EnumDataSetMetadata> enums = null;
@@ -97,6 +101,7 @@ public abstract class HotRodGenerator {
     this.loc = loc;
     this.config = config;
     this.displayMode = displayMode;
+    this.cachedMetadata = cachedMetadata;
 
     if (!incrementalMode) {
       config.markGenerateSubtree(true);
@@ -153,7 +158,7 @@ public abstract class HotRodGenerator {
 
       // Decide about using cached or fresh database objects
 
-      JdbcDatabase cachedDatabase = cachedMetadata == null ? null : cachedMetadata.getCachedDatabase();
+      JdbcDatabase cachedDatabase = cachedMetadata.getCachedDatabase();
 
       boolean retrieveFreshDatabaseObjects = false;
       if (!incrementalMode) {
@@ -312,9 +317,9 @@ public abstract class HotRodGenerator {
       this.enums = new LinkedHashSet<EnumDataSetMetadata>();
 
       for (Iterator<TableDataSetMetadata> it = this.tables.iterator(); it.hasNext();) {
-        TableDataSetMetadata ds = it.next();
+        TableDataSetMetadata tm = it.next();
         try {
-          EnumDataSetMetadata em = (EnumDataSetMetadata) ds;
+          EnumDataSetMetadata em = (EnumDataSetMetadata) tm;
           // It's an enum - move it to the enum set.
           this.enums.add(em);
           it.remove();
@@ -397,8 +402,7 @@ public abstract class HotRodGenerator {
 
       // Prepare executor DAOs meta data
 
-      Map<String, Map<String, SelectMethodMetadata>> allDAOsSelectMetadata = cachedMetadata == null ? null
-          : cachedMetadata.getSelectMetadata();
+      Map<String, Map<String, SelectMethodMetadata>> allDAOsSelectMetadata = cachedMetadata.getSelectMetadata();
 
       this.executors = new LinkedHashSet<ExecutorDAOMetadata>();
       for (ExecutorTag tag : config.getExecutors()) {
@@ -516,6 +520,9 @@ public abstract class HotRodGenerator {
 
     // Prepare <select> DAOs meta data - phase 2
 
+    Map<String, Map<String, SelectMethodMetadata>> selectsMetaData = new HashMap<String, Map<String, SelectMethodMetadata>>();
+    Map<String, List<EnumConstant>> tableEnumConstants = new HashMap<String, List<EnumConstant>>();
+
     log.debug("ret 1");
     if (retrieveSelectMetadata) {
 
@@ -533,24 +540,24 @@ public abstract class HotRodGenerator {
         log.debug("ret 3");
 
         for (TableDataSetMetadata tm : this.tables) {
-          // log.info("gather2 on table " +
-          // tm.getIdentifier().getSQLIdentifier());
           tm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
+          addSelectsMetaData(tm.getDaoTag().getJavaClassName(), tm.getSelectsMetadata(), selectsMetaData);
         }
 
         for (TableDataSetMetadata vm : this.views) {
-          // log.info("gather2 on view " +
-          // vm.getIdentifier().getSQLIdentifier());
           vm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
+          addSelectsMetaData(vm.getDaoTag().getJavaClassName(), vm.getSelectsMetadata(), selectsMetaData);
         }
 
         for (TableDataSetMetadata em : this.enums) {
           em.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
+          addSelectsMetaData(em.getDaoTag().getJavaClassName(), em.getSelectsMetadata(), selectsMetaData);
+          addTableEnumConstants(em, tableEnumConstants);
         }
 
-        for (ExecutorDAOMetadata dm : this.executors) {
-          // log.info("gather2 on DAO " + dm.getJavaClassName());
-          dm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
+        for (ExecutorDAOMetadata xm : this.executors) {
+          xm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
+          addSelectsMetaData(xm.getDaoTag().getJavaClassName(), xm.getSelectsMetadata(), selectsMetaData);
         }
 
         for (SelectDataSetMetadata ds : this.selects) {
@@ -611,6 +618,15 @@ public abstract class HotRodGenerator {
           + "or may have been computed based on the SQL names (as in the <sequence> tag).");
     }
 
+    // Assemble cached metadata for non-incremental generation
+
+    if (!incrementalMode) {
+      this.cachedMetadata.setConfig(config);
+      this.cachedMetadata.setCachedDatabase(this.db);
+      this.cachedMetadata.setSelectMetadata(selectsMetaData);
+      this.cachedMetadata.setEnumConstants(tableEnumConstants);
+    }
+
     // Display the retrieved meta data
 
     logm("Metadata initialized.");
@@ -619,6 +635,27 @@ public abstract class HotRodGenerator {
 
     // logSelectMethodMetadata(); // keep for debugging purposes only
 
+  }
+
+  private void addSelectsMetaData(final String daoName, final List<SelectMethodMetadata> selects,
+      final Map<String, Map<String, SelectMethodMetadata>> selectsMetaData) {
+    Map<String, SelectMethodMetadata> daoSelects = selectsMetaData.get(daoName);
+    if (daoSelects == null) {
+      daoSelects = new HashMap<String, SelectMethodMetadata>();
+      selectsMetaData.put(daoName, daoSelects);
+    }
+    for (SelectMethodMetadata sm : selects) {
+      daoSelects.put(sm.getMethod(), sm);
+    }
+  }
+
+  private void addTableEnumConstants(final TableDataSetMetadata em,
+      final Map<String, List<EnumConstant>> tableEnumConstants) {
+    if (tableEnumConstants.containsKey(em.getDaoTag().getJavaClassName())) {
+      tableEnumConstants.remove(em.getDaoTag().getJavaClassName());
+    }
+    EnumTag enumTag = (EnumTag) em.getDaoTag();
+    tableEnumConstants.put(em.getDaoTag().getJavaClassName(), enumTag.getTableConstants());
   }
 
   private void propagateGeneration(final TableDataSetMetadata tm, final Set<TableDataSetMetadata> alreadyWalked) {

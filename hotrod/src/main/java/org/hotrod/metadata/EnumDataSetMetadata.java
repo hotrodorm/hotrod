@@ -17,6 +17,8 @@ import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public class EnumDataSetMetadata extends TableDataSetMetadata {
 
+  private static final long serialVersionUID = 1L;
+
   private static final Logger log = Logger.getLogger(EnumDataSetMetadata.class);
 
   private EnumTag tag;

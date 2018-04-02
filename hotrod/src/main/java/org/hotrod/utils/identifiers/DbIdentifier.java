@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 
 public class DbIdentifier extends Identifier {
 
+  private static final long serialVersionUID = 1L;
+
   private static Logger log = Logger.getLogger(DbIdentifier.class);
 
   /** Look for this separator in the db name */
@@ -63,7 +65,7 @@ public class DbIdentifier extends Identifier {
       i++;
     }
     log.debug("chunks=" + javaChunks.length);
-    
+
     this.SQLName = name;
 
   }

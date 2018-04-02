@@ -21,9 +21,10 @@ public abstract class DataSetMetadataFactory {
       final HotRodConfigTag config, final DataSetLayout layout, final CachedMetadata cachedMetadata)
       throws UnresolvableDataTypeException, ControlledException {
 
-    JdbcDatabase cachedDB = cachedMetadata == null ? null : cachedMetadata.getCachedDatabase();
-    Map<String, Map<String, SelectMethodMetadata>> allDAOsSelectMetadata = cachedMetadata == null ? null
-        : cachedMetadata.getSelectMetadata();
+    JdbcDatabase cachedDB = cachedMetadata.getCachedDatabase();
+    Map<String, Map<String, SelectMethodMetadata>> allDAOsSelectMetadata = cachedMetadata.getSelectMetadata();
+
+    // Table
 
     TableTag tableTag = config.getTableTag(t);
     if (tableTag != null) {
@@ -40,6 +41,8 @@ public abstract class DataSetMetadataFactory {
       return new TableDataSetMetadata(tableTag, t, adapter, config, layout, selectsMetadata);
     }
 
+    // Enum
+
     EnumTag enumTag = config.getEnumTag(t);
     if (enumTag != null) {
       if (cachedDB == null) {
@@ -54,6 +57,8 @@ public abstract class DataSetMetadataFactory {
           : allDAOsSelectMetadata.get(enumTag.getName());
       return new EnumDataSetMetadata(enumTag, t, adapter, config, layout, selectsMetadata);
     }
+
+    // View
 
     ViewTag viewTag = config.getViewTag(t);
     if (viewTag != null) {

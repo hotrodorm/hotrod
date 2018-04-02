@@ -44,8 +44,11 @@ public class ExpressionTag extends AbstractConfigurationTag {
 
   // Properties - Primitive content parsing by JAXB
 
+  // TODO: make this property transient. JAXB fails when doing so with the
+  // message: Transient field "content" cannot have any JAXB annotations.
+
   @XmlMixed
-  private transient List<Object> content = new ArrayList<Object>();
+  private List<Object> content = new ArrayList<Object>();
 
   private String body;
 

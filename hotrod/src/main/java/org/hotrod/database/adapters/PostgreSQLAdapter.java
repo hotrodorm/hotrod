@@ -24,6 +24,8 @@ import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class PostgreSQLAdapter extends DatabaseAdapter {
 
+  private static final long serialVersionUID = 1L;
+
   private static Logger log = Logger.getLogger(PostgreSQLAdapter.class);
 
   public PostgreSQLAdapter(final HotRodConfigTag config, final DatabaseMetaData dm) throws SQLException {

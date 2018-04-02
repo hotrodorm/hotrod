@@ -80,18 +80,12 @@ public class SpringJDBCTag extends AbstractGeneratorTag {
   // Produce Generator Instance
 
   @Override
-  public HotRodGenerator instantiateGenerator(final DatabaseLocation loc, final HotRodConfigTag config,
-      final DisplayMode displayMode) throws UncontrolledException, ControlledException {
-    config.markGenerateSubtree(true);
-    return new SpringJDBCGenerator(loc, config, displayMode);
-  }
-
-  @Override
   public HotRodGenerator instantiateGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc,
       final HotRodConfigTag config, final DisplayMode displayMode, final boolean incrementalMode)
       throws UncontrolledException, ControlledException {
     // Ignore cachedMetadata & selectedTags (for now)
-    return this.instantiateGenerator(loc, config, displayMode);
+    config.markGenerateSubtree(true);
+    return new SpringJDBCGenerator(loc, config, displayMode);
   }
 
   @Override

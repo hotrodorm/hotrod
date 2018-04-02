@@ -10,6 +10,7 @@ import org.hotrod.buildinfo.BuildConstants;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.exceptions.FacetNotFoundException;
+import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.LiveGenerator;
@@ -172,8 +173,9 @@ public class HotRodAntTask extends Task {
     }
 
     try {
-      HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(loc, config,
-          this.displayMode);
+      CachedMetadata cachedMetadata = new CachedMetadata();
+      HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
+          config, this.displayMode, false);
       log.debug("Generator instantiated.");
 
       try {

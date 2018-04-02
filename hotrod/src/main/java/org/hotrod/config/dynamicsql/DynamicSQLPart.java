@@ -33,6 +33,9 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   // Properties
 
+  // TODO: make this property transient. JAXB fails when doing so with the
+  // message: Transient field "content" cannot have any JAXB annotations.
+
   @XmlMixed
   @XmlElementRefs({ //
       @XmlElementRef(type = IfTag.class), //
@@ -45,7 +48,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
       @XmlElementRef(type = SetTag.class), //
       @XmlElementRef(type = TrimTag.class) //
   })
-  protected transient List<Object> content = new ArrayList<Object>();
+  protected List<Object> content = new ArrayList<Object>();
 
   protected List<DynamicSQLPart> parts;
 

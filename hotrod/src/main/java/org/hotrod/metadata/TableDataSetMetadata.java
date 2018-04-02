@@ -1,5 +1,6 @@
 package org.hotrod.metadata;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +39,15 @@ import org.nocrala.tools.database.tartarus.core.JdbcKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
-public class TableDataSetMetadata implements DataSetMetadata {
+public class TableDataSetMetadata implements DataSetMetadata, Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(TableDataSetMetadata.class);
 
-  protected JdbcTable t;
-  protected HotRodConfigTag config;
-  protected DatabaseAdapter adapter;
+  protected transient JdbcTable t;
+  protected transient HotRodConfigTag config;
+  protected transient DatabaseAdapter adapter;
 
   private AbstractDAOTag daoTag;
 

@@ -472,6 +472,10 @@ public class EnumTag extends AbstractEntityDAOTag {
     return all;
   }
 
+  public List<EnumConstant> getTableConstants() {
+    return this.tableConstants;
+  }
+
   public HotRodFragmentConfigTag getFragmentConfig() {
     return fragmentConfig;
   }

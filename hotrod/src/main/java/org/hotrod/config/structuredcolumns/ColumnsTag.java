@@ -63,7 +63,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   private Expressions expressions = new Expressions();
 
   @SuppressWarnings("unused")
-  private HotRodGenerator generator;
+  private transient HotRodGenerator generator;
 
   private boolean connectedVOResult;
 

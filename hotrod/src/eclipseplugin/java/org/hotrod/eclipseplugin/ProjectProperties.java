@@ -70,7 +70,10 @@ public class ProjectProperties {
   public static final String CACHE_PREFIX_ATT = "cache-";
 
   private IProject project;
+
+  @SuppressWarnings("unused")
   private String format;
+
   private TreeMap<String, FileProperties> files;
 
   public ProjectProperties(final IProject project) {
@@ -259,7 +262,7 @@ public class ProjectProperties {
     private String generator = null;
 
     private TreeMap<Integer, String> cache = new TreeMap<Integer, String>();
-    private CachedMetadata cachedMetadata = null;
+    private CachedMetadata cachedMetadata = new CachedMetadata(null, null, null, null);
 
     private List<String> availableCatalogs;
     private List<String> availableSchemas;
@@ -355,6 +358,9 @@ public class ProjectProperties {
 
       try {
         this.cachedMetadata = ObjectPropertyCodec.decode(this.cache, CachedMetadata.class);
+        if (this.cachedMetadata == null) {
+          this.cachedMetadata = new CachedMetadata();
+        }
       } catch (CouldNotDecodeException e) {
         throw new CouldNotLoadPropertiesException("Invalid cache on file '" + file + "': " + e.getMessage());
       }
@@ -363,13 +369,7 @@ public class ProjectProperties {
 
     public TreeMap<Integer, String> getSlicedCache() throws CouldNotEncodeException {
       log.debug("this.cachedMetadata=" + this.cachedMetadata);
-      if (this.cachedMetadata == null) {
-        log.debug("slice 1");
-        return null;
-      } else {
-        log.debug("slice 2");
-        return ObjectPropertyCodec.encode(this.cachedMetadata, MAX_VALUE_LENGTH);
-      }
+      return ObjectPropertyCodec.encode(this.cachedMetadata, MAX_VALUE_LENGTH);
     }
 
     // Setters & Getters
@@ -467,6 +467,9 @@ public class ProjectProperties {
     }
 
     public void setCachedMetadata(CachedMetadata cachedMetadata) {
+      if (cachedMetadata == null) {
+        throw new IllegalArgumentException("cachedMetadata cannot be set to a null value.");
+      }
       this.cachedMetadata = cachedMetadata;
     }
 

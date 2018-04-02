@@ -23,6 +23,8 @@ import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class DB2Adapter extends DatabaseAdapter {
 
+  private static final long serialVersionUID = 1L;
+
   private static Logger log = Logger.getLogger(DB2Adapter.class);
 
   public DB2Adapter(final HotRodConfigTag config, final DatabaseMetaData dm) throws SQLException {

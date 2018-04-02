@@ -1,6 +1,7 @@
 package org.hotrod.generator.mybatis;
 
 import java.io.File;
+import java.io.Serializable;
 
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
@@ -9,7 +10,9 @@ import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.utils.ClassPackage;
 
-public class DataSetLayout {
+public class DataSetLayout implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private HotRodConfigTag config;
   private String columnSeam;

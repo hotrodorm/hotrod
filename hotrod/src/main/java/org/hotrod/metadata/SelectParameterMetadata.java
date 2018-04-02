@@ -1,11 +1,15 @@
 package org.hotrod.metadata;
 
+import java.io.Serializable;
+
 import org.hotrod.config.ParameterTag;
 import org.hotrod.database.PropertyType;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.JavaIdentifier;
 
-public class SelectParameterMetadata {
+public class SelectParameterMetadata implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private JavaIdentifier identifier;
   private ParameterTag p;

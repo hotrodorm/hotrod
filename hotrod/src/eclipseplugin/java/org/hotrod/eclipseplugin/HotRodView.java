@@ -424,7 +424,8 @@ public class HotRodView extends ViewPart {
             } else {
               log("generating all - starting");
               mainConfigFace.getConfig().markGenerateSubtree(true);
-              generate(mainConfigFace.getConfig(), fileProperties, mainConfigFace.getProject());
+              generate(mainConfigFace.getConfig(), projectProperties, fileProperties, mainConfigFace.getProject(),
+                  false);
               log("generating all - complete");
             }
           }
@@ -470,7 +471,7 @@ public class HotRodView extends ViewPart {
           for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
             ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
             FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
-            generateMarked(mf.getConfig(), projectProperties, fileProperties, mf.getProject());
+            generate(mf.getConfig(), projectProperties, fileProperties, mf.getProject(), true);
           }
         }
 
@@ -544,7 +545,7 @@ public class HotRodView extends ViewPart {
             for (MainConfigFace mf : mainFaces) {
               ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
               FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
-              generateMarked(mf.getConfig(), projectProperties, fileProperties, mf.getProject());
+              generate(mf.getConfig(), projectProperties, fileProperties, mf.getProject(), true);
             }
           }
 
@@ -732,66 +733,8 @@ public class HotRodView extends ViewPart {
 
   // Generation
 
-  private void generate(final HotRodConfigTag config, final FileProperties fileProperties, final IProject project) {
-
-    File projectDir = project.getLocation().toFile();
-
-    List<String> classPath = new ArrayList<String>();
-    for (String p : fileProperties.getDriverClassPathEntries()) {
-      if (FUtil.isAbsolute(new File(p))) {
-        classPath.add(p);
-      } else {
-        File f = new File(projectDir, p);
-        classPath.add(f.getAbsolutePath());
-      }
-    }
-
-    DatabaseLocation loc = new DatabaseLocation(fileProperties.getDriverClassName(), fileProperties.getUrl(),
-        fileProperties.getUsername(), fileProperties.getPassword(), fileProperties.getCatalog(),
-        fileProperties.getSchema(), classPath);
-
-    try {
-      HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(loc, config,
-          DisplayMode.LIST);
-      log("Generator instantiated.");
-
-      g.prepareGeneration();
-      log("Generation prepared.");
-
-      try {
-        LiveGenerator liveGenerator = (LiveGenerator) g;
-
-        // a live generator
-        FileGenerator fg = new EclipseFileGenerator(project);
-        liveGenerator.generate(fg);
-
-      } catch (ClassCastException e) {
-        // not a live generator
-        g.generate();
-      }
-
-      log("Generation complete.");
-
-    } catch (ControlledException e) {
-      if (e.getLocation() == null) {
-        throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code:\n" + e.getMessage());
-      } else {
-        throw new BuildException(
-            Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "
-                + e.getLocation().render() + ":\n" + e.getMessage());
-      }
-    } catch (UncontrolledException e) {
-      e.printStackTrace();
-      throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
-    } catch (Throwable t) {
-      t.printStackTrace();
-      throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
-    }
-
-  }
-
-  private void generateMarked(final HotRodConfigTag config, final ProjectProperties projectProperties,
-      final FileProperties fileProperties, final IProject project) {
+  private void generate(final HotRodConfigTag config, final ProjectProperties projectProperties,
+      final FileProperties fileProperties, final IProject project, final boolean incrementalMode) {
 
     File projectDir = project.getLocation().toFile();
 
@@ -814,40 +757,30 @@ public class HotRodView extends ViewPart {
       CachedMetadata cachedMetadata = fileProperties.getCachedMetadata();
 
       HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
-          config, DisplayMode.LIST, true);
+          config, DisplayMode.LIST, incrementalMode);
       log("Generator instantiated.");
 
       log("=== Generated Marks ===");
       displayGenerateMark(config, 0);
       log("=======================");
 
+      g.prepareGeneration();
+      log("Generation prepared.");
+
       try {
         LiveGenerator liveGenerator = (LiveGenerator) g;
 
         // a live generator
-
-        g.prepareGeneration();
-        log("Generation prepared.");
-
         FileGenerator fg = new EclipseFileGenerator(project);
         liveGenerator.generate(fg);
 
       } catch (ClassCastException e) {
 
         // a batch generator
-
-        g.prepareGeneration();
-        log("Generation prepared.");
-
         g.generate();
       }
 
       // Save the cache
-
-      if (cachedMetadata == null) {
-        cachedMetadata = new CachedMetadata(config, g.getJdbcDatabase(), null, null);
-        fileProperties.setCachedMetadata(cachedMetadata);
-      }
 
       projectProperties.save();
 

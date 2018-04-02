@@ -22,10 +22,16 @@ public class CachedMetadata implements Serializable {
 
   // Constructor
 
+  public CachedMetadata() {
+    this.config = null;
+    this.cachedDatabase = null;
+    this.enumConstants = null;
+    this.selectMetadata = null;
+  }
+
   public CachedMetadata(final HotRodConfigTag config, final JdbcDatabase cachedDatabase,
       final Map<String, List<EnumConstant>> enumConstants,
       final Map<String, Map<String, SelectMethodMetadata>> selectMetadata) {
-    super();
     this.config = config;
     this.cachedDatabase = cachedDatabase;
     this.enumConstants = enumConstants;
@@ -48,6 +54,22 @@ public class CachedMetadata implements Serializable {
 
   public Map<String, Map<String, SelectMethodMetadata>> getSelectMetadata() {
     return selectMetadata;
+  }
+
+  public void setConfig(final HotRodConfigTag config) {
+    this.config = config;
+  }
+
+  public void setCachedDatabase(final JdbcDatabase cachedDatabase) {
+    this.cachedDatabase = cachedDatabase;
+  }
+
+  public void setEnumConstants(final Map<String, List<EnumConstant>> enumConstants) {
+    this.enumConstants = enumConstants;
+  }
+
+  public void setSelectMetadata(final Map<String, Map<String, SelectMethodMetadata>> selectMetadata) {
+    this.selectMetadata = selectMetadata;
   }
 
 }

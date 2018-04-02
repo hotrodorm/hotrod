@@ -1,5 +1,6 @@
 package org.hotrod.metadata;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +26,9 @@ import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ClassPackage;
 
-public class VOMetadata {
+public class VOMetadata implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   // Constants
 
@@ -357,7 +360,9 @@ public class VOMetadata {
 
   // Classes
 
-  public static class VOMember {
+  public static class VOMember implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String property;
     private ClassPackage classPackage;

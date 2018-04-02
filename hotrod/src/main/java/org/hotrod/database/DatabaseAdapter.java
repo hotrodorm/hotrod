@@ -1,5 +1,6 @@
 package org.hotrod.database;
 
+import java.io.Serializable;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +25,9 @@ import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
 
-public abstract class DatabaseAdapter {
+public abstract class DatabaseAdapter implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(DatabaseAdapter.class);
 
@@ -230,7 +233,9 @@ public abstract class DatabaseAdapter {
 
   // Classes
 
-  private static class DataType {
+  private static class DataType implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String typeName;
     private int dataType;

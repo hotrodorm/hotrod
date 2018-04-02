@@ -1,10 +1,13 @@
 package org.hotrod.metadata;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.hotrod.runtime.util.ListWriter;
 
-public class KeyMetadata {
+public class KeyMetadata implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private TableDataSetMetadata tableMetadata;
   private List<ColumnMetadata> columns;

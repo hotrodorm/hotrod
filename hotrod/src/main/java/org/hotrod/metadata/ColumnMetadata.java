@@ -1,5 +1,7 @@
 package org.hotrod.metadata;
 
+import java.io.Serializable;
+
 import org.apache.log4j.Logger;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.ConverterTag;
@@ -10,7 +12,9 @@ import org.hotrod.utils.identifiers.ColumnIdentifier;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 
-public class ColumnMetadata {
+public class ColumnMetadata implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(ColumnMetadata.class);
 
@@ -32,7 +36,7 @@ public class ColumnMetadata {
 
   private EnumDataSetMetadata enumMetadata;
 
-  private DatabaseAdapter adapter;
+  private transient DatabaseAdapter adapter;
   private ColumnTag tag;
   private PropertyType type;
   private ColumnIdentifier identifier;

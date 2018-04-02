@@ -26,6 +26,8 @@ import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class SQLServerAdapter extends DatabaseAdapter {
 
+  private static final long serialVersionUID = 1L;
+
   private static Logger log = Logger.getLogger(SQLServerAdapter.class);
 
   private static final long MAX_VARCHAR_LENGTH = 64 * 1024;

@@ -1,5 +1,6 @@
 package org.hotrod.config.structuredcolumns;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +27,9 @@ import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 
-public class Expressions implements ColumnsProvider {
+public class Expressions implements ColumnsProvider, Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   // Constants
 
@@ -37,7 +40,7 @@ public class Expressions implements ColumnsProvider {
   private List<ExpressionTag> expressions;
 
   protected ColumnsMetadataRetriever columnsRetriever;
-  private HotRodGenerator generator;
+  private transient HotRodGenerator generator;
 
   // Constructor
 

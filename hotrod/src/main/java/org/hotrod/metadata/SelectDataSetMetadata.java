@@ -1,5 +1,6 @@
 package org.hotrod.metadata;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,18 +27,20 @@ import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
 
-public class SelectDataSetMetadata implements DataSetMetadata {
+public class SelectDataSetMetadata implements DataSetMetadata, Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private static final Logger log = Logger.getLogger(SelectDataSetMetadata.class);
 
-  private JdbcDatabase db;
-  private HotRodConfigTag config;
-  private DatabaseAdapter adapter;
-  private DatabaseLocation loc;
+  private transient JdbcDatabase db;
+  private transient HotRodConfigTag config;
+  private transient DatabaseAdapter adapter;
+  private transient DatabaseLocation loc;
   private SelectClassTag tag;
   private List<ColumnMetadata> columns;
   private String tempViewName;
-  private HotRodFragmentConfigTag fragmentConfig;
+  private transient HotRodFragmentConfigTag fragmentConfig;
 
   private String reducedSelect;
   private String createView;

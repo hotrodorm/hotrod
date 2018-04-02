@@ -41,6 +41,9 @@ public class ComplementTag extends EnhancedSQLPart {
 
   // Properties - Primitive content parsing by JAXB
 
+  // TODO: make this property transient. JAXB fails when doing so with the
+  // message: Transient field "content" cannot have any JAXB annotations.
+
   @XmlMixed
   @XmlElementRefs({ //
       @XmlElementRef(type = IfTag.class), //
@@ -53,7 +56,7 @@ public class ComplementTag extends EnhancedSQLPart {
       @XmlElementRef(type = SetTag.class), //
       @XmlElementRef(type = TrimTag.class) //
   })
-  protected transient List<Object> content = new ArrayList<Object>();
+  protected List<Object> content = new ArrayList<Object>();
 
   // Properties - Parsed
 

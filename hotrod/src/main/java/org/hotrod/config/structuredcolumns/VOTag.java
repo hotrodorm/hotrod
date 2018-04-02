@@ -57,13 +57,16 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   // Properties - Primitive content parsing by JAXB
 
+  // TODO: make this property transient. JAXB fails when doing so with the
+  // message: Transient field "content" cannot have any JAXB annotations.
+
   @XmlMixed
   @XmlElementRefs({ //
       @XmlElementRef(type = CollectionTag.class), //
       @XmlElementRef(type = AssociationTag.class), //
       @XmlElementRef(type = ExpressionTag.class) //
   })
-  private transient List<Object> content = new ArrayList<Object>();
+  private List<Object> content = new ArrayList<Object>();
 
   private String table = null;
   private String view = null;
@@ -83,7 +86,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   private Expressions expressions = new Expressions();
 
-  private HotRodGenerator generator;
+  private transient HotRodGenerator generator;
 
   private String compiledBody;
   private boolean useAllColumns;
@@ -91,8 +94,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   private ColumnsMetadataRetriever cmr;
   private String aliasPrefix;
 
-  private List<StructuredColumnMetadata> inheritedColumns;
-  private List<StructuredColumnMetadata> declaredColumns;
+  private transient List<StructuredColumnMetadata> inheritedColumns;
+  private transient List<StructuredColumnMetadata> declaredColumns;
 
   // Constructors
 

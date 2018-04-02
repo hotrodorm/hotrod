@@ -1,5 +1,6 @@
 package org.hotrod.metadata;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.hotrod.config.AbstractDAOTag;
@@ -8,7 +9,7 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
 
-public interface DataSetMetadata {
+public interface DataSetMetadata extends Serializable {
 
   @Deprecated
   String generateDAOName(Identifier identifier);

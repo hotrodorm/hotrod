@@ -1,11 +1,15 @@
 package org.hotrod.metadata;
 
+import java.io.Serializable;
+
 import org.hotrod.config.VersionControlColumnTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.utils.identifiers.ColumnIdentifier;
 
-public class VersionControlMetadata {
+public class VersionControlMetadata implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private DataSetMetadata dataSet;
   private ColumnMetadata columnMetadata;

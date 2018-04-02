@@ -5,6 +5,8 @@ import org.hotrod.database.PropertyType;
 
 public class ColumnIdentifier extends DbIdentifier {
 
+  private static final long serialVersionUID = 1L;
+
   private boolean isBooleanType;
 
   public ColumnIdentifier(final String name, final PropertyType type, final ColumnTag columnTag) {

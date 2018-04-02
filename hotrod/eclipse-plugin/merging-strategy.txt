@@ -50,7 +50,13 @@
   config3            config3    |
 
 
-
+  config1           (no-cache)
+        \             
+         \                      
+    +---[GENERATE-ALL]---+      |
+    |                    |      | Case 3*: Full Generate
+    V                    V      |
+  config1            config1    |
 
 
 

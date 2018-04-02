@@ -1,9 +1,13 @@
 package org.hotrod.utils.identifiers;
 
+import java.io.Serializable;
+
 import org.apache.log4j.Logger;
 import org.hotrod.runtime.util.ListWriter;
 
-public abstract class Identifier {
+public abstract class Identifier implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private static Logger log = Logger.getLogger(Identifier.class);
 
