@@ -1,8 +1,8 @@
 package org.hotrod.metadata;
 
 import java.util.List;
-import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
@@ -11,18 +11,25 @@ import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.CachedMetadata;
+import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public abstract class DataSetMetadataFactory {
 
+  private static final Logger log = Logger.getLogger(DataSetMetadataFactory.class);
+
   public static TableDataSetMetadata getMetadata(final JdbcTable t, final DatabaseAdapter adapter,
       final HotRodConfigTag config, final DataSetLayout layout, final CachedMetadata cachedMetadata)
       throws UnresolvableDataTypeException, ControlledException {
 
     JdbcDatabase cachedDB = cachedMetadata.getCachedDatabase();
-    Map<String, Map<String, SelectMethodMetadata>> allDAOsSelectMetadata = cachedMetadata.getSelectMetadata();
+
+    log.info(">>> HG 1 cachedMetadata=" + cachedMetadata);
+
+    SelectMetadataCache selectMetadataCache = cachedMetadata.getSelectMetadataCache();
 
     // Table
 
@@ -36,9 +43,7 @@ public abstract class DataSetMetadataFactory {
           tableTag.markGenerate(true);
         }
       }
-      Map<String, SelectMethodMetadata> selectsMetadata = allDAOsSelectMetadata == null ? null
-          : allDAOsSelectMetadata.get(tableTag.getName());
-      return new TableDataSetMetadata(tableTag, t, adapter, config, layout, selectsMetadata);
+      return new TableDataSetMetadata(tableTag, t, adapter, config, layout, selectMetadataCache);
     }
 
     // Enum
@@ -53,9 +58,7 @@ public abstract class DataSetMetadataFactory {
           enumTag.markGenerate(true);
         }
       }
-      Map<String, SelectMethodMetadata> selectsMetadata = allDAOsSelectMetadata == null ? null
-          : allDAOsSelectMetadata.get(enumTag.getName());
-      return new EnumDataSetMetadata(enumTag, t, adapter, config, layout, selectsMetadata);
+      return new EnumDataSetMetadata(enumTag, t, adapter, config, layout, selectMetadataCache);
     }
 
     // View
@@ -70,9 +73,7 @@ public abstract class DataSetMetadataFactory {
           viewTag.markGenerate(true);
         }
       }
-      Map<String, SelectMethodMetadata> selectsMetadata = allDAOsSelectMetadata == null ? null
-          : allDAOsSelectMetadata.get(viewTag.getName());
-      return new TableDataSetMetadata(viewTag, t, adapter, config, layout, selectsMetadata);
+      return new TableDataSetMetadata(viewTag, t, adapter, config, layout, selectMetadataCache);
     }
 
     throw new ControlledException("Could not find table, enum, or view with name '" + t.getName() + "'.");

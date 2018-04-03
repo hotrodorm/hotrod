@@ -22,6 +22,7 @@ import org.hotrod.eclipseplugin.utils.ObjectPropertyCodec.CouldNotDecodeExceptio
 import org.hotrod.eclipseplugin.utils.ObjectPropertyCodec.CouldNotEncodeException;
 import org.hotrod.eclipseplugin.utils.SUtil;
 import org.hotrod.generator.CachedMetadata;
+import org.hotrod.generator.SelectMetadataCache;
 
 /**
  * <pre>
@@ -262,7 +263,7 @@ public class ProjectProperties {
     private String generator = null;
 
     private TreeMap<Integer, String> cache = new TreeMap<Integer, String>();
-    private CachedMetadata cachedMetadata = new CachedMetadata(null, null, null, null);
+    private CachedMetadata cachedMetadata = new CachedMetadata();
 
     private List<String> availableCatalogs;
     private List<String> availableSchemas;
@@ -358,9 +359,15 @@ public class ProjectProperties {
 
       try {
         this.cachedMetadata = ObjectPropertyCodec.decode(this.cache, CachedMetadata.class);
+        log.info(">>> 2.0 this.cachedMetadata=" + this.cachedMetadata);
         if (this.cachedMetadata == null) {
           this.cachedMetadata = new CachedMetadata();
+        } else if (this.cachedMetadata.getSelectMetadataCache() == null) {
+          this.cachedMetadata.setSelectMetadataCache(new SelectMetadataCache());
         }
+        log.info(">>> 2.1 this.cachedMetadata=" + this.cachedMetadata);
+        log.info(
+            ">>> 2.1 this.cachedMetadata.getSelectMetadataCache()=" + this.cachedMetadata.getSelectMetadataCache());
       } catch (CouldNotDecodeException e) {
         throw new CouldNotLoadPropertiesException("Invalid cache on file '" + file + "': " + e.getMessage());
       }

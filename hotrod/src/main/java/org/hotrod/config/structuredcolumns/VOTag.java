@@ -464,6 +464,9 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
       } else { // 1.b Based on a view
 
+        log.info("this.tableMetadata=" + this.tableMetadata);
+        log.info("this.viewMetadata=" + this.viewMetadata);
+
         if (requiresIds && this.idNames.isEmpty()) {
           throw new InvalidConfigurationFileException(super.getSourceLocation(), "Missing 'id' attribute on tag <"
               + this.getTagName() + ">.\n" + "When a <" + this.getTagName()

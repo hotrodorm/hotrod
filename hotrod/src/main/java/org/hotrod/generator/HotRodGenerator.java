@@ -98,6 +98,9 @@ public abstract class HotRodGenerator {
   public HotRodGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc, final HotRodConfigTag config,
       final DisplayMode displayMode, final boolean incrementalMode) throws UncontrolledException, ControlledException {
 
+    log.info(">>> HG 1 cachedMetadata=" + cachedMetadata);
+    log.info(">>> HG 1 cachedMetadata.getSelectMetadataCache()=" + cachedMetadata.getSelectMetadataCache());
+
     this.loc = loc;
     this.config = config;
     this.displayMode = displayMode;
@@ -402,16 +405,14 @@ public abstract class HotRodGenerator {
 
       // Prepare executor DAOs meta data
 
-      Map<String, Map<String, SelectMethodMetadata>> allDAOsSelectMetadata = cachedMetadata.getSelectMetadata();
+      SelectMetadataCache selectMetadataCache = cachedMetadata.getSelectMetadataCache();
+      log.info(">>> 1 selectMetadataCache=" + selectMetadataCache);
 
       this.executors = new LinkedHashSet<ExecutorDAOMetadata>();
       for (ExecutorTag tag : config.getExecutors()) {
 
-        Map<String, SelectMethodMetadata> selectsMetadata = allDAOsSelectMetadata == null ? null
-            : allDAOsSelectMetadata.get(tag.getJavaClassName());
-
         ExecutorDAOMetadata dm = new ExecutorDAOMetadata(tag, this.adapter, config, tag.getFragmentConfig(),
-            selectsMetadata);
+            selectMetadataCache);
         this.executors.add(dm);
       }
 
@@ -520,7 +521,7 @@ public abstract class HotRodGenerator {
 
     // Prepare <select> DAOs meta data - phase 2
 
-    Map<String, Map<String, SelectMethodMetadata>> selectsMetaData = new HashMap<String, Map<String, SelectMethodMetadata>>();
+    SelectMetadataCache selectMetadataCache = new SelectMetadataCache();
     Map<String, List<EnumConstant>> tableEnumConstants = new HashMap<String, List<EnumConstant>>();
 
     log.debug("ret 1");
@@ -541,23 +542,23 @@ public abstract class HotRodGenerator {
 
         for (TableDataSetMetadata tm : this.tables) {
           tm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
-          addSelectsMetaData(tm.getDaoTag().getJavaClassName(), tm.getSelectsMetadata(), selectsMetaData);
+          addSelectsMetaData(tm.getDaoTag().getJavaClassName(), tm.getSelectsMetadata(), selectMetadataCache);
         }
 
         for (TableDataSetMetadata vm : this.views) {
           vm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
-          addSelectsMetaData(vm.getDaoTag().getJavaClassName(), vm.getSelectsMetadata(), selectsMetaData);
+          addSelectsMetaData(vm.getDaoTag().getJavaClassName(), vm.getSelectsMetadata(), selectMetadataCache);
         }
 
         for (TableDataSetMetadata em : this.enums) {
           em.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
-          addSelectsMetaData(em.getDaoTag().getJavaClassName(), em.getSelectsMetadata(), selectsMetaData);
+          addSelectsMetaData(em.getDaoTag().getJavaClassName(), em.getSelectsMetadata(), selectMetadataCache);
           addTableEnumConstants(em, tableEnumConstants);
         }
 
         for (ExecutorDAOMetadata xm : this.executors) {
           xm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
-          addSelectsMetaData(xm.getDaoTag().getJavaClassName(), xm.getSelectsMetadata(), selectsMetaData);
+          addSelectsMetaData(xm.getDaoTag().getJavaClassName(), xm.getSelectsMetadata(), selectMetadataCache);
         }
 
         for (SelectDataSetMetadata ds : this.selects) {
@@ -623,7 +624,7 @@ public abstract class HotRodGenerator {
     if (!incrementalMode) {
       this.cachedMetadata.setConfig(config);
       this.cachedMetadata.setCachedDatabase(this.db);
-      this.cachedMetadata.setSelectMetadata(selectsMetaData);
+      this.cachedMetadata.setSelectMetadataCache(selectMetadataCache);
       this.cachedMetadata.setEnumConstants(tableEnumConstants);
     }
 
@@ -638,14 +639,9 @@ public abstract class HotRodGenerator {
   }
 
   private void addSelectsMetaData(final String daoName, final List<SelectMethodMetadata> selects,
-      final Map<String, Map<String, SelectMethodMetadata>> selectsMetaData) {
-    Map<String, SelectMethodMetadata> daoSelects = selectsMetaData.get(daoName);
-    if (daoSelects == null) {
-      daoSelects = new HashMap<String, SelectMethodMetadata>();
-      selectsMetaData.put(daoName, daoSelects);
-    }
+      final SelectMetadataCache selectMetadataCache) {
     for (SelectMethodMetadata sm : selects) {
-      daoSelects.put(sm.getMethod(), sm);
+      selectMetadataCache.put(daoName, sm.getMethod(), sm);
     }
   }
 

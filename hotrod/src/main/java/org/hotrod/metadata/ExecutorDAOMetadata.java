@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -22,6 +21,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
@@ -45,7 +45,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   private List<QueryMethodTag> queries = new ArrayList<QueryMethodTag>();
   private List<SelectMethodTag> selects = new ArrayList<SelectMethodTag>();
 
-  private Map<String, SelectMethodMetadata> cachedSelectsMetadata;
+  private SelectMetadataCache selectMetadataCache;
   private List<SelectMethodMetadata> selectsMetadata;
 
   private HotRodFragmentConfigTag fragmentConfig;
@@ -53,14 +53,14 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   // Constructor
 
   public ExecutorDAOMetadata(final ExecutorTag tag, final DatabaseAdapter adapter, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final Map<String, SelectMethodMetadata> cachedSelectsMetadata) {
+      final HotRodFragmentConfigTag fragmentConfig, final SelectMetadataCache selectMetadataCache) {
     log.debug("init");
     this.tag = tag;
     this.config = config;
     this.adapter = adapter;
     this.fragmentConfig = fragmentConfig;
 
-    this.cachedSelectsMetadata = cachedSelectsMetadata;
+    this.selectMetadataCache = selectMetadataCache;
 
     this.sequences = this.tag.getSequences();
     this.queries = this.tag.getQueries();
@@ -77,8 +77,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
     boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
 
-      SelectMethodMetadata cachedSm = this.cachedSelectsMetadata == null ? null
-          : this.cachedSelectsMetadata.get(selectTag.getMethod());
+      SelectMethodMetadata cachedSm = this.selectMetadataCache.get(this.getJavaClassName(), selectTag.getMethod());
 
       if (referencesAMarkedEntity(selectTag.getReferencedEntities())) {
         selectTag.markGenerate(true);

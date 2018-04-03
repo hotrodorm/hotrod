@@ -8,6 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -57,6 +58,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.hotrod.ant.Constants;
 import org.hotrod.ant.ControlledException;
+import org.hotrod.ant.HotRodAntTask;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractConfigurationTag;
@@ -78,6 +80,7 @@ import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.runtime.util.SUtils;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
+import org.nocrala.tools.utils.Log;
 
 public class HotRodView extends ViewPart {
 
@@ -424,6 +427,9 @@ public class HotRodView extends ViewPart {
             } else {
               log("generating all - starting");
               mainConfigFace.getConfig().markGenerateSubtree(true);
+              log(">>> 4 fileProperties.getCachedMetadata()=" + fileProperties.getCachedMetadata());
+              log(">>> 4 fileProperties.getCachedMetadata().getSelectMetadataCache()=" + fileProperties.getCachedMetadata().getSelectMetadataCache());
+
               generate(mainConfigFace.getConfig(), projectProperties, fileProperties, mainConfigFace.getProject(),
                   false);
               log("generating all - complete");
@@ -449,7 +455,7 @@ public class HotRodView extends ViewPart {
 
         for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
           mf.getConfig().markGenerateSubtree(false);
-          boolean modified = markChanges(mf.getTag());
+          boolean modified = markChanges(mf.getTag(), 0);
           if (modified) {
             ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
             if (projectProperties == null) {
@@ -479,13 +485,15 @@ public class HotRodView extends ViewPart {
 
       }
 
-      private boolean markChanges(final AbstractConfigurationTag t) {
+      private boolean markChanges(final AbstractConfigurationTag t, final int level) {
+        log(SUtils.getFiller(". ", level) + " " + (t.getGenerateMark() ? "G" : "_") + " " + t.getTagName()
+            + " - status=" + t.getStatus());
         boolean modified = t.getStatus() != TagStatus.UNAFFECTED;
         if (modified) {
           t.markGenerate(true);
         }
         for (AbstractConfigurationTag subtag : t.getSubTags()) {
-          if (markChanges(subtag)) {
+          if (markChanges(subtag, level + 1)) {
             modified = true;
           }
         }
@@ -516,7 +524,7 @@ public class HotRodView extends ViewPart {
           LinkedHashSet<MainConfigFace> mainFaces = new LinkedHashSet<MainConfigFace>();
           for (Object obj : (List<?>) selection.toList()) {
             AbstractFace selectedFace = (AbstractFace) obj;
-            selectedFace.getTag().markGenerate(true);
+            selectedFace.getTag().markGenerateSubtree(true);
             mainFaces.add(selectedFace.getMainConfigFace());
           }
 
@@ -736,6 +744,13 @@ public class HotRodView extends ViewPart {
   private void generate(final HotRodConfigTag config, final ProjectProperties projectProperties,
       final FileProperties fileProperties, final IProject project, final boolean incrementalMode) {
 
+    log(">>> 5 fileProperties.getCachedMetadata()=" + fileProperties.getCachedMetadata());
+    log(">>> 5 fileProperties.getCachedMetadata().getSelectMetadataCache()=" + fileProperties.getCachedMetadata().getSelectMetadataCache());
+
+    log("--- Generate Marks ---");
+    displayGenerateMark(config, 0);
+    log("----------------------");
+
     File projectDir = project.getLocation().toFile();
 
     List<String> classPath = new ArrayList<String>();
@@ -748,21 +763,27 @@ public class HotRodView extends ViewPart {
       }
     }
 
+    log(">>> 6 fileProperties.getCachedMetadata()=" + fileProperties.getCachedMetadata());
+
     DatabaseLocation loc = new DatabaseLocation(fileProperties.getDriverClassName(), fileProperties.getUrl(),
         fileProperties.getUsername(), fileProperties.getPassword(), fileProperties.getCatalog(),
         fileProperties.getSchema(), classPath);
 
     try {
 
+      log(">>> 7 fileProperties.getCachedMetadata()=" + fileProperties.getCachedMetadata());
+
       CachedMetadata cachedMetadata = fileProperties.getCachedMetadata();
+      
+      log("cachedDatabase: " + (cachedMetadata.getCachedDatabase() == null ? "null" : "not null"));
 
       HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
           config, DisplayMode.LIST, incrementalMode);
       log("Generator instantiated.");
 
-      log("=== Generated Marks ===");
+      log("=== Generate Marks (post) ===");
       displayGenerateMark(config, 0);
-      log("=======================");
+      log("=============================");
 
       g.prepareGeneration();
       log("Generation prepared.");

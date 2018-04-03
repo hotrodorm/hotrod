@@ -1,0 +1,40 @@
+package org.hotrod.generator;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.hotrod.metadata.SelectMethodMetadata;
+
+public class SelectMetadataCache implements Serializable {
+
+  private static final long serialVersionUID = 1L;
+
+  private static final Logger log = Logger.getLogger(SelectMetadataCache.class);
+
+  // dao-name,
+  // method-name,
+  // metadata
+  private Map<String, Map<String, SelectMethodMetadata>> cache = new HashMap<String, Map<String, SelectMethodMetadata>>();
+
+  public void put(final String dao, final String method, final SelectMethodMetadata metaData) {
+    log.info("CACHE PUT: " + dao + "." + method + "()");
+    Map<String, SelectMethodMetadata> daoCache = this.cache.get(dao);
+    if (daoCache == null) {
+      daoCache = new HashMap<String, SelectMethodMetadata>();
+      this.cache.put(dao, daoCache);
+    }
+    daoCache.put(method, metaData);
+  }
+
+  public SelectMethodMetadata get(final String dao, final String method) {
+    log.info("CACHE GET: " + dao + "." + method + "()");
+    Map<String, SelectMethodMetadata> daoCache = this.cache.get(dao);
+    if (daoCache == null) {
+      return null;
+    }
+    return daoCache.get(method);
+  }
+
+}

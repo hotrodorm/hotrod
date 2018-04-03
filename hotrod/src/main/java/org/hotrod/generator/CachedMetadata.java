@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.hotrod.config.EnumTag.EnumConstant;
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.metadata.SelectMethodMetadata;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 
 public class CachedMetadata implements Serializable {
@@ -16,9 +15,7 @@ public class CachedMetadata implements Serializable {
   private HotRodConfigTag config;
   private JdbcDatabase cachedDatabase;
   private Map<String, List<EnumConstant>> enumConstants;
-  private Map<String, Map<String, SelectMethodMetadata>> selectMetadata; // dao-name,
-                                                                         // method-name,
-                                                                         // metadata
+  private SelectMetadataCache selectMetadataCache;
 
   // Constructor
 
@@ -26,16 +23,15 @@ public class CachedMetadata implements Serializable {
     this.config = null;
     this.cachedDatabase = null;
     this.enumConstants = null;
-    this.selectMetadata = null;
+    this.selectMetadataCache = new SelectMetadataCache();
   }
 
   public CachedMetadata(final HotRodConfigTag config, final JdbcDatabase cachedDatabase,
-      final Map<String, List<EnumConstant>> enumConstants,
-      final Map<String, Map<String, SelectMethodMetadata>> selectMetadata) {
+      final Map<String, List<EnumConstant>> enumConstants, final SelectMetadataCache selectMetadataCache) {
     this.config = config;
     this.cachedDatabase = cachedDatabase;
     this.enumConstants = enumConstants;
-    this.selectMetadata = selectMetadata;
+    this.setSelectMetadataCache(selectMetadataCache);
   }
 
   // Getters
@@ -52,8 +48,8 @@ public class CachedMetadata implements Serializable {
     return enumConstants;
   }
 
-  public Map<String, Map<String, SelectMethodMetadata>> getSelectMetadata() {
-    return selectMetadata;
+  public SelectMetadataCache getSelectMetadataCache() {
+    return selectMetadataCache;
   }
 
   public void setConfig(final HotRodConfigTag config) {
@@ -68,8 +64,12 @@ public class CachedMetadata implements Serializable {
     this.enumConstants = enumConstants;
   }
 
-  public void setSelectMetadata(final Map<String, Map<String, SelectMethodMetadata>> selectMetadata) {
-    this.selectMetadata = selectMetadata;
+  public void setSelectMetadataCache(final SelectMetadataCache selectMetadataCache) {
+    if (selectMetadataCache == null) {
+      this.selectMetadataCache = new SelectMetadataCache();
+    } else {
+      this.selectMetadataCache = selectMetadataCache;
+    }
   }
 
 }

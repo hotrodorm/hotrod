@@ -32,7 +32,7 @@ public abstract class DatabaseAdapter implements Serializable {
   private static final Logger log = Logger.getLogger(DatabaseAdapter.class);
 
   protected HotRodConfigTag config;
-  protected final DatabaseMetaData databaseMedaData;
+  protected transient DatabaseMetaData databaseMedaData;
   private String identifierQuoteString;
 
   private Map<String, DataType> dataTypes;

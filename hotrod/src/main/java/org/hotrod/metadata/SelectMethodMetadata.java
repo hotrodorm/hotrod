@@ -60,10 +60,10 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   private transient HotRodGenerator generator;
   private transient JdbcDatabase db;
-  private transient HotRodConfigTag config;
+  private HotRodConfigTag config;
   private transient DatabaseAdapter adapter;
   private transient DatabaseLocation loc;
-  private transient SelectMethodTag tag;
+  private SelectMethodTag tag;
   private transient SelectGenerationTag selectGenerationTag;
   private transient ColumnsPrefixGenerator columnsPrefixGenerator;
 

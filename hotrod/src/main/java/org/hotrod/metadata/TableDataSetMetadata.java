@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -28,6 +27,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
@@ -67,7 +67,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   private List<QueryMethodTag> queries = new ArrayList<QueryMethodTag>();
   private List<SelectMethodTag> selects = new ArrayList<SelectMethodTag>();
 
-  private Map<String, SelectMethodMetadata> cachedSelectsMetadata;
+  private SelectMetadataCache selectMetadataCache;
   private List<SelectMethodMetadata> selectsMetadata;
 
   private HotRodFragmentConfigTag fragmentConfig;
@@ -78,8 +78,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   // Table constructor
 
   protected TableDataSetMetadata(final TableTag tableTag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config, final DataSetLayout layout,
-      final Map<String, SelectMethodMetadata> cachedSelectsMetadata)
+      final HotRodConfigTag config, final DataSetLayout layout, final SelectMetadataCache selectMetadataCache)
       throws UnresolvableDataTypeException, ControlledException {
     this.t = t;
     this.config = config;
@@ -88,7 +87,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     this.daoTag = tableTag;
     this.fragmentConfig = tableTag.getFragmentConfig();
 
-    this.cachedSelectsMetadata = cachedSelectsMetadata;
+    this.selectMetadataCache = selectMetadataCache;
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage() : null;
@@ -174,8 +173,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   // Enum Constructor
 
   protected TableDataSetMetadata(final EnumTag enumTag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config, final DataSetLayout layout,
-      final Map<String, SelectMethodMetadata> cachedSelectsMetadata)
+      final HotRodConfigTag config, final DataSetLayout layout, final SelectMetadataCache selectMetadataCache)
       throws UnresolvableDataTypeException, ControlledException {
     this.t = t;
     this.config = config;
@@ -184,7 +182,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     this.daoTag = enumTag;
     this.fragmentConfig = enumTag.getFragmentConfig();
 
-    this.cachedSelectsMetadata = cachedSelectsMetadata;
+    this.selectMetadataCache = selectMetadataCache;
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage() : null;
@@ -211,7 +209,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   // View Constructor
 
   protected TableDataSetMetadata(final ViewTag viewTag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config, final DataSetLayout layout, Map<String, SelectMethodMetadata> cachedSelectsMetadata)
+      final HotRodConfigTag config, final DataSetLayout layout, final SelectMetadataCache selectMetadataCache)
       throws UnresolvableDataTypeException, ControlledException {
 
     this.t = t;
@@ -221,7 +219,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     this.daoTag = viewTag;
     this.fragmentConfig = viewTag.getFragmentConfig();
 
-    this.cachedSelectsMetadata = cachedSelectsMetadata;
+    this.selectMetadataCache = selectMetadataCache;
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage() : null;
@@ -305,8 +303,8 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
-      SelectMethodMetadata cachedSm = this.cachedSelectsMetadata == null ? null
-          : this.cachedSelectsMetadata.get(selectTag.getMethod());
+      log.info(">>> this.selectMetadataCache=" + this.selectMetadataCache);
+      SelectMethodMetadata cachedSm = this.selectMetadataCache.get(this.javaName, selectTag.getMethod());
 
       if (referencesAMarkedEntity(selectTag.getReferencedEntities())) {
         selectTag.markGenerate(true);
@@ -345,7 +343,9 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   public void gatherSelectsMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
       throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
+    log.info("*** DataSet " + this.renderSQLIdentifier() + ":");
     for (SelectMethodMetadata sm : this.selectsMetadata) {
+      log.info("*** - method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());
       if (!sm.metadataComplete()) {
         log.debug("... method: " + sm.getMethod());
         sm.gatherMetadataPhase2(conn2, voRegistry);
