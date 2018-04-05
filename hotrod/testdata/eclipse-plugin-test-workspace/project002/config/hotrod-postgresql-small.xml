@@ -32,7 +32,7 @@
 
 	</table>
 
-	<view name="tx_branch" />
+	<view name="tx_branch"  />
 
 	<dao class="Executor1DAO">
 
@@ -40,10 +40,19 @@
 			select a.* , t.*
 			from account a, transaction t
 			<complement>
-				where t.account_id = a.id
-				and a.current_balance &lt; 1000
+				where t.account_id = a.id  
+				and a.current_balance &lt; 1000   
 			</complement>
 		</select>
+
+    <select method="getAccountTx2" vo="AccountTx2VO">
+      select a.* , t.*   
+      from account a, transaction t
+      <complement>
+        where t.account_id = a.id
+        and a.current_balance &lt; 1000
+      </complement>
+    </select>
 
 		<select method="findValuatedAccount">
 			<parameter name="clientId" java-type="java.lang.Integer"
