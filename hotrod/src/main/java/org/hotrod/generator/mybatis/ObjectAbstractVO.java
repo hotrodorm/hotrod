@@ -13,12 +13,13 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.generator.GeneretableObject;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ClassPackage;
 
-public class ObjectAbstractVO {
+public class ObjectAbstractVO extends GeneretableObject {
 
   private static final Logger log = Logger.getLogger(ObjectAbstractVO.class);
 
@@ -45,6 +46,7 @@ public class ObjectAbstractVO {
     if (daoType == null) {
       throw new RuntimeException("VOType cannot be null.");
     }
+    metadata.getDaoTag().addGeneretableObject(this);
     this.daoType = daoType;
     this.myBatisTag = myBatisTag;
     this.fragmentConfig = metadata.getFragmentConfig();
@@ -80,6 +82,8 @@ public class ObjectAbstractVO {
       writePropertiesChangeLog();
 
       writeClassFooter();
+
+      super.markGenerated();
 
     } catch (IOException e) {
       throw new UncontrolledException(

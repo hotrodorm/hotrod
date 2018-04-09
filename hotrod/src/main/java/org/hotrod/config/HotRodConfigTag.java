@@ -117,15 +117,17 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   @Override
   public boolean sameKey(final AbstractConfigurationTag fresh) {
-    return true;
+    return super.commonSameKey(fresh) && true;
   }
 
   @Override
   public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    log.info("copying... " + this.getInternalCaption());
     try {
       HotRodConfigTag f = (HotRodConfigTag) fresh;
-      boolean different = !same(fresh);
+      boolean different = !super.commonSame(fresh) || !same(fresh);
 
+      super.commonCopyNonKeyProperties(fresh);
       this.generatorsTag = f.generatorsTag;
       this.converters = f.converters;
       this.convertersByName = f.convertersByName;
@@ -141,13 +143,21 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     try {
       HotRodConfigTag f = (HotRodConfigTag) fresh;
       return //
-      Compare.same(this.generatorsTag, f.generatorsTag) && //
+      super.commonSame(fresh) && //
+          Compare.same(this.generatorsTag, f.generatorsTag) && //
           Compare.same(this.converters, f.converters) && //
           Compare.same(this.convertersByName, f.convertersByName) //
       ;
     } catch (ClassCastException e) {
       return false;
     }
+  }
+
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName();
   }
 
 }

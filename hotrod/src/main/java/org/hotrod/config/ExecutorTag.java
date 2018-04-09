@@ -133,4 +133,11 @@ public class ExecutorTag extends AbstractDAOTag {
     }
   }
 
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName() + ":" + this.javaClassName;
+  }
+
 }

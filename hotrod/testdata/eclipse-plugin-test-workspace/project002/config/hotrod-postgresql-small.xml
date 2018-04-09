@@ -16,10 +16,16 @@
 		</mybatis>
 	</generators>
 
-	<table name="account" />
+  <table name="transaction" />
+  <table name="account" />
+ <!--
+ -->
 
-	<table name="transaction" />
 
+  <table name="log" />
+<!--
+-->
+<!-- 
 	<table name="federal_branch">
 
 		<select method="findFilteredTxBranch">
@@ -69,9 +75,20 @@
 			<complement>
 				where a.id = #{clientId}
 			</complement>
-
 		</select>
 
-	</dao>
+    <select method="findBestBranches">
+      <parameter name="clientId" java-type="java.lang.Integer"
+        jdbc-type="NUMERIC" />
+      select
+      <columns>
+        <vo view="tx_branch" alias="b">
+        </vo>
+      </columns>
+      from tx_branch b
+    </select>
 
+	</dao>
+ -->
+ 
 </hotrod>

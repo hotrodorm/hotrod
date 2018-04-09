@@ -27,6 +27,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.generator.GeneretableObject;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
@@ -57,7 +58,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
 
-public class ObjectDAO {
+public class ObjectDAO extends GeneretableObject {
 
   // Constants
 
@@ -95,6 +96,7 @@ public class ObjectDAO {
     if (type == null) {
       throw new RuntimeException("DAOType cannot be null.");
     }
+    metadata.getDaoTag().addGeneretableObject(this);
     this.daoType = type;
     this.myBatisTag = myBatisTag;
     this.vo = vo;
@@ -118,7 +120,7 @@ public class ObjectDAO {
   }
 
   public boolean isPlain() {
-    return this.daoType == DAOType.PLAIN;
+    return this.daoType == DAOType.EXECUTOR;
   }
 
   public void generate(final FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
@@ -194,6 +196,8 @@ public class ObjectDAO {
       writeTxManager();
 
       writeClassFooter();
+
+      super.markGenerated();
 
     } catch (IOException e) {
 

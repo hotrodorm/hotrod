@@ -249,6 +249,8 @@ public abstract class HotRodGenerator {
 
       }
 
+      config.displayGenerateMark("VALIDATE", ':');
+
       // Validate names
 
       logm("Validate Names.");
@@ -306,12 +308,16 @@ public abstract class HotRodGenerator {
 
       // Propagate generation to related db changes (if incremental generation)
 
+      config.displayGenerateMark("BEFORE PROPAGATE", ':');
+
       if (incrementalMode) {
         Set<TableDataSetMetadata> alreadyWalked = new HashSet<TableDataSetMetadata>();
         for (TableDataSetMetadata tm : this.tables) {
           propagateGeneration(tm, alreadyWalked);
         }
       }
+
+      config.displayGenerateMark("AFTER PROPAGATE", ':');
 
       // Separate enums metadata from tables'
 
@@ -655,6 +661,8 @@ public abstract class HotRodGenerator {
   }
 
   private void propagateGeneration(final TableDataSetMetadata tm, final Set<TableDataSetMetadata> alreadyWalked) {
+    log.info("propagating... " + tm.getIdentifier().getSQLIdentifier() + " alreadyWalked.contains(tm)="
+        + alreadyWalked.contains(tm) + " tm.getDaoTag().getGenerateMark()=" + tm.getDaoTag().getGenerateMark());
     if (!alreadyWalked.contains(tm)) {
       alreadyWalked.add(tm);
       if (tm.getDaoTag().getGenerateMark()) {

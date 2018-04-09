@@ -316,4 +316,11 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
 
   protected abstract boolean sameProperties(DynamicSQLPart fresh);
 
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName();
+  }
+
 }

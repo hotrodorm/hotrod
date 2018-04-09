@@ -201,4 +201,11 @@ public class QueryMethodTag extends AbstractMethodTag {
     }
   }
 
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName() + ":" + this.method;
+  }
+
 }

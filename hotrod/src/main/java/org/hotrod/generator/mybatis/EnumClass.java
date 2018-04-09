@@ -12,11 +12,12 @@ import org.hotrod.config.EnumTag.EnumProperty;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.generator.GeneretableObject;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ClassPackage;
 
-public class EnumClass {
+public class EnumClass extends GeneretableObject {
 
   // Constants
 
@@ -48,6 +49,7 @@ public class EnumClass {
     this.layout = layout;
     this.daos = daos;
     this.generator = generator;
+    metadata.getDaoTag().addGeneretableObject(this);
 
     this.fragmentConfig = this.metadata.getFragmentConfig();
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
@@ -119,6 +121,8 @@ public class EnumClass {
       writeCodec();
 
       println("}");
+
+      super.markGenerated();
 
     } catch (IOException e) {
       throw new UncontrolledException(

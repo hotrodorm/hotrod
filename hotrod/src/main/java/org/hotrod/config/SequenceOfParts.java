@@ -109,4 +109,11 @@ public class SequenceOfParts extends EnhancedSQLPart {
     }
   }
 
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName();
+  }
+
 }

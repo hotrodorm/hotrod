@@ -102,4 +102,11 @@ public class GeneratorsTag extends AbstractConfigurationTag {
     }
   }
 
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName();
+  }
+
 }

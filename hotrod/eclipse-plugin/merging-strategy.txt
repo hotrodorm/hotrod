@@ -30,8 +30,8 @@
     |                    |      | Case 5: Partial Generate With Existing Cache
     V                    V      |
   config2            config-Y   |
-    |                /   |
-    |               /    | 
+    |                    |
+    |                    | 
 [RELOAD-FILE-CHANGES] <--|      |
     |   /                |      | Case 6: File Reload With Unsynced Cache
     V  /                 V      |
@@ -59,6 +59,10 @@
   config1            config1    |
 
 
+    +-------[LOAD]-------+      |
+    |                    |      | Case 8: Loading File with Existing Cache
+    V                    V      |
+  config1            config-W   |
 
 
 

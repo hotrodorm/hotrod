@@ -63,15 +63,15 @@ public class LoadedConfigurationFiles implements FileChangeListener {
             // 2. Load the config file
 
             // TODO: fix generator value. Should be configurable
-            HotRodConfigTag config = ConfigurationLoader.loadPrimary(path.getProject().getLocation().toFile(), f,
+            HotRodConfigTag loadedConfig = ConfigurationLoader.loadPrimary(path.getProject().getLocation().toFile(), f,
                 "MyBatis");
 
             // 3. Correlate them
 
             if (fileProperties == null) {
 
-              // assume all in sync
-              config.setTreeStatus(TagStatus.UNAFFECTED);
+              // assume all elements are new
+              loadedConfig.setTreeStatus(TagStatus.ADDED);
 
             } else {
 
@@ -80,21 +80,21 @@ public class LoadedConfigurationFiles implements FileChangeListener {
                   : fileProperties.getCachedMetadata().getConfig();
               log("cachedConfigFile=" + cachedConfigFile);
               if (cachedConfigFile == null) {
-                config.setTreeStatus(TagStatus.ADDED);
+                loadedConfig.setTreeStatus(TagStatus.ADDED);
               } else {
-                correlate(config, cachedConfigFile);
+                correlate(loadedConfig, cachedConfigFile);
               }
 
-              log("[1] config.getStatus()=" + config.getStatus());
+              log("[1] config.getStatus()=" + loadedConfig.getStatus());
 
             }
 
             // 4. Assemble a face & refresh
 
-            MainConfigFace face = new MainConfigFace(f, path, this.provider, config);
+            MainConfigFace face = new MainConfigFace(f, path, this.provider, loadedConfig);
             this.loadedFiles.put(absolutePath, face);
             this.provider.refresh();
-            log("[2] config.getStatus()=" + config.getStatus());
+            log("[2] config.getStatus()=" + loadedConfig.getStatus());
             // fileGenerationProofOfConcept();
 
             // } catch (FaultyConfigFileException e) {
@@ -123,12 +123,13 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     }
   }
 
+  // loaded vs cached
   private boolean correlate(final AbstractConfigurationTag left, final AbstractConfigurationTag right) {
     boolean different = left.copyNonKeyProperties(right);
     for (CorrelatedEntry<AbstractConfigurationTag> entry : Correlator.correlateSorted(left.getSubTags(),
         right.getSubTags())) {
-      AbstractConfigurationTag l = entry.getLeft(); // file
-      AbstractConfigurationTag r = entry.getRight(); // cache
+      AbstractConfigurationTag l = entry.getLeft(); // loaded
+      AbstractConfigurationTag r = entry.getRight(); // cached
       if (l != null) {
         if (r != null) {
           if (correlate(l, r)) {
@@ -140,7 +141,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
         }
       }
     }
-    left.setStatus(different ? TagStatus.MODIFIED : TagStatus.UNAFFECTED);
+    left.setStatus(different ? TagStatus.MODIFIED : TagStatus.UP_TO_DATE);
     return different;
   }
 
@@ -213,8 +214,17 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     File f = new File(absPath);
     MainConfigFace newFace = load(f);
     System.out.println("[X123] File changed - Apply changes");
-    // TODO: apply changes
+
+    HotRodConfigTag bl1 = baselineFace.getConfig();
+    bl1.displayGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(bl1), '-');
+
     baselineFace.applyChangesFrom(newFace);
+
+    baselineFace.getTag();
+
+    HotRodConfigTag bl2 = baselineFace.getConfig();
+    bl2.displayGenerateMark("Generate Marks (POST) - " + System.identityHashCode(bl2), '=');
+
   }
 
   public void removeAll() {

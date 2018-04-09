@@ -11,7 +11,6 @@ import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.CachedMetadata;
-import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
@@ -39,6 +38,8 @@ public abstract class DataSetMetadataFactory {
         tableTag.markGenerate(true);
       } else {
         JdbcTable o = findJdbcTable(cachedDB.getTables(), t.getName(), adapter);
+        log.info(" * t=" + t);
+        log.info(" * o=" + o);
         if (!t.isEquivalentTo(o)) {
           tableTag.markGenerate(true);
         }

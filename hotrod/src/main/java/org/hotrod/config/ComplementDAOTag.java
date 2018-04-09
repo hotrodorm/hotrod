@@ -139,4 +139,11 @@ public class ComplementDAOTag extends DynamicSQLPart {
     return true;
   }
 
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName();
+  }
+
 }

@@ -12,9 +12,10 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.generator.GeneretableObject;
 import org.hotrod.runtime.util.SUtils;
 
-public class MyBatisConfiguration {
+public class MyBatisConfiguration extends GeneretableObject {
 
   private static final String MAPPERS_INSERTION_TOKEN = "<mappers/>";
 
@@ -29,6 +30,7 @@ public class MyBatisConfiguration {
   public MyBatisConfiguration(final HotRodConfigTag config) {
     this.config = config;
     this.mybatisTag = (MyBatisTag) this.config.getGenerators().getSelectedGeneratorTag();
+    this.config.getGenerators().addGeneretableObject(this);
     this.sourceFiles = new ArrayList<String>();
     this.mapperCustom = new ArrayList<String>();
   }
@@ -90,6 +92,8 @@ public class MyBatisConfiguration {
       String mappers = prepareMappers();
       String result = template.replace(MAPPERS_INSERTION_TOKEN, mappers);
       this.w.write(result);
+
+      super.markGenerated();
 
     } catch (IOException e) {
       throw new UncontrolledException("Could not generate the MyBatis main configuration file: "

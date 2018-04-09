@@ -305,4 +305,11 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     return null;
   }
 
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName();
+  }
+
 }

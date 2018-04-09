@@ -37,6 +37,7 @@ public class ConfigurationLoader {
 
   private static final Logger log = Logger.getLogger(ConfigurationLoader.class);
 
+  // TODO: Improve the XSD schema assembling.
   // private static final String PRIMARY_XSD_PATH = "/hotrod.xsd";
   // private static final String FRAGMENT_XSD_PATH = "/hotrod-fragment.xsd";
 
@@ -127,6 +128,10 @@ public class ConfigurationLoader {
       alreadyLoadedFileNames.add(f.getAbsolutePath());
 
       config.validateCommon(config, f, alreadyLoadedFileNames, f, daosTag, null);
+
+      // Prepare transient values
+
+      config.activate();
 
       // Complete
 

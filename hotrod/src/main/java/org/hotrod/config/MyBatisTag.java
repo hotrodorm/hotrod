@@ -193,4 +193,11 @@ public class MyBatisTag extends AbstractGeneratorTag {
     }
   }
 
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName();
+  }
+
 }

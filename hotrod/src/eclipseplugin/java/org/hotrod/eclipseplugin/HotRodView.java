@@ -8,7 +8,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -58,7 +57,6 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.hotrod.ant.Constants;
 import org.hotrod.ant.ControlledException;
-import org.hotrod.ant.HotRodAntTask;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractConfigurationTag;
@@ -148,9 +146,9 @@ public class HotRodView extends ViewPart {
 
     int operations = DND.DROP_COPY | DND.DROP_MOVE;
     Transfer[] transfers = new Transfer[] { FileTransfer.getInstance() };
-    HotRodDropTargetListener listener = new HotRodDropTargetListener(this.viewer,
+    HotRodDropTargetListener dropListener = new HotRodDropTargetListener(this.viewer,
         this.hotRodViewContentProvider.getFiles());
-    this.viewer.addDropSupport(operations, transfers, listener);
+    this.viewer.addDropSupport(operations, transfers, dropListener);
 
     this.viewer.setContentProvider(this.hotRodViewContentProvider);
 
@@ -414,24 +412,23 @@ public class HotRodView extends ViewPart {
         } else {
 
           AbstractFace face = (AbstractFace) selection.toList().get(0);
-          MainConfigFace mainConfigFace = face.getMainConfigFace();
-          ProjectProperties projectProperties = ProjectPropertiesCache
-              .getProjectProperties(mainConfigFace.getProject());
+          MainConfigFace mainFace = face.getMainConfigFace();
+          ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mainFace.getProject());
           if (projectProperties == null) {
             showMessage("Project properties are not yet configured");
           } else {
-            log("file=" + mainConfigFace.getRelativeFileName());
-            FileProperties fileProperties = projectProperties.getFileProperties(mainConfigFace.getRelativeFileName());
+            log("file=" + mainFace.getRelativeFileName());
+            FileProperties fileProperties = projectProperties.getFileProperties(mainFace.getRelativeFileName());
             if (fileProperties == null) {
               showMessage("File properties are not yet configured");
             } else {
               log("generating all - starting");
-              mainConfigFace.getConfig().markGenerateSubtree(true);
+              mainFace.getConfig().markGenerateSubtree(true);
               log(">>> 4 fileProperties.getCachedMetadata()=" + fileProperties.getCachedMetadata());
-              log(">>> 4 fileProperties.getCachedMetadata().getSelectMetadataCache()=" + fileProperties.getCachedMetadata().getSelectMetadataCache());
+              log(">>> 4 fileProperties.getCachedMetadata().getSelectMetadataCache()="
+                  + fileProperties.getCachedMetadata().getSelectMetadataCache());
 
-              generate(mainConfigFace.getConfig(), projectProperties, fileProperties, mainConfigFace.getProject(),
-                  false);
+              generate(mainFace, projectProperties, fileProperties, false);
               log("generating all - complete");
             }
           }
@@ -474,10 +471,10 @@ public class HotRodView extends ViewPart {
         }
 
         if (allConfigured) {
-          for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-            ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
-            FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
-            generate(mf.getConfig(), projectProperties, fileProperties, mf.getProject(), true);
+          for (MainConfigFace mainFace : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+            ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mainFace.getProject());
+            FileProperties fileProperties = projectProperties.getFileProperties(mainFace.getRelativeFileName());
+            generate(mainFace, projectProperties, fileProperties, true);
           }
         }
 
@@ -488,7 +485,7 @@ public class HotRodView extends ViewPart {
       private boolean markChanges(final AbstractConfigurationTag t, final int level) {
         log(SUtils.getFiller(". ", level) + " " + (t.getGenerateMark() ? "G" : "_") + " " + t.getTagName()
             + " - status=" + t.getStatus());
-        boolean modified = t.getStatus() != TagStatus.UNAFFECTED;
+        boolean modified = t.getStatus() != TagStatus.UP_TO_DATE;
         if (modified) {
           t.markGenerate(true);
         }
@@ -517,13 +514,17 @@ public class HotRodView extends ViewPart {
         }
 
         TreeSelection selection = (TreeSelection) viewer.getSelection();
-        if (!selection.toList().isEmpty()) {
+        log("selection 1: " + selection);
+        List<?> sel = selection.toList();
+        log("selection 2: size=" + selection.size());
+        if (!sel.isEmpty()) {
 
           // Mark selection for generation and identify main faces
 
           LinkedHashSet<MainConfigFace> mainFaces = new LinkedHashSet<MainConfigFace>();
-          for (Object obj : (List<?>) selection.toList()) {
+          for (Object obj : sel) {
             AbstractFace selectedFace = (AbstractFace) obj;
+            log(" - selected face=" + selectedFace.getName());
             selectedFace.getTag().markGenerateSubtree(true);
             mainFaces.add(selectedFace.getMainConfigFace());
           }
@@ -550,10 +551,10 @@ public class HotRodView extends ViewPart {
           // Generate all main faces
 
           if (allConfigured) {
-            for (MainConfigFace mf : mainFaces) {
-              ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
-              FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
-              generate(mf.getConfig(), projectProperties, fileProperties, mf.getProject(), true);
+            for (MainConfigFace mainFace : mainFaces) {
+              ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mainFace.getProject());
+              FileProperties fileProperties = projectProperties.getFileProperties(mainFace.getRelativeFileName());
+              generate(mainFace, projectProperties, fileProperties, true);
             }
           }
 
@@ -572,7 +573,7 @@ public class HotRodView extends ViewPart {
       @Override
       public void run() {
         autoGenerate = !autoGenerate;
-        String text = "Auto Generate (" + (autoGenerate ? "On" : "Off") + ")";
+        String text = "Auto Generate Changes (" + (autoGenerate ? "On" : "Off") + ")";
         actionAutoOnOff.setText(text);
         actionAutoOnOff.setChecked(autoGenerate);
         actionAutoOnOff.setToolTipText(text);
@@ -741,15 +742,15 @@ public class HotRodView extends ViewPart {
 
   // Generation
 
-  private void generate(final HotRodConfigTag config, final ProjectProperties projectProperties,
-      final FileProperties fileProperties, final IProject project, final boolean incrementalMode) {
+  private void generate(final MainConfigFace mainFace, final ProjectProperties projectProperties,
+      final FileProperties fileProperties, final boolean incrementalMode) {
+
+    HotRodConfigTag config = mainFace.getConfig();
+    IProject project = mainFace.getProject();
 
     log(">>> 5 fileProperties.getCachedMetadata()=" + fileProperties.getCachedMetadata());
-    log(">>> 5 fileProperties.getCachedMetadata().getSelectMetadataCache()=" + fileProperties.getCachedMetadata().getSelectMetadataCache());
-
-    log("--- Generate Marks ---");
-    displayGenerateMark(config, 0);
-    log("----------------------");
+    log(">>> 5 fileProperties.getCachedMetadata().getSelectMetadataCache()="
+        + fileProperties.getCachedMetadata().getSelectMetadataCache());
 
     File projectDir = project.getLocation().toFile();
 
@@ -774,16 +775,15 @@ public class HotRodView extends ViewPart {
       log(">>> 7 fileProperties.getCachedMetadata()=" + fileProperties.getCachedMetadata());
 
       CachedMetadata cachedMetadata = fileProperties.getCachedMetadata();
-      
+
       log("cachedDatabase: " + (cachedMetadata.getCachedDatabase() == null ? "null" : "not null"));
+
+      config.displayGenerateMark("Generate Marks (pre)", '-');
 
       HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
           config, DisplayMode.LIST, incrementalMode);
-      log("Generator instantiated.");
 
-      log("=== Generate Marks (post) ===");
-      displayGenerateMark(config, 0);
-      log("=============================");
+      config.displayGenerateMark("Generate Marks (post)", '=');
 
       g.prepareGeneration();
       log("Generation prepared.");
@@ -794,6 +794,9 @@ public class HotRodView extends ViewPart {
         // a live generator
         FileGenerator fg = new EclipseFileGenerator(project);
         liveGenerator.generate(fg);
+
+        config.unmarkTreeGenerateIfAllGenerated();
+        mainFace.refreshView();
 
       } catch (ClassCastException e) {
 
@@ -811,6 +814,7 @@ public class HotRodView extends ViewPart {
 
     } catch (ControlledException e) {
       if (e.getLocation() == null) {
+        e.printStackTrace(); // TODO: remove this
         throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code:\n" + e.getMessage());
       } else {
         throw new BuildException(
@@ -827,12 +831,14 @@ public class HotRodView extends ViewPart {
 
   }
 
-  private void displayGenerateMark(final AbstractConfigurationTag tag, final int level) {
-    log(SUtils.getFiller(". ", level) + " " + (tag.getGenerateMark() ? "G" : "_") + " " + tag.getTagName());
-    for (AbstractConfigurationTag subtag : tag.getSubTags()) {
-      displayGenerateMark(subtag, level + 1);
-    }
-  }
+  // private void displayGenerateMark(final AbstractConfigurationTag tag, final
+  // int level) {
+  // log(SUtils.getFiller(". ", level) + " " + (tag.getGenerateMark() ? "G" :
+  // "_") + " " + tag.getInternalCaption());
+  // for (AbstractConfigurationTag subtag : tag.getSubTags()) {
+  // displayGenerateMark(subtag, level + 1);
+  // }
+  // }
 
   private static void log(final String txt) {
     System.out.println("[" + new Object() {

@@ -233,4 +233,11 @@ public class FacetTag extends AbstractConfigurationTag {
     }
   }
 
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName() + ":" + this.name;
+  }
+
 }

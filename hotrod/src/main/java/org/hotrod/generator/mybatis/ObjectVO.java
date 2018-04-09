@@ -9,13 +9,14 @@ import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.generator.GeneretableObject;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ImportsRenderer;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 
-public class ObjectVO {
+public class ObjectVO extends GeneretableObject {
 
   private static final Logger log = Logger.getLogger(ObjectVO.class);
 
@@ -37,6 +38,7 @@ public class ObjectVO {
     this.metadata = metadata;
     this.layout = layout;
     this.generator = generator;
+    metadata.getDaoTag().addGeneretableObject(this);
     this.abstractVO = abstractVO;
     this.myBatisTag = myBatisTag;
 
@@ -56,7 +58,9 @@ public class ObjectVO {
     File dir = this.layout.getDAOPackageDir(fragmentPackage);
     File vo = new File(dir, sourceClassName);
     log.debug("vo file:" + vo.getAbsolutePath());
-    if (!vo.exists()) {
+    if (vo.exists()) {
+      super.markGenerated();
+    } else {
       TextWriter w = null;
 
       try {
@@ -82,6 +86,8 @@ public class ObjectVO {
         w.write("  // Add custom code below.\n\n");
 
         w.write("}\n");
+
+        super.markGenerated();
 
       } catch (IOException e) {
         throw new UncontrolledException("Could not generate VO class: could not write to file '" + vo.getName() + "'.",

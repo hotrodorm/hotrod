@@ -39,14 +39,13 @@ public abstract class AbstractFace implements IAdaptable {
 
   public void setName(final String name) {
     this.name = name;
-    // this.setModified();
   }
 
   public void removeAllChildren() {
     this.children.clear();
   }
 
-  public void removeChildren(final int index) {
+  public void removeChild(final int index) {
     try {
       this.children.remove(index);
     } catch (IndexOutOfBoundsException e) {
@@ -57,14 +56,7 @@ public abstract class AbstractFace implements IAdaptable {
   public void addChild(final AbstractFace child) {
     child.setParent(this);
     this.children.add(child);
-    // this.setModified();
   }
-
-  // void removeChild(final AbstractFace child) {
-  // this.children.remove(child);
-  // child.setParent(null);
-  // this.setModified();
-  // }
 
   public AbstractFace[] getChildren() {
     return this.children.toArray(EMPTY_FACE_ARRAY);
@@ -73,49 +65,6 @@ public abstract class AbstractFace implements IAdaptable {
   public boolean hasChildren() {
     return !this.children.isEmpty();
   }
-
-  // Status change managing
-
-  // public void setUnchanged() {
-  // this.markUnchanged();
-  // this.refreshView();
-  // }
-
-  // private void markUnchanged() {
-  // for (AbstractFace child : this.children) {
-  // child.markUnchanged();
-  // }
-  // }
-
-  // public final void setModified() {
-  // this.markModified();
-  // this.refreshView();
-  // }
-
-  // private void markModified() {
-  // this.aggregatedStatus = ChangeStatus.MODIFIED;
-  // for (AbstractFace child : this.children) {
-  // child.markModified();
-  // }
-  // }
-
-  // public void setAdded() {
-  // this.aggregatedStatus = ChangeStatus.ADDED;
-  // // if (this.parent != null) {
-  // // this.parent.setModified();
-  // // } else {
-  // this.refreshView();
-  // // }
-  // }
-
-  // public void setDeleted() {
-  // this.aggregatedStatus = ChangeStatus.DELETED;
-  // // if (this.parent != null) {
-  // // this.parent.setModified();
-  // // } else {
-  // this.refreshView();
-  // // }
-  // }
 
   // Generating marker
 
@@ -166,35 +115,8 @@ public abstract class AbstractFace implements IAdaptable {
     }
   }
 
-  // Tree display
-
-  // private TagStatus treeStatus = null;
-
-  // public final TagStatus getTreeStatus() {
-  // log("0 name=" + this.name + " this.getStatus()=" + this.getStatus() + "
-  // this.treeStatus=" + this.treeStatus);
-  // if (this.treeStatus == null) {
-  // log("1");
-  // if (this.getStatus() == TagStatus.MODIFIED) {
-  // log("2");
-  // this.treeStatus = TagStatus.MODIFIED;
-  // } else {
-  // log("3");
-  // boolean changed = false;
-  // for (AbstractFace c : this.children) {
-  // if (c.getTreeStatus() != TagStatus.UNAFFECTED) {
-  // changed = true;
-  // }
-  // }
-  // this.treeStatus = changed ? TagStatus.MODIFIED : this.getStatus();
-  // }
-  // }
-  // log("4 this.treeStatus=" + this.treeStatus);
-  // return this.treeStatus;
-  // }
-
   public final TagStatus getStatus() {
-    return this.tag == null ? TagStatus.UNAFFECTED : this.tag.getStatus();
+    return this.tag == null ? TagStatus.UP_TO_DATE : this.tag.getStatus();
   }
 
   public abstract String getDecoration();
@@ -231,29 +153,39 @@ public abstract class AbstractFace implements IAdaptable {
     return true;
   }
 
-  // private final void unsetTreeStatus() {
-  // this.treeStatus = null;
-  // if (this.parent != null) {
-  // this.parent.unsetTreeStatus();
-  // }
-  // }
-
   public final void applyChangesFrom(final AbstractFace fresh) {
+
+    log("[1] applyChanges: " + this.name + " - this:" + System.identityHashCode(this.getTag()) + " fresh:"
+        + System.identityHashCode(fresh.getTag()));
 
     // own changes
 
+    TagStatus currentStatus = this.tag.getStatus();
     if (this.tag.copyNonKeyProperties(fresh.tag)) {
-      this.tag.setStatus(TagStatus.MODIFIED);
-      // this.unsetTreeStatus();
+      currentStatus = TagStatus.MODIFIED;
     }
+    this.tag = fresh.tag;
+    this.tag.setStatus(currentStatus);
+
+    try { // update the main tag, if it's a main face.
+      MainConfigFace cf = (MainConfigFace) this;
+      MainConfigFace ff = (MainConfigFace) fresh;
+      cf.setConfig(ff.getConfig());
+    } catch (ClassCastException e) {
+      // Not a main tag - Ignore
+    }
+
+    log("  [2] applyChanges: " + this.name + " - this:" + System.identityHashCode(this.getTag()) + " status:"
+        + this.getStatus());
 
     // sub item changes
 
     List<AbstractFace> existing = new ArrayList<AbstractFace>(this.children);
+    log(" . children count '" + this.name + "': this=" + existing.size() + " fresh=" + fresh.children.size());
     this.children.clear();
 
     for (AbstractFace f : fresh.children) {
-      AbstractFace e = extractChildren(f, existing);
+      AbstractFace e = retrieve(f, existing);
       if (e != null) {
         e.applyChangesFrom(f);
         this.children.add(e);
@@ -261,21 +193,20 @@ public abstract class AbstractFace implements IAdaptable {
       } else {
         this.children.add(f);
         f.parent = this;
-        // f.unsetTreeStatus();
         if (f.tag != null) {
           f.tag.setStatus(TagStatus.ADDED);
         }
       }
     }
-    log("applyChangesFrom() name=" + this.name + " existing.isEmpty()=" + existing.isEmpty());
-    // if (!existing.isEmpty()) { // some children were removed
-    // this.unsetTreeStatus();
-    // this.treeStatus = TagStatus.MODIFIED;
-    // }
+
+    log(" . children removed '" + this.name + "': " + !existing.isEmpty());
+    if (!existing.isEmpty()) { // some children were removed
+      this.getTag().setStatus(TagStatus.MODIFIED);
+    }
 
   }
 
-  private AbstractFace extractChildren(final AbstractFace f, final List<AbstractFace> existing) {
+  private AbstractFace retrieve(final AbstractFace f, final List<AbstractFace> existing) {
     for (Iterator<AbstractFace> it = existing.iterator(); it.hasNext();) {
       AbstractFace e = it.next();
       if (f.tag == null) {
@@ -297,8 +228,8 @@ public abstract class AbstractFace implements IAdaptable {
   }
 
   private static void log(final String txt) {
-    // System.out.println("[" + new Object() {
-    // }.getClass().getEnclosingClass().getName() + "] " + txt);
+    System.out.println("[" + new Object() {
+    }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

@@ -855,4 +855,11 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     }
   }
 
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName();
+  }
+
 }

@@ -69,7 +69,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
       String prefix;
       switch (face.getStatus()) {
-      case UNAFFECTED:
+      case UP_TO_DATE:
         prefix = "";
         break;
       case MODIFIED:
@@ -96,6 +96,8 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
         label.append(AbstractFace.GENERATING_MARKER, StyledString.COUNTER_STYLER);
       }
       label.append(face.getName());
+
+      label.append(" - " + System.identityHashCode(face.getTag()));
 
       try {
         SettingsFace s = (SettingsFace) obj; // settings

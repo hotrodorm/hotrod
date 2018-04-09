@@ -61,6 +61,10 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
     this.myBatisTag = (MyBatisTag) this.config.getGenerators().getSelectedGeneratorTag();
     DataSetLayout layout = new DataSetLayout(this.config);
 
+    // Reset the generated object counters
+
+    this.config.resetTreeGeneretables();
+
     // Add tables
 
     for (TableDataSetMetadata tm : super.tables) {
@@ -105,7 +109,7 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
     // Add plain DAOs
 
     for (ExecutorDAOMetadata dm : super.executors) {
-      addDaosAndMapper(dm, DAOType.PLAIN);
+      addDaosAndMapper(dm, DAOType.EXECUTOR);
       for (SelectMethodMetadata sm : dm.getSelectsMetadata()) {
         addSelectVOs(sm, layout);
       }
@@ -166,7 +170,7 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
 
       break;
 
-    case PLAIN:
+    case EXECUTOR:
       AbstractDAOTag tag = metadata.getDaoTag();
       layout = new DataSetLayout(this.config);
       abstractVO = null;

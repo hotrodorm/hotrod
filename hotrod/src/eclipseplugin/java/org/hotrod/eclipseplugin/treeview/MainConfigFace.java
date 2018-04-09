@@ -55,6 +55,10 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
   // super.computeChangesFrom(fresh);
   // }
 
+  void setConfig(HotRodConfigTag config) {
+    this.config = config;
+  }
+
   // Getters
 
   public String getAbsolutePath() {
@@ -117,7 +121,9 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
     return config;
   }
 
+
   // Indexable
+
 
   @Override
   public int hashCode() {

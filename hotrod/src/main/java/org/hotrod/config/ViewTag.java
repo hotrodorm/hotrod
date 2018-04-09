@@ -233,4 +233,11 @@ public class ViewTag extends AbstractEntityDAOTag {
     }
   }
 
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName() + ":" + this.name;
+  }
+
 }

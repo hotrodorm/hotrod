@@ -75,15 +75,16 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
 
   @Override
   public boolean sameKey(final AbstractConfigurationTag fresh) {
-    return true;
+    return super.commonSameKey(fresh) && true;
   }
 
   @Override
   public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
     try {
       HotRodFragmentConfigTag f = (HotRodFragmentConfigTag) fresh;
-      boolean different = !same(fresh);
+      boolean different = !super.commonSame(fresh) || !same(fresh);
 
+      super.commonCopyNonKeyProperties(fresh);
       this.sPackage = f.sPackage;
       this.filename = f.filename;
       this.fragmentPackage = f.fragmentPackage;
@@ -98,10 +99,19 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
   public boolean same(final AbstractConfigurationTag fresh) {
     try {
       HotRodFragmentConfigTag f = (HotRodFragmentConfigTag) fresh;
-      return Compare.same(this.sPackage, f.sPackage);
+      return //
+      super.commonSame(fresh) && //
+          Compare.same(this.sPackage, f.sPackage);
     } catch (ClassCastException e) {
       return false;
     }
+  }
+
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName();
   }
 
 }

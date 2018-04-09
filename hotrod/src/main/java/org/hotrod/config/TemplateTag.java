@@ -101,4 +101,11 @@ public class TemplateTag extends AbstractConfigurationTag {
     }
   }
 
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName();
+  }
+
 }

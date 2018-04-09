@@ -303,4 +303,11 @@ public class TableTag extends AbstractEntityDAOTag {
     }
   }
 
+  // Simple Caption
+
+  @Override
+  public String getInternalCaption() {
+    return this.getTagName() + ":" + this.name;
+  }
+
 }
