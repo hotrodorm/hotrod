@@ -52,6 +52,7 @@ import org.hotrod.metadata.VORegistry;
 import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
+import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
@@ -76,7 +77,7 @@ public abstract class HotRodGenerator {
 
   private static final Logger logm = Logger.getLogger("hotrod-metadata-retrieval");
 
-  protected DatabaseLocation loc;
+  protected DatabaseLocation dloc;
   protected HotRodConfigTag config;
   protected DisplayMode displayMode;
 
@@ -95,24 +96,24 @@ public abstract class HotRodGenerator {
 
   private Long lastLog = null;
 
-  public HotRodGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc, final HotRodConfigTag config,
+  public HotRodGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation dloc, final HotRodConfigTag config,
       final DisplayMode displayMode, final boolean incrementalMode) throws UncontrolledException, ControlledException {
 
     log.info(">>> HG 1 cachedMetadata=" + cachedMetadata);
     log.info(">>> HG 1 cachedMetadata.getSelectMetadataCache()=" + cachedMetadata.getSelectMetadataCache());
 
-    this.loc = loc;
+    this.dloc = dloc;
     this.config = config;
     this.displayMode = displayMode;
     this.cachedMetadata = cachedMetadata;
 
     if (!incrementalMode) {
-      config.markGenerateSubtree(true);
+      config.markGenerateTree(true);
     }
 
     logm("Starting core generator.");
 
-    display("Database URL: " + loc.getUrl());
+    display("Database URL: " + dloc.getUrl());
 
     Connection conn = null;
     boolean retrieveSelectMetadata = false;
@@ -122,7 +123,7 @@ public abstract class HotRodGenerator {
       // Get Connection
 
       logm("Opening connection...");
-      conn = this.loc.getConnection();
+      conn = this.dloc.getConnection();
       logm("Connection open.");
 
       // Database Version
@@ -147,16 +148,16 @@ public abstract class HotRodGenerator {
       display("");
 
       try {
-        this.adapter = DatabaseAdapterFactory.getAdapter(this.loc, this.config);
+        this.adapter = DatabaseAdapterFactory.getAdapter(this.dloc, this.config);
         display("HotRod Database Adapter: " + this.adapter.getName());
 
       } catch (UnrecognizedDatabaseException e) {
         throw new ControlledException(
-            "Could not recognize database type at JDBC URL " + loc.getUrl() + " - " + e.getMessage());
+            "Could not recognize database type at JDBC URL " + dloc.getUrl() + " - " + e.getMessage());
       }
 
-      display("Database Catalog: " + (this.adapter.supportsCatalog() ? loc.getDefaultCatalog() : "(not supported)"));
-      display("Database Schema: " + (this.adapter.supportsSchema() ? loc.getDefaultSchema() : "(not supported)"));
+      display("Database Catalog: " + (this.adapter.supportsCatalog() ? dloc.getDefaultCatalog() : "(not supported)"));
+      display("Database Schema: " + (this.adapter.supportsSchema() ? dloc.getDefaultSchema() : "(not supported)"));
       display("");
 
       // Decide about using cached or fresh database objects
@@ -183,6 +184,18 @@ public abstract class HotRodGenerator {
         }
       }
 
+      // check if an entity was removed from the configuration file
+
+      if (!retrieveFreshDatabaseObjects) {
+        for (JdbcTable t : cachedDatabase.getTables()) {
+          if (config.getTableTag(t) == null && config.getEnumTag(t) == null && config.getViewTag(t) == null) {
+            retrieveFreshDatabaseObjects = true;
+          }
+        }
+      }
+
+      log.info("--------------> retrieveFreshDatabaseObjects=" + retrieveFreshDatabaseObjects);
+
       if (!retrieveFreshDatabaseObjects) {
 
         this.db = cachedDatabase;
@@ -198,7 +211,7 @@ public abstract class HotRodGenerator {
               new ViewFilter(this.config, this.adapter));
 
           // TODO: Use the existing connection instead of opening a new one.
-          this.db = new JdbcDatabase(this.loc, true, filter);
+          this.db = new JdbcDatabase(this.dloc, true, filter);
 
           logm("After retrieval 1.");
 
@@ -208,17 +221,17 @@ public abstract class HotRodGenerator {
           throw new UncontrolledException("Could not retrieve database metadata.", e);
         } catch (CatalogNotSupportedException e) {
           throw new ControlledException(
-              "A catalog name was specified for the database with the value '" + loc.getDefaultCatalog() + "', "
+              "A catalog name was specified for the database with the value '" + dloc.getDefaultCatalog() + "', "
                   + "but this database does not support catalogs through the JDBC driver. "
                   + "Please specify it with an empty value.");
         } catch (InvalidCatalogException e) {
           StringBuilder sb = new StringBuilder();
-          if (loc.getDefaultCatalog() == null) {
+          if (dloc.getDefaultCatalog() == null) {
             sb.append(
                 "This database requires a catalog name. Please specify in " + Constants.TOOL_NAME + "'s Ant task.\n\n");
           } else {
             sb.append(
-                "The specified catalog name '" + loc.getDefaultCatalog() + "' does not exist in this database.\n\n");
+                "The specified catalog name '" + dloc.getDefaultCatalog() + "' does not exist in this database.\n\n");
           }
           sb.append("The available catalogs are:\n");
           for (String c : e.getExistingCatalogs()) {
@@ -227,16 +240,16 @@ public abstract class HotRodGenerator {
           throw new ControlledException(sb.toString());
         } catch (SchemaNotSupportedException e) {
           throw new ControlledException("A schema name was specified for the database with the value '"
-              + loc.getDefaultSchema() + "', " + "but this database does not support schemas through the JDBC driver. "
+              + dloc.getDefaultSchema() + "', " + "but this database does not support schemas through the JDBC driver. "
               + "Please specify it with an empty value.");
         } catch (InvalidSchemaException e) {
           StringBuilder sb = new StringBuilder();
-          if (loc.getDefaultSchema() == null) {
+          if (dloc.getDefaultSchema() == null) {
             sb.append(
                 "This database requires a schema name. Please specify in " + Constants.TOOL_NAME + "'s Ant task.\n\n");
           } else {
             sb.append(
-                "The specified schema name '" + loc.getDefaultSchema() + "' does not exist in this database.\n\n");
+                "The specified schema name '" + dloc.getDefaultSchema() + "' does not exist in this database.\n\n");
           }
           sb.append("The available schemas are:\n");
           for (String s : e.getExistingSchemas()) {
@@ -244,12 +257,12 @@ public abstract class HotRodGenerator {
           }
           throw new ControlledException(sb.toString());
         } catch (Exception e) {
-          throw new UncontrolledException("Could not retrieve database metadata using JDBC URL " + loc.getUrl(), e);
+          throw new UncontrolledException("Could not retrieve database metadata using JDBC URL " + dloc.getUrl(), e);
         }
 
       }
 
-      config.displayGenerateMark("VALIDATE", ':');
+      config.logGenerateMark("VALIDATE", ':');
 
       // Validate names
 
@@ -306,18 +319,42 @@ public abstract class HotRodGenerator {
         tm.linkReferencedTableMetadata(this.tables);
       }
 
-      // Propagate generation to related db changes (if incremental generation)
+      // Validate there are no 1-many FK relationships with enums on the many
+      // side.
 
-      config.displayGenerateMark("BEFORE PROPAGATE", ':');
+      for (TableDataSetMetadata tm : this.tables) {
+        for (ForeignKeyMetadata efk : tm.getExportedFKs()) {
+          try {
+            EnumDataSetMetadata em = (EnumDataSetMetadata) efk.getRemote().getTableMetadata();
+            // it's an enum! An enum cannot be used as the children table
+            SourceLocation loc = em.getDaoTag().getSourceLocation();
+            throw new ControlledException("Invalid configuration file '" + loc.getFile().getPath() + "' (line "
+                + loc.getLineNumber() + ", col " + loc.getColumnNumber() + "):\n" + "cannot specify the enum '"
+                + em.renderSQLIdentifier() + "' on the 'many' side of a 1-to-many relationship.");
 
-      if (incrementalMode) {
-        Set<TableDataSetMetadata> alreadyWalked = new HashSet<TableDataSetMetadata>();
-        for (TableDataSetMetadata tm : this.tables) {
-          propagateGeneration(tm, alreadyWalked);
+          } catch (ClassCastException e) {
+            // It's a table, not an enum - it's valid.
+          }
         }
+
       }
 
-      config.displayGenerateMark("AFTER PROPAGATE", ':');
+      config.logGenerateMark("AFTER LINKING", ':');
+
+      // // Propagate generation to related db changes (if incremental
+      // generation)
+      //
+      // config.displayGenerateMark("BEFORE PROPAGATE", ':');
+      //
+      // if (incrementalMode) {
+      // Set<TableDataSetMetadata> alreadyWalked = new
+      // HashSet<TableDataSetMetadata>();
+      // for (TableDataSetMetadata tm : this.tables) {
+      // propagateGeneration(tm, alreadyWalked);
+      // }
+      // }
+      //
+      // config.displayGenerateMark("AFTER PROPAGATE", ':');
 
       // Separate enums metadata from tables'
 
@@ -493,7 +530,7 @@ public abstract class HotRodGenerator {
             current = s;
             String tempViewName = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
                 .getNextTempViewName();
-            sm = new SelectDataSetMetadata(this.db, this.adapter, this.loc, s, tempViewName, this.config);
+            sm = new SelectDataSetMetadata(this.db, this.adapter, this.dloc, s, tempViewName, this.config);
             this.selects.add(sm);
             log.debug("prepareView() will be called...");
             sm.prepareViews(conn);
@@ -542,7 +579,7 @@ public abstract class HotRodGenerator {
 
         log.debug("ret 2");
         logm("Opening connection (selects)...");
-        conn2 = this.loc.getConnection();
+        conn2 = this.dloc.getConnection();
         logm("Connection open (selects).");
         log.debug("ret 3");
 
@@ -1172,7 +1209,7 @@ public abstract class HotRodGenerator {
   }
 
   public DatabaseLocation getLoc() {
-    return this.loc;
+    return this.dloc;
   }
 
   // Abstract methods

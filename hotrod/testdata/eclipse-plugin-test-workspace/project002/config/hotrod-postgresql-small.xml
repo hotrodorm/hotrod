@@ -16,14 +16,30 @@
 		</mybatis>
 	</generators>
 
-  <table name="transaction" />
-  <table name="account" />
  <!--
+  <table name="agent" />
+  <enum name="agent" name-column="name" /> 
+
+  <table name="state_branch" />
+  <enum name="state_branch" name-column="name" />
+
  -->
+
+  <table name="log" />
+  
+  <enum name="state_branch" name-column="name" />
+  <table name="client" />
+  <enum name="federal_branch" name-column="name" />
+
+  <table name="account" />
+
+<!--
+
+  <table name="account" />
+  <table name="transaction" />
 
 
   <table name="log" />
-<!--
 -->
 <!-- 
 	<table name="federal_branch">

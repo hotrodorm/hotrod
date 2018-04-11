@@ -418,6 +418,18 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     return null;
   }
 
+  public EnumTag findEnum(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
+    if (metadata == null) {
+      return null;
+    }
+    for (EnumTag e : this.getEnums()) {
+      if (adapter.isTableIdentifier(metadata.getIdentifier().getSQLIdentifier(), e.getName())) {
+        return e;
+      }
+    }
+    return null;
+  }
+
   public ViewTag findView(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;

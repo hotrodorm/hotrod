@@ -9,22 +9,22 @@ public class KeyMetadata implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private TableDataSetMetadata tableMetadata;
+  private TableDataSetMetadata tm;
   private List<ColumnMetadata> columns;
 
-  public KeyMetadata(final TableDataSetMetadata dataSet, final List<ColumnMetadata> columns) {
-    this.tableMetadata = dataSet;
+  public KeyMetadata(final TableDataSetMetadata tm, final List<ColumnMetadata> columns) {
+    this.tm = tm;
     this.columns = columns;
   }
 
-  void linkReferencedDataSet(final TableDataSetMetadata tableMetadata) {
-    this.tableMetadata = tableMetadata;
+  void linkReferencedDataSet(final TableDataSetMetadata tm) {
+    this.tm = tm;
   }
 
   // Getters
 
   public TableDataSetMetadata getTableMetadata() {
-    return tableMetadata;
+    return tm;
   }
 
   public List<ColumnMetadata> getColumns() {
@@ -37,7 +37,7 @@ public class KeyMetadata implements Serializable {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((tableMetadata == null) ? 0 : tableMetadata.hashCode());
+    result = prime * result + ((tm == null) ? 0 : tm.hashCode());
     return result;
   }
 
@@ -50,10 +50,10 @@ public class KeyMetadata implements Serializable {
     if (getClass() != obj.getClass())
       return false;
     KeyMetadata other = (KeyMetadata) obj;
-    if (tableMetadata == null) {
-      if (other.tableMetadata != null)
+    if (tm == null) {
+      if (other.tm != null)
         return false;
-    } else if (!tableMetadata.equals(other.tableMetadata))
+    } else if (!tm.equals(other.tm))
       return false;
     return equals(this.columns, other.columns);
   }

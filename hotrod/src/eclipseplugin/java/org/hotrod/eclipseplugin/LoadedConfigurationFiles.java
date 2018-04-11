@@ -213,17 +213,17 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     String absPath = baselineFace.getAbsolutePath();
     File f = new File(absPath);
     MainConfigFace newFace = load(f);
-    System.out.println("[X123] File changed - Apply changes");
+    System.out.println("[X123] File changed - Apply changes - newFace=" + newFace);
 
     HotRodConfigTag bl1 = baselineFace.getConfig();
-    bl1.displayGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(bl1), '-');
+    bl1.logGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(bl1), '-');
 
     baselineFace.applyChangesFrom(newFace);
 
     baselineFace.getTag();
 
     HotRodConfigTag bl2 = baselineFace.getConfig();
-    bl2.displayGenerateMark("Generate Marks (POST) - " + System.identityHashCode(bl2), '=');
+    bl2.logGenerateMark("Generate Marks (POST) - " + System.identityHashCode(bl2), '=');
 
   }
 

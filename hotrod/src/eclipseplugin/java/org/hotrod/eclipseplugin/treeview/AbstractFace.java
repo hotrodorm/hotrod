@@ -21,7 +21,6 @@ public abstract class AbstractFace implements IAdaptable {
   private AbstractConfigurationTag tag;
 
   private String name;
-  private boolean generating;
   private AbstractFace parent;
   private int id;
 
@@ -64,17 +63,6 @@ public abstract class AbstractFace implements IAdaptable {
 
   public boolean hasChildren() {
     return !this.children.isEmpty();
-  }
-
-  // Generating marker
-
-  public boolean isGenerating() {
-    return generating;
-  }
-
-  public void setGenerating(boolean generating) {
-    this.generating = generating;
-    this.refreshView();
   }
 
   // Navigation

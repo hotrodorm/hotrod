@@ -84,7 +84,7 @@ public class SpringJDBCTag extends AbstractGeneratorTag {
       final HotRodConfigTag config, final DisplayMode displayMode, final boolean incrementalMode)
       throws UncontrolledException, ControlledException {
     // Ignore cachedMetadata & selectedTags (for now)
-    config.markGenerateSubtree(true);
+    config.markGenerateTree(true);
     return new SpringJDBCGenerator(loc, config, displayMode);
   }
 

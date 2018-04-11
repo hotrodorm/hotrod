@@ -20,6 +20,7 @@ import org.hotrod.config.ParameterTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SequenceMethodTag;
+import org.hotrod.config.TableTag;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.SequencesNotSupportedException;
@@ -290,12 +291,25 @@ public class ObjectDAO extends GeneretableObject {
     }
 
     for (ForeignKeyMetadata ek : this.metadata.getExportedFKs()) {
-      ObjectVO rvo = this.generator.getVO(ek.getRemote().getTableMetadata());
-      imports.add(rvo.getFullClassName());
 
-      ObjectDAO dao = this.generator.getDAO(ek.getRemote().getTableMetadata());
-      imports.add(dao.getOrderByFullClassName());
-      imports.add(dao.getFullClassName());
+      log.info(" DAO=" + metadata.getIdentifier().getSQLIdentifier() + " ek="
+          + ek.getRemote().getTableMetadata().getIdentifier().getSQLIdentifier());
+
+      try {
+        @SuppressWarnings("unused")
+        TableTag tag = (TableTag) ek.getRemote().getTableMetadata().getDaoTag();
+
+        ObjectVO rvo = this.generator.getVO(ek.getRemote().getTableMetadata());
+        imports.add(rvo.getFullClassName());
+
+        ObjectDAO dao = this.generator.getDAO(ek.getRemote().getTableMetadata());
+        imports.add(dao.getOrderByFullClassName());
+        imports.add(dao.getFullClassName());
+
+      } catch (ClassCastException e) {
+        // points to an enum - nothing to do.
+      }
+
     }
 
     imports.newLine();

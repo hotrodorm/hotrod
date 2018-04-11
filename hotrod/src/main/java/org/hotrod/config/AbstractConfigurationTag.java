@@ -29,6 +29,7 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
 
   private transient boolean generate = false;
   private transient List<GeneretableObject> generetables = new ArrayList<GeneretableObject>();
+  private transient boolean justGenerated = false;
 
   // Constructor
 
@@ -86,19 +87,27 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     this.generate = generate;
   }
 
-  public void markGenerateSubtree(boolean generate) {
-    this.generate = generate;
+  public void markGenerateTree(boolean generate) {
+    markGenerate(generate);
     for (AbstractConfigurationTag subTag : this.subTags) {
-      subTag.markGenerateSubtree(generate);
+      subTag.markGenerateTree(generate);
     }
   }
 
-  public boolean subtreeIncludesGenerateMark() {
+  public void resetTreeGenerationMark() {
+    this.markGenerate(false);
+    this.justGenerated = false;
+    for (AbstractConfigurationTag subTag : this.subTags) {
+      subTag.resetTreeGenerationMark();
+    }
+  }
+
+  public boolean treeIncludesGenerateMark() {
     if (this.generate) {
       return true;
     }
     for (AbstractConfigurationTag subTag : this.subTags) {
-      if (subTag.subtreeIncludesGenerateMark()) {
+      if (subTag.treeIncludesGenerateMark()) {
         return true;
       }
     }
@@ -118,6 +127,10 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     for (AbstractConfigurationTag subTag : this.subTags) {
       subTag.addTagsToGenerate(list);
     }
+  }
+
+  public boolean wasJustGenerated() {
+    return justGenerated;
   }
 
   // Generable objects
@@ -142,9 +155,10 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     return generetables;
   }
 
-  public void unmarkGenerateIfAllGenerated() {
+  public void markUpToDateIfAllGenerated() {
     if (this.generate) {
       log.info("unmarking: " + this.getInternalCaption());
+
       boolean allObjectsGenerated = true;
       for (GeneretableObject g : this.generetables) {
         log.info(" -> is generated (" + g.getClass().getName() + ") =" + g.isGenerated());
@@ -153,16 +167,17 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
         }
       }
       if (allObjectsGenerated) {
-        this.markGenerate(false);
+        this.generate = false;
         this.status = TagStatus.UP_TO_DATE;
+        this.justGenerated = true;
       }
     }
   }
 
-  public void unmarkTreeGenerateIfAllGenerated() {
-    unmarkGenerateIfAllGenerated();
+  public void markTreeUpToDateIfAllGenerated() {
+    markUpToDateIfAllGenerated();
     for (AbstractConfigurationTag subTag : this.subTags) {
-      subTag.unmarkTreeGenerateIfAllGenerated();
+      subTag.markTreeUpToDateIfAllGenerated();
     }
   }
 
@@ -200,7 +215,7 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
 
   // Display
 
-  public void displayGenerateMark(final String title, final char c) {
+  public void logGenerateMark(final String title, final char c) {
     log(SUtils.getFiller(c, 10) + " " + title + " " + SUtils.getFiller(c, 10));
     displayGenerateMark(this, 0);
     log(SUtils.getFiller(c, 22 + title.length()));

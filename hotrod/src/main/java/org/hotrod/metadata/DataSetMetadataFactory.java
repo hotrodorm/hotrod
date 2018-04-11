@@ -13,6 +13,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.generator.mybatis.DataSetLayout;
+import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
@@ -25,9 +26,7 @@ public abstract class DataSetMetadataFactory {
       throws UnresolvableDataTypeException, ControlledException {
 
     JdbcDatabase cachedDB = cachedMetadata.getCachedDatabase();
-
-    log.info(">>> HG 1 cachedMetadata=" + cachedMetadata);
-
+    HotRodConfigTag cachedConfig = cachedMetadata.getConfig();
     SelectMetadataCache selectMetadataCache = cachedMetadata.getSelectMetadataCache();
 
     // Table
@@ -35,16 +34,21 @@ public abstract class DataSetMetadataFactory {
     TableTag tableTag = config.getTableTag(t);
     if (tableTag != null) {
       if (cachedDB == null) {
+        log.info(">>> Table '" + t.getName() + "' equivalent= NOT IN CACHE");
         tableTag.markGenerate(true);
       } else {
         JdbcTable o = findJdbcTable(cachedDB.getTables(), t.getName(), adapter);
-        log.info(" * t=" + t);
-        log.info(" * o=" + o);
+        log.info(">>> Table '" + t.getName() + "' equivalent=" + t.isEquivalentTo(o));
         if (!t.isEquivalentTo(o)) {
           tableTag.markGenerate(true);
         }
       }
-      return new TableDataSetMetadata(tableTag, t, adapter, config, layout, selectMetadataCache);
+      TableDataSetMetadata tm = new TableDataSetMetadata(tableTag, t, adapter, config, layout, selectMetadataCache);
+      if (cachedConfig != null && cachedConfig.findEnum(tm, adapter) != null) {
+        // changed from enum to table - generate related tables
+        markGenerateRelatedEntities(tm);
+      }
+      return tm;
     }
 
     // Enum
@@ -59,7 +63,12 @@ public abstract class DataSetMetadataFactory {
           enumTag.markGenerate(true);
         }
       }
-      return new EnumDataSetMetadata(enumTag, t, adapter, config, layout, selectMetadataCache);
+      EnumDataSetMetadata em = new EnumDataSetMetadata(enumTag, t, adapter, config, layout, selectMetadataCache);
+      if (cachedConfig != null && cachedConfig.findEnum(em, adapter) != null) {
+        // changed from table to enum - generate related tables
+        markGenerateRelatedEntities(em);
+      }
+      return em;
     }
 
     // View
@@ -78,6 +87,16 @@ public abstract class DataSetMetadataFactory {
     }
 
     throw new ControlledException("Could not find table, enum, or view with name '" + t.getName() + "'.");
+
+  }
+
+  private static void markGenerateRelatedEntities(final DataSetMetadata tm) {
+    for (ForeignKeyMetadata efk : tm.getExportedFKs()) {
+      efk.getRemote().getTableMetadata().getDaoTag().markGenerate(true);
+    }
+    for (ForeignKeyMetadata ifk : tm.getImportedFKs()) {
+      ifk.getRemote().getTableMetadata().getDaoTag().markGenerate(true);
+    }
 
   }
 

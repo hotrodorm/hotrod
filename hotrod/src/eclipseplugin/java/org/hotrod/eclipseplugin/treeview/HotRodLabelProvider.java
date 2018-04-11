@@ -76,7 +76,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
         prefix = "> ";
         break;
       case ADDED:
-        prefix = "+ ";
+        prefix = "> "; // +
         break;
       case DELETED:
         prefix = "- ";
@@ -86,18 +86,25 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
         break;
       }
 
-      // String prefix = face.getTreeStatus().getPrefix();
+      // status prefix
+
       if (prefix != null) {
-        // label.append(prefix, HotRodLabelProvider.changeStyler);
         label.append(prefix, StyledString.DECORATIONS_STYLER);
       }
 
-      if (face.isGenerating()) {
-        label.append(AbstractFace.GENERATING_MARKER, StyledString.COUNTER_STYLER);
-      }
-      label.append(face.getName());
+      // name
 
-      label.append(" - " + System.identityHashCode(face.getTag()));
+      if (face != null) {
+        label.append(face.getName());
+      }
+
+      // generated suffix
+
+      if (face != null && face.getTag().wasJustGenerated()) {
+        label.append(" [generated]", StyledString.DECORATIONS_STYLER);
+      }
+
+      // suffix
 
       try {
         SettingsFace s = (SettingsFace) obj; // settings
@@ -164,6 +171,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
     cell.setStyleRanges(label.getStyleRanges());
 
     super.update(cell);
+
   }
 
   // private void listen() {
@@ -190,4 +198,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
   // });
   // }
 
+  private void log(final String txt) {
+    System.out.println("[LOG7] " + txt);
+  }
 }
