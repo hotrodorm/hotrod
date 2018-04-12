@@ -9,14 +9,14 @@ import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.generator.GeneretableObject;
+import org.hotrod.generator.GeneratableObject;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ImportsRenderer;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 
-public class ObjectVO extends GeneretableObject {
+public class ObjectVO extends GeneratableObject {
 
   private static final Logger log = Logger.getLogger(ObjectVO.class);
 
@@ -38,7 +38,7 @@ public class ObjectVO extends GeneretableObject {
     this.metadata = metadata;
     this.layout = layout;
     this.generator = generator;
-    metadata.getDaoTag().addGeneretableObject(this);
+    metadata.getDaoTag().addGeneratableObject(this);
     this.abstractVO = abstractVO;
     this.myBatisTag = myBatisTag;
 

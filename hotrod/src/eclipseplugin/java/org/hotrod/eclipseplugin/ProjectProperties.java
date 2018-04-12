@@ -91,7 +91,7 @@ public class ProjectProperties {
   // Getters
 
   public FileProperties getFileProperties(final String fileName) {
-    log("[X2] this.files.size()=" + this.files.size());
+//    log("[X2] this.files.size()=" + this.files.size());
     return this.files.get(fileName);
   }
 
@@ -359,14 +359,14 @@ public class ProjectProperties {
 
       try {
         this.cachedMetadata = ObjectPropertyCodec.decode(this.cache, CachedMetadata.class);
-        log.info(">>> 2.0 this.cachedMetadata=" + this.cachedMetadata);
+        log.debug(">>> 2.0 this.cachedMetadata=" + this.cachedMetadata);
         if (this.cachedMetadata == null) {
           this.cachedMetadata = new CachedMetadata();
         } else if (this.cachedMetadata.getSelectMetadataCache() == null) {
           this.cachedMetadata.setSelectMetadataCache(new SelectMetadataCache());
         }
-        log.info(">>> 2.1 this.cachedMetadata=" + this.cachedMetadata);
-        log.info(
+        log.debug(">>> 2.1 this.cachedMetadata=" + this.cachedMetadata);
+        log.debug(
             ">>> 2.1 this.cachedMetadata.getSelectMetadataCache()=" + this.cachedMetadata.getSelectMetadataCache());
       } catch (CouldNotDecodeException e) {
         throw new CouldNotLoadPropertiesException("Invalid cache on file '" + file + "': " + e.getMessage());

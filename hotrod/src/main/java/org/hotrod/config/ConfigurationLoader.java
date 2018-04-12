@@ -114,9 +114,9 @@ public class ConfigurationLoader {
 
       // Validation (specific)
 
-      log.info("projectBaseDir=" + projectBaseDir + " :: " + projectBaseDir.getAbsolutePath());
+      log.debug("projectBaseDir=" + projectBaseDir + " :: " + projectBaseDir.getAbsolutePath());
       File parentDir = f.getParentFile();
-      log.info("parentFile=" + parentDir + " :: " + parentDir.getAbsolutePath());
+      log.debug("parentFile=" + parentDir + " :: " + parentDir.getAbsolutePath());
 
       config.validate(projectBaseDir, parentDir, generatorName);
 

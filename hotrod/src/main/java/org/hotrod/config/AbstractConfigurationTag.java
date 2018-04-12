@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hotrod.generator.GeneretableObject;
+import org.hotrod.generator.GeneratableObject;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.runtime.util.SUtils;
 
@@ -27,9 +27,12 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   private TagStatus status;
   protected List<AbstractConfigurationTag> subTags;
 
-  private transient boolean generate = false;
-  private transient List<GeneretableObject> generetables = new ArrayList<GeneretableObject>();
-  private transient boolean justGenerated = false;
+  private enum GenerationStatus {
+    NO_ACTION, TO_BE_GENERATED, GENERATION_COMPLETE
+  }
+
+  private transient GenerationStatus generate = GenerationStatus.NO_ACTION;
+  private transient List<GeneratableObject> generatables = new ArrayList<GeneratableObject>();
 
   // Constructor
 
@@ -46,7 +49,7 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   }
 
   public void activate() {
-    this.generetables = new ArrayList<GeneretableObject>();
+    this.generatables = new ArrayList<GeneratableObject>();
     for (AbstractConfigurationTag subTag : this.subTags) {
       subTag.activate();
     }
@@ -79,31 +82,34 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
 
   // Generation mark
 
-  public boolean getGenerateMark() {
-    return this.generate;
-  }
-
-  public void markGenerate(boolean generate) {
-    this.generate = generate;
-  }
-
-  public void markGenerateTree(boolean generate) {
-    markGenerate(generate);
+  public void resetTreeGeneration() {
+    this.generate = GenerationStatus.NO_ACTION;
     for (AbstractConfigurationTag subTag : this.subTags) {
-      subTag.markGenerateTree(generate);
+      subTag.resetTreeGeneration();
     }
   }
 
-  public void resetTreeGenerationMark() {
-    this.markGenerate(false);
-    this.justGenerated = false;
+  public boolean isToBeGenerated() {
+    return this.generate == GenerationStatus.TO_BE_GENERATED;
+  }
+
+  public boolean isGenerationComplete() {
+    return this.generate == GenerationStatus.GENERATION_COMPLETE;
+  }
+
+  public void markGenerate() {
+    this.generate = GenerationStatus.TO_BE_GENERATED;
+  }
+
+  public void markGenerateTree() {
+    markGenerate();
     for (AbstractConfigurationTag subTag : this.subTags) {
-      subTag.resetTreeGenerationMark();
+      subTag.markGenerateTree();
     }
   }
 
   public boolean treeIncludesGenerateMark() {
-    if (this.generate) {
+    if (this.isToBeGenerated()) {
       return true;
     }
     for (AbstractConfigurationTag subTag : this.subTags) {
@@ -121,7 +127,7 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   }
 
   private void addTagsToGenerate(final List<AbstractConfigurationTag> list) {
-    if (this.generate) {
+    if (this.isToBeGenerated()) {
       list.add(this);
     }
     for (AbstractConfigurationTag subTag : this.subTags) {
@@ -129,55 +135,43 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     }
   }
 
-  public boolean wasJustGenerated() {
-    return justGenerated;
-  }
-
   // Generable objects
 
-  public void resetGeneretables() {
-    this.generetables.clear();
-  }
-
-  public void resetTreeGeneretables() {
-    this.resetGeneretables();
+  public void resetTreeGeneratables() {
+    this.generatables.clear();
     for (AbstractConfigurationTag subTag : this.subTags) {
-      subTag.resetTreeGeneretables();
+      subTag.resetTreeGeneratables();
     }
   }
 
-  public void addGeneretableObject(final GeneretableObject go) {
-    log.info("this.generetables=" + this.generetables);
-    this.generetables.add(go);
+  public void addGeneratableObject(final GeneratableObject g) {
+    // log.info("this.generatables=" + this.generatables);
+    this.generatables.add(g);
   }
 
-  public List<GeneretableObject> getGeneretables() {
-    return generetables;
+  public List<GeneratableObject> getGeneratables() {
+    return generatables;
   }
 
-  public void markUpToDateIfAllGenerated() {
-    if (this.generate) {
-      log.info("unmarking: " + this.getInternalCaption());
-
+  public void markCompleteIfGeneratedSuccessfully() {
+    if (this.isToBeGenerated()) {
       boolean allObjectsGenerated = true;
-      for (GeneretableObject g : this.generetables) {
-        log.info(" -> is generated (" + g.getClass().getName() + ") =" + g.isGenerated());
+      for (GeneratableObject g : this.generatables) {
         if (!g.isGenerated()) {
           allObjectsGenerated = false;
         }
       }
       if (allObjectsGenerated) {
-        this.generate = false;
+        this.generate = GenerationStatus.GENERATION_COMPLETE;
         this.status = TagStatus.UP_TO_DATE;
-        this.justGenerated = true;
       }
     }
   }
 
-  public void markTreeUpToDateIfAllGenerated() {
-    markUpToDateIfAllGenerated();
+  public void markTreeCompleteIfGeneratedSuccessfully() {
+    markCompleteIfGeneratedSuccessfully();
     for (AbstractConfigurationTag subTag : this.subTags) {
-      subTag.markTreeUpToDateIfAllGenerated();
+      subTag.markTreeCompleteIfGeneratedSuccessfully();
     }
   }
 
@@ -222,7 +216,7 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   }
 
   public void displayGenerateMark(final AbstractConfigurationTag tag, final int level) {
-    log(SUtils.getFiller(". ", level) + " " + (tag.getGenerateMark() ? "G" : "_") + " " + tag.getInternalCaption()
+    log(SUtils.getFiller(". ", level) + " " + (tag.isToBeGenerated() ? "G" : "_") + " " + tag.getInternalCaption()
         + " - " + System.identityHashCode(tag));
     for (AbstractConfigurationTag subtag : tag.getSubTags()) {
       displayGenerateMark(subtag, level + 1);

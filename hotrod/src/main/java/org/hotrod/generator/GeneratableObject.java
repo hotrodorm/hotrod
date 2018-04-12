@@ -1,6 +1,6 @@
 package org.hotrod.generator;
 
-public abstract class GeneretableObject {
+public abstract class GeneratableObject {
 
   private boolean generated = false;
 

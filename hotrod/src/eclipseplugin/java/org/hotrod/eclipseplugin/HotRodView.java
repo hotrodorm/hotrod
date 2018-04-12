@@ -8,6 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -61,6 +62,7 @@ import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractConfigurationTag.TagStatus;
+import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.eclipseplugin.ProjectProperties.FileProperties;
 import org.hotrod.eclipseplugin.jdbc.DatabasePropertiesWizard;
@@ -79,6 +81,8 @@ import org.hotrod.generator.LiveGenerator;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public class HotRodView extends ViewPart {
+
+  private static final Logger log = Logger.getLogger(HotRodView.class);
 
   private static final String GEN_ALL_ICON_PATH = "eclipse-plugin/icons/gen-all6-16.png";
   private static final String AUTO_GEN_ON_ICON_PATH = "eclipse-plugin/icons/auto-on1-16.png";
@@ -398,8 +402,8 @@ public class HotRodView extends ViewPart {
       @Override
       public void run() {
 
-        for (MainConfigFace face : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-          face.getConfig().resetTreeGenerationMark();
+        for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+          mf.getConfig().resetTreeGeneration();
         }
 
         TreeSelection selection = (TreeSelection) viewer.getSelection();
@@ -421,13 +425,15 @@ public class HotRodView extends ViewPart {
               showMessage("File properties are not yet configured");
             } else {
               log("generating all - starting");
-              mainFace.getConfig().markGenerateTree(true);
-              log(">>> 4 fileProperties.getCachedMetadata()=" + fileProperties.getCachedMetadata());
-              log(">>> 4 fileProperties.getCachedMetadata().getSelectMetadataCache()="
-                  + fileProperties.getCachedMetadata().getSelectMetadataCache());
+              mainFace.getConfig().markGenerateTree();
+              // log(">>> 4 fileProperties.getCachedMetadata()=" +
+              // fileProperties.getCachedMetadata());
+              // log(">>> 4
+              // fileProperties.getCachedMetadata().getSelectMetadataCache()="
+              // + fileProperties.getCachedMetadata().getSelectMetadataCache());
 
               generateFile(mainFace, projectProperties, fileProperties, false);
-              log("generating all - complete");
+              // log("generating all - complete");
             }
           }
 
@@ -451,14 +457,14 @@ public class HotRodView extends ViewPart {
       @Override
       public void run() {
 
-        for (MainConfigFace face : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-          face.getConfig().resetTreeGenerationMark();
+        for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+          mf.getConfig().resetTreeGeneration();
         }
 
         boolean allConfigured = true;
 
         for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-          mf.getConfig().markGenerateTree(false);
+          mf.getConfig().resetTreeGeneration();
           boolean modified = markChanges(mf.getTag(), 0);
           if (modified) {
             ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
@@ -498,7 +504,7 @@ public class HotRodView extends ViewPart {
       private boolean markChanges(final AbstractConfigurationTag t, final int level) {
         boolean modified = t.getStatus() != TagStatus.UP_TO_DATE;
         if (modified) {
-          t.markGenerate(true);
+          t.markGenerate();
         }
         for (AbstractConfigurationTag subtag : t.getSubTags()) {
           if (markChanges(subtag, level + 1)) {
@@ -522,8 +528,8 @@ public class HotRodView extends ViewPart {
       @Override
       public void run() {
 
-        for (MainConfigFace face : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-          face.getConfig().resetTreeGenerationMark();
+        for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+          mf.getConfig().resetTreeGeneration();
         }
 
         TreeSelection selection = (TreeSelection) viewer.getSelection();
@@ -538,7 +544,7 @@ public class HotRodView extends ViewPart {
           for (Object obj : sel) {
             AbstractFace selectedFace = (AbstractFace) obj;
             log(" - selected face=" + selectedFace.getName());
-            selectedFace.getTag().markGenerateTree(true);
+            selectedFace.getTag().markGenerateTree();
             mainFaces.add(selectedFace.getMainConfigFace());
           }
 
@@ -769,9 +775,11 @@ public class HotRodView extends ViewPart {
       display("Nothing to generate.");
     } else {
 
-      log(">>> 5 fileProperties.getCachedMetadata()=" + fileProperties.getCachedMetadata());
-      log(">>> 5 fileProperties.getCachedMetadata().getSelectMetadataCache()="
-          + fileProperties.getCachedMetadata().getSelectMetadataCache());
+      // log(">>> 5 fileProperties.getCachedMetadata()=" +
+      // fileProperties.getCachedMetadata());
+      // log(">>> 5
+      // fileProperties.getCachedMetadata().getSelectMetadataCache()="
+      // + fileProperties.getCachedMetadata().getSelectMetadataCache());
 
       File projectDir = project.getLocation().toFile();
 
@@ -787,13 +795,14 @@ public class HotRodView extends ViewPart {
 
       // If settings were changed, (re)generate all
 
-      if (config.getGenerators().getGenerateMark()) {
-        config.markGenerateTree(true);
+      if (config.getGenerators().isToBeGenerated()) {
+        config.markGenerateTree();
       }
 
       // Generate
 
-      log(">>> 6 fileProperties.getCachedMetadata()=" + fileProperties.getCachedMetadata());
+      // log(">>> 6 fileProperties.getCachedMetadata()=" +
+      // fileProperties.getCachedMetadata());
 
       DatabaseLocation loc = new DatabaseLocation(fileProperties.getDriverClassName(), fileProperties.getUrl(),
           fileProperties.getUsername(), fileProperties.getPassword(), fileProperties.getCatalog(),
@@ -801,18 +810,20 @@ public class HotRodView extends ViewPart {
 
       try {
 
-        log(">>> 7 fileProperties.getCachedMetadata()=" + fileProperties.getCachedMetadata());
+        // log(">>> 7 fileProperties.getCachedMetadata()=" +
+        // fileProperties.getCachedMetadata());
 
         CachedMetadata cachedMetadata = fileProperties.getCachedMetadata();
 
-        log("cachedDatabase: " + (cachedMetadata.getCachedDatabase() == null ? "null" : "not null"));
+        // log("cachedDatabase: " + (cachedMetadata.getCachedDatabase() == null
+        // ? "null" : "not null"));
 
         config.logGenerateMark("Generate Marks (pre)", '-');
 
         HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
             config, DisplayMode.LIST, incrementalMode);
 
-        config.logGenerateMark("Generate Marks (post)", '=');
+        // config.logGenerateMark("Generate Marks (post)", '=');
 
         g.prepareGeneration();
         log("Generation prepared.");
@@ -824,7 +835,7 @@ public class HotRodView extends ViewPart {
           FileGenerator fg = new EclipseFileGenerator(project);
           liveGenerator.generate(fg);
 
-          config.markTreeUpToDateIfAllGenerated();
+          config.markTreeCompleteIfGeneratedSuccessfully();
           mainFace.refreshView();
 
         } catch (ClassCastException e) {
@@ -835,7 +846,19 @@ public class HotRodView extends ViewPart {
 
         // Save the cache
 
-        projectProperties.save();
+        // TODO: enable saving
+        // projectProperties.save();
+
+        HotRodConfigTag ch = cachedMetadata.getConfig();
+        if (ch != null) {
+          log.info("...*** Enums from cache config ***");
+          for (EnumTag et : ch.getAllEnums()) {
+            log.info("***    enum '" + et.getName() + "'");
+          }
+          log.info("...*** End of enums from cache config ***");
+        } else {
+          log.info("... *** cached-config is null.");
+        }
 
         // Generation complete
 

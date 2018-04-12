@@ -100,7 +100,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
       // generated suffix
 
-      if (face != null && face.getTag().wasJustGenerated()) {
+      if (face != null && face.getTag().isGenerationComplete()) {
         label.append(" [generated]", StyledString.DECORATIONS_STYLER);
       }
 

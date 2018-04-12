@@ -80,10 +80,10 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
       SelectMethodMetadata cachedSm = this.selectMetadataCache.get(this.getJavaClassName(), selectTag.getMethod());
 
       if (referencesAMarkedEntity(selectTag.getReferencedEntities())) {
-        selectTag.markGenerate(true);
+        selectTag.markGenerate();
       }
 
-      if (cachedSm != null && !selectTag.getGenerateMark()) {
+      if (cachedSm != null && !selectTag.isToBeGenerated()) {
 
         // use the cached metadata
         this.selectsMetadata.add(cachedSm);
@@ -107,7 +107,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
 
   private boolean referencesAMarkedEntity(final Set<TableDataSetMetadata> referencedEntities) {
     for (TableDataSetMetadata referencedEntity : referencedEntities) {
-      if (referencedEntity.getDaoTag().getGenerateMark()) {
+      if (referencedEntity.getDaoTag().isToBeGenerated()) {
         return true;
       }
     }

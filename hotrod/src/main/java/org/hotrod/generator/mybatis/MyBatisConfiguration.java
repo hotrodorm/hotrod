@@ -12,10 +12,10 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.generator.GeneretableObject;
+import org.hotrod.generator.GeneratableObject;
 import org.hotrod.runtime.util.SUtils;
 
-public class MyBatisConfiguration extends GeneretableObject {
+public class MyBatisConfiguration extends GeneratableObject {
 
   private static final String MAPPERS_INSERTION_TOKEN = "<mappers/>";
 
@@ -30,7 +30,7 @@ public class MyBatisConfiguration extends GeneretableObject {
   public MyBatisConfiguration(final HotRodConfigTag config) {
     this.config = config;
     this.mybatisTag = (MyBatisTag) this.config.getGenerators().getSelectedGeneratorTag();
-    this.config.getGenerators().addGeneretableObject(this);
+    this.config.getGenerators().addGeneratableObject(this);
     this.sourceFiles = new ArrayList<String>();
     this.mapperCustom = new ArrayList<String>();
   }

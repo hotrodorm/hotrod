@@ -28,7 +28,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.generator.GeneretableObject;
+import org.hotrod.generator.GeneratableObject;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
@@ -59,7 +59,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
 
-public class ObjectDAO extends GeneretableObject {
+public class ObjectDAO extends GeneratableObject {
 
   // Constants
 
@@ -97,7 +97,7 @@ public class ObjectDAO extends GeneretableObject {
     if (type == null) {
       throw new RuntimeException("DAOType cannot be null.");
     }
-    metadata.getDaoTag().addGeneretableObject(this);
+    metadata.getDaoTag().addGeneratableObject(this);
     this.daoType = type;
     this.myBatisTag = myBatisTag;
     this.vo = vo;
@@ -292,8 +292,9 @@ public class ObjectDAO extends GeneretableObject {
 
     for (ForeignKeyMetadata ek : this.metadata.getExportedFKs()) {
 
-      log.info(" DAO=" + metadata.getIdentifier().getSQLIdentifier() + " ek="
-          + ek.getRemote().getTableMetadata().getIdentifier().getSQLIdentifier());
+      // log.info(" DAO=" + metadata.getIdentifier().getSQLIdentifier() + " ek="
+      // +
+      // ek.getRemote().getTableMetadata().getIdentifier().getSQLIdentifier());
 
       try {
         @SuppressWarnings("unused")

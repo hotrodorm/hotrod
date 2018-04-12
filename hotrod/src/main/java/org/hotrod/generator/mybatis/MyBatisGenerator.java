@@ -63,7 +63,7 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
 
     // Reset the generated object counters
 
-    this.config.resetTreeGeneretables();
+    this.config.resetTreeGeneratables();
 
     // Add tables
 

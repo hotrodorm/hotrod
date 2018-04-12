@@ -63,6 +63,7 @@ import org.nocrala.tools.database.tartarus.core.DatabaseObjectFilter;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase.DatabaseConnectionVersion;
+import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 import org.nocrala.tools.database.tartarus.core.JdbcTableFilter;
 import org.nocrala.tools.database.tartarus.exception.CatalogNotSupportedException;
@@ -99,8 +100,8 @@ public abstract class HotRodGenerator {
   public HotRodGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation dloc, final HotRodConfigTag config,
       final DisplayMode displayMode, final boolean incrementalMode) throws UncontrolledException, ControlledException {
 
-    log.info(">>> HG 1 cachedMetadata=" + cachedMetadata);
-    log.info(">>> HG 1 cachedMetadata.getSelectMetadataCache()=" + cachedMetadata.getSelectMetadataCache());
+    log.debug(">>> HG 1 cachedMetadata=" + cachedMetadata);
+    log.debug(">>> HG 1 cachedMetadata.getSelectMetadataCache()=" + cachedMetadata.getSelectMetadataCache());
 
     this.dloc = dloc;
     this.config = config;
@@ -108,7 +109,7 @@ public abstract class HotRodGenerator {
     this.cachedMetadata = cachedMetadata;
 
     if (!incrementalMode) {
-      config.markGenerateTree(true);
+      config.markGenerateTree();
     }
 
     logm("Starting core generator.");
@@ -162,7 +163,41 @@ public abstract class HotRodGenerator {
 
       // Decide about using cached or fresh database objects
 
-      JdbcDatabase cachedDatabase = cachedMetadata.getCachedDatabase();
+      JdbcDatabase cachedDatabase = incrementalMode ? cachedMetadata.getCachedDatabase() : null;
+
+      // TODO: remove extra logging once fixed.
+      if (cachedDatabase != null) {
+        JdbcTable found = null;
+        for (JdbcTable t : cachedDatabase.getTables()) {
+          if (this.adapter.isTableIdentifier(t.getName(), "client")) {
+            found = t;
+          }
+        }
+        if (found != null) {
+          log.info("---> CLIENT [from cache] imported FKs:");
+          for (JdbcForeignKey ifk : found.getImportedFks()) {
+            log.info("   FK points to: " + ifk.getRemoteTable().getName());
+          }
+          for (JdbcForeignKey efk : found.getExportedFks()) {
+            log.info("   FK pointed from: " + efk.getRemoteTable().getName());
+          }
+          log.info("---> [end of table CLIENT]");
+        } else {
+          log.info("---> CLIENT table was not found in cache.");
+        }
+      } else {
+        log.info("---> no CLIENT table in cache, since there's no cache.");
+      }
+      HotRodConfigTag ch = cachedMetadata.getConfig();
+      if (ch != null) {
+        log.info("...=== Enums from cache config ===");
+        for (EnumTag et : ch.getAllEnums()) {
+          log.info("... enum '" + et.getName() + "'");
+        }
+        log.info("...=== End of enums from cache config ===");
+      } else {
+        log.info("... cached-config is null.");
+      }
 
       boolean retrieveFreshDatabaseObjects = false;
       if (!incrementalMode) {
@@ -194,7 +229,7 @@ public abstract class HotRodGenerator {
         }
       }
 
-      log.info("--------------> retrieveFreshDatabaseObjects=" + retrieveFreshDatabaseObjects);
+      log.info("--> retrieveFreshDatabaseObjects=" + retrieveFreshDatabaseObjects);
 
       if (!retrieveFreshDatabaseObjects) {
 
@@ -313,7 +348,7 @@ public abstract class HotRodGenerator {
         }
       }
 
-      // Link meta data by foreign keys
+      // Link table meta data by foreign keys
 
       for (TableDataSetMetadata tm : this.tables) {
         tm.linkReferencedTableMetadata(this.tables);
@@ -449,7 +484,7 @@ public abstract class HotRodGenerator {
       // Prepare executor DAOs meta data
 
       SelectMetadataCache selectMetadataCache = cachedMetadata.getSelectMetadataCache();
-      log.info(">>> 1 selectMetadataCache=" + selectMetadataCache);
+      log.debug(">>> 1 selectMetadataCache=" + selectMetadataCache);
 
       this.executors = new LinkedHashSet<ExecutorDAOMetadata>();
       for (ExecutorTag tag : config.getExecutors()) {
@@ -664,12 +699,13 @@ public abstract class HotRodGenerator {
 
     // Assemble cached metadata for non-incremental generation
 
+    // TODO: refresh the cache. This strategy should be revisited.
     if (!incrementalMode) {
-      this.cachedMetadata.setConfig(config);
-      this.cachedMetadata.setCachedDatabase(this.db);
-      this.cachedMetadata.setSelectMetadataCache(selectMetadataCache);
-      this.cachedMetadata.setEnumConstants(tableEnumConstants);
     }
+    this.cachedMetadata.setConfig(config);
+    this.cachedMetadata.setSelectMetadataCache(selectMetadataCache);
+    this.cachedMetadata.setEnumConstants(tableEnumConstants);
+    this.cachedMetadata.setCachedDatabase(this.db);
 
     // Display the retrieved meta data
 
@@ -699,10 +735,10 @@ public abstract class HotRodGenerator {
 
   private void propagateGeneration(final TableDataSetMetadata tm, final Set<TableDataSetMetadata> alreadyWalked) {
     log.info("propagating... " + tm.getIdentifier().getSQLIdentifier() + " alreadyWalked.contains(tm)="
-        + alreadyWalked.contains(tm) + " tm.getDaoTag().getGenerateMark()=" + tm.getDaoTag().getGenerateMark());
+        + alreadyWalked.contains(tm) + " tm.getDaoTag().getGenerateMark()=" + tm.getDaoTag().isToBeGenerated());
     if (!alreadyWalked.contains(tm)) {
       alreadyWalked.add(tm);
-      if (tm.getDaoTag().getGenerateMark()) {
+      if (tm.getDaoTag().isToBeGenerated()) {
         for (ForeignKeyMetadata efk : tm.getExportedFKs()) {
           propagateGeneration(efk.getRemote().getTableMetadata(), alreadyWalked);
         }
