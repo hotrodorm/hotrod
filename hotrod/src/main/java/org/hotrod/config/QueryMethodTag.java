@@ -29,17 +29,13 @@ import org.hotrod.utils.identifiers.DbIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
 
 @XmlRootElement(name = "query")
-public class QueryMethodTag extends AbstractMethodTag {
+public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
 
   private static final long serialVersionUID = 1L;
 
   // Constants
 
   private static final Logger log = Logger.getLogger(QueryMethodTag.class);
-
-  // Properties
-
-  protected String method = null;
 
   // Properties - Primitive content parsing by JAXB
 
@@ -71,6 +67,21 @@ public class QueryMethodTag extends AbstractMethodTag {
   public QueryMethodTag() {
     super("query");
     log.debug("init");
+  }
+
+  // Duplicate
+
+  @Override
+  public QueryMethodTag duplicate() {
+    QueryMethodTag d = new QueryMethodTag();
+
+    d.copyCommon(this);
+
+    d.content = this.content;
+    d.parts = this.parts;
+    d.parameters = this.parameters;
+
+    return d;
   }
 
   // JAXB Setters
@@ -131,6 +142,7 @@ public class QueryMethodTag extends AbstractMethodTag {
 
   // Getters
 
+  @Override
   public String getMethod() {
     return method;
   }

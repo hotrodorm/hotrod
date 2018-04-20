@@ -27,7 +27,7 @@ import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "select")
-public class SelectMethodTag extends AbstractMethodTag {
+public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,6 @@ public class SelectMethodTag extends AbstractMethodTag {
 
   // Properties
 
-  private String method = null;
   private String vo = null;
   private String sMultipleRows = null;
 
@@ -76,6 +75,32 @@ public class SelectMethodTag extends AbstractMethodTag {
 
   public SelectMethodTag() {
     super("select");
+  }
+
+  // Duplicate
+
+  @Override
+  public SelectMethodTag duplicate() {
+    SelectMethodTag d = new SelectMethodTag();
+
+    d.copyCommon(this);
+
+    d.vo = this.vo;
+    d.sMultipleRows = this.sMultipleRows;
+    d.metadata = this.metadata;
+
+    d.content = this.content;
+
+    d.multipleRows = this.multipleRows;
+    d.parameters = this.parameters;
+    d.columns = this.columns;
+    d.parts = this.parts;
+    d.aggregatedPart = this.aggregatedPart;
+    d.structuredColumns = this.structuredColumns;
+
+    d.fragmentConfig = this.fragmentConfig;
+
+    return d;
   }
 
   // JAXB Setters

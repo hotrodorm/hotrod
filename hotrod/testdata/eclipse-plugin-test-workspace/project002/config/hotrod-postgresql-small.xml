@@ -21,15 +21,17 @@
   <enum name="agent" name-column="name" /> 
 
   <enum name="federal_branch" name-column="name" />
+  
+  <enum name="state_branch" name-column="name" />
 
   <table name="state_branch" />
  -->
-  <enum name="state_branch" name-column="name" />
 
-  <table name="client" />
-  <table name="account" />
+
 
 <!--
+  <table name="client" />
+  <table name="account" />
   <table name="log" />
 
   <table name="transaction" />
@@ -37,8 +39,29 @@
 
   <table name="log" />
 -->
-<!-- 
 	<table name="federal_branch">
+
+    <select method="method1" vo="FB1VO">
+      select * from log
+    </select>
+
+    <select method="method15" vo="FB15VO">
+      select * from log
+    </select>
+
+    <select method="method16" vo="FB16VO">
+      select * from log
+    </select> 
+
+    <select method="method2" vo="FB2VO">
+      select * from log
+    </select>
+
+<!-- 
+
+    <select method="method3" vo="FB3VO">
+      select * from log
+    </select>
 
 		<select method="findFilteredTxBranch">
 			select
@@ -47,10 +70,30 @@
 			</columns>
 			from tx_branch tb
 		</select>
-
+ -->
+ 
 	</table>
 
-	<view name="tx_branch"  />
+  <view name="tx_branch" >
+    <select method="method10" vo="FB10VO">
+      select * from log
+    </select>
+    <select method="method11" vo="FB11VO">
+      select * from log
+    </select>
+  </view>
+
+  <dao class="Exec1" >
+    <select method="method30" vo="FB30VO">
+      select * from log
+    </select>
+    <select method="method31" vo="FB31VO">
+      select * from log
+    </select>
+  </dao>
+
+<!-- 
+
 
 	<dao class="Executor1DAO">
 

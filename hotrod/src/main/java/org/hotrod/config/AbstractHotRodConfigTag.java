@@ -7,7 +7,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,6 +22,8 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.eclipseplugin.utils.Correlator;
+import org.hotrod.eclipseplugin.utils.Correlator.CorrelatedEntry;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
@@ -28,7 +32,8 @@ import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
-public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
+public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
+    implements GenerationUnit<AbstractHotRodConfigTag> {
 
   private static final long serialVersionUID = 1L;
 
@@ -493,6 +498,120 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
 
   }
 
+  // Update generated cache
+
+  protected TableTag add(final TableTag t) {
+    TableTag d = t.duplicate();
+    this.tables.add(d);
+    return d;
+  }
+
+  protected void remove(final TableTag t, final DatabaseAdapter adapter) {
+    for (Iterator<TableTag> it = this.tables.iterator(); it.hasNext();) {
+      TableTag current = it.next();
+      if (adapter.equalConfigNames(current.getName(), t.getName())) {
+        it.remove();
+        return;
+      }
+    }
+  }
+
+  protected TableTag replace(final TableTag t, final DatabaseAdapter adapter) {
+    for (ListIterator<TableTag> it = this.tables.listIterator(); it.hasNext();) {
+      TableTag current = it.next();
+      if (adapter.equalConfigNames(current.getName(), t.getName())) {
+        TableTag d = t.duplicate();
+        it.set(d);
+        return d;
+      }
+    }
+    return null;
+  }
+
+  protected EnumTag add(final EnumTag e) {
+    EnumTag d = e.duplicate();
+    this.enums.add(d);
+    return d;
+  }
+
+  protected void remove(final EnumTag e, final DatabaseAdapter adapter) {
+    for (Iterator<EnumTag> it = this.enums.iterator(); it.hasNext();) {
+      EnumTag current = it.next();
+      if (adapter.equalConfigNames(current.getName(), e.getName())) {
+        it.remove();
+        return;
+      }
+    }
+  }
+
+  protected EnumTag replace(final EnumTag e, final DatabaseAdapter adapter) {
+    for (ListIterator<EnumTag> it = this.enums.listIterator(); it.hasNext();) {
+      EnumTag current = it.next();
+      if (adapter.equalConfigNames(current.getName(), e.getName())) {
+        EnumTag d = e.duplicate();
+        it.set(d);
+        return d;
+      }
+    }
+    return null;
+  }
+
+  protected ViewTag add(final ViewTag v) {
+    ViewTag d = v.duplicate();
+    this.views.add(d);
+    return d;
+  }
+
+  protected void remove(final ViewTag v, final DatabaseAdapter adapter) {
+    for (Iterator<ViewTag> it = this.views.iterator(); it.hasNext();) {
+      ViewTag current = it.next();
+      if (adapter.equalConfigNames(current.getName(), v.getName())) {
+        it.remove();
+        return;
+      }
+    }
+  }
+
+  protected ViewTag replace(final ViewTag v, final DatabaseAdapter adapter) {
+    for (ListIterator<ViewTag> it = this.views.listIterator(); it.hasNext();) {
+      ViewTag current = it.next();
+      if (adapter.equalConfigNames(current.getName(), v.getName())) {
+        ViewTag d = v.duplicate();
+        it.set(d);
+        return d;
+      }
+    }
+    return null;
+  }
+
+  protected ExecutorTag add(final ExecutorTag x) {
+    ExecutorTag d = x.duplicate();
+    this.executors.add(d);
+    return d;
+  }
+
+  protected void remove(final ExecutorTag x, final DatabaseAdapter adapter) {
+    for (Iterator<ExecutorTag> it = this.executors.iterator(); it.hasNext();) {
+      ExecutorTag current = it.next();
+      if (adapter.equalConfigNames(current.getJavaClassName(), x.getJavaClassName())) {
+        it.remove();
+        return;
+      }
+    }
+  }
+
+  protected ExecutorTag replace(final ExecutorTag x, final DatabaseAdapter adapter) {
+    for (ListIterator<ExecutorTag> it = this.executors.listIterator(); it.hasNext();) {
+      ExecutorTag current = it.next();
+      if (adapter.equalConfigNames(current.getJavaClassName(), x.getJavaClassName())) {
+        ExecutorTag d = x.duplicate();
+        it.set(d);
+        return d;
+      }
+    }
+    return null;
+  }
+
   // Merging logic
 
   protected boolean commonSameKey(final AbstractConfigurationTag fresh) {
@@ -530,6 +649,189 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag {
     } catch (ClassCastException e) {
       return false;
     }
+  }
+
+  // Update generated cache
+
+  public boolean commonMarkGenerationComplete(final AbstractConfigurationTag unitCache, final DatabaseAdapter adapter) {
+
+    log.info("mark 1");
+
+    boolean failedInnerGeneration = false;
+
+    AbstractHotRodConfigTag cache = (AbstractHotRodConfigTag) unitCache;
+
+    // Tables
+
+    log.info("mark 2 failedInnerGeneration=" + failedInnerGeneration);
+
+    for (CorrelatedEntry<TableTag> cor : Correlator.correlate(this.getTables(), cache.getTables(),
+        new Comparator<TableTag>() {
+          @Override
+          public int compare(TableTag o1, TableTag o2) {
+            return adapter.canonizeName(o1.getName(), false).compareTo(adapter.canonizeName(o2.getName(), false));
+          }
+        })) {
+
+      TableTag t = cor.getLeft();
+      TableTag c = cor.getRight();
+
+      log.info("mark 2.0 t=" + t + " c=" + c);
+
+      if (t != null && t.isToBeGenerated()) {
+        log.info("mark 2.1 - fail t=" + t.getName());
+        failedInnerGeneration = true;
+      }
+      if (t != null && c == null) {
+        if (t.isGenerationComplete()) {
+          c = cache.add(t); // add to the cache.
+          if (!t.concludeGeneration(c, adapter)) {
+            log.info("mark 2.2 - fail.");
+            failedInnerGeneration = true;
+          }
+        }
+      }
+      if (t == null && c != null) {
+        cache.remove(t, adapter); // remove from the cache.
+      }
+      if (t != null && c != null) {
+        log.info("mark 2.3");
+        if (t.isGenerationComplete()) {
+          log.info("mark 2.3.1");
+          c = cache.replace(t, adapter); // replace the cache.
+        }
+        if (!t.concludeGeneration(c, adapter)) {
+          log.info("mark 2.3.2 - fail.");
+          failedInnerGeneration = true;
+        }
+      }
+
+    }
+
+    // Enums
+
+    log.info("mark 3 failedInnerGeneration=" + failedInnerGeneration);
+
+    for (CorrelatedEntry<EnumTag> cor : Correlator.correlate(this.getEnums(), cache.getEnums(),
+        new Comparator<EnumTag>() {
+          @Override
+          public int compare(EnumTag o1, EnumTag o2) {
+            return adapter.canonizeName(o1.getName(), false).compareTo(adapter.canonizeName(o2.getName(), false));
+          }
+        })) {
+
+      EnumTag t = cor.getLeft();
+      EnumTag c = cor.getRight();
+
+      if (t != null && t.isToBeGenerated()) {
+        failedInnerGeneration = true;
+      }
+      if (t != null && c == null) {
+        if (t.isGenerationComplete()) {
+          c = cache.add(t); // add to the cache.
+          if (!t.concludeGeneration(c, adapter)) {
+            failedInnerGeneration = true;
+          }
+        }
+      }
+      if (t == null && c != null) {
+        cache.remove(t, adapter); // remove from the cache.
+      }
+      if (t != null && c != null) {
+        if (t.isGenerationComplete()) {
+          c = cache.replace(t, adapter); // replace the cache.
+        }
+        if (!t.concludeGeneration(c, adapter)) {
+          failedInnerGeneration = true;
+        }
+      }
+
+    }
+
+    // Views
+
+    log.info("mark 4 failedInnerGeneration=" + failedInnerGeneration);
+
+    for (CorrelatedEntry<ViewTag> cor : Correlator.correlate(this.getViews(), cache.getViews(),
+        new Comparator<ViewTag>() {
+          @Override
+          public int compare(ViewTag o1, ViewTag o2) {
+            return adapter.canonizeName(o1.getName(), false).compareTo(adapter.canonizeName(o2.getName(), false));
+          }
+        })) {
+
+      ViewTag t = cor.getLeft();
+      ViewTag c = cor.getRight();
+
+      if (t != null && t.isToBeGenerated()) {
+        failedInnerGeneration = true;
+      }
+      if (t != null && c == null) {
+        if (t.isGenerationComplete()) {
+          c = cache.add(t); // add to the cache.
+          if (!t.concludeGeneration(c, adapter)) {
+            failedInnerGeneration = true;
+          }
+        }
+      }
+      if (t == null && c != null) {
+        cache.remove(t, adapter); // remove from the cache.
+      }
+      if (t != null && c != null) {
+        if (t.isGenerationComplete()) {
+          c = cache.replace(t, adapter); // replace the cache.
+        }
+        if (!t.concludeGeneration(c, adapter)) {
+          failedInnerGeneration = true;
+        }
+      }
+
+    }
+
+    // Executors
+
+    log.info("mark 5 failedInnerGeneration=" + failedInnerGeneration);
+
+    for (CorrelatedEntry<ExecutorTag> cor : Correlator.correlate(this.getExecutors(), cache.getExecutors(),
+        new Comparator<ExecutorTag>() {
+          @Override
+          public int compare(ExecutorTag o1, ExecutorTag o2) {
+            return adapter.canonizeName(o1.getJavaClassName(), false)
+                .compareTo(adapter.canonizeName(o2.getJavaClassName(), false));
+          }
+        })) {
+
+      ExecutorTag t = cor.getLeft();
+      ExecutorTag c = cor.getRight();
+
+      if (t != null && t.isToBeGenerated()) {
+        failedInnerGeneration = true;
+      }
+      if (t != null && c == null) {
+        if (t.isGenerationComplete()) {
+          c = cache.add(t); // add to the cache.
+          if (!t.concludeGeneration(c, adapter)) {
+            failedInnerGeneration = true;
+          }
+        }
+      }
+      if (t == null && c != null) {
+        cache.remove(t, adapter); // remove from the cache.
+      }
+      if (t != null && c != null) {
+        if (t.isGenerationComplete()) {
+          c = cache.replace(t, adapter); // replace the cache.
+        }
+        if (!t.concludeGeneration(c, adapter)) {
+          failedInnerGeneration = true;
+        }
+      }
+
+    }
+
+    log.info("mark 10");
+
+    return !failedInnerGeneration;
   }
 
 }

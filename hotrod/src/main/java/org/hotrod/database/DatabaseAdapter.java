@@ -147,6 +147,13 @@ public abstract class DatabaseAdapter implements Serializable {
 
   // Names
 
+  public boolean equalConfigNames(final String a, final String b) {
+    if (a == null || b == null) {
+      return false;
+    }
+    return this.canonizeName(a, false).equals(this.canonizeName(b, false));
+  }
+
   public abstract String canonizeName(String configName, boolean quoted);
 
   public abstract String renderSQLName(String canonicalName);

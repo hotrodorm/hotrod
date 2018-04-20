@@ -4,3 +4,20 @@ String type = "java.lang.Integer";
 System.out.println("type '"
     + type
     + "' "+(type.matches(VALID_JAVA_TYPE_PATTERN)?"matches!":"does not match :("));
+
+
+String nameRegex = "[Rr][Oo][Mm][Ee]";
+String name = "Rome";
+System.out.println("'"
+    + name
+    + "' "+(name.matches(nameRegex)?"matches!":"does not match :("));
+
+String regex = "green";
+String phrase = "Green is my favorite color.";
+System.out.println(phrase.matches(regex)); // not found.
+
+Pattern cannot be resolvedPattern cannot be resolved to a variableString regex = ".*rome.*";
+String phrase = "I saw Rome.";
+// System.out.println(phrase.matches(regex)); // found!
+System.out.println(
+Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matches(phrase));

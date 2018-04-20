@@ -73,6 +73,31 @@ public class EnumTag extends AbstractEntityDAOTag {
     log.debug("init");
   }
 
+  // Duplicate
+
+  public EnumTag duplicate() {
+    EnumTag d = new EnumTag();
+
+    d.copyCommon(this);
+
+    d.name = this.name;
+    d.javaClassName = this.javaClassName;
+    d.nameCol = this.nameCol;
+    d.nonPersistents = this.nonPersistents;
+    d.table = this.table;
+    d.valueColumn = this.valueColumn;
+    d.nameColumn = this.nameColumn;
+    d.tableConstants = this.tableConstants;
+    d.npConstants = this.npConstants;
+    d.extraColumns = this.extraColumns;
+
+    d.daosTag = this.daosTag;
+    d.fragmentConfig = this.fragmentConfig;
+    d.fragmentPackage = this.fragmentPackage;
+
+    return d;
+  }
+
   // JAXB Setters
 
   @XmlAttribute

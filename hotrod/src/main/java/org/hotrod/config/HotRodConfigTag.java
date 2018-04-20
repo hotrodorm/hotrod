@@ -4,14 +4,20 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
+import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.eclipseplugin.utils.Correlator;
+import org.hotrod.eclipseplugin.utils.Correlator.CorrelatedEntry;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
@@ -122,7 +128,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   @Override
   public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    log.info("copying... " + this.getInternalCaption());
+    log.info("copying... " + this.getInternalCaption() + " fresh=" + fresh);
     try {
       HotRodConfigTag f = (HotRodConfigTag) fresh;
       boolean different = !super.commonSame(fresh) || !same(fresh);
@@ -150,6 +156,107 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
       ;
     } catch (ClassCastException e) {
       return false;
+    }
+  }
+
+  // Update generated cache
+
+  private boolean concludeGeneration(final AbstractHotRodConfigTag unitCache, final DatabaseAdapter adapter) {
+
+    log.info("conclude 1");
+
+    HotRodConfigTag uc = (HotRodConfigTag) unitCache;
+
+    boolean successfulCommonGeneration = super.commonMarkGenerationComplete(uc, adapter);
+
+    boolean failedExtendedGeneration = false;
+
+    HotRodConfigTag cache = (HotRodConfigTag) unitCache;
+
+    // Converters
+
+    log.info("conclude 2 - converters");
+
+    for (ConverterTag c : this.getConverters()) {
+      if (c.isToBeGenerated()) {
+        failedExtendedGeneration = true;
+      }
+    }
+
+    for (CorrelatedEntry<ConverterTag> cor : Correlator.correlate(this.getConverters(), cache.getConverters(),
+        new Comparator<ConverterTag>() {
+          @Override
+          public int compare(ConverterTag o1, ConverterTag o2) {
+            return adapter.canonizeName(o1.getName(), false).compareTo(adapter.canonizeName(o2.getName(), false));
+          }
+        })) {
+
+      ConverterTag t = cor.getLeft();
+      ConverterTag c = cor.getRight();
+
+      if (t != null && t.isToBeGenerated()) {
+        failedExtendedGeneration = true;
+      }
+      if (t != null && c == null) {
+        if (t.isGenerationComplete()) {
+          cache.add(t); // adds the generated element to the cache.
+        }
+      }
+      if (t == null && c != null) {
+        cache.remove(t, adapter); // removes the element from the cache.
+      }
+      if (t != null && c != null) {
+        if (t.isGenerationComplete()) {
+          cache.replace(t, adapter); // replaces the element on the cache.
+        }
+      }
+
+    }
+
+    // Generators (settings)
+
+    this.generatorsTag.concludeGenerationMarkTag();
+
+    // HotRodConfigTag
+
+    log.info("conclude 3 - end");
+    log.info("successfulCommonGeneration=" + successfulCommonGeneration + " failedExtendedGeneration="
+        + failedExtendedGeneration);
+
+    if (successfulCommonGeneration && !failedExtendedGeneration) {
+      log.info("conclude 4 - conclude");
+      return this.concludeGenerationMarkTag();
+    }
+
+    return false;
+  }
+
+  @Override
+  public boolean concludeGenerationTree(final AbstractHotRodConfigTag cache, final DatabaseAdapter adapter) {
+    return this.concludeGeneration(cache, adapter);
+  }
+
+  protected void add(final ConverterTag c) {
+    this.converters.add(c);
+  }
+
+  protected void remove(final ConverterTag c, final DatabaseAdapter adapter) {
+    for (Iterator<ConverterTag> it = this.converters.iterator(); it.hasNext();) {
+      ConverterTag current = it.next();
+      if (adapter.equalConfigNames(current.getName(), c.getName())) {
+        it.remove();
+        return;
+      }
+    }
+  }
+
+  protected void replace(final ConverterTag c, final DatabaseAdapter adapter) {
+    for (ListIterator<ConverterTag> it = this.converters.listIterator(); it.hasNext();) {
+      ConverterTag current = it.next();
+      if (adapter.equalConfigNames(current.getName(), c.getName())) {
+        it.set(c);
+        return;
+      }
     }
   }
 

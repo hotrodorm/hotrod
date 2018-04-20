@@ -279,7 +279,13 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
 
     this.myBatisConfig.generate(fileGenerator);
 
+    // compute tree generation status
+
+    super.config.promoteTreeToGenerated();
+
   }
+
+  // Getters
 
   public ObjectVO getVO(final DataSetMetadata dataSet) {
     return this.vos.get(dataSet);

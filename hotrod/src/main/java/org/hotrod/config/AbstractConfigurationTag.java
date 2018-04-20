@@ -37,6 +37,7 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   // Constructor
 
   protected AbstractConfigurationTag(final String tagName) {
+    log.trace("init.");
     this.tagName = tagName;
     this.status = TagStatus.UP_TO_DATE;
     this.subTags = new ArrayList<AbstractConfigurationTag>();
@@ -53,6 +54,20 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     for (AbstractConfigurationTag subTag : this.subTags) {
       subTag.activate();
     }
+  }
+
+  // Duplicate
+
+  protected void copyCommon(final AbstractConfigurationTag source) {
+    this.tagName = source.tagName;
+    this.location = source.location;
+
+    this.status = source.status;
+    this.subTags = source.subTags;
+
+    this.generate = source.generate;
+    this.generatables = source.generatables;
+
   }
 
   // Getters
@@ -89,6 +104,10 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     }
   }
 
+  public boolean isNoAction() {
+    return this.generate == GenerationStatus.NO_ACTION;
+  }
+
   public boolean isToBeGenerated() {
     return this.generate == GenerationStatus.TO_BE_GENERATED;
   }
@@ -108,12 +127,12 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     }
   }
 
-  public boolean treeIncludesGenerateMark() {
+  public boolean treeIncludesIsToBeGenerated() {
     if (this.isToBeGenerated()) {
       return true;
     }
     for (AbstractConfigurationTag subTag : this.subTags) {
-      if (subTag.treeIncludesGenerateMark()) {
+      if (subTag.treeIncludesIsToBeGenerated()) {
         return true;
       }
     }
@@ -153,7 +172,9 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     return generatables;
   }
 
-  public void markCompleteIfGeneratedSuccessfully() {
+  // Update generated cache
+
+  public void promoteTreeToGenerated() {
     if (this.isToBeGenerated()) {
       boolean allObjectsGenerated = true;
       for (GeneratableObject g : this.generatables) {
@@ -163,16 +184,19 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
       }
       if (allObjectsGenerated) {
         this.generate = GenerationStatus.GENERATION_COMPLETE;
-        this.status = TagStatus.UP_TO_DATE;
       }
+    }
+    for (AbstractConfigurationTag subTag : this.subTags) {
+      subTag.promoteTreeToGenerated();
     }
   }
 
-  public void markTreeCompleteIfGeneratedSuccessfully() {
-    markCompleteIfGeneratedSuccessfully();
-    for (AbstractConfigurationTag subTag : this.subTags) {
-      subTag.markTreeCompleteIfGeneratedSuccessfully();
+  public boolean concludeGenerationMarkTag() {
+    if (this.generate == GenerationStatus.GENERATION_COMPLETE) {
+      this.status = TagStatus.UP_TO_DATE;
+      return true;
     }
+    return false;
   }
 
   // XmlLocatable

@@ -62,7 +62,9 @@ import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractConfigurationTag.TagStatus;
+import org.hotrod.config.AbstractHotRodConfigTag;
 import org.hotrod.config.EnumTag;
+import org.hotrod.config.GenerationUnit;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.eclipseplugin.ProjectProperties.FileProperties;
 import org.hotrod.eclipseplugin.jdbc.DatabasePropertiesWizard;
@@ -485,7 +487,7 @@ public class HotRodView extends ViewPart {
 
         if (allConfigured) {
           for (MainConfigFace mainFace : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-            if (mainFace.getTag().treeIncludesGenerateMark()) {
+            if (mainFace.getTag().treeIncludesIsToBeGenerated()) {
               ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mainFace.getProject());
               FileProperties fileProperties = projectProperties.getFileProperties(mainFace.getRelativeFileName());
               generateFile(mainFace, projectProperties, fileProperties, true);
@@ -771,7 +773,7 @@ public class HotRodView extends ViewPart {
     HotRodConfigTag config = mainFace.getConfig();
     IProject project = mainFace.getProject();
 
-    if (incrementalMode && !config.treeIncludesGenerateMark()) {
+    if (incrementalMode && !config.treeIncludesIsToBeGenerated()) {
       display("Nothing to generate.");
     } else {
 
@@ -835,7 +837,9 @@ public class HotRodView extends ViewPart {
           FileGenerator fg = new EclipseFileGenerator(project);
           liveGenerator.generate(fg);
 
-          config.markTreeCompleteIfGeneratedSuccessfully();
+          GenerationUnit<AbstractHotRodConfigTag> unit = (GenerationUnit<AbstractHotRodConfigTag>) config;
+          boolean successful = unit.concludeGenerationTree(cachedMetadata.getConfig(), g.getAdapter());
+
           mainFace.refreshView();
 
         } catch (ClassCastException e) {

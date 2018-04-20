@@ -46,6 +46,24 @@ public class ViewTag extends AbstractEntityDAOTag {
     super("view");
   }
 
+  // Duplicate
+
+  public ViewTag duplicate() {
+    ViewTag d = new ViewTag();
+
+    d.copyCommon(this);
+
+    d.name = this.name;
+    d.javaClassName = this.javaClassName;
+    d.columns = this.columns;
+
+    d.daosTag = this.daosTag;
+    d.fragmentConfig = this.fragmentConfig;
+    d.fragmentPackage = this.fragmentPackage;
+
+    return d;
+  }
+
   // JAXB Setters
 
   @XmlAttribute

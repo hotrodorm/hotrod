@@ -33,6 +33,22 @@ public class ExecutorTag extends AbstractDAOTag {
     super("dao");
   }
 
+  // Duplicate
+
+  public ExecutorTag duplicate() {
+    ExecutorTag d = new ExecutorTag();
+
+    d.copyCommon(this);
+
+    d.javaClassName = this.javaClassName;
+
+    d.daosTag = this.daosTag;
+    d.fragmentConfig = this.fragmentConfig;
+    d.fragmentPackage = this.fragmentPackage;
+
+    return d;
+  }
+
   // JAXB Setters
 
   @XmlAttribute(name = "class")

@@ -1,5 +1,6 @@
 package org.hotrod.eclipseplugin.treeview;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.StyledString.Styler;
@@ -12,8 +13,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.hotrod.config.HotRodFragmentConfigTag;
 
 public class HotRodLabelProvider extends StyledCellLabelProvider {
+
+  private static final Logger log = Logger.getLogger(HotRodLabelProvider.class);
 
   private Composite parent;
 
@@ -98,12 +102,6 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
         label.append(face.getName());
       }
 
-      // generated suffix
-
-      if (face != null && face.getTag().isGenerationComplete()) {
-        label.append(" [generated]", StyledString.DECORATIONS_STYLER);
-      }
-
       // suffix
 
       try {
@@ -147,8 +145,37 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
             label.append("  [" + relativePath + "]", StyledString.DECORATIONS_STYLER);
           } catch (ClassCastException e3) {
             try {
-              AbstractMethodFace m = (AbstractMethodFace) obj; // method
+              AbstractMethodFace m = (AbstractMethodFace) obj; // daos & methods
               label.append("()");
+            } catch (ClassCastException e4) { // any other face
+              try {
+                ErrorMessageFace m = (ErrorMessageFace) obj; // error message
+              } catch (ClassCastException e5) { // any other face
+              }
+            }
+          }
+        }
+      }
+
+      // generated mark
+
+      if (face != null && face.getTag() != null && face.getTag().isGenerationComplete()) {
+        label.append(" [generated]", StyledString.DECORATIONS_STYLER);
+      }
+
+      // type
+
+      try {
+        SettingsFace s = (SettingsFace) obj; // settings
+      } catch (ClassCastException e1) {
+        try {
+          MainConfigFace c = (MainConfigFace) obj; // main config
+        } catch (ClassCastException e2) {
+          try {
+            FragmentConfigFace f = (FragmentConfigFace) obj; // fragment
+          } catch (ClassCastException e3) {
+            try {
+              AbstractMethodFace m = (AbstractMethodFace) obj; // daos & methods
               label.append(" " + m.getDecoration(), StyledString.DECORATIONS_STYLER);
             } catch (ClassCastException e4) { // any other face
               try {

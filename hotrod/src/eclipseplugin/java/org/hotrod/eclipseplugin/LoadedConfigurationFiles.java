@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -29,6 +30,8 @@ import org.hotrod.eclipseplugin.utils.Correlator;
 import org.hotrod.eclipseplugin.utils.Correlator.CorrelatedEntry;
 
 public class LoadedConfigurationFiles implements FileChangeListener {
+
+  private static final Logger log = Logger.getLogger(LoadedConfigurationFiles.class);
 
   private static final String VALID_HOTROD_EXTENSION = ".xml";
 
@@ -213,11 +216,12 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     String absPath = baselineFace.getAbsolutePath();
     File f = new File(absPath);
     MainConfigFace newFace = load(f);
-    System.out.println("[X123] File changed - Apply changes - newFace=" + newFace);
+    log.info("File changed - Apply changes - newFace=" + newFace);
 
     HotRodConfigTag bl1 = baselineFace.getConfig();
     bl1.logGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(bl1), '-');
 
+    log.info("newFace=" + newFace + " newFace.getTag()=" + newFace.getTag());
     baselineFace.applyChangesFrom(newFace);
 
     baselineFace.getTag();

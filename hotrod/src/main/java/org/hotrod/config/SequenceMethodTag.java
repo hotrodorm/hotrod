@@ -11,7 +11,7 @@ import org.hotrod.utils.identifiers.DbIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
 
 @XmlRootElement(name = "sequence")
-public class SequenceMethodTag extends AbstractMethodTag {
+public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
 
   private static final long serialVersionUID = 1L;
 
@@ -26,13 +26,25 @@ public class SequenceMethodTag extends AbstractMethodTag {
   // Properties
 
   private String name = null;
-  private String method = null;
 
   // Constructor
 
   public SequenceMethodTag() {
     super("sequence");
     log.debug("init");
+  }
+
+  // Duplicate
+
+  @Override
+  public SequenceMethodTag duplicate() {
+    SequenceMethodTag d = new SequenceMethodTag();
+
+    d.copyCommon(this);
+
+    d.name = this.name;
+
+    return d;
   }
 
   // JAXB Setters

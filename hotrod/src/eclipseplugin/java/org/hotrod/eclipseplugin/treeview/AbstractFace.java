@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
@@ -11,6 +12,8 @@ import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractConfigurationTag.TagStatus;
 
 public abstract class AbstractFace implements IAdaptable {
+
+  private static final Logger log = Logger.getLogger(AbstractFace.class);
 
   private static final AbstractFace[] EMPTY_FACE_ARRAY = new AbstractFace[0];
 
@@ -143,6 +146,7 @@ public abstract class AbstractFace implements IAdaptable {
 
   public final void applyChangesFrom(final AbstractFace fresh) {
 
+    log.info("fresh=" + fresh);
     log("[1] applyChanges: " + this.name + " - this:" + System.identityHashCode(this.getTag()) + " fresh:"
         + System.identityHashCode(fresh.getTag()));
 

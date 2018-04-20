@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Correlator {
 
-  public static <T extends Comparable<T>> List<CorrelatedEntry<T>> correlateUnsorted(final Collection<T> left,
+  public static <T extends Comparable<T>> List<CorrelatedEntry<T>> correlate(final Collection<T> left,
       final Collection<T> right) {
 
     List<T> sortedLeft = new ArrayList<T>(left);
@@ -79,7 +79,7 @@ public class Correlator {
 
   }
 
-  public static <T> List<CorrelatedEntry<T>> correlateUnsorted(final Collection<T> left, final Collection<T> right,
+  public static <T> List<CorrelatedEntry<T>> correlate(final Collection<T> left, final Collection<T> right,
       final Comparator<T> comparator) {
 
     if (comparator == null) {

@@ -45,7 +45,7 @@ public class FaceFactory {
         "Unknown configuration item type '" + tag.getClass().getName() + "'.");
   }
 
-  public static AbstractFace getMethodElement(final AbstractMethodTag m) throws InvalidConfigurationItemException {
+  public static AbstractFace getMethodElement(final AbstractMethodTag<?> m) throws InvalidConfigurationItemException {
     if (m instanceof SequenceMethodTag) {
       return new SequenceFace((SequenceMethodTag) m);
     }
