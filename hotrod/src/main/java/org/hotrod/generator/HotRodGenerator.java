@@ -58,6 +58,7 @@ import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.identifiers.Identifier;
+import org.nocrala.tools.database.tartarus.connectors.DatabaseConnectorFactory.UnsupportedDatabaseException;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.DatabaseObjectFilter;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -67,6 +68,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 import org.nocrala.tools.database.tartarus.core.JdbcTableFilter;
 import org.nocrala.tools.database.tartarus.exception.CatalogNotSupportedException;
+import org.nocrala.tools.database.tartarus.exception.DifferentCatalogSchemaException;
 import org.nocrala.tools.database.tartarus.exception.InvalidCatalogException;
 import org.nocrala.tools.database.tartarus.exception.InvalidSchemaException;
 import org.nocrala.tools.database.tartarus.exception.ReaderException;
@@ -231,70 +233,66 @@ public abstract class HotRodGenerator {
 
       log.info("--> retrieveFreshDatabaseObjects=" + retrieveFreshDatabaseObjects);
 
-      if (!retrieveFreshDatabaseObjects) {
+      DatabaseObjectFilter filter = new DatabaseObjectFilter(new TableFilter(this.adapter),
+          new ViewFilter(this.config, this.adapter));
 
-        this.db = cachedDatabase;
+      try {
 
-      } else {
-
-        // Retrieve database objects
-
-        try {
-          logm("Ready for database objects retrieval.");
-
-          DatabaseObjectFilter filter = new DatabaseObjectFilter(new TableFilter(this.adapter),
-              new ViewFilter(this.config, this.adapter));
-
-          // TODO: Use the existing connection instead of opening a new one.
+        if (!retrieveFreshDatabaseObjects) {
+          try {
+            log.info("Will activate now.");
+            cachedDatabase.activate(this.dloc, true);
+            this.db = cachedDatabase;
+          } catch (DifferentCatalogSchemaException e) {
+            // catalog or schema changed -- retrieve the database again.
+            this.db = new JdbcDatabase(this.dloc, true, filter);
+          }
+        } else {
+          // Retrieve database objects
           this.db = new JdbcDatabase(this.dloc, true, filter);
-
-          logm("After retrieval 1.");
-
-        } catch (ReaderException e) {
-          throw new ControlledException(e.getMessage());
-        } catch (SQLException e) {
-          throw new UncontrolledException("Could not retrieve database metadata.", e);
-        } catch (CatalogNotSupportedException e) {
-          throw new ControlledException(
-              "A catalog name was specified for the database with the value '" + dloc.getDefaultCatalog() + "', "
-                  + "but this database does not support catalogs through the JDBC driver. "
-                  + "Please specify it with an empty value.");
-        } catch (InvalidCatalogException e) {
-          StringBuilder sb = new StringBuilder();
-          if (dloc.getDefaultCatalog() == null) {
-            sb.append(
-                "This database requires a catalog name. Please specify in " + Constants.TOOL_NAME + "'s Ant task.\n\n");
-          } else {
-            sb.append(
-                "The specified catalog name '" + dloc.getDefaultCatalog() + "' does not exist in this database.\n\n");
-          }
-          sb.append("The available catalogs are:\n");
-          for (String c : e.getExistingCatalogs()) {
-            sb.append("  " + c + "\n");
-          }
-          throw new ControlledException(sb.toString());
-        } catch (SchemaNotSupportedException e) {
-          throw new ControlledException("A schema name was specified for the database with the value '"
-              + dloc.getDefaultSchema() + "', " + "but this database does not support schemas through the JDBC driver. "
-              + "Please specify it with an empty value.");
-        } catch (InvalidSchemaException e) {
-          StringBuilder sb = new StringBuilder();
-          if (dloc.getDefaultSchema() == null) {
-            sb.append(
-                "This database requires a schema name. Please specify in " + Constants.TOOL_NAME + "'s Ant task.\n\n");
-          } else {
-            sb.append(
-                "The specified schema name '" + dloc.getDefaultSchema() + "' does not exist in this database.\n\n");
-          }
-          sb.append("The available schemas are:\n");
-          for (String s : e.getExistingSchemas()) {
-            sb.append("  " + s + "\n");
-          }
-          throw new ControlledException(sb.toString());
-        } catch (Exception e) {
-          throw new UncontrolledException("Could not retrieve database metadata using JDBC URL " + dloc.getUrl(), e);
         }
 
+      } catch (ReaderException e) {
+        throw new ControlledException(e.getMessage());
+      } catch (SQLException e) {
+        throw new UncontrolledException("Could not retrieve database metadata.", e);
+      } catch (CatalogNotSupportedException e) {
+        throw new ControlledException("A catalog name was specified for the database with the value '"
+            + dloc.getDefaultCatalog() + "', " + "but this database does not support catalogs through the JDBC driver. "
+            + "Please specify it with an empty value.");
+      } catch (InvalidCatalogException e) {
+        StringBuilder sb = new StringBuilder();
+        if (dloc.getDefaultCatalog() == null) {
+          sb.append(
+              "This database requires a catalog name. Please specify in " + Constants.TOOL_NAME + "'s Ant task.\n\n");
+        } else {
+          sb.append(
+              "The specified catalog name '" + dloc.getDefaultCatalog() + "' does not exist in this database.\n\n");
+        }
+        sb.append("The available catalogs are:\n");
+        for (String c : e.getExistingCatalogs()) {
+          sb.append("  " + c + "\n");
+        }
+        throw new ControlledException(sb.toString());
+      } catch (SchemaNotSupportedException e) {
+        throw new ControlledException("A schema name was specified for the database with the value '"
+            + dloc.getDefaultSchema() + "', " + "but this database does not support schemas through the JDBC driver. "
+            + "Please specify it with an empty value.");
+      } catch (InvalidSchemaException e) {
+        StringBuilder sb = new StringBuilder();
+        if (dloc.getDefaultSchema() == null) {
+          sb.append(
+              "This database requires a schema name. Please specify in " + Constants.TOOL_NAME + "'s Ant task.\n\n");
+        } else {
+          sb.append("The specified schema name '" + dloc.getDefaultSchema() + "' does not exist in this database.\n\n");
+        }
+        sb.append("The available schemas are:\n");
+        for (String s : e.getExistingSchemas()) {
+          sb.append("  " + s + "\n");
+        }
+        throw new ControlledException(sb.toString());
+      } catch (Exception e) {
+        throw new UncontrolledException("Could not retrieve database metadata using JDBC URL " + dloc.getUrl(), e);
       }
 
       config.logGenerateMark("VALIDATE", ':');

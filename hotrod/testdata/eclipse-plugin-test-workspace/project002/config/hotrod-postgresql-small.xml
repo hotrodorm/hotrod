@@ -81,13 +81,19 @@
     <select method="method11" vo="FB11VO">
       select * from log
     </select>
+    <select method="method12" vo="FB12VO">
+      select * from log
+    </select>
   </view>
 
   <dao class="Exec1" >
     <select method="method30" vo="FB30VO">
       select * from log
-    </select>
+    </select>  
     <select method="method31" vo="FB31VO">
+      select * from log
+    </select>
+    <select method="method32" vo="FB32VO">
       select * from log
     </select>
   </dao>

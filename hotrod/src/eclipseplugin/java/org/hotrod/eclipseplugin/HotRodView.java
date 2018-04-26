@@ -851,7 +851,7 @@ public class HotRodView extends ViewPart {
         // Save the cache
 
         // TODO: enable saving
-        // projectProperties.save();
+        projectProperties.save();
 
         HotRodConfigTag ch = cachedMetadata.getConfig();
         if (ch != null) {

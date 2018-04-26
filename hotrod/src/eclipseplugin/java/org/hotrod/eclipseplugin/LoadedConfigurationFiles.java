@@ -1,8 +1,6 @@
 package org.hotrod.eclipseplugin;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,11 +8,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractConfigurationTag;
@@ -45,9 +38,68 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     this.provider = provider;
   }
 
-  // File changes
+  // File is being dropped (addeed to) in the view
 
   public void addFile(final File f) {
+
+    if (f != null && f.getName().endsWith(VALID_HOTROD_EXTENSION) && f.isFile()) {
+      String absolutePath = f.getAbsolutePath();
+      if (!this.loadedFiles.containsKey(absolutePath)) {
+
+        RelativeProjectPath path = RelativeProjectPath.findProjectPath(f);
+        if (path != null) {
+
+          // 1. Load the cached config
+
+          ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(path.getProject());
+          FileProperties fileProperties = projectProperties.getFileProperties(path.getRelativeFileName());
+
+          // 2. Retrieve cached config, if available
+
+          HotRodConfigTag cachedConfig = fileProperties.getCachedMetadata().getConfig();
+          MainConfigFace cachedFace = cachedConfig == null ? null
+              : new MainConfigFace(f, path, this.provider, cachedConfig);
+
+          // 3. Load file
+
+          MainConfigFace freshFace = load(f);
+          log.info("File loading - freshFace=" + freshFace);
+
+          if (cachedConfig == null) {
+
+            // 4.a Display loaded file as-is when no cached config is present.
+
+            log.info("No cached config present.");
+            freshFace.getConfig().setTreeStatus(TagStatus.ADDED);
+            this.loadedFiles.put(absolutePath, freshFace);
+
+          } else {
+
+            // 4.b Display combined loaded file with cached config.
+
+            log.info("Cached config present.");
+            cachedConfig.logGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(cachedConfig), '-');
+            log.info("freshFace=" + freshFace + " freshFace.getTag()=" + freshFace.getTag());
+            cachedFace.applyChangesFrom(freshFace);
+            HotRodConfigTag ex2 = cachedFace.getConfig();
+            ex2.logGenerateMark("Generate Marks (POST) - " + System.identityHashCode(ex2), '=');
+
+            this.loadedFiles.put(absolutePath, cachedFace);
+
+          }
+
+          // 5. Refresh the plugin tree view with new file.
+
+          this.provider.refresh();
+
+        }
+
+      }
+    }
+
+  }
+
+  public void addFileOld(final File f) {
     if (f != null && f.getName().endsWith(VALID_HOTROD_EXTENSION) && f.isFile()) {
       String absolutePath = f.getAbsolutePath();
       if (!this.loadedFiles.containsKey(absolutePath)) {
@@ -148,7 +200,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     return different;
   }
 
-  public MainConfigFace load(final File f) {
+  private MainConfigFace load(final File f) {
 
     RelativeProjectPath path = RelativeProjectPath.findProjectPath(f);
     if (path == null) {
@@ -175,58 +227,26 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
   }
 
-  // TODO: remove once fully implemented.
-
-  private void fileGenerationProofOfConcept() {
-    // TODO: remove
-    // Create a file
-    try {
-      IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("project002");
-      String name = "f-" + System.currentTimeMillis() + ".txt";
-      IFile ifile = project.getFile(name);
-
-      byte[] bytes = "File contents".getBytes();
-      InputStream source = new ByteArrayInputStream(bytes);
-      ifile.create(source, IResource.NONE, null);
-      ifile.delete(false, null);
-    } catch (CoreException e) {
-      e.printStackTrace();
-    }
-
-    // TODO: remove
-    // update a file
-    try {
-      IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("project002");
-      String name = "existing-file.txt";
-      IFile ifile = project.getFile(name);
-
-      byte[] bytes = ("File contents at " + System.currentTimeMillis()).getBytes();
-      InputStream source = new ByteArrayInputStream(bytes);
-      ifile.setContents(source, IResource.FORCE, null);
-    } catch (CoreException e) {
-      e.printStackTrace();
-    }
-  }
-
   public void remove(final MainConfigFace face) {
     this.loadedFiles.remove(face.getAbsolutePath());
   }
 
-  private void reload(final MainConfigFace baselineFace) {
-    String absPath = baselineFace.getAbsolutePath();
+  // TODO: mark of reload
+  private void reload(final MainConfigFace currentPresentedFace) {
+    String absPath = currentPresentedFace.getAbsolutePath();
     File f = new File(absPath);
     MainConfigFace newFace = load(f);
     log.info("File changed - Apply changes - newFace=" + newFace);
 
-    HotRodConfigTag bl1 = baselineFace.getConfig();
+    HotRodConfigTag bl1 = currentPresentedFace.getConfig();
     bl1.logGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(bl1), '-');
 
     log.info("newFace=" + newFace + " newFace.getTag()=" + newFace.getTag());
-    baselineFace.applyChangesFrom(newFace);
+    currentPresentedFace.applyChangesFrom(newFace);
 
-    baselineFace.getTag();
+    currentPresentedFace.getTag();
 
-    HotRodConfigTag bl2 = baselineFace.getConfig();
+    HotRodConfigTag bl2 = currentPresentedFace.getConfig();
     bl2.logGenerateMark("Generate Marks (POST) - " + System.identityHashCode(bl2), '=');
 
   }
@@ -272,7 +292,8 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     log("  --> received file changed: " + f.getAbsolutePath());
     String fullPathName = f.getAbsolutePath();
     if (this.loadedFiles.containsKey(fullPathName)) {
-      this.reload(this.loadedFiles.get(fullPathName));
+      MainConfigFace currentPresentedFace = this.loadedFiles.get(fullPathName);
+      this.reload(currentPresentedFace);
       return true;
     }
     return false;

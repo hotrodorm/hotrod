@@ -1,5 +1,6 @@
 package org.hotrod.config;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -247,7 +248,9 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
   // Helper classes
 
-  private class MethodTagContainer<M extends AbstractMethodTag<M>> implements Iterable<M> {
+  private class MethodTagContainer<M extends AbstractMethodTag<M>> implements Iterable<M>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private List<M> methods = new ArrayList<M>();
 
