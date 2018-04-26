@@ -80,7 +80,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
         prefix = "> ";
         break;
       case ADDED:
-        prefix = "> "; // +
+        prefix = "+ ";
         break;
       case DELETED:
         prefix = "- ";
@@ -89,6 +89,9 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
         prefix = "";
         break;
       }
+
+      // prefix = (face.hasBranchChanges() ? ">" : "") + " " + prefix;
+      prefix = (face.hasBranchChanges() ? ">" : "") + " ";
 
       // status prefix
 
@@ -160,7 +163,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
       // generated mark
 
       if (face != null && face.getTag() != null && face.getTag().isGenerationComplete()) {
-        label.append(" [generated]", StyledString.DECORATIONS_STYLER);
+        label.append(" \u26ab", StyledString.COUNTER_STYLER);
       }
 
       // type

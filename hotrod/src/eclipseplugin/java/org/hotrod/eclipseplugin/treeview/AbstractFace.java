@@ -27,6 +27,8 @@ public abstract class AbstractFace implements IAdaptable {
   private AbstractFace parent;
   private int id;
 
+  private boolean hasBranchChanges;
+
   private List<AbstractFace> children;
 
   public AbstractFace(final String name, final AbstractConfigurationTag tag) {
@@ -102,8 +104,23 @@ public abstract class AbstractFace implements IAdaptable {
   public void refreshView() {
     TreeViewer viewer = this.getViewer();
     if (viewer != null) {
+      this.computeBranchChanges();
       viewer.refresh(this, true);
     }
+  }
+
+  public boolean computeBranchChanges() {
+    this.hasBranchChanges = this.getStatus() != TagStatus.UP_TO_DATE;
+    for (AbstractFace c : this.children) {
+      if (c.computeBranchChanges()) {
+        this.hasBranchChanges = true;
+      }
+    }
+    return this.hasBranchChanges;
+  }
+
+  public boolean hasBranchChanges() {
+    return this.hasBranchChanges;
   }
 
   public final TagStatus getStatus() {

@@ -10,7 +10,6 @@ import java.util.TreeMap;
 import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
-import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractConfigurationTag.TagStatus;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.HotRodConfigTag;
@@ -19,8 +18,6 @@ import org.hotrod.eclipseplugin.ProjectProperties.FileProperties;
 import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
-import org.hotrod.eclipseplugin.utils.Correlator;
-import org.hotrod.eclipseplugin.utils.Correlator.CorrelatedEntry;
 
 public class LoadedConfigurationFiles implements FileChangeListener {
 
@@ -72,6 +69,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
             log.info("No cached config present.");
             freshFace.getConfig().setTreeStatus(TagStatus.ADDED);
             this.loadedFiles.put(absolutePath, freshFace);
+            freshFace.computeBranchChanges();
 
           } else {
 
@@ -85,7 +83,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
             ex2.logGenerateMark("Generate Marks (POST) - " + System.identityHashCode(ex2), '=');
 
             this.loadedFiles.put(absolutePath, cachedFace);
-
+            cachedFace.computeBranchChanges();
           }
 
           // 5. Refresh the plugin tree view with new file.
@@ -97,107 +95,6 @@ public class LoadedConfigurationFiles implements FileChangeListener {
       }
     }
 
-  }
-
-  public void addFileOld(final File f) {
-    if (f != null && f.getName().endsWith(VALID_HOTROD_EXTENSION) && f.isFile()) {
-      String absolutePath = f.getAbsolutePath();
-      if (!this.loadedFiles.containsKey(absolutePath)) {
-
-        // MainConfigFace face = FaceProducer.load(this.provider, f);
-
-        RelativeProjectPath path = RelativeProjectPath.findProjectPath(f);
-        if (path != null) {
-          try {
-
-            // 1. Load the cached config
-
-            ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(path.getProject());
-            FileProperties fileProperties = projectProperties.getFileProperties(path.getRelativeFileName());
-
-            // 2. Load the config file
-
-            // TODO: fix generator value. Should be configurable
-            HotRodConfigTag loadedConfig = ConfigurationLoader.loadPrimary(path.getProject().getLocation().toFile(), f,
-                "MyBatis");
-
-            // 3. Correlate them
-
-            if (fileProperties == null) {
-
-              // assume all elements are new
-              loadedConfig.setTreeStatus(TagStatus.ADDED);
-
-            } else {
-
-              // correlate them
-              HotRodConfigTag cachedConfigFile = fileProperties.getCachedMetadata() == null ? null
-                  : fileProperties.getCachedMetadata().getConfig();
-              log("cachedConfigFile=" + cachedConfigFile);
-              if (cachedConfigFile == null) {
-                loadedConfig.setTreeStatus(TagStatus.ADDED);
-              } else {
-                correlate(loadedConfig, cachedConfigFile);
-              }
-
-              log("[1] config.getStatus()=" + loadedConfig.getStatus());
-
-            }
-
-            // 4. Assemble a face & refresh
-
-            MainConfigFace face = new MainConfigFace(f, path, this.provider, loadedConfig);
-            this.loadedFiles.put(absolutePath, face);
-            this.provider.refresh();
-            log("[2] config.getStatus()=" + loadedConfig.getStatus());
-            // fileGenerationProofOfConcept();
-
-            // } catch (FaultyConfigFileException e) {
-            // MainConfigFace face = new MainConfigFace(f, path, provider,
-            // new ErrorMessageFace(e.getPath(), e.getLineNumber(),
-            // e.getMessage()));
-            // this.loadedFiles.put(absolutePath, face);
-            // this.provider.refresh();
-          } catch (ControlledException e) {
-            log("Failed to load file: ", e);
-            MainConfigFace face = new MainConfigFace(f, path, this.provider,
-                new ErrorMessageFace(e.getLocation(), e.getMessage()));
-            this.loadedFiles.put(absolutePath, face);
-            this.provider.refresh();
-          } catch (UncontrolledException e) {
-            log("Failed to load file: ", e);
-            MainConfigFace face = new MainConfigFace(f, path, this.provider,
-                new ErrorMessageFace(null, e.getMessage()));
-            this.loadedFiles.put(absolutePath, face);
-            this.provider.refresh();
-          }
-
-        }
-
-      }
-    }
-  }
-
-  // loaded vs cached
-  private boolean correlate(final AbstractConfigurationTag left, final AbstractConfigurationTag right) {
-    boolean different = left.copyNonKeyProperties(right);
-    for (CorrelatedEntry<AbstractConfigurationTag> entry : Correlator.correlateSorted(left.getSubTags(),
-        right.getSubTags())) {
-      AbstractConfigurationTag l = entry.getLeft(); // loaded
-      AbstractConfigurationTag r = entry.getRight(); // cached
-      if (l != null) {
-        if (r != null) {
-          if (correlate(l, r)) {
-            different = true;
-          }
-        } else {
-          different = true;
-          l.setTreeStatus(TagStatus.ADDED);
-        }
-      }
-    }
-    left.setStatus(different ? TagStatus.MODIFIED : TagStatus.UP_TO_DATE);
-    return different;
   }
 
   private MainConfigFace load(final File f) {
@@ -243,8 +140,6 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
     log.info("newFace=" + newFace + " newFace.getTag()=" + newFace.getTag());
     currentPresentedFace.applyChangesFrom(newFace);
-
-    currentPresentedFace.getTag();
 
     HotRodConfigTag bl2 = currentPresentedFace.getConfig();
     bl2.logGenerateMark("Generate Marks (POST) - " + System.identityHashCode(bl2), '=');
@@ -294,6 +189,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     if (this.loadedFiles.containsKey(fullPathName)) {
       MainConfigFace currentPresentedFace = this.loadedFiles.get(fullPathName);
       this.reload(currentPresentedFace);
+      currentPresentedFace.computeBranchChanges();
       return true;
     }
     return false;
