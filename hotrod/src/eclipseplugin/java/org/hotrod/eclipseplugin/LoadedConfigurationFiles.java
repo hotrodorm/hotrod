@@ -15,7 +15,6 @@ import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.eclipseplugin.FileSystemChangesListener.FileChangeListener;
 import org.hotrod.eclipseplugin.ProjectProperties.FileProperties;
-import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 
@@ -60,30 +59,39 @@ public class LoadedConfigurationFiles implements FileChangeListener {
           // 3. Load file
 
           MainConfigFace freshFace = load(f);
-          log.info("File loading - freshFace=" + freshFace);
+          log.debug("File loading - freshFace=" + freshFace);
 
           if (cachedConfig == null) {
 
             // 4.a Display loaded file as-is when no cached config is present.
 
-            log.info("No cached config present.");
-            freshFace.getConfig().setTreeStatus(TagStatus.ADDED);
+            log.debug("No cached config present.");
             this.loadedFiles.put(absolutePath, freshFace);
-            freshFace.computeBranchChanges();
+            if (freshFace.isValid()) {
+              freshFace.getConfig().setTreeStatus(TagStatus.ADDED);
+              freshFace.computeBranchChanges();
+            }
 
           } else {
 
             // 4.b Display combined loaded file with cached config.
 
-            log.info("Cached config present.");
-            cachedConfig.logGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(cachedConfig), '-');
-            log.info("freshFace=" + freshFace + " freshFace.getTag()=" + freshFace.getTag());
-            cachedFace.applyChangesFrom(freshFace);
-            HotRodConfigTag ex2 = cachedFace.getConfig();
-            ex2.logGenerateMark("Generate Marks (POST) - " + System.identityHashCode(ex2), '=');
+            if (freshFace.isValid()) {
 
-            this.loadedFiles.put(absolutePath, cachedFace);
-            cachedFace.computeBranchChanges();
+              this.loadedFiles.put(absolutePath, freshFace);
+
+            } else {
+              log.info("Cached config present.");
+              cachedConfig.logGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(cachedConfig), '-');
+              log.info("freshFace=" + freshFace + " freshFace.getTag()=" + freshFace.getTag());
+              cachedFace.applyChangesFrom(freshFace);
+              HotRodConfigTag ex2 = cachedFace.getConfig();
+              ex2.logGenerateMark("Generate Marks (POST) - " + System.identityHashCode(ex2), '=');
+
+              this.loadedFiles.put(absolutePath, cachedFace);
+              cachedFace.computeBranchChanges();
+            }
+
           }
 
           // 5. Refresh the plugin tree view with new file.
@@ -114,11 +122,12 @@ public class LoadedConfigurationFiles implements FileChangeListener {
       return face;
 
     } catch (ControlledException e) {
+      log.info("Error Message=" + e.getMessage() + " loc=" + e.getLocation());
       MainConfigFace face = new MainConfigFace(f, path, this.provider,
-          new ErrorMessageFace(e.getLocation(), e.getMessage()));
+          new ErrorMessage(e.getLocation(), e.getMessage()));
       return face;
     } catch (UncontrolledException e) {
-      MainConfigFace face = new MainConfigFace(f, path, this.provider, new ErrorMessageFace(null, e.getMessage()));
+      MainConfigFace face = new MainConfigFace(f, path, this.provider, new ErrorMessage(null, e.getMessage()));
       return face;
     }
 
@@ -133,16 +142,16 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     String absPath = currentPresentedFace.getAbsolutePath();
     File f = new File(absPath);
     MainConfigFace newFace = load(f);
-    log.info("File changed - Apply changes - newFace=" + newFace);
+    log.debug("File changed - Apply changes - newFace=" + newFace);
 
-    HotRodConfigTag bl1 = currentPresentedFace.getConfig();
-    bl1.logGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(bl1), '-');
-
-    log.info("newFace=" + newFace + " newFace.getTag()=" + newFace.getTag());
-    currentPresentedFace.applyChangesFrom(newFace);
-
-    HotRodConfigTag bl2 = currentPresentedFace.getConfig();
-    bl2.logGenerateMark("Generate Marks (POST) - " + System.identityHashCode(bl2), '=');
+    HotRodConfigTag config1 = currentPresentedFace.getConfig();
+    if (config1 != null) {
+      config1.logGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(config1), '-');
+      log.debug("newFace=" + newFace + " newFace.getTag()=" + newFace.getTag());
+      currentPresentedFace.applyChangesFrom(newFace);
+      HotRodConfigTag config2 = currentPresentedFace.getConfig();
+      config2.logGenerateMark("Generate Marks (POST) - " + System.identityHashCode(config2), '=');
+    }
 
   }
 

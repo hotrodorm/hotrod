@@ -10,6 +10,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractConfigurationTag.TagStatus;
+import org.hotrod.eclipseplugin.ErrorMessage;
 
 public abstract class AbstractFace implements IAdaptable {
 
@@ -29,14 +30,25 @@ public abstract class AbstractFace implements IAdaptable {
 
   private boolean hasBranchChanges;
 
+  private ErrorMessage errorMessage;
+
   private List<AbstractFace> children;
 
   public AbstractFace(final String name, final AbstractConfigurationTag tag) {
+    initialize(name, tag, null);
+  }
+
+  public AbstractFace(final String name, final AbstractConfigurationTag tag, final ErrorMessage errorMessage) {
+    initialize(name, tag, errorMessage);
+  }
+
+  private void initialize(final String name, final AbstractConfigurationTag tag, final ErrorMessage errorMessage) {
     synchronized (AbstractFace.class) {
       this.id = nextElementId++;
     }
     this.name = name;
     this.tag = tag;
+    this.errorMessage = errorMessage;
     this.children = new ArrayList<AbstractFace>();
     this.parent = null;
   }
@@ -95,6 +107,10 @@ public abstract class AbstractFace implements IAdaptable {
 
   public MainConfigFace getMainConfigFace() {
     return this.parent.getMainConfigFace();
+  }
+
+  public ErrorMessage getErrorMessage() {
+    return errorMessage;
   }
 
   public HotRodViewContentProvider getProvider() {
@@ -203,7 +219,7 @@ public abstract class AbstractFace implements IAdaptable {
         this.children.add(f);
         f.parent = this;
         if (f.tag != null) {
-          f.tag.setStatus(TagStatus.ADDED);
+          f.tag.setTreeStatus(TagStatus.ADDED);
         }
       }
     }

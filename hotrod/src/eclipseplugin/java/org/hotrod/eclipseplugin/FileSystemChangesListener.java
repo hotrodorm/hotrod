@@ -32,25 +32,29 @@ public class FileSystemChangesListener implements IResourceChangeListener {
     log("*** kind=" + renderDeltaKind(delta.getKind()) + " type=" + renderResourceType(delta.getResource().getType())
         + " r=" + delta.getResource().getLocation());
     int kind = delta.getKind();
+    int flags = delta.getFlags();
+    boolean includesMarkerChange = (flags | IResourceDelta.MARKERS) != 0;
     boolean refresh = false;
-    if (kind == IResourceDelta.ADDED || kind == IResourceDelta.REMOVED || kind == IResourceDelta.CHANGED) {
-      IResource r = delta.getResource();
-      if (r.getType() == IResource.FILE) {
-        File file = r.getLocation().toFile();
-        switch (kind) {
-        case IResourceDelta.ADDED:
-          refresh = refresh | this.listener.informFileAdded(file);
-          break;
-        case IResourceDelta.REMOVED:
-          refresh = refresh | this.listener.informFileRemoved(file);
-          break;
-        case IResourceDelta.CHANGED:
-          refresh = refresh | this.listener.informFileChanged(file);
-          break;
+    if (!includesMarkerChange) { // Ingore markers changes
+      if (kind == IResourceDelta.ADDED || kind == IResourceDelta.REMOVED || kind == IResourceDelta.CHANGED) {
+        IResource r = delta.getResource();
+        if (r.getType() == IResource.FILE) {
+          File file = r.getLocation().toFile();
+          switch (kind) {
+          case IResourceDelta.ADDED:
+            refresh = refresh | this.listener.informFileAdded(file);
+            break;
+          case IResourceDelta.REMOVED:
+            refresh = refresh | this.listener.informFileRemoved(file);
+            break;
+          case IResourceDelta.CHANGED:
+            refresh = refresh | this.listener.informFileChanged(file);
+            break;
+          }
         }
-      }
-      for (IResourceDelta d : delta.getAffectedChildren()) {
-        refresh = refresh | processFileChanges(d);
+        for (IResourceDelta d : delta.getAffectedChildren()) {
+          refresh = refresh | processFileChanges(d);
+        }
       }
     }
     return refresh;
@@ -99,8 +103,8 @@ public class FileSystemChangesListener implements IResourceChangeListener {
   }
 
   private static void log(final String txt) {
-//    System.out.println("[" + new Object() {
-//    }.getClass().getEnclosingClass().getName() + "] " + txt);
+    // System.out.println("[" + new Object() {
+    // }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

@@ -8,12 +8,14 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
-import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.eclipseplugin.ErrorMessage;
+import org.hotrod.runtime.dynamicsql.SourceLocation;
 
 public class HotRodLabelProvider extends StyledCellLabelProvider {
 
@@ -41,6 +43,44 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
       };
     }
   }
+
+  // Tool tip
+
+  @Override
+  public String getToolTipText(final Object element) {
+    log.debug("element=" + element + " (" + (element == null ? "<null>" : element.getClass().getName()) + ")");
+    try {
+      AbstractFace face = (AbstractFace) element;
+      ErrorMessage errorMessage = face.getErrorMessage();
+      if (errorMessage == null) {
+        return null; // no tool tip
+      } else {
+        SourceLocation loc = errorMessage.getLocation();
+        return errorMessage.getMessage() + (loc == null ? ""
+            : ("\n" + "  at " + loc.getFile().getName() + " (line "
+                + loc.getLineNumber() + ", col " + loc.getColumnNumber() + ") [click to source]"));
+      }
+    } catch (ClassCastException e) {
+      return null; // no tool tip
+    }
+  }
+
+  @Override
+  public Point getToolTipShift(final Object object) {
+    return new Point(5, 5);
+  }
+
+  @Override
+  public int getToolTipDisplayDelayTime(final Object object) {
+    return 100; // almost immediately
+  }
+
+  @Override
+  public int getToolTipTimeDisplayed(final Object object) {
+    return 120000; // stays visible for 2 minutes
+  }
+
+  // Label
 
   @Override
   public void update(final ViewerCell cell) {
@@ -152,7 +192,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
               label.append("()");
             } catch (ClassCastException e4) { // any other face
               try {
-                ErrorMessageFace m = (ErrorMessageFace) obj; // error message
+                ErrorMessage m = (ErrorMessage) obj; // error message
               } catch (ClassCastException e5) { // any other face
               }
             }
@@ -182,7 +222,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
               label.append(" " + m.getDecoration(), StyledString.DECORATIONS_STYLER);
             } catch (ClassCastException e4) { // any other face
               try {
-                ErrorMessageFace m = (ErrorMessageFace) obj; // error message
+                ErrorMessage m = (ErrorMessage) obj; // error message
               } catch (ClassCastException e5) { // any other face
                 label.append(" " + face.getDecoration(), StyledString.DECORATIONS_STYLER);
               }

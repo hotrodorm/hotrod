@@ -16,6 +16,7 @@
             id="org.hotrod.eclipseplugin.HotRodView">
       </view>
    </extension>
+
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
@@ -28,6 +29,7 @@
          </view>
       </perspectiveExtension>
    </extension>
+
    <extension
          point="org.eclipse.help.contexts">
       <contexts

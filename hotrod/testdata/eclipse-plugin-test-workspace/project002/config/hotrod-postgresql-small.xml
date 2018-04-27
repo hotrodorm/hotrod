@@ -78,7 +78,7 @@
     <select method="method10" vo="FB10VO">
       select * from log
     </select>
-    <select method="method11" vo="FB11VO">
+    <select method="method12" vo="FB11VO">
       select * from log
     </select>
     <select method="method15" vo="FB134VO">
@@ -90,7 +90,7 @@
     <select method="method30" vo="FB30VO">
       select * from log
     </select>  
-    <select method="method34" vo="FB32VO">
+    <select method="method34" vo="FB32xVO">
       select * from log
     </select>
     <select method="method32" vo="FB32VO">
@@ -98,11 +98,11 @@
     </select>
   </dao>
 
-<!-- 
 
 
 	<dao class="Executor1DAO">
 
+<!--
 		<select method="getAccountTx0" vo="AccountTx0VO">
 			select a.* , t.*
 			from account a, transaction t
@@ -120,23 +120,26 @@
         and a.current_balance &lt; 1000
       </complement>
     </select>
+  -->
 
-		<select method="findValuatedAccount">
-			<parameter name="clientId" java-type="java.lang.Integer"
-				jdbc-type="NUMERIC" />
-			select
-			<columns>
+    <select method="findValuatedAccount">
+      <parameter name="clientId" java-type="java.lang.Integer"
+        jdbc-type="NUMERIC" />
+      select
+      <columns>
         <vo table="account" extended-vo="ValuatedAccountVO" alias="a">
-					<collection table="transaction" property="transaction"
-						alias="t" />
-				</vo>
-			</columns>
-			from account a
-			join transaction t on (t.account_id) = (a.id)
-			<complement>
-				where a.id = #{clientId}
-			</complement>
-		</select>
+          <collection table="transaction" property="transaction"
+            alias="t" />
+        </vo>
+      </columns>
+      from account a
+      join transaction t on (t.account_id) = (a.id)
+      <complement>
+        where a.id = #{clientId}
+      </complement>
+    </select>
+
+<!-- 
 
     <select method="findBestBranches">
       <parameter name="clientId" java-type="java.lang.Integer"
@@ -148,8 +151,11 @@
       </columns>
       from tx_branch b
     </select>
+    
+    -->
 
 	</dao>
+<!-- 
  -->
  
 </hotrod>

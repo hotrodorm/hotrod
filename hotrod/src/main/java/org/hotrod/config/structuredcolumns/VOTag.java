@@ -305,6 +305,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
     this.generator = generator;
+    log.info("*** this.table=" + this.table + " this.view=" + this.view);
     if (this.table != null) {
       this.tableMetadata = generator.findTableMetadata(this.table);
       if (this.tableMetadata == null) {

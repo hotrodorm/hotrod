@@ -6,11 +6,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.eclipseplugin.ErrorMessage;
 import org.hotrod.eclipseplugin.RelativeProjectPath;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
 public class MainConfigFace extends AbstractFace implements Comparable<MainConfigFace> {
 
+  private boolean valid;
   private String absolutePath;
   private RelativeProjectPath path;
   private HotRodViewContentProvider provider;
@@ -21,6 +23,7 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
   public MainConfigFace(final File f, final RelativeProjectPath path, final HotRodViewContentProvider provider,
       final HotRodConfigTag config) {
     super(path.getFileName(), config);
+    this.valid = true;
     this.absolutePath = f.getAbsolutePath();
     this.path = path;
     this.provider = provider;
@@ -33,20 +36,19 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
       } catch (InvalidConfigurationItemException e) {
         this.config = null;
         this.removeAllChildren();
-        this.addChild(new ErrorMessageFace(e.getLocation(), e.getMessage()));
         return;
       }
     }
   }
 
   public MainConfigFace(final File f, final RelativeProjectPath path, final HotRodViewContentProvider provider,
-      final ErrorMessageFace errorMessageFace) {
-    super(path.getFileName(), null);
+      final ErrorMessage errorMessage) {
+    super(path.getFileName(), null, errorMessage);
+    this.valid = false;
     this.absolutePath = f.getAbsolutePath();
     this.path = path;
     this.provider = provider;
     this.config = null;
-    this.addChild(errorMessageFace);
   }
 
   // Behavior
@@ -54,6 +56,10 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
   // public void applyFreshVersion(final MainConfigFace fresh) {
   // super.computeChangesFrom(fresh);
   // }
+
+  public boolean isValid() {
+    return valid;
+  }
 
   void setConfig(HotRodConfigTag config) {
     this.config = config;
@@ -121,9 +127,7 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
     return config;
   }
 
-
   // Indexable
-
 
   @Override
   public int hashCode() {

@@ -145,8 +145,7 @@ public class ConfigurationLoader {
       if (loc == null) {
         throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
       } else {
-        throw new ControlledException("Invalid configuration file '" + loc.getFile().getPath() + "' (line "
-            + loc.getLineNumber() + ", col " + loc.getColumnNumber() + "): " + e.getMessage());
+        throw new ControlledException(loc, e.getMessage());
       }
 
     } catch (GeneratorNotFoundException e) {
@@ -247,8 +246,7 @@ public class ConfigurationLoader {
       if (loc == null) {
         throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
       } else {
-        throw new ControlledException("Invalid configuration file '" + loc.getFile().getPath() + "' (line "
-            + loc.getLineNumber() + ", col " + loc.getColumnNumber() + "): " + e.getMessage());
+        throw new ControlledException(loc, e.getMessage());
       }
 
     } finally {

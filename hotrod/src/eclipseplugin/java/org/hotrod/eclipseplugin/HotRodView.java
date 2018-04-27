@@ -26,8 +26,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -46,16 +45,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.texteditor.ITextEditor;
 import org.hotrod.ant.Constants;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
@@ -70,7 +66,6 @@ import org.hotrod.eclipseplugin.ProjectProperties.FileProperties;
 import org.hotrod.eclipseplugin.jdbc.DatabasePropertiesWizard;
 import org.hotrod.eclipseplugin.jdbc.NavigationAwareWizardDialog;
 import org.hotrod.eclipseplugin.treeview.AbstractFace;
-import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
 import org.hotrod.eclipseplugin.treeview.HotRodLabelProvider;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
@@ -80,6 +75,7 @@ import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.LiveGenerator;
+import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public class HotRodView extends ViewPart {
@@ -109,7 +105,6 @@ public class HotRodView extends ViewPart {
   private Action actionAutoOnOff;
   private Action actionRemoveFile;
   private Action actionRemoveAllFiles;
-  private Action actionConnectToDatabase;
   private Action actionConfigureDatabaseConnection;
 
   private boolean autoGenerate = false;
@@ -120,8 +115,6 @@ public class HotRodView extends ViewPart {
   private ImageDescriptor generateChanges;
   private ImageDescriptor generateSelection;
   private ImageDescriptor configureDatabaseConnection;
-  private ImageDescriptor connected;
-  private ImageDescriptor disconnected;
 
   private IMenuManager contextMenu = null;
 
@@ -138,13 +131,13 @@ public class HotRodView extends ViewPart {
     this.generateChanges = Activator.getImageDescriptor(GEN_CHANGES_ICON_PATH);
     this.generateSelection = Activator.getImageDescriptor(GEN_SELECTION_ICON_PATH);
     this.configureDatabaseConnection = Activator.getImageDescriptor(CONNECT_TO_DATABASE_ICON_PATH);
-    this.connected = Activator.getImageDescriptor(CONNECTED_ICON_PATH);
-    this.disconnected = Activator.getImageDescriptor(DISCONNECTED_ICON_PATH);
   }
 
   @Override
   public void createPartControl(final Composite parent) {
     this.viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+
+    ColumnViewerToolTipSupport.enableFor(this.viewer);
 
     this.hotRodViewContentProvider = new HotRodViewContentProvider(this);
 
@@ -185,7 +178,7 @@ public class HotRodView extends ViewPart {
     // Point point = new Point(event.x, event.y);
     // TreeItem item = viewer.getItem(point);
     // if (item != null) {
-    // log("Mouse down: " + item);
+    // log.debug("Mouse down: " + item);
     // }
     // }
     // });
@@ -208,112 +201,60 @@ public class HotRodView extends ViewPart {
     }
 
     @Override
-    public void mouseDown(final MouseEvent e) {
-      Point point = new Point(e.x, e.y);
+    public void mouseDown(final MouseEvent event) {
+      Point point = new Point(event.x, event.y);
       ViewerCell cell = myViewer.getCell(point);
       // if (cell != null && cell.getColumnIndex() == columnIndex) {
       // Rectangle rect = cell.getTextBounds();
       // rect.width = cell.getText().length() * charWidth;
       // if (rect.contains(point))
-      // log("Cell="+cell);
+      // log.debug("Cell="+cell);
 
       if (cell != null) {
         Object obj = cell.getElement();
 
         try {
-          ErrorMessageFace em = (ErrorMessageFace) obj; // error message face
-          log("THIS IS an error message!");
-
-          // =================================================
-
-          try {
-            String filePath = em.getLocation().getFile().getPath();
-            int lineNumber = em.getLocation().getLineNumber();
-            log("... opening: filePath=" + filePath + " line=" + lineNumber);
-
-            IPath fromOSString = Path.fromOSString(filePath);
-            IFile inputFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(fromOSString);
-            log("... opening: inputFile=" + inputFile);
-
-            if (inputFile != null) {
-
-              // openAsTextFile(line, inputFile);
-              openAsXMLFile(inputFile, lineNumber);
+          AbstractFace face = (AbstractFace) obj;
+          ErrorMessage em = (ErrorMessage) face.getErrorMessage();
+          if (em != null) {
+            SourceLocation location = em.getLocation();
+            if (location != null) {
+              String filePath = em.getLocation().getFile().getPath();
+              int lineNumber = em.getLocation().getLineNumber();
+              IPath fromOSString = Path.fromOSString(filePath);
+              IFile inputFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(fromOSString);
+              if (inputFile != null) {
+                try {
+                  openAsXMLFile(inputFile, lineNumber);
+                } catch (CoreException e1) {
+                  log.error("Could not open configuration file '" + filePath + "'.", e1);
+                }
+              }
 
             }
-
-          } catch (PartInitException e1) {
-            log("Could not open the text editor.");
-            // e1.printStackTrace();
-            // } catch (BadLocationException e1) {
-            // log("Line does not exist.");
-            // // e1.printStackTrace();
-          } catch (CoreException e1) {
-            e1.printStackTrace();
           }
-
-          // ==================================================
-
         } catch (ClassCastException e2) {
           // ignore
-          // log("Not an error message face.");
         }
 
       }
     }
 
-    private void openAsTextFile(int line, IFile inputFile) throws PartInitException, BadLocationException {
-      IWorkbenchPage page1 = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-      IEditorPart openEditor11 = IDE.openEditor(page1, inputFile);
-
-      // org.eclipse.ui.texteditor.ITextEditor a;
-      // org.eclipse.ui.texteditor.ITextEditor2 a2;
-      // org.eclipse.ui.texteditor.ITextEditor3 a3;
-      // org.eclipse.ui.texteditor.ITextEditor4 a4;
-      // org.eclipse.ui.texteditor.ITextEditor5 a5;
-
-      log("... opening: openEditor11=" + openEditor11);
-
-      // org.eclipse.wst.xml.ui.internal.tabletree.XMLMultiPageEditorPart
-      // ep =
-      // (org.eclipse.wst.xml.ui.internal.tabletree.XMLMultiPageEditorPart)openEditor11;
-      // ep.getEditorSite().getWorkbenchWindow()
-
-      if (openEditor11 instanceof ITextEditor) {
-        log("... opening: ITextEditor");
-        ITextEditor textEditor = (ITextEditor) openEditor11;
-        IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
-        textEditor.selectAndReveal(document.getLineOffset(line - 1), document.getLineLength(line - 1));
-        // } else if (openEditor11 instanceof MultiPageEditorPart) {
-        // log("... opening: MultiPageEditorPart");
-        // MultiPageEditorPart textEditor = (MultiPageEditorPart)
-        // openEditor11;
-        // textEditor.
-        // IDocument document =
-        // textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
-        // textEditor.selectAndReveal(document.getLineOffset(line - 1),
-        // document.getLineLength(line - 1));
-      }
-
-      // org.eclipse.wst.xml.ui.internal.tabletree.XMLMultiPageEditorPart
-      // org.eclipse.ui.part.MultiPageEditorPart
-    }
-
   }
 
   private void openAsXMLFile(final IFile ifile, final int lineNumber) throws CoreException {
-
     IWorkbench wb = PlatformUI.getWorkbench();
     IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
     IWorkbenchPage page = win.getActivePage();
 
-    IMarker marker;
-    marker = ifile.createMarker(IMarker.TEXT);
+    IMarker marker = ifile.createMarker(IMarker.TEXT);
     HashMap<String, Object> map = new HashMap<String, Object>();
     map.put(IMarker.LINE_NUMBER, lineNumber);
     marker.setAttributes(map);
     IDE.openEditor(page, marker);
     marker.delete();
+
+    IDE.openEditor(page, ifile);
   }
 
   public void dispose() {
@@ -331,7 +272,6 @@ public class HotRodView extends ViewPart {
     toolBar.add(actionGenerateSelected);
     toolBar.add(new Separator());
     toolBar.add(actionAutoOnOff);
-    toolBar.add(actionConnectToDatabase);
     toolBar.add(actionConfigureDatabaseConnection);
     toolBar.add(new Separator());
     toolBar.add(actionRemoveFile);
@@ -345,7 +285,6 @@ public class HotRodView extends ViewPart {
     menu.add(actionGenerateSelected);
     menu.add(new Separator());
     menu.add(actionAutoOnOff);
-    menu.add(actionConnectToDatabase);
     menu.add(actionConfigureDatabaseConnection);
     menu.add(new Separator());
     menu.add(actionRemoveFile);
@@ -375,7 +314,6 @@ public class HotRodView extends ViewPart {
     contextMenu.add(actionGenerateSelected);
     contextMenu.add(new Separator());
     contextMenu.add(actionAutoOnOff);
-    contextMenu.add(actionConnectToDatabase);
     contextMenu.add(actionConfigureDatabaseConnection);
     contextMenu.add(new Separator());
     contextMenu.add(actionRemoveFile);
@@ -421,21 +359,21 @@ public class HotRodView extends ViewPart {
           if (projectProperties == null) {
             showMessage("Project properties are not yet configured");
           } else {
-            log("file=" + mainFace.getRelativeFileName());
+            log.debug("file=" + mainFace.getRelativeFileName());
             FileProperties fileProperties = projectProperties.getFileProperties(mainFace.getRelativeFileName());
             if (fileProperties == null) {
               showMessage("File properties are not yet configured");
             } else {
-              log("generating all - starting");
+              log.debug("generating all - starting");
               mainFace.getConfig().markGenerateTree();
-              // log(">>> 4 fileProperties.getCachedMetadata()=" +
+              // log.debug(">>> 4 fileProperties.getCachedMetadata()=" +
               // fileProperties.getCachedMetadata());
-              // log(">>> 4
+              // log.debug(">>> 4
               // fileProperties.getCachedMetadata().getSelectMetadataCache()="
               // + fileProperties.getCachedMetadata().getSelectMetadataCache());
 
               generateFile(mainFace, projectProperties, fileProperties, false);
-              // log("generating all - complete");
+              // log.debug("generating all - complete");
             }
           }
 
@@ -499,7 +437,7 @@ public class HotRodView extends ViewPart {
           face.refreshView();
         }
 
-        log("[generate changes - finished]");
+        log.debug("[generate changes - finished]");
 
       }
 
@@ -535,9 +473,9 @@ public class HotRodView extends ViewPart {
         }
 
         TreeSelection selection = (TreeSelection) viewer.getSelection();
-        log("selection 1: " + selection);
+        log.debug("selection 1: " + selection);
         List<?> sel = selection.toList();
-        log("selection 2: size=" + selection.size());
+        log.debug("selection 2: size=" + selection.size());
         if (!sel.isEmpty()) {
 
           // Mark selection for generation and identify main faces
@@ -545,7 +483,7 @@ public class HotRodView extends ViewPart {
           LinkedHashSet<MainConfigFace> mainFaces = new LinkedHashSet<MainConfigFace>();
           for (Object obj : sel) {
             AbstractFace selectedFace = (AbstractFace) obj;
-            log(" - selected face=" + selectedFace.getName());
+            log.debug(" - selected face=" + selectedFace.getName());
             selectedFace.getTag().markGenerateTree();
             mainFaces.add(selectedFace.getMainConfigFace());
           }
@@ -618,32 +556,6 @@ public class HotRodView extends ViewPart {
     actionAutoOnOff.setToolTipText(text);
     actionAutoOnOff.setImageDescriptor(autoGenerate ? autoOn : autoOff);
 
-    // Connect to Database
-
-    actionConnectToDatabase = new Action() {
-      @Override
-      public void run() {
-        fileConnected = !fileConnected;
-        String text = fileConnected ? "Disconnect from database" : "Connect to database";
-        actionConnectToDatabase.setText(text);
-        actionConnectToDatabase.setChecked(fileConnected);
-        actionConnectToDatabase.setToolTipText(text);
-        actionConnectToDatabase.setImageDescriptor(fileConnected ? connected : disconnected);
-
-        // actionGenerateChanges.setEnabled(!autoGenerate);
-        // actionGenerateSelection.setEnabled(!autoGenerate);
-
-        if (contextMenu != null) {
-          contextMenu.update();
-        }
-      }
-    };
-    String t1 = fileConnected ? "Disconnect from database" : "Connect to database";
-    actionConnectToDatabase.setText(t1);
-    actionConnectToDatabase.setChecked(fileConnected);
-    actionConnectToDatabase.setToolTipText(t1);
-    actionConnectToDatabase.setImageDescriptor(fileConnected ? connected : disconnected);
-
     // Configure Database Connection
 
     actionConfigureDatabaseConnection = new Action() {
@@ -662,12 +574,12 @@ public class HotRodView extends ViewPart {
           MainConfigFace mainConfigFace = face.getMainConfigFace();
 
           // try {
-          // log("[X1] will load properties");
+          // log.debug("[X1] will load properties");
           ProjectProperties projectProperties =
               // ProjectProperties.load(mainConfigFace.getProject());
               ProjectPropertiesCache.getProjectProperties(mainConfigFace.getProject());
 
-          // log("[X1] properties loaded");
+          // log.debug("[X1] properties loaded");
 
           DatabasePropertiesWizard wizard = new DatabasePropertiesWizard(mainConfigFace, projectProperties,
               viewer.getControl().getShell());
@@ -676,7 +588,7 @@ public class HotRodView extends ViewPart {
           hotRodViewContentProvider.refresh();
 
           // } catch (CouldNotLoadPropertiesException e) {
-          // // log("[X1] Could not load properties");
+          // // log.debug("[X1] Could not load properties");
           // MessageDialog.openError(shell, "Invalid HotRod Plugin's properties
           // file",
           // "Invalid HotRod Plugin's properties file: " +
@@ -700,24 +612,24 @@ public class HotRodView extends ViewPart {
       @Override
       public void run() {
 
-        // log("--- Removing selection...");
+        // log.debug("--- Removing selection...");
 
         TreeSelection selection = (TreeSelection) viewer.getSelection();
         Set<MainConfigFace> mainConfigFaces = new HashSet<MainConfigFace>();
         for (Object obj : selection.toList()) {
-          // log("SELECTION: obj=" + obj + (obj != null ? " (" +
+          // log.debug("SELECTION: obj=" + obj + (obj != null ? " (" +
           // obj.getClass().getName() + ")" : ""));
           AbstractFace face = (AbstractFace) obj;
           mainConfigFaces.add(face.getMainConfigFace());
         }
         for (MainConfigFace f : mainConfigFaces) {
-          // log(" --> removing face: " + f.getAbsolutePath());
+          // log.debug(" --> removing face: " + f.getAbsolutePath());
           f.remove();
         }
         hotRodViewContentProvider.refresh();
 
         // showMessage("Remove File - executed");
-        // log("--- Removing selection COMPLETED");
+        // log.debug("--- Removing selection COMPLETED");
       }
     };
     actionRemoveFile.setText("Remove File");
@@ -777,9 +689,9 @@ public class HotRodView extends ViewPart {
       display("Nothing to generate.");
     } else {
 
-      // log(">>> 5 fileProperties.getCachedMetadata()=" +
+      // log.debug(">>> 5 fileProperties.getCachedMetadata()=" +
       // fileProperties.getCachedMetadata());
-      // log(">>> 5
+      // log.debug(">>> 5
       // fileProperties.getCachedMetadata().getSelectMetadataCache()="
       // + fileProperties.getCachedMetadata().getSelectMetadataCache());
 
@@ -803,7 +715,7 @@ public class HotRodView extends ViewPart {
 
       // Generate
 
-      // log(">>> 6 fileProperties.getCachedMetadata()=" +
+      // log.debug(">>> 6 fileProperties.getCachedMetadata()=" +
       // fileProperties.getCachedMetadata());
 
       DatabaseLocation loc = new DatabaseLocation(fileProperties.getDriverClassName(), fileProperties.getUrl(),
@@ -812,12 +724,13 @@ public class HotRodView extends ViewPart {
 
       try {
 
-        // log(">>> 7 fileProperties.getCachedMetadata()=" +
+        // log.debug(">>> 7 fileProperties.getCachedMetadata()=" +
         // fileProperties.getCachedMetadata());
 
         CachedMetadata cachedMetadata = fileProperties.getCachedMetadata();
 
-        // log("cachedDatabase: " + (cachedMetadata.getCachedDatabase() == null
+        // log.debug("cachedDatabase: " + (cachedMetadata.getCachedDatabase() ==
+        // null
         // ? "null" : "not null"));
 
         config.logGenerateMark("Generate Marks (pre)", '-');
@@ -828,7 +741,7 @@ public class HotRodView extends ViewPart {
         // config.logGenerateMark("Generate Marks (post)", '=');
 
         g.prepareGeneration();
-        log("Generation prepared.");
+        log.debug("Generation prepared.");
 
         try {
           LiveGenerator liveGenerator = (LiveGenerator) g;
@@ -866,7 +779,7 @@ public class HotRodView extends ViewPart {
 
         // Generation complete
 
-        log("Generation complete.");
+        log.debug("Generation complete.");
 
       } catch (ControlledException e) {
         if (e.getLocation() == null) {
@@ -885,11 +798,6 @@ public class HotRodView extends ViewPart {
 
     }
 
-  }
-
-  private static void log(final String txt) {
-    System.out.println("[" + new Object() {
-    }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
   private static void display(final String txt) {
