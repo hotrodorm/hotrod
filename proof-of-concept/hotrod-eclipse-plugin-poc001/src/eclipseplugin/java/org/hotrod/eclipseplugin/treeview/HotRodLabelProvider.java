@@ -7,6 +7,7 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -36,6 +37,36 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
         }
       };
     }
+  }
+
+  @Override
+  public String getToolTipText(final Object element) {
+    System.out.println("element=" + element + " (" + (element == null ? "<null>" : element.getClass().getName()) + ")");
+    AbstractFace face = (AbstractFace) element;
+    String longText = "This is my tooltip than can be:\nreally long and long and "
+        + "long and long and long and long and long and long. "
+        + "Yep it can CONTINUE to be long and long and long and " + "long and long and long. "
+        + "\nPLUS MORE 1: more and more and more and more and more and more and more and more and more and."
+        + "\nPLUS MORE 2: more and more and more and more and more and more and more and more and more and."
+        + "\nPLUS MORE 3: more and more and more and more and more and more and more and more and more and."
+        + "\nPLUS MORE 4: more and more and more and more and more and more and more and more and more and."
+        + "\nPLUS MORE 5: more and more and more and more and more and more and more and more and more and.";
+    return face.getName().endsWith("income") ? longText : null;
+  }
+
+  @Override
+  public Point getToolTipShift(Object object) {
+    return new Point(5, 5);
+  }
+
+  @Override
+  public int getToolTipDisplayDelayTime(Object object) {
+    return 100;
+  }
+
+  @Override
+  public int getToolTipTimeDisplayed(Object object) {
+    return 30000;
   }
 
   @Override
@@ -163,6 +194,10 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
     super.update(cell);
   }
+
+  // public String getText(Object element) {
+  // return "My Tooltip 1.";
+  // }
 
   // private void listen() {
   // styledText.addListener(SWT.MouseDown, event -> {

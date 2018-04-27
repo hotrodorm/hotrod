@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -49,9 +50,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.hotrod.eclipseplugin.jdbc.DatabasePropertiesWizard;
-import org.hotrod.eclipseplugin.LocalProperties;
 import org.hotrod.eclipseplugin.LocalProperties.CouldNotLoadPropertiesException;
+import org.hotrod.eclipseplugin.jdbc.DatabasePropertiesWizard;
 import org.hotrod.eclipseplugin.jdbc.NavigationAwareWizardDialog;
 import org.hotrod.eclipseplugin.treeview.AbstractFace;
 import org.hotrod.eclipseplugin.treeview.ErrorMessageFace;
@@ -120,6 +120,8 @@ public class HotRodView extends ViewPart {
   @Override
   public void createPartControl(final Composite parent) {
     this.viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+
+    ColumnViewerToolTipSupport.enableFor(this.viewer);
 
     this.hotRodViewContentProvider = new HotRodViewContentProvider(this);
 
