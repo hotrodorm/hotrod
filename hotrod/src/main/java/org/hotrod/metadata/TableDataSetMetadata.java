@@ -241,8 +241,6 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
     this.exportedFKs = new ArrayList<ForeignKeyMetadata>();
     for (JdbcForeignKey fk : this.t.getExportedFks()) {
-      // System.out.println(" /// " + t.getName() + " -> " +
-      // fk.getRemoteTable().getName());
       this.exportedFKs.add(new ForeignKeyMetadata(getKeyMetadata(fk.getLocalKey(), viewTag),
           getKeyMetadata(fk.getRemoteKey(), viewTag), fk.pointsToPk(), fk.getRemoteTable()));
     }

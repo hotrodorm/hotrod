@@ -815,9 +815,6 @@ public class ObjectDAO extends GeneratableObject {
    */
   private void writeSelectParentByFK() throws IOException, ControlledException {
 
-    // System.out.println("::: writeSelectParentByFK() - " +
-    // this.ds.getIdentifier().getSQLIdentifier());
-
     List<ForeignKeyMetadata> fks = this.metadata.getImportedFKs();
     if (fks.isEmpty()) {
 
@@ -1017,9 +1014,6 @@ public class ObjectDAO extends GeneratableObject {
 
   private void writeSelectChildrenByFK() throws IOException, ControlledException {
 
-    // System.out.println("::: writeSelectChildrenByFK() - " +
-    // this.ds.getIdentifier().getSQLIdentifier());
-
     if (this.metadata.getExportedFKs().isEmpty()) {
 
       println("  // select children by exported FKs: no exported keys found -- skipped");
@@ -1040,9 +1034,6 @@ public class ObjectDAO extends GeneratableObject {
           this.metadata.getExportedFKs());
 
       for (DataSetMetadata ds : efkSelectors.keySet()) {
-
-        // System.out.println(">> remote=" +
-        // ds.getIdentifier().getSQLIdentifier());
 
         ObjectVO vo = this.generator.getVO(ds);
         ObjectDAO dao = this.generator.getDAO(ds);

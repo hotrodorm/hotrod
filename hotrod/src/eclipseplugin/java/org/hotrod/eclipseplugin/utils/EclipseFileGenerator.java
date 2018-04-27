@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -15,6 +16,8 @@ import org.hotrod.eclipseplugin.RelativeProjectPath;
 import org.hotrod.generator.FileGenerator;
 
 public class EclipseFileGenerator implements FileGenerator {
+
+  private static final Logger log = Logger.getLogger(EclipseFileGenerator.class);
 
   private IProject project;
 
@@ -35,7 +38,7 @@ public class EclipseFileGenerator implements FileGenerator {
 
     private EclipseTextWriter(final File f) throws IOException {
       RelativeProjectPath rp = RelativeProjectPath.findRelativePath(project, f);
-      log("opening: " + f.getAbsolutePath());
+      log.debug("opening: " + f.getAbsolutePath());
       if (rp == null) {
         this.w = new BufferedWriter(new FileWriter(f));
         this.ifile = null;
@@ -57,7 +60,7 @@ public class EclipseFileGenerator implements FileGenerator {
 
     @Override
     public void close() throws IOException {
-      log("closing...");
+      log.debug("closing...");
       if (this.ifile != null) {
         try {
           ByteArrayInputStream bis = new ByteArrayInputStream(this.bos.toByteArray());
@@ -74,10 +77,6 @@ public class EclipseFileGenerator implements FileGenerator {
       }
     }
 
-  }
-
-  private static void log(final String txt) {
-    // System.out.println("[EclipseFileGenerator] - " + txt);
   }
 
 }

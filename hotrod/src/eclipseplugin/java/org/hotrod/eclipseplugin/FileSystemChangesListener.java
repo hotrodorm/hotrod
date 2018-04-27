@@ -2,6 +2,7 @@ package org.hotrod.eclipseplugin;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -9,6 +10,8 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 
 public class FileSystemChangesListener implements IResourceChangeListener {
+
+  private static final Logger log = Logger.getLogger(FileSystemChangesListener.class);
 
   private HotRodViewContentProvider provider;
   private FileChangeListener listener;
@@ -22,6 +25,7 @@ public class FileSystemChangesListener implements IResourceChangeListener {
   public void resourceChanged(final IResourceChangeEvent event) {
     if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
       boolean refresh = processFileChanges(event.getDelta());
+      log.info("refresh=" + refresh);
       if (refresh) {
         this.provider.refresh();
       }
@@ -29,13 +33,13 @@ public class FileSystemChangesListener implements IResourceChangeListener {
   }
 
   private boolean processFileChanges(final IResourceDelta delta) {
-    log("*** kind=" + renderDeltaKind(delta.getKind()) + " type=" + renderResourceType(delta.getResource().getType())
-        + " r=" + delta.getResource().getLocation());
+    log.debug("*** kind=" + renderDeltaKind(delta.getKind()) + " type="
+        + renderResourceType(delta.getResource().getType()) + " r=" + delta.getResource().getLocation());
     int kind = delta.getKind();
     int flags = delta.getFlags();
-    boolean includesMarkerChange = (flags | IResourceDelta.MARKERS) != 0;
+    boolean isMarkerChangeOnly = flags == IResourceDelta.MARKERS;
     boolean refresh = false;
-    if (!includesMarkerChange) { // Ingore markers changes
+    if (!isMarkerChangeOnly) { // Ignore markers changes
       if (kind == IResourceDelta.ADDED || kind == IResourceDelta.REMOVED || kind == IResourceDelta.CHANGED) {
         IResource r = delta.getResource();
         if (r.getType() == IResource.FILE) {
@@ -100,11 +104,6 @@ public class FileSystemChangesListener implements IResourceChangeListener {
 
     boolean informFileChanged(File f);
 
-  }
-
-  private static void log(final String txt) {
-    // System.out.println("[" + new Object() {
-    // }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

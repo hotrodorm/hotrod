@@ -30,7 +30,7 @@ public abstract class AbstractFace implements IAdaptable {
 
   private boolean hasBranchChanges;
 
-  private ErrorMessage errorMessage;
+  protected ErrorMessage errorMessage;
 
   private List<AbstractFace> children;
 
@@ -179,8 +179,8 @@ public abstract class AbstractFace implements IAdaptable {
 
   public final void applyChangesFrom(final AbstractFace fresh) {
 
-    log.info("fresh=" + fresh);
-    log("[1] applyChanges: " + this.name + " - this:" + System.identityHashCode(this.getTag()) + " fresh:"
+    log.debug("fresh=" + fresh);
+    log.debug("[1] applyChanges: " + this.name + " - this:" + System.identityHashCode(this.getTag()) + " fresh:"
         + System.identityHashCode(fresh.getTag()));
 
     // own changes
@@ -200,13 +200,13 @@ public abstract class AbstractFace implements IAdaptable {
       // Not a main tag - Ignore
     }
 
-    log("  [2] applyChanges: " + this.name + " - this:" + System.identityHashCode(this.getTag()) + " status:"
+    log.debug("  [2] applyChanges: " + this.name + " - this:" + System.identityHashCode(this.getTag()) + " status:"
         + this.getStatus());
 
     // sub item changes
 
     List<AbstractFace> existing = new ArrayList<AbstractFace>(this.children);
-    log(" . children count '" + this.name + "': this=" + existing.size() + " fresh=" + fresh.children.size());
+    log.debug(" . children count '" + this.name + "': this=" + existing.size() + " fresh=" + fresh.children.size());
     this.children.clear();
 
     for (AbstractFace f : fresh.children) {
@@ -224,7 +224,7 @@ public abstract class AbstractFace implements IAdaptable {
       }
     }
 
-    log(" . children removed '" + this.name + "': " + !existing.isEmpty());
+    log.debug(" . children removed '" + this.name + "': " + !existing.isEmpty());
     if (!existing.isEmpty()) { // some children were removed
       this.getTag().setStatus(TagStatus.MODIFIED);
     }
@@ -235,10 +235,10 @@ public abstract class AbstractFace implements IAdaptable {
     for (Iterator<AbstractFace> it = existing.iterator(); it.hasNext();) {
       AbstractFace e = it.next();
       if (f.tag == null) {
-        System.out.println("f.item is null!");
+        log.trace("f.item is null!");
       }
       if (e.tag == null) {
-        System.out.println("e.item is null!");
+        log.trace("e.item is null!");
       }
       if (f.tag.sameKey(e.tag)) {
         it.remove();
@@ -250,11 +250,6 @@ public abstract class AbstractFace implements IAdaptable {
 
   public AbstractConfigurationTag getTag() {
     return tag;
-  }
-
-  private static void log(final String txt) {
-    System.out.println("[" + new Object() {
-    }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

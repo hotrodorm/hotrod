@@ -61,6 +61,8 @@ public class LoadedConfigurationFiles implements FileChangeListener {
           MainConfigFace freshFace = load(f);
           log.debug("File loading - freshFace=" + freshFace);
 
+          log.info("cachedConfig=" + cachedConfig);
+
           if (cachedConfig == null) {
 
             // 4.a Display loaded file as-is when no cached config is present.
@@ -137,20 +139,36 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     this.loadedFiles.remove(face.getAbsolutePath());
   }
 
-  // TODO: mark of reload
-  private void reload(final MainConfigFace currentPresentedFace) {
-    String absPath = currentPresentedFace.getAbsolutePath();
+  private void reload(final MainConfigFace currentFace) {
+    log.info("reload");
+    String absPath = currentFace.getAbsolutePath();
     File f = new File(absPath);
     MainConfigFace newFace = load(f);
-    log.debug("File changed - Apply changes - newFace=" + newFace);
+    HotRodConfigTag currentConfig = currentFace.getConfig();
 
-    HotRodConfigTag config1 = currentPresentedFace.getConfig();
-    if (config1 != null) {
-      config1.logGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(config1), '-');
-      log.debug("newFace=" + newFace + " newFace.getTag()=" + newFace.getTag());
-      currentPresentedFace.applyChangesFrom(newFace);
-      HotRodConfigTag config2 = currentPresentedFace.getConfig();
-      config2.logGenerateMark("Generate Marks (POST) - " + System.identityHashCode(config2), '=');
+    if (currentFace.isValid()) {
+      if (newFace.isValid()) { // 1. Stays valid
+        log.info("1. Stays valid");
+        currentFace.applyChangesFrom(newFace);
+      } else { // 2. Becoming invalid
+        log.info("2. Becoming invalid");
+        currentFace.setInvalid(newFace.getErrorMessage());
+      }
+    } else {
+      if (newFace.isValid()) { // 3. Becoming valid
+        log.info("3. Becoming valid");
+        currentFace.setValid();
+        if (currentConfig == null) {
+          log.info("3.1 Set config to new one.");
+          currentFace.setConfig(newFace.getConfig());
+        } else {
+          log.info("3.2 Apply changes.");
+          currentFace.applyChangesFrom(newFace);
+        }
+      } else { // 4. Stays invalid
+        log.info("4. Stays invalid");
+        currentFace.setInvalid(newFace.getErrorMessage());
+      }
     }
 
   }
@@ -171,29 +189,29 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
   @Override
   public boolean informFileAdded(final File f) {
-    log("  --> received file added: " + f.getAbsolutePath());
+    log.debug("  --> received file added: " + f.getAbsolutePath());
     // Ignore new file
     return false;
   }
 
   @Override
   public boolean informFileRemoved(final File f) {
-    log("  --> received file removed: " + f.getAbsolutePath());
+    log.debug("  --> received file removed: " + f.getAbsolutePath());
     String fullPathName = f.getAbsolutePath();
     printLoadedFiles();
     if (this.loadedFiles.containsKey(fullPathName)) {
-      log("  >> Found to remove");
+      log.debug("  >> Found to remove");
       this.remove(this.loadedFiles.get(fullPathName));
       return true;
     } else {
-      log("  >> NOT Found to remove");
+      log.debug("  >> NOT Found to remove");
       return false;
     }
   }
 
   @Override
   public boolean informFileChanged(final File f) {
-    log("  --> received file changed: " + f.getAbsolutePath());
+    log.debug("  --> received file changed: " + f.getAbsolutePath());
     String fullPathName = f.getAbsolutePath();
     if (this.loadedFiles.containsKey(fullPathName)) {
       MainConfigFace currentPresentedFace = this.loadedFiles.get(fullPathName);
@@ -206,20 +224,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
   private void printLoadedFiles() {
     for (String p : this.loadedFiles.keySet()) {
-      log("## currently loaded: " + p);
-    }
-  }
-
-  private static void log(final String txt) {
-    // System.out.println("[" + new Object() {
-    // }.getClass().getEnclosingClass().getName() + "] " + txt);
-  }
-
-  private static void log(final String txt, final Throwable t) {
-    System.out.println("[" + new Object() {
-    }.getClass().getEnclosingClass().getName() + "] " + txt);
-    if (t != null) {
-      t.printStackTrace(System.out);
+      log.debug("## currently loaded: " + p);
     }
   }
 

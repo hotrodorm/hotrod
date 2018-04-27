@@ -91,7 +91,7 @@ public class ProjectProperties {
   // Getters
 
   public FileProperties getFileProperties(final String fileName) {
-//    log("[X2] this.files.size()=" + this.files.size());
+    // log("[X2] this.files.size()=" + this.files.size());
     return this.files.get(fileName);
   }
 
@@ -502,11 +502,6 @@ public class ProjectProperties {
       super(message);
     }
 
-  }
-
-  private static void log(final String txt) {
-    System.out.println("[" + new Object() {
-    }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

@@ -27,8 +27,12 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
     this.absolutePath = f.getAbsolutePath();
     this.path = path;
     this.provider = provider;
-    this.config = config;
 
+    this.config = config;
+    addSubFaces(config);
+  }
+
+  private void addSubFaces(final HotRodConfigTag config) {
     for (AbstractConfigurationTag subTag : config.getSubTags()) {
       try {
         AbstractFace face = FaceFactory.getFace(subTag);
@@ -53,16 +57,54 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   // Behavior
 
-  // public void applyFreshVersion(final MainConfigFace fresh) {
-  // super.computeChangesFrom(fresh);
-  // }
-
   public boolean isValid() {
     return valid;
   }
 
-  void setConfig(HotRodConfigTag config) {
+  public void setInvalid(final ErrorMessage errorMessage) {
+    if (errorMessage == null) {
+      throw new IllegalArgumentException("Cannot set null error message.");
+    }
+    this.valid = false;
+    this.errorMessage = errorMessage;
+  }
+
+  public void setValid() {
+    this.valid = true;
+    this.errorMessage = null;
+  }
+
+  public void setConfig(final HotRodConfigTag config) {
     this.config = config;
+    super.removeAllChildren();
+    addSubFaces(config);
+  }
+
+  @Override
+  public AbstractFace[] getChildren() {
+    if (this.valid) {
+      return super.getChildren();
+    } else {
+      return new AbstractFace[0];
+    }
+  }
+
+  @Override
+  public boolean hasChildren() {
+    if (this.valid) {
+      return super.hasChildren();
+    } else {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean hasBranchChanges() {
+    if (this.valid) {
+      return super.hasBranchChanges();
+    } else {
+      return false;
+    }
   }
 
   // Getters

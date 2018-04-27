@@ -2,12 +2,16 @@ package org.hotrod.eclipseplugin;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.hotrod.eclipseplugin.jdbc.DriverFiles;
 
 public class RelativeProjectPath {
+
+  private static final Logger log = Logger.getLogger(RelativeProjectPath.class);
 
   private IProject project; // the project
   private String relativePath; // the relative path (only folders)
@@ -17,7 +21,7 @@ public class RelativeProjectPath {
     this.project = project;
     this.relativePath = relativePath;
     this.fileName = fileName;
-    log("***    relativePath=" + relativePath);
+    log.debug("***    relativePath=" + relativePath);
   }
 
   public IProject getProject() {
@@ -40,7 +44,8 @@ public class RelativeProjectPath {
       File folder = new File(this.relativePath);
       file = new File(folder, this.fileName);
     }
-    log("/// this.relativePath=" + this.relativePath + " this.fileName=" + this.fileName + " file=" + file.getPath());
+    log.debug(
+        "/// this.relativePath=" + this.relativePath + " this.fileName=" + this.fileName + " file=" + file.getPath());
     return file.getPath();
   }
 
@@ -72,13 +77,13 @@ public class RelativeProjectPath {
         IPath projectIPath = project.getLocation();
         String projectPath = projectIPath.toFile().getAbsolutePath();
         String head = projectPath + File.separator;
-        log(">>> projectPath=" + projectPath);
+        log.debug(">>> projectPath=" + projectPath);
         if (parentPath.equals(projectPath)) {
-          log(">>> -> equals");
+          log.debug(">>> -> equals");
           return new RelativeProjectPath(project, "", fileName);
         }
         if (parentPath.startsWith(head)) {
-          log(">>> -> starts");
+          log.debug(">>> -> starts");
           String relativePath = parentPath.substring(head.length());
           return new RelativeProjectPath(project, relativePath, fileName);
         }
@@ -90,11 +95,6 @@ public class RelativeProjectPath {
   public String toString() {
     return "[ " + this.project.getLocation().toFile().getPath() + " ! " + this.relativePath + " / " + this.fileName
         + " ]";
-  }
-
-  private static void log(final String txt) {
-    // System.out.println("[" + new Object() {
-    // }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

@@ -308,6 +308,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     log.info("*** this.table=" + this.table + " this.view=" + this.view);
     if (this.table != null) {
       this.tableMetadata = generator.findTableMetadata(this.table);
+      log.info("this.tableMetadata="+this.tableMetadata);
       if (this.tableMetadata == null) {
         throw new InvalidConfigurationFileException(super.getSourceLocation(),
             "Could not find <" + new TableTag().getTagName() + "> tag in the configuration file for the table '"

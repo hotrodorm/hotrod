@@ -31,14 +31,15 @@
 
 <!--
   <table name="client" />
-  <table name="account" />
   <table name="log" />
 
-  <table name="transaction" />
 
 
   <table name="log" />
 -->
+  <table name="account" />
+  <table name="transaction" />
+
 	<table name="federal_branch">
 
     <select method="method1" vo="FB1VO">
@@ -84,6 +85,9 @@
     <select method="method15" vo="FB134VO">
       select * from log
     </select>
+    <select method="method19" vo="FB18VO">
+      select * from log
+    </select>
   </view>
 
   <dao class="Exec1" >
@@ -127,12 +131,13 @@
         jdbc-type="NUMERIC" />
       select
       <columns>
-        <vo table="account" extended-vo="ValuatedAccountVO" alias="a">
+        <!--vo table="account" extended-vo="ValuatedAccountVO" alias="a"-->
+        <vo table="account" extended-vo="ValuatedAccountVO" alias="a"> 
           <collection table="transaction" property="transaction"
-            alias="t" />
+            alias="t" /> 
         </vo>
       </columns>
-      from account a
+      from account a 
       join transaction t on (t.account_id) = (a.id)
       <complement>
         where a.id = #{clientId}

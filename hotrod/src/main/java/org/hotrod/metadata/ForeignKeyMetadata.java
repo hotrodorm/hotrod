@@ -39,17 +39,10 @@ public class ForeignKeyMetadata implements Serializable {
   void linkReferencedTableMetadata(final Set<TableDataSetMetadata> tableMetadata) {
     for (TableDataSetMetadata tm : tableMetadata) {
       if (tm.correspondsToJdbcTable(this.remoteTable)) {
-        // System.out.println(
-        // " + this.remoteTable=" + this.remoteTable.getName() + " tds=" +
-        // tds.getIdentifier().getSQLIdentifier());
         remote.linkReferencedDataSet(tm);
         return;
       }
     }
-    // System.out.println(
-    // " + this.remoteTable " + this.remoteTable + " NOT
-    // FOUND!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    // remote.linkReferencedDataSet(null);
   }
 
   // Indexing methods

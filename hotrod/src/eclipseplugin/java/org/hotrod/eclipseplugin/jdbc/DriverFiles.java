@@ -10,24 +10,27 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.hotrod.eclipseplugin.utils.FUtil;
 
 public class DriverFiles {
 
+  private static final Logger log = Logger.getLogger(DriverFiles.class);
+
   private static Set<DriverFileLocation> driverFiles = new HashSet<DriverFileLocation>();
   private static URLClassLoader loader = null;
 
   public static synchronized void load(final IProject project, final String driverClassPathEntry) throws SQLException {
-    log("[DriverFiles] starting...");
+    log.debug("[DriverFiles] starting...");
     DriverFileLocation df = new DriverFileLocation(project, driverClassPathEntry);
 
     // Return the existing one if already loaded
 
     for (DriverFileLocation existing : driverFiles) {
       if (existing.equals(df)) {
-        log("[DriverFiles] already exists.");
+        log.debug("[DriverFiles] already exists.");
         return;
       }
     }
@@ -40,7 +43,7 @@ public class DriverFiles {
       file = ifile.getLocation().toFile();
     }
 
-    log("[DriverFiles] file=" + file.getPath());
+    log.debug("[DriverFiles] file=" + file.getPath());
     if (!file.exists()) {
       throw new SQLException("Could not load JDBC driver. File not found at " + file.getPath());
     }
@@ -53,7 +56,7 @@ public class DriverFiles {
       Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
       method.setAccessible(true);
       method.invoke(loader, file.toURI().toURL());
-      log("[DriverFiles] added!");
+      log.debug("[DriverFiles] added!");
 
     } catch (SecurityException e) {
       throw new SQLException("Could not load JDBC driver " + file.getPath(), e);
@@ -127,11 +130,6 @@ public class DriverFiles {
       return true;
     }
 
-  }
-
-  private static void log(final String txt) {
-    System.out.println("[" + new Object() {
-    }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

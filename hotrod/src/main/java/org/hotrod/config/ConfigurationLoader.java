@@ -13,6 +13,7 @@ import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEventLocator;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -138,7 +139,7 @@ public class ConfigurationLoader {
       return config;
 
     } catch (JAXBException e) {
-      throw new ControlledException(renderJAXBErrorMessage(f, validationHandler, e));
+      throw assembleJAXBException(f, validationHandler, e);
 
     } catch (InvalidConfigurationFileException e) {
       SourceLocation loc = e.getSourceLocation();
@@ -239,7 +240,7 @@ public class ConfigurationLoader {
       return fragmentConfig;
 
     } catch (JAXBException e) {
-      throw new ControlledException(renderJAXBErrorMessage(f, validationHandler, e));
+      throw assembleJAXBException(f, validationHandler, e);
 
     } catch (InvalidConfigurationFileException e) {
       SourceLocation loc = e.getSourceLocation();
@@ -261,23 +262,22 @@ public class ConfigurationLoader {
 
   }
 
-  private static String renderJAXBErrorMessage(final File f, final StrictValidationEventHandler validationHandler,
-      final JAXBException e) {
+  private static ControlledException assembleJAXBException(final File f,
+      final StrictValidationEventHandler validationHandler, final JAXBException e) {
+    ValidationEventLocator locator = validationHandler.getLocator();
+    SourceLocation location = new SourceLocation(f, locator.getLineNumber(), locator.getColumnNumber(),
+        locator.getOffset());
     if (e.getMessage() != null) {
-      return "The configuration file '" + f.getPath() + "' is not valid. An error was found at "
-          + validationHandler.getLocation() + ":\n - " + e.getMessage();
+      return new ControlledException(location, e.getMessage());
     } else if (e.getCause() != null) {
       try {
         SAXParseException pe = (SAXParseException) e.getCause();
-        return "The configuration file '" + f.getPath() + "' is invalid or non well-formed. An error was found at "
-            + validationHandler.getLocation() + ":\n - " + pe.getMessage();
+        return new ControlledException(location, pe.getMessage());
       } catch (ClassCastException e2) {
-        return "The configuration file '" + f.getPath() + "' is incorrect. An error was found at "
-            + validationHandler.getLocation() + ":\n - " + e.getCause().getMessage();
+        return new ControlledException(location, e.getCause().getMessage());
       }
     } else {
-      return "The configuration file '" + f.getPath() + "' is incorrect. An error was found at "
-          + validationHandler.getLocation() + ".";
+      return new ControlledException(location, "Invalid configuration file.");
     }
   }
 

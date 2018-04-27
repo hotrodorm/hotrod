@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.hotrod.eclipseplugin.jdbc.DriverFiles.DriverFileLocation;
@@ -18,12 +19,14 @@ import org.hotrod.eclipseplugin.utils.FUtil;
 
 public class SeparateDriverLoader {
 
+  private static final Logger log = Logger.getLogger(SeparateDriverLoader.class);
+
   private Set<DriverFileLocation> driverFiles = new HashSet<DriverFileLocation>();
   private URLClassLoader loader = null;
 
   public SeparateDriverLoader(final IProject project, final List<String> driverClassPathEntries) throws SQLException {
 
-    log("[DriverFiles] starting...");
+    log.debug("[DriverFiles] starting...");
     for (String entry : driverClassPathEntries) {
       DriverFileLocation df = new DriverFileLocation(project, entry);
 
@@ -31,7 +34,7 @@ public class SeparateDriverLoader {
 
       for (DriverFileLocation existing : this.driverFiles) {
         if (existing.equals(df)) {
-          log("[DriverFiles] already exists.");
+          log.debug("[DriverFiles] already exists.");
           return;
         }
       }
@@ -44,7 +47,7 @@ public class SeparateDriverLoader {
         file = ifile.getLocation().toFile();
       }
 
-      log("[DriverFiles] file=" + file.getPath());
+      log.debug("[DriverFiles] file=" + file.getPath());
       if (!file.exists()) {
         throw new SQLException("Could not load JDBC driver. File not found at " + file.getPath());
       }
@@ -62,7 +65,7 @@ public class SeparateDriverLoader {
         Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
         method.setAccessible(true);
         method.invoke(this.loader, file.toURI().toURL());
-        log("[DriverFiles] added!");
+        log.debug("[DriverFiles] added!");
 
       } catch (SecurityException e) {
         throw new SQLException("Could not load JDBC driver " + file.getPath(), e);
@@ -86,11 +89,6 @@ public class SeparateDriverLoader {
 
   public URLClassLoader getLoader() {
     return this.loader;
-  }
-
-  private static void log(final String txt) {
-    System.out.println("[" + new Object() {
-    }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

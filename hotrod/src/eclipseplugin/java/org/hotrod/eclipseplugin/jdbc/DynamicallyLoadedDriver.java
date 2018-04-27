@@ -7,9 +7,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 
 public class DynamicallyLoadedDriver {
+
+  private static final Logger log = Logger.getLogger(DynamicallyLoadedDriver.class);
 
   private IProject project;
   private List<String> driverClassPathEntries;
@@ -22,7 +25,7 @@ public class DynamicallyLoadedDriver {
 
   public DynamicallyLoadedDriver(final IProject project, final List<String> driverClassPathEntries,
       final String driverClassName) throws SQLException {
-    log("starting...");
+    log.debug("starting...");
     this.project = project;
     this.driverClassPathEntries = driverClassPathEntries;
     this.driverClassName = driverClassName;
@@ -34,19 +37,19 @@ public class DynamicallyLoadedDriver {
       this.classLoader = dl.getLoader();
     } else {
       for (String classPathEntry : this.driverClassPathEntries) {
-        log("classPathEntry=" + classPathEntry);
+        log.debug("classPathEntry=" + classPathEntry);
         DriverFiles.load(this.project, classPathEntry);
       }
       this.classLoader = DriverFiles.getClassLoader();
     }
 
     try {
-      log("will load class: " + this.driverClassName);
+      log.debug("will load class: " + this.driverClassName);
       Class<?> classToLoad = Class.forName(this.driverClassName, true, classLoader);
       Driver driver = (Driver) classToLoad.newInstance();
       this.driverProxy = this.getDriverProxy(driver);
       DriverManager.registerDriver(this.driverProxy);
-      log("loaded.");
+      log.debug("loaded.");
     } catch (ClassNotFoundException e) {
       throw new SQLException("Could not load JDBC driver. Class " + this.driverClassName + " not found");
     } catch (InstantiationException e) {
@@ -75,11 +78,6 @@ public class DynamicallyLoadedDriver {
 
   public void close() throws SQLException {
     DriverManager.deregisterDriver(this.driverProxy);
-  }
-
-  private static void log(final String txt) {
-    System.out.println("[" + new Object() {
-    }.getClass().getEnclosingClass().getName() + "] " + txt);
   }
 
 }

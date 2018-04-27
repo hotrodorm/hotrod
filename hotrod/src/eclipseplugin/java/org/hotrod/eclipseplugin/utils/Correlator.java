@@ -203,8 +203,4 @@ public class Correlator {
 
   }
 
-  // private static void display(final String txt) {
-  // System.out.println("[Correlator] " + txt);
-  // }
-
 }

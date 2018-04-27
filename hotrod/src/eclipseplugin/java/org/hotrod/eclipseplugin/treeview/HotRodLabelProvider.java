@@ -21,6 +21,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
   private static final Logger log = Logger.getLogger(HotRodLabelProvider.class);
 
+  @SuppressWarnings("unused")
   private Composite parent;
 
   private static Styler changeStyler = null;
@@ -57,8 +58,8 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
       } else {
         SourceLocation loc = errorMessage.getLocation();
         return errorMessage.getMessage() + (loc == null ? ""
-            : ("\n" + "  at " + loc.getFile().getName() + " (line "
-                + loc.getLineNumber() + ", col " + loc.getColumnNumber() + ") [click to source]"));
+            : ("\n" + "  at " + loc.getFile().getName() + " (line " + loc.getLineNumber() + ", col "
+                + loc.getColumnNumber() + ") [click to source]"));
       }
     } catch (ClassCastException e) {
       return null; // no tool tip
@@ -261,14 +262,11 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
   // }
   // if (style1 != null && style1.underline && style1.underlineStyle ==
   // SWT.UNDERLINE_LINK) {
-  // System.out.println("Click on a Link");
+  // log.debug("Click on a Link");
   // }
   // }
   // }
   // });
   // }
 
-  private void log(final String txt) {
-    System.out.println("[LOG7] " + txt);
-  }
 }

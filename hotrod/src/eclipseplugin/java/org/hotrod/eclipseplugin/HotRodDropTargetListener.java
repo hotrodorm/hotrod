@@ -34,9 +34,6 @@ public class HotRodDropTargetListener extends ViewerDropAdapter {
   @Override
   public boolean validateDrop(final Object currentTarget, final int currentOperation, final TransferData type) {
     boolean allowed = FileTransfer.getInstance().isSupportedType(type);
-    // System.out.println(
-    // "target=" + currentTarget + " operation=" + currentOperation + " type=" +
-    // type + " -> allowed=" + allowed);
     return allowed;
   }
 
@@ -46,13 +43,10 @@ public class HotRodDropTargetListener extends ViewerDropAdapter {
    */
   @Override
   public boolean performDrop(final Object data) {
-    // System.out.println("DROP: data=" + data + (data != null ? (" (" +
-    // data.getClass().getName() + ")") : ""));
     if (data instanceof String[]) {
       String[] files = (String[]) data;
       for (String fullPathName : files) {
         File f = new File(fullPathName);
-        // System.out.println(" * dropping: txt=" + fullPathName);
         this.files.addFile(f);
       }
     }

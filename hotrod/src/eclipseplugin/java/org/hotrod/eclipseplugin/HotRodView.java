@@ -88,8 +88,6 @@ public class HotRodView extends ViewPart {
   private static final String GEN_CHANGES_ICON_PATH = "eclipse-plugin/icons/gen-chg1-16.png";
   private static final String GEN_SELECTION_ICON_PATH = "eclipse-plugin/icons/gen-sel1-16.png";
   private static final String CONNECT_TO_DATABASE_ICON_PATH = "eclipse-plugin/icons/connect-to-database2-16.png";
-  private static final String CONNECTED_ICON_PATH = "eclipse-plugin/icons/connected2-16.png";
-  private static final String DISCONNECTED_ICON_PATH = "eclipse-plugin/icons/disconnected1-16.png";
 
   /**
    * The ID of the view as specified by the extension. // public static final
@@ -108,7 +106,6 @@ public class HotRodView extends ViewPart {
   private Action actionConfigureDatabaseConnection;
 
   private boolean autoGenerate = false;
-  private boolean fileConnected = false;
   private ImageDescriptor autoOn;
   private ImageDescriptor autoOff;
   private ImageDescriptor generateAll;
@@ -686,7 +683,7 @@ public class HotRodView extends ViewPart {
     IProject project = mainFace.getProject();
 
     if (incrementalMode && !config.treeIncludesIsToBeGenerated()) {
-      display("Nothing to generate.");
+      showMessage("Nothing to generate.");
     } else {
 
       // log.debug(">>> 5 fileProperties.getCachedMetadata()=" +
@@ -738,8 +735,6 @@ public class HotRodView extends ViewPart {
         HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
             config, DisplayMode.LIST, incrementalMode);
 
-        // config.logGenerateMark("Generate Marks (post)", '=');
-
         g.prepareGeneration();
         log.debug("Generation prepared.");
 
@@ -751,6 +746,8 @@ public class HotRodView extends ViewPart {
           liveGenerator.generate(fg);
 
           GenerationUnit<AbstractHotRodConfigTag> unit = (GenerationUnit<AbstractHotRodConfigTag>) config;
+
+          @SuppressWarnings("unused")
           boolean successful = unit.concludeGenerationTree(cachedMetadata.getConfig(), g.getAdapter());
 
           mainFace.refreshView();
@@ -763,7 +760,6 @@ public class HotRodView extends ViewPart {
 
         // Save the cache
 
-        // TODO: enable saving
         projectProperties.save();
 
         HotRodConfigTag ch = cachedMetadata.getConfig();
@@ -783,9 +779,9 @@ public class HotRodView extends ViewPart {
 
       } catch (ControlledException e) {
         if (e.getLocation() == null) {
-          display(Constants.TOOL_NAME + " could not generate the persistence code:\n" + e.getMessage());
+          showMessage(Constants.TOOL_NAME + " could not generate the persistence code:\n" + e.getMessage());
         } else {
-          display(Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "
+          showMessage(Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "
               + e.getLocation().render() + ":\n" + e.getMessage());
         }
       } catch (UncontrolledException e) {
@@ -798,10 +794,6 @@ public class HotRodView extends ViewPart {
 
     }
 
-  }
-
-  private static void display(final String txt) {
-    System.out.println(txt);
   }
 
 }
