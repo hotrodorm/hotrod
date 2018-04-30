@@ -301,7 +301,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
-      log.info(
+      log.debug(
           ">>> [" + this.getIdentifier().getSQLIdentifier() + "] this.selectMetadataCache=" + this.selectMetadataCache);
       SelectMethodMetadata cachedSm = this.selectMetadataCache.get(this.javaName, selectTag.getMethod());
 

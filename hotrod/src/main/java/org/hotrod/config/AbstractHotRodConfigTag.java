@@ -644,6 +644,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
   protected boolean commonSame(final AbstractConfigurationTag fresh) {
     try {
+      @SuppressWarnings("unused")
       AbstractHotRodConfigTag f = (AbstractHotRodConfigTag) fresh;
       return true;
     } catch (ClassCastException e) {
@@ -655,7 +656,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
   public boolean commonMarkGenerationComplete(final AbstractConfigurationTag unitCache, final DatabaseAdapter adapter) {
 
-    log.info("mark 1");
+    log.debug("mark 1");
 
     boolean failedInnerGeneration = false;
 
@@ -663,7 +664,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
     // Tables
 
-    log.info("mark 2 failedInnerGeneration=" + failedInnerGeneration);
+    log.debug("mark 2 failedInnerGeneration=" + failedInnerGeneration);
 
     for (CorrelatedEntry<TableTag> cor : Correlator.correlate(this.getTables(), cache.getTables(),
         new Comparator<TableTag>() {
@@ -676,17 +677,17 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
       TableTag t = cor.getLeft();
       TableTag c = cor.getRight();
 
-      log.info("mark 2.0 t=" + t + " c=" + c);
+      log.debug("mark 2.0 t=" + t + " c=" + c);
 
       if (t != null && t.isToBeGenerated()) {
-        log.info("mark 2.1 - fail t=" + t.getName());
+        log.debug("mark 2.1 - fail t=" + t.getName());
         failedInnerGeneration = true;
       }
       if (t != null && c == null) {
         if (t.isGenerationComplete()) {
           c = cache.add(t); // add to the cache.
           if (!t.concludeGeneration(c, adapter)) {
-            log.info("mark 2.2 - fail.");
+            log.debug("mark 2.2 - fail.");
             failedInnerGeneration = true;
           }
         }
@@ -695,13 +696,13 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
         cache.remove(t, adapter); // remove from the cache.
       }
       if (t != null && c != null) {
-        log.info("mark 2.3");
+        log.debug("mark 2.3");
         if (t.isGenerationComplete()) {
-          log.info("mark 2.3.1");
+          log.debug("mark 2.3.1");
           c = cache.replace(t, adapter); // replace the cache.
         }
         if (!t.concludeGeneration(c, adapter)) {
-          log.info("mark 2.3.2 - fail.");
+          log.debug("mark 2.3.2 - fail.");
           failedInnerGeneration = true;
         }
       }
@@ -710,7 +711,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
     // Enums
 
-    log.info("mark 3 failedInnerGeneration=" + failedInnerGeneration);
+    log.debug("mark 3 failedInnerGeneration=" + failedInnerGeneration);
 
     for (CorrelatedEntry<EnumTag> cor : Correlator.correlate(this.getEnums(), cache.getEnums(),
         new Comparator<EnumTag>() {
@@ -750,7 +751,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
     // Views
 
-    log.info("mark 4 failedInnerGeneration=" + failedInnerGeneration);
+    log.debug("mark 4 failedInnerGeneration=" + failedInnerGeneration);
 
     for (CorrelatedEntry<ViewTag> cor : Correlator.correlate(this.getViews(), cache.getViews(),
         new Comparator<ViewTag>() {
@@ -790,7 +791,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
     // Executors
 
-    log.info("mark 5 failedInnerGeneration=" + failedInnerGeneration);
+    log.debug("mark 5 failedInnerGeneration=" + failedInnerGeneration);
 
     for (CorrelatedEntry<ExecutorTag> cor : Correlator.correlate(this.getExecutors(), cache.getExecutors(),
         new Comparator<ExecutorTag>() {
@@ -829,7 +830,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
     }
 
-    log.info("mark 10");
+    log.debug("mark 10");
 
     return !failedInnerGeneration;
   }

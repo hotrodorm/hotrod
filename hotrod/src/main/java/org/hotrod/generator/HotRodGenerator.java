@@ -730,22 +730,6 @@ public abstract class HotRodGenerator {
     tableEnumConstants.put(em.getDaoTag().getJavaClassName(), enumTag.getTableConstants());
   }
 
-  private void propagateGeneration(final TableDataSetMetadata tm, final Set<TableDataSetMetadata> alreadyWalked) {
-    log.info("propagating... " + tm.getIdentifier().getSQLIdentifier() + " alreadyWalked.contains(tm)="
-        + alreadyWalked.contains(tm) + " tm.getDaoTag().getGenerateMark()=" + tm.getDaoTag().isToBeGenerated());
-    if (!alreadyWalked.contains(tm)) {
-      alreadyWalked.add(tm);
-      if (tm.getDaoTag().isToBeGenerated()) {
-        for (ForeignKeyMetadata efk : tm.getExportedFKs()) {
-          propagateGeneration(efk.getRemote().getTableMetadata(), alreadyWalked);
-        }
-        for (ForeignKeyMetadata ifk : tm.getImportedFKs()) {
-          propagateGeneration(ifk.getRemote().getTableMetadata(), alreadyWalked);
-        }
-      }
-    }
-  }
-
   @SuppressWarnings("unused")
   private void logSelectMethodMetadata() {
     for (ExecutorDAOMetadata d : this.executors) {

@@ -36,7 +36,6 @@
 
 
   <table name="log" />
--->
   <table name="account" />
   <table name="transaction" />
 
@@ -57,6 +56,7 @@
     <select method="method2" vo="FB2VO">
       select * from log
     </select>
+-->
 
 <!-- 
 
@@ -71,30 +71,45 @@
 			</columns>
 			from tx_branch tb
 		</select>
+  </table>
  -->
+  
+  <view name="tx_branch">
+    <select method="method100" vo="FB100"> 
+      select * from log        
+    </select>
+    <select method="method103" vo="FB103">
+      select * from log 
+    </select> 
+    <select method="method104" vo="FB104"> 
+      select *  
+        from log         
+    </select> 
+  </view> 
+    <!--
+    <select method="method103" vo="FB103">
+      select * from log
+    </select> 
+
+    <select method="method102" vo="FB102">
+      select * from log
+    </select>
+
+    
+    
+  <view name="tx_branch" />    
+     -->
+
  
-	</table>
-
-  <view name="tx_branch" >
-    <select method="method10" vo="FB10VO">
-      select * from log
-    </select>
-    <select method="method12" vo="FB11VO">
-      select * from log
-    </select>
-    <select method="method15" vo="FB134VO">
-      select * from log
-    </select>
-    <select method="method19" vo="FB18VO">
-      select * from log
-    </select>
-  </view>
-
+<!--
   <dao class="Exec1" >
     <select method="method30" vo="FB30VO">
       select * from log
     </select>  
     <select method="method34" vo="FB32xVO">
+      select * from log
+    </select>
+    <select method="method35" vo="FB35xVO">
       select * from log
     </select>
     <select method="method32" vo="FB32VO">
@@ -104,9 +119,9 @@
 
 
 
-	<dao class="Executor1DAO">
+  <dao class="Executor1DAO">
 
-<!--
+
 		<select method="getAccountTx0" vo="AccountTx0VO">
 			select a.* , t.*
 			from account a, transaction t
@@ -124,14 +139,13 @@
         and a.current_balance &lt; 1000
       </complement>
     </select>
-  -->
 
     <select method="findValuatedAccount">
       <parameter name="clientId" java-type="java.lang.Integer"
         jdbc-type="NUMERIC" />
       select
       <columns>
-        <!--vo table="account" extended-vo="ValuatedAccountVO" alias="a"-->
+        <!vo table="account" extended-vo="ValuatedAccountVO" alias="a">
         <vo table="account" extended-vo="ValuatedAccountVO" alias="a"> 
           <collection table="transaction" property="transaction"
             alias="t" /> 
@@ -143,6 +157,7 @@
         where a.id = #{clientId}
       </complement>
     </select>
+  -->
 
 <!-- 
 
@@ -159,8 +174,8 @@
     
     -->
 
-	</dao>
 <!-- 
+  </dao>
  -->
  
 </hotrod>

@@ -304,7 +304,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
   }
 
   @Override
-  public final boolean same(final AbstractConfigurationTag fresh) {
+  public boolean same(final AbstractConfigurationTag fresh) {
     try {
       DynamicSQLPart f = (DynamicSQLPart) fresh;
       this.getClass().cast(fresh); // Check it's the correct subclass

@@ -25,7 +25,7 @@ public class FileSystemChangesListener implements IResourceChangeListener {
   public void resourceChanged(final IResourceChangeEvent event) {
     if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
       boolean refresh = processFileChanges(event.getDelta());
-      log.info("refresh=" + refresh);
+      log.debug("refresh=" + refresh);
       if (refresh) {
         this.provider.refresh();
       }

@@ -12,8 +12,10 @@ import java.util.Set;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEventLocator;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -139,7 +141,7 @@ public class ConfigurationLoader {
       return config;
 
     } catch (JAXBException e) {
-      throw assembleJAXBException(f, validationHandler, e);
+      throw assembleControlledException(f, validationHandler, e);
 
     } catch (InvalidConfigurationFileException e) {
       SourceLocation loc = e.getSourceLocation();
@@ -240,7 +242,7 @@ public class ConfigurationLoader {
       return fragmentConfig;
 
     } catch (JAXBException e) {
-      throw assembleJAXBException(f, validationHandler, e);
+      throw assembleControlledException(f, validationHandler, e);
 
     } catch (InvalidConfigurationFileException e) {
       SourceLocation loc = e.getSourceLocation();
@@ -262,11 +264,28 @@ public class ConfigurationLoader {
 
   }
 
-  private static ControlledException assembleJAXBException(final File f,
+  private static ControlledException assembleControlledException(final File f,
       final StrictValidationEventHandler validationHandler, final JAXBException e) {
     ValidationEventLocator locator = validationHandler.getLocator();
-    SourceLocation location = new SourceLocation(f, locator.getLineNumber(), locator.getColumnNumber(),
-        locator.getOffset());
+
+    SourceLocation location = null;
+
+    if (locator == null) {
+      try {
+        UnmarshalException ue = (UnmarshalException) e;
+        if (ue.getCause() != null) {
+          XMLStreamException xe = (XMLStreamException) ue.getCause();
+          Location lxe = xe.getLocation();
+          location = new SourceLocation(f, lxe.getLineNumber(), lxe.getColumnNumber(), lxe.getCharacterOffset());
+          return new ControlledException(location, xe.getMessage());
+        }
+      } catch (ClassCastException e2) {
+        // Ignore
+      }
+    } else {
+      location = new SourceLocation(f, locator.getLineNumber(), locator.getColumnNumber(), locator.getOffset());
+    }
+
     if (e.getMessage() != null) {
       return new ControlledException(location, e.getMessage());
     } else if (e.getCause() != null) {

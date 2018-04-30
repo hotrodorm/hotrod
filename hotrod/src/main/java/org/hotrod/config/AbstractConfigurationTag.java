@@ -234,13 +234,15 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   // Display
 
   public void logGenerateMark(final String title, final char c) {
-    log.debug(SUtils.getFiller(c, 10) + " " + title + " " + SUtils.getFiller(c, 10));
-    displayGenerateMark(this, 0);
-    log.debug(SUtils.getFiller(c, 22 + title.length()));
+    // log.info(SUtils.getFiller(c, 10) + " " + title + " " +
+    // SUtils.getFiller(c, 10));
+    // displayGenerateMark(this, 0);
+    // log.info(SUtils.getFiller(c, 22 + title.length()));
   }
 
-  public void displayGenerateMark(final AbstractConfigurationTag tag, final int level) {
-    log.debug(SUtils.getFiller(". ", level) + " " + (tag.isToBeGenerated() ? "G" : "_") + " " + tag.getInternalCaption()
+  @SuppressWarnings("unused")
+  private void displayGenerateMark(final AbstractConfigurationTag tag, final int level) {
+    log.info(SUtils.getFiller(". ", level) + " " + (tag.isToBeGenerated() ? "G" : "_") + " " + tag.getInternalCaption()
         + " - " + System.identityHashCode(tag));
     for (AbstractConfigurationTag subtag : tag.getSubTags()) {
       displayGenerateMark(subtag, level + 1);

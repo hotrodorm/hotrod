@@ -20,9 +20,9 @@ import org.hotrod.eclipseplugin.utils.ClassPathEncoder;
 import org.hotrod.eclipseplugin.utils.ObjectPropertyCodec;
 import org.hotrod.eclipseplugin.utils.ObjectPropertyCodec.CouldNotDecodeException;
 import org.hotrod.eclipseplugin.utils.ObjectPropertyCodec.CouldNotEncodeException;
-import org.hotrod.eclipseplugin.utils.SUtil;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.SelectMetadataCache;
+import org.hotrod.runtime.util.SUtils;
 
 /**
  * <pre>
@@ -318,7 +318,7 @@ public class ProjectProperties {
         throw new CouldNotLoadPropertiesException(
             "Incomplete file '" + file + "'. Property '" + file + "." + FILENAME_ATT + "' not found.");
       }
-      if (SUtil.isEmpty(this.fileName)) {
+      if (SUtils.isEmpty(this.fileName)) {
         throw new CouldNotLoadPropertiesException(
             "Incomplete file '" + file + "'. Property '" + file + "." + FILENAME_ATT + "' is empty.");
       }

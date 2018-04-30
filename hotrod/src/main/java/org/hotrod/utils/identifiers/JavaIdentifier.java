@@ -8,6 +8,8 @@ import org.hotrod.database.PropertyType;
 
 public class JavaIdentifier extends Identifier {
 
+  private static final long serialVersionUID = 1L;
+
   private static Logger log = Logger.getLogger(JavaIdentifier.class);
 
   private boolean isBooleanType;

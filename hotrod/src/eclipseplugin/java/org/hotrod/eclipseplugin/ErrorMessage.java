@@ -1,8 +1,12 @@
 package org.hotrod.eclipseplugin;
 
+import java.io.Serializable;
+
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 
-public class ErrorMessage {
+public class ErrorMessage implements Serializable {
+
+  private static final long serialVersionUID = 1L;
 
   private SourceLocation location;
   private String message;

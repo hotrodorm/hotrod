@@ -149,38 +149,14 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
       // suffix
 
       try {
+        @SuppressWarnings("unused")
         SettingsFace s = (SettingsFace) obj; // settings
+        // no sufix
       } catch (ClassCastException e1) {
         try {
           MainConfigFace c = (MainConfigFace) obj; // main config
           String relativePath = c.getRelativePath().isEmpty() ? "." : c.getRelativePath();
           label.append(" [" + relativePath + "]", StyledString.DECORATIONS_STYLER);
-
-          // org.eclipse.ui.forms.widgets.Hyperlink.Hyperlink hl;
-
-          // =========================================================================
-
-          // Hyperlink link = new Hyperlink(this.parent, SWT.FILL |
-          // SWT.READ_ONLY);
-          // link.setText("My HyperLink");
-
-          // /* make text look like a link */
-          // StyledString text = new StyledString();
-          //
-          // String caption = "1234567890";
-          //
-          // StyleRange myStyledRange = new StyleRange(0, caption.length(),
-          // Display.getCurrent().getSystemColor(SWT.COLOR_BLUE), null);
-          // myStyledRange.underline = true;
-          // text.append(caption, StyledString.DECORATIONS_STYLER);
-          // cell.setText(text.toString());
-          //
-          // StyleRange[] range = { myStyledRange };
-          // cell.setStyleRanges(range);
-          //
-          // super.update(cell);
-
-          // =========================================================================
 
         } catch (ClassCastException e2) {
           try {
@@ -189,10 +165,12 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
             label.append("  [" + relativePath + "]", StyledString.DECORATIONS_STYLER);
           } catch (ClassCastException e3) {
             try {
+              @SuppressWarnings("unused")
               AbstractMethodFace m = (AbstractMethodFace) obj; // daos & methods
               label.append("()");
             } catch (ClassCastException e4) { // any other face
               try {
+                @SuppressWarnings("unused")
                 ErrorMessage m = (ErrorMessage) obj; // error message
               } catch (ClassCastException e5) { // any other face
               }
@@ -210,12 +188,15 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
       // type
 
       try {
+        @SuppressWarnings("unused")
         SettingsFace s = (SettingsFace) obj; // settings
       } catch (ClassCastException e1) {
         try {
+          @SuppressWarnings("unused")
           MainConfigFace c = (MainConfigFace) obj; // main config
         } catch (ClassCastException e2) {
           try {
+            @SuppressWarnings("unused")
             FragmentConfigFace f = (FragmentConfigFace) obj; // fragment
           } catch (ClassCastException e3) {
             try {
@@ -223,6 +204,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
               label.append(" " + m.getDecoration(), StyledString.DECORATIONS_STYLER);
             } catch (ClassCastException e4) { // any other face
               try {
+                @SuppressWarnings("unused")
                 ErrorMessage m = (ErrorMessage) obj; // error message
               } catch (ClassCastException e5) { // any other face
                 label.append(" " + face.getDecoration(), StyledString.DECORATIONS_STYLER);

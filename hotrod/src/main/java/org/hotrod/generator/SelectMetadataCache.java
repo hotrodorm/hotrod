@@ -19,7 +19,7 @@ public class SelectMetadataCache implements Serializable {
   private Map<String, Map<String, SelectMethodMetadata>> cache = new HashMap<String, Map<String, SelectMethodMetadata>>();
 
   public void put(final String dao, final String method, final SelectMethodMetadata metaData) {
-    log.info("CACHE PUT: " + dao + "." + method + "()");
+    log.debug("CACHE PUT: " + dao + "." + method + "()");
     Map<String, SelectMethodMetadata> daoCache = this.cache.get(dao);
     if (daoCache == null) {
       daoCache = new HashMap<String, SelectMethodMetadata>();
@@ -29,7 +29,7 @@ public class SelectMetadataCache implements Serializable {
   }
 
   public SelectMethodMetadata get(final String dao, final String method) {
-    log.info("CACHE GET: " + dao + "." + method + "()");
+    log.debug("CACHE GET: " + dao + "." + method + "()");
     Map<String, SelectMethodMetadata> daoCache = this.cache.get(dao);
     if (daoCache == null) {
       return null;

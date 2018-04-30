@@ -179,7 +179,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
   public boolean concludeGeneration(final AbstractDAOTag cache, final DatabaseAdapter adapter) {
 
-    log.info("----> DAO " + this.getJavaClassName() + " 1");
+    log.debug("----> DAO " + this.getJavaClassName() + " 1");
 
     boolean failedInnerGeneration = false;
 
@@ -198,7 +198,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
   private <M extends AbstractMethodTag<M>> boolean markMethodGenerated(final MethodTagContainer<M> thisMethods,
       final MethodTagContainer<M> cache) {
     boolean failedInnerGeneration = false;
-    log.info("====> DAO " + this.getJavaClassName() + " 2");
+    log.debug("====> DAO " + this.getJavaClassName() + " 2");
     for (CorrelatedEntry<M> cor : Correlator.correlate(thisMethods.toList(), cache.toList(), new Comparator<M>() {
       @Override
       public int compare(M o1, M o2) {
@@ -209,7 +209,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
       M t = cor.getLeft();
       M c = cor.getRight();
 
-      log.info(
+      log.debug(
           "method '" + (t != null ? t.method + "()" : (c != null ? c.method + "()" : "?")) + "': t=" + t + " c=" + c);
 
       if (t != null && t.isToBeGenerated()) {
@@ -278,6 +278,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
       }
     }
 
+    @SuppressWarnings("unused")
     public void copyMethods(final MethodTagContainer<M> source) {
       for (M m : source) {
         M d = m.duplicate();

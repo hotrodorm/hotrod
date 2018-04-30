@@ -38,7 +38,7 @@ import org.hotrod.eclipseplugin.ProjectProperties.FileProperties;
 import org.hotrod.eclipseplugin.jdbc.NavigationAwareWizardDialog.NavigationAwareWizard;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 import org.hotrod.eclipseplugin.utils.FUtil;
-import org.hotrod.eclipseplugin.utils.SUtil;
+import org.hotrod.runtime.util.SUtils;
 
 public class DatabasePropertiesWizard extends NavigationAwareWizard {
 
@@ -475,7 +475,7 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
     }
 
     private void validate() {
-      if (!SUtil.isEmpty(this.fieldDriverClassName.getText())) {
+      if (!SUtils.isEmpty(this.fieldDriverClassName.getText())) {
         setPageComplete(true);
       } else {
         setPageComplete(false);
@@ -610,7 +610,7 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
     }
 
     private void validate() {
-      if (!SUtil.isEmpty(this.fieldURL.getText())) {
+      if (!SUtils.isEmpty(this.fieldURL.getText())) {
         setPageComplete(true);
       } else {
         setPageComplete(false);

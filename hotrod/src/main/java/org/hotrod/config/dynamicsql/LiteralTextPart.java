@@ -1,6 +1,7 @@
 package org.hotrod.config.dynamicsql;
 
 import org.apache.log4j.Logger;
+import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
@@ -103,6 +104,19 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
     try {
       LiteralTextPart f = (LiteralTextPart) fresh;
       return Compare.same(this.text, f.text);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      LiteralTextPart f = (LiteralTextPart) fresh;
+      boolean equals = SUtils.equals(this.text, f.text);
+      // log.info("[LITERAL] equals=" + equals);
+      // log.info("this.text=" + this.text);
+      // log.info("othe.text=" + f.text);
+      return equals;
     } catch (ClassCastException e) {
       return false;
     }

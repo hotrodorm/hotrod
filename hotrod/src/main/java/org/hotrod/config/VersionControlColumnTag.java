@@ -121,6 +121,7 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
   @Override
   public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
     try {
+      @SuppressWarnings("unused")
       VersionControlColumnTag f = (VersionControlColumnTag) fresh;
       boolean different = !same(fresh);
 

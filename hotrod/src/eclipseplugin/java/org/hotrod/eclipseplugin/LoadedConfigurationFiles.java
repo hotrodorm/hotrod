@@ -50,20 +50,20 @@ public class LoadedConfigurationFiles implements FileChangeListener {
           ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(path.getProject());
           FileProperties fileProperties = projectProperties.getFileProperties(path.getRelativeFileName());
 
-          // 2. Retrieve cached config, if available
+          // 2. Retrieve cached config (current), if available
 
-          HotRodConfigTag cachedConfig = fileProperties.getCachedMetadata().getConfig();
-          MainConfigFace cachedFace = cachedConfig == null ? null
-              : new MainConfigFace(f, path, this.provider, cachedConfig);
+          HotRodConfigTag currentConfig = fileProperties.getCachedMetadata().getConfig();
+          MainConfigFace currentFace = currentConfig == null ? null
+              : new MainConfigFace(f, path, this.provider, currentConfig);
 
-          // 3. Load file
+          // 3. Load new face (fresh)
 
-          MainConfigFace freshFace = load(f);
+          MainConfigFace freshFace = loadFile(f);
           log.debug("File loading - freshFace=" + freshFace);
 
-          log.info("cachedConfig=" + cachedConfig);
+          log.debug("cachedConfig=" + currentConfig);
 
-          if (cachedConfig == null) {
+          if (currentConfig == null) {
 
             // 4.a Display loaded file as-is when no cached config is present.
 
@@ -78,21 +78,29 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
             // 4.b Display combined loaded file with cached config.
 
-            if (freshFace.isValid()) {
+            this.loadedFiles.put(absolutePath, currentFace);
+            applyFreshVersion(currentFace, freshFace);
+            currentFace.computeBranchChanges();
 
-              this.loadedFiles.put(absolutePath, freshFace);
-
-            } else {
-              log.info("Cached config present.");
-              cachedConfig.logGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(cachedConfig), '-');
-              log.info("freshFace=" + freshFace + " freshFace.getTag()=" + freshFace.getTag());
-              cachedFace.applyChangesFrom(freshFace);
-              HotRodConfigTag ex2 = cachedFace.getConfig();
-              ex2.logGenerateMark("Generate Marks (POST) - " + System.identityHashCode(ex2), '=');
-
-              this.loadedFiles.put(absolutePath, cachedFace);
-              cachedFace.computeBranchChanges();
-            }
+            // TODO: remove when tested
+            // if (freshFace.isValid()) {
+            //
+            // this.loadedFiles.put(absolutePath, freshFace);
+            //
+            // } else {
+            // log.info("Cached config present.");
+            // currentConfig.logGenerateMark("Generate Marks (PRE) - " +
+            // System.identityHashCode(currentConfig), '-');
+            // log.info("freshFace=" + freshFace + " freshFace.getTag()=" +
+            // freshFace.getTag());
+            // currentFace.applyChangesFrom(freshFace);
+            // HotRodConfigTag ex2 = currentFace.getConfig();
+            // ex2.logGenerateMark("Generate Marks (POST) - " +
+            // System.identityHashCode(ex2), '=');
+            //
+            // this.loadedFiles.put(absolutePath, currentFace);
+            // currentFace.computeBranchChanges();
+            // }
 
           }
 
@@ -107,7 +115,60 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
   }
 
-  private MainConfigFace load(final File f) {
+  public void remove(final MainConfigFace face) {
+    this.loadedFiles.remove(face.getAbsolutePath());
+  }
+
+  private void reload(final MainConfigFace currentFace) {
+    log.debug("reload");
+    String absPath = currentFace.getAbsolutePath();
+    File f = new File(absPath);
+    MainConfigFace freshFace = loadFile(f);
+
+    applyFreshVersion(currentFace, freshFace);
+
+    // TODO: implement automatic generation here (on changes).
+
+  }
+
+  private void applyFreshVersion(final MainConfigFace currentFace, final MainConfigFace freshFace) {
+    if (currentFace.isValid()) {
+      if (freshFace.isValid()) { // 1. Stays valid
+        log.debug("1. Stays valid");
+
+        HotRodConfigTag bl1 = currentFace.getConfig();
+        bl1.logGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(bl1), '-');
+
+        // currentFace.display();
+        currentFace.applyChangesFrom(freshFace);
+        // currentFace.display();
+
+        HotRodConfigTag bl2 = currentFace.getConfig();
+        bl2.logGenerateMark("Generate Marks (POST) - " + System.identityHashCode(bl2), '=');
+
+      } else { // 2. Becoming invalid
+        log.debug("2. Becoming invalid");
+        currentFace.setInvalid(freshFace.getErrorMessage());
+      }
+    } else {
+      if (freshFace.isValid()) { // 3. Becoming valid
+        log.debug("3. Becoming valid");
+        currentFace.setValid();
+        if (currentFace.getConfig() == null) {
+          log.debug("3.1 Set first config since it was null so far.");
+          currentFace.initializeConfig(freshFace.getConfig());
+        } else {
+          log.debug("3.2 Apply changes.");
+          currentFace.applyChangesFrom(freshFace);
+        }
+      } else { // 4. Stays invalid
+        log.debug("4. Stays invalid");
+        currentFace.setInvalid(freshFace.getErrorMessage());
+      }
+    }
+  }
+
+  private MainConfigFace loadFile(final File f) {
 
     RelativeProjectPath path = RelativeProjectPath.findProjectPath(f);
     if (path == null) {
@@ -124,51 +185,13 @@ public class LoadedConfigurationFiles implements FileChangeListener {
       return face;
 
     } catch (ControlledException e) {
-      log.info("Error Message=" + e.getMessage() + " loc=" + e.getLocation());
+      log.debug("Error Message=" + e.getMessage() + " loc=" + e.getLocation());
       MainConfigFace face = new MainConfigFace(f, path, this.provider,
           new ErrorMessage(e.getLocation(), e.getMessage()));
       return face;
     } catch (UncontrolledException e) {
       MainConfigFace face = new MainConfigFace(f, path, this.provider, new ErrorMessage(null, e.getMessage()));
       return face;
-    }
-
-  }
-
-  public void remove(final MainConfigFace face) {
-    this.loadedFiles.remove(face.getAbsolutePath());
-  }
-
-  private void reload(final MainConfigFace currentFace) {
-    log.info("reload");
-    String absPath = currentFace.getAbsolutePath();
-    File f = new File(absPath);
-    MainConfigFace newFace = load(f);
-    HotRodConfigTag currentConfig = currentFace.getConfig();
-
-    if (currentFace.isValid()) {
-      if (newFace.isValid()) { // 1. Stays valid
-        log.info("1. Stays valid");
-        currentFace.applyChangesFrom(newFace);
-      } else { // 2. Becoming invalid
-        log.info("2. Becoming invalid");
-        currentFace.setInvalid(newFace.getErrorMessage());
-      }
-    } else {
-      if (newFace.isValid()) { // 3. Becoming valid
-        log.info("3. Becoming valid");
-        currentFace.setValid();
-        if (currentConfig == null) {
-          log.info("3.1 Set config to new one.");
-          currentFace.setConfig(newFace.getConfig());
-        } else {
-          log.info("3.2 Apply changes.");
-          currentFace.applyChangesFrom(newFace);
-        }
-      } else { // 4. Stays invalid
-        log.info("4. Stays invalid");
-        currentFace.setInvalid(newFace.getErrorMessage());
-      }
     }
 
   }

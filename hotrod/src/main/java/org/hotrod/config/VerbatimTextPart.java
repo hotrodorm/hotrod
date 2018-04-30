@@ -27,7 +27,7 @@ public class VerbatimTextPart extends EnhancedSQLPart {
   // Constructor
 
   public VerbatimTextPart(final String text) {
-    super("not-a-tag-but-literal-text");
+    super("not-a-tag-but-verbatim-text");
     log.debug("init");
     this.text = text;
   }
@@ -87,6 +87,21 @@ public class VerbatimTextPart extends EnhancedSQLPart {
   @Override
   public String getInternalCaption() {
     return this.getTagName();
+  }
+
+  // Merging logic
+
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      VerbatimTextPart f = (VerbatimTextPart) fresh;
+      boolean equals = SUtils.equals(this.text, f.text);
+      // log.info("[LITERAL] equals=" + equals);
+      // log.info("this.text=" + this.text);
+      // log.info("othe.text=" + f.text);
+      return equals;
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
 }

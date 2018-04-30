@@ -4,12 +4,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ConverterTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 
 public class Compare {
+
+  private static final Logger log = Logger.getLogger(Compare.class);
 
   @SuppressWarnings("unchecked")
   public static boolean same(final List<?> a, final List<?> b) {
@@ -33,7 +36,9 @@ public class Compare {
       while (ita.hasNext() && itb.hasNext()) {
         AbstractConfigurationTag ta = ita.next();
         AbstractConfigurationTag tb = itb.next();
-        if (!ta.same(tb)) {
+        boolean same = ta.same(tb);
+        log.info("[" + ta.getTagName() + " / " + ta.getClass().getName() + "] same=" + same);
+        if (!same) {
           return false;
         }
       }

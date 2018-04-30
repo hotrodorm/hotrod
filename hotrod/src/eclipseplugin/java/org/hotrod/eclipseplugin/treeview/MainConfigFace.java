@@ -15,7 +15,7 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
   private boolean valid;
   private String absolutePath;
   private RelativeProjectPath path;
-  private HotRodViewContentProvider provider;
+  private transient HotRodViewContentProvider provider;
   private HotRodConfigTag config;
 
   // Constructors
@@ -74,10 +74,14 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
     this.errorMessage = null;
   }
 
-  public void setConfig(final HotRodConfigTag config) {
+  public void initializeConfig(final HotRodConfigTag config) {
     this.config = config;
     super.removeAllChildren();
     addSubFaces(config);
+  }
+
+  public void setConfig(final HotRodConfigTag config) {
+    this.config = config;
   }
 
   @Override
@@ -151,8 +155,7 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   @Override
   public String getIconPath() {
-    return this.config != null ? "eclipse-plugin/icons/main-config5-16.png"
-        : "eclipse-plugin/icons/main-config5-bad-16.png";
+    return this.isValid() ? "eclipse-plugin/icons/main-config5-16.png" : "eclipse-plugin/icons/main-config5-bad-16.png";
   }
 
   @Override

@@ -8,7 +8,7 @@ public class ExecutorFace extends AbstractFace {
 
   public ExecutorFace(final ExecutorTag executorDAO) throws InvalidConfigurationItemException {
     super(executorDAO.getJavaClassName(), executorDAO);
-    for (AbstractMethodTag m : executorDAO.getMethods()) {
+    for (AbstractMethodTag<?> m : executorDAO.getMethods()) {
       AbstractFace leaf = FaceFactory.getMethodElement(m);
       super.addChild(leaf);
     }

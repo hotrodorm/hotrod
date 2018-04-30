@@ -8,7 +8,7 @@ public class EnumFace extends AbstractFace {
 
   public EnumFace(final EnumTag enumDAO) throws InvalidConfigurationItemException {
     super(enumDAO.getName(), enumDAO);
-    for (AbstractMethodTag m : enumDAO.getMethods()) {
+    for (AbstractMethodTag<?> m : enumDAO.getMethods()) {
       AbstractFace leaf = FaceFactory.getMethodElement(m);
       super.addChild(leaf);
     }

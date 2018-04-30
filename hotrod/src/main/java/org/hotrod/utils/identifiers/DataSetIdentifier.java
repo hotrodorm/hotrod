@@ -2,6 +2,8 @@ package org.hotrod.utils.identifiers;
 
 public class DataSetIdentifier extends DbIdentifier {
 
+  private static final long serialVersionUID = 1L;
+
   public DataSetIdentifier(final String name) {
     super(name);
   }

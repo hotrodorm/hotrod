@@ -128,7 +128,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   @Override
   public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    log.info("copying... " + this.getInternalCaption() + " fresh=" + fresh);
+    log.debug("copying... " + this.getInternalCaption() + " fresh=" + fresh);
     try {
       HotRodConfigTag f = (HotRodConfigTag) fresh;
       boolean different = !super.commonSame(fresh) || !same(fresh);
@@ -163,7 +163,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   private boolean concludeGeneration(final AbstractHotRodConfigTag unitCache, final DatabaseAdapter adapter) {
 
-    log.info("conclude 1");
+    log.debug("conclude 1");
 
     HotRodConfigTag uc = (HotRodConfigTag) unitCache;
 
@@ -175,7 +175,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
     // Converters
 
-    log.info("conclude 2 - converters");
+    log.debug("conclude 2 - converters");
 
     for (ConverterTag c : this.getConverters()) {
       if (c.isToBeGenerated()) {
@@ -219,12 +219,12 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
     // HotRodConfigTag
 
-    log.info("conclude 3 - end");
-    log.info("successfulCommonGeneration=" + successfulCommonGeneration + " failedExtendedGeneration="
+    log.debug("conclude 3 - end");
+    log.debug("successfulCommonGeneration=" + successfulCommonGeneration + " failedExtendedGeneration="
         + failedExtendedGeneration);
 
     if (successfulCommonGeneration && !failedExtendedGeneration) {
-      log.info("conclude 4 - conclude");
+      log.debug("conclude 4 - conclude");
       return this.concludeGenerationMarkTag();
     }
 

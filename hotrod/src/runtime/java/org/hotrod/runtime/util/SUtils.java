@@ -9,6 +9,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SUtils {
 
@@ -223,6 +225,15 @@ public class SUtils {
     }
     String filler = getFiller(' ', width - txt.length());
     return txt + filler;
+  }
+
+  public static List<String> slice(final String txt, final int width) {
+    List<String> slices = new ArrayList<String>();
+    int len = txt.length();
+    for (int i = 0; i < len; i += width) {
+      slices.add(txt.substring(i, Math.min(len, i + width)));
+    }
+    return slices;
   }
 
 }

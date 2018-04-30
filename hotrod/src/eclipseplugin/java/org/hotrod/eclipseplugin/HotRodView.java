@@ -758,6 +758,10 @@ public class HotRodView extends ViewPart {
           g.generate();
         }
 
+        // Mark Settings as generated
+
+        config.getGenerators().setTreeStatus(TagStatus.UP_TO_DATE);
+
         // Save the cache
 
         projectProperties.save();
