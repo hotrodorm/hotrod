@@ -37,9 +37,9 @@ public class FileSystemChangesListener implements IResourceChangeListener {
         + renderResourceType(delta.getResource().getType()) + " r=" + delta.getResource().getLocation());
     int kind = delta.getKind();
     int flags = delta.getFlags();
-    boolean isMarkerChangeOnly = flags == IResourceDelta.MARKERS;
+    boolean isMarkersOnlyChanges = flags == IResourceDelta.MARKERS;
     boolean refresh = false;
-    if (!isMarkerChangeOnly) { // Ignore markers changes
+    if (!isMarkersOnlyChanges) { // Ignore markers-only changes
       if (kind == IResourceDelta.ADDED || kind == IResourceDelta.REMOVED || kind == IResourceDelta.CHANGED) {
         IResource r = delta.getResource();
         if (r.getType() == IResource.FILE) {

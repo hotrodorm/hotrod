@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<hotrod>
+
+	<generators>
+		<mybatis>
+			<daos gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" />
+			<mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
+			<mybatis-configuration-template file="mybatis-config-template.xml" />
+			<session-factory singleton-full-class-name="sessionfactory.DatabaseSessionFactory" />
+			<select-generation temp-view-base-name="mybatis_temp_view" />
+		</mybatis>
+	</generators>
+ 
+  <table name="agent" />
+
+  <table name="properties" />
+  
+  <table name="quadrant" />
+
+</hotrod>
+ 

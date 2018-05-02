@@ -37,7 +37,7 @@ public class Compare {
         AbstractConfigurationTag ta = ita.next();
         AbstractConfigurationTag tb = itb.next();
         boolean same = ta.same(tb);
-        log.info("[" + ta.getTagName() + " / " + ta.getClass().getName() + "] same=" + same);
+        log.debug("[" + ta.getTagName() + " / " + ta.getClass().getName() + "] same=" + same);
         if (!same) {
           return false;
         }

@@ -182,7 +182,8 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
       // generated mark
 
       if (face != null && face.getTag() != null && face.getTag().isGenerationComplete()) {
-        label.append(" \u26ab", StyledString.COUNTER_STYLER);
+        // label.append(" \u2796", StyledString.COUNTER_STYLER);
+        label.append(" *", StyledString.COUNTER_STYLER);
       }
 
       // type

@@ -25,16 +25,19 @@ public class LoadedConfigurationFiles implements FileChangeListener {
   private static final String VALID_HOTROD_EXTENSION = ".xml";
 
   private HotRodViewContentProvider provider;
+  private HotRodView viewPart;
+
   private Map<String, MainConfigFace> loadedFiles = new TreeMap<String, MainConfigFace>();
 
   // Constructor
 
-  public LoadedConfigurationFiles(final HotRodViewContentProvider provider) {
+  public LoadedConfigurationFiles(final HotRodViewContentProvider provider, final HotRodView viewPart) {
     super();
     this.provider = provider;
+    this.viewPart = viewPart;
   }
 
-  // File is being dropped (addeed to) in the view
+  // File is being dropped in (addeed to) the view
 
   public void addFile(final File f) {
 
@@ -52,7 +55,10 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
           // 2. Retrieve cached config (current), if available
 
-          HotRodConfigTag currentConfig = fileProperties.getCachedMetadata().getConfig();
+          log.info("fileProperties=" + fileProperties);
+
+          HotRodConfigTag currentConfig = fileProperties == null ? null
+              : fileProperties.getCachedMetadata().getConfig();
           MainConfigFace currentFace = currentConfig == null ? null
               : new MainConfigFace(f, path, this.provider, currentConfig);
 
@@ -60,6 +66,11 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
           MainConfigFace freshFace = loadFile(f);
           log.debug("File loading - freshFace=" + freshFace);
+
+          if (fileProperties == null) {
+            fileProperties = new FileProperties(freshFace.getRelativeFileName());
+            projectProperties.addFileProperties(freshFace.getRelativeFileName(), fileProperties);
+          }
 
           log.debug("cachedConfig=" + currentConfig);
 
@@ -72,6 +83,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
             if (freshFace.isValid()) {
               freshFace.getConfig().setTreeStatus(TagStatus.ADDED);
               freshFace.computeBranchChanges();
+              this.viewPart.informFileChangesDetected(freshFace);
             }
 
           } else {
@@ -79,8 +91,12 @@ public class LoadedConfigurationFiles implements FileChangeListener {
             // 4.b Display combined loaded file with cached config.
 
             this.loadedFiles.put(absolutePath, currentFace);
-            applyFreshVersion(currentFace, freshFace);
+            boolean changesDetected = applyFreshVersion(currentFace, freshFace);
             currentFace.computeBranchChanges();
+
+            if (changesDetected) {
+              this.viewPart.informFileChangesDetected(currentFace);
+            }
 
             // TODO: remove when tested
             // if (freshFace.isValid()) {
@@ -115,23 +131,23 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
   }
 
-  public void remove(final MainConfigFace face) {
-    this.loadedFiles.remove(face.getAbsolutePath());
-  }
-
   private void reload(final MainConfigFace currentFace) {
     log.debug("reload");
     String absPath = currentFace.getAbsolutePath();
     File f = new File(absPath);
     MainConfigFace freshFace = loadFile(f);
 
-    applyFreshVersion(currentFace, freshFace);
+    boolean changesDetected = applyFreshVersion(currentFace, freshFace);
 
     // TODO: implement automatic generation here (on changes).
 
+    if (changesDetected) {
+      this.viewPart.informFileChangesDetected(currentFace);
+    }
+
   }
 
-  private void applyFreshVersion(final MainConfigFace currentFace, final MainConfigFace freshFace) {
+  private boolean applyFreshVersion(final MainConfigFace currentFace, final MainConfigFace freshFace) {
     if (currentFace.isValid()) {
       if (freshFace.isValid()) { // 1. Stays valid
         log.debug("1. Stays valid");
@@ -140,15 +156,18 @@ public class LoadedConfigurationFiles implements FileChangeListener {
         bl1.logGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(bl1), '-');
 
         // currentFace.display();
-        currentFace.applyChangesFrom(freshFace);
+        boolean changesDetected = currentFace.applyChangesFrom(freshFace);
         // currentFace.display();
 
         HotRodConfigTag bl2 = currentFace.getConfig();
         bl2.logGenerateMark("Generate Marks (POST) - " + System.identityHashCode(bl2), '=');
 
+        return changesDetected;
+
       } else { // 2. Becoming invalid
         log.debug("2. Becoming invalid");
         currentFace.setInvalid(freshFace.getErrorMessage());
+        return true;
       }
     } else {
       if (freshFace.isValid()) { // 3. Becoming valid
@@ -161,9 +180,11 @@ public class LoadedConfigurationFiles implements FileChangeListener {
           log.debug("3.2 Apply changes.");
           currentFace.applyChangesFrom(freshFace);
         }
+        return true;
       } else { // 4. Stays invalid
         log.debug("4. Stays invalid");
         currentFace.setInvalid(freshFace.getErrorMessage());
+        return true;
       }
     }
   }
@@ -194,6 +215,10 @@ public class LoadedConfigurationFiles implements FileChangeListener {
       return face;
     }
 
+  }
+
+  public void remove(final MainConfigFace face) {
+    this.loadedFiles.remove(face.getAbsolutePath());
   }
 
   public void removeAll() {

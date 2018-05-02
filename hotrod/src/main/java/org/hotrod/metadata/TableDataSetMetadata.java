@@ -342,9 +342,9 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   public void gatherSelectsMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
       throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
-    log.info("*** DataSet " + this.renderSQLIdentifier() + ":");
+    log.debug("*** DataSet " + this.renderSQLIdentifier() + ":");
     for (SelectMethodMetadata sm : this.selectsMetadata) {
-      log.info("*** - method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());
+      log.debug("*** - method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());
       if (!sm.metadataComplete()) {
         log.debug("... method: " + sm.getMethod());
         sm.gatherMetadataPhase2(conn2, voRegistry);

@@ -175,29 +175,29 @@ public abstract class HotRodGenerator {
           }
         }
         if (found != null) {
-          log.info("---> CLIENT [from cache] imported FKs:");
+          log.debug("---> CLIENT [from cache] imported FKs:");
           for (JdbcForeignKey ifk : found.getImportedFks()) {
-            log.info("   FK points to: " + ifk.getRemoteTable().getName());
+            log.debug("   FK points to: " + ifk.getRemoteTable().getName());
           }
           for (JdbcForeignKey efk : found.getExportedFks()) {
-            log.info("   FK pointed from: " + efk.getRemoteTable().getName());
+            log.debug("   FK pointed from: " + efk.getRemoteTable().getName());
           }
-          log.info("---> [end of table CLIENT]");
+          log.debug("---> [end of table CLIENT]");
         } else {
-          log.info("---> CLIENT table was not found in cache.");
+          log.debug("---> CLIENT table was not found in cache.");
         }
       } else {
-        log.info("---> no CLIENT table in cache, since there's no cache.");
+        log.debug("---> no CLIENT table in cache, since there's no cache.");
       }
       HotRodConfigTag ch = cachedMetadata.getConfig();
       if (ch != null) {
-        log.info("...=== Enums from cache config ===");
+        log.debug("...=== Enums from cache config ===");
         for (EnumTag et : ch.getAllEnums()) {
-          log.info("... enum '" + et.getName() + "'");
+          log.debug("... enum '" + et.getName() + "'");
         }
-        log.info("...=== End of enums from cache config ===");
+        log.debug("...=== End of enums from cache config ===");
       } else {
-        log.info("... cached-config is null.");
+        log.debug("... cached-config is null.");
       }
 
       boolean retrieveFreshDatabaseObjects = false;
@@ -230,7 +230,7 @@ public abstract class HotRodGenerator {
         }
       }
 
-      log.info("--> retrieveFreshDatabaseObjects=" + retrieveFreshDatabaseObjects);
+      log.debug("--> retrieveFreshDatabaseObjects=" + retrieveFreshDatabaseObjects);
 
       DatabaseObjectFilter filter = new DatabaseObjectFilter(new TableFilter(this.adapter),
           new ViewFilter(this.config, this.adapter));
@@ -239,7 +239,7 @@ public abstract class HotRodGenerator {
 
         if (!retrieveFreshDatabaseObjects) {
           try {
-            log.info("Will activate now.");
+            log.debug("Will activate now.");
             cachedDatabase.activate(this.dloc, true);
             this.db = cachedDatabase;
           } catch (DifferentCatalogSchemaException e) {

@@ -33,19 +33,19 @@ public abstract class DataSetMetadataFactory {
     TableTag tableTag = config.getTableTag(t);
     if (tableTag != null) {
       if (cachedDB == null) {
-        log.info("##### Table '" + t.getName() + "' equivalent= NOT IN CACHE");
+        log.debug("##### Table '" + t.getName() + "' equivalent= NOT IN CACHE");
         tableTag.markGenerate();
       } else {
         JdbcTable o = findJdbcTable(cachedDB.getTables(), t.getName(), adapter);
-        log.info("##### Table '" + t.getName() + "' equivalent=" + t.isEquivalentTo(o));
+        log.debug("##### Table '" + t.getName() + "' equivalent=" + t.isEquivalentTo(o));
         if (!t.isEquivalentTo(o)) {
           tableTag.markGenerate();
         }
       }
       TableDataSetMetadata tm = new TableDataSetMetadata(tableTag, t, adapter, config, layout, selectMetadataCache);
-      log.info("cachedConfig=" + cachedConfig);
+      log.debug("cachedConfig=" + cachedConfig);
       if (cachedConfig != null) {
-        log.info("cachedConfig.findEnum(tm, adapter)=" + cachedConfig.findEnum(tm, adapter));
+        log.debug("cachedConfig.findEnum(tm, adapter)=" + cachedConfig.findEnum(tm, adapter));
         if (cachedConfig.findEnum(tm, adapter) != null) {
           // changed from enum to table - generate related tables
           markGenerateRelatedEntities(tm);

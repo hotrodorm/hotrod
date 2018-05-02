@@ -4,23 +4,23 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.part.ViewPart;
+import org.hotrod.eclipseplugin.HotRodView;
 import org.hotrod.eclipseplugin.LoadedConfigurationFiles;
 
 public class HotRodViewContentProvider implements ITreeContentProvider {
 
-  private ViewPart viewPart;
+  private HotRodView viewPart;
   private TreeViewer viewer;
   private boolean visible;
 
   private LoadedConfigurationFiles files;
 
-  public HotRodViewContentProvider(final ViewPart viewPart) {
+  public HotRodViewContentProvider(final HotRodView viewPart) {
     super();
     this.viewPart = viewPart;
     this.viewer = null;
     this.visible = false;
-    this.files = new LoadedConfigurationFiles(this);
+    this.files = new LoadedConfigurationFiles(this, this.viewPart);
   }
 
   @Override

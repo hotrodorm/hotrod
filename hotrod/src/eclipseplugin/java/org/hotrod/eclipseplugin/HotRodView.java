@@ -15,9 +15,13 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -83,7 +87,7 @@ public class HotRodView extends ViewPart {
   private static final Logger log = Logger.getLogger(HotRodView.class);
 
   private static final String GEN_ALL_ICON_PATH = "eclipse-plugin/icons/gen-all6-16.png";
-  private static final String AUTO_GEN_ON_ICON_PATH = "eclipse-plugin/icons/auto-on1-16.png";
+  private static final String AUTO_GEN_ON_ICON_PATH = "eclipse-plugin/icons/auto-on2-16.png";
   private static final String AUTO_GEN_OFF_ICON_PATH = "eclipse-plugin/icons/auto-off1-16.png";
   private static final String GEN_CHANGES_ICON_PATH = "eclipse-plugin/icons/gen-chg1-16.png";
   private static final String GEN_SELECTION_ICON_PATH = "eclipse-plugin/icons/gen-sel1-16.png";
@@ -105,7 +109,7 @@ public class HotRodView extends ViewPart {
   private Action actionRemoveAllFiles;
   private Action actionConfigureDatabaseConnection;
 
-  private boolean autoGenerate = false;
+  private boolean autoGenerateOnChanges = false;
   private ImageDescriptor autoOn;
   private ImageDescriptor autoOff;
   private ImageDescriptor generateAll;
@@ -265,10 +269,11 @@ public class HotRodView extends ViewPart {
 
     IToolBarManager toolBar = bars.getToolBarManager();
     toolBar.add(actionGenerateAll);
-    toolBar.add(actionGenerateChanges);
     toolBar.add(actionGenerateSelected);
     toolBar.add(new Separator());
+    toolBar.add(actionGenerateChanges);
     toolBar.add(actionAutoOnOff);
+    toolBar.add(new Separator());
     toolBar.add(actionConfigureDatabaseConnection);
     toolBar.add(new Separator());
     toolBar.add(actionRemoveFile);
@@ -278,10 +283,11 @@ public class HotRodView extends ViewPart {
 
     IMenuManager menu = bars.getMenuManager();
     menu.add(actionGenerateAll);
-    menu.add(actionGenerateChanges);
     menu.add(actionGenerateSelected);
     menu.add(new Separator());
+    menu.add(actionGenerateChanges);
     menu.add(actionAutoOnOff);
+    menu.add(new Separator());
     menu.add(actionConfigureDatabaseConnection);
     menu.add(new Separator());
     menu.add(actionRemoveFile);
@@ -307,10 +313,11 @@ public class HotRodView extends ViewPart {
 
   private void fillContextMenu(final IMenuManager contextMenu) {
     contextMenu.add(actionGenerateAll);
-    contextMenu.add(actionGenerateChanges);
     contextMenu.add(actionGenerateSelected);
     contextMenu.add(new Separator());
+    contextMenu.add(actionGenerateChanges);
     contextMenu.add(actionAutoOnOff);
+    contextMenu.add(new Separator());
     contextMenu.add(actionConfigureDatabaseConnection);
     contextMenu.add(new Separator());
     contextMenu.add(actionRemoveFile);
@@ -333,51 +340,40 @@ public class HotRodView extends ViewPart {
 
     // Generate All
 
-    // TODO: implement
+    // TODO: Nothing to do - remove when ready
 
     actionGenerateAll = new Action() {
       @Override
       public void run() {
 
         for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-          mf.getConfig().resetTreeGeneration();
-        }
-
-        TreeSelection selection = (TreeSelection) viewer.getSelection();
-        if (selection.toList().isEmpty()) {
-          showMessage("Please select a HotRod configuration file and then press Generate All...");
-        } else if (selection.toList().size() > 1) {
-          showMessage("Please select only one HotRod configuration file and then press Generate All...");
-        } else {
-
-          AbstractFace face = (AbstractFace) selection.toList().get(0);
-          MainConfigFace mainFace = face.getMainConfigFace();
-          ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mainFace.getProject());
+          ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
           if (projectProperties == null) {
-            showMessage("Project properties are not yet configured");
+            showMessage("Project properties are not yet configured on file '" + mf.getRelativePath() + "'.");
+            return;
           } else {
-            log.debug("file=" + mainFace.getRelativeFileName());
-            FileProperties fileProperties = projectProperties.getFileProperties(mainFace.getRelativeFileName());
+            FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
+            log.info("fileProperties=" + fileProperties);
+            if (fileProperties != null) {
+              log.info("fileProperties.url=" + fileProperties.getUrl());
+            }
             if (fileProperties == null) {
-              showMessage("File properties are not yet configured");
-            } else {
-              log.debug("generating all - starting");
-              mainFace.getConfig().markGenerateTree();
-              // log.debug(">>> 4 fileProperties.getCachedMetadata()=" +
-              // fileProperties.getCachedMetadata());
-              // log.debug(">>> 4
-              // fileProperties.getCachedMetadata().getSelectMetadataCache()="
-              // + fileProperties.getCachedMetadata().getSelectMetadataCache());
-
-              generateFile(mainFace, projectProperties, fileProperties, false);
-              // log.debug("generating all - complete");
+              showMessage("File properties are not yet configured on file '" + mf.getRelativePath() + "'.");
+              return;
             }
           }
-
         }
 
-        for (MainConfigFace face : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-          face.refreshView();
+        for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+          ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
+          FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
+          log.debug("generating all - starting");
+
+          mf.getConfig().resetTreeGeneration();
+          mf.getConfig().markGenerateTree();
+          generateFile(mf, projectProperties, fileProperties, false);
+          mf.refreshView();
+
         }
 
       }
@@ -394,61 +390,10 @@ public class HotRodView extends ViewPart {
       @Override
       public void run() {
 
-        for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-          mf.getConfig().resetTreeGeneration();
-        }
-
-        boolean allConfigured = true;
-
-        for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-          mf.getConfig().resetTreeGeneration();
-          boolean modified = markChanges(mf.getTag(), 0);
-          if (modified) {
-            ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
-            if (projectProperties == null) {
-              showMessage("The file '" + mf.getRelativeFileName()
-                  + "' has not yet been configured. Please click on Configure File and try again.");
-              allConfigured = false;
-            } else {
-              FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
-              if (fileProperties == null) {
-                showMessage("The file '" + mf.getRelativeFileName()
-                    + "' has not yet been configured. Please click on Configure File and try again.");
-                allConfigured = false;
-              }
-            }
-          }
-        }
-
-        if (allConfigured) {
-          for (MainConfigFace mainFace : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-            if (mainFace.getTag().treeIncludesIsToBeGenerated()) {
-              ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mainFace.getProject());
-              FileProperties fileProperties = projectProperties.getFileProperties(mainFace.getRelativeFileName());
-              generateFile(mainFace, projectProperties, fileProperties, true);
-            }
-          }
-        }
-
-        for (MainConfigFace face : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-          face.refreshView();
-        }
+        generateChanges();
 
         log.debug("[generate changes - finished]");
 
-      }
-
-      private boolean markChanges(final AbstractConfigurationTag t, final int level) {
-        boolean modified = t.getStatus() != TagStatus.UP_TO_DATE;
-        if (modified) {
-          t.markGenerate();
-        }
-        for (AbstractConfigurationTag subtag : t.getSubTags()) {
-          if (markChanges(subtag, level + 1)) {
-            modified = true;
-          }
-        }
-        return modified;
       }
 
     };
@@ -532,26 +477,31 @@ public class HotRodView extends ViewPart {
     actionAutoOnOff = new Action() {
       @Override
       public void run() {
-        autoGenerate = !autoGenerate;
-        String text = "Auto Generate Changes (" + (autoGenerate ? "On" : "Off") + ")";
+        autoGenerateOnChanges = !autoGenerateOnChanges;
+        String text = "Auto Generate Changes (" + (autoGenerateOnChanges ? "On" : "Off") + ")";
         actionAutoOnOff.setText(text);
-        actionAutoOnOff.setChecked(autoGenerate);
+        actionAutoOnOff.setChecked(autoGenerateOnChanges);
         actionAutoOnOff.setToolTipText(text);
-        actionAutoOnOff.setImageDescriptor(autoGenerate ? autoOn : autoOff);
+        actionAutoOnOff.setImageDescriptor(autoGenerateOnChanges ? autoOn : autoOff);
 
-        actionGenerateChanges.setEnabled(!autoGenerate);
-        actionGenerateSelected.setEnabled(!autoGenerate);
+        actionGenerateChanges.setEnabled(!autoGenerateOnChanges);
+        actionGenerateSelected.setEnabled(!autoGenerateOnChanges);
 
         if (contextMenu != null) {
           contextMenu.update();
         }
+
+        if (autoGenerateOnChanges) {
+          generateChanges();
+        }
+
       }
     };
-    String text = "Auto Generate (" + (autoGenerate ? "On" : "Off") + ")";
+    String text = "Auto Generate (" + (autoGenerateOnChanges ? "On" : "Off") + ")";
     actionAutoOnOff.setText(text);
-    actionAutoOnOff.setChecked(autoGenerate);
+    actionAutoOnOff.setChecked(autoGenerateOnChanges);
     actionAutoOnOff.setToolTipText(text);
-    actionAutoOnOff.setImageDescriptor(autoGenerate ? autoOn : autoOff);
+    actionAutoOnOff.setImageDescriptor(autoGenerateOnChanges ? autoOn : autoOff);
 
     // Configure Database Connection
 
@@ -662,6 +612,119 @@ public class HotRodView extends ViewPart {
 
   }
 
+  private void generateChanges() {
+    for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+      mf.getConfig().resetTreeGeneration();
+    }
+
+    boolean allConfigured = true;
+
+    for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+      mf.getConfig().resetTreeGeneration();
+      boolean modified = markChanges(mf.getTag(), 0);
+      if (modified) {
+        ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
+        if (projectProperties == null) {
+          showMessage("The file '" + mf.getRelativeFileName()
+              + "' has not yet been configured. Please click on Configure File and try again.");
+          allConfigured = false;
+        } else {
+          FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
+          if (fileProperties == null) {
+            showMessage("The file '" + mf.getRelativeFileName()
+                + "' has not yet been configured. Please click on Configure File and try again.");
+            allConfigured = false;
+          }
+        }
+      }
+    }
+
+    if (allConfigured) {
+      for (MainConfigFace mainFace : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+        if (mainFace.getTag().treeIncludesIsToBeGenerated()) {
+          ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mainFace.getProject());
+          FileProperties fileProperties = projectProperties.getFileProperties(mainFace.getRelativeFileName());
+          generateFile(mainFace, projectProperties, fileProperties, true);
+        }
+      }
+    }
+
+    for (MainConfigFace face : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+      face.refreshView();
+    }
+  }
+
+  public void informFileChangesDetected(final MainConfigFace mf) {
+
+    if (mf.isValid() && this.autoGenerateOnChanges) {
+
+      // generation must be delayed until all file changes events are complete
+      HotRodDelayedGenerationJob job = new HotRodDelayedGenerationJob(mf);
+      job.setRule(mf.getProject()); // needs exclusive access to the project
+      job.schedule();
+
+    }
+
+  }
+
+  private class HotRodDelayedGenerationJob extends WorkspaceJob {
+
+    private MainConfigFace mf;
+
+    public HotRodDelayedGenerationJob(final MainConfigFace mf) {
+      super("Generating file " + mf.getRelativeFileName());
+      this.mf = mf;
+    }
+
+    @Override
+    public IStatus runInWorkspace(final IProgressMonitor pm) throws CoreException {
+      try {
+        generateDetectedFileChanges(this.mf);
+        return Status.OK_STATUS;
+      } catch (Exception e) {
+        Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Could not generate file changes", e);
+        throw new CoreException(status);
+      }
+    }
+
+  }
+
+  private void generateDetectedFileChanges(final MainConfigFace mf) {
+    mf.getConfig().resetTreeGeneration();
+    boolean modified = markChanges(mf.getTag(), 0);
+    if (modified) {
+      ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(mf.getProject());
+      if (projectProperties == null) {
+        showMessage("The file '" + mf.getRelativeFileName()
+            + "' has not yet been configured. Please click on Configure File and try again.");
+      } else {
+        FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
+        if (fileProperties == null) {
+          showMessage("The file '" + mf.getRelativeFileName()
+              + "' has not yet been configured. Please click on Configure File and try again.");
+        } else {
+          if (mf.getTag().treeIncludesIsToBeGenerated()) {
+            generateFile(mf, projectProperties, fileProperties, true);
+            mf.refreshView();
+          }
+        }
+      }
+    }
+  }
+
+  private boolean markChanges(final AbstractConfigurationTag t, final int level) {
+    boolean modified = t.getStatus() != TagStatus.UP_TO_DATE;
+    if (modified) {
+      t.markGenerate();
+    }
+    for (AbstractConfigurationTag subtag : t.getSubTags()) {
+      if (markChanges(subtag, level + 1)) {
+        modified = true;
+      }
+    }
+    return modified;
+  }
+
   private void showMessage(final String message) {
     MessageDialog.openInformation(viewer.getControl().getShell(), "Sample View 2", message);
   }
@@ -730,7 +793,7 @@ public class HotRodView extends ViewPart {
         // null
         // ? "null" : "not null"));
 
-        config.logGenerateMark("Generate Marks (pre)", '-');
+        config.logGenerateMark("Generate Marks (ready to generate)", '-');
 
         HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
             config, DisplayMode.LIST, incrementalMode);
@@ -768,13 +831,13 @@ public class HotRodView extends ViewPart {
 
         HotRodConfigTag ch = cachedMetadata.getConfig();
         if (ch != null) {
-          log.info("...*** Enums from cache config ***");
+          log.debug("...*** Enums from cache config ***");
           for (EnumTag et : ch.getAllEnums()) {
-            log.info("***    enum '" + et.getName() + "'");
+            log.debug("***    enum '" + et.getName() + "'");
           }
-          log.info("...*** End of enums from cache config ***");
+          log.debug("...*** End of enums from cache config ***");
         } else {
-          log.info("... *** cached-config is null.");
+          log.debug("... *** cached-config is null.");
         }
 
         // Generation complete

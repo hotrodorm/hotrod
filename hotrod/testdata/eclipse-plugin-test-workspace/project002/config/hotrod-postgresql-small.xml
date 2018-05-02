@@ -26,18 +26,22 @@
 
   <table name="state_branch" />
  -->
+ 
 
-
-
+  <table name="account" /> 
+  <table name="transaction" />   
+ 
+  <table name="state_branch" />
+  <table name="log" /> 
+  <table name="agent" />
 <!--
-  <table name="client" />
-  <table name="log" />
+
+  <table name="client" />   
+
+  
 
 
-
-  <table name="log" />
-  <table name="account" />
-  <table name="transaction" />
+  <table name="log" /> 
 
 	<table name="federal_branch">
 
@@ -73,27 +77,23 @@
 		</select>
   </table>
  -->
-  
+   
   <view name="tx_branch">
     <select method="method100" vo="FB100"> 
-      select * from log        
+      select * from log                    
+    </select>
+    <select method="method102" vo="FB102">
+      select * from log    
     </select>
     <select method="method103" vo="FB103">
-      select * from log 
-    </select> 
+      select * from log     
+    </select>  
     <select method="method104" vo="FB104"> 
-      select *  
-        from log         
-    </select> 
+      select *   
+        from log                   
+    </select>  
   </view> 
     <!--
-    <select method="method103" vo="FB103">
-      select * from log
-    </select> 
-
-    <select method="method102" vo="FB102">
-      select * from log
-    </select>
 
     
     
@@ -155,7 +155,7 @@
       join transaction t on (t.account_id) = (a.id)
       <complement>
         where a.id = #{clientId}
-      </complement>
+      </complement> 
     </select>
   -->
 

@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractConfigurationTag.TagStatus;
 import org.hotrod.eclipseplugin.ErrorMessage;
@@ -122,8 +123,25 @@ public abstract class AbstractFace implements IAdaptable {
     TreeViewer viewer = this.getViewer();
     if (viewer != null) {
       this.computeBranchChanges();
-      viewer.refresh(this, true);
+      Display.getDefault().asyncExec(new RefreshViewRunnable(this, viewer));
     }
+  }
+
+  private class RefreshViewRunnable implements Runnable {
+
+    private AbstractFace face;
+    private TreeViewer viewer;
+
+    private RefreshViewRunnable(final AbstractFace face, final TreeViewer viewer) {
+      this.face = face;
+      this.viewer = viewer;
+    }
+
+    @Override
+    public void run() {
+      this.viewer.refresh(this.face, true);
+    }
+
   }
 
   public boolean computeBranchChanges() {
@@ -193,22 +211,25 @@ public abstract class AbstractFace implements IAdaptable {
     }
   }
 
-  public final void applyChangesFrom(final AbstractFace fresh) {
-    applyChangesFrom(fresh, 0);
+  public final boolean applyChangesFrom(final AbstractFace fresh) {
+    return applyChangesFrom(fresh, 0);
   }
 
-  private final void applyChangesFrom(final AbstractFace fresh, final int level) {
+  private final boolean applyChangesFrom(final AbstractFace fresh, final int level) {
 
-    log.info(SUtils.getFiller("- ", level) + "existing:" + this.getDecoration() + "[" + this.children.size() + "] ("
+    log.debug(SUtils.getFiller("- ", level) + "existing:" + this.getDecoration() + "[" + this.children.size() + "] ("
         + System.identityHashCode(this) + ") - fresh:" + fresh.getDecoration() + "[" + fresh.children.size() + "] ("
         + System.identityHashCode(fresh) + ")");
 
     // own changes
 
-    log.info("this.tag=" + this.tag);
+    boolean changesDetected = false;
+
+    log.debug("this.tag=" + this.tag);
     TagStatus currentStatus = this.tag.getStatus();
     if (this.tag.copyNonKeyProperties(fresh.tag)) {
       currentStatus = TagStatus.MODIFIED;
+      changesDetected = true;
     }
     this.tag = fresh.tag;
     this.tag.setStatus(currentStatus);
@@ -216,20 +237,21 @@ public abstract class AbstractFace implements IAdaptable {
     try { // update the main tag, if it's a main face.
       MainConfigFace cf = (MainConfigFace) this;
       MainConfigFace ff = (MainConfigFace) fresh;
-      cf.setConfig(ff.getConfig()); // HERE'S THE ERROR!
+      cf.setConfig(ff.getConfig());
     } catch (ClassCastException e) {
       // Not a main tag - Ignore
     }
 
     // sub item changes
 
-    // List<AbstractFace> existing = new ArrayList<AbstractFace>(this.children);
+    List<AbstractFace> existing = new ArrayList<AbstractFace>(this.children);
     // List<AbstractFace> existing = this.children;
-    List<AbstractFace> existing = new ArrayList<AbstractFace>();
-    for (AbstractFace af : this.children) {
-      log.debug("::::: adding child " + af.getDecoration() + " (" + System.identityHashCode(af) + ")");
-      existing.add(af);
-    }
+    // List<AbstractFace> existing = new ArrayList<AbstractFace>();
+    // for (AbstractFace af : this.children) {
+    // log.debug("::::: adding child " + af.getDecoration() + " (" +
+    // System.identityHashCode(af) + ")");
+    // existing.add(af);
+    // }
     // existing.addAll(this.children);
 
     this.children.clear();
@@ -241,11 +263,15 @@ public abstract class AbstractFace implements IAdaptable {
       if (e != null) {
         log.debug(SUtils.getFiller("- ", level) + ".. child [" + e.getDecoration() + "] found ("
             + System.identityHashCode(e) + ")");
-        e.applyChangesFrom(f, level + 1);
+        boolean innerChanges = e.applyChangesFrom(f, level + 1);
+        if (innerChanges) {
+          changesDetected = true;
+        }
         this.children.add(e);
         e.parent = this;
       } else {
         log.debug(SUtils.getFiller("- ", level) + ".. child not found -- adding new one.");
+        changesDetected = true;
         this.children.add(f);
         f.parent = this;
         if (f.tag != null) {
@@ -258,6 +284,8 @@ public abstract class AbstractFace implements IAdaptable {
     if (!existing.isEmpty()) { // some children were removed
       this.getTag().setStatus(TagStatus.MODIFIED);
     }
+
+    return changesDetected;
 
   }
 
