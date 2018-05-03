@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
 public class SerialUtils {
 
@@ -18,6 +19,23 @@ public class SerialUtils {
       oos.flush();
       byte[] serialized = bos.toByteArray();
       return serialized;
+    } finally {
+      if (oos != null) {
+        try {
+          oos.close();
+        } catch (IOException e) {
+          // Ignore
+        }
+      }
+    }
+  }
+
+  public static final void serialize(final Object obj, final OutputStream os) throws IOException {
+    ObjectOutputStream oos = null;
+    try {
+      oos = new ObjectOutputStream(os);
+      oos.writeObject(obj);
+      oos.flush();
     } finally {
       if (oos != null) {
         try {

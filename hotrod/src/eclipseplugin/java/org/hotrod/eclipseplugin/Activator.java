@@ -2,6 +2,7 @@ package org.hotrod.eclipseplugin;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -14,6 +15,7 @@ public class Activator extends AbstractUIPlugin {
 
   // The shared instance
   private static Activator plugin;
+  private static Bundle bundle;
 
   /**
    * The constructor
@@ -27,9 +29,14 @@ public class Activator extends AbstractUIPlugin {
    * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
    * BundleContext)
    */
-  public void start(BundleContext context) throws Exception {
+  public void start(final BundleContext context) throws Exception {
     super.start(context);
-    plugin = this;
+    Activator.bundle = context.getBundle();
+    Activator.plugin = this;
+
+    WorkspaceProperties.initializeInstance();
+    WorkspaceProperties.getInstance().save();
+
   }
 
   /*
@@ -38,8 +45,8 @@ public class Activator extends AbstractUIPlugin {
    * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.
    * BundleContext)
    */
-  public void stop(BundleContext context) throws Exception {
-    plugin = null;
+  public void stop(final BundleContext context) throws Exception {
+    Activator.plugin = null;
     super.stop(context);
   }
 
@@ -49,7 +56,7 @@ public class Activator extends AbstractUIPlugin {
    * @return the shared instance
    */
   public static Activator getDefault() {
-    return plugin;
+    return Activator.plugin;
   }
 
   /**
@@ -62,6 +69,10 @@ public class Activator extends AbstractUIPlugin {
    */
   public static ImageDescriptor getImageDescriptor(String path) {
     return imageDescriptorFromPlugin(PLUGIN_ID, path);
+  }
+
+  public static Bundle getPluginBundle() {
+    return bundle;
   }
 
 }

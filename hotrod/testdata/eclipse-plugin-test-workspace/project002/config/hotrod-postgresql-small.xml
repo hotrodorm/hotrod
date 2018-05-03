@@ -32,11 +32,17 @@
   <table name="transaction" />   
  
   <table name="state_branch" />
-  <table name="log" /> 
   <table name="agent" />
-<!--
 
   <table name="client" />   
+
+
+  <table name="codes" />
+
+  <table name="log" /> 
+
+<!--
+
 
   
 

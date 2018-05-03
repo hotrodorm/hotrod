@@ -32,9 +32,10 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.hotrod.eclipseplugin.FileProperties;
+import org.hotrod.eclipseplugin.FileProperties.CouldNotSaveFilePropertiesException;
 import org.hotrod.eclipseplugin.ProjectProperties;
-import org.hotrod.eclipseplugin.ProjectProperties.CouldNotSavePropertiesException;
-import org.hotrod.eclipseplugin.ProjectProperties.FileProperties;
+import org.hotrod.eclipseplugin.ProjectProperties.CouldNotSaveProjectPropertiesException;
 import org.hotrod.eclipseplugin.jdbc.NavigationAwareWizardDialog.NavigationAwareWizard;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 import org.hotrod.eclipseplugin.utils.FUtil;
@@ -47,7 +48,7 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
   private MainConfigFace mainConfigFace;
   private Shell shell;
 
-  private ProjectProperties properties;
+  private ProjectProperties projectProperties;
   private FileProperties fileProperties;
 
   protected DriverPage driverPage;
@@ -73,19 +74,14 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
     super();
 
     this.mainConfigFace = mainConfigFace;
-    this.properties = properties;
+    this.projectProperties = properties;
     this.shell = shell;
 
     TrayDialog.setDialogHelpAvailable(false);
 
-    this.fileProperties = this.properties.getFileProperties(this.mainConfigFace.getRelativeFileName());
+    this.fileProperties = this.projectProperties.getFileProperties(this.mainConfigFace.getRelativeFileName());
     log.debug("[X1] this.fileProperties=" + this.fileProperties + " (rel file name="
         + this.mainConfigFace.getRelativeFileName() + ")");
-
-    if (this.fileProperties == null) {
-      this.fileProperties = new FileProperties(this.mainConfigFace.getRelativeFileName());
-      this.properties.addFileProperties(this.mainConfigFace.getRelativeFileName(), this.fileProperties);
-    }
 
     this.driverPage = new DriverPage();
     this.connectionPage = new ConnectionPage();
@@ -288,10 +284,14 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
     this.connectionPage.retrieveValues();
     this.selectionPage.retrieveValues();
     try {
-      this.properties.save();
-    } catch (CouldNotSavePropertiesException e) {
-      MessageDialog.openError(this.shell, "Could not save HotRod Plugin's properties file",
-          "Error: " + e.getMessage() + "\n\nCould not save HotRod Plugin's properties file.");
+      this.projectProperties.save();
+      this.fileProperties.save();
+    } catch (CouldNotSaveProjectPropertiesException e) {
+      MessageDialog.openError(this.shell, "Could not save project properties",
+          "Error: " + e.getMessage() + "\n\nCould not save project properties file.");
+    } catch (CouldNotSaveFilePropertiesException e) {
+      MessageDialog.openError(this.shell, "Could not save file properties",
+          "Error: " + e.getMessage() + "\n\nCould not save file properties file.");
     }
     return true;
   }

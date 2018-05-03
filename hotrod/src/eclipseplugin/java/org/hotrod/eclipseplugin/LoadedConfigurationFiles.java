@@ -13,8 +13,9 @@ import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractConfigurationTag.TagStatus;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.eclipseplugin.FileProperties.CouldNotSaveFilePropertiesException;
 import org.hotrod.eclipseplugin.FileSystemChangesListener.FileChangeListener;
-import org.hotrod.eclipseplugin.ProjectProperties.FileProperties;
+import org.hotrod.eclipseplugin.ProjectProperties.CouldNotSaveProjectPropertiesException;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 
@@ -50,7 +51,8 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
           // 1. Load the cached config
 
-          ProjectProperties projectProperties = ProjectPropertiesCache.getProjectProperties(path.getProject());
+          ProjectProperties projectProperties = WorkspaceProperties.getInstance()
+              .getProjectProperties(path.getProject());
           FileProperties fileProperties = projectProperties.getFileProperties(path.getRelativeFileName());
 
           // 2. Retrieve cached config (current), if available
@@ -66,11 +68,6 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
           MainConfigFace freshFace = loadFile(f);
           log.debug("File loading - freshFace=" + freshFace);
-
-          if (fileProperties == null) {
-            fileProperties = new FileProperties(freshFace.getRelativeFileName());
-            projectProperties.addFileProperties(freshFace.getRelativeFileName(), fileProperties);
-          }
 
           log.debug("cachedConfig=" + currentConfig);
 
@@ -118,6 +115,18 @@ public class LoadedConfigurationFiles implements FileChangeListener {
             // currentFace.computeBranchChanges();
             // }
 
+          }
+
+          try {
+            fileProperties.save();
+          } catch (CouldNotSaveFilePropertiesException e) {
+            log.error("Could not save file properties: " + e.getMessage());
+          }
+
+          try {
+            projectProperties.save();
+          } catch (CouldNotSaveProjectPropertiesException e) {
+            log.error("Could not save project properties: " + e.getMessage());
           }
 
           // 5. Refresh the plugin tree view with new file.
