@@ -872,7 +872,7 @@ public class HotRodView extends ViewPart {
               + e.getLocation().render() + ":\n" + e.getMessage());
         }
       } catch (UncontrolledException e) {
-        e.printStackTrace();
+        e.getCause().printStackTrace();
         throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
       } catch (Throwable t) {
         t.printStackTrace();

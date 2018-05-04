@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
@@ -154,7 +156,8 @@ public class FileProperties {
     IPath pc = this.projectProperties.getProjectDir().append(getCacheFileName(this.code));
     if (pc.toFile().exists()) {
       try {
-        this.cachedMetadata = (CachedMetadata) SerialUtils.deserialize(new FileInputStream(pc.toFile()));
+        this.cachedMetadata = (CachedMetadata) SerialUtils
+            .deserialize(new GZIPInputStream(new FileInputStream(pc.toFile())));
       } catch (FileNotFoundException e) {
         throw new CouldNotLoadFilePropertiesException("Could not read cache for file '" + this.relativeFileName + "'.");
       } catch (IOException e) {
@@ -168,7 +171,7 @@ public class FileProperties {
   private void writeCache() throws CouldNotSaveFilePropertiesException {
     IPath pc = this.projectProperties.getProjectDir().append(getCacheFileName(this.code));
     try {
-      SerialUtils.serialize(this.cachedMetadata, new FileOutputStream(pc.toFile()));
+      SerialUtils.serialize(this.cachedMetadata, new GZIPOutputStream(new FileOutputStream(pc.toFile())));
     } catch (FileNotFoundException e) {
       throw new CouldNotSaveFilePropertiesException("Could not save cache for file '" + this.relativeFileName + "'.");
     } catch (IOException e) {

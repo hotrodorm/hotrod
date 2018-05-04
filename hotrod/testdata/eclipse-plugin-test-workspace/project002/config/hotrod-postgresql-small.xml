@@ -2,9 +2,9 @@
 <!DOCTYPE hotrod SYSTEM "hotrod.dtd">
 
 <hotrod>
-
+ 
 	<generators>
-		<mybatis>
+		<mybatis> 
 			<daos gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" />
 			<!-- <daos gen-base-dir="gen/empusamb/daos" dao-package="empusa.test.generation.dao" 
 				primitives-package="empusa.test.generation.prim" dao-prefix="" dao-suffix="DO" 
