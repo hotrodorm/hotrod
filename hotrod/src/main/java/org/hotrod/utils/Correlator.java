@@ -1,4 +1,4 @@
-package org.hotrod.eclipseplugin.utils;
+package org.hotrod.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;

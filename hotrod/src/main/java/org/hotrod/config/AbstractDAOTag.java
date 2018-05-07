@@ -14,10 +14,10 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.eclipseplugin.utils.Correlator;
-import org.hotrod.eclipseplugin.utils.Correlator.CorrelatedEntry;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.Correlator;
+import org.hotrod.utils.Correlator.CorrelatedEntry;
 
 /**
  * <pre>

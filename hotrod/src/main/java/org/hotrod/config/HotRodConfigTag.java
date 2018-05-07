@@ -16,11 +16,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.eclipseplugin.utils.Correlator;
-import org.hotrod.eclipseplugin.utils.Correlator.CorrelatedEntry;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
+import org.hotrod.utils.Correlator;
+import org.hotrod.utils.Correlator.CorrelatedEntry;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

@@ -22,14 +22,14 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.eclipseplugin.utils.Correlator;
-import org.hotrod.eclipseplugin.utils.Correlator.CorrelatedEntry;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
+import org.hotrod.utils.Correlator;
+import org.hotrod.utils.Correlator.CorrelatedEntry;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag

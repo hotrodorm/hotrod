@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import org.hotrod.eclipseplugin.utils.Correlator;
-import org.hotrod.eclipseplugin.utils.Correlator.CorrelatedEntry;
+import org.hotrod.utils.Correlator;
+import org.hotrod.utils.Correlator.CorrelatedEntry;
 
 import junit.framework.TestCase;
 

@@ -35,8 +35,8 @@
   <table name="log" /> 
   <table name="codes" />
   <table name="state_branch" />
-  <table name="account" /> 
 <!--
+  <table name="account" /> 
 
   
 
