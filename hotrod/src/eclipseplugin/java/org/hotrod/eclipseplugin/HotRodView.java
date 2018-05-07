@@ -361,10 +361,6 @@ public class HotRodView extends ViewPart {
             return;
           } else {
             FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
-            log.info("fileProperties=" + fileProperties);
-            if (fileProperties != null) {
-              log.info("fileProperties.url=" + fileProperties.getUrl());
-            }
             if (fileProperties == null) {
               showMessage("File properties are not yet configured on file '" + mf.getRelativePath() + "'.");
               return;
@@ -632,8 +628,8 @@ public class HotRodView extends ViewPart {
   }
 
   private void generateChanges() {
-    for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-      mf.getConfig().resetTreeGeneration();
+    for (MainConfigFace face : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+      face.getConfig().resetTreeGeneration();
     }
 
     boolean allConfigured = true;
@@ -674,13 +670,13 @@ public class HotRodView extends ViewPart {
     }
   }
 
-  public void informFileChangesDetected(final MainConfigFace mf) {
+  public void informFileChangesDetected(final MainConfigFace face) {
 
-    if (mf.isValid() && WorkspaceProperties.getInstance().isAutogenerateOnChanges()) {
+    if (face.isValid() && WorkspaceProperties.getInstance().isAutogenerateOnChanges()) {
 
       // generation must be delayed until all file changes events are complete
-      HotRodDelayedGenerationJob job = new HotRodDelayedGenerationJob(mf);
-      job.setRule(mf.getProject()); // needs exclusive access to the project
+      HotRodDelayedGenerationJob job = new HotRodDelayedGenerationJob(face);
+      job.setRule(face.getProject()); // needs exclusive access to the project
       job.schedule();
 
     }
@@ -689,17 +685,19 @@ public class HotRodView extends ViewPart {
 
   private class HotRodDelayedGenerationJob extends WorkspaceJob {
 
-    private MainConfigFace mf;
+    private MainConfigFace face;
 
-    public HotRodDelayedGenerationJob(final MainConfigFace mf) {
-      super("Generating file " + mf.getRelativeFileName());
-      this.mf = mf;
+    public HotRodDelayedGenerationJob(final MainConfigFace face) {
+      super("Generating file " + face.getRelativeFileName());
+      this.face = face;
+      log.debug("Scheduling changes generation...");
     }
 
     @Override
     public IStatus runInWorkspace(final IProgressMonitor pm) throws CoreException {
+      log.debug("Running changes generation...");
       try {
-        generateDetectedFileChanges(this.mf);
+        generateDetectedFileChanges(this.face);
         return Status.OK_STATUS;
       } catch (Exception e) {
         Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Could not generate file changes", e);
@@ -832,6 +830,8 @@ public class HotRodView extends ViewPart {
 
           @SuppressWarnings("unused")
           boolean successful = unit.concludeGenerationTree(cachedMetadata.getConfig(), g.getAdapter());
+
+          config.logGenerateMark("Generate Marks (concluded)", '-');
 
           mainFace.refreshView();
 

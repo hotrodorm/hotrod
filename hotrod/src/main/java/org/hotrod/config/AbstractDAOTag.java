@@ -179,13 +179,14 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
   public boolean concludeGeneration(final AbstractDAOTag cache, final DatabaseAdapter adapter) {
 
-    log.debug("----> DAO " + this.getJavaClassName() + " 1");
+    log.debug("----> DAO " + this.getJavaClassName() + " 1- generate="+this.getGenerate());
 
     boolean failedInnerGeneration = false;
 
     failedInnerGeneration |= markMethodGenerated(this.sequences, cache.sequences);
     failedInnerGeneration |= markMethodGenerated(this.queries, cache.queries);
     failedInnerGeneration |= markMethodGenerated(this.selects, cache.selects);
+    log.debug("failedInnerGeneration=" + failedInnerGeneration);
 
     if (!failedInnerGeneration) {
       return this.concludeGenerationMarkTag();

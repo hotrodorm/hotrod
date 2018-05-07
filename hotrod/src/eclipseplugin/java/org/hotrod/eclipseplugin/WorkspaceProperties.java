@@ -7,9 +7,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.hotrod.config.HotRodConfigTag;
+import org.nocrala.tools.utils.Log;
 
 /**
  * <pre>
@@ -29,6 +32,8 @@ import org.eclipse.core.runtime.Platform;
  */
 
 public class WorkspaceProperties {
+
+  private static final Logger log = Logger.getLogger(WorkspaceProperties.class);
 
   private static WorkspaceProperties instance = null;
 
@@ -64,7 +69,9 @@ public class WorkspaceProperties {
   private WorkspaceProperties() throws CouldNotLoadWorkspacePropertiesException {
     Properties prop = new Properties();
     try {
-      prop.load(new FileInputStream(getPropertiesFile()));
+      File workspaceFile = getPropertiesFile();
+      log.debug("workspaceFile=" + workspaceFile);
+      prop.load(new FileInputStream(workspaceFile));
       this.autogenerateOnChanges = AUTOGENERATE_VALUE_ON.equals(prop.getProperty(AUTOGENERATE_ATT));
     } catch (FileNotFoundException e) {
       this.autogenerateOnChanges = false;

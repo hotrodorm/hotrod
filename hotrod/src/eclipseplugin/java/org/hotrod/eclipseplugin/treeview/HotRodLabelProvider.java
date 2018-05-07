@@ -118,7 +118,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
         prefix = "";
         break;
       case MODIFIED:
-        prefix = "> ";
+        prefix = "* ";
         break;
       case ADDED:
         prefix = "+ ";
@@ -131,8 +131,8 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
         break;
       }
 
-      // prefix = (face.hasBranchChanges() ? ">" : "") + " " + prefix;
-      prefix = (face.hasBranchChanges() ? ">" : "") + " ";
+      prefix = (face.hasBranchChanges() ? ">" : "") + " " + prefix;
+      // prefix = (face.hasBranchChanges() ? ">" : "") + " ";
 
       // status prefix
 
@@ -183,7 +183,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
       if (face != null && face.getTag() != null && face.getTag().isGenerationComplete()) {
         // label.append(" \u2796", StyledString.COUNTER_STYLER);
-        label.append(" *", StyledString.COUNTER_STYLER);
+        label.append(" [g]", StyledString.COUNTER_STYLER);
       }
 
       // type

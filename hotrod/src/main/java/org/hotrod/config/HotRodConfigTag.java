@@ -163,19 +163,19 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   private boolean concludeGeneration(final AbstractHotRodConfigTag unitCache, final DatabaseAdapter adapter) {
 
-    log.info("conclude 1");
+    log.debug("conclude 1");
 
     HotRodConfigTag cache = (HotRodConfigTag) unitCache;
 
     boolean successfulCommonGeneration = super.commonMarkGenerationComplete(cache, adapter);
 
-    log.info("CONCLUDE: successfulCommonGeneration=" + successfulCommonGeneration);
+    log.debug("CONCLUDE: successfulCommonGeneration=" + successfulCommonGeneration);
 
     boolean failedExtendedGeneration = false;
 
     // Converters
 
-    log.info("conclude 2 - converters");
+    log.debug("conclude 2 - converters");
 
     for (ConverterTag c : this.getConverters()) {
       if (c.isToBeGenerated()) {
@@ -220,7 +220,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     // HotRodConfigTag
 
     log.debug("conclude 3 - end");
-    log.info("CONCLUDE: successfulCommonGeneration=" + successfulCommonGeneration + " failedExtendedGeneration="
+    log.debug("CONCLUDE: successfulCommonGeneration=" + successfulCommonGeneration + " failedExtendedGeneration="
         + failedExtendedGeneration);
 
     if (successfulCommonGeneration && !failedExtendedGeneration) {

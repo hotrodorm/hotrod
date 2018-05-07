@@ -76,6 +76,10 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     return tagName;
   }
 
+  public GenerationStatus getGenerate() {
+    return generate;
+  }
+
   public TagStatus getStatus() {
     return status;
   }
@@ -192,7 +196,7 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   }
 
   public boolean concludeGenerationMarkTag() {
-    if (this.generate == GenerationStatus.GENERATION_COMPLETE) {
+    if (this.generate == GenerationStatus.NO_ACTION || this.generate == GenerationStatus.GENERATION_COMPLETE) {
       this.status = TagStatus.UP_TO_DATE;
       return true;
     }

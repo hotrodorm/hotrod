@@ -225,7 +225,7 @@ public abstract class AbstractFace implements IAdaptable {
 
     boolean changesDetected = false;
 
-    log.debug("this.tag=" + this.tag);
+    // log.info("this.tag=" + this.tag);
     TagStatus currentStatus = this.tag.getStatus();
     if (this.tag.copyNonKeyProperties(fresh.tag)) {
       currentStatus = TagStatus.MODIFIED;
@@ -280,9 +280,10 @@ public abstract class AbstractFace implements IAdaptable {
       }
     }
 
-    log.debug(" . children removed '" + this.name + "': " + !existing.isEmpty());
+    log.debug(SUtils.getFiller("- ", level) + "  children removed '" + this.name + "': " + !existing.isEmpty());
     if (!existing.isEmpty()) { // some children were removed
       this.getTag().setStatus(TagStatus.MODIFIED);
+      changesDetected = true;
     }
 
     return changesDetected;

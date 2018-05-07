@@ -147,6 +147,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     MainConfigFace freshFace = loadFile(f);
 
     boolean changesDetected = applyFreshVersion(currentFace, freshFace);
+    log.debug("changesDetected=" + changesDetected);
 
     // TODO: implement automatic generation here (on changes).
 

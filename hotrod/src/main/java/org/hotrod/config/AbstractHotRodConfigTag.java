@@ -677,7 +677,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
       TableTag t = cor.getLeft();
       TableTag c = cor.getRight();
 
-      log.debug("mark 2.0 t=" + t + " c=" + c);
+      log.debug("mark 2 t=" + (t == null ? "null" : t.getName()) + " - c=" + (c == null ? "null" : c.getName()));
 
       if (t != null && t.isToBeGenerated()) {
         log.debug("mark 2.1 - fail t=" + t.getName());
@@ -696,7 +696,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
         cache.remove(t, adapter); // remove from the cache.
       }
       if (t != null && c != null) {
-        log.debug("mark 2.3");
+        log.debug("mark 2.3 generate=" + t.getGenerate());
         if (t.isGenerationComplete()) {
           log.debug("mark 2.3.1");
           c = cache.replace(t, adapter); // replace the cache.
