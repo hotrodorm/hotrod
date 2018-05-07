@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: hotrod-category
-Bundle-SymbolicName: hotrod-eclipse-plugin;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: org.hotrod.eclipse;singleton:=true
+Bundle-Version: 2.1.0
 Bundle-Activator: org.hotrod.eclipseplugin.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

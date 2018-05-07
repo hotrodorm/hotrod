@@ -26,17 +26,17 @@
 
   <table name="state_branch" />
 
-  <table name="account" /> 
   <table name="transaction" />   
   <table name="agent" />
   <table name="client" />   
 
  -->
- 
-<!--
+
   <table name="log" /> 
   <table name="codes" />
   <table name="state_branch" />
+  <table name="account" /> 
+<!--
 
   
 
