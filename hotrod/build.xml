@@ -5,6 +5,7 @@
   <property name="projectName" value="hotrod" />
 
   <property name="main.src.dir" value="src/main/java" />
+  <property name="eclipseplugin.src.dir" value="src/eclipseplugin/java" />
   <property name="test.src.dir" value="src/test/java" />
   <property name="runtime.src.dir" value="src/runtime/java" />
   <property name="tools.src.dir" value="src/tools/java" />
@@ -15,6 +16,7 @@
   <property name="lib.dir" value="lib" />
   <property name="build.dir" value="build" />
   <property name="main.build.dir" value="build/java" />
+  <property name="eclipseplugin.build.dir" value="build/eclipseplugin" />
   <property name="test.build.dir" value="build/test" />
   <property name="buildinfo.build.dir" value="build/buildinfo" />
   <property name="runtime.build.dir" value="build/test" />
@@ -28,6 +30,7 @@
 
   <target name="-init">
     <mkdir dir="${main.build.dir}" />
+    <mkdir dir="${eclipseplugin.build.dir}" />
     <mkdir dir="${test.build.dir}" />
     <mkdir dir="${buildinfo.gen.dir}" />
     <mkdir dir="${runtime.build.dir}" />
@@ -93,8 +96,7 @@
   </target>
 
   <target name="compile-main" depends="-init, compile-runtime">
-    <javac srcdir="${main.src.dir}"
-           destdir="${main.build.dir}"
+    <javac destdir="${main.build.dir}"
            debug="true"
            deprecation="true"
            source="1.6"
@@ -113,6 +115,95 @@
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/tartarus-${tartarus.version}.jar" />
+      </classpath>
+    </javac>
+  </target>
+  
+  <path id="eclipseplugin.classpath">
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui_3.108.0.v20160518-1929.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.swt_3.105.0.v20160603-0902.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.swt.gtk.linux.x86_64_3.105.0.v20160603-0902.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jface_3.12.0.v20160518-1929.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.commands_3.8.0.v20160316-1921.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.workbench_3.108.0.v20160602-1232.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.e4.ui.workbench3_0.13.100.v20160506-0759.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.12.0.v20160606-1342.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/javax.inject_1.0.0.v20091030.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.11.0.v20160603-1336.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi.compatibility.state_1.0.200.v20160504-1419.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.wst.jsdt.nashorn.extension_1.0.0.v201605131737.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.8.0.v20160509-1230.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.8.0.v20160509-0411.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.registry_3.6.100.v20160223-2218.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.preferences_3.6.0.v20160120-1756.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.contenttype_3.5.100.v20160418-1621.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.app_1.3.400.v20150715-1528.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.forms_3.7.0.v20160518-1929.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.ide_3.12.0.v20160601-1609.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.editors_3.10.0.v20160505-0931.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.filebuffers_3.6.0.v20160503-1849.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jface.text_3.11.0.v20160505-1301.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.text_3.6.0.v20160503-1849.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.wst.xml.ui_1.1.700.v201604272318.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.resources_3.11.0.v20160503-1608.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.views_3.8.100.v20160518-1929.jar"/>
+      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.workbench.texteditor_3.10.0.v20160530-2011.jar"/>
+  </path>
+  
+  <target name="compile-eclipseplugin" depends="-init, compile-main">
+    <echo message="${ECLIPSE_HOME}/plugins/org.eclipse.ui_3.108.0.v20160518-1929.jar" />
+    <javac destdir="${eclipseplugin.build.dir}"
+           debug="true"
+           deprecation="true"
+           source="1.8"
+           target="1.8"
+           includeantruntime="false"
+           includes="**/*.java"
+           fork="yes"
+           executable="${javac.compiler.exec}"
+           compiler="${java.compiler}">
+      <src path="${eclipseplugin.src.dir}" />
+      <classpath>
+        <pathelement path="${runtime.build.dir}" />
+        <pathelement path="${main.build.dir}" />
+        <pathelement location="${lib.dir}/ant.jar" />
+        <pathelement location="${lib.dir}/jxl.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/tartarus-${tartarus.version}.jar" />
+        
+        <!--
+        <path refid="eclipseplugin.classpath" />
+        -->
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui_3.108.0.v20160518-1929.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.swt_3.105.0.v20160603-0902.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.swt.gtk.linux.x86_64_3.105.0.v20160603-0902.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jface_3.12.0.v20160518-1929.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.commands_3.8.0.v20160316-1921.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.workbench_3.108.0.v20160602-1232.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.e4.ui.workbench3_0.13.100.v20160506-0759.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.12.0.v20160606-1342.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/javax.inject_1.0.0.v20091030.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.11.0.v20160603-1336.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi.compatibility.state_1.0.200.v20160504-1419.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.wst.jsdt.nashorn.extension_1.0.0.v201605131737.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.8.0.v20160509-1230.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.8.0.v20160509-0411.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.registry_3.6.100.v20160223-2218.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.preferences_3.6.0.v20160120-1756.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.contenttype_3.5.100.v20160418-1621.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.app_1.3.400.v20150715-1528.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.forms_3.7.0.v20160518-1929.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.ide_3.12.0.v20160601-1609.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.editors_3.10.0.v20160505-0931.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.filebuffers_3.6.0.v20160503-1849.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jface.text_3.11.0.v20160505-1301.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.text_3.6.0.v20160503-1849.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.wst.xml.ui_1.1.700.v201604272318.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.resources_3.11.0.v20160503-1608.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.views_3.8.100.v20160518-1929.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.workbench.texteditor_3.10.0.v20160530-2011.jar"/>
+        
       </classpath>
     </javac>
   </target>
@@ -160,7 +251,7 @@
 
   <target name="clean-build" depends="clean, build" />
 
-  <target name="release" depends="clean, build">
+  <target name="release" depends="clean, build, jar-eclipse-plugin">
     <!--
     <zip destfile="${dist.dir}/quick-start-example.zip">
       <fileset dir="docs/quick-start-example" excludes="build/**/*" />
@@ -178,6 +269,20 @@
       <zipfileset dir="docs/release-docs" prefix="" />
       <zipfileset dir="${dist.dir}" includes="example.zip" prefix="docs" />
     -->
+  </target>
+  
+  <target name="jar-eclipse-plugin" depends="compile-eclipseplugin">
+    <zip destfile="${dist.dir}/org.hotrod.eclipse-${version}.jar">
+      <zipfileset dir="eclipse-plugin-resources/icons" prefix="eclipse-plugin-resources/icons" />
+      <fileset dir="${main.build.dir}" />
+      <fileset dir="${eclipseplugin.build.dir}" />
+      <zipfileset file="META-INF/MANIFEST.MF" prefix="META-INF" />
+      <fileset file="plugin.xml" />
+      <!--
+      -->
+      <zipfileset src="${lib.dir}/log4j-1.2.17.jar" excludes="META-INF/MANIFEST.MF" />
+      <zipfileset src="${lib.dir}/tartarus-${tartarus.version}.jar" excludes="META-INF/MANIFEST.MF" />
+    </zip>
   </target>
 
   <!-- =================== -->

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -85,14 +84,16 @@ import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public class HotRodView extends ViewPart {
 
+  public static final String ICONS_DIR = "eclipse-plugin-resources/icons/";
+
   private static final Logger log = Logger.getLogger(HotRodView.class);
 
-  private static final String GEN_ALL_ICON_PATH = "eclipse-plugin/icons/gen-all6-16.png";
-  private static final String AUTO_GEN_ON_ICON_PATH = "eclipse-plugin/icons/auto-on2-16.png";
-  private static final String AUTO_GEN_OFF_ICON_PATH = "eclipse-plugin/icons/auto-off1-16.png";
-  private static final String GEN_CHANGES_ICON_PATH = "eclipse-plugin/icons/gen-chg1-16.png";
-  private static final String GEN_SELECTION_ICON_PATH = "eclipse-plugin/icons/gen-sel1-16.png";
-  private static final String CONNECT_TO_DATABASE_ICON_PATH = "eclipse-plugin/icons/connect-to-database2-16.png";
+  private static final String GEN_ALL_ICON_PATH = ICONS_DIR + "button-gen-all.png";
+  private static final String AUTO_GEN_ON_ICON_PATH = ICONS_DIR + "button-auto-on.png";
+  private static final String AUTO_GEN_OFF_ICON_PATH = ICONS_DIR + "button-auto-off.png";
+  private static final String GEN_CHANGES_ICON_PATH = ICONS_DIR + "button-gen-chg.png";
+  private static final String GEN_SELECTION_ICON_PATH = ICONS_DIR + "button-gen-sel.png";
+  private static final String CONNECT_TO_DATABASE_ICON_PATH = ICONS_DIR + "button-configure-database.png";
 
   private TreeViewer viewer;
   private Action doubleClickAction;
@@ -872,11 +873,11 @@ public class HotRodView extends ViewPart {
               + e.getLocation().render() + ":\n" + e.getMessage());
         }
       } catch (UncontrolledException e) {
-        e.getCause().printStackTrace();
-        throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
+        log.error("Could not generate the persistence code.", e.getCause());
+        showMessage(Constants.TOOL_NAME + " could not generate the persistence code:\n" + e.getCause().getMessage());
       } catch (Throwable t) {
-        t.printStackTrace();
-        throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
+        log.error("Could not generate the persistence code.", t);
+        showMessage(Constants.TOOL_NAME + " could not generate the persistence code:\n" + t.getMessage());
       }
 
     }

@@ -1,6 +1,7 @@
 package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.config.GeneratorsTag;
+import org.hotrod.eclipseplugin.HotRodView;
 
 public class SettingsFace extends AbstractFace {
 
@@ -10,7 +11,7 @@ public class SettingsFace extends AbstractFace {
 
   @Override
   public String getIconPath() {
-    return "eclipse-plugin/icons/settings6-16.png";
+    return HotRodView.ICONS_DIR + "settings.png";
   }
 
   @Override

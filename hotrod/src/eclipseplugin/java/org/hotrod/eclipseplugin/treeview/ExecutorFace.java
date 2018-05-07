@@ -2,6 +2,7 @@ package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.config.AbstractMethodTag;
 import org.hotrod.config.ExecutorTag;
+import org.hotrod.eclipseplugin.HotRodView;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
 public class ExecutorFace extends AbstractFace {
@@ -16,7 +17,7 @@ public class ExecutorFace extends AbstractFace {
 
   @Override
   public String getIconPath() {
-    return "eclipse-plugin/icons/executor3-16.png";
+    return HotRodView.ICONS_DIR + "executor.png";
   }
 
   @Override

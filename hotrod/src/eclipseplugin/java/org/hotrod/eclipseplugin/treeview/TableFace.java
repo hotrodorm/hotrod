@@ -3,6 +3,7 @@ package org.hotrod.eclipseplugin.treeview;
 import org.apache.log4j.Logger;
 import org.hotrod.config.AbstractMethodTag;
 import org.hotrod.config.TableTag;
+import org.hotrod.eclipseplugin.HotRodView;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
 public class TableFace extends AbstractFace {
@@ -21,11 +22,7 @@ public class TableFace extends AbstractFace {
 
   @Override
   public String getIconPath() {
-    // return "icons/table2-16.png";
-    // return "icons/table1-16.png";
-
-    // return "icons/table20-16.png";
-    return "eclipse-plugin/icons/table21-16.png";
+    return HotRodView.ICONS_DIR + "table.png";
   }
 
   @Override

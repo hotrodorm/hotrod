@@ -10,7 +10,7 @@
       </category>
       <view
             name="HotRod"
-            icon="eclipse-plugin/icons/hotrod1-16.png"
+            icon="eclipse-plugin-resources/icons/hotrod.png"
             category="hotrod-category"
             class="org.hotrod.eclipseplugin.HotRodView"
             id="org.hotrod.eclipseplugin.HotRodView">

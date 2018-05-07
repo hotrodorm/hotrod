@@ -1,6 +1,7 @@
 package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.config.ConverterTag;
+import org.hotrod.eclipseplugin.HotRodView;
 
 public class ConverterFace extends AbstractFace {
 
@@ -10,7 +11,7 @@ public class ConverterFace extends AbstractFace {
 
   @Override
   public String getIconPath() {
-    return "eclipse-plugin/icons/converter1-16.png";
+    return HotRodView.ICONS_DIR + "converter.png";
   }
 
   @Override

@@ -11,8 +11,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.hotrod.config.HotRodConfigTag;
-import org.nocrala.tools.utils.Log;
 
 /**
  * <pre>

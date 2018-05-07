@@ -77,8 +77,6 @@
 		</select>
   </table>
  -->
-   
-    <!--
 
   <view name="tx_branch">
     <select method="method100" vo="FB100"> 
@@ -95,6 +93,9 @@
         from log                   
     </select>  
   </view> 
+   
+    <!--
+
     
     
   <view name="tx_branch" />    

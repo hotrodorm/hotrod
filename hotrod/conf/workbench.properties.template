@@ -4,6 +4,8 @@ javac.compiler.exec=/home/valarcon/apps/jdk1.6.0_34/bin/javac
 # --- See https://ant.apache.org/manual/Tasks/javac.html#compilervalues
 java.compiler=javac1.6
 
+ECLIPSE_HOME=/home/valarcon/apps/eclipse/eclipse-jee-neon-4.6-java6
+
 # =================
 # === DATABASES ===
 # =================

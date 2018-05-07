@@ -1,6 +1,7 @@
 package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.config.QueryMethodTag;
+import org.hotrod.eclipseplugin.HotRodView;
 
 public class QueryFace extends AbstractMethodFace {
 
@@ -10,8 +11,7 @@ public class QueryFace extends AbstractMethodFace {
 
   @Override
   public String getIconPath() {
-    // return "icons/sql-query10-16.png";
-    return "eclipse-plugin/icons/sql-query6-16.png";
+    return HotRodView.ICONS_DIR + "sql-query.png";
   }
 
   @Override

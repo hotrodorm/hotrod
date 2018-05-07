@@ -1,6 +1,7 @@
 package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.config.SequenceMethodTag;
+import org.hotrod.eclipseplugin.HotRodView;
 
 public class SequenceFace extends AbstractMethodFace {
 
@@ -10,8 +11,7 @@ public class SequenceFace extends AbstractMethodFace {
 
   @Override
   public String getIconPath() {
-    // return "icons/sql-sequence5-16.png";
-    return "eclipse-plugin/icons/sql-sequence7b-16.png";
+    return HotRodView.ICONS_DIR + "sql-sequence.png";
   }
 
   @Override

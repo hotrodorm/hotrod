@@ -2,6 +2,7 @@ package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.config.AbstractMethodTag;
 import org.hotrod.config.ViewTag;
+import org.hotrod.eclipseplugin.HotRodView;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
 public class ViewFace extends AbstractFace {
@@ -16,16 +17,7 @@ public class ViewFace extends AbstractFace {
 
   @Override
   public String getIconPath() {
-    // return "icons/view6-16.png";
-
-    // return "icons/view20-16.png";
-    return "eclipse-plugin/icons/view21-16.png";
-
-    // return "icons/animate/ani2.png";
-
-    // return "icons/view5-16.png";
-    // return "icons/view7-16.png";
-    // return "icons/view9-16.png";
+    return HotRodView.ICONS_DIR + "view.png";
   }
 
   @Override

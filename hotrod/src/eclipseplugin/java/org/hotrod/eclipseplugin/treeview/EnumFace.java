@@ -2,6 +2,7 @@ package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.config.AbstractMethodTag;
 import org.hotrod.config.EnumTag;
+import org.hotrod.eclipseplugin.HotRodView;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
 public class EnumFace extends AbstractFace {
@@ -16,10 +17,7 @@ public class EnumFace extends AbstractFace {
 
   @Override
   public String getIconPath() {
-    // return "icons/enum3-16.png";
-
-    // return "icons/enum20-16.png";
-    return "eclipse-plugin/icons/enum21-16.png";
+    return HotRodView.ICONS_DIR + "enum.png";
   }
 
   @Override

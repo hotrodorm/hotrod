@@ -1,6 +1,7 @@
 package org.hotrod.eclipseplugin.treeview;
 
 import org.hotrod.config.SelectMethodTag;
+import org.hotrod.eclipseplugin.HotRodView;
 
 public class SelectFace extends AbstractMethodFace {
 
@@ -10,7 +11,7 @@ public class SelectFace extends AbstractMethodFace {
 
   @Override
   public String getIconPath() {
-    return "eclipse-plugin/icons/sql-select8-16.png";
+    return HotRodView.ICONS_DIR + "sql-select.png";
   }
 
   @Override

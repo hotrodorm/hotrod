@@ -7,6 +7,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.eclipseplugin.ErrorMessage;
+import org.hotrod.eclipseplugin.HotRodView;
 import org.hotrod.eclipseplugin.RelativeProjectPath;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
@@ -155,7 +156,7 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   @Override
   public String getIconPath() {
-    return this.isValid() ? "eclipse-plugin/icons/main-config5-16.png" : "eclipse-plugin/icons/main-config5-bad-16.png";
+    return this.isValid() ? HotRodView.ICONS_DIR + "main-config.png" : HotRodView.ICONS_DIR + "main-config-bad.png";
   }
 
   @Override
