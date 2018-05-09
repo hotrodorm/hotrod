@@ -81,7 +81,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
               this.loadedFiles.put(absolutePath, freshFace);
               if (freshFace.isValid()) {
                 freshFace.getConfig().setTreeStatus(TagStatus.ADDED);
-                freshFace.computeBranchChanges();
+                freshFace.computeBranchMarkers();
                 this.viewPart.informFileChangesDetected(freshFace);
               }
 
@@ -93,7 +93,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
               this.loadedFiles.put(absolutePath, currentFace);
               boolean changesDetected = applyFreshVersion(currentFace, freshFace);
-              currentFace.computeBranchChanges();
+              currentFace.computeBranchMarkers();
               log.info("changesDetected=" + changesDetected);
 
               if (changesDetected) {
@@ -286,7 +286,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     if (this.loadedFiles.containsKey(fullPathName)) {
       MainConfigFace currentPresentedFace = this.loadedFiles.get(fullPathName);
       this.reload(currentPresentedFace);
-      currentPresentedFace.computeBranchChanges();
+      currentPresentedFace.computeBranchMarkers();
       return true;
     }
     return false;

@@ -31,6 +31,7 @@ public abstract class AbstractFace implements IAdaptable {
   private int id;
 
   private boolean hasBranchChanges;
+  private boolean hasBranchErrors;
 
   protected ErrorMessage errorMessage;
 
@@ -111,8 +112,12 @@ public abstract class AbstractFace implements IAdaptable {
     return this.parent.getMainConfigFace();
   }
 
+  public boolean hasError() {
+    return this.getErrorMessage() != null;
+  }
+
   public ErrorMessage getErrorMessage() {
-    return errorMessage;
+    return this.errorMessage != null ? this.errorMessage : this.tag.getErrorMessage();
   }
 
   public HotRodViewContentProvider getProvider() {
@@ -122,7 +127,7 @@ public abstract class AbstractFace implements IAdaptable {
   public void refreshView() {
     TreeViewer viewer = this.getViewer();
     if (viewer != null) {
-      this.computeBranchChanges();
+      this.computeBranchMarkers();
       Display.getDefault().asyncExec(new RefreshViewRunnable(this, viewer));
     }
   }
@@ -144,18 +149,37 @@ public abstract class AbstractFace implements IAdaptable {
 
   }
 
-  public boolean computeBranchChanges() {
+  private class BranchMarkers {
+    private boolean hasChanges;
+    private boolean hasErrors;
+
+    private BranchMarkers(final boolean hasChanges, final boolean hasErrors) {
+      this.hasChanges = hasChanges;
+      this.hasErrors = hasErrors;
+    }
+  }
+
+  public BranchMarkers computeBranchMarkers() {
     this.hasBranchChanges = this.getStatus() != TagStatus.UP_TO_DATE;
+    this.hasBranchErrors = this.hasError();
     for (AbstractFace c : this.children) {
-      if (c.computeBranchChanges()) {
+      BranchMarkers m = c.computeBranchMarkers();
+      if (m.hasChanges) {
         this.hasBranchChanges = true;
       }
+      if (m.hasErrors) {
+        this.hasBranchErrors = true;
+      }
     }
-    return this.hasBranchChanges;
+    return new BranchMarkers(this.hasBranchChanges, this.hasBranchErrors);
   }
 
   public boolean hasBranchChanges() {
     return this.hasBranchChanges;
+  }
+
+  public boolean hasBranchErrors() {
+    return this.hasBranchErrors;
   }
 
   public final TagStatus getStatus() {
@@ -166,8 +190,14 @@ public abstract class AbstractFace implements IAdaptable {
 
   public abstract String getIconPath();
 
+  public abstract String getErrorIconPath();
+
   public Image getImage() {
     return ImageCache.getImage(this.getIconPath());
+  }
+
+  public Image getErrorImage() {
+    return ImageCache.getImage(this.getErrorIconPath());
   }
 
   public abstract String getTooltip();

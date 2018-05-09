@@ -156,7 +156,12 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   @Override
   public String getIconPath() {
-    return this.isValid() ? HotRodView.ICONS_DIR + "main-config.png" : HotRodView.ICONS_DIR + "main-config-bad.png";
+    return this.isValid() ? HotRodView.ICONS_DIR + "main-config.png" : HotRodView.ICONS_DIR + "main-config-error.png";
+  }
+
+  @Override
+  public String getErrorIconPath() {
+    return HotRodView.ICONS_DIR + "main-config-error.png";
   }
 
   @Override

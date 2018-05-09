@@ -21,6 +21,11 @@ public class EnumFace extends AbstractFace {
   }
 
   @Override
+  public String getErrorIconPath() {
+    return HotRodView.ICONS_DIR + "enum-error.png";
+  }
+
+  @Override
   public String getDecoration() {
     return "enum";
   }

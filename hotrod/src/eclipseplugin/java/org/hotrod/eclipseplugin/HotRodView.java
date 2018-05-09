@@ -80,6 +80,7 @@ import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
+import org.hotrod.utils.EUtils;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public class HotRodView extends ViewPart {
@@ -132,6 +133,9 @@ public class HotRodView extends ViewPart {
 
   @Override
   public void createPartControl(final Composite parent) {
+
+    log.info("HotRod View starting...");
+
     this.viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 
     ColumnViewerToolTipSupport.enableFor(this.viewer);
@@ -355,6 +359,7 @@ public class HotRodView extends ViewPart {
       public void run() {
 
         for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+          log.error("mf: " + mf.getRelativeFileName() + " / " + mf.getRelativePath());
           ProjectProperties projectProperties = WorkspaceProperties.getInstance().getProjectProperties(mf.getProject());
 
           if (projectProperties == null) {
@@ -364,6 +369,11 @@ public class HotRodView extends ViewPart {
             FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
             if (fileProperties == null) {
               showMessage("File properties are not yet configured on file '" + mf.getRelativePath() + "'.");
+              return;
+            }
+            if (!fileProperties.isConfigured()) {
+              showMessage("The database connection for the file '" + mf.getRelativeFileName()
+                  + "' has not yet been configured. " + "\n\nPlease configure it and try again.");
               return;
             }
           }
@@ -451,6 +461,11 @@ public class HotRodView extends ViewPart {
                 showMessage("The file '" + mf.getRelativeFileName()
                     + "' has not yet been configured. Please click on Configure File and try again.");
                 allConfigured = false;
+              }
+              if (!fileProperties.isConfigured()) {
+                showMessage("The database connection for the file '" + mf.getRelativeFileName()
+                    + "' has not yet been configured. " + "\n\nPlease configure it and try again.");
+                return;
               }
             }
           }
@@ -651,6 +666,11 @@ public class HotRodView extends ViewPart {
                 + "' has not yet been configured. Please click on Configure File and try again.");
             allConfigured = false;
           }
+          if (!fileProperties.isConfigured()) {
+            showMessage("The database connection for the file '" + mf.getRelativeFileName()
+                + "' has not yet been configured. " + "\n\nPlease configure it and try again.");
+            allConfigured = false;
+          }
         }
       }
     }
@@ -745,7 +765,7 @@ public class HotRodView extends ViewPart {
   }
 
   private void showMessage(final String message) {
-    MessageDialog.openInformation(viewer.getControl().getShell(), "Sample View 2", message);
+    MessageDialog.openInformation(viewer.getControl().getShell(), Constants.TOOL_NAME, message);
   }
 
   /**
@@ -763,6 +783,8 @@ public class HotRodView extends ViewPart {
 
     HotRodConfigTag config = mainFace.getConfig();
     IProject project = mainFace.getProject();
+
+    config.eraseTreeErrorMessages();
 
     if (incrementalMode && !config.treeIncludesIsToBeGenerated()) {
       showMessage("Nothing to generate.");
@@ -794,26 +816,17 @@ public class HotRodView extends ViewPart {
 
       // Generate
 
-      // log.debug(">>> 6 fileProperties.getCachedMetadata()=" +
-      // fileProperties.getCachedMetadata());
-
       DatabaseLocation loc = new DatabaseLocation(fileProperties.getDriverClassName(), fileProperties.getUrl(),
           fileProperties.getUsername(), fileProperties.getPassword(), fileProperties.getCatalog(),
           fileProperties.getSchema(), classPath);
 
       try {
 
-        // log.debug(">>> 7 fileProperties.getCachedMetadata()=" +
-        // fileProperties.getCachedMetadata());
-
         CachedMetadata cachedMetadata = fileProperties.getCachedMetadata();
-
-        // log.debug("cachedDatabase: " + (cachedMetadata.getCachedDatabase() ==
-        // null
-        // ? "null" : "not null"));
 
         config.logGenerateMark("Generate Marks (ready to generate)", '-');
 
+        log.info("will instantiate");
         HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
             config, DisplayMode.LIST, incrementalMode);
 
@@ -824,7 +837,9 @@ public class HotRodView extends ViewPart {
           LiveGenerator liveGenerator = (LiveGenerator) g;
 
           // a live generator
+
           FileGenerator fg = new EclipseFileGenerator(project);
+          log.info("will generate live");
           liveGenerator.generate(fg);
 
           GenerationUnit<AbstractHotRodConfigTag> unit = (GenerationUnit<AbstractHotRodConfigTag>) config;
@@ -839,7 +854,10 @@ public class HotRodView extends ViewPart {
         } catch (ClassCastException e) {
 
           // a batch generator
+
+          log.info("will generate batch");
           g.generate();
+
         }
 
         // Mark Settings as generated
@@ -866,18 +884,20 @@ public class HotRodView extends ViewPart {
         log.debug("Generation complete.");
 
       } catch (ControlledException e) {
-        if (e.getLocation() == null) {
-          showMessage(Constants.TOOL_NAME + " could not generate the persistence code:\n" + e.getMessage());
+        if (e.getLocation() != null) {
+          showMessage(Constants.TOOL_NAME + " 1 could not generate the persistence code. Invalid configuration in "
+              + e.getLocation().render() + ":\n\n" + e.getMessage());
         } else {
-          showMessage(Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "
-              + e.getLocation().render() + ":\n" + e.getMessage());
+          showMessage(Constants.TOOL_NAME + " 2 could not generate the persistence code:\n" + e.getMessage());
         }
       } catch (UncontrolledException e) {
         log.error("Could not generate the persistence code.", e.getCause());
-        showMessage(Constants.TOOL_NAME + " could not generate the persistence code:\n" + e.getCause().getMessage());
+        String msg = EUtils.renderMessages(e.getCause(), " - ", "", "\n");
+        showMessage(Constants.TOOL_NAME + " 3 could not generate the persistence code:\n" + msg);
       } catch (Throwable t) {
         log.error("Could not generate the persistence code.", t);
-        showMessage(Constants.TOOL_NAME + " could not generate the persistence code:\n" + t.getMessage());
+        String msg = EUtils.renderMessages(t, " - ", "", "\n");
+        showMessage(Constants.TOOL_NAME + " 4 could not generate the persistence code:\n" + msg);
       }
 
     }

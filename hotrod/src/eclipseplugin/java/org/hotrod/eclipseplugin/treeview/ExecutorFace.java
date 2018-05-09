@@ -21,6 +21,11 @@ public class ExecutorFace extends AbstractFace {
   }
 
   @Override
+  public String getErrorIconPath() {
+    return HotRodView.ICONS_DIR + "executor-error.png";
+  }
+
+  @Override
   public String getDecoration() {
     return "executor";
   }

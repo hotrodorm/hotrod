@@ -15,6 +15,11 @@ public class ConverterFace extends AbstractFace {
   }
 
   @Override
+  public String getErrorIconPath() {
+    return HotRodView.ICONS_DIR + "converter-error.png";
+  }
+
+  @Override
   public String getDecoration() {
     return "converter";
   }

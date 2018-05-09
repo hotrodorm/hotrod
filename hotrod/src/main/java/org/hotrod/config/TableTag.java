@@ -176,6 +176,7 @@ public class TableTag extends AbstractEntityDAOTag {
     JdbcTable jt = generator.findJdbcTable(this.name);
 
     if (jt == null) {
+      this.markError("Could not find table '" + this.name + "'.");
       throw new InvalidConfigurationFileException(super.getSourceLocation(),
           "Could not find database table '" + this.name
               + "' as specified in the <table> tag of the configuration file. "

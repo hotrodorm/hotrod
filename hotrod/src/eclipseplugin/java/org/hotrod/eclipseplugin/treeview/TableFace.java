@@ -15,7 +15,6 @@ public class TableFace extends AbstractFace {
     super(tableDAO.getName(), tableDAO);
     for (AbstractMethodTag<?> m : tableDAO.getMethods()) {
       AbstractFace leaf = FaceFactory.getMethodElement(m);
-      // log.info("leaf=" + leaf);
       super.addChild(leaf);
     }
   }
@@ -23,6 +22,11 @@ public class TableFace extends AbstractFace {
   @Override
   public String getIconPath() {
     return HotRodView.ICONS_DIR + "table.png";
+  }
+
+  @Override
+  public String getErrorIconPath() {
+    return HotRodView.ICONS_DIR + "table-error.png";
   }
 
   @Override

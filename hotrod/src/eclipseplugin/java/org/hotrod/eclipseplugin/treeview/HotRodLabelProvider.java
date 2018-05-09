@@ -94,13 +94,17 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
     try {
       face = (AbstractFace) obj; // any face
-      cell.setImage(face.getImage());
+      if (face.hasBranchErrors()) {
+        cell.setImage(face.getErrorImage());
+      } else {
+        cell.setImage(face.getImage());
+      }
     } catch (ClassCastException e) { // unknown
       Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
       cell.setImage(image);
     }
 
-    // Label
+    // status prefix
 
     StyledString label = new StyledString("");
     if (face == null) {
@@ -109,35 +113,38 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
     } else {
 
-      // String prefix = face.getTreeStatus().getPrefix() + ":" +
-      // face.getStatus().getPrefix();
-
-      String prefix;
+      String ownStatus;
       switch (face.getStatus()) {
       case UP_TO_DATE:
-        prefix = "";
+        ownStatus = "";
         break;
       case MODIFIED:
-        prefix = "* ";
+        ownStatus = "* ";
         break;
       case ADDED:
-        prefix = "+ ";
+        ownStatus = "+ ";
         break;
       case DELETED:
-        prefix = "- ";
+        ownStatus = "- ";
         break;
       default:
-        prefix = "";
+        ownStatus = "";
         break;
       }
 
-      prefix = (face.hasBranchChanges() ? ">" : "") + " " + prefix;
-      // prefix = (face.hasBranchChanges() ? ">" : "") + " ";
-
-      // status prefix
+      String branchStatus = face.hasBranchChanges() ? ">" : "";
+      String prefix;
+      // prefix = branchStatus + " " + ownStatus + " ";
+      prefix = branchStatus + " ";
 
       if (prefix != null) {
         label.append(prefix, StyledString.DECORATIONS_STYLER);
+      }
+
+      // error
+
+      if (face.hasError()) {
+        label.append("(!) ", StyledString.DECORATIONS_STYLER);
       }
 
       // name

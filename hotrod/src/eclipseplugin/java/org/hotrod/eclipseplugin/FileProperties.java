@@ -22,6 +22,7 @@ public class FileProperties {
 
   private static final Logger log = Logger.getLogger(FileProperties.class);
 
+  public static final String CONFIGURED_ATT = "configured";
   public static final String DRIVERCLASSPATH_ATT = "driverclasspath";
   public static final String DRIVERCLASSNAME_ATT = "driverclassname";
   public static final String URL_ATT = "url";
@@ -31,12 +32,16 @@ public class FileProperties {
   public static final String SCHEMA_ATT = "schema";
   public static final String GENERATOR_ATT = "generator";
 
+  private static final String CONFIGURED_FALSE = "0";
+  private static final String CONFIGURED_TRUE = "1";
+
   // Properties
 
   private ProjectProperties projectProperties;
   private String code;
   private String relativeFileName;
 
+  private boolean configured;
   private List<String> driverClassPathEntries;
   private String driverClassName;
   private String url;
@@ -56,6 +61,7 @@ public class FileProperties {
     this.code = code;
     this.relativeFileName = relativeFileName;
 
+    this.configured = false;
     this.driverClassPathEntries = new ArrayList<String>();
     this.driverClassName = "";
     this.url = "";
@@ -97,7 +103,9 @@ public class FileProperties {
   }
 
   private void applyProperty(final String name, final String value) throws CouldNotLoadFilePropertiesException {
-    if (DRIVERCLASSPATH_ATT.equals(name)) {
+    if (CONFIGURED_ATT.equals(name)) {
+      this.configured = CONFIGURED_TRUE.equals(value);
+    } else if (DRIVERCLASSPATH_ATT.equals(name)) {
       this.driverClassPathEntries = ClassPathEncoder.decode(value);
     } else if (DRIVERCLASSNAME_ATT.equals(name)) {
       this.driverClassName = value;
@@ -126,6 +134,7 @@ public class FileProperties {
     IPath pp = this.projectProperties.getProjectDir().append(getFileName(this.code));
 
     Properties prop = new Properties();
+    prop.put(CONFIGURED_ATT, this.configured ? CONFIGURED_TRUE : CONFIGURED_FALSE);
     prop.put(DRIVERCLASSPATH_ATT, ClassPathEncoder.encode(this.driverClassPathEntries));
     prop.put(DRIVERCLASSNAME_ATT, this.driverClassName);
     prop.put(URL_ATT, this.url);
@@ -247,6 +256,14 @@ public class FileProperties {
 
   public CachedMetadata getCachedMetadata() {
     return cachedMetadata;
+  }
+
+  public boolean isConfigured() {
+    return configured;
+  }
+
+  public void setConfigured(boolean configured) {
+    this.configured = configured;
   }
 
   // Exceptions

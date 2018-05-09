@@ -38,6 +38,11 @@ public class FragmentConfigFace extends AbstractFace {
   }
 
   @Override
+  public String getErrorIconPath() {
+    return HotRodView.ICONS_DIR + "fragment-error.png";
+  }
+
+  @Override
   public String getTooltip() {
     return "HotRod fragment file " + super.getName();
   }

@@ -15,6 +15,11 @@ public class SettingsFace extends AbstractFace {
   }
 
   @Override
+  public String getErrorIconPath() {
+    return HotRodView.ICONS_DIR + "settings-error.png";
+  }
+
+  @Override
   public String getDecoration() {
     return "settings";
   }

@@ -498,11 +498,7 @@ public abstract class HotRodGenerator {
         try {
           this.config.validateAgainstDatabase(this, conn);
         } catch (InvalidConfigurationFileException e) {
-          String message = (e.getSourceLocation() == null ? ""
-              : "[file: " + e.getSourceLocation().getFile().getPath() + ", line "
-                  + e.getSourceLocation().getLineNumber() + ", col " + e.getSourceLocation().getColumnNumber() + "] ")
-              + e.getMessage();
-          throw new ControlledException(message);
+          throw new ControlledException(e.getSourceLocation(), e.getMessage());
         }
       }
 

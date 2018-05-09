@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Text;
 import org.hotrod.eclipseplugin.FileProperties;
 import org.hotrod.eclipseplugin.FileProperties.CouldNotSaveFilePropertiesException;
 import org.hotrod.eclipseplugin.ProjectProperties;
-import org.hotrod.eclipseplugin.ProjectProperties.CouldNotSaveProjectPropertiesException;
 import org.hotrod.eclipseplugin.jdbc.NavigationAwareWizardDialog.NavigationAwareWizard;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 import org.hotrod.eclipseplugin.utils.FUtil;
@@ -284,11 +283,8 @@ public class DatabasePropertiesWizard extends NavigationAwareWizard {
     this.connectionPage.retrieveValues();
     this.selectionPage.retrieveValues();
     try {
-      this.projectProperties.save();
+      this.fileProperties.setConfigured(true);
       this.fileProperties.save();
-    } catch (CouldNotSaveProjectPropertiesException e) {
-      MessageDialog.openError(this.shell, "Could not save project properties",
-          "Error: " + e.getMessage() + "\n\nCould not save project properties file.");
     } catch (CouldNotSaveFilePropertiesException e) {
       MessageDialog.openError(this.shell, "Could not save file properties",
           "Error: " + e.getMessage() + "\n\nCould not save file properties file.");

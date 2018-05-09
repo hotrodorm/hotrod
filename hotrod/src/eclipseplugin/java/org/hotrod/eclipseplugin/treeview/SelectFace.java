@@ -15,6 +15,11 @@ public class SelectFace extends AbstractMethodFace {
   }
 
   @Override
+  public String getErrorIconPath() {
+    return HotRodView.ICONS_DIR + "sql-select-error.png";
+  }
+
+  @Override
   public String getDecoration() {
     return "select";
   }

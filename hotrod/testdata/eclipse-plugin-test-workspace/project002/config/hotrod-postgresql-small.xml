@@ -33,10 +33,10 @@
  -->
 
   <table name="log" /> 
+  <table name="accou2nt" /> 
+<!--
   <table name="codes" />
   <table name="state_branch" />
-<!--
-  <table name="account" /> 
 
   
 

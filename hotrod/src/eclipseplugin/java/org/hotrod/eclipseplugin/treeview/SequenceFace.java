@@ -15,6 +15,11 @@ public class SequenceFace extends AbstractMethodFace {
   }
 
   @Override
+  public String getErrorIconPath() {
+    return HotRodView.ICONS_DIR + "sql-sequence-error.png";
+  }
+
+  @Override
   public String getDecoration() {
     return "sequence retriever";
   }

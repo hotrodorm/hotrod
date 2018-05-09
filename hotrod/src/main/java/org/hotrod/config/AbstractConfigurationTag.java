@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hotrod.eclipseplugin.ErrorMessage;
 import org.hotrod.generator.GeneratableObject;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.runtime.util.SUtils;
@@ -26,6 +27,8 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
 
   private TagStatus status;
   protected List<AbstractConfigurationTag> subTags;
+
+  private ErrorMessage errorMessage = null;
 
   private enum GenerationStatus {
     NO_ACTION, TO_BE_GENERATED, GENERATION_COMPLETE
@@ -155,6 +158,27 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     }
     for (AbstractConfigurationTag subTag : this.subTags) {
       subTag.addTagsToGenerate(list);
+    }
+  }
+
+  // Error Mark
+
+  public boolean hasError() {
+    return this.errorMessage != null;
+  }
+
+  public ErrorMessage getErrorMessage() {
+    return this.errorMessage;
+  }
+
+  public void markError(final String errorMessage) {
+    this.errorMessage = new ErrorMessage(this.location, errorMessage);
+  }
+
+  public void eraseTreeErrorMessages() {
+    this.errorMessage = null;
+    for (AbstractConfigurationTag subTag : this.subTags) {
+      subTag.eraseTreeErrorMessages();
     }
   }
 
