@@ -672,7 +672,7 @@ public class HotRodView extends ViewPart {
   }
 
   public void informFileChangesDetected(final MainConfigFace face) {
-
+    log.info("informing file changed. face.isValid()=" + face.isValid());
     if (face.isValid() && WorkspaceProperties.getInstance().isAutogenerateOnChanges()) {
 
       // generation must be delayed until all file changes events are complete

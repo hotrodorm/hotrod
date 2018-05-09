@@ -275,9 +275,13 @@
     <zip destfile="${dist.dir}/org.hotrod.eclipse-${version}.jar">
       <zipfileset dir="eclipse-plugin-resources/icons" prefix="eclipse-plugin-resources/icons" />
       <fileset dir="${main.build.dir}" />
+      <fileset dir="${runtime.build.dir}" />
       <fileset dir="${eclipseplugin.build.dir}" />
       <zipfileset file="META-INF/MANIFEST.MF" prefix="META-INF" />
+      <fileset file="src/main/xml/hotrod-primary-head.xsd" />
+      <fileset file="src/main/xml/hotrod-fragment-head.xsd" />
       <fileset file="plugin.xml" />
+      <fileset file="src/eclipseplugin/metadata/log4j.properties" />
       <!--
       -->
       <zipfileset src="${lib.dir}/log4j-1.2.17.jar" excludes="META-INF/MANIFEST.MF" />

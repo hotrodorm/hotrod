@@ -42,100 +42,111 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
   public void addFile(final File f) {
 
-    if (f != null && f.getName().endsWith(VALID_HOTROD_EXTENSION) && f.isFile()) {
-      String absolutePath = f.getAbsolutePath();
-      if (!this.loadedFiles.containsKey(absolutePath)) {
+    try {
 
-        RelativeProjectPath path = RelativeProjectPath.findProjectPath(f);
-        if (path != null) {
+      if (f != null && f.getName().endsWith(VALID_HOTROD_EXTENSION) && f.isFile()) {
+        String absolutePath = f.getAbsolutePath();
+        if (!this.loadedFiles.containsKey(absolutePath)) {
 
-          // 1. Load the cached config
+          RelativeProjectPath path = RelativeProjectPath.findProjectPath(f);
+          if (path != null) {
 
-          ProjectProperties projectProperties = WorkspaceProperties.getInstance()
-              .getProjectProperties(path.getProject());
-          FileProperties fileProperties = projectProperties.getFileProperties(path.getRelativeFileName());
+            // 1. Load the cached config
 
-          // 2. Retrieve cached config (current), if available
+            ProjectProperties projectProperties = WorkspaceProperties.getInstance()
+                .getProjectProperties(path.getProject());
+            FileProperties fileProperties = projectProperties.getFileProperties(path.getRelativeFileName());
 
-          log.info("fileProperties=" + fileProperties);
+            // 2. Retrieve cached config (current), if available
 
-          HotRodConfigTag currentConfig = fileProperties == null ? null
-              : fileProperties.getCachedMetadata().getConfig();
-          MainConfigFace currentFace = currentConfig == null ? null
-              : new MainConfigFace(f, path, this.provider, currentConfig);
+            log.info("fileProperties=" + fileProperties);
 
-          // 3. Load new face (fresh)
+            HotRodConfigTag currentConfig = fileProperties == null ? null
+                : fileProperties.getCachedMetadata().getConfig();
+            MainConfigFace currentFace = currentConfig == null ? null
+                : new MainConfigFace(f, path, this.provider, currentConfig);
+            log.info("cachedConfig=" + currentConfig);
 
-          MainConfigFace freshFace = loadFile(f);
-          log.debug("File loading - freshFace=" + freshFace);
+            // 3. Load new face (fresh)
 
-          log.debug("cachedConfig=" + currentConfig);
+            log.info("File loading...");
+            MainConfigFace freshFace = loadFile(f);
+            log.info("Loaded - freshFace=" + freshFace);
 
-          if (currentConfig == null) {
+            if (currentConfig == null) {
 
-            // 4.a Display loaded file as-is when no cached config is present.
+              // 4.a Display loaded file as-is when no cached config is present.
 
-            log.debug("No cached config present.");
-            this.loadedFiles.put(absolutePath, freshFace);
-            if (freshFace.isValid()) {
-              freshFace.getConfig().setTreeStatus(TagStatus.ADDED);
-              freshFace.computeBranchChanges();
-              this.viewPart.informFileChangesDetected(freshFace);
+              log.info("No cached config present.");
+              this.loadedFiles.put(absolutePath, freshFace);
+              if (freshFace.isValid()) {
+                freshFace.getConfig().setTreeStatus(TagStatus.ADDED);
+                freshFace.computeBranchChanges();
+                this.viewPart.informFileChangesDetected(freshFace);
+              }
+
+            } else {
+
+              // 4.b Display combined loaded file with cached config.
+
+              log.info("Cached config present.");
+
+              this.loadedFiles.put(absolutePath, currentFace);
+              boolean changesDetected = applyFreshVersion(currentFace, freshFace);
+              currentFace.computeBranchChanges();
+              log.info("changesDetected=" + changesDetected);
+
+              if (changesDetected) {
+                this.viewPart.informFileChangesDetected(currentFace);
+              }
+
+              // TODO: remove when tested
+              // if (freshFace.isValid()) {
+              //
+              // this.loadedFiles.put(absolutePath, freshFace);
+              //
+              // } else {
+              // log.info("Cached config present.");
+              // currentConfig.logGenerateMark("Generate Marks (PRE) - " +
+              // System.identityHashCode(currentConfig), '-');
+              // log.info("freshFace=" + freshFace + " freshFace.getTag()=" +
+              // freshFace.getTag());
+              // currentFace.applyChangesFrom(freshFace);
+              // HotRodConfigTag ex2 = currentFace.getConfig();
+              // ex2.logGenerateMark("Generate Marks (POST) - " +
+              // System.identityHashCode(ex2), '=');
+              //
+              // this.loadedFiles.put(absolutePath, currentFace);
+              // currentFace.computeBranchChanges();
+              // }
+
             }
 
-          } else {
-
-            // 4.b Display combined loaded file with cached config.
-
-            this.loadedFiles.put(absolutePath, currentFace);
-            boolean changesDetected = applyFreshVersion(currentFace, freshFace);
-            currentFace.computeBranchChanges();
-
-            if (changesDetected) {
-              this.viewPart.informFileChangesDetected(currentFace);
+            try {
+              fileProperties.save();
+            } catch (CouldNotSaveFilePropertiesException e) {
+              log.error("Could not save file properties: " + e.getMessage());
             }
 
-            // TODO: remove when tested
-            // if (freshFace.isValid()) {
-            //
-            // this.loadedFiles.put(absolutePath, freshFace);
-            //
-            // } else {
-            // log.info("Cached config present.");
-            // currentConfig.logGenerateMark("Generate Marks (PRE) - " +
-            // System.identityHashCode(currentConfig), '-');
-            // log.info("freshFace=" + freshFace + " freshFace.getTag()=" +
-            // freshFace.getTag());
-            // currentFace.applyChangesFrom(freshFace);
-            // HotRodConfigTag ex2 = currentFace.getConfig();
-            // ex2.logGenerateMark("Generate Marks (POST) - " +
-            // System.identityHashCode(ex2), '=');
-            //
-            // this.loadedFiles.put(absolutePath, currentFace);
-            // currentFace.computeBranchChanges();
-            // }
+            try {
+              projectProperties.save();
+            } catch (CouldNotSaveProjectPropertiesException e) {
+              log.error("Could not save project properties: " + e.getMessage());
+            }
+
+            // 5. Refresh the plugin tree view with new file.
+
+            log.info("5. Will refresh.");
+            this.provider.refresh();
+            log.info("5.1 Refreshed.");
 
           }
-
-          try {
-            fileProperties.save();
-          } catch (CouldNotSaveFilePropertiesException e) {
-            log.error("Could not save file properties: " + e.getMessage());
-          }
-
-          try {
-            projectProperties.save();
-          } catch (CouldNotSaveProjectPropertiesException e) {
-            log.error("Could not save project properties: " + e.getMessage());
-          }
-
-          // 5. Refresh the plugin tree view with new file.
-
-          this.provider.refresh();
 
         }
-
       }
+
+    } catch (Throwable t) {
+      log.error("Throwable caught.", t);
     }
 
   }
@@ -216,11 +227,12 @@ public class LoadedConfigurationFiles implements FileChangeListener {
       return face;
 
     } catch (ControlledException e) {
-      log.debug("Error Message=" + e.getMessage() + " loc=" + e.getLocation());
+      log.info("Error Message=" + e.getMessage() + " loc=" + e.getLocation());
       MainConfigFace face = new MainConfigFace(f, path, this.provider,
           new ErrorMessage(e.getLocation(), e.getMessage()));
       return face;
     } catch (UncontrolledException e) {
+      log.error("Failed to load configuration file.", e);
       MainConfigFace face = new MainConfigFace(f, path, this.provider, new ErrorMessage(null, e.getMessage()));
       return face;
     }

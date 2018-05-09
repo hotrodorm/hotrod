@@ -47,6 +47,9 @@ public class ConfigurationLoader {
   private static final String PRIMARY_XSD_PATH = "/src/main/xml/hotrod-primary-head.xsd";
   private static final String FRAGMENT_XSD_PATH = "/src/main/xml/hotrod-fragment-head.xsd";
 
+  private static final String PLUGIN_PRIMARY_XSD_PATH = "/hotrod-primary-head.xsd";
+  private static final String PLUGIN_FRAGMENT_XSD_PATH = "/hotrod-fragment-head.xsd";
+
   // Static properties
 
   private static Schema primarySchema = null;
@@ -307,7 +310,21 @@ public class ConfigurationLoader {
       SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
       InputStream is = null;
       try {
+
+        // checkExistence("/src/main/xml/hotrod-primary-head.xsd");
+        // checkExistence("src/main/xml/hotrod-primary-head.xsd");
+        // checkExistence("/src/main/xml/hotrod-fragment-head.xsd");
+        // checkExistence("src/main/xml/hotrod-fragment-head.xsd");
+        //
+        // checkExistence("/hotrod-primary-head.xsd");
+        // checkExistence("hotrod-primary-head.xsd");
+        // checkExistence("/hotrod-fragment-head.xsd");
+        // checkExistence("hotrod-fragment-head.xsd");
+
         is = ConfigurationLoader.class.getResourceAsStream(PRIMARY_XSD_PATH);
+        if (is == null) { // try the plugin location
+          is = ConfigurationLoader.class.getResourceAsStream(PLUGIN_PRIMARY_XSD_PATH);
+        }
         primarySchema = factory.newSchema(new StreamSource(is));
       } finally {
         if (is != null) {
@@ -322,12 +339,20 @@ public class ConfigurationLoader {
     return primarySchema;
   }
 
+  private static void checkExistence(final String name) {
+    InputStream is = ConfigurationLoader.class.getResourceAsStream(name);
+    log.info("--> Resource: " + name + " -- " + (is == null ? "does not exist" : "exists") + ".");
+  }
+
   private static Schema getFragmentSchema() throws SAXException {
     if (fragmentSchema == null) {
       SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
       InputStream is = null;
       try {
         is = ConfigurationLoader.class.getResourceAsStream(FRAGMENT_XSD_PATH);
+        if (is == null) { // try the plugin location
+          is = ConfigurationLoader.class.getResourceAsStream(PLUGIN_FRAGMENT_XSD_PATH);
+        }
         fragmentSchema = factory.newSchema(new StreamSource(is));
       } finally {
         if (is != null) {
