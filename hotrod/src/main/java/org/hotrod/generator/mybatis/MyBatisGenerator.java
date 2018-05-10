@@ -4,15 +4,15 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 import org.apache.log4j.Logger;
-import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
+import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;

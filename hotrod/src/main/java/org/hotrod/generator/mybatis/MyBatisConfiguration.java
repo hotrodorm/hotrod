@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrod.ant.ControlledException;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.MyBatisTag;
+import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.GeneratableObject;

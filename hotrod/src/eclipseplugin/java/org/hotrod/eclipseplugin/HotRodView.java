@@ -56,9 +56,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.hotrod.ant.Constants;
-import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractConfigurationTag.TagStatus;
 import org.hotrod.config.AbstractHotRodConfigTag;
@@ -75,6 +73,8 @@ import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
 import org.hotrod.eclipseplugin.utils.EclipseFileGenerator;
 import org.hotrod.eclipseplugin.utils.FUtil;
+import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
@@ -359,7 +359,7 @@ public class HotRodView extends ViewPart {
       public void run() {
 
         for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-          log.error("mf: " + mf.getRelativeFileName() + " / " + mf.getRelativePath());
+          log.debug("mf: " + mf.getRelativeFileName() + " / " + mf.getRelativePath());
           ProjectProperties projectProperties = WorkspaceProperties.getInstance().getProjectProperties(mf.getProject());
 
           if (projectProperties == null) {
@@ -830,8 +830,9 @@ public class HotRodView extends ViewPart {
         HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
             config, DisplayMode.LIST, incrementalMode);
 
+        log.info("Will prepare.");
         g.prepareGeneration();
-        log.debug("Generation prepared.");
+        log.info("Generation prepared.");
 
         try {
           LiveGenerator liveGenerator = (LiveGenerator) g;
@@ -881,9 +882,10 @@ public class HotRodView extends ViewPart {
 
         // Generation complete
 
-        log.debug("Generation complete.");
+        log.info("Generation complete.");
 
       } catch (ControlledException e) {
+        log.info("Could not generate.", e);
         // if (e.getLocation() != null) {
         // showMessage(Constants.TOOL_NAME + " 1 could not generate the
         // persistence code. Invalid configuration in "

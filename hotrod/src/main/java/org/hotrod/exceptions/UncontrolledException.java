@@ -1,4 +1,4 @@
-package org.hotrod.ant;
+package org.hotrod.exceptions;
 
 public class UncontrolledException extends Exception {
 

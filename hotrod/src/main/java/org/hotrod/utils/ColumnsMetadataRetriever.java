@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.InvalidSQLException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.ColumnMetadata;
@@ -206,25 +207,6 @@ public class ColumnsMetadataRetriever {
     }
 
     return reassembled;
-  }
-
-  // Exceptions
-
-  public static class InvalidSQLException extends Exception {
-
-    private static final long serialVersionUID = 1L;
-
-    private String invalidSQL;
-
-    public InvalidSQLException(final String invalidSQL, final Throwable cause) {
-      super(cause);
-      this.invalidSQL = invalidSQL;
-    }
-
-    public String getInvalidSQL() {
-      return invalidSQL;
-    }
-
   }
 
 }

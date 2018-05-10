@@ -80,7 +80,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     // Generators
 
     this.generatorsTag.validate(basedir, parentDir, generatorName);
-    super.subTags.add(this.generatorsTag);
+    super.addChild(this.generatorsTag);
 
     // Converters
 
@@ -88,7 +88,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
     for (ConverterTag c : this.converters) {
       c.validate();
-      super.subTags.add(c);
+      super.addChild(c);
       if (this.convertersByName.containsKey(c.getName())) {
         throw new InvalidConfigurationFileException(this, //
             "Multiple converters with name '" + c.getName() + "'", //
@@ -162,8 +162,8 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   // Update generated cache
 
-  private boolean concludeGeneration(final AbstractHotRodConfigTag unitCache, final DatabaseAdapter adapter) {
-
+  @Override
+  public boolean concludeGenerationTree(final AbstractHotRodConfigTag unitCache, final DatabaseAdapter adapter) {
     log.debug("conclude 1");
 
     HotRodConfigTag cache = (HotRodConfigTag) unitCache;
@@ -179,7 +179,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     log.debug("conclude 2 - converters");
 
     for (ConverterTag c : this.getConverters()) {
-      if (c.isToBeGenerated()) {
+      if (!c.concludeGenerationMarkTag()) {
         failedExtendedGeneration = true;
       }
     }
@@ -230,11 +230,6 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     }
 
     return false;
-  }
-
-  @Override
-  public boolean concludeGenerationTree(final AbstractHotRodConfigTag cache, final DatabaseAdapter adapter) {
-    return this.concludeGeneration(cache, adapter);
   }
 
   protected void add(final ConverterTag c) {

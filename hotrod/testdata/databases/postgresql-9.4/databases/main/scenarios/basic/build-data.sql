@@ -21,9 +21,9 @@ insert into federal_branch (id, name) values (101, 'Virginia');
 insert into federal_branch (id, name) values (102, 'Maryland');
 insert into federal_branch (id, name) values (103, 'Delaware');
 
-insert into account (id, current_balance, name, created_on) values (1234001, 120, 'CHK1004', '2015-12-10');
-insert into account (id, current_balance, name, created_on) values (1234004, 500, 'SAV7018', '2015-12-08');
-insert into account (id, current_balance, name, created_on) values (1234005, 45, 'CHK2301', '2015-9-1');
+insert into account (id, current_balance, name, type, active, created_on) values (1234001, 120, 'CHK1004', 'CHK', 1, '2015-12-10');
+insert into account (id, current_balance, name, type, active, created_on) values (1234004, 500, 'SAV7018', 'SAV', 1, '2015-12-08');
+insert into account (id, current_balance, name, type, active, created_on) values (1234005, 45, 'CHK2301', 'CHK', 0, '2015-9-1');
   
 insert into transaction (account_id, seq_id, time, amount, fed_branch_id) 
   values (1234001, 100, 'Time 001', 100, 101);

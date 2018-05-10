@@ -1,7 +1,7 @@
 package org.hotrod.generator;
 
-import org.hotrod.ant.ControlledException;
-import org.hotrod.ant.UncontrolledException;
+import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.UncontrolledException;
 
 public interface LiveGenerator {
 

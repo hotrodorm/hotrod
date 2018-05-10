@@ -79,6 +79,7 @@ public class ViewTag extends AbstractEntityDAOTag {
   @XmlElement
   public void setColumn(final ColumnTag c) {
     this.columns.add(c);
+    super.addChild(c);
   }
 
   // Behavior
@@ -128,7 +129,7 @@ public class ViewTag extends AbstractEntityDAOTag {
     for (ColumnTag c : this.columns) {
       c.validate(config);
       if (cols.contains(c)) {
-        throw new InvalidConfigurationFileException(this, //
+        throw new InvalidConfigurationFileException(c, //
             "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name", //
             "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name on tag <" + super.getTagName()
                 + "> for table '" + this.name + "'. You cannot specify the same column name "

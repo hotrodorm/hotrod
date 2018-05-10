@@ -34,6 +34,7 @@ public abstract class AbstractFace implements IAdaptable {
   private boolean hasBranchErrors;
 
   protected ErrorMessage errorMessage;
+  protected ErrorMessage subtagErrorMessage;
 
   private List<AbstractFace> children;
 
@@ -52,6 +53,7 @@ public abstract class AbstractFace implements IAdaptable {
     this.name = name;
     this.tag = tag;
     this.errorMessage = errorMessage;
+    this.subtagErrorMessage = null;
     this.children = new ArrayList<AbstractFace>();
     this.parent = null;
   }
@@ -117,7 +119,13 @@ public abstract class AbstractFace implements IAdaptable {
   }
 
   public ErrorMessage getErrorMessage() {
-    return this.errorMessage != null ? this.errorMessage : this.tag.getErrorMessage();
+    if (this.errorMessage != null) {
+      return this.errorMessage;
+    }
+    if (this.tag.getErrorMessage() != null) {
+      return this.tag.getErrorMessage();
+    }
+    return this.subtagErrorMessage;
   }
 
   public HotRodViewContentProvider getProvider() {
@@ -149,29 +157,36 @@ public abstract class AbstractFace implements IAdaptable {
 
   }
 
-  private class BranchMarkers {
-    private boolean hasChanges;
-    private boolean hasErrors;
-
-    private BranchMarkers(final boolean hasChanges, final boolean hasErrors) {
-      this.hasChanges = hasChanges;
-      this.hasErrors = hasErrors;
-    }
+  public void computeBranchMarkers() {
+    this.computeBranchChanges();
+    this.computeBranchErrors();
   }
 
-  public BranchMarkers computeBranchMarkers() {
+  public boolean computeBranchChanges() {
     this.hasBranchChanges = this.getStatus() != TagStatus.UP_TO_DATE;
-    this.hasBranchErrors = this.hasError();
     for (AbstractFace c : this.children) {
-      BranchMarkers m = c.computeBranchMarkers();
-      if (m.hasChanges) {
+      if (c.computeBranchChanges()) {
         this.hasBranchChanges = true;
       }
-      if (m.hasErrors) {
-        this.hasBranchErrors = true;
-      }
     }
-    return new BranchMarkers(this.hasBranchChanges, this.hasBranchErrors);
+    return this.hasBranchChanges;
+  }
+
+  public boolean computeBranchErrors() {
+    this.hasBranchErrors = this.hasError();
+    if (!this.children.isEmpty()) {
+      for (AbstractFace c : this.children) {
+        if (c.computeBranchErrors()) {
+          this.hasBranchErrors = true;
+        }
+      }
+    } else {
+      ErrorMessage errorMessage = this.tag.getBranchError();
+      log.debug("[" + this.getDecoration() + " " + this.name + "] this.hasError()=" + this.hasError() + " branchError="
+          + this.errorMessage);
+      this.errorMessage = errorMessage;
+    }
+    return this.hasBranchErrors;
   }
 
   public boolean hasBranchChanges() {

@@ -136,26 +136,31 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     for (Object obj : this.content) {
       try {
-        String s = (String) obj; // content part
+        String s = (String) obj; // literal content part
         VerbatimTextPart p = new VerbatimTextPart(s);
         this.parts.add(p);
+        super.addChild(p);
       } catch (ClassCastException e1) {
         try {
           ParameterTag param = (ParameterTag) obj; // parameter
           this.parameters.add(param);
+          super.addChild(param);
         } catch (ClassCastException e2) {
           try {
             ColumnTag col = (ColumnTag) obj; // column
             this.columns.add(col);
+            super.addChild(col);
           } catch (ClassCastException e3) {
             try {
               ComplementTag p = (ComplementTag) obj; // complement
               this.parts.add(p);
+              super.addChild(p);
             } catch (ClassCastException e4) {
               try {
                 ColumnsTag p = (ColumnsTag) obj; // columns
                 this.structuredColumns = p;
                 this.parts.add(p);
+                super.addChild(p);
               } catch (ClassCastException e5) {
                 throw new InvalidConfigurationFileException(this, //
                     "Invalid tag (" + obj.getClass().getName() + ") in body of <" + super.getTagName() + "> tag", //

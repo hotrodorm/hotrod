@@ -16,8 +16,6 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.ant.ControlledException;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
@@ -27,7 +25,10 @@ import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
+import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidSQLException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.mybatis.DataSetLayout;
@@ -39,7 +40,6 @@ import org.hotrod.metadata.VOMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ColumnsMetadataRetriever;
-import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.JdbcTypes;
@@ -91,7 +91,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   private String compiledBody;
   private boolean useAllColumns;
 
-  private ColumnsMetadataRetriever cmr;
+  private transient ColumnsMetadataRetriever cmr;
   private String aliasPrefix;
 
   private transient List<StructuredColumnMetadata> inheritedColumns;
@@ -161,14 +161,17 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
         try {
           CollectionTag c = (CollectionTag) obj; // collection
           this.collections.add(c);
+          super.addChild(c);
         } catch (ClassCastException e2) {
           try {
             AssociationTag a = (AssociationTag) obj; // association
             this.associations.add(a);
+            super.addChild(a);
           } catch (ClassCastException e3) {
             try {
               ExpressionTag exp = (ExpressionTag) obj; // expressions
               this.expressions.addExpression(exp);
+              super.addChild(exp);
             } catch (ClassCastException e4) {
               throw new InvalidConfigurationFileException(this, //
                   "The body of the tag <" + super.getTagName() + "> has an invalid tag of class "
@@ -347,10 +350,10 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
     this.generator = generator;
-    log.info("*** this.table=" + this.table + " this.view=" + this.view);
+    log.debug("*** this.table=" + this.table + " this.view=" + this.view);
     if (this.table != null) {
       this.tableMetadata = generator.findTableMetadata(this.table);
-      log.info("this.tableMetadata=" + this.tableMetadata);
+      log.debug("this.tableMetadata=" + this.tableMetadata);
       if (this.tableMetadata == null) {
         throw new InvalidConfigurationFileException(this, //
             "Could not find <" + new TableTag().getTagName() + "> tag in the configuration file for the table '"

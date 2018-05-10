@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.hotrod.ant.ControlledException;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnumTag.EnumConstant;
 import org.hotrod.config.EnumTag.EnumProperty;
+import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;

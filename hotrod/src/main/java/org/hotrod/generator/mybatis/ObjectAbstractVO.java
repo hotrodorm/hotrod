@@ -5,10 +5,10 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
-import org.hotrod.ant.ControlledException;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
+import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;

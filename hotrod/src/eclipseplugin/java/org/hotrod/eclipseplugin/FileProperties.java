@@ -182,8 +182,10 @@ public class FileProperties {
     try {
       SerialUtils.serialize(this.cachedMetadata, new GZIPOutputStream(new FileOutputStream(pc.toFile())));
     } catch (FileNotFoundException e) {
+      log.error("Could not save cache for file '" + this.relativeFileName + "'.", e);
       throw new CouldNotSaveFilePropertiesException("Could not save cache for file '" + this.relativeFileName + "'.");
     } catch (IOException e) {
+      log.error("Could not save cache for file '" + this.relativeFileName + "'.", e);
       throw new CouldNotSaveFilePropertiesException("Could not save cache for file '" + this.relativeFileName + "'.");
     }
   }

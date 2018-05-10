@@ -10,8 +10,8 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.Properties;
 
-import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.HotRodAntTask;
+import org.hotrod.exceptions.ControlledException;
 
 public class FirstTest {
 

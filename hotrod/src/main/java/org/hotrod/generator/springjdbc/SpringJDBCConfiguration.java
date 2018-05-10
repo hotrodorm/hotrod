@@ -1,8 +1,8 @@
 package org.hotrod.generator.springjdbc;
 
-import org.hotrod.ant.ControlledException;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.UncontrolledException;
 
 public class SpringJDBCConfiguration {
 

@@ -78,11 +78,11 @@ public class ComplementTag extends EnhancedSQLPart {
     for (Object obj : this.content) {
       DynamicSQLPart p = null;
       try {
-        String s = (String) obj;
+        String s = (String) obj; // literal content part
         p = new ParameterisableTextPart(s, this, parameters);
       } catch (ClassCastException e1) {
         try {
-          p = (DynamicSQLPart) obj;
+          p = (DynamicSQLPart) obj; // dynamic sql part
           p.retrievePartsAndValidate(parameters);
         } catch (ClassCastException e2) {
           throw new InvalidConfigurationFileException(this, //
@@ -92,6 +92,7 @@ public class ComplementTag extends EnhancedSQLPart {
         }
       }
       this.parts.add(p);
+      super.addChild(p);
     }
 
   }

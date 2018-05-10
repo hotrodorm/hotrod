@@ -2,6 +2,7 @@ package org.hotrod.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -26,7 +27,9 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   private SourceLocation location = null;
 
   private TagStatus status;
-  protected List<AbstractConfigurationTag> subTags;
+
+  private AbstractConfigurationTag parent;
+  private List<AbstractConfigurationTag> subTags;
 
   private ErrorMessage errorMessage = null;
 
@@ -43,6 +46,7 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     log.trace("init.");
     this.tagName = tagName;
     this.status = TagStatus.UP_TO_DATE;
+    this.parent = null;
     this.subTags = new ArrayList<AbstractConfigurationTag>();
   }
 
@@ -57,6 +61,22 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     for (AbstractConfigurationTag subTag : this.subTags) {
       subTag.activate();
     }
+  }
+
+  protected void addChild(final AbstractConfigurationTag t) {
+    t.parent = this;
+    this.subTags.add(t);
+  }
+
+  protected void addChildren(final Collection<? extends AbstractConfigurationTag> c) {
+    for (AbstractConfigurationTag t : c) {
+      t.parent = this;
+      this.subTags.add(t);
+    }
+  }
+
+  public AbstractConfigurationTag getParent() {
+    return parent;
   }
 
   // Duplicate
@@ -180,6 +200,22 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     for (AbstractConfigurationTag subTag : this.subTags) {
       subTag.eraseTreeErrorMessages();
     }
+  }
+
+  public ErrorMessage getBranchError() {
+    log.debug(
+        " ::: " + this.getInternalCaption() + "[" + this.subTags.size() + "] this.errorMessage=" + this.errorMessage);
+    if (this.errorMessage != null) {
+      return this.errorMessage;
+    }
+    for (AbstractConfigurationTag subTag : this.subTags) {
+      ErrorMessage branchError = subTag.getBranchError();
+      if (branchError != null) {
+        log.debug(" --> BRANCH ERROR FOUND!");
+        return branchError;
+      }
+    }
+    return null;
   }
 
   // Generable objects

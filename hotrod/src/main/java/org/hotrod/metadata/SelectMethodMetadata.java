@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hotrod.ant.ControlledException;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.ColumnTag;
@@ -23,7 +21,10 @@ import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidSQLException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
@@ -37,7 +38,6 @@ import org.hotrod.metadata.VORegistry.VOProperty;
 import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
@@ -108,7 +108,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   // Behavior
 
-  public void gatherMetadataPhase1(final Connection conn1) throws UncontrolledException, ControlledException {
+  public void gatherMetadataPhase1(final Connection conn1) throws InvalidConfigurationFileException {
 
     if (!this.structured) {
 
@@ -117,7 +117,11 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       try {
         prepareUnstructuredColumnsRetrieval(conn1);
       } catch (InvalidSQLException e) {
-        throw new ControlledException(
+        throw new InvalidConfigurationFileException(this.tag, //
+            "Could not retrieve metadata for <" + new SelectClassTag().getTagName()
+                + "> tag while creating a temporary SQL view for it.\n" + "* " + e.getCause().getMessage() + "\n"
+                + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
+                + "\n--- end SQL ---", //
             "Error in " + this.tag.getSourceLocation().render() + ":\n" + "Could not retrieve metadata for <"
                 + new SelectClassTag().getTagName() + "> tag while creating a temporary SQL view for it.\n" + "* "
                 + e.getCause().getMessage() + "\n" + "* Is the create view SQL code below valid?\n"
@@ -133,7 +137,11 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, this.selectGenerationTag,
             this.columnsPrefixGenerator, conn1);
       } catch (InvalidSQLException e) {
-        throw new ControlledException(
+        throw new InvalidConfigurationFileException(this.tag, //
+            "Could not retrieve metadata for <" + this.tag.getTagName()
+                + "> tag while creating the temporary SQL view for it.\n" + "* " + e.getCause().getMessage() + "\n"
+                + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
+                + "\n--- end SQL ---", //
             "Error in " + this.tag.getSourceLocation().render() + ":\n" + "Could not retrieve metadata for <"
                 + this.tag.getTagName() + "> tag while creating the temporary SQL view for it.\n" + "* "
                 + e.getCause().getMessage() + "\n" + "* Is the create view SQL code below valid?\n"

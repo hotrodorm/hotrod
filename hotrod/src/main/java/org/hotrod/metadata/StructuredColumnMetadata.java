@@ -8,7 +8,6 @@ import java.util.Set;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
-import org.hotrod.runtime.dynamicsql.SourceLocation;
 
 public class StructuredColumnMetadata extends ColumnMetadata implements Serializable {
 

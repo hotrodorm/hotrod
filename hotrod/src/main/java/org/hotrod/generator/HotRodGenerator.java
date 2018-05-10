@@ -12,9 +12,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
-import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractEntityDAOTag;
 import org.hotrod.config.ColumnTag;
@@ -31,7 +29,9 @@ import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.DatabaseAdapterFactory;
+import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
@@ -503,28 +503,48 @@ public abstract class HotRodGenerator {
       // Prepare <select> methods meta data - phase 1
 
       for (TableDataSetMetadata tm : this.tables) {
-        boolean retrieving = tm.gatherSelectsMetadataPhase1(this, conn, layout);
+        boolean retrieving;
+        try {
+          retrieving = tm.gatherSelectsMetadataPhase1(this, conn, layout);
+        } catch (InvalidConfigurationFileException e) {
+          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
+        }
         if (retrieving) {
           retrieveSelectMetadata = true;
         }
       }
 
       for (TableDataSetMetadata vm : this.views) {
-        boolean retrieving = vm.gatherSelectsMetadataPhase1(this, conn, layout);
+        boolean retrieving;
+        try {
+          retrieving = vm.gatherSelectsMetadataPhase1(this, conn, layout);
+        } catch (InvalidConfigurationFileException e) {
+          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
+        }
         if (retrieving) {
           retrieveSelectMetadata = true;
         }
       }
 
       for (TableDataSetMetadata em : this.enums) {
-        boolean retrieving = em.gatherSelectsMetadataPhase1(this, conn, layout);
+        boolean retrieving;
+        try {
+          retrieving = em.gatherSelectsMetadataPhase1(this, conn, layout);
+        } catch (InvalidConfigurationFileException e) {
+          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
+        }
         if (retrieving) {
           retrieveSelectMetadata = true;
         }
       }
 
       for (ExecutorDAOMetadata dm : this.executors) {
-        boolean retrieving = dm.gatherSelectsMetadataPhase1(this, conn, layout);
+        boolean retrieving;
+        try {
+          retrieving = dm.gatherSelectsMetadataPhase1(this, conn, layout);
+        } catch (InvalidConfigurationFileException e) {
+          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
+        }
         if (retrieving) {
           retrieveSelectMetadata = true;
         }

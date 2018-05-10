@@ -123,16 +123,19 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
         DynamicSQLPart p = new ParameterisableTextPart(s, this, this.parameters);
         p.validate(daosTag, config, fragmentConfig, this.parameters);
         this.parts.add(p);
+        super.addChild(p);
       } catch (ClassCastException e1) {
         try {
           ParameterTag p = (ParameterTag) obj; // parameter
           p.validate();
           this.parameters.add(p);
+          super.addChild(p);
         } catch (ClassCastException e2) {
           try {
             DynamicSQLPart p = (DynamicSQLPart) obj; // dynamic SQL part
             p.validate(daosTag, config, fragmentConfig, this.parameters);
             this.parts.add(p);
+            super.addChild(p);
           } catch (ClassCastException e3) {
             throw new InvalidConfigurationFileException(this, //
                 "The body of the tag <" + super.getTagName() + "> has an invalid tag: " + obj.getClass().getName(), //

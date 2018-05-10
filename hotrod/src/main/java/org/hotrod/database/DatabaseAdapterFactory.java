@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.database.adapters.ApacheDerbyAdapter;
 import org.hotrod.database.adapters.DB2Adapter;
@@ -18,6 +17,7 @@ import org.hotrod.database.adapters.OracleAdapter;
 import org.hotrod.database.adapters.PostgreSQLAdapter;
 import org.hotrod.database.adapters.SAPASEAdapter;
 import org.hotrod.database.adapters.SQLServerAdapter;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 

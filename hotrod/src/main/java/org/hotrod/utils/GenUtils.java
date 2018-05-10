@@ -1,7 +1,7 @@
 package org.hotrod.utils;
 
 import org.hotrod.ant.Constants;
-import org.hotrod.ant.ControlledException;
+import org.hotrod.exceptions.ControlledException;
 
 public class GenUtils {
 

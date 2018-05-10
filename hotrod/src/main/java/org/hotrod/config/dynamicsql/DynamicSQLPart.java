@@ -98,6 +98,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
         }
       }
       this.parts.add(p);
+      super.addChild(p);
     }
 
     // 3. Specific body validation

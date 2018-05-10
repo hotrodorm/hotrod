@@ -11,8 +11,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.ant.ControlledException;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.HotRodConfigTag;
@@ -22,7 +20,10 @@ import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidSQLException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
@@ -36,7 +37,6 @@ import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 
 @XmlRootElement(name = "columns")
@@ -91,11 +91,13 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   @XmlElement(name = "vo")
   public void setVO(final VOTag vo) {
     this.vos.add(vo);
+    super.addChild(vo);
   }
 
   @XmlElement(name = "expression")
   public void setExpressionsTag(final ExpressionTag exp) {
     this.expressions.addExpression(exp);
+    super.addChild(exp);
   }
 
   // Behavior
@@ -199,24 +201,28 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
                 + "' specified in the 'vo' attribute. When specified, the vo-class must start with an upper case letter, "
                 + "and continue with any combination of letters, digits, or underscores.");
       }
-      if (this.id == null) {
-        throw new InvalidConfigurationFileException(this, //
-            "The 'id' attribute must be specified when the 'vo' attribute is specified. "
-                + "It includes the comma-separated list of properties that identify a row", //
-            "The 'id' attribute must be specified when the 'vo' attribute is specified. "
-                + "It includes the comma-separated list of properties that identify a row.");
-      }
-      for (String id : this.id.split(",")) {
-        if (!id.isEmpty()) {
-          this.idNames.add(id);
+      if (!this.expressions.isEmpty()) {
+        if (this.id == null) {
+          throw new InvalidConfigurationFileException(this, //
+              "The 1 'id' attribute must be specified when the 'vo' attribute is specified and <expression> tags are included. "
+                  + "It includes the comma-separated list of properties that identify a row", //
+              "The 2 'id' attribute must be specified when the 'vo' attribute is specified and <expression> tags are included. "
+                  + "It includes the comma-separated list of properties that identify a row.");
         }
-      }
-      if (this.idNames.isEmpty()) {
-        throw new InvalidConfigurationFileException(this, //
-            "The 'id' attribute should not be empty. " + "It must be specified when the 'vo' attribute is specified; "
-                + "it includes the comma-separated list of properties that identify a row", //
-            "The 'id' attribute should not be empty. " + "It must be specified when the 'vo' attribute is specified; "
-                + "it includes the comma-separated list of properties that identify a row.");
+        for (String id : this.id.split(",")) {
+          if (!id.isEmpty()) {
+            this.idNames.add(id);
+          }
+        }
+        if (this.idNames.isEmpty()) {
+          throw new InvalidConfigurationFileException(this, //
+              "The 3 'id' attribute should not be empty. "
+                  + "It must be specified when the 'vo' attribute is specified; "
+                  + "it includes the comma-separated list of properties that identify a row", //
+              "The 4 'id' attribute should not be empty. "
+                  + "It must be specified when the 'vo' attribute is specified; "
+                  + "it includes the comma-separated list of properties that identify a row.");
+        }
       }
     } else { // vo == null
       if (!includesSingleVO) {

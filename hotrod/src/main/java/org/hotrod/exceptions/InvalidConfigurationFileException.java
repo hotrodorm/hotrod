@@ -1,13 +1,16 @@
 package org.hotrod.exceptions;
 
+import org.apache.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 
 public class InvalidConfigurationFileException extends Exception {
 
   private static final long serialVersionUID = 1L;
 
+  private static final Logger log = Logger.getLogger(InvalidConfigurationFileException.class);
+
   private AbstractConfigurationTag tag;
-  private String notice;
+  private String interactiveMessage;
 
   public InvalidConfigurationFileException(final AbstractConfigurationTag tag, final String interactiveMessage,
       final String batchMessage) {
@@ -15,8 +18,10 @@ public class InvalidConfigurationFileException extends Exception {
     if (tag == null) {
       throw new IllegalArgumentException("tag cannot be null");
     }
+    log.info("  interactiveMessage=" + interactiveMessage + "\n  loc=" + tag.getSourceLocation().render());
+    log.info("  parent="+tag.getParent());
     tag.setErrorMessage(interactiveMessage);
-    this.notice = interactiveMessage;
+    this.interactiveMessage = interactiveMessage;
     this.tag = tag;
   }
 
@@ -24,8 +29,8 @@ public class InvalidConfigurationFileException extends Exception {
     return this.tag;
   }
 
-  public String getNotice() {
-    return this.notice;
+  public String getInteractiveMessage() {
+    return this.interactiveMessage;
   }
 
 }

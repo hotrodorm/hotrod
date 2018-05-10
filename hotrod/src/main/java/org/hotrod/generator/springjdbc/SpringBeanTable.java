@@ -3,7 +3,7 @@ package org.hotrod.generator.springjdbc;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.hotrod.ant.UncontrolledException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.metadata.DataSetMetadata;
 
 public class SpringBeanTable implements SpringBean {

@@ -19,11 +19,11 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.log4j.Logger;
-import org.hotrod.ant.ControlledException;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
@@ -135,7 +135,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
         return a.getName().compareTo(b.getName());
       }
     });
-    super.subTags.addAll(this.tables);
+    super.addChildren(this.tables);
 
     for (EnumTag e : this.enums) {
       e.validate(daosTag, fragmentConfig);
@@ -146,7 +146,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
         return a.getName().compareTo(b.getName());
       }
     });
-    super.subTags.addAll(this.enums);
+    super.addChildren(this.enums);
 
     for (ViewTag v : this.views) {
       v.validate(daosTag, config, fragmentConfig);
@@ -157,7 +157,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
         return a.getName().compareTo(b.getName());
       }
     });
-    super.subTags.addAll(this.views);
+    super.addChildren(this.views);
 
     for (ExecutorTag x : this.executors) {
       x.validate(daosTag, config, fragmentConfig);
@@ -168,7 +168,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
         return a.getJavaClassName().compareTo(b.getJavaClassName());
       }
     });
-    super.subTags.addAll(this.executors);
+    super.addChildren(this.executors);
 
     for (SelectClassTag s : this.selects) {
       s.validate(daosTag, config, fragmentConfig);
@@ -179,19 +179,19 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
         return a.getJavaClassName().compareTo(b.getJavaClassName());
       }
     });
-    super.subTags.addAll(this.selects);
+    super.addChildren(this.selects);
 
     for (FacetTag f : this.facets) {
       f.validate(config, daosTag, fragmentConfig);
     }
-    super.subTags.addAll(this.facets);
+    super.addChildren(this.facets);
 
     // Fragments
 
     for (FragmentTag f : this.fragments) {
       f.validate(config, parentDir, alreadyLoadedFileNames, parentFile, daosTag);
       this.mergeFragment(f.getFragmentConfig());
-      super.subTags.add(f);
+      super.addChild(f);
     }
 
     // Assemble facets

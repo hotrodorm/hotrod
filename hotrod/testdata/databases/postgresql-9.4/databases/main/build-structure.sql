@@ -38,9 +38,11 @@ alter table config_values add constraint cfgval_uc11 unique (name);
 
 create table account (
   id serial not null,
-  current_balance integer not null,
   name varchar(100) not null,
+  type varchar(10) not null,
+  current_balance integer not null,
   created_on timestamp not null,
+  active int not null,
   primary key (id),
   constraint account_name_uc unique (name)
 );

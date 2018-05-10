@@ -59,7 +59,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
         SourceLocation loc = errorMessage.getLocation();
         return errorMessage.getMessage() + (loc == null ? ""
             : ("\n" + "  at " + loc.getFile().getName() + " (line " + loc.getLineNumber() + ", col "
-                + loc.getColumnNumber() + ") [click to source]"));
+                + loc.getColumnNumber() + ") -- click to source"));
       }
     } catch (ClassCastException e) {
       return null; // no tool tip
@@ -94,7 +94,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
     try {
       face = (AbstractFace) obj; // any face
-      if (face.hasBranchErrors()) {
+      if (face.hasError() || face.hasBranchErrors()) {
         cell.setImage(face.getErrorImage());
       } else {
         cell.setImage(face.getImage());

@@ -25,11 +25,11 @@ import javax.xml.validation.SchemaFactory;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
-import org.hotrod.ant.ControlledException;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractHotRodConfigTag.LocationListener;
+import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -149,9 +149,10 @@ public class ConfigurationLoader {
     } catch (InvalidConfigurationFileException e) {
       SourceLocation loc = e.getTag().getSourceLocation();
       if (loc == null) {
-        throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
+        throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage(),
+            e.getInteractiveMessage());
       } else {
-        throw new ControlledException(loc, e.getMessage());
+        throw new ControlledException(loc, e.getMessage(), e.getInteractiveMessage());
       }
 
     } catch (GeneratorNotFoundException e) {

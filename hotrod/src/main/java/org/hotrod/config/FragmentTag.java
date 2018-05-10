@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.ant.ControlledException;
-import org.hotrod.ant.UncontrolledException;
+import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.Compare;
 
@@ -76,7 +76,7 @@ public class FragmentTag extends AbstractConfigurationTag {
     this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.file, parentFile, alreadyLoadedFileNames,
         daosTag);
     log.debug("Fragment loaded.");
-    this.subTags.addAll(this.fragmentConfig.subTags);
+    super.addChildren(this.fragmentConfig.getSubTags());
 
   }
 

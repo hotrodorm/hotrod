@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
-import org.hotrod.ant.ControlledException;
-import org.hotrod.ant.UncontrolledException;
 import org.hotrod.config.AbstractConfigurationTag.TagStatus;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.HotRodConfigTag;
@@ -18,6 +16,8 @@ import org.hotrod.eclipseplugin.FileSystemChangesListener.FileChangeListener;
 import org.hotrod.eclipseplugin.ProjectProperties.CouldNotSaveProjectPropertiesException;
 import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.treeview.MainConfigFace;
+import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.UncontrolledException;
 
 public class LoadedConfigurationFiles implements FileChangeListener {
 
@@ -229,7 +229,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     } catch (ControlledException e) {
       log.info("Error Message=" + e.getMessage() + " loc=" + e.getLocation());
       MainConfigFace face = new MainConfigFace(f, path, this.provider,
-          new ErrorMessage(e.getLocation(), e.getMessage()));
+          new ErrorMessage(e.getLocation(), e.getInteractiveMessage()));
       return face;
     } catch (UncontrolledException e) {
       log.error("Failed to load configuration file.", e);

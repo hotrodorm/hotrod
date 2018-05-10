@@ -2,7 +2,7 @@ package org.hotrod.generator.springjdbc;
 
 import java.io.Writer;
 
-import org.hotrod.ant.UncontrolledException;
+import org.hotrod.exceptions.UncontrolledException;
 
 public interface SpringBean {
 
