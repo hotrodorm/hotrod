@@ -104,10 +104,12 @@ public class MyBatisTag extends AbstractGeneratorTag {
     for (PropertyTag p : this.propertyTags) {
       p.validate();
       if (names.contains(p.getName())) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Property with name '" + p.getName()
-            + "' cannot be specified more than once, but multiple occurrences found.");
+        throw new InvalidConfigurationFileException(this, //
+            "Duplicate property '" + p.getName() + "'", //
+            "Property with name '" + p.getName()
+                + "' cannot be specified more than once, but multiple occurrences found.");
       }
-      this.properties.set(super.getSourceLocation(), p);
+      this.properties.set(this, p);
     }
 
   }

@@ -58,30 +58,39 @@ public class ParameterTag extends AbstractConfigurationTag {
     // name
 
     if (this.name == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'name' must be specified", //
           "Invalid <parameter> tag -- the 'name' attribute must be specified.");
     }
     if (SUtils.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'name' cannot be empty or blank", //
           "Invalid <parameter> tag -- the 'name' attribute cannot be blank.");
     }
     if (!this.name.matches(Patterns.VALID_JAVA_VARIABLE)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid Java parameter name '" + this.name
-          + "'. The 'name' attribute must start with a lower case letter and continue with letters, digits, and/or underscores.");
+      throw new InvalidConfigurationFileException(this, //
+          "Invalid Java parameter name '" + this.name
+              + "': must start with a lower case letter and continue with letters, digits, and/or underscores", //
+          "Invalid Java parameter name '" + this.name
+              + "'. The 'name' attribute must start with a lower case letter and continue with letters, digits, and/or underscores.");
     }
 
     // java-type
 
     if (this.javaType == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "The 'java-type' attribute cannot be empty", //
           "invalid <parameter> tag -- the 'java-type' attribute cannot be empty.");
     }
     if (SUtils.isEmpty(this.javaType)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "The 'java-type' attribute cannot be blank", //
           "invalid <parameter> tag -- the 'java-type' attribute cannot be blank.");
     }
     if (!this.javaType.matches(Patterns.VALID_JAVA_TYPE)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Invalid 'java-type' attribute with value '" + this.javaType
+              + "':  must start with a letter and continue with letters, digits, and/or underscores", //
           "invalid <parameter> tag -- "
               + "the 'java-type' attribute must start with a letter and continue with letters, digits, and/or underscores, but found '"
               + this.javaType + "'.");
@@ -90,15 +99,19 @@ public class ParameterTag extends AbstractConfigurationTag {
     // jdbc-type
 
     if (this.jdbcType == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "The 'jdbc-type' attribute cannot be empty", //
           "invalid <parameter> tag -- the 'jdbc-type' attribute cannot be empty.");
     }
     if (SUtils.isEmpty(this.jdbcType)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "The 'jdbc-type' attribute cannot be blank", //
           "invalid <parameter> tag -- the 'jdbc-type' attribute cannot be blank.");
     }
     if (!this.jdbcType.matches(Patterns.VALID_JDBC_TYPE)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Invalid 'jdbc-type' attribute with value '" + this.jdbcType
+              + "': must include uppercase letters, digits, and/or underscores", //
           "invalid <parameter> tag -- "
               + "the 'jdbc-type' attribute must include uppercase letters, digits, and/or underscores, but found '"
               + this.jdbcType + "'.");

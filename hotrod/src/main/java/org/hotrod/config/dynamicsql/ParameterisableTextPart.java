@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.runtime.dynamicsql.expressions.CollectionExpression;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
@@ -33,12 +33,12 @@ public class ParameterisableTextPart extends DynamicSQLPart {
 
   // Constructor
 
-  public ParameterisableTextPart(final String txt, final SourceLocation location,
+  public ParameterisableTextPart(final String txt, final AbstractConfigurationTag tag,
       final ParameterDefinitions parameterDefinitions) throws InvalidConfigurationFileException {
     super("not-a-tag-but-sql-content");
     log.debug("init");
     this.txt = txt;
-    this.validate(location, parameterDefinitions);
+    this.validate(tag, parameterDefinitions);
   }
 
   // Behavior
@@ -55,7 +55,7 @@ public class ParameterisableTextPart extends DynamicSQLPart {
     // No extra validation on the body
   }
 
-  private void validate(final SourceLocation location, final ParameterDefinitions parameterDefinitions)
+  private void validate(final AbstractConfigurationTag tag, final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
 
     super.retrievePartsAndValidate(parameterDefinitions);
@@ -66,46 +66,58 @@ public class ParameterisableTextPart extends DynamicSQLPart {
 
     while (pos < this.txt.length() && (prefix = this.txt.indexOf(SQLParameter.PREFIX, pos)) != -1) {
 
-      LiteralTextPart literal = new LiteralTextPart(location, this.txt.substring(pos, prefix));
+      LiteralTextPart literal = new LiteralTextPart(tag.getSourceLocation(), this.txt.substring(pos, prefix));
       this.segments.add(literal);
 
       suffix = this.txt.indexOf(SQLParameter.SUFFIX, prefix + SQLParameter.PREFIX.length());
       if (suffix == -1) {
-        throw new InvalidConfigurationFileException(location, "Unmatched parameter delimiters; found an '"
-            + SQLParameter.PREFIX + "' but not an '" + SQLParameter.SUFFIX + "'.");
+        throw new InvalidConfigurationFileException(tag, //
+            "Unmatched parameter delimiters; found an '" + SQLParameter.PREFIX + "' but not an '" + SQLParameter.SUFFIX
+                + "'", //
+            "Unmatched parameter delimiters; found an '" + SQLParameter.PREFIX + "' but not an '" + SQLParameter.SUFFIX
+                + "'.");
       }
 
       String name = this.txt.substring(prefix + SQLParameter.PREFIX.length(), suffix);
 
       if (!name.matches(VALID_NAME_PATTERN)) {
         if (name.indexOf(',') != -1) {
-          throw new InvalidConfigurationFileException(location, "invalid parameter reference " + SQLParameter.PREFIX
-              + name + SQLParameter.SUFFIX + " in the body of the tag. "
-              + "The parameter must include a single alphanumeric name. "
-              + "\n - Note: Extra sections such as 'javaType' or 'jdbcType' are now obsolete and should be removed. You should use <parameter> tags instead.");
+          throw new InvalidConfigurationFileException(tag, //
+              "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
+                  + " in the body of the tag. " + "The parameter must include a single alphanumeric name", //
+              "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
+                  + " in the body of the tag. " + "The parameter must include a single alphanumeric name. "
+                  + "\n - Note: Extra sections such as 'javaType' or 'jdbcType' are now obsolete and should be removed. You should use <parameter> tags instead.");
         } else {
-          throw new InvalidConfigurationFileException(location, "invalid parameter reference " + SQLParameter.PREFIX
-              + name + SQLParameter.SUFFIX + " in the body of the tag. "
-              + "\nA parameter name must start with a letter and continue with letters, digits, and/or underscores.");
+          throw new InvalidConfigurationFileException(tag, //
+              "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
+                  + " in the body of the tag. "
+                  + "\nA parameter name must start with a letter and continue with letters, digits, and/or underscores", //
+              "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
+                  + " in the body of the tag. "
+                  + "\nA parameter name must start with a letter and continue with letters, digits, and/or underscores.");
         }
       }
 
       ParameterTag definition = parameterDefinitions.find(name);
 
       if (definition != null) {
-        SQLParameter p = new SQLParameter(name, location, false);
+        SQLParameter p = new SQLParameter(name, tag, false);
         p.setDefinition(definition);
         this.segments.add(p);
       } else {
-        throw new InvalidConfigurationFileException(location, "invalid parameter reference " + SQLParameter.PREFIX
-            + name + SQLParameter.SUFFIX + " in the body of the tag. There's no parameter with that name.");
+        throw new InvalidConfigurationFileException(tag, //
+            "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
+                + " in the body of the tag: no parameter with that name", //
+            "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
+                + " in the body of the tag. There's no parameter with that name.");
       }
 
       pos = suffix + SQLParameter.SUFFIX.length();
     }
 
     if (pos < this.txt.length()) {
-      LiteralTextPart literal = new LiteralTextPart(location, this.txt.substring(pos));
+      LiteralTextPart literal = new LiteralTextPart(tag.getSourceLocation(), this.txt.substring(pos));
       this.segments.add(literal);
     }
   }

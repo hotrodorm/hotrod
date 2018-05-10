@@ -95,8 +95,10 @@ public class ViewTag extends AbstractEntityDAOTag {
     // name
 
     if (SUtils.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'name' of tag <"
-          + super.getTagName() + "> cannot be empty. " + "Must specify a database view name.");
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'name' cannot be empty", //
+          "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
+              + "Must specify a database view name.");
     }
 
     // java-name
@@ -104,12 +106,15 @@ public class ViewTag extends AbstractEntityDAOTag {
     if (this.javaClassName != null) {
       this.javaClassName = this.javaClassName.trim();
       if (SUtils.isEmpty(this.javaClassName)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "When specified, 'java-name' cannot be empty", //
             "Invalid 'java-name' attribute value of tag <" + super.getTagName() + "> for the view '" + this.name
                 + "'. When specified, the value cannot be empty.");
       }
       if (!this.javaClassName.matches(Patterns.VALID_JAVA_CLASS)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid 'java-name' attribute value '" + this.javaClassName + "': must start with an upper case letter, "
+                + "and continue with any combination of letters, digits, underscores, or dollar signs", //
             "Invalid 'java-name' attribute value '" + this.javaClassName + "' of tag <" + super.getTagName()
                 + "> for the view '" + this.name
                 + "'. When specified, the java-name must start with an upper case letter, "
@@ -123,7 +128,8 @@ public class ViewTag extends AbstractEntityDAOTag {
     for (ColumnTag c : this.columns) {
       c.validate(config);
       if (cols.contains(c)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name", //
             "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name on tag <" + super.getTagName()
                 + "> for table '" + this.name + "'. You cannot specify the same column name "
                 + "multiple times on a same view.");
@@ -141,7 +147,8 @@ public class ViewTag extends AbstractEntityDAOTag {
 
     JdbcTable v = generator.findJdbcView(this.name);
     if (v == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Could not find database view '" + this.name + "'", //
           "Could not find database view '" + this.name + "' as specified in the <view> tag of the configuration file. "
               + "\n\nPlease verify the specified database catalog and schema names are correct according to this database. "
               + "You can try leaving the catalog/schema values empty, so " + Constants.TOOL_NAME
@@ -151,8 +158,10 @@ public class ViewTag extends AbstractEntityDAOTag {
     for (ColumnTag c : this.columns) {
       JdbcColumn jc = generator.findJdbcColumn(v, c.getName());
       if (jc == null) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Could not find column '" + c.getName()
-            + "' on database view '" + this.name + "', as specified in the <column> tag of the configuration file. ");
+        throw new InvalidConfigurationFileException(this, //
+            "Could not find column '" + c.getName() + "' on view", //
+            "Could not find column '" + c.getName() + "' on database view '" + this.name
+                + "', as specified in the <column> tag of the configuration file. ");
       }
     }
 

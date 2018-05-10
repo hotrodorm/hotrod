@@ -6,10 +6,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.metadata.VOMetadata.DuplicatePropertyNameException;
 import org.hotrod.metadata.VOMetadata.VOMember;
 import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
-import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ClassPackage;
 
 /*
@@ -176,14 +176,14 @@ public class VORegistry {
     private ClassPackage classPackage;
     private String name;
     private LinkedHashMap<String, ColumnMetadata> columnsByName;
-    private SourceLocation location;
+    private AbstractConfigurationTag tag;
 
     // Constructor
 
     public EntityVOClass(final DataSetMetadata metadata, final ClassPackage classPackage, final String name,
-        final List<ColumnMetadata> columns, final SourceLocation location) {
-      this.location = location;
-      if (this.location == null) {
+        final List<ColumnMetadata> columns, final AbstractConfigurationTag tag) {
+      this.tag = tag;
+      if (this.tag == null) {
         throw new IllegalArgumentException("location cannot be null");
       }
 
@@ -273,8 +273,8 @@ public class VORegistry {
       return this.classPackage.getFullClassName(this.name);
     }
 
-    public SourceLocation getLocation() {
-      return location;
+    public AbstractConfigurationTag getTag() {
+      return this.tag;
     }
 
   }
@@ -291,17 +291,17 @@ public class VORegistry {
     private LinkedHashMap<String, StructuredColumnMetadata> columnsByName;
     private List<VOMember> associations;
     private List<VOMember> collections;
-    private SourceLocation location;
+    private AbstractConfigurationTag tag;
 
     // Constructor
 
     public SelectVOClass(final ClassPackage classPackage, final String name, final EntityVOClass extendsEntityVO,
         final List<VOProperty> properties, final List<VOMember> associations, final List<VOMember> collections,
-        final SourceLocation location) throws DuplicatePropertyNameException {
+        final AbstractConfigurationTag tag) throws DuplicatePropertyNameException {
 
-      this.location = location;
-      if (this.location == null) {
-        throw new IllegalArgumentException("location cannot be null");
+      this.tag = tag;
+      if (this.tag == null) {
+        throw new IllegalArgumentException("tag cannot be null");
       }
 
       VOPropertiesRegistry reg = new VOPropertiesRegistry(name);
@@ -321,12 +321,12 @@ public class VORegistry {
 
       this.associations = associations;
       for (VOMember a : this.associations) {
-        reg.add(new VOProperty(a.getProperty(), null, EnclosingTagType.ASSOCIATION, a.getSourceTagLocation()));
+        reg.add(new VOProperty(a.getProperty(), null, EnclosingTagType.ASSOCIATION, a.getTag()));
       }
 
       this.collections = collections;
       for (VOMember c : this.collections) {
-        reg.add(new VOProperty(c.getProperty(), null, EnclosingTagType.COLLECTION, c.getSourceTagLocation()));
+        reg.add(new VOProperty(c.getProperty(), null, EnclosingTagType.COLLECTION, c.getTag()));
       }
 
     }
@@ -410,8 +410,8 @@ public class VORegistry {
       return associations;
     }
 
-    public SourceLocation getLocation() {
-      return location;
+    public AbstractConfigurationTag getTag() {
+      return this.tag;
     }
 
   }
@@ -447,14 +447,14 @@ public class VORegistry {
     private String name;
     private StructuredColumnMetadata cm;
     private EnclosingTagType sourceTagType;
-    private SourceLocation sourceTagLocation;
+    private AbstractConfigurationTag tag;
 
     public VOProperty(final String name, final StructuredColumnMetadata cm, final EnclosingTagType sourceTagType,
-        final SourceLocation sourceTagLocation) {
+        final AbstractConfigurationTag tag) {
       this.name = name;
       this.cm = cm;
       this.sourceTagType = sourceTagType;
-      this.sourceTagLocation = sourceTagLocation;
+      this.tag = tag;
     }
 
     public String getName() {
@@ -469,8 +469,8 @@ public class VORegistry {
       return sourceTagType;
     }
 
-    public SourceLocation getSourceTagLocation() {
-      return sourceTagLocation;
+    public AbstractConfigurationTag getTag() {
+      return this.tag;
     }
 
     public String toString() {
@@ -523,8 +523,8 @@ public class VORegistry {
       return otherOne;
     }
 
-    public SourceLocation getThisLocation() {
-      return this.thisOne != null ? this.thisOne.getLocation() : this.thisOneSt.getLocation();
+    public AbstractConfigurationTag getTag() {
+      return this.thisOne != null ? this.thisOne.getTag() : this.thisOneSt.getTag();
     }
 
     public String getThisName() {
@@ -563,8 +563,8 @@ public class VORegistry {
       return otherOne;
     }
 
-    public SourceLocation getThisLocation() {
-      return this.thisOne != null ? this.thisOne.getLocation() : this.thisOneSt.getLocation();
+    public AbstractConfigurationTag getThisTag() {
+      return this.thisOne != null ? this.thisOne.getTag() : this.thisOneSt.getTag();
     }
 
     public String getThisName() {

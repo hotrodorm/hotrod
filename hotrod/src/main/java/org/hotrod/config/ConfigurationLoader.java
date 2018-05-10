@@ -147,7 +147,7 @@ public class ConfigurationLoader {
       throw assembleControlledException(f, validationHandler, e);
 
     } catch (InvalidConfigurationFileException e) {
-      SourceLocation loc = e.getSourceLocation();
+      SourceLocation loc = e.getTag().getSourceLocation();
       if (loc == null) {
         throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
       } else {
@@ -248,7 +248,7 @@ public class ConfigurationLoader {
       throw assembleControlledException(f, validationHandler, e);
 
     } catch (InvalidConfigurationFileException e) {
-      SourceLocation loc = e.getSourceLocation();
+      SourceLocation loc = e.getTag().getSourceLocation();
       if (loc == null) {
         throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
       } else {

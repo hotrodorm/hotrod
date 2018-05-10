@@ -71,7 +71,8 @@ public class TrimTag extends DynamicSQLPart {
       try {
         ParameterisableTextPart text = (ParameterisableTextPart) p;
         if (!text.isEmpty()) {
-          throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          throw new InvalidConfigurationFileException(this, //
+              "A <trim> tag can only include other tags, but no free text content in it", //
               "Invalid <trim> tag. " + "A <trim> tag can only include other tags, but no free text content in it.");
         }
         // it.remove();

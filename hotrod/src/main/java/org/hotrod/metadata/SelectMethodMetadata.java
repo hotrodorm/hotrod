@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hotrod.ant.ControlledException;
 import org.hotrod.ant.UncontrolledException;
+import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
@@ -34,7 +35,6 @@ import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOProperty;
 import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
-import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsMetadataRetriever.InvalidSQLException;
@@ -166,10 +166,9 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       List<VOProperty> properties = new ArrayList<VOProperty>();
 
       for (ColumnMetadata cm : this.nonStructuredColumns) {
-        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false,
-            this.tag.getSourceLocation());
+        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false, this.tag);
         properties.add(new VOProperty(m.getIdentifier().getJavaMemberIdentifier(), m,
-            EnclosingTagType.NON_STRUCTURED_SELECT, this.tag.getSourceLocation()));
+            EnclosingTagType.NON_STRUCTURED_SELECT, this.tag));
       }
 
       List<VOMember> associations = new ArrayList<VOMember>();
@@ -178,19 +177,27 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       SelectVOClass vo = null;
       try {
         vo = new SelectVOClass(this.classPackage, this.tag.getVO(), null, properties, associations, collections,
-            this.tag.getSourceLocation());
+            this.tag);
         log.debug("--> Adding VO: " + vo);
         voRegistry.addVO(vo);
       } catch (VOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(vo.getLocation(),
+        throw new InvalidConfigurationFileException(this.tag, //
             "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getLocation().render() + ".");
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
+            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
+                + ".");
       } catch (StructuredVOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(vo.getLocation(),
+        throw new InvalidConfigurationFileException(this.tag, //
             "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getLocation().render() + ".");
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
+            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
+                + ".");
       } catch (DuplicatePropertyNameException e) {
-        throw new InvalidConfigurationFileException(e.getInitial().getSourceTagLocation(), e.renderMessage());
+        throw new InvalidConfigurationFileException(e.getInitial().getTag(), //
+            e.renderMessage(), //
+            e.renderMessage());
       }
 
     } else {
@@ -214,20 +221,28 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
             + this.tag.getSourceLocation().render() + ": could not find suitable Java type for column '"
             + e.getColumnName() + "' ");
       } catch (VOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(e.getThisLocation(),
+        throw new InvalidConfigurationFileException(e.getTag(), //
             "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getLocation().render() + ".");
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
+            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
+                + ".");
       } catch (StructuredVOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(e.getThisLocation(),
+        throw new InvalidConfigurationFileException(e.getThisTag(), //
             "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getLocation().render() + ".");
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
+            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
+                + ".");
       } catch (DuplicatePropertyNameException e) {
-        throw new InvalidConfigurationFileException(e.getDuplicate().getSourceTagLocation(), e.renderMessage());
+        throw new InvalidConfigurationFileException(e.getDuplicate().getTag(), //
+            e.renderMessage(), //
+            e.renderMessage());
       }
 
     }
 
-    this.selectMethodReturnType = new SelectMethodReturnType(this, this.classPackage, this.tag.getSourceLocation());
+    this.selectMethodReturnType = new SelectMethodReturnType(this, this.classPackage, this.tag);
 
   }
 
@@ -542,7 +557,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     private boolean multipleRows;
 
     public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage voClassPackage,
-        final SourceLocation location) throws InvalidConfigurationFileException {
+        final AbstractConfigurationTag tag) throws InvalidConfigurationFileException {
 
       if (sm.isStructured()) { // structured columns
 
@@ -553,7 +568,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         } else { // solo VO from a <columns> tag
           List<VOMember> associations = new ArrayList<VOMember>();
           for (VOMetadata vo : sm.getStructuredColumns().getVOs()) {
-            VOMember m = new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName(), vo.getSourceLocation());
+            VOMember m = new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName(), vo.getTag());
             associations.add(m);
           }
           this.soloVO = scols.getSoloVOClass();
@@ -566,14 +581,13 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
           StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false, null);
           VOProperty p = new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), m,
-              EnclosingTagType.NON_STRUCTURED_SELECT, sm.tag.getSourceLocation());
+              EnclosingTagType.NON_STRUCTURED_SELECT, sm.tag);
           properties.add(p);
         }
         List<VOMember> associations = new ArrayList<VOMember>();
         List<VOMember> collections = new ArrayList<VOMember>();
         try {
-          this.soloVO = new SelectVOClass(voClassPackage, sm.getVO(), null, properties, associations, collections,
-              location);
+          this.soloVO = new SelectVOClass(voClassPackage, sm.getVO(), null, properties, associations, collections, tag);
         } catch (DuplicatePropertyNameException e) {
           // swallow this exception
         }

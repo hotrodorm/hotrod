@@ -86,7 +86,8 @@ public class SelectClassTag extends AbstractDAOTag {
     // java-class-name
 
     if (SUtils.isEmpty(this.javaClassName)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'java-class-name' cannot be empty", //
           "Attribute 'java-class-name' of tag <" + getTagName() + "> cannot be empty. "
               + "Must specify a unique query name, " + "different from table and view names.");
     }
@@ -119,8 +120,11 @@ public class SelectClassTag extends AbstractDAOTag {
               ComplementDAOTag p = (ComplementDAOTag) obj; // complement
               this.parts.add(p);
             } catch (ClassCastException e4) {
-              throw new InvalidConfigurationFileException(super.getSourceLocation(), "The body of the tag <"
-                  + super.getTagName() + "> has an invalid tag (of class '" + obj.getClass().getName() + "').");
+              throw new InvalidConfigurationFileException(this, //
+                  "The body of the tag <" + super.getTagName() + "> includes an invalid tag: "
+                      + obj.getClass().getName() + "", //
+                  "The body of the tag <" + super.getTagName() + "> includes an invalid tag (of class '"
+                      + obj.getClass().getName() + "').");
             }
           }
         }
@@ -133,7 +137,8 @@ public class SelectClassTag extends AbstractDAOTag {
     for (ColumnTag c : this.columns) {
       c.validate(config);
       if (cols.contains(c)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Multiple <" + new ColumnTag().getTagName() + "> tags for the same column '" + c.getName() + "'", //
             "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name on tag <" + getTagName()
                 + "> for query '" + this.javaClassName + "'. You cannot specify the same column name "
                 + "multiple times on the same query.");

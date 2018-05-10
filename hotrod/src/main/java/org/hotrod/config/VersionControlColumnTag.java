@@ -50,7 +50,8 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
     // name
 
     if (SUtils.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'name' cannot be empty", //
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
               + "Must specify the version control column name. A column of type numeric.");
     }
@@ -66,7 +67,8 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
 
     this.jdbcColumn = generator.findJdbcColumn(this.jdbcTable, this.name);
     if (this.jdbcColumn == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Could not find database column '" + this.name + "'", //
           "Could not find column '" + this.name + "' for table '" + name
               + "' as specified in the attribute 'column' of the tag <" + super.getTagName() + ">.");
     }
@@ -74,14 +76,19 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
     // Check the optimistic locking column is integer-like
 
     if (generator.getAdapter().isSerial(this.jdbcColumn)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid type for version control columm '"
-          + this.name + "' on table '" + name + ". ' A version control column must be of an integer-like number type.");
+      throw new InvalidConfigurationFileException(this, //
+          "Invalid type for version control columm '" + this.name + "' on table '" + name
+              + ". ' A version control column must be of an integer-like number type", //
+          "Invalid type for version control columm '" + this.name + "' on table '" + name
+              + ". ' A version control column must be of an integer-like number type.");
     }
 
     // Check the table has a PK
 
     if (t.getPk() == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Cannot use optimistic locking (row-version-control) on table '" + name
+              + "' since it does not have a primary key", //
           "Cannot use optimistic locking (row-version-control) on table '" + name
               + "' since it does not have a primary key.");
     }
@@ -91,10 +98,13 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
     for (JdbcKeyColumn kc : t.getPk().getKeyColumns()) {
       JdbcColumn c = kc.getColumn();
       if (this.jdbcColumn.getName().equals(c.getName())) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
             "Cannot use optimistic locking (row-version-control) on table '" + name
-                + "'. The specified version control column ('" + this.name
-                + "') cannot be part of the primary key of the table.");
+                + "'. The specified version control column '" + this.name
+                + "' cannot be part of the primary key of the table", //
+            "Cannot use optimistic locking (row-version-control) on table '" + name
+                + "'. The specified version control column '" + this.name
+                + "' cannot be part of the primary key of the table.");
       }
     }
 

@@ -50,20 +50,25 @@ public class NonPersistentTag extends AbstractConfigurationTag {
     // value
 
     if (SUtils.isEmpty(this.value)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'value' of tag <"
-          + super.getTagName() + "> cannot be empty. " + "Must specify a non-empty value.");
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'value' cannot be empty", //
+          "Attribute 'value' of tag <" + super.getTagName() + "> cannot be empty.");
     }
 
     // name
 
     if (SUtils.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. " + "Must specify a non-empty name.");
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'name' cannot be empty", //
+          "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty.");
     }
     if (!this.name.matches(VALID_JAVA_CONSTANT_IDENTIFIER)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'name' of tag <"
-          + super.getTagName() + "> must be a valid Java constant identifier but found '" + this.name + "'. "
-          + "The name must start with an uppercase letter, and continue with uppercase letters, digits, or underscores.");
+      throw new InvalidConfigurationFileException(this, //
+          "Invalid attribute 'name' with value '" + this.name
+              + "': must start with an uppercase letter, and continue with uppercase letters, digits, or underscores", //
+          "Attribute 'name' of tag <" + super.getTagName() + "> must be a valid Java constant identifier but found '"
+              + this.name + "'. "
+              + "The name must start with an uppercase letter, and continue with uppercase letters, digits, or underscores.");
     }
 
   }

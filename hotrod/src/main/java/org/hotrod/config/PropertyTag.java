@@ -52,11 +52,15 @@ public class PropertyTag extends AbstractConfigurationTag {
     // name
 
     if (SUtils.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute '" + ATT_NAME + "' of tag <"
-          + super.getTagName() + "> cannot be empty. " + "Must specify a property name.");
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute '" + ATT_NAME + "' cannot be empty", //
+          "Attribute '" + ATT_NAME + "' of tag <" + super.getTagName() + "> cannot be empty. "
+              + "Must specify a property name.");
     }
     if (!this.name.matches(VIEW_NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Invalid property name '" + this.name + "': must start with a letter, " + "and continue with one or more "
+              + "letters, digits, period, or underscore characters", //
           "Attribute '" + ATT_NAME + "' of tag <" + super.getTagName() + "> must be a valid name. Specified value is '"
               + this.name + "' but must start with a letter, " + "and continue with one or more "
               + "letters, digits, period, or underscore characters.");

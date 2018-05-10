@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
@@ -19,26 +20,26 @@ public class StructuredColumnMetadata extends ColumnMetadata implements Serializ
   private String columnAlias;
   private String formula;
   private boolean id;
-  private SourceLocation sourceLocation;
+  private AbstractConfigurationTag tag;
 
   // Constructor
 
   public StructuredColumnMetadata(final ColumnMetadata cm, final String entityPrefix, final String columnAlias,
-      final boolean id, final SourceLocation sourceLocation) {
+      final boolean id, final AbstractConfigurationTag tag) {
     super(cm);
     this.entityPrefix = entityPrefix;
     this.columnAlias = columnAlias;
     this.formula = null;
     this.id = id;
-    this.sourceLocation = sourceLocation;
+    this.tag = tag;
   }
 
   // Behavior
 
   public static StructuredColumnMetadata applyColumnTag(final StructuredColumnMetadata orig, final ColumnTag t,
-      final SourceLocation location) throws UnresolvableDataTypeException {
+      final AbstractConfigurationTag tag) throws UnresolvableDataTypeException {
     ColumnMetadata cm = ColumnMetadata.applyColumnTag(orig, t);
-    return new StructuredColumnMetadata(cm, orig.entityPrefix, orig.columnAlias, orig.id, location);
+    return new StructuredColumnMetadata(cm, orig.entityPrefix, orig.columnAlias, orig.id, tag);
   }
 
   // Setters
@@ -65,8 +66,8 @@ public class StructuredColumnMetadata extends ColumnMetadata implements Serializ
     return id;
   }
 
-  public SourceLocation getSourceLocation() {
-    return sourceLocation;
+  public AbstractConfigurationTag getTag() {
+    return this.tag;
   }
 
   // Rendering

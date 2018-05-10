@@ -323,8 +323,7 @@ public abstract class HotRodGenerator {
                   : null;
           ClassPackage classPackage = layout.getDAOPackage(fragmentPackage);
           String voName = daosTag.generateVOName(tm.getIdentifier());
-          EntityVOClass vo = new EntityVOClass(tm, classPackage, voName, tm.getColumns(),
-              tm.getDaoTag().getSourceLocation());
+          EntityVOClass vo = new EntityVOClass(tm, classPackage, voName, tm.getColumns(), tm.getDaoTag());
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {
@@ -463,8 +462,7 @@ public abstract class HotRodGenerator {
                   : null;
           ClassPackage classPackage = layout.getDAOPackage(fragmentPackage);
           String voName = daosTag.generateVOName(vm.getIdentifier());
-          EntityVOClass vo = new EntityVOClass(vm, classPackage, voName, vm.getColumns(),
-              vm.getDaoTag().getSourceLocation());
+          EntityVOClass vo = new EntityVOClass(vm, classPackage, voName, vm.getColumns(), vm.getDaoTag());
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {
@@ -498,7 +496,7 @@ public abstract class HotRodGenerator {
         try {
           this.config.validateAgainstDatabase(this, conn);
         } catch (InvalidConfigurationFileException e) {
-          throw new ControlledException(e.getSourceLocation(), e.getMessage());
+          throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
         }
       }
 
@@ -654,11 +652,7 @@ public abstract class HotRodGenerator {
       } catch (UnresolvableDataTypeException e) {
         throw new ControlledException(e.getMessage());
       } catch (InvalidConfigurationFileException e) {
-        String message = (e.getSourceLocation() == null ? ""
-            : "[file: " + e.getSourceLocation().getFile().getPath() + ", line " + e.getSourceLocation().getLineNumber()
-                + ", col " + e.getSourceLocation().getColumnNumber() + "] ")
-            + e.getMessage();
-        throw new ControlledException(message);
+        throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
       } finally {
         if (conn2 != null) {
           try {

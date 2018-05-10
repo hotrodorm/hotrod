@@ -86,13 +86,14 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
       DynamicSQLPart p = null;
       try {
         String s = (String) obj;
-        p = new ParameterisableTextPart(s, this.getSourceLocation(), parameterDefinitions);
+        p = new ParameterisableTextPart(s, this, parameterDefinitions);
       } catch (ClassCastException e1) {
         try {
           p = (DynamicSQLPart) obj;
           p.retrievePartsAndValidate(parameterDefinitions);
         } catch (ClassCastException e2) {
-          throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          throw new InvalidConfigurationFileException(this, //
+              "Invalid inner tag of class " + obj.getClass().getName(), //
               "Malformed content of the <query> tag. Invalid inner tag of class " + obj.getClass().getName());
         }
       }
@@ -140,7 +141,8 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
       this.params.add(p);
 
       if (this.definitions.containsKey(p.getName())) {
-        throw new InvalidConfigurationFileException(p.getSourceLocation(),
+        throw new InvalidConfigurationFileException(p, //
+            "Duplicate parameter name '" + p.getName() + "'", //
             "Duplicate parameter name '" + p.getName() + "'. Please specify a different name for each parameter.");
       }
       this.definitions.put(p.getName(), p);

@@ -101,12 +101,14 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
       s.validate();
       super.subTags.add(s);
       if (seqNames.contains(s.getName())) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Duplicate sequence with name '" + s.getName() + "'", //
             "Duplicate sequence with name '" + s.getName() + "'.");
       }
       String method = s.getMethod();
       if (this.declaredMethodNames.contains(method)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Duplicate sequence method-name '" + method + "'", //
             "Duplicate sequence method-name '" + method + "'.");
       }
       seqNames.add(s.getName());
@@ -120,7 +122,10 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
       q.validate(daosTag, config, fragmentConfig);
       super.subTags.add(q);
       if (this.declaredMethodNames.contains(q.getMethod())) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Duplicate java-method-name '" + q.getMethod()
+                + "'. cannot add multiple queries or sequences with identical 'java-method-name' "
+                + "(specified or implied), even if they have different parameters (different signature)", //
             "Duplicate java-method-name '" + q.getMethod()
                 + "'. cannot add multiple queries or sequences with identical java-method-name "
                 + "(specified or implied) in the same <dao> tag. " + "For <query> tags they cannot have the same name, "
@@ -139,7 +144,8 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
       super.subTags.add(s);
 
       if (methodNames.contains(s.getMethod())) {
-        throw new InvalidConfigurationFileException(s.getSourceLocation(),
+        throw new InvalidConfigurationFileException(s, //
+            "Duplicate method name '" + s.getMethod() + "'", //
             "Duplicate method name '" + s.getMethod() + "' on <" + s.getTagName() + "> tag.");
       }
       methodNames.add(s.getMethod());
@@ -179,7 +185,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
   public boolean concludeGeneration(final AbstractDAOTag cache, final DatabaseAdapter adapter) {
 
-    log.debug("----> DAO " + this.getJavaClassName() + " 1- generate="+this.getGenerate());
+    log.debug("----> DAO " + this.getJavaClassName() + " 1- generate=" + this.getGenerate());
 
     boolean failedInnerGeneration = false;
 

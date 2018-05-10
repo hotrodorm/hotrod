@@ -143,9 +143,9 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
       // error
 
-      if (face.hasError()) {
-        label.append("(!) ", StyledString.DECORATIONS_STYLER);
-      }
+      // if (face.hasError()) {
+      // label.append("(!) ", StyledString.DECORATIONS_STYLER);
+      // }
 
       // name
 
@@ -163,6 +163,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
         try {
           MainConfigFace c = (MainConfigFace) obj; // main config
           String relativePath = c.getRelativePath().isEmpty() ? "." : c.getRelativePath();
+
           label.append(" [" + relativePath + "]", StyledString.DECORATIONS_STYLER);
 
         } catch (ClassCastException e2) {

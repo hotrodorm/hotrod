@@ -133,15 +133,20 @@ public class EnumTag extends AbstractEntityDAOTag {
     // name
 
     if (SUtils.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'name' of tag <"
-          + super.getTagName() + "> cannot be empty. " + "Must specify the name of a database table.");
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'name' cannot be empty", //
+          "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
+              + "Must specify the name of a database table.");
     }
 
     // java-name
 
     if (!SUtils.isEmpty(this.javaClassName)) {
       if (!this.javaClassName.matches(CLASS_NAME_PATTERN)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid attribute 'java-name' with value '" + this.javaClassName
+                + "': when specified, must start with an upper case letter, "
+                + "and continue with letters, digits, and/or underscores", //
             "The attribute 'java-name' of tag <" + super.getTagName() + "> with value '" + this.javaClassName
                 + "' is not a valid Java class name. " + "When specified, it must start with an upper case letter, "
                 + "and continue with letters, digits, and/or underscores.");
@@ -151,7 +156,8 @@ public class EnumTag extends AbstractEntityDAOTag {
     // name-column
 
     if (SUtils.isEmpty(this.nameCol)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'name-column' cannot be empty", //
           "Attribute 'name-column' of tag <" + super.getTagName() + "> cannot be empty. "
               + "Must specify the column name of the table that will be used as the name for each value for the enum.");
     }
@@ -197,8 +203,10 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     this.table = generator.findJdbcTable(this.name);
     if (this.table == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Could not find table '" + this.name
-          + "' as specified in the attribute 'name' of the tag <" + super.getTagName() + ">.");
+      throw new InvalidConfigurationFileException(this, //
+          "Could not find database table '" + this.name + "'", //
+          "Could not find table '" + this.name + "' as specified in the attribute 'name' of the tag <"
+              + super.getTagName() + ">.");
     }
 
     // Get the list of columns
@@ -213,12 +221,14 @@ public class EnumTag extends AbstractEntityDAOTag {
     // Validate the single-column PK
 
     if (this.table.getPk() == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Enum table '" + this.name + "' must have a (single-column) primary key", //
           "Enum table '" + this.name + "' does not have a primary key. "
               + "A primary key is required on a table that is being used in an <" + super.getTagName() + "> tag.");
     }
     if (this.table.getPk().getKeyColumns().size() != 1) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Enum table '" + this.name + "' cannot have a composite primary key", //
           "Enum table '" + this.name + "' should not have a composite primary key. "
               + "A single-column primary key is required on a table that is being used in an <" + super.getTagName()
               + "> tag, but this one has " + this.table.getPk().getKeyColumns().size()
@@ -233,7 +243,8 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     JdbcColumn nameCol = generator.findJdbcColumn(this.table, this.nameCol);
     if (nameCol == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Could not find column '" + this.nameCol + "' on table '" + this.name + "'", //
           "Could not find column '" + this.nameCol + "' on table '" + this.name
               + "' as specified in the attribute 'name-column' of the tag <" + super.getTagName() + ">.");
     }
@@ -257,7 +268,10 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     for (EnumConstant c : this.tableConstants) {
       if (javaConstantNames.contains(c.getJavaConstantName())) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Duplicate constant name '" + c.getJavaConstantName() + "' found in column '" + this.nameCol
+                + "' of table '" + this.name
+                + "'.\nMultiple rows of the table produce the same Java constant name for the enum", //
             "Duplicate constant name '" + c.getJavaConstantName() + "' found in column '" + this.nameCol
                 + "' of table '" + this.name + "' for <" + super.getTagName() + "> tag. "
                 + "Multiple rows of the table produce the same Java constant name for the enum.");
@@ -267,7 +281,9 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     for (EnumConstant c : this.npConstants) {
       if (javaConstantNames.contains(c.getJavaConstantName())) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Duplicate constant name '" + c.getJavaConstantName() + "' found in column '" + this.nameCol
+                + "' of table '" + this.name + "'.\nA <non-persistent> tag was defined with an already existing name", //
             "Duplicate constant name '" + c.getJavaConstantName() + "' found in column '" + this.nameCol
                 + "' of table '" + this.name + "' for <" + super.getTagName() + "> tag. "
                 + "A <non-persistent> tag was defined with an already existing name.");
@@ -316,7 +332,8 @@ public class EnumTag extends AbstractEntityDAOTag {
         Object value = this.valueColumn.getValueTypeManager().getFromResultSet(rs, 1);
         String name = rs.getString(2);
         if (SUtils.isEmpty(name)) {
-          throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          throw new InvalidConfigurationFileException(this, //
+              "Enum constant name cannot be empty: an empty value was found on the colum '" + this.nameCol + "'", //
               "Invalid enum constant name from table '" + this.name + "' on the <" + super.getTagName() + "> tag. "
                   + "A en empty value was read from the column '" + this.nameCol + "'. "
                   + "If a column is used for the enum constant names, it cannot have null or empty values.");
@@ -336,7 +353,8 @@ public class EnumTag extends AbstractEntityDAOTag {
         this.tableConstants.add(new EnumConstant(javaConstantName, literalValues));
       }
     } catch (SQLException e) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Could not retrieve table values from table '" + this.name + "'", //
           "Could not retrieve table values from table '" + this.name + "' on the <" + super.getTagName() + "> tag. "
               + e.getMessage());
     } finally {
@@ -370,14 +388,17 @@ public class EnumTag extends AbstractEntityDAOTag {
       ColumnMetadata cm = new ColumnMetadata(null, c, adapter, null, false, false);
       type = adapter.getAdapterDefaultType(cm);
     } catch (UnresolvableDataTypeException e) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Could not resolve a suitable Java type for the column '" + c.getName() + "'", //
           "Could not resolve a suitable Java type for the column '" + c.getName() + "' on table '" + this.name + "'.");
     }
 
     String valueType = type.getJavaClassName();
     ValueTypeManager<?> m = ValueTypeFactory.getValueManager(valueType);
     if (m == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Invalid Java type '" + valueType + "' for the column '" + c.getName()
+              + "': the column must correspond to a simple Java type, as defined in the documentation", //
           "Invalid Java type '" + valueType + "' for the column '" + c.getName() + "' on table '" + this.name
               + "'. The column must be readable as (i.e. must correspond to) one of the following Java types:\n"
               + ListWriter.render(ValueTypeFactory.getSupportedTypes(), "", " - ", "", "\n", ""));

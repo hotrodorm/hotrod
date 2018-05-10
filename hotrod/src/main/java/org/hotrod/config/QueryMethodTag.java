@@ -99,10 +99,13 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
     // method
 
     if (this.method == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'method' cannot be empty", //
           "Attribute 'method' of tag <" + getTagName() + "> cannot be empty. " + "Must specify a unique name.");
     } else if (!this.method.matches(Patterns.VALID_JAVA_METHOD)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Invalid method name '" + this.method + "': must start with a lowercase letter, "
+              + "and continue with letters, digits, dollarsign, and/or underscores", //
           "Attribute 'method' of tag <" + super.getTagName() + "> specifies '" + this.method
               + "' but must specify a valid java method name. "
               + "Valid method names must start with a lowercase letter, "
@@ -117,7 +120,7 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
     for (Object obj : this.content) {
       try {
         String s = (String) obj; // content text
-        DynamicSQLPart p = new ParameterisableTextPart(s, this.getSourceLocation(), this.parameters);
+        DynamicSQLPart p = new ParameterisableTextPart(s, this, this.parameters);
         p.validate(daosTag, config, fragmentConfig, this.parameters);
         this.parts.add(p);
       } catch (ClassCastException e1) {
@@ -131,8 +134,10 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
             p.validate(daosTag, config, fragmentConfig, this.parameters);
             this.parts.add(p);
           } catch (ClassCastException e3) {
-            throw new InvalidConfigurationFileException(super.getSourceLocation(), "The body of the tag <"
-                + super.getTagName() + "> has an invalid tag (of class '" + obj.getClass().getName() + "').");
+            throw new InvalidConfigurationFileException(this, //
+                "The body of the tag <" + super.getTagName() + "> has an invalid tag: " + obj.getClass().getName(), //
+                "The body of the tag <" + super.getTagName() + "> has an invalid tag (of class '"
+                    + obj.getClass().getName() + "').");
           }
         }
       }

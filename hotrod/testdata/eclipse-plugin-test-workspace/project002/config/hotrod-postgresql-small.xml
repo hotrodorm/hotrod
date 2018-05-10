@@ -33,7 +33,9 @@
  -->
 
   <table name="log" /> 
-  <table name="accou2nt" /> 
+  <table name="account" />
+  <view name="fkdsd" /> 
+   
 <!--
   <table name="codes" />
   <table name="state_branch" />

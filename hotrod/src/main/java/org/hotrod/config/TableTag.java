@@ -116,8 +116,10 @@ public class TableTag extends AbstractEntityDAOTag {
     // name
 
     if (SUtils.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'name' of tag <"
-          + super.getTagName() + "> cannot be empty. " + "Must specify a database table name.");
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'name' cannot be empty", //
+          "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
+              + "Must specify a database table name.");
     }
 
     // java-name
@@ -125,12 +127,15 @@ public class TableTag extends AbstractEntityDAOTag {
     if (this.javaClassName != null) {
       this.javaClassName = this.javaClassName.trim();
       if (SUtils.isEmpty(this.javaClassName)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Attribute 'java-name' cannot be empty", //
             "Invalid 'java-name' attribute value of tag <" + super.getTagName() + "> for the table '" + this.name
                 + "'. When specified, the value cannot be empty.");
       }
       if (!this.javaClassName.matches(Patterns.VALID_JAVA_CLASS)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid 'java-name' attribute value '" + this.javaClassName + "': must start with an upper case letter, "
+                + "and continue with any combination of letters, digits, underscores, or dollar signs", //
             "Invalid 'java-name' attribute value '" + this.javaClassName + "' of tag <" + super.getTagName()
                 + ">. When specified, the java-name must start with an upper case letter, "
                 + "and continue with any combination of letters, digits, underscores, or dollar signs.");
@@ -157,7 +162,8 @@ public class TableTag extends AbstractEntityDAOTag {
     for (ColumnTag c : this.columns) {
       c.validate(config);
       if (cols.contains(c)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name", //
             "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name on tag <" + super.getTagName()
                 + "> for table '" + this.name + "'. You cannot specify the same column name "
                 + "multiple times on a same table.");
@@ -176,8 +182,8 @@ public class TableTag extends AbstractEntityDAOTag {
     JdbcTable jt = generator.findJdbcTable(this.name);
 
     if (jt == null) {
-      this.markError("Could not find table '" + this.name + "'.");
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Could not find database table '" + this.name + "'", //
           "Could not find database table '" + this.name
               + "' as specified in the <table> tag of the configuration file. "
               + "\n\nPlease verify the specified database catalog and schema names are correct according to this database. "
@@ -188,8 +194,10 @@ public class TableTag extends AbstractEntityDAOTag {
     for (ColumnTag ct : this.columns) {
       ct.populateJdbcElements(generator, jt);
       if (ct.getJdbcColumn() == null) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Could not find column '" + ct.getName()
-            + "' on database table '" + this.name + "', as specified in the <column> tag of the configuration file. ");
+        throw new InvalidConfigurationFileException(this, //
+            "Could not find database column '" + ct.getName() + "'", //
+            "Could not find column '" + ct.getName() + "' on database table '" + this.name
+                + "', as specified in the <column> tag of the configuration file. ");
       }
     }
 

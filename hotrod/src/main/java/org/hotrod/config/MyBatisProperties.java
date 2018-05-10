@@ -24,7 +24,7 @@ public class MyBatisProperties implements Serializable {
 
   // Setters
 
-  public void set(final SourceLocation location, final PropertyTag p) throws InvalidConfigurationFileException {
+  public void set(final AbstractConfigurationTag tag, final PropertyTag p) throws InvalidConfigurationFileException {
 
     if (PROPERTY_CHECKED_PERSISTENCE_EXCEPTION.equals(p.getName())) {
       if (TRUE.equals(p.getValue())) {
@@ -32,7 +32,8 @@ public class MyBatisProperties implements Serializable {
       } else if (FALSE.equals(p.getValue())) {
         this.checkedPersistenceException = false;
       } else {
-        throw new InvalidConfigurationFileException(location,
+        throw new InvalidConfigurationFileException(tag, //
+            "Invalid value '" + p.getValue() + "' for property '" + p.getName() + "'. Valid values are: true, false", //
             "Invalid value '" + p.getValue() + "' for property '" + p.getName() + "'. Valid values are: true, false");
       }
     } else if (PROPERTY_MULTILINE_TOSTRING.equals(p.getName())) {
@@ -41,11 +42,13 @@ public class MyBatisProperties implements Serializable {
       } else if (FALSE.equals(p.getValue())) {
         this.multilineTostring = false;
       } else {
-        throw new InvalidConfigurationFileException(location,
+        throw new InvalidConfigurationFileException(tag, //
+            "Invalid value '" + p.getValue() + "' for property '" + p.getName() + "'. Valid values are: true, false", //
             "Invalid value '" + p.getValue() + "' for property '" + p.getName() + "'. Valid values are: true, false");
       }
     } else {
-      throw new InvalidConfigurationFileException(location,
+      throw new InvalidConfigurationFileException(tag, //
+          "Invalid property name '" + p.getName() + "'. Valid property names are: " + getAllPropertyNames(), //
           "Invalid property name '" + p.getName() + "'. Valid property names are: " + getAllPropertyNames());
     }
 

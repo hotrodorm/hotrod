@@ -884,20 +884,22 @@ public class HotRodView extends ViewPart {
         log.debug("Generation complete.");
 
       } catch (ControlledException e) {
-        if (e.getLocation() != null) {
-          showMessage(Constants.TOOL_NAME + " 1 could not generate the persistence code. Invalid configuration in "
-              + e.getLocation().render() + ":\n\n" + e.getMessage());
-        } else {
-          showMessage(Constants.TOOL_NAME + " 2 could not generate the persistence code:\n" + e.getMessage());
-        }
+        // if (e.getLocation() != null) {
+        // showMessage(Constants.TOOL_NAME + " 1 could not generate the
+        // persistence code. Invalid configuration in "
+        // + e.getLocation().render() + ":\n\n" + e.getMessage());
+        // } else {
+        // showMessage(Constants.TOOL_NAME + " 2 could not generate the
+        // persistence code:\n" + e.getMessage());
+        // }
       } catch (UncontrolledException e) {
         log.error("Could not generate the persistence code.", e.getCause());
         String msg = EUtils.renderMessages(e.getCause(), " - ", "", "\n");
-        showMessage(Constants.TOOL_NAME + " 3 could not generate the persistence code:\n" + msg);
+        showMessage(Constants.TOOL_NAME + " could not generate the persistence code:\n" + msg);
       } catch (Throwable t) {
         log.error("Could not generate the persistence code.", t);
         String msg = EUtils.renderMessages(t, " - ", "", "\n");
-        showMessage(Constants.TOOL_NAME + " 4 could not generate the persistence code:\n" + msg);
+        showMessage(Constants.TOOL_NAME + " could not generate the persistence code:\n" + msg);
       }
 
     }

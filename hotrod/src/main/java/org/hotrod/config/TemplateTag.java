@@ -46,19 +46,23 @@ public class TemplateTag extends AbstractConfigurationTag {
     // file
 
     if (SUtils.isEmpty(this.sFile)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'file' cannot be empty", //
           "MyBatis configuration template not found. " + "Attribute 'file' of tag <" + super.getTagName()
               + "> cannot be empty. " + "Must specify the MyBatis configuration template file.");
     }
     this.file = new File(parentDir, this.sFile);
     if (!this.file.exists()) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "MyBatis configuration template not found. " + "Attribute 'file' of tag <" + super.getTagName()
+      throw new InvalidConfigurationFileException(this, //
+          "MyBatis configuration template file not found", //
+          "MyBatis configuration template file not found. " + "Attribute 'file' of tag <" + super.getTagName()
               + "> with value '" + this.sFile + "' points to a non-existing file.");
     }
     if (!this.file.isFile()) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'file' of tag <"
-          + super.getTagName() + "> with value '" + this.sFile + "' is not a regular file.");
+      throw new InvalidConfigurationFileException(this, //
+          "MyBatis configuration template file found, but it's not a regular file", //
+          "Attribute 'file' of tag <" + super.getTagName() + "> with value '" + this.sFile
+              + "' is not a regular file.");
     }
 
   }

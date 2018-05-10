@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import org.hotrod.config.dynamicsql.SQLSegment;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.dynamicsql.expressions.VariableExpression;
@@ -36,13 +35,13 @@ public class SQLParameter implements SQLSegment {
   // Constructor
 
   // Java Parameter
-  public SQLParameter(final String name, final SourceLocation location, final boolean isVariable)
+  public SQLParameter(final String name, final AbstractConfigurationTag tag, final boolean isVariable)
       throws InvalidConfigurationFileException {
     log.debug("init");
-    initialize(name, location, false);
+    initialize(name, tag, false);
   }
 
-  private void initialize(final String name, final SourceLocation location, final boolean isVariable)
+  private void initialize(final String name, final AbstractConfigurationTag tag, final boolean isVariable)
       throws InvalidConfigurationFileException {
 
     this.name = name;
@@ -52,8 +51,11 @@ public class SQLParameter implements SQLSegment {
     // name
 
     if (!this.name.matches(VALID_NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException(location, "Invalid parameter name '" + this.name
-          + "'. Must start with a letter and " + "continue with letters, digits, and/or underscores.");
+      throw new InvalidConfigurationFileException(tag, //
+          "Invalid parameter name '" + this.name + "'. Must start with a letter and "
+              + "continue with letters, digits, and/or underscores", //
+          "Invalid parameter name '" + this.name + "'. Must start with a letter and "
+              + "continue with letters, digits, and/or underscores.");
     }
 
   }

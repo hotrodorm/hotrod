@@ -37,7 +37,8 @@ public class IfTag extends DynamicSQLPart {
   protected void validateAttributes(final ParameterDefinitions parameterDefinitions)
       throws InvalidConfigurationFileException {
     if (this.test == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "The 'test' attribute must be specified", //
           "Invalid <if> tag. The 'test' attribute must be specified.");
     }
   }

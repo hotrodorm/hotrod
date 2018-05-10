@@ -52,39 +52,50 @@ public class ConfigTag extends AbstractConfigurationTag {
     // gen-base-dir
 
     if (SUtils.isEmpty(this.sGenBaseDir)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'gen-base-dir' of tag <"
-          + super.getTagName() + "> cannot be empty. " + "Must specify the base dir.");
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'gen-base-dir' cannot be empty", //
+          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> cannot be empty. "
+              + "Must specify the base dir.");
     }
     this.genBaseDir = new File(basedir, this.sGenBaseDir);
     if (!this.genBaseDir.exists()) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'gen-base-dir' of tag <"
-          + super.getTagName() + "> with value '" + this.sGenBaseDir + "' must point to an existing dir.");
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'gen-base-dir' directory not found:\n  " + this.genBaseDir.getPath(), //
+          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> with value '" + this.sGenBaseDir
+              + "' must point to an existing dir.");
     }
     if (!this.genBaseDir.isDirectory()) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Attribute 'gen-base-dir' of tag <"
-          + super.getTagName() + "> with value '" + this.sGenBaseDir + "' is not a directory.");
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'gen-base-dir' must point to a directory, but other type of file was found", //
+          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> with value '" + this.sGenBaseDir
+              + "' is not a directory.");
     }
 
     // relative-dir
 
     if (this.relativeDir == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Invalid relative-dir attribute on tag <" + super.getTagName() + ">. Must be a non-empty value");
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'relative-dir' cannot be empty", //
+          "Invalid 'relative-dir' attribute on tag <" + super.getTagName() + ">. Must be a non-empty value");
     }
     if (SUtils.isEmpty(this.relativeDir)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid relative-dir '" + this.relativeDir
-          + "' on attribute 'relative-dir' of tag <" + super.getTagName() + ">. Must be a non-empty value");
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'relative-dir' cannot be empty", //
+          "Invalid relative-dir '" + this.relativeDir + "' on attribute 'relative-dir' of tag <" + super.getTagName()
+              + ">. Must be a non-empty value");
     }
 
     // prefix
 
     if (this.prefix == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Invalid prefix attribute value. " + "Must be specified with a non-empty value.");
+      throw new InvalidConfigurationFileException(this, //
+          "'prefix' attribute cannot be empty", //
+          "Invalid 'prefix' attribute value. " + "Must be specified with a non-empty value.");
     }
     if (SUtils.isEmpty(this.prefix)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
-          "Invalid dao-prefix value '" + this.prefix + "'. Must be specified with a non-empty value..");
+      throw new InvalidConfigurationFileException(this, //
+          "'dao-prefix' cannot be empty", //
+          "Invalid 'dao-prefix' value '" + this.prefix + "'. Must be specified with a non-empty value..");
     }
 
   }

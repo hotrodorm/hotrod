@@ -128,7 +128,7 @@ public class Expressions implements ColumnsProvider, Serializable {
           ct.setConverterTag(tag.getConverterTag());
         }
         log.debug("******** java-name=" + ct.getJavaName() + " java-type=" + ct.getJavaType());
-        cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag.getSourceLocation());
+        cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag);
         cm.setId(tag.isId());
         cm.setFormula(tag.getBody());
         tag.setMetadata(cm);

@@ -171,7 +171,7 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     return this.errorMessage;
   }
 
-  public void markError(final String errorMessage) {
+  public void setErrorMessage(final String errorMessage) {
     this.errorMessage = new ErrorMessage(this.location, errorMessage);
   }
 

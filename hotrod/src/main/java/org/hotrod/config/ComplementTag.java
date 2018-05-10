@@ -79,14 +79,16 @@ public class ComplementTag extends EnhancedSQLPart {
       DynamicSQLPart p = null;
       try {
         String s = (String) obj;
-        p = new ParameterisableTextPart(s, this.getSourceLocation(), parameters);
+        p = new ParameterisableTextPart(s, this, parameters);
       } catch (ClassCastException e1) {
         try {
           p = (DynamicSQLPart) obj;
           p.retrievePartsAndValidate(parameters);
         } catch (ClassCastException e2) {
-          throw new InvalidConfigurationFileException(super.getSourceLocation(), "Malformed content of the <"
-              + this.getTagName() + "> tag. Invalid inner tag of class " + obj.getClass().getName());
+          throw new InvalidConfigurationFileException(this, //
+              "Malformed content: invalid inner tag of class " + obj.getClass().getName(), //
+              "Malformed content of the <" + this.getTagName() + "> tag. Invalid inner tag of class "
+                  + obj.getClass().getName());
         }
       }
       this.parts.add(p);

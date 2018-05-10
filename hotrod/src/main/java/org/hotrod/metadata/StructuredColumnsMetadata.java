@@ -55,21 +55,21 @@ public class StructuredColumnsMetadata implements Serializable {
     // Expressions properties
 
     for (StructuredColumnMetadata cm : this.expressions.getMetadata()) {
-      properties.add(new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), cm, EnclosingTagType.EXPRESSIONS,
-          cm.getSourceLocation()));
+      properties.add(
+          new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), cm, EnclosingTagType.EXPRESSIONS, cm.getTag()));
     }
 
     if (this.isSoloVO) { // solo VO
 
       List<VOMember> associations = new ArrayList<VOMember>();
       for (VOMetadata vo : this.vos) {
-        associations.add(new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName(), vo.getSourceLocation()));
+        associations.add(new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName(), vo.getTag()));
       }
 
       List<VOMember> collections = new ArrayList<VOMember>();
 
       this.soloVOClass = new SelectVOClass(classPackage, this.vo, null, properties, associations, collections,
-          this.tag.getSourceLocation());
+          this.tag);
       voRegistry.addVO(this.soloVOClass);
 
     } else { // connected VO

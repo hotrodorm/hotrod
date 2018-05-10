@@ -58,12 +58,16 @@ public class ChooseTag extends DynamicSQLPart {
           try {
             ParameterisableTextPart text = (ParameterisableTextPart) p;
             if (!text.isEmpty()) {
-              throw new InvalidConfigurationFileException(super.getSourceLocation(),
+              throw new InvalidConfigurationFileException(this, //
+                  "A <choose> tag can only include <when> and <otherwise> tags in its body, "
+                      + "but found additional text in it", //
                   "Invalid <choose> tag. " + "A <choose> tag can only include <when> and <otherwise> tags in its body, "
-                      + "but found extra text in it.");
+                      + "but found additional text in it.");
             }
           } catch (ClassCastException e3) {
-            throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            throw new InvalidConfigurationFileException(this, //
+                "A <choose> tag can only include <when> and <otherwise> tags, but found an object of class "
+                    + p.getClass().getName(), //
                 "Invalid <choose> tag. "
                     + "A <choose> tag can only include <when> and <otherwise> tags, but found an object of class '"
                     + p.getClass().getName() + "'.");

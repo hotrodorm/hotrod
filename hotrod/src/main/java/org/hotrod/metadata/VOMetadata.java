@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
@@ -23,7 +24,6 @@ import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOProperty;
 import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
-import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ClassPackage;
 
 public class VOMetadata implements Serializable {
@@ -76,7 +76,7 @@ public class VOMetadata implements Serializable {
     for (AssociationTag a : tag.getAssociations()) {
       VOMetadata am = a.getMetadata(layout, fragmentConfig, daosTag);
       this.associations.add(am);
-      VOMember m = new VOMember(a.getProperty(), am.getClassPackage(), am.getName(), a.getSourceLocation());
+      VOMember m = new VOMember(a.getProperty(), am.getClassPackage(), am.getName(), a);
       this.associationMembers.add(m);
     }
 
@@ -85,7 +85,7 @@ public class VOMetadata implements Serializable {
     for (CollectionTag c : tag.getCollections()) {
       VOMetadata com = c.getMetadata(layout, fragmentConfig, daosTag);
       this.collections.add(com);
-      VOMember m = new VOMember(c.getProperty(), com.getClassPackage(), com.getName(), c.getSourceLocation());
+      VOMember m = new VOMember(c.getProperty(), com.getClassPackage(), com.getName(), c);
       this.collectionMembers.add(m);
     }
 
@@ -97,7 +97,9 @@ public class VOMetadata implements Serializable {
       this.entityVOSuperClass = tag.getGenerator().getVORegistry()
           .findEntityVOClass(this.tableMetadata != null ? this.tableMetadata : this.viewMetadata);
       if (this.entityVOSuperClass == null) {
-        throw new InvalidConfigurationFileException(tag.getSourceLocation(),
+        throw new InvalidConfigurationFileException(tag, //
+            "Invalid 'extended-vo' attribute with value '" + tag.getExtendedVO()
+                + "'. There's no table or view VO with that name", //
             "Invalid 'extended-vo' attribute with value '" + tag.getExtendedVO()
                 + "'. There's no table or view VO with that name.");
       }
@@ -144,35 +146,34 @@ public class VOMetadata implements Serializable {
       // Entity VO properties
 
       for (ColumnMetadata cm : this.entityVOSuperClass.getColumnsByName().values()) {
-        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false,
-            this.tag.getSourceLocation());
+        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false, this.tag);
         properties.add(new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), m, EnclosingTagType.ENTITY_VO,
-            this.entityVOSuperClass.getLocation()));
+            this.entityVOSuperClass.getTag()));
       }
 
       // Expressions properties
 
       for (StructuredColumnMetadata cm : this.tag.getExpressions().getMetadata()) {
         properties.add(new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), cm, EnclosingTagType.EXPRESSIONS,
-            cm.getSourceLocation()));
+            cm.getTag()));
       }
 
       // Association properties
 
       List<VOMember> associationMembers = new ArrayList<VOMember>();
       for (VOMetadata vo : this.associations) {
-        associationMembers.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty(), vo.getSourceLocation()));
+        associationMembers.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty(), vo.getTag()));
       }
 
       // Collection properties
 
       List<VOMember> collectionMembers = new ArrayList<VOMember>();
       for (VOMetadata vo : this.collections) {
-        collectionMembers.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty(), vo.getSourceLocation()));
+        collectionMembers.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty(), vo.getTag()));
       }
 
       SelectVOClass voClass = new SelectVOClass(classPackage, this.name, this.entityVOSuperClass, properties,
-          associationMembers, collectionMembers, this.tag.getSourceLocation());
+          associationMembers, collectionMembers, this.tag);
       voRegistry.addVO(voClass);
 
     }
@@ -217,23 +218,23 @@ public class VOMetadata implements Serializable {
       switch (this.initial.getSourceTagType()) {
       case NON_STRUCTURED_SELECT:
         existing = "This property name is already being used by a property (related to a database column) of the non-structured select in "
-            + this.initial.getSourceTagLocation().render();
+            + this.initial.getTag().getSourceLocation().render();
         break;
       case ENTITY_VO:
         existing = "This property name is already being used by a property (column) of the entity VO it is subclassing defined in "
-            + this.initial.getSourceTagLocation().render();
+            + this.initial.getTag().getSourceLocation().render();
         break;
       case EXPRESSIONS:
         existing = "This property name is also being used by a property of an expression defined in "
-            + this.initial.getSourceTagLocation().render();
+            + this.initial.getTag().getSourceLocation().render();
         break;
       case ASSOCIATION:
         existing = "This property name is also being used by the property name of an association defined in "
-            + this.initial.getSourceTagLocation().render();
+            + this.initial.getTag().getSourceLocation().render();
         break;
       case COLLECTION:
         existing = "This property name is also being used by the property name of a collection defined in "
-            + this.initial.getSourceTagLocation().render();
+            + this.initial.getTag().getSourceLocation().render();
         break;
       default:
         existing = "<undefined>";
@@ -292,8 +293,8 @@ public class VOMetadata implements Serializable {
         + this.name + "}";
   }
 
-  public SourceLocation getSourceLocation() {
-    return this.tag.getSourceLocation();
+  public AbstractConfigurationTag getTag() {
+    return this.tag;
   }
 
   // Getters
@@ -367,14 +368,14 @@ public class VOMetadata implements Serializable {
     private String property;
     private ClassPackage classPackage;
     private String name;
-    private SourceLocation sourceTagLocation;
+    private AbstractConfigurationTag tag;
 
     public VOMember(final String property, final ClassPackage classPackage, final String name,
-        final SourceLocation sourceTagLocation) {
+        final AbstractConfigurationTag tag) {
       this.property = property;
       this.classPackage = classPackage;
       this.name = name;
-      this.sourceTagLocation = sourceTagLocation;
+      this.tag = tag;
     }
 
     public String getProperty() {
@@ -389,8 +390,8 @@ public class VOMetadata implements Serializable {
       return name;
     }
 
-    public SourceLocation getSourceTagLocation() {
-      return sourceTagLocation;
+    public AbstractConfigurationTag getTag() {
+      return this.tag;
     }
 
     public String getFullClassName() {

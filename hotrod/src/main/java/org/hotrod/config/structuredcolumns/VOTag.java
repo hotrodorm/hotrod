@@ -170,8 +170,11 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
               ExpressionTag exp = (ExpressionTag) obj; // expressions
               this.expressions.addExpression(exp);
             } catch (ClassCastException e4) {
-              throw new InvalidConfigurationFileException(super.getSourceLocation(), "The body of the tag <"
-                  + super.getTagName() + "> has an invalid tag (of class '" + obj.getClass().getName() + "').");
+              throw new InvalidConfigurationFileException(this, //
+                  "The body of the tag <" + super.getTagName() + "> has an invalid tag of class "
+                      + obj.getClass().getName(), //
+                  "The body of the tag <" + super.getTagName() + "> has an invalid tag of class "
+                      + obj.getClass().getName() + ".");
             }
           }
         }
@@ -181,22 +184,32 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     // table & view
 
     if (this.table == null && this.view == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid <" + super.getTagName()
-          + "> tag. Must specify the 'table' or the 'view' attribute, but none was specified.");
+      throw new InvalidConfigurationFileException(this, //
+          "Invalid <" + super.getTagName()
+              + "> tag. Must specify the 'table' or the 'view' attribute, but none was specified", //
+          "Invalid <" + super.getTagName()
+              + "> tag. Must specify the 'table' or the 'view' attribute, but none was specified.");
     }
     if (this.table != null && this.view != null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Invalid <" + super.getTagName() + "> tag. Cannot specify both the 'table' and 'view' attributes", //
           "Invalid <" + super.getTagName() + "> tag. Cannot specify both the 'table' and 'view' attributes.");
     }
     if (this.table != null) {
       if (SUtils.isEmpty(this.table)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid 'table' attribute on the <"
-            + super.getTagName() + "> tag. When specified this attribute must not be empty.");
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid 'table' attribute on the <" + super.getTagName()
+                + "> tag. When specified this attribute cannot be empty", //
+            "Invalid 'table' attribute on the <" + super.getTagName()
+                + "> tag. When specified this attribute cannot be empty.");
       }
     } else {
       if (SUtils.isEmpty(this.view)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid 'view' attribute on the <"
-            + super.getTagName() + "> tag. When specified this attribute must not be empty.");
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid 'view' attribute on the <" + super.getTagName()
+                + "> tag. When specified this attribute cannot be empty", //
+            "Invalid 'view' attribute on the <" + super.getTagName()
+                + "> tag. When specified this attribute cannot be empty.");
       }
     }
 
@@ -207,15 +220,21 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       for (String idName : this.id.split(",")) {
         if (!idName.isEmpty()) {
           if (this.idNames.contains(idName)) {
-            throw new InvalidConfigurationFileException(super.getSourceLocation(), "Duplicate column '" + idName
-                + "' on the 'id' attribute. The comma-separated list of column names should not include the same column more than once.");
+            throw new InvalidConfigurationFileException(this, //
+                "Duplicate column '" + idName + "' on the 'id' attribute. "
+                    + "The comma-separated list of column names should not include the same column more than once", //
+                "Duplicate column '" + idName + "' on the 'id' attribute. "
+                    + "The comma-separated list of column names should not include the same column more than once.");
           }
           this.idNames.add(idName);
         }
       }
       if (this.idNames.isEmpty()) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "Invalid value '" + this.id
-            + "' for 'id' attribute. " + "Must specify a comma-separated list of column names.");
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid value '" + this.id + "' for 'id' attribute. "
+                + "Must specify a comma-separated list of column names", //
+            "Invalid value '" + this.id + "' for 'id' attribute. "
+                + "Must specify a comma-separated list of column names.");
       }
     }
 
@@ -224,22 +243,32 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     if (this.property == null) {
       if (!singleVOResult) {
         if (super.getTagName().equals("vo")) {
-          throw new InvalidConfigurationFileException(super.getSourceLocation(), "Missing 'property' attribute on <"
-              + super.getTagName() + "> tag. This attribute can only be omitted "
-              + "when the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags.");
+          throw new InvalidConfigurationFileException(this, //
+              "Missing 'property' attribute on <" + super.getTagName() + "> tag. This attribute can only be omitted "
+                  + "when the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags", //
+              "Missing 'property' attribute on <" + super.getTagName() + "> tag. This attribute can only be omitted "
+                  + "when the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags.");
         } else {
-          throw new InvalidConfigurationFileException(super.getSourceLocation(),
-              "Missing required 'property' attribute on <" + super.getTagName() + "> tag.");
+          throw new InvalidConfigurationFileException(this, //
+              "Missing 'property' attribute on <" + super.getTagName() + "> tag", //
+              "Missing 'property' attribute on <" + super.getTagName() + "> tag.");
         }
       }
     } else {
       if (singleVOResult) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(), "The 'property' attribute on the <"
-            + super.getTagName() + "> tag should not be specified. This attribute should be omitted "
-            + "when the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags.");
+        throw new InvalidConfigurationFileException(this, //
+            "The 'property' attribute on the <" + super.getTagName()
+                + "> tag should not be specified. This attribute should be omitted "
+                + "when the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags", //
+            "The 'property' attribute on the <" + super.getTagName()
+                + "> tag should not be specified. This attribute should be omitted "
+                + "when the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags.");
       }
       if (!this.property.matches(Patterns.VALID_JAVA_PROPERTY)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid property value '" + this.property + "' on <" + super.getTagName()
+                + "> tag. A Java property name must start with a lower case letter, "
+                + "and continue with letters, digits, and/or underscores", //
             "Invalid property value '" + this.property + "' on <" + super.getTagName()
                 + "> tag. A Java property name must start with a lower case letter, "
                 + "and continue with letters, digits, and/or underscores.");
@@ -249,13 +278,19 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     // alias
 
     if (this.alias == null) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "The 'alias' attribute must be specified. "
+              + "It indicates the table or view alias as it appears in the SQL FROM statement "
+              + "(for example, the 'p' when typing the column 'p.city_name')", //
           "The 'alias' attribute must be specified. "
               + "It indicates the table or view alias as it appears in the SQL FROM statement "
               + "(for example, the 'p' when typing the column 'p.city_name').");
     }
     if (SUtils.isEmpty(this.alias)) {
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "The 'alias' attribute must be non-empty. "
+              + "It indicates the table or view alias as it appears in the SQL FROM statement "
+              + "(for example, the 'p' when typing the column 'p.city_name')", //
           "The 'alias' attribute must be non-empty. "
               + "It indicates the table or view alias as it appears in the SQL FROM statement "
               + "(for example, the 'p' when typing the column 'p.city_name').");
@@ -265,18 +300,25 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     if (this.extendedVO == null) {
       if (!this.associations.isEmpty() || !this.collections.isEmpty() || !this.expressions.isEmpty()) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "The 'extended-vo' attribute must be specified when the <" + super.getTagName()
+                + "> tag includes one or more <association>, <colection>, and/or <expressions> tags", //
             "The 'extended-vo' attribute must be specified when the <" + super.getTagName()
                 + "> tag includes one or more <association>, <colection>, and/or <expressions> tags.");
       }
     } else {
       if (this.associations.isEmpty() && this.collections.isEmpty() && this.expressions.isEmpty()) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
-            "The 'extended-vo' attribute must not be specified when the <" + super.getTagName()
+        throw new InvalidConfigurationFileException(this, //
+            "The 'extended-vo' attribute cannot be specified when the <" + super.getTagName()
+                + "> tag does not include any <association>, <colection>, or <expressions> tags", //
+            "The 'extended-vo' attribute cannot be specified when the <" + super.getTagName()
                 + "> tag does not include any <association>, <colection>, or <expressions> tags.");
       }
       if (!this.extendedVO.matches(Patterns.VALID_JAVA_CLASS)) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid 'extended-vo' attribute value '" + this.extendedVO + "' on the <" + super.getTagName()
+                + "> tag. A Java class name must start with an upper case letter, "
+                + "and continue with letters, digits, and/or underscores", //
             "Invalid 'extended-vo' attribute value '" + this.extendedVO + "' on the <" + super.getTagName()
                 + "> tag. A Java class name must start with an upper case letter, "
                 + "and continue with letters, digits, and/or underscores.");
@@ -308,9 +350,11 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     log.info("*** this.table=" + this.table + " this.view=" + this.view);
     if (this.table != null) {
       this.tableMetadata = generator.findTableMetadata(this.table);
-      log.info("this.tableMetadata="+this.tableMetadata);
+      log.info("this.tableMetadata=" + this.tableMetadata);
       if (this.tableMetadata == null) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Could not find <" + new TableTag().getTagName() + "> tag in the configuration file for the table '"
+                + this.table + "', specified by the 'table' attribute on the <" + super.getTagName() + "> tag", //
             "Could not find <" + new TableTag().getTagName() + "> tag in the configuration file for the table '"
                 + this.table + "', specified by the 'table' attribute on the <" + super.getTagName() + "> tag.");
       }
@@ -318,7 +362,9 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     } else {
       this.viewMetadata = generator.findViewMetadata(this.view);
       if (this.viewMetadata == null) {
-        throw new InvalidConfigurationFileException(super.getSourceLocation(),
+        throw new InvalidConfigurationFileException(this, //
+            "Could not find <" + new ViewTag().getTagName() + "> tag in the configuration file for the view '"
+                + this.view + "', specified by the 'view' attribute on the <" + super.getTagName() + "> tag", //
             "Could not find <" + new ViewTag().getTagName() + "> tag in the configuration file for the view '"
                 + this.view + "', specified by the 'view' attribute on the <" + super.getTagName() + "> tag.");
       }
@@ -434,7 +480,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
               this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.tableMetadata.getColumns(),
                   this.aliasPrefix, this.idNames);
             } catch (IdColumnNotFoundException e) {
-              throw new InvalidConfigurationFileException(super.getSourceLocation(),
+              throw new InvalidConfigurationFileException(this, //
+                  "", //
                   "Could not find column '" + e.getIdName() + "' on the table '"
                       + this.tableMetadata.getIdentifier().getSQLIdentifier()
                       + "' as specified on the 'id' attribute.");
@@ -447,17 +494,23 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
         } else { // 1.a.2 Table without a PK
 
           if (requiresIds && this.idNames.isEmpty()) {
-            throw new InvalidConfigurationFileException(super.getSourceLocation(), "Missing 'id' attribute on tag <"
-                + this.getTagName() + ">.\n" + "When a <" + this.getTagName() + "> uses a table with no PK (the table "
-                + this.tableMetadata.getIdentifier().getSQLIdentifier()
-                + " in this case) and includes other <collection> tags, "
-                + "the 'id' attribute must specify the row-identifying columns for the table (i.e. an acting unique key for the table).");
+            throw new InvalidConfigurationFileException(this, //
+                "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
+                    + "> uses a table with no PK (the table " + this.tableMetadata.getIdentifier().getSQLIdentifier()
+                    + " in this case) and includes other <collection> tags, "
+                    + "the 'id' attribute must specify the row-identifying columns for the table (i.e. an acting unique key for the table)", //
+                "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
+                    + "> uses a table with no PK (the table " + this.tableMetadata.getIdentifier().getSQLIdentifier()
+                    + " in this case) and includes other <collection> tags, "
+                    + "the 'id' attribute must specify the row-identifying columns for the table (i.e. an acting unique key for the table).");
           }
           try {
             this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.tableMetadata.getColumns(),
                 this.aliasPrefix, this.idNames);
           } catch (IdColumnNotFoundException e) {
-            throw new InvalidConfigurationFileException(super.getSourceLocation(),
+            throw new InvalidConfigurationFileException(this, //
+                "Could not find column '" + e.getIdName() + "' on the table '"
+                    + this.tableMetadata.getIdentifier().getSQLIdentifier() + "' as specified on the 'id' attribute", //
                 "Could not find column '" + e.getIdName() + "' on the table '"
                     + this.tableMetadata.getIdentifier().getSQLIdentifier() + "' as specified on the 'id' attribute.");
           }
@@ -470,16 +523,21 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
         log.info("this.viewMetadata=" + this.viewMetadata);
 
         if (requiresIds && this.idNames.isEmpty()) {
-          throw new InvalidConfigurationFileException(super.getSourceLocation(), "Missing 'id' attribute on tag <"
-              + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
-              + "> uses a view and includes other <collection> tags, "
-              + "the 'id' attribute must specify the row-identifying columns for the view (i.e. an acting unique key for the view).");
+          throw new InvalidConfigurationFileException(this, //
+              "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
+                  + "> uses a view and includes other <collection> tags, "
+                  + "the 'id' attribute must specify the row-identifying columns for the view (i.e. an acting unique key for the view)", //
+              "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
+                  + "> uses a view and includes other <collection> tags, "
+                  + "the 'id' attribute must specify the row-identifying columns for the view (i.e. an acting unique key for the view).");
         }
         try {
           this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.viewMetadata.getColumns(),
               this.aliasPrefix, this.idNames);
         } catch (IdColumnNotFoundException e) {
-          throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          throw new InvalidConfigurationFileException(this, //
+              "Could not find column '" + e.getIdName() + "' on the view '"
+                  + this.viewMetadata.getIdentifier().getSQLIdentifier() + "' as specified on the 'id' attribute", //
               "Could not find column '" + e.getIdName() + "' on the view '"
                   + this.viewMetadata.getIdentifier().getSQLIdentifier() + "' as specified on the 'id' attribute.");
         }
@@ -542,16 +600,23 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     if (requiresIds) {
       if (dm.getPK() == null && this.idNames.isEmpty()) {
         if (this.tableMetadata != null) {
-          throw new InvalidConfigurationFileException(super.getSourceLocation(), "Missing 'id' attribute on tag <"
-              + this.getTagName() + ">.\n" + "When a <" + this.getTagName() + "> uses a table with no PK (the table "
-              + this.tableMetadata.getIdentifier().getSQLIdentifier()
-              + " in this case) and includes other <collection> tags, "
-              + "the 'id' attribute must specify the row-identifying columns for the table (i.e. an acting unique key for the table).");
+          throw new InvalidConfigurationFileException(this, //
+              "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
+                  + "> uses a table with no PK (the table " + this.tableMetadata.getIdentifier().getSQLIdentifier()
+                  + " in this case) and includes other <collection> tags, "
+                  + "the 'id' attribute must specify the row-identifying columns for the table (i.e. an acting unique key for the table)", //
+              "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
+                  + "> uses a table with no PK (the table " + this.tableMetadata.getIdentifier().getSQLIdentifier()
+                  + " in this case) and includes other <collection> tags, "
+                  + "the 'id' attribute must specify the row-identifying columns for the table (i.e. an acting unique key for the table).");
         } else {
-          throw new InvalidConfigurationFileException(super.getSourceLocation(), "Missing 'id' attribute on tag <"
-              + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
-              + "> uses a view and includes other <collection> tags, "
-              + "the 'id' attribute must specify the row-identifying columns for the view (i.e. an acting unique key for the view).");
+          throw new InvalidConfigurationFileException(this, //
+              "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
+                  + "> uses a view and includes other <collection> tags, "
+                  + "the 'id' attribute must specify the row-identifying columns for the view (i.e. an acting unique key for the view)", //
+              "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
+                  + "> uses a view and includes other <collection> tags, "
+                  + "the 'id' attribute must specify the row-identifying columns for the view (i.e. an acting unique key for the view).");
         }
       }
     }
@@ -559,7 +624,11 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     if (!this.idNames.isEmpty()) {
       for (String idName : this.idNames) {
         if (!idIsColumn(dm.getColumns(), idName)) {
-          throw new InvalidConfigurationFileException(super.getSourceLocation(),
+          throw new InvalidConfigurationFileException(this, //
+              "Could not find column '" + idName + "' on the "
+                  + (this.tableMetadata != null ? "table '" + this.tableMetadata.getIdentifier().getSQLIdentifier()
+                      : "view '" + this.viewMetadata.getIdentifier().getSQLIdentifier())
+                  + "' as specified on the 'id' attribute", //
               "Could not find column '" + idName + "' on the "
                   + (this.tableMetadata != null ? "table '" + this.tableMetadata.getIdentifier().getSQLIdentifier()
                       : "view '" + this.viewMetadata.getIdentifier().getSQLIdentifier())
@@ -585,7 +654,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
         validateIdJDBCType(baseColumn);
       }
       StructuredColumnMetadata sc = new StructuredColumnMetadata(baseColumn, this.alias, r.getColumnAlias(), isId,
-          this.getSourceLocation());
+          this);
       metadata.add(sc);
     }
     return metadata;
@@ -598,7 +667,11 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       for (Integer t : VALID_ID_JDBC_TYPES) {
         validJdbcTypes.add(SUtils.alignRight("" + t, 7) + " (" + JdbcTypes.codeToName(t) + ")");
       }
-      throw new InvalidConfigurationFileException(super.getSourceLocation(),
+      throw new InvalidConfigurationFileException(this, //
+          "Unsupported JDBC type " + jdbcType + " (" + JdbcTypes.codeToName(jdbcType) + ") on column '"
+              + baseColumn.getColumnName() + "' of "
+              + (this.tableMetadata != null ? "table '" + this.tableMetadata.getIdentifier().getSQLIdentifier() + "'"
+                  : "view '" + this.viewMetadata.getIdentifier().getSQLIdentifier() + "'"), //
           "Unsupported JDBC type " + jdbcType + " (" + JdbcTypes.codeToName(jdbcType) + ") on column '"
               + baseColumn.getColumnName() + "' of "
               + (this.tableMetadata != null ? "table '" + this.tableMetadata.getIdentifier().getSQLIdentifier() + "'"
