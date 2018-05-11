@@ -100,26 +100,6 @@ public class LoadedConfigurationFiles implements FileChangeListener {
                 this.viewPart.informFileChangesDetected(currentFace);
               }
 
-              // TODO: remove when tested
-              // if (freshFace.isValid()) {
-              //
-              // this.loadedFiles.put(absolutePath, freshFace);
-              //
-              // } else {
-              // log.info("Cached config present.");
-              // currentConfig.logGenerateMark("Generate Marks (PRE) - " +
-              // System.identityHashCode(currentConfig), '-');
-              // log.info("freshFace=" + freshFace + " freshFace.getTag()=" +
-              // freshFace.getTag());
-              // currentFace.applyChangesFrom(freshFace);
-              // HotRodConfigTag ex2 = currentFace.getConfig();
-              // ex2.logGenerateMark("Generate Marks (POST) - " +
-              // System.identityHashCode(ex2), '=');
-              //
-              // this.loadedFiles.put(absolutePath, currentFace);
-              // currentFace.computeBranchChanges();
-              // }
-
             }
 
             try {
@@ -133,12 +113,6 @@ public class LoadedConfigurationFiles implements FileChangeListener {
             } catch (CouldNotSaveProjectPropertiesException e) {
               log.error("Could not save project properties: " + e.getMessage());
             }
-
-            // 5. Refresh the plugin tree view with new file.
-
-            log.info("5. Will refresh.");
-            this.provider.refresh();
-            log.info("5.1 Refreshed.");
 
           }
 

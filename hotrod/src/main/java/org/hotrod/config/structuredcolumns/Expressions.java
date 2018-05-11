@@ -144,4 +144,8 @@ public class Expressions implements ColumnsProvider, Serializable {
     return cms;
   }
 
+  public List<ExpressionTag> getExpressionTags() {
+    return expressions;
+  }
+
 }

@@ -16,6 +16,7 @@ public class Compare {
 
   @SuppressWarnings("unchecked")
   public static boolean same(final List<?> a, final List<?> b) {
+    log.debug("a[" + (a == null ? "null" : "" + a.size()) + "] =? b[" + (b == null ? "null" : "" + b.size()) + "]");
     if (a == null && b == null) {
       return true;
     }
@@ -37,7 +38,7 @@ public class Compare {
         AbstractConfigurationTag ta = ita.next();
         AbstractConfigurationTag tb = itb.next();
         boolean same = ta.same(tb);
-        log.debug("[" + ta.getTagName() + " / " + ta.getClass().getName() + "] same=" + same);
+        log.debug("  [" + ta.getTagName() + "] same=" + same);
         if (!same) {
           return false;
         }
@@ -103,6 +104,7 @@ public class Compare {
   // Common types
 
   public static boolean same(final String a, final String b) {
+    // log.info("a=" + a + " b=" + b);
     if (a == null) {
       return b == null;
     }

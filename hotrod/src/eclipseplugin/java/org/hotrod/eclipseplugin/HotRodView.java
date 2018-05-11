@@ -38,13 +38,16 @@ import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
@@ -80,6 +83,7 @@ import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
+import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.EUtils;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
@@ -90,29 +94,32 @@ public class HotRodView extends ViewPart {
   private static final Logger log = Logger.getLogger(HotRodView.class);
 
   private static final String GEN_ALL_ICON_PATH = ICONS_DIR + "button-gen-all.png";
+  private static final String GEN_SELECTION_ICON_PATH = ICONS_DIR + "button-gen-sel.png";
+  private static final String GEN_CHANGES_ICON_PATH = ICONS_DIR + "button-gen-chg.png";
   private static final String AUTO_GEN_ON_ICON_PATH = ICONS_DIR + "button-auto-on.png";
   private static final String AUTO_GEN_OFF_ICON_PATH = ICONS_DIR + "button-auto-off.png";
-  private static final String GEN_CHANGES_ICON_PATH = ICONS_DIR + "button-gen-chg.png";
-  private static final String GEN_SELECTION_ICON_PATH = ICONS_DIR + "button-gen-sel.png";
+  private static final String COPY_ERROR_PATH = ICONS_DIR + "button-copy-error.png";
   private static final String CONNECT_TO_DATABASE_ICON_PATH = ICONS_DIR + "button-configure-database.png";
 
   private TreeViewer viewer;
   private Action doubleClickAction;
 
   private Action actionGenerateAll;
-  private Action actionGenerateChanges;
   private Action actionGenerateSelected;
+  private Action actionGenerateChanges;
   private Action actionAutoOnOff;
+  private Action actionCopyError;
+  private Action actionConfigureDatabaseConnection;
   private Action actionRemoveFile;
   private Action actionRemoveAllFiles;
-  private Action actionConfigureDatabaseConnection;
 
-  private ImageDescriptor autoOn;
-  private ImageDescriptor autoOff;
-  private ImageDescriptor generateAll;
-  private ImageDescriptor generateChanges;
-  private ImageDescriptor generateSelection;
-  private ImageDescriptor configureDatabaseConnection;
+  private ImageDescriptor imgGenerateAll;
+  private ImageDescriptor imgGenerateSelection;
+  private ImageDescriptor imgGenerateChanges;
+  private ImageDescriptor imgAutoOn;
+  private ImageDescriptor imgAutoOff;
+  private ImageDescriptor imgCopyError;
+  private ImageDescriptor imgConfigureDatabaseConnection;
 
   private IMenuManager contextMenu = null;
 
@@ -123,12 +130,13 @@ public class HotRodView extends ViewPart {
   // Constructor
 
   public HotRodView() {
-    this.autoOn = Activator.getImageDescriptor(AUTO_GEN_ON_ICON_PATH);
-    this.autoOff = Activator.getImageDescriptor(AUTO_GEN_OFF_ICON_PATH);
-    this.generateAll = Activator.getImageDescriptor(GEN_ALL_ICON_PATH);
-    this.generateChanges = Activator.getImageDescriptor(GEN_CHANGES_ICON_PATH);
-    this.generateSelection = Activator.getImageDescriptor(GEN_SELECTION_ICON_PATH);
-    this.configureDatabaseConnection = Activator.getImageDescriptor(CONNECT_TO_DATABASE_ICON_PATH);
+    this.imgGenerateAll = Activator.getImageDescriptor(GEN_ALL_ICON_PATH);
+    this.imgGenerateSelection = Activator.getImageDescriptor(GEN_SELECTION_ICON_PATH);
+    this.imgGenerateChanges = Activator.getImageDescriptor(GEN_CHANGES_ICON_PATH);
+    this.imgAutoOn = Activator.getImageDescriptor(AUTO_GEN_ON_ICON_PATH);
+    this.imgAutoOff = Activator.getImageDescriptor(AUTO_GEN_OFF_ICON_PATH);
+    this.imgCopyError = Activator.getImageDescriptor(COPY_ERROR_PATH);
+    this.imgConfigureDatabaseConnection = Activator.getImageDescriptor(CONNECT_TO_DATABASE_ICON_PATH);
   }
 
   @Override
@@ -286,6 +294,8 @@ public class HotRodView extends ViewPart {
     toolBar.add(actionGenerateChanges);
     toolBar.add(actionAutoOnOff);
     toolBar.add(new Separator());
+    toolBar.add(actionCopyError);
+    toolBar.add(new Separator());
     toolBar.add(actionConfigureDatabaseConnection);
     toolBar.add(new Separator());
     toolBar.add(actionRemoveFile);
@@ -299,6 +309,8 @@ public class HotRodView extends ViewPart {
     menu.add(new Separator());
     menu.add(actionGenerateChanges);
     menu.add(actionAutoOnOff);
+    menu.add(new Separator());
+    menu.add(actionCopyError);
     menu.add(new Separator());
     menu.add(actionConfigureDatabaseConnection);
     menu.add(new Separator());
@@ -330,6 +342,8 @@ public class HotRodView extends ViewPart {
     contextMenu.add(actionGenerateChanges);
     contextMenu.add(actionAutoOnOff);
     contextMenu.add(new Separator());
+    contextMenu.add(actionCopyError);
+    contextMenu.add(new Separator());
     contextMenu.add(actionConfigureDatabaseConnection);
     contextMenu.add(new Separator());
     contextMenu.add(actionRemoveFile);
@@ -350,9 +364,7 @@ public class HotRodView extends ViewPart {
 
   private void makeActions() {
 
-    // Generate All
-
-    // TODO: Nothing to do -- just a marker
+    // Generate All -- TODO: Nothing to do -- just a marker
 
     actionGenerateAll = new Action() {
       @Override
@@ -393,32 +405,11 @@ public class HotRodView extends ViewPart {
 
       }
     };
-    actionGenerateAll.setText("Generate All");
-    actionGenerateAll.setToolTipText("Generate All");
-    actionGenerateAll.setImageDescriptor(this.generateAll);
+    actionGenerateAll.setText("Generate all");
+    actionGenerateAll.setToolTipText("Generate all");
+    actionGenerateAll.setImageDescriptor(this.imgGenerateAll);
 
-    // Generate Changes
-
-    // TODO: Nothing to do -- just a marker
-
-    actionGenerateChanges = new Action() {
-      @Override
-      public void run() {
-
-        generateChanges();
-
-        log.debug("[generate changes - finished]");
-
-      }
-
-    };
-    actionGenerateChanges.setText("Generate Changes");
-    actionGenerateChanges.setToolTipText("Generate Changes");
-    actionGenerateChanges.setImageDescriptor(this.generateChanges);
-
-    // TODO: Nothing to do -- just a marker
-
-    // Generate Selection
+    // Generate Selection -- TODO: Nothing to do -- just a marker
 
     actionGenerateSelected = new Action() {
 
@@ -490,11 +481,28 @@ public class HotRodView extends ViewPart {
       }
 
     };
-    actionGenerateSelected.setText("Generate Selected");
-    actionGenerateSelected.setToolTipText("Generate Selected");
-    actionGenerateSelected.setImageDescriptor(this.generateSelection);
+    actionGenerateSelected.setText("Generate selected");
+    actionGenerateSelected.setToolTipText("Generate selected");
+    actionGenerateSelected.setImageDescriptor(this.imgGenerateSelection);
 
-    // Auto On/Off
+    // Generate Changes -- TODO: Nothing to do -- just a marker
+
+    actionGenerateChanges = new Action() {
+      @Override
+      public void run() {
+
+        generateChanges();
+
+        log.debug("[generate changes - finished]");
+
+      }
+
+    };
+    actionGenerateChanges.setText("Generate changes");
+    actionGenerateChanges.setToolTipText("Generate changes");
+    actionGenerateChanges.setImageDescriptor(this.imgGenerateChanges);
+
+    // Auto On/Off -- TODO: Nothing to do -- just a marker
 
     actionAutoOnOff = new Action() {
       @Override
@@ -506,11 +514,11 @@ public class HotRodView extends ViewPart {
         } catch (CouldNotSaveWorkspacePropertiesException e) {
           log.error("Could not save workspace properties.", e);
         }
-        String text = "Auto Generate Changes (" + (autoGenerateOnChanges ? "On" : "Off") + ")";
+        String text = "Auto generate changes (" + (autoGenerateOnChanges ? "on" : "off") + ")";
         actionAutoOnOff.setText(text);
         actionAutoOnOff.setChecked(autoGenerateOnChanges);
         actionAutoOnOff.setToolTipText(text);
-        actionAutoOnOff.setImageDescriptor(autoGenerateOnChanges ? autoOn : autoOff);
+        actionAutoOnOff.setImageDescriptor(autoGenerateOnChanges ? imgAutoOn : imgAutoOff);
 
         actionGenerateChanges.setEnabled(!autoGenerateOnChanges);
         actionGenerateSelected.setEnabled(!autoGenerateOnChanges);
@@ -526,16 +534,44 @@ public class HotRodView extends ViewPart {
       }
     };
     boolean autoGenerateOnChanges = WorkspaceProperties.getInstance().isAutogenerateOnChanges();
-    String text = "Auto Generate Changes (" + (autoGenerateOnChanges ? "On" : "Off") + ")";
+    String text = "Auto generate changes (" + (autoGenerateOnChanges ? "on" : "off") + ")";
     actionAutoOnOff.setText(text);
     actionAutoOnOff.setChecked(autoGenerateOnChanges);
     actionAutoOnOff.setToolTipText(text);
-    actionAutoOnOff.setImageDescriptor(autoGenerateOnChanges ? autoOn : autoOff);
+    actionAutoOnOff.setImageDescriptor(autoGenerateOnChanges ? imgAutoOn : imgAutoOff);
 
     actionGenerateChanges.setEnabled(!autoGenerateOnChanges);
     actionGenerateSelected.setEnabled(!autoGenerateOnChanges);
 
-    // Configure Database Connection
+    // Copy Error -- TODO: Nothing to do -- just a marker
+
+    actionCopyError = new Action() {
+      @Override
+      public void run() {
+
+        ListWriter w = new ListWriter("\n\n---\n\n");
+
+        for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+          ErrorMessage errorMessage = mf.getErrorMessage();
+          if (errorMessage != null) {
+            w.add(errorMessage.getMessage()
+                + (errorMessage.getLocation() != null ? "\n  at " + errorMessage.getLocation().render() : ""));
+          }
+        }
+
+        Clipboard clipboard = new Clipboard(Display.getCurrent());
+        TextTransfer textTransfer = TextTransfer.getInstance();
+        clipboard.setContents(new Object[] { w.toString() }, new Transfer[] { textTransfer });
+        clipboard.dispose();
+
+      }
+    };
+    actionCopyError.setText("Copy errors to clipboard");
+    actionCopyError.setToolTipText("Copy errors to clipboard");
+    actionCopyError.setImageDescriptor(imgCopyError);
+    computeCopyErrorEnabled();
+
+    // Configure Database Connection -- TODO: Nothing to do -- just a marker
 
     actionConfigureDatabaseConnection = new Action() {
 
@@ -583,7 +619,7 @@ public class HotRodView extends ViewPart {
     };
     actionConfigureDatabaseConnection.setText("Configure database connection...");
     actionConfigureDatabaseConnection.setToolTipText("Configure database connection...");
-    actionConfigureDatabaseConnection.setImageDescriptor(this.configureDatabaseConnection);
+    actionConfigureDatabaseConnection.setImageDescriptor(this.imgConfigureDatabaseConnection);
 
     // Remove File
 
@@ -610,8 +646,8 @@ public class HotRodView extends ViewPart {
 
       }
     };
-    actionRemoveFile.setText("Remove File");
-    actionRemoveFile.setToolTipText("Remove File");
+    actionRemoveFile.setText("Remove file");
+    actionRemoveFile.setToolTipText("Remove file");
     actionRemoveFile.setImageDescriptor(
         PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_REMOVE));
 
@@ -625,8 +661,8 @@ public class HotRodView extends ViewPart {
         hotRodViewContentProvider.refresh();
       }
     };
-    actionRemoveAllFiles.setText("Remove All Files");
-    actionRemoveAllFiles.setToolTipText("Remove All Files");
+    actionRemoveAllFiles.setText("Remove all files");
+    actionRemoveAllFiles.setToolTipText("Remove all files");
     actionRemoveAllFiles.setImageDescriptor(
         PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ELCL_REMOVEALL));
 
@@ -641,6 +677,20 @@ public class HotRodView extends ViewPart {
       }
     };
 
+  }
+
+  private void computeCopyErrorEnabled() {
+    log.info("/// computing Copy Error enabled");
+    boolean errorsPresent = false;
+    for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+      log.debug("/// face " + mf.getRelativeFileName() + " - error="
+          + (mf.getErrorMessage() == null ? "null" : mf.getErrorMessage().getMessage()));
+      if (mf.getErrorMessage() != null) {
+        errorsPresent = true;
+      }
+    }
+    log.debug("/// CopyError enabled = " + errorsPresent);
+    actionCopyError.setEnabled(errorsPresent);
   }
 
   private void generateChanges() {
@@ -691,17 +741,18 @@ public class HotRodView extends ViewPart {
     }
   }
 
+  // TODO: Nothing to do -- just a marker
+
   public void informFileChangesDetected(final MainConfigFace face) {
     log.info("informing file changed. face.isValid()=" + face.isValid());
     if (face.isValid() && WorkspaceProperties.getInstance().isAutogenerateOnChanges()) {
-
       // generation must be delayed until all file changes events are complete
       HotRodDelayedGenerationJob job = new HotRodDelayedGenerationJob(face);
       job.setRule(face.getProject()); // needs exclusive access to the project
       job.schedule();
-
+    } else {
+      computeCopyErrorEnabled();
     }
-
   }
 
   private class HotRodDelayedGenerationJob extends WorkspaceJob {
@@ -716,9 +767,30 @@ public class HotRodView extends ViewPart {
 
     @Override
     public IStatus runInWorkspace(final IProgressMonitor pm) throws CoreException {
-      log.debug("Running changes generation...");
+      log.info("Running changes generation...");
       try {
-        generateDetectedFileChanges(this.face);
+        this.face.getConfig().resetTreeGeneration();
+        boolean modified = markChanges(this.face.getTag(), 0);
+        if (modified) {
+          ProjectProperties projectProperties = WorkspaceProperties.getInstance()
+              .getProjectProperties(this.face.getProject());
+          if (projectProperties == null) {
+            showMessage("The file '" + this.face.getRelativeFileName()
+                + "' has not yet been configured. Please click on Configure File and try again.");
+          } else {
+            FileProperties fileProperties = projectProperties.getFileProperties(this.face.getRelativeFileName());
+            if (fileProperties == null) {
+              showMessage("The file '" + this.face.getRelativeFileName()
+                  + "' has not yet been configured. Please click on Configure File and try again.");
+            } else {
+              if (this.face.getTag().treeIncludesIsToBeGenerated()) {
+                generateFile(this.face, projectProperties, fileProperties, true);
+                this.face.refreshView();
+                computeCopyErrorEnabled();
+              }
+            }
+          }
+        }
         return Status.OK_STATUS;
       } catch (Exception e) {
         Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Could not generate file changes", e);
@@ -726,29 +798,6 @@ public class HotRodView extends ViewPart {
       }
     }
 
-  }
-
-  private void generateDetectedFileChanges(final MainConfigFace mf) {
-    mf.getConfig().resetTreeGeneration();
-    boolean modified = markChanges(mf.getTag(), 0);
-    if (modified) {
-      ProjectProperties projectProperties = WorkspaceProperties.getInstance().getProjectProperties(mf.getProject());
-      if (projectProperties == null) {
-        showMessage("The file '" + mf.getRelativeFileName()
-            + "' has not yet been configured. Please click on Configure File and try again.");
-      } else {
-        FileProperties fileProperties = projectProperties.getFileProperties(mf.getRelativeFileName());
-        if (fileProperties == null) {
-          showMessage("The file '" + mf.getRelativeFileName()
-              + "' has not yet been configured. Please click on Configure File and try again.");
-        } else {
-          if (mf.getTag().treeIncludesIsToBeGenerated()) {
-            generateFile(mf, projectProperties, fileProperties, true);
-            mf.refreshView();
-          }
-        }
-      }
-    }
   }
 
   private boolean markChanges(final AbstractConfigurationTag t, final int level) {
@@ -765,6 +814,7 @@ public class HotRodView extends ViewPart {
   }
 
   private void showMessage(final String message) {
+    log.info("Message: " + message);
     MessageDialog.openInformation(viewer.getControl().getShell(), Constants.TOOL_NAME, message);
   }
 
@@ -850,8 +900,6 @@ public class HotRodView extends ViewPart {
 
           config.logGenerateMark("Generate Marks (concluded)", '-');
 
-          mainFace.refreshView();
-
         } catch (ClassCastException e) {
 
           // a batch generator
@@ -885,7 +933,7 @@ public class HotRodView extends ViewPart {
         log.info("Generation complete.");
 
       } catch (ControlledException e) {
-        log.info("Could not generate.", e);
+        log.info(e);
         // if (e.getLocation() != null) {
         // showMessage(Constants.TOOL_NAME + " 1 could not generate the
         // persistence code. Invalid configuration in "
@@ -902,6 +950,10 @@ public class HotRodView extends ViewPart {
         log.error("Could not generate the persistence code.", t);
         String msg = EUtils.renderMessages(t, " - ", "", "\n");
         showMessage(Constants.TOOL_NAME + " could not generate the persistence code:\n" + msg);
+      } finally {
+        log.info("FINALLY BLOCK!");
+        mainFace.refreshView();
+        computeCopyErrorEnabled();
       }
 
     }

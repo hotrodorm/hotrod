@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
+import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.HotRodConfigTag;
@@ -38,6 +39,7 @@ import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
+import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "columns")
 public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
@@ -327,6 +329,50 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   @Override
   public String renderColumns() {
     return null;
+  }
+
+  // Merging logic
+
+  @Override
+  public boolean sameKey(final AbstractConfigurationTag fresh) {
+    try {
+      @SuppressWarnings("unused")
+      ColumnsTag f = (ColumnsTag) fresh;
+      return true;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
+    try {
+      ColumnsTag f = (ColumnsTag) fresh;
+      boolean different = !same(fresh);
+
+      this.vo = f.vo;
+      this.id = f.id;
+      this.vos = f.vos;
+      this.expressions = f.expressions;
+
+      return different;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean same(final AbstractConfigurationTag fresh) {
+    try {
+      ColumnsTag f = (ColumnsTag) fresh;
+      boolean same = Compare.same(this.vo, f.vo) && //
+          Compare.same(this.id, f.id) && //
+          Compare.same(this.vos, f.vos) && //
+          Compare.same(this.expressions.getExpressionTags(), f.expressions.getExpressionTags());
+      return same;
+    } catch (ClassCastException e) {
+      return false;
+    }
   }
 
   // Simple Caption

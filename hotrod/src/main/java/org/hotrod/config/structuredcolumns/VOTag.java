@@ -920,8 +920,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   public boolean same(final AbstractConfigurationTag fresh) {
     try {
       VOTag f = (VOTag) fresh;
-      return //
-      Compare.same(this.table, f.table) && //
+      return Compare.same(this.table, f.table) && //
           Compare.same(this.view, f.view) && //
           Compare.same(this.id, f.id) && //
           Compare.same(this.property, f.property) && //

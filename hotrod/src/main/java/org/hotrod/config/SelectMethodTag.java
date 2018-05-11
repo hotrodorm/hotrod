@@ -421,8 +421,12 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
   public boolean same(final AbstractConfigurationTag fresh) {
     try {
       SelectMethodTag f = (SelectMethodTag) fresh;
-      return //
-      Compare.same(this.method, f.method) && //
+
+      log.debug("--------------- Will compare -----------------------");
+      boolean comp = Compare.same(this.parts, f.parts);
+      log.debug("--------------- Compared = " + comp + " ------------------");
+
+      boolean same = Compare.same(this.method, f.method) && //
           Compare.same(this.vo, f.vo) && //
           Compare.same(this.sMultipleRows, f.sMultipleRows) && //
           Compare.same(this.parameters, f.parameters) && //
@@ -431,7 +435,10 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
           Compare.same(this.aggregatedPart, f.aggregatedPart) && //
           Compare.same(this.structuredColumns, f.structuredColumns) && //
           Compare.same(this.fragmentConfig, f.fragmentConfig);
+      log.debug("<select> '" + this.method + "' same=" + same);
+      return same;
     } catch (ClassCastException e) {
+      log.debug("<select> '" + this.method + "' same=" + "false");
       return false;
     }
   }

@@ -67,12 +67,12 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
       throw new IllegalArgumentException("Cannot set null error message.");
     }
     this.valid = false;
-    this.errorMessage = errorMessage;
+    this.ownErrorMessage = errorMessage;
   }
 
   public void setValid() {
     this.valid = true;
-    this.errorMessage = null;
+    this.ownErrorMessage = null;
   }
 
   public void initializeConfig(final HotRodConfigTag config) {

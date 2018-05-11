@@ -52,34 +52,12 @@
 	
   <table name="person">
     <column name="type" converter="person_type" />
-
-    <!-- Case 1 - Flat Join -->
-
-    <select method="findAccountWithPersonFlat" vo="AccountPersonFlatVO">
-
-      <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-
-      <column name="type" converter="account_type" />
-      <column name="person_type" converter="person_type" />
-      <column name="active" converter="account_status" />
-
-      select
-      a.*,
-      p.id "pers_id", p.name, p.type "person_type"
-      from account a
-      join person p on (p.id) = (a.person_id)
-      <complement>
-        where a.id = #{clientId}
-      </complement>
-
-    </select>
-    
   </table>	
   
   <view name="north_office">
 
     <!-- Case 2 - Select returns multiple VOs -->
-
+<!-- 
     <select method="viewFindAccountWithPerson">
 
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
@@ -110,11 +88,11 @@
       </complement>
 
     </select>
-
+-->
   </view>
   
-
 	<dao class="SelectsDAO">
+
 
 		<!-- Case 1 - Flat Join -->
 
@@ -161,6 +139,7 @@
 
 		</select>
  
+<?comment
 
 		<!-- 3 - Select returns a single VO and no expressions -->
 
@@ -272,7 +251,7 @@
 				<vo table="person" extended-vo="ExtendedPersonVO" alias="p">
 					p.*
 					<collection table="account" property="accounts"
-						extended-vo="AccountWithTransactionsVO" alias="p">
+						extended-vo="AccountWithTransactions2VO" alias="p">
 						a.*
 						<collection table="transaction" property="transactions"
 							alias="t" />
@@ -283,10 +262,8 @@
 			</columns>
 			from person p
 			join account a on (a.person_id) = (a.id)
-			join transaction
-			t on (t.account_id) = (a.id)
-			join category c on
-			a.category_id = c.id
+			join transaction t on (t.account_id) = (a.id)
+			join category c on p.category_id = c.id
 			<complement>
 				where a.id = #{clientId}
 			</complement>
@@ -302,14 +279,14 @@
 
 			select
 			<columns>
-				<vo table="log" id="recorded_by, recorded_at" extended-vo="LogWithOfficeVO" alias="l">
+				<vo table="log" id="recorded_by,recorded_at" extended-vo="LogWithOfficeVO" alias="l">
 					l.*
-					<association view="north_office" 
-						property="office" alias="o" />
+					<association view="north_office"
+						property="office" alias="o" />  
 				</vo>
-			</columns>
-			from log l
-			left join view_office o on l.office_id = o.id
+			</columns>  
+			from log l     
+			left join north_office o on l.office_id = o.id
 
 		</select>
 
@@ -326,16 +303,14 @@
 				<vo table="person" property="person" alias="p" />
 			</columns>
 			from account a
-			left join person p on (p.id) = (c.person_id)
+			left join person p on p.id = a.person_id
 			<complement>
 				where a.id = #{clientId}
 			</complement>
 
 		</select>
-
+?>
 
 	</dao>
-<?comment
-?>
 
 </hotrod>
