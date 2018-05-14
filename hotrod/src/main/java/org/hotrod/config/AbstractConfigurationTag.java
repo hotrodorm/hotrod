@@ -298,10 +298,9 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   // Display
 
   public void logGenerateMark(final String title, final char c) {
-    // log.info(SUtils.getFiller(c, 10) + " " + title + " " +
-    // SUtils.getFiller(c, 10));
-    // displayGenerateMark(this, 0);
-    // log.info(SUtils.getFiller(c, 22 + title.length()));
+    log.info(SUtils.getFiller(c, 10) + " " + title + " " + SUtils.getFiller(c, 10));
+    displayGenerateMark(this, 0);
+    log.info(SUtils.getFiller(c, 22 + title.length()));
   }
 
   @SuppressWarnings("unused")

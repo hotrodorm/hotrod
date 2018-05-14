@@ -1,5 +1,6 @@
 package org.hotrod.eclipseplugin.treeview;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -8,6 +9,8 @@ import org.hotrod.eclipseplugin.HotRodView;
 import org.hotrod.eclipseplugin.LoadedConfigurationFiles;
 
 public class HotRodViewContentProvider implements ITreeContentProvider {
+
+  private static final Logger log = Logger.getLogger(HotRodViewContentProvider.class);
 
   private HotRodView viewPart;
   private TreeViewer viewer;
@@ -25,9 +28,12 @@ public class HotRodViewContentProvider implements ITreeContentProvider {
 
   @Override
   public Object[] getElements(final Object inputElement) {
+    log.info("getting elements 1");
     if (inputElement.equals(this.viewPart.getViewSite())) {
+      log.info("getting elements 2 - this.files.getLoadedFiles().size()=" + this.files.getLoadedFiles().size());
       return this.files.getLoadedFiles().toArray(new MainConfigFace[0]);
     }
+    log.info("getting elements 3");
     return getChildren(inputElement);
   }
 
@@ -71,7 +77,9 @@ public class HotRodViewContentProvider implements ITreeContentProvider {
   }
 
   public void refresh() {
+    log.info("content provider refresh 1");
     TreeViewer v = this.getViewer();
+    log.info("content provider refresh 2 v=" + v);
     if (v != null) {
 
       // Make sure the refresh happens in the singleton UI thread, even when

@@ -88,7 +88,6 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
     for (ConverterTag c : this.converters) {
       c.validate();
-      super.addChild(c);
       if (this.convertersByName.containsKey(c.getName())) {
         throw new InvalidConfigurationFileException(this, //
             "Multiple converters with name '" + c.getName() + "'", //
@@ -97,6 +96,12 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
       this.convertersByName.put(c.getName(), c);
     }
 
+  }
+
+  public void addConverterTags() {
+    for (ConverterTag c : this.converters) {
+      super.addChild(c);
+    }
   }
 
   // Entity Resolver

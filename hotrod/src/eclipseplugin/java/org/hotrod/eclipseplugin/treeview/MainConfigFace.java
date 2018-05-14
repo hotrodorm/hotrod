@@ -2,16 +2,20 @@ package org.hotrod.eclipseplugin.treeview;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.eclipseplugin.ErrorMessage;
+import org.hotrod.eclipseplugin.HotRodDropTargetListener;
 import org.hotrod.eclipseplugin.HotRodView;
 import org.hotrod.eclipseplugin.RelativeProjectPath;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
 public class MainConfigFace extends AbstractFace implements Comparable<MainConfigFace> {
+
+  private static final Logger log = Logger.getLogger(MainConfigFace.class);
 
   private boolean valid;
   private String absolutePath;
@@ -87,8 +91,11 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   @Override
   public AbstractFace[] getChildren() {
+    log.info("this.valid=" + this.valid);
     if (this.valid) {
-      return super.getChildren();
+      AbstractFace[] children = super.getChildren();
+      log.info("children[" + children.length + "]");
+      return children;
     } else {
       return new AbstractFace[0];
     }
@@ -96,6 +103,7 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   @Override
   public boolean hasChildren() {
+    log.info("this.valid=" + this.valid);
     if (this.valid) {
       return super.hasChildren();
     } else {
@@ -105,6 +113,7 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   @Override
   public boolean hasBranchChanges() {
+    log.info("this.valid=" + this.valid);
     if (this.valid) {
       return super.hasBranchChanges();
     } else {

@@ -26,4 +26,13 @@ public class ErrorMessage implements Serializable {
     return message;
   }
 
+  // toString
+
+  public String toString() {
+    return (this.location == null ? ""
+        : this.location.getFile().getName() + "(" + this.location.getLineNumber() + ","
+            + this.location.getColumnNumber() + "): ")
+        + this.message;
+  }
+
 }

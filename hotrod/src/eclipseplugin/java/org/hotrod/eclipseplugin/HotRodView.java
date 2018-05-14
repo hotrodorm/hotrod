@@ -156,11 +156,6 @@ public class HotRodView extends ViewPart {
         this.hotRodViewContentProvider.getFiles());
     this.viewer.addDropSupport(operations, transfers, dropListener);
 
-    this.viewer.setContentProvider(this.hotRodViewContentProvider);
-
-    this.viewer.setInput(getViewSite());
-    this.viewer.setLabelProvider(new HotRodLabelProvider(parent));
-
     getSite().setSelectionProvider(this.viewer);
 
     makeActions();
@@ -176,7 +171,6 @@ public class HotRodView extends ViewPart {
         this.hotRodViewContentProvider.getFiles());
     ResourcesPlugin.getWorkspace().addResourceChangeListener(this.fileSystemListener);
 
-    this.hotRodViewContentProvider.setVisible(true);
 
     // Test mouse down
 
@@ -207,6 +201,16 @@ public class HotRodView extends ViewPart {
       }
     }
 
+    this.hotRodViewContentProvider.setVisible(true);
+    this.viewer.setContentProvider(this.hotRodViewContentProvider);
+    this.viewer.setInput(getViewSite());
+    this.viewer.setLabelProvider(new HotRodLabelProvider(parent));
+
+    // for (MainConfigFace face :
+    // this.hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+    // face.refreshView();
+    // }
+
   }
 
   interface LinkOpener {
@@ -236,7 +240,7 @@ public class HotRodView extends ViewPart {
 
         try {
           AbstractFace face = (AbstractFace) obj;
-          ErrorMessage em = (ErrorMessage) face.getErrorMessage();
+          ErrorMessage em = (ErrorMessage) face.getBranchErrorMessage();
           if (em != null) {
             SourceLocation location = em.getLocation();
             if (location != null) {
@@ -428,18 +432,18 @@ public class HotRodView extends ViewPart {
 
           // Mark selection for generation and identify main faces
 
-          LinkedHashSet<MainConfigFace> mainFaces = new LinkedHashSet<MainConfigFace>();
+          LinkedHashSet<MainConfigFace> selectedMainFaces = new LinkedHashSet<MainConfigFace>();
           for (Object obj : sel) {
             AbstractFace selectedFace = (AbstractFace) obj;
             log.debug(" - selected face=" + selectedFace.getName());
             selectedFace.getTag().markGenerateTree();
-            mainFaces.add(selectedFace.getMainConfigFace());
+            selectedMainFaces.add(selectedFace.getMainConfigFace());
           }
 
           // Verify file properties are set up for all faces
 
           boolean allConfigured = true;
-          for (MainConfigFace mf : mainFaces) {
+          for (MainConfigFace mf : selectedMainFaces) {
             ProjectProperties projectProperties = WorkspaceProperties.getInstance()
                 .getProjectProperties(mf.getProject());
             if (projectProperties == null) {
@@ -464,7 +468,7 @@ public class HotRodView extends ViewPart {
           // Generate all main faces
 
           if (allConfigured) {
-            for (MainConfigFace mainFace : mainFaces) {
+            for (MainConfigFace mainFace : selectedMainFaces) {
               ProjectProperties projectProperties = WorkspaceProperties.getInstance()
                   .getProjectProperties(mainFace.getProject());
               FileProperties fileProperties = projectProperties.getFileProperties(mainFace.getRelativeFileName());
@@ -552,7 +556,7 @@ public class HotRodView extends ViewPart {
         ListWriter w = new ListWriter("\n\n---\n\n");
 
         for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-          ErrorMessage errorMessage = mf.getErrorMessage();
+          ErrorMessage errorMessage = mf.getBranchErrorMessage();
           if (errorMessage != null) {
             w.add(errorMessage.getMessage()
                 + (errorMessage.getLocation() != null ? "\n  at " + errorMessage.getLocation().render() : ""));
@@ -569,7 +573,7 @@ public class HotRodView extends ViewPart {
     actionCopyError.setText("Copy errors to clipboard");
     actionCopyError.setToolTipText("Copy errors to clipboard");
     actionCopyError.setImageDescriptor(imgCopyError);
-    computeCopyErrorEnabled();
+    refreshToolbar();
 
     // Configure Database Connection -- TODO: Nothing to do -- just a marker
 
@@ -679,17 +683,17 @@ public class HotRodView extends ViewPart {
 
   }
 
-  private void computeCopyErrorEnabled() {
-    log.info("/// computing Copy Error enabled");
+  public void refreshToolbar() {
+    // log.info("/// computing Copy Error enabled");
     boolean errorsPresent = false;
     for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-      log.debug("/// face " + mf.getRelativeFileName() + " - error="
-          + (mf.getErrorMessage() == null ? "null" : mf.getErrorMessage().getMessage()));
-      if (mf.getErrorMessage() != null) {
+      log.info("/// face " + mf.getRelativeFileName() + " - error="
+          + (mf.getBranchErrorMessage() == null ? "null" : mf.getBranchErrorMessage().getMessage()));
+      if (mf.getBranchErrorMessage() != null) {
         errorsPresent = true;
       }
     }
-    log.debug("/// CopyError enabled = " + errorsPresent);
+    log.info("/// CopyError enabled = " + errorsPresent);
     actionCopyError.setEnabled(errorsPresent);
   }
 
@@ -743,6 +747,24 @@ public class HotRodView extends ViewPart {
 
   // TODO: Nothing to do -- just a marker
 
+  public void informFileAdded(final MainConfigFace face, final boolean changesDetected) {
+    log.info("informing file added. face.isValid()=" + face.isValid());
+    if (face.isValid() && changesDetected && WorkspaceProperties.getInstance().isAutogenerateOnChanges()) {
+      // generation must be delayed until all file changes events are complete
+      HotRodDelayedGenerationJob job = new HotRodDelayedGenerationJob(face);
+      job.setRule(face.getProject()); // needs exclusive access to the project
+      job.schedule();
+    } else {
+      log.info("::: will compute markers");
+      face.computeBranchMarkers();
+      log.info("::: will refresh view");
+      face.refreshView();
+      log.info("::: will refresh tool bar");
+      refreshToolbar();
+      log.info("::: refresh complete");
+    }
+  }
+
   public void informFileChangesDetected(final MainConfigFace face) {
     log.info("informing file changed. face.isValid()=" + face.isValid());
     if (face.isValid() && WorkspaceProperties.getInstance().isAutogenerateOnChanges()) {
@@ -751,7 +773,9 @@ public class HotRodView extends ViewPart {
       job.setRule(face.getProject()); // needs exclusive access to the project
       job.schedule();
     } else {
-      computeCopyErrorEnabled();
+      face.computeBranchMarkers();
+      face.refreshView();
+      refreshToolbar();
     }
   }
 
@@ -785,16 +809,19 @@ public class HotRodView extends ViewPart {
             } else {
               if (this.face.getTag().treeIncludesIsToBeGenerated()) {
                 generateFile(this.face, projectProperties, fileProperties, true);
-                this.face.refreshView();
-                computeCopyErrorEnabled();
               }
             }
           }
         }
         return Status.OK_STATUS;
       } catch (Exception e) {
+        log.error("Failed to generate.", e);
         Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Could not generate file changes", e);
         throw new CoreException(status);
+      } finally {
+        this.face.computeBranchMarkers();
+        this.face.refreshView();
+        refreshToolbar();
       }
     }
 
@@ -951,9 +978,10 @@ public class HotRodView extends ViewPart {
         String msg = EUtils.renderMessages(t, " - ", "", "\n");
         showMessage(Constants.TOOL_NAME + " could not generate the persistence code:\n" + msg);
       } finally {
-        log.info("FINALLY BLOCK!");
+        // log.info("FINALLY BLOCK!");
+        mainFace.computeBranchMarkers();
         mainFace.refreshView();
-        computeCopyErrorEnabled();
+        refreshToolbar();
       }
 
     }

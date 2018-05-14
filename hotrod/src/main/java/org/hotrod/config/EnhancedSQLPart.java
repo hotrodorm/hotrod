@@ -125,7 +125,7 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
     try {
       EnhancedSQLPart f = (EnhancedSQLPart) fresh;
       boolean same = Compare.same(this.eparts, f.eparts);
-      log.info("[" + this.getTagName() + "[" + (this.eparts == null ? "null" : "" + this.eparts.size()) + "] ] same="
+      log.debug("[" + this.getTagName() + "[" + (this.eparts == null ? "null" : "" + this.eparts.size()) + "] ] same="
           + same);
       return same;
     } catch (ClassCastException e) {

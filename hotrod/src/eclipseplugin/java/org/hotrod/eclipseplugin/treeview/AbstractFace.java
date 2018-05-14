@@ -80,10 +80,12 @@ public abstract class AbstractFace implements IAdaptable {
   }
 
   public AbstractFace[] getChildren() {
+    log.debug("this.children[" + this.children.size() + "]");
     return this.children.toArray(EMPTY_FACE_ARRAY);
   }
 
   public boolean hasChildren() {
+    log.debug("this.children.isEmpty()=" + this.children.isEmpty());
     return !this.children.isEmpty();
   }
 
@@ -119,16 +121,17 @@ public abstract class AbstractFace implements IAdaptable {
   }
 
   public ErrorMessage getErrorMessage() {
-
     try {
       MainConfigFace face = (MainConfigFace) this;
-      return face.isValid() ? null : this.ownErrorMessage;
-    } catch (ClassCastException e) {
-      if (this.ownErrorMessage != null) {
-        return this.ownErrorMessage;
+      if (face.isValid()) {
+        return null;
       }
+    } catch (ClassCastException e) {
+      // ignore
     }
-
+    if (this.ownErrorMessage != null) {
+      return this.ownErrorMessage;
+    }
     if (this.subtagErrorMessage != null) {
       return this.subtagErrorMessage;
     }
@@ -140,14 +143,15 @@ public abstract class AbstractFace implements IAdaptable {
   }
 
   public void refreshView() {
-    log.info("### Refreshing view");
+    log.info("### Refreshing view - this=" + this.getDecoration());
     TreeViewer viewer = this.getViewer();
     if (viewer != null) {
-      this.computeBranchMarkers();
-      log.info("### -- this.ownErrorMessage=" + this.ownErrorMessage);
-      log.info("### -- this.subtagErrorMessage=" + this.subtagErrorMessage);
-      log.info("### -- this.branchErrorMessage=" + this.branchErrorMessage);
+
       Display.getDefault().asyncExec(new RefreshViewRunnable(this, viewer));
+      log.info("### Refresh complete");
+
+    } else {
+      log.info("### Refresh could not be done");
     }
   }
 
@@ -163,13 +167,15 @@ public abstract class AbstractFace implements IAdaptable {
 
     @Override
     public void run() {
+      log.info("-- refreshing view");
       this.viewer.refresh(this.face, true);
+      log.info("-- refreshing view - complete");
     }
 
   }
 
   public void computeBranchMarkers() {
-    log.info("##### Computing changes & errors");
+    log.info("Computing changes & errors");
     this.computeBranchChanges();
     this.computeBranchError();
   }
@@ -211,6 +217,10 @@ public abstract class AbstractFace implements IAdaptable {
 
   public boolean hasBranchChanges() {
     return this.hasBranchChanges;
+  }
+
+  public ErrorMessage getBranchErrorMessage() {
+    return branchErrorMessage;
   }
 
   public boolean hasBranchErrors() {

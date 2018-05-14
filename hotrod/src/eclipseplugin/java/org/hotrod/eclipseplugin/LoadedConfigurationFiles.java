@@ -41,12 +41,16 @@ public class LoadedConfigurationFiles implements FileChangeListener {
   // File is being dropped in (addeed to) the view
 
   public void addFile(final File f) {
+    log.info("ADD f=" + f);
 
     try {
 
       if (f != null && f.getName().endsWith(VALID_HOTROD_EXTENSION) && f.isFile()) {
+        log.info("ADD [2] f=" + f);
         String absolutePath = f.getAbsolutePath();
+        boolean filesLoaded = false;
         if (!this.loadedFiles.containsKey(absolutePath)) {
+          filesLoaded = true;
 
           RelativeProjectPath path = RelativeProjectPath.findProjectPath(f);
           if (path != null) {
@@ -79,26 +83,18 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
               log.info("No cached config present.");
               this.loadedFiles.put(absolutePath, freshFace);
-              if (freshFace.isValid()) {
-                freshFace.getConfig().setTreeStatus(TagStatus.ADDED);
-                freshFace.computeBranchMarkers();
-                this.viewPart.informFileChangesDetected(freshFace);
-              }
+              freshFace.getConfig().setTreeStatus(TagStatus.ADDED);
+              this.viewPart.informFileAdded(freshFace, true);
 
             } else {
 
               // 4.b Display combined loaded file with cached config.
 
               log.info("Cached config present.");
-
               this.loadedFiles.put(absolutePath, currentFace);
               boolean changesDetected = applyFreshVersion(currentFace, freshFace);
-              currentFace.computeBranchMarkers();
               log.info("changesDetected=" + changesDetected);
-
-              if (changesDetected) {
-                this.viewPart.informFileChangesDetected(currentFace);
-              }
+              this.viewPart.informFileAdded(currentFace, changesDetected);
 
             }
 
@@ -117,6 +113,11 @@ public class LoadedConfigurationFiles implements FileChangeListener {
           }
 
         }
+
+        if (filesLoaded) {
+          this.viewPart.refreshToolbar();
+        }
+
       }
 
     } catch (Throwable t) {
@@ -133,8 +134,6 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
     boolean changesDetected = applyFreshVersion(currentFace, freshFace);
     log.debug("changesDetected=" + changesDetected);
-
-    // TODO: implement automatic generation here (on changes).
 
     if (changesDetected) {
       this.viewPart.informFileChangesDetected(currentFace);

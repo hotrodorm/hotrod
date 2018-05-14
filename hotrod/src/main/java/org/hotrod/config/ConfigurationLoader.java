@@ -60,6 +60,8 @@ public class ConfigurationLoader {
   public static HotRodConfigTag loadPrimary(final File projectBaseDir, final File f, final String generatorName)
       throws ControlledException, UncontrolledException {
 
+    log.info("loading file: " + f);
+
     // Basic validation on the file
 
     if (f == null) {
@@ -135,11 +137,15 @@ public class ConfigurationLoader {
 
       config.validateCommon(config, f, alreadyLoadedFileNames, f, daosTag, null);
 
+      config.addConverterTags();
+
       // Prepare transient values
 
       config.activate();
 
       // Complete
+      
+      log.info("File loaded.");
 
       return config;
 

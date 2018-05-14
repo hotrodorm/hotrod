@@ -52,7 +52,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
     log.debug("element=" + element + " (" + (element == null ? "<null>" : element.getClass().getName()) + ")");
     try {
       AbstractFace face = (AbstractFace) element;
-      ErrorMessage errorMessage = face.getErrorMessage();
+      ErrorMessage errorMessage = face.getBranchErrorMessage();
       if (errorMessage == null) {
         return null; // no tool tip
       } else {
@@ -94,7 +94,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
     try {
       face = (AbstractFace) obj; // any face
-      if (face.hasError() || face.hasBranchErrors()) {
+      if (face.hasBranchErrors()) {
         cell.setImage(face.getErrorImage());
       } else {
         cell.setImage(face.getImage());
@@ -116,7 +116,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
       String ownStatus;
       switch (face.getStatus()) {
       case UP_TO_DATE:
-        ownStatus = "";
+        ownStatus = ". ";
         break;
       case MODIFIED:
         ownStatus = "* ";
@@ -128,14 +128,13 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
         ownStatus = "- ";
         break;
       default:
-        ownStatus = "";
+        ownStatus = "? ";
         break;
       }
 
       String branchStatus = face.hasBranchChanges() ? ">" : "";
-      String prefix;
-      // prefix = branchStatus + " " + ownStatus + " ";
-      prefix = branchStatus + " ";
+      String prefix = branchStatus + " ";
+      // prefix = prefix + ownStatus + " "; // remove when tested
 
       if (prefix != null) {
         label.append(prefix, StyledString.DECORATIONS_STYLER);

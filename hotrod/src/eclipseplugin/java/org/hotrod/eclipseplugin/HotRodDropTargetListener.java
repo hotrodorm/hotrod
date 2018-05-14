@@ -2,6 +2,7 @@ package org.hotrod.eclipseplugin;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.DND;
@@ -10,6 +11,8 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
 public class HotRodDropTargetListener extends ViewerDropAdapter {
+
+  private static final Logger log = Logger.getLogger(HotRodDropTargetListener.class);
 
   private LoadedConfigurationFiles files;
 
@@ -43,10 +46,12 @@ public class HotRodDropTargetListener extends ViewerDropAdapter {
    */
   @Override
   public boolean performDrop(final Object data) {
+    log.info("dropping files.");
     if (data instanceof String[]) {
       String[] files = (String[]) data;
       for (String fullPathName : files) {
         File f = new File(fullPathName);
+        log.info(" - dropping file f=" + f);
         this.files.addFile(f);
       }
     }
