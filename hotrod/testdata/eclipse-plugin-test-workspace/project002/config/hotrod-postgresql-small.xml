@@ -57,7 +57,7 @@
   <view name="north_office">
 
     <!-- Case 2 - Select returns multiple VOs -->
-<!-- 
+
     <select method="viewFindAccountWithPerson">
 
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
@@ -88,6 +88,7 @@
       </complement>
 
     </select>
+<!-- 
 -->
   </view>
   
@@ -105,7 +106,7 @@
 			<column name="person_type" converter="person_type" />
 			<column name="active" converter="account_status" />
 
-			select
+			select 
 			a.*,
 			p.id "pers_id", p.name, p.type "person_type"
 			from account
@@ -116,8 +117,8 @@
 			</complement>
 
 		</select>
-<!-- 
- --> 
+<!--
+ -->
  
 		<!-- Case 2 - Select returns multiple VOs -->
 

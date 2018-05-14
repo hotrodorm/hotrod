@@ -1,6 +1,11 @@
 package org.hotrod.config;
 
-public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends AbstractConfigurationTag {
+import org.hotrod.database.DatabaseAdapter;
+
+public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends AbstractConfigurationTag
+    implements GenerationUnit<AbstractMethodTag<M>> {
+
+  // GenerationUnit<AbstractMethodTag<M extends AbstractMethodTag<M>>>
 
   private static final long serialVersionUID = 1L;
 
@@ -26,5 +31,10 @@ public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends 
   // Methods
 
   public abstract String getMethod();
+
+  @Override
+  public boolean concludeGenerationTree(final AbstractMethodTag<M> unitCache, final DatabaseAdapter adapter) {
+    return this.concludeGenerationMarkTag();
+  }
 
 }

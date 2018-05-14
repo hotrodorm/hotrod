@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -12,6 +13,7 @@ import java.util.TreeMap;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.hotrod.eclipseplugin.FileProperties.CouldNotLoadFilePropertiesException;
+import org.hotrod.eclipseplugin.utils.HashUtils;
 
 /**
  * <pre>
@@ -108,7 +110,11 @@ public class ProjectProperties {
     String code = this.loadedFilesByFileName.get(relativeFileName);
     if (code == null) {
       code = getNewCode(relativeFileName);
-      return new FileProperties(this, code, relativeFileName);
+      try {
+        return FileProperties.load(this, code, relativeFileName);
+      } catch (CouldNotLoadFilePropertiesException e) {
+        return new FileProperties(this, code, relativeFileName);
+      }
     } else {
       try {
         return FileProperties.load(this, code, relativeFileName);
@@ -120,8 +126,14 @@ public class ProjectProperties {
   }
 
   private String getNewCode(final String relativeFileName) {
+    String base = null;
+    try {
+      base = "file-" + HashUtils.hexaSha1(relativeFileName);
+    } catch (NoSuchAlgorithmException e) {
+      base = "file-0";
+    }
     for (int i = 1; i < 1000000; i++) {
-      String codeCandidate = "file" + i;
+      String codeCandidate = base + i;
       if (!this.loadedFilesByCode.containsKey(codeCandidate)) {
         this.registerFile(codeCandidate, relativeFileName);
         return codeCandidate;

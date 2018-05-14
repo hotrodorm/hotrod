@@ -189,9 +189,9 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
     boolean failedInnerGeneration = false;
 
-    failedInnerGeneration |= markMethodGenerated(this.sequences, cache.sequences);
-    failedInnerGeneration |= markMethodGenerated(this.queries, cache.queries);
-    failedInnerGeneration |= markMethodGenerated(this.selects, cache.selects);
+    failedInnerGeneration |= markMethodGenerated(this.sequences, cache.sequences, adapter);
+    failedInnerGeneration |= markMethodGenerated(this.queries, cache.queries, adapter);
+    failedInnerGeneration |= markMethodGenerated(this.selects, cache.selects, adapter);
     log.debug("failedInnerGeneration=" + failedInnerGeneration);
 
     if (!failedInnerGeneration) {
@@ -203,7 +203,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
   }
 
   private <M extends AbstractMethodTag<M>> boolean markMethodGenerated(final MethodTagContainer<M> thisMethods,
-      final MethodTagContainer<M> cache) {
+      final MethodTagContainer<M> cache, final DatabaseAdapter adapter) {
     boolean failedInnerGeneration = false;
     log.debug("====> DAO " + this.getJavaClassName() + " 2");
     for (CorrelatedEntry<M> cor : Correlator.correlate(thisMethods.toList(), cache.toList(), new Comparator<M>() {
@@ -219,10 +219,10 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
       log.debug(
           "method '" + (t != null ? t.method + "()" : (c != null ? c.method + "()" : "?")) + "': t=" + t + " c=" + c);
 
-      if (t != null && t.isToBeGenerated()) {
-        failedInnerGeneration = true;
-      }
       if (t != null && c == null) {
+        if (t != null && t.isToBeGenerated()) {
+          failedInnerGeneration = true;
+        }
         if (t.isGenerationComplete()) {
           cache.add(t); // adds the generated element to the cache.
           t.concludeGenerationMarkTag();
@@ -232,6 +232,13 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
         cache.remove(t); // removes the element from the cache.
       }
       if (t != null && c != null) {
+        boolean innerTreeConclude = t.concludeGenerationTree(c, adapter);
+        if (!innerTreeConclude) {
+          failedInnerGeneration = true;
+        }
+        if (t != null && t.isToBeGenerated()) {
+          failedInnerGeneration = true;
+        }
         if (t.isGenerationComplete()) {
           cache.replace(t); // replaces the element on the cache.
           t.concludeGenerationMarkTag();

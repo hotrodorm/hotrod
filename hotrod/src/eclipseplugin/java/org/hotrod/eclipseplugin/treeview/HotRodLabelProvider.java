@@ -15,6 +15,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.hotrod.eclipseplugin.ErrorMessage;
+import org.hotrod.eclipseplugin.FileProperties;
+import org.hotrod.eclipseplugin.ProjectProperties;
+import org.hotrod.eclipseplugin.WorkspaceProperties;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 
 public class HotRodLabelProvider extends StyledCellLabelProvider {
@@ -161,9 +164,17 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
       } catch (ClassCastException e1) {
         try {
           MainConfigFace c = (MainConfigFace) obj; // main config
-          String relativePath = c.getRelativePath().isEmpty() ? "." : c.getRelativePath();
 
-          label.append(" [" + relativePath + "]", StyledString.DECORATIONS_STYLER);
+          boolean configured = false;
+          ProjectProperties projectProperties = WorkspaceProperties.getInstance().getProjectProperties(c.getProject());
+          FileProperties fileProperties = projectProperties.getFileProperties(c.getRelativeFileName());
+          if (fileProperties != null) {
+            configured = fileProperties.isConfigured();
+          }
+
+          String relativePath = c.getRelativePath().isEmpty() ? "." : c.getRelativePath();
+          label.append(" {" + (configured ? "conf" : "!conf") + "} [" + relativePath + "]",
+              StyledString.DECORATIONS_STYLER);
 
         } catch (ClassCastException e2) {
           try {

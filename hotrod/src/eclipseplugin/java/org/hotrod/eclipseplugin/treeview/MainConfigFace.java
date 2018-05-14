@@ -8,9 +8,11 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.eclipseplugin.ErrorMessage;
-import org.hotrod.eclipseplugin.HotRodDropTargetListener;
+import org.hotrod.eclipseplugin.FileProperties;
 import org.hotrod.eclipseplugin.HotRodView;
+import org.hotrod.eclipseplugin.ProjectProperties;
 import org.hotrod.eclipseplugin.RelativeProjectPath;
+import org.hotrod.eclipseplugin.WorkspaceProperties;
 import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
 
 public class MainConfigFace extends AbstractFace implements Comparable<MainConfigFace> {
@@ -91,10 +93,10 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   @Override
   public AbstractFace[] getChildren() {
-    log.info("this.valid=" + this.valid);
+    log.debug("this.valid=" + this.valid);
     if (this.valid) {
       AbstractFace[] children = super.getChildren();
-      log.info("children[" + children.length + "]");
+      log.debug("children[" + children.length + "]");
       return children;
     } else {
       return new AbstractFace[0];
@@ -165,12 +167,22 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   @Override
   public String getIconPath() {
-    return this.isValid() ? HotRodView.ICONS_DIR + "main-config.png" : HotRodView.ICONS_DIR + "main-config-error.png";
+    if (!this.isValid()) {
+      return getErrorIconPath();
+    }
+    return isConfigured() ? HotRodView.ICONS_DIR + "main-config-on.png" : HotRodView.ICONS_DIR + "main-config-off.png";
   }
 
   @Override
   public String getErrorIconPath() {
-    return HotRodView.ICONS_DIR + "main-config-error.png";
+    return isConfigured() ? HotRodView.ICONS_DIR + "main-config-on-error.png"
+        : HotRodView.ICONS_DIR + "main-config-off-error.png";
+  }
+
+  private boolean isConfigured() {
+    ProjectProperties projectProperties = WorkspaceProperties.getInstance().getProjectProperties(this.getProject());
+    FileProperties fileProperties = projectProperties.getFileProperties(this.getRelativeFileName());
+    return fileProperties == null ? false : fileProperties.isConfigured();
   }
 
   @Override

@@ -171,7 +171,6 @@ public class HotRodView extends ViewPart {
         this.hotRodViewContentProvider.getFiles());
     ResourcesPlugin.getWorkspace().addResourceChangeListener(this.fileSystemListener);
 
-
     // Test mouse down
 
     // this.viewer.addTreeListener(listener);
@@ -698,6 +697,7 @@ public class HotRodView extends ViewPart {
   }
 
   private void generateChanges() {
+    log.info("@@@ ini 1");
     for (MainConfigFace face : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
       face.getConfig().resetTreeGeneration();
     }
@@ -707,6 +707,7 @@ public class HotRodView extends ViewPart {
     for (MainConfigFace mf : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
       mf.getConfig().resetTreeGeneration();
       boolean modified = markChanges(mf.getTag(), 0);
+      log.info("@@@ modified=" + modified);
       if (modified) {
         ProjectProperties projectProperties = WorkspaceProperties.getInstance().getProjectProperties(mf.getProject());
         if (projectProperties == null) {
@@ -731,10 +732,13 @@ public class HotRodView extends ViewPart {
 
     if (allConfigured) {
       for (MainConfigFace mainFace : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+        log.info(
+            "@@@ generate: " + mainFace.getDecoration() + " itbg=" + mainFace.getTag().treeIncludesIsToBeGenerated());
         if (mainFace.getTag().treeIncludesIsToBeGenerated()) {
           ProjectProperties projectProperties = WorkspaceProperties.getInstance()
               .getProjectProperties(mainFace.getProject());
           FileProperties fileProperties = projectProperties.getFileProperties(mainFace.getRelativeFileName());
+          log.info("@@@ now generate: " + mainFace.getDecoration());
           generateFile(mainFace, projectProperties, fileProperties, true);
         }
       }
@@ -755,13 +759,10 @@ public class HotRodView extends ViewPart {
       job.setRule(face.getProject()); // needs exclusive access to the project
       job.schedule();
     } else {
-      log.info("::: will compute markers");
       face.computeBranchMarkers();
-      log.info("::: will refresh view");
-      face.refreshView();
-      log.info("::: will refresh tool bar");
+      hotRodViewContentProvider.refresh();
+      // face.refreshView();
       refreshToolbar();
-      log.info("::: refresh complete");
     }
   }
 
@@ -774,7 +775,8 @@ public class HotRodView extends ViewPart {
       job.schedule();
     } else {
       face.computeBranchMarkers();
-      face.refreshView();
+      hotRodViewContentProvider.refresh();
+      // face.refreshView();
       refreshToolbar();
     }
   }
@@ -820,7 +822,8 @@ public class HotRodView extends ViewPart {
         throw new CoreException(status);
       } finally {
         this.face.computeBranchMarkers();
-        this.face.refreshView();
+        hotRodViewContentProvider.refresh();
+        // this.face.refreshView();
         refreshToolbar();
       }
     }
@@ -828,16 +831,26 @@ public class HotRodView extends ViewPart {
   }
 
   private boolean markChanges(final AbstractConfigurationTag t, final int level) {
-    boolean modified = t.getStatus() != TagStatus.UP_TO_DATE;
-    if (modified) {
-      t.markGenerate();
-    }
-    for (AbstractConfigurationTag subtag : t.getSubTags()) {
-      if (markChanges(subtag, level + 1)) {
-        modified = true;
+    try {
+      @SuppressWarnings("unused")
+      GenerationUnit<?> unit = (GenerationUnit<?>) t;
+      // continue only if this is a GenerationUnit.
+      log.info(">>> [GU] " + t.getInternalCaption() + " t.getStatus()=" + t.getStatus());
+      boolean modified = t.getStatus() != TagStatus.UP_TO_DATE;
+      if (modified) {
+        t.markGenerate();
       }
+      for (AbstractConfigurationTag subtag : t.getSubTags()) {
+        if (markChanges(subtag, level + 1)) {
+          modified = true;
+        }
+      }
+      return modified;
+    } catch (ClassCastException e) {
+      log.info(">>> [not a GU] " + t.getInternalCaption() + " (class " + t.getClass().getName() + ") t.getStatus()="
+          + t.getStatus());
+      return false;
     }
-    return modified;
   }
 
   private void showMessage(final String message) {
@@ -971,16 +984,25 @@ public class HotRodView extends ViewPart {
         // }
       } catch (UncontrolledException e) {
         log.error("Could not generate the persistence code.", e.getCause());
-        String msg = EUtils.renderMessages(e.getCause(), " - ", "", "\n");
-        showMessage(Constants.TOOL_NAME + " could not generate the persistence code:\n" + msg);
+        ErrorMessage msg = new ErrorMessage(null,
+            "Could not generate the persistence code: " + EUtils.renderMessages(e));
+        mainFace.setInvalid(msg);
+        // String msg = EUtils.renderMessages(e.getCause(), " - ", "", "\n");
+        // showMessage(Constants.TOOL_NAME + " could not generate the
+        // persistence code:\n" + msg);
       } catch (Throwable t) {
         log.error("Could not generate the persistence code.", t);
-        String msg = EUtils.renderMessages(t, " - ", "", "\n");
-        showMessage(Constants.TOOL_NAME + " could not generate the persistence code:\n" + msg);
+        ErrorMessage msg = new ErrorMessage(null,
+            "Could not generate the persistence code: " + EUtils.renderMessages(t));
+        mainFace.setInvalid(msg);
+        // String msg = EUtils.renderMessages(t, " - ", "", "\n");
+        // showMessage(Constants.TOOL_NAME + " could not generate the
+        // persistence code:\n" + msg);
       } finally {
         // log.info("FINALLY BLOCK!");
         mainFace.computeBranchMarkers();
-        mainFace.refreshView();
+        hotRodViewContentProvider.refresh();
+        // mainFace.refreshView();
         refreshToolbar();
       }
 

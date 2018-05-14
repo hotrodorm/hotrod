@@ -155,10 +155,17 @@ public class FileProperties {
   }
 
   public static void remove(final ProjectProperties projectProperties, final String code) {
-    IPath pp = projectProperties.getProjectDir().append(getFileName(code));
-    pp.toFile().delete();
+
+    // Leave the properties file on disk
+
+    // IPath pp = projectProperties.getProjectDir().append(getFileName(code));
+    // pp.toFile().delete();
+
+    // Always remove the cache file
+
     IPath cp = projectProperties.getProjectDir().append(getCacheFileName(code));
     cp.toFile().delete();
+
   }
 
   private void readCache() throws CouldNotLoadFilePropertiesException {
