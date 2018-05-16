@@ -4,6 +4,7 @@ drop table person;
 drop table category;
 
 drop view north_office;
+drop view south_office;
 drop table office;
 drop table log;
 

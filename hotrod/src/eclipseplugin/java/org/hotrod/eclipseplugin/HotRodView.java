@@ -833,7 +833,7 @@ public class HotRodView extends ViewPart {
       @SuppressWarnings("unused")
       GenerationUnit<?> unit = (GenerationUnit<?>) t;
       // continue only if this is a GenerationUnit.
-      log.info(">>> [GU] " + t.getInternalCaption() + " t.getStatus()=" + t.getStatus());
+      log.debug(">>> [GU] " + t.getInternalCaption() + " t.getStatus()=" + t.getStatus());
       boolean modified = t.getStatus() != TagStatus.UP_TO_DATE;
       if (modified) {
         t.markGenerate();
@@ -845,7 +845,7 @@ public class HotRodView extends ViewPart {
       }
       return modified;
     } catch (ClassCastException e) {
-      log.info(">>> [not a GU] " + t.getInternalCaption() + " (class " + t.getClass().getName() + ") t.getStatus()="
+      log.debug(">>> [not a GU] " + t.getInternalCaption() + " (class " + t.getClass().getName() + ") t.getStatus()="
           + t.getStatus());
       return false;
     }
@@ -934,7 +934,7 @@ public class HotRodView extends ViewPart {
           GenerationUnit<AbstractHotRodConfigTag> unit = (GenerationUnit<AbstractHotRodConfigTag>) config;
 
           @SuppressWarnings("unused")
-          boolean successful = unit.concludeGenerationTree(cachedMetadata.getConfig(), g.getAdapter());
+          boolean successful = unit.concludeGeneration(cachedMetadata.getConfig(), g.getAdapter());
 
           config.logGenerateMark("Generate Marks (concluded)", '-');
 
@@ -971,7 +971,7 @@ public class HotRodView extends ViewPart {
         log.info("Generation complete.");
 
       } catch (ControlledException e) {
-        log.info(e);
+        log.info("", e);
         // if (e.getLocation() != null) {
         // showMessage(Constants.TOOL_NAME + " 1 could not generate the
         // persistence code. Invalid configuration in "

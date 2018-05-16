@@ -112,9 +112,9 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
 
   // Update generated cache
 
-  private boolean concludeGeneration(final AbstractHotRodConfigTag unitCache, final DatabaseAdapter adapter) {
-
-    HotRodFragmentConfigTag uc = (HotRodFragmentConfigTag) unitCache;
+  @Override
+  public boolean concludeGeneration(final AbstractHotRodConfigTag cache, final DatabaseAdapter adapter) {
+    HotRodFragmentConfigTag uc = (HotRodFragmentConfigTag) cache;
     boolean successfulCommonGeneration = super.commonMarkGenerationComplete(uc, adapter);
 
     // HotRodFragmentConfigTag
@@ -124,12 +124,6 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
     }
 
     return false;
-
-  }
-
-  @Override
-  public boolean concludeGenerationTree(final AbstractHotRodConfigTag cache, final DatabaseAdapter adapter) {
-    return this.concludeGeneration(cache, adapter);
   }
 
   // Simple Caption

@@ -4,6 +4,6 @@ import org.hotrod.database.DatabaseAdapter;
 
 public interface GenerationUnit<T extends GenerationUnit<T>> {
 
-  boolean concludeGenerationTree(T unitCache, DatabaseAdapter adapter);
+  boolean concludeGeneration(T cache, DatabaseAdapter adapter);
 
 }

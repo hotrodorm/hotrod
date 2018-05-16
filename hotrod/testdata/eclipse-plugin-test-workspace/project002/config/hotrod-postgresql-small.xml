@@ -49,13 +49,56 @@
 	<table name="category" />
 
 	<table name="log" />
-	
+
   <table name="person">
     <column name="type" converter="person_type" />
-  </table>	
-  
+  </table>
+
+  <enum name="office" name-column="name">
+    <non-persistent value="1" name="DC" />
+    <non-persistent value="2" name="NEW_YORK" />
+    <non-persistent value="4" name="US" />
+    <!-- 
+    <non-persistent value="2" name="NEW_YORK" />
+    <non-persistent value="3" name="DF" />
+    <non-persistent value="4" name="US" />
+    -->
+  </enum>
+
   <view name="north_office">
 
+  </view>
+
+  <view name="south_office">
+    <!--
+    -->
+    <select method="viewFindAcc2" vo="Acc2VO">  
+      select * from account a9xd 
+    </select>
+  </view> 
+
+  <dao class="SelectsDAO">
+    <select method="findAccountWithPerson">   
+
+      <parameter name="clientId" java-type="java.lang.Integer"
+        jdbc-type="NUMERIC" />
+ 
+      select
+      <columns vo="AccountPersonVO">
+        <vo table="account" property="account" alias="a"> a.* </vo>
+        <vo table="person" property="person" alias="p"></vo>
+      </columns> 
+      from account a
+      join person p on (p.id) = (a.person_id)
+      <complement>
+        where a.id = #{clientId}
+      </complement>
+
+    </select>
+  <!-- 
+ -->
+  </dao>
+  
     <!-- Case 2 - Select returns multiple VOs --> 
 
 <!--
@@ -92,9 +135,7 @@
     </select>
 -->
 
-  </view>
   
-	<dao class="SelectsDAO">
 
 
 		<!-- Case 1 - Flat Join -->
@@ -122,34 +163,6 @@
 		</select>
  -->  
  
-		<!-- Case 2 - Select returns multiple VOs -->
-
-    <select method="viewFindAcc2" vo="Acc2VO">  
-      select * from account a 
-    </select>
-
-    <select method="viewFindAcc3" vo="Acc3VO">  
-      select * from account b
-    </select>
-
-		<select method="findAccountWithPerson">   
-
-
-			<parameter name="clientId" java-type="java.lang.Integer"
-				jdbc-type="NUMERIC" />
-
-			select
-			<columns vo="AccountPersonVO">
-				<vo table="account" property="account" alias="a"> a.* </vo>
-				<vo table="person" property="person" alias="p"></vo>
-			</columns>
-			from account a
-			join person p on (p.id) = (a.person_id)
-			<complement>
-				where a.id = #{clientId}
-			</complement>
-
-		</select>
  <!--  
  -->
  
@@ -324,7 +337,5 @@
 
 		</select>
 ?>
-
-	</dao>
 
 </hotrod>

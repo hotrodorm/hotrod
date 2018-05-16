@@ -258,6 +258,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     // Retrieve non-persistent values
 
+    this.npConstants.clear();
     for (NonPersistentTag np : this.nonPersistents) {
       this.npConstants.add(new EnumConstant(np.getName(), np.getValue(), np.getName(), this.extraColumns.size()));
     }

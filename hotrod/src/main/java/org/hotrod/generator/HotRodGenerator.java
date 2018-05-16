@@ -496,6 +496,7 @@ public abstract class HotRodGenerator {
       try {
         this.config.validateAgainstDatabase(this, conn);
       } catch (InvalidConfigurationFileException e) {
+        log.info("ICF", e);
         throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
       }
       // }
@@ -613,7 +614,8 @@ public abstract class HotRodGenerator {
     SelectMetadataCache selectMetadataCache = new SelectMetadataCache();
     Map<String, List<EnumConstant>> tableEnumConstants = new HashMap<String, List<EnumConstant>>();
 
-    log.debug("ret 1");
+    log.info("/////////////// retrieveSelectMetadata=" + retrieveSelectMetadata);
+
     if (retrieveSelectMetadata) {
 
       logm("Prepare selects metadata - phase 2.");

@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.eclipseplugin.ErrorMessage;
 import org.hotrod.generator.GeneratableObject;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
-import org.hotrod.runtime.util.LogUtils;
+import org.hotrod.runtime.util.LogUtil;
 import org.hotrod.runtime.util.SUtils;
 
 public abstract class AbstractConfigurationTag implements Comparable<AbstractConfigurationTag>, Serializable {

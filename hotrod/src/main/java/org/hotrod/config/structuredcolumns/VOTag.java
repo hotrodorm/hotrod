@@ -473,6 +473,10 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   public void gatherMetadataPhase2(final Connection conn2) throws InvalidSQLException, UncontrolledException,
       UnresolvableDataTypeException, ControlledException, InvalidConfigurationFileException {
 
+    // log.info("===========");
+    // log.info("=========== VOTag " + this.table);
+    // log.info("=========== - stacktrace:" + LogUtil.renderStack());
+
     boolean requiresIds = this.incorporatesCollections();
 
     if (this.useAllColumns) { // 1. All columns
@@ -525,8 +529,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
       } else { // 1.b Based on a view
 
-        log.info("this.tableMetadata=" + this.tableMetadata);
-        log.info("this.viewMetadata=" + this.viewMetadata);
+        log.debug("this.tableMetadata=" + this.tableMetadata);
+        log.debug("this.viewMetadata=" + this.viewMetadata);
 
         if (requiresIds && this.idNames.isEmpty()) {
           throw new InvalidConfigurationFileException(this, //

@@ -301,9 +301,12 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
-      log.debug(
-          ">>> [" + this.getIdentifier().getSQLIdentifier() + "] this.selectMetadataCache=" + this.selectMetadataCache);
-      SelectMethodMetadata cachedSm = this.selectMetadataCache.get(this.javaName, selectTag.getMethod());
+      // SelectMethodMetadata cachedSm =
+      // this.selectMetadataCache.get(this.javaName, selectTag.getMethod());
+      SelectMethodMetadata cachedSm = null; // Do not use cache, for now.
+      log.info("[" + this.getIdentifier().getSQLIdentifier() + "] " + selectTag.getMethod() + "() cache["
+          + this.javaName + "]=" + cachedSm + " cache[" + this.selectMetadataCache.size() + "]");
+      log.info(" cache entries: " + this.selectMetadataCache.listNames());
 
       if (referencesAMarkedEntity(selectTag.getReferencedEntities())) {
         selectTag.markGenerate();
@@ -313,6 +316,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
         // use the cached metadata
         this.selectsMetadata.add(cachedSm);
+        log.info(">>>   [Using cache] cachedSm.metadataComplete()=" + cachedSm.metadataComplete());
 
       } else {
 
@@ -325,6 +329,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
             columnsPrefixGenerator, layout);
         this.selectsMetadata.add(sm);
         sm.gatherMetadataPhase1(conn1);
+        log.info(">>>   [Fresh] sm.metadataComplete()=" + sm.metadataComplete());
 
       }
     }
@@ -344,7 +349,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
       throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
     log.debug("*** DataSet " + this.renderSQLIdentifier() + ":");
     for (SelectMethodMetadata sm : this.selectsMetadata) {
-      log.debug("*** - method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());
+      log.info("*** - table-like method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());
       if (!sm.metadataComplete()) {
         log.debug("... method: " + sm.getMethod());
         sm.gatherMetadataPhase2(conn2, voRegistry);

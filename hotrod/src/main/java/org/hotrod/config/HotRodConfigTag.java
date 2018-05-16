@@ -168,7 +168,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
   // Update generated cache
 
   @Override
-  public boolean concludeGenerationTree(final AbstractHotRodConfigTag unitCache, final DatabaseAdapter adapter) {
+  public boolean concludeGeneration(final AbstractHotRodConfigTag unitCache, final DatabaseAdapter adapter) {
     log.debug("conclude 1");
 
     HotRodConfigTag cache = (HotRodConfigTag) unitCache;

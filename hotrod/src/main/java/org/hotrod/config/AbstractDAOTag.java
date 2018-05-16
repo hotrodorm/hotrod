@@ -183,8 +183,8 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
   // Update generated cache
 
+  @Override
   public boolean concludeGeneration(final AbstractDAOTag cache, final DatabaseAdapter adapter) {
-
     log.debug("----> DAO " + this.getJavaClassName() + " 1- generate=" + this.getGenerate());
 
     boolean failedInnerGeneration = false;
@@ -199,7 +199,6 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
     }
 
     return !failedInnerGeneration;
-
   }
 
   private <M extends AbstractMethodTag<M>> boolean markMethodGenerated(final MethodTagContainer<M> thisMethods,
@@ -232,7 +231,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
         cache.remove(t); // removes the element from the cache.
       }
       if (t != null && c != null) {
-        boolean innerTreeConclude = t.concludeGenerationTree(c, adapter);
+        boolean innerTreeConclude = t.concludeGeneration(c, adapter);
         if (!innerTreeConclude) {
           failedInnerGeneration = true;
         }
@@ -247,11 +246,6 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
     }
     return failedInnerGeneration;
-  }
-
-  @Override
-  public boolean concludeGenerationTree(final AbstractDAOTag cache, final DatabaseAdapter adapter) {
-    return this.concludeGeneration(cache, adapter);
   }
 
   // Abstract methods

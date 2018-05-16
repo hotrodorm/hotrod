@@ -76,8 +76,12 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     boolean needsToRetrieveMetadata = false;
     for (SelectMethodTag selectTag : this.selects) {
-
-      SelectMethodMetadata cachedSm = this.selectMetadataCache.get(this.getJavaClassName(), selectTag.getMethod());
+      // SelectMethodMetadata cachedSm =
+      // this.selectMetadataCache.get(this.getJavaClassName(),
+      // selectTag.getMethod());
+      SelectMethodMetadata cachedSm = null; // Do not use cache, for now.
+      log.info("[" + this.getIdentifier().getSQLIdentifier() + "] " + selectTag.getMethod() + "() cache["
+          + this.getJavaClassName() + "]=" + cachedSm + " cache[" + this.selectMetadataCache.size() + "]");
 
       if (referencesAMarkedEntity(selectTag.getReferencedEntities())) {
         selectTag.markGenerate();
@@ -87,6 +91,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
 
         // use the cached metadata
         this.selectsMetadata.add(cachedSm);
+        log.info(">>>   [Using cache] cachedSm.metadataComplete()=" + cachedSm.metadataComplete());
 
       } else {
 
@@ -99,6 +104,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
             columnsPrefixGenerator, layout);
         this.selectsMetadata.add(sm);
         sm.gatherMetadataPhase1(conn1);
+        log.info(">>>   [Fresh] sm.metadataComplete()=" + sm.metadataComplete());
 
       }
     }
@@ -117,6 +123,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   public void gatherSelectsMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
       throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
     for (SelectMethodMetadata sm : this.selectsMetadata) {
+      log.info("*** - executor method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());
       if (!sm.metadataComplete()) {
         sm.gatherMetadataPhase2(conn2, voRegistry);
       }

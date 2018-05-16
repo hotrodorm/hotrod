@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hotrod.metadata.SelectMethodMetadata;
+import org.hotrod.runtime.util.ListWriter;
 
 public class SelectMetadataCache implements Serializable {
 
@@ -35,6 +36,18 @@ public class SelectMetadataCache implements Serializable {
       return null;
     }
     return daoCache.get(method);
+  }
+
+  public int size() {
+    return this.cache.size();
+  }
+
+  public String listNames() {
+    ListWriter w = new ListWriter(", ");
+    for (String name : this.cache.keySet()) {
+      w.add(name);
+    }
+    return w.toString();
   }
 
 }
