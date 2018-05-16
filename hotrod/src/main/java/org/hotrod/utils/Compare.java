@@ -30,24 +30,35 @@ public class Compare {
       return false;
     }
     try {
+      log.debug("  correlating...");
       List<AbstractConfigurationTag> la = (List<AbstractConfigurationTag>) a;
       List<AbstractConfigurationTag> lb = (List<AbstractConfigurationTag>) b;
       Iterator<AbstractConfigurationTag> ita = la.iterator();
       Iterator<AbstractConfigurationTag> itb = lb.iterator();
       while (ita.hasNext() && itb.hasNext()) {
-        AbstractConfigurationTag ta = ita.next();
-        AbstractConfigurationTag tb = itb.next();
-        boolean same = ta.same(tb);
-        log.debug("  [" + ta.getTagName() + "] same=" + same);
-        if (!same) {
-          return false;
+        Object ae = ita.next();
+        Object be = itb.next();
+        if (ae instanceof String) {
+          return ae.equals((String) be);
+        } else {
+          AbstractConfigurationTag ta = (AbstractConfigurationTag) ae;
+          AbstractConfigurationTag tb = (AbstractConfigurationTag) be;
+          boolean same = ta.same(tb);
+          log.debug("  [" + ta.getInternalCaption() + "] same=" + same);
+          if (!same) {
+            return false;
+          }
         }
       }
+      log.debug("  correlating finished 1");
       if (ita.hasNext() || itb.hasNext()) {
+        log.debug("  correlating finished 2");
         return false;
       }
+      log.debug("  correlating finished 3");
       return true;
     } catch (ClassCastException e) {
+      log.error("  Invalid list! ", e);
       return false;
     }
   }

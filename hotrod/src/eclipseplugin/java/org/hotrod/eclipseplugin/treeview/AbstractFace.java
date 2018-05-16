@@ -11,6 +11,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractConfigurationTag.TagStatus;
+import org.hotrod.config.AbstractMethodTag;
 import org.hotrod.eclipseplugin.ErrorMessage;
 import org.hotrod.runtime.util.SUtils;
 
@@ -292,9 +293,13 @@ public abstract class AbstractFace implements IAdaptable {
 
   private final boolean applyChangesFrom(final AbstractFace fresh, final int level) {
 
-    log.debug(SUtils.getFiller("- ", level) + "existing:" + this.getDecoration() + "[" + this.children.size() + "] ("
-        + System.identityHashCode(this) + ") - fresh:" + fresh.getDecoration() + "[" + fresh.children.size() + "] ("
-        + System.identityHashCode(fresh) + ")");
+    boolean display = this.tag instanceof AbstractMethodTag
+        && "findAccountWithPerson".equals(((AbstractMethodTag<?>) this.tag).getMethod());
+    if (display) {
+      log.info("***** " + SUtils.getFiller("- ", level) + "existing:" + this.getDecoration() + "["
+          + this.children.size() + "] (" + System.identityHashCode(this) + ") - fresh:" + fresh.getDecoration() + "["
+          + fresh.children.size() + "] (" + System.identityHashCode(fresh) + ")");
+    }
 
     // own changes
 
@@ -303,6 +308,9 @@ public abstract class AbstractFace implements IAdaptable {
     // log.info("this.tag=" + this.tag);
     TagStatus currentStatus = this.tag.getStatus();
     if (this.tag.copyNonKeyProperties(fresh.tag)) {
+      if (display) {
+        log.info("*** CHANGES DETECTED!");
+      }
       currentStatus = TagStatus.MODIFIED;
       changesDetected = true;
     }
@@ -318,6 +326,10 @@ public abstract class AbstractFace implements IAdaptable {
     }
 
     // sub item changes
+
+    if (display) {
+      log.info("***** changesDetected=" + changesDetected);
+    }
 
     List<AbstractFace> existing = new ArrayList<AbstractFace>(this.children);
 
@@ -353,6 +365,9 @@ public abstract class AbstractFace implements IAdaptable {
       changesDetected = true;
     }
 
+    if (display) {
+      log.info("***** changesDetected=" + changesDetected);
+    }
     return changesDetected;
 
   }

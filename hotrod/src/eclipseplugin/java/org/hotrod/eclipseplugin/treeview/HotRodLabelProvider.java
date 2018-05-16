@@ -116,28 +116,9 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
     } else {
 
-      String ownStatus;
-      switch (face.getStatus()) {
-      case UP_TO_DATE:
-        ownStatus = ". ";
-        break;
-      case MODIFIED:
-        ownStatus = "* ";
-        break;
-      case ADDED:
-        ownStatus = "+ ";
-        break;
-      case DELETED:
-        ownStatus = "- ";
-        break;
-      default:
-        ownStatus = "? ";
-        break;
-      }
-
       String branchStatus = face.hasBranchChanges() ? ">" : "";
       String prefix = branchStatus + " ";
-      // prefix = prefix + ownStatus + " "; // remove when tested
+      prefix = prefix + face.getStatus().getIcon() + " "; // remove when tested
 
       if (prefix != null) {
         label.append(prefix, StyledString.DECORATIONS_STYLER);

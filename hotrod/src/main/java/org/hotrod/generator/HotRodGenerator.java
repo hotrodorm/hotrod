@@ -492,13 +492,13 @@ public abstract class HotRodGenerator {
       // Validate against the database
 
       // TODO: make sure the cache includes enum values from table rows.
-      if (retrieveFreshDatabaseObjects) {
-        try {
-          this.config.validateAgainstDatabase(this, conn);
-        } catch (InvalidConfigurationFileException e) {
-          throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
-        }
+      // if (retrieveFreshDatabaseObjects) {
+      try {
+        this.config.validateAgainstDatabase(this, conn);
+      } catch (InvalidConfigurationFileException e) {
+        throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
       }
+      // }
 
       // Prepare <select> methods meta data - phase 1
 

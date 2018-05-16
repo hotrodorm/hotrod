@@ -133,7 +133,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       // Structured columns
 
       try {
-        log.debug("Phase 1");
+        log.info("Phase 1 - method="+this.getMethod());
         this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, this.selectGenerationTag,
             this.columnsPrefixGenerator, conn1);
       } catch (InvalidSQLException e) {

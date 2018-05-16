@@ -348,6 +348,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   }
 
+  // TODO: just a marker
+
   public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
     this.generator = generator;
     log.debug("*** this.table=" + this.table + " this.view=" + this.view);
@@ -408,6 +410,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       this.cmr = null;
       this.aliasPrefix = columnsPrefixGenerator.next();
     } else { // specific columns
+      log.info("this.generator=" + this.generator);
       this.cmr = new ColumnsMetadataRetriever(selectTag, this.generator.getAdapter(), this.generator.getJdbcDatabase(),
           this.generator.getLoc(), selectGenerationTag, this, this.alias, columnsPrefixGenerator);
       this.cmr.prepareRetrieval(conn1);
@@ -920,13 +923,30 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   public boolean same(final AbstractConfigurationTag fresh) {
     try {
       VOTag f = (VOTag) fresh;
-      return Compare.same(this.table, f.table) && //
-          Compare.same(this.view, f.view) && //
-          Compare.same(this.id, f.id) && //
-          Compare.same(this.property, f.property) && //
-          Compare.same(this.alias, f.alias) && //
-          Compare.same(this.extendedVO, f.extendedVO) && //
-          Compare.same(this.body, f.body);
+      log.debug("*** >>> will compare body...");
+      boolean sameBody = Compare.same(this.body, f.body);
+      log.debug("*** >>> Compare.same(this.body, f.body)=" + sameBody);
+      boolean sameExtendedVO = Compare.same(this.extendedVO, f.extendedVO);
+      boolean sameAlias = Compare.same(this.alias, f.alias);
+      boolean sameProperty = Compare.same(this.property, f.property);
+      boolean sameId = Compare.same(this.id, f.id);
+      boolean sameView = Compare.same(this.view, f.view);
+      boolean sameTable = Compare.same(this.table, f.table);
+      boolean same = sameTable && //
+          sameView && //
+          sameId && //
+          sameProperty && //
+          sameAlias && //
+          sameExtendedVO && //
+          sameBody;
+      log.debug("*** # Compare.same(this.table, f.table)=" + sameTable);
+      log.debug("*** # Compare.same(this.view, f.view)=" + sameView);
+      log.debug("*** # Compare.same(this.id, f.id)=" + sameId);
+      log.debug("*** # Compare.same(this.property, f.property)=" + sameProperty);
+      log.debug("*** # Compare.same(this.alias, f.alias)=" + sameAlias);
+      log.debug("*** # Compare.same(this.extendedVO, f.extendedVO)=" + sameExtendedVO);
+      log.debug("***** same=" + same);
+      return same;
     } catch (ClassCastException e) {
       return false;
     }

@@ -424,7 +424,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
       log.debug("--------------- Will compare -----------------------");
       boolean comp = Compare.same(this.parts, f.parts);
-      log.debug("--------------- Compared = " + comp + " ------------------");
+      log.debug("--------------- Compared same= " + comp + " ------------------");
 
       boolean same = Compare.same(this.method, f.method) && //
           Compare.same(this.vo, f.vo) && //

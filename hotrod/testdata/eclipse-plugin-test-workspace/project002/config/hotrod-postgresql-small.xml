@@ -56,9 +56,11 @@
   
   <view name="north_office">
 
-    <!-- Case 2 - Select returns multiple VOs -->
+    <!-- Case 2 - Select returns multiple VOs --> 
 
-    <select method="viewFindAccountWithPerson">
+<!--
+
+    <select method="viewFindAccountWithPerson29"> 
 
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
 
@@ -88,8 +90,8 @@
       </complement>
 
     </select>
-<!-- 
 -->
+
   </view>
   
 	<dao class="SelectsDAO">
@@ -97,10 +99,11 @@
 
 		<!-- Case 1 - Flat Join -->
 
-		<select method="findAccountWithPersonFlat" vo="AccountPersonFlatVO">
-
-			<parameter name="clientId" java-type="java.lang.Integer"
-				jdbc-type="NUMERIC" />
+<!--
+		<select method="findAccountWithPersonFlat" vo="AccountPersonFlatVO">   
+   
+			<parameter name="clientId" java-type="java.lang.Integer" 
+				jdbc-type="NUMERIC" /> 
 
 			<column name="type" converter="account_type" />
 			<column name="person_type" converter="person_type" />
@@ -117,12 +120,16 @@
 			</complement>
 
 		</select>
-<!--
- -->
+ -->  
  
 		<!-- Case 2 - Select returns multiple VOs -->
 
-		<select method="findAccountWithPerson">
+    <select method="viewFindAcc2" vo="Acc2VO">  
+      select * from account a 
+    </select>
+
+		<select method="findAccountWithPerson">   
+
 
 			<parameter name="clientId" java-type="java.lang.Integer"
 				jdbc-type="NUMERIC" />
@@ -139,6 +146,8 @@
 			</complement>
 
 		</select>
+ <!--  
+ -->
  
 <?comment
 

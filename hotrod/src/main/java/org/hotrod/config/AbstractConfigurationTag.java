@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.eclipseplugin.ErrorMessage;
 import org.hotrod.generator.GeneratableObject;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
+import org.hotrod.runtime.util.LogUtils;
 import org.hotrod.runtime.util.SUtils;
 
 public abstract class AbstractConfigurationTag implements Comparable<AbstractConfigurationTag>, Serializable {
@@ -18,7 +19,18 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   private static final Logger log = Logger.getLogger(HotRodConfigTag.class);
 
   public enum TagStatus {
-    UP_TO_DATE, MODIFIED, ADDED, DELETED;
+    UP_TO_DATE("."), MODIFIED("*"), ADDED("+"), DELETED("-");
+
+    private String icon;
+
+    private TagStatus(final String icon) {
+      this.icon = icon;
+    }
+
+    public String getIcon() {
+      return icon;
+    }
+
   }
 
   // Properties
@@ -298,15 +310,17 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   // Display
 
   public void logGenerateMark(final String title, final char c) {
-    log.info(SUtils.getFiller(c, 10) + " " + title + " " + SUtils.getFiller(c, 10));
-    displayGenerateMark(this, 0);
-    log.info(SUtils.getFiller(c, 22 + title.length()));
+    // log.info(SUtils.getFiller(c, 10) + " " + title + " " +
+    // SUtils.getFiller(c, 10));
+    // log.info(" - Caller: " + LogUtils.getCaller());
+    // displayGenerateMark(this, 0);
+    // log.info(SUtils.getFiller(c, 22 + title.length()));
   }
 
   @SuppressWarnings("unused")
   private void displayGenerateMark(final AbstractConfigurationTag tag, final int level) {
-    log.info(SUtils.getFiller(". ", level) + " " + (tag.isToBeGenerated() ? "G" : "_") + " " + tag.getInternalCaption()
-        + " - " + System.identityHashCode(tag));
+    log.info(SUtils.getFiller(". ", level) + " " + (tag.isToBeGenerated() ? "G" : "_") + " " + tag.getStatus().getIcon()
+        + " " + tag.getInternalCaption() + " - " + System.identityHashCode(tag));
     for (AbstractConfigurationTag subtag : tag.getSubTags()) {
       displayGenerateMark(subtag, level + 1);
     }
