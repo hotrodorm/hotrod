@@ -36,7 +36,7 @@ import org.hotrod.eclipseplugin.FileProperties;
 import org.hotrod.eclipseplugin.FileProperties.CouldNotSaveFilePropertiesException;
 import org.hotrod.eclipseplugin.ProjectProperties;
 import org.hotrod.eclipseplugin.jdbc.NavigationAwareWizardDialog.NavigationAwareWizard;
-import org.hotrod.eclipseplugin.treeview.MainConfigFace;
+import org.hotrod.eclipseplugin.treefaces.MainConfigFace;
 import org.hotrod.eclipseplugin.utils.FUtil;
 import org.hotrod.runtime.util.SUtils;
 

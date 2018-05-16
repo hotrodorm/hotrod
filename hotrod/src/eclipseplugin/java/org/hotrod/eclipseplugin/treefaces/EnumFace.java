@@ -1,9 +1,9 @@
-package org.hotrod.eclipseplugin.treeview;
+package org.hotrod.eclipseplugin.treefaces;
 
 import org.hotrod.config.AbstractMethodTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.eclipseplugin.HotRodView;
-import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
+import org.hotrod.eclipseplugin.treefaces.FaceFactory.InvalidConfigurationItemException;
 
 public class EnumFace extends AbstractFace {
 

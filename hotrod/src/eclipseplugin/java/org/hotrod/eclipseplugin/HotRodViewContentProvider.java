@@ -1,12 +1,12 @@
-package org.hotrod.eclipseplugin.treeview;
+package org.hotrod.eclipseplugin;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
-import org.hotrod.eclipseplugin.HotRodView;
-import org.hotrod.eclipseplugin.LoadedConfigurationFiles;
+import org.hotrod.eclipseplugin.treefaces.AbstractFace;
+import org.hotrod.eclipseplugin.treefaces.MainConfigFace;
 
 public class HotRodViewContentProvider implements ITreeContentProvider {
 

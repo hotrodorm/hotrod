@@ -1,4 +1,4 @@
-package org.hotrod.eclipseplugin.treeview;
+package org.hotrod.eclipseplugin;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
@@ -14,10 +14,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
-import org.hotrod.eclipseplugin.ErrorMessage;
-import org.hotrod.eclipseplugin.FileProperties;
-import org.hotrod.eclipseplugin.ProjectProperties;
-import org.hotrod.eclipseplugin.WorkspaceProperties;
+import org.hotrod.eclipseplugin.treefaces.AbstractFace;
+import org.hotrod.eclipseplugin.treefaces.AbstractMethodFace;
+import org.hotrod.eclipseplugin.treefaces.FragmentConfigFace;
+import org.hotrod.eclipseplugin.treefaces.MainConfigFace;
+import org.hotrod.eclipseplugin.treefaces.SettingsFace;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 
 public class HotRodLabelProvider extends StyledCellLabelProvider {

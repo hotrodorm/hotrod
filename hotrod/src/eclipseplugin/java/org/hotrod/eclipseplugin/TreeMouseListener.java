@@ -1,10 +1,11 @@
-package org.hotrod.eclipseplugin.treeview;
+package org.hotrod.eclipseplugin;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.TreeItem;
+import org.hotrod.eclipseplugin.treefaces.AbstractFace;
 
 public class TreeMouseListener implements MouseTrackListener {
 

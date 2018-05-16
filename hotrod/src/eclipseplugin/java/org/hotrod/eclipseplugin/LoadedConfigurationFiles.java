@@ -14,8 +14,7 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.eclipseplugin.FileProperties.CouldNotSaveFilePropertiesException;
 import org.hotrod.eclipseplugin.FileSystemChangesListener.FileChangeListener;
 import org.hotrod.eclipseplugin.ProjectProperties.CouldNotSaveProjectPropertiesException;
-import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
-import org.hotrod.eclipseplugin.treeview.MainConfigFace;
+import org.hotrod.eclipseplugin.treefaces.MainConfigFace;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
 

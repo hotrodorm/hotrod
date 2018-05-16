@@ -1,4 +1,4 @@
-package org.hotrod.eclipseplugin.treeview;
+package org.hotrod.eclipseplugin.treefaces;
 
 import org.hotrod.config.ConverterTag;
 import org.hotrod.eclipseplugin.HotRodView;

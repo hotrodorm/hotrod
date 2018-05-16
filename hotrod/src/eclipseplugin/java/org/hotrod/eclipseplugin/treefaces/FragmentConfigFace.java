@@ -1,9 +1,9 @@
-package org.hotrod.eclipseplugin.treeview;
+package org.hotrod.eclipseplugin.treefaces;
 
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.FragmentTag;
 import org.hotrod.eclipseplugin.HotRodView;
-import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
+import org.hotrod.eclipseplugin.treefaces.FaceFactory.InvalidConfigurationItemException;
 
 public class FragmentConfigFace extends AbstractFace {
 

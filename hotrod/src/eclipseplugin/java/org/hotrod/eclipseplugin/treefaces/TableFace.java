@@ -1,10 +1,10 @@
-package org.hotrod.eclipseplugin.treeview;
+package org.hotrod.eclipseplugin.treefaces;
 
 import org.apache.log4j.Logger;
 import org.hotrod.config.AbstractMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.eclipseplugin.HotRodView;
-import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
+import org.hotrod.eclipseplugin.treefaces.FaceFactory.InvalidConfigurationItemException;
 
 public class TableFace extends AbstractFace {
 

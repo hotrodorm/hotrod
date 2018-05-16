@@ -1,4 +1,4 @@
-package org.hotrod.eclipseplugin.treeview;
+package org.hotrod.eclipseplugin.treefaces;
 
 import java.io.File;
 
@@ -10,10 +10,11 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.eclipseplugin.ErrorMessage;
 import org.hotrod.eclipseplugin.FileProperties;
 import org.hotrod.eclipseplugin.HotRodView;
+import org.hotrod.eclipseplugin.HotRodViewContentProvider;
 import org.hotrod.eclipseplugin.ProjectProperties;
 import org.hotrod.eclipseplugin.RelativeProjectPath;
 import org.hotrod.eclipseplugin.WorkspaceProperties;
-import org.hotrod.eclipseplugin.treeview.FaceFactory.InvalidConfigurationItemException;
+import org.hotrod.eclipseplugin.treefaces.FaceFactory.InvalidConfigurationItemException;
 
 public class MainConfigFace extends AbstractFace implements Comparable<MainConfigFace> {
 

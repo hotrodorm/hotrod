@@ -1,4 +1,4 @@
-package org.hotrod.eclipseplugin.treeview;
+package org.hotrod.eclipseplugin.treefaces;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,6 +13,7 @@ import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractConfigurationTag.TagStatus;
 import org.hotrod.config.AbstractMethodTag;
 import org.hotrod.eclipseplugin.ErrorMessage;
+import org.hotrod.eclipseplugin.HotRodViewContentProvider;
 import org.hotrod.runtime.util.SUtils;
 
 public abstract class AbstractFace implements IAdaptable {

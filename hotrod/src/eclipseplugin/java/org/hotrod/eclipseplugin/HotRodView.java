@@ -70,10 +70,8 @@ import org.hotrod.eclipseplugin.ProjectProperties.CouldNotSaveProjectPropertiesE
 import org.hotrod.eclipseplugin.WorkspaceProperties.CouldNotSaveWorkspacePropertiesException;
 import org.hotrod.eclipseplugin.jdbc.DatabasePropertiesWizard;
 import org.hotrod.eclipseplugin.jdbc.NavigationAwareWizardDialog;
-import org.hotrod.eclipseplugin.treeview.AbstractFace;
-import org.hotrod.eclipseplugin.treeview.HotRodLabelProvider;
-import org.hotrod.eclipseplugin.treeview.HotRodViewContentProvider;
-import org.hotrod.eclipseplugin.treeview.MainConfigFace;
+import org.hotrod.eclipseplugin.treefaces.AbstractFace;
+import org.hotrod.eclipseplugin.treefaces.MainConfigFace;
 import org.hotrod.eclipseplugin.utils.EclipseFileGenerator;
 import org.hotrod.eclipseplugin.utils.FUtil;
 import org.hotrod.exceptions.ControlledException;

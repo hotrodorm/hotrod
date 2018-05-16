@@ -128,6 +128,10 @@
       select * from account a 
     </select>
 
+    <select method="viewFindAcc3" vo="Acc3VO">  
+      select * from account b
+    </select>
+
 		<select method="findAccountWithPerson">   
 
 
