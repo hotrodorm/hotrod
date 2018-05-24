@@ -53,10 +53,11 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
 
   @Override
   public String getToolTipText(final Object element) {
-    log.debug("element=" + element + " (" + (element == null ? "<null>" : element.getClass().getName()) + ")");
+    log.info("element=" + element + " (" + (element == null ? "<null>" : element.getClass().getName()) + ")");
     try {
       AbstractFace face = (AbstractFace) element;
       ErrorMessage errorMessage = face.getBranchErrorMessage();
+      log.info("errorMessage=" + errorMessage);
       if (errorMessage == null) {
         return null; // no tool tip
       } else {

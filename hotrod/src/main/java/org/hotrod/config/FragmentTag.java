@@ -1,17 +1,19 @@
 package org.hotrod.config;
 
 import java.io.File;
-import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
+import org.hotrod.eclipseplugin.utils.FUtil;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.runtime.util.LogUtil;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.Compare;
+import org.hotrod.utils.FileRegistry;
 
 @XmlRootElement(name = "fragment")
 public class FragmentTag extends AbstractConfigurationTag {
@@ -26,7 +28,7 @@ public class FragmentTag extends AbstractConfigurationTag {
 
   private String filename = null;
 
-  private File file;
+  private File f;
   private HotRodFragmentConfigTag fragmentConfig;
 
   // Constructor
@@ -37,18 +39,18 @@ public class FragmentTag extends AbstractConfigurationTag {
 
   // JAXB Setters
 
-  @XmlAttribute
-  public void setFile(final String filename) {
+  @XmlAttribute(name = "file")
+  public void setFilename(final String filename) {
     this.filename = filename;
   }
 
   // Behavior
 
-  public void validate(final HotRodConfigTag primaryConfig, final File parentDir,
-      final Set<String> alreadyLoadedFileNames, final File parentFile, final DaosTag daosTag)
+  public void validate(final HotRodConfigTag primaryConfig, final File parentDir, final FileRegistry fileRegistry,
+      final File parentFile, final DaosTag daosTag)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
 
-    log.debug("init");
+    log.info("Will load fragment: this.filename=" + this.filename);
 
     // file
 
@@ -58,26 +60,35 @@ public class FragmentTag extends AbstractConfigurationTag {
           "Attribute 'file' of tag <" + super.getTagName() + "> cannot be empty. "
               + "Must specify a (relative) file name.");
     }
-    this.file = new File(parentDir, this.filename);
-    if (!this.file.exists()) {
-      throw new InvalidConfigurationFileException(this, //
-          "Could not find fragment file '" + this.file.getPath() + "'", //
-          "Could not find fragment file '" + this.file.getPath() + "'.");
+    this.f = new File(parentDir, this.filename);
+    if (!this.f.exists()) {
+      // log.info("Stack: " + LogUtil.renderStack());
+      InvalidConfigurationFileException e1 = new InvalidConfigurationFileException(this, //
+          "Could not find fragment file '" + this.f.getPath() + "'", //
+          "Could not find fragment file '" + this.f.getPath() + "'.");
+      throw e1;
     }
-    if (!this.file.isFile()) {
+    if (!this.f.isFile()) {
       throw new InvalidConfigurationFileException(this, //
-          "Invalid fragment file '" + this.file.getPath()
+          "Invalid fragment file '" + this.f.getPath()
               + "': must be a normal file, not a directory or other special type", //
-          "Invalid fragment file '" + this.file.getPath()
+          "Invalid fragment file '" + this.f.getPath()
               + "'. Must be a normal file, not a directory or other special file.");
     }
 
-    log.debug("Will load fragment '" + this.file.getName() + "'");
-    this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.file, parentFile, alreadyLoadedFileNames,
-        daosTag);
+    load(primaryConfig, fileRegistry, daosTag);
+
+    log.info("Fragment loaded.");
+
+  }
+
+  public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry, final DaosTag daosTag)
+      throws UncontrolledException, ControlledException {
+    log.debug("Will load fragment '" + this.f.getName() + "'");
+    super.clearChildren();
+    this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.f, fileRegistry, daosTag, this);
     log.debug("Fragment loaded.");
     super.addChildren(this.fragmentConfig.getSubTags());
-
   }
 
   // Getters
@@ -88,6 +99,42 @@ public class FragmentTag extends AbstractConfigurationTag {
 
   public HotRodFragmentConfigTag getFragmentConfig() {
     return fragmentConfig;
+  }
+
+  public File getFile() {
+    return this.f;
+  }
+
+  // Processing file system changes
+
+  public boolean informFileAdded(final File f, final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
+      final DaosTag daosTag) throws UncontrolledException, ControlledException {
+    if (FUtil.equals(this.f, f)) {
+      load(primaryConfig, fileRegistry, daosTag);
+      return true;
+    } else {
+      return this.fragmentConfig.informFileAdded(f, primaryConfig, fileRegistry, daosTag);
+    }
+  }
+
+  public boolean informFileChanged(final File f, final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
+      final DaosTag daosTag) throws UncontrolledException, ControlledException {
+    if (FUtil.equals(this.f, f)) {
+      load(primaryConfig, fileRegistry, daosTag);
+      return true;
+    } else {
+      return this.fragmentConfig.informFileChanged(f, primaryConfig, fileRegistry, daosTag);
+    }
+  }
+
+  public boolean informFileRemoved(final File f, final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
+      final DaosTag daosTag) throws UncontrolledException, ControlledException {
+    if (FUtil.equals(this.f, f)) {
+      throw new ControlledException(this.getSourceLocation(),
+          "Could not find fragment file '" + this.f.getPath() + "'.");
+    } else {
+      return this.fragmentConfig.informFileRemoved(f, primaryConfig, fileRegistry, daosTag);
+    }
   }
 
   // Merging logic
@@ -109,7 +156,7 @@ public class FragmentTag extends AbstractConfigurationTag {
       boolean different = !same(fresh);
 
       this.filename = f.filename;
-      this.file = f.file;
+      this.f = f.f;
       this.fragmentConfig = f.fragmentConfig;
 
       return different;
@@ -133,6 +180,16 @@ public class FragmentTag extends AbstractConfigurationTag {
   @Override
   public String getInternalCaption() {
     return this.getTagName() + ":" + this.filename;
+  }
+
+  // Conclude Generation
+
+  public boolean concludeFragmentGeneration() {
+    boolean concluded = this.fragmentConfig.concludeFragmentGeneration();
+    if (concluded) {
+      super.markConcluded();
+    }
+    return concluded;
   }
 
 }

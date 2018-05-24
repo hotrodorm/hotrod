@@ -165,7 +165,7 @@ public class HotRodView extends ViewPart {
     // viewer.getTree().addMouseTrackListener(mouseListener);
 
     // this.fileSystemListener = new FileSystemChangesTestListener();
-    this.fileSystemListener = new FileSystemChangesListener(this.hotRodViewContentProvider,
+    this.fileSystemListener = new FileSystemChangesListener(this, this.hotRodViewContentProvider,
         this.hotRodViewContentProvider.getFiles());
     ResourcesPlugin.getWorkspace().addResourceChangeListener(this.fileSystemListener);
 
@@ -764,6 +764,12 @@ public class HotRodView extends ViewPart {
     }
   }
 
+  public void informFileChangesDetected() {
+    for (MainConfigFace face : this.hotRodViewContentProvider.getFiles().getLoadedFiles()) {
+      informFileChangesDetected(face);
+    }
+  }
+
   public void informFileChangesDetected(final MainConfigFace face) {
     log.info("informing file changed. face.isValid()=" + face.isValid());
     if (face.isValid() && WorkspaceProperties.getInstance().isAutogenerateOnChanges()) {
@@ -795,6 +801,7 @@ public class HotRodView extends ViewPart {
       try {
         this.face.getConfig().resetTreeGeneration();
         boolean modified = markChanges(this.face.getTag(), 0);
+        log.info("modified=" + modified);
         if (modified) {
           ProjectProperties projectProperties = WorkspaceProperties.getInstance()
               .getProjectProperties(this.face.getProject());

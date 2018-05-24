@@ -34,4 +34,12 @@ public class FUtil {
     return f.getAbsolutePath().equals(f.getPath());
   }
 
+  public static boolean equals(final File a, final File b) {
+    if (a == null) {
+      return b == null;
+    } else {
+      return a.getAbsolutePath().equals(b.getAbsolutePath());
+    }
+  }
+
 }

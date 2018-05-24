@@ -115,7 +115,7 @@ public class HotRodFragmentConfigTag extends AbstractHotRodConfigTag {
   @Override
   public boolean concludeGeneration(final AbstractHotRodConfigTag cache, final DatabaseAdapter adapter) {
     HotRodFragmentConfigTag uc = (HotRodFragmentConfigTag) cache;
-    boolean successfulCommonGeneration = super.commonMarkGenerationComplete(uc, adapter);
+    boolean successfulCommonGeneration = super.commonConcludeGeneration(uc, adapter);
 
     // HotRodFragmentConfigTag
 

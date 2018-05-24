@@ -15,6 +15,8 @@ import org.hotrod.eclipseplugin.ProjectProperties;
 import org.hotrod.eclipseplugin.RelativeProjectPath;
 import org.hotrod.eclipseplugin.WorkspaceProperties;
 import org.hotrod.eclipseplugin.treefaces.FaceFactory.InvalidConfigurationItemException;
+import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.UncontrolledException;
 
 public class MainConfigFace extends AbstractFace implements Comparable<MainConfigFace> {
 
@@ -74,12 +76,12 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
       throw new IllegalArgumentException("Cannot set null error message.");
     }
     this.valid = false;
-    this.ownErrorMessage = errorMessage;
+    super.setErrorMessage(errorMessage);
   }
 
   public void setValid() {
     this.valid = true;
-    this.ownErrorMessage = null;
+    super.setErrorMessage(null);
   }
 
   public void initializeConfig(final HotRodConfigTag config) {
@@ -198,6 +200,20 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   public HotRodConfigTag getConfig() {
     return config;
+  }
+
+  // Processing file system changes
+
+  public boolean informFileAdded(final File f) throws UncontrolledException, ControlledException {
+    return this.config.informFileAdded(f);
+  }
+
+  public boolean informFileChanged(final File f) throws UncontrolledException, ControlledException {
+    return this.config.informFileChanged(f);
+  }
+
+  public boolean informFileRemoved(final File f) throws UncontrolledException, ControlledException {
+    return this.config.informFileRemoved(f);
   }
 
   // Indexable

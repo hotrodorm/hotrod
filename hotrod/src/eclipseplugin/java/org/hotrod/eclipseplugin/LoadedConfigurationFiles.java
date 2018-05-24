@@ -17,6 +17,7 @@ import org.hotrod.eclipseplugin.ProjectProperties.CouldNotSaveProjectPropertiesE
 import org.hotrod.eclipseplugin.treefaces.MainConfigFace;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.utils.EUtils;
 
 public class LoadedConfigurationFiles implements FileChangeListener {
 
@@ -82,7 +83,9 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
               log.info("No cached config present.");
               this.loadedFiles.put(absolutePath, freshFace);
-              freshFace.getConfig().setTreeStatus(TagStatus.ADDED);
+              if (freshFace.getConfig() != null) {
+                freshFace.getConfig().setTreeStatus(TagStatus.ADDED);
+              }
               this.viewPart.informFileAdded(freshFace, true);
 
             } else {
@@ -205,7 +208,8 @@ public class LoadedConfigurationFiles implements FileChangeListener {
       return face;
     } catch (UncontrolledException e) {
       log.error("Failed to load configuration file.", e);
-      MainConfigFace face = new MainConfigFace(f, path, this.provider, new ErrorMessage(null, e.getMessage()));
+      MainConfigFace face = new MainConfigFace(f, path, this.provider,
+          new ErrorMessage(null, EUtils.renderMessages(e)));
       return face;
     }
 
@@ -231,29 +235,29 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
   @Override
   public boolean informFileAdded(final File f) {
-    log.debug("  --> received file added: " + f.getAbsolutePath());
-    // Ignore new file
-    return false;
-  }
-
-  @Override
-  public boolean informFileRemoved(final File f) {
-    log.debug("  --> received file removed: " + f.getAbsolutePath());
-    String fullPathName = f.getAbsolutePath();
-    printLoadedFiles();
-    if (this.loadedFiles.containsKey(fullPathName)) {
-      log.debug("  >> Found to remove");
-      this.remove(this.loadedFiles.get(fullPathName));
-      return true;
-    } else {
-      log.debug("  >> NOT Found to remove");
-      return false;
+    log.info("[EVENT] file added: " + f.getAbsolutePath());
+    boolean changesDetected = false;
+    for (MainConfigFace face : this.loadedFiles.values()) {
+      try {
+        changesDetected |= face.informFileAdded(f);
+        face.setValid();
+      } catch (ControlledException e) {
+        changesDetected = true;
+        face.setInvalid(new ErrorMessage(e.getLocation(), e.getInteractiveMessage()));
+      } catch (UncontrolledException e) {
+        changesDetected = true;
+        face.setInvalid(new ErrorMessage(null, EUtils.renderMessages(e)));
+      }
     }
+    return changesDetected;
   }
 
   @Override
   public boolean informFileChanged(final File f) {
-    log.debug("  --> received file changed: " + f.getAbsolutePath());
+    log.info("[EVENT] file changed: " + f.getAbsolutePath());
+
+    // Check if it's a main face
+
     String fullPathName = f.getAbsolutePath();
     if (this.loadedFiles.containsKey(fullPathName)) {
       MainConfigFace currentPresentedFace = this.loadedFiles.get(fullPathName);
@@ -261,13 +265,57 @@ public class LoadedConfigurationFiles implements FileChangeListener {
       currentPresentedFace.computeBranchMarkers();
       return true;
     }
-    return false;
+
+    // Otherwise, check if it's a fragment
+
+    boolean changesDetected = false;
+    for (MainConfigFace face : this.loadedFiles.values()) {
+      try {
+        changesDetected |= face.informFileChanged(f);
+        face.setValid();
+      } catch (ControlledException e) {
+        log.info("[error detected] " + e.getInteractiveMessage());
+        changesDetected = true;
+        face.setInvalid(new ErrorMessage(e.getLocation(), e.getInteractiveMessage()));
+      } catch (UncontrolledException e) {
+        changesDetected = true;
+        face.setInvalid(new ErrorMessage(null, EUtils.renderMessages(e)));
+      }
+    }
+    return changesDetected;
+
   }
 
-  private void printLoadedFiles() {
-    for (String p : this.loadedFiles.keySet()) {
-      log.debug("## currently loaded: " + p);
+  @Override
+  public boolean informFileRemoved(final File f) {
+    log.info("[EVENT] file removed: " + f.getAbsolutePath());
+
+    // Check if it's a main face
+
+    String fullPathName = f.getAbsolutePath();
+    if (this.loadedFiles.containsKey(fullPathName)) {
+      log.debug("  >> Found to remove");
+      this.remove(this.loadedFiles.get(fullPathName));
+      return true;
     }
+
+    // Otherwise, check if it's a fragment
+
+    boolean changesDetected = false;
+    for (MainConfigFace face : this.loadedFiles.values()) {
+      try {
+        changesDetected |= face.informFileRemoved(f);
+        face.setValid();
+      } catch (ControlledException e) {
+        changesDetected = true;
+        face.setInvalid(new ErrorMessage(e.getLocation(), e.getInteractiveMessage()));
+      } catch (UncontrolledException e) {
+        changesDetected = true;
+        face.setInvalid(new ErrorMessage(null, EUtils.renderMessages(e)));
+      }
+    }
+    return changesDetected;
+
   }
 
 }

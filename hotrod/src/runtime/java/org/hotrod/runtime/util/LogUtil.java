@@ -10,12 +10,14 @@ public class LogUtil {
 
   public static String renderStack() {
     StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-    ListWriter w = new ListWriter("\n");
+    StringBuilder sb = new StringBuilder();
     for (int i = 3; i < stackTrace.length; i++) {
       StackTraceElement e = stackTrace[i];
-      w.add(" * " + e.getClassName() + "." + e.getMethodName() + "(" + e.getLineNumber() + ")");
+      String line = String.format(" * %s.%s(%s:%s)%n", e.getClassName(), e.getMethodName(), e.getFileName(),
+          e.getLineNumber());
+      sb.append(line);
     }
-    return w.toString();
+    return sb.toString();
   }
 
 }

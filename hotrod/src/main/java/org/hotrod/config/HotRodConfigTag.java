@@ -16,11 +16,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.Correlator;
 import org.hotrod.utils.Correlator.CorrelatedEntry;
+import org.hotrod.utils.FileRegistry;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -35,6 +38,8 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
   private static final Logger log = Logger.getLogger(HotRodConfigTag.class);
 
   // Properties
+
+  private File f;
 
   private GeneratorsTag generatorsTag = null;
 
@@ -74,8 +79,10 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     return this.convertersByName.get(name);
   }
 
-  public void validate(final File basedir, final File parentDir, final String generatorName)
+  public void validate(final File basedir, final File parentDir, final File f, final String generatorName)
       throws InvalidConfigurationFileException, GeneratorNotFoundException {
+
+    this.f = f;
 
     // Generators
 
@@ -169,13 +176,13 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   @Override
   public boolean concludeGeneration(final AbstractHotRodConfigTag unitCache, final DatabaseAdapter adapter) {
-    log.debug("conclude 1");
+    log.info("CONCLUDE 1");
 
     HotRodConfigTag cache = (HotRodConfigTag) unitCache;
 
-    boolean successfulCommonGeneration = super.commonMarkGenerationComplete(cache, adapter);
+    boolean successfulCommonGeneration = super.commonConcludeGeneration(cache, adapter);
 
-    log.debug("CONCLUDE: successfulCommonGeneration=" + successfulCommonGeneration);
+    log.info("CONCLUDE: successfulCommonGeneration=" + successfulCommonGeneration);
 
     boolean failedExtendedGeneration = false;
 
@@ -236,6 +243,28 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
     return false;
   }
+
+  // Processing file system changes
+
+  public boolean informFileAdded(final File f) throws UncontrolledException, ControlledException {
+    FileRegistry fileRegistry = new FileRegistry(this.f);
+    DaosTag daosTag = this.generatorsTag.getSelectedGeneratorTag().getDaos();
+    return super.informFileAdded(f, this, fileRegistry, daosTag);
+  }
+
+  public boolean informFileChanged(final File f) throws UncontrolledException, ControlledException {
+    FileRegistry fileRegistry = new FileRegistry(this.f);
+    DaosTag daosTag = this.generatorsTag.getSelectedGeneratorTag().getDaos();
+    return super.informFileChanged(f, this, fileRegistry, daosTag);
+  }
+
+  public boolean informFileRemoved(final File f) throws UncontrolledException, ControlledException {
+    FileRegistry fileRegistry = new FileRegistry(this.f);
+    DaosTag daosTag = this.generatorsTag.getSelectedGeneratorTag().getDaos();
+    return super.informFileRemoved(f, this, fileRegistry, daosTag);
+  }
+
+  // Setters
 
   protected void add(final ConverterTag c) {
     this.converters.add(c);

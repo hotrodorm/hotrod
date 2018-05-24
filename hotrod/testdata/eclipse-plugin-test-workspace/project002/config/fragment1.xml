@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod-fragment>
+
+<hotrod-fragment>
+
+<!--
+-->
+  
+  <table name="log">
+    <select method="findAccount7">   
+      select
+      <columns>
+        <vo table="account" alias="a" />
+      </columns> 
+      from account a
+      join person p on (p.id) = (a.person_id)
+    </select>
+  </table>
+  
+  <fragment file="fragment2.xml" />
+
+</hotrod-fragment>

@@ -75,6 +75,10 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     }
   }
 
+  protected void clearChildren() {
+    this.subTags.clear();
+  }
+
   protected void addChild(final AbstractConfigurationTag t) {
     t.parent = this;
     this.subTags.add(t);
@@ -275,6 +279,10 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     return false;
   }
 
+  public void markConcluded() {
+    this.status = TagStatus.UP_TO_DATE;
+  }
+
   // XmlLocatable
 
   public void setSourceLocation(final SourceLocation location) {
@@ -310,11 +318,10 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   // Display
 
   public void logGenerateMark(final String title, final char c) {
-    // log.info(SUtils.getFiller(c, 10) + " " + title + " " +
-    // SUtils.getFiller(c, 10));
-    // log.info(" - Caller: " + LogUtils.getCaller());
-    // displayGenerateMark(this, 0);
-    // log.info(SUtils.getFiller(c, 22 + title.length()));
+    log.info(SUtils.getFiller(c, 10) + " " + title + " " + SUtils.getFiller(c, 10));
+    log.info(" - Caller: " + LogUtil.getCaller());
+    displayGenerateMark(this, 0);
+    log.info(SUtils.getFiller(c, 22 + title.length()));
   }
 
   @SuppressWarnings("unused")

@@ -46,13 +46,21 @@
 		<column name="type" converter="transaction_type" />
 	</table>
 
-	<table name="category" />
-
-	<table name="log" />
 
   <table name="person">
     <column name="type" converter="person_type" />
   </table>
+
+<!--
+-->
+
+  <fragment file="fragment1.xml" />
+
+<!--
+  <fragment />
+  <fragment file="hotrod-postgresql-fragment2.xml" />
+  <fragment file="hotrod-postgresql-fragment2.xml" abc="def" />
+-->
 
   <enum name="office" name-column="name">
     <non-persistent value="1" name="DC" />
@@ -65,8 +73,16 @@
     -->
   </enum>
 
+<!--
+-->
   <view name="north_office">
-
+    <select method="findLog1">   
+      select
+      <columns>
+        <vo table="log" alias="l" />
+      </columns> 
+      from log l
+    </select>
   </view>
 
   <view name="south_office">

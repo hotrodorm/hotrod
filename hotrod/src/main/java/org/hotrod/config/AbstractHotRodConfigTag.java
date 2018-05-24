@@ -19,7 +19,9 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.log4j.Logger;
+import org.hotrod.ant.Constants;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.eclipseplugin.utils.FUtil;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -30,6 +32,7 @@ import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.Correlator;
 import org.hotrod.utils.Correlator.CorrelatedEntry;
+import org.hotrod.utils.FileRegistry;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
@@ -116,7 +119,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
   // Behavior
 
-  protected void validateCommon(final HotRodConfigTag config, final File file, final Set<String> alreadyLoadedFileNames,
+  protected void validateCommon(final HotRodConfigTag config, final File file, final FileRegistry fileRegistry,
       final File parentFile, final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
 
@@ -189,7 +192,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     // Fragments
 
     for (FragmentTag f : this.fragments) {
-      f.validate(config, parentDir, alreadyLoadedFileNames, parentFile, daosTag);
+      f.validate(config, parentDir, fileRegistry, parentFile, daosTag);
       this.mergeFragment(f.getFragmentConfig());
       super.addChild(f);
     }
@@ -654,7 +657,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
   // Update generated cache
 
-  public boolean commonMarkGenerationComplete(final AbstractConfigurationTag unitCache, final DatabaseAdapter adapter) {
+  public boolean commonConcludeGeneration(final AbstractConfigurationTag unitCache, final DatabaseAdapter adapter) {
 
     log.debug("mark 1");
 
@@ -677,7 +680,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
       TableTag t = cor.getLeft();
       TableTag c = cor.getRight();
 
-      log.debug("mark 2 t=" + (t == null ? "null" : t.getName()) + " - c=" + (c == null ? "null" : c.getName()));
+      log.info("mark 2 t=" + (t == null ? "null" : t.getName()) + " - c=" + (c == null ? "null" : c.getName()));
 
       if (t != null && t.isToBeGenerated()) {
         log.debug("mark 2.1 - fail t=" + t.getName());
@@ -764,6 +767,8 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
       ViewTag t = cor.getLeft();
       ViewTag c = cor.getRight();
 
+      log.info("view 2 t=" + (t == null ? "null" : t.getName()) + " - c=" + (c == null ? "null" : c.getName()));
+
       if (t != null && t.isToBeGenerated()) {
         failedInnerGeneration = true;
       }
@@ -832,7 +837,85 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
     log.debug("mark 10");
 
+    // Fragments
+
+    if (!this.concludeFragmentGeneration()) {
+      failedInnerGeneration = true;
+    }
+
+    // Complete
+
     return !failedInnerGeneration;
+  }
+
+  // Processing file system changes
+
+  public boolean informFileAdded(final File f, final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
+      final DaosTag daosTag) throws UncontrolledException, ControlledException {
+    for (FragmentTag fragmentTag : this.fragments) {
+      if (FUtil.equals(fragmentTag.getFile(), f)) {
+        fragmentTag.load(primaryConfig, fileRegistry, daosTag);
+        return true;
+      } else {
+        return fragmentTag.informFileAdded(f, primaryConfig, fileRegistry, daosTag);
+      }
+    }
+    return false;
+  }
+
+  public boolean informFileChanged(final File f, final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
+      final DaosTag daosTag) throws UncontrolledException, ControlledException {
+    for (FragmentTag fragmentTag : this.fragments) {
+      if (FUtil.equals(fragmentTag.getFile(), f)) {
+        fragmentTag.load(primaryConfig, fileRegistry, daosTag);
+        return true;
+      } else {
+        return fragmentTag.informFileChanged(f, primaryConfig, fileRegistry, daosTag);
+      }
+    }
+    return false;
+  }
+
+  public boolean informFileRemoved(final File f, final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
+      final DaosTag daosTag) throws UncontrolledException, ControlledException {
+    log.info("--> file removed f=" + f);
+    for (FragmentTag fragmentTag : this.fragments) {
+      boolean equals = FUtil.equals(fragmentTag.getFile(), f);
+      log.info("    > is " + (equals ? "" : "not ") + "equal to: " + fragmentTag.getFile());
+      if (equals) {
+        throw new ControlledException(fragmentTag.getSourceLocation(), Constants.TOOL_NAME,
+            " fragment file not found: " + fragmentTag.getFile());
+      } else {
+        return fragmentTag.informFileRemoved(f, primaryConfig, fileRegistry, daosTag);
+      }
+    }
+    return false;
+  }
+
+  // Conclude
+
+  protected boolean concludeFragmentGeneration() {
+    boolean concluded = true;
+    for (TableTag t : this.tables) {
+      concluded &= t.getStatus() == TagStatus.UP_TO_DATE;
+    }
+    for (ViewTag t : this.views) {
+      concluded &= t.getStatus() == TagStatus.UP_TO_DATE;
+    }
+    for (EnumTag t : this.enums) {
+      concluded &= t.getStatus() == TagStatus.UP_TO_DATE;
+    }
+    for (ExecutorTag t : this.executors) {
+      concluded &= t.getStatus() == TagStatus.UP_TO_DATE;
+    }
+    for (FragmentTag f : this.fragments) {
+      concluded &= f.concludeFragmentGeneration();
+    }
+    log.info("::::::::::::::::::::::: concluded=" + concluded + " (" + this.getInternalCaption() + ")");
+    if (concluded) {
+      markConcluded();
+    }
+    return concluded;
   }
 
 }

@@ -12,10 +12,13 @@ public class FileSystemChangesListener implements IResourceChangeListener {
 
   private static final Logger log = Logger.getLogger(FileSystemChangesListener.class);
 
+  private HotRodView hotRodView;
   private HotRodViewContentProvider provider;
   private FileChangeListener listener;
 
-  public FileSystemChangesListener(final HotRodViewContentProvider provider, final FileChangeListener listener) {
+  public FileSystemChangesListener(final HotRodView hotRodView, final HotRodViewContentProvider provider,
+      final FileChangeListener listener) {
+    this.hotRodView = hotRodView;
     this.provider = provider;
     this.listener = listener;
   }
@@ -24,9 +27,9 @@ public class FileSystemChangesListener implements IResourceChangeListener {
   public void resourceChanged(final IResourceChangeEvent event) {
     if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
       boolean refresh = processFileChanges(event.getDelta());
-      log.debug("refresh=" + refresh);
+      log.info("REFRESH=" + refresh);
       if (refresh) {
-        this.provider.refresh();
+        this.hotRodView.informFileChangesDetected();
       }
     }
   }

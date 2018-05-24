@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -31,6 +29,8 @@ import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
+import org.hotrod.utils.FileRegistry;
+import org.hotrod.utils.FileRegistry.FileAlreadyRegisteredException;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -95,7 +95,8 @@ public class ConfigurationLoader {
       xsr = xif.createXMLStreamReader(xml);
       LocationListener locationListener = new LocationListener(f, xsr);
       unmarshaller.setListener(locationListener);
-
+      log.info("XML loaded.");
+      
     } catch (SAXException e) {
       throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
     } catch (JAXBException e) {
@@ -126,16 +127,17 @@ public class ConfigurationLoader {
       File parentDir = f.getParentFile();
       log.debug("parentFile=" + parentDir + " :: " + parentDir.getAbsolutePath());
 
-      config.validate(projectBaseDir, parentDir, generatorName);
+      log.info("Will validate semantics.");
+      config.validate(projectBaseDir, parentDir, f, generatorName);
+      log.info("Semantics validation #1 successful.");
 
       // Validation (common)
 
       DaosTag daosTag = config.getGenerators().getSelectedGeneratorTag().getDaos();
+      FileRegistry fileRegistry = new FileRegistry(f);
 
-      Set<String> alreadyLoadedFileNames = new HashSet<String>();
-      alreadyLoadedFileNames.add(f.getAbsolutePath());
-
-      config.validateCommon(config, f, alreadyLoadedFileNames, f, daosTag, null);
+      config.validateCommon(config, f, fileRegistry, f, daosTag, null);
+      log.info("Semantics validation #2 successful.");
 
       config.addConverterTags();
 
@@ -144,7 +146,7 @@ public class ConfigurationLoader {
       config.activate();
 
       // Complete
-      
+
       log.info("File loaded.");
 
       return config;
@@ -177,20 +179,21 @@ public class ConfigurationLoader {
   }
 
   public static HotRodFragmentConfigTag loadFragment(final HotRodConfigTag primaryConfig, final File f,
-      final File parentFile, final Set<String> alreadyLoadedFileNames, final DaosTag daosTag)
+      final FileRegistry fileRegistry, final DaosTag daosTag, final FragmentTag fragmentTag)
       throws UncontrolledException, ControlledException {
 
     // Basic file validation
 
     if (f == null) {
-      throw new ControlledException("Configuration file name is empty.");
+      throw new ControlledException(fragmentTag.getSourceLocation(), "Configuration file name is empty.");
     }
     if (!f.exists()) {
-      throw new ControlledException(Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
+      throw new ControlledException(fragmentTag.getSourceLocation(),
+          Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
     }
     if (!f.isFile()) {
-      throw new ControlledException(Constants.TOOL_NAME + " configuration file '" + f.getPath()
-          + "' must be a normal file, not a directory or other special file.");
+      throw new ControlledException(fragmentTag.getSourceLocation(), Constants.TOOL_NAME + " configuration file '"
+          + f.getPath() + "' must be a normal file, not a directory or other special file.");
     }
 
     // Prepare the parser
@@ -219,12 +222,13 @@ public class ConfigurationLoader {
     } catch (JAXBException e) {
       throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
     } catch (FileNotFoundException e) {
-      throw new ControlledException(Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
+      throw new ControlledException(fragmentTag.getSourceLocation(),
+          Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
     } catch (XMLStreamException e) {
       String message = (e.getLocation() == null ? ""
           : "[line " + e.getLocation().getLineNumber() + ", col " + e.getLocation().getColumnNumber() + "] ")
           + e.getMessage();
-      throw new ControlledException(
+      throw new ControlledException(fragmentTag.getSourceLocation(),
           Constants.TOOL_NAME + " configuration file '" + f.getPath() + "' is not well-formed: " + message);
     }
 
@@ -244,8 +248,8 @@ public class ConfigurationLoader {
 
       // Validation (common)
 
-      alreadyLoadedFileNames.add(f.getAbsolutePath());
-      fragmentConfig.validateCommon(primaryConfig, f, alreadyLoadedFileNames, f, daosTag, fragmentConfig);
+      fileRegistry.add(f);
+      fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, daosTag, fragmentConfig);
 
       // Complete
 
@@ -262,6 +266,9 @@ public class ConfigurationLoader {
         throw new ControlledException(loc, e.getMessage());
       }
 
+    } catch (FileAlreadyRegisteredException e) {
+      throw new ControlledException(fragmentTag.getSourceLocation(),
+          "Invalid configuration file '" + f.getPath() + "': this fragment file has already been loaded once.");
     } finally {
       if (reader != null) {
         try {

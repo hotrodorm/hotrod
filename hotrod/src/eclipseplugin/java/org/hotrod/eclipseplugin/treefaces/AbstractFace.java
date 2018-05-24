@@ -34,8 +34,8 @@ public abstract class AbstractFace implements IAdaptable {
 
   private boolean hasBranchChanges;
 
-  protected ErrorMessage ownErrorMessage;
-  protected ErrorMessage subtagErrorMessage;
+  private ErrorMessage ownErrorMessage;
+  private ErrorMessage subtagErrorMessage;
   private ErrorMessage branchErrorMessage;
 
   private List<AbstractFace> children;
@@ -62,6 +62,11 @@ public abstract class AbstractFace implements IAdaptable {
 
   public void setName(final String name) {
     this.name = name;
+  }
+
+  protected void setErrorMessage(final ErrorMessage errorMessage) {
+    this.ownErrorMessage = errorMessage;
+    this.branchErrorMessage = errorMessage;
   }
 
   public void removeAllChildren() {
