@@ -60,7 +60,7 @@ public class ConfigurationLoader {
   public static HotRodConfigTag loadPrimary(final File projectBaseDir, final File f, final String generatorName)
       throws ControlledException, UncontrolledException {
 
-    log.info("loading file: " + f);
+    log.debug("loading file: " + f);
 
     // Basic validation on the file
 
@@ -95,7 +95,7 @@ public class ConfigurationLoader {
       xsr = xif.createXMLStreamReader(xml);
       LocationListener locationListener = new LocationListener(f, xsr);
       unmarshaller.setListener(locationListener);
-      log.info("XML loaded.");
+      log.debug("XML loaded.");
       
     } catch (SAXException e) {
       throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
@@ -127,9 +127,9 @@ public class ConfigurationLoader {
       File parentDir = f.getParentFile();
       log.debug("parentFile=" + parentDir + " :: " + parentDir.getAbsolutePath());
 
-      log.info("Will validate semantics.");
+      log.debug("Will validate semantics.");
       config.validate(projectBaseDir, parentDir, f, generatorName);
-      log.info("Semantics validation #1 successful.");
+      log.debug("Semantics validation #1 successful.");
 
       // Validation (common)
 
@@ -137,7 +137,7 @@ public class ConfigurationLoader {
       FileRegistry fileRegistry = new FileRegistry(f);
 
       config.validateCommon(config, f, fileRegistry, f, daosTag, null);
-      log.info("Semantics validation #2 successful.");
+      log.debug("Semantics validation #2 successful.");
 
       config.addConverterTags();
 
@@ -147,7 +147,7 @@ public class ConfigurationLoader {
 
       // Complete
 
-      log.info("File loaded.");
+      log.debug("File loaded.");
 
       return config;
 

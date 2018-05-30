@@ -50,7 +50,7 @@ public class FragmentTag extends AbstractConfigurationTag {
       final File parentFile, final DaosTag daosTag)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
 
-    log.info("Will load fragment: this.filename=" + this.filename);
+    log.debug("Will load fragment: this.filename=" + this.filename);
 
     // file
 
@@ -78,7 +78,7 @@ public class FragmentTag extends AbstractConfigurationTag {
 
     load(primaryConfig, fileRegistry, daosTag);
 
-    log.info("Fragment loaded.");
+    log.debug("Fragment loaded.");
 
   }
 
@@ -105,37 +105,44 @@ public class FragmentTag extends AbstractConfigurationTag {
     return this.f;
   }
 
-  // Processing file system changes
-
-  public boolean informFileAdded(final File f, final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
-      final DaosTag daosTag) throws UncontrolledException, ControlledException {
-    if (FUtil.equals(this.f, f)) {
-      load(primaryConfig, fileRegistry, daosTag);
-      return true;
-    } else {
-      return this.fragmentConfig.informFileAdded(f, primaryConfig, fileRegistry, daosTag);
-    }
-  }
-
-  public boolean informFileChanged(final File f, final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
-      final DaosTag daosTag) throws UncontrolledException, ControlledException {
-    if (FUtil.equals(this.f, f)) {
-      load(primaryConfig, fileRegistry, daosTag);
-      return true;
-    } else {
-      return this.fragmentConfig.informFileChanged(f, primaryConfig, fileRegistry, daosTag);
-    }
-  }
-
-  public boolean informFileRemoved(final File f, final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
-      final DaosTag daosTag) throws UncontrolledException, ControlledException {
-    if (FUtil.equals(this.f, f)) {
-      throw new ControlledException(this.getSourceLocation(),
-          "Could not find fragment file '" + this.f.getPath() + "'.");
-    } else {
-      return this.fragmentConfig.informFileRemoved(f, primaryConfig, fileRegistry, daosTag);
-    }
-  }
+  // TODO: Remove once finished
+  // // Processing file system changes
+  //
+  // public boolean informFileAdded(final File f, final HotRodConfigTag
+  // primaryConfig, final FileRegistry fileRegistry,
+  // final DaosTag daosTag) throws UncontrolledException, ControlledException {
+  // if (FUtil.equals(this.f, f)) {
+  // load(primaryConfig, fileRegistry, daosTag);
+  // return true;
+  // } else {
+  // return this.fragmentConfig.informFileAdded(f, primaryConfig, fileRegistry,
+  // daosTag);
+  // }
+  // }
+  //
+  // public boolean informFileChanged(final File f, final HotRodConfigTag
+  // primaryConfig, final FileRegistry fileRegistry,
+  // final DaosTag daosTag) throws UncontrolledException, ControlledException {
+  // if (FUtil.equals(this.f, f)) {
+  // load(primaryConfig, fileRegistry, daosTag);
+  // return true;
+  // } else {
+  // return this.fragmentConfig.informFileChanged(f, primaryConfig,
+  // fileRegistry, daosTag);
+  // }
+  // }
+  //
+  // public boolean informFileRemoved(final File f, final HotRodConfigTag
+  // primaryConfig, final FileRegistry fileRegistry,
+  // final DaosTag daosTag) throws UncontrolledException, ControlledException {
+  // if (FUtil.equals(this.f, f)) {
+  // throw new ControlledException(this.getSourceLocation(),
+  // "Could not find fragment file '" + this.f.getPath() + "'.");
+  // } else {
+  // return this.fragmentConfig.informFileRemoved(f, primaryConfig,
+  // fileRegistry, daosTag);
+  // }
+  // }
 
   // Merging logic
 

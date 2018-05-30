@@ -41,12 +41,12 @@ public class LoadedConfigurationFiles implements FileChangeListener {
   // File is being dropped in (addeed to) the view
 
   public void addFile(final File f) {
-    log.info("ADD f=" + f);
+    log.debug("ADD f=" + f);
 
     try {
 
       if (f != null && f.getName().endsWith(VALID_HOTROD_EXTENSION) && f.isFile()) {
-        log.info("ADD [2] f=" + f);
+        log.debug("ADD [2] f=" + f);
         String absolutePath = f.getAbsolutePath();
         boolean filesLoaded = false;
         if (!this.loadedFiles.containsKey(absolutePath)) {
@@ -63,25 +63,25 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
             // 2. Retrieve cached config (current), if available
 
-            log.info("fileProperties=" + fileProperties);
+            log.debug("fileProperties=" + fileProperties);
 
             HotRodConfigTag currentConfig = fileProperties == null ? null
                 : fileProperties.getCachedMetadata().getConfig();
             MainConfigFace currentFace = currentConfig == null ? null
                 : new MainConfigFace(f, path, this.provider, currentConfig);
-            log.info("cachedConfig=" + currentConfig);
+            log.debug("cachedConfig=" + currentConfig);
 
             // 3. Load new face (fresh)
 
-            log.info("File loading...");
+            log.debug("File loading...");
             MainConfigFace freshFace = loadFile(f);
-            log.info("Loaded - freshFace=" + freshFace);
+            log.debug("Loaded - freshFace=" + freshFace);
 
             if (currentConfig == null) {
 
               // 4.a Display loaded file as-is when no cached config is present.
 
-              log.info("No cached config present.");
+              log.debug("No cached config present.");
               this.loadedFiles.put(absolutePath, freshFace);
               if (freshFace.getConfig() != null) {
                 freshFace.getConfig().setTreeStatus(TagStatus.ADDED);
@@ -92,10 +92,10 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
               // 4.b Display combined loaded file with cached config.
 
-              log.info("Cached config present.");
+              log.debug("Cached config present.");
               this.loadedFiles.put(absolutePath, currentFace);
               boolean changesDetected = applyFreshVersion(currentFace, freshFace);
-              log.info("changesDetected=" + changesDetected);
+              log.debug("changesDetected=" + changesDetected);
               this.viewPart.informFileAdded(currentFace, changesDetected);
 
             }
@@ -239,7 +239,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     boolean changesDetected = false;
     for (MainConfigFace face : this.loadedFiles.values()) {
       try {
-        changesDetected |= face.informFileAdded(f);
+        changesDetected |= face.triggerFileAdded(f);
         face.setValid();
       } catch (ControlledException e) {
         changesDetected = true;
@@ -266,23 +266,28 @@ public class LoadedConfigurationFiles implements FileChangeListener {
       return true;
     }
 
+    log.info("[EVENT] 2");
+
     // Otherwise, check if it's a fragment
 
-    boolean changesDetected = false;
+    boolean refreshNeeded = false;
     for (MainConfigFace face : this.loadedFiles.values()) {
       try {
-        changesDetected |= face.informFileChanged(f);
+        boolean faceChanged = face.triggerFileChanged(f);
         face.setValid();
+        log.info("### faceChanged=" + faceChanged);
+        refreshNeeded |= faceChanged;
+
       } catch (ControlledException e) {
         log.info("[error detected] " + e.getInteractiveMessage());
-        changesDetected = true;
+        refreshNeeded = true;
         face.setInvalid(new ErrorMessage(e.getLocation(), e.getInteractiveMessage()));
       } catch (UncontrolledException e) {
-        changesDetected = true;
+        refreshNeeded = true;
         face.setInvalid(new ErrorMessage(null, EUtils.renderMessages(e)));
       }
     }
-    return changesDetected;
+    return refreshNeeded;
 
   }
 
@@ -304,7 +309,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     boolean changesDetected = false;
     for (MainConfigFace face : this.loadedFiles.values()) {
       try {
-        changesDetected |= face.informFileRemoved(f);
+        changesDetected |= face.triggerFileRemoved(f);
         face.setValid();
       } catch (ControlledException e) {
         changesDetected = true;

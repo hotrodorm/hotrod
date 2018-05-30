@@ -1,5 +1,6 @@
 package org.hotrod.eclipseplugin.treefaces;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +15,8 @@ import org.hotrod.config.AbstractConfigurationTag.TagStatus;
 import org.hotrod.config.AbstractMethodTag;
 import org.hotrod.eclipseplugin.ErrorMessage;
 import org.hotrod.eclipseplugin.HotRodViewContentProvider;
+import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.runtime.util.SUtils;
 
 public abstract class AbstractFace implements IAdaptable {
@@ -86,6 +89,19 @@ public abstract class AbstractFace implements IAdaptable {
     this.children.add(child);
   }
 
+  protected List<FragmentConfigFace> getFragments() {
+    List<FragmentConfigFace> fragments = new ArrayList<FragmentConfigFace>();
+    for (AbstractFace f : this.children) {
+      try {
+        FragmentConfigFace fragment = (FragmentConfigFace) f;
+        fragments.add(fragment);
+      } catch (ClassCastException e) {
+        // Ignore non-fragments
+      }
+    }
+    return fragments;
+  }
+
   public AbstractFace[] getChildren() {
     log.debug("this.children[" + this.children.size() + "]");
     return this.children.toArray(EMPTY_FACE_ARRAY);
@@ -150,15 +166,15 @@ public abstract class AbstractFace implements IAdaptable {
   }
 
   public void refreshView() {
-    log.info("### Refreshing view - this=" + this.getDecoration());
+    log.debug("### Refreshing view - this=" + this.getDecoration());
     TreeViewer viewer = this.getViewer();
     if (viewer != null) {
 
       Display.getDefault().asyncExec(new RefreshViewRunnable(this, viewer));
-      log.info("### Refresh complete");
+      log.debug("### Refresh complete");
 
     } else {
-      log.info("### Refresh could not be done");
+      log.debug("### Refresh could not be done");
     }
   }
 
@@ -174,15 +190,15 @@ public abstract class AbstractFace implements IAdaptable {
 
     @Override
     public void run() {
-      log.info("-- refreshing view");
+      log.debug("-- refreshing view");
       this.viewer.refresh(this.face, true);
-      log.info("-- refreshing view - complete");
+      log.debug("-- refreshing view - complete");
     }
 
   }
 
   public void computeBranchMarkers() {
-    log.info("Computing changes & errors");
+    log.debug("Computing changes & errors");
     this.computeBranchChanges();
     this.computeBranchError();
   }
@@ -278,6 +294,26 @@ public abstract class AbstractFace implements IAdaptable {
     return true;
   }
 
+  // TODO: remove once tested
+  // // Processing file system changes
+  //
+  // public boolean informFileAdded(final File f) throws UncontrolledException,
+  // ControlledException {
+  // return false;
+  // }
+  //
+  // public boolean informFileChanged(final File f) throws
+  // UncontrolledException, ControlledException {
+  // return false;
+  // }
+  //
+  // public boolean informFileRemoved(final File f) throws
+  // UncontrolledException, ControlledException {
+  // return false;
+  // }
+
+  // Extra
+
   public final void display() {
     display(0);
   }
@@ -302,7 +338,7 @@ public abstract class AbstractFace implements IAdaptable {
     boolean display = this.tag instanceof AbstractMethodTag
         && "findAccountWithPerson".equals(((AbstractMethodTag<?>) this.tag).getMethod());
     if (display) {
-      log.info("***** " + SUtils.getFiller("- ", level) + "existing:" + this.getDecoration() + "["
+      log.debug("***** " + SUtils.getFiller("- ", level) + "existing:" + this.getDecoration() + "["
           + this.children.size() + "] (" + System.identityHashCode(this) + ") - fresh:" + fresh.getDecoration() + "["
           + fresh.children.size() + "] (" + System.identityHashCode(fresh) + ")");
     }
@@ -315,7 +351,7 @@ public abstract class AbstractFace implements IAdaptable {
     TagStatus currentStatus = this.tag.getStatus();
     if (this.tag.copyNonKeyProperties(fresh.tag)) {
       if (display) {
-        log.info("*** CHANGES DETECTED!");
+        log.debug("*** CHANGES DETECTED!");
       }
       currentStatus = TagStatus.MODIFIED;
       changesDetected = true;
@@ -334,7 +370,7 @@ public abstract class AbstractFace implements IAdaptable {
     // sub item changes
 
     if (display) {
-      log.info("***** changesDetected=" + changesDetected);
+      log.debug("***** changesDetected=" + changesDetected);
     }
 
     List<AbstractFace> existing = new ArrayList<AbstractFace>(this.children);
@@ -372,7 +408,7 @@ public abstract class AbstractFace implements IAdaptable {
     }
 
     if (display) {
-      log.info("***** changesDetected=" + changesDetected);
+      log.debug("***** changesDetected=" + changesDetected);
     }
     return changesDetected;
 
@@ -398,7 +434,7 @@ public abstract class AbstractFace implements IAdaptable {
 
   private void displayChildrenIDs(final String prompt) {
     for (AbstractFace f : this.children) {
-      log.info(prompt + " children id = " + System.identityHashCode(f));
+      log.debug(prompt + " children id = " + System.identityHashCode(f));
     }
   }
 

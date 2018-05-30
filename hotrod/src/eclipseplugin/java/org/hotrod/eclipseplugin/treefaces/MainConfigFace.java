@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.hotrod.config.AbstractConfigurationTag;
+import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.eclipseplugin.ErrorMessage;
 import org.hotrod.eclipseplugin.FileProperties;
@@ -17,12 +18,13 @@ import org.hotrod.eclipseplugin.WorkspaceProperties;
 import org.hotrod.eclipseplugin.treefaces.FaceFactory.InvalidConfigurationItemException;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.utils.FileRegistry;
 
-public class MainConfigFace extends AbstractFace implements Comparable<MainConfigFace> {
+public class MainConfigFace extends AbstractConfigFace implements Comparable<MainConfigFace> {
 
   private static final Logger log = Logger.getLogger(MainConfigFace.class);
 
-  private boolean valid;
+  private File mainFile;
   private String absolutePath;
   private RelativeProjectPath path;
   private transient HotRodViewContentProvider provider;
@@ -32,8 +34,8 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   public MainConfigFace(final File f, final RelativeProjectPath path, final HotRodViewContentProvider provider,
       final HotRodConfigTag config) {
-    super(path.getFileName(), config);
-    this.valid = true;
+    super(path.getFileName(), config, true);
+    this.mainFile = f;
     this.absolutePath = f.getAbsolutePath();
     this.path = path;
     this.provider = provider;
@@ -42,7 +44,7 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
     addSubFaces(config);
   }
 
-  private void addSubFaces(final HotRodConfigTag config) {
+  private void addSubFaces(final AbstractConfigurationTag config) {
     for (AbstractConfigurationTag subTag : config.getSubTags()) {
       try {
         AbstractFace face = FaceFactory.getFace(subTag);
@@ -57,8 +59,8 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   public MainConfigFace(final File f, final RelativeProjectPath path, final HotRodViewContentProvider provider,
       final ErrorMessage errorMessage) {
-    super(path.getFileName(), null, errorMessage);
-    this.valid = false;
+    super(path.getFileName(), null, errorMessage, false);
+    this.mainFile = f;
     this.absolutePath = f.getAbsolutePath();
     this.path = path;
     this.provider = provider;
@@ -66,23 +68,6 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
   }
 
   // Behavior
-
-  public boolean isValid() {
-    return valid;
-  }
-
-  public void setInvalid(final ErrorMessage errorMessage) {
-    if (errorMessage == null) {
-      throw new IllegalArgumentException("Cannot set null error message.");
-    }
-    this.valid = false;
-    super.setErrorMessage(errorMessage);
-  }
-
-  public void setValid() {
-    this.valid = true;
-    super.setErrorMessage(null);
-  }
 
   public void initializeConfig(final HotRodConfigTag config) {
     this.config = config;
@@ -94,36 +79,23 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
     this.config = config;
   }
 
-  @Override
-  public AbstractFace[] getChildren() {
-    log.debug("this.valid=" + this.valid);
-    if (this.valid) {
-      AbstractFace[] children = super.getChildren();
-      log.debug("children[" + children.length + "]");
-      return children;
-    } else {
-      return new AbstractFace[0];
-    }
+  // Processing file system changes
+
+  public final boolean triggerFileAdded(final File f) throws UncontrolledException, ControlledException {
+    FileRegistry fileRegistry = new FileRegistry(this.mainFile);
+    DaosTag daosTag = this.config.getGenerators().getSelectedGeneratorTag().getDaos();
+    return super.informFileAdded(f, this.getConfig(), fileRegistry, daosTag);
   }
 
-  @Override
-  public boolean hasChildren() {
-    log.info("this.valid=" + this.valid);
-    if (this.valid) {
-      return super.hasChildren();
-    } else {
-      return false;
-    }
+  public final boolean triggerFileChanged(final File f) throws UncontrolledException, ControlledException {
+    FileRegistry fileRegistry = new FileRegistry(this.mainFile);
+    DaosTag daosTag = this.config.getGenerators().getSelectedGeneratorTag().getDaos();
+    log.info("trigger 1");
+    return super.informFileChanged(f, this.getConfig(), fileRegistry, daosTag);
   }
 
-  @Override
-  public boolean hasBranchChanges() {
-    log.info("this.valid=" + this.valid);
-    if (this.valid) {
-      return super.hasBranchChanges();
-    } else {
-      return false;
-    }
+  public final boolean triggerFileRemoved(final File f) throws UncontrolledException, ControlledException {
+    return super.informFileRemoved(f);
   }
 
   // Getters
@@ -200,20 +172,6 @@ public class MainConfigFace extends AbstractFace implements Comparable<MainConfi
 
   public HotRodConfigTag getConfig() {
     return config;
-  }
-
-  // Processing file system changes
-
-  public boolean informFileAdded(final File f) throws UncontrolledException, ControlledException {
-    return this.config.informFileAdded(f);
-  }
-
-  public boolean informFileChanged(final File f) throws UncontrolledException, ControlledException {
-    return this.config.informFileChanged(f);
-  }
-
-  public boolean informFileRemoved(final File f) throws UncontrolledException, ControlledException {
-    return this.config.informFileRemoved(f);
   }
 
   // Indexable

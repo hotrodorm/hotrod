@@ -19,9 +19,7 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.log4j.Logger;
-import org.hotrod.ant.Constants;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.eclipseplugin.utils.FUtil;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -848,49 +846,58 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return !failedInnerGeneration;
   }
 
-  // Processing file system changes
-
-  public boolean informFileAdded(final File f, final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
-      final DaosTag daosTag) throws UncontrolledException, ControlledException {
-    for (FragmentTag fragmentTag : this.fragments) {
-      if (FUtil.equals(fragmentTag.getFile(), f)) {
-        fragmentTag.load(primaryConfig, fileRegistry, daosTag);
-        return true;
-      } else {
-        return fragmentTag.informFileAdded(f, primaryConfig, fileRegistry, daosTag);
-      }
-    }
-    return false;
-  }
-
-  public boolean informFileChanged(final File f, final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
-      final DaosTag daosTag) throws UncontrolledException, ControlledException {
-    for (FragmentTag fragmentTag : this.fragments) {
-      if (FUtil.equals(fragmentTag.getFile(), f)) {
-        fragmentTag.load(primaryConfig, fileRegistry, daosTag);
-        return true;
-      } else {
-        return fragmentTag.informFileChanged(f, primaryConfig, fileRegistry, daosTag);
-      }
-    }
-    return false;
-  }
-
-  public boolean informFileRemoved(final File f, final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
-      final DaosTag daosTag) throws UncontrolledException, ControlledException {
-    log.info("--> file removed f=" + f);
-    for (FragmentTag fragmentTag : this.fragments) {
-      boolean equals = FUtil.equals(fragmentTag.getFile(), f);
-      log.info("    > is " + (equals ? "" : "not ") + "equal to: " + fragmentTag.getFile());
-      if (equals) {
-        throw new ControlledException(fragmentTag.getSourceLocation(), Constants.TOOL_NAME,
-            " fragment file not found: " + fragmentTag.getFile());
-      } else {
-        return fragmentTag.informFileRemoved(f, primaryConfig, fileRegistry, daosTag);
-      }
-    }
-    return false;
-  }
+  // TODO: Remove once finished
+  // // Processing file system changes
+  //
+  // public boolean informFileAdded(final File f, final HotRodConfigTag
+  // primaryConfig, final FileRegistry fileRegistry,
+  // final DaosTag daosTag) throws UncontrolledException, ControlledException {
+  // for (FragmentTag fragmentTag : this.fragments) {
+  // if (FUtil.equals(fragmentTag.getFile(), f)) {
+  // fragmentTag.load(primaryConfig, fileRegistry, daosTag);
+  // return true;
+  // } else {
+  // return fragmentTag.informFileAdded(f, primaryConfig, fileRegistry,
+  // daosTag);
+  // }
+  // }
+  // return false;
+  // }
+  //
+  // public boolean informFileChanged(final File f, final HotRodConfigTag
+  // primaryConfig, final FileRegistry fileRegistry,
+  // final DaosTag daosTag) throws UncontrolledException, ControlledException {
+  // for (FragmentTag fragmentTag : this.fragments) {
+  // if (FUtil.equals(fragmentTag.getFile(), f)) {
+  // fragmentTag.load(primaryConfig, fileRegistry, daosTag);
+  // return true;
+  // } else {
+  // return fragmentTag.informFileChanged(f, primaryConfig, fileRegistry,
+  // daosTag);
+  // }
+  // }
+  // return false;
+  // }
+  //
+  // public boolean informFileRemoved(final File f, final HotRodConfigTag
+  // primaryConfig, final FileRegistry fileRegistry,
+  // final DaosTag daosTag) throws UncontrolledException, ControlledException {
+  // log.info("--> file removed f=" + f);
+  // for (FragmentTag fragmentTag : this.fragments) {
+  // boolean equals = FUtil.equals(fragmentTag.getFile(), f);
+  // log.info(" > is " + (equals ? "" : "not ") + "equal to: " +
+  // fragmentTag.getFile());
+  // if (equals) {
+  // throw new ControlledException(fragmentTag.getSourceLocation(),
+  // Constants.TOOL_NAME,
+  // " fragment file not found: " + fragmentTag.getFile());
+  // } else {
+  // return fragmentTag.informFileRemoved(f, primaryConfig, fileRegistry,
+  // daosTag);
+  // }
+  // }
+  // return false;
+  // }
 
   // Conclude
 

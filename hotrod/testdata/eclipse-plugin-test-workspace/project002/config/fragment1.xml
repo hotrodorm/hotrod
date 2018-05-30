@@ -17,6 +17,6 @@
     </select>
   </table>
   
-  <fragment file="fragment2.xml" />
+  <fragment file="fragment2.xml" /> 
 
 </hotrod-fragment>

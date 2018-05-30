@@ -82,6 +82,7 @@ import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.runtime.util.ListWriter;
+import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.EUtils;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
@@ -840,7 +841,8 @@ public class HotRodView extends ViewPart {
       @SuppressWarnings("unused")
       GenerationUnit<?> unit = (GenerationUnit<?>) t;
       // continue only if this is a GenerationUnit.
-      log.debug(">>> [GU] " + t.getInternalCaption() + " t.getStatus()=" + t.getStatus());
+      log.info(
+          ">>> [GU] " + SUtils.getFiller(". ", level) + t.getInternalCaption() + " t.getStatus()=" + t.getStatus());
       boolean modified = t.getStatus() != TagStatus.UP_TO_DATE;
       if (modified) {
         t.markGenerate();

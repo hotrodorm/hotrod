@@ -244,25 +244,29 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     return false;
   }
 
-  // Processing file system changes
-
-  public boolean informFileAdded(final File f) throws UncontrolledException, ControlledException {
-    FileRegistry fileRegistry = new FileRegistry(this.f);
-    DaosTag daosTag = this.generatorsTag.getSelectedGeneratorTag().getDaos();
-    return super.informFileAdded(f, this, fileRegistry, daosTag);
-  }
-
-  public boolean informFileChanged(final File f) throws UncontrolledException, ControlledException {
-    FileRegistry fileRegistry = new FileRegistry(this.f);
-    DaosTag daosTag = this.generatorsTag.getSelectedGeneratorTag().getDaos();
-    return super.informFileChanged(f, this, fileRegistry, daosTag);
-  }
-
-  public boolean informFileRemoved(final File f) throws UncontrolledException, ControlledException {
-    FileRegistry fileRegistry = new FileRegistry(this.f);
-    DaosTag daosTag = this.generatorsTag.getSelectedGeneratorTag().getDaos();
-    return super.informFileRemoved(f, this, fileRegistry, daosTag);
-  }
+  // TODO: Remove once finished
+  // // Processing file system changes
+  //
+  // public boolean informFileAdded(final File f) throws UncontrolledException,
+  // ControlledException {
+  // FileRegistry fileRegistry = new FileRegistry(this.f);
+  // DaosTag daosTag = this.generatorsTag.getSelectedGeneratorTag().getDaos();
+  // return super.informFileAdded(f, this, fileRegistry, daosTag);
+  // }
+  //
+  // public boolean informFileChanged(final File f) throws
+  // UncontrolledException, ControlledException {
+  // FileRegistry fileRegistry = new FileRegistry(this.f);
+  // DaosTag daosTag = this.generatorsTag.getSelectedGeneratorTag().getDaos();
+  // return super.informFileChanged(f, this, fileRegistry, daosTag);
+  // }
+  //
+  // public boolean informFileRemoved(final File f) throws
+  // UncontrolledException, ControlledException {
+  // FileRegistry fileRegistry = new FileRegistry(this.f);
+  // DaosTag daosTag = this.generatorsTag.getSelectedGeneratorTag().getDaos();
+  // return super.informFileRemoved(f, this, fileRegistry, daosTag);
+  // }
 
   // Setters
 
