@@ -90,7 +90,7 @@ public class MainConfigFace extends AbstractConfigFace implements Comparable<Mai
   public final boolean triggerFileChanged(final File f) throws UncontrolledException, ControlledException {
     FileRegistry fileRegistry = new FileRegistry(this.mainFile);
     DaosTag daosTag = this.config.getGenerators().getSelectedGeneratorTag().getDaos();
-    log.info("trigger 1");
+    log.debug("trigger 1");
     return super.informFileChanged(f, this.getConfig(), fileRegistry, daosTag);
   }
 

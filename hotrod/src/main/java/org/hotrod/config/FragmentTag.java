@@ -6,17 +6,16 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
-import org.hotrod.eclipseplugin.utils.FUtil;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.runtime.util.LogUtil;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.FileRegistry;
 
 @XmlRootElement(name = "fragment")
-public class FragmentTag extends AbstractConfigurationTag {
+public class FragmentTag extends AbstractConfigurationTag implements GenerationUnit<FragmentTag> {
 
   private static final long serialVersionUID = 1L;
 
@@ -197,6 +196,11 @@ public class FragmentTag extends AbstractConfigurationTag {
       super.markConcluded();
     }
     return concluded;
+  }
+
+  @Override
+  public boolean concludeGeneration(FragmentTag cache, DatabaseAdapter adapter) {
+    return this.concludeFragmentGeneration();
   }
 
 }

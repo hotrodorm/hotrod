@@ -84,10 +84,9 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
     this.subTags.add(t);
   }
 
-  protected void addChildren(final Collection<? extends AbstractConfigurationTag> c) {
-    for (AbstractConfigurationTag t : c) {
-      t.parent = this;
-      this.subTags.add(t);
+  protected void addChildren(final Collection<? extends AbstractConfigurationTag> collection) {
+    for (AbstractConfigurationTag t : collection) {
+      this.addChild(t);
     }
   }
 
@@ -160,6 +159,7 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   }
 
   public void markGenerate() {
+    // log.info(" === MARKING ===\n" + LogUtil.renderStack());
     this.generate = GenerationStatus.TO_BE_GENERATED;
   }
 
@@ -171,11 +171,17 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   }
 
   public boolean treeIncludesIsToBeGenerated() {
+    return treeIncludesIsToBeGenerated(0);
+  }
+
+  public boolean treeIncludesIsToBeGenerated(final int level) {
+    log.info("@@ " + SUtils.getFiller(". ", level) + "[" + (this.isToBeGenerated() ? "g" : "_") + "] "
+        + (this.status.getIcon()) + " " + this.getInternalCaption());
     if (this.isToBeGenerated()) {
       return true;
     }
     for (AbstractConfigurationTag subTag : this.subTags) {
-      if (subTag.treeIncludesIsToBeGenerated()) {
+      if (subTag.treeIncludesIsToBeGenerated(level + 1)) {
         return true;
       }
     }
@@ -318,10 +324,11 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   // Display
 
   public void logGenerateMark(final String title, final char c) {
-//    log.info(SUtils.getFiller(c, 10) + " " + title + " " + SUtils.getFiller(c, 10));
-//    log.info(" - Caller: " + LogUtil.getCaller());
-//    displayGenerateMark(this, 0);
-//    log.info(SUtils.getFiller(c, 22 + title.length()));
+    // log.info(SUtils.getFiller(c, 10) + " " + title + " " +
+    // SUtils.getFiller(c, 10));
+    // log.info(" - Caller: " + LogUtil.getCaller());
+    // displayGenerateMark(this, 0);
+    // log.info(SUtils.getFiller(c, 22 + title.length()));
   }
 
   @SuppressWarnings("unused")

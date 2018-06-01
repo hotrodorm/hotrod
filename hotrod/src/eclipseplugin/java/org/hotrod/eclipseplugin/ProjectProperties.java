@@ -108,11 +108,17 @@ public class ProjectProperties {
 
   public FileProperties getFileProperties(final String relativeFileName) {
     String code = this.loadedFilesByFileName.get(relativeFileName);
+    log.info("code=" + code);
     if (code == null) {
       code = getNewCode(relativeFileName);
       try {
+        log.info("will load 1");
         return FileProperties.load(this, code, relativeFileName);
       } catch (CouldNotLoadFilePropertiesException e) {
+        log.error("failed 1", e);
+        return new FileProperties(this, code, relativeFileName);
+      } catch (Throwable e) {
+        log.error("failed 2 ", e);
         return new FileProperties(this, code, relativeFileName);
       }
     } else {
@@ -120,6 +126,9 @@ public class ProjectProperties {
         return FileProperties.load(this, code, relativeFileName);
       } catch (CouldNotLoadFilePropertiesException e) {
         log.error("Could not load file properties for '" + relativeFileName + "' -- instantiating an empty one.");
+        return new FileProperties(this, code, relativeFileName);
+      } catch (Throwable e) {
+        log.error("failed 3 ", e);
         return new FileProperties(this, code, relativeFileName);
       }
     }

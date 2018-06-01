@@ -95,6 +95,8 @@ public class FileProperties {
       throw new CouldNotLoadFilePropertiesException(e.getMessage());
     } catch (CouldNotLoadFilePropertiesException e) {
       throw new CouldNotLoadFilePropertiesException(e.getMessage());
+    } catch (Throwable e) {
+      throw new CouldNotLoadFilePropertiesException(e.getMessage());
     }
   }
 

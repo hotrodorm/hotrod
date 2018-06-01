@@ -23,24 +23,30 @@ public class FragmentConfigFace extends AbstractConfigFace {
   private HotRodFragmentConfigTag fragmentConfig;
 
   public FragmentConfigFace(final FragmentTag fragmentTag) throws InvalidConfigurationItemException {
-    super(fragmentTag.getFilename(), fragmentTag, false);
+    super(fragmentTag.getFilename(), fragmentTag, true);
     this.fragmentTag = fragmentTag;
+    this.fragmentConfig = fragmentTag.getFragmentConfig();
 
     // TODO: fix this: the relative path must be based on the project, not the
     // parent file.
     // this.relativePath = fragment.getRelativeProjectPath().getRelativePath();
     this.relativePath = fragmentTag.getFilename();
 
+    log.info("'" + this.fragmentTag.getFilename() + "' fragmentTag.getSubTags()=" + fragmentTag.getSubTags().size());
+
     for (AbstractConfigurationTag item : fragmentTag.getSubTags()) {
       AbstractFace element = FaceFactory.getFace(item);
       super.addChild(element);
     }
+
+    log.info("'" + this.fragmentTag.getFilename() + "' children[" + super.getChildren().length + "]");
   }
 
   private FragmentConfigFace(final FragmentTag fragmentTag, final HotRodFragmentConfigTag fragmentConfig)
       throws InvalidConfigurationItemException {
     super(fragmentTag.getFilename(), fragmentTag, true);
     this.fragmentTag = fragmentTag;
+    this.fragmentConfig = fragmentConfig;
 
     // TODO: fix this: the relative path must be based on the project, not the
     // parent file.
@@ -70,6 +76,8 @@ public class FragmentConfigFace extends AbstractConfigFace {
       throw e;
     }
 
+    log.info("fragmentConfig=" + fragmentConfig);
+
     FragmentConfigFace freshFace = null;
     try {
       freshFace = new FragmentConfigFace(this.fragmentTag, fragmentConfig);
@@ -85,15 +93,16 @@ public class FragmentConfigFace extends AbstractConfigFace {
   }
 
   private boolean applyFreshVersion(final FragmentConfigFace freshFace) {
+    log.info("this.isValid()=" + this.isValid() + " this.fragmentConfig=" + this.fragmentConfig);
     if (this.isValid()) {
       if (freshFace.isValid()) { // 1. Stays valid
         log.info("1. Stays valid");
 
         this.fragmentConfig.logGenerateMark("Generate Marks (PRE) - " + System.identityHashCode(this.fragmentConfig),
             '-');
-        // currentFace.display();
+
         boolean changesDetected = this.applyChangesFrom(freshFace);
-        // currentFace.display();
+
         this.fragmentConfig.logGenerateMark("Generate Marks (POST) - " + System.identityHashCode(this.fragmentConfig),
             '=');
 
@@ -118,6 +127,7 @@ public class FragmentConfigFace extends AbstractConfigFace {
           log.info("3.2 Apply changes.");
           this.applyChangesFrom(freshFace);
         }
+        this.fragmentConfig.markGenerateTree();
         return true;
       } else { // 4. Stays invalid
         log.info("4. Stays invalid");

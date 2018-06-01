@@ -16,14 +16,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.Correlator;
 import org.hotrod.utils.Correlator.CorrelatedEntry;
-import org.hotrod.utils.FileRegistry;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -39,6 +36,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   // Properties
 
+  @SuppressWarnings("unused")
   private File f;
 
   private GeneratorsTag generatorsTag = null;

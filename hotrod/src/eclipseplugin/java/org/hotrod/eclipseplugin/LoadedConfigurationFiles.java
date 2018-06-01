@@ -41,12 +41,12 @@ public class LoadedConfigurationFiles implements FileChangeListener {
   // File is being dropped in (addeed to) the view
 
   public void addFile(final File f) {
-    log.debug("ADD f=" + f);
+    log.info("ADD f=" + f);
 
     try {
 
       if (f != null && f.getName().endsWith(VALID_HOTROD_EXTENSION) && f.isFile()) {
-        log.debug("ADD [2] f=" + f);
+        log.info("ADD [2] f=" + f);
         String absolutePath = f.getAbsolutePath();
         boolean filesLoaded = false;
         if (!this.loadedFiles.containsKey(absolutePath)) {
@@ -57,13 +57,14 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
             // 1. Load the cached config
 
+            log.info("will load project properties.");
             ProjectProperties projectProperties = WorkspaceProperties.getInstance()
                 .getProjectProperties(path.getProject());
+            log.info("will load file properties.");
             FileProperties fileProperties = projectProperties.getFileProperties(path.getRelativeFileName());
+            log.info("fileProperties=" + fileProperties);
 
             // 2. Retrieve cached config (current), if available
-
-            log.debug("fileProperties=" + fileProperties);
 
             HotRodConfigTag currentConfig = fileProperties == null ? null
                 : fileProperties.getCachedMetadata().getConfig();
@@ -254,7 +255,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
   @Override
   public boolean informFileChanged(final File f) {
-    log.info("[EVENT] file changed: " + f.getAbsolutePath());
+    log.debug("[EVENT] file changed: " + f.getAbsolutePath());
 
     // Check if it's a main face
 
@@ -266,7 +267,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
       return true;
     }
 
-    log.info("[EVENT] 2");
+    log.debug("[EVENT] 2");
 
     // Otherwise, check if it's a fragment
 
@@ -275,11 +276,11 @@ public class LoadedConfigurationFiles implements FileChangeListener {
       try {
         boolean faceChanged = face.triggerFileChanged(f);
         face.setValid();
-        log.info("### faceChanged=" + faceChanged);
+        log.debug("### faceChanged=" + faceChanged);
         refreshNeeded |= faceChanged;
 
       } catch (ControlledException e) {
-        log.info("[error detected] " + e.getInteractiveMessage());
+        log.debug("[error detected] " + e.getInteractiveMessage());
         refreshNeeded = true;
         face.setInvalid(new ErrorMessage(e.getLocation(), e.getInteractiveMessage()));
       } catch (UncontrolledException e) {

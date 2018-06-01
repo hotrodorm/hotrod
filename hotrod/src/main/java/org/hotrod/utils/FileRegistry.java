@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hotrod.config.FragmentTag;
+
 public class FileRegistry {
 
   private Set<String> names = new HashSet<String>();
@@ -14,11 +16,11 @@ public class FileRegistry {
     }
   }
 
-  public void add(final File f) throws FileAlreadyRegisteredException {
+  public void add(final FragmentTag containerTag, final File f) throws FileAlreadyRegisteredException {
     if (f != null) {
       String absName = f.getAbsolutePath();
       if (this.names.contains(absName)) {
-        throw new FileAlreadyRegisteredException();
+        throw new FileAlreadyRegisteredException(containerTag);
       }
       this.names.add(absName);
     }
@@ -28,8 +30,15 @@ public class FileRegistry {
 
     private static final long serialVersionUID = 1L;
 
-    private FileAlreadyRegisteredException() {
+    private FragmentTag containerTag;
+
+    private FileAlreadyRegisteredException(final FragmentTag containerTag) {
       super();
+      this.containerTag = containerTag;
+    }
+
+    public FragmentTag getContainerTag() {
+      return containerTag;
     }
 
   }

@@ -96,7 +96,7 @@ public class ConfigurationLoader {
       LocationListener locationListener = new LocationListener(f, xsr);
       unmarshaller.setListener(locationListener);
       log.debug("XML loaded.");
-      
+
     } catch (SAXException e) {
       throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
     } catch (JAXBException e) {
@@ -248,7 +248,7 @@ public class ConfigurationLoader {
 
       // Validation (common)
 
-      fileRegistry.add(f);
+      fileRegistry.add(fragmentTag, f);
       fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, daosTag, fragmentConfig);
 
       // Complete
@@ -267,7 +267,7 @@ public class ConfigurationLoader {
       }
 
     } catch (FileAlreadyRegisteredException e) {
-      throw new ControlledException(fragmentTag.getSourceLocation(),
+      throw new ControlledException(e.getContainerTag().getSourceLocation(),
           "Invalid configuration file '" + f.getPath() + "': this fragment file has already been loaded once.");
     } finally {
       if (reader != null) {

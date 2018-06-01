@@ -731,9 +731,9 @@ public class HotRodView extends ViewPart {
 
     if (allConfigured) {
       for (MainConfigFace mainFace : hotRodViewContentProvider.getFiles().getLoadedFiles()) {
-        log.info(
-            "@@@ generate: " + mainFace.getDecoration() + " itbg=" + mainFace.getTag().treeIncludesIsToBeGenerated());
-        if (mainFace.getTag().treeIncludesIsToBeGenerated()) {
+        boolean treeIncludesIsToBeGenerated = mainFace.getTag().treeIncludesIsToBeGenerated();
+        log.info("@@@ generate: " + mainFace.getDecoration() + " itbg=" + treeIncludesIsToBeGenerated);
+        if (treeIncludesIsToBeGenerated) {
           ProjectProperties projectProperties = WorkspaceProperties.getInstance()
               .getProjectProperties(mainFace.getProject());
           FileProperties fileProperties = projectProperties.getFileProperties(mainFace.getRelativeFileName());
@@ -837,6 +837,7 @@ public class HotRodView extends ViewPart {
   }
 
   private boolean markChanges(final AbstractConfigurationTag t, final int level) {
+    log.info(">>> [..] " + SUtils.getFiller(". ", level) + t.getInternalCaption() + " t.getStatus()=" + t.getStatus());
     try {
       @SuppressWarnings("unused")
       GenerationUnit<?> unit = (GenerationUnit<?>) t;

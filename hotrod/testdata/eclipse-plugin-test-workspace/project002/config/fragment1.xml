@@ -5,6 +5,7 @@
 
 <!--
 -->
+  <table name="document" />
   
   <table name="log">
     <select method="findAccount7">   
@@ -16,7 +17,7 @@
       join person p on (p.id) = (a.person_id)
     </select>
   </table>
-  
-  <fragment file="fragment2.xml" /> 
-
+   
+  <fragment file="fragment2.xml" />       
+ 
 </hotrod-fragment>

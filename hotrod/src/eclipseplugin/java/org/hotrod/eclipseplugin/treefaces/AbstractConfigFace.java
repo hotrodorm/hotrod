@@ -106,16 +106,16 @@ public abstract class AbstractConfigFace extends AbstractFace {
     boolean changesDetected = false;
     for (FragmentConfigFace fragment : super.getFragments()) {
       FragmentTag tag = fragment.getFragmentTag();
-      log.info("fragment file: " + tag.getFile());
+      log.debug("fragment file: " + tag.getFile());
       if (FUtil.equals(f, tag.getFile())) {
-        log.info("inform - fragment is file");
+        log.debug("inform - fragment is file");
         changesDetected |= fragment.loadAndApplyChanges(primaryConfig, fileRegistry, daosTag);
       } else {
-        log.info("inform - fragment is NOT file");
+        log.debug("inform - fragment is NOT file");
         changesDetected |= fragment.informFileChanged(f, primaryConfig, fileRegistry, daosTag);
       }
     }
-    log.info("inform complete: changesDetected=" + changesDetected);
+    log.debug("inform complete: changesDetected=" + changesDetected);
     return changesDetected;
   }
 
