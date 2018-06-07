@@ -1,3 +1,37 @@
+create table shopper (
+  id int primary key not null,
+  name varchar(20) not null,
+  referred_by_id int,
+  constraint fk1 foreign key (referred_by_id) references shopper (id)
+);
+
+insert into shopper (id, name, referred_by_id) values (1, 'Peter', null);
+insert into shopper (id, name, referred_by_id) values (2, 'Anna', 1);
+insert into shopper (id, name, referred_by_id) values (3, 'Mary', null);
+insert into shopper (id, name, referred_by_id) values (4, 'John', 1);
+insert into shopper (id, name, referred_by_id) values (5, 'Donna', 3);
+insert into shopper (id, name, referred_by_id) values (6, 'Michael', 4);
+
+with recursive referrer (id, referred_by_id, client) as (
+    select id, referred_by_id, name from shopper where substr(name, 1, 1) = 'M'
+    union
+    select s.id, s.referred_by_id, r.client from referrer r join shopper s on s.id = r.referred_by_id
+)
+select * from referrer where referred_by_id is null;
+
+-- Recursive WITH clause:
+--  * Requires RECURSIVE.
+--  * Works with UNION. UNION ALL is accepted but the query seems to time out.
+--  * Must have a query name.
+--  * Column aliases are mandatory.
+--  * The anchor member cannot reference the query name.
+--  * The recursive member must include a single reference to the query name.
+
+-- *** Works with limitations. Some queries work; other ones don't. It's hit or miss.
+
+-- ============================================================================
+
+
 -- Limitations:
 -- ============
 --  * Need to define a query table different to any other database object (table, view, etc.) name. 
