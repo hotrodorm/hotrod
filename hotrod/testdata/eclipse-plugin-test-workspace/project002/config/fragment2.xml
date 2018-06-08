@@ -3,11 +3,9 @@
 
 <hotrod-fragment>
 
-  <table name="category" />
-  
 <!--
--->
   <fragment file="fragment1.xml" />
+-->
 
 
 

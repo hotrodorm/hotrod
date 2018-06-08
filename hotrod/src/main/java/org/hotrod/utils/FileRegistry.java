@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hotrod.config.FragmentTag;
+import org.hotrod.runtime.util.ListWriter;
 
 public class FileRegistry {
 
@@ -41,6 +42,15 @@ public class FileRegistry {
       return containerTag;
     }
 
+  }
+
+  public String toString() {
+    ListWriter w = new ListWriter(", ");
+    for (String n : this.names) {
+      int idx = n.lastIndexOf('/');
+      w.add(idx == -1 ? n : n.substring(idx + 1));
+    }
+    return "FileRegistry[" + this.names.size() + "]: " + w.toString();
   }
 
 }
