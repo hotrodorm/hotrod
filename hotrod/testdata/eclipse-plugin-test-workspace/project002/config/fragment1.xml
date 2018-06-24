@@ -17,7 +17,9 @@
       join person p on (p.id) = (a.person_id)
     </select>
   </table>
-   
+
+<!--    
+  -->
   <fragment file="fragment2.xml" />       
- 
+  
 </hotrod-fragment>

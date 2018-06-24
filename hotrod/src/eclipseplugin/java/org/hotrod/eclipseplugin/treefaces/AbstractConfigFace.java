@@ -12,6 +12,7 @@ import org.hotrod.eclipseplugin.utils.FUtil;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.utils.FileRegistry;
+import org.hotrod.utils.FileRegistry.FileAlreadyRegisteredException;
 
 public abstract class AbstractConfigFace extends AbstractFace {
 
@@ -91,10 +92,20 @@ public abstract class AbstractConfigFace extends AbstractFace {
       final FileRegistry fileRegistry, final DaosTag daosTag) throws UncontrolledException, ControlledException {
 
     boolean changesDetected = false;
+    log.info("fileRegistry=" + fileRegistry);
     for (FragmentConfigFace fragment : super.getFragments()) {
+      FragmentTag tag = fragment.getFragmentTag();
       if (FUtil.equals(f, fragment.getFragmentTag().getFile())) {
-        changesDetected |= fragment.loadAndApplyChanges(primaryConfig, fileRegistry, daosTag);
+        log.info("+*> fileRegistry=" + fileRegistry);
+        fragment.loadAndApplyChanges(primaryConfig, fileRegistry, daosTag);
+        changesDetected = true;
       } else {
+        try {
+          fileRegistry.add(tag, tag.getFile());
+        } catch (FileAlreadyRegisteredException e) {
+          throw new ControlledException(tag.getSourceLocation(), "Could not load fragment '" + f.getPath() + "'.");
+        }
+        log.info("++> fileRegistry=" + fileRegistry);
         changesDetected |= fragment.informFileAdded(f, primaryConfig, fileRegistry, daosTag);
       }
     }
@@ -104,14 +115,23 @@ public abstract class AbstractConfigFace extends AbstractFace {
   public final boolean informFileChanged(final File f, final HotRodConfigTag primaryConfig,
       final FileRegistry fileRegistry, final DaosTag daosTag) throws UncontrolledException, ControlledException {
     boolean changesDetected = false;
+    log.info("fileRegistry=" + fileRegistry);
     for (FragmentConfigFace fragment : super.getFragments()) {
       FragmentTag tag = fragment.getFragmentTag();
-      log.debug("fragment file: " + tag.getFile());
+      log.info("*** fragment file: " + tag.getFile());
+      log.info("*** f: " + f);
+      try {
+        fileRegistry.add(tag, tag.getFile());
+      } catch (FileAlreadyRegisteredException e) {
+        throw new ControlledException(tag.getSourceLocation(), "Could not load fragment '" + f.getPath() + "'.");
+      }
       if (FUtil.equals(f, tag.getFile())) {
-        log.debug("inform - fragment is file");
-        changesDetected |= fragment.loadAndApplyChanges(primaryConfig, fileRegistry, daosTag);
+        log.info("inform - fragment is file -  apply changes now.");
+        fragment.loadAndApplyChanges(primaryConfig, fileRegistry, daosTag);
+        changesDetected = true;
       } else {
-        log.debug("inform - fragment is NOT file");
+        log.info("inform - fragment is NOT file - inpect fragment content");
+        log.info("++> fileRegistry=" + fileRegistry);
         changesDetected |= fragment.informFileChanged(f, primaryConfig, fileRegistry, daosTag);
       }
     }

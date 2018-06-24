@@ -187,6 +187,7 @@ public class ConfigurationLoader {
     if (f == null) {
       throw new ControlledException(fragmentTag.getSourceLocation(), "Configuration file name is empty.");
     }
+    log.info("-- loading fragment: " + f.getName());
     if (!f.exists()) {
       throw new ControlledException(fragmentTag.getSourceLocation(),
           Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
@@ -248,7 +249,10 @@ public class ConfigurationLoader {
 
       // Validation (common)
 
+      log.info("--       Registering f=" + f);
+      log.info("  --     tag: " + fragmentTag.getSourceLocation());
       fileRegistry.add(fragmentTag, f);
+      log.info("----2> fileRegistry=" + fileRegistry);
       fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, daosTag, fragmentConfig);
 
       // Complete
@@ -267,6 +271,7 @@ public class ConfigurationLoader {
       }
 
     } catch (FileAlreadyRegisteredException e) {
+      log.info("********** exception in tag: " + e.getContainerTag().getSourceLocation());
       throw new ControlledException(e.getContainerTag().getSourceLocation(),
           "Invalid configuration file '" + f.getPath() + "': this fragment file has already been loaded once.");
     } finally {

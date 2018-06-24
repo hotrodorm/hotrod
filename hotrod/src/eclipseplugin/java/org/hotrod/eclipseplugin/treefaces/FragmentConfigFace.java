@@ -66,12 +66,15 @@ public class FragmentConfigFace extends AbstractConfigFace {
 
     HotRodFragmentConfigTag fragmentConfig;
     try {
+      log.info("fileRegistry=" + fileRegistry);
       fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.fragmentTag.getFile(), fileRegistry,
           daosTag, this.getFragmentTag());
     } catch (ControlledException e) {
+      log.info("ce:" + e.getMessage());
       this.setInvalid(new ErrorMessage(this.fragmentTag.getSourceLocation(), e.getMessage()));
       throw e;
     } catch (UncontrolledException e) {
+      log.info("ue", e);
       this.setInvalid(new ErrorMessage(this.fragmentTag.getSourceLocation(), e.getMessage()));
       throw e;
     }

@@ -17,6 +17,7 @@ import org.hotrod.eclipseplugin.ErrorMessage;
 import org.hotrod.eclipseplugin.HotRodViewContentProvider;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.runtime.util.LogUtil;
 import org.hotrod.runtime.util.SUtils;
 
 public abstract class AbstractFace implements IAdaptable {
@@ -68,6 +69,8 @@ public abstract class AbstractFace implements IAdaptable {
   }
 
   protected void setErrorMessage(final ErrorMessage errorMessage) {
+    log.info("setting error message (1) errorMessage=" + errorMessage);
+    log.info("*** Call Stack:\n" + LogUtil.renderStack());
     this.ownErrorMessage = errorMessage;
     this.branchErrorMessage = errorMessage;
   }
@@ -218,6 +221,7 @@ public abstract class AbstractFace implements IAdaptable {
   // branchErrorMessage -- own, or children error
 
   private ErrorMessage computeBranchError() {
+    log.info("computing branch error (2) this.ownErrorMessage=" + this.ownErrorMessage);
     this.branchErrorMessage = null;
     if (this.ownErrorMessage != null) { // face with own error
       this.branchErrorMessage = this.ownErrorMessage;

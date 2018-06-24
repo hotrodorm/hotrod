@@ -83,7 +83,7 @@ public class FragmentTag extends AbstractConfigurationTag implements GenerationU
 
   public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry, final DaosTag daosTag)
       throws UncontrolledException, ControlledException {
-    log.debug("Will load fragment '" + this.f.getName() + "'");
+    log.info("@@@ Will load fragment '" + this.f.getName() + "' -- at " + this.getSourceLocation());
     super.clearChildren();
     this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.f, fileRegistry, daosTag, this);
     log.debug("Fragment loaded.");

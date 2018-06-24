@@ -62,6 +62,7 @@ public class HotRodLabelProvider extends StyledCellLabelProvider {
         return null; // no tool tip
       } else {
         SourceLocation loc = errorMessage.getLocation();
+        log.info(">>>>>>>>>>> errorMessage.getLocation()="+errorMessage.getLocation());
         return errorMessage.getMessage() + (loc == null ? ""
             : ("\n" + "  at " + loc.getFile().getName() + " (line " + loc.getLineNumber() + ", col "
                 + loc.getColumnNumber() + ") -- click to source"));

@@ -236,14 +236,17 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
   @Override
   public boolean informFileAdded(final File f) {
-    log.info("[EVENT] file added: " + f.getAbsolutePath());
+    log.info("\n\n[EVENT] file added: " + f.getAbsolutePath());
     boolean changesDetected = false;
     for (MainConfigFace face : this.loadedFiles.values()) {
       try {
-        changesDetected |= face.triggerFileAdded(f);
+        boolean triggerChanges = face.triggerFileAdded(f);
+        log.info("triggerChanges="+triggerChanges);
+        changesDetected |= triggerChanges;
         face.setValid();
       } catch (ControlledException e) {
         changesDetected = true;
+        log.info(":::: exception in tag location: " + e.getLocation());
         face.setInvalid(new ErrorMessage(e.getLocation(), e.getInteractiveMessage()));
       } catch (UncontrolledException e) {
         changesDetected = true;
@@ -255,7 +258,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
   @Override
   public boolean informFileChanged(final File f) {
-    log.debug("[EVENT] file changed: " + f.getAbsolutePath());
+    log.info("\n\n[EVENT] file changed: " + f.getAbsolutePath());
 
     // Check if it's a main face
 
@@ -267,7 +270,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
       return true;
     }
 
-    log.debug("[EVENT] 2");
+    log.info("[EVENT] file changed 2");
 
     // Otherwise, check if it's a fragment
 
@@ -276,14 +279,15 @@ public class LoadedConfigurationFiles implements FileChangeListener {
       try {
         boolean faceChanged = face.triggerFileChanged(f);
         face.setValid();
-        log.debug("### faceChanged=" + faceChanged);
+        log.info("### faceChanged=" + faceChanged);
         refreshNeeded |= faceChanged;
 
       } catch (ControlledException e) {
-        log.debug("[error detected] " + e.getInteractiveMessage());
+        log.info("[ControlledException] " + e.getInteractiveMessage());
         refreshNeeded = true;
         face.setInvalid(new ErrorMessage(e.getLocation(), e.getInteractiveMessage()));
       } catch (UncontrolledException e) {
+        log.info("[UncontrolledException]", e);
         refreshNeeded = true;
         face.setInvalid(new ErrorMessage(null, EUtils.renderMessages(e)));
       }
@@ -294,7 +298,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
   @Override
   public boolean informFileRemoved(final File f) {
-    log.info("[EVENT] file removed: " + f.getAbsolutePath());
+    log.info("\n\n[EVENT] file removed: " + f.getAbsolutePath());
 
     // Check if it's a main face
 
@@ -311,7 +315,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     for (MainConfigFace face : this.loadedFiles.values()) {
       try {
         changesDetected |= face.triggerFileRemoved(f);
-        face.setValid();
+//        face.setValid();
       } catch (ControlledException e) {
         changesDetected = true;
         face.setInvalid(new ErrorMessage(e.getLocation(), e.getInteractiveMessage()));
