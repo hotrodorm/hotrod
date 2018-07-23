@@ -158,7 +158,11 @@ public class HotRodAntTask extends Task {
     try {
       config = ConfigurationLoader.loadPrimary(this.projectBaseDir, this.configFile, this.generator);
     } catch (ControlledException e) {
-      throw new BuildException("\n" + e.getMessage());
+      if (e.getLocation() != null) {
+        throw new BuildException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
+      } else {
+        throw new BuildException("\n" + e.getMessage());
+      }
     } catch (UncontrolledException e) {
       throw new BuildException(e);
     } catch (RuntimeException e) {

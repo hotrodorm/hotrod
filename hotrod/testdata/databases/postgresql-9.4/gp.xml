@@ -16,54 +16,68 @@
     </mybatis>
   </generators>
 
-  <table name="vendor" />
-  <table name="client" >
-  
+  <table name="vendor">
+
+    <select method="selectEnhancedVendors">
+      select
+      <columns>
+        <vo table="vendor" alias="v" extended-vo="EnhancedVendor">
+          <collection table="client" alias="c" property="clients" extended-vo="EnhancedClient" />
+        </vo>
+      </columns>
+      from vendor v
+      join client c on c.vendor_id = v.id
+    </select>
+
+  </table>
+
+  <table name="client">
+
     <select method="selectExtendedClients">
       <parameter name="vendorId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
       select
-        <columns>
-          <vo table="client" extended-vo="ExtendedClient" alias="c">
-            <collection table="client_file_prefix" property="prefixes" alias="p" />
-          </vo>
-        </columns>
-        from client c
-        join client_file_prefix p on p.client_id = c.id
-        where c.vendor_id = #{vendorId}
-        order by c.id
+      <columns>
+        <vo table="client" extended-vo="ExtendedClient" alias="c">
+          <collection table="client_file_prefix" property="prefixes" alias="p" />
+        </vo>
+      </columns>
+      from client c
+      join client_file_prefix p on p.client_id = c.id
+      where c.vendor_id = #{vendorId}
+      order by c.id
     </select>
-      
+
   </table>
   <table name="client_file_prefix" />
 
   <table name="alert">
-  
+
     <select method="selectAlertSummaryPerVendor" vo="VendorAlertSummary">
       <parameter name="vendorId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
       <parameter name="since" java-type="java.sql.Timestamp" jdbc-type="TIMESTAMP" />
       <parameter name="upTo" java-type="java.sql.Timestamp" jdbc-type="TIMESTAMP" />
-      select severity_id, count(*) as count 
-        from alert
-        <complement>
+      select severity_id, count(*) as count
+      from alert
+      <complement>
         where vendor_id = #{vendorId}
-          and originator = 'v'
-          and raised_at between #{since} and #{upTo}
-        </complement>
-        group by severity_id
+        and originator = 'v'
+        and raised_at between #{since} and #{upTo}
+      </complement>
+      group by severity_id
     </select>
 
     <select method="selectAlertSummaryPerClient" vo="ClientAlertSummary">
       <parameter name="clientId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
       <parameter name="since" java-type="java.sql.Timestamp" jdbc-type="TIMESTAMP" />
       <parameter name="upTo" java-type="java.sql.Timestamp" jdbc-type="TIMESTAMP" />
-      select severity_id, count(*) as count 
-        from alert
-        <complement>
+      select severity_id, count(*) as count
+      from alert
+      <complement>
         where client_id = #{clientId}
-          and originator = 'c'
-          and raised_at between #{since} and #{upTo}
-        </complement>
-        group by severity_id
+        and originator = 'c'
+        and raised_at between #{since} and #{upTo}
+      </complement>
+      group by severity_id
     </select>
 
     <select method="selectClientAlerts" vo="ClientAlert">
@@ -72,43 +86,43 @@
       <parameter name="upTo" java-type="java.sql.Timestamp" jdbc-type="TIMESTAMP" />
       <parameter name="maxRows" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
       select
-          a.client_id, a.raised_at, v.name as vendor_name, 
-          s.id as severity_id, s.name as severity_name,
-          o.name as operation_name, c.name as cause_name, a.error_message
-        from alert a
-        left join vendor v on v.id = a.vendor_id
-        join severity s on s.id = a.severity_id
-        join operation o on o.id = a.operation_id
-        join cause c on c.id = a.cause_id
-        <complement>
+      a.client_id, a.raised_at, v.name as vendor_name,
+      s.id as severity_id, s.name as severity_name,
+      o.name as operation_name, c.name as cause_name, a.error_message
+      from alert a
+      left join vendor v on v.id = a.vendor_id
+      join severity s on s.id = a.severity_id
+      join operation o on o.id = a.operation_id
+      join cause c on c.id = a.cause_id
+      <complement>
         where a.client_id = #{clientId}
-          and a.originator = 'c'
-          and a.raised_at between #{since} and #{upTo}
+        and a.originator = 'c'
+        and a.raised_at between #{since} and #{upTo}
         order by a.raised_at desc
         limit #{maxRows}
-        </complement>
+      </complement>
     </select>
-    
+
     <select method="selectVendorAlerts" vo="VendorAlert">
       <parameter name="vendorId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
       <parameter name="since" java-type="java.sql.Timestamp" jdbc-type="TIMESTAMP" />
       <parameter name="upTo" java-type="java.sql.Timestamp" jdbc-type="TIMESTAMP" />
       <parameter name="maxRows" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
       select
-          a.client_id, a.raised_at, cl.name as client_name, s.id as severity_id, s.name as severity_name, 
-          o.name as operation_name, c.name as cause_name, a.error_message
-        from alert a
-        left join client cl on cl.id = a.client_id
-        join severity s on s.id = a.severity_id
-        join operation o on o.id = a.operation_id
-        join cause c on c.id = a.cause_id
-        <complement>
+      a.client_id, a.raised_at, cl.name as client_name, s.id as severity_id, s.name as severity_name,
+      o.name as operation_name, c.name as cause_name, a.error_message
+      from alert a
+      left join client cl on cl.id = a.client_id
+      join severity s on s.id = a.severity_id
+      join operation o on o.id = a.operation_id
+      join cause c on c.id = a.cause_id
+      <complement>
         where a.vendor_id = #{vendorId}
-          and a.originator = 'v'
-          and a.raised_at between #{since} and #{upTo}
+        and a.originator = 'v'
+        and a.raised_at between #{since} and #{upTo}
         order by a.raised_at desc
         limit #{maxRows}
-        </complement>
+      </complement>
     </select>
 
 <!--  
@@ -126,12 +140,12 @@
         left join client c on a.client_id = c.id
     </select>
 -->
-    
+
   </table>
-  
+
   <enum name="severity" name-column="name" />
   <enum name="operation" name-column="name" />
-  
+
   <enum name="cause" name-column="name" />
 
   <table name="execution_round" />

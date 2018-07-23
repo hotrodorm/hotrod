@@ -310,13 +310,13 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
                 + "> tag includes one or more <association>, <colection>, and/or <expressions> tags.");
       }
     } else {
-      if (this.associations.isEmpty() && this.collections.isEmpty() && this.expressions.isEmpty()) {
-        throw new InvalidConfigurationFileException(this, //
-            "The 'extended-vo' attribute cannot be specified when the <" + super.getTagName()
-                + "> tag does not include any <association>, <colection>, or <expressions> tags", //
-            "The 'extended-vo' attribute cannot be specified when the <" + super.getTagName()
-                + "> tag does not include any <association>, <colection>, or <expressions> tags.");
-      }
+//      if (this.associations.isEmpty() && this.collections.isEmpty() && this.expressions.isEmpty()) {
+//        throw new InvalidConfigurationFileException(this, //
+//            "The 'extended-vo' attribute cannot be specified when the <" + super.getTagName()
+//                + "> tag does not include any <association>, <colection>, or <expressions> tags", //
+//            "The 'extended-vo' attribute cannot be specified when the <" + super.getTagName()
+//                + "> tag does not include any <association>, <colection>, or <expressions> tags.");
+//      }
       if (!this.extendedVO.matches(Patterns.VALID_JAVA_CLASS)) {
         throw new InvalidConfigurationFileException(this, //
             "Invalid 'extended-vo' attribute value '" + this.extendedVO + "' on the <" + super.getTagName()

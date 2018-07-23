@@ -6,7 +6,10 @@ import java.sql.Timestamp;
 
 import hotrod.test.generation.AlertVO;
 import hotrod.test.generation.ClientAlertSummary;
+import hotrod.test.generation.EnhancedClient;
+import hotrod.test.generation.EnhancedVendor;
 import hotrod.test.generation.primitives.AlertDAO;
+import hotrod.test.generation.primitives.VendorDAO;
 
 public class GPTests {
 
@@ -17,7 +20,8 @@ public class GPTests {
   private static void countProperties() throws SQLException {
 
     // selectAlerts();
-    showAllAlerts();
+    // showAllAlerts();
+    showClients();
   }
 
   private static void selectAlerts() throws SQLException {
@@ -40,6 +44,17 @@ public class GPTests {
 
     for (AlertVO a : AlertDAO.selectByExample(new AlertVO())) {
       System.out.println("a=" + a);
+    }
+
+  }
+
+  private static void showClients() throws SQLException {
+
+    for (EnhancedVendor v : VendorDAO.selectEnhancedVendors()) {
+      System.out.println("* vendor " + v.getName());
+      for (EnhancedClient c : v.getClients()) {
+        System.out.println("  - client " + c.getName() + " -- " + c.getUpperCaseName());
+      }
     }
 
   }

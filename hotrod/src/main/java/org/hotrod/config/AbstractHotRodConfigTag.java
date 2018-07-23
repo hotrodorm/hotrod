@@ -161,7 +161,13 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     super.addChildren(this.views);
 
     for (ExecutorTag x : this.executors) {
-      x.validate(daosTag, config, fragmentConfig);
+      try {
+        x.validate(daosTag, config, fragmentConfig);
+      } catch (InvalidConfigurationFileException e1) {
+        log.error("zzzz", e1);
+        log.error("tag=" + e1.getTag());
+        throw e1;
+      }
     }
     Collections.sort(this.executors, new Comparator<ExecutorTag>() {
       @Override
