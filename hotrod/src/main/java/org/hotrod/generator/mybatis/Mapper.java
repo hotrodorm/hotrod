@@ -191,7 +191,7 @@ public class Mapper extends GeneratableObject {
         }
 
         for (SelectMethodMetadata sm : this.metadata.getSelectsMetadata()) {
-          log.info("Generating method: " + sm.getMethod());
+          log.debug("Generating method: " + sm.getMethod());
           writeSelectMethod(sm);
         }
 
@@ -1123,7 +1123,7 @@ public class Mapper extends GeneratableObject {
     String statementId = this.getSelectMethodStatementId(sm);
 
     println("  <select id=\"" + statementId + "\" resultMap=\"" + resultMapName + "\">");
-    log.info("sm.getMethod()=" + sm.getMethod());
+    log.debug("sm.getMethod()=" + sm.getMethod());
     println(sm.renderXML(new MyBatisParameterRenderer()));
     println("  </select>");
     println();

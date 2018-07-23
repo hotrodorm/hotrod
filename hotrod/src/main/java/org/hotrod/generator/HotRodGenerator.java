@@ -613,7 +613,7 @@ public abstract class HotRodGenerator {
     SelectMetadataCache selectMetadataCache = new SelectMetadataCache();
     Map<String, List<EnumConstant>> tableEnumConstants = new HashMap<String, List<EnumConstant>>();
 
-    log.info("/////////////// retrieveSelectMetadata=" + retrieveSelectMetadata);
+    log.debug("/////////////// retrieveSelectMetadata=" + retrieveSelectMetadata);
 
     if (retrieveSelectMetadata) {
 
