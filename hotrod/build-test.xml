@@ -50,6 +50,30 @@
     </javac>
   </target>
 
+  <target name="compile-gp" depends="-init">
+    <javac destdir="${test.build.dir}"
+           debug="true"
+           deprecation="true"
+           source="1.6"
+           target="1.6"
+           includeantruntime="false"
+           includes="**/*.java"
+           fork="yes"
+           executable="${javac.compiler.exec}"
+           compiler="${java.compiler}">
+      <src path="${daos.src.dir}" />
+      <src path="${test.src.dir}-gp" />
+      <classpath>
+        <pathelement path="${daos.build.dir}" />
+        <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+        <!--pathelement location="${lib.dir}/jdbc-drivers/ojdbc6.jar" /-->
+        <!--pathelement location="${lib.dir}/jdbc-drivers/h2-1.3.176.jar" /-->
+      </classpath>
+    </javac>
+  </target>
+
   <target name="build" depends="compile" />
 
   <target name="clean-build" depends="clean, build" />
@@ -127,6 +151,23 @@
 
   <target name="test-select" depends="clean-build">
     <java classname="tests.SelectTests" fork="yes">
+      <classpath>
+        <pathelement path="${test.build.dir}" />
+        <pathelement path="gen/hotrod/mappers" />
+        <pathelement path="${db.src.dir}" />
+        <pathelement path="${test.src.dir}/../metadata" />
+        <pathelement location="${db.src.dir}/${driverclasspath}" />
+        <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+        <pathelement location="lib/apache-commons/commons-jexl3-3.1.jar" />
+        <pathelement location="lib/apache-commons/commons-logging-1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="test-gp" depends="clean, compile-gp">
+    <java classname="tests.GPTests" fork="yes">
       <classpath>
         <pathelement path="${test.build.dir}" />
         <pathelement path="gen/hotrod/mappers" />

@@ -32,12 +32,16 @@ public class ColumnIdentifier extends DbIdentifier {
   }
 
   public String getGetter() {
-    return (this.isBooleanType ? "is" : "get")
-        + (startsWithLowerUpperCase() ? this.getJavaMemberIdentifier() : this.getJavaClassIdentifier());
+    // return (this.isBooleanType ? "is" : "get")
+    // + (startsWithLowerUpperCase() ? this.getJavaMemberIdentifier() :
+    // this.getJavaClassIdentifier());
+    return (this.isBooleanType ? "is" : "get") + this.getJavaClassIdentifier();
   }
 
   public String getSetter() {
-    return "set" + (startsWithLowerUpperCase() ? this.getJavaMemberIdentifier() : this.getJavaClassIdentifier());
+    // return "set" + (startsWithLowerUpperCase() ?
+    // this.getJavaMemberIdentifier() : this.getJavaClassIdentifier());
+    return "set" + this.getJavaClassIdentifier();
   }
 
 }

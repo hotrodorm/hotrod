@@ -277,14 +277,21 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
               cm.setEnumMetadata(em);
             }
           }
-          for (ColumnMetadata cm : this.pk.getColumns()) {
-            if (cm.getColumnName().equals(icm.getColumnName())) {
-              cm.setEnumMetadata(em);
+          // log.info("this.t.getName()=" + this.t.getName());
+          // log.info("this.javaName=" + this.javaName);
+          // log.info(" * this.pk=" + this.pk);
+          if (this.pk != null) {
+            for (ColumnMetadata cm : this.pk.getColumns()) {
+              if (cm.getColumnName().equals(icm.getColumnName())) {
+                cm.setEnumMetadata(em);
+              }
             }
           }
-          for (ColumnMetadata cm : this.nonPKCols) {
-            if (cm.getColumnName().equals(icm.getColumnName())) {
-              cm.setEnumMetadata(em);
+          if (this.nonPKCols != null) {
+            for (ColumnMetadata cm : this.nonPKCols) {
+              if (cm.getColumnName().equals(icm.getColumnName())) {
+                cm.setEnumMetadata(em);
+              }
             }
           }
         }
