@@ -41,11 +41,11 @@ public class ConfigurationLoader {
   private static final Logger log = Logger.getLogger(ConfigurationLoader.class);
 
   // TODO: Improve the XSD schema assembling.
-  // private static final String PRIMARY_XSD_PATH = "/hotrod.xsd";
-  // private static final String FRAGMENT_XSD_PATH = "/hotrod-fragment.xsd";
+   private static final String PRIMARY_XSD_PATH = "/hotrod.xsd";
+   private static final String FRAGMENT_XSD_PATH = "/hotrod-fragment.xsd";
 
-  private static final String PRIMARY_XSD_PATH = "/src/main/xml/hotrod-primary-head.xsd";
-  private static final String FRAGMENT_XSD_PATH = "/src/main/xml/hotrod-fragment-head.xsd";
+//  private static final String PRIMARY_XSD_PATH = "/src/main/xml/hotrod-primary-head.xsd";
+//  private static final String FRAGMENT_XSD_PATH = "/src/main/xml/hotrod-fragment-head.xsd";
 
   private static final String PLUGIN_PRIMARY_XSD_PATH = "/hotrod-primary-head.xsd";
   private static final String PLUGIN_FRAGMENT_XSD_PATH = "/hotrod-fragment-head.xsd";

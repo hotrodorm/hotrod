@@ -7,12 +7,12 @@ import java.util.List;
 
 import hotrod.test.generation.AccountVO;
 import hotrod.test.generation.TxBranchVO;
-import hotrod.test.generation.UnusualTxVO;
+import hotrod.test.generation.UnusualTx;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountDAO.AccountOrderBy;
+import hotrod.test.generation.primitives.MyDAO;
 import hotrod.test.generation.primitives.TxBranchDAO;
 import hotrod.test.generation.primitives.TxBranchDAO.TxBranchOrderBy;
-import hotrod.test.generation.primitives.UnusualTxDAO;
 
 public class Examples {
 
@@ -118,7 +118,7 @@ public class Examples {
     // Selects
 
     {
-      List<UnusualTxVO> utxs = UnusualTxDAO.select(300, 50, 1000, 4000);
+      List<UnusualTx> utxs = MyDAO.getUnusualTx(300, 50, 1000, 4000);
     }
 
   }

@@ -3,14 +3,12 @@ package tests;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import hotrod.test.generation.AccountTx0VO;
-import hotrod.test.generation.AccountTx1VO;
+import hotrod.test.generation.AccountTx0;
+import hotrod.test.generation.AccountTx1;
 import hotrod.test.generation.ConfigValuesVO;
-import hotrod.test.generation.MultParamSelectVO;
-import hotrod.test.generation.primitives.AccountTx0DAO;
-import hotrod.test.generation.primitives.AccountTx1DAO;
+import hotrod.test.generation.MultParamSelect;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
-import hotrod.test.generation.primitives.MultParamSelectDAO;
+import hotrod.test.generation.primitives.MyDAO;
 
 public class SelectTests {
 
@@ -29,14 +27,14 @@ public class SelectTests {
 
     {
       System.out.println("--- a0 ---");
-      for (AccountTx0VO a0 : AccountTx0DAO.select()) {
+      for (AccountTx0 a0 : MyDAO.getAccountTx0()) {
         System.out.println("a0: " + a0);
       }
     }
 
     {
       System.out.println("--- a1 ---");
-      for (AccountTx1VO a1 : AccountTx1DAO.select(200, 0)) {
+      for (AccountTx1 a1 : MyDAO.getAccountTx1(200, 0)) {
         System.out.println("a1: " + a1);
       }
     }
@@ -51,7 +49,7 @@ public class SelectTests {
     }
 
     System.out.println("===");
-    for (MultParamSelectVO mp : MultParamSelectDAO.select(160)) {
+    for (MultParamSelect mp : MyDAO.getMultParamSelect(160)) {
       System.out.println("mp=" + mp);
     }
 

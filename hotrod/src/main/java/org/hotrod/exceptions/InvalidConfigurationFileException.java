@@ -18,8 +18,8 @@ public class InvalidConfigurationFileException extends Exception {
     if (tag == null) {
       throw new IllegalArgumentException("tag cannot be null");
     }
-    log.info("  interactiveMessage=" + interactiveMessage + "\n  loc=" + tag.getSourceLocation().render());
-    log.info("  parent="+tag.getParent());
+    log.debug("  interactiveMessage=" + interactiveMessage + "\n  loc=" + tag.getSourceLocation().render());
+    log.debug("  parent=" + tag.getParent());
     tag.setErrorMessage(interactiveMessage);
     this.interactiveMessage = interactiveMessage;
     this.tag = tag;

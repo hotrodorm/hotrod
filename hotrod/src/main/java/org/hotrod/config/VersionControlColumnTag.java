@@ -75,7 +75,12 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
 
     // Check the optimistic locking column is integer-like
 
-    if (generator.getAdapter().isSerial(this.jdbcColumn)) {
+    // log.info("this.jdbcColumn=" + this.jdbcColumn.getDataType() + " '" +
+    // this.jdbcColumn.getTypeName() + "'");
+    // log.info("generator.getAdapter().isSerial(this.jdbcColumn)=" +
+    // generator.getAdapter().isSerial(this.jdbcColumn));
+
+    if (!generator.getAdapter().isSerial(this.jdbcColumn)) {
       throw new InvalidConfigurationFileException(this, //
           "Invalid type for version control columm '" + this.name + "' on table '" + name
               + ". ' A version control column must be of an integer-like number type", //

@@ -496,7 +496,6 @@ public abstract class HotRodGenerator {
       try {
         this.config.validateAgainstDatabase(this, conn);
       } catch (InvalidConfigurationFileException e) {
-        log.info("ICF", e);
         throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
       }
       // }
