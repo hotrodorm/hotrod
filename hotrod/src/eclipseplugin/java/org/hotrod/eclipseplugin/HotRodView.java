@@ -84,6 +84,7 @@ import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.EUtils;
+import org.hotrod.utils.ErrorMessage;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public class HotRodView extends ViewPart {

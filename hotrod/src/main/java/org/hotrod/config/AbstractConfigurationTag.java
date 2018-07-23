@@ -6,11 +6,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hotrod.eclipseplugin.ErrorMessage;
 import org.hotrod.generator.GeneratableObject;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
-import org.hotrod.runtime.util.LogUtil;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.ErrorMessage;
 
 public abstract class AbstractConfigurationTag implements Comparable<AbstractConfigurationTag>, Serializable {
 

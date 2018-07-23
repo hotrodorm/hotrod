@@ -1,4 +1,4 @@
-package org.hotrod.eclipseplugin;
+package org.hotrod.utils;
 
 import java.io.Serializable;
 

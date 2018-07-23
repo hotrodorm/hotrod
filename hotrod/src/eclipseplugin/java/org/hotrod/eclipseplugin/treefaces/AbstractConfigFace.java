@@ -7,10 +7,10 @@ import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.FragmentTag;
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.eclipseplugin.ErrorMessage;
 import org.hotrod.eclipseplugin.utils.FUtil;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.utils.ErrorMessage;
 import org.hotrod.utils.FileRegistry;
 import org.hotrod.utils.FileRegistry.FileAlreadyRegisteredException;
 

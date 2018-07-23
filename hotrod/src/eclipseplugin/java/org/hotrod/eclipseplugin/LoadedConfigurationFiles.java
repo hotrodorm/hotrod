@@ -18,6 +18,7 @@ import org.hotrod.eclipseplugin.treefaces.MainConfigFace;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.utils.EUtils;
+import org.hotrod.utils.ErrorMessage;
 
 public class LoadedConfigurationFiles implements FileChangeListener {
 

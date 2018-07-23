@@ -7,11 +7,11 @@ import org.hotrod.config.DaosTag;
 import org.hotrod.config.FragmentTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
-import org.hotrod.eclipseplugin.ErrorMessage;
 import org.hotrod.eclipseplugin.HotRodView;
 import org.hotrod.eclipseplugin.treefaces.FaceFactory.InvalidConfigurationItemException;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.utils.ErrorMessage;
 import org.hotrod.utils.FileRegistry;
 
 public class FragmentConfigFace extends AbstractConfigFace {

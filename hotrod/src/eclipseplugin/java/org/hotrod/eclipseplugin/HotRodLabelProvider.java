@@ -20,6 +20,7 @@ import org.hotrod.eclipseplugin.treefaces.FragmentConfigFace;
 import org.hotrod.eclipseplugin.treefaces.MainConfigFace;
 import org.hotrod.eclipseplugin.treefaces.SettingsFace;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
+import org.hotrod.utils.ErrorMessage;
 
 public class HotRodLabelProvider extends StyledCellLabelProvider {
 

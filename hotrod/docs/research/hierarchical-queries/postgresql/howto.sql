@@ -29,4 +29,7 @@ select * from referrer where referred_by_id is null order by client;
 --  * The anchor member cannot reference the query name.
 --  * The recursive member must include a single reference to the query name.
 
+-- Note: the RECURSIVE keyword qualifies the WITH keyword and must always follow it, if *any* CTE is a 
+--       recursive one. Even if a recursive CTE shows up other than in first place, the RECURSIVE 
+--       keyword is always right after the WITH keyword.
 

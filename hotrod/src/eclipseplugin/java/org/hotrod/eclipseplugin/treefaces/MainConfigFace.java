@@ -8,7 +8,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.eclipseplugin.ErrorMessage;
 import org.hotrod.eclipseplugin.FileProperties;
 import org.hotrod.eclipseplugin.HotRodView;
 import org.hotrod.eclipseplugin.HotRodViewContentProvider;
@@ -18,6 +17,7 @@ import org.hotrod.eclipseplugin.WorkspaceProperties;
 import org.hotrod.eclipseplugin.treefaces.FaceFactory.InvalidConfigurationItemException;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.utils.ErrorMessage;
 import org.hotrod.utils.FileRegistry;
 
 public class MainConfigFace extends AbstractConfigFace implements Comparable<MainConfigFace> {
