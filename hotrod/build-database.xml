@@ -8,6 +8,7 @@
 
   <target name="-init">
     <loadproperties srcfile="${db.src.dir}/config.properties" />
+    <property name="escapeprocessing" value="true" /> <!-- sets default value -->
   </target>
 
   <!-- ============== -->
@@ -21,6 +22,7 @@
          userid="${username}"
          password="${password}"
          delimiter=";"
+         escapeprocessing="${escapeprocessing}"
          onerror="abort">
       <fileset file="${db.src.dir}/${database}/build-structure.sql" />
     </sql>
@@ -35,6 +37,7 @@
          userid="${username}"
          password="${password}"
          delimiter=";"
+         escapeprocessing="${escapeprocessing}"
          autocommit="true"
          onerror="continue">
       <fileset file="${db.src.dir}/${database}/clean-structure.sql" />
@@ -50,6 +53,7 @@
          password="${password}"
          keepformat="true"
          delimiter="//"
+         escapeprocessing="${escapeprocessing}"
          autocommit="true"
          onerror="abort">
       <fileset file="${db.src.dir}/${database}/build-sp.sql" />
@@ -64,6 +68,7 @@
          password="${password}"
          keepformat="true"
          delimiter="//"
+         escapeprocessing="${escapeprocessing}"
          onerror="continue">
       <fileset file="${db.src.dir}/${database}/clean-sp.sql" />
     </sql>
@@ -76,6 +81,7 @@
          userid="${username}"
          password="${password}"
          delimiter="//"
+         escapeprocessing="${escapeprocessing}"
          autocommit="true"
          onerror="abort">
       <fileset file="${db.src.dir}/${database}/run-sp.sql" />
@@ -90,6 +96,7 @@
          password="${password}"
       
          delimiter="//"
+         escapeprocessing="${escapeprocessing}"
       
          autocommit="true"
       
@@ -112,6 +119,7 @@
          userid="${username}"
          password="${password}"
          delimiter=";"
+         escapeprocessing="${escapeprocessing}"
          autocommit="true"
          onerror="abort">
       <fileset file="${db.src.dir}/${database}/scenarios/${scenario}/build-data.sql" />
@@ -125,6 +133,7 @@
          userid="${username}"
          password="${password}"
          delimiter=";"
+         escapeprocessing="${escapeprocessing}"
          onerror="continue">
       <fileset file="${db.src.dir}/${database}/scenarios/${scenario}/clean-data.sql" />
     </sql>

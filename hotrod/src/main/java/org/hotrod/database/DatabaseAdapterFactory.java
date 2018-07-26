@@ -17,6 +17,7 @@ import org.hotrod.database.adapters.OracleAdapter;
 import org.hotrod.database.adapters.PostgreSQLAdapter;
 import org.hotrod.database.adapters.SAPASEAdapter;
 import org.hotrod.database.adapters.SQLServerAdapter;
+import org.hotrod.database.adapters.SQLiteAdapter;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -82,6 +83,8 @@ public final class DatabaseAdapterFactory {
         return new SQLServerAdapter(config, dm);
       } else if (uName.startsWith("APACHE DERBY")) {
         return new ApacheDerbyAdapter(config, dm);
+      } else if (name.startsWith("SQLite")) {
+        return new SQLiteAdapter(config, dm);
       } else {
         throw new UnrecognizedDatabaseException(
             "Could not resolve the database adapter. " + "The product name reported by the JDBC driver '" + name

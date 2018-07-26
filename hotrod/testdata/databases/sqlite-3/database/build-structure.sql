@@ -1,4 +1,4 @@
-pragma foreign_keys = ON;
+-- pragma foreign_keys = ON;
 
 create table log (
   recorded_at integer,
@@ -152,13 +152,34 @@ create view tx_branch
 
 create table types_numeric (
   id identity primary key not null,
-  int1 int,    -- Signed integer (1, 2, 3, 4, 6, or 8 bytes)
-  dou3 real    -- Double (8 bytes)
+  int1 int,    -- signed integer (1, 2, 3, 4, 6, or 8 bytes depending on the magnitude)
+  int2 integer,
+  int3 tinyint,
+  int4 smallint,
+  int5 mediumint,
+  int6 bigint,
+  int7 unsigned big int,
+  int8 int2,
+  int9 int8,
+  dou1 real,    -- double (8 bytes)
+  dou2 double,
+  dou3 double precision,
+  dou4 float,
+  num1 numeric, 
+  num2 decimal(10,5)
 );
 
 create table types_char (
   id integer identity primary key not null,
-  vc1 text                -- String
+  cha1 character(20),
+  cha2 nchar(55),
+  cha3 native character(70),
+  vc1 varchar(255),
+  vc2 varying character(255),
+  vc3 nvarchar(100),
+  vc4 text,
+  vc5 clob,
+  vc6 string
 );
 
 create table types_binary (
@@ -168,5 +189,8 @@ create table types_binary (
 
 create table types_other (
   id integer identity primary key not null,
-  nul1 null  -- (null?)
+  nul1 null,  -- (null?)
+  boo1 boolean,
+  dat1 date, 
+  ts1 datetime
 );
