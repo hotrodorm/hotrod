@@ -58,9 +58,10 @@ create table "transaction" (
   time text not null,
   amount integer not null,
   fed_branch_id integer,
-  constraint tx_account_id_time unique (account_id, time),
-  constraint fk_tx_fed_branch foreign key (fed_branch_id)
-    references federal_branch (id)
+  constraint tx_account_id_time unique (account_id, time)
+-- SQLite metadata doesn't provide coherent info for FKs!
+--   constraint fk_tx_fed_branch foreign key (fed_branch_id)
+--     references federal_branch (id)
 );
 
 create table client (
@@ -73,19 +74,20 @@ create table client (
   group_account_id integer,
   branch_id integer,
   constraint client_nat_id unique (national_id),
-  primary key (id),
-  constraint fk_client_properties foreign key (prop_name)  -- to other UI
-    references properties (name),
-  constraint fk_client_referrer foreign key (referrer_id) -- to self PK
-    references client (id),
-  constraint fk_client_friend foreign key (friend_id) -- to self UI
-    references client (national_id),
-  constraint fk_client_gaccount foreign key (group_account_id) -- to other PK
-    references account (id),
-  constraint fk_client_st_branch foreign key (branch_id) -- dual fk #1
-    references state_branch (id),
-  constraint fk_client_fed_branch foreign key (branch_id) -- dual fk #2
-    references federal_branch (id)
+  primary key (id)
+-- SQLite metadata doesn't provide coherent info for FKs!
+--   constraint fk_client_properties foreign key (prop_name)  -- to other UI
+--     references properties (name),
+--   constraint fk_client_referrer foreign key (referrer_id) -- to self PK
+--     references client (id),
+--   constraint fk_client_friend foreign key (friend_id) -- to self UI
+--     references client (national_id),
+--   constraint fk_client_gaccount foreign key (group_account_id) -- to other PK
+--     references account (id),
+--   constraint fk_client_st_branch foreign key (branch_id) -- dual fk #1
+--     references state_branch (id),
+--   constraint fk_client_fed_branch foreign key (branch_id) -- dual fk #2
+--     references federal_branch (id)
 );
 
 -- create sequence seq_agent;
@@ -111,10 +113,11 @@ create table codes (
   version_name integer not null,
   account_version integer not null,
   name integer not null,
-  constraint fk_codes_q1 foreign key (account, version_name) 
-    references quadrant (region, area),
-  constraint fk_codes_q2 foreign key (account_version, name) 
-    references quadrant (region, area),
+-- SQLite metadata doesn't provide coherent info for FKs!
+--   constraint fk_codes_q1 foreign key (account, version_name) 
+--     references quadrant (region, area),
+--   constraint fk_codes_q2 foreign key (account_version, name) 
+--     references quadrant (region, area),
   constraint cd_q1 unique (account, version_name),
   constraint cd_q2 unique (account_version, name)
 );

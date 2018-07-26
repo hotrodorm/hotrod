@@ -17,7 +17,6 @@ import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
-import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
@@ -33,12 +32,12 @@ public class SQLiteAdapter extends DatabaseAdapter {
 
   @Override
   public boolean supportsCatalog() {
-    return true;
+    return false;
   }
 
   @Override
   public boolean supportsSchema() {
-    return true;
+    return false;
   }
 
   @Override
