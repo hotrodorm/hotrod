@@ -17,6 +17,7 @@ import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.runtime.util.SUtils;
+import org.hotrod.utils.EUtils;
 import org.hotrod.utils.LocalFileGenerator;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
@@ -164,9 +165,11 @@ public class HotRodAntTask extends Task {
         throw new BuildException("\n" + e.getMessage());
       }
     } catch (UncontrolledException e) {
-      throw new BuildException(e);
-    } catch (RuntimeException e) {
-      throw new BuildException(e);
+      display("Technical error found: " + EUtils.renderMessages(e));
+      throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
+    } catch (Throwable e) {
+      display("Technical error found: " + EUtils.renderMessages(e));
+      throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
     }
 
     log.debug("Configuration loaded.");
@@ -213,7 +216,7 @@ public class HotRodAntTask extends Task {
                 + e.getLocation().render() + ":\n" + e.getMessage());
       }
     } catch (UncontrolledException e) {
-      e.printStackTrace();
+      display("Technical error found: " + EUtils.renderMessages(e));
       throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
     } catch (Throwable t) {
       t.printStackTrace();
