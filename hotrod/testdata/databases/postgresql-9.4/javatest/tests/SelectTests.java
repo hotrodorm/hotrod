@@ -5,8 +5,10 @@ import java.sql.SQLException;
 
 import hotrod.test.generation.AccountTx0;
 import hotrod.test.generation.AccountTx1;
+import hotrod.test.generation.Car_part_priceVO;
 import hotrod.test.generation.ConfigValuesVO;
 import hotrod.test.generation.MultParamSelect;
+import hotrod.test.generation.primitives.Car_part_priceDAO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
 import hotrod.test.generation.primitives.MyDAO;
 
@@ -17,10 +19,9 @@ public class SelectTests {
   }
 
   private static void countProperties() throws SQLException {
-
-    selectByExample();
+    // selectByExample();
     // selectByUI();
-
+    selectComplexName();
   }
 
   private static void selectByExample() throws SQLException {
@@ -38,6 +39,22 @@ public class SelectTests {
         System.out.println("a1: " + a1);
       }
     }
+
+  }
+
+  private static void selectComplexName() throws SQLException {
+
+    System.out.println("=== Car Part Prices ===");
+    for (Car_part_priceVO p : Car_part_priceDAO.selectByExample(new Car_part_priceVO())) {
+      System.out.println("p: " + p);
+    }
+    System.out.println("===");
+
+    // Car_part_priceVO n = new Car_part_priceVO();
+    // n.setPart_(1234);
+    // n.setPrice_dollar(123456);
+    // n.set_discount(15);
+    // Car_part_priceDAO.insert(n);
 
   }
 

@@ -61,4 +61,15 @@ insert into employee (id, name, state_id, hired_on) values (101, 'Peter', 2, '20
 insert into employee (id, name, state_id, hired_on) values (102, 'Alice', 1, '2017-07-15');
 insert into employee (id, name, state_id, hired_on) values (103, 'Donna', 4, '2017-08-03');
 
+-- complex names
+
+insert into "car#part$Price" ("part#", "price$dollar", "%discount") values (123, 456, 789);
+insert into "car#part$Price" ("part#", "price$dollar", "%discount") values (101, 202, 303);
+
+
+
+
+
+
+
 

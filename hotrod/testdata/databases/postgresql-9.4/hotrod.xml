@@ -75,6 +75,8 @@
 -->
   </table>
   
+  <table name="car#part$Price" />
+  
 	<view name="tx_branch">
 		<column name="amount" java-type="java.lang.Long" jdbc-type="NUMERIC" />
 	</view>

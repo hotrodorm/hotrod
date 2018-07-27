@@ -19,7 +19,7 @@ public class DbIdentifier extends Identifier {
   private static final String SEPARATOR_CHUNK = "_";
 
   /** Use this char in java to escape non ASCII chars */
-  private static final char ESCAPE_CHAR = '$';
+  private static final char REPLACE_CHAR = '_';
 
   public DbIdentifier(final String name) {
     initializeSQLName(name);
@@ -61,6 +61,7 @@ public class DbIdentifier extends Identifier {
       } else {
         this.javaChunks[i] = genJavaAsciiChunk(chunk, (i == 0), true);
         this.dbChunks[i] = genJavaAsciiChunk(chunk, (i == 0), false);
+        log.debug("this.javaChunks[i]=" + this.javaChunks[i]);
       }
       i++;
     }
@@ -142,47 +143,21 @@ public class DbIdentifier extends Identifier {
       char b = Character.toLowerCase(c);
       log.debug("c=" + (int) c + " lower=" + (int) b);
 
-      if ((pos == 0) && isFirstChunk) {
-        if (Character.isJavaIdentifierStart(c) && (ESCAPE_CHAR != c) && (c > 32) && (c < 128)) {
-          log.debug("-> is start");
-          if (forceLowerCase) {
-            sb.append(Character.toLowerCase(c));
-          } else {
-            sb.append(c);
-          }
+      if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_') {
+        if (forceLowerCase) {
+          sb.append(Character.toLowerCase(c));
         } else {
-          log.debug("-> escape start");
-          sb.append(escapeChar(c));
+          sb.append(c);
         }
       } else {
-        if (Character.isJavaIdentifierPart(c) && (ESCAPE_CHAR != c) && (c > 32) && (c < 128)) {
-          log.debug("-> is part");
-          if (forceLowerCase) {
-            sb.append(Character.toLowerCase(c));
-          } else {
-            sb.append(c);
-          }
-        } else {
-          log.debug("-> escape part");
-          sb.append(escapeChar(c));
-        }
+        log.debug("-> escape start");
+        sb.append(REPLACE_CHAR);
       }
+
       pos++;
       log.debug("sb=" + sb.toString());
     }
     return sb.toString();
-  }
-
-  private String escapeChar(final char c) {
-    int n = c;
-    return ESCAPE_CHAR + toHexa(n >> 8) + toHexa(n & 0xff);
-  }
-
-  private static final String[] HEXA_DIGITS = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d",
-      "e", "f" };
-
-  private String toHexa(final int value) {
-    return HEXA_DIGITS[value >> 4] + HEXA_DIGITS[value & 0x0f];
   }
 
 }

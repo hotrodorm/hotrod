@@ -15,6 +15,13 @@
   <!-- Database build -->
   <!-- ============== -->
 
+  <target name="display-database" depends="-init">
+    <echo message="JDBC driverCP: ${driverclasspath}" />
+    <echo message="JDBC driver  : ${driverclass}" />
+    <echo message="JDBC database: ${url}" />
+    <echo message="JDBC username: ${username}" />
+  </target>
+
   <target name="build-database" depends="-init">
     <sql driver="${driverclass}"
          classpath="${db.src.dir}/${driverclasspath}"

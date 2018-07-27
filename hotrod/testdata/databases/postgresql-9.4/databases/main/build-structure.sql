@@ -158,6 +158,14 @@ create table vehicle (
 
 create unique index vehicle_unique on vehicle (upper(name));
 
+-- Complex Names
+
+create table "car#part$Price" (
+  "part#" int,
+  "price$dollar" int,
+  "%discount" int
+);
+
 -- ======================
 -- Auto-generated columns 
 -- ======================

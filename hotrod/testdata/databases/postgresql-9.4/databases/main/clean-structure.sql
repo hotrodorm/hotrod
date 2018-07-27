@@ -1,3 +1,6 @@
+
+drop table if exists "car#part$Price";
+
 drop table if exists vehicle;
 drop view if exists tx_branch;
 
@@ -7,7 +10,7 @@ drop table if exists codes;
 drop table if exists quadrant; 
 
 drop table if exists agent; 
-drop table if exists client; 
+drop table if exists client;
 drop table if exists transaction; 
 drop table if exists federal_branch; 
 drop table if exists state_branch; 
