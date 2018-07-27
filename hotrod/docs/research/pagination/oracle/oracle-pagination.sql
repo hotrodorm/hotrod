@@ -29,3 +29,16 @@ select * from ( select rownum "pagination_$%&)(_rownum", "pagination_$%&)(_resul
 select * from ( select rownum "pagination_$%&)(_rownum", "pagination_$%&)(_resultset".* from (
   select * from customer order by last_name, first_name, address_id
 ) "pagination_$%&)(_resultset" where rownum <= 50 ) where "pagination_$%&)(_rownum" > 40;
+
+-- OPTION 2 for Pagination:
+-- ========================
+
+select * from account order by name;
+
+select * from (
+  select a.*, row_number() over(order by name) as my_row_number from account a
+) x where my_row_number between OFFSET and OFFSET + LIMIT - 1;
+
+select * from (
+  select a.*, row_number() over(order by name) as my_row_number from account a
+) x where my_row_number between 40 and 49;

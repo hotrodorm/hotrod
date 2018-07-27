@@ -36,3 +36,11 @@ select * from  (
 select row_number() over(order by last_name, first_name, address_id) as "pagination_$%&)(_rownum", customer.* from customer order by last_name, first_name, address_id
 ) where "pagination_$%&)(_rownum" > 40 and "pagination_$%&)(_rownum" <= 50;
 
+
+-- In DB2 12:
+-- ==========
+
+-- OFFSET and LIMIT are available.
+
+
+
