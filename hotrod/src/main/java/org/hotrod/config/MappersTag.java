@@ -90,12 +90,14 @@ public class MappersTag extends AbstractConfigurationTag {
     }
     this.fullRelativeDir = new File(this.baseDir, this.sRelativeDir);
     if (!this.fullRelativeDir.exists()) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'relative-dir' points to a non existent directory:\n  " + this.fullRelativeDir.getPath(), //
-          "Attribute 'relative-dir' of tag <" + super.getTagName() + "> with value '" + this.sRelativeDir
-              + "' points to a non existent directory.");
-    }
-    if (!this.fullRelativeDir.isDirectory()) {
+      if (!this.fullRelativeDir.mkdirs()) {
+        throw new InvalidConfigurationFileException(this, //
+            "Could not create mappers dir '" + this.fullRelativeDir.getPath() + "' specified in tag <"
+                + super.getTagName() + ">.",
+            "Could not create mappers dir '" + this.fullRelativeDir.getPath() + "' specified in tag <"
+                + super.getTagName() + ">.");
+      }
+    } else if (!this.fullRelativeDir.isDirectory()) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'relative-dir' must point to a directory but found other type of file:\n  "
               + this.fullRelativeDir.getPath(), //
