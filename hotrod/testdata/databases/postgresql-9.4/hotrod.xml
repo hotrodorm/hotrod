@@ -81,61 +81,6 @@
 		<column name="amount" java-type="java.lang.Long" jdbc-type="NUMERIC" />
 	</view>
 
-  <dao class="MyDAO">
-
-    <select method="getAccountTx0" vo="AccountTx0">
-      select a.* , t.*
-      from account a, transaction t
-      <complement>
-        where t.account_id = a.id
-          and a.current_balance &lt; 1000
-      </complement>
-    </select>
-  
-    <select method="getAccountTx1" vo="AccountTx1">
-      <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-      <parameter name="minAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-      <column name="account_id" java-type="java.lang.Long" jdbc-type="NUMERIC" />
-      select a.* , t.*
-        from account a, transaction t
-      <complement>
-        where t.account_id = a.id
-          and a.current_balance &lt;= #{maxBalance}
-          and t.amount >= #{minAmount}
-        order by a.current_balance
-      </complement>
-    </select>
-  
-    <select method="getUnusualTx" vo="UnusualTx">
-      <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-      <parameter name="minAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-      <parameter name="maxRows" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-      <parameter name="offset" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-      select a.* , t.*
-      from account a, transaction t
-      <complement>
-      where t.account_id = a.id
-        and a.current_balance &lt;= #{maxBalance}
-        and t.amount >= #{minAmount}
-        order by a.id, t.seq_id
-        limit #{maxRows}
-        offset #{offset}
-      </complement>
-    </select>
-  
-    <select method="getMultParamSelect" vo="MultParamSelect">
-      <parameter name="maxAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-      select a.* , t.*
-      from account a, transaction t
-      <complement>
-      where t.account_id = a.id
-        and a.current_balance &lt;= #{maxAmount}
-        and t.amount &lt;= #{maxAmount}
-        order by a.id, t.seq_id
-      </complement>
-    </select>
-
-  </dao>
-
+  <fragment file="hotrod-extra1.xml" />
 
 </hotrod>

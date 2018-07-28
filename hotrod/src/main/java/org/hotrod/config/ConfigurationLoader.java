@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 
 import javax.xml.XMLConstants;
@@ -31,6 +32,8 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.FileRegistry;
 import org.hotrod.utils.FileRegistry.FileAlreadyRegisteredException;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -40,14 +43,8 @@ public class ConfigurationLoader {
 
   private static final Logger log = Logger.getLogger(ConfigurationLoader.class);
 
-  // TODO: Improve the XSD schema assembling.
   private static final String PRIMARY_XSD_PATH = "/hotrod.xsd";
   private static final String FRAGMENT_XSD_PATH = "/hotrod-fragment.xsd";
-
-  // private static final String PRIMARY_XSD_PATH =
-  // "/src/main/xml/hotrod-primary-head.xsd";
-  // private static final String FRAGMENT_XSD_PATH =
-  // "/src/main/xml/hotrod-fragment-head.xsd";
 
   private static final String PLUGIN_PRIMARY_XSD_PATH = "/hotrod-primary-head.xsd";
   private static final String PLUGIN_FRAGMENT_XSD_PATH = "/hotrod-fragment-head.xsd";
@@ -190,7 +187,7 @@ public class ConfigurationLoader {
     if (f == null) {
       throw new ControlledException(fragmentTag.getSourceLocation(), "Configuration file name is empty.");
     }
-    log.info("-- loading fragment: " + f.getName());
+    log.debug("-- loading fragment: " + f.getName());
     if (!f.exists()) {
       throw new ControlledException(fragmentTag.getSourceLocation(),
           Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
@@ -252,10 +249,10 @@ public class ConfigurationLoader {
 
       // Validation (common)
 
-      log.info("--       Registering f=" + f);
-      log.info("  --     tag: " + fragmentTag.getSourceLocation());
+      log.debug("--       Registering f=" + f);
+      log.debug("  --     tag: " + fragmentTag.getSourceLocation());
       fileRegistry.add(fragmentTag, f);
-      log.info("----2> fileRegistry=" + fileRegistry);
+      log.debug("----2> fileRegistry=" + fileRegistry);
       fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, daosTag, fragmentConfig);
 
       // Complete
@@ -330,24 +327,30 @@ public class ConfigurationLoader {
   private static Schema getPrimarySchema() throws SAXException {
     if (primarySchema == null) {
       SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+      LSResourceResolver xsdResolver = new XSDResolver();
+      factory.setResourceResolver(xsdResolver);
+
       InputStream is = null;
       try {
 
-        // checkExistence("/src/main/xml/hotrod-primary-head.xsd");
-        // checkExistence("src/main/xml/hotrod-primary-head.xsd");
-        // checkExistence("/src/main/xml/hotrod-fragment-head.xsd");
-        // checkExistence("src/main/xml/hotrod-fragment-head.xsd");
-        //
-        // checkExistence("/hotrod-primary-head.xsd");
-        // checkExistence("hotrod-primary-head.xsd");
-        // checkExistence("/hotrod-fragment-head.xsd");
-        // checkExistence("hotrod-fragment-head.xsd");
-
         is = ConfigurationLoader.class.getResourceAsStream(PRIMARY_XSD_PATH);
+        log.debug("[Load #1] is=" + is);
+
         if (is == null) { // try the plugin location
+          log.debug("[Load #2]");
           is = ConfigurationLoader.class.getResourceAsStream(PLUGIN_PRIMARY_XSD_PATH);
+          log.debug("[Load #3] is=" + is);
         }
+        log.debug("[Load #4]");
         primarySchema = factory.newSchema(new StreamSource(is));
+        log.debug("[Load #5] primarySchema =" + primarySchema);
+
+      } catch (SAXException e) {
+        log.error("Failed to load", e);
+        throw e;
+      } catch (RuntimeException e) {
+        log.error("(RuntimeException) Failed to load", e);
       } finally {
         if (is != null) {
           try {
@@ -361,14 +364,13 @@ public class ConfigurationLoader {
     return primarySchema;
   }
 
-  private static void checkExistence(final String name) {
-    InputStream is = ConfigurationLoader.class.getResourceAsStream(name);
-    log.info("--> Resource: " + name + " -- " + (is == null ? "does not exist" : "exists") + ".");
-  }
-
   private static Schema getFragmentSchema() throws SAXException {
     if (fragmentSchema == null) {
       SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+      LSResourceResolver xsdResolver = new XSDResolver();
+      factory.setResourceResolver(xsdResolver);
+
       InputStream is = null;
       try {
         is = ConfigurationLoader.class.getResourceAsStream(FRAGMENT_XSD_PATH);
@@ -387,6 +389,142 @@ public class ConfigurationLoader {
       }
     }
     return fragmentSchema;
+  }
+
+  // Inner classes
+
+  private static class XSDResolver implements LSResourceResolver {
+
+    @Override
+    public LSInput resolveResource(final String type, final String namespaceURI, final String publicId,
+        final String systemId, final String baseURI) {
+      log.debug("[RESOLVE]\n  type=" + type + "\n  namespaceURI=" + namespaceURI + "\n  publicId=" + publicId
+          + "\n  systemId=" + systemId + "\n  baseURI=" + baseURI);
+      return new XSDInput(type, namespaceURI, publicId, systemId, baseURI);
+    }
+
+  }
+
+  private static class XSDInput implements LSInput {
+
+    @SuppressWarnings("unused")
+    private String type;
+    @SuppressWarnings("unused")
+    private String namespaceURI;
+    private String publicId;
+    private String systemId;
+    private String baseURI;
+
+    public XSDInput(final String type, final String namespaceURI, final String publicId, final String systemId,
+        final String baseURI) {
+      this.type = type;
+      this.namespaceURI = namespaceURI;
+      this.publicId = publicId;
+      this.systemId = systemId;
+      this.baseURI = baseURI;
+    }
+
+    @Override
+    public Reader getCharacterStream() {
+      log.debug("{get reader} this.systemId=" + this.systemId);
+      InputStream is = ConfigurationLoader.class.getResourceAsStream("/" + this.systemId);
+      log.debug("{get reader} is=" + is);
+      if (is != null) {
+        return new InputStreamReader(is);
+      } else {
+        return null;
+      }
+    }
+
+    @Override
+    public void setCharacterStream(final Reader characterStream) {
+      log.debug("{set reader} characterStream=" + characterStream);
+      // Ignore
+    }
+
+    @Override
+    public InputStream getByteStream() {
+      log.debug("{ignore}");
+      // Ignore
+      return null;
+    }
+
+    @Override
+    public void setByteStream(InputStream byteStream) {
+      log.debug("{set bytestream} byteStream=" + byteStream);
+      // Ignore
+    }
+
+    @Override
+    public String getStringData() {
+      log.debug("{ignore}");
+      // Ignore
+      return null;
+    }
+
+    @Override
+    public void setStringData(String stringData) {
+      log.debug("{set stringData} stringData=" + stringData);
+      // Ignore
+    }
+
+    @Override
+    public String getSystemId() {
+      return this.systemId;
+    }
+
+    @Override
+    public void setSystemId(String systemId) {
+      log.debug("{ignore} systemId=" + systemId);
+      // Ignore
+    }
+
+    @Override
+    public String getPublicId() {
+      return this.publicId;
+    }
+
+    @Override
+    public void setPublicId(String publicId) {
+      log.debug("{ignore} publicId=" + publicId);
+      // Ignore
+    }
+
+    @Override
+    public String getBaseURI() {
+      return this.baseURI;
+    }
+
+    @Override
+    public void setBaseURI(String baseURI) {
+      log.debug("{ignore} baseURI=" + baseURI);
+      // Ignore
+    }
+
+    @Override
+    public String getEncoding() {
+      log.debug("{ignore}");
+      return null;
+    }
+
+    @Override
+    public void setEncoding(String encoding) {
+      log.debug("{ignore} encoding=" + encoding);
+      // Ignore
+    }
+
+    @Override
+    public boolean getCertifiedText() {
+      log.debug("{ignore}");
+      return false;
+    }
+
+    @Override
+    public void setCertifiedText(boolean certifiedText) {
+      log.debug("{ignore} certifiedText=" + certifiedText);
+      // Ignore
+    }
+
   }
 
 }

@@ -210,23 +210,25 @@
 
   <target name="prepare-xsd">
 
-    <loadfile property="common.xsd" srcFile="src/main/xml/hotrod-common.xsd" />
+    <!--
+    <loadfile property="common.xsd" srcFile="src/main/xml/parts/hotrod-common.xsd" />
 
-    <copy file="src/main/xml/hotrod-primary-head.xsd"
-          tofile="${xsd.build.dir}/hotrod.xsd"
+    <copy file="src/main/xml/parts/hotrod-primary-head.xsd"
+          tofile="src/main/xml/hotrod.xsd"
           overwrite="true">
       <filterset>
         <filter token="common-xsd" value="${common.xsd}" />
       </filterset>
     </copy>
 
-    <copy file="src/main/xml/hotrod-fragment-head.xsd"
-          tofile="${xsd.build.dir}/hotrod-fragment.xsd"
+    <copy file="src/main/xml/parts/hotrod-fragment-head.xsd"
+          tofile="src/main/xml/hotrod-fragment.xsd"
           overwrite="true">
       <filterset>
         <filter token="common-xsd" value="${common.xsd}" />
       </filterset>
     </copy>
+    -->
 
   </target>
 
@@ -241,12 +243,13 @@
       <fileset dir="${main.build.dir}" />
       <zipfileset src="${lib.dir}/log4j-1.2.17.jar" />
       <zipfileset src="${lib.dir}/tartarus-${tartarus.version}.jar" />
-      <fileset file="${xsd.build.dir}/hotrod.xsd" />
-      <fileset file="${xsd.build.dir}/hotrod-fragment.xsd" />
+      <fileset file="src/main/xml/hotrod.xsd" />
+      <fileset file="src/main/xml/hotrod-fragment.xsd" />
+      <fileset file="src/main/xml/hotrod-common.xsd" />
       <fileset file="src/main/metadata/log4j.properties" />
     </jar>
   </target>
-
+  
   <target name="build" depends="jar" />
 
   <target name="clean-build" depends="clean, build" />
