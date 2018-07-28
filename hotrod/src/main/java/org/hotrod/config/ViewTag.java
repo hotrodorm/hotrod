@@ -33,6 +33,8 @@ public class ViewTag extends AbstractEntityDAOTag {
   // Properties
 
   private String name = null;
+  private String catalog = null;
+  private String schema = null;
   private String javaClassName = null;
   private List<ColumnTag> columns = new ArrayList<ColumnTag>();
 
@@ -54,6 +56,8 @@ public class ViewTag extends AbstractEntityDAOTag {
     d.copyCommon(this);
 
     d.name = this.name;
+    d.catalog = this.catalog;
+    d.schema = this.schema;
     d.javaClassName = this.javaClassName;
     d.columns = this.columns;
 
@@ -69,6 +73,16 @@ public class ViewTag extends AbstractEntityDAOTag {
   @XmlAttribute
   public void setName(final String name) {
     this.name = name;
+  }
+
+  @XmlAttribute
+  public void setCatalog(final String catalog) {
+    this.catalog = catalog;
+  }
+
+  @XmlAttribute
+  public void setSchema(final String schema) {
+    this.schema = schema;
   }
 
   @XmlAttribute(name = "java-name")
@@ -101,6 +115,10 @@ public class ViewTag extends AbstractEntityDAOTag {
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
               + "Must specify a database view name.");
     }
+    
+    // catalog
+    
+    // schema
 
     // java-name
 

@@ -27,6 +27,8 @@
       </xsd:choice>
     </xsd:sequence>
     <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="catalog" type="xsd:string" />
+    <xsd:attribute name="schema" type="xsd:string" />
     <xsd:attribute name="java-name" type="xsd:string" />
     <xsd:attribute name="column-seam" type="xsd:string" />
   </xsd:complexType>
@@ -108,6 +110,8 @@
       </xsd:choice>
     </xsd:sequence>
     <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="catalog" type="xsd:string" />
+    <xsd:attribute name="schema" type="xsd:string" />
     <xsd:attribute name="java-name" type="xsd:string" />
   </xsd:complexType>
 
@@ -118,6 +122,8 @@
       <xsd:element name="non-persistent" type="non-persistent-type" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
     <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="catalog" type="xsd:string" />
+    <xsd:attribute name="schema" type="xsd:string" />
     <xsd:attribute name="java-name" type="xsd:string" />
     <xsd:attribute name="name-column" type="xsd:string" use="required" />
   </xsd:complexType>
@@ -129,7 +135,7 @@
     <xsd:attribute name="name" type="xsd:string" use="required" />
   </xsd:complexType>
 
-  <!-- select (dao) -->
+  <!-- select DAO [deprecated] -->
   
   <xsd:complexType name="select-dao-type" mixed="true">
     <xsd:sequence>
@@ -190,6 +196,8 @@
     </xsd:choice>
     <xsd:attribute name="table" type="xsd:string" />
     <xsd:attribute name="view" type="xsd:string" />
+    <xsd:attribute name="catalog" type="xsd:string" />
+    <xsd:attribute name="schema" type="xsd:string" />
     <xsd:attribute name="id" type="xsd:string" />
     <xsd:attribute name="property" type="xsd:string" />
     <xsd:attribute name="alias" type="xsd:string" />
@@ -206,6 +214,8 @@
     </xsd:choice>
     <xsd:attribute name="table" type="xsd:string" />
     <xsd:attribute name="view" type="xsd:string" />
+    <xsd:attribute name="catalog" type="xsd:string" />
+    <xsd:attribute name="schema" type="xsd:string" />
     <xsd:attribute name="id" type="xsd:string" />
     <xsd:attribute name="property" type="xsd:string" />
     <xsd:attribute name="alias" type="xsd:string" />
@@ -222,6 +232,8 @@
     </xsd:choice>
     <xsd:attribute name="table" type="xsd:string" />
     <xsd:attribute name="view" type="xsd:string" />
+    <xsd:attribute name="catalog" type="xsd:string" />
+    <xsd:attribute name="schema" type="xsd:string" />
     <xsd:attribute name="id" type="xsd:string" />
     <xsd:attribute name="property" type="xsd:string" />
     <xsd:attribute name="alias" type="xsd:string" />

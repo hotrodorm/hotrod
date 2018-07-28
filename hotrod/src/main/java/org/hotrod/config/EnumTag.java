@@ -49,6 +49,8 @@ public class EnumTag extends AbstractEntityDAOTag {
   // Properties
 
   private String name = null;
+  private String catalog = null;
+  private String schema = null;
   private String javaClassName = null;
   private String nameCol = null;
   private List<NonPersistentTag> nonPersistents = new ArrayList<NonPersistentTag>();
@@ -81,6 +83,8 @@ public class EnumTag extends AbstractEntityDAOTag {
     d.copyCommon(this);
 
     d.name = this.name;
+    d.catalog = this.catalog;
+    d.schema = this.schema;
     d.javaClassName = this.javaClassName;
     d.nameCol = this.nameCol;
     d.nonPersistents = this.nonPersistents;
@@ -103,6 +107,16 @@ public class EnumTag extends AbstractEntityDAOTag {
   @XmlAttribute
   public void setName(final String column) {
     this.name = column;
+  }
+
+  @XmlAttribute
+  public void setCatalog(final String catalog) {
+    this.catalog = catalog;
+  }
+
+  @XmlAttribute
+  public void setSchema(final String schema) {
+    this.schema = schema;
   }
 
   @XmlAttribute(name = "java-name")
@@ -138,6 +152,10 @@ public class EnumTag extends AbstractEntityDAOTag {
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
               + "Must specify the name of a database table.");
     }
+    
+    // catalog
+    
+    // schema
 
     // java-name
 
