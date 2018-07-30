@@ -23,7 +23,7 @@ public class IdentifierTests {
     System.out.println("JavaClassIdentifier    -> " + id.getJavaClassIdentifier());
     System.out.println("JavaMemberIdentifier   -> " + id.getJavaMemberIdentifier());
     System.out.println("JavaConstantIdentifier -> " + id.getJavaConstantIdentifier());
-    System.out.println("MapperFileIdentifier   -> " + id.getMapperFileIdentifier());
+    System.out.println("MapperFileIdentifier   -> " + id.getMapperIdentifier());
   }
 
 }

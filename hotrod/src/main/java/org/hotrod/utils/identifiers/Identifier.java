@@ -80,11 +80,11 @@ public abstract class Identifier implements Serializable {
     return id.toString();
   }
 
-  public String getMapperIdentifier() {
-    return this.getJavaClassIdentifier();
-  }
+//  public String getMapperIdentifier() {
+//    return this.getJavaClassIdentifier();
+//  }
 
-  public String getMapperFileIdentifier() {
+  public String getMapperIdentifier() {
     ListWriter lw = new ListWriter("-");
     for (String c : this.javaChunks) {
       lw.add(c.toLowerCase());

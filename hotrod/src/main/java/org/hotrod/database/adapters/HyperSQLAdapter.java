@@ -194,7 +194,8 @@ public class HyperSQLAdapter extends DatabaseAdapter {
   @Override
   public String renderSQLName(final String canonicalName) {
     return canonicalName == null ? null
-        : (canonicalName.matches(UNQUOTED_IDENTIFIER_PATTERN) ? canonicalName : super.quote(canonicalName));
+        : (canonicalName.matches(UNQUOTED_IDENTIFIER_PATTERN) ? canonicalName.toLowerCase()
+            : super.quote(canonicalName));
   }
 
   @Override

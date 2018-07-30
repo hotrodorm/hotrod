@@ -1,0 +1,6 @@
+String txt = "abc_def ghi";
+String[] parts = txt.split("[_ ]");
+System.out.println("=== Parts ===");
+for (String p : parts) {
+  System.out.println(" - " + p);  
+}

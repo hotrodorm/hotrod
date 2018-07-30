@@ -1227,7 +1227,7 @@ public class Mapper extends GeneratableObject {
   }
 
   public static String getSourceFile(final Identifier id) {
-    return "primitives-" + id.getMapperFileIdentifier() + ".xml";
+    return "primitives-" + id.getMapperIdentifier() + ".xml";
   }
 
   public String getMapperIdSelectByPK() {
