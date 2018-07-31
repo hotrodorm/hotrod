@@ -95,8 +95,9 @@ public class Id {
     // String canonicalSQLName = adapter.canonizeName(sqlName, quoted);
     // List<String> canonicalParts = splitSQL(sqlName);
     String javaMemberName = javaClassName.substring(0, 1).toLowerCase() + javaClassName.substring(1);
-//    Id id = new Id(adapter, canonicalParts, canonicalSQLName, javaClassName, javaMemberName);
-//    return id;
+    // Id id = new Id(adapter, canonicalParts, canonicalSQLName, javaClassName,
+    // javaMemberName);
+    // return id;
     return null;
   }
 
@@ -148,11 +149,24 @@ public class Id {
     return this.javaSetter;
   }
 
+  public List<String> getCanonicalParts() {
+    return canonicalParts;
+  }
+
   // Helper -- Parsing
 
   public static List<String> splitSQL(final String sqlName) {
     List<String> parts = new ArrayList<String>();
-    for (String p : sqlName.split("[_ ]")) { // split on "_" and space
+    System.out.println("=== sqlName='" + sqlName + "'");
+
+    if (sqlName.matches("_+")) {
+      parts.add("_");
+      return parts;
+    }
+
+    String separator = sqlName.contains(" ") ? " " : "_";
+    for (String p : sqlName.split(separator)) { // split on "_" and space
+      System.out.println(" - p='" + p + "'");
       if (!p.isEmpty()) {
         parts.add(p.toLowerCase());
       }
