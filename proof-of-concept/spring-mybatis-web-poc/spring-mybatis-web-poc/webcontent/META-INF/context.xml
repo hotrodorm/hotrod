@@ -4,8 +4,9 @@
   <Manager pathname="" />
 
   <Resource name="jdbc/myDatasource1" auth="Container" type="javax.sql.DataSource"
-    maxActive="100" maxIdle="30" maxWait="10000" driverClassName="org.apache.derby.jdbc.ClientDriver"
-    url="jdbc:derby://192.168.56.26:1527/hotrod" username="schema1"
-    password="b" />
+    maxActive="100" maxIdle="30" maxWait="10000" 
+    driverClassName="org.hsqldb.jdbcDriver"
+    url="jdbc:hsqldb:hsql://localhost:9001/xdb" username="SA"
+    password="" />
 
 </Context>
