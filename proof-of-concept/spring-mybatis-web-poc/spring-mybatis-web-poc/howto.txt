@@ -1,10 +1,35 @@
-1. Crear una base de datos Derby, usando el script: database.sql
+1. Ejecutar HyperSQL en modo server:
 
-2. En el archivo webcontent/META-INF/context.xml configurar el datasource.
+  ./run-hypersql.sh
+   
+2. Crear una base de datos Derby, usando el script: database.sql
 
-3. Desplegar el proyecto en Tomcat como aplicatión web.
+Usando cualquier cliente JDBC, ejecutar el script. Datos para JDBC:
+  * classpath:    lib/hsqldb-2.3.4.jar
+  * driver class: org.hsqldb.jdbcDriver"
+  * url:          jdbc:hsqldb:hsql://localhost:9001/xdb
+  * username:     SA
+  * password:     
 
-4. La página inicial (única) es:
+3. Instalar Tomcat y agregar el driver JDBC (hsqldb-2.3.4.jar) en TOMCAT_HOME/lib.
+
+4. Agregar Tomcat como web server del proyecto. 
+
+  2.a) Agregarlo usando:
+  
+    [Eclipse] -> Window -> Show View -> Servers
+
+  2.b) Luego desplegar la aplicación web "spring-mybatis-web-poc" en él.
+
+  2.c) Revisar que el servidor correcto está seleccionado en el proyecto.
+
+    Right-click -> Properties -> Project Facets -> Dynamic Web Project -> Runtime  
+
+5. En el archivo webcontent/META-INF/context.xml configurar el datasource (ya está configurado).
+
+6. Desplegar el proyecto en Tomcat como aplicatión web.
+
+7. La página inicial (única) es:
  
      http://localhost:8080/spring-mybatis-web-poc/transferir.jsp
      
