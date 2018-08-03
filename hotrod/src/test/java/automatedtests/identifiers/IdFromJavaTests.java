@@ -13,7 +13,7 @@ public class IdFromJavaTests extends TestCase {
     super(txt);
   }
 
-  public void testFromSQLCommon() throws SQLException, InvalidIdentifierException {
+  public void testFromJavaClass() throws SQLException, InvalidIdentifierException {
 
     // --------------------------- Cl - m -- Co - d -- get --- set --- tok
 
@@ -29,6 +29,26 @@ public class IdFromJavaTests extends TestCase {
     } catch (InvalidIdentifierException e) {
       // OK
     }
+
+    try {
+      matches(Id.fromJavaMember(" A"), "C", "m", "X", "-", "get", "set", "_");
+      fail("A Java class must start with a lower case letter.");
+    } catch (InvalidIdentifierException e) {
+      // OK
+    }
+    try {
+      matches(Id.fromJavaMember("A "), "C", "m", "X", "-", "get", "set", "_");
+      fail("A Java class cannot include other non-alphaumeric characters.");
+    } catch (InvalidIdentifierException e) {
+      // OK
+    }
+    try {
+      matches(Id.fromJavaMember("A B"), "C", "m", "X", "-", "get", "set", "_");
+      fail("A Java class cannot include other non-alphaumeric characters.");
+    } catch (InvalidIdentifierException e) {
+      // OK
+    }
+
     matches(Id.fromJavaClass("A"), "A", "a", "A", "a", "getA", "setA", "a");
     matches(Id.fromJavaClass("_"), "_", "_", "_", "_", "get_", "set_", "_");
     matches(Id.fromJavaClass("__"), "__", "__", "__", "__", "get__", "set__", "__");
@@ -76,6 +96,100 @@ public class IdFromJavaTests extends TestCase {
     matches(Id.fromJavaClass("AAABbb"), "AAABbb", "aaaBbb", "AAA_BBB", "aaa-bbb", "getAAABbb", "setAAABbb", "AAA",
         "bbb");
     matches(Id.fromJavaClass("AaaBBB"), "AaaBBB", "aaaBBB", "AAA_BBB", "aaa-bbb", "getAaaBBB", "setAaaBBB", "aaa",
+        "BBB");
+
+  }
+
+  public void testFromJavaMember() throws SQLException, InvalidIdentifierException {
+
+    // --------------------------- Cl - m -- Co - d -- get --- set --- tok
+
+    try {
+      matches(Id.fromJavaMember(" a"), "C", "m", "X", "-", "get", "set", "_");
+      fail("A Java member must start with a lower case letter.");
+    } catch (InvalidIdentifierException e) {
+      // OK
+    }
+    try {
+      matches(Id.fromJavaMember("a "), "C", "m", "X", "-", "get", "set", "_");
+      fail("A Java member cannot include other non-alphaumeric characters.");
+    } catch (InvalidIdentifierException e) {
+      // OK
+    }
+    try {
+      matches(Id.fromJavaMember("a b"), "C", "m", "X", "-", "get", "set", "_");
+      fail("A Java member cannot include other non-alphaumeric characters.");
+    } catch (InvalidIdentifierException e) {
+      // OK
+    }
+
+    // a
+    // A
+    // _
+    // __
+    // ___
+
+    matches(Id.fromJavaMember("a"), "A", "a", "A", "a", "getA", "setA", "a");
+    try {
+      matches(Id.fromJavaMember("A"), "C", "m", "X", "-", "get", "set", "A");
+      fail("A Java member cannot start with an upper case letter.");
+    } catch (InvalidIdentifierException e) {
+      // OK
+    }
+    matches(Id.fromJavaMember("_"), "_", "_", "_", "_", "get_", "set_", "_");
+    matches(Id.fromJavaMember("__"), "__", "__", "__", "__", "get__", "set__", "__");
+    matches(Id.fromJavaMember("___"), "___", "___", "___", "___", "get___", "set___", "___");
+
+    // _B
+    // _aB
+    // a_aB
+
+    matches(Id.fromJavaMember("_B"), "_B", "_B", "__B", "_-b", "get_B", "set_B", "_", "b");
+    matches(Id.fromJavaMember("_aB"), "_aB", "_aB", "_A_B", "_a-b", "get_aB", "set_aB", "_a", "b");
+    matches(Id.fromJavaMember("a_aB"), "A_aB", "a_aB", "A_A_B", "a_a-b", "getA_aB", "setA_aB", "a_a", "b");
+
+    // aBb
+    // aBB
+    // aaBb
+    // aaBB
+    // a1Bb
+    // a1B2
+    // a1aB2b
+
+    matches(Id.fromJavaMember("aBb"), "ABb", "aBb", "A_BB", "a-bb", "getABb", "setABb", "a", "bb");
+    matches(Id.fromJavaMember("aBB"), "ABB", "aBB", "A_BB", "a-bb", "getABB", "setABB", "a", "BB");
+    matches(Id.fromJavaMember("aaBb"), "AaBb", "aaBb", "AA_BB", "aa-bb", "getAaBb", "setAaBb", "aa", "bb");
+    matches(Id.fromJavaMember("aaBB"), "AaBB", "aaBB", "AA_BB", "aa-bb", "getAaBB", "setAaBB", "aa", "BB");
+    matches(Id.fromJavaMember("a1Bb"), "A1Bb", "a1Bb", "A1_BB", "a1-bb", "getA1Bb", "setA1Bb", "a1", "bb");
+    matches(Id.fromJavaMember("a1B2"), "A1B2", "a1B2", "A1_B2", "a1-b2", "getA1B2", "setA1B2", "a1", "b2");
+    matches(Id.fromJavaMember("a1aB2b"), "A1aB2b", "a1aB2b", "A1A_B2B", "a1a-b2b", "getA1aB2b", "setA1aB2b", "a1a",
+        "b2b");
+
+    // a_aB_b
+    // _aB_
+    // _aB_b
+    // a_B_
+    // a_B_b
+
+    matches(Id.fromJavaMember("a_aB_b"), "A_aB_b", "a_aB_b", "A_A_B_B", "a_a-b_b", "getA_aB_b", "setA_aB_b", "a_a",
+        "b_b");
+    matches(Id.fromJavaMember("_aB_"), "_aB_", "_aB_", "_A_B_", "_a-b_", "get_aB_", "set_aB_", "_a", "b_");
+    matches(Id.fromJavaMember("_aB_b"), "_aB_b", "_aB_b", "_A_B_B", "_a-b_b", "get_aB_b", "set_aB_b", "_a", "b_b");
+    matches(Id.fromJavaMember("a_B_"), "A_B_", "a_B_", "A__B_", "a_-b_", "getA_B_", "setA_B_", "a_", "b_");
+    matches(Id.fromJavaMember("a_B_b"), "A_B_b", "a_B_b", "A__B_B", "a_-b_b", "getA_B_b", "setA_B_b", "a_", "b_b");
+
+    // a123a456B789
+
+    matches(Id.fromJavaMember("a123a456B789"), "A123a456B789", "a123a456B789", "A123A456_B789", "a123a456-b789",
+        "getA123a456B789", "setA123a456B789", "a123a456", "b789");
+
+    // aaaBb
+
+    matches(Id.fromJavaMember("aaaBb"), "AaaBb", "aaaBb", "AAA_BB", "aaa-bb", "getAaaBb", "setAaaBb", "aaa", "bb");
+
+    // aaaBBB
+
+    matches(Id.fromJavaMember("aaaBBB"), "AaaBBB", "aaaBBB", "AAA_BBB", "aaa-bbb", "getAaaBBB", "setAaaBBB", "aaa",
         "BBB");
 
   }
