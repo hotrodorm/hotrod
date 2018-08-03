@@ -44,7 +44,7 @@ public class SUtils {
     return sb.toString();
   }
 
-  public static String capitalizeFirst(final String txt) {
+  public static String sentenceFormat(final String txt) {
     if (txt == null) {
       return null;
     }

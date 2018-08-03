@@ -23,11 +23,11 @@ public class Id {
   private String mapperName; // ------- my-property, car--price
 
   private DatabaseAdapter adapter;
-  private List<String> canonicalParts;
+  private List<NamePart> canonicalParts;
 
   // Constructor
 
-  private Id(final DatabaseAdapter adapter, final List<String> canonicalParts, final String canonicalSQLName,
+  private Id(final DatabaseAdapter adapter, final List<NamePart> canonicalParts, final String canonicalSQLName,
       final String javaClassName, final String javaMemberName) throws InvalidIdentifierException {
 
     if (canonicalSQLName != null && adapter == null) {
@@ -71,16 +71,22 @@ public class Id {
 
   }
 
-  public static Id fromSQL(final String sqlName, final boolean quoted, final DatabaseAdapter adapter)
+  public static Id fromSQL(final String commonName, final boolean quoted, final DatabaseAdapter adapter)
       throws InvalidIdentifierException {
     if (adapter == null) {
       throw new InvalidIdentifierException("'adapter' cannot be null.");
     }
-    if (sqlName == null || sqlName.isEmpty()) {
+    if (commonName == null || commonName.isEmpty()) {
       throw new InvalidIdentifierException("'sqlName' cannot be null or empty.");
     }
-    String canonicalSQLName = adapter.canonizeName(sqlName, quoted);
-    List<String> canonicalParts = splitSQL(sqlName);
+
+    String canonicalSQLName = adapter.canonizeName(commonName, quoted);
+
+    List<NamePart> canonicalParts = splitSQL(commonName);
+    if (canonicalParts == null || canonicalParts.isEmpty()) {
+      throw new InvalidIdentifierException("SQL name must produce at least one part");
+    }
+
     String javaClassName = null;
     String javaMemberName = null;
     Id id = new Id(adapter, canonicalParts, canonicalSQLName, javaClassName, javaMemberName);
@@ -91,18 +97,38 @@ public class Id {
     if (javaClassName == null || javaClassName.isEmpty()) {
       throw new InvalidIdentifierException("'javaClassName' cannot be null or empty.");
     }
+    if (!javaClassName.matches("[A-Z_][A-Za-z0-9_]*")) {
+      throw new InvalidIdentifierException(
+          "'javaClassName' must start with an upper case letter or underscore, and continue with letters, digits, or underscores.");
+    }
     DatabaseAdapter adapter = null;
-    // String canonicalSQLName = adapter.canonizeName(sqlName, quoted);
-    // List<String> canonicalParts = splitSQL(sqlName);
-    String javaMemberName = javaClassName.substring(0, 1).toLowerCase() + javaClassName.substring(1);
-    // Id id = new Id(adapter, canonicalParts, canonicalSQLName, javaClassName,
-    // javaMemberName);
-    // return id;
-    return null;
+    String canonicalSQLName = null;
+    List<NamePart> canonicalParts = splitJava(javaClassName);
+    if (canonicalParts == null || canonicalParts.isEmpty()) {
+      throw new InvalidIdentifierException("javaClassName must produce at least one part");
+    }
+    String javaMemberName = null;
+    Id id = new Id(adapter, canonicalParts, canonicalSQLName, javaClassName, javaMemberName);
+    return id;
   }
 
-  public static Id fromJavaMember(final String javaMemberName) {
-    return null;
+  public static Id fromJavaMember(final String javaMemberName) throws InvalidIdentifierException {
+    if (javaMemberName == null || javaMemberName.isEmpty()) {
+      throw new InvalidIdentifierException("'javaMemberName' cannot be null or empty.");
+    }
+    if (!javaMemberName.matches("[a-z_][A-Za-z0-9_]*")) {
+      throw new InvalidIdentifierException(
+          "'javaMemberName' must start with a lower case letter or underscore, and continue with letters, digits, or underscores.");
+    }
+    DatabaseAdapter adapter = null;
+    String canonicalSQLName = null;
+    List<NamePart> canonicalParts = splitJava(javaMemberName);
+    if (canonicalParts == null || canonicalParts.isEmpty()) {
+      throw new InvalidIdentifierException("javaClassName must produce at least one part");
+    }
+    String javaClassName = null;
+    Id id = new Id(adapter, canonicalParts, canonicalSQLName, javaClassName, javaMemberName);
+    return id;
   }
 
   public static Id fromSQLAndJavaClass(final String sqlName, final boolean quoted, final DatabaseAdapter adapter,
@@ -137,7 +163,7 @@ public class Id {
     return javaConstantName;
   }
 
-  public String getMapperName() {
+  public String getDashedName() {
     return mapperName;
   }
 
@@ -149,33 +175,38 @@ public class Id {
     return this.javaSetter;
   }
 
-  public List<String> getCanonicalParts() {
+  public List<NamePart> getCanonicalParts() {
     return canonicalParts;
   }
 
   // Helper -- Parsing
 
-  public static List<String> splitSQL(final String sqlName) {
-    List<String> parts = new ArrayList<String>();
-    System.out.println("=== sqlName='" + sqlName + "'");
+  public static List<NamePart> splitSQL(final String sqlName) {
+    List<NamePart> parts = new ArrayList<NamePart>();
 
     if (sqlName.matches("_+")) {
-      parts.add("_");
+      parts.add(new NamePart(sqlName));
+      return parts;
+    }
+
+    if (sqlName.matches("\\ +")) {
+      String repeat = repeat("_", sqlName.length());
+      parts.add(new NamePart(repeat));
       return parts;
     }
 
     String separator = sqlName.contains(" ") ? " " : "_";
     for (String p : sqlName.split(separator)) { // split on "_" and space
-      System.out.println(" - p='" + p + "'");
       if (!p.isEmpty()) {
-        parts.add(p.toLowerCase());
+        parts.add(new NamePart(p));
       }
     }
     return parts;
   }
 
-  public static List<String> splitJava(final String javaName) {
-    List<String> parts = new ArrayList<String>();
+  public static List<NamePart> splitJava(final String javaName) {
+
+    List<NamePart> parts = new ArrayList<NamePart>();
 
     // null or empty
 
@@ -200,11 +231,13 @@ public class Id {
     // AAABb
 
     while (lastStart < javaName.length()) {
+      log(" - pos=" + lastStart);
 
       // Single char left
 
-      if (javaName.length() == 1) {
-        parts.add(javaName.toLowerCase());
+      if (javaName.length() - lastStart == 1) {
+        log(" - Single char left");
+        parts.add(new NamePart(javaName.substring(lastStart).toLowerCase()));
         return parts;
       }
 
@@ -214,6 +247,7 @@ public class Id {
       boolean secondUpper = Character.isUpperCase(javaName.charAt(lastStart + 1));
 
       if (firstUpper && secondUpper) { // acronym mode (full upper)
+        log(" - acronym mode (full upper)");
         int pos = lastStart + 2;
         boolean goOn = true;
         while (goOn && pos < javaName.length()) {
@@ -224,14 +258,15 @@ public class Id {
           }
         }
         if (goOn) {
-          parts.add(javaName.substring(lastStart).toLowerCase());
+          parts.add(new NamePart(javaName.substring(lastStart).toLowerCase(), true));
           lastStart = javaName.length();
         } else {
-          parts.add(javaName.substring(lastStart, pos - 1).toLowerCase());
+          parts.add(new NamePart(javaName.substring(lastStart, pos - 1).toLowerCase(), true));
           lastStart = pos - 1;
         }
 
       } else if (firstUpper && !secondUpper) { // class mode (upper + lower)
+        log(" - class mode (upper + lower)");
         int pos = lastStart + 2;
         boolean goOn = true;
         while (goOn && pos < javaName.length()) {
@@ -242,18 +277,20 @@ public class Id {
           }
         }
         if (goOn) {
-          parts.add(javaName.substring(lastStart).toLowerCase());
+          parts.add(new NamePart(javaName.substring(lastStart).toLowerCase()));
           lastStart = javaName.length();
         } else {
-          parts.add(javaName.substring(lastStart, pos).toLowerCase());
+          parts.add(new NamePart(javaName.substring(lastStart, pos).toLowerCase()));
           lastStart = pos;
         }
 
       } else if (!firstUpper && secondUpper) { // single-letter - split!
-        parts.add(javaName.substring(lastStart, lastStart + 1).toLowerCase());
+        log(" - single-letter - split!");
+        parts.add(new NamePart(javaName.substring(lastStart, lastStart + 1).toLowerCase()));
         lastStart++;
 
       } else { // member mode (full lower)
+        log(" - member mode (full lower)");
         int pos = lastStart + 2;
         boolean goOn = true;
         while (goOn && pos < javaName.length()) {
@@ -264,10 +301,10 @@ public class Id {
           }
         }
         if (goOn) {
-          parts.add(javaName.substring(lastStart).toLowerCase());
+          parts.add(new NamePart(javaName.substring(lastStart).toLowerCase()));
           lastStart = javaName.length();
         } else {
-          parts.add(javaName.substring(lastStart, pos).toLowerCase());
+          parts.add(new NamePart(javaName.substring(lastStart, pos).toLowerCase()));
           lastStart = pos;
         }
       }
@@ -279,54 +316,137 @@ public class Id {
 
   // Helpers -- Rendering
 
-  private String assembleJavaClassName(final List<String> canonicalParts) {
+  private String assembleJavaClassName(final List<NamePart> canonicalParts) {
     StringBuilder sb = new StringBuilder();
-    for (String p : canonicalParts) {
-      sb.append(SUtils.capitalize(p));
+    if (canonicalParts != null && !canonicalParts.isEmpty()
+        && !canonicalParts.get(0).getToken().matches("[A-Za-z_].*")) {
+      sb.append("_");
     }
-    return sb.toString();
-  }
-
-  private String assembleJavaMemberName(final List<String> canonicalParts) {
-    StringBuilder sb = new StringBuilder();
-    boolean first = true;
-    for (String p : canonicalParts) {
-      if (first) {
-        first = false;
-        sb.append(p.toLowerCase());
+    for (NamePart p : canonicalParts) {
+      if (p.isAcronym()) {
+        sb.append(p.getToken().toUpperCase());
       } else {
-        sb.append(SUtils.capitalize(p));
+        sb.append(SUtils.sentenceFormat(p.getToken().toLowerCase()));
       }
     }
     return sb.toString();
   }
 
-  private String assembleJavaConstantName(final List<String> canonicalParts) {
+  private String assembleJavaMemberName(final List<NamePart> canonicalParts) {
     StringBuilder sb = new StringBuilder();
+    if (canonicalParts != null && !canonicalParts.isEmpty()
+        && !canonicalParts.get(0).getToken().matches("[A-Za-z_].*")) {
+      sb.append("_");
+    }
     boolean first = true;
-    for (String p : canonicalParts) {
+    for (NamePart p : canonicalParts) {
       if (first) {
-        first = false;
+        sb.append(p.getToken().toLowerCase());
       } else {
+        if (p.isAcronym()) {
+          sb.append(p.getToken().toUpperCase());
+        } else {
+          sb.append(SUtils.sentenceFormat(p.getToken().toLowerCase()));
+        }
+      }
+      first = false;
+    }
+    return sb.toString();
+  }
+
+  private String assembleJavaConstantName(final List<NamePart> canonicalParts) {
+    StringBuilder sb = new StringBuilder();
+    if (canonicalParts != null && !canonicalParts.isEmpty()
+        && !canonicalParts.get(0).getToken().matches("[A-Za-z_].*")) {
+      sb.append("_");
+    }
+    boolean first = true;
+    for (NamePart p : canonicalParts) {
+      if (!first) {
         sb.append("_");
       }
-      sb.append(p.toUpperCase());
+      sb.append(p.getToken().toUpperCase());
+      first = false;
     }
     return sb.toString();
   }
 
-  private String assembleMapperName(final List<String> canonicalParts) {
+  private String assembleMapperName(final List<NamePart> canonicalParts) {
     StringBuilder sb = new StringBuilder();
     boolean first = true;
-    for (String p : canonicalParts) {
-      if (first) {
-        first = false;
-      } else {
+    for (NamePart p : canonicalParts) {
+      if (!first) {
         sb.append("-");
       }
-      sb.append(p.toLowerCase());
+      sb.append(p.getToken().toLowerCase());
+      first = false;
     }
     return sb.toString();
+  }
+
+  private static String repeat(final String s, final int times) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < times; i++) {
+      sb.append(s);
+    }
+    return sb.toString();
+  }
+
+  private static void log(final String txt) {
+    // System.out.println("[LOG] " + txt);
+  }
+
+  public static class NamePart {
+
+    private String token;
+    private boolean acronym;
+
+    private NamePart(final String token, final boolean acronym) {
+      if (token == null) {
+        throw new IllegalArgumentException("Name part 'token' can not be null");
+      }
+      this.token = token;
+      this.acronym = acronym;
+    }
+
+    private NamePart(final String token) {
+      if (token == null) {
+        throw new IllegalArgumentException("Name part 'token' can not be null");
+      }
+      this.token = token;
+      this.acronym = false;
+    }
+
+    public String getToken() {
+      return token;
+    }
+
+    public boolean isAcronym() {
+      return acronym;
+    }
+
+    // equals
+
+    @Override
+    public boolean equals(final Object obj) {
+      if (obj == null) {
+        return false;
+      }
+      // As a NamePart
+      try {
+        NamePart p = (NamePart) obj;
+        return p.acronym = this.acronym && p.token.equals(this.token);
+      } catch (ClassCastException e) {
+        // As a String
+        try {
+          String s = (String) obj;
+          return this.acronym ? this.token.toUpperCase().equals(s) : this.token.equals(s);
+        } catch (ClassCastException e2) {
+          return false;
+        }
+      }
+    }
+
   }
 
   // Exceptions

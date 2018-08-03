@@ -33,7 +33,7 @@ public abstract class DatabaseAdapter implements Serializable {
 
   protected HotRodConfigTag config;
   protected transient DatabaseMetaData databaseMedaData;
-  private String identifierQuoteString;
+  protected String identifierQuoteString;
 
   private Map<String, DataType> dataTypes;
 

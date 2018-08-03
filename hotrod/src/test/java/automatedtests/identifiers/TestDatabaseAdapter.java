@@ -15,11 +15,72 @@ import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
-public class MyDatabaseAdapter extends DatabaseAdapter {
+public class TestDatabaseAdapter extends DatabaseAdapter {
 
-  public MyDatabaseAdapter(HotRodConfigTag config, DatabaseMetaData dm) throws SQLException {
+  public static enum CaseSensitiveness {
+    UPPERCASE("[A-Z][A-Z0-9_]*"), // Oracle, DB2, H2, Derby, HyperSQL
+    LOWERCASE("[a-z][a-z0-9_]*"), // PostgreSQL
+    INSENSITIVE("[A-Za-z][A-Za-z0-9_]*"), // SQL Server
+    SENSITIVE("[A-Za-z][A-Za-z0-9_]*"); // MariaDB, MySQL, Sybase ASE
+
+    // private static final String UNQUOTED_IDENTIFIER_PATTERN =
+    // "[A-Z][A-Z0-9_]*";
+
+    private String unquotedPattern;
+
+    private CaseSensitiveness(final String unquotedPattern) {
+      this.unquotedPattern = unquotedPattern;
+    }
+
+    public String canonize(final String commonName, final boolean quoted) {
+      if (quoted) {
+        return commonName;
+      }
+      if (commonName == null) {
+        return null;
+      }
+      switch (this) {
+      case UPPERCASE:
+        return commonName.toUpperCase();
+      case LOWERCASE:
+        return commonName.toLowerCase();
+      case INSENSITIVE:
+        return commonName.toLowerCase();
+      default: // SENSITIVE
+        return commonName;
+      }
+    }
+
+    public String commonize(final String canonicalName, final String initialQuote, final String endQuote) {
+      if (canonicalName == null) {
+        return null;
+      }
+      switch (this) {
+      case UPPERCASE:
+        return canonicalName.matches(this.unquotedPattern) ? canonicalName.toLowerCase()
+            : initialQuote + canonicalName + endQuote;
+      case LOWERCASE:
+        return canonicalName.matches(this.unquotedPattern) ? canonicalName : initialQuote + canonicalName + endQuote;
+      case INSENSITIVE:
+        return canonicalName.matches(this.unquotedPattern) ? canonicalName.toLowerCase()
+            : initialQuote + canonicalName + endQuote;
+      default: // SENSITIVE
+        return canonicalName.matches(this.unquotedPattern) ? canonicalName : initialQuote + canonicalName + endQuote;
+      }
+    }
+
+  }
+
+  private CaseSensitiveness caseSensitiveness;
+
+  public TestDatabaseAdapter(final HotRodConfigTag config, final DatabaseMetaData dm,
+      final CaseSensitiveness caseSensitiveness) throws SQLException {
     super(config, dm);
-    // TODO Auto-generated constructor stub
+    this.caseSensitiveness = caseSensitiveness;
+    if (this.caseSensitiveness == null) {
+      throw new IllegalArgumentException("'caseSensitiveness' should not be null");
+    }
+    super.identifierQuoteString = "'";
   }
 
   /**
@@ -28,16 +89,13 @@ public class MyDatabaseAdapter extends DatabaseAdapter {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public String canonizeName(String configName, boolean quoted) {
-    return configName.toUpperCase();
+  public String canonizeName(final String commonName, final boolean quoted) {
+    return this.caseSensitiveness.canonize(commonName, quoted);
   }
-
-  private static final String UNQUOTED_IDENTIFIER_PATTERN = "[A-Z][A-Z0-9_]*";
 
   @Override
   public String renderSQLName(final String canonicalName) {
-    return canonicalName == null ? null
-        : (canonicalName.matches(UNQUOTED_IDENTIFIER_PATTERN) ? canonicalName : super.quote(canonicalName));
+    return this.caseSensitiveness.commonize(canonicalName, super.identifierQuoteString, super.identifierQuoteString);
   }
 
   @Override

@@ -546,7 +546,7 @@ public class EnumTag extends AbstractEntityDAOTag {
     }
 
     public String getGetter() {
-      return "get" + SUtils.capitalizeFirst(this.name);
+      return "get" + SUtils.sentenceFormat(this.name);
     }
 
   }
