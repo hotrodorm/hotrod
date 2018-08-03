@@ -28,7 +28,8 @@ public class Id {
   // Constructor
 
   private Id(final DatabaseAdapter adapter, final List<NamePart> canonicalParts, final String canonicalSQLName,
-      final String javaClassName, final String javaMemberName) throws InvalidIdentifierException {
+      final String javaClassName, final String javaMemberName, final String javaConstantName, final String mapperName)
+      throws InvalidIdentifierException {
 
     if (canonicalSQLName != null && adapter == null) {
       throw new InvalidIdentifierException("'adapter' cannot be null when the canonicalSQLName is specified.");
@@ -38,6 +39,18 @@ public class Id {
     }
     if (canonicalParts.isEmpty()) {
       throw new InvalidIdentifierException("'canonicalParts' cannot be empty.");
+    }
+    if (javaClassName == null) {
+      throw new InvalidIdentifierException("'javaClassName' cannot be empty.");
+    }
+    if (javaMemberName == null) {
+      throw new InvalidIdentifierException("'javaMemberName' cannot be empty.");
+    }
+    if (javaConstantName == null) {
+      throw new InvalidIdentifierException("'javaConstantName' cannot be empty.");
+    }
+    if (mapperName == null) {
+      throw new InvalidIdentifierException("'mapperName' cannot be empty.");
     }
 
     this.adapter = adapter;
@@ -49,25 +62,17 @@ public class Id {
     } else { // does not have a SQL side
       this.canonicalSQLName = null;
       this.renderedSQLName = null;
+
     }
 
-    if (javaClassName != null) {
-      this.javaClassName = javaClassName;
-    } else {
-      this.javaClassName = assembleJavaClassName(this.canonicalParts);
-    }
+    this.javaClassName = javaClassName;
+    this.javaMemberName = javaMemberName;
 
-    if (javaMemberName != null) {
-      this.javaMemberName = javaMemberName;
-    } else {
-      this.javaMemberName = assembleJavaMemberName(this.canonicalParts);
-    }
-
-    this.javaConstantName = assembleJavaConstantName(this.canonicalParts);
+    this.javaConstantName = javaConstantName;
     this.javaGetter = "get" + this.javaClassName;
     this.javaSetter = "set" + this.javaClassName;
 
-    this.mapperName = assembleMapperName(this.canonicalParts);
+    this.mapperName = mapperName;
 
   }
 
@@ -77,19 +82,22 @@ public class Id {
       throw new InvalidIdentifierException("'adapter' cannot be null.");
     }
     if (commonName == null || commonName.isEmpty()) {
-      throw new InvalidIdentifierException("'sqlName' cannot be null or empty.");
+      throw new InvalidIdentifierException("'commonName' cannot be null or empty.");
     }
 
     String canonicalSQLName = adapter.canonizeName(commonName, quoted);
 
-    List<NamePart> canonicalParts = splitSQL(commonName);
-    if (canonicalParts == null || canonicalParts.isEmpty()) {
+    List<NamePart> nameParts = splitSQL(commonName);
+    if (nameParts == null || nameParts.isEmpty()) {
       throw new InvalidIdentifierException("SQL name must produce at least one part");
     }
 
-    String javaClassName = null;
-    String javaMemberName = null;
-    Id id = new Id(adapter, canonicalParts, canonicalSQLName, javaClassName, javaMemberName);
+    String javaClassName = assembleJavaClassName(nameParts);
+    String javaMemberName = assembleJavaMemberName(nameParts);
+    String javaConstantName = assembleJavaConstantName(nameParts);
+    String mapperName = assembleMapperName(nameParts);
+
+    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, mapperName);
     return id;
   }
 
@@ -103,12 +111,15 @@ public class Id {
     }
     DatabaseAdapter adapter = null;
     String canonicalSQLName = null;
-    List<NamePart> canonicalParts = splitJava(javaClassName);
-    if (canonicalParts == null || canonicalParts.isEmpty()) {
+    List<NamePart> nameParts = splitJava(javaClassName);
+    if (nameParts == null || nameParts.isEmpty()) {
       throw new InvalidIdentifierException("javaClassName must produce at least one part");
     }
-    String javaMemberName = null;
-    Id id = new Id(adapter, canonicalParts, canonicalSQLName, javaClassName, javaMemberName);
+    String javaMemberName = assembleJavaMemberName(nameParts);
+    String javaConstantName = assembleJavaConstantName(nameParts);
+    String mapperName = assembleMapperName(nameParts);
+
+    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, mapperName);
     return id;
   }
 
@@ -122,23 +133,78 @@ public class Id {
     }
     DatabaseAdapter adapter = null;
     String canonicalSQLName = null;
-    List<NamePart> canonicalParts = splitJava(javaMemberName);
-    if (canonicalParts == null || canonicalParts.isEmpty()) {
+    List<NamePart> nameParts = splitJava(javaMemberName);
+    if (nameParts == null || nameParts.isEmpty()) {
       throw new InvalidIdentifierException("javaClassName must produce at least one part");
     }
-    String javaClassName = null;
-    Id id = new Id(adapter, canonicalParts, canonicalSQLName, javaClassName, javaMemberName);
+    String javaClassName = assembleJavaClassName(nameParts);
+    String javaConstantName = assembleJavaConstantName(nameParts);
+    String mapperName = assembleMapperName(nameParts);
+
+    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, mapperName);
     return id;
   }
 
-  public static Id fromSQLAndJavaClass(final String sqlName, final boolean quoted, final DatabaseAdapter adapter,
-      final String javaClassName) {
-    return null;
+  public static Id fromSQLAndJavaClass(final String commonName, final boolean quoted, final DatabaseAdapter adapter,
+      final String javaClassName) throws InvalidIdentifierException {
+    if (adapter == null) {
+      throw new InvalidIdentifierException("'adapter' cannot be null.");
+    }
+    if (commonName == null || commonName.isEmpty()) {
+      throw new InvalidIdentifierException("'commonName' cannot be null or empty.");
+    }
+    if (javaClassName == null || javaClassName.isEmpty()) {
+      throw new InvalidIdentifierException("'javaClassName' cannot be null or empty.");
+    }
+    if (!javaClassName.matches("[A-Z_].*")) {
+      throw new InvalidIdentifierException("'javaClassName' must start with an upper case letter or an underscore.");
+    }
+
+    String canonicalSQLName = adapter.canonizeName(commonName, quoted);
+
+    List<NamePart> nameParts = splitSQL(commonName);
+    if (nameParts == null || nameParts.isEmpty()) {
+      throw new InvalidIdentifierException("SQL name must produce at least one part");
+    }
+
+    List<NamePart> javaNameParts = splitJava(javaClassName);
+    String javaMemberName = assembleJavaMemberName(javaNameParts);
+    String javaConstantName = assembleJavaConstantName(javaNameParts);
+    String mapperName = assembleMapperName(javaNameParts);
+
+    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, mapperName);
+    return id;
   }
 
-  public static Id fromSQLAndJavaMember(final String sqlName, final boolean quoted, final DatabaseAdapter adapter,
-      final String javaPropertyName) {
-    return null;
+  public static Id fromSQLAndJavaMember(final String commonName, final boolean quoted, final DatabaseAdapter adapter,
+      final String javaMemberName) throws InvalidIdentifierException {
+    if (adapter == null) {
+      throw new InvalidIdentifierException("'adapter' cannot be null.");
+    }
+    if (commonName == null || commonName.isEmpty()) {
+      throw new InvalidIdentifierException("'commonName' cannot be null or empty.");
+    }
+    if (javaMemberName == null || javaMemberName.isEmpty()) {
+      throw new InvalidIdentifierException("'javaMemberName' cannot be null or empty.");
+    }
+    if (!javaMemberName.matches("[a-z_].*")) {
+      throw new InvalidIdentifierException("'javaMemberName' must start with an lower case letter or an underscore.");
+    }
+
+    String canonicalSQLName = adapter.canonizeName(commonName, quoted);
+
+    List<NamePart> nameParts = splitSQL(commonName);
+    if (nameParts == null || nameParts.isEmpty()) {
+      throw new InvalidIdentifierException("SQL name must produce at least one part");
+    }
+
+    List<NamePart> javaNameParts = splitJava(javaMemberName);
+    String javaClassName = assembleJavaClassName(javaNameParts);
+    String javaConstantName = assembleJavaConstantName(javaNameParts);
+    String mapperName = assembleMapperName(javaNameParts);
+
+    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, mapperName);
+    return id;
   }
 
   // Getters
@@ -316,7 +382,7 @@ public class Id {
 
   // Helpers -- Rendering
 
-  private String assembleJavaClassName(final List<NamePart> canonicalParts) {
+  private static String assembleJavaClassName(final List<NamePart> canonicalParts) {
     StringBuilder sb = new StringBuilder();
     if (canonicalParts != null && !canonicalParts.isEmpty()
         && !canonicalParts.get(0).getToken().matches("[A-Za-z_].*")) {
@@ -332,7 +398,7 @@ public class Id {
     return sb.toString();
   }
 
-  private String assembleJavaMemberName(final List<NamePart> canonicalParts) {
+  private static String assembleJavaMemberName(final List<NamePart> canonicalParts) {
     StringBuilder sb = new StringBuilder();
     if (canonicalParts != null && !canonicalParts.isEmpty()
         && !canonicalParts.get(0).getToken().matches("[A-Za-z_].*")) {
@@ -354,7 +420,7 @@ public class Id {
     return sb.toString();
   }
 
-  private String assembleJavaConstantName(final List<NamePart> canonicalParts) {
+  private static String assembleJavaConstantName(final List<NamePart> canonicalParts) {
     StringBuilder sb = new StringBuilder();
     if (canonicalParts != null && !canonicalParts.isEmpty()
         && !canonicalParts.get(0).getToken().matches("[A-Za-z_].*")) {
@@ -371,7 +437,7 @@ public class Id {
     return sb.toString();
   }
 
-  private String assembleMapperName(final List<NamePart> canonicalParts) {
+  private static String assembleMapperName(final List<NamePart> canonicalParts) {
     StringBuilder sb = new StringBuilder();
     boolean first = true;
     for (NamePart p : canonicalParts) {
