@@ -20,7 +20,7 @@ public class Id {
   private String javaGetter; // ------- getMyProperty, getCar_Price
   private String javaSetter; // ------- setMyProperty, setCar_Price
 
-  private String mapperName; // ------- my-property, car--price
+  private String dashedName; // ------- my-property, car--price
 
   private DatabaseAdapter adapter;
   private List<NamePart> canonicalParts;
@@ -28,7 +28,7 @@ public class Id {
   // Constructor
 
   private Id(final DatabaseAdapter adapter, final List<NamePart> canonicalParts, final String canonicalSQLName,
-      final String javaClassName, final String javaMemberName, final String javaConstantName, final String mapperName)
+      final String javaClassName, final String javaMemberName, final String javaConstantName, final String dashedName)
       throws InvalidIdentifierException {
 
     if (canonicalSQLName != null && adapter == null) {
@@ -49,8 +49,8 @@ public class Id {
     if (javaConstantName == null) {
       throw new InvalidIdentifierException("'javaConstantName' cannot be empty.");
     }
-    if (mapperName == null) {
-      throw new InvalidIdentifierException("'mapperName' cannot be empty.");
+    if (dashedName == null) {
+      throw new InvalidIdentifierException("'dashedName' cannot be empty.");
     }
 
     this.adapter = adapter;
@@ -72,7 +72,7 @@ public class Id {
     this.javaGetter = "get" + this.javaClassName;
     this.javaSetter = "set" + this.javaClassName;
 
-    this.mapperName = mapperName;
+    this.dashedName = dashedName;
 
   }
 
@@ -95,9 +95,9 @@ public class Id {
     String javaClassName = assembleJavaClassName(nameParts);
     String javaMemberName = assembleJavaMemberName(nameParts);
     String javaConstantName = assembleJavaConstantName(nameParts);
-    String mapperName = assembleMapperName(nameParts);
+    String dashedName = assembleDashedName(nameParts);
 
-    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, mapperName);
+    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, dashedName);
     return id;
   }
 
@@ -117,9 +117,9 @@ public class Id {
     }
     String javaMemberName = assembleJavaMemberName(nameParts);
     String javaConstantName = assembleJavaConstantName(nameParts);
-    String mapperName = assembleMapperName(nameParts);
+    String dashedName = assembleDashedName(nameParts);
 
-    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, mapperName);
+    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, dashedName);
     return id;
   }
 
@@ -139,9 +139,9 @@ public class Id {
     }
     String javaClassName = assembleJavaClassName(nameParts);
     String javaConstantName = assembleJavaConstantName(nameParts);
-    String mapperName = assembleMapperName(nameParts);
+    String dashedName = assembleDashedName(nameParts);
 
-    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, mapperName);
+    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, dashedName);
     return id;
   }
 
@@ -170,9 +170,9 @@ public class Id {
     List<NamePart> javaNameParts = splitJava(javaClassName);
     String javaMemberName = assembleJavaMemberName(javaNameParts);
     String javaConstantName = assembleJavaConstantName(javaNameParts);
-    String mapperName = assembleMapperName(javaNameParts);
+    String dashedName = assembleDashedName(javaNameParts);
 
-    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, mapperName);
+    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, dashedName);
     return id;
   }
 
@@ -201,9 +201,9 @@ public class Id {
     List<NamePart> javaNameParts = splitJava(javaMemberName);
     String javaClassName = assembleJavaClassName(javaNameParts);
     String javaConstantName = assembleJavaConstantName(javaNameParts);
-    String mapperName = assembleMapperName(javaNameParts);
+    String dashedName = assembleDashedName(javaNameParts);
 
-    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, mapperName);
+    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, dashedName);
     return id;
   }
 
@@ -230,7 +230,7 @@ public class Id {
   }
 
   public String getDashedName() {
-    return mapperName;
+    return dashedName;
   }
 
   public String getJavaGetter() {
@@ -437,7 +437,7 @@ public class Id {
     return sb.toString();
   }
 
-  private static String assembleMapperName(final List<NamePart> canonicalParts) {
+  private static String assembleDashedName(final List<NamePart> canonicalParts) {
     StringBuilder sb = new StringBuilder();
     boolean first = true;
     for (NamePart p : canonicalParts) {
