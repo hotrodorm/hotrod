@@ -8,8 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.utils.identifiers.Id;
-import org.hotrod.utils.identifiers.Id.InvalidIdentifierException;
+import org.hotrod.utils.identifiers2.Id;
+import org.hotrod.utils.identifiers2.Id.InvalidIdentifierException;
 
 import automatedtests.identifiers.TestDatabaseAdapter.CaseSensitiveness;
 import junit.framework.TestCase;
@@ -24,19 +24,17 @@ public class IdFromSQLWithJavaTests extends TestCase {
 
     DatabaseAdapter uAdapter = new TestDatabaseAdapter(null, getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
 
-    matchesSQL(Id.fromSQLAndJavaClass("sql", false, uAdapter, "A"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql",
-        "sql");
+    matchesSQL(Id.fromSQLAndJavaClass("sql", uAdapter, "A"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
 
     try {
-      matchesSQL(Id.fromSQLAndJavaClass("sql", false, uAdapter, "a"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql",
-          "sql");
+      matchesSQL(Id.fromSQLAndJavaClass("sql", uAdapter, "a"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
       fail("Java class cannot start with a lower case letter.");
     } catch (InvalidIdentifierException e) {
       // OK
     }
 
-    matchesSQL(Id.fromSQLAndJavaClass("sql", false, uAdapter, "Abc123"), "Abc123", "abc123", "ABC123", "abc123",
-        "getAbc123", "setAbc123", "SQL", "sql", "sql");
+    matchesSQL(Id.fromSQLAndJavaClass("sql", uAdapter, "Abc123"), "Abc123", "abc123", "ABC123", "abc123", "getAbc123",
+        "setAbc123", "SQL", "sql", "sql");
 
   }
 
@@ -44,19 +42,18 @@ public class IdFromSQLWithJavaTests extends TestCase {
 
     DatabaseAdapter uAdapter = new TestDatabaseAdapter(null, getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
 
-    matchesSQL(Id.fromSQLAndJavaMember("sql", false, uAdapter, "a"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql",
-        "sql");
+    matchesSQL(Id.fromSQLAndJavaMember("sql", uAdapter, "a"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
 
     try {
-      matchesSQL(Id.fromSQLAndJavaMember("sql", false, uAdapter, "A"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql",
+      matchesSQL(Id.fromSQLAndJavaMember("sql", uAdapter, "A"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql",
           "sql");
       fail("Java class cannot start with an upper case letter.");
     } catch (InvalidIdentifierException e) {
       // OK
     }
 
-    matchesSQL(Id.fromSQLAndJavaMember("sql", false, uAdapter, "abc123"), "Abc123", "abc123", "ABC123", "abc123",
-        "getAbc123", "setAbc123", "SQL", "sql", "sql");
+    matchesSQL(Id.fromSQLAndJavaMember("sql", uAdapter, "abc123"), "Abc123", "abc123", "ABC123", "abc123", "getAbc123",
+        "setAbc123", "SQL", "sql", "sql");
 
   }
 

@@ -1,4 +1,4 @@
-package org.hotrod.utils.identifiers;
+package org.hotrod.utils.identifiers2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,22 +23,22 @@ public class Id {
   private String dashedName; // ------- my-property, car--price
 
   private DatabaseAdapter adapter;
-  private List<NamePart> canonicalParts;
+  private List<NamePart> nameParts;
 
   // Constructor
 
-  private Id(final DatabaseAdapter adapter, final List<NamePart> canonicalParts, final String canonicalSQLName,
+  private Id(final DatabaseAdapter adapter, final List<NamePart> nameParts, final String canonicalSQLName,
       final String javaClassName, final String javaMemberName, final String javaConstantName, final String dashedName)
       throws InvalidIdentifierException {
 
     if (canonicalSQLName != null && adapter == null) {
       throw new InvalidIdentifierException("'adapter' cannot be null when the canonicalSQLName is specified.");
     }
-    if (canonicalParts == null) {
-      throw new InvalidIdentifierException("'canonicalParts' cannot be null.");
+    if (nameParts == null) {
+      throw new InvalidIdentifierException("'nameParts' cannot be null.");
     }
-    if (canonicalParts.isEmpty()) {
-      throw new InvalidIdentifierException("'canonicalParts' cannot be empty.");
+    if (nameParts.isEmpty()) {
+      throw new InvalidIdentifierException("'nameParts' cannot be empty.");
     }
     if (javaClassName == null) {
       throw new InvalidIdentifierException("'javaClassName' cannot be empty.");
@@ -54,7 +54,7 @@ public class Id {
     }
 
     this.adapter = adapter;
-    this.canonicalParts = canonicalParts;
+    this.nameParts = nameParts;
 
     if (canonicalSQLName != null) { // has a SQL side
       this.canonicalSQLName = canonicalSQLName;
@@ -76,18 +76,19 @@ public class Id {
 
   }
 
-  public static Id fromSQL(final String commonName, final boolean quoted, final DatabaseAdapter adapter)
-      throws InvalidIdentifierException {
+  public static Id fromSQL(final String typedName, final DatabaseAdapter adapter) throws InvalidIdentifierException {
     if (adapter == null) {
       throw new InvalidIdentifierException("'adapter' cannot be null.");
     }
-    if (commonName == null || commonName.isEmpty()) {
-      throw new InvalidIdentifierException("'commonName' cannot be null or empty.");
+    if (typedName == null || typedName.isEmpty()) {
+      throw new InvalidIdentifierException("'typedName' cannot be null or empty.");
     }
 
-    String canonicalSQLName = adapter.canonizeName(commonName, quoted);
+    SQLName sqlName = new SQLName(typedName);
 
-    List<NamePart> nameParts = splitSQL(commonName);
+    String canonicalSQLName = adapter.canonizeName(sqlName.getName(), sqlName.isQuoted());
+
+    List<NamePart> nameParts = splitSQL(sqlName.getName());
     if (nameParts == null || nameParts.isEmpty()) {
       throw new InvalidIdentifierException("SQL name must produce at least one part");
     }
@@ -145,13 +146,13 @@ public class Id {
     return id;
   }
 
-  public static Id fromSQLAndJavaClass(final String commonName, final boolean quoted, final DatabaseAdapter adapter,
+  public static Id fromSQLAndJavaClass(final String typedName, final DatabaseAdapter adapter,
       final String javaClassName) throws InvalidIdentifierException {
     if (adapter == null) {
       throw new InvalidIdentifierException("'adapter' cannot be null.");
     }
-    if (commonName == null || commonName.isEmpty()) {
-      throw new InvalidIdentifierException("'commonName' cannot be null or empty.");
+    if (typedName == null || typedName.isEmpty()) {
+      throw new InvalidIdentifierException("'typedName' cannot be null or empty.");
     }
     if (javaClassName == null || javaClassName.isEmpty()) {
       throw new InvalidIdentifierException("'javaClassName' cannot be null or empty.");
@@ -160,9 +161,11 @@ public class Id {
       throw new InvalidIdentifierException("'javaClassName' must start with an upper case letter or an underscore.");
     }
 
-    String canonicalSQLName = adapter.canonizeName(commonName, quoted);
+    SQLName sqlName = new SQLName(typedName);
 
-    List<NamePart> nameParts = splitSQL(commonName);
+    String canonicalSQLName = adapter.canonizeName(sqlName.getName(), sqlName.isQuoted());
+
+    List<NamePart> nameParts = splitSQL(sqlName.getName());
     if (nameParts == null || nameParts.isEmpty()) {
       throw new InvalidIdentifierException("SQL name must produce at least one part");
     }
@@ -176,13 +179,13 @@ public class Id {
     return id;
   }
 
-  public static Id fromSQLAndJavaMember(final String commonName, final boolean quoted, final DatabaseAdapter adapter,
+  public static Id fromSQLAndJavaMember(final String typedName, final DatabaseAdapter adapter,
       final String javaMemberName) throws InvalidIdentifierException {
     if (adapter == null) {
       throw new InvalidIdentifierException("'adapter' cannot be null.");
     }
-    if (commonName == null || commonName.isEmpty()) {
-      throw new InvalidIdentifierException("'commonName' cannot be null or empty.");
+    if (typedName == null || typedName.isEmpty()) {
+      throw new InvalidIdentifierException("'typedName' cannot be null or empty.");
     }
     if (javaMemberName == null || javaMemberName.isEmpty()) {
       throw new InvalidIdentifierException("'javaMemberName' cannot be null or empty.");
@@ -191,9 +194,11 @@ public class Id {
       throw new InvalidIdentifierException("'javaMemberName' must start with an lower case letter or an underscore.");
     }
 
-    String canonicalSQLName = adapter.canonizeName(commonName, quoted);
+    SQLName sqlName = new SQLName(typedName);
 
-    List<NamePart> nameParts = splitSQL(commonName);
+    String canonicalSQLName = adapter.canonizeName(sqlName.getName(), sqlName.isQuoted());
+
+    List<NamePart> nameParts = splitSQL(sqlName.getName());
     if (nameParts == null || nameParts.isEmpty()) {
       throw new InvalidIdentifierException("SQL name must produce at least one part");
     }
@@ -242,7 +247,7 @@ public class Id {
   }
 
   public List<NamePart> getCanonicalParts() {
-    return canonicalParts;
+    return nameParts;
   }
 
   // Helper -- Parsing
@@ -450,6 +455,26 @@ public class Id {
     return sb.toString();
   }
 
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Id other = (Id) obj;
+    if (this.nameParts.size() != other.nameParts.size()) {
+      return false;
+    }
+    for (int i = 0; i < this.nameParts.size(); i++) {
+      if (!this.nameParts.get(i).equals(other.nameParts.get(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   private static String repeat(final String s, final int times) {
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < times; i++) {
@@ -489,6 +514,10 @@ public class Id {
 
     public boolean isAcronym() {
       return acronym;
+    }
+
+    public String toString() {
+      return this.acronym ? "[" + this.token + "]" : this.token;
     }
 
     // equals
