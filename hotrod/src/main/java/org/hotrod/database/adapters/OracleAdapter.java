@@ -8,7 +8,6 @@ import java.sql.Types;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
@@ -30,8 +29,8 @@ public class OracleAdapter extends DatabaseAdapter {
 
   private boolean isOracle12cOrNewer;
 
-  public OracleAdapter(final HotRodConfigTag config, final DatabaseMetaData dm) throws SQLException {
-    super(config, dm);
+  public OracleAdapter(final DatabaseMetaData dm) throws SQLException {
+    super(dm);
     this.isOracle12cOrNewer = this.isOracle12cOrNewer();
   }
 

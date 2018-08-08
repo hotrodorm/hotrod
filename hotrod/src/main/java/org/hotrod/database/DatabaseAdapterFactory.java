@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
-import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.database.adapters.ApacheDerbyAdapter;
 import org.hotrod.database.adapters.DB2Adapter;
 import org.hotrod.database.adapters.H2Adapter;
@@ -26,7 +25,7 @@ public final class DatabaseAdapterFactory {
 
   private static Logger log = Logger.getLogger(DatabaseAdapterFactory.class);
 
-  public static DatabaseAdapter getAdapter(final DatabaseLocation loc, final HotRodConfigTag config)
+  public static DatabaseAdapter getAdapter(final DatabaseLocation loc)
       throws UnrecognizedDatabaseException, UncontrolledException {
     log.debug("init.");
 
@@ -61,30 +60,30 @@ public final class DatabaseAdapterFactory {
       String uName = name.toUpperCase();
 
       if (name.equalsIgnoreCase("ORACLE")) {
-        return new OracleAdapter(config, dm);
+        return new OracleAdapter(dm);
       } else if (uName.startsWith("HSQL")) {
-        return new HyperSQLAdapter(config, dm);
+        return new HyperSQLAdapter(dm);
       } else if (uName.startsWith("H2")) {
-        return new H2Adapter(config, dm);
+        return new H2Adapter(dm);
       } else if (uName.startsWith("MYSQL")) {
         String productVersion = dm.getDatabaseProductVersion().toLowerCase();
         if (productVersion != null && productVersion.contains("mariadb")) {
-          return new MariaDBAdapter(config, dm);
+          return new MariaDBAdapter(dm);
         } else {
-          return new MySQLAdapter(config, dm);
+          return new MySQLAdapter(dm);
         }
       } else if (uName.startsWith("ADAPTIVE SERVER ENTERPRISE")) {
-        return new SAPASEAdapter(config, dm);
+        return new SAPASEAdapter(dm);
       } else if (uName.startsWith("DB2")) {
-        return new DB2Adapter(config, dm);
+        return new DB2Adapter(dm);
       } else if (uName.startsWith("POSTGRESQL")) {
-        return new PostgreSQLAdapter(config, dm);
+        return new PostgreSQLAdapter(dm);
       } else if (name.startsWith("Microsoft SQL Server")) {
-        return new SQLServerAdapter(config, dm);
+        return new SQLServerAdapter(dm);
       } else if (uName.startsWith("APACHE DERBY")) {
-        return new ApacheDerbyAdapter(config, dm);
+        return new ApacheDerbyAdapter(dm);
       } else if (name.startsWith("SQLite")) {
-        return new SQLiteAdapter(config, dm);
+        return new SQLiteAdapter(dm);
       } else {
         throw new UnrecognizedDatabaseException(
             "Could not resolve the database adapter. " + "The product name reported by the JDBC driver '" + name

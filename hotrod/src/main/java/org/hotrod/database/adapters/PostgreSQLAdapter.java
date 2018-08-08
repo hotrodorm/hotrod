@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
@@ -28,8 +27,8 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
 
   private static Logger log = Logger.getLogger(PostgreSQLAdapter.class);
 
-  public PostgreSQLAdapter(final HotRodConfigTag config, final DatabaseMetaData dm) throws SQLException {
-    super(config, dm);
+  public PostgreSQLAdapter(final DatabaseMetaData dm) throws SQLException {
+    super(dm);
   }
 
   @Override

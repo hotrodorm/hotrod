@@ -11,7 +11,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.config.TableTag;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
@@ -22,7 +21,6 @@ import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
-import org.nocrala.tools.database.tartarus.core.JdbcTable;
 import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
 
 public abstract class DatabaseAdapter implements Serializable {
@@ -31,7 +29,6 @@ public abstract class DatabaseAdapter implements Serializable {
 
   private static final Logger log = Logger.getLogger(DatabaseAdapter.class);
 
-  protected HotRodConfigTag config;
   protected transient DatabaseMetaData databaseMedaData;
   protected String identifierQuoteString;
 
@@ -73,8 +70,7 @@ public abstract class DatabaseAdapter implements Serializable {
     LOWER_CASE, UPPER_CASE, ANY_CASE;
   }
 
-  public DatabaseAdapter(final HotRodConfigTag config, final DatabaseMetaData dm) throws SQLException {
-    this.config = config;
+  public DatabaseAdapter(final DatabaseMetaData dm) throws SQLException {
     this.databaseMedaData = dm;
     this.identifierQuoteString = dm.getIdentifierQuoteString();
     this.dataTypes = DataType.retrieveDataTypes(this.databaseMedaData);
@@ -125,26 +121,6 @@ public abstract class DatabaseAdapter implements Serializable {
     }
   }
 
-  public ColumnTag findTableColumnTag(final ColumnMetadata md) throws UnresolvableDataTypeException {
-    ColumnTag ct;
-    TableTag t = findTableTag(md);
-    if (t == null) {
-      throw new UnresolvableDataTypeException(md);
-    }
-    ct = t.findColumnTag(md.getColumnName(), this);
-    return ct;
-  }
-
-  public TableTag findTableTag(final ColumnMetadata md) {
-    String jdbcTableName = md.getTableName();
-    for (TableTag t : this.config.getTables()) {
-      if (this.isTableIdentifier(jdbcTableName, t.getName())) {
-        return t;
-      }
-    }
-    return null;
-  }
-
   // Names
 
   public boolean equalConfigNames(final String a, final String b) {
@@ -163,10 +139,6 @@ public abstract class DatabaseAdapter implements Serializable {
   }
 
   // End of names
-
-  public TableTag findTableTag(final JdbcTable table) {
-    return this.config.getTableTag(table);
-  }
 
   public abstract boolean supportsCatalog();
 

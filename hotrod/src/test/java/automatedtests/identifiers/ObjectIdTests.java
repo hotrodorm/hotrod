@@ -10,50 +10,73 @@ import java.sql.SQLException;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.utils.identifiers2.Id;
+import org.hotrod.utils.identifiers2.ObjectId;
 
 import automatedtests.identifiers.TestDatabaseAdapter.CaseSensitiveness;
 import junit.framework.TestCase;
 
-public class IdFromSQLWithJavaTests extends TestCase {
+public class ObjectIdTests extends TestCase {
 
-  public IdFromSQLWithJavaTests(final String txt) {
+  public ObjectIdTests(final String txt) {
     super(txt);
   }
 
-  public void testFromSQLWithJavaClass() throws SQLException, InvalidIdentifierException {
+  public void testFromSQLCommon() throws SQLException, InvalidIdentifierException {
 
     DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
 
-    matchesSQL(Id.fromSQLAndJavaClass("sql", uAdapter, "A"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
-
     try {
-      matchesSQL(Id.fromSQLAndJavaClass("sql", uAdapter, "a"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
-      fail("Java class cannot start with a lower case letter.");
+      @SuppressWarnings("unused")
+      ObjectId id = new ObjectId(null, null, null);
+      fail("identifier cannot have a null object.");
     } catch (InvalidIdentifierException e) {
       // OK
     }
 
-    matchesSQL(Id.fromSQLAndJavaClass("sql", uAdapter, "Abc123"), "Abc123", "abc123", "ABC123", "abc123", "getAbc123",
-        "setAbc123", "SQL", "sql", "sql");
-
-  }
-
-  public void testFromSQLWithJavaMember() throws SQLException, InvalidIdentifierException {
-
-    DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
-
-    matchesSQL(Id.fromSQLAndJavaMember("sql", uAdapter, "a"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
-
-    try {
-      matchesSQL(Id.fromSQLAndJavaMember("sql", uAdapter, "A"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql",
-          "sql");
-      fail("Java class cannot start with an upper case letter.");
-    } catch (InvalidIdentifierException e) {
-      // OK
+    {
+      ObjectId t = new ObjectId(null, null, Id.fromSQL("abc", uAdapter));
+      ObjectId te = new ObjectId(null, null, Id.fromSQL("abc", uAdapter));
+      ObjectId td = new ObjectId(null, null, Id.fromSQL("def", uAdapter));
+      assertTrue("t=te", t.equals(te));
+      assertTrue("t!=td", !t.equals(td));
     }
 
-    matchesSQL(Id.fromSQLAndJavaMember("sql", uAdapter, "abc123"), "Abc123", "abc123", "ABC123", "abc123", "getAbc123",
-        "setAbc123", "SQL", "sql", "sql");
+    {
+      ObjectId c = new ObjectId(Id.fromSQL("catalog1", uAdapter), null, Id.fromSQL("abc", uAdapter));
+      ObjectId ce = new ObjectId(Id.fromSQL("catalog1", uAdapter), null, Id.fromSQL("abc", uAdapter));
+      ObjectId cd1 = new ObjectId(Id.fromSQL("catalog2", uAdapter), null, Id.fromSQL("abc", uAdapter));
+      ObjectId cd2 = new ObjectId(Id.fromSQL("catalog1", uAdapter), null, Id.fromSQL("def", uAdapter));
+      assertTrue("c=ce", c.equals(ce));
+      assertTrue("c!=cd1", !c.equals(cd1));
+      assertTrue("c!=cd2", !c.equals(cd2));
+    }
+
+    {
+      ObjectId s = new ObjectId(null, Id.fromSQL("schema1", uAdapter), Id.fromSQL("abc", uAdapter));
+      ObjectId se = new ObjectId(null, Id.fromSQL("schema1", uAdapter), Id.fromSQL("abc", uAdapter));
+      ObjectId sd1 = new ObjectId(null, Id.fromSQL("schema2", uAdapter), Id.fromSQL("abc", uAdapter));
+      ObjectId sd2 = new ObjectId(null, Id.fromSQL("schema1", uAdapter), Id.fromSQL("def", uAdapter));
+      assertTrue("s=se", s.equals(se));
+      assertTrue("s!=sd1", !s.equals(sd1));
+      assertTrue("s!=sd2", !s.equals(sd2));
+    }
+
+    {
+      ObjectId cs = new ObjectId(Id.fromSQL("catalog1", uAdapter), Id.fromSQL("schema1", uAdapter),
+          Id.fromSQL("abc", uAdapter));
+      ObjectId cse = new ObjectId(Id.fromSQL("catalog1", uAdapter), Id.fromSQL("schema1", uAdapter),
+          Id.fromSQL("abc", uAdapter));
+      ObjectId csd1 = new ObjectId(Id.fromSQL("catalog2", uAdapter), Id.fromSQL("schema1", uAdapter),
+          Id.fromSQL("abc", uAdapter));
+      ObjectId csd2 = new ObjectId(Id.fromSQL("catalog1", uAdapter), Id.fromSQL("schema2", uAdapter),
+          Id.fromSQL("abc", uAdapter));
+      ObjectId csd3 = new ObjectId(Id.fromSQL("catalog2", uAdapter), Id.fromSQL("schema2", uAdapter),
+          Id.fromSQL("abc", uAdapter));
+      assertTrue("cs=cse", cs.equals(cse));
+      assertTrue("cs!=csd1", !cs.equals(csd1));
+      assertTrue("cs!=csd2", !cs.equals(csd2));
+      assertTrue("cs!=csd3", !cs.equals(csd3));
+    }
 
   }
 
@@ -69,7 +92,7 @@ public class IdFromSQLWithJavaTests extends TestCase {
         return null;
       }
     };
-    ResultSet rs = (ResultSet) Proxy.newProxyInstance(IdFromSQLWithJavaTests.class.getClassLoader(),
+    ResultSet rs = (ResultSet) Proxy.newProxyInstance(ObjectIdTests.class.getClassLoader(),
         new Class<?>[] { ResultSet.class }, h);
     return rs;
   }
@@ -89,7 +112,7 @@ public class IdFromSQLWithJavaTests extends TestCase {
         return null;
       }
     };
-    DatabaseMetaData dm = (DatabaseMetaData) Proxy.newProxyInstance(IdFromSQLWithJavaTests.class.getClassLoader(),
+    DatabaseMetaData dm = (DatabaseMetaData) Proxy.newProxyInstance(ObjectIdTests.class.getClassLoader(),
         new Class<?>[] { DatabaseMetaData.class }, h);
     return dm;
   }
@@ -123,7 +146,7 @@ public class IdFromSQLWithJavaTests extends TestCase {
         "canonicalparts[" + id.getCanonicalParts().size() + "] number does not match tokens[" + tokens.length + "]",
         id.getCanonicalParts().size(), tokens.length);
     for (int i = 0; i < tokens.length; i++) {
-      assertEquals("canonical part[" + i + "] '" + id.getCanonicalParts().get(i) + "' <> token '" + tokens[i] + "'",
+      assertEquals("name part[" + i + "] '" + id.getCanonicalParts().get(i) + "' <> token '" + tokens[i] + "'",
           id.getCanonicalParts().get(i).getToken(), tokens[i]);
     }
   }

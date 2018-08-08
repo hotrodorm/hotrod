@@ -56,7 +56,7 @@ public class ColumnMetadata implements Serializable {
   public ColumnMetadata(final DataSetMetadata dataSet, final JdbcColumn c, final DatabaseAdapter adapter,
       final ColumnTag columnTag, final boolean isVersionControlColumn, final boolean belongsToPK)
       throws UnresolvableDataTypeException {
-    log.debug("init c="+c);
+    log.debug("init c=" + c);
     this.dataSet = dataSet;
     this.c = c;
     this.columnName = c.getName();
@@ -173,14 +173,6 @@ public class ColumnMetadata implements Serializable {
   }
 
   // Utilities
-
-  public ColumnTag findTag(final DatabaseAdapter adapter) {
-    try {
-      return adapter.findTableColumnTag(this);
-    } catch (UnresolvableDataTypeException e) {
-      return null;
-    }
-  }
 
   public PropertyType getType() {
     return type;

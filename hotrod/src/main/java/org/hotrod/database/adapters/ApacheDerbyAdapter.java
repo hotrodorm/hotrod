@@ -8,7 +8,6 @@ import java.sql.Types;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
@@ -27,8 +26,8 @@ public class ApacheDerbyAdapter extends DatabaseAdapter {
 
   private static Logger log = Logger.getLogger(ApacheDerbyAdapter.class);
 
-  public ApacheDerbyAdapter(final HotRodConfigTag config, final DatabaseMetaData dm) throws SQLException {
-    super(config, dm);
+  public ApacheDerbyAdapter(final DatabaseMetaData dm) throws SQLException {
+    super(dm);
   }
 
   @Override

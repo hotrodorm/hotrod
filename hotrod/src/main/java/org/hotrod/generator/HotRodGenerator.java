@@ -150,7 +150,7 @@ public abstract class HotRodGenerator {
       display("");
 
       try {
-        this.adapter = DatabaseAdapterFactory.getAdapter(this.dloc, this.config);
+        this.adapter = DatabaseAdapterFactory.getAdapter(this.dloc);
         display("HotRod Database Adapter: " + this.adapter.getName());
 
       } catch (UnrecognizedDatabaseException e) {

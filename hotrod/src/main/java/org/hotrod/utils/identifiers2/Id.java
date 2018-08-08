@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.runtime.util.SUtils;
 
 public class Id {
@@ -457,21 +458,30 @@ public class Id {
 
   @Override
   public boolean equals(final Object obj) {
+    log("Id.equals() 1");
     if (this == obj)
       return true;
+    log("Id.equals() 2");
     if (obj == null)
       return false;
+    log("Id.equals() 3");
     if (getClass() != obj.getClass())
       return false;
     Id other = (Id) obj;
+    log("Id.equals() 4");
     if (this.nameParts.size() != other.nameParts.size()) {
       return false;
     }
+    log("Id.equals() 5");
     for (int i = 0; i < this.nameParts.size(); i++) {
-      if (!this.nameParts.get(i).equals(other.nameParts.get(i))) {
+      NamePart thisPart = this.nameParts.get(i);
+      NamePart otherPart = other.nameParts.get(i);
+      log("Id.equals() 5.1 thisPart=" + thisPart + " otherPart=" + otherPart);
+      if (!thisPart.equals(otherPart)) {
         return false;
       }
     }
+    log("Id.equals() 6");
     return true;
   }
 
@@ -524,34 +534,29 @@ public class Id {
 
     @Override
     public boolean equals(final Object obj) {
+      log("NamePart.equals() 1");
       if (obj == null) {
         return false;
       }
+      log("NamePart.equals() 2");
       // As a NamePart
       try {
         NamePart p = (NamePart) obj;
-        return p.acronym = this.acronym && p.token.equals(this.token);
+        log("NamePart.equals() 3 this=" + this + " other=" + p);
+        boolean eq = p.acronym == this.acronym && p.token.equals(this.token);
+        log("NamePart.equals() 3.1 eq=" + eq);
+        return eq;
       } catch (ClassCastException e) {
         // As a String
         try {
           String s = (String) obj;
+          log("NamePart.equals() 4");
           return this.acronym ? this.token.toUpperCase().equals(s) : this.token.equals(s);
         } catch (ClassCastException e2) {
+          log("NamePart.equals() 5");
           return false;
         }
       }
-    }
-
-  }
-
-  // Exceptions
-
-  public static class InvalidIdentifierException extends Exception {
-
-    private static final long serialVersionUID = 1L;
-
-    private InvalidIdentifierException(String message) {
-      super(message);
     }
 
   }

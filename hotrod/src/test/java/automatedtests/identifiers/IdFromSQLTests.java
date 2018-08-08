@@ -8,8 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.utils.identifiers2.Id;
-import org.hotrod.utils.identifiers2.Id.InvalidIdentifierException;
 
 import automatedtests.identifiers.TestDatabaseAdapter.CaseSensitiveness;
 import junit.framework.TestCase;
@@ -22,7 +22,7 @@ public class IdFromSQLTests extends TestCase {
 
   public void testFromSQLCommon() throws SQLException, InvalidIdentifierException {
 
-    DatabaseAdapter uAdapter = new TestDatabaseAdapter(null, getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
+    DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
 
     // a
     // A
@@ -142,7 +142,7 @@ public class IdFromSQLTests extends TestCase {
   }
 
   public void testFromSQLUpperCaseDefaultAdapter() throws InvalidIdentifierException, SQLException {
-    DatabaseAdapter uAdapter = new TestDatabaseAdapter(null, getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
+    DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
 
     // Unquoted
 
@@ -160,7 +160,7 @@ public class IdFromSQLTests extends TestCase {
   }
 
   public void testFromSQLLowerCaseDefaultAdapter() throws InvalidIdentifierException, SQLException {
-    DatabaseAdapter lAdapter = new TestDatabaseAdapter(null, getDatabaseMetaData(), CaseSensitiveness.LOWERCASE);
+    DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE);
 
     // Unquoted
 
@@ -178,7 +178,7 @@ public class IdFromSQLTests extends TestCase {
   }
 
   public void testFromSQLCaseSensitiveAdapter() throws InvalidIdentifierException, SQLException {
-    DatabaseAdapter sAdapter = new TestDatabaseAdapter(null, getDatabaseMetaData(), CaseSensitiveness.SENSITIVE);
+    DatabaseAdapter sAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.SENSITIVE);
 
     // Unquoted
 
@@ -196,7 +196,7 @@ public class IdFromSQLTests extends TestCase {
   }
 
   public void testFromSQLCaseInsensitiveAdapter() throws InvalidIdentifierException, SQLException {
-    DatabaseAdapter iAdapter = new TestDatabaseAdapter(null, getDatabaseMetaData(), CaseSensitiveness.INSENSITIVE);
+    DatabaseAdapter iAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.INSENSITIVE);
 
     // Unquoted
 

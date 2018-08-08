@@ -4,7 +4,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
@@ -73,9 +72,8 @@ public class TestDatabaseAdapter extends DatabaseAdapter {
 
   private CaseSensitiveness caseSensitiveness;
 
-  public TestDatabaseAdapter(final HotRodConfigTag config, final DatabaseMetaData dm,
-      final CaseSensitiveness caseSensitiveness) throws SQLException {
-    super(config, dm);
+  public TestDatabaseAdapter(final DatabaseMetaData dm, final CaseSensitiveness caseSensitiveness) throws SQLException {
+    super(dm);
     this.caseSensitiveness = caseSensitiveness;
     if (this.caseSensitiveness == null) {
       throw new IllegalArgumentException("'caseSensitiveness' should not be null");

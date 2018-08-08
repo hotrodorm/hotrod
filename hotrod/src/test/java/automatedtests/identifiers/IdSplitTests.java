@@ -3,8 +3,8 @@ package automatedtests.identifiers;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.utils.identifiers2.Id;
-import org.hotrod.utils.identifiers2.Id.InvalidIdentifierException;
 import org.hotrod.utils.identifiers2.Id.NamePart;
 
 import junit.framework.TestCase;
