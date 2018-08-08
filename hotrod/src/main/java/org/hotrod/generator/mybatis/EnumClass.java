@@ -156,7 +156,7 @@ public class EnumClass extends GeneratableObject {
     println("      }");
     println("    }");
     println("    throw new IllegalArgumentException(");
-    println("        \"Invalid " + this.metadata.getIdentifier().getSQLIdentifier() + " " + valueColumn.getName()
+    println("        \"Invalid " + this.metadata.getId().getCanonicalSQLName() + " " + valueColumn.getName()
         + " value (\" + value + \"). There's no enum constant for this value.\\n\\n"
         + "***** Maybe the <enum> table data has changed, and the <enum> table needs to be regenerated *****\\n\");");
     println("  }");

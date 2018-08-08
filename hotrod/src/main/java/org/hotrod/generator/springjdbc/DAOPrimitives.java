@@ -143,9 +143,8 @@ public class DAOPrimitives {
     println("  // Persistence methods");
     println("  // ===================");
     println();
-    String springBeanName = this.ds.getIdentifier().getJavaMemberIdentifier() + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
-    String springBeanClassName = this.ds.getIdentifier().getJavaClassIdentifier()
-        + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
+    String springBeanName = this.ds.getId().getJavaMemberName() + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
+    String springBeanClassName = this.ds.getId().getJavaClassName() + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
 
     String params = null;
     List<ParameterTag> pl = sm.getSelectTag().getParameterDefinitions();
@@ -162,7 +161,7 @@ public class DAOPrimitives {
     println("  // select by plain SQL with optional ordering (always available)");
     println();
     println("  public static List<" + this.dao.getClassName() + "> select(" + (params != null ? params + ", " : "")
-        + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies) {");
+        + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
     println(
         "    " + springBeanClassName + " " + springBeanName + " = ApplicationContextProvider.getApplicationContext()");
     println("        .getBean(\"" + springBeanName + "\", " + springBeanClassName + ".class);");
@@ -184,9 +183,8 @@ public class DAOPrimitives {
     println("  // Persistence methods");
     println("  // ===================");
     println();
-    String springBeanName = this.ds.getIdentifier().getJavaMemberIdentifier() + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
-    String springBeanClassName = this.ds.getIdentifier().getJavaClassIdentifier()
-        + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
+    String springBeanName = this.ds.getId().getJavaMemberName() + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
+    String springBeanClassName = this.ds.getId().getJavaClassName() + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
 
     boolean hasPK = (this.ds.getPK() != null);
     // SELECT by PK
@@ -224,12 +222,12 @@ public class DAOPrimitives {
     println();
     if (hasLobs) {
       println("  public static List<" + this.dao.getClassName() + "> selectByExample(final " + this.dao.getClassName()
-          + " example, final " + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies) {");
+          + " example, final " + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
       println("    return " + this.dao.getClassName() + ".selectByExample(example, false, orderBies);");
       println("  }");
 
       println("  public static List<" + this.dao.getClassName() + "> selectByExample(final " + this.dao.getClassName()
-          + " example, boolean excludeLOB, final " + this.ds.getIdentifier().getJavaClassIdentifier()
+          + " example, boolean excludeLOB, final " + this.ds.getId().getJavaClassName()
           + "OrderBy... orderBies) {");
       println("    " + springBeanClassName + " " + springBeanName
           + " = ApplicationContextProvider.getApplicationContext()");
@@ -239,7 +237,7 @@ public class DAOPrimitives {
     } else {
       // TODO improve this: duplicated code
       println("  public static List<" + this.dao.getClassName() + "> selectByExample(final " + this.dao.getClassName()
-          + " example, final " + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies) {");
+          + " example, final " + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
       println("    " + springBeanClassName + " " + springBeanName
           + " = ApplicationContextProvider.getApplicationContext()");
       println("        .getBean(\"" + springBeanName + "\", " + springBeanClassName + ".class);");
@@ -255,13 +253,13 @@ public class DAOPrimitives {
     if (hasLobs) {
       println("  public static List<" + this.dao.getClassName()
           + "> selectByCriteria(final SQLLogicalExpression criteria, final "
-          + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies) {");
+          + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
       println("    return " + this.dao.getClassName() + ".selectByCriteria(criteria, false, orderBies);");
       println("  }");
 
       println("  public static List<" + this.dao.getClassName()
           + "> selectByCriteria(final SQLLogicalExpression criteria, boolean excludeLOB, final "
-          + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies) {");
+          + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
       println("    " + springBeanClassName + " " + springBeanName
           + " = ApplicationContextProvider.getApplicationContext()");
       println("        .getBean(\"" + springBeanName + "\", " + springBeanClassName + ".class);");
@@ -271,7 +269,7 @@ public class DAOPrimitives {
       // TODO improve this: duplicated code
       println("  public static List<" + this.dao.getClassName()
           + "> selectByCriteria(final SQLLogicalExpression criteria, final "
-          + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies) {");
+          + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
       println("    " + springBeanClassName + " " + springBeanName
           + " = ApplicationContextProvider.getApplicationContext()");
       println("        .getBean(\"" + springBeanName + "\", " + springBeanClassName + ".class);");
@@ -286,7 +284,7 @@ public class DAOPrimitives {
     println();
     println("  public static List<" + this.dao.getClassName()
         + "> selectBySQL(final List<SQLJoin> joins, final SQLLogicalExpression where, final "
-        + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies) {");
+        + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
     println(
         "    " + springBeanClassName + " " + springBeanName + " = ApplicationContextProvider.getApplicationContext()");
     println("        .getBean(\"" + springBeanName + "\", " + springBeanClassName + ".class);");
@@ -299,7 +297,7 @@ public class DAOPrimitives {
     println();
     println("  public static List<" + this.dao.getClassName()
         + "> selectBySQL(final SQLJoin join, final SQLLogicalExpression where, final "
-        + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies) {");
+        + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
     println(
         "    " + springBeanClassName + " " + springBeanName + " = ApplicationContextProvider.getApplicationContext()");
     println("        .getBean(\"" + springBeanName + "\", " + springBeanClassName + ".class);");
@@ -409,7 +407,7 @@ public class DAOPrimitives {
     println("  // Spring JDBC - Mapper");
     println("  // ====================");
     println();
-    println("  public static class " + this.ds.getIdentifier().getJavaClassIdentifier() + "Mapper implements RowMapper<"
+    println("  public static class " + this.ds.getId().getJavaClassName() + "Mapper implements RowMapper<"
         + this.dao.getClassName() + "> {");
     println();
     println("    public " + this.dao.getClassName() + " mapRow(ResultSet rs, int rowNum) throws SQLException {");
@@ -498,7 +496,7 @@ public class DAOPrimitives {
     println("  // Ordering");
     println("  // ========");
     println();
-    println("  public enum " + ds.getIdentifier().getJavaClassIdentifier() + "OrderBy implements OrderBy {");
+    println("  public enum " + ds.getId().getJavaClassName() + "OrderBy implements OrderBy {");
     println();
     ListWriter lw = new ListWriter(",\n    ");
     for (ColumnMetadata cm : this.ds.getColumns()) {
@@ -514,7 +512,7 @@ public class DAOPrimitives {
     println("    private String columnName;");
     println("    private boolean ascending;");
     println();
-    println("    private " + ds.getIdentifier().getJavaClassIdentifier()
+    println("    private " + ds.getId().getJavaClassName()
         + "OrderBy(final String tableName, final String columnName, boolean ascending) {");
     println("      this.tableName = tableName;");
     println("      this.columnName = columnName;");
@@ -546,7 +544,7 @@ public class DAOPrimitives {
     println("  // Ordering");
     println("  // ========");
     println();
-    println("  public enum " + ds.getIdentifier().getJavaClassIdentifier() + "OrderBy implements OrderBy {");
+    println("  public enum " + ds.getId().getJavaClassName() + "OrderBy implements OrderBy {");
     println();
     ListWriter lw = new ListWriter(",\n    ");
     for (ColumnMetadata cm : this.ds.getColumns()) {
@@ -561,7 +559,7 @@ public class DAOPrimitives {
     println("    private String columnName;");
     println("    private boolean ascending;");
     println();
-    println("    private " + ds.getIdentifier().getJavaClassIdentifier()
+    println("    private " + ds.getId().getJavaClassName()
         + "OrderBy(final String columnName, boolean ascending) {");
     println("      this.columnName = columnName;");
     println("      this.ascending = ascending;");
@@ -711,7 +709,7 @@ public class DAOPrimitives {
     println("  // Spring JDBC - Template");
     println("  // ======================");
     println();
-    println("  public static class " + this.ds.getIdentifier().getJavaClassIdentifier()
+    println("  public static class " + this.ds.getId().getJavaClassName()
         + CodeGenerationHelper.SPRING_BEAN_SUFFIX + " {");
     println("    private JdbcTemplate jdbcTemplateObject;");
     println("    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;");
@@ -754,13 +752,13 @@ public class DAOPrimitives {
     println();
     // TODO improve: duplicated code
     println("    public List<" + this.dao.getClassName() + "> selectCustom(Map<String,Object> params, "
-        + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies) {");
+        + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
     String sentence = sm.getSelectTag().renderSQLSentence(new SpringParameterRenderer()).replaceAll("\n",
         "\" +\n      \"");
     println("      String sql = \"" + sentence + "\"\n      + OrderByRenderer.render(orderBies);");
     println();
     println("      return this.namedParameterJdbcTemplate.query(sql, params, new "
-        + this.ds.getIdentifier().getJavaClassIdentifier() + "Mapper());");
+        + this.ds.getId().getJavaClassName() + "Mapper());");
     println("    }");
     println();
 
@@ -770,7 +768,8 @@ public class DAOPrimitives {
     println("    public int deleteByExample(" + this.dao.getClassName() + " example) {");
     println("      SQLRenderer where = new SQLRenderer(SQLSegmentType.WHERE);");
     println("      appendDynamicColumns(example, where, true);");
-    println("      String sql = \"delete from " + this.ds.getIdentifier().getSQLIdentifier() + "\" + where.render();");
+    println(
+        "      String sql = \"delete from " + this.ds.getId().getRenderedSQLName() + "\" + where.render();");
     println(
         "      return jdbcTemplateObject.update(sql, SQLRenderer.getParamValues(where), SQLRenderer.getParamTypes(where));");
     println("    }");
@@ -786,7 +785,7 @@ public class DAOPrimitives {
       println("      // Nothing to delete.");
       println("        return 0;");
       println("      }");
-      print("      String sql = \"delete from " + this.ds.getIdentifier().getSQLIdentifier() + " where ");
+      print("      String sql = \"delete from " + this.ds.getId().getRenderedSQLName() + " where ");
       ListWriter lw = new ListWriter(" and ");
       for (ColumnMetadata cm : this.ds.getPK().getColumns()) {
         lw.add(cm.getColumnName() + " = ?");
@@ -885,7 +884,7 @@ public class DAOPrimitives {
     println("      SQLRenderer where = new SQLRenderer(SQLSegmentType.WHERE);");
     println("      appendDynamicColumns(example, where, true);");
 
-    println("      String sql = \"update " + this.ds.getIdentifier().getSQLIdentifier()
+    println("      String sql = \"update " + this.ds.getId().getRenderedSQLName()
         + "\" + set.render() + where.render();");
     println("      return jdbcTemplateObject.update(sql, SQLRenderer.getParamValues(set, where),");
     println("          SQLRenderer.getParamTypes(set, where));");
@@ -920,7 +919,7 @@ public class DAOPrimitives {
 
       if (hasLobs) {
         println("      if(!excludeLOB) {");
-        print("        sql = \"update " + this.ds.getIdentifier().getSQLIdentifier());
+        print("        sql = \"update " + this.ds.getId().getRenderedSQLName());
         print(" set " + getUpdateDbFields(true));
 
         print(" where " + lw.toString());
@@ -936,7 +935,7 @@ public class DAOPrimitives {
 
         println("      } else {");
 
-        print("        sql = \"update " + this.ds.getIdentifier().getSQLIdentifier());
+        print("        sql = \"update " + this.ds.getId().getRenderedSQLName());
         print(" set " + getUpdateDbFields(false));
 
         print(" where " + lw.toString());
@@ -952,7 +951,7 @@ public class DAOPrimitives {
         println("      }");
 
       } else {
-        print("        sql = \"update " + this.ds.getIdentifier().getSQLIdentifier());
+        print("        sql = \"update " + this.ds.getId().getRenderedSQLName());
         print(" set " + getUpdateDbFields(true));
 
         print(" where " + lw.toString());
@@ -1064,7 +1063,7 @@ public class DAOPrimitives {
 
     println("      int rows = jdbcTemplateObject.update(new PreparedStatementCreator() {");
     println("        public PreparedStatement createPreparedStatement(Connection con) throws SQLException {");
-    println("          String sql = \"insert into " + this.ds.getIdentifier().getSQLIdentifier() + " (" + insertParams
+    println("          String sql = \"insert into " + this.ds.getId().getRenderedSQLName() + " (" + insertParams
         + ") values (" + insertValues + ")\";");
     if (scenario == SCENARIO_PK_AUTOGENERATED) {
       println("          PreparedStatement pst = con.prepareStatement(sql, new String[] { \""
@@ -1074,7 +1073,7 @@ public class DAOPrimitives {
     } else {
       println("          PreparedStatement pst = con.prepareStatement(sql);");
     }
-    println("          " + this.ds.getIdentifier().getJavaClassIdentifier() + "Mapper.setValues(pst, dao);");
+    println("          " + this.ds.getId().getJavaClassName() + "Mapper.setValues(pst, dao);");
     println("          return pst;");
     println("        }");
     if (scenario == SCENARIO_PK_AUTOGENERATED) {
@@ -1107,13 +1106,13 @@ public class DAOPrimitives {
       }
 
       println("        sql = \"select " + CodeGenerationHelper.writeSQLColumns(ds, false, false, true, true) + " from "
-          + this.ds.getIdentifier().getSQLIdentifier() + " where "
+          + this.ds.getId().getRenderedSQLName() + " where "
           + CodeGenerationHelper.getSQLWhereConditionByIndex(this.ds.getPK()) + "\";");
 
       if (hasLobs) {
         println("      } else {");
         println("        sql = \"select " + CodeGenerationHelper.writeSQLColumns(ds, false, false, false, true)
-            + " from " + this.ds.getIdentifier().getSQLIdentifier() + " where "
+            + " from " + this.ds.getId().getRenderedSQLName() + " where "
             + CodeGenerationHelper.getSQLWhereConditionByIndex(this.ds.getPK()) + "\";");
         println("      }");
       }
@@ -1122,7 +1121,7 @@ public class DAOPrimitives {
       println("        return jdbcTemplateObject.queryForObject(sql, new Object[] { "
           + CodeGenerationHelper.toParametersCall(this.ds.getPK(), false) + " }, new int[] { "
           + CodeGenerationHelper.toParametersCallJdbcType(this.ds.getPK(), false) + " },");
-      println("            new " + this.ds.getIdentifier().getJavaClassIdentifier() + "Mapper());");
+      println("            new " + this.ds.getId().getJavaClassName() + "Mapper());");
       println("      } catch (IncorrectResultSizeDataAccessException e) {");
       println("        return null;");
       println("      }");
@@ -1140,31 +1139,30 @@ public class DAOPrimitives {
     // TODO improve: duplicated code
     if (hasLobs) {
       println("    public List<" + this.dao.getClassName() + "> selectByExample(" + this.dao.getClassName()
-          + " example, boolean excludeLOB, " + this.ds.getIdentifier().getJavaClassIdentifier()
-          + "OrderBy... orderBies) {");
+          + " example, boolean excludeLOB, " + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
       println("      SQLRenderer where = new SQLRenderer(SQLSegmentType.WHERE);");
       println("      appendDynamicColumns(example, where, true);");
       println("      String sql;");
       println("      if (!excludeLOB) {");
       println("        sql = \"select " + CodeGenerationHelper.writeSQLColumns(ds, false, false, true, true) + " from "
-          + this.ds.getIdentifier().getSQLIdentifier() + " \" + where.render() + OrderByRenderer.render(orderBies);");
+          + this.ds.getId().getRenderedSQLName() + " \" + where.render() + OrderByRenderer.render(orderBies);");
       println("      } else {");
       println("        sql = \"select " + CodeGenerationHelper.writeSQLColumns(ds, false, false, false, true) + " from "
-          + this.ds.getIdentifier().getSQLIdentifier() + " \" + where.render() + OrderByRenderer.render(orderBies);");
+          + this.ds.getId().getRenderedSQLName() + " \" + where.render() + OrderByRenderer.render(orderBies);");
       println("      }");
     } else {
       println("    public List<" + this.dao.getClassName() + "> selectByExample(" + this.dao.getClassName()
-          + " example, " + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies) {");
+          + " example, " + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
       println("      SQLRenderer where = new SQLRenderer(SQLSegmentType.WHERE);");
       println("      appendDynamicColumns(example, where, true);");
       println("      String sql = \"select " + CodeGenerationHelper.writeSQLColumns(ds, false, false, true, true)
-          + " from " + this.ds.getIdentifier().getSQLIdentifier()
+          + " from " + this.ds.getId().getRenderedSQLName()
           + " \" + where.render() + OrderByRenderer.render(orderBies);");
     }
     println();
     println(
         "      return jdbcTemplateObject.query(sql, SQLRenderer.getParamValues(where), SQLRenderer.getParamTypes(where),");
-    println("          new " + this.ds.getIdentifier().getJavaClassIdentifier() + "Mapper());");
+    println("          new " + this.ds.getId().getJavaClassName() + "Mapper());");
     println("    }");
     println();
 
@@ -1177,27 +1175,27 @@ public class DAOPrimitives {
     if (hasLobs) {
       println("    public List<" + this.dao.getClassName()
           + "> selectByCriteria(SQLLogicalExpression criteria, boolean excludeLOB, "
-          + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies) {");
+          + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
       println("      String sql;");
       println("      if (!excludeLOB) {");
       println("        sql = \"select " + CodeGenerationHelper.writeSQLColumns(ds, false, false, true, true) + " from "
-          + this.ds.getIdentifier().getSQLIdentifier()
+          + this.ds.getId().getRenderedSQLName()
           + " where \" + criteria.render() + OrderByRenderer.render(orderBies);");
       println("      } else {");
       println("        sql = \"select " + CodeGenerationHelper.writeSQLColumns(ds, false, false, false, true) + " from "
-          + this.ds.getIdentifier().getSQLIdentifier()
+          + this.ds.getId().getRenderedSQLName()
           + " where \" + criteria.render() + OrderByRenderer.render(orderBies);");
       println("      }");
     } else {
       println("    public List<" + this.dao.getClassName() + "> selectByCriteria(SQLLogicalExpression criteria, "
-          + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies) {");
+          + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
       println("      String sql = \"select " + CodeGenerationHelper.writeSQLColumns(ds, false, false, true, true)
-          + " from " + this.ds.getIdentifier().getSQLIdentifier()
+          + " from " + this.ds.getId().getRenderedSQLName()
           + " where \" + criteria.render() + OrderByRenderer.render(orderBies);");
     }
     println();
     println("      return this.namedParameterJdbcTemplate.query(sql, criteria.getParameters(), new "
-        + this.ds.getIdentifier().getJavaClassIdentifier() + "Mapper());");
+        + this.ds.getId().getJavaClassName() + "Mapper());");
     println("    }");
     println();
 
@@ -1206,12 +1204,12 @@ public class DAOPrimitives {
   private void writeSelectBySQL() throws IOException, UnresolvableDataTypeException {
     println(
         "    public List<" + this.dao.getClassName() + "> selectBySQL(List<SQLJoin> joins, SQLLogicalExpression where, "
-            + this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy... orderBies) {");
+            + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
     println("      StringBuffer sql = new StringBuffer();");
     println("      Map<String,Object> paramMap = new HashMap<String, Object>();");
     // FIXME always excludes LOBs
     println("      sql.append( \"select distinct " + CodeGenerationHelper.writeSQLColumns(ds, false, false, false, true)
-        + " from " + this.ds.getIdentifier().getSQLIdentifier() + "\");");
+        + " from " + this.ds.getId().getRenderedSQLName() + "\");");
 
     println("      if (joins != null && joins.size() > 0) {");
     println("        for (SQLJoin j : joins) {");
@@ -1227,7 +1225,7 @@ public class DAOPrimitives {
     println("      }");
     println("      sql.append(OrderByRenderer.render(orderBies));");
     println("      return this.namedParameterJdbcTemplate.query(sql.toString(), paramMap, new "
-        + this.ds.getIdentifier().getJavaClassIdentifier() + "Mapper());");
+        + this.ds.getId().getJavaClassName() + "Mapper());");
     println("    }");
     println();
   }
@@ -1386,9 +1384,9 @@ public class DAOPrimitives {
   }
 
   private void writeJavaToDatabaseFieldMapper() throws IOException {
-    println("  public static final String DBTABLE$NAME = \"" + ds.getIdentifier().getSQLIdentifier() + "\";");
+    println("  public static final String DBTABLE$NAME = \"" + ds.getId().getRenderedSQLName() + "\";");
     println(
-        "  public static final SQLTable DB$TABLE = new SQLTable(\"" + ds.getIdentifier().getSQLIdentifier() + "\");");
+        "  public static final SQLTable DB$TABLE = new SQLTable(\"" + ds.getId().getRenderedSQLName() + "\");");
     println();
     for (ColumnMetadata cm : this.ds.getColumns()) {
       println("  public static final SQLField DBFIELD$" + cm.getColumnName() + " = new SQLField(DB$TABLE,\""
@@ -1419,11 +1417,11 @@ public class DAOPrimitives {
   }
 
   private String getOrderByClassName() {
-    return this.ds.getIdentifier().getJavaClassIdentifier() + "OrderBy";
+    return this.ds.getId().getJavaClassName() + "OrderBy";
   }
 
   public String getClassName() {
-    return this.ds.generatePrimitivesName(this.ds.getIdentifier());
+    return this.ds.generatePrimitivesName(this.ds.getId());
   }
 
   public String getParameterClassName() {

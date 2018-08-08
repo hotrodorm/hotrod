@@ -80,7 +80,7 @@ public class SpringJDBCGenerator extends HotRodGenerator {
       TableTag tag = this.config.findTable(metadata, this.adapter);
       if (tag == null) {
         throw new ControlledException(
-            "Could not find table tag for table '" + metadata.getIdentifier().getSQLIdentifier() + "'.");
+            "Could not find table tag for table '" + metadata.getId().getCanonicalSQLName() + "'.");
       }
       layout = new DataSetLayout(this.config, tag);
 
@@ -121,7 +121,7 @@ public class SpringJDBCGenerator extends HotRodGenerator {
       break;
     default:
       throw new ControlledException(
-          "Unrecognized type for database object '" + metadata.getIdentifier().getSQLIdentifier() + "'.");
+          "Unrecognized type for database object '" + metadata.getId().getCanonicalSQLName() + "'.");
     }
 
   }

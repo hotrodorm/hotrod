@@ -23,6 +23,7 @@ import org.hotrod.config.SelectMethodTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
@@ -39,8 +40,9 @@ import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
-import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.Id;
+import org.hotrod.utils.identifiers2.ObjectId;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
@@ -75,6 +77,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   private transient String tempViewName;
   private transient String createView;
 
+  private ObjectId id;
+
   private ClassPackage classPackage;
 
   private SelectMethodReturnType selectMethodReturnType;
@@ -83,13 +87,14 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   public SelectMethodMetadata(final HotRodGenerator generator, final SelectMethodTag tag, final HotRodConfigTag config,
       final SelectGenerationTag selectGenerationTag, final ColumnsPrefixGenerator columnsPrefixGenerator,
-      final DataSetLayout layout) {
+      final DataSetLayout layout) throws InvalidIdentifierException {
     this.generator = generator;
     this.db = generator.getJdbcDatabase();
     this.config = config;
     this.adapter = generator.getAdapter();
     this.loc = generator.getLoc();
     this.tag = tag;
+    this.id = new ObjectId(null, null, Id.fromJavaMember(tag.getMethod()));
     this.selectGenerationTag = selectGenerationTag;
     this.columnsPrefixGenerator = columnsPrefixGenerator;
 
@@ -133,7 +138,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       // Structured columns
 
       try {
-        log.debug("Phase 1 - method="+this.getMethod());
+        log.debug("Phase 1 - method=" + this.getMethod());
         this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, this.selectGenerationTag,
             this.columnsPrefixGenerator, conn1);
       } catch (InvalidSQLException e) {
@@ -449,8 +454,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   }
 
   @Override
-  public DataSetIdentifier getIdentifier() {
-    return new DataSetIdentifier("m", this.getMethod(), false);
+  public ObjectId getId() {
+    return this.id;
   }
 
   @Override
@@ -510,13 +515,13 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   @Override
   @Deprecated
-  public String generateDAOName(final Identifier identifier) {
+  public String generateDAOName(final ObjectId identifier) {
     return this.config.getGenerators().getSelectedGeneratorTag().getDaos().generateDAOName(identifier);
   }
 
   @Override
   @Deprecated
-  public String generatePrimitivesName(final Identifier identifier) {
+  public String generatePrimitivesName(final ObjectId identifier) {
     return this.config.getGenerators().getSelectedGeneratorTag().getDaos().generatePrimitivesName(identifier);
   }
 

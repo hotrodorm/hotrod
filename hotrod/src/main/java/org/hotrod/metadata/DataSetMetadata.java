@@ -6,16 +6,16 @@ import java.util.List;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.ObjectId;
 
 public interface DataSetMetadata extends Serializable {
 
   @Deprecated
-  String generateDAOName(Identifier identifier);
+  String generateDAOName(ObjectId identifier);
 
   @Deprecated
-  String generatePrimitivesName(Identifier identifier);
+  String generatePrimitivesName(ObjectId identifier);
 
   AbstractDAOTag getDaoTag();
 
@@ -25,7 +25,7 @@ public interface DataSetMetadata extends Serializable {
 
   KeyMetadata getPK();
 
-  DataSetIdentifier getIdentifier();
+  ObjectId getId();
 
   String renderSQLIdentifier();
 

@@ -123,7 +123,8 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
   // Behavior
 
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
 
     this.fragmentConfig = fragmentConfig;
 
@@ -263,7 +264,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     for (EnhancedSQLPart p : this.parts) {
       // log.info("VAL p: " + p.getClass().getName());
-      p.validate(daosTag, config, fragmentConfig, this.parameters);
+      p.validate(daosTag, config, fragmentConfig, this.parameters, adapter);
     }
 
     // all validations cleared

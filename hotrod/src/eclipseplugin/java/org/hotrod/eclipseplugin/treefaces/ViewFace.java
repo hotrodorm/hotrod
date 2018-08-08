@@ -8,7 +8,7 @@ import org.hotrod.eclipseplugin.treefaces.FaceFactory.InvalidConfigurationItemEx
 public class ViewFace extends AbstractFace {
 
   public ViewFace(final ViewTag viewDAO) throws InvalidConfigurationItemException {
-    super(viewDAO.getName(), viewDAO);
+    super(viewDAO.getId().getCanonicalSQLName(), viewDAO);
     for (AbstractMethodTag<?> m : viewDAO.getMethods()) {
       AbstractFace leaf = FaceFactory.getMethodElement(m);
       super.addChild(leaf);

@@ -107,10 +107,10 @@ public class VOMetadata implements Serializable {
       this.entityVOSuperClass = null;
       if (this.tableMetadata != null) {
         this.classPackage = getVOClassPackage(layout, this.tableMetadata.getFragmentConfig());
-        this.name = daosTag.generateVOName(this.tableMetadata.getIdentifier());
+        this.name = daosTag.generateVOName(this.tableMetadata.getId());
       } else {
         this.classPackage = getVOClassPackage(layout, this.viewMetadata.getFragmentConfig());
-        this.name = daosTag.generateVOName(this.viewMetadata.getIdentifier());
+        this.name = daosTag.generateVOName(this.viewMetadata.getId());
       }
     }
 

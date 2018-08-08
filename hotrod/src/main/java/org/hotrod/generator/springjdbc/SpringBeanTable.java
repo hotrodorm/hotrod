@@ -20,8 +20,8 @@ public class SpringBeanTable implements SpringBean {
   public void writeBeanTag(Writer w) throws UncontrolledException {
     try {
       w.write("\t<bean id=\"" + this.getBeanName() + "\"\n");
-      w.write("\t\tclass=\"" + this.daoPrimitives.getFullClassName() + "."
-          + dsm.getIdentifier().getJavaClassIdentifier() + CodeGenerationHelper.SPRING_BEAN_SUFFIX + "\">\n");
+      w.write("\t\tclass=\"" + this.daoPrimitives.getFullClassName() + "." + dsm.getId().getJavaClassName()
+          + CodeGenerationHelper.SPRING_BEAN_SUFFIX + "\">\n");
       w.write("\t\t<property name=\"dataSource\" ref=\"dataSource\" />\n");
       w.write("\t</bean>\n\n");
 
@@ -33,10 +33,10 @@ public class SpringBeanTable implements SpringBean {
   }
 
   public String getBeanName() {
-    return this.dsm.getIdentifier().getJavaMemberIdentifier() + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
+    return this.dsm.getId().getJavaMemberName() + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
   }
 
   public String getBeanClassName() {
-    return this.dsm.getIdentifier().getJavaClassIdentifier() + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
+    return this.dsm.getId().getJavaClassName() + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
   }
 }

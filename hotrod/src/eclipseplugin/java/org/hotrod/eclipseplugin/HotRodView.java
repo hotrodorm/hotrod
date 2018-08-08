@@ -974,7 +974,7 @@ public class HotRodView extends ViewPart {
         if (ch != null) {
           log.debug("...*** Enums from cache config ***");
           for (EnumTag et : ch.getAllEnums()) {
-            log.debug("***    enum '" + et.getName() + "'");
+            log.debug("***    enum '" + et.getId().getCanonicalSQLName() + "'");
           }
           log.debug("...*** End of enums from cache config ***");
         } else {

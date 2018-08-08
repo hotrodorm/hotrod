@@ -36,8 +36,8 @@ import org.hotrod.metadata.VersionControlMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 import org.nocrala.tools.database.tartarus.exception.ReaderException;
 
@@ -110,7 +110,7 @@ public class Mapper extends GeneratableObject {
     this.vo = vo;
 
     this.namespace = this.layout.getDAOPrimitivePackage(this.fragmentPackage).getPackage() + "."
-        + this.metadata.getIdentifier().getJavaMemberIdentifier();
+        + this.metadata.getId().getJavaMemberName();
   }
 
   public void setDao(ObjectDAO dao) {
@@ -1222,12 +1222,12 @@ public class Mapper extends GeneratableObject {
   }
 
   public String getSourceFileName() {
-    DataSetIdentifier id = this.metadata.getIdentifier();
+    ObjectId id = this.metadata.getId();
     return getSourceFile(id);
   }
 
-  public static String getSourceFile(final Identifier id) {
-    return "primitives-" + id.getMapperIdentifier() + ".xml";
+  public static String getSourceFile(final ObjectId id) {
+    return "primitives-" + id.getDashedName() + ".xml";
   }
 
   public String getMapperIdSelectByPK() {

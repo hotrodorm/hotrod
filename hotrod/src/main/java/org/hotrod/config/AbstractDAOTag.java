@@ -91,7 +91,8 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
   // Behavior
 
   protected void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
 
     // sequences
 
@@ -140,7 +141,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
     Set<String> methodNames = new HashSet<String>();
 
     for (SelectMethodTag s : this.selects) {
-      s.validate(daosTag, config, fragmentConfig);
+      s.validate(daosTag, config, fragmentConfig, adapter);
       super.addChild(s);
 
       if (methodNames.contains(s.getMethod())) {

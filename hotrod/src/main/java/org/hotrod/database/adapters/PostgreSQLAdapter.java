@@ -235,7 +235,7 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
       throws IdentitiesPostFetchNotSupportedException {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : identityGeneratedColumns) {
-      lw.add("select currval(pg_get_serial_sequence('" + cm.getDataSet().getIdentifier().getSQLIdentifier() + "', '"
+      lw.add("select currval(pg_get_serial_sequence('" + cm.getDataSet().getId().getCanonicalSQLName() + "', '"
           + cm.getIdentifier().getSQLIdentifier() + "'))");
     }
     return "select " + lw.toString();

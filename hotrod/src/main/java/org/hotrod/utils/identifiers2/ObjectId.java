@@ -1,8 +1,11 @@
 package org.hotrod.utils.identifiers2;
 
-import org.hotrod.exceptions.InvalidIdentifierException;
+import java.util.List;
 
-public class ObjectId {
+import org.hotrod.exceptions.InvalidIdentifierException;
+import org.hotrod.utils.identifiers2.Id.NamePart;
+
+public class ObjectId implements Comparable<ObjectId> {
 
   // Properties
 
@@ -33,6 +36,75 @@ public class ObjectId {
 
   public Id getObject() {
     return object;
+  }
+
+  public String getCanonicalSQLName() {
+    return this.object.getCanonicalSQLName();
+  }
+
+  public String getRenderedSQLName() {
+    return this.object.getRenderedSQLName();
+  }
+
+  public boolean wasJavaNameSpecified() {
+    return this.object.wasJavaNameSpecified();
+  }
+
+  public String getJavaClassName() {
+    return this.object.getJavaClassName();
+  }
+
+  public String getJavaMemberName() {
+    return this.object.getJavaMemberName();
+  }
+
+  public String getJavaConstantName() {
+    return this.object.getJavaConstantName();
+  }
+
+  public String getDashedName() {
+    return this.object.getDashedName();
+  }
+
+  public String getJavaGetter() {
+    return this.object.getJavaGetter();
+  }
+
+  public String getJavaSetter() {
+    return this.object.getJavaSetter();
+  }
+
+  public List<NamePart> getCanonicalParts() {
+    return this.object.getCanonicalParts();
+  }
+
+  // Comparable
+
+  @Override
+  public int compareTo(final ObjectId o) {
+
+    int comp = compareIds(this.catalog, o.catalog);
+    if (comp != 0) {
+      return comp;
+    }
+
+    comp = compareIds(this.schema, o.schema);
+    if (comp != 0) {
+      return comp;
+    }
+
+    return compareIds(this.object, o.object);
+
+  }
+
+  private int compareIds(final Id a, final Id b) {
+    if (a == null) {
+      return b == null ? 0 : -1;
+    }
+    if (b == null) {
+      return 1;
+    }
+    return a.compareTo(b);
   }
 
   // Equals

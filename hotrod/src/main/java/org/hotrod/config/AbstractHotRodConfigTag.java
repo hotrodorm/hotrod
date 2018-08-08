@@ -118,7 +118,8 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   // Behavior
 
   protected void validateCommon(final HotRodConfigTag config, final File file, final FileRegistry fileRegistry,
-      final File parentFile, final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      final File parentFile, final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
+      final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
 
     log.debug("init");
@@ -133,7 +134,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     Collections.sort(this.tables, new Comparator<TableTag>() {
       @Override
       public int compare(final TableTag a, final TableTag b) {
-        return a.getName().compareTo(b.getName());
+        return a.getId().compareTo(b.getId());
       }
     });
     super.addChildren(this.tables);
@@ -144,7 +145,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     Collections.sort(this.enums, new Comparator<EnumTag>() {
       @Override
       public int compare(final EnumTag a, final EnumTag b) {
-        return a.getName().compareTo(b.getName());
+        return a.getId().compareTo(b.getId());
       }
     });
     super.addChildren(this.enums);
@@ -155,7 +156,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     Collections.sort(this.views, new Comparator<ViewTag>() {
       @Override
       public int compare(final ViewTag a, final ViewTag b) {
-        return a.getName().compareTo(b.getName());
+        return a.getId().compareTo(b.getId());
       }
     });
     super.addChildren(this.views);
@@ -233,15 +234,15 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     log.debug("* LISTING " + name + " (" + file.getName() + ") ...");
 
     for (TableTag t : f.getTables()) {
-      log.debug(" - tables: " + t.getName());
+      log.debug(" - tables: " + t.getId().getCanonicalSQLName());
     }
 
     for (ViewTag v : f.getViews()) {
-      log.debug(" - views: " + v.getName());
+      log.debug(" - views: " + v.getId().getCanonicalSQLName());
     }
 
     for (EnumTag e : f.getEnums()) {
-      log.debug(" - enum: " + e.getName());
+      log.debug(" - enum: " + e.getId().getCanonicalSQLName());
     }
 
     for (ExecutorTag dao : f.getExecutors()) {
@@ -285,8 +286,9 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
   public TableTag getTableTag(final JdbcTable t) {
     for (TableTag tag : this.getTables()) {
-      log.debug("table tag=" + tag.getName());
-      if (tag.getName().equalsIgnoreCase(t.getName())) {
+      log.debug("table tag=" + tag.getId().getCanonicalSQLName());
+      // TODO: this comparison fails to include the catalog/schema. Fix!
+      if (tag.getId().getCanonicalSQLName().equals(t.getName())) {
         return tag;
       }
     }
@@ -299,8 +301,9 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
   public EnumTag getEnumTag(final JdbcTable t) {
     for (EnumTag tag : this.getEnums()) {
-      log.debug("enum tag=" + tag.getName());
-      if (tag.getName().equalsIgnoreCase(t.getName())) {
+      log.debug("enum tag=" + tag.getId().getCanonicalSQLName());
+      // TODO: this comparison fails to include the catalog/schema. Fix!
+      if (tag.getId().getCanonicalSQLName().equals(t.getName())) {
         return tag;
       }
     }
@@ -313,7 +316,8 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
   public ViewTag getViewTag(final JdbcTable t) {
     for (ViewTag tag : this.getViews()) {
-      if (tag.getName().equalsIgnoreCase(t.getName())) {
+      // TODO: this comparison fails to include the catalog/schema. Fix!
+      if (tag.getId().getCanonicalSQLName().equals(t.getName())) {
         return tag;
       }
     }
@@ -423,37 +427,40 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
       return null;
     }
     for (TableTag t : this.getTables()) {
-      if (adapter.isTableIdentifier(metadata.getIdentifier().getSQLIdentifier(), t.getName())) {
+      if (metadata.getId().equals(t.getId())) {
         return t;
       }
     }
     return null;
   }
 
+  // TODO: Why is this methods used?
   public EnumTag findEnum(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;
     }
     for (EnumTag e : this.getEnums()) {
-      if (adapter.isTableIdentifier(metadata.getIdentifier().getSQLIdentifier(), e.getName())) {
+      if (metadata.getId().equals(e.getId())) {
         return e;
       }
     }
     return null;
   }
 
+  // TODO: Why is this methods used?
   public ViewTag findView(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;
     }
     for (ViewTag v : this.getViews()) {
-      if (adapter.isTableIdentifier(metadata.getIdentifier().getSQLIdentifier(), v.getName())) {
+      if (metadata.getId().equals(v.getId())) {
         return v;
       }
     }
     return null;
   }
 
+  // TODO: Why is this methods used?
   public SelectClassTag findSelect(final SelectDataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;
@@ -513,20 +520,22 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return d;
   }
 
+  // TODO: remove 'adapter' parameter
   protected void remove(final TableTag t, final DatabaseAdapter adapter) {
     for (Iterator<TableTag> it = this.tables.iterator(); it.hasNext();) {
       TableTag current = it.next();
-      if (adapter.equalConfigNames(current.getName(), t.getName())) {
+      if (current.getId().equals(t.getId())) {
         it.remove();
         return;
       }
     }
   }
 
+  // TODO: remove 'adapter' parameter
   protected TableTag replace(final TableTag t, final DatabaseAdapter adapter) {
     for (ListIterator<TableTag> it = this.tables.listIterator(); it.hasNext();) {
       TableTag current = it.next();
-      if (adapter.equalConfigNames(current.getName(), t.getName())) {
+      if (current.getId().equals(t.getId())) {
         TableTag d = t.duplicate();
         it.set(d);
         return d;
@@ -541,20 +550,22 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return d;
   }
 
+  // TODO: remove 'adapter' parameter
   protected void remove(final EnumTag e, final DatabaseAdapter adapter) {
     for (Iterator<EnumTag> it = this.enums.iterator(); it.hasNext();) {
       EnumTag current = it.next();
-      if (adapter.equalConfigNames(current.getName(), e.getName())) {
+      if (current.getId().equals(e.getId())) {
         it.remove();
         return;
       }
     }
   }
 
+  // TODO: remove 'adapter' parameter
   protected EnumTag replace(final EnumTag e, final DatabaseAdapter adapter) {
     for (ListIterator<EnumTag> it = this.enums.listIterator(); it.hasNext();) {
       EnumTag current = it.next();
-      if (adapter.equalConfigNames(current.getName(), e.getName())) {
+      if (current.getId().equals(e.getId())) {
         EnumTag d = e.duplicate();
         it.set(d);
         return d;
@@ -569,20 +580,22 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return d;
   }
 
+  // TODO: remove 'adapter' parameter
   protected void remove(final ViewTag v, final DatabaseAdapter adapter) {
     for (Iterator<ViewTag> it = this.views.iterator(); it.hasNext();) {
       ViewTag current = it.next();
-      if (adapter.equalConfigNames(current.getName(), v.getName())) {
+      if (current.getId().equals(v.getId())) {
         it.remove();
         return;
       }
     }
   }
 
+  // TODO: remove 'adapter' parameter
   protected ViewTag replace(final ViewTag v, final DatabaseAdapter adapter) {
     for (ListIterator<ViewTag> it = this.views.listIterator(); it.hasNext();) {
       ViewTag current = it.next();
-      if (adapter.equalConfigNames(current.getName(), v.getName())) {
+      if (current.getId().equals(v.getId())) {
         ViewTag d = v.duplicate();
         it.set(d);
         return d;
@@ -677,17 +690,18 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
         new Comparator<TableTag>() {
           @Override
           public int compare(TableTag o1, TableTag o2) {
-            return adapter.canonizeName(o1.getName(), false).compareTo(adapter.canonizeName(o2.getName(), false));
+            return o1.getId().compareTo(o2.getId());
           }
         })) {
 
       TableTag t = cor.getLeft();
       TableTag c = cor.getRight();
 
-      log.info("mark 2 t=" + (t == null ? "null" : t.getName()) + " - c=" + (c == null ? "null" : c.getName()));
+      log.info("mark 2 t=" + (t == null ? "null" : t.getId().getCanonicalSQLName()) + " - c="
+          + (c == null ? "null" : c.getId().getCanonicalSQLName()));
 
       if (t != null && t.isToBeGenerated()) {
-        log.debug("mark 2.1 - fail t=" + t.getName());
+        log.debug("mark 2.1 - fail t=" + t.getId().getCanonicalSQLName());
         failedInnerGeneration = true;
       }
       if (t != null && c == null) {
@@ -724,7 +738,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
         new Comparator<EnumTag>() {
           @Override
           public int compare(EnumTag o1, EnumTag o2) {
-            return adapter.canonizeName(o1.getName(), false).compareTo(adapter.canonizeName(o2.getName(), false));
+            return o1.getId().compareTo(o2.getId());
           }
         })) {
 
@@ -764,14 +778,15 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
         new Comparator<ViewTag>() {
           @Override
           public int compare(ViewTag o1, ViewTag o2) {
-            return adapter.canonizeName(o1.getName(), false).compareTo(adapter.canonizeName(o2.getName(), false));
+            return o1.getId().compareTo(o2.getId());
           }
         })) {
 
       ViewTag t = cor.getLeft();
       ViewTag c = cor.getRight();
 
-      log.info("view 2 t=" + (t == null ? "null" : t.getName()) + " - c=" + (c == null ? "null" : c.getName()));
+      log.info("view 2 t=" + (t == null ? "null" : t.getId().getCanonicalSQLName()) + " - c="
+          + (c == null ? "null" : c.getId().getCanonicalSQLName()));
 
       if (t != null && t.isToBeGenerated()) {
         failedInnerGeneration = true;

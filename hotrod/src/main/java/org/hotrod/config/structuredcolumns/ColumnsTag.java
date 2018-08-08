@@ -110,7 +110,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   @Override
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, ParameterDefinitions parameters)
+      final HotRodFragmentConfigTag fragmentConfig, ParameterDefinitions parameters, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
     this.daosTag = daosTag;
@@ -118,7 +118,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     this.fragmentConfig = fragmentConfig;
 
     this.connectedVOResult = this.vo == null && this.vos.size() == 1 && this.expressions.isEmpty();
-    this.validate(daosTag, config, fragmentConfig, this.connectedVOResult);
+    this.validate(daosTag, config, fragmentConfig, this.connectedVOResult, adapter);
 
   }
 
@@ -180,7 +180,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   // ========================
 
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final boolean connectedVOResult)
+      final HotRodFragmentConfigTag fragmentConfig, final boolean connectedVOResult, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
     // vo
@@ -248,7 +248,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     // vos
 
     for (VOTag vo : this.vos) {
-      vo.validate(daosTag, config, fragmentConfig, connectedVOResult);
+      vo.validate(daosTag, config, fragmentConfig, connectedVOResult, adapter);
     }
 
     // expressions

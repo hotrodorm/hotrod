@@ -14,7 +14,7 @@ import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ImportsRenderer;
-import org.hotrod.utils.identifiers.DataSetIdentifier;
+import org.hotrod.utils.identifiers2.ObjectId;
 
 public class ObjectVO extends GeneratableObject {
 
@@ -108,8 +108,8 @@ public class ObjectVO extends GeneratableObject {
   // Info
 
   public String getClassName() {
-    DataSetIdentifier id = this.metadata.getIdentifier();
-    log.debug("id.wasJavaNameSpecified()=" + id.wasJavaNameSpecified());
+    ObjectId id = this.metadata.getId();
+    // log.debug("id.wasJavaNameSpecified()=" + id.wasJavaNameSpecified());
     String name = this.myBatisTag.getDaos().generateVOName(id);
     log.debug("name=" + name);
     return name;
@@ -120,7 +120,7 @@ public class ObjectVO extends GeneratableObject {
   }
 
   public String getJavaClassIdentifier() {
-    return this.metadata.getIdentifier().getJavaClassIdentifier();
+    return this.metadata.getId().getJavaClassName();
   }
 
 }

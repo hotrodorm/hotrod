@@ -12,7 +12,7 @@ public class TableFace extends AbstractFace {
   private static final Logger log = Logger.getLogger(TableFace.class);
 
   public TableFace(final TableTag tableDAO) throws InvalidConfigurationItemException {
-    super(tableDAO.getName(), tableDAO);
+    super(tableDAO.getId().getCanonicalSQLName(), tableDAO);
     for (AbstractMethodTag<?> m : tableDAO.getMethods()) {
       AbstractFace leaf = FaceFactory.getMethodElement(m);
       super.addChild(leaf);

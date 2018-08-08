@@ -11,7 +11,7 @@ import org.hotrod.exceptions.InvalidPackageException;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
-import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.ObjectId;
 
 @XmlRootElement(name = "daos")
 public class DaosTag extends AbstractConfigurationTag {
@@ -207,26 +207,26 @@ public class DaosTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public String generateDAOName(final Identifier identifier) {
-    if (identifier.wasJavaNameSpecified()) {
-      return identifier.getJavaClassIdentifier();
+  public String generateDAOName(final ObjectId id) {
+    if (id.wasJavaNameSpecified()) {
+      return id.getJavaClassName();
     } else {
-      return this.daoPrefix + identifier.getJavaClassIdentifier() + this.daoSuffix;
+      return this.daoPrefix + id.getJavaClassName() + this.daoSuffix;
     }
   }
 
-  public String generatePrimitivesName(final Identifier identifier) {
+  public String generatePrimitivesName(final ObjectId id) {
     log.debug("this.primitivesSuffix=" + this.primitivesSuffix);
-    return this.primitivesPrefix + identifier.getJavaClassIdentifier() + this.primitivesSuffix;
+    return this.primitivesPrefix + id.getJavaClassName() + this.primitivesSuffix;
   }
 
-  public String generateAbstractVOName(final Identifier identifier) {
-    if (identifier.wasJavaNameSpecified()) {
+  public String generateAbstractVOName(final ObjectId id) {
+    if (id.wasJavaNameSpecified()) {
       // For this case new <dao> tag attributes are needed.
       // Something like: abstract-vo-prefix & abstract-vo-suffix
-      return "Abstract" + identifier.getJavaClassIdentifier() + "VO";
+      return "Abstract" + id.getJavaClassName() + "VO";
     } else {
-      return "Abstract" + identifier.getJavaClassIdentifier() + "VO";
+      return "Abstract" + id.getJavaClassName() + "VO";
     }
   }
 
@@ -236,21 +236,22 @@ public class DaosTag extends AbstractConfigurationTag {
 
   private static final String DAO_SUFFIX = "DAO";
 
-  public String generateVOName(final Identifier identifier) {
-    String daoName = identifier.getJavaClassIdentifier();
+  public String generateVOName(final ObjectId identifier) {
+    String daoName = identifier.getJavaClassName();
     String name;
     if (daoName.endsWith(DAO_SUFFIX)) {
       name = daoName.substring(0, daoName.length() - DAO_SUFFIX.length()) + "VO";
     } else {
       name = daoName + "VO";
     }
-    if (identifier.wasJavaNameSpecified()) {
-      // For this case new <dao> tag attributes are needed.
-      // Something like: vo-prefix & vo-suffix
-      return name;
-    } else {
-      return name;
-    }
+    return name;
+    // if (identifier.wasJavaNameSpecified()) {
+    // // For this case new <dao> tag attributes are needed.
+    // // Something like: vo-prefix & vo-suffix
+    // return name;
+    // } else {
+    // return name;
+    // }
   }
 
   // Getters

@@ -93,7 +93,7 @@ public class DAO {
   // Info
 
   public String getClassName() {
-    return this.dsm.generateDAOName(this.dsm.getIdentifier());
+    return this.dsm.generateDAOName(this.dsm.getId());
   }
 
   public String getFullClassName() {
@@ -101,7 +101,7 @@ public class DAO {
   }
 
   public String getJavaClassIdentifier() {
-    return this.dsm.getIdentifier().getJavaClassIdentifier();
+    return this.dsm.getId().getJavaClassName();
   }
 
   // FIXME duplicated code with DAOPrimitives

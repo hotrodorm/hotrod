@@ -55,7 +55,7 @@ public class EnumDataSetMetadata extends TableDataSetMetadata {
   // Getters
 
   public String getName() {
-    return this.tag.getName();
+    return this.tag.getId().getCanonicalSQLName();
   }
 
   public String getJdbcName() {

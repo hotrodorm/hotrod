@@ -176,7 +176,7 @@ public class ObjectDAO extends GeneratableObject {
 
       if (this.tag != null) {
 
-        log.debug("SQL NAME=" + this.metadata.getIdentifier().getSQLIdentifier() + " this.tag=" + this.tag);
+        log.debug("SQL NAME=" + this.metadata.getId().getCanonicalSQLName() + " this.tag=" + this.tag);
         for (SequenceMethodTag s : this.tag.getSequences()) {
           log.debug("s.getName()=" + s.getName());
           writeSelectSequence(s);
@@ -1440,7 +1440,7 @@ public class ObjectDAO extends GeneratableObject {
         println("    int rows = sqlSession.update(\"" + this.mapper.getFullMapperIdUpdateByPK() + "\", u);");
         println("    if (rows != 1) {");
         println("      throw new StaleDataException(\"Could not update row on table "
-            + this.metadata.getIdentifier().getSQLIdentifier() + " with version \" + currentVersion");
+            + this.metadata.getId().getCanonicalSQLName() + " with version \" + currentVersion");
         println("          + \" since it had already been updated by another process.\");");
         println("    }");
         println("    vo." + cm.getIdentifier().getJavaMemberIdentifier() + " = (" + pt.getPrimitiveClassJavaType()
@@ -1627,7 +1627,7 @@ public class ObjectDAO extends GeneratableObject {
         println("    int rows = sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByPK() + "\", vo);");
         println("    if (rows != 1) {");
         println("      throw new StaleDataException(\"Could not delete row on table "
-            + this.metadata.getIdentifier().getSQLIdentifier() + " with version \" + vo."
+            + this.metadata.getId().getCanonicalSQLName() + " with version \" + vo."
             + cm.getIdentifier().getJavaMemberIdentifier());
         println("          + \" since it had already been updated or deleted by another process.\");");
         println("    }");
@@ -1757,7 +1757,7 @@ public class ObjectDAO extends GeneratableObject {
           ValueTypeManager<?> tm = ValueTypeFactory.getValueManager(interType);
           if (tm == null) {
             throw new ControlledException("Could not generate DAO primitives for table '"
-                + this.metadata.getIdentifier().getSQLIdentifier() + "'. Foreign key column '" + cm.getColumnName()
+                + this.metadata.getId().getCanonicalSQLName() + "'. Foreign key column '" + cm.getColumnName()
                 + "' point to an enum type and must be of one of the following simple types:\n"
                 + ListWriter.render(ValueTypeFactory.getSupportedTypes(), " - ", "", "\n"));
           }
@@ -2482,11 +2482,11 @@ public class ObjectDAO extends GeneratableObject {
   }
 
   private String getOrderByClassName() {
-    return this.metadata.getIdentifier().getJavaClassIdentifier() + "OrderBy";
+    return this.metadata.getId().getJavaClassName() + "OrderBy";
   }
 
   public String getClassName() {
-    return this.myBatisTag.getDaos().generateDAOName(this.metadata.getIdentifier());
+    return this.myBatisTag.getDaos().generateDAOName(this.metadata.getId());
   }
 
   public String getParameterClassName() {
@@ -2506,7 +2506,7 @@ public class ObjectDAO extends GeneratableObject {
   }
 
   public String getParamClassName(final SelectMethodMetadata sm) {
-    return "Param" + sm.getIdentifier().getJavaClassIdentifier();
+    return "Param" + sm.getId().getJavaClassName();
   }
 
   private String getTypeHandlerClassName(final ColumnMetadata cm) {

@@ -7,13 +7,14 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.runtime.util.SUtils;
 
-public class Id {
+public class Id implements Comparable<Id> {
 
   // Properties
 
   private String canonicalSQLName; // - MY_PROPERTY, Car$Price
   private String renderedSQLName; // -- my_property, "Car$Price"
 
+  private boolean wasJavaNameSpecified;
   private String javaClassName; // ---- MyProperty, Car_Price
   private String javaMemberName; // --- myProperty, car_Price
 
@@ -29,8 +30,8 @@ public class Id {
   // Constructor
 
   private Id(final DatabaseAdapter adapter, final List<NamePart> nameParts, final String canonicalSQLName,
-      final String javaClassName, final String javaMemberName, final String javaConstantName, final String dashedName)
-      throws InvalidIdentifierException {
+      final boolean wasJavaNameSpecified, final String javaClassName, final String javaMemberName,
+      final String javaConstantName, final String dashedName) throws InvalidIdentifierException {
 
     if (canonicalSQLName != null && adapter == null) {
       throw new InvalidIdentifierException("'adapter' cannot be null when the canonicalSQLName is specified.");
@@ -66,6 +67,7 @@ public class Id {
 
     }
 
+    this.wasJavaNameSpecified = wasJavaNameSpecified;
     this.javaClassName = javaClassName;
     this.javaMemberName = javaMemberName;
 
@@ -99,7 +101,8 @@ public class Id {
     String javaConstantName = assembleJavaConstantName(nameParts);
     String dashedName = assembleDashedName(nameParts);
 
-    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, dashedName);
+    Id id = new Id(adapter, nameParts, canonicalSQLName, false, javaClassName, javaMemberName, javaConstantName,
+        dashedName);
     return id;
   }
 
@@ -121,7 +124,8 @@ public class Id {
     String javaConstantName = assembleJavaConstantName(nameParts);
     String dashedName = assembleDashedName(nameParts);
 
-    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, dashedName);
+    Id id = new Id(adapter, nameParts, canonicalSQLName, true, javaClassName, javaMemberName, javaConstantName,
+        dashedName);
     return id;
   }
 
@@ -143,7 +147,8 @@ public class Id {
     String javaConstantName = assembleJavaConstantName(nameParts);
     String dashedName = assembleDashedName(nameParts);
 
-    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, dashedName);
+    Id id = new Id(adapter, nameParts, canonicalSQLName, true, javaClassName, javaMemberName, javaConstantName,
+        dashedName);
     return id;
   }
 
@@ -176,7 +181,8 @@ public class Id {
     String javaConstantName = assembleJavaConstantName(javaNameParts);
     String dashedName = assembleDashedName(javaNameParts);
 
-    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, dashedName);
+    Id id = new Id(adapter, nameParts, canonicalSQLName, true, javaClassName, javaMemberName, javaConstantName,
+        dashedName);
     return id;
   }
 
@@ -209,7 +215,8 @@ public class Id {
     String javaConstantName = assembleJavaConstantName(javaNameParts);
     String dashedName = assembleDashedName(javaNameParts);
 
-    Id id = new Id(adapter, nameParts, canonicalSQLName, javaClassName, javaMemberName, javaConstantName, dashedName);
+    Id id = new Id(adapter, nameParts, canonicalSQLName, true, javaClassName, javaMemberName, javaConstantName,
+        dashedName);
     return id;
   }
 
@@ -221,6 +228,10 @@ public class Id {
 
   public String getRenderedSQLName() {
     return this.renderedSQLName;
+  }
+
+  public boolean wasJavaNameSpecified() {
+    return wasJavaNameSpecified;
   }
 
   public String getJavaClassName() {
@@ -491,6 +502,16 @@ public class Id {
       sb.append(s);
     }
     return sb.toString();
+  }
+
+  // comparable
+
+  @Override
+  public int compareTo(final Id o) {
+    if (this.canonicalSQLName != null) {
+      return this.canonicalSQLName.compareTo(o.canonicalSQLName);
+    }
+    return this.javaClassName.compareTo(o.javaClassName);
   }
 
   private static void log(final String txt) {

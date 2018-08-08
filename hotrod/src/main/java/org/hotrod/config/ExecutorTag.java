@@ -89,7 +89,7 @@ public class ExecutorTag extends AbstractDAOTag {
 
     // sequences, queries, selects
 
-    super.validate(daosTag, config, fragmentConfig);
+    super.validate(daosTag, config, fragmentConfig, adapter);
 
   }
 

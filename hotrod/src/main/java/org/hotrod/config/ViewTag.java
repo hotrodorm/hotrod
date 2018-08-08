@@ -203,7 +203,7 @@ public class ViewTag extends AbstractEntityDAOTag {
 
     // sequences, queries, and selects
 
-    super.validate(daosTag, config, fragmentConfig);
+    super.validate(daosTag, config, fragmentConfig, adapter);
 
   }
 
@@ -248,12 +248,12 @@ public class ViewTag extends AbstractEntityDAOTag {
 
   // Getters
 
-  public String getName() {
-    return name;
-  }
+  // public String getName() {
+  // return name;
+  // }
 
-  public String getJavaName() {
-    return javaClassName;
+  public ObjectId getId() {
+    return this.id;
   }
 
   public List<ColumnTag> getColumns() {
@@ -273,11 +273,7 @@ public class ViewTag extends AbstractEntityDAOTag {
 
   @Override
   public String getJavaClassName() {
-    if (this.javaClassName == null) {
-      return new DataSetIdentifier(this.name).getJavaClassIdentifier();
-    } else {
-      return new DataSetIdentifier(this.name, this.javaClassName).getJavaClassIdentifier();
-    }
+    return this.id.getJavaClassName();
   }
 
   // Merging logic

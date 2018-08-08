@@ -30,6 +30,7 @@ import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
@@ -55,7 +56,7 @@ import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.JdbcTypes;
-import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.ObjectId;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.DatabaseObjectFilter;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -183,7 +184,7 @@ public abstract class HotRodGenerator {
       if (ch != null) {
         log.debug("...=== Enums from cache config ===");
         for (EnumTag et : ch.getAllEnums()) {
-          log.debug("... enum '" + et.getName() + "'");
+          log.debug("... enum '" + et.getJdbcName() + "'");
         }
         log.debug("...=== End of enums from cache config ===");
       } else {
@@ -305,14 +306,14 @@ public abstract class HotRodGenerator {
           log.debug("t.getName()=" + t.getName());
           TableDataSetMetadata tm = DataSetMetadataFactory.getMetadata(t, this.adapter, config, layout, cachedMetadata);
           log.debug("*** tm=" + tm);
-          validateIdentifier(sqlNames, "table", t.getName(), tm.getIdentifier());
+          validateIdentifier(sqlNames, "table", t.getName(), tm.getId());
           this.tables.add(tm);
 
           ClassPackage fragmentPackage = tm.getFragmentConfig() != null
               && tm.getFragmentConfig().getFragmentPackage() != null ? tm.getFragmentConfig().getFragmentPackage()
                   : null;
           ClassPackage classPackage = layout.getDAOPackage(fragmentPackage);
-          String voName = daosTag.generateVOName(tm.getIdentifier());
+          String voName = daosTag.generateVOName(tm.getId());
           EntityVOClass vo = new EntityVOClass(tm, classPackage, voName, tm.getColumns(), tm.getDaoTag());
           this.voRegistry.addVO(vo);
 
@@ -406,7 +407,7 @@ public abstract class HotRodGenerator {
       Set<String> tablesAndEnumsCanonicalNames = new HashSet<String>();
 
       for (TableTag tt : config.getTables()) {
-        String canonicalName = this.adapter.canonizeName(tt.getName(), false);
+        String canonicalName = tt.getId().getCanonicalSQLName();
         if (tablesAndEnumsCanonicalNames.contains(canonicalName)) {
           throw new ControlledException(tt.getSourceLocation(), "Duplicate database <table> name '" + canonicalName
               + "'. This table is already defined in the configuration file(s).");
@@ -415,7 +416,7 @@ public abstract class HotRodGenerator {
       }
 
       for (EnumTag et : config.getEnums()) {
-        String canonicalName = this.adapter.canonizeName(et.getName(), false);
+        String canonicalName = et.getId().getCanonicalSQLName();
         if (tablesAndEnumsCanonicalNames.contains(canonicalName)) {
           throw new ControlledException(et.getSourceLocation(), "Duplicate database <enum> name '" + canonicalName
               + "'. This enum is already defined in the configuration file(s), as a <table> or <enum>.");
@@ -426,7 +427,7 @@ public abstract class HotRodGenerator {
       Set<String> viewsCanonicalNames = new HashSet<String>();
 
       for (ViewTag vt : config.getViews()) {
-        String canonicalName = this.adapter.canonizeName(vt.getName(), false);
+        String canonicalName = vt.getId().getCanonicalSQLName();
         if (viewsCanonicalNames.contains(canonicalName)) {
           throw new ControlledException(vt.getSourceLocation(), "Duplicate database <view> name '" + canonicalName
               + "'. This enum is already defined in the configuration file(s).");
@@ -439,29 +440,32 @@ public abstract class HotRodGenerator {
       logm("Prepare views metadata.");
 
       this.views = new LinkedHashSet<TableDataSetMetadata>();
+      TableDataSetMetadata vmd = null;
       for (JdbcTable v : this.db.getViews()) {
         try {
 
-          TableDataSetMetadata vm = DataSetMetadataFactory.getMetadata(v, this.adapter, config, layout, cachedMetadata);
+          vmd = DataSetMetadataFactory.getMetadata(v, this.adapter, config, layout, cachedMetadata);
 
-          validateIdentifier(sqlNames, "view", v.getName(), vm.getIdentifier());
-          this.views.add(vm);
+          validateIdentifier(sqlNames, "view", v.getName(), vmd.getId());
+          this.views.add(vmd);
 
-          ClassPackage fragmentPackage = vm.getFragmentConfig() != null
-              && vm.getFragmentConfig().getFragmentPackage() != null ? vm.getFragmentConfig().getFragmentPackage()
+          ClassPackage fragmentPackage = vmd.getFragmentConfig() != null
+              && vmd.getFragmentConfig().getFragmentPackage() != null ? vmd.getFragmentConfig().getFragmentPackage()
                   : null;
           ClassPackage classPackage = layout.getDAOPackage(fragmentPackage);
-          String voName = daosTag.generateVOName(vm.getIdentifier());
-          EntityVOClass vo = new EntityVOClass(vm, classPackage, voName, vm.getColumns(), vm.getDaoTag());
+          String voName = daosTag.generateVOName(vmd.getId());
+          EntityVOClass vo = new EntityVOClass(vmd, classPackage, voName, vmd.getColumns(), vmd.getDaoTag());
           this.voRegistry.addVO(vo);
 
         } catch (UnresolvableDataTypeException e) {
           throw new ControlledException(e.getMessage());
 
         } catch (VOAlreadyExistsException e) {
-          throw new ControlledException("Duplicate view with name '" + v.getName() + "'.");
+          throw new ControlledException(vmd.getDaoTag().getSourceLocation(),
+              "Duplicate view with name '" + v.getName() + "'.");
         } catch (StructuredVOAlreadyExistsException e) {
-          throw new ControlledException("Duplicate view with name '" + v.getName() + "'.");
+          throw new ControlledException(vmd.getDaoTag().getSourceLocation(),
+              "Duplicate view with name '" + v.getName() + "'.");
 
         }
       }
@@ -473,9 +477,13 @@ public abstract class HotRodGenerator {
 
       this.executors = new LinkedHashSet<ExecutorDAOMetadata>();
       for (ExecutorTag tag : config.getExecutors()) {
-
-        ExecutorDAOMetadata dm = new ExecutorDAOMetadata(tag, this.adapter, config, tag.getFragmentConfig(),
-            selectMetadataCache);
+        ExecutorDAOMetadata dm;
+        try {
+          dm = new ExecutorDAOMetadata(tag, this.adapter, config, tag.getFragmentConfig(), selectMetadataCache);
+        } catch (InvalidIdentifierException e) {
+          throw new ControlledException(tag.getSourceLocation(),
+              "Invalid DAO with namename '" + tag.getJavaClassName() + "': " + e.getMessage());
+        }
         this.executors.add(dm);
       }
 
@@ -554,31 +562,36 @@ public abstract class HotRodGenerator {
         SelectClassTag current = null;
         SelectDataSetMetadata sm = null;
 
-        try {
-
-          for (SelectClassTag s : this.config.getSelects()) {
-            log.debug("::: select '" + s.getJavaClassName() + "': " + s.renderSQLSentence(new ParameterRenderer() {
-              @Override
-              public String render(SQLParameter parameter) {
-                return "?";
-              }
-            }));
-            current = s;
-            String tempViewName = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
-                .getNextTempViewName();
+        for (SelectClassTag s : this.config.getSelects()) {
+          log.debug("::: select '" + s.getJavaClassName() + "': " + s.renderSQLSentence(new ParameterRenderer() {
+            @Override
+            public String render(SQLParameter parameter) {
+              return "?";
+            }
+          }));
+          current = s;
+          String tempViewName = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
+              .getNextTempViewName();
+          try {
             sm = new SelectDataSetMetadata(this.db, this.adapter, this.dloc, s, tempViewName, this.config);
-            this.selects.add(sm);
-            log.debug("prepareView() will be called...");
-            sm.prepareViews(conn);
-            log.debug("prepareView() complete.");
+          } catch (InvalidIdentifierException e) {
+            throw new ControlledException(s.getSourceLocation(),
+                "Invalid identifier for <" + new SelectClassTag().getTagName() + "> query '"
+                    + current.getJavaClassName() + "': " + e.getMessage());
           }
-
-        } catch (SQLException e) {
-          throw new ControlledException("Failed to retrieve metadata for <" + new SelectClassTag().getTagName()
-              + "> query '" + current.getJavaClassName() + "' while creating a temporary SQL view for it.\n" + "[ "
-              + e.getMessage() + " ]\n" + "* Do all resulting columns have different and valid names?\n"
-              + "* Is the trimmed create view SQL code below valid?\n" + "--- begin SQL ---\n" + sm.getCreateView()
-              + "\n--- end SQL ---");
+          this.selects.add(sm);
+          log.debug("prepareView() will be called...");
+          try {
+            sm.prepareViews(conn);
+          } catch (SQLException e) {
+            throw new ControlledException(s.getSourceLocation(),
+                "Failed to retrieve metadata for <" + new SelectClassTag().getTagName() + "> query '"
+                    + current.getJavaClassName() + "' while creating a temporary SQL view for it.\n" + "[ "
+                    + e.getMessage() + " ]\n" + "* Do all resulting columns have different and valid names?\n"
+                    + "* Is the trimmed create view SQL code below valid?\n" + "--- begin SQL ---\n"
+                    + sm.getCreateView() + "\n--- end SQL ---");
+          }
+          log.debug("prepareView() complete.");
         }
 
       }
@@ -659,7 +672,7 @@ public abstract class HotRodGenerator {
 
       } catch (SQLException e) {
         throw new UncontrolledException("Failed to retrieve metadata for <" + new SelectClassTag().getTagName()
-            + "> query with name '" + currDs.getIdentifier().getSQLIdentifier() + "'.", e);
+            + "> query with name '" + currDs.getId().getCanonicalSQLName() + "'.", e);
       } catch (UnresolvableDataTypeException e) {
         throw new ControlledException(e.getMessage());
       } catch (InvalidConfigurationFileException e) {
@@ -773,11 +786,11 @@ public abstract class HotRodGenerator {
     String filler = SUtils.getFiller(' ', level);
     for (VOMetadata c : collections) {
       boolean extendsVO = c.getSuperClass() != null;
-      String based = c.getTableMetadata() != null ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
-          + c.getTableMetadata().getIdentifier().getSQLIdentifier() + (extendsVO ? " <as> " + c.getSuperClass() : "")
+      String based = c.getTableMetadata() != null
+          ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
+              + c.getTableMetadata().getId().getCanonicalSQLName() + (extendsVO ? " <as> " + c.getSuperClass() : "")
           : (extendsVO ? "<extends>" : "<corresponds to>") + " view "
-              + c.getViewMetadata().getIdentifier().getSQLIdentifier()
-              + (extendsVO ? " <as> " + c.getSuperClass() : "");
+              + c.getViewMetadata().getId().getCanonicalSQLName() + (extendsVO ? " <as> " + c.getSuperClass() : "");
       String property = c.getProperty() != null ? c.getProperty() : "<main-vo>";
       display("   " + filler + "+ " + property + " [collection] " + based);
       logColumns(c.getDeclaredColumns(), level + 2);
@@ -792,11 +805,11 @@ public abstract class HotRodGenerator {
     for (VOMetadata a : associations) {
 
       boolean extendsVO = a.getSuperClass() != null;
-      String based = a.getTableMetadata() != null ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
-          + a.getTableMetadata().getIdentifier().getSQLIdentifier() + (extendsVO ? " <as> " + a.getSuperClass() : "")
+      String based = a.getTableMetadata() != null
+          ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
+              + a.getTableMetadata().getId().getCanonicalSQLName() + (extendsVO ? " <as> " + a.getSuperClass() : "")
           : (extendsVO ? "<extends>" : "<corresponds to>") + " view "
-              + a.getViewMetadata().getIdentifier().getSQLIdentifier()
-              + (extendsVO ? " <as> " + a.getSuperClass() : "");
+              + a.getViewMetadata().getId().getCanonicalSQLName() + (extendsVO ? " <as> " + a.getSuperClass() : "");
 
       String property = a.getProperty() != null ? a.getProperty() : "<main-vo>";
 
@@ -814,11 +827,11 @@ public abstract class HotRodGenerator {
 
       boolean extendsVO = vo.getSuperClass() != null;
 
-      String based = vo.getTableMetadata() != null ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
-          + vo.getTableMetadata().getIdentifier().getSQLIdentifier() + (extendsVO ? " <as> " + vo.getSuperClass() : "")
+      String based = vo.getTableMetadata() != null
+          ? (extendsVO ? "<extends>" : "<corresponds to>") + " table "
+              + vo.getTableMetadata().getId().getCanonicalSQLName() + (extendsVO ? " <as> " + vo.getSuperClass() : "")
           : (extendsVO ? "<extends>" : "<corresponds to>") + " view "
-              + vo.getViewMetadata().getIdentifier().getSQLIdentifier()
-              + (extendsVO ? " <as> " + vo.getSuperClass() : "");
+              + vo.getViewMetadata().getId().getCanonicalSQLName() + (extendsVO ? " <as> " + vo.getSuperClass() : "");
 
       String property = vo.getProperty() != null ? vo.getProperty() : "<main-single-vo>";
       display("   " + filler + "+ " + property + " [vo] " + based);
@@ -861,7 +874,7 @@ public abstract class HotRodGenerator {
       // tables
 
       for (TableDataSetMetadata t : this.tables) {
-        display("Table " + t.getIdentifier().getSQLIdentifier() + " included.");
+        display("Table " + t.getId().getCanonicalSQLName() + " included.");
         for (SequenceMethodTag s : t.getSequences()) {
           sequences++;
           if (this.displayMode == DisplayMode.LIST) {
@@ -885,7 +898,7 @@ public abstract class HotRodGenerator {
       // views
 
       for (TableDataSetMetadata v : this.views) {
-        display("View " + v.getIdentifier().getSQLIdentifier() + " included.");
+        display("View " + v.getId().getCanonicalSQLName() + " included.");
         for (SequenceMethodTag s : v.getSequences()) {
           sequences++;
           if (this.displayMode == DisplayMode.LIST) {
@@ -972,11 +985,11 @@ public abstract class HotRodGenerator {
 
     try {
       for (TableDataSetMetadata t : this.tables) {
-        ns.registerDAOTag(t.getDaoTag(), "table", t.getIdentifier().getSQLIdentifier());
+        ns.registerDAOTag(t.getDaoTag(), "table", t.getId().getCanonicalSQLName());
       }
 
       for (TableDataSetMetadata v : this.views) {
-        ns.registerDAOTag(v.getDaoTag(), "view", v.getIdentifier().getSQLIdentifier());
+        ns.registerDAOTag(v.getDaoTag(), "view", v.getId().getCanonicalSQLName());
       }
 
       for (SelectClassTag s : config.getSelects()) {
@@ -997,14 +1010,16 @@ public abstract class HotRodGenerator {
   }
 
   private void validateIdentifier(final Set<String> SQLNames, final String objectType, final String sqlName,
-      final Identifier id) throws ControlledException {
-    if (id.hasSQLName() && SQLNames.contains(id.getSQLIdentifier())) {
-      throw new ControlledException("Duplicate database object name '" + id.getSQLIdentifier() + "' on " + objectType
+      final ObjectId id) throws ControlledException {
+    if (id.getCanonicalSQLName() != null && SQLNames.contains(id.getCanonicalSQLName())) {
+      throw new ControlledException("Duplicate database object name '" + id.getCanonicalSQLName() + "' on " + objectType
           + " '" + sqlName + "'. There's another table, view, dao, or select "
           + "whose java-name resolves to the same value (either specified or computed).");
     }
-    SQLNames.add(id.getSQLIdentifier());
+    SQLNames.add(id.getCanonicalSQLName());
   }
+
+  // TODO: remove
 
   // private void validateAgainstDatabase(final JdbcDatabase db) throws
   // ControlledException {
@@ -1074,9 +1089,9 @@ public abstract class HotRodGenerator {
   // return null;
   // }
 
-  public TableDataSetMetadata findTableMetadata(final String name) {
+  public TableDataSetMetadata findTableMetadata(final ObjectId id) {
     for (TableDataSetMetadata tm : this.tables) {
-      if (this.adapter.isTableIdentifier(tm.getIdentifier().getSQLIdentifier(), name)) {
+      if (tm.getId().equals(id)) {
         return tm;
       }
     }
@@ -1110,15 +1125,16 @@ public abstract class HotRodGenerator {
     return null;
   }
 
-  public TableDataSetMetadata findViewMetadata(final String name) {
+  public TableDataSetMetadata findViewMetadata(final ObjectId id) {
     for (TableDataSetMetadata tm : this.views) {
-      if (this.adapter.isTableIdentifier(tm.getIdentifier().getSQLIdentifier(), name)) {
+      if (tm.getId().equals(id)) {
         return tm;
       }
     }
     return null;
   }
 
+  // TODO: remove
   // private JdbcTable findJdbcView(final String name, final JdbcDatabase jd) {
   // for (JdbcTable jt : jd.getViews()) {
   // if (this.adapter.isTableIdentifier(jt.getName(), name)) {
@@ -1165,13 +1181,13 @@ public abstract class HotRodGenerator {
     public boolean accepts(final String jdbcName) {
       log.debug("ACCEPTS? " + jdbcName);
       for (TableTag t : config.getTables()) {
-        if (this.adapter.isTableIdentifier(jdbcName, t.getName())) {
+        if (this.adapter.isTableIdentifier(jdbcName, t.getId().getCanonicalSQLName())) {
           log.debug("table '" + jdbcName + "' accepted.");
           return true;
         }
       }
       for (EnumTag e : config.getEnums()) {
-        if (this.adapter.isTableIdentifier(jdbcName, e.getName())) {
+        if (this.adapter.isTableIdentifier(jdbcName, e.getId().getCanonicalSQLName())) {
           log.debug("enum '" + jdbcName + "' accepted.");
           return true;
         }
@@ -1192,7 +1208,7 @@ public abstract class HotRodGenerator {
     public ViewFilter(final HotRodConfigTag config, final DatabaseAdapter adapter) {
       this.includedViews = new HashSet<String>();
       for (ViewTag v : config.getViews()) {
-        this.includedViews.add(v.getName());
+        this.includedViews.add(v.getId().getCanonicalSQLName());
       }
       this.adapter = adapter;
     }
@@ -1200,7 +1216,7 @@ public abstract class HotRodGenerator {
     public boolean accepts(final String jdbcName) {
       log.debug("ACCEPTS? " + jdbcName);
       for (ViewTag v : config.getViews()) {
-        if (this.adapter.isTableIdentifier(jdbcName, v.getName())) {
+        if (this.adapter.isTableIdentifier(jdbcName, v.getId().getCanonicalSQLName())) {
           log.debug("view '" + jdbcName + "' accepted.");
           return true;
         }

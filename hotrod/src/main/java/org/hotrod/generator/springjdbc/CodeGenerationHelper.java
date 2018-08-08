@@ -51,7 +51,7 @@ public class CodeGenerationHelper {
 
   public static String writeSQLColumns(DataSetMetadata ds, boolean excludePK, boolean useQuotationMarks,
       boolean includeLOB, boolean includeTablename) throws IOException {
-    String tablenamePrefix = (includeTablename ? ds.getIdentifier().getSQLIdentifier() + "." : "");
+    String tablenamePrefix = (includeTablename ? ds.getId().getRenderedSQLName() + "." : "");
     StringBuilder sb = new StringBuilder();
     ListWriter lw = new ListWriter(",");
     String q = (useQuotationMarks ? "\"" : "");

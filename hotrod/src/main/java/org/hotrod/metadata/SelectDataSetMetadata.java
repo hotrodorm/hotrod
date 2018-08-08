@@ -17,11 +17,13 @@ import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectClassTag;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.util.ListWriter;
-import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.Id;
+import org.hotrod.utils.identifiers2.ObjectId;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
@@ -42,16 +44,20 @@ public class SelectDataSetMetadata implements DataSetMetadata, Serializable {
   private String tempViewName;
   private transient HotRodFragmentConfigTag fragmentConfig;
 
+  private ObjectId id;
+
   private String reducedSelect;
   private String createView;
 
   public SelectDataSetMetadata(final JdbcDatabase db, final DatabaseAdapter adapter, final DatabaseLocation loc,
-      final SelectClassTag tag, final String tempViewName, final HotRodConfigTag config) {
+      final SelectClassTag tag, final String tempViewName, final HotRodConfigTag config)
+      throws InvalidIdentifierException {
     this.db = db;
     this.config = config;
     this.adapter = adapter;
     this.loc = loc;
     this.tag = tag;
+    this.id = new ObjectId(null, null, Id.fromJavaClass(tag.getJavaClassName()));
     this.tempViewName = tempViewName;
     this.fragmentConfig = tag.getFragmentConfig();
   }
@@ -236,8 +242,8 @@ public class SelectDataSetMetadata implements DataSetMetadata, Serializable {
   }
 
   @Override
-  public DataSetIdentifier getIdentifier() {
-    return new DataSetIdentifier("s", this.tag.getJavaClassName(), false);
+  public ObjectId getId() {
+    return this.id;
   }
 
   @Override
@@ -295,13 +301,13 @@ public class SelectDataSetMetadata implements DataSetMetadata, Serializable {
 
   @Override
   @Deprecated
-  public String generateDAOName(final Identifier identifier) {
+  public String generateDAOName(final ObjectId identifier) {
     return this.config.getGenerators().getSelectedGeneratorTag().getDaos().generateDAOName(identifier);
   }
 
   @Override
   @Deprecated
-  public String generatePrimitivesName(final Identifier identifier) {
+  public String generatePrimitivesName(final ObjectId identifier) {
     return this.config.getGenerators().getSelectedGeneratorTag().getDaos().generatePrimitivesName(identifier);
   }
 

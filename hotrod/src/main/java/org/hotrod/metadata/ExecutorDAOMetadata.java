@@ -18,14 +18,15 @@ import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.utils.ColumnsPrefixGenerator;
-import org.hotrod.utils.identifiers.DataSetIdentifier;
-import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.Id;
+import org.hotrod.utils.identifiers2.ObjectId;
 
 public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
 
@@ -48,12 +49,15 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   private SelectMetadataCache selectMetadataCache;
   private List<SelectMethodMetadata> selectsMetadata;
 
+  private ObjectId id;
+
   private HotRodFragmentConfigTag fragmentConfig;
 
   // Constructor
 
   public ExecutorDAOMetadata(final ExecutorTag tag, final DatabaseAdapter adapter, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final SelectMetadataCache selectMetadataCache) {
+      final HotRodFragmentConfigTag fragmentConfig, final SelectMetadataCache selectMetadataCache)
+      throws InvalidIdentifierException {
     log.debug("init");
     this.tag = tag;
     this.config = config;
@@ -65,6 +69,8 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
     this.sequences = this.tag.getSequences();
     this.queries = this.tag.getQueries();
     this.selects = this.tag.getSelects();
+
+    this.id = new ObjectId(null, null, Id.fromJavaClass(tag.getJavaClassName()));
 
     this.selectsMetadata = null;
   }
@@ -80,7 +86,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
       // this.selectMetadataCache.get(this.getJavaClassName(),
       // selectTag.getMethod());
       SelectMethodMetadata cachedSm = null; // Do not use cache, for now.
-      log.debug("[" + this.getIdentifier().getSQLIdentifier() + "] " + selectTag.getMethod() + "() cache["
+      log.debug("[" + this.getId().getCanonicalSQLName() + "] " + selectTag.getMethod() + "() cache["
           + this.getJavaClassName() + "]=" + cachedSm + " cache[" + this.selectMetadataCache.size() + "]");
 
       if (referencesAMarkedEntity(selectTag.getReferencedEntities())) {
@@ -100,8 +106,14 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
         SelectGenerationTag selectGenerationTag = this.config.getGenerators().getSelectedGeneratorTag()
             .getSelectGeneration();
         ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
-        SelectMethodMetadata sm = new SelectMethodMetadata(generator, selectTag, this.config, selectGenerationTag,
-            columnsPrefixGenerator, layout);
+        SelectMethodMetadata sm;
+        try {
+          sm = new SelectMethodMetadata(generator, selectTag, this.config, selectGenerationTag, columnsPrefixGenerator,
+              layout);
+        } catch (InvalidIdentifierException e) {
+          String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
+          throw new InvalidConfigurationFileException(selectTag, msg, msg);
+        }
         this.selectsMetadata.add(sm);
         sm.gatherMetadataPhase1(conn1);
         log.debug(">>>   [Fresh] sm.metadataComplete()=" + sm.metadataComplete());
@@ -161,12 +173,12 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   }
 
   @Override
-  public String generateDAOName(Identifier identifier) {
+  public String generateDAOName(ObjectId identifier) {
     return null;
   }
 
   @Override
-  public String generatePrimitivesName(Identifier identifier) {
+  public String generatePrimitivesName(ObjectId identifier) {
     return null;
   }
 
@@ -186,8 +198,8 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   }
 
   @Override
-  public DataSetIdentifier getIdentifier() {
-    return new DataSetIdentifier("no-sql-name", this.tag.getJavaClassName());
+  public ObjectId getId() {
+    return this.id;
   }
 
   @Override

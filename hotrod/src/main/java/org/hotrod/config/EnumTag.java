@@ -566,12 +566,16 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   // Getters
 
-  public String getName() {
-    return name;
+  // public String getName() {
+  // return name;
+  // }
+
+  public ObjectId getId() {
+    return id;
   }
 
   public String getJdbcName() {
-    return this.table.getName();
+    return this.id.getCanonicalSQLName();
   }
 
   public List<EnumConstant> getEnumConstants() {
@@ -636,11 +640,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   @Override
   public String getJavaClassName() {
-    if (this.javaClassName == null) {
-      return new DataSetIdentifier(this.name).getJavaClassIdentifier();
-    } else {
-      return new DataSetIdentifier(this.name, this.javaClassName).getJavaClassIdentifier();
-    }
+    return this.id.getJavaClassName();
   }
 
   // Merging logic

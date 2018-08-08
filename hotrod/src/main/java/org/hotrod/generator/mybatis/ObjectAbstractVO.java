@@ -273,7 +273,7 @@ public class ObjectAbstractVO extends GeneratableObject {
   }
 
   public String getClassName() {
-    return this.myBatisTag.getDaos().generateAbstractVOName(this.metadata.getIdentifier());
+    return this.myBatisTag.getDaos().generateAbstractVOName(this.metadata.getId());
   }
 
   // Helpers
