@@ -3,6 +3,7 @@ package org.hotrod.config;
 import java.io.File;
 
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
@@ -31,7 +32,7 @@ public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
   public abstract SelectGenerationTag getSelectGeneration();
 
   public abstract HotRodGenerator instantiateGenerator(CachedMetadata cachedMetadata, DatabaseLocation loc,
-      HotRodConfigTag config, DisplayMode displayMode, boolean incrementalMode)
+      HotRodConfigTag config, DisplayMode displayMode, boolean incrementalMode, DatabaseAdapter adapter)
       throws UncontrolledException, ControlledException;
 
 }

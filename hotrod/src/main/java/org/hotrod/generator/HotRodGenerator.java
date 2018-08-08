@@ -28,11 +28,9 @@ import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.database.DatabaseAdapterFactory;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassMethodException;
@@ -99,7 +97,8 @@ public abstract class HotRodGenerator {
   private Long lastLog = null;
 
   public HotRodGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation dloc, final HotRodConfigTag config,
-      final DisplayMode displayMode, final boolean incrementalMode) throws UncontrolledException, ControlledException {
+      final DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter)
+      throws UncontrolledException, ControlledException {
 
     log.debug(">>> HG 1 cachedMetadata=" + cachedMetadata);
     log.debug(">>> HG 1 cachedMetadata.getSelectMetadataCache()=" + cachedMetadata.getSelectMetadataCache());
@@ -108,6 +107,7 @@ public abstract class HotRodGenerator {
     this.config = config;
     this.displayMode = displayMode;
     this.cachedMetadata = cachedMetadata;
+    this.adapter = adapter;
 
     if (!incrementalMode) {
       config.markGenerateTree();
@@ -148,16 +148,6 @@ public abstract class HotRodGenerator {
       // Database Adapter
 
       display("");
-
-      try {
-        this.adapter = DatabaseAdapterFactory.getAdapter(this.dloc);
-        display("HotRod Database Adapter: " + this.adapter.getName());
-
-      } catch (UnrecognizedDatabaseException e) {
-        throw new ControlledException(
-            "Could not recognize database type at JDBC URL " + dloc.getUrl() + " - " + e.getMessage());
-      }
-
       display("Database Catalog: " + (this.adapter.supportsCatalog() ? dloc.getDefaultCatalog() : "(not supported)"));
       display("Database Schema: " + (this.adapter.supportsSchema() ? dloc.getDefaultSchema() : "(not supported)"));
       display("");

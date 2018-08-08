@@ -9,9 +9,12 @@ import org.apache.tools.ant.Task;
 import org.hotrod.buildinfo.BuildConstants;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.database.DatabaseAdapterFactory;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
@@ -155,9 +158,21 @@ public class HotRodAntTask extends Task {
     DatabaseLocation loc = new DatabaseLocation(this.driverClass, this.url, this.username, this.password, this.catalog,
         this.schema, null);
 
+    DatabaseAdapter adapter;
+    try {
+      adapter = DatabaseAdapterFactory.getAdapter(loc);
+      display("HotRod Database Adapter: " + adapter.getName());
+    } catch (UnrecognizedDatabaseException e) {
+      throw new BuildException(
+          "Could not recognize database type at JDBC URL " + loc.getUrl() + " - " + e.getMessage());
+    } catch (Throwable e) {
+      log.debug("Could not connect to database", e);
+      throw new BuildException("Could not connect to database: " + EUtils.renderMessages(e));
+    }
+
     HotRodConfigTag config = null;
     try {
-      config = ConfigurationLoader.loadPrimary(this.projectBaseDir, this.configFile, this.generator);
+      config = ConfigurationLoader.loadPrimary(this.projectBaseDir, this.configFile, this.generator, adapter);
     } catch (ControlledException e) {
       if (e.getLocation() != null) {
         throw new BuildException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
@@ -184,7 +199,7 @@ public class HotRodAntTask extends Task {
     try {
       CachedMetadata cachedMetadata = new CachedMetadata();
       HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
-          config, this.displayMode, false);
+          config, this.displayMode, false, adapter);
       log.debug("Generator instantiated.");
 
       try {

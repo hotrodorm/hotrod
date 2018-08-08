@@ -11,6 +11,7 @@ import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.CachedMetadata;
@@ -47,8 +48,9 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
   private EntityDAORegistry entityDAORegistry = new EntityDAORegistry();
 
   public MyBatisGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc, final HotRodConfigTag config,
-      final DisplayMode displayMode, final boolean incrementalMode) throws UncontrolledException, ControlledException {
-    super(cachedMetadata, loc, config, displayMode, incrementalMode);
+      final DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter)
+      throws UncontrolledException, ControlledException {
+    super(cachedMetadata, loc, config, displayMode, incrementalMode, adapter);
   }
 
   @Override

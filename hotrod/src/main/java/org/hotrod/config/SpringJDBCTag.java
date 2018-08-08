@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
@@ -81,11 +82,11 @@ public class SpringJDBCTag extends AbstractGeneratorTag {
 
   @Override
   public HotRodGenerator instantiateGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc,
-      final HotRodConfigTag config, final DisplayMode displayMode, final boolean incrementalMode)
-      throws UncontrolledException, ControlledException {
+      final HotRodConfigTag config, final DisplayMode displayMode, final boolean incrementalMode,
+      final DatabaseAdapter adapter) throws UncontrolledException, ControlledException {
     // Ignore cachedMetadata & selectedTags (for now)
     config.markGenerate();
-    return new SpringJDBCGenerator(loc, config, displayMode);
+    return new SpringJDBCGenerator(loc, config, displayMode, adapter);
   }
 
   @Override

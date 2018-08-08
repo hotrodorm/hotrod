@@ -66,6 +66,7 @@ import org.hotrod.config.AbstractHotRodConfigTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.GenerationUnit;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.eclipseplugin.ProjectProperties.CouldNotSaveProjectPropertiesException;
 import org.hotrod.eclipseplugin.WorkspaceProperties.CouldNotSaveWorkspacePropertiesException;
 import org.hotrod.eclipseplugin.jdbc.DatabasePropertiesWizard;
@@ -925,9 +926,12 @@ public class HotRodView extends ViewPart {
 
         config.logGenerateMark("Generate Marks (ready to generate)", '-');
 
+        // TODO: Fix adapter; should not be null
+        DatabaseAdapter adapter = null;
+
         log.info("will instantiate");
         HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
-            config, DisplayMode.LIST, incrementalMode);
+            config, DisplayMode.LIST, incrementalMode, adapter);
 
         log.info("Will prepare.");
         g.prepareGeneration();

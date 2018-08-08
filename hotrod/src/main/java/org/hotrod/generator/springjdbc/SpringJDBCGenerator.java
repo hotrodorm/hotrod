@@ -17,6 +17,7 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SpringJDBCTag;
 import org.hotrod.config.TableTag;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.DAOType;
@@ -34,9 +35,9 @@ public class SpringJDBCGenerator extends HotRodGenerator {
   private List<SpringBean> beans = new ArrayList<SpringBean>();
   private SpringJDBCConfiguration springJDBCConfiguration;
 
-  public SpringJDBCGenerator(final DatabaseLocation loc, final HotRodConfigTag config, final DisplayMode displayMode)
-      throws UncontrolledException, ControlledException {
-    super(null, loc, config, displayMode, false);
+  public SpringJDBCGenerator(final DatabaseLocation loc, final HotRodConfigTag config, final DisplayMode displayMode,
+      final DatabaseAdapter adapter) throws UncontrolledException, ControlledException {
+    super(null, loc, config, displayMode, false, adapter);
   }
 
   @Override

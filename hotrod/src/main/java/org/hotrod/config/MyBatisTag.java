@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
@@ -146,9 +147,9 @@ public class MyBatisTag extends AbstractGeneratorTag {
 
   @Override
   public HotRodGenerator instantiateGenerator(final CachedMetadata cachedMetadata, DatabaseLocation loc,
-      HotRodConfigTag config, DisplayMode displayMode, final boolean incrementalMode)
+      HotRodConfigTag config, DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter)
       throws UncontrolledException, ControlledException {
-    return new MyBatisGenerator(cachedMetadata, loc, config, displayMode, incrementalMode);
+    return new MyBatisGenerator(cachedMetadata, loc, config, displayMode, incrementalMode, adapter);
   }
 
   // Merging logic

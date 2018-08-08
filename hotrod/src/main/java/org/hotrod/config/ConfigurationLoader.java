@@ -25,6 +25,7 @@ import javax.xml.validation.SchemaFactory;
 import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
 import org.hotrod.config.AbstractHotRodConfigTag.LocationListener;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -56,8 +57,8 @@ public class ConfigurationLoader {
 
   // Behavior
 
-  public static HotRodConfigTag loadPrimary(final File projectBaseDir, final File f, final String generatorName)
-      throws ControlledException, UncontrolledException {
+  public static HotRodConfigTag loadPrimary(final File projectBaseDir, final File f, final String generatorName,
+      final DatabaseAdapter adapter) throws ControlledException, UncontrolledException {
 
     log.debug("loading file: " + f);
 

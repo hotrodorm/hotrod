@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag.TagStatus;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.eclipseplugin.FileProperties.CouldNotSaveFilePropertiesException;
 import org.hotrod.eclipseplugin.FileSystemChangesListener.FileChangeListener;
 import org.hotrod.eclipseplugin.ProjectProperties.CouldNotSaveProjectPropertiesException;
@@ -198,8 +199,12 @@ public class LoadedConfigurationFiles implements FileChangeListener {
 
     try {
 
+      // TODO: Fix adapter; should not be null
+      DatabaseAdapter adapter = null;
+
       // TODO: fix generator value. Should be configurable
-      HotRodConfigTag config = ConfigurationLoader.loadPrimary(path.getProject().getLocation().toFile(), f, "MyBatis");
+      HotRodConfigTag config = ConfigurationLoader.loadPrimary(path.getProject().getLocation().toFile(), f, "MyBatis",
+          adapter);
       MainConfigFace face = new MainConfigFace(f, path, this.provider, config);
       return face;
 
@@ -242,7 +247,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     for (MainConfigFace face : this.loadedFiles.values()) {
       try {
         boolean triggerChanges = face.triggerFileAdded(f);
-        log.info("triggerChanges="+triggerChanges);
+        log.info("triggerChanges=" + triggerChanges);
         changesDetected |= triggerChanges;
         face.setValid();
       } catch (ControlledException e) {
@@ -316,7 +321,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     for (MainConfigFace face : this.loadedFiles.values()) {
       try {
         changesDetected |= face.triggerFileRemoved(f);
-//        face.setValid();
+        // face.setValid();
       } catch (ControlledException e) {
         changesDetected = true;
         face.setInvalid(new ErrorMessage(e.getLocation(), e.getInteractiveMessage()));
