@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.metadata.ColumnMetadata;
@@ -31,6 +32,8 @@ import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers.DbIdentifier;
 import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.Id;
+import org.hotrod.utils.identifiers2.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
@@ -48,9 +51,12 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   // Properties
 
-  private String name = null;
   private String catalog = null;
   private String schema = null;
+  private String name = null;
+
+  private ObjectId id = null;
+
   private String javaClassName = null;
   private String nameCol = null;
   private List<NonPersistentTag> nonPersistents = new ArrayList<NonPersistentTag>();
@@ -82,9 +88,11 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     d.copyCommon(this);
 
-    d.name = this.name;
     d.catalog = this.catalog;
     d.schema = this.schema;
+    d.name = this.name;
+    d.id = this.id;
+
     d.javaClassName = this.javaClassName;
     d.nameCol = this.nameCol;
     d.nonPersistents = this.nonPersistents;
@@ -136,8 +144,8 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig)
-      throws InvalidConfigurationFileException {
+  public void validate(final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
+      final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
 
     this.daosTag = daosTag;
     this.fragmentConfig = fragmentConfig;
@@ -152,10 +160,28 @@ public class EnumTag extends AbstractEntityDAOTag {
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
               + "Must specify the name of a database table.");
     }
-    
+
     // catalog
-    
+
+    Id catalogId;
+    try {
+      catalogId = this.catalog == null ? null : Id.fromSQL(this.catalog, adapter);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid catalog name '" + this.catalog + "' on tag <" + super.getTagName() + "> for the table '"
+          + this.name + "': " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
+    }
+
     // schema
+
+    Id schemaId;
+    try {
+      schemaId = this.schema == null ? null : Id.fromSQL(this.schema, adapter);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid schema name '" + this.schema + "' on tag <" + super.getTagName() + "> for the table '"
+          + this.name + "': " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
+    }
 
     // java-name
 
@@ -169,6 +195,24 @@ public class EnumTag extends AbstractEntityDAOTag {
                 + "' is not a valid Java class name. " + "When specified, it must start with an upper case letter, "
                 + "and continue with letters, digits, and/or underscores.");
       }
+    }
+
+    // Assemble object id
+
+    Id nameId;
+    try {
+      nameId = this.javaClassName == null ? Id.fromSQL(this.name, adapter)
+          : Id.fromSQLAndJavaClass(this.name, adapter, this.javaClassName);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid table name '" + this.name + "': " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
+    }
+
+    try {
+      this.id = new ObjectId(catalogId, schemaId, nameId);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid table object name: " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
     }
 
     // name-column

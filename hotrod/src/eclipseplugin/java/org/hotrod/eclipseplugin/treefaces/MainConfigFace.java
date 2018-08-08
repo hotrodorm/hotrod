@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.eclipseplugin.FileProperties;
 import org.hotrod.eclipseplugin.HotRodView;
 import org.hotrod.eclipseplugin.HotRodViewContentProvider;
@@ -29,6 +30,7 @@ public class MainConfigFace extends AbstractConfigFace implements Comparable<Mai
   private RelativeProjectPath path;
   private transient HotRodViewContentProvider provider;
   private HotRodConfigTag config;
+  private DatabaseAdapter adapter;
 
   // Constructors
 
@@ -79,19 +81,23 @@ public class MainConfigFace extends AbstractConfigFace implements Comparable<Mai
     this.config = config;
   }
 
+  public void setAdapter(final DatabaseAdapter adapter) {
+    this.adapter = adapter;
+  }
+
   // Processing file system changes
 
   public final boolean triggerFileAdded(final File f) throws UncontrolledException, ControlledException {
     FileRegistry fileRegistry = new FileRegistry(this.mainFile);
     DaosTag daosTag = this.config.getGenerators().getSelectedGeneratorTag().getDaos();
-    return super.informFileAdded(f, this.getConfig(), fileRegistry, daosTag);
+    return super.informFileAdded(f, this.getConfig(), fileRegistry, daosTag, this.adapter);
   }
 
   public final boolean triggerFileChanged(final File f) throws UncontrolledException, ControlledException {
     FileRegistry fileRegistry = new FileRegistry(this.mainFile);
     DaosTag daosTag = this.config.getGenerators().getSelectedGeneratorTag().getDaos();
     log.info("trigger 1");
-    return super.informFileChanged(f, this.getConfig(), fileRegistry, daosTag);
+    return super.informFileChanged(f, this.getConfig(), fileRegistry, daosTag, this.adapter);
   }
 
   public final boolean triggerFileRemoved(final File f) throws UncontrolledException, ControlledException {

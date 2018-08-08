@@ -13,11 +13,14 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.identifiers.DataSetIdentifier;
+import org.hotrod.utils.identifiers2.Id;
+import org.hotrod.utils.identifiers2.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
@@ -32,9 +35,12 @@ public class ViewTag extends AbstractEntityDAOTag {
 
   // Properties
 
-  private String name = null;
   private String catalog = null;
   private String schema = null;
+  private String name = null;
+
+  private ObjectId id = null;
+
   private String javaClassName = null;
   private List<ColumnTag> columns = new ArrayList<ColumnTag>();
 
@@ -55,9 +61,11 @@ public class ViewTag extends AbstractEntityDAOTag {
 
     d.copyCommon(this);
 
-    d.name = this.name;
     d.catalog = this.catalog;
     d.schema = this.schema;
+    d.name = this.name;
+    d.id = this.id;
+
     d.javaClassName = this.javaClassName;
     d.columns = this.columns;
 
@@ -99,7 +107,8 @@ public class ViewTag extends AbstractEntityDAOTag {
   // Behavior
 
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
     log.debug("validate");
 
     this.daosTag = daosTag;
@@ -115,10 +124,28 @@ public class ViewTag extends AbstractEntityDAOTag {
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
               + "Must specify a database view name.");
     }
-    
+
     // catalog
-    
+
+    Id catalogId;
+    try {
+      catalogId = this.catalog == null ? null : Id.fromSQL(this.catalog, adapter);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid catalog name '" + this.catalog + "' on tag <" + super.getTagName() + "> for the table '"
+          + this.name + "': " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
+    }
+
     // schema
+
+    Id schemaId;
+    try {
+      schemaId = this.schema == null ? null : Id.fromSQL(this.schema, adapter);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid schema name '" + this.schema + "' on tag <" + super.getTagName() + "> for the table '"
+          + this.name + "': " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
+    }
 
     // java-name
 
@@ -139,6 +166,24 @@ public class ViewTag extends AbstractEntityDAOTag {
                 + "'. When specified, the java-name must start with an upper case letter, "
                 + "and continue with any combination of letters, digits, underscores, or dollar signs.");
       }
+    }
+
+    // Assemble object id
+
+    Id nameId;
+    try {
+      nameId = this.javaClassName == null ? Id.fromSQL(this.name, adapter)
+          : Id.fromSQLAndJavaClass(this.name, adapter, this.javaClassName);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid view name '" + this.name + "': " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
+    }
+
+    try {
+      this.id = new ObjectId(catalogId, schemaId, nameId);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid view object name: " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
     }
 
     // columns

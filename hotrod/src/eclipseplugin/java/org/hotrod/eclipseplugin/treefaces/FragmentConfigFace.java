@@ -7,6 +7,7 @@ import org.hotrod.config.DaosTag;
 import org.hotrod.config.FragmentTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.eclipseplugin.HotRodView;
 import org.hotrod.eclipseplugin.treefaces.FaceFactory.InvalidConfigurationItemException;
 import org.hotrod.exceptions.ControlledException;
@@ -62,13 +63,13 @@ public class FragmentConfigFace extends AbstractConfigFace {
   // Processing file system changes
 
   public boolean loadAndApplyChanges(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
-      final DaosTag daosTag) throws UncontrolledException, ControlledException {
+      final DaosTag daosTag, final DatabaseAdapter adapter) throws UncontrolledException, ControlledException {
 
     HotRodFragmentConfigTag fragmentConfig;
     try {
       log.info("fileRegistry=" + fileRegistry);
       fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.fragmentTag.getFile(), fileRegistry,
-          daosTag, this.getFragmentTag());
+          daosTag, this.getFragmentTag(), adapter);
     } catch (ControlledException e) {
       log.info("ce:" + e.getMessage());
       this.setInvalid(new ErrorMessage(this.fragmentTag.getSourceLocation(), e.getMessage()));

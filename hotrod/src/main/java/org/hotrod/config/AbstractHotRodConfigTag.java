@@ -118,7 +118,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   // Behavior
 
   protected void validateCommon(final HotRodConfigTag config, final File file, final FileRegistry fileRegistry,
-      final File parentFile, final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig)
+      final File parentFile, final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
 
     log.debug("init");
@@ -128,7 +128,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     // DAOs
 
     for (TableTag t : this.tables) {
-      t.validate(daosTag, config, fragmentConfig);
+      t.validate(daosTag, config, fragmentConfig, adapter);
     }
     Collections.sort(this.tables, new Comparator<TableTag>() {
       @Override
@@ -139,7 +139,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     super.addChildren(this.tables);
 
     for (EnumTag e : this.enums) {
-      e.validate(daosTag, fragmentConfig);
+      e.validate(daosTag, fragmentConfig, adapter);
     }
     Collections.sort(this.enums, new Comparator<EnumTag>() {
       @Override
@@ -150,7 +150,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     super.addChildren(this.enums);
 
     for (ViewTag v : this.views) {
-      v.validate(daosTag, config, fragmentConfig);
+      v.validate(daosTag, config, fragmentConfig, adapter);
     }
     Collections.sort(this.views, new Comparator<ViewTag>() {
       @Override
@@ -162,7 +162,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
     for (ExecutorTag x : this.executors) {
       try {
-        x.validate(daosTag, config, fragmentConfig);
+        x.validate(daosTag, config, fragmentConfig, adapter);
       } catch (InvalidConfigurationFileException e1) {
         log.error("zzzz", e1);
         log.error("tag=" + e1.getTag());
@@ -178,7 +178,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     super.addChildren(this.executors);
 
     for (SelectClassTag s : this.selects) {
-      s.validate(daosTag, config, fragmentConfig);
+      s.validate(daosTag, config, fragmentConfig, adapter);
     }
     Collections.sort(this.selects, new Comparator<SelectClassTag>() {
       @Override
@@ -189,14 +189,14 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     super.addChildren(this.selects);
 
     for (FacetTag f : this.facets) {
-      f.validate(config, daosTag, fragmentConfig);
+      f.validate(config, daosTag, fragmentConfig, adapter);
     }
     super.addChildren(this.facets);
 
     // Fragments
 
     for (FragmentTag f : this.fragments) {
-      f.validate(config, parentDir, fileRegistry, parentFile, daosTag);
+      f.validate(config, parentDir, fileRegistry, parentFile, daosTag, adapter);
       this.mergeFragment(f.getFragmentConfig());
       super.addChild(f);
     }

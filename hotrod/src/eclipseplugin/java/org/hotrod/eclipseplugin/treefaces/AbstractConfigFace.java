@@ -7,6 +7,7 @@ import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.FragmentTag;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.eclipseplugin.utils.FUtil;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
@@ -89,7 +90,8 @@ public abstract class AbstractConfigFace extends AbstractFace {
   // Processing file system changes
 
   public final boolean informFileAdded(final File f, final HotRodConfigTag primaryConfig,
-      final FileRegistry fileRegistry, final DaosTag daosTag) throws UncontrolledException, ControlledException {
+      final FileRegistry fileRegistry, final DaosTag daosTag, final DatabaseAdapter adapter)
+      throws UncontrolledException, ControlledException {
 
     boolean changesDetected = false;
     log.info("fileRegistry=" + fileRegistry);
@@ -97,7 +99,7 @@ public abstract class AbstractConfigFace extends AbstractFace {
       FragmentTag tag = fragment.getFragmentTag();
       if (FUtil.equals(f, fragment.getFragmentTag().getFile())) {
         log.info("+*> fileRegistry=" + fileRegistry);
-        fragment.loadAndApplyChanges(primaryConfig, fileRegistry, daosTag);
+        fragment.loadAndApplyChanges(primaryConfig, fileRegistry, daosTag, adapter);
         changesDetected = true;
       } else {
         try {
@@ -106,14 +108,15 @@ public abstract class AbstractConfigFace extends AbstractFace {
           throw new ControlledException(tag.getSourceLocation(), "Could not load fragment '" + f.getPath() + "'.");
         }
         log.info("++> fileRegistry=" + fileRegistry);
-        changesDetected |= fragment.informFileAdded(f, primaryConfig, fileRegistry, daosTag);
+        changesDetected |= fragment.informFileAdded(f, primaryConfig, fileRegistry, daosTag, adapter);
       }
     }
     return changesDetected;
   }
 
   public final boolean informFileChanged(final File f, final HotRodConfigTag primaryConfig,
-      final FileRegistry fileRegistry, final DaosTag daosTag) throws UncontrolledException, ControlledException {
+      final FileRegistry fileRegistry, final DaosTag daosTag, final DatabaseAdapter adapter)
+      throws UncontrolledException, ControlledException {
     boolean changesDetected = false;
     log.info("fileRegistry=" + fileRegistry);
     for (FragmentConfigFace fragment : super.getFragments()) {
@@ -127,12 +130,12 @@ public abstract class AbstractConfigFace extends AbstractFace {
       }
       if (FUtil.equals(f, tag.getFile())) {
         log.info("inform - fragment is file -  apply changes now.");
-        fragment.loadAndApplyChanges(primaryConfig, fileRegistry, daosTag);
+        fragment.loadAndApplyChanges(primaryConfig, fileRegistry, daosTag, adapter);
         changesDetected = true;
       } else {
         log.info("inform - fragment is NOT file - inpect fragment content");
         log.info("++> fileRegistry=" + fileRegistry);
-        changesDetected |= fragment.informFileChanged(f, primaryConfig, fileRegistry, daosTag);
+        changesDetected |= fragment.informFileChanged(f, primaryConfig, fileRegistry, daosTag, adapter);
       }
     }
     log.debug("inform complete: changesDetected=" + changesDetected);

@@ -46,7 +46,7 @@ public class FragmentTag extends AbstractConfigurationTag implements GenerationU
   // Behavior
 
   public void validate(final HotRodConfigTag primaryConfig, final File parentDir, final FileRegistry fileRegistry,
-      final File parentFile, final DaosTag daosTag)
+      final File parentFile, final DaosTag daosTag, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
 
     log.debug("Will load fragment: this.filename=" + this.filename);
@@ -75,17 +75,17 @@ public class FragmentTag extends AbstractConfigurationTag implements GenerationU
               + "'. Must be a normal file, not a directory or other special file.");
     }
 
-    load(primaryConfig, fileRegistry, daosTag);
+    load(primaryConfig, fileRegistry, daosTag, adapter);
 
     log.debug("Fragment loaded.");
 
   }
 
-  public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry, final DaosTag daosTag)
-      throws UncontrolledException, ControlledException {
+  public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry, final DaosTag daosTag,
+      final DatabaseAdapter adapter) throws UncontrolledException, ControlledException {
     log.debug("@@@ Will load fragment '" + this.f.getName() + "' -- at " + this.getSourceLocation());
     super.clearChildren();
-    this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.f, fileRegistry, daosTag, this);
+    this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.f, fileRegistry, daosTag, this, adapter);
     log.debug("Fragment loaded.");
     super.addChildren(this.fragmentConfig.getSubTags());
   }

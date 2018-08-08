@@ -136,7 +136,7 @@ public class ConfigurationLoader {
       DaosTag daosTag = config.getGenerators().getSelectedGeneratorTag().getDaos();
       FileRegistry fileRegistry = new FileRegistry(f);
 
-      config.validateCommon(config, f, fileRegistry, f, daosTag, null);
+      config.validateCommon(config, f, fileRegistry, f, daosTag, null, adapter);
       log.debug("Semantics validation #2 successful.");
 
       config.addConverterTags();
@@ -180,8 +180,8 @@ public class ConfigurationLoader {
   }
 
   public static HotRodFragmentConfigTag loadFragment(final HotRodConfigTag primaryConfig, final File f,
-      final FileRegistry fileRegistry, final DaosTag daosTag, final FragmentTag fragmentTag)
-      throws UncontrolledException, ControlledException {
+      final FileRegistry fileRegistry, final DaosTag daosTag, final FragmentTag fragmentTag,
+      final DatabaseAdapter adapter) throws UncontrolledException, ControlledException {
 
     // Basic file validation
 
@@ -254,7 +254,7 @@ public class ConfigurationLoader {
       log.debug("  --     tag: " + fragmentTag.getSourceLocation());
       fileRegistry.add(fragmentTag, f);
       log.debug("----2> fileRegistry=" + fileRegistry);
-      fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, daosTag, fragmentConfig);
+      fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, daosTag, fragmentConfig, adapter);
 
       // Complete
 

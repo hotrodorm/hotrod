@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.Compare;
@@ -71,7 +72,8 @@ public class FacetTag extends AbstractConfigurationTag {
   // Behavior
 
   public void validate(final HotRodConfigTag config, final DaosTag daosTag,
-      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
 
     // name
 
@@ -84,23 +86,23 @@ public class FacetTag extends AbstractConfigurationTag {
     // daos
 
     for (TableTag t : this.tables) {
-      t.validate(daosTag, config, fragmentConfig);
+      t.validate(daosTag, config, fragmentConfig, adapter);
     }
 
     for (ViewTag v : this.views) {
-      v.validate(daosTag, config, fragmentConfig);
+      v.validate(daosTag, config, fragmentConfig, adapter);
     }
 
     for (EnumTag e : this.enums) {
-      e.validate(daosTag, fragmentConfig);
+      e.validate(daosTag, fragmentConfig, adapter);
     }
 
     for (ExecutorTag dao : this.daos) {
-      dao.validate(daosTag, config, fragmentConfig);
+      dao.validate(daosTag, config, fragmentConfig, adapter);
     }
 
     for (SelectClassTag s : this.selects) {
-      s.validate(daosTag, config, fragmentConfig);
+      s.validate(daosTag, config, fragmentConfig, adapter);
     }
 
   }

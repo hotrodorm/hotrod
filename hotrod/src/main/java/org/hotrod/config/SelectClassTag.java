@@ -76,7 +76,7 @@ public class SelectClassTag extends AbstractDAOTag {
   // Behavior
 
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
 
     this.daosTag = daosTag;
     this.fragmentConfig = fragmentConfig;
