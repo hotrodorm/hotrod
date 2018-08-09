@@ -9,6 +9,8 @@ import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ConverterTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
+import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 
 public class Compare {
 
@@ -82,6 +84,20 @@ public class Compare {
       return false;
     }
     return true;
+  }
+
+  public static boolean same(final ObjectId a, final ObjectId b) {
+    if (a == null) {
+      return b == null;
+    }
+    return a.equals(b);
+  }
+
+  public static boolean same(final Id a, final Id b) {
+    if (a == null) {
+      return b == null;
+    }
+    return a.equals(b);
   }
 
   public static boolean same(final AbstractConfigurationTag a, final AbstractConfigurationTag b) {

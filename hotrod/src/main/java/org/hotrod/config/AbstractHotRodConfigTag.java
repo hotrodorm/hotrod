@@ -286,7 +286,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
   public TableTag getTableTag(final JdbcTable t) {
     for (TableTag tag : this.getTables()) {
-      log.debug("table tag=" + tag.getId().getCanonicalSQLName());
+      log.debug("Comparing table '" + t.getName() + "' -- tag=" + tag.getId().getCanonicalSQLName());
       // TODO: this comparison fails to include the catalog/schema. Fix!
       if (tag.getId().getCanonicalSQLName().equals(t.getName())) {
         return tag;

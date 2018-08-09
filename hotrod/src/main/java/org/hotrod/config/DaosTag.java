@@ -11,7 +11,7 @@ import org.hotrod.exceptions.InvalidPackageException;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
-import org.hotrod.utils.identifiers2.ObjectId;
+import org.hotrod.utils.identifiers.ObjectId;
 
 @XmlRootElement(name = "daos")
 public class DaosTag extends AbstractConfigurationTag {

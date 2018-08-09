@@ -25,8 +25,8 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.utils.ColumnsPrefixGenerator;
-import org.hotrod.utils.identifiers2.Id;
-import org.hotrod.utils.identifiers2.ObjectId;
+import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 
 public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
 

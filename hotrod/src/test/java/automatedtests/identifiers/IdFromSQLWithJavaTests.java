@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.utils.identifiers2.Id;
+import org.hotrod.utils.identifiers.Id;
 
 import automatedtests.identifiers.TestDatabaseAdapter.CaseSensitiveness;
 import junit.framework.TestCase;

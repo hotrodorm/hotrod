@@ -1,4 +1,4 @@
-package org.hotrod.utils.identifiers2;
+package org.hotrod.utils.identifiers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +90,10 @@ public class Id implements Comparable<Id> {
     SQLName sqlName = new SQLName(typedName);
 
     String canonicalSQLName = adapter.canonizeName(sqlName.getName(), sqlName.isQuoted());
+
+    // System.out.println(
+    // "typedName=" + typedName + " isQuoted=" + sqlName.isQuoted() + "
+    // canonicalSQLName=" + canonicalSQLName);
 
     List<NamePart> nameParts = splitSQL(sqlName.getName());
     if (nameParts == null || nameParts.isEmpty()) {
@@ -401,70 +405,90 @@ public class Id implements Comparable<Id> {
 
   private static String assembleJavaClassName(final List<NamePart> canonicalParts) {
     StringBuilder sb = new StringBuilder();
-    if (canonicalParts != null && !canonicalParts.isEmpty()
-        && !canonicalParts.get(0).getToken().matches("[A-Za-z_].*")) {
-      sb.append("_");
-    }
     for (NamePart p : canonicalParts) {
+      String st = sanitizeJava(p.getToken());
       if (p.isAcronym()) {
-        sb.append(p.getToken().toUpperCase());
+        sb.append(st.toUpperCase());
       } else {
-        sb.append(SUtils.sentenceFormat(p.getToken().toLowerCase()));
+        sb.append(SUtils.sentenceFormat(st.toLowerCase()));
       }
     }
-    return sb.toString();
+    String n = sb.toString();
+    if (!n.matches("[A-Za-z_].*")) {
+      n = "_" + n;
+    }
+    return n;
   }
 
   private static String assembleJavaMemberName(final List<NamePart> canonicalParts) {
     StringBuilder sb = new StringBuilder();
-    if (canonicalParts != null && !canonicalParts.isEmpty()
-        && !canonicalParts.get(0).getToken().matches("[A-Za-z_].*")) {
-      sb.append("_");
-    }
     boolean first = true;
     for (NamePart p : canonicalParts) {
+      String st = sanitizeJava(p.getToken());
       if (first) {
-        sb.append(p.getToken().toLowerCase());
+        sb.append(st.toLowerCase());
       } else {
         if (p.isAcronym()) {
-          sb.append(p.getToken().toUpperCase());
+          sb.append(st.toUpperCase());
         } else {
-          sb.append(SUtils.sentenceFormat(p.getToken().toLowerCase()));
+          sb.append(SUtils.sentenceFormat(st.toLowerCase()));
         }
       }
       first = false;
     }
-    return sb.toString();
+    String n = sb.toString();
+    if (!n.matches("[A-Za-z_].*")) {
+      n = "_" + n;
+    }
+    return n;
   }
 
   private static String assembleJavaConstantName(final List<NamePart> canonicalParts) {
     StringBuilder sb = new StringBuilder();
-    if (canonicalParts != null && !canonicalParts.isEmpty()
-        && !canonicalParts.get(0).getToken().matches("[A-Za-z_].*")) {
-      sb.append("_");
-    }
     boolean first = true;
     for (NamePart p : canonicalParts) {
+      String st = sanitizeJava(p.getToken());
       if (!first) {
         sb.append("_");
       }
-      sb.append(p.getToken().toUpperCase());
+      sb.append(st.toUpperCase());
       first = false;
     }
-    return sb.toString();
+    String n = sb.toString();
+    if (!n.matches("[A-Za-z_].*")) {
+      n = "_" + n;
+    }
+    return n;
   }
 
   private static String assembleDashedName(final List<NamePart> canonicalParts) {
     StringBuilder sb = new StringBuilder();
     boolean first = true;
     for (NamePart p : canonicalParts) {
+      String st = sanitizeJava(p.getToken());
       if (!first) {
         sb.append("-");
       }
-      sb.append(p.getToken().toLowerCase());
+      sb.append(st.toLowerCase());
       first = false;
     }
     return sb.toString();
+  }
+
+  private static String sanitizeJava(final String txt) {
+    if (txt == null) {
+      return null;
+    }
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < txt.length(); i++) {
+      char c = txt.charAt(i);
+      sb.append(validJavaIdentifierChar(c) ? c : "_");
+    }
+    return sb.toString();
+  }
+
+  private static boolean validJavaIdentifierChar(final char c) {
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || (c == '_');
   }
 
   @Override

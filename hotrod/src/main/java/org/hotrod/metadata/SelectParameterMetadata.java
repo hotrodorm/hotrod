@@ -3,7 +3,7 @@ package org.hotrod.metadata;
 import java.io.Serializable;
 
 import org.hotrod.config.ParameterTag;
-import org.hotrod.utils.identifiers2.Id;
+import org.hotrod.utils.identifiers.Id;
 
 public class SelectParameterMetadata implements Serializable {
 
@@ -17,7 +17,7 @@ public class SelectParameterMetadata implements Serializable {
 
   // Getters
 
-  public Id getIdentifier() {
+  public Id getId() {
     return this.p.getId();
   }
 

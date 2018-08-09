@@ -36,7 +36,7 @@ import org.hotrod.metadata.VersionControlMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.identifiers2.ObjectId;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 import org.nocrala.tools.database.tartarus.exception.ReaderException;
 
@@ -1045,7 +1045,7 @@ public class Mapper extends GeneratableObject {
     println("  <!-- select sequence " + seq.getName() + " -->");
     println();
     println("  <select id=\"" + this.getMapperSelectSequence(seq) + "\" " + "resultType=\"java.lang.Long\">");
-    String sentence = this.generator.getAdapter().renderSelectSequence(seq.getIdentifier());
+    String sentence = this.generator.getAdapter().renderSelectSequence(seq.getId());
     println("    " + SUtils.escapeXmlBody(sentence));
     println("  </select>");
     println();

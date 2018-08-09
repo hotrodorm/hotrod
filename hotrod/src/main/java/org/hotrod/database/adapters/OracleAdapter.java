@@ -18,7 +18,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.JdbcTypes.JDBCType;
-import org.hotrod.utils.identifiers2.Id;
+import org.hotrod.utils.identifiers.Id;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class OracleAdapter extends DatabaseAdapter {

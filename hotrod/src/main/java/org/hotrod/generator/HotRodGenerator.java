@@ -56,7 +56,7 @@ import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.JdbcTypes;
-import org.hotrod.utils.identifiers2.ObjectId;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.DatabaseObjectFilter;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;

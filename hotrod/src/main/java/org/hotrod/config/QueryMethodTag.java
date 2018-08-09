@@ -25,7 +25,7 @@ import org.hotrod.config.dynamicsql.WhereTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.utils.Compare;
-import org.hotrod.utils.identifiers2.Id;
+import org.hotrod.utils.identifiers.Id;
 
 @XmlRootElement(name = "query")
 public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {

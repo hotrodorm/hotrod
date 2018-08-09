@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.Compare;
-import org.hotrod.utils.identifiers2.Id;
+import org.hotrod.utils.identifiers.Id;
 
 @XmlRootElement(name = "sequence")
 public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
@@ -83,10 +83,6 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
 
   public String getMethod() {
     return super.method;
-  }
-
-  public Id getIdentifier() {
-    return super.id;
   }
 
   // Merging logic

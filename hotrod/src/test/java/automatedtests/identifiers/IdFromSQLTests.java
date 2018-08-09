@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.utils.identifiers2.Id;
+import org.hotrod.utils.identifiers.Id;
 
 import automatedtests.identifiers.TestDatabaseAdapter.CaseSensitiveness;
 import junit.framework.TestCase;
@@ -138,6 +138,19 @@ public class IdFromSQLTests extends TestCase {
     matchesSQL(Id.fromSQL("\"aBc\"", uAdapter), "Abc", "abc", "ABC", "abc", "getAbc", "setAbc", "aBc", "'aBc'", "aBc");
     matchesSQL(Id.fromSQL("`aBc`", uAdapter), "Abc", "abc", "ABC", "abc", "getAbc", "setAbc", "aBc", "'aBc'", "aBc");
     matchesSQL(Id.fromSQL("[aBc]", uAdapter), "Abc", "abc", "ABC", "abc", "getAbc", "setAbc", "aBc", "'aBc'", "aBc");
+
+  }
+
+  public void testRealcases() throws SQLException, InvalidIdentifierException {
+
+    DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE);
+
+    String expected = "car#part$Price";
+
+    Id id = Id.fromSQL("'" + expected + "'", lAdapter);
+    String actual = id.getCanonicalSQLName();
+
+    assertEquals("Expected '" + expected + "' but found '" + actual + "'", expected, actual);
 
   }
 

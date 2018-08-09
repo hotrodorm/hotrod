@@ -18,8 +18,8 @@ import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
-import org.hotrod.utils.identifiers2.Id;
-import org.hotrod.utils.identifiers2.ObjectId;
+import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
@@ -194,7 +194,7 @@ public class ViewTag extends AbstractEntityDAOTag {
         throw new InvalidConfigurationFileException(c, //
             "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name", //
             "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name on tag <" + super.getTagName()
-                + "> for table '" + this.name + "'. You cannot specify the same column name "
+                + "> for table '" + this.id.getRenderedSQLName() + "'. You cannot specify the same column name "
                 + "multiple times on a same view.");
       }
       cols.add(c);
@@ -208,11 +208,12 @@ public class ViewTag extends AbstractEntityDAOTag {
 
   public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
 
-    JdbcTable v = generator.findJdbcView(this.name);
+    JdbcTable v = generator.findJdbcView(this.id.getCanonicalSQLName());
     if (v == null) {
       throw new InvalidConfigurationFileException(this, //
-          "Could not find database view '" + this.name + "'", //
-          "Could not find database view '" + this.name + "' as specified in the <view> tag of the configuration file. "
+          "Could not find database view '" + this.id.getRenderedSQLName() + "'", //
+          "Could not find database view '" + this.id.getRenderedSQLName()
+              + "' as specified in the <view> tag of the configuration file. "
               + "\n\nPlease verify the specified database catalog and schema names are correct according to this database. "
               + "You can try leaving the catalog/schema values empty, so " + Constants.TOOL_NAME
               + " will list all available values.");
@@ -223,7 +224,7 @@ public class ViewTag extends AbstractEntityDAOTag {
       if (jc == null) {
         throw new InvalidConfigurationFileException(this, //
             "Could not find column '" + c.getName() + "' on view", //
-            "Could not find column '" + c.getName() + "' on database view '" + this.name
+            "Could not find column '" + c.getName() + "' on database view '" + this.id.getRenderedSQLName()
                 + "', as specified in the <column> tag of the configuration file. ");
       }
     }
@@ -246,10 +247,6 @@ public class ViewTag extends AbstractEntityDAOTag {
   }
 
   // Getters
-
-  // public String getName() {
-  // return name;
-  // }
 
   public ObjectId getId() {
     return this.id;
@@ -281,7 +278,7 @@ public class ViewTag extends AbstractEntityDAOTag {
   public boolean sameKey(final AbstractConfigurationTag fresh) {
     try {
       ViewTag f = (ViewTag) fresh;
-      return this.name.equals(f.name);
+      return this.id.equals(f.id);
     } catch (ClassCastException e) {
       return false;
     }
@@ -310,7 +307,7 @@ public class ViewTag extends AbstractEntityDAOTag {
     try {
       ViewTag f = (ViewTag) fresh;
       return //
-      Compare.same(this.name, f.name) && //
+      Compare.same(this.id, f.id) && //
           Compare.same(this.javaClassName, f.javaClassName) && //
           Compare.same(this.columns, f.columns) //
       ;
@@ -323,7 +320,7 @@ public class ViewTag extends AbstractEntityDAOTag {
 
   @Override
   public String getInternalCaption() {
-    return this.getTagName() + ":" + this.name;
+    return this.getTagName() + ":" + this.id;
   }
 
 }

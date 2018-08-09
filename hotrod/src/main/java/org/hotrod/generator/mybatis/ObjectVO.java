@@ -14,7 +14,7 @@ import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ImportsRenderer;
-import org.hotrod.utils.identifiers2.ObjectId;
+import org.hotrod.utils.identifiers.ObjectId;
 
 public class ObjectVO extends GeneratableObject {
 

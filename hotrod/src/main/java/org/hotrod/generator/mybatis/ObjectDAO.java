@@ -2108,7 +2108,7 @@ public class ObjectDAO extends GeneratableObject {
 
     println("  // sequence " + tag.getName());
     println();
-    println(ObjectDAO.renderJavaComment(this.generator.getAdapter().renderSelectSequence(tag.getIdentifier())));
+    println(ObjectDAO.renderJavaComment(this.generator.getAdapter().renderSelectSequence(tag.getId())));
     println();
 
     println("  public static long " + tag.getMethod() + "()");

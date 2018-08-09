@@ -15,6 +15,7 @@ public class AllIdentifierTests {
     ts.addTestSuite(IdSplitTests.class);
     ts.addTestSuite(ObjectIdTests.class);
     ts.addTestSuite(SQLNameTests.class);
+    ts.addTestSuite(IdSpecialCharactersTests.class);
 
     return ts;
   }

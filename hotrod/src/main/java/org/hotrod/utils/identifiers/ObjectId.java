@@ -1,9 +1,9 @@
-package org.hotrod.utils.identifiers2;
+package org.hotrod.utils.identifiers;
 
 import java.util.List;
 
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.utils.identifiers2.Id.NamePart;
+import org.hotrod.utils.identifiers.Id.NamePart;
 
 public class ObjectId implements Comparable<ObjectId> {
 
@@ -155,6 +155,10 @@ public class ObjectId implements Comparable<ObjectId> {
       return false;
     log("ObjectID.equals() 9");
     return true;
+  }
+
+  public String toString() {
+    return this.getRenderedSQLName();
   }
 
   private void log(final String txt) {

@@ -13,6 +13,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.DatabaseAdapterFactory;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.generator.CachedMetadata;
@@ -233,6 +234,10 @@ public class HotRodAntTask extends Task {
     } catch (UncontrolledException e) {
       display("Technical error found: " + EUtils.renderMessages(e));
       throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
+    } catch (InvalidConfigurationFileException e) {
+      throw new BuildException(
+          Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "
+              + e.getTag().getSourceLocation().render() + ":\n" + e.getMessage());
     } catch (Throwable t) {
       t.printStackTrace();
       throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");

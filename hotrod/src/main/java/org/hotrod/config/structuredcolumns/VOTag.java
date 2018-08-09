@@ -44,8 +44,8 @@ import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.JdbcTypes;
-import org.hotrod.utils.identifiers2.Id;
-import org.hotrod.utils.identifiers2.ObjectId;
+import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 
 @XmlRootElement(name = "vo")
 public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {

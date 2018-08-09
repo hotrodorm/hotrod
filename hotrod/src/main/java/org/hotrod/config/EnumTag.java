@@ -29,8 +29,8 @@ import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.ValueTypeFactory;
 import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
-import org.hotrod.utils.identifiers2.Id;
-import org.hotrod.utils.identifiers2.ObjectId;
+import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
@@ -263,12 +263,11 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     // Validate the table existence
 
-    this.table = generator.findJdbcTable(this.name);
+    this.table = generator.findJdbcTable(this.id.getCanonicalSQLName());
     if (this.table == null) {
       throw new InvalidConfigurationFileException(this, //
-          "Could not find database table '" + this.name + "'", //
-          "Could not find table '" + this.name + "' as specified in the attribute 'name' of the tag <"
-              + super.getTagName() + ">.");
+          "Could not find database table '" + this.id.getRenderedSQLName() + "'", //
+          "Could not find database table '" + this.id.getRenderedSQLName() + "'");
     }
 
     // Get the list of columns
@@ -291,14 +290,14 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     if (this.table.getPk() == null) {
       throw new InvalidConfigurationFileException(this, //
-          "Enum table '" + this.name + "' must have a (single-column) primary key", //
-          "Enum table '" + this.name + "' does not have a primary key. "
+          "Enum table '" + this.id.getRenderedSQLName() + "' must have a (single-column) primary key", //
+          "Enum table '" + this.id.getRenderedSQLName() + "' does not have a primary key. "
               + "A primary key is required on a table that is being used in an <" + super.getTagName() + "> tag.");
     }
     if (this.table.getPk().getKeyColumns().size() != 1) {
       throw new InvalidConfigurationFileException(this, //
-          "Enum table '" + this.name + "' cannot have a composite primary key", //
-          "Enum table '" + this.name + "' should not have a composite primary key. "
+          "Enum table '" + this.id.getRenderedSQLName() + "' cannot have a composite primary key", //
+          "Enum table '" + this.id.getRenderedSQLName() + "' should not have a composite primary key. "
               + "A single-column primary key is required on a table that is being used in an <" + super.getTagName()
               + "> tag, but this one has " + this.table.getPk().getKeyColumns().size()
               + " columns in the primary key.");
@@ -313,8 +312,8 @@ public class EnumTag extends AbstractEntityDAOTag {
     JdbcColumn nameCol = generator.findJdbcColumn(this.table, this.nameCol);
     if (nameCol == null) {
       throw new InvalidConfigurationFileException(this, //
-          "Could not find column '" + this.nameCol + "' on table '" + this.name + "'", //
-          "Could not find column '" + this.nameCol + "' on table '" + this.name
+          "Could not find column '" + this.nameCol + "' on table '" + this.id.getRenderedSQLName() + "'", //
+          "Could not find column '" + this.nameCol + "' on table '" + this.id.getRenderedSQLName()
               + "' as specified in the attribute 'name-column' of the tag <" + super.getTagName() + ">.");
     }
 
@@ -340,10 +339,10 @@ public class EnumTag extends AbstractEntityDAOTag {
       if (javaConstantNames.contains(c.getJavaConstantName())) {
         throw new InvalidConfigurationFileException(this, //
             "Duplicate constant name '" + c.getJavaConstantName() + "' found in column '" + this.nameCol
-                + "' of table '" + this.name
+                + "' of table '" + this.id.getRenderedSQLName()
                 + "'.\nMultiple rows of the table produce the same Java constant name for the enum", //
             "Duplicate constant name '" + c.getJavaConstantName() + "' found in column '" + this.nameCol
-                + "' of table '" + this.name + "' for <" + super.getTagName() + "> tag. "
+                + "' of table '" + this.id.getRenderedSQLName() + "' for <" + super.getTagName() + "> tag. "
                 + "Multiple rows of the table produce the same Java constant name for the enum.");
       }
       javaConstantNames.add(c.getJavaConstantName());
@@ -353,9 +352,10 @@ public class EnumTag extends AbstractEntityDAOTag {
       if (javaConstantNames.contains(c.getJavaConstantName())) {
         throw new InvalidConfigurationFileException(this, //
             "Duplicate constant name '" + c.getJavaConstantName() + "' found in column '" + this.nameCol
-                + "' of table '" + this.name + "'.\nA <non-persistent> tag was defined with an already existing name", //
+                + "' of table '" + this.id.getRenderedSQLName()
+                + "'.\nA <non-persistent> tag was defined with an already existing name", //
             "Duplicate constant name '" + c.getJavaConstantName() + "' found in column '" + this.nameCol
-                + "' of table '" + this.name + "' for <" + super.getTagName() + "> tag. "
+                + "' of table '" + this.id.getRenderedSQLName() + "' for <" + super.getTagName() + "> tag. "
                 + "A <non-persistent> tag was defined with an already existing name.");
       }
       javaConstantNames.add(c.getJavaConstantName());
@@ -401,9 +401,9 @@ public class EnumTag extends AbstractEntityDAOTag {
         if (SUtils.isEmpty(name)) {
           throw new InvalidConfigurationFileException(this, //
               "Enum constant name cannot be empty: an empty value was found on the colum '" + this.nameCol + "'", //
-              "Invalid enum constant name from table '" + this.name + "' on the <" + super.getTagName() + "> tag. "
-                  + "A en empty value was read from the column '" + this.nameCol + "'. "
-                  + "If a column is used for the enum constant names, it cannot have null or empty values.");
+              "Invalid enum constant name from table '" + this.id.getRenderedSQLName() + "' on the <"
+                  + super.getTagName() + "> tag. " + "A en empty value was read from the column '" + this.nameCol
+                  + "'. " + "If a column is used for the enum constant names, it cannot have null or empty values.");
         }
         String javaConstantName = new TitleIdentifier(name).getJavaConstantName();
 
@@ -421,9 +421,9 @@ public class EnumTag extends AbstractEntityDAOTag {
       }
     } catch (SQLException e) {
       throw new InvalidConfigurationFileException(this, //
-          "Could not retrieve table values from table '" + this.name + "'", //
-          "Could not retrieve table values from table '" + this.name + "' on the <" + super.getTagName() + "> tag. "
-              + e.getMessage());
+          "Could not retrieve table values from table '" + this.id.getRenderedSQLName() + "'", //
+          "Could not retrieve table values from table '" + this.id.getRenderedSQLName() + "' on the <"
+              + super.getTagName() + "> tag. " + e.getMessage());
     } finally {
       closeResources(st, rs);
     }
@@ -457,12 +457,13 @@ public class EnumTag extends AbstractEntityDAOTag {
     } catch (UnresolvableDataTypeException e) {
       throw new InvalidConfigurationFileException(this, //
           "Could not resolve a suitable Java type for the column '" + c.getName() + "'", //
-          "Could not resolve a suitable Java type for the column '" + c.getName() + "' on table '" + this.name + "'.");
+          "Could not resolve a suitable Java type for the column '" + c.getName() + "' on table '"
+              + this.id.getRenderedSQLName() + "'.");
     } catch (InvalidIdentifierException e) {
       throw new InvalidConfigurationFileException(this, //
           "Could not resolve a suitable indentifier for the column '" + c.getName() + "'", //
-          "Could not resolve a suitable indentifier for the column '" + c.getName() + "' on table '" + this.name
-              + "'.");
+          "Could not resolve a suitable indentifier for the column '" + c.getName() + "' on table '"
+              + this.id.getRenderedSQLName() + "'.");
     }
 
     String valueType = type.getJavaClassName();
@@ -471,7 +472,8 @@ public class EnumTag extends AbstractEntityDAOTag {
       throw new InvalidConfigurationFileException(this, //
           "Invalid Java type '" + valueType + "' for the column '" + c.getName()
               + "': the column must correspond to a simple Java type, as defined in the documentation", //
-          "Invalid Java type '" + valueType + "' for the column '" + c.getName() + "' on table '" + this.name
+          "Invalid Java type '" + valueType + "' for the column '" + c.getName() + "' on table '"
+              + this.id.getRenderedSQLName()
               + "'. The column must be readable as (i.e. must correspond to) one of the following Java types:\n"
               + ListWriter.render(ValueTypeFactory.getSupportedTypes(), "", " - ", "", "\n", ""));
     }
@@ -540,33 +542,6 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   }
 
-  // Indexing methods
-
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    EnumTag other = (EnumTag) obj;
-    if (name == null) {
-      if (other.name != null)
-        return false;
-    } else if (!name.equals(other.name))
-      return false;
-    return true;
-  }
-
   // Finders
 
   public ColumnTag findColumnTag(final String jdbcName, final DatabaseAdapter adapter) {
@@ -574,10 +549,6 @@ public class EnumTag extends AbstractEntityDAOTag {
   }
 
   // Getters
-
-  // public String getName() {
-  // return name;
-  // }
 
   public ObjectId getId() {
     return id;
@@ -658,7 +629,7 @@ public class EnumTag extends AbstractEntityDAOTag {
   public boolean sameKey(final AbstractConfigurationTag fresh) {
     try {
       EnumTag f = (EnumTag) fresh;
-      return this.name.equals(f.name);
+      return this.id.equals(f.id);
     } catch (ClassCastException e) {
       return false;
     }
@@ -694,7 +665,7 @@ public class EnumTag extends AbstractEntityDAOTag {
     try {
       EnumTag f = (EnumTag) fresh;
       boolean same = //
-          Compare.same(this.name, f.name) && //
+          Compare.same(this.id, f.id) && //
               Compare.same(this.javaClassName, f.javaClassName) && //
               Compare.same(this.nameCol, f.nameCol) && //
               Compare.same(this.nonPersistents, f.nonPersistents);
