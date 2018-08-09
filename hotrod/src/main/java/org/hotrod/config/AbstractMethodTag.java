@@ -1,6 +1,9 @@
 package org.hotrod.config;
 
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
+import org.hotrod.utils.identifiers2.Id;
 
 public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends AbstractConfigurationTag
     implements GenerationUnit<AbstractMethodTag<M>> {
@@ -10,6 +13,7 @@ public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends 
   // Properties
 
   protected String method = null;
+  protected Id id = null;
 
   // Constructor
 
@@ -26,13 +30,39 @@ public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends 
     this.method = source.method;
   }
 
-  // Methods
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
 
-  public abstract String getMethod();
+    // method
+
+    if (this.method == null) {
+      throw new InvalidConfigurationFileException(this, //
+          "Attribute 'method' cannot be empty", //
+          "Attribute 'method' of tag <" + getTagName() + "> cannot be empty. " + "Must specify a unique name.");
+    }
+
+    try {
+      this.id = Id.fromJavaMember(this.method);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid Java method name '" + this.method + "': " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
+    }
+
+  }
+
+  // Methods
 
   @Override
   public boolean concludeGeneration(final AbstractMethodTag<M> cache, final DatabaseAdapter adapter) {
     return this.concludeGenerationMarkTag();
+  }
+
+  // Getters
+
+  public abstract String getMethod();
+
+  public Id getId() {
+    return id;
   }
 
 }

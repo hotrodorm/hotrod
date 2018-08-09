@@ -8,7 +8,7 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.SelectMetadataCache;
@@ -22,7 +22,7 @@ public abstract class DataSetMetadataFactory {
 
   public static TableDataSetMetadata getMetadata(final JdbcTable t, final DatabaseAdapter adapter,
       final HotRodConfigTag config, final DataSetLayout layout, final CachedMetadata cachedMetadata)
-      throws UnresolvableDataTypeException, ControlledException {
+      throws UnresolvableDataTypeException, InvalidConfigurationFileException {
 
     JdbcDatabase cachedDB = cachedMetadata.getCachedDatabase();
     HotRodConfigTag cachedConfig = cachedMetadata.getConfig();
@@ -89,7 +89,8 @@ public abstract class DataSetMetadataFactory {
       return new TableDataSetMetadata(viewTag, t, adapter, config, layout, selectMetadataCache);
     }
 
-    throw new ControlledException("Could not find table, enum, or view with name '" + t.getName() + "'.");
+    String msg = "Could not find table, enum, or view with name '" + t.getName() + "'.";
+    throw new InvalidConfigurationFileException(config, msg, msg);
 
   }
 

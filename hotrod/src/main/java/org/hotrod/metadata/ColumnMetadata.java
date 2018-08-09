@@ -7,8 +7,9 @@ import org.hotrod.config.ColumnTag;
 import org.hotrod.config.ConverterTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
-import org.hotrod.utils.identifiers.ColumnIdentifier;
+import org.hotrod.utils.identifiers2.Id;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 
@@ -23,6 +24,8 @@ public class ColumnMetadata implements Serializable {
   private JdbcColumn c;
   private String columnName;
   private String tableName;
+
+  private Id id;
 
   private boolean belongsToPK;
 
@@ -39,7 +42,6 @@ public class ColumnMetadata implements Serializable {
   private transient DatabaseAdapter adapter;
   private ColumnTag tag;
   private PropertyType type;
-  private ColumnIdentifier identifier;
 
   private boolean isVersionControlColumn;
 
@@ -55,12 +57,15 @@ public class ColumnMetadata implements Serializable {
 
   public ColumnMetadata(final DataSetMetadata dataSet, final JdbcColumn c, final DatabaseAdapter adapter,
       final ColumnTag columnTag, final boolean isVersionControlColumn, final boolean belongsToPK)
-      throws UnresolvableDataTypeException {
+      throws UnresolvableDataTypeException, InvalidIdentifierException {
     log.debug("init c=" + c);
     this.dataSet = dataSet;
     this.c = c;
     this.columnName = c.getName();
     this.tableName = c.getTable().getName();
+
+    this.id = Id.fromSQL(c.getName(), adapter);
+
     this.belongsToPK = belongsToPK;
     this.autogenerationType = c.getAutogenerationType();
     this.dataType = c.getDataType();
@@ -73,7 +78,6 @@ public class ColumnMetadata implements Serializable {
     this.adapter = adapter;
     this.tag = columnTag;
     this.type = this.adapter.resolveJavaType(this, this.tag);
-    this.identifier = new ColumnIdentifier(this.columnName, this.type, columnTag);
     this.isVersionControlColumn = isVersionControlColumn;
   }
 
@@ -88,6 +92,9 @@ public class ColumnMetadata implements Serializable {
     this.c = cm.c;
     this.columnName = cm.columnName;
     this.tableName = cm.tableName;
+
+    this.id = cm.id;
+
     this.belongsToPK = cm.belongsToPK;
     this.autogenerationType = cm.autogenerationType;
     this.dataType = cm.dataType;
@@ -99,7 +106,6 @@ public class ColumnMetadata implements Serializable {
     this.adapter = cm.adapter;
     this.tag = cm.tag;
     this.type = cm.type;
-    this.identifier = cm.identifier;
     this.isVersionControlColumn = cm.isVersionControlColumn;
   }
 
@@ -107,11 +113,14 @@ public class ColumnMetadata implements Serializable {
 
   public ColumnMetadata(final DataSetMetadata dataSet, final JdbcColumn c, final String selectName,
       final DatabaseAdapter adapter, final ColumnTag columnTag, final boolean isVersionControlColumn,
-      final boolean belongsToPK) throws UnresolvableDataTypeException {
+      final boolean belongsToPK) throws UnresolvableDataTypeException, InvalidIdentifierException {
     this.dataSet = dataSet;
     this.c = c;
     this.columnName = c.getName();
     this.tableName = selectName;
+
+    this.id = Id.fromSQL(c.getName(), adapter);
+
     this.belongsToPK = belongsToPK;
     this.autogenerationType = c.getAutogenerationType();
     this.dataType = c.getDataType();
@@ -124,18 +133,19 @@ public class ColumnMetadata implements Serializable {
     this.adapter = adapter;
     this.tag = columnTag;
     this.type = this.adapter.resolveJavaType(this, this.tag);
-    this.identifier = new ColumnIdentifier(this.columnName, this.type, columnTag);
     this.isVersionControlColumn = isVersionControlColumn;
   }
 
   // Applying a column tag to a column meta data
 
-  public static ColumnMetadata applyColumnTag(final ColumnMetadata cm, final ColumnTag tag)
-      throws UnresolvableDataTypeException {
+  public static ColumnMetadata applyColumnTag(final ColumnMetadata cm, final ColumnTag tag,
+      final DatabaseAdapter adapter) throws UnresolvableDataTypeException, InvalidIdentifierException {
     ColumnMetadata m2 = new ColumnMetadata(cm);
     m2.tag = tag;
     m2.type = m2.adapter.resolveJavaType(m2, tag);
-    m2.identifier = new ColumnIdentifier(m2.columnName, m2.type, tag);
+    if (tag.getJavaName() != null) {
+      m2.id = Id.fromSQLAndJavaMember(cm.getColumnName(), adapter, tag.getJavaName());
+    }
     return m2;
   }
 
@@ -178,12 +188,8 @@ public class ColumnMetadata implements Serializable {
     return type;
   }
 
-  public ColumnIdentifier getIdentifier() {
-    return identifier;
-  }
-
-  public String renderSQLIdentifier() {
-    return this.adapter.renderSQLName(this.columnName);
+  public Id getId() {
+    return this.id;
   }
 
   public boolean isConfigurationName(final String configurationName) {
@@ -247,15 +253,17 @@ public class ColumnMetadata implements Serializable {
     return this.tag == null ? null : this.tag.getSequence();
   }
 
+  // TODO: replace with a formal ID
   public String getCanonicalSequence() {
     return this.tag == null ? null : this.adapter.canonizeName(this.tag.getSequence(), false);
   }
 
+  // TODO: replace with a formal ID
   public String renderSQLSequence() {
     return this.tag == null || this.tag.getSequence() == null ? null
         : this.adapter.renderSQLName(this.getCanonicalSequence());
   }
-
+  
   public AutogenerationType getAutogenerationType() {
     return this.autogenerationType;
   }

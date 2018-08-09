@@ -3,10 +3,12 @@ package org.hotrod.config;
 import org.apache.log4j.Logger;
 import org.hotrod.config.dynamicsql.SQLSegment;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.dynamicsql.expressions.VariableExpression;
+import org.hotrod.utils.identifiers2.Id;
 
 public class SQLParameter implements SQLSegment {
 
@@ -31,6 +33,8 @@ public class SQLParameter implements SQLSegment {
   private String name;
   private VariableType type;
   private ParameterTag definition;
+
+  private Id id;
 
   // Constructor
 
@@ -58,6 +62,13 @@ public class SQLParameter implements SQLSegment {
               + "continue with letters, digits, and/or underscores.");
     }
 
+    try {
+      this.id = Id.fromJavaMember(this.name);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid parameter name '" + this.name + "': " + e.getMessage();
+      throw new InvalidConfigurationFileException(tag, msg, msg);
+    }
+
   }
 
   public String getErrorMessage(final String paramDefinition, final String tagIdentification,
@@ -76,6 +87,10 @@ public class SQLParameter implements SQLSegment {
 
   public String getName() {
     return name;
+  }
+
+  public Id getId() {
+    return id;
   }
 
   public boolean isVariable() {

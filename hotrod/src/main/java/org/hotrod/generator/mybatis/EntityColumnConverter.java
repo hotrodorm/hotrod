@@ -18,7 +18,7 @@ public class EntityColumnConverter {
   public EntityColumnConverter(final Writer w, final ColumnMetadata cm) {
     this.w = w;
     this.cm = cm;
-    this.typeHandlerClassName = cm.getIdentifier().getJavaClassIdentifier() + "TypeHandler";
+    this.typeHandlerClassName = cm.getId().getJavaClassName() + "TypeHandler";
   }
 
   public String getTypeHandlerClassName() {
@@ -34,7 +34,7 @@ public class EntityColumnConverter {
     String getter = this.cm.getConverter().getJdbcGetterMethod();
     String converter = this.cm.getConverter().getJavaClass();
 
-    String property = this.cm.getIdentifier().getJavaMemberIdentifier();
+    String property = this.cm.getId().getJavaMemberName();
 
     println("  // TypeHandler for " + (property != null ? "property " + property : "column " + cm.getColumnName())
         + " using Converter " + converter + ".");

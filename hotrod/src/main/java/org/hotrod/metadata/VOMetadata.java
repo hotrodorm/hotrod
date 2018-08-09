@@ -15,6 +15,7 @@ import org.hotrod.config.structuredcolumns.CollectionTag;
 import org.hotrod.config.structuredcolumns.Expressions;
 import org.hotrod.config.structuredcolumns.VOTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.generator.mybatis.SelectAbstractVO;
 import org.hotrod.generator.mybatis.SelectVO;
@@ -25,6 +26,7 @@ import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOProperty;
 import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.utils.ClassPackage;
+import org.hotrod.utils.identifiers2.Id;
 
 public class VOMetadata implements Serializable {
 
@@ -76,7 +78,13 @@ public class VOMetadata implements Serializable {
     for (AssociationTag a : tag.getAssociations()) {
       VOMetadata am = a.getMetadata(layout, fragmentConfig, daosTag);
       this.associations.add(am);
-      VOMember m = new VOMember(a.getProperty(), am.getClassPackage(), am.getName(), a);
+      VOMember m;
+      try {
+        m = new VOMember(a.getProperty(), am.getClassPackage(), am.getName(), a);
+      } catch (InvalidIdentifierException e) {
+        String msg = "Invalid property name '" + a.getProperty() + "': " + e.getMessage();
+        throw new InvalidConfigurationFileException(tag, msg, msg);
+      }
       this.associationMembers.add(m);
     }
 
@@ -85,7 +93,13 @@ public class VOMetadata implements Serializable {
     for (CollectionTag c : tag.getCollections()) {
       VOMetadata com = c.getMetadata(layout, fragmentConfig, daosTag);
       this.collections.add(com);
-      VOMember m = new VOMember(c.getProperty(), com.getClassPackage(), com.getName(), c);
+      VOMember m;
+      try {
+        m = new VOMember(c.getProperty(), com.getClassPackage(), com.getName(), c);
+      } catch (InvalidIdentifierException e) {
+        String msg = "Invalid property name '" + c.getProperty() + "': " + e.getMessage();
+        throw new InvalidConfigurationFileException(tag, msg, msg);
+      }
       this.collectionMembers.add(m);
     }
 
@@ -137,7 +151,8 @@ public class VOMetadata implements Serializable {
   }
 
   public void registerSubTreeVOs(final ClassPackage classPackage, final VORegistry voRegistry)
-      throws VOAlreadyExistsException, StructuredVOAlreadyExistsException, DuplicatePropertyNameException {
+      throws VOAlreadyExistsException, StructuredVOAlreadyExistsException, DuplicatePropertyNameException
+       {
 
     if (this.entityVOSuperClass != null) { // new VO (extends an entity VO)
 
@@ -147,29 +162,38 @@ public class VOMetadata implements Serializable {
 
       for (ColumnMetadata cm : this.entityVOSuperClass.getColumnsByName().values()) {
         StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false, this.tag);
-        properties.add(new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), m, EnclosingTagType.ENTITY_VO,
+        properties.add(new VOProperty(cm.getId().getJavaMemberName(), m, EnclosingTagType.ENTITY_VO,
             this.entityVOSuperClass.getTag()));
       }
 
       // Expressions properties
 
       for (StructuredColumnMetadata cm : this.tag.getExpressions().getMetadata()) {
-        properties.add(new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), cm, EnclosingTagType.EXPRESSIONS,
-            cm.getTag()));
+        properties.add(new VOProperty(cm.getId().getJavaMemberName(), cm, EnclosingTagType.EXPRESSIONS, cm.getTag()));
       }
 
       // Association properties
 
       List<VOMember> associationMembers = new ArrayList<VOMember>();
       for (VOMetadata vo : this.associations) {
-        associationMembers.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty(), vo.getTag()));
+        try {
+          associationMembers.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty(), vo.getTag()));
+        } catch (InvalidIdentifierException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       }
 
       // Collection properties
 
       List<VOMember> collectionMembers = new ArrayList<VOMember>();
       for (VOMetadata vo : this.collections) {
-        collectionMembers.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty(), vo.getTag()));
+        try {
+          collectionMembers.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty(), vo.getTag()));
+        } catch (InvalidIdentifierException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       }
 
       SelectVOClass voClass = new SelectVOClass(classPackage, this.name, this.entityVOSuperClass, properties,
@@ -370,16 +394,23 @@ public class VOMetadata implements Serializable {
     private String name;
     private AbstractConfigurationTag tag;
 
+    private Id id;
+
     public VOMember(final String property, final ClassPackage classPackage, final String name,
-        final AbstractConfigurationTag tag) {
+        final AbstractConfigurationTag tag) throws InvalidIdentifierException {
       this.property = property;
       this.classPackage = classPackage;
       this.name = name;
       this.tag = tag;
+      this.id = Id.fromJavaMember(this.property);
     }
 
     public String getProperty() {
       return property;
+    }
+
+    public Id getId() {
+      return id;
     }
 
     public ClassPackage getClassPackage() {

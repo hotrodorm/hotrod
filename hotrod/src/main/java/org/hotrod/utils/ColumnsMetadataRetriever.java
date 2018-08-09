@@ -13,6 +13,8 @@ import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
@@ -126,8 +128,8 @@ public class ColumnsMetadataRetriever {
 
   }
 
-  public List<StructuredColumnMetadata> retrieve(final Connection conn2)
-      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException {
+  public List<StructuredColumnMetadata> retrieve(final Connection conn2) throws InvalidSQLException,
+      UncontrolledException, UnresolvableDataTypeException, InvalidConfigurationFileException {
 
     String dropViewSQL = this.adapter.dropView(this.tempViewName);
 
@@ -147,7 +149,13 @@ public class ColumnsMetadataRetriever {
             null);
         while (rs.next()) {
           JdbcColumn c = this.db.retrieveColumn(rs, this.tempViewName);
-          ColumnMetadata cm = new ColumnMetadata(null, c, this.selectTag.getMethod(), this.adapter, null, false, false);
+          ColumnMetadata cm;
+          try {
+            cm = new ColumnMetadata(null, c, this.selectTag.getMethod(), this.adapter, null, false, false);
+          } catch (InvalidIdentifierException e) {
+            String msg = "Invalid identifier for column '" + c.getName() + "': " + e.getMessage();
+            throw new InvalidConfigurationFileException(this.selectTag, msg, msg);
+          }
 
           String alias = this.aliasPrefix + cm.getColumnName();
           StructuredColumnMetadata scm = new StructuredColumnMetadata(cm, this.entityPrefix, alias, false, null);

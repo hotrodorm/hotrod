@@ -7,6 +7,8 @@ import java.util.Set;
 
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ColumnTag;
+import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 
 public class StructuredColumnMetadata extends ColumnMetadata implements Serializable {
@@ -36,8 +38,9 @@ public class StructuredColumnMetadata extends ColumnMetadata implements Serializ
   // Behavior
 
   public static StructuredColumnMetadata applyColumnTag(final StructuredColumnMetadata orig, final ColumnTag t,
-      final AbstractConfigurationTag tag) throws UnresolvableDataTypeException {
-    ColumnMetadata cm = ColumnMetadata.applyColumnTag(orig, t);
+      final AbstractConfigurationTag tag, final DatabaseAdapter adapter)
+      throws UnresolvableDataTypeException, InvalidIdentifierException {
+    ColumnMetadata cm = ColumnMetadata.applyColumnTag(orig, t, adapter);
     return new StructuredColumnMetadata(cm, orig.entityPrefix, orig.columnAlias, orig.id, tag);
   }
 
@@ -73,7 +76,7 @@ public class StructuredColumnMetadata extends ColumnMetadata implements Serializ
 
   public String renderAliasedSQLColumn() {
     if (this.formula == null) {
-      return this.entityPrefix + "." + super.renderSQLIdentifier() + " as " + this.columnAlias;
+      return this.entityPrefix + "." + super.getId().getRenderedSQLName() + " as " + this.columnAlias;
     } else {
       return this.formula + " as " + this.columnAlias;
     }

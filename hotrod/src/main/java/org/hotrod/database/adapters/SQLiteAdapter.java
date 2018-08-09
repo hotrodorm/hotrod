@@ -16,7 +16,7 @@ import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
-import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.Id;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class SQLiteAdapter extends DatabaseAdapter {
@@ -171,7 +171,7 @@ public class SQLiteAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderSelectSequence(final Identifier sequence) throws SequencesNotSupportedException {
+  public String renderSelectSequence(final Id sequence) throws SequencesNotSupportedException {
     throw new UnsupportedOperationException("This database does not return support sequences.");
   }
 
@@ -188,7 +188,7 @@ public class SQLiteAdapter extends DatabaseAdapter {
 
   @Override
   public String renderAliasedSelectColumn(final StructuredColumnMetadata cm) {
-    return cm.renderSQLIdentifier() + " as " + this.renderSQLName(cm.getColumnAlias());
+    return cm.getId().getRenderedSQLName() + " as " + this.renderSQLName(cm.getColumnAlias());
   }
 
   @Override
@@ -259,7 +259,7 @@ public class SQLiteAdapter extends DatabaseAdapter {
 
   @Override
   public String renderForCaseInsensitiveOrderBy(final ColumnMetadata cm) {
-    return "lower(" + cm.renderSQLIdentifier() + ")";
+    return "lower(" + cm.getId().getRenderedSQLName() + ")";
   }
 
   @Override

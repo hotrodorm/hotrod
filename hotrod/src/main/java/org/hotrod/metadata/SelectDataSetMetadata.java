@@ -17,11 +17,11 @@ import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectClassTag;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.util.ListWriter;
-import org.hotrod.utils.identifiers.Identifier;
 import org.hotrod.utils.identifiers2.Id;
 import org.hotrod.utils.identifiers2.ObjectId;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -144,7 +144,8 @@ public class SelectDataSetMetadata implements DataSetMetadata, Serializable {
     return reassembled;
   }
 
-  public void retrieveColumnsMetadata(final Connection conn) throws SQLException, UnresolvableDataTypeException {
+  public void retrieveColumnsMetadata(final Connection conn)
+      throws SQLException, UnresolvableDataTypeException, InvalidConfigurationFileException {
     String dropView = this.adapter.dropView(this.tempViewName);
 
     PreparedStatement ps = null;
@@ -162,8 +163,13 @@ public class SelectDataSetMetadata implements DataSetMetadata, Serializable {
         JdbcColumn c = this.db.retrieveColumn(rs, tempViewName);
         ColumnTag columnTag = this.tag.findColumnTag(c.getName(), this.adapter);
         log.debug("c=" + c.getName() + " / col: " + columnTag);
-        ColumnMetadata cm = new ColumnMetadata(this, c, this.tag.getJavaClassName(), this.adapter, columnTag, false,
-            false);
+        ColumnMetadata cm;
+        try {
+          cm = new ColumnMetadata(this, c, this.tag.getJavaClassName(), this.adapter, columnTag, false, false);
+        } catch (InvalidIdentifierException e) {
+          String msg = "Invalid identifier for column '" + c.getName() + "': " + e.getMessage();
+          throw new InvalidConfigurationFileException(this.tag, msg, msg);
+        }
         log.debug(" --> type=" + cm.getType());
         this.columns.add(cm);
       }

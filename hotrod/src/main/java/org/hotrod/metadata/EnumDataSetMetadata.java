@@ -9,7 +9,7 @@ import org.hotrod.config.EnumTag.EnumProperty;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.generator.mybatis.DataSetLayout;
@@ -27,7 +27,7 @@ public class EnumDataSetMetadata extends TableDataSetMetadata {
 
   public EnumDataSetMetadata(final EnumTag tag, final JdbcTable t, final DatabaseAdapter adapter,
       final HotRodConfigTag config, final DataSetLayout layout, final SelectMetadataCache selectMetadataCache)
-      throws UnresolvableDataTypeException, ControlledException {
+      throws UnresolvableDataTypeException, InvalidConfigurationFileException {
     super(tag, t, adapter, config, layout, selectMetadataCache);
     log.debug("init");
     this.tag = tag;

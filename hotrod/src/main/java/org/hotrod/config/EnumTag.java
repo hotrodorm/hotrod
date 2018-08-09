@@ -29,9 +29,6 @@ import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.ValueTypeFactory;
 import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
-import org.hotrod.utils.identifiers.DataSetIdentifier;
-import org.hotrod.utils.identifiers.DbIdentifier;
-import org.hotrod.utils.identifiers.Identifier;
 import org.hotrod.utils.identifiers2.Id;
 import org.hotrod.utils.identifiers2.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -237,15 +234,14 @@ public class EnumTag extends AbstractEntityDAOTag {
     private static final long serialVersionUID = 1L;
 
     private JdbcColumn column;
+    private Id id;
     private ValueTypeManager<?> valueTypeManager;
 
-    public EnumColumn(final JdbcColumn column, final ValueTypeManager<?> valueTypeManager) {
+    public EnumColumn(final JdbcColumn column, final ValueTypeManager<?> valueTypeManager,
+        final DatabaseAdapter adapter) throws InvalidIdentifierException {
       this.column = column;
+      this.id = Id.fromSQL(this.column.getName(), adapter);
       this.valueTypeManager = valueTypeManager;
-    }
-
-    public JdbcColumn getColumn() {
-      return column;
     }
 
     public ValueTypeManager<?> getValueTypeManager() {
@@ -253,13 +249,17 @@ public class EnumTag extends AbstractEntityDAOTag {
     }
 
     public EnumProperty getProperty() {
-      Identifier id = new DbIdentifier(this.column.getName());
-      return new EnumProperty(this.valueTypeManager.getValueClassName(), id.getJavaMemberIdentifier());
+      return new EnumProperty(this.valueTypeManager.getValueClassName(), this.id.getJavaMemberName());
     }
+
+    public Id getId() {
+      return id;
+    }
+
   }
 
-  public void validateAgainstDatabase(final HotRodGenerator generator, final Connection conn)
-      throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final HotRodGenerator generator, final Connection conn,
+      final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
 
     // Validate the table existence
 
@@ -277,7 +277,14 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     for (JdbcColumn c : this.table.getColumns()) {
       ValueTypeManager<?> m = resolveValueTypeManager(c, generator.getAdapter());
-      this.extraColumns.put(c, new EnumColumn(c, m));
+      try {
+        this.extraColumns.put(c, new EnumColumn(c, m, adapter));
+      } catch (InvalidIdentifierException e) {
+        String msg = "Invalid column name '" + c.getName() + "' on table '" + this.table.getName()
+            + "'. Could not produce a valid identifier for it.";
+        throw new InvalidConfigurationFileException(this, //
+            msg, msg);
+      }
     }
 
     // Validate the single-column PK
@@ -365,21 +372,18 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     this.tableConstants = new ArrayList<EnumConstant>();
 
-    Identifier tableId = new DbIdentifier(this.name);
-
-    Identifier valueId = new DbIdentifier(this.valueColumn.getColumn().getName());
-    Identifier nameId = new DbIdentifier(this.nameColumn.getColumn().getName());
+    Id valueId = this.valueColumn.getId();
+    Id nameId = this.nameColumn.getId();
 
     ListWriter lw = new ListWriter(", ");
-    lw.add(valueId.getSQLIdentifier());
-    lw.add(nameId.getSQLIdentifier());
+    lw.add(valueId.getRenderedSQLName());
+    lw.add(nameId.getRenderedSQLName());
     for (EnumColumn ec : this.extraColumns.values()) {
-      Identifier id = new DbIdentifier(ec.getColumn().getName());
-      lw.add(id.getSQLIdentifier());
+      lw.add(ec.getId().getRenderedSQLName());
     }
 
-    String sql = "select " + lw.toString() + " from " + tableId.getSQLIdentifier() + " order by "
-        + valueId.getSQLIdentifier();
+    String sql = "select " + lw.toString() + " from " + this.id.getRenderedSQLName() + " order by "
+        + valueId.getRenderedSQLName();
 
     // log.info("SQL=" + sql);
 
@@ -454,6 +458,11 @@ public class EnumTag extends AbstractEntityDAOTag {
       throw new InvalidConfigurationFileException(this, //
           "Could not resolve a suitable Java type for the column '" + c.getName() + "'", //
           "Could not resolve a suitable Java type for the column '" + c.getName() + "' on table '" + this.name + "'.");
+    } catch (InvalidIdentifierException e) {
+      throw new InvalidConfigurationFileException(this, //
+          "Could not resolve a suitable indentifier for the column '" + c.getName() + "'", //
+          "Could not resolve a suitable indentifier for the column '" + c.getName() + "' on table '" + this.name
+              + "'.");
     }
 
     String valueType = type.getJavaClassName();

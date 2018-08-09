@@ -54,7 +54,6 @@ import org.hotrod.utils.ImportsRenderer;
 import org.hotrod.utils.JUtils;
 import org.hotrod.utils.ValueTypeFactory;
 import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
-import org.hotrod.utils.identifiers.Identifier;
 import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
@@ -409,11 +408,11 @@ public class ObjectDAO extends GeneratableObject {
     this.throwsCheckedException();
     println("{");
     for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
-      println("    if (" + cm.getIdentifier().getJavaMemberIdentifier() + " == null) return null;");
+      println("    if (" + cm.getId().getJavaMemberName() + " == null) return null;");
     }
     println("    " + this.vo.getClassName() + " pk = new " + this.vo.getClassName() + "();");
     for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
-      println("    pk." + cm.getIdentifier().getSetter() + "(" + cm.getIdentifier().getJavaMemberIdentifier() + ");");
+      println("    pk." + cm.getId().getJavaSetter() + "(" + cm.getId().getJavaMemberName() + ");");
     }
 
     preCheckedException();
@@ -602,12 +601,11 @@ public class ObjectDAO extends GeneratableObject {
         this.throwsCheckedException();
         println("{");
         for (ColumnMetadata cm : ui.getColumns()) {
-          println("    if (" + cm.getIdentifier().getJavaMemberIdentifier() + " == null) return null;");
+          println("    if (" + cm.getId().getJavaMemberName() + " == null) return null;");
         }
         println("    " + this.vo.getClassName() + " ui = new " + this.vo.getClassName() + "();");
         for (ColumnMetadata cm : ui.getColumns()) {
-          println(
-              "    ui." + cm.getIdentifier().getSetter() + "(" + cm.getIdentifier().getJavaMemberIdentifier() + ");");
+          println("    ui." + cm.getId().getJavaSetter() + "(" + cm.getId().getJavaMemberName() + ");");
         }
 
         preCheckedException();
@@ -969,7 +967,7 @@ public class ObjectDAO extends GeneratableObject {
       PropertyType loType = loCol.getType();
       PropertyType reType = reCol.getType();
       String param = GenUtils.convertPropertyType(loType.getJavaClassName(), reType.getJavaClassName(),
-          "vo." + loCol.getIdentifier().getJavaMemberIdentifier());
+          "vo." + loCol.getId().getJavaMemberName());
       lw.add(param);
     }
     return lw.toString();
@@ -1071,8 +1069,8 @@ public class ObjectDAO extends GeneratableObject {
             PropertyType loType = loCol.getType();
             PropertyType reType = reCol.getType();
             String param = GenUtils.convertPropertyType(loType.getJavaClassName(), reType.getJavaClassName(),
-                "vo." + loCol.getIdentifier().getJavaMemberIdentifier());
-            println("      example.set" + reCol.getIdentifier().getJavaClassIdentifier() + "(" + param + ");");
+                "vo." + loCol.getId().getJavaMemberName());
+            println("      example.set" + reCol.getId().getJavaClassName() + "(" + param + ");");
           }
 
           println("      return " + dao.getClassName() + ".selectByExample(sqlSession, example, orderBies);");
@@ -1217,7 +1215,7 @@ public class ObjectDAO extends GeneratableObject {
       ColumnMetadata cm = vcm.getColumnMetadata();
       String literalValue = renderNumericLiteral(cm.getType().getValueRange().getInitialValue(),
           cm.getType().getJavaClassName());
-      println("    vo." + cm.getIdentifier().getJavaMemberIdentifier() + " = " + literalValue + ";");
+      println("    vo." + cm.getId().getJavaMemberName() + " = " + literalValue + ";");
     }
 
     preCheckedException();
@@ -1287,7 +1285,7 @@ public class ObjectDAO extends GeneratableObject {
       println("    " + this.vo.getClassName() + " values = sqlSession.selectOne(id, vo);");
       println("    int rows = 1;");
       for (ColumnMetadata cm : this.metadata.getColumns()) {
-        String prop = cm.getIdentifier().getJavaMemberIdentifier();
+        String prop = cm.getId().getJavaMemberName();
         if (cm.getSequence() != null && integratesSequences
             || cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity() && integratesIdentities) {
           println("    vo." + prop + " = values." + prop + ";");
@@ -1307,7 +1305,7 @@ public class ObjectDAO extends GeneratableObject {
         + this.mapper.getFullMapperIdSequencesPreFetch() + "\");");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (cm.getSequence() != null) {
-        String prop = cm.getIdentifier().getJavaMemberIdentifier();
+        String prop = cm.getId().getJavaMemberName();
         println("    vo." + prop + " = sequences." + prop + ";");
       }
     }
@@ -1318,7 +1316,7 @@ public class ObjectDAO extends GeneratableObject {
         + this.mapper.getFullMapperIdIdentitiesPostFetch() + "\");");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity()) {
-        String prop = cm.getIdentifier().getJavaMemberIdentifier();
+        String prop = cm.getId().getJavaMemberName();
         println("    vo." + prop + " = identities." + prop + ";");
       }
     }
@@ -1430,7 +1428,7 @@ public class ObjectDAO extends GeneratableObject {
             + this.vo.getClassName() + " vo) ");
         printExceptions(useVersionControl);
         println("{");
-        println("    long currentVersion = vo." + cm.getIdentifier().getJavaMemberIdentifier() + ";");
+        println("    long currentVersion = vo." + cm.getId().getJavaMemberName() + ";");
 
         String minValue = renderNumericLiteral(range.getMinValue(), cm.getType().getJavaClassName());
         String maxValue = renderNumericLiteral(range.getMaxValue(), cm.getType().getJavaClassName());
@@ -1443,7 +1441,7 @@ public class ObjectDAO extends GeneratableObject {
             + this.metadata.getId().getCanonicalSQLName() + " with version \" + currentVersion");
         println("          + \" since it had already been updated by another process.\");");
         println("    }");
-        println("    vo." + cm.getIdentifier().getJavaMemberIdentifier() + " = (" + pt.getPrimitiveClassJavaType()
+        println("    vo." + cm.getId().getJavaMemberName() + " = (" + pt.getPrimitiveClassJavaType()
             + ") u.getNextVersionValue();");
         println("    return rows;");
       } else {
@@ -1453,7 +1451,7 @@ public class ObjectDAO extends GeneratableObject {
         println("{");
 
         for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
-          println("    if (vo." + cm.getIdentifier().getJavaMemberIdentifier() + " == null) return 0;");
+          println("    if (vo." + cm.getId().getJavaMemberName() + " == null) return 0;");
         }
 
         preCheckedException();
@@ -1627,8 +1625,7 @@ public class ObjectDAO extends GeneratableObject {
         println("    int rows = sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByPK() + "\", vo);");
         println("    if (rows != 1) {");
         println("      throw new StaleDataException(\"Could not delete row on table "
-            + this.metadata.getId().getCanonicalSQLName() + " with version \" + vo."
-            + cm.getIdentifier().getJavaMemberIdentifier());
+            + this.metadata.getId().getCanonicalSQLName() + " with version \" + vo." + cm.getId().getJavaMemberName());
         println("          + \" since it had already been updated or deleted by another process.\");");
         println("    }");
         println("    return rows;");
@@ -1640,7 +1637,7 @@ public class ObjectDAO extends GeneratableObject {
         println("{");
 
         for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
-          println("    if (vo." + cm.getIdentifier().getJavaMemberIdentifier() + " == null) return 0;");
+          println("    if (vo." + cm.getId().getJavaMemberName() + " == null) return 0;");
         }
 
         preCheckedException();
@@ -2029,9 +2026,9 @@ public class ObjectDAO extends GeneratableObject {
 
     ListWriter lw = new ListWriter(", //\n");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      String constantBase = cm.getIdentifier().getJavaConstantIdentifier();
+      String constantBase = cm.getId().getJavaConstantName();
       String ti = JUtils.escapeJavaString(this.metadata.renderSQLIdentifier());
-      String ci = JUtils.escapeJavaString(cm.renderSQLIdentifier());
+      String ci = JUtils.escapeJavaString(cm.getId().getRenderedSQLName());
       lw.add("    " + constantBase + "(\"" + ti + "\", \"" + ci + "\", true)");
       lw.add("    " + constantBase + "$DESC(\"" + ti + "\", \"" + ci + "\", false)");
       log.debug(
@@ -2177,8 +2174,7 @@ public class ObjectDAO extends GeneratableObject {
 
     println();
 
-    Identifier id = tag.getIdentifier();
-    String methodName = id.getJavaMemberIdentifier();
+    String methodName = tag.getId().getJavaMemberName();
 
     ListWriter pdef = new ListWriter(", ");
     ListWriter pcall = new ListWriter(", ");
@@ -2502,7 +2498,7 @@ public class ObjectDAO extends GeneratableObject {
   }
 
   public String getParamClassName(final QueryMethodTag u) {
-    return "Param" + u.getIdentifier().getJavaClassIdentifier();
+    return "Param" + u.getId().getJavaClassName();
   }
 
   public String getParamClassName(final SelectMethodMetadata sm) {
@@ -2510,7 +2506,7 @@ public class ObjectDAO extends GeneratableObject {
   }
 
   private String getTypeHandlerClassName(final ColumnMetadata cm) {
-    return cm.getIdentifier().getJavaClassIdentifier() + "TypeHandler";
+    return cm.getId().getJavaClassName() + "TypeHandler";
   }
 
   public String getTypeHandlerFullClassName(final ColumnMetadata cm) {
@@ -2529,7 +2525,7 @@ public class ObjectDAO extends GeneratableObject {
     }
     boolean added = false;
     if (thName == null) {
-      String base = sm.getMethod() + "_" + cm.getIdentifier().getJavaClassIdentifier() + "TypeHandler";
+      String base = sm.getMethod() + "_" + cm.getId().getJavaClassName() + "TypeHandler";
       thName = findNextAvailableThName(base);
       if (typeHandlers == null) {
         typeHandlers = new HashMap<ColumnMetadata, String>();
@@ -2566,7 +2562,7 @@ public class ObjectDAO extends GeneratableObject {
   public static String toParametersSignature(final KeyMetadata km) throws UnresolvableDataTypeException {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : km.getColumns()) {
-      lw.add("final " + cm.getType().getJavaClassName() + " " + cm.getIdentifier().getJavaMemberIdentifier());
+      lw.add("final " + cm.getType().getJavaClassName() + " " + cm.getId().getJavaMemberName());
     }
     return lw.toString();
   }
@@ -2574,7 +2570,7 @@ public class ObjectDAO extends GeneratableObject {
   public static String toParametersCall(final KeyMetadata km) {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : km.getColumns()) {
-      lw.add(cm.getIdentifier().getJavaMemberIdentifier());
+      lw.add(cm.getId().getJavaMemberName());
     }
     return lw.toString();
   }

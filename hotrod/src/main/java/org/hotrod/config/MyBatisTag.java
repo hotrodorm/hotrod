@@ -148,7 +148,7 @@ public class MyBatisTag extends AbstractGeneratorTag {
   @Override
   public HotRodGenerator instantiateGenerator(final CachedMetadata cachedMetadata, DatabaseLocation loc,
       HotRodConfigTag config, DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter)
-      throws UncontrolledException, ControlledException {
+      throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
     return new MyBatisGenerator(cachedMetadata, loc, config, displayMode, incrementalMode, adapter);
   }
 

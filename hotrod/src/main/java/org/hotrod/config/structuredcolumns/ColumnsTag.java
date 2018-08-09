@@ -279,7 +279,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   @Override
   public void gatherMetadataPhase2(final Connection conn2) throws InvalidSQLException, UncontrolledException,
-      UnresolvableDataTypeException, ControlledException, InvalidConfigurationFileException {
+      UnresolvableDataTypeException, InvalidConfigurationFileException {
 
     // Retrieve
 

@@ -6,7 +6,6 @@ import java.util.List;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.utils.identifiers.Identifier;
 import org.hotrod.utils.identifiers2.ObjectId;
 
 public interface DataSetMetadata extends Serializable {

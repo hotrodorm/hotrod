@@ -133,7 +133,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   }
 
   public void gatherSelectsMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
-      throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
+      throws UncontrolledException, InvalidConfigurationFileException {
     for (SelectMethodMetadata sm : this.selectsMetadata) {
       log.debug("*** - executor method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());
       if (!sm.metadataComplete()) {

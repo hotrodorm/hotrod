@@ -21,7 +21,6 @@ import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
@@ -40,7 +39,6 @@ import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
-import org.hotrod.utils.identifiers.Identifier;
 import org.hotrod.utils.identifiers2.Id;
 import org.hotrod.utils.identifiers2.ObjectId;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -158,7 +156,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   }
 
   public void gatherMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
-      throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
+      throws UncontrolledException, InvalidConfigurationFileException {
 
     if (!this.structured) {
 
@@ -171,17 +169,20 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         throw new UncontrolledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
             + "> at " + this.tag.getSourceLocation().render(), e);
       } catch (UnresolvableDataTypeException e) {
-        throw new ControlledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + "> at "
-            + this.tag.getSourceLocation().render() + ": could not find suitable Java type for column '"
-            + e.getColumnName() + "' ");
+        String msg = "Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
+            + ">: could not find suitable Java type for column '" + e.getColumnName() + "' ";
+        throw new InvalidConfigurationFileException(this.tag, msg, msg);
+      } catch (InvalidIdentifierException e) {
+        String msg = "Invalid retrieved column name: " + e.getMessage();
+        throw new InvalidConfigurationFileException(this.tag, msg, msg);
       }
 
       List<VOProperty> properties = new ArrayList<VOProperty>();
 
       for (ColumnMetadata cm : this.nonStructuredColumns) {
         StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false, this.tag);
-        properties.add(new VOProperty(m.getIdentifier().getJavaMemberIdentifier(), m,
-            EnclosingTagType.NON_STRUCTURED_SELECT, this.tag));
+        properties
+            .add(new VOProperty(m.getId().getJavaMemberName(), m, EnclosingTagType.NON_STRUCTURED_SELECT, this.tag));
       }
 
       List<VOMember> associations = new ArrayList<VOMember>();
@@ -224,15 +225,15 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         this.structuredColumns.registerVOs(this.classPackage, voRegistry);
 
       } catch (InvalidSQLException e) {
-        throw new ControlledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + "> at "
-            + this.tag.getSourceLocation().render() + "; could not create temporary SQL view for it.\n" + "[ "
-            + e.getMessage() + " ]\n" + "* Do all resulting columns have different and valid names?\n"
+        String msg = "Could not create temporary SQL view to retrieve metadata.\n" + "[ " + e.getMessage() + " ]\n"
+            + "* Do all resulting columns have different and valid names?\n"
             + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
-            + "\n--- end SQL ---");
+            + "\n--- end SQL ---";
+        throw new InvalidConfigurationFileException(this.tag, msg, msg);
       } catch (UnresolvableDataTypeException e) {
-        throw new ControlledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName() + "> at "
-            + this.tag.getSourceLocation().render() + ": could not find suitable Java type for column '"
-            + e.getColumnName() + "' ");
+        String msg = "Could not retrieve metadata: could not find suitable Java type for column '" + e.getColumnName()
+            + "' ";
+        throw new InvalidConfigurationFileException(this.tag, msg, msg);
       } catch (VOAlreadyExistsException e) {
         throw new InvalidConfigurationFileException(e.getTag(), //
             "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
@@ -344,7 +345,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     return reassembled;
   }
 
-  public void retrieveFlatColumnsMetadata(final Connection conn2) throws SQLException, UnresolvableDataTypeException {
+  public void retrieveFlatColumnsMetadata(final Connection conn2)
+      throws SQLException, UnresolvableDataTypeException, InvalidIdentifierException {
 
     // 1. Retrieve the temp view column's metadata
 
@@ -581,7 +583,13 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         } else { // solo VO from a <columns> tag
           List<VOMember> associations = new ArrayList<VOMember>();
           for (VOMetadata vo : sm.getStructuredColumns().getVOs()) {
-            VOMember m = new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName(), vo.getTag());
+            VOMember m;
+            try {
+              m = new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName(), vo.getTag());
+            } catch (InvalidIdentifierException e) {
+              String msg = "Invalid property '" + vo.getProperty() + "':" + e.getMessage();
+              throw new InvalidConfigurationFileException(tag, msg, msg);
+            }
             associations.add(m);
           }
           this.soloVO = scols.getSoloVOClass();
@@ -593,8 +601,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         List<VOProperty> properties = new ArrayList<VOProperty>();
         for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
           StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false, null);
-          VOProperty p = new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), m,
-              EnclosingTagType.NON_STRUCTURED_SELECT, sm.tag);
+          VOProperty p = new VOProperty(cm.getId().getJavaMemberName(), m, EnclosingTagType.NON_STRUCTURED_SELECT,
+              sm.tag);
           properties.add(p);
         }
         List<VOMember> associations = new ArrayList<VOMember>();

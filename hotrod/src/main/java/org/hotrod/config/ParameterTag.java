@@ -5,10 +5,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.Compare;
-import org.hotrod.utils.identifiers.DbIdentifier;
-import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.Id;
 
 @XmlRootElement(name = "parameter")
 public class ParameterTag extends AbstractConfigurationTag {
@@ -26,6 +26,7 @@ public class ParameterTag extends AbstractConfigurationTag {
   private String name = null;
   private String javaType = null;
   private String jdbcType = null;
+  private Id id = null;
 
   // Constructor
 
@@ -73,6 +74,13 @@ public class ParameterTag extends AbstractConfigurationTag {
               + "': must start with a lower case letter and continue with letters, digits, and/or underscores", //
           "Invalid Java parameter name '" + this.name
               + "'. The 'name' attribute must start with a lower case letter and continue with letters, digits, and/or underscores.");
+    }
+
+    try {
+      this.id = Id.fromJavaMember(this.name);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid name '" + this.name + "' for a Java parameter: " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
     }
 
     // java-type
@@ -133,8 +141,8 @@ public class ParameterTag extends AbstractConfigurationTag {
     return jdbcType;
   }
 
-  public Identifier getIdentifier() {
-    return new DbIdentifier(this.name);
+  public Id getId() {
+    return this.id;
   }
 
   // Merging logic

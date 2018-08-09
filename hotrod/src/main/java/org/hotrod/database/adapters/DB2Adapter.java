@@ -17,7 +17,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
-import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.Id;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class DB2Adapter extends DatabaseAdapter {
@@ -141,19 +141,19 @@ public class DB2Adapter extends DatabaseAdapter {
       throws SequencesNotSupportedException {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : sequenceGeneratedColumns) {
-      lw.add("next value for " + cm.renderSQLSequence() + " as " + cm.getIdentifier().getJavaMemberIdentifier());
+      lw.add("next value for " + cm.getId().getRenderedSQLName() + " as " + cm.getId().getRenderedSQLName());
     }
     return "select " + lw.toString() + " from sysibm.sysdummy1";
   }
 
   @Override
-  public String renderSelectSequence(final Identifier sequence) throws SequencesNotSupportedException {
-    return "select next value for " + sequence.getSQLIdentifier() + " from sysibm.sysdummy1";
+  public String renderSelectSequence(final Id sequence) throws SequencesNotSupportedException {
+    return "select next value for " + sequence.getRenderedSQLName() + " from sysibm.sysdummy1";
   }
 
   @Override
   public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
-    return "next value for " + cm.renderSQLSequence();
+    return "next value for " + cm.getId().getRenderedSQLName();
   }
 
   @Override
@@ -164,7 +164,7 @@ public class DB2Adapter extends DatabaseAdapter {
 
   @Override
   public String renderAliasedSelectColumn(final StructuredColumnMetadata cm) {
-    return cm.renderSQLIdentifier() + " as " + this.renderSQLName(cm.getColumnAlias());
+    return cm.getId().getRenderedSQLName() + " as " + this.renderSQLName(cm.getColumnAlias());
   }
 
   @Override
@@ -232,7 +232,7 @@ public class DB2Adapter extends DatabaseAdapter {
 
   @Override
   public String renderForCaseInsensitiveOrderBy(final ColumnMetadata cm) {
-    return "lcase(" + cm.renderSQLIdentifier() + ")";
+    return "lcase(" + cm.getId().getRenderedSQLName() + ")";
   }
 
   @Override

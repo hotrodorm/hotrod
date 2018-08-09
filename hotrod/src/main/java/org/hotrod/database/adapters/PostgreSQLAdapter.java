@@ -18,7 +18,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
-import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.Id;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class PostgreSQLAdapter extends DatabaseAdapter {
@@ -215,19 +215,19 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
       throws SequencesNotSupportedException {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : sequenceGeneratedColumns) {
-      lw.add("nextval('" + cm.renderSQLSequence() + "') as " + cm.getIdentifier().getJavaMemberIdentifier());
+      lw.add("nextval('" + cm.getId().getRenderedSQLName() + "') as " + cm.getId().getRenderedSQLName());
     }
     return "select " + lw.toString();
   }
 
   @Override
-  public String renderSelectSequence(final Identifier sequence) throws SequencesNotSupportedException {
-    return "select nextval('" + sequence.getSQLIdentifier() + "')";
+  public String renderSelectSequence(final Id sequence) throws SequencesNotSupportedException {
+    return "select nextval('" + sequence.getCanonicalSQLName() + "')";
   }
 
   @Override
   public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
-    return "nextval('" + cm.renderSQLSequence() + "')";
+    return "nextval('" + cm.getId().getCanonicalSQLName() + "')";
   }
 
   @Override
@@ -236,14 +236,14 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : identityGeneratedColumns) {
       lw.add("select currval(pg_get_serial_sequence('" + cm.getDataSet().getId().getCanonicalSQLName() + "', '"
-          + cm.getIdentifier().getSQLIdentifier() + "'))");
+          + cm.getId().getCanonicalSQLName() + "'))");
     }
     return "select " + lw.toString();
   }
 
   @Override
   public String renderAliasedSelectColumn(final StructuredColumnMetadata cm) {
-    return cm.renderSQLIdentifier() + " as " + this.renderSQLName(cm.getColumnAlias());
+    return cm.getId().getRenderedSQLName() + " as " + this.renderSQLName(cm.getColumnAlias());
   }
 
   @Override
@@ -319,7 +319,7 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
 
   @Override
   public String renderForCaseInsensitiveOrderBy(final ColumnMetadata cm) {
-    return "lower(" + cm.renderSQLIdentifier() + ")";
+    return "lower(" + cm.getId().getRenderedSQLName() + ")";
   }
 
   @Override

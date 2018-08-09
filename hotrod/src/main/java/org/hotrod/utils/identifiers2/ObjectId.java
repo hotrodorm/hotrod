@@ -43,7 +43,17 @@ public class ObjectId implements Comparable<ObjectId> {
   }
 
   public String getRenderedSQLName() {
-    return this.object.getRenderedSQLName();
+    StringBuilder sb = new StringBuilder();
+    if (this.catalog != null) {
+      sb.append(this.catalog.getRenderedSQLName());
+      sb.append(".");
+    }
+    if (this.schema != null) {
+      sb.append(this.schema.getRenderedSQLName());
+      sb.append(".");
+    }
+    sb.append(this.object.getRenderedSQLName());
+    return sb.toString();
   }
 
   public boolean wasJavaNameSpecified() {

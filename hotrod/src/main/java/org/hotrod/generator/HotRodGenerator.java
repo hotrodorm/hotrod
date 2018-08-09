@@ -99,7 +99,7 @@ public abstract class HotRodGenerator {
 
   public HotRodGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation dloc, final HotRodConfigTag config,
       final DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter)
-      throws UncontrolledException, ControlledException {
+      throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
 
     log.debug(">>> HG 1 cachedMetadata=" + cachedMetadata);
     log.debug(">>> HG 1 cachedMetadata.getSelectMetadataCache()=" + cachedMetadata.getSelectMetadataCache());
@@ -492,7 +492,7 @@ public abstract class HotRodGenerator {
       // TODO: make sure the cache includes enum values from table rows.
       // if (retrieveFreshDatabaseObjects) {
       try {
-        this.config.validateAgainstDatabase(this, conn);
+        this.config.validateAgainstDatabase(this, conn, adapter);
       } catch (InvalidConfigurationFileException e) {
         throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
       }
@@ -763,8 +763,7 @@ public abstract class HotRodGenerator {
           }
         } else {
           for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
-            display(
-                "   - " + cm.getIdentifier().getJavaMemberIdentifier() + " (" + cm.getType().getJavaClassName() + ")");
+            display("   - " + cm.getId().getJavaMemberName() + " (" + cm.getType().getJavaClassName() + ")");
           }
         }
         display("--- end select method ---");
@@ -775,7 +774,7 @@ public abstract class HotRodGenerator {
   private void logExpressions(final List<StructuredColumnMetadata> expressions, final int level) {
     String filler = SUtils.getFiller(' ', level);
     for (StructuredColumnMetadata cm : expressions) {
-      display("   " + filler + "+ " + cm.getIdentifier().getJavaMemberIdentifier() + " [expr] <is "
+      display("   " + filler + "+ " + cm.getId().getJavaMemberName() + " [expr] <is "
           + (cm.isId() ? "" : "not ") + "ID> (" + (cm.getConverter() != null
               ? "<converted-to> " + cm.getConverter().getJavaType() : cm.getType().getJavaClassName())
           + ") --> " + cm.getColumnAlias());
@@ -845,7 +844,7 @@ public abstract class HotRodGenerator {
   private void logColumns(final List<StructuredColumnMetadata> columns, final int level) {
     String indent = SUtils.getFiller(' ', level);
     for (StructuredColumnMetadata cm : columns) {
-      display("   " + indent + "- " + cm.getIdentifier().getJavaMemberIdentifier()
+      display("   " + indent + "- " + cm.getId().getJavaMemberName()
           + (cm.isId() ? " <<id>>" : "") + " (" + (cm.getConverter() != null
               ? "<converted-to> " + cm.getConverter().getJavaType() : cm.getType().getJavaClassName())
           + ") --> " + cm.getColumnAlias());

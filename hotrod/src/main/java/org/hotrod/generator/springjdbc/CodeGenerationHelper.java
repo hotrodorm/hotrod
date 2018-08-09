@@ -17,7 +17,7 @@ public class CodeGenerationHelper {
   public static String toParametersSignature(final KeyMetadata km) throws UnresolvableDataTypeException {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : km.getColumns()) {
-      lw.add("final " + cm.getType().getJavaClassName() + " " + cm.getIdentifier().getJavaMemberIdentifier());
+      lw.add("final " + cm.getType().getJavaClassName() + " " + cm.getId().getJavaMemberName());
     }
     return lw.toString();
   }
@@ -26,7 +26,7 @@ public class CodeGenerationHelper {
     ListWriter lw = new ListWriter(", ");
     String q = (useQuotationMarks ? "\"" : "");
     for (ColumnMetadata cm : km.getColumns()) {
-      lw.add(q + cm.getIdentifier().getJavaMemberIdentifier() + q);
+      lw.add(q + cm.getId().getJavaMemberName() + q);
     }
     return lw.toString();
   }

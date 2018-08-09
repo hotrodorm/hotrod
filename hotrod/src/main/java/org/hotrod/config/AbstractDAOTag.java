@@ -99,7 +99,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
     Set<String> seqNames = new HashSet<String>();
 
     for (SequenceMethodTag s : this.sequences) {
-      s.validate();
+      s.validate(daosTag, config, fragmentConfig);
       super.addChild(s);
       if (seqNames.contains(s.getName())) {
         throw new InvalidConfigurationFileException(this, //

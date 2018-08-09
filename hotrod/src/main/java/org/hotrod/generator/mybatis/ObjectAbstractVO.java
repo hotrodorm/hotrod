@@ -139,7 +139,7 @@ public class ObjectAbstractVO extends GeneratableObject {
     println();
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
-      println("  protected " + javaType + " " + cm.getIdentifier().getJavaMemberIdentifier() + " = null;"
+      println("  protected " + javaType + " " + cm.getId().getJavaMemberName() + " = null;"
           + (cm.getType().isLOB() ? " // it's a LOB type" : ""));
     }
     println();
@@ -156,14 +156,14 @@ public class ObjectAbstractVO extends GeneratableObject {
 
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
-      String m = cm.getIdentifier().getJavaMemberIdentifier();
+      String m = cm.getId().getJavaMemberName();
 
-      println("  public final " + javaType + " " + cm.getIdentifier().getGetter() + "() {");
+      println("  public final " + javaType + " " + cm.getId().getJavaGetter() + "() {");
       println("    return this." + m + ";");
       println("  }");
       println();
 
-      String setter = cm.getIdentifier().getSetter();
+      String setter = cm.getId().getJavaSetter();
       writeSetter(cm, javaType, m, setter);
 
     }
@@ -174,7 +174,7 @@ public class ObjectAbstractVO extends GeneratableObject {
       throws IOException {
     println("  public final void " + setter + "(final " + javaType + " " + m + ") {");
     println("    this." + m + " = " + m + ";");
-    String name = cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
+    String name = cm.getId().getJavaMemberName() + "WasSet";
     println("    this.propertiesChangeLog." + name + " = true;");
     println("  }");
     println();
@@ -198,7 +198,7 @@ public class ObjectAbstractVO extends GeneratableObject {
       String suffix = ");";
       ListWriter lw = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
       for (ColumnMetadata cm : this.metadata.getColumns()) {
-        String prop = cm.getIdentifier().getJavaMemberIdentifier();
+        String prop = cm.getId().getJavaMemberName();
         lw.add("\"- " + prop + "=\" + this." + prop);
       }
       println(lw.toString());
@@ -214,7 +214,7 @@ public class ObjectAbstractVO extends GeneratableObject {
       String suffix = ");";
       ListWriter lw = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
       for (ColumnMetadata cm : this.metadata.getColumns()) {
-        String prop = cm.getIdentifier().getJavaMemberIdentifier();
+        String prop = cm.getId().getJavaMemberName();
         lw.add("\"" + prop + "=\" + this." + prop);
       }
       println(lw.toString());
@@ -253,7 +253,7 @@ public class ObjectAbstractVO extends GeneratableObject {
     println("  public class PropertiesChangeLog {");
 
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      String name = cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
+      String name = cm.getId().getJavaMemberName() + "WasSet";
       println("    public boolean " + name + " = false;");
     }
 

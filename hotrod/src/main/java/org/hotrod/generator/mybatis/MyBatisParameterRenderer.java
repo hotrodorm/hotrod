@@ -2,7 +2,6 @@ package org.hotrod.generator.mybatis;
 
 import org.hotrod.config.SQLParameter;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.utils.identifiers.JavaIdentifier;
 
 public class MyBatisParameterRenderer implements ParameterRenderer {
 
@@ -16,8 +15,7 @@ public class MyBatisParameterRenderer implements ParameterRenderer {
    */
   @Override
   public String render(final SQLParameter parameter) {
-    JavaIdentifier id = new JavaIdentifier(parameter.getName(), parameter.getJavaType());
-    return "#{" + id.getJavaMemberIdentifier() + ",jdbcType=" + parameter.getJdbcType() + "}";
+    return "#{" + parameter.getId().getJavaMemberName() + ",jdbcType=" + parameter.getJdbcType() + "}";
   }
 
 }

@@ -18,7 +18,6 @@ import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
-import org.hotrod.utils.identifiers.DataSetIdentifier;
 import org.hotrod.utils.identifiers2.Id;
 import org.hotrod.utils.identifiers2.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;

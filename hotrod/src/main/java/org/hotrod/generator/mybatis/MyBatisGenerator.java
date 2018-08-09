@@ -13,6 +13,7 @@ import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.DAOType;
@@ -49,7 +50,7 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
 
   public MyBatisGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc, final HotRodConfigTag config,
       final DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter)
-      throws UncontrolledException, ControlledException {
+      throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
     super(cachedMetadata, loc, config, displayMode, incrementalMode, adapter);
   }
 

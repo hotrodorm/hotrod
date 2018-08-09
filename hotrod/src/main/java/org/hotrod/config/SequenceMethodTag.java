@@ -7,8 +7,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.Compare;
-import org.hotrod.utils.identifiers.DbIdentifier;
-import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.Id;
 
 @XmlRootElement(name = "sequence")
 public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
@@ -61,7 +60,10 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
 
   // Behavior
 
-  public void validate() throws InvalidConfigurationFileException {
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
+
+    super.validate(daosTag, config, fragmentConfig);
 
     // name
 
@@ -71,38 +73,20 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
           "Attribute 'name' of tag <" + TAG_NAME + "> cannot be empty. " + "You must specify a sequence name.");
     }
 
-    // method
-
-    if (this.method == null) {
-      this.method = METHOD_PREFIX + this.getIdentifier().getJavaClassIdentifier();
-    } else {
-      if (!this.method.matches(Patterns.VALID_JAVA_METHOD)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Attribute 'method' of tag <" + TAG_NAME + "> specifies '" + this.method
-                + "' but must specify a valid java method name. "
-                + "Valid method names must start with a lowercase letter, "
-                + "and continue with letters, digits, dollarsign, and/or underscores", //
-            "Attribute 'method' of tag <" + TAG_NAME + "> specifies '" + this.method
-                + "' but must specify a valid java method name. "
-                + "Valid method names must start with a lowercase letter, "
-                + "and continue with letters, digits, dollarsign, and/or underscores.");
-      }
-    }
-
   }
 
   // Getters
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public String getMethod() {
-    return method;
+    return super.method;
   }
 
-  public Identifier getIdentifier() {
-    return new DbIdentifier(this.name);
+  public Id getIdentifier() {
+    return super.id;
   }
 
   // Merging logic

@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hotrod.config.ColumnTag;
-import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
@@ -19,7 +18,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.JdbcTypes.JDBCType;
-import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.Id;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
 
@@ -159,7 +158,7 @@ public abstract class DatabaseAdapter implements Serializable {
   public abstract String renderSequencesPrefetch(final List<ColumnMetadata> sequenceGeneratedColumns)
       throws SequencesNotSupportedException;
 
-  public abstract String renderSelectSequence(final Identifier sequence) throws SequencesNotSupportedException;
+  public abstract String renderSelectSequence(final Id sequence) throws SequencesNotSupportedException;
 
   public abstract String renderInlineSequenceOnInsert(final ColumnMetadata cm) throws SequencesNotSupportedException;
 

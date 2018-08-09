@@ -12,7 +12,7 @@ import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
-import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.Id;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class MariaDBAdapter extends DatabaseAdapter {
@@ -71,7 +71,7 @@ public class MariaDBAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderSelectSequence(final Identifier sequence) throws SequencesNotSupportedException {
+  public String renderSelectSequence(final Id sequence) throws SequencesNotSupportedException {
     return this.mysqlAdaper.renderSelectSequence(sequence);
   }
 

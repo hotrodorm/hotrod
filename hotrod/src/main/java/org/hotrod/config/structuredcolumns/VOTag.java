@@ -26,7 +26,6 @@ import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
@@ -541,7 +540,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   @Override
   public void gatherMetadataPhase2(final Connection conn2) throws InvalidSQLException, UncontrolledException,
-      UnresolvableDataTypeException, ControlledException, InvalidConfigurationFileException {
+      UnresolvableDataTypeException, InvalidConfigurationFileException {
 
     // log.info("===========");
     // log.info("=========== VOTag " + this.table);
@@ -669,7 +668,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   private List<StructuredColumnMetadata> retrieveSpecificColumns(final Connection conn2, final TableDataSetMetadata dm,
       final boolean requiresIds) throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
-      ControlledException, InvalidConfigurationFileException {
+      InvalidConfigurationFileException {
 
     Map<String, ColumnMetadata> baseColumnsByName = new HashMap<String, ColumnMetadata>();
     for (ColumnMetadata cm : dm.getColumns()) {
@@ -721,12 +720,12 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     for (StructuredColumnMetadata r : retrievedColumns) {
       ColumnMetadata baseColumn = baseColumnsByName.get(r.getColumnName());
       if (baseColumn == null) {
-        throw new ControlledException(
-            "Invalid column '" + r.getColumnName() + "' in the body of the <" + this.getTagName() + "> tag at "
-                + super.getSourceLocation().render() + ".\n" + "There's no column '" + r.getColumnName() + "' in the "
-                + (this.tableMetadata != null ? "table" : "view") + " '" + (this.tableMetadata != null
-                    ? this.tableMetadata.renderSQLIdentifier() : this.viewMetadata.renderSQLIdentifier())
-                + "'.");
+        String msg = "Invalid column '" + r.getColumnName() + "' in the body of the <" + this.getTagName() + "> tag at "
+            + super.getSourceLocation().render() + ".\n" + "There's no column '" + r.getColumnName() + "' in the "
+            + (this.tableMetadata != null ? "table" : "view") + " '" + (this.tableMetadata != null
+                ? this.tableMetadata.renderSQLIdentifier() : this.viewMetadata.renderSQLIdentifier())
+            + "'.";
+        throw new InvalidConfigurationFileException(dm.getDaoTag(), msg, msg);
       }
       boolean isId = this.idNames.isEmpty() ? baseColumn.belongsToPK() : columnIsId(baseColumn);
       if (isId) {
@@ -934,11 +933,11 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       ListWriter w = new ListWriter(",\n  ");
       if (this.tableMetadata != null) {
         for (ColumnMetadata cm : this.tableMetadata.getColumns()) {
-          w.add(cm.renderSQLIdentifier());
+          w.add(cm.getId().getRenderedSQLName());
         }
       } else {
         for (ColumnMetadata cm : this.viewMetadata.getColumns()) {
-          w.add(cm.renderSQLIdentifier());
+          w.add(cm.getId().getRenderedSQLName());
         }
       }
       return w.toString();

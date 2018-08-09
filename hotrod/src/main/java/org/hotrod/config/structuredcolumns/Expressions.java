@@ -18,6 +18,7 @@ import org.hotrod.config.SelectMethodTag;
 import org.hotrod.database.DatabaseAdapter.UnescapedSQLCase;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
@@ -111,7 +112,7 @@ public class Expressions implements ColumnsProvider, Serializable {
 
   @Override
   public void gatherMetadataPhase2(final Connection conn2) throws InvalidSQLException, UncontrolledException,
-      UnresolvableDataTypeException, ControlledException, InvalidConfigurationFileException {
+      UnresolvableDataTypeException, InvalidConfigurationFileException {
     log.debug("this.columnsRetriever=" + this.columnsRetriever);
     if (this.columnsRetriever != null) {
       List<StructuredColumnMetadata> cms = this.columnsRetriever.retrieve(conn2);
@@ -128,7 +129,12 @@ public class Expressions implements ColumnsProvider, Serializable {
           ct.setConverterTag(tag.getConverterTag());
         }
         log.debug("******** java-name=" + ct.getJavaName() + " java-type=" + ct.getJavaType());
-        cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag);
+        try {
+          cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag, this.generator.getAdapter());
+        } catch (InvalidIdentifierException e) {
+          String msg = "Invalid name for column '" + cm.getColumnName() + tag.getClassName() + "': " + e.getMessage();
+          throw new InvalidConfigurationFileException(tag, msg, msg);
+        }
         cm.setId(tag.isId());
         cm.setFormula(tag.getBody());
         tag.setMetadata(cm);

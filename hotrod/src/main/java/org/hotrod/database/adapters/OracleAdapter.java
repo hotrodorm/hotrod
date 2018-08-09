@@ -18,7 +18,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.JdbcTypes.JDBCType;
-import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.Id;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class OracleAdapter extends DatabaseAdapter {
@@ -209,19 +209,19 @@ public class OracleAdapter extends DatabaseAdapter {
       throws SequencesNotSupportedException {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : sequenceGeneratedColumns) {
-      lw.add(cm.renderSQLSequence() + ".nextval as " + cm.getIdentifier().getJavaMemberIdentifier());
+      lw.add(cm.getId().getRenderedSQLName() + ".nextval as " + cm.getId().getRenderedSQLName());
     }
     return "select " + lw.toString() + " from dual";
   }
 
   @Override
-  public String renderSelectSequence(final Identifier sequence) throws SequencesNotSupportedException {
-    return "select " + sequence.getSQLIdentifier() + ".nextval from dual";
+  public String renderSelectSequence(final Id sequence) throws SequencesNotSupportedException {
+    return "select " + sequence.getRenderedSQLName() + ".nextval from dual";
   }
 
   @Override
   public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
-    return cm.renderSQLSequence() + ".nextval";
+    return cm.getId().getRenderedSQLName() + ".nextval";
   }
 
   @Override
@@ -232,7 +232,7 @@ public class OracleAdapter extends DatabaseAdapter {
 
   @Override
   public String renderAliasedSelectColumn(final StructuredColumnMetadata cm) {
-    return cm.renderSQLIdentifier() + " as " + this.renderSQLName(cm.getColumnAlias());
+    return cm.getId().getRenderedSQLName() + " as " + this.renderSQLName(cm.getColumnAlias());
   }
 
   @Override
@@ -291,7 +291,7 @@ public class OracleAdapter extends DatabaseAdapter {
 
   @Override
   public String renderForCaseInsensitiveOrderBy(final ColumnMetadata cm) {
-    return "lower(" + cm.renderSQLIdentifier() + ")";
+    return "lower(" + cm.getId().getRenderedSQLName() + ")";
   }
 
   // Helpers

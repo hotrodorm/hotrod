@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hotrod.config.structuredcolumns.ColumnsTag;
 import org.hotrod.config.structuredcolumns.Expressions;
+import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.metadata.VOMetadata.DuplicatePropertyNameException;
 import org.hotrod.metadata.VOMetadata.VOMember;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
@@ -47,7 +49,7 @@ public class StructuredColumnsMetadata implements Serializable {
   }
 
   public void registerVOs(final ClassPackage classPackage, final VORegistry voRegistry)
-      throws VOAlreadyExistsException, StructuredVOAlreadyExistsException, DuplicatePropertyNameException {
+      throws VOAlreadyExistsException, StructuredVOAlreadyExistsException, DuplicatePropertyNameException, InvalidConfigurationFileException {
 
     List<VOProperty> properties = new ArrayList<VOProperty>();
     log.debug("this.vos.size()=" + this.vos.size());
@@ -55,15 +57,19 @@ public class StructuredColumnsMetadata implements Serializable {
     // Expressions properties
 
     for (StructuredColumnMetadata cm : this.expressions.getMetadata()) {
-      properties.add(
-          new VOProperty(cm.getIdentifier().getJavaMemberIdentifier(), cm, EnclosingTagType.EXPRESSIONS, cm.getTag()));
+      properties.add(new VOProperty(cm.getId().getJavaMemberName(), cm, EnclosingTagType.EXPRESSIONS, cm.getTag()));
     }
 
     if (this.isSoloVO) { // solo VO
 
       List<VOMember> associations = new ArrayList<VOMember>();
       for (VOMetadata vo : this.vos) {
-        associations.add(new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName(), vo.getTag()));
+        try {
+          associations.add(new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName(), vo.getTag()));
+        } catch (InvalidIdentifierException e) {
+          String msg = "Invalid property name '" + vo.getProperty() + "': " + e.getMessage();
+          throw new InvalidConfigurationFileException(this.tag, msg, msg);
+        }
       }
 
       List<VOMember> collections = new ArrayList<VOMember>();

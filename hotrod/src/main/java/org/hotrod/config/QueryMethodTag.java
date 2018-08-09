@@ -25,8 +25,7 @@ import org.hotrod.config.dynamicsql.WhereTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.utils.Compare;
-import org.hotrod.utils.identifiers.DbIdentifier;
-import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.Id;
 
 @XmlRootElement(name = "query")
 public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
@@ -96,21 +95,7 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
 
-    // method
-
-    if (this.method == null) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'method' cannot be empty", //
-          "Attribute 'method' of tag <" + getTagName() + "> cannot be empty. " + "Must specify a unique name.");
-    } else if (!this.method.matches(Patterns.VALID_JAVA_METHOD)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid method name '" + this.method + "': must start with a lowercase letter, "
-              + "and continue with letters, digits, dollarsign, and/or underscores", //
-          "Attribute 'method' of tag <" + super.getTagName() + "> specifies '" + this.method
-              + "' but must specify a valid java method name. "
-              + "Valid method names must start with a lowercase letter, "
-              + "and continue with letters, digits, dollarsign, and/or underscores.");
-    }
+    super.validate(daosTag, config, fragmentConfig);
 
     // content text, parameters, dynamic SQL tags
 
@@ -152,11 +137,11 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
 
   @Override
   public String getMethod() {
-    return method;
+    return super.method;
   }
 
-  public Identifier getIdentifier() {
-    return new DbIdentifier("a", this.method);
+  public Id getId() {
+    return super.id;
   }
 
   // Rendering

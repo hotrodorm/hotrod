@@ -20,7 +20,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.JdbcTypes.JDBCType;
-import org.hotrod.utils.identifiers.Identifier;
+import org.hotrod.utils.identifiers2.Id;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class SQLServerAdapter extends DatabaseAdapter {
@@ -185,7 +185,7 @@ public class SQLServerAdapter extends DatabaseAdapter {
 
   @Override
   public String renderInsertQueryColumn(final ColumnMetadata cm) {
-    return "inserted." + cm.renderSQLIdentifier() + " as " + cm.getIdentifier().getJavaMemberIdentifier();
+    return "inserted." + cm.getId().getRenderedSQLName() + " as " + cm.getId().getJavaMemberName();
   }
 
   @Override
@@ -193,14 +193,14 @@ public class SQLServerAdapter extends DatabaseAdapter {
       throws SequencesNotSupportedException {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : sequenceGeneratedColumns) {
-      lw.add("next value for " + cm.renderSQLSequence() + " as " + cm.getIdentifier().getJavaMemberIdentifier());
+      lw.add("next value for " + cm.renderSQLSequence() + " as " + cm.getId().getJavaMemberName());
     }
     return "select " + lw.toString();
   }
 
   @Override
-  public String renderSelectSequence(final Identifier sequence) throws SequencesNotSupportedException {
-    return "select next value for " + sequence.getSQLIdentifier();
+  public String renderSelectSequence(final Id sequence) throws SequencesNotSupportedException {
+    return "select next value for " + sequence.getRenderedSQLName();
   }
 
   @Override
@@ -216,7 +216,7 @@ public class SQLServerAdapter extends DatabaseAdapter {
 
   @Override
   public String renderAliasedSelectColumn(final StructuredColumnMetadata cm) {
-    return cm.renderSQLIdentifier() + " as " + this.renderSQLName(cm.getColumnAlias());
+    return cm.getId().getRenderedSQLName() + " as " + this.renderSQLName(cm.getColumnAlias());
   }
 
   @Override
@@ -300,7 +300,7 @@ public class SQLServerAdapter extends DatabaseAdapter {
 
   @Override
   public String renderForCaseInsensitiveOrderBy(final ColumnMetadata cm) {
-    return "lower(" + cm.renderSQLIdentifier() + ")";
+    return "lower(" + cm.getId().getRenderedSQLName() + ")";
   }
 
   @Override

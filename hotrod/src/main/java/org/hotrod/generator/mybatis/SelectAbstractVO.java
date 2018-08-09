@@ -20,7 +20,6 @@ import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ImportsRenderer;
-import org.hotrod.utils.identifiers.ColumnIdentifier;
 
 public class SelectAbstractVO {
 
@@ -187,7 +186,7 @@ public class SelectAbstractVO {
       println();
       for (ColumnMetadata cm : this.columns) {
         String javaType = cm.getType().getJavaClassName();
-        println("  protected " + javaType + " " + cm.getIdentifier().getJavaMemberIdentifier() + " = null;"
+        println("  protected " + javaType + " " + cm.getId().getJavaMemberName() + " = null;"
             + (cm.getType().isLOB() ? " // it's a LOB type" : ""));
       }
       println();
@@ -219,42 +218,40 @@ public class SelectAbstractVO {
 
     for (ColumnMetadata cm : this.columns) {
       String javaType = cm.getType().getJavaClassName();
-      String property = cm.getIdentifier().getJavaMemberIdentifier();
+      String property = cm.getId().getJavaMemberName();
 
-      println("  public final " + javaType + " " + cm.getIdentifier().getGetter() + "() {");
+      println("  public final " + javaType + " " + cm.getId().getJavaGetter() + "() {");
       println("    return this." + property + ";");
       println("  }");
       println();
 
-      String setter = cm.getIdentifier().getSetter();
+      String setter = cm.getId().getJavaSetter();
       writeSetter(property, javaType, setter, true);
     }
 
     for (VOMember a : this.associationMembers) {
       String javaType = a.getFullClassName();
       String property = a.getProperty();
-      ColumnIdentifier ci = new ColumnIdentifier(property, a.getFullClassName());
 
-      println("  public final " + javaType + " " + ci.getGetter() + "() {");
+      println("  public final " + javaType + " " + a.getId().getJavaGetter() + "() {");
       println("    return this." + property + ";");
       println("  }");
       println();
 
-      String setter = ci.getSetter();
+      String setter = a.getId().getJavaSetter();
       writeSetter(property, javaType, setter, false);
     }
 
     for (VOMember c : this.collectionMembers) {
       String javaType = c.getFullClassName();
       String property = c.getProperty();
-      ColumnIdentifier ci = new ColumnIdentifier(property, c.getFullClassName());
 
-      println("  public final List<" + javaType + "> " + ci.getGetter() + "() {");
+      println("  public final List<" + javaType + "> " + c.getId().getJavaGetter() + "() {");
       println("    return this." + property + ";");
       println("  }");
       println();
 
-      String setter = ci.getSetter();
+      String setter = c.getId().getJavaSetter();
       writeSetter(property, "List<" + javaType + ">", setter, false);
     }
 
@@ -293,7 +290,7 @@ public class SelectAbstractVO {
         String suffix = ");";
         ListWriter lw = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
         for (ColumnMetadata cm : this.columns) {
-          String prop = cm.getIdentifier().getJavaMemberIdentifier();
+          String prop = cm.getId().getJavaMemberName();
           lw.add("\"- " + prop + "=\" + this." + prop);
         }
         println(lw.toString());
@@ -312,7 +309,7 @@ public class SelectAbstractVO {
         String suffix = ");";
         ListWriter lw = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
         for (ColumnMetadata cm : this.columns) {
-          String prop = cm.getIdentifier().getJavaMemberIdentifier();
+          String prop = cm.getId().getJavaMemberName();
           lw.add("\"" + prop + "=\" + this." + prop);
         }
         println(lw.toString());
@@ -352,7 +349,7 @@ public class SelectAbstractVO {
     println("  public class PropertiesChangeLog {");
 
     for (ColumnMetadata cm : this.columns) {
-      String name = cm.getIdentifier().getJavaMemberIdentifier() + "WasSet";
+      String name = cm.getId().getJavaMemberName() + "WasSet";
       println("    public boolean " + name + " = false;");
     }
 

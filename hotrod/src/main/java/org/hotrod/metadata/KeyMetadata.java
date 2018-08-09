@@ -75,7 +75,7 @@ public class KeyMetadata implements Serializable {
   public String toCamelCase(final String columnSeam) {
     ListWriter lw = new ListWriter(columnSeam == null ? "" : columnSeam);
     for (ColumnMetadata km : this.columns) {
-      lw.add(km.getIdentifier().getJavaClassIdentifier());
+      lw.add(km.getId().getJavaClassName());
     }
     return lw.toString();
   }

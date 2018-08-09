@@ -263,8 +263,8 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     this.facets.addAll(other.facets);
   }
 
-  public void validateAgainstDatabase(final HotRodGenerator generator, final Connection conn)
-      throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final HotRodGenerator generator, final Connection conn,
+      final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
 
     for (TableTag t : this.getTables()) {
       t.validateAgainstDatabase(generator);
@@ -275,7 +275,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     }
 
     for (EnumTag e : this.getEnums()) {
-      e.validateAgainstDatabase(generator, conn);
+      e.validateAgainstDatabase(generator, conn, adapter);
     }
 
     for (ExecutorTag d : this.getExecutors()) {

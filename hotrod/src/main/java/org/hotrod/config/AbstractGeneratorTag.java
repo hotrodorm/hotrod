@@ -33,6 +33,6 @@ public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
 
   public abstract HotRodGenerator instantiateGenerator(CachedMetadata cachedMetadata, DatabaseLocation loc,
       HotRodConfigTag config, DisplayMode displayMode, boolean incrementalMode, DatabaseAdapter adapter)
-      throws UncontrolledException, ControlledException;
+      throws UncontrolledException, ControlledException, InvalidConfigurationFileException;
 
 }

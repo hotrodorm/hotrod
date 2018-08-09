@@ -5,7 +5,6 @@ import java.io.Serializable;
 import org.hotrod.config.VersionControlColumnTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
-import org.hotrod.utils.identifiers.ColumnIdentifier;
 
 public class VersionControlMetadata implements Serializable {
 
@@ -33,10 +32,6 @@ public class VersionControlMetadata implements Serializable {
 
   public ColumnMetadata getColumnMetadata() {
     return columnMetadata;
-  }
-
-  public ColumnIdentifier getIdentifier() {
-    return this.columnMetadata.getIdentifier();
   }
 
 }
