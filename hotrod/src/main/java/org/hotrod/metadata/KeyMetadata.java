@@ -3,11 +3,14 @@ package org.hotrod.metadata;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.hotrod.runtime.util.ListWriter;
 
 public class KeyMetadata implements Serializable {
 
   private static final long serialVersionUID = 1L;
+
+  private static final Logger log = Logger.getLogger(KeyMetadata.class);
 
   private TableDataSetMetadata tm;
   private List<ColumnMetadata> columns;
@@ -53,8 +56,9 @@ public class KeyMetadata implements Serializable {
     if (tm == null) {
       if (other.tm != null)
         return false;
-    } else if (!tm.equals(other.tm))
+    } else if (!tm.equals(other.tm)) {
       return false;
+    }
     return equals(this.columns, other.columns);
   }
 

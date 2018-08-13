@@ -33,6 +33,7 @@ import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.identifiers.ObjectId;
+import org.nocrala.tools.database.tartarus.core.DatabaseObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
@@ -264,12 +265,12 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   }
 
-  public void linkReferencedTableMetadata(final Set<TableDataSetMetadata> dss) {
+  public void linkReferencedTableMetadata(final Set<TableDataSetMetadata> tm) {
     for (ForeignKeyMetadata fk : this.importedFKs) {
-      fk.linkReferencedTableMetadata(dss);
+      fk.linkReferencedTableMetadata(tm);
     }
     for (ForeignKeyMetadata fk : this.exportedFKs) {
-      fk.linkReferencedTableMetadata(dss);
+      fk.linkReferencedTableMetadata(tm);
     }
   }
 
@@ -367,7 +368,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   public void gatherSelectsMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
       throws ControlledException, UncontrolledException, InvalidConfigurationFileException {
-    log.debug("*** DataSet " + this.renderSQLIdentifier() + ":");
+    log.debug("*** DataSet " + this.id.getRenderedSQLName() + ":");
     for (SelectMethodMetadata sm : this.selectsMetadata) {
       log.debug("*** - table-like method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());
       if (!sm.metadataComplete()) {
@@ -507,31 +508,27 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((this.t.getName() == null) ? 0 : this.t.getName().hashCode());
-    return result;
+    return this.t.getDatabaseObjectId().hashCode();
+  }
+
+  public DatabaseObjectId getDatabaseObjectId() {
+    return this.t.getDatabaseObjectId();
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
+    try {
+      TableDataSetMetadata other = (TableDataSetMetadata) obj;
+      return this.getDatabaseObjectId().equals(other.getDatabaseObjectId());
+    } catch (ClassCastException e) {
       return false;
-    if (getClass() != obj.getClass())
-      return false;
-    TableDataSetMetadata other = (TableDataSetMetadata) obj;
-    if (this.t.getName() == null) {
-      if (other.t.getName() != null)
-        return false;
-    } else if (!this.t.getName().equals(other.t.getName()))
-      return false;
-    return true;
+    }
   }
 
+  // Matching FKs
+
   boolean correspondsToJdbcTable(final JdbcTable t) {
-    return this.t.getName().equals(t.getName());
+    return this.t.getDatabaseObjectId().equals(t.getDatabaseObjectId());
   }
 
   // Getters
@@ -634,11 +631,6 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   public boolean hasSelects() {
     return !this.selects.isEmpty();
-  }
-
-  @Override
-  public String renderSQLIdentifier() {
-    return this.adapter.renderSQLName(t.getName());
   }
 
   @Override

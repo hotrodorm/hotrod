@@ -723,7 +723,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
         String msg = "Invalid column '" + r.getColumnName() + "' in the body of the <" + this.getTagName() + "> tag at "
             + super.getSourceLocation().render() + ".\n" + "There's no column '" + r.getColumnName() + "' in the "
             + (this.tableMetadata != null ? "table" : "view") + " '" + (this.tableMetadata != null
-                ? this.tableMetadata.renderSQLIdentifier() : this.viewMetadata.renderSQLIdentifier())
+                ? this.tableMetadata.getId().getRenderedSQLName() : this.viewMetadata.getId().getRenderedSQLName())
             + "'.";
         throw new InvalidConfigurationFileException(dm.getDaoTag(), msg, msg);
       }

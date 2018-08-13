@@ -25,21 +25,21 @@ public class ForeignKeyMetadata implements Serializable {
   // Getters
 
   public KeyMetadata getLocal() {
-    return local;
+    return this.local;
   }
 
   public KeyMetadata getRemote() {
-    return remote;
+    return this.remote;
   }
 
   public boolean pointsToPK() {
-    return pointsToPK;
+    return this.pointsToPK;
   }
 
   void linkReferencedTableMetadata(final Set<TableDataSetMetadata> tableMetadata) {
     for (TableDataSetMetadata tm : tableMetadata) {
       if (tm.correspondsToJdbcTable(this.remoteTable)) {
-        remote.linkReferencedDataSet(tm);
+        this.remote.linkReferencedDataSet(tm);
         return;
       }
     }

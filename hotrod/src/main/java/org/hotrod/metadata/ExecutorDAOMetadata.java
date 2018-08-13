@@ -203,11 +203,6 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   }
 
   @Override
-  public String renderSQLIdentifier() {
-    return null;
-  }
-
-  @Override
   public List<KeyMetadata> getUniqueIndexes() {
     return new ArrayList<KeyMetadata>();
   }

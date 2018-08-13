@@ -26,8 +26,6 @@ public interface DataSetMetadata extends Serializable {
 
   ObjectId getId();
 
-  String renderSQLIdentifier();
-
   List<KeyMetadata> getUniqueIndexes();
 
   List<ForeignKeyMetadata> getImportedFKs();

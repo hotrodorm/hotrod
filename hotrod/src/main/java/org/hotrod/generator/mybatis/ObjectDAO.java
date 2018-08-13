@@ -887,7 +887,7 @@ public class ObjectDAO extends GeneratableObject {
               }
               println("  // --- no select parent for FK column" + (fkm.getLocal().getColumns().size() > 1 ? "s" : "")
                   + " (" + lw.toString() + ") since it points to the enum table "
-                  + fkm.getRemote().getTableMetadata().renderSQLIdentifier());
+                  + fkm.getRemote().getTableMetadata().getId().getRenderedSQLName());
               println();
             }
           }
@@ -2027,7 +2027,7 @@ public class ObjectDAO extends GeneratableObject {
     ListWriter lw = new ListWriter(", //\n");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String constantBase = cm.getId().getJavaConstantName();
-      String ti = JUtils.escapeJavaString(this.metadata.renderSQLIdentifier());
+      String ti = JUtils.escapeJavaString(this.metadata.getId().getRenderedSQLName());
       String ci = JUtils.escapeJavaString(cm.getId().getRenderedSQLName());
       lw.add("    " + constantBase + "(\"" + ti + "\", \"" + ci + "\", true)");
       lw.add("    " + constantBase + "$DESC(\"" + ti + "\", \"" + ci + "\", false)");

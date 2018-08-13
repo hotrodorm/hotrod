@@ -1,3 +1,9 @@
+drop table if exists "<Stock$"."&Price%";
+drop table if exists "house_ROOM";
+drop table if exists schema2.account_alert;
+drop table if exists house;
+drop table if exists schema2.house;
+drop view if exists schema2.low_account;
 
 drop table if exists "car#part$Price";
 

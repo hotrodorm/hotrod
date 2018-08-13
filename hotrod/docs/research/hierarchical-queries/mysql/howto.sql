@@ -30,3 +30,5 @@ select * from referrer where referred_by_id is null order by client;
 --  * Column aliases are optional. When not specified they are defined by the anchor member.
 --  * The anchor member cannot reference the query name.
 --  * The recursive member must include a single reference to the query name.
+
+

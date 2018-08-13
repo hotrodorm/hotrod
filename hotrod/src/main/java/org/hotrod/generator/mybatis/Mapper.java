@@ -382,7 +382,7 @@ public class Mapper extends GeneratableObject {
       println("  <select id=\"" + this.getMapperIdSelectByPK() + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
       println("    select");
       println("      <include refid=\"columns\" />");
-      println("     from " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()));
+      println("     from " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
       println("     where");
       println(getWhereByIndex(this.metadata.getPK()));
       println("  </select>");
@@ -417,7 +417,7 @@ public class Mapper extends GeneratableObject {
           println("  <select id=\"" + this.getMapperIdSelectByUI(ui) + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
           println("    select");
           println("      <include refid=\"columns\" />");
-          println("     from " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()));
+          println("     from " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
           println("     where");
           println(getWhereByIndex(ui));
           println("  </select>");
@@ -455,7 +455,7 @@ public class Mapper extends GeneratableObject {
     println("  <select id=\"" + this.getMapperIdSelectByExample() + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
     println("    select");
     println("      <include refid=\"columns\" />");
-    println("     from " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()));
+    println("     from " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
     print(getWhereByExample("p"));
     println("    <if test=\"o != null\">");
     println("      order by ${o}");
@@ -557,7 +557,7 @@ public class Mapper extends GeneratableObject {
 
   private void renderInsert(final ListWriter columns, final ListWriter values, final ListWriter queryColumns)
       throws IOException {
-    println("    insert into " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()) + " (");
+    println("    insert into " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()) + " (");
     print("      <trim prefixOverrides=\", \">\n" + columns.toString() + "      </trim>\n");
     print("      ) ");
     if (queryColumns.getCount() != 0) {
@@ -856,7 +856,7 @@ public class Mapper extends GeneratableObject {
       println("  <!-- update by PK -->");
       println();
       println("  <update id=\"" + this.getMapperIdUpdateByPK() + "\">");
-      println("    update " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()) + " set");
+      println("    update " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()) + " set");
 
       ListWriter lw = new ListWriter(",\n");
       for (ColumnMetadata cm : this.metadata.getNonPkColumns()) {
@@ -959,7 +959,7 @@ public class Mapper extends GeneratableObject {
     println("  <!-- update by example -->");
     println();
     println("  <update id=\"" + this.getMapperIdUpdateByExample() + "\">");
-    println("    update " + this.metadata.renderSQLIdentifier());
+    println("    update " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
 
     println("    <set>");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
@@ -998,7 +998,7 @@ public class Mapper extends GeneratableObject {
       println("  <!-- delete by PK -->");
       println();
       println("  <delete id=\"" + this.getMapperIdDeleteByPK() + "\">");
-      println("    delete from " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()));
+      println("    delete from " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
       println("     where");
       println(getWhereByIndex(this.metadata.getPK()));
 
@@ -1021,7 +1021,7 @@ public class Mapper extends GeneratableObject {
     println("  <!-- delete by example -->");
     println();
     println("  <delete id=\"" + this.getMapperIdDeleteByExample() + "\">");
-    println("    delete from " + SUtils.escapeXmlBody(this.metadata.renderSQLIdentifier()));
+    println("    delete from " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
     print(getWhereByExample());
     println("  </delete>");
     println();

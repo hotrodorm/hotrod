@@ -528,11 +528,6 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   }
 
   @Override
-  public String renderSQLIdentifier() {
-    return "N/A";
-  }
-
-  @Override
   public HotRodFragmentConfigTag getFragmentConfig() {
     return this.fragmentConfig;
   }

@@ -18,6 +18,9 @@
 
   <table name="config_values" /> <!-- No PK -->
 
+<?comment 
+?>  
+
 	<table name="properties" />
 	<table name="parameters">
 		<column name="level" java-type="java.lang.Long" jdbc-type="NUMERIC" />
@@ -61,6 +64,7 @@
   </table>
   
 	<table name="types_other">
+  
 <!--
     <column name="uui1" java-type="java.lang.String" />
     <column name="uui1" java-type="java.util.UUID" />
@@ -80,7 +84,23 @@
 	<view name="tx_branch">
 		<column name="amount" java-type="java.lang.Long" jdbc-type="NUMERIC" />
 	</view>
+  
+  <!-- 
+  -->
+  <table name="'house_ROOM'" />
+  <table name="account_alert" schema="schema2" />
+  <table name="house" schema="schema2" />
 
+<!-- 
+  <table name="house" java-name="LocalHouse" />
+-->
+   
+  <view name="low_account" schema="schema2" />
+  
+  <table name="'&amp;Price%'" schema="'&lt;Stock$'" />
+
+<!-- 
+ -->
   <fragment file="hotrod-extra1.xml" />
-
+ 
 </hotrod>

@@ -7,9 +7,11 @@ import hotrod.test.generation.AccountTx0;
 import hotrod.test.generation.AccountTx1;
 import hotrod.test.generation.Car_part_priceVO;
 import hotrod.test.generation.ConfigValuesVO;
+import hotrod.test.generation.HouseVO;
 import hotrod.test.generation.MultParamSelect;
 import hotrod.test.generation.primitives.Car_part_priceDAO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
+import hotrod.test.generation.primitives.HouseDAO;
 import hotrod.test.generation.primitives.MyDAO;
 
 public class SelectTests {
@@ -21,7 +23,8 @@ public class SelectTests {
   private static void countProperties() throws SQLException {
     // selectByExample();
     // selectByUI();
-    selectComplexName();
+    // selectComplexName();
+    selectOtherSchema();
   }
 
   private static void selectByExample() throws SQLException {
@@ -40,6 +43,14 @@ public class SelectTests {
       }
     }
 
+  }
+
+  private static void selectOtherSchema() throws SQLException {
+    System.out.println("=== House ===");
+    for (HouseVO h : HouseDAO.selectByExample(new HouseVO())) {
+      System.out.println("h: " + h);
+    }
+    System.out.println("===");
   }
 
   private static void selectComplexName() throws SQLException {

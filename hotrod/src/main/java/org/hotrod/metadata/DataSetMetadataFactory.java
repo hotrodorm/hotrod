@@ -96,13 +96,15 @@ public abstract class DataSetMetadataFactory {
 
   private static void markGenerateRelatedEntities(final DataSetMetadata tm) {
     for (ForeignKeyMetadata efk : tm.getExportedFKs()) {
-      log.info("...marking (using exported FK) remote=" + efk.getRemote().getTableMetadata().renderSQLIdentifier()
-          + " local=" + efk.getLocal().getTableMetadata().renderSQLIdentifier());
+      log.info(
+          "...marking (using exported FK) remote=" + efk.getRemote().getTableMetadata().getId().getRenderedSQLName()
+              + " local=" + efk.getLocal().getTableMetadata().getId().getRenderedSQLName());
       efk.getRemote().getTableMetadata().getDaoTag().markGenerate();
     }
     for (ForeignKeyMetadata ifk : tm.getImportedFKs()) {
-      log.info("...marking (using imported FK) remote=" + ifk.getRemote().getTableMetadata().renderSQLIdentifier()
-          + " local=" + ifk.getLocal().getTableMetadata().renderSQLIdentifier());
+      log.info(
+          "...marking (using imported FK) remote=" + ifk.getRemote().getTableMetadata().getId().getRenderedSQLName()
+              + " local=" + ifk.getLocal().getTableMetadata().getId().getRenderedSQLName());
       ifk.getRemote().getTableMetadata().getDaoTag().markGenerate();
     }
   }

@@ -51,21 +51,21 @@ import org.hotrod.metadata.VORegistry;
 import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
-import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.identifiers.ObjectId;
+import org.nocrala.tools.database.tartarus.connectors.DatabaseConnectorFactory.UnsupportedDatabaseException;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
-import org.nocrala.tools.database.tartarus.core.DatabaseObjectFilter;
+import org.nocrala.tools.database.tartarus.core.DatabaseObject;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase.DatabaseConnectionVersion;
 import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
-import org.nocrala.tools.database.tartarus.core.JdbcTableFilter;
 import org.nocrala.tools.database.tartarus.exception.CatalogNotSupportedException;
+import org.nocrala.tools.database.tartarus.exception.DatabaseObjectNotFoundException;
 import org.nocrala.tools.database.tartarus.exception.DifferentCatalogSchemaException;
 import org.nocrala.tools.database.tartarus.exception.InvalidCatalogException;
 import org.nocrala.tools.database.tartarus.exception.InvalidSchemaException;
@@ -223,8 +223,15 @@ public abstract class HotRodGenerator {
 
       log.debug("--> retrieveFreshDatabaseObjects=" + retrieveFreshDatabaseObjects);
 
-      DatabaseObjectFilter filter = new DatabaseObjectFilter(new TableFilter(this.adapter),
-          new ViewFilter(this.config, this.adapter));
+      Set<DatabaseObject> tables = new HashSet<DatabaseObject>();
+      for (TableTag t : this.config.getTables()) {
+        tables.add(t.getDatabaseObjectId());
+      }
+
+      Set<DatabaseObject> views = new HashSet<DatabaseObject>();
+      for (ViewTag v : this.config.getViews()) {
+        views.add(v.getDatabaseObjectId());
+      }
 
       try {
 
@@ -235,11 +242,13 @@ public abstract class HotRodGenerator {
             this.db = cachedDatabase;
           } catch (DifferentCatalogSchemaException e) {
             // catalog or schema changed -- retrieve the database again.
-            this.db = new JdbcDatabase(this.dloc, true, filter);
+            log.debug("Retrieve 1.");
+            this.db = new JdbcDatabase(this.dloc, tables, views);
           }
         } else {
           // Retrieve database objects
-          this.db = new JdbcDatabase(this.dloc, true, filter);
+          log.debug("Retrieve 2.");
+          this.db = new JdbcDatabase(this.dloc, tables, views);
         }
 
       } catch (ReaderException e) {
@@ -281,10 +290,18 @@ public abstract class HotRodGenerator {
           sb.append("  " + s + "\n");
         }
         throw new ControlledException(sb.toString());
-      } catch (Exception e) {
+      } catch (UnsupportedDatabaseException e) {
+        throw new ControlledException("This database is not currently supported by " + Constants.TOOL_NAME);
+      } catch (DatabaseObjectNotFoundException e) {
+        throw new ControlledException(
+            "Database object not found. Please check this is the correct database, catalog, and schema: "
+                + e.getMessage());
+      } catch (RuntimeException e) {
+        e.printStackTrace();
         throw new UncontrolledException("Could not retrieve database metadata using JDBC URL " + dloc.getUrl(), e);
       }
 
+      log.debug("database loaded.");
       config.logGenerateMark("VALIDATE", ':');
 
       // Validate names
@@ -349,10 +366,8 @@ public abstract class HotRodGenerator {
           try {
             EnumDataSetMetadata em = (EnumDataSetMetadata) efk.getRemote().getTableMetadata();
             // it's an enum! An enum cannot be used as the children table
-            SourceLocation loc = em.getDaoTag().getSourceLocation();
-            throw new ControlledException("Invalid configuration file '" + loc.getFile().getPath() + "' (line "
-                + loc.getLineNumber() + ", col " + loc.getColumnNumber() + "):\n" + "cannot specify the enum '"
-                + em.renderSQLIdentifier() + "' on the 'many' side of a 1-to-many relationship.");
+            throw new ControlledException(em.getDaoTag().getSourceLocation(), "Cannot specify the enum '"
+                + em.getId().getRenderedSQLName() + "' on the 'many' side of a 1-to-many relationship.");
 
           } catch (ClassCastException e) {
             // It's a table, not an enum - it's valid.
@@ -1167,63 +1182,68 @@ public abstract class HotRodGenerator {
     System.out.println(SUtils.isEmpty(txt) ? " " : txt);
   }
 
-  // Table Filter
-
-  public class TableFilter implements JdbcTableFilter {
-
-    private DatabaseAdapter adapter;
-
-    public TableFilter(final DatabaseAdapter adapter) {
-      this.adapter = adapter;
-    }
-
-    public boolean accepts(final String jdbcName) {
-      log.debug("ACCEPTS? " + jdbcName);
-      for (TableTag t : config.getTables()) {
-        if (this.adapter.isTableIdentifier(jdbcName, t.getId().getCanonicalSQLName())) {
-          log.debug("table '" + jdbcName + "' accepted.");
-          return true;
-        }
-      }
-      for (EnumTag e : config.getEnums()) {
-        if (this.adapter.isTableIdentifier(jdbcName, e.getId().getCanonicalSQLName())) {
-          log.debug("enum '" + jdbcName + "' accepted.");
-          return true;
-        }
-      }
-
-      log.debug("table/enum '" + jdbcName + "' rejected.");
-      return false;
-    }
-  }
-
-  // View Filter
-
-  public class ViewFilter implements JdbcTableFilter {
-
-    private Set<String> includedViews;
-    private DatabaseAdapter adapter;
-
-    public ViewFilter(final HotRodConfigTag config, final DatabaseAdapter adapter) {
-      this.includedViews = new HashSet<String>();
-      for (ViewTag v : config.getViews()) {
-        this.includedViews.add(v.getId().getCanonicalSQLName());
-      }
-      this.adapter = adapter;
-    }
-
-    public boolean accepts(final String jdbcName) {
-      log.debug("ACCEPTS? " + jdbcName);
-      for (ViewTag v : config.getViews()) {
-        if (this.adapter.isTableIdentifier(jdbcName, v.getId().getCanonicalSQLName())) {
-          log.debug("view '" + jdbcName + "' accepted.");
-          return true;
-        }
-      }
-      log.debug("view '" + jdbcName + "' rejected.");
-      return false;
-    }
-  }
+  // TODO: Remove once tests
+  // // Table Filter
+  //
+  // public class TableFilter implements JdbcTableFilter {
+  //
+  // private DatabaseAdapter adapter;
+  //
+  // public TableFilter(final DatabaseAdapter adapter) {
+  // this.adapter = adapter;
+  // }
+  //
+  // public boolean accepts(final String jdbcName) {
+  // log.debug("ACCEPTS? " + jdbcName);
+  // for (TableTag t : config.getTables()) {
+  // if (this.adapter.isTableIdentifier(jdbcName,
+  // t.getId().getCanonicalSQLName())) {
+  // log.debug("table '" + jdbcName + "' accepted.");
+  // return true;
+  // }
+  // }
+  // for (EnumTag e : config.getEnums()) {
+  // if (this.adapter.isTableIdentifier(jdbcName,
+  // e.getId().getCanonicalSQLName())) {
+  // log.debug("enum '" + jdbcName + "' accepted.");
+  // return true;
+  // }
+  // }
+  //
+  // log.debug("table/enum '" + jdbcName + "' rejected.");
+  // return false;
+  // }
+  // }
+  //
+  // // View Filter
+  //
+  // public class ViewFilter implements JdbcTableFilter {
+  //
+  // private Set<String> includedViews;
+  // private DatabaseAdapter adapter;
+  //
+  // public ViewFilter(final HotRodConfigTag config, final DatabaseAdapter
+  // adapter) {
+  // this.includedViews = new HashSet<String>();
+  // for (ViewTag v : config.getViews()) {
+  // this.includedViews.add(v.getId().getCanonicalSQLName());
+  // }
+  // this.adapter = adapter;
+  // }
+  //
+  // public boolean accepts(final String jdbcName) {
+  // log.debug("ACCEPTS? " + jdbcName);
+  // for (ViewTag v : config.getViews()) {
+  // if (this.adapter.isTableIdentifier(jdbcName,
+  // v.getId().getCanonicalSQLName())) {
+  // log.debug("view '" + jdbcName + "' accepted.");
+  // return true;
+  // }
+  // }
+  // log.debug("view '" + jdbcName + "' rejected.");
+  // return false;
+  // }
+  // }
 
   // VO Registry
 

@@ -66,10 +66,12 @@ insert into employee (id, name, state_id, hired_on) values (103, 'Donna', 4, '20
 insert into "car#part$Price" ("part#", "price$dollar", "%discount") values (123, 456, 789);
 insert into "car#part$Price" ("part#", "price$dollar", "%discount") values (101, 202, 303);
 
+INSERT INTO schema2.house (id,name) VALUES (1,'House 1');
+INSERT INTO schema2.house (id,name) VALUES (2,'House 2');
 
-
-
-
+INSERT INTO house (address,price) VALUES ('123 Maple St', 150000);
+INSERT INTO house (address,price) VALUES ('456 Oak St', 320000);
+INSERT INTO house (address,price) VALUES ('789 Columbia Pike', 250000);
 
 
 
