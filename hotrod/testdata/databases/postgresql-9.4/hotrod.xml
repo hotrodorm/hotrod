@@ -99,6 +99,22 @@
   
   <table name="'&amp;Price%'" schema="'&lt;Stock$'" />
 
+  <dao class="AlertFinder">
+    <select method="findAlerts">
+      select
+      <columns>
+        <vo table="account" alias="a" extended-vo="Account2VO">
+          <collection table="account_alert" schema="schema2" property="alerts" alias="aa" extended-vo="Alert2VO">
+            <association table="house" property="house" schema="schema2" alias="h" /> 
+          </collection>
+        </vo>
+      </columns>
+        from account a 
+        join schema2.account_alert aa on a.id = aa.account_id
+        join schema2.house h on h.id = aa.house_id
+        where a.current_balance >= 100;
+    </select>
+  </dao>
 <!-- 
  -->
   <fragment file="hotrod-extra1.xml" />

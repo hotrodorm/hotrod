@@ -74,4 +74,13 @@ INSERT INTO house (address,price) VALUES ('456 Oak St', 320000);
 INSERT INTO house (address,price) VALUES ('789 Columbia Pike', 250000);
 
 
+insert into schema2.house (id, name) values (70, 'Main Source');
+insert into schema2.house (id, name) values (71, 'Secondary Source');
+  
+insert into schema2.account_alert (raised_at, account_id, house_id) values ('2018-01-01 17:56:23', 1234001, 70);
+insert into schema2.account_alert (raised_at, account_id, house_id) values ('2018-01-02 18:12:34', 1234001, 70);
+insert into schema2.account_alert (raised_at, account_id, house_id) values ('2018-01-20 20:59:59', 1234004, 71);
+insert into schema2.account_alert (raised_at, account_id, house_id) values ('2018-01-21 08:05:12', 1234004, 71);
+
+
 

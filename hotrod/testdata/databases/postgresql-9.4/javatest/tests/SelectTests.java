@@ -3,12 +3,15 @@ package tests;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import hotrod.test.generation.Account2VO;
 import hotrod.test.generation.AccountTx0;
 import hotrod.test.generation.AccountTx1;
+import hotrod.test.generation.Alert2VO;
 import hotrod.test.generation.Car_part_priceVO;
 import hotrod.test.generation.ConfigValuesVO;
 import hotrod.test.generation.HouseVO;
 import hotrod.test.generation.MultParamSelect;
+import hotrod.test.generation.primitives.AlertFinder;
 import hotrod.test.generation.primitives.Car_part_priceDAO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
 import hotrod.test.generation.primitives.HouseDAO;
@@ -24,7 +27,8 @@ public class SelectTests {
     // selectByExample();
     // selectByUI();
     // selectComplexName();
-    selectOtherSchema();
+    // selectOtherSchema();
+    selectMultiSchema();
   }
 
   private static void selectByExample() throws SQLException {
@@ -49,6 +53,18 @@ public class SelectTests {
     System.out.println("=== House ===");
     for (HouseVO h : HouseDAO.selectByExample(new HouseVO())) {
       System.out.println("h: " + h);
+    }
+    System.out.println("===");
+  }
+
+  private static void selectMultiSchema() throws SQLException {
+    System.out.println("=== Tree ===");
+    for (Account2VO acc : AlertFinder.findAlerts()) {
+      System.out.println("account: " + acc);
+      for (Alert2VO a : acc.getAlerts()) {
+        System.out.println(" + alert: " + a);
+        System.out.println(" + house: " + a.getHouse());
+      }
     }
     System.out.println("===");
   }
