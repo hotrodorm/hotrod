@@ -62,9 +62,17 @@ public class ColumnMetadata implements Serializable {
     this.dataSet = dataSet;
     this.c = c;
     this.columnName = c.getName();
+    log.debug("this.columnName=" + this.columnName);
     this.tableName = c.getTable().getName();
 
-    this.id = Id.fromSQL(c.getName(), adapter);
+    this.tag = columnTag;
+    if (this.tag == null || this.tag.getJavaName() == null) {
+      this.id = Id.fromCanonicalSQL(c.getName(), adapter);
+    } else {
+      this.id = Id.fromCanonicalSQLAndJavaMember(c.getName(), adapter, this.tag.getJavaName());
+    }
+    log.debug(
+        "  > CanonicalSQLName=" + this.id.getCanonicalSQLName() + " RenderedSQLName=" + this.id.getRenderedSQLName());
 
     this.belongsToPK = belongsToPK;
     this.autogenerationType = c.getAutogenerationType();
@@ -76,7 +84,6 @@ public class ColumnMetadata implements Serializable {
     this.enumMetadata = null;
 
     this.adapter = adapter;
-    this.tag = columnTag;
     this.type = this.adapter.resolveJavaType(this, this.tag);
     this.isVersionControlColumn = isVersionControlColumn;
   }
@@ -119,7 +126,12 @@ public class ColumnMetadata implements Serializable {
     this.columnName = c.getName();
     this.tableName = selectName;
 
-    this.id = Id.fromSQL(c.getName(), adapter);
+    this.tag = columnTag;
+    if (this.tag == null || this.tag.getJavaName() == null) {
+      this.id = Id.fromCanonicalSQL(c.getName(), adapter);
+    } else {
+      this.id = Id.fromCanonicalSQLAndJavaMember(c.getName(), adapter, this.tag.getJavaName());
+    }
 
     this.belongsToPK = belongsToPK;
     this.autogenerationType = c.getAutogenerationType();
@@ -131,7 +143,6 @@ public class ColumnMetadata implements Serializable {
     this.enumMetadata = null;
 
     this.adapter = adapter;
-    this.tag = columnTag;
     this.type = this.adapter.resolveJavaType(this, this.tag);
     this.isVersionControlColumn = isVersionControlColumn;
   }
@@ -144,7 +155,7 @@ public class ColumnMetadata implements Serializable {
     m2.tag = tag;
     m2.type = m2.adapter.resolveJavaType(m2, tag);
     if (tag.getJavaName() != null) {
-      m2.id = Id.fromSQLAndJavaMember(cm.getColumnName(), adapter, tag.getJavaName());
+      m2.id = Id.fromCanonicalSQLAndJavaMember(cm.getColumnName(), adapter, tag.getJavaName());
     }
     return m2;
   }
@@ -263,7 +274,7 @@ public class ColumnMetadata implements Serializable {
     return this.tag == null || this.tag.getSequence() == null ? null
         : this.adapter.renderSQLName(this.getCanonicalSequence());
   }
-  
+
   public AutogenerationType getAutogenerationType() {
     return this.autogenerationType;
   }

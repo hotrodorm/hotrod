@@ -1,8 +1,6 @@
 package org.hotrod.config;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -21,9 +19,6 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.Correlator;
 import org.hotrod.utils.Correlator.CorrelatedEntry;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 @XmlRootElement(name = "hotrod")
 public class HotRodConfigTag extends AbstractHotRodConfigTag {

@@ -48,7 +48,7 @@
   <table name="types_binary" />
   <table name="types_date_time" />
   <table name="types_other">
-      <query java-method-name="applyAccountPromotion74">
+      <query method="applyAccountPromotion74">
         <parameter name="reward" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
         <parameter name="minBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
         <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
@@ -60,13 +60,13 @@
 
   <facet name="phase2">
 
-    <dao java-class-name="Promotions">
+    <dao class="Promotions">
 
-      <sequence name="seq_agent" />
+      <sequence name="seq_agent" method="getSeqAgent" />
 
-      <sequence name="seq_codes" java-method-name="getCodeSequence" />
+      <sequence name="seq_codes" method="getCodeSequence" />
 
-      <query java-method-name="applyAccountPromotion74">
+      <query method="applyAccountPromotion74">
         <parameter name="reward" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
         <parameter name="from" java-type="java.util.Date" jdbc-type="TIMESTAMP" />
         <parameter name="to" java-type="java.util.Date" jdbc-type="TIMESTAMP" />
@@ -77,7 +77,7 @@
             and (select count(*) from transaction where account_id = a.id) > #{minTransactions}
       </query>
 
-      <query java-method-name="applyAccountPromotion75">
+      <query method="applyAccountPromotion75">
         <parameter name="reward" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
         <parameter name="minBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
         <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
@@ -93,9 +93,9 @@
     <view name="tx_branch">
       <column name="amount" java-name="total" java-type="java.lang.Long" />
 
-      <sequence name="seq_codes" java-method-name="getCodeSequence" />
+      <sequence name="seq_codes" method="getCodeSequence" />
 
-      <query java-method-name="applyAccountPromotion75">
+      <query method="applyAccountPromotion75">
         <parameter name="reward" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
         <parameter name="from" java-type="java.util.Date" jdbc-type="TIMESTAMP" />
         <parameter name="to" java-type="java.util.Date" jdbc-type="TIMESTAMP" />

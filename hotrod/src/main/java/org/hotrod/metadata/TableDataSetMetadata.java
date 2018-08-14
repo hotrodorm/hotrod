@@ -205,6 +205,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
     this.nonPKCols = getColumnsMetadata(this.t.getNonPkColumns(), enumTag);
 
+    this.id = enumTag.getId();
     this.agcm = null;
 
     this.vcm = null;

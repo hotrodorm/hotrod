@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.dynamicsql.BindTag;
 import org.hotrod.config.dynamicsql.ChooseTag;

@@ -1,6 +1,5 @@
 package org.hotrod.eclipseplugin.treefaces;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,8 +13,6 @@ import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractConfigurationTag.TagStatus;
 import org.hotrod.config.AbstractMethodTag;
 import org.hotrod.eclipseplugin.HotRodViewContentProvider;
-import org.hotrod.exceptions.ControlledException;
-import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.runtime.util.LogUtil;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ErrorMessage;

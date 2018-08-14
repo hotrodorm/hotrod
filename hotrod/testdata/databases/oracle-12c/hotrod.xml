@@ -29,28 +29,47 @@
 
   <facet name="phase2">
 
-    <select java-class-name="AccountTx3">
-      <parameter name="minBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-      <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-      select *
-        from account a
-      <complement>
-        where current_balance between #{minBalance} and #{maxBalance}
-      </complement>
-    </select>
-
   </facet>
 
   <facet name="phase2">
 
-    <dao java-class-name="Dao2" />
+    <dao class="Dao2" />
 
   </facet>
 
-  <!-- -->
 
+  <table name="'house_ROOM'" />
+  <table name="account_alert" schema="schema2" />
+  <table name="house" schema="schema2" />
+
+  <view name="low_account" schema="schema2" />
+  
+  <table name="'&amp;Price%'" schema="'&lt;Stock$'" />
+
+<!--
+-->
+  <dao class="AlertFinder">
+    <select method="findAlerts">
+      select
+      <columns>
+        <vo table="account" alias="a" extended-vo="Account2VO">
+          <collection table="account_alert" schema="schema2" property="alerts" alias="aa" extended-vo="Alert2VO">
+            <association table="house" property="house" schema="schema2" alias="h" /> 
+          </collection>
+        </vo>
+      </columns>
+        from account a 
+        join schema2.account_alert aa on a.id = aa.account_id
+        join schema2.house h on h.id = aa.house_id
+        where a.current_balance >= 100
+    </select>
+  </dao>
+
+  <!--
   <fragment file="hotrod-finances.xml" />
-  <fragment file="hotrod-core-and-types.xml" />
+  -->
 
+  <fragment file="hotrod-core-and-types.xml" />
+ 
 </hotrod>
 

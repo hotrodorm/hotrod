@@ -13,6 +13,8 @@
     </mybatis>
   </generators>
 
+<?comment
+?>
   <table name="config_values" /> <!-- No PK -->
   <table name="properties" />
   <table name="parameters" />
@@ -21,7 +23,7 @@
   <table name="account" /> <!-- identity always PK -->
 
   <table name="transaction"> <!-- identity by default PK -->
-    <query java-method-name="award10">
+    <query method="award10">
       update transaction set amount = amount + 10
     </query>
   </table>
@@ -63,57 +65,68 @@
   <view name="types_pseudo1" />
   <view name="types_pseudo2" />
 
-  <select java-class-name="AccountTxDAO">
-    select a.*, t.*
-    from account a, transaction t
-    <complement>
+  <dao class="Executor1">
+  
+    <select method="findAccountTxDAO" vo="AccountTxDAO">
+      select a.*, t.*
+      from account a, transaction t
+      <complement>
+        where t.account_id = a.id
+      </complement>
+    </select>
+  
+    <select method="findAccountTx2DAO" vo="AccountTx2DAO">
+      <parameter name="maxAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      select a.* , t.*
+      from account a, transaction t
       where t.account_id = a.id
-    </complement>
-  </select>
+      <complement>
+        <if test="maxAmount != null">
+          and t.amount &lt;= #{maxAmount}
+        </if>
+      </complement>
+    </select>
+  
+    <select method="findAccountTx3DAO" vo="AccountTx3DAO">
+      <parameter name="maxAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      select a.* , t.*
+      from account a, transaction t
+      where t.account_id = a.id
+      <complement>
+        <if test="maxAmount != null">
+          and t.amount1 &lt;= #{maxAmount}
+          and t.amount2 &lt;= #{maxAmount}
+        </if>
+      </complement>
+    </select>
+  
+  </dao>
 
-  <select java-class-name="AccountTx2DAO">
-    <parameter name="maxAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-    select a.* , t.*
-    from account a, transaction t
-    where t.account_id = a.id
-    <complement>
-      <if test="maxAmount != null">
-        and t.amount &lt;= #{maxAmount}
-      </if>
-    </complement>
-  </select>
+  <table name="'car#part$Price'" />
 
-  <select java-class-name="AccountTx3DAO">
-    <parameter name="maxAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-    select a.* , t.*
-    from account a, transaction t
-    where t.account_id = a.id
-    <complement>
-      <if test="maxAmount != null">
-        and t.amount1 &lt;= #{maxAmount}
-        and t.amount2 &lt;= #{maxAmount}
-      </if>
-    </complement>
-  </select>
+<?comment
+?>
+  <table name="'house_ROOM'" />
+  <table name="account_alert" schema="schema2" />
+  <table name="house" schema="schema2" />
 
-  <select java-class-name="SelectTNumeric">
-    select * from types_numeric
-  </select>
+  <view name="low_account" schema="schema2" />
 
-  <select java-class-name="SelectTChar">
-    select * from types_char
-  </select>
-
-  <select java-class-name="SelectTBinary">
-    select * from types_binary
-  </select>
-
-  <select java-class-name="SelectTDateTime">
-    select * from types_date_time
-  </select>
-
-  <select java-class-name="SelectTOther">
-    select * from types_other
-  </select>
+  <dao class="AlertFinder">
+    <select method="findAlerts">
+      select
+      <columns>
+        <vo table="account" alias="a" extended-vo="Account2VO">
+          <collection table="account_alert" schema="schema2" property="alerts" alias="aa" extended-vo="Alert2VO">
+            <association table="house" property="house" schema="schema2" alias="h" /> 
+          </collection>
+        </vo>
+      </columns>
+        from account a 
+        join schema2.account_alert aa on a.id = aa.account_id
+        join schema2.house h on h.id = aa.house_id
+        where a.current_balance >= 100
+    </select>
+  </dao>
 
 </hotrod>

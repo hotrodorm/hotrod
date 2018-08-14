@@ -34,44 +34,44 @@ public class ObjectIdTests extends TestCase {
     }
 
     {
-      ObjectId t = new ObjectId(null, null, Id.fromSQL("abc", uAdapter));
-      ObjectId te = new ObjectId(null, null, Id.fromSQL("abc", uAdapter));
-      ObjectId td = new ObjectId(null, null, Id.fromSQL("def", uAdapter));
+      ObjectId t = new ObjectId(null, null, Id.fromTypedSQL("abc", uAdapter));
+      ObjectId te = new ObjectId(null, null, Id.fromTypedSQL("abc", uAdapter));
+      ObjectId td = new ObjectId(null, null, Id.fromTypedSQL("def", uAdapter));
       assertTrue("t=te", t.equals(te));
       assertTrue("t!=td", !t.equals(td));
     }
 
     {
-      ObjectId c = new ObjectId(Id.fromSQL("catalog1", uAdapter), null, Id.fromSQL("abc", uAdapter));
-      ObjectId ce = new ObjectId(Id.fromSQL("catalog1", uAdapter), null, Id.fromSQL("abc", uAdapter));
-      ObjectId cd1 = new ObjectId(Id.fromSQL("catalog2", uAdapter), null, Id.fromSQL("abc", uAdapter));
-      ObjectId cd2 = new ObjectId(Id.fromSQL("catalog1", uAdapter), null, Id.fromSQL("def", uAdapter));
+      ObjectId c = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), null, Id.fromTypedSQL("abc", uAdapter));
+      ObjectId ce = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), null, Id.fromTypedSQL("abc", uAdapter));
+      ObjectId cd1 = new ObjectId(Id.fromTypedSQL("catalog2", uAdapter), null, Id.fromTypedSQL("abc", uAdapter));
+      ObjectId cd2 = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), null, Id.fromTypedSQL("def", uAdapter));
       assertTrue("c=ce", c.equals(ce));
       assertTrue("c!=cd1", !c.equals(cd1));
       assertTrue("c!=cd2", !c.equals(cd2));
     }
 
     {
-      ObjectId s = new ObjectId(null, Id.fromSQL("schema1", uAdapter), Id.fromSQL("abc", uAdapter));
-      ObjectId se = new ObjectId(null, Id.fromSQL("schema1", uAdapter), Id.fromSQL("abc", uAdapter));
-      ObjectId sd1 = new ObjectId(null, Id.fromSQL("schema2", uAdapter), Id.fromSQL("abc", uAdapter));
-      ObjectId sd2 = new ObjectId(null, Id.fromSQL("schema1", uAdapter), Id.fromSQL("def", uAdapter));
+      ObjectId s = new ObjectId(null, Id.fromTypedSQL("schema1", uAdapter), Id.fromTypedSQL("abc", uAdapter));
+      ObjectId se = new ObjectId(null, Id.fromTypedSQL("schema1", uAdapter), Id.fromTypedSQL("abc", uAdapter));
+      ObjectId sd1 = new ObjectId(null, Id.fromTypedSQL("schema2", uAdapter), Id.fromTypedSQL("abc", uAdapter));
+      ObjectId sd2 = new ObjectId(null, Id.fromTypedSQL("schema1", uAdapter), Id.fromTypedSQL("def", uAdapter));
       assertTrue("s=se", s.equals(se));
       assertTrue("s!=sd1", !s.equals(sd1));
       assertTrue("s!=sd2", !s.equals(sd2));
     }
 
     {
-      ObjectId cs = new ObjectId(Id.fromSQL("catalog1", uAdapter), Id.fromSQL("schema1", uAdapter),
-          Id.fromSQL("abc", uAdapter));
-      ObjectId cse = new ObjectId(Id.fromSQL("catalog1", uAdapter), Id.fromSQL("schema1", uAdapter),
-          Id.fromSQL("abc", uAdapter));
-      ObjectId csd1 = new ObjectId(Id.fromSQL("catalog2", uAdapter), Id.fromSQL("schema1", uAdapter),
-          Id.fromSQL("abc", uAdapter));
-      ObjectId csd2 = new ObjectId(Id.fromSQL("catalog1", uAdapter), Id.fromSQL("schema2", uAdapter),
-          Id.fromSQL("abc", uAdapter));
-      ObjectId csd3 = new ObjectId(Id.fromSQL("catalog2", uAdapter), Id.fromSQL("schema2", uAdapter),
-          Id.fromSQL("abc", uAdapter));
+      ObjectId cs = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), Id.fromTypedSQL("schema1", uAdapter),
+          Id.fromTypedSQL("abc", uAdapter));
+      ObjectId cse = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), Id.fromTypedSQL("schema1", uAdapter),
+          Id.fromTypedSQL("abc", uAdapter));
+      ObjectId csd1 = new ObjectId(Id.fromTypedSQL("catalog2", uAdapter), Id.fromTypedSQL("schema1", uAdapter),
+          Id.fromTypedSQL("abc", uAdapter));
+      ObjectId csd2 = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), Id.fromTypedSQL("schema2", uAdapter),
+          Id.fromTypedSQL("abc", uAdapter));
+      ObjectId csd3 = new ObjectId(Id.fromTypedSQL("catalog2", uAdapter), Id.fromTypedSQL("schema2", uAdapter),
+          Id.fromTypedSQL("abc", uAdapter));
       assertTrue("cs=cse", cs.equals(cse));
       assertTrue("cs!=csd1", !cs.equals(csd1));
       assertTrue("cs!=csd2", !cs.equals(csd2));

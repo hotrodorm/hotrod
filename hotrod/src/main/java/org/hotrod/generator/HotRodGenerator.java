@@ -227,6 +227,9 @@ public abstract class HotRodGenerator {
       for (TableTag t : this.config.getTables()) {
         tables.add(t.getDatabaseObjectId());
       }
+      for (EnumTag e : this.config.getEnums()) {
+        tables.add(e.getDatabaseObjectId());
+      }
 
       Set<DatabaseObject> views = new HashSet<DatabaseObject>();
       for (ViewTag v : this.config.getViews()) {
@@ -1025,6 +1028,7 @@ public abstract class HotRodGenerator {
 
   private void validateIdentifier(final Set<String> SQLNames, final String objectType, final String sqlName,
       final ObjectId id) throws ControlledException {
+    log.debug("id=" + id + " SQLNames=" + SQLNames);
     if (id.getCanonicalSQLName() != null && SQLNames.contains(id.getCanonicalSQLName())) {
       throw new ControlledException("Duplicate database object name '" + id.getCanonicalSQLName() + "' on " + objectType
           + " '" + sqlName + "'. There's another table, view, dao, or select "

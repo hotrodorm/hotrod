@@ -58,3 +58,20 @@ update types_other set stu1 = person_struct(123, to_date('2003/07/09', 'yyyy/mm/
 
 -- select inserted_value from dual;
 
+INSERT INTO schema2.house (id,name) VALUES (1,'House 1');
+INSERT INTO schema2.house (id,name) VALUES (2,'House 2');
+
+INSERT INTO house (address,price) VALUES ('123 Maple St', 150000);
+INSERT INTO house (address,price) VALUES ('456 Oak St', 320000);
+INSERT INTO house (address,price) VALUES ('789 Columbia Pike', 250000);
+
+insert into schema2.house (id, name) values (70, 'Main Source');
+insert into schema2.house (id, name) values (71, 'Secondary Source');
+  
+insert into schema2.account_alert (raised_at, account_id, house_id) values (timestamp '2018-01-01 17:56:23', 1, 70);
+insert into schema2.account_alert (raised_at, account_id, house_id) values (timestamp '2018-01-02 18:12:34', 3, 70);
+insert into schema2.account_alert (raised_at, account_id, house_id) values (timestamp '2018-01-20 20:59:59', 2, 71);
+insert into schema2.account_alert (raised_at, account_id, house_id) values (timestamp '2018-01-21 08:05:12', 2, 71);
+
+insert into "<Stock$"."&Price%" (id, value) values (123, 10140);
+insert into "<Stock$"."&Price%" (id, value) values (124, 10145);

@@ -7,13 +7,11 @@ import java.text.SimpleDateFormat;
 import hotrod.test.generation.AccountVO;
 import hotrod.test.generation.AgentVO;
 import hotrod.test.generation.ConfigValuesVO;
-import hotrod.test.generation.TestIdentity1VO;
 import hotrod.test.generation.TestSeqIdeDef1VO;
 import hotrod.test.generation.TransactionVO;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AgentDAO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
-import hotrod.test.generation.primitives.TestIdentity1DAO;
 import hotrod.test.generation.primitives.TestSeqIdeDef1DAO;
 import hotrod.test.generation.primitives.TransactionDAO;
 

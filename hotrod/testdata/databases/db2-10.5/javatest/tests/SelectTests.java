@@ -2,16 +2,28 @@ package tests;
 
 import java.sql.SQLException;
 
-import hotrod.test.generation.AccountTx2VO;
+import hotrod.test.generation.Account2VO;
+import hotrod.test.generation.AccountTx2DAO;
+import hotrod.test.generation.Alert2VO;
+import hotrod.test.generation.Car_part_priceVO;
+import hotrod.test.generation.HouseVO;
 import hotrod.test.generation.SpecialColumnsVO;
-import hotrod.test.generation.primitives.AccountTx2DAO;
+import hotrod.test.generation.primitives.AlertFinder;
+import hotrod.test.generation.primitives.Car_part_priceDAO;
+import hotrod.test.generation.primitives.Executor1;
+import hotrod.test.generation.primitives.HouseDAO;
 import hotrod.test.generation.primitives.SpecialColumnsDAO;
 
 public class SelectTests {
 
   public static void main(final String[] args) throws SQLException {
-    testColumns();
+    // testColumns();
     // testDynamicSelect();
+
+    // selectOtherSchema();
+    // selectMultiSchema();
+    selectComplexName();
+
   }
 
   private static void testDynamicSelect() throws SQLException {
@@ -21,10 +33,40 @@ public class SelectTests {
 
   private static void showDynamicSelectResult(final Integer maxAmount) throws SQLException {
     System.out.println("--- Dynamic Select with maxamount=" + maxAmount + " ---");
-    for (AccountTx2VO at : AccountTx2DAO.select(maxAmount)) {
+    for (AccountTx2DAO at : Executor1.findAccountTx2DAO(maxAmount)) {
       System.out.println("[maxamount=" + maxAmount + "] at=" + at);
     }
     System.out.println("---");
+  }
+
+  private static void selectOtherSchema() throws SQLException {
+    System.out.println("=== House ===");
+    for (HouseVO h : HouseDAO.selectByExample(new HouseVO())) {
+      System.out.println("h: " + h);
+    }
+    System.out.println("===");
+  }
+
+  private static void selectMultiSchema() throws SQLException {
+    System.out.println("=== Tree ===");
+    for (Account2VO acc : AlertFinder.findAlerts()) {
+      System.out.println("account: " + acc);
+      for (Alert2VO a : acc.getAlerts()) {
+        System.out.println(" + alert: " + a);
+        System.out.println(" + house: " + a.getHouse());
+      }
+    }
+    System.out.println("===");
+  }
+
+  private static void selectComplexName() throws SQLException {
+
+    System.out.println("=== Car Part Prices ===");
+    for (Car_part_priceVO p : Car_part_priceDAO.selectByExample(new Car_part_priceVO())) {
+      System.out.println("p: " + p);
+    }
+    System.out.println("===");
+
   }
 
   private static void testColumns() throws SQLException {

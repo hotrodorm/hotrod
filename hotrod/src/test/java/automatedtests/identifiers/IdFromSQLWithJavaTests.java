@@ -24,16 +24,16 @@ public class IdFromSQLWithJavaTests extends TestCase {
 
     DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
 
-    matchesSQL(Id.fromSQLAndJavaClass("sql", uAdapter, "A"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
+    matchesSQL(Id.fromTypedSQLAndJavaClass("sql", uAdapter, "A"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
 
     try {
-      matchesSQL(Id.fromSQLAndJavaClass("sql", uAdapter, "a"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
+      matchesSQL(Id.fromTypedSQLAndJavaClass("sql", uAdapter, "a"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
       fail("Java class cannot start with a lower case letter.");
     } catch (InvalidIdentifierException e) {
       // OK
     }
 
-    matchesSQL(Id.fromSQLAndJavaClass("sql", uAdapter, "Abc123"), "Abc123", "abc123", "ABC123", "abc123", "getAbc123",
+    matchesSQL(Id.fromTypedSQLAndJavaClass("sql", uAdapter, "Abc123"), "Abc123", "abc123", "ABC123", "abc123", "getAbc123",
         "setAbc123", "SQL", "sql", "sql");
 
   }
@@ -42,17 +42,17 @@ public class IdFromSQLWithJavaTests extends TestCase {
 
     DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
 
-    matchesSQL(Id.fromSQLAndJavaMember("sql", uAdapter, "a"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
+    matchesSQL(Id.fromTypedSQLAndJavaMember("sql", uAdapter, "a"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
 
     try {
-      matchesSQL(Id.fromSQLAndJavaMember("sql", uAdapter, "A"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql",
+      matchesSQL(Id.fromTypedSQLAndJavaMember("sql", uAdapter, "A"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql",
           "sql");
       fail("Java class cannot start with an upper case letter.");
     } catch (InvalidIdentifierException e) {
       // OK
     }
 
-    matchesSQL(Id.fromSQLAndJavaMember("sql", uAdapter, "abc123"), "Abc123", "abc123", "ABC123", "abc123", "getAbc123",
+    matchesSQL(Id.fromTypedSQLAndJavaMember("sql", uAdapter, "abc123"), "Abc123", "abc123", "ABC123", "abc123", "getAbc123",
         "setAbc123", "SQL", "sql", "sql");
 
   }

@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.metadata.DataSetMetadata;

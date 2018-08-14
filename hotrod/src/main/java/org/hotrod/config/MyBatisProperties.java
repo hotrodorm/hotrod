@@ -3,7 +3,6 @@ package org.hotrod.config;
 import java.io.Serializable;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.runtime.dynamicsql.SourceLocation;
 
 public class MyBatisProperties implements Serializable {
 

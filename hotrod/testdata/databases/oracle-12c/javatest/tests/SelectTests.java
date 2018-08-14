@@ -4,15 +4,20 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 
-import hotrod.test.generation.AccountTx3VO;
+import hotrod.test.generation.Account2VO;
 import hotrod.test.generation.AccountVO;
+import hotrod.test.generation.Alert2VO;
 import hotrod.test.generation.ConfigValuesVO;
+import hotrod.test.generation.HouseVO;
 import hotrod.test.generation.TxBranchVO;
+import hotrod.test.generation._price_VO;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountDAO.AccountOrderBy;
-import hotrod.test.generation.primitives.AccountTx3;
+import hotrod.test.generation.primitives.AlertFinder;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
+import hotrod.test.generation.primitives.HouseDAO;
 import hotrod.test.generation.primitives.TxBranchDAO;
+import hotrod.test.generation.primitives._price_DAO;
 
 public class SelectTests {
 
@@ -27,7 +32,12 @@ public class SelectTests {
     // selectByExampleWithNull();
     // selectTag();
     // tryInsertBadData();
-    selectViewSequenceAndQuery();
+    // selectViewSequenceAndQuery();
+
+    // selectOtherSchema();
+    // selectMultiSchema();
+    selectComplexName();
+
   }
 
   private static void tryInsertBadData() throws SQLException {
@@ -92,12 +102,32 @@ public class SelectTests {
 
   }
 
-  private static void selectTag() throws SQLException {
-    System.out.println("AccountTx3:");
-    System.out.println("===========");
-    for (AccountTx3VO a : AccountTx3.select(50, 300)) {
-      System.out.println("--> AccountTx3 = " + a);
+  private static void selectComplexName() throws SQLException {
+    System.out.println("=== Complex Name ===");
+    for (_price_VO p : _price_DAO.selectByExample(new _price_VO())) {
+      System.out.println("p: " + p);
     }
+    System.out.println("===");
+  }
+
+  private static void selectOtherSchema() throws SQLException {
+    System.out.println("=== House ===");
+    for (HouseVO h : HouseDAO.selectByExample(new HouseVO())) {
+      System.out.println("h: " + h);
+    }
+    System.out.println("===");
+  }
+
+  private static void selectMultiSchema() throws SQLException {
+    System.out.println("=== Tree ===");
+    for (Account2VO acc : AlertFinder.findAlerts()) {
+      System.out.println("account: " + acc);
+      for (Alert2VO a : acc.getAlerts()) {
+        System.out.println(" + alert: " + a);
+        System.out.println(" + house: " + a.getHouse());
+      }
+    }
+    System.out.println("===");
   }
 
   private static void selectViewSequenceAndQuery() throws SQLException {

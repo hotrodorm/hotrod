@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
-import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.Compare;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;

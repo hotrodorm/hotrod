@@ -21,7 +21,6 @@ import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;

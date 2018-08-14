@@ -1,3 +1,11 @@
+drop table "house_ROOM";
+drop table schema2.account_alert;
+-- drop table house;
+drop table schema2.house;
+drop view schema2.low_account;
+
+drop table "car#part$Price";
+
 drop view tx_branch;
 
 drop table types_char;

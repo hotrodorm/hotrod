@@ -79,7 +79,8 @@ public class Id implements Comparable<Id> {
 
   }
 
-  public static Id fromSQL(final String typedName, final DatabaseAdapter adapter) throws InvalidIdentifierException {
+  public static Id fromTypedSQL(final String typedName, final DatabaseAdapter adapter)
+      throws InvalidIdentifierException {
     if (adapter == null) {
       throw new InvalidIdentifierException("'adapter' cannot be null.");
     }
@@ -91,11 +92,31 @@ public class Id implements Comparable<Id> {
 
     String canonicalSQLName = adapter.canonizeName(sqlName.getName(), sqlName.isQuoted());
 
-    // System.out.println(
-    // "typedName=" + typedName + " isQuoted=" + sqlName.isQuoted() + "
-    // canonicalSQLName=" + canonicalSQLName);
-
     List<NamePart> nameParts = splitSQL(sqlName.getName());
+    if (nameParts == null || nameParts.isEmpty()) {
+      throw new InvalidIdentifierException("SQL name must produce at least one part");
+    }
+
+    String javaClassName = assembleJavaClassName(nameParts);
+    String javaMemberName = assembleJavaMemberName(nameParts);
+    String javaConstantName = assembleJavaConstantName(nameParts);
+    String dashedName = assembleDashedName(nameParts);
+
+    Id id = new Id(adapter, nameParts, canonicalSQLName, false, javaClassName, javaMemberName, javaConstantName,
+        dashedName);
+    return id;
+  }
+
+  public static Id fromCanonicalSQL(final String canonicalSQLName, final DatabaseAdapter adapter)
+      throws InvalidIdentifierException {
+    if (adapter == null) {
+      throw new InvalidIdentifierException("'adapter' cannot be null.");
+    }
+    if (canonicalSQLName == null || canonicalSQLName.isEmpty()) {
+      throw new InvalidIdentifierException("'canonicalSQLName ' cannot be null or empty.");
+    }
+
+    List<NamePart> nameParts = splitSQL(canonicalSQLName);
     if (nameParts == null || nameParts.isEmpty()) {
       throw new InvalidIdentifierException("SQL name must produce at least one part");
     }
@@ -156,7 +177,7 @@ public class Id implements Comparable<Id> {
     return id;
   }
 
-  public static Id fromSQLAndJavaClass(final String typedName, final DatabaseAdapter adapter,
+  public static Id fromTypedSQLAndJavaClass(final String typedName, final DatabaseAdapter adapter,
       final String javaClassName) throws InvalidIdentifierException {
     if (adapter == null) {
       throw new InvalidIdentifierException("'adapter' cannot be null.");
@@ -190,7 +211,37 @@ public class Id implements Comparable<Id> {
     return id;
   }
 
-  public static Id fromSQLAndJavaMember(final String typedName, final DatabaseAdapter adapter,
+  public static Id fromCanonicalSQLAndJavaClass(final String canonicalSQLName, final DatabaseAdapter adapter,
+      final String javaClassName) throws InvalidIdentifierException {
+    if (adapter == null) {
+      throw new InvalidIdentifierException("'adapter' cannot be null.");
+    }
+    if (canonicalSQLName == null || canonicalSQLName.isEmpty()) {
+      throw new InvalidIdentifierException("'canonicalSQLName' cannot be null or empty.");
+    }
+    if (javaClassName == null || javaClassName.isEmpty()) {
+      throw new InvalidIdentifierException("'javaClassName' cannot be null or empty.");
+    }
+    if (!javaClassName.matches("[A-Z_].*")) {
+      throw new InvalidIdentifierException("'javaClassName' must start with an upper case letter or an underscore.");
+    }
+
+    List<NamePart> nameParts = splitSQL(canonicalSQLName);
+    if (nameParts == null || nameParts.isEmpty()) {
+      throw new InvalidIdentifierException("SQL name must produce at least one part");
+    }
+
+    List<NamePart> javaNameParts = splitJava(javaClassName);
+    String javaMemberName = assembleJavaMemberName(javaNameParts);
+    String javaConstantName = assembleJavaConstantName(javaNameParts);
+    String dashedName = assembleDashedName(javaNameParts);
+
+    Id id = new Id(adapter, nameParts, canonicalSQLName, true, javaClassName, javaMemberName, javaConstantName,
+        dashedName);
+    return id;
+  }
+
+  public static Id fromTypedSQLAndJavaMember(final String typedName, final DatabaseAdapter adapter,
       final String javaMemberName) throws InvalidIdentifierException {
     if (adapter == null) {
       throw new InvalidIdentifierException("'adapter' cannot be null.");
@@ -210,6 +261,36 @@ public class Id implements Comparable<Id> {
     String canonicalSQLName = adapter.canonizeName(sqlName.getName(), sqlName.isQuoted());
 
     List<NamePart> nameParts = splitSQL(sqlName.getName());
+    if (nameParts == null || nameParts.isEmpty()) {
+      throw new InvalidIdentifierException("SQL name must produce at least one part");
+    }
+
+    List<NamePart> javaNameParts = splitJava(javaMemberName);
+    String javaClassName = assembleJavaClassName(javaNameParts);
+    String javaConstantName = assembleJavaConstantName(javaNameParts);
+    String dashedName = assembleDashedName(javaNameParts);
+
+    Id id = new Id(adapter, nameParts, canonicalSQLName, true, javaClassName, javaMemberName, javaConstantName,
+        dashedName);
+    return id;
+  }
+
+  public static Id fromCanonicalSQLAndJavaMember(final String canonicalSQLName, final DatabaseAdapter adapter,
+      final String javaMemberName) throws InvalidIdentifierException {
+    if (adapter == null) {
+      throw new InvalidIdentifierException("'adapter' cannot be null.");
+    }
+    if (canonicalSQLName == null || canonicalSQLName.isEmpty()) {
+      throw new InvalidIdentifierException("'canonicalSQLName' cannot be null or empty.");
+    }
+    if (javaMemberName == null || javaMemberName.isEmpty()) {
+      throw new InvalidIdentifierException("'javaMemberName' cannot be null or empty.");
+    }
+    if (!javaMemberName.matches("[a-z_].*")) {
+      throw new InvalidIdentifierException("'javaMemberName' must start with an lower case letter or an underscore.");
+    }
+
+    List<NamePart> nameParts = splitSQL(canonicalSQLName);
     if (nameParts == null || nameParts.isEmpty()) {
       throw new InvalidIdentifierException("SQL name must produce at least one part");
     }

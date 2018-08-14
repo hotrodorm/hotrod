@@ -193,4 +193,6 @@
 
   </target>
 
+  <target name="rebuild-hotrod" depends="clean-hotrod, build-hotrod" />
+
 </project>

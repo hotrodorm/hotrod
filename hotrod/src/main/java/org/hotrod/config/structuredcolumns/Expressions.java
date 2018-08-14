@@ -16,7 +16,6 @@ import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.database.DatabaseAdapter.UnescapedSQLCase;
-import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;

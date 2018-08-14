@@ -22,7 +22,7 @@ public class IdSpecialCharactersTests extends TestCase {
 
   public void testInitial() throws SQLException, InvalidIdentifierException {
     DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE);
-    Id id = Id.fromSQL("'%discount'", lAdapter);
+    Id id = Id.fromTypedSQL("'%discount'", lAdapter);
 
     assertEquals("%discount", id.getCanonicalSQLName());
     assertEquals("_discount", id.getJavaClassName());
@@ -31,7 +31,7 @@ public class IdSpecialCharactersTests extends TestCase {
 
   public void testMiddle() throws SQLException, InvalidIdentifierException {
     DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE);
-    Id id = Id.fromSQL("'car#part$Price'", lAdapter);
+    Id id = Id.fromTypedSQL("'car#part$Price'", lAdapter);
 
     assertEquals("car#part$Price", id.getCanonicalSQLName());
     assertEquals("Car_part_price", id.getJavaClassName());
@@ -40,7 +40,7 @@ public class IdSpecialCharactersTests extends TestCase {
 
   public void testEnd() throws SQLException, InvalidIdentifierException {
     DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE);
-    Id id = Id.fromSQL("'part#'", lAdapter);
+    Id id = Id.fromTypedSQL("'part#'", lAdapter);
 
     assertEquals("part#", id.getCanonicalSQLName());
     assertEquals("Part_", id.getJavaClassName());

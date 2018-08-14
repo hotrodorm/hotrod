@@ -7,10 +7,10 @@ import org.hotrod.runtime.dynamicsql.expressions.ChooseExpression;
 import org.hotrod.runtime.dynamicsql.expressions.CollectionExpression;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.IfExpression;
+import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.dynamicsql.expressions.OtherwiseExpression;
 import org.hotrod.runtime.dynamicsql.expressions.SetExpression;
 import org.hotrod.runtime.dynamicsql.expressions.TrimExpression;
-import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.dynamicsql.expressions.WhenExpression;
 import org.hotrod.runtime.dynamicsql.expressions.WhereExpression;
 

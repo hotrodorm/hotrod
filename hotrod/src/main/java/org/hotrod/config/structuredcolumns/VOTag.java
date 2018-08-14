@@ -245,7 +245,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     Id catalogId;
     try {
-      catalogId = this.catalog == null ? null : Id.fromSQL(this.catalog, adapter);
+      catalogId = this.catalog == null ? null : Id.fromTypedSQL(this.catalog, adapter);
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid catalog name '" + this.catalog + "' on tag <" + super.getTagName() + "> for the " + label
           + "': " + e.getMessage();
@@ -256,7 +256,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     Id schemaId;
     try {
-      schemaId = this.schema == null ? null : Id.fromSQL(this.schema, adapter);
+      schemaId = this.schema == null ? null : Id.fromTypedSQL(this.schema, adapter);
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid schema name '" + this.schema + "' on tag <" + super.getTagName() + "> for the " + label
           + ": " + e.getMessage();
@@ -267,7 +267,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     Id nameId;
     try {
-      nameId = Id.fromSQL(name, adapter);
+      nameId = Id.fromTypedSQL(name, adapter);
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid " + label + ": " + e.getMessage();
       throw new InvalidConfigurationFileException(this, msg, msg);

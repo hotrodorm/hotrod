@@ -152,7 +152,7 @@ public class TableTag extends AbstractEntityDAOTag {
 
     Id catalogId;
     try {
-      catalogId = this.catalog == null ? null : Id.fromSQL(this.catalog, adapter);
+      catalogId = this.catalog == null ? null : Id.fromTypedSQL(this.catalog, adapter);
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid catalog name '" + this.catalog + "' on tag <" + super.getTagName() + "> for the table '"
           + this.name + "': " + e.getMessage();
@@ -163,7 +163,7 @@ public class TableTag extends AbstractEntityDAOTag {
 
     Id schemaId;
     try {
-      schemaId = this.schema == null ? null : Id.fromSQL(this.schema, adapter);
+      schemaId = this.schema == null ? null : Id.fromTypedSQL(this.schema, adapter);
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid schema name '" + this.schema + "' on tag <" + super.getTagName() + "> for the table '"
           + this.name + "': " + e.getMessage();
@@ -194,8 +194,8 @@ public class TableTag extends AbstractEntityDAOTag {
 
     Id nameId;
     try {
-      nameId = this.javaClassName == null ? Id.fromSQL(this.name, adapter)
-          : Id.fromSQLAndJavaClass(this.name, adapter, this.javaClassName);
+      nameId = this.javaClassName == null ? Id.fromTypedSQL(this.name, adapter)
+          : Id.fromTypedSQLAndJavaClass(this.name, adapter, this.javaClassName);
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid table name '" + this.name + "': " + e.getMessage();
       throw new InvalidConfigurationFileException(this, msg, msg);
