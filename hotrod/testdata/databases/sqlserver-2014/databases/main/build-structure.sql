@@ -313,8 +313,52 @@ create table types_other (
 -- alter table types_other add constraint default_timestamp default getdate() for row1;
 
 
+-- Complex Names
+
+create table "car#part$Price" (
+  "part#" int,
+  "price$dollar" int,
+  "%discount" int
+);
 
 
+-- =========================
+-- Secondary Schema: schema2
+-- =========================
+
+create table schema2.house (
+  id int primary key not null,
+  name varchar(20)
+);
+
+create table house (
+  address varchar(50),
+  price int
+);
+
+create table schema2.account_alert (
+  raised_at timestamp not null,
+  account_id int not null,
+  house_id int not null,
+  constraint aa_fk1 foreign key (account_id) references account (id),
+  constraint ah_fk2 foreign key (house_id) references schema2.house (id)
+);
+
+create view schema2.low_account as select * from account where current_balance < 100;
+
+create table "house_ROOM" (
+  id int primary key not null,
+  room_name varchar(20),
+  house_id int not null,
+  constraint room_house_fk1 foreign key (house_id) references schema2.house (id)
+);
+  
+-- create schema "<Stock$";
+
+create table "&General"."<Stock$"."&Price%" (
+  id int,
+  value int
+);
 
 
 
