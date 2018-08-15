@@ -337,7 +337,7 @@ create table house (
 );
 
 create table schema2.account_alert (
-  raised_at timestamp not null,
+  raised_at datetime not null,
   account_id int not null,
   house_id int not null,
   constraint aa_fk1 foreign key (account_id) references account (id),
@@ -360,6 +360,10 @@ create table "&General"."<Stock$"."&Price%" (
   value int
 );
 
+create table "&General".dbo.atelier (
+  id int,
+  name varchar(20)
+);
 
 
 
