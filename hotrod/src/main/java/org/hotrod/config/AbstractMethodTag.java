@@ -30,7 +30,7 @@ public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends 
     this.method = source.method;
   }
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  protected void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
 
     // method

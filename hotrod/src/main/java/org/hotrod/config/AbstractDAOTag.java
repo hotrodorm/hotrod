@@ -18,6 +18,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Correlator;
 import org.hotrod.utils.Correlator.CorrelatedEntry;
+import org.hotrod.utils.identifiers.ObjectId;
 
 /**
  * <pre>
@@ -96,15 +97,18 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
     // sequences
 
-    Set<String> seqNames = new HashSet<String>();
+    Set<ObjectId> seqNames = new HashSet<ObjectId>();
+
+    log.debug(
+        "Validating sequences[" + this.sequences.toList().size() + "] now for '" + daosTag.getInternalCaption() + "':");
 
     for (SequenceMethodTag s : this.sequences) {
-      s.validate(daosTag, config, fragmentConfig);
+      s.validate(daosTag, config, fragmentConfig, adapter);
       super.addChild(s);
-      if (seqNames.contains(s.getName())) {
+      if (seqNames.contains(s.getSequenceId())) {
+        String msg = "Duplicate sequence " + s.getSequenceId().getRenderedSQLName();
         throw new InvalidConfigurationFileException(this, //
-            "Duplicate sequence with name '" + s.getName() + "'", //
-            "Duplicate sequence with name '" + s.getName() + "'.");
+            msg, msg);
       }
       String method = s.getMethod();
       if (this.declaredMethodNames.contains(method)) {
@@ -112,7 +116,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
             "Duplicate sequence method-name '" + method + "'", //
             "Duplicate sequence method-name '" + method + "'.");
       }
-      seqNames.add(s.getName());
+      seqNames.add(s.getSequenceId());
       this.declaredMethodNames.add(method);
       log.debug("* added '" + method + "'");
     }

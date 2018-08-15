@@ -175,8 +175,8 @@ public class Mapper extends GeneratableObject {
           try {
             writeSelectSequence(s);
           } catch (SequencesNotSupportedException e) {
-            throw new ControlledException(
-                "Could not generate mapper for sequence '" + s.getName() + "' onto file: " + e.getMessage());
+            throw new ControlledException("Could not generate mapper for sequence "
+                + s.getSequenceId().getRenderedSQLName() + " onto file: " + e.getMessage());
           }
         }
 
@@ -1042,14 +1042,13 @@ public class Mapper extends GeneratableObject {
    */
 
   private void writeSelectSequence(final SequenceMethodTag seq) throws IOException, SequencesNotSupportedException {
-    println("  <!-- select sequence " + seq.getName() + " -->");
+    println("  <!-- select sequence " + seq.getSequenceId().getRenderedSQLName() + " -->");
     println();
     println("  <select id=\"" + this.getMapperSelectSequence(seq) + "\" " + "resultType=\"java.lang.Long\">");
-    String sentence = this.generator.getAdapter().renderSelectSequence(seq.getId());
+    String sentence = this.generator.getAdapter().renderSelectSequence(seq.getSequenceId());
     println("    " + SUtils.escapeXmlBody(sentence));
     println("  </select>");
     println();
-
   }
 
   /**

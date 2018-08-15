@@ -88,6 +88,8 @@
     <select method="findTDateTimeVO" vo="TDateTimeVO">
       select * from types_date_time
     </select>
+
+    <sequence name="my_seq1" schema="schema2" method="retrieveMySeq1" />
     
   </dao>
 
@@ -95,7 +97,8 @@
   
   <table name="'house_ROOM'" />
   <table name="account_alert" schema="schema2" />
-  <table name="house" schema="schema2" />
+  <table name="house" schema="schema2" >
+  </table>
   
   <table name="'&amp;Price%'" catalog="'&amp;General'" schema="'&lt;Stock$'" />
   

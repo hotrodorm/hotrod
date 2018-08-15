@@ -365,6 +365,7 @@ create table "&General".dbo.atelier (
   name varchar(20)
 );
 
+create sequence schema2.my_seq1;
 
 
 

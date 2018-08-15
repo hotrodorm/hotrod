@@ -17,7 +17,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
-import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class ApacheDerbyAdapter extends DatabaseAdapter {
@@ -162,8 +162,8 @@ public class ApacheDerbyAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderSelectSequence(final Id sequence) throws SequencesNotSupportedException {
-    return "select next value for " + sequence.getRenderedSQLName() + " from sysibm.sysdummy1";
+  public String renderSelectSequence(final ObjectId id) throws SequencesNotSupportedException {
+    return "select next value for " + id.getRenderedSQLName() + " from sysibm.sysdummy1";
   }
 
   @Override

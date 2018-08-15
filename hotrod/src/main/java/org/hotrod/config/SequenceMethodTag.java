@@ -4,9 +4,13 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.log4j.Logger;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.Compare;
+import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 
 @XmlRootElement(name = "sequence")
 public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
@@ -19,11 +23,13 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
 
   static final String TAG_NAME = "sequence";
 
-  private static final String METHOD_PREFIX = "selectSequence";
-
   // Properties
 
   private String name = null;
+  private String catalog = null;
+  private String schema = null;
+
+  private ObjectId sequenceId = null;
 
   // Constructor
 
@@ -52,6 +58,16 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
     this.name = name;
   }
 
+  @XmlAttribute
+  public void setCatalog(final String catalog) {
+    this.catalog = catalog;
+  }
+
+  @XmlAttribute
+  public void setSchema(final String schema) {
+    this.schema = schema;
+  }
+
   @XmlAttribute(name = "method")
   public void setMethod(final String method) {
     this.method = method;
@@ -60,7 +76,10 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
   // Behavior
 
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig) throws InvalidConfigurationFileException {
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
+
+    log.debug(">>> VALIDATING SEQUENCE.");
 
     super.validate(daosTag, config, fragmentConfig);
 
@@ -70,6 +89,45 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'name' cannot be empty", //
           "Attribute 'name' of tag <" + TAG_NAME + "> cannot be empty. " + "You must specify a sequence name.");
+    }
+
+    // catalog
+
+    Id catalogId;
+    try {
+      catalogId = this.catalog == null ? null : Id.fromTypedSQL(this.catalog, adapter);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid catalog name '" + this.catalog + "' on tag <" + super.getTagName() + "> for the table '"
+          + this.name + "': " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
+    }
+
+    // schema
+
+    Id schemaId;
+    try {
+      schemaId = this.schema == null ? null : Id.fromTypedSQL(this.schema, adapter);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid schema name '" + this.schema + "' on tag <" + super.getTagName() + "> for the table '"
+          + this.name + "': " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
+    }
+
+    // Assemble object id
+
+    Id nameId;
+    try {
+      nameId = Id.fromTypedSQL(this.name, adapter);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid table name '" + this.name + "': " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
+    }
+
+    try {
+      this.sequenceId = new ObjectId(catalogId, schemaId, nameId, adapter);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid table object name: " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
     }
 
   }
@@ -84,13 +142,17 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
     return super.method;
   }
 
+  public ObjectId getSequenceId() {
+    return sequenceId;
+  }
+
   // Merging logic
 
   @Override
   public boolean sameKey(final AbstractConfigurationTag fresh) {
     try {
       SequenceMethodTag f = (SequenceMethodTag) fresh;
-      return this.name.equals(f.name);
+      return this.sequenceId.equals(f.getSequenceId());
     } catch (ClassCastException e) {
       return false;
     }
@@ -103,6 +165,9 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
       boolean different = !same(fresh);
 
       this.method = f.method;
+      this.catalog = f.catalog;
+      this.schema = f.schema;
+      this.sequenceId = f.sequenceId;
 
       return different;
     } catch (ClassCastException e) {
@@ -115,7 +180,7 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
     try {
       SequenceMethodTag f = (SequenceMethodTag) fresh;
       return //
-      Compare.same(this.name, f.name) && //
+      this.sequenceId.equals(f.getSequenceId()) && //
           Compare.same(this.method, f.method);
     } catch (ClassCastException e) {
       return false;

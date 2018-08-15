@@ -1,3 +1,5 @@
+drop sequence schema2.my_seq1;
+
 drop table "&General".dbo.atelier;
 
 drop table "&General"."<Stock$"."&Price%";

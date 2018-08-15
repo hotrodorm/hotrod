@@ -62,7 +62,8 @@ public class ExecutorTag extends AbstractDAOTag {
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
-    log.debug("validate");
+
+    log.debug("validate Table tag: " + daosTag.getInternalCaption());
 
     this.daosTag = daosTag;
     this.fragmentConfig = fragmentConfig;

@@ -177,7 +177,7 @@ public class ObjectDAO extends GeneratableObject {
 
         log.debug("SQL NAME=" + this.metadata.getId().getCanonicalSQLName() + " this.tag=" + this.tag);
         for (SequenceMethodTag s : this.tag.getSequences()) {
-          log.debug("s.getName()=" + s.getName());
+          log.debug("s.getName()=" + s.getSequenceId().getRenderedSQLName());
           writeSelectSequence(s);
         }
 
@@ -2106,9 +2106,9 @@ public class ObjectDAO extends GeneratableObject {
 
   private void writeSelectSequence(final SequenceMethodTag tag) throws IOException, SequencesNotSupportedException {
 
-    println("  // sequence " + tag.getName());
+    println("  // sequence " + tag.getSequenceId().getRenderedSQLName());
     println();
-    println(ObjectDAO.renderJavaComment(this.generator.getAdapter().renderSelectSequence(tag.getId())));
+    println(ObjectDAO.renderJavaComment(this.generator.getAdapter().renderSelectSequence(tag.getSequenceId())));
     println();
 
     println("  public static long " + tag.getMethod() + "()");

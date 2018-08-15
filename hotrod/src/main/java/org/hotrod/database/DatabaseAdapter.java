@@ -18,7 +18,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.JdbcTypes.JDBCType;
-import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
 
@@ -158,7 +158,7 @@ public abstract class DatabaseAdapter implements Serializable {
   public abstract String renderSequencesPrefetch(final List<ColumnMetadata> sequenceGeneratedColumns)
       throws SequencesNotSupportedException;
 
-  public abstract String renderSelectSequence(final Id sequence) throws SequencesNotSupportedException;
+  public abstract String renderSelectSequence(final ObjectId sequence) throws SequencesNotSupportedException;
 
   public abstract String renderInlineSequenceOnInsert(final ColumnMetadata cm) throws SequencesNotSupportedException;
 

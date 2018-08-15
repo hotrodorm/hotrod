@@ -133,45 +133,47 @@ public class ObjectId implements Comparable<ObjectId> {
     return a.compareTo(b);
   }
 
-  // Equals
+  // Indexable
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((catalog == null) ? 0 : catalog.hashCode());
+    result = prime * result + ((object == null) ? 0 : object.hashCode());
+    result = prime * result + ((schema == null) ? 0 : schema.hashCode());
+    return result;
+  }
 
   @Override
   public boolean equals(final Object obj) {
-    log("ObjectID.equals() 1");
     if (this == obj)
       return true;
-    log("ObjectID.equals() 2");
     if (obj == null)
       return false;
-    log("ObjectID.equals() 3");
     if (getClass() != obj.getClass())
       return false;
     ObjectId other = (ObjectId) obj;
-    log("ObjectID.equals() 4");
     if (catalog == null) {
-      log("ObjectID.equals() 5");
       if (other.catalog != null)
         return false;
     } else if (!catalog.equals(other.catalog))
       return false;
-    log("ObjectID.equals() 6");
     if (object == null) {
-      log("ObjectID.equals() 7");
       if (other.object != null)
         return false;
     } else if (!object.equals(other.object)) {
-      log("ObjectID.equals() 7.1");
       return false;
     }
-    log("ObjectID.equals() 8");
     if (schema == null) {
       if (other.schema != null)
         return false;
     } else if (!schema.equals(other.schema))
       return false;
-    log("ObjectID.equals() 9");
     return true;
   }
+
+  // Helpers
 
   public String toString() {
     return this.getRenderedSQLName();

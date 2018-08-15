@@ -572,6 +572,16 @@ public class Id implements Comparable<Id> {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || (c == '_');
   }
 
+  // Indexable
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((nameParts == null) ? 0 : nameParts.size());
+    return result;
+  }
+
   @Override
   public boolean equals(final Object obj) {
     log("Id.equals() 1");
@@ -600,6 +610,8 @@ public class Id implements Comparable<Id> {
     log("Id.equals() 6");
     return true;
   }
+
+  // Helper methods
 
   private static String repeat(final String s, final int times) {
     StringBuilder sb = new StringBuilder();

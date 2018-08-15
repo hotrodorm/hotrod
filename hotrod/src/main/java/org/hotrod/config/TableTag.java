@@ -132,7 +132,7 @@ public class TableTag extends AbstractEntityDAOTag {
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
-    log.debug("validate");
+    log.debug("validate Table tag: " + daosTag.getInternalCaption());
 
     this.daosTag = daosTag;
     this.fragmentConfig = fragmentConfig;

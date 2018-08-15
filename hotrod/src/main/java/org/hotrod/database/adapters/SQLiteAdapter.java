@@ -16,7 +16,7 @@ import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
-import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class SQLiteAdapter extends DatabaseAdapter {
@@ -171,7 +171,7 @@ public class SQLiteAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderSelectSequence(final Id sequence) throws SequencesNotSupportedException {
+  public String renderSelectSequence(final ObjectId id) throws SequencesNotSupportedException {
     throw new UnsupportedOperationException("This database does not return support sequences.");
   }
 

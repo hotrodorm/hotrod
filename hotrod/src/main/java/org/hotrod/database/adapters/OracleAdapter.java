@@ -18,7 +18,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.JdbcTypes.JDBCType;
-import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class OracleAdapter extends DatabaseAdapter {
@@ -215,8 +215,8 @@ public class OracleAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderSelectSequence(final Id sequence) throws SequencesNotSupportedException {
-    return "select " + sequence.getRenderedSQLName() + ".nextval from dual";
+  public String renderSelectSequence(final ObjectId id) throws SequencesNotSupportedException {
+    return "select " + id.getRenderedSQLName() + ".nextval from dual";
   }
 
   @Override

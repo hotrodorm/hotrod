@@ -20,7 +20,7 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.JdbcTypes.JDBCType;
-import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class SQLServerAdapter extends DatabaseAdapter {
@@ -199,8 +199,8 @@ public class SQLServerAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderSelectSequence(final Id sequence) throws SequencesNotSupportedException {
-    return "select next value for " + sequence.getRenderedSQLName();
+  public String renderSelectSequence(final ObjectId id) throws SequencesNotSupportedException {
+    return "select next value for " + id.getRenderedSQLName();
   }
 
   @Override

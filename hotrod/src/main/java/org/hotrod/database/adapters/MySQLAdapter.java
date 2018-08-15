@@ -18,7 +18,7 @@ import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
-import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 public class MySQLAdapter extends DatabaseAdapter {
@@ -163,7 +163,7 @@ public class MySQLAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderSelectSequence(final Id sequence) throws SequencesNotSupportedException {
+  public String renderSelectSequence(final ObjectId id) throws SequencesNotSupportedException {
     throw new SequencesNotSupportedException("Sequence-generated columns are not supported by this database.");
   }
 

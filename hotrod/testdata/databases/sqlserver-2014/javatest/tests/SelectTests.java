@@ -13,6 +13,7 @@ import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AlertFinder;
 import hotrod.test.generation.primitives.AtelierDAO;
 import hotrod.test.generation.primitives.Car_part_priceDAO;
+import hotrod.test.generation.primitives.Executor1;
 import hotrod.test.generation.primitives.HouseDAO;
 
 public class SelectTests {
@@ -28,7 +29,8 @@ public class SelectTests {
     // selectComplexName();
     // selectOtherSchema();
     // selectMultiSchema();
-    selectCatalogDefaultSchema();
+    // selectCatalogDefaultSchema();
+    selectSequenceFromSchema();
   }
 
   private static void selectByExample() throws SQLException {
@@ -66,6 +68,12 @@ public class SelectTests {
       System.out.println("a: " + a);
     }
     System.out.println("===");
+  }
+
+  private static void selectSequenceFromSchema() throws SQLException {
+    System.out.println("=== Sequence ===");
+    long s1 = Executor1.retrieveMySeq1();
+    System.out.println("s1=" + s1);
   }
 
   private static void selectComplexName() throws SQLException {

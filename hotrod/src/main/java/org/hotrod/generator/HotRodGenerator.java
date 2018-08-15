@@ -895,7 +895,7 @@ public abstract class HotRodGenerator {
         for (SequenceMethodTag s : t.getSequences()) {
           sequences++;
           if (this.displayMode == DisplayMode.LIST) {
-            display(" - Sequence " + s.getName() + " included.");
+            display(" - Sequence " + s.getSequenceId().getRenderedSQLName() + " included.");
           }
         }
         for (QueryMethodTag q : t.getQueries()) {
@@ -919,7 +919,7 @@ public abstract class HotRodGenerator {
         for (SequenceMethodTag s : v.getSequences()) {
           sequences++;
           if (this.displayMode == DisplayMode.LIST) {
-            display(" - Sequence " + s.getName() + " included.");
+            display(" - Sequence " + s.getSequenceId().getRenderedSQLName() + " included.");
           }
         }
         for (QueryMethodTag q : v.getQueries()) {
@@ -951,7 +951,7 @@ public abstract class HotRodGenerator {
         for (SequenceMethodTag s : d.getSequences()) {
           sequences++;
           if (this.displayMode == DisplayMode.LIST) {
-            display(" - Sequence " + s.getName() + " included.");
+            display(" - Sequence " + s.getSequenceId().getRenderedSQLName() + " included.");
           }
         }
         for (QueryMethodTag q : d.getQueries()) {
