@@ -166,8 +166,10 @@ public class HotRodAntTask extends Task {
     } catch (UnrecognizedDatabaseException e) {
       throw new BuildException(
           "Could not recognize database type at JDBC URL " + loc.getUrl() + " - " + e.getMessage());
+    } catch (UncontrolledException e) {
+      Throwable cause = e.getCause();
+      throw new BuildException(e.getMessage() + (cause == null ? "" : ": " + cause.getMessage()));
     } catch (Throwable e) {
-      log.debug("Could not connect to database", e);
       throw new BuildException("Could not connect to database: " + EUtils.renderMessages(e));
     }
 

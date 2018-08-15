@@ -1,8 +1,11 @@
 package org.hotrod.utils;
 
+import org.apache.log4j.Logger;
 import org.hotrod.runtime.util.ListWriter;
 
 public class EUtils {
+
+  private static transient final Logger log = Logger.getLogger(EUtils.class);
 
   public static String renderMessages(final Throwable t) {
     return renderMessages(t, "", "", ": ");
@@ -13,8 +16,10 @@ public class EUtils {
     ListWriter w = new ListWriter(prefix, suffix, separator);
     Throwable current = t;
     while (current != null) {
-      if (current.getMessage() != null) {
-        w.add(current.getMessage());
+      String msg = current.getMessage();
+      log.debug("Exception Stack [" + current.getClass().getName() + "] " + msg);
+      if (msg != null) {
+        w.add(msg);
       }
       current = current.getCause();
     }
