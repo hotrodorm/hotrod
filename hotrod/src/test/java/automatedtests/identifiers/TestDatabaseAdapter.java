@@ -17,6 +17,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 public class TestDatabaseAdapter extends DatabaseAdapter {
 
   public static enum CaseSensitiveness {
+
     UPPERCASE("[A-Z][A-Z0-9_]*"), // Oracle, DB2, H2, Derby, HyperSQL
     LOWERCASE("[a-z][a-z0-9_]*"), // PostgreSQL
     INSENSITIVE("[A-Za-z][A-Za-z0-9_]*"), // SQL Server
@@ -70,13 +71,44 @@ public class TestDatabaseAdapter extends DatabaseAdapter {
 
   }
 
-  private CaseSensitiveness caseSensitiveness;
+  public static enum CatalogSchemaSupport {
+    NONE(false, false), //
+    CATALOG_ONLY(true, false), //
+    SCHEMA_ONLY(false, true), //
+    CATALOG_AND_SCHEMA(true, true) //
+    ;
 
-  public TestDatabaseAdapter(final DatabaseMetaData dm, final CaseSensitiveness caseSensitiveness) throws SQLException {
+    private boolean supportCatalog;
+    private boolean supportsSchema;
+
+    private CatalogSchemaSupport(boolean supportCatalog, boolean supportsSchema) {
+      this.supportCatalog = supportCatalog;
+      this.supportsSchema = supportsSchema;
+    }
+
+    public boolean supportCatalog() {
+      return supportCatalog;
+    }
+
+    public boolean supportsSchema() {
+      return supportsSchema;
+    }
+
+  }
+
+  private CaseSensitiveness caseSensitiveness;
+  private CatalogSchemaSupport catalogSchemaSupport;
+
+  public TestDatabaseAdapter(final DatabaseMetaData dm, final CaseSensitiveness caseSensitiveness,
+      final CatalogSchemaSupport catalogSchemaSupport) throws SQLException {
     super(dm);
     this.caseSensitiveness = caseSensitiveness;
     if (this.caseSensitiveness == null) {
       throw new IllegalArgumentException("'caseSensitiveness' should not be null");
+    }
+    this.catalogSchemaSupport = catalogSchemaSupport;
+    if (this.catalogSchemaSupport == null) {
+      throw new IllegalArgumentException("'catalogSchemaSupport' should not be null");
     }
     super.identifierQuoteString = "'";
   }
@@ -98,14 +130,12 @@ public class TestDatabaseAdapter extends DatabaseAdapter {
 
   @Override
   public boolean supportsCatalog() {
-    // TODO Auto-generated method stub
-    return false;
+    return this.catalogSchemaSupport.supportCatalog();
   }
 
   @Override
   public boolean supportsSchema() {
-    // TODO Auto-generated method stub
-    return false;
+    return this.catalogSchemaSupport.supportsSchema();
   }
 
   @Override

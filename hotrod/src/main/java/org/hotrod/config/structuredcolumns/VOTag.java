@@ -274,7 +274,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     }
 
     try {
-      this.objectId = new ObjectId(catalogId, schemaId, nameId);
+      this.objectId = new ObjectId(catalogId, schemaId, nameId, adapter);
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid table object name: " + e.getMessage();
       throw new InvalidConfigurationFileException(this, msg, msg);

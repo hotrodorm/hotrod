@@ -2,6 +2,7 @@ package org.hotrod.utils.identifiers;
 
 import java.util.List;
 
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.utils.identifiers.Id.NamePart;
 
@@ -12,16 +13,22 @@ public class ObjectId implements Comparable<ObjectId> {
   private Id catalog;
   private Id schema;
   private Id object;
+  private DatabaseAdapter adapter;
 
   // Constructor
 
-  public ObjectId(final Id catalog, final Id schema, final Id object) throws InvalidIdentifierException {
+  public ObjectId(final Id catalog, final Id schema, final Id object, final DatabaseAdapter adapter)
+      throws InvalidIdentifierException {
     if (object == null) {
       throw new InvalidIdentifierException("'object' cannot be null");
+    }
+    if (adapter == null) {
+      throw new InvalidIdentifierException("'adapter' cannot be null");
     }
     this.catalog = catalog;
     this.schema = schema;
     this.object = object;
+    this.adapter = adapter;
   }
 
   // Getters
@@ -47,10 +54,19 @@ public class ObjectId implements Comparable<ObjectId> {
     if (this.catalog != null) {
       sb.append(this.catalog.getRenderedSQLName());
       sb.append(".");
-    }
-    if (this.schema != null) {
-      sb.append(this.schema.getRenderedSQLName());
-      sb.append(".");
+      if (this.schema != null) {
+        sb.append(this.schema.getRenderedSQLName());
+        sb.append(".");
+      } else {
+        if (this.adapter.supportsSchema()) {
+          sb.append(".");
+        }
+      }
+    } else {
+      if (this.schema != null) {
+        sb.append(this.schema.getRenderedSQLName());
+        sb.append(".");
+      }
     }
     sb.append(this.object.getRenderedSQLName());
     return sb.toString();

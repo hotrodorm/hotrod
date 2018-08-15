@@ -12,6 +12,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.utils.identifiers.Id;
 
 import automatedtests.identifiers.TestDatabaseAdapter.CaseSensitiveness;
+import automatedtests.identifiers.TestDatabaseAdapter.CatalogSchemaSupport;
 import junit.framework.TestCase;
 
 public class IdFromSQLWithJavaTests extends TestCase {
@@ -22,27 +23,32 @@ public class IdFromSQLWithJavaTests extends TestCase {
 
   public void testFromSQLWithJavaClass() throws SQLException, InvalidIdentifierException {
 
-    DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
+    DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE,
+        CatalogSchemaSupport.SCHEMA_ONLY);
 
-    matchesSQL(Id.fromTypedSQLAndJavaClass("sql", uAdapter, "A"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
+    matchesSQL(Id.fromTypedSQLAndJavaClass("sql", uAdapter, "A"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql",
+        "sql");
 
     try {
-      matchesSQL(Id.fromTypedSQLAndJavaClass("sql", uAdapter, "a"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
+      matchesSQL(Id.fromTypedSQLAndJavaClass("sql", uAdapter, "a"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql",
+          "sql");
       fail("Java class cannot start with a lower case letter.");
     } catch (InvalidIdentifierException e) {
       // OK
     }
 
-    matchesSQL(Id.fromTypedSQLAndJavaClass("sql", uAdapter, "Abc123"), "Abc123", "abc123", "ABC123", "abc123", "getAbc123",
-        "setAbc123", "SQL", "sql", "sql");
+    matchesSQL(Id.fromTypedSQLAndJavaClass("sql", uAdapter, "Abc123"), "Abc123", "abc123", "ABC123", "abc123",
+        "getAbc123", "setAbc123", "SQL", "sql", "sql");
 
   }
 
   public void testFromSQLWithJavaMember() throws SQLException, InvalidIdentifierException {
 
-    DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
+    DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE,
+        CatalogSchemaSupport.SCHEMA_ONLY);
 
-    matchesSQL(Id.fromTypedSQLAndJavaMember("sql", uAdapter, "a"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql", "sql");
+    matchesSQL(Id.fromTypedSQLAndJavaMember("sql", uAdapter, "a"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql",
+        "sql");
 
     try {
       matchesSQL(Id.fromTypedSQLAndJavaMember("sql", uAdapter, "A"), "A", "a", "A", "a", "getA", "setA", "SQL", "sql",
@@ -52,8 +58,8 @@ public class IdFromSQLWithJavaTests extends TestCase {
       // OK
     }
 
-    matchesSQL(Id.fromTypedSQLAndJavaMember("sql", uAdapter, "abc123"), "Abc123", "abc123", "ABC123", "abc123", "getAbc123",
-        "setAbc123", "SQL", "sql", "sql");
+    matchesSQL(Id.fromTypedSQLAndJavaMember("sql", uAdapter, "abc123"), "Abc123", "abc123", "ABC123", "abc123",
+        "getAbc123", "setAbc123", "SQL", "sql", "sql");
 
   }
 

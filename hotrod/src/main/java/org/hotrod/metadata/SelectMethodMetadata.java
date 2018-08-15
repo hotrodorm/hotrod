@@ -92,7 +92,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     this.adapter = generator.getAdapter();
     this.loc = generator.getLoc();
     this.tag = tag;
-    this.id = new ObjectId(null, null, Id.fromJavaMember(tag.getMethod()));
+    this.id = new ObjectId(null, null, Id.fromJavaMember(tag.getMethod()), adapter);
     this.selectGenerationTag = selectGenerationTag;
     this.columnsPrefixGenerator = columnsPrefixGenerator;
 

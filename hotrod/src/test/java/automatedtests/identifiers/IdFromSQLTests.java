@@ -12,6 +12,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.utils.identifiers.Id;
 
 import automatedtests.identifiers.TestDatabaseAdapter.CaseSensitiveness;
+import automatedtests.identifiers.TestDatabaseAdapter.CatalogSchemaSupport;
 import junit.framework.TestCase;
 
 public class IdFromSQLTests extends TestCase {
@@ -22,7 +23,8 @@ public class IdFromSQLTests extends TestCase {
 
   public void testfromTypedSQLCommon() throws SQLException, InvalidIdentifierException {
 
-    DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
+    DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE,
+        CatalogSchemaSupport.SCHEMA_ONLY);
 
     // a
     // A
@@ -149,7 +151,8 @@ public class IdFromSQLTests extends TestCase {
 
   public void testRealcases() throws SQLException, InvalidIdentifierException {
 
-    DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE);
+    DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE,
+        CatalogSchemaSupport.SCHEMA_ONLY);
 
     String expected = "car#part$Price";
 
@@ -161,7 +164,8 @@ public class IdFromSQLTests extends TestCase {
   }
 
   public void testfromTypedSQLUpperCaseDefaultAdapter() throws InvalidIdentifierException, SQLException {
-    DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
+    DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE,
+        CatalogSchemaSupport.SCHEMA_ONLY);
 
     // Unquoted
 
@@ -182,7 +186,8 @@ public class IdFromSQLTests extends TestCase {
   }
 
   public void testfromTypedSQLLowerCaseDefaultAdapter() throws InvalidIdentifierException, SQLException {
-    DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE);
+    DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE,
+        CatalogSchemaSupport.SCHEMA_ONLY);
 
     // Unquoted
 
@@ -203,7 +208,8 @@ public class IdFromSQLTests extends TestCase {
   }
 
   public void testfromTypedSQLCaseSensitiveAdapter() throws InvalidIdentifierException, SQLException {
-    DatabaseAdapter sAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.SENSITIVE);
+    DatabaseAdapter sAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.SENSITIVE,
+        CatalogSchemaSupport.SCHEMA_ONLY);
 
     // Unquoted
 
@@ -221,7 +227,8 @@ public class IdFromSQLTests extends TestCase {
   }
 
   public void testfromTypedSQLCaseInsensitiveAdapter() throws InvalidIdentifierException, SQLException {
-    DatabaseAdapter iAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.INSENSITIVE);
+    DatabaseAdapter iAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.INSENSITIVE,
+        CatalogSchemaSupport.SCHEMA_ONLY);
 
     // Unquoted
 

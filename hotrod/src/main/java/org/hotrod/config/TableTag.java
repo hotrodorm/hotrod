@@ -202,7 +202,7 @@ public class TableTag extends AbstractEntityDAOTag {
     }
 
     try {
-      this.id = new ObjectId(catalogId, schemaId, nameId);
+      this.id = new ObjectId(catalogId, schemaId, nameId, adapter);
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid table object name: " + e.getMessage();
       throw new InvalidConfigurationFileException(this, msg, msg);

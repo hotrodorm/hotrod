@@ -12,6 +12,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.utils.identifiers.Id;
 
 import automatedtests.identifiers.TestDatabaseAdapter.CaseSensitiveness;
+import automatedtests.identifiers.TestDatabaseAdapter.CatalogSchemaSupport;
 import junit.framework.TestCase;
 
 public class IdSpecialCharactersTests extends TestCase {
@@ -21,7 +22,8 @@ public class IdSpecialCharactersTests extends TestCase {
   }
 
   public void testInitial() throws SQLException, InvalidIdentifierException {
-    DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE);
+    DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE,
+        CatalogSchemaSupport.SCHEMA_ONLY);
     Id id = Id.fromTypedSQL("'%discount'", lAdapter);
 
     assertEquals("%discount", id.getCanonicalSQLName());
@@ -30,7 +32,8 @@ public class IdSpecialCharactersTests extends TestCase {
   }
 
   public void testMiddle() throws SQLException, InvalidIdentifierException {
-    DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE);
+    DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE,
+        CatalogSchemaSupport.SCHEMA_ONLY);
     Id id = Id.fromTypedSQL("'car#part$Price'", lAdapter);
 
     assertEquals("car#part$Price", id.getCanonicalSQLName());
@@ -39,7 +42,8 @@ public class IdSpecialCharactersTests extends TestCase {
   }
 
   public void testEnd() throws SQLException, InvalidIdentifierException {
-    DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE);
+    DatabaseAdapter lAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.LOWERCASE,
+        CatalogSchemaSupport.SCHEMA_ONLY);
     Id id = Id.fromTypedSQL("'part#'", lAdapter);
 
     assertEquals("part#", id.getCanonicalSQLName());

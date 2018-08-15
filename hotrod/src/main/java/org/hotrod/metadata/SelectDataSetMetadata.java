@@ -57,7 +57,7 @@ public class SelectDataSetMetadata implements DataSetMetadata, Serializable {
     this.adapter = adapter;
     this.loc = loc;
     this.tag = tag;
-    this.id = new ObjectId(null, null, Id.fromJavaClass(tag.getJavaClassName()));
+    this.id = new ObjectId(null, null, Id.fromJavaClass(tag.getJavaClassName()), adapter);
     this.tempViewName = tempViewName;
     this.fragmentConfig = tag.getFragmentConfig();
   }

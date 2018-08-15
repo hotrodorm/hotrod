@@ -13,6 +13,7 @@ import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;
 
 import automatedtests.identifiers.TestDatabaseAdapter.CaseSensitiveness;
+import automatedtests.identifiers.TestDatabaseAdapter.CatalogSchemaSupport;
 import junit.framework.TestCase;
 
 public class ObjectIdTests extends TestCase {
@@ -23,39 +24,47 @@ public class ObjectIdTests extends TestCase {
 
   public void testFromSQLCommon() throws SQLException, InvalidIdentifierException {
 
-    DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE);
+    DatabaseAdapter uAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.UPPERCASE,
+        CatalogSchemaSupport.SCHEMA_ONLY);
 
     try {
       @SuppressWarnings("unused")
-      ObjectId id = new ObjectId(null, null, null);
+      ObjectId id = new ObjectId(null, null, null, uAdapter);
       fail("identifier cannot have a null object.");
     } catch (InvalidIdentifierException e) {
       // OK
     }
 
     {
-      ObjectId t = new ObjectId(null, null, Id.fromTypedSQL("abc", uAdapter));
-      ObjectId te = new ObjectId(null, null, Id.fromTypedSQL("abc", uAdapter));
-      ObjectId td = new ObjectId(null, null, Id.fromTypedSQL("def", uAdapter));
+      ObjectId t = new ObjectId(null, null, Id.fromTypedSQL("abc", uAdapter), uAdapter);
+      ObjectId te = new ObjectId(null, null, Id.fromTypedSQL("abc", uAdapter), uAdapter);
+      ObjectId td = new ObjectId(null, null, Id.fromTypedSQL("def", uAdapter), uAdapter);
       assertTrue("t=te", t.equals(te));
       assertTrue("t!=td", !t.equals(td));
     }
 
     {
-      ObjectId c = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), null, Id.fromTypedSQL("abc", uAdapter));
-      ObjectId ce = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), null, Id.fromTypedSQL("abc", uAdapter));
-      ObjectId cd1 = new ObjectId(Id.fromTypedSQL("catalog2", uAdapter), null, Id.fromTypedSQL("abc", uAdapter));
-      ObjectId cd2 = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), null, Id.fromTypedSQL("def", uAdapter));
+      ObjectId c = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), null, Id.fromTypedSQL("abc", uAdapter),
+          uAdapter);
+      ObjectId ce = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), null, Id.fromTypedSQL("abc", uAdapter),
+          uAdapter);
+      ObjectId cd1 = new ObjectId(Id.fromTypedSQL("catalog2", uAdapter), null, Id.fromTypedSQL("abc", uAdapter),
+          uAdapter);
+      ObjectId cd2 = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), null, Id.fromTypedSQL("def", uAdapter),
+          uAdapter);
       assertTrue("c=ce", c.equals(ce));
       assertTrue("c!=cd1", !c.equals(cd1));
       assertTrue("c!=cd2", !c.equals(cd2));
     }
 
     {
-      ObjectId s = new ObjectId(null, Id.fromTypedSQL("schema1", uAdapter), Id.fromTypedSQL("abc", uAdapter));
-      ObjectId se = new ObjectId(null, Id.fromTypedSQL("schema1", uAdapter), Id.fromTypedSQL("abc", uAdapter));
-      ObjectId sd1 = new ObjectId(null, Id.fromTypedSQL("schema2", uAdapter), Id.fromTypedSQL("abc", uAdapter));
-      ObjectId sd2 = new ObjectId(null, Id.fromTypedSQL("schema1", uAdapter), Id.fromTypedSQL("def", uAdapter));
+      ObjectId s = new ObjectId(null, Id.fromTypedSQL("schema1", uAdapter), Id.fromTypedSQL("abc", uAdapter), uAdapter);
+      ObjectId se = new ObjectId(null, Id.fromTypedSQL("schema1", uAdapter), Id.fromTypedSQL("abc", uAdapter),
+          uAdapter);
+      ObjectId sd1 = new ObjectId(null, Id.fromTypedSQL("schema2", uAdapter), Id.fromTypedSQL("abc", uAdapter),
+          uAdapter);
+      ObjectId sd2 = new ObjectId(null, Id.fromTypedSQL("schema1", uAdapter), Id.fromTypedSQL("def", uAdapter),
+          uAdapter);
       assertTrue("s=se", s.equals(se));
       assertTrue("s!=sd1", !s.equals(sd1));
       assertTrue("s!=sd2", !s.equals(sd2));
@@ -63,19 +72,70 @@ public class ObjectIdTests extends TestCase {
 
     {
       ObjectId cs = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), Id.fromTypedSQL("schema1", uAdapter),
-          Id.fromTypedSQL("abc", uAdapter));
+          Id.fromTypedSQL("abc", uAdapter), uAdapter);
       ObjectId cse = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), Id.fromTypedSQL("schema1", uAdapter),
-          Id.fromTypedSQL("abc", uAdapter));
+          Id.fromTypedSQL("abc", uAdapter), uAdapter);
       ObjectId csd1 = new ObjectId(Id.fromTypedSQL("catalog2", uAdapter), Id.fromTypedSQL("schema1", uAdapter),
-          Id.fromTypedSQL("abc", uAdapter));
+          Id.fromTypedSQL("abc", uAdapter), uAdapter);
       ObjectId csd2 = new ObjectId(Id.fromTypedSQL("catalog1", uAdapter), Id.fromTypedSQL("schema2", uAdapter),
-          Id.fromTypedSQL("abc", uAdapter));
+          Id.fromTypedSQL("abc", uAdapter), uAdapter);
       ObjectId csd3 = new ObjectId(Id.fromTypedSQL("catalog2", uAdapter), Id.fromTypedSQL("schema2", uAdapter),
-          Id.fromTypedSQL("abc", uAdapter));
+          Id.fromTypedSQL("abc", uAdapter), uAdapter);
       assertTrue("cs=cse", cs.equals(cse));
       assertTrue("cs!=csd1", !cs.equals(csd1));
       assertTrue("cs!=csd2", !cs.equals(csd2));
       assertTrue("cs!=csd3", !cs.equals(csd3));
+    }
+
+    // No/default catalog, no/default schema
+
+    {
+      ObjectId s = new ObjectId(null, null, Id.fromTypedSQL("abc", uAdapter), uAdapter);
+      String expected = "abc";
+      String actual = s.getRenderedSQLName();
+      assertEquals("Invalid rendered name: expected '" + expected + "' and found '" + actual + "'.", expected, actual);
+    }
+
+    // No/default catalog, specified schema (Oracle, DB2, PostgreSQL, H2, Derby,
+    // HyperSQL)
+
+    {
+      ObjectId s = new ObjectId(null, Id.fromTypedSQL("schema1", uAdapter), Id.fromTypedSQL("abc", uAdapter), uAdapter);
+      String expected = "schema1.abc";
+      String actual = s.getRenderedSQLName();
+      assertEquals("Invalid rendered name: expected '" + expected + "' and found '" + actual + "'.", expected, actual);
+    }
+
+    // Specified catalog, default schema (SQL Server, Sybase ASE)
+
+    {
+      DatabaseAdapter csAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.INSENSITIVE,
+          CatalogSchemaSupport.CATALOG_AND_SCHEMA);
+      ObjectId s = new ObjectId(Id.fromTypedSQL("db1", csAdapter), null, Id.fromTypedSQL("abc", csAdapter), csAdapter);
+      String expected = "db1..abc";
+      String actual = s.getRenderedSQLName();
+      assertEquals("Invalid rendered name: expected '" + expected + "' and found '" + actual + "'.", expected, actual);
+    }
+
+    // Specified catalog, schema not supported (MySQL, MariaDB)
+
+    {
+      DatabaseAdapter cAdapter = new TestDatabaseAdapter(getDatabaseMetaData(), CaseSensitiveness.SENSITIVE,
+          CatalogSchemaSupport.CATALOG_ONLY);
+      ObjectId s = new ObjectId(Id.fromTypedSQL("db1", cAdapter), null, Id.fromTypedSQL("abc", cAdapter), cAdapter);
+      String expected = "db1.abc";
+      String actual = s.getRenderedSQLName();
+      assertEquals("Invalid rendered name: expected '" + expected + "' and found '" + actual + "'.", expected, actual);
+    }
+
+    // Specified catalog, specified schema (SQL Server, Sybase ASE)
+
+    {
+      ObjectId s = new ObjectId(Id.fromTypedSQL("db1", uAdapter), Id.fromTypedSQL("schema1", uAdapter),
+          Id.fromTypedSQL("abc", uAdapter), uAdapter);
+      String expected = "db1.schema1.abc";
+      String actual = s.getRenderedSQLName();
+      assertEquals("Invalid rendered name: expected '" + expected + "' and found '" + actual + "'.", expected, actual);
     }
 
   }
@@ -119,6 +179,7 @@ public class ObjectIdTests extends TestCase {
 
   // Helpers
 
+  @SuppressWarnings("unused")
   private void matchesSQL(final Id id, final String javaClassName, final String javaMemberName,
       final String constantName, final String dashedName, final String getter, final String setter,
       final String canonicalSQLName, final String renderedSQLName, final String... tokens) {
