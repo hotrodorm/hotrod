@@ -221,13 +221,13 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderSelectSequence(final ObjectId id) throws SequencesNotSupportedException {
-    return "select nextval('" + id.getCanonicalSQLName() + "')";
+  public String renderSelectSequence(final ObjectId sequenceId) throws SequencesNotSupportedException {
+    return "select nextval('" + sequenceId.getRenderedSQLName() + "')";
   }
 
   @Override
   public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
-    return "nextval('" + cm.getId().getCanonicalSQLName() + "')";
+    return "nextval('" + cm.getSequenceId().getRenderedSQLName() + "')";
   }
 
   @Override

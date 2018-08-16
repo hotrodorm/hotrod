@@ -162,13 +162,13 @@ public class ApacheDerbyAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderSelectSequence(final ObjectId id) throws SequencesNotSupportedException {
-    return "select next value for " + id.getRenderedSQLName() + " from sysibm.sysdummy1";
+  public String renderSelectSequence(final ObjectId sequenceId) throws SequencesNotSupportedException {
+    return "select next value for " + sequenceId.getRenderedSQLName() + " from sysibm.sysdummy1";
   }
 
   @Override
   public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
-    return "next value for " + cm.getId().getRenderedSQLName();
+    return "next value for " + cm.getSequenceId().getRenderedSQLName();
   }
 
   @Override

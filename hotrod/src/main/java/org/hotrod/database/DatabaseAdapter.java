@@ -158,7 +158,7 @@ public abstract class DatabaseAdapter implements Serializable {
   public abstract String renderSequencesPrefetch(final List<ColumnMetadata> sequenceGeneratedColumns)
       throws SequencesNotSupportedException;
 
-  public abstract String renderSelectSequence(final ObjectId sequence) throws SequencesNotSupportedException;
+  public abstract String renderSelectSequence(final ObjectId sequenceId) throws SequencesNotSupportedException;
 
   public abstract String renderInlineSequenceOnInsert(final ColumnMetadata cm) throws SequencesNotSupportedException;
 

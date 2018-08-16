@@ -96,8 +96,10 @@
 -->
    
   <view name="low_account" schema="schema2" />
-  
-  <table name="'&amp;Price%'" schema="'&lt;Stock$'" />
+
+  <table name="'&amp;Price%'" schema="'&lt;Stock$'">
+    <column name="id" sequence="seq_price" schema="'&lt;Stock$'" />
+  </table>
 
   <dao class="AlertFinder">
     <select method="findAlerts">

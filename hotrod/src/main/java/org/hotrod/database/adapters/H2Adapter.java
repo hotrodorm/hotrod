@@ -176,13 +176,13 @@ public class H2Adapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderSelectSequence(final ObjectId id) throws SequencesNotSupportedException {
-    return "select next value for " + id.getRenderedSQLName();
+  public String renderSelectSequence(final ObjectId sequenceId) throws SequencesNotSupportedException {
+    return "select next value for " + sequenceId.getRenderedSQLName();
   }
 
   @Override
   public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
-    return "next value for " + cm.getId().getRenderedSQLName();
+    return "next value for " + cm.getSequenceId().getRenderedSQLName();
   }
 
   @Override

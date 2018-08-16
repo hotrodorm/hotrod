@@ -552,7 +552,7 @@ public class Mapper extends GeneratableObject {
   private void appendSequenceColumn(final ListWriter columns, final ListWriter values, final ColumnMetadata cm)
       throws SequencesNotSupportedException {
     columns.add("<if test=\"true\">, " + SUtils.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
-    values.add("<if test=\"true\">, " + this.adapter.renderInlineSequenceOnInsert(cm) + "</if>");
+    values.add("<if test=\"true\">, " + SUtils.escapeXmlBody(this.adapter.renderInlineSequenceOnInsert(cm)) + "</if>");
   }
 
   private void renderInsert(final ListWriter columns, final ListWriter values, final ListWriter queryColumns)

@@ -369,3 +369,6 @@ create table "<Stock$"."&Price%" (
   id int,
   value int
 );
+
+create sequence "<Stock$".seq_price;
+

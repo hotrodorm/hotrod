@@ -199,8 +199,8 @@ public class SQLServerAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderSelectSequence(final ObjectId id) throws SequencesNotSupportedException {
-    return "select next value for " + id.getRenderedSQLName();
+  public String renderSelectSequence(final ObjectId sequenceId) throws SequencesNotSupportedException {
+    return "select next value for " + sequenceId.getRenderedSQLName();
   }
 
   @Override

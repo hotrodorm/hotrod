@@ -9,11 +9,13 @@ import hotrod.test.generation.AgentVO;
 import hotrod.test.generation.ConfigValuesVO;
 import hotrod.test.generation.TestSeqIdeDef1VO;
 import hotrod.test.generation.TransactionVO;
+import hotrod.test.generation._price_VO;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AgentDAO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
 import hotrod.test.generation.primitives.TestSeqIdeDef1DAO;
 import hotrod.test.generation.primitives.TransactionDAO;
+import hotrod.test.generation.primitives._price_DAO;
 
 public class InsertTests {
 
@@ -22,7 +24,8 @@ public class InsertTests {
     // insertWithSequence();
     // insertWithIdentity();
     // insertWithOptionalIdentity();
-    insertMixed();
+    // insertMixed();
+    insertDifferentSchemaWithSequence();
   }
 
   private static void insertNoPK() throws SQLException {
@@ -144,6 +147,19 @@ public class InsertTests {
     // ti2.setName("Title (specified) " + time);
     // TestIdentity1DAO.insert(ti2);
     // System.out.println("[inserted] optional identity=" + ti2);
+
+  }
+
+  private static void insertDifferentSchemaWithSequence() throws SQLException {
+
+    _price_VO p = new _price_VO();
+    p.setId(1234);
+    p.setValue(123);
+    _price_DAO.insert(p);
+
+    for (_price_VO pr : _price_DAO.selectByExample(new _price_VO())) {
+      System.out.println("-> price=" + pr);
+    }
 
   }
 

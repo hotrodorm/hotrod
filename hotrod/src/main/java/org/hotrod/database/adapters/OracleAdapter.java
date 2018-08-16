@@ -215,13 +215,13 @@ public class OracleAdapter extends DatabaseAdapter {
   }
 
   @Override
-  public String renderSelectSequence(final ObjectId id) throws SequencesNotSupportedException {
-    return "select " + id.getRenderedSQLName() + ".nextval from dual";
+  public String renderSelectSequence(final ObjectId sequenceId) throws SequencesNotSupportedException {
+    return "select " + sequenceId.getRenderedSQLName() + ".nextval from dual";
   }
 
   @Override
   public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
-    return cm.getId().getRenderedSQLName() + ".nextval";
+    return cm.getSequenceId().getRenderedSQLName() + ".nextval";
   }
 
   @Override
