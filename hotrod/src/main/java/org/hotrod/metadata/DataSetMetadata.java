@@ -10,10 +10,8 @@ import org.hotrod.utils.identifiers.ObjectId;
 
 public interface DataSetMetadata extends Serializable {
 
-  @Deprecated
   String generateDAOName(ObjectId identifier);
 
-  @Deprecated
   String generatePrimitivesName(ObjectId identifier);
 
   AbstractDAOTag getDaoTag();

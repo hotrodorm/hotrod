@@ -141,7 +141,7 @@ public class DB2Adapter extends DatabaseAdapter {
       throws SequencesNotSupportedException {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : sequenceGeneratedColumns) {
-      lw.add("next value for " + cm.getId().getRenderedSQLName() + " as " + cm.getId().getRenderedSQLName());
+      lw.add("next value for " + cm.getSequenceId().getRenderedSQLName() + " as " + cm.getId().getJavaMemberName());
     }
     return "select " + lw.toString() + " from sysibm.sysdummy1";
   }

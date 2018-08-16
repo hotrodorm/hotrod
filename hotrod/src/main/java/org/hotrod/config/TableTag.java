@@ -226,7 +226,7 @@ public class TableTag extends AbstractEntityDAOTag {
 
     Set<ColumnTag> cols = new HashSet<ColumnTag>();
     for (ColumnTag c : this.columns) {
-      c.validate(config);
+      c.validate(config, adapter);
       if (cols.contains(c)) {
         throw new InvalidConfigurationFileException(c, //
             "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name", //

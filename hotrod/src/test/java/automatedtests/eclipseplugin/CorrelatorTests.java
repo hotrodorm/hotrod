@@ -143,7 +143,7 @@ public class CorrelatorTests extends TestCase {
     }
 
     {
-      List<Row> left = Arrays.asList(new Row[] { null }); // TODO: fix
+      List<Row> left = Arrays.asList(new Row[] { null });
       List<Row> right = Arrays.asList(new Row[] {});
       List<CorrelatedEntry<Row>> ce = Correlator.correlateSorted(left, right, comp);
       assertEquals(1, ce.size());

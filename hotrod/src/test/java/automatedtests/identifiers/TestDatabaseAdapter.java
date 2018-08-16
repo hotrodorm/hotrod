@@ -140,117 +140,117 @@ public class TestDatabaseAdapter extends DatabaseAdapter {
 
   @Override
   public String getName() {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 
   @Override
   public PropertyType getAdapterDefaultType(ColumnMetadata cm) throws UnresolvableDataTypeException {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 
   @Override
   public InsertIntegration getInsertIntegration() {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 
   @Override
   public boolean integratesUsingQuery() {
-    // TODO Auto-generated method stub
+    // Ignore
     return false;
   }
 
   @Override
   public String renderInsertQueryColumn(ColumnMetadata cm) {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 
   @Override
   public String renderSequencesPrefetch(List<ColumnMetadata> sequenceGeneratedColumns)
       throws SequencesNotSupportedException {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 
   @Override
   public String renderSelectSequence(ObjectId id) throws SequencesNotSupportedException {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 
   @Override
   public String renderInlineSequenceOnInsert(ColumnMetadata cm) throws SequencesNotSupportedException {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 
   @Override
   public String renderIdentitiesPostfetch(List<ColumnMetadata> identityGeneratedColumns)
       throws IdentitiesPostFetchNotSupportedException {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 
   @Override
   public boolean isTableIdentifier(String jdbcName, String name) {
-    // TODO Auto-generated method stub
+    // Ignore
     return false;
   }
 
   @Override
   public boolean isColumnIdentifier(String jdbcName, String name) {
-    // TODO Auto-generated method stub
+    // Ignore
     return false;
   }
 
   @Override
   public String formatSchemaName(String name) {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 
   @Override
   public String createOrReplaceView(String viewName, String select) {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 
   @Override
   public String dropView(String viewName) {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 
   @Override
   public String formatJdbcTableName(String tableName) {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 
   @Override
   public boolean isSerial(JdbcColumn c) {
-    // TODO Auto-generated method stub
+    // Ignore
     return false;
   }
 
   @Override
   public String renderAliasedSelectColumn(StructuredColumnMetadata cm) {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 
   @Override
   public UnescapedSQLCase getUnescapedSQLCase() {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 
   @Override
   public String renderForCaseInsensitiveOrderBy(ColumnMetadata cm) {
-    // TODO Auto-generated method stub
+    // Ignore
     return null;
   }
 

@@ -80,13 +80,6 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
   protected void copyCommon(final AbstractDAOTag source) {
     super.copyCommon(source);
-
-    // TODO: remove these once tested
-    // this.sequences.copyMethods(source.sequences);
-    // this.queries.copyMethods(source.queries);
-    // this.selects.copyMethods(source.selects);
-    // this.declaredMethodNames.addAll(source.declaredMethodNames);
-
   }
 
   // Behavior

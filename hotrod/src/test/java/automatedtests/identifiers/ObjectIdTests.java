@@ -29,7 +29,7 @@ public class ObjectIdTests extends TestCase {
 
     try {
       @SuppressWarnings("unused")
-      ObjectId id = new ObjectId(null, null, null, uAdapter);
+      ObjectId id = new ObjectId((Id) null, null, null, uAdapter);
       fail("identifier cannot have a null object.");
     } catch (InvalidIdentifierException e) {
       // OK

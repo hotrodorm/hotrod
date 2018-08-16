@@ -209,7 +209,7 @@ public class OracleAdapter extends DatabaseAdapter {
       throws SequencesNotSupportedException {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : sequenceGeneratedColumns) {
-      lw.add(cm.getId().getRenderedSQLName() + ".nextval as " + cm.getId().getRenderedSQLName());
+      lw.add(cm.getSequenceId().getRenderedSQLName() + ".nextval as " + cm.getId().getJavaMemberName());
     }
     return "select " + lw.toString() + " from dual";
   }

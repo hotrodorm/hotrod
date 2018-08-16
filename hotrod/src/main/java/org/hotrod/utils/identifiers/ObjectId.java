@@ -31,6 +31,20 @@ public class ObjectId implements Comparable<ObjectId> {
     this.adapter = adapter;
   }
 
+  public ObjectId(final String catalogName, final String schemaName, final String objectName,
+      final DatabaseAdapter adapter) throws InvalidIdentifierException {
+    if (objectName == null) {
+      throw new InvalidIdentifierException("'objectName' cannot be null");
+    }
+    if (adapter == null) {
+      throw new InvalidIdentifierException("'adapter' cannot be null");
+    }
+    this.catalog = catalogName == null ? null : Id.fromCanonicalSQL(catalogName, adapter);
+    this.schema = schemaName == null ? null : Id.fromCanonicalSQL(schemaName, adapter);
+    this.object = Id.fromCanonicalSQL(objectName, adapter);
+    this.adapter = adapter;
+  }
+
   // Getters
 
   public Id getCatalog() {

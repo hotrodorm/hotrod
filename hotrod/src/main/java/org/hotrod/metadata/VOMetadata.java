@@ -151,8 +151,8 @@ public class VOMetadata implements Serializable {
   }
 
   public void registerSubTreeVOs(final ClassPackage classPackage, final VORegistry voRegistry)
-      throws VOAlreadyExistsException, StructuredVOAlreadyExistsException, DuplicatePropertyNameException
-       {
+      throws VOAlreadyExistsException, StructuredVOAlreadyExistsException, DuplicatePropertyNameException,
+      InvalidConfigurationFileException {
 
     if (this.entityVOSuperClass != null) { // new VO (extends an entity VO)
 
@@ -179,8 +179,8 @@ public class VOMetadata implements Serializable {
         try {
           associationMembers.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty(), vo.getTag()));
         } catch (InvalidIdentifierException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+          throw new InvalidConfigurationFileException(this.getTag(),
+              "Invalid property '" + vo.getProperty() + "': " + e.getMessage());
         }
       }
 
@@ -191,8 +191,8 @@ public class VOMetadata implements Serializable {
         try {
           collectionMembers.add(new VOMember(vo.getProperty(), classPackage, vo.getProperty(), vo.getTag()));
         } catch (InvalidIdentifierException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+          throw new InvalidConfigurationFileException(this.getTag(),
+              "Invalid property '" + vo.getProperty() + "': " + e.getMessage());
         }
       }
 

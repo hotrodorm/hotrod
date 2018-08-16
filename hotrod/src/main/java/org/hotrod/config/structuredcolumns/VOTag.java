@@ -60,7 +60,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   // Properties - Primitive content parsing by JAXB
 
-  // TODO: make this property transient. JAXB fails when doing so with the
+  // This property cannot be transient. JAXB fails when doing so with the
   // message: Transient field "content" cannot have any JAXB annotations.
 
   @XmlMixed
@@ -416,8 +416,6 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     }
 
   }
-
-  // TODO: just a marker
 
   public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
     this.generator = generator;

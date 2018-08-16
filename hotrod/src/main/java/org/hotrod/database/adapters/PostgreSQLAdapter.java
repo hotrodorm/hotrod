@@ -215,7 +215,7 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
       throws SequencesNotSupportedException {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : sequenceGeneratedColumns) {
-      lw.add("nextval('" + cm.getId().getRenderedSQLName() + "') as " + cm.getId().getRenderedSQLName());
+      lw.add("nextval('" + cm.getSequenceId().getRenderedSQLName() + "') as " + cm.getId().getJavaMemberName());
     }
     return "select " + lw.toString();
   }

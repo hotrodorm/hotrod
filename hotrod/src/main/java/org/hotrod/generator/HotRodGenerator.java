@@ -62,7 +62,6 @@ import org.nocrala.tools.database.tartarus.core.DatabaseObject;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase.DatabaseConnectionVersion;
-import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 import org.nocrala.tools.database.tartarus.exception.CatalogNotSupportedException;
 import org.nocrala.tools.database.tartarus.exception.DatabaseObjectNotFoundException;
@@ -191,7 +190,7 @@ public abstract class HotRodGenerator {
         }
       }
 
-      log.debug("--> retrieveFreshDatabaseObjects=" + retrieveFreshDatabaseObjects);
+      log.debug("retrieveFreshDatabaseObjects=" + retrieveFreshDatabaseObjects);
 
       Set<DatabaseObject> tables = new HashSet<DatabaseObject>();
       for (TableTag t : this.config.getTables()) {
@@ -1009,76 +1008,6 @@ public abstract class HotRodGenerator {
     SQLNames.add(id.getCanonicalSQLName());
   }
 
-  // TODO: remove
-
-  // private void validateAgainstDatabase(final JdbcDatabase db) throws
-  // ControlledException {
-
-  // Check tables
-
-  // for (TableTag t : this.config.getTables()) {
-  //
-  // JdbcTable jt = this.findJdbcTable(t.getName(), db);
-  // if (jt == null) {
-  // throw new ControlledException("Could not find database table '" +
-  // t.getName()
-  // + "' as specified in the <table> tag of the configuration file. "
-  // + "\n\nPlease verify the specified database catalog and schema names are
-  // correct according to this database. "
-  // + "You can try leaving the catalog/schema values empty, so " +
-  // Constants.TOOL_NAME
-  // + " will list all available values.");
-  // }
-  //
-  // for (ColumnTag ct : t.getColumns()) {
-  // JdbcColumn jc = this.findJdbcColumn(ct.getName(), jt);
-  // if (jc == null) {
-  // throw new ControlledException("Could not find column '" + ct.getName() + "'
-  // on database table '" + t.getName()
-  // + "', as specified in the <column> tag of the configuration file. ");
-  // }
-  // }
-  //
-  // }
-
-  // Check views
-
-  // for (ViewTag v : this.config.getViews()) {
-  //
-  // JdbcTable jv = this.findJdbcView(v.getName(), db);
-  // if (jv == null) {
-  // throw new ControlledException("Could not find database view '" +
-  // v.getName()
-  // + "' as specified in the <view> tag of the configuration file. "
-  // + "\n\nPlease verify the specified database catalog and schema names are
-  // correct according to this database. "
-  // + "You can try leaving the catalog/schema values empty, so " +
-  // Constants.TOOL_NAME
-  // + " will list all available values.");
-  // }
-  //
-  // for (ColumnTag ct : v.getColumns()) {
-  // JdbcColumn jc = this.findJdbcColumn(ct.getName(), jv);
-  // if (jc == null) {
-  // throw new ControlledException("Could not find column '" + ct.getName() + "'
-  // on database view '" + v.getName()
-  // + "', as specified in the <column> tag of the configuration file. ");
-  // }
-  // }
-  //
-  // }
-
-  // }
-
-  // private JdbcTable findJdbcTable(final String name, final JdbcDatabase jd) {
-  // for (JdbcTable t : jd.getTables()) {
-  // if (this.adapter.isTableIdentifier(t.getName(), name)) {
-  // return t;
-  // }
-  // }
-  // return null;
-  // }
-
   public TableDataSetMetadata findTableMetadata(final ObjectId id) {
     for (TableDataSetMetadata tm : this.tables) {
       if (tm.getId().equals(id)) {
@@ -1124,25 +1053,6 @@ public abstract class HotRodGenerator {
     return null;
   }
 
-  // TODO: remove
-  // private JdbcTable findJdbcView(final String name, final JdbcDatabase jd) {
-  // for (JdbcTable jt : jd.getViews()) {
-  // if (this.adapter.isTableIdentifier(jt.getName(), name)) {
-  // return jt;
-  // }
-  // }
-  // return null;
-  // }
-
-  // private JdbcColumn findJdbcColumn(final String name, final JdbcTable jt) {
-  // for (JdbcColumn jc : jt.getColumns()) {
-  // if (this.adapter.isColumnIdentifier(jc.getName(), name)) {
-  // return jc;
-  // }
-  // }
-  // return null;
-  // }
-
   private ColumnMetadata findColumnMetadata(final String name, final SelectDataSetMetadata ds) {
     for (ColumnMetadata cm : ds.getColumns()) {
       if (this.adapter.isColumnIdentifier(cm.getColumnName(), name)) {
@@ -1157,69 +1067,6 @@ public abstract class HotRodGenerator {
   public static void display(final String txt) {
     System.out.println(SUtils.isEmpty(txt) ? " " : txt);
   }
-
-  // TODO: Remove once tests
-  // // Table Filter
-  //
-  // public class TableFilter implements JdbcTableFilter {
-  //
-  // private DatabaseAdapter adapter;
-  //
-  // public TableFilter(final DatabaseAdapter adapter) {
-  // this.adapter = adapter;
-  // }
-  //
-  // public boolean accepts(final String jdbcName) {
-  // log.debug("ACCEPTS? " + jdbcName);
-  // for (TableTag t : config.getTables()) {
-  // if (this.adapter.isTableIdentifier(jdbcName,
-  // t.getId().getCanonicalSQLName())) {
-  // log.debug("table '" + jdbcName + "' accepted.");
-  // return true;
-  // }
-  // }
-  // for (EnumTag e : config.getEnums()) {
-  // if (this.adapter.isTableIdentifier(jdbcName,
-  // e.getId().getCanonicalSQLName())) {
-  // log.debug("enum '" + jdbcName + "' accepted.");
-  // return true;
-  // }
-  // }
-  //
-  // log.debug("table/enum '" + jdbcName + "' rejected.");
-  // return false;
-  // }
-  // }
-  //
-  // // View Filter
-  //
-  // public class ViewFilter implements JdbcTableFilter {
-  //
-  // private Set<String> includedViews;
-  // private DatabaseAdapter adapter;
-  //
-  // public ViewFilter(final HotRodConfigTag config, final DatabaseAdapter
-  // adapter) {
-  // this.includedViews = new HashSet<String>();
-  // for (ViewTag v : config.getViews()) {
-  // this.includedViews.add(v.getId().getCanonicalSQLName());
-  // }
-  // this.adapter = adapter;
-  // }
-  //
-  // public boolean accepts(final String jdbcName) {
-  // log.debug("ACCEPTS? " + jdbcName);
-  // for (ViewTag v : config.getViews()) {
-  // if (this.adapter.isTableIdentifier(jdbcName,
-  // v.getId().getCanonicalSQLName())) {
-  // log.debug("view '" + jdbcName + "' accepted.");
-  // return true;
-  // }
-  // }
-  // log.debug("view '" + jdbcName + "' rejected.");
-  // return false;
-  // }
-  // }
 
   // VO Registry
 

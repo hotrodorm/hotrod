@@ -38,7 +38,7 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
 
   // Properties - Primitive content parsing by JAXB
 
-  // TODO: make this property transient. JAXB fails when doing so with the
+  // This property cannot be transient. JAXB fails when doing so with the
   // message: Transient field "content" cannot have any JAXB annotations.
 
   @XmlMixed

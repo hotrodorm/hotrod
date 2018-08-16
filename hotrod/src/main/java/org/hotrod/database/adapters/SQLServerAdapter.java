@@ -193,7 +193,7 @@ public class SQLServerAdapter extends DatabaseAdapter {
       throws SequencesNotSupportedException {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : sequenceGeneratedColumns) {
-      lw.add("next value for " + cm.renderSQLSequence() + " as " + cm.getId().getJavaMemberName());
+      lw.add("next value for " + cm.getSequenceId().getRenderedSQLName() + " as " + cm.getId().getJavaMemberName());
     }
     return "select " + lw.toString();
   }
@@ -205,7 +205,7 @@ public class SQLServerAdapter extends DatabaseAdapter {
 
   @Override
   public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
-    return "next value for " + cm.renderSQLSequence();
+    return "next value for " + cm.getSequenceId().getRenderedSQLName();
   }
 
   @Override

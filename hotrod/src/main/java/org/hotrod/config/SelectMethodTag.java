@@ -48,7 +48,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   // Properties - Primitive content parsing by JAXB
 
-  // TODO: make this property transient. JAXB fails when doing so with the
+  // This property cannot be transient. JAXB fails when doing so with the
   // message: Transient field "content" cannot have any JAXB annotations.
 
   @XmlMixed
@@ -250,7 +250,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     Set<ColumnTag> cols = new HashSet<ColumnTag>();
     for (ColumnTag c : this.columns) {
-      c.validate(config);
+      c.validate(config, adapter);
       if (cols.contains(c)) {
         throw new InvalidConfigurationFileException(this, //
             "Duplicate <" + new ColumnTag().getTagName() + "> tag for column '" + c.getName() + "'", //

@@ -37,7 +37,7 @@ public class SelectClassTag extends AbstractDAOTag {
 
   // Properties - Primitive content parsing by JAXB
 
-  // TODO: make this property transient. JAXB fails when doing so with the
+  // This property cannot be transient. JAXB fails when doing so with the
   // message: Transient field "content" cannot have any JAXB annotations.
 
   @XmlMixed
@@ -76,7 +76,8 @@ public class SelectClassTag extends AbstractDAOTag {
   // Behavior
 
   public void validate(final DaosTag daosTag, final HotRodConfigTag config,
-      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
 
     this.daosTag = daosTag;
     this.fragmentConfig = fragmentConfig;
@@ -135,7 +136,7 @@ public class SelectClassTag extends AbstractDAOTag {
 
     Set<ColumnTag> cols = new HashSet<ColumnTag>();
     for (ColumnTag c : this.columns) {
-      c.validate(config);
+      c.validate(config, adapter);
       if (cols.contains(c)) {
         throw new InvalidConfigurationFileException(this, //
             "Multiple <" + new ColumnTag().getTagName() + "> tags for the same column '" + c.getName() + "'", //

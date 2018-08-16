@@ -104,26 +104,30 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     }
   }
 
-//  // Entity Resolver
-//
-//  public static class HotRodInternalEntityResolver implements EntityResolver {
-//
-//    private static final Logger log = Logger.getLogger(HotRodInternalEntityResolver.class);
-//
-//    private static final String DTD = "/hotrod.dtd";
-//
-//    @Override
-//    public InputSource resolveEntity(final String publicId, final String systemId) throws SAXException, IOException {
-//      log.debug("*** public: " + publicId + " system: " + systemId);
-//      InputStream is = getClass().getResourceAsStream(DTD);
-//      log.debug("*** is=" + is);
-//      if (is == null) {
-//        throw new IOException("Could not find DTD definition file/resource: " + DTD);
-//      }
-//      return new InputSource(is);
-//    }
-//
-//  }
+  // // Entity Resolver
+  //
+  // public static class HotRodInternalEntityResolver implements EntityResolver
+  // {
+  //
+  // private static final Logger log =
+  // Logger.getLogger(HotRodInternalEntityResolver.class);
+  //
+  // private static final String DTD = "/hotrod.dtd";
+  //
+  // @Override
+  // public InputSource resolveEntity(final String publicId, final String
+  // systemId) throws SAXException, IOException {
+  // log.debug("*** public: " + publicId + " system: " + systemId);
+  // InputStream is = getClass().getResourceAsStream(DTD);
+  // log.debug("*** is=" + is);
+  // if (is == null) {
+  // throw new IOException("Could not find DTD definition file/resource: " +
+  // DTD);
+  // }
+  // return new InputSource(is);
+  // }
+  //
+  // }
 
   // Merging logic
 
@@ -236,30 +240,6 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
     return false;
   }
-
-  // TODO: Remove once finished
-  // // Processing file system changes
-  //
-  // public boolean informFileAdded(final File f) throws UncontrolledException,
-  // ControlledException {
-  // FileRegistry fileRegistry = new FileRegistry(this.f);
-  // DaosTag daosTag = this.generatorsTag.getSelectedGeneratorTag().getDaos();
-  // return super.informFileAdded(f, this, fileRegistry, daosTag);
-  // }
-  //
-  // public boolean informFileChanged(final File f) throws
-  // UncontrolledException, ControlledException {
-  // FileRegistry fileRegistry = new FileRegistry(this.f);
-  // DaosTag daosTag = this.generatorsTag.getSelectedGeneratorTag().getDaos();
-  // return super.informFileChanged(f, this, fileRegistry, daosTag);
-  // }
-  //
-  // public boolean informFileRemoved(final File f) throws
-  // UncontrolledException, ControlledException {
-  // FileRegistry fileRegistry = new FileRegistry(this.f);
-  // DaosTag daosTag = this.generatorsTag.getSelectedGeneratorTag().getDaos();
-  // return super.informFileRemoved(f, this, fileRegistry, daosTag);
-  // }
 
   // Setters
 

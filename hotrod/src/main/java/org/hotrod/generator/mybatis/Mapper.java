@@ -475,7 +475,7 @@ public class Mapper extends GeneratableObject {
     int identities = 0;
     int defaults = 0;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      if (cm.getSequence() != null) {
+      if (cm.getSequenceId() != null) {
         sequences++;
       }
       if (cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity()) {
@@ -609,7 +609,7 @@ public class Mapper extends GeneratableObject {
 
     for (ColumnMetadata cm : this.metadata.getColumns()) {
 
-      if (retrieveSequences && cm.getSequence() != null) {
+      if (retrieveSequences && cm.getSequenceId() != null) {
         keyProperties.add(cm.getId().getJavaMemberName());
         keyColumns.add(cm.getId().getRenderedSQLName());
         if (this.adapter.integratesUsingQuery()) {
@@ -671,7 +671,7 @@ public class Mapper extends GeneratableObject {
     ListWriter values = new ListWriter("        ", "\n", ",");
     ListWriter queryColumns = new ListWriter(", ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      if (cm.getSequence() != null) {
+      if (cm.getSequenceId() != null) {
         sequences.add(cm);
         keyProperties.add(cm.getId().getJavaMemberName());
       }
@@ -748,7 +748,7 @@ public class Mapper extends GeneratableObject {
 
       List<ColumnMetadata> sequences = new ArrayList<ColumnMetadata>();
       for (ColumnMetadata cm : this.metadata.getColumns()) {
-        if (cm.getSequence() != null) {
+        if (cm.getSequenceId() != null) {
           sequences.add(cm);
         }
       }

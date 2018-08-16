@@ -7,10 +7,13 @@ import org.apache.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.JdbcTypes;
+import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
@@ -30,7 +33,11 @@ public class ColumnTag extends AbstractConfigurationTag {
   private String javaType = null;
   private String converter = null;
   private String jdbcType = null;
+
   private String sequence = null;
+  private String catalog = null;
+  private String schema = null;
+
   private String sInitialValue = null;
   private String sMinValue = null;
   private String sMaxValue = null;
@@ -40,6 +47,8 @@ public class ColumnTag extends AbstractConfigurationTag {
   private boolean isLOB;
   private ValueRange valueRange;
   private ConverterTag converterTag;
+
+  private ObjectId sequenceId = null;
 
   // Constructor
 
@@ -83,6 +92,16 @@ public class ColumnTag extends AbstractConfigurationTag {
     this.sequence = sequence;
   }
 
+  @XmlAttribute
+  public void setCatalog(final String catalog) {
+    this.catalog = catalog;
+  }
+
+  @XmlAttribute
+  public void setSchema(final String schema) {
+    this.schema = schema;
+  }
+
   @XmlAttribute(name = "is-lob")
   public void setIsLOB(final String sIsLOB) {
     this.sIsLOB = sIsLOB;
@@ -105,7 +124,8 @@ public class ColumnTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate(final HotRodConfigTag config) throws InvalidConfigurationFileException {
+  public void validate(final HotRodConfigTag config, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
 
     log.debug("COLUMN DEF: " + this.toString());
 
@@ -207,11 +227,60 @@ public class ColumnTag extends AbstractConfigurationTag {
     if (this.sequence != null) {
       if (SUtils.isEmpty(this.sequence)) {
         throw new InvalidConfigurationFileException(this, //
-            "Attribute 'sequence' cannot be empty", //
-            "Attribute 'sequence' of tag <" + super.getTagName() + "> cannot be empty. " + "When specified, "
-                + "this attribute must specify the name of the database sequence "
-                + "that generates values for this column.");
+            "When specified, attribute 'sequence' cannot be empty", //
+            "When specified, attribute 'sequence' cannot be empty");
       }
+    }
+
+    // catalog
+
+    if (this.sequence == null && this.catalog != null) {
+      throw new InvalidConfigurationFileException(this,
+          "The catalog attribute cannot be specified when the sequence attribute is not present");
+    }
+    Id catalogId;
+    try {
+      catalogId = this.catalog == null ? null : Id.fromTypedSQL(this.catalog, adapter);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid catalog name '" + this.catalog + "' on tag <" + super.getTagName() + "> for the table '"
+          + this.name + "': " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
+    }
+
+    // schema
+
+    if (this.sequence == null && this.schema != null) {
+      throw new InvalidConfigurationFileException(this,
+          "The schema attribute cannot be specified when the sequence attribute is not present");
+    }
+    Id schemaId;
+    try {
+      schemaId = this.schema == null ? null : Id.fromTypedSQL(this.schema, adapter);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Invalid schema name '" + this.schema + "' on tag <" + super.getTagName() + "> for the table '"
+          + this.name + "': " + e.getMessage();
+      throw new InvalidConfigurationFileException(this, msg, msg);
+    }
+
+    // Assemble sequence's object id
+
+    if (this.sequence != null) {
+      Id sequenceNameId;
+      try {
+        sequenceNameId = Id.fromTypedSQL(this.sequence, adapter);
+      } catch (InvalidIdentifierException e) {
+        String msg = "Invalid sequence name '" + this.sequence + "': " + e.getMessage();
+        throw new InvalidConfigurationFileException(this, msg, msg);
+      }
+
+      try {
+        this.sequenceId = new ObjectId(catalogId, schemaId, sequenceNameId, adapter);
+      } catch (InvalidIdentifierException e) {
+        String msg = "Invalid table object name: " + e.getMessage();
+        throw new InvalidConfigurationFileException(this, msg, msg);
+      }
+    } else {
+      this.sequenceId = null;
     }
 
     // is-lob
@@ -366,8 +435,8 @@ public class ColumnTag extends AbstractConfigurationTag {
     return jdbcType;
   }
 
-  public String getSequence() {
-    return sequence;
+  public ObjectId getSequenceId() {
+    return this.sequenceId;
   }
 
   public boolean isLOB() {

@@ -23,6 +23,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.metadata.DataSetMetadata;
@@ -31,6 +32,7 @@ import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.Correlator;
 import org.hotrod.utils.Correlator.CorrelatedEntry;
 import org.hotrod.utils.FileRegistry;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
@@ -520,8 +522,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return d;
   }
 
-  // TODO: remove 'adapter' parameter
-  protected void remove(final TableTag t, final DatabaseAdapter adapter) {
+  protected void remove(final TableTag t) {
     for (Iterator<TableTag> it = this.tables.iterator(); it.hasNext();) {
       TableTag current = it.next();
       if (current.getId().equals(t.getId())) {
@@ -531,8 +532,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     }
   }
 
-  // TODO: remove 'adapter' parameter
-  protected TableTag replace(final TableTag t, final DatabaseAdapter adapter) {
+  protected TableTag replace(final TableTag t) {
     for (ListIterator<TableTag> it = this.tables.listIterator(); it.hasNext();) {
       TableTag current = it.next();
       if (current.getId().equals(t.getId())) {
@@ -550,8 +550,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return d;
   }
 
-  // TODO: remove 'adapter' parameter
-  protected void remove(final EnumTag e, final DatabaseAdapter adapter) {
+  protected void remove(final EnumTag e) {
     for (Iterator<EnumTag> it = this.enums.iterator(); it.hasNext();) {
       EnumTag current = it.next();
       if (current.getId().equals(e.getId())) {
@@ -561,8 +560,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     }
   }
 
-  // TODO: remove 'adapter' parameter
-  protected EnumTag replace(final EnumTag e, final DatabaseAdapter adapter) {
+  protected EnumTag replace(final EnumTag e) {
     for (ListIterator<EnumTag> it = this.enums.listIterator(); it.hasNext();) {
       EnumTag current = it.next();
       if (current.getId().equals(e.getId())) {
@@ -580,8 +578,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return d;
   }
 
-  // TODO: remove 'adapter' parameter
-  protected void remove(final ViewTag v, final DatabaseAdapter adapter) {
+  protected void remove(final ViewTag v) {
     for (Iterator<ViewTag> it = this.views.iterator(); it.hasNext();) {
       ViewTag current = it.next();
       if (current.getId().equals(v.getId())) {
@@ -591,8 +588,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     }
   }
 
-  // TODO: remove 'adapter' parameter
-  protected ViewTag replace(final ViewTag v, final DatabaseAdapter adapter) {
+  protected ViewTag replace(final ViewTag v) {
     for (ListIterator<ViewTag> it = this.views.listIterator(); it.hasNext();) {
       ViewTag current = it.next();
       if (current.getId().equals(v.getId())) {
@@ -714,13 +710,13 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
         }
       }
       if (t == null && c != null) {
-        cache.remove(t, adapter); // remove from the cache.
+        cache.remove(t); // remove from the cache.
       }
       if (t != null && c != null) {
         log.debug("mark 2.3 generate=" + t.getGenerate());
         if (t.isGenerationComplete()) {
           log.debug("mark 2.3.1");
-          c = cache.replace(t, adapter); // replace the cache.
+          c = cache.replace(t); // replace the cache.
         }
         if (!t.concludeGeneration(c, adapter)) {
           log.debug("mark 2.3.2 - fail.");
@@ -757,11 +753,11 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
         }
       }
       if (t == null && c != null) {
-        cache.remove(t, adapter); // remove from the cache.
+        cache.remove(t); // remove from the cache.
       }
       if (t != null && c != null) {
         if (t.isGenerationComplete()) {
-          c = cache.replace(t, adapter); // replace the cache.
+          c = cache.replace(t); // replace the cache.
         }
         if (!t.concludeGeneration(c, adapter)) {
           failedInnerGeneration = true;
@@ -800,11 +796,11 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
         }
       }
       if (t == null && c != null) {
-        cache.remove(t, adapter); // remove from the cache.
+        cache.remove(t); // remove from the cache.
       }
       if (t != null && c != null) {
         if (t.isGenerationComplete()) {
-          c = cache.replace(t, adapter); // replace the cache.
+          c = cache.replace(t); // replace the cache.
         }
         if (!t.concludeGeneration(c, adapter)) {
           failedInnerGeneration = true;
@@ -866,59 +862,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
     return !failedInnerGeneration;
   }
-
-  // TODO: Remove once finished
-  // // Processing file system changes
-  //
-  // public boolean informFileAdded(final File f, final HotRodConfigTag
-  // primaryConfig, final FileRegistry fileRegistry,
-  // final DaosTag daosTag) throws UncontrolledException, ControlledException {
-  // for (FragmentTag fragmentTag : this.fragments) {
-  // if (FUtil.equals(fragmentTag.getFile(), f)) {
-  // fragmentTag.load(primaryConfig, fileRegistry, daosTag);
-  // return true;
-  // } else {
-  // return fragmentTag.informFileAdded(f, primaryConfig, fileRegistry,
-  // daosTag);
-  // }
-  // }
-  // return false;
-  // }
-  //
-  // public boolean informFileChanged(final File f, final HotRodConfigTag
-  // primaryConfig, final FileRegistry fileRegistry,
-  // final DaosTag daosTag) throws UncontrolledException, ControlledException {
-  // for (FragmentTag fragmentTag : this.fragments) {
-  // if (FUtil.equals(fragmentTag.getFile(), f)) {
-  // fragmentTag.load(primaryConfig, fileRegistry, daosTag);
-  // return true;
-  // } else {
-  // return fragmentTag.informFileChanged(f, primaryConfig, fileRegistry,
-  // daosTag);
-  // }
-  // }
-  // return false;
-  // }
-  //
-  // public boolean informFileRemoved(final File f, final HotRodConfigTag
-  // primaryConfig, final FileRegistry fileRegistry,
-  // final DaosTag daosTag) throws UncontrolledException, ControlledException {
-  // log.info("--> file removed f=" + f);
-  // for (FragmentTag fragmentTag : this.fragments) {
-  // boolean equals = FUtil.equals(fragmentTag.getFile(), f);
-  // log.info(" > is " + (equals ? "" : "not ") + "equal to: " +
-  // fragmentTag.getFile());
-  // if (equals) {
-  // throw new ControlledException(fragmentTag.getSourceLocation(),
-  // Constants.TOOL_NAME,
-  // " fragment file not found: " + fragmentTag.getFile());
-  // } else {
-  // return fragmentTag.informFileRemoved(f, primaryConfig, fileRegistry,
-  // daosTag);
-  // }
-  // }
-  // return false;
-  // }
 
   // Conclude
 

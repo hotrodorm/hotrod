@@ -10,6 +10,7 @@ import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 
@@ -260,19 +261,8 @@ public class ColumnMetadata implements Serializable {
     return enumMetadata;
   }
 
-  public String getSequence() {
-    return this.tag == null ? null : this.tag.getSequence();
-  }
-
-  // TODO: replace with a formal ID
-  public String getCanonicalSequence() {
-    return this.tag == null ? null : this.adapter.canonizeName(this.tag.getSequence(), false);
-  }
-
-  // TODO: replace with a formal ID
-  public String renderSQLSequence() {
-    return this.tag == null || this.tag.getSequence() == null ? null
-        : this.adapter.renderSQLName(this.getCanonicalSequence());
+  public ObjectId getSequenceId() {
+    return this.tag != null ? this.tag.getSequenceId() : null;
   }
 
   public AutogenerationType getAutogenerationType() {

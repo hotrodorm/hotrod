@@ -1136,7 +1136,7 @@ public class ObjectDAO extends GeneratableObject {
     int identities = 0;
     int defaults = 0;
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      if (cm.getSequence() != null) {
+      if (cm.getSequenceId() != null) {
         sequences++;
       }
       if (cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity()) {
@@ -1286,7 +1286,7 @@ public class ObjectDAO extends GeneratableObject {
       println("    int rows = 1;");
       for (ColumnMetadata cm : this.metadata.getColumns()) {
         String prop = cm.getId().getJavaMemberName();
-        if (cm.getSequence() != null && integratesSequences
+        if (cm.getSequenceId() != null && integratesSequences
             || cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity() && integratesIdentities) {
           println("    vo." + prop + " = values." + prop + ";");
         } else if (extraInsert) {
@@ -1304,7 +1304,7 @@ public class ObjectDAO extends GeneratableObject {
     println("    " + this.vo.getClassName() + " sequences = sqlSession.selectOne(\""
         + this.mapper.getFullMapperIdSequencesPreFetch() + "\");");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      if (cm.getSequence() != null) {
+      if (cm.getSequenceId() != null) {
         String prop = cm.getId().getJavaMemberName();
         println("    vo." + prop + " = sequences." + prop + ";");
       }

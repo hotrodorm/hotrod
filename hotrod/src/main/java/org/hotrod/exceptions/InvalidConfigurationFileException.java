@@ -12,9 +12,18 @@ public class InvalidConfigurationFileException extends Exception {
   private AbstractConfigurationTag tag;
   private String interactiveMessage;
 
+  public InvalidConfigurationFileException(final AbstractConfigurationTag tag, final String batchMessage) {
+    super(batchMessage);
+    intialize(tag, batchMessage);
+  }
+
   public InvalidConfigurationFileException(final AbstractConfigurationTag tag, final String interactiveMessage,
       final String batchMessage) {
     super(batchMessage);
+    intialize(tag, interactiveMessage);
+  }
+
+  private void intialize(final AbstractConfigurationTag tag, final String interactiveMessage) {
     if (tag == null) {
       throw new IllegalArgumentException("tag cannot be null");
     }
