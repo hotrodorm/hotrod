@@ -297,10 +297,48 @@ create table employee (
 );
 
     
-    
-    
-    
-    
+
+-- Complex Names
+
+create table `car#part$Price` (
+  `part#` int,
+  `price$dollar` int,
+  `%discount` int
+);
+   
+
+-- ============================
+-- Secondary Database: catalog2
+-- ============================
+
+create table catalog2.house (
+  id int primary key not null,
+  name varchar(20)
+);
+
+create table house (
+  address varchar(50),
+  price int
+);
+
+create table catalog2.account_alert (
+  raised_at timestamp not null,
+  account_id int not null,
+  house_id int not null,
+  constraint aa_fk1 foreign key (account_id) references database1.account (id),
+  constraint ah_fk2 foreign key (house_id) references catalog2.house (id)
+);
+
+create view catalog2.low_account as select * from account where current_balance < 100;
+
+create table `house_ROOM` (
+  id int primary key not null,
+  room_name varchar(20),
+  house_id int not null,
+  constraint room_house_fk1 foreign key (house_id) references catalog2.house (id)
+);
+  
+   
     
     
     

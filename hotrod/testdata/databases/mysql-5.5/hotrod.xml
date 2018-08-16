@@ -55,69 +55,100 @@
   <view name="tx_branch">
     <column name="amount" java-type="java.lang.Long" jdbc-type="NUMERIC" />
   </view>
+  
+  <dao class="Executor1">
 
-  <select java-class-name="AccountTx0DAO">
-    select a.* , t.*
-    from account a, transaction t
-    <complement>
-    where t.account_id = a.id
-        and a.current_balance &lt; 1000
-    </complement>        
-  </select>
-
-  <select java-class-name="AccountTx1DAO">
-    <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-    <parameter name="minAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-    <column name="account_id" java-type="java.lang.Long" jdbc-type="NUMERIC" />
- 		select a.* , t.*
-		  from account a, transaction t
-      <complement>
-		  where t.account_id = a.id
-			  and a.current_balance &lt;= #{maxBalance}
-			  and t.amount >= #{minAmount}
-      order by a.current_balance
-      </complement>
-  </select>
-
-  <select java-class-name="BigAccountTxDAO">
-    <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-    <parameter name="minTxAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-		select a.* , t.*
-  	  from account a, transaction t
-      <complement>
-	    where t.account_id = a.id
-        and a.current_balance &lt;= #{maxBalance}
-        and t.amount >= #{minTxAmount}
-      </complement>
-  </select>
-
-  <select java-class-name="UnusualTxDAO">
-    <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-    <parameter name="minAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-    <parameter name="maxRows" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-    <parameter name="offset" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-    select a.* , t.*
+    <select method="findAccountTx0" vo="AccountTx0VO">
+      select a.* , t.*
       from account a, transaction t
       <complement>
       where t.account_id = a.id
-        and a.current_balance &lt;= #{maxBalance}
-        and t.amount >= #{minAmount}
-        order by a.id, t.seq_id
-        limit #{maxRows}
-        offset #{offset}
-      </complement>
-  </select>
+          and a.current_balance &lt; 1000
+      </complement>        
+    </select>
+  
+    <select method="findAccountTx1" vo="AccountTx1VO">
+      <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="minAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <column name="account_id" java-type="java.lang.Long" jdbc-type="NUMERIC" />
+   		select a.* , t.*
+  		  from account a, transaction t
+        <complement>
+  		  where t.account_id = a.id
+  			  and a.current_balance &lt;= #{maxBalance}
+  			  and t.amount >= #{minAmount}
+        order by a.current_balance
+        </complement>
+    </select>
+  
+    <select method="findBigAccountTx" vo="BigAccountTxVO">
+      <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="minTxAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+  		select a.* , t.*
+    	  from account a, transaction t
+        <complement>
+  	    where t.account_id = a.id
+          and a.current_balance &lt;= #{maxBalance}
+          and t.amount >= #{minTxAmount}
+        </complement>
+    </select>
+  
+    <select method="findUnusualTx" vo="UnusualTxVO">
+      <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="minAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="maxRows" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="offset" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      select a.* , t.*
+        from account a, transaction t
+        <complement>
+        where t.account_id = a.id
+          and a.current_balance &lt;= #{maxBalance}
+          and t.amount >= #{minAmount}
+          order by a.id, t.seq_id
+          limit #{maxRows}
+          offset #{offset}
+        </complement>
+    </select>
+  
+    <select method="findMultParamSelect" vo="MultParamSelectVO">
+      <parameter name="maxAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      select a.* , t.*
+        from account a, transaction t
+        <complement>
+        where t.account_id = a.id
+          and a.current_balance &lt;= #{maxAmount}
+          and t.amount &lt;= #{maxAmount}
+          order by a.id, t.seq_id
+        </complement>
+    </select>
 
-  <select java-class-name="MultParamSelectDAO">
-    <parameter name="maxAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-    select a.* , t.*
-      from account a, transaction t
-      <complement>
-      where t.account_id = a.id
-        and a.current_balance &lt;= #{maxAmount}
-        and t.amount &lt;= #{maxAmount}
-        order by a.id, t.seq_id
-      </complement>
-  </select>
+  </dao>  
+  
+  <table name="'car#part$Price'" />
+  
+  <!-- 
+  -->
+  <table name="'house_ROOM'" />
+  <table name="account_alert" catalog="catalog2" />
+  <table name="house" catalog="catalog2" />
+
+  <view name="low_account" catalog="catalog2" />
+  
+  <dao class="AlertFinder">
+    <select method="findAlerts">
+      select
+      <columns>
+        <vo table="account" alias="a" extended-vo="Account2VO">
+          <collection table="account_alert" catalog="catalog2" property="alerts" alias="aa" extended-vo="Alert2VO">
+            <association table="house" property="house" catalog="catalog2" alias="h" /> 
+          </collection>
+        </vo>
+      </columns>
+        from account a 
+        join catalog2.account_alert aa on a.id = aa.account_id
+        join catalog2.house h on h.id = aa.house_id
+        where a.current_balance >= 100;
+    </select>
+  </dao>
 
 </hotrod>

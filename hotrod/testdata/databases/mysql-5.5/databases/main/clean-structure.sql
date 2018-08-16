@@ -1,3 +1,10 @@
+drop table `car#part$Price`;
+drop table `house_ROOM`;
+drop table catalog2.account_alert;
+drop table house;
+drop table catalog2.house;
+drop view catalog2.low_account;
+
 drop view tx_branch;
 
 drop table application_config;

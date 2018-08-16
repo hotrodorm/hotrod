@@ -46,3 +46,28 @@ insert into employee (id, name, state_id, hired_on) values (102, 'Alice', 1, '20
 insert into employee (id, name, state_id, hired_on) values (103, 'Donna', 4, '2017-08-03');
 
 
+
+
+
+
+-- complex names
+
+insert into `car#part$Price` (`part#`, `price$dollar`, `%discount`) values (123, 456, 789);
+insert into `car#part$Price` (`part#`, `price$dollar`, `%discount`) values (101, 202, 303);
+
+INSERT INTO catalog2.house (id, name) VALUES (1, 'House 1');
+INSERT INTO catalog2.house (id, name) VALUES (2, 'House 2');
+
+INSERT INTO house (address,price) VALUES ('123 Maple St', 150000);
+INSERT INTO house (address,price) VALUES ('456 Oak St', 320000);
+INSERT INTO house (address,price) VALUES ('789 Columbia Pike', 250000);
+
+
+insert into catalog2.house (id, name) values (70, 'Main Source');
+insert into catalog2.house (id, name) values (71, 'Secondary Source');
+  
+insert into catalog2.account_alert (raised_at, account_id, house_id) values ('2018-01-01 17:56:23', 1234001, 70);
+insert into catalog2.account_alert (raised_at, account_id, house_id) values ('2018-01-02 18:12:34', 1234001, 70);
+insert into catalog2.account_alert (raised_at, account_id, house_id) values ('2018-01-20 20:59:59', 1234004, 71);
+insert into catalog2.account_alert (raised_at, account_id, house_id) values ('2018-01-21 08:05:12', 1234004, 71);
+
