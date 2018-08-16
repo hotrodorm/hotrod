@@ -149,47 +149,17 @@ public abstract class HotRodGenerator {
       // Database Adapter
 
       display("");
-      display("Database Catalog: " + (this.adapter.supportsCatalog() ? dloc.getDefaultCatalog() : "(not supported)"));
-      display("Database Schema: " + (this.adapter.supportsSchema() ? dloc.getDefaultSchema() : "(not supported)"));
+      if (this.adapter.supportsCatalog()) {
+        display("Default Database Catalog: " + (dloc.getDefaultCatalog() == null ? "" : dloc.getDefaultCatalog()));
+      }
+      if (this.adapter.supportsSchema()) {
+        display("Default Database Schema: " + (dloc.getDefaultSchema() == null ? "" : dloc.getDefaultSchema()));
+      }
       display("");
 
       // Decide about using cached or fresh database objects
 
       JdbcDatabase cachedDatabase = incrementalMode ? cachedMetadata.getCachedDatabase() : null;
-
-      // TODO: remove extra logging once fixed.
-      if (cachedDatabase != null) {
-        JdbcTable found = null;
-        for (JdbcTable t : cachedDatabase.getTables()) {
-          if (this.adapter.isTableIdentifier(t.getName(), "client")) {
-            found = t;
-          }
-        }
-        if (found != null) {
-          log.debug("---> CLIENT [from cache] imported FKs:");
-          for (JdbcForeignKey ifk : found.getImportedFks()) {
-            log.debug("   FK points to: " + ifk.getRemoteTable().getName());
-          }
-          for (JdbcForeignKey efk : found.getExportedFks()) {
-            log.debug("   FK pointed from: " + efk.getRemoteTable().getName());
-          }
-          log.debug("---> [end of table CLIENT]");
-        } else {
-          log.debug("---> CLIENT table was not found in cache.");
-        }
-      } else {
-        log.debug("---> no CLIENT table in cache, since there's no cache.");
-      }
-      HotRodConfigTag ch = cachedMetadata.getConfig();
-      if (ch != null) {
-        log.debug("...=== Enums from cache config ===");
-        for (EnumTag et : ch.getAllEnums()) {
-          log.debug("... enum '" + et.getJdbcName() + "'");
-        }
-        log.debug("...=== End of enums from cache config ===");
-      } else {
-        log.debug("... cached-config is null.");
-      }
 
       boolean retrieveFreshDatabaseObjects = false;
       if (!incrementalMode) {
@@ -236,6 +206,8 @@ public abstract class HotRodGenerator {
         views.add(v.getDatabaseObjectId());
       }
 
+      log.debug("database retrieval (if needed).");
+
       try {
 
         if (!retrieveFreshDatabaseObjects) {
@@ -247,6 +219,7 @@ public abstract class HotRodGenerator {
             // catalog or schema changed -- retrieve the database again.
             log.debug("Retrieve 1.");
             this.db = new JdbcDatabase(this.dloc, tables, views);
+            log.debug("Retrieve 1 - done.");
           }
         } else {
           // Retrieve database objects
@@ -259,17 +232,16 @@ public abstract class HotRodGenerator {
       } catch (SQLException e) {
         throw new UncontrolledException("Could not retrieve database metadata.", e);
       } catch (CatalogNotSupportedException e) {
-        throw new ControlledException("A catalog name was specified for the database with the value '"
-            + dloc.getDefaultCatalog() + "', " + "but this database does not support catalogs through the JDBC driver. "
-            + "Please specify it with an empty value.");
+        throw new ControlledException("This database does not support catalogs through the JDBC driver. "
+            + "Please specify an empty value for the default catalog property instead of '" + dloc.getDefaultCatalog()
+            + "'.");
       } catch (InvalidCatalogException e) {
         StringBuilder sb = new StringBuilder();
         if (dloc.getDefaultCatalog() == null) {
-          sb.append(
-              "This database requires a catalog name. Please specify in " + Constants.TOOL_NAME + "'s Ant task.\n\n");
+          sb.append("Please specify a default catalog.\n\n");
         } else {
           sb.append(
-              "The specified catalog name '" + dloc.getDefaultCatalog() + "' does not exist in this database.\n\n");
+              "The specified default catalog '" + dloc.getDefaultCatalog() + "' does not exist in this database.\n\n");
         }
         sb.append("The available catalogs are:\n");
         for (String c : e.getExistingCatalogs()) {
@@ -277,16 +249,16 @@ public abstract class HotRodGenerator {
         }
         throw new ControlledException(sb.toString());
       } catch (SchemaNotSupportedException e) {
-        throw new ControlledException("A schema name was specified for the database with the value '"
-            + dloc.getDefaultSchema() + "', " + "but this database does not support schemas through the JDBC driver. "
-            + "Please specify it with an empty value.");
+        throw new ControlledException("This database does not support schemas through the JDBC driver. "
+            + "Please specify an empty value for the default schema property instead of '" + dloc.getDefaultCatalog()
+            + "'.");
       } catch (InvalidSchemaException e) {
         StringBuilder sb = new StringBuilder();
         if (dloc.getDefaultSchema() == null) {
-          sb.append(
-              "This database requires a schema name. Please specify in " + Constants.TOOL_NAME + "'s Ant task.\n\n");
+          sb.append("Please specify a default schema.\n\n");
         } else {
-          sb.append("The specified schema name '" + dloc.getDefaultSchema() + "' does not exist in this database.\n\n");
+          sb.append(
+              "The specified default schema '" + dloc.getDefaultSchema() + "' does not exist in this database.\n\n");
         }
         sb.append("The available schemas are:\n");
         for (String s : e.getExistingSchemas()) {

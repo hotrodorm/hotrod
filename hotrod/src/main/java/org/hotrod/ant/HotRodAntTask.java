@@ -173,6 +173,8 @@ public class HotRodAntTask extends Task {
       throw new BuildException("Could not connect to database: " + EUtils.renderMessages(e));
     }
 
+    log.debug("Adapter loaded.");
+
     HotRodConfigTag config = null;
     try {
       config = ConfigurationLoader.loadPrimary(this.projectBaseDir, this.configFile, this.generator, adapter);
