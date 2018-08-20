@@ -38,8 +38,11 @@ insert into config_values(node, cell, name, verbatim) values(10, 100, 'prop1', '
 insert into config_values(node, cell, name, verbatim) values(10, 101, 'prop2', 'value2');
 insert into config_values(node, cell, name, verbatim) values(20, 100, 'prop3', 'value3');
   
-insert into vehicle (name, mileage, version_number) values ('Volkswagen', 10000, 32765);
-insert into vehicle (name, mileage, version_number) values ('Ford', 25000, 15);
+insert into vehicle_type (id, description) values (10, 'Sedan');
+insert into vehicle_type (id, description) values (11, 'Truck');
+
+insert into vehicle (name, mileage, vtype, version_number) values ('Volkswagen', 10000, 10, 32765);
+insert into vehicle (name, mileage, vtype, version_number) values ('Ford', 25000, 11, 15);
 
 insert into properties (application, name, prop_value) values ('app01', 'key1', 'value1');
 

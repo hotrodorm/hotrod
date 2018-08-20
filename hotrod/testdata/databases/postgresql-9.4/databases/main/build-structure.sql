@@ -148,12 +148,19 @@ create view tx_branch
     where t.fed_branch_id = b.id
     order by t.amount;
   
+create table vehicle_type (
+  id int primary key not null,
+  description varchar(20)
+);
+
 create table vehicle (
   id serial not null,
   name varchar(40) not null,
   mileage integer not null,
   version_number smallint not null,
-  primary key (id)
+  vtype int not null,
+  primary key (id),
+  constraint fk1_vehicle_type foreign key (vtype) references vehicle_type (id)
 );
 
 create unique index vehicle_unique on vehicle (upper(name));

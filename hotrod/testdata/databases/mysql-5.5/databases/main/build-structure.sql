@@ -122,12 +122,19 @@ create table application_config (
   config_value varchar(250)
 );
 
+create table vehicle_type (
+  id int primary key not null,
+  description varchar(20)
+);
+
 create table vehicle (
   id integer not null auto_increment,
   name varchar(40) not null,
   mileage integer not null,
   version_number decimal(10) not null,
-  primary key (id)
+  vtype int not null,
+  primary key (id),
+  constraint fk1_vehicle_type foreign key (vtype) references vehicle_type (id)
 );
 
 -- === Views ===

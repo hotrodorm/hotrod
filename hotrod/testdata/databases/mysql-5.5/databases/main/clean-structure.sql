@@ -26,6 +26,7 @@ drop table log;
 drop table agent; 
 
 drop table vehicle;
+drop table vehicle_type;
 
 drop table types_numeric;
 drop table types_char;

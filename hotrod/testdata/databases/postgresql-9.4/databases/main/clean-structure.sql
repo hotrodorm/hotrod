@@ -11,6 +11,8 @@ drop view if exists schema2.low_account;
 drop table if exists "car#part$Price";
 
 drop table if exists vehicle;
+drop table if exists vehicle_type;
+
 drop view if exists tx_branch;
 
 drop table if exists application_config;

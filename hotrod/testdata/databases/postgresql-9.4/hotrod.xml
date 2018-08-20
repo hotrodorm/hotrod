@@ -43,6 +43,8 @@
 	<table name="quadrant" />
 	<table name="application_config" />
 
+  <enum name="vehicle_type" name-column="description" />
+
 	<table name="vehicle">
 		<version-control-column name="version_number" />
 		<column name="version_number" java-type="java.lang.Short"
