@@ -32,6 +32,7 @@ import org.hotrod.generator.GeneratableObject;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
+import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
@@ -123,7 +124,8 @@ public class ObjectDAO extends GeneratableObject {
     return this.daoType == DAOType.EXECUTOR;
   }
 
-  public void generate(final FileGenerator fileGenerator) throws UncontrolledException, ControlledException {
+  public void generate(final FileGenerator fileGenerator, final MyBatisGenerator mg)
+      throws UncontrolledException, ControlledException {
 
     String className = this.getClassName() + ".java";
 
@@ -140,8 +142,8 @@ public class ObjectDAO extends GeneratableObject {
       if (!this.isPlain()) {
 
         if (this.isTable()) {
-          writeSelectByPK();
-          writeSelectByUI();
+          writeSelectByPK(mg);
+          writeSelectByUI(mg);
         }
 
         writeSelectByExampleAndOrder();
@@ -378,14 +380,14 @@ public class ObjectDAO extends GeneratableObject {
 
   private static final String SELECT_BY_PK_METHOD = "select";
 
-  private void writeSelectByPK() throws IOException, UnresolvableDataTypeException {
+  private void writeSelectByPK(final MyBatisGenerator mg) throws IOException, UnresolvableDataTypeException {
     if (this.metadata.getPK() == null) {
       println("  // no select by PK generated, since the table does not have a PK.");
       println();
       return;
     }
 
-    String paramsSignature = toParametersSignature(this.metadata.getPK());
+    String paramsSignature = toParametersSignature(this.metadata.getPK(), mg);
     String paramsCall = toParametersCall(this.metadata.getPK());
 
     println("  // select by primary key");
@@ -562,7 +564,7 @@ public class ObjectDAO extends GeneratableObject {
    * @throws UnresolvableDataTypeException
    */
 
-  private void writeSelectByUI() throws IOException, UnresolvableDataTypeException {
+  private void writeSelectByUI(final MyBatisGenerator mg) throws IOException, UnresolvableDataTypeException {
     boolean first = true;
 
     // Remove duplicated unique indexes/constraints that may be registered in
@@ -583,7 +585,7 @@ public class ObjectDAO extends GeneratableObject {
           println();
         }
 
-        String paramsSignature = toParametersSignature(ui);
+        String paramsSignature = toParametersSignature(ui, mg);
         String paramsCall = toParametersCall(ui);
         String camelCase = ui.toCamelCase(this.layout.getColumnSeam());
 
@@ -2559,10 +2561,22 @@ public class ObjectDAO extends GeneratableObject {
 
   // Helpers
 
-  public static String toParametersSignature(final KeyMetadata km) throws UnresolvableDataTypeException {
+  public static String toParametersSignature(final KeyMetadata km, final MyBatisGenerator mg)
+      throws UnresolvableDataTypeException {
     ListWriter lw = new ListWriter(", ");
     for (ColumnMetadata cm : km.getColumns()) {
-      lw.add("final " + cm.getType().getJavaClassName() + " " + cm.getId().getJavaMemberName());
+      EnumDataSetMetadata em = cm.getEnumMetadata();
+      log.debug(cm.getColumnName() + " cm.getEnumMetadata()=" + em);
+      String javaClassName;
+      if (em != null) {
+        EnumClass ec = mg.getEnum(em);
+        javaClassName = ec.getFullClassName();
+        log.debug(" >> enumclass=" + javaClassName);
+      } else {
+        javaClassName = cm.getType().getJavaClassName();
+        log.debug(" >> simpleclass=" + javaClassName);
+      }
+      lw.add("final " + javaClassName + " " + cm.getId().getJavaMemberName());
     }
     return lw.toString();
   }

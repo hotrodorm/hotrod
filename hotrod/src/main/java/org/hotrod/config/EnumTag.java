@@ -528,11 +528,20 @@ public class EnumTag extends AbstractEntityDAOTag {
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < title.length(); i++) {
         String c = title.substring(i, i + 1);
-        if (i == 0 && c.matches(VALID_LEAD_JAVA_IDENTIFIER_CHAR) || i != 0 && c.matches(VALID_JAVA_IDENTIFIER_CHAR)) {
+
+        if (i == 0) {
+          if (!c.matches(VALID_LEAD_JAVA_IDENTIFIER_CHAR)) {
+            sb.append("_");
+          }
+          if (c.matches(VALID_JAVA_IDENTIFIER_CHAR)) {
+            sb.append(c.toUpperCase());
+          }
+        } else if (c.matches(VALID_JAVA_IDENTIFIER_CHAR)) {
           sb.append(c.toUpperCase());
         } else {
           sb.append("_");
         }
+
       }
       this.javaConstantName = sb.toString();
     }

@@ -78,4 +78,12 @@ public class ForeignKeyMetadata implements Serializable {
     return true;
   }
 
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(this.local.toString());
+    sb.append(" -> ");
+    sb.append(this.remote.toString());
+    return sb.toString();
+  }
+
 }

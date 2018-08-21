@@ -127,14 +127,23 @@ create table vehicle_type (
   description varchar(20)
 );
 
+create table vehicle_vin (
+  num varchar(20) primary key not null,
+  reg date not null
+);
+
 create table vehicle (
   id integer not null auto_increment,
   name varchar(40) not null,
   mileage integer not null,
   version_number decimal(10) not null,
   vtype int not null,
+  vin varchar(20) not null,
   primary key (id),
-  constraint fk1_vehicle_type foreign key (vtype) references vehicle_type (id)
+  constraint fk1_vehicle_type foreign key (vtype) references vehicle_type (id),
+  constraint fk2_vehicle_vin foreign key (vin) references vehicle_vin (num)
+  , constraint uq1_vehicle_type unique (vtype)
+  , constraint uq2_vehicle_vin unique (vin)
 );
 
 -- === Views ===
@@ -332,7 +341,7 @@ create table catalog2.account_alert (
   raised_at timestamp not null,
   account_id int not null,
   house_id int not null,
-  constraint aa_fk1 foreign key (account_id) references database1.account (id),
+  constraint aa_fk1 foreign key (account_id) references hotrod.account (id),
   constraint ah_fk2 foreign key (house_id) references catalog2.house (id)
 );
 

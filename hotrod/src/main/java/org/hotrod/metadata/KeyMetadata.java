@@ -84,4 +84,17 @@ public class KeyMetadata implements Serializable {
     return lw.toString();
   }
 
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(this.tm.getId().getRenderedSQLName());
+    sb.append("(");
+    ListWriter w = new ListWriter(",");
+    for (ColumnMetadata cm : this.columns) {
+      w.add(cm.getColumnName());
+    }
+    sb.append(w.toString());
+    sb.append(")");
+    return sb.toString();
+  }
+
 }

@@ -269,7 +269,7 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
     }
 
     for (ObjectDAO dao : this.daos.values()) {
-      dao.generate(fileGenerator);
+      dao.generate(fileGenerator, this);
     }
 
     // Enums

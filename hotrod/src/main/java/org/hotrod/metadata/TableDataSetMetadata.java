@@ -277,15 +277,27 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   public void linkEnumMetadata(final Set<EnumDataSetMetadata> enums) {
     for (ForeignKeyMetadata ifk : this.importedFKs) {
+      log.debug("FK: " + ifk.toString());
       try {
         EnumDataSetMetadata em = (EnumDataSetMetadata) ifk.getRemote().getTableMetadata();
+        log.debug(" - em=" + em);
         for (ColumnMetadata icm : ifk.getLocal().getColumns()) {
+
+          // Mark FK column
+
           icm.setEnumMetadata(em);
+
+          // Mark dataset column
+
           for (ColumnMetadata cm : this.cols) {
             if (cm.getColumnName().equals(icm.getColumnName())) {
+              log.debug("   + marking column.");
               cm.setEnumMetadata(em);
             }
           }
+
+          // Mark PK columns
+
           // log.info("this.t.getName()=" + this.t.getName());
           // log.info("this.javaName=" + this.javaName);
           // log.info(" * this.pk=" + this.pk);
@@ -296,6 +308,9 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
               }
             }
           }
+
+          // Mark non-PK columns
+
           if (this.nonPKCols != null) {
             for (ColumnMetadata cm : this.nonPKCols) {
               if (cm.getColumnName().equals(icm.getColumnName())) {
@@ -303,6 +318,17 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
               }
             }
           }
+
+          // Mark Unique indexes columns
+
+          for (KeyMetadata km : this.uniqueIndexes) {
+            for (ColumnMetadata cm : km.getColumns()) {
+              if (cm.getColumnName().equals(icm.getColumnName())) {
+                cm.setEnumMetadata(em);
+              }
+            }
+          }
+
         }
       } catch (ClassCastException e) {
         // FK does not point to an enum - nothing to do.

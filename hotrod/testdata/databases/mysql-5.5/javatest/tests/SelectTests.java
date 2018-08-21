@@ -12,11 +12,15 @@ import hotrod.test.generation.Car_part_priceVO;
 import hotrod.test.generation.ConfigValuesVO;
 import hotrod.test.generation.HouseVO;
 import hotrod.test.generation.MultParamSelectVO;
+import hotrod.test.generation.VehicleVO;
 import hotrod.test.generation.primitives.AlertFinder;
 import hotrod.test.generation.primitives.Car_part_priceDAO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
 import hotrod.test.generation.primitives.Executor1;
 import hotrod.test.generation.primitives.HouseDAO;
+import hotrod.test.generation.primitives.VehicleDAO;
+import hotrod.test.generation.primitives.VehicleType;
+import hotrod.test.generation.primitives.VehicleVin;
 
 public class SelectTests {
 
@@ -26,8 +30,9 @@ public class SelectTests {
 
     // selectOtherCatalog();
     // selectMultiCatalog();
-    selectComplexName();
+    // selectComplexName();
 
+    selectByEnumUI();
   }
 
   private static void selectByExample() throws SQLException {
@@ -71,6 +76,19 @@ public class SelectTests {
     for (MultParamSelectVO mp : Executor1.findMultParamSelect(160)) {
       System.out.println("mp=" + mp);
     }
+
+  }
+
+  private static void selectByEnumUI() throws SQLException {
+    System.out.println("=== select by Enum UI ===");
+
+    VehicleVO v1 = VehicleDAO.selectByUIVin(VehicleVin._2018_02_07);
+    System.out.println("v1=" + v1);
+
+    VehicleVO v2 = VehicleDAO.selectByUIVtype(VehicleType.SEDAN);
+    System.out.println("v2=" + v2);
+
+    System.out.println("===");
 
   }
 

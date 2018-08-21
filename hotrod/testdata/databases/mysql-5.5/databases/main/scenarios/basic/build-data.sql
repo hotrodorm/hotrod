@@ -32,8 +32,11 @@ insert into config_values(node, cell, name, verbatim) values(20, 100, 'prop3', '
 insert into vehicle_type (id, description) values (10, 'Sedan');
 insert into vehicle_type (id, description) values (11, 'Truck');
 
-insert into vehicle (name, mileage, vtype, version_number) values ('Volkswagen', 10000, 10, 32765);
-insert into vehicle (name, mileage, vtype, version_number) values ('Ford', 25000, 11, 15);
+insert into vehicle_vin (num, reg) values ('DE123456', '2018-01-01'); 
+insert into vehicle_vin (num, reg) values ('FG999777', '2018-02-07'); 
+
+insert into vehicle (name, mileage, vtype, vin, version_number) values ('Volkswagen', 10000, 10, 'DE123456', 32765);
+insert into vehicle (name, mileage, vtype, vin, version_number) values ('Ford', 25000, 11, 'FG999777', 15);
 
 -- enum
 

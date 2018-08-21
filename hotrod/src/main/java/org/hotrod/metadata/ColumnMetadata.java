@@ -90,6 +90,7 @@ public class ColumnMetadata implements Serializable {
   }
 
   public void setEnumMetadata(final EnumDataSetMetadata enumMetadata) {
+    log.debug("[mark enum column] name=" + this.columnName + " enum=" + enumMetadata.getJdbcName());
     this.enumMetadata = enumMetadata;
   }
 
