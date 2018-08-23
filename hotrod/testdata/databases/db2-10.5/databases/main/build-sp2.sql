@@ -23,3 +23,24 @@ else
 end if;
 end  
 //
+
+ 
+create or replace trigger employee_state_read_only
+before insert or delete or update on employee_state for each row
+begin
+  signal sqlstate '80001' set message_text = 
+    'Insert, update, or delete operation not allowed on read-only table "employee_state".';
+end//
+
+
+
+  
+
+
+
+
+
+
+
+
+

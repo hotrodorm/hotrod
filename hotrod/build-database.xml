@@ -33,11 +33,12 @@
          onerror="abort">
       <fileset file="${db.src.dir}/${database}/build-structure.sql" />
     </sql>
-    <antcall target="build-sp" />
+    <antcall target="build-sp2" />
     <antcall target="build-data" />
   </target>
 
   <target name="clean-database" depends="-init">
+    <antcall target="clean-sp2" />
     <sql driver="${driverclass}"
          classpath="${db.src.dir}/${driverclasspath}"
          url="${url}"
@@ -49,10 +50,9 @@
          onerror="continue">
       <fileset file="${db.src.dir}/${database}/clean-structure.sql" />
     </sql>
-    <antcall target="clean-sp" />
   </target>
 
-  <target name="build-sp" depends="-init">
+  <target name="build-sp2" depends="-init">
     <sql driver="${driverclass}"
          classpath="${db.src.dir}/${driverclasspath}"
          url="${url}"
@@ -63,11 +63,11 @@
          escapeprocessing="${escapeprocessing}"
          autocommit="true"
          onerror="abort">
-      <fileset file="${db.src.dir}/${database}/build-sp.sql" />
+      <fileset file="${db.src.dir}/${database}/build-sp2.sql" />
     </sql>
   </target>
 
-  <target name="clean-sp" depends="-init">
+  <target name="clean-sp2" depends="-init">
     <sql driver="${driverclass}"
          classpath="${db.src.dir}/${driverclasspath}"
          url="${url}"
@@ -75,9 +75,10 @@
          password="${password}"
          keepformat="true"
          delimiter="//"
+         autocommit="true"
          escapeprocessing="${escapeprocessing}"
          onerror="continue">
-      <fileset file="${db.src.dir}/${database}/clean-sp.sql" />
+      <fileset file="${db.src.dir}/${database}/clean-sp2.sql" />
     </sql>
   </target>
 
@@ -148,7 +149,7 @@
 
   <target name="rebuild-database" depends="clean-database, build-database" />
 
-  <target name="rebuild-sp" depends="clean-sp, build-sp" />
+  <target name="rebuild-sp2" depends="clean-sp2, build-sp2" />
 
   <target name="rebuild-data" depends="clean-data, build-data" />
 

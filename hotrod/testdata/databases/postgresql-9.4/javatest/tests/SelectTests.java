@@ -2,6 +2,7 @@ package tests;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Date;
 
 import hotrod.test.generation.Account2VO;
 import hotrod.test.generation.AccountTx0;
@@ -11,11 +12,13 @@ import hotrod.test.generation.Car_part_priceVO;
 import hotrod.test.generation.ConfigValuesVO;
 import hotrod.test.generation.HouseVO;
 import hotrod.test.generation.MultParamSelect;
+import hotrod.test.generation.TypesDateTimeVO;
 import hotrod.test.generation.primitives.AlertFinder;
 import hotrod.test.generation.primitives.Car_part_priceDAO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
 import hotrod.test.generation.primitives.HouseDAO;
 import hotrod.test.generation.primitives.MyDAO;
+import hotrod.test.generation.primitives.TypesDateTimeDAO;
 
 public class SelectTests {
 
@@ -28,7 +31,9 @@ public class SelectTests {
     // selectByUI();
     // selectComplexName();
     // selectOtherSchema();
-    selectMultiSchema();
+    // selectMultiSchema();
+    selectTimestampWithoutTimeZone();
+
   }
 
   private static void selectByExample() throws SQLException {
@@ -47,6 +52,23 @@ public class SelectTests {
       }
     }
 
+  }
+
+  private static void selectTimestampWithoutTimeZone() throws SQLException {
+    System.out.println("=== TS without time zone ===");
+    for (TypesDateTimeVO ts : TypesDateTimeDAO.selectByExample(new TypesDateTimeVO())) {
+      System.out.println("ts: " + ts);
+      System.out.println("  -> ts2=" + ts.getTs2());
+      Date d2 = new Date(ts.getTs2().getTime());
+      System.out.println("  -> dt2=" + d2);
+    }
+
+    // TypesDateTimeVO t2 = new TypesDateTimeVO();
+    // t2.setId(1234);
+    // t2.setTs2(new java.util.Date());
+    // TypesDateTimeDAO.insert(t2);
+
+    System.out.println("===");
   }
 
   private static void selectOtherSchema() throws SQLException {

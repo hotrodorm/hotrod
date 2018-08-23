@@ -1,4 +1,0 @@
-drop function reverse
-//
-
-

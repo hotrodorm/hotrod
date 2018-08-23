@@ -8,6 +8,8 @@ drop table "car#part$Price";
 
 drop view tx_branch;
 
+drop table employee_state;
+
 drop table types_char;
 drop table types_numeric;
 drop table types_date_time;
