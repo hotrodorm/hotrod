@@ -11,6 +11,8 @@ drop view schema2.low_account;
 
 drop table "car#part$Price";
 
+drop table employee_state;
+
 drop view tx_branch;
 
 drop table application_config;

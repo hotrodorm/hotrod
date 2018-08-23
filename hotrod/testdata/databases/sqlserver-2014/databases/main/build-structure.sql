@@ -127,6 +127,18 @@ create view tx_branch (account_id, branch_id, branch_name, amount) as
 select t.account_id, b.id, b.name, t.amount from transaction2 t, federal_branch b 
   where t.fed_branch_id = b.id;
 
+-- enum (ideally read-only)
+
+create table employee_state (
+  id integer primary key not null,
+  description varchar(40) not null
+);
+
+insert into employee_state (id, description) values (1, 'Enrolled');
+insert into employee_state (id, description) values (2, 'Accepted_OK');
+insert into employee_state (id, description) values (3, 'Pending Notification');
+insert into employee_state (id, description) values (4, 'Rejected, but can Reapply!');
+  
 -- ======================
 -- Auto-generated columns 
 -- ======================
