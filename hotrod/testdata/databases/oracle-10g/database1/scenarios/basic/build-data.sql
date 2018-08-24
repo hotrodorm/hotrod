@@ -80,12 +80,37 @@ insert into employee_state (id, since, description, active) values (3, to_date('
 insert into employee_state (id, since, description, active) values (4, to_date('2017-03-01', 'YYYY-MM-DD'), 'Rejected, but can Reapply!', 1);
 alter trigger employee_state_read_only enable;
 
+
 insert into employee_interim (start_date, caption) values (to_date('2014-08-15','YYYY-MM-DD'), 'First Year');
 insert into employee_interim (start_date, caption) values (to_date('2017-07-28','YYYY-MM-DD'), 'Second Year');
 
 insert into employee (id, name, state_id, initial_state_id, hired_on, classification) values (101, 'Peter', 2, 3, to_date('2017-08-01', 'YYYY-MM-DD'), to_date('2014-08-15','YYYY-MM-DD'));
 insert into employee (id, name, state_id, initial_state_id, hired_on, classification) values (102, 'Alice', 1, 2, to_date('2017-07-15', 'YYYY-MM-DD'), to_date('2014-08-15','YYYY-MM-DD'));
 insert into employee (id, name, state_id, initial_state_id, hired_on, classification) values (103, 'Donna', 4, 1, to_date('2017-08-03', 'YYYY-MM-DD'), to_date('2017-07-28','YYYY-MM-DD'));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
