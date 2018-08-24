@@ -63,3 +63,31 @@ insert into schema2.account_alert (raised_at, account_id, house_id) values (time
 insert into schema2.account_alert (raised_at, account_id, house_id) values (timestamp '2018-01-20 20:59:59', 2, 71);
 insert into schema2.account_alert (raised_at, account_id, house_id) values (timestamp '2018-01-21 08:05:12', 2, 71);
 
+
+set read_only_employee_state = 0;
+insert into employee_state (id, description) values (1, 'Applying');
+insert into employee_state (id, description) values (2, 'Rejected');
+insert into employee_state (id, description) values (3, 'Active');
+insert into employee_state (id, description) values (4, 'Inactive');
+set read_only_employee_state = 1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

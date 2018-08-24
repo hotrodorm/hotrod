@@ -146,12 +146,6 @@ create table employee_state (
   description varchar(40) not null
 );
 
-insert into employee_state (id, description) values (1, 'Applying');
-insert into employee_state (id, description) values (2, 'Rejected');
-insert into employee_state (id, description) values (3, 'Active');
-insert into employee_state (id, description) values (4, 'Inactive');
-
-
 -- ======================
 -- Auto-generated columns 
 -- ======================
