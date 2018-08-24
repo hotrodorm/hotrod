@@ -50,3 +50,22 @@ insert into schema2.account_alert (raised_at, account_id, house_id) values ('201
 
 insert into "&General".dbo.atelier (id, name) values (123, 'Atelier 1');
 insert into "&General".dbo.atelier (id, name) values (456, 'Atelier 2');
+
+disable trigger employee_state_read_only on employee_state; 
+insert into employee_state (id, description) values (1, 'Enrolled');
+insert into employee_state (id, description) values (2, 'Accepted_OK');
+insert into employee_state (id, description) values (3, 'Pending Notification');
+insert into employee_state (id, description) values (4, 'Rejected, but can Reapply!');
+enable trigger employee_state_read_only on employee_state;
+
+
+
+
+
+
+
+
+
+
+
+

@@ -53,12 +53,12 @@ insert into client (id, national_id, name,              prop_name, referrer_id, 
 
 -- enum
 
--- alter table employee_state disable trigger employee_state_read_only;
--- insert into employee_state (id, description) values (1, 'Enrolled');
--- insert into employee_state (id, description) values (2, 'Accepted_OK');
--- insert into employee_state (id, description) values (3, 'Pending Notification');
--- insert into employee_state (id, description) values (4, 'Rejected, but can Reapply!');
--- alter table employee_state enable trigger employee_state_read_only;
+alter table employee_state disable trigger employee_state_read_only;
+insert into employee_state (id, description) values (1, 'Enrolled');
+insert into employee_state (id, description) values (2, 'Accepted_OK');
+insert into employee_state (id, description) values (3, 'Pending Notification');
+insert into employee_state (id, description) values (4, 'Rejected, but can Reapply!');
+alter table employee_state enable trigger employee_state_read_only;
 
 insert into employee (id, name, state_id, hired_on) values (101, 'Peter', 2, '2017-08-01');
 insert into employee (id, name, state_id, hired_on) values (102, 'Alice', 1, '2017-07-15');
@@ -84,6 +84,5 @@ insert into schema2.account_alert (raised_at, account_id, house_id) values ('201
 insert into schema2.account_alert (raised_at, account_id, house_id) values ('2018-01-02 18:12:34', 1234001, 70);
 insert into schema2.account_alert (raised_at, account_id, house_id) values ('2018-01-20 20:59:59', 1234004, 71);
 insert into schema2.account_alert (raised_at, account_id, house_id) values ('2018-01-21 08:05:12', 1234004, 71);
-
 
 
