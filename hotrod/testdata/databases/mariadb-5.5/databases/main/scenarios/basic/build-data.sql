@@ -31,3 +31,30 @@ insert into config_values(node, cell, name, verbatim) values(20, 100, 'prop3', '
   
 insert into vehicle (name, mileage, version_number) values ('Volkswagen', 10000, 32765);
 insert into vehicle (name, mileage, version_number) values ('Ford', 25000, 15);
+
+set @read_only_employee_state_disabled = 1;
+insert into employee_state (id, description) values (1, 'Enrolled');
+insert into employee_state (id, description) values (2, 'Accepted_OK');
+insert into employee_state (id, description) values (3, 'Pending Notification');
+insert into employee_state (id, description) values (4, 'Rejected, but can Reapply!');
+set @read_only_employee_state_disabled = 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

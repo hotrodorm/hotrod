@@ -40,12 +40,14 @@ insert into vehicle (name, mileage, vtype, vin, version_number) values ('Ford', 
 
 -- enum
 
---alter table employee_state disable trigger employee_state_read_only;
+-- make table read-write
+set @read_only_employee_state_disabled = 1;
 insert into employee_state (id, since, description, active) values (1, '2015-07-01', 'Enrolled', 1);
 insert into employee_state (id, since, description, active) values (2, null, 'Accepted_OK', 1);
 insert into employee_state (id, since, description, active) values (3, '2016-04-22', 'Pending Notification', 0);
 insert into employee_state (id, since, description, active) values (4, '2017-03-05', 'Rejected, but can Reapply!', 1);
--- alter table employee_state enable trigger employee_state_read_only;
+-- make table read-only (default when unset)
+set @read_only_employee_state_disabled = 0;
 
 insert into employee (id, name, state_id, hired_on) values (101, 'Peter', 2, '2017-08-01');
 insert into employee (id, name, state_id, hired_on) values (102, 'Alice', 1, '2017-07-15');
