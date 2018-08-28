@@ -1,0 +1,5 @@
+1. Read only mode: Oracle
+2. Trigger that can be disabled: PostgreSQL, SQL Server
+3. Trigger with session variable: MariaDB, MySQL
+4. Trigger with permanent variable: DB2
+5. Revoke permissions
