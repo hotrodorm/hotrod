@@ -1,4 +1,4 @@
-package explainplan;
+package explainplanpopulator;
 
 import java.sql.SQLException;
 import java.util.Random;

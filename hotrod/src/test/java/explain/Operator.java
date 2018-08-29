@@ -1,0 +1,52 @@
+package explain;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+
+public interface Operator {
+
+  // Node Identification
+
+  Integer getId();
+
+  // Type
+
+  String getType();
+
+  boolean includesHeapFetch();
+
+  // Cost
+
+  Double getCost();
+
+  Double getExaminedRows();
+
+  Long getProducedBytes();
+
+  Double getProducedRows();
+
+  // Source of rows
+
+  String getRowsSource();
+
+  String getRowsSourceAlias();
+
+  String getIndexName();
+  
+  String getIndexDescription();
+
+  List<String> getAccessPredicates();
+
+  // Filtering
+
+  List<String> getFilterPredicates();
+
+  // Sources
+
+  List<Operator> getInnerOperators();
+
+  // Extra Properties
+
+  LinkedHashMap<String, String> getExtraProperties();
+
+}

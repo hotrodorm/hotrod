@@ -1,4 +1,4 @@
-package explainplan;
+package explainplanpopulator;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
