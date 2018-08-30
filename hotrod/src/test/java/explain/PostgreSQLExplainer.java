@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 import explain.postgresql.PostgreSQLPlanRetriever;
 import explain.postgresql.PostgreSQLXMLPlanParser;
-import explain.postgresql.PostgreSQLXMLPlanParser.InvalidPlanException;
 import explain.renderers.TextPlanRenderer;
 
 public class PostgreSQLExplainer {

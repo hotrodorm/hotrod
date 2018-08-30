@@ -20,6 +20,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import explain.InvalidPlanException;
+
 public class PostgreSQLXMLPlanParser {
 
   public static PostgreSQLOperator parse(final Connection conn, final String doc)
@@ -117,7 +119,7 @@ public class PostgreSQLXMLPlanParser {
         }
       }
     }
-    boolean includesHeapFetch = "Bitmap Heap Scan".equals(nodeType)|| "Index Scan".equals(nodeType);
+    boolean includesHeapFetch = "Bitmap Heap Scan".equals(nodeType) || "Index Scan".equals(nodeType);
     if (indexName != null) {
       indexDescription = getIndexDefinition(conn, indexName);
     }
@@ -154,16 +156,6 @@ public class PostgreSQLXMLPlanParser {
         }
       }
     }
-  }
-
-  public static class InvalidPlanException extends Exception {
-
-    private static final long serialVersionUID = 1L;
-
-    public InvalidPlanException(String message) {
-      super(message);
-    }
-
   }
 
   // Helpers

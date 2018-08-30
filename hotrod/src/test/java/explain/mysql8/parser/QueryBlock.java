@@ -1,4 +1,4 @@
-package plan.json.mysql8;
+package explain.mysql8.parser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,47 +10,45 @@ public class QueryBlock {
   // Properties
 
   @SerializedName("select_id")
-  private String selectId = null;
+  private Integer selectId = null;
 
   @SerializedName("cost_info")
   private CostInfo costInfo = null;
 
   private Table table = null;
 
+  @SerializedName("nested_loop")
   private List<NestedLoopElement> nestedLoopElements = new ArrayList<NestedLoopElement>();
+
+  @SerializedName("optimized_away_subqueries")
+  private List<OptimizedAwaySubquery> optimizedAwaySubqueries = new ArrayList<OptimizedAwaySubquery>();
+
+  private String message;
 
   // Getters & Setters
 
-  public String getSelectId() {
+  public Integer getSelectId() {
     return selectId;
-  }
-
-  public void setSelectId(String selectId) {
-    this.selectId = selectId;
   }
 
   public CostInfo getCostInfo() {
     return costInfo;
   }
 
-  public void setCostInfo(CostInfo costInfo) {
-    this.costInfo = costInfo;
-  }
-
   public Table getTable() {
     return table;
-  }
-
-  public void setTable(Table table) {
-    this.table = table;
   }
 
   public List<NestedLoopElement> getNestedLoopElements() {
     return nestedLoopElements;
   }
 
-  public void setNestedLoopElements(List<NestedLoopElement> nestedLoopElements) {
-    this.nestedLoopElements = nestedLoopElements;
+  public List<OptimizedAwaySubquery> getOptimizedAwaySubqueries() {
+    return optimizedAwaySubqueries;
+  }
+
+  public String getMessage() {
+    return message;
   }
 
   // toString

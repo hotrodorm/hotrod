@@ -1,0 +1,404 @@
+{
+  "query_block": {
+    "select_id": 1,
+    "cost_info": {
+      "query_cost": "1.40"
+    },
+    "nested_loop": [
+      {
+        "table": {
+          "table_name": "t6",
+          "access_type": "system",
+          "rows_examined_per_scan": 1,
+          "rows_produced_per_join": 1,
+          "filtered": "100.00",
+          "cost_info": {
+            "read_cost": "0.00",
+            "eval_cost": "0.10",
+            "prefix_cost": "0.00",
+            "data_read_per_join": "16"
+          },
+          "used_columns": [
+            "account_id"
+          ],
+          "materialized_from_subquery": {
+            "using_temporary_table": true,
+            "dependent": false,
+            "cacheable": true,
+            "query_block": {
+              "select_id": 2,
+              "message": "Select tables optimized away"
+            }
+          }
+        }
+      },
+      {
+        "table": {
+          "table_name": "a",
+          "access_type": "const",
+          "possible_keys": [
+            "PRIMARY"
+          ],
+          "key": "PRIMARY",
+          "used_key_parts": [
+            "id"
+          ],
+          "key_length": "4",
+          "ref": [
+            "const"
+          ],
+          "rows_examined_per_scan": 1,
+          "rows_produced_per_join": 1,
+          "filtered": "100.00",
+          "cost_info": {
+            "read_cost": "0.00",
+            "eval_cost": "0.10",
+            "prefix_cost": "0.00",
+            "data_read_per_join": "824"
+          },
+          "used_columns": [
+            "id",
+            "current_balance",
+            "name",
+            "created_on",
+            "lname",
+            "xbalance"
+          ]
+        }
+      },
+      {
+        "table": {
+          "table_name": "t4",
+          "access_type": "ref",
+          "possible_keys": [
+            "tx_account_id_time",
+            "fk_tx_fed_branch"
+          ],
+          "key": "tx_account_id_time",
+          "used_key_parts": [
+            "account_id"
+          ],
+          "key_length": "4",
+          "ref": [
+            "const"
+          ],
+          "rows_examined_per_scan": 2,
+          "rows_produced_per_join": 2,
+          "filtered": "100.00",
+          "cost_info": {
+            "read_cost": "0.50",
+            "eval_cost": "0.20",
+            "prefix_cost": "0.70",
+            "data_read_per_join": "176"
+          },
+          "used_columns": [
+            "account_id",
+            "seq_id",
+            "time",
+            "amount",
+            "fed_branch_id"
+          ],
+          "attached_condition": "((('45' < (3 * (/* select#3 */ select avg(`hotrod`.`t`.`amount`) from `hotrod`.`transaction` `t` semi join (`hotrod`.`federal_branch`) join `hotrod`.`federal_branch` `b` where ((`hotrod`.`b`.`id` = `hotrod`.`t`.`fed_branch_id`) and (`hotrod`.`federal_branch`.`name` = `hotrod`.`b`.`name`) and (`hotrod`.`t`.`account_id` = '1234005') and (`hotrod`.`federal_branch`.`name` like '%ar%'))))) and <cache>(('45' < (5 * (/* select#5 */ select avg(`hotrod`.`t2`.`amount`) from `hotrod`.`transaction` `t2` join `hotrod`.`federal_branch` `b2` where ((`hotrod`.`b2`.`id` = `hotrod`.`t2`.`fed_branch_id`) and (not(<in_optimizer>(`hotrod`.`b2`.`name`,`hotrod`.`b2`.`name` in ( <materialize> (/* select#6 */ select `hotrod`.`federal_branch`.`name` from `hotrod`.`federal_branch` where (`hotrod`.`federal_branch`.`name` like '%y%') ), <primary_index_lookup>(`hotrod`.`b2`.`name` in <temporary table> on <auto_key> where ((`hotrod`.`b2`.`name` = `materialized-subquery`.`name`))))))))))))) and (`hotrod`.`t4`.`fed_branch_id` is not null))",
+          "attached_subqueries": [
+            {
+              "dependent": true,
+              "cacheable": false,
+              "query_block": {
+                "select_id": 3,
+                "cost_info": {
+                  "query_cost": "2.15"
+                },
+                "nested_loop": [
+                  {
+                    "table": {
+                      "table_name": "t",
+                      "access_type": "ref",
+                      "possible_keys": [
+                        "tx_account_id_time",
+                        "fk_tx_fed_branch"
+                      ],
+                      "key": "tx_account_id_time",
+                      "used_key_parts": [
+                        "account_id"
+                      ],
+                      "key_length": "4",
+                      "ref": [
+                        "const"
+                      ],
+                      "rows_examined_per_scan": 2,
+                      "rows_produced_per_join": 2,
+                      "filtered": "100.00",
+                      "cost_info": {
+                        "read_cost": "0.50",
+                        "eval_cost": "0.20",
+                        "prefix_cost": "0.70",
+                        "data_read_per_join": "176"
+                      },
+                      "used_columns": [
+                        "account_id",
+                        "amount",
+                        "fed_branch_id"
+                      ],
+                      "attached_condition": "(`hotrod`.`t`.`fed_branch_id` is not null)"
+                    }
+                  },
+                  {
+                    "table": {
+                      "table_name": "b",
+                      "access_type": "eq_ref",
+                      "possible_keys": [
+                        "PRIMARY"
+                      ],
+                      "key": "PRIMARY",
+                      "used_key_parts": [
+                        "id"
+                      ],
+                      "key_length": "4",
+                      "ref": [
+                        "hotrod.t.fed_branch_id"
+                      ],
+                      "rows_examined_per_scan": 1,
+                      "rows_produced_per_join": 2,
+                      "filtered": "100.00",
+                      "cost_info": {
+                        "read_cost": "0.50",
+                        "eval_cost": "0.20",
+                        "prefix_cost": "1.40",
+                        "data_read_per_join": "256"
+                      },
+                      "used_columns": [
+                        "id",
+                        "name"
+                      ]
+                    }
+                  },
+                  {
+                    "table": {
+                      "table_name": "federal_branch",
+                      "access_type": "ALL",
+                      "rows_examined_per_scan": 4,
+                      "rows_produced_per_join": 2,
+                      "filtered": "25.00",
+                      "first_match": "b",
+                      "using_join_buffer": "Block Nested Loop",
+                      "cost_info": {
+                        "read_cost": "0.55",
+                        "eval_cost": "0.20",
+                        "prefix_cost": "2.15",
+                        "data_read_per_join": "256"
+                      },
+                      "used_columns": [
+                        "name"
+                      ],
+                      "attached_condition": "((`hotrod`.`federal_branch`.`name` = `hotrod`.`b`.`name`) and (`hotrod`.`federal_branch`.`name` like '%ar%'))"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "table": {
+          "table_name": "b5",
+          "access_type": "eq_ref",
+          "possible_keys": [
+            "PRIMARY"
+          ],
+          "key": "PRIMARY",
+          "used_key_parts": [
+            "id"
+          ],
+          "key_length": "4",
+          "ref": [
+            "hotrod.t4.fed_branch_id"
+          ],
+          "rows_examined_per_scan": 1,
+          "rows_produced_per_join": 2,
+          "filtered": "100.00",
+          "cost_info": {
+            "read_cost": "0.50",
+            "eval_cost": "0.20",
+            "prefix_cost": "1.40",
+            "data_read_per_join": "256"
+          },
+          "used_columns": [
+            "id",
+            "name"
+          ]
+        }
+      }
+    ],
+    "optimized_away_subqueries": [
+      {
+        "dependent": false,
+        "cacheable": true,
+        "query_block": {
+          "select_id": 5,
+          "cost_info": {
+            "query_cost": "2.05"
+          },
+          "nested_loop": [
+            {
+              "table": {
+                "table_name": "t2",
+                "access_type": "ALL",
+                "possible_keys": [
+                  "fk_tx_fed_branch"
+                ],
+                "rows_examined_per_scan": 4,
+                "rows_produced_per_join": 4,
+                "filtered": "100.00",
+                "cost_info": {
+                  "read_cost": "0.25",
+                  "eval_cost": "0.40",
+                  "prefix_cost": "0.65",
+                  "data_read_per_join": "352"
+                },
+                "used_columns": [
+                  "amount",
+                  "fed_branch_id"
+                ],
+                "attached_condition": "(`hotrod`.`t2`.`fed_branch_id` is not null)"
+              }
+            },
+            {
+              "table": {
+                "table_name": "b2",
+                "access_type": "eq_ref",
+                "possible_keys": [
+                  "PRIMARY"
+                ],
+                "key": "PRIMARY",
+                "used_key_parts": [
+                  "id"
+                ],
+                "key_length": "4",
+                "ref": [
+                  "hotrod.t2.fed_branch_id"
+                ],
+                "rows_examined_per_scan": 1,
+                "rows_produced_per_join": 4,
+                "filtered": "100.00",
+                "cost_info": {
+                  "read_cost": "1.00",
+                  "eval_cost": "0.40",
+                  "prefix_cost": "2.05",
+                  "data_read_per_join": "512"
+                },
+                "used_columns": [
+                  "id",
+                  "name"
+                ],
+                "attached_condition": "(not(<in_optimizer>(`hotrod`.`b2`.`name`,`hotrod`.`b2`.`name` in ( <materialize> (/* select#6 */ select `hotrod`.`federal_branch`.`name` from `hotrod`.`federal_branch` where (`hotrod`.`federal_branch`.`name` like '%y%') ), <primary_index_lookup>(`hotrod`.`b2`.`name` in <temporary table> on <auto_key> where ((`hotrod`.`b2`.`name` = `materialized-subquery`.`name`)))))))",
+                "attached_subqueries": [
+                  {
+                    "table": {
+                      "table_name": "<materialized_subquery>",
+                      "access_type": "eq_ref",
+                      "key": "<auto_key>",
+                      "key_length": "122",
+                      "rows_examined_per_scan": 1,
+                      "materialized_from_subquery": {
+                        "using_temporary_table": true,
+                        "dependent": true,
+                        "cacheable": false,
+                        "query_block": {
+                          "select_id": 6,
+                          "cost_info": {
+                            "query_cost": "0.65"
+                          },
+                          "table": {
+                            "table_name": "federal_branch",
+                            "access_type": "ALL",
+                            "rows_examined_per_scan": 4,
+                            "rows_produced_per_join": 1,
+                            "filtered": "25.00",
+                            "cost_info": {
+                              "read_cost": "0.55",
+                              "eval_cost": "0.10",
+                              "prefix_cost": "0.65",
+                              "data_read_per_join": "128"
+                            },
+                            "used_columns": [
+                              "name"
+                            ],
+                            "attached_condition": "(`hotrod`.`federal_branch`.`name` like '%y%')"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,231 @@
+{
+  "query_block": {
+    "select_id": 1,
+    "cost_info": {
+      "query_cost": "0.35"
+    },
+    "table": {
+      "table_name": "a",
+      "access_type": "ALL",
+      "rows_examined_per_scan": 1,
+      "rows_produced_per_join": 1,
+      "filtered": "100.00",
+      "cost_info": {
+        "read_cost": "0.25",
+        "eval_cost": "0.10",
+        "prefix_cost": "0.35",
+        "data_read_per_join": "424"
+      },
+      "used_columns": [
+        "id",
+        "current_balance",
+        "name",
+        "created_on"
+      ],
+      "attached_condition": "((`hotrod`.`a`.`current_balance` < (3 * (/* select#2 */ select avg(`hotrod`.`t`.`amount`) from `hotrod`.`transaction` `t` semi join (`hotrod`.`federal_branch`) join `hotrod`.`federal_branch` `b` where ((`hotrod`.`b`.`id` = `hotrod`.`t`.`fed_branch_id`) and (`hotrod`.`federal_branch`.`name` = `hotrod`.`b`.`name`) and (`hotrod`.`t`.`account_id` = `hotrod`.`a`.`id`) and (`hotrod`.`federal_branch`.`name` like '%ar%'))))) and (`hotrod`.`a`.`current_balance` < (5 * (/* select#4 */ select avg(`hotrod`.`t2`.`amount`) from `hotrod`.`transaction` `t2` join `hotrod`.`federal_branch` `b2` where ((`hotrod`.`b2`.`id` = `hotrod`.`t2`.`fed_branch_id`) and (`hotrod`.`t2`.`account_id` = `hotrod`.`a`.`id`) and (not(<in_optimizer>(`hotrod`.`b2`.`name`,<exists>(/* select#5 */ select 1 from `hotrod`.`federal_branch` where ((`hotrod`.`federal_branch`.`name` like '%y%') and (<cache>(`hotrod`.`b2`.`name`) = `hotrod`.`federal_branch`.`name`)))))))))))",
+      "attached_subqueries": [
+        {
+          "dependent": true,
+          "cacheable": false,
+          "query_block": {
+            "select_id": 4,
+            "cost_info": {
+              "query_cost": "0.70"
+            },
+            "nested_loop": [
+              {
+                "table": {
+                  "table_name": "t2",
+                  "access_type": "ref",
+                  "possible_keys": [
+                    "tx_account_id_time",
+                    "fk_tx_fed_branch"
+                  ],
+                  "key": "tx_account_id_time",
+                  "used_key_parts": [
+                    "account_id"
+                  ],
+                  "key_length": "4",
+                  "ref": [
+                    "hotrod.a.id"
+                  ],
+                  "rows_examined_per_scan": 1,
+                  "rows_produced_per_join": 1,
+                  "filtered": "100.00",
+                  "cost_info": {
+                    "read_cost": "0.25",
+                    "eval_cost": "0.10",
+                    "prefix_cost": "0.35",
+                    "data_read_per_join": "88"
+                  },
+                  "used_columns": [
+                    "account_id",
+                    "amount",
+                    "fed_branch_id"
+                  ],
+                  "attached_condition": "(`hotrod`.`t2`.`fed_branch_id` is not null)"
+                }
+              },
+              {
+                "table": {
+                  "table_name": "b2",
+                  "access_type": "eq_ref",
+                  "possible_keys": [
+                    "PRIMARY"
+                  ],
+                  "key": "PRIMARY",
+                  "used_key_parts": [
+                    "id"
+                  ],
+                  "key_length": "4",
+                  "ref": [
+                    "hotrod.t2.fed_branch_id"
+                  ],
+                  "rows_examined_per_scan": 1,
+                  "rows_produced_per_join": 1,
+                  "filtered": "100.00",
+                  "cost_info": {
+                    "read_cost": "0.25",
+                    "eval_cost": "0.10",
+                    "prefix_cost": "0.70",
+                    "data_read_per_join": "128"
+                  },
+                  "used_columns": [
+                    "id",
+                    "name"
+                  ],
+                  "attached_condition": "(not(<in_optimizer>(`hotrod`.`b2`.`name`,<exists>(/* select#5 */ select 1 from `hotrod`.`federal_branch` where ((`hotrod`.`federal_branch`.`name` like '%y%') and (<cache>(`hotrod`.`b2`.`name`) = `hotrod`.`federal_branch`.`name`))))))",
+                  "attached_subqueries": [
+                    {
+                      "dependent": true,
+                      "cacheable": false,
+                      "query_block": {
+                        "select_id": 5,
+                        "cost_info": {
+                          "query_cost": "0.35"
+                        },
+                        "table": {
+                          "table_name": "federal_branch",
+                          "access_type": "ALL",
+                          "rows_examined_per_scan": 1,
+                          "rows_produced_per_join": 1,
+                          "filtered": "100.00",
+                          "cost_info": {
+                            "read_cost": "0.25",
+                            "eval_cost": "0.10",
+                            "prefix_cost": "0.35",
+                            "data_read_per_join": "128"
+                          },
+                          "used_columns": [
+                            "name"
+                          ],
+                          "attached_condition": "((`hotrod`.`federal_branch`.`name` like '%y%') and (<cache>(`hotrod`.`b2`.`name`) = `hotrod`.`federal_branch`.`name`))"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "dependent": true,
+          "cacheable": false,
+          "query_block": {
+            "select_id": 2,
+            "cost_info": {
+              "query_cost": "1.05"
+            },
+            "nested_loop": [
+              {
+                "table": {
+                  "table_name": "t",
+                  "access_type": "ref",
+                  "possible_keys": [
+                    "tx_account_id_time",
+                    "fk_tx_fed_branch"
+                  ],
+                  "key": "tx_account_id_time",
+                  "used_key_parts": [
+                    "account_id"
+                  ],
+                  "key_length": "4",
+                  "ref": [
+                    "hotrod.a.id"
+                  ],
+                  "rows_examined_per_scan": 1,
+                  "rows_produced_per_join": 1,
+                  "filtered": "100.00",
+                  "cost_info": {
+                    "read_cost": "0.25",
+                    "eval_cost": "0.10",
+                    "prefix_cost": "0.35",
+                    "data_read_per_join": "88"
+                  },
+                  "used_columns": [
+                    "account_id",
+                    "amount",
+                    "fed_branch_id"
+                  ],
+                  "attached_condition": "(`hotrod`.`t`.`fed_branch_id` is not null)"
+                }
+              },
+              {
+                "table": {
+                  "table_name": "b",
+                  "access_type": "eq_ref",
+                  "possible_keys": [
+                    "PRIMARY"
+                  ],
+                  "key": "PRIMARY",
+                  "used_key_parts": [
+                    "id"
+                  ],
+                  "key_length": "4",
+                  "ref": [
+                    "hotrod.t.fed_branch_id"
+                  ],
+                  "rows_examined_per_scan": 1,
+                  "rows_produced_per_join": 1,
+                  "filtered": "100.00",
+                  "cost_info": {
+                    "read_cost": "0.25",
+                    "eval_cost": "0.10",
+                    "prefix_cost": "0.70",
+                    "data_read_per_join": "128"
+                  },
+                  "used_columns": [
+                    "id",
+                    "name"
+                  ]
+                }
+              },
+              {
+                "table": {
+                  "table_name": "federal_branch",
+                  "access_type": "ALL",
+                  "rows_examined_per_scan": 1,
+                  "rows_produced_per_join": 1,
+                  "filtered": "100.00",
+                  "first_match": "b",
+                  "using_join_buffer": "Block Nested Loop",
+                  "cost_info": {
+                    "read_cost": "0.25",
+                    "eval_cost": "0.10",
+                    "prefix_cost": "1.05",
+                    "data_read_per_join": "128"
+                  },
+                  "used_columns": [
+                    "name"
+                  ],
+                  "attached_condition": "((`hotrod`.`federal_branch`.`name` = `hotrod`.`b`.`name`) and (`hotrod`.`federal_branch`.`name` like '%ar%'))"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

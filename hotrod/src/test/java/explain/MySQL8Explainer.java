@@ -4,9 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import explain.postgresql.PostgreSQLPlanRetriever;
-import explain.postgresql.PostgreSQLXMLPlanParser;
-import explain.postgresql.PostgreSQLXMLPlanParser.InvalidPlanException;
+import explain.mysql8.MySQLPlanRetriever;
+import explain.mysql8.parser.MySQLJSONPlanParser;
 import explain.renderers.TextPlanRenderer;
 
 public class MySQL8Explainer {
@@ -19,31 +18,30 @@ public class MySQL8Explainer {
 
       StringBuilder sb = new StringBuilder();
 
-      // sb.append("select l.*, b.* ");
-      // sb.append(" from library l ");
-      // sb.append(" left join lateral ( ");
-      // sb.append(" select * from book b where b.lib = l.id ");
-      // sb.append(" order by hits desc ");
-      // sb.append(" fetch first 2 rows only ");
-      // sb.append(" ) b on true ");
-
-      sb.append("select c.*, o.placed ");
-      sb.append("  from customer c ");
-      sb.append("  left join lateral ( ");
-      sb.append("    select * from \"order\" o where o.customer_id = c.id ");
-      sb.append("    order by o.placed desc ");
-      sb.append("    fetch first 2 rows only ");
-      sb.append("  ) o on true ");
-      sb.append("  where ");
-      sb.append("    c.first_name = 'JENNIFER' and ");
-      sb.append("    lower(c.last_name) = 'campbell' and phone_number like '2025551%' ");
+      sb.append("select * ");
+      sb.append("  from account a ");
+      sb.append("  join transaction t4 on t4.account_id = a.id ");
+      sb.append("  join federal_branch b5 on b5.id = t4.fed_branch_id ");
+      sb.append("  join (select max(account_id) as account_id from transaction t7) t6 on t6.account_id = a.id ");
+      sb.append("  where a.current_balance < 3 * ( ");
+      sb.append("    select avg(amount) ");
+      sb.append("      from transaction t ");
+      sb.append("      join federal_branch b on b.id = t.fed_branch_id ");
+      sb.append("      where t.account_id = a.id ");
+      sb.append("        and b.name in (select name from federal_branch b7 where name like '%ar%') ");
+      sb.append("  ) and a.current_balance < 5 * ( ");
+      sb.append("    select avg(amount) ");
+      sb.append("      from transaction t2 ");
+      sb.append("      join federal_branch b2 on b2.id = t2.fed_branch_id ");
+      sb.append("      where b2.name not in (select name from federal_branch b8 where name like '%y%') ");
+      sb.append("  ) ");
 
       String sql = sb.toString();
 
-      String p = PostgreSQLPlanRetriever.retrieveXMLPlan(conn, sql);
+      String p = MySQLPlanRetriever.retrieveJSONPlan(conn, sql);
       System.out.println("Plan:\n" + p);
 
-      Operator op = PostgreSQLXMLPlanParser.parse(conn, p);
+      Operator op = MySQLJSONPlanParser.parse(conn, p);
 
       TextPlanRenderer r = new TextPlanRenderer();
       String plan = r.render(op);
@@ -58,13 +56,10 @@ public class MySQL8Explainer {
   }
 
   private static Connection getConnection() throws SQLException {
-    // String databaseURL = "jdbc:postgresql://192.168.56.46:5432/hotrod";
-    // String user = "postgres";
-    // String password = "mypassword";
 
-    String databaseURL = "jdbc:postgresql://192.168.56.46:5432/postgres";
-    String user = "postgres";
-    String password = "mypassword";
+    String databaseURL = "jdbc:mysql://192.168.56.29:3306/hotrod?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false";
+    String user = "user1";
+    String password = "pass1";
 
     Connection conn = null;
     try {

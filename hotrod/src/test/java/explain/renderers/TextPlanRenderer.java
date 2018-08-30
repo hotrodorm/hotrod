@@ -27,10 +27,11 @@ public class TextPlanRenderer {
 
   private void renderOperator(final Operator op, final int level, final StringBuilder sb) {
     DecimalFormat df = new DecimalFormat("0");
+    DecimalFormat cf = new DecimalFormat("0.00");
     String indent = getFiller("  ", level);
     sb.append(indent + "+");
     if (op.getCost() != null) {
-      sb.append(" " + df.format(op.getCost()));
+      sb.append(" " + cf.format(op.getCost()));
     }
 
     if (op.getCost() != null && !op.getInnerOperators().isEmpty()) {
@@ -48,17 +49,19 @@ public class TextPlanRenderer {
     if (op.includesHeapFetch()) {
       sb.append(" <<");
     }
-    sb.append(" " + op.getType().replace(" ", "_"));
+    sb.append(" " + op.getType());
 
     if (op.getRowsSource() != null) {
       if (op.getRowsSourceAlias() != null) {
-        sb.append(" [on " + op.getRowsSource() + " " + op.getRowsSourceAlias() + "]");
+        sb.append(" [" + op.getRowsSource() + " " + op.getRowsSourceAlias() + "]");
       } else {
-        sb.append(" [on " + op.getRowsSource() + "]");
+        sb.append(" [" + op.getRowsSource() + "]");
       }
+    } else if (op.getRowsSourceAlias() != null) {
+      sb.append(" [" + op.getRowsSourceAlias() + "]");
     }
     if (op.getIndexName() != null) {
-      sb.append(" {on " + op.getIndexName() + "}");
+      sb.append(" {" + op.getIndexName() + "}");
     }
 
     if (!op.getAccessPredicates().isEmpty() || !op.getFilterPredicates().isEmpty()
