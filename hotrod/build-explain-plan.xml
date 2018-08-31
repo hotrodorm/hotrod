@@ -27,7 +27,7 @@
   </target>
 
   <target name="populate" depends="-init, compile">
-    <java classname="explainplan.DataPopulator" fork="true">
+    <java classname="explainplanpopulator.DataPopulator" fork="true">
       <arg value="${driverclass}" />
       <arg value="${url}" />
       <arg value="${username}" />

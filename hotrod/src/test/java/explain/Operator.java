@@ -32,8 +32,6 @@ public interface Operator {
   String getRowsSourceAlias();
 
   String getIndexName();
-  
-  String getIndexDescription();
 
   List<String> getAccessPredicates();
 

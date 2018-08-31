@@ -64,8 +64,7 @@ public class TextPlanRenderer {
       sb.append(" {" + op.getIndexName() + "}");
     }
 
-    if (!op.getAccessPredicates().isEmpty() || !op.getFilterPredicates().isEmpty()
-        || (op.getIndexName() != null && op.getIndexDescription() != null)) {
+    if (!op.getAccessPredicates().isEmpty() || !op.getFilterPredicates().isEmpty() || op.getIndexName() != null) {
       sb.append(" *" + op.getId());
     }
 
@@ -101,9 +100,6 @@ public class TextPlanRenderer {
     String prompt = " *" + op.getId() + " ";
     for (String access : op.getAccessPredicates()) {
       sb.append(prompt + "Access: " + access + "\n");
-      if (op.getIndexName() != null && op.getIndexDescription() != null) {
-        sb.append(getFiller(" ", prompt.length() + 8) + "index: " + op.getIndexDescription() + "\n");
-      }
     }
     for (String filter : op.getFilterPredicates()) {
       String key = !op.getAccessPredicates().isEmpty() ? getFiller(" ", prompt.length()) : prompt;

@@ -20,7 +20,6 @@ public class MySQLOperator implements Operator {
   private String rowsSource;
   private String rowsSourceAlias;
   private String indexName;
-  private String indexDescription;
   private List<String> accessPredicates;
   private List<String> filterPredicates;
   private List<MySQLOperator> innerOperators;
@@ -30,8 +29,8 @@ public class MySQLOperator implements Operator {
 
   public MySQLOperator(Integer id, String type, boolean includesHeapFetch, Double cost, Double examinedRows,
       Long producedBytes, Double producedRows, String rowsSource, String rowsSourceAlias, String indexName,
-      String indexDescription, List<String> accessPredicates, List<String> filterPredicates,
-      List<MySQLOperator> innerOperators, LinkedHashMap<String, String> extraProperties) {
+      List<String> accessPredicates, List<String> filterPredicates, List<MySQLOperator> innerOperators,
+      LinkedHashMap<String, String> extraProperties) {
     this.id = id;
     this.type = type;
     this.includesHeapFetch = includesHeapFetch;
@@ -42,7 +41,6 @@ public class MySQLOperator implements Operator {
     this.rowsSource = rowsSource;
     this.rowsSourceAlias = rowsSourceAlias;
     this.indexName = indexName;
-    this.indexDescription = indexDescription;
     this.accessPredicates = accessPredicates;
     this.filterPredicates = filterPredicates;
     this.innerOperators = innerOperators;
@@ -109,11 +107,6 @@ public class MySQLOperator implements Operator {
   @Override
   public String getIndexName() {
     return indexName;
-  }
-
-  @Override
-  public String getIndexDescription() {
-    return indexDescription;
   }
 
   @Override

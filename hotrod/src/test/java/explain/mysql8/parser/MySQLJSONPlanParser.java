@@ -59,7 +59,7 @@ public class MySQLJSONPlanParser {
 
       String type = (prefix != null ? prefix : "") + t.getAccessType();
       boolean includesHeapFetch = false;
-      Double cost = b.getCostInfo().getQueryCost();
+      Double cost = b.getCostInfo() != null ? b.getCostInfo().getQueryCost() : null;
       Double examinedRows = t.getRowsExaminedPerScan();
       Long producedBytes = null;
       Double producedRows = t.getRowsProducedPerJoin();
@@ -68,7 +68,6 @@ public class MySQLJSONPlanParser {
 
       // TODO: fill when using index.
       String indexName = t.getKey();
-      String indexDescription = null;
       List<String> accessPredicates = new ArrayList<String>();
       if (t.getKey() != null) {
         accessPredicates.add("index " + t.getKey() + " (" + ListWriter.render(t.getUsedKeyParts(), ", ") + ")");
@@ -106,8 +105,7 @@ public class MySQLJSONPlanParser {
       LinkedHashMap<String, String> extraProperties = new LinkedHashMap<String, String>();
 
       MySQLOperator op = new MySQLOperator(id, type, includesHeapFetch, cost, examinedRows, producedBytes, producedRows,
-          rowsSource, rowsSourceAlias, indexName, indexDescription, accessPredicates, filterPredicates, innerOperators,
-          extraProperties);
+          rowsSource, rowsSourceAlias, indexName, accessPredicates, filterPredicates, innerOperators, extraProperties);
 
       return op;
 
@@ -177,7 +175,6 @@ public class MySQLJSONPlanParser {
 
     // TODO: fill when using index.
     String indexName = t.getKey();
-    String indexDescription = null;
     List<String> accessPredicates = new ArrayList<String>();
     // accessPredicates.add(t.getAccessType());
     if (t.getKey() != null) {
@@ -219,8 +216,7 @@ public class MySQLJSONPlanParser {
     LinkedHashMap<String, String> extraProperties = new LinkedHashMap<String, String>();
 
     MySQLOperator xop = new MySQLOperator(id, type, includesHeapFetch, cost, examinedRows, producedBytes, producedRows,
-        rowsSource, rowsSourceAlias, indexName, indexDescription, accessPredicates, filterPredicates, innerOperators,
-        extraProperties);
+        rowsSource, rowsSourceAlias, indexName, accessPredicates, filterPredicates, innerOperators, extraProperties);
     return xop;
   }
 
@@ -238,7 +234,6 @@ public class MySQLJSONPlanParser {
 
     // TODO: fill when using index.
     String indexName = null;
-    String indexDescription = null;
     List<String> accessPredicates = new ArrayList<String>();
 
     List<String> filterPredicates = new ArrayList<String>();
@@ -246,8 +241,7 @@ public class MySQLJSONPlanParser {
     LinkedHashMap<String, String> xExtraProperties = new LinkedHashMap<String, String>();
 
     MySQLOperator op = new MySQLOperator(id, type, includesHeapFetch, cost, examinedRows, producedBytes, producedRows,
-        rowsSource, rowsSourceAlias, indexName, indexDescription, accessPredicates, filterPredicates, innerOperators,
-        xExtraProperties);
+        rowsSource, rowsSourceAlias, indexName, accessPredicates, filterPredicates, innerOperators, xExtraProperties);
     return op;
   }
 

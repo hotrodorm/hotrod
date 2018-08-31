@@ -8,7 +8,7 @@ import explain.mysql8.MySQLPlanRetriever;
 import explain.mysql8.parser.MySQLJSONPlanParser;
 import explain.renderers.TextPlanRenderer;
 
-public class MySQL8Explainer {
+public class MariaDB103Explainer {
 
   public static void main(final String[] args) throws SQLException, InvalidPlanException {
     Connection conn = null;
@@ -58,13 +58,13 @@ public class MySQL8Explainer {
 
   private static Connection getConnection() throws SQLException {
 
-    String databaseURL = "jdbc:mysql://192.168.56.29:3306/hotrod?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false";
-    String user = "user1";
-    String password = "pass1";
+    String databaseURL = "jdbc:mysql://192.168.56.205:3306/database1";
+    String user = "my_user";
+    String password = "mypass";
 
     Connection conn = null;
     try {
-      Class.forName("com.mysql.cj.jdbc.Driver");
+      Class.forName("org.mariadb.jdbc.Driver");
       conn = DriverManager.getConnection(databaseURL, user, password);
       return conn;
     } catch (ClassNotFoundException e) {

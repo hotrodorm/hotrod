@@ -1,0 +1,150 @@
+{
+  "query_block": {
+    "select_id": 1,
+    "const_condition": "45 < 3 * (subquery#3) and <cache>(45 < 5 * (subquery#5)) and 1234005 is not null",
+    "table": {
+      "table_name": "<derived2>",
+      "access_type": "system",
+      "rows": 1,
+      "filtered": 100,
+      "materialized": {
+        "query_block": {
+          "select_id": 2,
+          "table": {
+            "message": "Select tables optimized away"
+          }
+        }
+      }
+    },
+    "table": {
+      "table_name": "a",
+      "access_type": "const",
+      "possible_keys": ["PRIMARY"],
+      "key": "PRIMARY",
+      "key_length": "4",
+      "used_key_parts": ["id"],
+      "ref": ["const"],
+      "rows": 1,
+      "filtered": 100
+    },
+    "table": {
+      "table_name": "t4",
+      "access_type": "ref",
+      "possible_keys": ["tx_account_id_time", "fk_tx_fed_branch"],
+      "key": "tx_account_id_time",
+      "key_length": "4",
+      "used_key_parts": ["account_id"],
+      "ref": ["const"],
+      "rows": 2,
+      "filtered": 100
+    },
+    "block-nl-join": {
+      "table": {
+        "table_name": "b5",
+        "access_type": "ALL",
+        "possible_keys": ["PRIMARY"],
+        "rows": 3,
+        "filtered": 100
+      },
+      "buffer_type": "flat",
+      "buffer_size": "256Kb",
+      "join_type": "BNL",
+      "attached_condition": "b5.`id` = t4.fed_branch_id"
+    },
+    "subqueries": [
+      {
+        "query_block": {
+          "select_id": 5,
+          "table": {
+            "table_name": "b2",
+            "access_type": "ALL",
+            "possible_keys": ["PRIMARY"],
+            "rows": 3,
+            "filtered": 100,
+            "attached_condition": "!<in_optimizer>(b2.`name`,b2.`name` in (subquery#6))"
+          },
+          "block-nl-join": {
+            "table": {
+              "table_name": "t2",
+              "access_type": "ALL",
+              "possible_keys": ["fk_tx_fed_branch"],
+              "rows": 4,
+              "filtered": 75
+            },
+            "buffer_type": "flat",
+            "buffer_size": "256Kb",
+            "join_type": "BNL",
+            "attached_condition": "t2.fed_branch_id = b2.`id`"
+          },
+          "subqueries": [
+            {
+              "query_block": {
+                "select_id": 6,
+                "table": {
+                  "table_name": "b8",
+                  "access_type": "ALL",
+                  "rows": 3,
+                  "filtered": 100,
+                  "attached_condition": "b8.`name` like '%y%'"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "query_block": {
+          "select_id": 3,
+          "table": {
+            "table_name": "t",
+            "access_type": "ref",
+            "possible_keys": ["tx_account_id_time", "fk_tx_fed_branch"],
+            "key": "tx_account_id_time",
+            "key_length": "4",
+            "used_key_parts": ["account_id"],
+            "ref": ["const"],
+            "rows": 2,
+            "filtered": 100
+          },
+          "block-nl-join": {
+            "table": {
+              "table_name": "b",
+              "access_type": "ALL",
+              "possible_keys": ["PRIMARY"],
+              "rows": 3,
+              "filtered": 100
+            },
+            "buffer_type": "flat",
+            "buffer_size": "256Kb",
+            "join_type": "BNL",
+            "attached_condition": "b.`id` = t.fed_branch_id"
+          },
+          "table": {
+            "table_name": "<subquery4>",
+            "access_type": "eq_ref",
+            "possible_keys": ["distinct_key"],
+            "key": "distinct_key",
+            "key_length": "33",
+            "used_key_parts": ["name"],
+            "ref": ["func"],
+            "rows": 1,
+            "filtered": 100,
+            "materialized": {
+              "unique": 1,
+              "query_block": {
+                "select_id": 4,
+                "table": {
+                  "table_name": "b7",
+                  "access_type": "ALL",
+                  "rows": 3,
+                  "filtered": 100,
+                  "attached_condition": "b7.`name` like '%ar%'"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}
