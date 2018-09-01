@@ -1,4 +1,4 @@
-package explain.mysql8.parser;
+package explain.mysql8;
 
 import java.util.ArrayList;
 import java.util.List;

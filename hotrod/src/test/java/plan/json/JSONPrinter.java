@@ -8,7 +8,7 @@ import java.io.IOException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import explain.mysql8.parser.MySQL8Plan;
+import explain.mysql8.MySQL8Plan;
 
 public class JSONPrinter {
 

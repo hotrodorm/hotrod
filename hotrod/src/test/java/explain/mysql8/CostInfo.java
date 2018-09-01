@@ -1,4 +1,4 @@
-package explain.mysql8.parser;
+package explain.mysql8;
 
 import com.google.gson.annotations.SerializedName;
 

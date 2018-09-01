@@ -1,4 +1,4 @@
-package explain.mysql8.parser;
+package explain.mysql8;
 
 public class NestedLoopElement {
 

@@ -1,4 +1,4 @@
-package explain.mysql8.parser;
+package explain.mysql8;
 
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
@@ -46,8 +46,7 @@ public class ValidatorAdapterFactory implements TypeAdapterFactory {
             Object value = super.get(key);
             // System.out.println("get('" + key + "') -> " + value);
             if (value == null) {
-              throw new JsonParseException(
-                  "Property '" + key + "' not found on " + type.getClass().getSimpleName() + ".");
+              throw new JsonParseException("Property '" + key + "' not found on " + type.getType() + ".");
             }
             return value;
 

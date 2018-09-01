@@ -4,8 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import explain.mysql8.MySQLPlanRetriever;
-import explain.mysql8.parser.MySQLJSONPlanParser;
+import explain.mariadb103.MariaDBJSONPlanParser;
+import explain.mariadb103.MariaDBPlanRetriever;
 import explain.renderers.TextPlanRenderer;
 
 public class MariaDB103Explainer {
@@ -39,10 +39,10 @@ public class MariaDB103Explainer {
       String sql = sb.toString();
       System.out.println("SQL:\n" + sql);
 
-      String p = MySQLPlanRetriever.retrieveJSONPlan(conn, sql);
+      String p = MariaDBPlanRetriever.retrieveJSONPlan(conn, sql);
       System.out.println("Plan:\n" + p);
 
-      Operator op = MySQLJSONPlanParser.parse(conn, p);
+      Operator op = MariaDBJSONPlanParser.parse(conn, p);
 
       TextPlanRenderer r = new TextPlanRenderer();
       String plan = r.render(op);

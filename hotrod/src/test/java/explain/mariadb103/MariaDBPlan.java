@@ -1,8 +1,8 @@
-package explain.mysql8.parser;
+package explain.mariadb103;
 
 import com.google.gson.annotations.SerializedName;
 
-public class MySQL8Plan {
+public class MariaDBPlan {
 
   @SerializedName("query_block")
   private QueryBlock queryBlock = null;

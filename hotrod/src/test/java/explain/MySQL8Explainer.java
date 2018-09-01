@@ -4,8 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import explain.mysql8.MySQLJSONPlanParser;
 import explain.mysql8.MySQLPlanRetriever;
-import explain.mysql8.parser.MySQLJSONPlanParser;
 import explain.renderers.TextPlanRenderer;
 
 public class MySQL8Explainer {
