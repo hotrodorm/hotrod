@@ -37,7 +37,13 @@ import explain.Operator;
 public class MySQLJSONPlanParser {
 
   public static MySQLOperator parse(final Connection conn, final String jsonPlan) {
-    Gson gson = new GsonBuilder().create();
+    GsonBuilder gsonBuilder = new GsonBuilder();
+    // gsonBuilder.registerTypeAdapter(Animal.class, myTypeAdapterObject);
+
+    ValidatorAdapterFactory factory = new ValidatorAdapterFactory();
+    gsonBuilder.registerTypeAdapterFactory(factory);
+
+    Gson gson = gsonBuilder.create();
     MySQL8Plan plan = gson.fromJson(jsonPlan, MySQL8Plan.class);
 
     QueryBlock b = plan.getQueryBlock();

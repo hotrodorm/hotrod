@@ -4,6 +4,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 
+import org.apache.ibatis.cursor.Cursor;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.hotrod.runtime.interfaces.DaoWithOrder;
+import org.hotrod.runtime.tx.TxManager;
+
 import hotrod.test.generation.Account2VO;
 import hotrod.test.generation.AccountTx0;
 import hotrod.test.generation.AccountTx1;
@@ -17,6 +23,7 @@ import hotrod.test.generation.primitives.AlertFinder;
 import hotrod.test.generation.primitives.Car_part_priceDAO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
 import hotrod.test.generation.primitives.HouseDAO;
+import hotrod.test.generation.primitives.HouseDAO.HouseOrderBy;
 import hotrod.test.generation.primitives.MyDAO;
 import hotrod.test.generation.primitives.TypesDateTimeDAO;
 
@@ -32,8 +39,8 @@ public class SelectTests {
     // selectComplexName();
     // selectOtherSchema();
     // selectMultiSchema();
-    selectTimestampWithoutTimeZone();
-
+    // selectTimestampWithoutTimeZone();
+    selectCursor();
   }
 
   private static void selectByExample() throws SQLException {
@@ -68,6 +75,29 @@ public class SelectTests {
     // t2.setTs2(new java.util.Date());
     // TypesDateTimeDAO.insert(t2);
 
+    System.out.println("===");
+  }
+
+  private static void selectCursor() throws SQLException {
+    System.out.println("=== House using Cursor ===");
+
+    SqlSessionFactory f = sessionfactory.DatabaseSessionFactory.getInstance().getSqlSessionFactory();
+    TxManager txm = new TxManager(f);
+
+    SqlSession sqlSession = txm.getSqlSession();
+
+    DaoWithOrder<HouseVO, HouseOrderBy> dwo = new DaoWithOrder<HouseVO, HouseOrderBy>(new HouseVO(),
+        new HouseOrderBy[0]);
+
+    // List<HouseVO> houses =
+    // sqlSession.selectList("hotrod.test.generation.primitives.house.selectByExample",
+    // dwo);
+
+    Cursor<HouseVO> houses = sqlSession.selectCursor("hotrod.test.generation.primitives.house.selectByExample", dwo);
+    
+    for (HouseVO h : houses) {
+      System.out.println("h: " + h);
+    }
     System.out.println("===");
   }
 
