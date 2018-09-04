@@ -121,7 +121,10 @@ public class PostgreSQLXMLPlanParser {
         }
       }
     }
-    boolean includesHeapFetch = "Bitmap Heap Scan".equals(nodeType) || "Index Scan".equals(nodeType);
+    boolean includesHeapFetch = "Bitmap Heap Scan".equals(nodeType) //
+        || "Index Scan".equals(nodeType) //
+        || "Seq Scan".equals(nodeType) //
+    ;
     if (indexName != null) {
       indexDescription = getIndexDefinition(conn, indexName);
     }

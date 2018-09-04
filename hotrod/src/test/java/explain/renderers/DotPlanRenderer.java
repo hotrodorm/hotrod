@@ -16,7 +16,7 @@ public class DotPlanRenderer implements PlanRenderer {
 
   private static final double COST_EXP = 10.0;
   private static final Color COST_MIN_COLOR = new Color(255, 255, 255);
-  private static final Color COST_MAX_COLOR = new Color(255, 140, 140);
+  private static final Color COST_MAX_COLOR = new Color(255, 70, 70);
 
   private static final DecimalFormat WIDTH_FORMATTER = new DecimalFormat("0.0");
 
@@ -59,7 +59,8 @@ public class DotPlanRenderer implements PlanRenderer {
         + (op.getProducedRows() != null ? (formatDouble(op.getProducedRows()) + "<br/>rows") : "--") //
         + "</td><td bgcolor=\"#e0e0e0\">" //
         // + "4<br/>io" // io
-        + "--" + "</td></tr><tr><td colspan=\"3\"><b>" //
+        + "--" + "</td></tr><tr><td colspan=\"3\" bgcolor=\"#" + (op.includesHeapFetch() ? "d3e4ff" : "ffffff")
+        + "\"><b>" //
         + op.getType() //
         + (!op.getAccessPredicates().isEmpty() || !op.getFilterPredicates().isEmpty() ? " *" + op.getId() : "") //
         + "</b></td></tr></table>>];\n");
@@ -74,10 +75,13 @@ public class DotPlanRenderer implements PlanRenderer {
       if (op.getIndexName() != null) {
         label = label + "<br/>{" + op.getIndexName() + "}";
       }
+      // celeste: d3e4ff
       sb.append(
-          "  d" + op.getId() + " [shape=\"box\" style=\"filled\" fillcolor=\"#d3e4ff\" label=<" + label + ">];\n");
+          "  d" + op.getId() + " [shape=\"box\" style=\"filled\" fillcolor=\"#ceefb3\" label=<" + label + ">];\n");
     } else if (op.getIndexName() != null) {
-      sb.append("  i" + op.getId() + " [shape=\"box\" style=\"filled\" fillcolor=\"#fffdd3\" label=<"
+      // light green: a3f75d
+      // light yellow: fffdd3
+      sb.append("  i" + op.getId() + " [shape=\"box\" style=\"filled\" fillcolor=\"#a3f75d\" label=<"
           + op.getIndexName() + ">];\n");
     }
 
@@ -135,7 +139,7 @@ public class DotPlanRenderer implements PlanRenderer {
   private void renderFooter(final Operator op, final StringBuilder sb) {
     sb.append("}\n");
     sb.append("subgraph key {\n");
-    sb.append("    rank=source; p [fontname = \"monospace\", shape=plaintext, style=solid, label=\"");
+    sb.append("    rank=min; p [fontname = \"monospace\", shape=plaintext, style=solid, label=\"");
     sb.append("Predicates:\\l");
     renderPredicates(op, sb);
     sb.append("\"];\n");
