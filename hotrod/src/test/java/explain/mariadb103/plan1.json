@@ -1,0 +1,79 @@
+{
+  "query_block": {
+    "select_id": 1,
+    "const_condition": "45 < 3 * (subquery#3) and <cache>(45 < 5 * (subquery#5)) and 1234005 is not null",
+    "table": {
+      "table_name": "<derived2>"
+    },
+    "table": {
+      "table_name": "a",
+      "access_type": "const",
+      "possible_keys": ["PRIMARY"],
+      "key": "PRIMARY",
+      "key_length": "4",
+      "used_key_parts": ["id"],
+      "ref": ["const"],
+      "rows": 1,
+      "filtered": 100
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

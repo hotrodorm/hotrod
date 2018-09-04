@@ -5,8 +5,9 @@ import java.text.DecimalFormat;
 
 import explain.Operator;
 
-public class TextPlanRenderer {
+public class TextPlanRenderer implements PlanRenderer {
 
+  @Override
   public String render(final Operator op) throws SQLException {
 
     StringBuilder sb = new StringBuilder();

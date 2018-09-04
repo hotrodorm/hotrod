@@ -1,16 +1,21 @@
 package explain;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import explain.postgresql.PostgreSQLPlanRetriever;
 import explain.postgresql.PostgreSQLXMLPlanParser;
+import explain.renderers.DotPlanRenderer;
+import explain.renderers.PlanRenderer;
 import explain.renderers.TextPlanRenderer;
 
 public class PostgreSQLExplainer {
 
-  public static void main(final String[] args) throws SQLException, InvalidPlanException {
+  public static void main(final String[] args) throws SQLException, InvalidPlanException, IOException {
     Connection conn = null;
     try {
       System.out.println("Will connect");
@@ -56,10 +61,14 @@ public class PostgreSQLExplainer {
 
       Operator op = PostgreSQLXMLPlanParser.parse(conn, p);
 
-      TextPlanRenderer r = new TextPlanRenderer();
+      PlanRenderer r = new TextPlanRenderer();
       String plan = r.render(op);
-
       System.out.println("Rendered Plan:\n" + plan);
+
+      r = new DotPlanRenderer();
+      plan = r.render(op);
+      System.out.println("Rendered Plan:\n" + plan);
+      save(plan, "testdata/databases/postgresql-9.4/plan/p1.dot");
 
     } finally {
       if (conn != null) {
@@ -83,6 +92,18 @@ public class PostgreSQLExplainer {
       throw new SQLException("Driver class not found");
     } catch (SQLException e) {
       throw new SQLException("Could not connect to database: " + e.getMessage());
+    }
+  }
+
+  private static void save(final String s, final String filename) throws SQLException, IOException {
+    BufferedWriter w = null;
+    try {
+      w = new BufferedWriter(new FileWriter(filename));
+      w.write(s);
+    } finally {
+      if (w != null) {
+        w.close();
+      }
     }
   }
 

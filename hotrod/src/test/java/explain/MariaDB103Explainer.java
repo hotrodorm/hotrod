@@ -1,16 +1,19 @@
 package explain;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import explain.mariadb103.MariaDBJSONPlanParser;
-import explain.mariadb103.MariaDBPlanRetriever;
 import explain.renderers.TextPlanRenderer;
 
 public class MariaDB103Explainer {
 
-  public static void main(final String[] args) throws SQLException, InvalidPlanException {
+  public static void main(final String[] args) throws SQLException, InvalidPlanException, IOException {
     Connection conn = null;
     try {
       System.out.println("Will connect");
@@ -39,7 +42,8 @@ public class MariaDB103Explainer {
       String sql = sb.toString();
       System.out.println("SQL:\n" + sql);
 
-      String p = MariaDBPlanRetriever.retrieveJSONPlan(conn, sql);
+      // String p = MariaDBPlanRetriever.retrieveJSONPlan(conn, sql);
+      String p = loadPlan(new File("src/test/java/explain/mariadb103/plan1.json"));
       System.out.println("Plan:\n" + p);
 
       Operator op = MariaDBJSONPlanParser.parse(conn, p);
@@ -71,6 +75,24 @@ public class MariaDB103Explainer {
       throw new SQLException("Driver class not found");
     } catch (SQLException e) {
       throw new SQLException("Could not connect to database: " + e.getMessage());
+    }
+  }
+
+  private static String loadPlan(final File f) throws IOException {
+    BufferedReader r = null;
+    try {
+      r = new BufferedReader(new FileReader(f));
+      StringBuilder sb = new StringBuilder();
+      String line;
+      while ((line = r.readLine()) != null) {
+        sb.append(line);
+        sb.append("\n");
+      }
+      return sb.toString();
+    } finally {
+      if (r != null) {
+        r.close();
+      }
     }
   }
 

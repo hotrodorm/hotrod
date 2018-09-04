@@ -24,6 +24,8 @@ import explain.InvalidPlanException;
 
 public class PostgreSQLXMLPlanParser {
 
+  private static final String CREATE_PREFIX = "CREATE ";
+
   public static PostgreSQLOperator parse(final Connection conn, final String doc)
       throws InvalidPlanException, SQLException {
     DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -142,7 +144,11 @@ public class PostgreSQLXMLPlanParser {
         if (rs.wasNull()) {
           return null;
         }
-        return createIndex;
+        if (createIndex.startsWith(CREATE_PREFIX)) {
+          return createIndex.substring(CREATE_PREFIX.length());
+        } else {
+          return createIndex;
+        }
       }
       return null;
     } finally {

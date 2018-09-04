@@ -1,4 +1,7 @@
 
+-- Cursor select example
+drop table cursor_example1;
+
 drop table "<Stock$"."&Price%";
 drop table "house_ROOM";
 drop table schema2.account_alert;

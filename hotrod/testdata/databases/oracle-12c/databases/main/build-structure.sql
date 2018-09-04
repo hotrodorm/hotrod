@@ -189,6 +189,15 @@ create table test_default2 (
   branch_id number(9) default 123 not null
 );
 
+-- =====================
+-- Cursor select example
+-- =====================
+
+create table cursor_example1 (
+  id number(12) not null,
+  data varchar2(1000) not null
+);
+
 -- =========
 -- All Types
 -- =========

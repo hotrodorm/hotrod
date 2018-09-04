@@ -7,4 +7,10 @@ public class Subquery {
   @SerializedName("query_block")
   private QueryBlock queryBlock = null;
 
+  // Getters
+
+  public QueryBlock getQueryBlock() {
+    return queryBlock;
+  }
+
 }

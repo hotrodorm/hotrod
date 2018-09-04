@@ -3,15 +3,18 @@ package tests;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Random;
 
 import hotrod.test.generation.AccountVO;
 import hotrod.test.generation.AgentVO;
 import hotrod.test.generation.ConfigValuesVO;
+import hotrod.test.generation.CursorExample1VO;
 import hotrod.test.generation.TestSeqIdeDef1VO;
 import hotrod.test.generation.TransactionVO;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AgentDAO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
+import hotrod.test.generation.primitives.CursorExample1DAO;
 import hotrod.test.generation.primitives.TestSeqIdeDef1DAO;
 import hotrod.test.generation.primitives.TransactionDAO;
 
@@ -23,7 +26,9 @@ public class InsertTests {
     // insertWithIdentity();
     // insertWithOptionalIdentity();
     // insertWithSequenceIdentityDefault();
-    insertMixed();
+    // insertMixed();
+
+    insertForCursorExample1();
   }
 
   private static void insertNoPK() throws SQLException {
@@ -44,6 +49,34 @@ public class InsertTests {
       System.out.println("-> config=" + l);
     }
 
+  }
+
+  private static void insertForCursorExample1() throws SQLException {
+
+    long total = 90 * 1000;
+
+    System.out.println("=== Will insert " + total + " for Cursor Example #1 ===");
+
+    for (long i = 0; i < total; i++) {
+      CursorExample1VO c = new CursorExample1VO();
+      c.setId(i);
+      c.setData(produceRandomString(1000));
+      CursorExample1DAO.insert(c);
+    }
+
+    System.out.println("=== Inserted ===");
+
+  }
+
+  private static String produceRandomString(final int length) {
+    int diff = '~' - ' ';
+    Random random = new Random();
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < length; i++) {
+      char c = (char) (random.nextInt(diff) + (int) ' ');
+      sb.append(c);
+    }
+    return sb.toString();
   }
 
   private static void insertWithSequence() throws SQLException {

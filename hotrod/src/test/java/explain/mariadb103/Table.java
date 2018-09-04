@@ -43,85 +43,62 @@ public class Table {
   @SerializedName("message")
   private String message = null;
 
-  // @SerializedName("rows_examined_per_scan")
-  // private Double rowsExaminedPerScan = null;
-  //
-  // @SerializedName("rows_produced_per_join")
-  // private Double rowsProducedPerJoin = null;
-  //
-  // @SerializedName("materialized_from_subquery")
-  // private MaterializedFromSubquery materializedFromSubquery;
+  // Getters
 
-  // @SerializedName("cost_info")
-  // private CostInfo costInfo = null;
-  //
-  // @SerializedName("used_columns")
-  // private List<String> usedColumns = new ArrayList<String>();
-  //
-  // @SerializedName("attached_subqueries")
-  // private List<AttachedSubquery> attachedSubqueries = new
-  // ArrayList<AttachedSubquery>();
+  public String getTableName() {
+    return tableName;
+  }
 
-  // Getters / Setters
+  public String getAccessType() {
+    return accessType;
+  }
 
-  // public String getTableName() {
-  // return tableName;
-  // }
-  //
-  // public String getAccessType() {
-  // return accessType;
-  // }
-  //
-  // public List<String> getPossibleKeys() {
-  // return possibleKeys;
-  // }
-  //
-  // public String getKey() {
-  // return key;
-  // }
-  //
-  // public List<String> getUsedKeyParts() {
-  // return usedKeyParts;
-  // }
-  //
-  // public Integer getKeyLength() {
-  // return keyLength;
-  // }
-  //
-  // public List<String> getRef() {
-  // return ref;
-  // }
-  //
-  // public Double getRowsExaminedPerScan() {
-  // return rowsExaminedPerScan;
-  // }
-  //
-  // public Double getRowsProducedPerJoin() {
-  // return rowsProducedPerJoin;
-  // }
-  //
-  // public Double getFiltered() {
-  // return filtered;
-  // }
-  //
-  // public CostInfo getCostInfo() {
-  // return costInfo;
-  // }
-  //
-  // public List<String> getUsedColumns() {
-  // return usedColumns;
-  // }
-  //
-  // public String getAttachedCondition() {
-  // return attachedCondition;
-  // }
-  //
-  // public List<AttachedSubquery> getAttachedSubqueries() {
-  // return attachedSubqueries;
-  // }
-  //
-  // public MaterializedFromSubquery getMaterializedFromSubquery() {
-  // return materializedFromSubquery;
-  // }
+  public List<String> getPossibleKeys() {
+    return possibleKeys;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public List<String> getUsedKeyParts() {
+    return usedKeyParts;
+  }
+
+  public Integer getKeyLength() {
+    return keyLength;
+  }
+
+  public List<String> getRef() {
+    return ref;
+  }
+
+  public Double getRows() {
+    return rows;
+  }
+
+  public Double getFiltered() {
+    return filtered;
+  }
+
+  public Materialized getMaterialized() {
+    return materialized;
+  }
+
+  public String getAttachedCondition() {
+    return attachedCondition;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  @Override
+  public String toString() {
+    return "Table [tableName=" + tableName + ", accessType=" + accessType + ", possibleKeys=" + possibleKeys + ", key="
+        + key + ", usedKeyParts=" + usedKeyParts + ", keyLength=" + keyLength + ", ref=" + ref + ", rows=" + rows
+        + ", filtered=" + filtered + ", materialized=" + materialized + ", attachedCondition=" + attachedCondition
+        + ", message=" + message + "]";
+  }
 
 }

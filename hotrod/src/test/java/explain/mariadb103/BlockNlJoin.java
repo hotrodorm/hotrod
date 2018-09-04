@@ -1,8 +1,5 @@
 package explain.mariadb103;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.annotations.SerializedName;
 
 public class BlockNlJoin {
@@ -22,4 +19,26 @@ public class BlockNlJoin {
   @SerializedName("attached_condition")
   private String attachedCondition = null;
 
+  // Getters
+
+  public Table getTable() {
+    return table;
   }
+
+  public String getBufferType() {
+    return bufferType;
+  }
+
+  public String getBufferSize() {
+    return bufferSize;
+  }
+
+  public String getJoinType() {
+    return joinType;
+  }
+
+  public String getAttachedCondition() {
+    return attachedCondition;
+  }
+
+}

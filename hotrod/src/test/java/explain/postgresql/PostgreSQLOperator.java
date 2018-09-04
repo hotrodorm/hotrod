@@ -125,11 +125,11 @@ public class PostgreSQLOperator implements Operator {
   @Override
   public List<String> getAccessPredicates() {
     List<String> access = new ArrayList<String>();
+    if (this.indexDescription != null) {
+      access.add(this.indexDescription);
+    }
     if (this.indexCond != null) {
       access.add(this.indexCond);
-    }
-    if (this.indexDescription != null) {
-      access.add("Using index: " + this.indexDescription);
     }
     return access;
   }

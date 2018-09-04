@@ -37,7 +37,6 @@
 
   </facet>
 
-
   <table name="'house_ROOM'" />
   <table name="account_alert" schema="schema2" />
   <table name="house" schema="schema2" />
@@ -46,6 +45,8 @@
   
   <table name="'&amp;Price%'" schema="'&lt;Stock$'" />
 
+  <table name="cursor_example1" />
+  
 <!--
 -->
   <dao class="AlertFinder">
