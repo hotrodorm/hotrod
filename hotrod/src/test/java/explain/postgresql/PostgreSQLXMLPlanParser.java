@@ -78,6 +78,9 @@ public class PostgreSQLXMLPlanParser {
     Double planWidth = null;
     String relationName = null;
     String filter = null;
+    Double actualTime = null;
+    Long actualRows = null;
+    Long actualLoops = null;
     List<PostgreSQLOperator> sources = new ArrayList<PostgreSQLOperator>();
 
     NodeList children = operatorTag.getChildNodes();
@@ -110,6 +113,12 @@ public class PostgreSQLXMLPlanParser {
         relationName = getString(n);
       } else if ("Filter".equals(n.getNodeName())) {
         filter = getString(n);
+      } else if ("Actual-Total-Time".equals(n.getNodeName())) {
+        actualTime = getDouble(n);
+      } else if ("Actual-Rows".equals(n.getNodeName())) {
+        actualRows = getLong(n);
+      } else if ("Actual-Loops".equals(n.getNodeName())) {
+        actualLoops = getLong(n);
       } else if ("Plans".equals(n.getNodeName())) {
         NodeList plans = n.getChildNodes();
         for (int j = 0; j < plans.getLength(); j++) {
@@ -131,7 +140,7 @@ public class PostgreSQLXMLPlanParser {
 
     return new PostgreSQLOperator(id, nodeType, joinType, parentRelationship, alias, indexName, indexDescription,
         indexCond, recheckCond, startupCost, totalCost, planRows, planWidth, relationName, filter, includesHeapFetch,
-        sources);
+        actualTime, actualRows, actualLoops, sources);
 
   }
 
@@ -182,6 +191,19 @@ public class PostgreSQLXMLPlanParser {
         return Double.parseDouble(s);
       } catch (ClassCastException e) {
         throw new InvalidPlanException("Invalid floating point value '" + s + "'.");
+      }
+    }
+  }
+
+  private static Long getLong(final Node node) throws InvalidPlanException {
+    String s = getString(node);
+    if (s == null) {
+      return null;
+    } else {
+      try {
+        return Long.parseLong(s);
+      } catch (ClassCastException e) {
+        throw new InvalidPlanException("Invalid long value '" + s + "'.");
       }
     }
   }

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 
-import org.apache.ibatis.cursor.Cursor;
+//import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.hotrod.runtime.interfaces.DaoWithOrder;
@@ -93,12 +93,12 @@ public class SelectTests {
     // sqlSession.selectList("hotrod.test.generation.primitives.house.selectByExample",
     // dwo);
 
-    Cursor<HouseVO> houses = sqlSession.selectCursor("hotrod.test.generation.primitives.house.selectByExample", dwo);
-    
-    for (HouseVO h : houses) {
-      System.out.println("h: " + h);
-    }
-    System.out.println("===");
+//    Cursor<HouseVO> houses = sqlSession.selectCursor("hotrod.test.generation.primitives.house.selectByExample", dwo);
+//    
+//    for (HouseVO h : houses) {
+//      System.out.println("h: " + h);
+//    }
+//    System.out.println("===");
   }
 
   private static void selectOtherSchema() throws SQLException {

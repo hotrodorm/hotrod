@@ -60,9 +60,7 @@ public class MariaDBOperator implements Operator {
     return id;
   }
 
-  public void setId(Integer id) {
-    this.id = id;
-  }
+  // Type
 
   @Override
   public String getType() {
@@ -73,6 +71,8 @@ public class MariaDBOperator implements Operator {
   public boolean includesHeapFetch() {
     return includesHeapFetch;
   }
+
+  // Estimated Cost
 
   @Override
   public Double getCost() {
@@ -94,6 +94,25 @@ public class MariaDBOperator implements Operator {
     return producedRows;
   }
 
+  // Actual Cost
+
+  @Override
+  public Double getActualTime() {
+    return null;
+  }
+
+  @Override
+  public Long getActualRows() {
+    return null;
+  }
+
+  @Override
+  public Long getActualLoops() {
+    return null;
+  }
+
+  // Source of rows
+
   @Override
   public String getRowsSource() {
     return rowsSource;
@@ -114,10 +133,14 @@ public class MariaDBOperator implements Operator {
     return accessPredicates;
   }
 
+  // Filtering
+
   @Override
   public List<String> getFilterPredicates() {
     return filterPredicates;
   }
+
+  // Sources
 
   @Override
   public List<Operator> getInnerOperators() {
@@ -127,6 +150,8 @@ public class MariaDBOperator implements Operator {
     }
     return opes;
   }
+
+  // Extra Properties
 
   @Override
   public LinkedHashMap<String, String> getExtraProperties() {

@@ -27,10 +27,11 @@ public class DotPlanRenderer implements PlanRenderer {
 
     Range rowsRange = new Range(ROWS_EXP, ROWS_MIN_WIDTH, ROWS_MAX_WIDTH, ROWS_MIN_COLOR, ROWS_MAX_COLOR);
     Range costRange = new Range(COST_EXP, 1, 100, COST_MIN_COLOR, COST_MAX_COLOR);
-    gatherRanges(op, rowsRange, costRange);
+    Range timeRange = new Range(COST_EXP, 1, 100, COST_MIN_COLOR, COST_MAX_COLOR);
+    gatherRanges(op, rowsRange, costRange, timeRange);
 
     renderHeader(sb);
-    renderNodes(op, rowsRange, costRange, sb);
+    renderNodes(op, rowsRange, costRange, timeRange, sb);
     renderLinks(op, rowsRange, costRange, sb);
     renderFooter(op, sb);
 
@@ -48,19 +49,45 @@ public class DotPlanRenderer implements PlanRenderer {
     sb.append("subgraph tree {\n");
   }
 
-  private void renderNodes(final Operator op, final Range rowsRange, final Range costRange, final StringBuilder sb) {
+  private void renderNodes(final Operator op, final Range rowsRange, final Range costRange, final Range timeRange,
+      final StringBuilder sb) {
 
-    String cc = renderColor(costRange.computeColorLinear(op.getCost()));
+    boolean actualData = op.getActualTime() != null || op.getActualRows() != null || op.getActualLoops() != null;
+
+    String cc;
+    if (actualData) {
+      cc = renderColor(timeRange.computeColorLinear(op.getActualTime()));
+    } else {
+      cc = renderColor(costRange.computeColorLinear(op.getCost()));
+    }
 
     sb.append("  " + op.getId() + " [shape=none width=0 height=0 margin=0 style=\"rounded\" color=\"gray40\" "
-        + "label=<<table cellspacing=\"0\" border=\"0\" cellborder=\"1\"><tr><td width=\"60%\" bgcolor=\"" + cc + "\">"
-        + "<font point-size=\"18\">" //
-        + formatDouble(op.getCost()) + "</font></td><td bgcolor=\"#ffeac1\">" //
-        + (op.getProducedRows() != null ? (formatDouble(op.getProducedRows()) + "<br/>rows") : "--") //
-        + "</td><td bgcolor=\"#e0e0e0\">" //
-        // + "4<br/>io" // io
-        + "--" + "</td></tr><tr><td colspan=\"3\" bgcolor=\"#" + (op.includesHeapFetch() ? "d3e4ff" : "ffffff")
-        + "\"><b>" //
+        + "label=<<table cellspacing=\"0\" border=\"0\" cellborder=\"1\">");
+
+    if (actualData) {
+      sb.append("<tr><td width=\"60%\" bgcolor=\"" + cc + "\">" + "<font point-size=\"18\">" //
+          + formatTimeMs(1000 * op.getActualTime()) + "</font></td><td bgcolor=\"#ffeac1\">" //
+          + (op.getActualRows() != null ? (op.getActualRows() + "<br/>rows") : "--") //
+          + "</td><td bgcolor=\"#e0e0e0\">" //
+          // + "4<br/>io" // io
+          + (op.getActualLoops() != null ? (op.getActualLoops() + "<br/>loops") : "--") //
+          + "</td></tr>");
+      sb.append("<tr><td width=\"60%\" bgcolor=\"#ffffff\"><i>" //
+          + formatDouble(op.getCost()) + " cost</i></td><td bgcolor=\"#ffeac1\">" //
+          + (op.getProducedRows() != null ? ("<i>" + formatDouble(op.getProducedRows()) + "</i>") : "--") //
+          + "</td><td bgcolor=\"#e0e0e0\">" //
+          // + "4<br/>io" // io
+          + "--" + "</td></tr>");
+    } else {
+      sb.append("<tr><td width=\"60%\" bgcolor=\"" + cc + "\">" + "<font point-size=\"18\">" //
+          + formatDouble(op.getCost()) + "</font></td><td bgcolor=\"#ffeac1\">" //
+          + (op.getProducedRows() != null ? (formatDouble(op.getProducedRows()) + "<br/>rows") : "--") //
+          + "</td><td bgcolor=\"#e0e0e0\">" //
+          // + "4<br/>io" // io
+          + "--" + "</td></tr>");
+    }
+
+    sb.append("<tr><td colspan=\"3\" bgcolor=\"#" + (op.includesHeapFetch() ? "d3e4ff" : "ffffff") + "\"><b>" //
         + op.getType() //
         + (!op.getAccessPredicates().isEmpty() || !op.getFilterPredicates().isEmpty() ? " *" + op.getId() : "") //
         + "</b></td></tr></table>>];\n");
@@ -86,7 +113,7 @@ public class DotPlanRenderer implements PlanRenderer {
     }
 
     for (Operator io : op.getInnerOperators()) {
-      renderNodes(io, rowsRange, costRange, sb);
+      renderNodes(io, rowsRange, costRange, timeRange, sb);
     }
 
   }
@@ -113,11 +140,27 @@ public class DotPlanRenderer implements PlanRenderer {
     }
   }
 
-  private void gatherRanges(final Operator op, final Range rowsRange, final Range costRange) {
+  private String formatTimeMs(final Double ms) {
+    if (ms == null) {
+      return "";
+    }
+    if (ms < 9.95) { // 0.0 - 9.9
+      return DECF.format(ms) + " ms";
+    } else if (ms < 9999.5) { // 10 - 9999
+      return INTF.format(ms) + " ms";
+    } else if (ms < 99.5 * 1000) { // 10.0s - 99.9s
+      return DECF.format(ms / 1000) + " s";
+    } else { // > 100s
+      return INTF.format(ms / 1000) + " s";
+    }
+  }
+
+  private void gatherRanges(final Operator op, final Range rowsRange, final Range costRange, final Range timeRange) {
     rowsRange.register(op.getProducedRows());
     costRange.register(op.getCost());
+    timeRange.register(op.getActualTime());
     for (Operator io : op.getInnerOperators()) {
-      gatherRanges(io, rowsRange, costRange);
+      gatherRanges(io, rowsRange, costRange, timeRange);
     }
   }
 

@@ -29,6 +29,11 @@ public class PostgreSQLOperator implements Operator {
   private String relationName;
   private String filter;
   private List<PostgreSQLOperator> sources;
+
+  private Double actualTime;
+  private Long actualRows;
+  private Long actualLoops;
+
   private boolean includesHeapFetch;
 
   // Constructor
@@ -37,7 +42,7 @@ public class PostgreSQLOperator implements Operator {
       final String alias, final String indexName, final String indexDescription, final String indexCond,
       final String recheckCond, final Double startupCost, final Double cost, final Double producedRows,
       final Double width, final String relationName, final String filter, final boolean includesHeapFetch,
-      final List<PostgreSQLOperator> sources) {
+      final Double actualTime, final Long actualRows, final Long actualLoops, final List<PostgreSQLOperator> sources) {
     this.id = id;
     this.type = type;
     this.joinType = joinType;
@@ -54,6 +59,9 @@ public class PostgreSQLOperator implements Operator {
     this.relationName = relationName;
     this.filter = filter;
     this.includesHeapFetch = includesHeapFetch;
+    this.actualTime = actualTime;
+    this.actualRows = actualRows;
+    this.actualLoops = actualLoops;
     this.sources = sources;
   }
 
@@ -67,10 +75,14 @@ public class PostgreSQLOperator implements Operator {
 
   // Getters
 
+  // Node Identification
+
   @Override
   public Integer getId() {
     return id;
   }
+
+  // Type
 
   @Override
   public String getType() {
@@ -81,6 +93,8 @@ public class PostgreSQLOperator implements Operator {
   public boolean includesHeapFetch() {
     return includesHeapFetch;
   }
+
+  // Estimated Cost
 
   @Override
   public Double getCost() {
@@ -106,6 +120,25 @@ public class PostgreSQLOperator implements Operator {
   public Double getProducedRows() {
     return producedRows;
   }
+
+  // Actual Cost
+
+  @Override
+  public Double getActualTime() {
+    return this.actualTime;
+  }
+
+  @Override
+  public Long getActualRows() {
+    return this.actualRows;
+  }
+
+  @Override
+  public Long getActualLoops() {
+    return this.actualLoops;
+  }
+
+  // Source of rows
 
   @Override
   public String getRowsSource() {
@@ -134,6 +167,8 @@ public class PostgreSQLOperator implements Operator {
     return access;
   }
 
+  // Filtering
+
   @Override
   public List<String> getFilterPredicates() {
     List<String> filters = new ArrayList<String>();
@@ -146,6 +181,8 @@ public class PostgreSQLOperator implements Operator {
     return filters;
   }
 
+  // Sources
+
   public List<Operator> getInnerOperators() {
     List<Operator> opes = new ArrayList<Operator>();
     for (PostgreSQLOperator o : this.sources) {
@@ -154,7 +191,7 @@ public class PostgreSQLOperator implements Operator {
     return Collections.unmodifiableList(opes);
   }
 
-  // Extra
+  // Extra Properties
 
   public LinkedHashMap<String, String> getExtraProperties() {
     LinkedHashMap<String, String> p = new LinkedHashMap<String, String>();

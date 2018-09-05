@@ -15,7 +15,7 @@ public interface Operator {
 
   boolean includesHeapFetch();
 
-  // Cost
+  // Estimated Cost
 
   Double getCost();
 
@@ -24,6 +24,14 @@ public interface Operator {
   Long getProducedBytes();
 
   Double getProducedRows();
+
+  // Actual Cost
+
+  Double getActualTime();
+
+  Long getActualRows();
+
+  Long getActualLoops();
 
   // Source of rows
 

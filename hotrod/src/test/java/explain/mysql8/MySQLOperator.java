@@ -64,6 +64,8 @@ public class MySQLOperator implements Operator {
     this.id = id;
   }
 
+  // Type
+
   @Override
   public String getType() {
     return type;
@@ -73,6 +75,8 @@ public class MySQLOperator implements Operator {
   public boolean includesHeapFetch() {
     return includesHeapFetch;
   }
+
+  // Estimated Cost
 
   @Override
   public Double getCost() {
@@ -94,6 +98,25 @@ public class MySQLOperator implements Operator {
     return producedRows;
   }
 
+  // Actual Cost
+
+  @Override
+  public Double getActualTime() {
+    return null;
+  }
+
+  @Override
+  public Long getActualRows() {
+    return null;
+  }
+
+  @Override
+  public Long getActualLoops() {
+    return null;
+  }
+
+  // Source of rows
+
   @Override
   public String getRowsSource() {
     return rowsSource;
@@ -114,10 +137,14 @@ public class MySQLOperator implements Operator {
     return accessPredicates;
   }
 
+  // Filtering
+
   @Override
   public List<String> getFilterPredicates() {
     return filterPredicates;
   }
+
+  // Sources
 
   @Override
   public List<Operator> getInnerOperators() {
@@ -127,6 +154,8 @@ public class MySQLOperator implements Operator {
     }
     return opes;
   }
+
+  // Extra Properties
 
   @Override
   public LinkedHashMap<String, String> getExtraProperties() {

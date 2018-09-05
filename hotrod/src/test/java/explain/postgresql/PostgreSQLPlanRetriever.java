@@ -8,7 +8,7 @@ import java.sql.Statement;
 public class PostgreSQLPlanRetriever {
 
   public static String retrieveXMLPlan(final Connection conn, final String query) throws SQLException {
-    String sql = "explain (format xml) " + query;
+    String sql = "explain (analyze true, timing true, format xml) " + query;
     Statement st = conn.createStatement();
     System.out.println("sql=" + sql);
     ResultSet rs = st.executeQuery(sql);
