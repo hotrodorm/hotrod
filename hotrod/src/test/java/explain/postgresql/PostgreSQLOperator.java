@@ -86,7 +86,12 @@ public class PostgreSQLOperator implements Operator {
 
   @Override
   public String getType() {
-    return this.type + (this.joinType == null ? "" : " " + this.joinType + " Join");
+    return this.type;
+  }
+
+  @Override
+  public String getJoinType() {
+    return this.joinType;
   }
 
   @Override

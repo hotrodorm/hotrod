@@ -71,6 +71,13 @@ public class MySQLOperator implements Operator {
     return type;
   }
 
+
+  @Override
+  public String getJoinType() {
+    // TODO: fix!
+    return null;
+  }
+
   @Override
   public boolean includesHeapFetch() {
     return includesHeapFetch;

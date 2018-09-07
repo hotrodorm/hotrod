@@ -6,9 +6,15 @@ import java.text.DecimalFormat;
 
 import explain.Operator;
 
-public class DotPlanRenderer implements PlanRenderer {
+public class DotPlanRenderer2 implements PlanRenderer {
 
-  private static final DecimalFormat WIDTH_FORMATTER = new DecimalFormat("0.0");
+  private final DecimalFormat WIDTH_FORMATTER = new DecimalFormat("0.0");
+  private final DecimalFormat INTEGER_FORMATTER = new DecimalFormat("0");
+
+  private static final String GREY = "808080";
+  private static final String BLUE = "0000ff";
+  private static final String RED = "ff0000";
+  private static final String WHITE = "ffffff";
 
   @Override
   public String render(final Operator op) throws SQLException {
@@ -31,6 +37,8 @@ public class DotPlanRenderer implements PlanRenderer {
   private void renderHeader(final StringBuilder sb) {
     sb.append("digraph p1 {\n");
     sb.append("  rankdir=BT; ranksep=0.3;\n");
+    sb.append("  bgcolor=\"#f4f4f4\";\n");
+
     sb.append(
         "  graph [fontname = \"helvetica\", fontsize = 9]; node [fontname = \"helvetica\", fontsize = 9]; edge [fontname = \"helvetica\", fontsize = 9];\n");
     sb.append("  labelloc=\"t\"; label=\"SQL Execution Plan - 2018-09-03 10:11\";\n");
@@ -42,42 +50,88 @@ public class DotPlanRenderer implements PlanRenderer {
     boolean actualData = op.getActualTime() != null || op.getActualRows() != null || op.getActualLoops() != null;
 
     String cc;
+    double ratio;
     if (actualData) {
       cc = renderColor(stats.getTime().computeLinearColor(op.getActualTime()));
+      ratio = stats.getTime().computeLinearRatio(op.getActualTime());
     } else {
       cc = renderColor(stats.getCost().computeLinearColor(op.getCost()));
+      ratio = stats.getCost().computeLinearRatio(op.getCost());
     }
 
-    sb.append("  " + op.getId() + " [shape=none width=0 height=0 margin=0 style=\"rounded\" color=\"gray40\" "
-        + "label=<<table cellspacing=\"0\" border=\"0\" cellborder=\"1\">");
+    // Opening node
+
+    sb.append("  " + op.getId() + " [shape=none width=0 height=0 margin=0 style=\"rounded\" color=\"#c0c0c0\" "
+        + "label=<<table cellspacing=\"0\" border=\"1\" bgcolor=\"#ffffff\" cellborder=\"0\">");
+
+    // First row
 
     if (actualData) {
-      sb.append("<tr><td width=\"60%\" bgcolor=\"" + cc + "\">" + "<font point-size=\"18\">" //
-          + formatTimeMs(op.getActualTime()) + "</font></td><td bgcolor=\"#ffeac1\">" //
-          + (op.getActualRows() != null ? (op.getActualRows() + "<br/>rows") : "--") //
-          + "</td><td bgcolor=\"#e0e0e0\">" //
-          // + "4<br/>io" // io
-          + (op.getActualLoops() != null ? (op.getActualLoops() + "<br/>loops") : "--") //
-          + "</td></tr>");
-      sb.append("<tr><td width=\"60%\" bgcolor=\"#ffffff\"><i>" //
-          + formatDouble(op.getCost()) + " cost</i></td><td bgcolor=\"#ffeac1\">" //
-          + (op.getProducedRows() != null ? ("<i>" + formatDouble(op.getProducedRows()) + "</i>") : "--") //
-          + "</td><td bgcolor=\"#e0e0e0\">" //
-          // + "4<br/>io" // io
-          + "--" + "</td></tr>");
+
+      FormattedTime ft = formatTimeMs(op.getActualTime());
+      Double tp = null;
+      if (op.getActualTime() != null && stats.getTime().getMaxValue() != null) {
+        tp = op.getActualTime() / stats.getTime().getMaxValue();
+      }
+
+      System.out.println(ft.getValue());
+
+      sb.append("<tr>" //
+          + "<td width=\"50%\" color=\"#c0c0c0\" border=\"1\" bgcolor=\"" + cc + "\">" //
+          + ft.getValue() //
+          + "<font color=\"#" + (ratio < 0.7 ? GREY : WHITE) + "\">" //
+          + "&nbsp;" + ft.getUnit() + " | " //
+          + "</font>" //
+          + (tp != null ? INTEGER_FORMATTER.format(100 * tp) : "") //
+          + "<font color=\"#" + (ratio < 0.7 ? GREY : WHITE) + "\">&nbsp;%" //
+          + "</font>" //
+          + "</td>" //
+          + "<td align=\"right\">&nbsp;" //
+          + (op.getActualRows() != null ? (op.getActualRows() //
+              + "<font color=\"#" + GREY + "\"> rows</font>" //
+          ) : "") //
+          + "&nbsp;" + (op.getActualLoops() != null ? //
+              +op.getActualLoops() + "<font color=\"#" + GREY + "\"> x</font>" : "") //
+          + "</td>" //
+          + "</tr>");
     } else {
-      sb.append("<tr><td width=\"60%\" bgcolor=\"" + cc + "\">" + "<font point-size=\"18\">" //
-          + formatDouble(op.getCost()) + "</font></td><td bgcolor=\"#ffeac1\">" //
-          + (op.getProducedRows() != null ? (formatDouble(op.getProducedRows()) + "<br/>rows") : "--") //
-          + "</td><td bgcolor=\"#e0e0e0\">" //
-          // + "4<br/>io" // io
-          + "--" + "</td></tr>");
+      // sb.append("<tr><td width=\"60%\" bgcolor=\"" + cc + "\">" + "<font
+      // point-size=\"18\">" //
+      // + formatDouble(op.getCost()) + "</font></td><td bgcolor=\"#ffeac1\">"
+      // //
+      // + (op.getProducedRows() != null ? (formatDouble(op.getProducedRows()) +
+      // "<br/>rows") : "--") //
+      // + "</td><td bgcolor=\"#e0e0e0\">" //
+      // // + "4<br/>io" // io
+      // + "--" + "</td></tr>");
     }
 
-    sb.append("<tr><td colspan=\"3\" bgcolor=\"#" + (op.includesHeapFetch() ? "d3e4ff" : "ffffff") + "\"><b>" //
-        + op.getType() //
-        + (!op.getAccessPredicates().isEmpty() || !op.getFilterPredicates().isEmpty() ? " *" + op.getId() : "") //
-        + "</b></td></tr></table>>];\n");
+    // Second row
+
+    boolean hasPredicates = !op.getAccessPredicates().isEmpty() || !op.getFilterPredicates().isEmpty();
+    sb.append("<tr><td colspan=\"2\" align=\"left\">" //
+        + "<b>" + (op.getType() != null ? op.getType().toUpperCase() : "") + "</b>" //
+        + (hasPredicates ? "<font color=\"#" + GREY + "\">&nbsp;&nbsp;*" + op.getId() + "</font>" : "&nbsp;") //
+        + (op.includesHeapFetch() ? "<font color=\"#" + BLUE + "\">&#x25e9;</font> " : "") //
+        + "</td></tr>");
+    // &#x25c6;&#x25c0;&#x25c1;&#x25c2;&#x25c3;&#x25c4;&#x25c5;&#x2b88;&#x2b05;&#x21e6;
+
+    // Third row
+
+    sb.append("<tr>" //
+        + "<td align=\"left\">" //
+        + (op.getJoinType() != null ? "Inner " + "<font color=\"#" + GREY + "\">" + "join" + "</font>" : "") //
+        + "</td>" //
+        + "<td align=\"right\">" //
+//        + "<IMG SRC=\"costly.png\">"
+        + "<font color=\"#" + RED + "\">" 
+        + "<b>($) (T) (=) (x)</b></font>" //
+        + "</td>" //
+        + "</tr>");
+
+    // Closing node
+
+    sb.append("</table>>];\n");
 
     if (op.getRowsSource() != null || op.getRowsSourceAlias() != null) {
       String label;
@@ -127,18 +181,36 @@ public class DotPlanRenderer implements PlanRenderer {
     }
   }
 
-  private String formatTimeMs(final Double ms) {
-    if (ms == null) {
-      return "";
+  private static class FormattedTime {
+
+    private String value;
+    private String unit;
+
+    public FormattedTime(final String value, final String unit) {
+      this.value = value;
+      this.unit = unit;
     }
-    if (ms < 9.95) { // 0.0 - 9.9
-      return DECF.format(ms) + " ms";
-    } else if (ms < 9999.5) { // 10 - 9999
-      return INTF.format(ms) + " ms";
-    } else if (ms < 99.5 * 1000) { // 10.0s - 99.9s
-      return DECF.format(ms / 1000) + " s";
+
+    public String getValue() {
+      return value;
+    }
+
+    public String getUnit() {
+      return unit;
+    }
+
+  }
+
+  private FormattedTime formatTimeMs(final Double ms) {
+    if (ms == null) {
+      return new FormattedTime("", "");
+    }
+    if (ms < 1) { // < 1 ms
+      return new FormattedTime("&lt;1", "ms");
+    } else if (ms < 99999) { // < 99999 ms
+      return new FormattedTime(INTF.format(ms), "ms");
     } else { // > 100s
-      return INTF.format(ms / 1000) + " s";
+      return new FormattedTime(INTF.format(ms / 1000), " s");
     }
   }
 

@@ -68,6 +68,12 @@ public class MariaDBOperator implements Operator {
   }
 
   @Override
+  public String getJoinType() {
+    // TODO: fix!
+    return null;
+  }
+
+  @Override
   public boolean includesHeapFetch() {
     return includesHeapFetch;
   }

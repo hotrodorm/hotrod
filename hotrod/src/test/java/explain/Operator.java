@@ -13,6 +13,8 @@ public interface Operator {
 
   String getType();
 
+  String getJoinType();
+
   boolean includesHeapFetch();
 
   // Estimated Cost
