@@ -6,31 +6,35 @@ import java.text.SimpleDateFormat;
 import java.util.Random;
 
 import hotrod.test.generation.AccountVO;
-import hotrod.test.generation.AgentVO;
 import hotrod.test.generation.ConfigValuesVO;
 import hotrod.test.generation.CursorExample1VO;
-import hotrod.test.generation.TestSeqIdeDef1VO;
+import hotrod.test.generation.TestMixed1VO;
 import hotrod.test.generation.TransactionVO;
-import hotrod.test.generation._price_VO;
 import hotrod.test.generation.primitives.AccountDAO;
-import hotrod.test.generation.primitives.AgentDAO;
 import hotrod.test.generation.primitives.ConfigValuesDAO;
 import hotrod.test.generation.primitives.CursorExample1DAO;
-import hotrod.test.generation.primitives.TestSeqIdeDef1DAO;
+import hotrod.test.generation.primitives.TestMixed1DAO;
 import hotrod.test.generation.primitives.TransactionDAO;
-import hotrod.test.generation.primitives._price_DAO;
 
 public class InsertTests {
 
   public static void main(final String[] args) throws SQLException {
+
     // insertNoPK();
-    // insertWithSequence();
     // insertWithIdentity();
     // insertWithOptionalIdentity();
+
+    // insertByExampleNoPK();
+    // insertByExampleWithIdentity();
+    // insertByExampleWithOptionalIdentity();
     // insertMixed();
-    // insertDifferentSchemaWithSequence();
+
     insertForCursorExample1();
   }
+
+  // ==============
+  // NORMAL INSERTS
+  // ==============
 
   private static void insertNoPK() throws SQLException {
 
@@ -48,23 +52,6 @@ public class InsertTests {
 
     for (ConfigValuesVO l : ConfigValuesDAO.selectByExample(example)) {
       System.out.println("-> config=" + l);
-    }
-
-  }
-
-  private static void insertWithSequence() throws SQLException {
-
-    AgentVO example = new AgentVO();
-    // AgentDAO.deleteByExample(example);
-
-    AgentVO a = new AgentVO();
-    int time = getTimeInt();
-    a.setName("Agent 007 - #" + time);
-    a.setClientId(12L);
-    AgentDAO.insert(a);
-
-    for (AgentVO l : AgentDAO.selectByExample(example)) {
-      System.out.println("-> agent=" + l);
     }
 
   }
@@ -95,21 +82,21 @@ public class InsertTests {
     { // no PK
       TransactionVO t = new TransactionVO();
       int time = getTimeInt();
-      t.setAccountId(1234001);
+      t.setAccountId(1);
       t.setTime("time #" + time);
       t.setAmount(200);
-      t.setFedBranchId(101L);
+      t.setFedBranchId(101);
       TransactionDAO.insert(t);
     }
 
     { // with PK
       TransactionVO t = new TransactionVO();
       int time = getTimeInt();
-      t.setAccountId(1234001);
+      t.setAccountId(1);
       t.setSeqId(time);
       t.setTime("time #" + time);
       t.setAmount(300);
-      t.setFedBranchId(102L);
+      t.setFedBranchId(102);
       TransactionDAO.insert(t);
     }
 
@@ -124,18 +111,15 @@ public class InsertTests {
     String time = getTime();
     int timeInt = getTimeInt();
 
-    TestSeqIdeDef1VO example = new TestSeqIdeDef1VO();
-    // AgentDAO.deleteByExample(example);
+    // Mixed
 
-    TestSeqIdeDef1VO a = new TestSeqIdeDef1VO();
-    a.setName("Caption 007 - " + time);
-    a.setPrice(50004);
-    // a.setBranchId(123456);
+    TestMixed1VO vo = new TestMixed1VO();
+    vo.setName("Abc");
+    vo.setBranchId(50004);
+    // vo.setPrice(123456);
 
-    TestSeqIdeDef1DAO.insert(a);
-    // TestSeqIdeDef1DAO.insert(a, true);
-
-    System.out.println("[inserted] mixed=" + a);
+    TestMixed1DAO.insert(vo);
+    System.out.println("[inserted] optional vo=" + vo);
 
     // // Optional Identity (default)
     //
@@ -154,18 +138,7 @@ public class InsertTests {
 
   }
 
-  private static void insertDifferentSchemaWithSequence() throws SQLException {
-
-    _price_VO p = new _price_VO();
-    p.setId(1234);
-    p.setValue(123);
-    _price_DAO.insert(p);
-
-    for (_price_VO pr : _price_DAO.selectByExample(new _price_VO())) {
-      System.out.println("-> price=" + pr);
-    }
-
-  }
+  // Cursor example
 
   private static void insertForCursorExample1() throws SQLException {
 
@@ -198,7 +171,7 @@ public class InsertTests {
   // Utilities
 
   private static int getTimeInt() {
-    return (int) (System.currentTimeMillis() % ((long) Integer.MAX_VALUE));
+    return (int) (System.currentTimeMillis() % (1000000000L));
   }
 
   private static String getTime() {

@@ -25,11 +25,17 @@ ECLIPSE_HOME=/home/valarcon/apps/eclipse/eclipse-jee-neon-4.6-java6
 # --- SQL Server 2014 ---
 #db.src.dir=testdata/databases/sqlserver-2014
 
-# --- MariaDB 5.5 ---
-#db.src.dir=testdata/databases/mariadb-5.5
+# --- MariaDB 10.0 ---
+#db.src.dir=testdata/databases/mariadb-10.0
+
+# --- MariaDB 10.3 ---
+#db.src.dir=testdata/databases/mariadb-10.3
 
 # --- MySQL 5.5 ---
 #db.src.dir=testdata/databases/mysql-5.5
+
+# --- MySQL 8.0 ---
+#db.src.dir=testdata/databases/mysql-8
 
 # --- SAP ASE 16 (ex-Sybase) ---
 #db.src.dir=testdata/databases/sapase-16

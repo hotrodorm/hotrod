@@ -1,3 +1,4 @@
+drop table if exists cursor_example1;
 
 drop sequence if exists "<Stock$".seq_price;
 

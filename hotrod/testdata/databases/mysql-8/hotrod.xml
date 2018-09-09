@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<hotrod>
+
+  <generators>
+    <mybatis>
+      <daos gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" />
+      <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
+      <mybatis-configuration-template
+        file="mybatis-config-template.xml" />
+      <session-factory singleton-full-class-name="sessionfactory.DatabaseSessionFactory" />
+      <select-generation temp-view-base-name="mybatis_temp_view" />
+    </mybatis>
+  </generators>
+
+<?comment
+?>
+  <table name="config_values" /> <!-- No PK -->
+
+  <table name="properties" />
+  <table name="parameters">
+    <column name="level2" java-type="java.lang.Long" jdbc-type="NUMERIC" />
+  </table>
+  <table name="log" />
+
+  <table name="account" /> <!-- identity by default PK -->
+  <table name="transaction" />  <!-- Identity by default PK -->
+
+  <table name="state_branch" />
+  <table name="federal_branch" />
+  <table name="client" />
+
+  <table name="agent" /> <!-- identity by default PK -->
+
+  <table name="codes" column-seam="_" /> <!-- identity by default PK -->
+
+  <table name="quadrant" />
+  <table name="application_config" />
+
+  <enum name="vehicle_type" name-column="description" />
+  <enum name="vehicle_vin" name-column="reg" />
+
+  <table name="vehicle">
+    <version-control-column name="version_number" />
+    <column name="version_number" java-type="java.lang.Short"
+      jdbc-type="NUMERIC" initial-value="4" min-value="-7" max-value="7" />
+  </table>
+
+  <table name="cursor_example1" />
+  
+<?comment  
+?>
+  <table name="test_identity1" />
+  
+  <table name="test_mixed1" />  
+
+  <table name="types_numeric" />
+  <table name="types_char" />
+  <table name="types_binary" />
+  <table name="types_date_time" />
+  <table name="types_other" />
+
+  <view name="tx_branch">
+    <column name="amount" java-type="java.lang.Long" jdbc-type="NUMERIC" />
+  </view>
+  
+  <dao class="Executor1">
+
+    <select method="findAccountTx0" vo="AccountTx0VO">
+      select a.* , t.*
+      from account a, transaction t
+      <complement>
+      where t.account_id = a.id
+          and a.current_balance &lt; 1000
+      </complement>        
+    </select>
+  
+    <select method="findAccountTx1" vo="AccountTx1VO">
+      <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="minAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <column name="account_id" java-type="java.lang.Long" jdbc-type="NUMERIC" />
+   		select a.* , t.*
+  		  from account a, transaction t
+        <complement>
+  		  where t.account_id = a.id
+  			  and a.current_balance &lt;= #{maxBalance}
+  			  and t.amount >= #{minAmount}
+        order by a.current_balance
+        </complement>
+    </select>
+  
+    <select method="findBigAccountTx" vo="BigAccountTxVO">
+      <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="minTxAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+  		select a.* , t.*
+    	  from account a, transaction t
+        <complement>
+  	    where t.account_id = a.id
+          and a.current_balance &lt;= #{maxBalance}
+          and t.amount >= #{minTxAmount}
+        </complement>
+    </select>
+  
+    <select method="findUnusualTx" vo="UnusualTxVO">
+      <parameter name="maxBalance" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="minAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="maxRows" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="offset" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      select a.* , t.*
+        from account a, transaction t
+        <complement>
+        where t.account_id = a.id
+          and a.current_balance &lt;= #{maxBalance}
+          and t.amount >= #{minAmount}
+          order by a.id, t.seq_id
+          limit #{maxRows}
+          offset #{offset}
+        </complement>
+    </select>
+  
+    <select method="findMultParamSelect" vo="MultParamSelectVO">
+      <parameter name="maxAmount" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      select a.* , t.*
+        from account a, transaction t
+        <complement>
+        where t.account_id = a.id
+          and a.current_balance &lt;= #{maxAmount}
+          and t.amount &lt;= #{maxAmount}
+          order by a.id, t.seq_id
+        </complement>
+    </select>
+
+  </dao>  
+  
+  <table name="'car#part$Price'" />
+  
+  <!-- 
+  -->
+  <table name="'house_ROOM'" />
+  <table name="account_alert" catalog="catalog2" />
+  <table name="house" catalog="catalog2" />
+
+  <view name="low_account" catalog="catalog2" />
+  
+  <dao class="AlertFinder">
+    <select method="findAlerts">
+      select
+      <columns>
+        <vo table="account" alias="a" extended-vo="Account2VO">
+          <collection table="account_alert" catalog="catalog2" property="alerts" alias="aa" extended-vo="Alert2VO">
+            <association table="house" property="house" catalog="catalog2" alias="h" /> 
+          </collection>
+        </vo>
+      </columns>
+        from account a 
+        join catalog2.account_alert aa on a.id = aa.account_id
+        join catalog2.house h on h.id = aa.house_id
+        where a.current_balance >= 100;
+    </select>
+  </dao>
+
+</hotrod>

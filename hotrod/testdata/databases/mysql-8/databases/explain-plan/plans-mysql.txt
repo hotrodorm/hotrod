@@ -1,0 +1,86 @@
+-- 1. Full Table Scan
+-- ==================
+
+select * from payment where amount < 100;
+
+id select_type table   type possible_keys key    key_len ref      rows Extra
+-- ----------- ------- ---- ------------- ------ ------- ------- ----- -----
+ 1 SIMPLE      payment ALL  <null>        <null>  <null> <null>  10261 Using where
+
+-- 2. Index Only Scan
+-- ==================
+
+create index ix1_placed_status_amount on payment (placed_at, status, amount);
+
+select count(*) from payment where amount = 1;
+
+id select_type table   type  possible_keys key               key_len ref      rows Extra
+-- ----------- ------- ----- ------------- ----------------- ------- ------- ----- -----
+ 1 SIMPLE      payment index <null>        ix4_status_amount       8 <null>  10261 Using where; Using index
+
+-- 3. Index Data Scan
+-- ==================
+
+select amount from payment where amount <= 2;
+
+id select_type table   type  possible_keys key               key_len ref      rows Extra
+-- ----------- ------- ----- ------------- ----------------- ------- ------- ----- -----
+ 1 SIMPLE      payment index <null>        ix4_status_amount       8 <null>  10261 Using where; Using index
+
+-- 4. Index Full Scan
+-- ==================
+
+select placed_at, status, amount from payment order by placed_at, status, amount;
+
+id select_type table   type  possible_keys key                      key_len ref      rows Extra
+-- ----------- ------- ----- ------------- ------------------------ ------- ------- ----- -----
+ 1 SIMPLE      payment index <null>        ix1_placed_status_amount      11 <null>  10261 Using index
+ 
+-- 5. Index Range Scan
+-- ===================
+
+select amount from payment where placed_at between '2017-05-01' and '2017-05-31' and status = 1;
+
+id select_type table   type  possible_keys                              key                       key_len ref      rows Extra
+-- ----------- ------- ----- ------------------------------------------ ------------------------- ------- ------- ----- -----
+ 1 SIMPLE      payment range ix1_placed_status_amount,ix4_status_amount ix1_placed_status_amount        4 <null>    167 Using where; Using index
+
+-- 6. Index Range Scan (reverse)
+-- =============================
+
+select amount from payment where status = 1 and amount < 20;
+
+id select_type table   type  possible_keys     key               key_len ref      rows Extra
+-- ----------- ------- ----- ----------------- ----------------- ------- ------- ----- -----
+ 1 SIMPLE      payment range ix4_status_amount ix4_status_amount       8 <null>   1378 Using where; Using index
+
+-- 7. Index Unique Scan
+-- ====================
+
+create unique index ix2_processor_id on payment (payment_processor_id);
+
+select amount from payment where payment_processor_id = 'ax33-4r5y44-ww-00192387'; -- no row found
+
+id select_type table   type   possible_keys key               key_len ref       rows Extra
+-- ----------- ------- ------ ------------- ----------------- ------- ------- ------ -----
+ 1 SIMPLE      <null>  <null> <null>        <null>             <null> <null>  <null> Impossible WHERE noticed after reading const tables
+
+select amount from payment where payment_processor_id = '790682939-3609-027638853'; -- row found
+
+id select_type table   type   possible_keys    key               key_len ref       rows Extra
+-- ----------- ------- ------ ---------------- ----------------- ------- ------- ------ -----
+ 1 SIMPLE      payment const  ix2_processor_id ix2_processor_id       26 const        1
+  
+
+-- 8. Index Merge
+-- ==============
+
+create index ix3_charged on payment (charged_at);
+
+select count(*) from payment where charged_at > '2018-02-03' or placed_at < '2012-10-15' or charged_at < '2012-10-15';
+
+id select_type table   type        possible_keys                        key                                  key_len ref      rows Extra
+-- ----------- ------- ----------- ------------------------------------ ------------------------------------ ------- ------- ----- -----
+ 1 SIMPLE      payment index_merge ix1_placed_status_amount,ix3_charged ix3_charged,ix1_placed_status_amount     4,3 <null>     16 Using sort_union(ix3_charged,ix1_placed_status_amount); Using where
+
+

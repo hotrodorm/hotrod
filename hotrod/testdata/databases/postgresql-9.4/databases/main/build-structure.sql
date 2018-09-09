@@ -233,6 +233,15 @@ create table test_default2 (
   branch_id integer default 123 not null
 );
 
+-- =====================
+-- Cursor select example
+-- =====================
+
+create table cursor_example1 (
+  id bigint not null,
+  data varchar(1000) not null
+);
+
 -- =========
 -- All Types
 -- =========

@@ -1,3 +1,6 @@
+
+drop table cursor_example1;
+
 drop table "house_ROOM";
 drop table schema2.account_alert;
 -- drop table house;

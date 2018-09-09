@@ -198,6 +198,16 @@ create table test_seq_ide_def1 (
   branch_id integer default 123 not null
 );
 
+-- =====================
+-- Cursor select example
+-- =====================
+
+create table cursor_example1 (
+  id bigint not null,
+  data varchar(1000) not null
+);
+
+
 -- ============
 -- Column Types
 -- ============

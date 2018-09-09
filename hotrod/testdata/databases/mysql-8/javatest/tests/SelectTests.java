@@ -1,5 +1,6 @@
 package tests;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -10,48 +11,100 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.tx.TxManager;
 
 import hotrod.test.generation.Account2VO;
-import hotrod.test.generation.AccountTx2DAO;
+import hotrod.test.generation.AccountTx0VO;
+import hotrod.test.generation.AccountTx1VO;
 import hotrod.test.generation.Alert2VO;
+import hotrod.test.generation.BigAccountTxVO;
 import hotrod.test.generation.Car_part_priceVO;
+import hotrod.test.generation.ConfigValuesVO;
 import hotrod.test.generation.CursorExample1VO;
 import hotrod.test.generation.HouseVO;
-import hotrod.test.generation.SpecialColumnsVO;
+import hotrod.test.generation.MultParamSelectVO;
+import hotrod.test.generation.VehicleVO;
 import hotrod.test.generation.primitives.AlertFinder;
 import hotrod.test.generation.primitives.Car_part_priceDAO;
+import hotrod.test.generation.primitives.ConfigValuesDAO;
 import hotrod.test.generation.primitives.CursorExample1DAO;
+import hotrod.test.generation.primitives.CursorExample1DAO.CursorExample1OrderBy;
 import hotrod.test.generation.primitives.Executor1;
 import hotrod.test.generation.primitives.HouseDAO;
-import hotrod.test.generation.primitives.SpecialColumnsDAO;
-import hotrod.test.generation.primitives.CursorExample1DAO.CursorExample1OrderBy;
+import hotrod.test.generation.primitives.VehicleDAO;
+import hotrod.test.generation.primitives.VehicleType;
+import hotrod.test.generation.primitives.VehicleVin;
 
 public class SelectTests {
 
-  public static void main(final String[] args) throws SQLException {
-    // testColumns();
-    // testDynamicSelect();
+  public static void main(final String[] args) throws IOException, SQLException {
+    // selectByExample();
+    // selectByUI();
 
-    // selectOtherSchema();
-    // selectMultiSchema();
+    // selectOtherCatalog();
+    // selectMultiCatalog();
     // selectComplexName();
 
+//    selectByEnumUI();
+
     selectByCursor();
-
   }
 
-  private static void testDynamicSelect() throws SQLException {
-    showDynamicSelectResult(140);
-    showDynamicSelectResult(null);
-  }
+  private static void selectByExample() throws SQLException {
 
-  private static void showDynamicSelectResult(final Integer maxAmount) throws SQLException {
-    System.out.println("--- Dynamic Select with maxamount=" + maxAmount + " ---");
-    for (AccountTx2DAO at : Executor1.findAccountTx2DAO(maxAmount)) {
-      System.out.println("[maxamount=" + maxAmount + "] at=" + at);
+    {
+      System.out.println("--- a0 ---");
+      for (AccountTx0VO a0 : Executor1.findAccountTx0()) {
+        System.out.println("a0: " + a0);
+      }
     }
-    System.out.println("---");
+
+    {
+      System.out.println("--- a1 ---");
+      for (AccountTx1VO a1 : Executor1.findAccountTx1(200, 0)) {
+        System.out.println("a1: " + a1);
+      }
+    }
+
+    {
+      System.out.println("--- big account tx ---");
+      for (BigAccountTxVO ba : Executor1.findBigAccountTx(200, 0)) {
+        System.out.println("ba: " + ba);
+      }
+    }
+
   }
 
-  private static void selectOtherSchema() throws SQLException {
+  private static void selectByUI() throws SQLException {
+    ConfigValuesVO example = new ConfigValuesVO();
+    example.setName("prop3");
+    for (ConfigValuesVO v : ConfigValuesDAO.selectByExample(example)) {
+      System.out.println("v: " + v);
+    }
+
+    // AccountDAO a = AccountDAO.select(1234005);
+    // for (TransactionDAO tx : a.selectChildrenTransaction().byAccountId()) {
+    // System.out.println("tx: " + tx);
+    // }
+
+    System.out.println("===");
+    for (MultParamSelectVO mp : Executor1.findMultParamSelect(160)) {
+      System.out.println("mp=" + mp);
+    }
+
+  }
+
+  private static void selectByEnumUI() throws SQLException {
+    System.out.println("=== select by Enum UI ===");
+
+    VehicleVO v1 = VehicleDAO.selectByUIVin(VehicleVin._2018_02_07);
+    System.out.println("v1=" + v1);
+
+    VehicleVO v2 = VehicleDAO.selectByUIVtype(VehicleType.SEDAN);
+    System.out.println("v2=" + v2);
+
+    System.out.println("===");
+
+  }
+
+  private static void selectOtherCatalog() throws SQLException {
     System.out.println("=== House ===");
     for (HouseVO h : HouseDAO.selectByExample(new HouseVO())) {
       System.out.println("h: " + h);
@@ -59,7 +112,7 @@ public class SelectTests {
     System.out.println("===");
   }
 
-  private static void selectMultiSchema() throws SQLException {
+  private static void selectMultiCatalog() throws SQLException {
     System.out.println("=== Tree ===");
     for (Account2VO acc : AlertFinder.findAlerts()) {
       System.out.println("account: " + acc);
@@ -79,41 +132,11 @@ public class SelectTests {
     }
     System.out.println("===");
 
-  }
-
-  private static void testColumns() throws SQLException {
-
-    // delete all rows
-    int rows = SpecialColumnsDAO.deleteByExample(new SpecialColumnsVO());
-    System.out.println(rows + " row(s) deleted.");
-
-    {
-      SpecialColumnsVO s1 = new SpecialColumnsVO();
-      s1.setColumn("c");
-      s1.setCreatedAt("d");
-      s1.setFrom("e");
-      s1.setId(1);
-      s1.setTable("f");
-      s1.setValueId("g1");
-      SpecialColumnsDAO.insert(s1);
-    }
-
-    {
-      SpecialColumnsVO s1 = new SpecialColumnsVO();
-      s1.setColumn("c2");
-      s1.setCreatedAt("d2");
-      s1.setFrom("e2");
-      s1.setId(2);
-      s1.setTable("f2");
-      s1.setValueId("g2");
-      SpecialColumnsDAO.insert(s1);
-    }
-
-    SpecialColumnsVO example = new SpecialColumnsVO();
-    // filter.setValueId("g2");
-    for (SpecialColumnsVO s : SpecialColumnsDAO.selectByExample(example)) {
-      System.out.println("s=" + s);
-    }
+    // Car_part_priceVO n = new Car_part_priceVO();
+    // n.setPart_(1234);
+    // n.setPrice_dollar(123456);
+    // n.set_discount(15);
+    // Car_part_priceDAO.insert(n);
 
   }
 

@@ -64,7 +64,7 @@ public class SelectTests {
     }
   }
 
-  // CursorExample1VO c = new CursorExample1VO();
+  // Select using cursor
 
   private static void selectByCursor() throws SQLException {
 

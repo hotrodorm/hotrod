@@ -103,9 +103,12 @@
   </dao>
 
   <table name="'car#part$Price'" />
+  
+  <table name="cursor_example1" />
 
 <?comment
 ?>
+
   <table name="'house_ROOM'" />
   <table name="account_alert" schema="schema2" />
   <table name="house" schema="schema2" />
