@@ -29,6 +29,27 @@ begin
 end get_accounts;
 //
 
+-- Multi-type parameters
+
+create or replace procedure params1() is
+BEGIN
+    dbms_output.put_line('Hello World ');
+END;
+//
+
+
+create or replace procedure params2 (
+  account_name in varchar2(20),
+  balance_sum inout number(9),
+  balance out number(9)
+) is
+begin
+	select current_balance into balance_out
+	  from account
+	  where name = account_name;
+end;
+//
+
 
 
 

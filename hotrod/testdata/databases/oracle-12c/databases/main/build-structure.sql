@@ -327,6 +327,8 @@ create table schema2.account_alert (
   constraint ah_fk2 foreign key (house_id) references schema2.house (id)
 );
 
+grant select on account to schema2;
+
 create view schema2.low_account as select * from user1.account where current_balance < 100;
 
 create table "house_ROOM" (

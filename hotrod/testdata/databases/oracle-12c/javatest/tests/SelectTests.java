@@ -48,7 +48,9 @@ public class SelectTests {
     // selectMultiSchema();
     // selectComplexName();
 
-    selectByCursor();
+    // selectByCursor();
+
+    callParams1();
   }
 
   private static void tryInsertBadData() throws SQLException {
@@ -209,6 +211,20 @@ public class SelectTests {
     int rows = TxBranchDAO.applyAccountPromotion75(10, from, to, -1);
     System.out.println("promotios rows=" + rows);
 
+  }
+
+  private static void callParams1() throws SQLException {
+    System.out.println("Will call params1...");
+
+    ValuesVO params = new ValuesVO();
+    params.setAccountName("CHK0001");
+    params.setBalanceSum(100);
+    params.setBalanceOut(-123);
+
+    ValuesVO r = AccountDAO.callParams1(params);
+
+    // System.out.println("params=" + params);
+    System.out.println("r=" + r);
   }
 
 }
