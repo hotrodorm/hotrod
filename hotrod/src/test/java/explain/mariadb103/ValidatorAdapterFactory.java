@@ -46,7 +46,7 @@ public class ValidatorAdapterFactory implements TypeAdapterFactory {
             Object value = super.get(key);
             System.out.println("get('" + key + "') -> " + value);
             if (value == null) {
-              throw new JsonParseException("Property '" + key + "' not found on " + type.getType().getTypeName() + ".");
+              throw new JsonParseException("Property '" + key + "' not found on " + type.getType() + ".");
             }
             return value;
           }

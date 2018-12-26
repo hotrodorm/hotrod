@@ -1,0 +1,724 @@
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.3.1" Build="12.0.5000.0">
+  <BatchSequence>
+    <Batch>
+      <Statements>
+        <StmtSimple
+          StatementText="select&#xa;    c.phone_number, c.first_name, c.last_name, c.address_id,&#xa;    a.id, a.line1, a.line2, a.city, a.state, a.zip_code,&#xa;    i.deferred_shipment_date, i.quantity, ic.caption, oc.caption,&#xa;    p.description, s.shipped_on&#xa;  from&#xa;    &quot;order&quot; o&#xa;    join order_item i on i.order_id = o.id&#xa;    left join product p on i.product_id = p.id&#xa;    join customer c on c.id = o.customer_id&#xa;    left join shipment s on s.id = o.shipment_id&#xa;    left join address a on a.id = s.address_id&#xa;    join code oc on oc.id = o.status_code&#xa;    join code ic on ic.id = i.status_code&#xa;  where&#xa;        c.first_name like &apos;JO%&apos;     and c.last_name like &apos;CO%&apos;      and oc.type = &apos;CLOSED&apos;          and ic.type = &apos;CLOSED&apos;          and o.placed &gt; &apos;2017-11-15&apos;   order by&#xa;    c.id, o.id desc, s.id, i.id"
+          StatementId="1" StatementCompId="1" StatementType="SELECT" RetrievedFromCache="true" StatementSubTreeCost="1.20443" StatementEstRows="91.6038" StatementOptmLevel="FULL" QueryHash="0x7E28E78B7F4A5A5" QueryPlanHash="0x819FE390785B5AF7" StatementOptmEarlyAbortReason="TimeOut" CardinalityEstimationModelVersion="120">
+          <StatementSetOptions QUOTED_IDENTIFIER="true" ARITHABORT="false" CONCAT_NULL_YIELDS_NULL="true" ANSI_NULLS="true" ANSI_PADDING="true" ANSI_WARNINGS="true" NUMERIC_ROUNDABORT="false" />
+          <QueryPlan NonParallelPlanReason="EstimatedDOPIsOne" CachedPlanSize="152" CompileTime="458" CompileCPU="432" CompileMemory="1432">
+            <MissingIndexes>
+              <MissingIndexGroup Impact="18.6265">
+                <MissingIndex Database="[master]" Schema="[dbo]" Table="[order]">
+                  <ColumnGroup Usage="INEQUALITY">
+                    <Column Name="[placed]" ColumnId="3" />
+                  </ColumnGroup>
+                  <ColumnGroup Usage="INCLUDE">
+                    <Column Name="[id]" ColumnId="1" />
+                    <Column Name="[customer_id]" ColumnId="2" />
+                    <Column Name="[shipment_id]" ColumnId="4" />
+                    <Column Name="[status_code]" ColumnId="5" />
+                  </ColumnGroup>
+                </MissingIndex>
+              </MissingIndexGroup>
+              <MissingIndexGroup Impact="16.0397">
+                <MissingIndex Database="[master]" Schema="[dbo]" Table="[customer]">
+                  <ColumnGroup Usage="INEQUALITY">
+                    <Column Name="[first_name]" ColumnId="2" />
+                    <Column Name="[last_name]" ColumnId="3" />
+                  </ColumnGroup>
+                  <ColumnGroup Usage="INCLUDE">
+                    <Column Name="[id]" ColumnId="1" />
+                    <Column Name="[phone_number]" ColumnId="4" />
+                    <Column Name="[address_id]" ColumnId="5" />
+                  </ColumnGroup>
+                </MissingIndex>
+              </MissingIndexGroup>
+            </MissingIndexes>
+            <MemoryGrantInfo SerialRequiredMemory="1536" SerialDesiredMemory="1776" />
+            <OptimizerHardwareDependentProperties EstimatedAvailableMemoryGrant="209669" EstimatedPagesCached="13104" EstimatedAvailableDegreeOfParallelism="1" MaxCompileMemory="1022344" />
+            <RelOp NodeId="0" PhysicalOp="Nested Loops" LogicalOp="Left Outer Join" EstimateRows="91.6038" EstimateIO="0" EstimateCPU="0.000382904" AvgRowSize="219" EstimatedTotalSubtreeCost="1.20443" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+              <OutputList>
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="id" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="customer_id" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="id" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="quantity" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="deferred_shipment_date" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[product]" Alias="[p]" Column="description" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="customer_id" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="first_name" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="last_name" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="phone_number" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="address_id" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="id" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="shipped_on" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="id" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="line1" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="line2" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="city" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="state" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="zip_code" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[oc]" Column="caption" />
+                <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[ic]" Column="caption" />
+              </OutputList>
+              <NestedLoops Optimized="0" WithOrderedPrefetch="1">
+                <OuterReferences>
+                  <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="address_id" />
+                  <ColumnReference Column="Expr1013" />
+                </OuterReferences>
+                <RelOp NodeId="3" PhysicalOp="Sort" LogicalOp="Sort" EstimateRows="91.6038" EstimateIO="0.0112613" EstimateCPU="0.00103149" AvgRowSize="150" EstimatedTotalSubtreeCost="1.14789" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+                  <OutputList>
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="id" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="customer_id" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="id" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="quantity" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="deferred_shipment_date" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[product]" Alias="[p]" Column="description" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="first_name" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="last_name" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="phone_number" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="address_id" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="id" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="address_id" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="shipped_on" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[oc]" Column="caption" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[ic]" Column="caption" />
+                  </OutputList>
+                  <MemoryFractions Input="0.2" Output="1" />
+                  <Sort Distinct="0">
+                    <OrderBy>
+                      <OrderByColumn Ascending="1">
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="customer_id" />
+                      </OrderByColumn>
+                      <OrderByColumn Ascending="0">
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="id" />
+                      </OrderByColumn>
+                      <OrderByColumn Ascending="1">
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="id" />
+                      </OrderByColumn>
+                      <OrderByColumn Ascending="1">
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="id" />
+                      </OrderByColumn>
+                    </OrderBy>
+                    <RelOp NodeId="4" PhysicalOp="Nested Loops" LogicalOp="Left Outer Join" EstimateRows="91.6038" EstimateIO="0" EstimateCPU="0.000382904" AvgRowSize="150" EstimatedTotalSubtreeCost="1.1356" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+                      <OutputList>
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="id" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="customer_id" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="id" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="quantity" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="deferred_shipment_date" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[product]" Alias="[p]" Column="description" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="id" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="first_name" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="last_name" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="phone_number" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="address_id" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="id" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="address_id" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="shipped_on" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[oc]" Column="caption" />
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[ic]" Column="caption" />
+                      </OutputList>
+                      <NestedLoops Optimized="0" WithUnorderedPrefetch="1">
+                        <OuterReferences>
+                          <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="shipment_id" />
+                          <ColumnReference Column="Expr1012" />
+                        </OuterReferences>
+                        <RelOp NodeId="6" PhysicalOp="Nested Loops" LogicalOp="Left Outer Join" EstimateRows="91.6038" EstimateIO="0" EstimateCPU="0.000382904" AvgRowSize="143" EstimatedTotalSubtreeCost="1.05225" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+                          <OutputList>
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="id" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="customer_id" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="shipment_id" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="id" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="quantity" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="deferred_shipment_date" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[product]" Alias="[p]" Column="description" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="id" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="first_name" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="last_name" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="phone_number" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="address_id" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[oc]" Column="caption" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[ic]" Column="caption" />
+                          </OutputList>
+                          <NestedLoops Optimized="0" WithUnorderedPrefetch="1">
+                            <OuterReferences>
+                              <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="product_id" />
+                              <ColumnReference Column="Expr1011" />
+                            </OuterReferences>
+                            <RelOp NodeId="8" PhysicalOp="Nested Loops" LogicalOp="Inner Join" EstimateRows="91.6038" EstimateIO="0" EstimateCPU="0.000382904" AvgRowSize="105" EstimatedTotalSubtreeCost="0.981812" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+                              <OutputList>
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="id" />
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="customer_id" />
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="shipment_id" />
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="id" />
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="product_id" />
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="quantity" />
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="deferred_shipment_date" />
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="id" />
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="first_name" />
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="last_name" />
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="phone_number" />
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="address_id" />
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[oc]" Column="caption" />
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[ic]" Column="caption" />
+                              </OutputList>
+                              <NestedLoops Optimized="0">
+                                <OuterReferences>
+                                  <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="status_code" />
+                                </OuterReferences>
+                                <RelOp NodeId="9" PhysicalOp="Nested Loops" LogicalOp="Inner Join" EstimateRows="91.6038" EstimateIO="0" EstimateCPU="0.000382904" AvgRowSize="97" EstimatedTotalSubtreeCost="0.963778" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+                                  <OutputList>
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="id" />
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="customer_id" />
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="shipment_id" />
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="status_code" />
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="id" />
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="product_id" />
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="quantity" />
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="deferred_shipment_date" />
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="id" />
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="first_name" />
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="last_name" />
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="phone_number" />
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="address_id" />
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[ic]" Column="caption" />
+                                  </OutputList>
+                                  <NestedLoops Optimized="0">
+                                    <OuterReferences>
+                                      <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="status_code" />
+                                    </OuterReferences>
+                                    <RelOp NodeId="10" PhysicalOp="Nested Loops" LogicalOp="Inner Join" EstimateRows="91.6038" EstimateIO="0" EstimateCPU="0.000382904" AvgRowSize="89" EstimatedTotalSubtreeCost="0.945743" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+                                      <OutputList>
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="id" />
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="customer_id" />
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="shipment_id" />
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="status_code" />
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="id" />
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="product_id" />
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="quantity" />
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="status_code" />
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="deferred_shipment_date" />
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="id" />
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="first_name" />
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="last_name" />
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="phone_number" />
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="address_id" />
+                                      </OutputList>
+                                      <NestedLoops Optimized="0" WithUnorderedPrefetch="1">
+                                        <OuterReferences>
+                                          <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="id" />
+                                          <ColumnReference Column="Expr1010" />
+                                        </OuterReferences>
+                                        <RelOp NodeId="12" PhysicalOp="Nested Loops" LogicalOp="Inner Join" EstimateRows="91.6038" EstimateIO="0" EstimateCPU="0.000382904" AvgRowSize="78" EstimatedTotalSubtreeCost="0.662159" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+                                          <OutputList>
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="id" />
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="customer_id" />
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="shipment_id" />
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="status_code" />
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="id" />
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="status_code" />
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="id" />
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="first_name" />
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="last_name" />
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="phone_number" />
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="address_id" />
+                                          </OutputList>
+                                          <NestedLoops Optimized="0" WithUnorderedPrefetch="1">
+                                            <OuterReferences>
+                                              <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="id" />
+                                              <ColumnReference Column="Expr1009" />
+                                            </OuterReferences>
+                                            <RelOp NodeId="14" PhysicalOp="Hash Match" LogicalOp="Inner Join" EstimateRows="30.6353" EstimateIO="0" EstimateCPU="0.0368387" AvgRowSize="70" EstimatedTotalSubtreeCost="0.565806" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+                                              <OutputList>
+                                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="id" />
+                                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="customer_id" />
+                                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="shipment_id" />
+                                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="status_code" />
+                                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="id" />
+                                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="first_name" />
+                                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="last_name" />
+                                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="phone_number" />
+                                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="address_id" />
+                                              </OutputList>
+                                              <MemoryFractions Input="1" Output="0.8" />
+                                              <Hash>
+                                                <DefinedValues />
+                                                <HashKeysBuild>
+                                                  <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="id" />
+                                                </HashKeysBuild>
+                                                <HashKeysProbe>
+                                                  <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="customer_id" />
+                                                </HashKeysProbe>
+                                                <RelOp NodeId="15" PhysicalOp="Clustered Index Scan" LogicalOp="Clustered Index Scan" EstimateRows="356.694" EstimateIO="0.170532" EstimateCPU="0.033157" AvgRowSize="53" EstimatedTotalSubtreeCost="0.203689" TableCardinality="30000" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+                                                  <OutputList>
+                                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="id" />
+                                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="first_name" />
+                                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="last_name" />
+                                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="phone_number" />
+                                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="address_id" />
+                                                  </OutputList>
+                                                  <IndexScan Ordered="0" ForcedIndex="0" ForceScan="0" NoExpandHint="0" Storage="RowStore">
+                                                    <DefinedValues>
+                                                      <DefinedValue>
+                                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="id" />
+                                                      </DefinedValue>
+                                                      <DefinedValue>
+                                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="first_name" />
+                                                      </DefinedValue>
+                                                      <DefinedValue>
+                                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="last_name" />
+                                                      </DefinedValue>
+                                                      <DefinedValue>
+                                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="phone_number" />
+                                                      </DefinedValue>
+                                                      <DefinedValue>
+                                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="address_id" />
+                                                      </DefinedValue>
+                                                    </DefinedValues>
+                                                    <Object Database="[master]" Schema="[dbo]" Table="[customer]" Index="[PK__customer__3213E83F334AC052]" Alias="[c]" IndexKind="Clustered" Storage="RowStore" />
+                                                    <Predicate>
+                                                      <ScalarOperator ScalarString="[master].[dbo].[customer].[first_name] as [c].[first_name] like &apos;JO%&apos; AND [master].[dbo].[customer].[last_name] as [c].[last_name] like &apos;CO%&apos;">
+                                                        <Logical Operation="AND">
+                                                          <ScalarOperator>
+                                                            <Intrinsic FunctionName="like">
+                                                              <ScalarOperator>
+                                                                <Identifier>
+                                                                  <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="first_name" />
+                                                                </Identifier>
+                                                              </ScalarOperator>
+                                                              <ScalarOperator>
+                                                                <Const ConstValue="&apos;JO%&apos;" />
+                                                              </ScalarOperator>
+                                                            </Intrinsic>
+                                                          </ScalarOperator>
+                                                          <ScalarOperator>
+                                                            <Intrinsic FunctionName="like">
+                                                              <ScalarOperator>
+                                                                <Identifier>
+                                                                  <ColumnReference Database="[master]" Schema="[dbo]" Table="[customer]" Alias="[c]" Column="last_name" />
+                                                                </Identifier>
+                                                              </ScalarOperator>
+                                                              <ScalarOperator>
+                                                                <Const ConstValue="&apos;CO%&apos;" />
+                                                              </ScalarOperator>
+                                                            </Intrinsic>
+                                                          </ScalarOperator>
+                                                        </Logical>
+                                                      </ScalarOperator>
+                                                    </Predicate>
+                                                  </IndexScan>
+                                                </RelOp>
+                                                <RelOp NodeId="16" PhysicalOp="Clustered Index Scan" LogicalOp="Clustered Index Scan" EstimateRows="2087.91" EstimateIO="0.195718" EstimateCPU="0.055157" AvgRowSize="26" EstimatedTotalSubtreeCost="0.250875" TableCardinality="50000" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+                                                  <OutputList>
+                                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="id" />
+                                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="customer_id" />
+                                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="shipment_id" />
+                                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="status_code" />
+                                                  </OutputList>
+                                                  <IndexScan Ordered="0" ForcedIndex="0" ForceScan="0" NoExpandHint="0" Storage="RowStore">
+                                                    <DefinedValues>
+                                                      <DefinedValue>
+                                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="id" />
+                                                      </DefinedValue>
+                                                      <DefinedValue>
+                                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="customer_id" />
+                                                      </DefinedValue>
+                                                      <DefinedValue>
+                                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="shipment_id" />
+                                                      </DefinedValue>
+                                                      <DefinedValue>
+                                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="status_code" />
+                                                      </DefinedValue>
+                                                    </DefinedValues>
+                                                    <Object Database="[master]" Schema="[dbo]" Table="[order]" Index="[PK__order__3213E83F57CF4FAF]" Alias="[o]" IndexKind="Clustered" Storage="RowStore" />
+                                                    <Predicate>
+                                                      <ScalarOperator ScalarString="[master].[dbo].[order].[placed] as [o].[placed]&gt;&apos;2017-11-15&apos;">
+                                                        <Compare CompareOp="GT">
+                                                          <ScalarOperator>
+                                                            <Identifier>
+                                                              <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="placed" />
+                                                            </Identifier>
+                                                          </ScalarOperator>
+                                                          <ScalarOperator>
+                                                            <Const ConstValue="&apos;2017-11-15&apos;" />
+                                                          </ScalarOperator>
+                                                        </Compare>
+                                                      </ScalarOperator>
+                                                    </Predicate>
+                                                  </IndexScan>
+                                                </RelOp>
+                                              </Hash>
+                                            </RelOp>
+                                            <RelOp NodeId="18" PhysicalOp="Index Seek" LogicalOp="Index Seek" EstimateRows="2.99014" EstimateIO="0.003125" EstimateCPU="0.000160289" AvgRowSize="15" EstimatedTotalSubtreeCost="0.0959704" TableCardinality="149507" Parallel="0" EstimateRebinds="29.6353" EstimateRewinds="2.22045e-016" EstimatedExecutionMode="Row">
+                                              <OutputList>
+                                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="id" />
+                                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="status_code" />
+                                              </OutputList>
+                                              <IndexScan Ordered="1" ScanDirection="FORWARD" ForcedIndex="0" ForceSeek="0" ForceScan="0" NoExpandHint="0" Storage="RowStore">
+                                                <DefinedValues>
+                                                  <DefinedValue>
+                                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="id" />
+                                                  </DefinedValue>
+                                                  <DefinedValue>
+                                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="status_code" />
+                                                  </DefinedValue>
+                                                </DefinedValues>
+                                                <Object Database="[master]" Schema="[dbo]" Table="[order_item]" Index="[ix_order_id_status]" Alias="[i]" IndexKind="NonClustered" Storage="RowStore" />
+                                                <SeekPredicates>
+                                                  <SeekPredicateNew>
+                                                    <SeekKeys>
+                                                      <Prefix ScanType="EQ">
+                                                        <RangeColumns>
+                                                          <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="order_id" />
+                                                        </RangeColumns>
+                                                        <RangeExpressions>
+                                                          <ScalarOperator ScalarString="[master].[dbo].[order].[id] as [o].[id]">
+                                                            <Identifier>
+                                                              <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="id" />
+                                                            </Identifier>
+                                                          </ScalarOperator>
+                                                        </RangeExpressions>
+                                                      </Prefix>
+                                                    </SeekKeys>
+                                                  </SeekPredicateNew>
+                                                </SeekPredicates>
+                                              </IndexScan>
+                                            </RelOp>
+                                          </NestedLoops>
+                                        </RelOp>
+                                        <RelOp NodeId="20" PhysicalOp="Clustered Index Seek" LogicalOp="Clustered Index Seek" EstimateRows="1" EstimateIO="0.003125" EstimateCPU="0.0001581" AvgRowSize="18" EstimatedTotalSubtreeCost="0.283201" TableCardinality="149507" Parallel="0" EstimateRebinds="90.6038" EstimateRewinds="4.44089e-016" EstimatedExecutionMode="Row">
+                                          <OutputList>
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="product_id" />
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="quantity" />
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="deferred_shipment_date" />
+                                          </OutputList>
+                                          <IndexScan Lookup="1" Ordered="1" ScanDirection="FORWARD" ForcedIndex="0" ForceSeek="0" ForceScan="0" NoExpandHint="0" Storage="RowStore">
+                                            <DefinedValues>
+                                              <DefinedValue>
+                                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="product_id" />
+                                              </DefinedValue>
+                                              <DefinedValue>
+                                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="quantity" />
+                                              </DefinedValue>
+                                              <DefinedValue>
+                                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="deferred_shipment_date" />
+                                              </DefinedValue>
+                                            </DefinedValues>
+                                            <Object Database="[master]" Schema="[dbo]" Table="[order_item]" Index="[PK__order_it__3213E83F25468AA6]" Alias="[i]" TableReferenceId="-1" IndexKind="Clustered" Storage="RowStore" />
+                                            <SeekPredicates>
+                                              <SeekPredicateNew>
+                                                <SeekKeys>
+                                                  <Prefix ScanType="EQ">
+                                                    <RangeColumns>
+                                                      <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="id" />
+                                                    </RangeColumns>
+                                                    <RangeExpressions>
+                                                      <ScalarOperator ScalarString="[master].[dbo].[order_item].[id] as [i].[id]">
+                                                        <Identifier>
+                                                          <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="id" />
+                                                        </Identifier>
+                                                      </ScalarOperator>
+                                                    </RangeExpressions>
+                                                  </Prefix>
+                                                </SeekKeys>
+                                              </SeekPredicateNew>
+                                            </SeekPredicates>
+                                          </IndexScan>
+                                        </RelOp>
+                                      </NestedLoops>
+                                    </RelOp>
+                                    <RelOp NodeId="28" PhysicalOp="Clustered Index Seek" LogicalOp="Clustered Index Seek" EstimateRows="1" EstimateIO="0.003125" EstimateCPU="0.0001581" AvgRowSize="33" EstimatedTotalSubtreeCost="0.0176076" TableCardinality="8" Parallel="0" EstimateRebinds="68.7026" EstimateRewinds="21.9013" EstimatedExecutionMode="Row">
+                                      <OutputList>
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[ic]" Column="caption" />
+                                      </OutputList>
+                                      <IndexScan Ordered="1" ScanDirection="FORWARD" ForcedIndex="0" ForceSeek="0" ForceScan="0" NoExpandHint="0" Storage="RowStore">
+                                        <DefinedValues>
+                                          <DefinedValue>
+                                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[ic]" Column="caption" />
+                                          </DefinedValue>
+                                        </DefinedValues>
+                                        <Object Database="[master]" Schema="[dbo]" Table="[code]" Index="[PK__code__3213E83F07CB4FB4]" Alias="[ic]" IndexKind="Clustered" Storage="RowStore" />
+                                        <SeekPredicates>
+                                          <SeekPredicateNew>
+                                            <SeekKeys>
+                                              <Prefix ScanType="EQ">
+                                                <RangeColumns>
+                                                  <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[ic]" Column="id" />
+                                                </RangeColumns>
+                                                <RangeExpressions>
+                                                  <ScalarOperator ScalarString="[master].[dbo].[order_item].[status_code] as [i].[status_code]">
+                                                    <Identifier>
+                                                      <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="status_code" />
+                                                    </Identifier>
+                                                  </ScalarOperator>
+                                                </RangeExpressions>
+                                              </Prefix>
+                                            </SeekKeys>
+                                          </SeekPredicateNew>
+                                        </SeekPredicates>
+                                        <Predicate>
+                                          <ScalarOperator ScalarString="[master].[dbo].[code].[type] as [ic].[type]=&apos;CLOSED&apos;">
+                                            <Compare CompareOp="EQ">
+                                              <ScalarOperator>
+                                                <Identifier>
+                                                  <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[ic]" Column="type" />
+                                                </Identifier>
+                                              </ScalarOperator>
+                                              <ScalarOperator>
+                                                <Const ConstValue="&apos;CLOSED&apos;" />
+                                              </ScalarOperator>
+                                            </Compare>
+                                          </ScalarOperator>
+                                        </Predicate>
+                                      </IndexScan>
+                                    </RelOp>
+                                  </NestedLoops>
+                                </RelOp>
+                                <RelOp NodeId="29" PhysicalOp="Clustered Index Seek" LogicalOp="Clustered Index Seek" EstimateRows="1" EstimateIO="0.003125" EstimateCPU="0.0001581" AvgRowSize="31" EstimatedTotalSubtreeCost="0.0176076" TableCardinality="8" Parallel="0" EstimateRebinds="68.6985" EstimateRewinds="21.9053" EstimatedExecutionMode="Row">
+                                  <OutputList>
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[oc]" Column="caption" />
+                                  </OutputList>
+                                  <IndexScan Ordered="1" ScanDirection="FORWARD" ForcedIndex="0" ForceSeek="0" ForceScan="0" NoExpandHint="0" Storage="RowStore">
+                                    <DefinedValues>
+                                      <DefinedValue>
+                                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[oc]" Column="caption" />
+                                      </DefinedValue>
+                                    </DefinedValues>
+                                    <Object Database="[master]" Schema="[dbo]" Table="[code]" Index="[PK__code__3213E83F07CB4FB4]" Alias="[oc]" IndexKind="Clustered" Storage="RowStore" />
+                                    <SeekPredicates>
+                                      <SeekPredicateNew>
+                                        <SeekKeys>
+                                          <Prefix ScanType="EQ">
+                                            <RangeColumns>
+                                              <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[oc]" Column="id" />
+                                            </RangeColumns>
+                                            <RangeExpressions>
+                                              <ScalarOperator ScalarString="[master].[dbo].[order].[status_code] as [o].[status_code]">
+                                                <Identifier>
+                                                  <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="status_code" />
+                                                </Identifier>
+                                              </ScalarOperator>
+                                            </RangeExpressions>
+                                          </Prefix>
+                                        </SeekKeys>
+                                      </SeekPredicateNew>
+                                    </SeekPredicates>
+                                    <Predicate>
+                                      <ScalarOperator ScalarString="[master].[dbo].[code].[type] as [oc].[type]=&apos;CLOSED&apos;">
+                                        <Compare CompareOp="EQ">
+                                          <ScalarOperator>
+                                            <Identifier>
+                                              <ColumnReference Database="[master]" Schema="[dbo]" Table="[code]" Alias="[oc]" Column="type" />
+                                            </Identifier>
+                                          </ScalarOperator>
+                                          <ScalarOperator>
+                                            <Const ConstValue="&apos;CLOSED&apos;" />
+                                          </ScalarOperator>
+                                        </Compare>
+                                      </ScalarOperator>
+                                    </Predicate>
+                                  </IndexScan>
+                                </RelOp>
+                              </NestedLoops>
+                            </RelOp>
+                            <RelOp NodeId="30" PhysicalOp="Clustered Index Seek" LogicalOp="Clustered Index Seek" EstimateRows="1" EstimateIO="0.003125" EstimateCPU="0.0001581" AvgRowSize="51" EstimatedTotalSubtreeCost="0.0700588" TableCardinality="4300" Parallel="0" EstimateRebinds="46.531" EstimateRewinds="44.0729" EstimatedExecutionMode="Row">
+                              <OutputList>
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[product]" Alias="[p]" Column="description" />
+                              </OutputList>
+                              <IndexScan Ordered="1" ScanDirection="FORWARD" ForcedIndex="0" ForceSeek="0" ForceScan="0" NoExpandHint="0" Storage="RowStore">
+                                <DefinedValues>
+                                  <DefinedValue>
+                                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[product]" Alias="[p]" Column="description" />
+                                  </DefinedValue>
+                                </DefinedValues>
+                                <Object Database="[master]" Schema="[dbo]" Table="[product]" Index="[PK__product__3213E83FA1FEDCB9]" Alias="[p]" IndexKind="Clustered" Storage="RowStore" />
+                                <SeekPredicates>
+                                  <SeekPredicateNew>
+                                    <SeekKeys>
+                                      <Prefix ScanType="EQ">
+                                        <RangeColumns>
+                                          <ColumnReference Database="[master]" Schema="[dbo]" Table="[product]" Alias="[p]" Column="id" />
+                                        </RangeColumns>
+                                        <RangeExpressions>
+                                          <ScalarOperator ScalarString="[master].[dbo].[order_item].[product_id] as [i].[product_id]">
+                                            <Identifier>
+                                              <ColumnReference Database="[master]" Schema="[dbo]" Table="[order_item]" Alias="[i]" Column="product_id" />
+                                            </Identifier>
+                                          </ScalarOperator>
+                                        </RangeExpressions>
+                                      </Prefix>
+                                    </SeekKeys>
+                                  </SeekPredicateNew>
+                                </SeekPredicates>
+                              </IndexScan>
+                            </RelOp>
+                          </NestedLoops>
+                        </RelOp>
+                        <RelOp NodeId="31" PhysicalOp="Clustered Index Seek" LogicalOp="Clustered Index Seek" EstimateRows="1" EstimateIO="0.003125" EstimateCPU="0.0001581" AvgRowSize="18" EstimatedTotalSubtreeCost="0.0829652" TableCardinality="19000" Parallel="0" EstimateRebinds="85.4894" EstimateRewinds="5.11444" EstimatedExecutionMode="Row">
+                          <OutputList>
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="id" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="address_id" />
+                            <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="shipped_on" />
+                          </OutputList>
+                          <IndexScan Ordered="1" ScanDirection="FORWARD" ForcedIndex="0" ForceSeek="0" ForceScan="0" NoExpandHint="0" Storage="RowStore">
+                            <DefinedValues>
+                              <DefinedValue>
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="id" />
+                              </DefinedValue>
+                              <DefinedValue>
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="address_id" />
+                              </DefinedValue>
+                              <DefinedValue>
+                                <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="shipped_on" />
+                              </DefinedValue>
+                            </DefinedValues>
+                            <Object Database="[master]" Schema="[dbo]" Table="[shipment]" Index="[PK__shipment__3213E83F5C19D9DA]" Alias="[s]" IndexKind="Clustered" Storage="RowStore" />
+                            <SeekPredicates>
+                              <SeekPredicateNew>
+                                <SeekKeys>
+                                  <Prefix ScanType="EQ">
+                                    <RangeColumns>
+                                      <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="id" />
+                                    </RangeColumns>
+                                    <RangeExpressions>
+                                      <ScalarOperator ScalarString="[master].[dbo].[order].[shipment_id] as [o].[shipment_id]">
+                                        <Identifier>
+                                          <ColumnReference Database="[master]" Schema="[dbo]" Table="[order]" Alias="[o]" Column="shipment_id" />
+                                        </Identifier>
+                                      </ScalarOperator>
+                                    </RangeExpressions>
+                                  </Prefix>
+                                </SeekKeys>
+                              </SeekPredicateNew>
+                            </SeekPredicates>
+                          </IndexScan>
+                        </RelOp>
+                      </NestedLoops>
+                    </RelOp>
+                  </Sort>
+                </RelOp>
+                <RelOp NodeId="35" PhysicalOp="Clustered Index Seek" LogicalOp="Clustered Index Seek" EstimateRows="1" EstimateIO="0.003125" EstimateCPU="0.0001581" AvgRowSize="81" EstimatedTotalSubtreeCost="0.0561481" TableCardinality="1800" Parallel="0" EstimateRebinds="85.4785" EstimateRewinds="5.12533" EstimatedExecutionMode="Row">
+                  <OutputList>
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="id" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="line1" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="line2" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="city" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="state" />
+                    <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="zip_code" />
+                  </OutputList>
+                  <IndexScan Ordered="1" ScanDirection="FORWARD" ForcedIndex="0" ForceSeek="0" ForceScan="0" NoExpandHint="0" Storage="RowStore">
+                    <DefinedValues>
+                      <DefinedValue>
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="id" />
+                      </DefinedValue>
+                      <DefinedValue>
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="line1" />
+                      </DefinedValue>
+                      <DefinedValue>
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="line2" />
+                      </DefinedValue>
+                      <DefinedValue>
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="city" />
+                      </DefinedValue>
+                      <DefinedValue>
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="state" />
+                      </DefinedValue>
+                      <DefinedValue>
+                        <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="zip_code" />
+                      </DefinedValue>
+                    </DefinedValues>
+                    <Object Database="[master]" Schema="[dbo]" Table="[address]" Index="[PK__address__3213E83F9ABE2112]" Alias="[a]" IndexKind="Clustered" Storage="RowStore" />
+                    <SeekPredicates>
+                      <SeekPredicateNew>
+                        <SeekKeys>
+                          <Prefix ScanType="EQ">
+                            <RangeColumns>
+                              <ColumnReference Database="[master]" Schema="[dbo]" Table="[address]" Alias="[a]" Column="id" />
+                            </RangeColumns>
+                            <RangeExpressions>
+                              <ScalarOperator ScalarString="[master].[dbo].[shipment].[address_id] as [s].[address_id]">
+                                <Identifier>
+                                  <ColumnReference Database="[master]" Schema="[dbo]" Table="[shipment]" Alias="[s]" Column="address_id" />
+                                </Identifier>
+                              </ScalarOperator>
+                            </RangeExpressions>
+                          </Prefix>
+                        </SeekKeys>
+                      </SeekPredicateNew>
+                    </SeekPredicates>
+                  </IndexScan>
+                </RelOp>
+              </NestedLoops>
+            </RelOp>
+          </QueryPlan>
+        </StmtSimple>
+      </Statements>
+    </Batch>
+  </BatchSequence>
+</ShowPlanXML>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

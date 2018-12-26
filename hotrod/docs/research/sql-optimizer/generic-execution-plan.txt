@@ -1,0 +1,9 @@
+1. Query Name, Info & Stats
+2. Query
+3. Parameter Values
+4. Execution Plan (text)
+5. Execution Plan (graph)
+
+
+
+

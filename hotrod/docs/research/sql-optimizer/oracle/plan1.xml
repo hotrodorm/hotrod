@@ -1,0 +1,86 @@
+<!-- 
+
+explain plan set statement_id = 'p001' for
+select * 
+from employee e
+join employee_state s on e.state_id = s.id;
+
+select to_clob(dbms_xplan.build_plan_xml(statement_id => 'p001')) from dual;
+
+-->
+
+<plan>
+  <operation name="SELECT STATEMENT" id="0" depth="0" pos="2">
+    <card>1</card>
+    <bytes>146</bytes>
+    <cost>2</cost>
+    <io_cost>2</io_cost>
+    <cpu_cost>8381</cpu_cost>
+    <time>00:00:01 </time>
+  </operation>
+  <operation name="NESTED LOOPS" id="1" depth="1" pos="1">
+    <card>1</card>
+    <bytes>146</bytes>
+    <cost>2</cost>
+    <io_cost>2</io_cost>
+    <cpu_cost>8381</cpu_cost>
+    <time>00:00:01 </time>
+    <other_xml>
+      <info type="db_version">12.1.0.2</info>
+      <info type="parse_schema"><![CDATA["USER1"]]></info>
+      <info type="plan_hash_full">1677714444</info>
+      <info type="plan_hash">1686668145</info>
+      <info type="plan_hash_2">1677714444</info>
+      <outline_data>
+        <hint><![CDATA[NLJ_BATCHING(@"SEL$58A6D7F6" "S"@"SEL$1")]]></hint>
+        <hint><![CDATA[USE_NL(@"SEL$58A6D7F6" "S"@"SEL$1")]]></hint>
+        <hint><![CDATA[LEADING(@"SEL$58A6D7F6" "E"@"SEL$1" "S"@"SEL$1")]]></hint>
+        <hint><![CDATA[INDEX(@"SEL$58A6D7F6" "S"@"SEL$1" ("EMPLOYEE_STATE"."ID"))]]></hint>
+        <hint><![CDATA[FULL(@"SEL$58A6D7F6" "E"@"SEL$1")]]></hint>
+        <hint><![CDATA[OUTLINE(@"SEL$1")]]></hint>
+        <hint><![CDATA[OUTLINE(@"SEL$2")]]></hint>
+        <hint><![CDATA[MERGE(@"SEL$1")]]></hint>
+        <hint><![CDATA[OUTLINE_LEAF(@"SEL$58A6D7F6")]]></hint>
+        <hint><![CDATA[ALL_ROWS]]></hint>
+        <hint><![CDATA[DB_VERSION('12.1.0.2')]]></hint>
+        <hint><![CDATA[OPTIMIZER_FEATURES_ENABLE('12.1.0.2')]]></hint>
+        <hint><![CDATA[IGNORE_OPTIM_EMBEDDED_HINTS]]></hint>
+      </outline_data>
+    </other_xml>
+  </operation>
+  <operation name="NESTED LOOPS" id="2" depth="2" pos="1">
+    <card>1</card>
+    <bytes>146</bytes>
+    <cost>2</cost>
+    <io_cost>2</io_cost>
+    <cpu_cost>8381</cpu_cost>
+    <time>00:00:01 </time>
+  </operation>
+  <operation name="TABLE ACCESS" options="FULL" id="3" depth="3" pos="1">
+    <object>EMPLOYEE</object>
+    <card>1</card>
+    <bytes>89</bytes>
+    <cost>2</cost>
+    <io_cost>2</io_cost>
+    <cpu_cost>7121</cpu_cost>
+    <time>00:00:01 </time>
+  </operation>
+  <operation name="INDEX" options="UNIQUE SCAN" id="4" depth="3" pos="2">
+    <object>SYS_C0014448</object>
+    <card>1</card>
+    <cost>0</cost>
+    <io_cost>0</io_cost>
+    <cpu_cost>1050</cpu_cost>
+    <time>00:00:01 </time>
+    <predicates type="access">&quot;E&quot;.&quot;STATE_ID&quot;=&quot;S&quot;.&quot;ID&quot;</predicates>
+  </operation>
+  <operation name="TABLE ACCESS" options="BY INDEX ROWID" id="5" depth="2" pos="2">
+    <object>EMPLOYEE_STATE</object>
+    <card>1</card>
+    <bytes>57</bytes>
+    <cost>0</cost>
+    <io_cost>0</io_cost>
+    <cpu_cost>1260</cpu_cost>
+    <time>00:00:01 </time>
+  </operation>
+</plan>
