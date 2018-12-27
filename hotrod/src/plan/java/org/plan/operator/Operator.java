@@ -2,8 +2,7 @@ package org.plan.operator;
 
 import java.util.List;
 
-import org.plan.metrics.ActualMetrics;
-import org.plan.metrics.EstimatedMetrics;
+import org.plan.metrics.Metrics;
 import org.plan.predicate.AccessPredicate;
 import org.plan.predicate.FilterPredicate;
 
@@ -17,20 +16,18 @@ public abstract class Operator {
   private List<FilterPredicate> filterPredicates;
   private List<Operator> children;
 
-  private EstimatedMetrics estimatedMetrics;
-  private ActualMetrics actualMetrics;
+  private Metrics metrics;
 
   public Operator(final String id, final String operatorName, final boolean includesFetch,
       final List<AccessPredicate> accessPredicates, final List<FilterPredicate> filterPredicates,
-      final List<Operator> children, final EstimatedMetrics estimatedMetrics, final ActualMetrics actualMetrics) {
+      final List<Operator> children, final Metrics metrics) {
     this.id = id;
     this.operatorName = operatorName;
     this.includesFetch = includesFetch;
     this.accessPredicates = accessPredicates;
     this.filterPredicates = filterPredicates;
     this.children = children;
-    this.estimatedMetrics = estimatedMetrics;
-    this.actualMetrics = actualMetrics;
+    this.metrics = metrics;
   }
 
   public String getId() {
@@ -57,12 +54,8 @@ public abstract class Operator {
     return children;
   }
 
-  public EstimatedMetrics getEstimatedMetrics() {
-    return estimatedMetrics;
-  }
-
-  public ActualMetrics getActualMetrics() {
-    return actualMetrics;
+  public Metrics getMetrics() {
+    return metrics;
   }
 
 }

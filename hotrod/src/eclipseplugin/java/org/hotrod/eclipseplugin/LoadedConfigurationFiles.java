@@ -40,7 +40,7 @@ public class LoadedConfigurationFiles implements FileChangeListener {
     this.viewPart = viewPart;
   }
 
-  // File is being dropped in (addeed to) the view
+  // File is being dropped in (added to) the view
 
   public void addFile(final File f) {
     log.info("ADD f=" + f);

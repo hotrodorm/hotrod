@@ -90,7 +90,7 @@ public class FileProperties {
       fileProperties.readCache();
       return fileProperties;
     } catch (FileNotFoundException e) {
-      throw new CouldNotLoadFilePropertiesException(e.getMessage());
+      return fileProperties;
     } catch (IOException e) {
       throw new CouldNotLoadFilePropertiesException(e.getMessage());
     } catch (CouldNotLoadFilePropertiesException e) {

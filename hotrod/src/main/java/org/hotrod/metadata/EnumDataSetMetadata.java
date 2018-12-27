@@ -49,7 +49,7 @@ public class EnumDataSetMetadata extends TableDataSetMetadata {
     if (getClass() != obj.getClass())
       return false;
     EnumDataSetMetadata other = (EnumDataSetMetadata) obj;
-    return this.tag.equals(other);
+    return this.tag.equals(other.tag);
   }
 
   // Getters

@@ -5,40 +5,40 @@ import java.text.SimpleDateFormat;
 
 import org.plan.ExecutionPlan;
 import org.plan.operator.Operator;
+import org.plan.renderer.text.cost.CostRenderer;
 
 public class TextRenderer {
 
-  private static final DecimalFormat PF = new DecimalFormat("#0%");
-
-  public static String render(final ExecutionPlan p) {
+  public static String render(final ExecutionPlan plan, final boolean showPercentageCost) {
 
     StringBuilder sb = new StringBuilder();
 
-    sb.append("Execution Plan for query '" + p.getQueryTag() + "'\n");
+    sb.append("Execution Plan for query '" + plan.getQueryTag() + "'\n");
 
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    sb.append("Produced at: " + df.format(p.getProducedAt()) + "\n");
+    sb.append("Produced at: " + df.format(plan.getProducedAt()) + "\n");
 
     sb.append("Query:\n");
     sb.append("\n");
-    sb.append(p.getQuery() + "\n");
+    sb.append(plan.getQuery() + "\n");
     sb.append("\n");
 
     sb.append("Parameter Values:\n");
-    for (String name : p.getParameterValues().keySet()) {
-      Object value = p.getParameterValues().get(name);
+    for (String name : plan.getParameterValues().keySet()) {
+      Object value = plan.getParameterValues().get(name);
       sb.append(" - " + name + ": " + value + "\n");
     }
     sb.append("\n");
 
     // Tree
 
-    Operator op = p.getRootOperator();
+    Operator op = plan.getRootOperator();
 
-    Double actualFullCost = op.getActualMetrics().getActualTimeMs();
-    Double estimatedFullCost = op.getEstimatedMetrics().getEstimatedCost();
+    Double fullCost = op.getMetrics().getCost();
 
-    renderOperator(op, 0, actualFullCost, estimatedFullCost, sb);
+    CostRenderer costRenderer = CostRenderer.instantiate(plan.getMetricsFactory(), fullCost, showPercentageCost);
+
+    renderOperator(op, 0, costRenderer, sb);
 
     sb.append("\n");
     sb.append("\n");
@@ -47,20 +47,42 @@ public class TextRenderer {
     return sb.toString();
   }
 
-  private static void renderOperator(final Operator op, final int level, final Double actualFullCost,
-      final Double estimatedFullCost, final StringBuilder sb) {
-    
+  private static void renderOperator(final Operator op, final int level, final CostRenderer costRenderer,
+      final StringBuilder sb) {
+
     // indent
-    
+
     String indent = repeat(".  ", level);
-    
+    sb.append(indent);
+
     // cost
-    
-    if (actualFullCost != null) {
-      
+
+    String renderedCost = costRenderer.renderCost(op.getMetrics());
+    if (renderedCost != null) {
+      sb.append(" " + renderedCost);
     }
-    
-    
+
+    // tags (not yet)
+
+    // Operator
+
+    sb.append(" " + op.getOperatorName());
+
+    // Foot note
+
+    if (!op.getAccessPredicates().isEmpty() || !op.getFilterPredicates().isEmpty()) {
+      sb.append(" *" + op.getId());
+    }
+
+    // rows
+
+    String renderedRows = costRenderer.renderRows(op.getMetrics());
+    if (renderedRows != null) {
+      sb.append(" (" + renderedRows + " rows)");
+    }
+
+    // source result set
+
   }
 
   private static String repeat(final String x, final int times) {

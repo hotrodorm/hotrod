@@ -22,6 +22,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
 import org.hotrod.config.AbstractHotRodConfigTag.LocationListener;
@@ -40,15 +41,18 @@ import org.xml.sax.SAXParseException;
 
 public class ConfigurationLoader {
 
+  private static final String DEBUG_PATH = "/src/main/xml/";
+  private static final String PLUGIN_PATH = "/xml/";
+
   // Constants
 
   private static final Logger log = Logger.getLogger(ConfigurationLoader.class);
 
-  private static final String PRIMARY_XSD_PATH = "/hotrod.xsd";
-  private static final String FRAGMENT_XSD_PATH = "/hotrod-fragment.xsd";
+  private static final String DEBUG_PRIMARY_XSD_PATH = DEBUG_PATH + "hotrod.xsd";
+  private static final String DEBUG_FRAGMENT_XSD_PATH = DEBUG_PATH + "hotrod-fragment.xsd";
 
-  private static final String PLUGIN_PRIMARY_XSD_PATH = "/hotrod-primary-head.xsd";
-  private static final String PLUGIN_FRAGMENT_XSD_PATH = "/hotrod-fragment-head.xsd";
+  private static final String PLUGIN_PRIMARY_XSD_PATH = PLUGIN_PATH + "hotrod-primary-head.xsd";
+  private static final String PLUGIN_FRAGMENT_XSD_PATH = PLUGIN_PATH + "hotrod-fragment-head.xsd";
 
   // Static properties
 
@@ -59,6 +63,8 @@ public class ConfigurationLoader {
 
   public static HotRodConfigTag loadPrimary(final File projectBaseDir, final File f, final String generatorName,
       final DatabaseAdapter adapter) throws ControlledException, UncontrolledException {
+
+    log.setLevel(Level.DEBUG);
 
     log.debug("loading file: " + f);
 
@@ -335,13 +341,13 @@ public class ConfigurationLoader {
       InputStream is = null;
       try {
 
-        is = ConfigurationLoader.class.getResourceAsStream(PRIMARY_XSD_PATH);
-        log.debug("[Load #1] is=" + is);
+        is = ConfigurationLoader.class.getResourceAsStream(DEBUG_PRIMARY_XSD_PATH);
+        log.info("[Load #1] is=" + is);
 
         if (is == null) { // try the plugin location
-          log.debug("[Load #2]");
+          log.info("[Load #2]");
           is = ConfigurationLoader.class.getResourceAsStream(PLUGIN_PRIMARY_XSD_PATH);
-          log.debug("[Load #3] is=" + is);
+          log.info("[Load #3] is=" + is);
         }
         log.debug("[Load #4]");
         primarySchema = factory.newSchema(new StreamSource(is));
@@ -374,7 +380,7 @@ public class ConfigurationLoader {
 
       InputStream is = null;
       try {
-        is = ConfigurationLoader.class.getResourceAsStream(FRAGMENT_XSD_PATH);
+        is = ConfigurationLoader.class.getResourceAsStream(DEBUG_FRAGMENT_XSD_PATH);
         if (is == null) { // try the plugin location
           is = ConfigurationLoader.class.getResourceAsStream(PLUGIN_FRAGMENT_XSD_PATH);
         }
@@ -399,7 +405,7 @@ public class ConfigurationLoader {
     @Override
     public LSInput resolveResource(final String type, final String namespaceURI, final String publicId,
         final String systemId, final String baseURI) {
-      log.debug("[RESOLVE]\n  type=" + type + "\n  namespaceURI=" + namespaceURI + "\n  publicId=" + publicId
+      log.info("[RESOLVE]\n  type=" + type + "\n  namespaceURI=" + namespaceURI + "\n  publicId=" + publicId
           + "\n  systemId=" + systemId + "\n  baseURI=" + baseURI);
       return new XSDInput(type, namespaceURI, publicId, systemId, baseURI);
     }
@@ -428,13 +434,8 @@ public class ConfigurationLoader {
     @Override
     public Reader getCharacterStream() {
       log.debug("{get reader} this.systemId=" + this.systemId);
-      InputStream is = ConfigurationLoader.class.getResourceAsStream("/" + this.systemId);
-      log.debug("{get reader} is=" + is);
-      if (is != null) {
-        return new InputStreamReader(is);
-      } else {
-        return null;
-      }
+      InputStream is = this.getByteStream();
+      return is == null ? null : new InputStreamReader(is);
     }
 
     @Override
@@ -445,9 +446,14 @@ public class ConfigurationLoader {
 
     @Override
     public InputStream getByteStream() {
-      log.debug("{ignore}");
-      // Ignore
-      return null;
+      log.debug("{getByteStream} this.systemId=" + this.systemId);
+      InputStream is = ConfigurationLoader.class.getResourceAsStream(DEBUG_PATH + this.systemId);
+      log.debug(DEBUG_PATH + this.systemId + " -> is=" + is);
+      if (is == null) {
+        is = ConfigurationLoader.class.getResourceAsStream(PLUGIN_PATH + this.systemId);
+        log.debug(PLUGIN_PATH + this.systemId + " -> is=" + is);
+      }
+      return is;
     }
 
     @Override
