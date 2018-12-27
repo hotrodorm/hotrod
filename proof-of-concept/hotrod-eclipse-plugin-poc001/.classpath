@@ -5,6 +5,6 @@
 	<classpathentry kind="src" path="src/eclipseplugin/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="lib" path="lib/junit.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_51"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java1.8"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
