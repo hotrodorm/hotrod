@@ -27,7 +27,7 @@ public abstract class Metrics {
     private Double estimatedCost;
     private Double estimatedRows;
 
-    public EstimatedMetrics(final Double estimatedCost, final Double estimatedRows) {
+    EstimatedMetrics(final Double estimatedCost, final Double estimatedRows) {
       this.estimatedCost = estimatedCost;
       this.estimatedRows = estimatedRows;
       if (this.estimatedCost == null) {
@@ -61,7 +61,7 @@ public abstract class Metrics {
     private Double actualRows;
     private Double actualLoops;
 
-    public ActualMetrics(final Double actualTimeMs, final Double actualRows, final Double actualLoops) {
+    ActualMetrics(final Double actualTimeMs, final Double actualRows, final Double actualLoops) {
       this.actualTimeMs = actualTimeMs;
       this.actualRows = actualRows;
       this.actualLoops = actualLoops;
@@ -103,7 +103,7 @@ public abstract class Metrics {
     private Double actualRows;
     private Double actualLoops;
 
-    public FullMetrics(final Double estimatedCost, final Double estimatedRows, final Double actualTimeMs,
+    FullMetrics(final Double estimatedCost, final Double estimatedRows, final Double actualTimeMs,
         final Double actualRows, final Double actualLoops) {
       this.estimatedCost = estimatedCost;
       this.estimatedRows = estimatedRows;

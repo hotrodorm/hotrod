@@ -8,10 +8,10 @@ import org.plan.predicate.FilterPredicate;
 
 public class HashJoinOperator extends Operator {
 
-  public HashJoinOperator(final String id, final String operatorName, final boolean includesFetch,
+  public HashJoinOperator(final String id, final String operatorName, final SourceSet sourceSet,
       final List<AccessPredicate> accessPredicates, final List<FilterPredicate> filterPredicates,
       final List<Operator> children, final Metrics metrics) {
-    super(id, operatorName, includesFetch, accessPredicates, filterPredicates, children, metrics);
+    super(id, operatorName, sourceSet, accessPredicates, filterPredicates, children, metrics);
     // TODO Auto-generated constructor stub
 
   }

@@ -17,19 +17,19 @@ public class ExecutionPlan {
   private String query;
   private LinkedHashMap<String, Object> parameterValues;
 
-  private Operator rootOperator;
+  private Operator<?> rootOperator;
 
   private MetricsFactory metricsFactory;
 
   public static ExecutionPlan instantiate(final String queryTag, final Date producedAt, final String query,
-      final LinkedHashMap<String, Object> parameterValues, final Operator rootOperator,
+      final LinkedHashMap<String, Object> parameterValues, final Operator<?> rootOperator,
       final boolean includesEstimatedMetrics, final boolean includesActualMetrics) {
     MetricsFactory metricsFactory = MetricsFactory.instantiate(includesEstimatedMetrics, includesActualMetrics);
     return new ExecutionPlan(queryTag, producedAt, query, parameterValues, rootOperator, metricsFactory);
   }
 
   private ExecutionPlan(final String queryTag, final Date producedAt, final String query,
-      final LinkedHashMap<String, Object> parameterValues, final Operator rootOperator,
+      final LinkedHashMap<String, Object> parameterValues, final Operator<?> rootOperator,
       final MetricsFactory metricsFactory) {
     this.queryTag = queryTag;
     this.producedAt = producedAt;
@@ -55,7 +55,7 @@ public class ExecutionPlan {
     return parameterValues;
   }
 
-  public Operator getRootOperator() {
+  public Operator<?> getRootOperator() {
     return rootOperator;
   }
 

@@ -33,7 +33,7 @@ public abstract class CostRenderer {
     }
   }
 
-  public abstract String renderCost(final Metrics metrics);
+  public abstract Scalar renderCost(final Metrics metrics);
 
   public abstract String renderRows(final Metrics metrics);
 
@@ -85,12 +85,12 @@ public abstract class CostRenderer {
     }
 
     @Override
-    public String renderCost(final Metrics metrics) {
+    public Scalar renderCost(final Metrics metrics) {
       if (this.showPercentageCost) {
         double ratio = metrics.getCost() / this.fullCost;
-        return PERCENT_FORMATTER.format(ratio);
+        return new Scalar(PERCENT_FORMATTER.format(ratio), null);
       } else {
-        return this.costFormatter.format(metrics.getCost());
+        return new Scalar(this.costFormatter.format(metrics.getCost()), null);
       }
     }
 
@@ -110,16 +110,16 @@ public abstract class CostRenderer {
 
     public ActualCostRenderer(final Double fullCost, final boolean showPercentageCost) {
       super(fullCost, showPercentageCost);
-      this.costFormatter = new NumberFormatter(1.0, new DecimalFormat("#0' ms'"));
+      this.costFormatter = new NumberFormatter(1.0, new DecimalFormat("#0"));
     }
 
     @Override
-    public String renderCost(final Metrics metrics) {
+    public Scalar renderCost(final Metrics metrics) {
       if (this.showPercentageCost) {
         double ratio = metrics.getCost() / this.fullCost;
-        return PERCENT_FORMATTER.format(ratio);
+        return new Scalar(PERCENT_FORMATTER.format(ratio), null);
       } else {
-        return this.costFormatter.format(metrics.getCost());
+        return new Scalar(this.costFormatter.format(metrics.getCost()), "ms");
       }
     }
 
@@ -142,7 +142,7 @@ public abstract class CostRenderer {
     }
 
     @Override
-    public String renderCost(final Metrics metrics) {
+    public Scalar renderCost(final Metrics metrics) {
       return null;
     }
 
@@ -170,6 +170,26 @@ public abstract class CostRenderer {
       return new NumberFormatter(1.0, new DecimalFormat("#0.00"));
     } else {
       return new NumberFormatter(1.0, new DecimalFormat("#0.0000"));
+    }
+
+  }
+
+  public static class Scalar {
+
+    private String formatterNumber;
+    private String unit;
+
+    public Scalar(final String formatterNumber, final String unit) {
+      this.formatterNumber = formatterNumber;
+      this.unit = unit;
+    }
+
+    public String getFormatterNumber() {
+      return formatterNumber;
+    }
+
+    public String getUnit() {
+      return unit;
     }
 
   }

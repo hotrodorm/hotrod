@@ -6,31 +6,32 @@ import org.plan.metrics.Metrics;
 import org.plan.predicate.AccessPredicate;
 import org.plan.predicate.FilterPredicate;
 
-public abstract class Operator {
+public abstract class Operator<T extends Comparable<T>> {
 
-  private String id;
+  private T id;
   private String operatorName;
 
-  private boolean includesFetch;
+  private SourceSet sourceSet;
+
   private List<AccessPredicate> accessPredicates;
   private List<FilterPredicate> filterPredicates;
-  private List<Operator> children;
+  private List<Operator<T>> children;
 
   private Metrics metrics;
 
-  public Operator(final String id, final String operatorName, final boolean includesFetch,
+  public Operator(final T id, final String operatorName, final SourceSet sourceSet,
       final List<AccessPredicate> accessPredicates, final List<FilterPredicate> filterPredicates,
-      final List<Operator> children, final Metrics metrics) {
+      final List<Operator<T>> children, final Metrics metrics) {
     this.id = id;
     this.operatorName = operatorName;
-    this.includesFetch = includesFetch;
+    this.sourceSet = sourceSet;
     this.accessPredicates = accessPredicates;
     this.filterPredicates = filterPredicates;
     this.children = children;
     this.metrics = metrics;
   }
 
-  public String getId() {
+  public T getId() {
     return id;
   }
 
@@ -38,8 +39,8 @@ public abstract class Operator {
     return operatorName;
   }
 
-  public boolean isIncludesFetch() {
-    return includesFetch;
+  public SourceSet getSourceSet() {
+    return sourceSet;
   }
 
   public List<AccessPredicate> getAccessPredicates() {
@@ -50,12 +51,89 @@ public abstract class Operator {
     return filterPredicates;
   }
 
-  public List<Operator> getChildren() {
+  public List<Operator<T>> getChildren() {
     return children;
   }
 
   public Metrics getMetrics() {
     return metrics;
+  }
+
+  // Classes
+
+  public static class SourceSet {
+
+    private String sourceTable;
+    private String sourceIndex;
+    private List<Ordinal> sourceIndexColumns;
+    private boolean includesHeapFetch;
+
+    public SourceSet(final String sourceTable, final String sourceIndex, final List<Ordinal> sourceIndexColumns,
+        final boolean includesHeapFetch) {
+
+      if (sourceTable == null && sourceIndex == null) {
+        throw new IllegalArgumentException("sourceTable or sourceIndex must be specified; both cannot be null");
+      }
+      if (sourceIndexColumns != null && sourceIndex == null) {
+        throw new IllegalArgumentException("sourceIndexColumns cannot be specified when sourceIndex is null");
+      }
+
+      this.sourceTable = sourceTable;
+      this.sourceIndex = sourceIndex;
+      this.sourceIndexColumns = sourceIndexColumns;
+      this.includesHeapFetch = includesHeapFetch;
+    }
+
+    public String getSourceTable() {
+      return sourceTable;
+    }
+
+    public String getSourceIndex() {
+      return sourceIndex;
+    }
+
+    public List<Ordinal> getSourceIndexColumns() {
+      return sourceIndexColumns;
+    }
+
+    public boolean includesHeapFetch() {
+      return includesHeapFetch;
+    }
+
+  }
+
+  public static class Ordinal {
+
+    private String columnName;
+    private String expression;
+    private boolean ascending;
+
+    public Ordinal(final String columnName, final String expression, final boolean ascending) {
+
+      if (columnName == null && expression == null) {
+        throw new IllegalArgumentException("At least columnName or expression must be specified");
+      }
+      if (columnName != null && expression != null) {
+        throw new IllegalArgumentException("columnName and expression cannot be specified simultaneously");
+      }
+
+      this.columnName = columnName;
+      this.expression = expression;
+      this.ascending = ascending;
+    }
+
+    public String getColumnName() {
+      return columnName;
+    }
+
+    public String getExpression() {
+      return expression;
+    }
+
+    public boolean isAscending() {
+      return ascending;
+    }
+
   }
 
 }
