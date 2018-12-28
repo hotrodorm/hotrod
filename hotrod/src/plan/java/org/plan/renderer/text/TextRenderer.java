@@ -16,7 +16,7 @@ import org.plan.renderer.text.cost.CostRenderer.Scalar;
 
 public class TextRenderer {
 
-  public static String render(final ExecutionPlan plan, final boolean showPercentageCost) {
+  public static <T extends Comparable<T>> String render(final ExecutionPlan<T> plan, final boolean showPercentageCost) {
 
     StringBuilder sb = new StringBuilder();
 

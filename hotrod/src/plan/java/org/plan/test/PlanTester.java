@@ -20,7 +20,7 @@ public class PlanTester {
 
   public static void main(final String[] args) {
 
-    ExecutionPlan plan = retrievePlan();
+    ExecutionPlan<?> plan = retrievePlan();
 
     String report = TextRenderer.render(plan, false);
 
@@ -30,7 +30,7 @@ public class PlanTester {
 
   }
 
-  private static ExecutionPlan retrievePlan() {
+  private static ExecutionPlan<Integer> retrievePlan() {
 
     boolean includesEstimatedMetrics = true;
     boolean includesActualMetrics = false;
@@ -42,7 +42,7 @@ public class PlanTester {
 
     // Index Scan
 
-    Operator<?> is;
+    Operator<Integer> is;
     {
       List<Ordinal> sourceIndexColumns = new ArrayList<Ordinal>();
       sourceIndexColumns.add(new Ordinal("ID", null, true));
@@ -56,17 +56,17 @@ public class PlanTester {
       List<FilterPredicate> filterPredicates = new ArrayList<FilterPredicate>();
       filterPredicates.add(new FilterPredicate("SARG: STARTED_AT > $p002"));
 
-      List<Operator> children = new ArrayList<Operator>();
+      List<Operator<Integer>> children = new ArrayList<Operator<Integer>>();
 
       Metrics metrics = factory.getMetrics(1234.5678, 87.456, null, null, null);
 
-      is = new IndexRangeScanOperator("101", "Index Scan Ranged", sourceSet, accessPredicates, filterPredicates,
-          children, metrics);
+      is = new IndexRangeScanOperator<Integer>(new Integer(101), "Index Scan Ranged", sourceSet, accessPredicates,
+          filterPredicates, children, metrics);
     }
 
     // Sort
 
-    Operator rootOperator;
+    Operator<Integer> rootOperator;
     {
       SourceSet sourceSet = null;
 
@@ -75,16 +75,16 @@ public class PlanTester {
       List<FilterPredicate> filterPredicates = new ArrayList<FilterPredicate>();
       filterPredicates.add(new FilterPredicate("ORDER BY: NAME"));
 
-      List<Operator> children = new ArrayList<Operator>();
+      List<Operator<Integer>> children = new ArrayList<Operator<Integer>>();
       children.add(is);
 
       Metrics metrics = factory.getMetrics(2345.6789, 187.456, null, null, null);
 
-      rootOperator = new IndexRangeScanOperator("104", "Sort", sourceSet, accessPredicates, filterPredicates, children,
-          metrics);
+      rootOperator = new IndexRangeScanOperator<Integer>(new Integer(104), "Sort", sourceSet, accessPredicates,
+          filterPredicates, children, metrics);
     }
 
-    ExecutionPlan plan = ExecutionPlan.instantiate("query-001", new Date(),
+    ExecutionPlan<Integer> plan = ExecutionPlan.instantiate("query-001", new Date(),
         "select *\nfrom account\nwhere id = #{id} and started_at > #{minDate}\norder by name", parameterValues,
         rootOperator, true, false);
     return plan;

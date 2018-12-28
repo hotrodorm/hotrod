@@ -7,7 +7,7 @@ import java.util.Map;
 import org.plan.metrics.MetricsFactory;
 import org.plan.operator.Operator;
 
-public class ExecutionPlan {
+public class ExecutionPlan<T extends Comparable<T>> {
 
   private String queryTag;
   private Date producedAt;
@@ -21,15 +21,15 @@ public class ExecutionPlan {
 
   private MetricsFactory metricsFactory;
 
-  public static ExecutionPlan instantiate(final String queryTag, final Date producedAt, final String query,
-      final LinkedHashMap<String, Object> parameterValues, final Operator<?> rootOperator,
+  public static <E extends Comparable<E>> ExecutionPlan<E> instantiate(final String queryTag, final Date producedAt, final String query,
+      final LinkedHashMap<String, Object> parameterValues, final Operator<E> rootOperator,
       final boolean includesEstimatedMetrics, final boolean includesActualMetrics) {
     MetricsFactory metricsFactory = MetricsFactory.instantiate(includesEstimatedMetrics, includesActualMetrics);
-    return new ExecutionPlan(queryTag, producedAt, query, parameterValues, rootOperator, metricsFactory);
+    return new ExecutionPlan<E>(queryTag, producedAt, query, parameterValues, rootOperator, metricsFactory);
   }
 
   private ExecutionPlan(final String queryTag, final Date producedAt, final String query,
-      final LinkedHashMap<String, Object> parameterValues, final Operator<?> rootOperator,
+      final LinkedHashMap<String, Object> parameterValues, final Operator<T> rootOperator,
       final MetricsFactory metricsFactory) {
     this.queryTag = queryTag;
     this.producedAt = producedAt;
