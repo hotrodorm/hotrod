@@ -20,7 +20,10 @@ public class TextRenderer {
 
     StringBuilder sb = new StringBuilder();
 
-    sb.append("Execution Plan for query: " + plan.getQueryTag() + "\n");
+    sb.append("Execution Plan Report\n");
+    sb.append("---------------------\n");
+
+    sb.append("Query Tag: " + plan.getQueryTag() + "\n");
 
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     sb.append("Produced at: " + df.format(plan.getProducedAt()) + "\n");
@@ -83,7 +86,7 @@ public class TextRenderer {
 
     // Operator
 
-    line.append(" " + op.getOperatorName());
+    line.append(" " + op.getGenericName() + " (" + op.getSpecificName() + ")");
 
     // Foot note
 

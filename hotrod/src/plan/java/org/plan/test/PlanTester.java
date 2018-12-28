@@ -12,6 +12,7 @@ import org.plan.operator.IndexRangeScanOperator;
 import org.plan.operator.Operator;
 import org.plan.operator.Operator.Ordinal;
 import org.plan.operator.Operator.SourceSet;
+import org.plan.operator.SortOperator;
 import org.plan.predicate.AccessPredicate;
 import org.plan.predicate.FilterPredicate;
 import org.plan.renderer.text.TextRenderer;
@@ -24,8 +25,6 @@ public class PlanTester {
 
     String report = TextRenderer.render(plan, false);
 
-    System.out.println("Execution Plan Report");
-    System.out.println();
     System.out.println(report);
 
   }
@@ -80,8 +79,8 @@ public class PlanTester {
 
       Metrics metrics = factory.getMetrics(2345.6789, 187.456, null, null, null);
 
-      rootOperator = new IndexRangeScanOperator<Integer>(new Integer(104), "Sort", sourceSet, accessPredicates,
-          filterPredicates, children, metrics);
+      rootOperator = new SortOperator<Integer>(new Integer(104), "Sort", sourceSet, accessPredicates, filterPredicates,
+          children, metrics);
     }
 
     ExecutionPlan<Integer> plan = ExecutionPlan.instantiate("query-001", new Date(),

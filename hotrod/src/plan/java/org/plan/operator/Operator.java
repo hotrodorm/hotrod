@@ -9,7 +9,8 @@ import org.plan.predicate.FilterPredicate;
 public abstract class Operator<T extends Comparable<T>> {
 
   private T id;
-  private String operatorName;
+  private String genericName;
+  private String specificName;
 
   private SourceSet sourceSet;
 
@@ -19,11 +20,12 @@ public abstract class Operator<T extends Comparable<T>> {
 
   private Metrics metrics;
 
-  public Operator(final T id, final String operatorName, final SourceSet sourceSet,
+  public Operator(final String genericName, final T id, final String specificName, final SourceSet sourceSet,
       final List<AccessPredicate> accessPredicates, final List<FilterPredicate> filterPredicates,
       final List<Operator<T>> children, final Metrics metrics) {
+    this.genericName = genericName;
     this.id = id;
-    this.operatorName = operatorName;
+    this.specificName = specificName;
     this.sourceSet = sourceSet;
     this.accessPredicates = accessPredicates;
     this.filterPredicates = filterPredicates;
@@ -31,12 +33,16 @@ public abstract class Operator<T extends Comparable<T>> {
     this.metrics = metrics;
   }
 
+  public String getGenericName() {
+    return genericName;
+  }
+
   public T getId() {
     return id;
   }
 
-  public String getOperatorName() {
-    return operatorName;
+  public String getSpecificName() {
+    return specificName;
   }
 
   public SourceSet getSourceSet() {
