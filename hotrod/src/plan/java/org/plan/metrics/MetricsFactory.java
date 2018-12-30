@@ -20,7 +20,7 @@ public abstract class MetricsFactory {
   }
 
   public abstract Metrics getMetrics(final Double estimatedCost, final Double estimatedRows, final Double actualTimeMs,
-      final Double actualRows, final Double actualLoops);
+      final Long actualRows, final Long actualLoops);
 
   public boolean includesEstimatedMetrics() {
     return this.includesEstimatedMetrics;
@@ -43,7 +43,7 @@ public abstract class MetricsFactory {
 
     @Override
     public Metrics getMetrics(final Double estimatedCost, final Double estimatedRows, final Double actualTimeMs,
-        final Double actualRows, final Double actualLoops) {
+        final Long actualRows, final Long actualLoops) {
 
       if (estimatedCost != null) {
         throw new IllegalArgumentException("estimatedCost must be null for this type of metrics (" + NAME + ")");
@@ -77,7 +77,7 @@ public abstract class MetricsFactory {
 
     @Override
     public Metrics getMetrics(final Double estimatedCost, final Double estimatedRows, final Double actualTimeMs,
-        final Double actualRows, final Double actualLoops) {
+        final Long actualRows, final Long actualLoops) {
 
       if (actualTimeMs != null) {
         throw new IllegalArgumentException("actualTimeMs must be null for this type of metrics (" + NAME + ")");
@@ -109,7 +109,7 @@ public abstract class MetricsFactory {
 
     @Override
     public Metrics getMetrics(final Double estimatedCost, final Double estimatedRows, final Double actualTimeMs,
-        final Double actualRows, final Double actualLoops) {
+        final Long actualRows, final Long actualLoops) {
 
       if (estimatedCost != null) {
         throw new IllegalArgumentException("estimatedCost must be null for this type of metrics (" + NAME + ")");
@@ -138,7 +138,7 @@ public abstract class MetricsFactory {
 
     @Override
     public Metrics getMetrics(final Double estimatedCost, final Double estimatedRows, final Double actualTimeMs,
-        final Double actualRows, final Double actualLoops) {
+        final Long actualRows, final Long actualLoops) {
 
       if (estimatedCost == null) {
         throw new IllegalArgumentException("estimatedCost must be not null for this type of metrics (" + NAME + ")");

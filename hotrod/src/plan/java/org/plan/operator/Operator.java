@@ -70,12 +70,13 @@ public abstract class Operator<T extends Comparable<T>> {
   public static class SourceSet {
 
     private String sourceTable;
+    private String tableAlias;
     private String sourceIndex;
-    private List<Ordinal> sourceIndexColumns;
+    private List<IndexColumn> sourceIndexColumns;
     private boolean includesHeapFetch;
 
-    public SourceSet(final String sourceTable, final String sourceIndex, final List<Ordinal> sourceIndexColumns,
-        final boolean includesHeapFetch) {
+    public SourceSet(final String sourceTable, final String tableAlias, final String sourceIndex,
+        final List<IndexColumn> sourceIndexColumns, final boolean includesHeapFetch) {
 
       if (sourceTable == null && sourceIndex == null) {
         throw new IllegalArgumentException("sourceTable or sourceIndex must be specified; both cannot be null");
@@ -85,6 +86,7 @@ public abstract class Operator<T extends Comparable<T>> {
       }
 
       this.sourceTable = sourceTable;
+      this.tableAlias = tableAlias;
       this.sourceIndex = sourceIndex;
       this.sourceIndexColumns = sourceIndexColumns;
       this.includesHeapFetch = includesHeapFetch;
@@ -94,11 +96,15 @@ public abstract class Operator<T extends Comparable<T>> {
       return sourceTable;
     }
 
+    public String getTableAlias() {
+      return tableAlias;
+    }
+
     public String getSourceIndex() {
       return sourceIndex;
     }
 
-    public List<Ordinal> getSourceIndexColumns() {
+    public List<IndexColumn> getSourceIndexColumns() {
       return sourceIndexColumns;
     }
 
@@ -108,13 +114,13 @@ public abstract class Operator<T extends Comparable<T>> {
 
   }
 
-  public static class Ordinal {
+  public static class IndexColumn {
 
     private String columnName;
     private String expression;
     private boolean ascending;
 
-    public Ordinal(final String columnName, final String expression, final boolean ascending) {
+    public IndexColumn(final String columnName, final String expression, final boolean ascending) {
 
       if (columnName == null && expression == null) {
         throw new IllegalArgumentException("At least columnName or expression must be specified");

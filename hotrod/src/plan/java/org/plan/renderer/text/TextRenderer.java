@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import org.hotrod.runtime.util.ListWriter;
 import org.plan.ExecutionPlan;
 import org.plan.operator.Operator;
-import org.plan.operator.Operator.Ordinal;
+import org.plan.operator.Operator.IndexColumn;
 import org.plan.predicate.AccessPredicate;
 import org.plan.predicate.FilterPredicate;
 import org.plan.renderer.text.cost.CostRenderer;
@@ -108,11 +108,14 @@ public class TextRenderer {
         line.append(" " + op.getSourceSet().getSourceIndex());
         if (op.getSourceSet().getSourceTable() != null) {
           line.append(" on " + op.getSourceSet().getSourceTable());
+          if (op.getSourceSet().getTableAlias() != null) {
+            line.append(" \"" + op.getSourceSet().getTableAlias() + "\"");
+          }
         }
-        List<Ordinal> sic = op.getSourceSet().getSourceIndexColumns();
+        List<IndexColumn> sic = op.getSourceSet().getSourceIndexColumns();
         if (sic != null && !sic.isEmpty()) {
           ListWriter lw = new ListWriter(", ");
-          for (Ordinal o : sic) {
+          for (IndexColumn o : sic) {
             lw.add( //
                 (o.getColumnName() != null ? o.getColumnName() : o.getExpression()) //
                     + (o.isAscending() ? "" : " desc"));
@@ -121,6 +124,9 @@ public class TextRenderer {
         }
       } else { // table access
         line.append(" " + op.getSourceSet().getSourceTable());
+        if (op.getSourceSet().getTableAlias() != null) {
+          line.append(" \"" + op.getSourceSet().getTableAlias() + "\"");
+        }
       }
 
     }

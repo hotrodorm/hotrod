@@ -8,7 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import explain.postgresql.PostgreSQLPlanRetriever;
-import explain.postgresql.PostgreSQLXMLPlanParser;
+import explain.postgresql.OldPostgreSQLXMLPlanParser;
 import explain.renderers.DotPlanRenderer2;
 import explain.renderers.PlanRenderer;
 import explain.renderers.TextPlanRenderer;
@@ -23,43 +23,43 @@ public class PostgreSQLExplainer {
 
       StringBuilder sb = new StringBuilder();
 
-      sb.append(" ");
-      sb.append("select ");
-      sb.append("  * ");
-      sb.append("from account a ");
-      sb.append("  join transaction t4 on t4.account_id = a.id ");
-      sb.append("  join federal_branch b5 on b5.id = t4.fed_branch_id ");
-      sb.append("  join ");
-      sb.append("  ( ");
-      sb.append("    select ");
-      sb.append("      max(account_id) as account_id ");
-      sb.append("    from transaction t7 ");
-      sb.append("  ) ");
-      sb.append("  t6 on t6.account_id = a.id ");
-      sb.append("where a.current_balance < 3 * ");
-      sb.append("  ( ");
-      sb.append("    select ");
-      sb.append("      avg(amount) ");
-      sb.append("    from transaction t ");
-      sb.append("      join federal_branch b on b.id = t.fed_branch_id ");
-      sb.append("    where t.account_id = a.id ");
-      sb.append("      and b.name in (select name from federal_branch b7 where name like '%ar%') ");
-      sb.append("  ) ");
-      sb.append("  and a.current_balance < 5 * ");
-      sb.append("  ( ");
-      sb.append("    select ");
-      sb.append("      avg(amount) ");
-      sb.append("    from transaction t2 ");
-      sb.append("      join federal_branch b2 on b2.id = t2.fed_branch_id ");
-      sb.append("    where b2.name not in (select name from federal_branch b8 where name like '%y%') ");
-      sb.append("  ) ");
+      sb.append(" \n");
+      sb.append("select \n");
+      sb.append("  * \n");
+      sb.append("from account a \n");
+      sb.append("  join transaction t4 on t4.account_id = a.id \n");
+      sb.append("  join federal_branch b5 on b5.id = t4.fed_branch_id \n");
+      sb.append("  join \n");
+      sb.append("  ( \n");
+      sb.append("    select \n");
+      sb.append("      max(account_id) as account_id \n");
+      sb.append("    from transaction t7 \n");
+      sb.append("  ) \n");
+      sb.append("  t6 on t6.account_id = a.id \n");
+      sb.append("where a.current_balance < 3 * \n");
+      sb.append("  ( \n");
+      sb.append("    select \n");
+      sb.append("      avg(amount) \n");
+      sb.append("    from transaction t \n");
+      sb.append("      join federal_branch b on b.id = t.fed_branch_id \n");
+      sb.append("    where t.account_id = a.id \n");
+      sb.append("      and b.name in (select name from federal_branch b7 where name like '%ar%') \n");
+      sb.append("  ) \n");
+      sb.append("  and a.current_balance < 5 * \n");
+      sb.append("  ( \n");
+      sb.append("    select \n");
+      sb.append("      avg(amount) \n");
+      sb.append("    from transaction t2 \n");
+      sb.append("      join federal_branch b2 on b2.id = t2.fed_branch_id \n");
+      sb.append("    where b2.name not in (select name from federal_branch b8 where name like '%y%') \n");
+      sb.append("  ) \n");
 
       String sql = sb.toString();
 
       String p = PostgreSQLPlanRetriever.retrieveXMLPlan(conn, sql);
       System.out.println("Plan:\n" + p);
 
-      Operator op = PostgreSQLXMLPlanParser.parse(conn, p);
+      Operator op = OldPostgreSQLXMLPlanParser.parse(conn, p);
 
       PlanRenderer r = new TextPlanRenderer();
       String plan = r.render(op);

@@ -1,5 +1,8 @@
 package org.plan.test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -10,18 +13,22 @@ import org.plan.metrics.Metrics;
 import org.plan.metrics.MetricsFactory;
 import org.plan.operator.IndexRangeScanOperator;
 import org.plan.operator.Operator;
-import org.plan.operator.Operator.Ordinal;
+import org.plan.operator.Operator.IndexColumn;
 import org.plan.operator.Operator.SourceSet;
 import org.plan.operator.SortOperator;
 import org.plan.predicate.AccessPredicate;
 import org.plan.predicate.FilterPredicate;
 import org.plan.renderer.text.TextRenderer;
+import org.plan.retriever.postgresql.PostgreSQLXMLPlanParser;
+
+import explain.InvalidPlanException;
 
 public class PlanTester {
 
-  public static void main(final String[] args) {
+  public static void main(final String[] args) throws SQLException, InvalidPlanException {
 
-    ExecutionPlan<?> plan = retrievePlan();
+    // ExecutionPlan<?> plan = retrieveHardCodedTestPlan();
+    ExecutionPlan<?> plan = retrieveLivePlan();
 
     String report = TextRenderer.render(plan, false);
 
@@ -29,7 +36,81 @@ public class PlanTester {
 
   }
 
-  private static ExecutionPlan<Integer> retrievePlan() {
+  // Live Plan
+
+  private static ExecutionPlan<Long> retrieveLivePlan() throws SQLException, InvalidPlanException {
+
+    Connection conn = null;
+    try {
+      System.out.println("Will connect");
+      conn = getConnection();
+
+      StringBuilder sb = new StringBuilder();
+
+      sb.append(" \n");
+      sb.append("select \n");
+      sb.append("  * \n");
+      sb.append("from account a \n");
+      sb.append("  join transaction t4 on t4.account_id = a.id \n");
+      sb.append("  join federal_branch b5 on b5.id = t4.fed_branch_id \n");
+      sb.append("  join \n");
+      sb.append("  ( \n");
+      sb.append("    select \n");
+      sb.append("      max(account_id) as account_id \n");
+      sb.append("    from transaction t7 \n");
+      sb.append("  ) \n");
+      sb.append("  t6 on t6.account_id = a.id \n");
+      sb.append("where a.current_balance < 3 * \n");
+      sb.append("  ( \n");
+      sb.append("    select \n");
+      sb.append("      avg(amount) \n");
+      sb.append("    from transaction t \n");
+      sb.append("      join federal_branch b on b.id = t.fed_branch_id \n");
+      sb.append("    where t.account_id = a.id \n");
+      sb.append("      and b.name in (select name from federal_branch b7 where name like '%ar%') \n");
+      sb.append("  ) \n");
+      sb.append("  and a.current_balance < 5 * \n");
+      sb.append("  ( \n");
+      sb.append("    select \n");
+      sb.append("      avg(amount) \n");
+      sb.append("    from transaction t2 \n");
+      sb.append("      join federal_branch b2 on b2.id = t2.fed_branch_id \n");
+      sb.append("    where b2.name not in (select name from federal_branch b8 where name like '%y%') \n");
+      sb.append("  ) \n");
+
+      String sql = sb.toString();
+
+      boolean executeForActualMetrics = true;
+
+      ExecutionPlan<Long> plan = PostgreSQLXMLPlanParser.retrievePlan(conn, sql, executeForActualMetrics);
+
+      return plan;
+
+      // String p = PostgreSQLPlanRetriever.retrieveXMLPlan(conn, sql);
+      // System.out.println("Plan:\n" + p);
+      //
+      // Operator op = OldPostgreSQLXMLPlanParser.parse(conn, p);
+      //
+      // PlanRenderer r = new TextPlanRenderer();
+      // String plan = r.render(op);
+      // System.out.println("Rendered Plan:\n" + plan);
+      //
+      // r = new DotPlanRenderer2();
+      // plan = r.render(op);
+      // System.out.println("Rendered Plan:\n" + plan);
+      // save(plan, "testdata/databases/postgresql-9.4/plan/p1.dot");
+
+    } finally {
+      if (conn != null) {
+        conn.close();
+      }
+    }
+
+  }
+
+  // Hard coded plan
+
+  private static ExecutionPlan<Integer> retrieveHardCodedTestPlan() {
 
     boolean includesEstimatedMetrics = true;
     boolean includesActualMetrics = false;
@@ -43,10 +124,10 @@ public class PlanTester {
 
     Operator<Integer> is;
     {
-      List<Ordinal> sourceIndexColumns = new ArrayList<Ordinal>();
-      sourceIndexColumns.add(new Ordinal("ID", null, true));
-      sourceIndexColumns.add(new Ordinal("VERSION", null, false));
-      SourceSet sourceSet = new SourceSet("ACCOUNT", "IX1_ACCOUNT_ID", sourceIndexColumns, true);
+      List<IndexColumn> sourceIndexColumns = new ArrayList<IndexColumn>();
+      sourceIndexColumns.add(new IndexColumn("ID", null, true));
+      sourceIndexColumns.add(new IndexColumn("VERSION", null, false));
+      SourceSet sourceSet = new SourceSet("ACCOUNT", "a", "IX1_ACCOUNT_ID", sourceIndexColumns, true);
 
       List<AccessPredicate> accessPredicates = new ArrayList<AccessPredicate>();
       accessPredicates.add(new AccessPredicate("START: ID = $p001"));
@@ -87,6 +168,24 @@ public class PlanTester {
         "select *\nfrom account\nwhere id = #{id} and started_at > #{minDate}\norder by name", parameterValues,
         rootOperator, true, false);
     return plan;
+  }
+
+  private static Connection getConnection() throws SQLException {
+
+    String databaseURL = "jdbc:postgresql://192.168.56.46:5432/postgres";
+    String user = "postgres";
+    String password = "mypassword";
+
+    Connection conn = null;
+    try {
+      Class.forName("org.postgresql.Driver");
+      conn = DriverManager.getConnection(databaseURL, user, password);
+      return conn;
+    } catch (ClassNotFoundException e) {
+      throw new SQLException("Driver class not found");
+    } catch (SQLException e) {
+      throw new SQLException("Could not connect to database: " + e.getMessage());
+    }
   }
 
 }

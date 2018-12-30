@@ -22,7 +22,7 @@ import org.xml.sax.SAXException;
 
 import explain.InvalidPlanException;
 
-public class PostgreSQLXMLPlanParser {
+public class OldPostgreSQLXMLPlanParser {
 
   private static final String CREATE_PREFIX = "CREATE ";
 

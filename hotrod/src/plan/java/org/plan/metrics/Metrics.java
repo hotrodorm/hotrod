@@ -58,10 +58,10 @@ public abstract class Metrics {
   public static class ActualMetrics extends Metrics {
 
     private Double actualTimeMs;
-    private Double actualRows;
-    private Double actualLoops;
+    private Long actualRows;
+    private Long actualLoops;
 
-    ActualMetrics(final Double actualTimeMs, final Double actualRows, final Double actualLoops) {
+    ActualMetrics(final Double actualTimeMs, final Long actualRows, final Long actualLoops) {
       this.actualTimeMs = actualTimeMs;
       this.actualRows = actualRows;
       this.actualLoops = actualLoops;
@@ -74,11 +74,11 @@ public abstract class Metrics {
       return actualTimeMs;
     }
 
-    public Double getActualRows() {
+    public Long getActualRows() {
       return actualRows;
     }
 
-    public Double getActualLoops() {
+    public Long getActualLoops() {
       return actualLoops;
     }
 
@@ -89,7 +89,7 @@ public abstract class Metrics {
 
     @Override
     public Double getRows() {
-      return this.actualRows;
+      return 1.0 * this.actualRows;
     }
 
   }
@@ -100,11 +100,11 @@ public abstract class Metrics {
     private Double estimatedRows;
 
     private Double actualTimeMs;
-    private Double actualRows;
-    private Double actualLoops;
+    private Long actualRows;
+    private Long actualLoops;
 
     FullMetrics(final Double estimatedCost, final Double estimatedRows, final Double actualTimeMs,
-        final Double actualRows, final Double actualLoops) {
+        final Long actualRows, final Long actualLoops) {
       this.estimatedCost = estimatedCost;
       this.estimatedRows = estimatedRows;
       this.actualTimeMs = actualTimeMs;
@@ -130,11 +130,11 @@ public abstract class Metrics {
       return actualTimeMs;
     }
 
-    public Double getActualRows() {
+    public Long getActualRows() {
       return actualRows;
     }
 
-    public Double getActualLoops() {
+    public Long getActualLoops() {
       return actualLoops;
     }
 
@@ -145,7 +145,7 @@ public abstract class Metrics {
 
     @Override
     public Double getRows() {
-      return this.actualRows;
+      return 1.0 * this.actualRows;
     }
 
   }
