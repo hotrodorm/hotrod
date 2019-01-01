@@ -2,7 +2,7 @@ package explain.renderers;
 
 import java.awt.Color;
 
-public class Stats {
+public class OldStats {
 
   // Constants
 
@@ -24,7 +24,7 @@ public class Stats {
 
   // Constructor
 
-  public Stats() {
+  public OldStats() {
     this.rows = new Range(ROWS_EXP, ROWS_MIN_WIDTH, ROWS_MAX_WIDTH, ROWS_MIN_COLOR, ROWS_MAX_COLOR);
     this.cost = new Range(COST_EXP, 1, 100, COST_MIN_COLOR, COST_MAX_COLOR);
     this.time = new Range(COST_EXP, 1, 100, COST_MIN_COLOR, COST_MAX_COLOR);

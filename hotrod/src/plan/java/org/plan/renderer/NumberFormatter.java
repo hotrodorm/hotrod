@@ -1,4 +1,4 @@
-package org.plan.renderer.text.cost;
+package org.plan.renderer;
 
 import java.text.DecimalFormat;
 

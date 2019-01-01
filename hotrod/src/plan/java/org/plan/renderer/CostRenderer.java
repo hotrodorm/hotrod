@@ -1,4 +1,4 @@
-package org.plan.renderer.text.cost;
+package org.plan.renderer;
 
 import java.text.DecimalFormat;
 
@@ -60,6 +60,8 @@ public abstract class CostRenderer {
     public EstimatedCostRenderer(final Double fullCost, final boolean showPercentageCost) {
       super(fullCost, showPercentageCost);
 
+      System.out.println(">>> fullCost=" + fullCost);
+
       // cost
 
       if (fullCost >= 100 * M) {
@@ -108,9 +110,40 @@ public abstract class CostRenderer {
 
   public static class ActualCostRenderer extends CostRenderer {
 
+    // 100 --
+    // 99.9
+    // 10.0 --
+    // 9.99
+    // 1.00 --
+    // 0.9999
+    // 0.0100 --
+    // 9.99 µs
+    // 1.00 µs --
+    // 0.9999 µs
+
+    private String unit;
+
     public ActualCostRenderer(final Double fullCost, final boolean showPercentageCost) {
       super(fullCost, showPercentageCost);
-      this.costFormatter = new NumberFormatter(1.0, new DecimalFormat("#0"));
+      if (fullCost >= 100) {
+        this.costFormatter = new NumberFormatter(1.0, new DecimalFormat("#0"));
+        this.unit = "ms";
+      } else if (fullCost >= 10.0) {
+        this.costFormatter = new NumberFormatter(1.0, new DecimalFormat("#0.0"));
+        this.unit = "ms";
+      } else if (fullCost >= 1.0) {
+        this.costFormatter = new NumberFormatter(1.0, new DecimalFormat("#0.00"));
+        this.unit = "ms";
+      } else if (fullCost >= 0.01) {
+        this.costFormatter = new NumberFormatter(1000.0, new DecimalFormat("#0"));
+        this.unit = "µs";
+      } else if (fullCost >= 0.001) {
+        this.costFormatter = new NumberFormatter(1000.0, new DecimalFormat("#0.00"));
+        this.unit = "µs";
+      } else {
+        this.costFormatter = new NumberFormatter(1000.0, new DecimalFormat("#0.0000"));
+        this.unit = "µs";
+      }
     }
 
     @Override
@@ -119,7 +152,7 @@ public abstract class CostRenderer {
         double ratio = metrics.getCost() / this.fullCost;
         return new Scalar(PERCENT_FORMATTER.format(ratio), null);
       } else {
-        return new Scalar(this.costFormatter.format(metrics.getCost()), "ms");
+        return new Scalar(this.costFormatter.format(metrics.getCost()), this.unit);
       }
     }
 

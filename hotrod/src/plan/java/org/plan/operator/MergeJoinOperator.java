@@ -10,10 +10,10 @@ public class MergeJoinOperator<T extends Comparable<T>> extends Operator<T> {
 
   private static final String NAME = "MERGE JOIN";
 
-  public MergeJoinOperator(final T id, final String specificName, final SourceSet sourceSet,
+  public MergeJoinOperator(final T id, final String specificName, final String joinType, final SourceSet sourceSet,
       final List<AccessPredicate> accessPredicates, final List<FilterPredicate> filterPredicates,
       final List<Operator<T>> children, final Metrics metrics) {
-    super(NAME, id, specificName, sourceSet, accessPredicates, filterPredicates, children, metrics);
+    super(NAME, id, specificName, joinType, sourceSet, accessPredicates, filterPredicates, children, metrics);
     // TODO Auto-generated constructor stub
 
   }

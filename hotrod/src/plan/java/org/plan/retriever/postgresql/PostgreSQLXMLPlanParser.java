@@ -112,7 +112,7 @@ public class PostgreSQLXMLPlanParser {
         + (executeForActualMetrics ? "analyze true, timing true, " : "") //
         + "format xml) " + sqlQuery;
     Statement st = conn.createStatement();
-    System.out.println("sql=" + sql);
+    // System.out.println("sql=" + sql);
     ResultSet rs = st.executeQuery(sql);
     StringBuilder sb = new StringBuilder();
     while (rs.next()) {
@@ -295,14 +295,15 @@ public class PostgreSQLXMLPlanParser {
     // TODO: Use joinType ('inner', 'outer', ...)
 
     if ("Nested Loop".equals(nodeType)) {
-      return new NestedLoopOperator<Long>(id, nodeType, sourceSet, accessPredicates, filterPredicates, sources,
-          metrics);
+      return new NestedLoopOperator<Long>(id, nodeType, joinType, sourceSet, accessPredicates, filterPredicates,
+          sources, metrics);
     } else if ("Aggregate".equals(nodeType)) { // TODO: is it Hash aggregate or
                                                // sort aggregate?
       return new HashAggregateOperator<Long>(id, nodeType, sourceSet, accessPredicates, filterPredicates, sources,
           metrics);
     } else if ("Hash Join".equals(nodeType)) {
-      return new HashJoinOperator<Long>(id, nodeType, sourceSet, accessPredicates, filterPredicates, sources, metrics);
+      return new HashJoinOperator<Long>(id, nodeType, joinType, sourceSet, accessPredicates, filterPredicates, sources,
+          metrics);
     } else if ("Seq Scan".equals(nodeType)) {
       return new TableScanOperator<Long>(id, nodeType, sourceSet, accessPredicates, filterPredicates, sources, metrics);
     } else if ("Hash".equals(nodeType)) {

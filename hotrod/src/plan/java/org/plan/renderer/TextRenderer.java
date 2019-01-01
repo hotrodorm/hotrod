@@ -1,4 +1,4 @@
-package org.plan.renderer.text;
+package org.plan.renderer;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,8 +11,7 @@ import org.plan.operator.Operator;
 import org.plan.operator.Operator.IndexColumn;
 import org.plan.predicate.AccessPredicate;
 import org.plan.predicate.FilterPredicate;
-import org.plan.renderer.text.cost.CostRenderer;
-import org.plan.renderer.text.cost.CostRenderer.Scalar;
+import org.plan.renderer.CostRenderer.Scalar;
 
 public class TextRenderer {
 
@@ -50,7 +49,6 @@ public class TextRenderer {
     Operator<?> op = plan.getRootOperator();
 
     Double fullCost = op.getMetrics().getCost();
-
     CostRenderer costRenderer = CostRenderer.instantiate(plan.getMetricsFactory(), fullCost, showPercentageCost);
 
     renderOperator(op, 0, costRenderer, sb);

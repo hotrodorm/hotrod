@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 import explain.postgresql.PostgreSQLPlanRetriever;
 import explain.postgresql.OldPostgreSQLXMLPlanParser;
-import explain.renderers.DotPlanRenderer2;
+import explain.renderers.OldDotPlanRenderer2;
 import explain.renderers.PlanRenderer;
 import explain.renderers.TextPlanRenderer;
 
@@ -65,7 +65,7 @@ public class PostgreSQLExplainer {
       String plan = r.render(op);
       System.out.println("Rendered Plan:\n" + plan);
 
-      r = new DotPlanRenderer2();
+      r = new OldDotPlanRenderer2();
       plan = r.render(op);
       System.out.println("Rendered Plan:\n" + plan);
       save(plan, "testdata/databases/postgresql-9.4/plan/p1.dot");

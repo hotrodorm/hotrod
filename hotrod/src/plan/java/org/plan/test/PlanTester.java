@@ -1,5 +1,8 @@
 package org.plan.test;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,21 +21,28 @@ import org.plan.operator.Operator.SourceSet;
 import org.plan.operator.SortOperator;
 import org.plan.predicate.AccessPredicate;
 import org.plan.predicate.FilterPredicate;
-import org.plan.renderer.text.TextRenderer;
+import org.plan.renderer.DotPlanRenderer;
+import org.plan.renderer.TextRenderer;
 import org.plan.retriever.postgresql.PostgreSQLXMLPlanParser;
 
 import explain.InvalidPlanException;
 
 public class PlanTester {
 
-  public static void main(final String[] args) throws SQLException, InvalidPlanException {
+  public static void main(final String[] args) throws SQLException, InvalidPlanException, IOException {
 
     // ExecutionPlan<?> plan = retrieveHardCodedTestPlan();
     ExecutionPlan<?> plan = retrieveLivePlan();
 
-    String report = TextRenderer.render(plan, false);
+    String textReport = TextRenderer.render(plan, false);
+    System.out.println(textReport);
 
-    System.out.println(report);
+    System.out.println("\n--------------------\n");
+
+    String dotReport = DotPlanRenderer.render(plan, false);
+    System.out.println(dotReport);
+
+    save(dotReport, "testdata/databases/postgresql-9.4/plan/p1.dot");
 
   }
 
@@ -42,7 +52,6 @@ public class PlanTester {
 
     Connection conn = null;
     try {
-      System.out.println("Will connect");
       conn = getConnection();
 
       StringBuilder sb = new StringBuilder();
@@ -185,6 +194,18 @@ public class PlanTester {
       throw new SQLException("Driver class not found");
     } catch (SQLException e) {
       throw new SQLException("Could not connect to database: " + e.getMessage());
+    }
+  }
+
+  private static void save(final String s, final String filename) throws SQLException, IOException {
+    BufferedWriter w = null;
+    try {
+      w = new BufferedWriter(new FileWriter(filename));
+      w.write(s);
+    } finally {
+      if (w != null) {
+        w.close();
+      }
     }
   }
 

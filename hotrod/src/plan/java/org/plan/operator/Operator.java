@@ -11,6 +11,7 @@ public abstract class Operator<T extends Comparable<T>> {
   private T id;
   private String genericName;
   private String specificName;
+  private String joinType;
 
   private SourceSet sourceSet;
 
@@ -20,12 +21,13 @@ public abstract class Operator<T extends Comparable<T>> {
 
   private Metrics metrics;
 
-  public Operator(final String genericName, final T id, final String specificName, final SourceSet sourceSet,
-      final List<AccessPredicate> accessPredicates, final List<FilterPredicate> filterPredicates,
-      final List<Operator<T>> children, final Metrics metrics) {
+  public Operator(final String genericName, final T id, final String specificName, final String joinType,
+      final SourceSet sourceSet, final List<AccessPredicate> accessPredicates,
+      final List<FilterPredicate> filterPredicates, final List<Operator<T>> children, final Metrics metrics) {
     this.genericName = genericName;
     this.id = id;
     this.specificName = specificName;
+    this.joinType = joinType;
     this.sourceSet = sourceSet;
     this.accessPredicates = accessPredicates;
     this.filterPredicates = filterPredicates;
@@ -43,6 +45,10 @@ public abstract class Operator<T extends Comparable<T>> {
 
   public String getSpecificName() {
     return specificName;
+  }
+
+  public String getJoinType() {
+    return joinType;
   }
 
   public SourceSet getSourceSet() {
