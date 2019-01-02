@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.hotrod.runtime.util.ListWriter;
+import org.nocrala.tools.texttreeformatter.TextTreeFormatter;
+import org.nocrala.tools.texttreeformatter.TextTreeStyle;
+import org.nocrala.tools.texttreeformatter.TreeNode;
 import org.plan.ExecutionPlan;
 import org.plan.operator.Operator;
 import org.plan.operator.Operator.IndexColumn;
@@ -51,7 +54,10 @@ public class TextRenderer {
     Double fullCost = op.getMetrics().getCost();
     CostRenderer costRenderer = CostRenderer.instantiate(plan.getMetricsFactory(), fullCost, showPercentageCost);
 
-    renderOperator(op, 0, costRenderer, sb);
+    OperatorNode root = renderOperator(op, 0, costRenderer);
+    TextTreeFormatter formatter = new TextTreeFormatter(TextTreeStyle.CLASSIC_FULL2);
+    String tree = formatter.render(root);
+    sb.append(tree);
 
     sb.append("\n");
 
@@ -62,21 +68,15 @@ public class TextRenderer {
     return sb.toString();
   }
 
-  private static void renderOperator(final Operator<?> op, final int level, final CostRenderer costRenderer,
-      final StringBuilder out) {
+  private static OperatorNode renderOperator(final Operator<?> op, final int level, final CostRenderer costRenderer) {
 
-    // indent
-
-    String indent = repeat("+- ", level);
-    out.append(indent);
-
-    StringBuilder line = new StringBuilder();
+    StringBuilder label = new StringBuilder();
 
     // cost
 
     Scalar renderedCost = costRenderer.renderCost(op.getMetrics());
     if (renderedCost != null) {
-      line.append(" " + renderedCost.getFormatterNumber()
+      label.append(" " + renderedCost.getFormatterNumber()
           + (renderedCost.getUnit() != null ? " " + renderedCost.getUnit() : ""));
     }
 
@@ -84,30 +84,30 @@ public class TextRenderer {
 
     // Operator
 
-    line.append(" " + op.getGenericName() + " (" + op.getSpecificName() + ")");
+    label.append(" " + op.getGenericName() + " (" + op.getSpecificName() + ")");
 
     // Foot note
 
     if (!op.getAccessPredicates().isEmpty() || !op.getFilterPredicates().isEmpty()) {
-      line.append(" *" + op.getId());
+      label.append(" *" + op.getId());
     }
 
     // rows
 
     String renderedRows = costRenderer.renderRows(op.getMetrics());
     if (renderedRows != null) {
-      line.append(" (" + renderedRows + " rows)");
+      label.append(" (" + renderedRows + " rows)");
     }
 
     // source set
 
     if (op.getSourceSet() != null) {
       if (op.getSourceSet().getSourceIndex() != null) { // index access
-        line.append(" " + op.getSourceSet().getSourceIndex());
+        label.append(" " + op.getSourceSet().getSourceIndex());
         if (op.getSourceSet().getSourceTable() != null) {
-          line.append(" on " + op.getSourceSet().getSourceTable());
+          label.append(" on " + op.getSourceSet().getSourceTable());
           if (op.getSourceSet().getTableAlias() != null) {
-            line.append(" \"" + op.getSourceSet().getTableAlias() + "\"");
+            label.append(" \"" + op.getSourceSet().getTableAlias() + "\"");
           }
         }
         List<IndexColumn> sic = op.getSourceSet().getSourceIndexColumns();
@@ -118,27 +118,27 @@ public class TextRenderer {
                 (o.getColumnName() != null ? o.getColumnName() : o.getExpression()) //
                     + (o.isAscending() ? "" : " desc"));
           }
-          line.append(" (" + lw.toString() + ")");
+          label.append(" (" + lw.toString() + ")");
         }
       } else { // table access
-        line.append(" " + op.getSourceSet().getSourceTable());
+        label.append(" " + op.getSourceSet().getSourceTable());
         if (op.getSourceSet().getTableAlias() != null) {
-          line.append(" \"" + op.getSourceSet().getTableAlias() + "\"");
+          label.append(" \"" + op.getSourceSet().getTableAlias() + "\"");
         }
       }
 
     }
 
-    // End of line
-
-    out.append(line.toString().trim());
-    out.append("\n");
-
     // Render inner operators
 
+    List<OperatorNode> children = new ArrayList<OperatorNode>();
     for (Operator<?> co : op.getChildren()) {
-      renderOperator(co, level + 1, costRenderer, out);
+      children.add(renderOperator(co, level + 1, costRenderer));
     }
+
+    // Return
+
+    return new OperatorNode(label.toString().trim(), children);
 
   }
 
@@ -209,6 +209,28 @@ public class TextRenderer {
       sb.append(x);
     }
     return sb.toString();
+  }
+
+  private static class OperatorNode implements TreeNode {
+
+    private String label;
+    private List<OperatorNode> children;
+
+    public OperatorNode(final String label, final List<OperatorNode> children) {
+      this.label = label;
+      this.children = children;
+    }
+
+    @Override
+    public String getLabel() {
+      return this.label;
+    }
+
+    @Override
+    public List<TreeNode> getChildren() {
+      return new ArrayList<TreeNode>(this.children);
+    }
+
   }
 
 }
