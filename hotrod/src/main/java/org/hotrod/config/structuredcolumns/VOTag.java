@@ -202,6 +202,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       }
     }
 
+    this.compiledBody = this.compileBody();
+
     // table & view
 
     String label;
@@ -345,20 +347,24 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     // alias
 
     if (this.alias == null) {
-      throw new InvalidConfigurationFileException(this, //
-          "The 'alias' attribute must be specified. "
-              + "It indicates the table or view alias as it appears in the SQL FROM statement "
-              + "(for example, the 'p' when typing the column 'p.city_name')", //
-          "The 'alias' attribute must be specified. "
-              + "It indicates the table or view alias as it appears in the SQL FROM statement "
-              + "(for example, the 'p' when typing the column 'p.city_name').");
+      if (!this.compiledBody.trim().isEmpty()) {
+        throw new InvalidConfigurationFileException(this, //
+            "The 'alias' attribute must be specified when columns are specified in the body of the <"
+                + super.getTagName() + "> tag. "
+                + "It indicates the table or view alias as it appears in the SQL FROM statement "
+                + "(for example, the 'p' when typing the column 'p.city_name')", //
+            "The 'alias' attribute must be specified when columns are specified in the body of the <"
+                + super.getTagName() + "> tag. "
+                + "It indicates the table or view alias as it appears in the SQL FROM statement "
+                + "(for example, the 'p' when typing the column 'p.city_name').");
+      }
     }
-    if (SUtils.isEmpty(this.alias)) {
+    if (this.alias != null && SUtils.isEmpty(this.alias)) {
       throw new InvalidConfigurationFileException(this, //
-          "The 'alias' attribute must be non-empty. "
+          "When specified, the 'alias' attribute must be non-empty. "
               + "It indicates the table or view alias as it appears in the SQL FROM statement "
               + "(for example, the 'p' when typing the column 'p.city_name')", //
-          "The 'alias' attribute must be non-empty. "
+          "When specified, the 'alias' attribute must be non-empty. "
               + "It indicates the table or view alias as it appears in the SQL FROM statement "
               + "(for example, the 'p' when typing the column 'p.city_name').");
     }
@@ -401,7 +407,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     // expressions
 
-    this.expressions.validate(daosTag, config, fragmentConfig, singleVOResult, null);
+    this.expressions.validate(daosTag, config, fragmentConfig, singleVOResult, this.idNames);
 
     // associations
 
@@ -415,6 +421,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       c.validate(daosTag, config, fragmentConfig, false, adapter);
     }
 
+    log.debug("Validation complete.");
   }
 
   public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
@@ -457,7 +464,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     // expressions
 
-    this.expressions.validateAgainstDatabase(generator);
+    this.expressions.validateAgainstDatabase(generator, this.tableMetadata);
 
   }
 
@@ -469,18 +476,20 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     // body
 
-    this.compiledBody = this.compileBody();
     this.useAllColumns = this.body.isEmpty() || this.compiledBody.equals("*");
     log.debug("this.compiledBody=" + this.compiledBody + " this.useAllColumns=" + this.useAllColumns);
 
-    if (this.useAllColumns) { // all columns
-      this.cmr = null;
-      this.aliasPrefix = columnsPrefixGenerator.next();
-    } else { // specific columns
-      log.info("this.generator=" + this.generator);
-      this.cmr = new ColumnsMetadataRetriever(selectTag, this.generator.getAdapter(), this.generator.getJdbcDatabase(),
-          this.generator.getLoc(), selectGenerationTag, this, this.alias, columnsPrefixGenerator);
-      this.cmr.prepareRetrieval(conn1);
+    if (this.alias != null) { // includes entity columns (all or partial)
+      if (this.useAllColumns) { // all columns
+        this.cmr = null;
+        this.aliasPrefix = columnsPrefixGenerator.next();
+      } else { // specific columns
+        log.debug("this.generator=" + this.generator);
+        this.cmr = new ColumnsMetadataRetriever(selectTag, this.generator.getAdapter(),
+            this.generator.getJdbcDatabase(), this.generator.getLoc(), selectGenerationTag, this, this.alias,
+            columnsPrefixGenerator);
+        this.cmr.prepareRetrieval(conn1);
+      }
     }
 
     // expressions, collections, associations
@@ -546,103 +555,107 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     boolean requiresIds = this.incorporatesCollections();
 
-    if (this.useAllColumns) { // 1. All columns
+    if (this.alias != null) {
 
-      if (this.tableMetadata != null) { // 1.a Based on a table
+      if (this.useAllColumns) { // 1. All columns
 
-        if (this.tableMetadata.getPK() != null) { // 1.a.1 Table with a PK
+        if (this.tableMetadata != null) { // 1.a Based on a table
 
-          if (!this.idNames.isEmpty()) {
+          if (this.tableMetadata.getPK() != null) { // 1.a.1 Table with a PK
+
+            if (!this.idNames.isEmpty()) {
+              try {
+                this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.tableMetadata.getColumns(),
+                    this.aliasPrefix, this.idNames);
+              } catch (IdColumnNotFoundException e) {
+                throw new InvalidConfigurationFileException(this, //
+                    "", //
+                    "Could not find column '" + e.getIdName() + "' on the table '"
+                        + this.tableMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute.");
+              }
+            } else {
+              this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.tableMetadata.getColumns(),
+                  this.aliasPrefix);
+            }
+
+          } else { // 1.a.2 Table without a PK
+
+            if (requiresIds && this.idNames.isEmpty()) {
+              throw new InvalidConfigurationFileException(this, //
+                  "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
+                      + "> uses a table with no PK (the table " + this.tableMetadata.getId().getCanonicalSQLName()
+                      + " in this case) and includes other <collection> tags, "
+                      + "the 'id' attribute must specify the row-identifying columns for the table (i.e. an acting unique key for the table)", //
+                  "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
+                      + "> uses a table with no PK (the table " + this.tableMetadata.getId().getCanonicalSQLName()
+                      + " in this case) and includes other <collection> tags, "
+                      + "the 'id' attribute must specify the row-identifying columns for the table (i.e. an acting unique key for the table).");
+            }
             try {
               this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.tableMetadata.getColumns(),
                   this.aliasPrefix, this.idNames);
             } catch (IdColumnNotFoundException e) {
               throw new InvalidConfigurationFileException(this, //
-                  "", //
+                  "Could not find column '" + e.getIdName() + "' on the table '"
+                      + this.tableMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute", //
                   "Could not find column '" + e.getIdName() + "' on the table '"
                       + this.tableMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute.");
             }
-          } else {
-            this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.tableMetadata.getColumns(),
-                this.aliasPrefix);
+
           }
 
-        } else { // 1.a.2 Table without a PK
+        } else { // 1.b Based on a view
+
+          log.debug("this.tableMetadata=" + this.tableMetadata);
+          log.debug("this.viewMetadata=" + this.viewMetadata);
 
           if (requiresIds && this.idNames.isEmpty()) {
             throw new InvalidConfigurationFileException(this, //
                 "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
-                    + "> uses a table with no PK (the table " + this.tableMetadata.getId().getCanonicalSQLName()
-                    + " in this case) and includes other <collection> tags, "
-                    + "the 'id' attribute must specify the row-identifying columns for the table (i.e. an acting unique key for the table)", //
+                    + "> uses a view and includes other <collection> tags, "
+                    + "the 'id' attribute must specify the row-identifying columns for the view (i.e. an acting unique key for the view)", //
                 "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
-                    + "> uses a table with no PK (the table " + this.tableMetadata.getId().getCanonicalSQLName()
-                    + " in this case) and includes other <collection> tags, "
-                    + "the 'id' attribute must specify the row-identifying columns for the table (i.e. an acting unique key for the table).");
+                    + "> uses a view and includes other <collection> tags, "
+                    + "the 'id' attribute must specify the row-identifying columns for the view (i.e. an acting unique key for the view).");
           }
           try {
-            this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.tableMetadata.getColumns(),
+            this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.viewMetadata.getColumns(),
                 this.aliasPrefix, this.idNames);
           } catch (IdColumnNotFoundException e) {
             throw new InvalidConfigurationFileException(this, //
-                "Could not find column '" + e.getIdName() + "' on the table '"
-                    + this.tableMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute", //
-                "Could not find column '" + e.getIdName() + "' on the table '"
-                    + this.tableMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute.");
+                "Could not find column '" + e.getIdName() + "' on the view '"
+                    + this.viewMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute", //
+                "Could not find column '" + e.getIdName() + "' on the view '"
+                    + this.viewMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute.");
           }
 
         }
 
-      } else { // 1.b Based on a view
-
-        log.debug("this.tableMetadata=" + this.tableMetadata);
-        log.debug("this.viewMetadata=" + this.viewMetadata);
-
-        if (requiresIds && this.idNames.isEmpty()) {
-          throw new InvalidConfigurationFileException(this, //
-              "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
-                  + "> uses a view and includes other <collection> tags, "
-                  + "the 'id' attribute must specify the row-identifying columns for the view (i.e. an acting unique key for the view)", //
-              "Missing 'id' attribute on tag <" + this.getTagName() + ">.\n" + "When a <" + this.getTagName()
-                  + "> uses a view and includes other <collection> tags, "
-                  + "the 'id' attribute must specify the row-identifying columns for the view (i.e. an acting unique key for the view).");
-        }
-        try {
-          this.inheritedColumns = StructuredColumnMetadata.promote(this.alias, this.viewMetadata.getColumns(),
-              this.aliasPrefix, this.idNames);
-        } catch (IdColumnNotFoundException e) {
-          throw new InvalidConfigurationFileException(this, //
-              "Could not find column '" + e.getIdName() + "' on the view '"
-                  + this.viewMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute", //
-              "Could not find column '" + e.getIdName() + "' on the view '"
-                  + this.viewMetadata.getId().getCanonicalSQLName() + "' as specified on the 'id' attribute.");
+        for (StructuredColumnMetadata c : this.inheritedColumns) {
+          if (c.isId()) {
+            validateIdJDBCType(c);
+          }
         }
 
-      }
+      } else { // 2. Specific columns
 
-      for (StructuredColumnMetadata c : this.inheritedColumns) {
-        if (c.isId()) {
-          validateIdJDBCType(c);
-        }
-      }
+        if (this.tableMetadata != null) { // 2.a Based on a table
 
-    } else { // 2. Specific columns
+          if (this.tableMetadata.getPK() != null) { // 2.a.1 Table with a PK
 
-      if (this.tableMetadata != null) { // 2.a Based on a table
+            this.inheritedColumns = retrieveSpecificColumns(conn2, this.tableMetadata, requiresIds);
 
-        if (this.tableMetadata.getPK() != null) { // 2.a.1 Table with a PK
+          } else { // 2.a.2 Table without a PK
 
-          this.inheritedColumns = retrieveSpecificColumns(conn2, this.tableMetadata, requiresIds);
+            this.inheritedColumns = retrieveSpecificColumns(conn2, this.tableMetadata, requiresIds);
 
-        } else { // 2.a.2 Table without a PK
+          }
 
-          this.inheritedColumns = retrieveSpecificColumns(conn2, this.tableMetadata, requiresIds);
+        } else { // 2.b Based on a view
+
+          this.inheritedColumns = retrieveSpecificColumns(conn2, this.viewMetadata, requiresIds);
 
         }
-
-      } else { // 2.b Based on a view
-
-        this.inheritedColumns = retrieveSpecificColumns(conn2, this.viewMetadata, requiresIds);
 
       }
 
@@ -720,8 +733,9 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       if (baseColumn == null) {
         String msg = "Invalid column '" + r.getColumnName() + "' in the body of the <" + this.getTagName() + "> tag at "
             + super.getSourceLocation().render() + ".\n" + "There's no column '" + r.getColumnName() + "' in the "
-            + (this.tableMetadata != null ? "table" : "view") + " '" + (this.tableMetadata != null
-                ? this.tableMetadata.getId().getRenderedSQLName() : this.viewMetadata.getId().getRenderedSQLName())
+            + (this.tableMetadata != null ? "table" : "view") + " '"
+            + (this.tableMetadata != null ? this.tableMetadata.getId().getRenderedSQLName()
+                : this.viewMetadata.getId().getRenderedSQLName())
             + "'.";
         throw new InvalidConfigurationFileException(dm.getDaoTag(), msg, msg);
       }
@@ -908,8 +922,10 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   public List<String> gelAliasedSQLColumns() {
     List<String> columns = new ArrayList<String>();
-    for (StructuredColumnMetadata m : this.inheritedColumns) {
-      columns.add(m.renderAliasedSQLColumn());
+    if (this.inheritedColumns != null) {
+      for (StructuredColumnMetadata m : this.inheritedColumns) {
+        columns.add(m.renderAliasedSQLColumn());
+      }
     }
     for (StructuredColumnMetadata m : this.declaredColumns) { // expressions
       columns.add(m.renderAliasedSQLColumn());

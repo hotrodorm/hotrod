@@ -109,10 +109,14 @@
     <select method="findAlerts">
       select
       <columns>
-        <vo table="account" alias="a" extended-vo="Account2VO">
+        <vo table="account" extended-vo="Account2VO">
+          <expression property="id">a.id + 1</expression>
+          <expression property="extra2">a.id + 1</expression>
+          <!-- 
           <collection table="account_alert" schema="schema2" property="alerts" alias="aa" extended-vo="Alert2VO">
             <association table="house" property="house" schema="schema2" alias="h" />
           </collection>
+           -->
         </vo>
       </columns>
       from account a
@@ -121,8 +125,9 @@
       where a.current_balance >= 100;
     </select>
   </dao>
+
 <!-- 
- -->
   <fragment file="hotrod-extra1.xml" />
+ -->
 
 </hotrod>

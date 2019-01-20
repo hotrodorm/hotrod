@@ -1,0 +1,35 @@
+
+1. All columns
+
+  <collection table="attribute" property="attributes" extended-vo="SelectableAttributeVO" alias="a">
+  </collection>
+
+2. Some columns
+
+  <collection table="attribute" property="attributes" extended-vo="SelectableAttributeVO" alias="a">
+    a.total
+  </collection>
+
+3. All columns + expressions
+
+  <collection table="attribute" property="attributes" extended-vo="SelectableAttributeVO" alias="a">
+    <expression property="aselected">b.fid is not null</expression>
+  </collection>
+
+4. Some columns + expressions
+
+  <collection table="attribute" property="attributes" extended-vo="SelectableAttributeVO" alias="a">
+    a.total
+    <expression property="aselected">b.fid is not null</expression>
+  </collection>
+
+5. Only expressions
+
+  <collection table="attribute" property="attributes" extended-vo="SelectableAttributeVO">
+    <expression property="aselected">b.fid is not null</expression>
+  </collection>
+
+
+
+
+

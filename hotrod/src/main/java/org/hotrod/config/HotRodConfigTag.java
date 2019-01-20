@@ -173,13 +173,13 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   @Override
   public boolean concludeGeneration(final AbstractHotRodConfigTag unitCache, final DatabaseAdapter adapter) {
-    log.info("CONCLUDE 1");
+    log.debug("CONCLUDE 1");
 
     HotRodConfigTag cache = (HotRodConfigTag) unitCache;
 
     boolean successfulCommonGeneration = super.commonConcludeGeneration(cache, adapter);
 
-    log.info("CONCLUDE: successfulCommonGeneration=" + successfulCommonGeneration);
+    log.debug("CONCLUDE: successfulCommonGeneration=" + successfulCommonGeneration);
 
     boolean failedExtendedGeneration = false;
 

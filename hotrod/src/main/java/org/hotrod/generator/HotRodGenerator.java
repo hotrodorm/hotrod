@@ -763,9 +763,9 @@ public abstract class HotRodGenerator {
   private void logExpressions(final List<StructuredColumnMetadata> expressions, final int level) {
     String filler = SUtils.getFiller(' ', level);
     for (StructuredColumnMetadata cm : expressions) {
-      display("   " + filler + "+ " + cm.getId().getJavaMemberName() + " [expr] <is "
-          + (cm.isId() ? "" : "not ") + "ID> (" + (cm.getConverter() != null
-              ? "<converted-to> " + cm.getConverter().getJavaType() : cm.getType().getJavaClassName())
+      display("   " + filler + "+ " + cm.getId().getJavaMemberName() + " [expr] <is " + (cm.isId() ? "" : "not ")
+          + "ID> (" + (cm.getConverter() != null ? "<converted-to> " + cm.getConverter().getJavaType()
+              : cm.getType().getJavaClassName())
           + ") --> " + cm.getColumnAlias());
     }
   }
@@ -833,9 +833,9 @@ public abstract class HotRodGenerator {
   private void logColumns(final List<StructuredColumnMetadata> columns, final int level) {
     String indent = SUtils.getFiller(' ', level);
     for (StructuredColumnMetadata cm : columns) {
-      display("   " + indent + "- " + cm.getId().getJavaMemberName()
-          + (cm.isId() ? " <<id>>" : "") + " (" + (cm.getConverter() != null
-              ? "<converted-to> " + cm.getConverter().getJavaType() : cm.getType().getJavaClassName())
+      display("   " + indent + "- " + cm.getId().getJavaMemberName() + (cm.isId() ? " <<id>>" : "") + " ("
+          + (cm.getConverter() != null ? "<converted-to> " + cm.getConverter().getJavaType()
+              : cm.getType().getJavaClassName())
           + ") --> " + cm.getColumnAlias());
     }
   }

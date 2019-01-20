@@ -22,7 +22,9 @@ import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsPrefixGenerator;
@@ -37,6 +39,7 @@ public class Expressions implements ColumnsProvider, Serializable {
 
   // Properties
 
+  private TableDataSetMetadata tableMetadata;
   private List<ExpressionTag> expressions;
 
   protected transient ColumnsMetadataRetriever columnsRetriever;
@@ -68,9 +71,10 @@ public class Expressions implements ColumnsProvider, Serializable {
     }
   }
 
-  @Override
-  public void validateAgainstDatabase(HotRodGenerator generator) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final HotRodGenerator generator, final TableDataSetMetadata tableMetadata)
+      throws InvalidConfigurationFileException {
     this.generator = generator;
+    this.tableMetadata = tableMetadata;
   }
 
   @Override
@@ -134,7 +138,18 @@ public class Expressions implements ColumnsProvider, Serializable {
           String msg = "Invalid name for column '" + cm.getColumnName() + tag.getClassName() + "': " + e.getMessage();
           throw new InvalidConfigurationFileException(tag, msg, msg);
         }
-        cm.setId(tag.isId());
+
+        boolean isId = false;
+        for (ColumnMetadata tableCol : this.tableMetadata.getColumns()) {
+          if (tableCol.getId().getJavaMemberName().equals(tag.getProperty()) && tableCol.belongsToPK()) {
+            isId = true;
+          }
+          if (tableCol.getId().getJavaMemberName().equals(tag.getProperty())) {
+            cm.setReusesMemberFromSuperClass(true);
+          }
+        }
+
+        cm.setId(isId);
         cm.setFormula(tag.getBody());
         tag.setMetadata(cm);
       }

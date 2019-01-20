@@ -185,9 +185,11 @@ public class SelectAbstractVO {
       println("  // Expression properties");
       println();
       for (ColumnMetadata cm : this.columns) {
-        String javaType = cm.getType().getJavaClassName();
-        println("  protected " + javaType + " " + cm.getId().getJavaMemberName() + " = null;"
-            + (cm.getType().isLOB() ? " // it's a LOB type" : ""));
+        if (!cm.reusesMemberFromSuperClass()) {
+          String javaType = cm.getType().getJavaClassName();
+          println("  protected " + javaType + " " + cm.getId().getJavaMemberName() + " = null;"
+              + (cm.getType().isLOB() ? " // it's a LOB type" : ""));
+        }
       }
       println();
     }
@@ -217,16 +219,18 @@ public class SelectAbstractVO {
     println();
 
     for (ColumnMetadata cm : this.columns) {
-      String javaType = cm.getType().getJavaClassName();
-      String property = cm.getId().getJavaMemberName();
+      if (!cm.reusesMemberFromSuperClass()) {
+        String javaType = cm.getType().getJavaClassName();
+        String property = cm.getId().getJavaMemberName();
 
-      println("  public final " + javaType + " " + cm.getId().getJavaGetter() + "() {");
-      println("    return this." + property + ";");
-      println("  }");
-      println();
+        println("  public final " + javaType + " " + cm.getId().getJavaGetter() + "() {");
+        println("    return this." + property + ";");
+        println("  }");
+        println();
 
-      String setter = cm.getId().getJavaSetter();
-      writeSetter(property, javaType, setter, true);
+        String setter = cm.getId().getJavaSetter();
+        writeSetter(property, javaType, setter, true);
+      }
     }
 
     for (VOMember a : this.associationMembers) {

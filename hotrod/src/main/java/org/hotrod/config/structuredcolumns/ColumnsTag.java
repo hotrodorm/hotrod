@@ -136,7 +136,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
     // expressions
 
-    this.expressions.validateAgainstDatabase(generator);
+    this.expressions.validateAgainstDatabase(generator, null);
 
   }
 
@@ -253,6 +253,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
     // expressions
 
     Set<String> ids = new HashSet<String>(this.idNames);
+
     this.expressions.validate(daosTag, config, fragmentConfig, connectedVOResult, ids);
     if (!ids.isEmpty()) {
       throw new InvalidConfigurationFileException(this, //
@@ -313,7 +314,8 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   private ClassPackage getVOClassPackage(final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig) {
     ClassPackage fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
-        ? fragmentConfig.getFragmentPackage() : null;
+        ? fragmentConfig.getFragmentPackage()
+        : null;
     return layout.getDAOPackage(fragmentPackage);
   }
 

@@ -161,9 +161,11 @@ public class VOMetadata implements Serializable {
       // Entity VO properties
 
       for (ColumnMetadata cm : this.entityVOSuperClass.getColumnsByName().values()) {
-        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false, this.tag);
-        properties.add(new VOProperty(cm.getId().getJavaMemberName(), m, EnclosingTagType.ENTITY_VO,
-            this.entityVOSuperClass.getTag()));
+        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix3", "columnAlias", false, this.tag);
+        if (this.tag.getAlias() != null) {
+          properties.add(new VOProperty(cm.getId().getJavaMemberName(), m, EnclosingTagType.ENTITY_VO,
+              this.entityVOSuperClass.getTag()));
+        }
       }
 
       // Expressions properties
@@ -306,7 +308,8 @@ public class VOMetadata implements Serializable {
 
   private ClassPackage getVOClassPackage(final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig) {
     ClassPackage fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
-        ? fragmentConfig.getFragmentPackage() : null;
+        ? fragmentConfig.getFragmentPackage()
+        : null;
     return layout.getDAOPackage(fragmentPackage);
   }
 

@@ -158,7 +158,8 @@ public class ColumnsMetadataRetriever {
           }
 
           String alias = this.aliasPrefix + cm.getColumnName();
-          StructuredColumnMetadata scm = new StructuredColumnMetadata(cm, this.entityPrefix, alias, false, null);
+          StructuredColumnMetadata scm = new StructuredColumnMetadata(cm, this.entityPrefix, alias, false,
+              null, this.columnsProvider);
           columns.add(scm);
         }
 

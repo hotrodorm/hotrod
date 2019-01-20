@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ColumnTag;
+import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
@@ -22,6 +23,7 @@ public class StructuredColumnMetadata extends ColumnMetadata implements Serializ
   private String formula;
   private boolean id;
   private AbstractConfigurationTag tag;
+  private ColumnsProvider columnsProvider;
 
   // Constructor
 
@@ -33,6 +35,18 @@ public class StructuredColumnMetadata extends ColumnMetadata implements Serializ
     this.formula = null;
     this.id = id;
     this.tag = tag;
+    this.columnsProvider = null;
+  }
+
+  public StructuredColumnMetadata(final ColumnMetadata cm, final String entityPrefix, final String columnAlias,
+      final boolean id, final AbstractConfigurationTag tag, final ColumnsProvider columnsProvider) {
+    super(cm);
+    this.entityPrefix = entityPrefix;
+    this.columnAlias = columnAlias;
+    this.formula = null;
+    this.id = id;
+    this.tag = tag;
+    this.columnsProvider = columnsProvider;
   }
 
   // Behavior
@@ -68,8 +82,16 @@ public class StructuredColumnMetadata extends ColumnMetadata implements Serializ
     return id;
   }
 
+  public String getEntityPrefix() {
+    return entityPrefix;
+  }
+
   public AbstractConfigurationTag getTag() {
     return this.tag;
+  }
+
+  public ColumnsProvider getColumnsProvider() {
+    return columnsProvider;
   }
 
   // Rendering

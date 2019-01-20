@@ -23,7 +23,6 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.metadata.DataSetMetadata;
@@ -32,7 +31,6 @@ import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.Correlator;
 import org.hotrod.utils.Correlator.CorrelatedEntry;
 import org.hotrod.utils.FileRegistry;
-import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag

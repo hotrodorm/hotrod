@@ -22,7 +22,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
 import org.hotrod.config.AbstractHotRodConfigTag.LocationListener;
@@ -41,7 +40,8 @@ import org.xml.sax.SAXParseException;
 
 public class ConfigurationLoader {
 
-  private static final String DEBUG_PATH = "/src/main/xml/";
+  // private static final String DEBUG_PATH = "/src/main/xml/";
+  private static final String DEBUG_PATH = "/";
   private static final String PLUGIN_PATH = "/xml/";
 
   // Constants
@@ -63,8 +63,6 @@ public class ConfigurationLoader {
 
   public static HotRodConfigTag loadPrimary(final File projectBaseDir, final File f, final String generatorName,
       final DatabaseAdapter adapter) throws ControlledException, UncontrolledException {
-
-    log.setLevel(Level.DEBUG);
 
     log.debug("loading file: " + f);
 
@@ -162,7 +160,7 @@ public class ConfigurationLoader {
 
     } catch (InvalidConfigurationFileException e) {
       SourceLocation loc = e.getTag().getSourceLocation();
-      log.info("loc=" + loc);
+      log.debug("loc=" + loc);
       if (loc == null) {
         throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage(),
             e.getInteractiveMessage());
@@ -278,7 +276,7 @@ public class ConfigurationLoader {
       }
 
     } catch (FileAlreadyRegisteredException e) {
-      log.info("********** exception in tag: " + e.getContainerTag().getSourceLocation());
+      log.debug("********** exception in tag: " + e.getContainerTag().getSourceLocation());
       throw new ControlledException(e.getContainerTag().getSourceLocation(),
           "Invalid configuration file '" + f.getPath() + "': this fragment file has already been loaded once.");
     } finally {
@@ -342,12 +340,12 @@ public class ConfigurationLoader {
       try {
 
         is = ConfigurationLoader.class.getResourceAsStream(DEBUG_PRIMARY_XSD_PATH);
-        log.info("[Load #1] is=" + is);
+        log.debug("[Load #1] is=" + is);
 
         if (is == null) { // try the plugin location
-          log.info("[Load #2]");
+          log.debug("[Load #2]");
           is = ConfigurationLoader.class.getResourceAsStream(PLUGIN_PRIMARY_XSD_PATH);
-          log.info("[Load #3] is=" + is);
+          log.debug("[Load #3] is=" + is);
         }
         log.debug("[Load #4]");
         primarySchema = factory.newSchema(new StreamSource(is));
@@ -405,7 +403,7 @@ public class ConfigurationLoader {
     @Override
     public LSInput resolveResource(final String type, final String namespaceURI, final String publicId,
         final String systemId, final String baseURI) {
-      log.info("[RESOLVE]\n  type=" + type + "\n  namespaceURI=" + namespaceURI + "\n  publicId=" + publicId
+      log.debug("[RESOLVE]\n  type=" + type + "\n  namespaceURI=" + namespaceURI + "\n  publicId=" + publicId
           + "\n  systemId=" + systemId + "\n  baseURI=" + baseURI);
       return new XSDInput(type, namespaceURI, publicId, systemId, baseURI);
     }

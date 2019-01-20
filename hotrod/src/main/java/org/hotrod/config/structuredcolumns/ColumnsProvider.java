@@ -9,12 +9,12 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
-import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 
 public interface ColumnsProvider {
 
-  void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException;
+  // void validateAgainstDatabase(final HotRodGenerator generator) throws
+  // InvalidConfigurationFileException;
 
   void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, Connection conn1) throws InvalidSQLException;

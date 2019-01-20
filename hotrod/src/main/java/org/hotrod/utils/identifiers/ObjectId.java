@@ -193,6 +193,7 @@ public class ObjectId implements Comparable<ObjectId> {
     return this.getRenderedSQLName();
   }
 
+  @SuppressWarnings("unused")
   private void log(final String txt) {
     // System.out.println("[log] " + txt);
   }

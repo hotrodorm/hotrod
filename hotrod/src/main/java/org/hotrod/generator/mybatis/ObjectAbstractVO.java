@@ -40,6 +40,7 @@ public class ObjectAbstractVO extends GeneratableObject {
   public ObjectAbstractVO(final DataSetMetadata metadata, final DataSetLayout layout, final MyBatisGenerator generator,
       final DAOType daoType, final MyBatisTag myBatisTag) {
     log.debug("init");
+
     this.metadata = metadata;
     this.layout = layout;
     this.generator = generator;
@@ -51,7 +52,8 @@ public class ObjectAbstractVO extends GeneratableObject {
     this.myBatisTag = myBatisTag;
     this.fragmentConfig = metadata.getFragmentConfig();
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
-        ? this.fragmentConfig.getFragmentPackage() : null;
+        ? this.fragmentConfig.getFragmentPackage()
+        : null;
 
     this.classPackage = this.layout.getDAOPrimitivePackage(this.fragmentPackage);
   }
@@ -165,7 +167,6 @@ public class ObjectAbstractVO extends GeneratableObject {
 
       String setter = cm.getId().getJavaSetter();
       writeSetter(cm, javaType, m, setter);
-
     }
 
   }

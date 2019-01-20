@@ -46,6 +46,8 @@ public class ColumnMetadata implements Serializable {
 
   private boolean isVersionControlColumn;
 
+  private boolean reusesMemberFromSuperClass;
+
   // ToString
 
   public String toString() {
@@ -87,6 +89,7 @@ public class ColumnMetadata implements Serializable {
     this.adapter = adapter;
     this.type = this.adapter.resolveJavaType(this, this.tag);
     this.isVersionControlColumn = isVersionControlColumn;
+    this.reusesMemberFromSuperClass = false;
   }
 
   public void setEnumMetadata(final EnumDataSetMetadata enumMetadata) {
@@ -116,6 +119,7 @@ public class ColumnMetadata implements Serializable {
     this.tag = cm.tag;
     this.type = cm.type;
     this.isVersionControlColumn = cm.isVersionControlColumn;
+    this.reusesMemberFromSuperClass = false;
   }
 
   // From a <select> tag
@@ -147,6 +151,7 @@ public class ColumnMetadata implements Serializable {
     this.adapter = adapter;
     this.type = this.adapter.resolveJavaType(this, this.tag);
     this.isVersionControlColumn = isVersionControlColumn;
+    this.reusesMemberFromSuperClass = false;
   }
 
   // Applying a column tag to a column meta data
@@ -270,10 +275,18 @@ public class ColumnMetadata implements Serializable {
     return this.autogenerationType;
   }
 
+  public boolean reusesMemberFromSuperClass() {
+    return reusesMemberFromSuperClass;
+  }
+
   // Setters
 
   void setVersionControlColumn(boolean isVersionControlColumn) {
     this.isVersionControlColumn = isVersionControlColumn;
+  }
+
+  public void setReusesMemberFromSuperClass(boolean reusesMemberFromSuperClass) {
+    this.reusesMemberFromSuperClass = reusesMemberFromSuperClass;
   }
 
   // Sorting

@@ -102,7 +102,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     this.structuredColumns = null;
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
-        ? this.fragmentConfig.getFragmentPackage() : null;
+        ? this.fragmentConfig.getFragmentPackage()
+        : null;
     this.classPackage = layout.getDAOPackage(fragmentPackage);
 
     this.selectMethodReturnType = null;
@@ -180,7 +181,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       List<VOProperty> properties = new ArrayList<VOProperty>();
 
       for (ColumnMetadata cm : this.nonStructuredColumns) {
-        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false, this.tag);
+        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix1", "columnAlias", false, this.tag);
         properties
             .add(new VOProperty(m.getId().getJavaMemberName(), m, EnclosingTagType.NON_STRUCTURED_SELECT, this.tag));
       }
@@ -595,7 +596,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
         List<VOProperty> properties = new ArrayList<VOProperty>();
         for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
-          StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix", "columnAlias", false, null);
+          StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix2", "columnAlias", false, null);
           VOProperty p = new VOProperty(cm.getId().getJavaMemberName(), m, EnclosingTagType.NON_STRUCTURED_SELECT,
               sm.tag);
           properties.add(p);

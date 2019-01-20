@@ -8,7 +8,6 @@ import java.util.TreeMap;
 import org.hotrod.runtime.util.ListWriter;
 import org.nocrala.tools.texttreeformatter.TextTreeFormatter;
 import org.nocrala.tools.texttreeformatter.TextTreeStyle;
-import org.nocrala.tools.texttreeformatter.TreeNode;
 import org.plan.ExecutionPlan;
 import org.plan.operator.Operator;
 import org.plan.operator.Operator.IndexColumn;
@@ -56,8 +55,8 @@ public class TextRenderer {
 
     OperatorNode root = renderOperator(op, 0, costRenderer);
     TextTreeFormatter formatter = new TextTreeFormatter(TextTreeStyle.CLASSIC_FULL2);
-    String tree = formatter.render(root);
-    sb.append(tree);
+//    String tree = formatter.render(root);
+//    sb.append(tree);
 
     sb.append("\n");
 
@@ -211,7 +210,7 @@ public class TextRenderer {
     return sb.toString();
   }
 
-  private static class OperatorNode implements TreeNode {
+  private static class OperatorNode {
 
     private String label;
     private List<OperatorNode> children;
@@ -221,15 +220,15 @@ public class TextRenderer {
       this.children = children;
     }
 
-    @Override
-    public String getLabel() {
-      return this.label;
-    }
-
-    @Override
-    public List<TreeNode> getChildren() {
-      return new ArrayList<TreeNode>(this.children);
-    }
+//    @Override
+//    public String getLabel() {
+//      return this.label;
+//    }
+//
+//    @Override
+//    public List<TreeNode> getChildren() {
+//      return new ArrayList<TreeNode>(this.children);
+//    }
 
   }
 

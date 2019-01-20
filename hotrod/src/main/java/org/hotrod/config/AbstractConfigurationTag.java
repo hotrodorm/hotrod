@@ -174,7 +174,7 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   }
 
   public boolean treeIncludesIsToBeGenerated(final int level) {
-    log.info("@@ " + SUtils.getFiller(". ", level) + "[" + (this.isToBeGenerated() ? "g" : "_") + "] "
+    log.debug("@@ " + SUtils.getFiller(". ", level) + "[" + (this.isToBeGenerated() ? "g" : "_") + "] "
         + (this.status.getIcon()) + " " + this.getInternalCaption());
     if (this.isToBeGenerated()) {
       return true;
@@ -332,7 +332,7 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
 
   @SuppressWarnings("unused")
   private void displayGenerateMark(final AbstractConfigurationTag tag, final int level) {
-    log.info(SUtils.getFiller(". ", level) + " " + (tag.isToBeGenerated() ? "G" : "_") + " " + tag.getStatus().getIcon()
+    log.debug(SUtils.getFiller(". ", level) + " " + (tag.isToBeGenerated() ? "G" : "_") + " " + tag.getStatus().getIcon()
         + " " + tag.getInternalCaption() + " - " + System.identityHashCode(tag));
     for (AbstractConfigurationTag subtag : tag.getSubTags()) {
       displayGenerateMark(subtag, level + 1);

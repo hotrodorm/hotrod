@@ -96,10 +96,10 @@ public class SelectTests {
     System.out.println("=== Tree ===");
     for (Account2VO acc : AlertFinder.findAlerts()) {
       System.out.println("account: " + acc);
-      for (Alert2VO a : acc.getAlerts()) {
-        System.out.println(" + alert: " + a);
-        System.out.println(" + house: " + a.getHouse());
-      }
+      // for (Alert2VO a : acc.getAlerts()) {
+      // System.out.println(" + alert: " + a);
+      // System.out.println(" + house: " + a.getHouse());
+      // }
     }
     System.out.println("===");
   }
@@ -133,7 +133,6 @@ public class SelectTests {
     }
 
   }
-
 
   // Select using cursor
 
@@ -188,5 +187,4 @@ public class SelectTests {
     System.out.println(title + ": " + pf.format(1.0 * usedK / totalK) + " = " + usedK + " kB / " + totalK + " kB");
   }
 
-  
 }
