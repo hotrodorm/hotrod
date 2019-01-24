@@ -209,7 +209,7 @@
   </target>
 
   <target name="jar" depends="compile-runtime, compile-main">
-    <jar destfile="${dist.dir}/${projectName}-${version}-runtime.jar">
+    <jar destfile="${dist.dir}/${projectName}-runtime-${version}.jar">
       <fileset dir="${runtime.build.dir}" />
       <zipfileset dir="${runtime.src.dir}" prefix="src" />
     </jar>
