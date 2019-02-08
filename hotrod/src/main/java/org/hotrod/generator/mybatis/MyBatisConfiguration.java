@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.exceptions.ControlledException;
@@ -16,6 +17,8 @@ import org.hotrod.generator.GeneratableObject;
 import org.hotrod.runtime.util.SUtils;
 
 public class MyBatisConfiguration extends GeneratableObject {
+
+  private static transient final Logger log = Logger.getLogger(MyBatisConfiguration.class);
 
   private static final String MAPPERS_INSERTION_TOKEN = "<mappers/>";
 
@@ -112,19 +115,34 @@ public class MyBatisConfiguration extends GeneratableObject {
   }
 
   private String prepareMappers() {
+
     StringBuilder sb = new StringBuilder();
     sb.append("  <mappers>\n");
 
     for (String sourceFile : this.sourceFiles) {
-      sb.append("    <mapper resource=\"" + sourceFile + "\" />\n");
+      sb.append("    <mapper resource=\"" + getFileURL(sourceFile) + "\" />\n");
     }
 
     for (String m : this.mapperCustom) {
-      sb.append("    <mapper resource=\"" + this.mybatisTag.getMappers().getRelativeCustomDir() + "/" + m + "\" />\n");
+      sb.append("    <mapper resource=\"" + getFileURL(this.mybatisTag.getMappers().getRelativeCustomDir() + "/" + m)
+          + "\" />\n");
     }
 
     sb.append("  </mappers>\n");
     return sb.toString();
+  }
+
+  private String getFileURL(final String relativePath) {
+    String adaptedURL = adaptURL(relativePath);
+    log.debug("mapperURL=" + adaptedURL);
+    return adaptedURL;
+  }
+
+  private String adaptURL(final String relativePath) {
+    if (File.separatorChar == '\\') { // windows path?
+      return relativePath.replace('\\', '/');
+    }
+    return relativePath;
   }
 
 }
