@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<hotrod>
+
+  <generators>
+    <mybatis>
+      <daos gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" />
+		  <!-- <daos gen-base-dir="gen/empusamb/daos" dao-package="empusa.test.generation.dao" 
+			  primitives-package="empusa.test.generation.prim" dao-prefix="" dao-suffix="DO" 
+			  primitives-prefix="" primitives-suffix="AO" /> -->
+      <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
+      <mybatis-configuration-template file="mybatis-config-template.xml" />
+      <session-factory singleton-full-class-name="sessionfactory.DatabaseSessionFactory" />
+      <select-generation temp-view-base-name="mybatis_temp_view" />
+    </mybatis>
+  </generators>
+
+  <table name="config_values" /> <!-- No PK -->
+
+<?comment 
+?>
+
+  <table name="properties" />
+  <table name="parameters">
+    <column name="level" java-type="java.lang.Long" jdbc-type="NUMERIC" />
+  </table>
+  <table name="log" />
+
+  <table name="account" /> <!-- identity by default PK -->
+  <table name="transaction" /> <!-- identity by default PK -->
+
+  <table name="state_branch" />
+  <table name="federal_branch" />
+  <table name="client" />
+
+  <table name="agent"> <!-- sequence-generated PK -->
+    <column name="id" sequence="seq_agent" />
+  </table>
+
+  <table name="codes" column-seam="_" /> <!-- identity by default PK -->
+
+  <table name="quadrant" />
+  <table name="application_config" />
+
+  <enum name="vehicle_type" name-column="description" />
+
+  <table name="vehicle">
+    <version-control-column name="version_number" />
+    <column name="version_number" java-type="java.lang.Short" jdbc-type="NUMERIC" initial-value="4" min-value="-7"
+      max-value="7" />
+  </table>
+
+  <table name="test_seq_ide_def1">
+    <column name="extra_id1" sequence="gen_seq1" />
+    <column name="extra_id2" sequence="gen_seq2" />
+  </table>
+
+  <table name="test_identity1" />
+  <table name="test_identity2" />
+  
+  <table name="cursor_example1" />
+
+  <table name="types_numeric" />
+  <table name="types_char" />
+  <table name="types_binary" />
+
+  <table name="types_date_time">
+  </table>
+
+  <table name="types_other">
+  
+<!--
+    <column name="uui1" java-type="java.lang.String" />
+    <column name="uui1" java-type="java.util.UUID" />
+    <column name="uui1" java-type="java.lang.Object" />
+
+    <column name="bit1" java-type="boolean[]" jdbc-type="BIT" /> 
+    <column name="current_mood" java-type="java.lang.String" jdbc-type="VARCHAR" />
+
+    <column name="jso1" java-type="java.lang.String" jdbc-type="OTHER" /> 
+    <column name="jso2" java-type="java.lang.String" jdbc-type="OTHER" /> 
+     
+-->
+  </table>
+
+  <table name="'car#part$Price'" />
+
+  <view name="tx_branch">
+    <column name="amount" java-type="java.lang.Long" jdbc-type="NUMERIC" />
+  </view>
+  
+  <!-- 
+  -->
+  <table name="'house_ROOM'" />
+  <table name="account_alert" schema="schema2" />
+  <table name="house" schema="schema2" />
+
+<!-- 
+  <table name="house" java-name="LocalHouse" />
+-->
+
+  <view name="low_account" schema="schema2" />
+
+  <table name="'&amp;Price%'" schema="'&lt;Stock$'">
+    <column name="id" sequence="seq_price" schema="'&lt;Stock$'" />
+  </table>
+
+  <dao class="AlertFinder">
+    <select method="findAlerts">
+      select
+      <columns>
+        <vo table="account" extended-vo="Account2VO">
+          <expression property="id">a.id + 1</expression>
+          <expression property="extra2">a.id + 1</expression>
+          <!-- 
+          <collection table="account_alert" schema="schema2" property="alerts" alias="aa" extended-vo="Alert2VO">
+            <association table="house" property="house" schema="schema2" alias="h" />
+          </collection>
+           -->
+        </vo>
+      </columns>
+      from account a
+      join schema2.account_alert aa on a.id = aa.account_id
+      join schema2.house h on h.id = aa.house_id
+      where a.current_balance >= 100;
+    </select>
+  </dao>
+
+<!-- 
+  <fragment file="hotrod-extra1.xml" />
+ -->
+
+</hotrod>

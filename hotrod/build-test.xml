@@ -41,7 +41,7 @@
       <src path="${test.src.dir}" />
       <classpath>
         <pathelement path="${daos.build.dir}" />
-        <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
         <!--pathelement location="${lib.dir}/jdbc-drivers/ojdbc6.jar" /-->
@@ -65,7 +65,7 @@
       <src path="${test.src.dir}-gp" />
       <classpath>
         <pathelement path="${daos.build.dir}" />
-        <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
         <!--pathelement location="${lib.dir}/jdbc-drivers/ojdbc6.jar" /-->
@@ -86,7 +86,7 @@
         <pathelement path="${db.src.dir}/.." />
         <pathelement path="${test.src.dir}/../metadata" />
         <pathelement location="${db.src.dir}/${driverclasspath}" />
-        <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
       </classpath>
@@ -100,7 +100,7 @@
         <pathelement path="gen/hotrod/mappers" />
         <pathelement path="${db.src.dir}" />
         <pathelement location="${db.src.dir}/${driverclasspath}" />
-        <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
       </classpath>
@@ -114,7 +114,7 @@
         <pathelement path="gen/hotrod/mappers" />
         <pathelement path="${db.src.dir}" />
         <pathelement location="${db.src.dir}/${driverclasspath}" />
-        <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
       </classpath>
@@ -128,7 +128,7 @@
         <pathelement path="gen/hotrod/mappers" />
         <pathelement path="${db.src.dir}" />
         <pathelement location="${db.src.dir}/${driverclasspath}" />
-        <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
       </classpath>
@@ -142,7 +142,7 @@
         <pathelement path="gen/hotrod/mappers" />
         <pathelement path="${db.src.dir}" />
         <pathelement location="${db.src.dir}/${driverclasspath}" />
-        <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
       </classpath>
@@ -157,7 +157,7 @@
         <pathelement path="${db.src.dir}" />
         <pathelement path="${test.src.dir}/../metadata" />
         <pathelement location="${db.src.dir}/${driverclasspath}" />
-        <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
         <pathelement location="lib/apache-commons/commons-jexl3-3.1.jar" />
@@ -174,7 +174,7 @@
         <pathelement path="${db.src.dir}" />
         <pathelement path="${test.src.dir}/../metadata" />
         <pathelement location="${db.src.dir}/${driverclasspath}" />
-        <pathelement location="${dist.dir}/${projectName}-${version}-runtime.jar" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
         <pathelement location="lib/apache-commons/commons-jexl3-3.1.jar" />

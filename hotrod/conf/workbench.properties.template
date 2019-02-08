@@ -22,6 +22,9 @@ ECLIPSE_HOME=/home/valarcon/apps/eclipse/eclipse-jee-neon-4.6-java6
 # --- PostgreSQL 9.4 ---
 #db.src.dir=testdata/databases/postgresql-9.4
 
+# --- PostgreSQL 11.1 ---
+#db.src.dir=testdata/databases/postgresql-11.1
+
 # --- SQL Server 2014 ---
 #db.src.dir=testdata/databases/sqlserver-2014
 
