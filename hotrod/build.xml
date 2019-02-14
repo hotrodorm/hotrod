@@ -230,7 +230,7 @@
 
   <target name="clean-build" depends="clean, build" />
 
-  <target name="release" depends="clean, build, jar-eclipse-plugin">
+  <target name="release" depends="clean, build"> <!-- excluded: jar-eclipse-plugin -->
     <!--
     <zip destfile="${dist.dir}/quick-start-example.zip">
       <fileset dir="docs/quick-start-example" excludes="build/**/*" />
