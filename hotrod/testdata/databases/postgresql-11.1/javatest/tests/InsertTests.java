@@ -75,6 +75,7 @@ public class InsertTests {
   private static void insertWithIdentityAlways() throws SQLException {
 
     TestIdentity1VO i1 = new TestIdentity1VO();
+    i1.setId(1234); // ignored
     i1.setName("name-1 " + new Date());
 
     TestIdentity1DAO.insert(i1);
@@ -86,7 +87,8 @@ public class InsertTests {
 
     TestIdentity2VO i2 = new TestIdentity2VO();
     i2.setName("name-2 " + new Date());
-    i2.setId2(100);
+    // i2.setId(100);
+    // i2.setId2(200);
 
     TestIdentity2DAO.insert(i2);
     System.out.println("-> id=" + i2.getId() + " id2=" + i2.getId2());
