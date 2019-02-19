@@ -2,7 +2,7 @@
 
   ./run-hypersql.sh
    
-2. Crear una base de datos Derby, usando el script: database.sql
+2. Crear una base de datos Derby, usando el script: database-hypersql.sql
 
 Usando cualquier cliente JDBC, ejecutar el script. Datos para JDBC:
   * classpath:    lib/hsqldb-2.3.4.jar
