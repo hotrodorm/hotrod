@@ -338,7 +338,7 @@ public class ObjectDAO extends GeneratableObject {
 
     // Signature
 
-    println("public abstract class " + this.getClassName() + " implements Serializable {");
+    println("public class " + this.getClassName() + " implements Serializable {");
     println();
 
     // Serial Version UID

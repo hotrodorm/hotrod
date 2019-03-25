@@ -6,7 +6,7 @@
   <loadproperties srcFile="build.properties" />
   <loadproperties srcFile="conf/workbench.properties" />
 
-  <property name="test.src.dir" value="${db.src.dir}/javatest" />
+  <property name="test.src.dir" value="${db.src.dir}/javatest-mb-spring" />
   <property name="daos.src.dir" value="gen/hotrod/daos" />
 
   <property name="lib.dir" value="lib" />
@@ -44,6 +44,11 @@
         <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+        
+        <fileset dir="lib/spring2">
+          <include name="**/*.jar"/>
+        </fileset>
+        
         <!--pathelement location="${lib.dir}/jdbc-drivers/ojdbc6.jar" /-->
         <!--pathelement location="${lib.dir}/jdbc-drivers/h2-1.3.176.jar" /-->
       </classpath>
@@ -117,6 +122,25 @@
         <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="test-mb-spring" depends="clean-build">
+    <java classname="hotrod.test.Examples" fork="yes">
+      <classpath>
+        <pathelement path="${test.build.dir}" />
+        <pathelement path="gen/hotrod/mappers" />
+        <pathelement path="${db.src.dir}" />
+        <pathelement location="${db.src.dir}/${driverclasspath}" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+
+        <fileset dir="lib/spring2">
+          <include name="**/*.jar"/>
+        </fileset>
+          
       </classpath>
     </java>
   </target>

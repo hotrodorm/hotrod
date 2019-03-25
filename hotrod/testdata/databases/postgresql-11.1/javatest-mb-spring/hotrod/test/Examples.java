@@ -1,4 +1,4 @@
-package tests;
+package hotrod.test;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -15,21 +15,26 @@ import hotrod.test.generation.primitives.TxBranchDAO.TxBranchOrderBy;
 public class Examples {
 
   public static void main(final String[] args) throws IOException, SQLException {
-    examples();
+    Examples ex = new Examples();
+    ex.runExamples();
   }
 
-  private static void examples() throws SQLException {
+  private void runExamples() throws SQLException {
+
+    AccountDAO dao = SpringBeanRetriever.getBean("accountDAO");
 
     // Select by PK
 
     {
-      AccountVO a = AccountDAO.select(1004);
+      AccountVO a = dao.selectByPK(1004);
+      System.out.println("Test #1: a=" + a);
     }
 
     // Select by UI
 
     {
-      AccountVO a = AccountDAO.selectByUIName("CHK1004");
+      AccountVO a = dao.selectByUIName("CHK1004");
+      System.out.println("Test #2: a=" + a);
     }
 
     // Select by example
@@ -39,7 +44,10 @@ public class Examples {
 
       AccountVO example = new AccountVO();
       example.setCreatedOn(creationDate);
-      List<AccountVO> accounts = AccountDAO.selectByExample(example);
+      List<AccountVO> accounts = dao.selectByExample(example);
+      for (AccountVO a : accounts) {
+        System.out.println("Test #3: a=" + a);
+      }
     }
 
     // Select by example with order by
@@ -49,8 +57,10 @@ public class Examples {
 
       AccountVO example = new AccountVO();
       example.setCreatedOn(creationDate);
-      List<AccountVO> accounts = AccountDAO.selectByExample(example, AccountOrderBy.CURRENT_BALANCE$DESC,
-          AccountOrderBy.NAME);
+      List<AccountVO> accounts = dao.selectByExample(example, AccountOrderBy.CURRENT_BALANCE$DESC, AccountOrderBy.NAME);
+      for (AccountVO a : accounts) {
+        System.out.println("Test #4: a=" + a);
+      }
     }
 
     // insert
@@ -63,16 +73,17 @@ public class Examples {
       a.setName("CHK4010");
       a.setCreatedOn(creationDate);
       a.setCurrentBalance(0);
-      AccountDAO.insert(a);
-      System.out.println("New account id is: " + a.getId());
+      dao.insert(a);
+      System.out.println("Test #5 - new account id is: " + a.getId());
     }
 
     // update the balance
 
     {
-      AccountVO a = AccountDAO.select(1004);
+      AccountVO a = dao.selectByPK(1004);
       a.setCurrentBalance(250);
-      int rows = AccountDAO.update(a);
+      int rows = dao.update(a);
+      System.out.println("Test #6 - updated rows=" + rows);
     }
 
     // update by example
@@ -84,7 +95,8 @@ public class Examples {
       example.setCreatedOn(creationDate);
       AccountVO updateValues = new AccountVO();
       updateValues.setCurrentBalance(0);
-      int rows = AccountDAO.updateByExample(example, updateValues);
+      int rows = dao.updateByExample(example, updateValues);
+      System.out.println("Test #7 - updated rows=" + rows);
     }
 
     // delete
@@ -92,7 +104,8 @@ public class Examples {
     {
       AccountVO a = new AccountVO();
       a.setId(104);
-      int rows = AccountDAO.delete(a);
+      int rows = dao.delete(a);
+      System.out.println("Test #8 - deleted rows=" + rows);
     }
 
     // delete by example
@@ -102,15 +115,20 @@ public class Examples {
 
       AccountVO example = new AccountVO();
       example.setCreatedOn(creationDate);
-      int rows = AccountDAO.deleteByExample(example);
+      int rows = dao.deleteByExample(example);
+      System.out.println("Test #9 - updated rows=" + rows);
     }
 
     // Views
 
     {
+      TxBranchDAO tdao = SpringBeanRetriever.getBean("txBranchDAO");
       TxBranchVO example = new TxBranchVO();
       example.setBranchId(681);
-      List<TxBranchVO> txs = TxBranchDAO.selectByExample(example, TxBranchOrderBy.ACCOUNT_ID, TxBranchOrderBy.AMOUNT);
+      List<TxBranchVO> txs = tdao.selectByExample(example, TxBranchOrderBy.ACCOUNT_ID, TxBranchOrderBy.AMOUNT);
+      for (TxBranchVO b : txs) {
+        System.out.println("Test #10: b=" + b);
+      }
     }
 
     // Selects
