@@ -40,7 +40,6 @@ import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
 import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
-import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.StaleDataException;
 import org.hotrod.runtime.interfaces.DaoForUpdate;
 import org.hotrod.runtime.interfaces.DaoWithOrder;
@@ -49,7 +48,6 @@ import org.hotrod.runtime.interfaces.Selectable;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.tx.TxManager;
 import org.hotrod.runtime.util.ListWriter;
-import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.GenUtils;
 import org.hotrod.utils.ImportsRenderer;
@@ -106,7 +104,8 @@ public class ObjectDAO extends GeneratableObject {
 
     this.fragmentConfig = metadata.getFragmentConfig();
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
-        ? this.fragmentConfig.getFragmentPackage() : null;
+        ? this.fragmentConfig.getFragmentPackage()
+        : null;
 
     this.classPackage = this.layout.getDAOPrimitivePackage(this.fragmentPackage);
   }
@@ -121,7 +120,7 @@ public class ObjectDAO extends GeneratableObject {
     return this.daoType == DAOType.VIEW;
   }
 
-  public boolean isPlain() {
+  public boolean isExecutor() {
     return this.daoType == DAOType.EXECUTOR;
   }
 
@@ -140,32 +139,32 @@ public class ObjectDAO extends GeneratableObject {
 
       writeClassHeader();
 
-      if (!this.isPlain()) {
+      if (!this.isExecutor()) {
 
         if (this.isTable()) {
-          writeSelectByPK(mg);
-          writeSelectByUI(mg);
+          writeSelectByPK(mg); // done
+          writeSelectByUI(mg); // done
         }
 
-        writeSelectByExampleAndOrder();
+        writeSelectByExampleAndOrder(); // done
 
         if (this.isTable()) {
-          writeSelectParentByFK();
-          writeSelectChildrenByFK();
+          // writeSelectParentByFK(); // done
+          // writeSelectChildrenByFK(); // done
 
-          writeInsert();
+          writeInsert(); // done
 
-          writeUpdateByPK();
-          writeDeleteByPK();
+          writeUpdateByPK(); // done
+          writeDeleteByPK(); // done
         }
 
         if (this.isView()) {
-          writeInsertByExample();
+          writeInsertByExample(); // done
         }
 
         if (this.isTable() || this.isView()) {
-          writeUpdateByExample();
-          writeDeleteByExample();
+          writeUpdateByExample(); // done
+          writeDeleteByExample(); // done
         }
 
         writeEnumTypeHandlers();
@@ -181,22 +180,19 @@ public class ObjectDAO extends GeneratableObject {
         log.debug("SQL NAME=" + this.metadata.getId().getCanonicalSQLName() + " this.tag=" + this.tag);
         for (SequenceMethodTag s : this.tag.getSequences()) {
           log.debug("s.getName()=" + s.getSequenceId().getRenderedSQLName());
-          writeSelectSequence(s);
+          writeSelectSequence(s); // done
         }
 
         for (QueryMethodTag q : this.tag.getQueries()) {
           log.debug("q.getJavaMethodName()=" + q.getMethod());
-          writeQuery(q);
+          writeQuery(q); // done
         }
 
         for (SelectMethodMetadata s : this.metadata.getSelectsMetadata()) {
-          // writeSelectExpression(); // remove once tested
-          writeSelect(s);
+          writeSelect(s); // done
         }
 
       }
-
-      writeTxManager();
 
       writeClassFooter();
 
@@ -245,9 +241,6 @@ public class ObjectDAO extends GeneratableObject {
     ImportsRenderer imports = new ImportsRenderer();
 
     imports.add("java.io.Serializable");
-    if (isCheckedPersistenceException()) {
-      imports.add("java.sql.SQLException");
-    }
     imports.add("java.util.List");
     imports.newLine();
     imports.add("org.apache.ibatis.session.SqlSession");
@@ -329,6 +322,7 @@ public class ObjectDAO extends GeneratableObject {
 
     if (this.usesConverters() || hasFKPointingToEnum()) {
 
+      imports.add("java.sql.SQLException");
       imports.add("java.sql.CallableStatement");
       imports.add("java.sql.PreparedStatement");
       imports.add("java.sql.ResultSet");
@@ -352,34 +346,13 @@ public class ObjectDAO extends GeneratableObject {
     println("  private static final long serialVersionUID = 1L;");
     println();
 
+    println("  private SqlSession sqlSession;\n" + "\n" + "  // Bean setter\n" + "\n"
+        + "  public void setSqlSession(final SqlSession sqlSession) {\n" + "    this.sqlSession = sqlSession;\n"
+        + "  }\n" + "\n");
+
   }
 
-  /**
-   * <pre>
-   * 
-   * public static AbcDAO selectByPK(final Integer id) throws SQLException {
-   *   SqlSession sqlSession = null;
-   *   try {
-   *     sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
-   *     return selectByPK(sqlSession, id);
-   *   } finally {
-   *     if (sqlSession != null) {
-   *       sqlSession.close();
-   *     }
-   *   }
-   * }
-   * 
-   * public static AbcDAO selectByPK(final SqlSession sqlSession, final Integer id) throws SQLException {
-   *   AbcDAO pk = new AbcDAO();
-   *   pk.setId(id);
-   *   return sqlSession.selectOne(&quot;simpletests.dao.selectAbc&quot;, pk);
-   * }
-   * 
-   * </pre>
-   * 
-   */
-
-  private static final String SELECT_BY_PK_METHOD = "select";
+  private static final String SELECT_BY_PK_METHOD = "selectByPK";
 
   private void writeSelectByPK(final MyBatisSpringGenerator mg) throws IOException, UnresolvableDataTypeException {
     if (this.metadata.getPK() == null) {
@@ -388,182 +361,37 @@ public class ObjectDAO extends GeneratableObject {
       return;
     }
 
-    String paramsSignature = toParametersSignature(this.metadata.getPK(), mg);
-    String paramsCall = toParametersCall(this.metadata.getPK());
-
     println("  // select by primary key");
     println();
+    selectByUniqueKey(mg, this.metadata.getPK(), SELECT_BY_PK_METHOD, this.mapper.getFullMapperIdSelectByPK());
+  }
 
-    print("  public static " + this.vo.getClassName() + " " + SELECT_BY_PK_METHOD + "(");
+  private void selectByUniqueKey(final MyBatisSpringGenerator mg, final KeyMetadata key, final String method,
+      final String mapperQuery) throws UnresolvableDataTypeException, IOException {
+    String paramsSignature = toParametersSignature(key, mg);
+    String voc = this.vo.getClassName();
+
+    print("  public " + voc + " " + method + "(");
     print(paramsSignature);
     print(") ");
-    this.throwsCheckedException();
     println("{");
-    retrieveSqlSession();
-    println("      return " + SELECT_BY_PK_METHOD + "(sqlSession, " + paramsCall + ");");
-    releaseSqlSession();
-    println("  }");
-    println();
 
-    println("  public static " + this.vo.getClassName() + " " + SELECT_BY_PK_METHOD + "(final SqlSession sqlSession, "
-        + paramsSignature + ")");
-    print("      ");
-    this.throwsCheckedException();
-    println("{");
-    for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
-      println("    if (" + cm.getId().getJavaMemberName() + " == null) return null;");
+    for (ColumnMetadata cm : key.getColumns()) {
+      String m = cm.getId().getJavaMemberName();
+      println("    if (" + m + " == null)");
+      println("      return null;");
     }
-    println("    " + this.vo.getClassName() + " pk = new " + this.vo.getClassName() + "();");
-    for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
-      println("    pk." + cm.getId().getJavaSetter() + "(" + cm.getId().getJavaMemberName() + ");");
+    println("    " + voc + " vo = new " + voc + "();");
+    for (ColumnMetadata cm : key.getColumns()) {
+      String m = cm.getId().getJavaMemberName();
+      String setter = cm.getId().getJavaSetter();
+      println("    vo." + setter + "(" + m + ");");
     }
 
-    preCheckedException();
-    println("    return sqlSession.selectOne(\"" + this.mapper.getFullMapperIdSelectByPK() + "\", pk);");
-    postCheckedException();
-
+    println("    return this.sqlSession.selectOne(\"" + mapperQuery + "\", vo);");
     println("  }");
     println();
   }
-
-  private void throwsCheckedException() throws IOException {
-    if (isCheckedPersistenceException()) {
-      print("throws SQLException ");
-    }
-  }
-
-  private boolean isCheckedPersistenceException() {
-    return this.myBatisTag.getProperties().isCheckedPersistenceException();
-  }
-
-  private void addCheckedException() throws IOException {
-    if (isCheckedPersistenceException()) {
-      print("SQLException");
-    }
-  }
-
-  private void preCheckedException() throws IOException {
-    if (isCheckedPersistenceException()) {
-      println("    try {");
-    }
-  }
-
-  private void postCheckedException() throws IOException {
-    if (isCheckedPersistenceException()) {
-      println("    } catch (RuntimeException e) {");
-      println("      throw new SQLException(e);");
-      println("    }");
-    }
-  }
-
-  private void retrieveSqlSession() throws IOException {
-    retrieveSqlSession(0);
-  }
-
-  /**
-   * <pre>
-   *     TxManager txm = null;
-   *     try {
-   *       txm = getTxManager();
-   * </pre>
-   */
-  private void retrieveSqlSession(final int indent) throws IOException {
-    String f = SUtils.getFiller(' ', indent * 2);
-    println(f + "    TxManager txm = null;");
-    println(f + "    try {");
-    println(f + "      txm = getTxManager();");
-    println(f + "      SqlSession sqlSession = txm.getSqlSession();");
-  }
-
-  /**
-   * <pre>
-   * if (!txm.isTransactionOngoing()) {
-   *   txm.commit();
-   * }
-   * </pre>
-   */
-  private void commitSqlSession(final int indent) throws IOException {
-    String f = SUtils.getFiller(' ', indent * 2);
-    println(f + "    if (!txm.isTransactionOngoing()) {");
-    println(f + "      txm.commit();");
-    println(f + "    }");
-  }
-
-  private void releaseSqlSession() throws IOException {
-    releaseSqlSession(0);
-  }
-
-  /**
-   * <pre>
-   *     } finally {
-   *       if (txm != null && !txm.isTransactionOngoing()) {
-   *         txm.close();
-   *       }
-   *     }
-   * </pre>
-   */
-
-  private void releaseSqlSession(final int indent) throws IOException {
-    String f = SUtils.getFiller(' ', indent * 2);
-
-    if (this.isCheckedPersistenceException()) {
-      println(f + "    } catch (SQLException e) {");
-      println(f + "      throw e;");
-      println(f + "    } catch (RuntimeException e) {");
-      println(f + "      throw new SQLException(e);");
-    }
-
-    println(f + "    } finally {");
-
-    if (this.isCheckedPersistenceException()) {
-      println(f + "      try {");
-      f = SUtils.getFiller(' ', (indent + 1) * 2);
-    }
-
-    println(f + "      if (txm != null && !txm.isTransactionOngoing()) {");
-    println(f + "        txm.close();");
-    println(f + "      }");
-    f = SUtils.getFiller(' ', indent * 2);
-
-    if (this.isCheckedPersistenceException()) {
-      println(f + "      } catch (RuntimeException e) {");
-      println(f + "        throw new SQLException(e);");
-      println(f + "      }");
-    }
-
-    println(f + "    }");
-  }
-
-  /**
-   * <pre>
-   * 
-   * // Select by Unique Indexes
-   * 
-   * public static List&lt;AbcDAO&gt; selectByUISectionPage(final Integer section, final Integer page) throws SQLException {
-   *   SqlSession sqlSession = null;
-   *   try {
-   *     sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
-   *     return selectByUISectionPage(sqlSession, section, page);
-   *   } finally {
-   *     if (sqlSession != null) {
-   *       sqlSession.close();
-   *     }
-   *   }
-   * }
-   * 
-   * public static List&lt;AbcDAO&gt; selectByUISectionPage(final SqlSession sqlSession, final Integer section,
-   *     final Integer page) throws SQLException {
-   *   AbcDAO ui = new AbcDAO();
-   *   ui.setSection(section);
-   *   ui.setPage(page);
-   *   return sqlSession.selectList(&quot;simpletests.dao.selectAbc&quot;, ui);
-   * }
-   * 
-   * </pre>
-   * 
-   * @throws IOException
-   * @throws UnresolvableDataTypeException
-   */
 
   private void writeSelectByUI(final MyBatisSpringGenerator mg) throws IOException, UnresolvableDataTypeException {
     boolean first = true;
@@ -580,43 +408,17 @@ public class ObjectDAO extends GeneratableObject {
 
     for (KeyMetadata ui : distinctConstraints) {
       if (this.metadata.getPK() == null || !ui.equals(this.metadata.getPK())) {
+
         if (first) {
           first = false;
           println("  // select by unique indexes");
           println();
         }
 
-        String paramsSignature = toParametersSignature(ui, mg);
-        String paramsCall = toParametersCall(ui);
         String camelCase = ui.toCamelCase(this.layout.getColumnSeam());
+        String method = " selectByUI" + camelCase;
+        selectByUniqueKey(mg, ui, method, this.mapper.getFullMapperIdSelectByUI(ui));
 
-        print("  public static " + this.vo.getClassName() + " selectByUI" + camelCase + "(" + paramsSignature + ") ");
-        this.throwsCheckedException();
-        println("{");
-        retrieveSqlSession();
-        println("      return selectByUI" + camelCase + "(sqlSession, " + paramsCall + ");");
-        releaseSqlSession();
-        println("  }");
-        println();
-
-        println("  public static " + this.vo.getClassName() + " selectByUI" + camelCase
-            + "(final SqlSession sqlSession, " + paramsSignature + ") ");
-        this.throwsCheckedException();
-        println("{");
-        for (ColumnMetadata cm : ui.getColumns()) {
-          println("    if (" + cm.getId().getJavaMemberName() + " == null) return null;");
-        }
-        println("    " + this.vo.getClassName() + " ui = new " + this.vo.getClassName() + "();");
-        for (ColumnMetadata cm : ui.getColumns()) {
-          println("    ui." + cm.getId().getJavaSetter() + "(" + cm.getId().getJavaMemberName() + ");");
-        }
-
-        preCheckedException();
-        println("    return sqlSession.selectOne(\"" + this.mapper.getFullMapperIdSelectByUI(ui) + "\", ui);");
-        postCheckedException();
-
-        println("  }");
-        println();
       }
     }
 
@@ -678,88 +480,19 @@ public class ObjectDAO extends GeneratableObject {
 
   }
 
-  /**
-   * 
-   * <pre>
-   * 
-   * // Select with filter and order
-   * 
-   * public static List<AccountDAO> selectByExample(final AccountDAO example, final AccountOrderBy... orderBies)
-   *     throws SQLException {
-   *   TxManager txm = null;
-   *   try {
-   *     txm = getTxManager();
-   *     SqlSession sqlSession = txm.getSqlSession();
-   *     return selectByExample(sqlSession, example, orderBies);
-   *   } finally {
-   *     if (txm != null && !txm.isTransactionOngoing()) {
-   *       txm.close();
-   *     }
-   *   }
-   * }
-   * 
-   * public static List<AccountDAO> selectByExample(final SqlSession sqlSession, final AccountDAO example,
-   *     final AccountOrderBy... orderBies) throws SQLException {
-   *   DaoWithOrder<AccountDAOPrimitives, AccountOrderBy> dwo = //
-   *       new DaoWithOrder<AccountDAOPrimitives, AccountOrderBy>(example, orderBies);
-   *   return sqlSession.selectList("hotrod.test.generation.primitives.account.selectByExample", dwo);
-   * }
-   * 
-   * </pre>
-   * 
-   * @throws IOException
-   */
-
   private void writeSelectByExampleAndOrder() throws IOException {
     println("  // select by example (with ordering)");
     println();
 
-    println("  public static List<" + this.vo.getClassName() + "> selectByExample(final " + this.vo.getClassName()
+    println("  public List<" + this.vo.getClassName() + "> selectByExample(final " + this.vo.getClassName()
         + " example, final " + this.getOrderByClassName() + "... orderBies)");
     print("      ");
-    this.throwsCheckedException();
-    println("{");
-    retrieveSqlSession();
-    println("      return selectByExample(sqlSession, example, orderBies);");
-    releaseSqlSession();
-    println("  }");
-    println();
-
-    println("  public static List<" + this.vo.getClassName() + "> selectByExample(final SqlSession sqlSession, final "
-        + this.vo.getClassName() + " example, final " + this.getOrderByClassName() + "... orderBies)");
-    print("      ");
-    this.throwsCheckedException();
     println("{");
     println("    DaoWithOrder<" + this.vo.getClassName() + ", " + this.getOrderByClassName() + "> dwo = //");
-    println("    new DaoWithOrder<" + this.vo.getClassName() + ", " + this.getOrderByClassName()
+    println("        new DaoWithOrder<" + this.vo.getClassName() + ", " + this.getOrderByClassName()
         + ">(example, orderBies);");
-    preCheckedException();
-    println("    return sqlSession.selectList(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo);");
-    postCheckedException();
+    println("    return this.sqlSession.selectList(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo);");
     println("  }");
-    println();
-  }
-
-  // XXX: This method is only used for internal testing
-
-  @SuppressWarnings("unused")
-  private void writeSelectExpression() throws IOException, ControlledException {
-    println(" public static final " + DynamicExpression.class.getName() + " JAVA_EXPRESSION =\n");
-
-    ParameterRenderer parameterRenderer = new ParameterRenderer() {
-      @Override
-      public String render(final SQLParameter parameter) {
-        return "#" + parameter.getName() + "#";
-      }
-    };
-
-    // try {
-    // println(this.selectTag.renderJavaExpression(4, parameterRenderer) + ";");
-    // } catch (InvalidJavaExpressionException e) {
-    // throw new ControlledException("Invalid configuration file: " +
-    // e.getMessage());
-    // }
-
     println();
   }
 
@@ -782,38 +515,6 @@ public class ObjectDAO extends GeneratableObject {
     return sb.toString();
   }
 
-  /**
-   * <pre>
-   * // Select parents by FKs
-   * 
-   * public class DefParentSelector {
-   * 
-   *   public DefDAO byFkId() throws SQLException {
-   *     SqlSession sqlSession = null;
-   *     try {
-   *       sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
-   *       return byFkId(sqlSession);
-   *     } finally {
-   *       if (sqlSession != null) {
-   *         sqlSession.close();
-   *       }
-   *     }
-   *   }
-   * 
-   *   public DefDAO byFkId(final SqlSession sqlSession) throws SQLException {
-   *     return DefDAOPrimitives.selectByUIAbcId(sqlSession, id);
-   *   }
-   * 
-   * }
-   * 
-   * public static DefParentSelector selectParentDef() {
-   *   return new DefParentSelector();
-   * }
-   * </pre>
-   * 
-   * @throws IOException
-   * @throws ControlledException
-   */
   private void writeSelectParentByFK() throws IOException, ControlledException {
 
     List<ForeignKeyMetadata> fks = this.metadata.getImportedFKs();
@@ -847,25 +548,13 @@ public class ObjectDAO extends GeneratableObject {
 
           for (ForeignKeyMetadata fkm : fkSelectors.get(ds)) {
             String selectByCols = this.getSelectByColumns(fkm.getLocal());
-            print(
-                "    public " + vo.getClassName() + " " + selectByCols + "(final " + this.vo.getClassName() + " vo) ");
-            this.throwsCheckedException();
-            println("{");
-            retrieveSqlSession(1);
-            println("        return " + selectByCols + "(sqlSession, vo);");
-            releaseSqlSession(1);
-            println("    }");
-            println();
 
             String callParameters = renderCallParameters(fkm);
 
             String selectMethod = fkm.pointsToPK() ? SELECT_BY_PK_METHOD : dao.getSelectByUI(fkm.getRemote());
-            print("    public " + vo.getClassName() + " " + selectByCols + "(final SqlSession sqlSession, final "
-                + this.vo.getClassName() + " vo) ");
-            this.throwsCheckedException();
-            println("{");
             println(
-                "      return " + dao.getClassName() + "." + selectMethod + "(sqlSession, " + callParameters + ");");
+                "    public " + vo.getClassName() + " " + selectByCols + "(final " + this.vo.getClassName() + " vo) {");
+            println("      return " + dao.getClassName() + "." + selectMethod + "(" + callParameters + ");");
             println("    }");
             println();
 
@@ -874,8 +563,7 @@ public class ObjectDAO extends GeneratableObject {
           println("  }");
           println();
 
-          println(
-              "  public static " + parentSelectorClassName + " selectParent" + vo.getJavaClassIdentifier() + "() {");
+          println("  public " + parentSelectorClassName + " selectParent" + vo.getJavaClassIdentifier() + "() {");
           println("    return new " + parentSelectorClassName + "();");
           println("  }");
           println();
@@ -976,43 +664,6 @@ public class ObjectDAO extends GeneratableObject {
     return lw.toString();
   }
 
-  /**
-   * <pre>
-   * // Select children by exported FKs
-   * 
-   * public static class DefChildrenSelector {
-   * 
-   *   public List&lt;DefDAO&gt; byAbcSectionAbcPage(final DefDAOOrderBy... orderBies) throws SQLException {
-   *     SqlSession sqlSession = null;
-   *     try {
-   *       sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
-   *       return byAbcSectionAbcPage(sqlSession, orderBies);
-   *     } finally {
-   *       if (sqlSession != null) {
-   *         sqlSession.close();
-   *       }
-   *     }
-   *   }
-   * 
-   *   public List&lt;DefDAO&gt; byAbcSectionAbcPage(final SqlSession sqlSession, final DefDAOOrderBy... orderBies)
-   *       throws SQLException {
-   *     DefDAO example = new DefDAO();
-   *     example.setAbcSection(section);
-   *     example.setAbcPage(page);
-   *     return DefDAO.selectByExample(sqlSession, example, orderBies);
-   *   }
-   * 
-   * }
-   * 
-   * public static DefChildrenSelector selectChildrenDef() {
-   *   return new DefChildrenSelector();
-   * }
-   * </pre>
-   * 
-   * @throws IOException
-   * @throws ControlledException
-   */
-
   private void writeSelectChildrenByFK() throws IOException, ControlledException {
 
     if (this.metadata.getExportedFKs().isEmpty()) {
@@ -1049,21 +700,7 @@ public class ObjectDAO extends GeneratableObject {
 
           println("    public List<" + vo.getClassName() + "> " + selectByCols + "(final " + this.vo.getClassName()
               + " vo, final " + dao.getOrderByClassName() + "... orderBies)");
-          print("        ");
-          this.throwsCheckedException();
-          println("{");
-          retrieveSqlSession(1);
-          println("        return " + selectByCols + "(sqlSession, vo, orderBies);");
-          releaseSqlSession(1);
-          println("    }");
-          println();
-
-          println("    public List<" + vo.getClassName() + "> " + selectByCols + "(final SqlSession sqlSession, final "
-              + this.vo.getClassName() + " vo, final " + dao.getOrderByClassName() + "... orderBies)");
-          print("        ");
-          this.throwsCheckedException();
-          println("{");
-
+          println("        {");
           println("      " + vo.getClassName() + " example = new " + vo.getClassName() + "();");
 
           for (int i = 0; i < tfk.getLocal().getColumns().size(); i++) {
@@ -1076,7 +713,7 @@ public class ObjectDAO extends GeneratableObject {
             println("      example.set" + reCol.getId().getJavaClassName() + "(" + param + ");");
           }
 
-          println("      return " + dao.getClassName() + ".selectByExample(sqlSession, example, orderBies);");
+          println("      return " + dao.getClassName() + ".selectByExample(example, orderBies);");
           println("    }");
           println();
 
@@ -1085,8 +722,7 @@ public class ObjectDAO extends GeneratableObject {
         println("  }");
         println();
 
-        println("  public static " + getChildrenSelectorClass(vo) + " selectChildren" + vo.getJavaClassIdentifier()
-            + "() {");
+        println("  public " + getChildrenSelectorClass(vo) + " selectChildren" + vo.getJavaClassIdentifier() + "() {");
         println("    return new " + getChildrenSelectorClass(vo) + "();");
         println("  }");
         println();
@@ -1099,37 +735,6 @@ public class ObjectDAO extends GeneratableObject {
   private String getChildrenSelectorClass(final ObjectVO dao) {
     return dao.getJavaClassIdentifier() + "ChildrenSelector";
   }
-
-  /**
-   * <pre>
-   * 
-   * // Insert
-   * 
-   * public int insert() throws SQLException {
-   *   SqlSession sqlSession = null;
-   *   try {
-   *     sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
-   *     int rows = insert(sqlSession);
-   *     sqlSession.commit();
-   *     return rows;
-   *   } finally {
-   *     if (sqlSession != null) {
-   *       sqlSession.close();
-   *     }
-   *   }
-   * }
-   * 
-   * public int insert(final SqlSession sqlSession) throws SQLException {
-   *   this.versionControl = N; // only when there's version control defined
-   *   return sqlSession.insert(&quot;simpletests.dao.insertAbc&quot;, this);
-   * }
-   * 
-   * </pre>
-   * 
-   * @throws IOException
-   * @throws UnresolvableDataTypeException
-   * @throws ControlledException
-   */
 
   private void writeInsert() throws IOException, UnresolvableDataTypeException {
 
@@ -1156,60 +761,33 @@ public class ObjectDAO extends GeneratableObject {
 
     boolean extraInsert = integratesSequences && integratesDefaults && defaults != 0;
 
-    // | integrates identities
-    // | false | true
-    // -------------------------+------------+-------------
-    // has identities : false | T | T
-    // : true | F | T
-    //
-    // ! has identities || integrates identities
+    /**
+     * <pre>
+     * | integrates identities  | false      | true
+     * |------------------------+------------+-------------
+     * | has identities : false | T          | T
+     * |                : true  | F          | T
+     *                
+     * ! has identities || integrates identities
+     * </pre>
+     */
 
     println("  // insert");
     println();
 
     if (extraInsert) {
-
-      print("  public static int insert(final " + this.vo.getClassName() + " vo) ");
-      this.throwsCheckedException();
+      print("  public int insert(final " + this.vo.getClassName() + " vo) ");
       println("{");
       println("    return insert(vo, false);");
       println("  }");
       println();
-
-      print("  public static int insert(final SqlSession sqlSession, final " + this.vo.getClassName() + " vo) ");
-      this.throwsCheckedException();
-      println("{");
-      println("    return insert(sqlSession, vo, false);");
-      println("  }");
-      println();
-
     }
 
-    print("  public static int insert(final " + this.vo.getClassName() + " vo");
+    print("  public int insert(final " + this.vo.getClassName() + " vo");
     if (extraInsert) {
       print(", final boolean retrieveDefaults");
     }
     print(") ");
-    this.throwsCheckedException();
-    println("{");
-    retrieveSqlSession();
-    if (extraInsert) {
-      println("      int rows = insert(sqlSession, vo, retrieveDefaults);");
-    } else {
-      println("      int rows = insert(sqlSession, vo);");
-    }
-    commitSqlSession(1);
-    println("      return rows;");
-    releaseSqlSession();
-    println("  }");
-    println();
-
-    print("  public static int insert(final SqlSession sqlSession, final " + this.vo.getClassName() + " vo");
-    if (extraInsert) {
-      print(", final boolean retrieveDefaults");
-    }
-    print(") ");
-    this.throwsCheckedException();
     println("{");
 
     VersionControlMetadata vcm = this.metadata.getVersionControlMetadata();
@@ -1220,8 +798,6 @@ public class ObjectDAO extends GeneratableObject {
           cm.getType().getJavaClassName());
       println("    vo." + cm.getId().getJavaMemberName() + " = " + literalValue + ";");
     }
-
-    preCheckedException();
 
     // Decide on the mapper id
 
@@ -1236,13 +812,13 @@ public class ObjectDAO extends GeneratableObject {
 
     if (identities == 0) {
       if (sequences == 0) { // no sequences, no identities
-        println("    return sqlSession.insert(id, vo);");
+        println("    return this.sqlSession.insert(id, vo);");
       } else { // sequences only
         if (integratesSequences) {
           writeInsertIntegrated(true, false, extraInsert);
           println("    return rows;");
         } else {
-          println("    return sqlSession.insert(id, vo);");
+          println("    return this.sqlSession.insert(id, vo);");
         }
       }
     } else {
@@ -1251,7 +827,7 @@ public class ObjectDAO extends GeneratableObject {
           writeInsertIntegrated(false, true, extraInsert);
           println("    return rows;");
         } else {
-          println("    return sqlSession.insert(id, vo);");
+          println("    return this.sqlSession.insert(id, vo);");
         }
       } else { // sequences & identities
         if (integratesSequences && integratesIdentities) {
@@ -1267,15 +843,13 @@ public class ObjectDAO extends GeneratableObject {
           println("    return rows;");
         } else {
           writeSequencesPreFetch();
-          println("    int rows = sqlSession.insert(id, vo);");
+          println("    int rows = this.sqlSession.insert(id, vo);");
           writeIdentitiesPostFetch();
           println("    return rows;");
         }
 
       }
     }
-
-    postCheckedException();
 
     println("  }");
     println();
@@ -1285,7 +859,7 @@ public class ObjectDAO extends GeneratableObject {
   private void writeInsertIntegrated(final boolean integratesSequences, final boolean integratesIdentities,
       final boolean extraInsert) throws IOException {
     if (this.generator.getAdapter().integratesUsingQuery()) {
-      println("    " + this.vo.getClassName() + " values = sqlSession.selectOne(id, vo);");
+      println("    " + this.vo.getClassName() + " values = this.sqlSession.selectOne(id, vo);");
       println("    int rows = 1;");
       for (ColumnMetadata cm : this.metadata.getColumns()) {
         String prop = cm.getId().getJavaMemberName();
@@ -1299,12 +873,12 @@ public class ObjectDAO extends GeneratableObject {
         }
       }
     } else {
-      println("    int rows = sqlSession.insert(id, vo);");
+      println("    int rows = this.sqlSession.insert(id, vo);");
     }
   }
 
   private void writeSequencesPreFetch() throws IOException {
-    println("    " + this.vo.getClassName() + " sequences = sqlSession.selectOne(\""
+    println("    " + this.vo.getClassName() + " sequences = this.sqlSession.selectOne(\""
         + this.mapper.getFullMapperIdSequencesPreFetch() + "\");");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (cm.getSequenceId() != null) {
@@ -1315,7 +889,7 @@ public class ObjectDAO extends GeneratableObject {
   }
 
   private void writeIdentitiesPostFetch() throws IOException {
-    println("    " + this.vo.getClassName() + " identities = sqlSession.selectOne(\""
+    println("    " + this.vo.getClassName() + " identities = this.sqlSession.selectOne(\""
         + this.mapper.getFullMapperIdIdentitiesPostFetch() + "\");");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity()) {
@@ -1343,61 +917,6 @@ public class ObjectDAO extends GeneratableObject {
     }
   }
 
-  /**
-   * <pre>
-   * public int updateByPK() throws SQLException {
-   *   SqlSession sqlSession = null;
-   *   try {
-   *     sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
-   *     int rows = updateByPK(sqlSession);
-   *     sqlSession.commit();
-   *     return rows;
-   *   } finally {
-   *     if (sqlSession != null) {
-   *       sqlSession.close();
-   *     }
-   *   }
-   * }
-   * 
-   * public int updateByPK(final SqlSession sqlSession) throws SQLException {
-   *   return sqlSession.update(&quot;simpletests.dao.insertAbc&quot;, this);
-   * }
-   * 
-   * </pre>
-   */
-
-  /**
-   * <pre>
-   * public int update() throws SQLException, StaleDataException {
-   *   TxManager txm = null;
-   *   try {
-   *     txm = getTxManager();
-   *     SqlSession sqlSession = txm.getSqlSession();
-   *     int rows = update(sqlSession);
-   *     if (!txm.isTransactionOngoing()) {
-   *       txm.commit();
-   *     }
-   *     return rows;
-   *   } finally {
-   *     if (txm != null && !txm.isTransactionOngoing()) {
-   *       txm.close();
-   *     }
-   *   }
-   * }
-   * 
-   * public int update(final SqlSession sqlSession) throws SQLException, StaleDataException {
-   *   long currentVersion = this.versionControl;
-   *   DaoForUpdate<VehicleDAOPrimitives> u = new DaoForUpdate<VehicleDAOPrimitives>(this, currentVersion, -256, 255);
-   *   int rows = sqlSession.update("hotrod.test.generation.primitives.vehicle.updateByPK", u);
-   *   if (rows != 1) {
-   *     throw new StaleDataException("Could not update row on table VEHICLE with version " + currentVersion
-   *         + " since it had already been updated by other process.");
-   *   }
-   *   return rows;
-   * }
-   * </pre>
-   */
-
   private static final String UPDATE_BY_PK_METHOD = "update";
 
   private void writeUpdateByPK() throws IOException, UnresolvableDataTypeException {
@@ -1411,25 +930,12 @@ public class ObjectDAO extends GeneratableObject {
       println("  // update by PK");
       println();
 
-      print("  public static int " + UPDATE_BY_PK_METHOD + "(final " + this.vo.getClassName() + " vo) ");
-      printExceptions(useVersionControl);
-      println("{");
-      retrieveSqlSession();
-      println("      int rows = " + UPDATE_BY_PK_METHOD + "(sqlSession, vo);");
-      commitSqlSession(1);
-      println("      return rows;");
-      releaseSqlSession();
-      println("  }");
-      println();
-
       if (useVersionControl) {
         VersionControlMetadata vcm = this.metadata.getVersionControlMetadata();
         ColumnMetadata cm = vcm.getColumnMetadata();
         PropertyType pt = cm.getType();
         ValueRange range = pt.getValueRange();
-        print("  public static int " + UPDATE_BY_PK_METHOD + "(final SqlSession sqlSession, final "
-            + this.vo.getClassName() + " vo) ");
-        printExceptions(useVersionControl);
+        print("  public int " + UPDATE_BY_PK_METHOD + "(final " + this.vo.getClassName() + " vo) ");
         println("{");
         println("    long currentVersion = vo." + cm.getId().getJavaMemberName() + ";");
 
@@ -1438,7 +944,7 @@ public class ObjectDAO extends GeneratableObject {
 
         println("    DaoForUpdate<" + this.vo.getClassName() + "> u = new DaoForUpdate<" + this.vo.getClassName()
             + ">(vo, currentVersion, " + minValue + ", " + maxValue + ");");
-        println("    int rows = sqlSession.update(\"" + this.mapper.getFullMapperIdUpdateByPK() + "\", u);");
+        println("    int rows = this.sqlSession.update(\"" + this.mapper.getFullMapperIdUpdateByPK() + "\", u);");
         println("    if (rows != 1) {");
         println("      throw new StaleDataException(\"Could not update row on table "
             + this.metadata.getId().getCanonicalSQLName() + " with version \" + currentVersion");
@@ -1448,18 +954,12 @@ public class ObjectDAO extends GeneratableObject {
             + ") u.getNextVersionValue();");
         println("    return rows;");
       } else {
-        print("  public static int " + UPDATE_BY_PK_METHOD + "(final SqlSession sqlSession, final "
-            + this.vo.getClassName() + " vo) ");
-        this.throwsCheckedException();
+        print("  public int " + UPDATE_BY_PK_METHOD + "(final " + this.vo.getClassName() + " vo) ");
         println("{");
-
         for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
           println("    if (vo." + cm.getId().getJavaMemberName() + " == null) return 0;");
         }
-
-        preCheckedException();
-        println("    return sqlSession.update(\"" + this.mapper.getFullMapperIdUpdateByPK() + "\", vo);");
-        postCheckedException();
+        println("    return this.sqlSession.update(\"" + this.mapper.getFullMapperIdUpdateByPK() + "\", vo);");
       }
 
       println("  }");
@@ -1471,128 +971,26 @@ public class ObjectDAO extends GeneratableObject {
   private void writeInsertByExample() throws IOException {
     println("  // insert by example");
     println();
-
-    print("  public static int insertByExample(final " + this.vo.getClassName() + " example) ");
-    this.throwsCheckedException();
+    print("  public int insertByExample(final " + this.vo.getClassName() + " example) ");
     println("{");
-    retrieveSqlSession();
-    println("      int rows = " + this.getClassName() + ".insertByExample(sqlSession, example);");
-    commitSqlSession(1);
-    println("      return rows;");
-    releaseSqlSession();
-    println("  }");
-    println();
-
-    print("  public static int insertByExample(final SqlSession sqlSession, final " + this.vo.getClassName()
-        + " example) ");
-    this.throwsCheckedException();
-    println("{");
-
-    preCheckedException();
-
-    // Choose insert variant
-
     println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExample() + "\", example);");
-
-    postCheckedException();
-
     println("  }");
     println();
 
   }
 
-  /**
-   * <pre>
-   * public static int updateByExample(final AbcDAOPrimitives example, final AbcDAOPrimitives values)
-   *     throws SQLException {
-   *   SqlSession sqlSession = null;
-   *   try {
-   *     sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
-   *     int rows = AbcDAOPrimitives.updateByExample(sqlSession, example, values);
-   *     sqlSession.commit();
-   *     return rows;
-   *   } finally {
-   *     if (sqlSession != null) {
-   *       sqlSession.close();
-   *     }
-   *   }
-   * }
-   * 
-   * public static int updateByExample(final SqlSession sqlSession, final AbcDAOPrimitives example,
-   *     final AbcDAOPrimitives values) throws SQLException {
-   *   UpdateByExampleDao&lt;AbcDAOPrimitives&gt; fvd = //
-   *       new UpdateByExampleDao&lt;AbcDAOPrimitives&gt;(example, values);
-   *   return sqlSession.update(&quot;simpletests.dao.insertAbc&quot;, fvd);
-   * }
-   * 
-   * </pre>
-   * 
-   * @throws IOException
-   */
   private void writeUpdateByExample() throws IOException {
     println("  // update by example");
     println();
-
-    print("  public static int updateByExample(final " + this.vo.getClassName() + " example, final "
-        + this.vo.getClassName() + " updateValues) ");
-    this.throwsCheckedException();
-    println("{");
-    retrieveSqlSession();
-    println("      int rows = " + this.getClassName() + ".updateByExample(sqlSession, example, updateValues);");
-    commitSqlSession(1);
-    println("      return rows;");
-    releaseSqlSession();
-    println("  }");
-    println();
-
-    print("  public static int updateByExample(final SqlSession sqlSession, final " + this.vo.getClassName()
-        + " example, final " + this.vo.getClassName() + " updateValues) ");
-    this.throwsCheckedException();
-    println("{");
+    println("  public int updateByExample(final " + this.vo.getClassName() + " example, final " + this.vo.getClassName()
+        + " updateValues) {");
     println("    UpdateByExampleDao<" + this.vo.getClassName() + "> fvd = //");
     println("      new UpdateByExampleDao<" + this.vo.getClassName() + ">(example, updateValues);");
-
-    preCheckedException();
-    println("    return sqlSession.update(\"" + this.mapper.getFullMapperIdUpdateByExample() + "\", fvd);");
-    postCheckedException();
-
+    println("    return this.sqlSession.update(\"" + this.mapper.getFullMapperIdUpdateByExample() + "\", fvd);");
     println("  }");
     println();
 
   }
-
-  /**
-   * <pre>
-   * public int deleteByPK() throws SQLException {
-   *   SqlSession sqlSession = null;
-   *   try {
-   *     sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
-   *     int rows = deleteByPK(sqlSession);
-   *     sqlSession.commit();
-   *     return rows;
-   *   } finally {
-   *     if (sqlSession != null) {
-   *       sqlSession.close();
-   *     }
-   *   }
-   * }
-   * 
-   * public int deleteByPK(final SqlSession sqlSession) throws SQLException {
-   *   return sqlSession.delete(&quot;simpletests.dao.insertAbc&quot;, this);
-   * }
-   * 
-   * public int delete(final SqlSession sqlSession) throws SQLException, StaleDataException {
-   *   int rows = sqlSession.delete("hotrod.test.generation.primitives.vehicle.deleteByPK", this);
-   *   if (rows != 1) {
-   *     throw new StaleDataException("Could not delete row on table VEHICLE with version " + this.versionControl
-   *         + " since it had already been updated or deleted by another process.");
-   *   }
-   *   return rows;
-   * }
-   * </pre>
-   * 
-   * @throws IOException
-   */
 
   private static final String DELETE_BY_PK_METHOD = "delete";
 
@@ -1607,25 +1005,12 @@ public class ObjectDAO extends GeneratableObject {
       println("  // delete by PK");
       println();
 
-      print("  public static int " + DELETE_BY_PK_METHOD + "(final " + this.vo.getClassName() + " vo) ");
-      printExceptions(useVersionControl);
-      println("{");
-      retrieveSqlSession();
-      println("      int rows = " + DELETE_BY_PK_METHOD + "(sqlSession, vo);");
-      commitSqlSession(1);
-      println("      return rows;");
-      releaseSqlSession();
-      println("  }");
-      println();
-
       if (useVersionControl) {
         VersionControlMetadata vcm = this.metadata.getVersionControlMetadata();
         ColumnMetadata cm = vcm.getColumnMetadata();
-        print("  public static int " + DELETE_BY_PK_METHOD + "(final SqlSession sqlSession, final "
-            + this.vo.getClassName() + " vo) ");
-        printExceptions(useVersionControl);
+        print("  public int " + DELETE_BY_PK_METHOD + "(final " + this.vo.getClassName() + " vo) ");
         println("{");
-        println("    int rows = sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByPK() + "\", vo);");
+        println("    int rows = this.sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByPK() + "\", vo);");
         println("    if (rows != 1) {");
         println("      throw new StaleDataException(\"Could not delete row on table "
             + this.metadata.getId().getCanonicalSQLName() + " with version \" + vo." + cm.getId().getJavaMemberName());
@@ -1634,85 +1019,23 @@ public class ObjectDAO extends GeneratableObject {
         println("    return rows;");
         println("  }");
       } else {
-        print("  public static int " + DELETE_BY_PK_METHOD + "(final SqlSession sqlSession, final "
-            + this.vo.getClassName() + " vo) ");
-        this.throwsCheckedException();
+        print("  public int " + DELETE_BY_PK_METHOD + "(final " + this.vo.getClassName() + " vo) ");
         println("{");
-
         for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
           println("    if (vo." + cm.getId().getJavaMemberName() + " == null) return 0;");
         }
-
-        preCheckedException();
-        println("    return sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByPK() + "\", vo);");
-        postCheckedException();
-
+        println("    return this.sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByPK() + "\", vo);");
         println("  }");
       }
       println();
     }
   }
 
-  private void printExceptions(boolean useVersionControl) throws IOException {
-    if (this.isCheckedPersistenceException() || useVersionControl) {
-      print("throws ");
-    }
-    this.addCheckedException();
-
-    if (useVersionControl) {
-      if (this.isCheckedPersistenceException()) {
-        print(", ");
-      }
-      print("StaleDataException");
-    }
-    if (this.isCheckedPersistenceException() || useVersionControl) {
-      print(" ");
-    }
-  }
-
-  /**
-   * <pre>
-   * public static int deleteByExample(final AccountDAO example) throws SQLException {
-   *   SqlSession sqlSession = null;
-   *   try {
-   *     sqlSession = Database1SessionFactory.getInstance().getSqlSessionFactory().openSession();
-   *     int rows = AccountDAO.deleteByExample(sqlSession, example);
-   *     sqlSession.commit();
-   *     return rows;
-   *   } finally {
-   *     if (sqlSession != null) {
-   *       sqlSession.close();
-   *     }
-   *   }
-   * }
-   * 
-   * public static int deleteByExample(final SqlSession sqlSession, final AccountDAO example) throws SQLException {
-   *   return sqlSession.delete(&quot;simpletests.dao.insertAbc&quot;, example);
-   * }
-   * </pre>
-   * 
-   * @throws IOException
-   */
   private void writeDeleteByExample() throws IOException {
     println("  // delete by example");
     println();
-
-    print("  public static int deleteByExample(final " + this.vo.getClassName() + " example) ");
-    this.throwsCheckedException();
-    println("{");
-    retrieveSqlSession();
-    println("      int rows = " + this.getClassName() + ".deleteByExample(sqlSession, example);");
-    commitSqlSession(1);
-    println("      return rows;");
-    releaseSqlSession();
-    println("  }");
-    println();
-
-    print("  public static int deleteByExample(final SqlSession sqlSession, final " + this.vo.getClassName()
-        + " example) ");
-    this.throwsCheckedException();
-    println("{");
-    println("    return sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByExample() + "\", example);");
+    println("  public int deleteByExample(final " + this.vo.getClassName() + " example) {");
+    println("    return this.sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByExample() + "\", example);");
     println("  }");
     println();
   }
@@ -1824,58 +1147,6 @@ public class ObjectDAO extends GeneratableObject {
 
   }
 
-  /**
-   * <pre>
-   * 
-   * public class ActiveTypeHandler implements TypeHandler<Boolean> {
-   * 
-   *   private TypeConverter<Short, Boolean> converter = new BooleanShortConverter();
-   * 
-   *   &#64;Override
-   *   public Boolean getResult(final ResultSet rs, final String columnName) throws SQLException {
-   *     Short value = rs.getShort(columnName);
-   *     if (rs.wasNull()) {
-   *       value = null;
-   *     }
-   *     return this.converter.get(value);
-   *   }
-   * 
-   *   &#64;Override
-   *   public Boolean getResult(final ResultSet rs, final int columnIndex) throws SQLException {
-   *     Short value = rs.getShort(columnIndex);
-   *     if (rs.wasNull()) {
-   *       value = null;
-   *     }
-   *     return this.converter.get(value);
-   *   }
-   * 
-   *   &#64;Override
-   *   public Boolean getResult(final CallableStatement cs, final int columnIndex) throws SQLException {
-   *     Short value = cs.getShort(columnIndex);
-   *     if (cs.wasNull()) {
-   *       value = null;
-   *     }
-   *     return this.converter.get(value);
-   *   }
-   * 
-   *   &#64;Override
-   *   public void setParameter(final PreparedStatement ps, final int columnIndex, final Boolean v,
-   *       final JdbcType jdbcType) throws SQLException {
-   *     Short value = this.converter.set(v);
-   *     if (value == null) {
-   *       ps.setNull(columnIndex, jdbcType.TYPE_CODE);
-   *     } else {
-   *       ps.setShort(columnIndex, value);
-   *     }
-   *   }
-   * 
-   * }
-   * 
-   * </pre>
-   * 
-   * @throws IOException
-   */
-
   private void writeConverters() throws IOException {
 
     // Entity columns converters
@@ -1960,66 +1231,6 @@ public class ObjectDAO extends GeneratableObject {
     println();
   }
 
-  /**
-   * <pre>
-    NAME$CASEINSENSITIVE("\"ACCOUNT\"", "lower(\"NAME\")", true), //
-    NAME$CASEINSENSITIVE_STABLE_FORWARD("\"ACCOUNT\"", "lower(\"NAME\"), \"NAME\"", true), //
-    NAME$CASEINSENSITIVE_STABLE_REVERSE("\"ACCOUNT\"", "lower(\"NAME\"), \"NAME\"", false), //
-  
-    NAME$DESC_CASEINSENSITIVE("\"ACCOUNT\"", "lower(\"NAME\")", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("\"ACCOUNT\"", "lower(\"NAME\") DESC, \"NAME\"", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("\"ACCOUNT\"", "lower(\"NAME\") DESC, \"NAME\"", true), //
-   * </pre>
-   */
-
-  /**
-   * <pre>
-   * // DAO Ordering
-   * 
-   * public enum AbcDAOOrderBy implements OrderBy {
-   * 
-   *   IDN(&quot;ABC&quot;, &quot;IDN&quot;, true), //
-   *   IDN$DESC(&quot;ABC&quot;, &quot;IDN&quot;, false), //
-   *   ID(&quot;ABC&quot;, &quot;ID&quot;, true), //
-   *   ID$DESC(&quot;ABC&quot;, &quot;ID&quot;, false), //
-   *   VOLUME(&quot;ABC&quot;, &quot;VOLUME&quot;, true), //
-   *   VOLUME$DESC(&quot;ABC&quot;, &quot;VOLUME&quot;, false), //
-   *   CHAPTER(&quot;ABC&quot;, &quot;CHAPTER&quot;, true), //
-   *   CHAPTER$DESC(&quot;ABC&quot;, &quot;CHAPTER&quot;, false), //
-   *   SECTION(&quot;ABC&quot;, &quot;SECTION&quot;, true), //
-   *   SECTION$DESC(&quot;ABC&quot;, &quot;SECTION&quot;, false), //
-   *   PAGE(&quot;ABC&quot;, &quot;PAGE&quot;, true), //
-   *   PAGE$DESC(&quot;ABC&quot;, &quot;PAGE&quot;, false), //
-   *   DESCRIPTION(&quot;ABC&quot;, &quot;DESCRIPTION&quot;, true), //
-   *   DESCRIPTION$DESC(&quot;ABC&quot;, &quot;DESCRIPTION&quot;, false);
-   * 
-   *   private AbcDAOOrderBy(final String tableName, final String columnName, boolean ascending) {
-   *     this.tableName = tableName;
-   *     this.columnName = columnName;
-   *     this.ascending = ascending;
-   *   }
-   * 
-   *   private String tableName;
-   *   private String columnName;
-   *   private boolean ascending;
-   * 
-   *   public String getTableName() {
-   *     return this.tableName;
-   *   }
-   * 
-   *   public String getColumnName() {
-   *     return this.columnName;
-   *   }
-   * 
-   *   public boolean isAscending() {
-   *     return this.ascending;
-   *   }
-   * }
-   * </pre>
-   * 
-   * @throws IOException
-   */
-
   private void writeOrderingEnum() throws IOException {
     println("  // DAO ordering");
     println();
@@ -2083,30 +1294,6 @@ public class ObjectDAO extends GeneratableObject {
     println();
   }
 
-  /**
-   * <pre>
-   * public static long selectSequenceSeqCodes() throws SQLException {
-   *   TxManager txm = null;
-   *   try {
-   *     txm = getTxManager();
-   *     SqlSession sqlSession = txm.getSqlSession();
-   *     return selectSequenceSeqCodes(sqlSession);
-   *   } finally {
-   *     if (txm != null && !txm.isTransactionOngoing()) {
-   *       txm.close();
-   *     }
-   *   }
-   * }
-   * 
-   * public static long selectSequenceSeqCodes(final SqlSession sqlSession) {
-   *   return sqlSession.selectOne("hotrod.test.generation.primitives.account.sequenceSeqCodes");
-   * }
-   * </pre>
-   * 
-   * @throws IOException
-   * @throws SequencesNotSupportedException
-   */
-
   private void writeSelectSequence(final SequenceMethodTag tag) throws IOException, SequencesNotSupportedException {
 
     println("  // sequence " + tag.getSequenceId().getRenderedSQLName());
@@ -2114,52 +1301,13 @@ public class ObjectDAO extends GeneratableObject {
     println(ObjectDAO.renderJavaComment(this.generator.getAdapter().renderSelectSequence(tag.getSequenceId())));
     println();
 
-    println("  public static long " + tag.getMethod() + "()");
-    print("      ");
-    this.throwsCheckedException();
-    println("{");
-    retrieveSqlSession();
-    println("      return " + tag.getMethod() + "(sqlSession);");
-    releaseSqlSession();
-    println("  }");
-    println();
-
-    print("  public static long " + tag.getMethod() + "(final SqlSession sqlSession) ");
-    this.throwsCheckedException();
-    println("{");
-    preCheckedException();
+    println("  public long " + tag.getMethod() + "() {");
     println("    return (Long) sqlSession.selectOne(");
     println("      \"" + this.mapper.getFullMapperIdSelectSequence(tag) + "\");");
-    postCheckedException();
     println("  }");
     println();
 
   }
-
-  /**
-   * <pre>
-   * 
-   * public static int update-name() throws SQLException {
-   *   TxManager txm = null;
-   *   try {
-   *     txm = getTxManager();
-   *     SqlSession sqlSession = txm.getSqlSession();
-   *     return update-name(sqlSession);
-   *   } finally {
-   *     if (txm != null && !txm.isTransactionOngoing()) {
-   *       txm.close();
-   *     }
-   *   }
-   * }
-   * 
-   * public static int update-name(final SqlSession sqlSession) throws SQLException {
-   *   return sqlSession.update("hotrod.test.generation.primitives.account.sequenceSeqCodes");
-   * }
-   * 
-   * </pre>
-   * 
-   * @throws IOException
-   */
 
   private void writeQuery(final QueryMethodTag tag) throws IOException {
 
@@ -2186,7 +1334,6 @@ public class ObjectDAO extends GeneratableObject {
       pcall.add(p.getName());
     }
     String paramDef = pdef.toString();
-    String paramCall = pcall.toString();
 
     // parameter class
 
@@ -2199,36 +1346,13 @@ public class ObjectDAO extends GeneratableObject {
       println();
     }
 
-    // main method
+    // method
 
-    print("  public static int " + methodName + "(");
-    print(paramDef);
-    print(") ");
-    this.throwsCheckedException();
-    println("{");
-    retrieveSqlSession();
-    print("      int rows = " + methodName + "(sqlSession");
+    print("  public int " + methodName + "(");
     if (!tag.getParameterDefinitions().isEmpty()) {
-      print(", " + paramCall);
+      print(paramDef);
     }
-    println(");");
-    println("      if (!txm.isTransactionOngoing()) {");
-    println("        txm.commit();");
-    println("      }");
-    println("      return rows;");
-    releaseSqlSession();
-    println("  }");
-    println();
-
-    // core method
-
-    print("  public static int " + methodName + "(final SqlSession sqlSession");
-    if (!tag.getParameterDefinitions().isEmpty()) {
-      print(", " + paramDef);
-    }
-    print(") ");
-    this.throwsCheckedException();
-    println("{");
+    println(") {");
     String objName = null;
     if (!tag.getParameterDefinitions().isEmpty()) {
       objName = provideObjectName(tag.getParameterDefinitions());
@@ -2237,14 +1361,12 @@ public class ObjectDAO extends GeneratableObject {
         println("    " + objName + "." + p.getName() + " = " + p.getName() + ";");
       }
     }
-    preCheckedException();
-    println("    return sqlSession.update(");
+    println("    return this.sqlSession.update(");
     print("      \"" + this.mapper.getFullMapperIdUpdate(tag) + "\"");
     if (!tag.getParameterDefinitions().isEmpty()) {
       print(", " + objName);
     }
     println(");");
-    postCheckedException();
     println("  }");
     println();
 
@@ -2288,31 +1410,6 @@ public class ObjectDAO extends GeneratableObject {
 
   // Select Method Tag
 
-  /**
-   * <pre>
-   * 
-   * public static int update-name() throws SQLException {
-   *   TxManager txm = null;
-   *   try {
-   *     txm = getTxManager();
-   *     SqlSession sqlSession = txm.getSqlSession();
-   *     return update-name(sqlSession);
-   *   } finally {
-   *     if (txm != null && !txm.isTransactionOngoing()) {
-   *       txm.close();
-   *     }
-   *   }
-   * }
-   * 
-   * public static int update-name(final SqlSession sqlSession) throws SQLException {
-   *   return sqlSession.update("hotrod.test.generation.primitives.account.sequenceSeqCodes");
-   * }
-   * 
-   * </pre>
-   * 
-   * @throws IOException
-   */
-
   private void writeSelect(final SelectMethodMetadata sm) throws IOException {
 
     println("  // select method: " + sm.getMethod());
@@ -2343,7 +1440,6 @@ public class ObjectDAO extends GeneratableObject {
       pcall.add(name);
     }
     String paramDef = pdef.toString();
-    String paramCall = pcall.toString();
 
     // parameter class
 
@@ -2356,36 +1452,13 @@ public class ObjectDAO extends GeneratableObject {
       println();
     }
 
-    // main method
+    // method
 
-    print("  public static " + rt.getReturnType() + " " + methodName + "(");
-    print(paramDef);
-    print(") ");
-    this.throwsCheckedException();
-    println("{");
-    retrieveSqlSession();
-    print("      " + rt.getReturnType() + " result = " + methodName + "(sqlSession");
+    print("  public " + rt.getReturnType() + " " + methodName + "(");
     if (!sm.getParameterDefinitions().isEmpty()) {
-      print(", " + paramCall);
+      print(paramDef);
     }
-    println(");");
-    println("      if (!txm.isTransactionOngoing()) {");
-    println("        txm.commit();");
-    println("      }");
-    println("      return result;");
-    releaseSqlSession();
-    println("  }");
-    println();
-
-    // core method
-
-    print("  public static " + rt.getReturnType() + " " + methodName + "(final SqlSession sqlSession");
-    if (!sm.getParameterDefinitions().isEmpty()) {
-      print(", " + paramDef);
-    }
-    print(") ");
-    this.throwsCheckedException();
-    println("{");
+    println(") {");
     String objName = null;
     if (!sm.getParameterDefinitions().isEmpty()) {
       objName = provideParamObjectName(sm.getParameterDefinitions());
@@ -2394,76 +1467,17 @@ public class ObjectDAO extends GeneratableObject {
         println("    " + objName + "." + p.getParameter().getName() + " = " + p.getParameter().getName() + ";");
       }
     }
-    preCheckedException();
 
     String myBatisSelectMethod = sm.isMultipleRows() ? "selectList" : "selectOne";
-    print(
-        "    return sqlSession." + myBatisSelectMethod + "(\"" + this.mapper.getFullSelectMethodStatementId(sm) + "\"");
+    print("    return this.sqlSession." + myBatisSelectMethod + "(\"" + this.mapper.getFullSelectMethodStatementId(sm)
+        + "\"");
     if (!sm.getParameterDefinitions().isEmpty()) {
       print(", " + objName);
     }
     println(");");
-    postCheckedException();
     println("  }");
     println();
 
-  }
-
-  /**
-   * <pre>
-   * // Transaction demarcation
-   * 
-   * private static TxManager txManager = null;
-   * 
-   * public static TxManager getTxManager() throws SQLException {
-   *   if (txManager == null) {
-   *     synchronized (AccountPrimitives.class) {
-   *       if (txManager == null) {
-   *         txManager = new TxManager(getSqlSessionFactory());
-   *       }
-   *     }
-   *   }
-   *   return txManager;
-   * }
-   * 
-   * public static SqlSessionFactory getSqlSessionFactory() throws SQLException {
-   *   return fulltest.FullTestDatabaseSessionFactory.getInstance().getSqlSessionFactory();
-   * }
-   * 
-   * public static SqlSession getSqlSession() throws SQLException {
-   *   return getSqlSessionFactory().openSession();
-   * }
-   * </pre>
-   */
-  private void writeTxManager() throws IOException {
-    println("  // Transaction demarcation");
-    println();
-    println("  private static TxManager txManager = null;");
-    println();
-    print("  public static TxManager getTxManager() ");
-    this.throwsCheckedException();
-    println("{");
-    println("    if (txManager == null) {");
-    println("      synchronized (" + this.getClassName() + ".class) {");
-    println("        if (txManager == null) {");
-    println("          txManager = new TxManager(getSqlSessionFactory());");
-    println("        }");
-    println("      }");
-    println("    }");
-    println("    return txManager;");
-    println("  }");
-    println();
-
-    print("  public static SqlSessionFactory getSqlSessionFactory() ");
-    this.throwsCheckedException();
-    println("{");
-
-    preCheckedException();
-    println("    return " + this.layout.getSessionFactoryGetter() + ";");
-    postCheckedException();
-
-    println("  }");
-    println();
   }
 
   private void writeClassFooter() throws IOException {

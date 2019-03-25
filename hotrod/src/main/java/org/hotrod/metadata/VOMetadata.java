@@ -2,6 +2,7 @@ package org.hotrod.metadata;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -9,13 +10,14 @@ import org.apache.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
-import org.hotrod.config.MyBatisTag;
+import org.hotrod.config.MyBatisSpringTag;
 import org.hotrod.config.structuredcolumns.AssociationTag;
 import org.hotrod.config.structuredcolumns.CollectionTag;
 import org.hotrod.config.structuredcolumns.Expressions;
 import org.hotrod.config.structuredcolumns.VOTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
+import org.hotrod.generator.NamePackageResolver;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.generator.mybatis.SelectAbstractVO;
 import org.hotrod.generator.mybatis.SelectVO;
@@ -133,20 +135,20 @@ public class VOMetadata implements Serializable {
   // Registration
 
   public void register(final Set<SelectAbstractVO> abstractSelectVOs, final Set<SelectVO> selectVOs,
-      final DataSetLayout layout, final MyBatisTag myBatisTag) {
+      final DataSetLayout layout, final NamePackageResolver npResolver) {
     log.debug("VO " + this.name);
     if (this.entityVOSuperClass != null) {
-      SelectAbstractVO abstractVO = new SelectAbstractVO(this, layout, myBatisTag);
+      SelectAbstractVO abstractVO = new SelectAbstractVO(this, layout, npResolver);
       abstractSelectVOs.add(abstractVO);
       selectVOs.add(new SelectVO(this, abstractVO, layout));
     }
     for (VOMetadata vo : this.associations) {
       log.debug("+ property " + vo.getProperty() + " (" + vo.getName() + ")");
-      vo.register(abstractSelectVOs, selectVOs, layout, myBatisTag);
+      vo.register(abstractSelectVOs, selectVOs, layout, npResolver);
     }
     for (VOMetadata vo : this.collections) {
       log.debug("+ property " + vo.getProperty() + " (List<" + vo.getName() + ">)");
-      vo.register(abstractSelectVOs, selectVOs, layout, myBatisTag);
+      vo.register(abstractSelectVOs, selectVOs, layout, npResolver);
     }
   }
 

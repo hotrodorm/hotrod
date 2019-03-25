@@ -208,8 +208,6 @@ public class HotRodAntTask extends Task {
           config, this.displayMode, false, adapter);
       log.debug("Generator instantiated.");
 
-      log.info("Generator: " + g);
-
       try {
 
         LiveGenerator liveGenerator = (LiveGenerator) g;

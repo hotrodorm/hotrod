@@ -9,7 +9,6 @@ import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisSpringTag;
-import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -22,12 +21,15 @@ import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.generator.mybatis.DataSetLayout;
+import org.hotrod.generator.mybatis.SelectAbstractVO;
+import org.hotrod.generator.mybatis.SelectVO;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.ExecutorDAOMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
 import org.hotrod.metadata.TableDataSetMetadata;
+import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ClassPackage;
@@ -102,7 +104,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
       this.enumClasses.put(em, new EnumClass(em, new DataSetLayout(this.config), this.myBatisTag.getDaos(), this));
     }
 
-    // Add selects
+    // First-level select tags are unsupported
 
     if (!super.selects.isEmpty()) {
       SourceLocation loc = super.selects.iterator().next().getDaoTag().getSourceLocation();
@@ -111,7 +113,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
           + "Include any <select> tag inside another <table>, <view>, or <dao> tag.");
     }
 
-    // Add plain DAOs
+    // Add executors
 
     for (ExecutorDAOMetadata dm : super.executors) {
       addDaosAndMapper(dm, DAOType.EXECUTOR);
@@ -228,12 +230,11 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
 
     // connected VOs (all)
 
-    // if (sm.getStructuredColumns() != null) {
-    // for (VOMetadata vo : sm.getStructuredColumns().getVOs()) {
-    // vo.register(this.abstractSelectVOs, this.selectVOs, layout,
-    // this.myBatisTag);
-    // }
-    // }
+    if (sm.getStructuredColumns() != null) {
+      for (VOMetadata vo : sm.getStructuredColumns().getVOs()) {
+        vo.register(this.abstractSelectVOs, this.selectVOs, layout, this.myBatisTag);
+      }
+    }
 
   }
 

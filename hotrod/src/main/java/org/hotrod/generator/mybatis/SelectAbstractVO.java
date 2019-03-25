@@ -7,12 +7,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
-import org.hotrod.config.MyBatisTag;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.generator.NamePackageResolver;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VOMetadata.VOMember;
@@ -29,7 +29,6 @@ public class SelectAbstractVO {
 
   // Properties
 
-  private MyBatisTag myBatisTag;
   private DataSetLayout layout;
 
   private String name;
@@ -47,12 +46,18 @@ public class SelectAbstractVO {
   // Constructors
 
   // From a solo VO
-  public SelectAbstractVO(final SelectVOClass soloVO, final DataSetLayout layout, final MyBatisTag myBatisTag) {
+  public SelectAbstractVO(final SelectVOClass soloVO, final DataSetLayout layout,
+      final NamePackageResolver npResolver) {
     log.debug("init");
-    this.myBatisTag = myBatisTag;
     this.layout = layout;
-    this.name = this.myBatisTag.getDaos().generateAbstractVOName(soloVO.getName());
-    this.classPackage = this.myBatisTag.getDaos().getPrimitivesVOPackage(soloVO.getClassPackage());
+
+    // this.name =
+    // this.myBatisTag.getDaos().generateAbstractVOName(soloVO.getName());
+    // this.classPackage =
+    // this.myBatisTag.getDaos().getPrimitivesVOPackage(soloVO.getClassPackage());
+
+    this.name = npResolver.generateAbstractVOName(soloVO.getName());
+    this.classPackage = npResolver.getPrimitivesVOPackage(soloVO.getClassPackage());
 
     this.columns = new ArrayList<ColumnMetadata>(soloVO.getColumnsByName().values());
     log.debug("Name: " + this.name + " this.columns.size()=" + this.columns.size());
@@ -65,11 +70,10 @@ public class SelectAbstractVO {
   }
 
   // From a connected VO
-  public SelectAbstractVO(final VOMetadata vo, final DataSetLayout layout, final MyBatisTag myBatisTag) {
-    this.myBatisTag = myBatisTag;
+  public SelectAbstractVO(final VOMetadata vo, final DataSetLayout layout, final NamePackageResolver npResolver) {
     this.layout = layout;
-    this.name = this.myBatisTag.getDaos().generateAbstractVOName(vo.getName());
-    this.classPackage = this.myBatisTag.getDaos().getPrimitivesVOPackage(vo.getClassPackage());
+    this.name = npResolver.generateAbstractVOName(vo.getName());
+    this.classPackage = npResolver.getPrimitivesVOPackage(vo.getClassPackage());
     this.columns = new ArrayList<ColumnMetadata>();
     log.debug("vo.getDeclaredColumns().size()=" + vo.getDeclaredColumns().size());
     for (ColumnMetadata cm : vo.getDeclaredColumns()) {
@@ -280,7 +284,10 @@ public class SelectAbstractVO {
     println("  public String toString() {");
     println("    java.lang.StringBuilder sb = new java.lang.StringBuilder();");
 
-    if (this.myBatisTag.getProperties().isMultilineTostring()) {
+    boolean multiLine = true;
+    // boolean multiLine =
+    // this.myBatisTag.getProperties().isMultilineTostring();
+    if (multiLine) {
       println("    sb.append(super.toString() + \"\\n\");");
       // println(" sb.append( getClass().getName() + '@' +
       // Integer.toHexString(hashCode()) + \"\\n\");");

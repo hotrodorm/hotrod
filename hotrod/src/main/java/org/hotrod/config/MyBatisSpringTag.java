@@ -17,12 +17,14 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.NamePackageResolver;
 import org.hotrod.generator.mybatisspring.MyBatisSpringGenerator;
+import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 @XmlRootElement(name = "mybatis-spring")
-public class MyBatisSpringTag extends AbstractGeneratorTag {
+public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackageResolver {
 
   private static final long serialVersionUID = 1L;
 
@@ -188,6 +190,18 @@ public class MyBatisSpringTag extends AbstractGeneratorTag {
   @Override
   public String getInternalCaption() {
     return this.getTagName();
+  }
+
+  // NamePackageResolver implementation
+
+  @Override
+  public String generateAbstractVOName(final String name) {
+    return this.getDaos().generateAbstractVOName(name);
+  }
+
+  @Override
+  public ClassPackage getPrimitivesVOPackage(final ClassPackage cp) {
+    return this.getDaos().getPrimitivesVOPackage(cp);
   }
 
 }

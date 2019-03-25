@@ -1,6 +1,6 @@
 package org.hotrod.runtime.exceptions;
 
-public class StaleDataException extends Exception {
+public class StaleDataException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
