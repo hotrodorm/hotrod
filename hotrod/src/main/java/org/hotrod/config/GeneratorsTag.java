@@ -47,11 +47,17 @@ public class GeneratorsTag extends AbstractConfigurationTag {
     this.generators.add(g);
   }
 
+  @XmlElement(name = "mybatis-spring")
+  public void setMyBatisSpring(final MyBatisSpringTag g) {
+    this.generators.add(g);
+  }
+
   // Behavior
 
   public void validate(final File basedir, final File parentDir, final String generatorName)
       throws InvalidConfigurationFileException, GeneratorNotFoundException {
     for (AbstractGeneratorTag g : this.generators) {
+      log.debug("g.getName()=" + g.getName() + " / generatorName=" + generatorName + " g=" + g);
       if (g.getName().equals(generatorName)) {
         this.selectedGeneratorTag = g;
         g.validate(basedir, parentDir);
@@ -68,6 +74,7 @@ public class GeneratorsTag extends AbstractConfigurationTag {
   // Getters
 
   public AbstractGeneratorTag getSelectedGeneratorTag() {
+    log.debug("this.selectedGeneratorTag=" + this.selectedGeneratorTag);
     return this.selectedGeneratorTag;
   }
 

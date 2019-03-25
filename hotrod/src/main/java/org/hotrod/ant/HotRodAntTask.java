@@ -189,6 +189,7 @@ public class HotRodAntTask extends Task {
       throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
     } catch (Throwable e) {
       display("Technical error found: " + EUtils.renderMessages(e));
+      log.error("Technical error found", e);
       throw new BuildException(Constants.TOOL_NAME + " could not generate the persistence code.");
     }
 
@@ -206,6 +207,8 @@ public class HotRodAntTask extends Task {
       HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
           config, this.displayMode, false, adapter);
       log.debug("Generator instantiated.");
+
+      log.info("Generator: " + g);
 
       try {
 

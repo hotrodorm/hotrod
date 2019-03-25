@@ -6,6 +6,7 @@ import java.io.Serializable;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.MappersTag;
+import org.hotrod.config.MyBatisSpringTag;
 import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.utils.ClassPackage;
@@ -33,12 +34,19 @@ public class DataSetLayout implements Serializable {
 
   private void initialize(final HotRodConfigTag config) {
     this.config = config;
-    MyBatisTag mybatis = (MyBatisTag) this.config.getGenerators().getSelectedGeneratorTag();
 
-    this.daos = mybatis.getDaos();
-    this.mappers = mybatis.getMappers();
+    try {
+      MyBatisTag mybatis = (MyBatisTag) this.config.getGenerators().getSelectedGeneratorTag();
+      this.daos = mybatis.getDaos();
+      this.mappers = mybatis.getMappers();
+      this.sessionFactoryGetter = mybatis.getSessionFactory().getSessionFactoryGetter();
+    } catch (ClassCastException e) {
+      MyBatisSpringTag mybatis = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
+      this.daos = mybatis.getDaos();
+      this.mappers = mybatis.getMappers();
+      this.sessionFactoryGetter = null;
+    }
 
-    this.sessionFactoryGetter = mybatis.getSessionFactory().getSessionFactoryGetter();
   }
 
   public ClassPackage getDAOPackage(final ClassPackage fragmentPackage) {
