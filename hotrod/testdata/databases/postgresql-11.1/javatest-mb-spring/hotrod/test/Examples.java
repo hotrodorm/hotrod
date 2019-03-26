@@ -71,8 +71,10 @@ public class Examples {
       AccountVO a = new AccountVO();
       // a.setId(xxx); // ignored
       a.setName("CHK4010");
-      a.setCreatedOn(creationDate);
+      a.setType("CHK");
       a.setCurrentBalance(0);
+      a.setCreatedOn(creationDate);
+      a.setActive(1);
       dao.insert(a);
       System.out.println("Test #5 - new account id is: " + a.getId());
     }
@@ -80,7 +82,7 @@ public class Examples {
     // update the balance
 
     {
-      AccountVO a = dao.selectByPK(1004);
+      AccountVO a = dao.selectByPK(1234004);
       a.setCurrentBalance(250);
       int rows = dao.update(a);
       System.out.println("Test #6 - updated rows=" + rows);

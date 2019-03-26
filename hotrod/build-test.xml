@@ -134,7 +134,9 @@
         <pathelement path="${db.src.dir}" />
         <pathelement location="${db.src.dir}/${driverclasspath}" />
         <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
+        <!--
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        -->
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
 
         <fileset dir="lib/spring2">
