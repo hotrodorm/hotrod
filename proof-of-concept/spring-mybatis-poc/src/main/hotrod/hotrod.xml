@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+      <daos gen-base-dir="gen/java" dao-package="persistence" />
+      <mappers gen-base-dir="gen/mappers" relative-dir="." />
+      <mybatis-configuration-template file="mybatis-config-template.xml" />
+      <select-generation temp-view-base-name="mybatis_temp_view" />
+    </mybatis-spring>
+  </generators>
+
+  <table name="cliente" />
+  <table name="cuenta" />
+
+</hotrod>

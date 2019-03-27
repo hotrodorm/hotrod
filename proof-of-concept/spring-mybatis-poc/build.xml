@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<project name="spring-mybatis-poc" basedir=".">
+
+  <target name="-init-hotrod" depends="-init">
+    <mkdir dir="gen/mappers" />
+    <mkdir dir="gen/java/persistence" />
+  </target>
+
+  <target name="clean-hotrod" depends="-init-hotrod">
+    <delete includeemptydirs="true">
+      <fileset dir="gen/mappers" includes="**/*" />
+      <fileset dir="gen/java" includes="**/*" />
+    </delete>
+  </target>
+
+  <target name="build-hotrod" depends="-init-hotrod">
+
+    <taskdef name="hotrod" classname="org.hotrod.ant.HotRodAntTask">
+      <classpath>
+        <pathelement location="lib/hotrod-2.2.0.jar" />
+        <pathelement location="lib/h2-1.4.196.jar" />
+      </classpath>
+    </taskdef>
+
+    <hotrod driverclass="org.h2.Driver"
+            url="jdbc:h2:tcp://localhost:9092/./db1"
+            username="sa"
+            password=""
+            catalog="DB1"
+            schema="PUBLIC"
+            generator="MyBatis-Spring"
+            facets=""
+            configfile="src/main/hotrod/hotrod.xml"
+            display="list" />
+
+  </target>
+
+  <target name="-init">
+    <mkdir dir="build/test" />
+  </target>
+
+  <target name="clean" depends="-init">
+    <delete includeemptydirs="true">
+      <fileset dir="build" includes="**/*" />
+    </delete>
+    <antcall target="-init" />
+  </target>
+
+  <target name="compile" depends="-init">
+    <javac destdir="build/test"
+           debug="true"
+           deprecation="true"
+           source="1.8"
+           target="1.8"
+           includeantruntime="false"
+           includes="**/*.java"
+           >
+      <src path="src/main/java" />
+      <src path="gen/java" />
+      <classpath>
+        <pathelement location="lib/hotrod-runtime-2.2.0.jar" />
+        <pathelement location="lib/mybatis-3.3.0.jar" />
+        <pathelement location="lib/mybatis-spring-1.2.4.jar" />
+        <fileset dir="lib/spring">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="run" depends="clean, compile">
+    <java classname="shell.App1" fork="yes">
+      <classpath>
+        <pathelement path="build/test" />
+        <pathelement path="gen/mappers" />
+        <pathelement path="lib/h2-1.4.196.jar" />
+        <pathelement path="src/main/spring" />
+        <pathelement location="lib/hotrod-runtime-2.2.0.jar" />
+        <pathelement location="lib/mybatis-3.3.0.jar" />
+        <pathelement location="lib/mybatis-spring-1.2.4.jar" />
+        <fileset dir="lib/spring">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+    </java>
+  </target>
+
+
+</project>
