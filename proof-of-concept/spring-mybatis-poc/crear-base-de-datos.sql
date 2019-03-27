@@ -1,3 +1,6 @@
+drop table if exists cuenta;
+drop table if exists cliente;
+
 create table cliente (
   id integer identity primary key not null,
   nombre varchar(20) not null,

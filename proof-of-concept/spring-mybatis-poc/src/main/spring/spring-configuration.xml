@@ -42,6 +42,7 @@
   <bean id="managerCuentas" class="model.ManagerCuentas">
     <property name="sqlSession" ref="sqlSession" />
     <property name="cuentaDAO" ref="cuentaDAO" />
+    <property name="reportesDAO" ref="reportesDAO" />
   </bean>
 
   <!-- DAOs -->
@@ -51,6 +52,10 @@
   </bean>
 
   <bean id="cuentaDAO" class="persistence.primitives.CuentaDAO">
+    <property name="sqlSession" ref="sqlSession" />
+  </bean>
+
+  <bean id="reportesDAO" class="persistence.primitives.ReportesDAO">
     <property name="sqlSession" ref="sqlSession" />
   </bean>
 

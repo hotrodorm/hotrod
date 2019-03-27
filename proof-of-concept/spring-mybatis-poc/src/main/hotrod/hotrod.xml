@@ -8,11 +8,20 @@
       <daos gen-base-dir="gen/java" dao-package="persistence" />
       <mappers gen-base-dir="gen/mappers" relative-dir="." />
       <mybatis-configuration-template file="mybatis-config-template.xml" />
-      <select-generation temp-view-base-name="mybatis_temp_view" />
+      <select-generation temp-view-base-name="hotrod_temp_view" />
     </mybatis-spring>
   </generators>
 
   <table name="cliente" />
   <table name="cuenta" />
+
+  <dao class="ReportesDAO">
+    <select method="listarCuentasConNombre" vo="CuentaConNombreVO">
+      select c.*, t.nombre
+      from cuenta c
+      join cliente t on t.id = c.id_cliente
+      order by c.id_cliente, c.creada_en
+    </select>
+  </dao>
 
 </hotrod>

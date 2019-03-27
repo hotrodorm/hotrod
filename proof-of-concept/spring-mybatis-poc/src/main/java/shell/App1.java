@@ -20,6 +20,9 @@ public class App1 {
       Integer monto = 5000;
 
       System.out.println(" ");
+      managerCuentas.listarCuentas();
+
+      System.out.println(" ");
       System.out.println("Transfiriendo $" + monto + " - desde " + desdeCta + " - hacia " + haciaCta + " ...");
 
       managerCuentas.transferir(desdeCta, haciaCta, monto);
@@ -33,7 +36,7 @@ public class App1 {
     }
 
     System.out.println(" ");
-    managerCuentas.listarCuentas();
+    managerCuentas.listarCuentasConNombre();
 
   }
 

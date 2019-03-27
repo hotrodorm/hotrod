@@ -30,6 +30,7 @@
     <mappers>
     <mapper resource="./primitives/primitives-cliente.xml" />
     <mapper resource="./primitives/primitives-cuenta.xml" />
+    <mapper resource="./primitives/primitives-reportes-dao.xml" />
   </mappers>
 
 

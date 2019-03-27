@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import exceptions.CuentaInactivaException;
 import exceptions.CuentaNoExisteException;
 import exceptions.SaldoInsuficienteException;
+import persistence.CuentaConNombreVO;
 import persistence.CuentaVO;
 import persistence.primitives.CuentaDAO;
 import persistence.primitives.CuentaDAO.CuentaOrderBy;
+import persistence.primitives.ReportesDAO;
 
 public class ManagerCuentas {
 
@@ -19,6 +21,7 @@ public class ManagerCuentas {
 
   private SqlSession sqlSession;
   private CuentaDAO cuentaDAO;
+  private ReportesDAO reportesDAO;
 
   // Bean setter
 
@@ -28,6 +31,10 @@ public class ManagerCuentas {
 
   public void setCuentaDAO(final CuentaDAO cuentaDAO) {
     this.cuentaDAO = cuentaDAO;
+  }
+
+  public void setReportesDAO(final ReportesDAO reportesDAO) {
+    this.reportesDAO = reportesDAO;
   }
 
   // Comportamiento
@@ -59,6 +66,16 @@ public class ManagerCuentas {
     System.out.println("--- Listado de Cuentas (" + todas.size() + " cuentas) ---");
     for (CuentaVO c : todas) {
       System.out.println("    * Cuenta " + c.getNumCta() + " - Saldo: $" + c.getSaldo());
+    }
+    System.out.println("--- Fin de Listado ---");
+  }
+
+  public void listarCuentasConNombre() {
+    List<CuentaConNombreVO> todas = this.reportesDAO.listarCuentasConNombre();
+    System.out.println("--- Listado de Cuentas con Nombre (" + todas.size() + " cuentas) ---");
+    for (CuentaConNombreVO c : todas) {
+      System.out.println(
+          "    * Cuenta " + c.getNumCta() + " (perteneciente a " + c.getNombre() + ") - Saldo: $" + c.getSaldo());
     }
     System.out.println("--- Fin de Listado ---");
   }
