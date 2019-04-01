@@ -13,8 +13,8 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
-import persistence.ClienteVO;
-import persistence.CuentaVO;
+import persistence.Cliente;
+import persistence.Cuenta;
 import persistence.primitives.CuentaDAO.CuentaOrderBy;
 import persistence.primitives.CuentaDAO;
 
@@ -34,36 +34,36 @@ public class ClienteDAO implements Serializable {
 
   // select by primary key
 
-  public ClienteVO selectByPK(final java.lang.Integer id) {
+  public Cliente selectByPK(final java.lang.Integer id) {
     if (id == null)
       return null;
-    ClienteVO vo = new ClienteVO();
+    Cliente vo = new Cliente();
     vo.setId(id);
     return this.sqlSession.selectOne("persistence.primitives.cliente.selectByPK", vo);
   }
 
   // select by unique indexes
 
-  public ClienteVO  selectByUINombre(final java.lang.String nombre) {
+  public Cliente  selectByUINombre(final java.lang.String nombre) {
     if (nombre == null)
       return null;
-    ClienteVO vo = new ClienteVO();
+    Cliente vo = new Cliente();
     vo.setNombre(nombre);
     return this.sqlSession.selectOne("persistence.primitives.cliente.selectByUINombre", vo);
   }
 
   // select by example (with ordering)
 
-  public List<ClienteVO> selectByExample(final ClienteVO example, final ClienteOrderBy... orderBies)
+  public List<Cliente> selectByExample(final Cliente example, final ClienteOrderBy... orderBies)
       {
-    DaoWithOrder<ClienteVO, ClienteOrderBy> dwo = //
-        new DaoWithOrder<ClienteVO, ClienteOrderBy>(example, orderBies);
+    DaoWithOrder<Cliente, ClienteOrderBy> dwo = //
+        new DaoWithOrder<Cliente, ClienteOrderBy>(example, orderBies);
     return this.sqlSession.selectList("persistence.primitives.cliente.selectByExample", dwo);
   }
 
   // insert
 
-  public int insert(final ClienteVO vo) {
+  public int insert(final Cliente vo) {
     String id = "persistence.primitives.cliente.insert";
     int rows = this.sqlSession.insert(id, vo);
     return rows;
@@ -71,29 +71,29 @@ public class ClienteDAO implements Serializable {
 
   // update by PK
 
-  public int update(final ClienteVO vo) {
+  public int update(final Cliente vo) {
     if (vo.id == null) return 0;
     return this.sqlSession.update("persistence.primitives.cliente.updateByPK", vo);
   }
 
   // delete by PK
 
-  public int delete(final ClienteVO vo) {
+  public int delete(final Cliente vo) {
     if (vo.id == null) return 0;
     return this.sqlSession.delete("persistence.primitives.cliente.deleteByPK", vo);
   }
 
   // update by example
 
-  public int updateByExample(final ClienteVO example, final ClienteVO updateValues) {
-    UpdateByExampleDao<ClienteVO> fvd = //
-      new UpdateByExampleDao<ClienteVO>(example, updateValues);
+  public int updateByExample(final Cliente example, final Cliente updateValues) {
+    UpdateByExampleDao<Cliente> fvd = //
+      new UpdateByExampleDao<Cliente>(example, updateValues);
     return this.sqlSession.update("persistence.primitives.cliente.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final ClienteVO example) {
+  public int deleteByExample(final Cliente example) {
     return this.sqlSession.delete("persistence.primitives.cliente.deleteByExample", example);
   }
 

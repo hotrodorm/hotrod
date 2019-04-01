@@ -16,7 +16,7 @@
     ${alias}.nombre
   </sql>
 
-  <resultMap id="allColumns" type="persistence.ClienteVO">
+  <resultMap id="allColumns" type="persistence.Cliente">
     <id property="id" column="ID" />
     <result property="nombre" column="NOMBRE" />
   </resultMap>

@@ -5,8 +5,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
-import hotrod.test.generation.AccountVO;
-import hotrod.test.generation.TxBranchVO;
+import hotrod.test.generation.Account;
+import hotrod.test.generation.TxBranch;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountDAO.AccountOrderBy;
 import hotrod.test.generation.primitives.TxBranchDAO;
@@ -26,14 +26,14 @@ public class Examples {
     // Select by PK
 
     {
-      AccountVO a = dao.selectByPK(1004);
+      Account a = dao.selectByPK(1004);
       System.out.println("Test #1: a=" + a);
     }
 
     // Select by UI
 
     {
-      AccountVO a = dao.selectByUIName("CHK1004");
+      Account a = dao.selectByUIName("CHK1004");
       System.out.println("Test #2: a=" + a);
     }
 
@@ -42,11 +42,15 @@ public class Examples {
     {
       Timestamp creationDate = new Timestamp(System.currentTimeMillis());
 
-      AccountVO example = new AccountVO();
+      Account example = new Account();
       example.setCreatedOn(creationDate);
-      List<AccountVO> accounts = dao.selectByExample(example);
-      for (AccountVO a : accounts) {
-        System.out.println("Test #3: a=" + a);
+      List<Account> accounts = dao.selectByExample(example);
+      if (accounts.isEmpty()) {
+        System.out.println("Test #3: --- No accounts found.");
+      } else {
+        for (Account a : accounts) {
+          System.out.println("Test #3: a=" + a);
+        }
       }
     }
 
@@ -55,11 +59,15 @@ public class Examples {
     {
       Timestamp creationDate = new Timestamp(System.currentTimeMillis());
 
-      AccountVO example = new AccountVO();
+      Account example = new Account();
       example.setCreatedOn(creationDate);
-      List<AccountVO> accounts = dao.selectByExample(example, AccountOrderBy.CURRENT_BALANCE$DESC, AccountOrderBy.NAME);
-      for (AccountVO a : accounts) {
-        System.out.println("Test #4: a=" + a);
+      List<Account> accounts = dao.selectByExample(example, AccountOrderBy.CURRENT_BALANCE$DESC, AccountOrderBy.NAME);
+      if (accounts.isEmpty()) {
+        System.out.println("Test #4: --- No accounts found.");
+      } else {
+        for (Account a : accounts) {
+          System.out.println("Test #4: a=" + a);
+        }
       }
     }
 
@@ -68,7 +76,7 @@ public class Examples {
     {
       Timestamp creationDate = new Timestamp(System.currentTimeMillis());
 
-      AccountVO a = new AccountVO();
+      Account a = new Account();
       // a.setId(xxx); // ignored
       a.setName("CHK4010");
       a.setType("CHK");
@@ -82,7 +90,7 @@ public class Examples {
     // update the balance
 
     {
-      AccountVO a = dao.selectByPK(1234004);
+      Account a = dao.selectByPK(1234004);
       a.setCurrentBalance(250);
       int rows = dao.update(a);
       System.out.println("Test #6 - updated rows=" + rows);
@@ -93,9 +101,9 @@ public class Examples {
     {
       Timestamp creationDate = new Timestamp(System.currentTimeMillis());
 
-      AccountVO example = new AccountVO();
+      Account example = new Account();
       example.setCreatedOn(creationDate);
-      AccountVO updateValues = new AccountVO();
+      Account updateValues = new Account();
       updateValues.setCurrentBalance(0);
       int rows = dao.updateByExample(example, updateValues);
       System.out.println("Test #7 - updated rows=" + rows);
@@ -104,7 +112,7 @@ public class Examples {
     // delete
 
     {
-      AccountVO a = new AccountVO();
+      Account a = new Account();
       a.setId(104);
       int rows = dao.delete(a);
       System.out.println("Test #8 - deleted rows=" + rows);
@@ -115,7 +123,7 @@ public class Examples {
     {
       Timestamp creationDate = new Timestamp(System.currentTimeMillis());
 
-      AccountVO example = new AccountVO();
+      Account example = new Account();
       example.setCreatedOn(creationDate);
       int rows = dao.deleteByExample(example);
       System.out.println("Test #9 - updated rows=" + rows);
@@ -125,10 +133,10 @@ public class Examples {
 
     {
       TxBranchDAO tdao = SpringBeanRetriever.getBean("txBranchDAO");
-      TxBranchVO example = new TxBranchVO();
+      TxBranch example = new TxBranch();
       example.setBranchId(681);
-      List<TxBranchVO> txs = tdao.selectByExample(example, TxBranchOrderBy.ACCOUNT_ID, TxBranchOrderBy.AMOUNT);
-      for (TxBranchVO b : txs) {
+      List<TxBranch> txs = tdao.selectByExample(example, TxBranchOrderBy.ACCOUNT_ID, TxBranchOrderBy.AMOUNT);
+      for (TxBranch b : txs) {
         System.out.println("Test #10: b=" + b);
       }
     }

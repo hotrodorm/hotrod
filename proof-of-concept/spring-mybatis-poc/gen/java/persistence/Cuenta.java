@@ -1,8 +1,8 @@
 package persistence;
 
-import persistence.primitives.AbstractCuentaVO;
+import persistence.primitives.AbstractCuenta;
 
-public class CuentaVO extends AbstractCuentaVO {
+public class Cuenta extends AbstractCuenta {
 
   private static final long serialVersionUID = 1L;
 

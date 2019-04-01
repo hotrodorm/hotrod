@@ -20,7 +20,7 @@
     ${alias}.creada_en
   </sql>
 
-  <resultMap id="allColumns" type="persistence.CuentaVO">
+  <resultMap id="allColumns" type="persistence.Cuenta">
     <id property="numCta" column="NUM_CTA" />
     <result property="idCliente" column="ID_CLIENTE" />
     <result property="saldo" column="SALDO" />

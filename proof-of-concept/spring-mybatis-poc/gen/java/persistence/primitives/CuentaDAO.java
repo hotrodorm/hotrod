@@ -13,8 +13,8 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
-import persistence.CuentaVO;
-import persistence.ClienteVO;
+import persistence.Cuenta;
+import persistence.Cliente;
 import persistence.primitives.ClienteDAO;
 
 
@@ -33,10 +33,10 @@ public class CuentaDAO implements Serializable {
 
   // select by primary key
 
-  public CuentaVO selectByPK(final java.lang.String numCta) {
+  public Cuenta selectByPK(final java.lang.String numCta) {
     if (numCta == null)
       return null;
-    CuentaVO vo = new CuentaVO();
+    Cuenta vo = new Cuenta();
     vo.setNumCta(numCta);
     return this.sqlSession.selectOne("persistence.primitives.cuenta.selectByPK", vo);
   }
@@ -45,45 +45,45 @@ public class CuentaDAO implements Serializable {
 
   // select by example (with ordering)
 
-  public List<CuentaVO> selectByExample(final CuentaVO example, final CuentaOrderBy... orderBies)
+  public List<Cuenta> selectByExample(final Cuenta example, final CuentaOrderBy... orderBies)
       {
-    DaoWithOrder<CuentaVO, CuentaOrderBy> dwo = //
-        new DaoWithOrder<CuentaVO, CuentaOrderBy>(example, orderBies);
+    DaoWithOrder<Cuenta, CuentaOrderBy> dwo = //
+        new DaoWithOrder<Cuenta, CuentaOrderBy>(example, orderBies);
     return this.sqlSession.selectList("persistence.primitives.cuenta.selectByExample", dwo);
   }
 
   // insert
 
-  public int insert(final CuentaVO vo) {
+  public int insert(final Cuenta vo) {
     String id = "persistence.primitives.cuenta.insert";
     return this.sqlSession.insert(id, vo);
   }
 
   // update by PK
 
-  public int update(final CuentaVO vo) {
+  public int update(final Cuenta vo) {
     if (vo.numCta == null) return 0;
     return this.sqlSession.update("persistence.primitives.cuenta.updateByPK", vo);
   }
 
   // delete by PK
 
-  public int delete(final CuentaVO vo) {
+  public int delete(final Cuenta vo) {
     if (vo.numCta == null) return 0;
     return this.sqlSession.delete("persistence.primitives.cuenta.deleteByPK", vo);
   }
 
   // update by example
 
-  public int updateByExample(final CuentaVO example, final CuentaVO updateValues) {
-    UpdateByExampleDao<CuentaVO> fvd = //
-      new UpdateByExampleDao<CuentaVO>(example, updateValues);
+  public int updateByExample(final Cuenta example, final Cuenta updateValues) {
+    UpdateByExampleDao<Cuenta> fvd = //
+      new UpdateByExampleDao<Cuenta>(example, updateValues);
     return this.sqlSession.update("persistence.primitives.cuenta.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final CuentaVO example) {
+  public int deleteByExample(final Cuenta example) {
     return this.sqlSession.delete("persistence.primitives.cuenta.deleteByExample", example);
   }
 

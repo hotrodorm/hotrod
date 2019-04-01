@@ -14,7 +14,7 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.Selectable;
 
 
-import persistence.CuentaConNombreVO;
+import persistence.CuentaConNombre;
 
 public class ReportesDAO implements Serializable {
 
@@ -44,7 +44,7 @@ public class ReportesDAO implements Serializable {
   */
 
 
-  public List<CuentaConNombreVO> listarCuentasConNombre() {
+  public List<CuentaConNombre> listarCuentasConNombre() {
     return this.sqlSession.selectList("persistence.primitives.reportesDAO.select_listarCuentasConNombre");
   }
 

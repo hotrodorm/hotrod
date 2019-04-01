@@ -69,7 +69,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
     this.queries = this.tag.getQueries();
     this.selects = this.tag.getSelects();
 
-    this.id = new ObjectId(null, null, Id.fromJavaClass(tag.getJavaClassName()), adapter);
+    this.id = new ObjectId(Id.fromJavaClass(tag.getJavaClassName()));
 
     this.selectsMetadata = null;
   }

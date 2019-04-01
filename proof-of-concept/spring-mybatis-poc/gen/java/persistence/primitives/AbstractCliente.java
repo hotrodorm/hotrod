@@ -4,7 +4,7 @@ package persistence.primitives;
 
 import java.io.Serializable;
 
-public class AbstractClienteVO implements Serializable {
+public class AbstractCliente implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

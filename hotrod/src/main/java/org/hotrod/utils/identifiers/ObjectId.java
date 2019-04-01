@@ -10,6 +10,7 @@ public class ObjectId implements Comparable<ObjectId> {
 
   // Properties
 
+  private boolean isRelatedToDatabase;
   private Id catalog;
   private Id schema;
   private Id object;
@@ -19,6 +20,7 @@ public class ObjectId implements Comparable<ObjectId> {
 
   public ObjectId(final Id catalog, final Id schema, final Id object, final DatabaseAdapter adapter)
       throws InvalidIdentifierException {
+    this.isRelatedToDatabase = true;
     if (object == null) {
       throw new InvalidIdentifierException("'object' cannot be null");
     }
@@ -33,6 +35,7 @@ public class ObjectId implements Comparable<ObjectId> {
 
   public ObjectId(final String catalogName, final String schemaName, final String objectName,
       final DatabaseAdapter adapter) throws InvalidIdentifierException {
+    this.isRelatedToDatabase = true;
     if (objectName == null) {
       throw new InvalidIdentifierException("'objectName' cannot be null");
     }
@@ -45,7 +48,22 @@ public class ObjectId implements Comparable<ObjectId> {
     this.adapter = adapter;
   }
 
+  public ObjectId(final Id object) throws InvalidIdentifierException {
+    this.isRelatedToDatabase = false;
+    if (object == null) {
+      throw new InvalidIdentifierException("'object' cannot be null");
+    }
+    this.catalog = null;
+    this.schema = null;
+    this.object = object;
+    this.adapter = null;
+  }
+
   // Getters
+
+  public boolean isRelatedToDatabase() {
+    return isRelatedToDatabase;
+  }
 
   public Id getCatalog() {
     return catalog;

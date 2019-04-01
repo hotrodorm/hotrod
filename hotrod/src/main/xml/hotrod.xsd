@@ -61,6 +61,8 @@
     <xsd:attribute name="gen-base-dir" type="xsd:string" use="required" />
     <xsd:attribute name="dao-package" type="xsd:string" use="required" />
     <xsd:attribute name="primitives-package" type="xsd:string" />
+    <xsd:attribute name="vo-prefix" type="xsd:string" />
+    <xsd:attribute name="vo-suffix" type="xsd:string" />
     <xsd:attribute name="dao-prefix" type="xsd:string" />
     <xsd:attribute name="dao-suffix" type="xsd:string" />
     <xsd:attribute name="primitives-prefix" type="xsd:string" />

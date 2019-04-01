@@ -4,17 +4,16 @@ package persistence.primitives;
 
 import java.io.Serializable;
 
-public abstract class AbstractCuentaConNombreVO implements Serializable {
+public class AbstractCuenta implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  // Expression properties
+  // VO Properties (table columns)
 
   protected java.lang.String numCta = null;
   protected java.lang.Integer idCliente = null;
   protected java.lang.Integer saldo = null;
   protected java.sql.Date creadaEn = null;
-  protected java.lang.String nombre = null;
 
   // getters & setters
 
@@ -54,25 +53,15 @@ public abstract class AbstractCuentaConNombreVO implements Serializable {
     this.propertiesChangeLog.creadaEnWasSet = true;
   }
 
-  public final java.lang.String getNombre() {
-    return this.nombre;
-  }
-
-  public final void setNombre(final java.lang.String nombre) {
-    this.nombre = nombre;
-    this.propertiesChangeLog.nombreWasSet = true;
-  }
-
   // to string
 
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
-    sb.append(super.toString() + "\n");
+    sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- numCta=" + this.numCta + "\n");
     sb.append("- idCliente=" + this.idCliente + "\n");
     sb.append("- saldo=" + this.saldo + "\n");
-    sb.append("- creadaEn=" + this.creadaEn + "\n");
-    sb.append("- nombre=" + this.nombre);
+    sb.append("- creadaEn=" + this.creadaEn);
     return sb.toString();
   }
 
@@ -85,7 +74,6 @@ public abstract class AbstractCuentaConNombreVO implements Serializable {
     public boolean idClienteWasSet = false;
     public boolean saldoWasSet = false;
     public boolean creadaEnWasSet = false;
-    public boolean nombreWasSet = false;
   }
 
 }

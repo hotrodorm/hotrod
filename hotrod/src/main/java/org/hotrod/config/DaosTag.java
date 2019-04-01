@@ -23,8 +23,12 @@ public class DaosTag extends AbstractConfigurationTag {
   private static final Logger log = Logger.getLogger(DaosTag.class);
 
   private static final String DEFAULT_PRIMITIVES_RELATIVE_PACKAGE = "primitives";
+
+  private static final String DEFAULT_VO_PREFIX = "";
+  private static final String DEFAULT_VO_SUFFIX = "VO";
   private static final String DEFAULT_DAO_PREFIX = "";
   private static final String DEFAULT_DAO_SUFFIX = "DAO";
+
   private static final String DEFAULT_PRIMITIVES_PREFIX = "";
   private static final String DEFAULT_PRIMITIVES_SUFFIX = "Primitives";
 
@@ -36,6 +40,8 @@ public class DaosTag extends AbstractConfigurationTag {
   private String sDaoPackage = null;
   private String sPrimitivesPackage = null;
 
+  private String voPrefix = null;
+  private String voSuffix = null;
   private String daoPrefix = null;
   private String daoSuffix = null;
   private String primitivesPrefix = null;
@@ -66,6 +72,16 @@ public class DaosTag extends AbstractConfigurationTag {
   @XmlAttribute(name = "primitives-package")
   public void setSprimitivesPackage(final String sPrimitivesPackage) {
     this.sPrimitivesPackage = sPrimitivesPackage;
+  }
+
+  @XmlAttribute(name = "vo-prefix")
+  public void setVoPrefix(final String voPrefix) {
+    this.voPrefix = voPrefix;
+  }
+
+  @XmlAttribute(name = "vo-suffix")
+  public void setVoSuffix(final String voSuffix) {
+    this.voSuffix = voSuffix;
   }
 
   @XmlAttribute(name = "dao-prefix")
@@ -147,6 +163,38 @@ public class DaosTag extends AbstractConfigurationTag {
       }
     }
 
+    // =========================================================================
+
+    // vo-prefix
+
+    if (this.voPrefix == null) {
+      this.voPrefix = DEFAULT_VO_PREFIX;
+    } else {
+      if (!this.voPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid vo-prefix value '" + this.voPrefix
+                + "': when specified, it can only include one or more letters, digits, or underscores", //
+            "Invalid vo-prefix value '" + this.voPrefix
+                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+      }
+    }
+
+    // vo-suffix
+
+    if (this.voSuffix == null) {
+      this.voSuffix = DEFAULT_VO_SUFFIX;
+    } else {
+      if (!this.voSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid vo-suffix value '" + this.daoSuffix
+                + "': when specified, it can only include one or more letters, digits, or underscores", //
+            "Invalid vo-suffix value '" + this.daoSuffix
+                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+      }
+    }
+
+    // =========================================================================
+
     // dao-prefix
 
     if (this.daoPrefix == null) {
@@ -207,51 +255,36 @@ public class DaosTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public String generateDAOName(final ObjectId id) {
+  public String generateVOName(final ObjectId id) {
     if (id.wasJavaNameSpecified()) {
       return id.getJavaClassName();
+    } else {
+      return this.voPrefix + id.getJavaClassName() + this.voSuffix;
+    }
+  }
+
+  public String generateDAOName(final ObjectId id) {
+    if (id.wasJavaNameSpecified()) {
+      if (id.isRelatedToDatabase()) { // database object
+        return id.getJavaClassName() + this.daoSuffix;
+      } else { // executor
+        return id.getJavaClassName();
+      }
     } else {
       return this.daoPrefix + id.getJavaClassName() + this.daoSuffix;
     }
   }
 
   public String generatePrimitivesName(final ObjectId id) {
-    log.debug("this.primitivesSuffix=" + this.primitivesSuffix);
     return this.primitivesPrefix + id.getJavaClassName() + this.primitivesSuffix;
   }
 
   public String generateAbstractVOName(final ObjectId id) {
-    if (id.wasJavaNameSpecified()) {
-      // For this case new <dao> tag attributes are needed.
-      // Something like: abstract-vo-prefix & abstract-vo-suffix
-      return "Abstract" + id.getJavaClassName() + "VO";
-    } else {
-      return "Abstract" + id.getJavaClassName() + "VO";
-    }
+    return "Abstract" + this.generateVOName(id);
   }
 
   public String generateAbstractVOName(final String voName) {
     return "Abstract" + voName;
-  }
-
-  private static final String DAO_SUFFIX = "DAO";
-
-  public String generateVOName(final ObjectId identifier) {
-    String daoName = identifier.getJavaClassName();
-    String name;
-    if (daoName.endsWith(DAO_SUFFIX)) {
-      name = daoName.substring(0, daoName.length() - DAO_SUFFIX.length()) + "VO";
-    } else {
-      name = daoName + "VO";
-    }
-    return name;
-    // if (identifier.wasJavaNameSpecified()) {
-    // // For this case new <dao> tag attributes are needed.
-    // // Something like: vo-prefix & vo-suffix
-    // return name;
-    // } else {
-    // return name;
-    // }
   }
 
   // Getters

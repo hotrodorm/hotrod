@@ -16,7 +16,7 @@
 
   <!-- select method: listarCuentasConNombre -->
 
-  <resultMap id="result_map_select_listarCuentasConNombre" type="persistence.CuentaConNombreVO">
+  <resultMap id="result_map_select_listarCuentasConNombre" type="persistence.CuentaConNombre">
     <result property="numCta" column="NUM_CTA" />
     <result property="idCliente" column="ID_CLIENTE" />
     <result property="saldo" column="SALDO" />

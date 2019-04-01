@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import exceptions.CuentaInactivaException;
 import exceptions.CuentaNoExisteException;
 import exceptions.SaldoInsuficienteException;
-import persistence.CuentaConNombreVO;
-import persistence.CuentaVO;
+import persistence.CuentaConNombre;
+import persistence.Cuenta;
 import persistence.primitives.CuentaDAO;
 import persistence.primitives.CuentaDAO.CuentaOrderBy;
 import persistence.primitives.ReportesDAO;
@@ -46,7 +46,7 @@ public class ManagerCuentas {
   }
 
   public int abonar(final String numCta, final Integer monto) {
-    CuentaVO c = this.cuentaDAO.selectByPK(numCta);
+    Cuenta c = this.cuentaDAO.selectByPK(numCta);
     if (c == null) {
       throw new CuentaNoExisteException();
     }
@@ -61,19 +61,19 @@ public class ManagerCuentas {
   }
 
   public void listarCuentas() {
-    List<CuentaVO> todas = this.cuentaDAO.selectByExample(new CuentaVO(), CuentaOrderBy.ID_CLIENTE,
+    List<Cuenta> todas = this.cuentaDAO.selectByExample(new Cuenta(), CuentaOrderBy.ID_CLIENTE,
         CuentaOrderBy.CREADA_EN);
     System.out.println("--- Listado de Cuentas (" + todas.size() + " cuentas) ---");
-    for (CuentaVO c : todas) {
+    for (Cuenta c : todas) {
       System.out.println("    * Cuenta " + c.getNumCta() + " - Saldo: $" + c.getSaldo());
     }
     System.out.println("--- Fin de Listado ---");
   }
 
   public void listarCuentasConNombre() {
-    List<CuentaConNombreVO> todas = this.reportesDAO.listarCuentasConNombre();
+    List<CuentaConNombre> todas = this.reportesDAO.listarCuentasConNombre();
     System.out.println("--- Listado de Cuentas con Nombre (" + todas.size() + " cuentas) ---");
-    for (CuentaConNombreVO c : todas) {
+    for (CuentaConNombre c : todas) {
       System.out.println(
           "    * Cuenta " + c.getNumCta() + " (perteneciente a " + c.getNombre() + ") - Saldo: $" + c.getSaldo());
     }
