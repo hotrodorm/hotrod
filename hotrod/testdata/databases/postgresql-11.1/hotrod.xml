@@ -12,6 +12,7 @@
 			  primitives-package="empusa.test.generation.prim" dao-prefix="" dao-suffix="DO" 
 			  primitives-prefix="" primitives-suffix="AO" /> -->
       <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
+      <spring beans-file="gen/spring-hotrod2.xml" />
       <mybatis-configuration-template file="mybatis-config-template.xml" />
       <select-generation temp-view-base-name="mybatis_temp_view" />
     </mybatis-spring>

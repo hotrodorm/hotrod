@@ -7,6 +7,7 @@
     <mybatis-spring>
       <daos gen-base-dir="gen/java" dao-package="persistence" vo-suffix="" />
       <mappers gen-base-dir="gen/mappers" relative-dir="." />
+      <spring beans-file="gen/spring-hotrod.xml" />
       <mybatis-configuration-template file="mybatis-config-template.xml" />
       <select-generation temp-view-base-name="hotrod_temp_view" />
     </mybatis-spring>

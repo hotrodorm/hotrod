@@ -1,5 +1,6 @@
 package org.hotrod.generator.mybatisspring;
 
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
@@ -40,7 +41,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
 
   private static transient final Logger log = Logger.getLogger(MyBatisSpringGenerator.class);
 
-  private MyBatisSpringTag myBatisTag;
+  private MyBatisSpringTag myBatisSpringTag;
 
   private LinkedHashMap<DataSetMetadata, ObjectAbstractVO> abstractVos = new LinkedHashMap<DataSetMetadata, ObjectAbstractVO>();
   private LinkedHashMap<DataSetMetadata, ObjectVO> vos = new LinkedHashMap<DataSetMetadata, ObjectVO>();
@@ -48,6 +49,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
   private LinkedHashMap<DataSetMetadata, Mapper> mappers = new LinkedHashMap<DataSetMetadata, Mapper>();
   private LinkedHashMap<EnumDataSetMetadata, EnumClass> enumClasses = new LinkedHashMap<EnumDataSetMetadata, EnumClass>();
   private MyBatisConfiguration myBatisConfig;
+  private SpringBeansFile springBeansFile;
 
   private EntityDAORegistry entityDAORegistry = new EntityDAORegistry();
 
@@ -65,7 +67,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
     // Load and validate the configuration file
 
     this.myBatisConfig = new MyBatisConfiguration(this.config);
-    this.myBatisTag = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
+    this.myBatisSpringTag = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
     DataSetLayout layout = new DataSetLayout(this.config);
 
     // Reset the generated object counters
@@ -101,7 +103,8 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
     // Add enums
 
     for (EnumDataSetMetadata em : super.enums) {
-      this.enumClasses.put(em, new EnumClass(em, new DataSetLayout(this.config), this.myBatisTag.getDaos(), this));
+      this.enumClasses.put(em,
+          new EnumClass(em, new DataSetLayout(this.config), this.myBatisSpringTag.getDaos(), this));
     }
 
     // First-level select tags are unsupported
@@ -127,6 +130,15 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
     for (Mapper mapper : this.mappers.values()) {
       String sourceFile = mapper.getRuntimeSourceFileName();
       this.myBatisConfig.addSourceFile(sourceFile);
+    }
+
+    // Prepare Spring Beans file
+
+    File f = this.myBatisSpringTag.getSpring().getBeansResolvedFile();
+    this.springBeansFile = new SpringBeansFile(f);
+    for (DataSetMetadata dm : this.daos.keySet()) {
+      ObjectDAO dao = this.daos.get(dm);
+      this.springBeansFile.addDAO(dao);
     }
 
   }
@@ -222,7 +234,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
 
     SelectVOClass soloVO = rt.getSoloVO();
     if (soloVO != null) {
-      SelectAbstractVO abstractVO = new SelectAbstractVO(soloVO, layout, this.myBatisTag);
+      SelectAbstractVO abstractVO = new SelectAbstractVO(soloVO, layout, this.myBatisSpringTag);
       this.abstractSelectVOs.add(abstractVO);
       SelectVO vo = new SelectVO(soloVO, abstractVO, layout);
       this.selectVOs.add(vo);
@@ -232,7 +244,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
 
     if (sm.getStructuredColumns() != null) {
       for (VOMetadata vo : sm.getStructuredColumns().getVOs()) {
-        vo.register(this.abstractSelectVOs, this.selectVOs, layout, this.myBatisTag);
+        vo.register(this.abstractSelectVOs, this.selectVOs, layout, this.myBatisSpringTag);
       }
     }
 
@@ -286,6 +298,10 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
     // MyBatis Main configuration file
 
     this.myBatisConfig.generate(fileGenerator);
+
+    // Spring Beans file
+
+    this.springBeansFile.generate(fileGenerator);
 
     // compute tree generation status
 

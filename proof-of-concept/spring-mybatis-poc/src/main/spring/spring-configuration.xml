@@ -39,7 +39,7 @@
 
   <!-- HotRod DAO beans -->
   
-  <import resource="gen.xml"/>
+  <import resource="../../../gen/spring-hotrod.xml"/>
 
   <!-- App beans -->
 
