@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="persistence.primitives.cuenta">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    num_cta,
+    id_cliente,
+    saldo,
+    creada_en
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.num_cta,
+    ${alias}.id_cliente,
+    ${alias}.saldo,
+    ${alias}.creada_en
+  </sql>
+
+  <resultMap id="allColumns" type="persistence.Cuenta">
+    <id property="numCta" column="NUM_CTA" />
+    <result property="idCliente" column="ID_CLIENTE" />
+    <result property="saldo" column="SALDO" />
+    <result property="creadaEn" column="CREADA_EN" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from cuenta
+     where
+      num_cta = #{numCta,jdbcType=VARCHAR}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from cuenta
+    <where>
+      <if test="p.numCta != null ">
+        and num_cta = #{p.numCta,jdbcType=VARCHAR}
+      </if>
+      <if test="p.numCta == null and p.propertiesChangeLog.numCtaWasSet">
+        and num_cta is null
+      </if>
+      <if test="p.idCliente != null ">
+        and id_cliente = #{p.idCliente,jdbcType=INTEGER}
+      </if>
+      <if test="p.idCliente == null and p.propertiesChangeLog.idClienteWasSet">
+        and id_cliente is null
+      </if>
+      <if test="p.saldo != null ">
+        and saldo = #{p.saldo,jdbcType=INTEGER}
+      </if>
+      <if test="p.saldo == null and p.propertiesChangeLog.saldoWasSet">
+        and saldo is null
+      </if>
+      <if test="p.creadaEn != null ">
+        and creada_en = #{p.creadaEn,jdbcType=DATE}
+      </if>
+      <if test="p.creadaEn == null and p.propertiesChangeLog.creadaEnWasSet">
+        and creada_en is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into cuenta (
+      <trim prefixOverrides=", ">
+        <if test="true">, num_cta</if>
+        <if test="true">, id_cliente</if>
+        <if test="true">, saldo</if>
+        <if test="true">, creada_en</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{numCta,jdbcType=VARCHAR}</if>
+        <if test="true">, #{idCliente,jdbcType=INTEGER}</if>
+        <if test="true">, #{saldo,jdbcType=INTEGER}</if>
+        <if test="true">, #{creadaEn,jdbcType=DATE}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update cuenta set
+      id_cliente = #{idCliente,jdbcType=INTEGER},
+      saldo = #{saldo,jdbcType=INTEGER},
+      creada_en = #{creadaEn,jdbcType=DATE}
+     where
+      num_cta = #{numCta,jdbcType=VARCHAR}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from cuenta
+     where
+      num_cta = #{numCta,jdbcType=VARCHAR}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update cuenta
+    <set>
+      <if test="values.propertiesChangeLog.numCtaWasSet">num_cta = #{values.numCta,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.idClienteWasSet">id_cliente = #{values.idCliente,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.saldoWasSet">saldo = #{values.saldo,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.creadaEnWasSet">creada_en = #{values.creadaEn,jdbcType=DATE},</if>
+    </set>
+    <where>
+      <if test="filter.numCta != null ">
+        and num_cta = #{filter.numCta,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.numCta == null and filter.propertiesChangeLog.numCtaWasSet">
+        and num_cta is null
+      </if>
+      <if test="filter.idCliente != null ">
+        and id_cliente = #{filter.idCliente,jdbcType=INTEGER}
+      </if>
+      <if test="filter.idCliente == null and filter.propertiesChangeLog.idClienteWasSet">
+        and id_cliente is null
+      </if>
+      <if test="filter.saldo != null ">
+        and saldo = #{filter.saldo,jdbcType=INTEGER}
+      </if>
+      <if test="filter.saldo == null and filter.propertiesChangeLog.saldoWasSet">
+        and saldo is null
+      </if>
+      <if test="filter.creadaEn != null ">
+        and creada_en = #{filter.creadaEn,jdbcType=DATE}
+      </if>
+      <if test="filter.creadaEn == null and filter.propertiesChangeLog.creadaEnWasSet">
+        and creada_en is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from cuenta
+    <where>
+      <if test="numCta != null ">
+        and num_cta = #{numCta,jdbcType=VARCHAR}
+      </if>
+      <if test="numCta == null and propertiesChangeLog.numCtaWasSet">
+        and num_cta is null
+      </if>
+      <if test="idCliente != null ">
+        and id_cliente = #{idCliente,jdbcType=INTEGER}
+      </if>
+      <if test="idCliente == null and propertiesChangeLog.idClienteWasSet">
+        and id_cliente is null
+      </if>
+      <if test="saldo != null ">
+        and saldo = #{saldo,jdbcType=INTEGER}
+      </if>
+      <if test="saldo == null and propertiesChangeLog.saldoWasSet">
+        and saldo is null
+      </if>
+      <if test="creadaEn != null ">
+        and creada_en = #{creadaEn,jdbcType=DATE}
+      </if>
+      <if test="creadaEn == null and propertiesChangeLog.creadaEnWasSet">
+        and creada_en is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

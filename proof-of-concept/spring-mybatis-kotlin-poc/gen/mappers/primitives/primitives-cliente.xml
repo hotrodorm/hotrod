@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="persistence.primitives.cliente">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    nombre
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.nombre
+  </sql>
+
+  <resultMap id="allColumns" type="persistence.Cliente">
+    <id property="id" column="ID" />
+    <result property="nombre" column="NOMBRE" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from cliente
+     where
+      id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- select by unique indexes -->
+
+  <select id="selectByUINombre" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from cliente
+     where
+      nombre = #{nombre,jdbcType=VARCHAR}
+  </select>
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from cliente
+    <where>
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="p.nombre != null ">
+        and nombre = #{p.nombre,jdbcType=VARCHAR}
+      </if>
+      <if test="p.nombre == null and p.propertiesChangeLog.nombreWasSet">
+        and nombre is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- insert (does not integrate sequences, and integrates identities) -->
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into cliente (
+      <trim prefixOverrides=", ">
+        <if test="id != null">, id</if>
+        <if test="true">, nombre</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="id != null">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{nombre,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update cliente set
+      nombre = #{nombre,jdbcType=VARCHAR}
+     where
+      id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from cliente
+     where
+      id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update cliente
+    <set>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.nombreWasSet">nombre = #{values.nombre,jdbcType=VARCHAR},</if>
+    </set>
+    <where>
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="filter.nombre != null ">
+        and nombre = #{filter.nombre,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.nombre == null and filter.propertiesChangeLog.nombreWasSet">
+        and nombre is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from cliente
+    <where>
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="nombre != null ">
+        and nombre = #{nombre,jdbcType=VARCHAR}
+      </if>
+      <if test="nombre == null and propertiesChangeLog.nombreWasSet">
+        and nombre is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

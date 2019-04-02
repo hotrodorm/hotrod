@@ -1,0 +1,22 @@
+El proyecto viene listo para ejecutar. 
+
+La funcionalidad es la de transferir $5000 entre dos cuentas (usando transacciones). Funcionará
+bien dos veces, y fallará la tercera vez por saldo insuficiente. Para ejecutar: 
+
+1. Iniciar H2 (en linux). En Windows debe ser muy parecido:
+
+  ./run.h2.sh
+  
+  Nota: H2 queda operando en modo TCP, así que otros proceso puede acceder a la base de datos en paralelo. 
+
+2. Ejecutar la aplicación de transferencia:
+
+  ant run
+
+===============================
+
+Después, si quieres modificar la base de datos, puedes ejecutar HotRod de nuevo con:
+
+  ant build-hotrod
+  
+  
