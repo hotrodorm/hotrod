@@ -1,0 +1,557 @@
+digraph p1 {
+  rankdir=BT; ranksep=0.3;
+  bgcolor="#f4f4f4";
+  graph [fontname = "helvetica", fontsize = 9]; node [fontname = "helvetica", fontsize = 10]; edge [fontname = "helvetica", fontsize = 9];
+  0 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="6" color="#ff0000" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">196<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Nested Loop</b></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right">Inner <font color="#808080">join</font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  1 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="4" color="#c16868" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">70<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Aggregate</b></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  2 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="4" color="#be6d6d" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">64<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;3.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Hash Join</b></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right">Inner <font color="#808080">join</font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  3 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="1" color="#a09f9f" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">4<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;4.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Seq Scan</b> <font color="#0000ff"><b>&#x24bb;</b></font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  4 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="3" color="#af8787" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">33<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Hash</b></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  5 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="3" color="#ad8a8a" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">29<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Seq Scan</b>&nbsp;<font color="#a0a0a0">*5</font> <font color="#0000ff"><b>&#x24bb;</b></font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  6 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="2" color="#a29c9c" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">8<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Seq Scan</b>&nbsp;<font color="#a0a0a0">*6</font> <font color="#0000ff"><b>&#x24bb;</b></font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  7 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="5" color="#f41212" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">174<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Nested Loop</b></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right">Inner <font color="#808080">join</font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  8 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="5" color="#f01a1a" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">165<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Nested Loop</b></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right">Inner <font color="#808080">join</font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  9 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="3" color="#ab8d8d" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">26<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Result</b></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  10 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="3" color="#aa8f8f" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">23<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Limit</b></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  11 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="3" color="#a99191" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">21<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Index Only Scan</b>&nbsp;<font color="#a0a0a0">*11</font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  12 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="5" color="#e13232" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">136<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Index Scan</b>&nbsp;<font color="#a0a0a0">*12</font> <font color="#0000ff"><b>&#x24bb;</b></font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  13 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="4" color="#b57c7c" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">46<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Aggregate</b></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  14 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="4" color="#b38080" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">42<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Hash Join</b></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right">Semi <font color="#808080">join</font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  15 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="3" color="#ab8d8d" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">26<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Hash Join</b></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right">Inner <font color="#808080">join</font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  16 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="1" color="#a0a0a0" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">3<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;3.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Seq Scan</b> <font color="#0000ff"><b>&#x24bb;</b></font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  17 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="2" color="#a59898" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">13<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Hash</b></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  18 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="2" color="#a39b9b" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">9<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Bitmap Heap Scan</b>&nbsp;<font color="#a0a0a0">*18</font> <font color="#0000ff"><b>&#x24bb;</b></font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  19 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="1" color="#a09f9f" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">4<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Bitmap Index Scan</b>&nbsp;<font color="#a0a0a0">*19</font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  20 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="2" color="#a29d9d" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">7<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Hash</b></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  21 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="1" color="#a09f9f" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">4<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Seq Scan</b>&nbsp;<font color="#a0a0a0">*21</font> <font color="#0000ff"><b>&#x24bb;</b></font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  22 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="2" color="#a29d9d" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">7<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Index Scan</b>&nbsp;<font color="#a0a0a0">*22</font> <font color="#0000ff"><b>&#x24bb;</b></font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  23 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="2" color="#a39b9b" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">9<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Index Scan</b>&nbsp;<font color="#a0a0a0">*23</font> <font color="#0000ff"><b>&#x24bb;</b></font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  1 -> 0 [color="#a0a0a0" penwidth=1.0];
+  2 -> 1 [color="#eb2121" penwidth=6.5];
+  3 -> 2 [color="#ff0000" penwidth=8.0];
+  4 -> 2 [color="#d05050" penwidth=4.5];
+  5 -> 4 [color="#d05050" penwidth=4.5];
+  6 -> 5 [color="#a0a0a0" penwidth=1.0];
+  7 -> 0 [color="#d05050" penwidth=4.5];
+  8 -> 7 [color="#a0a0a0" penwidth=1.0];
+  9 -> 8 [color="#a0a0a0" penwidth=1.0];
+  10 -> 9 [color="#a0a0a0" penwidth=1.0];
+  11 -> 10 [color="#a0a0a0" penwidth=1.0];
+  12 -> 8 [color="#a0a0a0" penwidth=1.0];
+  13 -> 12 [color="#a0a0a0" penwidth=1.0];
+  14 -> 13 [color="#d05050" penwidth=4.5];
+  15 -> 14 [color="#d05050" penwidth=4.5];
+  16 -> 15 [color="#eb2121" penwidth=6.5];
+  17 -> 15 [color="#d05050" penwidth=4.5];
+  18 -> 17 [color="#d05050" penwidth=4.5];
+  19 -> 18 [color="#d05050" penwidth=4.5];
+  20 -> 14 [color="#d05050" penwidth=4.5];
+  21 -> 20 [color="#d05050" penwidth=4.5];
+  22 -> 7 [color="#d05050" penwidth=4.5];
+  23 -> 0 [color="#a0a0a0" penwidth=1.0];
+}
+}

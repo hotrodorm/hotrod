@@ -1,0 +1,58 @@
+<html>
+<head>
+</head>
+<body>
+
+<h3>Execution Plan Sketch</h3>
+
+<!--
+-->
+<script src="js/viz.js"></script>
+<script src="js/full.render.js"></script>
+  
+<script>
+
+var x2 = load1();
+// alert('[4] x2: ' + x2);
+render();
+
+
+function load1() {
+  var client = new XMLHttpRequest();
+  var text = '';
+  client.open('GET', 'p1.dot', false);
+  client.onreadystatechange = function() {
+    text = '' + client.responseText;
+  }
+  client.send();
+  // alert('text: ' + text);
+  return text;
+}
+
+function render() {
+
+	  var viz = new Viz();
+	  
+	  // viz.renderSVGElement('digraph { a -> b; a -> c; }')
+	  viz.renderSVGElement(x2)
+        .then(function(element) {
+	    document.body.appendChild(element);
+	  })
+	  .catch(error => {
+	    // Create a new Viz instance (@see Caveats page for more info)
+	    viz = new Viz();
+
+	    // Possibly display the error
+	    console.error(error);
+	  });
+}
+<!--
+-->
+
+
+</script>
+
+<p>End of execution plan.</p>
+
+</body>
+</html>
