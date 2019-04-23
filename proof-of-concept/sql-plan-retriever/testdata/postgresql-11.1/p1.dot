@@ -5,7 +5,7 @@ digraph p1 {
   0 [shape=none margin=0 label=<
     <table cellspacing="0" cellpadding="1" border="6" color="#ff0000" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">196<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">260<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -25,9 +25,9 @@ digraph p1 {
       </table>
     >];
   1 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="4" color="#c16868" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="4" color="#b87777" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">70<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">69<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -47,9 +47,9 @@ digraph p1 {
       </table>
     >];
   2 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="4" color="#be6d6d" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="4" color="#b67b7b" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">64<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">62<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;3.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -69,9 +69,9 @@ digraph p1 {
       </table>
     >];
   3 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="1" color="#a09f9f" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="1" color="#a19f9f" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">4<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">5<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;4.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -91,9 +91,9 @@ digraph p1 {
       </table>
     >];
   4 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="3" color="#af8787" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="3" color="#aa8f8f" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">33<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">31<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -113,9 +113,9 @@ digraph p1 {
       </table>
     >];
   5 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="3" color="#ad8a8a" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="3" color="#a99292" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">29<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">26<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -135,9 +135,9 @@ digraph p1 {
       </table>
     >];
   6 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="2" color="#a29c9c" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="1" color="#a19f9f" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">8<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">5<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -157,9 +157,9 @@ digraph p1 {
       </table>
     >];
   7 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="5" color="#f41212" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="5" color="#f11717" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">174<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">223<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -179,9 +179,9 @@ digraph p1 {
       </table>
     >];
   8 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="5" color="#f01a1a" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="5" color="#ec2020" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">165<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">208<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -201,9 +201,9 @@ digraph p1 {
       </table>
     >];
   9 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="3" color="#ab8d8d" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="3" color="#a99191" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">26<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">27<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -223,7 +223,7 @@ digraph p1 {
       </table>
     >];
   10 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="3" color="#aa8f8f" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="3" color="#a79494" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
         <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">23<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
@@ -245,7 +245,7 @@ digraph p1 {
       </table>
     >];
   11 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="3" color="#a99191" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="3" color="#a79595" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
         <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">21<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
@@ -267,9 +267,9 @@ digraph p1 {
       </table>
     >];
   12 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="5" color="#e13232" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="5" color="#e03434" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">136<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">177<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -289,9 +289,9 @@ digraph p1 {
       </table>
     >];
   13 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="4" color="#b57c7c" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="4" color="#bf6c6c" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">46<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">87<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -311,9 +311,9 @@ digraph p1 {
       </table>
     >];
   14 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="4" color="#b38080" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="4" color="#bd6f6f" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">42<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">82<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -333,9 +333,9 @@ digraph p1 {
       </table>
     >];
   15 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="3" color="#ab8d8d" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="4" color="#b38080" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">26<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">55<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -377,7 +377,73 @@ digraph p1 {
       </table>
     >];
   17 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="2" color="#a59898" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="3" color="#ae8989" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">40<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Hash</b></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  18 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="3" color="#ab8d8d" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">33<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Bitmap Heap Scan</b>&nbsp;<font color="#a0a0a0">*18</font> <font color="#0000ff"><b>&#x24bb;</b></font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  19 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="1" color="#a0a0a0" bgcolor="#ffffff" style="radial" cellborder="0">
+      <tr>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">3<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
+      </tr>
+      <tr>
+        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
+      </tr>
+      <tr>
+        <td align="left" colspan="2" ><b>Bitmap Index Scan</b>&nbsp;<font color="#a0a0a0">*19</font></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
+        <td align="right"></td>
+      </tr>
+      <tr>
+        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
+        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
+      </tr>
+      </table>
+    >];
+  20 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="2" color="#a49a9a" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
         <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">13<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
@@ -398,76 +464,10 @@ digraph p1 {
       </tr>
       </table>
     >];
-  18 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="2" color="#a39b9b" bgcolor="#ffffff" style="radial" cellborder="0">
-      <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">9<font color="#a0a0a0">&nbsp;µs</font></font></td>
-        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
-      </tr>
-      <tr>
-        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
-      </tr>
-      <tr>
-        <td align="left" colspan="2" ><b>Bitmap Heap Scan</b>&nbsp;<font color="#a0a0a0">*18</font> <font color="#0000ff"><b>&#x24bb;</b></font></td>
-      </tr>
-      <tr>
-        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
-        <td align="right"></td>
-      </tr>
-      <tr>
-        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
-        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
-      </tr>
-      </table>
-    >];
-  19 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="1" color="#a09f9f" bgcolor="#ffffff" style="radial" cellborder="0">
-      <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">4<font color="#a0a0a0">&nbsp;µs</font></font></td>
-        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
-      </tr>
-      <tr>
-        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
-      </tr>
-      <tr>
-        <td align="left" colspan="2" ><b>Bitmap Index Scan</b>&nbsp;<font color="#a0a0a0">*19</font></td>
-      </tr>
-      <tr>
-        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
-        <td align="right"></td>
-      </tr>
-      <tr>
-        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
-        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
-      </tr>
-      </table>
-    >];
-  20 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="2" color="#a29d9d" bgcolor="#ffffff" style="radial" cellborder="0">
+  21 [shape=none margin=0 label=<
+    <table cellspacing="0" cellpadding="1" border="1" color="#a19e9e" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
         <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">7<font color="#a0a0a0">&nbsp;µs</font></font></td>
-        <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
-      </tr>
-      <tr>
-        <td align="left" cellpadding="0"><font point-size="3" color="#ffffff">.</font></td>
-      </tr>
-      <tr>
-        <td align="left" colspan="2" ><b>Hash</b></td>
-      </tr>
-      <tr>
-        <td align="left"><font point-size="10" color="#ff0000">&#xff04; &#x231b; &#x26f0; </font></td>
-        <td align="right"></td>
-      </tr>
-      <tr>
-        <td align="left"><font point-size="12" color="#e08000">&#x2260;</font><font color="#a0a0a0"><i>est. 51 µs</i></font></td>
-        <td align="right"><font point-size="12" color="#e08000"> &#x2260;</font><font color="#a0a0a0"><i>est. 78 rows</i></font></td>
-      </tr>
-      </table>
-    >];
-  21 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="1" color="#a09f9f" bgcolor="#ffffff" style="radial" cellborder="0">
-      <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">4<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -487,9 +487,9 @@ digraph p1 {
       </table>
     >];
   22 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="2" color="#a29d9d" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="2" color="#a39b9b" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">7<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">11<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;2.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>
@@ -509,9 +509,9 @@ digraph p1 {
       </table>
     >];
   23 [shape=none margin=0 label=<
-    <table cellspacing="0" cellpadding="1" border="2" color="#a39b9b" bgcolor="#ffffff" style="radial" cellborder="0">
+    <table cellspacing="0" cellpadding="1" border="2" color="#a49999" bgcolor="#ffffff" style="radial" cellborder="0">
       <tr>
-        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">9<font color="#a0a0a0">&nbsp;µs</font></font></td>
+        <td align="left" cellpadding="0" width="50%" color="#c0c0c0" border="1" sides="b"><font point-size="18">15<font color="#a0a0a0">&nbsp;µs</font></font></td>
         <td align="right" color="#c0c0c0" border="1" sides="b"><font point-size="10">&nbsp;1.00<font color="#a0a0a0"> rows</font></font></td>
       </tr>
       <tr>

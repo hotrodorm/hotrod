@@ -39,10 +39,11 @@ public class PlanTester {
     System.out.println("\n--------------------\n");
 
     String dotReport = DotPlanRenderer.render(plan, false);
-    System.out.println(dotReport);
+//    System.out.println(dotReport);
 
-    save(dotReport, "testdata/postgresql-11.1/p1.dot");
-    System.out.println("DOT file saved.");
+    String filename = "testdata/postgresql-11.1/p1.dot";
+    save(dotReport, filename);
+    System.out.println("DOT file " + filename + " saved.");
 
   }
 

@@ -53,8 +53,8 @@ public class TextRenderer {
     Double fullCost = op.getMetrics().getCost();
     CostRenderer costRenderer = CostRenderer.instantiate(plan.getMetricsFactory(), fullCost, showPercentageCost);
 
-    OperatorNode root = renderOperator(op, 0, costRenderer);
-    TextTreeFormatter formatter = new TextTreeFormatter(TextTreeStyle.CLASSIC_FULL2);
+//    OperatorNode root = renderOperator(op, 0, costRenderer);
+//    TextTreeFormatter formatter = new TextTreeFormatter(TextTreeStyle.CLASSIC_FULL2);
 //    String tree = formatter.render(root);
 //    sb.append(tree);
 

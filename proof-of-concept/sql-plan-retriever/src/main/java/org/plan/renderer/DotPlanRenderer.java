@@ -7,6 +7,8 @@ import java.text.DecimalFormat;
 import org.plan.ExecutionPlan;
 import org.plan.operator.Operator;
 import org.plan.renderer.CostRenderer.Scalar;
+import org.plan.renderer.PlanStats.ColorFunction;
+import org.plan.renderer.PlanStats.ScalarFunction;
 
 public class DotPlanRenderer {
 
@@ -30,15 +32,22 @@ public class DotPlanRenderer {
   public static <T extends Comparable<T>> void render(final Operator<T> op, final CostRenderer costRenderer,
       final StringBuilder sb) throws SQLException {
 
-    Stats stats = new Stats();
+    PlanStats stats = new PlanStats();
     gatherStats(op, stats);
 
+    renderHeader(sb);
+
+    ScalarFunction nodeWidthFunction = stats.getCost().getLogScalarFunction(1, 6, 10.0);
     Color BORDER_MIN_COLOR = new Color(160, 160, 160);
     Color BORDER_MAX_COLOR = new Color(255, 0, 0);
+    ColorFunction nodeColorFunction = stats.getCost().getLinearColorFunction(BORDER_MIN_COLOR, BORDER_MAX_COLOR);
 
-    renderHeader(sb);
-    renderNodes(op, stats, costRenderer, sb);
-    renderArcs(op, stats, 1.0, 8.0, BORDER_MIN_COLOR, BORDER_MAX_COLOR, sb);
+    renderNodes(op, stats, costRenderer, nodeColorFunction, nodeWidthFunction, sb);
+
+    ScalarFunction arcWidthFunction = stats.getRows().getLogScalarFunction(1, 8, 2.0);
+    ColorFunction arcColorFunction = stats.getRows().getLogColorFunction(BORDER_MIN_COLOR, BORDER_MAX_COLOR, 2.0);
+    renderArcs(op, stats, arcWidthFunction, arcColorFunction, sb);
+
     renderFooter(op, sb);
 
   }
@@ -56,19 +65,15 @@ public class DotPlanRenderer {
 
   // TODO: nothing todo, just a marker
 
-  private static <T extends Comparable<T>> void renderNodes(final Operator<T> op, final Stats stats,
-      final CostRenderer costRenderer, final StringBuilder sb) {
-
-    Color BORDER_MIN_COLOR = new Color(160, 160, 160);
-    Color BORDER_MAX_COLOR = new Color(255, 0, 0);
+  private static <T extends Comparable<T>> void renderNodes(final Operator<T> op, final PlanStats stats,
+      final CostRenderer costRenderer, final ColorFunction nodeColorFunction, final ScalarFunction nodeWidthFunction,
+      final StringBuilder sb) {
 
     Double cost = op.getMetrics().getCost();
     Double rows = op.getMetrics().getRows();
-    String cc = renderColor(
-        stats.getCost().computeLinearColor(BORDER_MIN_COLOR, BORDER_MAX_COLOR, cost == null ? 1.0 : cost));
-    // double ratio = measurement.getTime().computeLinearRatio(cost == null ? 1.0 :
-    // cost);
-    long border = Math.round(stats.getCost().computeLogScalar(1, 6, cost == null ? 1.0 : cost) - 0.5);
+
+    String cc = renderColor(nodeColorFunction.apply(cost == null ? 1.0 : cost));
+    long border = Math.round(nodeWidthFunction.apply(cost == null ? 1.0 : cost) - 0.5);
 
     // Opening node
 
@@ -162,12 +167,12 @@ public class DotPlanRenderer {
     // }
 
     for (Operator<T> c : op.getChildren()) {
-      renderNodes(c, stats, costRenderer, sb);
+      renderNodes(c, stats, costRenderer, nodeColorFunction, nodeWidthFunction, sb);
     }
 
   }
 
-  private static <T extends Comparable<T>> void gatherStats(final Operator<T> op, final Stats stats) {
+  private static <T extends Comparable<T>> void gatherStats(final Operator<T> op, final PlanStats stats) {
     stats.getRows().addSample(op.getMetrics().getRows());
     stats.getCost().addSample(op.getMetrics().getCost());
     for (Operator<T> c : op.getChildren()) {
@@ -177,16 +182,15 @@ public class DotPlanRenderer {
 
   // TODO: nothing todo, just a marker
 
-  private static <T extends Comparable<T>> void renderArcs(final Operator<T> op, final Stats stats,
-      final double minWidth, final double maxWidth, final Color minColor, final Color maxColor,
-      final StringBuilder sb) {
+  private static <T extends Comparable<T>> void renderArcs(final Operator<T> op, final PlanStats stats,
+      final ScalarFunction arcWidthFunction, final ColorFunction arcColorFunction, final StringBuilder sb) {
     for (Operator<T> c : op.getChildren()) {
       Double rows = c.getMetrics().getRows();
-      double width = rows == null ? 1.0 : stats.getRows().computeLogScalar(minWidth, maxWidth, rows);
-      String rc = renderColor(stats.getRows().computeLogColor(minColor, maxColor, rows == null ? 1.0 : rows));
+      double arcWidth = rows == null ? 1.0 : arcWidthFunction.apply(rows);
+      String rc = renderColor(arcColorFunction.apply(rows == null ? 1.0 : rows));
       sb.append("  " + c.getId() + " -> " + op.getId() + " [color=\"" + rc + "\" penwidth="
-          + WIDTH_FORMATTER.format(width) + "];\n");
-      renderArcs(c, stats, minWidth, maxWidth, minColor, maxColor, sb);
+          + WIDTH_FORMATTER.format(arcWidth) + "];\n");
+      renderArcs(c, stats, arcWidthFunction, arcColorFunction, sb);
     }
   }
 
