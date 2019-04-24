@@ -35,6 +35,7 @@ public class Examples {
     {
       Account a = dao.selectByUIName("CHK1004");
       System.out.println("Test #2: a=" + a);
+      System.out.println("Test #2 JSON: a=" + (a == null ? "null" : a.toJSON()));
     }
 
     // Select by example

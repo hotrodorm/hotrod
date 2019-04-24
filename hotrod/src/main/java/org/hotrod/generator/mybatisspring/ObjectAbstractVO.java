@@ -82,6 +82,8 @@ public class ObjectAbstractVO extends GeneratableObject {
 
       writeToString();
 
+      writeToJSON();
+
       writePropertiesChangeLog();
 
       writeClassFooter();
@@ -122,6 +124,7 @@ public class ObjectAbstractVO extends GeneratableObject {
     // Imports
 
     println("import java.io.Serializable;");
+    println("import org.hotrod.runtime.json.*;");
     println();
 
     // Signature
@@ -228,6 +231,23 @@ public class ObjectAbstractVO extends GeneratableObject {
     println("  }");
     println();
 
+  }
+
+  private void writeToJSON() throws IOException, UnresolvableDataTypeException {
+    println("  // to JSON");
+    println();
+
+    println("  public String toJSON() {");
+    println("    JSONObject obj = new JSONObject();");
+
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String prop = cm.getId().getJavaMemberName();
+      println("    obj.addProperty(\"" + prop + "\", " + "this." + prop + ");");
+    }
+
+    println("    return obj.render();");
+    println("  }");
+    println();
   }
 
   /**
