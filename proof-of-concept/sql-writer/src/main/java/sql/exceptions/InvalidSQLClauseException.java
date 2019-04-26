@@ -1,6 +1,6 @@
 package sql.exceptions;
 
-public class InvalidSQLClauseException extends RuntimeException {
+public class InvalidSQLClauseException extends InvalidSQLStatementException {
 
   private static final long serialVersionUID = 1L;
 

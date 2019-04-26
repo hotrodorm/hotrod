@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.sun.rowset.internal.Row;
 
-public class SelectLimit {
+public class SelectOffset {
 
   // Properties
 
@@ -12,9 +12,15 @@ public class SelectLimit {
 
   // Constructor
 
-  SelectLimit(final Select select, final int limit) {
+  SelectOffset(final Select select, final int offset) {
     this.select = select;
-    this.select.setLimit(limit);
+    this.select.setOffset(offset);
+  }
+
+  // Next stages
+
+  public SelectLimit limit(final int limit) {
+    return new SelectLimit(this.select, limit);
   }
 
   // Execute

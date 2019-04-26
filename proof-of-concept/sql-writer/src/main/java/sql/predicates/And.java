@@ -1,16 +1,11 @@
 package sql.predicates;
 
-public class And extends Predicate {
+public class And extends BinaryBooleanOperator {
 
   private static final int PRECEDENCE = 11;
 
-  private Predicate a;
-  private Predicate b;
-
   public And(final Predicate a, final Predicate b) {
-    super(PRECEDENCE);
-    this.a = a;
-    this.b = b;
+    super(a, "and", b, PRECEDENCE);
   }
 
 }

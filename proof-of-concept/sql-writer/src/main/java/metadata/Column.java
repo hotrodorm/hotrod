@@ -1,5 +1,6 @@
 package metadata;
 
+import sql.QueryWriter;
 import sql.predicates.Expression;
 import sql.predicates.Predicate;
 
@@ -9,7 +10,6 @@ public class Column extends Expression {
 
   private TableOrView t;
 
-  private String renderedSQLName;
   private String catalog;
   private String schema;
   private String table;
@@ -24,10 +24,10 @@ public class Column extends Expression {
   private boolean serial;
   private boolean lob;
 
-  public Column(final TableOrView t, final String renderedSQLName) {
+  public Column(final TableOrView t, final String name) {
     super(PRECEDENCE);
     this.t = t;
-    this.renderedSQLName = renderedSQLName;
+    this.name = name;
   }
 
   // Column ordering
@@ -88,6 +88,17 @@ public class Column extends Expression {
 
   public Predicate notLike(final Expression e) {
     return null;
+  }
+
+  // Getters
+
+  public String getName() {
+    return this.name;
+  }
+
+  @Override
+  public void renderTo(final QueryWriter pq) {
+    pq.write(pq.getSqlDialect().renderName(this.name));
   }
 
 }

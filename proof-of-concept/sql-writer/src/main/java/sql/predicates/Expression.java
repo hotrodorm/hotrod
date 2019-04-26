@@ -1,7 +1,8 @@
 package sql.predicates;
 
-public abstract class Expression {
+import sql.QueryWriter;
 
+public abstract class Expression {
 
   /**
    * <pre>
@@ -43,5 +44,20 @@ public abstract class Expression {
   protected int getPrecedence() {
     return precedence;
   }
+
+  // Rendering
+
+  protected void renderInner(final Expression inner, final QueryWriter pq) {
+    boolean parenthesis = inner.getPrecedence() >= this.precedence;
+    if (parenthesis) {
+      pq.write("(");
+    }
+    inner.renderTo(pq);
+    if (parenthesis) {
+      pq.write(")");
+    }
+  }
+
+  public abstract void renderTo(final QueryWriter pq);
 
 }

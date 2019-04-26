@@ -2,6 +2,8 @@ package sql.predicates;
 
 import java.sql.Date;
 
+import sql.QueryWriter;
+
 public class Constant extends Expression {
 
   private static final int PRECEDENCE = 20;
@@ -73,15 +75,14 @@ public class Constant extends Expression {
 
   // Rendering
 
-  // @Override
-  // protected void render(final PreparedQuery pq) {
-  // QueryWriter w = pq.getWriter();
-  // if (this.parameterize) {
-  // String name = pq.registerParameter(this.value);
-  // w.text("#{" + name + ",jdbcType=" + this.type + "}");
-  // } else {
-  // w.text("" + this.value);
-  // }
-  // }
+  @Override
+  public void renderTo(final QueryWriter pq) {
+    if (this.parameterize) {
+      String name = pq.registerParameter(this.value);
+      pq.write("#{" + name + ",jdbcType=" + this.type + "}");
+    } else {
+      pq.write("" + this.value);
+    }
+  }
 
 }

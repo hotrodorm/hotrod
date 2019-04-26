@@ -7,7 +7,6 @@ import com.sun.rowset.internal.Row;
 import metadata.Column;
 import metadata.ColumnOrdering;
 import metadata.TableOrView;
-import sql.Select.Limit;
 import sql.predicates.Predicate;
 
 public class SelectFrom {
@@ -31,12 +30,12 @@ public class SelectFrom {
   }
 
   public SelectFrom leftJoin(final TableOrView t, final Predicate on) {
-    this.select.addJoin(new LeftJoin(t, on));
+    this.select.addJoin(new LeftOuterJoin(t, on));
     return this;
   }
 
   public SelectFrom rightJoin(final TableOrView t, final Predicate on) {
-    this.select.addJoin(new RightJoin(t, on));
+    this.select.addJoin(new RightOuterJoin(t, on));
     return this;
   }
 
@@ -64,12 +63,12 @@ public class SelectFrom {
     return new SelectOrderBy(this.select, columnOrderings);
   }
 
-  public SelectLimit limit(final int limit) {
-    return new SelectLimit(this.select, new Limit(0, limit));
+  public SelectOffset offset(final int offset) {
+    return new SelectOffset(this.select, offset);
   }
 
-  public SelectLimit limit(final int offset, final int limit) {
-    return new SelectLimit(this.select, new Limit(offset, limit));
+  public SelectLimit limit(final int limit) {
+    return new SelectLimit(this.select, limit);
   }
 
   // Execute

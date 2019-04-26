@@ -16,8 +16,8 @@ public class SelectColumns {
 
   // Constructor
 
-  public SelectColumns(final Column... columns) {
-    this.select = new Select();
+  SelectColumns(final SQLDialect sqlTranslator, final Column... columns) {
+    this.select = new Select(sqlTranslator);
     this.select.setColumns(Arrays.asList(columns));
   }
 

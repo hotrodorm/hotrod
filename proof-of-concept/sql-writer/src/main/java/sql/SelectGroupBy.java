@@ -7,7 +7,6 @@ import com.sun.rowset.internal.Row;
 
 import metadata.Column;
 import metadata.ColumnOrdering;
-import sql.Select.Limit;
 import sql.predicates.Predicate;
 
 public class SelectGroupBy {
@@ -33,12 +32,12 @@ public class SelectGroupBy {
     return new SelectOrderBy(this.select, columnOrderings);
   }
 
-  public SelectLimit limit(final int limit) {
-    return new SelectLimit(this.select, new Limit(0, limit));
+  public SelectOffset offset(final int offset) {
+    return new SelectOffset(this.select, offset);
   }
 
-  public SelectLimit limit(final int offset, final int limit) {
-    return new SelectLimit(this.select, new Limit(offset, limit));
+  public SelectLimit limit(final int limit) {
+    return new SelectLimit(this.select, limit);
   }
 
   // Execute

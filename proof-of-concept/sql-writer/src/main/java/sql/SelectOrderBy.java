@@ -6,7 +6,6 @@ import java.util.List;
 import com.sun.rowset.internal.Row;
 
 import metadata.ColumnOrdering;
-import sql.Select.Limit;
 
 public class SelectOrderBy {
 
@@ -25,12 +24,12 @@ public class SelectOrderBy {
 
   // Next stages
 
-  public SelectLimit limit(final int limit) {
-    return new SelectLimit(this.select, new Limit(0, limit));
+  public SelectOffset offset(final int offset) {
+    return new SelectOffset(this.select, offset);
   }
 
-  public SelectLimit limit(final int offset, final int limit) {
-    return new SelectLimit(this.select, new Limit(offset, limit));
+  public SelectLimit limit(final int limit) {
+    return new SelectLimit(this.select, limit);
   }
 
   // Execute
