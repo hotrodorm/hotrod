@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="src" path="src/lib/java"/>
-	<classpathentry kind="lib" path="lib/text-tree-formatter-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/postgresql-42.2.5.jar"/>
+	<classpathentry kind="lib" path="lib/text-tree-formatter-1.1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java8"/>
 	<classpathentry kind="output" path="idebuild"/>
 </classpath>

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.hotrod.runtime.util.ListWriter;
-import org.nocrala.tools.texttreeformatter.TextTreeFormatter;
+import org.nocrala.tools.texttreeformatter.TextTree;
 import org.nocrala.tools.texttreeformatter.TextTreeStyle;
 import org.plan.ExecutionPlan;
 import org.plan.operator.Operator;
@@ -54,7 +54,9 @@ public class TextRenderer {
     CostRenderer costRenderer = CostRenderer.instantiate(plan.getMetricsFactory(), fullCost, showPercentageCost);
 
 //    OperatorNode root = renderOperator(op, 0, costRenderer);
-//    TextTreeFormatter formatter = new TextTreeFormatter(TextTreeStyle.CLASSIC_FULL2);
+    TextTree tree= new TextTree(TextTreeStyle.CLASSIC_FULL2);
+    tree.setRootNode("");
+    
 //    String tree = formatter.render(root);
 //    sb.append(tree);
 

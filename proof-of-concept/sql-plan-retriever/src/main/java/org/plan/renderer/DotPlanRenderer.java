@@ -32,10 +32,16 @@ public class DotPlanRenderer {
   public static <T extends Comparable<T>> void render(final Operator<T> op, final CostRenderer costRenderer,
       final StringBuilder sb) throws SQLException {
 
+    // Gather stats
+
     PlanStats stats = new PlanStats();
     gatherStats(op, stats);
 
+    // Header
+
     renderHeader(sb);
+
+    // Nodes
 
     ScalarFunction nodeWidthFunction = stats.getCost().getLogScalarFunction(1, 6, 10.0);
     Color BORDER_MIN_COLOR = new Color(160, 160, 160);
@@ -44,9 +50,16 @@ public class DotPlanRenderer {
 
     renderNodes(op, stats, costRenderer, nodeColorFunction, nodeWidthFunction, sb);
 
+    // Arcs
+
+    Color ARC_MIN_COLOR = new Color(255, 199, 0);
+    Color ARC_MAX_COLOR = new Color(255, 128, 0);
+
     ScalarFunction arcWidthFunction = stats.getRows().getLogScalarFunction(1, 8, 2.0);
-    ColorFunction arcColorFunction = stats.getRows().getLogColorFunction(BORDER_MIN_COLOR, BORDER_MAX_COLOR, 2.0);
+    ColorFunction arcColorFunction = stats.getRows().getLogColorFunction(ARC_MIN_COLOR, ARC_MAX_COLOR, 2.0);
     renderArcs(op, stats, arcWidthFunction, arcColorFunction, sb);
+
+    // Footer
 
     renderFooter(op, sb);
 
