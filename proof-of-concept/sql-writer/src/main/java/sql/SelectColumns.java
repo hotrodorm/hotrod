@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.sun.rowset.internal.Row;
 
-import metadata.Column;
 import metadata.TableOrView;
+import sql.expressions.Expression;
 
 public class SelectColumns {
 
@@ -16,9 +16,9 @@ public class SelectColumns {
 
   // Constructor
 
-  SelectColumns(final SQLDialect sqlTranslator, final Column... columns) {
-    this.select = new Select(sqlTranslator);
-    this.select.setColumns(Arrays.asList(columns));
+  SelectColumns(final SQLDialect sqlDialect, final Expression... queryColumns) {
+    this.select = new Select(sqlDialect);
+    this.select.setQueryColumns(Arrays.asList(queryColumns));
   }
 
   // Next stages
@@ -30,7 +30,7 @@ public class SelectColumns {
   // Execute
 
   public List<Row> execute() {
-    return null;
+    return this.select.execute();
   }
 
 }

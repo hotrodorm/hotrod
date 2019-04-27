@@ -1,6 +1,6 @@
-package sql.predicates;
+package sql.expressions.predicates;
 
-public class And extends BinaryBooleanOperator {
+public class And extends BinaryPredicate {
 
   private static final int PRECEDENCE = 11;
 

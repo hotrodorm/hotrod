@@ -1,4 +1,4 @@
-package sql.predicates;
+package sql.expressions.predicates;
 
 import sql.QueryWriter;
 
@@ -14,10 +14,10 @@ public class Not extends Predicate {
   }
 
   @Override
-  public void renderTo(final QueryWriter pq) {
-    pq.write("not (");
-    super.renderInner(this.a, pq);
-    pq.write(")");
+  public void renderTo(final QueryWriter w) {
+    w.write("not (");
+    super.renderInner(this.a, w);
+    w.write(")");
   }
 
 }

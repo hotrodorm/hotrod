@@ -20,7 +20,7 @@ public class SelectLimit {
   // Execute
 
   public List<Row> execute() {
-    return null;
+    return this.select.execute();
   }
 
 }

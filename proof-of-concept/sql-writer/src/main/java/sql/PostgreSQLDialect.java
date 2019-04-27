@@ -1,33 +1,33 @@
 package sql;
 
-import metadata.DatabaseObject;
 import sql.exceptions.UnsupportedFeatureException;
 
-public class PostgreSQLDialect implements SQLDialect {
+public class PostgreSQLDialect extends SQLDialect {
 
-  @Override
-  public String renderObjectName(final DatabaseObject databaseObject) {
-    // TODO Auto-generated method stub
-    return null;
+  public PostgreSQLDialect() {
+    super("[a-z][a-z0-9_]*", "\"", "\"");
   }
 
   @Override
-  public String renderName(final String name) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public String renderJoinClause(final Join join) throws UnsupportedFeatureException {
-    // TODO Auto-generated method stub
-    return null;
+  public String renderJoinKeywords(final Join join) throws UnsupportedFeatureException {
+    if (join instanceof InnerJoin) {
+      return "join";
+    } else if (join instanceof LeftOuterJoin) {
+      return "left outer join";
+    } else if (join instanceof RightOuterJoin) {
+      return "right outer join";
+    } else if (join instanceof FullOuterJoin) {
+      return "full outer join";
+    } else {
+      return "cross join";
+    }
   }
 
   // Pagination
 
   @Override
   public PaginationType getPaginationType(final Integer offset, final Integer limit) {
-    return PaginationType.BOTTOM;
+    return offset != null || limit != null ? PaginationType.BOTTOM : null;
   }
 
   @Override

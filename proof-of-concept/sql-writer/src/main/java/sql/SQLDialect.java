@@ -3,13 +3,49 @@ package sql;
 import metadata.DatabaseObject;
 import sql.exceptions.UnsupportedFeatureException;
 
-public interface SQLDialect {
+public abstract class SQLDialect {
 
-  String renderObjectName(DatabaseObject databaseObject);
+  private String unquotedIdentifierPattern;
+  private String quotePrefix;
+  private String quoteSuffix;
 
-  String renderName(String name);
+  public SQLDialect(final String unquotedIdentifierPattern, final String quotePrefix, final String quoteSuffix) {
+    this.unquotedIdentifierPattern = unquotedIdentifierPattern;
+    this.quotePrefix = quotePrefix;
+    this.quoteSuffix = quoteSuffix;
+  }
 
-  String renderJoinClause(Join join) throws UnsupportedFeatureException;
+  public final String renderName(final String canonicalName) {
+    if (canonicalName == null) {
+      return null;
+    }
+    if (canonicalName.matches(this.unquotedIdentifierPattern)) {
+      return canonicalName;
+    }
+    return (this.quotePrefix == null ? "" : this.quotePrefix) + canonicalName
+        + (this.quoteSuffix == null ? "" : this.quoteSuffix);
+  }
+
+  public String renderObjectName(final DatabaseObject databaseObject) {
+    if (databaseObject == null) {
+      return null;
+    }
+    StringBuilder sb = new StringBuilder();
+    if (databaseObject.getCatalog() != null) {
+      sb.append(this.renderName(databaseObject.getCatalog()));
+      sb.append(".");
+    }
+    if (databaseObject.getSchema() != null) {
+      sb.append(this.renderName(databaseObject.getSchema()));
+      sb.append(".");
+    } else if (databaseObject.getCatalog() != null) {
+      sb.append(".");
+    }
+    sb.append(this.renderName(databaseObject.getName()));
+    return sb.toString();
+  }
+
+  public abstract String renderJoinKeywords(Join join) throws UnsupportedFeatureException;
 
   // Pagination
 
@@ -17,10 +53,10 @@ public interface SQLDialect {
     TOP, BOTTOM
   };
 
-  PaginationType getPaginationType(Integer offset, Integer limit);
+  public abstract PaginationType getPaginationType(Integer offset, Integer limit);
 
-  void renderTopPagination(Integer offset, Integer limit, QueryWriter w);
+  public abstract void renderTopPagination(Integer offset, Integer limit, QueryWriter w);
 
-  void renderBottomPagination(Integer offset, Integer limit, QueryWriter w);
+  public abstract void renderBottomPagination(Integer offset, Integer limit, QueryWriter w);
 
 }

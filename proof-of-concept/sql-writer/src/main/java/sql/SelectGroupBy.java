@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.sun.rowset.internal.Row;
 
-import metadata.Column;
-import metadata.ColumnOrdering;
-import sql.predicates.Predicate;
+import sql.expressions.Expression;
+import sql.expressions.OrderingTerm;
+import sql.expressions.predicates.Predicate;
 
 public class SelectGroupBy {
 
@@ -17,9 +17,9 @@ public class SelectGroupBy {
 
   // Constructor
 
-  SelectGroupBy(final Select select, final Column... columns) {
+  SelectGroupBy(final Select select, final Expression... expressions) {
     this.select = select;
-    this.select.setGroupBy(Arrays.asList(columns));
+    this.select.setGroupBy(Arrays.asList(expressions));
   }
 
   // Next stages
@@ -28,8 +28,8 @@ public class SelectGroupBy {
     return new SelectHaving(this.select, predicate);
   }
 
-  public SelectOrderBy orderBy(final ColumnOrdering... columnOrderings) {
-    return new SelectOrderBy(this.select, columnOrderings);
+  public SelectOrderBy orderBy(final OrderingTerm... orderingTerms) {
+    return new SelectOrderBy(this.select, orderingTerms);
   }
 
   public SelectOffset offset(final int offset) {
@@ -43,7 +43,7 @@ public class SelectGroupBy {
   // Execute
 
   public List<Row> execute() {
-    return null;
+    return this.select.execute();
   }
 
 }

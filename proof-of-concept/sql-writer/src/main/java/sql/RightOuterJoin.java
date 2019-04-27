@@ -1,7 +1,7 @@
 package sql;
 
 import metadata.TableOrView;
-import sql.predicates.Predicate;
+import sql.expressions.predicates.Predicate;
 
 class RightOuterJoin extends PredicatedJoin {
 

@@ -2,13 +2,16 @@ package sql;
 
 import java.util.Date;
 
-import metadata.Column;
-import sql.predicates.And;
-import sql.predicates.Constant;
-import sql.predicates.Not;
-import sql.predicates.Or;
-import sql.predicates.Predicate;
-import sql.predicates.Constant.JDBCType;
+import sql.expressions.Constant;
+import sql.expressions.Constant.JDBCType;
+import sql.expressions.Expression;
+import sql.expressions.OrderingTerm;
+import sql.expressions.aggregations.Count;
+import sql.expressions.aggregations.CountDistinct;
+import sql.expressions.predicates.And;
+import sql.expressions.predicates.Not;
+import sql.expressions.predicates.Or;
+import sql.expressions.predicates.Predicate;
 
 /*
  * Stages:
@@ -19,6 +22,7 @@ import sql.predicates.Constant.JDBCType;
  * - groupBy
  * - having
  * - orderBy
+ * - offset
  * - limit
  * 
  */
@@ -26,11 +30,11 @@ import sql.predicates.Constant.JDBCType;
 public class SQL {
 
   public static SelectColumns select() {
-    return new SelectColumns(resolveSQLTranslator());
+    return new SelectColumns(resolveSQLDialect());
   }
 
-  public static SelectColumns select(final Column... columns) {
-    return new SelectColumns(resolveSQLTranslator(), columns);
+  public static SelectColumns select(final Expression... queryColumns) {
+    return new SelectColumns(resolveSQLDialect(), queryColumns);
   }
 
   // Constants
@@ -73,15 +77,35 @@ public class SQL {
     return new Not(a);
   }
 
+  // Ordering expressions
+
+  public static OrderingTerm asc(final Expression expression) {
+    return new OrderingTerm(expression, true);
+  }
+
+  public static OrderingTerm desc(final Expression expression) {
+    return new OrderingTerm(expression, false);
+  }
+
+  // Aggregation expressions
+
+  public static Count count() {
+    return new Count();
+  }
+
+  public static CountDistinct countDistinct(final Expression... expressions) {
+    return new CountDistinct(expressions);
+  }
+
   // SQL translator resolver
 
-  private static SQLDialect sqlTranslator = null;
+  private static SQLDialect sqlDialect = null;
 
-  private static SQLDialect resolveSQLTranslator() {
-    if (sqlTranslator == null) {
-      sqlTranslator = new PostgreSQLDialect();
+  private static SQLDialect resolveSQLDialect() {
+    if (sqlDialect == null) {
+      sqlDialect = new PostgreSQLDialect();
     }
-    return sqlTranslator;
+    return sqlDialect;
   }
 
 }

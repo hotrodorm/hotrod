@@ -1,34 +1,34 @@
-package metadata;
+package sql.expressions;
 
 import sql.QueryWriter;
 import sql.exceptions.InvalidSQLStatementException;
 
-public class ColumnOrdering {
+public class OrderingTerm {
 
-  private Column column;
+  private Expression expression;
   private boolean ascending;
 
-  public ColumnOrdering(final Column column, final boolean ascending) {
-    if (column == null) {
+  public OrderingTerm(final Expression expression, final boolean ascending) {
+    if (expression == null) {
       throw new InvalidSQLStatementException(
           "Cannot use null value as column ordering. " + "Please speify a non null column in the ORDER BY clause");
     }
-    this.column = column;
+    this.expression = expression;
     this.ascending = ascending;
   }
 
-  public Column getColumn() {
-    return column;
+  public Expression getExpression() {
+    return this.expression;
   }
 
   public boolean isAscending() {
     return ascending;
   };
 
-  public void renderTo(final QueryWriter pq) {
-    this.column.renderTo(pq);
+  public void renderTo(final QueryWriter w) {
+    this.expression.renderTo(w);
     if (!this.ascending) {
-      pq.write(" desc");
+      w.write(" desc");
     }
   }
 

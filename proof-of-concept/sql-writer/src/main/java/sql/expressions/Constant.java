@@ -1,4 +1,4 @@
-package sql.predicates;
+package sql.expressions;
 
 import java.sql.Date;
 
@@ -6,7 +6,7 @@ import sql.QueryWriter;
 
 public class Constant extends Expression {
 
-  private static final int PRECEDENCE = 20;
+  private static final int PRECEDENCE = 1;
 
   public static enum JDBCType {
     VARCHAR, NUMERIC, DATE, TIMESTAMP, BOOLEAN
@@ -76,12 +76,12 @@ public class Constant extends Expression {
   // Rendering
 
   @Override
-  public void renderTo(final QueryWriter pq) {
+  public void renderTo(final QueryWriter w) {
     if (this.parameterize) {
-      String name = pq.registerParameter(this.value);
-      pq.write("#{" + name + ",jdbcType=" + this.type + "}");
+      String name = w.registerParameter(this.value);
+      w.write("#{" + name + ",jdbcType=" + this.type + "}");
     } else {
-      pq.write("" + this.value);
+      w.write("" + this.value);
     }
   }
 

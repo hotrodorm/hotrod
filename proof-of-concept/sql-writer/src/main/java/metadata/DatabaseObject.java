@@ -18,15 +18,15 @@ public class DatabaseObject {
 
   // Getters
 
-  final String getCatalog() {
+  public final String getCatalog() {
     return catalog;
   }
 
-  final String getSchema() {
+  public final String getSchema() {
     return schema;
   }
 
-  final String getName() {
+  public final String getName() {
     return name;
   }
 

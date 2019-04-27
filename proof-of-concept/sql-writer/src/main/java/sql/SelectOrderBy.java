@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.sun.rowset.internal.Row;
 
-import metadata.ColumnOrdering;
+import sql.expressions.OrderingTerm;
 
 public class SelectOrderBy {
 
@@ -15,9 +15,9 @@ public class SelectOrderBy {
 
   // Constructor
 
-  SelectOrderBy(final Select select, final ColumnOrdering... columnOrderings) {
+  SelectOrderBy(final Select select, final OrderingTerm... orderingTerms) {
     this.select = select;
-    this.select.setColumnOrderings(Arrays.asList(columnOrderings));
+    this.select.setColumnOrderings(Arrays.asList(orderingTerms));
   }
 
   // Same stage
@@ -35,7 +35,7 @@ public class SelectOrderBy {
   // Execute
 
   public List<Row> execute() {
-    return null;
+    return this.select.execute();
   }
 
 }

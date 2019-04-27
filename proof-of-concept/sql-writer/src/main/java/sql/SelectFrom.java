@@ -5,9 +5,9 @@ import java.util.List;
 import com.sun.rowset.internal.Row;
 
 import metadata.Column;
-import metadata.ColumnOrdering;
 import metadata.TableOrView;
-import sql.predicates.Predicate;
+import sql.expressions.OrderingTerm;
+import sql.expressions.predicates.Predicate;
 
 public class SelectFrom {
 
@@ -59,8 +59,8 @@ public class SelectFrom {
     return new SelectGroupBy(this.select, columns);
   }
 
-  public SelectOrderBy orderBy(final ColumnOrdering... columnOrderings) {
-    return new SelectOrderBy(this.select, columnOrderings);
+  public SelectOrderBy orderBy(final OrderingTerm... orderingTerms) {
+    return new SelectOrderBy(this.select, orderingTerms);
   }
 
   public SelectOffset offset(final int offset) {
@@ -74,7 +74,7 @@ public class SelectFrom {
   // Execute
 
   public List<Row> execute() {
-    return null;
+    return this.select.execute();
   }
 
 }

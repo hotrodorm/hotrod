@@ -15,7 +15,7 @@ abstract class Join {
   }
 
   TableOrView getTable() {
-    return table;
+    return this.table;
   }
 
 }

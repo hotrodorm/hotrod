@@ -1,14 +1,15 @@
-package sql.predicates;
+package sql.expressions.predicates;
 
 import sql.QueryWriter;
+import sql.expressions.Expression;
 
-public abstract class BinaryBooleanOperator extends Predicate {
+public abstract class BinaryPredicate extends Predicate {
 
   private Expression left;
   private String operator;
   private Expression right;
 
-  protected BinaryBooleanOperator(final Expression left, final String operator, final Expression right,
+  protected BinaryPredicate(final Expression left, final String operator, final Expression right,
       final int operatorPrecedence) {
     super(operatorPrecedence);
     if (operator == null || operator.trim().isEmpty()) {
@@ -27,12 +28,12 @@ public abstract class BinaryBooleanOperator extends Predicate {
   }
 
   @Override
-  public void renderTo(final QueryWriter pq) {
-    super.renderInner(this.left, pq);
-    pq.write(" ");
-    pq.write(this.operator);
-    pq.write(" ");
-    super.renderInner(this.right, pq);
+  public void renderTo(final QueryWriter w) {
+    super.renderInner(this.left, w);
+    w.write(" ");
+    w.write(this.operator);
+    w.write(" ");
+    super.renderInner(this.right, w);
   }
 
 }

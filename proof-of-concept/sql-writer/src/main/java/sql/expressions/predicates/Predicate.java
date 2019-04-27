@@ -1,4 +1,6 @@
-package sql.predicates;
+package sql.expressions.predicates;
+
+import sql.expressions.Expression;
 
 public abstract class Predicate extends Expression {
 

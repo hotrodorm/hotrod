@@ -1,4 +1,4 @@
-package gen.database.schema2;
+package gen.database.metadata.schema2;
 
 import metadata.Column;
 import metadata.Table;
@@ -9,10 +9,12 @@ public class Vacation extends Table {
 
   public Vacation() {
     super(null, "schema2", "vacation", null);
+    initialize();
   }
 
   public Vacation(final String alias) {
     super(null, "schema2", "vacation", alias);
+    initialize();
   }
 
   // Properties

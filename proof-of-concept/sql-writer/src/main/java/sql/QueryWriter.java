@@ -3,7 +3,7 @@ package sql;
 import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import sql.predicates.Expression;
+import sql.expressions.Expression;
 
 public class QueryWriter {
 
@@ -43,12 +43,34 @@ public class QueryWriter {
     return sqlDialect;
   }
 
-  public String getSQL() {
-    return this.sb.toString();
+  public PreparedQuery getPreparedQuery() {
+    LinkedHashMap<String, Object> p = new LinkedHashMap<String, Object>();
+    for (String name : this.params.keySet()) {
+      p.put(name, this.params.get(name));
+    }
+    return new PreparedQuery(this.sb.toString(), p);
   }
 
-  public LinkedHashMap<String, Object> getParameters() {
-    return this.params;
+  // Prepared Query
+
+  public static class PreparedQuery {
+
+    private String sql;
+    private LinkedHashMap<String, Object> parameters;
+
+    public PreparedQuery(final String sql, final LinkedHashMap<String, Object> parameters) {
+      this.sql = sql;
+      this.parameters = parameters;
+    }
+
+    public String getSQL() {
+      return sql;
+    }
+
+    public LinkedHashMap<String, Object> getParameters() {
+      return parameters;
+    }
+
   }
 
 }

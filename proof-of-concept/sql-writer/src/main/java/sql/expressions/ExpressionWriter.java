@@ -1,4 +1,4 @@
-package sql.predicates;
+package sql.expressions;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

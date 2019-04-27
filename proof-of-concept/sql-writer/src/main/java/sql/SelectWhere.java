@@ -5,10 +5,10 @@ import java.util.List;
 import com.sun.rowset.internal.Row;
 
 import metadata.Column;
-import metadata.ColumnOrdering;
-import sql.predicates.And;
-import sql.predicates.Or;
-import sql.predicates.Predicate;
+import sql.expressions.OrderingTerm;
+import sql.expressions.predicates.And;
+import sql.expressions.predicates.Or;
+import sql.expressions.predicates.Predicate;
 
 public class SelectWhere {
 
@@ -41,8 +41,8 @@ public class SelectWhere {
     return new SelectGroupBy(this.select, columns);
   }
 
-  public SelectOrderBy orderBy(final ColumnOrdering... columnOrderings) {
-    return new SelectOrderBy(this.select, columnOrderings);
+  public SelectOrderBy orderBy(final OrderingTerm... orderingTerms) {
+    return new SelectOrderBy(this.select, orderingTerms);
   }
 
   public SelectOffset offset(final int offset) {
@@ -56,7 +56,7 @@ public class SelectWhere {
   // Execute
 
   public List<Row> execute() {
-    return null;
+    return this.select.execute();
   }
 
 }
