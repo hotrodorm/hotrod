@@ -4,11 +4,11 @@ import java.util.List;
 
 import com.sun.rowset.internal.Row;
 
-import metadata.Column;
 import sql.expressions.OrderingTerm;
 import sql.expressions.predicates.And;
 import sql.expressions.predicates.Or;
 import sql.expressions.predicates.Predicate;
+import sql.metadata.Column;
 
 public class SelectWhere {
 

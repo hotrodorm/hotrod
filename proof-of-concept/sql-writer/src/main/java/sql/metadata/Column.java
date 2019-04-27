@@ -1,4 +1,4 @@
-package metadata;
+package sql.metadata;
 
 import sql.QueryWriter;
 import sql.expressions.Expression;

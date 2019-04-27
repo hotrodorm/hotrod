@@ -1,7 +1,7 @@
 package gen.database.metadata.schema2;
 
-import metadata.Column;
-import metadata.Table;
+import sql.metadata.Column;
+import sql.metadata.Table;
 
 public class Vacation extends Table {
 

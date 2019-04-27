@@ -1,4 +1,4 @@
-package metadata;
+package sql.metadata;
 
 public class DatabaseObject {
 

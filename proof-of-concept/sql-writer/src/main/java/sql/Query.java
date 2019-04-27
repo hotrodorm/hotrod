@@ -1,6 +1,7 @@
 package sql;
 
 import sql.exceptions.UnsupportedFeatureException;
+import sql.sqldialects.SQLDialect;
 
 public abstract class Query {
 

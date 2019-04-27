@@ -1,9 +1,9 @@
 package sql;
 
-import metadata.TableOrView;
 import sql.expressions.predicates.Predicate;
+import sql.metadata.TableOrView;
 
-class FullOuterJoin extends PredicatedJoin {
+public class FullOuterJoin extends PredicatedJoin {
 
   FullOuterJoin(final TableOrView table, final Predicate predicate) {
     super(table, predicate);

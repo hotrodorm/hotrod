@@ -1,8 +1,8 @@
 package sql;
 
-import metadata.TableOrView;
 import sql.exceptions.InvalidSQLClauseException;
 import sql.expressions.predicates.Predicate;
+import sql.metadata.TableOrView;
 
 abstract class PredicatedJoin extends Join {
 

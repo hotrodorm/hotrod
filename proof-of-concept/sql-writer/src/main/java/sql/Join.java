@@ -1,9 +1,9 @@
 package sql;
 
-import metadata.TableOrView;
 import sql.exceptions.InvalidSQLClauseException;
+import sql.metadata.TableOrView;
 
-abstract class Join {
+public abstract class Join {
 
   private TableOrView table;
 

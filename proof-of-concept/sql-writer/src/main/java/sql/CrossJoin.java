@@ -1,8 +1,8 @@
 package sql;
 
-import metadata.TableOrView;
+import sql.metadata.TableOrView;
 
-class CrossJoin extends Join {
+public class CrossJoin extends Join {
 
   CrossJoin(final TableOrView table) {
     super(table);

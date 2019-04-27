@@ -1,5 +1,11 @@
-package sql;
+package sql.sqldialects;
 
+import sql.FullOuterJoin;
+import sql.InnerJoin;
+import sql.Join;
+import sql.LeftOuterJoin;
+import sql.QueryWriter;
+import sql.RightOuterJoin;
 import sql.exceptions.UnsupportedFeatureException;
 
 public class PostgreSQLDialect extends SQLDialect {
@@ -7,6 +13,8 @@ public class PostgreSQLDialect extends SQLDialect {
   public PostgreSQLDialect() {
     super("[a-z][a-z0-9_]*", "\"", "\"");
   }
+
+  // Join keywords
 
   @Override
   public String renderJoinKeywords(final Join join) throws UnsupportedFeatureException {

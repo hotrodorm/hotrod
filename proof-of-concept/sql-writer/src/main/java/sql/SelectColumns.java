@@ -5,8 +5,9 @@ import java.util.List;
 
 import com.sun.rowset.internal.Row;
 
-import metadata.TableOrView;
 import sql.expressions.Expression;
+import sql.metadata.TableOrView;
+import sql.sqldialects.SQLDialect;
 
 public class SelectColumns {
 

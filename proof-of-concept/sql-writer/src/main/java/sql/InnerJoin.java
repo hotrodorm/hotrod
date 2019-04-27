@@ -1,9 +1,9 @@
 package sql;
 
-import metadata.TableOrView;
 import sql.expressions.predicates.Predicate;
+import sql.metadata.TableOrView;
 
-class InnerJoin extends PredicatedJoin {
+public class InnerJoin extends PredicatedJoin {
 
   InnerJoin(final TableOrView table, final Predicate predicate) {
     super(table, predicate);

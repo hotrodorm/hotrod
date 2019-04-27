@@ -1,9 +1,9 @@
 package sql;
 
-import metadata.TableOrView;
 import sql.expressions.predicates.Predicate;
+import sql.metadata.TableOrView;
 
-class LeftOuterJoin extends PredicatedJoin {
+public class LeftOuterJoin extends PredicatedJoin {
 
   LeftOuterJoin(final TableOrView table, final Predicate predicate) {
     super(table, predicate);

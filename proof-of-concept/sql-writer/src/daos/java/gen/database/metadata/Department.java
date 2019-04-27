@@ -1,7 +1,7 @@
 package gen.database.metadata;
 
-import metadata.Column;
-import metadata.Table;
+import sql.metadata.Column;
+import sql.metadata.Table;
 
 public class Department extends Table {
 

@@ -1,7 +1,9 @@
-package sql;
+package sql.sqldialects;
 
-import metadata.DatabaseObject;
+import sql.Join;
+import sql.QueryWriter;
 import sql.exceptions.UnsupportedFeatureException;
+import sql.metadata.DatabaseObject;
 
 public abstract class SQLDialect {
 
@@ -44,6 +46,8 @@ public abstract class SQLDialect {
     sb.append(this.renderName(databaseObject.getName()));
     return sb.toString();
   }
+
+  // Abstract methods
 
   public abstract String renderJoinKeywords(Join join) throws UnsupportedFeatureException;
 

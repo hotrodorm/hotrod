@@ -12,6 +12,8 @@ import sql.expressions.predicates.And;
 import sql.expressions.predicates.Not;
 import sql.expressions.predicates.Or;
 import sql.expressions.predicates.Predicate;
+import sql.sqldialects.PostgreSQLDialect;
+import sql.sqldialects.SQLDialect;
 
 /*
  * Stages:

@@ -1,4 +1,4 @@
-package metadata;
+package sql.metadata;
 
 public abstract class Table extends TableOrView {
 

@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.sun.rowset.internal.Row;
 
-import metadata.Column;
-import metadata.TableOrView;
 import sql.expressions.OrderingTerm;
 import sql.expressions.predicates.Predicate;
+import sql.metadata.Column;
+import sql.metadata.TableOrView;
 
 public class SelectFrom {
 

@@ -7,14 +7,15 @@ import java.util.Set;
 
 import com.sun.rowset.internal.Row;
 
-import metadata.TableOrView;
 import sql.QueryWriter.PreparedQuery;
-import sql.SQLDialect.PaginationType;
 import sql.exceptions.DuplicateAliasException;
 import sql.exceptions.InvalidSQLStatementException;
 import sql.expressions.Expression;
 import sql.expressions.OrderingTerm;
 import sql.expressions.predicates.Predicate;
+import sql.metadata.TableOrView;
+import sql.sqldialects.SQLDialect;
+import sql.sqldialects.SQLDialect.PaginationType;
 
 class Select extends Query {
 
