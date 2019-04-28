@@ -19,6 +19,7 @@ import sql.sqldialects.SQLDialect.PaginationType;
 
 abstract class AbstractSelect extends Query {
 
+  private boolean distinct;
   private TableOrView baseTable = null;
   private List<Join> joins = null;
   private Predicate wherePredicate = null;
@@ -28,8 +29,9 @@ abstract class AbstractSelect extends Query {
   private Integer offset = null;
   private Integer limit = null;
 
-  AbstractSelect(final SQLDialect sqlDialect) {
+  AbstractSelect(final SQLDialect sqlDialect, final boolean distinct) {
     super(sqlDialect);
+    this.distinct = distinct;
   }
 
   protected abstract void writeColumns(QueryWriter w);
@@ -126,6 +128,12 @@ abstract class AbstractSelect extends Query {
     // select
 
     w.write("select");
+
+    // distinct
+
+    if (this.distinct) {
+      w.write(" distinct");
+    }
 
     // top offset & limit
 

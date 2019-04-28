@@ -3,10 +3,10 @@ package sql;
 import java.util.Date;
 
 import sql.expressions.Constant;
-import sql.expressions.Constant.JDBCType;
 import sql.expressions.Expression;
 import sql.expressions.OrderingTerm;
 import sql.expressions.ResultSetColumn;
+import sql.expressions.Tuple;
 import sql.expressions.aggregations.Count;
 import sql.expressions.aggregations.CountDistinct;
 import sql.expressions.predicates.And;
@@ -32,46 +32,46 @@ import sql.sqldialects.SQLDialect;
 
 public class SQL {
 
-  public static SelectColumns select() {
-    return new SelectColumns(resolveSQLDialect());
+  // select
+
+  public static SelectColumns createSelect() {
+    return new SelectColumns(resolveSQLDialect(), false);
   }
 
-  public static SelectColumns select(final ResultSetColumn... resultSetColumns) {
-    return new SelectColumns(resolveSQLDialect(), resultSetColumns);
+  public static SelectColumns createSelect(final ResultSetColumn... resultSetColumns) {
+    return new SelectColumns(resolveSQLDialect(), false, resultSetColumns);
   }
 
-  public static SelectColumns selectSubquery() {
-    return new SelectColumns(resolveSQLDialect());
+  public static SelectColumns createSubquery() {
+    return new SelectColumns(resolveSQLDialect(), false);
   }
 
-  public static SelectColumns selectSubquery(final ReferenceableExpression... referenceableExpressions) {
-    return new SelectColumns(resolveSQLDialect(), referenceableExpressions);
+  public static SelectColumns createSubquery(final ReferenceableExpression... referenceableExpressions) {
+    return new SelectColumns(resolveSQLDialect(), false, referenceableExpressions);
   }
 
-  // Constants
+  // select distinct
 
-  public static Constant constant(final String value) {
-    return new Constant(value);
+  public static SelectColumns createSelectDistinct() {
+    return new SelectColumns(resolveSQLDialect(), true);
   }
 
-  public static Constant constant(final Character value) {
-    return new Constant(value);
+  public static SelectColumns createSelectDistinct(final ResultSetColumn... resultSetColumns) {
+    return new SelectColumns(resolveSQLDialect(), true, resultSetColumns);
   }
 
-  public static Constant constant(final Number value) {
-    return new Constant(value);
+  public static SelectColumns createSubqueryDistinct() {
+    return new SelectColumns(resolveSQLDialect(), true);
   }
 
-  public static Constant constant(final Boolean value) {
-    return new Constant(value);
+  public static SelectColumns createSubqueryDistinct(final ReferenceableExpression... referenceableExpressions) {
+    return new SelectColumns(resolveSQLDialect(), true, referenceableExpressions);
   }
 
-  public static Constant constant(final Date value) {
-    return new Constant(value);
-  }
+  // Tuples
 
-  public static Constant constant(final Object value, final JDBCType type) {
-    return new Constant(value, type);
+  public static Tuple tuple(final Expression... expressions) {
+    return new Tuple(expressions);
   }
 
   // Predicates

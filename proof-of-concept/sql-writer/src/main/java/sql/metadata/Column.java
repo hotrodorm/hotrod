@@ -43,7 +43,7 @@ public class Column extends Expression implements ReferenceableExpression {
 
   // Getters
 
-  public String getName() {
+  String getName() {
     return this.name;
   }
 

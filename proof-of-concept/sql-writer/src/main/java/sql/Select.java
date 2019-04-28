@@ -9,8 +9,8 @@ class Select extends AbstractSelect {
 
   private List<ResultSetColumn> resultSetColumns = null;
 
-  Select(final SQLDialect sqlDialect) {
-    super(sqlDialect);
+  Select(final SQLDialect sqlDialect, final boolean distinct) {
+    super(sqlDialect, distinct);
   }
 
   // Setters

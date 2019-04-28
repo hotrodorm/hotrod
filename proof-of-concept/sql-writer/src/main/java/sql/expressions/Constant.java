@@ -1,16 +1,17 @@
 package sql.expressions;
 
-import java.sql.Date;
-
 import sql.QueryWriter;
 
 public class Constant extends Expression {
 
   private static final int PRECEDENCE = 1;
 
-  public static enum JDBCType {
-    VARCHAR, NUMERIC, DATE, TIMESTAMP, BOOLEAN
-  };
+  // Control characters (x01 - x1f)
+  // Single quotes
+  // Delete (x7f)
+  // Control characters (x80 - x9f)
+  // Double quotes
+  private static final String SQL_INJECTION_PATTERN = ".*[\\x01-\\x1f'\\x7f-\\x9f\"].*";
 
   // Properties
 
@@ -25,7 +26,7 @@ public class Constant extends Expression {
     super(PRECEDENCE);
     this.value = value;
     this.type = JDBCType.VARCHAR;
-    this.parameterize = true;
+    this.parameterize = value.matches(SQL_INJECTION_PATTERN);
   }
 
   public Constant(final Character value) {
@@ -37,9 +38,15 @@ public class Constant extends Expression {
 
   public Constant(final Number value) {
     super(PRECEDENCE);
-    this.value = value;
-    this.type = JDBCType.NUMERIC;
-    this.parameterize = false;
+    if (this.isFloat(value) || this.isDouble(value)) {
+      this.parameterize = true;
+      this.type = JDBCType.NUMERIC;
+      this.value = value;
+    } else {
+      this.parameterize = false;
+      this.type = JDBCType.NUMERIC;
+      this.value = value;
+    }
   }
 
   public Constant(final Boolean value) {
@@ -47,13 +54,6 @@ public class Constant extends Expression {
     this.value = value;
     this.type = JDBCType.BOOLEAN;
     this.parameterize = false;
-  }
-
-  public Constant(final Date value) {
-    super(PRECEDENCE);
-    this.value = value;
-    this.type = JDBCType.DATE;
-    this.parameterize = true;
   }
 
   public Constant(final java.util.Date value) {
@@ -73,6 +73,26 @@ public class Constant extends Expression {
     this.parameterize = true;
   }
 
+  // Utilities
+
+  private boolean isFloat(final Number n) {
+    try {
+      Float.class.cast(n);
+      return true;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  private boolean isDouble(final Number n) {
+    try {
+      Double.class.cast(n);
+      return true;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
   // Rendering
 
   @Override
@@ -81,7 +101,11 @@ public class Constant extends Expression {
       String name = w.registerParameter(this.value);
       w.write("#{" + name + ",jdbcType=" + this.type + "}");
     } else {
-      w.write("" + this.value);
+      if (this.value instanceof String) {
+        w.write("'" + this.value + "'");
+      } else {
+        w.write("" + this.value);
+      }
     }
   }
 

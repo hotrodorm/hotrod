@@ -4,13 +4,13 @@ import sql.QueryWriter;
 
 /**
  * <pre>
- *                      <I> ResultSetColumn
- *                           ^     ^        
- *                           |     |
- *  <I> ReferenceableExpression    |
- *         ^              ^        |
- *         |              |        |
- * AliasedExpression     Column   Expression
+ *                    <I> ResultSetColumn
+ *                          ^      ^        
+ *                          |      |
+ *  <I> ReferenceableExpression  Expression
+ *           ^               ^    ^
+ *           |               |    |       
+ *      AliasedExpression    Column   
  *
  *    
  * SelectSubquery<ReferenceableExpression>

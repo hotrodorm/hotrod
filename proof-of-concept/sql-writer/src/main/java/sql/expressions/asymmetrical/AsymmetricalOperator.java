@@ -1,26 +1,29 @@
-package sql.expressions.predicates;
+package sql.expressions.asymmetrical;
 
 import sql.ExecutableSelect;
 import sql.QueryWriter;
 import sql.expressions.Expression;
+import sql.expressions.predicates.Predicate;
 
-public class NotIn extends Predicate {
+public abstract class AsymmetricalOperator extends Predicate {
 
   private static final int PRECEDENCE = 6;
 
   private Expression value;
+  private String operator;
   private ExecutableSelect subquery;
 
-  public NotIn(final Expression value, final ExecutableSelect subquery) {
+  protected AsymmetricalOperator(final Expression value, final String operator, final ExecutableSelect subquery) {
     super(PRECEDENCE);
     this.value = value;
+    this.operator = operator;
     this.subquery = subquery;
   }
 
   @Override
   public void renderTo(final QueryWriter w) {
     super.renderInner(this.value, w);
-    w.write(" not in (\n");
+    w.write(" " + this.operator + " (\n");
     this.subquery.renderTo(w);
     w.write("\n)");
   }

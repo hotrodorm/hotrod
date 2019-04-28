@@ -17,8 +17,8 @@ public class SelectColumns implements ExecutableSelect {
 
   // Constructor
 
-  SelectColumns(final SQLDialect sqlDialect, final ResultSetColumn... resultSetColumns) {
-    Select s = new Select(sqlDialect);
+  SelectColumns(final SQLDialect sqlDialect, final boolean distinct, final ResultSetColumn... resultSetColumns) {
+    Select s = new Select(sqlDialect, distinct);
     s.setResultSetColumns(Arrays.asList(resultSetColumns));
     this.select = s;
   }

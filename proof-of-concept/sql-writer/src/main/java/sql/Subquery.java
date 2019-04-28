@@ -5,12 +5,12 @@ import java.util.List;
 import sql.expressions.ResultSetColumn;
 import sql.sqldialects.SQLDialect;
 
-public class SelectSubquery extends AbstractSelect {
+public class Subquery extends AbstractSelect {
 
   private List<ReferenceableExpression> resultSetColumns = null;
 
-  SelectSubquery(final SQLDialect sqlDialect) {
-    super(sqlDialect);
+  Subquery(final SQLDialect sqlDialect, final boolean distinct) {
+    super(sqlDialect, distinct);
   }
 
   // Setters
