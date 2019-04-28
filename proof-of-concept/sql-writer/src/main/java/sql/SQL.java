@@ -6,6 +6,7 @@ import sql.expressions.Constant;
 import sql.expressions.Constant.JDBCType;
 import sql.expressions.Expression;
 import sql.expressions.OrderingTerm;
+import sql.expressions.ResultSetColumn;
 import sql.expressions.aggregations.Count;
 import sql.expressions.aggregations.CountDistinct;
 import sql.expressions.predicates.And;
@@ -35,8 +36,16 @@ public class SQL {
     return new SelectColumns(resolveSQLDialect());
   }
 
-  public static SelectColumns select(final Expression... queryColumns) {
-    return new SelectColumns(resolveSQLDialect(), queryColumns);
+  public static SelectColumns select(final ResultSetColumn... resultSetColumns) {
+    return new SelectColumns(resolveSQLDialect(), resultSetColumns);
+  }
+
+  public static SelectColumns selectSubquery() {
+    return new SelectColumns(resolveSQLDialect());
+  }
+
+  public static SelectColumns selectSubquery(final ReferenceableExpression... referenceableExpressions) {
+    return new SelectColumns(resolveSQLDialect(), referenceableExpressions);
   }
 
   // Constants

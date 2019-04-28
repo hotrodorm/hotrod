@@ -5,27 +5,35 @@ import java.util.List;
 
 import com.sun.rowset.internal.Row;
 
-import sql.expressions.Expression;
+import sql.expressions.ResultSetColumn;
 import sql.metadata.TableOrView;
 import sql.sqldialects.SQLDialect;
 
-public class SelectColumns {
+public class SelectColumns implements ExecutableSelect {
 
   // Properties
 
-  private Select select;
+  private AbstractSelect select;
 
   // Constructor
 
-  SelectColumns(final SQLDialect sqlDialect, final Expression... queryColumns) {
-    this.select = new Select(sqlDialect);
-    this.select.setQueryColumns(Arrays.asList(queryColumns));
+  SelectColumns(final SQLDialect sqlDialect, final ResultSetColumn... resultSetColumns) {
+    Select s = new Select(sqlDialect);
+    s.setResultSetColumns(Arrays.asList(resultSetColumns));
+    this.select = s;
   }
 
   // Next stages
 
   public SelectFrom from(final TableOrView t) {
     return new SelectFrom(this.select, t);
+  }
+
+  // Rendering
+
+  @Override
+  public void renderTo(final QueryWriter w) {
+    this.select.renderTo(w);
   }
 
   // Execute

@@ -9,15 +9,15 @@ import sql.expressions.Expression;
 import sql.expressions.OrderingTerm;
 import sql.expressions.predicates.Predicate;
 
-public class SelectGroupBy {
+public class SelectGroupBy implements ExecutableSelect {
 
   // Properties
 
-  private Select select;
+  private AbstractSelect select;
 
   // Constructor
 
-  SelectGroupBy(final Select select, final Expression... expressions) {
+  SelectGroupBy(final AbstractSelect select, final Expression... expressions) {
     this.select = select;
     this.select.setGroupBy(Arrays.asList(expressions));
   }
@@ -38,6 +38,13 @@ public class SelectGroupBy {
 
   public SelectLimit limit(final int limit) {
     return new SelectLimit(this.select, limit);
+  }
+
+  // Rendering
+
+  @Override
+  public void renderTo(final QueryWriter w) {
+    this.select.renderTo(w);
   }
 
   // Execute

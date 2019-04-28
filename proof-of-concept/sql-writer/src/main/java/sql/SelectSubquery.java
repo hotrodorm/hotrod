@@ -5,17 +5,17 @@ import java.util.List;
 import sql.expressions.ResultSetColumn;
 import sql.sqldialects.SQLDialect;
 
-class Select extends AbstractSelect {
+public class SelectSubquery extends AbstractSelect {
 
-  private List<ResultSetColumn> resultSetColumns = null;
+  private List<ReferenceableExpression> resultSetColumns = null;
 
-  Select(final SQLDialect sqlDialect) {
+  SelectSubquery(final SQLDialect sqlDialect) {
     super(sqlDialect);
   }
 
   // Setters
 
-  void setResultSetColumns(final List<ResultSetColumn> resultSetColumns) {
+  void setResultSetColumns(final List<ReferenceableExpression> resultSetColumns) {
     this.resultSetColumns = resultSetColumns;
   }
 

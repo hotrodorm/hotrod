@@ -9,15 +9,15 @@ import sql.expressions.predicates.Predicate;
 import sql.metadata.Column;
 import sql.metadata.TableOrView;
 
-public class SelectFrom {
+public class SelectFrom implements ExecutableSelect {
 
   // Properties
 
-  private Select select;
+  private AbstractSelect select;
 
   // Constructor
 
-  SelectFrom(final Select select, final TableOrView t) {
+  SelectFrom(final AbstractSelect select, final TableOrView t) {
     this.select = select;
     this.select.setBaseTable(t);
   }
@@ -69,6 +69,13 @@ public class SelectFrom {
 
   public SelectLimit limit(final int limit) {
     return new SelectLimit(this.select, limit);
+  }
+
+  // Rendering
+
+  @Override
+  public void renderTo(final QueryWriter w) {
+    this.select.renderTo(w);
   }
 
   // Execute

@@ -4,17 +4,24 @@ import java.util.List;
 
 import com.sun.rowset.internal.Row;
 
-public class SelectLimit {
+public class SelectLimit implements ExecutableSelect {
 
   // Properties
 
-  private Select select;
+  private AbstractSelect select;
 
   // Constructor
 
-  SelectLimit(final Select select, final int limit) {
+  SelectLimit(final AbstractSelect select, final int limit) {
     this.select = select;
     this.select.setLimit(limit);
+  }
+
+  // Rendering
+
+  @Override
+  public void renderTo(final QueryWriter w) {
+    this.select.renderTo(w);
   }
 
   // Execute

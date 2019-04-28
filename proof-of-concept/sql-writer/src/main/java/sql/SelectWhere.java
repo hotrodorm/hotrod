@@ -10,15 +10,15 @@ import sql.expressions.predicates.Or;
 import sql.expressions.predicates.Predicate;
 import sql.metadata.Column;
 
-public class SelectWhere {
+public class SelectWhere implements ExecutableSelect {
 
   // Properties
 
-  private Select select;
+  private AbstractSelect select;
 
   // Constructors
 
-  SelectWhere(final Select select, final Predicate predicate) {
+  SelectWhere(final AbstractSelect select, final Predicate predicate) {
     this.select = select;
     this.select.setWhereCondition(predicate);
   }
@@ -51,6 +51,13 @@ public class SelectWhere {
 
   public SelectLimit limit(final int limit) {
     return new SelectLimit(this.select, limit);
+  }
+
+  // Rendering
+
+  @Override
+  public void renderTo(final QueryWriter w) {
+    this.select.renderTo(w);
   }
 
   // Execute

@@ -1,10 +1,11 @@
 package sql.metadata;
 
 import sql.QueryWriter;
+import sql.ReferenceableExpression;
 import sql.expressions.Expression;
 import sql.expressions.OrderingTerm;
 
-public class Column extends Expression {
+public class Column extends Expression implements ReferenceableExpression {
 
   private static final int PRECEDENCE = 1;
 

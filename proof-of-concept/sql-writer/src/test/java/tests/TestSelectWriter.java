@@ -18,6 +18,8 @@ public class TestSelectWriter {
     Department d = new Department("d");
     Vacation v = new Vacation("v");
 
+    Department d2 = new Department("d2");
+
     List<Row> rows = SQL //
         .select(e.id, e.name, j.name, SQL.count(), SQL.countDistinct(e.departmentId)) //
         .from(e) //
@@ -27,6 +29,11 @@ public class TestSelectWriter {
         .where(e.salary.greaterThan(SQL.constant(1000))) //
         .and(e.name.like(SQL.constant("SM%"))) //
         .or(e.salary.lessThan(j.salary)) //
+        .or(e.departmentId.notIn( //
+            SQL.selectSubquery( //
+                d2.id) //
+                .from(d2) //
+                .where(d2.active.equals(SQL.constant(1))))) //
         .groupBy(e.id) //
         .having(SQL.count().between(SQL.constant(1000), SQL.constant(2000))) //
         .orderBy(e.name.asc(), j.name.desc()) //

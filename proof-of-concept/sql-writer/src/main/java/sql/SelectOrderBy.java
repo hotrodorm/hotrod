@@ -7,15 +7,15 @@ import com.sun.rowset.internal.Row;
 
 import sql.expressions.OrderingTerm;
 
-public class SelectOrderBy {
+public class SelectOrderBy implements ExecutableSelect {
 
   // Properties
 
-  private Select select;
+  private AbstractSelect select;
 
   // Constructor
 
-  SelectOrderBy(final Select select, final OrderingTerm... orderingTerms) {
+  SelectOrderBy(final AbstractSelect select, final OrderingTerm... orderingTerms) {
     this.select = select;
     this.select.setColumnOrderings(Arrays.asList(orderingTerms));
   }
@@ -30,6 +30,13 @@ public class SelectOrderBy {
 
   public SelectLimit limit(final int limit) {
     return new SelectLimit(this.select, limit);
+  }
+
+  // Rendering
+
+  @Override
+  public void renderTo(final QueryWriter w) {
+    this.select.renderTo(w);
   }
 
   // Execute

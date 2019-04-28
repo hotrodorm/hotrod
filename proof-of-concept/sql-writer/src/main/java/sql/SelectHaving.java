@@ -9,15 +9,15 @@ import sql.expressions.predicates.And;
 import sql.expressions.predicates.Or;
 import sql.expressions.predicates.Predicate;
 
-public class SelectHaving {
+public class SelectHaving implements ExecutableSelect {
 
   // Properties
 
-  private Select select;
+  private AbstractSelect select;
 
   // Constructor
 
-  SelectHaving(final Select select, final Predicate predicate) {
+  SelectHaving(final AbstractSelect select, final Predicate predicate) {
     this.select = select;
     this.select.setHavingCondition(predicate);
   }
@@ -46,6 +46,13 @@ public class SelectHaving {
 
   public SelectLimit limit(final int limit) {
     return new SelectLimit(this.select, limit);
+  }
+
+  // Rendering
+
+  @Override
+  public void renderTo(final QueryWriter w) {
+    this.select.renderTo(w);
   }
 
   // Execute

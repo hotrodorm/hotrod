@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import sql.ExecutableSelect;
 import sql.QueryWriter;
+import sql.SelectSubquery;
 import sql.exceptions.InvalidSQLStatementException;
 import sql.expressions.predicates.Between;
 import sql.expressions.predicates.Equal;
 import sql.expressions.predicates.GreaterThan;
 import sql.expressions.predicates.GreaterThanOrEqualTo;
+import sql.expressions.predicates.In;
 import sql.expressions.predicates.IsNotNull;
 import sql.expressions.predicates.IsNull;
 import sql.expressions.predicates.LessThan;
@@ -17,10 +20,11 @@ import sql.expressions.predicates.LessThanOrEqualTo;
 import sql.expressions.predicates.Like;
 import sql.expressions.predicates.NotBetween;
 import sql.expressions.predicates.NotEqual;
+import sql.expressions.predicates.NotIn;
 import sql.expressions.predicates.NotLike;
 import sql.expressions.predicates.Predicate;
 
-public abstract class Expression {
+public abstract class Expression implements ResultSetColumn {
 
   /**
    * <pre>
@@ -111,6 +115,20 @@ public abstract class Expression {
 
   public Predicate notLike(final Expression e) {
     return new NotLike(this, e);
+  }
+
+  public Expression in(final ExecutableSelect s) {
+    return new In(this, s);
+  }
+
+  public Predicate notIn(final ExecutableSelect s) {
+    return new NotIn(this, s);
+  }
+
+  // Aliasing
+
+  public AliasedExpression as(final String alias) {
+    return new AliasedExpression(this, alias);
   }
 
   // Rendering
