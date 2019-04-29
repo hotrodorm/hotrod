@@ -16,15 +16,19 @@ public class TestPredicateBuilder {
 
     // ------------------------------------
 
-    PredicateBuilder b = new PredicateBuilder(new Equal(new Constant(1), new Constant(2)));
-    b.or(new Equal(new Constant(3), new Constant(4)));
-    b.and(new Equal(new Constant(5), new Constant(6)));
+    Constant.from(1);
 
-//    b.and(new Or(new NotEqual(new Constant(20), new Constant(21)), new NotEqual(new Constant(22), new Constant(23))));
+    PredicateBuilder b = new PredicateBuilder(new Equal(Constant.from(1), Constant.from(2)));
+    b.or(new Equal(Constant.from(3), Constant.from(4)));
+    b.and(new Equal(Constant.from(5), Constant.from(6)));
 
-    b.and(SQL.or(new NotEqual(new Constant(20), new Constant(21)), new NotEqual(new Constant(22), new Constant(23))));
+    // b.and(new Or(new NotEqual(new Constant(20), new Constant(21)), new
+    // NotEqual(new Constant(22), new Constant(23))));
 
-    b.or(new Equal(new Constant(9), new Constant(10)));
+    b.and(
+        SQL.or(new NotEqual(Constant.from(20), Constant.from(21)), new NotEqual(Constant.from(22), Constant.from(23))));
+
+    b.or(new Equal(Constant.from(9), Constant.from(10)));
 
     // ------------------------------------
 

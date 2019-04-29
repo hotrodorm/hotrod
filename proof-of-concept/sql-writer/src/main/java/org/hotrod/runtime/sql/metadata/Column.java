@@ -5,7 +5,7 @@ import org.hotrod.runtime.sql.ReferenceableExpression;
 import org.hotrod.runtime.sql.expressions.Expression;
 import org.hotrod.runtime.sql.expressions.OrderingTerm;
 
-public class Column extends Expression implements ReferenceableExpression {
+public class Column<T> extends Expression<T> implements ReferenceableExpression {
 
   private static final int PRECEDENCE = 1;
 

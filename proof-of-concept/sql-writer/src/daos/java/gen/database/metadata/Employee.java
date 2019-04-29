@@ -19,18 +19,18 @@ public class Employee extends Table {
 
   // Properties
 
-  public Column id;
-  public Column name;
-  public Column salary;
-  public Column departmentId;
-  public Column managerId;
+  public Column<Number> id;
+  public Column<String> name;
+  public Column<Number> salary;
+  public Column<Number> departmentId;
+  public Column<Number> managerId;
 
   private void initialize() {
-    this.id = new Column(this, "id");
-    this.name = new Column(this, "name");
-    this.salary = new Column(this, "salary");
-    this.departmentId = new Column(this, "department_id");
-    this.managerId = new Column(this, "manager_id");
+    this.id = new Column<Number>(this, "id");
+    this.name = new Column<String>(this, "name");
+    this.salary = new Column<Number>(this, "salary");
+    this.departmentId = new Column<Number>(this, "department_id");
+    this.managerId = new Column<Number>(this, "manager_id");
   }
 
 }

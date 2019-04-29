@@ -19,14 +19,14 @@ public class Department extends Table {
 
   // Properties
 
-  public Column id;
-  public Column name;
-  public Column active;
+  public Column<Number> id;
+  public Column<String> name;
+  public Column<Number> active;
 
   private void initialize() {
-    this.id = new Column(this, "id");
-    this.name = new Column(this, "name");
-    this.active = new Column(this, "active");
+    this.id = new Column<Number>(this, "id");
+    this.name = new Column<String>(this, "name");
+    this.active = new Column<Number>(this, "active");
   }
 
 }
