@@ -3,9 +3,8 @@ package sql;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
-import com.sun.rowset.internal.Row;
 
 import sql.QueryWriter.PreparedQuery;
 import sql.exceptions.DuplicateAliasException;
@@ -222,7 +221,7 @@ abstract class AbstractSelect extends Query {
     }
   }
 
-  public List<Row> execute() {
+  public List<Map<String, Object>> execute() {
 
     PreparedQuery q = this.prepareQuery();
 

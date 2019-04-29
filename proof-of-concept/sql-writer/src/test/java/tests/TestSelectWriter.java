@@ -1,8 +1,7 @@
 package tests;
 
 import java.util.List;
-
-import com.sun.rowset.internal.Row;
+import java.util.Map;
 
 import gen.database.metadata.Department;
 import gen.database.metadata.Employee;
@@ -20,22 +19,22 @@ public class TestSelectWriter {
 
     Department d2 = new Department("d2");
 
-    List<Row> rows = SQL //
+    List<Map<String, Object>> rows = SQL //
         .createSelect(e.id, e.name, j.name, SQL.count(), SQL.countDistinct(e.departmentId)) //
         .from(e) //
         .join(d, d.id.eq(e.departmentId)) //
         .leftJoin(v, v.employeeId.eq(e.id)) //
         .leftJoin(j, j.id.eq(e.managerId)) //
         .where(e.salary.gt(500)) //
-        .and(d.name.like("R%")) //
+        .or(d.name.like("R%")) //
         .and(d.name.like("O'HARA%")) //
         .or(e.salary.lt(j.salary)) //
-        .or(SQL.tuple(e.departmentId, j.name).notIn( //
+        .and(SQL.tuple(e.departmentId, j.name).notIn( //
             SQL.createSubquery(d2.id, d2.name) //
                 .from(d2) //
                 .where(d2.active.eq(1)))) //
         .groupBy(e.id) //
-        .having(SQL.count().between(980.14, 2000)) //
+        .having(SQL.count().between(1000, 2500.14)) //
         .orderBy(e.name.asc(), j.name.desc()) //
         .offset(300) //
         .limit(50) //
@@ -43,14 +42,10 @@ public class TestSelectWriter {
     ;
 
     if (rows != null) {
-      for (Row r : rows) {
+      for (Map<String, Object> r : rows) {
         System.out.println("row: " + r);
       }
     }
-
-//    String text = "a\u00a0c";
-//    String regex = ".*[\\x01-\\x1f'\\x7f-\\x9f\"].*";
-//    System.out.println("matches=" + text.matches(regex));
 
   }
 

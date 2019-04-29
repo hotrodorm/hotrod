@@ -1,8 +1,7 @@
 package sql;
 
 import java.util.List;
-
-import com.sun.rowset.internal.Row;
+import java.util.Map;
 
 public class SelectLimit implements ExecutableSelect {
 
@@ -26,7 +25,7 @@ public class SelectLimit implements ExecutableSelect {
 
   // Execute
 
-  public List<Row> execute() {
+  public List<Map<String, Object>> execute() {
     return this.select.execute();
   }
 

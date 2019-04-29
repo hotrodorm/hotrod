@@ -1,8 +1,7 @@
 package sql;
 
 import java.util.List;
-
-import com.sun.rowset.internal.Row;
+import java.util.Map;
 
 import sql.expressions.OrderingTerm;
 import sql.expressions.predicates.Predicate;
@@ -80,7 +79,7 @@ public class SelectFrom implements ExecutableSelect {
 
   // Execute
 
-  public List<Row> execute() {
+  public List<Map<String, Object>> execute() {
     return this.select.execute();
   }
 

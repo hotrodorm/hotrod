@@ -1,13 +1,12 @@
 package sql;
 
 import java.util.List;
-
-import com.sun.rowset.internal.Row;
+import java.util.Map;
 
 public interface ExecutableSelect {
 
   void renderTo(final QueryWriter w);
 
-  List<Row> execute();
+  List<Map<String, Object>> execute();
 
 }

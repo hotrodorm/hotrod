@@ -2,8 +2,7 @@ package sql;
 
 import java.util.Arrays;
 import java.util.List;
-
-import com.sun.rowset.internal.Row;
+import java.util.Map;
 
 import sql.expressions.Expression;
 import sql.expressions.OrderingTerm;
@@ -49,7 +48,7 @@ public class SelectGroupBy implements ExecutableSelect {
 
   // Execute
 
-  public List<Row> execute() {
+  public List<Map<String, Object>> execute() {
     return this.select.execute();
   }
 

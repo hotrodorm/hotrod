@@ -1,36 +1,38 @@
 package sql;
 
 import java.util.List;
-
-import com.sun.rowset.internal.Row;
+import java.util.Map;
 
 import sql.expressions.OrderingTerm;
-import sql.expressions.predicates.And;
-import sql.expressions.predicates.Or;
 import sql.expressions.predicates.Predicate;
+import sql.expressions.predicates.PredicateBuilder;
 
 public class SelectHaving implements ExecutableSelect {
 
   // Properties
 
   private AbstractSelect select;
+  private PredicateBuilder predicateBuilder;
 
   // Constructor
 
   SelectHaving(final AbstractSelect select, final Predicate predicate) {
     this.select = select;
-    this.select.setHavingCondition(predicate);
+    this.predicateBuilder = new PredicateBuilder(predicate);
+    this.select.setHavingCondition(this.predicateBuilder.getAssembled());
   }
 
   // Same stage
 
   public SelectHaving and(final Predicate predicate) {
-    this.select.setHavingCondition(new And(this.select.getHavingCondition(), this.select.getHavingCondition()));
+    this.predicateBuilder.and(predicate);
+    this.select.setHavingCondition(this.predicateBuilder.getAssembled());
     return this;
   }
 
   public SelectHaving or(final Predicate predicate) {
-    this.select.setHavingCondition(new Or(this.select.getHavingCondition(), this.select.getHavingCondition()));
+    this.predicateBuilder.or(predicate);
+    this.select.setHavingCondition(this.predicateBuilder.getAssembled());
     return this;
   }
 
@@ -57,7 +59,7 @@ public class SelectHaving implements ExecutableSelect {
 
   // Execute
 
-  public List<Row> execute() {
+  public List<Map<String, Object>> execute() {
     return this.select.execute();
   }
 

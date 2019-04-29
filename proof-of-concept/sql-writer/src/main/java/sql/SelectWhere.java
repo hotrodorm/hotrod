@@ -1,13 +1,11 @@
 package sql;
 
 import java.util.List;
-
-import com.sun.rowset.internal.Row;
+import java.util.Map;
 
 import sql.expressions.OrderingTerm;
-import sql.expressions.predicates.And;
-import sql.expressions.predicates.Or;
 import sql.expressions.predicates.Predicate;
+import sql.expressions.predicates.PredicateBuilder;
 import sql.metadata.Column;
 
 public class SelectWhere implements ExecutableSelect {
@@ -15,23 +13,27 @@ public class SelectWhere implements ExecutableSelect {
   // Properties
 
   private AbstractSelect select;
+  private PredicateBuilder predicateBuilder;
 
   // Constructors
 
   SelectWhere(final AbstractSelect select, final Predicate predicate) {
     this.select = select;
-    this.select.setWhereCondition(predicate);
+    this.predicateBuilder = new PredicateBuilder(predicate);
+    this.select.setWhereCondition(this.predicateBuilder.getAssembled());
   }
 
   // Same stage
 
   public SelectWhere and(final Predicate predicate) {
-    this.select.setWhereCondition(new And(this.select.getWhereCondition(), predicate));
+    this.predicateBuilder.and(predicate);
+    this.select.setWhereCondition(this.predicateBuilder.getAssembled());
     return this;
   }
 
   public SelectWhere or(final Predicate predicate) {
-    this.select.setWhereCondition(new Or(this.select.getWhereCondition(), predicate));
+    this.predicateBuilder.or(predicate);
+    this.select.setWhereCondition(this.predicateBuilder.getAssembled());
     return this;
   }
 
@@ -62,7 +64,7 @@ public class SelectWhere implements ExecutableSelect {
 
   // Execute
 
-  public List<Row> execute() {
+  public List<Map<String, Object>> execute() {
     return this.select.execute();
   }
 

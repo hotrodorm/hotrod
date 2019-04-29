@@ -429,7 +429,7 @@ public abstract class Expression implements ResultSetColumn {
   // Rendering
 
   protected void renderInner(final Expression inner, final QueryWriter w) {
-    boolean parenthesis = inner.getPrecedence() >= this.precedence;
+    boolean parenthesis = inner.getPrecedence() > this.precedence;
     if (parenthesis) {
       w.write("(");
     }
