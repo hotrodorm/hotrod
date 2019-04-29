@@ -1,4 +1,4 @@
-package org.hotrod.runtime.sql.expressions.asymmetrical;
+package org.hotrod.runtime.sql.expressions.asymmetric;
 
 import org.hotrod.runtime.sql.ExecutableSelect;
 import org.hotrod.runtime.sql.QueryWriter;
