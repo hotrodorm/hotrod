@@ -1,7 +1,7 @@
 package gen.database.metadata;
 
-import sql.metadata.Column;
-import sql.metadata.Table;
+import org.hotrod.runtime.sql.metadata.Column;
+import org.hotrod.runtime.sql.metadata.Table;
 
 public class Department extends Table {
 

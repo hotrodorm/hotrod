@@ -1,7 +1,7 @@
 package gen.database.metadata.schema2;
 
-import sql.metadata.Column;
-import sql.metadata.Table;
+import org.hotrod.runtime.sql.metadata.Column;
+import org.hotrod.runtime.sql.metadata.Table;
 
 public class Vacation extends Table {
 

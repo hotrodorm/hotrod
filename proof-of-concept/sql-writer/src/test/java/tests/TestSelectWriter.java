@@ -3,10 +3,11 @@ package tests;
 import java.util.List;
 import java.util.Map;
 
+import org.hotrod.runtime.sql.SQL;
+
 import gen.database.metadata.Department;
 import gen.database.metadata.Employee;
 import gen.database.metadata.schema2.Vacation;
-import sql.SQL;
 
 public class TestSelectWriter {
 
