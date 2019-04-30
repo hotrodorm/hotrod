@@ -1,5 +1,7 @@
 package org.hotrod.runtime.sql;
 
+import org.hotrod.runtime.sql.dialects.PostgreSQLDialect;
+import org.hotrod.runtime.sql.dialects.SQLDialect;
 import org.hotrod.runtime.sql.expressions.Expression;
 import org.hotrod.runtime.sql.expressions.OrderingTerm;
 import org.hotrod.runtime.sql.expressions.ResultSetColumn;
@@ -12,8 +14,6 @@ import org.hotrod.runtime.sql.expressions.predicates.Not;
 import org.hotrod.runtime.sql.expressions.predicates.NotExists;
 import org.hotrod.runtime.sql.expressions.predicates.Or;
 import org.hotrod.runtime.sql.expressions.predicates.Predicate;
-import org.hotrod.runtime.sql.sqldialects.PostgreSQLDialect;
-import org.hotrod.runtime.sql.sqldialects.SQLDialect;
 
 /*
  * Stages:
@@ -69,7 +69,7 @@ public class SQL {
 
   // Tuples
 
-  public static Tuple tuple(final Expression... expressions) {
+  public static Tuple tuple(final Expression<?>... expressions) {
     return new Tuple(expressions);
   }
 
@@ -99,11 +99,11 @@ public class SQL {
 
   // Ordering expressions
 
-  public static OrderingTerm asc(final Expression expression) {
+  public static OrderingTerm asc(final Expression<?> expression) {
     return new OrderingTerm(expression, true);
   }
 
-  public static OrderingTerm desc(final Expression expression) {
+  public static OrderingTerm desc(final Expression<?> expression) {
     return new OrderingTerm(expression, false);
   }
 
@@ -113,7 +113,7 @@ public class SQL {
     return new Count();
   }
 
-  public static CountDistinct countDistinct(final Expression... expressions) {
+  public static CountDistinct countDistinct(final Expression<?>... expressions) {
     return new CountDistinct(expressions);
   }
 

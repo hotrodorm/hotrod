@@ -7,14 +7,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hotrod.runtime.sql.QueryWriter.PreparedQuery;
+import org.hotrod.runtime.sql.dialects.SQLDialect;
+import org.hotrod.runtime.sql.dialects.SQLDialect.PaginationType;
 import org.hotrod.runtime.sql.exceptions.DuplicateAliasException;
 import org.hotrod.runtime.sql.exceptions.InvalidSQLStatementException;
 import org.hotrod.runtime.sql.expressions.Expression;
 import org.hotrod.runtime.sql.expressions.OrderingTerm;
 import org.hotrod.runtime.sql.expressions.predicates.Predicate;
 import org.hotrod.runtime.sql.metadata.TableOrView;
-import org.hotrod.runtime.sql.sqldialects.SQLDialect;
-import org.hotrod.runtime.sql.sqldialects.SQLDialect.PaginationType;
 
 abstract class AbstractSelect extends Query {
 
@@ -22,7 +22,7 @@ abstract class AbstractSelect extends Query {
   private TableOrView baseTable = null;
   private List<Join> joins = null;
   private Predicate wherePredicate = null;
-  private List<Expression> groupBy = null;
+  private List<Expression<?>> groupBy = null;
   private Predicate havingPredicate = null;
   private List<OrderingTerm> orderingTerms = null;
   private Integer offset = null;
@@ -50,7 +50,7 @@ abstract class AbstractSelect extends Query {
     this.wherePredicate = whereCondition;
   }
 
-  void setGroupBy(final List<Expression> groupBy) {
+  void setGroupBy(final List<Expression<?>> groupBy) {
     this.groupBy = groupBy;
   }
 
@@ -179,7 +179,7 @@ abstract class AbstractSelect extends Query {
       if (this.groupBy != null && !this.groupBy.isEmpty()) {
         w.write("\ngroup by ");
         boolean first = true;
-        for (Expression expr : this.groupBy) {
+        for (Expression<?> expr : this.groupBy) {
           if (first) {
             first = false;
           } else {

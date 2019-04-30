@@ -6,7 +6,7 @@ public class NotEqual extends BinaryPredicate {
 
   private static final int PRECEDENCE = 6;
 
-  public NotEqual(final Expression a, final Expression b) {
+  public <T> NotEqual(final Expression<T> a, final Expression<T> b) {
     super(a, "<>", b, PRECEDENCE);
   }
 

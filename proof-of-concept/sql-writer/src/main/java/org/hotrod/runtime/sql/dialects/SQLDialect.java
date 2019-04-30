@@ -1,4 +1,4 @@
-package org.hotrod.runtime.sql.sqldialects;
+package org.hotrod.runtime.sql.dialects;
 
 import org.hotrod.runtime.sql.Join;
 import org.hotrod.runtime.sql.QueryWriter;
@@ -62,5 +62,7 @@ public abstract class SQLDialect {
   public abstract void renderTopPagination(Integer offset, Integer limit, QueryWriter w);
 
   public abstract void renderBottomPagination(Integer offset, Integer limit, QueryWriter w);
+
+  public abstract FunctionTranslator getFunctionTranslator();
 
 }

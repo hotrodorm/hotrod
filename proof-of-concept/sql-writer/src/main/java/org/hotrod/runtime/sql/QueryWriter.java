@@ -3,8 +3,8 @@ package org.hotrod.runtime.sql;
 import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.hotrod.runtime.sql.dialects.SQLDialect;
 import org.hotrod.runtime.sql.expressions.Expression;
-import org.hotrod.runtime.sql.sqldialects.SQLDialect;
 
 public class QueryWriter {
 
@@ -34,9 +34,9 @@ public class QueryWriter {
     }
   }
 
-  public void write(final Expression expr) {
-    if (expr != null) {
-      expr.renderTo(this);
+  public void write(final Expression<?> expression) {
+    if (expression != null) {
+      expression.renderTo(this);
     }
   }
 

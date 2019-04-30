@@ -2,8 +2,8 @@ package org.hotrod.runtime.sql;
 
 import java.util.List;
 
+import org.hotrod.runtime.sql.dialects.SQLDialect;
 import org.hotrod.runtime.sql.expressions.ResultSetColumn;
-import org.hotrod.runtime.sql.sqldialects.SQLDialect;
 
 class Select extends AbstractSelect {
 

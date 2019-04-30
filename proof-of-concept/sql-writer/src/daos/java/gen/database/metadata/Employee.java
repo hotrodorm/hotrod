@@ -1,6 +1,7 @@
 package gen.database.metadata;
 
-import org.hotrod.runtime.sql.metadata.Column;
+import org.hotrod.runtime.sql.metadata.NumberColumn;
+import org.hotrod.runtime.sql.metadata.StringColumn;
 import org.hotrod.runtime.sql.metadata.Table;
 
 public class Employee extends Table {
@@ -19,18 +20,18 @@ public class Employee extends Table {
 
   // Properties
 
-  public Column<Number> id;
-  public Column<String> name;
-  public Column<Number> salary;
-  public Column<Number> departmentId;
-  public Column<Number> managerId;
+  public NumberColumn id;
+  public StringColumn name;
+  public NumberColumn salary;
+  public NumberColumn departmentId;
+  public NumberColumn managerId;
 
   private void initialize() {
-    this.id = new Column<Number>(this, "id");
-    this.name = new Column<String>(this, "name");
-    this.salary = new Column<Number>(this, "salary");
-    this.departmentId = new Column<Number>(this, "department_id");
-    this.managerId = new Column<Number>(this, "manager_id");
+    this.id = new NumberColumn(this, "id");
+    this.name = new StringColumn(this, "name");
+    this.salary = new NumberColumn(this, "salary");
+    this.departmentId = new NumberColumn(this, "department_id");
+    this.managerId = new NumberColumn(this, "manager_id");
   }
 
 }

@@ -7,11 +7,11 @@ public class Between extends Predicate {
 
   private static final int PRECEDENCE = 6;
 
-  private Expression value;
-  private Expression from;
-  private Expression to;
+  private Expression<?> value;
+  private Expression<?> from;
+  private Expression<?> to;
 
-  public Between(final Expression value, final Expression from, final Expression to) {
+  public <T> Between(final Expression<T> value, final Expression<T> from, final Expression<T> to) {
     super(PRECEDENCE);
     this.value = value;
     this.from = from;

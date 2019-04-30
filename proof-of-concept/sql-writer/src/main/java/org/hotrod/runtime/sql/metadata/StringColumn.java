@@ -2,10 +2,10 @@ package org.hotrod.runtime.sql.metadata;
 
 import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.ReferenceableExpression;
-import org.hotrod.runtime.sql.expressions.Expression;
 import org.hotrod.runtime.sql.expressions.OrderingTerm;
+import org.hotrod.runtime.sql.expressions.strings.StringExpression;
 
-public class Column<T> extends Expression<T> implements ReferenceableExpression {
+public class StringColumn extends StringExpression implements ReferenceableExpression {
 
   private static final int PRECEDENCE = 1;
 
@@ -15,17 +15,14 @@ public class Column<T> extends Expression<T> implements ReferenceableExpression 
   private String schema;
   private String table;
   private String name;
-  private int dataType;
-  private String typeName;
+  private String type;
   private Integer columnSize;
   private Integer decimalDigits;
   private boolean nullable;
   private String defaultValue;
-  private int ordinalPosition;
-  private boolean serial;
   private boolean lob;
 
-  public Column(final TableOrView objectIntance, final String name) {
+  public StringColumn(final TableOrView objectIntance, final String name) {
     super(PRECEDENCE);
     this.objectInstance = objectIntance;
     this.name = name;
@@ -41,11 +38,7 @@ public class Column<T> extends Expression<T> implements ReferenceableExpression 
     return new OrderingTerm(this, false);
   }
 
-  // Getters
-
-  String getName() {
-    return this.name;
-  }
+  // Rendering
 
   @Override
   public void renderTo(final QueryWriter w) {
@@ -54,6 +47,52 @@ public class Column<T> extends Expression<T> implements ReferenceableExpression 
       w.write(".");
     }
     w.write(w.getSqlDialect().renderName(this.name));
+  }
+
+  // Getters
+
+  String getName() {
+    return this.name;
+  }
+
+  public TableOrView getObjectInstance() {
+    return objectInstance;
+  }
+
+  public String getCatalog() {
+    return catalog;
+  }
+
+  public String getSchema() {
+    return schema;
+  }
+
+  public String getTable() {
+    return table;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public Integer getColumnSize() {
+    return columnSize;
+  }
+
+  public Integer getDecimalDigits() {
+    return decimalDigits;
+  }
+
+  public boolean isNullable() {
+    return nullable;
+  }
+
+  public String getDefaultValue() {
+    return defaultValue;
+  }
+
+  public boolean isLob() {
+    return lob;
   }
 
 }

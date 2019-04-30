@@ -1,4 +1,4 @@
-package org.hotrod.runtime.sql.sqldialects;
+package org.hotrod.runtime.sql.dialects;
 
 import org.hotrod.runtime.sql.FullOuterJoin;
 import org.hotrod.runtime.sql.InnerJoin;
@@ -54,6 +54,33 @@ public class PostgreSQLDialect extends SQLDialect {
     } else {
       w.write("offset " + offset);
     }
+  }
+
+  @Override
+  public FunctionTranslator getFunctionTranslator() {
+    return new FunctionTranslator() {
+
+      @Override
+      public String getLog() {
+        return "log";
+      }
+
+      @Override
+      public String getPow() {
+        return "power";
+      }
+
+      @Override
+      public String getRound() {
+        return "round";
+      }
+
+      @Override
+      public String getSignum() {
+        return "sign";
+      }
+
+    };
   }
 
 }

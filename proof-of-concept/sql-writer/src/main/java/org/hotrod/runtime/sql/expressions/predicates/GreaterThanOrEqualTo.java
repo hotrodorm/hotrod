@@ -6,7 +6,7 @@ public class GreaterThanOrEqualTo extends BinaryPredicate {
 
   private static final int PRECEDENCE = 6;
 
-  public GreaterThanOrEqualTo(final Expression a, final Expression b) {
+  public <T> GreaterThanOrEqualTo(final Expression<T> a, final Expression<T> b) {
     super(a, ">=", b, PRECEDENCE);
   }
 

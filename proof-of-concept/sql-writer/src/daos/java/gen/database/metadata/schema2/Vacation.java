@@ -1,9 +1,8 @@
 package gen.database.metadata.schema2;
 
-import java.util.Date;
-
-import org.hotrod.runtime.sql.metadata.Column;
+import org.hotrod.runtime.sql.metadata.NumberColumn;
 import org.hotrod.runtime.sql.metadata.Table;
+import org.hotrod.runtime.sql.metadata.DateColumn;
 
 public class Vacation extends Table {
 
@@ -21,16 +20,16 @@ public class Vacation extends Table {
 
   // Properties
 
-  public Column<Number> employeeId;
-  public Column<Date> startDate;
-  public Column<Date> endDate;
-  public Column<Number> approved;
+  public NumberColumn employeeId;
+  public DateColumn startDate;
+  public DateColumn endDate;
+  public NumberColumn approved;
 
   private void initialize() {
-    this.employeeId = new Column<Number>(this, "employee_id");
-    this.startDate = new Column<Date>(this, "start_date");
-    this.endDate = new Column<Date>(this, "end_date");
-    this.approved = new Column<Number>(this, "approved");
+    this.employeeId = new NumberColumn(this, "employee_id");
+    this.startDate = new DateColumn(this, "start_date");
+    this.endDate = new DateColumn(this, "end_date");
+    this.approved = new NumberColumn(this, "approved");
   }
 
 }

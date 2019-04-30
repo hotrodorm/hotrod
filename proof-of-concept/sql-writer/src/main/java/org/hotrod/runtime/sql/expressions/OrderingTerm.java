@@ -5,10 +5,10 @@ import org.hotrod.runtime.sql.exceptions.InvalidSQLStatementException;
 
 public class OrderingTerm {
 
-  private Expression expression;
+  private Expression<?> expression;
   private boolean ascending;
 
-  public OrderingTerm(final Expression expression, final boolean ascending) {
+  public OrderingTerm(final Expression<?> expression, final boolean ascending) {
     if (expression == null) {
       throw new InvalidSQLStatementException(
           "Cannot use null value as column ordering. " + "Please speify a non null column in the ORDER BY clause");
@@ -17,7 +17,7 @@ public class OrderingTerm {
     this.ascending = ascending;
   }
 
-  public Expression getExpression() {
+  public Expression<?> getExpression() {
     return this.expression;
   }
 

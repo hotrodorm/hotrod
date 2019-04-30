@@ -27,10 +27,8 @@ import org.hotrod.runtime.sql.expressions.predicates.IsNotNull;
 import org.hotrod.runtime.sql.expressions.predicates.IsNull;
 import org.hotrod.runtime.sql.expressions.predicates.LessThan;
 import org.hotrod.runtime.sql.expressions.predicates.LessThanOrEqualTo;
-import org.hotrod.runtime.sql.expressions.predicates.Like;
 import org.hotrod.runtime.sql.expressions.predicates.NotBetween;
 import org.hotrod.runtime.sql.expressions.predicates.NotEqual;
-import org.hotrod.runtime.sql.expressions.predicates.NotLike;
 import org.hotrod.runtime.sql.expressions.predicates.Predicate;
 
 public abstract class Expression<T> implements ResultSetColumn {
@@ -87,7 +85,7 @@ public abstract class Expression<T> implements ResultSetColumn {
 
   // Boxing
 
-  private Expression<T> box(final T value) {
+  protected Expression<T> box(final T value) {
     if (value instanceof String) {
       return new Constant<T>(value, JDBCType.VARCHAR);
     } else if (value instanceof Character) {
@@ -101,30 +99,6 @@ public abstract class Expression<T> implements ResultSetColumn {
     } else {
       throw new InvalidSQLStatementException("Invalid expression type: " + value.getClass());
     }
-  }
-
-  private Expression<String> box(final String value) {
-    return new Constant<String>(value, JDBCType.VARCHAR);
-  }
-
-  @SuppressWarnings("unused")
-  private Expression<Character> box(final Character value) {
-    return new Constant<Character>(value, JDBCType.VARCHAR);
-  }
-
-  @SuppressWarnings("unused")
-  private Expression<Number> box(final Number value) {
-    return new Constant<Number>(value, JDBCType.NUMERIC);
-  }
-
-  @SuppressWarnings("unused")
-  private Expression<Date> box(final Date value) {
-    return new Constant<Date>(value, JDBCType.TIMESTAMP);
-  }
-
-  @SuppressWarnings("unused")
-  private Expression<Boolean> box(final Boolean value) {
-    return new Constant<Boolean>(value, JDBCType.BOOLEAN);
   }
 
   // Equal
@@ -223,62 +197,6 @@ public abstract class Expression<T> implements ResultSetColumn {
     return new NotBetween(this, box(from), box(to));
   }
 
-  // Like
-
-  public Predicate like(final Expression<String> e) {
-    return new Like(this, e);
-  }
-
-  public Predicate like(final String value) {
-    return new Like(this, box(value));
-  }
-
-  // Like escape
-
-  public Predicate like(final Expression<String> e, final Expression<String> escape) {
-    return new Like(this, e, escape);
-  }
-
-  public Predicate like(final Expression<String> e, final String escape) {
-    return new Like(this, e, box(escape));
-  }
-
-  public Predicate like(final String e, final Expression<String> escape) {
-    return new Like(this, box(e), escape);
-  }
-
-  public Predicate like(final String e, final String escape) {
-    return new Like(this, box(e), box(escape));
-  }
-
-  // Not Like
-
-  public Predicate notLike(final Expression<String> e) {
-    return new NotLike(this, e);
-  }
-
-  public Predicate notLike(final String e) {
-    return new NotLike(this, box(e));
-  }
-
-  // Not like escape
-
-  public Predicate notLike(final Expression<T> e, final Expression<T> escape) {
-    return new NotLike(this, e, escape);
-  }
-
-  public Predicate notLike(final Expression<T> e, final T escape) {
-    return new NotLike(this, e, box(escape));
-  }
-
-  public Predicate notLike(final T e, final Expression<T> escape) {
-    return new NotLike(this, box(e), escape);
-  }
-
-  public Predicate notLike(final T e, final T escape) {
-    return new NotLike(this, box(e), box(escape));
-  }
-
   // Is Null and Is Not Null
 
   public Predicate isNotNull() {
@@ -371,19 +289,5 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public abstract void renderTo(final QueryWriter w);
-
-  // public static List<Expression<?>> toNonEmptyList(final String errorMessage,
-  // final Expression<?>... expressions) {
-  // if (expressions == null) {
-  // throw new InvalidSQLStatementException(errorMessage);
-  // }
-  // return Arrays.asList(expressions);
-  // }
-
-  // public static List<Expression<?>> toList(final Expression<?> expression) {
-  // List<Expression<?>> l = new ArrayList<Expression<?>>();
-  // l.add(expression);
-  // return l;
-  // }
 
 }

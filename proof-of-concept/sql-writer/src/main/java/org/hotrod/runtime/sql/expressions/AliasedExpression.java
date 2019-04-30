@@ -5,10 +5,10 @@ import org.hotrod.runtime.sql.ReferenceableExpression;
 
 public class AliasedExpression implements ReferenceableExpression {
 
-  private Expression expression;
+  private Expression<?> expression;
   private String alias;
 
-  public AliasedExpression(final Expression expression, final String alias) {
+  public AliasedExpression(final Expression<?> expression, final String alias) {
     this.expression = expression;
     this.alias = alias;
   }

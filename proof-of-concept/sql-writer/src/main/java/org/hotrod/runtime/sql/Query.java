@@ -1,7 +1,7 @@
 package org.hotrod.runtime.sql;
 
+import org.hotrod.runtime.sql.dialects.SQLDialect;
 import org.hotrod.runtime.sql.exceptions.UnsupportedFeatureException;
-import org.hotrod.runtime.sql.sqldialects.SQLDialect;
 
 public abstract class Query {
 

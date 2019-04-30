@@ -5,7 +5,7 @@ import org.hotrod.runtime.sql.expressions.Expression;
 
 public class GtAny extends AsymmetricalOperator {
 
-  public GtAny(final Expression value, final ExecutableSelect subquery) {
+  public GtAny(final Expression<?> value, final ExecutableSelect subquery) {
     super(value, "> any", subquery);
   }
 

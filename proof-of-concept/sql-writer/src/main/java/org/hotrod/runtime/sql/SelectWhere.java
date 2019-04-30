@@ -3,10 +3,10 @@ package org.hotrod.runtime.sql;
 import java.util.List;
 import java.util.Map;
 
+import org.hotrod.runtime.sql.expressions.Expression;
 import org.hotrod.runtime.sql.expressions.OrderingTerm;
 import org.hotrod.runtime.sql.expressions.predicates.Predicate;
 import org.hotrod.runtime.sql.expressions.predicates.PredicateBuilder;
-import org.hotrod.runtime.sql.metadata.Column;
 
 public class SelectWhere implements ExecutableSelect {
 
@@ -39,7 +39,7 @@ public class SelectWhere implements ExecutableSelect {
 
   // Next stages
 
-  public SelectGroupBy groupBy(final Column... columns) {
+  public SelectGroupBy groupBy(final Expression<?>... columns) {
     return new SelectGroupBy(this.select, columns);
   }
 

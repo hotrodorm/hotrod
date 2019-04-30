@@ -6,7 +6,7 @@ public class LessThanOrEqualTo extends BinaryPredicate {
 
   private static final int PRECEDENCE = 6;
 
-  public LessThanOrEqualTo(final Expression a, final Expression b) {
+  public <T> LessThanOrEqualTo(final Expression<T> a, final Expression<T> b) {
     super(a, "<=", b, PRECEDENCE);
   }
 

@@ -5,11 +5,11 @@ import org.hotrod.runtime.sql.expressions.Expression;
 
 public abstract class BinaryPredicate extends Predicate {
 
-  private Expression left;
+  private Expression<?> left;
   private String operator;
-  private Expression right;
+  private Expression<?> right;
 
-  protected BinaryPredicate(final Expression left, final String operator, final Expression right,
+  protected <T> BinaryPredicate(final Expression<T> left, final String operator, final Expression<T> right,
       final int operatorPrecedence) {
     super(operatorPrecedence);
     if (operator == null || operator.trim().isEmpty()) {

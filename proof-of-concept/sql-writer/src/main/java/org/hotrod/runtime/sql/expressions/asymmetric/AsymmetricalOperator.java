@@ -9,11 +9,11 @@ public abstract class AsymmetricalOperator extends Predicate {
 
   private static final int PRECEDENCE = 6;
 
-  private Expression value;
+  private Expression<?> value;
   private String operator;
   private ExecutableSelect subquery;
 
-  protected AsymmetricalOperator(final Expression value, final String operator, final ExecutableSelect subquery) {
+  protected AsymmetricalOperator(final Expression<?> value, final String operator, final ExecutableSelect subquery) {
     super(PRECEDENCE);
     this.value = value;
     this.operator = operator;

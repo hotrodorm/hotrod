@@ -7,14 +7,14 @@ public class Like extends BinaryPredicate {
 
   private static final int PRECEDENCE = 6;
 
-  private Expression escape;
+  private Expression<String> escape;
 
-  public Like(final Expression a, final Expression b) {
+  public Like(final Expression<String> a, final Expression<String> b) {
     super(a, "like", b, PRECEDENCE);
     this.escape = null;
   }
 
-  public Like(final Expression a, final Expression b, final Expression escape) {
+  public Like(final Expression<String> a, final Expression<String> b, final Expression<String> escape) {
     super(a, "like", b, PRECEDENCE);
     this.escape = escape;
   }

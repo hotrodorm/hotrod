@@ -16,7 +16,7 @@ public class SelectGroupBy implements ExecutableSelect {
 
   // Constructor
 
-  SelectGroupBy(final AbstractSelect select, final Expression... expressions) {
+  SelectGroupBy(final AbstractSelect select, final Expression<?>... expressions) {
     this.select = select;
     this.select.setGroupBy(Arrays.asList(expressions));
   }

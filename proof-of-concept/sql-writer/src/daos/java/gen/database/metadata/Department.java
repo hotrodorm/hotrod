@@ -1,6 +1,7 @@
 package gen.database.metadata;
 
-import org.hotrod.runtime.sql.metadata.Column;
+import org.hotrod.runtime.sql.metadata.NumberColumn;
+import org.hotrod.runtime.sql.metadata.StringColumn;
 import org.hotrod.runtime.sql.metadata.Table;
 
 public class Department extends Table {
@@ -19,14 +20,14 @@ public class Department extends Table {
 
   // Properties
 
-  public Column<Number> id;
-  public Column<String> name;
-  public Column<Number> active;
+  public NumberColumn id;
+  public StringColumn name;
+  public NumberColumn active;
 
   private void initialize() {
-    this.id = new Column<Number>(this, "id");
-    this.name = new Column<String>(this, "name");
-    this.active = new Column<Number>(this, "active");
+    this.id = new NumberColumn(this, "id");
+    this.name = new StringColumn(this, "name");
+    this.active = new NumberColumn(this, "active");
   }
 
 }

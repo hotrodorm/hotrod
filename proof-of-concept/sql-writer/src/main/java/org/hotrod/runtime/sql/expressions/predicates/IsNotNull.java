@@ -7,9 +7,9 @@ public class IsNotNull extends Predicate {
 
   private static final int PRECEDENCE = 6;
 
-  private Expression a;
+  private Expression<?> a;
 
-  public IsNotNull(final Expression a) {
+  public IsNotNull(final Expression<?> a) {
     super(PRECEDENCE);
     this.a = a;
   }

@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.hotrod.runtime.sql.dialects.SQLDialect;
 import org.hotrod.runtime.sql.expressions.ResultSetColumn;
 import org.hotrod.runtime.sql.metadata.TableOrView;
-import org.hotrod.runtime.sql.sqldialects.SQLDialect;
 
 public class SelectColumns implements ExecutableSelect {
 
