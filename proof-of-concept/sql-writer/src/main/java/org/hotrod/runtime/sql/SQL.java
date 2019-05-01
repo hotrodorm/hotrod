@@ -2,6 +2,7 @@ package org.hotrod.runtime.sql;
 
 import org.hotrod.runtime.sql.dialects.PostgreSQLDialect;
 import org.hotrod.runtime.sql.dialects.SQLDialect;
+import org.hotrod.runtime.sql.expressions.Coalesce;
 import org.hotrod.runtime.sql.expressions.Expression;
 import org.hotrod.runtime.sql.expressions.OrderingTerm;
 import org.hotrod.runtime.sql.expressions.ResultSetColumn;
@@ -115,6 +116,13 @@ public class SQL {
 
   public static CountDistinct countDistinct(final Expression<?>... expressions) {
     return new CountDistinct(expressions);
+  }
+
+  // General functions
+
+  @SafeVarargs
+  public static <T> Coalesce<T> coalesce(final Expression<T> first, final Expression<T>... rest) {
+    return new Coalesce<T>(first, rest);
   }
 
   // SQL translator resolver

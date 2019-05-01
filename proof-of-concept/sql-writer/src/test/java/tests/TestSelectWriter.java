@@ -21,7 +21,8 @@ public class TestSelectWriter {
     Department d2 = new Department("d2");
 
     List<Map<String, Object>> rows = SQL //
-        .createSelect(e.id, e.name, j.name, SQL.count(), SQL.countDistinct(e.departmentId)) //
+        .createSelect(e.id, e.name, j.name, SQL.count(), SQL.countDistinct(e.departmentId),
+            SQL.coalesce(e.name, j.name)) //
         .from(e) //
         .join(d, d.id.eq(e.departmentId)) //
         .leftJoin(v, v.employeeId.eq(e.id)) //

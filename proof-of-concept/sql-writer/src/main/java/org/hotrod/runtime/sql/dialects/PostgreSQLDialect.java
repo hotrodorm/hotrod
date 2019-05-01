@@ -80,6 +80,11 @@ public class PostgreSQLDialect extends SQLDialect {
         return "sign";
       }
 
+      @Override
+      public String getCoalesce() {
+        return "coalesce";
+      }
+
     };
   }
 

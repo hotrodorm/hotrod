@@ -10,4 +10,5 @@ public interface FunctionTranslator {
 
   String getSignum();
 
+  String getCoalesce();
 }
