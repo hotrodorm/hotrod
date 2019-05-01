@@ -65,4 +65,6 @@ public abstract class SQLDialect {
 
   public abstract FunctionTranslator getFunctionTranslator();
 
+  public abstract FunctionRenderer getFunctionRenderer();
+
 }

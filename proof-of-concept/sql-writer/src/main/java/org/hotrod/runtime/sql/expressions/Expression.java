@@ -1,10 +1,8 @@
 package org.hotrod.runtime.sql.expressions;
 
-import java.util.Date;
-
 import org.hotrod.runtime.sql.ExecutableSelect;
 import org.hotrod.runtime.sql.QueryWriter;
-import org.hotrod.runtime.sql.exceptions.InvalidSQLStatementException;
+import org.hotrod.runtime.sql.SQL;
 import org.hotrod.runtime.sql.expressions.asymmetric.EqAll;
 import org.hotrod.runtime.sql.expressions.asymmetric.EqAny;
 import org.hotrod.runtime.sql.expressions.asymmetric.GeAll;
@@ -54,6 +52,7 @@ public abstract class Expression<T> implements ResultSetColumn {
    *          6  not like
    *         --  operand
    *         12  or
+   *         15  case
    *         --  expression
    *          1  literal value, column
    *          2  function
@@ -85,21 +84,22 @@ public abstract class Expression<T> implements ResultSetColumn {
 
   // Boxing
 
-  protected Expression<T> box(final T value) {
-    if (value instanceof String) {
-      return new Constant<T>(value, JDBCType.VARCHAR);
-    } else if (value instanceof Character) {
-      return new Constant<T>(value, JDBCType.VARCHAR);
-    } else if (value instanceof Number) {
-      return new Constant<T>(value, JDBCType.NUMERIC);
-    } else if (value instanceof Date) {
-      return new Constant<T>(value, JDBCType.TIMESTAMP);
-    } else if (value instanceof Boolean) {
-      return new Constant<T>(value, JDBCType.BOOLEAN);
-    } else {
-      throw new InvalidSQLStatementException("Invalid expression type: " + value.getClass());
-    }
-  }
+  // public Expression<T> box(final T value) {
+  // if (value instanceof String) {
+  // return new Constant<T>(value, JDBCType.VARCHAR);
+  // } else if (value instanceof Character) {
+  // return new Constant<T>(value, JDBCType.VARCHAR);
+  // } else if (value instanceof Number) {
+  // return new Constant<T>(value, JDBCType.NUMERIC);
+  // } else if (value instanceof Date) {
+  // return new Constant<T>(value, JDBCType.TIMESTAMP);
+  // } else if (value instanceof Boolean) {
+  // return new Constant<T>(value, JDBCType.BOOLEAN);
+  // } else {
+  // throw new InvalidSQLStatementException("Invalid expression type: " +
+  // value.getClass());
+  // }
+  // }
 
   // Equal
 
@@ -108,7 +108,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate eq(final T value) {
-    return new Equal(this, box(value));
+    return new Equal(this, SQL.box(value));
   }
 
   // Not Equal
@@ -118,7 +118,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate ne(final T value) {
-    return new NotEqual(this, box(value));
+    return new NotEqual(this, SQL.box(value));
   }
 
   // Greater Than
@@ -128,7 +128,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate gt(final T value) {
-    return new GreaterThan(this, box(value));
+    return new GreaterThan(this, SQL.box(value));
   }
 
   // Greater Than or Equal To
@@ -138,7 +138,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate ge(final T value) {
-    return new GreaterThanOrEqualTo(this, box(value));
+    return new GreaterThanOrEqualTo(this, SQL.box(value));
   }
 
   // Less Than
@@ -148,7 +148,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate lt(final T value) {
-    return new LessThan(this, box(value));
+    return new LessThan(this, SQL.box(value));
   }
 
   // Less Than or Equal To
@@ -158,7 +158,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate le(final T value) {
-    return new LessThanOrEqualTo(this, box(value));
+    return new LessThanOrEqualTo(this, SQL.box(value));
   }
 
   // Between
@@ -168,15 +168,15 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate between(final Expression<T> from, final T to) {
-    return new Between(this, from, box(to));
+    return new Between(this, from, SQL.box(to));
   }
 
   public Predicate between(final T from, final Expression<T> to) {
-    return new Between(this, box(from), to);
+    return new Between(this, SQL.box(from), to);
   }
 
   public Predicate between(final T from, final T to) {
-    return new Between(this, box(from), box(to));
+    return new Between(this, SQL.box(from), SQL.box(to));
   }
 
   // Not Between
@@ -186,15 +186,15 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate notBetween(final Expression<T> from, final T to) {
-    return new NotBetween(this, from, box(to));
+    return new NotBetween(this, from, SQL.box(to));
   }
 
   public Predicate notBetween(final T from, final Expression<T> to) {
-    return new NotBetween(this, box(from), to);
+    return new NotBetween(this, SQL.box(from), to);
   }
 
   public Predicate notBetween(final T from, T to) {
-    return new NotBetween(this, box(from), box(to));
+    return new NotBetween(this, SQL.box(from), SQL.box(to));
   }
 
   // Is Null and Is Not Null

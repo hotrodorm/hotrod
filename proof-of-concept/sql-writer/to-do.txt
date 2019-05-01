@@ -1,0 +1,33 @@
+* CASE
+* window functions
+* LEAD() and LAG()
+* Expression builder with correct precedence.
+* union, union all, intersect, except
+* common table expressions
+* string functions (concat, length, substring, etc.)
+   - concat
+   - length
+   - lower
+   - upper
+   - position
+   - substring
+   - trim
+* datetime functions
+   - current date
+   - current time
+   - current datetime
+   - date(datetime)
+   - time(datetime)
+   - datetime(date, time)
+   - extract (part of a date/time. eg: hour)
+   - add interval (can be negative)
+
+
+.createSelect(a.name, 
+
+  SQL.caseWhen(predicate, expression) -- CaseWhenStage
+  .when(predicate, expression) -- CaseWhenStage
+  .elsevalue(expression) -- CaseElseStage
+  .end() -- Expression
+  .as("name")
+  

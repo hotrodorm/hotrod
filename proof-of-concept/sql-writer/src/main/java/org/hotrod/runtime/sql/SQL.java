@@ -1,9 +1,15 @@
 package org.hotrod.runtime.sql;
 
+import java.util.Date;
+
+import org.hotrod.runtime.sql.caseclause.CaseWhenStage;
 import org.hotrod.runtime.sql.dialects.PostgreSQLDialect;
 import org.hotrod.runtime.sql.dialects.SQLDialect;
+import org.hotrod.runtime.sql.exceptions.InvalidSQLStatementException;
 import org.hotrod.runtime.sql.expressions.Coalesce;
+import org.hotrod.runtime.sql.expressions.Constant;
 import org.hotrod.runtime.sql.expressions.Expression;
+import org.hotrod.runtime.sql.expressions.JDBCType;
 import org.hotrod.runtime.sql.expressions.OrderingTerm;
 import org.hotrod.runtime.sql.expressions.ResultSetColumn;
 import org.hotrod.runtime.sql.expressions.Tuple;
@@ -118,6 +124,17 @@ public class SQL {
     return new CountDistinct(expressions);
   }
 
+  // Case
+
+  public static <T> CaseWhenStage<T> caseWhen(Predicate predicate, Expression<T> value) {
+    return new CaseWhenStage<T>(predicate, value);
+  }
+
+  public static <T> CaseWhenStage<T> caseWhen(Predicate predicate, T value) {
+    Constant<T> v = box(value);
+    return new CaseWhenStage<T>(predicate, v);
+  }
+
   // General functions
 
   @SafeVarargs
@@ -134,6 +151,26 @@ public class SQL {
       sqlDialect = new PostgreSQLDialect();
     }
     return sqlDialect;
+  }
+
+  // Utilities
+
+  public static <T> Constant<T> box(final T value) {
+    Constant<T> v;
+    if (value instanceof String) {
+      v = new Constant<T>(value, JDBCType.VARCHAR);
+    } else if (value instanceof Character) {
+      v = new Constant<T>(value, JDBCType.VARCHAR);
+    } else if (value instanceof Number) {
+      v = new Constant<T>(value, JDBCType.NUMERIC);
+    } else if (value instanceof Date) {
+      v = new Constant<T>(value, JDBCType.TIMESTAMP);
+    } else if (value instanceof Boolean) {
+      v = new Constant<T>(value, JDBCType.BOOLEAN);
+    } else {
+      throw new InvalidSQLStatementException("Invalid expression type: " + value.getClass());
+    }
+    return v;
   }
 
 }

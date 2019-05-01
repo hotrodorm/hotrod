@@ -1,5 +1,6 @@
 package org.hotrod.runtime.sql.expressions.strings;
 
+import org.hotrod.runtime.sql.SQL;
 import org.hotrod.runtime.sql.expressions.Expression;
 import org.hotrod.runtime.sql.expressions.predicates.Like;
 import org.hotrod.runtime.sql.expressions.predicates.NotLike;
@@ -18,7 +19,7 @@ public abstract class StringExpression extends Expression<String> {
   }
 
   public Predicate like(final String value) {
-    return new Like(this, box(value));
+    return new Like(this, SQL.box(value));
   }
 
   // Like escape
@@ -28,15 +29,15 @@ public abstract class StringExpression extends Expression<String> {
   }
 
   public Predicate like(final Expression<String> e, final String escape) {
-    return new Like(this, e, box(escape));
+    return new Like(this, e, SQL.box(escape));
   }
 
   public Predicate like(final String e, final Expression<String> escape) {
-    return new Like(this, box(e), escape);
+    return new Like(this, SQL.box(e), escape);
   }
 
   public Predicate like(final String e, final String escape) {
-    return new Like(this, box(e), box(escape));
+    return new Like(this, SQL.box(e), SQL.box(escape));
   }
 
   // Not Like
@@ -46,7 +47,7 @@ public abstract class StringExpression extends Expression<String> {
   }
 
   public Predicate notLike(final String e) {
-    return new NotLike(this, box(e));
+    return new NotLike(this, SQL.box(e));
   }
 
   // Not like escape
@@ -56,15 +57,15 @@ public abstract class StringExpression extends Expression<String> {
   }
 
   public Predicate notLike(final Expression<String> e, final String escape) {
-    return new NotLike(this, e, box(escape));
+    return new NotLike(this, e, SQL.box(escape));
   }
 
   public Predicate notLike(final String e, final Expression<String> escape) {
-    return new NotLike(this, box(e), escape);
+    return new NotLike(this, SQL.box(e), escape);
   }
 
   public Predicate notLike(final String e, final String escape) {
-    return new NotLike(this, box(e), box(escape));
+    return new NotLike(this, SQL.box(e), SQL.box(escape));
   }
 
 }

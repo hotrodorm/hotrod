@@ -21,8 +21,10 @@ public class TestSelectWriter {
     Department d2 = new Department("d2");
 
     List<Map<String, Object>> rows = SQL //
-        .createSelect(e.id, e.name, j.name, SQL.count(), SQL.countDistinct(e.departmentId),
-            SQL.coalesce(e.name, j.name)) //
+        .createSelect(e.id, e.name, j.name, SQL.count(), SQL.countDistinct(e.departmentId), //
+            SQL.coalesce(e.name, j.name), //
+            SQL.caseWhen(e.name.like("%AN%"), 1).when(e.name.isNull(), 2).end().as("segment")
+            ) //
         .from(e) //
         .join(d, d.id.eq(e.departmentId)) //
         .leftJoin(v, v.employeeId.eq(e.id)) //
