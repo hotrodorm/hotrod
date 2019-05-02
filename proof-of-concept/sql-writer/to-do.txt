@@ -1,3 +1,5 @@
+Done:
+=====
 * CASE
 * Implement the GROUP_CONCAT() aggregation function. 
 * Analytic functions (aka "window functions")
@@ -6,7 +8,13 @@
    - NTILE
    - ROW_NUMBER
 * LEAD() and LAG() (aka "Positional" Analytic functions)
-* Expression builder with correct precedence, based on PredicateBuilder.
+* Implement NULLS FIRST and NULLS LAST on OrderingTerm.
+
+Outstanding:
+============
+* Implement ROWS and RANGE on window functions.
+* Add extra parameters to GROUP_CONCAT. For example "window".
+
 * union, union all, intersect, except
 * common table expressions
 * string functions (concat, length, substring, etc.)
@@ -26,8 +34,8 @@
    - datetime(date, time)
    - extract (part of a date/time. eg: hour)
    - add interval (can be negative)
-* Implement NULLS FIRST and NULLS LAST on OrderingTerm.
-* Implement ROWS and RANGE on window functions.
+* Expression builder with correct precedence, based on PredicateBuilder.
+* Hide internal methods that may have public visibility.
 
 CASE:
 =====
