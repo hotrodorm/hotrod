@@ -7,6 +7,23 @@ import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.expressions.Expression;
 import org.hotrod.runtime.sql.expressions.predicates.Predicate;
 
+/**
+ * <pre>
+ * 
+ *   SQL.caseWhen(predicate, expression) -- CaseWhenStage
+ *   .when(predicate, expression) -- CaseWhenStage
+ *   .elseValue(expression) -- CaseElseStage
+ *   .end() -- Expression
+ * 
+ *   SQL.caseWhen(predicate, expression) -- CaseWhenStage
+ *   .end() -- Expression
+ * 
+ * </pre>
+ * 
+ * @author valarcon
+ *
+ * @param <T>
+ */
 public class CaseClause<T> extends Expression<T> {
 
   private static final int PRECEDENCE = 15;

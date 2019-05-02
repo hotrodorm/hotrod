@@ -13,28 +13,28 @@ import org.hotrod.runtime.sql.expressions.JDBCType;
 import org.hotrod.runtime.sql.expressions.OrderingTerm;
 import org.hotrod.runtime.sql.expressions.ResultSetColumn;
 import org.hotrod.runtime.sql.expressions.Tuple;
+import org.hotrod.runtime.sql.expressions.aggregations.Avg;
+import org.hotrod.runtime.sql.expressions.aggregations.AvgDistinct;
 import org.hotrod.runtime.sql.expressions.aggregations.Count;
 import org.hotrod.runtime.sql.expressions.aggregations.CountDistinct;
+import org.hotrod.runtime.sql.expressions.aggregations.GroupConcat;
+import org.hotrod.runtime.sql.expressions.aggregations.GroupConcatDistinct;
+import org.hotrod.runtime.sql.expressions.aggregations.Max;
+import org.hotrod.runtime.sql.expressions.aggregations.Min;
+import org.hotrod.runtime.sql.expressions.aggregations.Sum;
+import org.hotrod.runtime.sql.expressions.aggregations.SumDistinct;
+import org.hotrod.runtime.sql.expressions.analytics.DenseRank;
+import org.hotrod.runtime.sql.expressions.analytics.Lag;
+import org.hotrod.runtime.sql.expressions.analytics.Lead;
+import org.hotrod.runtime.sql.expressions.analytics.NTile;
+import org.hotrod.runtime.sql.expressions.analytics.Rank;
+import org.hotrod.runtime.sql.expressions.analytics.RowNumber;
 import org.hotrod.runtime.sql.expressions.predicates.And;
 import org.hotrod.runtime.sql.expressions.predicates.Exists;
 import org.hotrod.runtime.sql.expressions.predicates.Not;
 import org.hotrod.runtime.sql.expressions.predicates.NotExists;
 import org.hotrod.runtime.sql.expressions.predicates.Or;
 import org.hotrod.runtime.sql.expressions.predicates.Predicate;
-
-/*
- * Stages:
- * 
- * - select
- * - from
- * - where
- * - groupBy
- * - having
- * - orderBy
- * - offset
- * - limit
- * 
- */
 
 public class SQL {
 
@@ -114,23 +114,127 @@ public class SQL {
     return new OrderingTerm(expression, false);
   }
 
-  // Aggregation expressions
+  // Aggregation expressions, that are NOT window functions
 
   public static Count count() {
     return new Count();
   }
 
-  public static CountDistinct countDistinct(final Expression<?>... expressions) {
-    return new CountDistinct(expressions);
+  public static CountDistinct countDistinct(final Expression<?> expression) {
+    return new CountDistinct(expression);
+  }
+
+  public static SumDistinct sumDistinct(final Expression<?> expression) {
+    return new SumDistinct(expression);
+  }
+
+  public static AvgDistinct avgDistinct(final Expression<?> expression) {
+    return new AvgDistinct(expression);
+  }
+
+  public static GroupConcatDistinct groupConcatDistinct(final Expression<String> expression) {
+    return new GroupConcatDistinct(expression, null);
+  }
+
+  public static GroupConcatDistinct groupConcatDistinct(final Expression<String> expression,
+      final Expression<String> delimiter) {
+    return new GroupConcatDistinct(expression, delimiter);
+  }
+
+  public static GroupConcatDistinct groupConcatDistinct(final Expression<String> expression, final String delimiter) {
+    return new GroupConcatDistinct(expression, box(delimiter));
+  }
+
+  // Aggregation expressions, that ALSO are window functions
+
+  public static Sum sum(final Expression<Number> expression) {
+    return new Sum(expression);
+  }
+
+  public static Avg avg(final Expression<Number> expression) {
+    return new Avg(expression);
+  }
+
+  public static Min min(final Expression<Number> expression) {
+    return new Min(expression);
+  }
+
+  public static Max max(final Expression<Number> expression) {
+    return new Max(expression);
+  }
+
+  public static GroupConcat groupConcat(final Expression<String> expression) {
+    return new GroupConcat(expression, null);
+  }
+
+  public static GroupConcat groupConcat(final Expression<String> expression, final Expression<String> delimiter) {
+    return new GroupConcat(expression, delimiter);
+  }
+
+  public static GroupConcat groupConcat(final Expression<String> expression, final String delimiter) {
+    return new GroupConcat(expression, box(delimiter));
+  }
+
+  // Analytical functions
+
+  public static RowNumber rowNumber() {
+    return new RowNumber();
+  }
+
+  public static Rank rank() {
+    return new Rank();
+  }
+
+  public static DenseRank denseRank() {
+    return new DenseRank();
+  }
+
+  public static NTile ntile() {
+    return new NTile();
+  }
+
+  // Positional Analytic functions
+
+  public static <T> Lead<T> lead(final Expression<T> expression) {
+    return new Lead<T>(expression, null, null);
+  }
+
+  public static <T> Lead<T> lead(final Expression<T> expression, final Number offset) {
+    return new Lead<T>(expression, box(offset), null);
+  }
+
+  public static <T> Lead<T> lead(final Expression<T> expression, final Number offset,
+      final Expression<T> defaultValue) {
+    return new Lead<T>(expression, box(offset), defaultValue);
+  }
+
+  public static <T> Lead<T> lead(final Expression<T> expression, final Number offset, final T defaultValue) {
+    return new Lead<T>(expression, box(offset), box(defaultValue));
+  }
+
+  public static <T> Lag<T> lag(final Expression<T> expression) {
+    return new Lag<T>(expression, null, null);
+  }
+
+  public static <T> Lag<T> lag(final Expression<T> expression, final Number offset) {
+    return new Lag<T>(expression, box(offset), null);
+  }
+
+  public static <T> Lag<T> lag(final Expression<T> expression, final Number offset, final Expression<T> defaultValue) {
+    return new Lag<T>(expression, box(offset), defaultValue);
+  }
+
+  public static <T> Lag<T> lag(final Expression<T> expression, final Number offset, final T defaultValue) {
+    return new Lag<T>(expression, box(offset), box(defaultValue));
   }
 
   // Case
 
-  public static <T> CaseWhenStage<T> caseWhen(Predicate predicate, Expression<T> value) {
+  public static <T> CaseWhenStage<T> caseWhen(final Predicate predicate, Expression<T> value) {
     return new CaseWhenStage<T>(predicate, value);
   }
 
-  public static <T> CaseWhenStage<T> caseWhen(Predicate predicate, T value) {
+  public static <T> CaseWhenStage<T> caseWhen(final Predicate predicate, T value) {
     Constant<T> v = box(value);
     return new CaseWhenStage<T>(predicate, v);
   }
@@ -153,7 +257,7 @@ public class SQL {
     return sqlDialect;
   }
 
-  // Utilities
+  // Boxing scalar values
 
   public static <T> Constant<T> box(final T value) {
     Constant<T> v;

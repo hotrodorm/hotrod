@@ -4,8 +4,8 @@ import org.hotrod.runtime.sql.expressions.Expression;
 
 public class Sum extends NumericAggregationFunction {
 
-  protected Sum(final Expression<Number> expression) {
-    super("sum", null, NumericAggregationFunction.toList(expression));
+  public Sum(final Expression<Number> expression) {
+    super("sum", expression);
   }
 
 }

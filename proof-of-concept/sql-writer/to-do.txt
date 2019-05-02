@@ -1,7 +1,12 @@
 * CASE
-* window functions
-* LEAD() and LAG()
-* Expression builder with correct precedence.
+* Implement the GROUP_CONCAT() aggregation function. 
+* Analytic functions (aka "window functions")
+   - RANK
+   - DENSE_RANK
+   - NTILE
+   - ROW_NUMBER
+* LEAD() and LAG() (aka "Positional" Analytic functions)
+* Expression builder with correct precedence, based on PredicateBuilder.
 * union, union all, intersect, except
 * common table expressions
 * string functions (concat, length, substring, etc.)
@@ -21,13 +26,77 @@
    - datetime(date, time)
    - extract (part of a date/time. eg: hour)
    - add interval (can be negative)
+* Implement NULLS FIRST and NULLS LAST on OrderingTerm.
+* Implement ROWS and RANGE on window functions.
 
-
-.createSelect(a.name, 
+CASE:
+=====
 
   SQL.caseWhen(predicate, expression) -- CaseWhenStage
   .when(predicate, expression) -- CaseWhenStage
   .elsevalue(expression) -- CaseElseStage
   .end() -- Expression
-  .as("name")
+
+  SQL.caseWhen(predicate, expression) -- CaseWhenStage
+  .end() -- Expression
+
+Window functions:
+=================
+
+                 Expression<T>
+                   ^       ^
+                   |       |
+    WindowExpression<T>   AggregationFunction<T>
+                             ^              ^                   <I> WindowableFunction<T>         .over()
+                             |              |                               ^  ^
+  NonWindowableAggregationFunction<T>  WindowableAggregationFunction<T>.....:  :.....AnalyticFunction<T>
+   ^                                    ^    ^                                          ^             ^
+   |                                    |    |                                          |             |
+   |            NumericAggregationFunction  StringAggregationFunction  PositionalAnalyticFunction<?>  |
+   |                 ^                         ^                          ^                           |
+   |- Count          |- Sum                    |- GroupConcat             |- Lead                     |- RowNumber
+   |- CountDistinct  |- Avg                                               |- Lag                      |- Rank
+   |- SumDistinct    |- Min                                                                           |- DenseRank
+   |- AvgDistinct    |- Max                                                                           |- NTile
+   |- GroupConcatDistinct
+
+
+  SQL.sum(a.salary) -- WindowableFunction                            .over()
+  .over() -- WindowFunctionOverStage<T>                              .partitionBy()  .orderBy()  .end()
+  .partitionBy(expression...) -- WindowFunctionPartitioningStage<T>  .orderBy()  .end()
+  .orderBy(expression...) -- WindowFunctionOrderingStage<T>          .end()
+  .end() -- Expression<T>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   

@@ -2,13 +2,10 @@ package org.hotrod.runtime.sql.expressions.aggregations;
 
 import org.hotrod.runtime.sql.expressions.Expression;
 
-public class CountDistinct extends NumericAggregationFunction {
+public class CountDistinct extends NonWindowableAggregationFunction<Number> {
 
-  public CountDistinct(final Expression<?>... expressions) {
-    super("count", "distinct",
-        NumericAggregationFunction.toNonEmptyList(
-            "A COUNT() function with a DISTINCT qualifier must include at least one expression as parameters",
-            expressions));
+  public CountDistinct(final Expression<?> expression) {
+    super("count", "distinct", expression);
   }
 
 }

@@ -75,32 +75,6 @@ public abstract class Expression<T> implements ResultSetColumn {
 
   // Scalar comparisons
 
-  // String
-  // Character
-  // Number (byte, short, int, long, float, double, BigInteger, BigDecimal)
-  // java.util.Date
-  // Boolean
-  // Object
-
-  // Boxing
-
-  // public Expression<T> box(final T value) {
-  // if (value instanceof String) {
-  // return new Constant<T>(value, JDBCType.VARCHAR);
-  // } else if (value instanceof Character) {
-  // return new Constant<T>(value, JDBCType.VARCHAR);
-  // } else if (value instanceof Number) {
-  // return new Constant<T>(value, JDBCType.NUMERIC);
-  // } else if (value instanceof Date) {
-  // return new Constant<T>(value, JDBCType.TIMESTAMP);
-  // } else if (value instanceof Boolean) {
-  // return new Constant<T>(value, JDBCType.BOOLEAN);
-  // } else {
-  // throw new InvalidSQLStatementException("Invalid expression type: " +
-  // value.getClass());
-  // }
-  // }
-
   // Equal
 
   public Predicate eq(final Expression<T> e) {

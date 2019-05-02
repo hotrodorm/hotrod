@@ -20,11 +20,20 @@ public class TestSelectWriter {
 
     Department d2 = new Department("d2");
 
+    // QueryWriter w = new QueryWriter(new PostgreSQLDialect());
+    // WindowExpression<Number> wf = SQL.rowNumber().over().partitionBy(e.id,
+    // j.departmentId).orderBy(e.name.asc(), v.approved.desc()).end();
+    // wf.renderTo(w);
+    // PreparedQuery q = w.getPreparedQuery();
+    // System.out.println("q=" + q.getSQL());
+
     List<Map<String, Object>> rows = SQL //
         .createSelect(e.id, e.name, j.name, SQL.count(), SQL.countDistinct(e.departmentId), //
             SQL.coalesce(e.name, j.name), //
-            SQL.caseWhen(e.name.like("%AN%"), 1).when(e.name.isNull(), 2).end().as("segment")
-            ) //
+            SQL.caseWhen(e.name.like("%AN%"), 1).when(e.name.isNull(), 2).elseValue(-1).end().as("segment"), //
+            SQL.sum(e.salary).over().partitionBy(j.name, v.approved).orderBy(e.departmentId.asc(), d.name.desc()).end(), //
+            SQL.rowNumber().over().partitionBy(e.id).orderBy(e.name.desc()).end() //
+        ) //
         .from(e) //
         .join(d, d.id.eq(e.departmentId)) //
         .leftJoin(v, v.employeeId.eq(e.id)) //

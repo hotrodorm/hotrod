@@ -102,7 +102,7 @@ public class PostgreSQLDialect extends SQLDialect {
       public void concat(QueryWriter w, List<StringExpression> strings) {
 
         Separator sep = new Separator(" || ");
-        for (StringExpression s : strings) {
+        for (@SuppressWarnings("unused") StringExpression s : strings) {
           w.write(sep.render());
           // super.renderInner(s, w);
         }

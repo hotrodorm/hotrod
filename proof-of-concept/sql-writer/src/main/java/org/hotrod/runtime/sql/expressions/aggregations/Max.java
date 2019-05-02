@@ -4,8 +4,8 @@ import org.hotrod.runtime.sql.expressions.Expression;
 
 public class Max extends NumericAggregationFunction {
 
-  protected Max(final Expression<Number> expression) {
-    super("max", null, NumericAggregationFunction.toList(expression));
+  public Max(final Expression<Number> expression) {
+    super("max", expression);
   }
 
 }
