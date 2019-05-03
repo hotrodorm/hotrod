@@ -10,7 +10,6 @@ import org.hotrod.runtime.sql.expressions.Coalesce;
 import org.hotrod.runtime.sql.expressions.Constant;
 import org.hotrod.runtime.sql.expressions.Expression;
 import org.hotrod.runtime.sql.expressions.JDBCType;
-import org.hotrod.runtime.sql.expressions.OrderingTerm;
 import org.hotrod.runtime.sql.expressions.ResultSetColumn;
 import org.hotrod.runtime.sql.expressions.Tuple;
 import org.hotrod.runtime.sql.expressions.aggregations.Avg;
@@ -35,6 +34,7 @@ import org.hotrod.runtime.sql.expressions.predicates.Not;
 import org.hotrod.runtime.sql.expressions.predicates.NotExists;
 import org.hotrod.runtime.sql.expressions.predicates.Or;
 import org.hotrod.runtime.sql.expressions.predicates.Predicate;
+import org.hotrod.runtime.sql.ordering.OrderByDirectionStage;
 
 public class SQL {
 
@@ -106,12 +106,12 @@ public class SQL {
 
   // Ordering expressions
 
-  public static OrderingTerm asc(final Expression<?> expression) {
-    return new OrderingTerm(expression, true);
+  public static OrderByDirectionStage asc(final Expression<?> expression) {
+    return new OrderByDirectionStage(expression, true);
   }
 
-  public static OrderingTerm desc(final Expression<?> expression) {
-    return new OrderingTerm(expression, false);
+  public static OrderByDirectionStage desc(final Expression<?> expression) {
+    return new OrderByDirectionStage(expression, false);
   }
 
   // Aggregation expressions, that are NOT window functions

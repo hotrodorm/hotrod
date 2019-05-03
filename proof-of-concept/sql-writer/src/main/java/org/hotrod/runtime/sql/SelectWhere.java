@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.sql.expressions.Expression;
-import org.hotrod.runtime.sql.expressions.OrderingTerm;
 import org.hotrod.runtime.sql.expressions.predicates.Predicate;
 import org.hotrod.runtime.sql.expressions.predicates.PredicateBuilder;
+import org.hotrod.runtime.sql.ordering.OrderingTerm;
 
 public class SelectWhere implements ExecutableSelect {
 

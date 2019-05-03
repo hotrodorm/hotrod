@@ -26,7 +26,7 @@ import org.hotrod.runtime.sql.expressions.predicates.Predicate;
  */
 public class CaseClause<T> extends Expression<T> {
 
-  private static final int PRECEDENCE = 15;
+  private static final int PRECEDENCE = 2;
 
   private List<CaseWhen<T>> whens;
   private Expression<T> elseValue;

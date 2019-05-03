@@ -12,9 +12,9 @@ import org.hotrod.runtime.sql.dialects.SQLDialect.PaginationType;
 import org.hotrod.runtime.sql.exceptions.DuplicateAliasException;
 import org.hotrod.runtime.sql.exceptions.InvalidSQLStatementException;
 import org.hotrod.runtime.sql.expressions.Expression;
-import org.hotrod.runtime.sql.expressions.OrderingTerm;
 import org.hotrod.runtime.sql.expressions.predicates.Predicate;
 import org.hotrod.runtime.sql.metadata.TableOrView;
+import org.hotrod.runtime.sql.ordering.OrderingTerm;
 
 abstract class AbstractSelect extends Query {
 

@@ -2,8 +2,8 @@ package org.hotrod.runtime.sql.metadata;
 
 import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.ReferenceableExpression;
-import org.hotrod.runtime.sql.expressions.OrderingTerm;
 import org.hotrod.runtime.sql.expressions.strings.StringExpression;
+import org.hotrod.runtime.sql.ordering.OrderingTerm;
 
 public class StringColumn extends StringExpression implements ReferenceableExpression {
 
@@ -26,16 +26,6 @@ public class StringColumn extends StringExpression implements ReferenceableExpre
     super(PRECEDENCE);
     this.objectInstance = objectIntance;
     this.name = name;
-  }
-
-  // Column ordering
-
-  public OrderingTerm asc() {
-    return new OrderingTerm(this, true);
-  }
-
-  public OrderingTerm desc() {
-    return new OrderingTerm(this, false);
   }
 
   // Rendering

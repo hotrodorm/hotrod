@@ -28,6 +28,7 @@ import org.hotrod.runtime.sql.expressions.predicates.LessThanOrEqualTo;
 import org.hotrod.runtime.sql.expressions.predicates.NotBetween;
 import org.hotrod.runtime.sql.expressions.predicates.NotEqual;
 import org.hotrod.runtime.sql.expressions.predicates.Predicate;
+import org.hotrod.runtime.sql.ordering.OrderByDirectionStage;
 
 public abstract class Expression<T> implements ResultSetColumn {
 
@@ -35,27 +36,21 @@ public abstract class Expression<T> implements ResultSetColumn {
    * <pre>
    * Precedence  Operator
    * ----------  ------------------
-   *         11  and
-   *          6  between
-   *         --  binary operator
-   *          6  =
-   *          6  >
-   *          6  >=
-   *          6  is null
-   *          6  is not null
-   *          6  <
-   *          6  <=
-   *          6  like
+   *          1  literal value, column, parenthesis
+   *          2  case
+   *          2  function (aggregation, analytic, math, other)
+   *          2  tuple
+   *          3  * / %
+   *          4  + -
+   *          6  between, not between
+   *          6  = > >= < <= <>
+   *          6  is null, is not null
+   *          6  like, not like
+   *          6  in, not in
+   *          6  = > >= < <= <> any/all
    *         10  not
-   *          6  not between
-   *          6  <>
-   *          6  not like
-   *         --  operand
+   *         11  and
    *         12  or
-   *         15  case
-   *         --  expression
-   *          1  literal value, column
-   *          2  function
    * </pre>
    */
 
@@ -71,6 +66,16 @@ public abstract class Expression<T> implements ResultSetColumn {
 
   protected int getPrecedence() {
     return precedence;
+  }
+
+  // Column ordering
+
+  public final OrderByDirectionStage asc() {
+    return new OrderByDirectionStage(this, true);
+  }
+
+  public final OrderByDirectionStage desc() {
+    return new OrderByDirectionStage(this, false);
   }
 
   // Scalar comparisons

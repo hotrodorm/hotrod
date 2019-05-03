@@ -4,7 +4,7 @@ import org.hotrod.runtime.sql.QueryWriter;
 
 public class Not extends Predicate {
 
-  private static final int PRECEDENCE = 2;
+  private static final int PRECEDENCE = 10;
 
   private Predicate a;
 

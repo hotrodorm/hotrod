@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.hotrod.runtime.sql.expressions.OrderingTerm;
+import org.hotrod.runtime.sql.ordering.OrderingTerm;
 
 public class SelectOrderBy implements ExecutableSelect {
 

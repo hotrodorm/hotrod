@@ -2,7 +2,6 @@ package org.hotrod.runtime.sql.metadata;
 
 import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.ReferenceableExpression;
-import org.hotrod.runtime.sql.expressions.OrderingTerm;
 import org.hotrod.runtime.sql.expressions.dates.DateExpression;
 
 public class DateColumn extends DateExpression implements ReferenceableExpression {
@@ -26,16 +25,6 @@ public class DateColumn extends DateExpression implements ReferenceableExpressio
     super(PRECEDENCE);
     this.objectInstance = objectIntance;
     this.name = name;
-  }
-
-  // Column ordering
-
-  public OrderingTerm asc() {
-    return new OrderingTerm(this, true);
-  }
-
-  public OrderingTerm desc() {
-    return new OrderingTerm(this, false);
   }
 
   // Rendering

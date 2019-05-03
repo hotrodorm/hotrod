@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.expressions.Expression;
-import org.hotrod.runtime.sql.expressions.OrderingTerm;
+import org.hotrod.runtime.sql.ordering.OrderingTerm;
 
 import sql.util.Separator;
 

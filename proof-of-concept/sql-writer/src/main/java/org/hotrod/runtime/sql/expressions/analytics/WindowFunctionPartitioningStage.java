@@ -2,7 +2,7 @@ package org.hotrod.runtime.sql.expressions.analytics;
 
 import java.util.Arrays;
 
-import org.hotrod.runtime.sql.expressions.OrderingTerm;
+import org.hotrod.runtime.sql.ordering.OrderingTerm;
 
 public class WindowFunctionPartitioningStage<T> {
 

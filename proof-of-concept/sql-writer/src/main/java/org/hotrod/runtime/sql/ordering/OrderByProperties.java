@@ -1,12 +1,15 @@
-package org.hotrod.runtime.sql.expressions;
+package org.hotrod.runtime.sql.ordering;
 
 import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.exceptions.InvalidSQLStatementException;
+import org.hotrod.runtime.sql.expressions.Expression;
 
-public class OrderingTerm {
+public class OrderByProperties {
 
   public static enum NullsOrdering {
-    NULLS_FIRST("nulls first"), NULLS_LAST("nulls last");
+
+    NULLS_FIRST("nulls first"), //
+    NULLS_LAST("nulls last");
 
     private String rendered;
 
@@ -24,32 +27,19 @@ public class OrderingTerm {
   private boolean ascending;
   private NullsOrdering nullsOrdering;
 
-  public OrderingTerm(final Expression<?> expression, final boolean ascending) {
+  public OrderByProperties(final Expression<?> expression, final boolean ascending) {
     if (expression == null) {
       throw new InvalidSQLStatementException(
           "Cannot use null value as column ordering. " + "Please speify a non null column in the ORDER BY clause");
     }
     this.expression = expression;
     this.ascending = ascending;
+    this.nullsOrdering = null;
   }
 
-  public OrderingTerm nullsFirst() {
-    this.nullsOrdering = NullsOrdering.NULLS_FIRST;
-    return this;
+  void setNullsOrdering(final NullsOrdering nullsOrdering) {
+    this.nullsOrdering = nullsOrdering;
   }
-
-  public OrderingTerm nullsLast() {
-    this.nullsOrdering = NullsOrdering.NULLS_LAST;
-    return this;
-  }
-
-  public Expression<?> getExpression() {
-    return this.expression;
-  }
-
-  public boolean isAscending() {
-    return ascending;
-  };
 
   public void renderTo(final QueryWriter w) {
     this.expression.renderTo(w);

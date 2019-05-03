@@ -10,13 +10,10 @@ Done:
 * LEAD() and LAG() (aka "Positional" Analytic functions)
 * Implement NULLS FIRST and NULLS LAST on OrderingTerm.
 
-Outstanding:
-============
-* Implement ROWS and RANGE on window functions.
-* Add extra parameters to GROUP_CONCAT. For example "window".
+Outstanding with Priority 1:
+============================
 
-* union, union all, intersect, except
-* common table expressions
+* Add ORDER BY to GROUP_CONCAT(). For example: group_concat(child_name order by child_name asc separator ';')
 * string functions (concat, length, substring, etc.)
    - concat
    - length
@@ -35,7 +32,22 @@ Outstanding:
    - extract (part of a date/time. eg: hour)
    - add interval (can be negative)
 * Expression builder with correct precedence, based on PredicateBuilder.
+
+Outstanding with Priority 2:
+============================
+
+* union, union all, intersect, except
+* common table expressions
+
+Outstanding with Priority 3:
+============================
+
 * Hide internal methods that may have public visibility.
+* Implement INTERVALs
+* Implement FILTER(WHERE expression)
+* Implement WITHIN
+* Implement ROWS and RANGE on window functions.
+* Add extra parameters to GROUP_CONCAT. For example "window".
 
 CASE:
 =====
