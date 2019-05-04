@@ -1,16 +1,20 @@
 package org.hotrod.runtime.sql.expressions.numbers;
 
 import org.hotrod.runtime.sql.QueryWriter;
+import org.hotrod.runtime.sql.expressions.Expression;
 
-public class Signum extends CustomNumericFunction {
+public class Signum extends NumericFunction {
 
-  public Signum(final NumberExpression x) {
-    super(x);
+  private Expression<Number> value;
+
+  public Signum(final Expression<Number> value) {
+    super();
+    this.value = value;
   }
 
   @Override
-  protected String getName(final QueryWriter w) {
-    return w.getSqlDialect().getFunctionTranslator().getSignum();
+  public void renderTo(final QueryWriter w) {
+    w.getSqlDialect().getFunctionRenderer().signum(w, this.value);
   }
 
 }

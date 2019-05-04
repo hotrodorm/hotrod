@@ -1,16 +1,22 @@
 package org.hotrod.runtime.sql.expressions.numbers;
 
 import org.hotrod.runtime.sql.QueryWriter;
+import org.hotrod.runtime.sql.expressions.Expression;
 
-public class Round extends CustomNumericFunction {
+public class Round extends NumericFunction {
 
-  public Round(final NumberExpression x, final NumberExpression places) {
-    super(x, places);
+  private Expression<Number> value;
+  private Expression<Number> places;
+
+  public Round(final Expression<Number> value, final Expression<Number> places) {
+    super();
+    this.value = value;
+    this.places = places;
   }
 
   @Override
-  protected String getName(final QueryWriter w) {
-    return w.getSqlDialect().getFunctionTranslator().getRound();
+  public void renderTo(final QueryWriter w) {
+    w.getSqlDialect().getFunctionRenderer().round(w, this.value, this.places);
   }
 
 }

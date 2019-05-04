@@ -1,5 +1,6 @@
 Done:
 =====
+
 * CASE
 * Implement the GROUP_CONCAT() aggregation function. 
 * Analytic functions (aka "window functions")
@@ -9,11 +10,19 @@ Done:
    - ROW_NUMBER
 * LEAD() and LAG() (aka "Positional" Analytic functions)
 * Implement NULLS FIRST and NULLS LAST on OrderingTerm.
-
-Outstanding with Priority 1:
-============================
-
-* Add ORDER BY to GROUP_CONCAT(). For example: group_concat(child_name order by child_name asc separator ';')
+* Numeric operatos:
+   - plus
+   - minus
+   - mult
+   - div
+   - remainder
+* Numeric functions:
+   - power(x, exp)
+   - log(x, base)
+   - round(x, places)
+   - abs(x)
+   - signum(x)
+   - neg(x)
 * string functions (concat, length, substring, etc.)
    - concat
    - length
@@ -30,8 +39,13 @@ Outstanding with Priority 1:
    - time(datetime)
    - datetime(date, time)
    - extract (part of a date/time. eg: hour)
-   - add interval (can be negative)
+
+Outstanding with Priority 1:
+============================
+
+* Add ORDER BY to GROUP_CONCAT(). For example: group_concat(child_name order by child_name asc separator ';')
 * Expression builder with correct precedence, based on PredicateBuilder.
+* Implement all 10 database dialects, not just PostgreSQL.
 
 Outstanding with Priority 2:
 ============================
@@ -44,6 +58,8 @@ Outstanding with Priority 3:
 
 * Hide internal methods that may have public visibility.
 * Implement INTERVALs
+   - add interval (can be negative)
+   - diff(datetime)
 * Implement FILTER(WHERE expression)
 * Implement WITHIN
 * Implement ROWS and RANGE on window functions.
@@ -54,7 +70,7 @@ CASE:
 
   SQL.caseWhen(predicate, expression) -- CaseWhenStage
   .when(predicate, expression) -- CaseWhenStage
-  .elsevalue(expression) -- CaseElseStage
+  .elseValue(expression) -- CaseElseStage
   .end() -- Expression
 
   SQL.caseWhen(predicate, expression) -- CaseWhenStage

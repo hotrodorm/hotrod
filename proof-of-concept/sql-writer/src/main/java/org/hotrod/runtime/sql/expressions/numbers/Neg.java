@@ -1,14 +1,15 @@
 package org.hotrod.runtime.sql.expressions.numbers;
 
 import org.hotrod.runtime.sql.QueryWriter;
+import org.hotrod.runtime.sql.expressions.Expression;
 
 public class Neg extends NumberExpression {
 
   private static final int PRECEDENCE = 2;
 
-  private NumberExpression a;
+  private Expression<Number> a;
 
-  protected Neg(final NumberExpression a) {
+  public Neg(final Expression<Number> a) {
     super(PRECEDENCE);
     this.a = a;
   }

@@ -28,6 +28,11 @@ import org.hotrod.runtime.sql.expressions.analytics.Lead;
 import org.hotrod.runtime.sql.expressions.analytics.NTile;
 import org.hotrod.runtime.sql.expressions.analytics.Rank;
 import org.hotrod.runtime.sql.expressions.analytics.RowNumber;
+import org.hotrod.runtime.sql.expressions.datetime.CurrentDate;
+import org.hotrod.runtime.sql.expressions.datetime.CurrentDateTime;
+import org.hotrod.runtime.sql.expressions.datetime.CurrentTime;
+import org.hotrod.runtime.sql.expressions.datetime.DateTime;
+import org.hotrod.runtime.sql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.sql.expressions.predicates.And;
 import org.hotrod.runtime.sql.expressions.predicates.Exists;
 import org.hotrod.runtime.sql.expressions.predicates.Not;
@@ -245,6 +250,52 @@ public class SQL {
   public static <T> Coalesce<T> coalesce(final Expression<T> first, final Expression<T>... rest) {
     return new Coalesce<T>(first, rest);
   }
+
+  // Date/Time
+
+  public static DateTimeExpression currentDate() {
+    return new CurrentDate();
+  }
+
+  public static DateTimeExpression currentTime() {
+    return new CurrentTime();
+  }
+
+  public static DateTimeExpression currentDateTime() {
+    return new CurrentDateTime();
+  }
+
+  public static DateTimeExpression datetime(final Expression<Date> date, final Expression<Date> time) {
+    return new DateTime(date, time);
+  }
+
+//  // Arithmetic
+//
+//  public static Expression<Number> power(final Expression<Number> value, final Expression<Number> exponent) {
+//    return new Pow(value, exponent);
+//  }
+//
+//  public static Expression<Number> log(final Expression<Number> value, final Expression<Number> base) {
+//    return new Log(value, base);
+//  }
+//
+//  public static Expression<Number> round(final Expression<Number> value, final Expression<Number> places) {
+//    return new Log(value, places);
+//  }
+//
+//  public static Expression<Number> abs(final Expression<Number> value) {
+//    return new Abs(value);
+//  }
+//
+//  public static Expression<Number> signum(final Expression<Number> value) {
+//    return new Signum(value);
+//  }
+//
+//  public static Expression<Number> neg(final Expression<Number> value) {
+//    return new Neg(value);
+//  }
+//  
+//  // 
 
   // SQL translator resolver
 

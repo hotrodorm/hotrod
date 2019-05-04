@@ -63,8 +63,6 @@ public abstract class SQLDialect {
 
   public abstract void renderBottomPagination(Integer offset, Integer limit, QueryWriter w);
 
-  public abstract FunctionTranslator getFunctionTranslator();
-
   public abstract FunctionRenderer getFunctionRenderer();
 
 }

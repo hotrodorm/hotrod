@@ -2,9 +2,9 @@ package org.hotrod.runtime.sql.metadata;
 
 import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.ReferenceableExpression;
-import org.hotrod.runtime.sql.expressions.dates.DateExpression;
+import org.hotrod.runtime.sql.expressions.datetime.DateTimeExpression;
 
-public class DateColumn extends DateExpression implements ReferenceableExpression {
+public class DateColumn extends DateTimeExpression implements ReferenceableExpression {
 
   private static final int PRECEDENCE = 1;
 
