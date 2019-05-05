@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<project name="sql-writer" basedir=".">
+
+  <target name="loc-counter">
+    <taskdef name="loc" classname="loc.LocCounterAntTask">
+      <classpath>
+        <pathelement location="lib/loc.jar" />
+      </classpath>
+    </taskdef>
+    <tstamp>
+      <format property="now" pattern="yyyy.MM.dd-HH.mm" />
+    </tstamp>
+    <loc>
+      <consolereport />
+      <module name="SQL Writer" basedir=".">
+        <axis path="src/main/java" ext="java" />
+        <axis path="src/test/java" ext="java" />
+      </module>
+    </loc>
+  </target>
+
+</project>
+
