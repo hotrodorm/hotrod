@@ -18,7 +18,7 @@ public class Substring extends StringFunction {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().substring(w, this.string, this.from, this.length);
+    w.getSqlDialect().getFunctionRenderer().substr(w, this.string, this.from, this.length);
   }
 
 }

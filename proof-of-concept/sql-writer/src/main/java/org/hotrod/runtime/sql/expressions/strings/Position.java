@@ -18,7 +18,7 @@ public class Position extends StringFunction {
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().position(w, this.substring, this.string, this.from);
+    w.getSqlDialect().getFunctionRenderer().locate(w, this.substring, this.string, this.from);
   }
 
 }

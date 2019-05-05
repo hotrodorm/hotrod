@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.sql.SQL;
+import org.hotrod.runtime.sql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
 
 import gen.database.metadata.Department;
 import gen.database.metadata.Employee;
@@ -33,7 +34,7 @@ public class TestSelectWriter {
             SQL.caseWhen(e.name.like("%AN%"), 1).when(e.name.isNull(), 2).elseValue(-1).end().as("segment"), //
             SQL.sum(e.salary).over().partitionBy(j.name, v.approved).orderBy(e.departmentId.asc(), d.name.desc()).end(), //
             SQL.rowNumber().over().partitionBy(e.id).orderBy(e.name.desc().nullsFirst()).end(), //
-            SQL.currentDate().extract("day")
+            SQL.currentDate().extract(DateTimeField.DAY)
         ) //
         .from(e) //
         .join(d, d.id.eq(e.departmentId)) //

@@ -2,8 +2,8 @@ package org.hotrod.runtime.sql.expressions.datetime;
 
 import java.util.Date;
 
-import org.hotrod.runtime.sql.SQL;
 import org.hotrod.runtime.sql.expressions.Expression;
+import org.hotrod.runtime.sql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
 
 public abstract class DateTimeExpression extends Expression<Date> {
 
@@ -19,12 +19,12 @@ public abstract class DateTimeExpression extends Expression<Date> {
     return new org.hotrod.runtime.sql.expressions.datetime.Time(this);
   }
 
-  public DateTimeExpression extract(final Expression<String> field) {
-    return new Extract(this, field);
+  public DateTimeExpression extract(final DateTimeField field) {
+    return new Extract(this, new DateTimeFieldExpression(field));
   }
 
   public DateTimeExpression extract(final String field) {
-    return new Extract(this, SQL.box(field));
+    return new Extract(this, DateTimeFieldExpression.from(field));
   }
 
 }

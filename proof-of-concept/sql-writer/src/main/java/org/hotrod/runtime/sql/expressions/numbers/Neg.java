@@ -7,17 +7,16 @@ public class Neg extends NumberExpression {
 
   private static final int PRECEDENCE = 2;
 
-  private Expression<Number> a;
+  private Expression<Number> value;
 
-  public Neg(final Expression<Number> a) {
+  public Neg(final Expression<Number> value) {
     super(PRECEDENCE);
-    this.a = a;
+    this.value = value;
   }
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.write("-");
-    super.renderInner(this.a, w);
+    w.getSqlDialect().getFunctionRenderer().neg(w, this.value);
   }
 
 }

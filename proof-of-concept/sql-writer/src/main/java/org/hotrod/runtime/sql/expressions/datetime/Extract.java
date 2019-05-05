@@ -8,9 +8,9 @@ import org.hotrod.runtime.sql.expressions.Expression;
 public class Extract extends DateTimeFunction {
 
   private Expression<Date> datetime;
-  private Expression<String> field;
+  private DateTimeFieldExpression field;
 
-  public Extract(final Expression<Date> datetime, final Expression<String> field) {
+  public Extract(final Expression<Date> datetime, final DateTimeFieldExpression field) {
     super();
     this.datetime = datetime;
     this.field = field;

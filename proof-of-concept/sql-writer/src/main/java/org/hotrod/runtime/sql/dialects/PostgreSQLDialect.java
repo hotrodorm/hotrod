@@ -1,5 +1,7 @@
 package org.hotrod.runtime.sql.dialects;
 
+import java.util.Date;
+
 import org.hotrod.runtime.sql.FullOuterJoin;
 import org.hotrod.runtime.sql.InnerJoin;
 import org.hotrod.runtime.sql.Join;
@@ -7,6 +9,7 @@ import org.hotrod.runtime.sql.LeftOuterJoin;
 import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.RightOuterJoin;
 import org.hotrod.runtime.sql.exceptions.UnsupportedFeatureException;
+import org.hotrod.runtime.sql.expressions.Expression;
 
 public class PostgreSQLDialect extends SQLDialect {
 
@@ -59,6 +62,61 @@ public class PostgreSQLDialect extends SQLDialect {
   @Override
   public FunctionRenderer getFunctionRenderer() {
     return new FunctionRenderer() {
+
+      // Math functions
+
+      public void logarithm(final QueryWriter w, final Expression<Number> x, final Expression<Number> base) {
+        if (base == null) {
+          this.write(w, "LN", x);
+        } else {
+          this.write(w, "LOG", base, x);
+        }
+      }
+
+      // String functions
+
+      public void locate(final QueryWriter w, final Expression<String> substring, final Expression<String> string,
+          final Expression<Number> from) {
+        if (from == null) {
+          this.write(w, "STRPOS", string, substring);
+        } else {
+          throw new UnsupportedFeatureException(
+              "PostgreSQL does not support the parameter 'from' in the LOCATE function ('strpos' in PostgreSQL lingo).");
+        }
+      }
+
+      // Date/Time functions
+
+      public void currentDate(final QueryWriter w) {
+        w.write("CURRENT_DATE");
+      }
+
+      public void currentTime(final QueryWriter w) {
+        w.write("CURRENT_TIME");
+      }
+
+      public void currentDateTime(final QueryWriter w) {
+        w.write("CURRENT_TIMESTAMP");
+      }
+
+      public void date(final QueryWriter w, final Expression<Date> datetime) {
+        datetime.renderTo(w);
+        w.write("::DATE");
+      }
+
+      public void time(final QueryWriter w, final Expression<Date> datetime) {
+        datetime.renderTo(w);
+        w.write("::TIME");
+      }
+
+      public void dateTime(final QueryWriter w, final Expression<Date> date, final Expression<Date> time) {
+        w.write("(");
+        date.renderTo(w);
+        w.write(" + ");
+        time.renderTo(w);
+        w.write(")");
+      }
+
     };
   }
 

@@ -4,19 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.sql.QueryWriter;
+import org.hotrod.runtime.sql.expressions.Expression;
 
 public class Concat extends StringFunction {
 
-  private List<StringExpression> strings;
+  private List<Expression<String>> strings;
 
-  public Concat(final List<StringExpression> strings) {
+  public Concat(final List<Expression<String>> strings) {
     super();
     this.strings = strings;
   }
 
-  public Concat(final StringExpression a, final StringExpression b) {
+  public Concat(final Expression<String> a, final Expression<String> b) {
     super();
-    this.strings = new ArrayList<StringExpression>();
+    this.strings = new ArrayList<Expression<String>>();
     this.strings.add(a);
     this.strings.add(b);
   }

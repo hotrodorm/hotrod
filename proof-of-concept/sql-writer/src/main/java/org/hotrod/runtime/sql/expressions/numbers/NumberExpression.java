@@ -31,7 +31,7 @@ public abstract class NumberExpression extends Expression<Number> {
   }
 
   public NumberExpression pow(final NumberExpression exponent) {
-    return new Pow(this, exponent);
+    return new Power(this, exponent);
   }
 
   public NumberExpression log(final NumberExpression base) {

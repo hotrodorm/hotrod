@@ -3,20 +3,20 @@ package org.hotrod.runtime.sql.expressions.numbers;
 import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.expressions.Expression;
 
-public class Pow extends NumericFunction {
+public class Trunc extends NumericFunction {
 
   private Expression<Number> value;
-  private Expression<Number> exponent;
+  private Expression<Number> places;
 
-  public Pow(final Expression<Number> value, final Expression<Number> exponent) {
+  public Trunc(final Expression<Number> value, final Expression<Number> places) {
     super();
     this.value = value;
-    this.exponent = exponent;
+    this.places = places;
   }
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().power(w, this.value, this.exponent);
+    w.getSqlDialect().getFunctionRenderer().trunc(w, this.value, this.places);
   }
 
 }
