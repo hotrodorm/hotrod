@@ -23,8 +23,4 @@ public abstract class DateTimeExpression extends Expression<Date> {
     return new Extract(this, new DateTimeFieldExpression(field));
   }
 
-  public DateTimeExpression extract(final String field) {
-    return new Extract(this, DateTimeFieldExpression.from(field));
-  }
-
 }

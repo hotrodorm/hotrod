@@ -1,67 +1,43 @@
 package org.hotrod.runtime.sql.dialects;
 
-import org.hotrod.runtime.sql.Join;
-import org.hotrod.runtime.sql.QueryWriter;
-import org.hotrod.runtime.sql.exceptions.UnsupportedFeatureException;
-import org.hotrod.runtime.sql.metadata.DatabaseObject;
-
 public abstract class SQLDialect {
 
-  private String unquotedIdentifierPattern;
-  private String quotePrefix;
-  private String quoteSuffix;
+  protected String productName;
+  protected String productVersion;
+  protected int majorVersion;
+  protected int minorVersion;
 
-  public SQLDialect(final String unquotedIdentifierPattern, final String quotePrefix, final String quoteSuffix) {
-    this.unquotedIdentifierPattern = unquotedIdentifierPattern;
-    this.quotePrefix = quotePrefix;
-    this.quoteSuffix = quoteSuffix;
+  public SQLDialect(final String productName, final String productVersion, final int majorVersion,
+      final int minorVersion) {
+    this.productName = productName;
+    this.productVersion = productVersion;
+    this.majorVersion = majorVersion;
+    this.minorVersion = minorVersion;
   }
 
-  public final String renderName(final String canonicalName) {
-    if (canonicalName == null) {
-      return null;
-    }
-    if (canonicalName.matches(this.unquotedIdentifierPattern)) {
-      return canonicalName;
-    }
-    return (this.quotePrefix == null ? "" : this.quotePrefix) + canonicalName
-        + (this.quoteSuffix == null ? "" : this.quoteSuffix);
+  public String getProductName() {
+    return productName;
   }
 
-  public String renderObjectName(final DatabaseObject databaseObject) {
-    if (databaseObject == null) {
-      return null;
-    }
-    StringBuilder sb = new StringBuilder();
-    if (databaseObject.getCatalog() != null) {
-      sb.append(this.renderName(databaseObject.getCatalog()));
-      sb.append(".");
-    }
-    if (databaseObject.getSchema() != null) {
-      sb.append(this.renderName(databaseObject.getSchema()));
-      sb.append(".");
-    } else if (databaseObject.getCatalog() != null) {
-      sb.append(".");
-    }
-    sb.append(this.renderName(databaseObject.getName()));
-    return sb.toString();
+  public String getProductVersion() {
+    return productVersion;
   }
 
-  // Abstract methods
+  public int getMajorVersion() {
+    return majorVersion;
+  }
 
-  public abstract String renderJoinKeywords(Join join) throws UnsupportedFeatureException;
+  public int getMinorVersion() {
+    return minorVersion;
+  }
 
-  // Pagination
+  // Renderers
 
-  public enum PaginationType {
-    TOP, BOTTOM
-  };
+  public abstract IdentifierRenderer getIdentifierRenderer();
 
-  public abstract PaginationType getPaginationType(Integer offset, Integer limit);
+  public abstract JoinRenderer getJoinRenderer();
 
-  public abstract void renderTopPagination(Integer offset, Integer limit, QueryWriter w);
-
-  public abstract void renderBottomPagination(Integer offset, Integer limit, QueryWriter w);
+  public abstract PaginationRenderer getPaginationRenderer();
 
   public abstract FunctionRenderer getFunctionRenderer();
 

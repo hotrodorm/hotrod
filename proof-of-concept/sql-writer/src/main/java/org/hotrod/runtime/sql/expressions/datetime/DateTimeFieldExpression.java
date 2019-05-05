@@ -1,11 +1,8 @@
 package org.hotrod.runtime.sql.expressions.datetime;
 
 import org.hotrod.runtime.sql.QueryWriter;
-import org.hotrod.runtime.sql.exceptions.UnsupportedFeatureException;
 import org.hotrod.runtime.sql.expressions.Expression;
 import org.hotrod.runtime.sql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
-
-import sql.util.Separator;
 
 public class DateTimeFieldExpression extends Expression<DateTimeField> {
 
@@ -37,20 +34,20 @@ public class DateTimeFieldExpression extends Expression<DateTimeField> {
     MILLISECOND;
   }
 
-  public static DateTimeFieldExpression from(final String s) {
-    for (DateTimeField f : DateTimeField.values()) {
-      if (f.name().equalsIgnoreCase(s)) {
-        return new DateTimeFieldExpression(f);
-      }
-    }
-    StringBuilder sb = new StringBuilder();
-    Separator sep = new Separator();
-    for (DateTimeField f : DateTimeField.values()) {
-      sb.append(sep.render());
-      sb.append(f.name().toLowerCase());
-    }
-    throw new UnsupportedFeatureException(
-        "Invalid value '" + s + "' for a date/time field. Valid values are: " + sb.toString());
-  }
+//  public static DateTimeFieldExpression from(final String s) {
+//    for (DateTimeField f : DateTimeField.values()) {
+//      if (f.name().equalsIgnoreCase(s)) {
+//        return new DateTimeFieldExpression(f);
+//      }
+//    }
+//    StringBuilder sb = new StringBuilder();
+//    Separator sep = new Separator();
+//    for (DateTimeField f : DateTimeField.values()) {
+//      sb.append(sep.render());
+//      sb.append(f.name().toLowerCase());
+//    }
+//    throw new UnsupportedFeatureException(
+//        "Invalid value '" + s + "' for a date/time field. Valid values are: " + sb.toString());
+//  }
 
 }

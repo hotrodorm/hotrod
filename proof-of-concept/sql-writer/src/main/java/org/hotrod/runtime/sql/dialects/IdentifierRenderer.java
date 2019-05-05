@@ -1,0 +1,48 @@
+package org.hotrod.runtime.sql.dialects;
+
+import org.hotrod.runtime.sql.metadata.DatabaseObject;
+
+public class IdentifierRenderer {
+
+  private String unquotedIdentifierPattern;
+  private String quotePrefix;
+  private String quoteSuffix;
+
+  public IdentifierRenderer(final String unquotedIdentifierPattern, final String quotePrefix,
+      final String quoteSuffix) {
+    this.unquotedIdentifierPattern = unquotedIdentifierPattern;
+    this.quotePrefix = quotePrefix;
+    this.quoteSuffix = quoteSuffix;
+  }
+
+  public final String renderSQLName(final String canonicalName) {
+    if (canonicalName == null) {
+      return null;
+    }
+    if (canonicalName.matches(this.unquotedIdentifierPattern)) {
+      return canonicalName;
+    }
+    return (this.quotePrefix == null ? "" : this.quotePrefix) + canonicalName
+        + (this.quoteSuffix == null ? "" : this.quoteSuffix);
+  }
+
+  public String renderSQLObjectName(final DatabaseObject databaseObject) {
+    if (databaseObject == null) {
+      return null;
+    }
+    StringBuilder sb = new StringBuilder();
+    if (databaseObject.getCatalog() != null) {
+      sb.append(this.renderSQLName(databaseObject.getCatalog()));
+      sb.append(".");
+    }
+    if (databaseObject.getSchema() != null) {
+      sb.append(this.renderSQLName(databaseObject.getSchema()));
+      sb.append(".");
+    } else if (databaseObject.getCatalog() != null) {
+      sb.append(".");
+    }
+    sb.append(this.renderSQLName(databaseObject.getName()));
+    return sb.toString();
+  }
+
+}

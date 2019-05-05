@@ -17,7 +17,7 @@ public class AliasedExpression implements ReferenceableExpression {
   public void renderTo(final QueryWriter w) {
     this.expression.renderTo(w);
     w.write(" as ");
-    w.write(w.getSqlDialect().renderName(this.alias));
+    w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(this.alias));
   }
 
 }

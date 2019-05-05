@@ -1,8 +1,8 @@
 package tests;
 
 import org.hotrod.runtime.sql.QueryWriter;
-import org.hotrod.runtime.sql.SQL;
 import org.hotrod.runtime.sql.QueryWriter.PreparedQuery;
+import org.hotrod.runtime.sql.SQL;
 import org.hotrod.runtime.sql.dialects.PostgreSQLDialect;
 import org.hotrod.runtime.sql.expressions.Constant;
 import org.hotrod.runtime.sql.expressions.predicates.Equal;
@@ -12,7 +12,7 @@ import org.hotrod.runtime.sql.expressions.predicates.PredicateBuilder;
 public class TestPredicateBuilder {
 
   public static void main(final String[] args) {
-    QueryWriter w = new QueryWriter(new PostgreSQLDialect());
+    QueryWriter w = new QueryWriter(new PostgreSQLDialect("PostgreSQL", "9.4.5", 9, 4));
 
     // ------------------------------------
 

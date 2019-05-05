@@ -303,7 +303,7 @@ public class SQL {
 
   private static SQLDialect resolveSQLDialect() {
     if (sqlDialect == null) {
-      sqlDialect = new PostgreSQLDialect();
+      sqlDialect = new PostgreSQLDialect("PostgreSQL", "9.4.5", 9, 4);
     }
     return sqlDialect;
   }

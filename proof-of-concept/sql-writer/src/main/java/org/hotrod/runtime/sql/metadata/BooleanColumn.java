@@ -36,7 +36,7 @@ public class BooleanColumn extends Predicate implements ReferenceableExpression 
       w.write(this.objectInstance.getAlias());
       w.write(".");
     }
-    w.write(w.getSqlDialect().renderName(this.name));
+    w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(this.name));
   }
 
   // Getters

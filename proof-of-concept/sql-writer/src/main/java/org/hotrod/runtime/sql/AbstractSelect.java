@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hotrod.runtime.sql.QueryWriter.PreparedQuery;
+import org.hotrod.runtime.sql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.sql.dialects.SQLDialect;
-import org.hotrod.runtime.sql.dialects.SQLDialect.PaginationType;
 import org.hotrod.runtime.sql.exceptions.DuplicateAliasException;
 import org.hotrod.runtime.sql.exceptions.InvalidSQLStatementException;
 import org.hotrod.runtime.sql.expressions.Expression;
@@ -136,9 +136,9 @@ abstract class AbstractSelect extends Query {
 
     // top offset & limit
 
-    if (this.sqlDialect.getPaginationType(this.offset, this.limit) == PaginationType.TOP) {
+    if (this.sqlDialect.getPaginationRenderer().getPaginationType(this.offset, this.limit) == PaginationType.TOP) {
       w.write("\n  ");
-      this.sqlDialect.renderTopPagination(this.offset, this.limit, w);
+      this.sqlDialect.getPaginationRenderer().renderTopPagination(this.offset, this.limit, w);
     }
 
     // query columns
@@ -149,15 +149,16 @@ abstract class AbstractSelect extends Query {
 
     if (this.baseTable != null) {
 
-      w.write("\nfrom " + this.sqlDialect.renderObjectName(this.baseTable) + " " + this.baseTable.getAlias());
+      w.write("\nfrom " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.baseTable) + " "
+          + this.baseTable.getAlias());
 
       // joins
 
       for (Join j : this.joins) {
         String joinKeywords;
-        joinKeywords = this.sqlDialect.renderJoinKeywords(j);
-        w.write(
-            "\n" + joinKeywords + " " + this.sqlDialect.renderObjectName(j.getTable()) + " " + j.getTable().getAlias());
+        joinKeywords = this.sqlDialect.getJoinRenderer().renderJoinKeywords(j);
+        w.write("\n" + joinKeywords + " " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(j.getTable())
+            + " " + j.getTable().getAlias());
         try {
           w.write(" on ");
           PredicatedJoin pj = (PredicatedJoin) j;
@@ -213,9 +214,9 @@ abstract class AbstractSelect extends Query {
 
       // bottom offset & limit
 
-      if (this.sqlDialect.getPaginationType(this.offset, this.limit) == PaginationType.BOTTOM) {
+      if (this.sqlDialect.getPaginationRenderer().getPaginationType(this.offset, this.limit) == PaginationType.BOTTOM) {
         w.write("\n");
-        this.sqlDialect.renderBottomPagination(this.offset, this.limit, w);
+        this.sqlDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
       }
 
     }

@@ -11,7 +11,7 @@ import sql.util.Separator;
 
 public abstract class FunctionRenderer {
 
-  // General purpose
+  // General purpose functions
 
   public <T> void coalesce(final QueryWriter w, final List<Expression<T>> values) {
     this.write(w, "COALESCE", values);

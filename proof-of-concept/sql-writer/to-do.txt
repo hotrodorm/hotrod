@@ -62,7 +62,7 @@ Outstanding with Priority 3:
    - diff(datetime)
 * Implement FILTER(WHERE expression)
 * Implement WITHIN
-* Implement ROWS and RANGE on window functions.
+* Implement window frames: ROWS, RANGE, and GROUP.
 * Add extra parameters to GROUP_CONCAT. For example "window".
 
 CASE:
@@ -89,11 +89,11 @@ Window functions:
    ^                                    ^    ^                                          ^             ^
    |                                    |    |                                          |             |
    |            NumericAggregationFunction  StringAggregationFunction  PositionalAnalyticFunction<?>  |
-   |                 ^                         ^                          ^                           |
-   |- Count          |- Sum                    |- GroupConcat             |- Lead                     |- RowNumber
-   |- CountDistinct  |- Avg                                               |- Lag                      |- Rank
-   |- SumDistinct    |- Min                                                                           |- DenseRank
-   |- AvgDistinct    |- Max                                                                           |- NTile
+   |                         ^                 ^                          ^                           |
+   |- Count                  |- Sum            |- GroupConcat             |- Lead                     |- RowNumber
+   |- CountDistinct          |- Avg                                       |- Lag                      |- Rank
+   |- SumDistinct            |- Min                                                                   |- DenseRank
+   |- AvgDistinct            |- Max                                                                   |- NTile
    |- GroupConcatDistinct
 
 
