@@ -46,12 +46,12 @@ Done:
 * Implement SQL Server dialect.
 * Implement MariaDB dialect.
 * Implement MySQL dialect.
+* Implement H2 dialect.
+* Implement HyperSQL dialect.
 
 Outstanding with Priority 1:
 ============================
 
-* Implement H2 dialect.
-* Implement HyperSQL dialect.
 * Implement Derby dialect.
 * Implement Sybase ASE dialect.
 

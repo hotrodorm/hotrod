@@ -3,7 +3,6 @@ package org.hotrod.runtime.sql.metadata;
 import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.ReferenceableExpression;
 import org.hotrod.runtime.sql.expressions.predicates.Predicate;
-import org.hotrod.runtime.sql.ordering.OrderingTerm;
 
 public class BooleanColumn extends Predicate implements ReferenceableExpression {
 

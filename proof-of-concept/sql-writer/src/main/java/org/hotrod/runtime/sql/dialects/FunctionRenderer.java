@@ -55,11 +55,19 @@ public abstract class FunctionRenderer {
   }
 
   public void round(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
-    this.write(w, "round", x, places);
+    if (places == null) {
+      this.write(w, "round", x);
+    } else {
+      this.write(w, "round", x, places);
+    }
   }
 
   public void trunc(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
-    this.write(w, "trunc", x, places);
+    if (places == null) {
+      this.write(w, "trunc", x);
+    } else {
+      this.write(w, "trunc", x, places);
+    }
   }
 
   public void abs(final QueryWriter w, final Expression<Number> x) {
