@@ -124,6 +124,17 @@ abstract class AbstractSelect extends Query {
 
     }
 
+    // retrieve pagination type
+
+    PaginationType paginationType = this.sqlDialect.getPaginationRenderer().getPaginationType(this.offset, this.limit);
+
+    // enclosing pagination - begin
+
+    if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {
+      w.write("\n  ");
+      this.sqlDialect.getPaginationRenderer().renderBeginEnclosingPagination(this.offset, this.limit, w);
+    }
+
     // select
 
     w.write("select");
@@ -136,11 +147,9 @@ abstract class AbstractSelect extends Query {
 
     // top offset & limit
 
-    if (this.offset != null || this.limit != null) {
-      if (this.sqlDialect.getPaginationRenderer().getPaginationType(this.offset, this.limit) == PaginationType.TOP) {
-        w.write("\n  ");
-        this.sqlDialect.getPaginationRenderer().renderTopPagination(this.offset, this.limit, w);
-      }
+    if ((this.offset != null || this.limit != null) && paginationType == PaginationType.TOP) {
+      w.write("\n  ");
+      this.sqlDialect.getPaginationRenderer().renderTopPagination(this.offset, this.limit, w);
     }
 
     // query columns
@@ -216,12 +225,14 @@ abstract class AbstractSelect extends Query {
 
       // bottom offset & limit
 
-      if (this.offset != null || this.limit != null) {
-        if (this.sqlDialect.getPaginationRenderer().getPaginationType(this.offset,
-            this.limit) == PaginationType.BOTTOM) {
-          w.write("\n");
-          this.sqlDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
-        }
+      if ((this.offset != null || this.limit != null) && paginationType == PaginationType.BOTTOM) {
+        this.sqlDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
+      }
+
+      // enclosing pagination - end
+
+      if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {
+        this.sqlDialect.getPaginationRenderer().renderEndEnclosingPagination(this.offset, this.limit, w);
       }
 
     }

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.hotrod.runtime.sql.caseclause.CaseWhenStage;
-import org.hotrod.runtime.sql.dialects.PostgreSQLDialect;
+import org.hotrod.runtime.sql.dialects.OracleDialect;
 import org.hotrod.runtime.sql.dialects.SQLDialect;
 import org.hotrod.runtime.sql.exceptions.InvalidSQLStatementException;
 import org.hotrod.runtime.sql.expressions.Coalesce;
@@ -272,33 +272,36 @@ public class SQL {
     return new DateTime(date, time);
   }
 
-//  // Arithmetic
-//
-//  public static Expression<Number> power(final Expression<Number> value, final Expression<Number> exponent) {
-//    return new Pow(value, exponent);
-//  }
-//
-//  public static Expression<Number> log(final Expression<Number> value, final Expression<Number> base) {
-//    return new Log(value, base);
-//  }
-//
-//  public static Expression<Number> round(final Expression<Number> value, final Expression<Number> places) {
-//    return new Log(value, places);
-//  }
-//
-//  public static Expression<Number> abs(final Expression<Number> value) {
-//    return new Abs(value);
-//  }
-//
-//  public static Expression<Number> signum(final Expression<Number> value) {
-//    return new Signum(value);
-//  }
-//
-//  public static Expression<Number> neg(final Expression<Number> value) {
-//    return new Neg(value);
-//  }
-//  
-//  // 
+  // // Arithmetic
+  //
+  // public static Expression<Number> power(final Expression<Number> value, final
+  // Expression<Number> exponent) {
+  // return new Pow(value, exponent);
+  // }
+  //
+  // public static Expression<Number> log(final Expression<Number> value, final
+  // Expression<Number> base) {
+  // return new Log(value, base);
+  // }
+  //
+  // public static Expression<Number> round(final Expression<Number> value, final
+  // Expression<Number> places) {
+  // return new Log(value, places);
+  // }
+  //
+  // public static Expression<Number> abs(final Expression<Number> value) {
+  // return new Abs(value);
+  // }
+  //
+  // public static Expression<Number> signum(final Expression<Number> value) {
+  // return new Signum(value);
+  // }
+  //
+  // public static Expression<Number> neg(final Expression<Number> value) {
+  // return new Neg(value);
+  // }
+  //
+  // //
 
   // SQL translator resolver
 
@@ -306,7 +309,8 @@ public class SQL {
 
   private static SQLDialect resolveSQLDialect() {
     if (sqlDialect == null) {
-      sqlDialect = new PostgreSQLDialect("PostgreSQL", "9.4.5", 9, 4);
+      // sqlDialect = new PostgreSQLDialect("PostgreSQL", "9.4.5", 9, 4);
+      sqlDialect = new OracleDialect("Oracle", "6.2", 6, 2);
     }
     return sqlDialect;
   }
