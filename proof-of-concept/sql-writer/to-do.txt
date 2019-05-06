@@ -39,13 +39,23 @@ Done:
    - time(datetime)
    - datetime(date, time)
    - extract (part of a date/time. eg: hour)
+* Add ORDER BY to GROUP_CONCAT(). For example: group_concat(child_name order by child_name asc separator ';')
+* Implement PostgreSQL dialect.
+* Implement Oracle dialect.
+* Implement DB2 dialect.
+* Implement SQL Server dialect.
+* Implement MariaDB dialect.
+* Implement MySQL dialect.
 
 Outstanding with Priority 1:
 ============================
 
-* Add ORDER BY to GROUP_CONCAT(). For example: group_concat(child_name order by child_name asc separator ';')
+* Implement H2 dialect.
+* Implement HyperSQL dialect.
+* Implement Derby dialect.
+* Implement Sybase ASE dialect.
+
 * Expression builder with correct precedence, based on PredicateBuilder.
-* Implement all 10 database dialects, not just PostgreSQL.
 
 Outstanding with Priority 2:
 ============================
