@@ -1,6 +1,5 @@
 package org.hotrod.runtime.sql.dialects;
 
-import java.util.Date;
 import java.util.List;
 
 import org.hotrod.runtime.sql.FullOuterJoin;
@@ -15,9 +14,9 @@ import org.hotrod.runtime.sql.ordering.OrderingTerm;
 
 import sql.util.Separator;
 
-public class PostgreSQLDialect extends SQLDialect {
+public class DB2Dialect extends SQLDialect {
 
-  public PostgreSQLDialect(final String productName, final String productVersion, final int majorVersion,
+  public DB2Dialect(final String productName, final String productVersion, final int majorVersion,
       final int minorVersion) {
     super(productName, productVersion, majorVersion, minorVersion);
   }
@@ -26,8 +25,8 @@ public class PostgreSQLDialect extends SQLDialect {
 
   @Override
   public IdentifierRenderer getIdentifierRenderer() {
-    // Identifier names are by default lower case in PostgreSQL
-    return new IdentifierRenderer("[a-z][a-z0-9_]*", "\"", "\"", false);
+    // Identifier names are by default upper case in DB2
+    return new IdentifierRenderer("[A-Z][A-Z0-9_]*", "\"", "\"", false);
   }
 
   // Join rendering
@@ -61,35 +60,44 @@ public class PostgreSQLDialect extends SQLDialect {
 
       @Override
       public PaginationType getPaginationType(final Integer offset, final Integer limit) {
-        return offset != null || limit != null ? PaginationType.BOTTOM : null;
+        if (offset != null) {
+          if (!versionIsAtLeast(11, 1)) {
+            throw new UnsupportedFeatureException("This version of DB2 (" + renderVersion()
+                + ") does not support the OFFSET clause. DB2 11.1 and newer do.");
+          }
+        }
+        return PaginationType.BOTTOM;
       }
 
       @Override
       public void renderTopPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
+        throw new UnsupportedFeatureException("In DB2 pagination cannot be rendered at the top.");
       }
 
       @Override
       public void renderBottomPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        if (limit != null) {
-          if (offset != null) {
-            w.write("\nLIMIT " + limit + " OFFSET " + offset);
-          } else {
-            w.write("\nLIMIT " + limit);
+        if (offset != null) {
+          if (!versionIsAtLeast(11, 1)) {
+            throw new UnsupportedFeatureException("This version of DB2 (" + renderVersion()
+                + ") does not support the OFFSET clause. Support starts in DB2 11.1.");
           }
-        } else {
-          w.write("\nOFFSET " + offset);
+        }
+        if (offset != null) {
+          w.write("\nOFFSET " + offset + " ROWS");
+        }
+        if (limit != null) {
+          w.write("\nFETCH NEXT " + limit + " ROWS ONLY");
         }
       }
 
       @Override
       public void renderBeginEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
+        throw new UnsupportedFeatureException("In DB2 pagination cannot be rendered in an enclosing way.");
       }
 
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
+        throw new UnsupportedFeatureException("In DB2 pagination cannot be rendered in an enclosing way.");
       }
 
     };
@@ -106,31 +114,26 @@ public class PostgreSQLDialect extends SQLDialect {
       @Override
       public void groupConcat(final QueryWriter w, final boolean distinct, final Expression<String> value,
           final List<OrderingTerm> ordering, final Expression<String> separator) {
-        if (!versionIsAtLeast(9)) {
-          throw new UnsupportedFeatureException("This PostgreSQL version (" + renderVersion()
-              + ") does not support the GROUP_CONCAT() function (string_agg()). Only available on PostgreSQL 9.0 or newer.");
-        }
         if (distinct) {
           throw new UnsupportedFeatureException(
-              "PostgreSQL does not support DISTINCT on the GROUP_CONCAT() function (string_agg()).");
+              "DB2 does not support DISTINCT on the GROUP_CONCAT() function (listagg()).");
         }
-        if (separator == null) {
-          throw new UnsupportedFeatureException(
-              "PostgreSQL requires the separator to be specified on the GROUP_CONCAT() function (string_agg()).");
-        }
-        w.write("string_agg(");
+        w.write("listagg(");
         value.renderTo(w);
-        w.write(", ");
-        separator.renderTo(w);
+        if (separator != null) {
+          w.write(", ");
+          separator.renderTo(w);
+        }
+        w.write(")");
         if (ordering != null && !ordering.isEmpty()) {
-          w.write(" ORDER BY ");
+          w.write(" withing group (ORDER BY ");
           Separator sep = new Separator();
           for (OrderingTerm t : ordering) {
             w.write(sep.render());
             t.renderTo(w);
           }
+          w.write(")");
         }
-        w.write(")");
       }
 
       // Arithmetic functions
@@ -140,59 +143,31 @@ public class PostgreSQLDialect extends SQLDialect {
         if (base == null) {
           this.write(w, "ln", x);
         } else {
-          this.write(w, "log", base, x);
+          w.write("(");
+          this.write(w, "ln", x);
+          w.write(" / ");
+          this.write(w, "ln", base);
+          w.write(")");
         }
       }
 
       // String functions
 
-      @Override
-      public void locate(final QueryWriter w, final Expression<String> substring, final Expression<String> string,
-          final Expression<Number> from) {
-        if (from == null) {
-          this.write(w, "strpos", string, substring);
-        } else {
-          throw new UnsupportedFeatureException(
-              "PostgreSQL does not support the parameter 'from' in the LOCATE function ('strpos' in PostgreSQL lingo).");
-        }
-      }
-
       // Date/Time functions
 
       @Override
       public void currentDate(final QueryWriter w) {
-        w.write("current_date");
+        w.write("current date");
       }
 
       @Override
       public void currentTime(final QueryWriter w) {
-        w.write("current_time");
+        w.write("current time");
       }
 
       @Override
       public void currentDateTime(final QueryWriter w) {
-        w.write("current_timestamp");
-      }
-
-      @Override
-      public void date(final QueryWriter w, final Expression<Date> datetime) {
-        datetime.renderTo(w);
-        w.write("::date");
-      }
-
-      @Override
-      public void time(final QueryWriter w, final Expression<Date> datetime) {
-        datetime.renderTo(w);
-        w.write("::time");
-      }
-
-      @Override
-      public void dateTime(final QueryWriter w, final Expression<Date> date, final Expression<Date> time) {
-        w.write("(");
-        date.renderTo(w);
-        w.write(" + ");
-        time.renderTo(w);
-        w.write(")");
+        w.write("current timestamp");
       }
 
     };

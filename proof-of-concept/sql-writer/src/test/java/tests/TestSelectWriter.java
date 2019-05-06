@@ -34,7 +34,8 @@ public class TestSelectWriter {
             SQL.caseWhen(e.name.like("%AN%"), 1).when(e.name.isNull(), 2).elseValue(-1).end().as("segment"), //
             SQL.sum(e.salary).over().partitionBy(j.name, v.approved).orderBy(e.departmentId.asc(), d.name.desc()).end(), //
             SQL.rowNumber().over().partitionBy(e.id).orderBy(e.name.desc().nullsFirst()).end(), //
-            SQL.currentDate().extract(DateTimeField.HOUR)
+            SQL.currentDate().extract(DateTimeField.HOUR), //
+            SQL.groupConcat(e.name, ":", e.departmentId.desc(), j.managerId.asc())
         ) //
         .from(e) //
         .join(d, d.id.eq(e.departmentId)) //

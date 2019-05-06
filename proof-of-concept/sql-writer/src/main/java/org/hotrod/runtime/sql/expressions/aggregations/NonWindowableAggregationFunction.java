@@ -9,7 +9,7 @@ public abstract class NonWindowableAggregationFunction<T> extends AggregationFun
 
   private String functionName;
   private String qualifier;
-  private Expression<?> expression;
+  protected Expression<?> expression;
 
   public NonWindowableAggregationFunction(final String functionName, final String qualifier,
       final Expression<?> expression) {

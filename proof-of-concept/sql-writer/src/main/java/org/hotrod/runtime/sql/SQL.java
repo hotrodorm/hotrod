@@ -1,5 +1,6 @@
 package org.hotrod.runtime.sql;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import org.hotrod.runtime.sql.caseclause.CaseWhenStage;
@@ -40,6 +41,7 @@ import org.hotrod.runtime.sql.expressions.predicates.NotExists;
 import org.hotrod.runtime.sql.expressions.predicates.Or;
 import org.hotrod.runtime.sql.expressions.predicates.Predicate;
 import org.hotrod.runtime.sql.ordering.OrderByDirectionStage;
+import org.hotrod.runtime.sql.ordering.OrderingTerm;
 
 public class SQL {
 
@@ -138,16 +140,16 @@ public class SQL {
   }
 
   public static GroupConcatDistinct groupConcatDistinct(final Expression<String> expression) {
-    return new GroupConcatDistinct(expression, null);
+    return new GroupConcatDistinct(expression, null, null);
   }
 
-  public static GroupConcatDistinct groupConcatDistinct(final Expression<String> expression,
-      final Expression<String> delimiter) {
-    return new GroupConcatDistinct(expression, delimiter);
+  public static GroupConcatDistinct groupConcatDistinct(final Expression<String> expression, final String separator) {
+    return new GroupConcatDistinct(expression, null, box(separator));
   }
 
-  public static GroupConcatDistinct groupConcatDistinct(final Expression<String> expression, final String delimiter) {
-    return new GroupConcatDistinct(expression, box(delimiter));
+  public static GroupConcatDistinct groupConcatDistinct(final Expression<String> expression, final String separator,
+      final OrderingTerm... order) {
+    return new GroupConcatDistinct(expression, Arrays.asList(order), box(separator));
   }
 
   // Aggregation expressions, that ALSO are window functions
@@ -169,15 +171,16 @@ public class SQL {
   }
 
   public static GroupConcat groupConcat(final Expression<String> expression) {
-    return new GroupConcat(expression, null);
+    return new GroupConcat(expression, null, null);
   }
 
-  public static GroupConcat groupConcat(final Expression<String> expression, final Expression<String> delimiter) {
-    return new GroupConcat(expression, delimiter);
+  public static GroupConcat groupConcat(final Expression<String> expression, final String separator) {
+    return new GroupConcat(expression, null, box(separator));
   }
 
-  public static GroupConcat groupConcat(final Expression<String> expression, final String delimiter) {
-    return new GroupConcat(expression, box(delimiter));
+  public static GroupConcat groupConcat(final Expression<String> expression, final String separator,
+      final OrderingTerm... order) {
+    return new GroupConcat(expression, Arrays.asList(order), box(separator));
   }
 
   // Analytical functions

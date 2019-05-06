@@ -1,30 +1,26 @@
 package org.hotrod.runtime.sql.expressions.aggregations;
 
+import java.util.List;
+
 import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.expressions.Expression;
+import org.hotrod.runtime.sql.ordering.OrderingTerm;
 
 public class GroupConcat extends StringAggregationFunction {
 
-  private Expression<String> delimiter;
+  private List<OrderingTerm> ordering;
+  private Expression<String> separator;
 
-  public GroupConcat(final Expression<String> expression, final Expression<String> delimiter) {
+  public GroupConcat(final Expression<String> expression, final List<OrderingTerm> ordering,
+      final Expression<String> separator) {
     super("group_concat", expression);
-    this.delimiter = delimiter;
-
+    this.ordering = ordering;
+    this.separator = separator;
   }
 
   @Override
   public void renderTo(final QueryWriter w) {
-
-    super.renderHead(w);
-
-    if (this.delimiter != null) {
-      w.write(", ");
-      this.delimiter.renderTo(w);
-    }
-
-    super.renderTail(w);
-
+    w.getSqlDialect().getFunctionRenderer().groupConcat(w, false, super.expression, this.ordering, this.separator);
   }
 
 }

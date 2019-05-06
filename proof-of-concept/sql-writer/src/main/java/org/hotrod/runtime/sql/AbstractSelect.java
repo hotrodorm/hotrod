@@ -136,9 +136,11 @@ abstract class AbstractSelect extends Query {
 
     // top offset & limit
 
-    if (this.sqlDialect.getPaginationRenderer().getPaginationType(this.offset, this.limit) == PaginationType.TOP) {
-      w.write("\n  ");
-      this.sqlDialect.getPaginationRenderer().renderTopPagination(this.offset, this.limit, w);
+    if (this.offset != null || this.limit != null) {
+      if (this.sqlDialect.getPaginationRenderer().getPaginationType(this.offset, this.limit) == PaginationType.TOP) {
+        w.write("\n  ");
+        this.sqlDialect.getPaginationRenderer().renderTopPagination(this.offset, this.limit, w);
+      }
     }
 
     // query columns
@@ -214,9 +216,12 @@ abstract class AbstractSelect extends Query {
 
       // bottom offset & limit
 
-      if (this.sqlDialect.getPaginationRenderer().getPaginationType(this.offset, this.limit) == PaginationType.BOTTOM) {
-        w.write("\n");
-        this.sqlDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
+      if (this.offset != null || this.limit != null) {
+        if (this.sqlDialect.getPaginationRenderer().getPaginationType(this.offset,
+            this.limit) == PaginationType.BOTTOM) {
+          w.write("\n");
+          this.sqlDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
+        }
       }
 
     }

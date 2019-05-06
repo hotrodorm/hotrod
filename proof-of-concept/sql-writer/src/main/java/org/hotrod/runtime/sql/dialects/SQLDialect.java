@@ -2,33 +2,48 @@ package org.hotrod.runtime.sql.dialects;
 
 public abstract class SQLDialect {
 
-  protected String productName;
-  protected String productVersion;
-  protected int majorVersion;
-  protected int minorVersion;
+  private String databaseName;
+  private String databaseVersion;
+  private int databaseMajorVersion;
+  private int databaseMinorVersion;
 
-  public SQLDialect(final String productName, final String productVersion, final int majorVersion,
-      final int minorVersion) {
-    this.productName = productName;
-    this.productVersion = productVersion;
-    this.majorVersion = majorVersion;
-    this.minorVersion = minorVersion;
+  public SQLDialect(final String databaseName, final String databaseVersion, final int databaseMajorVersion,
+      final int databaseMinorVersion) {
+    this.databaseName = databaseName;
+    this.databaseVersion = databaseVersion;
+    this.databaseMajorVersion = databaseMajorVersion;
+    this.databaseMinorVersion = databaseMinorVersion;
   }
 
   public String getProductName() {
-    return productName;
+    return databaseName;
   }
 
   public String getProductVersion() {
-    return productVersion;
+    return databaseVersion;
   }
 
   public int getMajorVersion() {
-    return majorVersion;
+    return databaseMajorVersion;
   }
 
   public int getMinorVersion() {
-    return minorVersion;
+    return databaseMinorVersion;
+  }
+
+  // Version comparator
+
+  protected boolean versionIsAtLeast(final int major, final int minor) {
+    return this.databaseMajorVersion > major
+        || this.databaseMajorVersion == major && this.databaseMinorVersion >= minor;
+  }
+
+  protected boolean versionIsAtLeast(final int major) {
+    return this.databaseMajorVersion >= major;
+  }
+
+  protected String renderVersion() {
+    return "" + databaseMajorVersion + "." + databaseMinorVersion + " (" + databaseVersion + ")";
   }
 
   // Renderers

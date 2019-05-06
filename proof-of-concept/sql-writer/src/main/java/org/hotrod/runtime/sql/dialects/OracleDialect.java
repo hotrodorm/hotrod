@@ -15,9 +15,9 @@ import org.hotrod.runtime.sql.ordering.OrderingTerm;
 
 import sql.util.Separator;
 
-public class PostgreSQLDialect extends SQLDialect {
+public class OracleDialect extends SQLDialect {
 
-  public PostgreSQLDialect(final String productName, final String productVersion, final int majorVersion,
+  public OracleDialect(final String productName, final String productVersion, final int majorVersion,
       final int minorVersion) {
     super(productName, productVersion, majorVersion, minorVersion);
   }
@@ -26,8 +26,8 @@ public class PostgreSQLDialect extends SQLDialect {
 
   @Override
   public IdentifierRenderer getIdentifierRenderer() {
-    // Identifier names are by default lower case in PostgreSQL
-    return new IdentifierRenderer("[a-z][a-z0-9_]*", "\"", "\"", false);
+    // Identifier names are by default upper case in Oracle
+    return new IdentifierRenderer("[A-Z][A-Z0-9_]*", "\"", "\"", false);
   }
 
   // Join rendering
@@ -56,40 +56,70 @@ public class PostgreSQLDialect extends SQLDialect {
 
   // Pagination rendering
 
+  // -- offset 5, limit 3
+  // select * from (
+  // select x.*, rownum as "_HotRodRowNum_" from (
+  //
+  // select * from account order by id -- untouched original query
+  //
+  // ) x where rownum <= 5 + 3
+  // ) y where "_HotRodRowNum_" > 5
+
   public PaginationRenderer getPaginationRenderer() {
     return new PaginationRenderer() {
 
       @Override
       public PaginationType getPaginationType(final Integer offset, final Integer limit) {
-        return offset != null || limit != null ? PaginationType.BOTTOM : null;
+        return versionIsAtLeast(12, 1) ? PaginationType.BOTTOM : PaginationType.ENCLOSE;
       }
 
       @Override
       public void renderTopPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
+        throw new UnsupportedFeatureException("Pagination cannot be rendered at the top.");
       }
 
       @Override
       public void renderBottomPagination(final Integer offset, final Integer limit, final QueryWriter w) {
+        if (!versionIsAtLeast(12, 1)) {
+          throw new UnsupportedFeatureException(
+              "Pagination cannot be rendered at the bottom in this version of Oracle.");
+        }
+        if (offset != null) {
+          w.write("\nOFFSET " + offset + " ROWS");
+        }
         if (limit != null) {
-          if (offset != null) {
-            w.write("\nLIMIT " + limit + " OFFSET " + offset);
-          } else {
-            w.write("\nLIMIT " + limit);
-          }
-        } else {
-          w.write("\nOFFSET " + offset);
+          w.write("\nFETCH NEXT " + limit + " ROWS ONLY");
         }
       }
 
+      private static final String HOTROD_ROWNUM_COLUMN = "_HotRod_RowNum_";
+
       @Override
       public void renderBeginEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
+        if (versionIsAtLeast(12, 1)) {
+          throw new UnsupportedFeatureException(
+              "Pagination cannot be rendered in an enclosing way in this version of Oracle.");
+        }
+        if (offset != null) {
+          w.write("SELECT * FROM (");
+        }
+        w.write("SELECT x.*, rownum as \"" + HOTROD_ROWNUM_COLUMN + "\" FROM (");
       }
 
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
+        if (versionIsAtLeast(12, 1)) {
+          throw new UnsupportedFeatureException(
+              "Pagination cannot be rendered in an enclosing way in this version of Oracle.");
+        }
+        if (limit != null) {
+          w.write(") x WHERE rownum <= " + (offset != null ? "" + offset + " + " : "") + limit);
+        } else {
+          w.write(") x");
+        }
+        if (offset != null) {
+          w.write(") y WHERE \"" + HOTROD_ROWNUM_COLUMN + "\" > " + offset);
+        }
       }
 
     };
@@ -106,54 +136,51 @@ public class PostgreSQLDialect extends SQLDialect {
       @Override
       public void groupConcat(final QueryWriter w, final boolean distinct, final Expression<String> value,
           final List<OrderingTerm> ordering, final Expression<String> separator) {
-        if (!versionIsAtLeast(9)) {
-          throw new UnsupportedFeatureException("This PostgreSQL version (" + renderVersion()
-              + ") does not support the GROUP_CONCAT() function (string_agg()). Only available on PostgreSQL 9.0 or newer.");
-        }
         if (distinct) {
           throw new UnsupportedFeatureException(
-              "PostgreSQL does not support DISTINCT on the GROUP_CONCAT() function (string_agg()).");
+              "Oracle does not support DISTINCT on the GROUP_CONCAT() function (listagg()).");
         }
-        if (separator == null) {
-          throw new UnsupportedFeatureException(
-              "PostgreSQL requires the separator to be specified on the GROUP_CONCAT() function (string_agg()).");
+        if (ordering == null || ordering.isEmpty()) {
+          throw new UnsupportedFeatureException("In Oracle GROUP_CONCAT() requires ordering columns.");
         }
-        w.write("string_agg(");
+        w.write("listagg(");
         value.renderTo(w);
-        w.write(", ");
-        separator.renderTo(w);
-        if (ordering != null && !ordering.isEmpty()) {
-          w.write(" ORDER BY ");
-          Separator sep = new Separator();
-          for (OrderingTerm t : ordering) {
-            w.write(sep.render());
-            t.renderTo(w);
-          }
+        if (separator != null) {
+          w.write(", ");
+          separator.renderTo(w);
+        }
+        w.write(")");
+        w.write(" withing group (ORDER BY ");
+        Separator sep = new Separator();
+        for (OrderingTerm t : ordering) {
+          w.write(sep.render());
+          t.renderTo(w);
         }
         w.write(")");
       }
 
       // Arithmetic functions
 
-      @Override
-      public void logarithm(final QueryWriter w, final Expression<Number> x, final Expression<Number> base) {
-        if (base == null) {
-          this.write(w, "ln", x);
-        } else {
-          this.write(w, "log", base, x);
-        }
-      }
-
       // String functions
+
+      @Override
+      public void concat(final QueryWriter w, final List<Expression<String>> strings) {
+        w.write("(");
+        Separator sep = new Separator(" || ");
+        for (Expression<String> s : strings) {
+          w.write(sep.render());
+          s.renderTo(w);
+        }
+        w.write(")");
+      }
 
       @Override
       public void locate(final QueryWriter w, final Expression<String> substring, final Expression<String> string,
           final Expression<Number> from) {
         if (from == null) {
-          this.write(w, "strpos", string, substring);
+          this.write(w, "instr", string, substring);
         } else {
-          throw new UnsupportedFeatureException(
-              "PostgreSQL does not support the parameter 'from' in the LOCATE function ('strpos' in PostgreSQL lingo).");
+          this.write(w, "instr", string, substring, from);
         }
       }
 
@@ -161,12 +188,12 @@ public class PostgreSQLDialect extends SQLDialect {
 
       @Override
       public void currentDate(final QueryWriter w) {
-        w.write("current_date");
+        w.write("trunc(current_date)");
       }
 
       @Override
       public void currentTime(final QueryWriter w) {
-        w.write("current_time");
+        w.write("to_char(current_date, 'HH24:MI:SS')");
       }
 
       @Override
@@ -176,23 +203,25 @@ public class PostgreSQLDialect extends SQLDialect {
 
       @Override
       public void date(final QueryWriter w, final Expression<Date> datetime) {
+        w.write("trunc(");
         datetime.renderTo(w);
-        w.write("::date");
+        w.write(")");
       }
 
       @Override
       public void time(final QueryWriter w, final Expression<Date> datetime) {
+        w.write("to_char(");
         datetime.renderTo(w);
-        w.write("::time");
+        w.write(", 'HH24:MI:SS')");
       }
 
       @Override
       public void dateTime(final QueryWriter w, final Expression<Date> date, final Expression<Date> time) {
-        w.write("(");
+        w.write("to_date(to_char(");
         date.renderTo(w);
-        w.write(" + ");
+        w.write(", 'yyyymmdd') || ' ' || ");
         time.renderTo(w);
-        w.write(")");
+        w.write(", 'yyyymmdd hh24:mi:ss')");
       }
 
     };

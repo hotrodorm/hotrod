@@ -9,7 +9,7 @@ public abstract class StringAggregationFunction extends WindowableAggregationFun
   private static final int PRECEDENCE = 2;
 
   private String functionName;
-  private Expression<String> expression;
+  protected Expression<String> expression;
 
   protected StringAggregationFunction(final String functionName, final Expression<String> expression) {
     super(PRECEDENCE);
@@ -32,25 +32,5 @@ public abstract class StringAggregationFunction extends WindowableAggregationFun
     w.write("(");
     this.expression.renderTo(w);
   }
-
-  // Literal
-
-//  static class LiteralString extends Expression<String> {
-//
-//    private static final int PRECEDENCE = 1;
-//
-//    private String verbatim;
-//
-//    protected LiteralString(final String verbatim) {
-//      super(PRECEDENCE);
-//      this.verbatim = verbatim;
-//    }
-//
-//    @Override
-//    public void renderTo(final QueryWriter w) {
-//      w.write(this.verbatim);
-//    }
-//
-//  }
 
 }

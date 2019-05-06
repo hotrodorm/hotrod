@@ -1,25 +1,28 @@
 package org.hotrod.runtime.sql.expressions.aggregations;
 
+import java.util.List;
+
 import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.expressions.Expression;
+import org.hotrod.runtime.sql.ordering.OrderingTerm;
 
 public class GroupConcatDistinct extends NonWindowableAggregationFunction<String> {
 
-  private Expression<String> delimiter;
+  private List<OrderingTerm> ordering;
+  private Expression<String> separator;
 
-  public GroupConcatDistinct(final Expression<String> expression, final Expression<String> delimiter) {
+  public GroupConcatDistinct(final Expression<String> expression, final List<OrderingTerm> ordering,
+      final Expression<String> separator) {
     super("group_concat", "distinct", expression);
-    this.delimiter = delimiter;
+    this.ordering = ordering;
+    this.separator = separator;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void renderTo(final QueryWriter w) {
-    renderHead(w);
-    if (this.delimiter != null) {
-      w.write(", ");
-      this.delimiter.renderTo(w);
-    }
-    renderTail(w);
+    w.getSqlDialect().getFunctionRenderer().groupConcat(w, true, (Expression<String>) super.expression, this.ordering,
+        this.separator);
   }
 
 }

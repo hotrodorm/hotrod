@@ -7,12 +7,14 @@ public class IdentifierRenderer {
   private String unquotedIdentifierPattern;
   private String quotePrefix;
   private String quoteSuffix;
+  private boolean caseSensitiveWhenUnquoted;
 
-  public IdentifierRenderer(final String unquotedIdentifierPattern, final String quotePrefix,
-      final String quoteSuffix) {
+  public IdentifierRenderer(final String unquotedIdentifierPattern, final String quotePrefix, final String quoteSuffix,
+      final boolean caseSensitiveWhenUnquoted) {
     this.unquotedIdentifierPattern = unquotedIdentifierPattern;
     this.quotePrefix = quotePrefix;
     this.quoteSuffix = quoteSuffix;
+    this.caseSensitiveWhenUnquoted = caseSensitiveWhenUnquoted;
   }
 
   public final String renderSQLName(final String canonicalName) {
@@ -20,7 +22,7 @@ public class IdentifierRenderer {
       return null;
     }
     if (canonicalName.matches(this.unquotedIdentifierPattern)) {
-      return canonicalName;
+      return this.caseSensitiveWhenUnquoted ? canonicalName : canonicalName.toLowerCase();
     }
     return (this.quotePrefix == null ? "" : this.quotePrefix) + canonicalName
         + (this.quoteSuffix == null ? "" : this.quoteSuffix);

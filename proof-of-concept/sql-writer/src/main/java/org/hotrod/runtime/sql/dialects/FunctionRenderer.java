@@ -6,6 +6,7 @@ import java.util.List;
 import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.expressions.Expression;
 import org.hotrod.runtime.sql.expressions.datetime.DateTimeFieldExpression;
+import org.hotrod.runtime.sql.ordering.OrderingTerm;
 
 import sql.util.Separator;
 
@@ -14,37 +15,59 @@ public abstract class FunctionRenderer {
   // General purpose functions
 
   public <T> void coalesce(final QueryWriter w, final List<Expression<T>> values) {
-    this.write(w, "COALESCE", values);
+    this.write(w, "coalesce", values);
   }
 
-  // Math functions
+  public void groupConcat(final QueryWriter w, final boolean distinct, final Expression<String> value,
+      final List<OrderingTerm> ordering, final Expression<String> separator) {
+    w.write("group_concat(");
+    if (distinct) {
+      w.write("distinct ");
+    }
+    value.renderTo(w);
+    if (ordering != null) {
+      w.write("ORDER BY ");
+      Separator sep = new Separator();
+      for (OrderingTerm t : ordering) {
+        w.write(sep.render());
+        t.renderTo(w);
+      }
+    }
+    if (separator != null) {
+      w.write("separator ");
+      separator.renderTo(w);
+    }
+    w.write(")");
+  }
+
+  // Arithmetic functions
 
   public void power(final QueryWriter w, final Expression<Number> x, final Expression<Number> exponent) {
-    this.write(w, "POWER", x, exponent);
+    this.write(w, "power", x, exponent);
   }
 
   public void logarithm(final QueryWriter w, final Expression<Number> x, final Expression<Number> base) {
     if (base == null) {
-      this.write(w, "LOG", x);
+      this.write(w, "log", x);
     } else {
-      this.write(w, "LOG", base, x);
+      this.write(w, "log", base, x);
     }
   }
 
   public void round(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
-    this.write(w, "ROUND", x, places);
+    this.write(w, "round", x, places);
   }
 
   public void trunc(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
-    this.write(w, "TRUNC", x, places);
+    this.write(w, "trunc", x, places);
   }
 
   public void abs(final QueryWriter w, final Expression<Number> x) {
-    this.write(w, "ABC", x);
+    this.write(w, "abs", x);
   }
 
   public void signum(final QueryWriter w, final Expression<Number> x) {
-    this.write(w, "SIGN", x);
+    this.write(w, "sign", x);
   }
 
   public void neg(final QueryWriter w, final Expression<Number> x) {
@@ -54,105 +77,87 @@ public abstract class FunctionRenderer {
   // String functions
 
   public void concat(final QueryWriter w, final List<Expression<String>> strings) {
-    this.write(w, "CONCAT", strings);
+    this.write(w, "concat", strings);
   }
 
   public void length(final QueryWriter w, final Expression<String> string) {
-    this.write(w, "LENGTH", string);
+    this.write(w, "length", string);
   }
 
   public void lower(final QueryWriter w, final Expression<String> string) {
-    this.write(w, "LOWER", string);
+    this.write(w, "lower", string);
   }
 
   public void upper(final QueryWriter w, final Expression<String> string) {
-    this.write(w, "UPPER", string);
+    this.write(w, "upper", string);
   }
 
   public void locate(final QueryWriter w, final Expression<String> substring, final Expression<String> string,
       final Expression<Number> from) {
     if (from == null) {
-      this.write(w, "LOCATE", substring, string);
+      this.write(w, "locate", substring, string);
     } else {
-      this.write(w, "LOCATE", substring, string, from);
+      this.write(w, "locate", substring, string, from);
     }
   }
 
   public void substr(final QueryWriter w, final Expression<String> string, final Expression<Number> from,
       final Expression<Number> length) {
     if (length == null) {
-      this.write(w, "SUBSTR", string, from);
+      this.write(w, "substr", string, from);
     } else {
-      this.write(w, "SUBSTR", string, from, length);
+      this.write(w, "substr", string, from, length);
     }
   }
 
   public void trim(final QueryWriter w, final Expression<String> string) {
-    this.write(w, "TRIM", string);
+    this.write(w, "trim", string);
   }
 
   // Date/Time functions
 
   public void currentDate(final QueryWriter w) {
-    w.write("CURRENT_DATE()");
+    w.write("current_date()");
   }
 
   public void currentTime(final QueryWriter w) {
-    w.write("CURRENT_TIME()");
+    w.write("current_time()");
   }
 
   public void currentDateTime(final QueryWriter w) {
-    w.write("CURRENT_TIMESTAMP()");
+    w.write("current_timestamp()");
   }
 
   public void date(final QueryWriter w, final Expression<Date> datetime) {
-    this.write(w, "DATE", datetime);
+    this.write(w, "date", datetime);
   }
 
   public void time(final QueryWriter w, final Expression<Date> datetime) {
-    this.write(w, "TIME", datetime);
+    this.write(w, "time", datetime);
   }
 
   public void dateTime(final QueryWriter w, final Expression<Date> date, final Expression<Date> time) {
-    this.write(w, "TIMESTAMP", date, time);
+    this.write(w, "timestamp", date, time);
   }
 
   public void extract(final QueryWriter w, final Expression<Date> datetime, final DateTimeFieldExpression field) {
-    w.write("EXTRACT(");
+    w.write("extract(");
     field.renderTo(w);
-    w.write(" FROM ");
+    w.write(" from ");
     datetime.renderTo(w);
     w.write(")");
   }
 
   // Write utilities
 
-  protected <T> void write(final QueryWriter w, final String function, final Expression<T> x) {
+  protected void write(final QueryWriter w, final String function, final Expression<?>... expressions) {
     w.write(function);
     w.write("(");
-    x.renderTo(w);
-    w.write(")");
-  }
-
-  protected <T, U> void write(final QueryWriter w, final String function, final Expression<T> x,
-      final Expression<U> y) {
-    w.write(function);
-    w.write("(");
-    x.renderTo(w);
-    w.write(", ");
-    y.renderTo(w);
-    w.write(")");
-  }
-
-  protected <T, U, V> void write(final QueryWriter w, final String function, final Expression<T> x,
-      final Expression<U> y, final Expression<V> z) {
-    w.write(function);
-    w.write("(");
-    x.renderTo(w);
-    w.write(", ");
-    y.renderTo(w);
-    w.write(", ");
-    z.renderTo(w);
+    Separator sep = new Separator();
+    for (Expression<?> expr : expressions) {
+      w.write(sep.render());
+      expr.renderTo(w);
+    }
     w.write(")");
   }
 

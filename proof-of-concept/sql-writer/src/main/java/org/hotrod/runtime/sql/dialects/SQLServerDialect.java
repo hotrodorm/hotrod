@@ -9,15 +9,17 @@ import org.hotrod.runtime.sql.Join;
 import org.hotrod.runtime.sql.LeftOuterJoin;
 import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.RightOuterJoin;
+import org.hotrod.runtime.sql.SQL;
 import org.hotrod.runtime.sql.exceptions.UnsupportedFeatureException;
 import org.hotrod.runtime.sql.expressions.Expression;
+import org.hotrod.runtime.sql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.runtime.sql.ordering.OrderingTerm;
 
 import sql.util.Separator;
 
-public class PostgreSQLDialect extends SQLDialect {
+public class SQLServerDialect extends SQLDialect {
 
-  public PostgreSQLDialect(final String productName, final String productVersion, final int majorVersion,
+  public SQLServerDialect(final String productName, final String productVersion, final int majorVersion,
       final int minorVersion) {
     super(productName, productVersion, majorVersion, minorVersion);
   }
@@ -26,8 +28,8 @@ public class PostgreSQLDialect extends SQLDialect {
 
   @Override
   public IdentifierRenderer getIdentifierRenderer() {
-    // Identifier names are by default lower case in PostgreSQL
-    return new IdentifierRenderer("[a-z][a-z0-9_]*", "\"", "\"", false);
+    // Identifier names are case insensitive in SQL Server
+    return new IdentifierRenderer("[a-zA-Z][a-zA-Z0-9_]*", "\"", "\"", false);
   }
 
   // Join rendering
@@ -61,35 +63,45 @@ public class PostgreSQLDialect extends SQLDialect {
 
       @Override
       public PaginationType getPaginationType(final Integer offset, final Integer limit) {
-        return offset != null || limit != null ? PaginationType.BOTTOM : null;
+        if (offset != null) {
+          if (!versionIsAtLeast(11)) { // SQL Server 2012
+            throw new UnsupportedFeatureException(
+                "OFFSET not supported on this version of SQL Server. OFFSET is supported starting on SQL Server 2012 (internal version 11.0)");
+          }
+        }
+        return versionIsAtLeast(11) ? PaginationType.BOTTOM : PaginationType.TOP;
       }
 
       @Override
       public void renderTopPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
+        if (offset == null && !versionIsAtLeast(11)) {
+          w.write(" top " + limit);
+        } else {
+          throw new UnsupportedFeatureException(
+              "In SQL Server before version 2012, LIMIT can only be used without OFFSET as the TOP clause");
+        }
       }
 
       @Override
       public void renderBottomPagination(final Integer offset, final Integer limit, final QueryWriter w) {
+        if (offset != null) {
+          w.write("\nOFFSET " + offset + " ROWS");
+        } else if (limit != null) {
+          w.write("\nOFFSET 0 ROWS");
+        }
         if (limit != null) {
-          if (offset != null) {
-            w.write("\nLIMIT " + limit + " OFFSET " + offset);
-          } else {
-            w.write("\nLIMIT " + limit);
-          }
-        } else {
-          w.write("\nOFFSET " + offset);
+          w.write("FETCH NEXT " + limit + " ROWS ONLY");
         }
       }
 
       @Override
       public void renderBeginEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
+        throw new UnsupportedFeatureException("Pagination cannot be rendered in enclosing fashion in SQL Server");
       }
 
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
+        throw new UnsupportedFeatureException("Pagination cannot be rendered in enclosing fashion in SQL Server");
       }
 
     };
@@ -103,27 +115,37 @@ public class PostgreSQLDialect extends SQLDialect {
 
       // General purpose functions
 
+      // 8.0 for SQL Server 2000.
+      // 9.0 for SQL Server 2005.
+      // 10.0 for SQL Server 2008.
+      // 10.5 for SQL Server 2008 R2.
+      // 11.0 for SQL Server 2012.
+      // 12.0 for SQL Server 2014.
+      // 13.0 for SQL Server 2016.
+      // 14.0 for SQL Server 2017.
+
       @Override
       public void groupConcat(final QueryWriter w, final boolean distinct, final Expression<String> value,
           final List<OrderingTerm> ordering, final Expression<String> separator) {
-        if (!versionIsAtLeast(9)) {
-          throw new UnsupportedFeatureException("This PostgreSQL version (" + renderVersion()
-              + ") does not support the GROUP_CONCAT() function (string_agg()). Only available on PostgreSQL 9.0 or newer.");
+        if (versionIsAtLeast(14)) { // (SQL Server 2017)
+          throw new UnsupportedFeatureException("This SQL Server version (" + renderVersion()
+              + ") does not support the GROUP_CONCAT() function (string_agg()). It's available since version 14.0 (SQL Server 2017).");
         }
         if (distinct) {
           throw new UnsupportedFeatureException(
-              "PostgreSQL does not support DISTINCT on the GROUP_CONCAT() function (string_agg()).");
+              "SQL Server does not support DISTINCT on the GROUP_CONCAT() function (string_agg()).");
         }
         if (separator == null) {
           throw new UnsupportedFeatureException(
-              "PostgreSQL requires the separator to be specified on the GROUP_CONCAT() function (string_agg()).");
+              "SQL Server requires the separator to be specified on the GROUP_CONCAT() function (string_agg()).");
         }
         w.write("string_agg(");
         value.renderTo(w);
         w.write(", ");
         separator.renderTo(w);
+        w.write(")");
         if (ordering != null && !ordering.isEmpty()) {
-          w.write(" ORDER BY ");
+          w.write(" within group (ORDER BY ");
           Separator sep = new Separator();
           for (OrderingTerm t : ordering) {
             w.write(sep.render());
@@ -138,22 +160,55 @@ public class PostgreSQLDialect extends SQLDialect {
       @Override
       public void logarithm(final QueryWriter w, final Expression<Number> x, final Expression<Number> base) {
         if (base == null) {
-          this.write(w, "ln", x);
+          this.write(w, "log", x);
         } else {
-          this.write(w, "log", base, x);
+          this.write(w, "log", x, base);
         }
+      }
+
+      @Override
+      public void round(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
+        if (places == null) {
+          throw new UnsupportedFeatureException(
+              "SQL Server requires the number of decimal places to be specified on the ROUND() function.");
+        }
+        this.write(w, "round", x, places);
+      }
+
+      @Override
+      public void trunc(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
+        if (places == null) {
+          throw new UnsupportedFeatureException(
+              "SQL Server requires the number of decimal places to be specified on the TRUNC() function (round()).");
+        }
+
+        this.write(w, "round", x, places, SQL.box(1));
       }
 
       // String functions
 
       @Override
+      public void length(final QueryWriter w, final Expression<String> string) {
+        this.write(w, "len", string);
+      }
+
+      @Override
       public void locate(final QueryWriter w, final Expression<String> substring, final Expression<String> string,
           final Expression<Number> from) {
         if (from == null) {
-          this.write(w, "strpos", string, substring);
+          this.write(w, "charindex", substring, string);
         } else {
-          throw new UnsupportedFeatureException(
-              "PostgreSQL does not support the parameter 'from' in the LOCATE function ('strpos' in PostgreSQL lingo).");
+          this.write(w, "charindex", substring, string, from);
+        }
+      }
+
+      @Override
+      public void substr(final QueryWriter w, final Expression<String> string, final Expression<Number> from,
+          final Expression<Number> length) {
+        if (length == null) {
+          this.write(w, "substring", string, from);
+        } else {
+          this.write(w, "substring", string, from, length);
         }
       }
 
@@ -161,29 +216,31 @@ public class PostgreSQLDialect extends SQLDialect {
 
       @Override
       public void currentDate(final QueryWriter w) {
-        w.write("current_date");
+        w.write("getdate()");
       }
 
       @Override
       public void currentTime(final QueryWriter w) {
-        w.write("current_time");
+        w.write("convert(time, current_timestamp)");
       }
 
       @Override
       public void currentDateTime(final QueryWriter w) {
-        w.write("current_timestamp");
+        w.write("current timestamp");
       }
 
       @Override
       public void date(final QueryWriter w, final Expression<Date> datetime) {
+        w.write("convert(date, ");
         datetime.renderTo(w);
-        w.write("::date");
+        w.write(")");
       }
 
       @Override
       public void time(final QueryWriter w, final Expression<Date> datetime) {
+        w.write("convert(time, ");
         datetime.renderTo(w);
-        w.write("::time");
+        w.write(")");
       }
 
       @Override
@@ -192,6 +249,15 @@ public class PostgreSQLDialect extends SQLDialect {
         date.renderTo(w);
         w.write(" + ");
         time.renderTo(w);
+        w.write(")");
+      }
+
+      @Override
+      public void extract(final QueryWriter w, final Expression<Date> datetime, final DateTimeFieldExpression field) {
+        w.write("datepart(");
+        field.renderTo(w);
+        w.write(", ");
+        datetime.renderTo(w);
         w.write(")");
       }
 
