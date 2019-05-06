@@ -22,8 +22,8 @@ public class H2Dialect extends SQLDialect {
 
   @Override
   public IdentifierRenderer getIdentifierRenderer() {
-    // Identifier names are by default lower case in PostgreSQL
-    return new IdentifierRenderer("[a-z][a-z0-9_]*", "\"", "\"", false);
+    // Identifier names are by default upper case in H2
+    return new IdentifierRenderer("[A-Z][A-Z0-9_]*", "\"", "\"", false);
   }
 
   // Join rendering

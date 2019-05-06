@@ -108,15 +108,15 @@ public class PostgreSQLDialect extends SQLDialect {
           final List<OrderingTerm> ordering, final Expression<String> separator) {
         if (!versionIsAtLeast(9)) {
           throw new UnsupportedFeatureException("This PostgreSQL version (" + renderVersion()
-              + ") does not support the GROUP_CONCAT() function (string_agg()). Only available on PostgreSQL 9.0 or newer.");
+              + ") does not support the GROUP_CONCAT() function (string_agg()). Only available on PostgreSQL 9.0 or newer");
         }
         if (distinct) {
           throw new UnsupportedFeatureException(
-              "PostgreSQL does not support DISTINCT on the GROUP_CONCAT() function (string_agg()).");
+              "PostgreSQL does not support DISTINCT on the GROUP_CONCAT() function (string_agg())");
         }
         if (separator == null) {
           throw new UnsupportedFeatureException(
-              "PostgreSQL requires the separator to be specified on the GROUP_CONCAT() function (string_agg()).");
+              "PostgreSQL requires the separator to be specified on the GROUP_CONCAT() function (string_agg())");
         }
         w.write("string_agg(");
         value.renderTo(w);
@@ -153,7 +153,7 @@ public class PostgreSQLDialect extends SQLDialect {
           this.write(w, "strpos", string, substring);
         } else {
           throw new UnsupportedFeatureException(
-              "PostgreSQL does not support the parameter 'from' in the LOCATE function ('strpos' in PostgreSQL lingo).");
+              "PostgreSQL does not support the parameter 'from' in the LOCATE function ('strpos' in PostgreSQL lingo)");
         }
       }
 

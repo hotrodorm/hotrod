@@ -75,14 +75,14 @@ public class OracleDialect extends SQLDialect {
 
       @Override
       public void renderTopPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination cannot be rendered at the top.");
+        throw new UnsupportedFeatureException("Pagination cannot be rendered at the top");
       }
 
       @Override
       public void renderBottomPagination(final Integer offset, final Integer limit, final QueryWriter w) {
         if (!versionIsAtLeast(12, 1)) {
           throw new UnsupportedFeatureException(
-              "Pagination cannot be rendered at the bottom in this version of Oracle.");
+              "Pagination cannot be rendered at the bottom in this version of Oracle");
         }
         if (offset != null) {
           w.write("\nOFFSET " + offset + " ROWS");
@@ -114,7 +114,7 @@ public class OracleDialect extends SQLDialect {
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
         if (versionIsAtLeast(12, 1)) {
           throw new UnsupportedFeatureException(
-              "Pagination cannot be rendered in an enclosing way in this version of Oracle.");
+              "Pagination cannot be rendered in an enclosing way in this version of Oracle");
         }
         if (limit != null) {
           w.exitLevel();
@@ -148,10 +148,10 @@ public class OracleDialect extends SQLDialect {
           final List<OrderingTerm> ordering, final Expression<String> separator) {
         if (distinct) {
           throw new UnsupportedFeatureException(
-              "Oracle does not support DISTINCT on the GROUP_CONCAT() function (listagg()).");
+              "Oracle does not support DISTINCT on the GROUP_CONCAT() function (listagg())");
         }
         if (ordering == null || ordering.isEmpty()) {
-          throw new UnsupportedFeatureException("In Oracle GROUP_CONCAT() requires ordering columns.");
+          throw new UnsupportedFeatureException("In Oracle GROUP_CONCAT() requires ordering columns");
         }
         w.write("listagg(");
         value.renderTo(w);

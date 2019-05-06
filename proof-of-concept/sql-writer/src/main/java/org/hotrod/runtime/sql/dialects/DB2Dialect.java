@@ -63,7 +63,7 @@ public class DB2Dialect extends SQLDialect {
         if (offset != null) {
           if (!versionIsAtLeast(11, 1)) {
             throw new UnsupportedFeatureException("This version of DB2 (" + renderVersion()
-                + ") does not support the OFFSET clause. DB2 11.1 and newer do.");
+                + ") does not support the OFFSET clause. DB2 versions 11.1 and newer do");
           }
         }
         return PaginationType.BOTTOM;
@@ -71,7 +71,7 @@ public class DB2Dialect extends SQLDialect {
 
       @Override
       public void renderTopPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("In DB2 pagination cannot be rendered at the top.");
+        throw new UnsupportedFeatureException("In DB2 pagination cannot be rendered at the top");
       }
 
       @Override
@@ -79,7 +79,7 @@ public class DB2Dialect extends SQLDialect {
         if (offset != null) {
           if (!versionIsAtLeast(11, 1)) {
             throw new UnsupportedFeatureException("This version of DB2 (" + renderVersion()
-                + ") does not support the OFFSET clause. Support starts in DB2 11.1.");
+                + ") does not support the OFFSET clause. Support starts in DB2 11.1");
           }
         }
         if (offset != null) {
@@ -92,12 +92,12 @@ public class DB2Dialect extends SQLDialect {
 
       @Override
       public void renderBeginEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("In DB2 pagination cannot be rendered in an enclosing way.");
+        throw new UnsupportedFeatureException("In DB2 pagination cannot be rendered in an enclosing way");
       }
 
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("In DB2 pagination cannot be rendered in an enclosing way.");
+        throw new UnsupportedFeatureException("In DB2 pagination cannot be rendered in an enclosing way");
       }
 
     };
@@ -116,7 +116,7 @@ public class DB2Dialect extends SQLDialect {
           final List<OrderingTerm> ordering, final Expression<String> separator) {
         if (distinct) {
           throw new UnsupportedFeatureException(
-              "DB2 does not support DISTINCT on the GROUP_CONCAT() function (listagg()).");
+              "DB2 does not support DISTINCT on the GROUP_CONCAT() function (listagg())");
         }
         w.write("listagg(");
         value.renderTo(w);

@@ -129,15 +129,15 @@ public class SQLServerDialect extends SQLDialect {
           final List<OrderingTerm> ordering, final Expression<String> separator) {
         if (versionIsAtLeast(14)) { // (SQL Server 2017)
           throw new UnsupportedFeatureException("This SQL Server version (" + renderVersion()
-              + ") does not support the GROUP_CONCAT() function (string_agg()). It's available since version 14.0 (SQL Server 2017).");
+              + ") does not support the GROUP_CONCAT() function (string_agg()). It's available since version 14.0 (SQL Server 2017)");
         }
         if (distinct) {
           throw new UnsupportedFeatureException(
-              "SQL Server does not support DISTINCT on the GROUP_CONCAT() function (string_agg()).");
+              "SQL Server does not support DISTINCT on the GROUP_CONCAT() function (string_agg())");
         }
         if (separator == null) {
           throw new UnsupportedFeatureException(
-              "SQL Server requires the separator to be specified on the GROUP_CONCAT() function (string_agg()).");
+              "SQL Server requires the separator to be specified on the GROUP_CONCAT() function (string_agg())");
         }
         w.write("string_agg(");
         value.renderTo(w);
@@ -170,7 +170,7 @@ public class SQLServerDialect extends SQLDialect {
       public void round(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
         if (places == null) {
           throw new UnsupportedFeatureException(
-              "SQL Server requires the number of decimal places to be specified on the ROUND() function.");
+              "SQL Server requires the number of decimal places to be specified on the ROUND() function");
         }
         this.write(w, "round", x, places);
       }
@@ -179,7 +179,7 @@ public class SQLServerDialect extends SQLDialect {
       public void trunc(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
         if (places == null) {
           throw new UnsupportedFeatureException(
-              "SQL Server requires the number of decimal places to be specified on the TRUNC() function (round()).");
+              "SQL Server requires the number of decimal places to be specified on the TRUNC() function (round())");
         }
 
         this.write(w, "round", x, places, SQL.box(1));
@@ -206,10 +206,10 @@ public class SQLServerDialect extends SQLDialect {
       public void substr(final QueryWriter w, final Expression<String> string, final Expression<Number> from,
           final Expression<Number> length) {
         if (length == null) {
-          this.write(w, "substring", string, from);
-        } else {
-          this.write(w, "substring", string, from, length);
+          throw new UnsupportedFeatureException(
+              "SQL Server requires the length parameter to be be specified on the SUBSTR() function");
         }
+        this.write(w, "substring", string, from, length);
       }
 
       // Date/Time functions
