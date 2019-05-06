@@ -17,7 +17,9 @@ public class Exists extends Predicate {
   @Override
   public void renderTo(final QueryWriter w) {
     w.write("exists (\n");
+    w.enterLevel();
     this.subquery.renderTo(w);
+    w.exitLevel();
     w.write("\n)");
   }
 

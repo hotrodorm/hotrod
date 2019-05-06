@@ -131,13 +131,12 @@ abstract class AbstractSelect extends Query {
     // enclosing pagination - begin
 
     if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {
-      w.write("\n  ");
       this.sqlDialect.getPaginationRenderer().renderBeginEnclosingPagination(this.offset, this.limit, w);
     }
 
     // select
 
-    w.write("select");
+    w.write("SELECT");
 
     // distinct
 
@@ -160,7 +159,7 @@ abstract class AbstractSelect extends Query {
 
     if (this.baseTable != null) {
 
-      w.write("\nfrom " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.baseTable) + " "
+      w.write("\nFROM " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.baseTable) + " "
           + this.baseTable.getAlias());
 
       // joins
@@ -182,14 +181,14 @@ abstract class AbstractSelect extends Query {
       // where
 
       if (this.wherePredicate != null) {
-        w.write("\nwhere ");
+        w.write("\nWHERE ");
         this.wherePredicate.renderTo(w);
       }
 
       // group by
 
       if (this.groupBy != null && !this.groupBy.isEmpty()) {
-        w.write("\ngroup by ");
+        w.write("\nGROUP BY ");
         boolean first = true;
         for (Expression<?> expr : this.groupBy) {
           if (first) {
@@ -204,14 +203,14 @@ abstract class AbstractSelect extends Query {
       // having
 
       if (this.havingPredicate != null) {
-        w.write("\nhaving ");
+        w.write("\nHAVING ");
         this.havingPredicate.renderTo(w);
       }
 
       // order by
 
       if (this.orderingTerms != null && !this.orderingTerms.isEmpty()) {
-        w.write("\norder by ");
+        w.write("\nORDER BY ");
         boolean first = true;
         for (OrderingTerm term : this.orderingTerms) {
           if (first) {

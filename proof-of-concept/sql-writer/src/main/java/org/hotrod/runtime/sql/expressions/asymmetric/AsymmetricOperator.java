@@ -5,7 +5,7 @@ import org.hotrod.runtime.sql.QueryWriter;
 import org.hotrod.runtime.sql.expressions.Expression;
 import org.hotrod.runtime.sql.expressions.predicates.Predicate;
 
-public abstract class AsymmetricalOperator extends Predicate {
+public abstract class AsymmetricOperator extends Predicate {
 
   private static final int PRECEDENCE = 6;
 
@@ -13,7 +13,7 @@ public abstract class AsymmetricalOperator extends Predicate {
   private String operator;
   private ExecutableSelect subquery;
 
-  protected AsymmetricalOperator(final Expression<?> value, final String operator, final ExecutableSelect subquery) {
+  protected AsymmetricOperator(final Expression<?> value, final String operator, final ExecutableSelect subquery) {
     super(PRECEDENCE);
     this.value = value;
     this.operator = operator;
@@ -24,7 +24,9 @@ public abstract class AsymmetricalOperator extends Predicate {
   public void renderTo(final QueryWriter w) {
     super.renderInner(this.value, w);
     w.write(" " + this.operator + " (\n");
+    w.enterLevel();
     this.subquery.renderTo(w);
+    w.exitLevel();
     w.write("\n)");
   }
 

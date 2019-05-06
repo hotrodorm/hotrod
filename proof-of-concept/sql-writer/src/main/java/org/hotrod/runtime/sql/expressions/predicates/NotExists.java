@@ -17,7 +17,9 @@ public class NotExists extends Predicate {
   @Override
   public void renderTo(final QueryWriter w) {
     w.write("not exists (\n");
+    w.enterLevel();
     this.subquery.renderTo(w);
+    w.exitLevel();
     w.write("\n)");
   }
 

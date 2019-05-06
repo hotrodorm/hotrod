@@ -102,9 +102,11 @@ public class OracleDialect extends SQLDialect {
         }
         if (offset != null) {
           w.write("SELECT * FROM (");
+          w.enterLevel();
           w.write("\n");
         }
         w.write("SELECT x.*, rownum as \"" + HOTROD_ROWNUM_COLUMN + "\" FROM (");
+        w.enterLevel();
         w.write("\n");
       }
 
@@ -115,13 +117,16 @@ public class OracleDialect extends SQLDialect {
               "Pagination cannot be rendered in an enclosing way in this version of Oracle.");
         }
         if (limit != null) {
+          w.exitLevel();
           w.write("\n");
           w.write(") x WHERE rownum <= " + (offset != null ? "" + offset + " + " : "") + limit);
         } else {
+          w.exitLevel();
           w.write("\n");
           w.write(") x");
         }
         if (offset != null) {
+          w.exitLevel();
           w.write("\n");
           w.write(") y WHERE \"" + HOTROD_ROWNUM_COLUMN + "\" > " + offset);
         }
