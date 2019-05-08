@@ -4,6 +4,16 @@
 <hotrod>
 
   <generators>
+
+    <mybatis-spring>
+      <daos gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" vo-suffix="" dao-suffix="DAO" />
+      <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
+      <spring beans-file="gen/spring-hotrod2.xml" />
+      <mybatis-configuration-template file="mybatis-config-template.xml" />
+      <select-generation temp-view-base-name="mybatis_temp_view" />
+    </mybatis-spring>
+    
+    <?comment
     <mybatis>
       <daos gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" />
 		  <!-- <daos gen-base-dir="gen/empusamb/daos" dao-package="empusa.test.generation.dao" 
@@ -14,6 +24,8 @@
       <session-factory singleton-full-class-name="sessionfactory.DatabaseSessionFactory" />
       <select-generation temp-view-base-name="mybatis_temp_view" />
     </mybatis>
+    ?>
+    
   </generators>
 
   <table name="config_values" /> <!-- No PK -->
