@@ -3,8 +3,8 @@ package tests;
 import java.util.List;
 import java.util.Map;
 
-import org.hotrod.runtime.sql.SQL;
-import org.hotrod.runtime.sql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
+import org.hotrod.runtime.livesql.SQL;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
 
 import gen.database.metadata.Department;
 import gen.database.metadata.Employee;

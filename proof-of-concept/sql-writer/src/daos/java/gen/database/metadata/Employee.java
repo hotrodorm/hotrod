@@ -1,8 +1,8 @@
 package gen.database.metadata;
 
-import org.hotrod.runtime.sql.metadata.NumberColumn;
-import org.hotrod.runtime.sql.metadata.StringColumn;
-import org.hotrod.runtime.sql.metadata.Table;
+import org.hotrod.runtime.livesql.metadata.NumberColumn;
+import org.hotrod.runtime.livesql.metadata.StringColumn;
+import org.hotrod.runtime.livesql.metadata.Table;
 
 public class Employee extends Table {
 

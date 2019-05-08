@@ -1,8 +1,8 @@
 package gen.database.metadata.schema2;
 
-import org.hotrod.runtime.sql.metadata.NumberColumn;
-import org.hotrod.runtime.sql.metadata.Table;
-import org.hotrod.runtime.sql.metadata.DateColumn;
+import org.hotrod.runtime.livesql.metadata.DateColumn;
+import org.hotrod.runtime.livesql.metadata.NumberColumn;
+import org.hotrod.runtime.livesql.metadata.Table;
 
 public class Vacation extends Table {
 

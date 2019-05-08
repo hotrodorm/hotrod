@@ -1,13 +1,13 @@
 package tests;
 
-import org.hotrod.runtime.sql.QueryWriter;
-import org.hotrod.runtime.sql.QueryWriter.PreparedQuery;
-import org.hotrod.runtime.sql.SQL;
-import org.hotrod.runtime.sql.dialects.PostgreSQLDialect;
-import org.hotrod.runtime.sql.expressions.Constant;
-import org.hotrod.runtime.sql.expressions.predicates.Equal;
-import org.hotrod.runtime.sql.expressions.predicates.NotEqual;
-import org.hotrod.runtime.sql.expressions.predicates.PredicateBuilder;
+import org.hotrod.runtime.livesql.QueryWriter;
+import org.hotrod.runtime.livesql.SQL;
+import org.hotrod.runtime.livesql.QueryWriter.PreparedQuery;
+import org.hotrod.runtime.livesql.dialects.PostgreSQLDialect;
+import org.hotrod.runtime.livesql.expressions.Constant;
+import org.hotrod.runtime.livesql.expressions.predicates.Equal;
+import org.hotrod.runtime.livesql.expressions.predicates.NotEqual;
+import org.hotrod.runtime.livesql.expressions.predicates.PredicateBuilder;
 
 public class TestPredicateBuilder {
 
