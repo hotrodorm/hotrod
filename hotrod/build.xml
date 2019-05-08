@@ -19,7 +19,7 @@
   <property name="eclipseplugin.build.dir" value="build/eclipseplugin" />
   <property name="test.build.dir" value="build/test" />
   <property name="buildinfo.build.dir" value="build/buildinfo" />
-  <property name="runtime.build.dir" value="build/test" />
+  <property name="runtime.build.dir" value="build/runtime" />
   <property name="tools.build.dir" value="build/tools" />
   <property name="xsd.build.dir" value="build/xsd" />
   <property name="dist.dir" value="dist" />
