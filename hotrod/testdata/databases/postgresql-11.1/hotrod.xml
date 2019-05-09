@@ -41,7 +41,10 @@
   </table>
   <table name="log" />
 
-  <table name="account" /> <!-- identity by default PK -->
+  <table name="account" > <!-- identity by default PK -->
+    <column name="active" java-name="mainStatus" />
+  </table>
+  
   <table name="transaction" /> <!-- identity by default PK -->
 
   <table name="state_branch" />

@@ -6,6 +6,8 @@ import org.hotrod.runtime.livesql.QueryWriter;
 
 public class Constant<T> extends Expression<T> {
 
+  private static final int MAX_LITERAL_STRING_LENGTH = 250;
+
   private static final int PRECEDENCE = 1;
 
   // Control characters (x01 - x1f)
@@ -33,7 +35,11 @@ public class Constant<T> extends Expression<T> {
       this.parameterize = true;
     } else if (this.isString(value)) {
       String s = (String) value;
-      this.parameterize = s.matches(SQL_INJECTION_PATTERN);
+      if (s.length() > MAX_LITERAL_STRING_LENGTH) {
+        this.parameterize = true;
+      } else {
+        this.parameterize = s.matches(SQL_INJECTION_PATTERN);
+      }
     } else {
       this.parameterize = false;
     }
@@ -43,25 +49,25 @@ public class Constant<T> extends Expression<T> {
 
   // Static initializers
 
-   public static Constant<String> from(final String v) {
-   return new Constant<String>(v, JDBCType.VARCHAR);
-   }
-  
-   public static Constant<String> from(final Character v) {
-   return new Constant<String>("" + v, JDBCType.VARCHAR);
-   }
-  
-   public static Constant<Number> from(final Number v) {
-   return new Constant<Number>(v, JDBCType.NUMERIC);
-   }
-  
-   public static Constant<Boolean> from(final Boolean v) {
-   return new Constant<Boolean>(v, JDBCType.BOOLEAN);
-   }
-  
-   public static Constant<Date> from(final Date v) {
-   return new Constant<Date>(v, JDBCType.TIMESTAMP);
-   }
+  public static Constant<String> from(final String v) {
+    return new Constant<String>(v, JDBCType.VARCHAR);
+  }
+
+  public static Constant<String> from(final Character v) {
+    return new Constant<String>("" + v, JDBCType.VARCHAR);
+  }
+
+  public static Constant<Number> from(final Number v) {
+    return new Constant<Number>(v, JDBCType.NUMERIC);
+  }
+
+  public static Constant<Boolean> from(final Boolean v) {
+    return new Constant<Boolean>(v, JDBCType.BOOLEAN);
+  }
+
+  public static Constant<Date> from(final Date v) {
+    return new Constant<Date>(v, JDBCType.TIMESTAMP);
+  }
 
   // public static Constant<T> from(final T v) {
   // if (v == null) {

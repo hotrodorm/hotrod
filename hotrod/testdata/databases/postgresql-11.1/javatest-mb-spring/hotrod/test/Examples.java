@@ -26,9 +26,9 @@ public class Examples {
     // dao.createSelect()
 
     List<Map<String, Object>> rows = dao //
-        .createSelect(a.createdOn, a.name, a.currentBalance, a.active, a.id, a.type) //
+        .createSelect(a.createdOn, a.name, a.currentBalance, a.mainStatus, a.id, a.type) //
         .from(a) //
-        .where(a.active.eq(1)) //
+        .where(a.mainStatus.eq(1)) //
         .and(a.currentBalance.lt(100)) //
         .or(a.type.ne("S'AV")) //
         .orderBy(a.createdOn.asc()) //
