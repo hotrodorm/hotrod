@@ -47,39 +47,39 @@ public class SQL {
 
   // select
 
-  public static SelectColumns createSelect() {
-    return new SelectColumns(resolveSQLDialect(), false);
-  }
-
-  public static SelectColumns createSelect(final ResultSetColumn... resultSetColumns) {
-    return new SelectColumns(resolveSQLDialect(), false, resultSetColumns);
-  }
-
-  public static SelectColumns createSubquery() {
-    return new SelectColumns(resolveSQLDialect(), false);
-  }
-
-  public static SelectColumns createSubquery(final ReferenceableExpression... referenceableExpressions) {
-    return new SelectColumns(resolveSQLDialect(), false, referenceableExpressions);
-  }
-
-  // select distinct
-
-  public static SelectColumns createSelectDistinct() {
-    return new SelectColumns(resolveSQLDialect(), true);
-  }
-
-  public static SelectColumns createSelectDistinct(final ResultSetColumn... resultSetColumns) {
-    return new SelectColumns(resolveSQLDialect(), true, resultSetColumns);
-  }
-
-  public static SelectColumns createSubqueryDistinct() {
-    return new SelectColumns(resolveSQLDialect(), true);
-  }
-
-  public static SelectColumns createSubqueryDistinct(final ReferenceableExpression... referenceableExpressions) {
-    return new SelectColumns(resolveSQLDialect(), true, referenceableExpressions);
-  }
+//  public static SelectColumns createSelect() {
+//    return new SelectColumns(resolveSQLDialect(), false);
+//  }
+//
+//  public static SelectColumns createSelect(final ResultSetColumn... resultSetColumns) {
+//    return new SelectColumns(resolveSQLDialect(), false, resultSetColumns);
+//  }
+//
+//  public static SelectColumns createSubquery() {
+//    return new SelectColumns(resolveSQLDialect(), false);
+//  }
+//
+//  public static SelectColumns createSubquery(final ReferenceableExpression... referenceableExpressions) {
+//    return new SelectColumns(resolveSQLDialect(), false, referenceableExpressions);
+//  }
+//
+//  // select distinct
+//
+//  public static SelectColumns createSelectDistinct() {
+//    return new SelectColumns(resolveSQLDialect(), true);
+//  }
+//
+//  public static SelectColumns createSelectDistinct(final ResultSetColumn... resultSetColumns) {
+//    return new SelectColumns(resolveSQLDialect(), true, resultSetColumns);
+//  }
+//
+//  public static SelectColumns createSubqueryDistinct() {
+//    return new SelectColumns(resolveSQLDialect(), true);
+//  }
+//
+//  public static SelectColumns createSubqueryDistinct(final ReferenceableExpression... referenceableExpressions) {
+//    return new SelectColumns(resolveSQLDialect(), true, referenceableExpressions);
+//  }
 
   // Tuples
 
@@ -302,18 +302,6 @@ public class SQL {
   // }
   //
   // //
-
-  // SQL translator resolver
-
-  private static SQLDialect sqlDialect = null;
-
-  private static SQLDialect resolveSQLDialect() {
-    if (sqlDialect == null) {
-      sqlDialect = new PostgreSQLDialect("PostgreSQL", "9.4.5", 9, 4);
-      // sqlDialect = new OracleDialect("Oracle", "6.2", 6, 2);
-    }
-    return sqlDialect;
-  }
 
   // Boxing scalar values
 

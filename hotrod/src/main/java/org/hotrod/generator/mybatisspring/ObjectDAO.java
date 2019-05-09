@@ -331,6 +331,10 @@ public class ObjectDAO extends GeneratableObject {
       imports.newLine();
     }
 
+    imports.add("org.hotrod.runtime.livesql.SelectColumns");
+    imports.add("org.hotrod.runtime.livesql.expressions.ResultSetColumn");
+
+    imports.add("org.hotrod.runtime.livesql.dialects.SQLDialect");
     imports.add("org.hotrod.runtime.livesql.metadata.NumberColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.StringColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.DateTimeColumn");
@@ -352,9 +356,35 @@ public class ObjectDAO extends GeneratableObject {
     println("  private static final long serialVersionUID = 1L;");
     println();
 
-    println("  private SqlSession sqlSession;\n" + "\n" + "  // Bean setter\n" + "\n"
-        + "  public void setSqlSession(final SqlSession sqlSession) {\n" + "    this.sqlSession = sqlSession;\n"
-        + "  }\n" + "\n");
+    // Spring properties
+
+    println("  private SqlSession sqlSession;");
+    println("  private SQLDialect sqlDialect;");
+    println();
+
+    println("  // Bean setters");
+    println();
+    println("  public void setSqlSession(final SqlSession sqlSession) {");
+    println("    this.sqlSession = sqlSession;");
+    println("  }");
+    println();
+    println("  public void setSqlDialect(final SQLDialect sqlDialect) {");
+    println("    this.sqlDialect = sqlDialect;");
+    println("  }");
+    println();
+
+    // Live SQL
+
+    println("  // Live SQL");
+    println("");
+    println("  public SelectColumns createSelect() {");
+    println("    return new SelectColumns(this.sqlDialect, this.sqlSession, false);");
+    println("  }");
+    println("");
+    println("  public SelectColumns createSelect(final ResultSetColumn... resultSetColumns) {");
+    println("    return new SelectColumns(this.sqlDialect, this.sqlSession, false, resultSetColumns);");
+    println("  }");
+    println("");
 
   }
 
@@ -1372,7 +1402,9 @@ public class ObjectDAO extends GeneratableObject {
       String liveSQLColumnType = toLiveSQLType(javaType);
       String javaMembername = cm.getId().getJavaMemberName();
       String colName = cm.getId().getCanonicalSQLName();
-      println("      this." + javaMembername + " = new " + liveSQLColumnType + "(this, \"" + colName + "\");");
+      String property = cm.getId().getJavaMemberName();
+      println("      this." + javaMembername + " = new " + liveSQLColumnType + "(this, \""
+          + JUtils.escapeJavaString(colName) + "\", \"" + JUtils.escapeJavaString(property) + "\");");
     }
 
     println("    }");

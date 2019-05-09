@@ -82,22 +82,22 @@ public class QueryWriter {
     return sqlDialect;
   }
 
-  public PreparedQuery getPreparedQuery() {
+  public LiveSQL getPreparedQuery() {
     LinkedHashMap<String, Object> p = new LinkedHashMap<String, Object>();
     for (String name : this.params.keySet()) {
       p.put(name, this.params.get(name));
     }
-    return new PreparedQuery(this.sb.toString(), p);
+    return new LiveSQL(this.sb.toString(), p);
   }
 
   // Prepared Query
 
-  public static class PreparedQuery {
+  public static class LiveSQL {
 
     private String sql;
     private LinkedHashMap<String, Object> parameters;
 
-    public PreparedQuery(final String sql, final LinkedHashMap<String, Object> parameters) {
+    public LiveSQL(final String sql, final LinkedHashMap<String, Object> parameters) {
       this.sql = sql;
       this.parameters = parameters;
     }
@@ -108,6 +108,13 @@ public class QueryWriter {
 
     public LinkedHashMap<String, Object> getParameters() {
       return parameters;
+    }
+
+    public LinkedHashMap<String, Object> getConsolidatedParameters() {
+      LinkedHashMap<String, Object> c = new LinkedHashMap<String, Object>();
+      c.putAll(this.parameters);
+      c.put("sql", this.sql);
+      return c;
     }
 
   }

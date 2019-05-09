@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
@@ -16,8 +17,8 @@ public class SelectColumns implements ExecutableSelect {
 
   // Constructor
 
-  SelectColumns(final SQLDialect sqlDialect, final boolean distinct, final ResultSetColumn... resultSetColumns) {
-    Select s = new Select(sqlDialect, distinct);
+  public SelectColumns(final SQLDialect sqlDialect, final SqlSession sqlSession, final boolean distinct, final ResultSetColumn... resultSetColumns) {
+    Select s = new Select(sqlDialect, distinct, sqlSession);
     s.setResultSetColumns(Arrays.asList(resultSetColumns));
     this.select = s;
   }

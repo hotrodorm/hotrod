@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hotrod.runtime.livesql.QueryWriter.PreparedQuery;
+import org.apache.ibatis.session.SqlSession;
+import org.hotrod.runtime.livesql.QueryWriter.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.exceptions.DuplicateAliasException;
@@ -28,9 +29,12 @@ abstract class AbstractSelect extends Query {
   private Integer offset = null;
   private Integer limit = null;
 
-  AbstractSelect(final SQLDialect sqlDialect, final boolean distinct) {
+  private SqlSession sqlSession;
+
+  AbstractSelect(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession) {
     super(sqlDialect);
     this.distinct = distinct;
+    this.sqlSession = sqlSession;
   }
 
   protected abstract void writeColumns(QueryWriter w);
@@ -82,7 +86,7 @@ abstract class AbstractSelect extends Query {
 
   // Execute
 
-  private PreparedQuery prepareQuery() {
+  private LiveSQL prepareQuery() {
     QueryWriter w = new QueryWriter(this.sqlDialect);
     renderTo(w);
     return w.getPreparedQuery();
@@ -239,7 +243,7 @@ abstract class AbstractSelect extends Query {
 
   public List<Map<String, Object>> execute() {
 
-    PreparedQuery q = this.prepareQuery();
+    LiveSQL q = this.prepareQuery();
 
     System.out.println("--- SQL ---");
     System.out.println(q.getSQL());
@@ -250,6 +254,16 @@ abstract class AbstractSelect extends Query {
       System.out.println(" * " + name + (value == null ? "" : " (" + value.getClass().getName() + ")") + ": " + value);
     }
     System.out.println("------------------");
+
+    List<Map<String, Object>> rows = this.sqlSession.selectList("livesql.select", q.getConsolidatedParameters());
+    
+    System.out.println("rows[" + (rows == null ? "null" : rows.size()) + "]:");
+
+    if (rows != null) {
+      for (Map<String, Object> r : rows) {
+        System.out.println("row: " + r);
+      }
+    }
 
     return null;
 

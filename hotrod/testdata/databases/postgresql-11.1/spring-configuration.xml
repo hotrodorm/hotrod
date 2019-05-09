@@ -25,7 +25,7 @@
     <property name="maxIdle" value="5" />
     <property name="maxActive" value="10" />
   </bean> 
- 
+
   <!-- Main Spring beans -->
 
   <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -37,12 +37,19 @@
     <constructor-arg index="0" ref="sqlSessionFactory" />
   </bean>
 
+  <bean id="sqlDialectFactory" class="org.hotrod.runtime.livesql.dialects.SQLDialectFactory">
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+
   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
     <property name="dataSource" ref="dataSource" />
   </bean>
 
   <!-- DAOs -->
-  
+
+  <import resource="../../../gen/spring-hotrod2.xml"/>
+
+<?comment  
   <bean id="accountDAO" class="hotrod.test.generation.primitives.AccountDAO">
     <property name="sqlSession" ref="sqlSession" />
   </bean>
@@ -50,6 +57,8 @@
   <bean id="txBranchDAO" class="hotrod.test.generation.primitives.TxBranchDAO">
     <property name="sqlSession" ref="sqlSession" />
   </bean>
+?>
+
 
   <!-- Additional beans -->
 

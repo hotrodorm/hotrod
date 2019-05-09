@@ -50,6 +50,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
   private LinkedHashMap<EnumDataSetMetadata, EnumClass> enumClasses = new LinkedHashMap<EnumDataSetMetadata, EnumClass>();
   private MyBatisConfiguration myBatisConfig;
   private SpringBeansFile springBeansFile;
+  private LiveSQLMapper liveSQLMapper;
 
   private EntityDAORegistry entityDAORegistry = new EntityDAORegistry();
 
@@ -125,8 +126,13 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
       }
     }
 
+    // Prepare the Live SQL Mapper file
+
+    this.liveSQLMapper = new LiveSQLMapper(layout);
+
     // Prepare MyBatis Configuration File list
 
+    this.myBatisConfig.addSourceFile(this.liveSQLMapper.getFileName());
     for (Mapper mapper : this.mappers.values()) {
       String sourceFile = mapper.getRuntimeSourceFileName();
       this.myBatisConfig.addSourceFile(sourceFile);
@@ -294,6 +300,10 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
     for (EnumClass ec : this.enumClasses.values()) {
       ec.generate(fileGenerator);
     }
+
+    // Live SQL mapper
+
+    this.liveSQLMapper.generate(fileGenerator);
 
     // MyBatis Main configuration file
 

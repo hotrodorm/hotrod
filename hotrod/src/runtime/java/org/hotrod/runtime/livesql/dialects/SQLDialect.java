@@ -7,7 +7,7 @@ public abstract class SQLDialect {
   private int databaseMajorVersion;
   private int databaseMinorVersion;
 
-  public SQLDialect(final String databaseName, final String databaseVersion, final int databaseMajorVersion,
+  protected SQLDialect(final String databaseName, final String databaseVersion, final int databaseMajorVersion,
       final int databaseMinorVersion) {
     this.databaseName = databaseName;
     this.databaseVersion = databaseVersion;

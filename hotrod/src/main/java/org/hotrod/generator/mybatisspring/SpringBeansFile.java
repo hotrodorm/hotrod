@@ -66,9 +66,10 @@ public class SpringBeansFile {
     for (ObjectDAO dao : this.daos) {
       String className = SUtils.lowerFirst(dao.getClassName());
       String fullClassName = dao.getFullClassName();
-      w.write("  <bean id=\"" + className + "\" class=\"" + fullClassName + "\">\n" //
-          + "    <property name=\"sqlSession\" ref=\"sqlSession\" />\n" //
-          + "  </bean>\n" //
+      w.write("  <bean id=\"" + className + "\" class=\"" + fullClassName + "\">\n");
+      w.write("    <property name=\"sqlSession\" ref=\"sqlSession\" />\n");
+      w.write("    <property name=\"sqlDialect\" value=\"#{sqlDialectFactory.sqlDialect}\" />\n");
+      w.write("  </bean>\n" //
           + "\n" //
           + "");
     }
