@@ -46,7 +46,6 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.Selectable;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
-import org.hotrod.runtime.tx.TxManager;
 import org.hotrod.runtime.util.ListWriter;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.GenUtils;
@@ -173,6 +172,8 @@ public class ObjectDAO extends GeneratableObject {
 
         writeOrderingEnum();
 
+        writeMetadata();
+
       }
 
       if (this.tag != null) {
@@ -244,9 +245,7 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("java.util.List");
     imports.newLine();
     imports.add("org.apache.ibatis.session.SqlSession");
-    imports.add("org.apache.ibatis.session.SqlSessionFactory");
     imports.newLine();
-    imports.add(TxManager.class);
 
     if (this.metadata.getVersionControlMetadata() != null) {
       imports.add(DaoForUpdate.class);
@@ -316,12 +315,12 @@ public class ObjectDAO extends GeneratableObject {
       SelectMethodReturnType rt = sm.getReturnType(voPackage);
       imports.add(rt.getVOFullClassName());
     }
-
+    if (!this.metadata.getSelectsMetadata().isEmpty()) {
+      imports.newLine();
+    }
     // imports.comment("[ selects done. ]");
-    imports.newLine();
 
     if (this.usesConverters() || hasFKPointingToEnum()) {
-
       imports.add("java.sql.SQLException");
       imports.add("java.sql.CallableStatement");
       imports.add("java.sql.PreparedStatement");
@@ -329,10 +328,17 @@ public class ObjectDAO extends GeneratableObject {
       imports.add("org.apache.ibatis.type.JdbcType");
       imports.add("org.apache.ibatis.type.TypeHandler");
       imports.add("org.hotrod.runtime.converter.TypeConverter");
-
       imports.newLine();
-
     }
+
+    imports.add("org.hotrod.runtime.livesql.metadata.NumberColumn");
+    imports.add("org.hotrod.runtime.livesql.metadata.StringColumn");
+    imports.add("org.hotrod.runtime.livesql.metadata.DateTimeColumn");
+    imports.add("org.hotrod.runtime.livesql.metadata.BooleanColumn");
+    imports.add("org.hotrod.runtime.livesql.metadata.ObjectColumn");
+    imports.add("org.hotrod.runtime.livesql.metadata.Table");
+    imports.add("org.hotrod.runtime.livesql.metadata.View");
+    imports.newLine();
 
     this.w.write(imports.render());
 
@@ -369,7 +375,7 @@ public class ObjectDAO extends GeneratableObject {
   private void selectByUniqueKey(final MyBatisSpringGenerator mg, final KeyMetadata key, final String method,
       final String mapperQuery) throws UnresolvableDataTypeException, IOException {
     String paramsSignature = toParametersSignature(key, mg);
-    String voc = this.vo.getClassName();
+    String voc = this.vo.getFullClassName();
 
     print("  public " + voc + " " + method + "(");
     print(paramsSignature);
@@ -484,13 +490,13 @@ public class ObjectDAO extends GeneratableObject {
     println("  // select by example (with ordering)");
     println();
 
-    println("  public List<" + this.vo.getClassName() + "> selectByExample(final " + this.vo.getClassName()
-        + " example, final " + this.getOrderByClassName() + "... orderBies)");
+    String voClassName = this.vo.getFullClassName();
+    println("  public List<" + voClassName + "> selectByExample(final " + voClassName + " example, final "
+        + this.getOrderByClassName() + "... orderBies)");
     print("      ");
     println("{");
-    println("    DaoWithOrder<" + this.vo.getClassName() + ", " + this.getOrderByClassName() + "> dwo = //");
-    println("        new DaoWithOrder<" + this.vo.getClassName() + ", " + this.getOrderByClassName()
-        + ">(example, orderBies);");
+    println("    DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + "> dwo = //");
+    println("        new DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + ">(example, orderBies);");
     println("    return this.sqlSession.selectList(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo);");
     println("  }");
     println();
@@ -552,8 +558,8 @@ public class ObjectDAO extends GeneratableObject {
             String callParameters = renderCallParameters(fkm);
 
             String selectMethod = fkm.pointsToPK() ? SELECT_BY_PK_METHOD : dao.getSelectByUI(fkm.getRemote());
-            println(
-                "    public " + vo.getClassName() + " " + selectByCols + "(final " + this.vo.getClassName() + " vo) {");
+            String voClassName = this.vo.getFullClassName();
+            println("    public " + vo.getClassName() + " " + selectByCols + "(final " + voClassName + " vo) {");
             println("      return " + dao.getClassName() + "." + selectMethod + "(" + callParameters + ");");
             println("    }");
             println();
@@ -698,8 +704,9 @@ public class ObjectDAO extends GeneratableObject {
 
           String selectByCols = dao.getSelectByColumns(tfk.getRemote());
 
-          println("    public List<" + vo.getClassName() + "> " + selectByCols + "(final " + this.vo.getClassName()
-              + " vo, final " + dao.getOrderByClassName() + "... orderBies)");
+          String voClassName = this.vo.getFullClassName();
+          println("    public List<" + vo.getClassName() + "> " + selectByCols + "(final " + voClassName + " vo, final "
+              + dao.getOrderByClassName() + "... orderBies)");
           println("        {");
           println("      " + vo.getClassName() + " example = new " + vo.getClassName() + "();");
 
@@ -775,15 +782,16 @@ public class ObjectDAO extends GeneratableObject {
     println("  // insert");
     println();
 
+    String voClassName = this.vo.getFullClassName();
     if (extraInsert) {
-      print("  public int insert(final " + this.vo.getClassName() + " vo) ");
+      print("  public int insert(final " + voClassName + " vo) ");
       println("{");
       println("    return insert(vo, false);");
       println("  }");
       println();
     }
 
-    print("  public int insert(final " + this.vo.getClassName() + " vo");
+    print("  public int insert(final " + voClassName + " vo");
     if (extraInsert) {
       print(", final boolean retrieveDefaults");
     }
@@ -859,7 +867,8 @@ public class ObjectDAO extends GeneratableObject {
   private void writeInsertIntegrated(final boolean integratesSequences, final boolean integratesIdentities,
       final boolean extraInsert) throws IOException {
     if (this.generator.getAdapter().integratesUsingQuery()) {
-      println("    " + this.vo.getClassName() + " values = this.sqlSession.selectOne(id, vo);");
+      String voClassName = this.vo.getFullClassName();
+      println("    " + voClassName + " values = this.sqlSession.selectOne(id, vo);");
       println("    int rows = 1;");
       for (ColumnMetadata cm : this.metadata.getColumns()) {
         String prop = cm.getId().getJavaMemberName();
@@ -878,7 +887,8 @@ public class ObjectDAO extends GeneratableObject {
   }
 
   private void writeSequencesPreFetch() throws IOException {
-    println("    " + this.vo.getClassName() + " sequences = this.sqlSession.selectOne(\""
+    String voClassName = this.vo.getFullClassName();
+    println("    " + voClassName + " sequences = this.sqlSession.selectOne(\""
         + this.mapper.getFullMapperIdSequencesPreFetch() + "\");");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (cm.getSequenceId() != null) {
@@ -889,7 +899,8 @@ public class ObjectDAO extends GeneratableObject {
   }
 
   private void writeIdentitiesPostFetch() throws IOException {
-    println("    " + this.vo.getClassName() + " identities = this.sqlSession.selectOne(\""
+    String voClassName = this.vo.getFullClassName();
+    println("    " + voClassName + " identities = this.sqlSession.selectOne(\""
         + this.mapper.getFullMapperIdIdentitiesPostFetch() + "\");");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       if (cm.getAutogenerationType() != null && cm.getAutogenerationType().isIdentity()) {
@@ -930,20 +941,21 @@ public class ObjectDAO extends GeneratableObject {
       println("  // update by PK");
       println();
 
+      String voClassName = this.vo.getFullClassName();
       if (useVersionControl) {
         VersionControlMetadata vcm = this.metadata.getVersionControlMetadata();
         ColumnMetadata cm = vcm.getColumnMetadata();
         PropertyType pt = cm.getType();
         ValueRange range = pt.getValueRange();
-        print("  public int " + UPDATE_BY_PK_METHOD + "(final " + this.vo.getClassName() + " vo) ");
+        print("  public int " + UPDATE_BY_PK_METHOD + "(final " + voClassName + " vo) ");
         println("{");
         println("    long currentVersion = vo." + cm.getId().getJavaMemberName() + ";");
 
         String minValue = renderNumericLiteral(range.getMinValue(), cm.getType().getJavaClassName());
         String maxValue = renderNumericLiteral(range.getMaxValue(), cm.getType().getJavaClassName());
 
-        println("    DaoForUpdate<" + this.vo.getClassName() + "> u = new DaoForUpdate<" + this.vo.getClassName()
-            + ">(vo, currentVersion, " + minValue + ", " + maxValue + ");");
+        println("    DaoForUpdate<" + voClassName + "> u = new DaoForUpdate<" + voClassName + ">(vo, currentVersion, "
+            + minValue + ", " + maxValue + ");");
         println("    int rows = this.sqlSession.update(\"" + this.mapper.getFullMapperIdUpdateByPK() + "\", u);");
         println("    if (rows != 1) {");
         println("      throw new StaleDataException(\"Could not update row on table "
@@ -954,7 +966,7 @@ public class ObjectDAO extends GeneratableObject {
             + ") u.getNextVersionValue();");
         println("    return rows;");
       } else {
-        print("  public int " + UPDATE_BY_PK_METHOD + "(final " + this.vo.getClassName() + " vo) ");
+        print("  public int " + UPDATE_BY_PK_METHOD + "(final " + voClassName + " vo) ");
         println("{");
         for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
           println("    if (vo." + cm.getId().getJavaMemberName() + " == null) return 0;");
@@ -971,7 +983,8 @@ public class ObjectDAO extends GeneratableObject {
   private void writeInsertByExample() throws IOException {
     println("  // insert by example");
     println();
-    print("  public int insertByExample(final " + this.vo.getClassName() + " example) ");
+    String voClassName = this.vo.getFullClassName();
+    print("  public int insertByExample(final " + voClassName + " example) ");
     println("{");
     println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExample() + "\", example);");
     println("  }");
@@ -982,10 +995,11 @@ public class ObjectDAO extends GeneratableObject {
   private void writeUpdateByExample() throws IOException {
     println("  // update by example");
     println();
-    println("  public int updateByExample(final " + this.vo.getClassName() + " example, final " + this.vo.getClassName()
-        + " updateValues) {");
-    println("    UpdateByExampleDao<" + this.vo.getClassName() + "> fvd = //");
-    println("      new UpdateByExampleDao<" + this.vo.getClassName() + ">(example, updateValues);");
+    String voClassName = this.vo.getFullClassName();
+    println(
+        "  public int updateByExample(final " + voClassName + " example, final " + voClassName + " updateValues) {");
+    println("    UpdateByExampleDao<" + voClassName + "> fvd = //");
+    println("      new UpdateByExampleDao<" + voClassName + ">(example, updateValues);");
     println("    return this.sqlSession.update(\"" + this.mapper.getFullMapperIdUpdateByExample() + "\", fvd);");
     println("  }");
     println();
@@ -1005,10 +1019,11 @@ public class ObjectDAO extends GeneratableObject {
       println("  // delete by PK");
       println();
 
+      String voClassName = this.vo.getFullClassName();
       if (useVersionControl) {
         VersionControlMetadata vcm = this.metadata.getVersionControlMetadata();
         ColumnMetadata cm = vcm.getColumnMetadata();
-        print("  public int " + DELETE_BY_PK_METHOD + "(final " + this.vo.getClassName() + " vo) ");
+        print("  public int " + DELETE_BY_PK_METHOD + "(final " + voClassName + " vo) ");
         println("{");
         println("    int rows = this.sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByPK() + "\", vo);");
         println("    if (rows != 1) {");
@@ -1019,7 +1034,7 @@ public class ObjectDAO extends GeneratableObject {
         println("    return rows;");
         println("  }");
       } else {
-        print("  public int " + DELETE_BY_PK_METHOD + "(final " + this.vo.getClassName() + " vo) ");
+        print("  public int " + DELETE_BY_PK_METHOD + "(final " + voClassName + " vo) ");
         println("{");
         for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
           println("    if (vo." + cm.getId().getJavaMemberName() + " == null) return 0;");
@@ -1034,7 +1049,8 @@ public class ObjectDAO extends GeneratableObject {
   private void writeDeleteByExample() throws IOException {
     println("  // delete by example");
     println();
-    println("  public int deleteByExample(final " + this.vo.getClassName() + " example) {");
+    String voClassName = this.vo.getFullClassName();
+    println("  public int deleteByExample(final " + voClassName + " example) {");
     println("    return this.sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByExample() + "\", example);");
     println("  }");
     println();
@@ -1292,6 +1308,110 @@ public class ObjectDAO extends GeneratableObject {
     println();
     println("  }");
     println();
+  }
+
+  // TODO: Nothing to do. Just a marker
+
+  private void writeMetadata() throws IOException {
+
+    String className = this.metadata.getId().getJavaClassName();
+    String type = this.isTable() ? "Table" : "View";
+
+    String catalog = this.metadata.getId().getCatalog() == null ? null
+        : this.metadata.getId().getCatalog().getCanonicalSQLName();
+    String schema = this.metadata.getId().getSchema() == null ? null
+        : this.metadata.getId().getSchema().getCanonicalSQLName();
+    String name = this.metadata.getId().getCanonicalSQLName();
+
+    println("  // Database " + type + " metadata");
+    println();
+    println("  public static " + className + " new" + type + "() {");
+    println("    return new " + className + "();");
+    println("  }");
+    println();
+    println("  public static " + className + " new" + type + "(final String alias) {");
+    println("    return new " + className + "(alias);");
+    println("  }");
+    println();
+
+    println("  public static class " + className + " extends " + type + " {");
+    println();
+
+    println("    // Properties");
+    println();
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String javaType = resolveType(cm);
+      String liveSQLColumnType = toLiveSQLType(javaType);
+      String javaMembername = cm.getId().getJavaMemberName();
+      println("    public " + liveSQLColumnType + " " + javaMembername + ";");
+    }
+    println();
+
+    println("    // Constructors");
+    println();
+    println("    " + className + "() {");
+    println("      super(" + (catalog == null ? "null" : "\"" + JUtils.escapeJavaString(catalog) + "\"") + ", "
+        + (schema == null ? "null" : "\"" + JUtils.escapeJavaString(schema) + "\"") + ", \""
+        + JUtils.escapeJavaString(name) + "\", null);");
+    println("      initialize();");
+    println("    }");
+    println();
+    println("    " + className + "(final String alias) {");
+    println("      super(" + (catalog == null ? "null" : "\"" + JUtils.escapeJavaString(catalog) + "\"") + ", "
+        + (schema == null ? "null" : "\"" + JUtils.escapeJavaString(schema) + "\"") + ", \""
+        + JUtils.escapeJavaString(name) + "\", alias);");
+    println("      initialize();");
+    println("    }");
+    println();
+
+    println("    // Initialization");
+    println();
+    println("    private void initialize() {");
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String javaType = resolveType(cm);
+      String liveSQLColumnType = toLiveSQLType(javaType);
+      String javaMembername = cm.getId().getJavaMemberName();
+      String colName = cm.getId().getCanonicalSQLName();
+      println("      this." + javaMembername + " = new " + liveSQLColumnType + "(this, \"" + colName + "\");");
+    }
+
+    println("    }");
+    println();
+    println("  }");
+    println();
+  }
+
+  private String resolveType(final ColumnMetadata cm) {
+    EnumClass ec = this.generator.getEnum(cm.getEnumMetadata());
+    return ec != null ? ec.getFullClassName() : cm.getType().getJavaClassName();
+  }
+
+  private String toLiveSQLType(final String javaType) {
+    if ("java.lang.Byte".equals(javaType) //
+        || "java.lang.Short".equals(javaType) //
+        || "java.lang.Integer".equals(javaType) //
+        || "java.lang.Long".equals(javaType) //
+        || "java.lang.Float".equals(javaType) //
+        || "java.lang.Double".equals(javaType) //
+        || "java.math.BigInteger".equals(javaType) //
+        || "java.math.BigDecimal".equals(javaType) //
+    ) {
+      return "NumberColumn";
+    } else if ("java.lang.String".equals(javaType)) {
+      return "StringColumn";
+    } else if ("java.util.Date".equals(javaType) || "java.sql.Date".equals(javaType) //
+        || "java.sql.Timestamp".equals(javaType) //
+        || "java.sql.Time".equals(javaType) //
+    ) {
+      return "DateTimeColumn";
+    } else if ("java.lang.Boolean".equals(javaType)) {
+      return "BooleanColumn";
+    }
+
+    // byte[]
+    // java.lang.Object
+    // <Custom Converter>
+    return "ObjectColumn";
   }
 
   private void writeSelectSequence(final SequenceMethodTag tag) throws IOException, SequencesNotSupportedException {

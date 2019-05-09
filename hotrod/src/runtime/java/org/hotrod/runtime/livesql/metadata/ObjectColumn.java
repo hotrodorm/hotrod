@@ -2,9 +2,9 @@ package org.hotrod.runtime.livesql.metadata;
 
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.ReferenceableExpression;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.Expression;
 
-public class BooleanColumn extends Predicate implements ReferenceableExpression {
+public class ObjectColumn extends Expression<Object> implements ReferenceableExpression {
 
   private static final int PRECEDENCE = 1;
 
@@ -18,7 +18,7 @@ public class BooleanColumn extends Predicate implements ReferenceableExpression 
   private String defaultValue;
   private boolean lob;
 
-  public BooleanColumn(final TableOrView objectIntance, final String name) {
+  public ObjectColumn(final TableOrView objectIntance, final String name) {
     super(PRECEDENCE);
     this.objectInstance = objectIntance;
     this.name = name;

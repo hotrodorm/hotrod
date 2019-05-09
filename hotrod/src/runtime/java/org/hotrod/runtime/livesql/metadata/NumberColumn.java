@@ -10,9 +10,6 @@ public class NumberColumn extends NumberExpression implements ReferenceableExpre
 
   private TableOrView objectInstance;
 
-  private String catalog;
-  private String schema;
-  private String table;
   private String name;
   private String type;
   private Integer columnSize;
@@ -49,15 +46,15 @@ public class NumberColumn extends NumberExpression implements ReferenceableExpre
   }
 
   public String getCatalog() {
-    return catalog;
+    return this.objectInstance.getCatalog();
   }
 
   public String getSchema() {
-    return schema;
+    return this.objectInstance.getSchema();
   }
 
   public String getTable() {
-    return table;
+    return this.objectInstance.getName();
   }
 
   public String getType() {

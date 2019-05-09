@@ -4,15 +4,12 @@ import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.ReferenceableExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 
-public class DateColumn extends DateTimeExpression implements ReferenceableExpression {
+public class DateTimeColumn extends DateTimeExpression implements ReferenceableExpression {
 
   private static final int PRECEDENCE = 1;
 
   private TableOrView objectInstance;
 
-  private String catalog;
-  private String schema;
-  private String table;
   private String name;
   private String type;
   private Integer columnSize;
@@ -21,7 +18,7 @@ public class DateColumn extends DateTimeExpression implements ReferenceableExpre
   private String defaultValue;
   private boolean lob;
 
-  public DateColumn(final TableOrView objectIntance, final String name) {
+  public DateTimeColumn(final TableOrView objectIntance, final String name) {
     super(PRECEDENCE);
     this.objectInstance = objectIntance;
     this.name = name;
@@ -49,15 +46,15 @@ public class DateColumn extends DateTimeExpression implements ReferenceableExpre
   }
 
   public String getCatalog() {
-    return catalog;
+    return this.objectInstance.getCatalog();
   }
 
   public String getSchema() {
-    return schema;
+    return this.objectInstance.getSchema();
   }
 
   public String getTable() {
-    return table;
+    return this.objectInstance.getName();
   }
 
   public String getType() {
