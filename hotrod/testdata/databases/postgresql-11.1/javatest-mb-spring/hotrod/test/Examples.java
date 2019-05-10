@@ -19,10 +19,11 @@ public class Examples {
   public static void main(final String[] args) throws IOException, SQLException {
     Examples ex = new Examples();
     // ex.runExamples();
-    // ex.runLiveSQL();
-    ex.runSelectbyCriteria();
+    ex.runLiveSQL();
+    // ex.runSelectbyCriteria();
   }
 
+  @SuppressWarnings("unused")
   private void runLiveSQL() throws SQLException {
 
     ClientDAO dao = SpringBeanRetriever.getBean("clientDAO");
@@ -54,6 +55,7 @@ public class Examples {
     AccountDAO dao = SpringBeanRetriever.getBean("accountDAO");
     AccountDAO.Account a = AccountDAO.newTable();
     List<Account> rows = dao.selectByCriteria(a.currentBalance.gt(100)) //
+        .and(a.name.like("CHK%")) //
         .execute();
 
     for (Account r : rows) {
@@ -62,6 +64,7 @@ public class Examples {
 
   }
 
+  @SuppressWarnings("unused")
   private void runExamples() throws SQLException {
 
     AccountDAO dao = SpringBeanRetriever.getBean("accountDAO");

@@ -167,6 +167,8 @@ public abstract class AbstractSelect<R> extends Query {
 
     // base table
 
+    System.out.println(">>> this.baseTable=" + this.baseTable);
+
     if (this.baseTable != null) {
 
       w.write("\nFROM " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.baseTable) + " "
@@ -263,7 +265,8 @@ public abstract class AbstractSelect<R> extends Query {
 
     List<R> rows = this.sqlSession.selectList(this.statement, q.getConsolidatedParameters());
 
-    System.out.println("rows[" + (rows == null ? "null" : rows.size()) + "]:");
+    // System.out.println("rows[" + (rows == null ? "null" : rows.size()) +
+    // "]:");
 
     // if (rows != null) {
     // for (R r : rows) {

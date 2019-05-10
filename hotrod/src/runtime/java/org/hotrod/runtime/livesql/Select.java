@@ -40,7 +40,7 @@ class Select<T> extends AbstractSelect<T> {
         c.renderTo(w);
 
         try {
-          Column<?> col = (Column<?>) c;
+          Column col = (Column) c;
           w.write(" as ");
           w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(col.getProperty()));
         } catch (ClassCastException e) {

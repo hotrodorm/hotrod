@@ -146,6 +146,7 @@ public class ObjectDAO extends GeneratableObject {
         }
 
         writeSelectByExampleAndOrder(); // done
+        writeSelectByCriteria(); // done
 
         if (this.isTable()) {
           // writeSelectParentByFK(); // done
@@ -331,7 +332,7 @@ public class ObjectDAO extends GeneratableObject {
       imports.newLine();
     }
 
-    imports.add("org.hotrod.runtime.livesql.SelectColumns");
+    imports.add("org.hotrod.runtime.livesql.SelectColumnsPhase");
     imports.add("org.hotrod.runtime.livesql.expressions.ResultSetColumn");
 
     imports.add("org.hotrod.runtime.livesql.dialects.SQLDialect");
@@ -341,6 +342,8 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("org.hotrod.runtime.livesql.metadata.BooleanColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.ObjectColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.Table");
+    imports.add("org.hotrod.runtime.livesql.expressions.predicates.Predicate");
+    imports.add("org.hotrod.runtime.livesql.CriteriaWherePhase");
     imports.add("org.hotrod.runtime.livesql.metadata.View");
     imports.newLine();
 
@@ -377,12 +380,12 @@ public class ObjectDAO extends GeneratableObject {
 
     println("  // Live SQL");
     println("");
-    println("  public SelectColumns createSelect() {");
-    println("    return new SelectColumns(this.sqlDialect, this.sqlSession, false);");
+    println("  public SelectColumnsPhase createSelect() {");
+    println("    return new SelectColumnsPhase(this.sqlDialect, this.sqlSession, false);");
     println("  }");
     println("");
-    println("  public SelectColumns createSelect(final ResultSetColumn... resultSetColumns) {");
-    println("    return new SelectColumns(this.sqlDialect, this.sqlSession, false, resultSetColumns);");
+    println("  public SelectColumnsPhase createSelect(final ResultSetColumn... resultSetColumns) {");
+    println("    return new SelectColumnsPhase(this.sqlDialect, this.sqlSession, false, resultSetColumns);");
     println("  }");
     println("");
 
@@ -517,10 +520,11 @@ public class ObjectDAO extends GeneratableObject {
   }
 
   private void writeSelectByExampleAndOrder() throws IOException {
-    println("  // select by example (with ordering)");
+    println("  // select by example");
     println();
 
     String voClassName = this.vo.getFullClassName();
+
     println("  public List<" + voClassName + "> selectByExample(final " + voClassName + " example, final "
         + this.getOrderByClassName() + "... orderBies)");
     print("      ");
@@ -529,6 +533,33 @@ public class ObjectDAO extends GeneratableObject {
     println("        new DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + ">(example, orderBies);");
     println("    return this.sqlSession.selectList(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo);");
     println("  }");
+    println();
+  }
+
+  private void writeSelectByCriteria() throws IOException {
+    println("  // select by criteria");
+    println();
+
+    String daoClassName = this.getClassName();
+    String voClassName = this.vo.getClassName();
+    String voFullClassName = this.vo.getFullClassName();
+    String mapperName = this.mapper.getFullMapperIdSelectByCriteria();
+    String constructor = this.isTable() ? "newTable" : "newView";
+
+    println("  public CriteriaWherePhase<" + voFullClassName + "> selectByCriteria(final Predicate predicate) {");
+    println("    " + daoClassName + "." + voClassName + " baseTable = " + daoClassName + "." + constructor + "();");
+    println("    return new CriteriaWherePhase<" + voFullClassName + ">(baseTable, this.sqlDialect, this.sqlSession,");
+    println("        predicate, \"" + mapperName + "\");");
+    println("  }");
+    println();
+
+    println("  public CriteriaWherePhase<" + voFullClassName + "> selectByCriteria(final " + daoClassName + "."
+        + voClassName + " baseTable,");
+    println("      final Predicate predicate) {");
+    println("    return new CriteriaWherePhase<" + voFullClassName + ">(baseTable, this.sqlDialect, this.sqlSession,");
+    println("        predicate, \"" + mapperName + "\");");
+    println("  }");
+
     println();
   }
 
