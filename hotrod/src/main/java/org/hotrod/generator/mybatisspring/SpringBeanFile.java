@@ -2,29 +2,22 @@ package org.hotrod.generator.mybatisspring;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.runtime.util.SUtils;
 
-public class SpringBeansFile {
+public class SpringBeanFile {
 
+  private File baseDir;
   private File f;
-  private List<SpringBeanFile> beanFiles;
+  private ObjectDAO dao;
 
-  public SpringBeansFile(final File f) throws UncontrolledException {
-    if (f == null) {
-      throw new UncontrolledException("Cannot generate Spring Beans file: no file name specified.", null);
-    }
-    this.f = f;
-    this.beanFiles = new ArrayList<SpringBeanFile>();
-  }
-
-  public void addDAO(final ObjectDAO dao) {
-    SpringBeanFile bf = new SpringBeanFile(this.f.getParentFile(), dao);
-    this.beanFiles.add(bf);
+  public SpringBeanFile(final File baseDir, final ObjectDAO dao) {
+    this.dao = dao;
+    this.baseDir = baseDir;
+    this.f = new File(this.baseDir, this.getFileName());
   }
 
   public void generate(final FileGenerator fileGenerator) throws UncontrolledException {
@@ -41,18 +34,14 @@ public class SpringBeansFile {
 
       writeFooter(w);
 
-      for (SpringBeanFile bf : this.beanFiles) {
-        bf.generate(fileGenerator);
-      }
-
     } catch (IOException e) {
-      throw new UncontrolledException("Could not generate Spring beans file: could not write to file '" + f + "'.", e);
+      throw new UncontrolledException("Could not generate Spring bean file: could not write to file '" + f + "'.", e);
     } finally {
       if (w != null) {
         try {
           w.close();
         } catch (IOException e) {
-          throw new UncontrolledException("Could not generate Spring beans file: could not close file '" + f + "'.", e);
+          throw new UncontrolledException("Could not generate Spring bean file: could not close file '" + f + "'.", e);
         }
       }
     }
@@ -67,14 +56,27 @@ public class SpringBeansFile {
   }
 
   private void writeDAOs(final TextWriter w) throws IOException {
-    for (SpringBeanFile bf : this.beanFiles) {
-      ObjectDAO dao = bf.getDao();
-      w.write("  <import resource=\"./" + bf.getFileName() + "\"/>\n");
-    }
+    String className = SUtils.lowerFirst(this.dao.getClassName());
+    String fullClassName = this.dao.getFullClassName();
+    w.write("  <bean id=\"" + className + "\" class=\"" + fullClassName + "\">\n");
+    w.write("    <property name=\"sqlSession\" ref=\"sqlSession\" />\n");
+    w.write("    <property name=\"sqlDialect\" value=\"#{sqlDialectFactory.sqlDialect}\" />\n");
+    w.write("  </bean>\n" //
+        + "\n" //
+        + "");
   }
 
   private void writeFooter(final TextWriter w) throws IOException {
-    w.write("\n</beans>\n");
+    w.write("</beans>\n");
+  }
+
+  public String getFileName() {
+    String lower = this.dao.getClassName().toLowerCase();
+    return "spring-" + lower + ".xml";
+  }
+
+  public ObjectDAO getDao() {
+    return this.dao;
   }
 
 }
