@@ -16,6 +16,7 @@ public class KeyMetadata implements Serializable {
   private List<ColumnMetadata> columns;
 
   public KeyMetadata(final TableDataSetMetadata tm, final List<ColumnMetadata> columns) {
+    log.debug("init");
     this.tm = tm;
     this.columns = columns;
   }

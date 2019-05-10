@@ -3,13 +3,12 @@ package org.hotrod.runtime.livesql;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.QueryWriter.LiveSQL;
-import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
+import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.exceptions.DuplicateAliasException;
 import org.hotrod.runtime.livesql.exceptions.InvalidSQLStatementException;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -17,7 +16,11 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
-abstract class AbstractSelect extends Query {
+public abstract class AbstractSelect<R> extends Query {
+
+  public static final String LIVE_SQL_NAMESPACE = "livesql";
+  public static final String LIVE_SQL_STATEMENT_NAME = "select";
+  private static final String LIVE_SQL_STATEMENT = LIVE_SQL_NAMESPACE + "." + LIVE_SQL_STATEMENT_NAME;
 
   private boolean distinct;
   private TableOrView baseTable = null;
@@ -30,11 +33,14 @@ abstract class AbstractSelect extends Query {
   private Integer limit = null;
 
   private SqlSession sqlSession;
+  private String statement;
 
-  AbstractSelect(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession) {
+  AbstractSelect(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
+      final String statement) {
     super(sqlDialect);
     this.distinct = distinct;
     this.sqlSession = sqlSession;
+    this.statement = (statement == null ? LIVE_SQL_STATEMENT : statement);
   }
 
   protected abstract void writeColumns(QueryWriter w);
@@ -241,7 +247,7 @@ abstract class AbstractSelect extends Query {
     }
   }
 
-  public List<Map<String, Object>> execute() {
+  public List<R> execute() {
 
     LiveSQL q = this.prepareQuery();
 
@@ -255,17 +261,17 @@ abstract class AbstractSelect extends Query {
     }
     System.out.println("------------------");
 
-    List<Map<String, Object>> rows = this.sqlSession.selectList("livesql.select", q.getConsolidatedParameters());
-    
+    List<R> rows = this.sqlSession.selectList(this.statement, q.getConsolidatedParameters());
+
     System.out.println("rows[" + (rows == null ? "null" : rows.size()) + "]:");
 
-    if (rows != null) {
-      for (Map<String, Object> r : rows) {
-        System.out.println("row: " + r);
-      }
-    }
+    // if (rows != null) {
+    // for (R r : rows) {
+    // System.out.println("row: " + r);
+    // }
+    // }
 
-    return null;
+    return rows;
 
   }
 

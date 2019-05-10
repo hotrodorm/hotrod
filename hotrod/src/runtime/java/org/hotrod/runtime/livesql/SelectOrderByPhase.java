@@ -6,15 +6,15 @@ import java.util.Map;
 
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
-public class SelectOrderBy implements ExecutableSelect {
+public class SelectOrderByPhase implements ExecutableSelect {
 
   // Properties
 
-  private AbstractSelect select;
+  private AbstractSelect<Map<String, Object>> select;
 
   // Constructor
 
-  SelectOrderBy(final AbstractSelect select, final OrderingTerm... orderingTerms) {
+  SelectOrderByPhase(final AbstractSelect<Map<String, Object>> select, final OrderingTerm... orderingTerms) {
     this.select = select;
     this.select.setColumnOrderings(Arrays.asList(orderingTerms));
   }
@@ -23,12 +23,12 @@ public class SelectOrderBy implements ExecutableSelect {
 
   // Next stages
 
-  public SelectOffset offset(final int offset) {
-    return new SelectOffset(this.select, offset);
+  public SelectOffsetPhase offset(final int offset) {
+    return new SelectOffsetPhase(this.select, offset);
   }
 
-  public SelectLimit limit(final int limit) {
-    return new SelectLimit(this.select, limit);
+  public SelectLimitPhase limit(final int limit) {
+    return new SelectLimitPhase(this.select, limit);
   }
 
   // Rendering

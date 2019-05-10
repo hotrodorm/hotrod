@@ -2,7 +2,6 @@ package org.hotrod.metadata;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -10,7 +9,6 @@ import org.apache.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
-import org.hotrod.config.MyBatisSpringTag;
 import org.hotrod.config.structuredcolumns.AssociationTag;
 import org.hotrod.config.structuredcolumns.CollectionTag;
 import org.hotrod.config.structuredcolumns.Expressions;

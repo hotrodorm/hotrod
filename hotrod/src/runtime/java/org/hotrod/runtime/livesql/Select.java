@@ -8,12 +8,16 @@ import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.util.Separator;
 
-class Select extends AbstractSelect {
+class Select<T> extends AbstractSelect<T> {
 
   private List<ResultSetColumn> resultSetColumns = null;
 
   Select(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession) {
-    super(sqlDialect, distinct, sqlSession);
+    super(sqlDialect, distinct, sqlSession, null);
+  }
+
+  Select(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession, final String statement) {
+    super(sqlDialect, distinct, sqlSession, statement);
   }
 
   // Setters

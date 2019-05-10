@@ -89,13 +89,14 @@ public class Mapper extends GeneratableObject {
     initialize(metadata, layout, generator, type, adapter, vo);
   }
 
-  private void initialize(final DataSetMetadata metadata, final DataSetLayout layout, final MyBatisSpringGenerator generator,
-      final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo) {
+  private void initialize(final DataSetMetadata metadata, final DataSetLayout layout,
+      final MyBatisSpringGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo) {
     this.metadata = metadata;
 
     this.fragmentConfig = this.metadata.getFragmentConfig();
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
-        ? this.fragmentConfig.getFragmentPackage() : null;
+        ? this.fragmentConfig.getFragmentPackage()
+        : null;
 
     this.layout = layout;
     this.generator = generator;
@@ -133,7 +134,8 @@ public class Mapper extends GeneratableObject {
     String sourceFileName = this.getSourceFileName();
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
-        ? this.fragmentConfig.getFragmentPackage() : null;
+        ? this.fragmentConfig.getFragmentPackage()
+        : null;
 
     File mapper = new File(this.layout.getMapperPrimitiveDir(fragmentPackage), sourceFileName);
     this.w = null;
@@ -155,6 +157,7 @@ public class Mapper extends GeneratableObject {
         }
 
         writeSelectByExample();
+        writeSelectByCriteria();
 
         if (this.isTable()) {
           writeInsert();
@@ -461,6 +464,17 @@ public class Mapper extends GeneratableObject {
     println("    <if test=\"o != null\">");
     println("      order by ${o}");
     println("    </if>");
+    println("  </select>");
+    println();
+  }
+
+  // select by criteria
+
+  private void writeSelectByCriteria() throws IOException {
+    println("  <!-- select by criteria -->");
+    println();
+    println("  <select id=\"selectByCriteria\" resultMap=\"allColumns\">");
+    println("    ${sql}");
     println("  </select>");
     println();
   }
@@ -1262,6 +1276,14 @@ public class Mapper extends GeneratableObject {
 
   public String getFullMapperIdSelectByExample() {
     return this.namespace + "." + getMapperIdSelectByExample();
+  }
+
+  public String getMapperIdSelectByCriteria() {
+    return "selectByCriteria";
+  }
+
+  public String getFullMapperIdSelectByCriteria() {
+    return this.namespace + "." + getMapperIdSelectByCriteria();
   }
 
   public String getMapperIdSelectParameterized() {

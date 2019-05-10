@@ -7,16 +7,16 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.predicates.PredicateBuilder;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
-public class SelectHaving implements ExecutableSelect {
+public class SelectHavingPhase implements ExecutableSelect {
 
   // Properties
 
-  private AbstractSelect select;
+  private AbstractSelect<Map<String, Object>> select;
   private PredicateBuilder predicateBuilder;
 
   // Constructor
 
-  SelectHaving(final AbstractSelect select, final Predicate predicate) {
+  SelectHavingPhase(final AbstractSelect<Map<String, Object>> select, final Predicate predicate) {
     this.select = select;
     this.predicateBuilder = new PredicateBuilder(predicate);
     this.select.setHavingCondition(this.predicateBuilder.getAssembled());
@@ -24,13 +24,13 @@ public class SelectHaving implements ExecutableSelect {
 
   // Same stage
 
-  public SelectHaving and(final Predicate predicate) {
+  public SelectHavingPhase and(final Predicate predicate) {
     this.predicateBuilder.and(predicate);
     this.select.setHavingCondition(this.predicateBuilder.getAssembled());
     return this;
   }
 
-  public SelectHaving or(final Predicate predicate) {
+  public SelectHavingPhase or(final Predicate predicate) {
     this.predicateBuilder.or(predicate);
     this.select.setHavingCondition(this.predicateBuilder.getAssembled());
     return this;
@@ -38,16 +38,16 @@ public class SelectHaving implements ExecutableSelect {
 
   // Next stages
 
-  public SelectOrderBy orderBy(final OrderingTerm... orderingTerms) {
-    return new SelectOrderBy(this.select, orderingTerms);
+  public SelectOrderByPhase orderBy(final OrderingTerm... orderingTerms) {
+    return new SelectOrderByPhase(this.select, orderingTerms);
   }
 
-  public SelectOffset offset(final int offset) {
-    return new SelectOffset(this.select, offset);
+  public SelectOffsetPhase offset(final int offset) {
+    return new SelectOffsetPhase(this.select, offset);
   }
 
-  public SelectLimit limit(final int limit) {
-    return new SelectLimit(this.select, limit);
+  public SelectLimitPhase limit(final int limit) {
+    return new SelectLimitPhase(this.select, limit);
   }
 
   // Rendering

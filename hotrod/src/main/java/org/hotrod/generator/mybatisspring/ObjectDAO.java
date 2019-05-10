@@ -551,6 +551,7 @@ public class ObjectDAO extends GeneratableObject {
     return sb.toString();
   }
 
+  @SuppressWarnings("unused")
   private void writeSelectParentByFK() throws IOException, ControlledException {
 
     List<ForeignKeyMetadata> fks = this.metadata.getImportedFKs();
@@ -700,6 +701,7 @@ public class ObjectDAO extends GeneratableObject {
     return lw.toString();
   }
 
+  @SuppressWarnings("unused")
   private void writeSelectChildrenByFK() throws IOException, ControlledException {
 
     if (this.metadata.getExportedFKs().isEmpty()) {

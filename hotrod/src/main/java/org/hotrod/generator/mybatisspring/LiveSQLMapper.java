@@ -7,6 +7,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.mybatis.DataSetLayout;
+import org.hotrod.runtime.livesql.AbstractSelect;
 
 public class LiveSQLMapper {
 
@@ -36,9 +37,9 @@ public class LiveSQLMapper {
       println(w, "<!DOCTYPE mapper");
       println(w, "  PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\"");
       println(w, "  \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">");
-      println(w, "<mapper namespace=\"livesql\">");
+      println(w, "<mapper namespace=\"" + AbstractSelect.LIVE_SQL_NAMESPACE + "\">");
       println(w, "");
-      println(w, "  <select id=\"select\" resultType=\"map\">");
+      println(w, "  <select id=\"" + AbstractSelect.LIVE_SQL_STATEMENT_NAME + "\" resultType=\"map\">");
       println(w, "    ${sql}");
       println(w, "  </select>");
       println(w, "");

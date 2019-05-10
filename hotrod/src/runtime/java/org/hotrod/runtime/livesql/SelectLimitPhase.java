@@ -3,23 +3,17 @@ package org.hotrod.runtime.livesql;
 import java.util.List;
 import java.util.Map;
 
-public class SelectOffset implements ExecutableSelect {
+public class SelectLimitPhase implements ExecutableSelect {
 
   // Properties
 
-  private AbstractSelect select;
+  private AbstractSelect<Map<String, Object>> select;
 
   // Constructor
 
-  SelectOffset(final AbstractSelect select, final int offset) {
+  SelectLimitPhase(final AbstractSelect<Map<String, Object>> select, final int limit) {
     this.select = select;
-    this.select.setOffset(offset);
-  }
-
-  // Next stages
-
-  public SelectLimit limit(final int limit) {
-    return new SelectLimit(this.select, limit);
+    this.select.setLimit(limit);
   }
 
   // Rendering

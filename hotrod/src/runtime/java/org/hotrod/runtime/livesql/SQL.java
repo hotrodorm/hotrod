@@ -4,14 +4,11 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.hotrod.runtime.livesql.caseclause.CaseWhenStage;
-import org.hotrod.runtime.livesql.dialects.PostgreSQLDialect;
-import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.exceptions.InvalidSQLStatementException;
 import org.hotrod.runtime.livesql.expressions.Coalesce;
 import org.hotrod.runtime.livesql.expressions.Constant;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.JDBCType;
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.Tuple;
 import org.hotrod.runtime.livesql.expressions.aggregations.Avg;
 import org.hotrod.runtime.livesql.expressions.aggregations.AvgDistinct;
@@ -47,39 +44,45 @@ public class SQL {
 
   // select
 
-//  public static SelectColumns createSelect() {
-//    return new SelectColumns(resolveSQLDialect(), false);
-//  }
-//
-//  public static SelectColumns createSelect(final ResultSetColumn... resultSetColumns) {
-//    return new SelectColumns(resolveSQLDialect(), false, resultSetColumns);
-//  }
-//
-//  public static SelectColumns createSubquery() {
-//    return new SelectColumns(resolveSQLDialect(), false);
-//  }
-//
-//  public static SelectColumns createSubquery(final ReferenceableExpression... referenceableExpressions) {
-//    return new SelectColumns(resolveSQLDialect(), false, referenceableExpressions);
-//  }
-//
-//  // select distinct
-//
-//  public static SelectColumns createSelectDistinct() {
-//    return new SelectColumns(resolveSQLDialect(), true);
-//  }
-//
-//  public static SelectColumns createSelectDistinct(final ResultSetColumn... resultSetColumns) {
-//    return new SelectColumns(resolveSQLDialect(), true, resultSetColumns);
-//  }
-//
-//  public static SelectColumns createSubqueryDistinct() {
-//    return new SelectColumns(resolveSQLDialect(), true);
-//  }
-//
-//  public static SelectColumns createSubqueryDistinct(final ReferenceableExpression... referenceableExpressions) {
-//    return new SelectColumns(resolveSQLDialect(), true, referenceableExpressions);
-//  }
+  // public static SelectColumns createSelect() {
+  // return new SelectColumns(resolveSQLDialect(), false);
+  // }
+  //
+  // public static SelectColumns createSelect(final ResultSetColumn...
+  // resultSetColumns) {
+  // return new SelectColumns(resolveSQLDialect(), false, resultSetColumns);
+  // }
+  //
+  // public static SelectColumns createSubquery() {
+  // return new SelectColumns(resolveSQLDialect(), false);
+  // }
+  //
+  // public static SelectColumns createSubquery(final ReferenceableExpression...
+  // referenceableExpressions) {
+  // return new SelectColumns(resolveSQLDialect(), false,
+  // referenceableExpressions);
+  // }
+  //
+  // // select distinct
+  //
+  // public static SelectColumns createSelectDistinct() {
+  // return new SelectColumns(resolveSQLDialect(), true);
+  // }
+  //
+  // public static SelectColumns createSelectDistinct(final ResultSetColumn...
+  // resultSetColumns) {
+  // return new SelectColumns(resolveSQLDialect(), true, resultSetColumns);
+  // }
+  //
+  // public static SelectColumns createSubqueryDistinct() {
+  // return new SelectColumns(resolveSQLDialect(), true);
+  // }
+  //
+  // public static SelectColumns createSubqueryDistinct(final
+  // ReferenceableExpression... referenceableExpressions) {
+  // return new SelectColumns(resolveSQLDialect(), true,
+  // referenceableExpressions);
+  // }
 
   // Tuples
 
@@ -274,7 +277,8 @@ public class SQL {
 
   // // Arithmetic
   //
-  // public static Expression<Number> power(final Expression<Number> value, final
+  // public static Expression<Number> power(final Expression<Number> value,
+  // final
   // Expression<Number> exponent) {
   // return new Pow(value, exponent);
   // }
@@ -284,7 +288,8 @@ public class SQL {
   // return new Log(value, base);
   // }
   //
-  // public static Expression<Number> round(final Expression<Number> value, final
+  // public static Expression<Number> round(final Expression<Number> value,
+  // final
   // Expression<Number> places) {
   // return new Log(value, places);
   // }
