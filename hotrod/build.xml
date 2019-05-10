@@ -37,7 +37,6 @@
     <mkdir dir="${tools.build.dir}" />
     <mkdir dir="${xsd.build.dir}" />
     <mkdir dir="${dist.dir}" />
-    <mkdir dir="${website.dist.dir}" />
     <mkdir dir="${release.dir}" />
     <loadproperties srcfile="build.properties" />
     <loadproperties srcfile="conf/workbench.properties" />
@@ -274,6 +273,8 @@
 
   <target name="web-site-generate" depends="clean, compile-tools">
     <echo message="Assembling web site..." />
+    
+    <mkdir dir="${website.dist.dir}" />
 
     <java classname="websitegenerator.Assembler">
       <arg value="docs/web-site/src" />
