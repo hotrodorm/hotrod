@@ -12,8 +12,11 @@ import hotrod.test.generation.TypesBinary;
 import hotrod.test.generation.TypesOther;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountDAO.AccountOrderBy;
+import hotrod.test.generation.primitives.AccountDAO.AccountTable;
 import hotrod.test.generation.primitives.TypesBinaryDAO;
+import hotrod.test.generation.primitives.TypesBinaryDAO.TypesBinaryTable;
 import hotrod.test.generation.primitives.TypesOtherDAO;
+import hotrod.test.generation.primitives.TypesOtherDAO.TypesOtherTable;
 
 public class Examples {
 
@@ -56,7 +59,7 @@ public class Examples {
 
   private void runSelectbyCriteria() throws SQLException {
     AccountDAO dao = SpringBeanRetriever.getBean("accountDAO");
-    AccountDAO.Account a = AccountDAO.newTable();
+    AccountTable a = AccountDAO.newTable();
     List<Account> rows = dao.selectByCriteria(a.currentBalance.gt(100)) //
         .and(a.name.like("CHK%")) //
         .execute();
@@ -70,7 +73,7 @@ public class Examples {
     searched[0] = 0x31;
     searched[1] = 0x35;
     TypesBinaryDAO dao = SpringBeanRetriever.getBean("typesBinaryDAO");
-    TypesBinaryDAO.TypesBinary b = TypesBinaryDAO.newTable();
+    TypesBinaryTable b = TypesBinaryDAO.newTable();
     List<TypesBinary> rows = dao.selectByCriteria(b.bin1.eq(searched)) //
         .execute();
     for (TypesBinary r : rows) {
@@ -83,7 +86,7 @@ public class Examples {
     searched[0] = 0x31;
     searched[1] = 0x35;
     TypesOtherDAO dao = SpringBeanRetriever.getBean("typesOtherDAO");
-    TypesOtherDAO.TypesOther b = TypesOtherDAO.newTable();
+    TypesOtherTable b = TypesOtherDAO.newTable();
     List<TypesOther> rows = dao.selectByCriteria(b.uui1.ne("33bb9554-c616-42e6-a9c6-88d3bba4221c")) //
         .execute();
 

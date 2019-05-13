@@ -80,6 +80,8 @@ public class ObjectDAO extends GeneratableObject {
   private ObjectVO vo = null;
   private Mapper mapper = null;
 
+  private String metadataClassName;
+
   private TextWriter w;
 
   // Constructors
@@ -107,6 +109,8 @@ public class ObjectDAO extends GeneratableObject {
         : null;
 
     this.classPackage = this.layout.getDAOPrimitivePackage(this.fragmentPackage);
+    this.metadataClassName = this.metadata.getId().getJavaClassName() + (this.isTable() ? "Table" : "View");
+
   }
 
   // Behavior
@@ -548,14 +552,15 @@ public class ObjectDAO extends GeneratableObject {
     String constructor = this.isTable() ? "newTable" : "newView";
 
     println("  public CriteriaWherePhase<" + voFullClassName + "> selectByCriteria(final Predicate predicate) {");
-    println("    " + daoClassName + "." + voClassName + " baseTable = " + daoClassName + "." + constructor + "();");
+    println("    " + daoClassName + "." + this.metadataClassName + " baseTable = " + daoClassName + "." + constructor
+        + "();");
     println("    return new CriteriaWherePhase<" + voFullClassName + ">(baseTable, this.sqlDialect, this.sqlSession,");
     println("        predicate, \"" + mapperName + "\");");
     println("  }");
     println();
 
     println("  public CriteriaWherePhase<" + voFullClassName + "> selectByCriteria(final " + daoClassName + "."
-        + voClassName + " baseTable,");
+        + this.metadataClassName + " baseTable,");
     println("      final Predicate predicate) {");
     println("    return new CriteriaWherePhase<" + voFullClassName + ">(baseTable, this.sqlDialect, this.sqlSession,");
     println("        predicate, \"" + mapperName + "\");");
@@ -1378,7 +1383,6 @@ public class ObjectDAO extends GeneratableObject {
 
   private void writeMetadata() throws IOException {
 
-    String className = this.metadata.getId().getJavaClassName();
     String type = this.isTable() ? "Table" : "View";
 
     String catalog = this.metadata.getId().getCatalog() == null ? null
@@ -1389,16 +1393,16 @@ public class ObjectDAO extends GeneratableObject {
 
     println("  // Database " + type + " metadata");
     println();
-    println("  public static " + className + " new" + type + "() {");
-    println("    return new " + className + "();");
+    println("  public static " + this.metadataClassName + " new" + type + "() {");
+    println("    return new " + this.metadataClassName + "();");
     println("  }");
     println();
-    println("  public static " + className + " new" + type + "(final String alias) {");
-    println("    return new " + className + "(alias);");
+    println("  public static " + this.metadataClassName + " new" + type + "(final String alias) {");
+    println("    return new " + this.metadataClassName + "(alias);");
     println("  }");
     println();
 
-    println("  public static class " + className + " extends " + type + " {");
+    println("  public static class " + this.metadataClassName + " extends " + type + " {");
     println();
 
     println("    // Properties");
@@ -1413,14 +1417,14 @@ public class ObjectDAO extends GeneratableObject {
 
     println("    // Constructors");
     println();
-    println("    " + className + "() {");
+    println("    " + this.metadataClassName + "() {");
     println("      super(" + (catalog == null ? "null" : "\"" + JUtils.escapeJavaString(catalog) + "\"") + ", "
         + (schema == null ? "null" : "\"" + JUtils.escapeJavaString(schema) + "\"") + ", \""
         + JUtils.escapeJavaString(name) + "\", null);");
     println("      initialize();");
     println("    }");
     println();
-    println("    " + className + "(final String alias) {");
+    println("    " + this.metadataClassName + "(final String alias) {");
     println("      super(" + (catalog == null ? "null" : "\"" + JUtils.escapeJavaString(catalog) + "\"") + ", "
         + (schema == null ? "null" : "\"" + JUtils.escapeJavaString(schema) + "\"") + ", \""
         + JUtils.escapeJavaString(name) + "\", alias);");
