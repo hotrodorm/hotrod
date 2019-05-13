@@ -322,6 +322,8 @@ public class SQL {
       v = new Constant<T>(value, JDBCType.TIMESTAMP);
     } else if (value instanceof Boolean) {
       v = new Constant<T>(value, JDBCType.BOOLEAN);
+    } else if (value instanceof byte[]) {
+      v = new Constant<T>(value, JDBCType.BINARY);
     } else {
       throw new InvalidSQLStatementException("Invalid expression type: " + value.getClass());
     }

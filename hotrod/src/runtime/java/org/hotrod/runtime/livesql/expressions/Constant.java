@@ -31,7 +31,7 @@ public class Constant<T> extends Expression<T> {
     if (type == null) {
       throw new IllegalArgumentException("Specified type cannot be null");
     }
-    if (this.isFloat(value) || this.isDouble(value)) {
+    if (this.isFloat(value) || this.isDouble(value) || this.isByteArray(value)) {
       this.parameterize = true;
     } else if (this.isString(value)) {
       String s = (String) value;
@@ -47,7 +47,7 @@ public class Constant<T> extends Expression<T> {
     this.value = value;
   }
 
-  // Static initializers
+  // boxing
 
   public static Constant<String> from(final String v) {
     return new Constant<String>(v, JDBCType.VARCHAR);
@@ -69,25 +69,6 @@ public class Constant<T> extends Expression<T> {
     return new Constant<Date>(v, JDBCType.TIMESTAMP);
   }
 
-  // public static Constant<T> from(final T v) {
-  // if (v == null) {
-  // throw new IllegalArgumentException("Constant Value cannot be null");
-  // }
-  // if (v instanceof String) {
-  // return new Constant<String>((String) v, JDBCType.VARCHAR);
-  // }
-  // if (v instanceof Character) {
-  // return new Constant<String>("" + (Character) v, JDBCType.VARCHAR);
-  // }
-  // }
-
-  // public static Constant<Object> from(final Object v, final JDBCType type) {
-  // if (type == null) {
-  // throw new IllegalArgumentException("Specified type cannot be null");
-  // }
-  // return new Constant<Object>(v, type);
-  // }
-
   // Utilities
 
   private boolean isFloat(final T n) {
@@ -102,6 +83,15 @@ public class Constant<T> extends Expression<T> {
   private boolean isDouble(final T n) {
     try {
       Double.class.cast(n);
+      return true;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  private boolean isByteArray(final T n) {
+    try {
+      byte[].class.cast(n);
       return true;
     } catch (ClassCastException e) {
       return false;

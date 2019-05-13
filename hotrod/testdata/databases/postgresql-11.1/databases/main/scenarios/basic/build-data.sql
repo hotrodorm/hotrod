@@ -85,4 +85,11 @@ insert into schema2.account_alert (raised_at, account_id, house_id) values ('201
 insert into schema2.account_alert (raised_at, account_id, house_id) values ('2018-01-20 20:59:59', 1234004, 71);
 insert into schema2.account_alert (raised_at, account_id, house_id) values ('2018-01-21 08:05:12', 1234004, 71);
 
+insert into types_binary (bol1, bin1) values (true, '\x3135');
+insert into types_binary (bol1, bin1) values (false, '\xd0ff');
+insert into types_binary (bol1, bin1) values (true, '\x9974');
+insert into types_binary (bol1, bin1) values (false, '\x3135');
+
+insert into types_other (uui1) values ('33bb9554-c616-42e6-a9c6-88d3bba4221c');
+insert into types_other (uui1) values ('5af75c52-cb8e-44fb-93c8-1d46da518ee6');
 

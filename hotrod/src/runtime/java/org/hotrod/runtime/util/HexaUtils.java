@@ -1,10 +1,13 @@
-package org.hotrod.eclipseplugin.utils;
+package org.hotrod.runtime.util;
 
-public class HexUtils {
+public class HexaUtils {
 
   private static final String DIGITS = "0123456789abcdef";
 
   public static String toHexa(final byte[] byteArray) {
+    if (byteArray == null) {
+      return null;
+    }
     return toHexa(byteArray, 0, byteArray.length);
   }
 
@@ -62,7 +65,7 @@ public class HexUtils {
 
   public static String charToHexa(final char c) {
     int v = c < 0 ? c + 65536 : c;
-    String rendered = HexUtils.toHexa((byte) (v / 256)) + "/" + HexUtils.toHexa((byte) (v % 256));
+    String rendered = HexaUtils.toHexa((byte) (v / 256)) + "/" + HexaUtils.toHexa((byte) (v % 256));
     return rendered;
   }
 

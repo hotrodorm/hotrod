@@ -3,6 +3,8 @@ package org.hotrod.eclipseplugin.utils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.hotrod.runtime.util.HexaUtils;
+
 public class HashUtils {
 
   private static final byte[] NULL_DATA = new byte[1];
@@ -20,7 +22,7 @@ public class HashUtils {
   public static String hexaSha1(final String text) throws NoSuchAlgorithmException {
     byte[] data = text == null ? NULL_DATA : text.getBytes();
     byte[] hash = sha1(data);
-    String hexa = HexUtils.toHexa(hash);
+    String hexa = HexaUtils.toHexa(hash);
     return hexa;
   }
 

@@ -340,6 +340,7 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("org.hotrod.runtime.livesql.metadata.StringColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.DateTimeColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.BooleanColumn");
+    imports.add("org.hotrod.runtime.livesql.metadata.ByteArrayColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.ObjectColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.Table");
     imports.add("org.hotrod.runtime.livesql.expressions.predicates.Predicate");
@@ -1471,6 +1472,8 @@ public class ObjectDAO extends GeneratableObject {
       return "DateTimeColumn";
     } else if ("java.lang.Boolean".equals(javaType)) {
       return "BooleanColumn";
+    } else if ("byte[]".equals(javaType)) {
+      return "ByteArrayColumn";
     }
 
     // byte[]
