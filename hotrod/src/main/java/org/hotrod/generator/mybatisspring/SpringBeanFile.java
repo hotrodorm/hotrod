@@ -12,11 +12,16 @@ public class SpringBeanFile {
 
   private File baseDir;
   private File f;
-  private ObjectDAO dao;
+  private String daoClassName;
+  private String daoFullClassName;
+  private boolean inFacet;
 
-  public SpringBeanFile(final File baseDir, final ObjectDAO dao) {
-    this.dao = dao;
+  public SpringBeanFile(final File baseDir, final String daoClassName, final String daoFullClassName,
+      final boolean inFacet) {
     this.baseDir = baseDir;
+    this.daoClassName = daoClassName;
+    this.daoFullClassName = daoFullClassName;
+    this.inFacet = inFacet;
     this.f = new File(this.baseDir, this.getFileName());
   }
 
@@ -56,8 +61,8 @@ public class SpringBeanFile {
   }
 
   private void writeDAOs(final TextWriter w) throws IOException {
-    String className = SUtils.lowerFirst(this.dao.getClassName());
-    String fullClassName = this.dao.getFullClassName();
+    String className = SUtils.lowerFirst(this.daoClassName);
+    String fullClassName = this.daoFullClassName;
     w.write("  <bean id=\"" + className + "\" class=\"" + fullClassName + "\">\n");
     w.write("    <property name=\"sqlSession\" ref=\"sqlSession\" />\n");
     w.write("    <property name=\"sqlDialect\" value=\"#{sqlDialectFactory.sqlDialect}\" />\n");
@@ -71,12 +76,12 @@ public class SpringBeanFile {
   }
 
   public String getFileName() {
-    String lower = this.dao.getClassName().toLowerCase();
+    String lower = this.daoClassName.toLowerCase();
     return "spring-" + lower + ".xml";
   }
 
-  public ObjectDAO getDao() {
-    return this.dao;
+  boolean isInFacet() {
+    return this.inFacet;
   }
 
 }

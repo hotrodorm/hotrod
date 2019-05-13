@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import org.apache.log4j.Logger;
 import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.config.AbstractDAOTag;
+import org.hotrod.config.ExecutorTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisSpringTag;
@@ -15,6 +16,7 @@ import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.DAOType;
@@ -35,6 +37,8 @@ import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.LocalFileGenerator;
+import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGenerator {
@@ -132,10 +136,10 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
 
     // Prepare MyBatis Configuration File list
 
-    this.myBatisConfig.addSourceFile(this.liveSQLMapper.getFileName());
+    this.myBatisConfig.addFacetSourceFile(this.liveSQLMapper.getFileName());
     for (Mapper mapper : this.mappers.values()) {
       String sourceFile = mapper.getRuntimeSourceFileName();
-      this.myBatisConfig.addSourceFile(sourceFile);
+      this.myBatisConfig.addFacetSourceFile(sourceFile);
     }
 
     // Prepare Spring Beans file
@@ -144,7 +148,66 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
     this.springBeansFile = new SpringBeansFile(f);
     for (DataSetMetadata dm : this.daos.keySet()) {
       ObjectDAO dao = this.daos.get(dm);
-      this.springBeansFile.addDAO(dao);
+      this.springBeansFile.addFacetDAO(dao.getClassName(), dao.getFullClassName());
+    }
+
+    // ================== Add all DAOs included or not in the facet
+
+    MyBatisSpringTag myBatisTag = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
+
+    for (TableTag tag : this.config.getAllTables()) {
+      String className = myBatisTag.getDaos().generateDAOName(tag.getId());
+      ClassPackage fragmentPackage = tag.getFragmentConfig() != null
+          && tag.getFragmentConfig().getFragmentPackage() != null ? tag.getFragmentConfig().getFragmentPackage() : null;
+      ClassPackage classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
+      String fullClassName = classPackage.getFullClassName(className);
+      this.springBeansFile.addAnyDAO(className, fullClassName);
+
+      String sourceFileName = Mapper.getSourceFile(tag.getId());
+      File dir = layout.getMapperRuntimeDir(fragmentPackage);
+      File source = new File(dir, sourceFileName);
+      String sourceFile = source.getPath();
+      this.myBatisConfig.addAnySourceFile(sourceFile);
+
+    }
+
+    for (ViewTag tag : this.config.getAllViews()) {
+      String className = myBatisTag.getDaos().generateDAOName(tag.getId());
+      ClassPackage fragmentPackage = tag.getFragmentConfig() != null
+          && tag.getFragmentConfig().getFragmentPackage() != null ? tag.getFragmentConfig().getFragmentPackage() : null;
+      ClassPackage classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
+      String fullClassName = classPackage.getFullClassName(className);
+      this.springBeansFile.addAnyDAO(className, fullClassName);
+
+      String sourceFileName = Mapper.getSourceFile(tag.getId());
+      File dir = layout.getMapperRuntimeDir(fragmentPackage);
+      File source = new File(dir, sourceFileName);
+      String sourceFile = source.getPath();
+      this.myBatisConfig.addAnySourceFile(sourceFile);
+
+    }
+
+    for (ExecutorTag tag : this.config.getAllExecutors()) {
+      String className = tag.getJavaClassName();
+      ClassPackage fragmentPackage = tag.getFragmentConfig() != null
+          && tag.getFragmentConfig().getFragmentPackage() != null ? tag.getFragmentConfig().getFragmentPackage() : null;
+      ClassPackage classPackage = layout.getDAOPrimitivePackage(fragmentPackage);
+      String fullClassName = classPackage.getFullClassName(className);
+      this.springBeansFile.addAnyDAO(className, fullClassName);
+
+      ObjectId id;
+      try {
+        id = new ObjectId(Id.fromJavaClass(tag.getJavaClassName()));
+      } catch (InvalidIdentifierException e) {
+        throw new ControlledException(tag.getSourceLocation(),
+            "Invalid DAO with namename '" + tag.getJavaClassName() + "': " + e.getMessage());
+      }
+      String sourceFileName = Mapper.getSourceFile(id);
+      File dir = layout.getMapperRuntimeDir(fragmentPackage);
+      File source = new File(dir, sourceFileName);
+      String sourceFile = source.getPath();
+      this.myBatisConfig.addAnySourceFile(sourceFile);
+
     }
 
   }

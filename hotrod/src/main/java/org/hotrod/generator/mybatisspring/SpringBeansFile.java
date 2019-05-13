@@ -2,29 +2,40 @@ package org.hotrod.generator.mybatisspring;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.TreeMap;
 
+import org.apache.log4j.Logger;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 
 public class SpringBeansFile {
 
+  private static transient final Logger log = Logger.getLogger(SpringBeansFile.class);
+
   private File f;
-  private List<SpringBeanFile> beanFiles;
+  private TreeMap<String, SpringBeanFile> beanFiles;
 
   public SpringBeansFile(final File f) throws UncontrolledException {
     if (f == null) {
       throw new UncontrolledException("Cannot generate Spring Beans file: no file name specified.", null);
     }
     this.f = f;
-    this.beanFiles = new ArrayList<SpringBeanFile>();
+    this.beanFiles = new TreeMap<String, SpringBeanFile>();
   }
 
-  public void addDAO(final ObjectDAO dao) {
-    SpringBeanFile bf = new SpringBeanFile(this.f.getParentFile(), dao);
-    this.beanFiles.add(bf);
+  // For DAOs included in the facet
+  public void addFacetDAO(final String daoClassName, final String daoFullClassName) {
+    SpringBeanFile bf = new SpringBeanFile(this.f.getParentFile(), daoClassName, daoFullClassName, true);
+    this.beanFiles.put(daoFullClassName, bf);
+  }
+
+  // For ALL DAOS, included or not in the facet
+  public void addAnyDAO(final String daoClassName, final String daoFullClassName) {
+    SpringBeanFile bf = new SpringBeanFile(this.f.getParentFile(), daoClassName, daoFullClassName, false);
+    if (!this.beanFiles.containsKey(daoFullClassName)) {
+      this.beanFiles.put(daoFullClassName, bf);
+    }
   }
 
   public void generate(final FileGenerator fileGenerator) throws UncontrolledException {
@@ -37,13 +48,19 @@ public class SpringBeansFile {
 
       writeHeader(w);
 
-      writeDAOs(w);
+      writeDAOImports(w);
 
       writeFooter(w);
 
-      for (SpringBeanFile bf : this.beanFiles) {
-        bf.generate(fileGenerator);
+      int inCount = 0;
+      for (String daoFullClassName : this.beanFiles.keySet()) {
+        SpringBeanFile bf = this.beanFiles.get(daoFullClassName);
+        if (bf.isInFacet()) {
+          inCount++;
+          bf.generate(fileGenerator);
+        }
       }
+      log.debug("in-facet=" + inCount + " total=" + this.beanFiles.size());
 
     } catch (IOException e) {
       throw new UncontrolledException("Could not generate Spring beans file: could not write to file '" + f + "'.", e);
@@ -66,9 +83,9 @@ public class SpringBeansFile {
         + "\n");
   }
 
-  private void writeDAOs(final TextWriter w) throws IOException {
-    for (SpringBeanFile bf : this.beanFiles) {
-      ObjectDAO dao = bf.getDao();
+  private void writeDAOImports(final TextWriter w) throws IOException {
+    for (String daoFullClassName : this.beanFiles.keySet()) {
+      SpringBeanFile bf = this.beanFiles.get(daoFullClassName);
       w.write("  <import resource=\"./" + bf.getFileName() + "\"/>\n");
     }
   }

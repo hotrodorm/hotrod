@@ -30,10 +30,19 @@
     ?>
   </generators>
 
-  <table name="config_values" /> <!-- No PK -->
+  <facet name="f1">
+
+    <table name="config_values" /> <!-- No PK -->
+  
+    <table name="account" > <!-- identity by default PK -->
+      <column name="active" java-name="mainStatus" />
+    </table>
+
+  </facet>
 
 <?comment 
 ?>
+
 
   <table name="properties" />
   <table name="parameters">
@@ -41,9 +50,6 @@
   </table>
   <table name="log" />
 
-  <table name="account" > <!-- identity by default PK -->
-    <column name="active" java-name="mainStatus" />
-  </table>
   
   <table name="transaction" /> <!-- identity by default PK -->
 
@@ -143,6 +149,7 @@
       where a.current_balance >= 100;
     </select>
   </dao>
+
 
 <!-- 
   <fragment file="hotrod-extra1.xml" />

@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.hotrod.config.HotRodConfigTag;
@@ -23,7 +24,7 @@ public class MyBatisConfiguration extends GeneratableObject {
   private static final String MAPPERS_INSERTION_TOKEN = "<mappers/>";
 
   private HotRodConfigTag config;
-  private List<String> sourceFiles;
+  private TreeMap<String, Boolean> sourceFiles;
   private List<String> mapperCustom;
 
   private MyBatisSpringTag mybatisTag;
@@ -34,12 +35,18 @@ public class MyBatisConfiguration extends GeneratableObject {
     this.config = config;
     this.mybatisTag = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
     this.config.getGenerators().addGeneratableObject(this);
-    this.sourceFiles = new ArrayList<String>();
+    this.sourceFiles = new TreeMap<String, Boolean>();
     this.mapperCustom = new ArrayList<String>();
   }
 
-  public void addSourceFile(final String sourceFile) {
-    this.sourceFiles.add(sourceFile);
+  public void addFacetSourceFile(final String sourceFile) {
+    this.sourceFiles.put(sourceFile, true);
+  }
+
+  public void addAnySourceFile(final String sourceFile) {
+    if (!this.sourceFiles.containsKey(sourceFile)) {
+      this.sourceFiles.put(sourceFile, false);
+    }
   }
 
   private void gatherCustomMappers() {
@@ -119,8 +126,10 @@ public class MyBatisConfiguration extends GeneratableObject {
     StringBuilder sb = new StringBuilder();
     sb.append("  <mappers>\n");
 
-    for (String sourceFile : this.sourceFiles) {
-      sb.append("    <mapper resource=\"" + getFileURL(sourceFile) + "\" />\n");
+    for (String sourceFile : this.sourceFiles.keySet()) {
+      boolean inFacet = this.sourceFiles.get(sourceFile);
+      sb.append(
+          "    <mapper resource=\"" + getFileURL(sourceFile) + "\" />" + (inFacet ? "  <!-- in facet -->" : "") + "\n");
     }
 
     for (String m : this.mapperCustom) {

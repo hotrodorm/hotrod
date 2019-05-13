@@ -4,51 +4,46 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
 
 import hotrod.test.generation.Account;
-import hotrod.test.generation.TxBranch;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountDAO.AccountOrderBy;
-import hotrod.test.generation.primitives.ClientDAO;
-import hotrod.test.generation.primitives.TxBranchDAO;
-import hotrod.test.generation.primitives.TxBranchDAO.TxBranchOrderBy;
 
 public class Examples {
 
   public static void main(final String[] args) throws IOException, SQLException {
     Examples ex = new Examples();
     // ex.runExamples();
-    ex.runLiveSQL();
-    // ex.runSelectbyCriteria();
+//    ex.runLiveSQL();
+     ex.runSelectbyCriteria();
   }
 
-  @SuppressWarnings("unused")
-  private void runLiveSQL() throws SQLException {
-
-    ClientDAO dao = SpringBeanRetriever.getBean("clientDAO");
-
-    AccountDAO.Account a = AccountDAO.newTable("a");
-
-    // dao.createSelect()
-
-    List<Map<String, Object>> rows = dao //
-        .createSelect(a.createdOn, a.name, a.currentBalance, a.mainStatus, a.id, a.type) //
-        .from(a) //
-        .where(a.mainStatus.eq(1)) //
-        .and(a.currentBalance.lt(100)) //
-        .or(a.type.ne("S'AV")) //
-        .orderBy(a.createdOn.asc()) //
-        .execute() //
-    ;
-
-    if (rows != null) {
-      for (Map<String, Object> r : rows) {
-        System.out.println("row: " + r);
-      }
-    }
-
-  }
+//  @SuppressWarnings("unused")
+//  private void runLiveSQL() throws SQLException {
+//
+//    ClientDAO dao = SpringBeanRetriever.getBean("clientDAO");
+//
+//    AccountDAO.Account a = AccountDAO.newTable("a");
+//
+//    // dao.createSelect()
+//
+//    List<Map<String, Object>> rows = dao //
+//        .createSelect(a.createdOn, a.name, a.currentBalance, a.mainStatus, a.id, a.type) //
+//        .from(a) //
+//        .where(a.mainStatus.eq(1)) //
+//        .and(a.currentBalance.lt(100)) //
+//        .or(a.type.ne("S'AV")) //
+//        .orderBy(a.createdOn.asc()) //
+//        .execute() //
+//    ;
+//
+//    if (rows != null) {
+//      for (Map<String, Object> r : rows) {
+//        System.out.println("row: " + r);
+//      }
+//    }
+//
+//  }
 
   private void runSelectbyCriteria() throws SQLException {
 
@@ -178,15 +173,15 @@ public class Examples {
 
     // Views
 
-    {
-      TxBranchDAO tdao = SpringBeanRetriever.getBean("txBranchDAO");
-      TxBranch example = new TxBranch();
-      example.setBranchId(681);
-      List<TxBranch> txs = tdao.selectByExample(example, TxBranchOrderBy.ACCOUNT_ID, TxBranchOrderBy.AMOUNT);
-      for (TxBranch b : txs) {
-        System.out.println("Test #10: b=" + b);
-      }
-    }
+//    {
+//      TxBranchDAO tdao = SpringBeanRetriever.getBean("txBranchDAO");
+//      TxBranch example = new TxBranch();
+//      example.setBranchId(681);
+//      List<TxBranch> txs = tdao.selectByExample(example, TxBranchOrderBy.ACCOUNT_ID, TxBranchOrderBy.AMOUNT);
+//      for (TxBranch b : txs) {
+//        System.out.println("Test #10: b=" + b);
+//      }
+//    }
 
     // Selects
 
