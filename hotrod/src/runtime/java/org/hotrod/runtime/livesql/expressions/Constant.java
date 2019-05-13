@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.expressions;
 import java.util.Date;
 
 import org.hotrod.runtime.livesql.QueryWriter;
+import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 
 public class Constant<T> extends Expression<T> {
 
@@ -125,6 +126,18 @@ public class Constant<T> extends Expression<T> {
         w.write("" + this.value);
       }
     }
+  }
+
+  // Apply aliases
+
+  @Override
+  public void gatherAliases(final AliasGenerator ag) {
+    // nothing to do
+  }
+
+  @Override
+  public void designateAliases(final AliasGenerator ag) {
+    // nothing to do
   }
 
 }

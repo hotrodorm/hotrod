@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.expressions.strings;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
@@ -25,6 +26,22 @@ public class Concat extends StringFunction {
   @Override
   public void renderTo(final QueryWriter w) {
     w.getSqlDialect().getFunctionRenderer().concat(w, this.strings);
+  }
+
+  // Apply aliases
+
+  @Override
+  public void gatherAliases(final AliasGenerator ag) {
+    for (Expression<String> e : this.strings) {
+      e.gatherAliases(ag);
+    }
+  }
+
+  @Override
+  public void designateAliases(final AliasGenerator ag) {
+    for (Expression<String> e : this.strings) {
+      e.designateAliases(ag);
+    }
   }
 
 }

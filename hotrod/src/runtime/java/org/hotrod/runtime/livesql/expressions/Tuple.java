@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.expressions;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.exceptions.InvalidSQLClauseException;
 import org.hotrod.runtime.livesql.util.Separator;
@@ -30,6 +31,22 @@ public class Tuple extends Expression<Tuple> {
       expr.renderTo(w);
     }
     w.write(")");
+  }
+
+  // Apply aliases
+
+  @Override
+  public void gatherAliases(final AliasGenerator ag) {
+    for (Expression<?> e : this.expressions) {
+      e.gatherAliases(ag);
+    }
+  }
+
+  @Override
+  public void designateAliases(final AliasGenerator ag) {
+    for (Expression<?> e : this.expressions) {
+      e.designateAliases(ag);
+    }
   }
 
 }

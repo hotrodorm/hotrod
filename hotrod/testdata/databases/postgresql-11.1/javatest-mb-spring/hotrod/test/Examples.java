@@ -13,6 +13,8 @@ import hotrod.test.generation.TypesOther;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountDAO.AccountOrderBy;
 import hotrod.test.generation.primitives.AccountDAO.AccountTable;
+import hotrod.test.generation.primitives.TransactionDAO;
+import hotrod.test.generation.primitives.TransactionDAO.TransactionTable;
 import hotrod.test.generation.primitives.TypesBinaryDAO;
 import hotrod.test.generation.primitives.TypesBinaryDAO.TypesBinaryTable;
 import hotrod.test.generation.primitives.TypesOtherDAO;
@@ -26,7 +28,8 @@ public class Examples {
     // ex.runLiveSQL();
     // ex.runSelectbyCriteria();
     // ex.runSelectbyCriteriaBinary();
-    ex.runSelectbyCriteriaUUID();
+    // ex.runSelectbyCriteriaUUID();
+    ex.runSelectbyCriteriaIn();
   }
 
   // @SuppressWarnings("unused")
@@ -92,6 +95,19 @@ public class Examples {
 
     for (TypesOther r : rows) {
       System.out.println("row: [" + r.toJSON() + "]");
+    }
+  }
+
+  private void runSelectbyCriteriaIn() throws SQLException {
+    AccountDAO dao = SpringBeanRetriever.getBean("accountDAO");
+    AccountTable a = AccountDAO.newTable("c");
+    TransactionTable t = TransactionDAO.newTable("d");
+    List<Account> rows = dao.selectByCriteria(a.id.in( //
+        dao.createSelect(t.accountId).from(t).where(t.amount.ge(100)))) //
+        // .and(a.name.like("CHK%")) //
+        .execute();
+    for (Account r : rows) {
+      System.out.println("row: " + r);
     }
   }
 

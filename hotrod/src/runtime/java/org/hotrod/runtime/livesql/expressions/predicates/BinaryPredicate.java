@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
+import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
@@ -34,6 +35,20 @@ public abstract class BinaryPredicate extends Predicate {
     w.write(this.operator);
     w.write(" ");
     super.renderInner(this.right, w);
+  }
+
+  // Apply aliases
+
+  @Override
+  public void gatherAliases(final AliasGenerator ag) {
+    this.left.gatherAliases(ag);
+    this.right.gatherAliases(ag);
+  }
+
+  @Override
+  public void designateAliases(final AliasGenerator ag) {
+    this.left.designateAliases(ag);
+    this.right.designateAliases(ag);
   }
 
 }

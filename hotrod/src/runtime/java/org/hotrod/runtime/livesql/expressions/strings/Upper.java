@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.strings;
 
+import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.QueryWriter;
 
 public class Upper extends StringFunction {
@@ -14,6 +15,18 @@ public class Upper extends StringFunction {
   @Override
   public void renderTo(final QueryWriter w) {
     w.getSqlDialect().getFunctionRenderer().upper(w, this.string);
+  }
+
+  // Apply aliases
+
+  @Override
+  public void gatherAliases(final AliasGenerator ag) {
+    this.string.gatherAliases(ag);
+  }
+
+  @Override
+  public void designateAliases(final AliasGenerator ag) {
+    this.string.designateAliases(ag);
   }
 
 }

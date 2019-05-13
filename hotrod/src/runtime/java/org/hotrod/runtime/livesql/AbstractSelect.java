@@ -10,7 +10,6 @@ import org.hotrod.runtime.livesql.QueryWriter.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.exceptions.DuplicateAliasException;
-import org.hotrod.runtime.livesql.exceptions.InvalidSQLStatementException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
@@ -94,45 +93,16 @@ public abstract class AbstractSelect<R> extends Query {
 
   private LiveSQL prepareQuery() {
     QueryWriter w = new QueryWriter(this.sqlDialect);
+
+    AliasGenerator ag = new AliasGenerator();
+    this.gatherAliases(ag);
+    this.designateAliases(ag);
+
     renderTo(w);
     return w.getPreparedQuery();
   }
 
   public void renderTo(final QueryWriter w) {
-
-    // (re)assign aliases to tables without them
-
-    if (this.baseTable != null) {
-
-      this.baseTable.setDesignatedAlias(null);
-      for (Join j : this.joins) {
-        j.getTable().setDesignatedAlias(null);
-      }
-
-      AliasGenerator ag = new AliasGenerator();
-      try {
-        ag.register(this.baseTable.getAlias());
-      } catch (DuplicateAliasException e) {
-        throw new InvalidSQLStatementException("Duplicate table or view alias '" + this.baseTable.getAlias() + "'");
-      }
-      for (Join j : this.joins) {
-        try {
-          ag.register(j.getTable().getAlias());
-        } catch (DuplicateAliasException e) {
-          throw new InvalidSQLStatementException("Duplicate table or view alias '" + j.getTable().getAlias() + "'");
-        }
-      }
-
-      if (this.baseTable.getAlias() == null) {
-        this.baseTable.setDesignatedAlias(ag.next());
-      }
-      for (Join j : this.joins) {
-        if (j.getTable().getAlias() == null) {
-          j.getTable().setDesignatedAlias(ag.next());
-        }
-      }
-
-    }
 
     // retrieve pagination type
 
@@ -278,7 +248,7 @@ public abstract class AbstractSelect<R> extends Query {
 
   }
 
-  static class AliasGenerator {
+  public static class AliasGenerator {
 
     private Set<String> used = new HashSet<String>();
 
@@ -309,6 +279,64 @@ public abstract class AbstractSelect<R> extends Query {
       } while (true);
     }
 
+  }
+
+  // Apply aliases
+
+  public void gatherAliases(final AliasGenerator ag) {
+    if (this.baseTable != null) {
+      this.baseTable.gatherAliases(ag);
+    }
+    if (this.joins != null) {
+      for (Join j : this.joins) {
+        j.getTable().gatherAliases(ag);
+      }
+    }
+    if (this.wherePredicate != null) {
+      this.wherePredicate.gatherAliases(ag);
+    }
+    if (this.groupBy != null) {
+      for (Expression<?> e : this.groupBy) {
+        e.gatherAliases(ag);
+      }
+    }
+    if (this.havingPredicate != null) {
+      this.havingPredicate.gatherAliases(ag);
+    }
+    if (this.orderingTerms != null) {
+      for (@SuppressWarnings("unused")
+      OrderingTerm e : this.orderingTerms) {
+        //
+      }
+    }
+  }
+
+  public void designateAliases(final AliasGenerator ag) {
+    if (this.baseTable != null) {
+      this.baseTable.designateAliases(ag);
+    }
+    if (this.joins != null) {
+      for (Join j : this.joins) {
+        j.getTable().designateAliases(ag);
+      }
+    }
+    if (this.wherePredicate != null) {
+      this.wherePredicate.designateAliases(ag);
+    }
+    if (this.groupBy != null) {
+      for (Expression<?> e : this.groupBy) {
+        e.designateAliases(ag);
+      }
+    }
+    if (this.havingPredicate != null) {
+      this.havingPredicate.designateAliases(ag);
+    }
+    if (this.orderingTerms != null) {
+      for (@SuppressWarnings("unused")
+      OrderingTerm e : this.orderingTerms) {
+        //
+      }
+    }
   }
 
 }

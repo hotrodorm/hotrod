@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 
 import java.util.List;
 
+import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
@@ -103,6 +104,22 @@ public class WindowExpression<T> extends Expression<T> {
 
     w.write(")");
 
+  }
+
+  // Apply aliases
+
+  @Override
+  public void gatherAliases(final AliasGenerator ag) {
+    for (Expression<?> e : this.partitionBy) {
+      e.gatherAliases(ag);
+    }
+  }
+
+  @Override
+  public void designateAliases(final AliasGenerator ag) {
+    for (Expression<?> e : this.partitionBy) {
+      e.designateAliases(ag);
+    }
   }
 
 }

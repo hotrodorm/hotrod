@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
+import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
@@ -18,6 +19,19 @@ public class IsNull extends Predicate {
   public void renderTo(final QueryWriter w) {
     super.renderInner(this.a, w);
     w.write(" is null");
+  }
+
+  // Apply aliases
+
+  @Override
+  public void gatherAliases(final AliasGenerator ag) {
+    this.a.gatherAliases(ag);
+
+  }
+
+  @Override
+  public void designateAliases(final AliasGenerator ag) {
+    this.a.designateAliases(ag);
   }
 
 }

@@ -3,6 +3,8 @@ package org.hotrod.runtime.livesql;
 import java.util.List;
 import java.util.Map;
 
+import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+
 public class SelectLimitPhase implements ExecutableSelect {
 
   // Properties
@@ -27,6 +29,18 @@ public class SelectLimitPhase implements ExecutableSelect {
 
   public List<Map<String, Object>> execute() {
     return this.select.execute();
+  }
+
+  // Apply aliases
+
+  @Override
+  public void gatherAliases(final AliasGenerator ag) {
+    this.select.gatherAliases(ag);
+  }
+
+  @Override
+  public void designateAliases(final AliasGenerator ag) {
+    this.select.designateAliases(ag);
   }
 
 }

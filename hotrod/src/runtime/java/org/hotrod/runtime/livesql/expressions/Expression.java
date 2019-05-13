@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions;
 
+import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.ExecutableSelect;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.SQL;
@@ -89,6 +90,12 @@ public abstract class Expression<T> implements ResultSetColumn {
   protected int getPrecedence() {
     return precedence;
   }
+
+  // Apply aliases
+
+  public abstract void gatherAliases(final AliasGenerator ag);
+
+  public abstract void designateAliases(final AliasGenerator ag);
 
   // Column ordering
 

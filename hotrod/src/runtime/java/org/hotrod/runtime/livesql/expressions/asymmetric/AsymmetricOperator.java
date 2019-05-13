@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.asymmetric;
 
+import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.ExecutableSelect;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -28,6 +29,20 @@ public abstract class AsymmetricOperator extends Predicate {
     this.subquery.renderTo(w);
     w.exitLevel();
     w.write("\n)");
+  }
+
+  // Apply aliases
+
+  @Override
+  public void gatherAliases(final AliasGenerator ag) {
+    this.value.gatherAliases(ag);
+    this.subquery.gatherAliases(ag);
+  }
+
+  @Override
+  public void designateAliases(final AliasGenerator ag) {
+    this.value.designateAliases(ag);
+    this.subquery.designateAliases(ag);
   }
 
 }

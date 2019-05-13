@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.numbers;
 
+import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
@@ -15,6 +16,19 @@ public class Abs extends NumericFunction {
   @Override
   public void renderTo(final QueryWriter w) {
     w.getSqlDialect().getFunctionRenderer().abs(w, this.value);
+  }
+
+  // Apply aliases
+
+  @Override
+  public void gatherAliases(final AliasGenerator ag) {
+    this.value.gatherAliases(ag);
+
+  }
+
+  @Override
+  public void designateAliases(final AliasGenerator ag) {
+    this.value.designateAliases(ag);
   }
 
 }

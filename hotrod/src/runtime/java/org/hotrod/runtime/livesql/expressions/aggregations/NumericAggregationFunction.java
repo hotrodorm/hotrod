@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.aggregations;
 
+import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowableAggregationFunction;
@@ -30,6 +31,18 @@ public abstract class NumericAggregationFunction extends WindowableAggregationFu
 
     w.write(")");
 
+  }
+
+  // Apply aliases
+
+  @Override
+  public void gatherAliases(final AliasGenerator ag) {
+    this.expression.gatherAliases(ag);
+  }
+
+  @Override
+  public void designateAliases(final AliasGenerator ag) {
+    this.expression.designateAliases(ag);
   }
 
 }

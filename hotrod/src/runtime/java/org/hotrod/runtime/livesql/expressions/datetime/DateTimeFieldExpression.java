@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.datetime;
 
+import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
@@ -34,20 +35,16 @@ public class DateTimeFieldExpression extends Expression<DateTimeField> {
     MILLISECOND;
   }
 
-//  public static DateTimeFieldExpression from(final String s) {
-//    for (DateTimeField f : DateTimeField.values()) {
-//      if (f.name().equalsIgnoreCase(s)) {
-//        return new DateTimeFieldExpression(f);
-//      }
-//    }
-//    StringBuilder sb = new StringBuilder();
-//    Separator sep = new Separator();
-//    for (DateTimeField f : DateTimeField.values()) {
-//      sb.append(sep.render());
-//      sb.append(f.name().toLowerCase());
-//    }
-//    throw new UnsupportedFeatureException(
-//        "Invalid value '" + s + "' for a date/time field. Valid values are: " + sb.toString());
-//  }
+  // Apply aliases
+
+  @Override
+  public void gatherAliases(final AliasGenerator ag) {
+    // nothing to do
+  }
+
+  @Override
+  public void designateAliases(final AliasGenerator ag) {
+    // nothing to do
+  }
 
 }
