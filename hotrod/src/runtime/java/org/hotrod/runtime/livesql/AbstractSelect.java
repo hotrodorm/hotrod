@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.ibatis.session.SqlSession;
+import org.apache.log4j.Logger;
 import org.hotrod.runtime.livesql.QueryWriter.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
@@ -16,6 +17,8 @@ import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
 public abstract class AbstractSelect<R> extends Query {
+
+  private static final Logger log = Logger.getLogger(AbstractSelect.class);
 
   public static final String LIVE_SQL_NAMESPACE = "livesql";
   public static final String LIVE_SQL_STATEMENT_NAME = "select";
@@ -95,8 +98,11 @@ public abstract class AbstractSelect<R> extends Query {
     QueryWriter w = new QueryWriter(this.sqlDialect);
 
     AliasGenerator ag = new AliasGenerator();
+    log.info("will gather aliases.");
     this.gatherAliases(ag);
+    log.info("aliases gathered.");
     this.designateAliases(ag);
+    log.info("aliases designated.");
 
     renderTo(w);
     return w.getPreparedQuery();

@@ -63,7 +63,7 @@ public class Examples {
   private void runSelectbyCriteria() throws SQLException {
     AccountDAO dao = SpringBeanRetriever.getBean("accountDAO");
     AccountTable a = AccountDAO.newTable();
-    List<Account> rows = dao.selectByCriteria(a.currentBalance.gt(100)) //
+    List<Account> rows = dao.selectByCriteria(a, a.currentBalance.gt(100)) //
         .and(a.name.like("CHK%")) //
         .execute();
     for (Account r : rows) {
@@ -77,7 +77,7 @@ public class Examples {
     searched[1] = 0x35;
     TypesBinaryDAO dao = SpringBeanRetriever.getBean("typesBinaryDAO");
     TypesBinaryTable b = TypesBinaryDAO.newTable();
-    List<TypesBinary> rows = dao.selectByCriteria(b.bin1.eq(searched)) //
+    List<TypesBinary> rows = dao.selectByCriteria(b, b.bin1.eq(searched)) //
         .execute();
     for (TypesBinary r : rows) {
       System.out.println("row: [" + r.getBol1() + ", " + HexaUtils.toHexa(r.getBin1()) + "]");
@@ -90,7 +90,7 @@ public class Examples {
     searched[1] = 0x35;
     TypesOtherDAO dao = SpringBeanRetriever.getBean("typesOtherDAO");
     TypesOtherTable b = TypesOtherDAO.newTable();
-    List<TypesOther> rows = dao.selectByCriteria(b.uui1.ne("33bb9554-c616-42e6-a9c6-88d3bba4221c")) //
+    List<TypesOther> rows = dao.selectByCriteria(b, b.uui1.ne("33bb9554-c616-42e6-a9c6-88d3bba4221c")) //
         .execute();
 
     for (TypesOther r : rows) {
@@ -102,7 +102,7 @@ public class Examples {
     AccountDAO dao = SpringBeanRetriever.getBean("accountDAO");
     AccountTable a = AccountDAO.newTable("c");
     TransactionTable t = TransactionDAO.newTable("d");
-    List<Account> rows = dao.selectByCriteria(a.id.in( //
+    List<Account> rows = dao.selectByCriteria(a, a.id.in( //
         dao.createSelect(t.accountId).from(t).where(t.amount.ge(100)))) //
         // .and(a.name.like("CHK%")) //
         .execute();

@@ -16,7 +16,8 @@ public abstract class TableOrView extends DatabaseObject {
   }
 
   public final String getAlias() {
-    System.out.println("[" + super.getName() + "] alias=" + this.alias + " designatedAlias=" + this.designatedAlias);
+    System.out.println(">>> [" + super.getName() + "] @ " + System.identityHashCode(this) + " alias=" + this.alias
+        + " designatedAlias=" + this.designatedAlias);
     return this.alias != null ? this.alias : this.designatedAlias;
   }
 

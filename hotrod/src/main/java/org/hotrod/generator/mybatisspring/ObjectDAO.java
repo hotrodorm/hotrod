@@ -551,18 +551,21 @@ public class ObjectDAO extends GeneratableObject {
     String mapperName = this.mapper.getFullMapperIdSelectByCriteria();
     String constructor = this.isTable() ? "newTable" : "newView";
 
-    println("  public CriteriaWherePhase<" + voFullClassName + "> selectByCriteria(final Predicate predicate) {");
-    println("    " + daoClassName + "." + this.metadataClassName + " baseTable = " + daoClassName + "." + constructor
-        + "();");
-    println("    return new CriteriaWherePhase<" + voFullClassName + ">(baseTable, this.sqlDialect, this.sqlSession,");
-    println("        predicate, \"" + mapperName + "\");");
-    println("  }");
-    println();
+    // println(" public CriteriaWherePhase<" + voFullClassName + ">
+    // selectByCriteria(final Predicate predicate) {");
+    // println(" " + daoClassName + "." + this.metadataClassName + " baseTable =
+    // " + daoClassName + "." + constructor
+    // + "();");
+    // println(" return new CriteriaWherePhase<" + voFullClassName +
+    // ">(baseTable, this.sqlDialect, this.sqlSession,");
+    // println(" predicate, \"" + mapperName + "\");");
+    // println(" }");
+    // println();
 
     println("  public CriteriaWherePhase<" + voFullClassName + "> selectByCriteria(final " + daoClassName + "."
-        + this.metadataClassName + " baseTable,");
+        + this.metadataClassName + " from,");
     println("      final Predicate predicate) {");
-    println("    return new CriteriaWherePhase<" + voFullClassName + ">(baseTable, this.sqlDialect, this.sqlSession,");
+    println("    return new CriteriaWherePhase<" + voFullClassName + ">(from, this.sqlDialect, this.sqlSession,");
     println("        predicate, \"" + mapperName + "\");");
     println("  }");
 
