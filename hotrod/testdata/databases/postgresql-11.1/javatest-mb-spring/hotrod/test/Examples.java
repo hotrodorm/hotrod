@@ -100,8 +100,8 @@ public class Examples {
 
   private void runSelectbyCriteriaIn() throws SQLException {
     AccountDAO dao = SpringBeanRetriever.getBean("accountDAO");
-    AccountTable a = AccountDAO.newTable("c");
-    TransactionTable t = TransactionDAO.newTable("d");
+    AccountTable a = AccountDAO.newTable("b");
+    TransactionTable t = TransactionDAO.newTable("a");
     List<Account> rows = dao.selectByCriteria(a, a.id.in( //
         dao.createSelect(t.accountId).from(t).where(t.amount.ge(100)))) //
         // .and(a.name.like("CHK%")) //
