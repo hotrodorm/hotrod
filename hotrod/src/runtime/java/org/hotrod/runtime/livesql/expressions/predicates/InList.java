@@ -1,6 +1,5 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
@@ -13,11 +12,10 @@ public class InList<T> extends Predicate {
   private Expression<T> value;
   private List<Expression<T>> expressions;
 
-  @SafeVarargs
-  public InList(final Expression<T> value, final Expression<T>... list) {
+  public InList(final Expression<T> value, final List<Expression<T>> list) {
     super(Expression.PRECEDENCE_IN);
     this.value = value;
-    this.expressions = Arrays.asList(list);
+    this.expressions = list;
   }
 
   @Override

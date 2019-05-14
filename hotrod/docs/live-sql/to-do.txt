@@ -1,23 +1,24 @@
-Implement:
  - IN (constant...) / NOT IN (constant...)
-  
+
+-----------
 
 Validate:
  - each table/view instance is used once at most.
  - all tables/view have different aliases (the declared ones).
  - grouping rules.
  - having rules.
- - 
+
  - implement UNION, UNION ALL, INTERSECT, EXCEPT.
+      y SELECT
+      y FROM/JOIN
+      y WHERE
+      y GROUP BY
+      y HAVING
+      x ORDER BY
+      x OFFSET
+      x LIMIT
+
  - operator types for IN operator to subqueries.
  
  
-y SELECT
-y FROM/JOIN
-y WHERE
-y GROUP BY
-y HAVING
-x ORDER BY
-x OFFSET
-x LIMIT
 

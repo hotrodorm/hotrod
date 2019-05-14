@@ -105,6 +105,7 @@ public class Examples {
     List<Account> rows = dao.selectByCriteria(a, a.id.in( //
         dao.createSelect(t.accountId).from(t).where(t.amount.ge(100)))) //
         // .and(a.name.like("CHK%")) //
+        .and(a.id.notIn(123, 456, 789))
         .execute();
     for (Account r : rows) {
       System.out.println("row: " + r);

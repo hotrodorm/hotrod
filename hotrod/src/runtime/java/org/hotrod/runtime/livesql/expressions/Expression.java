@@ -1,5 +1,9 @@
 package org.hotrod.runtime.livesql.expressions;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.ExecutableSelect;
 import org.hotrod.runtime.livesql.QueryWriter;
@@ -220,11 +224,27 @@ public abstract class Expression<T> implements ResultSetColumn {
   // In list
 
   public Predicate in(final Expression<T>... values) {
-    return new InList<T>(this, values);
+    return new InList<T>(this, Arrays.asList(values));
+  }
+
+  public Predicate in(final T... values) {
+    List<Expression<T>> list = new ArrayList<Expression<T>>();
+    for (T t : values) {
+      list.add(SQL.box(t));
+    }
+    return new InList<T>(this, list);
   }
 
   public Predicate notIn(final Expression<T>... values) {
-    return new NotInList<T>(this, values);
+    return new NotInList<T>(this, Arrays.asList(values));
+  }
+
+  public Predicate notIn(final T... values) {
+    List<Expression<T>> list = new ArrayList<Expression<T>>();
+    for (T t : values) {
+      list.add(SQL.box(t));
+    }
+    return new NotInList<T>(this, list);
   }
 
   // In subuqery
