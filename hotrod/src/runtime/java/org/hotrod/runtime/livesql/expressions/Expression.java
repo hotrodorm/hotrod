@@ -10,24 +10,26 @@ import org.hotrod.runtime.livesql.expressions.asymmetric.GeAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.GeAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.GtAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.GtAny;
-import org.hotrod.runtime.livesql.expressions.asymmetric.In;
+import org.hotrod.runtime.livesql.expressions.asymmetric.InSubquery;
 import org.hotrod.runtime.livesql.expressions.asymmetric.LeAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.LeAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.LtAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.LtAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NeAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NeAny;
-import org.hotrod.runtime.livesql.expressions.asymmetric.NotIn;
+import org.hotrod.runtime.livesql.expressions.asymmetric.NotInSubquery;
 import org.hotrod.runtime.livesql.expressions.predicates.Between;
 import org.hotrod.runtime.livesql.expressions.predicates.Equal;
 import org.hotrod.runtime.livesql.expressions.predicates.GreaterThan;
 import org.hotrod.runtime.livesql.expressions.predicates.GreaterThanOrEqualTo;
+import org.hotrod.runtime.livesql.expressions.predicates.InList;
 import org.hotrod.runtime.livesql.expressions.predicates.IsNotNull;
 import org.hotrod.runtime.livesql.expressions.predicates.IsNull;
 import org.hotrod.runtime.livesql.expressions.predicates.LessThan;
 import org.hotrod.runtime.livesql.expressions.predicates.LessThanOrEqualTo;
 import org.hotrod.runtime.livesql.expressions.predicates.NotBetween;
 import org.hotrod.runtime.livesql.expressions.predicates.NotEqual;
+import org.hotrod.runtime.livesql.expressions.predicates.NotInList;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderByDirectionStage;
 
@@ -215,14 +217,24 @@ public abstract class Expression<T> implements ResultSetColumn {
     return new IsNull(this);
   }
 
-  // In
+  // In list
+
+  public Predicate in(final Expression<T>... values) {
+    return new InList<T>(this, values);
+  }
+
+  public Predicate notIn(final Expression<T>... values) {
+    return new NotInList<T>(this, values);
+  }
+
+  // In subuqery
 
   public Predicate in(final ExecutableSelect subquery) {
-    return new In(this, subquery);
+    return new InSubquery(this, subquery);
   }
 
   public Predicate notIn(final ExecutableSelect subquery) {
-    return new NotIn(this, subquery);
+    return new NotInSubquery(this, subquery);
   }
 
   // Any

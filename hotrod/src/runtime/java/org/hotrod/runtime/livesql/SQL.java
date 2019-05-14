@@ -42,48 +42,6 @@ import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
 public class SQL {
 
-  // select
-
-  // public static SelectColumns createSelect() {
-  // return new SelectColumns(resolveSQLDialect(), false);
-  // }
-  //
-  // public static SelectColumns createSelect(final ResultSetColumn...
-  // resultSetColumns) {
-  // return new SelectColumns(resolveSQLDialect(), false, resultSetColumns);
-  // }
-  //
-  // public static SelectColumns createSubquery() {
-  // return new SelectColumns(resolveSQLDialect(), false);
-  // }
-  //
-  // public static SelectColumns createSubquery(final ReferenceableExpression...
-  // referenceableExpressions) {
-  // return new SelectColumns(resolveSQLDialect(), false,
-  // referenceableExpressions);
-  // }
-  //
-  // // select distinct
-  //
-  // public static SelectColumns createSelectDistinct() {
-  // return new SelectColumns(resolveSQLDialect(), true);
-  // }
-  //
-  // public static SelectColumns createSelectDistinct(final ResultSetColumn...
-  // resultSetColumns) {
-  // return new SelectColumns(resolveSQLDialect(), true, resultSetColumns);
-  // }
-  //
-  // public static SelectColumns createSubqueryDistinct() {
-  // return new SelectColumns(resolveSQLDialect(), true);
-  // }
-  //
-  // public static SelectColumns createSubqueryDistinct(final
-  // ReferenceableExpression... referenceableExpressions) {
-  // return new SelectColumns(resolveSQLDialect(), true,
-  // referenceableExpressions);
-  // }
-
   // Tuples
 
   public static Tuple tuple(final Expression<?>... expressions) {
