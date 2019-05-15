@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
@@ -91,7 +91,7 @@ public class CaseClause<T> extends Expression<T> {
   // Validation
 
   @Override
-  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     for (CaseWhen<T> w : this.whens) {
       w.predicate.validateTableReferences(tableReferences, ag);
       w.value.validateTableReferences(tableReferences, ag);

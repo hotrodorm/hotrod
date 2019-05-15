@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.asymmetric;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.ExecutableSelect;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -35,7 +35,7 @@ public abstract class AsymmetricOperator extends Predicate {
   // Validation
 
   @Override
-  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     this.value.validateTableReferences(tableReferences, ag);
     this.subquery.validateTableReferences(tableReferences, ag);
   }

@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.metadata;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 
@@ -46,7 +46,7 @@ public class StringColumn extends StringExpression implements Column {
   // Validation
 
   @Override
-  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     // nothing to do. No inner queries
   }
 

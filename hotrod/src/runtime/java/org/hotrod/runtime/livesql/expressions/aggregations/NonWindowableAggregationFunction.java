@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.aggregations;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
@@ -56,7 +56,7 @@ public abstract class NonWindowableAggregationFunction<T> extends AggregationFun
   // Validation
 
   @Override
-  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     this.expression.validateTableReferences(tableReferences, ag);
   }
 

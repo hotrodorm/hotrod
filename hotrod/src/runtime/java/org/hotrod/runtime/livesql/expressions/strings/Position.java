@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.strings;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 
@@ -26,7 +26,7 @@ public class Position extends StringFunction {
   // Validation
 
   @Override
-  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     this.substring.validateTableReferences(tableReferences, ag);
     this.string.validateTableReferences(tableReferences, ag);
     this.from.validateTableReferences(tableReferences, ag);

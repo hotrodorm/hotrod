@@ -137,8 +137,8 @@ public abstract class AbstractSelect<R> extends Query {
 
     if (this.baseTable != null) {
 
-      w.write("\nFROM " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.baseTable) + " "
-          + this.baseTable.getAlias());
+      w.write("\nFROM " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(this.baseTable)
+          + (this.baseTable.getAlias() == null ? "" : " " + this.baseTable.getAlias()));
 
       // joins
 
@@ -146,7 +146,7 @@ public abstract class AbstractSelect<R> extends Query {
         String joinKeywords;
         joinKeywords = this.sqlDialect.getJoinRenderer().renderJoinKeywords(j);
         w.write("\n" + joinKeywords + " " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(j.getTable())
-            + " " + j.getTable().getAlias());
+            + (j.getTable().getAlias() == null ? "" : " " + j.getTable().getAlias()));
         try {
           w.write(" on ");
           PredicatedJoin pj = (PredicatedJoin) j;
@@ -241,17 +241,19 @@ public abstract class AbstractSelect<R> extends Query {
 
     // 1. Validate a table/view is not used more than once
 
-    TableReferencesValidator tableReferences = new TableReferencesValidator();
+    TableReferences tableReferences = new TableReferences();
     AliasGenerator ag = new AliasGenerator();
     this.validateTableReferences(tableReferences, ag);
 
-    // 2. Desingnate aliases to tables/views that do not declare them
+    // 2. Designate aliases to tables/views that do not declare them
 
-    this.designateAliases(ag);
+    if (tableReferences.getTableReferences().size() > 1) {
+      this.assignNonDeclaredAliases(ag);
+    }
 
   }
 
-  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     if (this.baseTable != null) {
       this.baseTable.validateTableReferences(tableReferences, ag);
     }
@@ -280,7 +282,7 @@ public abstract class AbstractSelect<R> extends Query {
 
   }
 
-  public static class TableReferencesValidator {
+  public static class TableReferences {
 
     private Set<DatabaseObject> tableReferences = new HashSet<DatabaseObject>();
     private Set<String> aliases = new HashSet<String>();
@@ -294,6 +296,14 @@ public abstract class AbstractSelect<R> extends Query {
       this.tableReferences.add(databaseObject);
     }
 
+    public Set<DatabaseObject> getTableReferences() {
+      return tableReferences;
+    }
+
+    public Set<String> getAliases() {
+      return aliases;
+    }
+
   }
 
   public static class AliasGenerator {
@@ -303,10 +313,19 @@ public abstract class AbstractSelect<R> extends Query {
     private char letter = 'a';
     private int seq = 0;
 
-    public void register(final String alias) {
+    public void register(final String alias, final DatabaseObject databaseObject) {
       if (alias == null) {
         return;
       }
+
+      if (alias.isEmpty()) {
+        throw new InvalidLiveSQLStatementException(
+            "Empty alias found for " + databaseObject.getType().toLowerCase() + " "
+                + databaseObject.renderUnescapedName() + ". Any specified alias for a table or view must be non-empty. "
+                + "Use any combination of alphanumeric characters as an alias. "
+                + "Usually aliases are very short, commonly a single letter.");
+      }
+
       if (!this.used.add(alias)) {
         throw new InvalidLiveSQLStatementException(
             "Same alias '" + alias + "' for tables/views cannot be used multiple times in a Live SQL statement. "
@@ -332,7 +351,7 @@ public abstract class AbstractSelect<R> extends Query {
 
   }
 
-  public void designateAliases(final AliasGenerator ag) {
+  public void assignNonDeclaredAliases(final AliasGenerator ag) {
     if (this.baseTable != null) {
       this.baseTable.designateAliases(ag);
     }

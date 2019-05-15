@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.numbers;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
@@ -24,7 +24,7 @@ public class Trunc extends NumericFunction {
   // Validation
 
   @Override
-  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     this.value.validateTableReferences(tableReferences, ag);
     this.places.validateTableReferences(tableReferences, ag);
   }

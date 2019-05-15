@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
@@ -57,13 +57,13 @@ public class SelectGroupByPhase implements ExecutableSelect {
   // Validation
 
   @Override
-  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
     this.select.validateTableReferences(tableReferences, ag);
   }
 
   @Override
   public void designateAliases(final AliasGenerator ag) {
-    this.select.designateAliases(ag);
+    this.select.assignNonDeclaredAliases(ag);
   }
 
 }

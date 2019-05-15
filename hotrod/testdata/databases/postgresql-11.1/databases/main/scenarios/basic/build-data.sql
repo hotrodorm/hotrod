@@ -93,3 +93,6 @@ insert into types_binary (bol1, bin1) values (false, '\x3135');
 insert into types_other (uui1) values ('33bb9554-c616-42e6-a9c6-88d3bba4221c');
 insert into types_other (uui1) values ('5af75c52-cb8e-44fb-93c8-1d46da518ee6');
 
+insert into product (id, name, "Name") values (123, 'keyboard', '104-key Keyboard');
+insert into product (id, name, "Name") values (456, 'monitor', '27-inch monitor');
+

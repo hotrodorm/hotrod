@@ -242,6 +242,16 @@ create table cursor_example1 (
   data varchar(1000) not null
 );
 
+-- ===============================
+-- Column names in different cases
+-- ===============================
+
+create table product (
+  id bigint not null primary key,
+  name varchar(20) not null,
+  "Name" varchar(20) not null
+);
+
 -- =========
 -- All Types
 -- =========

@@ -24,5 +24,9 @@ Validate:
 
  - operator types for IN operator to subqueries.
  
- 
+Defects:
+
+ - When multiple columns have the same name with different letter case, the generated source
+   code becomes invalid because of duplicate setters/getters, ordering, etc.
+  
 
