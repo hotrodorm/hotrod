@@ -22,16 +22,9 @@ public abstract class TableOrView extends DatabaseObject {
 
   // Validation
 
-  public void validateTableReferences(final TableReferencesValidator tableReferences) {
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
     tableReferences.register(this);
-  }
-
-  public void gatherAliases(final AliasGenerator ag) {
-    try {
-      ag.register(this.alias);
-    } catch (DuplicateLiveSQLAliasException e) {
-      throw new InvalidLiveSQLStatementException("Duplicate table or view alias '" + this.alias + "'");
-    }
+    ag.register(this.alias);
   }
 
   public void designateAliases(final AliasGenerator ag) {

@@ -9,7 +9,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.QueryWriter.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
-import org.hotrod.runtime.livesql.exceptions.DuplicateLiveSQLAliasException;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
@@ -254,11 +253,11 @@ public abstract class AbstractSelect<R> extends Query {
 
   public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
     if (this.baseTable != null) {
-      this.baseTable.validateTableReferences(tableReferences);
+      this.baseTable.validateTableReferences(tableReferences, ag);
     }
     if (this.joins != null) {
       for (Join j : this.joins) {
-        j.getTable().validateTableReferences(tableReferences);
+        j.getTable().validateTableReferences(tableReferences, ag);
       }
     }
     if (this.wherePredicate != null) {
@@ -284,11 +283,12 @@ public abstract class AbstractSelect<R> extends Query {
   public static class TableReferencesValidator {
 
     private Set<DatabaseObject> tableReferences = new HashSet<DatabaseObject>();
+    private Set<String> aliases = new HashSet<String>();
 
     public void register(final DatabaseObject databaseObject) {
       if (this.tableReferences.contains(databaseObject)) {
         throw new InvalidLiveSQLStatementException(SUtils.upperFirst(databaseObject.getType()) + " "
-            + databaseObject.renderUnescapedName() + " is used more than once in the Live SQL statement. "
+            + databaseObject.renderUnescapedName() + " is used multiple times in the Live SQL statement. "
             + "Every table or view can only be used once in a from() or join() methods of a Live SQL statement.");
       }
       this.tableReferences.add(databaseObject);
@@ -303,12 +303,15 @@ public abstract class AbstractSelect<R> extends Query {
     private char letter = 'a';
     private int seq = 0;
 
-    public void register(final String alias) throws DuplicateLiveSQLAliasException {
+    public void register(final String alias) {
       if (alias == null) {
         return;
       }
       if (!this.used.add(alias)) {
-        throw new DuplicateLiveSQLAliasException();
+        throw new InvalidLiveSQLStatementException(
+            "Same alias '" + alias + "' for tables/views cannot be used multiple times in a Live SQL statement. "
+                + "If a query includes multiple tables or views "
+                + "two of them cannot share the same alias, even when using subqueries.");
       }
     }
 
