@@ -8,9 +8,9 @@ import org.hotrod.runtime.livesql.QueryWriter;
  *                          ^      ^        
  *                          |      |
  *  <I> ReferenceableExpression  Expression
- *           ^               ^    ^
- *           |               |    |       
- *      AliasedExpression    Column   
+ *           ^               ^    ^      ^
+ *           |               |    |      |   
+ *      AliasedExpression    Column     ...
  *
  *    
  * SelectSubquery<ReferenceableExpression>

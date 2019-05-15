@@ -5,7 +5,8 @@
 -----------
 
 Validate:
- - All result set columns have different names.
+
+ - All result set columns have names and all names are different (ignoring letter case).
  - Grouping rules. Result set columns can be only one of the following:
      * a column named in the GROUP BY clause.
      * an aggregation expression.
