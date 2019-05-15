@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.datetime;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
@@ -35,10 +36,10 @@ public class DateTimeFieldExpression extends Expression<DateTimeField> {
     MILLISECOND;
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
     // nothing to do
   }
 

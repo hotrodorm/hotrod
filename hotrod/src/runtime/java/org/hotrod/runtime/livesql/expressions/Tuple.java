@@ -4,8 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.QueryWriter;
-import org.hotrod.runtime.livesql.exceptions.InvalidSQLClauseException;
+import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLClauseException;
 import org.hotrod.runtime.livesql.util.Separator;
 
 public class Tuple extends Expression<Tuple> {
@@ -17,7 +18,7 @@ public class Tuple extends Expression<Tuple> {
   public Tuple(final Expression<?>... expressions) {
     super(PRECEDENCE);
     if (expressions == null || expressions.length == 0) {
-      throw new InvalidSQLClauseException("A tuple cannot be empty. Please add expressions to the tuple");
+      throw new InvalidLiveSQLClauseException("A tuple cannot be empty. Please add expressions to the tuple");
     }
     this.expressions = Arrays.asList(expressions);
   }
@@ -33,12 +34,12 @@ public class Tuple extends Expression<Tuple> {
     w.write(")");
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
     for (Expression<?> e : this.expressions) {
-      e.gatherAliases(ag);
+      e.validateTableReferences(tableReferences, ag);
     }
   }
 

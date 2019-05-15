@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.ExecutableSelect;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.SQL;
@@ -99,7 +100,7 @@ public abstract class Expression<T> implements ResultSetColumn {
 
   // Apply aliases
 
-  public abstract void gatherAliases(final AliasGenerator ag);
+  public abstract void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag);
 
   public abstract void designateAliases(final AliasGenerator ag);
 

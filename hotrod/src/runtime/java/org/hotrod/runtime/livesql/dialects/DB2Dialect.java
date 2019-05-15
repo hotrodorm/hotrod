@@ -8,7 +8,7 @@ import org.hotrod.runtime.livesql.Join;
 import org.hotrod.runtime.livesql.LeftOuterJoin;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.RightOuterJoin;
-import org.hotrod.runtime.livesql.exceptions.UnsupportedFeatureException;
+import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.util.Separator;
@@ -35,7 +35,7 @@ public class DB2Dialect extends SQLDialect {
     return new JoinRenderer() {
 
       @Override
-      public String renderJoinKeywords(final Join join) throws UnsupportedFeatureException {
+      public String renderJoinKeywords(final Join join) throws UnsupportedLiveSQLFeatureException {
         if (join instanceof InnerJoin) {
           return "JOIN";
         } else if (join instanceof LeftOuterJoin) {
@@ -61,7 +61,7 @@ public class DB2Dialect extends SQLDialect {
       public PaginationType getPaginationType(final Integer offset, final Integer limit) {
         if (offset != null) {
           if (!versionIsAtLeast(11, 1)) {
-            throw new UnsupportedFeatureException("This version of DB2 (" + renderVersion()
+            throw new UnsupportedLiveSQLFeatureException("This version of DB2 (" + renderVersion()
                 + ") does not support the OFFSET clause. DB2 versions 11.1 and newer do");
           }
         }
@@ -70,14 +70,14 @@ public class DB2Dialect extends SQLDialect {
 
       @Override
       public void renderTopPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("In DB2 pagination cannot be rendered at the top");
+        throw new UnsupportedLiveSQLFeatureException("In DB2 pagination cannot be rendered at the top");
       }
 
       @Override
       public void renderBottomPagination(final Integer offset, final Integer limit, final QueryWriter w) {
         if (offset != null) {
           if (!versionIsAtLeast(11, 1)) {
-            throw new UnsupportedFeatureException("This version of DB2 (" + renderVersion()
+            throw new UnsupportedLiveSQLFeatureException("This version of DB2 (" + renderVersion()
                 + ") does not support the OFFSET clause. Support starts in DB2 11.1");
           }
         }
@@ -91,12 +91,12 @@ public class DB2Dialect extends SQLDialect {
 
       @Override
       public void renderBeginEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("In DB2 pagination cannot be rendered in an enclosing way");
+        throw new UnsupportedLiveSQLFeatureException("In DB2 pagination cannot be rendered in an enclosing way");
       }
 
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("In DB2 pagination cannot be rendered in an enclosing way");
+        throw new UnsupportedLiveSQLFeatureException("In DB2 pagination cannot be rendered in an enclosing way");
       }
 
     };
@@ -114,7 +114,7 @@ public class DB2Dialect extends SQLDialect {
       public void groupConcat(final QueryWriter w, final boolean distinct, final Expression<String> value,
           final List<OrderingTerm> ordering, final Expression<String> separator) {
         if (distinct) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "DB2 does not support DISTINCT on the GROUP_CONCAT() function (listagg())");
         }
         w.write("listagg(");

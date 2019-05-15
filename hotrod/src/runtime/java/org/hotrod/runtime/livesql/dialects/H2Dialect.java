@@ -8,7 +8,7 @@ import org.hotrod.runtime.livesql.Join;
 import org.hotrod.runtime.livesql.LeftOuterJoin;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.RightOuterJoin;
-import org.hotrod.runtime.livesql.exceptions.UnsupportedFeatureException;
+import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
 public class H2Dialect extends SQLDialect {
@@ -33,7 +33,7 @@ public class H2Dialect extends SQLDialect {
     return new JoinRenderer() {
 
       @Override
-      public String renderJoinKeywords(final Join join) throws UnsupportedFeatureException {
+      public String renderJoinKeywords(final Join join) throws UnsupportedLiveSQLFeatureException {
         if (join instanceof InnerJoin) {
           return "JOIN";
         } else if (join instanceof LeftOuterJoin) {
@@ -62,7 +62,7 @@ public class H2Dialect extends SQLDialect {
 
       @Override
       public void renderTopPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in H2");
+        throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in H2");
       }
 
       @Override
@@ -80,12 +80,12 @@ public class H2Dialect extends SQLDialect {
 
       @Override
       public void renderBeginEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in H2");
+        throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in H2");
       }
 
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in H2");
+        throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in H2");
       }
 
     };
@@ -116,7 +116,7 @@ public class H2Dialect extends SQLDialect {
 
       public void trunc(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
         if (places == null) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "H2 requires the number of decimal places to be specified when using the TRUNC() function");
         }
         this.write(w, "trunc", x, places);

@@ -9,11 +9,14 @@ import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.QueryWriter.LiveSQL;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
-import org.hotrod.runtime.livesql.exceptions.DuplicateAliasException;
+import org.hotrod.runtime.livesql.exceptions.DuplicateLiveSQLAliasException;
+import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.metadata.DatabaseObject;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.util.SUtils;
 
 public abstract class AbstractSelect<R> extends Query {
 
@@ -92,12 +95,8 @@ public abstract class AbstractSelect<R> extends Query {
   // Execute
 
   private LiveSQL prepareQuery() {
+    validateQuery();
     QueryWriter w = new QueryWriter(this.sqlDialect);
-
-    AliasGenerator ag = new AliasGenerator();
-    this.gatherAliases(ag);
-    this.designateAliases(ag);
-
     renderTo(w);
     return w.getPreparedQuery();
   }
@@ -233,16 +232,67 @@ public abstract class AbstractSelect<R> extends Query {
 
     List<R> rows = this.sqlSession.selectList(this.statement, q.getConsolidatedParameters());
 
-    // System.out.println("rows[" + (rows == null ? "null" : rows.size()) +
-    // "]:");
-
-    // if (rows != null) {
-    // for (R r : rows) {
-    // System.out.println("row: " + r);
-    // }
-    // }
-
     return rows;
+
+  }
+
+  // Validation
+
+  private void validateQuery() {
+
+    // 1. Validate a table/view is not used more than once
+
+    TableReferencesValidator tableReferences = new TableReferencesValidator();
+    AliasGenerator ag = new AliasGenerator();
+    this.validateTableReferences(tableReferences, ag);
+
+    // 2. Desingnate aliases to tables/views that do not declare them
+
+    this.designateAliases(ag);
+
+  }
+
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+    if (this.baseTable != null) {
+      this.baseTable.validateTableReferences(tableReferences);
+    }
+    if (this.joins != null) {
+      for (Join j : this.joins) {
+        j.getTable().validateTableReferences(tableReferences);
+      }
+    }
+    if (this.wherePredicate != null) {
+      this.wherePredicate.validateTableReferences(tableReferences, ag);
+    }
+    if (this.groupBy != null) {
+      for (Expression<?> e : this.groupBy) {
+        e.validateTableReferences(tableReferences, ag);
+      }
+    }
+    if (this.havingPredicate != null) {
+      this.havingPredicate.validateTableReferences(tableReferences, ag);
+    }
+    if (this.orderingTerms != null) {
+      for (@SuppressWarnings("unused")
+      OrderingTerm e : this.orderingTerms) {
+        //
+      }
+    }
+
+  }
+
+  public static class TableReferencesValidator {
+
+    private Set<DatabaseObject> tableReferences = new HashSet<DatabaseObject>();
+
+    public void register(final DatabaseObject databaseObject) {
+      if (this.tableReferences.contains(databaseObject)) {
+        throw new InvalidLiveSQLStatementException(SUtils.upperFirst(databaseObject.getType()) + " "
+            + databaseObject.renderUnescapedName() + " is used more than once in the Live SQL statement. "
+            + "Every table or view can only be used once in a from() or join() methods of a Live SQL statement.");
+      }
+      this.tableReferences.add(databaseObject);
+    }
 
   }
 
@@ -253,12 +303,12 @@ public abstract class AbstractSelect<R> extends Query {
     private char letter = 'a';
     private int seq = 0;
 
-    public void register(final String alias) throws DuplicateAliasException {
+    public void register(final String alias) throws DuplicateLiveSQLAliasException {
       if (alias == null) {
         return;
       }
       if (!this.used.add(alias)) {
-        throw new DuplicateAliasException();
+        throw new DuplicateLiveSQLAliasException();
       }
     }
 
@@ -277,36 +327,6 @@ public abstract class AbstractSelect<R> extends Query {
       } while (true);
     }
 
-  }
-
-  // Apply aliases
-
-  public void gatherAliases(final AliasGenerator ag) {
-    if (this.baseTable != null) {
-      this.baseTable.gatherAliases(ag);
-    }
-    if (this.joins != null) {
-      for (Join j : this.joins) {
-        j.getTable().gatherAliases(ag);
-      }
-    }
-    if (this.wherePredicate != null) {
-      this.wherePredicate.gatherAliases(ag);
-    }
-    if (this.groupBy != null) {
-      for (Expression<?> e : this.groupBy) {
-        e.gatherAliases(ag);
-      }
-    }
-    if (this.havingPredicate != null) {
-      this.havingPredicate.gatherAliases(ag);
-    }
-    if (this.orderingTerms != null) {
-      for (@SuppressWarnings("unused")
-      OrderingTerm e : this.orderingTerms) {
-        //
-      }
-    }
   }
 
   public void designateAliases(final AliasGenerator ag) {

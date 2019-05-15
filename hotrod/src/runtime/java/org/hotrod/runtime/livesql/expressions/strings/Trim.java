@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.strings;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.QueryWriter;
 
 public class Trim extends StringFunction {
@@ -17,11 +18,11 @@ public class Trim extends StringFunction {
     w.getSqlDialect().getFunctionRenderer().trim(w, this.string);
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
-    this.string.gatherAliases(ag);
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+    this.string.validateTableReferences(tableReferences, ag);
   }
 
   @Override

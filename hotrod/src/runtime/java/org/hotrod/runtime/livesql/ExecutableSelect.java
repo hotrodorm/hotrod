@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 
 public interface ExecutableSelect {
 
@@ -11,7 +12,7 @@ public interface ExecutableSelect {
 
   List<Map<String, Object>> execute();
 
-  void gatherAliases(final AliasGenerator ag);
+  void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag);
 
   void designateAliases(final AliasGenerator ag);
 

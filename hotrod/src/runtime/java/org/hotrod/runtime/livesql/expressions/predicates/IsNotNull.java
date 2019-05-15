@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
@@ -21,12 +22,11 @@ public class IsNotNull extends Predicate {
     w.write(" is not null");
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
-    this.a.gatherAliases(ag);
-
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+    this.a.validateTableReferences(tableReferences, ag);
   }
 
   @Override

@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
@@ -37,12 +38,12 @@ public abstract class BinaryPredicate extends Predicate {
     super.renderInner(this.right, w);
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
-    this.left.gatherAliases(ag);
-    this.right.gatherAliases(ag);
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+    this.left.validateTableReferences(tableReferences, ag);
+    this.right.validateTableReferences(tableReferences, ag);
   }
 
   @Override

@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql;
 
-import org.hotrod.runtime.livesql.exceptions.InvalidSQLClauseException;
+import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLClauseException;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 
 public abstract class Join {
@@ -9,7 +9,7 @@ public abstract class Join {
 
   Join(final TableOrView table) {
     if (table == null) {
-      throw new InvalidSQLClauseException("The table or view on a join cannot be null");
+      throw new InvalidLiveSQLClauseException("The table or view on a join cannot be null");
     }
     this.table = table;
   }

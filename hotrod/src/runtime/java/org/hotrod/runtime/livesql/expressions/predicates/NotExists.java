@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.ExecutableSelect;
 import org.hotrod.runtime.livesql.QueryWriter;
 
@@ -24,12 +25,11 @@ public class NotExists extends Predicate {
     w.write("\n)");
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
-    this.subquery.gatherAliases(ag);
-
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+    this.subquery.validateTableReferences(tableReferences, ag);
   }
 
   @Override

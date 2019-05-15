@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
@@ -28,13 +29,13 @@ public class NotBetween extends Predicate {
     super.renderInner(this.to, w);
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
-    this.value.gatherAliases(ag);
-    this.from.gatherAliases(ag);
-    this.to.gatherAliases(ag);
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+    this.value.validateTableReferences(tableReferences, ag);
+    this.from.validateTableReferences(tableReferences, ag);
+    this.to.validateTableReferences(tableReferences, ag);
   }
 
   @Override

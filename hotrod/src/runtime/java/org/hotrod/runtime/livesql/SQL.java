@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.hotrod.runtime.livesql.caseclause.CaseWhenStage;
-import org.hotrod.runtime.livesql.exceptions.InvalidSQLStatementException;
+import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.expressions.Coalesce;
 import org.hotrod.runtime.livesql.expressions.Constant;
 import org.hotrod.runtime.livesql.expressions.Expression;
@@ -283,7 +283,7 @@ public class SQL {
     } else if (value instanceof byte[]) {
       v = new Constant<T>(value, JDBCType.BINARY);
     } else {
-      throw new InvalidSQLStatementException("Invalid expression type: " + value.getClass());
+      throw new InvalidLiveSQLStatementException("Invalid expression type: " + value.getClass());
     }
     return v;
   }

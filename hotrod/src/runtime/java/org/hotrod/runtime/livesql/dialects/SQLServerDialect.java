@@ -10,7 +10,7 @@ import org.hotrod.runtime.livesql.LeftOuterJoin;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.RightOuterJoin;
 import org.hotrod.runtime.livesql.SQL;
-import org.hotrod.runtime.livesql.exceptions.UnsupportedFeatureException;
+import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
@@ -38,7 +38,7 @@ public class SQLServerDialect extends SQLDialect {
     return new JoinRenderer() {
 
       @Override
-      public String renderJoinKeywords(final Join join) throws UnsupportedFeatureException {
+      public String renderJoinKeywords(final Join join) throws UnsupportedLiveSQLFeatureException {
         if (join instanceof InnerJoin) {
           return "JOIN";
         } else if (join instanceof LeftOuterJoin) {
@@ -64,7 +64,7 @@ public class SQLServerDialect extends SQLDialect {
       public PaginationType getPaginationType(final Integer offset, final Integer limit) {
         if (offset != null) {
           if (!versionIsAtLeast(11)) { // SQL Server 2012
-            throw new UnsupportedFeatureException(
+            throw new UnsupportedLiveSQLFeatureException(
                 "OFFSET not supported on this version of SQL Server. OFFSET is supported starting on SQL Server 2012 (internal version 11.0)");
           }
         }
@@ -76,7 +76,7 @@ public class SQLServerDialect extends SQLDialect {
         if (offset == null && !versionIsAtLeast(11)) {
           w.write(" top " + limit);
         } else {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "In SQL Server before version 2012, LIMIT can only be used without OFFSET as the TOP clause");
         }
       }
@@ -95,12 +95,12 @@ public class SQLServerDialect extends SQLDialect {
 
       @Override
       public void renderBeginEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination cannot be rendered in enclosing fashion in SQL Server");
+        throw new UnsupportedLiveSQLFeatureException("Pagination cannot be rendered in enclosing fashion in SQL Server");
       }
 
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination cannot be rendered in enclosing fashion in SQL Server");
+        throw new UnsupportedLiveSQLFeatureException("Pagination cannot be rendered in enclosing fashion in SQL Server");
       }
 
     };
@@ -127,15 +127,15 @@ public class SQLServerDialect extends SQLDialect {
       public void groupConcat(final QueryWriter w, final boolean distinct, final Expression<String> value,
           final List<OrderingTerm> ordering, final Expression<String> separator) {
         if (versionIsAtLeast(14)) { // (SQL Server 2017)
-          throw new UnsupportedFeatureException("This SQL Server version (" + renderVersion()
+          throw new UnsupportedLiveSQLFeatureException("This SQL Server version (" + renderVersion()
               + ") does not support the GROUP_CONCAT() function (string_agg()). It's available since version 14.0 (SQL Server 2017)");
         }
         if (distinct) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "SQL Server does not support DISTINCT on the GROUP_CONCAT() function (string_agg())");
         }
         if (separator == null) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "SQL Server requires the separator to be specified on the GROUP_CONCAT() function (string_agg())");
         }
         w.write("string_agg(");
@@ -168,7 +168,7 @@ public class SQLServerDialect extends SQLDialect {
       @Override
       public void round(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
         if (places == null) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "SQL Server requires the number of decimal places to be specified on the ROUND() function");
         }
         this.write(w, "round", x, places);
@@ -177,7 +177,7 @@ public class SQLServerDialect extends SQLDialect {
       @Override
       public void trunc(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
         if (places == null) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "SQL Server requires the number of decimal places to be specified on the TRUNC() function (round())");
         }
 
@@ -205,7 +205,7 @@ public class SQLServerDialect extends SQLDialect {
       public void substr(final QueryWriter w, final Expression<String> string, final Expression<Number> from,
           final Expression<Number> length) {
         if (length == null) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "SQL Server requires the length parameter to be be specified on the SUBSTR() function");
         }
         this.write(w, "substring", string, from, length);

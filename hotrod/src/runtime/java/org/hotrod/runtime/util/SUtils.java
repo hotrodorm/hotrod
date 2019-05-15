@@ -55,7 +55,20 @@ public class SUtils {
     if (txt == null) {
       return null;
     }
+    if (txt.isEmpty()) {
+      return txt;
+    }
     return txt.substring(0, 1).toLowerCase() + txt.substring(1);
+  }
+
+  public static String upperFirst(final String txt) {
+    if (txt == null) {
+      return null;
+    }
+    if (txt.isEmpty()) {
+      return txt;
+    }
+    return txt.substring(0, 1).toUpperCase() + txt.substring(1);
   }
 
   public static boolean startsWithUpperCaseLetter(final String txt) {

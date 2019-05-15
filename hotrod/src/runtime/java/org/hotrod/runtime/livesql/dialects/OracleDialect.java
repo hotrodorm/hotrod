@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.Join;
 import org.hotrod.runtime.livesql.LeftOuterJoin;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.RightOuterJoin;
-import org.hotrod.runtime.livesql.exceptions.UnsupportedFeatureException;
+import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.util.Separator;
@@ -36,7 +36,7 @@ public class OracleDialect extends SQLDialect {
     return new JoinRenderer() {
 
       @Override
-      public String renderJoinKeywords(final Join join) throws UnsupportedFeatureException {
+      public String renderJoinKeywords(final Join join) throws UnsupportedLiveSQLFeatureException {
         if (join instanceof InnerJoin) {
           return "JOIN";
         } else if (join instanceof LeftOuterJoin) {
@@ -74,13 +74,13 @@ public class OracleDialect extends SQLDialect {
 
       @Override
       public void renderTopPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination cannot be rendered at the top");
+        throw new UnsupportedLiveSQLFeatureException("Pagination cannot be rendered at the top");
       }
 
       @Override
       public void renderBottomPagination(final Integer offset, final Integer limit, final QueryWriter w) {
         if (!versionIsAtLeast(12, 1)) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "Pagination cannot be rendered at the bottom in this version of Oracle");
         }
         if (offset != null) {
@@ -96,7 +96,7 @@ public class OracleDialect extends SQLDialect {
       @Override
       public void renderBeginEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
         if (versionIsAtLeast(12, 1)) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "Pagination cannot be rendered in an enclosing way in this version of Oracle.");
         }
         if (offset != null) {
@@ -112,7 +112,7 @@ public class OracleDialect extends SQLDialect {
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
         if (versionIsAtLeast(12, 1)) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "Pagination cannot be rendered in an enclosing way in this version of Oracle");
         }
         if (limit != null) {
@@ -146,11 +146,11 @@ public class OracleDialect extends SQLDialect {
       public void groupConcat(final QueryWriter w, final boolean distinct, final Expression<String> value,
           final List<OrderingTerm> ordering, final Expression<String> separator) {
         if (distinct) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "Oracle does not support DISTINCT on the GROUP_CONCAT() function (listagg())");
         }
         if (ordering == null || ordering.isEmpty()) {
-          throw new UnsupportedFeatureException("In Oracle GROUP_CONCAT() requires ordering columns");
+          throw new UnsupportedLiveSQLFeatureException("In Oracle GROUP_CONCAT() requires ordering columns");
         }
         w.write("listagg(");
         value.renderTo(w);

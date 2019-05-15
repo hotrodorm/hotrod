@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.datetime;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.QueryWriter;
 
 public class CurrentTime extends DateTimeFunction {
@@ -10,10 +11,10 @@ public class CurrentTime extends DateTimeFunction {
     w.getSqlDialect().getFunctionRenderer().currentTime(w);
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
     // nothing to do
   }
 

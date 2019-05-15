@@ -2,8 +2,9 @@ package org.hotrod.runtime.livesql.expressions;
 
 import java.util.Date;
 
-import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
+import org.hotrod.runtime.livesql.QueryWriter;
 
 public class Constant<T> extends Expression<T> {
 
@@ -128,10 +129,12 @@ public class Constant<T> extends Expression<T> {
     }
   }
 
-  // Apply aliases
+  // Validation
+
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
     // nothing to do
   }
 

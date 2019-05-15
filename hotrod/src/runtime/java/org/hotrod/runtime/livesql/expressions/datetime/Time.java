@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.expressions.datetime;
 import java.util.Date;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
@@ -20,12 +21,11 @@ public class Time extends DateTimeFunction {
     w.getSqlDialect().getFunctionRenderer().time(w, this.timestamp);
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
-    this.timestamp.gatherAliases(ag);
-
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+    this.timestamp.validateTableReferences(tableReferences, ag);
   }
 
   @Override

@@ -6,7 +6,7 @@ import org.hotrod.runtime.livesql.Join;
 import org.hotrod.runtime.livesql.LeftOuterJoin;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.RightOuterJoin;
-import org.hotrod.runtime.livesql.exceptions.UnsupportedFeatureException;
+import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
 public class MySQLDialect extends SQLDialect {
@@ -31,7 +31,7 @@ public class MySQLDialect extends SQLDialect {
     return new JoinRenderer() {
 
       @Override
-      public String renderJoinKeywords(final Join join) throws UnsupportedFeatureException {
+      public String renderJoinKeywords(final Join join) throws UnsupportedLiveSQLFeatureException {
         if (join instanceof InnerJoin) {
           return "JOIN";
         } else if (join instanceof LeftOuterJoin) {
@@ -39,7 +39,7 @@ public class MySQLDialect extends SQLDialect {
         } else if (join instanceof RightOuterJoin) {
           return "RIGHT OUTER JOIN";
         } else if (join instanceof FullOuterJoin) {
-          throw new UnsupportedFeatureException("Full outer joins are not supported in MySQL");
+          throw new UnsupportedLiveSQLFeatureException("Full outer joins are not supported in MySQL");
         } else {
           return "CROSS JOIN";
         }
@@ -60,7 +60,7 @@ public class MySQLDialect extends SQLDialect {
 
       @Override
       public void renderTopPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in MySQL");
+        throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in MySQL");
       }
 
       @Override
@@ -78,12 +78,12 @@ public class MySQLDialect extends SQLDialect {
 
       @Override
       public void renderBeginEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in MySQL");
+        throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in MySQL");
       }
 
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in MySQL");
+        throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in MySQL");
       }
 
     };

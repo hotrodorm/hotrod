@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql;
 
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
-import org.hotrod.runtime.livesql.exceptions.UnsupportedFeatureException;
+import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 
 public abstract class Query {
 
@@ -9,7 +9,7 @@ public abstract class Query {
 
   public Query(final SQLDialect sqlDialect) {
     if (sqlDialect == null) {
-      throw new UnsupportedFeatureException("Undefined SQL dialect. Please specify the SQL dialect");
+      throw new UnsupportedLiveSQLFeatureException("Undefined SQL dialect. Please specify the SQL dialect");
     }
     this.sqlDialect = sqlDialect;
   }

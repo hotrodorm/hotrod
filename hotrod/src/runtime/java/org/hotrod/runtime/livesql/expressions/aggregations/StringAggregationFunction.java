@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.aggregations;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowableAggregationFunction;
@@ -34,11 +35,11 @@ public abstract class StringAggregationFunction extends WindowableAggregationFun
     this.expression.renderTo(w);
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
-    this.expression.gatherAliases(ag);
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+    this.expression.validateTableReferences(tableReferences, ag);
   }
 
   @Override

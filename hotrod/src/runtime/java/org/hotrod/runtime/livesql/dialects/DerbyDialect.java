@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.Join;
 import org.hotrod.runtime.livesql.LeftOuterJoin;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.RightOuterJoin;
-import org.hotrod.runtime.livesql.exceptions.UnsupportedFeatureException;
+import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
@@ -37,7 +37,7 @@ public class DerbyDialect extends SQLDialect {
     return new JoinRenderer() {
 
       @Override
-      public String renderJoinKeywords(final Join join) throws UnsupportedFeatureException {
+      public String renderJoinKeywords(final Join join) throws UnsupportedLiveSQLFeatureException {
         if (join instanceof InnerJoin) {
           return "JOIN";
         } else if (join instanceof LeftOuterJoin) {
@@ -45,7 +45,7 @@ public class DerbyDialect extends SQLDialect {
         } else if (join instanceof RightOuterJoin) {
           return "RIGHT OUTER JOIN";
         } else if (join instanceof FullOuterJoin) {
-          throw new UnsupportedFeatureException("Full outer joins are not supported in Derby database");
+          throw new UnsupportedLiveSQLFeatureException("Full outer joins are not supported in Derby database");
         } else {
           return "CROSS JOIN";
         }
@@ -63,7 +63,7 @@ public class DerbyDialect extends SQLDialect {
       public PaginationType getPaginationType(final Integer offset, final Integer limit) {
         if (offset != null || limit != null) {
           if (!versionIsAtLeast(10, 5)) {
-            throw new UnsupportedFeatureException("This version of Derby (" + renderVersion()
+            throw new UnsupportedLiveSQLFeatureException("This version of Derby (" + renderVersion()
                 + ") does not support the OFFSET or LIMIT clauses. Derby versions 10.5 and newer do");
           }
         }
@@ -72,7 +72,7 @@ public class DerbyDialect extends SQLDialect {
 
       @Override
       public void renderTopPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("In Derby pagination cannot be rendered at the top");
+        throw new UnsupportedLiveSQLFeatureException("In Derby pagination cannot be rendered at the top");
       }
 
       @Override
@@ -87,12 +87,12 @@ public class DerbyDialect extends SQLDialect {
 
       @Override
       public void renderBeginEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("In Derby pagination cannot be rendered in an enclosing way");
+        throw new UnsupportedLiveSQLFeatureException("In Derby pagination cannot be rendered in an enclosing way");
       }
 
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("In Derby pagination cannot be rendered in an enclosing way");
+        throw new UnsupportedLiveSQLFeatureException("In Derby pagination cannot be rendered in an enclosing way");
       }
 
     };
@@ -109,7 +109,7 @@ public class DerbyDialect extends SQLDialect {
       @Override
       public void groupConcat(final QueryWriter w, final boolean distinct, final Expression<String> value,
           final List<OrderingTerm> ordering, final Expression<String> separator) {
-        throw new UnsupportedFeatureException("GROUP_CONCAT() is not supported in Derby database");
+        throw new UnsupportedLiveSQLFeatureException("GROUP_CONCAT() is not supported in Derby database");
       }
 
       // Arithmetic functions
@@ -138,12 +138,12 @@ public class DerbyDialect extends SQLDialect {
 
       @Override
       public void round(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
-        throw new UnsupportedFeatureException("ROUND() is not supported in Derby database");
+        throw new UnsupportedLiveSQLFeatureException("ROUND() is not supported in Derby database");
       }
 
       @Override
       public void trunc(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
-        throw new UnsupportedFeatureException("TRUNC() is not supported in Derby database");
+        throw new UnsupportedLiveSQLFeatureException("TRUNC() is not supported in Derby database");
       }
 
       // String functions
@@ -178,12 +178,12 @@ public class DerbyDialect extends SQLDialect {
 
       @Override
       public void dateTime(final QueryWriter w, final Expression<Date> date, final Expression<Date> time) {
-        throw new UnsupportedFeatureException("DATETIME() is not supported in Derby database");
+        throw new UnsupportedLiveSQLFeatureException("DATETIME() is not supported in Derby database");
       }
 
       @Override
       public void extract(final QueryWriter w, final Expression<Date> datetime, final DateTimeFieldExpression field) {
-        throw new UnsupportedFeatureException("EXTRACT() is not supported in Derby database");
+        throw new UnsupportedLiveSQLFeatureException("EXTRACT() is not supported in Derby database");
       }
 
     };

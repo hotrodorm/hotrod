@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.strings;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 
@@ -22,13 +23,13 @@ public class Substring extends StringFunction {
     w.getSqlDialect().getFunctionRenderer().substr(w, this.string, this.from, this.length);
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
-    this.string.gatherAliases(ag);
-    this.from.gatherAliases(ag);
-    this.length.gatherAliases(ag);
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+    this.string.validateTableReferences(tableReferences, ag);
+    this.from.validateTableReferences(tableReferences, ag);
+    this.length.validateTableReferences(tableReferences, ag);
   }
 
   @Override

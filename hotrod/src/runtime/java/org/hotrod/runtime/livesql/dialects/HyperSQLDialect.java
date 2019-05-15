@@ -8,7 +8,7 @@ import org.hotrod.runtime.livesql.Join;
 import org.hotrod.runtime.livesql.LeftOuterJoin;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.RightOuterJoin;
-import org.hotrod.runtime.livesql.exceptions.UnsupportedFeatureException;
+import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
 public class HyperSQLDialect extends SQLDialect {
@@ -33,7 +33,7 @@ public class HyperSQLDialect extends SQLDialect {
     return new JoinRenderer() {
 
       @Override
-      public String renderJoinKeywords(final Join join) throws UnsupportedFeatureException {
+      public String renderJoinKeywords(final Join join) throws UnsupportedLiveSQLFeatureException {
         if (join instanceof InnerJoin) {
           return "JOIN";
         } else if (join instanceof LeftOuterJoin) {
@@ -62,7 +62,7 @@ public class HyperSQLDialect extends SQLDialect {
 
       @Override
       public void renderTopPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in HyperSQL");
+        throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in HyperSQL");
       }
 
       @Override
@@ -80,12 +80,12 @@ public class HyperSQLDialect extends SQLDialect {
 
       @Override
       public void renderBeginEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in HyperSQL");
+        throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in HyperSQL");
       }
 
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in HyperSQL");
+        throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in HyperSQL");
       }
 
     };
@@ -117,7 +117,7 @@ public class HyperSQLDialect extends SQLDialect {
       @Override
       public void round(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
         if (places == null) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "HyperSQL requires the number of decimal places to be specified when using the ROUND() function");
         }
         this.write(w, "round", x, places);
@@ -129,7 +129,7 @@ public class HyperSQLDialect extends SQLDialect {
       public void substr(final QueryWriter w, final Expression<String> string, final Expression<Number> from,
           final Expression<Number> length) {
         if (length == null) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "HyperSQL requires the length to be specified when using the SUBSTR() function");
         } else {
           this.write(w, "substr", string, from, length);

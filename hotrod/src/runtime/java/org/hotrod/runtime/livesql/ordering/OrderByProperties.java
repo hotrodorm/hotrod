@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.ordering;
 
 import org.hotrod.runtime.livesql.QueryWriter;
-import org.hotrod.runtime.livesql.exceptions.InvalidSQLStatementException;
+import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
 public class OrderByProperties {
@@ -29,7 +29,7 @@ public class OrderByProperties {
 
   public OrderByProperties(final Expression<?> expression, final boolean ascending) {
     if (expression == null) {
-      throw new InvalidSQLStatementException(
+      throw new InvalidLiveSQLStatementException(
           "Cannot use null value as column ordering. " + "Please speify a non null column in the ORDER BY clause");
     }
     this.expression = expression;

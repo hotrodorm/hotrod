@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.Join;
 import org.hotrod.runtime.livesql.LeftOuterJoin;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.RightOuterJoin;
-import org.hotrod.runtime.livesql.exceptions.UnsupportedFeatureException;
+import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.util.Separator;
@@ -36,7 +36,7 @@ public class PostgreSQLDialect extends SQLDialect {
     return new JoinRenderer() {
 
       @Override
-      public String renderJoinKeywords(final Join join) throws UnsupportedFeatureException {
+      public String renderJoinKeywords(final Join join) throws UnsupportedLiveSQLFeatureException {
         if (join instanceof InnerJoin) {
           return "JOIN";
         } else if (join instanceof LeftOuterJoin) {
@@ -65,7 +65,7 @@ public class PostgreSQLDialect extends SQLDialect {
 
       @Override
       public void renderTopPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
+        throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
       }
 
       @Override
@@ -83,12 +83,12 @@ public class PostgreSQLDialect extends SQLDialect {
 
       @Override
       public void renderBeginEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
+        throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
       }
 
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
+        throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
       }
 
     };
@@ -106,15 +106,15 @@ public class PostgreSQLDialect extends SQLDialect {
       public void groupConcat(final QueryWriter w, final boolean distinct, final Expression<String> value,
           final List<OrderingTerm> ordering, final Expression<String> separator) {
         if (!versionIsAtLeast(9)) {
-          throw new UnsupportedFeatureException("This PostgreSQL version (" + renderVersion()
+          throw new UnsupportedLiveSQLFeatureException("This PostgreSQL version (" + renderVersion()
               + ") does not support the GROUP_CONCAT() function (string_agg()). Only available on PostgreSQL 9.0 or newer");
         }
         if (distinct) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "PostgreSQL does not support DISTINCT on the GROUP_CONCAT() function (string_agg())");
         }
         if (separator == null) {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "PostgreSQL requires the separator to be specified on the GROUP_CONCAT() function (string_agg())");
         }
         w.write("string_agg(");
@@ -151,7 +151,7 @@ public class PostgreSQLDialect extends SQLDialect {
         if (from == null) {
           this.write(w, "strpos", string, substring);
         } else {
-          throw new UnsupportedFeatureException(
+          throw new UnsupportedLiveSQLFeatureException(
               "PostgreSQL does not support the parameter 'from' in the LOCATE function ('strpos' in PostgreSQL lingo)");
         }
       }

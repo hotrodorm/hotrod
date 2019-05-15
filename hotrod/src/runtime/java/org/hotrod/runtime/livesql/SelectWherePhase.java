@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.predicates.PredicateBuilder;
@@ -69,11 +70,11 @@ public class SelectWherePhase implements ExecutableSelect {
     return this.select.execute();
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
-    this.select.gatherAliases(ag);
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+    this.select.validateTableReferences(tableReferences, ag);
   }
 
   @Override

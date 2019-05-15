@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.expressions.predicates;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.util.Separator;
@@ -30,12 +31,12 @@ public class NotInList<T> extends Predicate {
     w.write(")");
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
     for (Expression<T> e : this.expressions) {
-      e.gatherAliases(ag);
+      e.validateTableReferences(tableReferences, ag);
     }
   }
 

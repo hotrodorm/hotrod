@@ -1423,14 +1423,14 @@ public class ObjectDAO extends GeneratableObject {
     println("    " + this.metadataClassName + "() {");
     println("      super(" + (catalog == null ? "null" : "\"" + JUtils.escapeJavaString(catalog) + "\"") + ", "
         + (schema == null ? "null" : "\"" + JUtils.escapeJavaString(schema) + "\"") + ", \""
-        + JUtils.escapeJavaString(name) + "\", null);");
+        + JUtils.escapeJavaString(name) + "\", \"" + type + "\", null);");
     println("      initialize();");
     println("    }");
     println();
     println("    " + this.metadataClassName + "(final String alias) {");
     println("      super(" + (catalog == null ? "null" : "\"" + JUtils.escapeJavaString(catalog) + "\"") + ", "
         + (schema == null ? "null" : "\"" + JUtils.escapeJavaString(schema) + "\"") + ", \""
-        + JUtils.escapeJavaString(name) + "\", alias);");
+        + JUtils.escapeJavaString(name) + "\", \"" + type + "\", alias);");
     println("      initialize();");
     println("    }");
     println();

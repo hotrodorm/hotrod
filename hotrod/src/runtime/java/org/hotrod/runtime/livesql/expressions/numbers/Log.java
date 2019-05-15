@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.numbers;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
@@ -20,12 +21,12 @@ public class Log extends NumericFunction {
     w.getSqlDialect().getFunctionRenderer().logarithm(w, this.value, this.base);
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
-    this.value.gatherAliases(ag);
-    this.base.gatherAliases(ag);
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
+    this.value.validateTableReferences(tableReferences, ag);
+    this.base.validateTableReferences(tableReferences, ag);
   }
 
   @Override

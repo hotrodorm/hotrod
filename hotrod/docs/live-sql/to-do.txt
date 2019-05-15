@@ -1,12 +1,16 @@
  - IN (constant...) / NOT IN (constant...)
+ - Each table/view instance is referenced once at most.
+ - All tables/view have different aliases (the declared ones).
 
 -----------
 
 Validate:
- - each table/view instance is used once at most.
- - all tables/view have different aliases (the declared ones).
- - grouping rules.
- - having rules.
+ - All result set columns have different names.
+ - Grouping rules. Result set columns can be only one of the following:
+     * a column named in the GROUP BY clause.
+     * an aggregation expression.
+     * a column directly dependent on a GROUP BY column.
+ - Having rules. Same rules as GROUP BY.
 
  - implement UNION, UNION ALL, INTERSECT, EXCEPT.
       y SELECT

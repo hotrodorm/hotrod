@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.AbstractSelect.TableReferencesValidator;
 import org.hotrod.runtime.livesql.QueryWriter;
 
 public class Coalesce<T> extends Expression<T> {
@@ -26,12 +27,12 @@ public class Coalesce<T> extends Expression<T> {
     w.getSqlDialect().getFunctionRenderer().coalesce(w, this.expressions);
   }
 
-  // Apply aliases
+  // Validation
 
   @Override
-  public void gatherAliases(final AliasGenerator ag) {
+  public void validateTableReferences(final TableReferencesValidator tableReferences, final AliasGenerator ag) {
     for (Expression<T> e : this.expressions) {
-      e.gatherAliases(ag);
+      e.validateTableReferences(tableReferences, ag);
     }
   }
 
