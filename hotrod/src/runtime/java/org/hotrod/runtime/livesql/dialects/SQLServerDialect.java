@@ -181,7 +181,7 @@ public class SQLServerDialect extends SQLDialect {
               "SQL Server requires the number of decimal places to be specified on the TRUNC() function (round())");
         }
 
-        this.write(w, "round", x, places, SQL.box(1));
+        this.write(w, "round", x, places, SQL.val(1));
       }
 
       // String functions

@@ -3,19 +3,26 @@ package org.hotrod.runtime.livesql.expressions.strings;
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.QueryWriter;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.Expression;
 
 public class Substring extends StringFunction {
 
-  private StringExpression string;
-  private NumberExpression from;
-  private NumberExpression length;
+  private Expression<String> string;
+  private Expression<Number> from;
+  private Expression<Number> length;
 
-  public Substring(final StringExpression string, final NumberExpression from, final NumberExpression length) {
+  public Substring(final Expression<String> string, final Expression<Number> from, final Expression<Number> length) {
     super();
     this.string = string;
     this.from = from;
     this.length = length;
+  }
+
+  public Substring(final Expression<String> string, final Expression<Number> from) {
+    super();
+    this.string = string;
+    this.from = from;
+    this.length = null;
   }
 
   @Override

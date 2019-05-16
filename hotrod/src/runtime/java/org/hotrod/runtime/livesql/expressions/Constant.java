@@ -10,8 +10,6 @@ public class Constant<T> extends Expression<T> {
 
   private static final int MAX_LITERAL_STRING_LENGTH = 250;
 
-  private static final int PRECEDENCE = 1;
-
   // Control characters (x01 - x1f)
   // Single quotes
   // Delete (x7f)
@@ -22,56 +20,56 @@ public class Constant<T> extends Expression<T> {
   // Properties
 
   private T value;
-  private JDBCType type;
-
   private boolean parameterize;
 
   // Constructor
 
-  public Constant(final T value, final JDBCType type) {
-    super(PRECEDENCE);
-    if (type == null) {
-      throw new IllegalArgumentException("Specified type cannot be null");
-    }
-    if (this.isFloat(value) || this.isDouble(value) || this.isByteArray(value)) {
+  public Constant(final T value) {
+    super(Expression.PRECEDENCE_LITERAL);
+    if (this.isFloat(value) || this.isDouble(value) || this.isByteArray(value) || this.isDateTime(value)) {
       this.parameterize = true;
-    } else if (this.isString(value)) {
+    } else
+
+    if (this.isString(value)) {
       String s = (String) value;
       if (s.length() > MAX_LITERAL_STRING_LENGTH) {
         this.parameterize = true;
       } else {
         this.parameterize = s.matches(SQL_INJECTION_PATTERN);
       }
-    } else {
+    } else if (this.isNumber(value)) {
+      this.parameterize = this.isFloat(value) || this.isDouble(value);
+    } else if (this.isDateTime(value)) {
+      this.parameterize = true;
+    } else if (this.isBoolean(value)) {
       this.parameterize = false;
+    } else if (this.isByteArray(value)) {
+      this.parameterize = true;
+    } else { // Object
+      this.parameterize = true;
     }
-    this.type = type;
     this.value = value;
   }
 
-  // boxing
-
-  public static Constant<String> from(final String v) {
-    return new Constant<String>(v, JDBCType.VARCHAR);
-  }
-
-  public static Constant<String> from(final Character v) {
-    return new Constant<String>("" + v, JDBCType.VARCHAR);
-  }
-
-  public static Constant<Number> from(final Number v) {
-    return new Constant<Number>(v, JDBCType.NUMERIC);
-  }
-
-  public static Constant<Boolean> from(final Boolean v) {
-    return new Constant<Boolean>(v, JDBCType.BOOLEAN);
-  }
-
-  public static Constant<Date> from(final Date v) {
-    return new Constant<Date>(v, JDBCType.TIMESTAMP);
-  }
-
   // Utilities
+
+  private boolean isString(final T n) {
+    try {
+      String.class.cast(n);
+      return true;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  private boolean isNumber(final T n) {
+    try {
+      Number.class.cast(n);
+      return true;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
 
   private boolean isFloat(final T n) {
     try {
@@ -91,18 +89,27 @@ public class Constant<T> extends Expression<T> {
     }
   }
 
-  private boolean isByteArray(final T n) {
+  private boolean isDateTime(final T n) {
     try {
-      byte[].class.cast(n);
+      Date.class.cast(n);
       return true;
     } catch (ClassCastException e) {
       return false;
     }
   }
 
-  private boolean isString(final T n) {
+  private boolean isBoolean(final T n) {
     try {
-      String.class.cast(n);
+      Boolean.class.cast(n);
+      return true;
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  private boolean isByteArray(final T n) {
+    try {
+      byte[].class.cast(n);
       return true;
     } catch (ClassCastException e) {
       return false;
@@ -116,9 +123,6 @@ public class Constant<T> extends Expression<T> {
     if (this.parameterize) {
       String name = w.registerParameter(this.value);
       w.write("#{" + name);
-      if (this.value == null) {
-        w.write(",jdbcType=" + this.type);
-      }
       w.write("}");
     } else {
       if (this.value instanceof String) {

@@ -8,7 +8,6 @@ import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.ExecutableSelect;
 import org.hotrod.runtime.livesql.QueryWriter;
-import org.hotrod.runtime.livesql.SQL;
 import org.hotrod.runtime.livesql.expressions.asymmetric.EqAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.EqAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.GeAll;
@@ -37,6 +36,7 @@ import org.hotrod.runtime.livesql.expressions.predicates.NotEqual;
 import org.hotrod.runtime.livesql.expressions.predicates.NotInList;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderByDirectionStage;
+import org.hotrod.runtime.livesql.util.BoxUtil;
 
 public abstract class Expression<T> implements ResultSetColumn {
 
@@ -114,6 +114,20 @@ public abstract class Expression<T> implements ResultSetColumn {
     return new OrderByDirectionStage(this, false);
   }
 
+  // General
+
+  public Expression<T> coalesce(final Expression<T> a) {
+    @SuppressWarnings("unchecked")
+    Coalesce<T> coalesce = new Coalesce<T>(this, a);
+    return coalesce;
+  }
+
+  public Expression<T> coalesce(final T a) {
+    @SuppressWarnings("unchecked")
+    Coalesce<T> coalesce = new Coalesce<T>(this, new Constant<T>(a));
+    return coalesce;
+  }
+
   // Scalar comparisons
 
   // Equal
@@ -123,7 +137,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate eq(final T value) {
-    return new Equal(this, SQL.box(value));
+    return new Equal(this, BoxUtil.boxTyped(value));
   }
 
   // Not Equal
@@ -133,7 +147,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate ne(final T value) {
-    return new NotEqual(this, SQL.box(value));
+    return new NotEqual(this, BoxUtil.boxTyped(value));
   }
 
   // Greater Than
@@ -143,7 +157,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate gt(final T value) {
-    return new GreaterThan(this, SQL.box(value));
+    return new GreaterThan(this, BoxUtil.boxTyped(value));
   }
 
   // Greater Than or Equal To
@@ -153,7 +167,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate ge(final T value) {
-    return new GreaterThanOrEqualTo(this, SQL.box(value));
+    return new GreaterThanOrEqualTo(this, BoxUtil.boxTyped(value));
   }
 
   // Less Than
@@ -163,7 +177,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate lt(final T value) {
-    return new LessThan(this, SQL.box(value));
+    return new LessThan(this, BoxUtil.boxTyped(value));
   }
 
   // Less Than or Equal To
@@ -173,7 +187,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate le(final T value) {
-    return new LessThanOrEqualTo(this, SQL.box(value));
+    return new LessThanOrEqualTo(this, BoxUtil.boxTyped(value));
   }
 
   // Between
@@ -183,15 +197,15 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate between(final Expression<T> from, final T to) {
-    return new Between(this, from, SQL.box(to));
+    return new Between(this, from, BoxUtil.boxTyped(to));
   }
 
   public Predicate between(final T from, final Expression<T> to) {
-    return new Between(this, SQL.box(from), to);
+    return new Between(this, BoxUtil.boxTyped(from), to);
   }
 
   public Predicate between(final T from, final T to) {
-    return new Between(this, SQL.box(from), SQL.box(to));
+    return new Between(this, BoxUtil.boxTyped(from), BoxUtil.boxTyped(to));
   }
 
   // Not Between
@@ -201,15 +215,15 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public Predicate notBetween(final Expression<T> from, final T to) {
-    return new NotBetween(this, from, SQL.box(to));
+    return new NotBetween(this, from, BoxUtil.boxTyped(to));
   }
 
   public Predicate notBetween(final T from, final Expression<T> to) {
-    return new NotBetween(this, SQL.box(from), to);
+    return new NotBetween(this, BoxUtil.boxTyped(from), to);
   }
 
   public Predicate notBetween(final T from, T to) {
-    return new NotBetween(this, SQL.box(from), SQL.box(to));
+    return new NotBetween(this, BoxUtil.boxTyped(from), BoxUtil.boxTyped(to));
   }
 
   // Is Null and Is Not Null
@@ -231,7 +245,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   public Predicate in(final T... values) {
     List<Expression<T>> list = new ArrayList<Expression<T>>();
     for (T t : values) {
-      list.add(SQL.box(t));
+      list.add(BoxUtil.boxTyped(t));
     }
     return new InList<T>(this, list);
   }
@@ -243,7 +257,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   public Predicate notIn(final T... values) {
     List<Expression<T>> list = new ArrayList<Expression<T>>();
     for (T t : values) {
-      list.add(SQL.box(t));
+      list.add(BoxUtil.boxTyped(t));
     }
     return new NotInList<T>(this, list);
   }

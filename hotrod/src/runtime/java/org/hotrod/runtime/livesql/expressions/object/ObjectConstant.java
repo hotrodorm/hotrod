@@ -1,35 +1,35 @@
-package org.hotrod.runtime.livesql.expressions.strings;
+package org.hotrod.runtime.livesql.expressions.object;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.QueryWriter;
+import org.hotrod.runtime.livesql.expressions.Constant;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 
-public class Length extends NumberExpression {
+public class ObjectConstant extends ObjectExpression {
 
-  private StringExpression string;
+  private Constant<Object> constant;
 
-  public Length(final StringExpression string) {
-    super(Expression.PRECEDENCE_FUNCTION);
-    this.string = string;
+  public ObjectConstant(final Object value) {
+    super(Expression.PRECEDENCE_LITERAL);
+    this.constant = new Constant<Object>(value);
   }
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().length(w, this.string);
+    this.constant.renderTo(w);
   }
 
   // Validation
 
   @Override
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    this.string.validateTableReferences(tableReferences, ag);
+    // Nothing to do. No inner queries
   }
 
   @Override
   public void designateAliases(final AliasGenerator ag) {
-    this.string.designateAliases(ag);
+    // Nothing to do. No inner queries
   }
 
 }

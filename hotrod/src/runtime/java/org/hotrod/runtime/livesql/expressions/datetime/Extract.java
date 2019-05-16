@@ -6,8 +6,9 @@ import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumericFunction;
 
-public class Extract extends DateTimeFunction {
+public class Extract extends NumericFunction {
 
   private Expression<Date> datetime;
   private DateTimeFieldExpression field;

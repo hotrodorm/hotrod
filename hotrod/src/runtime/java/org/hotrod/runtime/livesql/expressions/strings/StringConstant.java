@@ -3,33 +3,33 @@ package org.hotrod.runtime.livesql.expressions.strings;
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.QueryWriter;
+import org.hotrod.runtime.livesql.expressions.Constant;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 
-public class Length extends NumberExpression {
+public class StringConstant extends StringExpression {
 
-  private StringExpression string;
+  private Constant<String> constant;
 
-  public Length(final StringExpression string) {
-    super(Expression.PRECEDENCE_FUNCTION);
-    this.string = string;
+  public StringConstant(final String value) {
+    super(Expression.PRECEDENCE_LITERAL);
+    this.constant = new Constant<String>(value);
   }
 
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().length(w, this.string);
+    this.constant.renderTo(w);
   }
 
   // Validation
 
   @Override
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    this.string.validateTableReferences(tableReferences, ag);
+    // Nothing to do. No inner queries
   }
 
   @Override
   public void designateAliases(final AliasGenerator ag) {
-    this.string.designateAliases(ag);
+    // Nothing to do. No inner queries
   }
 
 }

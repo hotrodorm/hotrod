@@ -3,16 +3,17 @@ package org.hotrod.runtime.livesql.expressions.strings;
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.QueryWriter;
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 
-public class Position extends StringFunction {
+public class Locate extends NumberExpression {
 
-  private StringExpression substring;
-  private StringExpression string;
-  private NumberExpression from;
+  private Expression<String> substring;
+  private Expression<String> string;
+  private Expression<Number> from;
 
-  public Position(final StringExpression substring, final StringExpression string, final NumberExpression from) {
-    super();
+  public Locate(final Expression<String> substring, final Expression<String> string, final Expression<Number> from) {
+    super(Expression.PRECEDENCE_FUNCTION);
     this.substring = substring;
     this.string = string;
     this.from = from;

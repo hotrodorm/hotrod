@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 
 public abstract class DateTimeExpression extends Expression<Date> {
 
@@ -19,7 +20,7 @@ public abstract class DateTimeExpression extends Expression<Date> {
     return new org.hotrod.runtime.livesql.expressions.datetime.Time(this);
   }
 
-  public DateTimeExpression extract(final DateTimeField field) {
+  public NumberExpression extract(final DateTimeField field) {
     return new Extract(this, new DateTimeFieldExpression(field));
   }
 

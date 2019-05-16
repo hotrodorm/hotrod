@@ -4,11 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.hotrod.runtime.livesql.caseclause.CaseWhenStage;
-import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
-import org.hotrod.runtime.livesql.expressions.Coalesce;
-import org.hotrod.runtime.livesql.expressions.Constant;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.JDBCType;
 import org.hotrod.runtime.livesql.expressions.Tuple;
 import org.hotrod.runtime.livesql.expressions.aggregations.Avg;
 import org.hotrod.runtime.livesql.expressions.aggregations.AvgDistinct;
@@ -26,17 +22,23 @@ import org.hotrod.runtime.livesql.expressions.analytics.Lead;
 import org.hotrod.runtime.livesql.expressions.analytics.NTile;
 import org.hotrod.runtime.livesql.expressions.analytics.Rank;
 import org.hotrod.runtime.livesql.expressions.analytics.RowNumber;
+import org.hotrod.runtime.livesql.expressions.binary.ByteArrayConstant;
 import org.hotrod.runtime.livesql.expressions.datetime.CurrentDate;
 import org.hotrod.runtime.livesql.expressions.datetime.CurrentDateTime;
 import org.hotrod.runtime.livesql.expressions.datetime.CurrentTime;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTime;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeConstant;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
+import org.hotrod.runtime.livesql.expressions.object.ObjectConstant;
 import org.hotrod.runtime.livesql.expressions.predicates.And;
+import org.hotrod.runtime.livesql.expressions.predicates.BooleanConstant;
 import org.hotrod.runtime.livesql.expressions.predicates.Exists;
 import org.hotrod.runtime.livesql.expressions.predicates.Not;
 import org.hotrod.runtime.livesql.expressions.predicates.NotExists;
 import org.hotrod.runtime.livesql.expressions.predicates.Or;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.expressions.strings.StringConstant;
 import org.hotrod.runtime.livesql.ordering.OrderByDirectionStage;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
@@ -105,12 +107,12 @@ public class SQL {
   }
 
   public static GroupConcatDistinct groupConcatDistinct(final Expression<String> expression, final String separator) {
-    return new GroupConcatDistinct(expression, null, box(separator));
+    return new GroupConcatDistinct(expression, null, val(separator));
   }
 
   public static GroupConcatDistinct groupConcatDistinct(final Expression<String> expression, final String separator,
       final OrderingTerm... order) {
-    return new GroupConcatDistinct(expression, Arrays.asList(order), box(separator));
+    return new GroupConcatDistinct(expression, Arrays.asList(order), val(separator));
   }
 
   // Aggregation expressions, that ALSO are window functions
@@ -136,12 +138,12 @@ public class SQL {
   }
 
   public static GroupConcat groupConcat(final Expression<String> expression, final String separator) {
-    return new GroupConcat(expression, null, box(separator));
+    return new GroupConcat(expression, null, val(separator));
   }
 
   public static GroupConcat groupConcat(final Expression<String> expression, final String separator,
       final OrderingTerm... order) {
-    return new GroupConcat(expression, Arrays.asList(order), box(separator));
+    return new GroupConcat(expression, Arrays.asList(order), val(separator));
   }
 
   // Analytical functions
@@ -164,55 +166,123 @@ public class SQL {
 
   // Positional Analytic functions
 
+  // Lead
+
   public static <T> Lead<T> lead(final Expression<T> expression) {
     return new Lead<T>(expression, null, null);
   }
 
   public static <T> Lead<T> lead(final Expression<T> expression, final Number offset) {
-    return new Lead<T>(expression, box(offset), null);
+    return new Lead<T>(expression, val(offset), null);
   }
 
   public static <T> Lead<T> lead(final Expression<T> expression, final Number offset,
       final Expression<T> defaultValue) {
-    return new Lead<T>(expression, box(offset), defaultValue);
+    return new Lead<T>(expression, val(offset), defaultValue);
   }
 
-  public static <T> Lead<T> lead(final Expression<T> expression, final Number offset, final T defaultValue) {
-    return new Lead<T>(expression, box(offset), box(defaultValue));
+  public static Lead<String> lead(final Expression<String> expression, final Number offset, final String defaultValue) {
+    return new Lead<String>(expression, val(offset), val(defaultValue));
   }
+
+  public static Lead<String> lead(final Expression<String> expression, final Number offset,
+      final Character defaultValue) {
+    return new Lead<String>(expression, val(offset), val(defaultValue));
+  }
+
+  public static Lead<Number> lead(final Expression<Number> expression, final Number offset, final Number defaultValue) {
+    return new Lead<Number>(expression, val(offset), val(defaultValue));
+  }
+
+  public static Lead<Date> lead(final Expression<Date> expression, final Number offset, final Date defaultValue) {
+    return new Lead<Date>(expression, val(offset), val(defaultValue));
+  }
+
+  public static Lead<Boolean> lead(final Expression<Boolean> expression, final Number offset,
+      final Boolean defaultValue) {
+    return new Lead<Boolean>(expression, val(offset), val(defaultValue));
+  }
+
+  public static Lead<byte[]> lead(final Expression<byte[]> expression, final Number offset, final byte[] defaultValue) {
+    return new Lead<byte[]>(expression, val(offset), val(defaultValue));
+  }
+
+  public static Lead<Object> lead(final Expression<Object> expression, final Number offset, final Object defaultValue) {
+    return new Lead<Object>(expression, val(offset), val(defaultValue));
+  }
+
+  // Lag
 
   public static <T> Lag<T> lag(final Expression<T> expression) {
     return new Lag<T>(expression, null, null);
   }
 
   public static <T> Lag<T> lag(final Expression<T> expression, final Number offset) {
-    return new Lag<T>(expression, box(offset), null);
+    return new Lag<T>(expression, val(offset), null);
   }
 
   public static <T> Lag<T> lag(final Expression<T> expression, final Number offset, final Expression<T> defaultValue) {
-    return new Lag<T>(expression, box(offset), defaultValue);
+    return new Lag<T>(expression, val(offset), defaultValue);
   }
 
-  public static <T> Lag<T> lag(final Expression<T> expression, final Number offset, final T defaultValue) {
-    return new Lag<T>(expression, box(offset), box(defaultValue));
+  public static Lag<String> lag(final Expression<String> expression, final Number offset, final String defaultValue) {
+    return new Lag<String>(expression, val(offset), val(defaultValue));
+  }
+
+  public static Lag<String> lag(final Expression<String> expression, final Number offset,
+      final Character defaultValue) {
+    return new Lag<String>(expression, val(offset), val(defaultValue));
+  }
+
+  public static Lag<Number> lag(final Expression<Number> expression, final Number offset, final Number defaultValue) {
+    return new Lag<Number>(expression, val(offset), val(defaultValue));
+  }
+
+  public static Lag<Date> lag(final Expression<Date> expression, final Number offset, final Date defaultValue) {
+    return new Lag<Date>(expression, val(offset), val(defaultValue));
+  }
+
+  public static Lag<Boolean> lag(final Expression<Boolean> expression, final Number offset,
+      final Boolean defaultValue) {
+    return new Lag<Boolean>(expression, val(offset), val(defaultValue));
+  }
+
+  public static Lag<byte[]> lag(final Expression<byte[]> expression, final Number offset, final byte[] defaultValue) {
+    return new Lag<byte[]>(expression, val(offset), val(defaultValue));
+  }
+
+  public static Lag<Object> lag(final Expression<Object> expression, final Number offset, final Object defaultValue) {
+    return new Lag<Object>(expression, val(offset), val(defaultValue));
   }
 
   // Case
 
-  public static <T> CaseWhenStage<T> caseWhen(final Predicate predicate, Expression<T> value) {
-    return new CaseWhenStage<T>(predicate, value);
+  public static CaseWhenStage<String> caseWhen(final Predicate predicate, String value) {
+    return new CaseWhenStage<String>(predicate, val(value));
   }
 
-  public static <T> CaseWhenStage<T> caseWhen(final Predicate predicate, T value) {
-    Constant<T> v = box(value);
-    return new CaseWhenStage<T>(predicate, v);
+  public static CaseWhenStage<String> caseWhen(final Predicate predicate, Character value) {
+    return new CaseWhenStage<String>(predicate, val(value));
   }
 
-  // General functions
+  public static CaseWhenStage<Number> caseWhen(final Predicate predicate, Number value) {
+    return new CaseWhenStage<Number>(predicate, val(value));
+  }
 
-  @SafeVarargs
-  public static <T> Coalesce<T> coalesce(final Expression<T> first, final Expression<T>... rest) {
-    return new Coalesce<T>(first, rest);
+  public static CaseWhenStage<Date> caseWhen(final Predicate predicate, Date value) {
+    return new CaseWhenStage<Date>(predicate, val(value));
+  }
+
+  public static CaseWhenStage<Boolean> caseWhen(final Predicate predicate, Boolean value) {
+    return new CaseWhenStage<Boolean>(predicate, val(value));
+  }
+
+  public static CaseWhenStage<byte[]> caseWhen(final Predicate predicate, byte[] value) {
+    return new CaseWhenStage<byte[]>(predicate, val(value));
+  }
+
+  public static CaseWhenStage<Object> caseWhen(final Predicate predicate, Object value) {
+    return new CaseWhenStage<Object>(predicate, val(value));
   }
 
   // Date/Time
@@ -233,59 +303,34 @@ public class SQL {
     return new DateTime(date, time);
   }
 
-  // // Arithmetic
-  //
-  // public static Expression<Number> power(final Expression<Number> value,
-  // final
-  // Expression<Number> exponent) {
-  // return new Pow(value, exponent);
-  // }
-  //
-  // public static Expression<Number> log(final Expression<Number> value, final
-  // Expression<Number> base) {
-  // return new Log(value, base);
-  // }
-  //
-  // public static Expression<Number> round(final Expression<Number> value,
-  // final
-  // Expression<Number> places) {
-  // return new Log(value, places);
-  // }
-  //
-  // public static Expression<Number> abs(final Expression<Number> value) {
-  // return new Abs(value);
-  // }
-  //
-  // public static Expression<Number> signum(final Expression<Number> value) {
-  // return new Signum(value);
-  // }
-  //
-  // public static Expression<Number> neg(final Expression<Number> value) {
-  // return new Neg(value);
-  // }
-  //
-  // //
+  // Scalar values
 
-  // Boxing scalar values
+  public static StringConstant val(final String value) {
+    return new StringConstant(value);
+  }
 
-  public static <T> Constant<T> box(final T value) {
-    Constant<T> v;
-    if (value instanceof String) {
-      v = new Constant<T>(value, JDBCType.VARCHAR);
-    } else if (value instanceof Character) {
-      v = new Constant<T>(value, JDBCType.VARCHAR);
-    } else if (value instanceof Number) {
-      v = new Constant<T>(value, JDBCType.NUMERIC);
-    } else if (value instanceof Date) {
-      v = new Constant<T>(value, JDBCType.TIMESTAMP);
-    } else if (value instanceof Boolean) {
-      v = new Constant<T>(value, JDBCType.BOOLEAN);
-    } else if (value instanceof byte[]) {
-      v = new Constant<T>(value, JDBCType.BINARY);
-    } else {
-      throw new InvalidLiveSQLStatementException("Invalid expression type: " + value.getClass());
-    }
-    return v;
+  public static StringConstant val(final Character value) {
+    return new StringConstant("" + value);
+  }
+
+  public static NumberConstant val(final Number value) {
+    return new NumberConstant(value);
+  }
+
+  public static DateTimeConstant val(final Date value) {
+    return new DateTimeConstant(value);
+  }
+
+  public static BooleanConstant val(final Boolean value) {
+    return new BooleanConstant(value);
+  }
+
+  public static ByteArrayConstant val(final byte[] value) {
+    return new ByteArrayConstant(value);
+  }
+
+  public static ObjectConstant val(final Object value) {
+    return new ObjectConstant(value);
   }
 
 }

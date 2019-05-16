@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.strings;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
@@ -17,11 +17,9 @@ public class Concat extends StringFunction {
     this.strings = strings;
   }
 
-  public Concat(final Expression<String> a, final Expression<String> b) {
+  public Concat(final Expression<String>... a) {
     super();
-    this.strings = new ArrayList<Expression<String>>();
-    this.strings.add(a);
-    this.strings.add(b);
+    this.strings = Arrays.asList(a);
   }
 
   @Override

@@ -1,19 +1,20 @@
+Done:
+=====
+
  - IN (constant...) / NOT IN (constant...)
  - Each table/view instance is referenced once at most.
  - All tables/view have different aliases (the declared ones).
 
------------
+Priority #1:
+============
 
-Validate:
+ - Fix NumberExpression operators. They can't be applied to NumberColumn.
+ - Fix precedence in operators.
 
- - All result set columns have names and all names are different (ignoring letter case).
- - Grouping rules. Result set columns can be only one of the following:
-     * a column named in the GROUP BY clause.
-     * an aggregation expression.
-     * a column directly dependent on a GROUP BY column.
- - Having rules. Same rules as GROUP BY.
+Priority #2:
+============
 
- - implement UNION, UNION ALL, INTERSECT, EXCEPT.
+ - Implement UNION, UNION ALL, INTERSECT, EXCEPT.
       y SELECT
       y FROM/JOIN
       y WHERE
@@ -22,10 +23,20 @@ Validate:
       x ORDER BY
       x OFFSET
       x LIMIT
+ - Validate all result set columns have names and all names are different (ignoring letter case).
 
- - operator types for IN operator to subqueries.
+Priority #3:
+============
+
+ - Grouping rules. Result set columns can be only one of the following:
+     * a column named in the GROUP BY clause.
+     * an aggregation expression.
+     * a column directly dependent on a GROUP BY column.
+ - Having rules. Same rules as GROUP BY.
+ - validate operator types for IN operator to subqueries.
  
 Defects:
+========
 
  - When multiple columns have the same name with different letter case, the generated source
    code becomes invalid because of duplicate setters/getters, ordering, etc.

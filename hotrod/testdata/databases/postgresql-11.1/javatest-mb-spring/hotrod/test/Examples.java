@@ -6,6 +6,8 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
+import org.hotrod.runtime.livesql.SQL;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
 import org.hotrod.runtime.util.HexaUtils;
 
 import hotrod.test.generation.Account;
@@ -41,7 +43,16 @@ public class Examples {
     AccountTable a = AccountDAO.newTable();
 
     List<Map<String, Object>> rows = dao //
-        .createSelect(a.createdOn, a.name, a.currentBalance, a.mainStatus, a.id, a.type) //
+        .createSelect(a.createdOn,
+            
+            SQL.sum(a.currentBalance).over().partitionBy(a.type).orderBy(a.name.substr(5, 2).asc()).end().as("runningBalance"),
+
+            SQL.val(1.10).mult(a.currentBalance).as("cbp"), //
+            a.currentBalance.trunc(-2).as("tb"), //
+            a.createdOn.extract(DateTimeField.MONTH).as("month"), //
+            a.name.coalesce(a.type).coalesce("N/A").as("xname"), //
+            SQL.val("%").concat(a.name).concat(a.type).concat("%").as("like1"), // 
+            a.currentBalance, a.mainStatus, a.id, a.type) //
         // .createSelect(a.id, a.name, a.name.as("Name")) //
         .from(a) //
         .where(a.mainStatus.eq(1)) //

@@ -1,8 +1,8 @@
 package org.hotrod.runtime.livesql.caseclause;
 
-import org.hotrod.runtime.livesql.SQL;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.util.BoxUtil;
 
 public class CaseWhenStage<T> {
 
@@ -20,7 +20,7 @@ public class CaseWhenStage<T> {
   }
 
   public CaseWhenStage<T> when(final Predicate predicate, final T value) {
-    this.clause.add(predicate, SQL.box(value));
+    this.clause.add(predicate, BoxUtil.boxTyped(value));
     return this;
   }
 
@@ -32,7 +32,7 @@ public class CaseWhenStage<T> {
   }
 
   public CaseElseStage<T> elseValue(final T value) {
-    this.clause.setElse(SQL.box(value));
+    this.clause.setElse(BoxUtil.boxTyped(value));
     return new CaseElseStage<T>(this.clause);
   }
 
