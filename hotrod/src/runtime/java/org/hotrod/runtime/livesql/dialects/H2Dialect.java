@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.dialects;
 
 import java.util.Date;
 
+import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
@@ -86,6 +87,41 @@ public class H2Dialect extends SQLDialect {
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
         throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in H2");
+      }
+
+    };
+  }
+
+  // Set operation rendering
+
+  @Override
+  public SetOperationRenderer getSetOperationRenderer() {
+    return new SetOperationRenderer() {
+
+      @Override
+      public void render(final SetOperation setOperation, final QueryWriter w) {
+        switch (setOperation) {
+        case UNION:
+          w.write("UNION");
+          break;
+        case UNION_ALL:
+          w.write("UNION ALL");
+          break;
+        case INTERSECT:
+          w.write("INTERSECT");
+          break;
+        case INTERSECT_ALL:
+          throw new UnsupportedLiveSQLFeatureException("H2 database does not support the INTERSECT ALL set operation. "
+              + "Nevertheless, it can be simulated using a semi join");
+        case EXCEPT:
+          w.write("EXCEPT");
+          break;
+        case EXCEPT_ALL:
+          throw new UnsupportedLiveSQLFeatureException("H2 database does not support the EXCEPT ALL set operation. "
+              + "Nevertheless, it can be simulated using an anti join");
+        default:
+          throw new InvalidLiveSQLStatementException("Invalid set operation '" + setOperation + "'.");
+        }
       }
 
     };

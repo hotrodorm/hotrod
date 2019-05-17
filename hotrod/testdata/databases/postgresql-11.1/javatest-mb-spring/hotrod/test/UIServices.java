@@ -39,7 +39,7 @@ public class UIServices {
   @Autowired
   private TypesOtherDAO typesOtherDao;
 
-  public void runLiveSQL() throws SQLException {
+  public void runLiveSQL1() throws SQLException {
 
     AccountTable a = AccountDAO.newTable();
     ClientTable c = ClientDAO.newTable("c");
@@ -75,6 +75,55 @@ public class UIServices {
         System.out.println("row: " + r);
       }
     }
+
+  }
+
+  public void runLiveSQL2() throws SQLException {
+
+    AccountTable a = AccountDAO.newTable("a");
+    AccountTable b = AccountDAO.newTable("b");
+    // ClientTable c = ClientDAO.newTable("c");
+
+    List<Map<String, Object>> rows = this.clientDao //
+        .createSelect(a.name, a.currentBalance) //
+        .from(a) //
+        .unionAll(this.clientDao.createSelect(b.name, b.currentBalance).from(b).where(b.name.like("CHK%"))) //
+        // .orderBy(a.currentBalance.asc())
+        .limit(2) //
+        .execute() //
+    ;
+
+    if (rows != null) {
+      for (Map<String, Object> r : rows) {
+        System.out.println("row: " + r);
+      }
+    }
+
+  }
+
+  public void runLiveSQL3() throws SQLException {
+
+    AccountTable a = AccountDAO.newTable("a");
+    AccountTable b = AccountDAO.newTable("b");
+    // ClientTable c = ClientDAO.newTable("c");
+
+//    List<Map<String, Object>> rows = this.clientDao.encloseSelect(this.clientDao //
+//        .createSelect(a.name, a.currentBalance) //
+//        .from(a) //
+//        .unionAll(this.clientDao.createSelect(b.name, b.currentBalance).from(b).where(b.name.like("CHK%"))) //
+//        // .orderBy(a.currentBalance.asc())
+//        )
+//        
+//        .
+//        .limit(2) //
+//        .execute() //
+//    ;
+//
+//    if (rows != null) {
+//      for (Map<String, Object> r : rows) {
+//        System.out.println("row: " + r);
+//      }
+//    }
 
   }
 

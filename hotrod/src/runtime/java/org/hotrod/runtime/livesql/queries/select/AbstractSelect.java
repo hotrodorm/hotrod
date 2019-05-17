@@ -8,7 +8,9 @@ import java.util.Set;
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
+import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
+import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.DatabaseObject;
@@ -21,7 +23,8 @@ public abstract class AbstractSelect<R> extends Query {
 
   public static final String LIVE_SQL_MAPPER_NAMESPACE = "livesql";
   public static final String LIVE_SQL_MAPPER_STATEMENT_NAME = "select";
-  private static final String LIVE_SQL_MAPPER_STATEMENT = LIVE_SQL_MAPPER_NAMESPACE + "." + LIVE_SQL_MAPPER_STATEMENT_NAME;
+  private static final String LIVE_SQL_MAPPER_STATEMENT = LIVE_SQL_MAPPER_NAMESPACE + "."
+      + LIVE_SQL_MAPPER_STATEMENT_NAME;
 
   private boolean distinct;
   private TableOrView baseTable = null;
@@ -29,6 +32,11 @@ public abstract class AbstractSelect<R> extends Query {
   private Predicate wherePredicate = null;
   private List<Expression<?>> groupBy = null;
   private Predicate havingPredicate = null;
+
+  private SetOperation setOperation = null;
+  private CombinableSelect<R> combinedSelect = null;
+  private AbstractSelect<R> parent = null;
+
   private List<OrderingTerm> orderingTerms = null;
   private Integer offset = null;
   private Integer limit = null;
@@ -67,6 +75,15 @@ public abstract class AbstractSelect<R> extends Query {
 
   void setHavingCondition(final Predicate havingCondition) {
     this.havingPredicate = havingCondition;
+  }
+
+  void setCombinedSelect(final SetOperation setOperation, final CombinableSelect<R> combinedSelect) {
+    this.setOperation = setOperation;
+    this.combinedSelect = combinedSelect;
+  }
+
+  void setParent(final AbstractSelect<R> parent) {
+    this.parent = parent;
   }
 
   void setColumnOrderings(List<OrderingTerm> orderingTerms) {
@@ -185,9 +202,41 @@ public abstract class AbstractSelect<R> extends Query {
         this.havingPredicate.renderTo(w);
       }
 
+      // combined select
+
+      if (this.combinedSelect != null) {
+        w.write("\n");
+        this.sqlDialect.getSetOperationRenderer().render(this.setOperation, w);
+        w.write("\n");
+        this.combinedSelect.renderTo(w);
+      }
+
       // order by
 
       if (this.orderingTerms != null && !this.orderingTerms.isEmpty()) {
+
+        if (this.combinedSelect != null || this.parent != null) {
+
+          // ORDER BY still unsupported for combined selects. Need to study this
+          // feature more.
+
+          // PostgreSQL only supports named columns from the initial SELECT as
+          // ordering columns; not expressions or functions. The error reads:
+          // Error: ERROR: invalid UNION/INTERSECT/EXCEPT ORDER BY clause
+          // Detail: Only result column names can be used, not expressions or
+          // functions.
+          // Hint: Add the expression/function to every SELECT, or move the
+          // UNION
+          // into a FROM clause.
+
+          // A valid ORDER BY would read: ORDER BY "currentBalance"
+          // Note that that's the alias of a column/expression, not the column
+          // itself.
+
+          throw new UnsupportedLiveSQLFeatureException(
+              "HotRod does not yet support ORDER BY for combined queries (UNION, UNION ALL, INTERSECT, INTERSECT ALL, EXCEPT, or EXCEPT ALL).");
+        }
+
         w.write("\nORDER BY ");
         boolean first = true;
         for (OrderingTerm term : this.orderingTerms) {
@@ -199,20 +248,20 @@ public abstract class AbstractSelect<R> extends Query {
           term.renderTo(w);
         }
       }
-
-      // bottom offset & limit
-
-      if ((this.offset != null || this.limit != null) && paginationType == PaginationType.BOTTOM) {
-        this.sqlDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
-      }
-
-      // enclosing pagination - end
-
-      if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {
-        this.sqlDialect.getPaginationRenderer().renderEndEnclosingPagination(this.offset, this.limit, w);
-      }
-
     }
+
+    // bottom offset & limit
+
+    if ((this.offset != null || this.limit != null) && paginationType == PaginationType.BOTTOM) {
+      this.sqlDialect.getPaginationRenderer().renderBottomPagination(this.offset, this.limit, w);
+    }
+
+    // enclosing pagination - end
+
+    if ((this.offset != null || this.limit != null) && paginationType == PaginationType.ENCLOSE) {
+      this.sqlDialect.getPaginationRenderer().renderEndEnclosingPagination(this.offset, this.limit, w);
+    }
+
   }
 
   public List<R> execute() {
@@ -272,6 +321,9 @@ public abstract class AbstractSelect<R> extends Query {
     }
     if (this.havingPredicate != null) {
       this.havingPredicate.validateTableReferences(tableReferences, ag);
+    }
+    if (this.combinedSelect != null) {
+      this.combinedSelect.validateTableReferences(tableReferences, ag);
     }
     if (this.orderingTerms != null) {
       for (@SuppressWarnings("unused")

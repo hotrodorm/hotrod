@@ -2,21 +2,20 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
-public class SelectOrderByPhase implements ExecutableSelect {
+public class SelectOrderByPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 
-  private AbstractSelect<Map<String, Object>> select;
+  private AbstractSelect<R> select;
 
   // Constructor
 
-  SelectOrderByPhase(final AbstractSelect<Map<String, Object>> select, final OrderingTerm... orderingTerms) {
+  SelectOrderByPhase(final AbstractSelect<R> select, final OrderingTerm... orderingTerms) {
     this.select = select;
     this.select.setColumnOrderings(Arrays.asList(orderingTerms));
   }
@@ -25,12 +24,12 @@ public class SelectOrderByPhase implements ExecutableSelect {
 
   // Next stages
 
-  public SelectOffsetPhase offset(final int offset) {
-    return new SelectOffsetPhase(this.select, offset);
+  public SelectOffsetPhase<R> offset(final int offset) {
+    return new SelectOffsetPhase<R>(this.select, offset);
   }
 
-  public SelectLimitPhase limit(final int limit) {
-    return new SelectLimitPhase(this.select, limit);
+  public SelectLimitPhase<R> limit(final int limit) {
+    return new SelectLimitPhase<R>(this.select, limit);
   }
 
   // Rendering
@@ -42,7 +41,7 @@ public class SelectOrderByPhase implements ExecutableSelect {
 
   // Execute
 
-  public List<Map<String, Object>> execute() {
+  public List<R> execute() {
     return this.select.execute();
   }
 

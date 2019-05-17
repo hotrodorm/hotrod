@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.dialects;
 
+import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
@@ -84,6 +85,41 @@ public class MySQLDialect extends SQLDialect {
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
         throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in MySQL");
+      }
+
+    };
+  }
+
+  // Set operation rendering
+
+  @Override
+  public SetOperationRenderer getSetOperationRenderer() {
+    return new SetOperationRenderer() {
+
+      @Override
+      public void render(final SetOperation setOperation, final QueryWriter w) {
+        switch (setOperation) {
+        case UNION:
+          w.write("UNION");
+          break;
+        case UNION_ALL:
+          w.write("UNION ALL");
+          break;
+        case INTERSECT:
+          throw new UnsupportedLiveSQLFeatureException("MySQL does not support the INTERSECT set operation. "
+              + "Nevertheless, it can be simulated using a semi join");
+        case INTERSECT_ALL:
+          throw new UnsupportedLiveSQLFeatureException("MySQL does not support the INTERSECT ALL set operation. "
+              + "Nevertheless, it can be simulated using a semi join");
+        case EXCEPT:
+          throw new UnsupportedLiveSQLFeatureException("MySQL does not support the EXCEPT set operation. "
+              + "Nevertheless, it can be simulated using an anti join");
+        case EXCEPT_ALL:
+          throw new UnsupportedLiveSQLFeatureException("MySQL does not support the EXCEPT ALL set operation. "
+              + "Nevertheless, it can be simulated using an anti join");
+        default:
+          throw new InvalidLiveSQLStatementException("Invalid set operation '" + setOperation + "'.");
+        }
       }
 
     };

@@ -9,7 +9,8 @@ public class Examples {
 
     UIServices ui = SpringBeanRetriever.getBean("uiServices");
     // ui.runExamples();
-    ui.runLiveSQL();
+    // ui.runLiveSQL1();
+    ui.runLiveSQL2();
     // ui.runSelectbyCriteria();
     // ui.runSelectbyCriteriaBinary();
     // ui.runSelectbyCriteriaUUID();

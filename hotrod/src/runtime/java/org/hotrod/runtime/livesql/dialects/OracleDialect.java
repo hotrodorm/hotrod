@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.dialects;
 import java.util.Date;
 import java.util.List;
 
+import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
@@ -128,6 +129,43 @@ public class OracleDialect extends SQLDialect {
           w.exitLevel();
           w.write("\n");
           w.write(") y WHERE \"" + HOTROD_ROWNUM_COLUMN + "\" > " + offset);
+        }
+      }
+
+    };
+  }
+
+  // Set operation rendering
+
+  @Override
+  public SetOperationRenderer getSetOperationRenderer() {
+    return new SetOperationRenderer() {
+
+      @Override
+      public void render(final SetOperation setOperation, final QueryWriter w) {
+        switch (setOperation) {
+        case UNION:
+          w.write("UNION");
+          break;
+        case UNION_ALL:
+          w.write("UNION ALL");
+          break;
+        case INTERSECT:
+          w.write("INTERSECT");
+          break;
+        case INTERSECT_ALL:
+          throw new UnsupportedLiveSQLFeatureException(
+              "Oracle database does not support the INTERSECT ALL set operation. "
+                  + "Nevertheless, it can be simulated using a semi join");
+        case EXCEPT:
+          w.write("MINUS");
+          break;
+        case EXCEPT_ALL:
+          throw new UnsupportedLiveSQLFeatureException(
+              "Oracle database does not support the EXCEPT ALL (MINUS ALL) set operation. "
+                  + "Nevertheless, it can be simulated using an anti join");
+        default:
+          throw new InvalidLiveSQLStatementException("Invalid set operation '" + setOperation + "'.");
         }
       }
 

@@ -248,6 +248,7 @@ public class ObjectDAO extends GeneratableObject {
 
     imports.add("java.io.Serializable");
     imports.add("java.util.List");
+    imports.add("java.util.Map");
     imports.newLine();
     imports.add("org.apache.ibatis.session.SqlSession");
     imports.newLine();
@@ -385,12 +386,14 @@ public class ObjectDAO extends GeneratableObject {
 
     println("  // Live SQL");
     println("");
-    println("  public SelectColumnsPhase createSelect() {");
-    println("    return new SelectColumnsPhase(this.sqlDialect, this.sqlSession, false);");
+    println("  public SelectColumnsPhase<Map<String, Object>> createSelect() {");
+    println("    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, false);");
     println("  }");
     println("");
-    println("  public SelectColumnsPhase createSelect(final ResultSetColumn... resultSetColumns) {");
-    println("    return new SelectColumnsPhase(this.sqlDialect, this.sqlSession, false, resultSetColumns);");
+    println(
+        "  public SelectColumnsPhase<Map<String, Object>> createSelect(final ResultSetColumn... resultSetColumns) {");
+    println(
+        "    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, false, resultSetColumns);");
     println("  }");
     println("");
 

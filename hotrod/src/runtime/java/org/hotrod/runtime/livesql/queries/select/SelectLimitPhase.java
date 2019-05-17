@@ -1,20 +1,19 @@
 package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.List;
-import java.util.Map;
 
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
-public class SelectLimitPhase implements ExecutableSelect {
+public class SelectLimitPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 
-  private AbstractSelect<Map<String, Object>> select;
+  private AbstractSelect<R> select;
 
   // Constructor
 
-  SelectLimitPhase(final AbstractSelect<Map<String, Object>> select, final int limit) {
+  SelectLimitPhase(final AbstractSelect<R> select, final int limit) {
     this.select = select;
     this.select.setLimit(limit);
   }
@@ -28,7 +27,7 @@ public class SelectLimitPhase implements ExecutableSelect {
 
   // Execute
 
-  public List<Map<String, Object>> execute() {
+  public List<R> execute() {
     return this.select.execute();
   }
 

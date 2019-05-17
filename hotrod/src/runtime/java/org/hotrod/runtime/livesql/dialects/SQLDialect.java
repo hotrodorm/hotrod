@@ -54,6 +54,8 @@ public abstract class SQLDialect {
 
   public abstract PaginationRenderer getPaginationRenderer();
 
+  public abstract SetOperationRenderer getSetOperationRenderer();
+
   public abstract FunctionRenderer getFunctionRenderer();
 
 }

@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.dialects;
 import java.util.Date;
 import java.util.List;
 
+import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
@@ -89,6 +90,41 @@ public class PostgreSQLDialect extends SQLDialect {
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
         throw new UnsupportedLiveSQLFeatureException("Pagination can only be rendered at the bottom in PostgreSQL");
+      }
+
+    };
+  }
+
+  // Set operation rendering
+
+  @Override
+  public SetOperationRenderer getSetOperationRenderer() {
+    return new SetOperationRenderer() {
+
+      @Override
+      public void render(final SetOperation setOperation, final QueryWriter w) {
+        switch (setOperation) {
+        case UNION:
+          w.write("UNION");
+          break;
+        case UNION_ALL:
+          w.write("UNION ALL");
+          break;
+        case INTERSECT:
+          w.write("INTERSECT");
+          break;
+        case INTERSECT_ALL:
+          w.write("INTERSECT ALL");
+          break;
+        case EXCEPT:
+          w.write("EXCEPT");
+          break;
+        case EXCEPT_ALL:
+          w.write("EXCEPT ALL");
+          break;
+        default:
+          throw new InvalidLiveSQLStatementException("Invalid set operation '" + setOperation + "'.");
+        }
       }
 
     };

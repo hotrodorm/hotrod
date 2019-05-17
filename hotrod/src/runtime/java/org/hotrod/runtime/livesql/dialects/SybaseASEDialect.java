@@ -3,6 +3,7 @@ package org.hotrod.runtime.livesql.dialects;
 import java.util.Date;
 import java.util.List;
 
+import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
@@ -83,12 +84,49 @@ public class SybaseASEDialect extends SQLDialect {
 
       @Override
       public void renderBeginEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedLiveSQLFeatureException("Pagination cannot be rendered in enclosing fashion in Sybase ASE");
+        throw new UnsupportedLiveSQLFeatureException(
+            "Pagination cannot be rendered in enclosing fashion in Sybase ASE");
       }
 
       @Override
       public void renderEndEnclosingPagination(final Integer offset, final Integer limit, final QueryWriter w) {
-        throw new UnsupportedLiveSQLFeatureException("Pagination cannot be rendered in enclosing fashion in Sybase ASE");
+        throw new UnsupportedLiveSQLFeatureException(
+            "Pagination cannot be rendered in enclosing fashion in Sybase ASE");
+      }
+
+    };
+  }
+
+  // Set operation rendering
+
+  @Override
+  public SetOperationRenderer getSetOperationRenderer() {
+    return new SetOperationRenderer() {
+
+      @Override
+      public void render(final SetOperation setOperation, final QueryWriter w) {
+        switch (setOperation) {
+        case UNION:
+          w.write("UNION");
+          break;
+        case UNION_ALL:
+          w.write("UNION ALL");
+          break;
+        case INTERSECT:
+          throw new UnsupportedLiveSQLFeatureException("Sybase ASE does not support the INTERSECT set operation. "
+              + "Nevertheless, it can be simulated using a semi join");
+        case INTERSECT_ALL:
+          throw new UnsupportedLiveSQLFeatureException("Sybase ASE does not support the INTERSECT ALL set operation. "
+              + "Nevertheless, it can be simulated using a semi join");
+        case EXCEPT:
+          throw new UnsupportedLiveSQLFeatureException("Sybase ASE does not support the EXCEPT set operation. "
+              + "Nevertheless, it can be simulated using an anti join");
+        case EXCEPT_ALL:
+          throw new UnsupportedLiveSQLFeatureException("Sybase ASE does not support the EXCEPT ALL set operation. "
+              + "Nevertheless, it can be simulated using an anti join");
+        default:
+          throw new InvalidLiveSQLStatementException("Invalid set operation '" + setOperation + "'.");
+        }
       }
 
     };

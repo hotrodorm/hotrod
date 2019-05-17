@@ -1,28 +1,27 @@
 package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.List;
-import java.util.Map;
 
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
-public class SelectOffsetPhase implements ExecutableSelect {
+public class SelectOffsetPhase<R> implements ExecutableSelect<R> {
 
   // Properties
 
-  private AbstractSelect<Map<String, Object>> select;
+  private AbstractSelect<R> select;
 
   // Constructor
 
-  SelectOffsetPhase(final AbstractSelect<Map<String, Object>> select, final int offset) {
+  SelectOffsetPhase(final AbstractSelect<R> select, final int offset) {
     this.select = select;
     this.select.setOffset(offset);
   }
 
   // Next stages
 
-  public SelectLimitPhase limit(final int limit) {
-    return new SelectLimitPhase(this.select, limit);
+  public SelectLimitPhase<R> limit(final int limit) {
+    return new SelectLimitPhase<R>(this.select, limit);
   }
 
   // Rendering
@@ -34,7 +33,7 @@ public class SelectOffsetPhase implements ExecutableSelect {
 
   // Execute
 
-  public List<Map<String, Object>> execute() {
+  public List<R> execute() {
     return this.select.execute();
   }
 

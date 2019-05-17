@@ -52,43 +52,9 @@ public class DatabaseObject {
     return sb.toString();
   }
 
-  // Indexable methods (hashCode & equals)
-
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((catalog == null) ? 0 : catalog.hashCode());
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    result = prime * result + ((schema == null) ? 0 : schema.hashCode());
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    DatabaseObject other = (DatabaseObject) obj;
-    if (catalog == null) {
-      if (other.catalog != null)
-        return false;
-    } else if (!catalog.equals(other.catalog))
-      return false;
-    if (name == null) {
-      if (other.name != null)
-        return false;
-    } else if (!name.equals(other.name))
-      return false;
-    if (schema == null) {
-      if (other.schema != null)
-        return false;
-    } else if (!schema.equals(other.schema))
-      return false;
-    return true;
-  }
+  // --- Indexable methods (hashCode & equals) ---
+  // DO NOT implement these methods, since the code relies on the default
+  // [shallow] JVM implementation.
+  // ---------------------------------------------
 
 }

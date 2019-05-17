@@ -1,39 +1,74 @@
 package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.List;
-import java.util.Map;
 
+import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
-public class SelectHavingPhase implements ExecutableSelect {
+public class SelectHavingPhase<R> implements ExecutableSelect<R>, CombinableSelect<R> {
 
   // Properties
 
-  private AbstractSelect<Map<String, Object>> select;
+  private AbstractSelect<R> select;
 
   // Constructor
 
-  SelectHavingPhase(final AbstractSelect<Map<String, Object>> select, final Predicate predicate) {
+  SelectHavingPhase(final AbstractSelect<R> select, final Predicate predicate) {
     this.select = select;
+    if (predicate != null) {
+      this.select.setHavingCondition(predicate);
+    }
   }
 
   // Same stage
 
   // Next stages
 
-  public SelectOrderByPhase orderBy(final OrderingTerm... orderingTerms) {
-    return new SelectOrderByPhase(this.select, orderingTerms);
+  public SelectOrderByPhase<R> orderBy(final OrderingTerm... orderingTerms) {
+    return new SelectOrderByPhase<R>(this.select, orderingTerms);
   }
 
-  public SelectOffsetPhase offset(final int offset) {
-    return new SelectOffsetPhase(this.select, offset);
+  public SelectOffsetPhase<R> offset(final int offset) {
+    return new SelectOffsetPhase<R>(this.select, offset);
   }
 
-  public SelectLimitPhase limit(final int limit) {
-    return new SelectLimitPhase(this.select, limit);
+  public SelectLimitPhase<R> limit(final int limit) {
+    return new SelectLimitPhase<R>(this.select, limit);
+  }
+
+  // Set operations
+
+  public SelectHavingPhase<R> union(final CombinableSelect<R> select) {
+    this.select.setCombinedSelect(SetOperation.UNION, select);
+    return new SelectHavingPhase<R>(this.select, null);
+  }
+
+  public SelectHavingPhase<R> unionAll(final CombinableSelect<R> select) {
+    this.select.setCombinedSelect(SetOperation.UNION_ALL, select);
+    return new SelectHavingPhase<R>(this.select, null);
+  }
+
+  public SelectHavingPhase<R> intersect(final CombinableSelect<R> select) {
+    this.select.setCombinedSelect(SetOperation.INTERSECT, select);
+    return new SelectHavingPhase<R>(this.select, null);
+  }
+
+  public SelectHavingPhase<R> intersectAll(final CombinableSelect<R> select) {
+    this.select.setCombinedSelect(SetOperation.INTERSECT_ALL, select);
+    return new SelectHavingPhase<R>(this.select, null);
+  }
+
+  public SelectHavingPhase<R> except(final CombinableSelect<R> select) {
+    this.select.setCombinedSelect(SetOperation.EXCEPT, select);
+    return new SelectHavingPhase<R>(this.select, null);
+  }
+
+  public SelectHavingPhase<R> exceptAll(final CombinableSelect<R> select) {
+    this.select.setCombinedSelect(SetOperation.EXCEPT_ALL, select);
+    return new SelectHavingPhase<R>(this.select, null);
   }
 
   // Rendering
@@ -45,7 +80,7 @@ public class SelectHavingPhase implements ExecutableSelect {
 
   // Execute
 
-  public List<Map<String, Object>> execute() {
+  public List<R> execute() {
     return this.select.execute();
   }
 
@@ -59,6 +94,13 @@ public class SelectHavingPhase implements ExecutableSelect {
   @Override
   public void designateAliases(final AliasGenerator ag) {
     this.select.assignNonDeclaredAliases(ag);
+  }
+
+  // CombinableSelect
+
+  @Override
+  public void setParent(final AbstractSelect<R> parent) {
+    this.select.setParent(parent);
   }
 
 }

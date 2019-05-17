@@ -56,13 +56,20 @@ public class SQL {
 
   // Subquery existence
 
-  public static Predicate exists(final ExecutableSelect subquery) {
+  public static <R> Predicate exists(final ExecutableSelect<R> subquery) {
     return new Exists(subquery);
   }
 
-  public static Predicate notExists(final ExecutableSelect subquery) {
+  public static <R> Predicate notExists(final ExecutableSelect<R> subquery) {
     return new NotExists(subquery);
   }
+
+  // Enclosing queries
+
+  // public static <R> AbstractSelect<R> encloseSelect(final AbstractSelect<R>
+  // select) {
+  // return new EnclosedSelect<R>(sqlDialect, false, sqlSession, null, select);
+  // }
 
   // Aggregation expressions, that are NOT window functions
 

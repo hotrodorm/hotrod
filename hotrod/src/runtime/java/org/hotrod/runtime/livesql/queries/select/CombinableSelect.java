@@ -1,15 +1,13 @@
 package org.hotrod.runtime.livesql.queries.select;
 
-import java.util.List;
-
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
-public interface ExecutableSelect<R> {
+public interface CombinableSelect<R> {
+
+  void setParent(final AbstractSelect<R> parent);
 
   void renderTo(final QueryWriter w);
-
-  List<R> execute();
 
   void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag);
 
