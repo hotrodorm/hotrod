@@ -1,11 +1,11 @@
 package org.hotrod.runtime.livesql.expressions.numbers;
 
+import org.hotrod.runtime.livesql.expressions.Expression;
+
 public class Minus extends BinaryNumberExpression {
 
-  private static final int PRECEDENCE = 4;
-
   public Minus(final NumberExpression a, final NumberExpression b) {
-    super(a, "-", b, PRECEDENCE);
+    super(a, "-", b, Expression.PRECEDENCE_PLUS_MINUS);
   }
 
 }

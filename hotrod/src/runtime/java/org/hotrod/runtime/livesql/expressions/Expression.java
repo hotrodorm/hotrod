@@ -34,10 +34,10 @@ import org.hotrod.runtime.livesql.expressions.predicates.NotEqual;
 import org.hotrod.runtime.livesql.expressions.predicates.NotInList;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderByDirectionStage;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.util.BoxUtil;
 
 public abstract class Expression<T> implements ResultSetColumn {
@@ -49,6 +49,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   public static final int PRECEDENCE_CASE = 2;
   public static final int PRECEDENCE_FUNCTION = 2;
   public static final int PRECEDENCE_TUPLE = 2;
+  public static final int PRECEDENCE_UNARY_MINUS = 2;
 
   public static final int PRECEDENCE_MULT_DIV_MOD = 3;
 
@@ -57,6 +58,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   public static final int PRECEDENCE_BETWEEN = 6;
   public static final int PRECEDENCE_EQ_NE_LT_LE_GT_GE = 6;
   public static final int PRECEDENCE_LIKE = 6;
+  public static final int PRECEDENCE_IS_NULL = 6;
   public static final int PRECEDENCE_IN = 6;
   public static final int PRECEDENCE_EXISTS = 6;
   public static final int PRECEDENCE_ANY_ALL_EQ_NE_LT_LE_GT_GE = 6;

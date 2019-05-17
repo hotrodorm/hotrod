@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 /**
  * <pre>
@@ -28,13 +28,11 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
  */
 public class CaseClause<T> extends Expression<T> {
 
-  private static final int PRECEDENCE = 2;
-
   private List<CaseWhen<T>> whens;
   private Expression<T> elseValue;
 
   public CaseClause(final Predicate predicate, final Expression<T> value) {
-    super(PRECEDENCE);
+    super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen<T>>();
     this.whens.add(new CaseWhen<T>(predicate, value));
     this.elseValue = null;

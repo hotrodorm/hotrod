@@ -1,13 +1,11 @@
 package org.hotrod.runtime.livesql.expressions.aggregations;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public abstract class NonWindowableAggregationFunction<T> extends AggregationFunction<T> {
-
-  private static final int PRECEDENCE = 1;
 
   private String functionName;
   private String qualifier;
@@ -15,7 +13,7 @@ public abstract class NonWindowableAggregationFunction<T> extends AggregationFun
 
   public NonWindowableAggregationFunction(final String functionName, final String qualifier,
       final Expression<?> expression) {
-    super(PRECEDENCE);
+    super(Expression.PRECEDENCE_FUNCTION);
     if (qualifier != null && expression == null) {
       throw new IllegalArgumentException("Invalid parameters on function '" + functionName + "': cannot specify '"
           + qualifier + "' clause without any expression");

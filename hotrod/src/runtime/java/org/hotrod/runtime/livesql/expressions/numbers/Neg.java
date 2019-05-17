@@ -1,18 +1,16 @@
 package org.hotrod.runtime.livesql.expressions.numbers;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class Neg extends NumberExpression {
-
-  private static final int PRECEDENCE = 2;
 
   private Expression<Number> value;
 
   public Neg(final Expression<Number> value) {
-    super(PRECEDENCE);
+    super(Expression.PRECEDENCE_UNARY_MINUS);
     this.value = value;
   }
 

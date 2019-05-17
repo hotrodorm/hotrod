@@ -1,18 +1,17 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class NotExists extends Predicate {
-
-  private static final int PRECEDENCE = 2;
 
   private ExecutableSelect subquery;
 
   public NotExists(final ExecutableSelect subquery) {
-    super(PRECEDENCE);
+    super(Expression.PRECEDENCE_EXISTS);
     this.subquery = subquery;
   }
 

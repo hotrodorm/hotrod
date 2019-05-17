@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.util.Separator;
 
 /**
@@ -43,8 +43,6 @@ import org.hotrod.runtime.livesql.util.Separator;
 
 public class WindowExpression<T> extends Expression<T> {
 
-  private final static int PRECEDENCE = 1;
-
   // Properties
 
   private WindowableFunction<T> windowablefunction;
@@ -54,7 +52,7 @@ public class WindowExpression<T> extends Expression<T> {
   // Constructor
 
   public WindowExpression(final WindowableFunction<T> windowablefunction) {
-    super(PRECEDENCE);
+    super(Expression.PRECEDENCE_FUNCTION);
     this.windowablefunction = windowablefunction;
     this.partitionBy = null;
     this.orderBy = null;

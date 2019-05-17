@@ -2,19 +2,17 @@ package org.hotrod.runtime.livesql.expressions.aggregations;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowableAggregationFunction;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public abstract class NumericAggregationFunction extends WindowableAggregationFunction<Number> {
-
-  private static final int PRECEDENCE = 2;
 
   private String functionName;
   private Expression<Number> expression;
 
   protected NumericAggregationFunction(final String functionName, final Expression<Number> expression) {
-    super(PRECEDENCE);
+    super(Expression.PRECEDENCE_FUNCTION);
     this.functionName = functionName;
     this.expression = expression;
   }

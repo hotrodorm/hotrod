@@ -1,18 +1,16 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class IsNull extends Predicate {
-
-  private static final int PRECEDENCE = 6;
 
   private Expression<?> a;
 
   public IsNull(final Expression<?> a) {
-    super(PRECEDENCE);
+    super(Expression.PRECEDENCE_IS_NULL);
     this.a = a;
   }
 

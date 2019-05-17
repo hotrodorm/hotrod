@@ -4,10 +4,8 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 
 public class NotEqual extends BinaryPredicate {
 
-  private static final int PRECEDENCE = 6;
-
   public <T> NotEqual(final Expression<T> a, final Expression<T> b) {
-    super(a, "<>", b, PRECEDENCE);
+    super(a, "<>", b, Expression.PRECEDENCE_EQ_NE_LT_LE_GT_GE);
   }
 
 }

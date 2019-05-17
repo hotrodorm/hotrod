@@ -1,20 +1,18 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class NotBetween extends Predicate {
-
-  private static final int PRECEDENCE = 6;
 
   private Expression<?> value;
   private Expression<?> from;
   private Expression<?> to;
 
   public <T> NotBetween(final Expression<T> value, final Expression<T> from, final Expression<T> to) {
-    super(PRECEDENCE);
+    super(Expression.PRECEDENCE_BETWEEN);
     this.value = value;
     this.from = from;
     this.to = to;

@@ -1,11 +1,11 @@
 package org.hotrod.runtime.livesql.expressions.datetime;
 
+import org.hotrod.runtime.livesql.expressions.Expression;
+
 public abstract class DateTimeFunction extends DateTimeExpression {
 
-  private static final int PRECEDENCE = 1;
-
   protected DateTimeFunction() {
-    super(PRECEDENCE);
+    super(Expression.PRECEDENCE_FUNCTION);
   }
 
 }

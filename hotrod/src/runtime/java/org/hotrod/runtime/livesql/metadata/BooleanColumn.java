@@ -1,13 +1,12 @@
 package org.hotrod.runtime.livesql.metadata;
 
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class BooleanColumn extends Predicate implements Column {
-
-  private static final int PRECEDENCE = 1;
 
   // Properties
 
@@ -26,7 +25,7 @@ public class BooleanColumn extends Predicate implements Column {
   // Constructor
 
   public BooleanColumn(final TableOrView objectInstance, final String name, final String property) {
-    super(PRECEDENCE);
+    super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
     this.name = name;
     this.property = property;

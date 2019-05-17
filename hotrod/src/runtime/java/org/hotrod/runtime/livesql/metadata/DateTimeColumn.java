@@ -1,13 +1,12 @@
 package org.hotrod.runtime.livesql.metadata;
 
+import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class DateTimeColumn extends DateTimeExpression implements Column {
-
-  private static final int PRECEDENCE = 1;
 
   // Properties
 
@@ -26,7 +25,7 @@ public class DateTimeColumn extends DateTimeExpression implements Column {
   // Constructor
 
   public DateTimeColumn(final TableOrView objectInstance, final String name, final String property) {
-    super(PRECEDENCE);
+    super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
     this.name = name;
     this.property = property;

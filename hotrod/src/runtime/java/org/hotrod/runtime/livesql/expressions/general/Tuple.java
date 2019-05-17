@@ -5,19 +5,17 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLClauseException;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.util.Separator;
 
 public class Tuple extends Expression<Tuple> {
 
-  private static final int PRECEDENCE = 2;
-
   private List<Expression<?>> expressions;
 
   public Tuple(final Expression<?>... expressions) {
-    super(PRECEDENCE);
+    super(Expression.PRECEDENCE_TUPLE);
     if (expressions == null || expressions.length == 0) {
       throw new InvalidLiveSQLClauseException("A tuple cannot be empty. Please add expressions to the tuple");
     }
