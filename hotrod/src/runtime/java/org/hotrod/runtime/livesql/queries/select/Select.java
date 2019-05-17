@@ -16,8 +16,9 @@ class Select<T> extends AbstractSelect<T> {
     super(sqlDialect, distinct, sqlSession, null);
   }
 
-  Select(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession, final String statement) {
-    super(sqlDialect, distinct, sqlSession, statement);
+  Select(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
+      final String mapperStatement) {
+    super(sqlDialect, distinct, sqlSession, mapperStatement);
   }
 
   // Setters

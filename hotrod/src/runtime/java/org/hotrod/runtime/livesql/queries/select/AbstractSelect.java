@@ -19,9 +19,9 @@ import org.hotrod.runtime.util.SUtils;
 
 public abstract class AbstractSelect<R> extends Query {
 
-  public static final String LIVE_SQL_NAMESPACE = "livesql";
-  public static final String LIVE_SQL_STATEMENT_NAME = "select";
-  private static final String LIVE_SQL_STATEMENT = LIVE_SQL_NAMESPACE + "." + LIVE_SQL_STATEMENT_NAME;
+  public static final String LIVE_SQL_MAPPER_NAMESPACE = "livesql";
+  public static final String LIVE_SQL_MAPPER_STATEMENT_NAME = "select";
+  private static final String LIVE_SQL_MAPPER_STATEMENT = LIVE_SQL_MAPPER_NAMESPACE + "." + LIVE_SQL_MAPPER_STATEMENT_NAME;
 
   private boolean distinct;
   private TableOrView baseTable = null;
@@ -34,14 +34,14 @@ public abstract class AbstractSelect<R> extends Query {
   private Integer limit = null;
 
   private SqlSession sqlSession;
-  private String statement;
+  private String mapperStatement;
 
   AbstractSelect(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
-      final String statement) {
+      final String mapperStatement) {
     super(sqlDialect);
     this.distinct = distinct;
     this.sqlSession = sqlSession;
-    this.statement = (statement == null ? LIVE_SQL_STATEMENT : statement);
+    this.mapperStatement = (mapperStatement == null ? LIVE_SQL_MAPPER_STATEMENT : mapperStatement);
   }
 
   protected abstract void writeColumns(QueryWriter w);
@@ -229,7 +229,7 @@ public abstract class AbstractSelect<R> extends Query {
     }
     System.out.println("------------------");
 
-    List<R> rows = this.sqlSession.selectList(this.statement, q.getConsolidatedParameters());
+    List<R> rows = this.sqlSession.selectList(this.mapperStatement, q.getConsolidatedParameters());
 
     return rows;
 

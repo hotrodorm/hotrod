@@ -37,9 +37,9 @@ public class LiveSQLMapper {
       println(w, "<!DOCTYPE mapper");
       println(w, "  PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\"");
       println(w, "  \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">");
-      println(w, "<mapper namespace=\"" + AbstractSelect.LIVE_SQL_NAMESPACE + "\">");
+      println(w, "<mapper namespace=\"" + AbstractSelect.LIVE_SQL_MAPPER_NAMESPACE + "\">");
       println(w, "");
-      println(w, "  <select id=\"" + AbstractSelect.LIVE_SQL_STATEMENT_NAME + "\" resultType=\"map\">");
+      println(w, "  <select id=\"" + AbstractSelect.LIVE_SQL_MAPPER_STATEMENT_NAME + "\" resultType=\"map\">");
       println(w, "    ${sql}");
       println(w, "  </select>");
       println(w, "");

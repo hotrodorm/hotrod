@@ -124,7 +124,7 @@ public class Examples {
     List<Account> rows = dao.selectByCriteria(a, a.id.in( //
         dao.createSelect(t.accountId) //
             .from(t) //
-            .where(t.accountId.eq(a.id).and(t.amount.ge(100)))) //
+            .where(t.accountId.eq(a.id).andNot(t.amount.ge(100).or(t.time.isNull())))) //
         .and(a.id.notIn(123, 456, 789))) //
         .execute();
     for (Account r : rows) {
