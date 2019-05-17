@@ -59,6 +59,9 @@
   </bean>
 ?>
 
+  <!-- Services -->
+
+  <bean id="uiServices" class="hotrod.test.UIServices" />
 
   <!-- Additional beans -->
 
