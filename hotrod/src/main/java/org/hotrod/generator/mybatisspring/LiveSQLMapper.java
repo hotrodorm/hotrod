@@ -7,7 +7,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.mybatis.DataSetLayout;
-import org.hotrod.runtime.livesql.AbstractSelect;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelect;
 
 public class LiveSQLMapper {
 

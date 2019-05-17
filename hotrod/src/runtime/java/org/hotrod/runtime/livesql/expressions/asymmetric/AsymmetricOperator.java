@@ -1,11 +1,11 @@
 package org.hotrod.runtime.livesql.expressions.asymmetric;
 
-import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
-import org.hotrod.runtime.livesql.ExecutableSelect;
-import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
 public abstract class AsymmetricOperator extends Predicate {
 

@@ -3,9 +3,7 @@ package org.hotrod.runtime.livesql;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.hotrod.runtime.livesql.caseclause.CaseWhenStage;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.Tuple;
 import org.hotrod.runtime.livesql.expressions.aggregations.Avg;
 import org.hotrod.runtime.livesql.expressions.aggregations.AvgDistinct;
 import org.hotrod.runtime.livesql.expressions.aggregations.Count;
@@ -23,12 +21,14 @@ import org.hotrod.runtime.livesql.expressions.analytics.NTile;
 import org.hotrod.runtime.livesql.expressions.analytics.Rank;
 import org.hotrod.runtime.livesql.expressions.analytics.RowNumber;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayConstant;
+import org.hotrod.runtime.livesql.expressions.caseclause.CaseWhenStage;
 import org.hotrod.runtime.livesql.expressions.datetime.CurrentDate;
 import org.hotrod.runtime.livesql.expressions.datetime.CurrentDateTime;
 import org.hotrod.runtime.livesql.expressions.datetime.CurrentTime;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTime;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeConstant;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.general.Tuple;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.expressions.object.ObjectConstant;
 import org.hotrod.runtime.livesql.expressions.predicates.And;
@@ -39,8 +39,8 @@ import org.hotrod.runtime.livesql.expressions.predicates.NotExists;
 import org.hotrod.runtime.livesql.expressions.predicates.Or;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.strings.StringConstant;
-import org.hotrod.runtime.livesql.ordering.OrderByDirectionStage;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 
 public class SQL {
 
@@ -72,16 +72,6 @@ public class SQL {
 
   public static Predicate notExists(final ExecutableSelect subquery) {
     return new NotExists(subquery);
-  }
-
-  // Ordering expressions
-
-  public static OrderByDirectionStage asc(final Expression<?> expression) {
-    return new OrderByDirectionStage(expression, true);
-  }
-
-  public static OrderByDirectionStage desc(final Expression<?> expression) {
-    return new OrderByDirectionStage(expression, false);
   }
 
   // Aggregation expressions, that are NOT window functions

@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.util;
 
-import org.hotrod.runtime.livesql.expressions.Constant;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.general.Constant;
 
 public class BoxUtil {
 

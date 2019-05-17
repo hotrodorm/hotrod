@@ -2,14 +2,14 @@ package org.hotrod.runtime.livesql.dialects;
 
 import java.util.Date;
 
-import org.hotrod.runtime.livesql.FullOuterJoin;
-import org.hotrod.runtime.livesql.InnerJoin;
-import org.hotrod.runtime.livesql.Join;
-import org.hotrod.runtime.livesql.LeftOuterJoin;
-import org.hotrod.runtime.livesql.QueryWriter;
-import org.hotrod.runtime.livesql.RightOuterJoin;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
+import org.hotrod.runtime.livesql.queries.select.InnerJoin;
+import org.hotrod.runtime.livesql.queries.select.Join;
+import org.hotrod.runtime.livesql.queries.select.LeftOuterJoin;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 
 public class HyperSQLDialect extends SQLDialect {
 

@@ -1,8 +1,8 @@
 package org.hotrod.runtime.livesql.expressions.strings;
 
-import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
-import org.hotrod.runtime.livesql.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
 public class Trim extends StringFunction {
 

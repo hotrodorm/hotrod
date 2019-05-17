@@ -44,20 +44,27 @@ public class Examples {
 
     List<Map<String, Object>> rows = dao //
         .createSelect(a.createdOn,
-            
-            SQL.sum(a.currentBalance).over().partitionBy(a.type).orderBy(a.name.substr(5, 2).asc()).end().as("runningBalance"),
+
+            a.name.isNull(),
+
+            SQL.sum(a.currentBalance).over().partitionBy(a.type).orderBy(a.name.substr(5, 2).asc()).end()
+                .as("runningBalance"),
+
+            a.currentBalance.mult(a.id).lt(10),
 
             SQL.val(1.10).mult(a.currentBalance).as("cbp"), //
             a.currentBalance.trunc(-2).as("tb"), //
             a.createdOn.extract(DateTimeField.MONTH).as("month"), //
             a.name.coalesce(a.type).coalesce("N/A").as("xname"), //
-            SQL.val("%").concat(a.name).concat(a.type).concat("%").as("like1"), // 
+            SQL.val("%").concat(a.name).concat(a.type).concat("%").as("like1"), //
             a.currentBalance, a.mainStatus, a.id, a.type) //
-        // .createSelect(a.id, a.name, a.name.as("Name")) //
         .from(a) //
         .where(a.mainStatus.eq(1)) //
         .and(a.currentBalance.lt(100)) //
         .or(a.type.ne("S'AV")) //
+        .and(SQL.exists( //
+            dao.createSelect().from(a).where(a.name.isNotNull()) //
+        )) //
         .orderBy(a.createdOn.asc()) //
         .execute() //
     ;

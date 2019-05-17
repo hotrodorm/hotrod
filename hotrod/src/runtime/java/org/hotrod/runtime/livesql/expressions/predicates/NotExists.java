@@ -1,9 +1,9 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
-import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
-import org.hotrod.runtime.livesql.ExecutableSelect;
-import org.hotrod.runtime.livesql.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
 public class NotExists extends Predicate {
 

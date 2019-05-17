@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.metadata;
 
-import org.hotrod.runtime.livesql.ReferenceableExpression;
+import org.hotrod.runtime.livesql.queries.select.ReferenceableExpression;
 
 public interface Column extends ReferenceableExpression {
 

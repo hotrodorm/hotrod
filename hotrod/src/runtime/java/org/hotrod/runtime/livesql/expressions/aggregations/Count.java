@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.expressions.aggregations;
 
-import org.hotrod.runtime.livesql.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class Count extends NonWindowableAggregationFunction<Number> {
 

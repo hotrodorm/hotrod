@@ -3,10 +3,10 @@ package org.hotrod.runtime.livesql.dialects;
 import java.util.Date;
 import java.util.List;
 
-import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.util.Separator;
 
 public abstract class FunctionRenderer {

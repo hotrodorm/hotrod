@@ -2,9 +2,9 @@ package org.hotrod.runtime.livesql.expressions.aggregations;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class GroupConcat extends StringAggregationFunction {
 

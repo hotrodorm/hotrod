@@ -1,8 +1,8 @@
 package org.hotrod.runtime.livesql.ordering;
 
-import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.OrderByProperties.NullsOrdering;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class OrderByDirectionStage implements OrderingTerm {
 

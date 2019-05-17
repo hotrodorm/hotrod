@@ -1,6 +1,6 @@
 package org.hotrod.runtime.livesql.expressions;
 
-import org.hotrod.runtime.livesql.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 /**
  * <pre>

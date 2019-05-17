@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
-import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.aggregations.AggregationFunction;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public abstract class WindowableAggregationFunction<T> extends AggregationFunction<T> implements WindowableFunction<T> {
 

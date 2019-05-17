@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hotrod.runtime.livesql.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.AbstractSelect.TableReferences;
-import org.hotrod.runtime.livesql.ExecutableSelect;
-import org.hotrod.runtime.livesql.QueryWriter;
 import org.hotrod.runtime.livesql.expressions.asymmetric.EqAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.EqAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.GeAll;
@@ -22,6 +18,8 @@ import org.hotrod.runtime.livesql.expressions.asymmetric.LtAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NeAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NeAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NotInSubquery;
+import org.hotrod.runtime.livesql.expressions.general.Coalesce;
+import org.hotrod.runtime.livesql.expressions.general.Constant;
 import org.hotrod.runtime.livesql.expressions.predicates.Between;
 import org.hotrod.runtime.livesql.expressions.predicates.Equal;
 import org.hotrod.runtime.livesql.expressions.predicates.GreaterThan;
@@ -36,6 +34,10 @@ import org.hotrod.runtime.livesql.expressions.predicates.NotEqual;
 import org.hotrod.runtime.livesql.expressions.predicates.NotInList;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderByDirectionStage;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
+import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.util.BoxUtil;
 
 public abstract class Expression<T> implements ResultSetColumn {
@@ -56,6 +58,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   public static final int PRECEDENCE_EQ_NE_LT_LE_GT_GE = 6;
   public static final int PRECEDENCE_LIKE = 6;
   public static final int PRECEDENCE_IN = 6;
+  public static final int PRECEDENCE_EXISTS = 6;
   public static final int PRECEDENCE_ANY_ALL_EQ_NE_LT_LE_GT_GE = 6;
 
   public static final int PRECEDENCE_NOT = 10;
@@ -262,7 +265,7 @@ public abstract class Expression<T> implements ResultSetColumn {
     return new NotInList<T>(this, list);
   }
 
-  // In subuqery
+  // In subquery
 
   public Predicate in(final ExecutableSelect subquery) {
     return new InSubquery(this, subquery);

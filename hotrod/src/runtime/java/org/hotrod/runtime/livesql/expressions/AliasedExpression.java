@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.expressions;
 
-import org.hotrod.runtime.livesql.QueryWriter;
-import org.hotrod.runtime.livesql.ReferenceableExpression;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrod.runtime.livesql.queries.select.ReferenceableExpression;
 
 public class AliasedExpression implements ReferenceableExpression {
 
