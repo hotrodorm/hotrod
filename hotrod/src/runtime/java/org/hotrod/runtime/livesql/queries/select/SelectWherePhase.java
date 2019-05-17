@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.expressions.predicates.PredicateBuilder;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
@@ -15,28 +14,12 @@ public class SelectWherePhase implements ExecutableSelect {
   // Properties
 
   private AbstractSelect<Map<String, Object>> select;
-  private PredicateBuilder predicateBuilder;
 
   // Constructors
 
   SelectWherePhase(final AbstractSelect<Map<String, Object>> select, final Predicate predicate) {
     this.select = select;
-    this.predicateBuilder = new PredicateBuilder(predicate);
-    this.select.setWhereCondition(this.predicateBuilder.getAssembled());
-  }
-
-  // Same stage
-
-  public SelectWherePhase and(final Predicate predicate) {
-    this.predicateBuilder.and(predicate);
-    this.select.setWhereCondition(this.predicateBuilder.getAssembled());
-    return this;
-  }
-
-  public SelectWherePhase or(final Predicate predicate) {
-    this.predicateBuilder.or(predicate);
-    this.select.setWhereCondition(this.predicateBuilder.getAssembled());
-    return this;
+    this.select.setWhereCondition(predicate);
   }
 
   // Next stages

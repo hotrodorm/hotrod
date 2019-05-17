@@ -30,11 +30,11 @@ public class Examples {
   public static void main(final String[] args) throws IOException, SQLException {
     Examples ex = new Examples();
     // ex.runExamples();
-    ex.runLiveSQL();
+    // ex.runLiveSQL();
     // ex.runSelectbyCriteria();
     // ex.runSelectbyCriteriaBinary();
     // ex.runSelectbyCriteriaUUID();
-    // ex.runSelectbyCriteriaIn();
+    ex.runSelectbyCriteriaIn();
   }
 
   @SuppressWarnings("unused")
@@ -61,12 +61,11 @@ public class Examples {
             SQL.val("%").concat(a.name).concat(a.type).concat("%").as("like1"), //
             a.currentBalance, a.mainStatus, a.id, a.type) //
         .from(a) //
-        .where(a.mainStatus.eq(1)) //
-        .and(a.currentBalance.lt(100)) //
-        .or(a.type.ne("S'AV")) //
-        .and(SQL.exists( //
-            dao.createSelect().from(c).where(c.friendId.isNotNull()) //
-        )) //
+        .where(a.mainStatus.eq(1) //
+            .and(a.currentBalance.lt(100)) //
+            .or(a.type.ne("S'AV") //
+                .and(SQL.exists(dao.createSelect().from(c).where(c.friendId.isNotNull())))) //
+            .andNot(a.mainStatus.ne(14).or(a.createdOn.gt(SQL.currentDateTime())))) //
         .orderBy(a.createdOn.asc()) //
         .execute() //
     ;
@@ -82,8 +81,9 @@ public class Examples {
   private void runSelectbyCriteria() throws SQLException {
     AccountDAO dao = SpringBeanRetriever.getBean("accountDAO");
     AccountTable a = AccountDAO.newTable();
-    List<Account> rows = dao.selectByCriteria(a, a.currentBalance.gt(100)) //
-        .and(a.name.like("CHK%")) //
+    List<Account> rows = dao.selectByCriteria(a, //
+        a.currentBalance.gt(100) //
+            .and(a.name.like("CHK%"))) //
         .execute();
     for (Account r : rows) {
       System.out.println("row: " + r);
@@ -119,12 +119,14 @@ public class Examples {
 
   private void runSelectbyCriteriaIn() throws SQLException {
     AccountDAO dao = SpringBeanRetriever.getBean("accountDAO");
-    AccountTable a = AccountDAO.newTable();
-    TransactionTable t = TransactionDAO.newTable("a");
+    AccountTable a = AccountDAO.newTable("a");
+    TransactionTable t = TransactionDAO.newTable("t");
     List<Account> rows = dao.selectByCriteria(a, a.id.in( //
-        dao.createSelect(t.accountId).from(t).where(t.amount.ge(100)))) //
-        // .and(a.name.like("CHK%")) //
-        .and(a.id.notIn(123, 456, 789)).execute();
+        dao.createSelect(t.accountId) //
+            .from(t) //
+            .where(t.accountId.eq(a.id).and(t.amount.ge(100)))) //
+        .and(a.id.notIn(123, 456, 789))) //
+        .execute();
     for (Account r : rows) {
       System.out.println("row: " + r);
     }

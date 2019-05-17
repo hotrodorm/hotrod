@@ -6,36 +6,21 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.expressions.predicates.PredicateBuilder;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
 public class CriteriaWherePhase<T> {
 
   private AbstractSelect<T> select;
-  private PredicateBuilder predicateBuilder;
 
   public CriteriaWherePhase(final TableOrView baseTable, final SQLDialect sqlDialect, final SqlSession sqlSession,
       final Predicate whereCondition, final String statement) {
     this.select = new Select<T>(sqlDialect, false, sqlSession, statement);
     this.select.setBaseTable(baseTable);
-    this.predicateBuilder = new PredicateBuilder(whereCondition);
-    this.select.setWhereCondition(this.predicateBuilder.getAssembled());
+    this.select.setWhereCondition(whereCondition);
   }
 
   // same phase
-
-  public CriteriaWherePhase<T> and(final Predicate predicate) {
-    this.predicateBuilder.and(predicate);
-    this.select.setWhereCondition(this.predicateBuilder.getAssembled());
-    return this;
-  }
-
-  public CriteriaWherePhase<T> or(final Predicate predicate) {
-    this.predicateBuilder.or(predicate);
-    this.select.setWhereCondition(this.predicateBuilder.getAssembled());
-    return this;
-  }
 
   // next phases
 

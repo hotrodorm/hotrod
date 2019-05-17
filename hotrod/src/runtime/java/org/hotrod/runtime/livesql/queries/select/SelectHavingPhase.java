@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.expressions.predicates.PredicateBuilder;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
@@ -14,29 +13,14 @@ public class SelectHavingPhase implements ExecutableSelect {
   // Properties
 
   private AbstractSelect<Map<String, Object>> select;
-  private PredicateBuilder predicateBuilder;
 
   // Constructor
 
   SelectHavingPhase(final AbstractSelect<Map<String, Object>> select, final Predicate predicate) {
     this.select = select;
-    this.predicateBuilder = new PredicateBuilder(predicate);
-    this.select.setHavingCondition(this.predicateBuilder.getAssembled());
   }
 
   // Same stage
-
-  public SelectHavingPhase and(final Predicate predicate) {
-    this.predicateBuilder.and(predicate);
-    this.select.setHavingCondition(this.predicateBuilder.getAssembled());
-    return this;
-  }
-
-  public SelectHavingPhase or(final Predicate predicate) {
-    this.predicateBuilder.or(predicate);
-    this.select.setHavingCondition(this.predicateBuilder.getAssembled());
-    return this;
-  }
 
   // Next stages
 

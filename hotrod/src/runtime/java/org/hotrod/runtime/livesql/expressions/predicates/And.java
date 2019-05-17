@@ -1,11 +1,11 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
+import org.hotrod.runtime.livesql.expressions.Expression;
+
 public class And extends BinaryPredicate {
 
-  private static final int PRECEDENCE = 11;
-
-  public And(final Predicate a, final Predicate b) {
-    super(a, "and", b, PRECEDENCE);
+  public And(final Expression<Boolean> a, final Expression<Boolean> b) {
+    super(a, "and", b, Expression.PRECEDENCE_AND);
   }
 
 }

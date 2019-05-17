@@ -1,11 +1,11 @@
 package org.hotrod.runtime.livesql.expressions.predicates;
 
+import org.hotrod.runtime.livesql.expressions.Expression;
+
 public class Or extends BinaryPredicate {
 
-  private static final int PRECEDENCE = 12;
-
-  public Or(final Predicate a, final Predicate b) {
-    super(a, "or", b, PRECEDENCE);
+  public Or(final Expression<Boolean> a, final Expression<Boolean> b) {
+    super(a, "or", b, Expression.PRECEDENCE_OR);
   }
 
 }

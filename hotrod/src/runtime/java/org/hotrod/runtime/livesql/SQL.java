@@ -31,12 +31,10 @@ import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.general.Tuple;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.expressions.object.ObjectConstant;
-import org.hotrod.runtime.livesql.expressions.predicates.And;
 import org.hotrod.runtime.livesql.expressions.predicates.BooleanConstant;
 import org.hotrod.runtime.livesql.expressions.predicates.Exists;
 import org.hotrod.runtime.livesql.expressions.predicates.Not;
 import org.hotrod.runtime.livesql.expressions.predicates.NotExists;
-import org.hotrod.runtime.livesql.expressions.predicates.Or;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.strings.StringConstant;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
@@ -52,15 +50,7 @@ public class SQL {
 
   // Predicates
 
-  public static Predicate or(final Predicate a, final Predicate b) {
-    return new Or(a, b);
-  }
-
-  public static Predicate and(final Predicate a, final Predicate b) {
-    return new And(a, b);
-  }
-
-  public static Predicate not(final Predicate a) {
+  public static Predicate not(final Expression<Boolean> a) {
     return new Not(a);
   }
 
