@@ -17,6 +17,7 @@ import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountDAO.AccountOrderBy;
 import hotrod.test.generation.primitives.AccountDAO.AccountTable;
 import hotrod.test.generation.primitives.ClientDAO;
+import hotrod.test.generation.primitives.ClientDAO.ClientTable;
 import hotrod.test.generation.primitives.TransactionDAO;
 import hotrod.test.generation.primitives.TransactionDAO.TransactionTable;
 import hotrod.test.generation.primitives.TypesBinaryDAO;
@@ -41,6 +42,7 @@ public class Examples {
 
     ClientDAO dao = SpringBeanRetriever.getBean("clientDAO");
     AccountTable a = AccountDAO.newTable();
+    ClientTable c = ClientDAO.newTable("c");
 
     List<Map<String, Object>> rows = dao //
         .createSelect(a.createdOn,
@@ -63,7 +65,7 @@ public class Examples {
         .and(a.currentBalance.lt(100)) //
         .or(a.type.ne("S'AV")) //
         .and(SQL.exists( //
-            dao.createSelect().from(a).where(a.name.isNotNull()) //
+            dao.createSelect().from(c).where(c.friendId.isNotNull()) //
         )) //
         .orderBy(a.createdOn.asc()) //
         .execute() //

@@ -21,7 +21,7 @@ public abstract class TableOrView extends DatabaseObject {
   // Validation
 
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    tableReferences.register(this);
+    tableReferences.register(this.alias, this);
     ag.register(this.alias, this);
   }
 

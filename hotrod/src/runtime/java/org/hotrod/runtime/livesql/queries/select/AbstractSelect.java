@@ -287,11 +287,13 @@ public abstract class AbstractSelect<R> extends Query {
     private Set<DatabaseObject> tableReferences = new HashSet<DatabaseObject>();
     private Set<String> aliases = new HashSet<String>();
 
-    public void register(final DatabaseObject databaseObject) {
+    public void register(final String alias, final DatabaseObject databaseObject) {
       if (this.tableReferences.contains(databaseObject)) {
-        throw new InvalidLiveSQLStatementException(SUtils.upperFirst(databaseObject.getType()) + " "
-            + databaseObject.renderUnescapedName() + " is used multiple times in the Live SQL statement. "
-            + "Every table or view can only be used once in a from() or join() methods of a Live SQL statement.");
+        throw new InvalidLiveSQLStatementException(
+            SUtils.upperFirst(databaseObject.getType()) + " " + databaseObject.renderUnescapedName()
+                + (alias == null ? " (with no alias)" : " (with alias '" + alias + "')")
+                + " is used multiple times in the Live SQL statement. "
+                + "Every table or view can only be used once in the from() or join() methods of a Live SQL statement.");
       }
       this.tableReferences.add(databaseObject);
     }

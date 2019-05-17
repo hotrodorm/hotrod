@@ -5,7 +5,7 @@ public class Minus extends BinaryNumberExpression {
   private static final int PRECEDENCE = 4;
 
   public Minus(final NumberExpression a, final NumberExpression b) {
-    super(a, " - ", b, PRECEDENCE);
+    super(a, "-", b, PRECEDENCE);
   }
 
 }

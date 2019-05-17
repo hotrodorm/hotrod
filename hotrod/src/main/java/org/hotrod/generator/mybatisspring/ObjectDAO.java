@@ -336,7 +336,6 @@ public class ObjectDAO extends GeneratableObject {
       imports.newLine();
     }
 
-    imports.add("org.hotrod.runtime.livesql.SelectColumnsPhase");
     imports.add("org.hotrod.runtime.livesql.expressions.ResultSetColumn");
 
     imports.add("org.hotrod.runtime.livesql.dialects.SQLDialect");
@@ -348,7 +347,8 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("org.hotrod.runtime.livesql.metadata.ObjectColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.Table");
     imports.add("org.hotrod.runtime.livesql.expressions.predicates.Predicate");
-    imports.add("org.hotrod.runtime.livesql.CriteriaWherePhase");
+    imports.add("org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase");
+    imports.add("org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase");
     imports.add("org.hotrod.runtime.livesql.metadata.View");
     imports.newLine();
 
