@@ -82,22 +82,22 @@ public class QueryWriter {
     return sqlDialect;
   }
 
-  public LiveSQL getPreparedQuery() {
+  public LiveSQLStructure getPreparedQuery() {
     LinkedHashMap<String, Object> p = new LinkedHashMap<String, Object>();
     for (String name : this.params.keySet()) {
       p.put(name, this.params.get(name));
     }
-    return new LiveSQL(this.sb.toString(), p);
+    return new LiveSQLStructure(this.sb.toString(), p);
   }
 
   // Prepared Query
 
-  public static class LiveSQL {
+  public static class LiveSQLStructure {
 
     private String sql;
     private LinkedHashMap<String, Object> parameters;
 
-    public LiveSQL(final String sql, final LinkedHashMap<String, Object> parameters) {
+    public LiveSQLStructure(final String sql, final LinkedHashMap<String, Object> parameters) {
       this.sql = sql;
       this.parameters = parameters;
     }

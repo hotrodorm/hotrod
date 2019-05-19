@@ -16,7 +16,7 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.DatabaseObject;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQL;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 import org.hotrod.runtime.util.SUtils;
 
 public abstract class AbstractSelect<R> extends Query {
@@ -110,7 +110,7 @@ public abstract class AbstractSelect<R> extends Query {
 
   // Execute
 
-  private LiveSQL prepareQuery() {
+  private LiveSQLStructure prepareQuery() {
     validateQuery();
     QueryWriter w = new QueryWriter(this.sqlDialect);
     renderTo(w);
@@ -266,7 +266,7 @@ public abstract class AbstractSelect<R> extends Query {
 
   public List<R> execute() {
 
-    LiveSQL q = this.prepareQuery();
+    LiveSQLStructure q = this.prepareQuery();
 
     System.out.println("--- SQL ---");
     System.out.println(q.getSQL());

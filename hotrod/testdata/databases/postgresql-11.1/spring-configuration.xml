@@ -45,6 +45,11 @@
     <property name="dataSource" ref="dataSource" />
   </bean>
 
+  <bean id="liveSQL" class="org.hotrod.runtime.livesql.LiveSQL">
+    <property name="sqlSession" ref="sqlSession" />
+    <property name="sqlDialect" value="#{sqlDialectFactory.sqlDialect}" />
+  </bean>
+
   <!-- DAOs -->
 
   <import resource="../../../gen/spring-hotrod2.xml"/>
@@ -62,6 +67,7 @@
   <!-- Services -->
 
   <bean id="uiServices" class="hotrod.test.UIServices" />
+  <bean id="uiServices2" class="hotrod.test.UIServicesLiveSQL" />
 
   <!-- Additional beans -->
 
