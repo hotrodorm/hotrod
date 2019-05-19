@@ -1,0 +1,46 @@
+  ‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗
+
+  @Autowired
+  private LiveSQL sql;
+  ‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗‗
+
+
+1. Same level
+   ‾‾‾‾‾‾‾‾‾‾
+  sql.select(a.col1, a.col2)
+     .from(a)
+     .union() // produces a "CombiningSelectPhase" object
+     .select(b.col3, b.col4)
+     .from(b)
+     .orderBy(a.col1)
+     .execute()
+
+2. Parenthesis are easy to write on the second query expression and subsequent ones.
+   ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+  sql.select(a.col1, a.col2)
+     .from(a)
+     .union(
+         sql.select(b.col3, b.col4)
+            .from(b)
+            .except()
+            .select(c.col5, c.col6)
+            .from(c)
+     )
+     .orderBy(a.col1)
+     .execute()
+
+3. Parenthesis that include the first query expression.
+   ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾   
+  sql.enclose(
+      sql.select(a.col1, a.col2)
+         .from(a)
+         .union()
+         .select(b.col3, b.col4)
+         .from(b)
+      )
+      .intersect()
+      .select(c.col5, c.col6)
+      .from(c)
+      .orderBy(a.col1)
+   
+   
