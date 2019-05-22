@@ -384,18 +384,22 @@ public class ObjectDAO extends GeneratableObject {
 
     // Live SQL
 
-    println("  // Live SQL");
-    println("");
-    println("  public SelectColumnsPhase<Map<String, Object>> createSelect() {");
-    println("    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, false);");
-    println("  }");
-    println("");
-    println(
-        "  public SelectColumnsPhase<Map<String, Object>> createSelect(final ResultSetColumn... resultSetColumns) {");
-    println(
-        "    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, false, resultSetColumns);");
-    println("  }");
-    println("");
+    // println(" // Live SQL");
+    // println("");
+    // println(" public SelectColumnsPhase<Map<String, Object>> createSelect()
+    // {");
+    // println(" return new SelectColumnsPhase<Map<String,
+    // Object>>(this.sqlDialect, this.sqlSession, false);");
+    // println(" }");
+    // println("");
+    // println(
+    // " public SelectColumnsPhase<Map<String, Object>> createSelect(final
+    // ResultSetColumn... resultSetColumns) {");
+    // println(
+    // " return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect,
+    // this.sqlSession, false, resultSetColumns);");
+    // println(" }");
+    // println("");
 
   }
 

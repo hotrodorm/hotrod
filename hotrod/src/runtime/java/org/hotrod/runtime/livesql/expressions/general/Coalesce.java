@@ -13,7 +13,6 @@ public class Coalesce<T> extends Expression<T> {
 
   private List<Expression<T>> expressions;
 
-  @SafeVarargs
   public Coalesce(final Expression<T> first, final Expression<T>... rest) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.expressions = new ArrayList<Expression<T>>();

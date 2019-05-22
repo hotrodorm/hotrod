@@ -19,13 +19,11 @@ public class UIServicesLiveSQL {
 
     AccountTable a = AccountDAO.newTable("a");
     AccountTable b = AccountDAO.newTable("b");
-    // ClientTable c = ClientDAO.newTable("c");
 
     List<Map<String, Object>> rows = sql //
         .select(a.name, a.currentBalance) //
         .from(a) //
         .unionAll(sql.select(b.name, b.currentBalance).from(b).where(b.name.like("CHK%"))) //
-        // .orderBy(a.currentBalance.asc())
         .limit(2) //
         .execute() //
     ;

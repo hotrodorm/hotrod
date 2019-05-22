@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
+import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.SQL;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
 import org.hotrod.runtime.util.HexaUtils;
@@ -28,9 +29,6 @@ import hotrod.test.generation.primitives.TypesOtherDAO.TypesOtherTable;
 public class UIServices {
 
   @Autowired
-  private ClientDAO clientDao;
-
-  @Autowired
   private AccountDAO accountDao;
 
   @Autowired
@@ -39,13 +37,16 @@ public class UIServices {
   @Autowired
   private TypesOtherDAO typesOtherDao;
 
+  @Autowired
+  private LiveSQL sql;
+
   public void runLiveSQL1() throws SQLException {
 
     AccountTable a = AccountDAO.newTable();
     ClientTable c = ClientDAO.newTable("c");
 
-    List<Map<String, Object>> rows = this.clientDao //
-        .createSelect(a.createdOn,
+    List<Map<String, Object>> rows = this.sql //
+        .select(a.createdOn,
 
             a.name.isNull(),
 
@@ -64,7 +65,7 @@ public class UIServices {
         .where(a.mainStatus.eq(1) //
             .and(a.currentBalance.lt(100)) //
             .or(a.type.ne("S'AV") //
-                .and(SQL.exists(this.clientDao.createSelect().from(c).where(c.friendId.isNotNull())))) //
+                .and(SQL.exists(this.sql.select().from(c).where(c.friendId.isNotNull())))) //
             .andNot(a.mainStatus.ne(14).or(a.createdOn.gt(SQL.currentDateTime())))) //
         .orderBy(a.createdOn.asc()) //
         .execute() //
@@ -84,10 +85,10 @@ public class UIServices {
     AccountTable b = AccountDAO.newTable("b");
     // ClientTable c = ClientDAO.newTable("c");
 
-    List<Map<String, Object>> rows = this.clientDao //
-        .createSelect(a.name, a.currentBalance) //
+    List<Map<String, Object>> rows = this.sql //
+        .select(a.name, a.currentBalance) //
         .from(a) //
-        .unionAll(this.clientDao.createSelect(b.name, b.currentBalance).from(b).where(b.name.like("CHK%"))) //
+        .unionAll(this.sql.select(b.name, b.currentBalance).from(b).where(b.name.like("CHK%"))) //
         // .orderBy(a.currentBalance.asc())
         .limit(2) //
         .execute() //
@@ -107,23 +108,25 @@ public class UIServices {
     AccountTable b = AccountDAO.newTable("b");
     // ClientTable c = ClientDAO.newTable("c");
 
-//    List<Map<String, Object>> rows = this.clientDao.encloseSelect(this.clientDao //
-//        .createSelect(a.name, a.currentBalance) //
-//        .from(a) //
-//        .unionAll(this.clientDao.createSelect(b.name, b.currentBalance).from(b).where(b.name.like("CHK%"))) //
-//        // .orderBy(a.currentBalance.asc())
-//        )
-//        
-//        .
-//        .limit(2) //
-//        .execute() //
-//    ;
-//
-//    if (rows != null) {
-//      for (Map<String, Object> r : rows) {
-//        System.out.println("row: " + r);
-//      }
-//    }
+    // List<Map<String, Object>> rows =
+    // this.clientDao.encloseSelect(this.clientDao //
+    // .createSelect(a.name, a.currentBalance) //
+    // .from(a) //
+    // .unionAll(this.clientDao.createSelect(b.name,
+    // b.currentBalance).from(b).where(b.name.like("CHK%"))) //
+    // // .orderBy(a.currentBalance.asc())
+    // )
+    //
+    // .
+    // .limit(2) //
+    // .execute() //
+    // ;
+    //
+    // if (rows != null) {
+    // for (Map<String, Object> r : rows) {
+    // System.out.println("row: " + r);
+    // }
+    // }
 
   }
 
@@ -167,7 +170,7 @@ public class UIServices {
     AccountTable a = AccountDAO.newTable("a");
     TransactionTable t = TransactionDAO.newTable("t");
     List<Account> rows = this.accountDao.selectByCriteria(a, a.id.in( //
-        this.accountDao.createSelect(t.accountId) //
+        this.sql.select(t.accountId) //
             .from(t) //
             .where(t.accountId.eq(a.id).andNot(t.amount.ge(100).or(t.time.isNull())))) //
         .and(a.id.notIn(123, 456, 789))) //
