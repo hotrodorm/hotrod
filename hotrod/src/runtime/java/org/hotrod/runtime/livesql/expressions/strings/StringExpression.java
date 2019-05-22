@@ -13,6 +13,16 @@ public abstract class StringExpression extends Expression<String> {
     super(precedence);
   }
 
+  // Coalesce
+
+  public StringExpression coalesce(final StringExpression a) {
+    return new StringCoalesce(this, a);
+  }
+
+  public StringExpression coalesce(final String a) {
+    return new StringCoalesce(this, new StringConstant(a));
+  }
+
   // Locate
 
   public NumberExpression locate(final Expression<String> substring, final Expression<Number> from) {

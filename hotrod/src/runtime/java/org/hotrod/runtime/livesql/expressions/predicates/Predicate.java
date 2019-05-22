@@ -8,6 +8,18 @@ public abstract class Predicate extends Expression<Boolean> {
     super(precedence);
   }
 
+  // Coalesce
+
+  public Predicate coalesce(final Predicate a) {
+    return new PredicateCoalesce(this, a);
+  }
+
+  public Predicate coalesce(final Boolean a) {
+    return new PredicateCoalesce(this, new BooleanConstant(a));
+  }
+
+  // Predicate operators
+
   public Predicate and(final Expression<Boolean> p) {
     return new And(this, p);
   }

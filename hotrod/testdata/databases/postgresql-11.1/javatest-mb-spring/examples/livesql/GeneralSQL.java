@@ -251,15 +251,15 @@ public class GeneralSQL {
     // ORDER BY case 
     // when a.type = 'INV' then 8.0 
     // when a.current_balance > 100 then 1.7
-    // else 0.5 end 
-    // desc
+    // else 0.5 end desc, 
+    // a.current_balance
 
     AccountTable a = AccountDAO.newTable("a");
 
     List<Map<String, Object>> rows = sql //
         .select(a.id, sql.caseWhen(a.type.eq("CHK"), 3.5).elseValue(1.0).end().as("factor")) //
         .from(a) //
-        .orderBy(sql.caseWhen(a.type.eq("INV"), 8.0).when(a.currentBalance.gt(100), 1.7).elseValue(0.5).end().desc()) //
+        .orderBy(sql.caseWhen(a.type.eq("INV"), 8.0).when(a.currentBalance.gt(100), 1.7).elseValue(0.5).end().desc(), a.currentBalance.asc()) //
         .execute() //
     ;
 

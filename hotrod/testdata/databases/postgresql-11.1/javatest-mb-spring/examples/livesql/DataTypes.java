@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import hotrod.test.generation.primitives.ItemDAO;
 import hotrod.test.generation.primitives.ItemDAO.ItemTable;
 
-@Service("dt1")
+@Service("dataTypesExamples")
 public class DataTypes {
 
   @Autowired

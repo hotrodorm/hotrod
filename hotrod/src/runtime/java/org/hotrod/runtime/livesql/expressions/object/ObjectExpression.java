@@ -8,4 +8,14 @@ public abstract class ObjectExpression extends Expression<Object> {
     super(precedence);
   }
 
+  // Coalesce
+
+  public ObjectExpression coalesce(final ObjectExpression a) {
+    return new ObjectCoalesce(this, a);
+  }
+
+  public ObjectExpression coalesce(final Object a) {
+    return new ObjectCoalesce(this, new ObjectConstant(a));
+  }
+
 }

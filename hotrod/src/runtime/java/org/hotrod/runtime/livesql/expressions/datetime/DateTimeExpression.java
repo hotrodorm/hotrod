@@ -12,6 +12,18 @@ public abstract class DateTimeExpression extends Expression<Date> {
     super(precedence);
   }
 
+  // Coalesce
+
+  public DateTimeExpression coalesce(final DateTimeExpression a) {
+    return new DateTimeCoalesce(this, a);
+  }
+
+  public DateTimeExpression coalesce(final Date a) {
+    return new DateTimeCoalesce(this, new DateTimeConstant(a));
+  }
+
+  // DateTime Functions
+
   public DateTimeExpression date() {
     return new org.hotrod.runtime.livesql.expressions.datetime.Date(this);
   }

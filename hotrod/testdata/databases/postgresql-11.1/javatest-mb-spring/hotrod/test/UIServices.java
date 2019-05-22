@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.runtime.livesql.SQL;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
 import org.hotrod.runtime.util.HexaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,23 +51,23 @@ public class UIServices {
 
             a.name.isNull(),
 
-            SQL.sum(a.currentBalance).over().partitionBy(a.type).orderBy(a.name.substr(5, 2).asc()).end()
+            sql.sum(a.currentBalance).over().partitionBy(a.type).orderBy(a.name.substr(5, 2).asc()).end()
                 .as("runningBalance"),
 
             a.currentBalance.mult(a.id).lt(10),
 
-            SQL.val(1.10).mult(a.currentBalance).as("cbp"), //
+            sql.val(1.10).mult(a.currentBalance).as("cbp"), //
             a.currentBalance.trunc(-2).as("tb"), //
             a.createdOn.extract(DateTimeField.MONTH).as("month"), //
             a.name.coalesce(a.type).coalesce("N/A").as("xname"), //
-            SQL.val("%").concat(a.name).concat(a.type).concat("%").as("like1"), //
+            sql.val("%").concat(a.name).concat(a.type).concat("%").as("like1"), //
             a.currentBalance, a.mainStatus, a.id, a.type) //
         .from(a) //
         .where(a.mainStatus.eq(1) //
             .and(a.currentBalance.lt(100)) //
             .or(a.type.ne("S'AV") //
-                .and(SQL.exists(this.sql.select().from(c).where(c.friendId.isNotNull())))) //
-            .andNot(a.mainStatus.ne(14).or(a.createdOn.gt(SQL.currentDateTime())))) //
+                .and(sql.exists(this.sql.select().from(c).where(c.friendId.isNotNull())))) //
+            .andNot(a.mainStatus.ne(14).or(a.createdOn.gt(sql.currentDateTime())))) //
         .orderBy(a.createdOn.asc()) //
         .execute() //
     ;

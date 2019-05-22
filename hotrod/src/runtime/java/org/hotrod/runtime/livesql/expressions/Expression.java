@@ -18,8 +18,6 @@ import org.hotrod.runtime.livesql.expressions.asymmetric.LtAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NeAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NeAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NotInSubquery;
-import org.hotrod.runtime.livesql.expressions.general.Coalesce;
-import org.hotrod.runtime.livesql.expressions.general.Constant;
 import org.hotrod.runtime.livesql.expressions.predicates.Between;
 import org.hotrod.runtime.livesql.expressions.predicates.Equal;
 import org.hotrod.runtime.livesql.expressions.predicates.GreaterThan;
@@ -121,17 +119,22 @@ public abstract class Expression<T> implements ResultSetColumn {
 
   // General
 
-  public Expression<T> coalesce(final Expression<T> a) {
-    @SuppressWarnings("unchecked")
-    Coalesce<T> coalesce = new Coalesce<T>(this, a);
-    return coalesce;
-  }
+  // public NumberExpression coalesce(final Expression<Number> a) {
+  // Expression<Number> x1 = (Expression<Number>) this;
+  // return new NumberCoalesce(x1, a);
+  // }
+  //
+  // public StringExpression coalesce(final Expression<String> a) {
+  // Expression<String> x1 = (Expression<String>) this;
+  // return null;
+  // // return new NumberCoalesce(x1, a);
+  // }
 
-  public Expression<T> coalesce(final T a) {
-    @SuppressWarnings("unchecked")
-    Coalesce<T> coalesce = new Coalesce<T>(this, new Constant<T>(a));
-    return coalesce;
-  }
+  // public Expression<T> coalesce(final T a) {
+  // @SuppressWarnings("unchecked")
+  // Coalesce<T> coalesce = new Coalesce<T>(this, new Constant<T>(a));
+  // return coalesce;
+  // }
 
   // Scalar comparisons
 

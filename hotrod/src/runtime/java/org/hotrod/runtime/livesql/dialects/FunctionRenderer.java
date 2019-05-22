@@ -9,6 +9,9 @@ import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.util.Separator;
 
+/**
+ * Generic rendering class. Methods can be overwritten by specific dialects.
+ */
 public abstract class FunctionRenderer {
 
   // General purpose functions

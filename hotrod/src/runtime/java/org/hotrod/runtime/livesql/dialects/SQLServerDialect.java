@@ -3,11 +3,11 @@ package org.hotrod.runtime.livesql.dialects;
 import java.util.Date;
 import java.util.List;
 
-import org.hotrod.runtime.livesql.SQL;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -219,7 +219,7 @@ public class SQLServerDialect extends SQLDialect {
               "SQL Server requires the number of decimal places to be specified on the TRUNC() function (round())");
         }
 
-        this.write(w, "round", x, places, SQL.val(1));
+        this.write(w, "round", x, places, new NumberConstant(1));
       }
 
       // String functions

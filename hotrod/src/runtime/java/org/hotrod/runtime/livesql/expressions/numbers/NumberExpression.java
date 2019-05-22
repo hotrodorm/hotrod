@@ -8,6 +8,16 @@ public abstract class NumberExpression extends Expression<Number> {
     super(precedence);
   }
 
+  // Coalesce
+
+  public NumberExpression coalesce(final NumberExpression a) {
+    return new NumberCoalesce(this, a);
+  }
+
+  public NumberExpression coalesce(final Number a) {
+    return new NumberCoalesce(this, new NumberConstant(a));
+  }
+
   // Basic arithmetic
 
   public NumberExpression plus(final NumberExpression n) {

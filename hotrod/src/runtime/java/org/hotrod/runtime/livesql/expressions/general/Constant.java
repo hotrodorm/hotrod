@@ -25,6 +25,7 @@ public class Constant<T> extends Expression<T> {
 
   // Constructor
 
+  @Deprecated
   public Constant(final T value) {
     super(Expression.PRECEDENCE_LITERAL);
     if (this.isString(value)) {

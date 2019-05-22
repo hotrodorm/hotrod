@@ -11,7 +11,7 @@
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
-  <context:component-scan base-package="hotrod.test" />
+  <context:component-scan base-package="hotrod.test, examples.livesql" />
 
 <!-- 
   <jee:jndi-lookup id="dataSource" jndi-name="jdbc/myDatasource1" expected-type="javax.sql.DataSource" />

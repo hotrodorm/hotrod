@@ -1,23 +1,20 @@
-package org.hotrod.runtime.livesql.expressions.general;
+package org.hotrod.runtime.livesql.expressions.binary;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public class Coalesce<T> extends Expression<T> {
+public class ByteArrayCoalesce extends ByteArrayExpression {
 
-  private List<Expression<T>> expressions;
+  private List<Expression<byte[]>> expressions;
 
-  public Coalesce(final Expression<T> first, final Expression<T>... rest) {
+  public ByteArrayCoalesce(final ByteArrayExpression... values) {
     super(Expression.PRECEDENCE_FUNCTION);
-    this.expressions = new ArrayList<Expression<T>>();
-    this.expressions.add(first);
-    this.expressions.addAll(Arrays.asList(rest));
+    this.expressions.addAll(Arrays.asList(values));
   }
 
   @Override
@@ -29,14 +26,14 @@ public class Coalesce<T> extends Expression<T> {
 
   @Override
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    for (Expression<T> e : this.expressions) {
+    for (Expression<byte[]> e : this.expressions) {
       e.validateTableReferences(tableReferences, ag);
     }
   }
 
   @Override
   public void designateAliases(final AliasGenerator ag) {
-    for (Expression<T> e : this.expressions) {
+    for (Expression<byte[]> e : this.expressions) {
       e.designateAliases(ag);
     }
   }

@@ -8,4 +8,14 @@ public abstract class ByteArrayExpression extends Expression<byte[]> {
     super(precedence);
   }
 
+  // Coalesce
+
+  public ByteArrayExpression coalesce(final ByteArrayExpression a) {
+    return new ByteArrayCoalesce(this, a);
+  }
+
+  public ByteArrayExpression coalesce(final byte[] a) {
+    return new ByteArrayCoalesce(this, new ByteArrayConstant(a));
+  }
+
 }
