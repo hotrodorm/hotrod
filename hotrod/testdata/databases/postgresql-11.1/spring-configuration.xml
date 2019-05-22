@@ -64,18 +64,4 @@
   </bean>
 ?>
 
-  <!-- Services -->
-
-  <bean id="uiServices" class="hotrod.test.UIServices" />
-  <bean id="uiServices2" class="hotrod.test.UIServicesLiveSQL" />
-
-  <!-- Additional beans -->
-
-<!--
-  <bean id="controller2" class="com.myapp1.controller.Controller2">
-    <property name="sqlSession" ref="sqlSession" />
-    <property name="cuentaDAO" ref="cuentaDAO" />
-  </bean>
--->
-
 </beans>

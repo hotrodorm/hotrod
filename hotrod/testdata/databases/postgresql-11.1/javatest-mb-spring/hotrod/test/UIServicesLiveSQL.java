@@ -6,10 +6,12 @@ import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountDAO.AccountTable;
 
+@Service("uiServices2")
 public class UIServicesLiveSQL {
 
   @Autowired

@@ -54,6 +54,8 @@ drop table if exists test_default2;
 
 -- All Types
 
+drop table if exists item;
+
 drop table if exists types_numeric;
 drop table if exists types_char;
 drop table if exists types_binary;

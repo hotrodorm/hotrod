@@ -10,6 +10,7 @@ import org.hotrod.runtime.livesql.SQL;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
 import org.hotrod.runtime.util.HexaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import hotrod.test.generation.Account;
 import hotrod.test.generation.TypesBinary;
@@ -26,6 +27,7 @@ import hotrod.test.generation.primitives.TypesBinaryDAO.TypesBinaryTable;
 import hotrod.test.generation.primitives.TypesOtherDAO;
 import hotrod.test.generation.primitives.TypesOtherDAO.TypesOtherTable;
 
+@Service("uiServices")
 public class UIServices {
 
   @Autowired

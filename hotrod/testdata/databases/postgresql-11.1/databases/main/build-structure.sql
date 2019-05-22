@@ -165,6 +165,18 @@ create table vehicle (
 
 create unique index vehicle_unique on vehicle (upper(name));
 
+-- Data types example
+
+create table item (
+  id int,
+  description varchar(200),
+  price decimal(14, 2),
+  created_on timestamp,
+  active boolean,
+  icon bytea, -- blob
+  store_code uuid -- object
+);
+
 -- Complex Names
 
 create table "car#part$Price" (

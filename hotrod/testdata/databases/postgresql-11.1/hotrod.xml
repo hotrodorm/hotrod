@@ -63,6 +63,8 @@
 
   <table name="codes" column-seam="_" /> <!-- identity by default PK -->
 
+  <table name="item" />
+  
   <table name="quadrant" />
   <table name="application_config" />
 
