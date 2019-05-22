@@ -38,8 +38,7 @@ public class Joins {
         .join(t, t.accountId.eq(a.id)) //
         .join(b, b.id.eq(t.fedBranchId)) //
         .where(a.type.eq("CHK")) // ... and rest of SQL
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -60,8 +59,8 @@ public class Joins {
         .select(a.id, t.amount) //
         .from(a) //
         .leftJoin(t, t.accountId.eq(a.id)) //
-        .execute() //
-    ;
+        // rest of SELECT here: where(), groupBy(), etc.
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -82,8 +81,8 @@ public class Joins {
         .select(a.id, t.amount) //
         .from(t) //
         .rightJoin(a, t.accountId.eq(a.id)) //
-        .execute() //
-    ;
+        // rest of SELECT here: where(), groupBy(), etc.
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -104,8 +103,8 @@ public class Joins {
         .select(a.id, t.amount) //
         .from(a) //
         .fullOuterJoin(t, t.accountId.eq(a.id)) //
-        .execute() //
-    ;
+        // rest of SELECT here: where(), groupBy(), etc.
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -126,8 +125,8 @@ public class Joins {
         .select(a.id, t.amount) //
         .from(a) //
         .crossJoin(t) //
-        .execute() //
-    ;
+        // rest of SELECT here: where(), groupBy(), etc.
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);

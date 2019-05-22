@@ -41,8 +41,7 @@ public class GeneralSQL {
     List<Map<String, Object>> rows = sql //
         .select() //
         .from(a) //
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -60,8 +59,7 @@ public class GeneralSQL {
     List<Map<String, Object>> rows = sql //
         .selectDistinct() //
         .from(a) //
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -79,8 +77,7 @@ public class GeneralSQL {
     List<Map<String, Object>> rows = sql //
         .select(a.name, a.createdOn) //
         .from(a) //
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -100,8 +97,7 @@ public class GeneralSQL {
         .select() //
         .from(a) //
         .where(a.currentBalance.ge(150.0).and(a.mainStatus.eq(1))) //
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -123,8 +119,7 @@ public class GeneralSQL {
         .from(a) //
         .where(a.currentBalance.ge(150.0).and(a.mainStatus.eq(1))) //
         .groupBy(a.type) //
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -148,8 +143,7 @@ public class GeneralSQL {
         .where(a.currentBalance.ge(150.0).and(a.mainStatus.eq(1))) //
         .groupBy(a.type) //
         .having(sql.sum(a.currentBalance).ge(1000)) //
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -175,8 +169,7 @@ public class GeneralSQL {
         .groupBy(a.type) //
         .having(sql.sum(a.currentBalance).ge(1000)) //
         .orderBy(a.type.asc()) //
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -204,8 +197,7 @@ public class GeneralSQL {
         .having(sql.sum(a.currentBalance).ge(1000)) //
         .orderBy(a.type.asc()) //
         .offset(300) //
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -235,8 +227,7 @@ public class GeneralSQL {
         .orderBy(a.type.asc()) //
         .offset(300) //
         .limit(50) //
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -248,10 +239,10 @@ public class GeneralSQL {
 
     // SELECT a.type, case when a.type = 'CHK' then 3.5 else 1.0 end as "factor"
     // FROM account a
-    // ORDER BY case 
-    // when a.type = 'INV' then 8.0 
+    // ORDER BY case
+    // when a.type = 'INV' then 8.0
     // when a.current_balance > 100 then 1.7
-    // else 0.5 end desc, 
+    // else 0.5 end desc,
     // a.current_balance
 
     AccountTable a = AccountDAO.newTable("a");
@@ -259,9 +250,9 @@ public class GeneralSQL {
     List<Map<String, Object>> rows = sql //
         .select(a.id, sql.caseWhen(a.type.eq("CHK"), 3.5).elseValue(1.0).end().as("factor")) //
         .from(a) //
-        .orderBy(sql.caseWhen(a.type.eq("INV"), 8.0).when(a.currentBalance.gt(100), 1.7).elseValue(0.5).end().desc(), a.currentBalance.asc()) //
-        .execute() //
-    ;
+        .orderBy(sql.caseWhen(a.type.eq("INV"), 8.0).when(a.currentBalance.gt(100), 1.7).elseValue(0.5).end().desc(),
+            a.currentBalance.asc()) //
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);

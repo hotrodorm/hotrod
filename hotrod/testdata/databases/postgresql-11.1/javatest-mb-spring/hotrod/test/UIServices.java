@@ -69,8 +69,7 @@ public class UIServices {
                 .and(sql.exists(this.sql.select().from(c).where(c.friendId.isNotNull())))) //
             .andNot(a.mainStatus.ne(14).or(a.createdOn.gt(sql.currentDateTime())))) //
         .orderBy(a.createdOn.asc()) //
-        .execute() //
-    ;
+        .execute();
 
     if (rows != null) {
       for (Map<String, Object> r : rows) {
@@ -92,8 +91,7 @@ public class UIServices {
         .unionAll(this.sql.select(b.name, b.currentBalance).from(b).where(b.name.like("CHK%"))) //
         // .orderBy(a.currentBalance.asc())
         .limit(2) //
-        .execute() //
-    ;
+        .execute();
 
     if (rows != null) {
       for (Map<String, Object> r : rows) {
@@ -120,7 +118,7 @@ public class UIServices {
     //
     // .
     // .limit(2) //
-    // .execute() //
+    // .execute()
     // ;
     //
     // if (rows != null) {

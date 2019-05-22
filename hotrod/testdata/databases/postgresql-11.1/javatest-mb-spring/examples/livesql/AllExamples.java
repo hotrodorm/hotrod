@@ -20,6 +20,9 @@ public class AllExamples {
     OperatorsAndFunctions oaf = SpringBeanRetriever.getBean("operatorsAndFunctionsExamples");
     oaf.arithmetic();
 
+    SelectByCriteria sbc = SpringBeanRetriever.getBean("selectByCriteria");
+    sbc.runSelectbyCriteria();
+
   }
 
 }

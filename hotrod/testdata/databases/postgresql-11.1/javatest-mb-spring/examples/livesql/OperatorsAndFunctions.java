@@ -52,6 +52,26 @@ public class OperatorsAndFunctions {
 
   }
 
+  public void generalPurpose() {
+
+    AccountTable a = AccountDAO.newTable("a");
+
+    // coalesce()
+
+    // SELECT coalesce(coalesce(a.name, a.type), 'no name')
+    // FROM account a
+
+    List<Map<String, Object>> rows = sql //
+        .select(a.name.coalesce(a.type).coalesce("no name")) //
+        .from(a) //
+        .execute();
+
+    for (Map<String, Object> r : rows) {
+      System.out.println("row: " + r);
+    }
+
+  }
+
   public void arithmetic() {
 
     AccountTable a = AccountDAO.newTable("a");
@@ -66,8 +86,7 @@ public class OperatorsAndFunctions {
         .select(a.currentBalance.mult(1.17).as("projectedBalance")) //
         .from(a) //
         .where(a.currentBalance.plus(10.2).minus(0.75).mult(a.id.minus(4)).div(1.10).le(1.20)) //
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -89,8 +108,7 @@ public class OperatorsAndFunctions {
         .select() //
         .from(a) //
         .where(a.id.neg().pow(2.5).abs().ge(10)) //
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -112,8 +130,7 @@ public class OperatorsAndFunctions {
         .select() //
         .from(a) //
         .where(a.name.substr(10, 5).like(a.type.concat("%"))) //
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -136,8 +153,7 @@ public class OperatorsAndFunctions {
         .select() //
         .from(a) //
         .where(a.createdOn.extract(DateTimeField.DAY).gt(25)) //
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);

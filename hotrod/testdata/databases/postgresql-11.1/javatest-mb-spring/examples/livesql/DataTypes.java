@@ -46,8 +46,7 @@ public class DataTypes {
                 .and(i.price.le(maxPrice)) //
                 .and(i.active.eq(active)) //
         ) // ... and rest of SQL
-        .execute() //
-    ;
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
