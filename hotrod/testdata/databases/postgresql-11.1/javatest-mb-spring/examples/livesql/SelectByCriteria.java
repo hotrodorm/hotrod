@@ -6,7 +6,7 @@ import java.util.List;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.util.HexaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import hotrod.test.generation.Account;
 import hotrod.test.generation.TypesBinary;
@@ -20,7 +20,7 @@ import hotrod.test.generation.primitives.TypesBinaryDAO.TypesBinaryTable;
 import hotrod.test.generation.primitives.TypesOtherDAO;
 import hotrod.test.generation.primitives.TypesOtherDAO.TypesOtherTable;
 
-@Service("selectByCriteria")
+@Component("selectByCriteria")
 public class SelectByCriteria {
 
   @Autowired

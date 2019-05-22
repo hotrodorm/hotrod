@@ -6,12 +6,12 @@ import java.util.Map;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountDAO.AccountTable;
 
-@Service("operatorsAndFunctionsExamples")
+@Component("operatorsAndFunctionsExamples")
 public class OperatorsAndFunctions {
 
   @Autowired
