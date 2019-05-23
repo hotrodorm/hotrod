@@ -349,14 +349,16 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("org.hotrod.runtime.livesql.metadata.ObjectColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.Table");
     imports.add("org.hotrod.runtime.livesql.expressions.predicates.Predicate");
-    // imports.add("org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase");
     imports.add("org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase");
     imports.add("org.hotrod.runtime.livesql.metadata.View");
     imports.newLine();
 
     imports.add("org.springframework.stereotype.Component");
+    imports.add("org.springframework.beans.BeansException");
     imports.add("org.springframework.beans.factory.annotation.Autowired");
     imports.add("org.springframework.beans.factory.annotation.Value");
+    imports.add("org.springframework.context.ApplicationContext");
+    imports.add("org.springframework.context.ApplicationContextAware");
     imports.newLine();
 
     this.w.write(imports.render());
@@ -364,7 +366,7 @@ public class ObjectDAO extends GeneratableObject {
     // Signature
 
     println("@Component(\"" + SUtils.escapeJavaString(SUtils.lowerFirst(this.getClassName())) + "\")");
-    println("public class " + this.getClassName() + " implements Serializable {");
+    println("public class " + this.getClassName() + " implements Serializable, ApplicationContextAware {");
     println();
 
     // Serial Version UID
@@ -379,6 +381,13 @@ public class ObjectDAO extends GeneratableObject {
     println();
     println("  @Value(\"#{sqlDialectFactory.sqlDialect}\")");
     println("  private SQLDialect sqlDialect;");
+    println();
+    println("  private ApplicationContext applicationContext;");
+    println();
+    println("  @Override");
+    println("  public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {");
+    println("    this.applicationContext = applicationContext;");
+    println("  }");
     println();
 
     // println(" // Bean setters");

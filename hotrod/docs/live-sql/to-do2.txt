@@ -8,16 +8,17 @@ DONE - Agregando la anotación "@Component" al comienzo de cada clase DAO (by de
 DONE - Agregando la misma anotación "@Component", en combinación con "@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)", 
    a los VOs
 
+DONE - Es posible implementar la interfaz "ApplicationContextAware" en los DAOs. Esto permite que Spring le pase su 
+   ApplicationContext una vez que se ha configurado completamente su factory (es decir, todos los beans y demás 
+   anotaciones y XMLs han sido procesados). Esto permite que los DAO's puedan instanciar los VOs como Spring beans, 
+   sin tener que hacer un "new".
+
 To do:
 ======
 
  - Resolver cómo obtener beans cuando MyBatis hace un SELECT.
  - prefijos y sufijos para los AbstractVO.
    
- - Es posible implementar la interfaz "ApplicationContextAware" en los DAOs. Esto permite que Spring le pase su 
-   ApplicationContext una vez que se ha configurado completamente su factory (es decir, todos los beans y demás 
-   anotaciones y XMLs han sido procesados). Esto permite que los DAO's puedan instanciar los VOs como Spring beans, 
-   sin tener que hacer un "new".
  
 min()
 max()
