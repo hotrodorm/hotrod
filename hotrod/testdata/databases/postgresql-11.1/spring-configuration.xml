@@ -49,6 +49,11 @@
     -->
   </bean>
 
+<!--
+  <bean id="sqlDialect" class="org.hotrod.runtime.livesql.dialects.SQLDialect" value="#{sqlDialectFactory.sqlDialect}">
+  </bean>
+-->
+
   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
     <property name="dataSource" ref="dataSource" />
   </bean>
@@ -60,7 +65,9 @@
 
   <!-- DAOs -->
 
+<?comment
   <import resource="../../../gen/spring-hotrod2.xml" />
+?>
 
 <?comment  
   <bean id="accountDAO" class="hotrod.test.generation.primitives.AccountDAO">

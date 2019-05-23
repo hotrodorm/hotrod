@@ -47,6 +47,7 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.Selectable;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.util.ListWriter;
+import org.hotrod.runtime.util.SUtils;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.GenUtils;
 import org.hotrod.utils.ImportsRenderer;
@@ -248,7 +249,7 @@ public class ObjectDAO extends GeneratableObject {
 
     imports.add("java.io.Serializable");
     imports.add("java.util.List");
-    imports.add("java.util.Map");
+    // imports.add("java.util.Map");
     imports.newLine();
     imports.add("org.apache.ibatis.session.SqlSession");
     imports.newLine();
@@ -348,15 +349,21 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("org.hotrod.runtime.livesql.metadata.ObjectColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.Table");
     imports.add("org.hotrod.runtime.livesql.expressions.predicates.Predicate");
-    imports.add("org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase");
+    // imports.add("org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase");
     imports.add("org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase");
     imports.add("org.hotrod.runtime.livesql.metadata.View");
+    imports.newLine();
+
+    imports.add("org.springframework.stereotype.Component");
+    imports.add("org.springframework.beans.factory.annotation.Autowired");
+    imports.add("org.springframework.beans.factory.annotation.Value");
     imports.newLine();
 
     this.w.write(imports.render());
 
     // Signature
 
+    println("@Component(\"" + SUtils.escapeJavaString(SUtils.lowerFirst(this.getClassName())) + "\")");
     println("public class " + this.getClassName() + " implements Serializable {");
     println();
 
@@ -367,20 +374,23 @@ public class ObjectDAO extends GeneratableObject {
 
     // Spring properties
 
+    println("  @Autowired");
     println("  private SqlSession sqlSession;");
+    println();
+    println("  @Value(\"#{sqlDialectFactory.sqlDialect}\")");
     println("  private SQLDialect sqlDialect;");
     println();
 
-    println("  // Bean setters");
-    println();
-    println("  public void setSqlSession(final SqlSession sqlSession) {");
-    println("    this.sqlSession = sqlSession;");
-    println("  }");
-    println();
-    println("  public void setSqlDialect(final SQLDialect sqlDialect) {");
-    println("    this.sqlDialect = sqlDialect;");
-    println("  }");
-    println();
+    // println(" // Bean setters");
+    // println();
+    // println(" public void setSqlSession(final SqlSession sqlSession) {");
+    // println(" this.sqlSession = sqlSession;");
+    // println(" }");
+    // println();
+    // println(" public void setSqlDialect(final SQLDialect sqlDialect) {");
+    // println(" this.sqlDialect = sqlDialect;");
+    // println(" }");
+    // println();
 
     // Live SQL
 
