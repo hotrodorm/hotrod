@@ -45,7 +45,8 @@ public class ObjectVO extends GeneratableObject {
 
     this.fragmentConfig = this.metadata.getFragmentConfig();
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
-        ? this.fragmentConfig.getFragmentPackage() : null;
+        ? this.fragmentConfig.getFragmentPackage()
+        : null;
 
     this.classPackage = this.layout.getDAOPackage(this.fragmentPackage);
   }
@@ -54,7 +55,8 @@ public class ObjectVO extends GeneratableObject {
     String sourceClassName = this.getClassName() + ".java";
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
-        ? this.fragmentConfig.getFragmentPackage() : null;
+        ? this.fragmentConfig.getFragmentPackage()
+        : null;
 
     File dir = this.layout.getDAOPackageDir(fragmentPackage);
     File vo = new File(dir, sourceClassName);
@@ -69,17 +71,28 @@ public class ObjectVO extends GeneratableObject {
 
         w.write("package " + this.classPackage.getPackage() + ";\n\n");
 
-        w.write("import " + this.abstractVO.getFullClassName() + ";\n\n");
+        w.write("import " + this.abstractVO.getFullClassName() + ";\n");
 
-        ImportsRenderer ic = new ImportsRenderer();
+        ImportsRenderer imports = new ImportsRenderer();
         for (ForeignKeyMetadata ik : this.metadata.getImportedFKs()) {
           EnumClass ec = this.generator.getEnum(ik.getRemote().getTableMetadata());
           if (ec != null) {
-            ic.add(ec.getFullClassName());
+            imports.add(ec.getFullClassName());
           }
         }
-        w.write(ic.render());
+        if (!this.metadata.getImportedFKs().isEmpty()) {
+          imports.newLine();
+        }
 
+        imports.add("org.springframework.stereotype.Component");
+        imports.add("org.springframework.beans.factory.config.ConfigurableBeanFactory");
+        imports.add("org.springframework.context.annotation.Scope");
+        imports.newLine();
+
+        w.write(imports.render());
+
+        w.write("@Component\n");
+        w.write("@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)\n");
         w.write("public class " + this.getClassName() + " extends " + this.abstractVO.getClassName() + " {\n\n");
 
         w.write("  private static final long serialVersionUID = 1L;\n\n");

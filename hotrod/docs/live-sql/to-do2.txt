@@ -2,14 +2,17 @@
 DONE - Agregar "forceDialect" al sqlDialectfactory.
 DONE - Cambiar 3.0.0
 
- - Resolver cómo obtener beans cuando MyBatis hace un SELECT.
- - prefijos y sufijos para los AbstractVO.
- 
 DONE - Agregando la anotación "@Component" al comienzo de cada clase DAO (by default el scope de estos beans es 'singleton', 
    que es exactamente el atributo que se necesita).
    
- - Agregando la misma anotación "@Component", en combinación con "@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)", 
+DONE - Agregando la misma anotación "@Component", en combinación con "@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)", 
    a los VOs
+
+To do:
+======
+
+ - Resolver cómo obtener beans cuando MyBatis hace un SELECT.
+ - prefijos y sufijos para los AbstractVO.
    
  - Es posible implementar la interfaz "ApplicationContextAware" en los DAOs. Esto permite que Spring le pase su 
    ApplicationContext una vez que se ha configurado completamente su factory (es decir, todos los beans y demás 
