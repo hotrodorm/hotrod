@@ -48,6 +48,13 @@ public abstract class SQLDialect {
 
   // Renderers
 
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName() + " [" + (databaseName != null ? "databaseName=" + databaseName + ", " : "")
+        + (databaseVersion != null ? "databaseVersion=" + databaseVersion + ", " : "") + "databaseMajorVersion="
+        + databaseMajorVersion + ", databaseMinorVersion=" + databaseMinorVersion + "]";
+  }
+
   public abstract IdentifierRenderer getIdentifierRenderer();
 
   public abstract JoinRenderer getJoinRenderer();
