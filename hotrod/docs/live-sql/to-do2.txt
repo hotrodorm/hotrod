@@ -1,8 +1,8 @@
 
- - Agregar "forceDialect" al sqlDialectfactory.
+DONE - Agregar "forceDialect" al sqlDialectfactory.
  - Resolver cómo obtener beans cuando MyBatis hace un SELECT.
  - prefijos y sufijos para los AbstractVO.
- - Cambiar 3.0.0
+DONE - Cambiar 3.0.0
  
  
 min()
