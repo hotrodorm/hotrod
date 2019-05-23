@@ -26,6 +26,8 @@ public class DaosTag extends AbstractConfigurationTag {
 
   private static final String DEFAULT_VO_PREFIX = "";
   private static final String DEFAULT_VO_SUFFIX = "VO";
+  private static final String DEFAULT_ABSTRACT_VO_PREFIX = "Abstract";
+  private static final String DEFAULT_ABSTRACT_VO_SUFFIX = "";
   private static final String DEFAULT_DAO_PREFIX = "";
   private static final String DEFAULT_DAO_SUFFIX = "DAO";
 
@@ -42,6 +44,8 @@ public class DaosTag extends AbstractConfigurationTag {
 
   private String voPrefix = null;
   private String voSuffix = null;
+  private String abstractVoPrefix = null;
+  private String abstractVoSuffix = null;
   private String daoPrefix = null;
   private String daoSuffix = null;
   private String primitivesPrefix = null;
@@ -82,6 +86,16 @@ public class DaosTag extends AbstractConfigurationTag {
   @XmlAttribute(name = "vo-suffix")
   public void setVoSuffix(final String voSuffix) {
     this.voSuffix = voSuffix;
+  }
+
+  @XmlAttribute(name = "abstract-vo-prefix")
+  public void setAbstractVoPrefix(final String abstractVoPrefix) {
+    this.abstractVoPrefix = abstractVoPrefix;
+  }
+
+  @XmlAttribute(name = "abstract-vo-suffix")
+  public void setAbstractVoSuffix(final String abstractVoSuffix) {
+    this.abstractVoSuffix = abstractVoSuffix;
   }
 
   @XmlAttribute(name = "dao-prefix")
@@ -193,6 +207,34 @@ public class DaosTag extends AbstractConfigurationTag {
       }
     }
 
+    // abstract-vo-prefix
+
+    if (this.abstractVoPrefix == null) {
+      this.abstractVoPrefix = DEFAULT_ABSTRACT_VO_PREFIX;
+    } else {
+      if (!this.abstractVoPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid abstract-vo-prefix value '" + this.voPrefix
+                + "': when specified, it can only include one or more letters, digits, or underscores", //
+            "Invalid abstract-vo-prefix value '" + this.voPrefix
+                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+      }
+    }
+
+    // abstract-vo-suffix
+
+    if (this.abstractVoSuffix == null) {
+      this.abstractVoSuffix = DEFAULT_ABSTRACT_VO_SUFFIX;
+    } else {
+      if (!this.abstractVoSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid abstract-vo-suffix value '" + this.daoSuffix
+                + "': when specified, it can only include one or more letters, digits, or underscores", //
+            "Invalid abstract-vo-suffix value '" + this.daoSuffix
+                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+      }
+    }
+
     // =========================================================================
 
     // dao-prefix
@@ -280,11 +322,11 @@ public class DaosTag extends AbstractConfigurationTag {
   }
 
   public String generateAbstractVOName(final ObjectId id) {
-    return "Abstract" + this.generateVOName(id);
+    return this.abstractVoPrefix + this.generateVOName(id) + this.abstractVoSuffix;
   }
 
   public String generateAbstractVOName(final String voName) {
-    return "Abstract" + voName;
+    return this.abstractVoPrefix + voName + this.abstractVoSuffix;
   }
 
   // Getters

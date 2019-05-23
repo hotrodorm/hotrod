@@ -7,6 +7,7 @@
     <mybatis-spring>
       <daos gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" 
         vo-suffix="" dao-suffix="DAO"
+        abstract-vo-prefix="Domain" abstract-vo-suffix="Prototype"
       />
 		  <!-- <daos gen-base-dir="gen/empusamb/daos" dao-package="empusa.test.generation.dao" 
 			  primitives-package="empusa.test.generation.prim" dao-prefix="" dao-suffix="DO" 

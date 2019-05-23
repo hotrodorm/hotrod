@@ -64,6 +64,8 @@
     <xsd:attribute name="primitives-package" type="xsd:string" />
     <xsd:attribute name="vo-prefix" type="xsd:string" />
     <xsd:attribute name="vo-suffix" type="xsd:string" />
+    <xsd:attribute name="abstract-vo-prefix" type="xsd:string" />
+    <xsd:attribute name="abstract-vo-suffix" type="xsd:string" />
     <xsd:attribute name="dao-prefix" type="xsd:string" />
     <xsd:attribute name="dao-suffix" type="xsd:string" />
     <xsd:attribute name="primitives-prefix" type="xsd:string" />
