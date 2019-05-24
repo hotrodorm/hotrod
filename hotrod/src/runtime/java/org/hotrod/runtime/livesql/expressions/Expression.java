@@ -89,6 +89,10 @@ public abstract class Expression<T> implements ResultSetColumn {
 
   private int precedence;
 
+  protected void setPrecedence(final int precedence) {
+    this.precedence = precedence;
+  }
+
   // Constructor
 
   protected Expression(final int precedence) {
@@ -97,7 +101,7 @@ public abstract class Expression<T> implements ResultSetColumn {
 
   // Getters
 
-  protected int getPrecedence() {
+  public int getPrecedence() {
     return precedence;
   }
 

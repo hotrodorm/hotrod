@@ -15,15 +15,17 @@ DONE - Es posible implementar la interfaz "ApplicationContextAware" en los DAOs.
 
 DONE - prefijos y sufijos para los AbstractVO.
 
+DONE - min()
+DONE - max()
+DONE - coalesce()
+DONE - case
+
 To do:
 ======
 
  - Resolver cómo obtener beans cuando MyBatis hace un SELECT.
    
  
-min()
-max()
-coalesce() -- fixed
-case 
+ 
  
  

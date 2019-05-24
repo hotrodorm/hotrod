@@ -18,18 +18,21 @@ public abstract class NumericAggregationFunction extends WindowableAggregationFu
   }
 
   @Override
-  public final void renderTo(final QueryWriter w) {
+  public void renderTo(final QueryWriter w) {
+    renderHead(w);
+    renderTail(w);
+  }
 
+  private void renderHead(final QueryWriter w) {
     w.write(this.functionName);
-
     w.write("(");
-
     if (this.expression != null) {
-      super.renderInner(this.expression, w);
+      this.expression.renderTo(w);
     }
+  }
 
+  private void renderTail(final QueryWriter w) {
     w.write(")");
-
   }
 
   // Validation

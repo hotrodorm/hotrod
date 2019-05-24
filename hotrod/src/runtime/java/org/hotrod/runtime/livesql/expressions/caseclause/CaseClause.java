@@ -38,11 +38,11 @@ public class CaseClause<T> extends Expression<T> {
     this.elseValue = null;
   }
 
-  public void add(final Predicate predicate, final Expression<T> value) {
+  void add(final Predicate predicate, final Expression<T> value) {
     this.whens.add(new CaseWhen<T>(predicate, value));
   }
 
-  public void setElse(final Expression<T> value) {
+  void setElse(final Expression<T> value) {
     this.elseValue = value;
   }
 

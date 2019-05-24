@@ -1,11 +1,12 @@
 package org.hotrod.runtime.livesql.metadata;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public class ByteArrayColumn extends Expression<byte[]> implements Column {
+public class ByteArrayColumn extends ByteArrayExpression implements Column {
 
   // Properties
 

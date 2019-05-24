@@ -248,7 +248,10 @@ public class GeneralSQL {
     AccountTable a = AccountDAO.newTable("a");
 
     List<Map<String, Object>> rows = sql //
-        .select(a.id, sql.caseWhen(a.type.eq("CHK"), 3.5).elseValue(1.0).end().as("factor")) //
+        .select(a.id, //
+            sql.caseWhen(a.type.eq("CHK"), 3.5).elseValue(1.0).end(), //
+            sql.castNumber(sql.caseWhen(a.type.eq("CHK"), 3.5).elseValue(1.0).end()).plus(1) //
+                .as("factor")) //
         .from(a) //
         .orderBy(sql.caseWhen(a.type.eq("INV"), 8.0).when(a.currentBalance.gt(100), 1.7).elseValue(0.5).end().desc(),
             a.currentBalance.asc()) //

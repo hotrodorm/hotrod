@@ -1,17 +1,19 @@
 package org.hotrod.runtime.livesql.expressions.aggregations;
 
+import java.util.Date;
+
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowableAggregationFunction;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public abstract class StringAggregationFunction extends WindowableAggregationFunction<String> {
+public abstract class DateTimeAggregationFunction extends WindowableAggregationFunction<Date> {
 
   private String functionName;
-  protected Expression<String> expression;
+  private Expression<Date> expression;
 
-  protected StringAggregationFunction(final String functionName, final Expression<String> expression) {
+  protected DateTimeAggregationFunction(final String functionName, final Expression<Date> expression) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.functionName = functionName;
     this.expression = expression;

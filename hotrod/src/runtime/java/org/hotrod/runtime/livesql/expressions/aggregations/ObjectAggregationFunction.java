@@ -6,12 +6,12 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public abstract class StringAggregationFunction extends WindowableAggregationFunction<String> {
+public abstract class ObjectAggregationFunction extends WindowableAggregationFunction<Object> {
 
   private String functionName;
-  protected Expression<String> expression;
+  private Expression<Object> expression;
 
-  protected StringAggregationFunction(final String functionName, final Expression<String> expression) {
+  protected ObjectAggregationFunction(final String functionName, final Expression<Object> expression) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.functionName = functionName;
     this.expression = expression;

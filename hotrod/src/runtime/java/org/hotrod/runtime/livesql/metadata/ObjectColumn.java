@@ -1,11 +1,12 @@
 package org.hotrod.runtime.livesql.metadata;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public class ObjectColumn extends Expression<Object> implements Column {
+public class ObjectColumn extends ObjectExpression implements Column {
 
   // Properties
 

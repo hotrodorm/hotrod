@@ -96,3 +96,9 @@ insert into types_other (uui1) values ('5af75c52-cb8e-44fb-93c8-1d46da518ee6');
 insert into product (id, name, "Name") values (123, 'keyboard', '104-key Keyboard');
 insert into product (id, name, "Name") values (456, 'monitor', '27-inch monitor');
 
+insert into item (id, description, price, created_on, active, icon, store_code) values (1, 'Sweater', 123.45, '2018-01-21 08:05:12', true, null, '11bb9554-c616-42e6-a9c6-88d3bba4221c'); 
+insert into item (id, description, price, created_on, active, icon, store_code) values (2, 'Pants', 789.01, '2018-02-22 12:34:56', false, null, '22779554-c616-42e6-a9c6-88d3bba4221c'); 
+insert into item (id, description, price, created_on, active, icon, store_code) values (3, 'Jacker', 123.45, '2018-03-21 03:03:03', true, null, '33bb9554-c616-42e6-a9c6-88d3bba4221c'); 
+insert into item (id, description, price, created_on, active, icon, store_code) values (4, 'Hat', 123.45, '2018-04-21 04:04:04', true, null, '44bb9554-c616-42e6-a9c6-88d3bba4221c'); 
+
+

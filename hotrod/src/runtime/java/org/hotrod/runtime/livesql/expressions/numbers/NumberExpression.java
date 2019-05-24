@@ -12,6 +12,8 @@ public abstract class NumberExpression extends Expression<Number> {
 
   public NumberExpression coalesce(final NumberExpression a) {
     return new NumberCoalesce(this, a);
+    // NumberExpression[] values = AUtil.concat(this, a);
+    // return new NumberCoalesce(values);
   }
 
   public NumberExpression coalesce(final Number a) {

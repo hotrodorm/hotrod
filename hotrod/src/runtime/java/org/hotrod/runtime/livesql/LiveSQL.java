@@ -10,12 +10,22 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.aggregations.Avg;
 import org.hotrod.runtime.livesql.expressions.aggregations.AvgDistinct;
+import org.hotrod.runtime.livesql.expressions.aggregations.BooleanMax;
+import org.hotrod.runtime.livesql.expressions.aggregations.BooleanMin;
+import org.hotrod.runtime.livesql.expressions.aggregations.ByteArrayMax;
+import org.hotrod.runtime.livesql.expressions.aggregations.ByteArrayMin;
 import org.hotrod.runtime.livesql.expressions.aggregations.Count;
 import org.hotrod.runtime.livesql.expressions.aggregations.CountDistinct;
+import org.hotrod.runtime.livesql.expressions.aggregations.DateTimeMax;
+import org.hotrod.runtime.livesql.expressions.aggregations.DateTimeMin;
 import org.hotrod.runtime.livesql.expressions.aggregations.GroupConcat;
 import org.hotrod.runtime.livesql.expressions.aggregations.GroupConcatDistinct;
-import org.hotrod.runtime.livesql.expressions.aggregations.Max;
-import org.hotrod.runtime.livesql.expressions.aggregations.Min;
+import org.hotrod.runtime.livesql.expressions.aggregations.NumberMax;
+import org.hotrod.runtime.livesql.expressions.aggregations.NumberMin;
+import org.hotrod.runtime.livesql.expressions.aggregations.ObjectMax;
+import org.hotrod.runtime.livesql.expressions.aggregations.ObjectMin;
+import org.hotrod.runtime.livesql.expressions.aggregations.StringMax;
+import org.hotrod.runtime.livesql.expressions.aggregations.StringMin;
 import org.hotrod.runtime.livesql.expressions.aggregations.Sum;
 import org.hotrod.runtime.livesql.expressions.aggregations.SumDistinct;
 import org.hotrod.runtime.livesql.expressions.analytics.DenseRank;
@@ -25,6 +35,8 @@ import org.hotrod.runtime.livesql.expressions.analytics.NTile;
 import org.hotrod.runtime.livesql.expressions.analytics.Rank;
 import org.hotrod.runtime.livesql.expressions.analytics.RowNumber;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayConstant;
+import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
+import org.hotrod.runtime.livesql.expressions.binary.ByteArrayValue;
 import org.hotrod.runtime.livesql.expressions.caseclause.CaseWhenStage;
 import org.hotrod.runtime.livesql.expressions.datetime.CurrentDate;
 import org.hotrod.runtime.livesql.expressions.datetime.CurrentDateTime;
@@ -32,15 +44,23 @@ import org.hotrod.runtime.livesql.expressions.datetime.CurrentTime;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTime;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeConstant;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeValue;
 import org.hotrod.runtime.livesql.expressions.general.Tuple;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberValue;
 import org.hotrod.runtime.livesql.expressions.object.ObjectConstant;
+import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
+import org.hotrod.runtime.livesql.expressions.object.ObjectValue;
 import org.hotrod.runtime.livesql.expressions.predicates.BooleanConstant;
+import org.hotrod.runtime.livesql.expressions.predicates.BooleanValue;
 import org.hotrod.runtime.livesql.expressions.predicates.Exists;
 import org.hotrod.runtime.livesql.expressions.predicates.Not;
 import org.hotrod.runtime.livesql.expressions.predicates.NotExists;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.strings.StringConstant;
+import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.strings.StringValue;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
@@ -151,14 +171,6 @@ public class LiveSQL {
     return new Avg(expression);
   }
 
-  public Min min(final Expression<Number> expression) {
-    return new Min(expression);
-  }
-
-  public Max max(final Expression<Number> expression) {
-    return new Max(expression);
-  }
-
   public GroupConcat groupConcat(final Expression<String> expression) {
     return new GroupConcat(expression, null, null);
   }
@@ -170,6 +182,58 @@ public class LiveSQL {
   public GroupConcat groupConcat(final Expression<String> expression, final String separator,
       final OrderingTerm... order) {
     return new GroupConcat(expression, Arrays.asList(order), val(separator));
+  }
+
+  // Max -- Aggregation expressions, that ALSO are window functions
+
+  public NumberMax max(final NumberExpression expression) {
+    return new NumberMax(expression);
+  }
+
+  public StringMax max(final StringExpression expression) {
+    return new StringMax(expression);
+  }
+
+  public DateTimeMax max(final DateTimeExpression expression) {
+    return new DateTimeMax(expression);
+  }
+
+  public BooleanMax max(final Predicate expression) {
+    return new BooleanMax(expression);
+  }
+
+  public ByteArrayMax max(final ByteArrayExpression expression) {
+    return new ByteArrayMax(expression);
+  }
+
+  public ObjectMax max(final ObjectExpression expression) {
+    return new ObjectMax(expression);
+  }
+
+  // Min -- Aggregation expressions, that ALSO are window functions
+
+  public NumberMin min(final NumberExpression expression) {
+    return new NumberMin(expression);
+  }
+
+  public StringMin min(final StringExpression expression) {
+    return new StringMin(expression);
+  }
+
+  public DateTimeMin min(final DateTimeExpression expression) {
+    return new DateTimeMin(expression);
+  }
+
+  public BooleanMin min(final Predicate expression) {
+    return new BooleanMin(expression);
+  }
+
+  public ByteArrayMin min(final ByteArrayExpression expression) {
+    return new ByteArrayMin(expression);
+  }
+
+  public ObjectMin min(final ObjectExpression expression) {
+    return new ObjectMin(expression);
   }
 
   // Analytical functions
@@ -324,7 +388,7 @@ public class LiveSQL {
     return new DateTime(date, time);
   }
 
-  // Scalar values
+  // Boxing of scalar values
 
   public StringConstant val(final String value) {
     return new StringConstant(value);
@@ -352,6 +416,32 @@ public class LiveSQL {
 
   public ObjectConstant val(final Object value) {
     return new ObjectConstant(value);
+  }
+
+  // Cast
+
+  public StringExpression castString(final Expression<String> value) {
+    return new StringValue(value);
+  }
+
+  public NumberExpression castNumber(final Expression<Number> value) {
+    return new NumberValue(value);
+  }
+
+  public DateTimeExpression castDateTime(final Expression<Date> value) {
+    return new DateTimeValue(value);
+  }
+
+  public Predicate castBoolean(final Expression<Boolean> value) {
+    return new BooleanValue(value);
+  }
+
+  public ByteArrayExpression castByteArray(final Expression<byte[]> value) {
+    return new ByteArrayValue(value);
+  }
+
+  public ObjectExpression castObject(final Expression<Object> value) {
+    return new ObjectValue(value);
   }
 
 }
