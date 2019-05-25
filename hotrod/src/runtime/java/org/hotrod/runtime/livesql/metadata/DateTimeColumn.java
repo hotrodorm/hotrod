@@ -42,6 +42,11 @@ public class DateTimeColumn extends DateTimeExpression implements Column {
     w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(this.name));
   }
 
+  @Override
+  public void renderSimpleNameTo(final QueryWriter w) {
+    w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(this.name));
+  }
+
   // Validation
 
   @Override

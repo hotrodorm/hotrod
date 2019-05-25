@@ -2,9 +2,9 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 
-public abstract class NaturalJoin extends Join {
+public class NaturalInnerJoin extends NaturalJoin {
 
-  NaturalJoin(final TableOrView table) {
+  NaturalInnerJoin(final TableOrView table) {
     super(table);
   }
 

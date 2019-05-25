@@ -1,5 +1,6 @@
 package org.hotrod.runtime.livesql.metadata;
 
+import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.ReferenceableExpression;
 
 public interface Column extends ReferenceableExpression {
@@ -27,5 +28,7 @@ public interface Column extends ReferenceableExpression {
   boolean isLob();
 
   String getProperty();
+
+  void renderSimpleNameTo(QueryWriter w);
 
 }

@@ -13,10 +13,12 @@ import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.DatabaseObject;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
+import org.hotrod.runtime.livesql.util.Separator;
 import org.hotrod.runtime.util.SUtils;
 
 public abstract class AbstractSelect<R> extends Query {
@@ -166,8 +168,18 @@ public abstract class AbstractSelect<R> extends Query {
             + (j.getTable().getAlias() == null ? "" : " " + j.getTable().getAlias()));
         try {
           PredicatedJoin pj = (PredicatedJoin) j;
-          w.write(" on ");
-          pj.getJoinPredicate().renderTo(w);
+          if (pj.getJoinPredicate() != null) { // on
+            w.write(" ON ");
+            pj.getJoinPredicate().renderTo(w);
+          } else { // using
+            w.write(" USING (");
+            Separator sep = new Separator();
+            for (Column c : pj.getUsingColumns()) {
+              w.write(sep.render());
+              c.renderSimpleNameTo(w);
+            }
+            w.write(")");
+          }
         } catch (ClassCastException e) {
           // no predicate on join - continue
         }

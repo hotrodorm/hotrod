@@ -13,7 +13,10 @@ import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
 import org.hotrod.runtime.livesql.queries.select.Join;
 import org.hotrod.runtime.livesql.queries.select.LeftOuterJoin;
-import org.hotrod.runtime.livesql.queries.select.NaturalJoin;
+import org.hotrod.runtime.livesql.queries.select.NaturalFullOuterJoin;
+import org.hotrod.runtime.livesql.queries.select.NaturalInnerJoin;
+import org.hotrod.runtime.livesql.queries.select.NaturalLeftOuterJoin;
+import org.hotrod.runtime.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
@@ -52,7 +55,13 @@ public class SybaseASEDialect extends SQLDialect {
           throw new UnsupportedLiveSQLFeatureException("Full outer joins are not supported in Sybase ASE database");
         } else if (join instanceof CrossJoin) {
           throw new UnsupportedLiveSQLFeatureException("Cross joins are not supported in Sybase ASE database");
-        } else if (join instanceof NaturalJoin) {
+        } else if (join instanceof NaturalInnerJoin) {
+          throw new UnsupportedLiveSQLFeatureException("Natural joins are not supported in Sybase ASE database");
+        } else if (join instanceof NaturalLeftOuterJoin) {
+          throw new UnsupportedLiveSQLFeatureException("Natural joins are not supported in Sybase ASE database");
+        } else if (join instanceof NaturalRightOuterJoin) {
+          throw new UnsupportedLiveSQLFeatureException("Natural joins are not supported in Sybase ASE database");
+        } else if (join instanceof NaturalFullOuterJoin) {
           throw new UnsupportedLiveSQLFeatureException("Natural joins are not supported in Sybase ASE database");
         } else if (join instanceof UnionJoin) {
           throw new UnsupportedLiveSQLFeatureException("Union joins are not supported in Sybase ASE database");

@@ -10,7 +10,10 @@ import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
 import org.hotrod.runtime.livesql.queries.select.Join;
 import org.hotrod.runtime.livesql.queries.select.LeftOuterJoin;
-import org.hotrod.runtime.livesql.queries.select.NaturalJoin;
+import org.hotrod.runtime.livesql.queries.select.NaturalFullOuterJoin;
+import org.hotrod.runtime.livesql.queries.select.NaturalInnerJoin;
+import org.hotrod.runtime.livesql.queries.select.NaturalLeftOuterJoin;
+import org.hotrod.runtime.livesql.queries.select.NaturalRightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
@@ -48,8 +51,14 @@ public class HyperSQLDialect extends SQLDialect {
           return "FULL OUTER JOIN";
         } else if (join instanceof CrossJoin) {
           return "CROSS JOIN";
-        } else if (join instanceof NaturalJoin) {
+        } else if (join instanceof NaturalInnerJoin) {
           return "NATURAL JOIN";
+        } else if (join instanceof NaturalLeftOuterJoin) {
+          return "NATURAL LEFT OUTER JOIN";
+        } else if (join instanceof NaturalRightOuterJoin) {
+          return "NATURAL RIGHT OUTER JOIN";
+        } else if (join instanceof NaturalFullOuterJoin) {
+          return "NATURAL FULL OUTER JOIN";
         } else if (join instanceof UnionJoin) {
           return "UNION JOIN";
         } else {

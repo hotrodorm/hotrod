@@ -46,6 +46,29 @@ public class Joins {
 
   }
 
+  public void innerJoinUsing() {
+
+    // SELECT a.id, a.name as "accountName", t.amount, b.name as "branchName"
+    // FROM account a
+    // JOIN federal_branch b USING (id)
+    // WHERE a.type = 'CHK'
+
+    AccountTable a = AccountDAO.newTable("a");
+    FederalBranchTable b = FederalBranchDAO.newTable("b");
+
+    List<Map<String, Object>> rows = sql //
+        .select(a.id, a.name.as("accountName"), b.name.as("branchName")) //
+        .from(a) //
+        .join(b, b.id) //
+        .where(a.type.eq("CHK")) // ... and rest of SQL
+        .execute();
+
+    for (Map<String, Object> r : rows) {
+      System.out.println("row: " + r);
+    }
+
+  }
+
   public void leftOuterJoin() {
 
     // SELECT a.id, t.amount
@@ -60,6 +83,29 @@ public class Joins {
         .from(a) //
         .leftJoin(t, t.accountId.eq(a.id)) //
         // rest of SELECT here: where(), groupBy(), etc.
+        .execute();
+
+    for (Map<String, Object> r : rows) {
+      System.out.println("row: " + r);
+    }
+
+  }
+
+  public void leftOuterJoinUsing() {
+
+    // SELECT a.id, a.name as "accountName", t.amount, b.name as "branchName"
+    // FROM account a
+    // LEFT JOIN federal_branch b USING (id)
+    // WHERE a.type = 'CHK'
+
+    AccountTable a = AccountDAO.newTable("a");
+    FederalBranchTable b = FederalBranchDAO.newTable("b");
+
+    List<Map<String, Object>> rows = sql //
+        .select(a.id, a.name.as("accountName"), b.name.as("branchName")) //
+        .from(a) //
+        .leftJoin(b, b.id) //
+        .where(a.type.eq("CHK")) // ... and rest of SQL
         .execute();
 
     for (Map<String, Object> r : rows) {
@@ -90,6 +136,29 @@ public class Joins {
 
   }
 
+  public void rightOuterJoinUsing() {
+
+    // SELECT a.id, a.name as "accountName", t.amount, b.name as "branchName"
+    // FROM account a
+    // JOIN federal_branch b USING (id)
+    // WHERE a.type = 'CHK'
+
+    AccountTable a = AccountDAO.newTable("a");
+    FederalBranchTable b = FederalBranchDAO.newTable("b");
+
+    List<Map<String, Object>> rows = sql //
+        .select(a.id, a.name.as("accountName"), b.name.as("branchName")) //
+        .from(a) //
+        .rightJoin(b, b.id) //
+        .where(a.type.eq("CHK")) // ... and rest of SQL
+        .execute();
+
+    for (Map<String, Object> r : rows) {
+      System.out.println("row: " + r);
+    }
+
+  }
+
   public void fullOuterJoin() {
 
     // SELECT a.id, t.amount
@@ -102,8 +171,31 @@ public class Joins {
     List<Map<String, Object>> rows = sql //
         .select(a.id, t.amount) //
         .from(a) //
-        .fullOuterJoin(t, t.accountId.eq(a.id)) //
+        .fullJoin(t, t.accountId.eq(a.id)) //
         // rest of SELECT here: where(), groupBy(), etc.
+        .execute();
+
+    for (Map<String, Object> r : rows) {
+      System.out.println("row: " + r);
+    }
+
+  }
+
+  public void fullOuterJoinUsing() {
+
+    // SELECT a.id, a.name as "accountName", t.amount, b.name as "branchName"
+    // FROM account a
+    // JOIN federal_branch b USING (id)
+    // WHERE a.type = 'CHK'
+
+    AccountTable a = AccountDAO.newTable("a");
+    FederalBranchTable b = FederalBranchDAO.newTable("b");
+
+    List<Map<String, Object>> rows = sql //
+        .select(a.id, a.name.as("accountName"), b.name.as("branchName")) //
+        .from(a) //
+        .fullJoin(b, b.id) //
+        .where(a.type.eq("CHK")) // ... and rest of SQL
         .execute();
 
     for (Map<String, Object> r : rows) {
@@ -134,7 +226,7 @@ public class Joins {
 
   }
 
-  public void naturalJoin() {
+  public void naturalInnerJoin() {
 
     // SELECT a.id, t.amount
     // FROM account a
@@ -147,6 +239,72 @@ public class Joins {
         .select(a.id, t.amount) //
         .from(a) //
         .naturalJoin(t) //
+        // rest of SELECT here: where(), groupBy(), etc.
+        .execute();
+
+    for (Map<String, Object> r : rows) {
+      System.out.println("row: " + r);
+    }
+
+  }
+
+  public void naturalLeftOuterJoin() {
+
+    // SELECT a.id, t.amount
+    // FROM account a
+    // NATURAL LEFT JOIN transaction t
+
+    AccountTable a = AccountDAO.newTable("a");
+    TransactionTable t = TransactionDAO.newTable("t");
+
+    List<Map<String, Object>> rows = sql //
+        .select(a.id, t.amount) //
+        .from(a) //
+        .naturalLeftJoin(t) //
+        // rest of SELECT here: where(), groupBy(), etc.
+        .execute();
+
+    for (Map<String, Object> r : rows) {
+      System.out.println("row: " + r);
+    }
+
+  }
+
+  public void naturalRightOuterJoin() {
+
+    // SELECT a.id, t.amount
+    // FROM account a
+    // NATURAL RIGHT JOIN transaction t
+
+    AccountTable a = AccountDAO.newTable("a");
+    TransactionTable t = TransactionDAO.newTable("t");
+
+    List<Map<String, Object>> rows = sql //
+        .select(a.id, t.amount) //
+        .from(a) //
+        .naturalRightJoin(t) //
+        // rest of SELECT here: where(), groupBy(), etc.
+        .execute();
+
+    for (Map<String, Object> r : rows) {
+      System.out.println("row: " + r);
+    }
+
+  }
+
+  public void naturalFullOuterJoin() {
+
+    // SELECT a.id, t.amount
+    // FROM account a
+    // NATURAL FULL JOIN transaction t
+
+    AccountTable a = AccountDAO.newTable("a");
+    TransactionTable t = TransactionDAO.newTable("t");
+
+    List<Map<String, Object>> rows = sql //
+        .select(a.id, t.amount) //
+        .from(a) //
+        .naturalFullJoin(t) //
         // rest of SELECT here: where(), groupBy(), etc.
         .execute();
 

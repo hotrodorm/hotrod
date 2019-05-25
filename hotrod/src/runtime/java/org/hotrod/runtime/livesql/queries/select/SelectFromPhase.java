@@ -5,6 +5,7 @@ import java.util.List;
 import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
@@ -30,8 +31,18 @@ public class SelectFromPhase<R> implements ExecutableSelect<R>, CombinableSelect
     return this;
   }
 
+  public SelectFromPhase<R> join(final TableOrView t, final Column... using) {
+    this.select.addJoin(new InnerJoin(t, using));
+    return this;
+  }
+
   public SelectFromPhase<R> leftJoin(final TableOrView t, final Predicate on) {
     this.select.addJoin(new LeftOuterJoin(t, on));
+    return this;
+  }
+
+  public SelectFromPhase<R> leftJoin(final TableOrView t, final Column... using) {
+    this.select.addJoin(new LeftOuterJoin(t, using));
     return this;
   }
 
@@ -40,8 +51,18 @@ public class SelectFromPhase<R> implements ExecutableSelect<R>, CombinableSelect
     return this;
   }
 
-  public SelectFromPhase<R> fullOuterJoin(final TableOrView t, final Predicate on) {
+  public SelectFromPhase<R> rightJoin(final TableOrView t, final Column... using) {
+    this.select.addJoin(new RightOuterJoin(t, using));
+    return this;
+  }
+
+  public SelectFromPhase<R> fullJoin(final TableOrView t, final Predicate on) {
     this.select.addJoin(new FullOuterJoin(t, on));
+    return this;
+  }
+
+  public SelectFromPhase<R> fullJoin(final TableOrView t, final Column... using) {
+    this.select.addJoin(new FullOuterJoin(t, using));
     return this;
   }
 
@@ -51,7 +72,22 @@ public class SelectFromPhase<R> implements ExecutableSelect<R>, CombinableSelect
   }
 
   public SelectFromPhase<R> naturalJoin(final TableOrView t) {
-    this.select.addJoin(new NaturalJoin(t));
+    this.select.addJoin(new NaturalInnerJoin(t));
+    return this;
+  }
+
+  public SelectFromPhase<R> naturalLeftJoin(final TableOrView t) {
+    this.select.addJoin(new NaturalLeftOuterJoin(t));
+    return this;
+  }
+
+  public SelectFromPhase<R> naturalRightJoin(final TableOrView t) {
+    this.select.addJoin(new NaturalRightOuterJoin(t));
+    return this;
+  }
+
+  public SelectFromPhase<R> naturalFullJoin(final TableOrView t) {
+    this.select.addJoin(new NaturalFullOuterJoin(t));
     return this;
   }
 
