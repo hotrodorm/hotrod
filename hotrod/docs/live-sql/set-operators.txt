@@ -43,4 +43,51 @@
       .from(c)
       .orderBy(a.col1)
    
-   
+_____________________________________________________________
+
+  SELECT --- "Select", named
+  FROM
+  WHERE
+  GROUP BY
+  HAVING
+
+    <set-operator> --- "Combinable Select", named or unnamed
+    SELECT
+    FROM
+    WHERE
+    GROUP BY
+    HAVING
+
+  ORDER
+  OFFSET
+  LIMIT   
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

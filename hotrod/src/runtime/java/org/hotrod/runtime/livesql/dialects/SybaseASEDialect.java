@@ -8,12 +8,15 @@ import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
 import org.hotrod.runtime.livesql.queries.select.Join;
 import org.hotrod.runtime.livesql.queries.select.LeftOuterJoin;
+import org.hotrod.runtime.livesql.queries.select.NaturalJoin;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
+import org.hotrod.runtime.livesql.queries.select.UnionJoin;
 import org.hotrod.runtime.livesql.util.Separator;
 
 public class SybaseASEDialect extends SQLDialect {
@@ -47,8 +50,15 @@ public class SybaseASEDialect extends SQLDialect {
           return "RIGHT OUTER JOIN";
         } else if (join instanceof FullOuterJoin) {
           throw new UnsupportedLiveSQLFeatureException("Full outer joins are not supported in Sybase ASE database");
-        } else {
+        } else if (join instanceof CrossJoin) {
           throw new UnsupportedLiveSQLFeatureException("Cross joins are not supported in Sybase ASE database");
+        } else if (join instanceof NaturalJoin) {
+          throw new UnsupportedLiveSQLFeatureException("Natural joins are not supported in Sybase ASE database");
+        } else if (join instanceof UnionJoin) {
+          throw new UnsupportedLiveSQLFeatureException("Union joins are not supported in Sybase ASE database");
+        } else {
+          throw new UnsupportedLiveSQLFeatureException(
+              "Invalid join type (" + join.getClass().getSimpleName() + ") in Sybase ASE database");
         }
       }
 

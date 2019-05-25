@@ -115,8 +115,8 @@ public class Joins {
   public void crossJoin() {
 
     // SELECT a.id, t.amount
-    // FROM transaction t
-    // CROSS JOIN account a
+    // FROM account a
+    // CROSS JOIN transaction t
 
     AccountTable a = AccountDAO.newTable("a");
     TransactionTable t = TransactionDAO.newTable("t");
@@ -125,6 +125,52 @@ public class Joins {
         .select(a.id, t.amount) //
         .from(a) //
         .crossJoin(t) //
+        // rest of SELECT here: where(), groupBy(), etc.
+        .execute();
+
+    for (Map<String, Object> r : rows) {
+      System.out.println("row: " + r);
+    }
+
+  }
+
+  public void naturalJoin() {
+
+    // SELECT a.id, t.amount
+    // FROM account a
+    // NATURAL JOIN transaction t
+
+    AccountTable a = AccountDAO.newTable("a");
+    TransactionTable t = TransactionDAO.newTable("t");
+
+    List<Map<String, Object>> rows = sql //
+        .select(a.id, t.amount) //
+        .from(a) //
+        .naturalJoin(t) //
+        // rest of SELECT here: where(), groupBy(), etc.
+        .execute();
+
+    for (Map<String, Object> r : rows) {
+      System.out.println("row: " + r);
+    }
+
+  }
+
+  public void unionJoin() {
+
+    // Only HyperSQL supports (afaik) this SQL standard clause
+
+    // SELECT a.id, t.amount
+    // FROM account a
+    // UNION JOIN transaction t
+
+    AccountTable a = AccountDAO.newTable("a");
+    TransactionTable t = TransactionDAO.newTable("t");
+
+    List<Map<String, Object>> rows = sql //
+        .select(a.id, t.amount) //
+        .from(a) //
+        .unionJoin(t) //
         // rest of SELECT here: where(), groupBy(), etc.
         .execute();
 

@@ -3,12 +3,15 @@ package org.hotrod.runtime.livesql.dialects;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
 import org.hotrod.runtime.livesql.queries.select.Join;
 import org.hotrod.runtime.livesql.queries.select.LeftOuterJoin;
+import org.hotrod.runtime.livesql.queries.select.NaturalJoin;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
+import org.hotrod.runtime.livesql.queries.select.UnionJoin;
 
 public class MySQLDialect extends SQLDialect {
 
@@ -41,8 +44,15 @@ public class MySQLDialect extends SQLDialect {
           return "RIGHT OUTER JOIN";
         } else if (join instanceof FullOuterJoin) {
           throw new UnsupportedLiveSQLFeatureException("Full outer joins are not supported in MySQL");
-        } else {
+        } else if (join instanceof CrossJoin) {
           return "CROSS JOIN";
+        } else if (join instanceof NaturalJoin) {
+          return "NATURAL JOIN";
+        } else if (join instanceof UnionJoin) {
+          throw new UnsupportedLiveSQLFeatureException("Union joins are not supported in MariaDB database");
+        } else {
+          throw new UnsupportedLiveSQLFeatureException(
+              "Invalid join type (" + join.getClass().getSimpleName() + ") in MariaDB database");
         }
       }
 

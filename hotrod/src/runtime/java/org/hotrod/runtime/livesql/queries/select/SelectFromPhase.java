@@ -50,6 +50,16 @@ public class SelectFromPhase<R> implements ExecutableSelect<R>, CombinableSelect
     return this;
   }
 
+  public SelectFromPhase<R> naturalJoin(final TableOrView t) {
+    this.select.addJoin(new NaturalJoin(t));
+    return this;
+  }
+
+  public SelectFromPhase<R> unionJoin(final TableOrView t) {
+    this.select.addJoin(new UnionJoin(t));
+    return this;
+  }
+
   // Next stages
 
   public SelectWherePhase<R> where(final Predicate predicate) {

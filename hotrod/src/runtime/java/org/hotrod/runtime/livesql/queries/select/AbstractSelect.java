@@ -165,8 +165,8 @@ public abstract class AbstractSelect<R> extends Query {
         w.write("\n" + joinKeywords + " " + this.sqlDialect.getIdentifierRenderer().renderSQLObjectName(j.getTable())
             + (j.getTable().getAlias() == null ? "" : " " + j.getTable().getAlias()));
         try {
-          w.write(" on ");
           PredicatedJoin pj = (PredicatedJoin) j;
+          w.write(" on ");
           pj.getJoinPredicate().renderTo(w);
         } catch (ClassCastException e) {
           // no predicate on join - continue

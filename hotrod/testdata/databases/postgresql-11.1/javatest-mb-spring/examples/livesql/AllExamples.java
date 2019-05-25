@@ -13,9 +13,12 @@ public class AllExamples {
     // generalSQL.limit();
     // generalSQL.caseExpressions();
 
-    // Joins joins = SpringBeanRetriever.getBean("joinsExamples");
-    // joins.innerJoin();
-    //
+     Joins joins = SpringBeanRetriever.getBean("joinsExamples");
+     joins.innerJoin();
+     joins.crossJoin();
+     joins.naturalJoin();
+     joins.unionJoin();
+    
     // DataTypes datatypes = SpringBeanRetriever.getBean("dataTypesExamples");
     // datatypes.filter();
     //
@@ -26,8 +29,8 @@ public class AllExamples {
     // SelectByCriteria sbc = SpringBeanRetriever.getBean("selectByCriteria");
     // sbc.runSelectbyCriteria();
 
-    WindowFunctions wf = SpringBeanRetriever.getBean("windowFunctions");
-    wf.aggregate();
+//    WindowFunctions wf = SpringBeanRetriever.getBean("windowFunctions");
+//    wf.aggregate();
 
   }
 

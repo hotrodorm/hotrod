@@ -8,12 +8,15 @@ import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
 import org.hotrod.runtime.livesql.queries.select.Join;
 import org.hotrod.runtime.livesql.queries.select.LeftOuterJoin;
+import org.hotrod.runtime.livesql.queries.select.NaturalJoin;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
+import org.hotrod.runtime.livesql.queries.select.UnionJoin;
 import org.hotrod.runtime.livesql.util.Separator;
 
 public class DerbyDialect extends SQLDialect {
@@ -47,8 +50,15 @@ public class DerbyDialect extends SQLDialect {
           return "RIGHT OUTER JOIN";
         } else if (join instanceof FullOuterJoin) {
           throw new UnsupportedLiveSQLFeatureException("Full outer joins are not supported in Derby database");
-        } else {
+        } else if (join instanceof CrossJoin) {
           return "CROSS JOIN";
+        } else if (join instanceof NaturalJoin) {
+          return "NATURAL JOIN";
+        } else if (join instanceof UnionJoin) {
+          throw new UnsupportedLiveSQLFeatureException("Union joins are not supported in Derby database");
+        } else {
+          throw new UnsupportedLiveSQLFeatureException(
+              "Invalid join type (" + join.getClass().getSimpleName() + ") in Derby database");
         }
       }
 
