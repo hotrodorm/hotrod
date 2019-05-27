@@ -3,12 +3,14 @@ package hotrod.test;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import examples.livesql.Transactions;
+
 public class Examples {
 
   public static void main(final String[] args) throws IOException, SQLException {
 
     {
-      UIServices ui = SpringBeanRetriever.getBean("uiServices");
+      // UIServices ui = SpringBeanRetriever.getBean("uiServices");
       // ui.runExamples();
       // ui.runLiveSQL1();
       // ui.runLiveSQL2();
@@ -19,8 +21,13 @@ public class Examples {
     }
 
     {
-      UIServicesLiveSQL uil = SpringBeanRetriever.getBean("uiServices2");
-      uil.runLiveSQL2();
+      // UIServicesLiveSQL uil = SpringBeanRetriever.getBean("uiServices2");
+      // uil.runLiveSQL2();
+    }
+
+    {
+      Transactions txs = SpringBeanRetriever.getBean("transactions");
+      txs.transfer(1234001, 1234004, 200);
     }
 
   }
