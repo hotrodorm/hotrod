@@ -13,20 +13,6 @@ Priority #1:
 Priority #2:
 ============
 
- - Implement UNION, UNION ALL, INTERSECT, EXCEPT.
-      y SELECT columns
-      y FROM/JOIN
-      y WHERE
-      y GROUP BY
-      y HAVING
-      x ORDER BY
-      x OFFSET
-      x LIMIT
- :: Partially implemented. Pending:
-      - Support ORDER BY in combined queries. ORDER BY can only probably use column aliases (see PostgreSQL). Need to research other databases.
-      - Enclosing SELECTs is not working.
-      - Allow ORDER BY in inner queries. Does MySQL supports this?
-      
  - Validate all result set columns have names and all names are different (ignoring letter case).
 
 Priority #3:
@@ -38,7 +24,13 @@ Priority #3:
      * a column directly dependent on a GROUP BY column.
  - Having rules. Same rules as GROUP BY.
  - validate operator types for IN operator to subqueries.
- 
+ - Implement scalar subqueries.
+ - Implement table expressions subqueries.
+ - Implement lateral subqueries.
+ - Implement CTE subqueries.
+ - Implement UNION, UNION ALL, INTERSECT, EXCEPT: combinable queries.
+ - Implement window frames.
+
 Defects:
 ========
 

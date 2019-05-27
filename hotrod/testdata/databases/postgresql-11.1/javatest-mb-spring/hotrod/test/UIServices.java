@@ -88,7 +88,7 @@ public class UIServices {
     List<Map<String, Object>> rows = this.sql //
         .select(a.name, a.currentBalance) //
         .from(a) //
-        .unionAll(this.sql.select(b.name, b.currentBalance).from(b).where(b.name.like("CHK%"))) //
+//        .unionAll(this.sql.select(b.name, b.currentBalance).from(b).where(b.name.like("CHK%"))) //
         // .orderBy(a.currentBalance.asc())
         .limit(2) //
         .execute();

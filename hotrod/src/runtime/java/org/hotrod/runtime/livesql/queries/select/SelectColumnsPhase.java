@@ -34,35 +34,36 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableSel
 
   // Set operations
 
-  public SelectHavingPhase<R> union(final CombinableSelect<R> select) {
-    this.select.setCombinedSelect(SetOperation.UNION, select);
-    return new SelectHavingPhase<R>(this.select, null);
-  }
-
-  public SelectHavingPhase<R> unionAll(final CombinableSelect<R> select) {
-    this.select.setCombinedSelect(SetOperation.UNION_ALL, select);
-    return new SelectHavingPhase<R>(this.select, null);
-  }
-
-  public SelectHavingPhase<R> intersect(final CombinableSelect<R> select) {
-    this.select.setCombinedSelect(SetOperation.INTERSECT, select);
-    return new SelectHavingPhase<R>(this.select, null);
-  }
-
-  public SelectHavingPhase<R> intersectAll(final CombinableSelect<R> select) {
-    this.select.setCombinedSelect(SetOperation.INTERSECT_ALL, select);
-    return new SelectHavingPhase<R>(this.select, null);
-  }
-
-  public SelectHavingPhase<R> except(final CombinableSelect<R> select) {
-    this.select.setCombinedSelect(SetOperation.EXCEPT, select);
-    return new SelectHavingPhase<R>(this.select, null);
-  }
-
-  public SelectHavingPhase<R> exceptAll(final CombinableSelect<R> select) {
-    this.select.setCombinedSelect(SetOperation.EXCEPT_ALL, select);
-    return new SelectHavingPhase<R>(this.select, null);
-  }
+  // public SelectHavingPhase<R> union(final CombinableSelect<R> select) {
+  // this.select.setCombinedSelect(SetOperation.UNION, select);
+  // return new SelectHavingPhase<R>(this.select, null);
+  // }
+  //
+  // public SelectHavingPhase<R> unionAll(final CombinableSelect<R> select) {
+  // this.select.setCombinedSelect(SetOperation.UNION_ALL, select);
+  // return new SelectHavingPhase<R>(this.select, null);
+  // }
+  //
+  // public SelectHavingPhase<R> intersect(final CombinableSelect<R> select) {
+  // this.select.setCombinedSelect(SetOperation.INTERSECT, select);
+  // return new SelectHavingPhase<R>(this.select, null);
+  // }
+  //
+  // public SelectHavingPhase<R> intersectAll(final CombinableSelect<R> select)
+  // {
+  // this.select.setCombinedSelect(SetOperation.INTERSECT_ALL, select);
+  // return new SelectHavingPhase<R>(this.select, null);
+  // }
+  //
+  // public SelectHavingPhase<R> except(final CombinableSelect<R> select) {
+  // this.select.setCombinedSelect(SetOperation.EXCEPT, select);
+  // return new SelectHavingPhase<R>(this.select, null);
+  // }
+  //
+  // public SelectHavingPhase<R> exceptAll(final CombinableSelect<R> select) {
+  // this.select.setCombinedSelect(SetOperation.EXCEPT_ALL, select);
+  // return new SelectHavingPhase<R>(this.select, null);
+  // }
 
   // Rendering
 

@@ -1,0 +1,15 @@
+                            Must columns
+Subqueries                  be named?     Can be correlated?  Card  Degree
+--------------------------  ------------  ------------------  ----  ------
+Scalar subquery             Optional      Always                 1       1
+IN/ANY/ALL/EXISTS subquery  Optional      Optional               n       n
+Combinable query*           Optional      Never                  n       n
+Table expression            Mandatory     Never                  n       n
+Lateral table expression    Mandatory     Always                 n       n
+CTE (recursive or not)      Mandatory     Never                  n       n
+<Main SELECT>               Mandatory     Never                  n       n
+
+* Combinable queries are the second, third, etc. query in a UNION/INTERSECT/EXCEPT sequence. They 
+  cannot have ORDER BY, OFFSET, LIMIT; those clauses belong to the first query in the sequence.
+
+

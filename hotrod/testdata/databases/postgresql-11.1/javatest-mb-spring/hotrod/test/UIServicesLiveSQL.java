@@ -25,7 +25,7 @@ public class UIServicesLiveSQL {
     List<Map<String, Object>> rows = sql //
         .select(a.name, a.currentBalance) //
         .from(a) //
-        .unionAll(sql.select(b.name, b.currentBalance).from(b).where(b.name.like("CHK%"))) //
+//        .unionAll(sql.select(b.name, b.currentBalance).from(b).where(b.name.like("CHK%"))) //
         .limit(2) //
         .execute() //
     ;
