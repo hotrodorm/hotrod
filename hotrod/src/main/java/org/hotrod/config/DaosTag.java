@@ -299,17 +299,17 @@ public class DaosTag extends AbstractConfigurationTag {
   // Behavior
 
   public String generateVOName(final ObjectId id) {
-    if (id.wasJavaNameSpecified()) {
-      return id.getJavaClassName();
-    } else {
-      return this.voPrefix + id.getJavaClassName() + this.voSuffix;
-    }
+    // if (id.wasJavaNameSpecified()) {
+    // return id.getJavaClassName();
+    // } else {
+    return this.voPrefix + id.getJavaClassName() + this.voSuffix;
+    // }
   }
 
   public String generateDAOName(final ObjectId id) {
     if (id.wasJavaNameSpecified()) {
       if (id.isRelatedToDatabase()) { // database object
-        return id.getJavaClassName() + this.daoSuffix;
+        return this.daoPrefix + id.getJavaClassName() + this.daoSuffix;
       } else { // executor
         return id.getJavaClassName();
       }
@@ -323,7 +323,9 @@ public class DaosTag extends AbstractConfigurationTag {
   }
 
   public String generateAbstractVOName(final ObjectId id) {
-    return this.abstractVoPrefix + this.generateVOName(id) + this.abstractVoSuffix;
+    // return this.abstractVoPrefix + this.generateVOName(id) +
+    // this.abstractVoSuffix;
+    return this.abstractVoPrefix + id.getJavaClassName() + this.abstractVoSuffix;
   }
 
   public String generateAbstractVOName(final String voName) {

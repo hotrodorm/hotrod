@@ -7,9 +7,9 @@
     <mybatis-spring>
       <daos
         gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" 
-        vo-prefix="" vo-suffix="" 
-        dao-prefix="" dao-suffix="DAO"
-        abstract-vo-prefix="" abstract-vo-suffix="Prototype"
+        vo-prefix="VP" vo-suffix="VS" 
+        dao-prefix="DP" dao-suffix="DS"
+        abstract-vo-prefix="AP" abstract-vo-suffix="AS"
       />
       <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
       <spring beans-file="gen/spring-hotrod2.xml" />
@@ -24,7 +24,7 @@
 
   <table name="client" />
   <table name="transaction" />
-  <table name="item" />
+  <table name="item" java-name="Element" />
   <table name="federal_branch" />
   <table name="types_binary" />
   <table name="types_other" />
