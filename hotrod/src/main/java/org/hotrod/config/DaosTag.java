@@ -26,7 +26,8 @@ public class DaosTag extends AbstractConfigurationTag {
 
   private static final String DEFAULT_VO_PREFIX = "";
   private static final String DEFAULT_VO_SUFFIX = "VO";
-  private static final String DEFAULT_ABSTRACT_VO_PREFIX = "Abstract";
+  // private static final String DEFAULT_ABSTRACT_VO_PREFIX = "Abstract";
+  private static final String DEFAULT_ABSTRACT_VO_PREFIX = "";
   private static final String DEFAULT_ABSTRACT_VO_SUFFIX = "";
   private static final String DEFAULT_DAO_PREFIX = "";
   private static final String DEFAULT_DAO_SUFFIX = "DAO";
