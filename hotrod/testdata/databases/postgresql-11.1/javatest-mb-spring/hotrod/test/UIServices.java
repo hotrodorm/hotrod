@@ -12,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import hotrod.test.generation.Account;
+import hotrod.test.generation.AccountVolume;
 import hotrod.test.generation.TypesBinary;
 import hotrod.test.generation.TypesOther;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountDAO.AccountOrderBy;
 import hotrod.test.generation.primitives.AccountDAO.AccountTable;
+import hotrod.test.generation.primitives.AccountReports;
 import hotrod.test.generation.primitives.ClientDAO;
 import hotrod.test.generation.primitives.ClientDAO.ClientTable;
 import hotrod.test.generation.primitives.TransactionDAO;
@@ -37,6 +39,9 @@ public class UIServices {
 
   @Autowired
   private TypesOtherDAO typesOtherDao;
+
+  @Autowired
+  private AccountReports accountReportsDAO;
 
   @Autowired
   private LiveSQL sql;
@@ -88,7 +93,8 @@ public class UIServices {
     List<Map<String, Object>> rows = this.sql //
         .select(a.name, a.currentBalance) //
         .from(a) //
-//        .unionAll(this.sql.select(b.name, b.currentBalance).from(b).where(b.name.like("CHK%"))) //
+        // .unionAll(this.sql.select(b.name,
+        // b.currentBalance).from(b).where(b.name.like("CHK%"))) //
         // .orderBy(a.currentBalance.asc())
         .limit(2) //
         .execute();
@@ -127,6 +133,15 @@ public class UIServices {
     // }
     // }
 
+  }
+
+  public void getNewAccountVolume() {
+    List<AccountVolume> v = this.accountReportsDAO.selectNewAccountsVolume();
+    for (AccountVolume av : v) {
+      System.out.println("av=" + av);
+    }
+
+    int rows = this.accountReportsDAO.applyPromotion(150, 100);
   }
 
   public void runSelectbyCriteria() throws SQLException {
