@@ -9,9 +9,9 @@
         vo-suffix="" dao-suffix="DAO"
         abstract-vo-prefix="Domain" abstract-vo-suffix="Prototype"
       />
-		  <!-- <daos gen-base-dir="gen/empusamb/daos" dao-package="empusa.test.generation.dao" 
-			  primitives-package="empusa.test.generation.prim" dao-prefix="" dao-suffix="DO" 
-			  primitives-prefix="" primitives-suffix="AO" /> -->
+      <!-- <daos gen-base-dir="gen/empusamb/daos" dao-package="empusa.test.generation.dao" 
+        primitives-package="empusa.test.generation.prim" dao-prefix="" dao-suffix="DO" 
+        primitives-prefix="" primitives-suffix="AO" /> -->
       <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
       <spring beans-file="gen/spring-hotrod2.xml" />
       <mybatis-configuration-template file="mybatis-config-template.xml" />
@@ -151,6 +151,36 @@
       join schema2.house h on h.id = aa.house_id
       where a.current_balance >= 100;
     </select>
+  </dao>
+
+  <dao class="AccountReports">
+  
+    <select method="selectNewAccountsVolume" vo="AccountVolume">
+      select a.id, a.name, sum(abs(t.amount)) as total_txs
+      from account a
+      left join transaction t on t.account_id = a.id
+      where a.created_on >= current_date - interval '30 day'
+      group by a.id
+    </select>
+
+    <select method="selectOldAccountsVolume" vo="OldAccountVolume">
+      select a.id, a.name, sum(abs(t.amount)) as total_txs
+      from account a
+      left join transaction t on t.account_id = a.id
+      where a.created_on &lt; current_date - interval '30 day'
+      group by a.id
+    </select>
+
+    <query method="applyPromotion">
+      <parameter name="minAmount" java-type="Integer" jdbc-type="NUMERIC" />
+      <parameter name="prize" java-type="Integer" jdbc-type="NUMERIC" />
+      update account a 
+      set current_balance = current_balance + #{prize}
+      from transaction t
+      where t.account_id = a.id 
+        and t.amount >= #{minAmount}
+    </query>
+    
   </dao>
 
 

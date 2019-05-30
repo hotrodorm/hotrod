@@ -182,4 +182,9 @@ public class SelectFromPhase<R> implements ExecutableSelect<R>, CombinableSelect
     this.select.setParent(parent);
   }
 
+  @Override
+  public String getPreview() {
+    return this.select.getPreview();
+  }
+
 }

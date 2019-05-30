@@ -104,4 +104,9 @@ public class SelectWherePhase<R> implements ExecutableSelect<R>, CombinableSelec
     this.select.setParent(parent);
   }
 
+  @Override
+  public String getPreview() {
+    return this.select.getPreview();
+  }
+
 }

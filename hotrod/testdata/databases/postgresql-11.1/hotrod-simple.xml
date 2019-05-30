@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+      <daos
+        gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" 
+        vo-prefix="VP" vo-suffix="VS" 
+        dao-prefix="DP" dao-suffix="DS"
+        abstract-vo-prefix="AP" abstract-vo-suffix="AS"
+      />
+      <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
+      <spring beans-file="gen/spring-hotrod2.xml" />
+      <mybatis-configuration-template file="mybatis-config-template.xml" />
+      <select-generation temp-view-base-name="mybatis_temp_view" />
+    </mybatis-spring>
+  </generators>
+
+  <table name="account">
+    <column name="active" java-name="mainStatus" />
+  </table>
+
+  <table name="client" />
+  <table name="transaction" />
+  <table name="item" java-name="Element" />
+  <table name="federal_branch" />
+  <table name="types_binary" />
+  <table name="types_other" />
+
+  <dao class="AccountReports">
+  
+    <select method="selectNewAccountsVolume" vo="AccountVolume">
+      select a.id, a.name, sum(abs(t.amount)) as total_txs
+      from account a
+      left join transaction t on t.account_id = a.id
+      where a.created_on >= current_date - interval '30 day'
+      group by a.id
+    </select>
+
+    <select method="selectOldAccountsVolume" vo="OldAccountVolume">
+      select a.id, a.name, sum(abs(t.amount)) as total_txs
+      from account a
+      left join transaction t on t.account_id = a.id
+      where a.created_on &lt; current_date - interval '30 day'
+      group by a.id
+    </select>
+
+    <query method="applyPromotion">
+      <parameter name="minAmount" java-type="Integer" jdbc-type="NUMERIC" />
+      <parameter name="prize" java-type="Integer" jdbc-type="NUMERIC" />
+      update account a 
+      set current_balance = current_balance + #{prize}
+      from transaction t
+      where t.account_id = a.id 
+        and t.amount >= #{minAmount}
+    </query>
+    
+  </dao>
+
+</hotrod>

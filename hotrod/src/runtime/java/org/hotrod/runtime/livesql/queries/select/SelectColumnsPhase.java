@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
-import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
@@ -95,6 +94,11 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableSel
   @Override
   public void setParent(final AbstractSelect<R> parent) {
     this.select.setParent(parent);
+  }
+
+  @Override
+  public String getPreview() {
+    return this.select.getPreview();
   }
 
 }
