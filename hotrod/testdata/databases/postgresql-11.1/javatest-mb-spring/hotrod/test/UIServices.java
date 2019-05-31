@@ -18,7 +18,7 @@ import hotrod.test.generation.TypesOther;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountDAO.AccountOrderBy;
 import hotrod.test.generation.primitives.AccountDAO.AccountTable;
-import hotrod.test.generation.primitives.AccountReports;
+import hotrod.test.generation.primitives.AccountReportsDAO;
 import hotrod.test.generation.primitives.ClientDAO;
 import hotrod.test.generation.primitives.ClientDAO.ClientTable;
 import hotrod.test.generation.primitives.TransactionDAO;
@@ -41,7 +41,7 @@ public class UIServices {
   private TypesOtherDAO typesOtherDao;
 
   @Autowired
-  private AccountReports accountReportsDAO;
+  private AccountReportsDAO accountReportsDAO;
 
   @Autowired
   private LiveSQL sql;
@@ -142,6 +142,7 @@ public class UIServices {
     }
 
     int rows = this.accountReportsDAO.applyPromotion(150, 100);
+    System.out.println("rows=" + rows);
   }
 
   public void runSelectbyCriteria() throws SQLException {

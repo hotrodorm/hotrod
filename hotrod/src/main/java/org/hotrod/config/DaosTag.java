@@ -318,6 +318,10 @@ public class DaosTag extends AbstractConfigurationTag {
     }
   }
 
+  public String generateDAOName(final String name) {
+    return this.daoPrefix + name + this.daoSuffix;
+  }
+
   public String generatePrimitivesName(final ObjectId id) {
     return this.primitivesPrefix + id.getJavaClassName() + this.primitivesSuffix;
   }

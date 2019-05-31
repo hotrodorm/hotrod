@@ -13,7 +13,6 @@
         primitives-package="empusa.test.generation.prim" dao-prefix="" dao-suffix="DO" 
         primitives-prefix="" primitives-suffix="AO" /> -->
       <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
-      <spring beans-file="gen/spring-hotrod2.xml" />
       <mybatis-configuration-template file="mybatis-config-template.xml" />
       <select-generation temp-view-base-name="mybatis_temp_view" />
     </mybatis-spring>
@@ -132,7 +131,7 @@
     <column name="id" sequence="seq_price" schema="'&lt;Stock$'" />
   </table>
 
-  <dao class="AlertFinder">
+  <dao name="AlertFinder">
     <select method="findAlerts">
       select
       <columns>
@@ -153,7 +152,7 @@
     </select>
   </dao>
 
-  <dao class="AccountReports">
+  <dao name="AccountReports">
   
     <select method="selectNewAccountsVolume" vo="AccountVolume">
       select a.id, a.name, sum(abs(t.amount)) as total_txs

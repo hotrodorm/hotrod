@@ -38,7 +38,6 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   private DaosTag daos = null;
   private MappersTag mappers = null;
-  private SpringTag spring = null;
   private TemplateTag template = null;
   private SelectGenerationTag selectGeneration = null;
   private List<PropertyTag> propertyTags = new ArrayList<PropertyTag>();
@@ -62,11 +61,6 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   @XmlElement
   public void setMappers(final MappersTag mappers) {
     this.mappers = mappers;
-  }
-
-  @XmlElement
-  public void setSpring(final SpringTag spring) {
-    this.spring = spring;
   }
 
   @XmlElement(name = "mybatis-configuration-template")
@@ -97,7 +91,6 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   public void validate(final File basedir, final File parentDir) throws InvalidConfigurationFileException {
     this.daos.validate(basedir);
     this.mappers.validate(basedir);
-    this.spring.validate(basedir);
     this.template.validate(basedir, parentDir);
     this.selectGeneration.validate(basedir);
 
@@ -126,10 +119,6 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   public MappersTag getMappers() {
     return mappers;
-  }
-
-  public SpringTag getSpring() {
-    return spring;
   }
 
   public TemplateTag getTemplate() {
