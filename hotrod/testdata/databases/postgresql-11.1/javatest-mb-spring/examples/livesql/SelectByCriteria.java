@@ -8,9 +8,9 @@ import org.hotrod.runtime.util.HexaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import hotrod.test.generation.Account;
-import hotrod.test.generation.TypesBinary;
-import hotrod.test.generation.TypesOther;
+import hotrod.test.generation.AccountVO;
+import hotrod.test.generation.TypesBinaryVO;
+import hotrod.test.generation.TypesOtherVO;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountDAO.AccountTable;
 import hotrod.test.generation.primitives.TransactionDAO;
@@ -42,12 +42,12 @@ public class SelectByCriteria {
     // WHERE current_balance > 100 and name like 'CHK%'
 
     AccountTable a = AccountDAO.newTable();
-    List<Account> rows = this.accountDao.selectByCriteria(a, //
+    List<AccountVO> rows = this.accountDao.selectByCriteria(a, //
         a.currentBalance.gt(100) //
             .and(a.name.like("CHK%"))) //
         .execute();
 
-    for (Account r : rows) {
+    for (AccountVO r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -58,9 +58,9 @@ public class SelectByCriteria {
     searched[0] = 0x31;
     searched[1] = 0x35;
     TypesBinaryTable b = TypesBinaryDAO.newTable();
-    List<TypesBinary> rows = this.typesBinaryDao.selectByCriteria(b, b.bin1.eq(searched)) //
+    List<TypesBinaryVO> rows = this.typesBinaryDao.selectByCriteria(b, b.bin1.eq(searched)) //
         .execute();
-    for (TypesBinary r : rows) {
+    for (TypesBinaryVO r : rows) {
       System.out.println("row: [" + r.getBol1() + ", " + HexaUtils.toHexa(r.getBin1()) + "]");
     }
   }
@@ -70,10 +70,10 @@ public class SelectByCriteria {
     searched[0] = 0x31;
     searched[1] = 0x35;
     TypesOtherTable b = TypesOtherDAO.newTable();
-    List<TypesOther> rows = this.typesOtherDao.selectByCriteria(b, b.uui1.ne("33bb9554-c616-42e6-a9c6-88d3bba4221c")) //
+    List<TypesOtherVO> rows = this.typesOtherDao.selectByCriteria(b, b.uui1.ne("33bb9554-c616-42e6-a9c6-88d3bba4221c")) //
         .execute();
 
-    for (TypesOther r : rows) {
+    for (TypesOtherVO r : rows) {
       System.out.println("row: [" + r.toJSON() + "]");
     }
   }
@@ -81,13 +81,13 @@ public class SelectByCriteria {
   public void runSelectbyCriteriaIn() throws SQLException {
     AccountTable a = AccountDAO.newTable("a");
     TransactionTable t = TransactionDAO.newTable("t");
-    List<Account> rows = this.accountDao.selectByCriteria(a, a.id.in( //
+    List<AccountVO> rows = this.accountDao.selectByCriteria(a, a.id.in( //
         this.sql.select(t.accountId) //
             .from(t) //
             .where(t.accountId.eq(a.id).andNot(t.amount.ge(100).or(t.time.isNull())))) //
         .and(a.id.notIn(123, 456, 789))) //
         .execute();
-    for (Account r : rows) {
+    for (AccountVO r : rows) {
       System.out.println("row: " + r);
     }
   }

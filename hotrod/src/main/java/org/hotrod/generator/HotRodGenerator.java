@@ -738,7 +738,7 @@ public abstract class HotRodGenerator {
     for (ExecutorDAOMetadata d : this.executors) {
       for (SelectMethodMetadata sm : d.getSelectsMetadata()) {
         display("=== Select method " + sm.getMethod() + " [" + (sm.isStructured() ? "structured" : "non-structured")
-            + "] " + (sm.getVO() != null ? "returns " + sm.getVO() + " " : "")
+            + "] " + (sm.getVOClassName() != null ? "returns " + sm.getVOClassName() + " " : "")
             + (sm.isMultipleRows() ? "<multiple-rows-return>" : "<single-row-return>") + " ===");
         if (sm.isStructured()) {
           StructuredColumnsMetadata sc = sm.getStructuredColumns();
