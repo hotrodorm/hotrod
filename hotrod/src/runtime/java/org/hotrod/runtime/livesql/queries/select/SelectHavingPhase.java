@@ -2,7 +2,6 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
@@ -102,6 +101,11 @@ public class SelectHavingPhase<R> implements ExecutableSelect<R>, CombinableSele
   @Override
   public void setParent(final AbstractSelect<R> parent) {
     this.select.setParent(parent);
+  }
+
+  @Override
+  public String getPreview() {
+    return this.select.getPreview();
   }
 
 }

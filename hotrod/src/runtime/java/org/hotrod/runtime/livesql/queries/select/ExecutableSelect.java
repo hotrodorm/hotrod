@@ -11,6 +11,8 @@ public interface ExecutableSelect<R> {
 
   List<R> execute();
 
+  String getPreview();
+
   void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag);
 
   void designateAliases(final AliasGenerator ag);

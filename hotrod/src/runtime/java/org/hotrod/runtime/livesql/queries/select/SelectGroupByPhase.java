@@ -105,4 +105,9 @@ public class SelectGroupByPhase<R> implements ExecutableSelect<R>, CombinableSel
     this.select.setParent(parent);
   }
 
+  @Override
+  public String getPreview() {
+    return this.select.getPreview();
+  }
+
 }

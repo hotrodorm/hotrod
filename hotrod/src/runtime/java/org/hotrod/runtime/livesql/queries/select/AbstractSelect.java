@@ -19,6 +19,8 @@ import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 import org.hotrod.runtime.livesql.util.Separator;
+import org.hotrod.runtime.util.CUtil;
+import org.hotrod.runtime.util.HexaUtils;
 import org.hotrod.runtime.util.SUtils;
 
 public abstract class AbstractSelect<R> extends Query {
@@ -280,19 +282,63 @@ public abstract class AbstractSelect<R> extends Query {
 
     LiveSQLStructure q = this.prepareQuery();
 
-    System.out.println("--- SQL ---");
-    System.out.println(q.getSQL());
+    // System.out.println("--- SQL ---");
+    // System.out.println(q.getSQL());
 
-    System.out.println("--- Parameters ---");
-    for (String name : q.getParameters().keySet()) {
-      Object value = q.getParameters().get(name);
-      System.out.println(" * " + name + (value == null ? "" : " (" + value.getClass().getName() + ")") + ": " + value);
-    }
-    System.out.println("------------------");
+    // System.out.println("--- Parameters ---");
+    // for (String name : q.getParameters().keySet()) {
+    // Object value = q.getParameters().get(name);
+    // System.out.println(" * " + name + (value == null ? "" : " (" +
+    // value.getClass().getName() + ")") + ": " + value);
+    // }
+    // System.out.println("------------------");
 
     List<R> rows = this.sqlSession.selectList(this.mapperStatement, q.getConsolidatedParameters());
 
     return rows;
+
+  }
+
+  public String getPreview() {
+
+    LiveSQLStructure q = this.prepareQuery();
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("--- SQL ----------\n");
+    sb.append(q.getSQL());
+    sb.append("\n--- Parameters ---\n");
+    for (String name : q.getParameters().keySet()) {
+      Object value = q.getParameters().get(name);
+      Integer length = null;
+      String preview = null;
+      if (value instanceof String) {
+        String v = (String) value;
+        length = v.length();
+        if (length <= 250) {
+          preview = v;
+        } else {
+          preview = v.substring(0, 250) + "...";
+        }
+      } else if (value instanceof byte[]) {
+        byte[] v = (byte[]) value;
+        length = v.length;
+        if (v.length < 100) {
+          preview = HexaUtils.toHexa(v);
+        } else {
+          preview = HexaUtils.toHexa(v, 0, 100) + "...";
+        }
+      } else {
+        preview = "" + value;
+      }
+
+      sb.append(" * " + name
+          + (value == null ? ""
+              : " (" + CUtil.renderObjectClass(value) + (length == null ? "" : ", length=" + length) + ")")
+          + ": " + preview + "\n");
+
+    }
+    sb.append("------------------");
+    return sb.toString();
 
   }
 

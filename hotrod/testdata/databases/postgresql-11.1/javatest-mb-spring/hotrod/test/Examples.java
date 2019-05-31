@@ -3,6 +3,8 @@ package hotrod.test;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import examples.livesql.Transactions;
+
 public class Examples {
 
   public static void main(final String[] args) throws IOException, SQLException {
@@ -16,16 +18,17 @@ public class Examples {
       // ui.runSelectbyCriteriaBinary();
       // ui.runSelectbyCriteriaUUID();
       // ui.runSelectbyCriteriaIn();
-      ui.getNewAccountVolume();
+      // ui.getNewAccountVolume();
     }
 
     {
-      // UIServicesLiveSQL uil = SpringBeanRetriever.getBean("uiServices2");
+      UIServicesLiveSQL uil = SpringBeanRetriever.getBean("uiServices2");
       // uil.runLiveSQL2();
+      uil.runLiveSQL3Binary();
     }
 
     {
-      // Transactions txs = SpringBeanRetriever.getBean("transactions");
+      Transactions txs = SpringBeanRetriever.getBean("transactions");
       // txs.transfer(1234001, 1234004, 200);
     }
 
