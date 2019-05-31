@@ -152,6 +152,7 @@ public class UIServices {
             .and(a.name.like("CHK%"))) //
         .execute();
     for (AccountVO r : rows) {
+      // r.setName("T1");
       System.out.println("row: " + r);
     }
   }
