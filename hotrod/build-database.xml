@@ -166,6 +166,7 @@
     <delete includeemptydirs="true">
       <fileset dir="gen/hotrod/mappers" includes="**/*" />
       <fileset dir="gen/hotrod/daos" includes="**/*" />
+      <fileset dir="gen/" includes="**/*.xml" />
     </delete>
     <mkdir dir="gen/hotrod/mappers/persistence" />
   </target>

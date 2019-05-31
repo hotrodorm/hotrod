@@ -12,7 +12,7 @@
         abstract-vo-prefix="AP" abstract-vo-suffix="AS"
       />
       <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
-      <spring beans-file="gen/spring-hotrod2.xml" />
+      <spring beans-file="gen/spring-hotrod2.xml" /> <!-- 1. Eliminar este tag! -->
       <mybatis-configuration-template file="mybatis-config-template.xml" />
       <select-generation temp-view-base-name="mybatis_temp_view" />
     </mybatis-spring>
@@ -29,9 +29,11 @@
   <table name="types_binary" />
   <table name="types_other" />
 
+  <!-- 2. Atributo "name" para dao, sin "class" -->
   <dao class="AccountReports">
   
-    <select method="selectNewAccountsVolume" vo="AccountVolume">
+    <!-- 3. vo: PREFIJO+AccountVolume+SUFIJO, PREFIJO+AccountVolume+SUFIJO -->
+    <select method="selectNewAccountsVolume" vo="AccountVolume"> 
       select a.id, a.name, sum(abs(t.amount)) as total_txs
       from account a
       left join transaction t on t.account_id = a.id

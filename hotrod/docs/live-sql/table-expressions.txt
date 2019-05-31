@@ -1,0 +1,79 @@
+Table expressions with ORDER BY:
+
+Oracle 12c1    : select * from (select * from account order by name offset 1 rows fetch next 2 rows only) x
+DB2 10.5       : select * from (select * from account order by name fetch first 2 rows only) x -- no OFFSET until 11.1
+PostgreSQL 11.1: select * from (select * from account order by type offset 1 limit 2) x
+SQL Server 2014: select * from (select * from account order by name offset 1 rows fetch next 3 rows only) x
+MariaDB 10.3   : select * from (select * from account order by name limit 1, 2) x
+MySQL 8.0      : select * from (select * from account order by name limit 1, 2) x
+Sybase ASE 16  :
+H2             : select * from (select * from account order by name offset 1 limit 2) x
+Derby          : select * from (select * from account order by name offset 1 rows fetch next 2 rows only) x
+HyperSQL       : select * from (select * from account order by name offset 1 limit 2) x
+
+Without ORDER BY:
+
+Oracle 12c1    : select * from (select * from account offset 1 rows fetch next 2 rows only) x
+DB2 10.5       : select * from (select * from account fetch first 2 rows only) x -- no OFFSET until 11.1
+PostgreSQL 11.1: select * from (select * from account offset 1 limit 2) x
+SQL Server 2014: N/A
+MariaDB 10.3   : select * from (select * from account limit 1, 2) x
+MySQL 8.0      : select * from (select * from account limit 1, 2) x
+Sybase ASE 16  :
+H2             : select * from (select * from account offset 1 limit 2) x
+Derby          : select * from (select * from account offset 1 rows fetch next 2 rows only) x
+HyperSQL       : select * from (select * from account offset 1 limit 2) x
+
+--- Scalar subqueries ---
+
+Oracle 12c1    : select id, (select name from account order by name offset 2 rows fetch next 1 rows only) from account
+DB2 10.5       : select id, (select name from account order by name fetch first 1 rows only) from account -- no OFFSET until 11.1
+PostgreSQL 11.1: select id, (select name from account order by name offset 2 limit 1) from account
+SQL Server 2014: select id, (select name from account order by name offset 1 rows fetch next 1 rows only) from account
+MariaDB 10.3   : select id, (select name from account order by name limit 2, 1) from account
+MySQL 8.0      : select id, (select name from account order by name limit 2, 1) from account
+Sybase ASE 16  :
+H2             : select id, (select name from account order by name offset 2 limit 1) from account
+Derby          : select id, (select name from account order by name offset 2 rows fetch next 1 rows only) from account
+HyperSQL       : select id, (select name from account order by name offset 2 limit 1) from account
+
+--- IN operator ---
+
+Oracle 12c1    : select * from account where name in (select name from account order by name offset 2 rows fetch next 1 rows only)
+DB2 10.5       : select * from account where name in (select name from account order by name fetch first 1 rows only) -- no OFFSET until 11.1
+PostgreSQL 11.1: select * from account where name in (select name from account order by name offset 2 limit 1)
+SQL Server 2014: select * from account where name in (select name from account order by name offset 1 rows fetch next 1 rows only)
+MariaDB 10.3   : select * from account where name in (select name from account order by name) -- 10.2 does not support OFFSET & LIMIT
+MySQL 8.0      : select * from account where name in (select name from account order by name) -- 8.0 does not support OFFSET & LIMIT
+Sybase ASE 16  :
+H2             : select * from account where name in (select name from account order by name offset 2 limit 1)
+Derby          : select * from account where name in (select name from account order by name offset 2 rows fetch next 1 rows only)
+HyperSQL       : select * from account where name in (select name from account order by name offset 1 limit 2)
+
+______________________________________________________________________________________
+
+Oracle 12c1    : 
+DB2 10.5       : 
+PostgreSQL 11.1: 
+SQL Server 2014: 
+MariaDB 10.3   : 
+MySQL 8.0      : 
+Sybase ASE 16  :
+H2             : 
+Derby          : 
+HyperSQL       : 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
