@@ -21,6 +21,8 @@ import hotrod.test.generation.primitives.AccountDAO.AccountTable;
 import hotrod.test.generation.primitives.AccountReportsDAO;
 import hotrod.test.generation.primitives.ClientDAO;
 import hotrod.test.generation.primitives.ClientDAO.ClientTable;
+import hotrod.test.generation.primitives.IslandDAO;
+import hotrod.test.generation.primitives.IslandDAO.IslandTable;
 import hotrod.test.generation.primitives.TransactionDAO;
 import hotrod.test.generation.primitives.TransactionDAO.TransactionTable;
 import hotrod.test.generation.primitives.TypesBinaryDAO;
@@ -194,6 +196,23 @@ public class UIServices {
     for (AccountVO r : rows) {
       System.out.println("row: " + r);
     }
+  }
+
+  public void frames() {
+
+    IslandTable i = IslandDAO.newTable("i");
+
+    List<Map<String, Object>> rows = sql //
+        .select(i.id, i.segment, i.xStart, i.xEnd, i.height, //
+            sql.max(i.xEnd).over().partitionBy(i.segment).orderBy(i.xStart.asc(), i.id.asc()).rows()
+                .betweenUnboundedPreceding().andPreceding(1).excludeNoOthers().end().as("maxEnd")) //
+        .from(i) //
+        .execute();
+
+    for (Map<String, Object> r : rows) {
+      System.out.println("row: " + r);
+    }
+
   }
 
   public void runExamples() throws SQLException {

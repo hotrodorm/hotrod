@@ -245,6 +245,33 @@ create table test_default2 (
   branch_id integer default 123 not null
 );
 
+-- =========================
+-- Window functions & frames
+-- =========================
+
+create table island (
+  id int,
+  segment int,
+  x_start int,
+  x_end int,
+  height int
+);
+
+insert into island (id, segment, x_start, x_end, height) values (1, 10, 1, 4, 500);
+insert into island (id, segment, x_start, x_end, height) values (2, 10, 1, 2, 501);
+insert into island (id, segment, x_start, x_end, height) values (3, 10, 2, 3, 502);
+insert into island (id, segment, x_start, x_end, height) values (4, 10, 3, 4, 503);
+insert into island (id, segment, x_start, x_end, height) values (5, 10, 5, 8, 504);
+insert into island (id, segment, x_start, x_end, height) values (5, 10, 5, 6, 505);
+insert into island (id, segment, x_start, x_end, height) values (6, 10, 7, 9, 506);
+insert into island (id, segment, x_start, x_end, height) values (10, 12, 3, 5, 400);
+insert into island (id, segment, x_start, x_end, height) values (11, 12, 1, 3, 401);
+insert into island (id, segment, x_start, x_end, height) values (12, 12, 4, 6, 402);
+insert into island (id, segment, x_start, x_end, height) values (13, 12, 7, 9, 403);
+insert into island (id, segment, x_start, x_end, height) values (14, 12, 7, 9, 404);
+insert into island (id, segment, x_start, x_end, height) values (15, 12, 8, 10, 405);
+
+
 -- =====================
 -- Cursor select example
 -- =====================
