@@ -306,6 +306,12 @@ public class DaosTag extends AbstractConfigurationTag {
     // }
   }
 
+  public String generateVOName(final String name) {
+    String voc = this.voPrefix + name + this.voSuffix;
+    log.info("name=" + name + " voc=" + voc);
+    return voc;
+  }
+
   public String generateDAOName(final ObjectId id) {
     if (id.wasJavaNameSpecified()) {
       if (id.isRelatedToDatabase()) { // database object
@@ -316,6 +322,10 @@ public class DaosTag extends AbstractConfigurationTag {
     } else {
       return this.daoPrefix + id.getJavaClassName() + this.daoSuffix;
     }
+  }
+
+  public String generateDAOName(final String name) {
+    return this.daoPrefix + name + this.daoSuffix;
   }
 
   public String generatePrimitivesName(final ObjectId id) {

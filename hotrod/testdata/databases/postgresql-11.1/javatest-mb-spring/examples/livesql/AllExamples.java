@@ -8,8 +8,7 @@ public class AllExamples {
 
   public static void main(final String[] args) throws SQLException {
 
-    // GeneralSQL generalSQL =
-    // SpringBeanRetriever.getBean("generalSQLExamples");
+    GeneralSQL generalSQL = SpringBeanRetriever.getBean("generalSQLExamples");
     // generalSQL.limit();
     // generalSQL.caseExpressions();
 
@@ -17,21 +16,21 @@ public class AllExamples {
     // joins.innerJoin();
     // joins.innerJoinUsing();
     // joins.crossJoin();
-    joins.naturalFullOuterJoin();
+    // joins.naturalFullOuterJoin();
     // joins.unionJoin();
 
-    // DataTypes datatypes = SpringBeanRetriever.getBean("dataTypesExamples");
+    DataTypes datatypes = SpringBeanRetriever.getBean("dataTypesExamples");
     // datatypes.filter();
     //
-    // OperatorsAndFunctions oaf =
-    // SpringBeanRetriever.getBean("operatorsAndFunctionsExamples");
+    OperatorsAndFunctions oaf = SpringBeanRetriever.getBean("operatorsAndFunctionsExamples");
     // oaf.arithmetic();
-    //
-    // SelectByCriteria sbc = SpringBeanRetriever.getBean("selectByCriteria");
+
+    SelectByCriteria sbc = SpringBeanRetriever.getBean("selectByCriteria");
     // sbc.runSelectbyCriteria();
 
-    // WindowFunctions wf = SpringBeanRetriever.getBean("windowFunctions");
+    WindowFunctions wf = SpringBeanRetriever.getBean("windowFunctions");
     // wf.aggregate();
+    wf.windowFrames();
 
   }
 

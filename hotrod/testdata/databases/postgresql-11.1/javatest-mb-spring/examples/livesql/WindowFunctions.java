@@ -10,6 +10,8 @@ import org.hotrod.runtime.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import hotrod.test.generation.primitives.IslandDAO;
+import hotrod.test.generation.primitives.IslandDAO.IslandTable;
 import hotrod.test.generation.primitives.ItemDAO;
 import hotrod.test.generation.primitives.ItemDAO.ItemTable;
 
@@ -62,6 +64,23 @@ public class WindowFunctions {
         // .and(i.active.eq(active)) //
         // ) // ... and rest of SQL
         .orderBy(i.price.asc(), i.createdOn.desc()).execute();
+
+    for (Map<String, Object> r : rows) {
+      System.out.println("row: " + r);
+    }
+
+  }
+
+  public void windowFrames() {
+
+    IslandTable i = IslandDAO.newTable("i");
+
+    List<Map<String, Object>> rows = sql //
+        .select(i.id, i.segment, i.xStart, i.xEnd, i.height, //
+            sql.max(i.xEnd).over().partitionBy(i.segment).orderBy(i.xStart.asc(), i.id.asc()).rows()
+                .betweenUnboundedPreceding().andPreceding(1).excludeNoOthers().end().as("prevEnd")) //
+        .from(i) //
+        .execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);

@@ -282,16 +282,14 @@ public abstract class AbstractSelect<R> extends Query {
 
     LiveSQLStructure q = this.prepareQuery();
 
-    // System.out.println("--- SQL ---");
-    // System.out.println(q.getSQL());
-
-    // System.out.println("--- Parameters ---");
-    // for (String name : q.getParameters().keySet()) {
-    // Object value = q.getParameters().get(name);
-    // System.out.println(" * " + name + (value == null ? "" : " (" +
-    // value.getClass().getName() + ")") + ": " + value);
-    // }
-    // System.out.println("------------------");
+    System.out.println("--- SQL ---");
+    System.out.println(q.getSQL());
+    System.out.println("--- Parameters ---");
+    for (String name : q.getParameters().keySet()) {
+      Object value = q.getParameters().get(name);
+      System.out.println(" * " + name + (value == null ? "" : " (" + value.getClass().getName() + ")") + ": " + value);
+    }
+    System.out.println("------------------");
 
     List<R> rows = this.sqlSession.selectList(this.mapperStatement, q.getConsolidatedParameters());
 

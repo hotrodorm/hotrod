@@ -51,7 +51,6 @@
     <xsd:sequence>
       <xsd:element name="daos" type="daos-type" />
       <xsd:element name="mappers" type="mappers-type" />
-      <xsd:element name="spring" type="spring-type" />
       <xsd:element name="mybatis-configuration-template" type="mybatis-configuration-template-type" />
       <xsd:element name="select-generation" type="select-generation-type" />
       <xsd:element name="property" type="property-type" minOccurs="0" maxOccurs="unbounded" />
@@ -75,10 +74,6 @@
   <xsd:complexType name="mappers-type">
     <xsd:attribute name="gen-base-dir" type="xsd:string" use="required" />
     <xsd:attribute name="relative-dir" type="xsd:string" use="required" />
-  </xsd:complexType>
-
-  <xsd:complexType name="spring-type">
-    <xsd:attribute name="beans-file" type="xsd:string" use="required" />
   </xsd:complexType>
 
   <xsd:complexType name="mybatis-configuration-template-type">

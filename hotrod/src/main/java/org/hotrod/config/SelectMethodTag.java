@@ -62,6 +62,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   // Properties - Parsed
 
+  private String voClassName;
   private boolean multipleRows;
   protected ParameterDefinitions parameters = null;
   protected List<ColumnTag> columns = null;
@@ -91,6 +92,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     d.content = this.content;
 
+    d.voClassName = this.voClassName;
     d.multipleRows = this.multipleRows;
     d.parameters = this.parameters;
     d.columns = this.columns;
@@ -227,6 +229,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
                 + ">. A Java class name must start with an upper case letter, "
                 + "and continue with letters, digits, and/or underscores.");
       }
+      this.voClassName = daosTag.generateVOName(this.vo);
     }
 
     // multiple-rows
@@ -289,8 +292,8 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     return method;
   }
 
-  public String getVO() {
-    return vo;
+  public String getVOClassName() {
+    return this.voClassName;
   }
 
   public boolean isMultipleRows() {
@@ -404,6 +407,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
       this.vo = f.vo;
       this.sMultipleRows = f.sMultipleRows;
       this.metadata = f.metadata;
+      this.voClassName = f.voClassName;
       this.multipleRows = f.multipleRows;
       this.parameters = f.parameters;
       this.columns = f.columns;

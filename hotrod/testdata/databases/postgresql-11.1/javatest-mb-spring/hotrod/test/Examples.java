@@ -19,12 +19,13 @@ public class Examples {
       // ui.runSelectbyCriteriaUUID();
       // ui.runSelectbyCriteriaIn();
       // ui.getNewAccountVolume();
+      ui.frames();
     }
 
     {
       UIServicesLiveSQL uil = SpringBeanRetriever.getBean("uiServices2");
       // uil.runLiveSQL2();
-      uil.runLiveSQL3Binary();
+      // uil.runLiveSQL3Binary();
     }
 
     {

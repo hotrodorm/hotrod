@@ -191,8 +191,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
       SelectVOClass vo = null;
       try {
-        vo = new SelectVOClass(this.classPackage, this.tag.getVO(), null, properties, associations, collections,
-            this.tag);
+        vo = new SelectVOClass(this.classPackage, this.tag.getVOClassName(), null, properties, associations,
+            collections, this.tag);
         log.debug("--> Adding VO: " + vo);
         voRegistry.addVO(vo);
       } catch (VOAlreadyExistsException e) {
@@ -427,8 +427,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     return this.tag.getStructuredColumns() == null ? null : this.tag.getStructuredColumns().getMetadata();
   }
 
-  public String getVO() {
-    return this.tag.getVO();
+  public String getVOClassName() {
+    return this.tag.getVOClassName();
   }
 
   // Other getters
@@ -604,7 +604,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         List<VOMember> associations = new ArrayList<VOMember>();
         List<VOMember> collections = new ArrayList<VOMember>();
         try {
-          this.soloVO = new SelectVOClass(voClassPackage, sm.getVO(), null, properties, associations, collections, tag);
+          this.soloVO = new SelectVOClass(voClassPackage, sm.getVOClassName(), null, properties, associations,
+              collections, tag);
         } catch (DuplicatePropertyNameException e) {
           // swallow this exception
         }

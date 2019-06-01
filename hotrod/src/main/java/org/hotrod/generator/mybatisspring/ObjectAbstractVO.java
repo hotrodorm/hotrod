@@ -180,7 +180,7 @@ public class ObjectAbstractVO extends GeneratableObject {
     println("  public final void " + setter + "(final " + javaType + " " + m + ") {");
     println("    this." + m + " = " + m + ";");
     String name = cm.getId().getJavaMemberName() + "WasSet";
-    println("    this.propertiesChangeLog." + name + " = true;");
+    println("    this.getPropertiesChangeLog()." + name + " = true;");
     println("  }");
     println();
   }
@@ -270,9 +270,13 @@ public class ObjectAbstractVO extends GeneratableObject {
   private void writePropertiesChangeLog() throws IOException {
     println("  // Properties change log");
     println();
-    println("  public PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();");
+    println("  private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();");
     println();
-    println("  public class PropertiesChangeLog {");
+    println("  protected PropertiesChangeLog getPropertiesChangeLog() {");
+    println("    return propertiesChangeLog;");
+    println("  }");
+    println();
+    println("  protected class PropertiesChangeLog {");
 
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String name = cm.getId().getJavaMemberName() + "WasSet";

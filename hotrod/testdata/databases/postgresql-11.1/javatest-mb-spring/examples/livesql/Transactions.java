@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import hotrod.test.generation.Account;
+import hotrod.test.generation.AccountVO;
 import hotrod.test.generation.primitives.AccountDAO;
 
 @Component("transactions")
@@ -18,8 +18,8 @@ public class Transactions {
 
     System.out.println("--- Transfer starting...");
 
-    Account from = dao.selectByPK(fromAccountId);
-    Account to = dao.selectByPK(toAccountId);
+    AccountVO from = dao.selectByPK(fromAccountId);
+    AccountVO to = dao.selectByPK(toAccountId);
 
     System.out
         .println("--- Transferring $" + amount + " from account " + from.getName() + " to account " + to.getName());

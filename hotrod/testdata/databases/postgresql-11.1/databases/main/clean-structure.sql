@@ -39,6 +39,8 @@ drop sequence if exists seq_agent;
 
 drop table if exists vehicle;
 
+drop table if exists island;
+
 -- Auto-generated columns 
 
 drop table if exists test_sequence1;

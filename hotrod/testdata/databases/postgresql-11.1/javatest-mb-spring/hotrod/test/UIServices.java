@@ -11,16 +11,18 @@ import org.hotrod.runtime.util.HexaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import hotrod.test.generation.Account;
-import hotrod.test.generation.AccountVolume;
-import hotrod.test.generation.TypesBinary;
-import hotrod.test.generation.TypesOther;
+import hotrod.test.generation.AccountVO;
+import hotrod.test.generation.AccountVolumeVO;
+import hotrod.test.generation.TypesBinaryVO;
+import hotrod.test.generation.TypesOtherVO;
 import hotrod.test.generation.primitives.AccountDAO;
 import hotrod.test.generation.primitives.AccountDAO.AccountOrderBy;
 import hotrod.test.generation.primitives.AccountDAO.AccountTable;
-import hotrod.test.generation.primitives.AccountReports;
+import hotrod.test.generation.primitives.AccountReportsDAO;
 import hotrod.test.generation.primitives.ClientDAO;
 import hotrod.test.generation.primitives.ClientDAO.ClientTable;
+import hotrod.test.generation.primitives.IslandDAO;
+import hotrod.test.generation.primitives.IslandDAO.IslandTable;
 import hotrod.test.generation.primitives.TransactionDAO;
 import hotrod.test.generation.primitives.TransactionDAO.TransactionTable;
 import hotrod.test.generation.primitives.TypesBinaryDAO;
@@ -41,7 +43,7 @@ public class UIServices {
   private TypesOtherDAO typesOtherDao;
 
   @Autowired
-  private AccountReports accountReportsDAO;
+  private AccountReportsDAO accountReportsDAO;
 
   @Autowired
   private LiveSQL sql;
@@ -136,21 +138,23 @@ public class UIServices {
   }
 
   public void getNewAccountVolume() {
-    List<AccountVolume> v = this.accountReportsDAO.selectNewAccountsVolume();
-    for (AccountVolume av : v) {
+    List<AccountVolumeVO> v = this.accountReportsDAO.selectNewAccountsVolume();
+    for (AccountVolumeVO av : v) {
       System.out.println("av=" + av);
     }
 
     int rows = this.accountReportsDAO.applyPromotion(150, 100);
+    System.out.println("rows=" + rows);
   }
 
   public void runSelectbyCriteria() throws SQLException {
     AccountTable a = AccountDAO.newTable();
-    List<Account> rows = this.accountDao.selectByCriteria(a, //
+    List<AccountVO> rows = this.accountDao.selectByCriteria(a, //
         a.currentBalance.gt(100) //
             .and(a.name.like("CHK%"))) //
         .execute();
-    for (Account r : rows) {
+    for (AccountVO r : rows) {
+      // r.setName("T1");
       System.out.println("row: " + r);
     }
   }
@@ -160,9 +164,9 @@ public class UIServices {
     searched[0] = 0x31;
     searched[1] = 0x35;
     TypesBinaryTable b = TypesBinaryDAO.newTable();
-    List<TypesBinary> rows = this.typesBinaryDao.selectByCriteria(b, b.bin1.eq(searched)) //
+    List<TypesBinaryVO> rows = this.typesBinaryDao.selectByCriteria(b, b.bin1.eq(searched)) //
         .execute();
-    for (TypesBinary r : rows) {
+    for (TypesBinaryVO r : rows) {
       System.out.println("row: [" + r.getBol1() + ", " + HexaUtils.toHexa(r.getBin1()) + "]");
     }
   }
@@ -172,10 +176,10 @@ public class UIServices {
     searched[0] = 0x31;
     searched[1] = 0x35;
     TypesOtherTable b = TypesOtherDAO.newTable();
-    List<TypesOther> rows = this.typesOtherDao.selectByCriteria(b, b.uui1.ne("33bb9554-c616-42e6-a9c6-88d3bba4221c")) //
+    List<TypesOtherVO> rows = this.typesOtherDao.selectByCriteria(b, b.uui1.ne("33bb9554-c616-42e6-a9c6-88d3bba4221c")) //
         .execute();
 
-    for (TypesOther r : rows) {
+    for (TypesOtherVO r : rows) {
       System.out.println("row: [" + r.toJSON() + "]");
     }
   }
@@ -183,15 +187,32 @@ public class UIServices {
   public void runSelectbyCriteriaIn() throws SQLException {
     AccountTable a = AccountDAO.newTable("a");
     TransactionTable t = TransactionDAO.newTable("t");
-    List<Account> rows = this.accountDao.selectByCriteria(a, a.id.in( //
+    List<AccountVO> rows = this.accountDao.selectByCriteria(a, a.id.in( //
         this.sql.select(t.accountId) //
             .from(t) //
             .where(t.accountId.eq(a.id).andNot(t.amount.ge(100).or(t.time.isNull())))) //
         .and(a.id.notIn(123, 456, 789))) //
         .execute();
-    for (Account r : rows) {
+    for (AccountVO r : rows) {
       System.out.println("row: " + r);
     }
+  }
+
+  public void frames() {
+
+    IslandTable i = IslandDAO.newTable("i");
+
+    List<Map<String, Object>> rows = sql //
+        .select(i.id, i.segment, i.xStart, i.xEnd, i.height, //
+            sql.max(i.xEnd).over().partitionBy(i.segment).orderBy(i.xStart.asc(), i.id.asc()).rows()
+                .betweenUnboundedPreceding().andPreceding(1).excludeNoOthers().end().as("maxEnd")) //
+        .from(i) //
+        .execute();
+
+    for (Map<String, Object> r : rows) {
+      System.out.println("row: " + r);
+    }
+
   }
 
   public void runExamples() throws SQLException {
@@ -199,14 +220,14 @@ public class UIServices {
     // Select by PK
 
     {
-      Account a = this.accountDao.selectByPK(1004);
+      AccountVO a = this.accountDao.selectByPK(1004);
       System.out.println("Test #1: a=" + a);
     }
 
     // Select by UI
 
     {
-      Account a = this.accountDao.selectByUIName("CHK1004");
+      AccountVO a = this.accountDao.selectByUIName("CHK1004");
       System.out.println("Test #2: a=" + a);
       System.out.println("Test #2 JSON: a=" + (a == null ? "null" : a.toJSON()));
     }
@@ -216,13 +237,13 @@ public class UIServices {
     {
       Timestamp creationDate = new Timestamp(System.currentTimeMillis());
 
-      Account example = new Account();
+      AccountVO example = new AccountVO();
       example.setCreatedOn(creationDate);
-      List<Account> accounts = this.accountDao.selectByExample(example);
+      List<AccountVO> accounts = this.accountDao.selectByExample(example);
       if (accounts.isEmpty()) {
         System.out.println("Test #3: --- No accounts found.");
       } else {
-        for (Account a : accounts) {
+        for (AccountVO a : accounts) {
           System.out.println("Test #3: a=" + a);
         }
       }
@@ -233,14 +254,14 @@ public class UIServices {
     {
       Timestamp creationDate = new Timestamp(System.currentTimeMillis());
 
-      Account example = new Account();
+      AccountVO example = new AccountVO();
       example.setCreatedOn(creationDate);
-      List<Account> accounts = this.accountDao.selectByExample(example, AccountOrderBy.CURRENT_BALANCE$DESC,
+      List<AccountVO> accounts = this.accountDao.selectByExample(example, AccountOrderBy.CURRENT_BALANCE$DESC,
           AccountOrderBy.NAME);
       if (accounts.isEmpty()) {
         System.out.println("Test #4: --- No accounts found.");
       } else {
-        for (Account a : accounts) {
+        for (AccountVO a : accounts) {
           System.out.println("Test #4: a=" + a);
         }
       }
@@ -251,7 +272,7 @@ public class UIServices {
     {
       Timestamp creationDate = new Timestamp(System.currentTimeMillis());
 
-      Account a = new Account();
+      AccountVO a = new AccountVO();
       // a.setId(xxx); // ignored
       a.setName("CHK4010");
       a.setType("CHK");
@@ -265,7 +286,7 @@ public class UIServices {
     // update the balance
 
     {
-      Account a = this.accountDao.selectByPK(1234004);
+      AccountVO a = this.accountDao.selectByPK(1234004);
       a.setCurrentBalance(250);
       int rows = this.accountDao.update(a);
       System.out.println("Test #6 - updated rows=" + rows);
@@ -276,9 +297,9 @@ public class UIServices {
     {
       Timestamp creationDate = new Timestamp(System.currentTimeMillis());
 
-      Account example = new Account();
+      AccountVO example = new AccountVO();
       example.setCreatedOn(creationDate);
-      Account updateValues = new Account();
+      AccountVO updateValues = new AccountVO();
       updateValues.setCurrentBalance(0);
       int rows = this.accountDao.updateByExample(example, updateValues);
       System.out.println("Test #7 - updated rows=" + rows);
@@ -287,7 +308,7 @@ public class UIServices {
     // delete
 
     {
-      Account a = new Account();
+      AccountVO a = new AccountVO();
       a.setId(104);
       int rows = this.accountDao.delete(a);
       System.out.println("Test #8 - deleted rows=" + rows);
@@ -298,7 +319,7 @@ public class UIServices {
     {
       Timestamp creationDate = new Timestamp(System.currentTimeMillis());
 
-      Account example = new Account();
+      AccountVO example = new AccountVO();
       example.setCreatedOn(creationDate);
       int rows = this.accountDao.deleteByExample(example);
       System.out.println("Test #9 - updated rows=" + rows);

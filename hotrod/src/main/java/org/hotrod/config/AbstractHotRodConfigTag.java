@@ -165,8 +165,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
       try {
         x.validate(daosTag, config, fragmentConfig, adapter);
       } catch (InvalidConfigurationFileException e1) {
-        log.error("zzzz", e1);
-        log.error("tag=" + e1.getTag());
         throw e1;
       }
     }

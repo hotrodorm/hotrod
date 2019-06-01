@@ -41,7 +41,7 @@
       <xsd:element name="query" type="query-type" />
       <xsd:element name="select" type="select-method-type" />
     </xsd:choice>
-    <xsd:attribute name="class" type="xsd:string" use="required" />
+    <xsd:attribute name="name" type="xsd:string" use="required" />
   </xsd:complexType>
 
   <!-- sequence -->
