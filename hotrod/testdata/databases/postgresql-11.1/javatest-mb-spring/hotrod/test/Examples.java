@@ -14,12 +14,12 @@ public class Examples {
       // ui.runExamples();
       // ui.runLiveSQL1();
       // ui.runLiveSQL2();
-      // ui.runSelectbyCriteria();
+      ui.runSelectbyCriteria();
       // ui.runSelectbyCriteriaBinary();
       // ui.runSelectbyCriteriaUUID();
       // ui.runSelectbyCriteriaIn();
       // ui.getNewAccountVolume();
-      ui.frames();
+      // ui.frames();
     }
 
     {

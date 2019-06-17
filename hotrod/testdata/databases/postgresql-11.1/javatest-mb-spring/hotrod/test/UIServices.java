@@ -151,11 +151,12 @@ public class UIServices {
     AccountTable a = AccountDAO.newTable();
     List<AccountVO> rows = this.accountDao.selectByCriteria(a, //
         a.currentBalance.gt(100) //
-            .and(a.name.like("CHK%"))) //
+            .and(a.mainStatus.eq(1))) //
         .execute();
+    System.out.println("rows=" + rows.size());
     for (AccountVO r : rows) {
       // r.setName("T1");
-      System.out.println("row: " + r);
+      System.out.println("row: " + r + "\nsqlSession=" + r.getSqlSession());
     }
   }
 

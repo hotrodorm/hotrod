@@ -85,11 +85,16 @@
       <src path="${runtime.src.dir}" />
       <src path="${buildinfo.gen.dir}" />
       <classpath>
+
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
-        <pathelement location="${lib.dir}/spring/spring-context-4.2.5.RELEASE.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
         <pathelement location="${lib.dir}/apache-commons/commons-jexl3-3.1.jar" />
         <pathelement location="${lib.dir}/apache-commons/commons-logging-1.2.jar" />
+        
+        <pathelement location="${lib.dir}/spring/spring-context-4.2.5.RELEASE.jar" />
+        <pathelement location="${lib.dir}/spring/spring-beans-4.2.5.RELEASE.jar" />
+        <pathelement location="${lib.dir}/spring/spring-core-4.2.5.RELEASE.jar" />
+
       </classpath>
     </javac>
   </target>

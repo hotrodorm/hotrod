@@ -12,7 +12,7 @@
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
-  <context:component-scan base-package="hotrod.test, examples.livesql" />
+  <context:component-scan base-package="org.hotrod.runtime.spring, hotrod.test, examples.livesql" />
 
 <!-- 
   <jee:jndi-lookup id="dataSource" jndi-name="jdbc/myDatasource1" expected-type="javax.sql.DataSource" />
@@ -29,9 +29,12 @@
 
   <!-- Main Spring beans -->
 
+  <bean id="springBeanObjectFactory" class="org.hotrod.runtime.spring.SpringBeanObjectFactory" />
+
   <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
     <property name="dataSource" ref="dataSource" />
     <property name="configLocation" value="persistence/primitives/mybatis-configuration.xml" />
+    <property name="objectFactory" ref="springBeanObjectFactory" />
   </bean>
 
   <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
