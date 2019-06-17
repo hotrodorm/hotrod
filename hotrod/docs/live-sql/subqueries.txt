@@ -1,15 +1,42 @@
-                            Must columns
-Subqueries                  be named?     Can be correlated?  Card  Degree
---------------------------  ------------  ------------------  ----  ------
-Scalar subquery             Optional      Always                 1       1
-IN/ANY/ALL/EXISTS subquery  Optional      Optional               n       n
-Combinable query*           Optional      Never                  n       n
-Table expression            Mandatory     Never                  n       n
-Lateral table expression    Mandatory     Always                 n       n
-CTE (recursive or not)      Mandatory     Never                  n       n
-<Main SELECT>               Mandatory     Never                  n       n
+                            Must columns  Can be       Can include  Max          Max
+Subquery Type               be named?     correlated?  OB/OFF/LIM?  Cardinality  Degree
+--------------------------  ------------  -----------  -----------  -----------  ------
+Scalar subquery             Optional      Optional     Yes*2                  1       1
+IN/ANY/ALL/EXISTS subquery  Optional      Optional     Yes*2*3                n       n
+Combinable query*1          Optional      Never        Never                  n       n
+Table expression            Mandatory     Never        Yes*2                  n       n
+Lateral table expression    Mandatory     Always       Yes*2*4                n       n
+CTE non recursive           Mandatory     Never        Yes*2                  n       n
+CTE recursive               Mandatory     Never        Rarely*5*6             n       n
+<Main SELECT>               Mandatory     Never        Yes                    n       n
 
-* Combinable queries are the second, third, etc. query in a UNION/INTERSECT/EXCEPT sequence. They 
-  cannot have ORDER BY, OFFSET, LIMIT; those clauses belong to the first query in the sequence.
+*1 Combinable queries are the second, third, etc. query in a UNION/INTERSECT/EXCEPT sequence. They 
+   cannot have ORDER BY, OFFSET, LIMIT; those clauses belong to the first query in the sequence.
+*2 SQL Server 2014 can only include ORDER BY when OFFSET and FETCH are also included.
+*3 MariaDB 10.3 & MySQL 8.0 do not support OFFSET & LIMIT in these type of subqueries.
+*4 Only Oracle, DB2, PostgreSQL, and SQL Server support lateral selects.
+*5 DB2 implements LIMIT. It seems it's part of the SQL standard but most engines usually say something like: "This version of MariaDB doesn't yet support 'global ORDER_BY/LIMIT in recursive CTE spec'".
+*6 PostgreSQL, MariaDB, H2 implement OB/LIMIT/OFFSET in the recursive member if it's enclosed in parenthesis.
+
+
+Group #1: Named and OB/OFF/LIM               |
+ - Table Expression                          |
+ - Lateral Table Expression                   > Type: Select<ReferenceableExpression>
+ - CTE non recursive                         |
+ - CTE recursive                             |
+ - <Main SELECT>                             |
+
+
+Group #2: Optionally named and OB/OFF/LIM    |
+ - Scalar Subquery                            > Type: Select<Expression>  --  1 column only
+
+
+Group #3: Optionally named and OB/OFF/LIM    |
+ - IN/ANY/ALL/EXISTS subquery                 > Type: Select<Expression>  --  Multiple columns
+
+
+Group #4: Optionally named and no OB/OFF/LIM |
+ - Combinable query                           > Type: CombinableSelect<Expression>
+
 
 

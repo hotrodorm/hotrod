@@ -6,14 +6,14 @@
   <generators>
     <mybatis-spring>
       <daos gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" 
-        vo-suffix="" dao-suffix="DAO"
+        vo-prefix="" vo-suffix="VO"
         abstract-vo-prefix="Domain" abstract-vo-suffix="Prototype"
+        dao-prefix="" dao-suffix="DAO"
       />
       <!-- <daos gen-base-dir="gen/empusamb/daos" dao-package="empusa.test.generation.dao" 
         primitives-package="empusa.test.generation.prim" dao-prefix="" dao-suffix="DO" 
         primitives-prefix="" primitives-suffix="AO" /> -->
       <mappers gen-base-dir="gen/hotrod/mappers" relative-dir="persistence" />
-      <spring beans-file="gen/spring-hotrod2.xml" />
       <mybatis-configuration-template file="mybatis-config-template.xml" />
       <select-generation temp-view-base-name="mybatis_temp_view" />
     </mybatis-spring>
@@ -44,6 +44,7 @@
 <?comment 
 ?>
 
+  <table name="island" />
 
   <table name="properties" />
   <table name="parameters">
@@ -132,7 +133,7 @@
     <column name="id" sequence="seq_price" schema="'&lt;Stock$'" />
   </table>
 
-  <dao class="AlertFinder">
+  <dao name="AlertFinder">
     <select method="findAlerts">
       select
       <columns>
@@ -153,7 +154,7 @@
     </select>
   </dao>
 
-  <dao class="AccountReports">
+  <dao name="AccountReports">
   
     <select method="selectNewAccountsVolume" vo="AccountVolume">
       select a.id, a.name, sum(abs(t.amount)) as total_txs
