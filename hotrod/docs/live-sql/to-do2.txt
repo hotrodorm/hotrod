@@ -20,11 +20,14 @@ DONE - max()
 DONE - coalesce()
 DONE - case
 
+DONE - Resolver cómo obtener beans cuando MyBatis hace un SELECT.
+
 To do:
 ======
 
- - Resolver cómo obtener beans cuando MyBatis hace un SELECT.
-   
+ - Implementar chequeo de nulos.
+
+ - Implementar subqueries.
  
  
  
