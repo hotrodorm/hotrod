@@ -156,7 +156,8 @@ public class UIServices {
     System.out.println("rows=" + rows.size());
     for (AccountVO r : rows) {
       // r.setName("T1");
-      System.out.println("row: " + r + "\nsqlSession=" + r.getSqlSession());
+      System.out.println("row: " + r);
+      // System.out.println("\nsqlSession=" + r.getSqlSession());
     }
   }
 
