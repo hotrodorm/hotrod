@@ -1,9 +1,11 @@
 package examples.livesql;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +30,41 @@ public class GeneralSQL {
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
     }
+
+  }
+
+  public void showSQLStatement() {
+
+    // 1. Assemble the SQL statement
+    ExecutableSelect<Map<String, Object>> ps = sql //
+        .select( //
+            sql.val(123).as("balance"), // 
+            sql.val(456.78).as("deposit"), // 
+            sql.val("Chicago").as("city"), //
+            sql.currentDate().as("performedAt"));
+
+    // 2. Show the SQL statement and parameters
+    System.out.print(ps);
+    // In PostgreSQL it's rendered as:
+    // --- SQL ---
+    // SELECT
+    //   123 as balance,
+    //   #{p1} as deposit,
+    //   'Chicago' as city,
+    //   current_date as "performedAt"
+    // --- Parameters ---
+    //  * p1 (java.lang.Double): 456.78
+    // ------------------
+
+    // 3. Run the SQL statement
+    List<Map<String, Object>> rows = ps.execute();
+
+    // 4. Display the result set
+    for (Map<String, Object> r : rows) {
+      System.out.println("row: " + r);
+    }
+    // In PostgreSQL it shows:
+    // row: {balance=123, city=Chicago, performedAt=2019-07-19, deposit=456.78}
 
   }
 
@@ -237,7 +274,10 @@ public class GeneralSQL {
 
   public void caseExpressions() {
 
-    // SELECT a.type, case when a.type = 'CHK' then 3.5 else 1.0 end as "factor"
+    // SELECT
+    // a.id,
+    // case when a.type = 'CHK' then 3.5 else 1.0 end,
+    // case when a.type = 'CHK' then 3.5 else 1.0 end + 1 as factor
     // FROM account a
     // ORDER BY case
     // when a.type = 'INV' then 8.0
