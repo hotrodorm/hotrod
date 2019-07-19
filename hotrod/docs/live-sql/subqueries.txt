@@ -1,4 +1,4 @@
-                            Must columns  Can be       Can include  Max          Max
+                            Must columns  Can be       Can include          Max     Max
 Subquery Type               be named?     correlated?  OB/OFF/LIM?  Cardinality  Degree
 --------------------------  ------------  -----------  -----------  -----------  ------
 Scalar subquery             Optional      Optional     Yes*2                  1       1
@@ -21,22 +21,22 @@ CTE recursive               Mandatory     Never        Rarely*5*6             n 
 
 Group #1: Named and OB/OFF/LIM               |
  - Table Expression                          |
- - Lateral Table Expression                   > Type: Select<ReferenceableExpression>
+ - Lateral Table Expression                   > Type: ExecutableSelect<NamedExpression...>
  - CTE non recursive                         |
  - CTE recursive                             |
  - <Main SELECT>                             |
 
 
 Group #2: Optionally named and OB/OFF/LIM    |
- - Scalar Subquery                            > Type: Select<Expression>  --  1 column only
+ - Scalar Subquery                            > Type: ScalarSelect<Expression>  --  1 column only
 
 
 Group #3: Optionally named and OB/OFF/LIM    |
- - IN/ANY/ALL/EXISTS subquery                 > Type: Select<Expression>  --  Multiple columns
+ - IN/ANY/ALL/EXISTS subquery                 > Type: NamelessSelect<Expression...>  --  Multiple columns
 
 
 Group #4: Optionally named and no OB/OFF/LIM |
- - Combinable query                           > Type: CombinableSelect<Expression>
+ - Combinable query                           > Type: CombinableSelect<Expression...>
 
 
 
