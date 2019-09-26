@@ -131,7 +131,7 @@
     <java classname="hotrod.test.Examples" fork="yes"> 
     <java classname="examples.livesql.AllExamples" fork="yes">
     -->
-    <java classname="examples.livesql.AllExamples" fork="yes">
+    <java classname="hotrod.test.Examples" fork="yes"> 
       <classpath>
         <pathelement path="${test.build.dir}" />
         <pathelement path="gen/hotrod/mappers" />

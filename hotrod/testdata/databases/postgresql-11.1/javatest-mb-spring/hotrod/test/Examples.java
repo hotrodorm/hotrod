@@ -36,7 +36,12 @@ public class Examples {
 
     {
       SelectByPK sbpk = SpringBeanRetriever.getBean("selectsByPK");
-      sbpk.insertSelect();
+//      sbpk.insertSelect();
+    }
+
+    {
+      SelectByPrimaryKeyTest s = SpringBeanRetriever.getBean("selectsByPrimaryKeyTest");
+      s.select1();
     }
 
   }
