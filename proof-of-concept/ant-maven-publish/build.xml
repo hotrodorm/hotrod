@@ -1,0 +1,180 @@
+<project name="maven-central-publishing" default="clean-build" basedir=".">
+
+  <property name="version" value="3.0.2" />
+
+  <property name="main.src.dir" value="src/main/java" />
+  <property name="runtime.src.dir" value="src/runtime/java" />
+  <property name="build.dir" value="build" />
+  <property name="main.build.dir" value="build/main" />
+  <property name="runtime.build.dir" value="build/runtime" />
+  <property name="main.javadoc.dir" value="build/main-javadoc" />
+  <property name="runtime.javadoc.dir" value="build/runtime-javadoc" />
+  <property name="dist.dir" value="dist" />
+
+  <target name="init">
+    <mkdir dir="${main.build.dir}" />
+    <mkdir dir="${runtime.build.dir}" />
+    <mkdir dir="${main.javadoc.dir}" />
+    <mkdir dir="${runtime.javadoc.dir}" />
+    <mkdir dir="${dist.dir}" />
+  </target>
+
+  <target name="clean" depends="init">
+    <delete includeemptydirs="true">
+      <fileset dir="${build.dir}" includes="**/*" />
+      <fileset dir="${dist.dir}" includes="**/*" />
+    </delete>
+    <antcall target="init" />
+  </target>
+
+  <target name="compile-main" depends="init">
+    <javac srcdir="${main.src.dir}"
+           destdir="${main.build.dir}"
+           debug="true"
+           deprecation="true"
+           source="1.6"
+           target="1.6"
+           includeantruntime="false"
+           includes="**/*.java">
+      <classpath>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="compile-runtime" depends="init">
+    <javac srcdir="${runtime.src.dir}"
+           destdir="${runtime.build.dir}"
+           debug="true"
+           deprecation="true"
+           source="1.6"
+           target="1.6"
+           includeantruntime="false"
+           includes="**/*.java">
+      <classpath>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="jar" depends="compile-main, compile-runtime">
+
+    <jar destfile="${dist.dir}/hot-${version}.jar">
+      <fileset dir="${main.build.dir}" />
+    </jar>
+    <jar destfile="${dist.dir}/hot-${version}-sources.jar">
+      <fileset dir="${main.src.dir}" />
+    </jar>
+
+    <jar destfile="${dist.dir}/hot-runtime-${version}.jar">
+      <fileset dir="${runtime.build.dir}" />
+    </jar>
+    <jar destfile="${dist.dir}/hot-runtime-${version}-sources.jar">
+      <fileset dir="${runtime.src.dir}" />
+    </jar>
+
+  </target>
+
+  <target name="build" depends="jar" />
+
+  <target name="clean-build" depends="clean, build, main-javadoc, poms, sign" />
+
+  <target name="main-javadoc" depends="init">
+    
+    <javadoc destdir="${main.javadoc.dir}"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="Hot3">
+      <fileset dir="${main.src.dir}" />
+      <doctitle>Hot</doctitle>
+    </javadoc>
+    <jar destfile="${dist.dir}/hot-${version}-javadoc.jar">
+      <fileset dir="${main.javadoc.dir}" />
+    </jar>
+    
+    <javadoc destdir="${runtime.javadoc.dir}"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="Hot3 Runtime">
+      <fileset dir="${runtime.src.dir}" />
+      <doctitle>Hot Runtime</doctitle>
+    </javadoc>
+    <jar destfile="${dist.dir}/hot-runtime-${version}-javadoc.jar">
+      <fileset dir="${runtime.javadoc.dir}" />
+    </jar>
+
+  </target>
+  
+  <target name="poms" depends="init">
+    <copy file="src/main/metadata/pom.xml" tofile="${dist.dir}/hot-${version}.pom"/>
+    <copy file="src/runtime/metadata/pom.xml" tofile="${dist.dir}/hot-runtime-${version}.pom"/>
+  </target>
+
+  <target name="sign" depends="init">
+    <input
+        message="Signing Artifacts - Please enter passphrase to unlock secret key: "
+        addproperty="passphrase">
+      <handler type="secure" />
+    </input>
+
+    <exec executable="gpg">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${dist.dir}/hot-${version}.pom" />
+    </exec>
+
+    <exec executable="gpg">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${dist.dir}/hot-${version}.jar" />
+    </exec>
+
+    <exec executable="gpg">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${dist.dir}/hot-${version}-sources.jar" />
+    </exec>
+
+    <exec executable="gpg">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${dist.dir}/hot-${version}-javadoc.jar" />
+    </exec>
+
+    <exec executable="gpg">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${dist.dir}/hot-runtime-${version}.pom" />
+    </exec>
+
+    <exec executable="gpg">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${dist.dir}/hot-runtime-${version}.jar" />
+    </exec>
+
+    <exec executable="gpg">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${dist.dir}/hot-runtime-${version}-sources.jar" />
+    </exec>
+
+    <exec executable="gpg">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${dist.dir}/hot-runtime-${version}-javadoc.jar" />
+    </exec>
+
+    <echo message="[ All artifacts signed ]" />
+
+  </target>
+
+</project>
