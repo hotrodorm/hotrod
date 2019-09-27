@@ -4,11 +4,10 @@
     username="${maven.central.username}" passwd="${maven.central.password}" />
   <resolvers>
     <ibiblio name="nexus-central" root="https://oss.sonatype.org/nexus/content/repositories/central/" m2compatible="true" />
-    <ibiblio name="nexus-deploy" root="https://oss.sonatype.org/content/repositories/snapshots" m2compatible="true" />
+    <ibiblio name="nexus-deploy" root="https://oss.sonatype.org/service/local/staging/deploy/maven2/" m2compatible="true" />
     <!--
-    <ibiblio name="nexus-deploy" root="https://oss.sonatype.org/content/groups/staging" m2compatible="true" />
-    <ibiblio name="nexus-central" root="https://oss.sonatype.org/nexus/content/repositories/central/" m2compatible="true" />
-    <ibiblio name="nexus-deploy" root="https://oss.sonatype.org/nexus/content/repositories/repo" m2compatible="true" />
+    This is an accepted URL for SNAPSHOTS in Maven Central:
+    <ibiblio name="nexus-deploy" root="https://oss.sonatype.org/content/repositories/snapshots" m2compatible="true" />
     -->
   </resolvers>
 </ivysettings>
