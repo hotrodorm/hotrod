@@ -3,6 +3,7 @@ package hotrod.test;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import examples.livesql.SelectByPK;
 import examples.livesql.Transactions;
 
 public class Examples {
@@ -14,7 +15,7 @@ public class Examples {
       // ui.runExamples();
       // ui.runLiveSQL1();
       // ui.runLiveSQL2();
-      ui.runSelectbyCriteria();
+      // ui.runSelectbyCriteria();
       // ui.runSelectbyCriteriaBinary();
       // ui.runSelectbyCriteriaUUID();
       // ui.runSelectbyCriteriaIn();
@@ -31,6 +32,16 @@ public class Examples {
     {
       Transactions txs = SpringBeanRetriever.getBean("transactions");
       // txs.transfer(1234001, 1234004, 200);
+    }
+
+    {
+      SelectByPK sbpk = SpringBeanRetriever.getBean("selectsByPK");
+//      sbpk.insertSelect();
+    }
+
+    {
+      SelectByPrimaryKeyTest s = SpringBeanRetriever.getBean("selectsByPrimaryKeyTest");
+      s.select1();
     }
 
   }

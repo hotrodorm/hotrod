@@ -41,6 +41,8 @@ drop table if exists vehicle;
 
 drop table if exists island;
 
+drop table if exists event; 
+
 -- Auto-generated columns 
 
 drop table if exists test_sequence1;

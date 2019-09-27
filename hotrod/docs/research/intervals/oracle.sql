@@ -1,10 +1,11 @@
 
-Oracle defines two types of intervals: 
- * abstract ones as INTERVAL YEAR TO MONTH
- * concrete ones as INTERVAL DAY TO SECOND
+-- Oracle defines two types of intervals: 
+--  * abstract ones as INTERVAL YEAR TO MONTH
+--  * concrete ones as INTERVAL DAY TO SECOND
 
-1. Abstract Intervals
-=====================
+-- =====================
+-- 1. Abstract Intervals
+-- =====================
 
 -- Data type: INTERVAL YEAR [(year_precision)] TO MONTH
 
@@ -28,8 +29,7 @@ insert into t1 (a) values (interval '120-11' year(3) to month); -- YEAR(3) since
 insert into t1 (a) values (interval '107' year); -- Invalid: precision cannot accommodate this value.
 insert into t1 (a) values (interval '6-12' year to month); -- Invalid: this notation only accepts months with value 0 to 11.
 
-1.1 Arithmetic
-==============
+-- Abstract Interval Arithmetic
 
 select interval '12' year + interval '5' year from dual; -- 17-0
 select interval '12' year + interval '5' month from dual; -- 12-5
@@ -46,8 +46,9 @@ select interval '12' year / 2.123 from dual; -- 5-7
  
 select interval '12-3' year to month + INTERVAL '4 5:06' DAY TO MINUTE from dual; -- Error: ORA-30081: invalid data type for datetime/interval arithmetic 
 
-2. Concrete Intervals
-=====================
+-- =====================
+-- 2. Concrete Intervals
+-- =====================
   
 -- Data type: INTERVAL DAY [(day_precision)] TO SECOND [(fractional_seconds_precision)]
               day_precision defaults to 2; fractional_seconds_precision defaults to 6 decimal places
@@ -79,8 +80,7 @@ insert into t2 (a) values (INTERVAL '09:30' HOUR TO MINUTE); -- 9 hours and 30 m
 insert into t2 (a) values (INTERVAL '15:30' MINUTE TO SECOND); -- 15 minutes 30 seconds.
 insert into t2 (a) values (INTERVAL '15.6789' SECOND(2,3)); --  Rounded to 15.679 seconds. Because the precision is 3, the fractional second ‘6789’ is rounded to ‘679’  
 
-2.1 Arithmetic:
----------------
+-- Concrete Interval Arithmetic
 
 select INTERVAL '1 2:03' DAY TO MINUTE + INTERVAL '4 5:06' DAY TO MINUTE from dual; -- 5 days 7 hours 9 minutes  
 select INTERVAL '4 5:06' DAY TO MINUTE - INTERVAL '1 3:02' DAY TO MINUTE from dual; -- 3 days 2 hours 4 minutes
@@ -92,20 +92,17 @@ select INTERVAL '2 5:06' DAY TO MINUTE / 2.123 from dual; -- 1 days 1 hour 0 min
 
 select INTERVAL '4 5:06' DAY TO MINUTE + INTERVAL '15:30' MINUTE TO SECOND from dual; -- 4 days 5 hours 21 minutes 30 s
 
-3. Date Arithmetic:
-===================
+-- Arithmetic against DATE
 
 select current_date + interval '12-3' year to month from dual; -- 2031-09-20 15:11:45.0
 select current_date + INTERVAL '4 5:06' DAY TO MINUTE from dual; -- 2019-06-24 20:18:10.0
 
-4. Timestamp (no time zone) Arithmetic:
-=======================================
+-- Arithmetic against TIMESTAMP (no time zone)
 
 select localtimestamp + interval '12-3' year to month from dual; -- 2031-09-20 15:13:45.941165
 select localtimestamp + INTERVAL '4 5:06' DAY TO MINUTE from dual; -- 2019-06-24 20:19:58.855
 
-5. Timestamp with Time Zone Arithmetic:
-=======================================
+-- Arithmetic against TIMESTAMP (with time zone)
 
 select current_timestamp + interval '12-3' year to month from dual; -- 2031-09-20 15:13:45.941165
 select current_timestamp + INTERVAL '4 5:06' DAY TO MINUTE from dual; -- 2019-06-24 20:19:58.855
@@ -144,6 +141,33 @@ select id, '' || d as d , '' || t as t, '' || tz as tz, '' || tlz as tlz from t3
  localtimestamp    20-JUN-19 20-JUN-19 03.41.18.208161 PM 20-JUN-19 03.41.18.208161 PM -04:00 20-JUN-19 10.41.18.208161 PM 
  current_date      20-JUN-19 20-JUN-19 03.41.18.000000 PM 20-JUN-19 03.41.18.000000 PM -04:00 20-JUN-19 10.41.18.000000 PM 
  
+
+
+_____________________________________________________________________
+
+
+date()
+time()
+datetime()
+date(dt)
+time(dt)
+datetime(d, t)
+_____________________
+
+time(iv) : time (ignores date part)
+interval(d, t) : interval (days + time)
+
+diff(d1, d2) : int, interval? (days, d1 - d2)
+diff(t1, t2) : interval? (t1- t2)
+diff(dt1, dt2) : interval (dt1 - dt2)
+diff(iv1, iv2) : interval
+
+add(d, int/interval?) : date
+add(t, interval?): time
+add(dt, interval) : datetime
+add(iv, interval) : interval
+
+mult(iv, scalar) : interval
 
 
 

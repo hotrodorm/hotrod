@@ -245,6 +245,12 @@ create table test_default2 (
   branch_id integer default 123 not null
 );
 
+create table event (
+  id bigint primary key not null,
+  name varchar(20) not null,
+  status int not null
+);
+
 -- =========================
 -- Window functions & frames
 -- =========================

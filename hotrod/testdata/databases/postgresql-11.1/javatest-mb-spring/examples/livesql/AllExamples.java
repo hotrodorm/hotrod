@@ -10,6 +10,7 @@ public class AllExamples {
 
     GeneralSQL generalSQL = SpringBeanRetriever.getBean("generalSQLExamples");
     // generalSQL.limit();
+    generalSQL.showSQLStatement();
     // generalSQL.caseExpressions();
 
     Joins joins = SpringBeanRetriever.getBean("joinsExamples");
@@ -30,7 +31,7 @@ public class AllExamples {
 
     WindowFunctions wf = SpringBeanRetriever.getBean("windowFunctions");
     // wf.aggregate();
-    wf.windowFrames();
+    // wf.windowFrames();
 
   }
 

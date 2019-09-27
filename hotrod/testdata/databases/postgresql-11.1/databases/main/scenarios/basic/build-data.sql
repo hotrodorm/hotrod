@@ -102,3 +102,10 @@ insert into item (id, description, price, created_on, active, icon, store_code) 
 insert into item (id, description, price, created_on, active, icon, store_code) values (4, 'Hat', 123.45, '2018-04-21 04:04:04', true, null, '44bb9554-c616-42e6-a9c6-88d3bba4221c'); 
 
 
+insert into event (id, name, status) values (1, 'Recorded', 1);
+insert into event (id, name, status) values (2, 'Deleted', 0);
+insert into event (id, name, status) values (3, 'Confirmed', 1);
+insert into event (id, name, status) values (4, 'Assigned', 1);
+insert into event (id, name, status) values (5, 'Fixed', 1);
+
+

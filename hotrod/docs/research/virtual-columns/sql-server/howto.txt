@@ -1,6 +1,6 @@
 SQL Server supports virtual columns:
 
- alter table customer add reverse_last_name generated always as (reverse(last_name));
+ alter table customer add reverse_last_name as reverse(last_name);
 
 An index can also be added to the virtual column:
 

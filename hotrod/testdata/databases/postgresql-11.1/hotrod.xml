@@ -95,7 +95,10 @@
   <table name="types_date_time">
   </table>
 
+  <table name="event" />
+
   <table name="types_other">
+  
   
 <!--
     <column name="uui1" java-type="java.lang.String" />

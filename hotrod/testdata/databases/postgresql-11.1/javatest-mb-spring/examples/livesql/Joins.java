@@ -317,6 +317,7 @@ public class Joins {
   public void unionJoin() {
 
     // Only HyperSQL supports (afaik) this SQL standard clause
+    // The UNION JOIN was added to the SQL standard in SQL-92 and removed from it in SQL:2003
 
     // SELECT a.id, t.amount
     // FROM account a
