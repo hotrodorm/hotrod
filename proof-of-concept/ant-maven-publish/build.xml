@@ -10,6 +10,7 @@
   <property name="main.javadoc.dir" value="build/main-javadoc" />
   <property name="runtime.javadoc.dir" value="build/runtime-javadoc" />
   <property name="dist.dir" value="dist" />
+  <property name="bundles.dir" value="dist/bundles" />
 
   <target name="init">
     <mkdir dir="${main.build.dir}" />
@@ -17,12 +18,14 @@
     <mkdir dir="${main.javadoc.dir}" />
     <mkdir dir="${runtime.javadoc.dir}" />
     <mkdir dir="${dist.dir}" />
+    <mkdir dir="${bundles.dir}" />
   </target>
 
   <target name="clean" depends="init">
     <delete includeemptydirs="true">
       <fileset dir="${build.dir}" includes="**/*" />
       <fileset dir="${dist.dir}" includes="**/*" />
+      <fileset dir="${bundles.dir}" includes="**/*" />
     </delete>
     <antcall target="init" />
   </target>
@@ -75,7 +78,7 @@
 
   <target name="build" depends="jar" />
 
-  <target name="clean-build" depends="clean, build, main-javadoc, poms, sign" />
+  <target name="clean-build" depends="clean, build, main-javadoc, poms, sign, bundle" />
 
   <target name="main-javadoc" depends="init">
     
@@ -175,6 +178,15 @@
 
     <echo message="[ All artifacts signed ]" />
 
+  </target>
+
+  <target name="bundle" depends="init">
+    <jar destfile="${bundles.dir}/hot-${version}-bundle.jar">
+      <fileset file="${dist.dir}/hot-${version}*" />
+    </jar>
+    <jar destfile="${bundles.dir}/hot-runtime-${version}-bundle.jar">
+      <fileset file="${dist.dir}/hot-runtime-${version}*" />
+    </jar>
   </target>
 
 </project>
