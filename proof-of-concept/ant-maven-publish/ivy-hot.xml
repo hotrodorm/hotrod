@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+
+  <!-- organization and module combined must match the Maven groupId -->
+  <info organisation="org.nocrala.tools" module="texttreeformatter" revision="3.0.2" />
+
+  <publications>
+  
+    <artifact name="hot" type="pom" ext="pom" />
+    <artifact name="hot" type="pom.asc" ext="pom.asc" />
+    
+    <artifact name="hot" type="jar" ext="jar" />
+    <artifact name="hot" type="jar.asc" ext="jar.asc" />
+
+    <artifact name="hot" type="sources" ext="jar" e:classifier="sources"/>
+    <artifact name="hot" type="sources.asc" ext="jar.asc" e:classifier="sources"/>
+    
+    <artifact name="hot" type="javadoc" ext="jar" e:classifier="javadoc"/>
+    <artifact name="hot" type="javadoc.asc" ext="jar.asc" e:classifier="javadoc"/>
+
+  </publications>
+   
+</ivy-module>
+
