@@ -1,0 +1,1 @@
+-- DB2 11.5 does not support INTERVALs.

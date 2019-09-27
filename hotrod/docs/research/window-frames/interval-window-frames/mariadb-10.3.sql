@@ -1,0 +1,1 @@
+-- MariaDB 10.3 does not support INTERVALs.
