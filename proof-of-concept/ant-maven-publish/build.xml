@@ -27,6 +27,11 @@
       <pathelement location="lib/ivy-2.4.0.jar" />
     </classpath>
   </taskdef>
+  <taskdef name="ivy-makepom" classname="org.apache.ivy.ant.IvyMakePom">
+    <classpath>
+      <pathelement location="lib/ivy-2.4.0.jar" />
+    </classpath>
+  </taskdef>
   <taskdef name="ivy-publish" classname="org.apache.ivy.ant.IvyPublish">
     <classpath>
       <pathelement location="lib/ivy-2.4.0.jar" />
@@ -34,9 +39,6 @@
   </taskdef>
 
   <target name="init">
-    <!--
-    <ivy-retrieve />
-    -->
     <mkdir dir="${main.build.dir}" />
     <mkdir dir="${runtime.build.dir}" />
     <mkdir dir="${main.javadoc.dir}" />
@@ -102,8 +104,9 @@
 
   <target name="build" depends="jar" />
 
-  <target name="clean-build"
-          depends="clean, build, main-javadoc, poms, sign, bundle" />
+  <target name="clean-build" depends="clean, build, main-javadoc, poms, sign" />
+
+  <target name="clean-build-bundle" depends="clean-build, bundle" />
 
   <target name="main-javadoc" depends="init">
 
@@ -235,35 +238,11 @@
                  overwrite="true"
                  publishivy="false">
       <artifacts pattern="dist/[artifact]-${version}(-[classifier]).[ext]" />
-      <!--
-      <artifacts pattern="${build.dir}/[artifact](-[classifier]).[ext]" />
-      -->
     </ivy-publish>
 
   </target>
 
-  <target name="ivy-publishing2">
-    <fail unless="upload.user"
-          message="supply upload.user on the command line" />
-    <fail unless="upload.password"
-          message="supply upload.password on the command line" />
-    <ivy-configure file="${common.basedir}/ivysettings-nexus.xml" />
-    <ivy-resolve file="${target.ivy.xml}" />
-    <!--
-    <ivy-retrieve />
-    <ivy-deliver />
-    -->
-    <ivy-publish publishivy="false"
-                 artifactspattern="${build.javarepository}/[organisation]/[module]/[artifact]/[revision]/[artifact]-[revision](-[classifier]).[ext]"
-                 resolver="nexus" />
-  </target>
-
-  <taskdef name="ivy-makepom" classname="org.apache.ivy.ant.IvyMakePom">
-    <classpath>
-      <pathelement location="lib/ivy-2.4.0.jar" />
-    </classpath>
-  </taskdef>
-
+  <!--
   <target name="make-pom">
     <ivy-makepom ivyfile="./ivy-hot.xml"
                  pomfile="./module.pom"
@@ -272,5 +251,6 @@
       <mapping conf="runtime" scope="runtime" />
     </ivy-makepom>
   </target>
+  -->
 
 </project>
