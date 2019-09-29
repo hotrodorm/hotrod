@@ -10,9 +10,11 @@
   <artifactId>hot</artifactId>
   <version>3.0.2</version>
 
+  <name>hot</name>
   <description>
     This is Hot3.
   </description>
+  <url>http://www.example.com</url>
 
   <licenses>
     <license>
@@ -37,5 +39,9 @@
     </developer>
 
   </developers>
+
+  <scm>
+    <url>https://sourceforge.net/p/</url>
+  </scm>
 
 </project>

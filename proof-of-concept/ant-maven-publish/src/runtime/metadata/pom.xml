@@ -10,9 +10,11 @@
   <artifactId>hot-runtime</artifactId>
   <version>3.0.2</version>
 
+  <name>hot-runtime</name>
   <description>
     This is Hot Runtime 3.
   </description>
+  <url>http://www.example.com</url>
 
   <licenses>
     <license>
@@ -37,5 +39,9 @@
     </developer>
 
   </developers>
+
+  <scm>
+    <url>https://sourceforge.net/p/</url>
+  </scm>
 
 </project>
