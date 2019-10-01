@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>@group.id@</groupId>
+  <artifactId>@artifact.id@</artifactId>
+  <version>@version@</version>
+
+  <name>@artifact.id@</name>
+  <description>@project.description@</description>
+  <url>@project.url@</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+
+    <developer>
+      <id>valarcon</id>
+      <name>Vladimir Alarcon</name>
+      <email>vladimiralarcon@yahoo.com</email>
+      <organization>Empirical Inc.</organization>
+      <organizationUrl />
+      <roles>
+        <role>Programmer</role>
+      </roles>
+      <timezone>America/New York</timezone>
+    </developer>
+
+    <developer>
+      <id>alvarov66</id>
+      <name>Alvaro Valderrama</name>
+      <email>alvarov66@gmail.com</email>
+      <organization></organization>
+      <organizationUrl />
+      <roles>
+        <role>Programmer</role>
+      </roles>
+      <timezone>America/Santiago</timezone>
+    </developer>
+
+  </developers>
+
+  <scm>
+    <url>@project.scm.url@</url>
+  </scm>
+
+</project>

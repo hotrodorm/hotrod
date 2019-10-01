@@ -353,7 +353,7 @@ public class DaosTag extends AbstractConfigurationTag {
    * 
    * </pre>
    * 
-   * @return
+   * @return The DAO package name
    */
   @Deprecated
   public ClassPackage getDaoPackage() {
@@ -377,7 +377,7 @@ public class DaosTag extends AbstractConfigurationTag {
    * 
    * </pre>
    * 
-   * @return
+   * @return The DAO package dir
    */
   @Deprecated
   public File getDaosPackageDir() {
@@ -417,7 +417,7 @@ public class DaosTag extends AbstractConfigurationTag {
    * 
    * </pre>
    * 
-   * @return
+   * @return The primitives package
    */
   @Deprecated
   public ClassPackage getPrimitivesPackage() {
@@ -441,7 +441,7 @@ public class DaosTag extends AbstractConfigurationTag {
    * 
    * </pre>
    * 
-   * @return
+   * @return The primitives dir
    */
   @Deprecated
   public File getPrimitivesPackageDir() {

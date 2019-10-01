@@ -27,9 +27,14 @@
   <property name="website.renumber.dist.dir" value="dist/website-renumber" />
   <property name="website.pdfmanual.dist.dir" value="dist/website-pdfmanual" />
   <property name="release.dir" value="release" />
-
+  
+  <property name="main.javadoc.dir" value="build/javadoc/main" />
+  <property name="runtime.javadoc.dir" value="build/javadoc/runtime" />
+  
   <target name="-init">
     <mkdir dir="${main.build.dir}" />
+    <mkdir dir="${main.javadoc.dir}" />
+    <mkdir dir="${runtime.javadoc.dir}" />
     <mkdir dir="${eclipseplugin.build.dir}" />
     <mkdir dir="${test.build.dir}" />
     <mkdir dir="${buildinfo.gen.dir}" />
@@ -211,14 +216,19 @@
       </classpath>
     </javac>
   </target>
+  
+  <property name="main.jar" value="${projectName}-${version}.jar" />
+  <property name="runtime.jar" value="${projectName}-runtime-${version}.jar" />
 
   <target name="jar" depends="compile-runtime, compile-main">
-    <jar destfile="${dist.dir}/${projectName}-runtime-${version}.jar">
+    <jar destfile="${dist.dir}/${runtime.jar}">
       <fileset dir="${runtime.build.dir}" />
+      <!-- Not needed since sources are now released in Maven Central, and also in sourceforge.net:
       <zipfileset dir="${runtime.src.dir}" prefix="src" />
+      -->
     </jar>
 
-    <jar destfile="${dist.dir}/${projectName}-${version}.jar">
+    <jar destfile="${dist.dir}/${main.jar}">
       <fileset dir="${runtime.build.dir}" />
       <fileset dir="${main.build.dir}" />
       <zipfileset src="${lib.dir}/log4j-1.2.17.jar" />
@@ -529,6 +539,209 @@
     </java>
     <echo message="[ Automated tests finished ]" level="info" />
     <record name="${junit.log}" action="stop" />
+  </target>
+  
+  <!-- =========================================== -->
+  <!-- Maven Central Publishing (using Apache Ivy) -->
+  <!-- =========================================== -->
+  
+  <property name="group.id" value="org.hotrodorm.hotrod" />
+  <property name="artifact.id" value="hotrod" />
+  <property name="runtime.artifact.id" value="hotrod-runtime" />
+  <property name="project.description" value="Advanced Java ORM" />
+  <property name="project.url" value="https://sourceforge.net/projects/hotrod/" />  
+  <property name="project.scm.url" value="https://git.code.sf.net/p/hotrod" />  
+
+  <property name="main.artifacts.dir" value="${dist.dir}/maven-hotrod" />
+  <property name="runtime.artifacts.dir" value="${dist.dir}/maven-runtime" />
+
+  <taskdef name="ivy-configure" classname="org.apache.ivy.ant.IvyConfigure">
+    <classpath>
+      <pathelement location="lib/ivy-2.4.0.jar" />
+    </classpath>
+  </taskdef>
+  <taskdef name="ivy-resolve" classname="org.apache.ivy.ant.IvyResolve">
+    <classpath>
+      <pathelement location="lib/ivy-2.4.0.jar" />
+    </classpath>
+  </taskdef>
+  <taskdef name="ivy-publish" classname="org.apache.ivy.ant.IvyPublish">
+    <classpath>
+      <pathelement location="lib/ivy-2.4.0.jar" />
+    </classpath>
+  </taskdef>
+
+  <target name="publish-to-maven-central-staging" depends="clean-build">
+
+    <!-- At this point both jars are ready in the dist dir, because of the Ant dependencies -->
+
+    <!-- 1. Prepare the artifacts dirs with the jar libraries -->
+
+    <mkdir dir="${main.artifacts.dir}" />
+    <mkdir dir="${runtime.artifacts.dir}" />
+
+    <copy file="${dist.dir}/${main.jar}" todir="${main.artifacts.dir}" />
+    <copy file="${dist.dir}/${runtime.jar}" todir="${runtime.artifacts.dir}" />
+
+    <!-- 2. Prepare sources packages -->
+
+    <jar destfile="${main.artifacts.dir}/${artifact.id}-${version}-sources.jar">
+      <fileset dir="${main.src.dir}" />
+    </jar>
+
+    <jar destfile="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}-sources.jar">
+      <fileset dir="${runtime.src.dir}" />
+    </jar>
+
+    <!-- 3. Prepare javadoc packages -->
+
+    <javadoc destdir="${main.javadoc.dir}"
+             author="true"
+             version="true"
+             use="true"
+             classpath="${runtime.build.dir}:${lib.dir}/ant.jar:${lib.dir}/jxl.jar:${lib.dir}/log4j-1.2.17.jar:${lib.dir}/mybatis-${mybatis.version}.jar:${lib.dir}/tartarus-${tartarus.version}.jar:${lib.dir}/apache-commons/commons-jexl3-3.1.jar:${lib.dir}/apache-commons/commons-logging-1.2.jar:${lib.dir}/spring/spring-context-4.2.5.RELEASE.jar:${lib.dir}/spring/spring-beans-4.2.5.RELEASE.jar:${lib.dir}/spring/spring-core-4.2.5.RELEASE.jar"
+             windowtitle="${artifact.id}">
+      <packageset dir="${main.src.dir}" />
+      <packageset dir="${runtime.src.dir}" />
+      <doctitle>${artifact.id}</doctitle>
+    </javadoc>
+
+    <jar destfile="${main.artifacts.dir}/${artifact.id}-${version}-javadoc.jar">
+      <fileset dir="${main.javadoc.dir}" />
+    </jar>
+
+    <javadoc destdir="${runtime.javadoc.dir}"
+             author="true"
+             version="true"
+             use="true"
+             classpath="${lib.dir}/ant.jar:${lib.dir}/jxl.jar:${lib.dir}/log4j-1.2.17.jar:${lib.dir}/mybatis-${mybatis.version}.jar:${lib.dir}/tartarus-${tartarus.version}.jar:${lib.dir}/apache-commons/commons-jexl3-3.1.jar:${lib.dir}/apache-commons/commons-logging-1.2.jar:${lib.dir}/spring/spring-context-4.2.5.RELEASE.jar:${lib.dir}/spring/spring-beans-4.2.5.RELEASE.jar:${lib.dir}/spring/spring-core-4.2.5.RELEASE.jar"
+             windowtitle="${runtime.artifact.id}">
+      <packageset dir="${runtime.src.dir}" />
+      <doctitle>${runtime.artifact.id}</doctitle>
+    </javadoc>
+    
+    <jar destfile="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}-javadoc.jar">
+      <fileset dir="${runtime.javadoc.dir}" />
+    </jar>
+
+    <!-- 4. Prepare pom descriptors -->
+
+    <copy file="maven-central-publishing/artifact-template.pom" tofile="${main.artifacts.dir}/${artifact.id}-${version}.pom" />
+    <replace file="${main.artifacts.dir}/${artifact.id}-${version}.pom">
+      <replacefilter token="@group.id@" value="${group.id}"/>
+      <replacefilter token="@artifact.id@" value="${artifact.id}"/>
+      <replacefilter token="@version@" value="${version}"/>
+      <replacefilter token="@project.description@" value="${project.description}"/>
+      <replacefilter token="@project.url@" value="${project.url}"/>
+      <replacefilter token="@project.scm.url@" value="${project.scm.url}"/>
+    </replace>
+    
+    <copy file="maven-central-publishing/artifact-template.pom" tofile="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}.pom" />
+    <replace file="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}.pom">
+      <replacefilter token="@group.id@" value="${group.id}"/>
+      <replacefilter token="@artifact.id@" value="${runtime.artifact.id}"/>
+      <replacefilter token="@version@" value="${version}"/>
+      <replacefilter token="@project.description@" value="${project.description}"/>
+      <replacefilter token="@project.url@" value="${project.url}"/>
+      <replacefilter token="@project.scm.url@" value="${project.scm.url}"/>
+    </replace>
+
+    <!-- 5. Sign all artifacts -->
+    <!-- This section relies on GPG being installed in your machine -->
+
+    <input message="Signing Artifacts - Please enter GPG passphrase to unlock secret key: "
+           addproperty="passphrase">
+      <handler type="secure" />
+    </input>
+ 
+    <exec executable="gpg" failonerror="true">
+     <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${main.artifacts.dir}/${main.jar}" />
+    </exec>
+ 
+    <exec executable="gpg" failonerror="true">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${main.artifacts.dir}/${artifact.id}-${version}.pom" />
+    </exec>
+ 
+    <exec executable="gpg" failonerror="true">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${main.artifacts.dir}/${artifact.id}-${version}-sources.jar" />
+    </exec>
+ 
+    <exec executable="gpg" failonerror="true">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${main.artifacts.dir}/${artifact.id}-${version}-javadoc.jar" />
+    </exec>
+
+
+    
+    <exec executable="gpg" failonerror="true">
+     <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${runtime.artifacts.dir}/${runtime.jar}" />
+    </exec>
+ 
+    <exec executable="gpg" failonerror="true">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}.pom" />
+    </exec>
+ 
+    <exec executable="gpg" failonerror="true">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}-sources.jar" />
+    </exec>
+ 
+    <exec executable="gpg" failonerror="true">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}-javadoc.jar" />
+    </exec>
+
+    <echo message="[ All artifacts signed ]" />
+
+    <!-- 6. Upload all artifacts to Maven Central Staging -->
+
+    <input message="Maven Central Username: " addproperty="maven.central.username" />
+    <input message="Maven Central Password: " addproperty="maven.central.password">
+      <handler type="secure" />
+    </input>
+    <ivy-configure file="maven-central-publishing/maven-central-ivysettings.xml" />
+
+    <ivy-resolve file="maven-central-publishing/maven-central-main-artifacts-ivy.xml" />
+    <ivy-publish resolver="nexus-deploy"
+                 pubrevision="${version}"
+                 overwrite="true"
+                 publishivy="false">
+      <artifacts pattern="${main.artifacts.dir}/[artifact]-${version}(-[classifier]).[ext]" />
+    </ivy-publish>
+    <echo message="[ HotRod - Artifacts uploaded ]" />
+
+    <ivy-resolve file="maven-central-publishing/maven-central-runtime-artifacts-ivy.xml" />
+    <ivy-publish resolver="nexus-deploy"
+                 pubrevision="${version}"
+                 overwrite="true"
+                 publishivy="false">
+      <artifacts pattern="${runtime.artifacts.dir}/[artifact]-${version}(-[classifier]).[ext]" />
+    </ivy-publish>
+    <echo message="[ HotRod Runtime - Artifacts uploaded ]" />
+
+    <!-- 7. Finally, you'll need to login to Maven Central web site to "Close" the artifacts, and then to "Release" them to the world -->
+
   </target>
 
 </project>

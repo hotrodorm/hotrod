@@ -1,0 +1,13 @@
+<ivysettings>
+ 
+  <settings defaultResolver="nexus-central" />
+ 
+  <credentials host="oss.sonatype.org" realm="Sonatype Nexus Repository Manager"
+    username="${maven.central.username}" passwd="${maven.central.password}" />
+ 
+  <resolvers>
+    <ibiblio name="nexus-central" root="https://oss.sonatype.org/nexus/content/repositories/central/" m2compatible="true" />
+    <ibiblio name="nexus-deploy" root="https://oss.sonatype.org/service/local/staging/deploy/maven2/" m2compatible="true" />
+  </resolvers>
+ 
+</ivysettings>

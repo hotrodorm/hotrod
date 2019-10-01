@@ -23,10 +23,10 @@ import org.hotrod.utils.identifiers.ObjectId;
 /**
  * <pre>
  *
- *     AbstractConfigurationTag <------------------------------------+
+ *     AbstractConfigurationTag *------------------------------------+
  *      ^                                                            |
  *      |                                                            |
- *     AbstractDAOTag <------------.............             AbstractMethodTag <-----------+
+ *     AbstractDAOTag *------------. . . . . . .             AbstractMethodTag *-----------+
  *      ^                         ^            .                ^         ^                |
  *      |                         |            .                |         |                |
  *     AbstractEntityDAOTag  ExecutorDAOTag  SelectTag  QueryMethodTag  SelectMethodTag  SequenceMethodTag

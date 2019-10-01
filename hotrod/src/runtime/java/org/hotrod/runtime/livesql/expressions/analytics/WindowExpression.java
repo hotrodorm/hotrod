@@ -12,16 +12,16 @@ import org.hotrod.runtime.livesql.util.Separator;
 /**
  * <pre>
  * 
- *                  Expression<T>
+ *                  Expression{T}
  *                    ^       ^
  *                    |       |
- *     WindowExpression<T>   AggregationFunction<T>
- *                              ^              ^                   <I> WindowableFunction<T>         .over()
+ *     WindowExpression{T}   AggregationFunction{T}
+ *                              ^              ^                   {I} WindowableFunction{T}         .over()
  *                              |              |                               ^  ^
- *   NonWindowableAggregationFunction<T>  WindowableAggregationFunction<T>.....:  :.....AnalyticFunction<T>
+ *   NonWindowableAggregationFunction{T}  WindowableAggregationFunction{T}.....:  :.....AnalyticFunction{T}
  *    ^                                    ^    ^                                          ^             ^
  *    |                                    |    |                                          |             |
- *    |            NumericAggregationFunction  StringAggregationFunction  PositionalAnalyticFunction<?>  |
+ *    |            NumericAggregationFunction  StringAggregationFunction  PositionalAnalyticFunction{?}  |
  *    |                 ^                         ^                          ^                           |
  *    |- Count          |- Sum                    |- GroupConcat             |- Lead                     |- RowNumber
  *    |- CountDistinct  |- Avg                                               |- Lag                      |- Rank
@@ -31,14 +31,14 @@ import org.hotrod.runtime.livesql.util.Separator;
  * 
  * 
  *   SQL.sum(a.salary) -- WindowableFunction                            .over()
- *   .over() -- WindowFunctionOverStage<T>                              .partitionBy()  .orderBy()  .end()
- *   .partitionBy(expression...) -- WindowFunctionPartitioningStage<T>  .orderBy()  .end()
- *   .orderBy(expression...) -- WindowFunctionOrderingStage<T>          .end()
- *   .end() -- Expression<T>
+ *   .over() -- WindowFunctionOverStage{T}                              .partitionBy()  .orderBy()  .end()
+ *   .partitionBy(expression...) -- WindowFunctionPartitioningStage{T}  .orderBy()  .end()
+ *   .orderBy(expression...) -- WindowFunctionOrderingStage{T}          .end()
+ *   .end() -- Expression{T}
  * 
  * </pre>
  * 
- * @param <T>
+ * @param <T> The type of the evaluated expression
  */
 
 public class WindowExpression<T> extends Expression<T> {

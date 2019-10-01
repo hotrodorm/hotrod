@@ -24,7 +24,7 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
  * 
  * @author valarcon
  *
- * @param <T>
+ * @param <T> The type of the evaluated expression
  */
 public class CaseClause<T> extends Expression<T> {
 

@@ -1097,8 +1097,8 @@ public abstract class HotRodGenerator {
    * config file. No code generation is performed by this method, so any failure
    * will not override a previous code generation.
    * 
-   * @throws UncontrolledException
-   * @throws ControlledException
+   * @throws UncontrolledException When a technical error is found
+   * @throws ControlledException When a configuration error is found
    */
   public abstract void prepareGeneration() throws UncontrolledException, ControlledException;
 
@@ -1108,8 +1108,8 @@ public abstract class HotRodGenerator {
    * This is the second step of the generation and should be called only after
    * the prepareGeneration() method has succeeded.
    * 
-   * @throws UncontrolledException
-   * @throws ControlledException
+   * @throws UncontrolledException When a technical error is found
+   * @throws ControlledException When a configuration error is found
    */
 
   public abstract void generate() throws UncontrolledException, ControlledException;

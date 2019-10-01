@@ -10,7 +10,7 @@ public class SQLField {
   }
 
   // Asume convención antigua del nombre de campo como <tablename>.<fieldname>
-  @Deprecated
+  // @Deprecated
   public SQLField(String fieldName) {
     // extract tableName
     int p = fieldName.indexOf(".");
@@ -25,14 +25,14 @@ public class SQLField {
   }
 
   // For backward compatibility
-  @Deprecated
+  // @Deprecated
   public SQLField(SQLField field) {
     this.table = field.getTable();
     this.fieldName = field.getFieldName();
   }
 
   // For backward compatibility
-  @Deprecated
+  // @Deprecated
   public SQLField(SQLTable table, SQLField field) {
     this.table = table;
     this.fieldName = field.getFieldName();

@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class JdbcTypes {
 
-  /**
+  /*
    * This enum contains all JDBC types available until Java 8. It's used to be
    * able to run in Java 6.
    */
@@ -101,7 +101,7 @@ public class JdbcTypes {
 
   }
 
-  /**
+  /*
    * Returns the code for this JDBC type name. Null if the type name does not
    * exist.
    */
@@ -114,7 +114,7 @@ public class JdbcTypes {
     return t == null ? null : t.getCode();
   }
 
-  /**
+  /*
    * Returns the JDBC type for this name. Accepts short type name (e.g.
    * "NUMERIC") as well as full type name ("java.sql.Types.NUMERIC"). Null if
    * the type name does not exist.
@@ -127,7 +127,7 @@ public class JdbcTypes {
     return mapByShortTypeName.get(jdbcTypeName);
   }
 
-  /**
+  /*
    * Returns the JDBC full type name for this code. Null if the code does not
    * exist.
    */
@@ -136,14 +136,14 @@ public class JdbcTypes {
     return t == null ? null : t.getTypeName();
   }
 
-  /**
+  /*
    * Returns the JDBC type for this code. Null if the code does not exist.
    */
   public static JDBCType codeToType(final int code) {
     return mapByCode.get(code);
   }
 
-  /**
+  /*
    * Returns the short JDBC type name for this code. Null if the code does not
    * exist.
    */

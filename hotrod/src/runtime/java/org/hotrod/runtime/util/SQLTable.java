@@ -4,7 +4,7 @@ public class SQLTable {
   private String name;
   private String alias;
 
-  @Deprecated
+  // @Deprecated
   public SQLTable(String name, String alias) {
     this.name = name;
     this.alias = alias;

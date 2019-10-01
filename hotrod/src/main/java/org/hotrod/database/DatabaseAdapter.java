@@ -78,12 +78,19 @@ public abstract class DatabaseAdapter implements Serializable {
   /**
    * <pre>
    * 
-   *   TableTag  -> JdbcTable
+   *   TableTag  -* JdbcTable
    *     |  ^         |  ^
    *     *  |         *  |
-   *   ColumnTag -> JdbcColumn
+   *   ColumnTag -* JdbcColumn
    * 
    * </pre>
+   * 
+   * @param md Column metadata
+   * @param columnTag Column tag
+   * 
+   * @return The property type
+   * 
+   * @throws UnresolvableDataTypeException When the type cannot be resolved
    */
 
   public PropertyType resolveJavaType(final ColumnMetadata md, final ColumnTag columnTag)
@@ -187,9 +194,7 @@ public abstract class DatabaseAdapter implements Serializable {
 
   // Sorting
 
-  /**
-   * Default implementation
-   */
+  /* Default implementation */
   public boolean isCaseSensitiveSortableString(final ColumnMetadata cm) {
     DataType dataType = this.dataTypes.get(cm.getTypeName());
     log.debug("dataType=" + dataType);

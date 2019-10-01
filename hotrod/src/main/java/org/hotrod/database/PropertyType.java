@@ -74,7 +74,7 @@ public class PropertyType implements Serializable {
 
   // Constructors for internal types
 
-  /** Internal type for a serial column */
+  /* Internal type for a serial column */
   public PropertyType(final Class<?> javaClass, final ColumnMetadata m, final boolean isLOB,
       final ValueRange valueRange) throws UnresolvableDataTypeException {
     JDBCType t = JdbcTypes.codeToType(m.getDataType());
@@ -85,7 +85,7 @@ public class PropertyType implements Serializable {
     initialize(javaClass.getName(), t, isLOB, valueRange);
   }
 
-  /** Internal type for a non-serial column */
+  /* Internal type for a non-serial column */
   public PropertyType(final Class<?> javaClass, final ColumnMetadata m, final boolean isLOB)
       throws UnresolvableDataTypeException {
     JDBCType t = JdbcTypes.codeToType(m.getDataType());
@@ -96,7 +96,7 @@ public class PropertyType implements Serializable {
     initialize(javaClass.getName(), t, isLOB, null);
   }
 
-  /**
+  /*
    * Internal type for a non-serial column with non-standard JDBC type reported
    * by the JDBC driver
    */
@@ -106,7 +106,7 @@ public class PropertyType implements Serializable {
 
   // For custom data types and select parameters
 
-  /** Custom type for a non-serial column with unspecified JDBC type */
+  /* Custom type for a non-serial column with unspecified JDBC type */
   public PropertyType(final String javaClassName, final ColumnMetadata m, final boolean isLOB)
       throws UnresolvableDataTypeException {
     JDBCType t = JdbcTypes.codeToType(m.getDataType());
@@ -117,12 +117,12 @@ public class PropertyType implements Serializable {
     initialize(javaClassName, t, isLOB, null);
   }
 
-  /** Custom type for a non-serial column with specified JDBC type */
+  /* Custom type for a non-serial column with specified JDBC type */
   public PropertyType(final String javaClassName, final JDBCType jdbcType, final boolean isLOB) {
     initialize(javaClassName, jdbcType, isLOB, null);
   }
 
-  /** Custom type for a serial column */
+  /* Custom type for a serial column */
   public PropertyType(final String javaClassName, final JDBCType jdbcType, final boolean isLOB,
       final ValueRange valueRange) {
     initialize(javaClassName, jdbcType, isLOB, valueRange);
@@ -210,17 +210,17 @@ public class PropertyType implements Serializable {
 
   // New methods
 
-  /** Example: "java.lang.Integer" */
+  /* Example: "java.lang.Integer" */
   public String getJavaClassName() {
     return this.javaClassName;
   }
 
-  /** Example: "java.sql.Types.NUMERIC" */
+  /* Example: "java.sql.Types.NUMERIC" */
   public String getJDBCType() {
     return this.jdbcType.getTypeName();
   }
 
-  /** Example: "NUMERIC" */
+  /* Example: "NUMERIC" */
   public String getJDBCShortType() {
     return this.jdbcType.getShortTypeName();
   }
