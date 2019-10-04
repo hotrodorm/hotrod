@@ -12,11 +12,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hotrod.ant.Constants;
-import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractEntityDAOTag;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.DaosTag;
+import org.hotrod.config.DisplayMode;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.EnumTag.EnumConstant;
 import org.hotrod.config.ExecutorTag;

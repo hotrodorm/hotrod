@@ -8,6 +8,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.hotrod.buildinfo.BuildConstants;
 import org.hotrod.config.ConfigurationLoader;
+import org.hotrod.config.DisplayMode;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.DatabaseAdapterFactory;
@@ -293,19 +294,6 @@ public class HotRodAntTask extends Task {
   }
 
   // Helpers
-
-  public enum DisplayMode {
-    SUMMARY, LIST;
-
-    public static DisplayMode parse(final String txt) {
-      for (DisplayMode dm : DisplayMode.values()) {
-        if (dm.name().equalsIgnoreCase(txt)) {
-          return dm;
-        }
-      }
-      return null;
-    }
-  }
 
   private void display(final String txt) {
     System.out.println(SUtils.isEmpty(txt) ? " " : txt);

@@ -4,8 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 import org.apache.log4j.Logger;
-import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.config.AbstractDAOTag;
+import org.hotrod.config.DisplayMode;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisTag;
@@ -209,7 +209,8 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
     // DataSetLayout layout = new DataSetLayout(this.config);
     HotRodFragmentConfigTag fragmentConfig = sm.getFragmentConfig();
     ClassPackage fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
-        ? fragmentConfig.getFragmentPackage() : null;
+        ? fragmentConfig.getFragmentPackage()
+        : null;
     ClassPackage daoPackage = layout.getDAOPackage(fragmentPackage);
     SelectMethodReturnType rt = sm.getReturnType(daoPackage);
 

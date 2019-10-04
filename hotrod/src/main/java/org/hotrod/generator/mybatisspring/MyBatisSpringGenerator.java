@@ -4,8 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 import org.apache.log4j.Logger;
-import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.config.AbstractDAOTag;
+import org.hotrod.config.DisplayMode;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisSpringTag;

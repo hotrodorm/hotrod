@@ -11,8 +11,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.config.ConfigTag;
+import org.hotrod.config.DisplayMode;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SpringJDBCTag;

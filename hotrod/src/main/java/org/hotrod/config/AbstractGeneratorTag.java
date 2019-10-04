@@ -2,7 +2,6 @@ package org.hotrod.config;
 
 import java.io.File;
 
-import org.hotrod.ant.HotRodAntTask.DisplayMode;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
