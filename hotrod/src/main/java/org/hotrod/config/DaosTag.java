@@ -308,7 +308,7 @@ public class DaosTag extends AbstractConfigurationTag {
 
   public String generateVOName(final String name) {
     String voc = this.voPrefix + name + this.voSuffix;
-    log.info("name=" + name + " voc=" + voc);
+    log.debug("name=" + name + " voc=" + voc);
     return voc;
   }
 
