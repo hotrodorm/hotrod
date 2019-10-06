@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+<!-- 
+  <properties resource="config.properties" />
+ -->
+ 
+  <settings>
+    <setting name="logImpl" value="LOG4J" />
+  </settings>
+
+  <environments default="development">
+
+    <environment id="development">
+
+      <transactionManager type="JDBC" />
+
+      <dataSource type="POOLED">
+        <property name="driver" value="${driverclass}" />
+        <property name="url" value="${url}" />
+        <property name="username" value="${username}" />
+        <property name="password" value="${password}" />
+      </dataSource>
+      
+      <!-- 
+      <dataSource type="JNDI">
+        <property name="data_source" value="java:comp/env/jdbc/myDS" />
+      </dataSource>
+      -->      
+
+    </environment>
+
+  </environments>
+
+    <mappers>
+    <mapper resource="persistence/primitives/live-sql.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-_price_.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-account-alert.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-account-reports-dao.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-account.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-agent.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-alert-finder-dao.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-application-config.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-car_part_price.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-client.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-codes.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-config-values.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-cursor-example1.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-event.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-federal-branch.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-house-room.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-house.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-island.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-item.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-log.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-low-account.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-parameters.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-properties.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-quadrant.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-state-branch.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-test-identity1.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-test-identity2.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-test-seq-ide-def1.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-transaction.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-tx-branch.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-types-binary.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-types-char.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-types-date-time.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-types-numeric.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-types-other.xml" />  <!-- in facet -->
+    <mapper resource="persistence/primitives/primitives-vehicle.xml" />  <!-- in facet -->
+  </mappers>
+
+
+</configuration>

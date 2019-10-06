@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.cli.maven_test.daos.primitives.accountReportsDAO">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    
+  </sql>
+
+  <sql id="columnsWithAlias">
+    
+  </sql>
+
+  <!-- query applyPromotion -->
+
+  <update id="applyPromotion">
+    
+      
+      
+      update account a 
+      set current_balance = current_balance + #{prize,jdbcType=NUMERIC}
+      from transaction t
+      where t.account_id = a.id 
+        and t.amount >= #{minAmount,jdbcType=NUMERIC}
+    
+  </update>
+
+  <!-- select method: selectNewAccountsVolume -->
+
+  <resultMap id="result_map_select_selectNewAccountsVolume" type="com.company.cli.maven_test.daos.AccountVolumeVO">
+    <result property="id" column="id" />
+    <result property="name" column="name" />
+    <result property="totalTxs" column="total_txs" />
+  </resultMap>
+
+  <select id="select_selectNewAccountsVolume" resultMap="result_map_select_selectNewAccountsVolume">
+      select a.id, a.name, sum(abs(t.amount)) as total_txs
+      from account a
+      left join transaction t on t.account_id = a.id
+      where a.created_on >= current_date - interval '3000 day'
+      group by a.id
+  </select>
+
+  <!-- select method: selectOldAccountsVolume -->
+
+  <resultMap id="result_map_select_selectOldAccountsVolume" type="com.company.cli.maven_test.daos.OldAccountVolumeVO">
+    <result property="id" column="id" />
+    <result property="name" column="name" />
+    <result property="totalTxs" column="total_txs" />
+  </resultMap>
+
+  <select id="select_selectOldAccountsVolume" resultMap="result_map_select_selectOldAccountsVolume">
+      select a.id, a.name, sum(abs(t.amount)) as total_txs
+      from account a
+      left join transaction t on t.account_id = a.id
+      where a.created_on &lt; current_date - interval '3000 day'
+      group by a.id
+  </select>
+
+</mapper>

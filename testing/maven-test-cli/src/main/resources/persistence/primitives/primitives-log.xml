@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.cli.maven_test.daos.primitives.log">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    recorded_at,
+    notes
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.recorded_at,
+    ${alias}.notes
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.cli.maven_test.daos.LogVO">
+    <result property="recordedAt" column="recorded_at" />
+    <result property="notes" column="notes" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from log
+    <where>
+      <if test="p.recordedAt != null ">
+        and recorded_at = #{p.recordedAt,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.recordedAt == null and p.propertiesChangeLog.recordedAtWasSet">
+        and recorded_at is null
+      </if>
+      <if test="p.notes != null ">
+        and notes = #{p.notes,jdbcType=VARCHAR}
+      </if>
+      <if test="p.notes == null and p.propertiesChangeLog.notesWasSet">
+        and notes is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into log (
+      <trim prefixOverrides=", ">
+        <if test="true">, recorded_at</if>
+        <if test="true">, notes</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{recordedAt,jdbcType=TIMESTAMP}</if>
+        <if test="true">, #{notes,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update log
+    <set>
+      <if test="values.propertiesChangeLog.recordedAtWasSet">recorded_at = #{values.recordedAt,jdbcType=TIMESTAMP},</if>
+      <if test="values.propertiesChangeLog.notesWasSet">notes = #{values.notes,jdbcType=VARCHAR},</if>
+    </set>
+    <where>
+      <if test="filter.recordedAt != null ">
+        and recorded_at = #{filter.recordedAt,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.recordedAt == null and filter.propertiesChangeLog.recordedAtWasSet">
+        and recorded_at is null
+      </if>
+      <if test="filter.notes != null ">
+        and notes = #{filter.notes,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.notes == null and filter.propertiesChangeLog.notesWasSet">
+        and notes is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from log
+    <where>
+      <if test="recordedAt != null ">
+        and recorded_at = #{recordedAt,jdbcType=TIMESTAMP}
+      </if>
+      <if test="recordedAt == null and propertiesChangeLog.recordedAtWasSet">
+        and recorded_at is null
+      </if>
+      <if test="notes != null ">
+        and notes = #{notes,jdbcType=VARCHAR}
+      </if>
+      <if test="notes == null and propertiesChangeLog.notesWasSet">
+        and notes is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

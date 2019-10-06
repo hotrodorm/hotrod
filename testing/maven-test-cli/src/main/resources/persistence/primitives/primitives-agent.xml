@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.cli.maven_test.daos.primitives.agent">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    name,
+    client_id
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.name,
+    ${alias}.client_id
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.cli.maven_test.daos.AgentVO">
+    <id property="id" column="id" />
+    <result property="name" column="name" />
+    <result property="clientId" column="client_id" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from agent
+     where
+      id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from agent
+    <where>
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="p.name != null ">
+        and name = #{p.name,jdbcType=VARCHAR}
+      </if>
+      <if test="p.name == null and p.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="p.clientId != null ">
+        and client_id = #{p.clientId,jdbcType=BIGINT}
+      </if>
+      <if test="p.clientId == null and p.propertiesChangeLog.clientIdWasSet">
+        and client_id is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (integrates sequences, and does not integrate identities) -->
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into agent (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+        <if test="true">, name</if>
+        <if test="true">, client_id</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, nextval('seq_agent')</if>
+        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+        <if test="true">, #{clientId,jdbcType=BIGINT}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update agent set
+      name = #{name,jdbcType=VARCHAR},
+      client_id = #{clientId,jdbcType=BIGINT}
+     where
+      id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from agent
+     where
+      id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update agent
+    <set>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.clientIdWasSet">client_id = #{values.clientId,jdbcType=BIGINT},</if>
+    </set>
+    <where>
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="filter.name != null ">
+        and name = #{filter.name,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.name == null and filter.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="filter.clientId != null ">
+        and client_id = #{filter.clientId,jdbcType=BIGINT}
+      </if>
+      <if test="filter.clientId == null and filter.propertiesChangeLog.clientIdWasSet">
+        and client_id is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from agent
+    <where>
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="name != null ">
+        and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="name == null and propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="clientId != null ">
+        and client_id = #{clientId,jdbcType=BIGINT}
+      </if>
+      <if test="clientId == null and propertiesChangeLog.clientIdWasSet">
+        and client_id is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

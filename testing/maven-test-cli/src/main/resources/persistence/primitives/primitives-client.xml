@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.cli.maven_test.daos.primitives.client">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    national_id,
+    name,
+    prop_name,
+    referrer_id,
+    friend_id,
+    group_account_id,
+    branch_id
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.national_id,
+    ${alias}.name,
+    ${alias}.prop_name,
+    ${alias}.referrer_id,
+    ${alias}.friend_id,
+    ${alias}.group_account_id,
+    ${alias}.branch_id
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.cli.maven_test.daos.ClientVO">
+    <id property="id" column="id" />
+    <result property="nationalId" column="national_id" />
+    <result property="name" column="name" />
+    <result property="propName" column="prop_name" />
+    <result property="referrerId" column="referrer_id" />
+    <result property="friendId" column="friend_id" />
+    <result property="groupAccountId" column="group_account_id" />
+    <result property="branchId" column="branch_id" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from client
+     where
+      id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- select by unique indexes -->
+
+  <select id="selectByUINationalId" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from client
+     where
+      national_id = #{nationalId,jdbcType=INTEGER}
+  </select>
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from client
+    <where>
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="p.nationalId != null ">
+        and national_id = #{p.nationalId,jdbcType=INTEGER}
+      </if>
+      <if test="p.nationalId == null and p.propertiesChangeLog.nationalIdWasSet">
+        and national_id is null
+      </if>
+      <if test="p.name != null ">
+        and name = #{p.name,jdbcType=VARCHAR}
+      </if>
+      <if test="p.name == null and p.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="p.propName != null ">
+        and prop_name = #{p.propName,jdbcType=VARCHAR}
+      </if>
+      <if test="p.propName == null and p.propertiesChangeLog.propNameWasSet">
+        and prop_name is null
+      </if>
+      <if test="p.referrerId != null ">
+        and referrer_id = #{p.referrerId,jdbcType=INTEGER}
+      </if>
+      <if test="p.referrerId == null and p.propertiesChangeLog.referrerIdWasSet">
+        and referrer_id is null
+      </if>
+      <if test="p.friendId != null ">
+        and friend_id = #{p.friendId,jdbcType=INTEGER}
+      </if>
+      <if test="p.friendId == null and p.propertiesChangeLog.friendIdWasSet">
+        and friend_id is null
+      </if>
+      <if test="p.groupAccountId != null ">
+        and group_account_id = #{p.groupAccountId,jdbcType=INTEGER}
+      </if>
+      <if test="p.groupAccountId == null and p.propertiesChangeLog.groupAccountIdWasSet">
+        and group_account_id is null
+      </if>
+      <if test="p.branchId != null ">
+        and branch_id = #{p.branchId,jdbcType=INTEGER}
+      </if>
+      <if test="p.branchId == null and p.propertiesChangeLog.branchIdWasSet">
+        and branch_id is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into client (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+        <if test="true">, national_id</if>
+        <if test="true">, name</if>
+        <if test="true">, prop_name</if>
+        <if test="true">, referrer_id</if>
+        <if test="true">, friend_id</if>
+        <if test="true">, group_account_id</if>
+        <if test="true">, branch_id</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{nationalId,jdbcType=INTEGER}</if>
+        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+        <if test="true">, #{propName,jdbcType=VARCHAR}</if>
+        <if test="true">, #{referrerId,jdbcType=INTEGER}</if>
+        <if test="true">, #{friendId,jdbcType=INTEGER}</if>
+        <if test="true">, #{groupAccountId,jdbcType=INTEGER}</if>
+        <if test="true">, #{branchId,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update client set
+      national_id = #{nationalId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      prop_name = #{propName,jdbcType=VARCHAR},
+      referrer_id = #{referrerId,jdbcType=INTEGER},
+      friend_id = #{friendId,jdbcType=INTEGER},
+      group_account_id = #{groupAccountId,jdbcType=INTEGER},
+      branch_id = #{branchId,jdbcType=INTEGER}
+     where
+      id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from client
+     where
+      id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update client
+    <set>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.nationalIdWasSet">national_id = #{values.nationalId,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.propNameWasSet">prop_name = #{values.propName,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.referrerIdWasSet">referrer_id = #{values.referrerId,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.friendIdWasSet">friend_id = #{values.friendId,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.groupAccountIdWasSet">group_account_id = #{values.groupAccountId,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.branchIdWasSet">branch_id = #{values.branchId,jdbcType=INTEGER},</if>
+    </set>
+    <where>
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="filter.nationalId != null ">
+        and national_id = #{filter.nationalId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.nationalId == null and filter.propertiesChangeLog.nationalIdWasSet">
+        and national_id is null
+      </if>
+      <if test="filter.name != null ">
+        and name = #{filter.name,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.name == null and filter.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="filter.propName != null ">
+        and prop_name = #{filter.propName,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.propName == null and filter.propertiesChangeLog.propNameWasSet">
+        and prop_name is null
+      </if>
+      <if test="filter.referrerId != null ">
+        and referrer_id = #{filter.referrerId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.referrerId == null and filter.propertiesChangeLog.referrerIdWasSet">
+        and referrer_id is null
+      </if>
+      <if test="filter.friendId != null ">
+        and friend_id = #{filter.friendId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.friendId == null and filter.propertiesChangeLog.friendIdWasSet">
+        and friend_id is null
+      </if>
+      <if test="filter.groupAccountId != null ">
+        and group_account_id = #{filter.groupAccountId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.groupAccountId == null and filter.propertiesChangeLog.groupAccountIdWasSet">
+        and group_account_id is null
+      </if>
+      <if test="filter.branchId != null ">
+        and branch_id = #{filter.branchId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.branchId == null and filter.propertiesChangeLog.branchIdWasSet">
+        and branch_id is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from client
+    <where>
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="nationalId != null ">
+        and national_id = #{nationalId,jdbcType=INTEGER}
+      </if>
+      <if test="nationalId == null and propertiesChangeLog.nationalIdWasSet">
+        and national_id is null
+      </if>
+      <if test="name != null ">
+        and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="name == null and propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="propName != null ">
+        and prop_name = #{propName,jdbcType=VARCHAR}
+      </if>
+      <if test="propName == null and propertiesChangeLog.propNameWasSet">
+        and prop_name is null
+      </if>
+      <if test="referrerId != null ">
+        and referrer_id = #{referrerId,jdbcType=INTEGER}
+      </if>
+      <if test="referrerId == null and propertiesChangeLog.referrerIdWasSet">
+        and referrer_id is null
+      </if>
+      <if test="friendId != null ">
+        and friend_id = #{friendId,jdbcType=INTEGER}
+      </if>
+      <if test="friendId == null and propertiesChangeLog.friendIdWasSet">
+        and friend_id is null
+      </if>
+      <if test="groupAccountId != null ">
+        and group_account_id = #{groupAccountId,jdbcType=INTEGER}
+      </if>
+      <if test="groupAccountId == null and propertiesChangeLog.groupAccountIdWasSet">
+        and group_account_id is null
+      </if>
+      <if test="branchId != null ">
+        and branch_id = #{branchId,jdbcType=INTEGER}
+      </if>
+      <if test="branchId == null and propertiesChangeLog.branchIdWasSet">
+        and branch_id is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

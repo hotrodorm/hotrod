@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.cli.maven_test.daos.primitives.car_part_price">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    "part#",
+    "price$dollar",
+    "%discount"
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}."part#",
+    ${alias}."price$dollar",
+    ${alias}."%discount"
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.cli.maven_test.daos.Car_part_priceVO">
+    <result property="part_" column="part#" />
+    <result property="price_dollar" column="price$dollar" />
+    <result property="_discount" column="%discount" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from "car#part$Price"
+    <where>
+      <if test="p.part_ != null ">
+        and "part#" = #{p.part_,jdbcType=INTEGER}
+      </if>
+      <if test="p.part_ == null and p.propertiesChangeLog.part_WasSet">
+        and "part#" is null
+      </if>
+      <if test="p.price_dollar != null ">
+        and "price$dollar" = #{p.price_dollar,jdbcType=INTEGER}
+      </if>
+      <if test="p.price_dollar == null and p.propertiesChangeLog.price_dollarWasSet">
+        and "price$dollar" is null
+      </if>
+      <if test="p._discount != null ">
+        and "%discount" = #{p._discount,jdbcType=INTEGER}
+      </if>
+      <if test="p._discount == null and p.propertiesChangeLog._discountWasSet">
+        and "%discount" is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into "car#part$Price" (
+      <trim prefixOverrides=", ">
+        <if test="true">, "part#"</if>
+        <if test="true">, "price$dollar"</if>
+        <if test="true">, "%discount"</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{part_,jdbcType=INTEGER}</if>
+        <if test="true">, #{price_dollar,jdbcType=INTEGER}</if>
+        <if test="true">, #{_discount,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update "car#part$Price"
+    <set>
+      <if test="values.propertiesChangeLog.part_WasSet">"part#" = #{values.part_,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.price_dollarWasSet">"price$dollar" = #{values.price_dollar,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog._discountWasSet">"%discount" = #{values._discount,jdbcType=INTEGER},</if>
+    </set>
+    <where>
+      <if test="filter.part_ != null ">
+        and "part#" = #{filter.part_,jdbcType=INTEGER}
+      </if>
+      <if test="filter.part_ == null and filter.propertiesChangeLog.part_WasSet">
+        and "part#" is null
+      </if>
+      <if test="filter.price_dollar != null ">
+        and "price$dollar" = #{filter.price_dollar,jdbcType=INTEGER}
+      </if>
+      <if test="filter.price_dollar == null and filter.propertiesChangeLog.price_dollarWasSet">
+        and "price$dollar" is null
+      </if>
+      <if test="filter._discount != null ">
+        and "%discount" = #{filter._discount,jdbcType=INTEGER}
+      </if>
+      <if test="filter._discount == null and filter.propertiesChangeLog._discountWasSet">
+        and "%discount" is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from "car#part$Price"
+    <where>
+      <if test="part_ != null ">
+        and "part#" = #{part_,jdbcType=INTEGER}
+      </if>
+      <if test="part_ == null and propertiesChangeLog.part_WasSet">
+        and "part#" is null
+      </if>
+      <if test="price_dollar != null ">
+        and "price$dollar" = #{price_dollar,jdbcType=INTEGER}
+      </if>
+      <if test="price_dollar == null and propertiesChangeLog.price_dollarWasSet">
+        and "price$dollar" is null
+      </if>
+      <if test="_discount != null ">
+        and "%discount" = #{_discount,jdbcType=INTEGER}
+      </if>
+      <if test="_discount == null and propertiesChangeLog._discountWasSet">
+        and "%discount" is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

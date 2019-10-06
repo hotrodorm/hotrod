@@ -1,0 +1,136 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+
+ <groupId>com.company.cli</groupId>
+ <artifactId>maven-test</artifactId>
+ <version>1.0.0</version>
+ <packaging>jar</packaging>
+
+ <name>maven-test</name>
+ <url>http://maven.apache.org</url>
+
+ <properties>
+  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  <maven.compiler.source>1.6</maven.compiler.source>
+  <maven.compiler.target>1.6</maven.compiler.target>
+
+  <configfile>/src/main/hotrod/hotrod.xml</configfile>
+  <generator>MyBatis-Spring</generator>
+
+ </properties>
+
+ <dependencies>
+
+  <dependency>
+   <groupId>org.hotrodorm.hotrod</groupId>
+   <artifactId>hotrod-maven-plugin</artifactId>
+   <version>3.0.1</version>
+  </dependency>
+ 
+  <dependency>
+   <groupId>org.hotrodorm.hotrod</groupId>
+   <artifactId>hotrod-runtime</artifactId>
+   <version>3.0.0</version>
+  </dependency>
+
+<dependency>
+  <groupId>log4j</groupId>
+  <artifactId>log4j</artifactId>
+  <version>1.2.17</version>
+</dependency>
+
+  <!-- JAXB for Java 9+ -->
+
+  <dependency>
+   <groupId>javax.xml.bind</groupId>
+   <artifactId>jaxb-api</artifactId>
+   <version>2.3.0</version>
+  </dependency>
+
+  <dependency>
+   <groupId>com.sun.xml.bind</groupId>
+   <artifactId>jaxb-core</artifactId>
+   <version>2.3.0</version>
+  </dependency>
+
+  <dependency>
+   <groupId>com.sun.xml.bind</groupId>
+   <artifactId>jaxb-impl</artifactId>
+   <version>2.3.0</version>
+  </dependency>
+
+  <dependency>
+   <groupId>javax.activation</groupId>
+   <artifactId>activation</artifactId>
+   <version>1.1.1</version>
+  </dependency>
+
+  <!-- MyBatis Spring -->
+
+  <dependency>
+   <groupId>org.mybatis</groupId>
+   <artifactId>mybatis-spring</artifactId>
+   <version>1.2.4</version>
+  </dependency>
+
+  <dependency>
+   <groupId>org.mybatis</groupId>
+   <artifactId>mybatis</artifactId>
+   <version>3.3.0</version>
+  </dependency>
+
+  <!-- Spring -->
+
+  <dependency>
+   <groupId>org.springframework</groupId>
+   <artifactId>spring-aop</artifactId>
+   <version>4.2.5.RELEASE</version>
+  </dependency>
+
+  <dependency>
+   <groupId>org.springframework</groupId>
+   <artifactId>spring-tx</artifactId>
+   <version>4.2.3.RELEASE</version>
+  </dependency>
+
+  <dependency>
+   <groupId>org.springframework</groupId>
+   <artifactId>spring-context</artifactId>
+   <version>4.2.5.RELEASE</version>
+  </dependency>
+
+  <!-- For unit testing only -->
+
+  <dependency>
+   <groupId>commons-dbcp</groupId>
+   <artifactId>commons-dbcp</artifactId>
+   <version>1.4</version>
+   <scope>test</scope>
+  </dependency>
+
+  <dependency>
+   <groupId>org.springframework</groupId>
+   <artifactId>spring-jdbc</artifactId>
+   <version>4.2.5.RELEASE</version>
+   <scope>test</scope>
+  </dependency>
+
+  <dependency>
+   <groupId>junit</groupId>
+   <artifactId>junit</artifactId>
+   <version>3.8.1</version>
+   <scope>test</scope>
+  </dependency>
+
+  <dependency>
+   <groupId>org.postgresql</groupId>
+   <artifactId>postgresql</artifactId>
+   <version>42.2.5.jre6</version>
+   <type>jar</type>
+  </dependency>
+
+ </dependencies>
+
+</project>

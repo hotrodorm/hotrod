@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.cli.maven_test.daos.primitives.island">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    segment,
+    x_start,
+    x_end,
+    height
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.segment,
+    ${alias}.x_start,
+    ${alias}.x_end,
+    ${alias}.height
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.cli.maven_test.daos.IslandVO">
+    <result property="id" column="id" />
+    <result property="segment" column="segment" />
+    <result property="xStart" column="x_start" />
+    <result property="xEnd" column="x_end" />
+    <result property="height" column="height" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from island
+    <where>
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="p.segment != null ">
+        and segment = #{p.segment,jdbcType=INTEGER}
+      </if>
+      <if test="p.segment == null and p.propertiesChangeLog.segmentWasSet">
+        and segment is null
+      </if>
+      <if test="p.xStart != null ">
+        and x_start = #{p.xStart,jdbcType=INTEGER}
+      </if>
+      <if test="p.xStart == null and p.propertiesChangeLog.xStartWasSet">
+        and x_start is null
+      </if>
+      <if test="p.xEnd != null ">
+        and x_end = #{p.xEnd,jdbcType=INTEGER}
+      </if>
+      <if test="p.xEnd == null and p.propertiesChangeLog.xEndWasSet">
+        and x_end is null
+      </if>
+      <if test="p.height != null ">
+        and height = #{p.height,jdbcType=INTEGER}
+      </if>
+      <if test="p.height == null and p.propertiesChangeLog.heightWasSet">
+        and height is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into island (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+        <if test="true">, segment</if>
+        <if test="true">, x_start</if>
+        <if test="true">, x_end</if>
+        <if test="true">, height</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{segment,jdbcType=INTEGER}</if>
+        <if test="true">, #{xStart,jdbcType=INTEGER}</if>
+        <if test="true">, #{xEnd,jdbcType=INTEGER}</if>
+        <if test="true">, #{height,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update island
+    <set>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.segmentWasSet">segment = #{values.segment,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.xStartWasSet">x_start = #{values.xStart,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.xEndWasSet">x_end = #{values.xEnd,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.heightWasSet">height = #{values.height,jdbcType=INTEGER},</if>
+    </set>
+    <where>
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="filter.segment != null ">
+        and segment = #{filter.segment,jdbcType=INTEGER}
+      </if>
+      <if test="filter.segment == null and filter.propertiesChangeLog.segmentWasSet">
+        and segment is null
+      </if>
+      <if test="filter.xStart != null ">
+        and x_start = #{filter.xStart,jdbcType=INTEGER}
+      </if>
+      <if test="filter.xStart == null and filter.propertiesChangeLog.xStartWasSet">
+        and x_start is null
+      </if>
+      <if test="filter.xEnd != null ">
+        and x_end = #{filter.xEnd,jdbcType=INTEGER}
+      </if>
+      <if test="filter.xEnd == null and filter.propertiesChangeLog.xEndWasSet">
+        and x_end is null
+      </if>
+      <if test="filter.height != null ">
+        and height = #{filter.height,jdbcType=INTEGER}
+      </if>
+      <if test="filter.height == null and filter.propertiesChangeLog.heightWasSet">
+        and height is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from island
+    <where>
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="segment != null ">
+        and segment = #{segment,jdbcType=INTEGER}
+      </if>
+      <if test="segment == null and propertiesChangeLog.segmentWasSet">
+        and segment is null
+      </if>
+      <if test="xStart != null ">
+        and x_start = #{xStart,jdbcType=INTEGER}
+      </if>
+      <if test="xStart == null and propertiesChangeLog.xStartWasSet">
+        and x_start is null
+      </if>
+      <if test="xEnd != null ">
+        and x_end = #{xEnd,jdbcType=INTEGER}
+      </if>
+      <if test="xEnd == null and propertiesChangeLog.xEndWasSet">
+        and x_end is null
+      </if>
+      <if test="height != null ">
+        and height = #{height,jdbcType=INTEGER}
+      </if>
+      <if test="height == null and propertiesChangeLog.heightWasSet">
+        and height is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

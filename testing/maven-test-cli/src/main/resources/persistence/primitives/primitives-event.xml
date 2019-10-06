@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.cli.maven_test.daos.primitives.event">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    otz,
+    o
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.otz,
+    ${alias}.o
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.cli.maven_test.daos.EventVO">
+    <result property="id" column="id" />
+    <result property="otz" column="otz" />
+    <result property="o" column="o" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from event
+    <where>
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="p.otz != null ">
+        and otz = #{p.otz,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.otz == null and p.propertiesChangeLog.otzWasSet">
+        and otz is null
+      </if>
+      <if test="p.o != null ">
+        and o = #{p.o,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.o == null and p.propertiesChangeLog.oWasSet">
+        and o is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into event (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+        <if test="true">, otz</if>
+        <if test="true">, o</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{otz,jdbcType=TIMESTAMP}</if>
+        <if test="true">, #{o,jdbcType=TIMESTAMP}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update event
+    <set>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.otzWasSet">otz = #{values.otz,jdbcType=TIMESTAMP},</if>
+      <if test="values.propertiesChangeLog.oWasSet">o = #{values.o,jdbcType=TIMESTAMP},</if>
+    </set>
+    <where>
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="filter.otz != null ">
+        and otz = #{filter.otz,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.otz == null and filter.propertiesChangeLog.otzWasSet">
+        and otz is null
+      </if>
+      <if test="filter.o != null ">
+        and o = #{filter.o,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.o == null and filter.propertiesChangeLog.oWasSet">
+        and o is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from event
+    <where>
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="otz != null ">
+        and otz = #{otz,jdbcType=TIMESTAMP}
+      </if>
+      <if test="otz == null and propertiesChangeLog.otzWasSet">
+        and otz is null
+      </if>
+      <if test="o != null ">
+        and o = #{o,jdbcType=TIMESTAMP}
+      </if>
+      <if test="o == null and propertiesChangeLog.oWasSet">
+        and o is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

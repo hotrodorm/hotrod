@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.cli.maven_test.daos.primitives.item">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    description,
+    price,
+    created_on,
+    active,
+    icon,
+    store_code
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.description,
+    ${alias}.price,
+    ${alias}.created_on,
+    ${alias}.active,
+    ${alias}.icon,
+    ${alias}.store_code
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.cli.maven_test.daos.ItemVO">
+    <result property="id" column="id" />
+    <result property="description" column="description" />
+    <result property="price" column="price" />
+    <result property="createdOn" column="created_on" />
+    <result property="active" column="active" />
+    <result property="icon" column="icon" />
+    <result property="storeCode" column="store_code" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from item
+    <where>
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="p.description != null ">
+        and description = #{p.description,jdbcType=VARCHAR}
+      </if>
+      <if test="p.description == null and p.propertiesChangeLog.descriptionWasSet">
+        and description is null
+      </if>
+      <if test="p.price != null ">
+        and price = #{p.price,jdbcType=NUMERIC}
+      </if>
+      <if test="p.price == null and p.propertiesChangeLog.priceWasSet">
+        and price is null
+      </if>
+      <if test="p.createdOn != null ">
+        and created_on = #{p.createdOn,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.createdOn == null and p.propertiesChangeLog.createdOnWasSet">
+        and created_on is null
+      </if>
+      <if test="p.active != null ">
+        and active = #{p.active,jdbcType=BIT}
+      </if>
+      <if test="p.active == null and p.propertiesChangeLog.activeWasSet">
+        and active is null
+      </if>
+      <if test="p.icon != null ">
+        and icon = #{p.icon,jdbcType=BINARY}
+      </if>
+      <if test="p.icon == null and p.propertiesChangeLog.iconWasSet">
+        and icon is null
+      </if>
+      <if test="p.storeCode != null ">
+        and store_code = #{p.storeCode,jdbcType=OTHER}
+      </if>
+      <if test="p.storeCode == null and p.propertiesChangeLog.storeCodeWasSet">
+        and store_code is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into item (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+        <if test="true">, description</if>
+        <if test="true">, price</if>
+        <if test="true">, created_on</if>
+        <if test="true">, active</if>
+        <if test="true">, icon</if>
+        <if test="true">, store_code</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{description,jdbcType=VARCHAR}</if>
+        <if test="true">, #{price,jdbcType=NUMERIC}</if>
+        <if test="true">, #{createdOn,jdbcType=TIMESTAMP}</if>
+        <if test="true">, #{active,jdbcType=BIT}</if>
+        <if test="true">, #{icon,jdbcType=BINARY}</if>
+        <if test="true">, #{storeCode,jdbcType=OTHER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update item
+    <set>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.descriptionWasSet">description = #{values.description,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.priceWasSet">price = #{values.price,jdbcType=NUMERIC},</if>
+      <if test="values.propertiesChangeLog.createdOnWasSet">created_on = #{values.createdOn,jdbcType=TIMESTAMP},</if>
+      <if test="values.propertiesChangeLog.activeWasSet">active = #{values.active,jdbcType=BIT},</if>
+      <if test="values.propertiesChangeLog.iconWasSet">icon = #{values.icon,jdbcType=BINARY},</if>
+      <if test="values.propertiesChangeLog.storeCodeWasSet">store_code = #{values.storeCode,jdbcType=OTHER},</if>
+    </set>
+    <where>
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="filter.description != null ">
+        and description = #{filter.description,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.description == null and filter.propertiesChangeLog.descriptionWasSet">
+        and description is null
+      </if>
+      <if test="filter.price != null ">
+        and price = #{filter.price,jdbcType=NUMERIC}
+      </if>
+      <if test="filter.price == null and filter.propertiesChangeLog.priceWasSet">
+        and price is null
+      </if>
+      <if test="filter.createdOn != null ">
+        and created_on = #{filter.createdOn,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.createdOn == null and filter.propertiesChangeLog.createdOnWasSet">
+        and created_on is null
+      </if>
+      <if test="filter.active != null ">
+        and active = #{filter.active,jdbcType=BIT}
+      </if>
+      <if test="filter.active == null and filter.propertiesChangeLog.activeWasSet">
+        and active is null
+      </if>
+      <if test="filter.icon != null ">
+        and icon = #{filter.icon,jdbcType=BINARY}
+      </if>
+      <if test="filter.icon == null and filter.propertiesChangeLog.iconWasSet">
+        and icon is null
+      </if>
+      <if test="filter.storeCode != null ">
+        and store_code = #{filter.storeCode,jdbcType=OTHER}
+      </if>
+      <if test="filter.storeCode == null and filter.propertiesChangeLog.storeCodeWasSet">
+        and store_code is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from item
+    <where>
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="description != null ">
+        and description = #{description,jdbcType=VARCHAR}
+      </if>
+      <if test="description == null and propertiesChangeLog.descriptionWasSet">
+        and description is null
+      </if>
+      <if test="price != null ">
+        and price = #{price,jdbcType=NUMERIC}
+      </if>
+      <if test="price == null and propertiesChangeLog.priceWasSet">
+        and price is null
+      </if>
+      <if test="createdOn != null ">
+        and created_on = #{createdOn,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createdOn == null and propertiesChangeLog.createdOnWasSet">
+        and created_on is null
+      </if>
+      <if test="active != null ">
+        and active = #{active,jdbcType=BIT}
+      </if>
+      <if test="active == null and propertiesChangeLog.activeWasSet">
+        and active is null
+      </if>
+      <if test="icon != null ">
+        and icon = #{icon,jdbcType=BINARY}
+      </if>
+      <if test="icon == null and propertiesChangeLog.iconWasSet">
+        and icon is null
+      </if>
+      <if test="storeCode != null ">
+        and store_code = #{storeCode,jdbcType=OTHER}
+      </if>
+      <if test="storeCode == null and propertiesChangeLog.storeCodeWasSet">
+        and store_code is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

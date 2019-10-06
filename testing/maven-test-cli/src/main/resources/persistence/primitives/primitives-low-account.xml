@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.cli.maven_test.daos.primitives.lowAccount">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    name,
+    type,
+    current_balance,
+    created_on,
+    active
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.name,
+    ${alias}.type,
+    ${alias}.current_balance,
+    ${alias}.created_on,
+    ${alias}.active
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.cli.maven_test.daos.LowAccountVO">
+    <result property="id" column="id" />
+    <result property="name" column="name" />
+    <result property="type" column="type" />
+    <result property="currentBalance" column="current_balance" />
+    <result property="createdOn" column="created_on" />
+    <result property="active" column="active" />
+  </resultMap>
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from schema2.low_account
+    <where>
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="p.name != null ">
+        and name = #{p.name,jdbcType=VARCHAR}
+      </if>
+      <if test="p.name == null and p.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="p.type != null ">
+        and type = #{p.type,jdbcType=VARCHAR}
+      </if>
+      <if test="p.type == null and p.propertiesChangeLog.typeWasSet">
+        and type is null
+      </if>
+      <if test="p.currentBalance != null ">
+        and current_balance = #{p.currentBalance,jdbcType=INTEGER}
+      </if>
+      <if test="p.currentBalance == null and p.propertiesChangeLog.currentBalanceWasSet">
+        and current_balance is null
+      </if>
+      <if test="p.createdOn != null ">
+        and created_on = #{p.createdOn,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.createdOn == null and p.propertiesChangeLog.createdOnWasSet">
+        and created_on is null
+      </if>
+      <if test="p.active != null ">
+        and active = #{p.active,jdbcType=INTEGER}
+      </if>
+      <if test="p.active == null and p.propertiesChangeLog.activeWasSet">
+        and active is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert by example (no auto-generated columns) -->
+
+  <insert id="insertByExample">
+    insert into schema2.low_account (
+      <trim prefixOverrides=", ">
+        <if test="propertiesChangeLog.idWasSet">, id</if>
+        <if test="propertiesChangeLog.nameWasSet">, name</if>
+        <if test="propertiesChangeLog.typeWasSet">, type</if>
+        <if test="propertiesChangeLog.currentBalanceWasSet">, current_balance</if>
+        <if test="propertiesChangeLog.createdOnWasSet">, created_on</if>
+        <if test="propertiesChangeLog.activeWasSet">, active</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="propertiesChangeLog.idWasSet">, #{id,jdbcType=INTEGER}</if>
+        <if test="propertiesChangeLog.nameWasSet">, #{name,jdbcType=VARCHAR}</if>
+        <if test="propertiesChangeLog.typeWasSet">, #{type,jdbcType=VARCHAR}</if>
+        <if test="propertiesChangeLog.currentBalanceWasSet">, #{currentBalance,jdbcType=INTEGER}</if>
+        <if test="propertiesChangeLog.createdOnWasSet">, #{createdOn,jdbcType=TIMESTAMP}</if>
+        <if test="propertiesChangeLog.activeWasSet">, #{active,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update schema2.low_account
+    <set>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.typeWasSet">type = #{values.type,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.currentBalanceWasSet">current_balance = #{values.currentBalance,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.createdOnWasSet">created_on = #{values.createdOn,jdbcType=TIMESTAMP},</if>
+      <if test="values.propertiesChangeLog.activeWasSet">active = #{values.active,jdbcType=INTEGER},</if>
+    </set>
+    <where>
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="filter.name != null ">
+        and name = #{filter.name,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.name == null and filter.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="filter.type != null ">
+        and type = #{filter.type,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.type == null and filter.propertiesChangeLog.typeWasSet">
+        and type is null
+      </if>
+      <if test="filter.currentBalance != null ">
+        and current_balance = #{filter.currentBalance,jdbcType=INTEGER}
+      </if>
+      <if test="filter.currentBalance == null and filter.propertiesChangeLog.currentBalanceWasSet">
+        and current_balance is null
+      </if>
+      <if test="filter.createdOn != null ">
+        and created_on = #{filter.createdOn,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.createdOn == null and filter.propertiesChangeLog.createdOnWasSet">
+        and created_on is null
+      </if>
+      <if test="filter.active != null ">
+        and active = #{filter.active,jdbcType=INTEGER}
+      </if>
+      <if test="filter.active == null and filter.propertiesChangeLog.activeWasSet">
+        and active is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from schema2.low_account
+    <where>
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="name != null ">
+        and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="name == null and propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="type != null ">
+        and type = #{type,jdbcType=VARCHAR}
+      </if>
+      <if test="type == null and propertiesChangeLog.typeWasSet">
+        and type is null
+      </if>
+      <if test="currentBalance != null ">
+        and current_balance = #{currentBalance,jdbcType=INTEGER}
+      </if>
+      <if test="currentBalance == null and propertiesChangeLog.currentBalanceWasSet">
+        and current_balance is null
+      </if>
+      <if test="createdOn != null ">
+        and created_on = #{createdOn,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createdOn == null and propertiesChangeLog.createdOnWasSet">
+        and created_on is null
+      </if>
+      <if test="active != null ">
+        and active = #{active,jdbcType=INTEGER}
+      </if>
+      <if test="active == null and propertiesChangeLog.activeWasSet">
+        and active is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.cli.maven_test.daos.primitives.properties">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    application,
+    name,
+    prop_value
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.application,
+    ${alias}.name,
+    ${alias}.prop_value
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.cli.maven_test.daos.PropertiesVO">
+    <result property="application" column="application" />
+    <result property="name" column="name" />
+    <result property="propValue" column="prop_value" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes -->
+
+  <select id="selectByUIName" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from properties
+     where
+      name = #{name,jdbcType=VARCHAR}
+  </select>
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from properties
+    <where>
+      <if test="p.application != null ">
+        and application = #{p.application,jdbcType=VARCHAR}
+      </if>
+      <if test="p.application == null and p.propertiesChangeLog.applicationWasSet">
+        and application is null
+      </if>
+      <if test="p.name != null ">
+        and name = #{p.name,jdbcType=VARCHAR}
+      </if>
+      <if test="p.name == null and p.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="p.propValue != null ">
+        and prop_value = #{p.propValue,jdbcType=VARCHAR}
+      </if>
+      <if test="p.propValue == null and p.propertiesChangeLog.propValueWasSet">
+        and prop_value is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into properties (
+      <trim prefixOverrides=", ">
+        <if test="true">, application</if>
+        <if test="true">, name</if>
+        <if test="true">, prop_value</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{application,jdbcType=VARCHAR}</if>
+        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+        <if test="true">, #{propValue,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update properties
+    <set>
+      <if test="values.propertiesChangeLog.applicationWasSet">application = #{values.application,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.propValueWasSet">prop_value = #{values.propValue,jdbcType=VARCHAR},</if>
+    </set>
+    <where>
+      <if test="filter.application != null ">
+        and application = #{filter.application,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.application == null and filter.propertiesChangeLog.applicationWasSet">
+        and application is null
+      </if>
+      <if test="filter.name != null ">
+        and name = #{filter.name,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.name == null and filter.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="filter.propValue != null ">
+        and prop_value = #{filter.propValue,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.propValue == null and filter.propertiesChangeLog.propValueWasSet">
+        and prop_value is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from properties
+    <where>
+      <if test="application != null ">
+        and application = #{application,jdbcType=VARCHAR}
+      </if>
+      <if test="application == null and propertiesChangeLog.applicationWasSet">
+        and application is null
+      </if>
+      <if test="name != null ">
+        and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="name == null and propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="propValue != null ">
+        and prop_value = #{propValue,jdbcType=VARCHAR}
+      </if>
+      <if test="propValue == null and propertiesChangeLog.propValueWasSet">
+        and prop_value is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

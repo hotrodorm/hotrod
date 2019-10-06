@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.cli.maven_test.daos.primitives.configValues">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    node,
+    cell,
+    name,
+    verbatim
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.node,
+    ${alias}.cell,
+    ${alias}.name,
+    ${alias}.verbatim
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.cli.maven_test.daos.ConfigValuesVO">
+    <result property="node" column="node" />
+    <result property="cell" column="cell" />
+    <result property="name" column="name" />
+    <result property="verbatim" column="verbatim" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes -->
+
+  <select id="selectByUIName" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from config_values
+     where
+      name = #{name,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByUINodeCell" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from config_values
+     where
+      node = #{node,jdbcType=INTEGER}
+      and cell = #{cell,jdbcType=INTEGER}
+  </select>
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from config_values
+    <where>
+      <if test="p.node != null ">
+        and node = #{p.node,jdbcType=INTEGER}
+      </if>
+      <if test="p.node == null and p.propertiesChangeLog.nodeWasSet">
+        and node is null
+      </if>
+      <if test="p.cell != null ">
+        and cell = #{p.cell,jdbcType=INTEGER}
+      </if>
+      <if test="p.cell == null and p.propertiesChangeLog.cellWasSet">
+        and cell is null
+      </if>
+      <if test="p.name != null ">
+        and name = #{p.name,jdbcType=VARCHAR}
+      </if>
+      <if test="p.name == null and p.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="p.verbatim != null ">
+        and verbatim = #{p.verbatim,jdbcType=VARCHAR}
+      </if>
+      <if test="p.verbatim == null and p.propertiesChangeLog.verbatimWasSet">
+        and verbatim is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into config_values (
+      <trim prefixOverrides=", ">
+        <if test="true">, node</if>
+        <if test="true">, cell</if>
+        <if test="true">, name</if>
+        <if test="true">, verbatim</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{node,jdbcType=INTEGER}</if>
+        <if test="true">, #{cell,jdbcType=INTEGER}</if>
+        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+        <if test="true">, #{verbatim,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update config_values
+    <set>
+      <if test="values.propertiesChangeLog.nodeWasSet">node = #{values.node,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.cellWasSet">cell = #{values.cell,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.verbatimWasSet">verbatim = #{values.verbatim,jdbcType=VARCHAR},</if>
+    </set>
+    <where>
+      <if test="filter.node != null ">
+        and node = #{filter.node,jdbcType=INTEGER}
+      </if>
+      <if test="filter.node == null and filter.propertiesChangeLog.nodeWasSet">
+        and node is null
+      </if>
+      <if test="filter.cell != null ">
+        and cell = #{filter.cell,jdbcType=INTEGER}
+      </if>
+      <if test="filter.cell == null and filter.propertiesChangeLog.cellWasSet">
+        and cell is null
+      </if>
+      <if test="filter.name != null ">
+        and name = #{filter.name,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.name == null and filter.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="filter.verbatim != null ">
+        and verbatim = #{filter.verbatim,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.verbatim == null and filter.propertiesChangeLog.verbatimWasSet">
+        and verbatim is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from config_values
+    <where>
+      <if test="node != null ">
+        and node = #{node,jdbcType=INTEGER}
+      </if>
+      <if test="node == null and propertiesChangeLog.nodeWasSet">
+        and node is null
+      </if>
+      <if test="cell != null ">
+        and cell = #{cell,jdbcType=INTEGER}
+      </if>
+      <if test="cell == null and propertiesChangeLog.cellWasSet">
+        and cell is null
+      </if>
+      <if test="name != null ">
+        and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="name == null and propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="verbatim != null ">
+        and verbatim = #{verbatim,jdbcType=VARCHAR}
+      </if>
+      <if test="verbatim == null and propertiesChangeLog.verbatimWasSet">
+        and verbatim is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

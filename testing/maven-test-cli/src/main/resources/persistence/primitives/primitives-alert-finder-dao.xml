@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.cli.maven_test.daos.primitives.alertFinderDAO">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    
+  </sql>
+
+  <sql id="columnsWithAlias">
+    
+  </sql>
+
+  <!-- select method: findAlerts -->
+
+  <resultMap id="result_map_select_findAlerts" type="com.company.cli.maven_test.daos.Account2VO">
+    <id property="id" column="ns0_expr_0" />
+    <result property="extra2" column="ns0_expr_1" />
+  </resultMap>
+
+  <select id="select_findAlerts" resultMap="result_map_select_findAlerts">
+      select
+        a.id + 1 as ns0_expr_0,
+        a.id + 1 as ns0_expr_1
+      from account a
+      join schema2.account_alert aa on a.id = aa.account_id
+      join schema2.house h on h.id = aa.house_id
+      where a.current_balance >= 100;
+  </select>
+
+</mapper>

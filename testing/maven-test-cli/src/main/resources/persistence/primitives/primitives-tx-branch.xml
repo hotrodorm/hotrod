@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.cli.maven_test.daos.primitives.txBranch">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    account_id,
+    branch_id,
+    branch_name,
+    amount
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.account_id,
+    ${alias}.branch_id,
+    ${alias}.branch_name,
+    ${alias}.amount
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.cli.maven_test.daos.TxBranchVO">
+    <result property="accountId" column="account_id" />
+    <result property="branchId" column="branch_id" />
+    <result property="branchName" column="branch_name" />
+    <result property="amount" column="amount" />
+  </resultMap>
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from tx_branch
+    <where>
+      <if test="p.accountId != null ">
+        and account_id = #{p.accountId,jdbcType=INTEGER}
+      </if>
+      <if test="p.accountId == null and p.propertiesChangeLog.accountIdWasSet">
+        and account_id is null
+      </if>
+      <if test="p.branchId != null ">
+        and branch_id = #{p.branchId,jdbcType=INTEGER}
+      </if>
+      <if test="p.branchId == null and p.propertiesChangeLog.branchIdWasSet">
+        and branch_id is null
+      </if>
+      <if test="p.branchName != null ">
+        and branch_name = #{p.branchName,jdbcType=VARCHAR}
+      </if>
+      <if test="p.branchName == null and p.propertiesChangeLog.branchNameWasSet">
+        and branch_name is null
+      </if>
+      <if test="p.amount != null ">
+        and amount = #{p.amount,jdbcType=NUMERIC}
+      </if>
+      <if test="p.amount == null and p.propertiesChangeLog.amountWasSet">
+        and amount is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert by example (no auto-generated columns) -->
+
+  <insert id="insertByExample">
+    insert into tx_branch (
+      <trim prefixOverrides=", ">
+        <if test="propertiesChangeLog.accountIdWasSet">, account_id</if>
+        <if test="propertiesChangeLog.branchIdWasSet">, branch_id</if>
+        <if test="propertiesChangeLog.branchNameWasSet">, branch_name</if>
+        <if test="propertiesChangeLog.amountWasSet">, amount</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="propertiesChangeLog.accountIdWasSet">, #{accountId,jdbcType=INTEGER}</if>
+        <if test="propertiesChangeLog.branchIdWasSet">, #{branchId,jdbcType=INTEGER}</if>
+        <if test="propertiesChangeLog.branchNameWasSet">, #{branchName,jdbcType=VARCHAR}</if>
+        <if test="propertiesChangeLog.amountWasSet">, #{amount,jdbcType=NUMERIC}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update tx_branch
+    <set>
+      <if test="values.propertiesChangeLog.accountIdWasSet">account_id = #{values.accountId,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.branchIdWasSet">branch_id = #{values.branchId,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.branchNameWasSet">branch_name = #{values.branchName,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.amountWasSet">amount = #{values.amount,jdbcType=NUMERIC},</if>
+    </set>
+    <where>
+      <if test="filter.accountId != null ">
+        and account_id = #{filter.accountId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.accountId == null and filter.propertiesChangeLog.accountIdWasSet">
+        and account_id is null
+      </if>
+      <if test="filter.branchId != null ">
+        and branch_id = #{filter.branchId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.branchId == null and filter.propertiesChangeLog.branchIdWasSet">
+        and branch_id is null
+      </if>
+      <if test="filter.branchName != null ">
+        and branch_name = #{filter.branchName,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.branchName == null and filter.propertiesChangeLog.branchNameWasSet">
+        and branch_name is null
+      </if>
+      <if test="filter.amount != null ">
+        and amount = #{filter.amount,jdbcType=NUMERIC}
+      </if>
+      <if test="filter.amount == null and filter.propertiesChangeLog.amountWasSet">
+        and amount is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from tx_branch
+    <where>
+      <if test="accountId != null ">
+        and account_id = #{accountId,jdbcType=INTEGER}
+      </if>
+      <if test="accountId == null and propertiesChangeLog.accountIdWasSet">
+        and account_id is null
+      </if>
+      <if test="branchId != null ">
+        and branch_id = #{branchId,jdbcType=INTEGER}
+      </if>
+      <if test="branchId == null and propertiesChangeLog.branchIdWasSet">
+        and branch_id is null
+      </if>
+      <if test="branchName != null ">
+        and branch_name = #{branchName,jdbcType=VARCHAR}
+      </if>
+      <if test="branchName == null and propertiesChangeLog.branchNameWasSet">
+        and branch_name is null
+      </if>
+      <if test="amount != null ">
+        and amount = #{amount,jdbcType=NUMERIC}
+      </if>
+      <if test="amount == null and propertiesChangeLog.amountWasSet">
+        and amount is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>
