@@ -1,0 +1,73 @@
+
+create table person (
+  id int primary key not null,
+  sid int not null unique,
+  name varchar(30)
+);
+
+insert into person (id, sid, name) values
+  (1, 3, 'Victor'),
+  (2, 4, 'Juliett'),
+  (3, 5, 'Oscar'),
+  (4, 1, 'Romeo'),
+  (5, 2, 'Mike');
+
+create table applicant (
+  id int primary key not null,
+  sid int not null unique,
+  referrer_id int not null,
+  foreign key (referrer_id) references applicant (id), -- fk #1
+  foreign key (referrer_id) references applicant (sid), -- fk #2
+  foreign key (referrer_id) references person (id), -- fk #3
+  foreign key (referrer_id) references person (sid), -- fk #4
+  friend_id int not null,
+  foreign key (friend_id) references applicant (id) -- fk #5
+);
+
+delete from applicant;
+insert into applicant (id, sid, referrer_id, friend_id) values
+  (1, 2, 3, 5),
+  (2, 5, 1, 3),  
+  (3, 4, 5, 2),
+  (4, 1, 1, 4),
+  (5, 3, 2, 3);
+
+ApplicantVO a = ...
+
+ApplicantVO b = ApplicantDAO.selectParentApplicant().onId().byReferrerId(a);
+ApplicantVO c = ApplicantDAO.selectParentApplicant().onSid().byReferrerId(a);
+PersonVO d = ApplicantDAO.selectParentPerson().onId().byReferrerId(a);
+PersonVO e = ApplicantDAO.selectParentPerson().onSid().byReferrerId(a);
+ApplicantVO f = ApplicantDAO.selectParentApplicant().onId().byFriendId(a);
+
+List<ApplicantVO> m = ApplicantDAO.selectChildrenApplicant().onId().byReferrerId(a);
+List<ApplicantVO> n = ApplicantDAO.selectChildrenApplicant().onSid().byReferrerId(a);
+List<PersonVO> o = ApplicantDAO.selectChildrenPerson().onId().byReferrerId(a);
+List<PersonVO> p = ApplicantDAO.selectChildrenPerson().onSid().byReferrerId(a);
+List<ApplicantVO> q = ApplicantDAO.selectChildrenApplicant().onId().byFriendId(a);
+
+select b.* -- fk1: -> applicant: 1, 2, 3, 5
+from applicant a
+join applicant b on a.referrer_id = b.id
+where a.id = 2;
+
+select b.* -- fk2: -> applicant: 4, 1, 1, 4
+from applicant a
+join applicant b on a.referrer_id = b.sid
+where a.id = 2;
+
+select b.* -- fk3 -> person: 1, 3, Victor
+from applicant a
+join person b on a.referrer_id = b.id 
+where a.id = 2;
+
+select b.* -- fk4 -> person: 4, 1, Romeo
+from applicant a
+join person b on a.referrer_id = b.sid
+where a.id = 2;
+
+select b.* -- fk5: -> applicant: 3, 4, 5, 2
+from applicant a
+join applicant b on a.friend_id = b.id
+where a.id = 2;
+
