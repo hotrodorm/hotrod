@@ -18,7 +18,7 @@ public class TestJar {
 
     List<File> entries = new ArrayList<File>();
     entries.add(new File("dist/compressed.jar"));
-    ClassLoader cl = ClassLoaderFactory.createClassLoader(entries);
+    ClassLoader cl = ClassLoaderFactory.newClassLoader(entries);
 
     // 2. Use the class
 

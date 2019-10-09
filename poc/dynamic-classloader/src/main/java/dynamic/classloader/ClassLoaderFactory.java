@@ -9,13 +9,18 @@ import java.util.List;
 
 public class ClassLoaderFactory {
 
-  public static ClassLoader createClassLoader(final List<File> classPathEntries) throws InvalidClassPathException {
+  public static ClassLoader newClassLoader(final List<File> classPath) throws InvalidClassPathException {
+    return createClassLoader(classPath, ClassLoaderFactory.class.getClassLoader());
+  }
+
+  public static ClassLoader createClassLoader(final List<File> classPath, final ClassLoader parent)
+      throws InvalidClassPathException {
 
     // 1. Assemble URLs
 
     List<URL> urlList = new ArrayList<URL>();
 
-    for (File f : classPathEntries) {
+    for (File f : classPath) {
       if (f != null) {
         if (!f.exists()) {
           throw new InvalidClassPathException("Class path entry not found: " + f);
@@ -47,7 +52,7 @@ public class ClassLoaderFactory {
     // 2. Create the class loader
 
     URL[] urls = urlList.toArray(new URL[0]);
-    URLClassLoader cl = URLClassLoader.newInstance(urls);
+    URLClassLoader cl = URLClassLoader.newInstance(urls, parent);
 
     // 3. Return the new class loader
 

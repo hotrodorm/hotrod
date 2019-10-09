@@ -26,27 +26,25 @@ public class TestJDBCJar {
 
     // 1. Create a class loader
 
-    List<File> entries = new ArrayList<File>();
-    File dcp = new File(JDBC_DRIVER_CLASSPATH);
-    entries.add(dcp);
-    ClassLoader cl = ClassLoaderFactory.createClassLoader(entries);
+    List<File> classPath = new ArrayList<File>();
+    classPath.add(new File(JDBC_DRIVER_CLASSPATH));
+    ClassLoader classLoader = ClassLoaderFactory.newClassLoader(classPath);
 
-    // 2. Load the driver
+    // 2. Create a new instance of the driver class
 
-    Class<?> ldc = cl.loadClass(JDBC_DRIVER_CLASS);
-    Driver ld = (Driver) ldc.newInstance();
+    Class<?> dc = classLoader.loadClass(JDBC_DRIVER_CLASS);
+    Driver dci = (Driver) dc.newInstance();
 
-    // 3. Get the connection
+    // 3. Get the connection using the driver class instance
 
     Properties jdbcProps = new Properties();
     jdbcProps.put("user", JDBC_USERNAME);
     jdbcProps.put("password", JDBC_PASSWORD);
-    Connection conn = ld.connect(JDBC_URL, jdbcProps);
+    Connection conn = dci.connect(JDBC_URL, jdbcProps);
 
     // 4. Run SQL statements
 
     PreparedStatement ps = conn.prepareStatement("select 3 * 5");
-
     ResultSet rs = ps.executeQuery();
 
     while (rs.next()) {

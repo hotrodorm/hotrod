@@ -18,7 +18,7 @@ public class TestDir {
 
     List<File> entries = new ArrayList<File>();
     entries.add(new File("build/exploded"));
-    ClassLoader cl = ClassLoaderFactory.createClassLoader(entries);
+    ClassLoader cl = ClassLoaderFactory.newClassLoader(entries);
 
     // 2. Use the class
 
