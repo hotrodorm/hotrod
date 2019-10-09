@@ -29,7 +29,7 @@ public class ClassLoaderFactory {
             throw new InvalidClassPathException("Invalid jar class path entry: " + f, e);
           }
         } else if (f.isFile()) {
-          if (!f.getName().endsWith(".jar")) {
+          if (!f.getName().toLowerCase().endsWith(".jar")) {
             throw new InvalidClassPathException("Invalid class path file: must have .jar extension: " + f);
           }
           // Add jar entry
