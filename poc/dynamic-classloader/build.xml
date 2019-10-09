@@ -1,0 +1,97 @@
+<project name="class-loader">
+
+  <property name="main.src.dir" value="src/main/java" />
+  <property name="test.src.dir" value="src/test/java" />
+  <property name="compressed.src.dir" value="src/compressed/java" />
+  <property name="exploded.src.dir" value="src/exploded/java" />
+
+  <property name="build.dir" value="build" />
+  <property name="main.build.dir" value="build/java" />
+  <property name="test.build.dir" value="build/test" />
+  <property name="compressed.build.dir" value="build/compressed" />
+  <property name="exploded.build.dir" value="build/exploded" />
+  <property name="dist.dir" value="dist" />
+
+  <target name="init">
+    <mkdir dir="${main.build.dir}" />
+    <mkdir dir="${test.build.dir}" />
+    <mkdir dir="${compressed.build.dir}" />
+    <mkdir dir="${exploded.build.dir}" />
+    <mkdir dir="${dist.dir}" />
+  </target>
+
+  <target name="clean" depends="init">
+    <delete includeemptydirs="true">
+      <fileset dir="${build.dir}" includes="**/*" />
+      <fileset dir="${dist.dir}" includes="**/*" />
+    </delete>
+    <antcall target="init" />
+  </target>
+
+  <target name="compile" depends="init">
+    <javac srcdir="${main.src.dir}"
+           destdir="${main.build.dir}"
+           debug="true"
+           deprecation="true"
+           source="1.6"
+           target="1.6"
+           includeantruntime="false"
+           includes="**/*.java">
+      <compilerarg value="-Xlint" />
+    </javac>
+    <javac srcdir="${compressed.src.dir}"
+           destdir="${compressed.build.dir}"
+           debug="true"
+           deprecation="true"
+           source="1.6"
+           target="1.6"
+           includeantruntime="false"
+           includes="**/*.java">
+      <compilerarg value="-Xlint" />
+    </javac>
+    <jar destfile="${dist.dir}/compressed.jar">
+      <fileset dir="${compressed.build.dir}" />
+    </jar>
+    <javac srcdir="${exploded.src.dir}"
+           destdir="${exploded.build.dir}"
+           debug="true"
+           deprecation="true"
+           source="1.6"
+           target="1.6"
+           includeantruntime="false"
+           includes="**/*.java">
+      <compilerarg value="-Xlint" />
+    </javac>
+    <javac srcdir="${test.src.dir}"
+           destdir="${test.build.dir}"
+           debug="true"
+           deprecation="true"
+           source="1.6"
+           target="1.6"
+           includeantruntime="false"
+           includes="**/*.java">
+      <compilerarg value="-Xlint" />
+      <classpath>
+        <pathelement path="${main.build.dir}" />
+        <!--
+        <pathelement path="${compressed.build.dir}" />
+        <pathelement path="${exploded.build.dir}" />
+        -->
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="build" depends="compile" />
+
+  <target name="clean-build" depends="clean, build" />
+
+  <target name="test" depends="clean-build">
+    <java classname="org.app.MyApp">
+      <classpath>
+        <pathelement path="${test.build.dir}" />
+        <pathelement path="${main.build.dir}" />
+      </classpath>
+    </java>
+  </target>
+
+</project>
