@@ -583,48 +583,7 @@
     <copy file="${dist.dir}/${main.jar}" todir="${main.artifacts.dir}" />
     <copy file="${dist.dir}/${runtime.jar}" todir="${runtime.artifacts.dir}" />
 
-    <!-- 2. Prepare sources packages -->
-
-    <jar destfile="${main.artifacts.dir}/${artifact.id}-${version}-sources.jar">
-      <fileset dir="${main.src.dir}" />
-    </jar>
-
-    <jar destfile="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}-sources.jar">
-      <fileset dir="${runtime.src.dir}" />
-    </jar>
-
-    <!-- 3. Prepare javadoc packages -->
-
-    <javadoc destdir="${main.javadoc.dir}"
-             author="true"
-             version="true"
-             use="true"
-             classpath="${runtime.build.dir}:${lib.dir}/ant.jar:${lib.dir}/jxl.jar:${lib.dir}/log4j-1.2.17.jar:${lib.dir}/mybatis-${mybatis.version}.jar:${lib.dir}/tartarus-${tartarus.version}.jar:${lib.dir}/apache-commons/commons-jexl3-3.1.jar:${lib.dir}/apache-commons/commons-logging-1.2.jar:${lib.dir}/spring/spring-context-4.2.5.RELEASE.jar:${lib.dir}/spring/spring-beans-4.2.5.RELEASE.jar:${lib.dir}/spring/spring-core-4.2.5.RELEASE.jar"
-             windowtitle="${artifact.id}">
-      <packageset dir="${main.src.dir}" />
-      <packageset dir="${runtime.src.dir}" />
-      <doctitle>${artifact.id}</doctitle>
-    </javadoc>
-
-    <jar destfile="${main.artifacts.dir}/${artifact.id}-${version}-javadoc.jar">
-      <fileset dir="${main.javadoc.dir}" />
-    </jar>
-
-    <javadoc destdir="${runtime.javadoc.dir}"
-             author="true"
-             version="true"
-             use="true"
-             classpath="${lib.dir}/ant.jar:${lib.dir}/jxl.jar:${lib.dir}/log4j-1.2.17.jar:${lib.dir}/mybatis-${mybatis.version}.jar:${lib.dir}/tartarus-${tartarus.version}.jar:${lib.dir}/apache-commons/commons-jexl3-3.1.jar:${lib.dir}/apache-commons/commons-logging-1.2.jar:${lib.dir}/spring/spring-context-4.2.5.RELEASE.jar:${lib.dir}/spring/spring-beans-4.2.5.RELEASE.jar:${lib.dir}/spring/spring-core-4.2.5.RELEASE.jar"
-             windowtitle="${runtime.artifact.id}">
-      <packageset dir="${runtime.src.dir}" />
-      <doctitle>${runtime.artifact.id}</doctitle>
-    </javadoc>
-    
-    <jar destfile="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}-javadoc.jar">
-      <fileset dir="${runtime.javadoc.dir}" />
-    </jar>
-
-    <!-- 4. Prepare pom descriptors -->
+    <!-- 2. Prepare pom descriptors -->
 
     <copy file="maven-central-publishing/artifact-template.pom" tofile="${main.artifacts.dir}/${artifact.id}-${version}.pom" />
     <replace file="${main.artifacts.dir}/${artifact.id}-${version}.pom">
@@ -645,14 +604,10 @@
       <replacefilter token="@project.url@" value="${project.url}"/>
       <replacefilter token="@project.scm.url@" value="${project.scm.url}"/>
     </replace>
-    
+
   </target>
 
   <target name="publish-install" depends="-publish-prepare">
-    
-    <checksum file="${main.artifacts.dir}/${main.jar}" algorithm="SHA-1" fileext=".sha1" />
-    <checksum file="${main.artifacts.dir}/${artifact.id}-${version}-sources.jar" algorithm="SHA-1" fileext=".sha1" />
-    <checksum file="${main.artifacts.dir}/${artifact.id}-${version}.pom" algorithm="SHA-1" fileext=".sha1" />
 
     <property name="vdir" value="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod/${version}" />
     <mkdir dir="${vdir}" />
@@ -661,18 +616,79 @@
     </delete>
     
     <copy file="${main.artifacts.dir}/${main.jar}" todir="${vdir}" />
-    <copy file="${main.artifacts.dir}/${main.jar}.sha1" todir="${vdir}" />
-
-    <copy file="${main.artifacts.dir}/${artifact.id}-${version}-sources.jar" todir="${vdir}" />
-    <copy file="${main.artifacts.dir}/${artifact.id}-${version}-sources.jar.sha1" todir="${vdir}" />
-
     <copy file="${main.artifacts.dir}/${artifact.id}-${version}.pom" todir="${vdir}" />
-    <copy file="${main.artifacts.dir}/${artifact.id}-${version}.pom.sha1" todir="${vdir}" />
 
   </target>
 
   <target name="publish-to-maven-central-staging" depends="-publish-prepare">
 
+    <!-- 3. Prepare sources packages -->
+
+    <jar destfile="${main.artifacts.dir}/${artifact.id}-${version}-sources.jar">
+      <fileset dir="${main.src.dir}" />
+    </jar>
+
+    <jar destfile="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}-sources.jar">
+      <fileset dir="${runtime.src.dir}" />
+    </jar>
+
+    <!-- 4. Prepare javadoc packages -->
+
+    <javadoc destdir="${main.javadoc.dir}"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="${artifact.id}">
+      <packageset dir="${main.src.dir}" />
+      <packageset dir="${runtime.src.dir}" />
+      <doctitle>${artifact.id}</doctitle>
+      <classpath>
+        <pathelement path="${runtime.build.dir}" />
+        <fileset dir="lib/jaxb">
+           <include name="**/*.jar"/>
+         </fileset>
+        <pathelement location="${lib.dir}/ant.jar" />
+        <pathelement location="${lib.dir}/jxl.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/tartarus-${tartarus.version}.jar" />
+        <pathelement location="${lib.dir}/apache-commons/commons-jexl3-3.1.jar" />
+        <pathelement location="${lib.dir}/apache-commons/commons-logging-1.2.jar" />
+        <pathelement location="${lib.dir}/spring/spring-context-4.2.5.RELEASE.jar" />
+        <pathelement location="${lib.dir}/spring/spring-beans-4.2.5.RELEASE.jar" />
+        <pathelement location="${lib.dir}/spring/spring-core-4.2.5.RELEASE.jar" />
+      </classpath>
+    </javadoc>
+
+    <jar destfile="${main.artifacts.dir}/${artifact.id}-${version}-javadoc.jar">
+      <fileset dir="${main.javadoc.dir}" />
+    </jar>
+
+    <javadoc destdir="${runtime.javadoc.dir}"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="${runtime.artifact.id}">
+      <packageset dir="${runtime.src.dir}" />
+      <doctitle>${runtime.artifact.id}</doctitle>
+      <classpath>
+        <pathelement location="${lib.dir}/ant.jar" />
+        <pathelement location="${lib.dir}/jxl.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/tartarus-${tartarus.version}.jar" />
+        <pathelement location="${lib.dir}/apache-commons/commons-jexl3-3.1.jar" />
+        <pathelement location="${lib.dir}/apache-commons/commons-logging-1.2.jar" />
+        <pathelement location="${lib.dir}/spring/spring-context-4.2.5.RELEASE.jar" />
+        <pathelement location="${lib.dir}/spring/spring-beans-4.2.5.RELEASE.jar" />
+        <pathelement location="${lib.dir}/spring/spring-core-4.2.5.RELEASE.jar" />
+      </classpath>
+    </javadoc>
+    
+    <jar destfile="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}-javadoc.jar">
+      <fileset dir="${runtime.javadoc.dir}" />
+    </jar>
+    
     <!-- 5. Sign all artifacts -->
     <!-- This section relies on GPG being installed in your machine -->
 

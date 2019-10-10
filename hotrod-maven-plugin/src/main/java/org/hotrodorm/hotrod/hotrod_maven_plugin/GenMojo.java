@@ -14,8 +14,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.settings.Settings;
 import org.hotrod.ant.Constants;
 import org.hotrod.buildinfo.BuildConstants;
 import org.hotrod.config.ConfigurationLoader;
@@ -42,8 +40,6 @@ public class GenMojo extends AbstractMojo {
 
   private static transient final Logger log = Logger.getLogger(GenMojo.class);
 
-  // Project properties: common to all developers in a project
-
   // Note: 1) Each property must be annotated by @Parameter. 2) The property
   // attribute -- if declared -- must be the exact same name as the Java member
 
@@ -52,11 +48,6 @@ public class GenMojo extends AbstractMojo {
 
   @Parameter(property = "generator")
   private String generator = null;
-
-  // Developer properties: could be different per developer
-
-  // @Parameter(property = "driverclasspath")
-  // private String driverclasspath = null;
 
   @Parameter(property = "driverclass")
   private String driverclass = null;
@@ -87,16 +78,6 @@ public class GenMojo extends AbstractMojo {
   @Parameter(property = "display", defaultValue = "list")
   private String display = null;
 
-  // Extra access to settings (may not be needed)
-
-  @Parameter(defaultValue = "${settings}", readonly = true)
-  private Settings settings = null;
-
-  // Injected properties
-
-  @Parameter(defaultValue = "${project}", readonly = true, required = true)
-  private MavenProject project;
-
   // Computed properties (during validation)
 
   private File projectBaseDir;
@@ -108,25 +89,14 @@ public class GenMojo extends AbstractMojo {
   // Mojo logic
 
   public void execute() throws MojoExecutionException {
-    getLog().info("[ HotRod -- Gen ]");
+    // getLog().info("[ HotRod -- Gen ]");
 
     log.debug("init");
-
-    getLog().info("project: " + this.project.getName());
-
-    getLog().info("configfile: " + this.configfile);
-    getLog().info("generator: " + this.generator);
-    // getLog().info("driverclasspath: " + this.driverclasspath);
 
     display(Constants.TOOL_NAME + " version " + BuildConstants.APPLICATION_VERSION + " (build "
         + BuildConstants.BUILD_TIME_TIMESTAMP + ")");
 
     validateParameters();
-
-    getLog().info("driverClass: " + this.driverclass);
-    getLog().info("url: " + this.url);
-    getLog().info("username: " + this.username);
-    getLog().info("password: " + this.password);
 
     display("");
     display("Configuration File: " + this.configFile);
