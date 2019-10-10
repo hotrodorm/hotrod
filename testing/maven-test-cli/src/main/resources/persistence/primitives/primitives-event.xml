@@ -8,25 +8,33 @@
 
   <sql id="columns">
     id,
-    otz,
-    o
+    name,
+    status
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
-    ${alias}.otz,
-    ${alias}.o
+    ${alias}.name,
+    ${alias}.status
   </sql>
 
   <resultMap id="allColumns" type="com.company.cli.maven_test.daos.EventVO">
-    <result property="id" column="id" />
-    <result property="otz" column="otz" />
-    <result property="o" column="o" />
+    <id property="id" column="id" />
+    <result property="name" column="name" />
+    <result property="status" column="status" />
   </resultMap>
 
-  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+  <!-- select by PK -->
 
-  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from event
+     where
+      id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
 
   <!-- select by example -->
 
@@ -36,22 +44,22 @@
      from event
     <where>
       <if test="p.id != null ">
-        and id = #{p.id,jdbcType=INTEGER}
+        and id = #{p.id,jdbcType=BIGINT}
       </if>
       <if test="p.id == null and p.propertiesChangeLog.idWasSet">
         and id is null
       </if>
-      <if test="p.otz != null ">
-        and otz = #{p.otz,jdbcType=TIMESTAMP}
+      <if test="p.name != null ">
+        and name = #{p.name,jdbcType=VARCHAR}
       </if>
-      <if test="p.otz == null and p.propertiesChangeLog.otzWasSet">
-        and otz is null
+      <if test="p.name == null and p.propertiesChangeLog.nameWasSet">
+        and name is null
       </if>
-      <if test="p.o != null ">
-        and o = #{p.o,jdbcType=TIMESTAMP}
+      <if test="p.status != null ">
+        and status = #{p.status,jdbcType=INTEGER}
       </if>
-      <if test="p.o == null and p.propertiesChangeLog.oWasSet">
-        and o is null
+      <if test="p.status == null and p.propertiesChangeLog.statusWasSet">
+        and status is null
       </if>
     </where>
     <if test="o != null">
@@ -71,49 +79,63 @@
     insert into event (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
-        <if test="true">, otz</if>
-        <if test="true">, o</if>
+        <if test="true">, name</if>
+        <if test="true">, status</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{id,jdbcType=INTEGER}</if>
-        <if test="true">, #{otz,jdbcType=TIMESTAMP}</if>
-        <if test="true">, #{o,jdbcType=TIMESTAMP}</if>
+        <if test="true">, #{id,jdbcType=BIGINT}</if>
+        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+        <if test="true">, #{status,jdbcType=INTEGER}</if>
       </trim>
       )
   </insert>
 
-  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+  <!-- update by PK -->
 
-  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+  <update id="updateByPK">
+    update event set
+      name = #{name,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+     where
+      id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from event
+     where
+      id = #{id,jdbcType=BIGINT}
+  </delete>
 
   <!-- update by example -->
 
   <update id="updateByExample">
     update event
     <set>
-      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
-      <if test="values.propertiesChangeLog.otzWasSet">otz = #{values.otz,jdbcType=TIMESTAMP},</if>
-      <if test="values.propertiesChangeLog.oWasSet">o = #{values.o,jdbcType=TIMESTAMP},</if>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=BIGINT},</if>
+      <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.statusWasSet">status = #{values.status,jdbcType=INTEGER},</if>
     </set>
     <where>
       <if test="filter.id != null ">
-        and id = #{filter.id,jdbcType=INTEGER}
+        and id = #{filter.id,jdbcType=BIGINT}
       </if>
       <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
         and id is null
       </if>
-      <if test="filter.otz != null ">
-        and otz = #{filter.otz,jdbcType=TIMESTAMP}
+      <if test="filter.name != null ">
+        and name = #{filter.name,jdbcType=VARCHAR}
       </if>
-      <if test="filter.otz == null and filter.propertiesChangeLog.otzWasSet">
-        and otz is null
+      <if test="filter.name == null and filter.propertiesChangeLog.nameWasSet">
+        and name is null
       </if>
-      <if test="filter.o != null ">
-        and o = #{filter.o,jdbcType=TIMESTAMP}
+      <if test="filter.status != null ">
+        and status = #{filter.status,jdbcType=INTEGER}
       </if>
-      <if test="filter.o == null and filter.propertiesChangeLog.oWasSet">
-        and o is null
+      <if test="filter.status == null and filter.propertiesChangeLog.statusWasSet">
+        and status is null
       </if>
     </where>
   </update>
@@ -124,22 +146,22 @@
     delete from event
     <where>
       <if test="id != null ">
-        and id = #{id,jdbcType=INTEGER}
+        and id = #{id,jdbcType=BIGINT}
       </if>
       <if test="id == null and propertiesChangeLog.idWasSet">
         and id is null
       </if>
-      <if test="otz != null ">
-        and otz = #{otz,jdbcType=TIMESTAMP}
+      <if test="name != null ">
+        and name = #{name,jdbcType=VARCHAR}
       </if>
-      <if test="otz == null and propertiesChangeLog.otzWasSet">
-        and otz is null
+      <if test="name == null and propertiesChangeLog.nameWasSet">
+        and name is null
       </if>
-      <if test="o != null ">
-        and o = #{o,jdbcType=TIMESTAMP}
+      <if test="status != null ">
+        and status = #{status,jdbcType=INTEGER}
       </if>
-      <if test="o == null and propertiesChangeLog.oWasSet">
-        and o is null
+      <if test="status == null and propertiesChangeLog.statusWasSet">
+        and status is null
       </if>
     </where>
   </delete>

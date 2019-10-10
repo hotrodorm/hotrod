@@ -1,7 +1,12 @@
 package org.hotrodorm.hotrod.hotrod_maven_plugin;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedHashSet;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.apache.maven.plugin.AbstractMojo;
@@ -9,6 +14,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 import org.hotrod.ant.Constants;
 import org.hotrod.buildinfo.BuildConstants;
@@ -38,16 +44,27 @@ public class GenMojo extends AbstractMojo {
 
   // Project properties: common to all developers in a project
 
+  // Note: 1) Each property must be annotated by @Parameter. 2) The property
+  // attribute -- if declared -- must be the exact same name as the Java member
+
   @Parameter(property = "configfile")
-  private String configFileName = null;
+  private String configfile = null;
 
   @Parameter(property = "generator")
   private String generator = null;
 
   // Developer properties: could be different per developer
 
+  // @Parameter(property = "driverclasspath")
+  // private String driverclasspath = null;
+
   @Parameter(property = "driverclass")
-  private String driverClass = null;
+  private String driverclass = null;
+
+  @Parameter()
+  private String localproperties = null;
+
+  // Loaded locally
 
   @Parameter(property = "url")
   private String url = null;
@@ -65,15 +82,20 @@ public class GenMojo extends AbstractMojo {
   private String schema = null;
 
   @Parameter(property = "facets", defaultValue = "")
-  private String facetsList = null;
+  private String facets = null;
 
   @Parameter(property = "display", defaultValue = "list")
-  private String sDisplayMode = null;
+  private String display = null;
 
   // Extra access to settings (may not be needed)
 
   @Parameter(defaultValue = "${settings}", readonly = true)
   private Settings settings = null;
+
+  // Injected properties
+
+  @Parameter(defaultValue = "${project}", readonly = true, required = true)
+  private MavenProject project;
 
   // Computed properties (during validation)
 
@@ -90,15 +112,26 @@ public class GenMojo extends AbstractMojo {
 
     log.debug("init");
 
+    getLog().info("project: " + this.project.getName());
+
+    getLog().info("configfile: " + this.configfile);
+    getLog().info("generator: " + this.generator);
+    // getLog().info("driverclasspath: " + this.driverclasspath);
+
     display(Constants.TOOL_NAME + " version " + BuildConstants.APPLICATION_VERSION + " (build "
         + BuildConstants.BUILD_TIME_TIMESTAMP + ")");
 
     validateParameters();
 
+    getLog().info("driverClass: " + this.driverclass);
+    getLog().info("url: " + this.url);
+    getLog().info("username: " + this.username);
+    getLog().info("password: " + this.password);
+
     display("");
     display("Configuration File: " + this.configFile);
 
-    DatabaseLocation loc = new DatabaseLocation(this.driverClass, this.url, this.username, this.password, this.catalog,
+    DatabaseLocation loc = new DatabaseLocation(this.driverclass, this.url, this.username, this.password, this.catalog,
         this.schema, null);
 
     DatabaseAdapter adapter;
@@ -197,13 +230,94 @@ public class GenMojo extends AbstractMojo {
 
   private void validateParameters() throws MojoExecutionException {
 
+    // 1. Load the local properties file
+
+    if (this.localproperties == null || this.localproperties.trim().isEmpty()) {
+      throw new MojoExecutionException(Constants.TOOL_NAME + " parameter: " + "localproperties must be specified.");
+    }
+
+    File p = new File(this.localproperties);
+    if (!p.exists()) {
+      throw new MojoExecutionException(
+          Constants.TOOL_NAME + " parameter: " + "localproperties file does not exist: " + this.localproperties);
+    }
+    if (!p.isFile()) {
+      throw new MojoExecutionException(Constants.TOOL_NAME + " parameter: "
+          + "localproperties file exists but it's not a regular file: " + this.localproperties);
+    }
+
+    BufferedReader r = null;
+    Properties props = null;
+
+    try {
+      props = new Properties();
+      r = new BufferedReader(new FileReader(p));
+      props.load(r);
+
+    } catch (FileNotFoundException e) {
+      throw new MojoExecutionException(
+          Constants.TOOL_NAME + " parameter: " + "localproperties file does not exist: " + this.localproperties);
+
+    } catch (IOException e) {
+      throw new MojoExecutionException(Constants.TOOL_NAME + " parameter: " + "localproperties: cannot read file: "
+          + e.getMessage() + ": " + this.localproperties);
+
+    } finally {
+      if (r != null) {
+        try {
+          r.close();
+        } catch (IOException e) {
+          // Swallow this exception
+        }
+      }
+    }
+
+    // 2. Load/Replace with local values if specified
+
+    this.configfile = props.getProperty("configfile", this.configfile);
+    this.generator = props.getProperty("generator", this.generator);
+    this.driverclass = props.getProperty("driverclass", this.driverclass);
+
+    this.url = props.getProperty("url");
+    this.username = props.getProperty("username");
+    this.password = props.getProperty("password");
+    this.catalog = props.getProperty("catalog");
+    this.schema = props.getProperty("schema");
+    this.facets = props.getProperty("facets");
+    this.display = props.getProperty("display");
+
+    // 3. Validate properties
+
+    // configfile
+
+    this.projectBaseDir = new File(".");
+    if (this.configfile == null) {
+      throw new MojoExecutionException(
+          Constants.TOOL_NAME + " parameter: " + "configfile attribute must be specified.");
+    }
+    if (SUtils.isEmpty(this.configfile)) {
+      throw new MojoExecutionException(Constants.TOOL_NAME + " parameter: " + "configfile attribute cannot be empty.");
+    }
+    this.configFile = new File(this.projectBaseDir, this.configfile);
+    if (!this.configFile.exists()) {
+      throw new MojoExecutionException(
+          Constants.TOOL_NAME + " parameter: " + "configfile does not exist: " + this.configfile);
+    }
+
+    // generator
+
+    if (SUtils.isEmpty(this.generator)) {
+      throw new MojoExecutionException(
+          Constants.TOOL_NAME + " parameter: " + "The attribute 'generator' must be specified.");
+    }
+
     // driverclass
 
-    if (this.driverClass == null) {
+    if (this.driverclass == null) {
       throw new MojoExecutionException(
           Constants.TOOL_NAME + " parameter: " + "driverclass attribute must be specified.");
     }
-    if (SUtils.isEmpty(this.driverClass)) {
+    if (SUtils.isEmpty(this.driverclass)) {
       throw new MojoExecutionException(Constants.TOOL_NAME + " parameter: " + "driverclass attribute cannot be empty.");
     }
 
@@ -244,49 +358,27 @@ public class GenMojo extends AbstractMojo {
       this.schema = null;
     }
 
-    // configfile
-
-    this.projectBaseDir = new File(".");
-    if (this.configFileName == null) {
-      throw new MojoExecutionException("configfile attribute must be specified.");
-    }
-    if (SUtils.isEmpty(this.configFileName)) {
-      throw new MojoExecutionException("configfile attribute cannot be empty.");
-    }
-    this.configFile = new File(this.projectBaseDir, this.configFileName);
-    if (!this.configFile.exists()) {
-      throw new MojoExecutionException(Constants.TOOL_NAME + " parameter: " + "Config file '"
-          + this.configFile.getAbsolutePath() + "' does not exist.");
-    }
-
-    // display mode
-
-    if (this.sDisplayMode == null) {
-      this.displayMode = DisplayMode.LIST;
-    } else {
-      this.displayMode = DisplayMode.parse(this.sDisplayMode);
-      if (this.displayMode == null) {
-        throw new MojoExecutionException(Constants.TOOL_NAME + " parameter: "
-            + "If specified, the attribute 'display' must have " + "one of the following values: " + "summary, list");
-      }
-    }
-
     // facets
 
     this.facetNames = new LinkedHashSet<String>();
-    if (!SUtils.isEmpty(this.facetsList)) {
-      for (String facetName : this.facetsList.split(",")) {
+    if (!SUtils.isEmpty(this.facets)) {
+      for (String facetName : this.facets.split(",")) {
         if (!SUtils.isEmpty(facetName)) {
           this.facetNames.add(facetName.trim());
         }
       }
     }
 
-    // generator
+    // display
 
-    if (SUtils.isEmpty(this.generator)) {
-      throw new MojoExecutionException(
-          Constants.TOOL_NAME + " parameter: " + "The attribute 'generator' must be specified.");
+    if (this.display == null) {
+      this.displayMode = DisplayMode.LIST;
+    } else {
+      this.displayMode = DisplayMode.parse(this.display);
+      if (this.displayMode == null) {
+        throw new MojoExecutionException(Constants.TOOL_NAME + " parameter: "
+            + "If specified, the attribute display must have one of the following values: " + "summary, list");
+      }
     }
 
   }
