@@ -1,50 +1,50 @@
 To run HotRod from Maven, you'll need to do two things:
 
+1. Prepare a local properties file for the developer. For example 'dev.properties' with the user's properties:
 
-1. Add the JDBC driver as a dependency in your pom.xml. For example, for PostgreSQL 11:
+  # local HotRod properties
+  url=jdbc:postgresql://192.168.56.213:5432/postgres
+  username=postgres
+  password=mypassword
+  catalog=
+  schema=public
+  facets=
+  display=list
 
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.2.5.jre6</version>
-      <type>jar</type>
-    </dependency>
+2. Configure the HotRod Generation (local props, project props, JDBC driver). For example:
 
+  <build>
 
-2. Add the configuration into the local user settings (~/.m2/settings.xml):
+    <plugins>
 
-<settings>
+      ...
 
-  ...
+      <plugin>
+        <groupId>org.hotrodorm.hotrod</groupId>
+        <artifactId>hotrod-maven-plugin</artifactId>
+        <version>3.0.1</version>
 
-  <profiles>
- 
-    <profile>
-      <id>hotrod</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
- 
-        <!-- Project properties: common to all developers in a project -->
- 
-        <configfile>/src/test/hotrod/hotrod.xml</configfile>
-        <generator>MyBatis-Spring</generator>
- 
-        <!-- Developer properties: could be different per developer -->
- 
-        <driverclass>org.postgresql.Driver</driverclass>
-        <url>jdbc:postgresql://192.168.56.213:5432/postgres</url>
-        <username>postgres</username>
-        <password>mypassword</password>
-        <catalog></catalog>
-        <schema>public</schema>
-        <facets></facets>
-        <display>list</display>
- 
-      </properties>
-    </profile>
- 
-  </profiles>
-   
-</settings>
+        <configuration>
+          <localproperties>dev.properties</localproperties>
+          <configfile>src/main/hotrod/hotrod.xml</configfile>
+          <generator>MyBatis-Spring</generator>
+          <driverclass>org.postgresql.Driver</driverclass>
+        </configuration>
+
+        <dependencies>
+          <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.5.jre6</version>
+            <type>jar</type>
+          </dependency>
+        </dependencies>
+
+      </plugin>
+
+      ...
+      
+    </plugins>
+
+  </build>
+      
