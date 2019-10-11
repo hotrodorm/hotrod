@@ -27,10 +27,10 @@
   <property name="website.renumber.dist.dir" value="dist/website-renumber" />
   <property name="website.pdfmanual.dist.dir" value="dist/website-pdfmanual" />
   <property name="release.dir" value="release" />
-  
+
   <property name="main.javadoc.dir" value="build/javadoc/main" />
   <property name="runtime.javadoc.dir" value="build/javadoc/runtime" />
-  
+
   <target name="-init">
     <mkdir dir="${main.build.dir}" />
     <mkdir dir="${main.javadoc.dir}" />
@@ -95,7 +95,7 @@
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
         <pathelement location="${lib.dir}/apache-commons/commons-jexl3-3.1.jar" />
         <pathelement location="${lib.dir}/apache-commons/commons-logging-1.2.jar" />
-        
+
         <pathelement location="${lib.dir}/spring/spring-context-4.2.5.RELEASE.jar" />
         <pathelement location="${lib.dir}/spring/spring-beans-4.2.5.RELEASE.jar" />
         <pathelement location="${lib.dir}/spring/spring-core-4.2.5.RELEASE.jar" />
@@ -127,38 +127,38 @@
       </classpath>
     </javac>
   </target>
-  
+
   <path id="eclipseplugin.classpath">
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui_3.108.0.v20160518-1929.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.swt_3.105.0.v20160603-0902.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.swt.gtk.linux.x86_64_3.105.0.v20160603-0902.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jface_3.12.0.v20160518-1929.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.commands_3.8.0.v20160316-1921.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.workbench_3.108.0.v20160602-1232.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.e4.ui.workbench3_0.13.100.v20160506-0759.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.12.0.v20160606-1342.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/javax.inject_1.0.0.v20091030.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.11.0.v20160603-1336.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi.compatibility.state_1.0.200.v20160504-1419.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.wst.jsdt.nashorn.extension_1.0.0.v201605131737.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.8.0.v20160509-1230.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.8.0.v20160509-0411.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.registry_3.6.100.v20160223-2218.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.preferences_3.6.0.v20160120-1756.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.contenttype_3.5.100.v20160418-1621.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.app_1.3.400.v20150715-1528.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.forms_3.7.0.v20160518-1929.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.ide_3.12.0.v20160601-1609.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.editors_3.10.0.v20160505-0931.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.filebuffers_3.6.0.v20160503-1849.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jface.text_3.11.0.v20160505-1301.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.text_3.6.0.v20160503-1849.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.wst.xml.ui_1.1.700.v201604272318.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.resources_3.11.0.v20160503-1608.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.views_3.8.100.v20160518-1929.jar"/>
-      <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.workbench.texteditor_3.10.0.v20160530-2011.jar"/>
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui_3.108.0.v20160518-1929.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.swt_3.105.0.v20160603-0902.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.swt.gtk.linux.x86_64_3.105.0.v20160603-0902.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jface_3.12.0.v20160518-1929.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.commands_3.8.0.v20160316-1921.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.workbench_3.108.0.v20160602-1232.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.e4.ui.workbench3_0.13.100.v20160506-0759.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.12.0.v20160606-1342.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/javax.inject_1.0.0.v20091030.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.11.0.v20160603-1336.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi.compatibility.state_1.0.200.v20160504-1419.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.wst.jsdt.nashorn.extension_1.0.0.v201605131737.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.8.0.v20160509-1230.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.8.0.v20160509-0411.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.registry_3.6.100.v20160223-2218.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.preferences_3.6.0.v20160120-1756.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.contenttype_3.5.100.v20160418-1621.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.app_1.3.400.v20150715-1528.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.forms_3.7.0.v20160518-1929.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.ide_3.12.0.v20160601-1609.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.editors_3.10.0.v20160505-0931.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.filebuffers_3.6.0.v20160503-1849.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jface.text_3.11.0.v20160505-1301.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.text_3.6.0.v20160503-1849.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.wst.xml.ui_1.1.700.v201604272318.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.resources_3.11.0.v20160503-1608.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.views_3.8.100.v20160518-1929.jar" />
+    <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.workbench.texteditor_3.10.0.v20160530-2011.jar" />
   </path>
-  
+
   <target name="compile-eclipseplugin" depends="-init, compile-main">
     <echo message="${ECLIPSE_HOME}/plugins/org.eclipse.ui_3.108.0.v20160518-1929.jar" />
     <javac destdir="${eclipseplugin.build.dir}"
@@ -180,43 +180,43 @@
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
         <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
         <pathelement location="${lib.dir}/tartarus-${tartarus.version}.jar" />
-        
+
         <!--
         <path refid="eclipseplugin.classpath" />
         -->
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui_3.108.0.v20160518-1929.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.swt_3.105.0.v20160603-0902.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.swt.gtk.linux.x86_64_3.105.0.v20160603-0902.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jface_3.12.0.v20160518-1929.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.commands_3.8.0.v20160316-1921.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.workbench_3.108.0.v20160602-1232.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.e4.ui.workbench3_0.13.100.v20160506-0759.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.12.0.v20160606-1342.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/javax.inject_1.0.0.v20091030.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.11.0.v20160603-1336.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi.compatibility.state_1.0.200.v20160504-1419.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.wst.jsdt.nashorn.extension_1.0.0.v201605131737.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.8.0.v20160509-1230.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.8.0.v20160509-0411.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.registry_3.6.100.v20160223-2218.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.preferences_3.6.0.v20160120-1756.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.contenttype_3.5.100.v20160418-1621.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.app_1.3.400.v20150715-1528.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.forms_3.7.0.v20160518-1929.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.ide_3.12.0.v20160601-1609.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.editors_3.10.0.v20160505-0931.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.filebuffers_3.6.0.v20160503-1849.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jface.text_3.11.0.v20160505-1301.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.text_3.6.0.v20160503-1849.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.wst.xml.ui_1.1.700.v201604272318.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.resources_3.11.0.v20160503-1608.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.views_3.8.100.v20160518-1929.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.workbench.texteditor_3.10.0.v20160530-2011.jar"/>
-        
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui_3.108.0.v20160518-1929.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.swt_3.105.0.v20160603-0902.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.swt.gtk.linux.x86_64_3.105.0.v20160603-0902.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jface_3.12.0.v20160518-1929.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.commands_3.8.0.v20160316-1921.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.workbench_3.108.0.v20160602-1232.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.e4.ui.workbench3_0.13.100.v20160506-0759.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.12.0.v20160606-1342.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/javax.inject_1.0.0.v20091030.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.11.0.v20160603-1336.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi.compatibility.state_1.0.200.v20160504-1419.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.wst.jsdt.nashorn.extension_1.0.0.v201605131737.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.8.0.v20160509-1230.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.8.0.v20160509-0411.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.registry_3.6.100.v20160223-2218.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.preferences_3.6.0.v20160120-1756.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.contenttype_3.5.100.v20160418-1621.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.app_1.3.400.v20150715-1528.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.forms_3.7.0.v20160518-1929.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.ide_3.12.0.v20160601-1609.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.editors_3.10.0.v20160505-0931.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.filebuffers_3.6.0.v20160503-1849.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jface.text_3.11.0.v20160505-1301.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.text_3.6.0.v20160503-1849.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.wst.xml.ui_1.1.700.v201604272318.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.resources_3.11.0.v20160503-1608.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.views_3.8.100.v20160518-1929.jar" />
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.ui.workbench.texteditor_3.10.0.v20160530-2011.jar" />
+
       </classpath>
     </javac>
   </target>
-  
+
   <property name="main.jar" value="${projectName}-${version}.jar" />
   <property name="runtime.jar" value="${projectName}-runtime-${version}.jar" />
 
@@ -239,12 +239,13 @@
       <fileset file="src/main/metadata/log4j.properties" />
     </jar>
   </target>
-  
+
   <target name="build" depends="jar" />
 
   <target name="clean-build" depends="clean, build" />
 
-  <target name="release" depends="clean, build"> <!-- excluded: jar-eclipse-plugin -->
+  <target name="release" depends="clean, build">
+    <!-- excluded: jar-eclipse-plugin -->
     <!--
     <zip destfile="${dist.dir}/quick-start-example.zip">
       <fileset dir="docs/quick-start-example" excludes="build/**/*" />
@@ -263,10 +264,11 @@
       <zipfileset dir="${dist.dir}" includes="example.zip" prefix="docs" />
     -->
   </target>
-  
+
   <target name="jar-eclipse-plugin" depends="compile-eclipseplugin">
     <zip destfile="${dist.dir}/org.hotrod.eclipse-${version}.jar">
-      <zipfileset dir="eclipse-plugin-resources/icons" prefix="eclipse-plugin-resources/icons" />
+      <zipfileset dir="eclipse-plugin-resources/icons"
+                  prefix="eclipse-plugin-resources/icons" />
       <fileset dir="${main.build.dir}" />
       <fileset dir="${runtime.build.dir}" />
       <fileset dir="${eclipseplugin.build.dir}" />
@@ -277,8 +279,10 @@
       <fileset file="src/eclipseplugin/metadata/log4j.properties" />
       <!--
       -->
-      <zipfileset src="${lib.dir}/log4j-1.2.17.jar" excludes="META-INF/MANIFEST.MF" />
-      <zipfileset src="${lib.dir}/tartarus-${tartarus.version}.jar" excludes="META-INF/MANIFEST.MF" />
+      <zipfileset src="${lib.dir}/log4j-1.2.17.jar"
+                  excludes="META-INF/MANIFEST.MF" />
+      <zipfileset src="${lib.dir}/tartarus-${tartarus.version}.jar"
+                  excludes="META-INF/MANIFEST.MF" />
     </zip>
   </target>
 
@@ -288,7 +292,7 @@
 
   <target name="web-site-generate" depends="clean, compile-tools">
     <echo message="Assembling web site..." />
-    
+
     <mkdir dir="${website.dist.dir}" />
 
     <java classname="websitegenerator.Assembler">
@@ -540,20 +544,33 @@
     <echo message="[ Automated tests finished ]" level="info" />
     <record name="${junit.log}" action="stop" />
   </target>
-  
+
   <!-- =========================================== -->
   <!-- Maven Central Publishing (using Apache Ivy) -->
   <!-- =========================================== -->
-  
+
   <property name="group.id" value="org.hotrodorm.hotrod" />
+  
   <property name="artifact.id" value="hotrod" />
   <property name="runtime.artifact.id" value="hotrod-runtime" />
+  <property name="mp.artifact.id" value="hotrod-maven-plugin" />
+  
   <property name="project.description" value="Advanced Java ORM" />
-  <property name="project.url" value="https://sourceforge.net/projects/hotrod/" />  
-  <property name="project.scm.url" value="https://git.code.sf.net/p/hotrod" />  
+  <property name="project.url"
+            value="https://sourceforge.net/projects/hotrod/" />
+  <property name="project.scm.url" value="https://git.code.sf.net/p/hotrod" />
 
   <property name="main.artifacts.dir" value="${dist.dir}/maven-hotrod" />
   <property name="runtime.artifacts.dir" value="${dist.dir}/maven-runtime" />
+  <property name="mp.artifacts.dir" value="${dist.dir}/maven-plugin" />
+
+  <property name="mp.dir" value="../hotrod-maven-plugin" />
+  <property name="mp.pom" value="hotrod-maven-plugin-${version}.pom" />
+  <property name="mp.jar" value="hotrod-maven-plugin-${version}.jar" />
+  <property name="mp.sources"
+            value="hotrod-maven-plugin-${version}-sources.jar" />
+  <property name="mp.javadoc"
+            value="hotrod-maven-plugin-${version}-javadoc.jar" />
 
   <taskdef name="ivy-configure" classname="org.apache.ivy.ant.IvyConfigure">
     <classpath>
@@ -573,50 +590,81 @@
 
   <target name="-publish-prepare" depends="clean-build">
 
-    <!-- At this point both jars are ready in the dist dir, because of the Ant dependencies -->
+    <!-- Check the HotRod Maven plugin is already prepared/built using Maven -->
+
+    <available file="${mp.dir}/target/${mp.jar}" property="mp.jar.present" />
+    <fail unless="mp.jar.present">Artifact not found: ${mp.dir}/target/${mp.jar}
+It seems the HotRod Maven plugin hasn't been packaged yet. Go the HotRod Maven plugin project and prepare the artifacts using:
+      
+        mvn clean package
+    </fail>
+    <available file="${mp.dir}/target/${mp.sources}" property="mp.jar.present" />
+    <fail unless="mp.jar.present">Artifact not found: ${mp.dir}/target/${mp.sources}
+It seems the HotRod Maven plugin hasn't been packaged yet. Go the HotRod Maven plugin project and prepare the artifacts using:
+      
+        mvn clean package
+    </fail>
+    <available file="${mp.dir}/target/${mp.javadoc}" property="mp.jar.present" />
+    <fail unless="mp.jar.present">Artifact not found: ${mp.dir}/target/${mp.javadoc}
+It seems the HotRod Maven plugin hasn't been packaged yet. Go the HotRod Maven plugin project and prepare the artifacts using:
+      
+        mvn clean package
+    </fail>
+    
+    <!-- At this point jars are ready in the dist dir, because of the Ant dependencies -->
 
     <!-- 1. Prepare the artifacts dirs with the jar libraries -->
 
     <mkdir dir="${main.artifacts.dir}" />
     <mkdir dir="${runtime.artifacts.dir}" />
+    <mkdir dir="${mp.artifacts.dir}" />
 
     <copy file="${dist.dir}/${main.jar}" todir="${main.artifacts.dir}" />
     <copy file="${dist.dir}/${runtime.jar}" todir="${runtime.artifacts.dir}" />
+    <copy file="${mp.dir}/target/${mp.jar}" todir="${mp.artifacts.dir}" />
 
     <!-- 2. Prepare pom descriptors -->
 
-    <copy file="maven-central-publishing/artifact-template.pom" tofile="${main.artifacts.dir}/${artifact.id}-${version}.pom" />
+    <copy file="maven-central-publishing/artifact-template.pom"
+          tofile="${main.artifacts.dir}/${artifact.id}-${version}.pom" />
     <replace file="${main.artifacts.dir}/${artifact.id}-${version}.pom">
-      <replacefilter token="@group.id@" value="${group.id}"/>
-      <replacefilter token="@artifact.id@" value="${artifact.id}"/>
-      <replacefilter token="@version@" value="${version}"/>
-      <replacefilter token="@project.description@" value="${project.description}"/>
-      <replacefilter token="@project.url@" value="${project.url}"/>
-      <replacefilter token="@project.scm.url@" value="${project.scm.url}"/>
+      <replacefilter token="@group.id@" value="${group.id}" />
+      <replacefilter token="@artifact.id@" value="${artifact.id}" />
+      <replacefilter token="@version@" value="${version}" />
+      <replacefilter token="@project.description@"
+                     value="${project.description}" />
+      <replacefilter token="@project.url@" value="${project.url}" />
+      <replacefilter token="@project.scm.url@" value="${project.scm.url}" />
     </replace>
-    
-    <copy file="maven-central-publishing/artifact-template.pom" tofile="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}.pom" />
+
+    <copy file="maven-central-publishing/artifact-template.pom"
+          tofile="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}.pom" />
     <replace file="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}.pom">
-      <replacefilter token="@group.id@" value="${group.id}"/>
-      <replacefilter token="@artifact.id@" value="${runtime.artifact.id}"/>
-      <replacefilter token="@version@" value="${version}"/>
-      <replacefilter token="@project.description@" value="${project.description}"/>
-      <replacefilter token="@project.url@" value="${project.url}"/>
-      <replacefilter token="@project.scm.url@" value="${project.scm.url}"/>
+      <replacefilter token="@group.id@" value="${group.id}" />
+      <replacefilter token="@artifact.id@" value="${runtime.artifact.id}" />
+      <replacefilter token="@version@" value="${version}" />
+      <replacefilter token="@project.description@"
+                     value="${project.description}" />
+      <replacefilter token="@project.url@" value="${project.url}" />
+      <replacefilter token="@project.scm.url@" value="${project.scm.url}" />
     </replace>
+
+    <copy file="${mp.dir}/pom.xml" tofile="${mp.artifacts.dir}/${mp.pom}" />
 
   </target>
 
   <target name="publish-install" depends="-publish-prepare">
 
-    <property name="vdir" value="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod/${version}" />
+    <property name="vdir"
+              value="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod/${version}" />
     <mkdir dir="${vdir}" />
     <delete includeemptydirs="true">
       <fileset dir="${vdir}" includes="**/*" />
     </delete>
-    
+
     <copy file="${main.artifacts.dir}/${main.jar}" todir="${vdir}" />
-    <copy file="${main.artifacts.dir}/${artifact.id}-${version}.pom" todir="${vdir}" />
+    <copy file="${main.artifacts.dir}/${artifact.id}-${version}.pom"
+          todir="${vdir}" />
 
   </target>
 
@@ -632,6 +680,8 @@
       <fileset dir="${runtime.src.dir}" />
     </jar>
 
+    <copy file="${mp.dir}/target/${mp.sources}" todir="${mp.artifacts.dir}" />
+
     <!-- 4. Prepare javadoc packages -->
 
     <javadoc destdir="${main.javadoc.dir}"
@@ -645,8 +695,8 @@
       <classpath>
         <pathelement path="${runtime.build.dir}" />
         <fileset dir="lib/jaxb">
-           <include name="**/*.jar"/>
-         </fileset>
+          <include name="**/*.jar" />
+        </fileset>
         <pathelement location="${lib.dir}/ant.jar" />
         <pathelement location="${lib.dir}/jxl.jar" />
         <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
@@ -684,40 +734,43 @@
         <pathelement location="${lib.dir}/spring/spring-core-4.2.5.RELEASE.jar" />
       </classpath>
     </javadoc>
-    
+
     <jar destfile="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}-javadoc.jar">
       <fileset dir="${runtime.javadoc.dir}" />
     </jar>
+
+    <copy file="${mp.dir}/target/${mp.javadoc}" todir="${mp.artifacts.dir}" />
+
+    <!-- 5. Sign all artifacts - This section relies on GPG being installed in your machine -->
     
-    <!-- 5. Sign all artifacts -->
-    <!-- This section relies on GPG being installed in your machine -->
+    <!-- 5.a Sign HotRod Generator library artifacts -->
 
     <input message="Signing Artifacts - Please enter GPG passphrase to unlock secret key: "
            addproperty="passphrase">
       <handler type="secure" />
     </input>
- 
+
     <exec executable="gpg" failonerror="true">
-     <arg value="-ab" />
+      <arg value="-ab" />
       <arg value="--passphrase" />
       <arg value="${passphrase}" />
       <arg value="${main.artifacts.dir}/${main.jar}" />
     </exec>
- 
+
     <exec executable="gpg" failonerror="true">
       <arg value="-ab" />
       <arg value="--passphrase" />
       <arg value="${passphrase}" />
       <arg value="${main.artifacts.dir}/${artifact.id}-${version}.pom" />
     </exec>
- 
+
     <exec executable="gpg" failonerror="true">
       <arg value="-ab" />
       <arg value="--passphrase" />
       <arg value="${passphrase}" />
       <arg value="${main.artifacts.dir}/${artifact.id}-${version}-sources.jar" />
     </exec>
- 
+
     <exec executable="gpg" failonerror="true">
       <arg value="-ab" />
       <arg value="--passphrase" />
@@ -725,29 +778,29 @@
       <arg value="${main.artifacts.dir}/${artifact.id}-${version}-javadoc.jar" />
     </exec>
 
+    <!-- 5.b Sign HotRod Runtime library artifacts -->
 
-    
     <exec executable="gpg" failonerror="true">
-     <arg value="-ab" />
+      <arg value="-ab" />
       <arg value="--passphrase" />
       <arg value="${passphrase}" />
       <arg value="${runtime.artifacts.dir}/${runtime.jar}" />
     </exec>
- 
+
     <exec executable="gpg" failonerror="true">
       <arg value="-ab" />
       <arg value="--passphrase" />
       <arg value="${passphrase}" />
       <arg value="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}.pom" />
     </exec>
- 
+
     <exec executable="gpg" failonerror="true">
       <arg value="-ab" />
       <arg value="--passphrase" />
       <arg value="${passphrase}" />
       <arg value="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}-sources.jar" />
     </exec>
- 
+
     <exec executable="gpg" failonerror="true">
       <arg value="-ab" />
       <arg value="--passphrase" />
@@ -755,12 +808,44 @@
       <arg value="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}-javadoc.jar" />
     </exec>
 
+    <!-- 5.c Sign HotRod Maven Plugin library artifacts -->
+
+    <exec executable="gpg" failonerror="true">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${mp.artifacts.dir}/${mp.jar}" />
+    </exec>
+
+    <exec executable="gpg" failonerror="true">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${mp.artifacts.dir}/${mp.pom}" />
+    </exec>
+
+    <exec executable="gpg" failonerror="true">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${mp.artifacts.dir}/${mp.sources}" />
+    </exec>
+
+    <exec executable="gpg" failonerror="true">
+      <arg value="-ab" />
+      <arg value="--passphrase" />
+      <arg value="${passphrase}" />
+      <arg value="${mp.artifacts.dir}/${mp.javadoc}" />
+    </exec>
+
     <echo message="[ All artifacts signed ]" />
 
     <!-- 6. Upload all artifacts to Maven Central Staging -->
 
-    <input message="Maven Central Username: " addproperty="maven.central.username" />
-    <input message="Maven Central Password: " addproperty="maven.central.password">
+    <input message="Maven Central Username: "
+           addproperty="maven.central.username" />
+    <input message="Maven Central Password: "
+           addproperty="maven.central.password">
       <handler type="secure" />
     </input>
     <ivy-configure file="maven-central-publishing/maven-central-ivysettings.xml" />
@@ -772,7 +857,7 @@
                  publishivy="false">
       <artifacts pattern="${main.artifacts.dir}/[artifact]-${version}(-[classifier]).[ext]" />
     </ivy-publish>
-    <echo message="[ HotRod - Artifacts uploaded ]" />
+    <echo message="[ HotRod Generator - Artifacts uploaded ]" />
 
     <ivy-resolve file="maven-central-publishing/maven-central-runtime-artifacts-ivy.xml" />
     <ivy-publish resolver="nexus-deploy"
@@ -781,9 +866,18 @@
                  publishivy="false">
       <artifacts pattern="${runtime.artifacts.dir}/[artifact]-${version}(-[classifier]).[ext]" />
     </ivy-publish>
+
+    <ivy-resolve file="maven-central-publishing/maven-central-plugin-artifacts-ivy.xml" />
+    <ivy-publish resolver="nexus-deploy"
+                 pubrevision="${version}"
+                 overwrite="true"
+                 publishivy="false">
+      <artifacts pattern="${mp.artifacts.dir}/[artifact]-${version}(-[classifier]).[ext]" />
+    </ivy-publish>
+      
     <echo message="[ HotRod Runtime - Artifacts uploaded ]" />
 
-    <!-- 7. Finally, you'll need to login to Maven Central web site to "Close" the artifacts, and then to "Release" them to the world -->
+    <!-- 7. Finally, you'll need to login to Maven Central web site to A) "Close" the artifacts, and then to B) "Release" them to the world -->
 
   </target>
 

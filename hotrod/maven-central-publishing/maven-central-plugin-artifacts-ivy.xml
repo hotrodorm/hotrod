@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+ 
+  <info organisation="${group.id}" module="${mp.artifact.id}" revision="${version}" />
+ 
+  <publications>
+ 
+    <artifact name="${mp.artifact.id}" type="pom" ext="pom" />
+    <artifact name="${mp.artifact.id}" type="pom.asc" ext="pom.asc" />
+   
+    <artifact name="${mp.artifact.id}" type="jar" ext="jar" />
+    <artifact name="${mp.artifact.id}" type="jar.asc" ext="jar.asc" />
+ 
+    <artifact name="${mp.artifact.id}" type="sources" ext="jar" e:classifier="sources"/>
+    <artifact name="${mp.artifact.id}" type="sources.asc" ext="jar.asc" e:classifier="sources"/>
+   
+    <artifact name="${mp.artifact.id}" type="javadoc" ext="jar" e:classifier="javadoc"/>
+    <artifact name="${mp.artifact.id}" type="javadoc.asc" ext="jar.asc" e:classifier="javadoc"/>
+ 
+  </publications>
+   
+</ivy-module>
