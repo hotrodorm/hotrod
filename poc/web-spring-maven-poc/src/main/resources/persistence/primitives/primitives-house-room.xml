@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.daos.primitives.houseRoom">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    room_name,
+    house_id
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.room_name,
+    ${alias}.house_id
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.daos.HouseRoomVO">
+    <id property="id" column="id" />
+    <result property="roomName" column="room_name" />
+    <result property="houseId" column="house_id" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from "house_ROOM"
+     where
+      id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from "house_ROOM"
+    <where>
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="p.roomName != null ">
+        and room_name = #{p.roomName,jdbcType=VARCHAR}
+      </if>
+      <if test="p.roomName == null and p.propertiesChangeLog.roomNameWasSet">
+        and room_name is null
+      </if>
+      <if test="p.houseId != null ">
+        and house_id = #{p.houseId,jdbcType=INTEGER}
+      </if>
+      <if test="p.houseId == null and p.propertiesChangeLog.houseIdWasSet">
+        and house_id is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into "house_ROOM" (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+        <if test="true">, room_name</if>
+        <if test="true">, house_id</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{roomName,jdbcType=VARCHAR}</if>
+        <if test="true">, #{houseId,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update "house_ROOM" set
+      room_name = #{roomName,jdbcType=VARCHAR},
+      house_id = #{houseId,jdbcType=INTEGER}
+     where
+      id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from "house_ROOM"
+     where
+      id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update "house_ROOM"
+    <set>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.roomNameWasSet">room_name = #{values.roomName,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.houseIdWasSet">house_id = #{values.houseId,jdbcType=INTEGER},</if>
+    </set>
+    <where>
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="filter.roomName != null ">
+        and room_name = #{filter.roomName,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.roomName == null and filter.propertiesChangeLog.roomNameWasSet">
+        and room_name is null
+      </if>
+      <if test="filter.houseId != null ">
+        and house_id = #{filter.houseId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.houseId == null and filter.propertiesChangeLog.houseIdWasSet">
+        and house_id is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from "house_ROOM"
+    <where>
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="roomName != null ">
+        and room_name = #{roomName,jdbcType=VARCHAR}
+      </if>
+      <if test="roomName == null and propertiesChangeLog.roomNameWasSet">
+        and room_name is null
+      </if>
+      <if test="houseId != null ">
+        and house_id = #{houseId,jdbcType=INTEGER}
+      </if>
+      <if test="houseId == null and propertiesChangeLog.houseIdWasSet">
+        and house_id is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

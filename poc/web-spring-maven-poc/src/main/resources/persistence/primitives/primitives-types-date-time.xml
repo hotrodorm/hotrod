@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.daos.primitives.typesDateTime">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    dat1,
+    ts1,
+    ts2,
+    ts3,
+    ts4,
+    ts5,
+    tim1,
+    tim2,
+    tim3,
+    tim4,
+    tim5
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.dat1,
+    ${alias}.ts1,
+    ${alias}.ts2,
+    ${alias}.ts3,
+    ${alias}.ts4,
+    ${alias}.ts5,
+    ${alias}.tim1,
+    ${alias}.tim2,
+    ${alias}.tim3,
+    ${alias}.tim4,
+    ${alias}.tim5
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.daos.TypesDateTimeVO">
+    <id property="id" column="id" />
+    <result property="dat1" column="dat1" />
+    <result property="ts1" column="ts1" />
+    <result property="ts2" column="ts2" />
+    <result property="ts3" column="ts3" />
+    <result property="ts4" column="ts4" />
+    <result property="ts5" column="ts5" />
+    <result property="tim1" column="tim1" />
+    <result property="tim2" column="tim2" />
+    <result property="tim3" column="tim3" />
+    <result property="tim4" column="tim4" />
+    <result property="tim5" column="tim5" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from types_date_time
+     where
+      id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from types_date_time
+    <where>
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="p.dat1 != null ">
+        and dat1 = #{p.dat1,jdbcType=DATE}
+      </if>
+      <if test="p.dat1 == null and p.propertiesChangeLog.dat1WasSet">
+        and dat1 is null
+      </if>
+      <if test="p.ts1 != null ">
+        and ts1 = #{p.ts1,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.ts1 == null and p.propertiesChangeLog.ts1WasSet">
+        and ts1 is null
+      </if>
+      <if test="p.ts2 != null ">
+        and ts2 = #{p.ts2,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.ts2 == null and p.propertiesChangeLog.ts2WasSet">
+        and ts2 is null
+      </if>
+      <if test="p.ts3 != null ">
+        and ts3 = #{p.ts3,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.ts3 == null and p.propertiesChangeLog.ts3WasSet">
+        and ts3 is null
+      </if>
+      <if test="p.ts4 != null ">
+        and ts4 = #{p.ts4,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.ts4 == null and p.propertiesChangeLog.ts4WasSet">
+        and ts4 is null
+      </if>
+      <if test="p.ts5 != null ">
+        and ts5 = #{p.ts5,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.ts5 == null and p.propertiesChangeLog.ts5WasSet">
+        and ts5 is null
+      </if>
+      <if test="p.tim1 != null ">
+        and tim1 = #{p.tim1,jdbcType=TIME}
+      </if>
+      <if test="p.tim1 == null and p.propertiesChangeLog.tim1WasSet">
+        and tim1 is null
+      </if>
+      <if test="p.tim2 != null ">
+        and tim2 = #{p.tim2,jdbcType=TIME}
+      </if>
+      <if test="p.tim2 == null and p.propertiesChangeLog.tim2WasSet">
+        and tim2 is null
+      </if>
+      <if test="p.tim3 != null ">
+        and tim3 = #{p.tim3,jdbcType=TIME}
+      </if>
+      <if test="p.tim3 == null and p.propertiesChangeLog.tim3WasSet">
+        and tim3 is null
+      </if>
+      <if test="p.tim4 != null ">
+        and tim4 = #{p.tim4,jdbcType=TIME}
+      </if>
+      <if test="p.tim4 == null and p.propertiesChangeLog.tim4WasSet">
+        and tim4 is null
+      </if>
+      <if test="p.tim5 != null ">
+        and tim5 = #{p.tim5,jdbcType=TIME}
+      </if>
+      <if test="p.tim5 == null and p.propertiesChangeLog.tim5WasSet">
+        and tim5 is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into types_date_time (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+        <if test="true">, dat1</if>
+        <if test="true">, ts1</if>
+        <if test="true">, ts2</if>
+        <if test="true">, ts3</if>
+        <if test="true">, ts4</if>
+        <if test="true">, ts5</if>
+        <if test="true">, tim1</if>
+        <if test="true">, tim2</if>
+        <if test="true">, tim3</if>
+        <if test="true">, tim4</if>
+        <if test="true">, tim5</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{dat1,jdbcType=DATE}</if>
+        <if test="true">, #{ts1,jdbcType=TIMESTAMP}</if>
+        <if test="true">, #{ts2,jdbcType=TIMESTAMP}</if>
+        <if test="true">, #{ts3,jdbcType=TIMESTAMP}</if>
+        <if test="true">, #{ts4,jdbcType=TIMESTAMP}</if>
+        <if test="true">, #{ts5,jdbcType=TIMESTAMP}</if>
+        <if test="true">, #{tim1,jdbcType=TIME}</if>
+        <if test="true">, #{tim2,jdbcType=TIME}</if>
+        <if test="true">, #{tim3,jdbcType=TIME}</if>
+        <if test="true">, #{tim4,jdbcType=TIME}</if>
+        <if test="true">, #{tim5,jdbcType=TIME}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update types_date_time set
+      dat1 = #{dat1,jdbcType=DATE},
+      ts1 = #{ts1,jdbcType=TIMESTAMP},
+      ts2 = #{ts2,jdbcType=TIMESTAMP},
+      ts3 = #{ts3,jdbcType=TIMESTAMP},
+      ts4 = #{ts4,jdbcType=TIMESTAMP},
+      ts5 = #{ts5,jdbcType=TIMESTAMP},
+      tim1 = #{tim1,jdbcType=TIME},
+      tim2 = #{tim2,jdbcType=TIME},
+      tim3 = #{tim3,jdbcType=TIME},
+      tim4 = #{tim4,jdbcType=TIME},
+      tim5 = #{tim5,jdbcType=TIME}
+     where
+      id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from types_date_time
+     where
+      id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update types_date_time
+    <set>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.dat1WasSet">dat1 = #{values.dat1,jdbcType=DATE},</if>
+      <if test="values.propertiesChangeLog.ts1WasSet">ts1 = #{values.ts1,jdbcType=TIMESTAMP},</if>
+      <if test="values.propertiesChangeLog.ts2WasSet">ts2 = #{values.ts2,jdbcType=TIMESTAMP},</if>
+      <if test="values.propertiesChangeLog.ts3WasSet">ts3 = #{values.ts3,jdbcType=TIMESTAMP},</if>
+      <if test="values.propertiesChangeLog.ts4WasSet">ts4 = #{values.ts4,jdbcType=TIMESTAMP},</if>
+      <if test="values.propertiesChangeLog.ts5WasSet">ts5 = #{values.ts5,jdbcType=TIMESTAMP},</if>
+      <if test="values.propertiesChangeLog.tim1WasSet">tim1 = #{values.tim1,jdbcType=TIME},</if>
+      <if test="values.propertiesChangeLog.tim2WasSet">tim2 = #{values.tim2,jdbcType=TIME},</if>
+      <if test="values.propertiesChangeLog.tim3WasSet">tim3 = #{values.tim3,jdbcType=TIME},</if>
+      <if test="values.propertiesChangeLog.tim4WasSet">tim4 = #{values.tim4,jdbcType=TIME},</if>
+      <if test="values.propertiesChangeLog.tim5WasSet">tim5 = #{values.tim5,jdbcType=TIME},</if>
+    </set>
+    <where>
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="filter.dat1 != null ">
+        and dat1 = #{filter.dat1,jdbcType=DATE}
+      </if>
+      <if test="filter.dat1 == null and filter.propertiesChangeLog.dat1WasSet">
+        and dat1 is null
+      </if>
+      <if test="filter.ts1 != null ">
+        and ts1 = #{filter.ts1,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.ts1 == null and filter.propertiesChangeLog.ts1WasSet">
+        and ts1 is null
+      </if>
+      <if test="filter.ts2 != null ">
+        and ts2 = #{filter.ts2,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.ts2 == null and filter.propertiesChangeLog.ts2WasSet">
+        and ts2 is null
+      </if>
+      <if test="filter.ts3 != null ">
+        and ts3 = #{filter.ts3,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.ts3 == null and filter.propertiesChangeLog.ts3WasSet">
+        and ts3 is null
+      </if>
+      <if test="filter.ts4 != null ">
+        and ts4 = #{filter.ts4,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.ts4 == null and filter.propertiesChangeLog.ts4WasSet">
+        and ts4 is null
+      </if>
+      <if test="filter.ts5 != null ">
+        and ts5 = #{filter.ts5,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.ts5 == null and filter.propertiesChangeLog.ts5WasSet">
+        and ts5 is null
+      </if>
+      <if test="filter.tim1 != null ">
+        and tim1 = #{filter.tim1,jdbcType=TIME}
+      </if>
+      <if test="filter.tim1 == null and filter.propertiesChangeLog.tim1WasSet">
+        and tim1 is null
+      </if>
+      <if test="filter.tim2 != null ">
+        and tim2 = #{filter.tim2,jdbcType=TIME}
+      </if>
+      <if test="filter.tim2 == null and filter.propertiesChangeLog.tim2WasSet">
+        and tim2 is null
+      </if>
+      <if test="filter.tim3 != null ">
+        and tim3 = #{filter.tim3,jdbcType=TIME}
+      </if>
+      <if test="filter.tim3 == null and filter.propertiesChangeLog.tim3WasSet">
+        and tim3 is null
+      </if>
+      <if test="filter.tim4 != null ">
+        and tim4 = #{filter.tim4,jdbcType=TIME}
+      </if>
+      <if test="filter.tim4 == null and filter.propertiesChangeLog.tim4WasSet">
+        and tim4 is null
+      </if>
+      <if test="filter.tim5 != null ">
+        and tim5 = #{filter.tim5,jdbcType=TIME}
+      </if>
+      <if test="filter.tim5 == null and filter.propertiesChangeLog.tim5WasSet">
+        and tim5 is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from types_date_time
+    <where>
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="dat1 != null ">
+        and dat1 = #{dat1,jdbcType=DATE}
+      </if>
+      <if test="dat1 == null and propertiesChangeLog.dat1WasSet">
+        and dat1 is null
+      </if>
+      <if test="ts1 != null ">
+        and ts1 = #{ts1,jdbcType=TIMESTAMP}
+      </if>
+      <if test="ts1 == null and propertiesChangeLog.ts1WasSet">
+        and ts1 is null
+      </if>
+      <if test="ts2 != null ">
+        and ts2 = #{ts2,jdbcType=TIMESTAMP}
+      </if>
+      <if test="ts2 == null and propertiesChangeLog.ts2WasSet">
+        and ts2 is null
+      </if>
+      <if test="ts3 != null ">
+        and ts3 = #{ts3,jdbcType=TIMESTAMP}
+      </if>
+      <if test="ts3 == null and propertiesChangeLog.ts3WasSet">
+        and ts3 is null
+      </if>
+      <if test="ts4 != null ">
+        and ts4 = #{ts4,jdbcType=TIMESTAMP}
+      </if>
+      <if test="ts4 == null and propertiesChangeLog.ts4WasSet">
+        and ts4 is null
+      </if>
+      <if test="ts5 != null ">
+        and ts5 = #{ts5,jdbcType=TIMESTAMP}
+      </if>
+      <if test="ts5 == null and propertiesChangeLog.ts5WasSet">
+        and ts5 is null
+      </if>
+      <if test="tim1 != null ">
+        and tim1 = #{tim1,jdbcType=TIME}
+      </if>
+      <if test="tim1 == null and propertiesChangeLog.tim1WasSet">
+        and tim1 is null
+      </if>
+      <if test="tim2 != null ">
+        and tim2 = #{tim2,jdbcType=TIME}
+      </if>
+      <if test="tim2 == null and propertiesChangeLog.tim2WasSet">
+        and tim2 is null
+      </if>
+      <if test="tim3 != null ">
+        and tim3 = #{tim3,jdbcType=TIME}
+      </if>
+      <if test="tim3 == null and propertiesChangeLog.tim3WasSet">
+        and tim3 is null
+      </if>
+      <if test="tim4 != null ">
+        and tim4 = #{tim4,jdbcType=TIME}
+      </if>
+      <if test="tim4 == null and propertiesChangeLog.tim4WasSet">
+        and tim4 is null
+      </if>
+      <if test="tim5 != null ">
+        and tim5 = #{tim5,jdbcType=TIME}
+      </if>
+      <if test="tim5 == null and propertiesChangeLog.tim5WasSet">
+        and tim5 is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

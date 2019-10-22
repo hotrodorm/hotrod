@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.daos.primitives.codes">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    account,
+    version_name,
+    account_version,
+    name
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.account,
+    ${alias}.version_name,
+    ${alias}.account_version,
+    ${alias}.name
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.daos.CodesVO">
+    <result property="id" column="id" />
+    <result property="account" column="account" />
+    <result property="versionName" column="version_name" />
+    <result property="accountVersion" column="account_version" />
+    <result property="name" column="name" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes -->
+
+  <select id="selectByUIAccount_VersionName" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from codes
+     where
+      account = #{account,jdbcType=INTEGER}
+      and version_name = #{versionName,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByUIAccountVersion_Name" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from codes
+     where
+      account_version = #{accountVersion,jdbcType=INTEGER}
+      and name = #{name,jdbcType=INTEGER}
+  </select>
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from codes
+    <where>
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="p.account != null ">
+        and account = #{p.account,jdbcType=INTEGER}
+      </if>
+      <if test="p.account == null and p.propertiesChangeLog.accountWasSet">
+        and account is null
+      </if>
+      <if test="p.versionName != null ">
+        and version_name = #{p.versionName,jdbcType=INTEGER}
+      </if>
+      <if test="p.versionName == null and p.propertiesChangeLog.versionNameWasSet">
+        and version_name is null
+      </if>
+      <if test="p.accountVersion != null ">
+        and account_version = #{p.accountVersion,jdbcType=INTEGER}
+      </if>
+      <if test="p.accountVersion == null and p.propertiesChangeLog.accountVersionWasSet">
+        and account_version is null
+      </if>
+      <if test="p.name != null ">
+        and name = #{p.name,jdbcType=INTEGER}
+      </if>
+      <if test="p.name == null and p.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (does not integrate sequences, and integrates identities) -->
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into codes (
+      <trim prefixOverrides=", ">
+        <if test="id != null">, id</if>
+        <if test="true">, account</if>
+        <if test="true">, version_name</if>
+        <if test="true">, account_version</if>
+        <if test="true">, name</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="id != null">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{account,jdbcType=INTEGER}</if>
+        <if test="true">, #{versionName,jdbcType=INTEGER}</if>
+        <if test="true">, #{accountVersion,jdbcType=INTEGER}</if>
+        <if test="true">, #{name,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update codes
+    <set>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.accountWasSet">account = #{values.account,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.versionNameWasSet">version_name = #{values.versionName,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.accountVersionWasSet">account_version = #{values.accountVersion,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=INTEGER},</if>
+    </set>
+    <where>
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="filter.account != null ">
+        and account = #{filter.account,jdbcType=INTEGER}
+      </if>
+      <if test="filter.account == null and filter.propertiesChangeLog.accountWasSet">
+        and account is null
+      </if>
+      <if test="filter.versionName != null ">
+        and version_name = #{filter.versionName,jdbcType=INTEGER}
+      </if>
+      <if test="filter.versionName == null and filter.propertiesChangeLog.versionNameWasSet">
+        and version_name is null
+      </if>
+      <if test="filter.accountVersion != null ">
+        and account_version = #{filter.accountVersion,jdbcType=INTEGER}
+      </if>
+      <if test="filter.accountVersion == null and filter.propertiesChangeLog.accountVersionWasSet">
+        and account_version is null
+      </if>
+      <if test="filter.name != null ">
+        and name = #{filter.name,jdbcType=INTEGER}
+      </if>
+      <if test="filter.name == null and filter.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from codes
+    <where>
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="account != null ">
+        and account = #{account,jdbcType=INTEGER}
+      </if>
+      <if test="account == null and propertiesChangeLog.accountWasSet">
+        and account is null
+      </if>
+      <if test="versionName != null ">
+        and version_name = #{versionName,jdbcType=INTEGER}
+      </if>
+      <if test="versionName == null and propertiesChangeLog.versionNameWasSet">
+        and version_name is null
+      </if>
+      <if test="accountVersion != null ">
+        and account_version = #{accountVersion,jdbcType=INTEGER}
+      </if>
+      <if test="accountVersion == null and propertiesChangeLog.accountVersionWasSet">
+        and account_version is null
+      </if>
+      <if test="name != null ">
+        and name = #{name,jdbcType=INTEGER}
+      </if>
+      <if test="name == null and propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

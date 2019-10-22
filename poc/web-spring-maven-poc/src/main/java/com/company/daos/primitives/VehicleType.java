@@ -1,0 +1,49 @@
+package com.company.daos.primitives;
+
+public enum VehicleType {
+
+  SEDAN(10, "Sedan"), //
+  TRUCK(11, "Truck");
+
+  // Properties (table columns)
+
+  private java.lang.Integer id;
+  private java.lang.String description;
+
+  // Constructor
+
+  private VehicleType(final java.lang.Integer id, final java.lang.String description) {
+    this.id = id;
+    this.description = description;
+  }
+
+  // Getters
+
+  public java.lang.Integer getId() {
+    return this.id;
+  }
+
+  public java.lang.String getDescription() {
+    return this.description;
+  }
+
+  // Encode & Decode
+
+  public static VehicleType decode(final java.lang.Integer value) {
+    if (value == null) {
+      return null;
+    }
+    for (VehicleType e : VehicleType.values()) {
+      if (e.id.equals(value)) {
+        return e;
+      }
+    }
+    throw new IllegalArgumentException(
+        "Invalid vehicle_type id value (" + value + "). There's no enum constant for this value.\n\n***** Maybe the <enum> table data has changed, and the <enum> table needs to be regenerated *****\n");
+  }
+
+  public static java.lang.Integer encode(final VehicleType e) {
+    return e == null ? null : e.id;
+  }
+
+}

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.daos.primitives._price_">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    value
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.value
+  </sql>
+
+  <resultMap id="allColumns" type="com.company.daos._price_VO">
+    <result property="id" column="id" />
+    <result property="value" column="value" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from "&lt;Stock$"."&amp;Price%"
+    <where>
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="p.value != null ">
+        and value = #{p.value,jdbcType=INTEGER}
+      </if>
+      <if test="p.value == null and p.propertiesChangeLog.valueWasSet">
+        and value is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (integrates sequences, and does not integrate identities) -->
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into "&lt;Stock$"."&amp;Price%" (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+        <if test="true">, value</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, nextval('"&lt;Stock$".seq_price')</if>
+        <if test="true">, #{value,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update "&lt;Stock$"."&amp;Price%"
+    <set>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.valueWasSet">value = #{values.value,jdbcType=INTEGER},</if>
+    </set>
+    <where>
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="filter.value != null ">
+        and value = #{filter.value,jdbcType=INTEGER}
+      </if>
+      <if test="filter.value == null and filter.propertiesChangeLog.valueWasSet">
+        and value is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from "&lt;Stock$"."&amp;Price%"
+    <where>
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="value != null ">
+        and value = #{value,jdbcType=INTEGER}
+      </if>
+      <if test="value == null and propertiesChangeLog.valueWasSet">
+        and value is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>
