@@ -4,7 +4,7 @@
 
   <groupId>org.hotrodorm.hotrod</groupId>
   <artifactId>hotrod-maven-plugin</artifactId>
-  <version>3.0.1</version>
+  <version>3.0.2</version>
   <packaging>maven-plugin</packaging>
 
   <name>HotRod Maven Plugin</name>
@@ -79,34 +79,21 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>3.0.1</version>
+      <version>3.0.2</version>
     </dependency>
 
-    <!-- Adding JAXB dependency, so any Java 9+ client will work -->
+    <!-- Adding JAXB (RI) dependency, so any Java 9+ client will work -->
 
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
-      <version>2.3.0</version>
-      <scope>runtime</scope>
+      <version>2.3.1</version>
     </dependency>
-
+    
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-core</artifactId>
-      <version>2.3.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>2.3.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>activation</artifactId>
-      <version>1.1.1</version>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>2.3.1</version>
     </dependency>
 
   </dependencies>

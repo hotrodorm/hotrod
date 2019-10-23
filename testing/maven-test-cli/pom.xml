@@ -20,20 +20,12 @@
 
   <dependencies>
 
-    <!-- Dependencies for workbench time -->
-
-    <dependency>
-      <groupId>org.hotrodorm.hotrod</groupId>
-      <artifactId>hotrod-maven-plugin</artifactId>
-      <version>3.0.1</version>
-    </dependency>
-
     <!-- Runtime dependencies -->
 
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-runtime</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.2</version>
     </dependency>
 
     <dependency>
@@ -116,7 +108,7 @@
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>3.0.1</version>
+        <version>3.0.2</version>
 
         <configuration>
           <localproperties>dev.properties</localproperties>

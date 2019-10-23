@@ -655,17 +655,35 @@ It seems the HotRod Maven plugin hasn't been packaged yet. Go the HotRod Maven p
 
   <target name="publish-install" depends="-publish-prepare">
 
-    <property name="vdir"
+    <property name="mdir"
               value="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod/${version}" />
-    <mkdir dir="${vdir}" />
+    <mkdir dir="${mdir}" />
     <delete includeemptydirs="true">
-      <fileset dir="${vdir}" includes="**/*" />
+      <fileset dir="${mdir}" includes="**/*" />
     </delete>
-
-    <copy file="${main.artifacts.dir}/${main.jar}" todir="${vdir}" />
+    <copy file="${main.artifacts.dir}/${main.jar}" todir="${mdir}" />
     <copy file="${main.artifacts.dir}/${artifact.id}-${version}.pom"
-          todir="${vdir}" />
+          todir="${mdir}" />
 
+    <property name="rdir"
+              value="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod-runtime/${version}" />
+    <mkdir dir="${rdir}" />
+    <delete includeemptydirs="true">
+      <fileset dir="${rdir}" includes="**/*" />
+    </delete>
+    <copy file="${runtime.artifacts.dir}/${runtime.jar}" todir="${rdir}" />
+    <copy file="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}.pom"
+          todir="${rdir}" />
+
+    <property name="pdir"
+              value="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod-maven-plugin/${version}" />
+    <mkdir dir="${pdir}" />
+    <delete includeemptydirs="true">
+      <fileset dir="${pdir}" includes="**/*" />
+    </delete>
+    <copy file="${mp.artifacts.dir}/${mp.jar}" todir="${pdir}" />
+    <copy file="${mp.artifacts.dir}/${mp.pom}" todir="${pdir}" />
+    
   </target>
 
   <target name="publish-to-maven-central-staging" depends="-publish-prepare">
