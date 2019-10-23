@@ -23,9 +23,9 @@
 
   <dependencies>
 
-    <!-- ============================= -->  
+    <!-- ============================= -->
     <!-- === Provided dependencies === -->
-    <!-- ============================= -->  
+    <!-- ============================= -->
     
     <!-- 1. Servlets -->
 
@@ -97,7 +97,7 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-runtime</artifactId>
-      <version>3.0.1</version>
+      <version>3.0.2</version>
     </dependency>
 
     <!-- 4. Log4j 2 -->
@@ -145,7 +145,7 @@
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>3.0.1</version>
+        <version>3.0.2</version>
 
         <configuration>
           <localproperties>dev.properties</localproperties>
