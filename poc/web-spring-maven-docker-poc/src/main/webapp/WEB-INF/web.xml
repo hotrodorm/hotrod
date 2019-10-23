@@ -4,7 +4,19 @@
 
 <web-app>
 
-  <display-name>Archetype Created Web Application</display-name>
+  <display-name>My Web Application</display-name>
+
+  <!-- Filters -->
+
+  <filter>
+    <filter-name>GateFilter</filter-name>
+    <filter-class>com.company.filters.GateFilter
+    </filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>GateFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
   <!-- Web Application Context Listener -->
 
@@ -24,9 +36,9 @@
   </servlet-mapping>  
 
   <!-- Welcome files -->
-    
+
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
-  
+
 </web-app>

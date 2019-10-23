@@ -22,15 +22,24 @@ public class RetrieveServlet extends HttpServlet {
     super();
   }
 
-  protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
-      throws ServletException, IOException {
-    log.info("starting...");
-    response.getWriter()
-        .append("<html><body><h1>Artifact #1</h1>" + "<p>Page served at " + request.getContextPath() + "</p>");
+  protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException
+  // throws ServletException, IOException
+  {
+    try {
+      log.info("starting...");
+      response.getWriter()
+          .append("<html><body><h1>Artifact #1</h1>" + "<p>Page served at " + request.getContextPath() + "</p>");
 
-    Queries queries = SpringBeanRetriever.getBean("queries");
-    int rows = queries.runLiveSQL();
-    response.getWriter().append("<p>Rows: " + rows + "</p></body></html>");
+      Queries queries = SpringBeanRetriever.getBean("queries");
+      int rows = queries.runLiveSQL();
+      response.getWriter().append("<p>Rows: " + rows + "</p></body></html>");
+    } catch (IOException e) {
+      log.error("Error", e);
+      throw e;
+    } catch (RuntimeException e) {
+      log.error("Error", e);
+      throw e;
+    }
 
   }
 

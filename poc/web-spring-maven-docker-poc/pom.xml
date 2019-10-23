@@ -4,12 +4,12 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>group1</groupId>
-  <artifactId>artifact1</artifactId>
+  <groupId>com.company.apps</groupId>
+  <artifactId>mywebapp</artifactId>
 
   <packaging>war</packaging>
 
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
 
   <name>artifact1 Maven Webapp</name>
   <url>http://maven.apache.org</url>
@@ -135,8 +135,6 @@
   </dependencies>
 
   <build>
-
-    <finalName>artifact1</finalName>
 
     <plugins>
 
