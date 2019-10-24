@@ -162,7 +162,27 @@
         </dependencies>
 
       </plugin>
-      
+
+      <!-- Generate a tar.gz file instead of a war file -->
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.1.1</version>
+        <configuration>
+                <descriptors>
+                    <descriptor>src/assembly/assembly.xml</descriptor>
+                </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase> <!-- bind to the packaging phase -->
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <!-- Set compiler using Java 11 (Java 8 also works, but not Java 6)-->
 
       <plugin>
