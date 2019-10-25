@@ -3,6 +3,8 @@ package com.company.servlets;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import com.company.daos.primitives.AccountDAO.AccountTable;
 
 @Component("queries")
 public class Queries {
+
+  private static final Logger log = LogManager.getLogger(Queries.class);
 
   @Autowired
   private LiveSQL sql;
@@ -31,13 +35,12 @@ public class Queries {
 
     if (rows != null) {
       for (Map<String, Object> r : rows) {
-        System.out.println("row: " + r);
+        log.info("row: " + r);
       }
     }
 
     return rows.size();
 
   }
-
 
 }

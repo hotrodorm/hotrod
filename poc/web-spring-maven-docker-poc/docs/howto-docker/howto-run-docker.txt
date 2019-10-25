@@ -4,7 +4,9 @@ This guide runs Tomcat on a non-root user with minimal privileges.
 
 This guide works on a docker engine that uses the "overlay2" storage driver, available in docker 18 (debian 9). Older storage drivers are buggy.
 
-=== Prepare the packages & files ===
+== 1. Preparing the image ==
+
+=== 1.a. Prepare the packages & files ===
 
 You'll need to create a folder with all packages. For example, you can create the "assembling" folder with:
 
@@ -13,9 +15,8 @@ total 207,978,496
 drwxr-xr-x 2 user1 user1       4,096 Oct 24 16:42 ./
 drwxr-xr-x 3 user1 user1       4,096 Oct 24 16:22 ../
 -rw-r--r-- 1 user1 user1  10,982,406 Oct 24 16:22 apache-tomcat-9.0.27.tar.gz
--rw-r--r-- 1 user1 user1         105 Oct 24 16:22 container.properties
 -rw-r--r-- 1 user1 user1       1,299 Oct 24 16:22 Dockerfile
--rw-r--r-- 1 user1 user1   8,604,072 Oct 24 16:22 mywebapp.tar.gz
+-rw-r--r-- 1 user1 user1   8,604,072 Oct 24 16:22 app.tar.gz
 -rw-r--r-- 1 user1 user1 187,611,826 Oct 24 16:22 openjdk-11+28_linux-x64_bin.tar.gz
 -rw-r--r-- 1 user1 user1     753,249 Oct 24 16:22 postgresql-42.2.5.jre6.jar
 -rw-r--r-- 1 user1 user1       1,564 Oct 24 16:22 server.xml
@@ -24,24 +25,54 @@ $
 As an example, use the files included in the same folder as this file:
  - Dockerfile
  - server.xml
- - container.properties
 
-=== Assemble the image ===
+=== 1.b. Assemble the image ===
 
 cd assembling
 docker build -t img3 .
 
-This will create the new image "img3".
+This will create the new image "img3". You can check it's there by typing:
+ $ docker images -a
+ REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+ img3                latest              6ddb42e5a406        18 hours ago        1.1GB
+ $
 
-=== Run the image ===
+== 2. Running the image ==
 
-docker run -it --env-file container.properties -p 80:8080 img3
+=== 2.a Prepare the files ===
 
-then:
+Create a directory with all necessary files and directories needed by the container. For example let's create the directory "running" with the following content:
 
-cd /home/user/apps/tomcat
-bin/startup.sh
+$ l
+total 16,384
+drwxr-xr-x 3 user1 user1 4,096 Oct 25 10:16 ./
+drwxr-xr-x 4 user1 user1 4,096 Oct 25 10:16 ../
+-rw-r--r-- 1 user1 user1   105 Oct 24 16:22 container.properties
+drwxr-xr-x 2 user1 user1 4,096 Oct 25 10:16 logs/
+$ 
 
-check the web page at: 192.168.56.77
+This image requires the "container.properties" file (an example is included in this directory) as well as a "logs" directory where the produced log files will be stored.
+
+=== 2.b Run the image ==
+
+The following command will run the image. It bounds the port reference to 80, and the logs dir to /home/user1/running/logs:
+
+ $ docker run -d --name app1 --env-file container.properties -p 80:8080 -v /home/user1/running/logs:/home/user/apps/tomcat/logs img3
+
+Note: the host directory (/home/user1/running/logs) must be specified with an absolute path.
+Note: you can check the web page at: 192.168.56.77
+
+=== 2.c. Stop the container ===
+
+ $ docker stop app1
+
+You can also remove the container (since it's still hogging the name "app1") with:
+
+ $ docker rm app1
+  
+ 
+
+
+
 
 

@@ -3,9 +3,14 @@ package com.company.contextlisteners;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.company.utils.EnvironmentValidator;
 
 public class MainContextListener implements ServletContextListener {
+
+  private static final Logger log = LogManager.getLogger(MainContextListener.class);
 
   private static final String APP_NAME = "Artifact #1";
 
@@ -28,7 +33,7 @@ public class MainContextListener implements ServletContextListener {
   // Helpers
 
   public static void display(final String txt) {
-    System.out.println(txt);
+    log.info(txt);
   }
 
 }

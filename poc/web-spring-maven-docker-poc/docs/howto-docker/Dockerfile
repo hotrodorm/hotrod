@@ -1,5 +1,4 @@
 FROM debian:stretch
-#FROM debian:jessie
 
 # sets the password to: pass
 RUN useradd -m -p a9b5csUr5wwB6 -s /bin/bash user
@@ -17,7 +16,7 @@ ADD postgresql-42.2.5.jre6.jar /home/user/apps/tomcat/lib
 
 RUN rm -r /home/user/apps/tomcat/webapps/*
 
-ADD mywebapp.tar.gz /home/user/apps/tomcat/webapps/ROOT
+ADD app.tar.gz /home/user/apps/tomcat/webapps/ROOT
 
 RUN rm -r /home/user/apps/tomcat/logs
 RUN rm -r /home/user/apps/tomcat/temp
@@ -26,10 +25,8 @@ RUN mkdir /home/user/apps/tomcat/logs
 RUN mkdir /home/user/apps/tomcat/temp
 RUN mkdir /home/user/apps/tomcat/work
 
-RUN mkdir /home/user/apps/tomcat/conf/Catalina
-RUN chown user:user /home/user/apps/tomcat/conf/Catalina
-RUN mkdir /home/user/apps/tomcat/conf/Catalina/localhost
-RUN chown user:user /home/user/apps/tomcat/conf/Catalina/localhost
+RUN mkdir -p /home/user/apps/tomcat/conf/Catalina/localhost
+RUN chown -R user:user /home/user/apps/tomcat/conf/Catalina
 
 RUN chmod -R 755 /home/user
 RUN chown -R root:root /home/user
@@ -40,3 +37,8 @@ RUN chown -R user:user /home/user/apps/tomcat/work
 EXPOSE 8080
 
 USER user
+
+ENV LOG_DIR /home/user/apps/tomcat/logs
+
+CMD ["/home/user/apps/tomcat/bin/catalina.sh", "run"]
+

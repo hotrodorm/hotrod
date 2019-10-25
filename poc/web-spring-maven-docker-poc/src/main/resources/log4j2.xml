@@ -5,42 +5,32 @@
 
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{DEFAULT} [%T] %-5p %C{1}(%L) - %m%n" />
-      <!-- PatternLayout pattern="%d{DEFAULT} [%t] %-5p %c{1}:%L - %msg%n" / -->
     </Console>
 
-    <!--
-    <RollingFile name="RollingFile" filename="logs/test.log"
-      filepattern="${logPath}/%d{YYYYMMddHHmmss}-rf.log">
-      <PatternLayout pattern="%-5p %C{1}(%L) - %m%n" />
+    <RollingFile name="RollingFile" filename="${env:LOG_DIR}/app.log" filepattern="${env:LOG_DIR}/app-%d{YYYYMMdd-HHmmss}.log">
+      <PatternLayout pattern="%d{DEFAULT} [%T] %-5p %C{1}(%L) - %m%n" />
       <Policies>
-        <SizeBasedTriggeringPolicy size="100 MB" />
+        <SizeBasedTriggeringPolicy size="30 MB" />
       </Policies>
       <DefaultRolloverStrategy max="20" />
     </RollingFile>
-    -->
  
   </Appenders>
 
   <Loggers>
 
     <!-- Adding logging to specific Java classes -->
-    <!--  
-    <Logger name="com.dol.lzcontroller.web.filters.LogFilter" level="debug" />
-    -->
+    <!-- <Logger name="com.company.servlets.Queries" level="debug" /> -->
 
-    <!-- Logging MyBatis persistence -->
-    <!--Logger name="daos.primitives.vendor.selectByPK" level="debug" / -->
-    <!-- 
-    <Logger name="com.dol.lzcontroller.db.queries.primitives.queries" level="debug" />
-    -->
-    <Logger name="com.dol.lzcontroller.db.queries.primitives.webQueries" level="debug" />
-    
+    <!-- Logging a MyBatis whole mapper, or a specific query -->
+    <!-- <Logger name="com.company.daos.primitives.account" level="debug"> -->
+    <!-- <Logger name="com.company.daos.primitives.account.selectByPK" level="debug"> -->
 
     <!-- Set default logger level to INFO -->
     <Root level="info">
       <AppenderRef ref="Console" />
-      <!-- 
       <AppenderRef ref="RollingFile" />
+      <!-- 
       -->
     </Root>
 
