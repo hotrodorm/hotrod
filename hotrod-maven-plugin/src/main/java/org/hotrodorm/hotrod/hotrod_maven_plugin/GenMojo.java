@@ -14,6 +14,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import org.hotrod.ant.Constants;
 import org.hotrod.buildinfo.BuildConstants;
 import org.hotrod.config.ConfigurationLoader;
@@ -42,6 +43,9 @@ public class GenMojo extends AbstractMojo {
 
   // Note: 1) Each property must be annotated by @Parameter. 2) The property
   // attribute -- if declared -- must be the exact same name as the Java member
+
+  @Parameter(property = "skip")
+  private String skip = null;
 
   @Parameter(property = "configfile")
   private String configfile = null;
@@ -80,11 +84,17 @@ public class GenMojo extends AbstractMojo {
 
   // Computed properties (during validation)
 
+  private boolean enabled;
   private File projectBaseDir;
   private File configFile;
   private DisplayMode displayMode;
 
   private LinkedHashSet<String> facetNames = null;
+
+  // Project information
+
+  @Parameter(defaultValue = "${project}", required = true, readonly = true)
+  private MavenProject project;
 
   // Mojo logic
 
@@ -95,8 +105,17 @@ public class GenMojo extends AbstractMojo {
 
     display(Constants.TOOL_NAME + " version " + BuildConstants.APPLICATION_VERSION + " (build "
         + BuildConstants.BUILD_TIME_TIMESTAMP + ")");
+    log.debug(" >> artifactId: " + this.project.getArtifactId());
+    log.debug(" >> object: " + System.identityHashCode(this));
+    log.debug(" >> configfile: " + this.configfile);
+    log.debug(" >> base dir: " + this.project.getBasedir());
 
     validateParameters();
+
+    if (!this.enabled) {
+      display(" >> skipped.");
+      return;
+    }
 
     display("");
     display("Configuration File: " + this.configFile);
@@ -200,13 +219,36 @@ public class GenMojo extends AbstractMojo {
 
   private void validateParameters() throws MojoExecutionException {
 
-    // 1. Load the local properties file
+    // 1. Process skip parameter
+
+    if (this.skip != null) {
+      if (this.skip.equals("true")) {
+        this.enabled = false;
+      } else if (this.skip.equals("false")) {
+        this.enabled = true;
+      } else {
+        throw new MojoExecutionException(
+            Constants.TOOL_NAME + " parameter: " + "when skip is specified it must be either true or false.");
+      }
+    } else {
+      this.enabled = true;
+    }
+
+    if (!this.enabled) {
+      return;
+    }
+
+    // 2. Retrieve the base dir
+
+    this.projectBaseDir = this.project.getBasedir();
+
+    // 3. Load the local properties file
 
     if (this.localproperties == null || this.localproperties.trim().isEmpty()) {
       throw new MojoExecutionException(Constants.TOOL_NAME + " parameter: " + "localproperties must be specified.");
     }
 
-    File p = new File(this.localproperties);
+    File p = new File(this.projectBaseDir, this.localproperties);
     if (!p.exists()) {
       throw new MojoExecutionException(
           Constants.TOOL_NAME + " parameter: " + "localproperties file does not exist: " + this.localproperties);
@@ -242,7 +284,7 @@ public class GenMojo extends AbstractMojo {
       }
     }
 
-    // 2. Load/Replace with local values if specified
+    // 4. Load/Replace with local values if specified
 
     this.configfile = props.getProperty("configfile", this.configfile);
     this.generator = props.getProperty("generator", this.generator);
@@ -256,11 +298,10 @@ public class GenMojo extends AbstractMojo {
     this.facets = props.getProperty("facets");
     this.display = props.getProperty("display");
 
-    // 3. Validate properties
+    // 5. Validate properties
 
     // configfile
 
-    this.projectBaseDir = new File(".");
     if (this.configfile == null) {
       throw new MojoExecutionException(
           Constants.TOOL_NAME + " parameter: " + "configfile attribute must be specified.");

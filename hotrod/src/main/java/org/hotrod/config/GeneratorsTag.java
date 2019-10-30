@@ -65,9 +65,9 @@ public class GeneratorsTag extends AbstractConfigurationTag {
       }
     }
     if (this.selectedGeneratorTag == null) {
-      throw new GeneratorNotFoundException("No HotRod generator found with name '" + generatorName
-          + "'. Check the generator tags specified inside the <generators> tag in the main " + Constants.TOOL_NAME
-          + " configuration file.");
+      throw new GeneratorNotFoundException("No HotRod generator found with name '" + generatorName + "'. "
+          + "This name was specified in the environment "
+          + "but it was not declared inside the <generators> tag of the configuration file.");
     }
   }
 
