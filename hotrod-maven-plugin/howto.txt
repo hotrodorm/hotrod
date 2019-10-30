@@ -11,7 +11,11 @@ To run HotRod from Maven, you'll need to do two things:
   facets=
   display=list
 
-2. Configure the HotRod Generation (local props, project props, JDBC driver). For example:
+2. Configure the HotRod Generation (local props, project props, JDBC driver) in the pom file. If the project has 
+modules, configure it on any module(s) that use HotRod. It doesn't need to be declared in the main project pom
+if the main project doesn't use HotRod. That is, specify it only on the modules that generate code using HotRod.
+
+For example:
 
   <build>
 
@@ -48,3 +52,25 @@ To run HotRod from Maven, you'll need to do two things:
 
   </build>
       
+3. Run the HotRod generation on the project (or on a/the module(s)):
+
+3.1 If the project is a single module, type:
+ mvn hotrod:gen
+ 
+* If the project is divided into modules, specify the module names:
+
+** For example, if you want to run HotRod for "module3", type:
+ mvn hotrod:gen -pl module3
+ 
+** If you want to run HotRod for "module3" and also "module4" at once, type:
+ mvn hotrod:gen -pl module3,module4
+ 
+Note: in the case of modules, all configuration files, directories, and generated files are relative
+to the module base dir.
+ 
+
+ 
+ 
+ 
+ 
+ 
