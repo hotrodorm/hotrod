@@ -589,27 +589,6 @@
   </taskdef>
 
   <target name="-publish-prepare" depends="clean-build">
-
-    <!-- Check the HotRod Maven plugin is already prepared/built using Maven -->
-
-    <available file="${mp.dir}/target/${mp.jar}" property="mp.jar.present" />
-    <fail unless="mp.jar.present">Artifact not found: ${mp.dir}/target/${mp.jar}
-It seems the HotRod Maven plugin hasn't been packaged yet. Go the HotRod Maven plugin project and prepare the artifacts using:
-      
-        mvn clean package
-    </fail>
-    <available file="${mp.dir}/target/${mp.sources}" property="mp.jar.present" />
-    <fail unless="mp.jar.present">Artifact not found: ${mp.dir}/target/${mp.sources}
-It seems the HotRod Maven plugin hasn't been packaged yet. Go the HotRod Maven plugin project and prepare the artifacts using:
-      
-        mvn clean package
-    </fail>
-    <available file="${mp.dir}/target/${mp.javadoc}" property="mp.jar.present" />
-    <fail unless="mp.jar.present">Artifact not found: ${mp.dir}/target/${mp.javadoc}
-It seems the HotRod Maven plugin hasn't been packaged yet. Go the HotRod Maven plugin project and prepare the artifacts using:
-      
-        mvn clean package
-    </fail>
     
     <!-- At this point jars are ready in the dist dir, because of the Ant dependencies -->
 
@@ -617,11 +596,9 @@ It seems the HotRod Maven plugin hasn't been packaged yet. Go the HotRod Maven p
 
     <mkdir dir="${main.artifacts.dir}" />
     <mkdir dir="${runtime.artifacts.dir}" />
-    <mkdir dir="${mp.artifacts.dir}" />
 
     <copy file="${dist.dir}/${main.jar}" todir="${main.artifacts.dir}" />
     <copy file="${dist.dir}/${runtime.jar}" todir="${runtime.artifacts.dir}" />
-    <copy file="${mp.dir}/target/${mp.jar}" todir="${mp.artifacts.dir}" />
 
     <!-- 2. Prepare pom descriptors -->
 
@@ -649,8 +626,6 @@ It seems the HotRod Maven plugin hasn't been packaged yet. Go the HotRod Maven p
       <replacefilter token="@project.scm.url@" value="${project.scm.url}" />
     </replace>
 
-    <copy file="${mp.dir}/pom.xml" tofile="${mp.artifacts.dir}/${mp.pom}" />
-
   </target>
 
   <target name="publish-install" depends="-publish-prepare">
@@ -675,6 +650,7 @@ It seems the HotRod Maven plugin hasn't been packaged yet. Go the HotRod Maven p
     <copy file="${runtime.artifacts.dir}/${runtime.artifact.id}-${version}.pom"
           todir="${rdir}" />
 
+    <!--
     <property name="pdir"
               value="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod-maven-plugin/${version}" />
     <mkdir dir="${pdir}" />
@@ -683,10 +659,38 @@ It seems the HotRod Maven plugin hasn't been packaged yet. Go the HotRod Maven p
     </delete>
     <copy file="${mp.artifacts.dir}/${mp.jar}" todir="${pdir}" />
     <copy file="${mp.artifacts.dir}/${mp.pom}" todir="${pdir}" />
+    -->
     
   </target>
 
   <target name="publish-to-maven-central-staging" depends="-publish-prepare">
+
+    <!-- Check the HotRod Maven plugin is already prepared/built using Maven -->
+
+    <available file="${mp.dir}/target/${mp.jar}" property="mp.jar.present" />
+    <fail unless="mp.jar.present">Artifact not found: ${mp.dir}/target/${mp.jar}
+It seems the HotRod Maven plugin hasn't been packaged yet. Go the HotRod Maven plugin project and prepare the artifacts using:
+      
+        mvn clean package
+    </fail>
+    <available file="${mp.dir}/target/${mp.sources}" property="mp.jar.present" />
+    <fail unless="mp.jar.present">Artifact not found: ${mp.dir}/target/${mp.sources}
+It seems the HotRod Maven plugin hasn't been packaged yet. Go the HotRod Maven plugin project and prepare the artifacts using:
+      
+        mvn clean package
+    </fail>
+    <available file="${mp.dir}/target/${mp.javadoc}" property="mp.jar.present" />
+    <fail unless="mp.jar.present">Artifact not found: ${mp.dir}/target/${mp.javadoc}
+It seems the HotRod Maven plugin hasn't been packaged yet. Go the HotRod Maven plugin project and prepare the artifacts using:
+      
+        mvn clean package
+    </fail>
+
+    <!-- plugin: prepare the artifacts dirs with the jar libraries & prepare pom descriptors -->
+
+    <mkdir dir="${mp.artifacts.dir}" />
+    <copy file="${mp.dir}/target/${mp.jar}" todir="${mp.artifacts.dir}" />
+    <copy file="${mp.dir}/pom.xml" tofile="${mp.artifacts.dir}/${mp.pom}" />
 
     <!-- 3. Prepare sources packages -->
 
