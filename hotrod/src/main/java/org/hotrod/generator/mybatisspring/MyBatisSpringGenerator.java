@@ -106,7 +106,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
           new EnumClass(em, new DataSetLayout(this.config), this.myBatisSpringTag.getDaos(), this));
     }
 
-    // First-level select tags are unsupported
+    // First-level select tags are no longer supported
 
     if (!super.selects.isEmpty()) {
       SourceLocation loc = super.selects.iterator().next().getDaoTag().getSourceLocation();
@@ -228,8 +228,9 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
     // solo VO
 
     SelectVOClass soloVO = rt.getSoloVO();
+    SelectVOClass abstractSoloVO = rt.getAbstractSoloVO();
     if (soloVO != null) {
-      SelectAbstractVO abstractVO = new SelectAbstractVO(soloVO, layout, this.myBatisSpringTag);
+      SelectAbstractVO abstractVO = new SelectAbstractVO(abstractSoloVO, layout, this.myBatisSpringTag);
       this.abstractSelectVOs.add(abstractVO);
       SelectVO vo = new SelectVO(soloVO, abstractVO, layout);
       this.selectVOs.add(vo);

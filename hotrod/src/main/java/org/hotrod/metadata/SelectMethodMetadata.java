@@ -431,6 +431,10 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     return this.tag.getVOClassName();
   }
 
+  public String getAbstractVOClassName() {
+    return this.tag.getAbstractVOClassName();
+  }
+
   // Other getters
 
   public String getMethod() {
@@ -563,6 +567,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     private static final long serialVersionUID = 1L;
 
     private SelectVOClass soloVO;
+    private SelectVOClass abstractSoloVO;
     private transient VOMetadata connectedVO;
 
     private boolean multipleRows;
@@ -575,6 +580,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         StructuredColumnsMetadata scols = sm.getStructuredColumns();
         if (scols.getSoloVOClass() == null) { // it's a connected VO
           this.soloVO = null;
+          this.abstractSoloVO = null;
           this.connectedVO = scols.getVOs().get(0);
         } else { // solo VO from a <columns> tag
           List<VOMember> associations = new ArrayList<VOMember>();
@@ -606,6 +612,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         try {
           this.soloVO = new SelectVOClass(voClassPackage, sm.getVOClassName(), null, properties, associations,
               collections, tag);
+          this.abstractSoloVO = new SelectVOClass(voClassPackage, sm.getAbstractVOClassName(), null, properties, associations,
+              collections, tag);
         } catch (DuplicatePropertyNameException e) {
           // swallow this exception
         }
@@ -617,6 +625,10 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
     public SelectVOClass getSoloVO() {
       return soloVO;
+    }
+
+    public SelectVOClass getAbstractSoloVO() {
+      return this.abstractSoloVO;
     }
 
     public VOMetadata getConnectedVO() {

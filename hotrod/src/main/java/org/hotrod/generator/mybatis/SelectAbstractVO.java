@@ -46,23 +46,18 @@ public class SelectAbstractVO {
   // Constructors
 
   // From a solo VO
-  public SelectAbstractVO(final SelectVOClass soloVO, final DataSetLayout layout,
+  public SelectAbstractVO(final SelectVOClass abstractSoloVO, final DataSetLayout layout,
       final NamePackageResolver npResolver) {
     log.debug("init");
     this.layout = layout;
 
-    // this.name =
-    // this.myBatisTag.getDaos().generateAbstractVOName(soloVO.getName());
-    // this.classPackage =
-    // this.myBatisTag.getDaos().getPrimitivesVOPackage(soloVO.getClassPackage());
+    this.name = abstractSoloVO.getName();
+    this.classPackage = npResolver.getPrimitivesVOPackage(abstractSoloVO.getClassPackage());
 
-    this.name = npResolver.generateAbstractVOName(soloVO.getName());
-    this.classPackage = npResolver.getPrimitivesVOPackage(soloVO.getClassPackage());
-
-    this.columns = new ArrayList<ColumnMetadata>(soloVO.getColumnsByName().values());
+    this.columns = new ArrayList<ColumnMetadata>(abstractSoloVO.getColumnsByName().values());
     log.debug("Name: " + this.name + " this.columns.size()=" + this.columns.size());
 
-    this.associationMembers = soloVO.getAssociations();
+    this.associationMembers = abstractSoloVO.getAssociations();
     this.collectionMembers = new ArrayList<VOMember>();
 
     this.superClassPackage = null;
