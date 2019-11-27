@@ -81,6 +81,16 @@ public class DataSetLayout implements Serializable {
     return sessionFactoryGetter;
   }
 
+  // VOs
+
+  public String generateVOName(final String name) {
+    return this.daos.generateVOName(name);
+  }
+
+  public String generateAbstractVOName(final String name) {
+    return this.daos.generateAbstractVOName(name);
+  }
+
   // ClassPackage methods
 
   public File getVOPackageDir(final ClassPackage classPackage) {

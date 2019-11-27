@@ -41,6 +41,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
   private static transient final Logger log = Logger.getLogger(MyBatisSpringGenerator.class);
 
   private MyBatisSpringTag myBatisSpringTag;
+  private DataSetLayout layout;
 
   private LinkedHashMap<DataSetMetadata, ObjectAbstractVO> abstractVos = new LinkedHashMap<DataSetMetadata, ObjectAbstractVO>();
   private LinkedHashMap<DataSetMetadata, ObjectVO> vos = new LinkedHashMap<DataSetMetadata, ObjectVO>();
@@ -67,7 +68,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
 
     this.myBatisConfig = new MyBatisConfiguration(this.config);
     this.myBatisSpringTag = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
-    DataSetLayout layout = new DataSetLayout(this.config);
+    this.layout = new DataSetLayout(this.config);
 
     // Reset the generated object counters
 
@@ -86,7 +87,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
             + "Use <column> tags with a 'sequence' attribute instead.");
       }
       for (SelectMethodMetadata sm : tm.getSelectsMetadata()) {
-        addSelectVOs(sm, layout);
+        addSelectVOs(sm);
       }
     }
 
@@ -95,7 +96,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
     for (TableDataSetMetadata vm : super.views) {
       addDaosAndMapper(vm, DAOType.VIEW);
       for (SelectMethodMetadata sm : vm.getSelectsMetadata()) {
-        addSelectVOs(sm, layout);
+        addSelectVOs(sm);
       }
     }
 
@@ -120,7 +121,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
     for (ExecutorDAOMetadata dm : super.executors) {
       addDaosAndMapper(dm, DAOType.EXECUTOR);
       for (SelectMethodMetadata sm : dm.getSelectsMetadata()) {
-        addSelectVOs(sm, layout);
+        addSelectVOs(sm);
       }
     }
 
@@ -215,35 +216,72 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
   private LinkedHashSet<SelectAbstractVO> abstractSelectVOs = new LinkedHashSet<SelectAbstractVO>();
   private LinkedHashSet<SelectVO> selectVOs = new LinkedHashSet<SelectVO>();
 
-  private void addSelectVOs(final SelectMethodMetadata sm, final DataSetLayout layout) throws ControlledException {
+  private void addSelectVOs(final SelectMethodMetadata sm) throws ControlledException {
 
     // DataSetLayout layout = new DataSetLayout(this.config);
     HotRodFragmentConfigTag fragmentConfig = sm.getFragmentConfig();
     ClassPackage fragmentPackage = fragmentConfig != null && fragmentConfig.getFragmentPackage() != null
         ? fragmentConfig.getFragmentPackage()
         : null;
-    ClassPackage daoPackage = layout.getDAOPackage(fragmentPackage);
+    ClassPackage daoPackage = this.layout.getDAOPackage(fragmentPackage);
     SelectMethodReturnType rt = sm.getReturnType(daoPackage);
 
     // solo VO
 
     SelectVOClass soloVO = rt.getSoloVO();
     SelectVOClass abstractSoloVO = rt.getAbstractSoloVO();
+
     if (soloVO != null) {
-      SelectAbstractVO abstractVO = new SelectAbstractVO(abstractSoloVO, layout, this.myBatisSpringTag);
+      SelectAbstractVO abstractVO = new SelectAbstractVO(abstractSoloVO, this.layout, this.myBatisSpringTag);
       this.abstractSelectVOs.add(abstractVO);
-      SelectVO vo = new SelectVO(soloVO, abstractVO, layout);
+      SelectVO vo = new SelectVO(soloVO, abstractVO, this.layout);
       this.selectVOs.add(vo);
+      log.trace("### soloVO.getName()=" + soloVO.getName() + " abstractVO.getName()=" + abstractVO.getName());
     }
 
     // connected VOs (all)
 
     if (sm.getStructuredColumns() != null) {
       for (VOMetadata vo : sm.getStructuredColumns().getVOs()) {
-        vo.register(this.abstractSelectVOs, this.selectVOs, layout, this.myBatisSpringTag);
+        log.trace("### Metadata: vo.getName()=" + vo.getName());
+        registerVOs(vo);
       }
     }
 
+  }
+
+  private void registerVOs(final VOMetadata vo) {
+
+    if (vo.getEntityVOSuperClass() != null) {
+
+      VOClasses voc = produceVOClasses(vo);
+
+      log.trace("@@@ x=" + voc.vo.getClassName() + " abstractVO.getName()=" + voc.abstractVO.getName());
+
+      this.abstractSelectVOs.add(voc.abstractVO);
+      this.selectVOs.add(voc.vo);
+
+    }
+
+    for (VOMetadata a : vo.getAssociations()) {
+      this.registerVOs(a);
+    }
+    for (VOMetadata c : vo.getCollections()) {
+      this.registerVOs(c);
+    }
+
+  }
+
+  public VOClasses produceVOClasses(final VOMetadata vo) {
+    VOClasses voc = new VOClasses();
+    voc.abstractVO = new SelectAbstractVO(vo, this.layout, this.myBatisSpringTag);
+    voc.vo = new SelectVO(vo, voc.abstractVO, this.layout, this.myBatisSpringTag);
+    return voc;
+  }
+
+  public static class VOClasses {
+    public SelectAbstractVO abstractVO;
+    public SelectVO vo;
   }
 
   @Override // HotRodGenerator

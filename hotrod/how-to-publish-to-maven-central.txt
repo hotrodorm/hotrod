@@ -1,0 +1,44 @@
+How to publish to Maven Central using Ant.
+
+1. Set the version of HotRod.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In the file build.properties change the property "version" as needed, and save the file.
+
+2. Install HotRod locally.
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Type:
+
+  ant publish-install 
+
+3. Change the version in the Maven plugin, in the file ../hotrod-maven-plugin/pom.xml
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ a. Change the main <version> tag to the same version you chose in step #1.
+ b. Change the version to the same version you chose in step #1, in the "org.hotrodorm.hotrod" dependency.
+ 
+4. Build the Maven plugin using Maven.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Switch to the plugin directory (../hotrod-maven-plugin) and type:
+
+  mvn clean package
+
+5. Send all packages to Maven Central - staging repository.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Note: you'll need the GPG passphrase and the Maven Central credentials.
+
+Switch back to the main HotRod directory and type:
+
+  ant publish-to-maven-central-staging
+  
+6. Release the packages to the world.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You'll need to:
+  1. Log in to Maven Central.
+  2. Find the packages and close them.
+  3. Release the packages.
+

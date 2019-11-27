@@ -59,6 +59,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   private boolean structured;
 
   private transient HotRodGenerator generator;
+  private transient DataSetLayout layout;
   private transient JdbcDatabase db;
   private HotRodConfigTag config;
   private transient DatabaseAdapter adapter;
@@ -87,6 +88,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       final SelectGenerationTag selectGenerationTag, final ColumnsPrefixGenerator columnsPrefixGenerator,
       final DataSetLayout layout) throws InvalidIdentifierException {
     this.generator = generator;
+    this.layout = layout;
     this.db = generator.getJdbcDatabase();
     this.config = config;
     this.adapter = generator.getAdapter();
@@ -257,7 +259,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
     }
 
-    this.selectMethodReturnType = new SelectMethodReturnType(this, this.classPackage, this.tag);
+    this.selectMethodReturnType = new SelectMethodReturnType(this, this.classPackage, this.tag, this.layout);
 
   }
 
@@ -336,7 +338,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       }
     }
 
-    // Remove trailing semi-colons
+    // Remove trailing semicolons
 
     String reassembled = lw.toString();
     while (reassembled.endsWith(";")) {
@@ -573,16 +575,20 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     private boolean multipleRows;
 
     public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage voClassPackage,
-        final AbstractConfigurationTag tag) throws InvalidConfigurationFileException {
+        final AbstractConfigurationTag tag, final DataSetLayout layout) throws InvalidConfigurationFileException {
 
       if (sm.isStructured()) { // structured columns
 
-        StructuredColumnsMetadata scols = sm.getStructuredColumns();
-        if (scols.getSoloVOClass() == null) { // it's a connected VO
+        StructuredColumnsMetadata structCols = sm.getStructuredColumns();
+        if (structCols.getSoloVOClass() == null) { // it's a connected VO
+          log.trace(">>> it's a connected VO (1)");
           this.soloVO = null;
           this.abstractSoloVO = null;
-          this.connectedVO = scols.getVOs().get(0);
+
+          this.connectedVO = structCols.getVOs().get(0);
+
         } else { // solo VO from a <columns> tag
+          log.info(">>> solo VO from a <columns> tag (2)");
           List<VOMember> associations = new ArrayList<VOMember>();
           for (VOMetadata vo : sm.getStructuredColumns().getVOs()) {
             VOMember m;
@@ -594,11 +600,12 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
             }
             associations.add(m);
           }
-          this.soloVO = scols.getSoloVOClass();
+          this.soloVO = structCols.getSoloVOClass();
           this.connectedVO = null;
         }
 
       } else { // solo VO from non-structured columns
+        log.trace(">>> solo VO (3)");
 
         List<VOProperty> properties = new ArrayList<VOProperty>();
         for (ColumnMetadata cm : sm.getNonStructuredColumns()) {
@@ -612,8 +619,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         try {
           this.soloVO = new SelectVOClass(voClassPackage, sm.getVOClassName(), null, properties, associations,
               collections, tag);
-          this.abstractSoloVO = new SelectVOClass(voClassPackage, sm.getAbstractVOClassName(), null, properties, associations,
-              collections, tag);
+          this.abstractSoloVO = new SelectVOClass(voClassPackage, sm.getAbstractVOClassName(), null, properties,
+              associations, collections, tag);
         } catch (DuplicatePropertyNameException e) {
           // swallow this exception
         }
@@ -621,6 +628,11 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
       }
       this.multipleRows = sm.isMultipleRows();
+      log.trace(">>> sm.getVOClassName()=" + sm.getVOClassName() + " sm.getAbstractVOClassName()="
+          + sm.getAbstractVOClassName());
+      log.trace("this.soloVO.getName()=" + (this.soloVO == null ? "null" : this.soloVO.getName())
+          + " this.connectedVO.getName()=" + (this.connectedVO == null ? "null" : this.connectedVO.getName()));
+
     }
 
     public SelectVOClass getSoloVO() {

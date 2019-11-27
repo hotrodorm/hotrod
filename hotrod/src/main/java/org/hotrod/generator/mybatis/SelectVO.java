@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.generator.NamePackageResolver;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.utils.ClassPackage;
@@ -30,7 +31,8 @@ public class SelectVO {
     this.abstractVO = abstractVO;
   }
 
-  public SelectVO(final VOMetadata vo, final SelectAbstractVO abstractVO, final DataSetLayout layout) {
+  public SelectVO(final VOMetadata vo, final SelectAbstractVO abstractVO, final DataSetLayout layout,
+      final NamePackageResolver npResolver) {
     this.layout = layout;
     this.className = vo.getName();
     this.classPackage = vo.getClassPackage();
@@ -75,6 +77,10 @@ public class SelectVO {
         }
       }
     }
+  }
+
+  public String getClassName() {
+    return className;
   }
 
   // Info

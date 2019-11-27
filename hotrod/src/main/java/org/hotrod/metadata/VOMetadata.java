@@ -3,7 +3,6 @@ package org.hotrod.metadata;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
@@ -15,10 +14,7 @@ import org.hotrod.config.structuredcolumns.Expressions;
 import org.hotrod.config.structuredcolumns.VOTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.generator.NamePackageResolver;
 import org.hotrod.generator.mybatis.DataSetLayout;
-import org.hotrod.generator.mybatis.SelectAbstractVO;
-import org.hotrod.generator.mybatis.SelectVO;
 import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
@@ -41,7 +37,10 @@ public class VOMetadata implements Serializable {
   private VOTag tag;
 
   private ClassPackage classPackage;
+
   private String name;
+  private String abstractName;
+
   private EntityVOClass entityVOSuperClass;
 
   private List<VOMetadata> associations;
@@ -107,7 +106,8 @@ public class VOMetadata implements Serializable {
 
     if (tag.getExtendedVO() != null) { // extended VO from a table or view
       this.classPackage = getVOClassPackage(layout, fragmentConfig);
-      this.name = tag.getExtendedVO();
+      this.name = daosTag.generateVOName(tag.getExtendedVO());
+      this.abstractName = daosTag.generateAbstractVOName(tag.getExtendedVO());
       this.entityVOSuperClass = tag.getGenerator().getVORegistry()
           .findEntityVOClass(this.tableMetadata != null ? this.tableMetadata : this.viewMetadata);
       if (this.entityVOSuperClass == null) {
@@ -122,9 +122,11 @@ public class VOMetadata implements Serializable {
       if (this.tableMetadata != null) {
         this.classPackage = getVOClassPackage(layout, this.tableMetadata.getFragmentConfig());
         this.name = daosTag.generateVOName(this.tableMetadata.getId());
+        this.abstractName = daosTag.generateAbstractVOName(this.tableMetadata.getId());
       } else {
         this.classPackage = getVOClassPackage(layout, this.viewMetadata.getFragmentConfig());
         this.name = daosTag.generateVOName(this.viewMetadata.getId());
+        this.abstractName = daosTag.generateAbstractVOName(this.viewMetadata.getId());
       }
     }
 
@@ -132,22 +134,8 @@ public class VOMetadata implements Serializable {
 
   // Registration
 
-  public void register(final Set<SelectAbstractVO> abstractSelectVOs, final Set<SelectVO> selectVOs,
-      final DataSetLayout layout, final NamePackageResolver npResolver) {
-    log.debug("VO " + this.name);
-    if (this.entityVOSuperClass != null) {
-      SelectAbstractVO abstractVO = new SelectAbstractVO(this, layout, npResolver);
-      abstractSelectVOs.add(abstractVO);
-      selectVOs.add(new SelectVO(this, abstractVO, layout));
-    }
-    for (VOMetadata vo : this.associations) {
-      log.debug("+ property " + vo.getProperty() + " (" + vo.getName() + ")");
-      vo.register(abstractSelectVOs, selectVOs, layout, npResolver);
-    }
-    for (VOMetadata vo : this.collections) {
-      log.debug("+ property " + vo.getProperty() + " (List<" + vo.getName() + ">)");
-      vo.register(abstractSelectVOs, selectVOs, layout, npResolver);
-    }
+  public EntityVOClass getEntityVOSuperClass() {
+    return entityVOSuperClass;
   }
 
   public void registerSubTreeVOs(final ClassPackage classPackage, final VORegistry voRegistry)
@@ -368,6 +356,10 @@ public class VOMetadata implements Serializable {
 
   public String getName() {
     return name;
+  }
+
+  public String getAbstractName() {
+    return abstractName;
   }
 
   public Expressions getExpressions() {

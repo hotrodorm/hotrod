@@ -4,7 +4,7 @@
 
   <groupId>org.hotrodorm.hotrod</groupId>
   <artifactId>hotrod-maven-plugin</artifactId>
-  <version>3.0.3</version>
+  <version>3.0.5</version>
   <packaging>maven-plugin</packaging>
 
   <name>HotRod Maven Plugin</name>
@@ -79,7 +79,7 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>3.0.3</version>
+      <version>3.0.5</version>
     </dependency>
 
     <!-- Adding JAXB (RI) dependency, so any Java 9+ client will work -->

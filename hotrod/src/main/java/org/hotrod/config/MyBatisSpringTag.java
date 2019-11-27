@@ -199,6 +199,11 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   }
 
   @Override
+  public String generateVOName(final String name) {
+    return this.getDaos().generateVOName(name);
+  }
+
+  @Override
   public ClassPackage getPrimitivesVOPackage(final ClassPackage cp) {
     return this.getDaos().getPrimitivesVOPackage(cp);
   }

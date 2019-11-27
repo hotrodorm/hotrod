@@ -228,8 +228,31 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
 
     if (sm.getStructuredColumns() != null) {
       for (VOMetadata vo : sm.getStructuredColumns().getVOs()) {
-        vo.register(this.abstractSelectVOs, this.selectVOs, layout, this.myBatisTag);
+        registerVOs(vo, layout);
       }
+    }
+
+  }
+
+  private void registerVOs(final VOMetadata vo, final DataSetLayout layout) {
+
+    if (vo.getEntityVOSuperClass() != null) {
+
+      SelectAbstractVO abstractVO = new SelectAbstractVO(vo, layout, this.myBatisTag);
+      SelectVO mvo = new SelectVO(vo, abstractVO, layout, this.myBatisTag);
+
+      log.trace("@@@ x=" + mvo.getClassName() + " abstractVO.getName()=" + abstractVO.getName());
+
+      this.abstractSelectVOs.add(abstractVO);
+      this.selectVOs.add(mvo);
+
+    }
+
+    for (VOMetadata a : vo.getAssociations()) {
+      this.registerVOs(a, layout);
+    }
+    for (VOMetadata c : vo.getCollections()) {
+      this.registerVOs(c, layout);
     }
 
   }

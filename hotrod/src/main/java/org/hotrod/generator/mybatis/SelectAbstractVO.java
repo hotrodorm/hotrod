@@ -67,7 +67,7 @@ public class SelectAbstractVO {
   // From a connected VO
   public SelectAbstractVO(final VOMetadata vo, final DataSetLayout layout, final NamePackageResolver npResolver) {
     this.layout = layout;
-    this.name = npResolver.generateAbstractVOName(vo.getName());
+    this.name = vo.getAbstractName();
     this.classPackage = npResolver.getPrimitivesVOPackage(vo.getClassPackage());
     this.columns = new ArrayList<ColumnMetadata>();
     log.debug("vo.getDeclaredColumns().size()=" + vo.getDeclaredColumns().size());

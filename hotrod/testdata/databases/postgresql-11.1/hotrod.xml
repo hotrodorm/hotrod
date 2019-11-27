@@ -7,7 +7,7 @@
     <mybatis-spring>
       <daos gen-base-dir="gen/hotrod/daos" dao-package="hotrod.test.generation" 
         vo-prefix="" vo-suffix="VO"
-        abstract-vo-prefix="Domain" abstract-vo-suffix="Prototype"
+        abstract-vo-prefix="Abstract" abstract-vo-suffix="VO"
         dao-prefix="" dao-suffix="DAO"
       />
       <!-- <daos gen-base-dir="gen/empusamb/daos" dao-package="empusa.test.generation.dao" 
@@ -33,16 +33,22 @@
 
   <facet name="f1">
 
-    <table name="config_values" /> <!-- No PK -->
+<!-- 
+    <table name="config_values" />
+-->
   
     <table name="account" > <!-- identity by default PK -->
       <column name="active" java-name="mainStatus" />
     </table>
 
+    <table name="federal_branch" />
+
+    <table name="transaction" /> <!-- identity by default PK -->
+
   </facet>
   
 <?comment 
-?>
+?>  
 
   <table name="island" />
 
@@ -52,11 +58,7 @@
   </table>
   <table name="log" />
 
-  
-  <table name="transaction" /> <!-- identity by default PK -->
-
   <table name="state_branch" />
-  <table name="federal_branch" />
   <table name="client" />
 
   <table name="agent"> <!-- sequence-generated PK -->
@@ -99,7 +101,6 @@
 
   <table name="types_other">
   
-  
 <!--
     <column name="uui1" java-type="java.lang.String" />
     <column name="uui1" java-type="java.util.UUID" />
@@ -140,7 +141,7 @@
     <select method="findAlerts">
       select
       <columns>
-        <vo table="account" extended-vo="Account2VO">
+        <vo table="account" extended-vo="Account2">
           <expression property="id">a.id + 1</expression>
           <expression property="extra2">a.id + 1</expression>
           <!-- 
@@ -158,7 +159,7 @@
   </dao>
 
   <dao name="AccountReports">
-  
+
     <select method="selectNewAccountsVolume" vo="AccountVolume">
       select a.id, a.name, sum(abs(t.amount)) as total_txs
       from account a
@@ -175,6 +176,20 @@
       group by a.id
     </select>
 
+    <select method="selectAccountsStats">
+      select
+        <columns>
+          <vo table="account" extended-vo="AccountStats" alias="a">
+            <collection table="transaction" extended-vo="TransactionStats" property="txs" alias="t">
+              <association table="federal_branch" property="branch" alias="b" />
+            </collection>
+          </vo>
+        </columns>
+      from account a
+      left join transaction t on t.account_id = a.id
+      left join federal_branch b on t.fed_branch_id = b.id
+    </select>
+
     <query method="applyPromotion">
       <parameter name="minAmount" java-type="Integer" jdbc-type="NUMERIC" />
       <parameter name="prize" java-type="Integer" jdbc-type="NUMERIC" />
@@ -184,7 +199,7 @@
       where t.account_id = a.id 
         and t.amount >= #{minAmount}
     </query>
-    
+
   </dao>
 
 
