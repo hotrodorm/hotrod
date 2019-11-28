@@ -1,0 +1,7 @@
+<ivy-module version="2.0">
+  <info organisation="com.mycompany.myapp" module="project1" />
+  <dependencies>
+    <dependency org="javax.xml.bind" name="jaxb-api" rev="2.3.1" />
+    <dependency org="org.glassfish.jaxb" name="jaxb-runtime" rev="2.3.1" />
+  </dependencies>
+</ivy-module>
