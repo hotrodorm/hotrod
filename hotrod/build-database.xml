@@ -171,15 +171,41 @@
     <mkdir dir="gen/hotrod/mappers/persistence" />
   </target>
 
+  <taskdef name="ivy-retrieve" classname="org.apache.ivy.ant.IvyRetrieve">
+    <classpath>
+      <pathelement location="lib/ivy-2.4.0.jar" />
+    </classpath>
+  </taskdef>
+
+  <property name="ivy.jaxb.dir" value="lib/ivy-jaxb" />
+  
+  <target name="retrieve-jaxb">
+    <ivy-retrieve type="jar" pattern="${ivy.jaxb.dir}/[artifact]-[revision].[ext]" />
+  </target>
+
   <target name="build-hotrod" depends="-init-hotrod">
 
+    <path id="hotrod.classpath">
+      <pathelement location="dist/hotrod-${version}.jar" />
+      <pathelement location="${db.src.dir}/${driverclasspath}" />
+      <pathelement location="lib/apache-commons/commons-jexl3-3.1.jar" />
+      <pathelement location="lib/apache-commons/commons-logging-1.2.jar" />
+      <!--
+      <fileset dir="${ivy.jaxb.dir}">
+        <include name="**/*.jar" />
+      </fileset>
+      -->  
+    </path>
+
+    <!--
+    <pathconvert property="hc" refid="hotrod.classpath" pathsep="${line.separator} * " />
+    <echo>Classpath is:${line.separator} * ${hc}${line.separator}</echo>
+    -->
+    
+    <echo message="--- Java Version: ${java.version} ---${line.separator}${line.separator}  " />
+    
     <taskdef name="hotrod" classname="org.hotrod.ant.HotRodAntTask">
-      <classpath>
-        <pathelement location="dist/hotrod-${version}.jar" />
-        <pathelement location="${db.src.dir}/${driverclasspath}" />
-        <pathelement location="lib/apache-commons/commons-jexl3-3.1.jar" />
-        <pathelement location="lib/apache-commons/commons-logging-1.2.jar" />
-      </classpath>
+      <classpath refid="hotrod.classpath" />
     </taskdef>
 
     <hotrod driverclass="${driverclass}"
