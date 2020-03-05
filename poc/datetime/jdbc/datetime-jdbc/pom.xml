@@ -90,6 +90,18 @@
       </dependencies>
     </profile>
 
+    <!-- MySQL profile -->
+    <profile>
+      <id>mysql</id>
+      <dependencies>
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>8.0.19</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
   </profiles>
 
 </project>
