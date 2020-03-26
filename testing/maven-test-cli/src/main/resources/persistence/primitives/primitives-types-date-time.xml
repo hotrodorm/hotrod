@@ -18,7 +18,24 @@
     tim2,
     tim3,
     tim4,
-    tim5
+    tim5,
+    ivt1,
+    ivt2,
+    ivt3,
+    ivt4,
+    ivt5,
+    ivt6,
+    ivt7,
+    ivt8,
+    ivt9,
+    ivt10,
+    ivt11,
+    ivt12,
+    ivt13,
+    ivt14,
+    ivt15,
+    ivt16,
+    ivt17
   </sql>
 
   <sql id="columnsWithAlias">
@@ -33,7 +50,24 @@
     ${alias}.tim2,
     ${alias}.tim3,
     ${alias}.tim4,
-    ${alias}.tim5
+    ${alias}.tim5,
+    ${alias}.ivt1,
+    ${alias}.ivt2,
+    ${alias}.ivt3,
+    ${alias}.ivt4,
+    ${alias}.ivt5,
+    ${alias}.ivt6,
+    ${alias}.ivt7,
+    ${alias}.ivt8,
+    ${alias}.ivt9,
+    ${alias}.ivt10,
+    ${alias}.ivt11,
+    ${alias}.ivt12,
+    ${alias}.ivt13,
+    ${alias}.ivt14,
+    ${alias}.ivt15,
+    ${alias}.ivt16,
+    ${alias}.ivt17
   </sql>
 
   <resultMap id="allColumns" type="com.company.cli.maven_test.daos.TypesDateTimeVO">
@@ -49,6 +83,23 @@
     <result property="tim3" column="tim3" />
     <result property="tim4" column="tim4" />
     <result property="tim5" column="tim5" />
+    <result property="ivt1" column="ivt1" />
+    <result property="ivt2" column="ivt2" />
+    <result property="ivt3" column="ivt3" />
+    <result property="ivt4" column="ivt4" />
+    <result property="ivt5" column="ivt5" />
+    <result property="ivt6" column="ivt6" />
+    <result property="ivt7" column="ivt7" />
+    <result property="ivt8" column="ivt8" />
+    <result property="ivt9" column="ivt9" />
+    <result property="ivt10" column="ivt10" />
+    <result property="ivt11" column="ivt11" />
+    <result property="ivt12" column="ivt12" />
+    <result property="ivt13" column="ivt13" />
+    <result property="ivt14" column="ivt14" />
+    <result property="ivt15" column="ivt15" />
+    <result property="ivt16" column="ivt16" />
+    <result property="ivt17" column="ivt17" />
   </resultMap>
 
   <!-- select by PK -->
@@ -142,6 +193,108 @@
       <if test="p.tim5 == null and p.propertiesChangeLog.tim5WasSet">
         and tim5 is null
       </if>
+      <if test="p.ivt1 != null ">
+        and ivt1 = #{p.ivt1,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt1 == null and p.propertiesChangeLog.ivt1WasSet">
+        and ivt1 is null
+      </if>
+      <if test="p.ivt2 != null ">
+        and ivt2 = #{p.ivt2,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt2 == null and p.propertiesChangeLog.ivt2WasSet">
+        and ivt2 is null
+      </if>
+      <if test="p.ivt3 != null ">
+        and ivt3 = #{p.ivt3,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt3 == null and p.propertiesChangeLog.ivt3WasSet">
+        and ivt3 is null
+      </if>
+      <if test="p.ivt4 != null ">
+        and ivt4 = #{p.ivt4,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt4 == null and p.propertiesChangeLog.ivt4WasSet">
+        and ivt4 is null
+      </if>
+      <if test="p.ivt5 != null ">
+        and ivt5 = #{p.ivt5,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt5 == null and p.propertiesChangeLog.ivt5WasSet">
+        and ivt5 is null
+      </if>
+      <if test="p.ivt6 != null ">
+        and ivt6 = #{p.ivt6,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt6 == null and p.propertiesChangeLog.ivt6WasSet">
+        and ivt6 is null
+      </if>
+      <if test="p.ivt7 != null ">
+        and ivt7 = #{p.ivt7,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt7 == null and p.propertiesChangeLog.ivt7WasSet">
+        and ivt7 is null
+      </if>
+      <if test="p.ivt8 != null ">
+        and ivt8 = #{p.ivt8,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt8 == null and p.propertiesChangeLog.ivt8WasSet">
+        and ivt8 is null
+      </if>
+      <if test="p.ivt9 != null ">
+        and ivt9 = #{p.ivt9,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt9 == null and p.propertiesChangeLog.ivt9WasSet">
+        and ivt9 is null
+      </if>
+      <if test="p.ivt10 != null ">
+        and ivt10 = #{p.ivt10,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt10 == null and p.propertiesChangeLog.ivt10WasSet">
+        and ivt10 is null
+      </if>
+      <if test="p.ivt11 != null ">
+        and ivt11 = #{p.ivt11,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt11 == null and p.propertiesChangeLog.ivt11WasSet">
+        and ivt11 is null
+      </if>
+      <if test="p.ivt12 != null ">
+        and ivt12 = #{p.ivt12,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt12 == null and p.propertiesChangeLog.ivt12WasSet">
+        and ivt12 is null
+      </if>
+      <if test="p.ivt13 != null ">
+        and ivt13 = #{p.ivt13,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt13 == null and p.propertiesChangeLog.ivt13WasSet">
+        and ivt13 is null
+      </if>
+      <if test="p.ivt14 != null ">
+        and ivt14 = #{p.ivt14,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt14 == null and p.propertiesChangeLog.ivt14WasSet">
+        and ivt14 is null
+      </if>
+      <if test="p.ivt15 != null ">
+        and ivt15 = #{p.ivt15,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt15 == null and p.propertiesChangeLog.ivt15WasSet">
+        and ivt15 is null
+      </if>
+      <if test="p.ivt16 != null ">
+        and ivt16 = #{p.ivt16,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt16 == null and p.propertiesChangeLog.ivt16WasSet">
+        and ivt16 is null
+      </if>
+      <if test="p.ivt17 != null ">
+        and ivt17 = #{p.ivt17,jdbcType=OTHER}
+      </if>
+      <if test="p.ivt17 == null and p.propertiesChangeLog.ivt17WasSet">
+        and ivt17 is null
+      </if>
     </where>
     <if test="o != null">
       order by ${o}
@@ -171,6 +324,23 @@
         <if test="true">, tim3</if>
         <if test="true">, tim4</if>
         <if test="true">, tim5</if>
+        <if test="true">, ivt1</if>
+        <if test="true">, ivt2</if>
+        <if test="true">, ivt3</if>
+        <if test="true">, ivt4</if>
+        <if test="true">, ivt5</if>
+        <if test="true">, ivt6</if>
+        <if test="true">, ivt7</if>
+        <if test="true">, ivt8</if>
+        <if test="true">, ivt9</if>
+        <if test="true">, ivt10</if>
+        <if test="true">, ivt11</if>
+        <if test="true">, ivt12</if>
+        <if test="true">, ivt13</if>
+        <if test="true">, ivt14</if>
+        <if test="true">, ivt15</if>
+        <if test="true">, ivt16</if>
+        <if test="true">, ivt17</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
@@ -186,6 +356,23 @@
         <if test="true">, #{tim3,jdbcType=TIME}</if>
         <if test="true">, #{tim4,jdbcType=TIME}</if>
         <if test="true">, #{tim5,jdbcType=TIME}</if>
+        <if test="true">, #{ivt1,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt2,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt3,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt4,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt5,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt6,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt7,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt8,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt9,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt10,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt11,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt12,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt13,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt14,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt15,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt16,jdbcType=OTHER}</if>
+        <if test="true">, #{ivt17,jdbcType=OTHER}</if>
       </trim>
       )
   </insert>
@@ -204,7 +391,24 @@
       tim2 = #{tim2,jdbcType=TIME},
       tim3 = #{tim3,jdbcType=TIME},
       tim4 = #{tim4,jdbcType=TIME},
-      tim5 = #{tim5,jdbcType=TIME}
+      tim5 = #{tim5,jdbcType=TIME},
+      ivt1 = #{ivt1,jdbcType=OTHER},
+      ivt2 = #{ivt2,jdbcType=OTHER},
+      ivt3 = #{ivt3,jdbcType=OTHER},
+      ivt4 = #{ivt4,jdbcType=OTHER},
+      ivt5 = #{ivt5,jdbcType=OTHER},
+      ivt6 = #{ivt6,jdbcType=OTHER},
+      ivt7 = #{ivt7,jdbcType=OTHER},
+      ivt8 = #{ivt8,jdbcType=OTHER},
+      ivt9 = #{ivt9,jdbcType=OTHER},
+      ivt10 = #{ivt10,jdbcType=OTHER},
+      ivt11 = #{ivt11,jdbcType=OTHER},
+      ivt12 = #{ivt12,jdbcType=OTHER},
+      ivt13 = #{ivt13,jdbcType=OTHER},
+      ivt14 = #{ivt14,jdbcType=OTHER},
+      ivt15 = #{ivt15,jdbcType=OTHER},
+      ivt16 = #{ivt16,jdbcType=OTHER},
+      ivt17 = #{ivt17,jdbcType=OTHER}
      where
       id = #{id,jdbcType=INTEGER}
   </update>
@@ -234,6 +438,23 @@
       <if test="values.propertiesChangeLog.tim3WasSet">tim3 = #{values.tim3,jdbcType=TIME},</if>
       <if test="values.propertiesChangeLog.tim4WasSet">tim4 = #{values.tim4,jdbcType=TIME},</if>
       <if test="values.propertiesChangeLog.tim5WasSet">tim5 = #{values.tim5,jdbcType=TIME},</if>
+      <if test="values.propertiesChangeLog.ivt1WasSet">ivt1 = #{values.ivt1,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt2WasSet">ivt2 = #{values.ivt2,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt3WasSet">ivt3 = #{values.ivt3,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt4WasSet">ivt4 = #{values.ivt4,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt5WasSet">ivt5 = #{values.ivt5,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt6WasSet">ivt6 = #{values.ivt6,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt7WasSet">ivt7 = #{values.ivt7,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt8WasSet">ivt8 = #{values.ivt8,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt9WasSet">ivt9 = #{values.ivt9,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt10WasSet">ivt10 = #{values.ivt10,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt11WasSet">ivt11 = #{values.ivt11,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt12WasSet">ivt12 = #{values.ivt12,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt13WasSet">ivt13 = #{values.ivt13,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt14WasSet">ivt14 = #{values.ivt14,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt15WasSet">ivt15 = #{values.ivt15,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt16WasSet">ivt16 = #{values.ivt16,jdbcType=OTHER},</if>
+      <if test="values.propertiesChangeLog.ivt17WasSet">ivt17 = #{values.ivt17,jdbcType=OTHER},</if>
     </set>
     <where>
       <if test="filter.id != null ">
@@ -307,6 +528,108 @@
       </if>
       <if test="filter.tim5 == null and filter.propertiesChangeLog.tim5WasSet">
         and tim5 is null
+      </if>
+      <if test="filter.ivt1 != null ">
+        and ivt1 = #{filter.ivt1,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt1 == null and filter.propertiesChangeLog.ivt1WasSet">
+        and ivt1 is null
+      </if>
+      <if test="filter.ivt2 != null ">
+        and ivt2 = #{filter.ivt2,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt2 == null and filter.propertiesChangeLog.ivt2WasSet">
+        and ivt2 is null
+      </if>
+      <if test="filter.ivt3 != null ">
+        and ivt3 = #{filter.ivt3,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt3 == null and filter.propertiesChangeLog.ivt3WasSet">
+        and ivt3 is null
+      </if>
+      <if test="filter.ivt4 != null ">
+        and ivt4 = #{filter.ivt4,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt4 == null and filter.propertiesChangeLog.ivt4WasSet">
+        and ivt4 is null
+      </if>
+      <if test="filter.ivt5 != null ">
+        and ivt5 = #{filter.ivt5,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt5 == null and filter.propertiesChangeLog.ivt5WasSet">
+        and ivt5 is null
+      </if>
+      <if test="filter.ivt6 != null ">
+        and ivt6 = #{filter.ivt6,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt6 == null and filter.propertiesChangeLog.ivt6WasSet">
+        and ivt6 is null
+      </if>
+      <if test="filter.ivt7 != null ">
+        and ivt7 = #{filter.ivt7,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt7 == null and filter.propertiesChangeLog.ivt7WasSet">
+        and ivt7 is null
+      </if>
+      <if test="filter.ivt8 != null ">
+        and ivt8 = #{filter.ivt8,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt8 == null and filter.propertiesChangeLog.ivt8WasSet">
+        and ivt8 is null
+      </if>
+      <if test="filter.ivt9 != null ">
+        and ivt9 = #{filter.ivt9,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt9 == null and filter.propertiesChangeLog.ivt9WasSet">
+        and ivt9 is null
+      </if>
+      <if test="filter.ivt10 != null ">
+        and ivt10 = #{filter.ivt10,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt10 == null and filter.propertiesChangeLog.ivt10WasSet">
+        and ivt10 is null
+      </if>
+      <if test="filter.ivt11 != null ">
+        and ivt11 = #{filter.ivt11,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt11 == null and filter.propertiesChangeLog.ivt11WasSet">
+        and ivt11 is null
+      </if>
+      <if test="filter.ivt12 != null ">
+        and ivt12 = #{filter.ivt12,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt12 == null and filter.propertiesChangeLog.ivt12WasSet">
+        and ivt12 is null
+      </if>
+      <if test="filter.ivt13 != null ">
+        and ivt13 = #{filter.ivt13,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt13 == null and filter.propertiesChangeLog.ivt13WasSet">
+        and ivt13 is null
+      </if>
+      <if test="filter.ivt14 != null ">
+        and ivt14 = #{filter.ivt14,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt14 == null and filter.propertiesChangeLog.ivt14WasSet">
+        and ivt14 is null
+      </if>
+      <if test="filter.ivt15 != null ">
+        and ivt15 = #{filter.ivt15,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt15 == null and filter.propertiesChangeLog.ivt15WasSet">
+        and ivt15 is null
+      </if>
+      <if test="filter.ivt16 != null ">
+        and ivt16 = #{filter.ivt16,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt16 == null and filter.propertiesChangeLog.ivt16WasSet">
+        and ivt16 is null
+      </if>
+      <if test="filter.ivt17 != null ">
+        and ivt17 = #{filter.ivt17,jdbcType=OTHER}
+      </if>
+      <if test="filter.ivt17 == null and filter.propertiesChangeLog.ivt17WasSet">
+        and ivt17 is null
       </if>
     </where>
   </update>
@@ -387,6 +710,108 @@
       </if>
       <if test="tim5 == null and propertiesChangeLog.tim5WasSet">
         and tim5 is null
+      </if>
+      <if test="ivt1 != null ">
+        and ivt1 = #{ivt1,jdbcType=OTHER}
+      </if>
+      <if test="ivt1 == null and propertiesChangeLog.ivt1WasSet">
+        and ivt1 is null
+      </if>
+      <if test="ivt2 != null ">
+        and ivt2 = #{ivt2,jdbcType=OTHER}
+      </if>
+      <if test="ivt2 == null and propertiesChangeLog.ivt2WasSet">
+        and ivt2 is null
+      </if>
+      <if test="ivt3 != null ">
+        and ivt3 = #{ivt3,jdbcType=OTHER}
+      </if>
+      <if test="ivt3 == null and propertiesChangeLog.ivt3WasSet">
+        and ivt3 is null
+      </if>
+      <if test="ivt4 != null ">
+        and ivt4 = #{ivt4,jdbcType=OTHER}
+      </if>
+      <if test="ivt4 == null and propertiesChangeLog.ivt4WasSet">
+        and ivt4 is null
+      </if>
+      <if test="ivt5 != null ">
+        and ivt5 = #{ivt5,jdbcType=OTHER}
+      </if>
+      <if test="ivt5 == null and propertiesChangeLog.ivt5WasSet">
+        and ivt5 is null
+      </if>
+      <if test="ivt6 != null ">
+        and ivt6 = #{ivt6,jdbcType=OTHER}
+      </if>
+      <if test="ivt6 == null and propertiesChangeLog.ivt6WasSet">
+        and ivt6 is null
+      </if>
+      <if test="ivt7 != null ">
+        and ivt7 = #{ivt7,jdbcType=OTHER}
+      </if>
+      <if test="ivt7 == null and propertiesChangeLog.ivt7WasSet">
+        and ivt7 is null
+      </if>
+      <if test="ivt8 != null ">
+        and ivt8 = #{ivt8,jdbcType=OTHER}
+      </if>
+      <if test="ivt8 == null and propertiesChangeLog.ivt8WasSet">
+        and ivt8 is null
+      </if>
+      <if test="ivt9 != null ">
+        and ivt9 = #{ivt9,jdbcType=OTHER}
+      </if>
+      <if test="ivt9 == null and propertiesChangeLog.ivt9WasSet">
+        and ivt9 is null
+      </if>
+      <if test="ivt10 != null ">
+        and ivt10 = #{ivt10,jdbcType=OTHER}
+      </if>
+      <if test="ivt10 == null and propertiesChangeLog.ivt10WasSet">
+        and ivt10 is null
+      </if>
+      <if test="ivt11 != null ">
+        and ivt11 = #{ivt11,jdbcType=OTHER}
+      </if>
+      <if test="ivt11 == null and propertiesChangeLog.ivt11WasSet">
+        and ivt11 is null
+      </if>
+      <if test="ivt12 != null ">
+        and ivt12 = #{ivt12,jdbcType=OTHER}
+      </if>
+      <if test="ivt12 == null and propertiesChangeLog.ivt12WasSet">
+        and ivt12 is null
+      </if>
+      <if test="ivt13 != null ">
+        and ivt13 = #{ivt13,jdbcType=OTHER}
+      </if>
+      <if test="ivt13 == null and propertiesChangeLog.ivt13WasSet">
+        and ivt13 is null
+      </if>
+      <if test="ivt14 != null ">
+        and ivt14 = #{ivt14,jdbcType=OTHER}
+      </if>
+      <if test="ivt14 == null and propertiesChangeLog.ivt14WasSet">
+        and ivt14 is null
+      </if>
+      <if test="ivt15 != null ">
+        and ivt15 = #{ivt15,jdbcType=OTHER}
+      </if>
+      <if test="ivt15 == null and propertiesChangeLog.ivt15WasSet">
+        and ivt15 is null
+      </if>
+      <if test="ivt16 != null ">
+        and ivt16 = #{ivt16,jdbcType=OTHER}
+      </if>
+      <if test="ivt16 == null and propertiesChangeLog.ivt16WasSet">
+        and ivt16 is null
+      </if>
+      <if test="ivt17 != null ">
+        and ivt17 = #{ivt17,jdbcType=OTHER}
+      </if>
+      <if test="ivt17 == null and propertiesChangeLog.ivt17WasSet">
+        and ivt17 is null
       </if>
     </where>
   </delete>

@@ -23,6 +23,23 @@ public class DomainTypesDateTimePrototype implements Serializable {
   protected java.sql.Timestamp tim3 = null;
   protected java.sql.Timestamp tim4 = null;
   protected java.sql.Timestamp tim5 = null;
+  protected java.lang.Object ivt1 = null;
+  protected java.lang.Object ivt2 = null;
+  protected java.lang.Object ivt3 = null;
+  protected java.lang.Object ivt4 = null;
+  protected java.lang.Object ivt5 = null;
+  protected java.lang.Object ivt6 = null;
+  protected java.lang.Object ivt7 = null;
+  protected java.lang.Object ivt8 = null;
+  protected java.lang.Object ivt9 = null;
+  protected java.lang.Object ivt10 = null;
+  protected java.lang.Object ivt11 = null;
+  protected java.lang.Object ivt12 = null;
+  protected java.lang.Object ivt13 = null;
+  protected java.lang.Object ivt14 = null;
+  protected java.lang.Object ivt15 = null;
+  protected java.lang.Object ivt16 = null;
+  protected java.lang.Object ivt17 = null;
 
   // getters & setters
 
@@ -134,6 +151,159 @@ public class DomainTypesDateTimePrototype implements Serializable {
     this.getPropertiesChangeLog().tim5WasSet = true;
   }
 
+  public final java.lang.Object getIvt1() {
+    return this.ivt1;
+  }
+
+  public final void setIvt1(final java.lang.Object ivt1) {
+    this.ivt1 = ivt1;
+    this.getPropertiesChangeLog().ivt1WasSet = true;
+  }
+
+  public final java.lang.Object getIvt2() {
+    return this.ivt2;
+  }
+
+  public final void setIvt2(final java.lang.Object ivt2) {
+    this.ivt2 = ivt2;
+    this.getPropertiesChangeLog().ivt2WasSet = true;
+  }
+
+  public final java.lang.Object getIvt3() {
+    return this.ivt3;
+  }
+
+  public final void setIvt3(final java.lang.Object ivt3) {
+    this.ivt3 = ivt3;
+    this.getPropertiesChangeLog().ivt3WasSet = true;
+  }
+
+  public final java.lang.Object getIvt4() {
+    return this.ivt4;
+  }
+
+  public final void setIvt4(final java.lang.Object ivt4) {
+    this.ivt4 = ivt4;
+    this.getPropertiesChangeLog().ivt4WasSet = true;
+  }
+
+  public final java.lang.Object getIvt5() {
+    return this.ivt5;
+  }
+
+  public final void setIvt5(final java.lang.Object ivt5) {
+    this.ivt5 = ivt5;
+    this.getPropertiesChangeLog().ivt5WasSet = true;
+  }
+
+  public final java.lang.Object getIvt6() {
+    return this.ivt6;
+  }
+
+  public final void setIvt6(final java.lang.Object ivt6) {
+    this.ivt6 = ivt6;
+    this.getPropertiesChangeLog().ivt6WasSet = true;
+  }
+
+  public final java.lang.Object getIvt7() {
+    return this.ivt7;
+  }
+
+  public final void setIvt7(final java.lang.Object ivt7) {
+    this.ivt7 = ivt7;
+    this.getPropertiesChangeLog().ivt7WasSet = true;
+  }
+
+  public final java.lang.Object getIvt8() {
+    return this.ivt8;
+  }
+
+  public final void setIvt8(final java.lang.Object ivt8) {
+    this.ivt8 = ivt8;
+    this.getPropertiesChangeLog().ivt8WasSet = true;
+  }
+
+  public final java.lang.Object getIvt9() {
+    return this.ivt9;
+  }
+
+  public final void setIvt9(final java.lang.Object ivt9) {
+    this.ivt9 = ivt9;
+    this.getPropertiesChangeLog().ivt9WasSet = true;
+  }
+
+  public final java.lang.Object getIvt10() {
+    return this.ivt10;
+  }
+
+  public final void setIvt10(final java.lang.Object ivt10) {
+    this.ivt10 = ivt10;
+    this.getPropertiesChangeLog().ivt10WasSet = true;
+  }
+
+  public final java.lang.Object getIvt11() {
+    return this.ivt11;
+  }
+
+  public final void setIvt11(final java.lang.Object ivt11) {
+    this.ivt11 = ivt11;
+    this.getPropertiesChangeLog().ivt11WasSet = true;
+  }
+
+  public final java.lang.Object getIvt12() {
+    return this.ivt12;
+  }
+
+  public final void setIvt12(final java.lang.Object ivt12) {
+    this.ivt12 = ivt12;
+    this.getPropertiesChangeLog().ivt12WasSet = true;
+  }
+
+  public final java.lang.Object getIvt13() {
+    return this.ivt13;
+  }
+
+  public final void setIvt13(final java.lang.Object ivt13) {
+    this.ivt13 = ivt13;
+    this.getPropertiesChangeLog().ivt13WasSet = true;
+  }
+
+  public final java.lang.Object getIvt14() {
+    return this.ivt14;
+  }
+
+  public final void setIvt14(final java.lang.Object ivt14) {
+    this.ivt14 = ivt14;
+    this.getPropertiesChangeLog().ivt14WasSet = true;
+  }
+
+  public final java.lang.Object getIvt15() {
+    return this.ivt15;
+  }
+
+  public final void setIvt15(final java.lang.Object ivt15) {
+    this.ivt15 = ivt15;
+    this.getPropertiesChangeLog().ivt15WasSet = true;
+  }
+
+  public final java.lang.Object getIvt16() {
+    return this.ivt16;
+  }
+
+  public final void setIvt16(final java.lang.Object ivt16) {
+    this.ivt16 = ivt16;
+    this.getPropertiesChangeLog().ivt16WasSet = true;
+  }
+
+  public final java.lang.Object getIvt17() {
+    return this.ivt17;
+  }
+
+  public final void setIvt17(final java.lang.Object ivt17) {
+    this.ivt17 = ivt17;
+    this.getPropertiesChangeLog().ivt17WasSet = true;
+  }
+
   // to string
 
   public String toString() {
@@ -150,7 +320,24 @@ public class DomainTypesDateTimePrototype implements Serializable {
     sb.append("- tim2=" + this.tim2 + "\n");
     sb.append("- tim3=" + this.tim3 + "\n");
     sb.append("- tim4=" + this.tim4 + "\n");
-    sb.append("- tim5=" + this.tim5);
+    sb.append("- tim5=" + this.tim5 + "\n");
+    sb.append("- ivt1=" + this.ivt1 + "\n");
+    sb.append("- ivt2=" + this.ivt2 + "\n");
+    sb.append("- ivt3=" + this.ivt3 + "\n");
+    sb.append("- ivt4=" + this.ivt4 + "\n");
+    sb.append("- ivt5=" + this.ivt5 + "\n");
+    sb.append("- ivt6=" + this.ivt6 + "\n");
+    sb.append("- ivt7=" + this.ivt7 + "\n");
+    sb.append("- ivt8=" + this.ivt8 + "\n");
+    sb.append("- ivt9=" + this.ivt9 + "\n");
+    sb.append("- ivt10=" + this.ivt10 + "\n");
+    sb.append("- ivt11=" + this.ivt11 + "\n");
+    sb.append("- ivt12=" + this.ivt12 + "\n");
+    sb.append("- ivt13=" + this.ivt13 + "\n");
+    sb.append("- ivt14=" + this.ivt14 + "\n");
+    sb.append("- ivt15=" + this.ivt15 + "\n");
+    sb.append("- ivt16=" + this.ivt16 + "\n");
+    sb.append("- ivt17=" + this.ivt17);
     return sb.toString();
   }
 
@@ -170,6 +357,23 @@ public class DomainTypesDateTimePrototype implements Serializable {
     obj.addProperty("tim3", this.tim3);
     obj.addProperty("tim4", this.tim4);
     obj.addProperty("tim5", this.tim5);
+    obj.addProperty("ivt1", this.ivt1);
+    obj.addProperty("ivt2", this.ivt2);
+    obj.addProperty("ivt3", this.ivt3);
+    obj.addProperty("ivt4", this.ivt4);
+    obj.addProperty("ivt5", this.ivt5);
+    obj.addProperty("ivt6", this.ivt6);
+    obj.addProperty("ivt7", this.ivt7);
+    obj.addProperty("ivt8", this.ivt8);
+    obj.addProperty("ivt9", this.ivt9);
+    obj.addProperty("ivt10", this.ivt10);
+    obj.addProperty("ivt11", this.ivt11);
+    obj.addProperty("ivt12", this.ivt12);
+    obj.addProperty("ivt13", this.ivt13);
+    obj.addProperty("ivt14", this.ivt14);
+    obj.addProperty("ivt15", this.ivt15);
+    obj.addProperty("ivt16", this.ivt16);
+    obj.addProperty("ivt17", this.ivt17);
     return obj.render();
   }
 
@@ -194,6 +398,23 @@ public class DomainTypesDateTimePrototype implements Serializable {
     public boolean tim3WasSet = false;
     public boolean tim4WasSet = false;
     public boolean tim5WasSet = false;
+    public boolean ivt1WasSet = false;
+    public boolean ivt2WasSet = false;
+    public boolean ivt3WasSet = false;
+    public boolean ivt4WasSet = false;
+    public boolean ivt5WasSet = false;
+    public boolean ivt6WasSet = false;
+    public boolean ivt7WasSet = false;
+    public boolean ivt8WasSet = false;
+    public boolean ivt9WasSet = false;
+    public boolean ivt10WasSet = false;
+    public boolean ivt11WasSet = false;
+    public boolean ivt12WasSet = false;
+    public boolean ivt13WasSet = false;
+    public boolean ivt14WasSet = false;
+    public boolean ivt15WasSet = false;
+    public boolean ivt16WasSet = false;
+    public boolean ivt17WasSet = false;
   }
 
 }

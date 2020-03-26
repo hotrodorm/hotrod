@@ -346,6 +346,23 @@ create table types_date_time (
   tim3 time with time zone,
   tim4 timetz,                     -- not tested!
   tim5 time(6),
+	ivt1 interval YEAR,
+	ivt2 interval MONTH,
+	ivt3 interval DAY,
+	ivt4 interval HOUR,
+	ivt5 interval MINUTE,
+	ivt6 interval SECOND,
+	ivt7 interval SECOND(5),
+	ivt8 interval YEAR TO MONTH,
+	ivt9 interval DAY TO HOUR,
+	ivt10 interval DAY TO MINUTE,
+	ivt11 interval DAY TO SECOND,
+	ivt12 interval DAY TO SECOND(5),
+	ivt13 interval HOUR TO MINUTE,
+	ivt14 interval HOUR TO SECOND,
+	ivt15 interval HOUR TO SECOND(5),
+	ivt16 interval MINUTE TO SECOND,
+	ivt17 interval MINUTE TO SECOND(5),
   primary key (id)
 );
 
@@ -372,7 +389,6 @@ create table types_other (
   -- bit2 bit varying(10),
   uui1 uuid, -- universally unique identifier
   -- xml1 xml, -- (optional support)
-  -- itv1 interval, -- not studied
   jso1 json,
   jso2 jsonb,
   arr1 integer[],

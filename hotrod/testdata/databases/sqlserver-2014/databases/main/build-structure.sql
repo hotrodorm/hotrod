@@ -281,6 +281,32 @@ create table types_date_time (
   tim2 time(0), -- accuracy: 100ms - 1s
   tim3 time(7) -- accuracy: 100ns - 10µs
   
+-- i1 interval MONTH,  
+-- i2 interval MONTH(3),  
+-- i3 interval YEAR,  
+-- i4 interval YEAR(3),
+-- i5 interval YEAR TO MONTH,   
+-- i6 interval YEAR(3) TO MONTH,   
+-- i7 interval DAY,   
+-- i8 interval DAY(3),
+-- i9 interval HOUR,  
+-- i10 interval HOUR(3),
+-- i11 interval MINUTE,  
+-- i12 interval MINUTE(3),
+-- i13 interval SECOND,  
+-- i14 interval SECOND(5,2),
+-- i15 interval DAY TO HOUR,   
+-- i16 interval DAY(3) TO HOUR,
+-- i17 interval DAY TO MINUTE,   
+-- i18 interval DAY(3) TO MINUTE,   
+-- i19 interval DAY TO SECOND,
+-- i20 interval DAY(3) TO SECOND(4),
+-- i21 interval HOUR TO MINUTE,
+-- i22 interval HOUR(3) TO MINUTE,
+-- i23 interval HOUR TO SECOND,
+-- i24 interval HOUR(3) TO SECOND(4),
+-- i25 interval MINUTE TO SECOND,
+-- i26 interval MINUTE(3) TO SECOND(4)
 );
 
 create table types_binary (

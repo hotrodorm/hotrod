@@ -142,7 +142,41 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
     TIM4("types_date_time", "tim4", true), //
     TIM4$DESC("types_date_time", "tim4", false), //
     TIM5("types_date_time", "tim5", true), //
-    TIM5$DESC("types_date_time", "tim5", false);
+    TIM5$DESC("types_date_time", "tim5", false), //
+    IVT1("types_date_time", "ivt1", true), //
+    IVT1$DESC("types_date_time", "ivt1", false), //
+    IVT2("types_date_time", "ivt2", true), //
+    IVT2$DESC("types_date_time", "ivt2", false), //
+    IVT3("types_date_time", "ivt3", true), //
+    IVT3$DESC("types_date_time", "ivt3", false), //
+    IVT4("types_date_time", "ivt4", true), //
+    IVT4$DESC("types_date_time", "ivt4", false), //
+    IVT5("types_date_time", "ivt5", true), //
+    IVT5$DESC("types_date_time", "ivt5", false), //
+    IVT6("types_date_time", "ivt6", true), //
+    IVT6$DESC("types_date_time", "ivt6", false), //
+    IVT7("types_date_time", "ivt7", true), //
+    IVT7$DESC("types_date_time", "ivt7", false), //
+    IVT8("types_date_time", "ivt8", true), //
+    IVT8$DESC("types_date_time", "ivt8", false), //
+    IVT9("types_date_time", "ivt9", true), //
+    IVT9$DESC("types_date_time", "ivt9", false), //
+    IVT10("types_date_time", "ivt10", true), //
+    IVT10$DESC("types_date_time", "ivt10", false), //
+    IVT11("types_date_time", "ivt11", true), //
+    IVT11$DESC("types_date_time", "ivt11", false), //
+    IVT12("types_date_time", "ivt12", true), //
+    IVT12$DESC("types_date_time", "ivt12", false), //
+    IVT13("types_date_time", "ivt13", true), //
+    IVT13$DESC("types_date_time", "ivt13", false), //
+    IVT14("types_date_time", "ivt14", true), //
+    IVT14$DESC("types_date_time", "ivt14", false), //
+    IVT15("types_date_time", "ivt15", true), //
+    IVT15$DESC("types_date_time", "ivt15", false), //
+    IVT16("types_date_time", "ivt16", true), //
+    IVT16$DESC("types_date_time", "ivt16", false), //
+    IVT17("types_date_time", "ivt17", true), //
+    IVT17$DESC("types_date_time", "ivt17", false);
 
     private TypesDateTimeOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -195,6 +229,23 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
     public DateTimeColumn tim3;
     public DateTimeColumn tim4;
     public DateTimeColumn tim5;
+    public ObjectColumn ivt1;
+    public ObjectColumn ivt2;
+    public ObjectColumn ivt3;
+    public ObjectColumn ivt4;
+    public ObjectColumn ivt5;
+    public ObjectColumn ivt6;
+    public ObjectColumn ivt7;
+    public ObjectColumn ivt8;
+    public ObjectColumn ivt9;
+    public ObjectColumn ivt10;
+    public ObjectColumn ivt11;
+    public ObjectColumn ivt12;
+    public ObjectColumn ivt13;
+    public ObjectColumn ivt14;
+    public ObjectColumn ivt15;
+    public ObjectColumn ivt16;
+    public ObjectColumn ivt17;
 
     // Constructors
 
@@ -223,6 +274,23 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
       this.tim3 = new DateTimeColumn(this, "tim3", "tim3");
       this.tim4 = new DateTimeColumn(this, "tim4", "tim4");
       this.tim5 = new DateTimeColumn(this, "tim5", "tim5");
+      this.ivt1 = new ObjectColumn(this, "ivt1", "ivt1");
+      this.ivt2 = new ObjectColumn(this, "ivt2", "ivt2");
+      this.ivt3 = new ObjectColumn(this, "ivt3", "ivt3");
+      this.ivt4 = new ObjectColumn(this, "ivt4", "ivt4");
+      this.ivt5 = new ObjectColumn(this, "ivt5", "ivt5");
+      this.ivt6 = new ObjectColumn(this, "ivt6", "ivt6");
+      this.ivt7 = new ObjectColumn(this, "ivt7", "ivt7");
+      this.ivt8 = new ObjectColumn(this, "ivt8", "ivt8");
+      this.ivt9 = new ObjectColumn(this, "ivt9", "ivt9");
+      this.ivt10 = new ObjectColumn(this, "ivt10", "ivt10");
+      this.ivt11 = new ObjectColumn(this, "ivt11", "ivt11");
+      this.ivt12 = new ObjectColumn(this, "ivt12", "ivt12");
+      this.ivt13 = new ObjectColumn(this, "ivt13", "ivt13");
+      this.ivt14 = new ObjectColumn(this, "ivt14", "ivt14");
+      this.ivt15 = new ObjectColumn(this, "ivt15", "ivt15");
+      this.ivt16 = new ObjectColumn(this, "ivt16", "ivt16");
+      this.ivt17 = new ObjectColumn(this, "ivt17", "ivt17");
     }
 
   }

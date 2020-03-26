@@ -11,37 +11,37 @@ public class DomainEventPrototype implements Serializable {
 
   // VO Properties (table columns)
 
-  protected java.lang.Long id = null;
-  protected java.lang.String name = null;
-  protected java.lang.Integer status = null;
+  protected java.lang.Integer id = null;
+  protected java.sql.Timestamp otz = null;
+  protected java.sql.Timestamp o = null;
 
   // getters & setters
 
-  public final java.lang.Long getId() {
+  public final java.lang.Integer getId() {
     return this.id;
   }
 
-  public final void setId(final java.lang.Long id) {
+  public final void setId(final java.lang.Integer id) {
     this.id = id;
     this.getPropertiesChangeLog().idWasSet = true;
   }
 
-  public final java.lang.String getName() {
-    return this.name;
+  public final java.sql.Timestamp getOtz() {
+    return this.otz;
   }
 
-  public final void setName(final java.lang.String name) {
-    this.name = name;
-    this.getPropertiesChangeLog().nameWasSet = true;
+  public final void setOtz(final java.sql.Timestamp otz) {
+    this.otz = otz;
+    this.getPropertiesChangeLog().otzWasSet = true;
   }
 
-  public final java.lang.Integer getStatus() {
-    return this.status;
+  public final java.sql.Timestamp getO() {
+    return this.o;
   }
 
-  public final void setStatus(final java.lang.Integer status) {
-    this.status = status;
-    this.getPropertiesChangeLog().statusWasSet = true;
+  public final void setO(final java.sql.Timestamp o) {
+    this.o = o;
+    this.getPropertiesChangeLog().oWasSet = true;
   }
 
   // to string
@@ -50,8 +50,8 @@ public class DomainEventPrototype implements Serializable {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
-    sb.append("- name=" + this.name + "\n");
-    sb.append("- status=" + this.status);
+    sb.append("- otz=" + this.otz + "\n");
+    sb.append("- o=" + this.o);
     return sb.toString();
   }
 
@@ -60,8 +60,8 @@ public class DomainEventPrototype implements Serializable {
   public String toJSON() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
-    obj.addProperty("name", this.name);
-    obj.addProperty("status", this.status);
+    obj.addProperty("otz", this.otz);
+    obj.addProperty("o", this.o);
     return obj.render();
   }
 
@@ -75,8 +75,8 @@ public class DomainEventPrototype implements Serializable {
 
   protected class PropertiesChangeLog {
     public boolean idWasSet = false;
-    public boolean nameWasSet = false;
-    public boolean statusWasSet = false;
+    public boolean otzWasSet = false;
+    public boolean oWasSet = false;
   }
 
 }

@@ -51,17 +51,9 @@ public class EventDAO implements Serializable, ApplicationContextAware {
     this.applicationContext = applicationContext;
   }
 
-  // select by primary key
+  // no select by PK generated, since the table does not have a PK.
 
-  public com.company.cli.maven_test.daos.EventVO selectByPK(final java.lang.Long id) {
-    if (id == null)
-      return null;
-    com.company.cli.maven_test.daos.EventVO vo = new com.company.cli.maven_test.daos.EventVO();
-    vo.setId(id);
-    return this.sqlSession.selectOne("com.company.cli.maven_test.daos.primitives.event.selectByPK", vo);
-  }
-
-  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
+  // select by unique indexes: no unique indexes found -- skipped
 
   // select by example
 
@@ -87,19 +79,9 @@ public class EventDAO implements Serializable, ApplicationContextAware {
     return this.sqlSession.insert(id, vo);
   }
 
-  // update by PK
+  // no update by PK generated, since the table does not have a PK.
 
-  public int update(final com.company.cli.maven_test.daos.EventVO vo) {
-    if (vo.id == null) return 0;
-    return this.sqlSession.update("com.company.cli.maven_test.daos.primitives.event.updateByPK", vo);
-  }
-
-  // delete by PK
-
-  public int delete(final com.company.cli.maven_test.daos.EventVO vo) {
-    if (vo.id == null) return 0;
-    return this.sqlSession.delete("com.company.cli.maven_test.daos.primitives.event.deleteByPK", vo);
-  }
+  // no delete by PK generated, since the table does not have a PK.
 
   // update by example
 
@@ -121,16 +103,10 @@ public class EventDAO implements Serializable, ApplicationContextAware {
 
     ID("event", "id", true), //
     ID$DESC("event", "id", false), //
-    NAME("event", "name", true), //
-    NAME$DESC("event", "name", false), //
-    NAME$CASEINSENSITIVE("event", "lower(name)", true), //
-    NAME$CASEINSENSITIVE_STABLE_FORWARD("event", "lower(name), name", true), //
-    NAME$CASEINSENSITIVE_STABLE_REVERSE("event", "lower(name), name", false), //
-    NAME$DESC_CASEINSENSITIVE("event", "lower(name)", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("event", "lower(name), name", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("event", "lower(name), name", true), //
-    STATUS("event", "status", true), //
-    STATUS$DESC("event", "status", false);
+    OTZ("event", "otz", true), //
+    OTZ$DESC("event", "otz", false), //
+    O("event", "o", true), //
+    O$DESC("event", "o", false);
 
     private EventOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -172,8 +148,8 @@ public class EventDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public NumberColumn id;
-    public StringColumn name;
-    public NumberColumn status;
+    public DateTimeColumn otz;
+    public DateTimeColumn o;
 
     // Constructors
 
@@ -191,8 +167,8 @@ public class EventDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       this.id = new NumberColumn(this, "id", "id");
-      this.name = new StringColumn(this, "name", "name");
-      this.status = new NumberColumn(this, "status", "status");
+      this.otz = new DateTimeColumn(this, "otz", "otz");
+      this.o = new DateTimeColumn(this, "o", "o");
     }
 
   }
