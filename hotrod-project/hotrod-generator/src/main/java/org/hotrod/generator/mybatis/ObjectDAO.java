@@ -54,7 +54,7 @@ import org.hotrod.utils.ImportsRenderer;
 import org.hotrod.utils.JUtils;
 import org.hotrod.utils.ValueTypeFactory;
 import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
@@ -469,7 +469,7 @@ public class ObjectDAO extends GeneratableObject {
    * </pre>
    */
   private void retrieveSqlSession(final int indent) throws IOException {
-    String f = SUtils.getFiller(' ', indent * 2);
+    String f = SUtil.getFiller(' ', indent * 2);
     println(f + "    TxManager txm = null;");
     println(f + "    try {");
     println(f + "      txm = getTxManager();");
@@ -484,7 +484,7 @@ public class ObjectDAO extends GeneratableObject {
    * </pre>
    */
   private void commitSqlSession(final int indent) throws IOException {
-    String f = SUtils.getFiller(' ', indent * 2);
+    String f = SUtil.getFiller(' ', indent * 2);
     println(f + "    if (!txm.isTransactionOngoing()) {");
     println(f + "      txm.commit();");
     println(f + "    }");
@@ -505,7 +505,7 @@ public class ObjectDAO extends GeneratableObject {
    */
 
   private void releaseSqlSession(final int indent) throws IOException {
-    String f = SUtils.getFiller(' ', indent * 2);
+    String f = SUtil.getFiller(' ', indent * 2);
 
     if (this.isCheckedPersistenceException()) {
       println(f + "    } catch (SQLException e) {");
@@ -518,13 +518,13 @@ public class ObjectDAO extends GeneratableObject {
 
     if (this.isCheckedPersistenceException()) {
       println(f + "      try {");
-      f = SUtils.getFiller(' ', (indent + 1) * 2);
+      f = SUtil.getFiller(' ', (indent + 1) * 2);
     }
 
     println(f + "      if (txm != null && !txm.isTransactionOngoing()) {");
     println(f + "        txm.close();");
     println(f + "      }");
-    f = SUtils.getFiller(' ', indent * 2);
+    f = SUtil.getFiller(' ', indent * 2);
 
     if (this.isCheckedPersistenceException()) {
       println(f + "      } catch (RuntimeException e) {");

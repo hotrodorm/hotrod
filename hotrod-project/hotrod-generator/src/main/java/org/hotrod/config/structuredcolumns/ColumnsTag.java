@@ -38,7 +38,7 @@ import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 @XmlRootElement(name = "columns")
@@ -164,7 +164,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
       columns.add(aliasedSQLColumn);
     }
 
-    String indent = SUtils.getFiller(' ', formatter.getCurrentIndent() + 2);
+    String indent = SUtil.getFiller(' ', formatter.getCurrentIndent() + 2);
     formatter.add(ListWriter.render(columns, indent, "", ",\n"));
   }
 

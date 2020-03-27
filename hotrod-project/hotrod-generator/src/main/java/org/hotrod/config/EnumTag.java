@@ -30,7 +30,7 @@ import org.hotrod.utils.ValueTypeFactory;
 import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
 import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
@@ -154,7 +154,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     // name
 
-    if (SUtils.isEmpty(this.name)) {
+    if (SUtil.isEmpty(this.name)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'name' cannot be empty", //
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
@@ -185,7 +185,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     // java-name
 
-    if (!SUtils.isEmpty(this.javaClassName)) {
+    if (!SUtil.isEmpty(this.javaClassName)) {
       if (!this.javaClassName.matches(CLASS_NAME_PATTERN)) {
         throw new InvalidConfigurationFileException(this, //
             "Invalid attribute 'java-name' with value '" + this.javaClassName
@@ -217,7 +217,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     // name-column
 
-    if (SUtils.isEmpty(this.nameCol)) {
+    if (SUtil.isEmpty(this.nameCol)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'name-column' cannot be empty", //
           "Attribute 'name-column' of tag <" + super.getTagName() + "> cannot be empty. "
@@ -401,7 +401,7 @@ public class EnumTag extends AbstractEntityDAOTag {
       while (rs.next()) {
         Object value = this.valueColumn.getValueTypeManager().getFromResultSet(rs, 1);
         String name = rs.getString(2);
-        if (SUtils.isEmpty(name)) {
+        if (SUtil.isEmpty(name)) {
           throw new InvalidConfigurationFileException(this, //
               "Enum constant name cannot be empty: an empty value was found on the colum '" + this.nameCol + "'", //
               "Invalid enum constant name from table '" + this.id.getRenderedSQLName() + "' on the <"
@@ -503,7 +503,7 @@ public class EnumTag extends AbstractEntityDAOTag {
       this.javaConstantName = javaConstantName;
       this.javaLiteralValues = new ArrayList<String>();
       this.javaLiteralValues.add(javaLiteralValue);
-      this.javaLiteralValues.add("\"" + SUtils.escapeJavaString(javaLiteralName) + "\"");
+      this.javaLiteralValues.add("\"" + SUtil.escapeJavaString(javaLiteralName) + "\"");
       for (int i = 0; i < numberOfExtraColumns; i++) {
         this.javaLiteralValues.add("null");
       }
@@ -611,7 +611,7 @@ public class EnumTag extends AbstractEntityDAOTag {
     }
 
     public String getGetter() {
-      return "get" + SUtils.sentenceFormat(this.name);
+      return "get" + SUtil.sentenceFormat(this.name);
     }
 
   }

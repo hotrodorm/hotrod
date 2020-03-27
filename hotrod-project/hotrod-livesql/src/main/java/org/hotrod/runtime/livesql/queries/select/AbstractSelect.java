@@ -21,7 +21,7 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 import org.hotrodorm.hotrod.names.Names;
 import org.hotrodorm.hotrod.utils.CUtil;
 import org.hotrodorm.hotrod.utils.HexaUtils;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
 
 public abstract class AbstractSelect<R> extends Query {
@@ -395,7 +395,7 @@ public abstract class AbstractSelect<R> extends Query {
     public void register(final String alias, final DatabaseObject databaseObject) {
       if (this.tableReferences.contains(databaseObject)) {
         throw new InvalidLiveSQLStatementException(
-            SUtils.upperFirst(databaseObject.getType()) + " " + databaseObject.renderUnescapedName()
+            SUtil.upperFirst(databaseObject.getType()) + " " + databaseObject.renderUnescapedName()
                 + (alias == null ? " (with no alias)" : " (with alias '" + alias + "')")
                 + " is used multiple times in the Live SQL statement. "
                 + "Every table or view can only be used once in the from() or join() methods of a Live SQL statement.");

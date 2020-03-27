@@ -53,7 +53,7 @@ import org.hotrod.utils.ImportsRenderer;
 import org.hotrod.utils.JUtils;
 import org.hotrod.utils.ValueTypeFactory;
 import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
@@ -366,7 +366,7 @@ public class ObjectDAO extends GeneratableObject {
 
     // Signature
 
-    println("@Component(\"" + SUtils.escapeJavaString(SUtils.lowerFirst(this.getClassName())) + "\")");
+    println("@Component(\"" + SUtil.escapeJavaString(SUtil.lowerFirst(this.getClassName())) + "\")");
     println("public class " + this.getClassName() + " implements Serializable, ApplicationContextAware {");
     println();
 

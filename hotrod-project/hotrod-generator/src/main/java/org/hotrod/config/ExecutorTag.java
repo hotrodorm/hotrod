@@ -10,7 +10,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "dao")
 public class ExecutorTag extends AbstractDAOTag {
@@ -76,7 +76,7 @@ public class ExecutorTag extends AbstractDAOTag {
 
     // name
 
-    if (SUtils.isEmpty(this.name)) {
+    if (SUtil.isEmpty(this.name)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'name' cannot be empty", //
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. " + "You must specify a dao name.");

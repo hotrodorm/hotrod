@@ -25,7 +25,7 @@ import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "select")
 public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
@@ -186,7 +186,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     // method
 
-    if (SUtils.isEmpty(this.method)) {
+    if (SUtil.isEmpty(this.method)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'method cannot be empty", //
           "Attribute 'method' of tag <" + getTagName() + "> cannot be empty. "
@@ -217,7 +217,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
             "Invalid 'vo' attribute. "
                 + "When the 'vo' attribute is specified no inner <columns> tag can be used. Use one or the other but not both.");
       }
-      if (SUtils.isEmpty(this.vo)) {
+      if (SUtil.isEmpty(this.vo)) {
         throw new InvalidConfigurationFileException(this, //
             "When specified, the 'vo' attribute cannot be empty", //
             "When specified, the 'vo' attribute cannot be empty.");

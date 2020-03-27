@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 public class PropertyTag extends AbstractConfigurationTag {
 
@@ -52,7 +52,7 @@ public class PropertyTag extends AbstractConfigurationTag {
 
     // name
 
-    if (SUtils.isEmpty(this.name)) {
+    if (SUtil.isEmpty(this.name)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute '" + ATT_NAME + "' cannot be empty", //
           "Attribute '" + ATT_NAME + "' of tag <" + super.getTagName() + "> cannot be empty. "

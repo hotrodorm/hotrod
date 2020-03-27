@@ -10,7 +10,7 @@ import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
 
@@ -71,7 +71,7 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
 
   @Override
   public String renderXML(final ParameterRenderer parameterRenderer) {
-    return SUtils.escapeXmlBody(this.text);
+    return SUtil.escapeXmlBody(this.text);
   }
 
   // Java Expression
@@ -113,7 +113,7 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
   public boolean same(final AbstractConfigurationTag fresh) {
     try {
       LiteralTextPart f = (LiteralTextPart) fresh;
-      boolean equals = SUtils.equals(this.text, f.text);
+      boolean equals = SUtil.equals(this.text, f.text);
       // log.info("[LITERAL] equals=" + equals);
       // log.info("this.text=" + this.text);
       // log.info("othe.text=" + f.text);

@@ -28,7 +28,7 @@ import org.hotrod.generator.LiveGenerator;
 import org.hotrod.runtime.BuildInformation;
 import org.hotrod.utils.EUtils;
 import org.hotrod.utils.LocalFileGenerator;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public class GenOperation {
@@ -179,70 +179,71 @@ public class GenOperation {
 
   private void validateParameters() throws Exception {
 
-    // 1. Load the local properties file
+    // 1. Apply local properties file, if any
 
-    if (this.localproperties == null || this.localproperties.trim().isEmpty()) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "localproperties must be specified.");
-    }
+    if (!SUtil.isEmpty(this.localproperties)) {
 
-    File p = new File(this.baseDir, this.localproperties);
-    if (!p.exists()) {
-      throw new Exception(
-          Constants.TOOL_NAME + " parameter: " + "localproperties file does not exist: " + this.localproperties);
-    }
-    if (!p.isFile()) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: "
-          + "localproperties file exists but it's not a regular file: " + this.localproperties);
-    }
+      // 1.a Load local properties
 
-    BufferedReader r = null;
-    Properties props = null;
+      File p = new File(this.baseDir, this.localproperties);
+      if (!p.exists()) {
+        throw new Exception(
+            Constants.TOOL_NAME + " parameter: " + "localproperties file does not exist: " + this.localproperties);
+      }
+      if (!p.isFile()) {
+        throw new Exception(Constants.TOOL_NAME + " parameter: "
+            + "localproperties file exists but it's not a regular file: " + this.localproperties);
+      }
 
-    try {
-      props = new Properties();
-      r = new BufferedReader(new FileReader(p));
-      props.load(r);
+      BufferedReader r = null;
+      Properties props = null;
 
-    } catch (FileNotFoundException e) {
-      throw new Exception(
-          Constants.TOOL_NAME + " parameter: " + "localproperties file does not exist: " + this.localproperties);
+      try {
+        props = new Properties();
+        r = new BufferedReader(new FileReader(p));
+        props.load(r);
 
-    } catch (IOException e) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "localproperties: cannot read file: " + e.getMessage()
-          + ": " + this.localproperties);
+      } catch (FileNotFoundException e) {
+        throw new Exception(
+            Constants.TOOL_NAME + " parameter: " + "localproperties file does not exist: " + this.localproperties);
 
-    } finally {
-      if (r != null) {
-        try {
-          r.close();
-        } catch (IOException e) {
-          // Swallow this exception
+      } catch (IOException e) {
+        throw new Exception(Constants.TOOL_NAME + " parameter: " + "localproperties: cannot read file: "
+            + e.getMessage() + ": " + this.localproperties);
+
+      } finally {
+        if (r != null) {
+          try {
+            r.close();
+          } catch (IOException e) {
+            // Swallow this exception
+          }
         }
       }
+
+      // 1.b Override default values
+
+      this.configfile = props.getProperty("configfile", this.configfile);
+      this.generator = props.getProperty("generator", this.generator);
+      this.driverclass = props.getProperty("driverclass", this.driverclass);
+
+      this.url = props.getProperty("url");
+      this.username = props.getProperty("username");
+      this.password = props.getProperty("password");
+      this.catalog = props.getProperty("catalog");
+      this.schema = props.getProperty("schema");
+      this.facets = props.getProperty("facets");
+      this.display = props.getProperty("display");
     }
 
-    // 2. Load/Replace with local values if specified
-
-    this.configfile = props.getProperty("configfile", this.configfile);
-    this.generator = props.getProperty("generator", this.generator);
-    this.driverclass = props.getProperty("driverclass", this.driverclass);
-
-    this.url = props.getProperty("url");
-    this.username = props.getProperty("username");
-    this.password = props.getProperty("password");
-    this.catalog = props.getProperty("catalog");
-    this.schema = props.getProperty("schema");
-    this.facets = props.getProperty("facets");
-    this.display = props.getProperty("display");
-
-    // 3. Validate properties
+    // 2. Validate properties
 
     // configfile
 
     if (this.configfile == null) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile attribute must be specified.");
     }
-    if (SUtils.isEmpty(this.configfile)) {
+    if (SUtil.isEmpty(this.configfile)) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile attribute cannot be empty.");
     }
     this.configFile = new File(this.baseDir, this.configfile);
@@ -252,7 +253,7 @@ public class GenOperation {
 
     // generator
 
-    if (SUtils.isEmpty(this.generator)) {
+    if (SUtil.isEmpty(this.generator)) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "The attribute 'generator' must be specified.");
     }
 
@@ -261,7 +262,7 @@ public class GenOperation {
     if (this.driverclass == null) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "driverclass attribute must be specified.");
     }
-    if (SUtils.isEmpty(this.driverclass)) {
+    if (SUtil.isEmpty(this.driverclass)) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "driverclass attribute cannot be empty.");
     }
 
@@ -270,7 +271,7 @@ public class GenOperation {
     if (this.url == null) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "url attribute must be specified.");
     }
-    if (SUtils.isEmpty(this.url)) {
+    if (SUtil.isEmpty(this.url)) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "url attribute cannot be empty.");
     }
 
@@ -279,7 +280,7 @@ public class GenOperation {
     if (this.username == null) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "username attribute must be specified.");
     }
-    if (SUtils.isEmpty(this.username)) {
+    if (SUtil.isEmpty(this.username)) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "username attribute cannot be empty.");
     }
 
@@ -292,22 +293,22 @@ public class GenOperation {
 
     // catalog
 
-    if (SUtils.isEmpty(this.catalog)) {
+    if (SUtil.isEmpty(this.catalog)) {
       this.catalog = null;
     }
 
     // schema
 
-    if (SUtils.isEmpty(this.schema)) {
+    if (SUtil.isEmpty(this.schema)) {
       this.schema = null;
     }
 
     // facets
 
     this.facetNames = new LinkedHashSet<String>();
-    if (!SUtils.isEmpty(this.facets)) {
+    if (!SUtil.isEmpty(this.facets)) {
       for (String facetName : this.facets.split(",")) {
-        if (!SUtils.isEmpty(facetName)) {
+        if (!SUtil.isEmpty(facetName)) {
           this.facetNames.add(facetName.trim());
         }
       }
@@ -315,7 +316,7 @@ public class GenOperation {
 
     // display
 
-    if (this.display == null) {
+    if (SUtil.isEmpty(this.display)) {
       this.displayMode = DisplayMode.LIST;
     } else {
       this.displayMode = DisplayMode.parse(this.display);

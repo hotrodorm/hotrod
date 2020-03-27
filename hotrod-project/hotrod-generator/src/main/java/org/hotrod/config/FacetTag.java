@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "facet")
 public class FacetTag extends AbstractConfigurationTag {
@@ -78,7 +78,7 @@ public class FacetTag extends AbstractConfigurationTag {
 
     // name
 
-    if (SUtils.isEmpty(this.name)) {
+    if (SUtil.isEmpty(this.name)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'name' cannot be empty", //
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. " + "You must specify a facet name.");

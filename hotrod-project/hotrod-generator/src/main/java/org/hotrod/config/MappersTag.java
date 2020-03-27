@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "mappers")
 public class MappersTag extends AbstractConfigurationTag {
@@ -60,7 +60,7 @@ public class MappersTag extends AbstractConfigurationTag {
 
     // gen-base-dir
 
-    if (SUtils.isEmpty(this.sGenBaseDir)) {
+    if (SUtil.isEmpty(this.sGenBaseDir)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> cannot be empty", //
           "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> cannot be empty. "
@@ -83,7 +83,7 @@ public class MappersTag extends AbstractConfigurationTag {
 
     // relative-dir
 
-    if (SUtils.isEmpty(this.sRelativeDir)) {
+    if (SUtil.isEmpty(this.sRelativeDir)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'relative-dir' cannot be empty", //
           "Attribute 'relative-dir' of tag <" + super.getTagName() + "> cannot be empty. "

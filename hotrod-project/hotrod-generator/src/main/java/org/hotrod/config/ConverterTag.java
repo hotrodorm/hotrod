@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 @XmlRootElement(name = "converter")
@@ -66,7 +66,7 @@ public class ConverterTag extends AbstractConfigurationTag {
 
     // name
 
-    if (SUtils.isEmpty(this.name)) {
+    if (SUtil.isEmpty(this.name)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'name' cannot be empty", //
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
@@ -81,7 +81,7 @@ public class ConverterTag extends AbstractConfigurationTag {
 
     // java-type
 
-    if (SUtils.isEmpty(this.javaType)) {
+    if (SUtil.isEmpty(this.javaType)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'java-type' cannot be empty", //
           "Attribute 'java-type' of tag <" + super.getTagName() + "> with name '" + this.name + "' cannot be empty.");
@@ -95,7 +95,7 @@ public class ConverterTag extends AbstractConfigurationTag {
 
     // java-intermediate-type
 
-    if (SUtils.isEmpty(this.javaIntermediateType)) {
+    if (SUtil.isEmpty(this.javaIntermediateType)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'java-intermediate-type' cannot be empty", //
           "Attribute 'java-intermediate-type' of tag <" + super.getTagName() + "> cannot be empty.");
@@ -121,7 +121,7 @@ public class ConverterTag extends AbstractConfigurationTag {
 
     // class
 
-    if (SUtils.isEmpty(this.javaClass)) {
+    if (SUtil.isEmpty(this.javaClass)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'class'  cannot be empty", //
           "Attribute 'class' of tag <" + super.getTagName() + "> cannot be empty.");

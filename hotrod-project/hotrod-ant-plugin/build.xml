@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<project name="hotrod-ant-plugin-test">
+
+  <property name="hotrod.version" value="3.1.0-SNAPSHOT" />
+
+  <loadproperties srcFile="build.properties" />
+
+  <property name="hotrod.lib"
+            value="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod-ant-plugin/${hotrod.version}/hotrod-ant-plugin-${hotrod.version}-jar-with-dependencies.jar" />
+
+  <target name="hotrod-gen-java8">
+    <property name="jvm" value="${user.home}/apps/java8/bin/java" />
+    <property name="antfile" value="${ant.file}" />
+    <property name="target" value="hotrod-gen" />
+    <exec executable="ant">
+      <env key="JAVACMD" value="${jvm}" />
+      <arg line='-f "${antfile}"' />
+      <arg line="${target}" />
+    </exec>
+  </target>
+
+  <target name="hotrod-gen">
+    <taskdef name="hotrod-gen" classname="org.hotrod.plugin.ant.GenAntTask">
+      <classpath>
+        <pathelement location="${hotrod.lib}" />
+        <pathelement location="${driverclasspath}" />
+      </classpath>
+    </taskdef>
+    <hotrod-gen configfilename="${configfilename}"
+                generator="${generator}"
+                driverclass="${driverclass}"
+                localproperties="${localproperties}"
+                url="${url}"
+                username="${username}"
+                password="${password}"
+                catalog="${catalog}"
+                schema="${schema}"
+                display="${display}"
+                facets="${facets}" />
+  </target>
+
+</project>

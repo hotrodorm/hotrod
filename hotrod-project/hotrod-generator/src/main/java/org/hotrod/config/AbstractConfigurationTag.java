@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.generator.GeneratableObject;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ErrorMessage;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 public abstract class AbstractConfigurationTag implements Comparable<AbstractConfigurationTag>, Serializable {
 
@@ -175,7 +175,7 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
   }
 
   public boolean treeIncludesIsToBeGenerated(final int level) {
-    log.debug("@@ " + SUtils.getFiller(". ", level) + "[" + (this.isToBeGenerated() ? "g" : "_") + "] "
+    log.debug("@@ " + SUtil.getFiller(". ", level) + "[" + (this.isToBeGenerated() ? "g" : "_") + "] "
         + (this.status.getIcon()) + " " + this.getInternalCaption());
     if (this.isToBeGenerated()) {
       return true;
@@ -333,7 +333,7 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
 
   @SuppressWarnings("unused")
   private void displayGenerateMark(final AbstractConfigurationTag tag, final int level) {
-    log.debug(SUtils.getFiller(". ", level) + " " + (tag.isToBeGenerated() ? "G" : "_") + " "
+    log.debug(SUtil.getFiller(". ", level) + " " + (tag.isToBeGenerated() ? "G" : "_") + " "
         + tag.getStatus().getIcon() + " " + tag.getInternalCaption() + " - " + System.identityHashCode(tag));
     for (AbstractConfigurationTag subtag : tag.getSubTags()) {
       displayGenerateMark(subtag, level + 1);

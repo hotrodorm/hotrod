@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+      <daos gen-base-dir="testdata/gen/hotrod/daos" dao-package="hotrod.test.generation" 
+        vo-prefix="" vo-suffix="VO"
+        abstract-vo-prefix="Abstract" abstract-vo-suffix="VO"
+        dao-prefix="" dao-suffix="DAO"
+      />
+      <mappers gen-base-dir="testdata/gen/hotrod/mappers" relative-dir="persistence" />
+      <mybatis-configuration-template file="mybatis-config-template.xml" />
+      <select-generation temp-view-base-name="mybatis_temp_view" />
+    </mybatis-spring>
+  </generators>
+
+  <facet name="f1">
+
+<!-- 
+    <table name="config_values" />
+-->
+  
+    <table name="account" > <!-- identity by default PK -->
+      <column name="active" java-name="mainStatus" />
+    </table>
+
+    <table name="federal_branch" />
+
+    <table name="transaction" /> <!-- identity by default PK -->
+
+  </facet>
+  
+<?comment 
+?>  
+
+  <table name="island" />
+
+  <table name="properties" />
+  <table name="parameters">
+    <column name="level" java-type="java.lang.Long" jdbc-type="NUMERIC" />
+  </table>
+  <table name="log" />
+
+  <table name="state_branch" />
+  <table name="client" />
+
+  <table name="agent"> <!-- sequence-generated PK -->
+    <column name="id" sequence="seq_agent" />
+  </table>
+
+  <table name="codes" column-seam="_" /> <!-- identity by default PK -->
+
+  <table name="item" />
+  
+  <table name="quadrant" />
+  <table name="application_config" />
+
+  <enum name="vehicle_type" name-column="description" />
+
+  <table name="vehicle">
+    <version-control-column name="version_number" />
+    <column name="version_number" java-type="java.lang.Short" jdbc-type="NUMERIC" initial-value="4" min-value="-7"
+      max-value="7" />
+  </table>
+
+  <table name="test_seq_ide_def1">
+    <column name="extra_id1" sequence="gen_seq1" />
+    <column name="extra_id2" sequence="gen_seq2" />
+  </table>
+
+  <table name="test_identity1" />
+  <table name="test_identity2" />
+  
+  <table name="cursor_example1" />
+
+  <table name="types_numeric" />
+  <table name="types_char" />
+  <table name="types_binary" />
+
+  <table name="types_date_time">
+  </table>
+
+  <table name="event" />
+
+  <table name="types_other">
+  
+<!--
+    <column name="uui1" java-type="java.lang.String" />
+    <column name="uui1" java-type="java.util.UUID" />
+    <column name="uui1" java-type="java.lang.Object" />
+
+    <column name="bit1" java-type="boolean[]" jdbc-type="BIT" /> 
+    <column name="current_mood" java-type="java.lang.String" jdbc-type="VARCHAR" />
+
+    <column name="jso1" java-type="java.lang.String" jdbc-type="OTHER" /> 
+    <column name="jso2" java-type="java.lang.String" jdbc-type="OTHER" /> 
+     
+-->
+  </table>
+
+  <table name="'car#part$Price'" />
+
+  <view name="tx_branch">
+    <column name="amount" java-type="java.lang.Long" jdbc-type="NUMERIC" />
+  </view>
+  
+  <!-- 
+  -->
+  <table name="'house_ROOM'" />
+  <table name="account_alert" schema="schema2" />
+  <table name="house" schema="schema2" />
+
+<!-- 
+  <table name="house" java-name="LocalHouse" />
+-->
+
+  <view name="low_account" schema="schema2" />
+
+  <table name="'&amp;Price%'" schema="'&lt;Stock$'">
+    <column name="id" sequence="seq_price" schema="'&lt;Stock$'" />
+  </table>
+
+  <dao name="AlertFinder">
+    <select method="findAlerts">
+      select
+      <columns>
+        <vo table="account" extended-vo="Account2">
+          <expression property="id">a.id + 1</expression>
+          <expression property="extra2">a.id + 1</expression>
+          <!-- 
+          <collection table="account_alert" schema="schema2" property="alerts" alias="aa" extended-vo="Alert2VO">
+            <association table="house" property="house" schema="schema2" alias="h" />
+          </collection>
+           -->
+        </vo>
+      </columns>
+      from account a
+      join schema2.account_alert aa on a.id = aa.account_id
+      join schema2.house h on h.id = aa.house_id
+      where a.current_balance >= 100;
+    </select>
+  </dao>
+
+  <dao name="AccountReports">
+
+    <select method="selectNewAccountsVolume" vo="AccountVolume">
+      select a.id, a.name, sum(abs(t.amount)) as total_txs
+      from account a
+      left join transaction t on t.account_id = a.id
+      where a.created_on >= current_date - interval '30 day'
+      group by a.id
+    </select>
+
+    <select method="selectOldAccountsVolume" vo="OldAccountVolume">
+      select a.id, a.name, sum(abs(t.amount)) as total_txs
+      from account a
+      left join transaction t on t.account_id = a.id
+      where a.created_on &lt; current_date - interval '30 day'
+      group by a.id
+    </select>
+
+    <select method="selectAccountsStats">
+      select
+        <columns>
+          <vo table="account" extended-vo="AccountStats" alias="a">
+            <collection table="transaction" extended-vo="TransactionStats" property="txs" alias="t">
+              <association table="federal_branch" property="branch" alias="b" />
+            </collection>
+          </vo>
+        </columns>
+      from account a
+      left join transaction t on t.account_id = a.id
+      left join federal_branch b on t.fed_branch_id = b.id
+    </select>
+
+    <query method="applyPromotion">
+      <parameter name="minAmount" java-type="Integer" jdbc-type="NUMERIC" />
+      <parameter name="prize" java-type="Integer" jdbc-type="NUMERIC" />
+      update account a 
+      set current_balance = current_balance + #{prize}
+      from transaction t
+      where t.account_id = a.id 
+        and t.amount >= #{minAmount}
+    </query>
+
+  </dao>
+
+</hotrod>

@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.hotrod.utils.JdbcTypes;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.connectors.DatabaseConnectorFactory.UnsupportedDatabaseException;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -52,61 +52,61 @@ public class HotRodInspectorAntTask extends Task {
 
     // driverclass
 
-    if (this.driverClass == null) {
-      throw new BuildException("driverclass attribute must be specified.");
-    }
-    if (SUtils.isEmpty(this.driverClass)) {
-      throw new BuildException("driverclass attribute cannot be empty.");
-    }
-
-    // url
-
-    if (this.url == null) {
-      throw new BuildException("url attribute must be specified.");
-    }
-    if (SUtils.isEmpty(this.url)) {
-      throw new BuildException("url attribute cannot be empty.");
-    }
-
-    // username
-
-    if (this.username == null) {
-      throw new BuildException("username attribute must be specified.");
-    }
-    if (SUtils.isEmpty(this.username)) {
-      throw new BuildException("username attribute cannot be empty.");
-    }
-
-    // password
-
-    if (this.password == null) {
-      throw new BuildException("password attribute must be specified, even if empty.");
-    }
-
-    // catalog
-
-    if (SUtils.isEmpty(this.catalog)) {
-      this.catalog = null;
-    }
-
-    // schema
-
-    if (SUtils.isEmpty(this.schema)) {
-      this.schema = null;
-    }
-
-    // destfile
-
-    if (this.destFile == null) {
-      throw new BuildException("destfile attribute must be specified.");
-    }
-    if (SUtils.isEmpty(this.destFile)) {
-      throw new BuildException("destfile attribute cannot be empty.");
-    }
-    this.dest = new File(this.destFile);
-    if (this.dest.exists()) {
-      throw new BuildException("destfile attribute specifies an existing file, but must specify a non-existent file.");
-    }
+//    if (this.driverClass == null) {
+//      throw new BuildException("driverclass attribute must be specified.");
+//    }
+//    if (SUtil.isEmpty(this.driverClass)) {
+//      throw new BuildException("driverclass attribute cannot be empty.");
+//    }
+//
+//    // url
+//
+//    if (this.url == null) {
+//      throw new BuildException("url attribute must be specified.");
+//    }
+//    if (SUtil.isEmpty(this.url)) {
+//      throw new BuildException("url attribute cannot be empty.");
+//    }
+//
+//    // username
+//
+//    if (this.username == null) {
+//      throw new BuildException("username attribute must be specified.");
+//    }
+//    if (SUtil.isEmpty(this.username)) {
+//      throw new BuildException("username attribute cannot be empty.");
+//    }
+//
+//    // password
+//
+//    if (this.password == null) {
+//      throw new BuildException("password attribute must be specified, even if empty.");
+//    }
+//
+//    // catalog
+//
+//    if (SUtil.isEmpty(this.catalog)) {
+//      this.catalog = null;
+//    }
+//
+//    // schema
+//
+//    if (SUtil.isEmpty(this.schema)) {
+//      this.schema = null;
+//    }
+//
+//    // destfile
+//
+//    if (this.destFile == null) {
+//      throw new BuildException("destfile attribute must be specified.");
+//    }
+//    if (SUtil.isEmpty(this.destFile)) {
+//      throw new BuildException("destfile attribute cannot be empty.");
+//    }
+//    this.dest = new File(this.destFile);
+//    if (this.dest.exists()) {
+//      throw new BuildException("destfile attribute specifies an existing file, but must specify a non-existent file.");
+//    }
 
   }
 

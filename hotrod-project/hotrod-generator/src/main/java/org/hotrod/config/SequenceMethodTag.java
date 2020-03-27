@@ -11,7 +11,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "sequence")
 public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
@@ -86,7 +86,7 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
 
     // name
 
-    if (SUtils.isEmpty(this.name)) {
+    if (SUtil.isEmpty(this.name)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'name' cannot be empty", //
           "Attribute 'name' of tag <" + TAG_NAME + "> cannot be empty. " + "You must specify a sequence name.");

@@ -16,7 +16,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.GeneratableObject;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 public class MyBatisConfiguration extends GeneratableObject {
 
@@ -73,13 +73,13 @@ public class MyBatisConfiguration extends GeneratableObject {
     }
     String template;
     try {
-      template = SUtils.loadFileAsString(templateFile);
+      template = SUtil.loadFileAsString(templateFile);
     } catch (IOException e) {
       throw new ControlledException("Could not generate the MyBatis main configuration file: "
           + "could not read the template file '" + templateFile.getPath() + "': " + e.getMessage());
     }
 
-    int count = SUtils.countMatches(template, MAPPERS_INSERTION_TOKEN);
+    int count = SUtil.countMatches(template, MAPPERS_INSERTION_TOKEN);
 
     if (count == 0) {
       throw new ControlledException("Could not generate the MyBatis main configuration file: "

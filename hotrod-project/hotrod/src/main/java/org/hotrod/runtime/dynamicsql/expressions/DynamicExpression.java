@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public abstract class DynamicExpression {
@@ -39,8 +39,8 @@ public abstract class DynamicExpression {
 
   public final String renderConstructor(final int margin) {
     // log.info(" * class " + this.getClass().getName());
-    String indent = SUtils.getFiller(' ', margin);
-    String nextIndent = SUtils.getFiller(' ', margin + 2);
+    String indent = SUtil.getFiller(' ', margin);
+    String nextIndent = SUtil.getFiller(' ', margin + 2);
     StringBuilder sb = new StringBuilder();
 
     sb.append(indent);
@@ -63,7 +63,7 @@ public abstract class DynamicExpression {
               if (s == null) {
                 pw.add("null");
               } else {
-                pw.add("\"" + SUtils.escapeJavaString(s) + "\"");
+                pw.add("\"" + SUtil.escapeJavaString(s) + "\"");
               }
             }
             lw.add(nextIndent + pw.toString());

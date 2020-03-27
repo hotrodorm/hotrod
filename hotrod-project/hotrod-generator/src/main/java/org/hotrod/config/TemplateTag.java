@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "mybatis-configuration-template")
 public class TemplateTag extends AbstractConfigurationTag {
@@ -46,7 +46,7 @@ public class TemplateTag extends AbstractConfigurationTag {
 
     // file
 
-    if (SUtils.isEmpty(this.sFile)) {
+    if (SUtil.isEmpty(this.sFile)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'file' cannot be empty", //
           "MyBatis configuration template not found. " + "Attribute 'file' of tag <" + super.getTagName()

@@ -45,7 +45,7 @@ import org.hotrod.utils.Compare;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 @XmlRootElement(name = "vo")
@@ -173,7 +173,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     for (Object obj : this.content) {
       try {
         String s = (String) obj; // content part
-        if (!SUtils.isEmpty(s)) {
+        if (!SUtil.isEmpty(s)) {
           this.body.add(s);
         }
       } catch (ClassCastException e1) {
@@ -223,7 +223,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
           "Invalid <" + super.getTagName() + "> tag. Cannot specify both the 'table' and 'view' attributes.");
     }
     if (this.table != null) {
-      if (SUtils.isEmpty(this.table)) {
+      if (SUtil.isEmpty(this.table)) {
         throw new InvalidConfigurationFileException(this, //
             "Invalid 'table' attribute on the <" + super.getTagName()
                 + "> tag. When specified this attribute cannot be empty", //
@@ -233,7 +233,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       label = "table '" + this.table + "'";
       name = this.table;
     } else {
-      if (SUtils.isEmpty(this.view)) {
+      if (SUtil.isEmpty(this.view)) {
         throw new InvalidConfigurationFileException(this, //
             "Invalid 'view' attribute on the <" + super.getTagName()
                 + "> tag. When specified this attribute cannot be empty", //
@@ -360,7 +360,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
                 + "(for example, the 'p' when typing the column 'p.city_name').");
       }
     }
-    if (this.alias != null && SUtils.isEmpty(this.alias)) {
+    if (this.alias != null && SUtil.isEmpty(this.alias)) {
       throw new InvalidConfigurationFileException(this, //
           "When specified, the 'alias' attribute must be non-empty. "
               + "It indicates the table or view alias as it appears in the SQL FROM statement "
@@ -756,7 +756,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     if (!VALID_ID_JDBC_TYPES.contains(jdbcType)) {
       List<String> validJdbcTypes = new ArrayList<String>();
       for (Integer t : VALID_ID_JDBC_TYPES) {
-        validJdbcTypes.add(SUtils.alignRight("" + t, 7) + " (" + JdbcTypes.codeToName(t) + ")");
+        validJdbcTypes.add(SUtil.alignRight("" + t, 7) + " (" + JdbcTypes.codeToName(t) + ")");
       }
       throw new InvalidConfigurationFileException(this, //
           "Unsupported JDBC type " + jdbcType + " (" + JdbcTypes.codeToName(jdbcType) + ") on column '"

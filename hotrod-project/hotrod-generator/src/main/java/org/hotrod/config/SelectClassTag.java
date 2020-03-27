@@ -21,7 +21,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "select")
 public class SelectClassTag extends AbstractDAOTag {
@@ -88,7 +88,7 @@ public class SelectClassTag extends AbstractDAOTag {
 
     // java-class-name
 
-    if (SUtils.isEmpty(this.javaClassName)) {
+    if (SUtil.isEmpty(this.javaClassName)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'java-class-name' cannot be empty", //
           "Attribute 'java-class-name' of tag <" + getTagName() + "> cannot be empty. "

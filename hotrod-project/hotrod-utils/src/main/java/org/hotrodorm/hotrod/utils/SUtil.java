@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
-public class SUtils {
+public class SUtil {
 
   public static boolean isEmpty(final String txt) {
     return txt == null || txt.trim().isEmpty();

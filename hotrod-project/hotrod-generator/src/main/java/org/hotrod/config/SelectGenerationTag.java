@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "select-generation")
 public class SelectGenerationTag extends AbstractConfigurationTag {
@@ -48,7 +48,7 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
 
     // temp-view-base-name
 
-    if (SUtils.isEmpty(this.tempViewBaseName)) {
+    if (SUtil.isEmpty(this.tempViewBaseName)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute '" + ATT_NAME + "' of tag <" + super.getTagName() + "> cannot be empty", //
           "Attribute '" + ATT_NAME + "' of tag <" + super.getTagName() + "> cannot be empty. "

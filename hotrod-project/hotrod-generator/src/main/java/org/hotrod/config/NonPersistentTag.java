@@ -7,7 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "non-persistent")
 public class NonPersistentTag extends AbstractConfigurationTag {
@@ -50,7 +50,7 @@ public class NonPersistentTag extends AbstractConfigurationTag {
 
     // value
 
-    if (SUtils.isEmpty(this.value)) {
+    if (SUtil.isEmpty(this.value)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'value' cannot be empty", //
           "Attribute 'value' of tag <" + super.getTagName() + "> cannot be empty.");
@@ -58,7 +58,7 @@ public class NonPersistentTag extends AbstractConfigurationTag {
 
     // name
 
-    if (SUtils.isEmpty(this.name)) {
+    if (SUtil.isEmpty(this.name)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'name' cannot be empty", //
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty.");

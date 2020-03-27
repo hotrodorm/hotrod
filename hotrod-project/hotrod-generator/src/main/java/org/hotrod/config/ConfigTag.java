@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "config")
 public class ConfigTag extends AbstractConfigurationTag {
@@ -51,7 +51,7 @@ public class ConfigTag extends AbstractConfigurationTag {
 
     // gen-base-dir
 
-    if (SUtils.isEmpty(this.sGenBaseDir)) {
+    if (SUtil.isEmpty(this.sGenBaseDir)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'gen-base-dir' cannot be empty", //
           "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> cannot be empty. "
@@ -78,7 +78,7 @@ public class ConfigTag extends AbstractConfigurationTag {
           "Attribute 'relative-dir' cannot be empty", //
           "Invalid 'relative-dir' attribute on tag <" + super.getTagName() + ">. Must be a non-empty value");
     }
-    if (SUtils.isEmpty(this.relativeDir)) {
+    if (SUtil.isEmpty(this.relativeDir)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'relative-dir' cannot be empty", //
           "Invalid relative-dir '" + this.relativeDir + "' on attribute 'relative-dir' of tag <" + super.getTagName()
@@ -92,7 +92,7 @@ public class ConfigTag extends AbstractConfigurationTag {
           "'prefix' attribute cannot be empty", //
           "Invalid 'prefix' attribute value. " + "Must be specified with a non-empty value.");
     }
-    if (SUtils.isEmpty(this.prefix)) {
+    if (SUtil.isEmpty(this.prefix)) {
       throw new InvalidConfigurationFileException(this, //
           "'dao-prefix' cannot be empty", //
           "Invalid 'dao-prefix' value '" + this.prefix + "'. Must be specified with a non-empty value..");

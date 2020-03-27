@@ -13,7 +13,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.FileRegistry;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "fragment")
 public class FragmentTag extends AbstractConfigurationTag implements GenerationUnit<FragmentTag> {
@@ -54,7 +54,7 @@ public class FragmentTag extends AbstractConfigurationTag implements GenerationU
 
     // file
 
-    if (SUtils.isEmpty(this.filename)) {
+    if (SUtil.isEmpty(this.filename)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'file' cannot be empty: must specify a (relative) file name", //
           "Attribute 'file' of tag <" + super.getTagName() + "> cannot be empty. "

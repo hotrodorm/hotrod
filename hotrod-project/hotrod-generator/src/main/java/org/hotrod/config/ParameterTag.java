@@ -9,7 +9,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.identifiers.Id;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "parameter")
 public class ParameterTag extends AbstractConfigurationTag {
@@ -64,7 +64,7 @@ public class ParameterTag extends AbstractConfigurationTag {
           "Attribute 'name' must be specified", //
           "Invalid <parameter> tag -- the 'name' attribute must be specified.");
     }
-    if (SUtils.isEmpty(this.name)) {
+    if (SUtil.isEmpty(this.name)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'name' cannot be empty or blank", //
           "Invalid <parameter> tag -- the 'name' attribute cannot be blank.");
@@ -91,7 +91,7 @@ public class ParameterTag extends AbstractConfigurationTag {
           "The 'java-type' attribute cannot be empty", //
           "invalid <parameter> tag -- the 'java-type' attribute cannot be empty.");
     }
-    if (SUtils.isEmpty(this.javaType)) {
+    if (SUtil.isEmpty(this.javaType)) {
       throw new InvalidConfigurationFileException(this, //
           "The 'java-type' attribute cannot be blank", //
           "invalid <parameter> tag -- the 'java-type' attribute cannot be blank.");
@@ -112,7 +112,7 @@ public class ParameterTag extends AbstractConfigurationTag {
           "The 'jdbc-type' attribute cannot be empty", //
           "invalid <parameter> tag -- the 'jdbc-type' attribute cannot be empty.");
     }
-    if (SUtils.isEmpty(this.jdbcType)) {
+    if (SUtil.isEmpty(this.jdbcType)) {
       throw new InvalidConfigurationFileException(this, //
           "The 'jdbc-type' attribute cannot be blank", //
           "invalid <parameter> tag -- the 'jdbc-type' attribute cannot be blank.");

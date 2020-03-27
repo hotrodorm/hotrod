@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "session-factory")
 public class SessionFactoryTag extends AbstractConfigurationTag {
@@ -46,7 +46,7 @@ public class SessionFactoryTag extends AbstractConfigurationTag {
 
     // singleton-full-class-name
 
-    if (SUtils.isEmpty(this.singletonFullClassName)) {
+    if (SUtil.isEmpty(this.singletonFullClassName)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute " + ATT_NAME + " cannot be empty", //
           "Attribute '" + ATT_NAME + "' of tag <" + super.getTagName() + "> cannot be empty. "

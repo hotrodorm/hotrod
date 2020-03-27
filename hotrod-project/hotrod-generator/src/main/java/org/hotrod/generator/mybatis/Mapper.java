@@ -36,7 +36,7 @@ import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 import org.nocrala.tools.database.tartarus.exception.ReaderException;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
@@ -270,7 +270,7 @@ public class Mapper extends GeneratableObject {
     StringBuilder sb = new StringBuilder("    ");
     ListWriter lw = new ListWriter(",\n    ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      lw.add(SUtils.escapeXmlBody(cm.getId().getRenderedSQLName()));
+      lw.add(SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()));
     }
     sb.append(lw.toString());
     println(sb.toString());
@@ -285,7 +285,7 @@ public class Mapper extends GeneratableObject {
     sb = new StringBuilder("    ");
     lw = new ListWriter(",\n    ");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      lw.add("${alias}." + SUtils.escapeXmlBody(cm.getId().getRenderedSQLName()));
+      lw.add("${alias}." + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()));
     }
     sb.append(lw.toString());
     println(sb.toString());
@@ -349,9 +349,9 @@ public class Mapper extends GeneratableObject {
       }
     }
 
-    String indent = SUtils.getFiller(' ', 4);
+    String indent = SUtil.getFiller(' ', 4);
     println(indent + "<" + tagName + " property=\"" + cm.getId().getJavaMemberName() + "\" column=\""
-        + SUtils.escapeXmlAttribute(cm.getColumnName()) + "\" " + typeHandler + "/>");
+        + SUtil.escapeXmlAttribute(cm.getColumnName()) + "\" " + typeHandler + "/>");
 
   }
 
@@ -369,9 +369,9 @@ public class Mapper extends GeneratableObject {
       }
     }
 
-    String indent = SUtils.getFiller(' ', 4);
+    String indent = SUtil.getFiller(' ', 4);
     println(indent + "<" + tagName + " property=\"" + cm.getId().getJavaMemberName() + "\" column=\""
-        + SUtils.escapeXmlAttribute(cm.getColumnName()) + "\" " + typeHandler + "/>");
+        + SUtil.escapeXmlAttribute(cm.getColumnName()) + "\" " + typeHandler + "/>");
 
   }
 
@@ -385,7 +385,7 @@ public class Mapper extends GeneratableObject {
       println("  <select id=\"" + this.getMapperIdSelectByPK() + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
       println("    select");
       println("      <include refid=\"columns\" />");
-      println("     from " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
+      println("     from " + SUtil.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
       println("     where");
       println(getWhereByIndex(this.metadata.getPK()));
       println("  </select>");
@@ -420,7 +420,7 @@ public class Mapper extends GeneratableObject {
           println("  <select id=\"" + this.getMapperIdSelectByUI(ui) + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
           println("    select");
           println("      <include refid=\"columns\" />");
-          println("     from " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
+          println("     from " + SUtil.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
           println("     where");
           println(getWhereByIndex(ui));
           println("  </select>");
@@ -458,7 +458,7 @@ public class Mapper extends GeneratableObject {
     println("  <select id=\"" + this.getMapperIdSelectByExample() + "\" resultMap=\"" + RESULT_MAP_NAME + "\">");
     println("    select");
     println("      <include refid=\"columns\" />");
-    println("     from " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
+    println("     from " + SUtil.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
     print(getWhereByExample("p"));
     println("    <if test=\"o != null\">");
     println("      order by ${o}");
@@ -544,23 +544,23 @@ public class Mapper extends GeneratableObject {
     if (byExample || cm.getColumnDefault() != null) {
       String prop = cm.getId().getJavaMemberName();
       columns.add("<if test=\"propertiesChangeLog." + prop + "WasSet\">, "
-          + SUtils.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
+          + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
       values.add("<if test=\"propertiesChangeLog." + prop + "WasSet\">, " + renderParameterColumn(cm) + "</if>");
     } else {
-      columns.add("<if test=\"true\">, " + SUtils.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
+      columns.add("<if test=\"true\">, " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
       values.add("<if test=\"true\">, " + renderParameterColumn(cm) + "</if>");
     }
   }
 
   private void appendSequenceColumn(final ListWriter columns, final ListWriter values, final ColumnMetadata cm)
       throws SequencesNotSupportedException {
-    columns.add("<if test=\"true\">, " + SUtils.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
-    values.add("<if test=\"true\">, " + SUtils.escapeXmlBody(this.adapter.renderInlineSequenceOnInsert(cm)) + "</if>");
+    columns.add("<if test=\"true\">, " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
+    values.add("<if test=\"true\">, " + SUtil.escapeXmlBody(this.adapter.renderInlineSequenceOnInsert(cm)) + "</if>");
   }
 
   private void renderInsert(final ListWriter columns, final ListWriter values, final ListWriter queryColumns)
       throws IOException {
-    println("    insert into " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()) + " (");
+    println("    insert into " + SUtil.escapeXmlBody(this.metadata.getId().getRenderedSQLName()) + " (");
     print("      <trim prefixOverrides=\", \">\n" + columns.toString() + "      </trim>\n");
     print("      ) ");
     if (queryColumns.getCount() != 0) {
@@ -629,7 +629,7 @@ public class Mapper extends GeneratableObject {
         if (cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
           String prop = cm.getId().getJavaMemberName();
           columns.add(
-              "<if test=\"" + prop + " != null\">, " + SUtils.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
+              "<if test=\"" + prop + " != null\">, " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
           values.add("<if test=\"" + prop + " != null\">, " + renderParameterColumn(cm) + "</if>");
         }
 
@@ -686,7 +686,7 @@ public class Mapper extends GeneratableObject {
     println("  <insert id=\"" + id + "\">");
     println("    <selectKey keyProperty=\"" + keyProperties.toString() + "\" resultType=\"" + this.vo.getFullClassName()
         + "\" order=\"BEFORE\">");
-    println("      " + SUtils.escapeXmlBody(this.adapter.renderSequencesPrefetch(sequences)));
+    println("      " + SUtil.escapeXmlBody(this.adapter.renderSequencesPrefetch(sequences)));
     println("    </selectKey>");
 
     renderInsert(columns, values, queryColumns);
@@ -716,7 +716,7 @@ public class Mapper extends GeneratableObject {
         if (cm.getAutogenerationType() == AutogenerationType.IDENTITY_BY_DEFAULT) {
           String prop = cm.getId().getJavaMemberName();
           columns.add(
-              "<if test=\"" + prop + " != null\">, " + SUtils.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
+              "<if test=\"" + prop + " != null\">, " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
           values.add("<if test=\"" + prop + " != null\">, " + renderParameterColumn(cm) + "</if>");
         }
       } else {
@@ -730,7 +730,7 @@ public class Mapper extends GeneratableObject {
     if (postFetch) {
       println("    <selectKey keyProperty=\"" + keyProperties.toString() + "\" resultType=\""
           + this.vo.getFullClassName() + "\" order=\"AFTER\">");
-      println("      " + SUtils.escapeXmlBody(this.adapter.renderIdentitiesPostfetch(identities)));
+      println("      " + SUtil.escapeXmlBody(this.adapter.renderIdentitiesPostfetch(identities)));
       println("    </selectKey>");
     }
 
@@ -758,7 +758,7 @@ public class Mapper extends GeneratableObject {
 
       println("  <select id=\"" + this.getMapperIdSequencesPreFetch() + "\" resultType=\"" + this.vo.getFullClassName()
           + "\">");
-      println("    " + SUtils.escapeXmlBody(this.adapter.renderSequencesPrefetch(sequences)));
+      println("    " + SUtil.escapeXmlBody(this.adapter.renderSequencesPrefetch(sequences)));
       println("  </select>");
       println();
 
@@ -785,7 +785,7 @@ public class Mapper extends GeneratableObject {
       }
       println("  <select id=\"" + this.getMapperIdIdentitiesPostFetch() + "\" resultType=\""
           + this.vo.getFullClassName() + "\">");
-      println("    " + SUtils.escapeXmlBody(this.adapter.renderIdentitiesPostfetch(identities)));
+      println("    " + SUtil.escapeXmlBody(this.adapter.renderIdentitiesPostfetch(identities)));
       println("  </select>");
       println();
 
@@ -859,19 +859,19 @@ public class Mapper extends GeneratableObject {
       println("  <!-- update by PK -->");
       println();
       println("  <update id=\"" + this.getMapperIdUpdateByPK() + "\">");
-      println("    update " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()) + " set");
+      println("    update " + SUtil.escapeXmlBody(this.metadata.getId().getRenderedSQLName()) + " set");
 
       ListWriter lw = new ListWriter(",\n");
       for (ColumnMetadata cm : this.metadata.getNonPkColumns()) {
         String sqlColumn = cm.getId().getRenderedSQLName();
         if (useVersionControl) {
           if (useVersionControl && vcm.getColumnMetadata().equals(cm)) {
-            lw.add("      " + SUtils.escapeXmlBody(sqlColumn) + " = #{nextVersionValue}");
+            lw.add("      " + SUtil.escapeXmlBody(sqlColumn) + " = #{nextVersionValue}");
           } else {
-            lw.add("      " + SUtils.escapeXmlBody(sqlColumn) + " = " + renderParameterColumn(cm, "p"));
+            lw.add("      " + SUtil.escapeXmlBody(sqlColumn) + " = " + renderParameterColumn(cm, "p"));
           }
         } else {
-          lw.add("      " + SUtils.escapeXmlBody(sqlColumn) + " = " + renderParameterColumn(cm));
+          lw.add("      " + SUtil.escapeXmlBody(sqlColumn) + " = " + renderParameterColumn(cm));
         }
       }
       println(lw.toString());
@@ -888,7 +888,7 @@ public class Mapper extends GeneratableObject {
         String sqlColumn = cm.getId().getRenderedSQLName();
 
         println("     and");
-        println("      " + SUtils.escapeXmlBody(sqlColumn) + " " + "= " + renderParameterColumn(cm));
+        println("      " + SUtil.escapeXmlBody(sqlColumn) + " " + "= " + renderParameterColumn(cm));
 
       }
 
@@ -905,7 +905,7 @@ public class Mapper extends GeneratableObject {
     ListWriter lw;
     lw = new ListWriter("\n      and ");
     for (ColumnMetadata cm : km.getColumns()) {
-      lw.add(SUtils.escapeXmlBody(cm.getId().getRenderedSQLName()) + " = " + renderParameterColumn(cm, prefix));
+      lw.add(SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + " = " + renderParameterColumn(cm, prefix));
     }
     return "      " + lw.toString();
   }
@@ -923,12 +923,12 @@ public class Mapper extends GeneratableObject {
       String propWasSet = prompt + "propertiesChangeLog." + cm.getId().getJavaMemberName() + "WasSet";
 
       sb.append("      <if test=\"" + prop + " != null \">\n");
-      sb.append("        and " + SUtils.escapeXmlBody(cm.getId().getRenderedSQLName()) + " = "
+      sb.append("        and " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + " = "
           + renderParameterColumn(cm, prefix) + "\n");
       sb.append("      </if>\n");
 
       sb.append("      <if test=\"" + prop + " == null and " + propWasSet + "\">\n");
-      sb.append("        and " + SUtils.escapeXmlBody(cm.getId().getRenderedSQLName()) + " is null\n");
+      sb.append("        and " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + " is null\n");
       sb.append("      </if>\n");
 
     }
@@ -962,16 +962,16 @@ public class Mapper extends GeneratableObject {
     println("  <!-- update by example -->");
     println();
     println("  <update id=\"" + this.getMapperIdUpdateByExample() + "\">");
-    println("    update " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
+    println("    update " + SUtil.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
 
     println("    <set>");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String propWasSet = "propertiesChangeLog." + cm.getId().getJavaMemberName() + "WasSet";
       if (cm.isVersionControlColumn()) {
-        println("      " + SUtils.escapeXmlBody(cm.getId().getRenderedSQLName()) + " = "
-            + SUtils.escapeXmlBody(cm.getId().getRenderedSQLName()) + " + 1,");
+        println("      " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + " = "
+            + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + " + 1,");
       } else {
-        println("      <if test=\"values." + propWasSet + "\">" + SUtils.escapeXmlBody(cm.getId().getRenderedSQLName())
+        println("      <if test=\"values." + propWasSet + "\">" + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName())
             + " = " + renderParameterColumn(cm, "values") + ",</if>");
       }
     }
@@ -1001,7 +1001,7 @@ public class Mapper extends GeneratableObject {
       println("  <!-- delete by PK -->");
       println();
       println("  <delete id=\"" + this.getMapperIdDeleteByPK() + "\">");
-      println("    delete from " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
+      println("    delete from " + SUtil.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
       println("     where");
       println(getWhereByIndex(this.metadata.getPK()));
 
@@ -1012,7 +1012,7 @@ public class Mapper extends GeneratableObject {
         ColumnMetadata cm = vcm.getColumnMetadata();
         println("     and");
         println(
-            "      " + SUtils.escapeXmlBody(cm.getId().getRenderedSQLName()) + " " + "= " + renderParameterColumn(cm));
+            "      " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + " " + "= " + renderParameterColumn(cm));
       }
 
       println("  </delete>");
@@ -1024,7 +1024,7 @@ public class Mapper extends GeneratableObject {
     println("  <!-- delete by example -->");
     println();
     println("  <delete id=\"" + this.getMapperIdDeleteByExample() + "\">");
-    println("    delete from " + SUtils.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
+    println("    delete from " + SUtil.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
     print(getWhereByExample());
     println("  </delete>");
     println();
@@ -1049,7 +1049,7 @@ public class Mapper extends GeneratableObject {
     println();
     println("  <select id=\"" + this.getMapperSelectSequence(seq) + "\" " + "resultType=\"java.lang.Long\">");
     String sentence = this.generator.getAdapter().renderSelectSequence(seq.getSequenceId());
-    println("    " + SUtils.escapeXmlBody(sentence));
+    println("    " + SUtil.escapeXmlBody(sentence));
     println("  </select>");
     println();
   }
@@ -1161,7 +1161,7 @@ public class Mapper extends GeneratableObject {
 
     // Associations
 
-    String indent = SUtils.getFiller(' ', 4 + (level * 2));
+    String indent = SUtil.getFiller(' ', 4 + (level * 2));
 
     for (VOMetadata a : associations) {
 
@@ -1205,9 +1205,9 @@ public class Mapper extends GeneratableObject {
       }
     }
 
-    String indent = SUtils.getFiller(' ', 4 + (level * 2));
+    String indent = SUtil.getFiller(' ', 4 + (level * 2));
     println(indent + "<" + tagName + " property=\"" + cm.getId().getJavaMemberName() + "\" column=\""
-        + SUtils.escapeXmlAttribute(cm.getColumnAlias()) + "\" " + typeHandler + "/>");
+        + SUtil.escapeXmlAttribute(cm.getColumnAlias()) + "\" " + typeHandler + "/>");
 
   }
 

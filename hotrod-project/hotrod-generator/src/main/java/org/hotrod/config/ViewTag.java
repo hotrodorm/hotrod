@@ -19,7 +19,7 @@ import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
@@ -119,7 +119,7 @@ public class ViewTag extends AbstractEntityDAOTag {
 
     // name
 
-    if (SUtils.isEmpty(this.name)) {
+    if (SUtil.isEmpty(this.name)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'name' cannot be empty", //
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
@@ -152,7 +152,7 @@ public class ViewTag extends AbstractEntityDAOTag {
 
     if (this.javaClassName != null) {
       this.javaClassName = this.javaClassName.trim();
-      if (SUtils.isEmpty(this.javaClassName)) {
+      if (SUtil.isEmpty(this.javaClassName)) {
         throw new InvalidConfigurationFileException(this, //
             "When specified, 'java-name' cannot be empty", //
             "Invalid 'java-name' attribute value of tag <" + super.getTagName() + "> for the view '" + this.name

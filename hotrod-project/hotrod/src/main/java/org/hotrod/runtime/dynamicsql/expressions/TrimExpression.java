@@ -9,7 +9,7 @@ import java.util.Set;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class TrimExpression extends DynamicExpression {
@@ -96,7 +96,7 @@ public class TrimExpression extends DynamicExpression {
 
   private String searchForPrefix(final String txt) {
     for (String p : this.prefixOverrides) {
-      if (SUtils.startsWithIgnoreCase(txt, p)) {
+      if (SUtil.startsWithIgnoreCase(txt, p)) {
         return p;
       }
     }
@@ -105,7 +105,7 @@ public class TrimExpression extends DynamicExpression {
 
   private String searchForSuffix(final String txt) {
     for (String p : this.suffixOverrides) {
-      if (SUtils.endsWithIgnoreCase(txt, p)) {
+      if (SUtil.endsWithIgnoreCase(txt, p)) {
         return p;
       }
     }

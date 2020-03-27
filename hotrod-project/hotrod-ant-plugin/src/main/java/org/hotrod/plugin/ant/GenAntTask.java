@@ -12,9 +12,9 @@ public class GenAntTask extends Task {
 
   private static transient final Logger log = LogManager.getLogger(GenAntTask.class);
 
-  private String configFileName = null;
+  private String configfilename = null;
   private String generator = null;
-  private String driverClass = null;
+  private String driverclass = null;
   private String localproperties = null;
 
   private String url = null;
@@ -28,8 +28,8 @@ public class GenAntTask extends Task {
   public void execute() {
     log.debug("init");
 
-    GenOperation op = new GenOperation(new File("."), this.configFileName, this.generator, this.localproperties,
-        this.driverClass, this.url, this.username, this.password, this.catalog, this.schema, this.facets, this.display);
+    GenOperation op = new GenOperation(new File("."), this.configfilename, this.generator, this.localproperties,
+        this.driverclass, this.url, this.username, this.password, this.catalog, this.schema, this.facets, this.display);
 
     try {
       op.execute(new AntFeedback(this));
@@ -41,8 +41,20 @@ public class GenAntTask extends Task {
 
   // Ant Setters
 
+  public void setConfigfilename(final String configfilename) {
+    this.configfilename = configfilename;
+  }
+
+  public void setGenerator(final String generator) {
+    this.generator = generator;
+  }
+
   public void setDriverclass(final String driverclass) {
-    this.driverClass = driverclass;
+    this.driverclass = driverclass;
+  }
+
+  public void setLocalproperties(String localproperties) {
+    this.localproperties = localproperties;
   }
 
   public void setUrl(final String url) {
@@ -65,16 +77,8 @@ public class GenAntTask extends Task {
     this.schema = schema;
   }
 
-  public void setConfigfile(final String configFile) {
-    this.configFileName = configFile;
-  }
-
   public void setDisplay(final String display) {
     this.display = display;
-  }
-
-  public void setGenerator(final String generator) {
-    this.generator = generator;
   }
 
   public void setFacets(final String facets) {

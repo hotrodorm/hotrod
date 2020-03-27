@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
@@ -50,7 +50,7 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
 
     // name
 
-    if (SUtils.isEmpty(this.name)) {
+    if (SUtil.isEmpty(this.name)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'name' cannot be empty", //
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "

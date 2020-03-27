@@ -55,7 +55,7 @@ import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.connectors.DatabaseConnectorFactory.UnsupportedDatabaseException;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
@@ -761,7 +761,7 @@ public abstract class HotRodGenerator {
   }
 
   private void logExpressions(final List<StructuredColumnMetadata> expressions, final int level) {
-    String filler = SUtils.getFiller(' ', level);
+    String filler = SUtil.getFiller(' ', level);
     for (StructuredColumnMetadata cm : expressions) {
       display("   " + filler + "+ " + cm.getId().getJavaMemberName() + " [expr] <is " + (cm.isId() ? "" : "not ")
           + "ID> (" + (cm.getConverter() != null ? "<converted-to> " + cm.getConverter().getJavaType()
@@ -771,7 +771,7 @@ public abstract class HotRodGenerator {
   }
 
   private void logCollections(final List<VOMetadata> collections, final int level) {
-    String filler = SUtils.getFiller(' ', level);
+    String filler = SUtil.getFiller(' ', level);
     for (VOMetadata c : collections) {
       boolean extendsVO = c.getSuperClass() != null;
       String based = c.getTableMetadata() != null
@@ -789,7 +789,7 @@ public abstract class HotRodGenerator {
   }
 
   private void logAssociations(final List<VOMetadata> associations, final int level) {
-    String filler = SUtils.getFiller(' ', level);
+    String filler = SUtil.getFiller(' ', level);
     for (VOMetadata a : associations) {
 
       boolean extendsVO = a.getSuperClass() != null;
@@ -810,7 +810,7 @@ public abstract class HotRodGenerator {
   }
 
   private void logVOs(final List<VOMetadata> vos, final int level) {
-    String filler = SUtils.getFiller(' ', level);
+    String filler = SUtil.getFiller(' ', level);
     for (VOMetadata vo : vos) {
 
       boolean extendsVO = vo.getSuperClass() != null;
@@ -831,7 +831,7 @@ public abstract class HotRodGenerator {
   }
 
   private void logColumns(final List<StructuredColumnMetadata> columns, final int level) {
-    String indent = SUtils.getFiller(' ', level);
+    String indent = SUtil.getFiller(' ', level);
     for (StructuredColumnMetadata cm : columns) {
       display("   " + indent + "- " + cm.getId().getJavaMemberName() + (cm.isId() ? " <<id>>" : "") + " ("
           + (cm.getConverter() != null ? "<converted-to> " + cm.getConverter().getJavaType()
@@ -1065,7 +1065,7 @@ public abstract class HotRodGenerator {
   // Utilities
 
   public static void display(final String txt) {
-    System.out.println(SUtils.isEmpty(txt) ? " " : txt);
+    System.out.println(SUtil.isEmpty(txt) ? " " : txt);
   }
 
   // VO Registry

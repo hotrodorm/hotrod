@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 public class ValueTypeFactory implements Serializable {
 
@@ -288,7 +288,7 @@ public class ValueTypeFactory implements Serializable {
 
       @Override
       public String renderJavaValue(final Object obj) {
-        return obj == null ? "null" : "\"" + SUtils.escapeJavaString((String) obj) + "\"";
+        return obj == null ? "null" : "\"" + SUtil.escapeJavaString((String) obj) + "\"";
       }
 
       @Override

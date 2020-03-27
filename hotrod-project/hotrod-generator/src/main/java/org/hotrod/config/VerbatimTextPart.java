@@ -11,7 +11,7 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 public class VerbatimTextPart extends EnhancedSQLPart {
 
@@ -56,7 +56,7 @@ public class VerbatimTextPart extends EnhancedSQLPart {
 
   @Override
   public void renderXML(final SQLFormatter formatter, final ParameterRenderer parameterRenderer) {
-    formatter.add(SUtils.escapeXmlBody(this.text));
+    formatter.add(SUtil.escapeXmlBody(this.text));
   }
 
   @Override
@@ -95,7 +95,7 @@ public class VerbatimTextPart extends EnhancedSQLPart {
   public boolean same(final AbstractConfigurationTag fresh) {
     try {
       VerbatimTextPart f = (VerbatimTextPart) fresh;
-      boolean equals = SUtils.equals(this.text, f.text);
+      boolean equals = SUtil.equals(this.text, f.text);
       // log.info("[LITERAL] equals=" + equals);
       // log.info("this.text=" + this.text);
       // log.info("othe.text=" + f.text);

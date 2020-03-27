@@ -14,7 +14,7 @@ import org.hotrod.utils.Compare;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
@@ -132,7 +132,7 @@ public class ColumnTag extends AbstractConfigurationTag {
 
     // name
 
-    if (SUtils.isEmpty(this.name)) {
+    if (SUtil.isEmpty(this.name)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'name' cannot be empty", //
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
@@ -143,7 +143,7 @@ public class ColumnTag extends AbstractConfigurationTag {
 
     if (this.javaName != null) {
       this.javaName = this.javaName.trim();
-      if (SUtils.isEmpty(this.javaName)) {
+      if (SUtil.isEmpty(this.javaName)) {
         throw new InvalidConfigurationFileException(this, //
             "When specified, 'java-name' cannot be empty", //
             "Invalid 'java-name' attribute value of tag <" + super.getTagName() + ">. "
@@ -162,7 +162,7 @@ public class ColumnTag extends AbstractConfigurationTag {
     // java-type
 
     if (this.javaType != null) {
-      if (SUtils.isEmpty(this.javaType)) {
+      if (SUtil.isEmpty(this.javaType)) {
         throw new InvalidConfigurationFileException(this, //
             "Attribute 'java-type' cannot be empty: must specify a full java class name for the database column", //
             "Attribute 'java-type' of tag <" + super.getTagName() + "> cannot be empty. " + "When specified, "
@@ -179,7 +179,7 @@ public class ColumnTag extends AbstractConfigurationTag {
             "Invalid attributes 'java-type' and 'converter' of tag <" + super.getTagName() + ">: "
                 + "these attributes are mutually exclusive, so only one of them can be specified in a column definition.");
       }
-      if (SUtils.isEmpty(this.converter)) {
+      if (SUtil.isEmpty(this.converter)) {
         throw new InvalidConfigurationFileException(this, //
             "Attribute 'converter' cannot be empty: must specify a valid converter name", //
             "Attribute 'converter' of tag <" + super.getTagName() + "> cannot be empty. "
@@ -204,7 +204,7 @@ public class ColumnTag extends AbstractConfigurationTag {
             "'jdbc-type' attribute specified but no java-type attribute nor converter attribute found. "
                 + "The jdbc-type attribute can only be specified when the java-type attribute or the converter is present.");
       }
-      if (SUtils.isEmpty(this.jdbcType)) {
+      if (SUtil.isEmpty(this.jdbcType)) {
         throw new InvalidConfigurationFileException(this, //
             "'jdbc-type' attribute cannot be empty", //
             "'jdbc-type' attribute cannot be empty. " + "When specified, the attribute 'jdbc-type' of the tag <"
@@ -226,7 +226,7 @@ public class ColumnTag extends AbstractConfigurationTag {
     // sequence
 
     if (this.sequence != null) {
-      if (SUtils.isEmpty(this.sequence)) {
+      if (SUtil.isEmpty(this.sequence)) {
         throw new InvalidConfigurationFileException(this, //
             "When specified, attribute 'sequence' cannot be empty", //
             "When specified, attribute 'sequence' cannot be empty");

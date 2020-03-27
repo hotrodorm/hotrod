@@ -12,7 +12,7 @@ import org.hotrod.exceptions.InvalidPackageException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "daos")
 public class DaosTag extends AbstractConfigurationTag {
@@ -126,7 +126,7 @@ public class DaosTag extends AbstractConfigurationTag {
 
     // gen-base-dir
 
-    if (SUtils.isEmpty(this.sGenBaseDir)) {
+    if (SUtil.isEmpty(this.sGenBaseDir)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'gen-base-dir' cannot be empty", //
           "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> cannot be empty. "

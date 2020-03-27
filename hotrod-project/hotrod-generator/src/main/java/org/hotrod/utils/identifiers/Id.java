@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 public class Id implements Comparable<Id> {
 
@@ -491,7 +491,7 @@ public class Id implements Comparable<Id> {
       if (p.isAcronym()) {
         sb.append(st.toUpperCase());
       } else {
-        sb.append(SUtils.sentenceFormat(st.toLowerCase()));
+        sb.append(SUtil.sentenceFormat(st.toLowerCase()));
       }
     }
     String n = sb.toString();
@@ -512,7 +512,7 @@ public class Id implements Comparable<Id> {
         if (p.isAcronym()) {
           sb.append(st.toUpperCase());
         } else {
-          sb.append(SUtils.sentenceFormat(st.toLowerCase()));
+          sb.append(SUtil.sentenceFormat(st.toLowerCase()));
         }
       }
       first = false;

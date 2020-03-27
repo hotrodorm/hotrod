@@ -19,7 +19,7 @@ import org.hotrod.config.Patterns;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtils;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "expression")
 public class ExpressionTag extends AbstractConfigurationTag {
@@ -90,7 +90,7 @@ public class ExpressionTag extends AbstractConfigurationTag {
     for (Object obj : this.content) {
       try {
         String s = (String) obj; // content part
-        if (!SUtils.isEmpty(s)) {
+        if (!SUtil.isEmpty(s)) {
           if (this.body == null) {
             this.body = s;
           } else {
@@ -115,7 +115,7 @@ public class ExpressionTag extends AbstractConfigurationTag {
               + "> tag must include a body with the SQL expression in it.");
     }
     cleanBody();
-    if (SUtils.isEmpty(this.body)) {
+    if (SUtil.isEmpty(this.body)) {
       throw new InvalidConfigurationFileException(this, //
           "Invalid empty <" + super.getTagName() + "> tag. " + "An <" + super.getTagName()
               + "> tag must include a non-empty body with the SQL expression in it", //
@@ -169,7 +169,7 @@ public class ExpressionTag extends AbstractConfigurationTag {
                 + "the 'class' and 'converter' attributes are mutually exclusive, so only one of them can be specified in an <"
                 + super.getTagName() + "> definition.");
       }
-      if (SUtils.isEmpty(this.converter)) {
+      if (SUtil.isEmpty(this.converter)) {
         throw new InvalidConfigurationFileException(this, //
             "When specified, the attribute 'converter' of tag <" + super.getTagName() + "> cannot be empty", //
             "When specified, the attribute 'converter' of tag <" + super.getTagName() + "> cannot be empty. "
