@@ -13,7 +13,7 @@ import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
 import org.hotrod.runtime.exceptions.InvalidJexlExpressionException;
-import org.hotrodorm.hotrod.utils.ListWriter;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class ForEachExpression extends DynamicExpression {
 

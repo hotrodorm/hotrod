@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hotrod.config.FragmentTag;
-import org.hotrodorm.hotrod.utils.ListWriter;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class FileRegistry {
 

@@ -55,7 +55,6 @@ import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.ListWriter;
 import org.hotrodorm.hotrod.utils.SUtils;
 import org.nocrala.tools.database.tartarus.connectors.DatabaseConnectorFactory.UnsupportedDatabaseException;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -71,6 +70,7 @@ import org.nocrala.tools.database.tartarus.exception.InvalidCatalogException;
 import org.nocrala.tools.database.tartarus.exception.InvalidSchemaException;
 import org.nocrala.tools.database.tartarus.exception.ReaderException;
 import org.nocrala.tools.database.tartarus.exception.SchemaNotSupportedException;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public abstract class HotRodGenerator {
 

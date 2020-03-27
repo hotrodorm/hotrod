@@ -1,4 +1,4 @@
-package org.hotrod.ant;
+package org.hotrod.plugin.ant;
 
 import java.io.File;
 import java.io.IOException;

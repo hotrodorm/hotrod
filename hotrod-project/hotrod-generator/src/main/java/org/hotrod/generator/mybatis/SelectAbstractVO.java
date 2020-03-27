@@ -20,7 +20,7 @@ import org.hotrod.metadata.VOMetadata.VOMember;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ImportsRenderer;
-import org.hotrodorm.hotrod.utils.ListWriter;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class SelectAbstractVO {
 

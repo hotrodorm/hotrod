@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.metadata.SelectMethodMetadata;
-import org.hotrodorm.hotrod.utils.ListWriter;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class SelectMetadataCache implements Serializable {
 

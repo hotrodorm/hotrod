@@ -30,12 +30,12 @@ import org.hotrod.utils.ValueTypeFactory;
 import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
 import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.ListWriter;
 import org.hotrodorm.hotrod.utils.SUtils;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 @XmlRootElement(name = "enum")
 public class EnumTag extends AbstractEntityDAOTag {

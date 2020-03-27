@@ -22,10 +22,10 @@ import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.KeyMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.utils.ClassPackage;
-import org.hotrodorm.hotrod.utils.ListWriter;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class DAOPrimitives {
 

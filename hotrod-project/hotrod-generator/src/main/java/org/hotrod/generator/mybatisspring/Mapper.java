@@ -37,10 +37,10 @@ import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.ListWriter;
 import org.hotrodorm.hotrod.utils.SUtils;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 import org.nocrala.tools.database.tartarus.exception.ReaderException;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class Mapper extends GeneratableObject {
 

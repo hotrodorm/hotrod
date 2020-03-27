@@ -16,7 +16,7 @@ import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.GeneratableObject;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.utils.ClassPackage;
-import org.hotrodorm.hotrod.utils.ListWriter;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class EnumClass extends GeneratableObject {
 

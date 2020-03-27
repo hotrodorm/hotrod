@@ -45,8 +45,8 @@ import org.hotrod.utils.Compare;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.ListWriter;
 import org.hotrodorm.hotrod.utils.SUtils;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 @XmlRootElement(name = "vo")
 public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {

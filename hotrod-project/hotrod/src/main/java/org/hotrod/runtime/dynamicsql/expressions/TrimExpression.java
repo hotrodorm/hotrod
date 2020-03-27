@@ -9,8 +9,8 @@ import java.util.Set;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
-import org.hotrodorm.hotrod.utils.ListWriter;
 import org.hotrodorm.hotrod.utils.SUtils;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class TrimExpression extends DynamicExpression {
 

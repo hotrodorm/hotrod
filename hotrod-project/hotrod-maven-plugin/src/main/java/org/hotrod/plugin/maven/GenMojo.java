@@ -1,4 +1,4 @@
-package org.hotrodorm.hotrod.maven;
+package org.hotrod.plugin.maven;
 
 import java.io.BufferedReader;
 import java.io.File;

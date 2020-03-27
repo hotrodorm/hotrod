@@ -24,11 +24,11 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.ListWriter;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class SelectDataSetMetadata implements DataSetMetadata, Serializable {
 

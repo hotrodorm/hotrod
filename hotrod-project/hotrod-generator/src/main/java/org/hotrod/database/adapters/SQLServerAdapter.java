@@ -21,8 +21,8 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.ObjectId;
-import org.hotrodorm.hotrod.utils.ListWriter;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class SQLServerAdapter extends DatabaseAdapter {
 

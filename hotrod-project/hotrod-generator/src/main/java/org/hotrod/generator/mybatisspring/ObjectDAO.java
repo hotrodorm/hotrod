@@ -53,11 +53,11 @@ import org.hotrod.utils.ImportsRenderer;
 import org.hotrod.utils.JUtils;
 import org.hotrod.utils.ValueTypeFactory;
 import org.hotrod.utils.ValueTypeFactory.ValueTypeManager;
-import org.hotrodorm.hotrod.utils.ListWriter;
 import org.hotrodorm.hotrod.utils.SUtils;
 import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class ObjectDAO extends GeneratableObject {
 

@@ -3,6 +3,8 @@ package org.hotrodorm.hotrod.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
+
 public class SQLSimpleExpression implements SQLLogicalExpression {
   private static long count = 0;
 
@@ -11,7 +13,8 @@ public class SQLSimpleExpression implements SQLLogicalExpression {
   }
 
   public static enum SimpleExpressionOperator {
-    GREATER_THAN, GREATER_OR_EQUAL, LOWER_THAN, LOWER_OR_EQUAL, EQUALS, NOT_EQUAL, LIKE, NOT_LIKE, IN, NOT_IN, IS_NULL, NOT_IS_NULL, BETWEEN, NOT_BETWEEN;
+    GREATER_THAN, GREATER_OR_EQUAL, LOWER_THAN, LOWER_OR_EQUAL, EQUALS, NOT_EQUAL, LIKE, NOT_LIKE, IN, NOT_IN, IS_NULL,
+    NOT_IS_NULL, BETWEEN, NOT_BETWEEN;
   }
 
   private String renderedExpression;

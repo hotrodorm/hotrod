@@ -18,7 +18,7 @@ import org.hotrod.generator.GeneratableObject;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.utils.ClassPackage;
-import org.hotrodorm.hotrod.utils.ListWriter;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class ObjectAbstractVO extends GeneratableObject {
 

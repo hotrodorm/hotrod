@@ -14,8 +14,8 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.ListWriter;
 import org.hotrodorm.hotrod.utils.SUtils;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
 

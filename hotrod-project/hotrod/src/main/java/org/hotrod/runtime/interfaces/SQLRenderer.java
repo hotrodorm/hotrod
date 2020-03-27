@@ -3,7 +3,7 @@ package org.hotrod.runtime.interfaces;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hotrodorm.hotrod.utils.ListWriter;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class SQLRenderer {
 

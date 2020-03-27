@@ -38,8 +38,8 @@ import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.ListWriter;
 import org.hotrodorm.hotrod.utils.SUtils;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 @XmlRootElement(name = "columns")
 public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
