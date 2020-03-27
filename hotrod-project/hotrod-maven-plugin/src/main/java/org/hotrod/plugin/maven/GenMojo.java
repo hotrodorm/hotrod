@@ -27,7 +27,7 @@ public class GenMojo extends AbstractMojo {
   @Parameter(property = "driverclass")
   private String driverclass = null;
 
-  @Parameter()
+  @Parameter(property = "localproperties")
   private String localproperties = null;
 
   // Loaded locally
@@ -62,6 +62,8 @@ public class GenMojo extends AbstractMojo {
 
   public void execute() throws MojoExecutionException {
     log.debug("init");
+
+    log.info("this.localproperties=" + this.localproperties);
 
     GenOperation op = new GenOperation(this.project.getBasedir(), this.configfile, this.generator, this.localproperties,
         this.driverclass, this.url, this.username, this.password, this.catalog, this.schema, this.facets, this.display);
