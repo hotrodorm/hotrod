@@ -6,10 +6,12 @@ import java.util.List;
 
 public class AUtil {
 
+  @SafeVarargs
   public static <T> T[] concat(final T... a) {
     return a;
   }
 
+  @SafeVarargs
   public static <T> T[] concat(final T[] a, final T... b) {
     T[] r = Arrays.copyOf(a, a.length + b.length);
     System.arraycopy(b, 0, r, a.length, b.length);
@@ -23,6 +25,7 @@ public class AUtil {
     return r;
   }
 
+  @SafeVarargs
   public static <T> T[] concat(final T[]... arrays) {
     List<T> l = new ArrayList<T>();
     for (T[] a : arrays) {

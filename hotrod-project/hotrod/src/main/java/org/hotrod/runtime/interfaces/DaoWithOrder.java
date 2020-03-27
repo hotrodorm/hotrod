@@ -8,7 +8,8 @@ public class DaoWithOrder<P, O extends OrderBy> {
   private O[] o;
   private String renderedOrderby;
 
-  public DaoWithOrder(final P p, @SuppressWarnings("unchecked") final O... o) {
+  @SafeVarargs
+  public DaoWithOrder(final P p, final O... o) {
     this.p = p;
     this.o = o;
     this.renderedOrderby = render();

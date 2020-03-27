@@ -250,11 +250,13 @@ public abstract class Expression<T> implements ResultSetColumn {
 
   // In list
 
-  public Predicate in(@SuppressWarnings("unchecked") final Expression<T>... values) {
+  @SafeVarargs
+  public final Predicate in(final Expression<T>... values) {
     return new InList<T>(this, Arrays.asList(values));
   }
 
-  public Predicate in(@SuppressWarnings("unchecked") final T... values) {
+  @SafeVarargs
+  public final Predicate in(final T... values) {
     List<Expression<T>> list = new ArrayList<Expression<T>>();
     for (T t : values) {
       list.add(BoxUtil.boxTyped(t));
@@ -262,11 +264,13 @@ public abstract class Expression<T> implements ResultSetColumn {
     return new InList<T>(this, list);
   }
 
-  public Predicate notIn(@SuppressWarnings("unchecked") final Expression<T>... values) {
+  @SafeVarargs
+  public final Predicate notIn(final Expression<T>... values) {
     return new NotInList<T>(this, Arrays.asList(values));
   }
 
-  public Predicate notIn(@SuppressWarnings("unchecked") final T... values) {
+  @SafeVarargs
+  public final Predicate notIn(final T... values) {
     List<Expression<T>> list = new ArrayList<Expression<T>>();
     for (T t : values) {
       list.add(BoxUtil.boxTyped(t));
