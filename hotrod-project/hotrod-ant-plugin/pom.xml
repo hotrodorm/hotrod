@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>hotrod-ant-plugin</artifactId>
+  <packaging>jar</packaging>
+
+  <name>hotrod-ant-plugin</name>
+  <url>http://maven.apache.org</url>
+
+  <parent>
+    <groupId>org.hotrodorm.hotrod</groupId>
+    <artifactId>hotrod-project</artifactId>
+    <version>3.1.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+
+    <!-- HotRod Abstract Plugin -->
+
+    <dependency>
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod-abstract-plugin</artifactId>
+      <version>3.1.0-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Ant 1.10 -->
+
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.10.7</version>
+    </dependency>
+    
+    <!-- JXL -->
+
+    <dependency>
+      <groupId>net.sourceforge.jexcelapi</groupId>
+      <artifactId>jxl</artifactId>
+      <version>2.6.12</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Unit Testing -->
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+</project>

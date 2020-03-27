@@ -1,0 +1,331 @@
+package org.hotrod.database.adapters;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.database.PropertyType;
+import org.hotrod.database.PropertyType.ValueRange;
+import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
+import org.hotrod.exceptions.SequencesNotSupportedException;
+import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.hotrod.metadata.ColumnMetadata;
+import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.utils.identifiers.ObjectId;
+import org.hotrodorm.hotrod.utils.ListWriter;
+import org.nocrala.tools.database.tartarus.core.JdbcColumn;
+
+public class PostgreSQLAdapter extends DatabaseAdapter {
+
+  private static final long serialVersionUID = 1L;
+
+  private static final Logger log = LogManager.getLogger(PostgreSQLAdapter.class);
+
+  public PostgreSQLAdapter(final DatabaseMetaData dm) throws SQLException {
+    super(dm);
+  }
+
+  @Override
+  public boolean supportsCatalog() {
+    return false;
+  }
+
+  @Override
+  public boolean supportsSchema() {
+    return true;
+  }
+
+  @Override
+  public String getName() {
+    return "PostgreSQL Adapter";
+  }
+
+  @Override
+  public PropertyType getAdapterDefaultType(final ColumnMetadata m) throws UnresolvableDataTypeException {
+
+    log.debug("c.getDataType()=" + m.getDataType());
+
+    switch (m.getDataType()) {
+
+    // Numeric Types
+
+    case java.sql.Types.NUMERIC:
+      if ("numeric".equalsIgnoreCase(m.getTypeName())) {
+        if (m.getDecimalDigits() == null || m.getDecimalDigits() != 0) {
+          return new PropertyType(BigDecimal.class, m, false);
+        } else {
+          if (m.getColumnSize() <= 2) {
+            return new PropertyType(Byte.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
+          } else if (m.getColumnSize() <= 4) {
+            return new PropertyType(Short.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
+          } else if (m.getColumnSize() <= 9) {
+            return new PropertyType(Integer.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
+          } else if (m.getColumnSize() <= 18) {
+            return new PropertyType(Long.class, m, false, ValueRange.getSignedRange(m.getColumnSize()));
+          } else {
+            return new PropertyType(BigInteger.class, m, false);
+          }
+        }
+      }
+      break;
+
+    case java.sql.Types.SMALLINT:
+      if ("int2".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(Short.class, m, false, ValueRange.SHORT_RANGE);
+      }
+      break;
+
+    case java.sql.Types.INTEGER:
+      if ("int4".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE);
+      } else if ("serial".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(Integer.class, m, false);
+      }
+      break;
+
+    case java.sql.Types.BIGINT:
+      if ("int8".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(Long.class, m, false, ValueRange.LONG_RANGE);
+      } else if ("bigserial".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(Long.class, m, false);
+      }
+      break;
+
+    case java.sql.Types.REAL:
+      if ("float4".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(Float.class, m, false);
+      }
+      break;
+
+    case java.sql.Types.DOUBLE:
+      if ("float8".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(Double.class, m, false);
+      } else if ("money".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(java.math.BigDecimal.class, m, false);
+      }
+      break;
+
+    // Char Types
+
+    case java.sql.Types.CHAR:
+      if ("bpchar".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(String.class, m, false);
+      }
+      break;
+
+    case java.sql.Types.VARCHAR:
+      if ("varchar".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(String.class, m, false);
+      } else if ("text".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(String.class, m, true);
+      } else { // enum: Type Name is the enum name
+        return new PropertyType(String.class, m, false);
+      }
+
+      // Date/Time Types
+
+    case java.sql.Types.DATE:
+      if ("date".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(java.sql.Date.class, m, false);
+      }
+      break;
+
+    case java.sql.Types.TIME:
+      if ("time".equals(m.getTypeName())) {
+        return new PropertyType(java.sql.Timestamp.class, m, false);
+      } else if ("timetz".equals(m.getTypeName())) {
+        return new PropertyType(java.sql.Timestamp.class, m, false);
+      }
+      break;
+
+    case java.sql.Types.TIMESTAMP:
+      if ("timestamp".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(java.sql.Timestamp.class, m, false);
+      } else if ("timestamptz".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(java.sql.Timestamp.class, m, false);
+      }
+      break;
+
+    // Binary Types
+
+    case java.sql.Types.BINARY:
+      if ("bytea".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType("byte[]", m, true);
+      }
+      break;
+
+    // Boolean Types
+
+    case java.sql.Types.BIT:
+      if ("bool".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(Boolean.class, m, false);
+      } else if ("bit".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(java.lang.Object.class, m, false);
+      }
+      break;
+
+    // Other Types
+
+    case java.sql.Types.STRUCT:
+      return new PropertyType(Object.class, m, false);
+
+    case java.sql.Types.ARRAY:
+      return new PropertyType(Object.class, m, false);
+
+    case java.sql.Types.OTHER:
+      if ("varbit".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType("byte[]", m, false);
+      } else if ("uuid".equalsIgnoreCase(m.getTypeName())) {
+        return new PropertyType(Object.class, m, false);
+      } else {
+        return new PropertyType(Object.class, m, false);
+      }
+
+    }
+
+    // Unrecognized type
+
+    return new PropertyType(Object.class, m, false);
+
+  }
+
+  @Override
+  public InsertIntegration getInsertIntegration() {
+    return InsertIntegration.INTEGRATES_IDENTITIES_SEQUENCES_AND_DEFAULTS;
+  }
+
+  @Override
+  public boolean integratesUsingQuery() {
+    return false;
+  }
+
+  @Override
+  public String renderInsertQueryColumn(final ColumnMetadata cm) {
+    throw new UnsupportedOperationException("This database does not return insert values using a query.");
+  }
+
+  @Override
+  public String renderSequencesPrefetch(final List<ColumnMetadata> sequenceGeneratedColumns)
+      throws SequencesNotSupportedException {
+    ListWriter lw = new ListWriter(", ");
+    for (ColumnMetadata cm : sequenceGeneratedColumns) {
+      lw.add("nextval('" + cm.getSequenceId().getRenderedSQLName() + "') as " + cm.getId().getJavaMemberName());
+    }
+    return "select " + lw.toString();
+  }
+
+  @Override
+  public String renderSelectSequence(final ObjectId sequenceId) throws SequencesNotSupportedException {
+    return "select nextval('" + sequenceId.getRenderedSQLName() + "')";
+  }
+
+  @Override
+  public String renderInlineSequenceOnInsert(final ColumnMetadata cm) {
+    return "nextval('" + cm.getSequenceId().getRenderedSQLName() + "')";
+  }
+
+  @Override
+  public String renderIdentitiesPostfetch(final List<ColumnMetadata> identityGeneratedColumns)
+      throws IdentitiesPostFetchNotSupportedException {
+    ListWriter lw = new ListWriter(", ");
+    for (ColumnMetadata cm : identityGeneratedColumns) {
+      lw.add("select currval(pg_get_serial_sequence('" + cm.getDataSet().getId().getCanonicalSQLName() + "', '"
+          + cm.getId().getCanonicalSQLName() + "'))");
+    }
+    return "select " + lw.toString();
+  }
+
+  @Override
+  public String renderAliasedSelectColumn(final StructuredColumnMetadata cm) {
+    return cm.getId().getRenderedSQLName() + " as " + this.renderSQLName(cm.getColumnAlias());
+  }
+
+  @Override
+  public String canonizeName(final String configName, final boolean quoted) {
+    return configName == null ? null : (quoted ? configName : configName.toLowerCase());
+  }
+
+  private static final String UNQUOTED_IDENTIFIER_PATTERN = "[a-z][a-z0-9_]*";
+
+  @Override
+  public String renderSQLName(final String canonicalName) {
+    return canonicalName == null ? null
+        : (canonicalName.matches(UNQUOTED_IDENTIFIER_PATTERN) ? canonicalName : super.quote(canonicalName));
+  }
+
+  @Override
+  public boolean isTableIdentifier(final String jdbcName, final String name) {
+    return name == null ? false : name.equalsIgnoreCase(jdbcName);
+  }
+
+  @Override
+  public boolean isColumnIdentifier(final String jdbcName, final String name) {
+    return name == null ? false : name.equalsIgnoreCase(jdbcName);
+  }
+
+  @Override
+  public String formatSchemaName(final String name) {
+    return name;
+  }
+
+  @Override
+  public String createOrReplaceView(final String viewName, final String select) {
+    return "create or replace view " + viewName + " as\n" + select;
+  }
+
+  @Override
+  public String dropView(final String viewName) {
+    return "drop view " + viewName;
+  }
+
+  @Override
+  public String formatJdbcTableName(final String tableName) {
+    return tableName.toLowerCase();
+  }
+
+  @Override
+  public boolean isSerial(final JdbcColumn c) {
+    if (c.getDataType() == java.sql.Types.BIGINT && "int8".equalsIgnoreCase(c.getTypeName())) {
+      return true;
+    }
+    if (c.getDataType() == java.sql.Types.INTEGER && "int4".equalsIgnoreCase(c.getTypeName())) {
+      return true;
+    }
+    if (c.getDataType() == java.sql.Types.SMALLINT && "int2".equalsIgnoreCase(c.getTypeName())) {
+      return true;
+    }
+    return false;
+  }
+
+  // Sorting
+
+  private final static Set<String> CS_SORTABLE_STRING_TYPE_NAMES = new HashSet<String>();
+  static {
+    CS_SORTABLE_STRING_TYPE_NAMES.add("bpchar"); // internal name of 'char'
+    CS_SORTABLE_STRING_TYPE_NAMES.add("varchar");
+    CS_SORTABLE_STRING_TYPE_NAMES.add("text");
+  }
+
+  @Override
+  public boolean isCaseSensitiveSortableString(final ColumnMetadata cm) {
+    return CS_SORTABLE_STRING_TYPE_NAMES.contains(cm.getTypeName());
+  }
+
+  @Override
+  public String renderForCaseInsensitiveOrderBy(final ColumnMetadata cm) {
+    return "lower(" + cm.getId().getRenderedSQLName() + ")";
+  }
+
+  @Override
+  public UnescapedSQLCase getUnescapedSQLCase() {
+    return UnescapedSQLCase.LOWER_CASE;
+  }
+
+}
