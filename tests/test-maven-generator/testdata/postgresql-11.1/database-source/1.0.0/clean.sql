@@ -68,4 +68,10 @@ drop type if exists mood;
 drop type if exists complex;
 
 drop table if exists employee;
+
+drop trigger employee_state_read_only on employee_state;
+drop function employee_state_read_only;
 drop table if exists employee_state;
+
+
+

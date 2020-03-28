@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.hotrodorm.hotrod.tests</groupId>
+  <artifactId>test-maven-generator</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <dependencies>
+
+    <!-- 1. Spring -->
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>5.2.0.RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>5.2.0.RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>5.2.0.RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>5.2.0.RELEASE</version>
+    </dependency>
+
+    <!-- 2. MyBatis Spring -->
+
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis-spring</artifactId>
+      <version>2.0.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis</artifactId>
+      <version>3.5.3</version>
+    </dependency>
+
+    <!-- 3. HotRod -->
+
+    <dependency>
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod</artifactId>
+      <version>3.1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod-livesql</artifactId>
+      <version>3.1.0-SNAPSHOT</version>
+    </dependency>
+
+    <!-- 4. Log4j 2 -->
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.12.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.12.1</version>
+    </dependency>
+
+    <!-- Unit Testing -->
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.2.5.jre6</version>
+      <type>jar</type>
+    </dependency>
+
+  </dependencies>
+
+  <profiles>
+
+    <!-- PostgreSQL 11.1 generation -->
+
+    <profile>
+      <id>postgresql-11.1</id>
+      <build>
+        <plugins>
+
+          <!-- Database builder -->
+
+          <plugin>
+            <groupId>org.nocrala.tools.database.builder</groupId>
+            <artifactId>database-builder-maven-plugin</artifactId>
+            <version>1.1.1</version>
+            <configuration>
+              <sourcedir>testdata/postgresql-11.1/database-source</sourcedir>
+              <targetversion>1.0.0</targetversion>
+              <datascenario>unit-testing</datascenario>
+              <layeredbuild>true</layeredbuild>
+              <layeredscenario>false</layeredscenario>
+              <onbuilderror>stop</onbuilderror>
+              <oncleanerror>continue</oncleanerror>
+              <localproperties>testdata/postgresql-11.1/testing.properties</localproperties>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.2.5.jre6</version>
+                <type>jar</type>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+          <!-- HotRod Generation -->
+
+          <plugin>
+            <groupId>org.hotrodorm.hotrod</groupId>
+            <artifactId>hotrod-maven-plugin</artifactId>
+            <version>3.1.0-SNAPSHOT</version>
+            <configuration>
+              <localproperties>testdata/postgresql-11.1/testing.properties</localproperties>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.2.5.jre6</version>
+                <type>jar</type>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
+
+</project>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jee="http://www.springframework.org/schema/jee"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+  <context:annotation-config />
+
+  <tx:annotation-driven transaction-manager="transactionManager" />
+
+  <context:component-scan base-package="org.hotrod.runtime.spring, com.myapp1" />
+
+  <bean name="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="org.postgresql.Driver" />
+    <property name="username" value="postgres" />
+    <property name="password" value="mypassword" />
+    <property name="url" value="jdbc:postgresql://192.168.56.213:5432/postgres" />
+    <property name="maxIdle" value="5" />
+    <property name="maxActive" value="10" />
+  </bean>
+
+  <!-- Main Spring beans -->
+
+  <bean id="springBeanObjectFactory" class="org.hotrod.runtime.spring.SpringBeanObjectFactory" />
+
+  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource" />
+    <property name="configLocation" value="mappers/primitives/mybatis-configuration.xml" />
+    <property name="objectFactory" ref="springBeanObjectFactory" />
+  </bean>
+
+  <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+    <constructor-arg index="0" ref="sqlSessionFactory" />
+  </bean>
+
+  <bean id="sqlDialectFactory" class="org.hotrod.runtime.livesql.dialects.SQLDialectFactory">
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+
+<!--
+  <bean id="sqlDialect" class="org.hotrod.runtime.livesql.dialects.SQLDialect" value="#{sqlDialectFactory.sqlDialect}">
+  </bean>
+  <bean id="sqlDialect" class="org.hotrod.runtime.livesql.dialects.SQLDialect" value="#{sqlDialectFactory.sqlDialect}" />
+-->
+
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+
+  <bean id="liveSQL" class="org.hotrod.runtime.livesql.LiveSQL">
+    <property name="sqlSession" ref="sqlSession" />
+    <property name="sqlDialect" value="#{sqlDialectFactory.sqlDialect}" />
+  </bean>
+
+  <!-- DAOs -->
+
+<?comment
+  <import resource="../../../gen/spring-hotrod2.xml" />
+?>
+
+<?comment  
+  <bean id="accountDAO" class="hotrod.test.generation.primitives.AccountDAO">
+    <property name="sqlSession" ref="sqlSession" />
+  </bean>
+
+  <bean id="txBranchDAO" class="hotrod.test.generation.primitives.TxBranchDAO">
+    <property name="sqlSession" ref="sqlSession" />
+  </bean>
+?>
+
+</beans>
