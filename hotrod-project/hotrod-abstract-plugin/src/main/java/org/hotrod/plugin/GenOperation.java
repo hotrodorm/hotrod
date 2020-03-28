@@ -36,16 +36,16 @@ public class GenOperation {
   private static final Logger log = LogManager.getLogger(GenOperation.class);
 
   private File baseDir;
-  private String configfile = null;
+  private String configfilename = null;
   private String generator = null;
   private String localproperties = null;
 
-  private String driverclass = null;
-  private String url = null;
-  private String username = null;
-  private String password = null;
-  private String catalog = null;
-  private String schema = null;
+  private String jdbcdriverclass = null;
+  private String jdbcurl = null;
+  private String jdbcusername = null;
+  private String jdbcpassword = null;
+  private String jdbccatalog = null;
+  private String jdbcschema = null;
   private String facets = null;
   private String display = null;
 
@@ -56,19 +56,20 @@ public class GenOperation {
 
   private LinkedHashSet<String> facetNames = null;
 
-  public GenOperation(final File baseDir, final String configfile, final String generator, final String localproperties,
-      final String driverclass, final String url, final String username, final String password, final String catalog,
-      final String schema, final String facets, final String display) {
+  public GenOperation(final File baseDir, final String configfilename, final String generator,
+      final String localproperties, final String jdbcdriverclass, final String jdbcurl, final String jdbcusername,
+      final String jdbcpassword, final String jdbccatalog, final String jdbcschema, final String facets,
+      final String display) {
     this.baseDir = baseDir;
-    this.configfile = configfile;
+    this.configfilename = configfilename;
     this.generator = generator;
     this.localproperties = localproperties;
-    this.driverclass = driverclass;
-    this.url = url;
-    this.username = username;
-    this.password = password;
-    this.catalog = catalog;
-    this.schema = schema;
+    this.jdbcdriverclass = jdbcdriverclass;
+    this.jdbcurl = jdbcurl;
+    this.jdbcusername = jdbcusername;
+    this.jdbcpassword = jdbcpassword;
+    this.jdbccatalog = jdbccatalog;
+    this.jdbcschema = jdbcschema;
     this.facets = facets;
     this.display = display;
   }
@@ -84,8 +85,8 @@ public class GenOperation {
     feedback.info("");
     feedback.info("Configuration File: " + this.configFile);
 
-    DatabaseLocation loc = new DatabaseLocation(this.driverclass, this.url, this.username, this.password, this.catalog,
-        this.schema, null);
+    DatabaseLocation loc = new DatabaseLocation(this.jdbcdriverclass, this.jdbcurl, this.jdbcusername,
+        this.jdbcpassword, this.jdbccatalog, this.jdbcschema, null);
 
     DatabaseAdapter adapter;
     try {
@@ -223,15 +224,15 @@ public class GenOperation {
 
       // 1.b Override default values
 
-      this.configfile = props.getProperty("configfile", this.configfile);
+      this.configfilename = props.getProperty("configfile", this.configfilename);
       this.generator = props.getProperty("generator", this.generator);
-      this.driverclass = props.getProperty("driverclass", this.driverclass);
+      this.jdbcdriverclass = props.getProperty("jdbcdriverclass", this.jdbcdriverclass);
 
-      this.url = props.getProperty("url");
-      this.username = props.getProperty("username");
-      this.password = props.getProperty("password");
-      this.catalog = props.getProperty("catalog");
-      this.schema = props.getProperty("schema");
+      this.jdbcurl = props.getProperty("jdbcurl");
+      this.jdbcusername = props.getProperty("jdbcusername");
+      this.jdbcpassword = props.getProperty("jdbcpassword");
+      this.jdbccatalog = props.getProperty("jdbccatalog");
+      this.jdbcschema = props.getProperty("jdbcschema");
       this.facets = props.getProperty("facets");
       this.display = props.getProperty("display");
     }
@@ -240,15 +241,15 @@ public class GenOperation {
 
     // configfile
 
-    if (this.configfile == null) {
+    if (this.configfilename == null) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile attribute must be specified.");
     }
-    if (SUtil.isEmpty(this.configfile)) {
+    if (SUtil.isEmpty(this.configfilename)) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile attribute cannot be empty.");
     }
-    this.configFile = new File(this.baseDir, this.configfile);
+    this.configFile = new File(this.baseDir, this.configfilename);
     if (!this.configFile.exists()) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile does not exist: " + this.configfile);
+      throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile does not exist: " + this.configfilename);
     }
 
     // generator
@@ -259,48 +260,48 @@ public class GenOperation {
 
     // driverclass
 
-    if (this.driverclass == null) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "driverclass attribute must be specified.");
+    if (this.jdbcdriverclass == null) {
+      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcdriverclass attribute must be specified.");
     }
-    if (SUtil.isEmpty(this.driverclass)) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "driverclass attribute cannot be empty.");
+    if (SUtil.isEmpty(this.jdbcdriverclass)) {
+      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcdriverclass attribute cannot be empty.");
     }
 
     // url
 
-    if (this.url == null) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "url attribute must be specified.");
+    if (this.jdbcurl == null) {
+      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcurl attribute must be specified.");
     }
-    if (SUtil.isEmpty(this.url)) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "url attribute cannot be empty.");
+    if (SUtil.isEmpty(this.jdbcurl)) {
+      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcurl attribute cannot be empty.");
     }
 
     // username
 
-    if (this.username == null) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "username attribute must be specified.");
+    if (this.jdbcusername == null) {
+      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcusername attribute must be specified.");
     }
-    if (SUtil.isEmpty(this.username)) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "username attribute cannot be empty.");
+    if (SUtil.isEmpty(this.jdbcusername)) {
+      throw new Exception(Constants.TOOL_NAME + " parameter: " + "jdbcusername attribute cannot be empty.");
     }
 
     // password
 
-    if (this.password == null) {
+    if (this.jdbcpassword == null) {
       throw new Exception(
-          Constants.TOOL_NAME + " parameter: " + "password attribute must be specified, even if empty.");
+          Constants.TOOL_NAME + " parameter: " + "jdbcpassword attribute must be specified, even if empty.");
     }
 
     // catalog
 
-    if (SUtil.isEmpty(this.catalog)) {
-      this.catalog = null;
+    if (SUtil.isEmpty(this.jdbccatalog)) {
+      this.jdbccatalog = null;
     }
 
     // schema
 
-    if (SUtil.isEmpty(this.schema)) {
-      this.schema = null;
+    if (SUtil.isEmpty(this.jdbcschema)) {
+      this.jdbcschema = null;
     }
 
     // facets

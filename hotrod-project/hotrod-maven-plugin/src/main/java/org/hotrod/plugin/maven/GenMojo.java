@@ -24,28 +24,28 @@ public class GenMojo extends AbstractMojo {
   @Parameter(property = "generator")
   private String generator = null;
 
-  @Parameter(property = "driverclass")
-  private String driverclass = null;
-
   @Parameter(property = "localproperties")
   private String localproperties = null;
 
+  @Parameter(property = "jdbcdriverclass")
+  private String jdbcdriverclass = null;
+
   // Loaded locally
 
-  @Parameter(property = "url")
-  private String url = null;
+  @Parameter(property = "jdbcurl")
+  private String jdbcurl = null;
 
-  @Parameter(property = "username")
-  private String username = null;
+  @Parameter(property = "jdbcusername")
+  private String jdbcusername = null;
 
-  @Parameter(property = "password")
-  private String password = null;
+  @Parameter(property = "jdbcpassword")
+  private String jdbcpassword = null;
 
-  @Parameter(property = "catalog")
-  private String catalog = null;
+  @Parameter(property = "jdbccatalog")
+  private String jdbccatalog = null;
 
-  @Parameter(property = "schema")
-  private String schema = null;
+  @Parameter(property = "jdbcschema")
+  private String jdbcschema = null;
 
   @Parameter(property = "facets", defaultValue = "")
   private String facets = null;
@@ -63,10 +63,11 @@ public class GenMojo extends AbstractMojo {
   public void execute() throws MojoExecutionException {
     log.debug("init");
 
-    log.info("this.localproperties=" + this.localproperties);
+    log.debug("this.localproperties=" + this.localproperties);
 
     GenOperation op = new GenOperation(this.project.getBasedir(), this.configfile, this.generator, this.localproperties,
-        this.driverclass, this.url, this.username, this.password, this.catalog, this.schema, this.facets, this.display);
+        this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema,
+        this.facets, this.display);
 
     try {
       op.execute(new MojoFeedback(this));

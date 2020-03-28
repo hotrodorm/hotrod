@@ -99,18 +99,40 @@
     <!-- PostgreSQL 11.1 generation -->
 
     <profile>
-      <id>postgresql</id>
+      <id>postgresql-11.1</id>
       <build>
         <plugins>
+
+          <plugin>
+            <groupId>org.nocrala.tools.database.builder</groupId>
+            <artifactId>database-builder-maven-plugin</artifactId>
+            <version>1.1.1</version>
+            <configuration>
+              <sourcedir>testdata/postgresql-11.1/database-source</sourcedir>
+              <targetversion>1.0.0</targetversion>
+              <datascenario></datascenario>
+              <layeredbuild>true</layeredbuild>
+              <layeredscenario>false</layeredscenario>
+              <onbuilderror>stop</onbuilderror>
+              <oncleanerror>continue</oncleanerror>
+              <localproperties>testdata/postgresql-11.1/testing.properties</localproperties>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.2.5.jre6</version>
+                <type>jar</type>
+              </dependency>
+            </dependencies>
+          </plugin>
+
           <plugin>
             <groupId>org.hotrodorm.hotrod</groupId>
             <artifactId>hotrod-maven-plugin</artifactId>
             <version>3.1.0-SNAPSHOT</version>
             <configuration>
-              <localproperties>testdata/postgresql-11.1/dev.properties</localproperties>
-              <configfile>testdata/postgresql-11.1/hotrod.xml</configfile>
-              <generator>MyBatis-Spring</generator>
-              <driverclass>org.postgresql.Driver</driverclass>
+              <localproperties>testdata/postgresql-11.1/testing.properties</localproperties>
             </configuration>
             <dependencies>
               <dependency>
