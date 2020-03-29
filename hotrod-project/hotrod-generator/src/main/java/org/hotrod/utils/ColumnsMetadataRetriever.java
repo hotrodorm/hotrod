@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
+import org.hotrod.config.TypeSolverTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -129,8 +130,9 @@ public class ColumnsMetadataRetriever {
 
   }
 
-  public List<StructuredColumnMetadata> retrieve(final Connection conn2) throws InvalidSQLException,
-      UncontrolledException, UnresolvableDataTypeException, InvalidConfigurationFileException {
+  public List<StructuredColumnMetadata> retrieve(final Connection conn2, final TypeSolverTag typeSolverTag)
+      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
+      InvalidConfigurationFileException {
 
     String dropViewSQL = this.adapter.dropView(this.tempViewName);
 
@@ -152,7 +154,8 @@ public class ColumnsMetadataRetriever {
           JdbcColumn c = this.db.retrieveSelectColumn(rs);
           ColumnMetadata cm;
           try {
-            cm = new ColumnMetadata(null, c, this.selectTag.getMethod(), this.adapter, null, false, false);
+            cm = new ColumnMetadata(null, c, this.selectTag.getMethod(), this.adapter, null, false, false,
+                typeSolverTag);
           } catch (InvalidIdentifierException e) {
             String msg = "Invalid identifier for column '" + c.getName() + "': " + e.getMessage();
             throw new InvalidConfigurationFileException(this.selectTag, msg, msg);

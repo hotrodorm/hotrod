@@ -224,7 +224,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
       try {
         log.debug("Phase 2");
-        this.tag.getStructuredColumns().gatherMetadataPhase2(conn2);
+        this.tag.getStructuredColumns().gatherMetadataPhase2(conn2, this.config.getTypeSolverTag());
         this.structuredColumns = this.tag.getStructuredColumns().getMetadata();
         this.structuredColumns.registerVOs(this.classPackage, voRegistry);
 
@@ -365,7 +365,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         JdbcColumn c = this.db.retrieveSelectColumn(rs);
         ColumnTag columnTag = this.tag.findColumnTag(c.getName(), this.adapter);
         log.debug("c=" + c.getName() + " / col: " + columnTag);
-        ColumnMetadata cm = new ColumnMetadata(this, c, this.tag.getMethod(), this.adapter, columnTag, false, false);
+        ColumnMetadata cm = new ColumnMetadata(this, c, this.tag.getMethod(), this.adapter, columnTag, false, false,
+            this.config.getTypeSolverTag());
         log.debug(" --> type=" + cm.getType());
         this.nonStructuredColumns.add(cm);
       }

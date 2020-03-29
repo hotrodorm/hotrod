@@ -20,6 +20,7 @@ import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.Patterns;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
+import org.hotrod.config.TypeSolverTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -279,15 +280,16 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   }
 
   @Override
-  public void gatherMetadataPhase2(final Connection conn2) throws InvalidSQLException, UncontrolledException,
-      UnresolvableDataTypeException, InvalidConfigurationFileException {
+  public void gatherMetadataPhase2(final Connection conn2, final TypeSolverTag typeSolverTag)
+      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
+      InvalidConfigurationFileException {
 
     // Retrieve
 
     for (VOTag vo : this.vos) {
-      vo.gatherMetadataPhase2(conn2);
+      vo.gatherMetadataPhase2(conn2, typeSolverTag);
     }
-    this.expressions.gatherMetadataPhase2(conn2);
+    this.expressions.gatherMetadataPhase2(conn2, typeSolverTag);
 
     // Assemble
 

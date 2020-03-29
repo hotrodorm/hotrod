@@ -36,6 +36,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
   private File f;
 
   private GeneratorsTag generatorsTag = null;
+  private TypeSolverTag typeSolverTag = null;
 
   private List<ConverterTag> converters = new ArrayList<ConverterTag>();
   private Map<String, ConverterTag> convertersByName = null;
@@ -54,6 +55,11 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     this.generatorsTag = generators;
   }
 
+  @XmlElement(name = "type-solver")
+  public void setTypeSolver(final TypeSolverTag typeSolverTag) {
+    this.typeSolverTag = typeSolverTag;
+  }
+
   @XmlElement
   public void setConverter(final ConverterTag converter) {
     this.converters.add(converter);
@@ -63,6 +69,10 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   public GeneratorsTag getGenerators() {
     return generatorsTag;
+  }
+
+  public TypeSolverTag getTypeSolverTag() {
+    return typeSolverTag;
   }
 
   public List<ConverterTag> getConverters() {
@@ -82,6 +92,12 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
     this.generatorsTag.validate(basedir, parentDir, generatorName);
     super.addChild(this.generatorsTag);
+
+    // Type Solver
+
+    if (this.typeSolverTag != null) {
+      this.typeSolverTag.validate(this);
+    }
 
     // Converters
 

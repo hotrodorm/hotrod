@@ -6,10 +6,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.ColumnTag;
 import org.hotrod.config.ConverterTag;
+import org.hotrod.config.TypeSolverTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
+import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.hotrod.utils.JdbcTypes;
+import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -60,9 +64,9 @@ public class ColumnMetadata implements Serializable {
   // From a <table>, <view>, or <enum> tag
 
   public ColumnMetadata(final DataSetMetadata dataSet, final JdbcColumn c, final DatabaseAdapter adapter,
-      final ColumnTag columnTag, final boolean isVersionControlColumn, final boolean belongsToPK)
-      throws UnresolvableDataTypeException, InvalidIdentifierException {
-    log.debug("init c=" + c);
+      final ColumnTag columnTag, final boolean isVersionControlColumn, final boolean belongsToPK,
+      final TypeSolverTag typeSolverTag) throws UnresolvableDataTypeException, InvalidIdentifierException {
+    log.info("init c=" + c);
     this.dataSet = dataSet;
     this.c = c;
     this.columnName = c.getName();
@@ -88,9 +92,65 @@ public class ColumnMetadata implements Serializable {
     this.enumMetadata = null;
 
     this.adapter = adapter;
-    this.type = this.adapter.resolveJavaType(this, this.tag);
+    this.type = ColumnMetadata.resolveJavaType(this, this.tag, this.c, typeSolverTag, this.adapter);
     this.isVersionControlColumn = isVersionControlColumn;
     this.reusesMemberFromSuperClass = false;
+  }
+
+  public static PropertyType resolveJavaType(final ColumnMetadata cm, final ColumnTag columnTag, final JdbcColumn c,
+      final TypeSolverTag typeSolverTag, final DatabaseAdapter adapter) throws UnresolvableDataTypeException {
+    log.info("columnTag=" + columnTag);
+    if (columnTag != null) {
+      log.info("columnTag.getJdbcColumn()=" + columnTag.getJdbcColumn());
+    }
+
+    if (columnTag != null && (columnTag.getJavaType() != null || columnTag.getConverterTag() != null)) {
+
+      // Use the type specified in the <column> tag
+
+      log.debug("User-specified column type. Use it.");
+      JDBCType jdbcType;
+      if (columnTag.getJdbcType() != null) {
+        // User specified the JDBC type. Use the user's.
+        jdbcType = JdbcTypes.nameToType(columnTag.getJdbcType());
+        if (jdbcType == null) {
+          throw new UnresolvableDataTypeException(cm);
+        }
+      } else {
+        // User did not specify the JDBC type. Get it from the live database.
+        jdbcType = JdbcTypes.codeToType(cm.getDataType());
+        if (jdbcType == null) {
+          throw new UnresolvableDataTypeException(cm);
+        }
+      }
+      ValueRange range = columnTag.getValueRange();
+      if (range == null) {
+        range = PropertyType.getDefaultValueRange(columnTag.getJavaType());
+      }
+
+      String javaType = columnTag.getJavaType() != null ? columnTag.getJavaType()
+          : columnTag.getConverterTag().getJavaType();
+
+      return new PropertyType(javaType, jdbcType, columnTag.isLOB(), range);
+
+    } else {
+
+      // Try the <type-solver> rules
+
+      if (typeSolverTag != null) {
+        PropertyType t = typeSolverTag.resolveType(cm, c);
+        log.info("t=" + t);
+        if (t != null) {
+          return t;
+        }
+      }
+
+      // Otherwise, use the default type from the database adapter
+
+      return adapter.getAdapterDefaultType(cm);
+
+    }
+
   }
 
   public void setEnumMetadata(final EnumDataSetMetadata enumMetadata) {
@@ -127,7 +187,8 @@ public class ColumnMetadata implements Serializable {
 
   public ColumnMetadata(final DataSetMetadata dataSet, final JdbcColumn c, final String selectName,
       final DatabaseAdapter adapter, final ColumnTag columnTag, final boolean isVersionControlColumn,
-      final boolean belongsToPK) throws UnresolvableDataTypeException, InvalidIdentifierException {
+      final boolean belongsToPK, final TypeSolverTag typeSolverTag)
+      throws UnresolvableDataTypeException, InvalidIdentifierException {
     this.dataSet = dataSet;
     this.c = c;
     this.columnName = c.getName();
@@ -150,7 +211,8 @@ public class ColumnMetadata implements Serializable {
     this.enumMetadata = null;
 
     this.adapter = adapter;
-    this.type = this.adapter.resolveJavaType(this, this.tag);
+    this.type = ColumnMetadata.resolveJavaType(this, this.tag, this.c, typeSolverTag, this.adapter);
+
     this.isVersionControlColumn = isVersionControlColumn;
     this.reusesMemberFromSuperClass = false;
   }
@@ -158,10 +220,12 @@ public class ColumnMetadata implements Serializable {
   // Applying a column tag to a column meta data
 
   public static ColumnMetadata applyColumnTag(final ColumnMetadata cm, final ColumnTag tag,
-      final DatabaseAdapter adapter) throws UnresolvableDataTypeException, InvalidIdentifierException {
+      final DatabaseAdapter adapter, final TypeSolverTag typeSolverTag)
+      throws UnresolvableDataTypeException, InvalidIdentifierException {
     ColumnMetadata m2 = new ColumnMetadata(cm);
     m2.tag = tag;
-    m2.type = m2.adapter.resolveJavaType(m2, tag);
+//    m2.type = m2.adapter.resolveJavaType(m2, tag);
+    m2.type = resolveJavaType(m2, tag, tag.getJdbcColumn(), typeSolverTag, m2.adapter);
     if (tag.getJavaName() != null) {
       m2.id = Id.fromCanonicalSQLAndJavaMember(cm.getColumnName(), adapter, tag.getJavaName());
     }

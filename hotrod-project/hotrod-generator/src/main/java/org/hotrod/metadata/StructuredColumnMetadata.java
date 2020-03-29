@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ColumnTag;
+import org.hotrod.config.TypeSolverTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
@@ -52,9 +53,9 @@ public class StructuredColumnMetadata extends ColumnMetadata implements Serializ
   // Behavior
 
   public static StructuredColumnMetadata applyColumnTag(final StructuredColumnMetadata orig, final ColumnTag t,
-      final AbstractConfigurationTag tag, final DatabaseAdapter adapter)
+      final AbstractConfigurationTag tag, final DatabaseAdapter adapter, final TypeSolverTag typeSolverTag)
       throws UnresolvableDataTypeException, InvalidIdentifierException {
-    ColumnMetadata cm = ColumnMetadata.applyColumnTag(orig, t, adapter);
+    ColumnMetadata cm = ColumnMetadata.applyColumnTag(orig, t, adapter, typeSolverTag);
     return new StructuredColumnMetadata(cm, orig.entityPrefix, orig.columnAlias, orig.id, tag);
   }
 

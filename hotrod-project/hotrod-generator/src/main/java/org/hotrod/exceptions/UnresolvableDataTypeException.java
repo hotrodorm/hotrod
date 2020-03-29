@@ -12,6 +12,11 @@ public class UnresolvableDataTypeException extends Exception {
     this.cm = cm;
   }
 
+  public UnresolvableDataTypeException(final ColumnMetadata cm, final String message) {
+    super(message);
+    this.cm = cm;
+  }
+
   // public JdbcColumn getColumn() {
   // return column;
   // }

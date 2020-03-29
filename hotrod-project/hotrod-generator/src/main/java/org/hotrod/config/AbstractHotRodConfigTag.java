@@ -141,7 +141,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     super.addChildren(this.tables);
 
     for (EnumTag e : this.enums) {
-      e.validate(daosTag, fragmentConfig, adapter);
+      e.validate(daosTag, config, fragmentConfig, adapter);
     }
     Collections.sort(this.enums, new Comparator<EnumTag>() {
       @Override

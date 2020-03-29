@@ -70,6 +70,7 @@ public class EnumTag extends AbstractEntityDAOTag {
   private LinkedHashMap<JdbcColumn, EnumColumn> extraColumns = null;
 
   private DaosTag daosTag;
+  private HotRodConfigTag config;
   private HotRodFragmentConfigTag fragmentConfig = null;
   private ClassPackage fragmentPackage;
 
@@ -143,10 +144,12 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
-      final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
+  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
 
     this.daosTag = daosTag;
+    this.config = config;
     this.fragmentConfig = fragmentConfig;
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage()
@@ -455,7 +458,7 @@ public class EnumTag extends AbstractEntityDAOTag {
       throws InvalidConfigurationFileException {
     PropertyType type;
     try {
-      ColumnMetadata cm = new ColumnMetadata(null, c, adapter, null, false, false);
+      ColumnMetadata cm = new ColumnMetadata(null, c, adapter, null, false, false, this.config.getTypeSolverTag());
       type = adapter.getAdapterDefaultType(cm);
     } catch (UnresolvableDataTypeException e) {
       throw new InvalidConfigurationFileException(this, //

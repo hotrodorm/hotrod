@@ -4,6 +4,7 @@ import java.sql.Connection;
 
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
+import org.hotrod.config.TypeSolverTag;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidSQLException;
@@ -19,7 +20,7 @@ public interface ColumnsProvider {
   void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, Connection conn1) throws InvalidSQLException;
 
-  void gatherMetadataPhase2(final Connection conn2) throws InvalidSQLException, UncontrolledException,
+  void gatherMetadataPhase2(final Connection conn2, final TypeSolverTag typeSolverTag) throws InvalidSQLException, UncontrolledException,
       UnresolvableDataTypeException, ControlledException, InvalidConfigurationFileException;
 
   String renderColumns();

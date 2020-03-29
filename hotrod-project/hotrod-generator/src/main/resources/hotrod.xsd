@@ -1,11 +1,12 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-  <xsd:include schemaLocation="hotrod-common.xsd" /> 
+  <xsd:include schemaLocation="hotrod-common.xsd" />
 
   <xsd:element name="hotrod">
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element name="generators" type="generators-type" />
+        <xsd:element name="type-solver" type="type-solver-type" minOccurs="0" maxOccurs="1" />
         <xsd:choice minOccurs="0" maxOccurs="unbounded">
           <xsd:element name="table" type="table-type" />
           <xsd:element name="dao" type="dao-type" />
@@ -26,6 +27,19 @@
       <xsd:element name="spring-jdbc" type="spring-jdbc-type" minOccurs="0" />
       <xsd:element name="mybatis-spring" type="mybatis-spring-type" minOccurs="0" />
     </xsd:all>
+  </xsd:complexType>
+
+  <xsd:complexType name="type-solver-type">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="when" type="type-solver-when-type" />
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:complexType name="type-solver-when-type">
+    <xsd:attribute name="test" type="xsd:string" use="required" />
+    <xsd:attribute name="java-type" type="xsd:string" />
+    <xsd:attribute name="jdbc-type" type="xsd:string" />
+    <xsd:attribute name="converter" type="xsd:string" />
   </xsd:complexType>
 
   <xsd:complexType name="mybatis-type">
@@ -98,6 +112,6 @@
     <xsd:attribute name="relative-dir" type="xsd:string" use="required" />
     <xsd:attribute name="prefix" type="xsd:string" use="required" />
   </xsd:complexType>
- 
+
 </xsd:schema>
    

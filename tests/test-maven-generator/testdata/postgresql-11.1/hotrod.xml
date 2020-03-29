@@ -13,6 +13,12 @@
     </mybatis-spring>
   </generators>
 
+<!-- 
+  <type-solver>
+    <when test="name == 'account_id'" java-type="java.util.Date" jdbc-type="NUMERIC" />
+  </type-solver>
+-->
+ 
   <facet name="f1">
     <table name="account"> <!-- identity by default PK -->
       <column name="active" java-name="mainStatus" />

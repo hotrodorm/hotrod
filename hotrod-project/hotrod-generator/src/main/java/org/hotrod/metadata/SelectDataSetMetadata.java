@@ -166,7 +166,8 @@ public class SelectDataSetMetadata implements DataSetMetadata, Serializable {
         log.debug("c=" + c.getName() + " / col: " + columnTag);
         ColumnMetadata cm;
         try {
-          cm = new ColumnMetadata(this, c, this.tag.getJavaClassName(), this.adapter, columnTag, false, false);
+          cm = new ColumnMetadata(this, c, this.tag.getJavaClassName(), this.adapter, columnTag, false, false,
+              this.config.getTypeSolverTag());
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid identifier for column '" + c.getName() + "': " + e.getMessage();
           throw new InvalidConfigurationFileException(this.tag, msg, msg);

@@ -16,6 +16,7 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
+import org.hotrod.config.TypeSolverTag;
 import org.hotrod.database.DatabaseAdapter.UnescapedSQLCase;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
@@ -115,11 +116,12 @@ public class Expressions implements ColumnsProvider, Serializable {
   }
 
   @Override
-  public void gatherMetadataPhase2(final Connection conn2) throws InvalidSQLException, UncontrolledException,
-      UnresolvableDataTypeException, InvalidConfigurationFileException {
+  public void gatherMetadataPhase2(final Connection conn2, final TypeSolverTag typeSolverTag)
+      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
+      InvalidConfigurationFileException {
     log.debug("this.columnsRetriever=" + this.columnsRetriever);
     if (this.columnsRetriever != null) {
-      List<StructuredColumnMetadata> cms = this.columnsRetriever.retrieve(conn2);
+      List<StructuredColumnMetadata> cms = this.columnsRetriever.retrieve(conn2, typeSolverTag);
       for (StructuredColumnMetadata cm : cms) {
         String alias = cm.getColumnName();
         ExpressionTag tag = this.expressionsByAlias.get(alias);
@@ -134,7 +136,7 @@ public class Expressions implements ColumnsProvider, Serializable {
         }
         log.debug("******** java-name=" + ct.getJavaName() + " java-type=" + ct.getJavaType());
         try {
-          cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag, this.generator.getAdapter());
+          cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag, this.generator.getAdapter(), typeSolverTag);
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid name for column '" + cm.getColumnName() + tag.getClassName() + "': " + e.getMessage();
           throw new InvalidConfigurationFileException(tag, msg, msg);

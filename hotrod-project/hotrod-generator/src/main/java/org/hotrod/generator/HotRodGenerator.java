@@ -316,7 +316,8 @@ public abstract class HotRodGenerator {
           throw new ControlledException(
               "Unrecognized column data type (reported as '" + m.getTypeName() + "', JDBC type " + m.getDataType() + " "
                   + (typeName == null ? "(non-standard JDBC type)" : "'" + typeName + "'") + ") on column '"
-                  + m.getColumnName() + "' of table/view/select '" + m.getTableName() + "'.");
+                  + m.getColumnName() + "' of table/view/select '" + m.getTableName()
+                  + (e.getMessage() == null ? "" : ": " + e.getMessage()));
 
         } catch (VOAlreadyExistsException e) {
           throw new ControlledException("Duplicate table with name '" + t.getName() + "'.");

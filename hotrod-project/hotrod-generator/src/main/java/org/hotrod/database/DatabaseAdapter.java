@@ -94,40 +94,6 @@ public abstract class DatabaseAdapter implements Serializable {
    * @throws UnresolvableDataTypeException When the type cannot be resolved
    */
 
-  public PropertyType resolveJavaType(final ColumnMetadata md, final ColumnTag columnTag)
-      throws UnresolvableDataTypeException {
-    log.debug("columnTag=" + columnTag);
-    if (columnTag == null || (columnTag.getJavaType() == null && columnTag.getConverterTag() == null)) {
-      log.debug("No user-specified column type. Return adapter type.");
-      return getAdapterDefaultType(md);
-    } else {
-      log.debug("User-specified column type. Use it.");
-      JDBCType jdbcType;
-      if (columnTag.getJdbcType() != null) {
-        // User specified the JDBC type. Use the user's.
-        jdbcType = JdbcTypes.nameToType(columnTag.getJdbcType());
-        if (jdbcType == null) {
-          throw new UnresolvableDataTypeException(md);
-        }
-      } else {
-        // User did not specify the JDBC type. Get it from the live database.
-        jdbcType = JdbcTypes.codeToType(md.getDataType());
-        if (jdbcType == null) {
-          throw new UnresolvableDataTypeException(md);
-        }
-      }
-      ValueRange range = columnTag.getValueRange();
-      if (range == null) {
-        range = PropertyType.getDefaultValueRange(columnTag.getJavaType());
-      }
-
-      String javaType = columnTag.getJavaType() != null ? columnTag.getJavaType()
-          : columnTag.getConverterTag().getJavaType();
-
-      return new PropertyType(javaType, jdbcType, columnTag.isLOB(), range);
-    }
-  }
-
   // Names
 
   public boolean equalConfigNames(final String a, final String b) {

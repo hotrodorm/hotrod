@@ -95,7 +95,7 @@ public class FacetTag extends AbstractConfigurationTag {
     }
 
     for (EnumTag e : this.enums) {
-      e.validate(daosTag, fragmentConfig, adapter);
+      e.validate(daosTag, config, fragmentConfig, adapter);
     }
 
     for (ExecutorTag dao : this.daos) {
