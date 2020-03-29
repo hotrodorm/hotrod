@@ -18,7 +18,10 @@
     <when test="name == 'account_id'" java-type="java.util.Date" jdbc-type="NUMERIC" />
   </type-solver>
 -->
- 
+
+  <table name="island" />
+
+
   <facet name="f1">
     <table name="account"> <!-- identity by default PK -->
       <column name="active" java-name="mainStatus" />
@@ -27,13 +30,12 @@
     <table name="transaction" /> <!-- identity by default PK -->
   </facet>
 
-  <table name="island" />
-
   <table name="properties" />
   <table name="parameters">
     <column name="level" java-type="java.lang.Long" jdbc-type="NUMERIC" />
   </table>
   <table name="log" />
+
 
   <table name="state_branch" />
   <table name="client" />
@@ -114,6 +116,7 @@
     <column name="id" sequence="seq_price" schema="'&lt;Stock$'" />
   </table>
 
+
   <dao name="AlertFinder">
     <select method="findAlerts">
       select
@@ -181,5 +184,8 @@
     </query>
 
   </dao>
+
+<?comment
+?>
 
 </hotrod>

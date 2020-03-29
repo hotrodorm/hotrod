@@ -1,10 +1,14 @@
 package org.hotrod.plugin;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashSet;
 import java.util.Properties;
 
@@ -22,18 +26,21 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.generator.CachedMetadata;
-import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
-import org.hotrod.generator.LiveGenerator;
 import org.hotrod.runtime.BuildInformation;
 import org.hotrod.utils.EUtils;
-import org.hotrod.utils.LocalFileGenerator;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
+import org.nocrala.tools.texttablefmt.BorderStyle;
+import org.nocrala.tools.texttablefmt.CellStyle;
+import org.nocrala.tools.texttablefmt.CellStyle.AbbreviationStyle;
+import org.nocrala.tools.texttablefmt.CellStyle.HorizontalAlign;
+import org.nocrala.tools.texttablefmt.ShownBorders;
+import org.nocrala.tools.texttablefmt.Table;
 
-public class GenOperation {
+public class ExportColumnsToTXTOperation {
 
-  private static final Logger log = LogManager.getLogger(GenOperation.class);
+  private static final Logger log = LogManager.getLogger(ExportColumnsToTXTOperation.class);
 
   private File baseDir;
   private String configfilename = null;
@@ -48,18 +55,20 @@ public class GenOperation {
   private String jdbcschema = null;
   private String facets = null;
   private String display = null;
+  private String exportfilename = null;
 
   // Computed properties (during validation)
 
   private File configFile;
   private DisplayMode displayMode;
+  private File exportFile;
 
   private LinkedHashSet<String> facetNames = null;
 
-  public GenOperation(final File baseDir, final String configfilename, final String generator,
+  public ExportColumnsToTXTOperation(final File baseDir, final String configfilename, final String generator,
       final String localproperties, final String jdbcdriverclass, final String jdbcurl, final String jdbcusername,
       final String jdbcpassword, final String jdbccatalog, final String jdbcschema, final String facets,
-      final String display) {
+      final String display, final String exportfilename) {
     this.baseDir = baseDir;
     this.configfilename = configfilename;
     this.generator = generator;
@@ -72,15 +81,16 @@ public class GenOperation {
     this.jdbcschema = jdbcschema;
     this.facets = facets;
     this.display = display;
+    this.exportfilename = exportfilename;
   }
 
   public void execute(final Feedback feedback) throws Exception {
     log.debug("init");
 
-    feedback.info(
-        Constants.TOOL_NAME + " version " + BuildInformation.VERSION + " (build " + BuildInformation.BUILD_ID + ") - Generate");
+    feedback.info(Constants.TOOL_NAME + " version " + BuildInformation.VERSION + " (build " + BuildInformation.BUILD_ID
+        + ") - Export Columns TXT");
 
-    validateParameters();
+    validateParameters(feedback);
 
     feedback.info("");
     feedback.info("Configuration File: " + this.configFile);
@@ -136,25 +146,10 @@ public class GenOperation {
           config, this.displayMode, false, adapter);
       log.debug("Generator instantiated.");
 
-      try {
+      g.prepareGeneration();
+      exportColumns(g);
 
-        LiveGenerator liveGenerator = (LiveGenerator) g;
-
-        // a live generator
-
-        g.prepareGeneration();
-        FileGenerator fg = new LocalFileGenerator();
-        liveGenerator.generate(fg);
-
-      } catch (ClassCastException e) {
-
-        // a batch generator
-
-        g.prepareGeneration();
-        g.generate();
-      }
-
-      log.debug("Generation complete.");
+      feedback.info("Column export saved to: " + this.exportFile);
 
     } catch (ControlledException e) {
       if (e.getLocation() == null) {
@@ -176,13 +171,106 @@ public class GenOperation {
 
   }
 
+  private void exportColumns(final HotRodGenerator g) throws IOException {
+    LinkedHashSet<String> nativeNames = new LinkedHashSet<>();
+    g.getConfig().getTypeSolverTag().getRetrievedColumns().stream().forEach(c -> {
+      if (c.getNative() != null) {
+        c.getNative().keySet().stream().forEach(n -> nativeNames.add(n));
+      }
+    });
+
+    int columns = 15 + nativeNames.size();
+    Table t = new Table(columns, BorderStyle.DESIGN_FORMAL_WIDE, ShownBorders.HEADER_AND_COLUMNS);
+
+    t.setColumnWidth(6, 1, 30);
+
+    CellStyle right = new CellStyle(HorizontalAlign.RIGHT);
+    CellStyle limited = new CellStyle(HorizontalAlign.LEFT, AbbreviationStyle.DOTS);
+
+    // Header
+
+    t.addCell("catalog");
+    t.addCell("schema");
+    t.addCell("objectName");
+    t.addCell("ordinal", right);
+    t.addCell("name");
+
+    t.addCell("typeName");
+    t.addCell("dataType");
+    t.addCell("size", right);
+    t.addCell("scale", right);
+    t.addCell("default", limited);
+
+    t.addCell("autogeneration");
+    t.addCell("belongsToPK");
+    t.addCell("isVersionControlColumn");
+    t.addCell("nature");
+    t.addCell("nullable");
+
+    nativeNames.forEach(n -> t.addCell("native." + n));
+
+    // Body
+
+    g.getConfig().getTypeSolverTag().getRetrievedColumns().stream().forEach(c -> {
+
+      t.addCell(c.getCatalog());
+      t.addCell(c.getSchema());
+      t.addCell(c.getObjectName());
+      t.addCell(c.getOrdinal() == null ? "" : "" + c.getOrdinal(), right);
+      t.addCell(c.getName());
+
+      t.addCell(c.getTypeName());
+      t.addCell(c.getDataType() == null ? "" : "" + c.getDataType());
+      t.addCell(c.getSize() == null ? "" : "" + c.getSize(), right);
+      t.addCell(c.getScale() == null ? "" : "" + c.getScale(), right);
+      t.addCell(c.getDefault() == null ? "" : "" + c.getDefault(), limited);
+
+      t.addCell(c.getAutogeneration() == null ? "" : "" + c.getAutogeneration());
+      t.addCell(c.getBelongsToPK() == null ? "" : "" + c.getBelongsToPK());
+      t.addCell(c.getIsVersionControlColumn() == null ? "" : "" + c.getIsVersionControlColumn());
+      t.addCell(c.getNature() == null ? "" : "" + c.getNature());
+      t.addCell(c.getNullable() == null ? "" : "" + c.getNullable());
+
+      nativeNames.stream().map(n -> c.getNative() == null ? null : c.getNative().get(n))
+          .map(v -> v == null ? "" : v.toString()).forEach(x -> t.addCell(x));
+    });
+
+    DateTimeFormatter df = DateTimeFormatter.ofPattern("d MMM yyyy 'at' HH:mm:ss Z");
+    OffsetDateTime now = OffsetDateTime.now();
+
+    try (BufferedWriter w = new BufferedWriter(new FileWriter(this.exportFile))) {
+      String content = t.render();
+
+      w.write("HotRod Column Export\n");
+      w.write("--------------------\n");
+
+      w.write("\n");
+      w.write(Constants.TOOL_NAME + " version " + BuildInformation.VERSION + " (build " + BuildInformation.BUILD_ID
+          + ")\n");
+      w.write("\n");
+
+      w.write("  From live database at : " + this.jdbcurl + "\n");
+      w.write("  Configuration file    : " + this.configFile + "\n");
+      w.write("  Catalog               : " + (this.jdbccatalog == null ? "" : this.jdbccatalog) + "\n");
+      w.write("  Schema                : " + (this.jdbcschema == null ? "" : this.jdbcschema) + "\n");
+      w.write("  Exported              : " + now.format(df) + "\n");
+
+      w.write("\n");
+      w.write(content);
+      w.write("\n");
+    }
+
+  }
+
   // Validation
 
-  private void validateParameters() throws Exception {
+  private void validateParameters(final Feedback feedback) throws Exception {
 
     // 1. Apply local properties file, if any
 
     if (!SUtil.isEmpty(this.localproperties)) {
+
+      feedback.info("Loading local properties from: " + this.localproperties);
 
       // 1.a Load local properties
 
@@ -235,6 +323,8 @@ public class GenOperation {
       this.jdbcschema = props.getProperty("jdbcschema");
       this.facets = props.getProperty("facets");
       this.display = props.getProperty("display");
+      this.exportfilename = props.getProperty("exportfile", this.exportfilename);
+
     }
 
     // 2. Validate properties
@@ -326,6 +416,16 @@ public class GenOperation {
             + "If specified, the attribute display must have one of the following values: " + "summary, list");
       }
     }
+
+    // Export File Name
+
+    if (this.exportfilename == null) {
+      throw new Exception(Constants.TOOL_NAME + " parameter: " + "exportfilename attribute must be specified.");
+    }
+    if (SUtil.isEmpty(this.exportfilename)) {
+      throw new Exception(Constants.TOOL_NAME + " parameter: " + "exportfilename attribute cannot be empty.");
+    }
+    this.exportFile = new File(this.baseDir, this.exportfilename);
 
   }
 

@@ -89,7 +89,7 @@ public abstract class HotRodGenerator {
   protected LinkedHashSet<TableDataSetMetadata> tables = null;
   protected LinkedHashSet<TableDataSetMetadata> views = null;
   protected LinkedHashSet<EnumDataSetMetadata> enums = null;
-  protected LinkedHashSet<SelectDataSetMetadata> selects = null;
+  protected LinkedHashSet<SelectDataSetMetadata> selects = null; // obsolete
   protected LinkedHashSet<ExecutorDAOMetadata> executors = null;
 
   private VORegistry voRegistry = new VORegistry();
@@ -1079,6 +1079,10 @@ public abstract class HotRodGenerator {
 
   public DatabaseAdapter getAdapter() {
     return this.adapter;
+  }
+
+  public HotRodConfigTag getConfig() {
+    return this.config;
   }
 
   public JdbcDatabase getJdbcDatabase() {

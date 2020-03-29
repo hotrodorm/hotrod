@@ -1,9 +1,8 @@
 package org.hotrod.config;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -12,25 +11,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.JdbcTypes.JDBCType;
-import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.OGNLPublicMemberAccess;
-import org.nocrala.tools.database.tartarus.connectors.DatabaseConnector.ColumnNature;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
-import org.nocrala.tools.database.tartarus.core.JdbcTable;
-import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 
 import ognl.OgnlContext;
 import ognl.OgnlException;
 
-@XmlRootElement(name = "table")
+@XmlRootElement(name = "type-solver")
 public class TypeSolverTag extends AbstractConfigurationTag {
 
   private static final long serialVersionUID = 1L;
@@ -43,7 +36,9 @@ public class TypeSolverTag extends AbstractConfigurationTag {
 
   private List<TypeSolverWhenTag> whens = new ArrayList<TypeSolverWhenTag>();
 
-  private OgnlContext context; // = new OgnlContext(null, null, new OGNLPublicMemberAccess());
+  private OgnlContext context;
+
+  private TreeSet<RetrievedColumn> retrievedColumns = new TreeSet<>();
 
   // Constructor
 
@@ -76,25 +71,8 @@ public class TypeSolverTag extends AbstractConfigurationTag {
 
     // Create a scope (aka "root object")
 
-    Map<String, Object> scope = new HashMap<>();
-    if (cm != null) {
-      scope.put("name", cm.getColumnName());
-      scope.put("tableName", cm.getTableName());
-      scope.put("typeName", cm.getTypeName());
-      scope.put("dataType", cm.getDataType());
-      scope.put("columnSize", cm.getColumnSize());
-      scope.put("decimalDigits", cm.getDecimalDigits());
-      scope.put("columnDefault", cm.getColumnDefault());
-      scope.put("autogenerationType", cm.getAutogenerationType());
-      scope.put("belongsToPK", cm.belongsToPK());
-      scope.put("isVersionControlColumn", cm.isVersionControlColumn());
-    }
-    if (c != null) {
-      scope.put("nature", c.getNature());
-      scope.put("ordinalPosition", c.getOrdinalPosition());
-      scope.put("nullable", c.isNullable());
-      scope.put("native", c.getNative());
-    }
+    RetrievedColumn rc = new RetrievedColumn(cm, c);
+    this.retrievedColumns.add(rc);
 
     // Find the first matching rule
 
@@ -106,7 +84,7 @@ public class TypeSolverTag extends AbstractConfigurationTag {
         log.info("this.context=" + this.context);
         log.info("cm=" + cm);
         log.info("c=" + c);
-        result = w.getTestExpression().getValue(this.context, scope);
+        result = w.getTestExpression().getValue(this.context, rc);
         Boolean test = (Boolean) result;
         if (test == null) {
           throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '" + w.getTest()
@@ -165,6 +143,12 @@ public class TypeSolverTag extends AbstractConfigurationTag {
   @Override
   public String getInternalCaption() {
     return this.getTagName();
+  }
+
+  // Column properties
+
+  public TreeSet<RetrievedColumn> getRetrievedColumns() {
+    return retrievedColumns;
   }
 
 }

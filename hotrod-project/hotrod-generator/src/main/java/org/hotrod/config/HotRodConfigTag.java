@@ -36,7 +36,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
   private File f;
 
   private GeneratorsTag generatorsTag = null;
-  private TypeSolverTag typeSolverTag = null;
+  private TypeSolverTag typeSolverTag = new TypeSolverTag(); // default that register columns
 
   private List<ConverterTag> converters = new ArrayList<ConverterTag>();
   private Map<String, ConverterTag> convertersByName = null;

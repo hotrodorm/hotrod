@@ -66,7 +66,7 @@ public class ColumnMetadata implements Serializable {
   public ColumnMetadata(final DataSetMetadata dataSet, final JdbcColumn c, final DatabaseAdapter adapter,
       final ColumnTag columnTag, final boolean isVersionControlColumn, final boolean belongsToPK,
       final TypeSolverTag typeSolverTag) throws UnresolvableDataTypeException, InvalidIdentifierException {
-    log.info("init c=" + c);
+    log.debug("init c=" + c);
     this.dataSet = dataSet;
     this.c = c;
     this.columnName = c.getName();
@@ -99,10 +99,12 @@ public class ColumnMetadata implements Serializable {
 
   public static PropertyType resolveJavaType(final ColumnMetadata cm, final ColumnTag columnTag, final JdbcColumn c,
       final TypeSolverTag typeSolverTag, final DatabaseAdapter adapter) throws UnresolvableDataTypeException {
-    log.info("columnTag=" + columnTag);
+    log.debug("columnTag=" + columnTag);
     if (columnTag != null) {
-      log.info("columnTag.getJdbcColumn()=" + columnTag.getJdbcColumn());
+      log.debug("columnTag.getJdbcColumn()=" + columnTag.getJdbcColumn());
     }
+
+    PropertyType typeSolverType = typeSolverTag.resolveType(cm, c);
 
     if (columnTag != null && (columnTag.getJavaType() != null || columnTag.getConverterTag() != null)) {
 
@@ -137,12 +139,8 @@ public class ColumnMetadata implements Serializable {
 
       // Try the <type-solver> rules
 
-      if (typeSolverTag != null) {
-        PropertyType t = typeSolverTag.resolveType(cm, c);
-        log.info("t=" + t);
-        if (t != null) {
-          return t;
-        }
+      if (typeSolverType != null) {
+        return typeSolverType;
       }
 
       // Otherwise, use the default type from the database adapter

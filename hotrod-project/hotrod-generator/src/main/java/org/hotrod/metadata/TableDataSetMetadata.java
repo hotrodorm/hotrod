@@ -170,6 +170,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
             + "'.";
         throw new InvalidConfigurationFileException(vct, msg, msg);
       }
+      log.debug("### VERSION CONTROL COLUMN SETTING: c=" + vcm.getColumnName() + " c=" + System.identityHashCode(vcm));
       vcm.setVersionControlColumn(true);
       this.vcm = new VersionControlMetadata(this, vct, vcm, this.adapter);
     }
