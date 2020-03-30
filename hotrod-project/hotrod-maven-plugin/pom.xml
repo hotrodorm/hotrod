@@ -51,6 +51,44 @@
       <version>3.0.5</version>
     </dependency>
 
+    <!-- Re-adding JAXB (RI) dependency (with compile scope), so any Java 9+ client will work -->
+
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.3.1</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <version>1.1</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>2.3.1</version>
+      <scope>compile</scope>
+    </dependency>    
+
+    <!-- Re-adding Apache POI (with compile scope) to generate XLSX -->
+
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>4.1.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>4.1.2</version>
+      <scope>compile</scope>
+    </dependency>
+
     <!-- Unit Testing -->
 
     <dependency>
