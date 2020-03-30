@@ -16,6 +16,7 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.CachedMetadata;
+import org.hotrod.generator.Feedback;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.NamePackageResolver;
 import org.hotrod.generator.mybatis.MyBatisGenerator;
@@ -149,9 +150,9 @@ public class MyBatisTag extends AbstractGeneratorTag implements NamePackageResol
 
   @Override
   public HotRodGenerator instantiateGenerator(final CachedMetadata cachedMetadata, DatabaseLocation loc,
-      HotRodConfigTag config, DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter)
-      throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
-    return new MyBatisGenerator(cachedMetadata, loc, config, displayMode, incrementalMode, adapter);
+      HotRodConfigTag config, DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter,
+      final Feedback feedback) throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
+    return new MyBatisGenerator(cachedMetadata, loc, config, displayMode, incrementalMode, adapter, feedback);
   }
 
   // Merging logic

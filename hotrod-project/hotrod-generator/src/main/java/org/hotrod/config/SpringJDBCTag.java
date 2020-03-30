@@ -12,6 +12,7 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.CachedMetadata;
+import org.hotrod.generator.Feedback;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.springjdbc.SpringJDBCGenerator;
 import org.hotrod.utils.Compare;
@@ -83,11 +84,11 @@ public class SpringJDBCTag extends AbstractGeneratorTag {
   @Override
   public HotRodGenerator instantiateGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc,
       final HotRodConfigTag config, final DisplayMode displayMode, final boolean incrementalMode,
-      final DatabaseAdapter adapter)
+      final DatabaseAdapter adapter, final Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
     // Ignore cachedMetadata & selectedTags (for now)
     config.markGenerate();
-    return new SpringJDBCGenerator(loc, config, displayMode, adapter);
+    return new SpringJDBCGenerator(loc, config, displayMode, adapter, feedback);
   }
 
   @Override

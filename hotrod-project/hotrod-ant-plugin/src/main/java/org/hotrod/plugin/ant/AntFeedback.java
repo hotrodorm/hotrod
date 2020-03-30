@@ -2,7 +2,7 @@ package org.hotrod.plugin.ant;
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
-import org.hotrod.plugin.Feedback;
+import org.hotrod.generator.Feedback;
 
 public class AntFeedback implements Feedback {
 

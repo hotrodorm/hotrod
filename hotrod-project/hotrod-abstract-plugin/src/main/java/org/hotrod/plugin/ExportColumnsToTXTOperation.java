@@ -26,6 +26,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.generator.CachedMetadata;
+import org.hotrod.generator.Feedback;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.runtime.BuildInformation;
 import org.hotrod.utils.EUtils;
@@ -143,7 +144,7 @@ public class ExportColumnsToTXTOperation {
     try {
       CachedMetadata cachedMetadata = new CachedMetadata();
       HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
-          config, this.displayMode, false, adapter);
+          config, this.displayMode, false, adapter, feedback);
       log.debug("Generator instantiated.");
 
       g.prepareGeneration();

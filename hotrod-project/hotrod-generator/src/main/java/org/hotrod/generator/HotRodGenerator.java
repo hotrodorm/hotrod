@@ -82,6 +82,7 @@ public abstract class HotRodGenerator {
   protected DisplayMode displayMode;
 
   protected DatabaseAdapter adapter = null;
+  protected Feedback feedback;
   protected JdbcDatabase db = null;
 
   protected CachedMetadata cachedMetadata = null;
@@ -97,8 +98,8 @@ public abstract class HotRodGenerator {
   private Long lastLog = null;
 
   public HotRodGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation dloc, final HotRodConfigTag config,
-      final DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter)
-      throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
+      final DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter,
+      final Feedback feedback) throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
 
     log.debug(">>> HG 1 cachedMetadata=" + cachedMetadata);
     log.debug(">>> HG 1 cachedMetadata.getSelectMetadataCache()=" + cachedMetadata.getSelectMetadataCache());
@@ -108,6 +109,7 @@ public abstract class HotRodGenerator {
     this.displayMode = displayMode;
     this.cachedMetadata = cachedMetadata;
     this.adapter = adapter;
+    this.feedback = feedback;
 
     if (!incrementalMode) {
       config.markGenerateTree();
@@ -1065,8 +1067,8 @@ public abstract class HotRodGenerator {
 
   // Utilities
 
-  public static void display(final String txt) {
-    System.out.println(SUtil.isEmpty(txt) ? " " : txt);
+  public void display(final String txt) {
+    this.feedback.info(SUtil.isEmpty(txt) ? " " : txt);
   }
 
   // VO Registry

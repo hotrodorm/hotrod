@@ -23,6 +23,7 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.DAOType;
+import org.hotrod.generator.Feedback;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
@@ -39,9 +40,9 @@ public class SpringJDBCGenerator extends HotRodGenerator {
   private SpringJDBCConfiguration springJDBCConfiguration;
 
   public SpringJDBCGenerator(final DatabaseLocation loc, final HotRodConfigTag config, final DisplayMode displayMode,
-      final DatabaseAdapter adapter)
+      final DatabaseAdapter adapter, final Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
-    super(null, loc, config, displayMode, false, adapter);
+    super(null, loc, config, displayMode, false, adapter, feedback);
   }
 
   @Override

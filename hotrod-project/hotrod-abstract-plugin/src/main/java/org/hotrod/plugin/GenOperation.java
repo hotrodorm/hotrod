@@ -22,6 +22,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.generator.CachedMetadata;
+import org.hotrod.generator.Feedback;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.LiveGenerator;
@@ -77,8 +78,8 @@ public class GenOperation {
   public void execute(final Feedback feedback) throws Exception {
     log.debug("init");
 
-    feedback.info(
-        Constants.TOOL_NAME + " version " + BuildInformation.VERSION + " (build " + BuildInformation.BUILD_ID + ") - Generate");
+    feedback.info(Constants.TOOL_NAME + " version " + BuildInformation.VERSION + " (build " + BuildInformation.BUILD_ID
+        + ") - Generate");
 
     validateParameters();
 
@@ -133,7 +134,7 @@ public class GenOperation {
     try {
       CachedMetadata cachedMetadata = new CachedMetadata();
       HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
-          config, this.displayMode, false, adapter);
+          config, this.displayMode, false, adapter, feedback);
       log.debug("Generator instantiated.");
 
       try {

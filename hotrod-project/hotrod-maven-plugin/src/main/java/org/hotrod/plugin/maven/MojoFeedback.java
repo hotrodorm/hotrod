@@ -1,7 +1,7 @@
 package org.hotrod.plugin.maven;
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.hotrod.plugin.Feedback;
+import org.hotrod.generator.Feedback;
 
 public class MojoFeedback implements Feedback {
 

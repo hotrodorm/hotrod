@@ -72,7 +72,9 @@ public class TypeSolverTag extends AbstractConfigurationTag {
     // Create a scope (aka "root object")
 
     RetrievedColumn rc = new RetrievedColumn(cm, c);
-    this.retrievedColumns.add(rc);
+    if (c != null) {
+      this.retrievedColumns.add(rc);
+    }
 
     // Find the first matching rule
 

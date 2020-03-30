@@ -18,6 +18,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.DAOType;
+import org.hotrod.generator.Feedback;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.LiveGenerator;
@@ -56,9 +57,9 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
 
   public MyBatisSpringGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc,
       final HotRodConfigTag config, final DisplayMode displayMode, final boolean incrementalMode,
-      final DatabaseAdapter adapter)
+      final DatabaseAdapter adapter, final Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
-    super(cachedMetadata, loc, config, displayMode, incrementalMode, adapter);
+    super(cachedMetadata, loc, config, displayMode, incrementalMode, adapter, feedback);
   }
 
   @Override

@@ -1,4 +1,4 @@
-package org.hotrod.plugin;
+package org.hotrod.generator;
 
 public interface Feedback {
 
