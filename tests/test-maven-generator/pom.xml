@@ -143,6 +143,8 @@
             <version>3.1.0-SNAPSHOT</version>
             <configuration>
               <localproperties>testdata/postgresql-11.1/testing.properties</localproperties>
+              <txtexportfile>./testdata/postgresql-11.1/export-columns.txt</txtexportfile>
+              <xlsxexportfile>./testdata/postgresql-11.1/export-columns.xlsx</xlsxexportfile>
             </configuration>
             <dependencies>
               <dependency>

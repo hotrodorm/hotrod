@@ -8,12 +8,12 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.hotrod.plugin.ExportColumnsToTXTOperation;
+import org.hotrod.plugin.ExportColumnsToXLSXOperation;
 
-@Mojo(name = "export-columns-txt", defaultPhase = LifecyclePhase.COMPILE)
-public class ExportColumnsToTXTMojo extends AbstractMojo {
+@Mojo(name = "export-columns-xlsx", defaultPhase = LifecyclePhase.COMPILE)
+public class ExportColumnsToXLSXMojo extends AbstractMojo {
 
-  private static transient final Logger log = LogManager.getLogger(ExportColumnsToTXTMojo.class);
+  private static transient final Logger log = LogManager.getLogger(ExportColumnsToXLSXMojo.class);
 
   // Note: 1) Each property must be annotated by @Parameter. 2) The property
   // attribute -- if declared -- must be the exact same name as the Java member
@@ -53,8 +53,8 @@ public class ExportColumnsToTXTMojo extends AbstractMojo {
   @Parameter(property = "display", defaultValue = "list")
   private String display = null;
 
-  @Parameter(property = "txtexportfile")
-  private String txtexportfile = null;
+  @Parameter(property = "xlsxexportfile")
+  private String xlsxexportfile = null;
 
   // Project information
 
@@ -66,11 +66,11 @@ public class ExportColumnsToTXTMojo extends AbstractMojo {
   public void execute() throws MojoExecutionException {
     log.debug("init");
 
-    log.info("this.txtexportfile=" + this.txtexportfile);
+    log.debug("this.localproperties=" + this.localproperties);
 
-    ExportColumnsToTXTOperation op = new ExportColumnsToTXTOperation(this.project.getBasedir(), this.configfile,
+    ExportColumnsToXLSXOperation op = new ExportColumnsToXLSXOperation(this.project.getBasedir(), this.configfile,
         this.generator, this.localproperties, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword,
-        this.jdbccatalog, this.jdbcschema, this.facets, this.display, this.txtexportfile);
+        this.jdbccatalog, this.jdbcschema, this.facets, this.display, this.xlsxexportfile);
 
     try {
       op.execute(new MojoFeedback(this));
