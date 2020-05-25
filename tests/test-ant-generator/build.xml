@@ -1,0 +1,240 @@
+<?xml version="1.0"?>
+<project name="hotrod-ant-test" basedir=".">
+
+  <property name="projectName" value="hotrod" />
+
+  <loadproperties srcFile="build.properties" />
+
+  <property name="test.src.dir" value="${db.src.dir}/javatest-mb-spring" />
+  <property name="daos.src.dir" value="gen/hotrod/daos" />
+
+  <property name="lib.dir" value="lib" />
+  <property name="build.dir" value="build" />
+  <property name="test.build.dir" value="build/test" />
+  <property name="dist.dir" value="dist" />
+
+  <target name="-init">
+    <mkdir dir="${test.build.dir}" />
+    <!--
+    <loadproperties srcfile="${db.src.dir}/config.properties" />
+    -->
+  </target>
+
+  <target name="clean" depends="-init">
+    <delete includeemptydirs="true">
+      <fileset dir="${build.dir}" includes="**/*" />
+    </delete>
+    <antcall target="-init" />
+  </target>
+
+  <target name="compile" depends="-init">
+    <javac destdir="${test.build.dir}"
+           debug="true"
+           deprecation="true"
+           source="1.6"
+           target="1.6"
+           includeantruntime="false"
+           includes="**/*.java"
+           fork="yes"
+           executable="${javac.compiler.exec}"
+           compiler="${java.compiler}">
+      <src path="${daos.src.dir}" />
+      <src path="${test.src.dir}" />
+      <classpath>
+        <pathelement path="${daos.build.dir}" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+
+        <fileset dir="lib/spring2">
+          <include name="**/*.jar" />
+        </fileset>
+
+        <!--pathelement location="${lib.dir}/jdbc-drivers/ojdbc6.jar" /-->
+        <!--pathelement location="${lib.dir}/jdbc-drivers/h2-1.3.176.jar" /-->
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="compile-gp" depends="-init">
+    <javac destdir="${test.build.dir}"
+           debug="true"
+           deprecation="true"
+           source="1.6"
+           target="1.6"
+           includeantruntime="false"
+           includes="**/*.java"
+           fork="yes"
+           executable="${javac.compiler.exec}"
+           compiler="${java.compiler}">
+      <src path="${daos.src.dir}" />
+      <src path="${test.src.dir}-gp" />
+      <classpath>
+        <pathelement path="${daos.build.dir}" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+        <!--pathelement location="${lib.dir}/jdbc-drivers/ojdbc6.jar" /-->
+        <!--pathelement location="${lib.dir}/jdbc-drivers/h2-1.3.176.jar" /-->
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="build" depends="compile" />
+
+  <target name="clean-build" depends="clean, build" />
+
+  <target name="test-transactions" depends="clean-build">
+    <java classname="fulltest.TransactionTests">
+      <classpath>
+        <pathelement path="${test.build.dir}" />
+        <pathelement path="gen/hotrod/mappers" />
+        <pathelement path="${db.src.dir}/.." />
+        <pathelement path="${test.src.dir}/../metadata" />
+        <pathelement location="${db.src.dir}/${driverclasspath}" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="test-types" depends="clean-build">
+    <java classname="tests.TypesTest" fork="yes">
+      <classpath>
+        <pathelement path="${test.build.dir}" />
+        <pathelement path="gen/hotrod/mappers" />
+        <pathelement path="${db.src.dir}" />
+        <pathelement location="${db.src.dir}/${driverclasspath}" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="test-insert" depends="clean-build">
+    <java classname="tests.InsertTests" fork="yes">
+      <classpath>
+        <pathelement path="${test.build.dir}" />
+        <pathelement path="gen/hotrod/mappers" />
+        <pathelement path="${db.src.dir}" />
+        <pathelement location="${db.src.dir}/${driverclasspath}" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="test-mb-spring" depends="clean-build">
+    <!-- 
+    <java classname="hotrod.test.Examples" fork="yes"> 
+    <java classname="examples.livesql.AllExamples" fork="yes">
+    -->
+    <java classname="hotrod.test.Examples" fork="yes">
+      <classpath>
+        <pathelement path="${test.build.dir}" />
+        <pathelement path="gen/hotrod/mappers" />
+        <pathelement path="${db.src.dir}" />
+        <pathelement location="${db.src.dir}/${driverclasspath}" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
+        <!--
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        -->
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+
+        <fileset dir="lib/spring2">
+          <include name="**/*.jar" />
+        </fileset>
+
+      </classpath>
+    </java>
+  </target>
+
+  <target name="test-update-views" depends="clean-build">
+    <java classname="tests.UpdateViewsTests" fork="yes">
+      <classpath>
+        <pathelement path="${test.build.dir}" />
+        <pathelement path="gen/hotrod/mappers" />
+        <pathelement path="${db.src.dir}" />
+        <pathelement location="${db.src.dir}/${driverclasspath}" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="test-version-control" depends="clean-build">
+    <java classname="tests.VersionControlTests" fork="yes">
+      <classpath>
+        <pathelement path="${test.build.dir}" />
+        <pathelement path="gen/hotrod/mappers" />
+        <pathelement path="${db.src.dir}" />
+        <pathelement location="${db.src.dir}/${driverclasspath}" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="test-select" depends="clean-build">
+    <java classname="tests.SelectTests" fork="yes">
+      <classpath>
+        <pathelement path="${test.build.dir}" />
+        <pathelement path="gen/hotrod/mappers" />
+        <pathelement path="${db.src.dir}" />
+        <pathelement path="${test.src.dir}/../metadata" />
+        <pathelement location="${db.src.dir}/${driverclasspath}" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+        <pathelement location="lib/apache-commons/commons-jexl3-3.1.jar" />
+        <pathelement location="lib/apache-commons/commons-logging-1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="test-gp" depends="clean, compile-gp">
+    <java classname="tests.GPTests" fork="yes">
+      <classpath>
+        <pathelement path="${test.build.dir}" />
+        <pathelement path="gen/hotrod/mappers" />
+        <pathelement path="${db.src.dir}" />
+        <pathelement path="${test.src.dir}/../metadata" />
+        <pathelement location="${db.src.dir}/${driverclasspath}" />
+        <pathelement location="${dist.dir}/${projectName}-runtime-${version}.jar" />
+        <pathelement location="${lib.dir}/mybatis-${mybatis.version}.jar" />
+        <pathelement location="${lib.dir}/log4j-1.2.17.jar" />
+        <pathelement location="lib/apache-commons/commons-jexl3-3.1.jar" />
+        <pathelement location="lib/apache-commons/commons-logging-1.2.jar" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="purge" depends="-init">
+    <taskdef name="hotrodpurge" classname="org.hotrod.plugin.ant.PurgeAntTask">
+      <classpath>
+        <pathelement location="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod-generator/${version}/hotrod-generator-${version}.jar" />
+        <pathelement location="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod-abstract-plugin/${version}/hotrod-abstract-plugin-${version}.jar" />
+        <pathelement location="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod-ant-plugin/${version}/hotrod-ant-plugin-${version}.jar" />
+        <pathelement location="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod-utils/${version}/hotrod-utils-${version}.jar" />
+        <pathelement location="${user.home}/.m2/repository/org/hotrodorm/hotrod/hotrod/${version}/hotrod-${version}.jar" />
+
+        <pathelement location="${user.home}/.m2/repository/ognl/ognl/3.2.14/ognl-3.2.14.jar" />
+
+        <pathelement location="${user.home}/.m2/repository/org/apache/logging/log4j/log4j-api/2.12.1/log4j-api-2.12.1.jar" />
+        <pathelement location="${user.home}/.m2/repository/org/apache/logging/log4j/log4j-core/2.12.1/log4j-core-2.12.1.jar" />
+        <pathelement location="${user.home}/.m2/repository/org/nocrala/tools/database/tartarus/${tartarus.version}/tartarus-${tartarus.version}.jar" />
+
+        <pathelement location="${jdbcdriverclasspath}" />
+      </classpath>
+    </taskdef>
+
+    <hotrodpurge localproperties="testing.properties" />
+
+  </target>
+
+</project>
