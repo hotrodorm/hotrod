@@ -60,7 +60,9 @@
   </properties>
 
   <scm>
-    <url>https://git.code.sf.net/p/hotrod</url>
+    <developerConnection>scm:git:ssh://olenus@git.code.sf.net/p/hotrod/hotrod</developerConnection>
+    <url>https://git.code.sf.net/p/hotrod/hotrod</url>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
