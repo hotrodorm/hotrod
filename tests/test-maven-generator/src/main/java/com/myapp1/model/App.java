@@ -27,4 +27,9 @@ public class App {
     System.out.println("[ Completed ]");
   }
 
+  public void retrieveBigAccounts() {
+    DataServices dataSQL = SpringBeanRetriever.getBean("dataServices");
+    dataSQL.retrieveBigAccounts();
+  }
+
 }

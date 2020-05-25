@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrodorm.hotrod.utils.HexaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -89,6 +90,36 @@ public class DataServices {
   public void runLiveSQL2() throws SQLException {
 
     AccountTable a = AccountDAO.newTable("a");
+    AccountTable b = AccountDAO.newTable("b");
+    // ClientTable c = ClientDAO.newTable("c");
+
+    List<Map<String, Object>> rows = this.sql //
+        .select(a.name, a.currentBalance) //
+        .from(a) //
+        // .unionAll(this.sql.select(b.name,
+        // b.currentBalance).from(b).where(b.name.like("CHK%"))) //
+        // .orderBy(a.currentBalance.asc())
+        .limit(2) //
+        .execute();
+
+    if (rows != null) {
+      for (Map<String, Object> r : rows) {
+        System.out.println("row: " + r);
+      }
+    }
+
+  }
+
+  public void retrieveBigAccounts() {
+
+    AccountTable a = AccountDAO.newTable("a");
+
+    ExecutableSelect<?> te = this.sql.select( //
+        a.name, //
+        a.currentBalance, //
+        a.currentBalance.plus(this.sql.castNumber(this.sql.caseWhen(a.type.eq("CHK"), 100).end())).as("adjustedBalance") //
+    ).from(a);
+
     AccountTable b = AccountDAO.newTable("b");
     // ClientTable c = ClientDAO.newTable("c");
 

@@ -6,11 +6,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.hotrod.plugin.GenOperation;
+import org.hotrod.plugin.PurgeOperation;
 
-public class GenAntTask extends Task {
+public class PurgeAntTask extends Task {
 
-  private static transient final Logger log = LogManager.getLogger(GenAntTask.class);
+  private static transient final Logger log = LogManager.getLogger(PurgeAntTask.class);
 
   private String configfile = null;
   private String generator = null;
@@ -22,16 +22,13 @@ public class GenAntTask extends Task {
   private String jdbcpassword = null;
   private String jdbccatalog = null;
   private String jdbcschema = null;
-  private String display = null;
-  private String facets = null;
 
   @Override
   public void execute() {
     log.debug("init");
 
-    GenOperation op = new GenOperation(new File("."), this.configfile, this.generator, this.localproperties,
-        this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema,
-        this.facets, this.display);
+    PurgeOperation op = new PurgeOperation(new File("."), this.configfile, this.generator, this.localproperties,
+        this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema);
 
     try {
       op.execute(new AntFeedback(this));
@@ -77,14 +74,6 @@ public class GenAntTask extends Task {
 
   public void setJdbcschema(final String jdbcschema) {
     this.jdbcschema = jdbcschema;
-  }
-
-  public void setDisplay(final String display) {
-    this.display = display;
-  }
-
-  public void setFacets(final String facets) {
-    this.facets = facets;
   }
 
 }

@@ -6,11 +6,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.hotrod.plugin.GenOperation;
+import org.hotrod.plugin.ExportColumnsToXLSXOperation;
 
-public class GenAntTask extends Task {
+public class ExportColumnsToXLSAntTask extends Task {
 
-  private static transient final Logger log = LogManager.getLogger(GenAntTask.class);
+  private static transient final Logger log = LogManager.getLogger(ExportColumnsToXLSAntTask.class);
 
   private String configfile = null;
   private String generator = null;
@@ -22,16 +22,18 @@ public class GenAntTask extends Task {
   private String jdbcpassword = null;
   private String jdbccatalog = null;
   private String jdbcschema = null;
+
   private String display = null;
   private String facets = null;
+  private String exportfilename = null;
 
   @Override
   public void execute() {
     log.debug("init");
 
-    GenOperation op = new GenOperation(new File("."), this.configfile, this.generator, this.localproperties,
-        this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema,
-        this.facets, this.display);
+    ExportColumnsToXLSXOperation op = new ExportColumnsToXLSXOperation(new File("."), this.configfile, this.generator,
+        this.localproperties, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword,
+        this.jdbccatalog, this.jdbcschema, this.display, this.facets, this.exportfilename);
 
     try {
       op.execute(new AntFeedback(this));
@@ -85,6 +87,10 @@ public class GenAntTask extends Task {
 
   public void setFacets(final String facets) {
     this.facets = facets;
+  }
+
+  public void setExportfilename(final String exportfilename) {
+    this.exportfilename = exportfilename;
   }
 
 }

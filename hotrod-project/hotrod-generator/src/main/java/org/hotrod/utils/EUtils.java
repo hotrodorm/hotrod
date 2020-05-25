@@ -8,10 +8,12 @@ public class EUtils {
 
   private static transient final Logger log = LogManager.getLogger(EUtils.class);
 
+  @Deprecated
   public static String renderMessages(final Throwable t) {
     return renderMessages(t, "", "", ": ");
   }
 
+  @Deprecated
   public static String renderMessages(final Throwable t, final String prefix, final String suffix,
       final String separator) {
     ListWriter w = new ListWriter(prefix, suffix, separator);

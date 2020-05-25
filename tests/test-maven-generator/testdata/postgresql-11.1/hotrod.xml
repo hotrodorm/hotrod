@@ -9,7 +9,7 @@
         abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" dao-prefix="" dao-suffix="DAO" />
       <mappers gen-base-dir="src/main/resources" relative-dir="mappers" />
       <mybatis-configuration-template file="mybatis-config-template.xml" />
-      <select-generation temp-view-base-name="mybatis_temp_view" />
+      <select-generation temp-view-base-name="hotrodtempview" />
     </mybatis-spring>
   </generators>
 

@@ -20,7 +20,7 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
 
   private static final Logger log = LogManager.getLogger(SelectGenerationTag.class);
 
-  private static final String VIEW_NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9_]*";
+  private static final String VIEW_NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9]*";
   private static final String ATT_NAME = "temp-view-base-name";
 
   // Properties
@@ -59,11 +59,10 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
     if (!this.tempViewBaseName.matches(VIEW_NAME_PATTERN)) {
       throw new InvalidConfigurationFileException(this, //
           "Invalid attribute '" + ATT_NAME + "': when specified it must start with a letter, "
-              + "and continue with one or more " + "letters, digits, or undersore characters", //
+              + "and continue with one or more " + "letters, or digits", //
           "Attribute '" + ATT_NAME + "' of tag <" + super.getTagName()
               + "> must be a valid view name. Specified value is '" + this.tempViewBaseName
-              + "' but must start with a letter, " + "and continue with one or more "
-              + "letters, digits, or undersore characters.");
+              + "' but must start with a letter, " + "and continue with one or more " + "letters, or digits.");
     }
 
   }
@@ -72,6 +71,10 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
 
   public synchronized String getNextTempViewName() {
     return this.tempViewBaseName + (this.folio++);
+  }
+
+  public String getTempViewBaseName() {
+    return this.tempViewBaseName;
   }
 
   // Merging logic
