@@ -76,7 +76,7 @@ public abstract class DatabaseAdapter implements Serializable {
     this.dataTypes = DataType.retrieveDataTypes(this.databaseMedaData);
   }
 
-  /**
+  /*
    * <pre>
    * 
    *   TableTag  -* JdbcTable
