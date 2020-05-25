@@ -22,7 +22,7 @@
 
   <dependencies>
 
-    <!-- HotRod Runtime -->
+    <!-- HotRod -->
 
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>

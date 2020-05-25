@@ -8,9 +8,9 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.hotrod.plugin.ExportColumnsToXLSXOperation;
 
-public class ExportColumnsToXLSAntTask extends Task {
+public class ExportColumnsToXLSXAntTask extends Task {
 
-  private static transient final Logger log = LogManager.getLogger(ExportColumnsToXLSAntTask.class);
+  private static transient final Logger log = LogManager.getLogger(ExportColumnsToXLSXAntTask.class);
 
   private String configfile = null;
   private String generator = null;

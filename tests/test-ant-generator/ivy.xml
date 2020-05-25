@@ -1,0 +1,15 @@
+<ivy-module version="2.0">
+  <info organisation="com.mycompany.myapp" module="project1" />
+  <dependencies>
+    <dependency org="org.nocrala.tools.lang.collector" name="list-collector" rev="1.0.0" />
+    <dependency org="org.nocrala.tools.texttablefmt" name="text-table-formatter" rev="1.2.4" />
+    <dependency org="ognl" name="ognl" rev="3.2.14" />
+    <dependency org="org.apache.poi" name="poi" rev="4.1.2" />
+    <dependency org="org.apache.poi" name="poi-ooxml" rev="4.1.2" />
+    <!-- 
+    <dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.12.1" />
+    <dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.12.1" />
+    -->    
+  </dependencies>
+</ivy-module>
+
