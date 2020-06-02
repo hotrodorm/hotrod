@@ -20,6 +20,8 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
 
   private static final Logger log = LogManager.getLogger(SelectGenerationTag.class);
 
+  public static final String DEFAULT_TEMP_VIEW_NAME = "hotrodtempview";
+
   private static final String VIEW_NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9]*";
   private static final String ATT_NAME = "temp-view-base-name";
 

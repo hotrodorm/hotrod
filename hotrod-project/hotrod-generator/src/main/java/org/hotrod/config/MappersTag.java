@@ -21,13 +21,15 @@ public class MappersTag extends AbstractConfigurationTag {
 
   private static final Logger log = LogManager.getLogger(MappersTag.class);
 
+  private static final String DEFAULT_BASE_DIR = "src/main/resources";
+
   private static final String PRIMITIVES_MAPPERS_DIR = "primitives";
   private static final String CUSTOM_MAPPERS_DIR = "custom";
 
   // Properties
 
-  private String sGenBaseDir = null;
-  private String sRelativeDir = null;
+  private String sBaseDir = null;
+  private String sDir = null;
 
   private File baseDir;
   private File fullRelativeDir;
@@ -44,52 +46,54 @@ public class MappersTag extends AbstractConfigurationTag {
 
   // JAXB Setters
 
-  @XmlAttribute(name = "gen-base-dir")
-  public void setGenBaseDir(final String genBaseDir) {
-    this.sGenBaseDir = genBaseDir;
+  @XmlAttribute(name = "base-dir")
+  public void setBaseDir(final String sBaseDir) {
+    this.sBaseDir = sBaseDir;
   }
 
-  @XmlAttribute(name = "relative-dir")
-  public void setRelativeDir(final String sRelativeDir) {
-    this.sRelativeDir = sRelativeDir;
+  @XmlAttribute(name = "dir")
+  public void setDir(final String sDir) {
+    this.sDir = sDir;
   }
 
   // Behavior
 
   public void validate(final File basedir) throws InvalidConfigurationFileException {
 
-    // gen-base-dir
+    // base-dir
 
-    if (SUtil.isEmpty(this.sGenBaseDir)) {
+    if (this.sBaseDir == null) {
+      this.sBaseDir = DEFAULT_BASE_DIR;
+    }
+    if (SUtil.isEmpty(this.sBaseDir)) {
       throw new InvalidConfigurationFileException(this, //
-          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> cannot be empty", //
-          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> cannot be empty. "
+          "Attribute 'base-dir' of tag <" + super.getTagName() + "> cannot be empty", //
+          "Attribute 'base-dir' of tag <" + super.getTagName() + "> cannot be empty. "
               + "Must specify the base dir to generate the MyBatis mapper files.");
     }
-    this.baseDir = new File(basedir, this.sGenBaseDir);
+    this.baseDir = new File(basedir, this.sBaseDir);
     if (!this.baseDir.exists()) {
       throw new InvalidConfigurationFileException(this, //
-          "Attribute 'gen-base-dir' points to a non existent directory:\n  " + this.baseDir.getPath(), //
-          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> with value '" + this.sGenBaseDir
+          "Attribute 'base-dir' points to a non existent directory:\n  " + this.baseDir.getPath(), //
+          "Attribute 'base-dir' of tag <" + super.getTagName() + "> with value '" + this.sBaseDir
               + "' points to a non existent directory.");
     }
     if (!this.baseDir.isDirectory()) {
       throw new InvalidConfigurationFileException(this, //
-          "Attribute 'gen-base-dir' must point to a directory but found other type of file:\n  "
-              + this.baseDir.getPath(), //
-          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> with value '" + this.sGenBaseDir
+          "Attribute 'base-dir' must point to a directory but found other type of file:\n  " + this.baseDir.getPath(), //
+          "Attribute 'base-dir' of tag <" + super.getTagName() + "> with value '" + this.sBaseDir
               + "' points to a file that is not a directory. ");
     }
 
-    // relative-dir
+    // dir
 
-    if (SUtil.isEmpty(this.sRelativeDir)) {
+    if (SUtil.isEmpty(this.sDir)) {
       throw new InvalidConfigurationFileException(this, //
-          "Attribute 'relative-dir' cannot be empty", //
-          "Attribute 'relative-dir' of tag <" + super.getTagName() + "> cannot be empty. "
+          "Attribute 'dir' cannot be empty", //
+          "Attribute 'dir' of tag <" + super.getTagName() + "> cannot be empty. "
               + "Must specify the base dir to generate the MyBatis mapper files.");
     }
-    this.fullRelativeDir = new File(this.baseDir, this.sRelativeDir);
+    this.fullRelativeDir = new File(this.baseDir, this.sDir);
     if (!this.fullRelativeDir.exists()) {
       if (!this.fullRelativeDir.mkdirs()) {
         throw new InvalidConfigurationFileException(this, //
@@ -100,9 +104,9 @@ public class MappersTag extends AbstractConfigurationTag {
       }
     } else if (!this.fullRelativeDir.isDirectory()) {
       throw new InvalidConfigurationFileException(this, //
-          "Attribute 'relative-dir' must point to a directory but found other type of file:\n  "
+          "Attribute 'dir' must point to a directory but found other type of file:\n  "
               + this.fullRelativeDir.getPath(), //
-          "Attribute 'relative-dir' of tag <" + super.getTagName() + "> with value '" + this.sRelativeDir
+          "Attribute 'dir' of tag <" + super.getTagName() + "> with value '" + this.sDir
               + "' points to an file system entry " + "that is not a directory. ");
     }
 
@@ -130,7 +134,7 @@ public class MappersTag extends AbstractConfigurationTag {
   }
 
   public File getRuntimeDir(final ClassPackage fragmentPackage) {
-    File relDir = new File(this.sRelativeDir);
+    File relDir = new File(this.sDir);
     if (fragmentPackage != null) {
       File fragmentDir = fragmentPackage.getPackageDir(relDir);
       File dir = new File(fragmentDir, PRIMITIVES_MAPPERS_DIR);
@@ -152,11 +156,11 @@ public class MappersTag extends AbstractConfigurationTag {
   }
 
   public String getRelativeCustomDir() {
-    return sRelativeDir + "/" + CUSTOM_MAPPERS_DIR;
+    return sDir + "/" + CUSTOM_MAPPERS_DIR;
   }
 
   public String getRelativePrimitivesDir() {
-    return sRelativeDir + "/" + PRIMITIVES_MAPPERS_DIR;
+    return sDir + "/" + PRIMITIVES_MAPPERS_DIR;
   }
 
   // Merging logic
@@ -172,8 +176,8 @@ public class MappersTag extends AbstractConfigurationTag {
       MappersTag f = (MappersTag) fresh;
       boolean different = !same(fresh);
 
-      this.sGenBaseDir = f.sGenBaseDir;
-      this.sRelativeDir = f.sRelativeDir;
+      this.sBaseDir = f.sBaseDir;
+      this.sDir = f.sDir;
       this.baseDir = f.baseDir;
       this.fullRelativeDir = f.fullRelativeDir;
       this.customDir = f.customDir;
@@ -189,8 +193,8 @@ public class MappersTag extends AbstractConfigurationTag {
   public boolean same(final AbstractConfigurationTag fresh) {
     try {
       MappersTag f = (MappersTag) fresh;
-      return Compare.same(this.sGenBaseDir, f.sGenBaseDir) && //
-          Compare.same(this.sRelativeDir, f.sRelativeDir);
+      return Compare.same(this.sBaseDir, f.sBaseDir) && //
+          Compare.same(this.sDir, f.sDir);
     } catch (ClassCastException e) {
       return false;
     }

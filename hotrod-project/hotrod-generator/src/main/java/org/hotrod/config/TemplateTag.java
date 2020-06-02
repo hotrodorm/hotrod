@@ -20,6 +20,8 @@ public class TemplateTag extends AbstractConfigurationTag {
 
   private static final Logger log = LogManager.getLogger(TemplateTag.class);
 
+  public static final String DEFAULT_TEMPLATE_FILE = "mybatis-template.xml";
+
   // Properties
 
   private String sFile = null;
@@ -55,15 +57,13 @@ public class TemplateTag extends AbstractConfigurationTag {
     this.file = new File(parentDir, this.sFile);
     if (!this.file.exists()) {
       throw new InvalidConfigurationFileException(this, //
-          "MyBatis configuration template file not found", //
-          "MyBatis configuration template file not found. " + "Attribute 'file' of tag <" + super.getTagName()
-              + "> with value '" + this.sFile + "' points to a non-existing file.");
+          "MyBatis configuration template file '" + this.file + "' not found", //
+          "MyBatis configuration template file '" + this.file + "' not found");
     }
     if (!this.file.isFile()) {
       throw new InvalidConfigurationFileException(this, //
-          "MyBatis configuration template file found, but it's not a regular file", //
-          "Attribute 'file' of tag <" + super.getTagName() + "> with value '" + this.sFile
-              + "' is not a regular file.");
+          "MyBatis configuration template file '" + this.file + "' found, but it's not a regular file", //
+          "MyBatis configuration template file '" + this.file + "' found, but it's not a regular file");
     }
 
   }

@@ -25,9 +25,10 @@ public class DaosTag extends AbstractConfigurationTag {
 
   private static final String DEFAULT_PRIMITIVES_RELATIVE_PACKAGE = "primitives";
 
+  private static final String DEFAULT_BASE_DIR = "src/main/java";
+
   private static final String DEFAULT_VO_PREFIX = "";
   private static final String DEFAULT_VO_SUFFIX = "VO";
-  // private static final String DEFAULT_ABSTRACT_VO_PREFIX = "Abstract";
   private static final String DEFAULT_ABSTRACT_VO_PREFIX = "";
   private static final String DEFAULT_ABSTRACT_VO_SUFFIX = "";
   private static final String DEFAULT_DAO_PREFIX = "";
@@ -40,8 +41,8 @@ public class DaosTag extends AbstractConfigurationTag {
 
   // Properties
 
-  private String sGenBaseDir = null;
-  private String sDaoPackage = null;
+  private String sBaseDir = null;
+  private String sPackage = null;
   private String sPrimitivesPackage = null;
 
   private String voPrefix = null;
@@ -65,14 +66,14 @@ public class DaosTag extends AbstractConfigurationTag {
 
   // JAXB Setters
 
-  @XmlAttribute(name = "gen-base-dir")
-  public void setGenBaseDir(final String genBaseDir) {
-    this.sGenBaseDir = genBaseDir;
+  @XmlAttribute(name = "base-dir")
+  public void setBaseDir(final String sBaseDir) {
+    this.sBaseDir = sBaseDir;
   }
 
-  @XmlAttribute(name = "dao-package")
-  public void setSdaoPackage(final String sDaoPackage) {
-    this.sDaoPackage = sDaoPackage;
+  @XmlAttribute(name = "package")
+  public void setSPackage(final String sPackage) {
+    this.sPackage = sPackage;
   }
 
   @XmlAttribute(name = "primitives-package")
@@ -126,35 +127,38 @@ public class DaosTag extends AbstractConfigurationTag {
 
     // gen-base-dir
 
-    if (SUtil.isEmpty(this.sGenBaseDir)) {
+    if (this.sBaseDir == null) {
+      this.sBaseDir = DEFAULT_BASE_DIR;
+    }
+    if (SUtil.isEmpty(this.sBaseDir)) {
       throw new InvalidConfigurationFileException(this, //
           "Attribute 'gen-base-dir' cannot be empty", //
           "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> cannot be empty. "
               + "Must specify the base dir to generate the DAO classes.");
     }
-    this.baseDir = new File(basedir, this.sGenBaseDir);
+    this.baseDir = new File(basedir, this.sBaseDir);
     log.debug("this.baseDir=" + this.baseDir + " , " + this.baseDir.getAbsolutePath());
     if (!this.baseDir.exists()) {
       throw new InvalidConfigurationFileException(this, //
           "'gen-base-dir' points to a non-existing directory:\n  " + this.baseDir.getPath(), //
-          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> with value '" + this.sGenBaseDir
+          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> with value '" + this.sBaseDir
               + "' must point to an existing dir.");
     }
     if (!this.baseDir.isDirectory()) {
       throw new InvalidConfigurationFileException(this, //
           "'gen-base-dir' must be a directory but point to other type of file:\n  " + this.baseDir.getPath(), //
-          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> with value '" + this.sGenBaseDir
+          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> with value '" + this.sBaseDir
               + "' is not a directory.");
     }
 
     // dao-package
 
     try {
-      this.daoPackage = new ClassPackage(this.sDaoPackage);
+      this.daoPackage = new ClassPackage(this.sPackage);
     } catch (InvalidPackageException e) {
       throw new InvalidConfigurationFileException(this, //
-          "Invalid package '" + this.sDaoPackage + "'", //
-          "Invalid package '" + this.sDaoPackage + "' on attribute 'dao-package' of tag <" + super.getTagName() + ">: "
+          "Invalid package '" + this.sPackage + "'", //
+          "Invalid package '" + this.sPackage + "' on attribute 'dao-package' of tag <" + super.getTagName() + ">: "
               + e.getMessage());
     }
 
@@ -472,8 +476,8 @@ public class DaosTag extends AbstractConfigurationTag {
       DaosTag f = (DaosTag) fresh;
       boolean different = !same(fresh);
 
-      this.sGenBaseDir = f.sGenBaseDir;
-      this.sDaoPackage = f.sDaoPackage;
+      this.sBaseDir = f.sBaseDir;
+      this.sPackage = f.sPackage;
       this.sPrimitivesPackage = f.sPrimitivesPackage;
       this.daoPrefix = f.daoPrefix;
       this.daoSuffix = f.daoSuffix;
@@ -494,17 +498,17 @@ public class DaosTag extends AbstractConfigurationTag {
     try {
       DaosTag f = (DaosTag) fresh;
       return //
-      Compare.same(this.sGenBaseDir, f.sGenBaseDir) && //
-          Compare.same(this.sDaoPackage, f.sDaoPackage) && //
+      Compare.same(this.sBaseDir, f.sBaseDir) && //
+          Compare.same(this.sPackage, f.sPackage) && //
           Compare.same(this.sPrimitivesPackage, f.sPrimitivesPackage) && //
           Compare.same(this.daoPrefix, f.daoPrefix) && //
           Compare.same(this.daoSuffix, f.daoSuffix) && //
           Compare.same(this.primitivesPrefix, f.primitivesPrefix) && //
           Compare.same(this.primitivesSuffix, f.primitivesSuffix) && //
-          Compare.same(this.sGenBaseDir, f.sGenBaseDir) && //
-          Compare.same(this.sGenBaseDir, f.sGenBaseDir) && //
-          Compare.same(this.sGenBaseDir, f.sGenBaseDir) && //
-          Compare.same(this.sGenBaseDir, f.sGenBaseDir);
+          Compare.same(this.sBaseDir, f.sBaseDir) && //
+          Compare.same(this.sBaseDir, f.sBaseDir) && //
+          Compare.same(this.sBaseDir, f.sBaseDir) && //
+          Compare.same(this.sBaseDir, f.sBaseDir);
     } catch (ClassCastException e) {
       return false;
     }

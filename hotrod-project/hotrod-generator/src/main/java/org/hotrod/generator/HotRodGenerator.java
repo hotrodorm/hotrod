@@ -959,10 +959,13 @@ public abstract class HotRodGenerator {
     sb.append(this.db.getViews().size() + " " + (this.db.getViews().size() == 1 ? "view" : "views") + ", ");
     sb.append(this.enums.size() + " " + (this.enums.size() == 1 ? "enum" : "enums") + ", ");
     sb.append(this.config.getExecutors().size() + " " + (this.config.getExecutors().size() == 1 ? "DAO" : "DAOs") //
-        + ", ");
-    sb.append(sequences + " sequence" + (sequences == 1 ? "" : "s") + ", ");
+        + ", and ");
+
+    sb.append(sequences + " sequence" + (sequences == 1 ? "" : "s") + " -- including ");
     sb.append(queries + " " + (queries == 1 ? "query" : "queries") + ", ");
-    int totalSelects = config.getSelects().size() + selectMethods;
+    int totalSelects =
+        // config.getSelects().size() +
+        selectMethods;
     sb.append("and " + totalSelects + " " + (totalSelects == 1 ? "select" : "selects") + ".");
 
     display(sb.toString());

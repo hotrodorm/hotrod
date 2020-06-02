@@ -60,6 +60,7 @@ public class OracleAdapter extends DatabaseAdapter {
     // Numeric types
 
     case Types.DECIMAL:
+    case Types.NUMERIC:
       if (m.getDecimalDigits() == null || m.getDecimalDigits().intValue() != 0) {
         return new PropertyType(BigDecimal.class, m, false);
       } else {

@@ -23,6 +23,7 @@ public class MyBatisConfiguration extends GeneratableObject {
   private static final Logger log = LogManager.getLogger(MyBatisConfiguration.class);
 
   private static final String MAPPERS_INSERTION_TOKEN = "<mappers/>";
+  private static final String MAPPERS_INSERTION_TOKEN2 = "<mappers />";
 
   private HotRodConfigTag config;
   private TreeMap<String, Boolean> sourceFiles;
@@ -79,16 +80,21 @@ public class MyBatisConfiguration extends GeneratableObject {
           + "could not read the template file '" + templateFile.getPath() + "': " + e.getMessage());
     }
 
-    int count = SUtil.countMatches(template, MAPPERS_INSERTION_TOKEN);
-
+    String token = MAPPERS_INSERTION_TOKEN;
+    int count = SUtil.countMatches(template, token);
     if (count == 0) {
-      throw new ControlledException("Could not generate the MyBatis main configuration file: "
-          + "didn't find the placeholder " + MAPPERS_INSERTION_TOKEN + " to insert the mappers in the template file '"
-          + templateFile.getPath() + "'.");
+      token = MAPPERS_INSERTION_TOKEN2;
+      count = SUtil.countMatches(template, token);
+      if (count == 0) {
+        throw new ControlledException("Could not generate the MyBatis main configuration file: "
+            + "didn't find the placeholder " + MAPPERS_INSERTION_TOKEN + " or " + MAPPERS_INSERTION_TOKEN2
+            + " to insert the mappers in the template file '" + templateFile.getPath() + "'.");
+      }
     }
+
     if (count > 1) {
       throw new ControlledException("Could not generate the MyBatis main configuration file: "
-          + "expected only one placeholder " + MAPPERS_INSERTION_TOKEN + " to insert the mappers in the template file '"
+          + "expected only one placeholder " + token + " to insert the mappers in the template file '"
           + templateFile.getPath() + "', but found " + count + ".");
     }
 
@@ -101,7 +107,7 @@ public class MyBatisConfiguration extends GeneratableObject {
       this.w = fileGenerator.createWriter(mbconfig);
 
       String mappers = prepareMappers();
-      String result = template.replace(MAPPERS_INSERTION_TOKEN, mappers);
+      String result = template.replace(token, mappers);
       this.w.write(result);
 
       super.markGenerated();
@@ -125,7 +131,7 @@ public class MyBatisConfiguration extends GeneratableObject {
   private String prepareMappers() {
 
     StringBuilder sb = new StringBuilder();
-    sb.append("  <mappers>\n");
+    sb.append("<mappers>\n");
 
     for (String sourceFile : this.sourceFiles.keySet()) {
       boolean inFacet = this.sourceFiles.get(sourceFile);
@@ -138,7 +144,7 @@ public class MyBatisConfiguration extends GeneratableObject {
           + "\" />\n");
     }
 
-    sb.append("  </mappers>\n");
+    sb.append("  </mappers>");
     return sb.toString();
   }
 

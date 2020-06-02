@@ -21,16 +21,17 @@ public class InvalidConfigurationFileException extends Exception {
   public InvalidConfigurationFileException(final AbstractConfigurationTag tag, final String interactiveMessage,
       final String batchMessage) {
     super(batchMessage);
+    log.trace("init");
     intialize(tag, interactiveMessage);
   }
 
   private void intialize(final AbstractConfigurationTag tag, final String interactiveMessage) {
-    if (tag == null) {
-      throw new IllegalArgumentException("tag cannot be null");
-    }
-    log.debug("  interactiveMessage=" + interactiveMessage + "\n  loc=" + tag.getSourceLocation().render());
-    log.debug("  parent=" + tag.getParent());
-    tag.setErrorMessage(interactiveMessage);
+//    if (tag == null) {
+//      throw new IllegalArgumentException("tag cannot be null");
+//    }
+//    log.debug("  interactiveMessage=" + interactiveMessage + "\n  loc=" + tag.getSourceLocation().render());
+//    log.debug("  parent=" + tag.getParent());
+//    tag.setErrorMessage(interactiveMessage);
     this.interactiveMessage = interactiveMessage;
     this.tag = tag;
   }

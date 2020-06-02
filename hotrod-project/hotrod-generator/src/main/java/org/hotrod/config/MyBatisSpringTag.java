@@ -90,6 +90,23 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   @Override
   public void validate(final File basedir, final File parentDir) throws InvalidConfigurationFileException {
+
+    // mybatis-configuration-template
+
+    if (this.template == null) {
+      this.template = new TemplateTag();
+      this.template.setTemplateFile(TemplateTag.DEFAULT_TEMPLATE_FILE);
+    }
+
+    // select-generation
+
+    if (this.selectGeneration == null) {
+      this.selectGeneration = new SelectGenerationTag();
+      this.selectGeneration.setTempViewBaseName(SelectGenerationTag.DEFAULT_TEMP_VIEW_NAME);
+    }
+
+    // Validate sub tags
+
     this.daos.validate(basedir);
     this.mappers.validate(basedir);
     this.template.validate(basedir, parentDir);
