@@ -1,0 +1,58 @@
+<archetype-descriptor
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0
+            https://maven.apache.org/xsd/archetype-descriptor-1.1.0.xsd"
+  xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="hotrod-jar-application">
+
+  <requiredProperties>
+    <requiredProperty key="package">
+      <defaultValue />
+      <validationRegex />
+    </requiredProperty>
+    <requiredProperty key="persistencepackage">
+      <defaultValue />
+      <validationRegex />
+    </requiredProperty>
+    <requiredProperty key="jdbcdriverclassname">
+      <defaultValue>com.database.jdbc.Driver</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+    <requiredProperty key="jdbcurl">
+      <defaultValue>jdbc:database:@12.34.56.78:1234:db</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+    <requiredProperty key="jdbcusername">
+      <defaultValue>username</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+    <requiredProperty key="jdbcpassword">
+      <defaultValue>password</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+    <requiredProperty key="jdbccatalog">
+      <defaultValue>@@CATALOG@@DOES@@NOT@@APPLY@@</defaultValue>
+      <validationRegex/>
+    </requiredProperty>
+    <requiredProperty key="jdbcschema">
+      <defaultValue>@@SCHEMA@@DOES@@NOT@@APPLY@@</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+  </requiredProperties>
+
+  <fileSets>
+    <fileSet filtered="true" packaged="true">
+      <directory>src/main/java</directory>
+    </fileSet>
+    <fileSet filtered="true">
+      <directory>src/main/hotrod</directory>
+    </fileSet>
+    <fileSet filtered="true">
+      <directory>src/main/resources</directory>
+    </fileSet>
+    <fileSet filtered="true" packaged="true">
+      <directory>src/test/java</directory>
+    </fileSet>
+  </fileSets>
+
+</archetype-descriptor>
+    

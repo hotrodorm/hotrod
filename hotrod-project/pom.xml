@@ -5,10 +5,10 @@
 
   <groupId>org.hotrodorm.hotrod</groupId>
   <artifactId>hotrod-project</artifactId>
-  <version>3.1.1-SNAPSHOT</version>
+  <version>3.2.0</version>
   <packaging>pom</packaging>
 
-  <name>HotRod - Advanced ORM</name>
+  <name>HotRod Project - Advanced ORM</name>
 
   <description>
     Advanced ORM Generator.
@@ -83,6 +83,7 @@
     <module>hotrod-maven-plugin</module>
     <module>hotrod-ant-plugin</module>
     <module>hotrod-livesql</module>
+    <module>hotrod-archetype-jar-app</module>
   </modules>
 
   <build>

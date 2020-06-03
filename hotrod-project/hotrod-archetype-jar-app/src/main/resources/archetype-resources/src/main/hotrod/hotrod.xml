@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+      <daos package="${package}.${persistencepackage}" />
+      <mappers dir="mappers" />
+    </mybatis-spring>
+  </generators>
+
+</hotrod>
