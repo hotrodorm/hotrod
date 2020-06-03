@@ -5,7 +5,7 @@
 
   <groupId>org.hotrodorm.hotrod</groupId>
   <artifactId>hotrod-project</artifactId>
-  <version>3.2.0</version>
+  <version>3.2.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>HotRod Project - Advanced ORM</name>
@@ -61,7 +61,7 @@
   <scm>
     <developerConnection>scm:git:ssh://olenus@git.code.sf.net/p/hotrod/hotrod</developerConnection>
     <url>https://git.code.sf.net/p/hotrod/hotrod</url>
-    <tag>3.2.0</tag>
+    <tag>3.1.0</tag>
   </scm>
 
   <distributionManagement>
