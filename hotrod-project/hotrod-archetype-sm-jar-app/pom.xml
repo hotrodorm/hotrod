@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>hotrod-archetype-jar-app</artifactId>
+  <artifactId>hotrod-archetype-sm-jar-app</artifactId>
   <packaging>maven-archetype</packaging>
 
-  <name>hotrod-archetype-jar-app</name>
+  <name>hotrod-archetype-sm-jar-app</name>
 
   <parent>
     <groupId>org.hotrodorm.hotrod</groupId>

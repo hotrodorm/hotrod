@@ -83,7 +83,7 @@
     <module>hotrod-maven-plugin</module>
     <module>hotrod-ant-plugin</module>
     <module>hotrod-livesql</module>
-    <module>hotrod-archetype-jar-app</module>
+    <module>hotrod-archetype-sm-jar-app</module>
   </modules>
 
   <build>

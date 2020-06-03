@@ -5,6 +5,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="hotrod-jar-application">
 
   <requiredProperties>
+
     <requiredProperty key="package">
       <defaultValue />
       <validationRegex />
@@ -13,6 +14,7 @@
       <defaultValue />
       <validationRegex />
     </requiredProperty>
+
     <requiredProperty key="jdbcdriverclassname">
       <defaultValue>com.database.jdbc.Driver</defaultValue>
       <validationRegex />
@@ -31,12 +33,30 @@
     </requiredProperty>
     <requiredProperty key="jdbccatalog">
       <defaultValue>@@CATALOG@@DOES@@NOT@@APPLY@@</defaultValue>
-      <validationRegex/>
+      <validationRegex />
     </requiredProperty>
     <requiredProperty key="jdbcschema">
       <defaultValue>@@SCHEMA@@DOES@@NOT@@APPLY@@</defaultValue>
       <validationRegex />
     </requiredProperty>
+
+    <requiredProperty key="jdbcdrivergroupid">
+      <defaultValue>@@NO@@VALUE@@</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+    <requiredProperty key="jdbcdriverartifactid">
+      <defaultValue>@@NO@@VALUE@@</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+    <requiredProperty key="jdbcdriverversion">
+      <defaultValue>@@NO@@VALUE@@</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+    <requiredProperty key="jdbcdrivertype">
+      <defaultValue>@@NO@@VALUE@@</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+
   </requiredProperties>
 
   <fileSets>
