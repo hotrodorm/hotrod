@@ -165,7 +165,7 @@ public class ObjectAbstractVO extends GeneratableObject {
       String javaType = resolveType(cm);
       String m = cm.getId().getJavaMemberName();
 
-      println("  public final " + javaType + " " + cm.getId().getJavaGetter() + "() {");
+      println("  public " + javaType + " " + cm.getId().getJavaGetter() + "() {");
       println("    return this." + m + ";");
       println("  }");
       println();
@@ -178,7 +178,7 @@ public class ObjectAbstractVO extends GeneratableObject {
 
   private void writeSetter(final ColumnMetadata cm, final String javaType, final String m, final String setter)
       throws IOException {
-    println("  public final void " + setter + "(final " + javaType + " " + m + ") {");
+    println("  public void " + setter + "(final " + javaType + " " + m + ") {");
     println("    this." + m + " = " + m + ";");
     String name = cm.getId().getJavaMemberName() + "WasSet";
     println("    this.getPropertiesChangeLog()." + name + " = true;");

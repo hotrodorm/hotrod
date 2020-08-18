@@ -1,0 +1,9 @@
+For oracle, db2, postgresql, sqlserver, mariadb, mysql, h2, hypersql, derby you can use Java 11:
+
+  mvn clean compile && mvn -P <database> test
+
+
+Note for Sybase ASE: you need to use Java 8, not Java 11:
+
+  mvn clean package && mvn -P sybasease test
+

@@ -5,11 +5,11 @@
 
   <generators>
     <mybatis-spring>
-      <daos gen-base-dir="src/main/java" dao-package="com.myapp1.persistence" vo-prefix="" vo-suffix="VO"
-        abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" dao-prefix="" dao-suffix="DAO" />
-      <mappers gen-base-dir="src/main/resources" relative-dir="mappers" />
-      <mybatis-configuration-template file="mybatis-config-template.xml" />
-      <select-generation temp-view-base-name="hotrodtempview" />
+      <daos package="com.myapp1.persistence" 
+        vo-prefix="" vo-suffix="VO"
+        abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" 
+        dao-prefix="" dao-suffix="DAO" />
+      <mappers dir="mappers" />
     </mybatis-spring>
   </generators>
 

@@ -1,0 +1,463 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.hotrodorm.hotrod.poc</groupId>
+  <artifactId>poc-query-metadata</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>poc-query-metadata</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+
+    <!-- Text Tables Formatting -->
+
+    <dependency>
+      <groupId>org.nocrala.tools.texttablefmt</groupId>
+      <artifactId>text-table-formatter</artifactId>
+      <version>1.2.4</version>
+    </dependency>
+    
+    <!-- Unit Testing -->
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <profiles>
+  
+    <!-- Oracle -->
+
+    <profile>
+      <id>oracle</id>
+
+      <dependencies>
+        <dependency>
+          <groupId>com.oracle.ojdbc</groupId>
+          <artifactId>ojdbc8</artifactId>
+          <version>19.3.0.0</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.1.1</version>
+            <executions>
+              <execution>
+                <phase>test</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <configuration>
+                  <mainClass>org.hotrodorm.hotrod.poc.pocquerymetadata.Reader</mainClass>
+                  <arguments>
+                    <argument>oracle.jdbc.driver.OracleDriver</argument>
+                    <argument>jdbc:oracle:thin:@192.168.56.95:1521:orcl</argument>
+                    <argument>user1</argument>
+                    <argument>pass1</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- DB2 -->
+
+    <profile>
+      <id>db2</id>
+
+      <dependencies>
+        <dependency>
+          <groupId>com.ibm.db2</groupId>
+          <artifactId>jcc</artifactId>
+          <version>11.5.0.0</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.1.1</version>
+            <executions>
+              <execution>
+                <phase>test</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <configuration>
+                  <mainClass>org.hotrodorm.hotrod.poc.pocquerymetadata.Reader</mainClass>
+                  <arguments>
+                    <argument>com.ibm.db2.jcc.DB2Driver</argument>
+                    <argument>jdbc:db2://192.168.56.44:50000/empusa</argument>
+                    <argument>user1</argument>
+                    <argument>pass1</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- PostgreSQL -->
+
+    <profile>
+      <id>postgresql</id>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>42.2.9</version>
+          <type>jar</type>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.1.1</version>
+            <executions>
+              <execution>
+                <phase>test</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <configuration>
+                  <mainClass>org.hotrodorm.hotrod.poc.pocquerymetadata.Reader</mainClass>
+                  <arguments>
+                    <argument>org.postgresql.Driver</argument>
+                    <argument>jdbc:postgresql://192.168.56.213:5432/postgres</argument>
+                    <argument>postgres</argument>
+                    <argument>mypassword</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- SQL Server -->
+
+    <profile>
+      <id>sqlserver</id>
+
+      <dependencies>
+        <dependency>
+          <groupId>com.microsoft.sqlserver</groupId>
+          <artifactId>mssql-jdbc</artifactId>
+          <version>7.4.1.jre8</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.1.1</version>
+            <executions>
+              <execution>
+                <phase>test</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <configuration>
+                  <mainClass>org.hotrodorm.hotrod.poc.pocquerymetadata.Reader</mainClass>
+                  <arguments>
+                    <argument>com.microsoft.sqlserver.jdbc.SQLServerDriver</argument>
+                    <argument>jdbc:sqlserver://192.168.56.51:1433</argument>
+                    <argument>admin</argument>
+                    <argument>admin</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- MariaDB -->
+
+    <profile>
+      <id>mariadb</id>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.mariadb.jdbc</groupId>
+          <artifactId>mariadb-java-client</artifactId>
+          <version>2.5.2</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.1.1</version>
+            <executions>
+              <execution>
+                <phase>test</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <configuration>
+                  <mainClass>org.hotrodorm.hotrod.poc.pocquerymetadata.Reader</mainClass>
+                  <arguments>
+                    <argument>org.mariadb.jdbc.Driver</argument>
+                    <argument>jdbc:mysql://192.168.56.205:3306/database1</argument>
+                    <argument>my_user</argument>
+                    <argument>mypass</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- MySQL -->
+
+    <profile>
+      <id>mysql</id>
+
+      <dependencies>
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>8.0.18</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.1.1</version>
+            <executions>
+              <execution>
+                <phase>test</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <configuration>
+                  <mainClass>org.hotrodorm.hotrod.poc.pocquerymetadata.Reader</mainClass>
+                  <arguments>
+                    <argument>com.mysql.cj.jdbc.Driver</argument>
+                    <argument>jdbc:mysql://192.168.56.29:3306/hotrod?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;useSSL=false</argument>
+                    <argument>user1</argument>
+                    <argument>pass1</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- Sybase ASE -->
+
+    <profile>
+      <id>sybasease</id>
+
+      <dependencies>
+        <dependency>
+          <groupId>com.sybase</groupId>
+          <artifactId>jconn4</artifactId>
+          <version>16.0</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.1.1</version>
+            <executions>
+              <execution>
+                <phase>test</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <configuration>
+                  <mainClass>org.hotrodorm.hotrod.poc.pocquerymetadata.Reader</mainClass>
+                  <arguments>
+                    <argument>com.sybase.jdbc4.jdbc.SybDriver</argument>
+                    <argument>jdbc:sybase:Tds:192.168.56.52:5000</argument>
+                    <argument>sa</argument>
+                    <argument>pass12</argument>
+                  </arguments>
+                  <additionalClasspathElements>/home/valarcon/apps/jdbc-drivers/jconn4.jar</additionalClasspathElements>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- H2 -->
+
+    <profile>
+      <id>h2</id>
+
+      <dependencies>
+        <dependency>
+          <groupId>com.h2database</groupId>
+          <artifactId>h2</artifactId>
+          <version>1.4.197</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.1.1</version>
+            <executions>
+              <execution>
+                <phase>test</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <configuration>
+                  <mainClass>org.hotrodorm.hotrod.poc.pocquerymetadata.Reader</mainClass>
+                  <arguments>
+                    <argument>org.h2.Driver</argument>
+                    <argument>jdbc:h2:tcp://localhost/~/test</argument>
+                    <argument>sa</argument>
+                    <argument></argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- HyperSQL -->
+
+    <profile>
+      <id>hypersql</id>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.hsqldb</groupId>
+          <artifactId>hsqldb</artifactId>
+          <version>2.3.4</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.1.1</version>
+            <executions>
+              <execution>
+                <phase>test</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <configuration>
+                  <mainClass>org.hotrodorm.hotrod.poc.pocquerymetadata.Reader</mainClass>
+                  <arguments>
+                    <argument>org.hsqldb.jdbcDriver</argument>
+                    <argument>jdbc:hsqldb:hsql://localhost:9001/xdb</argument>
+                    <argument>SA</argument>
+                    <argument></argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- Derby -->
+
+    <profile>
+      <id>derby</id>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.derby</groupId>
+          <artifactId>derbyclient</artifactId>
+          <version>10.13.1.1</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.1.1</version>
+            <executions>
+              <execution>
+                <phase>test</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <configuration>
+                  <mainClass>org.hotrodorm.hotrod.poc.pocquerymetadata.Reader</mainClass>
+                  <arguments>
+                    <argument>org.apache.derby.jdbc.ClientDriver</argument>
+                    <argument>jdbc:derby://192.168.56.26:1527/hotrod</argument>
+                    <argument>schema1</argument>
+                    <argument>b</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
+  <repositories>
+    <repository>
+      <id>maven-local-repository</id>
+      <url>file:///${project.basedir}/maven-local-repository</url>
+    </repository>
+  </repositories>
+
+</project>

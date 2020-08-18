@@ -68,13 +68,13 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>3.2.0</version>
+      <version>${version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>3.2.0</version>
+      <version>${version}</version>
     </dependency>
 
     <!-- Unit Testing -->
@@ -106,7 +106,7 @@
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>${version}</version>
         <configuration>
           <configfile>src/main/hotrod/hotrod.xml</configfile>
           <generator>MyBatis-Spring</generator>

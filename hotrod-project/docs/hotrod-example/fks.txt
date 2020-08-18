@@ -1,0 +1,33 @@
+    // Select by PK
+
+    CuentaVO c = this.cuentaDAO.selectByPK(102L);
+
+    // Select children by FK
+
+    List<TransaccionVO> txs = this.cuentaDAO.selectChildrenTransaccionOf(c).usingId().onIdCuenta();
+
+    // Select by PK
+
+    TransaccionVO t = this.transaccionDAO.selectByPK(5102L);
+
+    // Option #1: Select parent by FK
+
+    CuentaVO p = this.transaccionDAO.selectParentCuentaOf(t); // PK
+    CuentaVO p = this.transaccionDAO.selectParentCuentaOf(t).usingIdCuenta(); // PK
+    CuentaVO p = this.transaccionDAO.selectParentCuentaOf(t).usingIdCuenta().referencesId(); // PK
+
+    CuentaVO p = this.transaccionDAO.selectParentCuentaOf(t); // UC
+    CuentaVO p = this.transaccionDAO.selectParentCuentaOf(t).usingNombre(); // UC
+    CuentaVO p = this.transaccionDAO.selectParentCuentaOf(t).usingNombre().referencesNombre(); // UC
+
+    // Option #2: Select parent by FK
+
+    CuentaVO p = this.transaccionDAO.selectParentCuentaOf(t); // single FK, to PK
+    CuentaVO p = this.transaccionDAO.selectParentCuentaOf(t, TransaccionDAO.idCuenta); // multi FK, to PK
+    CuentaVO p = this.transaccionDAO.selectParentCuentaOf(t, TransaccionDAO.referencesNombre); // to UC
+
+    CuentaVO p = this.transaccionDAO.selectParentCuentaOf(t).usingNombre().referencesNombre(); // UC
+    CuentaVO p = this.transaccionDAO.selectParentCuentaOf(t).usingNombre(); // UC
+    CuentaVO p = this.transaccionDAO.selectParentCuentaOf(t); // UC
+
+  }
