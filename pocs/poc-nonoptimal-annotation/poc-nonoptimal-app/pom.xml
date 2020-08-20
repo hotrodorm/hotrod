@@ -23,20 +23,8 @@
 
     <plugins>
 
-<!-- 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.6.1</version>
-        <configuration>
-          <showWarnings>true</showWarnings>
-        </configuration>
-      </plugin>
--->
-  
       <!-- Set compiler to Java 11
-      Activating Toolchains disables the Annotation Processors.... why? 
-
+      Activating Toolchains disables annotation processor warnings (errors work well).... why? 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-toolchains-plugin</artifactId>

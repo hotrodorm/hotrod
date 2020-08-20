@@ -23,9 +23,6 @@
         </configuration>
       </plugin>
 
-      <!-- Set compiler to Java 11
-      Activating Toolchains disables the Annotation Processors.... why? 
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-toolchains-plugin</artifactId>
@@ -46,7 +43,6 @@
           </toolchains>
         </configuration>
       </plugin>
-      -->
 
     </plugins>
 
