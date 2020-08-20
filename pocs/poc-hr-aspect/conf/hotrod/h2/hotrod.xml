@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod>
+<hotrod>
+	<generators>
+		<mybatis-spring>
+			<daos package="hr3.poc.dao" abstract-vo-suffix="VO" vo-suffix="Impl" />
+			<mappers dir="mappers" />
+		</mybatis-spring>
+	</generators>
+
+	<!-- CONVERTERS -->
+		
+	<!-- FRAGMENTS  -->
+	
+	<fragment file="hotrod-action.xml" />
+	
+</hotrod>

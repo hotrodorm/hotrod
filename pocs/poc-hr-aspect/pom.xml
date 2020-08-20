@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.3.3.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>hr3.poc</groupId>
+	<artifactId>poc-hr-aspect</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>hr-aspect-poc</name>
+	<description>Demo HR3+Aspect on Spring Boot </description>
+
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.hotrodorm.hotrod</groupId>
+				<artifactId>hotrod-maven-plugin</artifactId>
+				<version>3.2.1-SNAPSHOT</version>
+				<configuration>
+					<configfile>conf/hotrod/h2/hotrod.xml</configfile>
+					<generator>MyBatis-Spring</generator>
+					<localproperties>conf/hotrod/h2/hotrod-local.properties</localproperties>
+				</configuration>
+				<dependencies>
+					<!-- HR3 configuration for database introspection. -->
+					<!-- Only one is used according to "hotrod-local.properties" configuration. -->
+					<dependency>
+						<groupId>com.h2database</groupId>
+						<artifactId>h2</artifactId>
+						<version>1.4.200</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/db</directory>
+				<includes>
+					<include>ddl/*.sql</include>
+					<include>sql/*.sql</include>
+				</includes>
+			</resource>
+
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>3.4.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+
+		<!-- MyBatis Spring -->
+
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>2.0.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.5.3</version>
+		</dependency>
+
+		<!-- HotRod 3 -->
+
+		<dependency>
+			<groupId>org.hotrodorm.hotrod</groupId>
+			<artifactId>hotrod</artifactId>
+			<version>3.2.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hotrodorm.hotrod</groupId>
+			<artifactId>hotrod-livesql</artifactId>
+			<version>3.2.1-SNAPSHOT</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.11.1</version>
+		</dependency>
+
+
+		<!-- persistencia de datos -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.200</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+</project>

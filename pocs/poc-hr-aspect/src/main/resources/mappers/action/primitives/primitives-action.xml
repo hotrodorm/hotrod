@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hr3.poc.dao.action.primitives.action">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    action_id,
+    action_title,
+    action_sub_title
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.action_id,
+    ${alias}.action_title,
+    ${alias}.action_sub_title
+  </sql>
+
+  <resultMap id="allColumns" type="hr3.poc.dao.action.ActionImpl">
+    <id property="actionId" column="ACTION_ID" />
+    <result property="title" column="ACTION_TITLE" />
+    <result property="subTitle" column="ACTION_SUB_TITLE" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from kzo_action
+     where
+      action_id = #{actionId,jdbcType=BIGINT}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from kzo_action
+    <where>
+      <if test="p.actionId != null ">
+        and action_id = #{p.actionId,jdbcType=BIGINT}
+      </if>
+      <if test="p.actionId == null and p.propertiesChangeLog.actionIdWasSet">
+        and action_id is null
+      </if>
+      <if test="p.title != null ">
+        and action_title = #{p.title,jdbcType=VARCHAR}
+      </if>
+      <if test="p.title == null and p.propertiesChangeLog.titleWasSet">
+        and action_title is null
+      </if>
+      <if test="p.subTitle != null ">
+        and action_sub_title = #{p.subTitle,jdbcType=VARCHAR}
+      </if>
+      <if test="p.subTitle == null and p.propertiesChangeLog.subTitleWasSet">
+        and action_sub_title is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (does not integrate sequences, and integrates identities) -->
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="actionId" keyColumn="action_id">
+    insert into kzo_action (
+      <trim prefixOverrides=", ">
+        <if test="actionId != null">, action_id</if>
+        <if test="true">, action_title</if>
+        <if test="true">, action_sub_title</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="actionId != null">, #{actionId,jdbcType=BIGINT}</if>
+        <if test="true">, #{title,jdbcType=VARCHAR}</if>
+        <if test="true">, #{subTitle,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update kzo_action set
+      action_title = #{title,jdbcType=VARCHAR},
+      action_sub_title = #{subTitle,jdbcType=VARCHAR}
+     where
+      action_id = #{actionId,jdbcType=BIGINT}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from kzo_action
+     where
+      action_id = #{actionId,jdbcType=BIGINT}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update kzo_action
+    <set>
+      <if test="values.propertiesChangeLog.actionIdWasSet">action_id = #{values.actionId,jdbcType=BIGINT},</if>
+      <if test="values.propertiesChangeLog.titleWasSet">action_title = #{values.title,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.subTitleWasSet">action_sub_title = #{values.subTitle,jdbcType=VARCHAR},</if>
+    </set>
+    <where>
+      <if test="filter.actionId != null ">
+        and action_id = #{filter.actionId,jdbcType=BIGINT}
+      </if>
+      <if test="filter.actionId == null and filter.propertiesChangeLog.actionIdWasSet">
+        and action_id is null
+      </if>
+      <if test="filter.title != null ">
+        and action_title = #{filter.title,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.title == null and filter.propertiesChangeLog.titleWasSet">
+        and action_title is null
+      </if>
+      <if test="filter.subTitle != null ">
+        and action_sub_title = #{filter.subTitle,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.subTitle == null and filter.propertiesChangeLog.subTitleWasSet">
+        and action_sub_title is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from kzo_action
+    <where>
+      <if test="actionId != null ">
+        and action_id = #{actionId,jdbcType=BIGINT}
+      </if>
+      <if test="actionId == null and propertiesChangeLog.actionIdWasSet">
+        and action_id is null
+      </if>
+      <if test="title != null ">
+        and action_title = #{title,jdbcType=VARCHAR}
+      </if>
+      <if test="title == null and propertiesChangeLog.titleWasSet">
+        and action_title is null
+      </if>
+      <if test="subTitle != null ">
+        and action_sub_title = #{subTitle,jdbcType=VARCHAR}
+      </if>
+      <if test="subTitle == null and propertiesChangeLog.subTitleWasSet">
+        and action_sub_title is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

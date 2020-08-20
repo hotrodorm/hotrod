@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hr3.poc.dao.action.primitives.news">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    action_id,
+    news_description,
+    news_metadata
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.action_id,
+    ${alias}.news_description,
+    ${alias}.news_metadata
+  </sql>
+
+  <resultMap id="allColumns" type="hr3.poc.dao.action.NewsImpl">
+    <id property="actionId" column="ACTION_ID" />
+    <result property="newsContent" column="NEWS_DESCRIPTION" />
+    <result property="newsMetadata" column="NEWS_METADATA" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from kzo_news
+     where
+      action_id = #{actionId,jdbcType=BIGINT}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from kzo_news
+    <where>
+      <if test="p.actionId != null ">
+        and action_id = #{p.actionId,jdbcType=BIGINT}
+      </if>
+      <if test="p.actionId == null and p.propertiesChangeLog.actionIdWasSet">
+        and action_id is null
+      </if>
+      <if test="p.newsContent != null ">
+        and news_description = #{p.newsContent,jdbcType=VARCHAR}
+      </if>
+      <if test="p.newsContent == null and p.propertiesChangeLog.newsContentWasSet">
+        and news_description is null
+      </if>
+      <if test="p.newsMetadata != null ">
+        and news_metadata = #{p.newsMetadata,jdbcType=VARCHAR}
+      </if>
+      <if test="p.newsMetadata == null and p.propertiesChangeLog.newsMetadataWasSet">
+        and news_metadata is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into kzo_news (
+      <trim prefixOverrides=", ">
+        <if test="true">, action_id</if>
+        <if test="true">, news_description</if>
+        <if test="true">, news_metadata</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{actionId,jdbcType=BIGINT}</if>
+        <if test="true">, #{newsContent,jdbcType=VARCHAR}</if>
+        <if test="true">, #{newsMetadata,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update kzo_news set
+      news_description = #{newsContent,jdbcType=VARCHAR},
+      news_metadata = #{newsMetadata,jdbcType=VARCHAR}
+     where
+      action_id = #{actionId,jdbcType=BIGINT}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from kzo_news
+     where
+      action_id = #{actionId,jdbcType=BIGINT}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update kzo_news
+    <set>
+      <if test="values.propertiesChangeLog.actionIdWasSet">action_id = #{values.actionId,jdbcType=BIGINT},</if>
+      <if test="values.propertiesChangeLog.newsContentWasSet">news_description = #{values.newsContent,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.newsMetadataWasSet">news_metadata = #{values.newsMetadata,jdbcType=VARCHAR},</if>
+    </set>
+    <where>
+      <if test="filter.actionId != null ">
+        and action_id = #{filter.actionId,jdbcType=BIGINT}
+      </if>
+      <if test="filter.actionId == null and filter.propertiesChangeLog.actionIdWasSet">
+        and action_id is null
+      </if>
+      <if test="filter.newsContent != null ">
+        and news_description = #{filter.newsContent,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.newsContent == null and filter.propertiesChangeLog.newsContentWasSet">
+        and news_description is null
+      </if>
+      <if test="filter.newsMetadata != null ">
+        and news_metadata = #{filter.newsMetadata,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.newsMetadata == null and filter.propertiesChangeLog.newsMetadataWasSet">
+        and news_metadata is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from kzo_news
+    <where>
+      <if test="actionId != null ">
+        and action_id = #{actionId,jdbcType=BIGINT}
+      </if>
+      <if test="actionId == null and propertiesChangeLog.actionIdWasSet">
+        and action_id is null
+      </if>
+      <if test="newsContent != null ">
+        and news_description = #{newsContent,jdbcType=VARCHAR}
+      </if>
+      <if test="newsContent == null and propertiesChangeLog.newsContentWasSet">
+        and news_description is null
+      </if>
+      <if test="newsMetadata != null ">
+        and news_metadata = #{newsMetadata,jdbcType=VARCHAR}
+      </if>
+      <if test="newsMetadata == null and propertiesChangeLog.newsMetadataWasSet">
+        and news_metadata is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>

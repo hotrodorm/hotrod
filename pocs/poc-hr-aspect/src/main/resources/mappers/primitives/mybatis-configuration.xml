@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="logImpl" value="LOG4J2" />
+	</settings>
+	<mappers>
+    <mapper resource="mappers/action/primitives/primitives-action.xml" />  <!-- in facet -->
+    <mapper resource="mappers/action/primitives/primitives-news.xml" />  <!-- in facet -->
+    <mapper resource="mappers/action/primitives/primitives-poll.xml" />  <!-- in facet -->
+    <mapper resource="mappers/primitives/live-sql.xml" />  <!-- in facet -->
+  </mappers>
+</configuration>

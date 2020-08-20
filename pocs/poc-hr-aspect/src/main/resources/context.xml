@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-4.2.xsd
+                        http://www.springframework.org/schema/jdbc
+                        http://www.springframework.org/schema/jdbc/spring-jdbc-4.2.xsd">
+    <context:annotation-config />
+
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    <context:component-scan base-package="org.hotrod.runtime.spring" />
+
+    <import resource="datasource-context.xml"/>
+
+    <bean id="springBeanObjectFactory" class="org.hotrod.runtime.spring.SpringBeanObjectFactory" />
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="configLocation" value="classpath:/mappers/primitives/mybatis-configuration.xml" />
+        <property name="objectFactory" ref="springBeanObjectFactory" />
+    </bean>
+
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory" />
+    </bean>
+
+    <bean id="sqlDialectFactory" class="org.hotrod.runtime.livesql.dialects.SQLDialectFactory">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean id="liveSQL" class="org.hotrod.runtime.livesql.LiveSQL">
+        <property name="sqlSession" ref="sqlSession" />
+        <property name="sqlDialect" value="#{sqlDialectFactory.sqlDialect}" />
+    </bean>
+
+</beans>
