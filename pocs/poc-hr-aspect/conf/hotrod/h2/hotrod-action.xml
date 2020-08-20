@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod-fragment>
+
+<hotrod-fragment package="action">
+	 
+	 <table name="KZO_ACTION" java-name="Action">	
+		<column name="ACTION_ID" java-name="actionId"/>
+	  	<column name="ACTION_TITLE" java-name="title" />
+	  	<column name="ACTION_SUB_TITLE" java-name="subTitle" />
+	</table>
+	
+	
+	<table name="KZO_NEWS" java-name="News">	
+		<column name="ACTION_ID" java-name="actionId" />
+	  	<column name="NEWS_DESCRIPTION" java-name="newsContent" />
+	  	<column name="NEWS_METADATA" java-name="newsMetadata" />
+	</table>
+	
+	<table name="KZO_POLL" java-name="Poll">	
+		<column name="ACTION_ID" java-name="pollId" />
+	  	<column name="POLL_DESCRIPTION" java-name="pollDescription" />
+	  	<column name="POLL_METADATA" java-name="pollMetadata" />
+	</table>
+	
+</hotrod-fragment>

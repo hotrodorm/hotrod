@@ -1,0 +1,4 @@
+<factorypath>
+    <factorypathentry kind="PLUGIN" id="org.eclipse.jst.ws.annotations.core" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="WKSPJAR" id="/poc-nonoptimal-lib/target/poc-nonoptimal-lib-1.0.0-SNAPSHOT.jar" enabled="false" runInBatchMode="false"/>
+</factorypath>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hr3.poc.dao.action.primitives.poll">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    action_id,
+    poll_description,
+    poll_metadata
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.action_id,
+    ${alias}.poll_description,
+    ${alias}.poll_metadata
+  </sql>
+
+  <resultMap id="allColumns" type="hr3.poc.dao.action.PollImpl">
+    <id property="pollId" column="ACTION_ID" />
+    <result property="pollDescription" column="POLL_DESCRIPTION" />
+    <result property="pollMetadata" column="POLL_METADATA" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from kzo_poll
+     where
+      action_id = #{pollId,jdbcType=BIGINT}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from kzo_poll
+    <where>
+      <if test="p.pollId != null ">
+        and action_id = #{p.pollId,jdbcType=BIGINT}
+      </if>
+      <if test="p.pollId == null and p.propertiesChangeLog.pollIdWasSet">
+        and action_id is null
+      </if>
+      <if test="p.pollDescription != null ">
+        and poll_description = #{p.pollDescription,jdbcType=VARCHAR}
+      </if>
+      <if test="p.pollDescription == null and p.propertiesChangeLog.pollDescriptionWasSet">
+        and poll_description is null
+      </if>
+      <if test="p.pollMetadata != null ">
+        and poll_metadata = #{p.pollMetadata,jdbcType=VARCHAR}
+      </if>
+      <if test="p.pollMetadata == null and p.propertiesChangeLog.pollMetadataWasSet">
+        and poll_metadata is null
+      </if>
+    </where>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into kzo_poll (
+      <trim prefixOverrides=", ">
+        <if test="true">, action_id</if>
+        <if test="true">, poll_description</if>
+        <if test="true">, poll_metadata</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{pollId,jdbcType=BIGINT}</if>
+        <if test="true">, #{pollDescription,jdbcType=VARCHAR}</if>
+        <if test="true">, #{pollMetadata,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update kzo_poll set
+      poll_description = #{pollDescription,jdbcType=VARCHAR},
+      poll_metadata = #{pollMetadata,jdbcType=VARCHAR}
+     where
+      action_id = #{pollId,jdbcType=BIGINT}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from kzo_poll
+     where
+      action_id = #{pollId,jdbcType=BIGINT}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update kzo_poll
+    <set>
+      <if test="values.propertiesChangeLog.pollIdWasSet">action_id = #{values.pollId,jdbcType=BIGINT},</if>
+      <if test="values.propertiesChangeLog.pollDescriptionWasSet">poll_description = #{values.pollDescription,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.pollMetadataWasSet">poll_metadata = #{values.pollMetadata,jdbcType=VARCHAR},</if>
+    </set>
+    <where>
+      <if test="filter.pollId != null ">
+        and action_id = #{filter.pollId,jdbcType=BIGINT}
+      </if>
+      <if test="filter.pollId == null and filter.propertiesChangeLog.pollIdWasSet">
+        and action_id is null
+      </if>
+      <if test="filter.pollDescription != null ">
+        and poll_description = #{filter.pollDescription,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.pollDescription == null and filter.propertiesChangeLog.pollDescriptionWasSet">
+        and poll_description is null
+      </if>
+      <if test="filter.pollMetadata != null ">
+        and poll_metadata = #{filter.pollMetadata,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.pollMetadata == null and filter.propertiesChangeLog.pollMetadataWasSet">
+        and poll_metadata is null
+      </if>
+    </where>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from kzo_poll
+    <where>
+      <if test="pollId != null ">
+        and action_id = #{pollId,jdbcType=BIGINT}
+      </if>
+      <if test="pollId == null and propertiesChangeLog.pollIdWasSet">
+        and action_id is null
+      </if>
+      <if test="pollDescription != null ">
+        and poll_description = #{pollDescription,jdbcType=VARCHAR}
+      </if>
+      <if test="pollDescription == null and propertiesChangeLog.pollDescriptionWasSet">
+        and poll_description is null
+      </if>
+      <if test="pollMetadata != null ">
+        and poll_metadata = #{pollMetadata,jdbcType=VARCHAR}
+      </if>
+      <if test="pollMetadata == null and propertiesChangeLog.pollMetadataWasSet">
+        and poll_metadata is null
+      </if>
+    </where>
+  </delete>
+
+</mapper>
