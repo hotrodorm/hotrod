@@ -195,15 +195,15 @@ public abstract class HotRodGenerator {
       log.debug("retrieveFreshDatabaseObjects=" + retrieveFreshDatabaseObjects);
 
       Set<DatabaseObject> tables = new HashSet<DatabaseObject>();
-      for (TableTag t : this.config.getTables()) {
+      for (TableTag t : this.config.getFacetTables()) {
         tables.add(t.getDatabaseObjectId());
       }
-      for (EnumTag e : this.config.getEnums()) {
+      for (EnumTag e : this.config.getFacetEnums()) {
         tables.add(e.getDatabaseObjectId());
       }
 
       Set<DatabaseObject> views = new HashSet<DatabaseObject>();
-      for (ViewTag v : this.config.getViews()) {
+      for (ViewTag v : this.config.getFacetViews()) {
         views.add(v.getDatabaseObjectId());
       }
 
@@ -398,7 +398,7 @@ public abstract class HotRodGenerator {
 
       Set<String> tablesAndEnumsCanonicalNames = new HashSet<String>();
 
-      for (TableTag tt : config.getTables()) {
+      for (TableTag tt : config.getFacetTables()) {
         String canonicalName = tt.getId().getCanonicalSQLName();
         if (tablesAndEnumsCanonicalNames.contains(canonicalName)) {
           throw new ControlledException(tt.getSourceLocation(), "Duplicate database <table> name '" + canonicalName
@@ -407,7 +407,7 @@ public abstract class HotRodGenerator {
         tablesAndEnumsCanonicalNames.add(canonicalName);
       }
 
-      for (EnumTag et : config.getEnums()) {
+      for (EnumTag et : config.getFacetEnums()) {
         String canonicalName = et.getId().getCanonicalSQLName();
         if (tablesAndEnumsCanonicalNames.contains(canonicalName)) {
           throw new ControlledException(et.getSourceLocation(), "Duplicate database <enum> name '" + canonicalName
@@ -418,7 +418,7 @@ public abstract class HotRodGenerator {
 
       Set<String> viewsCanonicalNames = new HashSet<String>();
 
-      for (ViewTag vt : config.getViews()) {
+      for (ViewTag vt : config.getFacetViews()) {
         String canonicalName = vt.getId().getCanonicalSQLName();
         if (viewsCanonicalNames.contains(canonicalName)) {
           throw new ControlledException(vt.getSourceLocation(), "Duplicate database <view> name '" + canonicalName
@@ -468,7 +468,7 @@ public abstract class HotRodGenerator {
       log.debug(">>> 1 selectMetadataCache=" + selectMetadataCache);
 
       this.executors = new LinkedHashSet<ExecutorDAOMetadata>();
-      for (ExecutorTag tag : config.getExecutors()) {
+      for (ExecutorTag tag : config.getFacetExecutors()) {
         ExecutorDAOMetadata dm;
         try {
           dm = new ExecutorDAOMetadata(tag, this.adapter, config, tag.getFragmentConfig(), selectMetadataCache);
@@ -544,17 +544,17 @@ public abstract class HotRodGenerator {
 
       logm("Prepare selects metadata - phase 1.");
 
-      if (!this.config.getSelects().isEmpty()) {
+      if (!this.config.getFacetSelects().isEmpty()) {
         retrieveSelectMetadata = true;
       }
 
       this.selects = new LinkedHashSet<SelectDataSetMetadata>();
-      if (!this.config.getSelects().isEmpty()) {
+      if (!this.config.getFacetSelects().isEmpty()) {
 
         SelectClassTag current = null;
         SelectDataSetMetadata sm = null;
 
-        for (SelectClassTag s : this.config.getSelects()) {
+        for (SelectClassTag s : this.config.getFacetSelects()) {
           log.debug("::: select '" + s.getJavaClassName() + "': " + s.renderSQLSentence(new ParameterRenderer() {
             @Override
             public String render(SQLParameter parameter) {
@@ -945,7 +945,7 @@ public abstract class HotRodGenerator {
 
       // selects
 
-      for (SelectClassTag q : config.getSelects()) {
+      for (SelectClassTag q : config.getFacetSelects()) {
         display("Select " + q.getJavaClassName() + " included.");
       }
 
@@ -958,7 +958,7 @@ public abstract class HotRodGenerator {
     sb.append(this.db.getTables().size() + " " + (this.db.getTables().size() == 1 ? "table" : "tables") + ", ");
     sb.append(this.db.getViews().size() + " " + (this.db.getViews().size() == 1 ? "view" : "views") + ", ");
     sb.append(this.enums.size() + " " + (this.enums.size() == 1 ? "enum" : "enums") + ", ");
-    sb.append(this.config.getExecutors().size() + " " + (this.config.getExecutors().size() == 1 ? "DAO" : "DAOs") //
+    sb.append(this.config.getFacetExecutors().size() + " " + (this.config.getFacetExecutors().size() == 1 ? "DAO" : "DAOs") //
         + ", and ");
 
     sb.append(sequences + " sequence" + (sequences == 1 ? "" : "s") + " -- including ");
@@ -986,11 +986,11 @@ public abstract class HotRodGenerator {
         ns.registerDAOTag(v.getDaoTag(), "view", v.getId().getCanonicalSQLName());
       }
 
-      for (SelectClassTag s : config.getSelects()) {
+      for (SelectClassTag s : config.getFacetSelects()) {
         ns.registerDAOTag(s, "select", s.getJavaClassName());
       }
 
-      for (ExecutorTag c : config.getExecutors()) {
+      for (ExecutorTag c : config.getFacetExecutors()) {
         ns.registerDAOTag(c, "dao", c.getJavaClassName());
       }
     } catch (DuplicateDAOClassException e) {

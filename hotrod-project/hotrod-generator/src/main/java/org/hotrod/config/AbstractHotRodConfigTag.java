@@ -218,6 +218,18 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
       this.allFacets.mergeOther(f);
     }
 
+    // Validate extends (across all facets)
+
+    for (TableTag t : this.tables) {
+      t.validateAllExtends(this.tables);
+    }
+
+    // Validate extends (within selected facets only)
+
+    for (TableTag t : this.getFacetTables()) {
+      t.validateFacetExtends(this.getFacetTables());
+    }
+
     // display
 
     if (log.isDebugEnabled()) {
@@ -265,26 +277,26 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   public void validateAgainstDatabase(final HotRodGenerator generator, final Connection conn,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
 
-    for (TableTag t : this.getTables()) {
+    for (TableTag t : this.getFacetTables()) {
       t.validateAgainstDatabase(generator);
     }
 
-    for (ViewTag v : this.getViews()) {
+    for (ViewTag v : this.getFacetViews()) {
       v.validateAgainstDatabase(generator);
     }
 
-    for (EnumTag e : this.getEnums()) {
+    for (EnumTag e : this.getFacetEnums()) {
       e.validateAgainstDatabase(generator, conn, adapter);
     }
 
-    for (ExecutorTag d : this.getExecutors()) {
+    for (ExecutorTag d : this.getFacetExecutors()) {
       d.validateAgainstDatabase(generator);
     }
 
   }
 
   public TableTag getTableTag(final JdbcTable t) {
-    for (TableTag tag : this.getTables()) {
+    for (TableTag tag : this.getFacetTables()) {
       log.debug("Comparing table '" + t.getName() + "' -- tag=" + tag.getId().getCanonicalSQLName());
       // TODO: this comparison fails to include the catalog/schema. Fix!
       if (tag.getId().getCanonicalSQLName().equals(t.getName())) {
@@ -299,7 +311,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   }
 
   public EnumTag getEnumTag(final JdbcTable t) {
-    for (EnumTag tag : this.getEnums()) {
+    for (EnumTag tag : this.getFacetEnums()) {
       log.debug("enum tag=" + tag.getId().getCanonicalSQLName());
       // TODO: this comparison fails to include the catalog/schema. Fix!
       if (tag.getId().getCanonicalSQLName().equals(t.getName())) {
@@ -314,7 +326,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   }
 
   public ViewTag getViewTag(final JdbcTable t) {
-    for (ViewTag tag : this.getViews()) {
+    for (ViewTag tag : this.getFacetViews()) {
       // TODO: this comparison fails to include the catalog/schema. Fix!
       if (tag.getId().getCanonicalSQLName().equals(t.getName())) {
         return tag;
@@ -333,7 +345,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return facetNames;
   }
 
-  public List<TableTag> getTables() {
+  public List<TableTag> getFacetTables() {
     if (this.chosenFacets.isEmpty()) {
       return this.allFacets.getTables();
     } else {
@@ -349,7 +361,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return this.allFacets.getTables();
   }
 
-  public List<ViewTag> getViews() {
+  public List<ViewTag> getFacetViews() {
     if (this.chosenFacets.isEmpty()) {
       return this.allFacets.getViews();
     } else {
@@ -365,7 +377,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return this.allFacets.getViews();
   }
 
-  public List<EnumTag> getEnums() {
+  public List<EnumTag> getFacetEnums() {
     if (this.chosenFacets.isEmpty()) {
       return this.allFacets.getEnums();
     } else {
@@ -381,7 +393,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return this.allFacets.getEnums();
   }
 
-  public List<ExecutorTag> getExecutors() {
+  public List<ExecutorTag> getFacetExecutors() {
     if (this.chosenFacets.isEmpty()) {
       return this.allFacets.getExecutors();
     } else {
@@ -397,7 +409,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return this.allFacets.getExecutors();
   }
 
-  public List<SelectClassTag> getSelects() {
+  public List<SelectClassTag> getFacetSelects() {
     if (this.chosenFacets.isEmpty()) {
       return this.allFacets.getSelects();
     } else {
@@ -421,11 +433,11 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return assembledFacets.get(name);
   }
 
-  public TableTag findTable(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
+  public TableTag findFacetTable(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;
     }
-    for (TableTag t : this.getTables()) {
+    for (TableTag t : this.getFacetTables()) {
       if (metadata.getId().equals(t.getId())) {
         return t;
       }
@@ -434,11 +446,11 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   }
 
   // TODO: Why is this methods used?
-  public EnumTag findEnum(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
+  public EnumTag findFacetEnum(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;
     }
-    for (EnumTag e : this.getEnums()) {
+    for (EnumTag e : this.getFacetEnums()) {
       if (metadata.getId().equals(e.getId())) {
         return e;
       }
@@ -447,11 +459,11 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   }
 
   // TODO: Why is this methods used?
-  public ViewTag findView(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
+  public ViewTag findFacetView(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;
     }
-    for (ViewTag v : this.getViews()) {
+    for (ViewTag v : this.getFacetViews()) {
       if (metadata.getId().equals(v.getId())) {
         return v;
       }
@@ -460,11 +472,11 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   }
 
   // TODO: Why is this methods used?
-  public SelectClassTag findSelect(final SelectDataSetMetadata metadata, final DatabaseAdapter adapter) {
+  public SelectClassTag findFacetSelect(final SelectDataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;
     }
-    for (SelectClassTag v : this.getSelects()) {
+    for (SelectClassTag v : this.getFacetSelects()) {
       if (metadata.getSelectTag().getJavaClassName().equals(v.getJavaClassName())) {
         return v;
       }
@@ -679,7 +691,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
     log.debug("mark 2 failedInnerGeneration=" + failedInnerGeneration);
 
-    for (CorrelatedEntry<TableTag> cor : Correlator.correlate(this.getTables(), cache.getTables(),
+    for (CorrelatedEntry<TableTag> cor : Correlator.correlate(this.getFacetTables(), cache.getFacetTables(),
         new Comparator<TableTag>() {
           @Override
           public int compare(TableTag o1, TableTag o2) {
@@ -727,7 +739,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
     log.debug("mark 3 failedInnerGeneration=" + failedInnerGeneration);
 
-    for (CorrelatedEntry<EnumTag> cor : Correlator.correlate(this.getEnums(), cache.getEnums(),
+    for (CorrelatedEntry<EnumTag> cor : Correlator.correlate(this.getFacetEnums(), cache.getFacetEnums(),
         new Comparator<EnumTag>() {
           @Override
           public int compare(EnumTag o1, EnumTag o2) {
@@ -767,7 +779,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
     log.debug("mark 4 failedInnerGeneration=" + failedInnerGeneration);
 
-    for (CorrelatedEntry<ViewTag> cor : Correlator.correlate(this.getViews(), cache.getViews(),
+    for (CorrelatedEntry<ViewTag> cor : Correlator.correlate(this.getFacetViews(), cache.getFacetViews(),
         new Comparator<ViewTag>() {
           @Override
           public int compare(ViewTag o1, ViewTag o2) {
@@ -810,7 +822,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
     log.debug("mark 5 failedInnerGeneration=" + failedInnerGeneration);
 
-    for (CorrelatedEntry<ExecutorTag> cor : Correlator.correlate(this.getExecutors(), cache.getExecutors(),
+    for (CorrelatedEntry<ExecutorTag> cor : Correlator.correlate(this.getFacetExecutors(), cache.getFacetExecutors(),
         new Comparator<ExecutorTag>() {
           @Override
           public int compare(ExecutorTag o1, ExecutorTag o2) {
