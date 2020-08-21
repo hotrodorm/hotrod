@@ -22,6 +22,7 @@ import org.hotrod.utils.identifiers.ObjectId;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
+import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 
 @XmlRootElement(name = "table")
 public class TableTag extends AbstractEntityDAOTag {
@@ -332,58 +333,64 @@ public class TableTag extends AbstractEntityDAOTag {
 
   }
 
-  public void validateAllExtends(final List<TableTag> allTables) throws InvalidConfigurationFileException {
+  public void validateExtendsAgainstAllTables(final List<TableTag> allTables) throws InvalidConfigurationFileException {
+    log.debug("v1");
     try {
       validateAndLinkExtends(allTables);
     } catch (ExtendedTableNotFoundException e) {
-      throw new InvalidConfigurationFileException(e.getTable(), //
-          "Extended table '" + e.getTable().getExtendsId() + "' not found.",
-          "Extended table '" + e.getTable().getExtendsId() + "' not found.");
+      throw new InvalidConfigurationFileException(this, //
+          "Table '" + this.getId() + "' is extending table '" + this.getExtendsId()
+              + "' that cannot be found in the configuration file(s).");
     }
   }
 
-  public void validateFacetExtends(final List<TableTag> facetTables) throws InvalidConfigurationFileException {
+  public void validateExtendsInSelectedFacets(final List<TableTag> facetTables, final Set<String> facetNames)
+      throws InvalidConfigurationFileException {
+    log.debug("v2");
+
+    for (TableTag ft : facetTables) {
+      log.debug("v2 - " + ft.getId());
+    }
+
     try {
       validateAndLinkExtends(facetTables);
     } catch (ExtendedTableNotFoundException e) {
-      throw new InvalidConfigurationFileException(e.getTable(), //
-          "Extended table '" + e.getTable().getExtendsId() + "' not found in the selected facets.",
-          "Extended table '" + e.getTable().getExtendsId() + "' not found in the selected facets.");
+      throw new InvalidConfigurationFileException(this, //
+          "Table '" + this.getId() + "' is extending table '" + this.getExtendsId()
+              + "' that cannot be found in the selected facets ("
+              + facetNames.stream().collect(ListCollector.joining(",")) + ") of the configuration file(s).");
     }
   }
 
   private void validateAndLinkExtends(final List<TableTag> tables)
       throws InvalidConfigurationFileException, ExtendedTableNotFoundException {
-    for (TableTag t : tables) {
-      if (t.getExtendsId() != null) {
-        if (t.getExtendsId().equals(t.getId())) {
-          throw new InvalidConfigurationFileException(t, //
-              "The table '" + t.name + "' cannot extend itself.", "The table '" + t.name + "' cannot extend itself.");
-        }
-        for (TableTag ot : tables) {
-          if (t.getExtendsId().equals(ot.getId())) {
-            this.extendsTag = ot;
-          }
-        }
-        throw new ExtendedTableNotFoundException(t);
+    if (this.getExtendsId() != null) {
+      log.debug("*** " + this.id + " -> " + this.getExtendsId() + " ***");
+      if (this.getExtendsId().equals(this.getId())) {
+        throw new InvalidConfigurationFileException(this, //
+            "Table '" + this.id + "' cannot extend itself.");
       }
+      for (TableTag ot : tables) {
+        log.debug(
+            " -> ot: " + ot.id + " -- t.getExtendsId().equals(ot.getId())=" + this.getExtendsId().equals(ot.getId()));
+        if (this.getExtendsId().equals(ot.getId())) {
+          this.extendsTag = ot;
+          if (ot.getExtendsId() != null) {
+            throw new InvalidConfigurationFileException(this, //
+                Constants.TOOL_NAME + " only supports single-level inheritance for tables, but table '" + this.getId()
+                    + "' is declared to extend table '" + this.getExtendsId()
+                    + "' that itself is declared to extend table '" + ot.getExtendsId() + "'.");
+          }
+          return;
+        }
+      }
+      throw new ExtendedTableNotFoundException();
     }
   }
 
   private static class ExtendedTableNotFoundException extends Exception {
 
     private static final long serialVersionUID = 1L;
-
-    private TableTag table;
-
-    public ExtendedTableNotFoundException(TableTag table) {
-      super();
-      this.table = table;
-    }
-
-    public TableTag getTable() {
-      return table;
-    }
 
   }
 

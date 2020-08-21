@@ -1,2 +1,8 @@
-mvn -P postgresql-11.1 hotrod:gen
+To run HotRod:
+
+  mvn -P postgresql-11.1 hotrod:gen
+
+To rebuild the database (PostgreSQL):
+
+  mvn -P postgresql-11.1 db:rebuild
 

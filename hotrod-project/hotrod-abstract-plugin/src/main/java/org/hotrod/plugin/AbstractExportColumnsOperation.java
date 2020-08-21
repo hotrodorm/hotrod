@@ -107,7 +107,8 @@ public abstract class AbstractExportColumnsOperation {
 
     HotRodConfigTag config = null;
     try {
-      config = ConfigurationLoader.loadPrimary(this.baseDir, this.configFile, this.generator, adapter);
+      config = ConfigurationLoader.loadPrimary(this.baseDir, this.configFile, this.generator, adapter,
+          new LinkedHashSet<String>());
     } catch (ControlledException e) {
       if (e.getLocation() != null) {
         throw new Exception("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
@@ -117,6 +118,9 @@ public abstract class AbstractExportColumnsOperation {
     } catch (UncontrolledException e) {
       feedback.error("Technical error found: " + EUtils.renderMessages(e));
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
+    } catch (FacetNotFoundException e) {
+      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code: " + "facet '"
+          + e.getMessage() + "' not found.");
     } catch (Throwable e) {
       feedback.error("Technical error found: " + EUtils.renderMessages(e));
       log.error("Technical error found", e);
@@ -124,13 +128,6 @@ public abstract class AbstractExportColumnsOperation {
     }
 
     log.debug("Configuration loaded.");
-
-    try {
-      config.setChosenFacets(this.facetNames);
-    } catch (FacetNotFoundException e) {
-      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code: " + "facet '"
-          + e.getMessage() + "' not found.");
-    }
 
     try {
       CachedMetadata cachedMetadata = new CachedMetadata();

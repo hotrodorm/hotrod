@@ -410,21 +410,6 @@ create table employee_state (
   description varchar(40) not null
 );
 
--- @delimiter // solo
-
-create function employee_state_read_only() returns trigger as $BODY$
-begin
-    raise exception 'Insert, update, or delete operation not allowed on read-only table "employee_state".';
-end;
-$BODY$ language plpgsql;
-//
-
-create trigger employee_state_read_only before insert or update or delete on employee_state
-  for each statement execute procedure employee_state_read_only();
-//
-
--- @delimiter ;
-
 create table employee (
   id integer primary key not null,
   name varchar(60) not null,
@@ -473,3 +458,37 @@ create table "<Stock$"."&Price%" (
 );
 
 create sequence "<Stock$".seq_price;
+
+-- inheritance testing
+
+create table a (
+  id int primary key not null,
+  name varchar(10)
+);
+
+create table schema2.b (
+  id int primary key not null,
+  amount int,
+  foreign key (id) references a (id)
+);
+
+create table c (
+  id int primary key not null,
+  recorded_at timestamp,
+  foreign key (id) references schema2.b (id)
+);
+
+-- @delimiter // solo
+
+create function employee_state_read_only() returns trigger as $BODY$
+begin
+    raise exception 'Insert, update, or delete operation not allowed on read-only table "employee_state".';
+end;
+$BODY$ language plpgsql;
+//
+
+create trigger employee_state_read_only before insert or update or delete on employee_state
+  for each statement execute procedure employee_state_read_only();
+//
+
+

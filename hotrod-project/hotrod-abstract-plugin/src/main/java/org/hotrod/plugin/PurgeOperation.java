@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -101,7 +102,8 @@ public class PurgeOperation {
 
     HotRodConfigTag config = null;
     try {
-      config = ConfigurationLoader.loadPrimary(this.baseDir, this.configFile, this.generator, adapter);
+      config = ConfigurationLoader.loadPrimary(this.baseDir, this.configFile, this.generator, adapter,
+          new LinkedHashSet<String>());
     } catch (ControlledException e) {
       if (e.getLocation() != null) {
         throw new OperationException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());

@@ -64,14 +64,22 @@ drop table if exists types_binary;
 drop table if exists types_date_time;
 drop table if exists types_other;  
 
+-- drop view if exists all_types_view;
+-- drop table if exists all_types_table;
+
 drop type if exists mood;
 drop type if exists complex;
 
 drop table if exists employee;
 
-drop trigger employee_state_read_only on employee_state;
-drop function employee_state_read_only;
+drop trigger if exists employee_state_read_only on employee_state;
+drop function if exists employee_state_read_only;
 drop table if exists employee_state;
 
+-- inheritance testing
+
+drop table if exists c;
+drop table if exists schema2.b;
+drop table if exists a;
 
 

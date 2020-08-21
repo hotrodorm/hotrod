@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.LinkedHashSet;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -27,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractHotRodConfigTag.LocationListener;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
@@ -62,7 +64,8 @@ public class ConfigurationLoader {
   // Behavior
 
   public static HotRodConfigTag loadPrimary(final File projectBaseDir, final File f, final String generatorName,
-      final DatabaseAdapter adapter) throws ControlledException, UncontrolledException {
+      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames)
+      throws ControlledException, UncontrolledException, FacetNotFoundException {
 
     log.debug("loading file: " + f);
 
@@ -140,7 +143,7 @@ public class ConfigurationLoader {
       DaosTag daosTag = config.getGenerators().getSelectedGeneratorTag().getDaos();
       FileRegistry fileRegistry = new FileRegistry(f);
 
-      config.validateCommon(config, f, fileRegistry, f, daosTag, null, adapter);
+      config.validateCommon(config, f, fileRegistry, f, daosTag, null, adapter, facetNames);
       log.debug("Semantics validation #2 successful.");
 
       config.addConverterTags();
@@ -185,7 +188,8 @@ public class ConfigurationLoader {
 
   public static HotRodFragmentConfigTag loadFragment(final HotRodConfigTag primaryConfig, final File f,
       final FileRegistry fileRegistry, final DaosTag daosTag, final FragmentTag fragmentTag,
-      final DatabaseAdapter adapter) throws UncontrolledException, ControlledException {
+      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames)
+      throws UncontrolledException, ControlledException, FacetNotFoundException {
 
     // Basic file validation
 
@@ -258,7 +262,7 @@ public class ConfigurationLoader {
       log.debug("  --     tag: " + fragmentTag.getSourceLocation());
       fileRegistry.add(fragmentTag, f);
       log.debug("----2> fileRegistry=" + fileRegistry);
-      fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, daosTag, fragmentConfig, adapter);
+      fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, daosTag, fragmentConfig, adapter, facetNames);
 
       // Complete
 

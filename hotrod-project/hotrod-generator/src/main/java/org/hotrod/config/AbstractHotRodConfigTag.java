@@ -8,10 +8,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.Unmarshaller.Listener;
 import javax.xml.bind.annotation.XmlElement;
@@ -104,7 +106,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
   // Setters
 
-  public void setChosenFacets(final Set<String> facetNames) throws FacetNotFoundException {
+  private void setChosenFacets(final Set<String> facetNames) throws FacetNotFoundException {
     this.facetNames = facetNames;
     this.chosenFacets = new HashSet<FacetTag>();
     for (String f : facetNames) {
@@ -120,10 +122,10 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
   protected void validateCommon(final HotRodConfigTag config, final File file, final FileRegistry fileRegistry,
       final File parentFile, final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
-      final DatabaseAdapter adapter)
-      throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
+      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames)
+      throws InvalidConfigurationFileException, ControlledException, UncontrolledException, FacetNotFoundException {
 
-    log.debug("init");
+    log.debug("validateCommon");
 
     File parentDir = file.getParentFile();
 
@@ -196,7 +198,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     // Fragments
 
     for (FragmentTag f : this.fragments) {
-      f.validate(config, parentDir, fileRegistry, parentFile, daosTag, adapter);
+      f.validate(config, parentDir, fileRegistry, parentFile, daosTag, adapter, facetNames);
       this.mergeFragment(f.getFragmentConfig());
       super.addChild(f);
     }
@@ -218,16 +220,18 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
       this.allFacets.mergeOther(f);
     }
 
+    this.setChosenFacets(facetNames);
+
     // Validate extends (across all facets)
 
-    for (TableTag t : this.tables) {
-      t.validateAllExtends(this.tables);
+    for (TableTag t : this.getAllTables()) {
+      t.validateExtendsAgainstAllTables(this.getAllTables());
     }
 
     // Validate extends (within selected facets only)
 
     for (TableTag t : this.getFacetTables()) {
-      t.validateFacetExtends(this.getFacetTables());
+      t.validateExtendsInSelectedFacets(this.getFacetTables(), this.facetNames);
     }
 
     // display
@@ -346,6 +350,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   }
 
   public List<TableTag> getFacetTables() {
+    log.debug("this.chosenFacets=" + this.chosenFacets.stream().map(f -> f.getName()).collect(Collectors.joining(",")));
     if (this.chosenFacets.isEmpty()) {
       return this.allFacets.getTables();
     } else {
