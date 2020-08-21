@@ -53,6 +53,10 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   private AbstractDAOTag daoTag;
 
+  private TableTag parentTag;
+  private transient JdbcTable parentJdbcTable;
+  private TableDataSetMetadata parent;
+
   private List<ColumnMetadata> cols;
   private KeyMetadata pk;
   private List<KeyMetadata> uniqueIndexes;
@@ -79,8 +83,9 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   // Table constructor
 
-  protected TableDataSetMetadata(final TableTag tableTag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config, final DataSetLayout layout, final SelectMetadataCache selectMetadataCache)
+  protected TableDataSetMetadata(final TableTag tableTag, final JdbcTable t, final TableTag parentTag,
+      final JdbcTable parentJdbcTable, final DatabaseAdapter adapter, final HotRodConfigTag config,
+      final DataSetLayout layout, final SelectMetadataCache selectMetadataCache)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
     this.t = t;
     this.config = config;
@@ -88,6 +93,10 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
     this.daoTag = tableTag;
     this.fragmentConfig = tableTag.getFragmentConfig();
+
+    this.parentTag = parentTag;
+    this.parentJdbcTable = parentJdbcTable;
+    this.parent = null;
 
     this.selectMetadataCache = selectMetadataCache;
 
@@ -193,6 +202,10 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     this.daoTag = enumTag;
     this.fragmentConfig = enumTag.getFragmentConfig();
 
+    this.parentTag = null;
+    this.parentJdbcTable = null;
+    this.parent = null;
+
     this.selectMetadataCache = selectMetadataCache;
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
@@ -231,6 +244,10 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
     this.daoTag = viewTag;
     this.fragmentConfig = viewTag.getFragmentConfig();
+
+    this.parentTag = null;
+    this.parentJdbcTable = null;
+    this.parent = null;
 
     this.selectMetadataCache = selectMetadataCache;
 
@@ -271,13 +288,36 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   }
 
-  public void linkReferencedTableMetadata(final Set<TableDataSetMetadata> tm) {
+  public void linkReferencedTableMetadata(final Set<TableDataSetMetadata> tm) throws InvalidConfigurationFileException {
+
+    // foreign keys
+
     for (ForeignKeyMetadata fk : this.importedFKs) {
       fk.linkReferencedTableMetadata(tm);
     }
     for (ForeignKeyMetadata fk : this.exportedFKs) {
       fk.linkReferencedTableMetadata(tm);
     }
+
+    // parent tables
+
+    log.debug("" + this.id + ": this.parentTag=" + this.parentTag);
+
+    this.parent = null;
+    if (this.parentTag != null) {
+      for (TableDataSetMetadata o : tm) {
+        if (o.getId().equals(this.parentTag.getId())) {
+          this.parent = o;
+        }
+      }
+      log.debug("" + this.id + ": parent=" + this.parent);
+      if (this.parent == null) {
+        throw new InvalidConfigurationFileException(this.daoTag,
+            "Could not find parent table '" + this.parentTag.getId() + "' that is extended by '" + this.id + "'.");
+
+      }
+    }
+
   }
 
   public void linkEnumMetadata(final Set<EnumDataSetMetadata> enums) {
@@ -599,6 +639,11 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   @Override
   public ObjectId getId() {
     return this.id;
+  }
+
+  @Override
+  public TableDataSetMetadata getParentMetadata() {
+    return this.parent;
   }
 
   @Override

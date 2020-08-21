@@ -43,7 +43,8 @@ public abstract class DataSetMetadataFactory {
           tableTag.markGenerate();
         }
       }
-      TableDataSetMetadata tm = new TableDataSetMetadata(tableTag, t, adapter, config, layout, selectMetadataCache);
+      TableDataSetMetadata tm = new TableDataSetMetadata(tableTag, t, tableTag.getExtendsTag(),
+          tableTag.getExtendsJdbcTable(), adapter, config, layout, selectMetadataCache);
       log.debug("cachedConfig=" + cachedConfig);
       if (cachedConfig != null) {
         log.debug("cachedConfig.findEnum(tm, adapter)=" + cachedConfig.findFacetEnum(tm, adapter));

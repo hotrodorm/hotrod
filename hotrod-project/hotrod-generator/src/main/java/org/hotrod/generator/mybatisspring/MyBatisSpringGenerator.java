@@ -1,7 +1,9 @@
 package org.hotrod.generator.mybatisspring;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,6 +52,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
   private LinkedHashMap<DataSetMetadata, ObjectDAO> daos = new LinkedHashMap<DataSetMetadata, ObjectDAO>();
   private LinkedHashMap<DataSetMetadata, Mapper> mappers = new LinkedHashMap<DataSetMetadata, Mapper>();
   private LinkedHashMap<EnumDataSetMetadata, EnumClass> enumClasses = new LinkedHashMap<EnumDataSetMetadata, EnumClass>();
+  private List<ObjectAbstractVO> tableAbstractVOs = new ArrayList<ObjectAbstractVO>();
   private MyBatisConfiguration myBatisConfig;
   private LiveSQLMapper liveSQLMapper;
 
@@ -63,7 +66,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
   }
 
   @Override
-  public void prepareGeneration() throws UncontrolledException, ControlledException {
+  public void prepareGeneration() throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
     log.debug("prepare");
 
     // Load and validate the configuration file
@@ -90,6 +93,24 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
       }
       for (SelectMethodMetadata sm : tm.getSelectsMetadata()) {
         addSelectVOs(sm);
+      }
+    }
+
+    // Link parent tables
+
+    for (ObjectAbstractVO avo : this.tableAbstractVOs) {
+      if (avo.getMetadata().getParentMetadata() != null) {
+        avo.setParent(null);
+        for (ObjectAbstractVO ovo : this.tableAbstractVOs) {
+          if (avo != ovo && avo.getMetadata().getParentMetadata().getId().equals(ovo.getMetadata().getId())) {
+            avo.setParent(ovo);
+          }
+        }
+        if (avo.getParent() == null) {
+          throw new InvalidConfigurationFileException(avo.getMetadata().getDaoTag(),
+              "Could not find parent table '" + avo.getMetadata().getParentMetadata().getId() + "' extended by table '"
+                  + avo.getMetadata().getId() + "'.");
+        }
       }
     }
 
@@ -162,6 +183,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
       layout = new DataSetLayout(this.config, ttag);
 
       abstractVO = new ObjectAbstractVO(metadata, layout, this, DAOType.TABLE, myBatisTag);
+      this.tableAbstractVOs.add(abstractVO);
       vo = new ObjectVO(metadata, layout, this, abstractVO, myBatisTag);
       mapper = new Mapper(ttag, metadata, layout, this, type, this.adapter, vo, this.entityDAORegistry);
       dao = new ObjectDAO(ttag, metadata, layout, this, type, myBatisTag, vo, mapper);

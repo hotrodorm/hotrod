@@ -225,13 +225,13 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     // Validate extends (across all facets)
 
     for (TableTag t : this.getAllTables()) {
-      t.validateExtendsAgainstAllTables(this.getAllTables());
+      t.validateExtendsAgainstAllTables(this.getAllTables(), this.getAllEnums());
     }
 
     // Validate extends (within selected facets only)
 
     for (TableTag t : this.getFacetTables()) {
-      t.validateExtendsInSelectedFacets(this.getFacetTables(), this.facetNames);
+      t.validateExtendsInSelectedFacets(this.getFacetTables(), this.getFacetEnums(), this.facetNames);
     }
 
     // display

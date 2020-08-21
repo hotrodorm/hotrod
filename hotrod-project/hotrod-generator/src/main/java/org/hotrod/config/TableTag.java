@@ -49,6 +49,7 @@ public class TableTag extends AbstractEntityDAOTag {
   private ObjectId id = null;
   private ObjectId extendsId = null;
   private TableTag extendsTag = null;
+  private JdbcTable extendsJdbcTable = null;
 
   private String javaClassName = null;
   private String columnSeam = null;
@@ -336,19 +337,24 @@ public class TableTag extends AbstractEntityDAOTag {
 
   }
 
-  public void validateExtendsAgainstAllTables(final List<TableTag> allTables) throws InvalidConfigurationFileException {
+  public void validateExtendsAgainstAllTables(final List<TableTag> allTables, final List<EnumTag> allEnums)
+      throws InvalidConfigurationFileException {
     log.debug("v1");
     try {
-      validateAndLinkExtends(allTables);
+      validateAndLinkExtends(allTables, allEnums);
     } catch (ExtendedTableNotFoundException e) {
       throw new InvalidConfigurationFileException(this, //
           "Table '" + this.getId() + "' is extending table '" + this.getExtendsId()
               + "' that cannot be found in the configuration file(s).");
+    } catch (ExtendedTableFoundAsEnumException e) {
+      throw new InvalidConfigurationFileException(this, //
+          "Table '" + this.getId() + "' cannot extend table '" + this.getExtendsId()
+              + "' since the latter is declared as an <enum>.");
     }
   }
 
-  public void validateExtendsInSelectedFacets(final List<TableTag> facetTables, final Set<String> facetNames)
-      throws InvalidConfigurationFileException {
+  public void validateExtendsInSelectedFacets(final List<TableTag> facetTables, final List<EnumTag> facetEnums,
+      final Set<String> facetNames) throws InvalidConfigurationFileException {
     log.debug("v2");
 
     for (TableTag ft : facetTables) {
@@ -356,23 +362,29 @@ public class TableTag extends AbstractEntityDAOTag {
     }
 
     try {
-      validateAndLinkExtends(facetTables);
+      validateAndLinkExtends(facetTables, facetEnums);
     } catch (ExtendedTableNotFoundException e) {
       throw new InvalidConfigurationFileException(this, //
           "Table '" + this.getId() + "' is extending table '" + this.getExtendsId()
               + "' that cannot be found in the selected facets ("
               + facetNames.stream().collect(ListCollector.joining(",")) + ") of the configuration file(s).");
+    } catch (ExtendedTableFoundAsEnumException e) {
+      throw new InvalidConfigurationFileException(this, //
+          "Table '" + this.getId() + "' cannot extend table '" + this.getExtendsId()
+              + "' since the latter is declared as an <enum>.");
     }
   }
 
-  private void validateAndLinkExtends(final List<TableTag> tables)
-      throws InvalidConfigurationFileException, ExtendedTableNotFoundException {
+  private void validateAndLinkExtends(final List<TableTag> tables, final List<EnumTag> enums)
+      throws InvalidConfigurationFileException, ExtendedTableNotFoundException, ExtendedTableFoundAsEnumException {
     if (this.getExtendsId() != null) {
       log.debug("*** " + this.id + " -> " + this.getExtendsId() + " ***");
+
       if (this.getExtendsId().equals(this.getId())) {
         throw new InvalidConfigurationFileException(this, //
             "Table '" + this.id + "' cannot extend itself.");
       }
+
       for (TableTag ot : tables) {
         log.debug(
             " -> ot: " + ot.id + " -- t.getExtendsId().equals(ot.getId())=" + this.getExtendsId().equals(ot.getId()));
@@ -387,11 +399,24 @@ public class TableTag extends AbstractEntityDAOTag {
           return;
         }
       }
+
+      for (EnumTag et : enums) {
+        if (this.getExtendsId().equals(et.getId())) {
+          throw new ExtendedTableFoundAsEnumException();
+        }
+      }
+
       throw new ExtendedTableNotFoundException();
     }
   }
 
   private static class ExtendedTableNotFoundException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+  }
+
+  private static class ExtendedTableFoundAsEnumException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
@@ -448,13 +473,13 @@ public class TableTag extends AbstractEntityDAOTag {
     // validate extends as an FK from the PK to the parent PK
 
     if (this.extendsTag != null) {
-      JdbcTable pt = generator.findJdbcTable(this.extendsTag.id.getCanonicalSQLName());
-      if (pt == null) {
+      this.extendsJdbcTable = generator.findJdbcTable(this.extendsTag.id.getCanonicalSQLName());
+      if (this.extendsJdbcTable == null) {
         throw new InvalidConfigurationFileException(this, //
             "Could not find database table '" + this.extendsTag.id + "'. "
                 + "\n\nPlease verify the specified database catalog and schema names are correct according to this database.");
       }
-      JdbcKey ppk = pt.getPk();
+      JdbcKey ppk = this.extendsJdbcTable.getPk();
       if (ppk == null) {
         throw new InvalidConfigurationFileException(this, //
             "Could not find a primary key on parent table '" + this.extendsId + "' extended by table '" + this.id
@@ -538,15 +563,23 @@ public class TableTag extends AbstractEntityDAOTag {
   // Getters
 
   public String getColumnSeam() {
-    return columnSeam;
+    return this.columnSeam;
   }
 
   public ObjectId getExtendsId() {
-    return extendsId;
+    return this.extendsId;
   }
 
   public ObjectId getId() {
     return this.id;
+  }
+
+  public TableTag getExtendsTag() {
+    return this.extendsTag;
+  }
+
+  public JdbcTable getExtendsJdbcTable() {
+    return this.extendsJdbcTable;
   }
 
   public DatabaseObject getDatabaseObjectId() {

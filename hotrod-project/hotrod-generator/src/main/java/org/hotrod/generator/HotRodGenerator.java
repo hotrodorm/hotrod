@@ -958,8 +958,9 @@ public abstract class HotRodGenerator {
     sb.append(this.db.getTables().size() + " " + (this.db.getTables().size() == 1 ? "table" : "tables") + ", ");
     sb.append(this.db.getViews().size() + " " + (this.db.getViews().size() == 1 ? "view" : "views") + ", ");
     sb.append(this.enums.size() + " " + (this.enums.size() == 1 ? "enum" : "enums") + ", ");
-    sb.append(this.config.getFacetExecutors().size() + " " + (this.config.getFacetExecutors().size() == 1 ? "DAO" : "DAOs") //
-        + ", and ");
+    sb.append(
+        this.config.getFacetExecutors().size() + " " + (this.config.getFacetExecutors().size() == 1 ? "DAO" : "DAOs") //
+            + ", and ");
 
     sb.append(sequences + " sequence" + (sequences == 1 ? "" : "s") + " -- including ");
     sb.append(queries + " " + (queries == 1 ? "query" : "queries") + ", ");
@@ -1107,10 +1108,12 @@ public abstract class HotRodGenerator {
    * config file. No code generation is performed by this method, so any failure
    * will not override a previous code generation.
    * 
-   * @throws UncontrolledException When a technical error is found
-   * @throws ControlledException   When a configuration error is found
+   * @throws UncontrolledException             When a technical error is found
+   * @throws ControlledException               When a configuration error is found
+   * @throws InvalidConfigurationFileException
    */
-  public abstract void prepareGeneration() throws UncontrolledException, ControlledException;
+  public abstract void prepareGeneration()
+      throws UncontrolledException, ControlledException, InvalidConfigurationFileException;
 
   /**
    * Generates new persistence code.

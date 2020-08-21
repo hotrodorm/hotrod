@@ -2,6 +2,7 @@ package org.hotrod.generator.mybatisspring;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +27,7 @@ public class ObjectAbstractVO extends GeneratableObject {
   private static final Logger log = LogManager.getLogger(ObjectAbstractVO.class);
 
   private DataSetMetadata metadata;
+  private ObjectAbstractVO parent;
   private DataSetLayout layout;
   private MyBatisSpringGenerator generator;
   private DAOType daoType;
@@ -44,6 +46,7 @@ public class ObjectAbstractVO extends GeneratableObject {
     log.debug("init");
 
     this.metadata = metadata;
+    this.parent = null;
     this.layout = layout;
     this.generator = generator;
     if (daoType == null) {
@@ -144,7 +147,23 @@ public class ObjectAbstractVO extends GeneratableObject {
     println("  // VO Properties ("
         + (this.daoType == DAOType.TABLE ? "table" : this.daoType == DAOType.VIEW ? "view" : "select") + " columns)");
     println();
-    for (ColumnMetadata cm : this.metadata.getColumns()) {
+    writeColumnProperties(this.metadata.getColumns());
+
+    // add parent VO if it extends another table
+
+    log.debug("" + this.metadata.getId() + ": this.metadata.getParentMetadata()=" + this.metadata.getParentMetadata());
+
+    if (this.metadata.getParentMetadata() != null) {
+      println("  // Parent VO, since this table extends another one");
+      println();
+      println("  protected " + this.parent.getClassName() + " __parent__ = null;");
+      println();
+    }
+
+  }
+
+  private void writeColumnProperties(List<ColumnMetadata> columns) throws IOException {
+    for (ColumnMetadata cm : columns) {
       String javaType = resolveType(cm);
       println("  protected " + javaType + " " + cm.getId().getJavaMemberName() + " = null;"
           + (cm.getType().isLOB() ? " // it's a LOB type" : ""));
@@ -164,20 +183,34 @@ public class ObjectAbstractVO extends GeneratableObject {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String javaType = resolveType(cm);
       String m = cm.getId().getJavaMemberName();
+      writeGetter(cm, javaType, m);
+      writeSetter(cm, javaType, m);
+    }
 
-      println("  public " + javaType + " " + cm.getId().getJavaGetter() + "() {");
-      println("    return this." + m + ";");
-      println("  }");
+    // add parent accessors if it extends another table
+
+    if (this.metadata.getParentMetadata() != null) {
+      println("  // parent getters & setters");
       println();
-
-      String setter = cm.getId().getJavaSetter();
-      writeSetter(cm, javaType, m, setter);
+      for (ColumnMetadata cm : this.metadata.getParentMetadata().getNonPkColumns()) {
+        String javaType = resolveType(cm);
+        String m = cm.getId().getJavaMemberName();
+        writeGetter(cm, javaType, m);
+        writeSetter(cm, javaType, m);
+      }
     }
 
   }
 
-  private void writeSetter(final ColumnMetadata cm, final String javaType, final String m, final String setter)
-      throws IOException {
+  private void writeGetter(ColumnMetadata cm, String javaType, String m) throws IOException {
+    println("  public " + javaType + " " + cm.getId().getJavaGetter() + "() {");
+    println("    return this." + m + ";");
+    println("  }");
+    println();
+  }
+
+  private void writeSetter(final ColumnMetadata cm, final String javaType, final String m) throws IOException {
+    String setter = cm.getId().getJavaSetter();
     println("  public void " + setter + "(final " + javaType + " " + m + ") {");
     println("    this." + m + " = " + m + ";");
     String name = cm.getId().getJavaMemberName() + "WasSet";
@@ -291,6 +324,18 @@ public class ObjectAbstractVO extends GeneratableObject {
 
   private void writeClassFooter() throws IOException {
     println("}");
+  }
+
+  DataSetMetadata getMetadata() {
+    return metadata;
+  }
+
+  ObjectAbstractVO getParent() {
+    return parent;
+  }
+
+  void setParent(ObjectAbstractVO parent) {
+    this.parent = parent;
   }
 
   // Identifiers & File Paths
