@@ -469,13 +469,18 @@ create table a (
 create table schema2.b (
   id int primary key not null,
   amount int,
+  vin int not null unique,
   foreign key (id) references a (id)
 );
 
 create table c (
   id int primary key not null,
   recorded_at timestamp,
-  foreign key (id) references schema2.b (id)
+  alt_id int
+ , foreign key (id) references schema2.b (id)
+ , foreign key (id) references schema2.b (vin)
+ , foreign key (alt_id) references schema2.b (id)
+ , foreign key (alt_id) references schema2.b (vin)
 );
 
 -- @delimiter // solo
