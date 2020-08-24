@@ -108,10 +108,10 @@
 
   <profiles>
 
-    <!-- PostgreSQL 11.1 generation -->
+    <!-- PostgreSQL 12.4 generation -->
 
     <profile>
-      <id>postgresql-11.1</id>
+      <id>postgresql-12.4</id>
       <build>
         <plugins>
 
@@ -120,16 +120,16 @@
           <plugin>
             <groupId>org.nocrala.tools.database.builder</groupId>
             <artifactId>database-builder-maven-plugin</artifactId>
-            <version>1.1.1</version>
+            <version>1.2.2-SNAPSHOT</version>
             <configuration>
-              <sourcedir>testdata/postgresql-11.1/database-source</sourcedir>
+              <sourcedir>testdata/postgresql-12.4/database-source</sourcedir>
               <targetversion>1.0.0</targetversion>
               <datascenario>unit-testing</datascenario>
               <layeredbuild>true</layeredbuild>
               <layeredscenario>false</layeredscenario>
               <onbuilderror>stop</onbuilderror>
               <oncleanerror>continue</oncleanerror>
-              <localproperties>testdata/postgresql-11.1/testing.properties</localproperties>
+              <localproperties>testdata/postgresql-12.4/testing.properties</localproperties>
             </configuration>
             <dependencies>
               <dependency>
@@ -148,9 +148,9 @@
             <artifactId>hotrod-maven-plugin</artifactId>
             <version>3.2.1-SNAPSHOT</version>
             <configuration>
-              <localproperties>testdata/postgresql-11.1/testing.properties</localproperties>
-              <txtexportfile>./testdata/postgresql-11.1/export-columns.txt</txtexportfile>
-              <xlsxexportfile>./testdata/postgresql-11.1/export-columns.xlsx</xlsxexportfile>
+              <localproperties>testdata/postgresql-12.4/testing.properties</localproperties>
+              <txtexportfile>./testdata/postgresql-12.4/export-columns.txt</txtexportfile>
+              <xlsxexportfile>./testdata/postgresql-12.4/export-columns.xlsx</xlsxexportfile>
             </configuration>
             <dependencies>
               <dependency>

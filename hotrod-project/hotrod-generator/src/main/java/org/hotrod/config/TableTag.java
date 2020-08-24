@@ -487,6 +487,12 @@ public class TableTag extends AbstractEntityDAOTag {
                 + "In order to extend another table this table must have a primary key. "
                 + "Also this primary key must have a foreign key constraint against the parent table.");
       }
+      if (pk.getKeyColumns().size() != 1) {
+        throw new InvalidConfigurationFileException(this, //
+            "Composite primary key found on table '" + this.id + "' that extends table '" + this.extendsTag.id + "'. "
+                + "In order to extend another table this table must have a single-column primary key. "
+                + "Also this primary key must have a foreign key constraint against the parent table.");
+      }
 
       this.extendsFK = null;
       log.debug("* cpk: " + renderKey(pk));
