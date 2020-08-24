@@ -463,13 +463,15 @@ create sequence "<Stock$".seq_price;
 
 create table a (
   id int primary key not null,
-  name varchar(10)
+  name varchar(10),
+  vin int not null unique
 );
 
 create table schema2.b (
   id int primary key not null,
   amount int,
   vin int not null unique,
+  foreign key (id) references a (vin),
   foreign key (id) references a (id)
 );
 

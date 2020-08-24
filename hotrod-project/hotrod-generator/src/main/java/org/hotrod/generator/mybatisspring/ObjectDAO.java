@@ -91,6 +91,7 @@ public class ObjectDAO extends GeneratableObject {
   public ObjectDAO(final AbstractDAOTag tag, final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisSpringGenerator generator, final DAOType type, final MyBatisSpringTag myBatisTag, final ObjectVO vo,
       final Mapper mapper) {
+    super();
     log.debug("init");
     this.tag = tag;
     this.metadata = metadata;

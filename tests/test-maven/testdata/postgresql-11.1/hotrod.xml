@@ -20,9 +20,13 @@
 -->
 
   <facet name="gui">
+    <table name="a" />
+    <table name="b" schema="schema2" extends="a" />
+    <!-- 
+    <table name="b" schema="schema2" extends="a" />
+    <enum name="a" name-column="name" />
     <table name="b" schema="schema2" />
     <table name="c" extends="b" extends-schema="schema2" />
-    <!-- 
     -->
   </facet>
   

@@ -50,6 +50,7 @@ public class TableTag extends AbstractEntityDAOTag {
   private ObjectId extendsId = null;
   private TableTag extendsTag = null;
   private JdbcTable extendsJdbcTable = null;
+  private JdbcForeignKey extendsFK = null;
 
   private String javaClassName = null;
   private String columnSeam = null;
@@ -479,41 +480,37 @@ public class TableTag extends AbstractEntityDAOTag {
             "Could not find database table '" + this.extendsTag.id + "'. "
                 + "\n\nPlease verify the specified database catalog and schema names are correct according to this database.");
       }
-      JdbcKey ppk = this.extendsJdbcTable.getPk();
-      if (ppk == null) {
-        throw new InvalidConfigurationFileException(this, //
-            "Could not find a primary key on parent table '" + this.extendsId + "' extended by table '" + this.id
-                + "'. " + "In order to extend a table both tables must have a primary key. "
-                + "Also the primary key of the child table must have a foreign key constraint against the primary key of the parent table.");
-      }
-      JdbcKey cpk = jt.getPk();
-      if (cpk == null) {
+      JdbcKey pk = jt.getPk();
+      if (pk == null) {
         throw new InvalidConfigurationFileException(this, //
             "Could not find a primary key on table '" + this.id + "' that extends table '" + this.extendsTag.id + "'. "
                 + "In order to extend another table this table must have a primary key. "
-                + "Also this primary key must have a foreign key constraint against the primary key of the parent table.");
+                + "Also this primary key must have a foreign key constraint against the parent table.");
       }
 
-      boolean foundFKPK = false;
-      log.debug("* cpk: " + renderKey(cpk));
-      log.debug("* ppk: " + renderKey(ppk));
-      for (JdbcForeignKey cfk : jt.getImportedFks()) {
-        log.debug("* FK: " + renderKey(cfk.getLocalKey()) + " -> " + renderKey(cfk.getRemoteKey()));
-        boolean goodFK = equivalentKeys(cfk.getRemoteKey(), ppk);
-        boolean goodPK = equivalentKeys(cfk.getLocalKey(), cpk);
-        log.debug(" - cfk.getRemoteKey().isEquivalentTo(ppk) = " + goodFK);
-        log.debug(" - cfk.getLocalKey().isEquivalentTo(cpk) = " + goodPK);
-        if (goodFK && goodPK) {
-          foundFKPK = true;
+      this.extendsFK = null;
+      log.debug("* cpk: " + renderKey(pk));
+      for (JdbcForeignKey fk : jt.getImportedFks()) {
+        log.debug("* FK: " + renderKey(fk.getLocalKey()) + " -> " + renderKey(fk.getRemoteKey()));
+        boolean fkFromPK = equivalentKeys(fk.getLocalKey(), pk);
+        log.debug(" - cfk.getLocalKey().isEquivalentTo(cpk) = " + fkFromPK);
+        if (fkFromPK) {
+          if (this.extendsFK != null) {
+            throw new InvalidConfigurationFileException(this, //
+                "Multiple foreign keys found on table '" + this.id
+                    + "' from its primary key column(s) to the the parent table '" + this.extendsId
+                    + "'. In order to extend another table this table's primary key must have "
+                    + "a single foreign key constraint from its primary key against the parent table.");
+          }
+          this.extendsFK = fk;
         }
       }
-      if (!foundFKPK) {
+      if (this.extendsFK == null) {
         throw new InvalidConfigurationFileException(this, //
             "Could not find a foreign key on table '" + this.id
-                + "' from its primary key column(s) to the primary key column(s) of the parent table '" + this.extendsId
-                + "'. "
-                + "In order to extend another table this table's primary key must have a foreign key constraint "
-                + "against the parent table's primary key.");
+                + "' from its primary key column(s) against the the parent table '" + this.extendsId
+                + "'. In order to extend another table this table's primary key must have "
+                + "a single foreign key constraint from its primary key against the parent table.");
       }
 
     }

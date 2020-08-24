@@ -26,8 +26,10 @@ public class ObjectAbstractVO extends GeneratableObject {
 
   private static final Logger log = LogManager.getLogger(ObjectAbstractVO.class);
 
+  private static final String DEFAULT_PARENT_DAO_PROPERTY = "__parent___DAO__";
+  private static final String DEFAULT_PARENT_VO_PROPERTY = "__parent__VO__";
+
   private DataSetMetadata metadata;
-  private ObjectAbstractVO parent;
   private DataSetLayout layout;
   private MyBatisSpringGenerator generator;
   private DAOType daoType;
@@ -39,14 +41,17 @@ public class ObjectAbstractVO extends GeneratableObject {
 
   private TextWriter w;
 
+  private String parentDAOProperty;
+  private String parentVOProperty;
+
   // Constructor
 
   public ObjectAbstractVO(final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisSpringGenerator generator, final DAOType daoType, final MyBatisSpringTag myBatisTag) {
+    super();
     log.debug("init");
 
     this.metadata = metadata;
-    this.parent = null;
     this.layout = layout;
     this.generator = generator;
     if (daoType == null) {
@@ -81,6 +86,8 @@ public class ObjectAbstractVO extends GeneratableObject {
       writeClassHeader();
 
       writeProperties();
+
+      writeParentManagementMethods();
 
       writeGettersAndSetters();
 
@@ -129,6 +136,10 @@ public class ObjectAbstractVO extends GeneratableObject {
 
     println("import java.io.Serializable;");
     println("import org.hotrod.runtime.json.*;");
+    if (this.getBundle().getParent() != null) {
+      println("import org.springframework.beans.factory.annotation.Autowired;");
+      println("import " + this.getBundle().getParent().getVO().getFullClassName() + ";");
+    }
     println();
 
     // Signature
@@ -144,22 +155,61 @@ public class ObjectAbstractVO extends GeneratableObject {
   }
 
   private void writeProperties() throws IOException, UnresolvableDataTypeException {
+
+    this.parentDAOProperty = DEFAULT_PARENT_DAO_PROPERTY;
+    this.parentVOProperty = DEFAULT_PARENT_VO_PROPERTY;
+
     println("  // VO Properties ("
         + (this.daoType == DAOType.TABLE ? "table" : this.daoType == DAOType.VIEW ? "view" : "select") + " columns)");
     println();
     writeColumnProperties(this.metadata.getColumns());
 
-    // add parent VO if it extends another table
+    // add parent DAO & VO if it extends another table
 
     log.debug("" + this.metadata.getId() + ": this.metadata.getParentMetadata()=" + this.metadata.getParentMetadata());
 
-    if (this.metadata.getParentMetadata() != null) {
-      println("  // Parent VO, since this table extends another one");
+    if (this.getBundle().getParent() != null) {
+      println("  // Parent DAO and VO (since this table extends another one)");
       println();
-      println("  protected " + this.parent.getClassName() + " __parent__ = null;");
+      println("  @Autowired");
+      println("  private " + this.getBundle().getParent().getDAO().getClassName() + " " + this.parentDAOProperty
+          + " = null;");
+      println();
+      println("  private " + this.getBundle().getParent().getVO().getClassName() + " " + this.parentVOProperty
+          + " = null;");
       println();
     }
 
+  }
+
+  private void writeParentManagementMethods() throws IOException, UnresolvableDataTypeException {
+    if (this.getBundle().getParent() == null) {
+      return;
+    }
+    println("  public void setActionId(Long id) {"); // Verify this property name
+    println("    this.unloadSuperclass();");
+    println("    super.setActionId(id);"); // Verify this property name
+    println("  }");
+    println();
+    println("  public boolean isLoaded() {");
+    println("    return this." + this.parentVOProperty + " != null;");
+    println("  }");
+    println();
+    println("  public void unloadSuperclass() {");
+    println("    System.out.println(\">>> Unloading superclass...\");");
+    println("    this." + this.parentVOProperty + " = null;");
+    println("  }");
+    println();
+    println("  public void loadSuperclass() {");
+    println("    if (!this.isLoaded()) {");
+    println("      System.out.println(\">>> Loading superclass\");");
+    println("      this." + this.parentVOProperty + " = this." + this.parentDAOProperty
+        + ".selectByPK(this.getActionId());"); // Verify this property name
+    println("    }");
+    println("    else");
+    println("      System.out.println(\">>>Nothing to do...already loaded\");");
+    println("  }");
+    println();
   }
 
   private void writeColumnProperties(List<ColumnMetadata> columns) throws IOException {
@@ -195,8 +245,8 @@ public class ObjectAbstractVO extends GeneratableObject {
       for (ColumnMetadata cm : this.metadata.getParentMetadata().getNonPkColumns()) {
         String javaType = resolveType(cm);
         String m = cm.getId().getJavaMemberName();
-        writeGetter(cm, javaType, m);
-        writeSetter(cm, javaType, m);
+        writeParentGetter(cm, javaType, m);
+        writeParentSetter(cm, javaType, m);
       }
     }
 
@@ -215,6 +265,21 @@ public class ObjectAbstractVO extends GeneratableObject {
     println("    this." + m + " = " + m + ";");
     String name = cm.getId().getJavaMemberName() + "WasSet";
     println("    this.getPropertiesChangeLog()." + name + " = true;");
+    println("  }");
+    println();
+  }
+
+  private void writeParentGetter(ColumnMetadata cm, String javaType, String m) throws IOException {
+    println("  public " + javaType + " " + cm.getId().getJavaGetter() + "() {");
+    println("    return this." + this.parentVOProperty + "." + cm.getId().getJavaGetter() + "();");
+    println("  }");
+    println();
+  }
+
+  private void writeParentSetter(final ColumnMetadata cm, final String javaType, final String m) throws IOException {
+    String setter = cm.getId().getJavaSetter();
+    println("  public void " + setter + "(final " + javaType + " " + m + ") {");
+    println("    this." + this.parentVOProperty + "." + setter + "(" + m + ");");
     println("  }");
     println();
   }
@@ -328,14 +393,6 @@ public class ObjectAbstractVO extends GeneratableObject {
 
   DataSetMetadata getMetadata() {
     return metadata;
-  }
-
-  ObjectAbstractVO getParent() {
-    return parent;
-  }
-
-  void setParent(ObjectAbstractVO parent) {
-    this.parent = parent;
   }
 
   // Identifiers & File Paths

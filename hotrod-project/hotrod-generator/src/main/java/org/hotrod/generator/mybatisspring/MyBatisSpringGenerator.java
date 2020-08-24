@@ -100,13 +100,13 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
 
     for (ObjectAbstractVO avo : this.tableAbstractVOs) {
       if (avo.getMetadata().getParentMetadata() != null) {
-        avo.setParent(null);
+        avo.getBundle().setParent(null);
         for (ObjectAbstractVO ovo : this.tableAbstractVOs) {
           if (avo != ovo && avo.getMetadata().getParentMetadata().getId().equals(ovo.getMetadata().getId())) {
-            avo.setParent(ovo);
+            avo.getBundle().setParent(ovo.getBundle());
           }
         }
-        if (avo.getParent() == null) {
+        if (avo.getBundle().getParent() == null) {
           throw new InvalidConfigurationFileException(avo.getMetadata().getDaoTag(),
               "Could not find parent table '" + avo.getMetadata().getParentMetadata().getId() + "' extended by table '"
                   + avo.getMetadata().getId() + "'.");
@@ -172,6 +172,8 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
     Mapper mapper;
     ObjectDAO dao;
 
+    Bundle bundle;
+
     switch (type) {
 
     case TABLE:
@@ -190,6 +192,12 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
       this.entityDAORegistry.add(vo.getFullClassName(), dao);
       mapper.setDao(dao);
 
+      bundle = new Bundle(abstractVO, vo, dao, mapper);
+      abstractVO.setBundle(bundle);
+      vo.setBundle(bundle);
+      mapper.setBundle(bundle);
+      dao.setBundle(bundle);
+
       break;
 
     case VIEW:
@@ -207,6 +215,12 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
       this.entityDAORegistry.add(vo.getFullClassName(), dao);
       mapper.setDao(dao);
 
+      bundle = new Bundle(abstractVO, vo, dao, mapper);
+      abstractVO.setBundle(bundle);
+      vo.setBundle(bundle);
+      mapper.setBundle(bundle);
+      dao.setBundle(bundle);
+
       break;
 
     case EXECUTOR:
@@ -218,6 +232,10 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
       mapper = new Mapper(tag, metadata, layout, this, type, this.adapter, vo, this.entityDAORegistry);
       dao = new ObjectDAO(tag, metadata, layout, this, type, myBatisTag, vo, mapper);
       mapper.setDao(dao);
+
+      bundle = new Bundle(abstractVO, vo, dao, mapper);
+      mapper.setBundle(bundle);
+      dao.setBundle(bundle);
 
       break;
 
