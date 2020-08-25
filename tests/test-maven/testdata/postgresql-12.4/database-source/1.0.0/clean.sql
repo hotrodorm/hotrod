@@ -78,7 +78,6 @@ drop table if exists employee_state;
 
 -- inheritance testing
 
-drop table if exists c;
 drop table if exists b;
 drop table if exists a;
 

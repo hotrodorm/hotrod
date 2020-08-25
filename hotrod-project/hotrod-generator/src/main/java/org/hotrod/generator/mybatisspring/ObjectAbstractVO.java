@@ -26,9 +26,6 @@ public class ObjectAbstractVO extends GeneratableObject {
 
   private static final Logger log = LogManager.getLogger(ObjectAbstractVO.class);
 
-  private static final String DEFAULT_PARENT_DAO_PROPERTY = "__parent___DAO__";
-  private static final String DEFAULT_PARENT_VO_PROPERTY = "__parent__VO__";
-
   private DataSetMetadata metadata;
   private DataSetLayout layout;
   private MyBatisSpringGenerator generator;
@@ -86,8 +83,6 @@ public class ObjectAbstractVO extends GeneratableObject {
       writeClassHeader();
 
       writeProperties();
-
-      writeParentManagementMethods();
 
       writeGettersAndSetters();
 
@@ -156,9 +151,6 @@ public class ObjectAbstractVO extends GeneratableObject {
 
   private void writeProperties() throws IOException, UnresolvableDataTypeException {
 
-    this.parentDAOProperty = DEFAULT_PARENT_DAO_PROPERTY;
-    this.parentVOProperty = DEFAULT_PARENT_VO_PROPERTY;
-
     println("  // VO Properties ("
         + (this.daoType == DAOType.TABLE ? "table" : this.daoType == DAOType.VIEW ? "view" : "select") + " columns)");
     println();
@@ -171,45 +163,19 @@ public class ObjectAbstractVO extends GeneratableObject {
     if (this.getBundle().getParent() != null) {
       println("  // Parent DAO and VO (since this table extends another one)");
       println();
+
+      String daoClassName = this.getBundle().getParent().getDAO().getClassName();
+      this.parentDAOProperty = this.toLowerInitial(daoClassName);
       println("  @Autowired");
-      println("  private " + this.getBundle().getParent().getDAO().getClassName() + " " + this.parentDAOProperty
-          + " = null;");
+      println("  private " + daoClassName + " " + this.parentDAOProperty + " = null;");
+
       println();
-      println("  private " + this.getBundle().getParent().getVO().getClassName() + " " + this.parentVOProperty
-          + " = null;");
+      String voClassName = this.getBundle().getParent().getVO().getClassName();
+      this.parentVOProperty = this.toLowerInitial(voClassName);
+      println("  private " + voClassName + " " + this.parentVOProperty + " = null;");
       println();
     }
 
-  }
-
-  private void writeParentManagementMethods() throws IOException, UnresolvableDataTypeException {
-    if (this.getBundle().getParent() == null) {
-      return;
-    }
-    println("  public void setActionId(Long id) {"); // Verify this property name
-    println("    this.unloadSuperclass();");
-    println("    super.setActionId(id);"); // Verify this property name
-    println("  }");
-    println();
-    println("  public boolean isLoaded() {");
-    println("    return this." + this.parentVOProperty + " != null;");
-    println("  }");
-    println();
-    println("  public void unloadSuperclass() {");
-    println("    System.out.println(\">>> Unloading superclass...\");");
-    println("    this." + this.parentVOProperty + " = null;");
-    println("  }");
-    println();
-    println("  public void loadSuperclass() {");
-    println("    if (!this.isLoaded()) {");
-    println("      System.out.println(\">>> Loading superclass\");");
-    println("      this." + this.parentVOProperty + " = this." + this.parentDAOProperty
-        + ".selectByPK(this.getActionId());"); // Verify this property name
-    println("    }");
-    println("    else");
-    println("      System.out.println(\">>>Nothing to do...already loaded\");");
-    println("  }");
-    println();
   }
 
   private void writeColumnProperties(List<ColumnMetadata> columns) throws IOException {
@@ -227,20 +193,58 @@ public class ObjectAbstractVO extends GeneratableObject {
   }
 
   private void writeGettersAndSetters() throws IOException, UnresolvableDataTypeException {
-    println("  // getters & setters");
-    println();
 
-    for (ColumnMetadata cm : this.metadata.getColumns()) {
-      String javaType = resolveType(cm);
-      String m = cm.getId().getJavaMemberName();
-      writeGetter(cm, javaType, m);
-      writeSetter(cm, javaType, m);
-    }
+    if (this.getBundle().getParent() != null) { // table that extends another one
 
-    // add parent accessors if it extends another table
+      ColumnMetadata pkm = this.metadata.getPK().getColumns().get(0);
+      {
 
-    if (this.metadata.getParentMetadata() != null) {
-      println("  // parent getters & setters");
+        println("  // PK getters & setters");
+        println();
+
+        String javaType = resolveType(pkm);
+        String m = pkm.getId().getJavaMemberName();
+        writeGetter(pkm, javaType, m);
+
+        String setter = pkm.getId().getJavaSetter();
+        println("  public void " + setter + "(final " + javaType + " " + m + ") {");
+        println("    this.unloadSuperclass();");
+        println("    this." + m + " = " + m + ";");
+        println("  }");
+
+        println();
+        println("  public boolean isLoaded() {");
+        println("    return this." + this.parentVOProperty + " != null;");
+        println("  }");
+        println();
+        println("  public void unloadSuperclass() {");
+        println("    System.out.println(\">>> Unloading superclass...\");");
+        println("    this." + this.parentVOProperty + " = null;");
+        println("  }");
+        println();
+        println("  public void loadSuperclass() {");
+        println("    if (!this.isLoaded()) {");
+        println("      System.out.println(\">>> Loading superclass\");");
+        println("      this." + this.parentVOProperty + " = this." + this.parentDAOProperty + ".selectByPK(this." + m
+            + ");");
+        println("    }");
+        println("    else");
+        println("      System.out.println(\">>>Nothing to do...already loaded\");");
+        println("  }");
+        println();
+      }
+
+      println("  // Non-PK getters & setters");
+      println();
+
+      for (ColumnMetadata cm : this.metadata.getNonPkColumns()) {
+        String javaType = resolveType(cm);
+        String m = cm.getId().getJavaMemberName();
+        writeGetter(cm, javaType, m);
+        writeSetter(cm, javaType, m);
+      }
+
+      println("  // Parent getters & setters");
       println();
       for (ColumnMetadata cm : this.metadata.getParentMetadata().getNonPkColumns()) {
         String javaType = resolveType(cm);
@@ -248,6 +252,19 @@ public class ObjectAbstractVO extends GeneratableObject {
         writeParentGetter(cm, javaType, m);
         writeParentSetter(cm, javaType, m);
       }
+
+    } else { // traditional table without extends
+
+      println("  // getters & setters");
+      println();
+
+      for (ColumnMetadata cm : this.metadata.getColumns()) {
+        String javaType = resolveType(cm);
+        String m = cm.getId().getJavaMemberName();
+        writeGetter(cm, javaType, m);
+        writeSetter(cm, javaType, m);
+      }
+
     }
 
   }
@@ -406,6 +423,13 @@ public class ObjectAbstractVO extends GeneratableObject {
   }
 
   // Helpers
+
+  private String toLowerInitial(final String txt) {
+    if (txt == null || txt.length() < 1) {
+      return txt;
+    }
+    return txt.substring(0, 1).toLowerCase() + txt.substring(1);
+  }
 
   @SuppressWarnings("unused")
   private void print(final String txt) throws IOException {
