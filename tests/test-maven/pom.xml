@@ -120,7 +120,7 @@
           <plugin>
             <groupId>org.nocrala.tools.database.builder</groupId>
             <artifactId>database-builder-maven-plugin</artifactId>
-            <version>1.2.2-SNAPSHOT</version>
+            <version>1.2.2</version>
             <configuration>
               <sourcedir>testdata/postgresql-12.4/database-source</sourcedir>
               <targetversion>1.0.0</targetversion>
