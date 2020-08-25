@@ -46,4 +46,8 @@ public interface DataSetMetadata extends Serializable {
 
   List<SelectMethodMetadata> getSelectsMetadata();
 
+  default public TableDataSetMetadata getParentMetadata() {
+    return null;
+  }
+
 }

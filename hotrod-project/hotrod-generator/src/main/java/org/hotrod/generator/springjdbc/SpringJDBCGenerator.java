@@ -82,7 +82,7 @@ public class SpringJDBCGenerator extends HotRodGenerator {
 
     switch (type) {
     case TABLE:
-      TableTag tag = this.config.findTable(metadata, this.adapter);
+      TableTag tag = this.config.findFacetTable(metadata, this.adapter);
       if (tag == null) {
         throw new ControlledException(
             "Could not find table tag for table '" + metadata.getId().getCanonicalSQLName() + "'.");
@@ -105,7 +105,7 @@ public class SpringJDBCGenerator extends HotRodGenerator {
 
     case SELECT:
       SelectDataSetMetadata sm = (SelectDataSetMetadata) metadata;
-      SelectClassTag stag = this.config.findSelect(sm, this.adapter);
+      SelectClassTag stag = this.config.findFacetSelect(sm, this.adapter);
       if (stag == null) {
         throw new ControlledException(
             "Could not find select tag for with java-class-name '" + sm.getSelectTag().getJavaClassName() + "'.");

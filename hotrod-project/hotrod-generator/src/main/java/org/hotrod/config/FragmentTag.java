@@ -1,6 +1,7 @@
 package org.hotrod.config;
 
 import java.io.File;
+import java.util.LinkedHashSet;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -9,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
+import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.utils.Compare;
@@ -47,8 +49,9 @@ public class FragmentTag extends AbstractConfigurationTag implements GenerationU
   // Behavior
 
   public void validate(final HotRodConfigTag primaryConfig, final File parentDir, final FileRegistry fileRegistry,
-      final File parentFile, final DaosTag daosTag, final DatabaseAdapter adapter)
-      throws InvalidConfigurationFileException, ControlledException, UncontrolledException {
+      final File parentFile, final DaosTag daosTag, final DatabaseAdapter adapter,
+      final LinkedHashSet<String> facetNames)
+      throws InvalidConfigurationFileException, ControlledException, UncontrolledException, FacetNotFoundException {
 
     log.debug("Will load fragment: this.filename=" + this.filename);
 
@@ -76,17 +79,19 @@ public class FragmentTag extends AbstractConfigurationTag implements GenerationU
               + "'. Must be a normal file, not a directory or other special file.");
     }
 
-    load(primaryConfig, fileRegistry, daosTag, adapter);
+    load(primaryConfig, fileRegistry, daosTag, adapter, facetNames);
 
     log.debug("Fragment loaded.");
 
   }
 
   public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry, final DaosTag daosTag,
-      final DatabaseAdapter adapter) throws UncontrolledException, ControlledException {
+      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames)
+      throws UncontrolledException, ControlledException, FacetNotFoundException {
     log.debug("@@@ Will load fragment '" + this.f.getName() + "' -- at " + this.getSourceLocation());
     super.clearChildren();
-    this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.f, fileRegistry, daosTag, this, adapter);
+    this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.f, fileRegistry, daosTag, this, adapter,
+        facetNames);
     log.debug("Fragment loaded.");
     super.addChildren(this.fragmentConfig.getSubTags());
   }

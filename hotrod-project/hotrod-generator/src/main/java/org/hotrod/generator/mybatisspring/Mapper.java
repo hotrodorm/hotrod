@@ -74,6 +74,7 @@ public class Mapper extends GeneratableObject {
   public Mapper(final AbstractDAOTag compositeTag, final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisSpringGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo,
       final EntityDAORegistry daoRegistry) {
+    super();
     log.debug("init");
     this.compositeTag = compositeTag;
     this.selectTag = null;
@@ -83,6 +84,7 @@ public class Mapper extends GeneratableObject {
 
   public Mapper(final SelectClassTag selectTag, final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisSpringGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo) {
+    super();
     log.debug("init");
     this.compositeTag = null;
     this.selectTag = selectTag;

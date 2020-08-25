@@ -142,7 +142,7 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
     switch (type) {
 
     case TABLE:
-      TableTag ttag = this.config.findTable(metadata, this.adapter);
+      TableTag ttag = this.config.findFacetTable(metadata, this.adapter);
       if (ttag == null) {
         throw new ControlledException(
             "Could not find table tag for table '" + metadata.getId().getCanonicalSQLName() + "'.");
@@ -159,7 +159,7 @@ public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
       break;
 
     case VIEW:
-      ViewTag vtag = this.config.findView(metadata, this.adapter);
+      ViewTag vtag = this.config.findFacetView(metadata, this.adapter);
       if (vtag == null) {
         throw new ControlledException(
             "Could not find view tag for table '" + metadata.getId().getCanonicalSQLName() + "'.");

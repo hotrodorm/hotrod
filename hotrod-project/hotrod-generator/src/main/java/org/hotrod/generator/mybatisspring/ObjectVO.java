@@ -35,6 +35,7 @@ public class ObjectVO extends GeneratableObject {
 
   public ObjectVO(final DataSetMetadata metadata, final DataSetLayout layout, final MyBatisSpringGenerator generator,
       final ObjectAbstractVO abstractVO, final MyBatisSpringTag myBatisTag) {
+    super();
     log.debug("init");
 
     this.metadata = metadata;

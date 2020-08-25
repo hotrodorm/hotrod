@@ -43,11 +43,12 @@ public abstract class DataSetMetadataFactory {
           tableTag.markGenerate();
         }
       }
-      TableDataSetMetadata tm = new TableDataSetMetadata(tableTag, t, adapter, config, layout, selectMetadataCache);
+      TableDataSetMetadata tm = new TableDataSetMetadata(tableTag, t, tableTag.getExtendsTag(),
+          tableTag.getExtendsJdbcTable(), adapter, config, layout, selectMetadataCache);
       log.debug("cachedConfig=" + cachedConfig);
       if (cachedConfig != null) {
-        log.debug("cachedConfig.findEnum(tm, adapter)=" + cachedConfig.findEnum(tm, adapter));
-        if (cachedConfig.findEnum(tm, adapter) != null) {
+        log.debug("cachedConfig.findEnum(tm, adapter)=" + cachedConfig.findFacetEnum(tm, adapter));
+        if (cachedConfig.findFacetEnum(tm, adapter) != null) {
           // changed from enum to table - generate related tables
           markGenerateRelatedEntities(tm);
         }
@@ -68,7 +69,7 @@ public abstract class DataSetMetadataFactory {
         }
       }
       EnumDataSetMetadata em = new EnumDataSetMetadata(enumTag, t, adapter, config, layout, selectMetadataCache);
-      if (cachedConfig != null && cachedConfig.findEnum(em, adapter) != null) {
+      if (cachedConfig != null && cachedConfig.findFacetEnum(em, adapter) != null) {
         // changed from table to enum - generate related tables
         markGenerateRelatedEntities(em);
       }

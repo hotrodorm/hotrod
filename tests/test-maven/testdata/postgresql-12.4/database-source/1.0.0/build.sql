@@ -423,66 +423,74 @@ create table employee (
 -- Secondary Schema: schema2
 -- =========================
 
-create table schema2.house (
-  id int primary key not null,
-  name varchar(20)
-);
+
+
+
+--create table "schema2".house (
+--  id int primary key not null,
+--  name varchar(20)
+--);
 
 create table house (
   address varchar(50),
   price int
 );
 
-create table schema2.account_alert (
-  raised_at timestamp not null,
-  account_id int not null,
-  house_id int not null,
-  constraint aa_fk1 foreign key (account_id) references account (id),
-  constraint ah_fk2 foreign key (house_id) references schema2.house (id)
-);
+--create table schema2.account_alert (
+--  raised_at timestamp not null,
+--  account_id int not null,
+--  house_id int not null,
+--  constraint aa_fk1 foreign key (account_id) references account (id),
+--  constraint ah_fk2 foreign key (house_id) references schema2.house (id)
+--);
 
-create view schema2.low_account as select * from account where current_balance < 100;
+--create view schema2.low_account as select * from account where current_balance < 100;
 
-create table "house_ROOM" (
-  id int primary key not null,
-  room_name varchar(20),
-  house_id int not null,
-  constraint room_house_fk1 foreign key (house_id) references schema2.house (id)
-);
+--create table "house_ROOM" (
+--  id int primary key not null,
+--  room_name varchar(20),
+--  house_id int not null,
+--  constraint room_house_fk1 foreign key (house_id) references schema2.house (id)
+--);
   
 -- create schema "<Stock$";
 
-create table "<Stock$"."&Price%" (
-  id int,
-  value int
-);
+--create table "<Stock$"."&Price%" (
+--  id int,
+--  value int
+--);
 
-create sequence "<Stock$".seq_price;
+--create sequence "<Stock$".seq_price;
 
 -- inheritance testing
 
 create table a (
-  id int primary key not null,
+  id int not null,
+  xy int not null,
   name varchar(10),
-  vin int not null unique
+  vin int not null unique,
+  primary key (id, xy)
 );
 
-create table schema2.b (
-  id int primary key not null,
+create table b (
+  id int not null,
+  tp int not null,
   amount int,
   vin int not null unique,
-  foreign key (id) references a (vin),
-  foreign key (id) references a (id)
+  constraint uq101 unique (id),
+--  foreign key (id) references a (vin),
+  primary key (id, tp),
+  foreign key (id, tp) references a (id, xy)
 );
 
 create table c (
   id int primary key not null,
   recorded_at timestamp,
   alt_id int
- , foreign key (id) references schema2.b (id)
- , foreign key (id) references schema2.b (vin)
- , foreign key (alt_id) references schema2.b (id)
- , foreign key (alt_id) references schema2.b (vin)
+ , foreign key (id) references b (id)
+ , foreign key (id) references b (vin)
+ , foreign key (alt_id) references b (id)
+ , foreign key (alt_id) references b (vin)
 );
 
 -- @delimiter // solo

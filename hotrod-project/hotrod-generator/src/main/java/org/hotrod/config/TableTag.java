@@ -21,7 +21,11 @@ import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
+import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
+import org.nocrala.tools.database.tartarus.core.JdbcKey;
+import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
+import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 
 @XmlRootElement(name = "table")
 public class TableTag extends AbstractEntityDAOTag {
@@ -38,7 +42,15 @@ public class TableTag extends AbstractEntityDAOTag {
   private String schema = null;
   private String name = null;
 
+  private String extendsTable = null;
+  private String extendsCatalog = null;
+  private String extendsSchema = null;
+
   private ObjectId id = null;
+  private ObjectId extendsId = null;
+  private TableTag extendsTag = null;
+  private JdbcTable extendsJdbcTable = null;
+  private JdbcForeignKey extendsFK = null;
 
   private String javaClassName = null;
   private String columnSeam = null;
@@ -66,7 +78,13 @@ public class TableTag extends AbstractEntityDAOTag {
     d.catalog = this.catalog;
     d.schema = this.schema;
     d.name = this.name;
+
+    d.extendsTable = this.extendsTable;
+    d.extendsCatalog = this.extendsCatalog;
+    d.extendsSchema = this.extendsSchema;
+
     d.id = this.id;
+    d.extendsId = this.extendsId;
 
     d.javaClassName = this.javaClassName;
     d.columnSeam = this.columnSeam;
@@ -84,6 +102,11 @@ public class TableTag extends AbstractEntityDAOTag {
   // JAXB Setters
 
   @XmlAttribute
+  public void setName(final String name) {
+    this.name = name;
+  }
+
+  @XmlAttribute
   public void setCatalog(final String catalog) {
     this.catalog = catalog;
   }
@@ -93,9 +116,19 @@ public class TableTag extends AbstractEntityDAOTag {
     this.schema = schema;
   }
 
-  @XmlAttribute
-  public void setName(final String name) {
-    this.name = name;
+  @XmlAttribute(name = "extends")
+  public void setExtendsTable(final String extendsTable) {
+    this.extendsTable = extendsTable;
+  }
+
+  @XmlAttribute(name = "extends-catalog")
+  public void setExtendsCatalog(final String extendsCatalog) {
+    this.extendsCatalog = extendsCatalog;
+  }
+
+  @XmlAttribute(name = "extends-schema")
+  public void setExtendsSchema(final String extendsSchema) {
+    this.extendsSchema = extendsSchema;
   }
 
   @XmlAttribute(name = "java-name")
@@ -171,6 +204,67 @@ public class TableTag extends AbstractEntityDAOTag {
       throw new InvalidConfigurationFileException(this, msg, msg);
     }
 
+    // extends
+
+    if (this.extendsTable == null) {
+
+      if (this.extendsCatalog != null) {
+        throw new InvalidConfigurationFileException(this, //
+            "Attribute 'extends-catalog' cannot only specified if the 'extends' attribute is present", //
+            "Attribute 'extends-catalog' cannot only specified if the 'extends' attribute is present");
+      }
+      if (this.extendsSchema != null) {
+        throw new InvalidConfigurationFileException(this, //
+            "Attribute 'extends-schema' cannot only specified if the 'extends' attribute is present", //
+            "Attribute 'extends-schema' cannot only specified if the 'extends' attribute is present");
+      }
+      this.extendsId = null;
+
+    } else {
+
+      // extends
+
+      Id extendsTableId;
+      try {
+        extendsTableId = Id.fromTypedSQL(this.extendsTable, adapter);
+      } catch (InvalidIdentifierException e) {
+        String msg = "Invalid value '" + this.extendsTable + "' on 'extends' attribute: " + e.getMessage();
+        throw new InvalidConfigurationFileException(this, msg, msg);
+      }
+
+      // extends-catalog
+
+      Id extendsCatalogId;
+      try {
+        extendsCatalogId = this.extendsCatalog == null ? null : Id.fromTypedSQL(this.extendsCatalog, adapter);
+      } catch (InvalidIdentifierException e) {
+        String msg = "Invalid extends-catalog name '" + this.catalog + "' on tag <" + super.getTagName()
+            + "> for the table '" + this.name + "': " + e.getMessage();
+        throw new InvalidConfigurationFileException(this, msg, msg);
+      }
+
+      // extends-schema
+
+      Id extendsSchemaId;
+      try {
+        extendsSchemaId = this.extendsSchema == null ? null : Id.fromTypedSQL(this.extendsSchema, adapter);
+      } catch (InvalidIdentifierException e) {
+        String msg = "Invalid extends-schema name '" + this.schema + "' on tag <" + super.getTagName()
+            + "> for the table '" + this.name + "': " + e.getMessage();
+        throw new InvalidConfigurationFileException(this, msg, msg);
+      }
+
+      // Assemble extendsId
+
+      try {
+        this.extendsId = new ObjectId(extendsCatalogId, extendsSchemaId, extendsTableId, adapter);
+      } catch (InvalidIdentifierException e) {
+        String msg = "Invalid 'extends' table object name: " + e.getMessage();
+        throw new InvalidConfigurationFileException(this, msg, msg);
+      }
+
+    }
+
     // java-name
 
     if (this.javaClassName != null) {
@@ -244,6 +338,91 @@ public class TableTag extends AbstractEntityDAOTag {
 
   }
 
+  public void validateExtendsAgainstAllTables(final List<TableTag> allTables, final List<EnumTag> allEnums)
+      throws InvalidConfigurationFileException {
+    log.debug("v1");
+    try {
+      validateAndLinkExtends(allTables, allEnums);
+    } catch (ExtendedTableNotFoundException e) {
+      throw new InvalidConfigurationFileException(this, //
+          "Table '" + this.getId() + "' is extending table '" + this.getExtendsId()
+              + "' that cannot be found in the configuration file(s).");
+    } catch (ExtendedTableFoundAsEnumException e) {
+      throw new InvalidConfigurationFileException(this, //
+          "Table '" + this.getId() + "' cannot extend table '" + this.getExtendsId()
+              + "' since the latter is declared as an <enum>.");
+    }
+  }
+
+  public void validateExtendsInSelectedFacets(final List<TableTag> facetTables, final List<EnumTag> facetEnums,
+      final Set<String> facetNames) throws InvalidConfigurationFileException {
+    log.debug("v2");
+
+    for (TableTag ft : facetTables) {
+      log.debug("v2 - " + ft.getId());
+    }
+
+    try {
+      validateAndLinkExtends(facetTables, facetEnums);
+    } catch (ExtendedTableNotFoundException e) {
+      throw new InvalidConfigurationFileException(this, //
+          "Table '" + this.getId() + "' is extending table '" + this.getExtendsId()
+              + "' that cannot be found in the selected facets ("
+              + facetNames.stream().collect(ListCollector.joining(",")) + ") of the configuration file(s).");
+    } catch (ExtendedTableFoundAsEnumException e) {
+      throw new InvalidConfigurationFileException(this, //
+          "Table '" + this.getId() + "' cannot extend table '" + this.getExtendsId()
+              + "' since the latter is declared as an <enum>.");
+    }
+  }
+
+  private void validateAndLinkExtends(final List<TableTag> tables, final List<EnumTag> enums)
+      throws InvalidConfigurationFileException, ExtendedTableNotFoundException, ExtendedTableFoundAsEnumException {
+    if (this.getExtendsId() != null) {
+      log.debug("*** " + this.id + " -> " + this.getExtendsId() + " ***");
+
+      if (this.getExtendsId().equals(this.getId())) {
+        throw new InvalidConfigurationFileException(this, //
+            "Table '" + this.id + "' cannot extend itself.");
+      }
+
+      for (TableTag ot : tables) {
+        log.debug(
+            " -> ot: " + ot.id + " -- t.getExtendsId().equals(ot.getId())=" + this.getExtendsId().equals(ot.getId()));
+        if (this.getExtendsId().equals(ot.getId())) {
+          this.extendsTag = ot;
+          if (ot.getExtendsId() != null) {
+            throw new InvalidConfigurationFileException(this, //
+                Constants.TOOL_NAME + " only supports single-level inheritance for tables, but table '" + this.getId()
+                    + "' is declared to extend table '" + this.getExtendsId()
+                    + "' that itself is declared to extend table '" + ot.getExtendsId() + "'.");
+          }
+          return;
+        }
+      }
+
+      for (EnumTag et : enums) {
+        if (this.getExtendsId().equals(et.getId())) {
+          throw new ExtendedTableFoundAsEnumException();
+        }
+      }
+
+      throw new ExtendedTableNotFoundException();
+    }
+  }
+
+  private static class ExtendedTableNotFoundException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+  }
+
+  private static class ExtendedTableFoundAsEnumException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+  }
+
   public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
 
     JdbcTable jt = generator.findJdbcTable(this.id.getCanonicalSQLName());
@@ -292,6 +471,85 @@ public class TableTag extends AbstractEntityDAOTag {
       s.validateAgainstDatabase(generator);
     }
 
+    // validate extends as an FK from the PK to the parent PK
+
+    if (this.extendsTag != null) {
+      this.extendsJdbcTable = generator.findJdbcTable(this.extendsTag.id.getCanonicalSQLName());
+      if (this.extendsJdbcTable == null) {
+        throw new InvalidConfigurationFileException(this, //
+            "Could not find database table '" + this.extendsTag.id + "'. "
+                + "\n\nPlease verify the specified database catalog and schema names are correct according to this database.");
+      }
+      JdbcKey pk = jt.getPk();
+      if (pk == null) {
+        throw new InvalidConfigurationFileException(this, //
+            "Could not find a primary key on table '" + this.id + "' that extends table '" + this.extendsTag.id + "'. "
+                + "In order to extend another table this table must have a primary key. "
+                + "Also this primary key must have a foreign key constraint against the parent table.");
+      }
+      if (pk.getKeyColumns().size() != 1) {
+        throw new InvalidConfigurationFileException(this, //
+            "Composite primary key found on table '" + this.id + "' that extends table '" + this.extendsTag.id + "'. "
+                + "In order to extend another table this table must have a single-column primary key. "
+                + "Also this primary key must have a foreign key constraint against the parent table.");
+      }
+
+      this.extendsFK = null;
+      log.debug("* cpk: " + renderKey(pk));
+      for (JdbcForeignKey fk : jt.getImportedFks()) {
+        log.debug("* FK: " + renderKey(fk.getLocalKey()) + " -> " + renderKey(fk.getRemoteKey()));
+        boolean fkFromPK = equivalentKeys(fk.getLocalKey(), pk);
+        log.debug(" - cfk.getLocalKey().isEquivalentTo(cpk) = " + fkFromPK);
+        if (fkFromPK) {
+          if (this.extendsFK != null) {
+            throw new InvalidConfigurationFileException(this, //
+                "Multiple foreign keys found on table '" + this.id
+                    + "' from its primary key column(s) to the the parent table '" + this.extendsId
+                    + "'. In order to extend another table this table's primary key must have "
+                    + "a single foreign key constraint from its primary key against the parent table.");
+          }
+          this.extendsFK = fk;
+        }
+      }
+      if (this.extendsFK == null) {
+        throw new InvalidConfigurationFileException(this, //
+            "Could not find a foreign key on table '" + this.id
+                + "' from its primary key column(s) against the the parent table '" + this.extendsId
+                + "'. In order to extend another table this table's primary key must have "
+                + "a single foreign key constraint from its primary key against the parent table.");
+      }
+
+    }
+
+  }
+
+  private boolean equivalentKeys(final JdbcKey a, final JdbcKey b) {
+    if (a == null || b == null) {
+      return false;
+    }
+
+    List<JdbcKeyColumn> ac = new ArrayList<>(a.getKeyColumns());
+    ac.sort((x, y) -> Integer.compare(x.getColumnSequence(), y.getColumnSequence()));
+
+    List<JdbcKeyColumn> bc = new ArrayList<>(b.getKeyColumns());
+    bc.sort((x, y) -> Integer.compare(x.getColumnSequence(), y.getColumnSequence()));
+
+    if (ac.size() != bc.size()) {
+      return false;
+    }
+    for (int i = 0; i < ac.size(); i++) {
+      if (!ac.get(i).getColumn().isEquivalentTo(bc.get(i).getColumn())) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private String renderKey(final JdbcKey k) {
+    return "("
+        + k.getKeyColumns().stream().sorted((a, b) -> Integer.compare(a.getColumnSequence(), b.getColumnSequence()))
+            .map(c -> c.getColumn().getName()).collect(ListCollector.joining(","))
+        + ")";
   }
 
   // Search
@@ -308,11 +566,23 @@ public class TableTag extends AbstractEntityDAOTag {
   // Getters
 
   public String getColumnSeam() {
-    return columnSeam;
+    return this.columnSeam;
+  }
+
+  public ObjectId getExtendsId() {
+    return this.extendsId;
   }
 
   public ObjectId getId() {
     return this.id;
+  }
+
+  public TableTag getExtendsTag() {
+    return this.extendsTag;
+  }
+
+  public JdbcTable getExtendsJdbcTable() {
+    return this.extendsJdbcTable;
   }
 
   public DatabaseObject getDatabaseObjectId() {
@@ -368,6 +638,10 @@ public class TableTag extends AbstractEntityDAOTag {
       TableTag f = (TableTag) fresh;
       boolean different = !same(fresh);
 
+      this.extendsTable = f.extendsTable;
+      this.extendsCatalog = f.extendsCatalog;
+      this.extendsSchema = f.extendsSchema;
+      this.extendsId = f.extendsId;
       this.javaClassName = f.javaClassName;
       this.columnSeam = f.columnSeam;
       this.autoGeneratedColumn = f.autoGeneratedColumn;
@@ -389,6 +663,10 @@ public class TableTag extends AbstractEntityDAOTag {
       TableTag f = (TableTag) fresh;
       return //
       Compare.same(this.id, f.id) && //
+          Compare.same(this.extendsTable, f.extendsTable) && //
+          Compare.same(this.extendsCatalog, f.extendsCatalog) && //
+          Compare.same(this.extendsSchema, f.extendsSchema) && //
+          Compare.same(this.extendsId, f.extendsId) && //
           Compare.same(this.javaClassName, f.javaClassName) && //
           Compare.same(this.columnSeam, f.columnSeam) && //
           Compare.same(this.autoGeneratedColumn, f.autoGeneratedColumn) && //
