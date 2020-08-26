@@ -47,6 +47,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.Selectable;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
+import org.hotrod.runtime.spring.LazyParentClassLoading;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.GenUtils;
 import org.hotrod.utils.ImportsRenderer;
@@ -181,6 +182,10 @@ public class ObjectDAO extends GeneratableObject {
         writeOrderingEnum();
 
         writeMetadata();
+
+        if (this.getBundle().getParent() != null) {
+          writeAOPAspect();
+        }
 
       }
 
@@ -362,6 +367,16 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("org.springframework.context.ApplicationContext");
     imports.add("org.springframework.context.ApplicationContextAware");
     imports.newLine();
+
+    if (this.getBundle().getParent() != null) {
+      imports.add("org.aspectj.lang.JoinPoint");
+      imports.add("org.aspectj.lang.annotation.Aspect");
+      imports.add("org.aspectj.lang.annotation.Before");
+      imports.add("org.springframework.context.annotation.Configuration");
+      imports.add("org.springframework.core.annotation.Order");
+      imports.add(LazyParentClassLoading.class);
+      imports.newLine();
+    }
 
     this.w.write(imports.render());
 
@@ -1481,6 +1496,35 @@ public class ObjectDAO extends GeneratableObject {
     println("  }");
     println();
   }
+
+  private void writeAOPAspect() throws IOException {
+
+    println("  // AOP Lazy Loading of Parent Class Aspect");
+    println();
+
+    println("  @Aspect");
+    println("  @Configuration");
+    println("  @Order(150)");
+    println("  public class LazyLoadingAspect {");
+    println();
+    println("    @Before(\"execution(* " + this.getFullClassName() + ".get*(..))\")");
+    println("    public void superclassLoader(JoinPoint joinPoint) {");
+    println("      System.out.println(\"> SuperclassLoader Aspect triggered. joinpoint: \" + joinPoint);");
+    println("      try {");
+    println("        " + LazyParentClassLoading.class.getSimpleName() + " target = ("
+        + LazyParentClassLoading.class.getSimpleName() + ") joinPoint.getTarget();");
+    println("        target.loadSuperclass();");
+    println("      } catch (Exception e) {");
+    println("        // do nothing");
+    println("      }");
+    println("    }");
+    println();
+    println("  }");
+    println();
+
+  }
+
+  // Helpers
 
   private String resolveType(final ColumnMetadata cm) {
     EnumClass ec = this.generator.getEnum(cm.getEnumMetadata());

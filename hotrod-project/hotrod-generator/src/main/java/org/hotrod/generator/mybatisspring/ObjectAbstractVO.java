@@ -19,6 +19,7 @@ import org.hotrod.generator.GeneratableObject;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
+import org.hotrod.runtime.spring.LazyParentClassLoading;
 import org.hotrod.utils.ClassPackage;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
@@ -134,12 +135,19 @@ public class ObjectAbstractVO extends GeneratableObject {
     if (this.getBundle().getParent() != null) {
       println("import org.springframework.beans.factory.annotation.Autowired;");
       println("import " + this.getBundle().getParent().getVO().getFullClassName() + ";");
+      println("import " + LazyParentClassLoading.class.getName() + ";");
     }
     println();
 
     // Signature
 
-    println("public class " + this.getClassName() + " implements Serializable {");
+    if (this.getBundle().getParent() != null) {
+      println("public class " + this.getClassName() + " implements " + LazyParentClassLoading.class.getSimpleName()
+          + ", Serializable {");
+    } else {
+      println("public class " + this.getClassName() + " implements Serializable {");
+    }
+
     println();
 
     // Serial Version UID
@@ -213,15 +221,18 @@ public class ObjectAbstractVO extends GeneratableObject {
         println("  }");
 
         println();
+        println("  @Override");
         println("  public boolean isLoaded() {");
         println("    return this." + this.parentVOProperty + " != null;");
         println("  }");
         println();
+        println("  @Override");
         println("  public void unloadSuperclass() {");
         println("    System.out.println(\">>> Unloading superclass...\");");
         println("    this." + this.parentVOProperty + " = null;");
         println("  }");
         println();
+        println("  @Override");
         println("  public void loadSuperclass() {");
         println("    if (!this.isLoaded()) {");
         println("      System.out.println(\">>> Loading superclass\");");
