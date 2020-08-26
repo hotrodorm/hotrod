@@ -13,7 +13,7 @@ public class OO4HR3Aspect {
 
 	@Before("execution(* hr3.poc.dao.action.NewsImpl.get*(..))")
 	public void superclassLoader(JoinPoint joinPoint) {
-		System.out.println("superclassLoader Aspect. joinpoint: " + joinPoint);
+		System.out.println("> SuperclassLoader Aspect triggered. joinpoint: " + joinPoint);
 		try {
 			LazySuperclassLoading target = (LazySuperclassLoading) joinPoint.getTarget();
 			target.loadSuperclass();

@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>hr3.poc</groupId>
-	<artifactId>poc-hr-aspect</artifactId>
+	<artifactId>hr-aspect-poc</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>hr-aspect-poc</name>
 	<description>Demo HR3+Aspect on Spring Boot </description>

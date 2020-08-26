@@ -39,13 +39,18 @@ public class NewsImpl extends NewsVO implements News, LazySuperclassLoading {
 
 	@Override
 	public void unloadSuperclass() {
+		System.out.println(">>> ActionImpl.loadSuperclass: unloading superclass... because subclass(NewsImpl) id was to 'null'");
 		this.actionImpl = null;
 	}
 
 	@Override
 	public void loadSuperclass() {
-		if (!this.isLoaded())
+		if (!this.isLoaded()) {
+			System.out.println(">>> ActionImpl.loadSuperclass: loading superclass");
 			this.actionImpl = actionDAO.selectByPK(this.getActionId());
+		}
+		else
+			System.out.println(">>>ActionImpl.loadSuperclass: nothing to do...already loaded");
 
 	}
 
