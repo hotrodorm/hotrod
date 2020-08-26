@@ -1,4 +1,9 @@
-1. Run the server: mvn spring-boot:run
+1. Run the server: 
+  $ mvn spring-boot:run
 
-2. Call from a client: wget -qO- localhost:8080
+2. Call from a client: 
+  $ wget -qO- localhost:8080
+  $ wget -qO- localhost:8080/saldo
+  
+  
 
