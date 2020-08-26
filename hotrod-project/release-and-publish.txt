@@ -4,6 +4,10 @@ RELEASING & PUBLISHING
 All-in-one
 ======================================================================
 
+Verify the build is ready:
+
+ $ export GPG_TTY=$(tty) && mvn -P release clean install
+
 You can combine the whole Release & Publishing process into the single command line, shown below:
 
  $ mvn release:clean && mvn -B release:prepare && export GPG_TTY=$(tty) && mvn -P release release:perform && mvn release:clean && git pull
