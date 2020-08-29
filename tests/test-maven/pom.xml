@@ -80,13 +80,13 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>3.2.1-SNAPSHOT</version>
+      <version>3.2.2-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>3.2.1-SNAPSHOT</version>
+      <version>3.2.2-SNAPSHOT</version>
     </dependency>
 
     <!-- 4. Log4j 2 -->
@@ -160,7 +160,7 @@
           <plugin>
             <groupId>org.hotrodorm.hotrod</groupId>
             <artifactId>hotrod-maven-plugin</artifactId>
-            <version>3.2.1-SNAPSHOT</version>
+            <version>3.2.1</version>
             <configuration>
               <localproperties>testdata/postgresql-12.4/testing.properties</localproperties>
               <txtexportfile>./testdata/postgresql-12.4/export-columns.txt</txtexportfile>
