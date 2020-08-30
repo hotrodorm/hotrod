@@ -1,0 +1,179 @@
+
+  // =======================================================================================
+
+  RegionVO r = CityDAO.selectParentRegion(city).fromCode1().toRegionId();
+
+  // ====== CityDAO === SELECTING PARENT ===================================================
+
+  // select parents by FK
+
+  public SelectParentRegionPhase selectParentRegionOf(final CityVO vo) {
+    return new SelectParentRegionPhase(vo);
+  }
+
+  public class SelectParentRegionPhase {
+
+    private CityVO vo;
+
+    public SelectParentRegionPhase(final CityVO vo) {
+      this.vo = vo;
+    }
+
+    public SelectParentRegionFromCode1Phase fromCode1() {
+      return new SelectParentRegionFromCode1Phase(this.vo);
+    }
+
+    public SelectParentRegionFromCode2Phase fromCode2() {
+      return new SelectParentRegionFromCode2Phase(this.vo);
+    }
+
+    public SelectParentRegionFromCityNamePhase fromCityName() {
+      return new SelectParentRegionFromCityNamePhase(this.vo);
+    }
+
+  }
+
+  public class SelectParentRegionFromCode1Phase {
+
+    private CityVO vo;
+
+    public SelectParentRegionFromCode1Phase(final CityVO vo) {
+      this.vo = vo;
+    }
+
+    public RegionVO toRegionId() {
+      return regionDAO.selectByPK(this.vo.code1);
+    }
+
+    public RegionVO toUnifiedCode() {
+      return regionDAO.selectByUIUnifiedCode(this.vo.code1);
+    }
+
+  }
+
+  public class SelectParentRegionFromCode2Phase {
+
+    private CityVO vo;
+
+    public SelectParentRegionFromCode2Phase(final CityVO vo) {
+      this.vo = vo;
+    }
+
+    public RegionVO toRegionId() {
+      return regionDAO.selectByPK(this.vo.code2);
+    }
+
+    public RegionVO toUnifiedCode() {
+      return regionDAO.selectByUIUnifiedCode(this.vo.code2);
+    }
+
+  }
+
+  public class SelectParentRegionFromCityNamePhase {
+
+    private CityVO vo;
+
+    public SelectParentRegionFromCityNamePhase(final CityVO vo) {
+      this.vo = vo;
+    }
+
+    public RegionVO toName() {
+      return regionDAO.selectByUIName(this.vo.cityName);
+    }
+
+  }
+
+  // =======================================================================================
+
+  // ====== RegionDAO === SELECTING CHILDREN ===============================================
+
+  // select children by FK
+
+  public SelectChildrenCityPhase selectChildrenCityOf(final RegionVO vo) {
+    return new SelectChildrenCityPhase(vo);
+  }
+
+  public class SelectChildrenCityPhase {
+
+    private RegionVO vo;
+
+    public SelectChildrenCityPhase(final RegionVO vo) {
+      this.vo = vo;
+    }
+
+    public SelectChildrenCityFromRegionIdPhase fromRegionId() {
+      return new SelectChildrenCityFromRegionIdPhase(this.vo);
+    }
+
+    public SelectChildrenCityFromUnifiedCodePhase fromUnifiedCode() {
+      return new SelectChildrenCityFromUnifiedCodePhase(this.vo);
+    }
+
+    public SelectChildrenCityFromNamePhase fromName() {
+      return new SelectChildrenCityFromNamePhase(this.vo);
+    }
+
+  }
+
+  public class SelectChildrenCityFromRegionIdPhase {
+
+    private RegionVO vo;
+
+    public SelectChildrenCityFromRegionIdPhase(final RegionVO vo) {
+      this.vo = vo;
+    }
+
+    public List<CityVO> toCode1(final CityOrderBy... orderBies) {
+      CityVO example = new CityVO();
+      example.setCode1(this.vo.getRegionId());
+      return cityDAO.selectByExample(example, orderBies);
+    }
+
+    public List<CityVO> toCode2(final CityOrderBy... orderBies) {
+      CityVO example = new CityVO();
+      example.setCode2(this.vo.getRegionId());
+      return cityDAO.selectByExample(example, orderBies);
+    }
+
+  }
+
+  public class SelectChildrenCityFromUnifiedCodePhase {
+
+    private RegionVO vo;
+
+    public SelectChildrenCityFromUnifiedCodePhase(final RegionVO vo) {
+      this.vo = vo;
+    }
+
+    public List<CityVO> toCode1(final CityOrderBy... orderBies) {
+      CityVO example = new CityVO();
+      example.setCode1(this.vo.getUnifiedCode());
+      return cityDAO.selectByExample(example, orderBies);
+    }
+
+    public List<CityVO> toCode2(final CityOrderBy... orderBies) {
+      CityVO example = new CityVO();
+      example.setCode2(this.vo.getUnifiedCode());
+      return cityDAO.selectByExample(example, orderBies);
+    }
+
+  }
+
+  public class SelectChildrenCityFromNamePhase {
+
+    private RegionVO vo;
+
+    public SelectChildrenCityFromNamePhase(final RegionVO vo) {
+      this.vo = vo;
+    }
+
+    public List<CityVO> toCityName(final CityOrderBy... orderBies) {
+      CityVO example = new CityVO();
+      example.setCityName(this.vo.getName());
+      return cityDAO.selectByExample(example, orderBies);
+    }
+
+  }
+
+  // =======================================================================================
+  

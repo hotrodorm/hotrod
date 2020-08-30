@@ -58,6 +58,7 @@ import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
+import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class ObjectDAO extends GeneratableObject {
@@ -84,6 +85,8 @@ public class ObjectDAO extends GeneratableObject {
   private Mapper mapper = null;
 
   private String metadataClassName;
+
+  private Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> fkSelectors;
 
   private TextWriter w;
 
@@ -114,6 +117,8 @@ public class ObjectDAO extends GeneratableObject {
 
     this.classPackage = this.layout.getDAOPrimitivePackage(this.fragmentPackage);
     this.metadataClassName = this.metadata.getId().getJavaClassName() + (this.isTable() ? "Table" : "View");
+
+    this.fkSelectors = compileDistinctFKs(this.metadata.getImportedFKs());
 
   }
 
@@ -157,7 +162,7 @@ public class ObjectDAO extends GeneratableObject {
         writeSelectByCriteria(); // done
 
         if (this.isTable()) {
-          // writeSelectParentByFK(); // done
+          writeSelectParentByFK(); // done
           // writeSelectChildrenByFK(); // done
 
           writeInsert(); // done
@@ -396,6 +401,15 @@ public class ObjectDAO extends GeneratableObject {
     println("  @Autowired");
     println("  private SqlSession sqlSession;");
     println();
+
+    for (DataSetMetadata ds : this.fkSelectors.keySet()) {
+      ObjectDAO dao = this.generator.getDAO(ds);
+
+      println("  @Autowired");
+      println("  private " + dao.getClassName() + " " + dao.getMemberName() + ";");
+      println();
+    }
+
     println("  @Value(\"#{sqlDialectFactory.sqlDialect}\")");
     println("  private SQLDialect sqlDialect;");
     println();
@@ -634,18 +648,17 @@ public class ObjectDAO extends GeneratableObject {
     return sb.toString();
   }
 
-  @SuppressWarnings("unused")
   private void writeSelectParentByFK() throws IOException, ControlledException {
 
     List<ForeignKeyMetadata> fks = this.metadata.getImportedFKs();
     if (fks.isEmpty()) {
 
-      println("  // select parents by imported FKs: no imported keys found -- skipped");
+      println("  // select parent(s) by FKs: no imported keys found -- skipped");
       println();
 
     } else {
 
-      println("  // select parents by imported FKs");
+      println("  // select parent(s) by FKs");
       println();
 
       // Sort by remote table.
@@ -654,39 +667,95 @@ public class ObjectDAO extends GeneratableObject {
       // keys can be registered in the database. This behavior/bug has been
       // observed in PostgreSQL.
 
-      Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> fkSelectors = compileDistinctFKs(
-          this.metadata.getImportedFKs());
+      log.info("DAO: " + this.getClassName() + " -- this.metadata.getImportedFKs().size()="
+          + this.metadata.getImportedFKs().size() + " --  fkSelectors.size()=" + fkSelectors.size());
 
       for (DataSetMetadata ds : fkSelectors.keySet()) {
         ObjectVO vo = this.generator.getVO(ds);
         if (vo != null) { // points to a table, not an enum
           ObjectDAO dao = this.generator.getDAO(ds);
 
-          String parentSelectorClassName = vo.getJavaClassIdentifier() + "ParentSelector";
-          println("  public static class " + parentSelectorClassName + " {");
+          String selectParentPhaseClassName = "SelectParent" + vo.getJavaClassIdentifier() + "Phase";
+          String voClassName = this.vo.getClassName();
+
+          println("  public " + selectParentPhaseClassName + " selectParent" + vo.getJavaClassIdentifier() + "Of(final "
+              + voClassName + " vo) {");
+          println("    return new " + selectParentPhaseClassName + "(vo);");
+          println("  }");
           println();
 
+          println("  public class " + selectParentPhaseClassName + " {");
+          println();
+          println("    private " + voClassName + " vo;");
+          println();
+          println("    public " + selectParentPhaseClassName + "(final " + voClassName + " vo) {");
+          println("      this.vo = vo;");
+          println("    }");
+          println();
+
+          Set<KeyMetadata> fromKeys = new HashSet<KeyMetadata>();
+
           for (ForeignKeyMetadata fkm : fkSelectors.get(ds)) {
-            String selectByCols = this.getSelectByColumns(fkm.getLocal());
 
-            String callParameters = renderCallParameters(fkm);
+            if (!fromKeys.contains(fkm.getLocal())) {
+              fromKeys.add(fkm.getLocal());
+              String fromKey = fkm.getLocal().toCamelCase(this.layout.getColumnSeam());
+              String fromPhaseClassName = "SelectParent" + vo.getJavaClassIdentifier() + "From" + fromKey + "Phase";
+              String fromMethod = "from" + fromKey;
 
-            String selectMethod = fkm.pointsToPK() ? SELECT_BY_PK_METHOD : dao.getSelectByUI(fkm.getRemote());
-            String voClassName = this.vo.getFullClassName();
-            println("    public " + vo.getClassName() + " " + selectByCols + "(final " + voClassName + " vo) {");
-            println("      return " + dao.getClassName() + "." + selectMethod + "(" + callParameters + ");");
-            println("    }");
-            println();
+              println("    public " + fromPhaseClassName + " " + fromMethod + "() {");
+              println("      return new " + fromPhaseClassName + "(this.vo);");
+              println("    }");
+              println();
+            }
 
           }
 
           println("  }");
           println();
 
-          println("  public " + parentSelectorClassName + " selectParent" + vo.getJavaClassIdentifier() + "() {");
-          println("    return new " + parentSelectorClassName + "();");
-          println("  }");
-          println();
+          fromKeys.clear();
+
+          for (ForeignKeyMetadata fkm : fkSelectors.get(ds)) {
+
+            if (!fromKeys.contains(fkm.getLocal())) {
+              fromKeys.add(fkm.getLocal());
+              String fromKey = fkm.getLocal().toCamelCase(this.layout.getColumnSeam());
+              String fromPhaseClassName = "SelectParent" + vo.getJavaClassIdentifier() + "From" + fromKey + "Phase";
+
+              println("  public class " + fromPhaseClassName + " {");
+              println();
+              println("    private " + voClassName + " vo;");
+              println();
+              println("    public " + fromPhaseClassName + "(final " + voClassName + " vo) {");
+              println("      this.vo = vo;");
+              println("    }");
+              println();
+
+              for (ForeignKeyMetadata fkm2 : fkSelectors.get(ds)) {
+                if (fkm2.getLocal().equals(fkm.getLocal())) {
+                  String toMethod = "to" + fkm2.getRemote().toCamelCase(this.layout.getColumnSeam());
+                  String params = fkm.getLocal().getColumns().stream()
+                      .map(cm -> "this.vo." + cm.getId().getJavaMemberName()).collect(ListCollector.joining(", "));
+                  String selectMethod = "";
+                  if (fkm2.getRemote().equals(fkm2.getRemote().getTableMetadata().getPK())) {
+                    selectMethod = "selectByPK";
+                  } else {
+                    selectMethod = "selectByUI" + fkm2.getRemote().toCamelCase(this.layout.getColumnSeam());
+                  }
+
+                  println("    public " + vo.getClassName() + " " + toMethod + "() {");
+                  println("      return " + dao.getMemberName() + "." + selectMethod + "(" + params + ");");
+                  println("    }");
+                  println();
+                }
+              }
+
+              println("  }");
+              println();
+
+            }
+          }
 
         } else {
           EnumClass ec = this.generator.getEnum(ds);
@@ -1767,6 +1836,10 @@ public class ObjectDAO extends GeneratableObject {
 
   public String getClassName() {
     return this.myBatisTag.getDaos().generateDAOName(this.metadata.getId());
+  }
+
+  private String getMemberName() {
+    return SUtil.lowerFirst(this.getClassName());
   }
 
   public String getParameterClassName() {

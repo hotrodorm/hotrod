@@ -160,7 +160,7 @@
           <plugin>
             <groupId>org.hotrodorm.hotrod</groupId>
             <artifactId>hotrod-maven-plugin</artifactId>
-            <version>3.2.1</version>
+            <version>3.2.2-SNAPSHOT</version>
             <configuration>
               <localproperties>testdata/postgresql-12.4/testing.properties</localproperties>
               <txtexportfile>./testdata/postgresql-12.4/export-columns.txt</txtexportfile>
@@ -172,6 +172,61 @@
                 <artifactId>postgresql</artifactId>
                 <version>42.2.5.jre6</version>
                 <type>jar</type>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- DB2 10.5 generation -->
+
+    <profile>
+      <id>db2-10.5</id>
+      <build>
+        <plugins>
+
+          <!-- Database builder -->
+
+          <plugin>
+            <groupId>org.nocrala.tools.database.builder</groupId>
+            <artifactId>database-builder-maven-plugin</artifactId>
+            <version>1.2.2</version>
+            <configuration>
+              <sourcedir>testdata/db2-10.5/database-source</sourcedir>
+              <targetversion>1.0.0</targetversion>
+              <datascenario>unit-testing</datascenario>
+              <layeredbuild>true</layeredbuild>
+              <layeredscenario>false</layeredscenario>
+              <onbuilderror>stop</onbuilderror>
+              <oncleanerror>continue</oncleanerror>
+              <localproperties>testdata/db2-10.5/testing.properties</localproperties>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>com.ibm.db2</groupId>
+                <artifactId>jcc</artifactId>
+                <version>11.5.0.0</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+          <!-- HotRod Generation -->
+
+          <plugin>
+            <groupId>org.hotrodorm.hotrod</groupId>
+            <artifactId>hotrod-maven-plugin</artifactId>
+            <version>3.2.2-SNAPSHOT</version>
+            <configuration>
+              <localproperties>testdata/db2-10.5/testing.properties</localproperties>
+              <txtexportfile>./testdata/db2-10.5/export-columns.txt</txtexportfile>
+              <xlsxexportfile>./testdata/db2-10.5/export-columns.xlsx</xlsxexportfile>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>com.ibm.db2</groupId>
+                <artifactId>jcc</artifactId>
+                <version>11.5.0.0</version>
               </dependency>
             </dependencies>
           </plugin>
