@@ -708,7 +708,7 @@ public class ObjectDAO extends GeneratableObject {
           println();
           println("    private " + voClassName + " vo;");
           println();
-          println("    public " + selectParentPhaseClassName + "(final " + voClassName + " vo) {");
+          println("    " + selectParentPhaseClassName + "(final " + voClassName + " vo) {");
           println("      this.vo = vo;");
           println("    }");
           println();
@@ -747,7 +747,7 @@ public class ObjectDAO extends GeneratableObject {
               println();
               println("    private " + voClassName + " vo;");
               println();
-              println("    public " + fromPhaseClassName + "(final " + voClassName + " vo) {");
+              println("    " + fromPhaseClassName + "(final " + voClassName + " vo) {");
               println("      this.vo = vo;");
               println("    }");
               println();
@@ -909,7 +909,7 @@ public class ObjectDAO extends GeneratableObject {
         println();
         println("    private " + this.vo.getClassName() + " vo;");
         println();
-        println("    public " + selectChildrenPhaseClassName + "(final " + this.vo.getClassName() + " vo) {");
+        println("    " + selectChildrenPhaseClassName + "(final " + this.vo.getClassName() + " vo) {");
         println("      this.vo = vo;");
         println("    }");
         println();
@@ -945,7 +945,7 @@ public class ObjectDAO extends GeneratableObject {
             println();
             println("    private " + this.vo.getClassName() + " vo;");
             println();
-            println("    public " + fromPhaseClassName + "(final " + this.vo.getClassName() + " vo) {");
+            println("    " + fromPhaseClassName + "(final " + this.vo.getClassName() + " vo) {");
             println("      this.vo = vo;");
             println("    }");
             println();

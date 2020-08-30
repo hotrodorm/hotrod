@@ -12,13 +12,14 @@
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
-  <context:component-scan base-package="org.hotrod.runtime.spring, com.myapp1" />
+  <context:component-scan base-package="org.hotrod.runtime.spring" />
+  <context:component-scan base-package="com.myapp1" />
 
   <bean name="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
     <property name="driverClassName" value="org.postgresql.Driver" />
-    <property name="username" value="postgres" />
-    <property name="password" value="mypassword" />
-    <property name="url" value="jdbc:postgresql://192.168.56.213:5432/postgres" />
+    <property name="url" value="jdbc:postgresql://192.168.56.214:5432/hotrod" />
+    <property name="username" value="user1" />
+    <property name="password" value="pass1" />
     <property name="maxIdle" value="5" />
     <property name="maxActive" value="10" />
   </bean>

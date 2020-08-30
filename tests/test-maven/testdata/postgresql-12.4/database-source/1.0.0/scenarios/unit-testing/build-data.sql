@@ -109,3 +109,19 @@ insert into event (id, name, status) values (4, 'Assigned', 1);
 insert into event (id, name, status) values (5, 'Fixed', 1);
 
 
+-- FKs
+
+start transaction;
+
+insert into region (region_id, name, unified_code, population) values (1, 'Chicago', 4, 200000);
+insert into region (region_id, name, unified_code, population) values (2, 'Boston', 3, 120000);
+insert into region (region_id, name, unified_code, population) values (3, 'Sierra', 1, 40000);
+insert into region (region_id, name, unified_code, population) values (4, 'La Habana', 2, 40000);
+
+insert into city (city_id, city_name, code_1, code_2) values (1, 'Chicago', 3, 1);
+insert into city (city_id, city_name, code_1, code_2) values (2, 'La Habana', 2, 3);
+insert into city (city_id, city_name, code_1, code_2) values (3, 'Boston', 1, 1);
+insert into city (city_id, city_name, code_1, code_2) values (4, 'La Habana', 3, 2);
+
+commit;
+

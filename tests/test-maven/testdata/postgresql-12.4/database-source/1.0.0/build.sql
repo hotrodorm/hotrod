@@ -507,6 +507,7 @@ create table region (
   population bigint,
   constraint uq101 unique (unified_code),
   constraint fk26 foreign key (unified_code) references region (region_id)
+    deferrable initially deferred
 );
 
 create table city (
@@ -522,7 +523,8 @@ create table city (
 );
 
 alter table region add
-  constraint fk25 foreign key (region_id) references city (city_id);
+  constraint fk25 foreign key (region_id) references city (city_id) 
+  deferrable initially deferred;
 
 
 
