@@ -1,4 +1,4 @@
-package com.myapp1.model;
+package com.myapp1;
 
 import java.sql.SQLException;
 import java.util.List;

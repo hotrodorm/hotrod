@@ -10,8 +10,10 @@
 
   <context:annotation-config />
 
+<!-- 
   <tx:annotation-driven transaction-manager="transactionManager" />
-
+ -->
+ 
   <context:component-scan base-package="org.hotrod.runtime.spring" />
   <context:component-scan base-package="com.myapp1" />
 
@@ -26,6 +28,8 @@
 
   <!-- Main Spring beans -->
 
+<!-- 
+ -->
   <bean id="springBeanObjectFactory" class="org.hotrod.runtime.spring.SpringBeanObjectFactory" />
 
   <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -42,15 +46,20 @@
     <property name="dataSource" ref="dataSource" />
   </bean>
 
+
+
 <!--
   <bean id="sqlDialect" class="org.hotrod.runtime.livesql.dialects.SQLDialect" value="#{sqlDialectFactory.sqlDialect}">
   </bean>
   <bean id="sqlDialect" class="org.hotrod.runtime.livesql.dialects.SQLDialect" value="#{sqlDialectFactory.sqlDialect}" />
 -->
 
+<!-- 
   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
     <property name="dataSource" ref="dataSource" />
   </bean>
+
+-->
 
   <bean id="liveSQL" class="org.hotrod.runtime.livesql.LiveSQL">
     <property name="sqlSession" ref="sqlSession" />

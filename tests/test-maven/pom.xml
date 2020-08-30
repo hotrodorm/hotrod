@@ -48,7 +48,7 @@
     </dependency>
     
     <!-- Spring AOP -->
-    
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
@@ -59,7 +59,15 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-aop</artifactId>
       <version>2.3.3.RELEASE</version>
-    </dependency>   
+    </dependency>
+
+    <!--    
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <version>2.3.3.RELEASE</version>
+    </dependency>
+    -->
 
     <!-- 2. MyBatis Spring -->
 
@@ -119,6 +127,18 @@
     </dependency>
 
   </dependencies>
+
+  <build>
+
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>2.3.3.RELEASE</version>
+      </plugin>
+    </plugins>
+
+  </build>
 
   <profiles>
 

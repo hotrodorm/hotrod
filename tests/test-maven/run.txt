@@ -1,12 +1,12 @@
 
-To run HotRod:
+* To run the HotRod Generation:
+    mvn -P postgresql-12.4 hotrod:gen
 
-  mvn -P postgresql-12.4 hotrod:gen
+* To run the test as Spring Boot:
+    mvn spring-boot:run
 
-To run the test:
+* To run the test directly Maven: mvn spring-boot:run
+    mvn exec:java -Dexec.cleanupDaemonThreads=false -Dexec.classpathScope=test -Dexec.mainClass="com.myapp1.App2"
 
-  mvn exec:java -Dexec.cleanupDaemonThreads=false -Dexec.classpathScope=test -Dexec.mainClass="com.myapp1.model.App2"
-
-In case you need to rebuild the database (PostgreSQL 12):
-
-  mvn -P postgresql-12.4 db:rebuild
+* In case you need to rebuild the database (PostgreSQL 12):
+    mvn -P postgresql-12.4 db:rebuild
