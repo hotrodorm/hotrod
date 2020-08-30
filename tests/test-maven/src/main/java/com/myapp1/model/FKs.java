@@ -9,6 +9,7 @@ import com.myapp1.persistence.RegionVO;
 import com.myapp1.persistence.primitives.CityDAO;
 import com.myapp1.persistence.primitives.CityDAO.CityOrderBy;
 import com.myapp1.persistence.primitives.RegionDAO;
+import com.myapp1.persistence.primitives.RegionDAO.RegionOrderBy;
 
 public class FKs {
 
@@ -21,12 +22,27 @@ public class FKs {
   public void test1() {
 
     RegionVO r1 = new RegionVO();
+
+    // Common select children
     List<CityVO> cities = regionDAO.selectChildrenCityOf(r1).fromUnifiedCode().toCode1(CityOrderBy.CITY_NAME);
 
-    CityVO c3 = new CityVO();
-    RegionVO r3 = cityDAO.selectParentRegionOf(c3).fromCityName().toName();
+    // Reflexive select parent
+    RegionVO r2 = regionDAO.selectParentRegionOf(r1).fromUnifiedCode().toRegionId();
 
-    cityDAO.selectParentRegionOf(c3).fromCode1().toUnifiedCode();
+    // Reflexive select children
+    List<RegionVO> r3 = regionDAO.selectChildrenRegionOf(r1).fromRegionId().toUnifiedCode(RegionOrderBy.NAME);
+
+    CityVO c3 = new CityVO();
+
+    // Common select parent
+    RegionVO r4 = cityDAO.selectParentRegionOf(c3).fromCityName().toName();
+    RegionVO r5 = cityDAO.selectParentRegionOf(c3).fromCode1().toUnifiedCode();
+    RegionVO r6 = cityDAO.selectParentRegionOf(c3).fromCode1().toRegionId();
+    RegionVO r8 = cityDAO.selectParentRegionOf(c3).fromCode2().toUnifiedCode();
+    RegionVO r9 = cityDAO.selectParentRegionOf(c3).fromCode2().toRegionId();
+
+    List<RegionVO> r10 = cityDAO.selectChildrenRegionOf(c3).fromCityId().toRegionId();
+
   }
 
 }

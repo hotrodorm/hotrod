@@ -83,6 +83,7 @@ drop table if exists a;
 
 -- FKs
 
+alter table region drop constraint fk25;
 drop table city;
 drop table region;
 

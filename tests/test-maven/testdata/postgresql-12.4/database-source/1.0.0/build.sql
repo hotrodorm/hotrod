@@ -505,7 +505,8 @@ create table region (
   name varchar(20) not null unique,
   unified_code int not null,
   population bigint,
-  constraint uq101 unique (unified_code)
+  constraint uq101 unique (unified_code),
+  constraint fk26 foreign key (unified_code) references region (region_id)
 );
 
 create table city (
@@ -520,6 +521,8 @@ create table city (
   constraint fk24 foreign key (city_name) references region (name)
 );
 
+alter table region add
+  constraint fk25 foreign key (region_id) references city (city_id);
 
 
 
