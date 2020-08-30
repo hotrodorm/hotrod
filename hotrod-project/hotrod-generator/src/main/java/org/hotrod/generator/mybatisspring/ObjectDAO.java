@@ -2,9 +2,11 @@ package org.hotrod.generator.mybatisspring;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -533,7 +535,7 @@ public class ObjectDAO extends GeneratableObject {
         }
 
         String camelCase = ui.toCamelCase(this.layout.getColumnSeam());
-        String method = " selectByUI" + camelCase;
+        String method = "selectByUI" + camelCase;
         selectByUniqueKey(mg, ui, method, this.mapper.getFullMapperIdSelectByUI(ui));
 
       }
@@ -685,7 +687,7 @@ public class ObjectDAO extends GeneratableObject {
       // keys can be registered in the database. This behavior/bug has been
       // observed in PostgreSQL.
 
-      log.info("DAO: " + this.getClassName() + " -- this.metadata.getImportedFKs().size()="
+      log.debug("DAO: " + this.getClassName() + " -- this.metadata.getImportedFKs().size()="
           + this.metadata.getImportedFKs().size() + " --  fkSelectors.size()=" + fkSelectors.size());
 
       for (DataSetMetadata ds : fkSelectors.keySet()) {
@@ -800,8 +802,18 @@ public class ObjectDAO extends GeneratableObject {
 
   private Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> compileDistinctFKs(
       final List<ForeignKeyMetadata> fks) {
-    Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> fkSelectors = new HashMap<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>>();
-    for (ForeignKeyMetadata fk : fks) {
+
+    List<ForeignKeyMetadata> sortedFKs = new ArrayList<ForeignKeyMetadata>(fks);
+    sortedFKs.sort((a, b) -> {
+      int c = a.getRemote().toCamelCase(".").compareTo(b.getRemote().toCamelCase("."));
+      if (c != 0) {
+        return c;
+      }
+      return a.getLocal().toCamelCase(".").compareTo(b.getLocal().toCamelCase("."));
+    });
+
+    Map<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>> fkSelectors = new LinkedHashMap<DataSetMetadata, LinkedHashSet<ForeignKeyMetadata>>();
+    for (ForeignKeyMetadata fk : sortedFKs) {
       DataSetMetadata ds = fk.getRemote().getTableMetadata();
       LinkedHashSet<ForeignKeyMetadata> fkSelector = fkSelectors.get(ds);
       if (fkSelector == null) {
@@ -810,6 +822,7 @@ public class ObjectDAO extends GeneratableObject {
       }
       fkSelector.add(fk);
     }
+
     return fkSelectors;
   }
 
@@ -917,6 +930,9 @@ public class ObjectDAO extends GeneratableObject {
           }
         }
 
+        println("  }");
+        println();
+
         fromKeys.clear();
 
         for (ForeignKeyMetadata tfk : this.efkSelectors.get(ds)) {
@@ -964,9 +980,6 @@ public class ObjectDAO extends GeneratableObject {
             println();
           }
         }
-
-        println("  }");
-        println();
 
       }
 
