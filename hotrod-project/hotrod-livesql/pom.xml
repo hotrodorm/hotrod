@@ -16,6 +16,14 @@
 
   <dependencies>
   
+    <!-- HotRod -->
+
+    <dependency>
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod</artifactId>
+      <version>3.2.2-SNAPSHOT</version>
+    </dependency>
+
     <!-- HotRod Utils -->
 
     <dependency>

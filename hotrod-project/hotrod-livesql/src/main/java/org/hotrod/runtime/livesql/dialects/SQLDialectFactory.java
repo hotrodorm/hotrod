@@ -6,6 +6,8 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.hotrodorm.hotrod.utils.XUtil;
+
 public class SQLDialectFactory {
 
   private static final String TOOL_NAME = "HotRod";
@@ -94,8 +96,13 @@ public class SQLDialectFactory {
     if (this.sqlDialect == null) {
       synchronized (this) {
         if (this.sqlDialect == null) {
-          this.sqlDialect = resolveSqlDialect();
-          // System.out.println("Dialect: " + this.sqlDialect);
+          try {
+            this.sqlDialect = resolveSQLDialect();
+          } catch (RuntimeException e) {
+            // Show abridged stack trace always. Can help debugging
+            System.out.println("---\n" + XUtil.renderThrowable(e) + "\n---");
+            throw e;
+          }
         }
       }
     }
@@ -104,7 +111,7 @@ public class SQLDialectFactory {
 
   // Utilities
 
-  private SQLDialect resolveSqlDialect() {
+  private SQLDialect resolveSQLDialect() {
 
     if (this.dataSource != null && this.dialect != null) {
       throw new RuntimeException("[" + this.getClass().getSimpleName() + "] Could not resolve the SQL dialect. "
@@ -119,13 +126,13 @@ public class SQLDialectFactory {
       try {
         return resolveFromDatasource();
       } catch (SQLException e) {
-        throw new RuntimeException(e.getMessage());
+        throw new RuntimeException(e.getMessage(), e.getCause());
       }
     } else {
       try {
         return resolveFromDialect();
       } catch (SQLException e) {
-        throw new RuntimeException(e.getMessage());
+        throw new RuntimeException(e.getMessage(), e.getCause());
       }
     }
 

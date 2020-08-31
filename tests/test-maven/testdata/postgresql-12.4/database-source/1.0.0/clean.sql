@@ -81,4 +81,11 @@ drop table if exists employee_state;
 drop table if exists b;
 drop table if exists a;
 
+-- FKs
+
+alter table region drop constraint fk25;
+drop table city;
+drop table region;
+
+
 
