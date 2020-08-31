@@ -25,7 +25,7 @@ public class App2 {
   private DataServices2 s2;
 
   @Autowired
-  private ChronoAspect ca;
+  private SQLMetrics sqlMetrics;
 
   public static void main(final String[] args) throws SQLException {
     SpringApplication.run(App2.class, args);
@@ -43,12 +43,11 @@ public class App2 {
 //      }
 
       System.out.println("[ Starting ]");
-//      System.out.println("[ this.ca.getSqlMetrics()=" + this.ca.getSqlMetrics() + " ]");
-//      DataServices2 s2 = SpringBeanRetriever.getBean("dataServices2");
-      s2.demoFKs();
+      System.out.println("(App) this.sqlMetrics=" + this.sqlMetrics); // NOT NULL -- OK
+      this.s2.demoFKs();
 
       System.out.println("[ Metrics ]");
-      System.out.println(SQLMetrics.render());
+      System.out.println(this.sqlMetrics.render());
 
       System.out.println("[ Completed ]");
 

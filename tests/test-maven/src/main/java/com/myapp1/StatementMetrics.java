@@ -1,5 +1,8 @@
 package com.myapp1;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public class StatementMetrics {
 
   private String actualSQL;
@@ -40,6 +43,14 @@ public class StatementMetrics {
 
   // Getters
 
+  public long getMaxTime() {
+    return this.maxElapsed;
+  }
+
+  public long getAvgTime() {
+    return this.executions == 0 ? -1 : this.sumElapsed / this.executions;
+  }
+
   public long getExecutions() {
     return executions;
   }
@@ -47,21 +58,7 @@ public class StatementMetrics {
   // Utility
 
   private String compact(final String txt) {
-    String[] chunks = txt.split("\n");
-    StringBuilder sb = new StringBuilder();
-    boolean first = true;
-    for (String c : chunks) {
-      String t = c.trim();
-      if (!t.isEmpty()) {
-        if (first) {
-          first = false;
-        } else {
-          sb.append(" ");
-        }
-        sb.append(t);
-      }
-    }
-    return sb.toString();
+    return Arrays.stream(txt.split("\n")).map(s -> s.trim()).filter(s -> !s.isEmpty()).collect(Collectors.joining(" "));
   }
 
 }
