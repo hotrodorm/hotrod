@@ -102,7 +102,7 @@ public final class JdbcUtils {
     if (rs.wasNull()) {
       return null;
     } else {
-      return new Long(value);
+      return Long.valueOf(value);
     }
   }
 
@@ -120,7 +120,7 @@ public final class JdbcUtils {
     if (rs.wasNull()) {
       return null;
     } else {
-      return new Double(value);
+      return Double.valueOf(value);
     }
   }
 
@@ -138,7 +138,7 @@ public final class JdbcUtils {
     if (rs.wasNull()) {
       return null;
     } else {
-      return new Integer(value);
+      return Integer.valueOf(value);
     }
   }
 
@@ -156,7 +156,7 @@ public final class JdbcUtils {
     if (rs.wasNull()) {
       return null;
     } else {
-      return new Short(value);
+      return Short.valueOf(value);
     }
   }
 
@@ -223,7 +223,7 @@ public final class JdbcUtils {
   }
 
   public static void setLong(final PreparedStatement st, final int col, final long value) throws SQLException {
-    setLong(st, col, new Long(value));
+    setLong(st, col, Long.valueOf(value));
   }
 
   public static void setDouble(final PreparedStatement st, final int col, final Double value) throws SQLException {
@@ -235,7 +235,7 @@ public final class JdbcUtils {
   }
 
   public static void setDouble(final PreparedStatement st, final int col, final double value) throws SQLException {
-    setDouble(st, col, new Double(value));
+    setDouble(st, col, Double.valueOf(value));
   }
 
   public static void setInt(final PreparedStatement st, final int col, final Integer value) throws SQLException {
@@ -247,7 +247,7 @@ public final class JdbcUtils {
   }
 
   public static void setInt(final PreparedStatement st, final int col, final int value) throws SQLException {
-    setInt(st, col, new Integer(value));
+    setInt(st, col, Integer.valueOf(value));
   }
 
   public static void setBoolean(final PreparedStatement st, final int col, final Boolean value) throws SQLException {
@@ -259,7 +259,7 @@ public final class JdbcUtils {
   }
 
   public static void setBoolean(final PreparedStatement st, final int col, final boolean value) throws SQLException {
-    setBoolean(st, col, new Boolean(value));
+    setBoolean(st, col, Boolean.valueOf(value));
   }
 
   public static void setDate(final PreparedStatement st, final int col, final Date value) throws SQLException {
@@ -292,9 +292,9 @@ public final class JdbcUtils {
     if (value == null) {
       return null;
     } else if (value.equals("T")) {
-      return new Boolean(true);
+      return Boolean.TRUE;
     } else {
-      return new Boolean(false);
+      return Boolean.FALSE;
     }
   }
 

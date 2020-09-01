@@ -25,9 +25,9 @@ import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.runtime.BuildInformation;
-import org.hotrod.utils.EUtils;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
+import org.nocrala.tools.database.tartarus.utils.XUtil;
 
 public abstract class AbstractExportColumnsOperation {
 
@@ -100,7 +100,7 @@ public abstract class AbstractExportColumnsOperation {
       Throwable cause = e.getCause();
       throw new Exception(e.getMessage() + (cause == null ? "" : ": " + cause.getMessage()));
     } catch (Throwable e) {
-      throw new Exception("Could not connect to database: " + EUtils.renderMessages(e));
+      throw new Exception("Could not connect to database: " + XUtil.abridge(e));
     }
 
     log.debug("Adapter loaded.");
@@ -116,13 +116,13 @@ public abstract class AbstractExportColumnsOperation {
         throw new Exception("\n" + e.getMessage());
       }
     } catch (UncontrolledException e) {
-      feedback.error("Technical error found: " + EUtils.renderMessages(e));
+      feedback.error("Technical error found: " + XUtil.abridge(e));
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
     } catch (FacetNotFoundException e) {
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code: " + "facet '"
           + e.getMessage() + "' not found.");
     } catch (Throwable e) {
-      feedback.error("Technical error found: " + EUtils.renderMessages(e));
+      feedback.error("Technical error found: " + XUtil.abridge(e));
       log.error("Technical error found", e);
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
     }
@@ -148,7 +148,7 @@ public abstract class AbstractExportColumnsOperation {
             + e.getLocation().render() + ":\n" + e.getMessage());
       }
     } catch (UncontrolledException e) {
-      feedback.error("Technical error found: " + EUtils.renderMessages(e));
+      feedback.error("Technical error found: " + XUtil.abridge(e));
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
     } catch (InvalidConfigurationFileException e) {
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "
