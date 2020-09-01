@@ -931,7 +931,8 @@ public class Mapper extends GeneratableObject {
 
   private String getWhereByExample(final String prefix) throws IOException {
     StringBuilder sb = new StringBuilder();
-    sb.append("    <where>\n");
+    // sb.append(" <where>\n");
+    sb.append("    <trim prefix=\"where&#xA;\" prefixOverrides=\"and |or \">\n");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String prompt = prefix != null ? (prefix + ".") : "";
       String prop = prompt + cm.getId().getJavaMemberName();
@@ -947,7 +948,8 @@ public class Mapper extends GeneratableObject {
       sb.append("      </if>\n");
 
     }
-    sb.append("    </where>\n");
+    // sb.append(" </where>\n");
+    sb.append("    </trim>\n");
     return sb.toString();
   }
 

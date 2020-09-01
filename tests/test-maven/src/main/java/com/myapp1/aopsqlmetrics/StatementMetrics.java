@@ -1,6 +1,5 @@
 package com.myapp1.aopsqlmetrics;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -46,10 +45,9 @@ public class StatementMetrics {
   }
 
   public String toString() {
-    DecimalFormat df = new DecimalFormat("0.00");
     return "" + this.totalExecutions + " exe"
         + (this.executionErrors != 0 ? (" (" + this.executionErrors + " errors)") : "") + ", avg "
-        + (this.sum / this.totalExecutions) + " ms (\u03c3 " + df.format(this.getTimeStandardDeviation()) + ") ["
+        + (this.sum / this.totalExecutions) + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " ["
         + this.minTime + "-" + this.maxTime + " ms] -- " + this.compactedSQL;
   }
 
