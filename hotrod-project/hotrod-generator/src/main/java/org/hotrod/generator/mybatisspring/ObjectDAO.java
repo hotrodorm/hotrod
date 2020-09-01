@@ -266,9 +266,9 @@ public class ObjectDAO extends GeneratableObject {
 
     imports.add("java.io.Serializable");
     imports.add("java.util.List");
-    // imports.add("java.util.Map");
     imports.newLine();
     imports.add("org.apache.ibatis.session.SqlSession");
+    imports.add("org.apache.ibatis.cursor.Cursor");
     imports.newLine();
 
     if (this.metadata.getVersionControlMetadata() != null) {
@@ -612,6 +612,16 @@ public class ObjectDAO extends GeneratableObject {
     println("    DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + "> dwo = //");
     println("        new DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + ">(example, orderBies);");
     println("    return this.sqlSession.selectList(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo);");
+    println("  }");
+    println();
+
+    println("  public Cursor<" + voClassName + "> selectByExampleCursor(final " + voClassName + " example, final "
+        + this.getOrderByClassName() + "... orderBies)");
+    print("      ");
+    println("{");
+    println("    DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + "> dwo = //");
+    println("        new DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + ">(example, orderBies);");
+    println("    return this.sqlSession.selectCursor(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo);");
     println("  }");
     println();
   }
