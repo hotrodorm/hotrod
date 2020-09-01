@@ -1,4 +1,4 @@
-package com.myapp1;
+package com.myapp1.aopsqlmetrics;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,17 +12,17 @@ public class SQLMetrics {
   private Map<String, StatementMetrics> metrics = new HashMap<String, StatementMetrics>();
 
   public void record(final String sql, final long elapsedTime, final boolean succeeded) {
-    StatementMetrics sm = metrics.get(sql);
+    StatementMetrics sm = this.metrics.get(sql);
     if (sm == null) {
       sm = new StatementMetrics(sql);
-      metrics.put(sql, sm);
+      this.metrics.put(sql, sm);
     }
     sm.record(elapsedTime, succeeded);
   }
 
   public String render() {
-    return metrics.values().stream().sorted((a, b) -> -Long.compare(a.getAvgTime(), b.getAvgTime())).map(s -> ">> " + s)
-        .collect(ListCollector.concat("\n"));
+    return this.metrics.values().stream().sorted((a, b) -> -Long.compare(a.getTimeAverage(), b.getTimeAverage()))
+        .map(s -> "> " + s).collect(ListCollector.concat("\n"));
   }
 
 }

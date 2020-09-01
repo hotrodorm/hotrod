@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.ImportResource;
 
+import com.myapp1.aopsqlmetrics.SQLMetrics;
+
 @Configuration
 @ComponentScan
 @ImportResource({ "spring-configuration.xml" })
@@ -35,15 +37,10 @@ public class App2 {
   public CommandLineRunner commandLineRunner(final ApplicationContext ctx) {
     return args -> {
 
-//      System.out.println("Let's inspect the beans provided by Spring Boot:");
-//      String[] beanNames = ctx.getBeanDefinitionNames();
-//      Arrays.sort(beanNames);
-//      for (String beanName : beanNames) {
-//        System.out.println(beanName);
-//      }
+//      Arrays.stream(ctx.getBeanDefinitionNames()).sorted().forEach(n -> System.out.println(" * " + n));
 
       System.out.println("[ Starting ]");
-      System.out.println("(App) this.sqlMetrics=" + this.sqlMetrics); // NOT NULL -- OK
+
       this.s2.demoFKs();
 
       System.out.println("[ Metrics ]");
