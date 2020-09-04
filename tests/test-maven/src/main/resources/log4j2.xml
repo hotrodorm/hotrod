@@ -9,7 +9,10 @@
 
   <Loggers>
     <Logger name="com.myapp1.model.App" level="debug" />
+    
     <!--Logger name="daos.primitives.vendor.selectByPK" level="debug" / -->
+    <Logger name="com.myapp1.persistence.primitives.region" level="debug" />
+
     <Root level="info">
       <AppenderRef ref="Console" />
     </Root>

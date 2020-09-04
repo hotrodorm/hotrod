@@ -7,7 +7,7 @@ public interface FileGenerator {
 
   TextWriter createWriter(File f) throws IOException;
 
-  public interface TextWriter {
+  public interface TextWriter extends AutoCloseable {
 
     void write(String txt) throws IOException;
 

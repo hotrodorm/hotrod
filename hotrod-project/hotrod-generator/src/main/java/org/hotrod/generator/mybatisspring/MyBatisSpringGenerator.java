@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,6 +56,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
   private List<ObjectAbstractVO> tableAbstractVOs = new ArrayList<ObjectAbstractVO>();
   private MyBatisConfiguration myBatisConfig;
   private LiveSQLMapper liveSQLMapper;
+  private AvailableFKs availableFKs;
 
   private EntityDAORegistry entityDAORegistry = new EntityDAORegistry();
 
@@ -159,6 +161,11 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
       String sourceFile = mapper.getRuntimeSourceFileName();
       this.myBatisConfig.addFacetSourceFile(sourceFile);
     }
+
+    // AvailableFKs
+
+    this.availableFKs = new AvailableFKs(this.config,
+        super.tables.stream().map(t -> t.getImportedFKs()).flatMap(l -> l.stream()).collect(Collectors.toList()));
 
   }
 
@@ -364,6 +371,8 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
     for (ObjectDAO dao : this.daos.values()) {
       dao.generate(fileGenerator, this);
     }
+
+    this.availableFKs.generate(fileGenerator);
 
     // Enums
 
