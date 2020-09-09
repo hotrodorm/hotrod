@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DisplayMode;
+import org.hotrod.config.EnabledFKs;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.DatabaseAdapterFactory;
@@ -127,12 +128,16 @@ public abstract class AbstractExportColumnsOperation {
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
     }
 
-    log.debug("Configuration loaded.");
+    log.debug("Main Configuration loaded.");
+
+    EnabledFKs enabledFKs = EnabledFKs.loadIfPresent(this.baseDir);
+    
+    log.debug("FKs Definition loaded.");
 
     try {
       CachedMetadata cachedMetadata = new CachedMetadata();
       HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
-          config, this.displayMode, false, adapter, feedback);
+          config, enabledFKs, this.displayMode, false, adapter, feedback);
       log.debug("Generator instantiated.");
 
       g.prepareGeneration();

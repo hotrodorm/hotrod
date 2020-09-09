@@ -156,8 +156,9 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   @Override
   public HotRodGenerator instantiateGenerator(final CachedMetadata cachedMetadata, DatabaseLocation loc,
-      HotRodConfigTag config, DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter,
-      final Feedback feedback) throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
+      HotRodConfigTag config, EnabledFKs enabledFKs, DisplayMode displayMode, final boolean incrementalMode,
+      final DatabaseAdapter adapter, final Feedback feedback)
+      throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
     return new MyBatisSpringGenerator(cachedMetadata, loc, config, displayMode, incrementalMode, adapter, feedback);
   }
 

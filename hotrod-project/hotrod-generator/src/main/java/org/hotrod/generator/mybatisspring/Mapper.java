@@ -1240,6 +1240,14 @@ public class Mapper extends GeneratableObject {
     return source.getPath();
   }
 
+  public static String assembleSourceFileName(final DataSetLayout layout, final ClassPackage fragmentPackage,
+      final ObjectId id) {
+    File dir = layout.getMapperRuntimeDir(fragmentPackage);
+    String sourceFile = "primitives-" + id.getDashedName() + ".xml";
+    File source = new File(dir, sourceFile);
+    return source.getPath();
+  }
+
   public String getSourceFileName() {
     ObjectId id = this.metadata.getId();
     return getSourceFile(id);
