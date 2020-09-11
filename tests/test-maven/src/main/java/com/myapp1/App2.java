@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.ImportResource;
 
-import com.myapp1.aopsqlmetrics.SQLMetrics;
+import com.myapp1.aopsqlmetrics.SQLMetricsAspect.SQLMetrics;
 
 @Configuration
 @ComponentScan

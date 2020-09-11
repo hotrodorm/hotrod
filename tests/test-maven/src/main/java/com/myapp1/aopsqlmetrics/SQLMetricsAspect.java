@@ -1,10 +1,15 @@
 package com.myapp1.aopsqlmetrics;
 
 import java.sql.PreparedStatement;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -180,6 +185,128 @@ public class SQLMetricsAspect {
 
   public String toString() {
     return this.getClass().getName() + "[" + System.identityHashCode(this) + "]";
+  }
+
+  // Inner classes
+
+  @Component("sqlMetrics")
+  public class SQLMetrics {
+
+    private Map<String, StatementMetrics> metrics = new HashMap<String, StatementMetrics>();
+
+    public synchronized void record(final String sql, final long elapsedTime, final boolean succeeded) {
+      StatementMetrics sm = this.metrics.get(sql);
+      if (sm == null) {
+        sm = new StatementMetrics(sql);
+        this.metrics.put(sql, sm);
+      }
+      sm.record(elapsedTime, succeeded);
+    }
+
+    public synchronized String render() {
+      return this.metrics.values().stream().sorted((a, b) -> -Long.compare(a.getTimeAverage(), b.getTimeAverage()))
+          .map(s -> "> " + s).collect(ListCollector.concat("\n"));
+    }
+
+  }
+
+  public class StatementMetrics {
+
+    private String actualSQL;
+    private String compactedSQL;
+
+    private long minTime;
+    private long maxTime;
+
+    private long totalExecutions;
+    private long executionErrors;
+    private long sum;
+    private long sumSQ;
+
+    public StatementMetrics(final String sql) {
+      this.actualSQL = sql;
+      this.compactedSQL = compact(sql);
+
+      this.minTime = 0;
+      this.maxTime = 0;
+
+      this.totalExecutions = 0;
+      this.executionErrors = 0;
+      this.sum = 0;
+      this.sumSQ = 0;
+    }
+
+    public void record(final long elapsedTime, final boolean succeeded) {
+      if (this.totalExecutions == 0 || elapsedTime < this.minTime) {
+        this.minTime = elapsedTime;
+      }
+      if (this.totalExecutions == 0 || elapsedTime > this.maxTime) {
+        this.maxTime = elapsedTime;
+      }
+      this.totalExecutions++;
+      if (!succeeded) {
+        this.executionErrors++;
+      }
+      this.sum += elapsedTime;
+      this.sumSQ += elapsedTime * elapsedTime;
+    }
+
+    public String toString() {
+      return "" + this.totalExecutions + " exe"
+          + (this.executionErrors != 0 ? (" (" + this.executionErrors + " errors)") : "") + ", avg "
+          + (this.sum / this.totalExecutions) + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " ["
+          + this.minTime + "-" + this.maxTime + " ms] -- " + this.compactedSQL;
+    }
+
+    // Getters
+
+    public String getActualSQL() {
+      return actualSQL;
+    }
+
+    public String getCompactedSQL() {
+      return compactedSQL;
+    }
+
+    public long getMinTime() {
+      return minTime;
+    }
+
+    public long getMaxTime() {
+      return maxTime;
+    }
+
+    public long getTotalExecutions() {
+      return totalExecutions;
+    }
+
+    public long getExecutionErrors() {
+      return executionErrors;
+    }
+
+    // Extra getters
+
+    public long getTimeAverage() {
+      return this.totalExecutions == 0 ? -1 : this.sum / this.totalExecutions;
+    }
+
+    public double getTimeStandardDeviation() {
+      // https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online_algorithm
+      return this.totalExecutions < 2 ? 0
+          : Math.sqrt( //
+              (this.sumSQ - 1.0 * this.sum * this.sum / this.totalExecutions) //
+                  / //
+                  (this.totalExecutions - 0));
+    }
+
+    // Utility
+
+    private String compact(final String txt) {
+      return txt == null ? null
+          : Arrays.stream(txt.split("\n")).map(s -> s.trim()).filter(s -> !s.isEmpty())
+              .collect(Collectors.joining(" "));
+    }
+
   }
 
 }
