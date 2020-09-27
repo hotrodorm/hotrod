@@ -9,6 +9,5 @@
   
 * Run packaged:
 
-  $ java -jar target/poc-springboot-web-0.0.1-SNAPSHOT-exec.jar
-
+  $ java -jar target/poc-springboot-web-0.0.1-SNAPSHOT.jar
 

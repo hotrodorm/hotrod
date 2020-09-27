@@ -19,7 +19,6 @@ import app5.persistence.primitives.ProductDAO;
 @Configuration
 @ComponentScan(basePackageClasses = Application.class)
 @ComponentScan(basePackageClasses = SQLDialectFactory.class)
-//@ImportResource({ "spring-configuration.xml" })
 
 @SpringBootApplication
 @EnableAspectJAutoProxy(proxyTargetClass = true)
