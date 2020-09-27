@@ -1,0 +1,14 @@
+* Run unpackaged:
+
+  $ mvn spring-boot:run
+  
+  Then call it with:
+
+  $ wget -qO- localhost:8080/product/4
+  {"id":4,"name":"Spoon","price":2}
+  
+* Run packaged:
+
+  $ java -jar target/poc-springboot-web-0.0.1-SNAPSHOT-exec.jar
+
+

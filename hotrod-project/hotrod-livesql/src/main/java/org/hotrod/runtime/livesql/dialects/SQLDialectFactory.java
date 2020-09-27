@@ -7,7 +7,10 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.hotrodorm.hotrod.utils.XUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("sqlDialectFactory")
 public class SQLDialectFactory {
 
   private static final String TOOL_NAME = "HotRod";
@@ -52,6 +55,7 @@ public class SQLDialectFactory {
 
   }
 
+  @Autowired
   private DataSource dataSource = null;
 
   private String dialect = null;

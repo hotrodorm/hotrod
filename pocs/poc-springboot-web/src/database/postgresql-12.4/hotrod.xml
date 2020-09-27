@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+      <daos package="app5.persistence" 
+        vo-prefix="" vo-suffix="VO"
+        abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" 
+        dao-prefix="" dao-suffix="DAO" />
+      <mappers dir="mappers" />
+    </mybatis-spring>
+  </generators>
+
+  <table name="product" />
+
+</hotrod>
