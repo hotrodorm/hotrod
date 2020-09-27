@@ -42,6 +42,10 @@ public class TemplateTag extends AbstractConfigurationTag {
     this.sFile = file;
   }
 
+  public String getTemplateFile() {
+    return this.sFile;
+  }
+
   // Behavior
 
   public void validate(final File basedir, final File parentDir) throws InvalidConfigurationFileException {

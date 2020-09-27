@@ -160,14 +160,16 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
 
     // Prepare MyBatis Configuration File list
 
-    this.myBatisConfig.addFacetSourceFile(this.liveSQLMapper.getFileName());
-    for (Mapper mapper : this.mappers.values()) {
-      String sourceFile = mapper.getRuntimeSourceFileName();
-      this.myBatisConfig.addFacetSourceFile(sourceFile);
-    }
+    if (this.myBatisSpringTag.getTemplate() != null) {
+      this.myBatisConfig.addFacetSourceFile(this.liveSQLMapper.getFileName());
+      for (Mapper mapper : this.mappers.values()) {
+        String sourceFile = mapper.getRuntimeSourceFileName();
+        this.myBatisConfig.addFacetSourceFile(sourceFile);
+      }
 
-    for (String sourceFile : getAllMappersSourceFileNames()) {
-      this.myBatisConfig.addAnySourceFile(sourceFile);
+      for (String sourceFile : getAllMappersSourceFileNames()) {
+        this.myBatisConfig.addAnySourceFile(sourceFile);
+      }
     }
 
     // AvailableFKs
@@ -432,7 +434,9 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
 
     // MyBatis Main configuration file
 
-    this.myBatisConfig.generate(fileGenerator);
+    if (this.myBatisSpringTag.getTemplate() != null) {
+      this.myBatisConfig.generate(fileGenerator);
+    }
 
     // compute tree generation status
 

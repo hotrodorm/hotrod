@@ -93,8 +93,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
     // mybatis-configuration-template
 
-    if (this.template == null) {
-      this.template = new TemplateTag();
+    if (this.template != null && this.template.getTemplateFile() == null) {
       this.template.setTemplateFile(TemplateTag.DEFAULT_TEMPLATE_FILE);
     }
 
@@ -109,7 +108,9 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
     this.daos.validate(basedir);
     this.mappers.validate(basedir);
-    this.template.validate(basedir, parentDir);
+    if (this.template != null) {
+      this.template.validate(basedir, parentDir);
+    }
     this.selectGeneration.validate(basedir);
 
     // Properties
