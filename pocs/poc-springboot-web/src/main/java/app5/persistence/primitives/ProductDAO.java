@@ -5,23 +5,34 @@ package app5.persistence.primitives;
 import java.io.Serializable;
 import java.util.List;
 
-import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.cursor.Cursor;
+
 import org.hotrod.runtime.interfaces.DaoWithOrder;
-import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
+import org.hotrod.runtime.interfaces.OrderBy;
+
+import app5.persistence.ProductVO;
+
+import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
+import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
+import org.hotrod.runtime.livesql.metadata.BooleanColumn;
+import org.hotrod.runtime.livesql.metadata.ByteArrayColumn;
+import org.hotrod.runtime.livesql.metadata.ObjectColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.metadata.View;
+
+import org.springframework.stereotype.Component;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
 @Component("productDAO")
 public class ProductDAO implements Serializable, ApplicationContextAware {
@@ -55,15 +66,15 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app5.persistence.ProductVO> selectByExample(final app5.persistence.ProductVO example,
-      final ProductOrderBy... orderBies) {
+  public List<app5.persistence.ProductVO> selectByExample(final app5.persistence.ProductVO example, final ProductOrderBy... orderBies)
+      {
     DaoWithOrder<app5.persistence.ProductVO, ProductOrderBy> dwo = //
         new DaoWithOrder<app5.persistence.ProductVO, ProductOrderBy>(example, orderBies);
     return this.sqlSession.selectList("app5.persistence.primitives.product.selectByExample", dwo);
   }
 
-  public Cursor<app5.persistence.ProductVO> selectByExampleCursor(final app5.persistence.ProductVO example,
-      final ProductOrderBy... orderBies) {
+  public Cursor<app5.persistence.ProductVO> selectByExampleCursor(final app5.persistence.ProductVO example, final ProductOrderBy... orderBies)
+      {
     DaoWithOrder<app5.persistence.ProductVO, ProductOrderBy> dwo = //
         new DaoWithOrder<app5.persistence.ProductVO, ProductOrderBy>(example, orderBies);
     return this.sqlSession.selectCursor("app5.persistence.primitives.product.selectByExample", dwo);
@@ -73,8 +84,8 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   public CriteriaWherePhase<app5.persistence.ProductVO> selectByCriteria(final ProductDAO.ProductTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app5.persistence.ProductVO>(from, this.sqlDialect, this.sqlSession, predicate,
-        "app5.persistence.primitives.product.selectByCriteria");
+    return new CriteriaWherePhase<app5.persistence.ProductVO>(from, this.sqlDialect, this.sqlSession,
+        predicate, "app5.persistence.primitives.product.selectByCriteria");
   }
 
   // select parent(s) by FKs: no imported keys found -- skipped
@@ -91,16 +102,14 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   // update by PK
 
   public int update(final app5.persistence.ProductVO vo) {
-    if (vo.id == null)
-      return 0;
+    if (vo.id == null) return 0;
     return this.sqlSession.update("app5.persistence.primitives.product.updateByPK", vo);
   }
 
   // delete by PK
 
   public int delete(final app5.persistence.ProductVO vo) {
-    if (vo.id == null)
-      return 0;
+    if (vo.id == null) return 0;
     return this.sqlSession.delete("app5.persistence.primitives.product.deleteByPK", vo);
   }
 
@@ -108,7 +117,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   public int updateByExample(final app5.persistence.ProductVO example, final app5.persistence.ProductVO updateValues) {
     UpdateByExampleDao<app5.persistence.ProductVO> fvd = //
-        new UpdateByExampleDao<app5.persistence.ProductVO>(example, updateValues);
+      new UpdateByExampleDao<app5.persistence.ProductVO>(example, updateValues);
     return this.sqlSession.update("app5.persistence.primitives.product.updateByExample", fvd);
   }
 
@@ -135,7 +144,8 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     PRICE("product", "price", true), //
     PRICE$DESC("product", "price", false);
 
-    private ProductOrderBy(final String tableName, final String columnName, boolean ascending) {
+    private ProductOrderBy(final String tableName, final String columnName,
+        boolean ascending) {
       this.tableName = tableName;
       this.columnName = columnName;
       this.ascending = ascending;
