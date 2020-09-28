@@ -1,19 +1,15 @@
 * Run unpackaged:
-
   $ mvn spring-boot:run
-  
-* Get product #4 from client app:
+ 
+* Run packaged:
+  $ java -jar target/my-web-app-0.0.1-SNAPSHOT.jar
 
-  $ wget -qO- localhost:8080/product/4
+* Get product #4 from client app:
+  $ wget -nv -O- localhost:8080/product/4
   {"id":4,"name":"Spoon","price":2}
 
 * Get SQL metrics:
-
-  $ wget -qO- localhost:8080/metrics/sql
+  $ wget -nv -O- localhost:8080/metrics/sql
   > 1 exe, avg 1 ms, σ 0 [1-1 ms] -- select id, name, price from product
   > 5 exe, avg 0 ms, σ 0 [0-1 ms] -- select id, name, price from product where id = ?
-
-* Run packaged:
-
-  $ java -jar target/poc-springboot-web-0.0.1-SNAPSHOT.jar
 
