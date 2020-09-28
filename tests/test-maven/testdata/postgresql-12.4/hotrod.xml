@@ -15,7 +15,7 @@
 
   <facet name="gui">
     <table name="a" />
-    <table name="b" extends="a" />
+    <!-- <table name="b" extends="a" /> -->
   </facet>
   
   <table name="island" />

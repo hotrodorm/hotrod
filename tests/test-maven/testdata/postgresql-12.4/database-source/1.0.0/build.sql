@@ -64,7 +64,7 @@ create table transaction (
   seq_id serial not null,
   time varchar(16) not null,
   amount integer not null,
-  fed_branch_id bigint,
+  fed_branch_id int,
   primary key (seq_id),
   constraint tx_account_id_time unique (account_id, time),
   constraint fk_tx_account1 foreign key (account_id) 
@@ -107,7 +107,7 @@ create sequence seq_agent;
 create table agent (
   id integer not null,
   name varchar(40) not null,
-  client_id bigint,
+  client_id int,
   primary key (id),
   constraint fk_agent_client1 foreign key (client_id) references client (id),
   constraint fk_agent_client2 foreign key (client_id) references client (id),

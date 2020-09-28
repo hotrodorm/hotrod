@@ -190,7 +190,7 @@ public class SQLMetricsAspect {
   // Inner classes
 
   @Component("sqlMetrics")
-  public class SQLMetrics {
+  public static class SQLMetrics {
 
     private Map<String, StatementMetrics> metrics = new HashMap<String, StatementMetrics>();
 
@@ -210,7 +210,7 @@ public class SQLMetricsAspect {
 
   }
 
-  public class StatementMetrics {
+  public static class StatementMetrics {
 
     private String actualSQL;
     private String compactedSQL;
