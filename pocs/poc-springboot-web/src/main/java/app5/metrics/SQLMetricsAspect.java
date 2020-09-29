@@ -192,9 +192,28 @@ public class SQLMetricsAspect {
   @Component("sqlMetrics")
   public static class SQLMetrics {
 
+    private boolean active = true;
     private Map<String, StatementMetrics> metrics = new HashMap<String, StatementMetrics>();
 
-    public synchronized void record(final String sql, final long elapsedTime, final boolean succeeded) {
+    public void activate() {
+      this.active = true;
+    }
+
+    public void deactivate() {
+      this.active = false;
+    }
+
+    public boolean isActive() {
+      return this.active;
+    }
+
+    public void record(final String sql, final long elapsedTime, final boolean succeeded) {
+      if (this.active) {
+        recordExecution(sql, elapsedTime, succeeded);
+      }
+    }
+
+    private synchronized void recordExecution(final String sql, final long elapsedTime, final boolean succeeded) {
       StatementMetrics sm = this.metrics.get(sql);
       if (sm == null) {
         sm = new StatementMetrics(sql);

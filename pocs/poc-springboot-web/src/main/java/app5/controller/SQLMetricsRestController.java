@@ -7,16 +7,31 @@ import org.springframework.web.bind.annotation.RestController;
 
 import app5.metrics.SQLMetricsAspect.SQLMetrics;
 
-@RequestMapping("/metrics")
+@RequestMapping("/metrics/sql")
 @RestController
 public class SQLMetricsRestController {
 
   @Autowired
   private SQLMetrics sqlMetrics;
 
-  @GetMapping("sql")
-  String getSQLMetrics() {
+  @GetMapping("stats")
+  public String getSQLMetrics() {
     return this.sqlMetrics.render();
+  }
+
+  @GetMapping("activate")
+  public void activate() {
+    this.sqlMetrics.activate();
+  }
+
+  @GetMapping("deactivate")
+  public void deactivate() {
+    this.sqlMetrics.deactivate();
+  }
+
+  @GetMapping("status")
+  public String getIsActive() {
+    return this.sqlMetrics.isActive() ? "Active" : "Inactive";
   }
 
 }
