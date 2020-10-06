@@ -32,7 +32,8 @@ public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
   public abstract SelectGenerationTag getSelectGeneration();
 
   public abstract HotRodGenerator instantiateGenerator(CachedMetadata cachedMetadata, DatabaseLocation loc,
-      HotRodConfigTag config, DisplayMode displayMode, boolean incrementalMode, DatabaseAdapter adapter,
-      Feedback feedback) throws UncontrolledException, ControlledException, InvalidConfigurationFileException;
+      HotRodConfigTag config, EnabledFKs enabledFKs, DisplayMode displayMode, boolean incrementalMode,
+      DatabaseAdapter adapter, Feedback feedback)
+      throws UncontrolledException, ControlledException, InvalidConfigurationFileException;
 
 }

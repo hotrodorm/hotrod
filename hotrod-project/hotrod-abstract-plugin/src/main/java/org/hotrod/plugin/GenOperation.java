@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DisplayMode;
+import org.hotrod.config.EnabledFKs;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.DatabaseAdapterFactory;
@@ -27,10 +28,10 @@ import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.HotRodGenerator;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.runtime.BuildInformation;
-import org.hotrod.utils.EUtils;
 import org.hotrod.utils.LocalFileGenerator;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
+import org.nocrala.tools.database.tartarus.utils.XUtil;
 
 public class GenOperation {
 
@@ -99,7 +100,7 @@ public class GenOperation {
       Throwable cause = e.getCause();
       throw new Exception(e.getMessage() + (cause == null ? "" : ": " + cause.getMessage()));
     } catch (Throwable e) {
-      throw new Exception("Could not connect to database: " + EUtils.renderMessages(e));
+      throw new Exception("Could not connect to database: " + XUtil.abridge(e));
     }
 
     log.debug("Adapter loaded.");
@@ -114,23 +115,27 @@ public class GenOperation {
         throw new Exception("\n" + e.getMessage());
       }
     } catch (UncontrolledException e) {
-      feedback.error("Technical error found: " + EUtils.renderMessages(e));
+      feedback.error("Technical error found: " + XUtil.abridge(e));
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
     } catch (FacetNotFoundException e) {
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code: " + "facet '"
           + e.getMessage() + "' not found.");
     } catch (Throwable e) {
-      feedback.error("Technical error found: " + EUtils.renderMessages(e));
+      feedback.error("Technical error found: " + XUtil.abridge(e));
       log.error("Technical error found", e);
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
     }
 
-    log.debug("Configuration loaded.");
+    log.debug("Main Configuration loaded.");
+
+    EnabledFKs enabledFKs = EnabledFKs.loadIfPresent(this.baseDir);
+
+    log.debug("FKs Definition loaded.");
 
     try {
       CachedMetadata cachedMetadata = new CachedMetadata();
       HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
-          config, this.displayMode, false, adapter, feedback);
+          config, enabledFKs, this.displayMode, false, adapter, feedback);
       log.debug("Generator instantiated.");
 
       try {
@@ -161,7 +166,7 @@ public class GenOperation {
             + e.getLocation().render() + ":\n" + e.getMessage());
       }
     } catch (UncontrolledException e) {
-      feedback.error("Technical error found: " + EUtils.renderMessages(e));
+      feedback.error("Technical error found: " + XUtil.abridge(e));
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
     } catch (InvalidConfigurationFileException e) {
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "

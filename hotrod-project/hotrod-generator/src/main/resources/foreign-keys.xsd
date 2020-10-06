@@ -1,0 +1,15 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <xsd:element name="foreign-keys">
+    <xsd:element name="foreign-key" type="foreign-key-type" minOccurs="0" maxOccurs="unbounded" />
+  </xsd:element>
+
+  <xsd:complexType name="foreign-key-type">
+    <xsd:attribute name="parent" type="xsd:string" use="required" />
+    <xsd:attribute name="children" type="xsd:string" use="required" />
+    <xsd:attribute name="get-parent-method" type="xsd:string" use="required" />
+    <xsd:attribute name="get-children-method" type="xsd:string" use="required" />
+  </xsd:complexType>
+
+</xsd:schema>
+   

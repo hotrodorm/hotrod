@@ -931,7 +931,8 @@ public class Mapper extends GeneratableObject {
 
   private String getWhereByExample(final String prefix) throws IOException {
     StringBuilder sb = new StringBuilder();
-    sb.append("    <where>\n");
+    // sb.append(" <where>\n");
+    sb.append("    <trim prefix=\"where&#xA;\" prefixOverrides=\"and |or \">\n");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String prompt = prefix != null ? (prefix + ".") : "";
       String prop = prompt + cm.getId().getJavaMemberName();
@@ -947,7 +948,8 @@ public class Mapper extends GeneratableObject {
       sb.append("      </if>\n");
 
     }
-    sb.append("    </where>\n");
+    // sb.append(" </where>\n");
+    sb.append("    </trim>\n");
     return sb.toString();
   }
 
@@ -1235,6 +1237,14 @@ public class Mapper extends GeneratableObject {
   public String getRuntimeSourceFileName() {
     File dir = this.layout.getMapperRuntimeDir(this.fragmentPackage);
     File source = new File(dir, this.getSourceFileName());
+    return source.getPath();
+  }
+
+  public static String assembleSourceFileName(final DataSetLayout layout, final ClassPackage fragmentPackage,
+      final ObjectId id) {
+    File dir = layout.getMapperRuntimeDir(fragmentPackage);
+    String sourceFile = "primitives-" + id.getDashedName() + ".xml";
+    File source = new File(dir, sourceFile);
     return source.getPath();
   }
 

@@ -4,6 +4,7 @@
 
 * To run the test as Spring Boot:
     mvn spring-boot:run
+    mvn spring-boot:run -Dspring-boot.run.arguments="param1 param2 param3"
 
 * To run the test directly Maven: mvn spring-boot:run
     mvn exec:java -Dexec.cleanupDaemonThreads=false -Dexec.classpathScope=test -Dexec.mainClass="com.myapp1.App2"

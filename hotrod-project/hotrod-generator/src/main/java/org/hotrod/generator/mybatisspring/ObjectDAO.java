@@ -16,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.Constants;
+import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisSpringTag;
 import org.hotrod.config.ParameterTag;
@@ -266,9 +267,9 @@ public class ObjectDAO extends GeneratableObject {
 
     imports.add("java.io.Serializable");
     imports.add("java.util.List");
-    // imports.add("java.util.Map");
     imports.newLine();
     imports.add("org.apache.ibatis.session.SqlSession");
+    imports.add("org.apache.ibatis.cursor.Cursor");
     imports.newLine();
 
     if (this.metadata.getVersionControlMetadata() != null) {
@@ -410,13 +411,17 @@ public class ObjectDAO extends GeneratableObject {
     Map<String, String> daoMembers = new HashMap<String, String>();
 
     for (DataSetMetadata ds : this.fkSelectors.keySet()) {
-      ObjectDAO dao = this.generator.getDAO(ds);
-      daoMembers.put(dao.getClassName(), dao.getMemberName());
+      if (!(ds.getDaoTag() instanceof EnumTag)) {
+        ObjectDAO dao = this.generator.getDAO(ds);
+        daoMembers.put(dao.getClassName(), dao.getMemberName());
+      }
     }
 
     for (DataSetMetadata ds : this.efkSelectors.keySet()) {
-      ObjectDAO dao = this.generator.getDAO(ds);
-      daoMembers.put(dao.getClassName(), dao.getMemberName());
+      if (!(ds.getDaoTag() instanceof EnumTag)) {
+        ObjectDAO dao = this.generator.getDAO(ds);
+        daoMembers.put(dao.getClassName(), dao.getMemberName());
+      }
     }
 
     for (String className : daoMembers.keySet()) {
@@ -614,6 +619,16 @@ public class ObjectDAO extends GeneratableObject {
     println("    return this.sqlSession.selectList(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo);");
     println("  }");
     println();
+
+    println("  public Cursor<" + voClassName + "> selectByExampleCursor(final " + voClassName + " example, final "
+        + this.getOrderByClassName() + "... orderBies)");
+    print("      ");
+    println("{");
+    println("    DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + "> dwo = //");
+    println("        new DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + ">(example, orderBies);");
+    println("    return this.sqlSession.selectCursor(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo);");
+    println("  }");
+    println();
   }
 
   private void writeSelectByCriteria() throws IOException {
@@ -754,7 +769,7 @@ public class ObjectDAO extends GeneratableObject {
 
               for (ForeignKeyMetadata fkm2 : fkSelectors.get(ds)) {
                 if (fkm2.getLocal().equals(fkm.getLocal())) {
-                  String toMethod = "to" + fkm2.getRemote().toCamelCase(this.layout.getColumnSeam());
+                  String toMethod = "to" + fkm2.getRemote().toCamelCase(dao.layout.getColumnSeam());
                   String params = fkm.getLocal().getColumns().stream()
                       .map(cm -> "this.vo." + cm.getId().getJavaMemberName()).collect(ListCollector.joining(", "));
                   String selectMethod = "";
@@ -938,6 +953,7 @@ public class ObjectDAO extends GeneratableObject {
         for (ForeignKeyMetadata tfk : this.efkSelectors.get(ds)) {
           if (!fromKeys.contains(tfk.getLocal())) {
             fromKeys.add(tfk.getLocal());
+
             String fromKey = tfk.getLocal().toCamelCase(this.layout.getColumnSeam());
             String fromPhaseClassName = "SelectChildren" + vo.getJavaClassIdentifier() + "From" + fromKey + "Phase";
 
@@ -952,7 +968,12 @@ public class ObjectDAO extends GeneratableObject {
 
             for (ForeignKeyMetadata fkm2 : this.efkSelectors.get(ds)) {
               if (fkm2.getLocal().equals(tfk.getLocal())) {
-                String toMethod = "to" + fkm2.getRemote().toCamelCase(this.layout.getColumnSeam());
+
+                // TODO: fix remote seam
+
+                fkm2.getRemote().getTableMetadata();
+
+                String toMethod = "to" + fkm2.getRemote().toCamelCase(dao.layout.getColumnSeam());
 
                 println("    public List<" + vo.getClassName() + "> " + toMethod + "(final "
                     + vo.getJavaClassIdentifier() + "OrderBy... orderBies) {");

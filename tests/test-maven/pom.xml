@@ -17,12 +17,13 @@
 
     <!-- 1. Spring -->
 
+<!-- 
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
       <version>5.2.0.RELEASE</version>
     </dependency>
-
+ 
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-tx</artifactId>
@@ -35,6 +36,8 @@
       <version>5.2.0.RELEASE</version>
     </dependency>
 
+ -->
+
     <dependency>
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
@@ -46,8 +49,15 @@
       <artifactId>spring-jdbc</artifactId>
       <version>5.2.0.RELEASE</version>
     </dependency>
+
     
-    <!-- Spring AOP -->
+    <!-- Spring Boot -->
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <version>2.3.3.RELEASE</version>
+    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -61,12 +71,21 @@
       <version>2.3.3.RELEASE</version>
     </dependency>
 
+
     <!--    
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
+      <artifactId>spring-boot-starter-test</artifactId>
       <version>2.3.3.RELEASE</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.junit.vintage</groupId>
+          <artifactId>junit-vintage-engine</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
+
     -->
 
     <!-- 2. MyBatis Spring -->
@@ -88,13 +107,13 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>3.2.2-SNAPSHOT</version>
+      <version>3.2.3-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>3.2.2-SNAPSHOT</version>
+      <version>3.2.3-SNAPSHOT</version>
     </dependency>
 
     <!-- 4. Log4j 2 -->
@@ -131,11 +150,36 @@
   <build>
 
     <plugins>
+    
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>2.3.3.RELEASE</version>
       </plugin>
+    
+      <!-- Assemble a single jar with all runtime dependencies, using one-jar -->
+
+<!-- 
+      <plugin>
+        <groupId>com.jolira</groupId>
+        <artifactId>onejar-maven-plugin</artifactId>
+        <version>1.4.4</version>
+        <executions>
+          <execution>
+            <configuration>
+              <mainClass>com.myapp1.App2</mainClass>
+              <attachToBuild>true</attachToBuild>
+              <classifier>commandline</classifier>
+              <filename>t1-${project.version}.${project.packaging}</filename>
+            </configuration>
+            <goals>
+              <goal>one-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>    
+ -->
+ 
     </plugins>
 
   </build>

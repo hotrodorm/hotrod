@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.DisplayMode;
+import org.hotrod.config.ExecutorTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisSpringTag;
@@ -17,6 +19,7 @@ import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.DAOType;
@@ -38,6 +41,8 @@ import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.LocalFileGenerator;
+import org.hotrod.utils.identifiers.Id;
+import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGenerator {
@@ -55,6 +60,7 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
   private List<ObjectAbstractVO> tableAbstractVOs = new ArrayList<ObjectAbstractVO>();
   private MyBatisConfiguration myBatisConfig;
   private LiveSQLMapper liveSQLMapper;
+  private AvailableFKs availableFKs;
 
   private EntityDAORegistry entityDAORegistry = new EntityDAORegistry();
 
@@ -154,11 +160,22 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
 
     // Prepare MyBatis Configuration File list
 
-    this.myBatisConfig.addFacetSourceFile(this.liveSQLMapper.getFileName());
-    for (Mapper mapper : this.mappers.values()) {
-      String sourceFile = mapper.getRuntimeSourceFileName();
-      this.myBatisConfig.addFacetSourceFile(sourceFile);
+    if (this.myBatisSpringTag.getTemplate() != null) {
+      this.myBatisConfig.addFacetSourceFile(this.liveSQLMapper.getFileName());
+      for (Mapper mapper : this.mappers.values()) {
+        String sourceFile = mapper.getRuntimeSourceFileName();
+        this.myBatisConfig.addFacetSourceFile(sourceFile);
+      }
+
+      for (String sourceFile : getAllMappersSourceFileNames()) {
+        this.myBatisConfig.addAnySourceFile(sourceFile);
+      }
     }
+
+    // AvailableFKs
+
+    this.availableFKs = new AvailableFKs(this.config,
+        super.tables.stream().map(t -> t.getImportedFKs()).flatMap(l -> l.stream()).collect(Collectors.toList()));
 
   }
 
@@ -253,6 +270,43 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
     this.mappers.put(metadata, mapper);
     this.daos.put(metadata, dao);
 
+  }
+
+  private List<String> getAllMappersSourceFileNames() {
+
+    List<String> allMappersSourceFileNames = new ArrayList<String>();
+
+    for (TableTag t : this.config.getAllTables()) {
+      ClassPackage fragmentPackage = t.getFragmentConfig() != null && t.getFragmentConfig().getFragmentPackage() != null
+          ? t.getFragmentConfig().getFragmentPackage()
+          : null;
+      String sourceFileName = Mapper.assembleSourceFileName(layout, fragmentPackage, t.getId());
+      allMappersSourceFileNames.add(sourceFileName);
+    }
+
+    for (ViewTag t : this.config.getAllViews()) {
+      ClassPackage fragmentPackage = t.getFragmentConfig() != null && t.getFragmentConfig().getFragmentPackage() != null
+          ? t.getFragmentConfig().getFragmentPackage()
+          : null;
+      String sourceFileName = Mapper.assembleSourceFileName(layout, fragmentPackage, t.getId());
+      allMappersSourceFileNames.add(sourceFileName);
+    }
+
+    for (ExecutorTag t : this.config.getAllExecutors()) {
+      ClassPackage fragmentPackage = t.getFragmentConfig() != null && t.getFragmentConfig().getFragmentPackage() != null
+          ? t.getFragmentConfig().getFragmentPackage()
+          : null;
+      ObjectId id = null;
+      try {
+        id = new ObjectId(Id.fromJavaClass(t.getJavaClassName()));
+      } catch (InvalidIdentifierException e) {
+        // Ignore
+      }
+      String sourceFileName = Mapper.assembleSourceFileName(layout, fragmentPackage, id);
+      allMappersSourceFileNames.add(sourceFileName);
+    }
+
+    return allMappersSourceFileNames;
   }
 
   private LinkedHashSet<SelectAbstractVO> abstractSelectVOs = new LinkedHashSet<SelectAbstractVO>();
@@ -365,6 +419,9 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
       dao.generate(fileGenerator, this);
     }
 
+    // TODO: Re-enable the Available FKs file.
+    // this.availableFKs.generate(fileGenerator);
+
     // Enums
 
     for (EnumClass ec : this.enumClasses.values()) {
@@ -377,7 +434,9 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
 
     // MyBatis Main configuration file
 
-    this.myBatisConfig.generate(fileGenerator);
+    if (this.myBatisSpringTag.getTemplate() != null) {
+      this.myBatisConfig.generate(fileGenerator);
+    }
 
     // compute tree generation status
 

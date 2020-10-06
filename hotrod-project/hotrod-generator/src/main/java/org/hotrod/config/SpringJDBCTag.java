@@ -83,8 +83,8 @@ public class SpringJDBCTag extends AbstractGeneratorTag {
 
   @Override
   public HotRodGenerator instantiateGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc,
-      final HotRodConfigTag config, final DisplayMode displayMode, final boolean incrementalMode,
-      final DatabaseAdapter adapter, final Feedback feedback)
+      final HotRodConfigTag config, final EnabledFKs enabledFKs, final DisplayMode displayMode,
+      final boolean incrementalMode, final DatabaseAdapter adapter, final Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
     // Ignore cachedMetadata & selectedTags (for now)
     config.markGenerate();

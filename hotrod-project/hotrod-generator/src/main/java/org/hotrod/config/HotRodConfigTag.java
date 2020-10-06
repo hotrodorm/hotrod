@@ -284,6 +284,12 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     }
   }
 
+  // Metadata
+
+  public File getFile() {
+    return this.f;
+  }
+
   // Simple Caption
 
   @Override
