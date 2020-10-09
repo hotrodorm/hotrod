@@ -9,7 +9,27 @@
   {"id":4,"name":"Spoon","price":2}
 
 * Get SQL metrics:
-  $ wget -nv -O- localhost:8080/metrics/sql
-  > 1 exe, avg 1 ms, σ 0 [1-1 ms] -- select id, name, price from product
-  > 5 exe, avg 0 ms, σ 0 [0-1 ms] -- select id, name, price from product where id = ?
+  $ wget -nv -O- localhost:8080/metrics/sql/by_highest_avg_response_time
+  > 2 exe, 0 errors, avg 1 ms, σ 1 [1-2 ms], last executed: Fri Oct 09 16:11:09 EDT 2020, last exception: never -- select id, name, price from product
+  > 1 exe, 0 errors, avg 1 ms, σ 0 [1-1 ms], last executed: Fri Oct 09 16:11:09 EDT 2020, last exception: never -- SELECT count(*) as cnt FROM product p
+  > 5 exe, 0 errors, avg 1 ms, σ 0 [1-1 ms], last executed: Fri Oct 09 16:11:17 EDT 2020, last exception: never -- select id, name, price from product where id = ?2020-10-09 16:11:59 URL:http://localhost:8080/metrics/sql/by_highest_response_time [464/464] -> "-" [1]
+
+  $ wget -nv -O- localhost:8080/metrics/sql/by_highest_response_time
+
+  $ wget -nv -O- localhost:8080/metrics/sql/by_most_executed
+
+  $ wget -nv -O- localhost:8080/metrics/sql/by_most_recently_executed
+
+  $ wget -nv -O- localhost:8080/metrics/sql/by_most_errors
+  
+  $ wget -nv -O- localhost:8080/metrics/sql/errors_by_most_recent
+  > 3 exe, 3 errors, avg 2 ms, σ 1 [1-4 ms], last executed: Fri Oct 09 16:16:06 EDT 2020, last exception at Fri Oct 09 16:16:06 EDT 2020: ERROR: operator does not exist: timestamp with time zone >= time with time zone
+    Hint: No operator matches the given name and argument types. You might need to add explicit type casts.
+    Position: 28
+  SELECT current_timestamp between current_time and current_timestamp
+  > 2 exe, 0 errors, avg 1 ms, σ 0 [1-1 ms], last executed: Fri Oct 09 16:15:43 EDT 2020, last exception: never -- select id, name, price from product
+  > 1 exe, 0 errors, avg 1 ms, σ 0 [1-1 ms], last executed: Fri Oct 09 16:15:43 EDT 2020, last exception: never -- SELECT count(*) as cnt FROM product p2020-10-09 16:16:08 URL:http://localhost:8080/metrics/sql/by_most_errors [707/707] -> "-" [1]
+
+* To produce a SQL error (for testing purposes) use:
+  $ wget -nv -O- localhost:8080/product/produceerror
 
