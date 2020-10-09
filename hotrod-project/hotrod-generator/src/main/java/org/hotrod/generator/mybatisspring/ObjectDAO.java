@@ -393,7 +393,7 @@ public class ObjectDAO extends GeneratableObject {
 
     // Signature
 
-    println("@Component(\"" + SUtil.escapeJavaString(SUtil.lowerFirst(this.getClassName())) + "\")");
+    println("@Component");
     println("public class " + this.getClassName() + " implements Serializable, ApplicationContextAware {");
     println();
 
@@ -433,7 +433,7 @@ public class ObjectDAO extends GeneratableObject {
       }
     }
 
-    println("  @Value(\"#{sqlDialectFactory.sqlDialect}\")");
+    println("  @Autowired");
     println("  private SQLDialect sqlDialect;");
     println();
     println("  private ApplicationContext applicationContext;");

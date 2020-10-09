@@ -8,10 +8,11 @@ import javax.sql.DataSource;
 
 import org.hotrodorm.hotrod.utils.XUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@Component("sqlDialectFactory")
-public class SQLDialectFactory {
+@Configuration
+public class SQLDialectConfiguration {
 
   private static final String TOOL_NAME = "HotRod";
 
@@ -46,7 +47,7 @@ public class SQLDialectFactory {
         for (Dialect d : Dialect.values()) {
           sb.append(" - " + d.name() + "\n");
         }
-        throw new RuntimeException("[" + SQLDialectFactory.class.getSimpleName()
+        throw new RuntimeException("[" + SQLDialectConfiguration.class.getSimpleName()
             + "] Could not resolve the SQL dialect. Invalid property 'dialect' with value '" + dialect
             + "'. Valid values are:\n" + sb.toString());
       }
@@ -96,6 +97,7 @@ public class SQLDialectFactory {
 
   // Getters
 
+  @Bean
   public SQLDialect getSqlDialect() {
     if (this.sqlDialect == null) {
       synchronized (this) {
@@ -104,7 +106,7 @@ public class SQLDialectFactory {
             this.sqlDialect = resolveSQLDialect();
           } catch (RuntimeException e) {
             // Always show abridged stack trace.
-            // It's very useful to debug special obscure cases.
+            // It's very useful to debug special obscure errors.
             System.out.println("---\n" + XUtil.renderThrowable(e) + "\n---");
             throw e;
           }

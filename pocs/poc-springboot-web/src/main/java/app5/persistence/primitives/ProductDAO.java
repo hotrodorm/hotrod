@@ -34,7 +34,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-@Component("productDAO")
+@Component
 public class ProductDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
@@ -42,7 +42,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private SqlSession sqlSession;
 
-  @Value("#{sqlDialectFactory.sqlDialect}")
+  @Autowired
   private SQLDialect sqlDialect;
 
   private ApplicationContext applicationContext;

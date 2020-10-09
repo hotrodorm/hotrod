@@ -65,7 +65,6 @@ import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -76,7 +75,7 @@ public class LiveSQL {
   @Autowired
   private SqlSession sqlSession;
 
-  @Value("#{sqlDialectFactory.sqlDialect}")
+  @Autowired
   private SQLDialect sqlDialect;
 
   @Autowired
