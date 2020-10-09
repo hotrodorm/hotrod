@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
+import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
@@ -18,9 +19,9 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableSel
 
   // Constructor
 
-  public SelectColumnsPhase(final SQLDialect sqlDialect, final SqlSession sqlSession, final boolean distinct,
-      final ResultSetColumn... resultSetColumns) {
-    Select<R> s = new Select<R>(sqlDialect, distinct, sqlSession);
+  public SelectColumnsPhase(final SQLDialect sqlDialect, final SqlSession sqlSession, final LiveSQLMapper liveSQLMapper,
+      final boolean distinct, final ResultSetColumn... resultSetColumns) {
+    Select<R> s = new Select<R>(sqlDialect, distinct, sqlSession, liveSQLMapper);
     s.setResultSetColumns(Arrays.asList(resultSetColumns));
     this.select = s;
   }

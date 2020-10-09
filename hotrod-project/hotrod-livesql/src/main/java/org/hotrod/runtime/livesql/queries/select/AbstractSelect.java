@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.ibatis.session.SqlSession;
+import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
@@ -18,7 +19,6 @@ import org.hotrod.runtime.livesql.metadata.DatabaseObject;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
-import org.hotrodorm.hotrod.names.Names;
 import org.hotrodorm.hotrod.utils.CUtil;
 import org.hotrodorm.hotrod.utils.HexaUtils;
 import org.hotrodorm.hotrod.utils.SUtil;
@@ -43,13 +43,15 @@ public abstract class AbstractSelect<R> extends Query {
 
   private SqlSession sqlSession;
   private String mapperStatement;
+  private LiveSQLMapper liveSQLMapper;
 
   AbstractSelect(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
-      final String mapperStatement) {
+      final String mapperStatement, final LiveSQLMapper liveSQLMapper) {
     super(sqlDialect);
     this.distinct = distinct;
     this.sqlSession = sqlSession;
-    this.mapperStatement = (mapperStatement == null ? Names.LIVE_SQL_MAPPER_STATEMENT : mapperStatement);
+    this.mapperStatement = mapperStatement;
+    this.liveSQLMapper = liveSQLMapper;
   }
 
   protected abstract void writeColumns(QueryWriter w);
@@ -288,10 +290,17 @@ public abstract class AbstractSelect<R> extends Query {
     // }
     // System.out.println("------------------");
 
-    List<R> rows = this.sqlSession.selectList(this.mapperStatement, q.getConsolidatedParameters());
+    if (this.mapperStatement == null) {
+      return executeLiveSQL(q);
+    } else {
+      return this.sqlSession.selectList(this.mapperStatement, q.getConsolidatedParameters());
+    }
 
-    return rows;
+  }
 
+  @SuppressWarnings("unchecked")
+  private List<R> executeLiveSQL(final LiveSQLStructure q) {
+    return (List<R>) this.liveSQLMapper.select(q.getSQL());
   }
 
   public String getPreview() {
