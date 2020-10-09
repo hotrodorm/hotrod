@@ -15,6 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+import app5.factory.Animal;
 import app5.persistence.ProductVO;
 import app5.persistence.primitives.ProductDAO;
 import app5.persistence.primitives.ProductDAO.ProductTable;
@@ -34,6 +35,9 @@ public class Application {
   @Autowired
   private LiveSQL sql;
 
+  @Autowired
+  private Animal animal;
+
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
   }
@@ -41,6 +45,11 @@ public class Application {
   @Bean
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
+
+      System.out.println("[ Starting... ]");
+
+      this.animal.talk();
+      this.animal.salute();
 
       System.out.println("[ Now will read database ]");
 
