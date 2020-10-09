@@ -9,6 +9,9 @@ import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrodorm.hotrod.names.Names;
 
+// LiveSQL mapper is now loaded as a mapper interface, not an XML file. Remove in the future.
+
+@Deprecated
 public class LiveSQLMapper {
 
   private static final String MAPPER_FILE_NAME = "live-sql.xml";

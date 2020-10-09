@@ -113,7 +113,7 @@
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>3.2.3-SNAPSHOT</version>
+        <version>3.3.1-SNAPSHOT</version>
         <configuration>
           <localproperties>src/database/postgresql-12.4/dev.properties</localproperties>
           <txtexportfile>src/database/postgresql-12.4/export-columns.txt</txtexportfile>

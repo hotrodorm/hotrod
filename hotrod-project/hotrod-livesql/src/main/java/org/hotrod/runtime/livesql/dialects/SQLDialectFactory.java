@@ -103,7 +103,8 @@ public class SQLDialectFactory {
           try {
             this.sqlDialect = resolveSQLDialect();
           } catch (RuntimeException e) {
-            // Show abridged stack trace always. Can help debugging
+            // Always show abridged stack trace.
+            // It's very useful to debug special obscure cases.
             System.out.println("---\n" + XUtil.renderThrowable(e) + "\n---");
             throw e;
           }
@@ -134,7 +135,7 @@ public class SQLDialectFactory {
       }
     } else {
       try {
-        return resolveFromDialect();
+        return resolveDesignatedDialect();
       } catch (SQLException e) {
         throw new RuntimeException(e.getMessage(), e.getCause());
       }
@@ -142,7 +143,7 @@ public class SQLDialectFactory {
 
   }
 
-  private SQLDialect resolveFromDialect() throws SQLException {
+  private SQLDialect resolveDesignatedDialect() throws SQLException {
 
     if (this.databaseName == null) {
       throw new SQLException("[" + this.getClass().getSimpleName() + "] Could not resolve the SQL dialect. "
