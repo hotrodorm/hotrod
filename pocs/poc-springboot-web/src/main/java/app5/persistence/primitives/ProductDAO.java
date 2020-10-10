@@ -13,6 +13,9 @@ import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
 import app5.persistence.ProductVO;
+import app5.persistence.HistoricPriceVO;
+import app5.persistence.primitives.HistoricPriceDAO.HistoricPriceOrderBy;
+import app5.persistence.primitives.HistoricPriceDAO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
@@ -43,6 +46,9 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   private SqlSession sqlSession;
 
   @Autowired
+  private HistoricPriceDAO historicPriceDAO;
+
+  @Autowired
   private SQLDialect sqlDialect;
 
   private ApplicationContext applicationContext;
@@ -54,7 +60,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // select by primary key
 
-  public app5.persistence.ProductVO selectByPK(final java.lang.Integer id) {
+  public app5.persistence.ProductVO selectByPK(final java.lang.Long id) {
     if (id == null)
       return null;
     app5.persistence.ProductVO vo = new app5.persistence.ProductVO();
@@ -90,7 +96,41 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // select parent(s) by FKs: no imported keys found -- skipped
 
-  // select children by FKs: no exported FKs found -- skipped
+  // select children by FKs
+
+  public SelectChildrenHistoricPricePhase selectChildrenHistoricPriceOf(final ProductVO vo) {
+    return new SelectChildrenHistoricPricePhase(vo);
+  }
+
+  public class SelectChildrenHistoricPricePhase {
+
+    private ProductVO vo;
+
+    SelectChildrenHistoricPricePhase(final ProductVO vo) {
+      this.vo = vo;
+    }
+
+    public SelectChildrenHistoricPriceFromIdPhase fromId() {
+      return new SelectChildrenHistoricPriceFromIdPhase(this.vo);
+    }
+
+  }
+
+  public class SelectChildrenHistoricPriceFromIdPhase {
+
+    private ProductVO vo;
+
+    SelectChildrenHistoricPriceFromIdPhase(final ProductVO vo) {
+      this.vo = vo;
+    }
+
+    public List<HistoricPriceVO> toProductId(final HistoricPriceOrderBy... orderBies) {
+      HistoricPriceVO example = new HistoricPriceVO();
+      example.setProductId((this.vo.getId() == null) ? null : new Integer(this.vo.getId().intValue()));
+      return historicPriceDAO.selectByExample(example, orderBies);
+    }
+
+  }
 
   // insert
 

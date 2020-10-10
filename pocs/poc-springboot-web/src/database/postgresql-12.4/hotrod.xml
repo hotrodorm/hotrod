@@ -14,5 +14,6 @@
   </generators>
 
   <table name="product" />
+  <table name="historic_price" />
 
 </hotrod>

@@ -24,7 +24,7 @@ public class ProductRestController {
   ProductVO getProduct(@PathVariable String id) {
     System.out.println("Retrieving product " + id + "...");
     try {
-      Integer iid = Integer.parseInt(id);
+      Long iid = Long.parseLong(id);
       return this.productDAO.selectByPK(iid);
     } catch (NumberFormatException e) {
       return null;

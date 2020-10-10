@@ -5,34 +5,34 @@ package app5.persistence.primitives;
 import java.io.Serializable;
 import org.hotrod.runtime.json.*;
 
-public class AbstractProductVO implements Serializable {
+public class AbstractHistoricPriceVO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   // VO Properties (table columns)
 
-  protected java.lang.Long id = null;
-  protected java.lang.String name = null;
+  protected java.lang.Integer productId = null;
+  protected java.sql.Date fromDate = null;
   protected java.lang.Integer price = null;
 
   // getters & setters
 
-  public java.lang.Long getId() {
-    return this.id;
+  public java.lang.Integer getProductId() {
+    return this.productId;
   }
 
-  public void setId(final java.lang.Long id) {
-    this.id = id;
-    this.getPropertiesChangeLog().idWasSet = true;
+  public void setProductId(final java.lang.Integer productId) {
+    this.productId = productId;
+    this.getPropertiesChangeLog().productIdWasSet = true;
   }
 
-  public java.lang.String getName() {
-    return this.name;
+  public java.sql.Date getFromDate() {
+    return this.fromDate;
   }
 
-  public void setName(final java.lang.String name) {
-    this.name = name;
-    this.getPropertiesChangeLog().nameWasSet = true;
+  public void setFromDate(final java.sql.Date fromDate) {
+    this.fromDate = fromDate;
+    this.getPropertiesChangeLog().fromDateWasSet = true;
   }
 
   public java.lang.Integer getPrice() {
@@ -49,8 +49,8 @@ public class AbstractProductVO implements Serializable {
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
-    sb.append("- id=" + this.id + "\n");
-    sb.append("- name=" + this.name + "\n");
+    sb.append("- productId=" + this.productId + "\n");
+    sb.append("- fromDate=" + this.fromDate + "\n");
     sb.append("- price=" + this.price);
     return sb.toString();
   }
@@ -59,8 +59,8 @@ public class AbstractProductVO implements Serializable {
 
   public String toJSON() {
     JSONObject obj = new JSONObject();
-    obj.addProperty("id", this.id);
-    obj.addProperty("name", this.name);
+    obj.addProperty("productId", this.productId);
+    obj.addProperty("fromDate", this.fromDate);
     obj.addProperty("price", this.price);
     return obj.render();
   }
@@ -74,8 +74,8 @@ public class AbstractProductVO implements Serializable {
   }
 
   protected class PropertiesChangeLog {
-    public boolean idWasSet = false;
-    public boolean nameWasSet = false;
+    public boolean productIdWasSet = false;
+    public boolean fromDateWasSet = false;
     public boolean priceWasSet = false;
   }
 

@@ -31,7 +31,7 @@
       <include refid="columns" />
      from product
      where
-      id = #{id,jdbcType=INTEGER}
+      id = #{id,jdbcType=BIGINT}
   </select>
 
   <!-- no select by unique indexes since there are no UI (besides the PK) -->
@@ -44,7 +44,7 @@
      from product
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null ">
-        and id = #{p.id,jdbcType=INTEGER}
+        and id = #{p.id,jdbcType=BIGINT}
       </if>
       <if test="p.id == null and p.propertiesChangeLog.idWasSet">
         and id is null
@@ -84,7 +84,7 @@
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{id,jdbcType=BIGINT}</if>
         <if test="true">, #{name,jdbcType=VARCHAR}</if>
         <if test="propertiesChangeLog.priceWasSet">, #{price,jdbcType=INTEGER}</if>
       </trim>
@@ -98,7 +98,7 @@
       name = #{name,jdbcType=VARCHAR},
       price = #{price,jdbcType=INTEGER}
      where
-      id = #{id,jdbcType=INTEGER}
+      id = #{id,jdbcType=BIGINT}
   </update>
 
   <!-- delete by PK -->
@@ -106,7 +106,7 @@
   <delete id="deleteByPK">
     delete from product
      where
-      id = #{id,jdbcType=INTEGER}
+      id = #{id,jdbcType=BIGINT}
   </delete>
 
   <!-- update by example -->
@@ -114,13 +114,13 @@
   <update id="updateByExample">
     update product
     <set>
-      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=BIGINT},</if>
       <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
       <if test="values.propertiesChangeLog.priceWasSet">price = #{values.price,jdbcType=INTEGER},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null ">
-        and id = #{filter.id,jdbcType=INTEGER}
+        and id = #{filter.id,jdbcType=BIGINT}
       </if>
       <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
         and id is null
@@ -146,7 +146,7 @@
     delete from product
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null ">
-        and id = #{id,jdbcType=INTEGER}
+        and id = #{id,jdbcType=BIGINT}
       </if>
       <if test="id == null and propertiesChangeLog.idWasSet">
         and id is null

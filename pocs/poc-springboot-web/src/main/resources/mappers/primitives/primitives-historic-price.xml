@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="app5.persistence.primitives.historicPrice">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    product_id,
+    from_date,
+    price
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.product_id,
+    ${alias}.from_date,
+    ${alias}.price
+  </sql>
+
+  <resultMap id="allColumns" type="app5.persistence.HistoricPriceVO">
+    <id property="productId" column="product_id" />
+    <id property="fromDate" column="from_date" />
+    <result property="price" column="price" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from historic_price
+     where
+      product_id = #{productId,jdbcType=INTEGER}
+      and from_date = #{fromDate,jdbcType=DATE}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from historic_price
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.productId != null ">
+        and product_id = #{p.productId,jdbcType=INTEGER}
+      </if>
+      <if test="p.productId == null and p.propertiesChangeLog.productIdWasSet">
+        and product_id is null
+      </if>
+      <if test="p.fromDate != null ">
+        and from_date = #{p.fromDate,jdbcType=DATE}
+      </if>
+      <if test="p.fromDate == null and p.propertiesChangeLog.fromDateWasSet">
+        and from_date is null
+      </if>
+      <if test="p.price != null ">
+        and price = #{p.price,jdbcType=INTEGER}
+      </if>
+      <if test="p.price == null and p.propertiesChangeLog.priceWasSet">
+        and price is null
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into historic_price (
+      <trim prefixOverrides=", ">
+        <if test="true">, product_id</if>
+        <if test="true">, from_date</if>
+        <if test="true">, price</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{productId,jdbcType=INTEGER}</if>
+        <if test="true">, #{fromDate,jdbcType=DATE}</if>
+        <if test="true">, #{price,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update historic_price set
+      price = #{price,jdbcType=INTEGER}
+     where
+      product_id = #{productId,jdbcType=INTEGER}
+      and from_date = #{fromDate,jdbcType=DATE}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from historic_price
+     where
+      product_id = #{productId,jdbcType=INTEGER}
+      and from_date = #{fromDate,jdbcType=DATE}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update historic_price
+    <set>
+      <if test="values.propertiesChangeLog.productIdWasSet">product_id = #{values.productId,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.fromDateWasSet">from_date = #{values.fromDate,jdbcType=DATE},</if>
+      <if test="values.propertiesChangeLog.priceWasSet">price = #{values.price,jdbcType=INTEGER},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.productId != null ">
+        and product_id = #{filter.productId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.productId == null and filter.propertiesChangeLog.productIdWasSet">
+        and product_id is null
+      </if>
+      <if test="filter.fromDate != null ">
+        and from_date = #{filter.fromDate,jdbcType=DATE}
+      </if>
+      <if test="filter.fromDate == null and filter.propertiesChangeLog.fromDateWasSet">
+        and from_date is null
+      </if>
+      <if test="filter.price != null ">
+        and price = #{filter.price,jdbcType=INTEGER}
+      </if>
+      <if test="filter.price == null and filter.propertiesChangeLog.priceWasSet">
+        and price is null
+      </if>
+    </trim>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from historic_price
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="productId != null ">
+        and product_id = #{productId,jdbcType=INTEGER}
+      </if>
+      <if test="productId == null and propertiesChangeLog.productIdWasSet">
+        and product_id is null
+      </if>
+      <if test="fromDate != null ">
+        and from_date = #{fromDate,jdbcType=DATE}
+      </if>
+      <if test="fromDate == null and propertiesChangeLog.fromDateWasSet">
+        and from_date is null
+      </if>
+      <if test="price != null ">
+        and price = #{price,jdbcType=INTEGER}
+      </if>
+      <if test="price == null and propertiesChangeLog.priceWasSet">
+        and price is null
+      </if>
+    </trim>
+  </delete>
+
+</mapper>
