@@ -375,8 +375,13 @@ public class SQLMetricsAspect {
       return this.totalExecutions == 0 ? -1 : this.sum / this.totalExecutions;
     }
 
+    /**
+     * See Welford's online algorithm:
+     * https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online_algorithm
+     * 
+     * @return the standard deviation
+     */
     public double getTimeStandardDeviation() {
-      // https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online_algorithm
       return this.totalExecutions < 2 ? 0
           : Math.sqrt( //
               (this.sumSQ - 1.0 * this.sum * this.sum / this.totalExecutions) //
