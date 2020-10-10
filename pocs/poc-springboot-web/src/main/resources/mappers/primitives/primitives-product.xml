@@ -80,13 +80,13 @@
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
         <if test="true">, name</if>
-        <if test="true">, price</if>
+        <if test="propertiesChangeLog.priceWasSet">, price</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
         <if test="true">, #{id,jdbcType=INTEGER}</if>
         <if test="true">, #{name,jdbcType=VARCHAR}</if>
-        <if test="true">, #{price,jdbcType=INTEGER}</if>
+        <if test="propertiesChangeLog.priceWasSet">, #{price,jdbcType=INTEGER}</if>
       </trim>
       )
   </insert>

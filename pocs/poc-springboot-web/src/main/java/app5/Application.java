@@ -1,7 +1,6 @@
 package app5;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,9 +61,7 @@ public class Application {
 
       log.info("Counting products using LiveSQL...");
       ProductTable p = ProductDAO.newTable();
-      List<Map<String, Object>> result = sql.select(sql.count().as("cnt")).from(p).execute();
-      long count = (long) result.get(0).get("cnt");
-      log.info(" - Total of " + count + " product(s)");
+      log.info(" - Total of " + sql.select(sql.count().as("cnt")).from(p).execute().get(0).get("cnt") + " product(s)");
 
       log.info("Complete");
 

@@ -95,7 +95,11 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   // insert
 
   public int insert(final app5.persistence.ProductVO vo) {
-    String id = "app5.persistence.primitives.product.insert";
+    return insert(vo, false);
+  }
+
+  public int insert(final app5.persistence.ProductVO vo, final boolean retrieveDefaults) {
+    String id = retrieveDefaults ? "app5.persistence.primitives.product.insertRetrievingDefaults" : "app5.persistence.primitives.product.insert";
     return this.sqlSession.insert(id, vo);
   }
 
