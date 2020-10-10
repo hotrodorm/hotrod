@@ -24,7 +24,24 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <version>2.3.4.RELEASE</version>
+      <!-- Removing default logger engine for Spring Boot -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
+
+    <!-- 1.b Enabling Log4j2 setup for Spring Boot -->
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-log4j2</artifactId>
+      <version>2.3.4.RELEASE</version>
+    </dependency>
+
+    <!-- 1.c Spring AOP -->
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -78,9 +95,9 @@
   </dependencies>
 
   <build>
-  
+
     <finalName>my-web-app-${project.version}</finalName>
-      
+
     <plugins>
 
       <!-- Database builder -->

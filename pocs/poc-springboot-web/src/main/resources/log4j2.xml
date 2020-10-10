@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" shutdownHook="disable">
+
+  <Appenders>
+
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout
+        pattern="%style{%d{YYYY-MM-dd HH:mm:ss}}{gray} %highlight{%-5level }[%style{%T}{bright,blue}] %style{%C{1}(%L)}{bright,yellow}: %msg%n%throwable" />
+    </Console>
+
+    <RollingFile 
+        name="RollingFile" 
+        filename="logs/app5.log" 
+        filepattern="logs/app5-%d{YYYYMMdd-HHmmss}.log">
+      <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} %-5p [%T] %C{1}(%L) - %m%n" />
+      <Policies>
+        <SizeBasedTriggeringPolicy size="30 MB" />
+      </Policies>
+      <DefaultRolloverStrategy max="20" />
+    </RollingFile>
+
+  </Appenders>
+
+  <Loggers>
+
+    <!-- Set default logger level to INFO -->
+    <Root level="info">
+      <AppenderRef ref="Console" />
+      <AppenderRef ref="RollingFile" />
+    </Root>
+
+    <!-- Adding logging to specific Java classes -->
+    <Logger name="app5.Application" level="debug" />
+    
+    <!-- Logging MyBatis persistence -->
+    <Logger name="app5.persistence.primitives.product" level="debug" />
+    
+  </Loggers>
+
+</Configuration>

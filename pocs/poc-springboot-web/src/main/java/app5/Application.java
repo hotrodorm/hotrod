@@ -3,6 +3,8 @@ package app5;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,8 @@ import app5.persistence.primitives.ProductDAO.ProductTable;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class Application {
 
+  private static final Logger log = LogManager.getLogger(Application.class);
+
   @Autowired
   private ProductDAO productDAO;
 
@@ -46,6 +50,9 @@ public class Application {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
 
+      log.info("[Starting INFO]");
+      log.debug("[Starting DEBUG]");
+      log.trace("[Starting TRACE]");
       System.out.println("[ Starting... ]");
 
       this.animal.talk();
@@ -59,6 +66,7 @@ public class Application {
       countProducts();
 
       System.out.println("[ Completed ]");
+      log.info("[Complete]");
 
     };
   }
