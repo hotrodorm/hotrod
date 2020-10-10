@@ -48,9 +48,9 @@ public class Application {
 
       // Testing Log4j2 configuration
 
-      log.info("Starting INFO"); // shown
-      log.debug("Starting DEBUG"); // shown
-      log.trace("Starting TRACE"); // not shown
+      log.trace("Starting TRACE"); // should not be shown
+      log.debug("Starting DEBUG"); // should be shown
+      log.info("Starting INFO"); // should be shown
 
       // Using DAO
 
@@ -62,7 +62,7 @@ public class Application {
 
       log.info("Counting products using LiveSQL...");
       ProductTable p = ProductDAO.newTable();
-      List<Map<String, Object>> result = this.sql.select(sql.count().as("cnt")).from(p).execute();
+      List<Map<String, Object>> result = sql.select(sql.count().as("cnt")).from(p).execute();
       long count = (long) result.get(0).get("cnt");
       log.info(" - Total of " + count + " product(s)");
 

@@ -21,7 +21,8 @@
   $ wget -nv -O- localhost:8080/metrics/sql/by_most_errors
   $ wget -nv -O- localhost:8080/metrics/sql/errors_by_most_recent
 
-  examples:
+* SQL metrics examples:
+
   $ wget -nv -O- localhost:8080/metrics/sql/by_highest_avg_response_time
   > 2 exe, 0 errors, avg 1 ms, σ 1 [1-2 ms], last executed: Fri Oct 09 16:11:09 EDT 2020, last exception: never -- select id, name, price from product
   > 1 exe, 0 errors, avg 1 ms, σ 0 [1-1 ms], last executed: Fri Oct 09 16:11:09 EDT 2020, last exception: never -- SELECT count(*) as cnt FROM product p
