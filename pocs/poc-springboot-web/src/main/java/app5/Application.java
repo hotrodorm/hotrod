@@ -17,7 +17,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-import app5.factory.Animal;
 import app5.persistence.ProductVO;
 import app5.persistence.primitives.ProductDAO;
 import app5.persistence.primitives.ProductDAO.ProductTable;
@@ -39,9 +38,6 @@ public class Application {
   @Autowired
   private LiveSQL sql;
 
-  @Autowired
-  private Animal animal;
-
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
   }
@@ -50,42 +46,29 @@ public class Application {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
 
-      log.info("[Starting INFO]");
-      log.debug("[Starting DEBUG]");
-      log.trace("[Starting TRACE]");
-      System.out.println("[ Starting... ]");
+      // Testing Log4j2 configuration
 
-      this.animal.talk();
-      this.animal.salute();
+      log.info("Starting INFO"); // shown
+      log.debug("Starting DEBUG"); // shown
+      log.trace("Starting TRACE"); // not shown
 
-      System.out.println("[ Now will read database ]");
+      // Using DAO
 
+      log.info("Getting products using DAO...");
       List<ProductVO> products = this.productDAO.selectByExample(new ProductVO());
-      System.out.println("[ Found " + products.size() + " product(s) ]");
+      log.info(" - Found " + products.size() + " product(s)");
 
-      countProducts();
+      // Using LiveSQL
 
-      System.out.println("[ Completed ]");
-      log.info("[Complete]");
+      log.info("Counting products using LiveSQL...");
+      ProductTable p = ProductDAO.newTable();
+      List<Map<String, Object>> result = this.sql.select(sql.count().as("cnt")).from(p).execute();
+      long count = (long) result.get(0).get("cnt");
+      log.info(" - Total of " + count + " product(s)");
+
+      log.info("Complete");
 
     };
-  }
-
-  private void countProducts() {
-    System.out.println("Counting products (liveSQL)...");
-    try {
-      ProductTable p = ProductDAO.newTable("p");
-
-      List<Map<String, Object>> result = this.sql.select(sql.count().as("cnt")).from(p).execute();
-
-      Map<String, Object> row0 = result.get(0);
-
-      long c = (long) row0.get("cnt");
-
-      System.out.println(" - Total of " + c + " product(s)");
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
   }
 
 }
