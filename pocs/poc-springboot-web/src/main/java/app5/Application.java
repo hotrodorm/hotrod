@@ -39,9 +39,6 @@ public class Application {
   @Autowired
   private HistoricPriceDAO historicPriceDAO;
 
-  @Autowired
-  private LiveSQL sql;
-
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
   }
@@ -61,12 +58,6 @@ public class Application {
       log.info("Getting products using DAO...");
       List<ProductVO> products = this.productDAO.selectByExample(new ProductVO());
       log.info(" - Found " + products.size() + " product(s)");
-
-      // Using LiveSQL
-
-      log.info("Counting products using LiveSQL...");
-      ProductTable p = ProductDAO.newTable();
-      log.info(" - Total of " + sql.select(sql.count().as("cnt")).from(p).execute().get(0).get("cnt") + " product(s)");
 
       // Navigating FK to children
 
