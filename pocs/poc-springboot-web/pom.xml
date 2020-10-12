@@ -14,6 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <hotrod.version>3.3.3</hotrod.version>
   </properties>
 
   <dependencies>
@@ -62,13 +63,13 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>3.3.2</version>
+      <version>${hotrod.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>3.3.2</version>
+      <version>${hotrod.version}</version>
     </dependency>
 
     <!-- 4. Log4j 2 -->
@@ -130,7 +131,7 @@
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>3.3.2</version>
+        <version>${hotrod.version}</version>
         <configuration>
           <localproperties>src/database/postgresql-12.4/dev.properties</localproperties>
           <txtexportfile>src/database/postgresql-12.4/export-columns.txt</txtexportfile>

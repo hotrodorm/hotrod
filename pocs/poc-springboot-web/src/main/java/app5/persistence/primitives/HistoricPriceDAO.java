@@ -114,6 +114,10 @@ public class HistoricPriceDAO implements Serializable, ApplicationContextAware {
       return new SelectParentProductFromProductIdPhase(this.vo);
     }
 
+    public SelectParentProductFromSkuPhase fromSku() {
+      return new SelectParentProductFromSkuPhase(this.vo);
+    }
+
   }
 
   public class SelectParentProductFromProductIdPhase {
@@ -126,6 +130,20 @@ public class HistoricPriceDAO implements Serializable, ApplicationContextAware {
 
     public ProductVO toId() {
       return productDAO.selectByPK((this.vo.productId == null) ? null : new Long(this.vo.productId.longValue()));
+    }
+
+  }
+
+  public class SelectParentProductFromSkuPhase {
+
+    private HistoricPriceVO vo;
+
+    SelectParentProductFromSkuPhase(final HistoricPriceVO vo) {
+      this.vo = vo;
+    }
+
+    public ProductVO toSku() {
+      return productDAO.selectByUISku(this.vo.sku);
     }
 
   }
@@ -178,7 +196,9 @@ public class HistoricPriceDAO implements Serializable, ApplicationContextAware {
     FROM_DATE("historic_price", "from_date", true), //
     FROM_DATE$DESC("historic_price", "from_date", false), //
     PRICE("historic_price", "price", true), //
-    PRICE$DESC("historic_price", "price", false);
+    PRICE$DESC("historic_price", "price", false), //
+    SKU("historic_price", "sku", true), //
+    SKU$DESC("historic_price", "sku", false);
 
     private HistoricPriceOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -222,6 +242,7 @@ public class HistoricPriceDAO implements Serializable, ApplicationContextAware {
     public NumberColumn productId;
     public DateTimeColumn fromDate;
     public NumberColumn price;
+    public NumberColumn sku;
 
     // Constructors
 
@@ -241,6 +262,7 @@ public class HistoricPriceDAO implements Serializable, ApplicationContextAware {
       this.productId = new NumberColumn(this, "product_id", "productId");
       this.fromDate = new DateTimeColumn(this, "from_date", "fromDate");
       this.price = new NumberColumn(this, "price", "price");
+      this.sku = new NumberColumn(this, "sku", "sku");
     }
 
   }

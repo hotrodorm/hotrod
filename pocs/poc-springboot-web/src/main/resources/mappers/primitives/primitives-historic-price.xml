@@ -9,19 +9,22 @@
   <sql id="columns">
     product_id,
     from_date,
-    price
+    price,
+    sku
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.product_id,
     ${alias}.from_date,
-    ${alias}.price
+    ${alias}.price,
+    ${alias}.sku
   </sql>
 
   <resultMap id="allColumns" type="app5.persistence.HistoricPriceVO">
     <id property="productId" column="product_id" />
     <id property="fromDate" column="from_date" />
     <result property="price" column="price" />
+    <result property="sku" column="sku" />
   </resultMap>
 
   <!-- select by PK -->
@@ -62,6 +65,12 @@
       <if test="p.price == null and p.propertiesChangeLog.priceWasSet">
         and price is null
       </if>
+      <if test="p.sku != null ">
+        and sku = #{p.sku,jdbcType=BIGINT}
+      </if>
+      <if test="p.sku == null and p.propertiesChangeLog.skuWasSet">
+        and sku is null
+      </if>
     </trim>
     <if test="o != null">
       order by ${o}
@@ -82,12 +91,14 @@
         <if test="true">, product_id</if>
         <if test="true">, from_date</if>
         <if test="true">, price</if>
+        <if test="true">, sku</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
         <if test="true">, #{productId,jdbcType=INTEGER}</if>
         <if test="true">, #{fromDate,jdbcType=DATE}</if>
         <if test="true">, #{price,jdbcType=INTEGER}</if>
+        <if test="true">, #{sku,jdbcType=BIGINT}</if>
       </trim>
       )
   </insert>
@@ -96,7 +107,8 @@
 
   <update id="updateByPK">
     update historic_price set
-      price = #{price,jdbcType=INTEGER}
+      price = #{price,jdbcType=INTEGER},
+      sku = #{sku,jdbcType=BIGINT}
      where
       product_id = #{productId,jdbcType=INTEGER}
       and from_date = #{fromDate,jdbcType=DATE}
@@ -119,6 +131,7 @@
       <if test="values.propertiesChangeLog.productIdWasSet">product_id = #{values.productId,jdbcType=INTEGER},</if>
       <if test="values.propertiesChangeLog.fromDateWasSet">from_date = #{values.fromDate,jdbcType=DATE},</if>
       <if test="values.propertiesChangeLog.priceWasSet">price = #{values.price,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.skuWasSet">sku = #{values.sku,jdbcType=BIGINT},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.productId != null ">
@@ -138,6 +151,12 @@
       </if>
       <if test="filter.price == null and filter.propertiesChangeLog.priceWasSet">
         and price is null
+      </if>
+      <if test="filter.sku != null ">
+        and sku = #{filter.sku,jdbcType=BIGINT}
+      </if>
+      <if test="filter.sku == null and filter.propertiesChangeLog.skuWasSet">
+        and sku is null
       </if>
     </trim>
   </update>
@@ -164,6 +183,12 @@
       </if>
       <if test="price == null and propertiesChangeLog.priceWasSet">
         and price is null
+      </if>
+      <if test="sku != null ">
+        and sku = #{sku,jdbcType=BIGINT}
+      </if>
+      <if test="sku == null and propertiesChangeLog.skuWasSet">
+        and sku is null
       </if>
     </trim>
   </delete>

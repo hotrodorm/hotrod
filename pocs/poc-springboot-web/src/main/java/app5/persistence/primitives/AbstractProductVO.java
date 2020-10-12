@@ -14,6 +14,7 @@ public class AbstractProductVO implements Serializable {
   protected java.lang.Long id = null;
   protected java.lang.String name = null;
   protected java.lang.Integer price = null;
+  protected java.lang.Long sku = null;
 
   // getters & setters
 
@@ -44,6 +45,15 @@ public class AbstractProductVO implements Serializable {
     this.getPropertiesChangeLog().priceWasSet = true;
   }
 
+  public java.lang.Long getSku() {
+    return this.sku;
+  }
+
+  public void setSku(final java.lang.Long sku) {
+    this.sku = sku;
+    this.getPropertiesChangeLog().skuWasSet = true;
+  }
+
   // to string
 
   public String toString() {
@@ -51,7 +61,8 @@ public class AbstractProductVO implements Serializable {
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- name=" + this.name + "\n");
-    sb.append("- price=" + this.price);
+    sb.append("- price=" + this.price + "\n");
+    sb.append("- sku=" + this.sku);
     return sb.toString();
   }
 
@@ -62,6 +73,7 @@ public class AbstractProductVO implements Serializable {
     obj.addProperty("id", this.id);
     obj.addProperty("name", this.name);
     obj.addProperty("price", this.price);
+    obj.addProperty("sku", this.sku);
     return obj.render();
   }
 
@@ -77,6 +89,7 @@ public class AbstractProductVO implements Serializable {
     public boolean idWasSet = false;
     public boolean nameWasSet = false;
     public boolean priceWasSet = false;
+    public boolean skuWasSet = false;
   }
 
 }

@@ -68,7 +68,15 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     return this.sqlSession.selectOne("app5.persistence.primitives.product.selectByPK", vo);
   }
 
-  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
+  // select by unique indexes
+
+  public app5.persistence.ProductVO selectByUISku(final java.lang.Long sku) {
+    if (sku == null)
+      return null;
+    app5.persistence.ProductVO vo = new app5.persistence.ProductVO();
+    vo.setSku(sku);
+    return this.sqlSession.selectOne("app5.persistence.primitives.product.selectByUISku", vo);
+  }
 
   // select by example
 
@@ -114,6 +122,10 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       return new SelectChildrenHistoricPriceFromIdPhase(this.vo);
     }
 
+    public SelectChildrenHistoricPriceFromSkuPhase fromSku() {
+      return new SelectChildrenHistoricPriceFromSkuPhase(this.vo);
+    }
+
   }
 
   public class SelectChildrenHistoricPriceFromIdPhase {
@@ -127,6 +139,22 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     public List<HistoricPriceVO> toProductId(final HistoricPriceOrderBy... orderBies) {
       HistoricPriceVO example = new HistoricPriceVO();
       example.setProductId((this.vo.getId() == null) ? null : new Integer(this.vo.getId().intValue()));
+      return historicPriceDAO.selectByExample(example, orderBies);
+    }
+
+  }
+
+  public class SelectChildrenHistoricPriceFromSkuPhase {
+
+    private ProductVO vo;
+
+    SelectChildrenHistoricPriceFromSkuPhase(final ProductVO vo) {
+      this.vo = vo;
+    }
+
+    public List<HistoricPriceVO> toSku(final HistoricPriceOrderBy... orderBies) {
+      HistoricPriceVO example = new HistoricPriceVO();
+      example.setSku(this.vo.getSku());
       return historicPriceDAO.selectByExample(example, orderBies);
     }
 
@@ -186,7 +214,9 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("product", "lower(name), name", false), //
     NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("product", "lower(name), name", true), //
     PRICE("product", "price", true), //
-    PRICE$DESC("product", "price", false);
+    PRICE$DESC("product", "price", false), //
+    SKU("product", "sku", true), //
+    SKU$DESC("product", "sku", false);
 
     private ProductOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -230,6 +260,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     public NumberColumn id;
     public StringColumn name;
     public NumberColumn price;
+    public NumberColumn sku;
 
     // Constructors
 
@@ -249,6 +280,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       this.id = new NumberColumn(this, "id", "id");
       this.name = new StringColumn(this, "name", "name");
       this.price = new NumberColumn(this, "price", "price");
+      this.sku = new NumberColumn(this, "sku", "sku");
     }
 
   }

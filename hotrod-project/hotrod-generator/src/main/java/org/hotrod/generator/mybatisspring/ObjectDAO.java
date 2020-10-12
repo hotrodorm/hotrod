@@ -167,8 +167,10 @@ public class ObjectDAO extends GeneratableObject {
         writeSelectByCriteria(); // done
 
         if (this.isTable()) {
-          writeSelectParentByFK(); // done
-          writeSelectChildrenByFK(); // done
+          if (this.generator.isClassicFKNavigationEnabled()) {
+            writeSelectParentByFK(); // done
+            writeSelectChildrenByFK(); // done
+          }
 
           writeInsert(); // done
 

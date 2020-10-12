@@ -452,6 +452,10 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
     return this.mappers.get(dataSet);
   }
 
+  public boolean isClassicFKNavigationEnabled() {
+    return this.myBatisSpringTag.getClassicFKNavigation() != null;
+  }
+
   // Helpers
 
 }

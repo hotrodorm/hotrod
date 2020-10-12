@@ -61,6 +61,7 @@ public class Application {
       log.info("Found " + products.size() + " product(s)");
 
       // Retrieving children using FK
+      // Enable classic FK navigation by adding the tag <classic-fk-navigation /> in hotrod.xml
 
       log.info("* Retrieving children using FK...");
       long id = 3L;
@@ -70,6 +71,7 @@ public class Application {
       log.info("Total of " + hprices.size() + " historic prices for product " + id + ".");
 
       // Retrieving parent using FK
+      // Enable classic FK navigation by adding the tag <classic-fk-navigation /> in hotrod.xml
 
       log.info("* Retrieving parent using FK...");
       HistoricPriceVO h = hprices.get(0);

@@ -10,6 +10,7 @@
         abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" 
         dao-prefix="" dao-suffix="DAO" />
       <mappers dir="mappers" />
+      <classic-fk-navigation /> 
     </mybatis-spring>
   </generators>
 

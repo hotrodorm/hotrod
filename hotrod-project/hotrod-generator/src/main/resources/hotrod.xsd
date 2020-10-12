@@ -67,6 +67,7 @@
       <xsd:element name="mappers" type="mappers-type" />
       <xsd:element name="mybatis-configuration-template" type="mybatis-configuration-template-type" minOccurs="0" />
       <xsd:element name="select-generation" type="select-generation-type" minOccurs="0" />
+      <xsd:element name="classic-fk-navigation" type="classic-fk-navigation-type" minOccurs="0" maxOccurs="1" />
       <xsd:element name="property" type="property-type" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
   </xsd:complexType>
@@ -101,6 +102,8 @@
   <xsd:complexType name="select-generation-type">
     <xsd:attribute name="temp-view-base-name" type="xsd:string" use="required" />
   </xsd:complexType>
+
+  <xsd:complexType name="classic-fk-navigation-type" />
 
   <xsd:complexType name="property-type">
     <xsd:attribute name="name" type="xsd:string" use="required" />
