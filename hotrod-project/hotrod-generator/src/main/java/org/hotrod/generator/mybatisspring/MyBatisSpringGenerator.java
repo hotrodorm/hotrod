@@ -59,7 +59,6 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
   private LinkedHashMap<EnumDataSetMetadata, EnumClass> enumClasses = new LinkedHashMap<EnumDataSetMetadata, EnumClass>();
   private List<ObjectAbstractVO> tableAbstractVOs = new ArrayList<ObjectAbstractVO>();
   private MyBatisConfiguration myBatisConfig;
-  private LiveSQLMapper liveSQLMapper;
   private AvailableFKs availableFKs;
 
   private EntityDAORegistry entityDAORegistry = new EntityDAORegistry();
@@ -154,14 +153,9 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
       }
     }
 
-    // Prepare the Live SQL Mapper file
-
-    this.liveSQLMapper = new LiveSQLMapper(layout);
-
     // Prepare MyBatis Configuration File list
 
     if (this.myBatisSpringTag.getTemplate() != null) {
-      this.myBatisConfig.addFacetSourceFile(this.liveSQLMapper.getFileName());
       for (Mapper mapper : this.mappers.values()) {
         String sourceFile = mapper.getRuntimeSourceFileName();
         this.myBatisConfig.addFacetSourceFile(sourceFile);
@@ -428,10 +422,6 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
       ec.generate(fileGenerator);
     }
 
-    // Live SQL mapper
-
-    this.liveSQLMapper.generate(fileGenerator);
-
     // MyBatis Main configuration file
 
     if (this.myBatisSpringTag.getTemplate() != null) {
@@ -460,6 +450,10 @@ public class MyBatisSpringGenerator extends HotRodGenerator implements LiveGener
 
   public Mapper getMapper(final DataSetMetadata dataSet) {
     return this.mappers.get(dataSet);
+  }
+
+  public boolean isClassicFKNavigationEnabled() {
+    return this.myBatisSpringTag.getClassicFKNavigation() != null;
   }
 
   // Helpers

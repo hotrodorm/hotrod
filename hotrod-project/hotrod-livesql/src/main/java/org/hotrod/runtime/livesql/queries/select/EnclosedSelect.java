@@ -1,6 +1,7 @@
 package org.hotrod.runtime.livesql.queries.select;
 
 import org.apache.ibatis.session.SqlSession;
+import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
 
@@ -9,8 +10,8 @@ public class EnclosedSelect<R> extends AbstractSelect<R> {
   private AbstractSelect<R> select;
 
   public EnclosedSelect(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
-      final String mapperStatement, final AbstractSelect<R> select) {
-    super(sqlDialect, distinct, sqlSession, mapperStatement);
+      final String mapperStatement, final AbstractSelect<R> select, final LiveSQLMapper liveSQLMapper) {
+    super(sqlDialect, distinct, sqlSession, mapperStatement, liveSQLMapper);
     this.select = select;
   }
 

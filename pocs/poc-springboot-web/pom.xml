@@ -14,7 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <module.name>my-web-app</module.name>
+    <hotrod.version>3.3.3</hotrod.version>
   </properties>
 
   <dependencies>
@@ -25,12 +25,29 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <version>2.3.4.RELEASE</version>
+      <!-- Removing default logger engine for Spring Boot -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
+
+    <!-- 1.b Enabling Log4j2 setup for Spring Boot -->
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-log4j2</artifactId>
+      <version>2.3.4.RELEASE</version>
+    </dependency>
+
+    <!-- 1.c Spring AOP -->
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-aop</artifactId>
-      <version>2.3.3.RELEASE</version>
+      <version>2.3.4.RELEASE</version>
     </dependency>
  
     <!-- 2. MyBatis Spring -->
@@ -46,13 +63,13 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>3.2.3-SNAPSHOT</version>
+      <version>${hotrod.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>3.2.3-SNAPSHOT</version>
+      <version>${hotrod.version}</version>
     </dependency>
 
     <!-- 4. Log4j 2 -->
@@ -79,6 +96,9 @@
   </dependencies>
 
   <build>
+
+    <finalName>my-web-app-${project.version}</finalName>
+
     <plugins>
 
       <!-- Database builder -->
@@ -111,7 +131,7 @@
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>3.2.3-SNAPSHOT</version>
+        <version>${hotrod.version}</version>
         <configuration>
           <localproperties>src/database/postgresql-12.4/dev.properties</localproperties>
           <txtexportfile>src/database/postgresql-12.4/export-columns.txt</txtexportfile>
@@ -143,6 +163,23 @@
       </plugin>
 
     </plugins>
+
+    <pluginManagement>
+
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.1</version>
+          <configuration>
+            <compilerArgs>
+              <arg>-Xlint</arg>
+            </compilerArgs>
+          </configuration>
+        </plugin>
+      </plugins>
+
+    </pluginManagement>
 
   </build>
 

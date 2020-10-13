@@ -41,6 +41,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   private MappersTag mappers = null;
   private TemplateTag template = null;
   private SelectGenerationTag selectGeneration = null;
+  private ClassicFKNavigationTag classicFKNavigation = null;
   private List<PropertyTag> propertyTags = new ArrayList<PropertyTag>();
 
   private MyBatisProperties properties = new MyBatisProperties();
@@ -72,6 +73,11 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   @XmlElement(name = "select-generation")
   public void setSelectGeneration(final SelectGenerationTag selectGeneration) {
     this.selectGeneration = selectGeneration;
+  }
+
+  @XmlElement(name = "classic-fk-navigation")
+  public void setClassicFKNavigation(final ClassicFKNavigationTag classicFKNavigation) {
+    this.classicFKNavigation = classicFKNavigation;
   }
 
   @XmlElement
@@ -147,6 +153,10 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   @Override
   public SelectGenerationTag getSelectGeneration() {
     return selectGeneration;
+  }
+
+  public ClassicFKNavigationTag getClassicFKNavigation() {
+    return classicFKNavigation;
   }
 
   // Produce Generator Instance

@@ -13,6 +13,9 @@ import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
 import app5.persistence.ProductVO;
+import app5.persistence.HistoricPriceVO;
+import app5.persistence.primitives.HistoricPriceDAO.HistoricPriceOrderBy;
+import app5.persistence.primitives.HistoricPriceDAO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
@@ -34,7 +37,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-@Component("productDAO")
+@Component
 public class ProductDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
@@ -42,7 +45,10 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private SqlSession sqlSession;
 
-  @Value("#{sqlDialectFactory.sqlDialect}")
+  @Autowired
+  private HistoricPriceDAO historicPriceDAO;
+
+  @Autowired
   private SQLDialect sqlDialect;
 
   private ApplicationContext applicationContext;
@@ -54,7 +60,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // select by primary key
 
-  public app5.persistence.ProductVO selectByPK(final java.lang.Integer id) {
+  public app5.persistence.ProductVO selectByPK(final java.lang.Long id) {
     if (id == null)
       return null;
     app5.persistence.ProductVO vo = new app5.persistence.ProductVO();
@@ -62,7 +68,15 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     return this.sqlSession.selectOne("app5.persistence.primitives.product.selectByPK", vo);
   }
 
-  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
+  // select by unique indexes
+
+  public app5.persistence.ProductVO selectByUISku(final java.lang.Long sku) {
+    if (sku == null)
+      return null;
+    app5.persistence.ProductVO vo = new app5.persistence.ProductVO();
+    vo.setSku(sku);
+    return this.sqlSession.selectOne("app5.persistence.primitives.product.selectByUISku", vo);
+  }
 
   // select by example
 
@@ -90,12 +104,70 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // select parent(s) by FKs: no imported keys found -- skipped
 
-  // select children by FKs: no exported FKs found -- skipped
+  // select children by FKs
+
+  public SelectChildrenHistoricPricePhase selectChildrenHistoricPriceOf(final ProductVO vo) {
+    return new SelectChildrenHistoricPricePhase(vo);
+  }
+
+  public class SelectChildrenHistoricPricePhase {
+
+    private ProductVO vo;
+
+    SelectChildrenHistoricPricePhase(final ProductVO vo) {
+      this.vo = vo;
+    }
+
+    public SelectChildrenHistoricPriceFromIdPhase fromId() {
+      return new SelectChildrenHistoricPriceFromIdPhase(this.vo);
+    }
+
+    public SelectChildrenHistoricPriceFromSkuPhase fromSku() {
+      return new SelectChildrenHistoricPriceFromSkuPhase(this.vo);
+    }
+
+  }
+
+  public class SelectChildrenHistoricPriceFromIdPhase {
+
+    private ProductVO vo;
+
+    SelectChildrenHistoricPriceFromIdPhase(final ProductVO vo) {
+      this.vo = vo;
+    }
+
+    public List<HistoricPriceVO> toProductId(final HistoricPriceOrderBy... orderBies) {
+      HistoricPriceVO example = new HistoricPriceVO();
+      example.setProductId((this.vo.getId() == null) ? null : new Integer(this.vo.getId().intValue()));
+      return historicPriceDAO.selectByExample(example, orderBies);
+    }
+
+  }
+
+  public class SelectChildrenHistoricPriceFromSkuPhase {
+
+    private ProductVO vo;
+
+    SelectChildrenHistoricPriceFromSkuPhase(final ProductVO vo) {
+      this.vo = vo;
+    }
+
+    public List<HistoricPriceVO> toSku(final HistoricPriceOrderBy... orderBies) {
+      HistoricPriceVO example = new HistoricPriceVO();
+      example.setSku(this.vo.getSku());
+      return historicPriceDAO.selectByExample(example, orderBies);
+    }
+
+  }
 
   // insert
 
   public int insert(final app5.persistence.ProductVO vo) {
-    String id = "app5.persistence.primitives.product.insert";
+    return insert(vo, false);
+  }
+
+  public int insert(final app5.persistence.ProductVO vo, final boolean retrieveDefaults) {
+    String id = retrieveDefaults ? "app5.persistence.primitives.product.insertRetrievingDefaults" : "app5.persistence.primitives.product.insert";
     return this.sqlSession.insert(id, vo);
   }
 
@@ -142,7 +214,9 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("product", "lower(name), name", false), //
     NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("product", "lower(name), name", true), //
     PRICE("product", "price", true), //
-    PRICE$DESC("product", "price", false);
+    PRICE$DESC("product", "price", false), //
+    SKU("product", "sku", true), //
+    SKU$DESC("product", "sku", false);
 
     private ProductOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -186,6 +260,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     public NumberColumn id;
     public StringColumn name;
     public NumberColumn price;
+    public NumberColumn sku;
 
     // Constructors
 
@@ -205,6 +280,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       this.id = new NumberColumn(this, "id", "id");
       this.name = new StringColumn(this, "name", "name");
       this.price = new NumberColumn(this, "price", "price");
+      this.sku = new NumberColumn(this, "sku", "sku");
     }
 
   }

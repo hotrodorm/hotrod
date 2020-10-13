@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
+import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 
@@ -11,8 +12,9 @@ public class Subquery extends AbstractSelect<Map<String, Object>> {
 
   private List<ReferenceableExpression> resultSetColumns = null;
 
-  Subquery(final SQLDialect sqlDialect, final boolean distinct, SqlSession sqlSession) {
-    super(sqlDialect, distinct, sqlSession, null);
+  Subquery(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
+      final LiveSQLMapper liveSQLMapper) {
+    super(sqlDialect, distinct, sqlSession, null, liveSQLMapper);
   }
 
   // Setters

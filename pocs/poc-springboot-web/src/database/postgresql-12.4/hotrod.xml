@@ -10,9 +10,11 @@
         abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" 
         dao-prefix="" dao-suffix="DAO" />
       <mappers dir="mappers" />
+      <classic-fk-navigation /> 
     </mybatis-spring>
   </generators>
 
   <table name="product" />
+  <table name="historic_price" />
 
 </hotrod>

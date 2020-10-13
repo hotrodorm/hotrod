@@ -62,7 +62,6 @@ import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcForeignKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
-import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class ObjectDAO extends GeneratableObject {
@@ -168,8 +167,10 @@ public class ObjectDAO extends GeneratableObject {
         writeSelectByCriteria(); // done
 
         if (this.isTable()) {
-          writeSelectParentByFK(); // done
-          writeSelectChildrenByFK(); // done
+          if (this.generator.isClassicFKNavigationEnabled()) {
+            writeSelectParentByFK(); // done
+            writeSelectChildrenByFK(); // done
+          }
 
           writeInsert(); // done
 
@@ -393,7 +394,7 @@ public class ObjectDAO extends GeneratableObject {
 
     // Signature
 
-    println("@Component(\"" + SUtil.escapeJavaString(SUtil.lowerFirst(this.getClassName())) + "\")");
+    println("@Component");
     println("public class " + this.getClassName() + " implements Serializable, ApplicationContextAware {");
     println();
 
@@ -433,7 +434,7 @@ public class ObjectDAO extends GeneratableObject {
       }
     }
 
-    println("  @Value(\"#{sqlDialectFactory.sqlDialect}\")");
+    println("  @Autowired");
     println("  private SQLDialect sqlDialect;");
     println();
     println("  private ApplicationContext applicationContext;");
@@ -770,8 +771,7 @@ public class ObjectDAO extends GeneratableObject {
               for (ForeignKeyMetadata fkm2 : fkSelectors.get(ds)) {
                 if (fkm2.getLocal().equals(fkm.getLocal())) {
                   String toMethod = "to" + fkm2.getRemote().toCamelCase(dao.layout.getColumnSeam());
-                  String params = fkm.getLocal().getColumns().stream()
-                      .map(cm -> "this.vo." + cm.getId().getJavaMemberName()).collect(ListCollector.joining(", "));
+                  String params = renderParams(fkm);
                   String selectMethod = "";
                   if (fkm2.getRemote().equals(fkm2.getRemote().getTableMetadata().getPK())) {
                     selectMethod = "selectByPK";
@@ -811,6 +811,47 @@ public class ObjectDAO extends GeneratableObject {
         }
       }
 
+    }
+
+  }
+
+  private String renderParams(final ForeignKeyMetadata fkm) throws ControlledException {
+    Iterator<ColumnMetadata> lit = fkm.getLocal().getColumns().iterator();
+    Iterator<ColumnMetadata> rit = fkm.getRemote().getColumns().iterator();
+    ListWriter lw = new ListWriter(", ");
+    while (lit.hasNext() && rit.hasNext()) {
+      ColumnMetadata local = lit.next();
+      ColumnMetadata remote = rit.next();
+      try {
+        lw.add(renderCast("this.vo." + local.getId().getJavaMemberName(), local, remote));
+      } catch (CannotConvertTypeException e) {
+        throw new ControlledException(e.getMessage());
+      }
+    }
+    return lw.toString();
+  }
+
+  private String renderCast(final String expression, final ColumnMetadata fromColumn, final ColumnMetadata toColumn)
+      throws CannotConvertTypeException {
+    if (fromColumn.getType().getJavaClassName().equals(toColumn.getType().getJavaClassName())) {
+      return expression;
+    }
+    try {
+      return GenUtils.convertPropertyType(fromColumn.getType().getJavaClassName(),
+          toColumn.getType().getJavaClassName(), expression);
+    } catch (ControlledException e) {
+      throw new CannotConvertTypeException("Cannot navigate foreign key relationship from column "
+          + fromColumn.getTableName() + "." + fromColumn.getColumnName() + " to column " + toColumn.getTableName() + "."
+          + toColumn.getColumnName() + ": " + e.getMessage());
+    }
+  }
+
+  public class CannotConvertTypeException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+    public CannotConvertTypeException(final String message) {
+      super(message);
     }
 
   }
@@ -985,8 +1026,12 @@ public class ObjectDAO extends GeneratableObject {
                 while (lit.hasNext() && rit.hasNext()) {
                   ColumnMetadata lcm = lit.next();
                   ColumnMetadata rcm = rit.next();
-                  println("      example.set" + rcm.getId().getJavaClassName() + "(this.vo.get"
-                      + lcm.getId().getJavaClassName() + "());");
+                  try {
+                    println("      example.set" + rcm.getId().getJavaClassName() + "("
+                        + renderCast("this.vo.get" + lcm.getId().getJavaClassName() + "()", lcm, rcm) + ");");
+                  } catch (CannotConvertTypeException e) {
+                    throw new ControlledException(e.getMessage());
+                  }
                 }
                 String memberPrefix = dao.getClassName().equals(currentDAO.getClassName()) ? ""
                     : (dao.getMemberName() + ".");

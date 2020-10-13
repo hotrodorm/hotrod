@@ -64,14 +64,22 @@ import org.hotrod.runtime.livesql.expressions.strings.StringValue;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LiveSQL {
 
   // Properties
 
+  @Autowired
   private SqlSession sqlSession;
 
+  @Autowired
   private SQLDialect sqlDialect;
+
+  @Autowired
+  private LiveSQLMapper liveSQLMapper;
 
   // Setters
 
@@ -86,19 +94,21 @@ public class LiveSQL {
   // Select
 
   public SelectColumnsPhase<Map<String, Object>> select() {
-    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, false);
+    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false);
   }
 
   public SelectColumnsPhase<Map<String, Object>> selectDistinct() {
-    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, true);
+    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true);
   }
 
   public SelectColumnsPhase<Map<String, Object>> select(final ResultSetColumn... resultSetColumns) {
-    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, false, resultSetColumns);
+    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false,
+        resultSetColumns);
   }
 
   public SelectColumnsPhase<Map<String, Object>> selectDistinct(final ResultSetColumn... resultSetColumns) {
-    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, true, resultSetColumns);
+    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true,
+        resultSetColumns);
   }
 
   // Tuples

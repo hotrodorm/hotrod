@@ -2,7 +2,11 @@ package app5;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.dialects.SQLDialectFactory;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hotrod.runtime.livesql.LiveSQL;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -13,19 +17,28 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+import app5.persistence.HistoricPriceVO;
 import app5.persistence.ProductVO;
+import app5.persistence.primitives.HistoricPriceDAO;
+import app5.persistence.primitives.HistoricPriceDAO.HistoricPriceOrderBy;
 import app5.persistence.primitives.ProductDAO;
 
 @Configuration
 @ComponentScan(basePackageClasses = Application.class)
-@ComponentScan(basePackageClasses = SQLDialectFactory.class)
+@ComponentScan(basePackageClasses = LiveSQL.class)
+@MapperScan(basePackageClasses = LiveSQL.class)
 
 @SpringBootApplication
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class Application {
 
+  private static final Logger log = LogManager.getLogger(Application.class);
+
   @Autowired
   private ProductDAO productDAO;
+
+  @Autowired
+  private HistoricPriceDAO historicPriceDAO;
 
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
@@ -35,12 +48,39 @@ public class Application {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
 
-      System.out.println("[ Now will read database ]");
+      // Testing Log4j2 configuration
 
+      log.trace("Starting TRACE"); // should not be shown
+      log.debug("Starting DEBUG"); // should be shown
+      log.info("Starting INFO"); // should be shown
+
+      // Using DAO
+
+      log.info("* Getting products using DAO...");
       List<ProductVO> products = this.productDAO.selectByExample(new ProductVO());
-      System.out.println("[ Found " + products.size() + " product(s) ]");
+      log.info("Found " + products.size() + " product(s)");
 
-      System.out.println("[ Completed ]");
+      // Retrieving children using FK
+      // Enable classic FK navigation by adding the tag <classic-fk-navigation /> in hotrod.xml
+
+      log.info("* Retrieving children using FK...");
+      long id = 3L;
+      ProductVO p = this.productDAO.selectByPK(id);
+      List<HistoricPriceVO> hprices = this.productDAO.selectChildrenHistoricPriceOf(p).fromId()
+          .toProductId(HistoricPriceOrderBy.FROM_DATE);
+      log.info("Total of " + hprices.size() + " historic prices for product " + id + ".");
+
+      // Retrieving parent using FK
+      // Enable classic FK navigation by adding the tag <classic-fk-navigation /> in hotrod.xml
+
+      log.info("* Retrieving parent using FK...");
+      HistoricPriceVO h = hprices.get(0);
+      ProductVO product = this.historicPriceDAO.selectParentProductOf(h).fromProductId().toId();
+      log.info("Parent historic price is: " + product.getName());
+
+      // All done
+
+      log.info("* End of example");
 
     };
   }

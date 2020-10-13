@@ -2,27 +2,27 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="app5.persistence.primitives.product">
+<mapper namespace="app5.persistence.primitives.historicPrice">
 
   <!-- columns -->
 
   <sql id="columns">
-    id,
-    name,
+    product_id,
+    from_date,
     price,
     sku
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}.id,
-    ${alias}.name,
+    ${alias}.product_id,
+    ${alias}.from_date,
     ${alias}.price,
     ${alias}.sku
   </sql>
 
-  <resultMap id="allColumns" type="app5.persistence.ProductVO">
-    <id property="id" column="id" />
-    <result property="name" column="name" />
+  <resultMap id="allColumns" type="app5.persistence.HistoricPriceVO">
+    <id property="productId" column="product_id" />
+    <id property="fromDate" column="from_date" />
     <result property="price" column="price" />
     <result property="sku" column="sku" />
   </resultMap>
@@ -32,39 +32,32 @@
   <select id="selectByPK" resultMap="allColumns">
     select
       <include refid="columns" />
-     from product
+     from historic_price
      where
-      id = #{id,jdbcType=BIGINT}
+      product_id = #{productId,jdbcType=INTEGER}
+      and from_date = #{fromDate,jdbcType=DATE}
   </select>
 
-  <!-- select by unique indexes -->
-
-  <select id="selectByUISku" resultMap="allColumns">
-    select
-      <include refid="columns" />
-     from product
-     where
-      sku = #{sku,jdbcType=BIGINT}
-  </select>
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
 
   <!-- select by example -->
 
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from product
+     from historic_price
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="p.id != null ">
-        and id = #{p.id,jdbcType=BIGINT}
+      <if test="p.productId != null ">
+        and product_id = #{p.productId,jdbcType=INTEGER}
       </if>
-      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
-        and id is null
+      <if test="p.productId == null and p.propertiesChangeLog.productIdWasSet">
+        and product_id is null
       </if>
-      <if test="p.name != null ">
-        and name = #{p.name,jdbcType=VARCHAR}
+      <if test="p.fromDate != null ">
+        and from_date = #{p.fromDate,jdbcType=DATE}
       </if>
-      <if test="p.name == null and p.propertiesChangeLog.nameWasSet">
-        and name is null
+      <if test="p.fromDate == null and p.propertiesChangeLog.fromDateWasSet">
+        and from_date is null
       </if>
       <if test="p.price != null ">
         and price = #{p.price,jdbcType=INTEGER}
@@ -93,18 +86,18 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into product (
+    insert into historic_price (
       <trim prefixOverrides=", ">
-        <if test="true">, id</if>
-        <if test="true">, name</if>
-        <if test="propertiesChangeLog.priceWasSet">, price</if>
+        <if test="true">, product_id</if>
+        <if test="true">, from_date</if>
+        <if test="true">, price</if>
         <if test="true">, sku</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{id,jdbcType=BIGINT}</if>
-        <if test="true">, #{name,jdbcType=VARCHAR}</if>
-        <if test="propertiesChangeLog.priceWasSet">, #{price,jdbcType=INTEGER}</if>
+        <if test="true">, #{productId,jdbcType=INTEGER}</if>
+        <if test="true">, #{fromDate,jdbcType=DATE}</if>
+        <if test="true">, #{price,jdbcType=INTEGER}</if>
         <if test="true">, #{sku,jdbcType=BIGINT}</if>
       </trim>
       )
@@ -113,44 +106,45 @@
   <!-- update by PK -->
 
   <update id="updateByPK">
-    update product set
-      name = #{name,jdbcType=VARCHAR},
+    update historic_price set
       price = #{price,jdbcType=INTEGER},
       sku = #{sku,jdbcType=BIGINT}
      where
-      id = #{id,jdbcType=BIGINT}
+      product_id = #{productId,jdbcType=INTEGER}
+      and from_date = #{fromDate,jdbcType=DATE}
   </update>
 
   <!-- delete by PK -->
 
   <delete id="deleteByPK">
-    delete from product
+    delete from historic_price
      where
-      id = #{id,jdbcType=BIGINT}
+      product_id = #{productId,jdbcType=INTEGER}
+      and from_date = #{fromDate,jdbcType=DATE}
   </delete>
 
   <!-- update by example -->
 
   <update id="updateByExample">
-    update product
+    update historic_price
     <set>
-      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=BIGINT},</if>
-      <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.productIdWasSet">product_id = #{values.productId,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.fromDateWasSet">from_date = #{values.fromDate,jdbcType=DATE},</if>
       <if test="values.propertiesChangeLog.priceWasSet">price = #{values.price,jdbcType=INTEGER},</if>
       <if test="values.propertiesChangeLog.skuWasSet">sku = #{values.sku,jdbcType=BIGINT},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="filter.id != null ">
-        and id = #{filter.id,jdbcType=BIGINT}
+      <if test="filter.productId != null ">
+        and product_id = #{filter.productId,jdbcType=INTEGER}
       </if>
-      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
-        and id is null
+      <if test="filter.productId == null and filter.propertiesChangeLog.productIdWasSet">
+        and product_id is null
       </if>
-      <if test="filter.name != null ">
-        and name = #{filter.name,jdbcType=VARCHAR}
+      <if test="filter.fromDate != null ">
+        and from_date = #{filter.fromDate,jdbcType=DATE}
       </if>
-      <if test="filter.name == null and filter.propertiesChangeLog.nameWasSet">
-        and name is null
+      <if test="filter.fromDate == null and filter.propertiesChangeLog.fromDateWasSet">
+        and from_date is null
       </if>
       <if test="filter.price != null ">
         and price = #{filter.price,jdbcType=INTEGER}
@@ -170,19 +164,19 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from product
+    delete from historic_price
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="id != null ">
-        and id = #{id,jdbcType=BIGINT}
+      <if test="productId != null ">
+        and product_id = #{productId,jdbcType=INTEGER}
       </if>
-      <if test="id == null and propertiesChangeLog.idWasSet">
-        and id is null
+      <if test="productId == null and propertiesChangeLog.productIdWasSet">
+        and product_id is null
       </if>
-      <if test="name != null ">
-        and name = #{name,jdbcType=VARCHAR}
+      <if test="fromDate != null ">
+        and from_date = #{fromDate,jdbcType=DATE}
       </if>
-      <if test="name == null and propertiesChangeLog.nameWasSet">
-        and name is null
+      <if test="fromDate == null and propertiesChangeLog.fromDateWasSet">
+        and from_date is null
       </if>
       <if test="price != null ">
         and price = #{price,jdbcType=INTEGER}

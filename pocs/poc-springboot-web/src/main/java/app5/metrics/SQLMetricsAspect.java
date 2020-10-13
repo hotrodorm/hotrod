@@ -2,6 +2,7 @@ package app5.metrics;
 
 import java.sql.PreparedStatement;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.hotrodorm.hotrod.utils.XUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -171,13 +173,13 @@ public class SQLMetricsAspect {
     try {
       Object ps = joinPoint.proceed();
       long end = System.currentTimeMillis();
-      this.sqlMetrics.record(sql, end - start, true);
+      this.sqlMetrics.record(sql, end - start, null);
       return ps;
 
-    } catch (Throwable e) {
+    } catch (Throwable t) {
       long end = System.currentTimeMillis();
-      this.sqlMetrics.record(sql, end - start, false);
-      throw e;
+      this.sqlMetrics.record(sql, end - start, t);
+      throw t;
     }
   }
 
@@ -189,23 +191,72 @@ public class SQLMetricsAspect {
 
   // Inner classes
 
-  @Component("sqlMetrics")
+  @Component
   public static class SQLMetrics {
 
+    private boolean active = true;
     private Map<String, StatementMetrics> metrics = new HashMap<String, StatementMetrics>();
 
-    public synchronized void record(final String sql, final long elapsedTime, final boolean succeeded) {
+    public void activate() {
+      this.active = true;
+    }
+
+    public void deactivate() {
+      this.active = false;
+    }
+
+    public boolean isActive() {
+      return this.active;
+    }
+
+    public void record(final String sql, final long elapsedTime, final Throwable t) {
+      if (this.active) {
+        recordExecution(sql, elapsedTime, t);
+      }
+    }
+
+    private synchronized void recordExecution(final String sql, final long elapsedTime, final Throwable t) {
       StatementMetrics sm = this.metrics.get(sql);
       if (sm == null) {
         sm = new StatementMetrics(sql);
         this.metrics.put(sql, sm);
       }
-      sm.record(elapsedTime, succeeded);
+      sm.record(elapsedTime, t);
     }
 
-    public synchronized String render() {
-      return this.metrics.values().stream().sorted((a, b) -> -Long.compare(a.getTimeAverage(), b.getTimeAverage()))
+    // Get stats
+
+    public synchronized String getByHighestAvgResponseTime() {
+      return this.metrics.values().stream().sorted((a, b) -> -Long.compare(a.getAverageTime(), b.getAverageTime()))
           .map(s -> "> " + s).collect(ListCollector.concat("\n"));
+    }
+
+    public synchronized String getByHighestResponseTime() {
+      return this.metrics.values().stream().sorted((a, b) -> -Long.compare(a.getMaxTime(), b.getMaxTime()))
+          .map(s -> "> " + s).collect(ListCollector.concat("\n"));
+    }
+
+    public synchronized String getByMostExecuted() {
+      return this.metrics.values().stream()
+          .sorted((a, b) -> -Long.compare(a.getTotalExecutions(), b.getTotalExecutions())).map(s -> "> " + s)
+          .collect(ListCollector.concat("\n"));
+    }
+
+    public synchronized String getByMostRecentlyExecuted() {
+      return this.metrics.values().stream().sorted((a, b) -> -Long.compare(a.getLastExecuted(), b.getLastExecuted()))
+          .map(s -> "> " + s).collect(ListCollector.concat("\n"));
+    }
+
+    public synchronized String getByMostErrors() {
+      return this.metrics.values().stream()
+          .sorted((a, b) -> -Long.compare(a.getExecutionErrors(), b.getExecutionErrors())).map(s -> "> " + s)
+          .collect(ListCollector.concat("\n"));
+    }
+
+    public synchronized String getErrorsByMostRecent() {
+      return this.metrics.values().stream().filter(a -> a.getExecutionErrors() > 0)
+          .sorted((a, b) -> -Long.compare(a.getLastExecuted(), b.getLastExecuted())).map(s -> "> " + s)
+          .collect(ListCollector.concat("\n"));
     }
 
   }
@@ -223,6 +274,11 @@ public class SQLMetricsAspect {
     private long sum;
     private long sumSQ;
 
+    private long lastExecuted;
+
+    private long lastExceptionTimestamp;
+    private Throwable lastException;
+
     public StatementMetrics(final String sql) {
       this.actualSQL = sql;
       this.compactedSQL = compact(sql);
@@ -234,9 +290,14 @@ public class SQLMetricsAspect {
       this.executionErrors = 0;
       this.sum = 0;
       this.sumSQ = 0;
+
+      this.lastExecuted = 0;
+      this.lastExceptionTimestamp = 0;
+      this.lastException = null;
     }
 
-    public void record(final long elapsedTime, final boolean succeeded) {
+    public void record(final long elapsedTime, final Throwable t) {
+      this.lastExecuted = System.currentTimeMillis();
       if (this.totalExecutions == 0 || elapsedTime < this.minTime) {
         this.minTime = elapsedTime;
       }
@@ -244,18 +305,30 @@ public class SQLMetricsAspect {
         this.maxTime = elapsedTime;
       }
       this.totalExecutions++;
-      if (!succeeded) {
+      if (t != null) {
         this.executionErrors++;
+        this.lastExceptionTimestamp = this.lastExecuted;
+        this.lastException = t;
       }
       this.sum += elapsedTime;
       this.sumSQ += elapsedTime * elapsedTime;
+
     }
 
     public String toString() {
-      return "" + this.totalExecutions + " exe"
-          + (this.executionErrors != 0 ? (" (" + this.executionErrors + " errors)") : "") + ", avg "
-          + (this.sum / this.totalExecutions) + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " ["
-          + this.minTime + "-" + this.maxTime + " ms] -- " + this.compactedSQL;
+      String le = this.lastExecuted == 0 ? "never" : new Date(this.lastExecuted).toString();
+      if (this.lastException == null) {
+        return "" + this.totalExecutions + " exe" + ", " + this.executionErrors + " errors" + ", avg "
+            + (this.sum / this.totalExecutions) + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " ["
+            + this.minTime + "-" + this.maxTime + " ms], last executed: " + le + ", last exception: never -- "
+            + this.compactedSQL;
+      } else {
+        return "" + this.totalExecutions + " exe" + ", " + this.executionErrors + " errors" + ", avg "
+            + (this.sum / this.totalExecutions) + " ms, \u03c3 " + Math.round(this.getTimeStandardDeviation()) + " ["
+            + this.minTime + "-" + this.maxTime + " ms], last executed: " + le + ", last exception at "
+            + new Date(this.lastExceptionTimestamp) + ": " + XUtil.renderThrowable(this.lastException) + "\n"
+            + this.compactedSQL;
+      }
     }
 
     // Getters
@@ -284,14 +357,31 @@ public class SQLMetricsAspect {
       return executionErrors;
     }
 
+    public long getLastExecuted() {
+      return lastExecuted;
+    }
+
+    public long getLastExceptionTimestamp() {
+      return lastExceptionTimestamp;
+    }
+
+    public Throwable getLastException() {
+      return lastException;
+    }
+
     // Extra getters
 
-    public long getTimeAverage() {
+    public long getAverageTime() {
       return this.totalExecutions == 0 ? -1 : this.sum / this.totalExecutions;
     }
 
+    /**
+     * See Welford's online algorithm:
+     * https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online_algorithm
+     * 
+     * @return the standard deviation
+     */
     public double getTimeStandardDeviation() {
-      // https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online_algorithm
       return this.totalExecutions < 2 ? 0
           : Math.sqrt( //
               (this.sumSQ - 1.0 * this.sum * this.sum / this.totalExecutions) //
