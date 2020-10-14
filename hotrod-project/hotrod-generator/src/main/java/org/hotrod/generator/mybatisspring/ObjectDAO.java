@@ -141,6 +141,10 @@ public class ObjectDAO extends GeneratableObject {
     return this.daoType == DAOType.EXECUTOR;
   }
 
+  public boolean isClassicFKNavigationEnabled() {
+    return this.metadata.getClassicFKNavigation() != null;
+  }
+
   public void generate(final FileGenerator fileGenerator, final MyBatisSpringGenerator mg)
       throws UncontrolledException, ControlledException {
 
@@ -167,7 +171,7 @@ public class ObjectDAO extends GeneratableObject {
         writeSelectByCriteria(); // done
 
         if (this.isTable()) {
-          if (this.generator.isClassicFKNavigationEnabled()) {
+          if (this.generator.isClassicFKNavigationEnabled() || this.isClassicFKNavigationEnabled()) {
             writeSelectParentByFK(); // done
             writeSelectChildrenByFK(); // done
           }

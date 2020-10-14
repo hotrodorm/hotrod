@@ -17,6 +17,7 @@
   
   <xsd:complexType name="table-type">
     <xsd:sequence>
+      <xsd:element name="classic-fk-navigation" type="classic-fk-navigation-type" minOccurs="0" maxOccurs="1" />
       <xsd:element name="auto-generated-column" type="auto-generated-column-type" minOccurs="0" maxOccurs="1" />
       <xsd:element name="version-control-column" type="version-control-column-type" minOccurs="0" maxOccurs="1" />
       <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
