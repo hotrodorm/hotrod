@@ -45,6 +45,7 @@ import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
 import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
+import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.exceptions.StaleDataException;
 import org.hotrod.runtime.interfaces.DaoForUpdate;
 import org.hotrod.runtime.interfaces.DaoWithOrder;
@@ -86,6 +87,7 @@ public class ObjectDAO extends GeneratableObject {
 
   private ObjectVO vo = null;
   private Mapper mapper = null;
+  private MyBatisCursorImpl mybatisCursor = null;
 
   private String metadataClassName;
 
@@ -98,7 +100,7 @@ public class ObjectDAO extends GeneratableObject {
 
   public ObjectDAO(final AbstractDAOTag tag, final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisSpringGenerator generator, final DAOType type, final MyBatisSpringTag myBatisTag, final ObjectVO vo,
-      final Mapper mapper) {
+      final Mapper mapper, final MyBatisCursorImpl mybatisCursor) {
     super();
     log.debug("init");
     this.tag = tag;
@@ -113,6 +115,7 @@ public class ObjectDAO extends GeneratableObject {
     this.myBatisTag = myBatisTag;
     this.vo = vo;
     this.mapper = mapper;
+    this.mybatisCursor = mybatisCursor;
 
     this.fragmentConfig = metadata.getFragmentConfig();
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
@@ -124,7 +127,6 @@ public class ObjectDAO extends GeneratableObject {
 
     this.fkSelectors = compileDistinctFKs(this.metadata.getImportedFKs());
     this.efkSelectors = compileDistinctFKs(this.metadata.getExportedFKs());
-
   }
 
   // Behavior
@@ -167,7 +169,7 @@ public class ObjectDAO extends GeneratableObject {
           writeSelectByUI(mg); // done
         }
 
-        writeSelectByExampleAndOrder(); // done
+        writeSelectByExample(); // done
         writeSelectByCriteria(); // done
 
         if (this.isTable()) {
@@ -274,7 +276,8 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("java.util.List");
     imports.newLine();
     imports.add("org.apache.ibatis.session.SqlSession");
-    imports.add("org.apache.ibatis.cursor.Cursor");
+    imports.add(Cursor.class);
+    imports.add(this.mybatisCursor.getFullClassName());
     imports.newLine();
 
     if (this.metadata.getVersionControlMetadata() != null) {
@@ -609,7 +612,7 @@ public class ObjectDAO extends GeneratableObject {
 
   }
 
-  private void writeSelectByExampleAndOrder() throws IOException {
+  private void writeSelectByExample() throws IOException {
     println("  // select by example");
     println();
 
@@ -631,7 +634,8 @@ public class ObjectDAO extends GeneratableObject {
     println("{");
     println("    DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + "> dwo = //");
     println("        new DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + ">(example, orderBies);");
-    println("    return this.sqlSession.selectCursor(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo);");
+    println("    return new " + this.mybatisCursor.getClassName() + "<" + voClassName
+        + ">(this.sqlSession.selectCursor(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo));");
     println("  }");
     println();
   }

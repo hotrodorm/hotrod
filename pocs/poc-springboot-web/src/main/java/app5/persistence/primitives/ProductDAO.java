@@ -6,7 +6,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.cursor.Cursor;
+import org.hotrod.runtime.cursors.Cursor;
+import app5.persistence.primitives.MyBatisCursor;
 
 import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
@@ -91,7 +92,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       {
     DaoWithOrder<app5.persistence.ProductVO, ProductOrderBy> dwo = //
         new DaoWithOrder<app5.persistence.ProductVO, ProductOrderBy>(example, orderBies);
-    return this.sqlSession.selectCursor("app5.persistence.primitives.product.selectByExample", dwo);
+    return new MyBatisCursor<app5.persistence.ProductVO>(this.sqlSession.selectCursor("app5.persistence.primitives.product.selectByExample", dwo));
   }
 
   // select by criteria
