@@ -27,7 +27,7 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
@@ -278,7 +278,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     this.facets.addAll(other.facets);
   }
 
-  public void validateAgainstDatabase(final HotRodGenerator generator, final Connection conn,
+  public void validateAgainstDatabase(final Generator generator, final Connection conn,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
 
     for (TableTag t : this.getFacetTables()) {

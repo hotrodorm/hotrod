@@ -20,7 +20,7 @@ import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.FileGenerator;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.FormerGenerator;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
@@ -35,7 +35,7 @@ import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.LocalFileGenerator;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
-public class MyBatisGenerator extends HotRodGenerator implements LiveGenerator {
+public class MyBatisGenerator extends FormerGenerator implements LiveGenerator {
 
   private static final Logger log = LogManager.getLogger(MyBatisGenerator.class);
 

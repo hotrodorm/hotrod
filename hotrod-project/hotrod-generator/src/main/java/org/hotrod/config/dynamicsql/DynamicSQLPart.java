@@ -17,7 +17,7 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
@@ -123,7 +123,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
     // By default, nothing to do
   }
 
-  public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final Generator generator) throws InvalidConfigurationFileException {
     // Nothing to do
   }
 

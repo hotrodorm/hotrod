@@ -27,7 +27,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.VOMetadata.DuplicatePropertyNameException;
@@ -59,7 +59,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   private boolean structured;
 
-  private transient HotRodGenerator generator;
+  private transient Generator generator;
   private transient DataSetLayout layout;
   private transient JdbcDatabase db;
   private HotRodConfigTag config;
@@ -85,7 +85,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   // Constructor
 
-  public SelectMethodMetadata(final HotRodGenerator generator, final SelectMethodTag tag, final HotRodConfigTag config,
+  public SelectMethodMetadata(final Generator generator, final SelectMethodTag tag, final HotRodConfigTag config,
       final SelectGenerationTag selectGenerationTag, final ColumnsPrefixGenerator columnsPrefixGenerator,
       final DataSetLayout layout) throws InvalidIdentifierException {
     this.generator = generator;
@@ -552,7 +552,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     throw new UnsupportedOperationException("This operation should not be used.");
   }
 
-  public HotRodGenerator getGenerator() {
+  public Generator getGenerator() {
     return generator;
   }
 

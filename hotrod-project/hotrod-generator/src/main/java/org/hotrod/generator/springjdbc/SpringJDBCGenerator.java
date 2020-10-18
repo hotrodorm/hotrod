@@ -24,12 +24,12 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.Feedback;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.FormerGenerator;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
-public class SpringJDBCGenerator extends HotRodGenerator {
+public class SpringJDBCGenerator extends FormerGenerator {
 
   private static transient final Logger log = LogManager.getLogger(SpringJDBCGenerator.class);
 

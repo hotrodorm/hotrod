@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.identifiers.Id;
@@ -208,7 +208,7 @@ public class ViewTag extends AbstractEntityDAOTag {
 
   }
 
-  public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final Generator generator) throws InvalidConfigurationFileException {
 
     JdbcTable v = generator.findJdbcView(this.id.getCanonicalSQLName());
     if (v == null) {

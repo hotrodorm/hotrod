@@ -72,9 +72,9 @@ import org.nocrala.tools.database.tartarus.exception.ReaderException;
 import org.nocrala.tools.database.tartarus.exception.SchemaNotSupportedException;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
-public abstract class HotRodGenerator {
+public abstract class FormerGenerator implements Generator {
 
-  private static final Logger log = LogManager.getLogger(HotRodGenerator.class);
+  private static final Logger log = LogManager.getLogger(FormerGenerator.class);
   private static final Logger logm = LogManager.getLogger("hotrod-metadata-retrieval");
 
   protected DatabaseLocation dloc;
@@ -97,7 +97,7 @@ public abstract class HotRodGenerator {
 
   private Long lastLog = null;
 
-  public HotRodGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation dloc, final HotRodConfigTag config,
+  public FormerGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation dloc, final HotRodConfigTag config,
       final DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter,
       final Feedback feedback) throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
 
@@ -1015,6 +1015,7 @@ public abstract class HotRodGenerator {
     SQLNames.add(id.getCanonicalSQLName());
   }
 
+  @Override
   public TableDataSetMetadata findTableMetadata(final ObjectId id) {
     for (TableDataSetMetadata tm : this.tables) {
       if (tm.getId().equals(id)) {
@@ -1024,6 +1025,7 @@ public abstract class HotRodGenerator {
     return null;
   }
 
+  @Override
   public JdbcTable findJdbcTable(final String name) {
     for (JdbcTable t : this.db.getTables()) {
       if (this.adapter.isTableIdentifier(t.getName(), name)) {
@@ -1033,6 +1035,7 @@ public abstract class HotRodGenerator {
     return null;
   }
 
+  @Override
   public JdbcTable findJdbcView(final String name) {
     for (JdbcTable t : this.db.getViews()) {
       if (this.adapter.isTableIdentifier(t.getName(), name)) {
@@ -1042,6 +1045,7 @@ public abstract class HotRodGenerator {
     return null;
   }
 
+  @Override
   public JdbcColumn findJdbcColumn(final JdbcTable t, final String name) {
     for (JdbcColumn c : t.getColumns()) {
       if (this.adapter.isColumnIdentifier(c.getName(), name)) {
@@ -1051,6 +1055,7 @@ public abstract class HotRodGenerator {
     return null;
   }
 
+  @Override
   public TableDataSetMetadata findViewMetadata(final ObjectId id) {
     for (TableDataSetMetadata tm : this.views) {
       if (tm.getId().equals(id)) {
@@ -1071,30 +1076,36 @@ public abstract class HotRodGenerator {
 
   // Utilities
 
+  @Override
   public void display(final String txt) {
     this.feedback.info(SUtil.isEmpty(txt) ? " " : txt);
   }
 
   // VO Registry
 
+  @Override
   public VORegistry getVORegistry() {
     return voRegistry;
   }
 
   // Getters
 
+  @Override
   public DatabaseAdapter getAdapter() {
     return this.adapter;
   }
 
+  @Override
   public HotRodConfigTag getConfig() {
     return this.config;
   }
 
+  @Override
   public JdbcDatabase getJdbcDatabase() {
     return this.db;
   }
 
+  @Override
   public DatabaseLocation getLoc() {
     return this.dloc;
   }
@@ -1112,6 +1123,7 @@ public abstract class HotRodGenerator {
    * @throws ControlledException               When a configuration error is found
    * @throws InvalidConfigurationFileException
    */
+  @Override
   public abstract void prepareGeneration()
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException;
 
@@ -1125,6 +1137,7 @@ public abstract class HotRodGenerator {
    * @throws ControlledException   When a configuration error is found
    */
 
+  @Override
   public abstract void generate() throws UncontrolledException, ControlledException;
 
   // Logging

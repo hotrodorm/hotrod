@@ -27,7 +27,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -66,7 +66,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   private Expressions expressions = new Expressions();
 
   @SuppressWarnings("unused")
-  private transient HotRodGenerator generator;
+  private transient Generator generator;
 
   private boolean connectedVOResult;
 
@@ -124,7 +124,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   }
 
   @Override
-  public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final Generator generator) throws InvalidConfigurationFileException {
 
     log.debug("### generator=" + generator);
 

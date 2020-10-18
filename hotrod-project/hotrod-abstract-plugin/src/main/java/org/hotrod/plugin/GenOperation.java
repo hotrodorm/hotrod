@@ -25,7 +25,7 @@ import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.FileGenerator;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.runtime.BuildInformation;
 import org.hotrod.utils.LocalFileGenerator;
@@ -134,7 +134,7 @@ public class GenOperation {
 
     try {
       CachedMetadata cachedMetadata = new CachedMetadata();
-      HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
+      Generator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
           config, enabledFKs, this.displayMode, false, adapter, feedback);
       log.debug("Generator instantiated.");
 

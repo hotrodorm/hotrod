@@ -24,7 +24,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.Feedback;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.hotrod.runtime.BuildInformation;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -136,7 +136,7 @@ public abstract class AbstractExportColumnsOperation {
 
     try {
       CachedMetadata cachedMetadata = new CachedMetadata();
-      HotRodGenerator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
+      Generator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
           config, enabledFKs, this.displayMode, false, adapter, feedback);
       log.debug("Generator instantiated.");
 
@@ -165,7 +165,7 @@ public abstract class AbstractExportColumnsOperation {
 
   }
 
-  protected abstract void exportColumns(final HotRodGenerator g) throws IOException;
+  protected abstract void exportColumns(final Generator g) throws IOException;
 
   // Validation
 

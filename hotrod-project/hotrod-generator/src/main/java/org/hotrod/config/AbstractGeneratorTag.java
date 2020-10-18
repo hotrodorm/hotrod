@@ -8,7 +8,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.Feedback;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
@@ -31,7 +31,7 @@ public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
 
   public abstract SelectGenerationTag getSelectGeneration();
 
-  public abstract HotRodGenerator instantiateGenerator(CachedMetadata cachedMetadata, DatabaseLocation loc,
+  public abstract Generator instantiateGenerator(CachedMetadata cachedMetadata, DatabaseLocation loc,
       HotRodConfigTag config, EnabledFKs enabledFKs, DisplayMode displayMode, boolean incrementalMode,
       DatabaseAdapter adapter, Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException;
