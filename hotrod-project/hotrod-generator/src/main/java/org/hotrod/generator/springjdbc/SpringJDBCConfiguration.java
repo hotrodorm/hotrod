@@ -6,6 +6,7 @@ import org.hotrod.exceptions.UncontrolledException;
 
 public class SpringJDBCConfiguration {
 
+  @SuppressWarnings("unused")
   private HotRodConfigTag config;
 
   public SpringJDBCConfiguration(final HotRodConfigTag config) {

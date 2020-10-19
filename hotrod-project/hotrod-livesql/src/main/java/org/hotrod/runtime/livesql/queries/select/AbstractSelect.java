@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.ibatis.session.SqlSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
@@ -25,6 +28,8 @@ import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
 
 public abstract class AbstractSelect<R> extends Query {
+
+  private static final Logger log = LogManager.getLogger(AbstractSelect.class);
 
   private boolean distinct;
   private TableOrView baseTable = null;
@@ -279,16 +284,9 @@ public abstract class AbstractSelect<R> extends Query {
   public List<R> execute() {
 
     LiveSQLStructure q = this.prepareQuery();
-
-    // System.out.println("--- SQL ---");
-    // System.out.println(q.getSQL());
-    // System.out.println("--- Parameters ---");
-    // for (String name : q.getParameters().keySet()) {
-    // Object value = q.getParameters().get(name);
-    // System.out.println(" * " + name + (value == null ? "" : " (" +
-    // value.getClass().getName() + ")") + ": " + value);
-    // }
-    // System.out.println("------------------");
+    if (log.isDebugEnabled()) {
+      log.debug(q.render());
+    }
 
     if (this.mapperStatement == null) {
       return executeLiveSQL(q);
@@ -298,9 +296,26 @@ public abstract class AbstractSelect<R> extends Query {
 
   }
 
+  public Cursor<R> executeCursor() {
+    LiveSQLStructure q = this.prepareQuery();
+    if (log.isDebugEnabled()) {
+      log.debug(q.render());
+    }
+    if (this.mapperStatement == null) {
+      return executeLiveSQLCursor(q);
+    } else {
+      return new MyBatisCursor<R>(this.sqlSession.selectCursor(this.mapperStatement, q.getConsolidatedParameters()));
+    }
+  }
+
   @SuppressWarnings("unchecked")
   private List<R> executeLiveSQL(final LiveSQLStructure q) {
     return (List<R>) this.liveSQLMapper.select(q.getSQL());
+  }
+
+  @SuppressWarnings("unchecked")
+  private Cursor<R> executeLiveSQLCursor(final LiveSQLStructure q) {
+    return (Cursor<R>) this.liveSQLMapper.selectCursor(q.getSQL());
   }
 
   public String getPreview() {

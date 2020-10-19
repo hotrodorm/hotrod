@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
+import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
@@ -43,6 +44,10 @@ public class CriteriaWherePhase<T> {
 
   public List<T> execute() {
     return this.select.execute();
+  }
+
+  public Cursor<T> executeCursor() {
+    return this.select.executeCursor();
   }
 
 }

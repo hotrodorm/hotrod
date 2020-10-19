@@ -16,7 +16,20 @@ public class CursorExamples {
   public int computeAvgPriceProducts() {
     int total = 0;
     int count = 0;
-    for (ProductVO p : this.productsManager.getExpensiveProducts()) {
+    for (ProductVO p : this.productsManager.getProducts()) {
+      if (p.getPrice() != null) {
+        total = total + p.getPrice();
+        count++;
+      }
+    }
+    return total / count;
+  }
+
+  @Transactional
+  public int computeAvgPriceProductsCriteria() {
+    int total = 0;
+    int count = 0;
+    for (ProductVO p : this.productsManager.getProductsCriteria()) {
       if (p.getPrice() != null) {
         total = total + p.getPrice();
         count++;

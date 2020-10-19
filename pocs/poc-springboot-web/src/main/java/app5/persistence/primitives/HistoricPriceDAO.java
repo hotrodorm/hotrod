@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
-import app5.persistence.primitives.MyBatisCursor;
+import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
 
 import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;

@@ -52,6 +52,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.Selectable;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
+import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
 import org.hotrod.runtime.spring.LazyParentClassLoading;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.GenUtils;
@@ -87,7 +88,6 @@ public class ObjectDAO extends GeneratableObject {
 
   private ObjectVO vo = null;
   private Mapper mapper = null;
-  private MyBatisCursorImpl mybatisCursor = null;
 
   private String metadataClassName;
 
@@ -100,7 +100,7 @@ public class ObjectDAO extends GeneratableObject {
 
   public ObjectDAO(final AbstractDAOTag tag, final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisSpringGenerator generator, final DAOType type, final MyBatisSpringTag myBatisTag, final ObjectVO vo,
-      final Mapper mapper, final MyBatisCursorImpl mybatisCursor) {
+      final Mapper mapper) {
     super();
     log.debug("init");
     this.tag = tag;
@@ -115,7 +115,6 @@ public class ObjectDAO extends GeneratableObject {
     this.myBatisTag = myBatisTag;
     this.vo = vo;
     this.mapper = mapper;
-    this.mybatisCursor = mybatisCursor;
 
     this.fragmentConfig = metadata.getFragmentConfig();
     this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
@@ -277,7 +276,7 @@ public class ObjectDAO extends GeneratableObject {
     imports.newLine();
     imports.add("org.apache.ibatis.session.SqlSession");
     imports.add(Cursor.class);
-    imports.add(this.mybatisCursor.getFullClassName());
+    imports.add(MyBatisCursor.class.getName());
     imports.newLine();
 
     if (this.metadata.getVersionControlMetadata() != null) {
@@ -634,7 +633,7 @@ public class ObjectDAO extends GeneratableObject {
     println("{");
     println("    DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + "> dwo = //");
     println("        new DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + ">(example, orderBies);");
-    println("    return new " + this.mybatisCursor.getClassName() + "<" + voClassName
+    println("    return new " + MyBatisCursor.class.getSimpleName() + "<" + voClassName
         + ">(this.sqlSession.selectCursor(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo));");
     println("  }");
     println();
@@ -645,10 +644,10 @@ public class ObjectDAO extends GeneratableObject {
     println();
 
     String daoClassName = this.getClassName();
-    String voClassName = this.vo.getClassName();
+//    String voClassName = this.vo.getClassName();
     String voFullClassName = this.vo.getFullClassName();
     String mapperName = this.mapper.getFullMapperIdSelectByCriteria();
-    String constructor = this.isTable() ? "newTable" : "newView";
+//    String constructor = this.isTable() ? "newTable" : "newView";
 
     // println(" public CriteriaWherePhase<" + voFullClassName + ">
     // selectByCriteria(final Predicate predicate) {");
@@ -1061,9 +1060,9 @@ public class ObjectDAO extends GeneratableObject {
 
   }
 
-  private String getChildrenSelectorClass(final ObjectVO dao) {
-    return dao.getJavaClassIdentifier() + "ChildrenSelector";
-  }
+//  private String getChildrenSelectorClass(final ObjectVO dao) {
+//    return dao.getJavaClassIdentifier() + "ChildrenSelector";
+//  }
 
   private void writeInsert() throws IOException, UnresolvableDataTypeException {
 

@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import app5.persistence.ProductVO;
 import app5.persistence.primitives.ProductDAO;
+import app5.persistence.primitives.ProductDAO.ProductTable;
 
 @Component
 public class ProductsManager {
@@ -14,10 +15,19 @@ public class ProductsManager {
   @Autowired
   private ProductDAO productDAO;
 
-//  @Transactional(propagation=Propagation.REQUIRES_NEW)
+  // To make the cursor crash, force the end of the transaction using:
+  // @Transactional(propagation=Propagation.REQUIRES_NEW)
   @Transactional
-  public Cursor<ProductVO> getExpensiveProducts() {
+  public Cursor<ProductVO> getProducts() {
     return this.productDAO.selectByExampleCursor(new ProductVO());
+  }
+
+  // To make the cursor crash, force the end of the transaction using:
+  // @Transactional(propagation=Propagation.REQUIRES_NEW)
+  @Transactional
+  public Cursor<ProductVO> getProductsCriteria() {
+    ProductTable p = ProductDAO.newTable();
+    return this.productDAO.selectByCriteria(p, p.price.ge(0)).executeCursor();
   }
 
 }

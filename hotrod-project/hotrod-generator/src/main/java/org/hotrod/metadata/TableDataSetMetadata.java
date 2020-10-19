@@ -55,6 +55,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   private AbstractDAOTag daoTag;
 
   private TableTag parentTag;
+  @SuppressWarnings("unused")
   private transient JdbcTable parentJdbcTable;
   private TableDataSetMetadata parent;
 

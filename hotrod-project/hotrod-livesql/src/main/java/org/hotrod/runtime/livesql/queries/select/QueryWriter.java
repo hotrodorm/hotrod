@@ -117,6 +117,19 @@ public class QueryWriter {
       return c;
     }
 
+    public String render() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("--- SQL ---\n");
+      sb.append(this.sql);
+      sb.append("\n--- Parameters ---\n");
+      for (String name : this.parameters.keySet()) {
+        Object value = this.getParameters().get(name);
+        sb.append(" * " + name + (value == null ? "" : " (" + value.getClass().getName() + ")") + ": " + value + "\n");
+      }
+      sb.append("------------------\n");
+      return sb.toString();
+    }
+
   }
 
 }

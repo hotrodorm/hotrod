@@ -31,6 +31,7 @@ public class DAOPrimitives {
 
   private DataSetMetadata ds;
   private DataSetLayout dsg;
+  @SuppressWarnings("unused")
   private SpringJDBCGenerator generator;
   private DAOType type;
 

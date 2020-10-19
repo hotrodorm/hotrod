@@ -10,8 +10,6 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hotrod.config.ColumnTag;
-import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.IdentitiesPostFetchNotSupportedException;
 import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
@@ -79,14 +77,12 @@ public abstract class DatabaseAdapter implements Serializable {
   /*
    * <pre>
    * 
-   *   TableTag  -* JdbcTable
-   *     |  ^         |  ^
-   *     *  |         *  |
-   *   ColumnTag -* JdbcColumn
+   * TableTag -* JdbcTable | ^ | ^ * | * | ColumnTag -* JdbcColumn
    * 
    * </pre>
    * 
-   * @param md        Column metadata
+   * @param md Column metadata
+   * 
    * @param columnTag Column tag
    * 
    * @return The property type

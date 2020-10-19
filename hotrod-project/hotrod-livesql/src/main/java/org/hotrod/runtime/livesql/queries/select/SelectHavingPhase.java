@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.List;
 
+import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
@@ -82,6 +83,11 @@ public class SelectHavingPhase<R> implements ExecutableSelect<R>, CombinableSele
 
   public List<R> execute() {
     return this.select.execute();
+  }
+
+  @Override
+  public Cursor<R> executeCursor() {
+    return this.select.executeCursor();
   }
 
   // Validation
