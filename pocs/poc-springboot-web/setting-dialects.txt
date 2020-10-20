@@ -1,0 +1,15 @@
+* In the application.properties file a dialect can be set. If I wanted to designate H2 as the dialect:
+
+livesql.dialect.name=H2
+livesql.dialect.databaseName=H2
+livesql.dialect.versionString="1.4.197 (2018-03-18)"
+livesql.dialect.majorVersion=1
+livesql.dialect.minorVersion=4
+
+* Then the application resolves the dialect as "designated as H2":
+
+2020-10-20 08:08:31 INFO  [1] SQLDialectConfiguration(117): Dialect designated as H2Dialect [databaseName=H2, databaseVersion="1.4.197 (2018-03-18)", databaseMajorVersion=1, databaseMinorVersion=4]
+
+* If the properties are not set (or commented out) the dialect is "discovered as PostgreSQL":
+
+2020-10-20 08:10:19 INFO  [1] SQLDialectConfiguration(117): Dialect discovered as PostgreSQLDialect [databaseName=PostgreSQL, databaseVersion=12.4 (Debian 12.4-1.pgdg90+1), databaseMajorVersion=12, databaseMinorVersion=4]
