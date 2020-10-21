@@ -23,16 +23,19 @@ public class PostgreSQL_12_Functions {
   // - ObjectFunction
 
   // The abstract function classes must receive parameters that extend Expression.
-  // *** Typically these are of the types:
+  // Typically these are of the types:
+  // - Expression (generic type)
   // - NumberExpression
   // - StringExpression
   // - DateTimeExpression
   // - Predicate (aka BooleanExpression)
   // - ByteArrayExpression
   // - ObjectExpression
-  // *** Simpler parameters can be promoted to Expression using
-  // - sql.val(Number|String|Date|Boolean|byte[]|Object)
-  // Or:
+
+  // Simpler parameters like int, String, etc. can be promoted to Expression
+  // in a LiveSQL query using: sql.val(Number|String|Date|Boolean|byte[]|Object)
+  // Or by providing specialized constructors in the function, as shown in the
+  // sin() function in this example:
   // - new NumberConstant(Number)
   // - new StringConstant(String)
   // - new DateTimeConstant(java.util.Date)
