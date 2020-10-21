@@ -1,4 +1,4 @@
-package org.hotrod.runtime.livesql.expressions.datetime;
+package org.hotrod.runtime.livesql.expressions.binary;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,12 +12,12 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.hotrodorm.hotrod.utils.Separator;
 
-public abstract class DateTimeFunction extends DateTimeExpression {
+public abstract class ByteArrayFunction extends ByteArrayExpression {
 
   private String name;
   private List<Expression<?>> parameters = new ArrayList<Expression<?>>();
 
-  protected DateTimeFunction(final String name, final Expression<?>... parameters) {
+  protected ByteArrayFunction(final String name, final Expression<?>... parameters) {
     super(Expression.PRECEDENCE_FUNCTION);
     if (SUtil.isEmpty(name)) {
       throw new InvalidFunctionException("The function name cannot be empty");
@@ -27,7 +27,7 @@ public abstract class DateTimeFunction extends DateTimeExpression {
     this.parameters.forEach(p -> super.register(p));
   }
 
-  protected DateTimeFunction(final String name, final List<Expression<?>> parameters) {
+  protected ByteArrayFunction(final String name, final List<Expression<?>> parameters) {
     super(Expression.PRECEDENCE_FUNCTION);
     if (SUtil.isEmpty(name)) {
       throw new InvalidFunctionException("The function name cannot be empty");
@@ -37,7 +37,7 @@ public abstract class DateTimeFunction extends DateTimeExpression {
     this.parameters.forEach(p -> super.register(p));
   }
 
-  protected DateTimeFunction(final String name, final Stream<Expression<?>> parameters) {
+  protected ByteArrayFunction(final String name, final Stream<Expression<?>> parameters) {
     super(Expression.PRECEDENCE_FUNCTION);
     if (SUtil.isEmpty(name)) {
       throw new InvalidFunctionException("The function name cannot be empty");

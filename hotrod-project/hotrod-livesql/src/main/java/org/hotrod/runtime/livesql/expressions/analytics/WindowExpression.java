@@ -4,10 +4,8 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
-import org.hotrodorm.hotrod.utils.Separator;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrodorm.hotrod.utils.Separator;
 
 /**
  * <pre>
@@ -134,6 +132,7 @@ public class WindowExpression<T> extends Expression<T> {
 
   void setPartitionBy(final List<Expression<?>> partitionBy) {
     this.partitionBy = partitionBy;
+    this.partitionBy.forEach(e -> super.register(e));
   }
 
   void setOrderBy(final List<OrderingTerm> orderBy) {
@@ -214,22 +213,6 @@ public class WindowExpression<T> extends Expression<T> {
 
     w.write(")");
 
-  }
-
-  // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    for (Expression<?> e : this.partitionBy) {
-      e.validateTableReferences(tableReferences, ag);
-    }
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    for (Expression<?> e : this.partitionBy) {
-      e.designateAliases(ag);
-    }
   }
 
 }

@@ -15,12 +15,12 @@ public class CaseWhenStage<T> {
   // Same stage
 
   public CaseWhenStage<T> when(final Predicate predicate, final Expression<T> value) {
-    this.clause.add(predicate, value);
+    this.clause.addWhen(predicate, value);
     return this;
   }
 
   public CaseWhenStage<T> when(final Predicate predicate, final T value) {
-    this.clause.add(predicate, BoxUtil.boxTyped(value));
+    this.clause.addWhen(predicate, BoxUtil.boxTyped(value));
     return this;
   }
 

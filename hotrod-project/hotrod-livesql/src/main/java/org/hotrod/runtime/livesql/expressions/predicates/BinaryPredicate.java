@@ -2,8 +2,6 @@ package org.hotrod.runtime.livesql.expressions.predicates;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
 public abstract class BinaryPredicate extends Predicate {
 
@@ -27,6 +25,10 @@ public abstract class BinaryPredicate extends Predicate {
           "Right argument of the binary operator (" + this.operator + ") cannot be null");
     }
     this.right = right;
+
+    super.register(this.left);
+    super.register(this.right);
+
   }
 
   @Override
@@ -36,20 +38,6 @@ public abstract class BinaryPredicate extends Predicate {
     w.write(this.operator);
     w.write(" ");
     super.renderInner(this.right, w);
-  }
-
-  // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    this.left.validateTableReferences(tableReferences, ag);
-    this.right.validateTableReferences(tableReferences, ag);
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    this.left.designateAliases(ag);
-    this.right.designateAliases(ag);
   }
 
 }

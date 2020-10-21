@@ -47,17 +47,7 @@ public class BooleanColumn extends Predicate implements Column {
     w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(this.name));
   }
 
-  // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    // nothing to do. No inner queries
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    // nothing to do. No inner queries
-  }
+  
 
   // Getters
 

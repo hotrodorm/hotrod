@@ -1,5 +1,7 @@
 package org.hotrod.runtime.livesql.expressions.strings;
 
+import java.util.stream.Stream;
+
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberConstant;
 import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
@@ -78,13 +80,11 @@ public abstract class StringExpression extends Expression<String> {
   // General functions
 
   public StringExpression concat(final Expression<String> e) {
-    @SuppressWarnings("unchecked")
     Concat concat = new Concat(this, e);
     return concat;
   }
 
   public StringExpression concat(final String e) {
-    @SuppressWarnings("unchecked")
     Concat concat = new Concat(this, new StringConstant(e));
     return concat;
   }

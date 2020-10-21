@@ -164,50 +164,55 @@ public class SQLDialectConfiguration {
 
     if (this.databaseName == null) {
       log.warn("Could not designate the SQL dialect: "
-          + "The 'livesql.dialect.databaseName' property is not set -- falling back to dialect discovery mode.\n"
-          + "A sample value for this property can be retrieved from the getDatabaseProductName() method of the JDBC metadata. "
-          + "For most dialects this property is not relevant and you can specify an empty string. "
-          + "The typical exception to the rule is IBM DB2 where z/OS versions differ considerably from LUW versions, "
-          + "even when the version numbers are similar.");
+          + "The 'livesql.dialect.databaseName' property is not set -- falling back to dialect discovery mode.");
+      log.info(
+          "A sample value for this property can be retrieved from the getDatabaseProductName() method of the JDBC metadata. "
+              + "For most dialects this property is not relevant and you can specify an empty string. "
+              + "The typical exception to the rule is IBM DB2 where z/OS versions differ considerably from LUW versions, "
+              + "even when the version numbers are similar.");
       return null;
     }
 
     if (this.versionString == null) {
       log.warn("Could not designate the SQL dialect. "
-          + "The 'livesql.dialect.versionString' property is not set -- falling back to dialect discovery mode.\n"
-          + "A sample value for this property can be retrieved from the getDatabaseProductVersion() method of the JDBC metadata. "
-          + "For most dialects this property is not relevant and you can specify an empty string. "
-          + "The typical exception to the rule is for MariaDB implementations where only the version string "
-          + "can identify it from MySQL (but not the version number).");
+          + "The 'livesql.dialect.versionString' property is not set -- falling back to dialect discovery mode.");
+      log.info(
+          "A sample value for this property can be retrieved from the getDatabaseProductVersion() method of the JDBC metadata. "
+              + "For most dialects this property is not relevant and you can specify an empty string. "
+              + "The typical exception to the rule is for MariaDB implementations where only the version string "
+              + "can identify it from MySQL (but not the version number).");
       return null;
     }
 
     if (SUtil.isEmpty(this.sMajorVersion)) {
       log.warn("Could not designate the SQL dialect. "
-          + "The 'livesql.dialect.majorVersion' property is empty or unset -- falling back to dialect discovery mode.\n"
-          + "A sample value for this property can be retrieved from the getDatabaseMajorVersion() method of the JDBC metadata. "
-          + "This property helps to identify the SQL subdialect: "
-          + "for example, the Oracle 12.1 SQL subdialect implements OFFSET differently compared to older versions.");
+          + "The 'livesql.dialect.majorVersion' property is empty or unset -- falling back to dialect discovery mode.");
+      log.info(
+          "A sample value for this property can be retrieved from the getDatabaseMajorVersion() method of the JDBC metadata. "
+              + "This property helps to identify the SQL subdialect: "
+              + "for example, the Oracle 12.1 SQL subdialect implements OFFSET differently compared to older versions.");
       return null;
     }
     try {
       this.majorVersion = Integer.valueOf(this.sMajorVersion);
     } catch (NumberFormatException e) {
-      log.warn("Could not designate the SQL dialect. "
-          + "The 'livesql.dialect.majorVersion' has an invalid numeric value: " + this.sMajorVersion
-          + " -- falling back to dialect discovery mode.\n"
-          + "A sample value for this property can be retrieved from the getDatabaseMajorVersion() method of the JDBC metadata. "
-          + "This property helps to identify the SQL subdialect: "
-          + "for example, the Oracle 12.1 SQL subdialect implements OFFSET differently compared to older versions.");
+      log.warn(
+          "Could not designate the SQL dialect. " + "The 'livesql.dialect.majorVersion' has an invalid numeric value: "
+              + this.sMajorVersion + " -- falling back to dialect discovery mode.");
+      log.info(
+          "A sample value for this property can be retrieved from the getDatabaseMajorVersion() method of the JDBC metadata. "
+              + "This property helps to identify the SQL subdialect: "
+              + "for example, the Oracle 12.1 SQL subdialect implements OFFSET differently compared to older versions.");
       return null;
     }
 
     if (SUtil.isEmpty(this.sMinorVersion)) {
       log.warn("Could not designate the SQL dialect. "
-          + "The 'livesql.dialect.minorVersion' property is empty or unset -- falling back to dialect discovery mode.\n"
-          + "A sample value for this property can be retrieved from the getDatabaseMinorVersion() method of the JDBC metadata. "
-          + "This property helps to identify the SQL subdialect: "
-          + "for example, the Oracle 12.1 SQL subdialect implements OFFSET differently compared to older versions.");
+          + "The 'livesql.dialect.minorVersion' property is empty or unset -- falling back to dialect discovery mode.");
+      log.info(
+          "A sample value for this property can be retrieved from the getDatabaseMinorVersion() method of the JDBC metadata. "
+              + "This property helps to identify the SQL subdialect: "
+              + "for example, the Oracle 12.1 SQL subdialect implements OFFSET differently compared to older versions.");
       return null;
     }
     try {
@@ -215,10 +220,11 @@ public class SQLDialectConfiguration {
     } catch (NumberFormatException e) {
       log.warn("Could not designate the SQL dialect. "
           + "The 'livesql.dialect.minorVersion' property has an invalid numeric value: " + this.sMinorVersion
-          + " -- falling back to dialect discovery mode.\n"
-          + "A sample value for this property can be retrieved from the getDatabaseMinorVersion() method of the JDBC metadata. "
-          + "This property helps to identify the SQL subdialect: "
-          + "for example, the Oracle 12.1 SQL subdialect implements OFFSET differently compared to older versions.");
+          + " -- falling back to dialect discovery mode.");
+      log.info(
+          "A sample value for this property can be retrieved from the getDatabaseMinorVersion() method of the JDBC metadata. "
+              + "This property helps to identify the SQL subdialect: "
+              + "for example, the Oracle 12.1 SQL subdialect implements OFFSET differently compared to older versions.");
       return null;
     }
 

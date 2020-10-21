@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hotrod.runtime.livesql.expressions.asymmetric.EqAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.EqAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.GeAll;
@@ -31,14 +33,18 @@ import org.hotrod.runtime.livesql.expressions.predicates.NotBetween;
 import org.hotrod.runtime.livesql.expressions.predicates.NotEqual;
 import org.hotrod.runtime.livesql.expressions.predicates.NotInList;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderByDirectionStage;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.util.BoxUtil;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 public abstract class Expression<T> implements ResultSetColumn {
+
+  private static final Logger log = LogManager.getLogger(Expression.class);
 
   public static final int PRECEDENCE_LITERAL = 1;
   public static final int PRECEDENCE_COLUMN = 1;
@@ -107,9 +113,45 @@ public abstract class Expression<T> implements ResultSetColumn {
 
   // Apply aliases
 
-  public abstract void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag);
+  private List<Expression<?>> expressions = new ArrayList<Expression<?>>();
+  private List<ExecutableSelect<?>> subqueries = new ArrayList<ExecutableSelect<?>>();
+  private List<TableOrView> tablesOrViews = new ArrayList<TableOrView>();
 
-  public abstract void designateAliases(final AliasGenerator ag);
+  protected void register(final Expression<?> expression) {
+    this.expressions.add(expression);
+  }
+
+  protected void register(final ExecutableSelect<?> subquery) {
+    this.subqueries.add(subquery);
+  }
+
+  protected void register(final TableOrView tableOrView) {
+    this.tablesOrViews.add(tableOrView);
+  }
+
+  public final void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
+    for (Expression<?> e : this.expressions) {
+      e.validateTableReferences(tableReferences, ag);
+    }
+    for (ExecutableSelect<?> s : this.subqueries) {
+      s.validateTableReferences(tableReferences, ag);
+    }
+    for (TableOrView t : this.tablesOrViews) {
+      t.validateTableReferences(tableReferences, ag);
+    }
+  }
+
+  public final void designateAliases(final AliasGenerator ag) {
+    for (Expression<?> e : this.expressions) {
+      e.designateAliases(ag);
+    }
+    for (ExecutableSelect<?> s : this.subqueries) {
+      s.designateAliases(ag);
+    }
+    for (TableOrView t : this.tablesOrViews) {
+      t.designateAliases(ag);
+    }
+  }
 
   // Column ordering
 
@@ -360,5 +402,18 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public abstract void renderTo(final QueryWriter w);
+
+  public String renderTree() {
+    StringBuilder sb = new StringBuilder();
+    this.renderTree(sb, 0);
+    return sb.toString();
+  }
+
+  public void renderTree(final StringBuilder sb, final int level) {
+    sb.append(SUtil.getFiller(". ", level) + "+ [" + this.precedence + "] " + this.getClass().getName() + "\n");
+    this.expressions.forEach(e -> e.renderTree(sb, level + 1));
+    this.subqueries.forEach(e -> e.renderTree(sb, level + 1));
+    this.tablesOrViews.forEach(e -> e.renderTree(sb, level + 1));
+  }
 
 }

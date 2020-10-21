@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 /**
@@ -36,14 +34,19 @@ public class CaseClause<T> extends Expression<T> {
     this.whens = new ArrayList<CaseWhen<T>>();
     this.whens.add(new CaseWhen<T>(predicate, value));
     this.elseValue = null;
+    super.register(predicate);
+    super.register(value);
   }
 
-  void add(final Predicate predicate, final Expression<T> value) {
+  void addWhen(final Predicate predicate, final Expression<T> value) {
     this.whens.add(new CaseWhen<T>(predicate, value));
+    super.register(predicate);
+    super.register(value);
   }
 
   void setElse(final Expression<T> value) {
     this.elseValue = value;
+    super.register(value);
   }
 
   // When
@@ -84,30 +87,6 @@ public class CaseClause<T> extends Expression<T> {
       super.renderInner(this.elseValue, w);
     }
     w.write(" end");
-  }
-
-  // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    for (CaseWhen<T> w : this.whens) {
-      w.predicate.validateTableReferences(tableReferences, ag);
-      w.value.validateTableReferences(tableReferences, ag);
-    }
-    if (this.elseValue != null) {
-      this.elseValue.validateTableReferences(tableReferences, ag);
-    }
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    for (CaseWhen<T> w : this.whens) {
-      w.predicate.designateAliases(ag);
-      w.value.designateAliases(ag);
-    }
-    if (this.elseValue != null) {
-      this.elseValue.designateAliases(ag);
-    }
   }
 
 }

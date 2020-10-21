@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrodorm.hotrod.utils.Separator;
 
 public class NotInList<T> extends Predicate {
@@ -17,6 +15,8 @@ public class NotInList<T> extends Predicate {
     super(Expression.PRECEDENCE_IN);
     this.value = value;
     this.expressions = list;
+    super.register(this.value);
+    this.expressions.forEach(e -> super.register(e));
   }
 
   @Override
@@ -29,22 +29,6 @@ public class NotInList<T> extends Predicate {
       super.renderInner(e, w);
     }
     w.write(")");
-  }
-
-  // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    for (Expression<T> e : this.expressions) {
-      e.validateTableReferences(tableReferences, ag);
-    }
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    for (Expression<T> e : this.expressions) {
-      e.designateAliases(ag);
-    }
   }
 
 }

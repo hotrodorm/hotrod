@@ -18,4 +18,8 @@ public abstract class Join {
     return this.table;
   }
 
+  public String renderTree() {
+    return this.table.renderTree();
+  }
+
 }

@@ -2,10 +2,8 @@ package org.hotrod.runtime.livesql.expressions.numbers;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
-public class Power extends NumericFunction {
+public class Power extends BuiltInNumberFunction {
 
   private Expression<Number> value;
   private Expression<Number> exponent;
@@ -14,25 +12,13 @@ public class Power extends NumericFunction {
     super();
     this.value = value;
     this.exponent = exponent;
+    super.register(this.value);
+    super.register(this.exponent);
   }
 
   @Override
   public void renderTo(final QueryWriter w) {
     w.getSqlDialect().getFunctionRenderer().power(w, this.value, this.exponent);
-  }
-
-  // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    this.value.validateTableReferences(tableReferences, ag);
-    this.exponent.validateTableReferences(tableReferences, ag);
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    this.value.designateAliases(ag);
-    this.exponent.designateAliases(ag);
   }
 
 }

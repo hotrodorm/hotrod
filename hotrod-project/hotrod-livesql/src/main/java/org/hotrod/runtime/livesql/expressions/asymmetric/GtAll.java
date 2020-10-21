@@ -5,7 +5,7 @@ import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 
 public class GtAll extends AsymmetricOperator {
 
-  public GtAll(final Expression<?> value, final ExecutableSelect subquery) {
+  public GtAll(final Expression<?> value, final ExecutableSelect<?> subquery) {
     super(value, "> all", subquery);
   }
 

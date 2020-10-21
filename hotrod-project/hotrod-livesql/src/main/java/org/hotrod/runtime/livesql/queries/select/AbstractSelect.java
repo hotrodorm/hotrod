@@ -380,15 +380,21 @@ public abstract class AbstractSelect<R> extends Query {
   }
 
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
+//    log.info("### obj " + System.identityHashCode(this) + " -- tableReferences=" + tableReferences.size());
     if (this.baseTable != null) {
+//      log.info(">>> Tree baseTable: " + this.baseTable.renderTree());
       this.baseTable.validateTableReferences(tableReferences, ag);
     }
+//    log.info("### obj " + System.identityHashCode(this) + " -- tableReferences=" + tableReferences.size());
     if (this.joins != null) {
       for (Join j : this.joins) {
+//        log.info(">>> Tree join: " + j.renderTree());
         j.getTable().validateTableReferences(tableReferences, ag);
       }
     }
+//    log.info("### obj " + System.identityHashCode(this) + " -- tableReferences=" + tableReferences.size());
     if (this.wherePredicate != null) {
+//      log.info(">>> Tree WHERE: " + this.wherePredicate.renderTree());
       this.wherePredicate.validateTableReferences(tableReferences, ag);
     }
     if (this.groupBy != null) {
@@ -417,12 +423,16 @@ public abstract class AbstractSelect<R> extends Query {
     private Set<String> aliases = new HashSet<String>();
 
     public void register(final String alias, final DatabaseObject databaseObject) {
+//      log.debug("---> registering2: " + databaseObject.renderUnescapedName());
+//      displayTableReferences();
       if (this.tableReferences.contains(databaseObject)) {
         throw new InvalidLiveSQLStatementException(
-            SUtil.upperFirst(databaseObject.getType()) + " " + databaseObject.renderUnescapedName()
+            "An instance of the " + databaseObject.getType() + " " + databaseObject.renderUnescapedName()
                 + (alias == null ? " (with no alias)" : " (with alias '" + alias + "')")
-                + " is used multiple times in the Live SQL statement. "
-                + "Every table or view can only be used once in the from() or join() methods of a Live SQL statement.");
+                + " is used multiple times in the Live SQL statement (in the FROM clause, JOIN clause, or a subquery). "
+                + "If you need to include the same " + databaseObject.getType()
+                + " multiple times in the query you can get more instances of it using the DAO method new"
+                + SUtil.upperFirst(databaseObject.getType()) + "().");
       }
       this.tableReferences.add(databaseObject);
     }
@@ -433,6 +443,18 @@ public abstract class AbstractSelect<R> extends Query {
 
     public Set<String> getAliases() {
       return aliases;
+    }
+
+//    public void displayTableReferences() {
+//      log.info("=== Existing " + this.tableReferences.size() + " refs ===");
+//      for (DatabaseObject o : this.tableReferences) {
+//        log.info("o=" + o.renderUnescapedName());
+//      }
+//      log.info("======");
+//    }
+
+    public int size() {
+      return this.tableReferences.size();
     }
 
   }

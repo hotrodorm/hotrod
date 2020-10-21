@@ -5,10 +5,8 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLClauseException;
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
-import org.hotrodorm.hotrod.utils.Separator;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrodorm.hotrod.utils.Separator;
 
 public class Tuple extends Expression<Tuple> {
 
@@ -20,6 +18,7 @@ public class Tuple extends Expression<Tuple> {
       throw new InvalidLiveSQLClauseException("A tuple cannot be empty. Please add expressions to the tuple");
     }
     this.expressions = Arrays.asList(expressions);
+    this.expressions.forEach(e -> super.register(e));
   }
 
   @Override
@@ -31,22 +30,6 @@ public class Tuple extends Expression<Tuple> {
       expr.renderTo(w);
     }
     w.write(")");
-  }
-
-  // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    for (Expression<?> e : this.expressions) {
-      e.validateTableReferences(tableReferences, ag);
-    }
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    for (Expression<?> e : this.expressions) {
-      e.designateAliases(ag);
-    }
   }
 
 }

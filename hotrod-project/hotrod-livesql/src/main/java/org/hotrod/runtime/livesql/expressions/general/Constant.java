@@ -4,8 +4,6 @@ import java.util.Date;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
 public class Constant<T> extends Expression<T> {
 
@@ -128,20 +126,6 @@ public class Constant<T> extends Expression<T> {
         w.write("" + this.value);
       }
     }
-  }
-
-  // Validation
-
-  // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    // nothing to do
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    // nothing to do
   }
 
 }

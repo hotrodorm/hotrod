@@ -5,7 +5,7 @@ import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 
 public class LeAny extends AsymmetricOperator {
 
-  public LeAny(final Expression<?> value, final ExecutableSelect subquery) {
+  public LeAny(final Expression<?> value, final ExecutableSelect<?> subquery) {
     super(value, "<= any", subquery);
   }
 

@@ -4,8 +4,6 @@ import java.util.Date;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowableAggregationFunction;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public abstract class DateTimeAggregationFunction extends WindowableAggregationFunction<Date> {
@@ -17,6 +15,7 @@ public abstract class DateTimeAggregationFunction extends WindowableAggregationF
     super(Expression.PRECEDENCE_FUNCTION);
     this.functionName = functionName;
     this.expression = expression;
+    super.register(this.expression);
   }
 
   @Override
@@ -35,18 +34,6 @@ public abstract class DateTimeAggregationFunction extends WindowableAggregationF
 
   private void renderTail(final QueryWriter w) {
     w.write(")");
-  }
-
-  // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    this.expression.validateTableReferences(tableReferences, ag);
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    this.expression.designateAliases(ag);
   }
 
 }
