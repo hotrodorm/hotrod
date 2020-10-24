@@ -47,7 +47,12 @@ import org.hotrod.runtime.livesql.expressions.analytics.StringLead;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayConstant;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 import org.hotrod.runtime.livesql.expressions.binary.ByteArrayValue;
-import org.hotrod.runtime.livesql.expressions.caseclause.CaseWhenStage;
+import org.hotrod.runtime.livesql.expressions.caseclause.BooleanCaseWhenStage;
+import org.hotrod.runtime.livesql.expressions.caseclause.ByteArrayCaseWhenStage;
+import org.hotrod.runtime.livesql.expressions.caseclause.DateTimeCaseWhenStage;
+import org.hotrod.runtime.livesql.expressions.caseclause.NumberCaseWhenStage;
+import org.hotrod.runtime.livesql.expressions.caseclause.ObjectCaseWhenStage;
+import org.hotrod.runtime.livesql.expressions.caseclause.StringCaseWhenStage;
 import org.hotrod.runtime.livesql.expressions.datetime.CurrentDate;
 import org.hotrod.runtime.livesql.expressions.datetime.CurrentDateTime;
 import org.hotrod.runtime.livesql.expressions.datetime.CurrentTime;
@@ -655,52 +660,52 @@ public class LiveSQL {
 
   // Case
 
-  public CaseWhenStage<NumberExpression> caseWhen(final Predicate predicate, final Number value) {
-    return new CaseWhenStage<NumberExpression>(predicate, val(value));
+  public NumberCaseWhenStage caseWhen(final Predicate predicate, final Number value) {
+    return new NumberCaseWhenStage(predicate, val(value));
   }
 
-  public CaseWhenStage<NumberExpression> caseWhen(final Predicate predicate, final NumberExpression value) {
-    return new CaseWhenStage<NumberExpression>(predicate, value);
+  public NumberCaseWhenStage caseWhen(final Predicate predicate, final NumberExpression value) {
+    return new NumberCaseWhenStage(predicate, value);
   }
 
-  public CaseWhenStage<StringExpression> caseWhen(final Predicate predicate, final String value) {
-    return new CaseWhenStage<StringExpression>(predicate, val(value));
+  public StringCaseWhenStage caseWhen(final Predicate predicate, final String value) {
+    return new StringCaseWhenStage(predicate, val(value));
   }
 
-  public CaseWhenStage<StringExpression> caseWhen(final Predicate predicate, final StringExpression value) {
-    return new CaseWhenStage<StringExpression>(predicate, value);
+  public StringCaseWhenStage caseWhen(final Predicate predicate, final StringExpression value) {
+    return new StringCaseWhenStage(predicate, value);
   }
 
-  public CaseWhenStage<DateTimeExpression> caseWhen(final Predicate predicate, final Date value) {
-    return new CaseWhenStage<DateTimeExpression>(predicate, val(value));
+  public DateTimeCaseWhenStage caseWhen(final Predicate predicate, final Date value) {
+    return new DateTimeCaseWhenStage(predicate, val(value));
   }
 
-  public CaseWhenStage<DateTimeExpression> caseWhen(final Predicate predicate, final DateTimeExpression value) {
-    return new CaseWhenStage<DateTimeExpression>(predicate, value);
+  public DateTimeCaseWhenStage caseWhen(final Predicate predicate, final DateTimeExpression value) {
+    return new DateTimeCaseWhenStage(predicate, value);
   }
 
-  public CaseWhenStage<Predicate> caseWhen(final Predicate predicate, final Boolean value) {
-    return new CaseWhenStage<Predicate>(predicate, val(value));
+  public BooleanCaseWhenStage caseWhen(final Predicate predicate, final Boolean value) {
+    return new BooleanCaseWhenStage(predicate, val(value));
   }
 
-  public CaseWhenStage<Predicate> caseWhen(final Predicate predicate, final Predicate value) {
-    return new CaseWhenStage<Predicate>(predicate, value);
+  public BooleanCaseWhenStage caseWhen(final Predicate predicate, final Predicate value) {
+    return new BooleanCaseWhenStage(predicate, value);
   }
 
-  public CaseWhenStage<ByteArrayExpression> caseWhen(final Predicate predicate, final byte[] value) {
-    return new CaseWhenStage<ByteArrayExpression>(predicate, val(value));
+  public ByteArrayCaseWhenStage caseWhen(final Predicate predicate, final byte[] value) {
+    return new ByteArrayCaseWhenStage(predicate, val(value));
   }
 
-  public CaseWhenStage<ByteArrayExpression> caseWhen(final Predicate predicate, final ByteArrayExpression value) {
-    return new CaseWhenStage<ByteArrayExpression>(predicate, value);
+  public ByteArrayCaseWhenStage caseWhen(final Predicate predicate, final ByteArrayExpression value) {
+    return new ByteArrayCaseWhenStage(predicate, value);
   }
 
-  public CaseWhenStage<ObjectExpression> caseWhen(final Predicate predicate, final Object value) {
-    return new CaseWhenStage<ObjectExpression>(predicate, val(value));
+  public ObjectCaseWhenStage caseWhen(final Predicate predicate, final Object value) {
+    return new ObjectCaseWhenStage(predicate, val(value));
   }
 
-  public CaseWhenStage<ObjectExpression> caseWhen(final Predicate predicate, final ObjectExpression value) {
-    return new CaseWhenStage<ObjectExpression>(predicate, value);
+  public ObjectCaseWhenStage caseWhen(final Predicate predicate, final ObjectExpression value) {
+    return new ObjectCaseWhenStage(predicate, value);
   }
 
   // Date/Time

@@ -9,4 +9,8 @@ public class Rank extends NumberFunction implements AnalyticFunction {
     super("rank", expression);
   }
 
+  public NumberWindowFunctionOverStage over() {
+    return new NumberWindowFunctionOverStage(new WindowExpression(this));
+  }
+
 }

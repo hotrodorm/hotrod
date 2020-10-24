@@ -9,4 +9,8 @@ public class NTile extends NumberFunction implements AnalyticFunction {
     super("ntile", expression);
   }
 
+  public NumberWindowFunctionOverStage over() {
+    return new NumberWindowFunctionOverStage(new WindowExpression(this));
+  }
+
 }

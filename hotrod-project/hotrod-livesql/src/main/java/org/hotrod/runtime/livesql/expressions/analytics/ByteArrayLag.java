@@ -11,4 +11,8 @@ public class ByteArrayLag extends StringFunction implements PositionalAnalyticFu
     super("lag", expression, offset, defaultValue);
   }
 
+  public ByteArrayWindowFunctionOverStage over() {
+    return new ByteArrayWindowFunctionOverStage(new WindowExpression(this));
+  }
+
 }

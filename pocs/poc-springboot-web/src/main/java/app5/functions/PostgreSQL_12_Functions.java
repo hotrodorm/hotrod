@@ -82,12 +82,12 @@ public class PostgreSQL_12_Functions {
 
   // format(text, args...)
 
-  public StringFunction format(final StringExpression text, final Expression<?>... args) {
+  public StringFunction format(final StringExpression text, final Expression... args) {
     return new StringFunction("format", Stream.concat(Stream.of(text), Stream.of(args))) {
     };
   }
 
-  public StringFunction format(final String text, final Expression<?>... args) {
+  public StringFunction format(final String text, final Expression... args) {
     return format(new StringConstant(text), args);
   }
 

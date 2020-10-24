@@ -11,4 +11,8 @@ public class ObjectLead extends ObjectFunction implements PositionalAnalyticFunc
     super("lead", expression, offset, defaultValue);
   }
 
+  public ObjectWindowFunctionOverStage over() {
+    return new ObjectWindowFunctionOverStage(new WindowExpression(this));
+  }
+
 }

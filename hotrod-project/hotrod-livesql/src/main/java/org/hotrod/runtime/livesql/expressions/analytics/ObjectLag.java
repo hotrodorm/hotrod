@@ -11,4 +11,8 @@ public class ObjectLag extends ObjectFunction implements PositionalAnalyticFunct
     super("lag", expression, offset, defaultValue);
   }
 
+  public ObjectWindowFunctionOverStage over() {
+    return new ObjectWindowFunctionOverStage(new WindowExpression(this));
+  }
+
 }

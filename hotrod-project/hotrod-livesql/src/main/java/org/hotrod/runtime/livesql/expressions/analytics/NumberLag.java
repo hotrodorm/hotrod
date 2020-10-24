@@ -10,4 +10,8 @@ public class NumberLag extends NumberFunction implements PositionalAnalyticFunct
     super("lag", expression, offset, defaultValue);
   }
 
+  public NumberWindowFunctionOverStage over() {
+    return new NumberWindowFunctionOverStage(new WindowExpression(this));
+  }
+
 }

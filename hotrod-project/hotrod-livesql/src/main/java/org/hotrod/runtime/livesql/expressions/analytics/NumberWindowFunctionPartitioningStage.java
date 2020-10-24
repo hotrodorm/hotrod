@@ -4,19 +4,19 @@ import java.util.Arrays;
 
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
-public class WindowFunctionPartitioningStage {
+public class NumberWindowFunctionPartitioningStage {
 
   private WindowExpression function;
 
-  public WindowFunctionPartitioningStage(final WindowExpression function) {
+  public NumberWindowFunctionPartitioningStage(final WindowExpression function) {
     this.function = function;
   }
 
   // Next stages
 
-  public WindowFunctionOrderingStage orderBy(final OrderingTerm... orderingTerm) {
+  public NumberWindowFunctionOrderingStage orderBy(final OrderingTerm... orderingTerm) {
     this.function.setOrderBy(Arrays.asList(orderingTerm));
-    return new WindowFunctionOrderingStage(this.function);
+    return new NumberWindowFunctionOrderingStage(this.function);
   }
 
   public WindowExpression end() {

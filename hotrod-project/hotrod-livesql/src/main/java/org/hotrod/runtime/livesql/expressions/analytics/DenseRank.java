@@ -9,4 +9,8 @@ public class DenseRank extends NumberFunction implements AnalyticFunction {
     super("dense_rank", expression);
   }
 
+  public NumberWindowFunctionOverStage over() {
+    return new NumberWindowFunctionOverStage(new WindowExpression(this));
+  }
+
 }

@@ -8,4 +8,8 @@ public class RowNumber extends NumberFunction implements AnalyticFunction {
     super("row_number");
   }
 
+  public NumberWindowFunctionOverStage over() {
+    return new NumberWindowFunctionOverStage(new WindowExpression(this));
+  }
+
 }

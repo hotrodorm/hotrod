@@ -11,4 +11,8 @@ public class StringLead extends StringFunction implements PositionalAnalyticFunc
     super("lead", expression, offset, defaultValue);
   }
 
+  public StringWindowFunctionOverStage over() {
+    return new StringWindowFunctionOverStage(new WindowExpression(this));
+  }
+
 }

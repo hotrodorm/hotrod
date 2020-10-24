@@ -11,4 +11,8 @@ public class StringLag extends StringFunction implements PositionalAnalyticFunct
     super("lag", expression, offset, defaultValue);
   }
 
+  public StringWindowFunctionOverStage over() {
+    return new StringWindowFunctionOverStage(new WindowExpression(this));
+  }
+
 }

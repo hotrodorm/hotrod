@@ -15,8 +15,14 @@
   </generators>
 
   <table name="product" />
+  <table name="historic_price" />
 
-  <table name="historic_price">
-  </table>
+  <table name="account" />
+  <table name="item" />
+  <table name="island" />
+  <table name="transaction" />
+  <table name="federal_branch" />
+  <table name="types_binary" />
+  <table name="types_other" />
 
 </hotrod>

@@ -10,4 +10,8 @@ public class BooleanLead extends BooleanFunction implements PositionalAnalyticFu
     super("lead", expression, offset, defaultValue);
   }
 
+  public BooleanWindowFunctionOverStage over() {
+    return new BooleanWindowFunctionOverStage(new WindowExpression(this));
+  }
+
 }

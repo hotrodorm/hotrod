@@ -11,4 +11,8 @@ public class ByteArrayLead extends ByteArrayFunction implements PositionalAnalyt
     super("lead", expression, offset, defaultValue);
   }
 
+  public ByteArrayWindowFunctionOverStage over() {
+    return new ByteArrayWindowFunctionOverStage(new WindowExpression(this));
+  }
+
 }
