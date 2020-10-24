@@ -7,11 +7,11 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public abstract class AsymmetricOperator extends Predicate {
 
-  private Expression<?> value;
+  private Expression value;
   private String operator;
   private ExecutableSelect<?> subquery;
 
-  protected AsymmetricOperator(final Expression<?> value, final String operator, final ExecutableSelect<?> subquery) {
+  protected AsymmetricOperator(final Expression value, final String operator, final ExecutableSelect<?> subquery) {
     super(Expression.PRECEDENCE_ANY_ALL_EQ_NE_LT_LE_GT_GE);
     this.value = value;
     this.operator = operator;

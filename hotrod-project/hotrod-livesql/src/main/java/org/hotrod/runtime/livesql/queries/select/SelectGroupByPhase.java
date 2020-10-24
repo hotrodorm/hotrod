@@ -18,7 +18,7 @@ public class SelectGroupByPhase<R> implements ExecutableSelect<R>, CombinableSel
 
   // Constructor
 
-  SelectGroupByPhase(final AbstractSelect<R> select, final Expression<?>... expressions) {
+  SelectGroupByPhase(final AbstractSelect<R> select, final Expression... expressions) {
     this.select = select;
     this.select.setGroupBy(Arrays.asList(expressions));
   }

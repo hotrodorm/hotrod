@@ -6,11 +6,11 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class Locate extends NumberExpression {
 
-  private Expression<String> substring;
-  private Expression<String> string;
-  private Expression<Number> from;
+  private StringExpression substring;
+  private StringExpression string;
+  private NumberExpression from;
 
-  public Locate(final Expression<String> substring, final Expression<String> string, final Expression<Number> from) {
+  public Locate(final StringExpression substring, final StringExpression string, final NumberExpression from) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.substring = substring;
     this.string = string;

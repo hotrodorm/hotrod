@@ -2,10 +2,12 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public interface WindowableFunction<T> {
+public interface WindowableFunction {
 
-  WindowFunctionOverStage<T> over();
+  default public WindowFunctionOverStage over() {
+    return new WindowFunctionOverStage(new WindowExpression(this));
+  }
 
-  void renderBaseTo(final QueryWriter w);
+  void renderTo(final QueryWriter w);
 
 }

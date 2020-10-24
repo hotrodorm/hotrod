@@ -1,10 +1,9 @@
 package org.hotrod.runtime.livesql.expressions.datetime;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public class DateTimeFieldExpression extends Expression<DateTimeField> {
+public class DateTimeFieldExpression extends Expression {
 
   private DateTimeField field;
 

@@ -1,13 +1,12 @@
 package org.hotrod.runtime.livesql.expressions.datetime;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class Date extends BuiltInDateTimeFunction {
 
-  private Expression<java.util.Date> dateTime;
+  private DateTimeExpression dateTime;
 
-  public Date(final Expression<java.util.Date> dateTime) {
+  public Date(final DateTimeExpression dateTime) {
     super();
     this.dateTime = dateTime;
     super.register(this.dateTime);

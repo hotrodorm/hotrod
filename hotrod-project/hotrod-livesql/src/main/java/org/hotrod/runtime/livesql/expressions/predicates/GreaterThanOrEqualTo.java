@@ -4,7 +4,7 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 
 public class GreaterThanOrEqualTo extends BinaryPredicate {
 
-  public <T> GreaterThanOrEqualTo(final Expression<T> a, final Expression<T> b) {
+  public <T extends Expression> GreaterThanOrEqualTo(final T a, final T b) {
     super(a, ">=", b, Expression.PRECEDENCE_EQ_NE_LT_LE_GT_GE);
   }
 

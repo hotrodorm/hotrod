@@ -35,7 +35,7 @@ public abstract class AbstractSelect<R> extends Query {
   private TableOrView baseTable = null;
   private List<Join> joins = null;
   private Predicate wherePredicate = null;
-  private List<Expression<?>> groupBy = null;
+  private List<Expression> groupBy = null;
   private Predicate havingPredicate = null;
 
   private SetOperation setOperation = null;
@@ -76,7 +76,7 @@ public abstract class AbstractSelect<R> extends Query {
     this.wherePredicate = whereCondition;
   }
 
-  void setGroupBy(final List<Expression<?>> groupBy) {
+  void setGroupBy(final List<Expression> groupBy) {
     this.groupBy = groupBy;
   }
 
@@ -202,7 +202,7 @@ public abstract class AbstractSelect<R> extends Query {
       if (this.groupBy != null && !this.groupBy.isEmpty()) {
         w.write("\nGROUP BY ");
         boolean first = true;
-        for (Expression<?> expr : this.groupBy) {
+        for (Expression expr : this.groupBy) {
           if (first) {
             first = false;
           } else {
@@ -398,7 +398,7 @@ public abstract class AbstractSelect<R> extends Query {
       this.wherePredicate.validateTableReferences(tableReferences, ag);
     }
     if (this.groupBy != null) {
-      for (Expression<?> e : this.groupBy) {
+      for (Expression e : this.groupBy) {
         e.validateTableReferences(tableReferences, ag);
       }
     }
@@ -517,7 +517,7 @@ public abstract class AbstractSelect<R> extends Query {
       this.wherePredicate.designateAliases(ag);
     }
     if (this.groupBy != null) {
-      for (Expression<?> e : this.groupBy) {
+      for (Expression e : this.groupBy) {
         e.designateAliases(ag);
       }
     }

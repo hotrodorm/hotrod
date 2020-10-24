@@ -8,7 +8,7 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class DateTimeCoalesce extends DateTimeExpression {
 
-  private List<Expression<java.util.Date>> expressions;
+  private List<DateTimeExpression> expressions;
 
   public DateTimeCoalesce(final DateTimeExpression... values) {
     super(Expression.PRECEDENCE_FUNCTION);

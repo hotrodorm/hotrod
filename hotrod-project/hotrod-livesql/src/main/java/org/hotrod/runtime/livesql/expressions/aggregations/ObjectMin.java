@@ -1,8 +1,10 @@
 package org.hotrod.runtime.livesql.expressions.aggregations;
 
+import org.hotrod.runtime.livesql.expressions.analytics.WindowableAggregationFunction;
 import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
+import org.hotrod.runtime.livesql.expressions.object.ObjectFunction;
 
-public class ObjectMin extends ObjectAggregationFunction {
+public class ObjectMin extends ObjectFunction implements WindowableAggregationFunction {
 
   public ObjectMin(final ObjectExpression expression) {
     super("min", expression);

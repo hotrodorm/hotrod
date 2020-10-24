@@ -8,12 +8,12 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class ByteArrayCoalesce extends ByteArrayExpression {
 
-  private List<Expression<byte[]>> expressions;
+  private List<ByteArrayExpression> expressions;
 
   public ByteArrayCoalesce(final ByteArrayExpression... values) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.expressions.addAll(Arrays.asList(values));
-    for (Expression<byte[]> e : this.expressions) {
+    for (ByteArrayExpression e : this.expressions) {
       super.register(e);
     }
   }

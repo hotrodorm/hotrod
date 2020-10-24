@@ -1,14 +1,13 @@
 package org.hotrod.runtime.livesql.expressions.numbers;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class Round extends BuiltInNumberFunction {
 
-  private Expression<Number> value;
-  private Expression<Number> places;
+  private NumberExpression value;
+  private NumberExpression places;
 
-  public Round(final Expression<Number> value, final Expression<Number> places) {
+  public Round(final NumberExpression value, final NumberExpression places) {
     super();
     this.value = value;
     this.places = places;

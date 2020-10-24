@@ -1,7 +1,6 @@
 package org.hotrod.runtime.livesql.expressions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,18 +19,8 @@ import org.hotrod.runtime.livesql.expressions.asymmetric.LtAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NeAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NeAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.NotInSubquery;
-import org.hotrod.runtime.livesql.expressions.predicates.Between;
-import org.hotrod.runtime.livesql.expressions.predicates.Equal;
-import org.hotrod.runtime.livesql.expressions.predicates.GreaterThan;
-import org.hotrod.runtime.livesql.expressions.predicates.GreaterThanOrEqualTo;
-import org.hotrod.runtime.livesql.expressions.predicates.InList;
 import org.hotrod.runtime.livesql.expressions.predicates.IsNotNull;
 import org.hotrod.runtime.livesql.expressions.predicates.IsNull;
-import org.hotrod.runtime.livesql.expressions.predicates.LessThan;
-import org.hotrod.runtime.livesql.expressions.predicates.LessThanOrEqualTo;
-import org.hotrod.runtime.livesql.expressions.predicates.NotBetween;
-import org.hotrod.runtime.livesql.expressions.predicates.NotEqual;
-import org.hotrod.runtime.livesql.expressions.predicates.NotInList;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderByDirectionStage;
@@ -39,10 +28,9 @@ import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.util.BoxUtil;
 import org.hotrodorm.hotrod.utils.SUtil;
 
-public abstract class Expression<T> implements ResultSetColumn {
+public abstract class Expression implements ResultSetColumn {
 
   private static final Logger log = LogManager.getLogger(Expression.class);
 
@@ -96,6 +84,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   private int precedence;
 
   protected void setPrecedence(final int precedence) {
+    log.debug("setPrecedence=" + precedence);
     this.precedence = precedence;
   }
 
@@ -113,11 +102,11 @@ public abstract class Expression<T> implements ResultSetColumn {
 
   // Apply aliases
 
-  private List<Expression<?>> expressions = new ArrayList<Expression<?>>();
+  private List<Expression> expressions = new ArrayList<Expression>();
   private List<ExecutableSelect<?>> subqueries = new ArrayList<ExecutableSelect<?>>();
   private List<TableOrView> tablesOrViews = new ArrayList<TableOrView>();
 
-  protected void register(final Expression<?> expression) {
+  protected void register(final Expression expression) {
     this.expressions.add(expression);
   }
 
@@ -130,7 +119,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public final void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    for (Expression<?> e : this.expressions) {
+    for (Expression e : this.expressions) {
       e.validateTableReferences(tableReferences, ag);
     }
     for (ExecutableSelect<?> s : this.subqueries) {
@@ -142,7 +131,7 @@ public abstract class Expression<T> implements ResultSetColumn {
   }
 
   public final void designateAliases(final AliasGenerator ag) {
-    for (Expression<?> e : this.expressions) {
+    for (Expression e : this.expressions) {
       e.designateAliases(ag);
     }
     for (ExecutableSelect<?> s : this.subqueries) {
@@ -163,123 +152,6 @@ public abstract class Expression<T> implements ResultSetColumn {
     return new OrderByDirectionStage(this, false);
   }
 
-  // General
-
-  // public NumberExpression coalesce(final Expression<Number> a) {
-  // Expression<Number> x1 = (Expression<Number>) this;
-  // return new NumberCoalesce(x1, a);
-  // }
-  //
-  // public StringExpression coalesce(final Expression<String> a) {
-  // Expression<String> x1 = (Expression<String>) this;
-  // return null;
-  // // return new NumberCoalesce(x1, a);
-  // }
-
-  // public Expression<T> coalesce(final T a) {
-  // @SuppressWarnings("unchecked")
-  // Coalesce<T> coalesce = new Coalesce<T>(this, new Constant<T>(a));
-  // return coalesce;
-  // }
-
-  // Scalar comparisons
-
-  // Equal
-
-  public Predicate eq(final Expression<T> e) {
-    return new Equal(this, e);
-  }
-
-  public Predicate eq(final T value) {
-    return new Equal(this, BoxUtil.boxTyped(value));
-  }
-
-  // Not Equal
-
-  public Predicate ne(final Expression<T> e) {
-    return new NotEqual(this, e);
-  }
-
-  public Predicate ne(final T value) {
-    return new NotEqual(this, BoxUtil.boxTyped(value));
-  }
-
-  // Greater Than
-
-  public Predicate gt(final Expression<T> e) {
-    return new GreaterThan(this, e);
-  }
-
-  public Predicate gt(final T value) {
-    return new GreaterThan(this, BoxUtil.boxTyped(value));
-  }
-
-  // Greater Than or Equal To
-
-  public Predicate ge(final Expression<T> e) {
-    return new GreaterThanOrEqualTo(this, e);
-  }
-
-  public Predicate ge(final T value) {
-    return new GreaterThanOrEqualTo(this, BoxUtil.boxTyped(value));
-  }
-
-  // Less Than
-
-  public Predicate lt(final Expression<T> e) {
-    return new LessThan(this, e);
-  }
-
-  public Predicate lt(final T value) {
-    return new LessThan(this, BoxUtil.boxTyped(value));
-  }
-
-  // Less Than or Equal To
-
-  public Predicate le(final Expression<T> e) {
-    return new LessThanOrEqualTo(this, e);
-  }
-
-  public Predicate le(final T value) {
-    return new LessThanOrEqualTo(this, BoxUtil.boxTyped(value));
-  }
-
-  // Between
-
-  public Predicate between(final Expression<T> from, final Expression<T> to) {
-    return new Between(this, from, to);
-  }
-
-  public Predicate between(final Expression<T> from, final T to) {
-    return new Between(this, from, BoxUtil.boxTyped(to));
-  }
-
-  public Predicate between(final T from, final Expression<T> to) {
-    return new Between(this, BoxUtil.boxTyped(from), to);
-  }
-
-  public Predicate between(final T from, final T to) {
-    return new Between(this, BoxUtil.boxTyped(from), BoxUtil.boxTyped(to));
-  }
-
-  // Not Between
-
-  public Predicate notBetween(final Expression<T> from, final Expression<T> to) {
-    return new NotBetween(this, from, to);
-  }
-
-  public Predicate notBetween(final Expression<T> from, final T to) {
-    return new NotBetween(this, from, BoxUtil.boxTyped(to));
-  }
-
-  public Predicate notBetween(final T from, final Expression<T> to) {
-    return new NotBetween(this, BoxUtil.boxTyped(from), to);
-  }
-
-  public Predicate notBetween(final T from, T to) {
-    return new NotBetween(this, BoxUtil.boxTyped(from), BoxUtil.boxTyped(to));
-  }
-
   // Is Null and Is Not Null
 
   public Predicate isNotNull() {
@@ -288,36 +160,6 @@ public abstract class Expression<T> implements ResultSetColumn {
 
   public Predicate isNull() {
     return new IsNull(this);
-  }
-
-  // In list
-
-  @SafeVarargs
-  public final Predicate in(final Expression<T>... values) {
-    return new InList<T>(this, Arrays.asList(values));
-  }
-
-  @SafeVarargs
-  public final Predicate in(final T... values) {
-    List<Expression<T>> list = new ArrayList<Expression<T>>();
-    for (T t : values) {
-      list.add(BoxUtil.boxTyped(t));
-    }
-    return new InList<T>(this, list);
-  }
-
-  @SafeVarargs
-  public final Predicate notIn(final Expression<T>... values) {
-    return new NotInList<T>(this, Arrays.asList(values));
-  }
-
-  @SafeVarargs
-  public final Predicate notIn(final T... values) {
-    List<Expression<T>> list = new ArrayList<Expression<T>>();
-    for (T t : values) {
-      list.add(BoxUtil.boxTyped(t));
-    }
-    return new NotInList<T>(this, list);
   }
 
   // In subquery
@@ -390,7 +232,7 @@ public abstract class Expression<T> implements ResultSetColumn {
 
   // Rendering
 
-  protected void renderInner(final Expression<?> inner, final QueryWriter w) {
+  protected void renderInner(final Expression inner, final QueryWriter w) {
     boolean parenthesis = inner.getPrecedence() > this.precedence;
     if (parenthesis) {
       w.write("(");

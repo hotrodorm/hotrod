@@ -1,0 +1,14 @@
+package org.hotrod.runtime.livesql.expressions.analytics;
+
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFunction;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+
+public class DateTimeLag extends DateTimeFunction implements PositionalAnalyticFunction {
+
+  public DateTimeLag(final DateTimeExpression expression, final NumberExpression offset,
+      final DateTimeExpression defaultValue) {
+    super("lag", expression, offset, defaultValue);
+  }
+
+}

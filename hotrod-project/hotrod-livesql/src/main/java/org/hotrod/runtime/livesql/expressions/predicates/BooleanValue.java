@@ -3,11 +3,12 @@ package org.hotrod.runtime.livesql.expressions.predicates;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
+@Deprecated
 public class BooleanValue extends Predicate {
 
-  private Expression<Boolean> value;
+  private Predicate value;
 
-  public BooleanValue(final Expression<Boolean> value) {
+  public BooleanValue(final Predicate value) {
     super(Expression.PRECEDENCE_LITERAL);
     this.value = value;
     super.setPrecedence(value.getPrecedence());

@@ -5,27 +5,27 @@ import java.util.Arrays;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
-public class WindowFunctionOverStage<T> {
+public class WindowFunctionOverStage {
 
-  private WindowExpression<T> function;
+  private WindowExpression function;
 
-  public WindowFunctionOverStage(final WindowExpression<T> function) {
+  public WindowFunctionOverStage(final WindowExpression function) {
     this.function = function;
   }
 
   // Next stages
 
-  public WindowFunctionPartitioningStage<T> partitionBy(final Expression<?>... expressions) {
+  public WindowFunctionPartitioningStage partitionBy(final Expression... expressions) {
     this.function.setPartitionBy(Arrays.asList(expressions));
-    return new WindowFunctionPartitioningStage<T>(this.function);
+    return new WindowFunctionPartitioningStage(this.function);
   }
 
-  public WindowFunctionOrderingStage<T> orderBy(final OrderingTerm... orderingTerm) {
+  public WindowFunctionOrderingStage orderBy(final OrderingTerm... orderingTerm) {
     this.function.setOrderBy(Arrays.asList(orderingTerm));
-    return new WindowFunctionOrderingStage<T>(this.function);
+    return new WindowFunctionOrderingStage(this.function);
   }
 
-  public WindowExpression<T> end() {
+  public WindowExpression end() {
     return this.function;
   }
 

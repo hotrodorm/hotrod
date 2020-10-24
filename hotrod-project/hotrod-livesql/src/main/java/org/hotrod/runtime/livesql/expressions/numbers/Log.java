@@ -1,14 +1,13 @@
 package org.hotrod.runtime.livesql.expressions.numbers;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class Log extends BuiltInNumberFunction {
 
-  private Expression<Number> value;
-  private Expression<Number> base;
+  private NumberExpression value;
+  private NumberExpression base;
 
-  public Log(final Expression<Number> value, final Expression<Number> base) {
+  public Log(final NumberExpression value, final NumberExpression base) {
     super();
     this.value = value;
     this.base = base;

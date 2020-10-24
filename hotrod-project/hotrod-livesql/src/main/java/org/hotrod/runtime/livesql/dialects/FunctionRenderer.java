@@ -1,10 +1,12 @@
 package org.hotrod.runtime.livesql.dialects;
 
-import java.util.Date;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrodorm.hotrod.utils.Separator;
@@ -16,12 +18,12 @@ public abstract class FunctionRenderer {
 
   // General purpose functions
 
-  public <T> void coalesce(final QueryWriter w, final List<Expression<T>> values) {
+  public <T extends Expression> void coalesce(final QueryWriter w, final List<T> values) {
     this.write(w, "coalesce", values);
   }
 
-  public void groupConcat(final QueryWriter w, final boolean distinct, final Expression<String> value,
-      final List<OrderingTerm> ordering, final Expression<String> separator) {
+  public void groupConcat(final QueryWriter w, final boolean distinct, final StringExpression value,
+      final List<OrderingTerm> ordering, final StringExpression separator) {
     w.write("group_concat(");
     if (distinct) {
       w.write("distinct ");
@@ -44,11 +46,11 @@ public abstract class FunctionRenderer {
 
   // Arithmetic functions
 
-  public void power(final QueryWriter w, final Expression<Number> x, final Expression<Number> exponent) {
+  public void power(final QueryWriter w, final NumberExpression x, final NumberExpression exponent) {
     this.write(w, "power", x, exponent);
   }
 
-  public void logarithm(final QueryWriter w, final Expression<Number> x, final Expression<Number> base) {
+  public void logarithm(final QueryWriter w, final NumberExpression x, final NumberExpression base) {
     if (base == null) {
       this.write(w, "log", x);
     } else {
@@ -56,7 +58,7 @@ public abstract class FunctionRenderer {
     }
   }
 
-  public void round(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
+  public void round(final QueryWriter w, final NumberExpression x, final NumberExpression places) {
     if (places == null) {
       this.write(w, "round", x);
     } else {
@@ -64,7 +66,7 @@ public abstract class FunctionRenderer {
     }
   }
 
-  public void trunc(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
+  public void trunc(final QueryWriter w, final NumberExpression x, final NumberExpression places) {
     if (places == null) {
       this.write(w, "trunc", x);
     } else {
@@ -72,38 +74,38 @@ public abstract class FunctionRenderer {
     }
   }
 
-  public void abs(final QueryWriter w, final Expression<Number> x) {
+  public void abs(final QueryWriter w, final NumberExpression x) {
     this.write(w, "abs", x);
   }
 
-  public void signum(final QueryWriter w, final Expression<Number> x) {
+  public void signum(final QueryWriter w, final NumberExpression x) {
     this.write(w, "sign", x);
   }
 
-  public void neg(final QueryWriter w, final Expression<Number> x) {
+  public void neg(final QueryWriter w, final NumberExpression x) {
     this.write(w, "-", x);
   }
 
   // String functions
 
-  public void concat(final QueryWriter w, final List<Expression<String>> strings) {
-    this.write(w, "concat", strings);
+  public void concat(final QueryWriter w, final List<StringExpression> strings) {
+    this.write(w, "concat", strings.toArray(new StringExpression[0]));
   }
 
-  public void length(final QueryWriter w, final Expression<String> string) {
+  public void length(final QueryWriter w, final StringExpression string) {
     this.write(w, "length", string);
   }
 
-  public void lower(final QueryWriter w, final Expression<String> string) {
+  public void lower(final QueryWriter w, final StringExpression string) {
     this.write(w, "lower", string);
   }
 
-  public void upper(final QueryWriter w, final Expression<String> string) {
+  public void upper(final QueryWriter w, final StringExpression string) {
     this.write(w, "upper", string);
   }
 
-  public void locate(final QueryWriter w, final Expression<String> substring, final Expression<String> string,
-      final Expression<Number> from) {
+  public void locate(final QueryWriter w, final StringExpression substring, final StringExpression string,
+      final NumberExpression from) {
     if (from == null) {
       this.write(w, "locate", substring, string);
     } else {
@@ -111,8 +113,8 @@ public abstract class FunctionRenderer {
     }
   }
 
-  public void substr(final QueryWriter w, final Expression<String> string, final Expression<Number> from,
-      final Expression<Number> length) {
+  public void substr(final QueryWriter w, final StringExpression string, final NumberExpression from,
+      final NumberExpression length) {
     if (length == null) {
       this.write(w, "substr", string, from);
     } else {
@@ -120,7 +122,7 @@ public abstract class FunctionRenderer {
     }
   }
 
-  public void trim(final QueryWriter w, final Expression<String> string) {
+  public void trim(final QueryWriter w, final StringExpression string) {
     this.write(w, "trim", string);
   }
 
@@ -138,19 +140,19 @@ public abstract class FunctionRenderer {
     w.write("current_timestamp()");
   }
 
-  public void date(final QueryWriter w, final Expression<Date> datetime) {
+  public void date(final QueryWriter w, final DateTimeExpression datetime) {
     this.write(w, "date", datetime);
   }
 
-  public void time(final QueryWriter w, final Expression<Date> datetime) {
+  public void time(final QueryWriter w, final DateTimeExpression datetime) {
     this.write(w, "time", datetime);
   }
 
-  public void dateTime(final QueryWriter w, final Expression<Date> date, final Expression<Date> time) {
+  public void dateTime(final QueryWriter w, final DateTimeExpression date, final DateTimeExpression time) {
     this.write(w, "timestamp", date, time);
   }
 
-  public void extract(final QueryWriter w, final Expression<Date> datetime, final DateTimeFieldExpression field) {
+  public void extract(final QueryWriter w, final DateTimeExpression datetime, final DateTimeFieldExpression field) {
     w.write("extract(");
     field.renderTo(w);
     w.write(" from ");
@@ -160,27 +162,27 @@ public abstract class FunctionRenderer {
 
   // Write utilities
 
-  protected void write(final QueryWriter w, final String function, final Expression<?>... expressions) {
+  protected void write(final QueryWriter w, final String function, final Expression... expressions) {
     w.write(function);
     w.write("(");
     Separator sep = new Separator();
-    for (Expression<?> expr : expressions) {
+    for (Expression expr : expressions) {
       w.write(sep.render());
       expr.renderTo(w);
     }
     w.write(")");
   }
 
-  protected <T> void write(final QueryWriter w, final String function, final List<Expression<T>> x) {
+  protected <T extends Expression> void write(final QueryWriter w, final String function, final List<T> x) {
     this.write(w, function, x, ", ");
   }
 
-  protected <T> void write(final QueryWriter w, final String function, final List<Expression<T>> x,
+  protected <T extends Expression> void write(final QueryWriter w, final String function, final List<T> x,
       final String separator) {
     w.write(function);
     w.write("(");
     Separator sep = new Separator(separator);
-    for (Expression<?> expr : x) {
+    for (Expression expr : x) {
       w.write(sep.render());
       expr.renderTo(w);
     }

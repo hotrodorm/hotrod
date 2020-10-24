@@ -15,9 +15,9 @@ import org.hotrodorm.hotrod.utils.Separator;
 public abstract class ByteArrayFunction extends ByteArrayExpression {
 
   private String name;
-  private List<Expression<?>> parameters = new ArrayList<Expression<?>>();
+  private List<Expression> parameters = new ArrayList<Expression>();
 
-  protected ByteArrayFunction(final String name, final Expression<?>... parameters) {
+  protected ByteArrayFunction(final String name, final Expression... parameters) {
     super(Expression.PRECEDENCE_FUNCTION);
     if (SUtil.isEmpty(name)) {
       throw new InvalidFunctionException("The function name cannot be empty");
@@ -27,7 +27,7 @@ public abstract class ByteArrayFunction extends ByteArrayExpression {
     this.parameters.forEach(p -> super.register(p));
   }
 
-  protected ByteArrayFunction(final String name, final List<Expression<?>> parameters) {
+  protected ByteArrayFunction(final String name, final List<Expression> parameters) {
     super(Expression.PRECEDENCE_FUNCTION);
     if (SUtil.isEmpty(name)) {
       throw new InvalidFunctionException("The function name cannot be empty");
@@ -37,7 +37,7 @@ public abstract class ByteArrayFunction extends ByteArrayExpression {
     this.parameters.forEach(p -> super.register(p));
   }
 
-  protected ByteArrayFunction(final String name, final Stream<Expression<?>> parameters) {
+  protected ByteArrayFunction(final String name, final Stream<Expression> parameters) {
     super(Expression.PRECEDENCE_FUNCTION);
     if (SUtil.isEmpty(name)) {
       throw new InvalidFunctionException("The function name cannot be empty");
@@ -52,15 +52,15 @@ public abstract class ByteArrayFunction extends ByteArrayExpression {
     w.write(this.name);
     w.write("(");
     Separator sep = new Separator();
-    for (Expression<?> p : this.parameters) {
+    for (Expression p : this.parameters) {
       w.write(sep.render());
       p.renderTo(w);
     }
     w.write(")");
   }
 
-  protected Expression<?>[] concat(final Expression<?> a, final Expression<?>... b) {
-    return Stream.concat(Stream.of(a), Stream.of(a)).toArray(Expression<?>[]::new);
+  protected Expression[] concat(final Expression a, final Expression... b) {
+    return Stream.concat(Stream.of(a), Stream.of(a)).toArray(Expression[]::new);
   }
 
 }

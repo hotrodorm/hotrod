@@ -72,7 +72,7 @@ public class QueryWriter {
     }
   }
 
-  public void write(final Expression<?> expression) {
+  public void write(final Expression expression) {
     if (expression != null) {
       expression.renderTo(this);
     }

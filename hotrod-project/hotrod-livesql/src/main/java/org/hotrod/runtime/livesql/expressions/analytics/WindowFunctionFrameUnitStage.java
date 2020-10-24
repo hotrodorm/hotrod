@@ -2,49 +2,49 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameBound;
 
-public class WindowFunctionFrameUnitStage<T> {
+public class WindowFunctionFrameUnitStage {
 
-  private WindowExpression<T> function;
+  private WindowExpression function;
 
-  public WindowFunctionFrameUnitStage(final WindowExpression<T> function) {
+  public WindowFunctionFrameUnitStage(final WindowExpression function) {
     this.function = function;
   }
 
   // Next stages
 
-  public WindowFunctionFrameBoundStage<T> unboundedPreceding() {
+  public WindowFunctionFrameBoundStage unboundedPreceding() {
     this.function.setFrameStart(FrameBound.UNBOUNDED_PRECEDING, null);
-    return new WindowFunctionFrameBoundStage<T>(this.function);
+    return new WindowFunctionFrameBoundStage(this.function);
   }
 
-  public WindowFunctionFrameBoundStage<T> preceding(final int offset) {
+  public WindowFunctionFrameBoundStage preceding(final int offset) {
     this.function.setFrameStart(FrameBound.OFFSET_PRECEDING, offset);
-    return new WindowFunctionFrameBoundStage<T>(this.function);
+    return new WindowFunctionFrameBoundStage(this.function);
   }
 
-  public WindowFunctionFrameBoundStage<T> currentRow() {
+  public WindowFunctionFrameBoundStage currentRow() {
     this.function.setFrameStart(FrameBound.CURRENT_ROW, null);
-    return new WindowFunctionFrameBoundStage<T>(this.function);
+    return new WindowFunctionFrameBoundStage(this.function);
   }
 
-  public WindowFunctionFrameStartedStage<T> betweenUnboundedPreceding() {
+  public WindowFunctionFrameStartedStage betweenUnboundedPreceding() {
     this.function.setFrameStart(FrameBound.UNBOUNDED_PRECEDING, null);
-    return new WindowFunctionFrameStartedStage<T>(this.function);
+    return new WindowFunctionFrameStartedStage(this.function);
   }
 
-  public WindowFunctionFrameStartedStage<T> betweenPreceding(final int offset) {
+  public WindowFunctionFrameStartedStage betweenPreceding(final int offset) {
     this.function.setFrameStart(FrameBound.OFFSET_PRECEDING, offset);
-    return new WindowFunctionFrameStartedStage<T>(this.function);
+    return new WindowFunctionFrameStartedStage(this.function);
   }
 
-  public WindowFunctionFrameStartedStage<T> betweenCurrentRow() {
+  public WindowFunctionFrameStartedStage betweenCurrentRow() {
     this.function.setFrameStart(FrameBound.CURRENT_ROW, null);
-    return new WindowFunctionFrameStartedStage<T>(this.function);
+    return new WindowFunctionFrameStartedStage(this.function);
   }
 
-  public WindowFunctionFrameStartedStage<T> betweenFollowing(final int offset) {
+  public WindowFunctionFrameStartedStage betweenFollowing(final int offset) {
     this.function.setFrameStart(FrameBound.OFFSET_FOLLOWING, offset);
-    return new WindowFunctionFrameStartedStage<T>(this.function);
+    return new WindowFunctionFrameStartedStage(this.function);
   }
 
 }

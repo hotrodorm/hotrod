@@ -1,9 +1,12 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
-public class DenseRank extends AnalyticFunction<Number> {
+import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberFunction;
 
-  public DenseRank() {
-    super("dense_rank", null);
+public class DenseRank extends NumberFunction implements AnalyticFunction {
+
+  public DenseRank(final Expression expression) {
+    super("dense_rank", expression);
   }
 
 }

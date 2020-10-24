@@ -1,14 +1,13 @@
 package org.hotrod.runtime.livesql.expressions.numbers;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class Power extends BuiltInNumberFunction {
 
-  private Expression<Number> value;
-  private Expression<Number> exponent;
+  private NumberExpression value;
+  private NumberExpression exponent;
 
-  public Power(final Expression<Number> value, final Expression<Number> exponent) {
+  public Power(final NumberExpression value, final NumberExpression exponent) {
     super();
     this.value = value;
     this.exponent = exponent;

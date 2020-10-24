@@ -1,15 +1,15 @@
 package org.hotrod.runtime.livesql.expressions.strings;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class Substring extends BuiltInStringFunction {
 
-  private Expression<String> string;
-  private Expression<Number> from;
-  private Expression<Number> length;
+  private StringExpression string;
+  private NumberExpression from;
+  private NumberExpression length;
 
-  public Substring(final Expression<String> string, final Expression<Number> from, final Expression<Number> length) {
+  public Substring(final StringExpression string, final NumberExpression from, final NumberExpression length) {
     super();
     this.string = string;
     this.from = from;
@@ -19,7 +19,7 @@ public class Substring extends BuiltInStringFunction {
     super.register(this.length);
   }
 
-  public Substring(final Expression<String> string, final Expression<Number> from) {
+  public Substring(final StringExpression string, final NumberExpression from) {
     super();
     this.string = string;
     this.from = from;

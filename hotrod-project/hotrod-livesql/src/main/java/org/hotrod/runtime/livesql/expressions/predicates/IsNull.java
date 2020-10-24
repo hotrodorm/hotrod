@@ -5,9 +5,9 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class IsNull extends Predicate {
 
-  private Expression<?> a;
+  private Expression a;
 
-  public IsNull(final Expression<?> a) {
+  public IsNull(final Expression a) {
     super(Expression.PRECEDENCE_IS_NULL);
     this.a = a;
     super.register(this.a);

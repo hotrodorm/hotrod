@@ -1,11 +1,12 @@
 package org.hotrod.runtime.livesql.dialects;
 
-import java.util.Date;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
@@ -200,8 +201,8 @@ public class OracleDialect extends SQLDialect {
       // General purpose functions
 
       @Override
-      public void groupConcat(final QueryWriter w, final boolean distinct, final Expression<String> value,
-          final List<OrderingTerm> ordering, final Expression<String> separator) {
+      public void groupConcat(final QueryWriter w, final boolean distinct, final StringExpression value,
+          final List<OrderingTerm> ordering, final StringExpression separator) {
         if (distinct) {
           throw new UnsupportedLiveSQLFeatureException(
               "Oracle does not support DISTINCT on the GROUP_CONCAT() function (listagg())");
@@ -230,10 +231,10 @@ public class OracleDialect extends SQLDialect {
       // String functions
 
       @Override
-      public void concat(final QueryWriter w, final List<Expression<String>> strings) {
+      public void concat(final QueryWriter w, final List<StringExpression> strings) {
         w.write("(");
         Separator sep = new Separator(" || ");
-        for (Expression<String> s : strings) {
+        for (StringExpression s : strings) {
           w.write(sep.render());
           s.renderTo(w);
         }
@@ -241,8 +242,8 @@ public class OracleDialect extends SQLDialect {
       }
 
       @Override
-      public void locate(final QueryWriter w, final Expression<String> substring, final Expression<String> string,
-          final Expression<Number> from) {
+      public void locate(final QueryWriter w, final StringExpression substring, final StringExpression string,
+          final NumberExpression from) {
         if (from == null) {
           this.write(w, "instr", string, substring);
         } else {
@@ -268,21 +269,21 @@ public class OracleDialect extends SQLDialect {
       }
 
       @Override
-      public void date(final QueryWriter w, final Expression<Date> datetime) {
+      public void date(final QueryWriter w, final DateTimeExpression datetime) {
         w.write("trunc(");
         datetime.renderTo(w);
         w.write(")");
       }
 
       @Override
-      public void time(final QueryWriter w, final Expression<Date> datetime) {
+      public void time(final QueryWriter w, final DateTimeExpression datetime) {
         w.write("to_char(");
         datetime.renderTo(w);
         w.write(", 'HH24:MI:SS')");
       }
 
       @Override
-      public void dateTime(final QueryWriter w, final Expression<Date> date, final Expression<Date> time) {
+      public void dateTime(final QueryWriter w, final DateTimeExpression date, final DateTimeExpression time) {
         w.write("to_date(to_char(");
         date.renderTo(w);
         w.write(", 'yyyymmdd') || ' ' || ");

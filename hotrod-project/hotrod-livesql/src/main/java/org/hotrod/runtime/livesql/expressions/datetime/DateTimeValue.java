@@ -3,11 +3,12 @@ package org.hotrod.runtime.livesql.expressions.datetime;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
+@Deprecated
 public class DateTimeValue extends DateTimeExpression {
 
-  private Expression<java.util.Date> value;
+  private DateTimeExpression value;
 
-  public DateTimeValue(final Expression<java.util.Date> value) {
+  public DateTimeValue(final DateTimeExpression value) {
     super(Expression.PRECEDENCE_LITERAL);
     this.value = value;
     super.setPrecedence(value.getPrecedence());

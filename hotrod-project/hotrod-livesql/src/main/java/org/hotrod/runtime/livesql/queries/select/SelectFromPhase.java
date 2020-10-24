@@ -102,7 +102,7 @@ public class SelectFromPhase<R> implements ExecutableSelect<R>, CombinableSelect
     return new SelectWherePhase<R>(this.select, predicate);
   }
 
-  public SelectGroupByPhase<R> groupBy(final Expression<?>... columns) {
+  public SelectGroupByPhase<R> groupBy(final Expression... columns) {
     return new SelectGroupByPhase<R>(this.select, columns);
   }
 

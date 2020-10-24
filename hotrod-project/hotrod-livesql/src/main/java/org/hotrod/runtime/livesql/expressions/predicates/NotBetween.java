@@ -3,13 +3,13 @@ package org.hotrod.runtime.livesql.expressions.predicates;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public class NotBetween extends Predicate {
+public class NotBetween<T extends Expression> extends Predicate {
 
-  private Expression<?> value;
-  private Expression<?> from;
-  private Expression<?> to;
+  private T value;
+  private T from;
+  private T to;
 
-  public <T> NotBetween(final Expression<T> value, final Expression<T> from, final Expression<T> to) {
+  public NotBetween(final T value, final T from, final T to) {
     super(Expression.PRECEDENCE_BETWEEN);
     this.value = value;
     this.from = from;

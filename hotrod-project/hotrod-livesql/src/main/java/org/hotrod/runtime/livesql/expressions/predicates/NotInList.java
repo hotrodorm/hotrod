@@ -6,12 +6,12 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrodorm.hotrod.utils.Separator;
 
-public class NotInList<T> extends Predicate {
+public class NotInList<T extends Expression> extends Predicate {
 
-  private Expression<T> value;
-  private List<Expression<T>> expressions;
+  private T value;
+  private List<T> expressions;
 
-  public NotInList(final Expression<T> value, final List<Expression<T>> list) {
+  public NotInList(final T value, final List<T> list) {
     super(Expression.PRECEDENCE_IN);
     this.value = value;
     this.expressions = list;
@@ -24,7 +24,7 @@ public class NotInList<T> extends Predicate {
     super.renderInner(value, w);
     w.write(" not in (");
     Separator sep = new Separator();
-    for (Expression<T> e : this.expressions) {
+    for (T e : this.expressions) {
       w.write(sep.render());
       super.renderInner(e, w);
     }

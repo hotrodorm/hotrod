@@ -1,10 +1,10 @@
 package org.hotrod.runtime.livesql.dialects;
 
-import java.util.Date;
-
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
+import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -157,7 +157,7 @@ public class HyperSQLDialect extends SQLDialect {
       // Arithmetic functions
 
       @Override
-      public void logarithm(final QueryWriter w, final Expression<Number> x, final Expression<Number> base) {
+      public void logarithm(final QueryWriter w, final NumberExpression x, final NumberExpression base) {
         if (base == null) {
           this.write(w, "ln", x);
         } else {
@@ -170,7 +170,7 @@ public class HyperSQLDialect extends SQLDialect {
       }
 
       @Override
-      public void round(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
+      public void round(final QueryWriter w, final NumberExpression x, final NumberExpression places) {
         if (places == null) {
           throw new UnsupportedLiveSQLFeatureException(
               "HyperSQL requires the number of decimal places to be specified when using the ROUND() function");
@@ -181,8 +181,8 @@ public class HyperSQLDialect extends SQLDialect {
       // String functions
 
       @Override
-      public void substr(final QueryWriter w, final Expression<String> string, final Expression<Number> from,
-          final Expression<Number> length) {
+      public void substr(final QueryWriter w, final StringExpression string, final NumberExpression from,
+          final NumberExpression length) {
         if (length == null) {
           throw new UnsupportedLiveSQLFeatureException(
               "HyperSQL requires the length to be specified when using the SUBSTR() function");
@@ -209,14 +209,14 @@ public class HyperSQLDialect extends SQLDialect {
       }
 
       @Override
-      public void date(final QueryWriter w, final Expression<Date> datetime) {
+      public void date(final QueryWriter w, final DateTimeExpression datetime) {
         w.write("cast(");
         datetime.renderTo(w);
         w.write(" as date)");
       }
 
       @Override
-      public void time(final QueryWriter w, final Expression<Date> datetime) {
+      public void time(final QueryWriter w, final DateTimeExpression datetime) {
         w.write("cast(");
         datetime.renderTo(w);
         w.write(" as time)");

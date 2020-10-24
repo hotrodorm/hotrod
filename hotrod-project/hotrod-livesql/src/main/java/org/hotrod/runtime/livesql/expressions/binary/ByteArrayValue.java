@@ -3,11 +3,12 @@ package org.hotrod.runtime.livesql.expressions.binary;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
+@Deprecated
 public class ByteArrayValue extends ByteArrayExpression {
 
-  private Expression<byte[]> value;
+  private ByteArrayExpression value;
 
-  public ByteArrayValue(final Expression<byte[]> value) {
+  public ByteArrayValue(final ByteArrayExpression value) {
     super(Expression.PRECEDENCE_LITERAL);
     this.value = value;
     super.setPrecedence(value.getPrecedence());

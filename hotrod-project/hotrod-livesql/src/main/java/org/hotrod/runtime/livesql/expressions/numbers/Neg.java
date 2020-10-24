@@ -5,9 +5,9 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class Neg extends NumberExpression {
 
-  private Expression<Number> value;
+  private NumberExpression value;
 
-  public Neg(final Expression<Number> value) {
+  public Neg(final NumberExpression value) {
     super(Expression.PRECEDENCE_UNARY_MINUS);
     this.value = value;
     super.register(this.value);

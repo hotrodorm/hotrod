@@ -8,11 +8,11 @@ import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrodorm.hotrod.utils.Separator;
 
-public class Tuple extends Expression<Tuple> {
+public class TupleExpression extends Expression {
 
-  private List<Expression<?>> expressions;
+  private List<Expression> expressions;
 
-  public Tuple(final Expression<?>... expressions) {
+  public TupleExpression(final Expression... expressions) {
     super(Expression.PRECEDENCE_TUPLE);
     if (expressions == null || expressions.length == 0) {
       throw new InvalidLiveSQLClauseException("A tuple cannot be empty. Please add expressions to the tuple");
@@ -25,10 +25,10 @@ public class Tuple extends Expression<Tuple> {
   public void renderTo(final QueryWriter w) {
     w.write("(");
     Separator s = new Separator();
-    for (Expression<?> expr : this.expressions) {
+    this.expressions.forEach(e -> {
       w.write(s.render());
-      expr.renderTo(w);
-    }
+      e.renderTo(w);
+    });
     w.write(")");
   }
 

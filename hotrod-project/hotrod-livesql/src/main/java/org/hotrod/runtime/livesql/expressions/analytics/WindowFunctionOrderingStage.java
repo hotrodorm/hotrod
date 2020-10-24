@@ -2,32 +2,32 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameUnit;
 
-public class WindowFunctionOrderingStage<T> {
+public class WindowFunctionOrderingStage {
 
-  private WindowExpression<T> function;
+  private WindowExpression function;
 
-  public WindowFunctionOrderingStage(final WindowExpression<T> function) {
+  public WindowFunctionOrderingStage(final WindowExpression function) {
     this.function = function;
   }
 
   // Next stages
 
-  public WindowFunctionFrameUnitStage<T> rows() {
+  public WindowFunctionFrameUnitStage rows() {
     this.function.setFrameUnit(FrameUnit.ROWS);
-    return new WindowFunctionFrameUnitStage<T>(this.function);
+    return new WindowFunctionFrameUnitStage(this.function);
   }
 
-  public WindowFunctionFrameUnitStage<T> range() {
+  public WindowFunctionFrameUnitStage range() {
     this.function.setFrameUnit(FrameUnit.RANGE);
-    return new WindowFunctionFrameUnitStage<T>(this.function);
+    return new WindowFunctionFrameUnitStage(this.function);
   }
 
-  public WindowFunctionFrameUnitStage<T> groups() {
+  public WindowFunctionFrameUnitStage groups() {
     this.function.setFrameUnit(FrameUnit.GROUPS);
-    return new WindowFunctionFrameUnitStage<T>(this.function);
+    return new WindowFunctionFrameUnitStage(this.function);
   }
 
-  public WindowExpression<T> end() {
+  public WindowExpression end() {
     return this.function;
   }
 

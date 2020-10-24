@@ -24,12 +24,12 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
  *
  * @param <T> The type of the evaluated expression
  */
-public class CaseClause<T> extends Expression<T> {
+public class CaseClause<T extends Expression> extends Expression {
 
   private List<CaseWhen<T>> whens;
-  private Expression<T> elseValue;
+  private T elseValue;
 
-  public CaseClause(final Predicate predicate, final Expression<T> value) {
+  public CaseClause(final Predicate predicate, final T value) {
     super(Expression.PRECEDENCE_CASE);
     this.whens = new ArrayList<CaseWhen<T>>();
     this.whens.add(new CaseWhen<T>(predicate, value));
@@ -38,13 +38,13 @@ public class CaseClause<T> extends Expression<T> {
     super.register(value);
   }
 
-  void addWhen(final Predicate predicate, final Expression<T> value) {
+  void addWhen(final Predicate predicate, final T value) {
     this.whens.add(new CaseWhen<T>(predicate, value));
     super.register(predicate);
     super.register(value);
   }
 
-  void setElse(final Expression<T> value) {
+  void setElse(final T value) {
     this.elseValue = value;
     super.register(value);
   }
@@ -54,9 +54,9 @@ public class CaseClause<T> extends Expression<T> {
   private static class CaseWhen<T> {
 
     private Predicate predicate;
-    private Expression<T> value;
+    private T value;
 
-    public CaseWhen(final Predicate predicate, final Expression<T> value) {
+    public CaseWhen(final Predicate predicate, final T value) {
       this.predicate = predicate;
       this.value = value;
     }
@@ -67,7 +67,7 @@ public class CaseClause<T> extends Expression<T> {
       return predicate;
     }
 
-    Expression<T> getValue() {
+    T getValue() {
       return value;
     }
 

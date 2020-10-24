@@ -1,8 +1,24 @@
 package org.hotrod.runtime.livesql.expressions.numbers;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public abstract class NumberExpression extends Expression<Number> {
+import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.predicates.Between;
+import org.hotrod.runtime.livesql.expressions.predicates.Equal;
+import org.hotrod.runtime.livesql.expressions.predicates.GreaterThan;
+import org.hotrod.runtime.livesql.expressions.predicates.GreaterThanOrEqualTo;
+import org.hotrod.runtime.livesql.expressions.predicates.InList;
+import org.hotrod.runtime.livesql.expressions.predicates.LessThan;
+import org.hotrod.runtime.livesql.expressions.predicates.LessThanOrEqualTo;
+import org.hotrod.runtime.livesql.expressions.predicates.NotBetween;
+import org.hotrod.runtime.livesql.expressions.predicates.NotEqual;
+import org.hotrod.runtime.livesql.expressions.predicates.NotInList;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.util.BoxUtil;
+
+public abstract class NumberExpression extends Expression {
 
   protected NumberExpression(final int precedence) {
     super(precedence);
@@ -113,5 +129,126 @@ public abstract class NumberExpression extends Expression<Number> {
   public NumberExpression signum() {
     return new Signum(this);
   }
+
+  // TODO: implement in subclasses
+
+  // Scalar comparisons
+
+  // Equal
+
+  public Predicate eq(final NumberExpression e) {
+    return new Equal(this, e);
+  }
+
+  public Predicate eq(final Number value) {
+    return new Equal(this, BoxUtil.box(value));
+  }
+
+  // Not Equal
+
+  public Predicate ne(final NumberExpression e) {
+    return new NotEqual(this, e);
+  }
+
+  public Predicate ne(final Number value) {
+    return new NotEqual(this, BoxUtil.box(value));
+  }
+
+  // Greater Than
+
+  public Predicate gt(final NumberExpression e) {
+    return new GreaterThan(this, e);
+  }
+
+  public Predicate gt(final Number value) {
+    return new GreaterThan(this, BoxUtil.box(value));
+  }
+
+  // Greater Than or Equal To
+
+  public Predicate ge(final NumberExpression e) {
+    return new GreaterThanOrEqualTo(this, e);
+  }
+
+  public Predicate ge(final Number value) {
+    return new GreaterThanOrEqualTo(this, BoxUtil.box(value));
+  }
+
+  // Less Than
+
+  public Predicate lt(final NumberExpression e) {
+    return new LessThan(this, e);
+  }
+
+  public Predicate lt(final Number value) {
+    return new LessThan(this, BoxUtil.box(value));
+  }
+
+  // Less Than or Equal To
+
+  public Predicate le(final NumberExpression e) {
+    return new LessThanOrEqualTo(this, e);
+  }
+
+  public Predicate le(final Number value) {
+    return new LessThanOrEqualTo(this, BoxUtil.box(value));
+  }
+
+  // Between
+
+  public Predicate between(final NumberExpression from, final NumberExpression to) {
+    return new Between(this, from, to);
+  }
+
+  public Predicate between(final NumberExpression from, final Number to) {
+    return new Between(this, from, BoxUtil.box(to));
+  }
+
+  public Predicate between(final Number from, final NumberExpression to) {
+    return new Between(this, BoxUtil.box(from), to);
+  }
+
+  public Predicate between(final Number from, final Number to) {
+    return new Between(this, BoxUtil.box(from), BoxUtil.box(to));
+  }
+
+  // Not Between
+
+  public Predicate notBetween(final NumberExpression from, final NumberExpression to) {
+    return new NotBetween<NumberExpression>(this, from, to);
+  }
+
+  public Predicate notBetween(final NumberExpression from, final Number to) {
+    return new NotBetween<NumberExpression>(this, from, BoxUtil.box(to));
+  }
+
+  public Predicate notBetween(final Number from, final NumberExpression to) {
+    return new NotBetween<NumberExpression>(this, BoxUtil.box(from), to);
+  }
+
+  public Predicate notBetween(final Number from, Number to) {
+    return new NotBetween<NumberExpression>(this, BoxUtil.box(from), BoxUtil.box(to));
+  }
+
+  // In list
+
+  public final Predicate in(final NumberExpression... values) {
+    return new InList<NumberExpression>(this, Arrays.asList(values));
+  }
+
+  public final Predicate in(final Number... values) {
+    return new InList<NumberExpression>(this, Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
+  }
+
+  public final Predicate notIn(final NumberExpression... values) {
+    return new NotInList<NumberExpression>(this, Arrays.asList(values));
+  }
+
+  public final Predicate notIn(final Number... values) {
+    return new NotInList<NumberExpression>(this,
+        Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
+  }
+
+  // TODO: END -- implement in subclasses
 
 }

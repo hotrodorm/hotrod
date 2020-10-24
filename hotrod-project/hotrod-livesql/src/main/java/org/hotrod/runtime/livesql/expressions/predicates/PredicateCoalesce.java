@@ -8,7 +8,7 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class PredicateCoalesce extends Predicate {
 
-  private List<Expression<Boolean>> expressions;
+  private List<Predicate> expressions;
 
   public PredicateCoalesce(final Predicate... values) {
     super(Expression.PRECEDENCE_FUNCTION);

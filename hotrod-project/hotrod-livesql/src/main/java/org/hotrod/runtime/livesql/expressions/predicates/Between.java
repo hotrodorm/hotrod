@@ -5,11 +5,11 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class Between extends Predicate {
 
-  private Expression<?> value;
-  private Expression<?> from;
-  private Expression<?> to;
+  private Expression value;
+  private Expression from;
+  private Expression to;
 
-  public <T> Between(final Expression<T> value, final Expression<T> from, final Expression<T> to) {
+  public <T extends Expression> Between(final T value, final T from, final T to) {
     super(Expression.PRECEDENCE_BETWEEN);
     this.value = value;
     this.from = from;

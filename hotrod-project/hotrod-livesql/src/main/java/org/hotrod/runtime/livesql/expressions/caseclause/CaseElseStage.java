@@ -1,6 +1,8 @@
 package org.hotrod.runtime.livesql.expressions.caseclause;
 
-public class CaseElseStage<T> {
+import org.hotrod.runtime.livesql.expressions.Expression;
+
+public class CaseElseStage<T extends Expression> {
 
   private CaseClause<T> clause;
 

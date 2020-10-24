@@ -3,11 +3,12 @@ package org.hotrod.runtime.livesql.expressions.object;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
+@Deprecated
 public class ObjectValue extends ObjectExpression {
 
-  private Expression<Object> value;
+  private ObjectExpression value;
 
-  public ObjectValue(final Expression<Object> value) {
+  public ObjectValue(final ObjectExpression value) {
     super(Expression.PRECEDENCE_LITERAL);
     this.value = value;
     super.setPrecedence(value.getPrecedence());

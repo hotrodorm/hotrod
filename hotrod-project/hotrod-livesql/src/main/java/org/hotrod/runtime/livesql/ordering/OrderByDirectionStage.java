@@ -8,7 +8,7 @@ public class OrderByDirectionStage implements OrderingTerm {
 
   private OrderByProperties ordering;
 
-  public OrderByDirectionStage(final Expression<?> expression, final boolean ascending) {
+  public OrderByDirectionStage(final Expression expression, final boolean ascending) {
     this.ordering = new OrderByProperties(expression, ascending);
   }
 

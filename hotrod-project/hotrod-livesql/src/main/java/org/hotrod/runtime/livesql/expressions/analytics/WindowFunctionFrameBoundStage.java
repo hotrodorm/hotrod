@@ -2,37 +2,37 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameExclusion;
 
-public class WindowFunctionFrameBoundStage<T> {
+public class WindowFunctionFrameBoundStage {
 
-  private WindowExpression<T> function;
+  private WindowExpression function;
 
-  public WindowFunctionFrameBoundStage(final WindowExpression<T> function) {
+  public WindowFunctionFrameBoundStage(final WindowExpression function) {
     this.function = function;
   }
 
   // Next stages
 
-  public WindowFunctionFrameExcludeStage<T> excludeCurrentRow() {
+  public WindowFunctionFrameExcludeStage excludeCurrentRow() {
     this.function.setFrameExclusion(FrameExclusion.EXCLUDE_CURRENT_ROW);
-    return new WindowFunctionFrameExcludeStage<T>(this.function);
+    return new WindowFunctionFrameExcludeStage(this.function);
   }
 
-  public WindowFunctionFrameExcludeStage<T> excludeGroup() {
+  public WindowFunctionFrameExcludeStage excludeGroup() {
     this.function.setFrameExclusion(FrameExclusion.EXCLUDE_GROUP);
-    return new WindowFunctionFrameExcludeStage<T>(this.function);
+    return new WindowFunctionFrameExcludeStage(this.function);
   }
 
-  public WindowFunctionFrameExcludeStage<T> excludeTies() {
+  public WindowFunctionFrameExcludeStage excludeTies() {
     this.function.setFrameExclusion(FrameExclusion.EXCLUDE_TIES);
-    return new WindowFunctionFrameExcludeStage<T>(this.function);
+    return new WindowFunctionFrameExcludeStage(this.function);
   }
 
-  public WindowFunctionFrameExcludeStage<T> excludeNoOthers() {
+  public WindowFunctionFrameExcludeStage excludeNoOthers() {
     this.function.setFrameExclusion(FrameExclusion.EXCLUDE_NO_OTHERS);
-    return new WindowFunctionFrameExcludeStage<T>(this.function);
+    return new WindowFunctionFrameExcludeStage(this.function);
   }
 
-  public WindowExpression<T> end() {
+  public WindowExpression end() {
     return this.function;
   }
 

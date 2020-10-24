@@ -15,52 +15,70 @@ import org.hotrodorm.hotrod.utils.Separator;
 public abstract class StringFunction extends StringExpression {
 
   private String name;
-  private List<Expression<?>> parameters = new ArrayList<Expression<?>>();
+  private String qualifier;
+  protected List<Expression> parameters = new ArrayList<Expression>();
 
-  protected StringFunction(final String name, final Expression<?>... parameters) {
+  protected StringFunction(final String name, final Expression... parameters) {
     super(Expression.PRECEDENCE_FUNCTION);
     if (SUtil.isEmpty(name)) {
       throw new InvalidFunctionException("The function name cannot be empty");
     }
     this.name = name;
+    this.qualifier = null;
     this.parameters = Arrays.asList(parameters);
     this.parameters.forEach(p -> super.register(p));
   }
 
-  protected StringFunction(final String name, final List<Expression<?>> parameters) {
+  protected StringFunction(final String name, final String qualifier, final Expression... parameters) {
     super(Expression.PRECEDENCE_FUNCTION);
     if (SUtil.isEmpty(name)) {
       throw new InvalidFunctionException("The function name cannot be empty");
     }
     this.name = name;
+    this.qualifier = qualifier;
+    this.parameters = Arrays.asList(parameters);
+    this.parameters.forEach(p -> super.register(p));
+  }
+
+  protected StringFunction(final String name, final List<Expression> parameters) {
+    super(Expression.PRECEDENCE_FUNCTION);
+    if (SUtil.isEmpty(name)) {
+      throw new InvalidFunctionException("The function name cannot be empty");
+    }
+    this.name = name;
+    this.qualifier = null;
     this.parameters = parameters;
     this.parameters.forEach(p -> super.register(p));
   }
 
-  protected StringFunction(final String name, final Stream<Expression<?>> parameters) {
+  protected StringFunction(final String name, final Stream<Expression> parameters) {
     super(Expression.PRECEDENCE_FUNCTION);
     if (SUtil.isEmpty(name)) {
       throw new InvalidFunctionException("The function name cannot be empty");
     }
     this.name = name;
+    this.qualifier = null;
     this.parameters = parameters.collect(Collectors.toList());
     this.parameters.forEach(p -> super.register(p));
   }
 
   @Override
-  public final void renderTo(final QueryWriter w) {
+  public void renderTo(final QueryWriter w) {
     w.write(this.name);
     w.write("(");
+    if (this.qualifier != null) {
+      w.write(this.qualifier + " ");
+    }
     Separator sep = new Separator();
-    for (Expression<?> p : this.parameters) {
+    for (Expression p : this.parameters) {
       w.write(sep.render());
       p.renderTo(w);
     }
     w.write(")");
   }
 
-  protected Expression<?>[] concat(final Expression<?> a, final Expression<?>... b) {
-    return Stream.concat(Stream.of(a), Stream.of(a)).toArray(Expression<?>[]::new);
+  protected Expression[] concat(final Expression a, final Expression... b) {
+    return Stream.concat(Stream.of(a), Stream.of(a)).toArray(Expression[]::new);
   }
 
 }

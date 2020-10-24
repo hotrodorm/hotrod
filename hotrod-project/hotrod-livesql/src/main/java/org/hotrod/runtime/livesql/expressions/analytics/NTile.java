@@ -1,9 +1,12 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
-public class NTile extends AnalyticFunction<Number> {
+import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberFunction;
 
-  public NTile() {
-    super("ntile", null);
+public class NTile extends NumberFunction implements AnalyticFunction {
+
+  public NTile(final Expression expression) {
+    super("ntile", expression);
   }
 
 }

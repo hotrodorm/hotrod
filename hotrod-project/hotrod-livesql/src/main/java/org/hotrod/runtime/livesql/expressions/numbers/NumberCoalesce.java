@@ -8,7 +8,7 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class NumberCoalesce extends NumberExpression {
 
-  private List<Expression<Number>> expressions;
+  private List<NumberExpression> expressions;
 
   public NumberCoalesce(final NumberExpression... values) {
     super(Expression.PRECEDENCE_FUNCTION);

@@ -5,9 +5,9 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class Not extends Predicate {
 
-  private Expression<Boolean> a;
+  private Predicate a;
 
-  public Not(final Expression<Boolean> a) {
+  public Not(final Predicate a) {
     super(Expression.PRECEDENCE_NOT);
     this.a = a;
     super.register(this.a);

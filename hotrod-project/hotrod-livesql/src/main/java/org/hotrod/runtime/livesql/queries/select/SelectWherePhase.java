@@ -24,7 +24,7 @@ public class SelectWherePhase<R> implements ExecutableSelect<R>, CombinableSelec
 
   // Next stages
 
-  public SelectGroupByPhase<R> groupBy(final Expression<?>... columns) {
+  public SelectGroupByPhase<R> groupBy(final Expression... columns) {
     return new SelectGroupByPhase<R>(this.select, columns);
   }
 

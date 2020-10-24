@@ -8,7 +8,7 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class StringCoalesce extends StringExpression {
 
-  private List<Expression<String>> expressions;
+  private List<StringExpression> expressions;
 
   public StringCoalesce(final StringExpression... values) {
     super(Expression.PRECEDENCE_FUNCTION);

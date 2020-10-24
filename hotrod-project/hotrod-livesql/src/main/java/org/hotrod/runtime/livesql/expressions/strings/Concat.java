@@ -3,21 +3,20 @@ package org.hotrod.runtime.livesql.expressions.strings;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class Concat extends BuiltInStringFunction {
 
-  private List<Expression<String>> strings;
+  private List<StringExpression> strings;
 
-  public Concat(final List<Expression<String>> strings) {
+  public Concat(final List<StringExpression> strings) {
     super();
     this.strings = strings;
     this.strings.forEach(e -> super.register(e));
   }
 
   @SafeVarargs
-  public Concat(final Expression<String>... a) {
+  public Concat(final StringExpression... a) {
     super();
     this.strings = Arrays.asList(a);
   }
