@@ -1,4 +1,4 @@
-package examples.livesql;
+package app5.livesql;
 
 import java.sql.SQLException;
 import java.util.List;

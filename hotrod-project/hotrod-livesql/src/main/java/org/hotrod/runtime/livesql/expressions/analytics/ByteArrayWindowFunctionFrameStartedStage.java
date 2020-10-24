@@ -4,9 +4,9 @@ import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameBo
 
 public class ByteArrayWindowFunctionFrameStartedStage {
 
-  private WindowExpression function;
+  private ByteArrayWindowExpression function;
 
-  public ByteArrayWindowFunctionFrameStartedStage(final WindowExpression function) {
+  public ByteArrayWindowFunctionFrameStartedStage(final ByteArrayWindowExpression function) {
     this.function = function;
   }
 

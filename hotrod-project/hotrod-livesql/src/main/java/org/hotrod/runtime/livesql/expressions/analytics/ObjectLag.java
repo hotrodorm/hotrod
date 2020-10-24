@@ -12,7 +12,7 @@ public class ObjectLag extends ObjectFunction implements PositionalAnalyticFunct
   }
 
   public ObjectWindowFunctionOverStage over() {
-    return new ObjectWindowFunctionOverStage(new WindowExpression(this));
+    return new ObjectWindowFunctionOverStage(new ObjectWindowExpression(this));
   }
 
 }

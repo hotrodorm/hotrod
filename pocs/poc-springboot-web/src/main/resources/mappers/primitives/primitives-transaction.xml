@@ -83,7 +83,7 @@
         and amount is null
       </if>
       <if test="p.fedBranchId != null ">
-        and fed_branch_id = #{p.fedBranchId,jdbcType=INTEGER}
+        and fed_branch_id = #{p.fedBranchId,jdbcType=BIGINT}
       </if>
       <if test="p.fedBranchId == null and p.propertiesChangeLog.fedBranchIdWasSet">
         and fed_branch_id is null
@@ -117,7 +117,7 @@
         <if test="seqId != null">, #{seqId,jdbcType=INTEGER}</if>
         <if test="true">, #{time,jdbcType=VARCHAR}</if>
         <if test="true">, #{amount,jdbcType=INTEGER}</if>
-        <if test="true">, #{fedBranchId,jdbcType=INTEGER}</if>
+        <if test="true">, #{fedBranchId,jdbcType=BIGINT}</if>
       </trim>
       )
   </insert>
@@ -129,7 +129,7 @@
       account_id = #{accountId,jdbcType=INTEGER},
       time = #{time,jdbcType=VARCHAR},
       amount = #{amount,jdbcType=INTEGER},
-      fed_branch_id = #{fedBranchId,jdbcType=INTEGER}
+      fed_branch_id = #{fedBranchId,jdbcType=BIGINT}
      where
       seq_id = #{seqId,jdbcType=INTEGER}
   </update>
@@ -151,7 +151,7 @@
       <if test="values.propertiesChangeLog.seqIdWasSet">seq_id = #{values.seqId,jdbcType=INTEGER},</if>
       <if test="values.propertiesChangeLog.timeWasSet">time = #{values.time,jdbcType=VARCHAR},</if>
       <if test="values.propertiesChangeLog.amountWasSet">amount = #{values.amount,jdbcType=INTEGER},</if>
-      <if test="values.propertiesChangeLog.fedBranchIdWasSet">fed_branch_id = #{values.fedBranchId,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.fedBranchIdWasSet">fed_branch_id = #{values.fedBranchId,jdbcType=BIGINT},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.accountId != null ">
@@ -179,7 +179,7 @@
         and amount is null
       </if>
       <if test="filter.fedBranchId != null ">
-        and fed_branch_id = #{filter.fedBranchId,jdbcType=INTEGER}
+        and fed_branch_id = #{filter.fedBranchId,jdbcType=BIGINT}
       </if>
       <if test="filter.fedBranchId == null and filter.propertiesChangeLog.fedBranchIdWasSet">
         and fed_branch_id is null
@@ -217,7 +217,7 @@
         and amount is null
       </if>
       <if test="fedBranchId != null ">
-        and fed_branch_id = #{fedBranchId,jdbcType=INTEGER}
+        and fed_branch_id = #{fedBranchId,jdbcType=BIGINT}
       </if>
       <if test="fedBranchId == null and propertiesChangeLog.fedBranchIdWasSet">
         and fed_branch_id is null

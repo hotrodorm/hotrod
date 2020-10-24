@@ -1,12 +1,13 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameUnit;
+import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
 
 public class ByteArrayWindowFunctionOrderingStage {
 
-  private WindowExpression function;
+  private ByteArrayWindowExpression function;
 
-  public ByteArrayWindowFunctionOrderingStage(final WindowExpression function) {
+  public ByteArrayWindowFunctionOrderingStage(final ByteArrayWindowExpression function) {
     this.function = function;
   }
 
@@ -27,7 +28,7 @@ public class ByteArrayWindowFunctionOrderingStage {
     return new ByteArrayWindowFunctionFrameUnitStage(this.function);
   }
 
-  public WindowExpression end() {
+  public ByteArrayExpression end() {
     return this.function;
   }
 

@@ -12,7 +12,7 @@ public class StringLag extends StringFunction implements PositionalAnalyticFunct
   }
 
   public StringWindowFunctionOverStage over() {
-    return new StringWindowFunctionOverStage(new WindowExpression(this));
+    return new StringWindowFunctionOverStage(new StringWindowExpression(this));
   }
 
 }

@@ -11,7 +11,7 @@ public class NumberLag extends NumberFunction implements PositionalAnalyticFunct
   }
 
   public NumberWindowFunctionOverStage over() {
-    return new NumberWindowFunctionOverStage(new WindowExpression(this));
+    return new NumberWindowFunctionOverStage(new NumberWindowExpression(this));
   }
 
 }

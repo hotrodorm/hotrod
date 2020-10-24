@@ -12,7 +12,7 @@ public class StringLead extends StringFunction implements PositionalAnalyticFunc
   }
 
   public StringWindowFunctionOverStage over() {
-    return new StringWindowFunctionOverStage(new WindowExpression(this));
+    return new StringWindowFunctionOverStage(new StringWindowExpression(this));
   }
 
 }

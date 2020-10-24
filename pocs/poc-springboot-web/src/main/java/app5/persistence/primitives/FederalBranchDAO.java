@@ -127,7 +127,7 @@ public class FederalBranchDAO implements Serializable, ApplicationContextAware {
 
     public List<TransactionVO> toFedBranchId(final TransactionOrderBy... orderBies) {
       TransactionVO example = new TransactionVO();
-      example.setFedBranchId(this.vo.getId());
+      example.setFedBranchId((this.vo.getId() == null) ? null : new Long(this.vo.getId().longValue()));
       return transactionDAO.selectByExample(example, orderBies);
     }
 

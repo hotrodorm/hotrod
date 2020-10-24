@@ -12,7 +12,7 @@ public class ByteArrayLag extends StringFunction implements PositionalAnalyticFu
   }
 
   public ByteArrayWindowFunctionOverStage over() {
-    return new ByteArrayWindowFunctionOverStage(new WindowExpression(this));
+    return new ByteArrayWindowFunctionOverStage(new ByteArrayWindowExpression(this));
   }
 
 }

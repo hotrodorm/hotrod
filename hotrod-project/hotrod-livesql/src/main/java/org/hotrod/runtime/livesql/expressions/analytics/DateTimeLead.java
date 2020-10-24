@@ -12,7 +12,7 @@ public class DateTimeLead extends DateTimeFunction implements PositionalAnalytic
   }
 
   public DateTimeWindowFunctionOverStage over() {
-    return new DateTimeWindowFunctionOverStage(new WindowExpression(this));
+    return new DateTimeWindowFunctionOverStage(new DateTimeWindowExpression(this));
   }
 
 }

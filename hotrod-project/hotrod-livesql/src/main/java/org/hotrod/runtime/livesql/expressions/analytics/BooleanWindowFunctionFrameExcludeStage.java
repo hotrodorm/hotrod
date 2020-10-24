@@ -1,16 +1,18 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+
 public class BooleanWindowFunctionFrameExcludeStage {
 
-  private WindowExpression function;
+  private BooleanWindowExpression function;
 
-  public BooleanWindowFunctionFrameExcludeStage(final WindowExpression function) {
+  public BooleanWindowFunctionFrameExcludeStage(final BooleanWindowExpression function) {
     this.function = function;
   }
 
   // Next stages
 
-  public WindowExpression end() {
+  public Predicate end() {
     return this.function;
   }
 

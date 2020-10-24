@@ -11,7 +11,7 @@ public class BooleanLag extends StringFunction implements PositionalAnalyticFunc
   }
 
   public BooleanWindowFunctionOverStage over() {
-    return new BooleanWindowFunctionOverStage(new WindowExpression(this));
+    return new BooleanWindowFunctionOverStage(new BooleanWindowExpression(this));
   }
 
 }

@@ -38,7 +38,7 @@ import org.hotrodorm.hotrod.utils.Separator;
  * @param <T> The type of the evaluated expression
  */
 
-public class WindowExpression extends Expression {
+public class WindowExpression {
 
   public enum FrameUnit {
     ROWS("rows"), //
@@ -114,8 +114,7 @@ public class WindowExpression extends Expression {
 
   // Constructor
 
-  public WindowExpression(final WindowableFunction windowablefunction) {
-    super(Expression.PRECEDENCE_FUNCTION);
+  public WindowExpression(final WindowableFunction windowablefunction, final int dummy) {
     this.windowablefunction = windowablefunction;
     this.partitionBy = null;
     this.orderBy = null;
@@ -131,7 +130,6 @@ public class WindowExpression extends Expression {
 
   void setPartitionBy(final List<Expression> partitionBy) {
     this.partitionBy = partitionBy;
-    this.partitionBy.forEach(e -> super.register(e));
   }
 
   void setOrderBy(final List<OrderingTerm> orderBy) {
@@ -158,7 +156,6 @@ public class WindowExpression extends Expression {
 
   // Rendering
 
-  @Override
   public void renderTo(final QueryWriter w) {
 
     // this.windowablefunction.renderBaseTo(w);
@@ -176,7 +173,7 @@ public class WindowExpression extends Expression {
       Separator sep = new Separator();
       for (Expression expr : this.partitionBy) {
         w.write(sep.render());
-        this.renderInner(expr, w);
+        expr.renderTo(w);
       }
     }
 

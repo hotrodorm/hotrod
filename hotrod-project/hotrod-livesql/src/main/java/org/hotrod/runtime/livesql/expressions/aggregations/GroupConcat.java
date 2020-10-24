@@ -2,8 +2,8 @@ package org.hotrod.runtime.livesql.expressions.aggregations;
 
 import java.util.List;
 
+import org.hotrod.runtime.livesql.expressions.analytics.StringWindowExpression;
 import org.hotrod.runtime.livesql.expressions.analytics.StringWindowFunctionOverStage;
-import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression;
 import org.hotrod.runtime.livesql.expressions.analytics.WindowableAggregationFunction;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.expressions.strings.StringFunction;
@@ -24,7 +24,7 @@ public class GroupConcat extends StringFunction implements WindowableAggregation
   }
 
   public StringWindowFunctionOverStage over() {
-    return new StringWindowFunctionOverStage(new WindowExpression(this));
+    return new StringWindowFunctionOverStage(new StringWindowExpression(this));
   }
 
   @Override

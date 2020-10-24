@@ -3,13 +3,14 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 import java.util.Arrays;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
 public class NumberWindowFunctionOverStage {
 
-  private WindowExpression function;
+  private NumberWindowExpression function;
 
-  public NumberWindowFunctionOverStage(final WindowExpression function) {
+  public NumberWindowFunctionOverStage(final NumberWindowExpression function) {
     this.function = function;
   }
 
@@ -25,7 +26,7 @@ public class NumberWindowFunctionOverStage {
     return new NumberWindowFunctionOrderingStage(this.function);
   }
 
-  public WindowExpression end() {
+  public NumberExpression end() {
     return this.function;
   }
 

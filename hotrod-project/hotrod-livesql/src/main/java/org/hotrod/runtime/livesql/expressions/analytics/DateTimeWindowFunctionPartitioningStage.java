@@ -2,13 +2,14 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 
 import java.util.Arrays;
 
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
 public class DateTimeWindowFunctionPartitioningStage {
 
-  private WindowExpression function;
+  private DateTimeWindowExpression function;
 
-  public DateTimeWindowFunctionPartitioningStage(final WindowExpression function) {
+  public DateTimeWindowFunctionPartitioningStage(final DateTimeWindowExpression function) {
     this.function = function;
   }
 
@@ -19,7 +20,7 @@ public class DateTimeWindowFunctionPartitioningStage {
     return new DateTimeWindowFunctionOrderingStage(this.function);
   }
 
-  public WindowExpression end() {
+  public DateTimeExpression end() {
     return this.function;
   }
 

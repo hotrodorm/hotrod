@@ -11,7 +11,7 @@ public class NumberLead extends NumberFunction implements PositionalAnalyticFunc
   }
 
   public NumberWindowFunctionOverStage over() {
-    return new NumberWindowFunctionOverStage(new WindowExpression(this));
+    return new NumberWindowFunctionOverStage(new NumberWindowExpression(this));
   }
 
 }

@@ -1,16 +1,18 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
+import org.hotrod.runtime.livesql.expressions.object.ObjectExpression;
+
 public class ObjectWindowFunctionFrameExcludeStage {
 
-  private WindowExpression function;
+  private ObjectWindowExpression function;
 
-  public ObjectWindowFunctionFrameExcludeStage(final WindowExpression function) {
+  public ObjectWindowFunctionFrameExcludeStage(final ObjectWindowExpression function) {
     this.function = function;
   }
 
   // Next stages
 
-  public WindowExpression end() {
+  public ObjectExpression end() {
     return this.function;
   }
 

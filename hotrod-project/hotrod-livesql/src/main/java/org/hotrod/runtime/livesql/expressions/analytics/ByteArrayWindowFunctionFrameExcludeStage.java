@@ -1,16 +1,18 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
+import org.hotrod.runtime.livesql.expressions.binary.ByteArrayExpression;
+
 public class ByteArrayWindowFunctionFrameExcludeStage {
 
-  private WindowExpression function;
+  private ByteArrayWindowExpression function;
 
-  public ByteArrayWindowFunctionFrameExcludeStage(final WindowExpression function) {
+  public ByteArrayWindowFunctionFrameExcludeStage(final ByteArrayWindowExpression function) {
     this.function = function;
   }
 
   // Next stages
 
-  public WindowExpression end() {
+  public ByteArrayExpression end() {
     return this.function;
   }
 

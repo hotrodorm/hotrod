@@ -171,7 +171,7 @@ public class TransactionDAO implements Serializable, ApplicationContextAware {
     }
 
     public FederalBranchVO toId() {
-      return federalBranchDAO.selectByPK(this.vo.fedBranchId);
+      return federalBranchDAO.selectByPK((this.vo.fedBranchId == null) ? null : new Integer(this.vo.fedBranchId.intValue()));
     }
 
   }

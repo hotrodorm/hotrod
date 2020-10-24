@@ -2,13 +2,14 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 
 import java.util.Arrays;
 
+import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
 public class StringWindowFunctionPartitioningStage {
 
-  private WindowExpression function;
+  private StringWindowExpression function;
 
-  public StringWindowFunctionPartitioningStage(final WindowExpression function) {
+  public StringWindowFunctionPartitioningStage(final StringWindowExpression function) {
     this.function = function;
   }
 
@@ -19,7 +20,7 @@ public class StringWindowFunctionPartitioningStage {
     return new StringWindowFunctionOrderingStage(this.function);
   }
 
-  public WindowExpression end() {
+  public StringExpression end() {
     return this.function;
   }
 

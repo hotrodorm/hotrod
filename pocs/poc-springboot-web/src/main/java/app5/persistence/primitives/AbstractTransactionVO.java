@@ -15,7 +15,7 @@ public class AbstractTransactionVO implements Serializable {
   protected java.lang.Integer seqId = null;
   protected java.lang.String time = null;
   protected java.lang.Integer amount = null;
-  protected java.lang.Integer fedBranchId = null;
+  protected java.lang.Long fedBranchId = null;
 
   // getters & setters
 
@@ -55,11 +55,11 @@ public class AbstractTransactionVO implements Serializable {
     this.getPropertiesChangeLog().amountWasSet = true;
   }
 
-  public java.lang.Integer getFedBranchId() {
+  public java.lang.Long getFedBranchId() {
     return this.fedBranchId;
   }
 
-  public void setFedBranchId(final java.lang.Integer fedBranchId) {
+  public void setFedBranchId(final java.lang.Long fedBranchId) {
     this.fedBranchId = fedBranchId;
     this.getPropertiesChangeLog().fedBranchIdWasSet = true;
   }

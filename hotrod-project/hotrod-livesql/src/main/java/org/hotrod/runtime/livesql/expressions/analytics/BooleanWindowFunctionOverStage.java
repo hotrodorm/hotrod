@@ -3,13 +3,14 @@ package org.hotrod.runtime.livesql.expressions.analytics;
 import java.util.Arrays;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 
 public class BooleanWindowFunctionOverStage {
 
-  private WindowExpression function;
+  private BooleanWindowExpression function;
 
-  public BooleanWindowFunctionOverStage(final WindowExpression function) {
+  public BooleanWindowFunctionOverStage(final BooleanWindowExpression function) {
     this.function = function;
   }
 
@@ -25,7 +26,7 @@ public class BooleanWindowFunctionOverStage {
     return new BooleanWindowFunctionOrderingStage(this.function);
   }
 
-  public WindowExpression end() {
+  public Predicate end() {
     return this.function;
   }
 

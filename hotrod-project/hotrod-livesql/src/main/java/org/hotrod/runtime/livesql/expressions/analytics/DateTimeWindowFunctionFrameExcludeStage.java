@@ -1,16 +1,18 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
+
 public class DateTimeWindowFunctionFrameExcludeStage {
 
-  private WindowExpression function;
+  private DateTimeWindowExpression function;
 
-  public DateTimeWindowFunctionFrameExcludeStage(final WindowExpression function) {
+  public DateTimeWindowFunctionFrameExcludeStage(final DateTimeWindowExpression function) {
     this.function = function;
   }
 
   // Next stages
 
-  public WindowExpression end() {
+  public DateTimeExpression end() {
     return this.function;
   }
 

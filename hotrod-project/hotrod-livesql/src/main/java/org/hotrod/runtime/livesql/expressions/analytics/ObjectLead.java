@@ -12,7 +12,7 @@ public class ObjectLead extends ObjectFunction implements PositionalAnalyticFunc
   }
 
   public ObjectWindowFunctionOverStage over() {
-    return new ObjectWindowFunctionOverStage(new WindowExpression(this));
+    return new ObjectWindowFunctionOverStage(new ObjectWindowExpression(this));
   }
 
 }

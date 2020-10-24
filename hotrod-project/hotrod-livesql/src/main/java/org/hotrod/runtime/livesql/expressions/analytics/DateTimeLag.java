@@ -12,7 +12,7 @@ public class DateTimeLag extends DateTimeFunction implements PositionalAnalyticF
   }
 
   public DateTimeWindowFunctionOverStage over() {
-    return new DateTimeWindowFunctionOverStage(new WindowExpression(this));
+    return new DateTimeWindowFunctionOverStage(new DateTimeWindowExpression(this));
   }
 
 }

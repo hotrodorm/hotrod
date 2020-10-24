@@ -1,4 +1,4 @@
-package examples.livesql;
+package app5.livesql;
 
 import java.util.List;
 import java.util.Map;

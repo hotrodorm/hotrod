@@ -1,12 +1,13 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
 import org.hotrod.runtime.livesql.expressions.analytics.WindowExpression.FrameUnit;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 
 public class BooleanWindowFunctionOrderingStage {
 
-  private WindowExpression function;
+  private BooleanWindowExpression function;
 
-  public BooleanWindowFunctionOrderingStage(final WindowExpression function) {
+  public BooleanWindowFunctionOrderingStage(final BooleanWindowExpression function) {
     this.function = function;
   }
 
@@ -27,7 +28,7 @@ public class BooleanWindowFunctionOrderingStage {
     return new BooleanWindowFunctionFrameUnitStage(this.function);
   }
 
-  public WindowExpression end() {
+  public Predicate end() {
     return this.function;
   }
 
