@@ -26,24 +26,32 @@ public class LiveSQLExamples {
 
   public void runExamples() {
 
-    generalSQL.limit();
+//    generalSQL.select();
+//    generalSQL.selectFrom();
+//    generalSQL.selectDistinctFrom();
+//    generalSQL.selectColumnsFrom();
+//    generalSQL.where();
 //    generalSQL.showSQLStatement();
+//    generalSQL.groupBy();
+//    generalSQL.having();
+//    generalSQL.orderBy();
+//    generalSQL.offset();
+//    generalSQL.limit();
 //    generalSQL.caseExpressions();
 //
 //    joins.innerJoin();
 //    joins.innerJoinUsing();
 //    joins.crossJoin();
 //    joins.naturalFullOuterJoin();
-//    joins.unionJoin();
 //
 //    datatypes.filter();
 //
 //    oaf.arithmetic();
 //
 //    sbc.runSelectbyCriteria();
-//
+
 //    wf.aggregate();
-//    wf.windowFrames();
+    wf.windowFrames();
 
   }
 

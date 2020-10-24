@@ -43,7 +43,7 @@ public class GeneralSQL {
             sql.currentDate().as("performedAt"));
 
     // 2. Show the SQL statement and parameters
-    System.out.print(ps);
+    System.out.println(ps.getPreview());
     // In PostgreSQL it's rendered as:
     // --- SQL ---
     // SELECT
@@ -129,11 +129,12 @@ public class GeneralSQL {
 
     AccountTable a = AccountDAO.newTable("a");
 
-    List<Map<String, Object>> rows = sql //
+    ExecutableSelect<Map<String, Object>> st = sql //
         .select() //
         .from(a) //
-        .where(a.currentBalance.ge(150.0).and(a.active.eq(1))) //
-        .execute();
+        .where(a.currentBalance.ge(150.0).and(a.active.eq(1)));
+
+    List<Map<String, Object>> rows = st.execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);

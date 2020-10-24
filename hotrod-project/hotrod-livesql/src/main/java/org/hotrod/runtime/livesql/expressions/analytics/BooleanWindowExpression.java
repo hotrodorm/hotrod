@@ -22,6 +22,7 @@ public class BooleanWindowExpression extends Predicate {
   public BooleanWindowExpression(final WindowableFunction windowableFunction) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.windowableFunction = windowableFunction;
+    this.windowExpression = new WindowExpression();
   }
 
   // Setters

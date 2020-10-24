@@ -1,6 +1,5 @@
 package app5.livesql;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.LiveSQL;
@@ -35,7 +34,7 @@ public class SelectByCriteria {
   @Autowired
   private LiveSQL sql;
 
-  public void runSelectbyCriteria() throws SQLException {
+  public void runSelectbyCriteria() {
 
     // SELECT *
     // FROM account
@@ -53,7 +52,7 @@ public class SelectByCriteria {
 
   }
 
-  public void runSelectbyCriteriaBinary() throws SQLException {
+  public void runSelectbyCriteriaBinary() {
     byte[] searched = new byte[2];
     searched[0] = 0x31;
     searched[1] = 0x35;
@@ -65,7 +64,7 @@ public class SelectByCriteria {
     }
   }
 
-  public void runSelectbyCriteriaUUID() throws SQLException {
+  public void runSelectbyCriteriaUUID() {
     byte[] searched = new byte[2];
     searched[0] = 0x31;
     searched[1] = 0x35;
@@ -78,7 +77,7 @@ public class SelectByCriteria {
     }
   }
 
-  public void runSelectbyCriteriaIn() throws SQLException {
+  public void runSelectbyCriteriaIn() {
     AccountTable a = AccountDAO.newTable("a");
     TransactionTable t = TransactionDAO.newTable("t");
     List<AccountVO> rows = this.accountDao.selectByCriteria(a, a.id.in( //

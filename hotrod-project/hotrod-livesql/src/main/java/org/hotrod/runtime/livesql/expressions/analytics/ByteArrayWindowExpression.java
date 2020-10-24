@@ -22,6 +22,7 @@ public class ByteArrayWindowExpression extends ByteArrayExpression {
   public ByteArrayWindowExpression(final WindowableFunction windowableFunction) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.windowableFunction = windowableFunction;
+    this.windowExpression = new WindowExpression();
   }
 
   // Setters

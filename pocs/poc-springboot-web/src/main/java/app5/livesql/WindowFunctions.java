@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -75,11 +76,14 @@ public class WindowFunctions {
 
     IslandTable i = IslandDAO.newTable("i");
 
-    List<Map<String, Object>> rows = sql //
+    SelectFromPhase<Map<String, Object>> query = sql //
         .select(i.id, i.segment, i.xStart, i.xEnd, i.height, //
             sql.max(i.xEnd).over().partitionBy(i.segment).orderBy(i.xStart.asc(), i.id.asc()).rows()
                 .betweenUnboundedPreceding().andPreceding(1).excludeNoOthers().end().as("prevEnd")) //
-        .from(i) //
+        .from(i);
+    System.out.println(query.getPreview());
+
+    List<Map<String, Object>> rows = query //
         .execute();
 
     for (Map<String, Object> r : rows) {

@@ -101,7 +101,6 @@ public class WindowExpression {
 
   // Properties
 
-  private WindowableFunction windowablefunction;
   private List<Expression> partitionBy;
   private List<OrderingTerm> orderBy;
 
@@ -114,8 +113,7 @@ public class WindowExpression {
 
   // Constructor
 
-  public WindowExpression(final WindowableFunction windowablefunction, final int dummy) {
-    this.windowablefunction = windowablefunction;
+  public WindowExpression() {
     this.partitionBy = null;
     this.orderBy = null;
     this.frameUnit = null;
@@ -157,9 +155,6 @@ public class WindowExpression {
   // Rendering
 
   public void renderTo(final QueryWriter w) {
-
-    // this.windowablefunction.renderBaseTo(w);
-    this.windowablefunction.renderTo(w);
 
     w.write(" over(");
 

@@ -22,6 +22,7 @@ public class NumberWindowExpression extends NumberExpression {
   public NumberWindowExpression(final WindowableFunction windowableFunction) {
     super(Expression.PRECEDENCE_FUNCTION);
     this.windowableFunction = windowableFunction;
+    this.windowExpression = new WindowExpression();
   }
 
   // Setters

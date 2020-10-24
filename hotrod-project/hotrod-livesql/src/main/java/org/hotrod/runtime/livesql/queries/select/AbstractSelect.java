@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -310,12 +311,16 @@ public abstract class AbstractSelect<R> extends Query {
 
   @SuppressWarnings("unchecked")
   private List<R> executeLiveSQL(final LiveSQLStructure q) {
-    return (List<R>) this.liveSQLMapper.select(q.getSQL());
+    LinkedHashMap<String, Object> parameters = q.getParameters();
+    parameters.put("sql", q.getSQL());
+    return (List<R>) this.liveSQLMapper.select(parameters);
   }
 
   @SuppressWarnings("unchecked")
   private Cursor<R> executeLiveSQLCursor(final LiveSQLStructure q) {
-    return (Cursor<R>) this.liveSQLMapper.selectCursor(q.getSQL());
+    LinkedHashMap<String, Object> parameters = q.getParameters();
+    parameters.put("sql", q.getSQL());
+    return (Cursor<R>) this.liveSQLMapper.selectCursor(parameters);
   }
 
   public String getPreview() {
