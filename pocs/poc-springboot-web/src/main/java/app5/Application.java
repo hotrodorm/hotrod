@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrodorm.hotrod.utils.Separator;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -68,8 +69,8 @@ public class Application {
 //      dao();
 //      foreignKeys();
 //      cursors();
-//      customFunctions();
-      liveSQLExamples();
+      customFunctions();
+//      liveSQLExamples();
 
       log.info("* End of example");
 
@@ -129,11 +130,22 @@ public class Application {
     log.info("sin(1): " + this.customFunctionsExamples.useSin());
     log.info("left('abcdef', 3): " + this.customFunctionsExamples.useLeft());
     log.info("format('Hello %s', 'World'): " + this.customFunctionsExamples.useFormat());
+    log.info("localtimestamp: " + this.customFunctionsExamples.useLocaltimestamp());
+    log.info("get_byte: " + renderByteArray(this.customFunctionsExamples.useSetByte()));
   }
 
   private void liveSQLExamples() {
     this.liveSQLExamples.runExamples();
+  }
 
+  private String renderByteArray(final byte[] a) {
+    StringBuilder sb = new StringBuilder("{");
+    Separator sep = new Separator(", ");
+    for (byte b : a) {
+      sb.append(sep.render() + b);
+    }
+    sb.append("}");
+    return sb.toString();
   }
 
 }

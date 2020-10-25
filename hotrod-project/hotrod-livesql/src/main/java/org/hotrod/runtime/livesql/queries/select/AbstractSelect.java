@@ -285,8 +285,8 @@ public abstract class AbstractSelect<R> extends Query {
   public List<R> execute() {
 
     LiveSQLStructure q = this.prepareQuery();
-    if (log.isDebugEnabled()) {
-      log.debug(q.render());
+    if (log.isInfoEnabled()) {
+      log.info(q.render());
     }
 
     if (this.mapperStatement == null) {

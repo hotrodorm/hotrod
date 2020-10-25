@@ -1,5 +1,7 @@
 package app5.functions;
 
+import java.sql.Timestamp;
+
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,4 +36,14 @@ public class CustomFunctionsExamples {
     return (String) sql.select(pg.format("Hello %s", sql.val("World")).as("v")).execute().get(0).get("v");
   }
 
+  @Transactional
+  public Timestamp useLocaltimestamp() {
+    return (Timestamp) sql.select(pg.localtimestamp().as("v")).execute().get(0).get("v");
+  }
+
+  @Transactional
+  public byte[] useSetByte() {
+    byte[] data = new byte[] { 100, 101, 102 };
+    return (byte[]) sql.select(pg.set_byte(data, 1, 3).as("v")).execute().get(0).get("v");
+  }
 }

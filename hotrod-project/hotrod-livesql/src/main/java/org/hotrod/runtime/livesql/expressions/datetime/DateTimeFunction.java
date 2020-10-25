@@ -3,18 +3,18 @@ package org.hotrod.runtime.livesql.expressions.datetime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.hotrod.runtime.livesql.exceptions.InvalidFunctionException;
 import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.rendering.Renderer;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrodorm.hotrod.utils.SUtil;
-import org.hotrodorm.hotrod.utils.Separator;
 
 public abstract class DateTimeFunction extends DateTimeExpression {
 
   private String name;
+  private String qualifier;
+  private boolean includeParenthesis;
   private List<Expression> parameters = new ArrayList<Expression>();
 
   protected DateTimeFunction(final String name, final Expression... parameters) {
@@ -23,44 +23,52 @@ public abstract class DateTimeFunction extends DateTimeExpression {
       throw new InvalidFunctionException("The function name cannot be empty");
     }
     this.name = name;
+    this.qualifier = null;
+    this.includeParenthesis = true;
     this.parameters = Arrays.asList(parameters);
     this.parameters.forEach(p -> super.register(p));
   }
 
-  protected DateTimeFunction(final String name, final List<Expression> parameters) {
+  protected DateTimeFunction(final String name, final String qualifier, final Expression... parameters) {
     super(Expression.PRECEDENCE_FUNCTION);
     if (SUtil.isEmpty(name)) {
       throw new InvalidFunctionException("The function name cannot be empty");
     }
     this.name = name;
-    this.parameters = parameters;
+    this.qualifier = qualifier;
+    this.includeParenthesis = true;
+    this.parameters = Arrays.asList(parameters);
     this.parameters.forEach(p -> super.register(p));
   }
 
-  protected DateTimeFunction(final String name, final Stream<Expression> parameters) {
+  protected DateTimeFunction(final String name, final boolean includeParenthesis, final Expression... parameters) {
     super(Expression.PRECEDENCE_FUNCTION);
     if (SUtil.isEmpty(name)) {
       throw new InvalidFunctionException("The function name cannot be empty");
     }
     this.name = name;
-    this.parameters = parameters.collect(Collectors.toList());
+    this.qualifier = null;
+    this.includeParenthesis = includeParenthesis;
+    this.parameters = Arrays.asList(parameters);
+    this.parameters.forEach(p -> super.register(p));
+  }
+
+  protected DateTimeFunction(final String name, final String qualifier, final boolean includeParenthesis,
+      final Expression... parameters) {
+    super(Expression.PRECEDENCE_FUNCTION);
+    if (SUtil.isEmpty(name)) {
+      throw new InvalidFunctionException("The function name cannot be empty");
+    }
+    this.name = name;
+    this.qualifier = qualifier;
+    this.includeParenthesis = includeParenthesis;
+    this.parameters = Arrays.asList(parameters);
     this.parameters.forEach(p -> super.register(p));
   }
 
   @Override
-  public final void renderTo(final QueryWriter w) {
-    w.write(this.name);
-    w.write("(");
-    Separator sep = new Separator();
-    for (Expression p : this.parameters) {
-      w.write(sep.render());
-      p.renderTo(w);
-    }
-    w.write(")");
-  }
-
-  protected Expression[] concat(final Expression a, final Expression... b) {
-    return Stream.concat(Stream.of(a), Stream.of(a)).toArray(Expression[]::new);
+  public void renderTo(final QueryWriter w) {
+    Renderer.renderGenericFunctionTo(this.name, this.qualifier, this.includeParenthesis, this.parameters, w);
   }
 
 }
