@@ -37,7 +37,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   // Properties
 
-  private DaosTag daos = null;
+  private DaosSpringMyBatisTag daos = null;
   private MappersTag mappers = null;
   private TemplateTag template = null;
   private SelectGenerationTag selectGeneration = null;
@@ -55,8 +55,8 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   // JAXB Setters
 
-  @XmlElement
-  public void setDaos(final DaosTag daos) {
+  @XmlElement(name = "daos")
+  public void setDaos(final DaosSpringMyBatisTag daos) {
     this.daos = daos;
   }
 
@@ -137,8 +137,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   // Getters
 
-  @Override
-  public DaosTag getDaos() {
+  public DaosSpringMyBatisTag getDaos() {
     return daos;
   }
 
