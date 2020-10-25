@@ -450,7 +450,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return null;
   }
 
-  // TODO: Why is this methods used?
+  // TODO: Why is this method used?
   public EnumTag findFacetEnum(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;
@@ -463,7 +463,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return null;
   }
 
-  // TODO: Why is this methods used?
+  // TODO: Why is this method used?
   public ViewTag findFacetView(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;
@@ -476,7 +476,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return null;
   }
 
-  // TODO: Why is this methods used?
+  // TODO: Why is this method used?
   public SelectClassTag findFacetSelect(final SelectDataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;
