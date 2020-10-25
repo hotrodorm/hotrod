@@ -1,4 +1,4 @@
-package app5.controller;
+package app5.rest;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;

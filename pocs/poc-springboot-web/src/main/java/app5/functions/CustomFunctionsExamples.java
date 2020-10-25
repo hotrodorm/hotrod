@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomFunctionsExamples {
 
   @Autowired
-  PostgreSQL_12_Functions pg;
+  PostgreSQL12Functions pg;
 
   @Autowired
   private LiveSQL sql;

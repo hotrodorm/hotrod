@@ -12,7 +12,7 @@ import org.hotrod.runtime.livesql.expressions.strings.StringFunction;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PostgreSQL_12_Functions {
+public class PostgreSQL12Functions {
 
   // According to its returning type, a function can extend:
   // - NumberFunction
