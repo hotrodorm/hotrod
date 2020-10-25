@@ -18,11 +18,6 @@ public class BooleanWindowFunctionOrderingStage {
     return new BooleanWindowFunctionFrameUnitStage(this.function);
   }
 
-  public BooleanWindowFunctionFrameUnitStage range() {
-    this.function.setFrameUnit(FrameUnit.RANGE);
-    return new BooleanWindowFunctionFrameUnitStage(this.function);
-  }
-
   public BooleanWindowFunctionFrameUnitStage groups() {
     this.function.setFrameUnit(FrameUnit.GROUPS);
     return new BooleanWindowFunctionFrameUnitStage(this.function);

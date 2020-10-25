@@ -18,11 +18,6 @@ public class StringWindowFunctionOrderingStage {
     return new StringWindowFunctionFrameUnitStage(this.function);
   }
 
-  public StringWindowFunctionFrameUnitStage range() {
-    this.function.setFrameUnit(FrameUnit.RANGE);
-    return new StringWindowFunctionFrameUnitStage(this.function);
-  }
-
   public StringWindowFunctionFrameUnitStage groups() {
     this.function.setFrameUnit(FrameUnit.GROUPS);
     return new StringWindowFunctionFrameUnitStage(this.function);

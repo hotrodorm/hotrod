@@ -18,10 +18,7 @@ public class DateTimeWindowFunctionOrderingStage {
     return new DateTimeWindowFunctionFrameUnitStage(this.function);
   }
 
-  public DateTimeWindowFunctionFrameUnitStage range() {
-    this.function.setFrameUnit(FrameUnit.RANGE);
-    return new DateTimeWindowFunctionFrameUnitStage(this.function);
-  }
+  // RANGE is not yet included since the INTERVAL data type is not yet implemented
 
   public DateTimeWindowFunctionFrameUnitStage groups() {
     this.function.setFrameUnit(FrameUnit.GROUPS);

@@ -18,11 +18,6 @@ public class ByteArrayWindowFunctionOrderingStage {
     return new ByteArrayWindowFunctionFrameUnitStage(this.function);
   }
 
-  public ByteArrayWindowFunctionFrameUnitStage range() {
-    this.function.setFrameUnit(FrameUnit.RANGE);
-    return new ByteArrayWindowFunctionFrameUnitStage(this.function);
-  }
-
   public ByteArrayWindowFunctionFrameUnitStage groups() {
     this.function.setFrameUnit(FrameUnit.GROUPS);
     return new ByteArrayWindowFunctionFrameUnitStage(this.function);
