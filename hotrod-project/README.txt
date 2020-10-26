@@ -65,5 +65,6 @@ Version History
  * Full typing for CASE and OVER clauses.
  * RANGE window frame implemented for numbers (date/time are not yet supported since we don't model intervals yet).
  * Fully independent Spring MyBatis generator.
+ * REST metrics implemented (experimental).
  
  
