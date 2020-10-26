@@ -6,7 +6,7 @@ import org.hotrod.runtime.livesql.expressions.numbers.NumberFunction;
 public class SumDistinct extends NumberFunction implements NonWindowableAggregationFunction {
 
   public SumDistinct(final NumberExpression expression) {
-    super("sum", "distinct", expression);
+    super("sum(distinct #{})", expression);
   }
 
 }

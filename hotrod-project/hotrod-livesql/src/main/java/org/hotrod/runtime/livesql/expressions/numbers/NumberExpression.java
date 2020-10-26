@@ -28,12 +28,10 @@ public abstract class NumberExpression extends Expression {
 
   public NumberExpression coalesce(final NumberExpression a) {
     return new NumberCoalesce(this, a);
-    // NumberExpression[] values = AUtil.concat(this, a);
-    // return new NumberCoalesce(values);
   }
 
   public NumberExpression coalesce(final Number a) {
-    return new NumberCoalesce(this, new NumberConstant(a));
+    return new NumberCoalesce(this, BoxUtil.box(a));
   }
 
   // Basic arithmetic
@@ -43,7 +41,7 @@ public abstract class NumberExpression extends Expression {
   }
 
   public NumberExpression plus(final Number n) {
-    return new Plus(this, new NumberConstant(n));
+    return new Plus(this, BoxUtil.box(n));
   }
 
   public NumberExpression minus(final NumberExpression n) {
@@ -51,7 +49,7 @@ public abstract class NumberExpression extends Expression {
   }
 
   public NumberExpression minus(final Number n) {
-    return new Minus(this, new NumberConstant(n));
+    return new Minus(this, BoxUtil.box(n));
   }
 
   public NumberExpression mult(final NumberExpression n) {
@@ -59,7 +57,7 @@ public abstract class NumberExpression extends Expression {
   }
 
   public NumberExpression mult(final Number n) {
-    return new Mult(this, new NumberConstant(n));
+    return new Mult(this, BoxUtil.box(n));
   }
 
   public NumberExpression div(final NumberExpression n) {
@@ -67,7 +65,7 @@ public abstract class NumberExpression extends Expression {
   }
 
   public NumberExpression div(final Number n) {
-    return new Div(this, new NumberConstant(n));
+    return new Div(this, BoxUtil.box(n));
   }
 
   public NumberExpression remainder(final NumberExpression n) {
@@ -75,7 +73,7 @@ public abstract class NumberExpression extends Expression {
   }
 
   public NumberExpression remainder(final Number n) {
-    return new Remainder(this, new NumberConstant(n));
+    return new Remainder(this, BoxUtil.box(n));
   }
 
   public NumberExpression pow(final NumberExpression exponent) {
@@ -83,7 +81,7 @@ public abstract class NumberExpression extends Expression {
   }
 
   public NumberExpression pow(final Number exponent) {
-    return new Power(this, new NumberConstant(exponent));
+    return new Power(this, BoxUtil.box(exponent));
   }
 
   public NumberExpression log(final NumberExpression base) {
@@ -95,7 +93,7 @@ public abstract class NumberExpression extends Expression {
   }
 
   public NumberExpression round() {
-    return new Round(this, new NumberConstant(0));
+    return new Round(this, BoxUtil.box(0));
   }
 
   public NumberExpression round(final NumberExpression places) {
@@ -103,11 +101,11 @@ public abstract class NumberExpression extends Expression {
   }
 
   public NumberExpression round(final Number places) {
-    return new Round(this, new NumberConstant(places));
+    return new Round(this, BoxUtil.box(places));
   }
 
   public NumberExpression trunc() {
-    return new Trunc(this, new NumberConstant(0));
+    return new Trunc(this, BoxUtil.box(0));
   }
 
   public NumberExpression trunc(final NumberExpression places) {
@@ -115,7 +113,7 @@ public abstract class NumberExpression extends Expression {
   }
 
   public NumberExpression trunc(final Number places) {
-    return new Trunc(this, new NumberConstant(places));
+    return new Trunc(this, BoxUtil.box(places));
   }
 
   public NumberExpression neg() {
@@ -129,8 +127,6 @@ public abstract class NumberExpression extends Expression {
   public NumberExpression signum() {
     return new Signum(this);
   }
-
-  // TODO: implement in subclasses
 
   // Scalar comparisons
 
@@ -248,7 +244,5 @@ public abstract class NumberExpression extends Expression {
     return new NotInList<NumberExpression>(this,
         Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
-
-  // TODO: END -- implement in subclasses
 
 }

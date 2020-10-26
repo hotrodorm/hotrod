@@ -6,9 +6,17 @@ import org.hotrod.runtime.livesql.expressions.object.ObjectFunction;
 
 public class ObjectLag extends ObjectFunction implements PositionalAnalyticFunction {
 
+  public ObjectLag(final ObjectExpression expression) {
+    super("lag(#{})", expression);
+  }
+
+  public ObjectLag(final ObjectExpression expression, final NumberExpression offset) {
+    super("lag(#{}, #{})", expression, offset);
+  }
+
   public ObjectLag(final ObjectExpression expression, final NumberExpression offset,
       final ObjectExpression defaultValue) {
-    super("lag", expression, offset, defaultValue);
+    super("lag(#{}, #{}, #{})", expression, offset, defaultValue);
   }
 
   public ObjectWindowFunctionOverStage over() {

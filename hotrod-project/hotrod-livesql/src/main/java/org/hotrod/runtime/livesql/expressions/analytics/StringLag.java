@@ -6,9 +6,17 @@ import org.hotrod.runtime.livesql.expressions.strings.StringFunction;
 
 public class StringLag extends StringFunction implements PositionalAnalyticFunction {
 
+  public StringLag(final StringExpression expression) {
+    super("lag(#{})", expression);
+  }
+
+  public StringLag(final StringExpression expression, final NumberExpression offset) {
+    super("lag(#{}, #{})", expression, offset);
+  }
+
   public StringLag(final StringExpression expression, final NumberExpression offset,
       final StringExpression defaultValue) {
-    super("lag", expression, offset, defaultValue);
+    super("lag(#{}, #{}, #{})", expression, offset, defaultValue);
   }
 
   public StringWindowFunctionOverStage over() {

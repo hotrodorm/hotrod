@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.binary.ByteArrayFunction;
 public class ByteArrayMax extends ByteArrayFunction implements WindowableAggregationFunction {
 
   public ByteArrayMax(final ByteArrayExpression expression) {
-    super("max", expression);
+    super("max(#{})", expression);
   }
 
   public ByteArrayWindowFunctionOverStage over() {

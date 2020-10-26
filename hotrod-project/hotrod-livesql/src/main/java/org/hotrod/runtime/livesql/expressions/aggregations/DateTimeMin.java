@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFunction;
 public class DateTimeMin extends DateTimeFunction implements WindowableAggregationFunction {
 
   public DateTimeMin(final DateTimeExpression expression) {
-    super("min", expression);
+    super("min(#{})", expression);
   }
 
   public DateTimeWindowFunctionOverStage over() {

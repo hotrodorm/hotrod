@@ -12,10 +12,8 @@ public class ByteArrayCoalesce extends ByteArrayExpression {
 
   public ByteArrayCoalesce(final ByteArrayExpression... values) {
     super(Expression.PRECEDENCE_FUNCTION);
-    this.expressions.addAll(Arrays.asList(values));
-    for (ByteArrayExpression e : this.expressions) {
-      super.register(e);
-    }
+    this.expressions = Arrays.asList(values);
+    this.expressions.forEach(e -> super.register(e));
   }
 
   @Override

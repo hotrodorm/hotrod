@@ -12,7 +12,7 @@ public class ObjectCoalesce extends ObjectExpression {
 
   public ObjectCoalesce(final ObjectExpression... values) {
     super(Expression.PRECEDENCE_FUNCTION);
-    this.expressions.addAll(Arrays.asList(values));
+    this.expressions = Arrays.asList(values);
     this.expressions.forEach(e -> super.register(e));
   }
 

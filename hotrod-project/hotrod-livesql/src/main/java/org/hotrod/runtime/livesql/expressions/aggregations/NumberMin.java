@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.numbers.NumberFunction;
 public class NumberMin extends NumberFunction implements WindowableAggregationFunction {
 
   public NumberMin(final NumberExpression expression) {
-    super("min", expression);
+    super("min(#{})", expression);
   }
 
   public NumberWindowFunctionOverStage over() {

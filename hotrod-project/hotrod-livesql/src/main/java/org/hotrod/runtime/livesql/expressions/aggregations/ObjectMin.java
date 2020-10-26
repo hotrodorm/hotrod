@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.object.ObjectFunction;
 public class ObjectMin extends ObjectFunction implements WindowableAggregationFunction {
 
   public ObjectMin(final ObjectExpression expression) {
-    super("min", expression);
+    super("min(#{})", expression);
   }
 
   public ObjectWindowFunctionOverStage over() {

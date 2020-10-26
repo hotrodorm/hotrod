@@ -16,11 +16,11 @@ public abstract class Predicate extends Expression {
   // Coalesce
 
   public Predicate coalesce(final Predicate a) {
-    return new PredicateCoalesce(this, a);
+    return new BooleanCoalesce(this, a);
   }
 
   public Predicate coalesce(final Boolean a) {
-    return new PredicateCoalesce(this, new BooleanConstant(a));
+    return new BooleanCoalesce(this, BoxUtil.box(a));
   }
 
   // Predicate operators
@@ -40,8 +40,6 @@ public abstract class Predicate extends Expression {
   public Predicate orNot(final Predicate p) {
     return new Or(this, new Not(p));
   }
-
-  // TODO: implement in subclasses
 
   // Scalar comparisons
 
@@ -158,7 +156,5 @@ public abstract class Predicate extends Expression {
   public final Predicate notIn(final Boolean... values) {
     return new NotInList<Predicate>(this, Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
-
-  // TODO: END -- implement in subclasses
 
 }

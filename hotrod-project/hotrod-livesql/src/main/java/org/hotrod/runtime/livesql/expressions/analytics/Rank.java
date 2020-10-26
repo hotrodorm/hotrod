@@ -6,7 +6,7 @@ import org.hotrod.runtime.livesql.expressions.numbers.NumberFunction;
 public class Rank extends NumberFunction implements AnalyticFunction {
 
   public Rank(final Expression expression) {
-    super("rank", expression);
+    super("rank(#{})", expression);
   }
 
   public NumberWindowFunctionOverStage over() {

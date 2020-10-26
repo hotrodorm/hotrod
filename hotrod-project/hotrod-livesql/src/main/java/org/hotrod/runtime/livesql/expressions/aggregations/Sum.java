@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.numbers.NumberFunction;
 public class Sum extends NumberFunction implements WindowableAggregationFunction {
 
   public Sum(final NumberExpression expression) {
-    super("sum", expression);
+    super("sum(#{})", expression);
   }
 
   public NumberWindowFunctionOverStage over() {

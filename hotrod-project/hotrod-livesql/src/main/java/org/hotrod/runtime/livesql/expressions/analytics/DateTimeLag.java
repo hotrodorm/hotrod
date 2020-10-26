@@ -6,9 +6,17 @@ import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 
 public class DateTimeLag extends DateTimeFunction implements PositionalAnalyticFunction {
 
+  public DateTimeLag(final DateTimeExpression expression) {
+    super("lag(#{})", expression);
+  }
+
+  public DateTimeLag(final DateTimeExpression expression, final NumberExpression offset) {
+    super("lag(#{}, #{})", expression, offset);
+  }
+
   public DateTimeLag(final DateTimeExpression expression, final NumberExpression offset,
       final DateTimeExpression defaultValue) {
-    super("lag", expression, offset, defaultValue);
+    super("lag(#{}, #{}, #{})", expression, offset, defaultValue);
   }
 
   public DateTimeWindowFunctionOverStage over() {

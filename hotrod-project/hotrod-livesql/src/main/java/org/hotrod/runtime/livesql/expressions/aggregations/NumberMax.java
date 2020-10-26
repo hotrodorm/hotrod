@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.numbers.NumberFunction;
 public class NumberMax extends NumberFunction implements WindowableAggregationFunction {
 
   public NumberMax(final NumberExpression expression) {
-    super("max", expression);
+    super("max(#{})", expression);
   }
 
   public NumberWindowFunctionOverStage over() {

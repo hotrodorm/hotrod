@@ -34,8 +34,6 @@ public abstract class ByteArrayExpression extends Expression {
     return new ByteArrayCoalesce(this, new ByteArrayConstant(a));
   }
 
-  // TODO: implement in subclasses
-
   // Scalar comparisons
 
   // Equal

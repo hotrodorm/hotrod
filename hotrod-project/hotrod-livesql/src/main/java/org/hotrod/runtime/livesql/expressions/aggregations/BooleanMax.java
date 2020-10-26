@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 public class BooleanMax extends BooleanFunction implements WindowableAggregationFunction {
 
   public BooleanMax(final Predicate expression) {
-    super("max", expression);
+    super("max(#{})", expression);
   }
 
   public BooleanWindowFunctionOverStage over() {

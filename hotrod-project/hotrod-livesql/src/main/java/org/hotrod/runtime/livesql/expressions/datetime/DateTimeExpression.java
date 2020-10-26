@@ -51,8 +51,6 @@ public abstract class DateTimeExpression extends Expression {
     return new Extract(this, new DateTimeFieldExpression(field));
   }
 
-  // TODO: implement in subclasses
-
   // Scalar comparisons
 
   // Equal

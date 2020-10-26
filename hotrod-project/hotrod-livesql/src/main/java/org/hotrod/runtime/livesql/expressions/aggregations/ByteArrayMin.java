@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.binary.ByteArrayFunction;
 public class ByteArrayMin extends ByteArrayFunction implements WindowableAggregationFunction {
 
   public ByteArrayMin(final ByteArrayExpression expression) {
-    super("min", expression);
+    super("min(#{})", expression);
   }
 
   public ByteArrayWindowFunctionOverStage over() {

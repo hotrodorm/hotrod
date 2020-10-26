@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.strings.StringFunction;
 public class StringMax extends StringFunction implements WindowableAggregationFunction {
 
   public StringMax(final StringExpression expression) {
-    super("max", expression);
+    super("max(#{})", expression);
   }
 
   public StringWindowFunctionOverStage over() {

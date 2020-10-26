@@ -12,7 +12,7 @@ public class DateTimeCoalesce extends DateTimeExpression {
 
   public DateTimeCoalesce(final DateTimeExpression... values) {
     super(Expression.PRECEDENCE_FUNCTION);
-    this.expressions.addAll(Arrays.asList(values));
+    this.expressions = Arrays.asList(values);
     this.expressions.forEach(e -> super.register(e));
   }
 

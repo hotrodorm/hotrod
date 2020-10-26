@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.object.ObjectFunction;
 public class ObjectMax extends ObjectFunction implements WindowableAggregationFunction {
 
   public ObjectMax(final ObjectExpression expression) {
-    super("max", expression);
+    super("max(#{})", expression);
   }
 
   public ObjectWindowFunctionOverStage over() {

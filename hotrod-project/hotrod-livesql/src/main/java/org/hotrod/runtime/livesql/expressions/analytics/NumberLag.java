@@ -5,9 +5,17 @@ import org.hotrod.runtime.livesql.expressions.numbers.NumberFunction;
 
 public class NumberLag extends NumberFunction implements PositionalAnalyticFunction {
 
+  public NumberLag(final NumberExpression expression) {
+    super("lag(#{})", expression);
+  }
+
+  public NumberLag(final NumberExpression expression, final NumberExpression offset) {
+    super("lag(#{}, #{})", expression, offset);
+  }
+
   public NumberLag(final NumberExpression expression, final NumberExpression offset,
       final NumberExpression defaultValue) {
-    super("lag", expression, offset, defaultValue);
+    super("lag(#{}, #{}, #{})", expression, offset, defaultValue);
   }
 
   public NumberWindowFunctionOverStage over() {

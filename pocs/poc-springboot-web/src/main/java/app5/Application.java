@@ -66,11 +66,11 @@ public class Application {
       log.debug("Starting DEBUG"); // should be shown
       log.info("Starting INFO"); // should be shown
 
-//      dao();
-//      foreignKeys();
-//      cursors();
+      dao();
+      foreignKeys();
+      cursors();
       customFunctions();
-//      liveSQLExamples();
+      liveSQLExamples();
 
       log.info("* End of example");
 
@@ -125,9 +125,10 @@ public class Application {
   }
 
   private void customFunctions() {
-    log.info("* Custom functions...");
+    log.info("* K Custom functions...");
     log.info("random(): " + this.customFunctionsExamples.useRandom());
     log.info("sin(1): " + this.customFunctionsExamples.useSin());
+    log.info("coalesce(): " + this.customFunctionsExamples.useCoalesce());
     log.info("left('abcdef', 3): " + this.customFunctionsExamples.useLeft());
     log.info("format('Hello %s', 'World'): " + this.customFunctionsExamples.useFormat());
     log.info("localtimestamp: " + this.customFunctionsExamples.useLocaltimestamp());

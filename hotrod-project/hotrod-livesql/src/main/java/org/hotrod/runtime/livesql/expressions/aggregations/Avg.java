@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.numbers.NumberFunction;
 public class Avg extends NumberFunction implements WindowableAggregationFunction {
 
   public Avg(final NumberExpression expression) {
-    super("avg", expression);
+    super("avg(#{})", expression);
   }
 
   public NumberWindowFunctionOverStage over() {

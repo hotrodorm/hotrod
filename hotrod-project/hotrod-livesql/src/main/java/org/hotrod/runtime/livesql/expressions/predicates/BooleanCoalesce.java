@@ -6,13 +6,13 @@ import java.util.List;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public class PredicateCoalesce extends Predicate {
+public class BooleanCoalesce extends Predicate {
 
   private List<Predicate> expressions;
 
-  public PredicateCoalesce(final Predicate... values) {
+  public BooleanCoalesce(final Predicate... values) {
     super(Expression.PRECEDENCE_FUNCTION);
-    this.expressions.addAll(Arrays.asList(values));
+    this.expressions = Arrays.asList(values);
     this.expressions.forEach(e -> super.register(e));
   }
 

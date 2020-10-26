@@ -12,14 +12,15 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class GroupConcat extends StringFunction implements WindowableAggregationFunction {
 
+  private StringExpression expression;
   private List<OrderingTerm> ordering;
   private StringExpression separator;
-  private StringExpression expression;
 
   public GroupConcat(final StringExpression expression, final List<OrderingTerm> ordering,
       final StringExpression separator) {
-    super("group_concat", expression);
+    super("<custom-rendering>");
     this.ordering = ordering;
+    this.expression = expression;
     this.separator = separator;
   }
 

@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.numbers.NumberFunction;
 public class CountValues extends NumberFunction implements WindowableAggregationFunction {
 
   public CountValues(final Expression parameter) {
-    super("count", "", parameter);
+    super("count(#{})", parameter);
   }
 
   public NumberWindowFunctionOverStage over() {

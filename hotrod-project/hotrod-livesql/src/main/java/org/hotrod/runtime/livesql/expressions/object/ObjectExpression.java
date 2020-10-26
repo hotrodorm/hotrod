@@ -31,10 +31,8 @@ public abstract class ObjectExpression extends Expression {
   }
 
   public ObjectExpression coalesce(final Object a) {
-    return new ObjectCoalesce(this, new ObjectConstant(a));
+    return new ObjectCoalesce(this, BoxUtil.box(a));
   }
-
-  // TODO: implement in subclasses
 
   // Scalar comparisons
 
@@ -152,7 +150,5 @@ public abstract class ObjectExpression extends Expression {
     return new NotInList<ObjectExpression>(this,
         Stream.of(values).map(v -> BoxUtil.box(v)).collect(Collectors.toList()));
   }
-
-  // TODO: END -- implement in subclasses
 
 }

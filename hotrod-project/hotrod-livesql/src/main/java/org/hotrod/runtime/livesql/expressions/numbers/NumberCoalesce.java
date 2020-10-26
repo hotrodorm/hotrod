@@ -12,7 +12,7 @@ public class NumberCoalesce extends NumberExpression {
 
   public NumberCoalesce(final NumberExpression... values) {
     super(Expression.PRECEDENCE_FUNCTION);
-    this.expressions.addAll(Arrays.asList(values));
+    this.expressions = Arrays.asList(values);
     this.expressions.forEach(e -> super.register(e));
   }
 

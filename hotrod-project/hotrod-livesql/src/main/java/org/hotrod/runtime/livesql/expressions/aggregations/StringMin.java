@@ -9,7 +9,7 @@ import org.hotrod.runtime.livesql.expressions.strings.StringFunction;
 public class StringMin extends StringFunction implements WindowableAggregationFunction {
 
   public StringMin(final StringExpression expression) {
-    super("min", expression);
+    super("min(#{})", expression);
   }
 
   public StringWindowFunctionOverStage over() {

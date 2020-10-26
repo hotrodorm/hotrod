@@ -27,6 +27,12 @@ public class CustomFunctionsExamples {
   }
 
   @Transactional
+  public Number useCoalesce() {
+    return (Number) sql.select(pg.coalesce(sql.val((Number) null), sql.val(12), sql.val(13)).as("v")).execute().get(0)
+        .get("v");
+  }
+
+  @Transactional
   public String useLeft() {
     return (String) sql.select(pg.left("abcdef", 3).as("v")).execute().get(0).get("v");
   }
