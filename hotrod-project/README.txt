@@ -63,7 +63,7 @@ Version History
  * Function infrastructure added, so developers can add custom database functions.
  * LiveSQL dialect can be designated at runtime using application.properties, with fallback to discovery mode.
  * Full typing for CASE and OVER clauses.
- * RANGE window frame implemented for numbers.
- * Separated Spring MyBatis generator.
+ * RANGE window frame implemented for numbers (date/time are not yet supported since we don't model intervals yet).
+ * Fully independent Spring MyBatis generator.
  
  
