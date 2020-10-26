@@ -34,7 +34,7 @@ public class CustomFunctionsExamples {
 
   @Transactional
   public String useLeft() {
-    return (String) sql.select(pg.left("abcdef", 3).as("v")).execute().get(0).get("v");
+    return (String) sql.select(pg.left("abc\"def", 3).as("v")).execute().get(0).get("v");
   }
 
   @Transactional
