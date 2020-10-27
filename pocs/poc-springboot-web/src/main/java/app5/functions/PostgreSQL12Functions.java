@@ -119,6 +119,16 @@ public class PostgreSQL12Functions {
     return Function.returnsNumber("random()");
   }
 
+  // user-defined function "addone(x)"
+  
+  public NumberFunction addone(NumberExpression x) {
+    return Function.returnsNumber("addone(#{})", x);
+  }
+
+  public NumberFunction addone(Number x) {
+    return addone(BoxUtil.box(x));
+  }
+  
   // sin(x)
 
   public NumberFunction sin(final NumberExpression x) {

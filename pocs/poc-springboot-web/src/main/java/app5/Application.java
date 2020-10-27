@@ -127,6 +127,7 @@ public class Application {
   private void customFunctions() {
     log.info("* K Custom functions...");
     log.info("random(): " + this.customFunctionsExamples.useRandom());
+    log.info("addone(): " + this.customFunctionsExamples.useAddone());
     log.info("sin(1): " + this.customFunctionsExamples.useSin());
     log.info("coalesce(): " + this.customFunctionsExamples.useCoalesce());
     log.info("left('abcdef', 3): " + this.customFunctionsExamples.useLeft());

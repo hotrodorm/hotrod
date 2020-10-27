@@ -22,6 +22,11 @@ public class CustomFunctionsExamples {
   }
 
   @Transactional
+  public Integer useAddone() {
+    return (Integer) sql.select(pg.addone(123).as("v")).execute().get(0).get("v");
+  }
+
+  @Transactional
   public double useSin() {
     return (double) sql.select(pg.sin(1).as("v")).execute().get(0).get("v");
   }
