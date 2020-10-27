@@ -59,10 +59,10 @@
 ## 3.3.4
 - Classic FK navigation can now be enabled on a per-table basis.
 - Cursors implemented for selectByExample(), selectByCriteria(), and LiveSQL.
-- Function infrastructure added, so developers can add custom database functions.
+- LiveSQL function infrastructure: developers can now add built-in and also user-defined functions to LiveSQL queries.
 - LiveSQL dialect can be designated at runtime using application.properties, with fallback to discovery mode.
-- Full typing for CASE and OVER clauses.
-- RANGE window frame implemented for numbers (date/time are not yet supported since we don't model intervals yet).
+- LiveSQL fully typed CASE and OVER clauses.
+- LiveSQL RANGE window frame implemented for numbers (date/time are not yet supported since we don't model intervals yet).
 - Fully independent Spring MyBatis generator.
 - REST metrics implemented (experimental).
  
