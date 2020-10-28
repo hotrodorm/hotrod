@@ -20,7 +20,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.generator.mybatis.DataSetLayout;
@@ -78,7 +78,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   // Select Methods meta data gathering
 
   @SuppressWarnings("unused")
-  public boolean gatherSelectsMetadataPhase1(final HotRodGenerator generator, final Connection conn1,
+  public boolean gatherSelectsMetadataPhase1(final Generator generator, final Connection conn1,
       final DataSetLayout layout) throws InvalidConfigurationFileException {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     boolean needsToRetrieveMetadata = false;

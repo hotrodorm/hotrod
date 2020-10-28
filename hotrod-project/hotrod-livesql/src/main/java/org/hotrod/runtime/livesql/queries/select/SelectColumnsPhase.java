@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
+import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -76,6 +77,11 @@ public class SelectColumnsPhase<R> implements ExecutableSelect<R>, CombinableSel
 
   public List<R> execute() {
     return this.select.execute();
+  }
+
+  @Override
+  public Cursor<R> executeCursor() {
+    return this.select.executeCursor();
   }
 
   // Validation

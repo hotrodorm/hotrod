@@ -20,7 +20,7 @@ import org.hotrod.config.dynamicsql.TrimTag;
 import org.hotrod.config.dynamicsql.WhenTag;
 import org.hotrod.config.dynamicsql.WhereTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
@@ -83,7 +83,7 @@ public class ComplementDAOTag extends DynamicSQLPart {
   // }
 
   @Override
-  public void validateAgainstDatabase(final HotRodGenerator generator) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final Generator generator) throws InvalidConfigurationFileException {
     // Nothing to do
   }
 

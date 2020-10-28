@@ -1,10 +1,9 @@
 package org.hotrod.runtime.livesql.dialects;
 
-import java.util.Date;
-
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.datetime.DateTimeExpression;
+import org.hotrod.runtime.livesql.expressions.numbers.NumberExpression;
 import org.hotrod.runtime.livesql.queries.select.CrossJoin;
 import org.hotrod.runtime.livesql.queries.select.FullOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.InnerJoin;
@@ -157,7 +156,7 @@ public class H2Dialect extends SQLDialect {
       // Arithmetic functions
 
       @Override
-      public void logarithm(final QueryWriter w, final Expression<Number> x, final Expression<Number> base) {
+      public void logarithm(final QueryWriter w, final NumberExpression x, final NumberExpression base) {
         if (base == null) {
           this.write(w, "ln", x);
         } else {
@@ -169,7 +168,7 @@ public class H2Dialect extends SQLDialect {
         }
       }
 
-      public void trunc(final QueryWriter w, final Expression<Number> x, final Expression<Number> places) {
+      public void trunc(final QueryWriter w, final NumberExpression x, final NumberExpression places) {
         if (places == null) {
           throw new UnsupportedLiveSQLFeatureException(
               "H2 requires the number of decimal places to be specified when using the TRUNC() function");
@@ -182,21 +181,21 @@ public class H2Dialect extends SQLDialect {
       // Date/Time functions
 
       @Override
-      public void date(final QueryWriter w, final Expression<Date> datetime) {
+      public void date(final QueryWriter w, final DateTimeExpression datetime) {
         w.write("cast(");
         datetime.renderTo(w);
         w.write(" as date)");
       }
 
       @Override
-      public void time(final QueryWriter w, final Expression<Date> datetime) {
+      public void time(final QueryWriter w, final DateTimeExpression datetime) {
         w.write("cast(");
         datetime.renderTo(w);
         w.write(" as time)");
       }
 
       @Override
-      public void dateTime(final QueryWriter w, final Expression<Date> date, final Expression<Date> time) {
+      public void dateTime(final QueryWriter w, final DateTimeExpression date, final DateTimeExpression time) {
         w.write("(");
         date.renderTo(w);
         w.write(" + ");

@@ -39,3 +39,16 @@
 * To produce an SQL error (for testing purposes) use:
   $ wget -nv -O- localhost:8080/product/produceerror
 
+* Get REST metrics:
+  $ wget -nv -O- localhost:8080/metrics/rest/by_highest_avg_response_time
+  $ wget -nv -O- localhost:8080/metrics/rest/by_highest_response_time
+  $ wget -nv -O- localhost:8080/metrics/rest/by_most_executed
+  $ wget -nv -O- localhost:8080/metrics/rest/by_most_recently_executed
+  $ wget -nv -O- localhost:8080/metrics/rest/by_most_errors
+  $ wget -nv -O- localhost:8080/metrics/rest/errors_by_most_recent
+
+* REST metrics examples:
+  $ wget -nv -O- localhost:8080/metrics/rest/by_highest_avg_response_time
+  > 2 exe, 0 errors, avg 58 ms, σ 2 [56-60 ms], last executed: Sun Oct 25 11:53:32 EDT 2020, last exception: never -- ProductVO app5.rest.ProductRestController.getProduct(String)
+  > 1 exe, 0 errors, avg 9 ms, σ 0 [9-9 ms], last executed: Sun Oct 25 11:53:23 EDT 2020, last exception: never -- String app5.rest.RESTMetricsRestController.getByHighestAvgResponseTime()
+

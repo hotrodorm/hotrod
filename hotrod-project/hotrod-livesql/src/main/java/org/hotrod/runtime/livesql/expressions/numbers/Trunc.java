@@ -1,38 +1,23 @@
 package org.hotrod.runtime.livesql.expressions.numbers;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
-public class Trunc extends NumericFunction {
+public class Trunc extends BuiltInNumberFunction {
 
-  private Expression<Number> value;
-  private Expression<Number> places;
+  private NumberExpression value;
+  private NumberExpression places;
 
-  public Trunc(final Expression<Number> value, final Expression<Number> places) {
+  public Trunc(final NumberExpression value, final NumberExpression places) {
     super();
     this.value = value;
     this.places = places;
+    super.register(this.value);
+    super.register(this.places);
   }
 
   @Override
   public void renderTo(final QueryWriter w) {
     w.getSqlDialect().getFunctionRenderer().trunc(w, this.value, this.places);
-  }
-
-  // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    this.value.validateTableReferences(tableReferences, ag);
-    this.places.validateTableReferences(tableReferences, ag);
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    this.value.designateAliases(ag);
-    this.places.designateAliases(ag);
   }
 
 }

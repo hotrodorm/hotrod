@@ -2,27 +2,28 @@ package org.hotrod.runtime.livesql.expressions.aggregations;
 
 import java.util.List;
 
-import org.hotrod.runtime.livesql.expressions.Expression;
+import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.expressions.strings.StringFunction;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
-public class GroupConcatDistinct extends NonWindowableAggregationFunction<String> {
+public class GroupConcatDistinct extends StringFunction implements NonWindowableAggregationFunction {
 
+  private StringExpression expression;
   private List<OrderingTerm> ordering;
-  private Expression<String> separator;
+  private StringExpression separator;
 
-  public GroupConcatDistinct(final Expression<String> expression, final List<OrderingTerm> ordering,
-      final Expression<String> separator) {
-    super("group_concat", "distinct", expression);
+  public GroupConcatDistinct(final StringExpression expression, final List<OrderingTerm> ordering,
+      final StringExpression separator) {
+    super("<custom-rendering>");
     this.ordering = ordering;
+    this.expression = expression;
     this.separator = separator;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public void renderTo(final QueryWriter w) {
-    w.getSqlDialect().getFunctionRenderer().groupConcat(w, true, (Expression<String>) super.expression, this.ordering,
-        this.separator);
+    w.getSqlDialect().getFunctionRenderer().groupConcat(w, true, this.expression, this.ordering, this.separator);
   }
 
 }

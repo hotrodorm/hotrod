@@ -23,7 +23,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
@@ -45,7 +45,7 @@ public class Expressions implements ColumnsProvider, Serializable {
   private List<ExpressionTag> expressions;
 
   protected transient ColumnsMetadataRetriever columnsRetriever;
-  private transient HotRodGenerator generator;
+  private transient Generator generator;
 
   // Constructor
 
@@ -73,7 +73,7 @@ public class Expressions implements ColumnsProvider, Serializable {
     }
   }
 
-  public void validateAgainstDatabase(final HotRodGenerator generator, final TableDataSetMetadata tableMetadata)
+  public void validateAgainstDatabase(final Generator generator, final TableDataSetMetadata tableMetadata)
       throws InvalidConfigurationFileException {
     this.generator = generator;
     this.tableMetadata = tableMetadata;

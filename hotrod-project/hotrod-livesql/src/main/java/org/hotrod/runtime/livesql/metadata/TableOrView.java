@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.metadata;
 
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
 import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 public abstract class TableOrView extends DatabaseObject {
 
@@ -16,6 +17,16 @@ public abstract class TableOrView extends DatabaseObject {
 
   public final String getAlias() {
     return this.alias != null ? this.alias : this.designatedAlias;
+  }
+
+  public String renderTree() {
+    StringBuilder sb = new StringBuilder();
+    this.renderTree(sb, 0);
+    return sb.toString();
+  }
+
+  public void renderTree(final StringBuilder sb, final int level) {
+    sb.append(SUtil.getFiller(". ", level) + "+ [table-or-view] " + this.getClass().getName() + "\n");
   }
 
   // Validation

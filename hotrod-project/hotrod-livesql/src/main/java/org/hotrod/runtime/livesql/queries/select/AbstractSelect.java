@@ -2,10 +2,14 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.ibatis.session.SqlSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
@@ -26,11 +30,13 @@ import org.hotrodorm.hotrod.utils.Separator;
 
 public abstract class AbstractSelect<R> extends Query {
 
+  private static final Logger log = LogManager.getLogger(AbstractSelect.class);
+
   private boolean distinct;
   private TableOrView baseTable = null;
   private List<Join> joins = null;
   private Predicate wherePredicate = null;
-  private List<Expression<?>> groupBy = null;
+  private List<Expression> groupBy = null;
   private Predicate havingPredicate = null;
 
   private SetOperation setOperation = null;
@@ -71,7 +77,7 @@ public abstract class AbstractSelect<R> extends Query {
     this.wherePredicate = whereCondition;
   }
 
-  void setGroupBy(final List<Expression<?>> groupBy) {
+  void setGroupBy(final List<Expression> groupBy) {
     this.groupBy = groupBy;
   }
 
@@ -197,7 +203,7 @@ public abstract class AbstractSelect<R> extends Query {
       if (this.groupBy != null && !this.groupBy.isEmpty()) {
         w.write("\nGROUP BY ");
         boolean first = true;
-        for (Expression<?> expr : this.groupBy) {
+        for (Expression expr : this.groupBy) {
           if (first) {
             first = false;
           } else {
@@ -279,16 +285,9 @@ public abstract class AbstractSelect<R> extends Query {
   public List<R> execute() {
 
     LiveSQLStructure q = this.prepareQuery();
-
-    // System.out.println("--- SQL ---");
-    // System.out.println(q.getSQL());
-    // System.out.println("--- Parameters ---");
-    // for (String name : q.getParameters().keySet()) {
-    // Object value = q.getParameters().get(name);
-    // System.out.println(" * " + name + (value == null ? "" : " (" +
-    // value.getClass().getName() + ")") + ": " + value);
-    // }
-    // System.out.println("------------------");
+    if (log.isInfoEnabled()) {
+      log.info(q.render());
+    }
 
     if (this.mapperStatement == null) {
       return executeLiveSQL(q);
@@ -298,9 +297,30 @@ public abstract class AbstractSelect<R> extends Query {
 
   }
 
+  public Cursor<R> executeCursor() {
+    LiveSQLStructure q = this.prepareQuery();
+    if (log.isDebugEnabled()) {
+      log.debug(q.render());
+    }
+    if (this.mapperStatement == null) {
+      return executeLiveSQLCursor(q);
+    } else {
+      return new MyBatisCursor<R>(this.sqlSession.selectCursor(this.mapperStatement, q.getConsolidatedParameters()));
+    }
+  }
+
   @SuppressWarnings("unchecked")
   private List<R> executeLiveSQL(final LiveSQLStructure q) {
-    return (List<R>) this.liveSQLMapper.select(q.getSQL());
+    LinkedHashMap<String, Object> parameters = q.getParameters();
+    parameters.put("sql", q.getSQL());
+    return (List<R>) this.liveSQLMapper.select(parameters);
+  }
+
+  @SuppressWarnings("unchecked")
+  private Cursor<R> executeLiveSQLCursor(final LiveSQLStructure q) {
+    LinkedHashMap<String, Object> parameters = q.getParameters();
+    parameters.put("sql", q.getSQL());
+    return (Cursor<R>) this.liveSQLMapper.selectCursor(parameters);
   }
 
   public String getPreview() {
@@ -365,19 +385,25 @@ public abstract class AbstractSelect<R> extends Query {
   }
 
   public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
+//    log.info("### obj " + System.identityHashCode(this) + " -- tableReferences=" + tableReferences.size());
     if (this.baseTable != null) {
+//      log.info(">>> Tree baseTable: " + this.baseTable.renderTree());
       this.baseTable.validateTableReferences(tableReferences, ag);
     }
+//    log.info("### obj " + System.identityHashCode(this) + " -- tableReferences=" + tableReferences.size());
     if (this.joins != null) {
       for (Join j : this.joins) {
+//        log.info(">>> Tree join: " + j.renderTree());
         j.getTable().validateTableReferences(tableReferences, ag);
       }
     }
+//    log.info("### obj " + System.identityHashCode(this) + " -- tableReferences=" + tableReferences.size());
     if (this.wherePredicate != null) {
+//      log.info(">>> Tree WHERE: " + this.wherePredicate.renderTree());
       this.wherePredicate.validateTableReferences(tableReferences, ag);
     }
     if (this.groupBy != null) {
-      for (Expression<?> e : this.groupBy) {
+      for (Expression e : this.groupBy) {
         e.validateTableReferences(tableReferences, ag);
       }
     }
@@ -402,12 +428,16 @@ public abstract class AbstractSelect<R> extends Query {
     private Set<String> aliases = new HashSet<String>();
 
     public void register(final String alias, final DatabaseObject databaseObject) {
+//      log.debug("---> registering2: " + databaseObject.renderUnescapedName());
+//      displayTableReferences();
       if (this.tableReferences.contains(databaseObject)) {
         throw new InvalidLiveSQLStatementException(
-            SUtil.upperFirst(databaseObject.getType()) + " " + databaseObject.renderUnescapedName()
+            "An instance of the " + databaseObject.getType() + " " + databaseObject.renderUnescapedName()
                 + (alias == null ? " (with no alias)" : " (with alias '" + alias + "')")
-                + " is used multiple times in the Live SQL statement. "
-                + "Every table or view can only be used once in the from() or join() methods of a Live SQL statement.");
+                + " is used multiple times in the Live SQL statement (in the FROM clause, JOIN clause, or a subquery). "
+                + "If you need to include the same " + databaseObject.getType()
+                + " multiple times in the query you can get more instances of it using the DAO method new"
+                + SUtil.upperFirst(databaseObject.getType()) + "().");
       }
       this.tableReferences.add(databaseObject);
     }
@@ -418,6 +448,18 @@ public abstract class AbstractSelect<R> extends Query {
 
     public Set<String> getAliases() {
       return aliases;
+    }
+
+//    public void displayTableReferences() {
+//      log.info("=== Existing " + this.tableReferences.size() + " refs ===");
+//      for (DatabaseObject o : this.tableReferences) {
+//        log.info("o=" + o.renderUnescapedName());
+//      }
+//      log.info("======");
+//    }
+
+    public int size() {
+      return this.tableReferences.size();
     }
 
   }
@@ -480,7 +522,7 @@ public abstract class AbstractSelect<R> extends Query {
       this.wherePredicate.designateAliases(ag);
     }
     if (this.groupBy != null) {
-      for (Expression<?> e : this.groupBy) {
+      for (Expression e : this.groupBy) {
         e.designateAliases(ag);
       }
     }

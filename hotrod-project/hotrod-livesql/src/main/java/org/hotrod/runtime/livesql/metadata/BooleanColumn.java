@@ -2,8 +2,6 @@ package org.hotrod.runtime.livesql.metadata;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class BooleanColumn extends Predicate implements Column {
@@ -45,18 +43,6 @@ public class BooleanColumn extends Predicate implements Column {
   @Override
   public void renderSimpleNameTo(final QueryWriter w) {
     w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(this.name));
-  }
-
-  // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    // nothing to do. No inner queries
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    // nothing to do. No inner queries
   }
 
   // Getters

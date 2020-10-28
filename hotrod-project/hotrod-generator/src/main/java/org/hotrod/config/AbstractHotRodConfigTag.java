@@ -27,7 +27,7 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
@@ -278,7 +278,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     this.facets.addAll(other.facets);
   }
 
-  public void validateAgainstDatabase(final HotRodGenerator generator, final Connection conn,
+  public void validateAgainstDatabase(final Generator generator, final Connection conn,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
 
     for (TableTag t : this.getFacetTables()) {
@@ -450,7 +450,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return null;
   }
 
-  // TODO: Why is this methods used?
+  // TODO: Why is this method used?
   public EnumTag findFacetEnum(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;
@@ -463,7 +463,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return null;
   }
 
-  // TODO: Why is this methods used?
+  // TODO: Why is this method used?
   public ViewTag findFacetView(final DataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;
@@ -476,7 +476,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return null;
   }
 
-  // TODO: Why is this methods used?
+  // TODO: Why is this method used?
   public SelectClassTag findFacetSelect(final SelectDataSetMetadata metadata, final DatabaseAdapter adapter) {
     if (metadata == null) {
       return null;

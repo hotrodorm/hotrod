@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="app5.persistence.primitives.transaction">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    account_id,
+    seq_id,
+    time,
+    amount,
+    fed_branch_id
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.account_id,
+    ${alias}.seq_id,
+    ${alias}.time,
+    ${alias}.amount,
+    ${alias}.fed_branch_id
+  </sql>
+
+  <resultMap id="allColumns" type="app5.persistence.TransactionVO">
+    <id property="seqId" column="seq_id" />
+    <result property="accountId" column="account_id" />
+    <result property="time" column="time" />
+    <result property="amount" column="amount" />
+    <result property="fedBranchId" column="fed_branch_id" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from transaction
+     where
+      seq_id = #{seqId,jdbcType=INTEGER}
+  </select>
+
+  <!-- select by unique indexes -->
+
+  <select id="selectByUIAccountIdTime" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from transaction
+     where
+      account_id = #{accountId,jdbcType=INTEGER}
+      and time = #{time,jdbcType=VARCHAR}
+  </select>
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from transaction
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.accountId != null ">
+        and account_id = #{p.accountId,jdbcType=INTEGER}
+      </if>
+      <if test="p.accountId == null and p.propertiesChangeLog.accountIdWasSet">
+        and account_id is null
+      </if>
+      <if test="p.seqId != null ">
+        and seq_id = #{p.seqId,jdbcType=INTEGER}
+      </if>
+      <if test="p.seqId == null and p.propertiesChangeLog.seqIdWasSet">
+        and seq_id is null
+      </if>
+      <if test="p.time != null ">
+        and time = #{p.time,jdbcType=VARCHAR}
+      </if>
+      <if test="p.time == null and p.propertiesChangeLog.timeWasSet">
+        and time is null
+      </if>
+      <if test="p.amount != null ">
+        and amount = #{p.amount,jdbcType=INTEGER}
+      </if>
+      <if test="p.amount == null and p.propertiesChangeLog.amountWasSet">
+        and amount is null
+      </if>
+      <if test="p.fedBranchId != null ">
+        and fed_branch_id = #{p.fedBranchId,jdbcType=BIGINT}
+      </if>
+      <if test="p.fedBranchId == null and p.propertiesChangeLog.fedBranchIdWasSet">
+        and fed_branch_id is null
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (does not integrate sequences, and integrates identities) -->
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="seqId" keyColumn="seq_id">
+    insert into transaction (
+      <trim prefixOverrides=", ">
+        <if test="true">, account_id</if>
+        <if test="seqId != null">, seq_id</if>
+        <if test="true">, time</if>
+        <if test="true">, amount</if>
+        <if test="true">, fed_branch_id</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{accountId,jdbcType=INTEGER}</if>
+        <if test="seqId != null">, #{seqId,jdbcType=INTEGER}</if>
+        <if test="true">, #{time,jdbcType=VARCHAR}</if>
+        <if test="true">, #{amount,jdbcType=INTEGER}</if>
+        <if test="true">, #{fedBranchId,jdbcType=BIGINT}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update transaction set
+      account_id = #{accountId,jdbcType=INTEGER},
+      time = #{time,jdbcType=VARCHAR},
+      amount = #{amount,jdbcType=INTEGER},
+      fed_branch_id = #{fedBranchId,jdbcType=BIGINT}
+     where
+      seq_id = #{seqId,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from transaction
+     where
+      seq_id = #{seqId,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update transaction
+    <set>
+      <if test="values.propertiesChangeLog.accountIdWasSet">account_id = #{values.accountId,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.seqIdWasSet">seq_id = #{values.seqId,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.timeWasSet">time = #{values.time,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.amountWasSet">amount = #{values.amount,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.fedBranchIdWasSet">fed_branch_id = #{values.fedBranchId,jdbcType=BIGINT},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.accountId != null ">
+        and account_id = #{filter.accountId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.accountId == null and filter.propertiesChangeLog.accountIdWasSet">
+        and account_id is null
+      </if>
+      <if test="filter.seqId != null ">
+        and seq_id = #{filter.seqId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.seqId == null and filter.propertiesChangeLog.seqIdWasSet">
+        and seq_id is null
+      </if>
+      <if test="filter.time != null ">
+        and time = #{filter.time,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.time == null and filter.propertiesChangeLog.timeWasSet">
+        and time is null
+      </if>
+      <if test="filter.amount != null ">
+        and amount = #{filter.amount,jdbcType=INTEGER}
+      </if>
+      <if test="filter.amount == null and filter.propertiesChangeLog.amountWasSet">
+        and amount is null
+      </if>
+      <if test="filter.fedBranchId != null ">
+        and fed_branch_id = #{filter.fedBranchId,jdbcType=BIGINT}
+      </if>
+      <if test="filter.fedBranchId == null and filter.propertiesChangeLog.fedBranchIdWasSet">
+        and fed_branch_id is null
+      </if>
+    </trim>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from transaction
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="accountId != null ">
+        and account_id = #{accountId,jdbcType=INTEGER}
+      </if>
+      <if test="accountId == null and propertiesChangeLog.accountIdWasSet">
+        and account_id is null
+      </if>
+      <if test="seqId != null ">
+        and seq_id = #{seqId,jdbcType=INTEGER}
+      </if>
+      <if test="seqId == null and propertiesChangeLog.seqIdWasSet">
+        and seq_id is null
+      </if>
+      <if test="time != null ">
+        and time = #{time,jdbcType=VARCHAR}
+      </if>
+      <if test="time == null and propertiesChangeLog.timeWasSet">
+        and time is null
+      </if>
+      <if test="amount != null ">
+        and amount = #{amount,jdbcType=INTEGER}
+      </if>
+      <if test="amount == null and propertiesChangeLog.amountWasSet">
+        and amount is null
+      </if>
+      <if test="fedBranchId != null ">
+        and fed_branch_id = #{fedBranchId,jdbcType=BIGINT}
+      </if>
+      <if test="fedBranchId == null and propertiesChangeLog.fedBranchIdWasSet">
+        and fed_branch_id is null
+      </if>
+    </trim>
+  </delete>
+
+</mapper>

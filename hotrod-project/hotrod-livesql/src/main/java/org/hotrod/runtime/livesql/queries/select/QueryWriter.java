@@ -72,7 +72,7 @@ public class QueryWriter {
     }
   }
 
-  public void write(final Expression<?> expression) {
+  public void write(final Expression expression) {
     if (expression != null) {
       expression.renderTo(this);
     }
@@ -115,6 +115,19 @@ public class QueryWriter {
       c.putAll(this.parameters);
       c.put("sql", this.sql);
       return c;
+    }
+
+    public String render() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("--- SQL ---\n");
+      sb.append(this.sql);
+      sb.append("\n--- Parameters ---\n");
+      for (String name : this.parameters.keySet()) {
+        Object value = this.getParameters().get(name);
+        sb.append(" * " + name + (value == null ? "" : " (" + value.getClass().getName() + ")") + ": " + value + "\n");
+      }
+      sb.append("------------------\n");
+      return sb.toString();
     }
 
   }

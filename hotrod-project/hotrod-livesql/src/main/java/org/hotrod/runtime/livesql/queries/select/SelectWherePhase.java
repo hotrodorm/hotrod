@@ -2,6 +2,7 @@ package org.hotrod.runtime.livesql.queries.select;
 
 import java.util.List;
 
+import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
@@ -23,7 +24,7 @@ public class SelectWherePhase<R> implements ExecutableSelect<R>, CombinableSelec
 
   // Next stages
 
-  public SelectGroupByPhase<R> groupBy(final Expression<?>... columns) {
+  public SelectGroupByPhase<R> groupBy(final Expression... columns) {
     return new SelectGroupByPhase<R>(this.select, columns);
   }
 
@@ -83,6 +84,11 @@ public class SelectWherePhase<R> implements ExecutableSelect<R>, CombinableSelec
 
   public List<R> execute() {
     return this.select.execute();
+  }
+
+  @Override
+  public Cursor<R> executeCursor() {
+    return this.select.executeCursor();
   }
 
   // Validation

@@ -5,7 +5,7 @@ import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 
 public class InSubquery extends AsymmetricOperator {
 
-  public InSubquery(final Expression<?> value, final ExecutableSelect subquery) {
+  public InSubquery(final Expression value, final ExecutableSelect<?> subquery) {
     super(value, "in", subquery);
   }
 

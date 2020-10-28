@@ -23,11 +23,11 @@ public class OrderByProperties {
 
   }
 
-  private Expression<?> expression;
+  private Expression expression;
   private boolean ascending;
   private NullsOrdering nullsOrdering;
 
-  public OrderByProperties(final Expression<?> expression, final boolean ascending) {
+  public OrderByProperties(final Expression expression, final boolean ascending) {
     if (expression == null) {
       throw new InvalidLiveSQLStatementException(
           "Cannot use null value as column ordering. " + "Please speify a non null column in the ORDER BY clause");

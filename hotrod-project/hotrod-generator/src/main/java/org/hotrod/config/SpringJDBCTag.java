@@ -13,7 +13,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.Feedback;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.hotrod.generator.springjdbc.SpringJDBCGenerator;
 import org.hotrod.utils.Compare;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -82,7 +82,7 @@ public class SpringJDBCTag extends AbstractGeneratorTag {
   // Produce Generator Instance
 
   @Override
-  public HotRodGenerator instantiateGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc,
+  public Generator instantiateGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc,
       final HotRodConfigTag config, final EnabledFKs enabledFKs, final DisplayMode displayMode,
       final boolean incrementalMode, final DatabaseAdapter adapter, final Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {

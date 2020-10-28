@@ -11,7 +11,7 @@ import java.util.LinkedHashSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.Constants;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.hotrod.runtime.BuildInformation;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.CellStyle;
@@ -36,7 +36,7 @@ public class ExportColumnsToTXTOperation extends AbstractExportColumnsOperation 
   }
 
   @Override
-  protected void exportColumns(final HotRodGenerator g) throws IOException {
+  protected void exportColumns(final Generator g) throws IOException {
     LinkedHashSet<String> nativeNames = new LinkedHashSet<>();
     g.getConfig().getTypeSolverTag().getRetrievedColumns().stream().forEach(c -> {
       if (c.getNative() != null) {

@@ -5,7 +5,7 @@ import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 
 public class EqAll extends AsymmetricOperator {
 
-  public EqAll(final Expression<?> value, final ExecutableSelect subquery) {
+  public EqAll(final Expression value, final ExecutableSelect<?> subquery) {
     super(value, "= all", subquery);
   }
 

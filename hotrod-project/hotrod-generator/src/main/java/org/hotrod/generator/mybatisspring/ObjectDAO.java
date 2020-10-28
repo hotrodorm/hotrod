@@ -45,12 +45,14 @@ import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
 import org.hotrod.metadata.SelectParameterMetadata;
 import org.hotrod.metadata.VersionControlMetadata;
+import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.exceptions.StaleDataException;
 import org.hotrod.runtime.interfaces.DaoForUpdate;
 import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.Selectable;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
+import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
 import org.hotrod.runtime.spring.LazyParentClassLoading;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.GenUtils;
@@ -124,7 +126,6 @@ public class ObjectDAO extends GeneratableObject {
 
     this.fkSelectors = compileDistinctFKs(this.metadata.getImportedFKs());
     this.efkSelectors = compileDistinctFKs(this.metadata.getExportedFKs());
-
   }
 
   // Behavior
@@ -139,6 +140,10 @@ public class ObjectDAO extends GeneratableObject {
 
   public boolean isExecutor() {
     return this.daoType == DAOType.EXECUTOR;
+  }
+
+  public boolean isClassicFKNavigationEnabled() {
+    return this.metadata.getClassicFKNavigation() != null;
   }
 
   public void generate(final FileGenerator fileGenerator, final MyBatisSpringGenerator mg)
@@ -163,11 +168,11 @@ public class ObjectDAO extends GeneratableObject {
           writeSelectByUI(mg); // done
         }
 
-        writeSelectByExampleAndOrder(); // done
+        writeSelectByExample(); // done
         writeSelectByCriteria(); // done
 
         if (this.isTable()) {
-          if (this.generator.isClassicFKNavigationEnabled()) {
+          if (this.generator.isClassicFKNavigationEnabled() || this.isClassicFKNavigationEnabled()) {
             writeSelectParentByFK(); // done
             writeSelectChildrenByFK(); // done
           }
@@ -270,7 +275,8 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("java.util.List");
     imports.newLine();
     imports.add("org.apache.ibatis.session.SqlSession");
-    imports.add("org.apache.ibatis.cursor.Cursor");
+    imports.add(Cursor.class);
+    imports.add(MyBatisCursor.class.getName());
     imports.newLine();
 
     if (this.metadata.getVersionControlMetadata() != null) {
@@ -605,7 +611,7 @@ public class ObjectDAO extends GeneratableObject {
 
   }
 
-  private void writeSelectByExampleAndOrder() throws IOException {
+  private void writeSelectByExample() throws IOException {
     println("  // select by example");
     println();
 
@@ -627,7 +633,8 @@ public class ObjectDAO extends GeneratableObject {
     println("{");
     println("    DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + "> dwo = //");
     println("        new DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + ">(example, orderBies);");
-    println("    return this.sqlSession.selectCursor(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo);");
+    println("    return new " + MyBatisCursor.class.getSimpleName() + "<" + voClassName
+        + ">(this.sqlSession.selectCursor(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo));");
     println("  }");
     println();
   }
@@ -637,10 +644,10 @@ public class ObjectDAO extends GeneratableObject {
     println();
 
     String daoClassName = this.getClassName();
-    String voClassName = this.vo.getClassName();
+//    String voClassName = this.vo.getClassName();
     String voFullClassName = this.vo.getFullClassName();
     String mapperName = this.mapper.getFullMapperIdSelectByCriteria();
-    String constructor = this.isTable() ? "newTable" : "newView";
+//    String constructor = this.isTable() ? "newTable" : "newView";
 
     // println(" public CriteriaWherePhase<" + voFullClassName + ">
     // selectByCriteria(final Predicate predicate) {");
@@ -1053,9 +1060,9 @@ public class ObjectDAO extends GeneratableObject {
 
   }
 
-  private String getChildrenSelectorClass(final ObjectVO dao) {
-    return dao.getJavaClassIdentifier() + "ChildrenSelector";
-  }
+//  private String getChildrenSelectorClass(final ObjectVO dao) {
+//    return dao.getJavaClassIdentifier() + "ChildrenSelector";
+//  }
 
   private void writeInsert() throws IOException, UnresolvableDataTypeException {
 

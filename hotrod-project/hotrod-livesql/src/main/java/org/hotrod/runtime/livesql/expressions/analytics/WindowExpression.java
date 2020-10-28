@@ -4,44 +4,41 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
-import org.hotrodorm.hotrod.utils.Separator;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrodorm.hotrod.utils.Separator;
 
 /**
  * <pre>
  * 
- *                  Expression{T}
- *                    ^       ^
- *                    |       |
- *     WindowExpression{T}   AggregationFunction{T}
- *                              ^              ^                   {I} WindowableFunction{T}         .over()
- *                              |              |                               ^  ^
- *   NonWindowableAggregationFunction{T}  WindowableAggregationFunction{T}.....:  :.....AnalyticFunction{T}
- *    ^                                    ^    ^                                          ^             ^
- *    |                                    |    |                                          |             |
- *    |            NumericAggregationFunction  StringAggregationFunction  PositionalAnalyticFunction{?}  |
- *    |                 ^                         ^                          ^                           |
- *    |- Count          |- Sum                    |- GroupConcat             |- Lead                     |- RowNumber
- *    |- CountDistinct  |- Avg                                               |- Lag                      |- Rank
- *    |- SumDistinct    |- Min                                                                           |- DenseRank
- *    |- AvgDistinct    |- Max                                                                           |- NTile
- *    |- GroupConcatDistinct
- * 
+ *        Expression
+ *            ^       
+ *            |       
+ *     WindowExpression       {I} AggregationFunction              {I} WindowableFunction
+ *                                 ^               ^                    ^              ^      
+ *                                 |               |                    |              |
+ *   {I} NonWindowableAggregationFunction   {I} WindowableAggregationFunction   {I} AnalyticFunction
+ *        ^                                       ^                                  ^           ^
+ *        |- CountDistinct       (*) : N          |- CountRows   ()  : N             |           |        
+ *        |- SumDistinct         (N) : N          |- CountValues (*) : N             |      {I} PositionalAnalyticFunction
+ *        |- AvgDistinct         (N) : N          |- Sum         (N) : N             |                        ^
+ *        |- GroupConcatDistinct (S) : S          |- Avg         (N) : N             |- RowNumber ()  : N     |- Lead (*) : *
+ *                                                |- Min         (*) : *             |- Rank      (*) : N     |- Lag  (*) : *
+ *                                                |- Max         (*) : *             |- DenseRank (*) : N
+ *                                                |- GroupConcat (S) : S             |- NTile     (*) : N
+ *
  * 
  *   SQL.sum(a.salary) -- WindowableFunction                            .over()
- *   .over() -- WindowFunctionOverStage{T}                              .partitionBy()  .orderBy()  .end()
- *   .partitionBy(expression...) -- WindowFunctionPartitioningStage{T}  .orderBy()  .end()
- *   .orderBy(expression...) -- WindowFunctionOrderingStage{T}          .end()
- *   .end() -- Expression{T}
- * 
+ *   .over() -- WindowFunctionOverStage                                 .partitionBy()  .orderBy()  .end()
+ *   .partitionBy(expression...) -- WindowFunctionPartitioningStage     .orderBy()  .end()
+ *   .orderBy(expression...) -- WindowFunctionOrderingStage             .end()
+ *   .end() -- WindowExpression
+ *
  * </pre>
  * 
  * @param <T> The type of the evaluated expression
  */
 
-public class WindowExpression<T> extends Expression<T> {
+public class WindowExpression {
 
   public enum FrameUnit {
     ROWS("rows"), //
@@ -104,8 +101,7 @@ public class WindowExpression<T> extends Expression<T> {
 
   // Properties
 
-  private WindowableFunction<T> windowablefunction;
-  private List<Expression<?>> partitionBy;
+  private List<Expression> partitionBy;
   private List<OrderingTerm> orderBy;
 
   private FrameUnit frameUnit;
@@ -117,9 +113,7 @@ public class WindowExpression<T> extends Expression<T> {
 
   // Constructor
 
-  public WindowExpression(final WindowableFunction<T> windowablefunction) {
-    super(Expression.PRECEDENCE_FUNCTION);
-    this.windowablefunction = windowablefunction;
+  public WindowExpression() {
     this.partitionBy = null;
     this.orderBy = null;
     this.frameUnit = null;
@@ -132,7 +126,7 @@ public class WindowExpression<T> extends Expression<T> {
 
   // Setters
 
-  void setPartitionBy(final List<Expression<?>> partitionBy) {
+  void setPartitionBy(final List<Expression> partitionBy) {
     this.partitionBy = partitionBy;
   }
 
@@ -160,10 +154,7 @@ public class WindowExpression<T> extends Expression<T> {
 
   // Rendering
 
-  @Override
   public void renderTo(final QueryWriter w) {
-
-    this.windowablefunction.renderBaseTo(w);
 
     w.write(" over(");
 
@@ -175,9 +166,9 @@ public class WindowExpression<T> extends Expression<T> {
     if (hasPartitionBy) {
       w.write("partition by ");
       Separator sep = new Separator();
-      for (Expression<?> expr : this.partitionBy) {
+      for (Expression expr : this.partitionBy) {
         w.write(sep.render());
-        this.renderInner(expr, w);
+        expr.renderTo(w);
       }
     }
 
@@ -214,22 +205,6 @@ public class WindowExpression<T> extends Expression<T> {
 
     w.write(")");
 
-  }
-
-  // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    for (Expression<?> e : this.partitionBy) {
-      e.validateTableReferences(tableReferences, ag);
-    }
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    for (Expression<?> e : this.partitionBy) {
-      e.designateAliases(ag);
-    }
   }
 
 }

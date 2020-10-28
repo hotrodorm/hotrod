@@ -1,9 +1,15 @@
 package org.hotrod.runtime.livesql.expressions.analytics;
 
-public class RowNumber extends AnalyticFunction<Number> {
+import org.hotrod.runtime.livesql.expressions.numbers.NumberFunction;
+
+public class RowNumber extends NumberFunction implements AnalyticFunction {
 
   public RowNumber() {
-    super("row_number", null);
+    super("row_number()");
+  }
+
+  public NumberWindowFunctionOverStage over() {
+    return new NumberWindowFunctionOverStage(new NumberWindowExpression(this));
   }
 
 }

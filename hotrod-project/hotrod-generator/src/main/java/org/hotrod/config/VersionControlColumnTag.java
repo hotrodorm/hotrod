@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.generator.HotRodGenerator;
+import org.hotrod.generator.Generator;
 import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -59,7 +59,7 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
 
   }
 
-  public void validateAgainstDatabase(final HotRodGenerator generator, final String canonicalSQLName, final JdbcTable t)
+  public void validateAgainstDatabase(final Generator generator, final String canonicalSQLName, final JdbcTable t)
       throws InvalidConfigurationFileException {
 
     this.jdbcTable = t;

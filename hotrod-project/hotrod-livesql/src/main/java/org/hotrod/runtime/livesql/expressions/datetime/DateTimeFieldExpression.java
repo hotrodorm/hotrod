@@ -1,12 +1,9 @@
 package org.hotrod.runtime.livesql.expressions.datetime;
 
 import org.hotrod.runtime.livesql.expressions.Expression;
-import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.AliasGenerator;
-import org.hotrod.runtime.livesql.queries.select.AbstractSelect.TableReferences;
 
-public class DateTimeFieldExpression extends Expression<DateTimeField> {
+public class DateTimeFieldExpression extends Expression {
 
   private DateTimeField field;
 
@@ -34,18 +31,6 @@ public class DateTimeFieldExpression extends Expression<DateTimeField> {
     WEEK, //
     DOW, //
     MILLISECOND;
-  }
-
-  // Validation
-
-  @Override
-  public void validateTableReferences(final TableReferences tableReferences, final AliasGenerator ag) {
-    // nothing to do
-  }
-
-  @Override
-  public void designateAliases(final AliasGenerator ag) {
-    // nothing to do
   }
 
 }

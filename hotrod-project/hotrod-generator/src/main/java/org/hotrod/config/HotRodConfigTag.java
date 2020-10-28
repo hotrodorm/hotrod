@@ -32,7 +32,6 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
 
   // Properties
 
-  @SuppressWarnings("unused")
   private File f;
 
   private GeneratorsTag generatorsTag = null;
