@@ -1,6 +1,6 @@
 # Creating Custom Functions
 
-LiveSQL includes the infrastructure to implement custom database functions. These can be built-in database functions, or user created functions available in the database.
+LiveSQL includes the infrastructure to add custom database functions. These can be built-in database functions, or user-defined functions available in the database.
 
 To add new functions, create a `@Component` that include methods for each function. For example:
 
@@ -16,11 +16,11 @@ To add new functions, create a `@Component` that include methods for each functi
 Then, add it to your class:
 
     @Autowired
-    PostgreSQL12Functions pg;
+    private PostgreSQL12Functions pg;
 
 And use it:
 
-    sql.select(pg.random().as("v")).execute()
+    sql.select(pg.random()).execute()
     
 To produce a result such as: `0.796045811049445`    
 
@@ -33,6 +33,7 @@ Use any of the six factory methods available in the `Function` class to create a
 - `Function.returnsByteArray(String pattern, Expression... parameters)` -- to produce a `ByteArrayFunction`
 - `Function.returnsObject(String pattern, Expression... parameters)` -- to produce a `ObjectFunction`
 
+**Note**: The `CURSOR` data type is not supported, either as an IN/OUT parameter or as a return type.
 
 # Parameters
 
@@ -46,7 +47,7 @@ The abstract function classes must receive parameters that extend `org.hotrod.ru
  - `ObjectExpression`
  - `Expression` (any expression type)
 
-If your function receives separate parameters that you need to assemble as a single array parameter while producing the function, they can be bundled together using `Function.bundle(a, b)`.
+Notice, the function factory receives either a vararg (`Expression...`) or a *single* array (`Expression[]`). If your function receives multiple separate parameters that you need to assemble as a single array parameter, you can bundle together using `Function.bundle(a, b)`.
 
 ## Parameters Boxing
 
@@ -76,7 +77,7 @@ This way, the above function can be called with an Expression as in `sin(a.angle
 
 # Function Pattern
 
-The function pattern defines the rendering details of the function. For example `sin(#{})` renders as `sin(x)` where `x` is replaced by the given parameter when executing the query. A pattern can include two types of parameters:
+The function pattern specifies the rendering details of the function. For example `sin(#{})` renders as `sin(x)` where `x` is replaced by the given parameter when executing the query. A pattern can include two types of parameters:
 
  - *Single positional parameters* as `#{}`.
  - *Varargs parameters* as `#{prefix?suffix}` or `#{firstprefix?prefix?suffix}`.
@@ -112,24 +113,34 @@ For example, if the developer created the following function in a PostgreSQL dat
     $bodytag$ language plpgsql;
     //
 
-The function could be added as:
+A class could be used to provide the function. For example:
 
-    public NumberFunction addone(NumberExpression a) {
-      return Function.returnsNumber("addone(#{})", a);
-    }
+    @Component
+    public class MyFunctions {
     
-    public NumberFunction addone(Number a) {
-      return addone(BoxUtil.box(a));
+      public NumberFunction addone(NumberExpression a) {
+        return Function.returnsNumber("addone(#{})", a);
+      }
+    
+      public NumberFunction addone(Number a) {
+        return addone(BoxUtil.box(a));
+      }
+      
     }
 
 and could be used in the LiveSQL query, as in:
 
-    sql.select(pg.addone(123)).execute()
+    @Autowired
+    private MyFunctions mf;
     
-To produce the result `124`. Of course, this assumes the function was already created in the database.
+    ...
+    
+    sql.select(mf.addone(123)).execute()
+    
+To produce the result `124`.
 
 
-     
+    
 
 
  
