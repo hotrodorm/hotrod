@@ -22,6 +22,7 @@ import jpa.spring.poc.model.RequestItemKey;
 import jpa.spring.poc.model.RequestItemRepository;
 import jpa.spring.poc.model.RequestRepository;
 
+// invoca los servicios en orden 1), 2) y 3)   ...as usual ;)
 @RestController
 @RequestMapping(value = "/jpa")
 public class RestSample {
@@ -40,10 +41,11 @@ public class RestSample {
 	@Autowired
 	private RequestItemRepository requestItemRepository;
 
-	// crea un pedido (request)
+	// 1) crea un pedido (request)
+	// Ej: http://localhost:8080/jpa/request/100
 	@RequestMapping(value = "request/{personId}", method = RequestMethod.PUT)
 	public long newRequest(@PathVariable Long personId) {
-		// find persona y artÃ­culo
+		// find persona y artículo
 		Persona p = personaRepository.findById(personId).get();
 
 //		Crea pedido (request)
@@ -57,10 +59,11 @@ public class RestSample {
 		return r.getId();
 	}
 
-	// agrega artÃ­culo a pedido
+	// 2) agrega artículo a pedido
+	// Ej: http://localhost:8080/jpa/request/1/4/333
 	@RequestMapping(value = "request/{requestId}/{articuloId}/{quantity}", method = RequestMethod.PUT)
 	public int newRequestItem(@PathVariable Long requestId, @PathVariable Long articuloId, @PathVariable int quantity) {
-		// find persona y artÃ­culo
+		// find persona y artículo
 		Articulo a = articuloRepository.findById(articuloId).get();
 
 		// Crea pedido (request)
@@ -75,7 +78,7 @@ public class RestSample {
 			item.setQuantity(item.getQuantity() + quantity);
 
 		} else {
-			// Agrega artÃ­culo a pedido
+			// Agrega artículo a pedido
 			item = new RequestItem();
 			item.setKey(new RequestItemKey(r.getId(), a.getId()));
 			item.setQuantity(quantity);
@@ -98,7 +101,8 @@ public class RestSample {
 
 	}
 
-	// retorna artÃ­culos de un pedido
+	// 3) retorna artículos de un pedido
+	// Ej: http://localhost:8080/jpa/request/1/items
 	@RequestMapping(value = "request/{requestId}/items", method = RequestMethod.GET)
 	public List<RequestItemRetVO> requestItemList(@PathVariable Long requestId) {
 		List<RequestItemRetVO> ret = new ArrayList<>();
