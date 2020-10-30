@@ -101,7 +101,7 @@ The following examples illustrate the patterns to use if you wanted to add a few
  
 # User-Defined Functions
 
-As well as built-in functions, the developer can also include custom made functions as part of LiveSQL.
+As well as built-in functions, the developer can also include user defined functions as part of LiveSQL.
 
 For example, if the developer created the following function in a PostgreSQL database:
 
@@ -113,7 +113,7 @@ For example, if the developer created the following function in a PostgreSQL dat
     $bodytag$ language plpgsql;
     //
 
-A class could be used to provide the function. For example:
+A class could be used to provide the function to LiveSQL. For example:
 
     @Component
     public class MyFunctions {

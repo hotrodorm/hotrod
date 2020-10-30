@@ -2,17 +2,34 @@
 
 HotRod can be executed from Maven. It provides four goals:
 
-<table>
-  <tr><th style="text-align: left;">Goal</th><th style="text-align: left;">Description</th>
-  <tr><td>hotrod:gen</td><td>Main goal that generates all codes.</td></tr>
-  <tr><td>hotrod:purge</td><td>Cleans up temporary database views that may have remaines after an execution error.</td></tr>
-  <tr><td>hotrod:export-columns-txt</td><td>Generates a TXT report of all columns from tables and views on the
-          database schema. Quite useful to write the &lt;type-solver> logic.</td></tr>
-  <tr><td>hotrod:export-columns-xlsx</td><td>Generates an XLSX report of all columns from tables and views on the
-          database schema. Quite useful to write the &lt;type-solver> logic.</td></tr>
-</table>
-
-
-
+ - Generate
+ - Purge
+ - TXT Column Metadata Report
+ - XLSX Column Metadata Report
  
+# Generate
+
+The `gen` goal is the main HotRod goal that generates all source code.
+
+TBD
+
+# Purge
+
+The `purge` goal cleans up temporary database views that may have remained after an execution error.
+
+TBD
+
+# TXT Column Metadata Report
+
+The `export-columns-txt` generates a TXT Column Metadata Report for tables and views in the
+database schema. The properties shown in this report are essential to write custom logic in the &lt;type-solver> tags.
+
+See [TXT Column Metadata Export](command-export-columns-txt.md) for details and example.
+
+# XLSX Column Metadata Report
+
+The `export-columns-xlsx` generates an XLSX Column Metadata Report for tables and views in the
+database schema. The properties shown in this report are essential to write custom logic in the &lt;type-solver> tags.
+
+This report provides the same information as the TXT report described before.
  
