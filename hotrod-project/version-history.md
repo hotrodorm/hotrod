@@ -11,25 +11,25 @@
 
 ## 3.0.3
 - Adding tar.gz packaging for Docker releases.
-- Fully dockerized example: web+hotrod+docker+java11+maven+spring.
+- Fully dockerized example: web + hotrod + docker + java11 + maven + spring.
 
 ## 3.0.4
 - Fixing prefixes and suffixes for abstract VOs.
-- Removed default select preview output.
+- Removed default LiveSQL preview in logging. Can be enabled by DEBUG logging level.
 
 ## 3.0.5
 - Fixing structured VOs prefixes and suffixes.
 
 ## 3.1.0
 - Maven Plugin released.
-- Full OGNL <type-solver> implemented.
+- Full &lt;type-solver> implemented with OGNL logic.
 - TXT column export implemented.
 - XLSX column export implemented.
 - HotRod PURGE operation implemented to remove residual temporary views.
 
 ## 3.2.0
 - Simplified hotrod.xml configuration file with many sensible default values.
-- Standard archetype for a Spring, Maven, MyBatis, command-line app.
+- Standard archetype implemented for a Spring, Maven, MyBatis, command-line app.
 
 ## 3.2.1
 - Removing "final" to VO getters and setters.
