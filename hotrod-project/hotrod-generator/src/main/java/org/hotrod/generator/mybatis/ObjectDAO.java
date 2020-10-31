@@ -20,6 +20,7 @@ import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
+import org.hotrod.config.SelectMethodTag.ResultSetMode;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.ControlledException;
@@ -2397,7 +2398,15 @@ public class ObjectDAO extends GeneratableObject {
     }
     preCheckedException();
 
-    String myBatisSelectMethod = sm.isMultipleRows() ? "selectList" : "selectOne";
+    String myBatisSelectMethod;
+    if (sm.getResultSetMode() == ResultSetMode.LIST) {
+      myBatisSelectMethod = "selectList";
+    } else if (sm.getResultSetMode() == ResultSetMode.CURSOR) {
+      myBatisSelectMethod = "selectCursor";
+    } else {
+      myBatisSelectMethod = "selectOne";
+    }
+
     print(
         "    return sqlSession." + myBatisSelectMethod + "(\"" + this.mapper.getFullSelectMethodStatementId(sm) + "\"");
     if (!sm.getParameterDefinitions().isEmpty()) {

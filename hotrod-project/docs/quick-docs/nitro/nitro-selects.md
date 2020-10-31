@@ -1,4 +1,4 @@
-# Selecting data using &lt;select>
+# Nitro Selects
 
 HotRod allows you to add any tailored SELECT query using the &lt;select> tag. The resulting results set is represented by 
 a newly created value object with formal properties and types. In other words, the SELECT query does not return an 
@@ -16,11 +16,11 @@ This strategy helps you squeeze the full performance of the SQL dialect of your 
 
 The &lt;select> tag can include two kinds of SELECT statements: flat selects, and structures selects.
 
-## Flat SELECTs
+## Nitro Flat SELECTs
 
 [Flat SELECTs](nitro-flat-selects.md) are the simplest and probably most useful and common form of the &lt;select> tag. It's recommended for beginners since they produce straightforward value objects that represent the result set of the query. They can be up and running in no time.
 
-## Structured SELECTs
+## Nitro Structured SELECTs
 
 [Structured SELECTs](nitro-structured-selects.md) enhance the *flat select model* by adding a hierarchical structure to the result set.
 

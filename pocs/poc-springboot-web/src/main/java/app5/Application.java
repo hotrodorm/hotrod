@@ -66,11 +66,11 @@ public class Application {
       log.debug("Starting DEBUG"); // should be shown
       log.info("Starting INFO"); // should be shown
 
-      dao();
-      foreignKeys();
+//      dao();
+//      foreignKeys();
       cursors();
-      customFunctions();
-      liveSQLExamples();
+//      customFunctions();
+//      liveSQLExamples();
 
       log.info("* End of example");
 
@@ -122,6 +122,10 @@ public class Application {
     log.info("* LiveSQL List...");
     int avgPriceLL = this.cursorExamples.computeAvgPriceProductsLiveSQL();
     log.info("Average priceLL: " + avgPriceLL);
+
+    log.info("* <select mode='cursor'>...");
+    this.cursorExamples.findCheapProductsCursor();
+
   }
 
   private void customFunctions() {

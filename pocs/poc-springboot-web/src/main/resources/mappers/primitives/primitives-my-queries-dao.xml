@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="app5.persistence.primitives.myQueriesDAO">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    
+  </sql>
+
+  <sql id="columnsWithAlias">
+    
+  </sql>
+
+  <!-- select method: findCheapProducts -->
+
+  <resultMap id="result_map_select_findCheapProducts" type="app5.persistence.CheapProductVOVO">
+    <result property="id" column="id" />
+    <result property="name" column="name" />
+    <result property="price" column="price" />
+    <result property="sku" column="sku" />
+  </resultMap>
+
+  <select id="select_findCheapProducts" resultMap="result_map_select_findCheapProducts">
+      select * from product where price between 0 and 5 
+  </select>
+
+  <!-- select method: findCheapestProducts -->
+
+  <resultMap id="result_map_select_findCheapestProducts" type="app5.persistence.ProductVO">
+    <id property="id" column="ns0_id" />
+    <result property="name" column="ns0_name" />
+    <result property="price" column="ns0_price" />
+    <result property="sku" column="ns0_sku" />
+  </resultMap>
+
+  <select id="select_findCheapestProducts" resultMap="result_map_select_findCheapestProducts">
+      select
+          p.id as ns0_id,
+          p.name as ns0_name,
+          p.price as ns0_price,
+          p.sku as ns0_sku
+      from product p
+      where p.price between 0 and 3
+  </select>
+
+</mapper>

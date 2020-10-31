@@ -24,5 +24,22 @@
   <table name="federal_branch" />
   <table name="types_binary" />
   <table name="types_other" />
+  
+  <dao name="MyQueries">
+
+    <select method="findCheapProducts" vo="CheapProductVO" mode="cursor">
+      select * from product where price between 0 and 5 
+    </select>
+  
+    <select method="findCheapestProducts">
+      select
+        <columns>
+          <vo table="product" alias="p" />
+        </columns>
+      from product p
+      where p.price between 0 and 3
+    </select>  
+  
+  </dao>
 
 </hotrod>

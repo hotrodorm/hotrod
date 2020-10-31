@@ -1,12 +1,12 @@
-## Structured SELECTs
+## Nitro Structured Selects
 
-Structured SELECTs enhance the flat select model by adding a structure to the result set. Instead of a List of VOs, these queries can return fully named, fully type tree-like structures of VOs using collections and association tags.
+Nitro Structured Selects enhance the flat select model by adding a structure to the result set. Instead of a List of VOs, these queries can return fully named, fully typed compounded VOs and/or tree-like structures of VOs using collections and association tags.
 
 This strategy can be very effective to resolve the "N + 1" problem when accessing data. It does have drawbacks so care needs to be take to make the most of this strategy.
 
-## Preserving Behavior by Returning Multiple VOs
+## Preserving Behavior by Returning Multiple VOs per Row
 
-Typically, the developer will enhance the behavior of the value objects, maybe adding properties, maybe adding methods. However, the VOs produced by a flat SELECT don't include this additional behavior; a flat SELECT includes all the columns but produces a whole different VO that is totally unrelated to the main VO of the table.
+Typically, the developer will enhance the behavior of the value objects, maybe adding properties, maybe adding methods. However, the VOs produced by a flat SELECT don't include these additional properties or behavior; a flat SELECT includes all the columns of the query, but produces a whole different VO that is unrelated to the main VO of the table.
 
 Structured SELECTs can capture the columns of a SELECT statement in one or more table (or view) VOs. For example, the query below:
 
@@ -62,9 +62,15 @@ Now, if the &lt;columns> tag includes a single VO, then there's no need to creat
       
     </dao>
 
-The method `retrieveActiveAccounts` does not define new VOs, but reuses the existing VO and returns a `List<AccountVO>`. Of course, this VO includes all custom behavior the developer may have added.
+The method `retrieveActiveAccounts` does not define new VOs, but reuses the existing VO and returns a `List<AccountVO>`. This VO includes all custom behavior the developer may have added.
 
-Of course the same rules shown in the previous case apply. Not all columns need to be retrieved, and parameters can be applied.
+The same rules shown in the previous case apply. Not all columns need to be retrieved, and parameters can be applied.
+
+The "Single VO return" must be read as "columns belonging to a single VO", not as "returning a single row". Structured Selects are assumed to return multiple rows in a List structure.
+
+## Query Return Mode
+
+Unlike Flat Selects, Structured Selects can only use the `list` mode.
 
 ## Extra Expressions  
 
@@ -264,19 +270,6 @@ Use the `id` attribute to decide which columns act as a VO key.
     </select>
 
 When you want to use multiple columns as an artificial key, use a comma-separated value as shown in the exmaple.
-
-    
-## SELECTs That Return a Single Row
- 
-Set the `multiple-rows` attribute to false. 
-
-    <select method="findSingleExpandedAccount" vo="ExpandedAccountVO" multiple-rows="false">
-      ...
-    </select>
-
-This method does not return a `List<ExpandedAccountVO>` but a single object of class `ExpandedAccountVO`.
- 
-It's the responsibility of the developer to ensure the query returns at most one row.
 
 ## Putting it all together
 

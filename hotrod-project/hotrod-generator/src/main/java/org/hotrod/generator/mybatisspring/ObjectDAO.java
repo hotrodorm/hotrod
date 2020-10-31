@@ -22,6 +22,7 @@ import org.hotrod.config.MyBatisSpringTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
+import org.hotrod.config.SelectMethodTag.ResultSetMode;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.database.PropertyType;
@@ -1941,13 +1942,36 @@ public class ObjectDAO extends GeneratableObject {
       }
     }
 
-    String myBatisSelectMethod = sm.isMultipleRows() ? "selectList" : "selectOne";
-    print("    return this.sqlSession." + myBatisSelectMethod + "(\"" + this.mapper.getFullSelectMethodStatementId(sm)
-        + "\"");
+    String myBatisSelectMethod;
+    if (sm.getResultSetMode() == ResultSetMode.LIST) {
+      myBatisSelectMethod = "selectList";
+    } else if (sm.getResultSetMode() == ResultSetMode.CURSOR) {
+      myBatisSelectMethod = "selectCursor";
+    } else {
+      myBatisSelectMethod = "selectOne";
+    }
+
+    // new MyBatisCursor<LocalProductVOVO>(
+
+    log.debug("--> mode=" + sm.getResultSetMode() + ", method=" + myBatisSelectMethod);
+
+    print("    return ");
+
+    if (sm.getResultSetMode() == ResultSetMode.CURSOR) {
+      print("    new MyBatisCursor<" + rt.getBaseReturnVOType() + ">(");
+    }
+
+    print("this.sqlSession." + myBatisSelectMethod + "(\"" + this.mapper.getFullSelectMethodStatementId(sm) + "\"");
     if (!sm.getParameterDefinitions().isEmpty()) {
       print(", " + objName);
     }
-    println(");");
+    print(")");
+
+    if (sm.getResultSetMode() == ResultSetMode.CURSOR) {
+      print(")");
+    }
+
+    println(";");
     println("  }");
     println();
 

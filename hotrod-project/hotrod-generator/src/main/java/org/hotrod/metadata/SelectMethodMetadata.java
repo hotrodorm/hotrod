@@ -21,6 +21,7 @@ import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
+import org.hotrod.config.SelectMethodTag.ResultSetMode;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
@@ -57,7 +58,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   // Properties
 
-  private boolean structured;
+  private boolean structuredSelect;
 
   private transient Generator generator;
   private transient DataSetLayout layout;
@@ -87,7 +88,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   public SelectMethodMetadata(final Generator generator, final SelectMethodTag tag, final HotRodConfigTag config,
       final SelectGenerationTag selectGenerationTag, final ColumnsPrefixGenerator columnsPrefixGenerator,
-      final DataSetLayout layout) throws InvalidIdentifierException {
+      final DataSetLayout layout) throws InvalidIdentifierException, InvalidConfigurationFileException {
     this.generator = generator;
     this.layout = layout;
     this.db = generator.getJdbcDatabase();
@@ -100,7 +101,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     this.columnsPrefixGenerator = columnsPrefixGenerator;
 
     this.fragmentConfig = tag.getFragmentConfig();
-    this.structured = this.tag.getStructuredColumns() != null;
+    this.structuredSelect = this.tag.getStructuredColumns() != null;
     this.nonStructuredColumns = null;
     this.structuredColumns = null;
 
@@ -117,7 +118,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   public void gatherMetadataPhase1(final Connection conn1) throws InvalidConfigurationFileException {
 
-    if (!this.structured) {
+    if (!this.structuredSelect) {
 
       // Unstructured columns
 
@@ -162,7 +163,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   public void gatherMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
       throws UncontrolledException, InvalidConfigurationFileException {
 
-    if (!this.structured) {
+    if (!this.structuredSelect) {
 
       // Non-structured columns
 
@@ -420,7 +421,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   // Getters
 
   public boolean isStructured() {
-    return structured;
+    return structuredSelect;
   }
 
   public List<ColumnMetadata> getNonStructuredColumns() {
@@ -541,8 +542,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     return this.fragmentConfig;
   }
 
-  public boolean isMultipleRows() {
-    return this.tag.isMultipleRows();
+  public ResultSetMode getResultSetMode() {
+    return this.tag.getResultSetMode();
   }
 
   @Override
@@ -574,7 +575,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     private SelectVOClass abstractSoloVO;
     private transient VOMetadata connectedVO;
 
-    private boolean multipleRows;
+    private ResultSetMode mode;
 
     public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage voClassPackage,
         final AbstractConfigurationTag tag, final DataSetLayout layout) throws InvalidConfigurationFileException {
@@ -629,7 +630,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         this.connectedVO = null;
 
       }
-      this.multipleRows = sm.isMultipleRows();
+      this.mode = sm.getResultSetMode();
       log.trace(">>> sm.getVOClassName()=" + sm.getVOClassName() + " sm.getAbstractVOClassName()="
           + sm.getAbstractVOClassName());
       log.trace("this.soloVO.getName()=" + (this.soloVO == null ? "null" : this.soloVO.getName())
@@ -649,8 +650,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       return connectedVO;
     }
 
-    public boolean isMultipleRows() {
-      return multipleRows;
+    public ResultSetMode getMode() {
+      return this.mode;
     }
 
     // Simpler methods
@@ -659,16 +660,23 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       return this.soloVO != null ? this.soloVO.getClassPackage() : this.connectedVO.getClassPackage();
     }
 
-    private String getReturnVOType() { // AccountPersonVO
+    public String getBaseReturnVOType() { // AccountPersonVO
       return this.soloVO != null ? this.soloVO.getName() : this.connectedVO.getName();
     }
 
-    public String getReturnType() { // List<AccountPersonVO>
-      return this.multipleRows ? "List<" + getReturnVOType() + ">" : getReturnVOType();
+    public String getReturnType() { // AccountPersonVO, List<AccountPersonVO>, Cursor<AccountPersonVO>
+      switch (this.mode) {
+      case LIST:
+        return "List<" + getBaseReturnVOType() + ">";
+      case CURSOR:
+        return "Cursor<" + getBaseReturnVOType() + ">";
+      default:
+        return getBaseReturnVOType(); // single-row
+      }
     }
 
     public String getVOFullClassName() { // primitives.accounting.AccountPersonVO
-      return this.getReturnVOPackage().getFullClassName(getReturnVOType());
+      return this.getReturnVOPackage().getFullClassName(getBaseReturnVOType());
     }
 
   }

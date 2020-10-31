@@ -171,7 +171,7 @@
     </xsd:sequence>
     <xsd:attribute name="method" type="xsd:string" use="required" />
     <xsd:attribute name="vo" type="xsd:string" />
-    <xsd:attribute name="multiple-rows" type="xsd:string" />
+    <xsd:attribute name="mode" type="xsd:string" />
   </xsd:complexType>
 
   <!-- select method - columns -->

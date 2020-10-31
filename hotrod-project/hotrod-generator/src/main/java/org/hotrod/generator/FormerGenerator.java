@@ -742,7 +742,7 @@ public abstract class FormerGenerator implements Generator {
       for (SelectMethodMetadata sm : d.getSelectsMetadata()) {
         display("=== Select method " + sm.getMethod() + " [" + (sm.isStructured() ? "structured" : "non-structured")
             + "] " + (sm.getVOClassName() != null ? "returns " + sm.getVOClassName() + " " : "")
-            + (sm.isMultipleRows() ? "<multiple-rows-return>" : "<single-row-return>") + " ===");
+            + sm.getResultSetMode().getCaption() + " ===");
         if (sm.isStructured()) {
           StructuredColumnsMetadata sc = sm.getStructuredColumns();
           if (sc.getSoloVOClass() == null) {

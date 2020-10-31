@@ -1,6 +1,6 @@
-## Flat SELECTs
+## Nitro Flat SELECTs
 
-A Flat (or unstructured) SELECT is the simplest and probably most useful and common form of the &lt;select> tag. It produces a single value 
+A Nitro Flat (or unstructured) SELECT is the simplest and probably most useful and common form of the &lt;select> tag. It produces a single value 
 object class that represents a row of the result set. The execution returns a `java.util.List` of these value objects. For example:
 
     <dao name="WebQueriesDAO">
@@ -50,6 +50,65 @@ Additionally, the generated DAO class that will expose the specified method coul
       
     }
 
+## Query Return Mode
+
+Flat Selects can work with three return modes: list, cursor, and single-row.
+
+### The `list` mode
+
+The `list` mode is the default mode and returns a `java.util.List<VO>`. 
+
+This mode reads all the rows returned by the query into memory, assembles a list, and returns this list
+to the caller.
+
+**Note**: This strategy can become a memory hog if the query returns a massive number of rows; in cases like this the `cursor` mode can be of use.
+
+Example:
+
+    <select method="findOldAccounts" vo="OldAccountVO">
+      ...
+    </select>
+
+Equivalent to:
+
+    <select method="findOldAccounts" vo="OldAccountVO" mode="list">
+      ...
+    </select>
+
+### The `cursor` mode
+
+The `cursor` mode returns a `org.hotrod.runtime.cursors.Cursor<VO>`.
+
+The `Cursor` object is a forward-only iterable object that uses a buffer 
+to receive a limited number of rows at a time from the query, thus limiting the amount of allocated memory at any given time.
+Cursors can be a memory-efficient solution for processes that handle massive number of rows that need to be
+**read, processed, and discarded immediately**.
+
+**Note**: The memory efficiency benefit of a cursor is not leveraged if the process ends up assembling all the rows
+into a `List` (or other `Collection`-like) data structure that will hold all the rows in memory anyway.
+
+Example:
+
+    <select method="findOldAccounts" vo="OldAccountVO" mode="cursor">
+      ...
+    </select>
+
+### The `single-row` mode
+
+The `single-row` mode returns a single `VO`. 
+
+It assumes the query returns zero or one row at most. 
+
+**Note**: It's the responsibility of the developer to ensure the query returns at most one row. If at runtime the query returns more than a single row, the query is considered failed and an error is displayed, such as:
+
+> Expected one result (or null) to be returned by SELECT, but found: 3
+
+Example:
+
+    <select method="findSingleAccount" vo="SingleAccountVO" mode="single-row">
+      ...
+    </select>
+    
 ## Parameters and the &lt;complement> tag
 
 Most likely your query will need parameters for its execution. You can add parameters using the &lt;parameter> tag inside the &lt;select> tag, as in:

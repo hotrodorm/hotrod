@@ -1,8 +1,8 @@
 # HotRod Nitro Queries
 
-The HotRod Nitro Enhancement allows the developer to run high performance, semi-automated queries.
+The HotRod Nitro Enhancement allows the developer to run high performance, configuration-assisted queries.
 
-The developer can add tailored queries to execute any custom build SQL query with or without native features. Apart from simple flat queries HotRod can also add a new dimension of hierarchical data and automated SQL rendering to solve very common problems -- what is known as *Structured SELECTs*.
+The developer can add tailored queries to execute any custom build SQL query with or without native features. Apart from simple flat queries HotRod can also add a new dimension of hierarchical data and automated SQL rendering to solve very common problems.
 
 Custom queries can typically access the whole range of the database services, and can also squeeze performance by the use of particular non-standard engine-specific features and peculiarities.
 

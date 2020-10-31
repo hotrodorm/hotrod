@@ -1,6 +1,7 @@
 package org.hotrod.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
+import org.hotrod.config.SelectMethodTag.ResultSetMode;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.config.structuredcolumns.ColumnsTag;
@@ -26,6 +28,7 @@ import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
+import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 
 @XmlRootElement(name = "select")
 public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
@@ -36,14 +39,37 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   private static final Logger log = LogManager.getLogger(SelectMethodTag.class);
 
-  private static final String MULTIPLE_ROWS_FALSE = "false";
-  private static final String MULTIPLE_ROWS_TRUE = "true";
-  private static final boolean MULTIPLE_ROWS_DEFAULT = true;
+  public enum ResultSetMode {
+
+    LIST("list"), //
+    CURSOR("cursor"), //
+    SINGLE_ROW("single-row");
+
+    private String caption;
+
+    private ResultSetMode(final String caption) {
+      this.caption = caption;
+    }
+
+    public String getCaption() {
+      return caption;
+    }
+
+    public static ResultSetMode parse(final String s) {
+      for (ResultSetMode m : ResultSetMode.values()) {
+        if (m.caption.equals(s)) {
+          return m;
+        }
+      }
+      return null;
+    }
+
+  }
 
   // Properties
 
   private String vo = null;
-  private String sMultipleRows = null;
+  private String sMode = null;
 
   private SelectMethodMetadata metadata = null;
 
@@ -65,7 +91,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   private String voClassName;
   private String abstractVoClassName;
-  private boolean multipleRows;
+  private ResultSetMode mode;
   protected ParameterDefinitions parameters = null;
   protected List<ColumnTag> columns = null;
   protected List<EnhancedSQLPart> parts = null;
@@ -89,13 +115,13 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     d.copyCommon(this);
 
     d.vo = this.vo;
-    d.sMultipleRows = this.sMultipleRows;
+    d.sMode = this.sMode;
     d.metadata = this.metadata;
 
     d.content = this.content;
 
     d.voClassName = this.voClassName;
-    d.multipleRows = this.multipleRows;
+    d.mode = this.mode;
     d.parameters = this.parameters;
     d.columns = this.columns;
     d.parts = this.parts;
@@ -119,9 +145,9 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     this.vo = vo;
   }
 
-  @XmlAttribute(name = "multiple-rows")
-  public void setHasMultipleRows(final String mr) {
-    this.sMultipleRows = mr;
+  @XmlAttribute(name = "mode")
+  public void setMode(final String m) {
+    this.sMode = m;
   }
 
   // Behavior
@@ -237,20 +263,27 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     }
 
-    // multiple-rows
+    // mode
 
-    if (this.sMultipleRows == null) {
-      this.multipleRows = MULTIPLE_ROWS_DEFAULT;
+    if (this.sMode == null) {
+      this.mode = ResultSetMode.LIST;
     } else {
-      if (this.sMultipleRows.equals(MULTIPLE_ROWS_TRUE)) {
-        this.multipleRows = true;
-      } else if (this.sMultipleRows.equals(MULTIPLE_ROWS_FALSE)) {
-        this.multipleRows = false;
-      } else {
+      this.mode = ResultSetMode.parse(this.sMode);
+      if (this.mode == null) {
         throw new InvalidConfigurationFileException(this, //
-            "'multiple-rows' attribute must either be 'true' or 'false'", //
-            "Invalid 'multiple-rows' attribute with value '" + this.sMultipleRows
-                + "'. When specified, the 'multiple-rows' attribute must either be 'true' or 'false'.");
+            "Invalid 'mode' attribute in <select> tag; when specified it must have one of the values: "
+                + Arrays.stream(ResultSetMode.values()).map(c -> ("'" + c.getCaption() + "'"))
+                    .collect(ListCollector.joining(", ", ", or ")));
+      }
+    }
+
+    log.debug("sMode=" + this.sMode + " this.structuredColumns=" + this.structuredColumns + " mode=" + this.mode);
+
+    if (this.structuredColumns != null) { // structured <select> can only use mode LIST
+      if (this.mode != ResultSetMode.LIST) {
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid mode '" + this.mode.getCaption() + "' in <select> tag; structured selects can only use mode '"
+                + ResultSetMode.LIST.getCaption() + "'.");
       }
     }
 
@@ -305,8 +338,8 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     return this.abstractVoClassName;
   }
 
-  public boolean isMultipleRows() {
-    return multipleRows;
+  public ResultSetMode getResultSetMode() {
+    return this.mode;
   }
 
   public ParameterDefinitions getParameters() {
@@ -414,10 +447,10 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
       boolean different = !same(fresh);
 
       this.vo = f.vo;
-      this.sMultipleRows = f.sMultipleRows;
+      this.sMode = f.sMode;
       this.metadata = f.metadata;
       this.voClassName = f.voClassName;
-      this.multipleRows = f.multipleRows;
+      this.mode = f.mode;
       this.parameters = f.parameters;
       this.columns = f.columns;
       this.parts = f.parts;
@@ -442,7 +475,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
       boolean same = Compare.same(this.method, f.method) && //
           Compare.same(this.vo, f.vo) && //
-          Compare.same(this.sMultipleRows, f.sMultipleRows) && //
+          Compare.same(this.sMode, f.sMode) && //
           Compare.same(this.parameters, f.parameters) && //
           Compare.same(this.columns, f.columns) && //
           Compare.same(this.parts, f.parts) && //

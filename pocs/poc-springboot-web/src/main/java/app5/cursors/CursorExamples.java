@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import app5.persistence.CheapProductVOVO;
 import app5.persistence.ProductVO;
 import app5.persistence.primitives.ProductDAO;
 import app5.persistence.primitives.ProductDAO.ProductTable;
@@ -65,6 +66,13 @@ public class CursorExamples {
       }
     }
     return total / count;
+  }
+
+  @Transactional
+  public void findCheapProductsCursor() {
+    for (CheapProductVOVO p : this.productsManager.getCheapProducts()) {
+      System.out.println(" - local: " + p);
+    }
   }
 
 }
