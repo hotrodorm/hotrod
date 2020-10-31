@@ -24,7 +24,11 @@ And use it:
     
 To produce a result such as: `0.796045811049445`    
 
-Use any of the six factory methods available in the `Function` class to create a function with the corresponding return type:
+# Factory methods
+
+LiveSQL groups all SQL parameters into six broad types: numbers, strings, date/time, boolean, binary/byte arrays, and generic objects.
+
+Therefore, you can use any of the six factory methods available in the `Function` class to create a function with the corresponding LiveSQL return type:
 
 - `Function.returnsNumber(String pattern, Expression... parameters)` -- to produce a `NumberFunction`
 - `Function.returnsString(String pattern, Expression... parameters)` -- to produce a `StringFunction`
@@ -33,7 +37,7 @@ Use any of the six factory methods available in the `Function` class to create a
 - `Function.returnsByteArray(String pattern, Expression... parameters)` -- to produce a `ByteArrayFunction`
 - `Function.returnsObject(String pattern, Expression... parameters)` -- to produce a `ObjectFunction`
 
-**Note**: The `CURSOR` data type is not supported, either as an IN/OUT parameter or as a return type.
+**Note**: The `CURSOR` data type is not supported, either as an IN/OUT parameter or as a return type. Also, the `INTERVAL` type is not implemented yet, but it may be supported in the future.
 
 # Parameters
 
@@ -45,9 +49,9 @@ The abstract function classes must receive parameters that extend `org.hotrod.ru
  - `Predicate` (boolean expression)
  - `ByteArrayExpression`
  - `ObjectExpression`
- - `Expression` (any expression type)
+ - `Expression` -- to accept any of the above
 
-Notice, the function factory receives either a vararg (`Expression...`) or a *single* array (`Expression[]`). If your function receives multiple separate parameters that you need to assemble as a single array parameter, you can bundle together using `Function.bundle(a, b)`.
+Notice the function factory receives either a vararg (`Expression...`) or a *single* array (`Expression[]`). If your function receives multiple separate parameters that you need to assemble as a single array parameter, you can bundle together using `Function.bundle(a, b)`.
 
 ## Parameters Boxing
 
@@ -60,7 +64,7 @@ Primitives values and simple parameters like:
  - `byte[]`
  - any `Object`
 
-can be promoted to `Expression`:
+need to be promoted to `Expression` to be used in a LiveSQL query. You can do this:
 
  - while typing a LiveSQL query using `sql.val(Number|String|Date|Boolean|byte[]|Object)`, or
  - by offering multiple constructors in the custom function definition and then boxing simple parameters as `Expression` using `BoxUtil.box(x)`, as shown in the `sin()` function below:
@@ -69,7 +73,7 @@ can be promoted to `Expression`:
           return Function.returnsNumber("sin(#{})", x);
         }
       
-        public NumberFunction sin(Number x) { // accepts any Number
+        public NumberFunction sin(Number x) { // accepts any java.lang.Number
           return sin(BoxUtil.box(x));
         }
 
@@ -179,7 +183,9 @@ while other ones use keywords; most have parenthesis, some don't; there are also
 - **Example #4:** Function `coalesce(a, ...)` with a vararg.
 
   Six factory methods are included, one per Expression type. Notice the pattern is a vararg `#{?, ?}`. Also notice that it also
-  bundles the received parameters using `Function.bundle(a, b)` since the factory can only receive one parameter of type `Expression[]`:
+  bundles the received parameters using `Function.bundle(a, b)` since the factory can only receive one parameter of type `Expression[]`.
+  
+  Notice that the factory methods need to accept at least one parameter to clearly distinguish the type of the function:
   
         public NumberFunction coalesce(NumberExpression a, NumberExpression... b) {
           return Function.returnsNumber("coalesce(#{?, ?})", Function.bundle(a, b));
