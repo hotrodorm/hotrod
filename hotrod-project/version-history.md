@@ -58,7 +58,7 @@
 
 ## 3.3.4
 - Classic FK navigation can now be enabled on a per-table basis.
-- Cursors implemented for selectByExample(), selectByCriteria(), and LiveSQL.
+- Cursors implemented for LiveSQL, Nitro Selects, selectByExample(), and selectByCriteria().
 - LiveSQL function infrastructure: developers can now add built-in and also user-defined functions to LiveSQL queries.
 - LiveSQL dialect can be designated at runtime using application.properties, with fallback to discovery mode.
 - LiveSQL fully typed CASE and OVER clauses.
