@@ -5,12 +5,14 @@ HotRod's configuration can include a rule based type solver that can assign type
 In order to do this the developer can add the <&lt;type-solver> tag. For example:
 
     <type-solver>
-      <when test="c.decimalplaces > 0" java-type="java.math.BigDecimal" jdbc-type="NUMERIC" />
-      <when test="c.name.matches('.*_IMAGE') && c.size < 10000" converter="ByteArrayConverter" />
+      <when test="scale > 0" java-type="java.math.BigDecimal" jdbc-type="NUMERIC" />
+      <when test="name.matches('.*_IMAGE') && size < 10000" converter="ByteArrayConverter" />
       <when ... />
     </type-solver>
 
 For each column the rules are checked in order. If any of them is evaluated as `true` then it's used to determine the type of the property.
+
+See the full list of available properties of a column at [Column Metadata](../maven/command-export-columns-txt.md#properties).
 
 ## Precedence
 

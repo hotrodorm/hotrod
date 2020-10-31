@@ -18,11 +18,11 @@ The &lt;select> tag can include two kinds of SELECT statements: flat selects, an
 
 ## Flat SELECTs
 
-[Flat SELECTs](flat-selects.md) are the simplest and probably most useful and common form of the &lt;select> tag. It's recommended for beginners since they produce straightforward value objects that represent the result set of the query. They can be up and running in no time.
+[Flat SELECTs](nitro-flat-selects.md) are the simplest and probably most useful and common form of the &lt;select> tag. It's recommended for beginners since they produce straightforward value objects that represent the result set of the query. They can be up and running in no time.
 
 ## Structured SELECTs
 
-[Structured SELECTs](structured-selects.md) enhance the *flat select model* by adding a hierarchical structure to the result set.
+[Structured SELECTs](nitro-structured-selects.md) enhance the *flat select model* by adding a hierarchical structure to the result set.
 
 Instead of a flat `List` of properties, columns are grouped in a hierarchy of VOs. These queries can return fully named, fully typed
 tree-like structures of VOs using collections and/or associations.

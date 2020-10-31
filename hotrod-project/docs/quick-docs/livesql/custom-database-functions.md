@@ -139,8 +139,116 @@ and could be used in the LiveSQL query, as in:
     
 To produce the result `124`.
 
+## Examples
 
-    
+The examples below were tested in PostgrrSQL 12. PostgreSQL implements functions with varied patterns. Some use the traditional comma as separator 
+while other ones use keywords; most have parenthesis, some don't; there are also some functions that use the syntax as of operators.
 
-
+- **Example #1:** Function `localtimestamp` with no parameters and no parenthesis.
  
+  This example demonstrate that any pattern can be used, even without parenthesis.
+
+        public DateTimeFunction localtimestamp() {
+          return Function.returnsDateTime("localtimestamp");
+        };
+
+- **Example #2:** Function `random()` with no parameters.
+
+  As well as in the previous example, this function does not have any parameters, but needs the parenthesis in its rendering.
+
+        public NumberFunction random() {
+          return Function.returnsNumber("random()");
+        }
+
+- **Example #3:** Function `sin(x)` with a single parameter. 
+
+  Two factory methods are implemented: the first one receives a boxed value (NumberExpression in this case), 
+  while the second method receives an unboxed `java.lang.Number` (such as `int`, `Integer`, `Double`, etc.).
+  
+  Notice the second method only deals with the parameter boxing. It boxes it into an Expression by
+  using `BoxUtil.box(x)`. Once done it reuses the first method, to avoid defining the pattern again.
+ 
+        public NumberFunction sin(NumberExpression x) {
+          return Function.returnsNumber("sin(#{})", x);
+        }
+        
+        public NumberFunction sin(Number x) {
+          return sin(BoxUtil.box(x));
+        } 
+
+- **Example #4:** Function `coalesce(a, ...)` with a vararg.
+
+  Six factory methods are included, one per Expression type. Notice the pattern is a vararg `#{?, ?}`. Also notice that it also
+  bundles the received parameters using `Function.bundle(a, b)` since the factory can only receive one parameter of type `Expression[]`:
+  
+        public NumberFunction coalesce(NumberExpression a, NumberExpression... b) {
+          return Function.returnsNumber("coalesce(#{?, ?})", Function.bundle(a, b));
+        }
+      
+        public StringFunction coalesce(StringExpression a, StringExpression... b) {
+          return Function.returnsString("coalesce(#{?, ?})", Function.bundle(a, b));
+        }
+      
+        public DateTimeFunction coalesce(DateTimeExpression a, DateTimeExpression... b) {
+          return Function.returnsDateTime("coalesce(#{?, ?})", Function.bundle(a, b));
+        }
+      
+        public BooleanFunction coalesce(Predicate a, Predicate... b) {
+          return Function.returnsBoolean("coalesce(#{?, ?})", Function.bundle(a, b));
+        }
+      
+        public ByteArrayFunction coalesce(ByteArrayExpression a, ByteArrayExpression... b) {
+          return Function.returnsByteArray("coalesce(#{?, ?})", Function.bundle(a, b));
+        }
+      
+        public ObjectFunction coalesce(ObjectExpression a, ObjectExpression... b) {
+          return Function.returnsObject("coalesce(#{?, ?})", Function.bundle(a, b));
+        }
+
+- **Example #5:** Function `left(text, n)` with two parameters.
+
+  It includes variations for both parameters being boxed or unboxed to produce four similar methods:
+
+  Again notice that, to avoid redundancy, the pattern is defined in the first variation only. The second, third, and fourth
+  methods box the parameters and then reuse the first method.
+
+        public StringFunction left(StringExpression text, NumberExpression n) {
+          return Function.returnsString("left(#{}, #{})", text, n);
+        }
+      
+        public StringFunction left(String text, NumberExpression n) {
+          return left(BoxUtil.box(text), n);
+        }
+      
+        public StringFunction left(StringExpression text, Number n) {
+          return left(text, BoxUtil.box(n));
+        }
+      
+        public StringFunction left(String text, Number n) {
+          return left(BoxUtil.box(text), BoxUtil.box(n));
+        };
+ 
+    
+- **Example #6:** Function `format(text, args...)` with one positional parameter and a vararg.
+
+  It includes boxed and unboxed variations for the first parameter only. It
+  assumes the second will always be boxed:
+
+        public StringFunction format(StringExpression text, Expression... args) {
+          return Function.returnsString("format(#{}#{, ?})", Function.bundle(text, args));
+        }
+      
+        public StringFunction format(final String text, final Expression... args) {
+          return format(BoxUtil.box(text), args);
+        }
+
+- **Example #7:** Function `set_byte(string, offset, newvalue)` with three positional parameters.
+
+  The example below considers only the variation where all parameters are unboxed. 
+  All other seven variations should probably be implemented as in the "left" function above, in order to accept any combination of boxed and unboxed parameters:
+
+        public ByteArrayFunction set_byte(byte[] string, Number offset, Number newValue) {
+          return Function.returnsByteArray("set_byte(#{}, #{}, #{})",
+              Function.bundle(Function.bundle(BoxUtil.box(string), BoxUtil.box(offset)), BoxUtil.box(newValue)));
+        }
+

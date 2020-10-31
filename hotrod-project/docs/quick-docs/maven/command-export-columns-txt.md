@@ -92,7 +92,7 @@ In addition to the list above, the Standard Properties also include the followin
 
 ### Native Metadata Properties
 
-Most databases provides extra metadata for their columns. TXT Column Metadata ExportTXT Column Metadata ExportHotRod retrieves this extra metadata and provides them as non-standard properties with the `native.` prefix.
+Most databases provides extra metadata for their columns. HotRod retrieves this extra metadata and provides them as non-standard properties with the `native.` prefix.
 
 **Note**: Apache Derby users: it seems Derby does not provide native properties. Thus, the section for native properties may be empty. 
 
