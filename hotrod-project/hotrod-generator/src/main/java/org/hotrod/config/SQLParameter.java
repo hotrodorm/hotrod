@@ -102,12 +102,16 @@ public class SQLParameter implements SQLSegment {
     return this.type == VariableType.PARAMETER_REFERENCE;
   }
 
+  public ParameterTag getDefinition() {
+    return definition;
+  }
+
   public String getJavaType() {
     return this.definition.getJavaType();
   }
 
   public String getJdbcType() {
-    return this.definition.getJdbcType();
+    return this.definition.getJDBCTypeName();
   }
 
   // Behavior

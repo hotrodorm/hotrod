@@ -16,8 +16,8 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.utils.JdbcTypes;
-import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.OGNLPublicMemberAccess;
+import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 import ognl.OgnlContext;

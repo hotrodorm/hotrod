@@ -15,7 +15,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
-import org.hotrod.config.SelectMethodTag.ResultSetMode;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.config.structuredcolumns.ColumnsTag;
@@ -167,13 +166,13 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     for (Object obj : this.content) {
       try {
-        String s = (String) obj; // literal content part
-        VerbatimTextPart p = new VerbatimTextPart(s);
+        String s = (String) obj; // literal [parameterisable] text content
+        TextContent p = new TextContent(s);
         this.parts.add(p);
         super.addChild(p);
       } catch (ClassCastException e1) {
         try {
-          ParameterTag param = (ParameterTag) obj; // parameter
+          ParameterTag param = (ParameterTag) obj; // parameter definition
           this.parameters.add(param);
           super.addChild(param);
         } catch (ClassCastException e2) {

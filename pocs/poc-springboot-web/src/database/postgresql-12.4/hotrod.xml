@@ -28,7 +28,12 @@
   <dao name="MyQueries">
 
     <select method="findCheapProducts" vo="CheapProductVO" mode="cursor">
-      select * from product where price between 0 and 5 
+      <parameter name="minPrice" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      select *
+      from product
+      <complement>
+      where price > #{minPrice}
+      </complement>
     </select>
   
     <select method="findCheapestProducts">

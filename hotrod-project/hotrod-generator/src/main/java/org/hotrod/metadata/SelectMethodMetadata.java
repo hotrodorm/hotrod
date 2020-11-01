@@ -40,6 +40,7 @@ import org.hotrod.metadata.VORegistry.VOProperty;
 import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
+import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -267,12 +268,23 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   public void prepareUnstructuredColumnsRetrieval(final Connection conn) throws InvalidSQLException {
 
-    log.debug("prepare view 0");
+    log.info("prepare view 0");
 
+    List<JDBCType> parameterJDBCTypes = new ArrayList<JDBCType>();
     ParameterRenderer JDBCParameterRenderer = new ParameterRenderer() {
+
+//      @Override
+//      public String render(final SQLParameter parameter) {
+//        log.info("prepare view 0.1 -- parameter=" + parameter.getDefinition());
+//        parameterJDBCTypes.add(parameter.getDefinition().getJDBCType());
+//        return "?";
+//      }
+
       @Override
       public String render(final SQLParameter parameter) {
-        return "?";
+        log.info("prepare view 0.1 -- parameter=" + parameter.getDefinition());
+//        parameterJDBCTypes.add(parameter.getDefinition().getJDBCType());
+        return "null";
       }
     };
 
@@ -307,14 +319,24 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
     // 2. Create or replace the view.
 
-    log.debug("prepare view - will create view: " + this.createView);
+    log.info("prepare view - will create view: " + this.createView);
 
     {
       PreparedStatement ps = null;
       try {
         ps = conn.prepareStatement(this.createView);
-        log.debug("prepare view - will execute create view");
+
+        log.info("Will apply null parameter values (" + parameterJDBCTypes.size() + " parameters).");
+        for (int i = 0; i < parameterJDBCTypes.size(); i++) {
+          JDBCType pt = parameterJDBCTypes.get(i);
+          log.info(" --> pt=" + pt);
+          log.info(" - ps.setNull(" + (i + 1) + ", " + pt.getCode() + ")");
+          ps.setNull(i + 1, pt.getCode());
+        }
+
+        log.info("prepare view - will execute create view");
         ps.execute();
+
         log.debug("prepare view - view created");
 
       } catch (SQLException e) {

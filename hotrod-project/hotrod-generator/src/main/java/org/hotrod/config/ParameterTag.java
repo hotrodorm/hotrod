@@ -1,5 +1,8 @@
 package org.hotrod.config;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -8,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.utils.Compare;
+import org.hotrod.utils.JdbcTypes;
+import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.Id;
 import org.hotrodorm.hotrod.utils.SUtil;
 
@@ -26,8 +31,10 @@ public class ParameterTag extends AbstractConfigurationTag {
 
   private String name = null;
   private String javaType = null;
-  private String jdbcType = null;
+  private String jdbcTypeName = null;
   private Id id = null;
+
+  private JDBCType jdbcType;
 
   // Constructor
 
@@ -50,7 +57,7 @@ public class ParameterTag extends AbstractConfigurationTag {
 
   @XmlAttribute(name = "jdbc-type")
   public void setJdbcType(final String jdbcType) {
-    this.jdbcType = jdbcType;
+    this.jdbcTypeName = jdbcType;
   }
 
   // Behavior
@@ -107,23 +114,22 @@ public class ParameterTag extends AbstractConfigurationTag {
 
     // jdbc-type
 
-    if (this.jdbcType == null) {
+    if (this.jdbcTypeName == null) {
       throw new InvalidConfigurationFileException(this, //
           "The 'jdbc-type' attribute cannot be empty", //
           "invalid <parameter> tag -- the 'jdbc-type' attribute cannot be empty.");
     }
-    if (SUtil.isEmpty(this.jdbcType)) {
+    if (SUtil.isEmpty(this.jdbcTypeName)) {
       throw new InvalidConfigurationFileException(this, //
           "The 'jdbc-type' attribute cannot be blank", //
           "invalid <parameter> tag -- the 'jdbc-type' attribute cannot be blank.");
     }
-    if (!this.jdbcType.matches(Patterns.VALID_JDBC_TYPE)) {
+    this.jdbcType = JdbcTypes.nameToType(this.jdbcTypeName);
+    if (this.jdbcType == null) {
       throw new InvalidConfigurationFileException(this, //
-          "Invalid 'jdbc-type' attribute with value '" + this.jdbcType
-              + "': must include uppercase letters, digits, and/or underscores", //
-          "invalid <parameter> tag -- "
-              + "the 'jdbc-type' attribute must include uppercase letters, digits, and/or underscores, but found '"
-              + this.jdbcType + "'.");
+          "Invalid 'jdbc-type' attribute with value '" + this.jdbcTypeName
+              + "': must be a valid JDBC type name from java.sql.Types. Valid type names are: "
+              + Stream.of(JDBCType.values()).map(t -> t.name()).collect(Collectors.joining(", ")));
     }
 
   }
@@ -138,12 +144,22 @@ public class ParameterTag extends AbstractConfigurationTag {
     return javaType;
   }
 
-  public String getJdbcType() {
+  public String getJDBCTypeName() {
+    return jdbcTypeName;
+  }
+
+  public JDBCType getJDBCType() {
     return jdbcType;
   }
 
   public Id getId() {
     return this.id;
+  }
+
+  @Override
+  public String toString() {
+    return "ParameterTag [name=" + name + ", javaType=" + javaType + ", jdbcTypeName=" + jdbcTypeName + ", id=" + id
+        + ", jdbcType=" + jdbcType + "]";
   }
 
   // Merging logic
@@ -165,7 +181,7 @@ public class ParameterTag extends AbstractConfigurationTag {
       boolean different = !same(fresh);
 
       this.javaType = f.javaType;
-      this.jdbcType = f.jdbcType;
+      this.jdbcTypeName = f.jdbcTypeName;
 
       return different;
     } catch (ClassCastException e) {
@@ -180,7 +196,7 @@ public class ParameterTag extends AbstractConfigurationTag {
       return //
       Compare.same(this.name, f.name) && //
           Compare.same(this.javaType, f.javaType) && //
-          Compare.same(this.jdbcType, f.jdbcType) //
+          Compare.same(this.jdbcTypeName, f.jdbcTypeName) //
       ;
     } catch (ClassCastException e) {
       return false;

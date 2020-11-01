@@ -162,6 +162,12 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
       return new ArrayList<ParameterTag>(this.definitions.values());
     }
 
+    public void validate() throws InvalidConfigurationFileException {
+      for (ParameterTag d : this.definitions.values()) {
+        d.validate();
+      }
+    }
+
   }
 
   // Simple Static (non-dynamic) Rendering
