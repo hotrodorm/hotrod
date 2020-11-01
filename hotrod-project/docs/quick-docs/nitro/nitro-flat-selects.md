@@ -25,6 +25,8 @@ This select specifies that:
 
 As an example, the &lt;select> tag above could produce the value objects:
 
+![flat](images/nitro-flat-select.png)    
+
     public class AbstractAccountClientVO {
       protected Integer id = null;
       protected Long amount = null;
@@ -50,9 +52,9 @@ Additionally, the generated DAO class that will expose the specified method coul
       
     }
 
-## Query Return Mode
+## Query Fetch Mode
 
-Flat Selects can work with three return modes: list, cursor, and single-row.
+Flat Selects can work with three fetch modes: list, cursor, and single-row.
 
 ### The `list` mode
 

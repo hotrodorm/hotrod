@@ -36,6 +36,8 @@ This select specifies:
  - The `account` and `client` properties will be of the **existing** types `AccountVO` and `ClientVO`, that are already defined by the &lt;table> and/or &lt;view> tags.
  - Naturally, the `AccountVO` and `ClientVO` will include all extra behavior added by the developer.
  
+![](images/structured-select1.png)
+ 
 Also consider:
  
  - If multiple VOs have columns with the same name HotRod automatically handles the case behind the scenes, by using different name spaces for each table.
@@ -98,6 +100,8 @@ This example:
  - The enclosing VO will have two properties: `account` and `score`.
  - The type of the property `score` is automatically discovered, but can be specified using the optional `<expression>` attributes `class` or `converter`. 
  - Any number of &lt;vo> tags can be included with any number of extra &lt;expression> tags as long as their names do not collide with other expressions, or with the properties for each &lt;vo> tag.
+ 
+![](images/structured-select2.png)
 
 ## Collections
 
@@ -129,6 +133,8 @@ In this example:
  - The method returns a `List<EnhancedAccountVO>`; the newly generated `EnhancedAccountVO` class extends `AccountVO`, thus inheriting all its behavior.
  - Apart from all the properties from `AccountVO`, the `EnhancedAccountVO` includes an extra one: `txs`.
  - The `txs` property is a `List<TransactionVO>`, that is an existing type, again with all behavior.
+
+![](images/structured-select3.png)
 
 It's crucial that the result set is returned in order, so the `ORDER BY a.id` clause included in the example above is essential. The engine considers a new `AccountVO` needs to be produced when the value of its primary key changes. Therefore if rows of the same `AccountVO` show up separated in the result set, the resulting `List<EnhancedAccountVO>` will include multiple, separated instances of the same `AccountVO`, producing a probably undesired data structure.
 
@@ -174,6 +180,8 @@ The model does not have a 1:N relationship between `product` and `invoice` but t
  - The return type of the method is `List<ProductOnInvoicesVO>`.
  - `ProductOnInvoicesVO` extends `ProductVO` to include the property `invoices` of type `List<Invoices>`.
  
+![](images/structured-select4.png)
+ 
 ## Nested Collections
 
 A `<collection>` tag can also be included inside another `<collection>` tag when multiple nesting levels are needed.
@@ -206,8 +214,10 @@ In this example:
  - The method returns a `List<EnhancedClientVO>`.
  - The new `EnhancedClientVO` class extends the existing `ClientVO` class, to include the new property `accounts` of type `List<EnhancedAccountVO>`.
  - The new `EnhancedAccountVO` class extends the existing `AccountVO` class, to include the new property `txs`, of type `List<TransactionVO>`.
- 
+
 Notice the `ORDER BY` clause ensures the grandparent, parent, and child values are sorted correcly.
+
+![](images/structured-select5.png)
 
 ## Associations
 
@@ -246,6 +256,8 @@ In this example:
  - The VO `CarWithOwnerVO` extends `CarVO`.
  - The `carOwner` property of the class `CarWithOwnerVO` is of type `OwnerVO`.
  - Since the query uses a `LEFT JOIN` this will include cars without owner. That means the property `carOwner` may be null for some rows.
+
+![](images/structured-select6.png)
 
 ## Combining Collections and Associations
 
