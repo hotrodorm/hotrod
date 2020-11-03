@@ -23,6 +23,7 @@ import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 
+@Deprecated
 @XmlRootElement(name = "select")
 public class SelectClassTag extends AbstractDAOTag {
 

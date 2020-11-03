@@ -30,6 +30,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
+@Deprecated
 public class SelectDataSetMetadata implements DataSetMetadata, Serializable {
 
   private static final long serialVersionUID = 1L;

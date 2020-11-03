@@ -115,7 +115,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   }
 
-  // Behavior
+  // TODO: Just a marker for phase 1
 
   public void gatherMetadataPhase1(final Connection conn1) throws InvalidConfigurationFileException {
 
@@ -161,111 +161,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   }
 
-  public void gatherMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
-      throws UncontrolledException, InvalidConfigurationFileException {
-
-    if (!this.structuredSelect) {
-
-      // Non-structured columns
-
-      try {
-        retrieveFlatColumnsMetadata(conn2);
-
-      } catch (SQLException e) {
-        throw new UncontrolledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
-            + "> at " + this.tag.getSourceLocation().render(), e);
-      } catch (UnresolvableDataTypeException e) {
-        String msg = "Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
-            + ">: could not find suitable Java type for column '" + e.getColumnName() + "' ";
-        throw new InvalidConfigurationFileException(this.tag, msg, msg);
-      } catch (InvalidIdentifierException e) {
-        String msg = "Invalid retrieved column name: " + e.getMessage();
-        throw new InvalidConfigurationFileException(this.tag, msg, msg);
-      }
-
-      List<VOProperty> properties = new ArrayList<VOProperty>();
-
-      for (ColumnMetadata cm : this.nonStructuredColumns) {
-        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix1", "columnAlias", false, this.tag);
-        properties
-            .add(new VOProperty(m.getId().getJavaMemberName(), m, EnclosingTagType.NON_STRUCTURED_SELECT, this.tag));
-      }
-
-      List<VOMember> associations = new ArrayList<VOMember>();
-      List<VOMember> collections = new ArrayList<VOMember>();
-
-      SelectVOClass vo = null;
-      try {
-        vo = new SelectVOClass(this.classPackage, this.tag.getVOClassName(), null, properties, associations,
-            collections, this.tag);
-        log.debug("--> Adding VO: " + vo);
-        voRegistry.addVO(vo);
-      } catch (VOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(this.tag, //
-            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
-            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
-                + ".");
-      } catch (StructuredVOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(this.tag, //
-            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
-            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
-                + ".");
-      } catch (DuplicatePropertyNameException e) {
-        throw new InvalidConfigurationFileException(e.getInitial().getTag(), //
-            e.renderMessage(), //
-            e.renderMessage());
-      }
-
-    } else {
-
-      // Structured columns
-
-      try {
-        log.debug("Phase 2");
-        this.tag.getStructuredColumns().gatherMetadataPhase2(conn2, this.config.getTypeSolverTag());
-        this.structuredColumns = this.tag.getStructuredColumns().getMetadata();
-        this.structuredColumns.registerVOs(this.classPackage, voRegistry);
-
-      } catch (InvalidSQLException e) {
-        String msg = "Could not create temporary SQL view to retrieve metadata.\n" + "[ " + e.getMessage() + " ]\n"
-            + "* Do all resulting columns have different and valid names?\n"
-            + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
-            + "\n--- end SQL ---";
-        throw new InvalidConfigurationFileException(this.tag, msg, msg);
-      } catch (UnresolvableDataTypeException e) {
-        String msg = "Could not retrieve metadata: could not find suitable Java type for column '" + e.getColumnName()
-            + "' ";
-        throw new InvalidConfigurationFileException(this.tag, msg, msg);
-      } catch (VOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(e.getTag(), //
-            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
-            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
-                + ".");
-      } catch (StructuredVOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(e.getThisTag(), //
-            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
-            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
-                + ".");
-      } catch (DuplicatePropertyNameException e) {
-        throw new InvalidConfigurationFileException(e.getDuplicate().getTag(), //
-            e.renderMessage(), //
-            e.renderMessage());
-      }
-
-    }
-
-    this.selectMethodReturnType = new SelectMethodReturnType(this, this.classPackage, this.tag, this.layout);
-
-  }
-
+  // phase1
   public void prepareUnstructuredColumnsRetrieval(final Connection conn) throws InvalidSQLException {
 
     log.info("prepare view 0");
@@ -372,6 +268,113 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     return reassembled;
   }
 
+  // TODO: Just a marker for phase 2
+
+  public void gatherMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
+      throws UncontrolledException, InvalidConfigurationFileException {
+
+    if (!this.structuredSelect) {
+
+      // Non-structured columns
+
+      try {
+        retrieveFlatColumnsMetadata(conn2);
+
+      } catch (SQLException e) {
+        throw new UncontrolledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
+            + "> at " + this.tag.getSourceLocation().render(), e);
+      } catch (UnresolvableDataTypeException e) {
+        String msg = "Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
+            + ">: could not find suitable Java type for column '" + e.getColumnName() + "' ";
+        throw new InvalidConfigurationFileException(this.tag, msg, msg);
+      } catch (InvalidIdentifierException e) {
+        String msg = "Invalid retrieved column name: " + e.getMessage();
+        throw new InvalidConfigurationFileException(this.tag, msg, msg);
+      }
+
+      List<VOProperty> properties = new ArrayList<VOProperty>();
+
+      for (ColumnMetadata cm : this.nonStructuredColumns) {
+        StructuredColumnMetadata m = new StructuredColumnMetadata(cm, "entityPrefix1", "columnAlias", false, this.tag);
+        properties
+            .add(new VOProperty(m.getId().getJavaMemberName(), m, EnclosingTagType.NON_STRUCTURED_SELECT, this.tag));
+      }
+
+      List<VOMember> associations = new ArrayList<VOMember>();
+      List<VOMember> collections = new ArrayList<VOMember>();
+
+      SelectVOClass vo = null;
+      try {
+        vo = new SelectVOClass(this.classPackage, this.tag.getVOClassName(), null, properties, associations,
+            collections, this.tag);
+        log.debug("--> Adding VO: " + vo);
+        voRegistry.addVO(vo);
+      } catch (VOAlreadyExistsException e) {
+        throw new InvalidConfigurationFileException(this.tag, //
+            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
+            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
+                + ".");
+      } catch (StructuredVOAlreadyExistsException e) {
+        throw new InvalidConfigurationFileException(this.tag, //
+            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
+            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
+                + ".");
+      } catch (DuplicatePropertyNameException e) {
+        throw new InvalidConfigurationFileException(e.getInitial().getTag(), //
+            e.renderMessage(), //
+            e.renderMessage());
+      }
+
+    } else {
+
+      // Structured columns
+
+      try {
+        log.debug("Phase 2");
+        this.tag.getStructuredColumns().gatherMetadataPhase2(conn2, this.config.getTypeSolverTag());
+        this.structuredColumns = this.tag.getStructuredColumns().getMetadata();
+        this.structuredColumns.registerVOs(this.classPackage, voRegistry);
+
+      } catch (InvalidSQLException e) {
+        String msg = "Could not create temporary SQL view to retrieve metadata.\n" + "[ " + e.getMessage() + " ]\n"
+            + "* Do all resulting columns have different and valid names?\n"
+            + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
+            + "\n--- end SQL ---";
+        throw new InvalidConfigurationFileException(this.tag, msg, msg);
+      } catch (UnresolvableDataTypeException e) {
+        String msg = "Could not retrieve metadata: could not find suitable Java type for column '" + e.getColumnName()
+            + "' ";
+        throw new InvalidConfigurationFileException(this.tag, msg, msg);
+      } catch (VOAlreadyExistsException e) {
+        throw new InvalidConfigurationFileException(e.getTag(), //
+            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
+            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
+                + ".");
+      } catch (StructuredVOAlreadyExistsException e) {
+        throw new InvalidConfigurationFileException(e.getThisTag(), //
+            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
+            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
+                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
+                + ".");
+      } catch (DuplicatePropertyNameException e) {
+        throw new InvalidConfigurationFileException(e.getDuplicate().getTag(), //
+            e.renderMessage(), //
+            e.renderMessage());
+      }
+
+    }
+
+    this.selectMethodReturnType = new SelectMethodReturnType(this, this.classPackage, this.tag, this.layout);
+
+  }
+
   public void retrieveFlatColumnsMetadata(final Connection conn2)
       throws SQLException, UnresolvableDataTypeException, InvalidIdentifierException {
 
@@ -412,6 +415,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     }
 
   }
+
+  // TODO: Just a marker for end of phase 2
 
   // Indexable
 

@@ -476,19 +476,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return null;
   }
 
-  // TODO: Why is this method used?
-  public SelectClassTag findFacetSelect(final SelectDataSetMetadata metadata, final DatabaseAdapter adapter) {
-    if (metadata == null) {
-      return null;
-    }
-    for (SelectClassTag v : this.getFacetSelects()) {
-      if (metadata.getSelectTag().getJavaClassName().equals(v.getJavaClassName())) {
-        return v;
-      }
-    }
-    return null;
-  }
-
   // Location Listener
 
   public static class LocationListener extends Listener {

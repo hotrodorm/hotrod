@@ -103,27 +103,6 @@ public class SpringJDBCGenerator extends FormerGenerator {
       this.beans.add(springBean);
       break;
 
-    case SELECT:
-      SelectDataSetMetadata sm = (SelectDataSetMetadata) metadata;
-      SelectClassTag stag = this.config.findFacetSelect(sm, this.adapter);
-      if (stag == null) {
-        throw new ControlledException(
-            "Could not find select tag for with java-class-name '" + sm.getSelectTag().getJavaClassName() + "'.");
-      }
-      layout = new DataSetLayout(this.config);
-      dao = new DAO(stag.getFragmentConfig(), metadata, layout);
-      daoPrimitives = new DAOPrimitives(stag.getFragmentConfig(), metadata, layout, this, type);
-      springBean = new SpringBeanTable(metadata, daoPrimitives);
-
-      // TODO Architecture: simplify mutual reference implementation.
-      dao.setDaoPrimitives(daoPrimitives);
-      daoPrimitives.setDao(dao);
-
-      this.daos.put(metadata, dao);
-      this.daoPrimitives.put(metadata, daoPrimitives);
-      this.beans.add(springBean);
-
-      break;
     default:
       throw new ControlledException(
           "Unrecognized type for database object '" + metadata.getId().getCanonicalSQLName() + "'.");

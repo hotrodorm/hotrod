@@ -143,17 +143,6 @@
     <xsd:attribute name="name" type="xsd:string" use="required" />
   </xsd:complexType>
 
-  <!-- select DAO [deprecated] -->
-  
-  <xsd:complexType name="select-dao-type" mixed="true">
-    <xsd:sequence>
-      <xsd:element name="parameter" type="parameter-type" minOccurs="0" maxOccurs="unbounded" />
-      <xsd:element name="column" type="column-type" minOccurs="0" maxOccurs="unbounded" />
-      <xsd:element name="complement" type="complement-type" minOccurs="0" maxOccurs="unbounded" />
-    </xsd:sequence>
-    <xsd:attribute name="java-class-name" type="xsd:string" use="required" />
-  </xsd:complexType>
-
   <!-- ============= -->
   <!-- SELECT METHOD -->
   <!-- ============= -->
