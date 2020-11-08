@@ -14,17 +14,21 @@
     
   </sql>
 
-  <!-- select method: findCheapProducts -->
+  <!-- select method: findExpensiveProducts -->
 
-  <resultMap id="result_map_select_findCheapProducts" type="app5.persistence.CheapProductVOVO">
-    <result property="id" column="id" />
+  <resultMap id="result_map_select_findExpensiveProducts" type="app5.persistence.CheapProductVOVO">
     <result property="name" column="name" />
     <result property="price" column="price" />
-    <result property="sku" column="sku" />
+    <result property="kind" column="kind" />
   </resultMap>
 
-  <select id="select_findCheapProducts" resultMap="result_map_select_findCheapProducts">
-      select * from product where price between 0 and 5 
+  <select id="select_findExpensiveProducts" resultMap="result_map_select_findExpensiveProducts">
+      select name, price, 
+#{title,jdbcType=VARCHAR}
+ as kind
+      from product
+      where price > 
+#{minPrice,jdbcType=NUMERIC}
   </select>
 
   <!-- select method: findCheapestProducts -->

@@ -2,8 +2,6 @@ package org.hotrod.metadata;
 
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +10,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractDAOTag;
-import org.hotrod.config.ColumnTag;
 import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.ParameterTag;
-import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.SelectMethodTag.ResultSetMode;
@@ -40,14 +36,10 @@ import org.hotrod.metadata.VORegistry.VOProperty;
 import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
-import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
-import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
-import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
-import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 

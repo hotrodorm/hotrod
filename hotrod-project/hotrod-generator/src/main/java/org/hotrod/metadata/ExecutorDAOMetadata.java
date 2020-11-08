@@ -20,6 +20,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;

@@ -55,29 +55,32 @@ public class MyQueriesDAO implements Serializable, ApplicationContextAware {
     this.applicationContext = applicationContext;
   }
 
-  // select method: findCheapProducts
+  // select method: findExpensiveProducts
 
   /*
   * The SQL statement for this method is:
 
 
       
-      select *
-      from product
       
+      select name, price, #{title} as kind
+      from product
+      where price > #{minPrice}
     
 
   */
 
 
-  public static class ParamFindCheapProducts {
+  public static class ParamFindExpensiveProducts {
     java.lang.Integer minPrice;
+    java.lang.String title;
   }
 
-  public Cursor<CheapProductVOVO> findCheapProducts(final java.lang.Integer minPrice) {
-    ParamFindCheapProducts param0 = new ParamFindCheapProducts();
+  public Cursor<CheapProductVOVO> findExpensiveProducts(final java.lang.Integer minPrice, final java.lang.String title) {
+    ParamFindExpensiveProducts param0 = new ParamFindExpensiveProducts();
     param0.minPrice = minPrice;
-    return     new MyBatisCursor<CheapProductVOVO>(this.sqlSession.selectCursor("app5.persistence.primitives.myQueriesDAO.select_findCheapProducts", param0));
+    param0.title = title;
+    return     new MyBatisCursor<CheapProductVOVO>(this.sqlSession.selectCursor("app5.persistence.primitives.myQueriesDAO.select_findExpensiveProducts", param0));
   }
 
   // select method: findCheapestProducts

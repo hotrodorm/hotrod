@@ -23,6 +23,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.hotrod.generator.ResultSetColumnsRetriever.RetrievalContext;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -359,44 +360,6 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
 
     public List<JDBCType> getParameterJDBCTypes() {
       return parameterJDBCTypes;
-    }
-
-  }
-
-  public class RetrievalContext {
-
-    private SelectMethodTag tag;
-    private SelectMethodMetadata sm;
-    private String cleanedUpFoundation;
-    private String tempViewName;
-
-    public RetrievalContext(final SelectMethodTag tag, final SelectMethodMetadata sm) {
-      this.tag = tag;
-      this.sm = sm;
-    }
-
-    public String getCleanedUpFoundation() {
-      return cleanedUpFoundation;
-    }
-
-    public void setCleanedUpFoundation(String cleanedUpFoundation) {
-      this.cleanedUpFoundation = cleanedUpFoundation;
-    }
-
-    public String getTempViewName() {
-      return tempViewName;
-    }
-
-    public void setTempViewName(String tempViewName) {
-      this.tempViewName = tempViewName;
-    }
-
-    public SelectMethodTag getTag() {
-      return tag;
-    }
-
-    public SelectMethodMetadata getSm() {
-      return sm;
     }
 
   }

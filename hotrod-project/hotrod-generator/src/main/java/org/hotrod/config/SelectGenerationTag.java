@@ -55,10 +55,10 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
 
   // Properties
 
-  private String sStrategy;
+  private String sStrategy = null;
   private String tempViewBaseName = null;
 
-  private SelectStrategy strategy;
+  private SelectStrategy strategy = null;
 
   private int folio = 0;
 
@@ -72,12 +72,14 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
   // JAXB Setters
 
   @XmlAttribute(name = "strategy")
-  public void setStrategy(final String strategy) {
+  public void setSStrategy(final String strategy) {
+    log.info("strategy=" + strategy);
     this.sStrategy = strategy;
   }
 
   @XmlAttribute(name = "temp-view-base-name")
   public void setTempViewBaseName(final String tempViewBaseName) {
+    log.info("tempViewBaseName=" + tempViewBaseName);
     this.tempViewBaseName = tempViewBaseName;
   }
 
@@ -87,6 +89,7 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
 
     // strategy
 
+    log.info("this.sStrategy=" + this.sStrategy);
     if (this.sStrategy == null) {
       this.strategy = DEFAULT_STRATEGY;
     } else {
@@ -98,6 +101,7 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
                 + Stream.of(SelectStrategy.values()).map(s -> s.getCaption()).collect(Collectors.joining(", ")));
       }
     }
+    log.info("this.strategy=" + this.strategy);
 
     // temp-view-base-name
 
@@ -128,6 +132,10 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
 
   public synchronized String getNextTempViewName() {
     return this.tempViewBaseName + (this.folio++);
+  }
+
+  public String getsStrategy() {
+    return sStrategy;
   }
 
   public SelectStrategy getStrategy() {

@@ -10,21 +10,11 @@ public abstract class AbstractCheapProductVOVO implements Serializable {
 
   // Expression properties
 
-  protected java.lang.Long id = null;
   protected java.lang.String name = null;
   protected java.lang.Integer price = null;
-  protected java.lang.Long sku = null;
+  protected java.lang.String kind = null; // it's a LOB type
 
   // getters & setters
-
-  public final java.lang.Long getId() {
-    return this.id;
-  }
-
-  public final void setId(final java.lang.Long id) {
-    this.id = id;
-    this.propertiesChangeLog.idWasSet = true;
-  }
 
   public final java.lang.String getName() {
     return this.name;
@@ -44,13 +34,13 @@ public abstract class AbstractCheapProductVOVO implements Serializable {
     this.propertiesChangeLog.priceWasSet = true;
   }
 
-  public final java.lang.Long getSku() {
-    return this.sku;
+  public final java.lang.String getKind() {
+    return this.kind;
   }
 
-  public final void setSku(final java.lang.Long sku) {
-    this.sku = sku;
-    this.propertiesChangeLog.skuWasSet = true;
+  public final void setKind(final java.lang.String kind) {
+    this.kind = kind;
+    this.propertiesChangeLog.kindWasSet = true;
   }
 
   // to string
@@ -58,10 +48,9 @@ public abstract class AbstractCheapProductVOVO implements Serializable {
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append(super.toString() + "\n");
-    sb.append("- id=" + this.id + "\n");
     sb.append("- name=" + this.name + "\n");
     sb.append("- price=" + this.price + "\n");
-    sb.append("- sku=" + this.sku);
+    sb.append("- kind=" + this.kind);
     return sb.toString();
   }
 
@@ -70,10 +59,9 @@ public abstract class AbstractCheapProductVOVO implements Serializable {
   public PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();
 
   public class PropertiesChangeLog {
-    public boolean idWasSet = false;
     public boolean nameWasSet = false;
     public boolean priceWasSet = false;
-    public boolean skuWasSet = false;
+    public boolean kindWasSet = false;
   }
 
 }

@@ -10,7 +10,7 @@
         abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" 
         dao-prefix="" dao-suffix="DAO" />
       <mappers dir="mappers" />
-      <select-generation strategy="create-view" />
+      <select-generation strategy="result-set" temp-view-base-name="tmp2" />
       <classic-fk-navigation />
     </mybatis-spring>
   </generators>
@@ -28,13 +28,12 @@
   
   <dao name="MyQueries">
 
-    <select method="findCheapProducts" vo="CheapProductVO" mode="cursor">
+    <select method="findExpensiveProducts" vo="CheapProductVO" mode="cursor">
       <parameter name="minPrice" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-      select *
+      <parameter name="title" java-type="java.lang.String" jdbc-type="VARCHAR" />
+      select name, price, #{title} as kind
       from product
-      <complement>
       where price > #{minPrice}
-      </complement>
     </select>
   
     <select method="findCheapestProducts">

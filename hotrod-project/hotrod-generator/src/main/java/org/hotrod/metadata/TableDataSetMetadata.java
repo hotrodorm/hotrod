@@ -425,8 +425,8 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
         ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
         SelectMethodMetadata sm;
         try {
-          sm = new SelectMethodMetadata(generator, cr, selectTag, this.config, selectGenerationTag, columnsPrefixGenerator,
-              layout);
+          sm = new SelectMethodMetadata(generator, cr, selectTag, this.config, selectGenerationTag,
+              columnsPrefixGenerator, layout);
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
           throw new InvalidConfigurationFileException(selectTag, msg, msg);

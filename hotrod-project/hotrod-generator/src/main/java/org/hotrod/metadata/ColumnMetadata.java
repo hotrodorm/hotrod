@@ -1,6 +1,8 @@
 package org.hotrod.metadata;
 
 import java.io.Serializable;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -184,7 +186,7 @@ public class ColumnMetadata implements Serializable {
     this.reusesMemberFromSuperClass = false;
   }
 
-  // From a <select> tag
+  // From a <select> tag -- create view strategy
 
   public ColumnMetadata(final DataSetMetadata dataSet, final JdbcColumn c, final String selectName,
       final DatabaseAdapter adapter, final ColumnTag columnTag, final boolean isVersionControlColumn,
@@ -213,6 +215,42 @@ public class ColumnMetadata implements Serializable {
 
     this.adapter = adapter;
     this.type = ColumnMetadata.resolveJavaType(this, this.tag, this.c, typeSolverTag, this.adapter);
+    this.typeSolverTag = typeSolverTag;
+
+    this.isVersionControlColumn = isVersionControlColumn;
+    this.reusesMemberFromSuperClass = false;
+  }
+
+  // From a <select> tag -- result set strategy
+
+  public ColumnMetadata(final DataSetMetadata dataSet, ResultSetMetaData rm, final int colIndex,
+      final String selectName, final DatabaseAdapter adapter, final ColumnTag columnTag,
+      final boolean isVersionControlColumn, final boolean belongsToPK, final TypeSolverTag typeSolverTag)
+      throws UnresolvableDataTypeException, InvalidIdentifierException, SQLException {
+    this.dataSet = dataSet;
+    this.c = null;
+
+    this.columnName = rm.getColumnLabel(colIndex);
+    this.tableName = selectName;
+
+    this.tag = columnTag;
+    if (this.tag == null || this.tag.getJavaName() == null) {
+      this.id = Id.fromCanonicalSQL(this.columnName, adapter);
+    } else {
+      this.id = Id.fromCanonicalSQLAndJavaMember(this.columnName, adapter, this.tag.getJavaName());
+    }
+
+    this.belongsToPK = belongsToPK;
+    this.autogenerationType = null;
+    this.dataType = rm.getColumnType(colIndex);
+    this.typeName = rm.getColumnTypeName(colIndex);
+    this.columnSize = rm.getPrecision(colIndex);
+    this.decimalDigits = rm.getScale(colIndex);
+    this.columnDefault = null;
+    this.enumMetadata = null;
+
+    this.adapter = adapter;
+    this.type = ColumnMetadata.resolveJavaType(this, this.tag, null, typeSolverTag, this.adapter);
     this.typeSolverTag = typeSolverTag;
 
     this.isVersionControlColumn = isVersionControlColumn;

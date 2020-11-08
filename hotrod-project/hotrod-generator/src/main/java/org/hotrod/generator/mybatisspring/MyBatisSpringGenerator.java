@@ -26,7 +26,6 @@ import org.hotrod.config.ExecutorTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisSpringTag;
-import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -522,6 +521,8 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       // Prepare <select> methods meta data - phase 1
 
       ColumnsRetriever cr = ColumnsRetriever.getInstance(this.config, this.dloc, this.adapter, this.db, conn);
+
+      log.info("ColumnsRetriever: " + cr);
 
       for (TableDataSetMetadata tm : this.tables) {
         boolean retrieving;
