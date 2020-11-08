@@ -111,17 +111,17 @@ public class Application {
 
     // Compute average price of products
 
-    log.info("* CURSOR - Select by example...");
-    int avgPrice = this.cursorExamples.computeAvgPriceProducts();
-    log.info("Average price: " + avgPrice);
-
-    log.info("* CURSOR - Select by criteria...");
-    int avgPriceC = this.cursorExamples.computeAvgPriceProductsCriteria();
-    log.info("Average priceC: " + avgPriceC);
-
-    log.info("* LiveSQL List...");
-    int avgPriceLL = this.cursorExamples.computeAvgPriceProductsLiveSQL();
-    log.info("Average priceLL: " + avgPriceLL);
+//    log.info("* CURSOR - Select by example...");
+//    int avgPrice = this.cursorExamples.computeAvgPriceProducts();
+//    log.info("Average price: " + avgPrice);
+//
+//    log.info("* CURSOR - Select by criteria...");
+//    int avgPriceC = this.cursorExamples.computeAvgPriceProductsCriteria();
+//    log.info("Average priceC: " + avgPriceC);
+//
+//    log.info("* LiveSQL List...");
+//    int avgPriceLL = this.cursorExamples.computeAvgPriceProductsLiveSQL();
+//    log.info("Average priceLL: " + avgPriceLL);
 
     log.info("* <select mode='cursor'>...");
     this.cursorExamples.findCheapProductsCursor();

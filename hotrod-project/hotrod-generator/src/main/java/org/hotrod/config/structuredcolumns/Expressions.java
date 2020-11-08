@@ -23,6 +23,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.Generator;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -81,15 +82,15 @@ public class Expressions implements ColumnsProvider, Serializable {
 
   @Override
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
-      final ColumnsPrefixGenerator columnsPrefixGenerator, final Connection conn1) throws InvalidSQLException {
+      final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr) throws InvalidSQLException {
     log.debug("this=" + this + " - this.expressions.isEmpty()=" + this.expressions.isEmpty());
     if (this.expressions.isEmpty()) {
       this.columnsRetriever = null;
     } else {
       this.columnsRetriever = new ColumnsMetadataRetriever(selectTag, this.generator.getAdapter(),
           this.generator.getJdbcDatabase(), this.generator.getLoc(), selectGenerationTag, this, null,
-          columnsPrefixGenerator);
-      this.columnsRetriever.prepareRetrieval(conn1);
+          columnsPrefixGenerator, cr);
+      this.columnsRetriever.prepareRetrieval();
     }
   }
 
@@ -116,12 +117,11 @@ public class Expressions implements ColumnsProvider, Serializable {
   }
 
   @Override
-  public void gatherMetadataPhase2(final Connection conn2, final TypeSolverTag typeSolverTag)
-      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
+  public void gatherMetadataPhase2() throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
       InvalidConfigurationFileException {
     log.debug("this.columnsRetriever=" + this.columnsRetriever);
     if (this.columnsRetriever != null) {
-      List<StructuredColumnMetadata> cms = this.columnsRetriever.retrieve(conn2, typeSolverTag);
+      List<StructuredColumnMetadata> cms = this.columnsRetriever.retrieve();
       for (StructuredColumnMetadata cm : cms) {
         String alias = cm.getColumnName();
         ExpressionTag tag = this.expressionsByAlias.get(alias);
@@ -136,7 +136,7 @@ public class Expressions implements ColumnsProvider, Serializable {
         }
         log.debug("******** java-name=" + ct.getJavaName() + " java-type=" + ct.getJavaType());
         try {
-          cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag, this.generator.getAdapter(), typeSolverTag);
+          cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag, this.generator.getAdapter());
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid name for column '" + cm.getColumnName() + tag.getClassName() + "': " + e.getMessage();
           throw new InvalidConfigurationFileException(tag, msg, msg);

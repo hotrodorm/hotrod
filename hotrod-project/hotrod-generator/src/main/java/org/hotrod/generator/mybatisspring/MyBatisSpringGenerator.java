@@ -36,6 +36,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.CachedMetadata;
+import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.DAONamespace;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassMethodException;
@@ -520,15 +521,12 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
       // Prepare <select> methods meta data - phase 1
 
-      SelectGenerationTag selectGenerationTag = config.getGenerators().getSelectedGeneratorTag().getSelectGeneration();
-
-      ViewSelectColumnsRetriever cr = new ViewSelectColumnsRetriever(this.config, this.dloc, selectGenerationTag, this.adapter,
-          this.db, conn);
+      ColumnsRetriever cr = ColumnsRetriever.getInstance(this.config, this.dloc, this.adapter, this.db, conn);
 
       for (TableDataSetMetadata tm : this.tables) {
         boolean retrieving;
         try {
-          retrieving = tm.gatherSelectsMetadataPhase1(this, conn, layout);
+          retrieving = tm.gatherSelectsMetadataPhase1(this, cr, layout);
         } catch (InvalidConfigurationFileException e) {
           throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
         }
@@ -540,7 +538,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       for (TableDataSetMetadata vm : this.views) {
         boolean retrieving;
         try {
-          retrieving = vm.gatherSelectsMetadataPhase1(this, conn, layout);
+          retrieving = vm.gatherSelectsMetadataPhase1(this, cr, layout);
         } catch (InvalidConfigurationFileException e) {
           throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
         }
@@ -552,7 +550,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       for (TableDataSetMetadata em : this.enums) {
         boolean retrieving;
         try {
-          retrieving = em.gatherSelectsMetadataPhase1(this, conn, layout);
+          retrieving = em.gatherSelectsMetadataPhase1(this, cr, layout);
         } catch (InvalidConfigurationFileException e) {
           throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
         }
@@ -564,7 +562,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       for (ExecutorDAOMetadata dm : this.executors) {
         boolean retrieving;
         try {
-          retrieving = dm.gatherSelectsMetadataPhase1(this, conn, layout);
+          retrieving = dm.gatherSelectsMetadataPhase1(this, cr, layout);
         } catch (InvalidConfigurationFileException e) {
           throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
         }

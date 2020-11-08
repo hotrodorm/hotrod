@@ -20,6 +20,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
+import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.SelectMetadataCache;
@@ -78,7 +79,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   // Select Methods meta data gathering
 
   @SuppressWarnings("unused")
-  public boolean gatherSelectsMetadataPhase1(final Generator generator, final Connection conn1,
+  public boolean gatherSelectsMetadataPhase1(final Generator generator, final ColumnsRetriever cr,
       final DataSetLayout layout) throws InvalidConfigurationFileException {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     boolean needsToRetrieveMetadata = false;
@@ -109,14 +110,14 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
         ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
         SelectMethodMetadata sm;
         try {
-          sm = new SelectMethodMetadata(generator, selectTag, this.config, selectGenerationTag, columnsPrefixGenerator,
-              layout);
+          sm = new SelectMethodMetadata(generator, cr, selectTag, this.config, selectGenerationTag,
+              columnsPrefixGenerator, layout);
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
           throw new InvalidConfigurationFileException(selectTag, msg, msg);
         }
         this.selectsMetadata.add(sm);
-        sm.gatherMetadataPhase1(conn1);
+        sm.gatherMetadataPhase1();
         log.debug(">>>   [Fresh] sm.metadataComplete()=" + sm.metadataComplete());
 
       }

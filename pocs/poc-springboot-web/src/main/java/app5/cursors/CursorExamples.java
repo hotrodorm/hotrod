@@ -1,8 +1,11 @@
 package app5.cursors;
 
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -73,6 +76,24 @@ public class CursorExamples {
     for (CheapProductVOVO p : this.productsManager.getCheapProducts()) {
       System.out.println(" - local: " + p);
     }
+
+    Cursor<CheapProductVOVO> base = this.productsManager.getCheapProducts();
+
+    Cursor<CheapProductVOVO> c = new Cursor() {
+
+      @Override
+      public void close() throws IOException {
+        base.close();
+      }
+
+      @Override
+      public Iterator iterator() {
+        // TODO Auto-generated method stub
+        return null;
+      }
+
+    };
+
   }
 
 }

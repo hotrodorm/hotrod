@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.ConverterTag;
 import org.hotrod.config.ParameterTag;
+import org.hotrod.config.SelectGenerationTag.SelectStrategy;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;
@@ -127,6 +128,13 @@ public class Compare {
       }
     }
     return true;
+  }
+
+  public static boolean same(final SelectStrategy a, final SelectStrategy b) {
+    if (a == null) {
+      return b == null;
+    }
+    return a == b;
   }
 
   // Common types

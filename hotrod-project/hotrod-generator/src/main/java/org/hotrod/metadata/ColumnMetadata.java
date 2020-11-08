@@ -48,6 +48,7 @@ public class ColumnMetadata implements Serializable {
   private transient DatabaseAdapter adapter;
   private ColumnTag tag;
   private PropertyType type;
+  private TypeSolverTag typeSolverTag;
 
   private boolean isVersionControlColumn;
 
@@ -93,6 +94,7 @@ public class ColumnMetadata implements Serializable {
 
     this.adapter = adapter;
     this.type = ColumnMetadata.resolveJavaType(this, this.tag, this.c, typeSolverTag, this.adapter);
+    this.typeSolverTag = typeSolverTag;
     this.isVersionControlColumn = isVersionControlColumn;
     this.reusesMemberFromSuperClass = false;
   }
@@ -177,6 +179,7 @@ public class ColumnMetadata implements Serializable {
     this.adapter = cm.adapter;
     this.tag = cm.tag;
     this.type = cm.type;
+    this.typeSolverTag = cm.typeSolverTag;
     this.isVersionControlColumn = cm.isVersionControlColumn;
     this.reusesMemberFromSuperClass = false;
   }
@@ -210,6 +213,7 @@ public class ColumnMetadata implements Serializable {
 
     this.adapter = adapter;
     this.type = ColumnMetadata.resolveJavaType(this, this.tag, this.c, typeSolverTag, this.adapter);
+    this.typeSolverTag = typeSolverTag;
 
     this.isVersionControlColumn = isVersionControlColumn;
     this.reusesMemberFromSuperClass = false;
@@ -218,12 +222,10 @@ public class ColumnMetadata implements Serializable {
   // Applying a column tag to a column meta data
 
   public static ColumnMetadata applyColumnTag(final ColumnMetadata cm, final ColumnTag tag,
-      final DatabaseAdapter adapter, final TypeSolverTag typeSolverTag)
-      throws UnresolvableDataTypeException, InvalidIdentifierException {
+      final DatabaseAdapter adapter) throws UnresolvableDataTypeException, InvalidIdentifierException {
     ColumnMetadata m2 = new ColumnMetadata(cm);
     m2.tag = tag;
-//    m2.type = m2.adapter.resolveJavaType(m2, tag);
-    m2.type = resolveJavaType(m2, tag, tag.getJdbcColumn(), typeSolverTag, m2.adapter);
+    m2.type = resolveJavaType(m2, tag, tag.getJdbcColumn(), cm.typeSolverTag, m2.adapter);
     if (tag.getJavaName() != null) {
       m2.id = Id.fromCanonicalSQLAndJavaMember(cm.getColumnName(), adapter, tag.getJavaName());
     }

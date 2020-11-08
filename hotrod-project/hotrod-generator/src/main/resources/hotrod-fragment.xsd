@@ -9,7 +9,6 @@
           <xsd:element name="dao" type="dao-type" />
           <xsd:element name="view" type="view-type" />
           <xsd:element name="enum" type="enum-type" />
-          <xsd:element name="select" type="select-dao-type" />
           <xsd:element name="fragment" type="fragment-type" />
           <xsd:element name="facet" type="facet-type" />
           <xsd:element name="converter" type="converter-type" />

@@ -25,6 +25,7 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectClassTag;
+import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
@@ -492,10 +493,12 @@ public abstract class FormerGenerator implements Generator {
 
       // Prepare <select> methods meta data - phase 1
 
+      ColumnsRetriever cr = ColumnsRetriever.getInstance(this.config, this.dloc, this.adapter, this.db, conn);
+
       for (TableDataSetMetadata tm : this.tables) {
         boolean retrieving;
         try {
-          retrieving = tm.gatherSelectsMetadataPhase1(this, conn, layout);
+          retrieving = tm.gatherSelectsMetadataPhase1(this, cr, layout);
         } catch (InvalidConfigurationFileException e) {
           throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
         }
@@ -507,7 +510,7 @@ public abstract class FormerGenerator implements Generator {
       for (TableDataSetMetadata vm : this.views) {
         boolean retrieving;
         try {
-          retrieving = vm.gatherSelectsMetadataPhase1(this, conn, layout);
+          retrieving = vm.gatherSelectsMetadataPhase1(this, cr, layout);
         } catch (InvalidConfigurationFileException e) {
           throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
         }
@@ -519,7 +522,7 @@ public abstract class FormerGenerator implements Generator {
       for (TableDataSetMetadata em : this.enums) {
         boolean retrieving;
         try {
-          retrieving = em.gatherSelectsMetadataPhase1(this, conn, layout);
+          retrieving = em.gatherSelectsMetadataPhase1(this, cr, layout);
         } catch (InvalidConfigurationFileException e) {
           throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
         }
@@ -531,7 +534,7 @@ public abstract class FormerGenerator implements Generator {
       for (ExecutorDAOMetadata dm : this.executors) {
         boolean retrieving;
         try {
-          retrieving = dm.gatherSelectsMetadataPhase1(this, conn, layout);
+          retrieving = dm.gatherSelectsMetadataPhase1(this, cr, layout);
         } catch (InvalidConfigurationFileException e) {
           throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
         }

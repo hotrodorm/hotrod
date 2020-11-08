@@ -38,7 +38,7 @@ public class ProductsManager {
   @Transactional
   public Cursor<CheapProductVOVO> getCheapProducts() {
     this.myQueriesDAO.findCheapestProducts();
-    return this.myQueriesDAO.findCheapProducts();
+    return this.myQueriesDAO.findCheapProducts(20);
   }
 
 }

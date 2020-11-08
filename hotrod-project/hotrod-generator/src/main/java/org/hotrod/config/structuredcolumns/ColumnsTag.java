@@ -27,6 +27,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.mybatis.DataSetLayout;
@@ -269,27 +270,26 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   @Override
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
-      final ColumnsPrefixGenerator columnsPrefixGenerator, final Connection conn1) throws InvalidSQLException {
+      final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr) throws InvalidSQLException {
 
     for (VOTag vo : this.vos) {
-      vo.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
+      vo.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, cr);
     }
     log.debug("EXPRESSIONS from ColumnsTag... this=" + this);
-    this.expressions.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
+    this.expressions.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, cr);
 
   }
 
   @Override
-  public void gatherMetadataPhase2(final Connection conn2, final TypeSolverTag typeSolverTag)
-      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
+  public void gatherMetadataPhase2() throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
       InvalidConfigurationFileException {
 
     // Retrieve
 
     for (VOTag vo : this.vos) {
-      vo.gatherMetadataPhase2(conn2, typeSolverTag);
+      vo.gatherMetadataPhase2();
     }
-    this.expressions.gatherMetadataPhase2(conn2, typeSolverTag);
+    this.expressions.gatherMetadataPhase2();
 
     // Assemble
 

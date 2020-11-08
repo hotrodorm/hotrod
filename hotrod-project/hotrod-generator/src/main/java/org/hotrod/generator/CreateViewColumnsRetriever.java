@@ -1,4 +1,4 @@
-package org.hotrod.generator.mybatisspring;
+package org.hotrod.generator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +16,6 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
-import org.hotrod.config.TypeSolverTag;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -24,7 +23,6 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
-import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -35,9 +33,9 @@ import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
-public class ViewSelectColumnsRetriever implements AutoCloseable {
+public class CreateViewColumnsRetriever implements ColumnsRetriever {
 
-  private static final Logger log = LogManager.getLogger(ViewSelectColumnsRetriever.class);
+  private static final Logger log = LogManager.getLogger(CreateViewColumnsRetriever.class);
 
   private HotRodConfigTag config;
   private DatabaseLocation dloc;
@@ -47,12 +45,9 @@ public class ViewSelectColumnsRetriever implements AutoCloseable {
   private Connection conn;
   private Map<String, RetrievalContext> contexts;
 
-  private List<JDBCType> parameterJDBCTypes;
-  private ParameterRenderer parameterRenderer;
-
   private Connection conn2;
 
-  public ViewSelectColumnsRetriever(final HotRodConfigTag config, final DatabaseLocation dloc,
+  public CreateViewColumnsRetriever(final HotRodConfigTag config, final DatabaseLocation dloc,
       final SelectGenerationTag selectGenerationTag, final DatabaseAdapter adapter, final JdbcDatabase db,
       final Connection conn) throws SQLException {
     this.config = config;
@@ -68,26 +63,21 @@ public class ViewSelectColumnsRetriever implements AutoCloseable {
 
   // TODO: Just a marker for phase 1
 
-  public ParameterRenderer getParameterRenderer() {
-    this.parameterJDBCTypes = new ArrayList<JDBCType>();
-    this.parameterRenderer = new ParameterRenderer() {
-      @Override
-      public String render(final SQLParameter parameter) {
-        log.info("prepare view 0.1 -- parameter=" + parameter.getDefinition());
-        parameterJDBCTypes.add(parameter.getDefinition().getJDBCType());
-        return "?";
-      }
+  private class CreateViewParameterRenderer implements ParameterRenderer {
 
-//      @Override
-//      public String render(final SQLParameter parameter) {
-//        log.info("prepare view 0.1 -- parameter=" + parameter.getDefinition());
-//        return "null";
-//      }
-    };
-    return this.parameterRenderer;
+    private List<JDBCType> parameterJDBCTypes = new ArrayList<JDBCType>();
+
+    @Override
+    public String render(final SQLParameter parameter) {
+      log.info("prepare view 0.1 -- parameter=" + parameter.getDefinition());
+      parameterJDBCTypes.add(parameter.getDefinition().getJDBCType());
+      return "#{" + parameter.getName() + "}";
+    }
+
   }
 
-  public void phase1Unstructured(final String key, final SelectMethodTag tag, final SelectMethodMetadata sm)
+  @Override
+  public void phase1Flat(final String key, final SelectMethodTag tag, final SelectMethodMetadata sm)
       throws InvalidSQLException {
 
     log.info("prepare view 0");
@@ -97,9 +87,8 @@ public class ViewSelectColumnsRetriever implements AutoCloseable {
 
     log.debug("prepare view 1");
 
-    // String foundation = this.tag.getSQLFoundation(JDBCParameterRenderer);
-    this.getParameterRenderer();
-    String foundation = tag.renderSQLSentence(this.parameterRenderer);
+    CreateViewParameterRenderer pr = new CreateViewParameterRenderer();
+    String foundation = tag.renderSQLSentence(pr);
     ctx.setCleanedUpFoundation(cleanUpSQL(foundation));
     ctx.setTempViewName(this.selectGenerationTag.getNextTempViewName());
     String createView = this.adapter.createOrReplaceView(ctx.getTempViewName(), ctx.getCleanedUpFoundation());
@@ -133,18 +122,8 @@ public class ViewSelectColumnsRetriever implements AutoCloseable {
       PreparedStatement ps = null;
       try {
         ps = this.conn.prepareStatement(createView);
-
-        log.info("Will apply null parameter values (" + parameterJDBCTypes.size() + " parameters).");
-        for (int i = 0; i < parameterJDBCTypes.size(); i++) {
-          JDBCType pt = parameterJDBCTypes.get(i);
-          log.info(" --> pt=" + pt);
-          log.info(" - ps.setNull(" + (i + 1) + ", " + pt.getCode() + ")");
-          ps.setNull(i + 1, pt.getCode());
-        }
-
         log.info("prepare view - will execute create view");
         ps.execute();
-
         log.debug("prepare view - view created");
 
       } catch (SQLException e) {
@@ -157,6 +136,7 @@ public class ViewSelectColumnsRetriever implements AutoCloseable {
 
   }
 
+  @Override
   public void phase1Structured(final String key, final SelectMethodTag selectTag, final ColumnsProvider columnsProvider,
       final SelectMethodMetadata sm) throws InvalidSQLException {
 
@@ -165,33 +145,22 @@ public class ViewSelectColumnsRetriever implements AutoCloseable {
     RetrievalContext ctx = new RetrievalContext(selectTag, sm);
     this.contexts.put(key, ctx);
 
-    ParameterRenderer JDBCParameterRenderer = new ParameterRenderer() {
-      @Override
-      public String render(final SQLParameter parameter) {
-        return "?";
-      }
-    };
-
     log.debug("prepare view 1");
-
-    String sqlAngle = selectTag.renderSQLAngle(JDBCParameterRenderer, columnsProvider, this.adapter);
-    log.debug("------> sqlAngle=" + sqlAngle);
-    sqlAngle = cleanUpSQL(sqlAngle);
-
-    ctx.setCleanedUpFoundation(sqlAngle);
+    CreateViewParameterRenderer pr = new CreateViewParameterRenderer();
+    String foundation = selectTag.renderSQLAngle(pr, columnsProvider, this.adapter);
+    ctx.setCleanedUpFoundation(cleanUpSQL(foundation));
     ctx.setTempViewName(this.selectGenerationTag.getNextTempViewName());
-
-    String createViewSQL = this.adapter.createOrReplaceView(ctx.getTempViewName(), sqlAngle);
-    String dropViewSQL = this.adapter.dropView(ctx.getTempViewName());
+    String createView = this.adapter.createOrReplaceView(ctx.getTempViewName(), ctx.getCleanedUpFoundation());
+    String dropView = this.adapter.dropView(ctx.getTempViewName());
 
     // 1. Drop (if exists) the view.
 
-    log.debug("prepare view - will drop view: " + dropViewSQL);
+    log.debug("prepare view - will drop view: " + dropView);
 
     {
       PreparedStatement ps = null;
       try {
-        ps = this.conn.prepareStatement(dropViewSQL);
+        ps = this.conn.prepareStatement(dropView);
         log.debug("prepare view - will execute drop view");
         ps.execute();
         log.debug("prepare view - view dropped");
@@ -206,19 +175,19 @@ public class ViewSelectColumnsRetriever implements AutoCloseable {
 
     // 2. Create or replace the view.
 
-    log.debug("prepare view - will create view: " + createViewSQL);
+    log.debug("prepare view - will create view: " + createView);
 
     {
       PreparedStatement ps = null;
       try {
-        ps = this.conn.prepareStatement(createViewSQL);
+        ps = this.conn.prepareStatement(createView);
         log.debug("prepare view - will execute create view");
         ps.execute();
         log.debug("prepare view - view created");
 
       } catch (SQLException e) {
         log.debug("prepare view - exception while creating view", e);
-        throw new InvalidSQLException(createViewSQL, e);
+        throw new InvalidSQLException(createView, e);
       } finally {
         log.debug("prepare view - will close resources");
         JdbcUtil.closeDbResources(ps);
@@ -229,7 +198,8 @@ public class ViewSelectColumnsRetriever implements AutoCloseable {
 
   // TODO: Just a marker for phase 2
 
-  public List<ColumnMetadata> phase2Unstructured(final String key)
+  @Override
+  public List<ColumnMetadata> phase2Flat(final String key)
       throws SQLException, UnresolvableDataTypeException, InvalidIdentifierException {
 
     RetrievalContext ctx = this.contexts.get(key);
@@ -284,18 +254,23 @@ public class ViewSelectColumnsRetriever implements AutoCloseable {
     }
   }
 
+  @Override
   public List<StructuredColumnMetadata> phase2Structured(final String key, final SelectMethodTag selectTag,
-      final TypeSolverTag typeSolverTag, final String aliasPrefix, final String entityPrefix,
-      final ColumnsProvider columnsProvider) throws SQLException, UnresolvableDataTypeException,
-      InvalidIdentifierException, InvalidConfigurationFileException, UncontrolledException, InvalidSQLException {
+      final String aliasPrefix, final String entityPrefix, final ColumnsProvider columnsProvider)
+      throws UnresolvableDataTypeException, InvalidConfigurationFileException, UncontrolledException {
 
     RetrievalContext ctx = this.contexts.get(key);
 
     // 1. Get the secondary connection if it's not ready yet
 
-    produceExtraConnection();
+    try {
+      produceExtraConnection();
+    } catch (SQLException e) {
+      throw new UncontrolledException("Could not retrieve database metadata", e);
+    }
 
     String dropViewSQL = this.adapter.dropView(ctx.getTempViewName());
+
     List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
 
     {
@@ -304,7 +279,7 @@ public class ViewSelectColumnsRetriever implements AutoCloseable {
 
       try {
 
-        // 2. Retrieve the view meta data
+        // 1. Retrieve the view meta data
 
         String viewJdbcName = this.adapter.formatJdbcTableName(ctx.getTempViewName());
 
@@ -314,10 +289,11 @@ public class ViewSelectColumnsRetriever implements AutoCloseable {
           JdbcColumn c = this.db.retrieveSelectColumn(rs);
           ColumnMetadata cm;
           try {
-            cm = new ColumnMetadata(null, c, selectTag.getMethod(), this.adapter, null, false, false, typeSolverTag);
+            cm = new ColumnMetadata(null, c, ctx.getTag().getMethod(), this.adapter, null, false, false,
+                this.config.getTypeSolverTag());
           } catch (InvalidIdentifierException e) {
             String msg = "Invalid identifier for column '" + c.getName() + "': " + e.getMessage();
-            throw new InvalidConfigurationFileException(selectTag, msg, msg);
+            throw new InvalidConfigurationFileException(ctx.getTag(), msg, msg);
           }
 
           String alias = aliasPrefix + cm.getColumnName();
@@ -344,7 +320,7 @@ public class ViewSelectColumnsRetriever implements AutoCloseable {
         ps.execute();
 
       } catch (SQLException e) {
-        throw new InvalidSQLException(dropViewSQL, e);
+        throw new UncontrolledException("Could not retrieve database metadata", e);
       } finally {
         JdbcUtil.closeDbResources(ps);
       }
@@ -353,6 +329,7 @@ public class ViewSelectColumnsRetriever implements AutoCloseable {
     // 3. Return the meta data
 
     return columns;
+
   }
 
   // TODO: Just a marker for end phase 2

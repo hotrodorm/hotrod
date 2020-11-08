@@ -33,6 +33,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.ColumnMetadata;
@@ -474,7 +475,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   @Override
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
-      final ColumnsPrefixGenerator columnsPrefixGenerator, final Connection conn1) throws InvalidSQLException {
+      final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr) throws InvalidSQLException {
 
     // body
 
@@ -489,21 +490,21 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
         log.debug("this.generator=" + this.generator);
         this.cmr = new ColumnsMetadataRetriever(selectTag, this.generator.getAdapter(),
             this.generator.getJdbcDatabase(), this.generator.getLoc(), selectGenerationTag, this, this.alias,
-            columnsPrefixGenerator);
-        this.cmr.prepareRetrieval(conn1);
+            columnsPrefixGenerator, cr);
+        this.cmr.prepareRetrieval();
       }
     }
 
     // expressions, collections, associations
 
-    this.expressions.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
+    this.expressions.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, cr);
 
     for (CollectionTag c : this.collections) {
-      c.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
+      c.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, cr);
     }
 
     for (AssociationTag a : this.associations) {
-      a.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, conn1);
+      a.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, cr);
     }
 
   }
@@ -548,8 +549,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   }
 
   @Override
-  public void gatherMetadataPhase2(final Connection conn2, final TypeSolverTag typeSolverTag)
-      throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
+  public void gatherMetadataPhase2() throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
       InvalidConfigurationFileException {
 
     // log.info("===========");
@@ -646,17 +646,17 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
           if (this.tableMetadata.getPK() != null) { // 2.a.1 Table with a PK
 
-            this.inheritedColumns = retrieveSpecificColumns(conn2, this.tableMetadata, requiresIds, typeSolverTag);
+            this.inheritedColumns = retrieveSpecificColumns(this.tableMetadata, requiresIds);
 
           } else { // 2.a.2 Table without a PK
 
-            this.inheritedColumns = retrieveSpecificColumns(conn2, this.tableMetadata, requiresIds, typeSolverTag);
+            this.inheritedColumns = retrieveSpecificColumns(this.tableMetadata, requiresIds);
 
           }
 
         } else { // 2.b Based on a view
 
-          this.inheritedColumns = retrieveSpecificColumns(conn2, this.viewMetadata, requiresIds, typeSolverTag);
+          this.inheritedColumns = retrieveSpecificColumns(this.viewMetadata, requiresIds);
 
         }
 
@@ -666,23 +666,23 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
     // 3. Retrieve inner expressions, collections, and associations
 
-    this.expressions.gatherMetadataPhase2(conn2, typeSolverTag);
+    this.expressions.gatherMetadataPhase2();
     this.declaredColumns = this.expressions.getMetadata();
     log.debug("DECLARED COLUMNS=" + this.declaredColumns.size());
 
     for (CollectionTag c : this.collections) {
-      c.gatherMetadataPhase2(conn2, typeSolverTag);
+      c.gatherMetadataPhase2();
     }
 
     for (AssociationTag a : this.associations) {
-      a.gatherMetadataPhase2(conn2, typeSolverTag);
+      a.gatherMetadataPhase2();
     }
 
   }
 
-  private List<StructuredColumnMetadata> retrieveSpecificColumns(final Connection conn2, final TableDataSetMetadata dm,
-      final boolean requiresIds, final TypeSolverTag typeSolverTag) throws InvalidSQLException, UncontrolledException,
-      UnresolvableDataTypeException, InvalidConfigurationFileException {
+  private List<StructuredColumnMetadata> retrieveSpecificColumns(final TableDataSetMetadata dm,
+      final boolean requiresIds) throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
+      InvalidConfigurationFileException {
 
     Map<String, ColumnMetadata> baseColumnsByName = new HashMap<String, ColumnMetadata>();
     for (ColumnMetadata cm : dm.getColumns()) {
@@ -730,7 +730,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     }
 
     List<StructuredColumnMetadata> metadata = new ArrayList<StructuredColumnMetadata>();
-    List<StructuredColumnMetadata> retrievedColumns = this.cmr.retrieve(conn2, typeSolverTag);
+    List<StructuredColumnMetadata> retrievedColumns = this.cmr.retrieve();
     for (StructuredColumnMetadata r : retrievedColumns) {
       ColumnMetadata baseColumn = baseColumnsByName.get(r.getColumnName());
       if (baseColumn == null) {

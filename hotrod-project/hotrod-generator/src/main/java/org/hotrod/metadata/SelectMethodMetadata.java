@@ -17,7 +17,6 @@ import org.hotrod.config.EnhancedSQLPart.SQLFormatter;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.ParameterTag;
-import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
@@ -28,6 +27,7 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
+import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.mybatis.DataSetLayout;
@@ -62,6 +62,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   private boolean structuredSelect;
 
   private transient Generator generator;
+  private ColumnsRetriever cr;
   private transient DataSetLayout layout;
   private transient JdbcDatabase db;
   private HotRodConfigTag config;
@@ -87,10 +88,12 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   // Constructor
 
-  public SelectMethodMetadata(final Generator generator, final SelectMethodTag tag, final HotRodConfigTag config,
-      final SelectGenerationTag selectGenerationTag, final ColumnsPrefixGenerator columnsPrefixGenerator,
-      final DataSetLayout layout) throws InvalidIdentifierException, InvalidConfigurationFileException {
+  public SelectMethodMetadata(final Generator generator, final ColumnsRetriever cr, final SelectMethodTag tag,
+      final HotRodConfigTag config, final SelectGenerationTag selectGenerationTag,
+      final ColumnsPrefixGenerator columnsPrefixGenerator, final DataSetLayout layout)
+      throws InvalidIdentifierException, InvalidConfigurationFileException {
     this.generator = generator;
+    this.cr = cr;
     this.layout = layout;
     this.db = generator.getJdbcDatabase();
     this.config = config;
@@ -117,22 +120,21 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   // TODO: Just a marker for phase 1
 
-  public void gatherMetadataPhase1(final Connection conn1) throws InvalidConfigurationFileException {
+  public void gatherMetadataPhase1() throws InvalidConfigurationFileException {
 
     if (!this.structuredSelect) {
 
       // Unstructured columns
 
       try {
-        prepareUnstructuredColumnsRetrieval(conn1);
+        this.cr.phase1Flat(getSelectKey(), this.tag, this);
       } catch (InvalidSQLException e) {
         throw new InvalidConfigurationFileException(this.tag, //
-            "Could not retrieve metadata for <" + new SelectClassTag().getTagName()
-                + "> tag while creating a temporary SQL view for it.\n" + "* " + e.getCause().getMessage() + "\n"
-                + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
-                + "\n--- end SQL ---", //
-            "Error in " + this.tag.getSourceLocation().render() + ":\n" + "Could not retrieve metadata for <"
-                + new SelectClassTag().getTagName() + "> tag while creating a temporary SQL view for it.\n" + "* "
+            "Could not retrieve metadata for <select> tag while creating a temporary SQL view for it.\n" + "* "
+                + e.getCause().getMessage() + "\n" + "* Is the create view SQL code below valid?\n"
+                + "--- begin SQL ---\n" + e.getInvalidSQL() + "\n--- end SQL ---", //
+            "Error in " + this.tag.getSourceLocation().render() + ":\n"
+                + "Could not retrieve metadata for <select> tag while creating a temporary SQL view for it.\n" + "* "
                 + e.getCause().getMessage() + "\n" + "* Is the create view SQL code below valid?\n"
                 + "--- begin SQL ---\n" + e.getInvalidSQL() + "\n--- end SQL ---");
       }
@@ -144,7 +146,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       try {
         log.debug("Phase 1 - method=" + this.getMethod());
         this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, this.selectGenerationTag,
-            this.columnsPrefixGenerator, conn1);
+            this.columnsPrefixGenerator, this.cr);
       } catch (InvalidSQLException e) {
         throw new InvalidConfigurationFileException(this.tag, //
             "Could not retrieve metadata for <" + this.tag.getTagName()
@@ -161,111 +163,8 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   }
 
-  // phase1
-  public void prepareUnstructuredColumnsRetrieval(final Connection conn) throws InvalidSQLException {
-
-    log.info("prepare view 0");
-
-    List<JDBCType> parameterJDBCTypes = new ArrayList<JDBCType>();
-    ParameterRenderer JDBCParameterRenderer = new ParameterRenderer() {
-
-//      @Override
-//      public String render(final SQLParameter parameter) {
-//        log.info("prepare view 0.1 -- parameter=" + parameter.getDefinition());
-//        parameterJDBCTypes.add(parameter.getDefinition().getJDBCType());
-//        return "?";
-//      }
-
-      @Override
-      public String render(final SQLParameter parameter) {
-        log.info("prepare view 0.1 -- parameter=" + parameter.getDefinition());
-//        parameterJDBCTypes.add(parameter.getDefinition().getJDBCType());
-        return "null";
-      }
-    };
-
-    log.debug("prepare view 1");
-
-    // String foundation = this.tag.getSQLFoundation(JDBCParameterRenderer);
-    String foundation = this.tag.renderSQLSentence(JDBCParameterRenderer);
-    this.cleanedUpFoundation = cleanUpSQL(foundation);
-    this.tempViewName = this.selectGenerationTag.getNextTempViewName();
-    this.createView = this.adapter.createOrReplaceView(this.tempViewName, this.cleanedUpFoundation);
-    String dropView = this.adapter.dropView(this.tempViewName);
-
-    // 1. Drop (if exists) the view.
-
-    log.debug("prepare view - will drop view: " + dropView);
-
-    {
-      PreparedStatement ps = null;
-      try {
-        ps = conn.prepareStatement(dropView);
-        log.debug("prepare view - will execute drop view");
-        ps.execute();
-        log.debug("prepare view - view dropped");
-
-      } catch (Exception e) {
-        log.debug("prepare view - exception while dropping view", e);
-        // Ignore this exception
-      } finally {
-        JdbcUtil.closeDbResources(ps);
-      }
-    }
-
-    // 2. Create or replace the view.
-
-    log.info("prepare view - will create view: " + this.createView);
-
-    {
-      PreparedStatement ps = null;
-      try {
-        ps = conn.prepareStatement(this.createView);
-
-        log.info("Will apply null parameter values (" + parameterJDBCTypes.size() + " parameters).");
-        for (int i = 0; i < parameterJDBCTypes.size(); i++) {
-          JDBCType pt = parameterJDBCTypes.get(i);
-          log.info(" --> pt=" + pt);
-          log.info(" - ps.setNull(" + (i + 1) + ", " + pt.getCode() + ")");
-          ps.setNull(i + 1, pt.getCode());
-        }
-
-        log.info("prepare view - will execute create view");
-        ps.execute();
-
-        log.debug("prepare view - view created");
-
-      } catch (SQLException e) {
-        throw new InvalidSQLException(this.createView, e);
-      } finally {
-        log.debug("prepare view - will close resources");
-        JdbcUtil.closeDbResources(ps);
-      }
-    }
-
-  }
-
-  private String cleanUpSQL(final String select) {
-    ListWriter lw = new ListWriter("\n");
-    String[] lines = select.split("\n");
-
-    // Trim lines and remove empty ones
-
-    for (String line : lines) {
-      String trimmed = line.trim();
-      if (!trimmed.isEmpty()) {
-        lw.add(line);
-      }
-    }
-
-    // Remove trailing semicolons
-
-    String reassembled = lw.toString();
-    while (reassembled.endsWith(";")) {
-      reassembled = reassembled.substring(0, reassembled.length() - 1);
-    }
-
-    return reassembled;
+  private String getSelectKey() {
+    return "t" + System.identityHashCode(this.tag);
   }
 
   // TODO: Just a marker for phase 2
@@ -278,7 +177,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       // Non-structured columns
 
       try {
-        retrieveFlatColumnsMetadata(conn2);
+        this.nonStructuredColumns = this.cr.phase2Flat(getSelectKey());
 
       } catch (SQLException e) {
         throw new UncontrolledException("Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
@@ -335,7 +234,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
       try {
         log.debug("Phase 2");
-        this.tag.getStructuredColumns().gatherMetadataPhase2(conn2, this.config.getTypeSolverTag());
+        this.tag.getStructuredColumns().gatherMetadataPhase2();
         this.structuredColumns = this.tag.getStructuredColumns().getMetadata();
         this.structuredColumns.registerVOs(this.classPackage, voRegistry);
 
@@ -372,47 +271,6 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     }
 
     this.selectMethodReturnType = new SelectMethodReturnType(this, this.classPackage, this.tag, this.layout);
-
-  }
-
-  public void retrieveFlatColumnsMetadata(final Connection conn2)
-      throws SQLException, UnresolvableDataTypeException, InvalidIdentifierException {
-
-    // 1. Retrieve the temp view column's metadata
-
-    ResultSet rs = null;
-
-    try {
-      String viewJdbcName = this.adapter.formatJdbcTableName(this.tempViewName);
-      rs = conn2.getMetaData().getColumns(this.loc.getDefaultCatalog(), this.loc.getDefaultSchema(), viewJdbcName,
-          null);
-      this.nonStructuredColumns = new ArrayList<ColumnMetadata>();
-      while (rs.next()) {
-        JdbcColumn c = this.db.retrieveSelectColumn(rs);
-        ColumnTag columnTag = this.tag.findColumnTag(c.getName(), this.adapter);
-        log.debug("c=" + c.getName() + " / col: " + columnTag);
-        ColumnMetadata cm = new ColumnMetadata(this, c, this.tag.getMethod(), this.adapter, columnTag, false, false,
-            this.config.getTypeSolverTag());
-        log.debug(" --> type=" + cm.getType());
-        this.nonStructuredColumns.add(cm);
-      }
-
-    } finally {
-      JdbcUtil.closeDbResources(rs);
-    }
-
-    // 2. Drop the temp view
-
-    PreparedStatement ps = null;
-
-    try {
-      String dropView = this.adapter.dropView(this.tempViewName);
-      ps = conn2.prepareStatement(dropView);
-      ps.execute();
-
-    } finally {
-      JdbcUtil.closeDbResources(ps);
-    }
 
   }
 
