@@ -1,22 +1,28 @@
 # The Type Solver
 
-HotRod's configuration can include a rule based type solver that can assign types or converters to VO properties according to custom logic specified by the developer.
+HotRod's configuration can include a rule based type solver that can assign types or converters to VO properties according 
+to custom logic specified by the developer.
 
-In order to do this the developer can add the <&lt;type-solver> tag. For example:
+In order to do this the developer can add the `<type-solver>` tag. For example:
 
     <type-solver>
-      <when test="scale > 0" java-type="java.math.BigDecimal" jdbc-type="NUMERIC" />
-      <when test="name.matches('.*_IMAGE') && size < 10000" converter="ByteArrayConverter" />
+      <when test="scale > 0" java-type="java.math.BigDecimal" />
+      <when test="name.matches('.*_IMAGE') && size > 10000" converter="ByteArrayConverter" />
       <when ... />
     </type-solver>
 
-For each column the rules are checked in order. If any of them is evaluated as `true` then it's used to determine the type of the property.
+For each column the rules are checked in order. If any of them is evaluated as `true` then it's used to determine the type of 
+the property, and no further rules are evaluated. 
 
 See the full list of available properties of a column at [Column Metadata](../maven/command-export-columns-txt.md#properties).
 
+## Location
+
+See [Configuration File Structure](configuration-file-structure.md) for the correct location of this tag in the configuration file.
+
 ## Precedence
 
-When a table or view column produces a VO property, the propery type is assigned according to the following precedence:
+When a table or view column produces a VO property, the property type is assigned according to the following precedence:
 
 1. If there's a &lt;column> tag for the column that specifies its type or a converter, this type or converter is used with no further processing.
 
@@ -24,7 +30,7 @@ When a table or view column produces a VO property, the propery type is assigned
 
 3. If none of the rules above is matched, then the database adapter for the specific database provides a default type for the column.
 
-## The Test Expression
+## The `test` Expression
 
 The `test` attribute includes a boolean expression that is evaluated. If found true that rule is selected and no further rules are processed.
 
@@ -43,10 +49,13 @@ If a rule is matched the resulting type specified in the rule is applied to the 
 A `<when>` tag has three attributes that are used to specify the resulting type:
 
  - `java-type`
- - `jdbc-type`
  - `converter`
+ - `force-jdbc-type-on-write`
  
-The tag can specify the `java-type` and the `jdbc-type` attributes to indicate the type for the property. Alternatively, it can specify `converter` attribute by itself to use a converter. Both alternatives are exclusive.
+The tag can either specify the `java-type` or the `converter` attributes; they are exclusive. If the `java-type` is specified, this is taken as the final type to use in the generated code. Alternatively, it can specify `converter` in case a converter needs to be used for the column.
+
+When using `java-type` option, the attibute `force-jdbc-type-on-write` can be specified in case the developer needs to force the JDBC type when sending a
+value back to the database, typically on the `UPDATE` or `INSERT` SQL statements.
 
 
  
