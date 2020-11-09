@@ -11,7 +11,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hotrod.config.NameSolverNameTag.Scope;
 import org.hotrod.database.DatabaseAdapter;
+import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.Generator;
@@ -166,6 +168,20 @@ public class ViewTag extends AbstractEntityDAOTag {
                 + "> for the view '" + this.name
                 + "'. When specified, the java-name must start with an upper case letter, "
                 + "and continue with any combination of letters, digits, underscores, or dollar signs.");
+      }
+    } else {
+      String replacedName = null;
+      try {
+        replacedName = config.getNameSolverTag().resolveName(this.name, Scope.VIEW);
+        if (replacedName != null) {
+          this.javaClassName = Id.fromTypedSQL(replacedName, adapter).getJavaClassName();
+        }
+      } catch (CouldNotResolveNameException e) {
+        throw new InvalidConfigurationFileException(this,
+            "Could not resolve java class name for table '" + this.name + "': " + e.getMessage());
+      } catch (InvalidIdentifierException e) {
+        throw new InvalidConfigurationFileException(this,
+            "Could not resolve java class name for table '" + this.name + "': " + e.getMessage());
       }
     }
 

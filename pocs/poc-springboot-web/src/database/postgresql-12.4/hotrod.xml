@@ -17,6 +17,7 @@
     <name value="^sk(.+)$" replace="prop2$1" scope="column" />
     <name value="^CLI_(.+)$" replace="$1" scope="column" />
     <name value="^(.+)_TBL$" replace="$1" scope="table, view " />
+    <name value="^(.+)_tbl$" replace="$1" scope="table, view " />
     <name value="^\w{3,3}_(\w+)_CLI$" replace="$1" scope="table, column" />
     <name value="^CLI_(\w.+)_(\w+)_\w{2,3}$" replace="$1$2" scope="table , column , view" />
   </name-solver>
@@ -29,6 +30,8 @@
 
   <table name="product" />
   <table name="historic_price" />
+  
+  <table name="client_tbl" />
 
   <table name="account" />
   <table name="item" />

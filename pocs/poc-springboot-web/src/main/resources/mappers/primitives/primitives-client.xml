@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="app5.persistence.primitives.client">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id
+  </sql>
+
+  <resultMap id="allColumns" type="app5.persistence.ClientVO">
+    <result property="id" column="id" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from client_tbl
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into client_tbl (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update client_tbl
+    <set>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+    </trim>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from client_tbl
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+    </trim>
+  </delete>
+
+</mapper>

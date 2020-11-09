@@ -17,8 +17,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hotrod.config.NameSolverNameTag.Scope;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
+import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
@@ -197,6 +199,20 @@ public class EnumTag extends AbstractEntityDAOTag {
             "The attribute 'java-name' of tag <" + super.getTagName() + "> with value '" + this.javaClassName
                 + "' is not a valid Java class name. " + "When specified, it must start with an upper case letter, "
                 + "and continue with letters, digits, and/or underscores.");
+      }
+    } else {
+      String replacedName = null;
+      try {
+        replacedName = config.getNameSolverTag().resolveName(this.name, Scope.TABLE);
+        if (replacedName != null) {
+          this.javaClassName = Id.fromTypedSQL(replacedName, adapter).getJavaClassName();
+        }
+      } catch (CouldNotResolveNameException e) {
+        throw new InvalidConfigurationFileException(this,
+            "Could not resolve java class name for table '" + this.name + "': " + e.getMessage());
+      } catch (InvalidIdentifierException e) {
+        throw new InvalidConfigurationFileException(this,
+            "Could not resolve java class name for table '" + this.name + "': " + e.getMessage());
       }
     }
 

@@ -141,6 +141,7 @@ public class NameSolverNameTag extends AbstractConfigurationTag {
   public String tryToReplace(final String name, final Scope scope) throws CouldNotResolveNameException {
     if (scope == Scope.TABLE && this.matchesTables || scope == Scope.VIEW && this.matchesViews
         || scope == Scope.COLUMN && this.matchesColumns) {
+      log.debug("scope=" + scope + " -- this.valuePattern=" + this.valuePattern + " -- name=" + name);
       Matcher m = this.valuePattern.matcher(name);
       boolean matches = m.matches();
       log.debug("%%% " + name + ".matches(" + this.value + ")=" + matches);
