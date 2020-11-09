@@ -2,7 +2,9 @@ create table product (
   id bigint primary key not null,
   name varchar(20) not null,
   price int not null default 25,
-  sku bigint unique not null
+  sku bigint unique not null,
+  "xyz_rank_CLI" int,
+  "CLI_first_name_ab" varchar(10)
 );
 
 create table historic_price (

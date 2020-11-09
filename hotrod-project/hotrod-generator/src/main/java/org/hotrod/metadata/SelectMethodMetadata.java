@@ -161,7 +161,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   // TODO: Just a marker for phase 2
 
-  public void gatherMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
+  public void gatherMetadataPhase2(final VORegistry voRegistry)
       throws UncontrolledException, InvalidConfigurationFileException {
 
     if (!this.structuredSelect) {

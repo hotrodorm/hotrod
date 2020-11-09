@@ -1,5 +1,8 @@
 package org.hotrod.config;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -8,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.JdbcTypes;
+import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.OgnlExpression;
 import org.hotrodorm.hotrod.utils.SUtil;
 
@@ -27,10 +31,11 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
   private String test = null;
   private String javaType = null;
   private String converter = null;
-  private String jdbcType = null;
+  private String forceJDBCTypeOnWrite = null;
 
   private OgnlExpression testExpression = null;
   private ConverterTag converterTag = null;
+  private JDBCType jdbcType = null;
 
   // Constructor
 
@@ -56,9 +61,9 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
     this.converter = converter;
   }
 
-  @XmlAttribute(name = "jdbc-type")
-  public void setJdbcType(final String jdbcType) {
-    this.jdbcType = jdbcType;
+  @XmlAttribute(name = "force-jdbc-type-on-write")
+  public void setForceJDBCTypeOnWrite(final String jdbcType) {
+    this.forceJDBCTypeOnWrite = jdbcType;
   }
 
   // Behavior
@@ -79,7 +84,7 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
           "Invalid OGNL expression: " + this.test, //
           "Invalid OGNL expression: " + this.test);
     }
-    log.info("this.testExpression=" + this.testExpression);
+    log.debug("this.testExpression=" + this.testExpression);
 
     // java-type
 
@@ -119,31 +124,26 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
 
     // jdbc-type
 
-    if (this.jdbcType != null) {
+    if (this.forceJDBCTypeOnWrite == null) {
+      this.jdbcType = null;
+    } else {
       if (this.javaType == null && this.converter == null) {
         throw new InvalidConfigurationFileException(this, //
-            "When the 'jdbc-type' attribute is specified 'java-type' or 'converter' must also be specified", //
-            "'jdbc-type' attribute specified but no java-type attribute nor converter attribute found. "
-                + "The jdbc-type attribute can only be specified when the java-type attribute or the converter is present.");
+            "When the 'force-jdbc-type-on-write' attribute is specified 'java-type' or 'converter' must also be specified");
       }
-      if (SUtil.isEmpty(this.jdbcType)) {
+      if (SUtil.isEmpty(this.forceJDBCTypeOnWrite)) {
         throw new InvalidConfigurationFileException(this, //
-            "'jdbc-type' attribute cannot be empty", //
-            "'jdbc-type' attribute cannot be empty. " + "When specified, the attribute 'jdbc-type' of the tag <"
-                + super.getTagName() + "> must specify a valid JDBC type "
-                + "as defined in the java class java.sql.Types. "
-                + "Make sure you specify it in all uppercase letters.");
+            "'force-jdbc-type-on-write' attribute cannot be empty");
       }
-      if (JdbcTypes.nameToCode(this.jdbcType) == null) {
+      this.jdbcType = JdbcTypes.nameToType(this.forceJDBCTypeOnWrite);
+      if (this.jdbcType == null) {
         throw new InvalidConfigurationFileException(this, //
-            "Invalid 'jdbc-type' attribute: "
-                + "must be a valid (upper case) JDBC type as defined in the java class java.sql.Types", //
-            "Invalid 'jdbc-type' attribute with value '" + this.jdbcType
-                + "'. When specified, the attribute 'jdbc-type' of the tag <" + super.getTagName()
-                + "> must specify a valid JDBC type " + "as defined in the java class java.sql.Types. "
-                + "Make sure you specify it in all uppercase letters.");
+            "Invalid 'force-jdbc-type-on-write' attribute: "
+                + "must be a valid JDBC type as defined in the java class java.sql.Types. Valid values are: "
+                + Stream.of(JDBCType.values()).map(t -> t.getShortTypeName()).collect(Collectors.joining(", ")));
       }
     }
+    log.debug("##### this.jdbcType=" + this.jdbcType);
 
   }
 
@@ -157,8 +157,12 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
     return this.javaType;
   }
 
-  public String getJdbcType() {
-    return this.jdbcType;
+  public String getForceJDBCTypeOnWrite() {
+    return this.forceJDBCTypeOnWrite;
+  }
+
+  public JDBCType getJDBCTypeOnWrite() {
+    return jdbcType;
   }
 
   public ConverterTag getConverterTag() {
@@ -185,7 +189,7 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
       boolean different = !same(fresh);
       this.javaType = f.javaType;
       this.converter = f.converter;
-      this.jdbcType = f.jdbcType;
+      this.forceJDBCTypeOnWrite = f.forceJDBCTypeOnWrite;
       this.converterTag = f.converterTag;
       return different;
     } catch (ClassCastException e) {
@@ -201,7 +205,7 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
       return //
       Compare.same(this.javaType, f.javaType) && //
           Compare.same(this.converter, f.converter) && //
-          Compare.same(this.jdbcType, f.jdbcType);
+          Compare.same(this.forceJDBCTypeOnWrite, f.forceJDBCTypeOnWrite);
     } catch (ClassCastException e) {
       return false;
     }

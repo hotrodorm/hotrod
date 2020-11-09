@@ -189,8 +189,7 @@ public class ObjectAbstractVO extends GeneratableObject {
   private void writeColumnProperties(List<ColumnMetadata> columns) throws IOException {
     for (ColumnMetadata cm : columns) {
       String javaType = resolveType(cm);
-      println("  protected " + javaType + " " + cm.getId().getJavaMemberName() + " = null;"
-          + (cm.getType().isLOB() ? " // it's a LOB type" : ""));
+      println("  protected " + javaType + " " + cm.getId().getJavaMemberName() + " = null;");
     }
     println();
   }

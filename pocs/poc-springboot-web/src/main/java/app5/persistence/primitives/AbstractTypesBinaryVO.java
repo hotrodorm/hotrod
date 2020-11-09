@@ -11,7 +11,7 @@ public class AbstractTypesBinaryVO implements Serializable {
 
   // VO Properties (table columns)
 
-  protected byte[] bin1 = null; // it's a LOB type
+  protected byte[] bin1 = null;
   protected java.lang.Boolean bol1 = null;
 
   // getters & setters

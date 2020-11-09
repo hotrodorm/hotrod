@@ -59,11 +59,15 @@
 ## 3.3.4
 - Classic FK navigation can now be enabled on a per-table basis.
 - Cursors implemented for LiveSQL, Nitro Selects, selectByExample(), and selectByCriteria().
+- New <select> tag processor "result-set" offers many benefits compared to traditional "create view" processor.
+- New <name-solver> tag, automatically names tables, views, and columns according to regex naming rules.
 - LiveSQL function infrastructure: developers can now add built-in and also user-defined functions to LiveSQL queries.
 - LiveSQL dialect can be designated at runtime using application.properties, with fallback to discovery mode.
 - LiveSQL fully typed CASE and OVER clauses.
 - LiveSQL RANGE window frame implemented for numbers (date/time are not yet supported since we don't model intervals yet).
 - Fully independent Spring MyBatis generator.
 - REST metrics implemented (experimental).
+- Added "force-jdbc-type-on-write" attribute to <type-solver> functionality.
+
  
  

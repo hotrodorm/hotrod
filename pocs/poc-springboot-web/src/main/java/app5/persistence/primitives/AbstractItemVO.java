@@ -16,7 +16,7 @@ public class AbstractItemVO implements Serializable {
   protected java.math.BigDecimal price = null;
   protected java.sql.Timestamp createdOn = null;
   protected java.lang.Boolean active = null;
-  protected byte[] icon = null; // it's a LOB type
+  protected byte[] icon = null;
   protected java.lang.Object storeCode = null;
 
   // getters & setters

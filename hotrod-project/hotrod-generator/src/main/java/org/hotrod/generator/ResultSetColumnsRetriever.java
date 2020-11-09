@@ -70,7 +70,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
 
     @Override
     public String render(final SQLParameter parameter) {
-      log.info("prepare view 0.1 -- parameter=" + parameter.getDefinition());
+      log.debug("prepare view 0.1 -- parameter=" + parameter.getDefinition());
       parameterJDBCTypes.add(parameter.getDefinition().getJDBCType());
       return "?";
     }
@@ -81,12 +81,12 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
   public void phase1Flat(final String key, final SelectMethodTag tag, final SelectMethodMetadata sm)
       throws InvalidSQLException, InvalidConfigurationFileException {
 
-    log.info("prepare view 0");
+    log.debug("prepare view 0");
 
     RetrievalContext ctx = new RetrievalContext(tag, sm);
     this.contexts.put(key, ctx);
 
-    log.info("flat 1 -- this.conn=" + this.conn);
+    log.debug("flat 1 -- this.conn=" + this.conn);
 
     ResultSetParameterRenderer pr = new ResultSetParameterRenderer();
     String foundation = cleanUpSQL(ctx.getTag().renderSQLSentence(pr));
@@ -94,24 +94,16 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     List<ColumnMetadata> nonStructuredColumns = new ArrayList<ColumnMetadata>();
     ctx.setColumnsMetadata(nonStructuredColumns);
 
-    log.info("flat 2 -- method=" + sm.getMethod() + " sql=" + foundation);
+    log.debug("flat 2 -- method=" + sm.getMethod() + " sql=" + foundation);
 
     try (PreparedStatement ps = this.conn.prepareStatement(foundation)) {
-      log.info("flat 2.1");
+      log.debug("flat 2.1");
       ResultSetMetaData rm = ps.getMetaData();
       int columns = rm.getColumnCount();
       for (int i = 1; i <= columns; i++) {
-        int displaySize = rm.getColumnDisplaySize(i);
         String label = rm.getColumnLabel(i);
-        String name = rm.getColumnName(i);
-        int type = rm.getColumnType(i);
-        String typeName = rm.getColumnTypeName(i);
-        int precision = rm.getPrecision(i);
-        int scale = rm.getScale(i);
-        int nullable = rm.isNullable(i);
-
         ColumnTag columnTag = ctx.getTag().findColumnTag(label, this.adapter);
-        log.info("prepare view 3 -- column=" + label);
+        log.debug("prepare view 3 -- column=" + label);
         ColumnMetadata cm;
         try {
           cm = new ColumnMetadata(ctx.getSm(), rm, i, ctx.getTag().getMethod(), this.adapter, columnTag, false, false,
@@ -196,7 +188,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
 
   @Override
   public List<ColumnMetadata> phase2Flat(final String key) {
-    log.info("flat 4 -- columns retrieved.");
+    log.debug("flat 4 -- columns retrieved.");
     RetrievalContext ctx = this.contexts.get(key);
     return ctx.getColumnsMetadata();
   }

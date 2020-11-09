@@ -629,23 +629,23 @@ public abstract class FormerGenerator implements Generator {
         log.debug("ret 3");
 
         for (TableDataSetMetadata tm : this.tables) {
-          tm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
+          tm.gatherSelectsMetadataPhase2(this.voRegistry);
           addSelectsMetaData(tm.getDaoTag().getJavaClassName(), tm.getSelectsMetadata(), selectMetadataCache);
         }
 
         for (TableDataSetMetadata vm : this.views) {
-          vm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
+          vm.gatherSelectsMetadataPhase2(this.voRegistry);
           addSelectsMetaData(vm.getDaoTag().getJavaClassName(), vm.getSelectsMetadata(), selectMetadataCache);
         }
 
         for (TableDataSetMetadata em : this.enums) {
-          em.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
+          em.gatherSelectsMetadataPhase2(this.voRegistry);
           addSelectsMetaData(em.getDaoTag().getJavaClassName(), em.getSelectsMetadata(), selectMetadataCache);
           addTableEnumConstants(em, tableEnumConstants);
         }
 
         for (ExecutorDAOMetadata xm : this.executors) {
-          xm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
+          xm.gatherSelectsMetadataPhase2(this.voRegistry);
           addSelectsMetaData(xm.getDaoTag().getJavaClassName(), xm.getSelectsMetadata(), selectMetadataCache);
         }
 

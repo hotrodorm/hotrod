@@ -1,7 +1,6 @@
 package org.hotrod.metadata;
 
 import java.io.Serializable;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +19,6 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
@@ -135,12 +133,12 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
     return false;
   }
 
-  public void gatherSelectsMetadataPhase2(final Connection conn2, final VORegistry voRegistry)
+  public void gatherSelectsMetadataPhase2(final VORegistry voRegistry)
       throws UncontrolledException, InvalidConfigurationFileException {
     for (SelectMethodMetadata sm : this.selectsMetadata) {
       log.debug("*** - executor method " + sm.getMethod() + "() sm.metadataComplete()=" + sm.metadataComplete());
       if (!sm.metadataComplete()) {
-        sm.gatherMetadataPhase2(conn2, voRegistry);
+        sm.gatherMetadataPhase2(voRegistry);
       }
     }
   }

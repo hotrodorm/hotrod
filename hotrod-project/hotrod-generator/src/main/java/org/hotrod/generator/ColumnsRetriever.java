@@ -39,7 +39,6 @@ public interface ColumnsRetriever extends AutoCloseable {
   static ColumnsRetriever getInstance(final HotRodConfigTag config, final DatabaseLocation dloc,
       final DatabaseAdapter adapter, final JdbcDatabase db, final Connection conn) throws SQLException {
     SelectGenerationTag selectGenerationTag = config.getGenerators().getSelectedGeneratorTag().getSelectGeneration();
-    System.out.println(">>> selectGenerationTag.getStrategy()=" + selectGenerationTag.getStrategy());
     if (selectGenerationTag.getStrategy() == SelectStrategy.RESULT_SET) {
       return new ResultSetColumnsRetriever(config, dloc, selectGenerationTag, adapter, db, conn);
     } else {

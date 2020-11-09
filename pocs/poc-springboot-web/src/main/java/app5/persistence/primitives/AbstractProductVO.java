@@ -14,7 +14,9 @@ public class AbstractProductVO implements Serializable {
   protected java.lang.Long id = null;
   protected java.lang.String name = null;
   protected java.lang.Integer price = null;
-  protected java.lang.Long sku = null;
+  protected java.lang.Long prop2u = null;
+  protected java.lang.Integer rank = null;
+  protected java.lang.String first_name_ab = null;
 
   // getters & setters
 
@@ -45,13 +47,31 @@ public class AbstractProductVO implements Serializable {
     this.getPropertiesChangeLog().priceWasSet = true;
   }
 
-  public java.lang.Long getSku() {
-    return this.sku;
+  public java.lang.Long getProp2u() {
+    return this.prop2u;
   }
 
-  public void setSku(final java.lang.Long sku) {
-    this.sku = sku;
-    this.getPropertiesChangeLog().skuWasSet = true;
+  public void setProp2u(final java.lang.Long prop2u) {
+    this.prop2u = prop2u;
+    this.getPropertiesChangeLog().prop2uWasSet = true;
+  }
+
+  public java.lang.Integer getRank() {
+    return this.rank;
+  }
+
+  public void setRank(final java.lang.Integer rank) {
+    this.rank = rank;
+    this.getPropertiesChangeLog().rankWasSet = true;
+  }
+
+  public java.lang.String getFirst_name_ab() {
+    return this.first_name_ab;
+  }
+
+  public void setFirst_name_ab(final java.lang.String first_name_ab) {
+    this.first_name_ab = first_name_ab;
+    this.getPropertiesChangeLog().first_name_abWasSet = true;
   }
 
   // to string
@@ -62,7 +82,9 @@ public class AbstractProductVO implements Serializable {
     sb.append("- id=" + this.id + "\n");
     sb.append("- name=" + this.name + "\n");
     sb.append("- price=" + this.price + "\n");
-    sb.append("- sku=" + this.sku);
+    sb.append("- prop2u=" + this.prop2u + "\n");
+    sb.append("- rank=" + this.rank + "\n");
+    sb.append("- first_name_ab=" + this.first_name_ab);
     return sb.toString();
   }
 
@@ -73,7 +95,9 @@ public class AbstractProductVO implements Serializable {
     obj.addProperty("id", this.id);
     obj.addProperty("name", this.name);
     obj.addProperty("price", this.price);
-    obj.addProperty("sku", this.sku);
+    obj.addProperty("prop2u", this.prop2u);
+    obj.addProperty("rank", this.rank);
+    obj.addProperty("first_name_ab", this.first_name_ab);
     return obj.render();
   }
 
@@ -89,7 +113,9 @@ public class AbstractProductVO implements Serializable {
     public boolean idWasSet = false;
     public boolean nameWasSet = false;
     public boolean priceWasSet = false;
-    public boolean skuWasSet = false;
+    public boolean prop2uWasSet = false;
+    public boolean rankWasSet = false;
+    public boolean first_name_abWasSet = false;
   }
 
 }

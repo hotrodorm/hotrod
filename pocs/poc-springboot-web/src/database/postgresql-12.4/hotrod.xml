@@ -5,15 +5,27 @@
 
   <generators>
     <mybatis-spring>
-      <daos package="app5.persistence" 
-        vo-prefix="" vo-suffix="VO"
-        abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" 
-        dao-prefix="" dao-suffix="DAO" />
+      <daos package="app5.persistence" vo-prefix="" vo-suffix="VO" abstract-vo-prefix="Abstract"
+        abstract-vo-suffix="VO" dao-prefix="" dao-suffix="DAO" />
       <mappers dir="mappers" />
       <select-generation strategy="result-set" temp-view-base-name="tmp2" />
       <classic-fk-navigation />
     </mybatis-spring>
   </generators>
+
+  <name-solver>
+    <name value="^sk(.+)$" replace="prop2$1" scope="column" />
+    <name value="^CLI_(.+)$" replace="$1" scope="column" />
+    <name value="^(.+)_TBL$" replace="$1" scope="table, view " />
+    <name value="^\w{3,3}_(\w+)_CLI$" replace="$1" scope="table, column" />
+    <name value="^CLI_(\w.+)_(\w+)_\w{2,3}$" replace="$1$2" scope="table , column , view" />
+  </name-solver>
+
+  <type-solver>
+  <!-- 
+    <when test="name == 'price'" java-type="java.lang.Double" />
+     -->
+  </type-solver>
 
   <table name="product" />
   <table name="historic_price" />
@@ -25,7 +37,8 @@
   <table name="federal_branch" />
   <table name="types_binary" />
   <table name="types_other" />
-  
+
+
   <dao name="MyQueries">
 
     <select method="findExpensiveProducts" vo="CheapProductVO" mode="cursor">
@@ -35,16 +48,16 @@
       from product
       where price > #{minPrice}
     </select>
-  
+
     <select method="findCheapestProducts">
       select
-        <columns>
-          <vo table="product" alias="p" />
-        </columns>
+      <columns>
+        <vo table="product" alias="p" />
+      </columns>
       from product p
       where p.price between 0 and 3
-    </select>  
-  
+    </select>
+
   </dao>
 
 </hotrod>

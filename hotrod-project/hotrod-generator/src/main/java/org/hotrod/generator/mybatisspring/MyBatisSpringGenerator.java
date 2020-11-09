@@ -150,6 +150,8 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
     Connection conn = null;
     boolean retrieveSelectMetadata = false;
 
+    ColumnsRetriever cr = null;
+
     try {
 
       // Get Connection
@@ -509,6 +511,9 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
       // Validate against the database
 
+      cr = ColumnsRetriever.getInstance(this.config, this.dloc, this.adapter, this.db, conn);
+      log.debug("ColumnsRetriever: " + cr);
+
       // TODO: make sure the cache includes enum values from table rows.
       // if (retrieveFreshDatabaseObjects) {
       try {
@@ -519,10 +524,6 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       // }
 
       // Prepare <select> methods meta data - phase 1
-
-      ColumnsRetriever cr = ColumnsRetriever.getInstance(this.config, this.dloc, this.adapter, this.db, conn);
-
-      log.info("ColumnsRetriever: " + cr);
 
       for (TableDataSetMetadata tm : this.tables) {
         boolean retrieving;
@@ -598,52 +599,40 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
       logm("Prepare selects metadata - phase 2.");
 
-      Connection conn2 = null;
       try {
 
-        log.debug("ret 2");
-        logm("Opening connection (selects)...");
-        conn2 = this.dloc.getConnection();
-        logm("Connection open (selects).");
-        log.debug("ret 3");
-
         for (TableDataSetMetadata tm : this.tables) {
-          tm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
+          tm.gatherSelectsMetadataPhase2(this.voRegistry);
           addSelectsMetaData(tm.getDaoTag().getJavaClassName(), tm.getSelectsMetadata(), selectMetadataCache);
         }
 
         for (TableDataSetMetadata vm : this.views) {
-          vm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
+          vm.gatherSelectsMetadataPhase2(this.voRegistry);
           addSelectsMetaData(vm.getDaoTag().getJavaClassName(), vm.getSelectsMetadata(), selectMetadataCache);
         }
 
         for (TableDataSetMetadata em : this.enums) {
-          em.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
+          em.gatherSelectsMetadataPhase2(this.voRegistry);
           addSelectsMetaData(em.getDaoTag().getJavaClassName(), em.getSelectsMetadata(), selectMetadataCache);
           addTableEnumConstants(em, tableEnumConstants);
         }
 
         for (ExecutorDAOMetadata xm : this.executors) {
-          xm.gatherSelectsMetadataPhase2(conn2, this.voRegistry);
+          xm.gatherSelectsMetadataPhase2(this.voRegistry);
           addSelectsMetaData(xm.getDaoTag().getJavaClassName(), xm.getSelectsMetadata(), selectMetadataCache);
         }
 
-      } catch (SQLException e) {
-        throw new UncontrolledException("Failed to retrieve metadata for <select> queries", e);
       } catch (InvalidConfigurationFileException e) {
         throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
       } finally {
-        if (conn2 != null) {
-          try {
-            logm("Closing connection (selects)...");
-            conn2.close();
-            logm("Connection closed (selects).");
-          } catch (SQLException e) {
-            throw new UncontrolledException("Could not retrieve database metadata.", e);
-          }
+        logm("Closing connection (selects)...");
+        try {
+          cr.close();
+        } catch (Exception e) {
+          log.debug("Could not close database connection", e);
         }
+        logm("Connection closed (selects).");
       }
-
     }
 
     // Validate DAO names and methods

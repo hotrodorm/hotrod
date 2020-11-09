@@ -1,0 +1,16 @@
+String value = "^sk(.+)$";
+String replace ="abc$1def";
+
+String name = "sxku";
+
+boolean matches = name.matches(value);
+System.out.println("%%% " + name + ".matches(" + value + ")=" + matches);
+java.util.regex.Pattern valuePattern = java.util.regex.Pattern.compile(value);
+System.out.println("will match...");
+java.util.regex.Matcher m = valuePattern.matcher(name);
+System.out.println("matcher: "+m.matches());
+// String newName = replace;
+String capture = m.group(1);
+System.out.println("capture 1="+capture);
+
+An exception occurred during evaluation:  java.lang.IllegalStateException

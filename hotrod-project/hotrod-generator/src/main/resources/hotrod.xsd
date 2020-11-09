@@ -6,6 +6,7 @@
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element name="generators" type="generators-type" />
+        <xsd:element name="name-solver" type="name-solver-type" minOccurs="0" maxOccurs="1" />
         <xsd:element name="type-solver" type="type-solver-type" minOccurs="0" maxOccurs="1" />
         <xsd:choice minOccurs="0" maxOccurs="unbounded">
           <xsd:element name="table" type="table-type" />
@@ -28,6 +29,18 @@
     </xsd:all>
   </xsd:complexType>
 
+  <xsd:complexType name="name-solver-type">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="name" type="name-solver-name-type" />
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:complexType name="name-solver-name-type">
+    <xsd:attribute name="value" type="xsd:string" use="required" />
+    <xsd:attribute name="replace" type="xsd:string" use="required" />
+    <xsd:attribute name="scope" type="xsd:string" />
+  </xsd:complexType>
+
   <xsd:complexType name="type-solver-type">
     <xsd:choice minOccurs="0" maxOccurs="unbounded">
       <xsd:element name="when" type="type-solver-when-type" />
@@ -37,10 +50,7 @@
   <xsd:complexType name="type-solver-when-type">
     <xsd:attribute name="test" type="xsd:string" use="required" />
     <xsd:attribute name="java-type" type="xsd:string" />
-    
-    <!-- Rename to "force-jdbc-type-on-write" -->
-    <xsd:attribute name="jdbc-type" type="xsd:string" />
-
+    <xsd:attribute name="force-jdbc-type-on-write" type="xsd:string" />
     <xsd:attribute name="converter" type="xsd:string" />
   </xsd:complexType>
 

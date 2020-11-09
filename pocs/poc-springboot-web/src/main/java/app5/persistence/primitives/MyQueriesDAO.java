@@ -90,7 +90,7 @@ public class MyQueriesDAO implements Serializable, ApplicationContextAware {
 
 
       select
-        ... structured columns here...
+      ... structured columns here...
       from product p
       where p.price between 0 and 3
     

@@ -3,8 +3,6 @@ package org.hotrod.config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -16,8 +14,8 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.utils.JdbcTypes;
-import org.hotrod.utils.OGNLPublicMemberAccess;
 import org.hotrod.utils.JdbcTypes.JDBCType;
+import org.hotrod.utils.OGNLPublicMemberAccess;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
 import ognl.OgnlContext;
@@ -65,7 +63,8 @@ public class TypeSolverTag extends AbstractConfigurationTag {
 
   }
 
-  public PropertyType resolveType(final ColumnMetadata cm, final JdbcColumn c) throws UnresolvableDataTypeException {
+  public PropertyType resolveType(final ColumnMetadata cm, final JdbcColumn c, final JDBCType resultSetType)
+      throws UnresolvableDataTypeException {
 
     this.context = new OgnlContext(null, null, new OGNLPublicMemberAccess());
 
@@ -81,11 +80,6 @@ public class TypeSolverTag extends AbstractConfigurationTag {
     for (TypeSolverWhenTag w : this.whens) {
       Object result = null;
       try {
-        log.info("w=" + w);
-        log.info("w.getTestExpression()=" + w.getTestExpression());
-        log.info("this.context=" + this.context);
-        log.info("cm=" + cm);
-        log.info("c=" + c);
         result = w.getTestExpression().getValue(this.context, rc);
         Boolean test = (Boolean) result;
         if (test == null) {
@@ -93,15 +87,19 @@ public class TypeSolverTag extends AbstractConfigurationTag {
               + "': must return a boolean value but returned null");
         }
         if (test) {
-          JDBCType jdbcType = JdbcTypes.nameToType(w.getJdbcType());
-          if (jdbcType == null) {
-            throw new UnresolvableDataTypeException(cm,
-                "Unrecognized jdbc-type '" + w.getJdbcType() + "' in <when> tag with test expression '" + w.getTest()
-                    + "': must be one of the following values:" + Stream.of(JDBCType.values())
-                        .map(t -> t.getShortTypeName()).collect(Collectors.joining(",\n * ", "\n * ", "\n")));
+          if ("price".equals(cm.getColumnName()) && "product".equals(cm.getTableName())) {
+            log.debug("w.getJDBCTypeOnWrite()=" + w.getJDBCTypeOnWrite());
+            log.debug("resultSetType=" + resultSetType);
+            log.debug("this.context=" + this.context);
+            log.debug("cm=" + cm);
+            log.debug("c=" + c);
           }
-          log.info("## 5 RULE MATCHES: w.getJavaType()=" + w.getJavaType() + " jdbcType=" + jdbcType);
-          return new PropertyType(w.getJavaType(), jdbcType, false);
+          JDBCType jdbcTypeOnWrite = w.getJDBCTypeOnWrite();
+          if (jdbcTypeOnWrite == null) {
+            jdbcTypeOnWrite = (c != null ? JdbcTypes.codeToType(c.getDataType()) : resultSetType);
+          }
+          log.debug("## 5 RULE MATCHES: w.getJavaType()=" + w.getJavaType() + " jdbcTypeOnWrite=" + jdbcTypeOnWrite);
+          return new PropertyType(w.getJavaType(), jdbcTypeOnWrite, false);
         }
       } catch (ClassCastException e) {
         throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '" + w.getTest()

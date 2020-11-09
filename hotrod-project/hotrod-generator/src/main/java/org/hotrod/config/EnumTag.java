@@ -264,8 +264,8 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   }
 
-  public void validateAgainstDatabase(final Generator generator, final Connection conn,
-      final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final Generator generator, final Connection conn, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
 
     // Validate the table existence
 
@@ -458,7 +458,8 @@ public class EnumTag extends AbstractEntityDAOTag {
       throws InvalidConfigurationFileException {
     PropertyType type;
     try {
-      ColumnMetadata cm = new ColumnMetadata(null, c, adapter, null, false, false, this.config.getTypeSolverTag());
+      ColumnMetadata cm = new ColumnMetadata(null, c, adapter, null, false, false, this.config.getTypeSolverTag(),
+          this.config.getNameSolverTag());
       type = adapter.getAdapterDefaultType(cm);
     } catch (UnresolvableDataTypeException e) {
       throw new InvalidConfigurationFileException(this, //
