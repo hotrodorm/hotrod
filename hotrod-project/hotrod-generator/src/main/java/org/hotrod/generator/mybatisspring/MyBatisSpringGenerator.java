@@ -960,7 +960,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       this.abstractSelectVOs.add(abstractVO);
       SelectVO vo = new SelectVO(soloVO, abstractVO, this.layout);
       this.selectVOs.add(vo);
-      log.trace("### soloVO.getName()=" + soloVO.getName() + " abstractVO.getName()=" + abstractVO.getName());
+      log.debug("### soloVO.getName()=" + soloVO.getName() + " abstractVO.getName()=" + abstractVO.getName());
     }
 
     // connected VOs (all)

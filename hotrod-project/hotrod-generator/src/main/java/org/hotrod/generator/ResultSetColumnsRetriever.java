@@ -101,7 +101,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     List<ColumnMetadata> nonStructuredColumns = new ArrayList<ColumnMetadata>();
     ctx.setColumnsMetadata(nonStructuredColumns);
 
-    log.info("flat 2 -- method=" + sm.getMethod() + " sql=" + foundation);
+    log.debug("flat 2 -- method=" + sm.getMethod() + " sql=" + foundation);
 
     try (PreparedStatement ps = this.conn.prepareStatement(foundation)) {
 
@@ -112,7 +112,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
       for (int i = 1; i <= columns; i++) {
         String label = rm.getColumnLabel(i);
         ColumnTag columnTag = ctx.getTag().findColumnTag(label, this.adapter);
-        log.info("prepare view 3 -- column=" + label);
+        log.debug("prepare view 3 -- column=" + label);
         ColumnMetadata cm;
         try {
           cm = new ColumnMetadata(ctx.getSm(), rm, i, ctx.getTag().getMethod(), this.adapter, columnTag, false, false,

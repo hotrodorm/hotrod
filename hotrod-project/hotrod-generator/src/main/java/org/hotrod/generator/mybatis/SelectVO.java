@@ -41,11 +41,13 @@ public class SelectVO {
   }
 
   public void generate(final FileGenerator fileGenerator) throws UncontrolledException {
+    log.debug("GENERATE VO...");
     String sourceClassName = this.className + ".java";
 
     File dir = this.layout.getVOPackageDir(this.classPackage);
 
     File vo = new File(dir, sourceClassName);
+    log.debug("vo=" + vo);
     if (!vo.exists()) {
       TextWriter w = null;
 
@@ -54,8 +56,13 @@ public class SelectVO {
 
         w.write("package " + this.classPackage.getPackage() + ";\n\n");
 
-        w.write("import " + this.abstractVO.getFullClassName() + ";\n\n");
+        w.write("import " + this.abstractVO.getFullClassName() + ";\n");
+        w.write("import org.springframework.stereotype.Component;\n");
+        w.write("import org.springframework.beans.factory.config.ConfigurableBeanFactory;\n");
+        w.write("import org.springframework.context.annotation.Scope;\n\n");
 
+        w.write("@Component\n");
+        w.write("@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)\n");
         w.write("public class " + this.className + " extends " + this.abstractVO.getName() + " {\n\n");
 
         w.write("  private static final long serialVersionUID = 1L;\n\n");

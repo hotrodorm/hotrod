@@ -270,7 +270,7 @@ public class ColumnMetadata implements Serializable {
 
     this.resultSetType = JdbcTypes.codeToType(this.dataType);
 
-    log.info(">>>>>>>> RS: '" + this.columnName + "' -- this.dataType=" + this.dataType + " -- this.resultSetType="
+    log.debug(">>>>>>>> RS: '" + this.columnName + "' -- this.dataType=" + this.dataType + " -- this.resultSetType="
         + resultSetType);
 
     this.adapter = adapter;
