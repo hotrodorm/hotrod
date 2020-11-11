@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,8 +73,13 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     @Override
     public String render(final SQLParameter parameter) {
       log.debug("prepare view 0.1 -- parameter=" + parameter.getDefinition());
-      parameterJDBCTypes.add(parameter.getDefinition().getJDBCType());
-      return "?";
+      JDBCType jdbcType = parameter.getDefinition().getJDBCType();
+      parameterJDBCTypes.add(jdbcType);
+      String parameterSampleValue = parameter.getDefinition().getSampleSQLValue();
+      String adapterSampleValue = adapter.provideSampleValueFor(jdbcType);
+      adapterSampleValue = adapterSampleValue != null ? ("(" + adapterSampleValue + ")") : null;
+      String sample = parameterSampleValue != null ? parameterSampleValue : adapterSampleValue;
+      return sample != null ? sample : "?";
     }
 
   }
@@ -94,16 +101,18 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     List<ColumnMetadata> nonStructuredColumns = new ArrayList<ColumnMetadata>();
     ctx.setColumnsMetadata(nonStructuredColumns);
 
-    log.debug("flat 2 -- method=" + sm.getMethod() + " sql=" + foundation);
+    log.info("flat 2 -- method=" + sm.getMethod() + " sql=" + foundation);
 
     try (PreparedStatement ps = this.conn.prepareStatement(foundation)) {
+
       log.debug("flat 2.1");
+
       ResultSetMetaData rm = ps.getMetaData();
       int columns = rm.getColumnCount();
       for (int i = 1; i <= columns; i++) {
         String label = rm.getColumnLabel(i);
         ColumnTag columnTag = ctx.getTag().findColumnTag(label, this.adapter);
-        log.debug("prepare view 3 -- column=" + label);
+        log.info("prepare view 3 -- column=" + label);
         ColumnMetadata cm;
         try {
           cm = new ColumnMetadata(ctx.getSm(), rm, i, ctx.getTag().getMethod(), this.adapter, columnTag, false, false,

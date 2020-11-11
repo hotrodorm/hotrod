@@ -61,7 +61,8 @@
   <xsd:complexType name="parameter-type">
     <xsd:attribute name="name" type="xsd:string" use="required" />
     <xsd:attribute name="java-type" type="xsd:string" use="required" />
-    <xsd:attribute name="jdbc-type" type="xsd:string" use="required" />
+    <xsd:attribute name="jdbc-type" type="xsd:string" />
+    <xsd:attribute name="sample-sql-value" type="xsd:string" />
   </xsd:complexType>
 
   <!-- query -->

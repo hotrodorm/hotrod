@@ -32,8 +32,9 @@ public class ParameterTag extends AbstractConfigurationTag {
   private String name = null;
   private String javaType = null;
   private String jdbcTypeName = null;
-  private Id id = null;
+  private String sampleSQLValue = null;
 
+  private Id id = null;
   private JDBCType jdbcType;
 
   // Constructor
@@ -58,6 +59,11 @@ public class ParameterTag extends AbstractConfigurationTag {
   @XmlAttribute(name = "jdbc-type")
   public void setJdbcType(final String jdbcType) {
     this.jdbcTypeName = jdbcType;
+  }
+
+  @XmlAttribute(name = "sample-sql-value")
+  public void setSampleSQLValue(final String s) {
+    this.sampleSQLValue = s;
   }
 
   // Behavior
@@ -115,21 +121,38 @@ public class ParameterTag extends AbstractConfigurationTag {
     // jdbc-type
 
     if (this.jdbcTypeName == null) {
-      throw new InvalidConfigurationFileException(this, //
-          "The 'jdbc-type' attribute cannot be empty", //
-          "invalid <parameter> tag -- the 'jdbc-type' attribute cannot be empty.");
+      this.jdbcType = getDefaultJDBCType(this.javaType);
+      log.debug("this.jdbcType=" + this.jdbcType);
+      if (this.jdbcType == null) {
+        throw new InvalidConfigurationFileException(this,
+            "Could not guess the JDBC type for the parameter based on its java type '" + this.javaType
+                + "'. Please include the 'jdbc-type' attribute to specify it; "
+                + "must be a valid JDBC type name from java.sql.Types. Valid type names are: "
+                + Stream.of(JDBCType.values()).map(t -> t.getShortTypeName()).collect(Collectors.joining(", ")));
+      }
+    } else {
+      if (SUtil.isEmpty(this.jdbcTypeName)) {
+        throw new InvalidConfigurationFileException(this, //
+            "When specified, the 'jdbc-type' attribute cannot be blank; "
+                + "must be a valid JDBC type name from java.sql.Types. Valid type names are: "
+                + Stream.of(JDBCType.values()).map(t -> t.getShortTypeName()).collect(Collectors.joining(", ")));
+      }
+      this.jdbcType = JdbcTypes.nameToType(this.jdbcTypeName);
+      if (this.jdbcType == null) {
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid 'jdbc-type' attribute with value '" + this.jdbcTypeName
+                + "': must be a valid JDBC type name from java.sql.Types. Valid type names are: "
+                + Stream.of(JDBCType.values()).map(t -> t.name()).collect(Collectors.joining(", ")));
+      }
     }
-    if (SUtil.isEmpty(this.jdbcTypeName)) {
-      throw new InvalidConfigurationFileException(this, //
-          "The 'jdbc-type' attribute cannot be blank", //
-          "invalid <parameter> tag -- the 'jdbc-type' attribute cannot be blank.");
-    }
-    this.jdbcType = JdbcTypes.nameToType(this.jdbcTypeName);
-    if (this.jdbcType == null) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid 'jdbc-type' attribute with value '" + this.jdbcTypeName
-              + "': must be a valid JDBC type name from java.sql.Types. Valid type names are: "
-              + Stream.of(JDBCType.values()).map(t -> t.name()).collect(Collectors.joining(", ")));
+
+    // sample-sql-value
+
+    if (this.sampleSQLValue != null) {
+      if (this.sampleSQLValue.length() == 0) {
+        throw new InvalidConfigurationFileException(this,
+            "Invalid 'sample-sql-value' attribute; when specified it cannot be empty");
+      }
     }
 
   }
@@ -152,6 +175,10 @@ public class ParameterTag extends AbstractConfigurationTag {
     return jdbcType;
   }
 
+  public String getSampleSQLValue() {
+    return sampleSQLValue;
+  }
+
   public Id getId() {
     return this.id;
   }
@@ -160,6 +187,64 @@ public class ParameterTag extends AbstractConfigurationTag {
   public String toString() {
     return "ParameterTag [name=" + name + ", javaType=" + javaType + ", jdbcTypeName=" + jdbcTypeName + ", id=" + id
         + ", jdbcType=" + jdbcType + "]";
+  }
+
+  // JDBC type defaults
+
+  private JDBCType getDefaultJDBCType(final String javaClass) {
+    String c = javaClass.indexOf('.') == -1 ? "java.lang." + javaClass : javaClass;
+
+    if ("java.lang.Byte".equals(c)) {
+      return JDBCType.TINYINT;
+    } else if ("java.lang.Short".equals(c)) {
+      return JDBCType.SMALLINT;
+    } else if ("java.lang.Integer".equals(c)) {
+      return JDBCType.INTEGER;
+    } else if ("java.lang.Long".equals(c)) {
+      return JDBCType.BIGINT;
+    } else if ("java.lang.Float".equals(c)) {
+      return JDBCType.REAL;
+    } else if ("java.lang.Double".equals(c)) {
+      return JDBCType.DOUBLE;
+    } else if ("java.math.BigInteger".equals(c)) {
+      return JDBCType.DECIMAL;
+    } else if ("java.math.BigDecimal".equals(c)) {
+      return JDBCType.DECIMAL;
+
+    } else if ("java.lang.Char".equals(c)) {
+      return JDBCType.CHAR;
+    } else if ("java.lang.String".equals(c)) {
+      return JDBCType.VARCHAR;
+
+    } else if ("java.util.Date".equals(c)) {
+      return JDBCType.TIMESTAMP;
+    } else if ("java.sql.Date".equals(c)) {
+      return JDBCType.DATE;
+    } else if ("java.sql.Timestamp".equals(c)) {
+      return JDBCType.TIMESTAMP;
+    } else if ("java.sql.Time".equals(c)) {
+      return JDBCType.TIME;
+    } else if ("java.time.LocalDate".equals(c)) {
+      return JDBCType.DATE;
+    } else if ("java.time.LocalTime".equals(c)) {
+      return JDBCType.TIME;
+    } else if ("java.time.LocalDateTime".equals(c)) {
+      return JDBCType.TIMESTAMP;
+    } else if ("java.time.OffsetDateTime".equals(c)) {
+      return JDBCType.TIMESTAMP_WITH_TIMEZONE;
+    } else if ("java.time.ZonedDateTime".equals(c)) {
+      return JDBCType.TIMESTAMP_WITH_TIMEZONE;
+
+    } else if ("java.lang.Boolean".equals(c)) {
+      return JDBCType.BOOLEAN;
+
+    } else if ("byte[]".equals(c)) {
+      return JDBCType.BLOB;
+
+    } else {
+      return null;
+    }
+
   }
 
   // Merging logic

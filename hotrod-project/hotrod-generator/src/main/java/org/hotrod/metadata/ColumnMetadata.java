@@ -86,16 +86,16 @@ public class ColumnMetadata implements Serializable {
     if (this.tag != null && this.tag.getJavaName() != null) {
       this.id = Id.fromCanonicalSQLAndJavaMember(c.getName(), adapter, this.tag.getJavaName());
     } else {
-      String nameFromNameSolver;
+      String nameFromNameSolver = null;
       try {
         nameFromNameSolver = nameSolverTag.resolveName(c.getName(), Scope.COLUMN);
-        log.debug("%%% "+this.tableName + "." + c.getName() + " -- nameFromNameSolver=" + nameFromNameSolver);
+        log.debug("%%% " + this.tableName + "." + c.getName() + " -- nameFromNameSolver=" + nameFromNameSolver);
       } catch (CouldNotResolveNameException e) {
         throw new InvalidIdentifierException(
             "Could not resolve property name for column " + this.tableName + "." + c.getName() + ": " + e.getMessage());
       }
       if (nameFromNameSolver != null) {
-        this.id = Id.fromCanonicalSQLAndJavaMember(c.getName(), adapter, nameFromNameSolver);
+        this.id = Id.fromCanonicalSQL(nameFromNameSolver, adapter);
       } else {
         this.id = Id.fromCanonicalSQL(c.getName(), adapter);
       }
@@ -270,7 +270,7 @@ public class ColumnMetadata implements Serializable {
 
     this.resultSetType = JdbcTypes.codeToType(this.dataType);
 
-    log.debug(">>>>>>>> RS: '" + this.columnName + "' -- this.dataType=" + this.dataType + " -- this.resultSetType="
+    log.info(">>>>>>>> RS: '" + this.columnName + "' -- this.dataType=" + this.dataType + " -- this.resultSetType="
         + resultSetType);
 
     this.adapter = adapter;

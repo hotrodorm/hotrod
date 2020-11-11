@@ -159,6 +159,7 @@ public class NameSolverNameTag extends AbstractConfigurationTag {
                     + "': could not find capture $" + c + " for replace pattern '" + this.replace + "'");
           }
         }
+        log.debug(">>> newName=" + newName);
         return newName;
       }
     }

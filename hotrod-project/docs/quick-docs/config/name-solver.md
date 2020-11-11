@@ -45,7 +45,8 @@ Rules are evaluated in order. If a rule matches, it's selected and no further ru
 
 - The replaced name is computed using the `replace` attribute. This pattern can use up to 9 pattern captures (from `$1` to `$9`) captured by the `value` pattern. For an explanation on captures see [Pattern Groups and Capturing](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html#cg).
 
-- The replaced name is considered a *SQL name* in the same category as the original object name. This name is always further processed by HotRod to produce an camel case Java property name. For example, if:
+- The replaced name is considered a **database name** in the same category as the original object name. This means the replaced name takes the place of the original name, and is
+converted to the target language (such as Java) according to the language rules. For example, if:
 
     - The original column name `ACC_VIP_CLIENT_NBR`,
     - Was converted to `VIP_CLIENT` by stripping the prefix and suffix,

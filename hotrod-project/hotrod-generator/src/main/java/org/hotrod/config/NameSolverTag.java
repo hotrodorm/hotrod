@@ -56,6 +56,7 @@ public class NameSolverTag extends AbstractConfigurationTag {
     for (NameSolverNameTag n : this.namingRules) {
       String newName = n.tryToReplace(name, scope);
       if (newName != null) {
+        // new Exception().printStackTrace();
         return newName;
       }
     }

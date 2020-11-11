@@ -18,6 +18,7 @@ import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
@@ -326,6 +327,61 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
   @Override
   public UnescapedSQLCase getUnescapedSQLCase() {
     return UnescapedSQLCase.LOWER_CASE;
+  }
+
+  @Override
+  public String provideSampleValueFor(final JDBCType jdbcType) {
+    switch (jdbcType.getCode()) {
+
+    case java.sql.Types.TINYINT: return "1::smallint";
+    case java.sql.Types.SMALLINT: return "1::smallint";
+    case java.sql.Types.INTEGER: return "1::int";
+    case java.sql.Types.BIGINT: return "1::bigint";
+    case java.sql.Types.FLOAT: return "1.0::float";
+    case java.sql.Types.DOUBLE: return "1.0::double";
+    case java.sql.Types.REAL: return "1.0::float";
+    case java.sql.Types.DECIMAL: return "1.0::decimal";
+    case java.sql.Types.NUMERIC: return "1::numeric";
+
+    case java.sql.Types.CHAR: return "'a'::char";
+    case java.sql.Types.NCHAR: return "'a'::char";
+    case java.sql.Types.VARCHAR: return "'a'::varchar";
+    case java.sql.Types.NVARCHAR: return "'a'::varchar";
+    case java.sql.Types.LONGVARCHAR: return "'a'::text";
+    case java.sql.Types.LONGNVARCHAR: return "'a'::text";
+    case java.sql.Types.CLOB: return "'a'::text";
+    case java.sql.Types.NCLOB: return "'a'::text";
+
+    case java.sql.Types.DATE: return "date '2001-10-05'";
+    case java.sql.Types.TIME: return "'04:05'::time";
+    case java.sql.Types.TIME_WITH_TIMEZONE: return "'04:05'::time";
+    case java.sql.Types.TIMESTAMP: return "timestamp '2004-10-19 10:23:54'";
+    case java.sql.Types.TIMESTAMP_WITH_TIMEZONE: return "timestamp '2004-10-19 10:23:54+02'";
+
+    case java.sql.Types.BLOB: return "E'a'::bytea";
+    case java.sql.Types.BINARY: return "E'a'::bytea";
+    case java.sql.Types.VARBINARY: return "E'a'::bytea";
+    case java.sql.Types.LONGVARBINARY: return "E'a'::bytea";
+
+    case java.sql.Types.BOOLEAN: return "true";
+
+    case java.sql.Types.SQLXML: return "xmlcomment('a')";
+
+//    case java.sql.Types.ARRAY: return "?";
+//    case java.sql.Types.BIT: return "b'101'::bit(3)";
+//    case java.sql.Types.DATALINK: return "?";
+//    case java.sql.Types.DISTINCT: return "?";
+//    case java.sql.Types.JAVA_OBJECT: return "?";
+//    case java.sql.Types.NULL: return "?";
+//    case java.sql.Types.OTHER: return "?";
+//    case java.sql.Types.REF: return "?";
+//    case java.sql.Types.REF_CURSOR: return "?";
+//    case java.sql.Types.ROWID: return "?";
+//    case java.sql.Types.STRUCT: return "?";
+
+    }
+    
+    return null;
   }
 
 }
