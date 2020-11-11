@@ -30,7 +30,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.generator.mybatis.DataSetLayout;
+import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;

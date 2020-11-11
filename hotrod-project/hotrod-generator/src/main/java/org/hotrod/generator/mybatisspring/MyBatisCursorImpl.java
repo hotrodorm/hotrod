@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.utils.ClassPackage;
 
 public class MyBatisCursorImpl {

@@ -45,7 +45,6 @@ import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.generator.SelectMetadataCache;
-import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.generator.mybatisspring.SelectAbstractVO;
 import org.hotrod.generator.mybatisspring.SelectVO;
 import org.hotrod.metadata.ColumnMetadata;

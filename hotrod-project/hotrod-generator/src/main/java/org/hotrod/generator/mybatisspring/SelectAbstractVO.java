@@ -14,7 +14,6 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.NamePackageResolver;
-import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VOMetadata.VOMember;

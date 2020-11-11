@@ -9,7 +9,6 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.NamePackageResolver;
-import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.utils.ClassPackage;

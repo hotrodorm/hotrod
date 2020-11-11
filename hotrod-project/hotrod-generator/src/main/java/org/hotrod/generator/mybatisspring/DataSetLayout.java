@@ -1,4 +1,4 @@
-package org.hotrod.generator.mybatis;
+package org.hotrod.generator.mybatisspring;
 
 import java.io.File;
 import java.io.Serializable;

@@ -22,6 +22,7 @@ import org.hotrod.generator.Feedback;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FormerGenerator;
 import org.hotrod.generator.LiveGenerator;
+import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.ExecutorDAOMetadata;
