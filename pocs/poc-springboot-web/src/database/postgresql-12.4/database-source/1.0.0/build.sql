@@ -7,10 +7,6 @@ create table product (
   "CLI_first_name_ab" varchar(10)
 );
 
-create table client_tbl (
-  id int
-);
-
 create table historic_price (
   product_id int not null,
   from_date date not null,

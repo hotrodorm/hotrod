@@ -28,9 +28,9 @@
     <id property="id" column="id" />
     <result property="name" column="name" />
     <result property="price" column="price" />
-    <result property="prop2u" column="sku" />
-    <result property="rank" column="xyz_rank_CLI" />
-    <result property="first_name_ab" column="CLI_first_name_ab" />
+    <result property="sku" column="sku" />
+    <result property="xyzRankCli" column="xyz_rank_CLI" />
+    <result property="cliFirstNameAb" column="CLI_first_name_ab" />
   </resultMap>
 
   <!-- select by PK -->
@@ -45,12 +45,12 @@
 
   <!-- select by unique indexes -->
 
-  <select id="selectByUIProp2u" resultMap="allColumns">
+  <select id="selectByUISku" resultMap="allColumns">
     select
       <include refid="columns" />
      from product
      where
-      sku = #{prop2u,jdbcType=BIGINT}
+      sku = #{sku,jdbcType=BIGINT}
   </select>
 
   <!-- select by example -->
@@ -78,22 +78,22 @@
       <if test="p.price == null and p.propertiesChangeLog.priceWasSet">
         and price is null
       </if>
-      <if test="p.prop2u != null ">
-        and sku = #{p.prop2u,jdbcType=BIGINT}
+      <if test="p.sku != null ">
+        and sku = #{p.sku,jdbcType=BIGINT}
       </if>
-      <if test="p.prop2u == null and p.propertiesChangeLog.prop2uWasSet">
+      <if test="p.sku == null and p.propertiesChangeLog.skuWasSet">
         and sku is null
       </if>
-      <if test="p.rank != null ">
-        and "xyz_rank_CLI" = #{p.rank,jdbcType=INTEGER}
+      <if test="p.xyzRankCli != null ">
+        and "xyz_rank_CLI" = #{p.xyzRankCli,jdbcType=INTEGER}
       </if>
-      <if test="p.rank == null and p.propertiesChangeLog.rankWasSet">
+      <if test="p.xyzRankCli == null and p.propertiesChangeLog.xyzRankCliWasSet">
         and "xyz_rank_CLI" is null
       </if>
-      <if test="p.first_name_ab != null ">
-        and "CLI_first_name_ab" = #{p.first_name_ab,jdbcType=VARCHAR}
+      <if test="p.cliFirstNameAb != null ">
+        and "CLI_first_name_ab" = #{p.cliFirstNameAb,jdbcType=VARCHAR}
       </if>
-      <if test="p.first_name_ab == null and p.propertiesChangeLog.first_name_abWasSet">
+      <if test="p.cliFirstNameAb == null and p.propertiesChangeLog.cliFirstNameAbWasSet">
         and "CLI_first_name_ab" is null
       </if>
     </trim>
@@ -125,9 +125,9 @@
         <if test="true">, #{id,jdbcType=BIGINT}</if>
         <if test="true">, #{name,jdbcType=VARCHAR}</if>
         <if test="propertiesChangeLog.priceWasSet">, #{price,jdbcType=INTEGER}</if>
-        <if test="true">, #{prop2u,jdbcType=BIGINT}</if>
-        <if test="true">, #{rank,jdbcType=INTEGER}</if>
-        <if test="true">, #{first_name_ab,jdbcType=VARCHAR}</if>
+        <if test="true">, #{sku,jdbcType=BIGINT}</if>
+        <if test="true">, #{xyzRankCli,jdbcType=INTEGER}</if>
+        <if test="true">, #{cliFirstNameAb,jdbcType=VARCHAR}</if>
       </trim>
       )
   </insert>
@@ -138,9 +138,9 @@
     update product set
       name = #{name,jdbcType=VARCHAR},
       price = #{price,jdbcType=INTEGER},
-      sku = #{prop2u,jdbcType=BIGINT},
-      "xyz_rank_CLI" = #{rank,jdbcType=INTEGER},
-      "CLI_first_name_ab" = #{first_name_ab,jdbcType=VARCHAR}
+      sku = #{sku,jdbcType=BIGINT},
+      "xyz_rank_CLI" = #{xyzRankCli,jdbcType=INTEGER},
+      "CLI_first_name_ab" = #{cliFirstNameAb,jdbcType=VARCHAR}
      where
       id = #{id,jdbcType=BIGINT}
   </update>
@@ -161,9 +161,9 @@
       <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=BIGINT},</if>
       <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
       <if test="values.propertiesChangeLog.priceWasSet">price = #{values.price,jdbcType=INTEGER},</if>
-      <if test="values.propertiesChangeLog.prop2uWasSet">sku = #{values.prop2u,jdbcType=BIGINT},</if>
-      <if test="values.propertiesChangeLog.rankWasSet">"xyz_rank_CLI" = #{values.rank,jdbcType=INTEGER},</if>
-      <if test="values.propertiesChangeLog.first_name_abWasSet">"CLI_first_name_ab" = #{values.first_name_ab,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.skuWasSet">sku = #{values.sku,jdbcType=BIGINT},</if>
+      <if test="values.propertiesChangeLog.xyzRankCliWasSet">"xyz_rank_CLI" = #{values.xyzRankCli,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.cliFirstNameAbWasSet">"CLI_first_name_ab" = #{values.cliFirstNameAb,jdbcType=VARCHAR},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null ">
@@ -184,22 +184,22 @@
       <if test="filter.price == null and filter.propertiesChangeLog.priceWasSet">
         and price is null
       </if>
-      <if test="filter.prop2u != null ">
-        and sku = #{filter.prop2u,jdbcType=BIGINT}
+      <if test="filter.sku != null ">
+        and sku = #{filter.sku,jdbcType=BIGINT}
       </if>
-      <if test="filter.prop2u == null and filter.propertiesChangeLog.prop2uWasSet">
+      <if test="filter.sku == null and filter.propertiesChangeLog.skuWasSet">
         and sku is null
       </if>
-      <if test="filter.rank != null ">
-        and "xyz_rank_CLI" = #{filter.rank,jdbcType=INTEGER}
+      <if test="filter.xyzRankCli != null ">
+        and "xyz_rank_CLI" = #{filter.xyzRankCli,jdbcType=INTEGER}
       </if>
-      <if test="filter.rank == null and filter.propertiesChangeLog.rankWasSet">
+      <if test="filter.xyzRankCli == null and filter.propertiesChangeLog.xyzRankCliWasSet">
         and "xyz_rank_CLI" is null
       </if>
-      <if test="filter.first_name_ab != null ">
-        and "CLI_first_name_ab" = #{filter.first_name_ab,jdbcType=VARCHAR}
+      <if test="filter.cliFirstNameAb != null ">
+        and "CLI_first_name_ab" = #{filter.cliFirstNameAb,jdbcType=VARCHAR}
       </if>
-      <if test="filter.first_name_ab == null and filter.propertiesChangeLog.first_name_abWasSet">
+      <if test="filter.cliFirstNameAb == null and filter.propertiesChangeLog.cliFirstNameAbWasSet">
         and "CLI_first_name_ab" is null
       </if>
     </trim>
@@ -228,22 +228,22 @@
       <if test="price == null and propertiesChangeLog.priceWasSet">
         and price is null
       </if>
-      <if test="prop2u != null ">
-        and sku = #{prop2u,jdbcType=BIGINT}
+      <if test="sku != null ">
+        and sku = #{sku,jdbcType=BIGINT}
       </if>
-      <if test="prop2u == null and propertiesChangeLog.prop2uWasSet">
+      <if test="sku == null and propertiesChangeLog.skuWasSet">
         and sku is null
       </if>
-      <if test="rank != null ">
-        and "xyz_rank_CLI" = #{rank,jdbcType=INTEGER}
+      <if test="xyzRankCli != null ">
+        and "xyz_rank_CLI" = #{xyzRankCli,jdbcType=INTEGER}
       </if>
-      <if test="rank == null and propertiesChangeLog.rankWasSet">
+      <if test="xyzRankCli == null and propertiesChangeLog.xyzRankCliWasSet">
         and "xyz_rank_CLI" is null
       </if>
-      <if test="first_name_ab != null ">
-        and "CLI_first_name_ab" = #{first_name_ab,jdbcType=VARCHAR}
+      <if test="cliFirstNameAb != null ">
+        and "CLI_first_name_ab" = #{cliFirstNameAb,jdbcType=VARCHAR}
       </if>
-      <if test="first_name_ab == null and propertiesChangeLog.first_name_abWasSet">
+      <if test="cliFirstNameAb == null and propertiesChangeLog.cliFirstNameAbWasSet">
         and "CLI_first_name_ab" is null
       </if>
     </trim>

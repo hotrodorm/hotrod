@@ -63,7 +63,8 @@ public class MyQueriesDAO implements Serializable, ApplicationContextAware {
 
       
       
-      select name, price, #{title} as kind
+      
+      select name, price, #{when} as kind
       from product
       where price > #{minPrice}
     
@@ -72,14 +73,14 @@ public class MyQueriesDAO implements Serializable, ApplicationContextAware {
 
 
   public static class ParamFindExpensiveProducts {
-    java.lang.Integer minPrice;
-    java.lang.String title;
+    Integer minPrice;
+    String when;
   }
 
-  public Cursor<CheapProductVOVO> findExpensiveProducts(final java.lang.Integer minPrice, final java.lang.String title) {
+  public Cursor<CheapProductVOVO> findExpensiveProducts(final Integer minPrice, final String when) {
     ParamFindExpensiveProducts param0 = new ParamFindExpensiveProducts();
     param0.minPrice = minPrice;
-    param0.title = title;
+    param0.when = when;
     return     new MyBatisCursor<CheapProductVOVO>(this.sqlSession.selectCursor("app5.persistence.primitives.myQueriesDAO.select_findExpensiveProducts", param0));
   }
 

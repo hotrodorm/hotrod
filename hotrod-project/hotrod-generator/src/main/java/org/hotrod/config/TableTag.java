@@ -295,12 +295,12 @@ public class TableTag extends AbstractEntityDAOTag {
     } else {
       String replacedName = null;
       try {
-        log.info("### this.name=" + this.name);
+        log.debug("### this.name=" + this.name);
         replacedName = config.getNameSolverTag().resolveName(this.name, Scope.TABLE);
-        log.info("### replacedName=" + replacedName);
+        log.debug("### replacedName=" + replacedName);
         if (replacedName != null) {
           this.javaClassName = Id.fromCanonicalSQL(replacedName, adapter).getJavaClassName();
-          log.info(" done.");
+          log.debug(" done.");
         }
       } catch (CouldNotResolveNameException e) {
         throw new InvalidConfigurationFileException(this,

@@ -8,7 +8,7 @@
       <daos package="app5.persistence" vo-prefix="" vo-suffix="VO" abstract-vo-prefix="Abstract"
         abstract-vo-suffix="VO" dao-prefix="" dao-suffix="DAO" />
       <mappers dir="mappers" />
-      <select-generation strategy="result-set" />
+      <select-generation strategy="result-set" temp-view-base-name="tmp2" />
       <classic-fk-navigation />
     </mybatis-spring>
   </generators>
@@ -35,9 +35,12 @@
      -->
   </type-solver>
 
+<!-- 
   <table name="product" />
   <table name="historic_price" />
   
+  <table name="client_tbl" />
+
   <table name="account" />
   <table name="item" />
   <table name="island" />
@@ -45,30 +48,19 @@
   <table name="federal_branch" />
   <table name="types_binary" />
   <table name="types_other" />
+-->
 
-
+  <table name="PTY_PERSONA" java-name="Persona">
+    <column name="PER_FECHA_NAC" java-name="fechaNacimiento" />
+  </table>
+  
   <dao name="MyQueries">
 
-    <select method="findExpensiveProducts" vo="CheapProductVO" mode="cursor">
-      <parameter name="minPrice" java-type="Integer" jdbc-type="NUMERIC" />
-      <!-- 
-      <parameter name="when" java-type="java.time.chrono.ChronoZonedDateTime" jdbc-type="TIMESTAMP" sample-sql-value="1" />
-      -->
-      <parameter name="when" java-type="String" />
-      select name, price, #{when} as kind
-      from product
-      where price > #{minPrice}
+    <select method="findCheapestProducts" vo="Prod1">
+      select *
+      from pty_persona
     </select>
 
-    <select method="findCheapestProducts">
-      select
-      <columns>
-        <vo table="product" alias="p" />
-      </columns>
-      from product p
-      where p.price between 0 and 3
-    </select>
-
-  </dao>
-
+  </dao>  
+  
 </hotrod>

@@ -5,7 +5,7 @@ package app5.persistence.primitives;
 import java.io.Serializable;
 import org.hotrod.runtime.json.*;
 
-public class AbstractClientVO implements Serializable {
+public class AbstractClientTblVO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

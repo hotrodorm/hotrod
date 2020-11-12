@@ -167,10 +167,6 @@ public class ParameterTag extends AbstractConfigurationTag {
     return javaType;
   }
 
-  public String getJDBCTypeName() {
-    return jdbcTypeName;
-  }
-
   public JDBCType getJDBCType() {
     return jdbcType;
   }

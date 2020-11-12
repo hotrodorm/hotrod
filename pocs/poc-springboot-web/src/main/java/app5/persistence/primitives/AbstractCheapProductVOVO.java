@@ -12,7 +12,7 @@ public abstract class AbstractCheapProductVOVO implements Serializable {
 
   protected java.lang.String name = null;
   protected java.lang.Integer price = null;
-  protected java.lang.String kind = null; // it's a LOB type
+  protected java.lang.String kind = null;
 
   // getters & setters
 

@@ -13,7 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
-import app5.persistence.ClientVO;
+import app5.persistence.ClientTblVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
@@ -36,7 +36,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 @Component
-public class ClientDAO implements Serializable, ApplicationContextAware {
+public class ClientTblDAO implements Serializable, ApplicationContextAware {
 
   private static final long serialVersionUID = 1L;
 
@@ -59,26 +59,26 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app5.persistence.ClientVO> selectByExample(final app5.persistence.ClientVO example, final ClientOrderBy... orderBies)
+  public List<app5.persistence.ClientTblVO> selectByExample(final app5.persistence.ClientTblVO example, final ClientTblOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.ClientVO, ClientOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.ClientVO, ClientOrderBy>(example, orderBies);
-    return this.sqlSession.selectList("app5.persistence.primitives.client.selectByExample", dwo);
+    DaoWithOrder<app5.persistence.ClientTblVO, ClientTblOrderBy> dwo = //
+        new DaoWithOrder<app5.persistence.ClientTblVO, ClientTblOrderBy>(example, orderBies);
+    return this.sqlSession.selectList("app5.persistence.primitives.clientTbl.selectByExample", dwo);
   }
 
-  public Cursor<app5.persistence.ClientVO> selectByExampleCursor(final app5.persistence.ClientVO example, final ClientOrderBy... orderBies)
+  public Cursor<app5.persistence.ClientTblVO> selectByExampleCursor(final app5.persistence.ClientTblVO example, final ClientTblOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.ClientVO, ClientOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.ClientVO, ClientOrderBy>(example, orderBies);
-    return new MyBatisCursor<app5.persistence.ClientVO>(this.sqlSession.selectCursor("app5.persistence.primitives.client.selectByExample", dwo));
+    DaoWithOrder<app5.persistence.ClientTblVO, ClientTblOrderBy> dwo = //
+        new DaoWithOrder<app5.persistence.ClientTblVO, ClientTblOrderBy>(example, orderBies);
+    return new MyBatisCursor<app5.persistence.ClientTblVO>(this.sqlSession.selectCursor("app5.persistence.primitives.clientTbl.selectByExample", dwo));
   }
 
   // select by criteria
 
-  public CriteriaWherePhase<app5.persistence.ClientVO> selectByCriteria(final ClientDAO.ClientTable from,
+  public CriteriaWherePhase<app5.persistence.ClientTblVO> selectByCriteria(final ClientTblDAO.ClientTblTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app5.persistence.ClientVO>(from, this.sqlDialect, this.sqlSession,
-        predicate, "app5.persistence.primitives.client.selectByCriteria");
+    return new CriteriaWherePhase<app5.persistence.ClientTblVO>(from, this.sqlDialect, this.sqlSession,
+        predicate, "app5.persistence.primitives.clientTbl.selectByCriteria");
   }
 
   // select parent(s) by FKs: no imported keys found -- skipped
@@ -87,8 +87,8 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final app5.persistence.ClientVO vo) {
-    String id = "app5.persistence.primitives.client.insert";
+  public int insert(final app5.persistence.ClientTblVO vo) {
+    String id = "app5.persistence.primitives.clientTbl.insert";
     return this.sqlSession.insert(id, vo);
   }
 
@@ -98,26 +98,26 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app5.persistence.ClientVO example, final app5.persistence.ClientVO updateValues) {
-    UpdateByExampleDao<app5.persistence.ClientVO> fvd = //
-      new UpdateByExampleDao<app5.persistence.ClientVO>(example, updateValues);
-    return this.sqlSession.update("app5.persistence.primitives.client.updateByExample", fvd);
+  public int updateByExample(final app5.persistence.ClientTblVO example, final app5.persistence.ClientTblVO updateValues) {
+    UpdateByExampleDao<app5.persistence.ClientTblVO> fvd = //
+      new UpdateByExampleDao<app5.persistence.ClientTblVO>(example, updateValues);
+    return this.sqlSession.update("app5.persistence.primitives.clientTbl.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final app5.persistence.ClientVO example) {
-    return this.sqlSession.delete("app5.persistence.primitives.client.deleteByExample", example);
+  public int deleteByExample(final app5.persistence.ClientTblVO example) {
+    return this.sqlSession.delete("app5.persistence.primitives.clientTbl.deleteByExample", example);
   }
 
   // DAO ordering
 
-  public enum ClientOrderBy implements OrderBy {
+  public enum ClientTblOrderBy implements OrderBy {
 
     ID("client_tbl", "id", true), //
     ID$DESC("client_tbl", "id", false);
 
-    private ClientOrderBy(final String tableName, final String columnName,
+    private ClientTblOrderBy(final String tableName, final String columnName,
         boolean ascending) {
       this.tableName = tableName;
       this.columnName = columnName;
@@ -144,15 +144,15 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
 
   // Database Table metadata
 
-  public static ClientTable newTable() {
-    return new ClientTable();
+  public static ClientTblTable newTable() {
+    return new ClientTblTable();
   }
 
-  public static ClientTable newTable(final String alias) {
-    return new ClientTable(alias);
+  public static ClientTblTable newTable(final String alias) {
+    return new ClientTblTable(alias);
   }
 
-  public static class ClientTable extends Table {
+  public static class ClientTblTable extends Table {
 
     // Properties
 
@@ -160,12 +160,12 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
 
     // Constructors
 
-    ClientTable() {
+    ClientTblTable() {
       super(null, null, "client_tbl", "Table", null);
       initialize();
     }
 
-    ClientTable(final String alias) {
+    ClientTblTable(final String alias) {
       super(null, null, "client_tbl", "Table", alias);
       initialize();
     }

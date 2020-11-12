@@ -17,6 +17,7 @@ import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
@@ -266,6 +267,11 @@ public class SQLiteAdapter extends DatabaseAdapter {
   @Override
   public UnescapedSQLCase getUnescapedSQLCase() {
     return UnescapedSQLCase.UPPER_CASE;
+  }
+
+  @Override
+  public String provideSampleValueFor(final JDBCType jdbcType) {
+    return "?";
   }
 
 }

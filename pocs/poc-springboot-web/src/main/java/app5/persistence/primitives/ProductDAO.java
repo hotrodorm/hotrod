@@ -71,12 +71,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // select by unique indexes
 
-  public app5.persistence.ProductVO selectByUIProp2u(final java.lang.Long prop2u) {
-    if (prop2u == null)
+  public app5.persistence.ProductVO selectByUISku(final java.lang.Long sku) {
+    if (sku == null)
       return null;
     app5.persistence.ProductVO vo = new app5.persistence.ProductVO();
-    vo.setProp2u(prop2u);
-    return this.sqlSession.selectOne("app5.persistence.primitives.product.selectByUIProp2u", vo);
+    vo.setSku(sku);
+    return this.sqlSession.selectOne("app5.persistence.primitives.product.selectByUISku", vo);
   }
 
   // select by example
@@ -123,8 +123,8 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       return new SelectChildrenHistoricPriceFromIdPhase(this.vo);
     }
 
-    public SelectChildrenHistoricPriceFromProp2uPhase fromProp2u() {
-      return new SelectChildrenHistoricPriceFromProp2uPhase(this.vo);
+    public SelectChildrenHistoricPriceFromSkuPhase fromSku() {
+      return new SelectChildrenHistoricPriceFromSkuPhase(this.vo);
     }
 
   }
@@ -145,17 +145,17 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   }
 
-  public class SelectChildrenHistoricPriceFromProp2uPhase {
+  public class SelectChildrenHistoricPriceFromSkuPhase {
 
     private ProductVO vo;
 
-    SelectChildrenHistoricPriceFromProp2uPhase(final ProductVO vo) {
+    SelectChildrenHistoricPriceFromSkuPhase(final ProductVO vo) {
       this.vo = vo;
     }
 
-    public List<HistoricPriceVO> toProp2u(final HistoricPriceOrderBy... orderBies) {
+    public List<HistoricPriceVO> toSku(final HistoricPriceOrderBy... orderBies) {
       HistoricPriceVO example = new HistoricPriceVO();
-      example.setProp2u(this.vo.getProp2u());
+      example.setSku(this.vo.getSku());
       return historicPriceDAO.selectByExample(example, orderBies);
     }
 
@@ -216,18 +216,18 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("product", "lower(name), name", true), //
     PRICE("product", "price", true), //
     PRICE$DESC("product", "price", false), //
-    PROP2U("product", "sku", true), //
-    PROP2U$DESC("product", "sku", false), //
-    RANK("product", "\"xyz_rank_CLI\"", true), //
-    RANK$DESC("product", "\"xyz_rank_CLI\"", false), //
-    FIRST_NAME_AB("product", "\"CLI_first_name_ab\"", true), //
-    FIRST_NAME_AB$DESC("product", "\"CLI_first_name_ab\"", false), //
-    FIRST_NAME_AB$CASEINSENSITIVE("product", "lower(\"CLI_first_name_ab\")", true), //
-    FIRST_NAME_AB$CASEINSENSITIVE_STABLE_FORWARD("product", "lower(\"CLI_first_name_ab\"), \"CLI_first_name_ab\"", true), //
-    FIRST_NAME_AB$CASEINSENSITIVE_STABLE_REVERSE("product", "lower(\"CLI_first_name_ab\"), \"CLI_first_name_ab\"", false), //
-    FIRST_NAME_AB$DESC_CASEINSENSITIVE("product", "lower(\"CLI_first_name_ab\")", false), //
-    FIRST_NAME_AB$DESC_CASEINSENSITIVE_STABLE_FORWARD("product", "lower(\"CLI_first_name_ab\"), \"CLI_first_name_ab\"", false), //
-    FIRST_NAME_AB$DESC_CASEINSENSITIVE_STABLE_REVERSE("product", "lower(\"CLI_first_name_ab\"), \"CLI_first_name_ab\"", true);
+    SKU("product", "sku", true), //
+    SKU$DESC("product", "sku", false), //
+    XYZ_RANK_CLI("product", "\"xyz_rank_CLI\"", true), //
+    XYZ_RANK_CLI$DESC("product", "\"xyz_rank_CLI\"", false), //
+    CLI_FIRST_NAME_AB("product", "\"CLI_first_name_ab\"", true), //
+    CLI_FIRST_NAME_AB$DESC("product", "\"CLI_first_name_ab\"", false), //
+    CLI_FIRST_NAME_AB$CASEINSENSITIVE("product", "lower(\"CLI_first_name_ab\")", true), //
+    CLI_FIRST_NAME_AB$CASEINSENSITIVE_STABLE_FORWARD("product", "lower(\"CLI_first_name_ab\"), \"CLI_first_name_ab\"", true), //
+    CLI_FIRST_NAME_AB$CASEINSENSITIVE_STABLE_REVERSE("product", "lower(\"CLI_first_name_ab\"), \"CLI_first_name_ab\"", false), //
+    CLI_FIRST_NAME_AB$DESC_CASEINSENSITIVE("product", "lower(\"CLI_first_name_ab\")", false), //
+    CLI_FIRST_NAME_AB$DESC_CASEINSENSITIVE_STABLE_FORWARD("product", "lower(\"CLI_first_name_ab\"), \"CLI_first_name_ab\"", false), //
+    CLI_FIRST_NAME_AB$DESC_CASEINSENSITIVE_STABLE_REVERSE("product", "lower(\"CLI_first_name_ab\"), \"CLI_first_name_ab\"", true);
 
     private ProductOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -271,9 +271,9 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
     public NumberColumn id;
     public StringColumn name;
     public NumberColumn price;
-    public NumberColumn prop2u;
-    public NumberColumn rank;
-    public StringColumn first_name_ab;
+    public NumberColumn sku;
+    public NumberColumn xyzRankCli;
+    public StringColumn cliFirstNameAb;
 
     // Constructors
 
@@ -293,9 +293,9 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       this.id = new NumberColumn(this, "id", "id");
       this.name = new StringColumn(this, "name", "name");
       this.price = new NumberColumn(this, "price", "price");
-      this.prop2u = new NumberColumn(this, "sku", "prop2u");
-      this.rank = new NumberColumn(this, "xyz_rank_CLI", "rank");
-      this.first_name_ab = new StringColumn(this, "CLI_first_name_ab", "first_name_ab");
+      this.sku = new NumberColumn(this, "sku", "sku");
+      this.xyzRankCli = new NumberColumn(this, "xyz_rank_CLI", "xyzRankCli");
+      this.cliFirstNameAb = new StringColumn(this, "CLI_first_name_ab", "cliFirstNameAb");
     }
 
   }

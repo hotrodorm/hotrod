@@ -24,7 +24,7 @@
 
   <select id="select_findExpensiveProducts" resultMap="result_map_select_findExpensiveProducts">
       select name, price, 
-#{title,jdbcType=VARCHAR}
+#{when,jdbcType=VARCHAR}
  as kind
       from product
       where price > 
@@ -37,9 +37,9 @@
     <id property="id" column="ns0_id" />
     <result property="name" column="ns0_name" />
     <result property="price" column="ns0_price" />
-    <result property="prop2u" column="ns0_sku" />
-    <result property="rank" column="ns0_xyz_rank_CLI" />
-    <result property="first_name_ab" column="ns0_CLI_first_name_ab" />
+    <result property="sku" column="ns0_sku" />
+    <result property="xyzRankCli" column="ns0_xyz_rank_CLI" />
+    <result property="cliFirstNameAb" column="ns0_CLI_first_name_ab" />
   </resultMap>
 
   <select id="select_findCheapestProducts" resultMap="result_map_select_findCheapestProducts">
