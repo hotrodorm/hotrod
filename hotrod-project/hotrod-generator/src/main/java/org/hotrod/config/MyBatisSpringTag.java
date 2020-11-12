@@ -56,27 +56,48 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   // JAXB Setters
 
   @XmlElement(name = "daos")
-  public void setDaos(final DaosSpringMyBatisTag daos) {
+  public void setDaos(final DaosSpringMyBatisTag daos) throws InvalidConfigurationFileException {
+    if (this.daos != null) {
+      throw new InvalidConfigurationFileException(this,
+          "Duplicate <daos> tag; the generator can only have a single <dao> tag");
+    }
     this.daos = daos;
   }
 
   @XmlElement
-  public void setMappers(final MappersTag mappers) {
+  public void setMappers(final MappersTag mappers) throws InvalidConfigurationFileException {
+    if (this.mappers != null) {
+      throw new InvalidConfigurationFileException(this,
+          "Duplicate <mappers> tag; the generator can only have a single <mappers> tag");
+    }
     this.mappers = mappers;
   }
 
   @XmlElement(name = "mybatis-configuration-template")
-  public void setTemplate(final TemplateTag template) {
+  public void setTemplate(final TemplateTag template) throws InvalidConfigurationFileException {
+    if (this.template != null) {
+      throw new InvalidConfigurationFileException(this,
+          "Duplicate <mybatis-configuration-template> tag; the generator can only have a single <mybatis-configuration-template> tag");
+    }
     this.template = template;
   }
 
   @XmlElement(name = "select-generation")
-  public void setSelectGeneration(final SelectGenerationTag selectGeneration) {
+  public void setSelectGeneration(final SelectGenerationTag selectGeneration) throws InvalidConfigurationFileException {
+    if (this.selectGeneration != null) {
+      throw new InvalidConfigurationFileException(this,
+          "Duplicate <select-generation> tag; the generator can only have a single <select-generation> tag");
+    }
     this.selectGeneration = selectGeneration;
   }
 
   @XmlElement(name = "classic-fk-navigation")
-  public void setClassicFKNavigation(final ClassicFKNavigationTag classicFKNavigation) {
+  public void setClassicFKNavigation(final ClassicFKNavigationTag classicFKNavigation)
+      throws InvalidConfigurationFileException {
+    if (this.classicFKNavigation != null) {
+      throw new InvalidConfigurationFileException(this,
+          "Duplicate <classic-fk-navigation> tag; the generator can only have a single <classic-fk-navigation> tag");
+    }
     this.classicFKNavigation = classicFKNavigation;
   }
 

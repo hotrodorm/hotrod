@@ -75,14 +75,14 @@
 
   <xsd:complexType name="mybatis-spring-type">
     <xsd:sequence>
-      <xsd:element name="daos" type="daos-mybatis-spring-type" />
-      <xsd:element name="mappers" type="mappers-type" />
-      <xsd:element name="mybatis-configuration-template" type="mybatis-configuration-template-type"
-        minOccurs="0" />
-      <xsd:element name="select-generation" type="select-generation-type" minOccurs="0" />
-      <xsd:element name="classic-fk-navigation" type="classic-fk-navigation-type" minOccurs="0"
-        maxOccurs="1" />
-      <xsd:element name="property" type="property-type" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="daos" type="daos-mybatis-spring-type" />
+        <xsd:element name="mappers" type="mappers-type" />
+        <xsd:element name="mybatis-configuration-template" type="mybatis-configuration-template-type" />
+        <xsd:element name="select-generation" type="select-generation-type" />
+        <xsd:element name="classic-fk-navigation" type="classic-fk-navigation-type" />
+        <xsd:element name="property" type="property-type" />
+      </xsd:choice>
     </xsd:sequence>
   </xsd:complexType>
 
