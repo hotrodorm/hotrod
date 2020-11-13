@@ -270,7 +270,8 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   @Override
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
-      final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr) throws InvalidSQLException {
+      final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr)
+      throws InvalidSQLException, InvalidConfigurationFileException {
 
     for (VOTag vo : this.vos) {
       vo.gatherMetadataPhase1(selectTag, selectGenerationTag, columnsPrefixGenerator, cr);

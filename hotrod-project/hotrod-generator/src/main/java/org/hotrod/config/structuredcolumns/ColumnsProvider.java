@@ -12,7 +12,8 @@ import org.hotrod.utils.ColumnsPrefixGenerator;
 public interface ColumnsProvider {
 
   void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
-      final ColumnsPrefixGenerator columnsPrefixGenerator, ColumnsRetriever cr) throws InvalidSQLException;
+      final ColumnsPrefixGenerator columnsPrefixGenerator, ColumnsRetriever cr)
+      throws InvalidSQLException, InvalidConfigurationFileException;
 
   void gatherMetadataPhase2() throws InvalidSQLException, UncontrolledException, UnresolvableDataTypeException,
       InvalidConfigurationFileException;

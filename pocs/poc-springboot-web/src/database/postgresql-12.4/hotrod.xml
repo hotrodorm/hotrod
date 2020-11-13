@@ -10,6 +10,10 @@
       <mappers dir="mappers" />
       <classic-fk-navigation />
       <select-generation strategy="result-set" />
+      <!-- 
+      <select-generation strategy="create-view" />
+      <select-generation strategy="result-set" />
+       -->
     </mybatis-spring>
   </generators>
 

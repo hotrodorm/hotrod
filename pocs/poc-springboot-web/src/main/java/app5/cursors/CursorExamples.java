@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import app5.persistence.CheapProductVOVO;
+import app5.persistence.ProductInterface;
 import app5.persistence.ProductVO;
 import app5.persistence.primitives.ProductDAO;
 import app5.persistence.primitives.ProductDAO.ProductTable;
@@ -42,7 +43,7 @@ public class CursorExamples {
   public int computeAvgPriceProductsCriteria() {
     int total = 0;
     int count = 0;
-    for (ProductVO p : this.productsManager.getProductsCriteria()) {
+    for (ProductInterface p : this.productsManager.getProductsCriteria()) {
       if (p.getPrice() != null) {
         total = total + p.getPrice();
         count++;

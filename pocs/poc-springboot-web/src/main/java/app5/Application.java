@@ -115,16 +115,16 @@ public class Application {
 //    int avgPrice = this.cursorExamples.computeAvgPriceProducts();
 //    log.info("Average price: " + avgPrice);
 //
-//    log.info("* CURSOR - Select by criteria...");
-//    int avgPriceC = this.cursorExamples.computeAvgPriceProductsCriteria();
-//    log.info("Average priceC: " + avgPriceC);
+    log.info("* CURSOR - Select by criteria...");
+    int avgPriceC = this.cursorExamples.computeAvgPriceProductsCriteria();
+    log.info("Average priceC: " + avgPriceC);
 //
 //    log.info("* LiveSQL List...");
 //    int avgPriceLL = this.cursorExamples.computeAvgPriceProductsLiveSQL();
 //    log.info("Average priceLL: " + avgPriceLL);
 
-    log.info("* <select mode='cursor'>...");
-    this.cursorExamples.findCheapProductsCursor();
+//    log.info("* <select mode='cursor'>...");
+//    this.cursorExamples.findCheapProductsCursor();
 
   }
 

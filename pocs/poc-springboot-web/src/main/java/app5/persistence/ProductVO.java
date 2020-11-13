@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Scope;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ProductVO extends AbstractProductVO {
+public class ProductVO extends AbstractProductVO implements ProductInterface {
 
   private static final long serialVersionUID = 1L;
 

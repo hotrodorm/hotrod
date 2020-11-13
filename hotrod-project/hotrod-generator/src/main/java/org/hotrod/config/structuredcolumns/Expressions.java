@@ -1,7 +1,6 @@
 package org.hotrod.config.structuredcolumns;
 
 import java.io.Serializable;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +15,6 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
-import org.hotrod.config.TypeSolverTag;
 import org.hotrod.database.DatabaseAdapter.UnescapedSQLCase;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
@@ -82,7 +80,8 @@ public class Expressions implements ColumnsProvider, Serializable {
 
   @Override
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
-      final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr) throws InvalidSQLException {
+      final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr)
+      throws InvalidSQLException, InvalidConfigurationFileException {
     log.debug("this=" + this + " - this.expressions.isEmpty()=" + this.expressions.isEmpty());
     if (this.expressions.isEmpty()) {
       this.columnsRetriever = null;

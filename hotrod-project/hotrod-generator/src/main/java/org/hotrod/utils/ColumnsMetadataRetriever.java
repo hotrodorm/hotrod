@@ -54,8 +54,8 @@ public class ColumnsMetadataRetriever {
 
   // TODO: Nothing to do; just a marker === Phase 1
 
-  public void prepareRetrieval() throws InvalidSQLException {
-    this.cr.phase1Structured(getKey(), this.selectTag, this.columnsProvider, null);
+  public void prepareRetrieval() throws InvalidSQLException, InvalidConfigurationFileException {
+    this.cr.phase1Structured(getKey(), this.selectTag, this.aliasPrefix, this.entityPrefix, this.columnsProvider, null);
   }
 
   // TODO: Nothing to do; just a marker === Phase 2
