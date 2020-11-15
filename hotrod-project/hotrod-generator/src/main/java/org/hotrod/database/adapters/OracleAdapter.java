@@ -354,10 +354,10 @@ public class OracleAdapter extends DatabaseAdapter {
       return "cast(1 as number(9))";
     case java.sql.Types.BIGINT:
       return "cast(1 as number(18))";
-    case java.sql.Types.FLOAT:
-      return "cast(1 as float)";
     case java.sql.Types.REAL:
       return "cast(1 as real)";
+    case java.sql.Types.FLOAT: // JDBC equivalent to DOUBLE PRECISION
+      return "cast(1 as double precision)";
     case java.sql.Types.DOUBLE:
       return "cast(1 as double precision)";
     case java.sql.Types.DECIMAL:

@@ -53,17 +53,28 @@
 
   <dao name="MyQueries">
 
-    <select method="findExpensiveProducts" vo="CheapProductVO" mode="cursor">
+    <!-- For new "result-set" strategy
+    -->
+    <select method="findExpensiveProducts" vo="CheapProduct" mode="cursor">
       <parameter name="minPrice" java-type="Integer" jdbc-type="NUMERIC" />
-      <!-- 
-      <parameter name="when" java-type="java.time.chrono.ChronoZonedDateTime" jdbc-type="TIMESTAMP" sample-sql-value="1" />
-      -->
       <parameter name="when" java-type="String" />
       select name, price, #{when} as kind
       from product
       where price > #{minPrice}
     </select>
 
+    <!-- For old "create-view" strategy 
+    <select method="findExpensiveProducts" vo="CheapProductVO" mode="cursor">
+      <parameter name="minPrice" java-type="Integer" jdbc-type="NUMERIC" />
+      <parameter name="when" java-type="String" />
+      select name, price, 1 as kind
+      from product
+      <complement>
+      where price > #{minPrice}
+      </complement>
+    </select>
+    -->
+  
     <select method="findCheapestProducts">
       select
       <columns>

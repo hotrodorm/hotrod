@@ -16,7 +16,7 @@
 
   <!-- select method: findExpensiveProducts -->
 
-  <resultMap id="result_map_select_findExpensiveProducts" type="app5.persistence.CheapProductVOVO">
+  <resultMap id="result_map_select_findExpensiveProducts" type="app5.persistence.CheapProductVO">
     <result property="name" column="name" />
     <result property="price" column="price" />
     <result property="kind" column="kind" />
@@ -27,8 +27,7 @@
 #{when,jdbcType=VARCHAR}
  as kind
       from product
-      where price > 
-#{minPrice,jdbcType=NUMERIC}
+      where price > #{minPrice,jdbcType=NUMERIC}
   </select>
 
   <!-- select method: findCheapestProducts -->

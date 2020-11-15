@@ -284,21 +284,20 @@ public class HyperSQLAdapter extends DatabaseAdapter {
 //    true as xboolean
 //    from (values 1) x;
 
-
     switch (jdbcType.getCode()) {
 
     case java.sql.Types.TINYINT:
-      return "cast(1 as tinyint";
+      return "cast(1 as tinyint)";
     case java.sql.Types.SMALLINT:
       return "cast(1 as smallint)";
     case java.sql.Types.INTEGER:
       return "cast(1 as int)";
     case java.sql.Types.BIGINT:
       return "cast(1 as bigint)";
-    case java.sql.Types.FLOAT:
-      return "cast(1 as float)";
     case java.sql.Types.REAL:
-      return "cast(1 as float)";
+      return "cast(1 as double)";
+    case java.sql.Types.FLOAT: // JDBC equivalent to DOUBLE PRECISION
+      return "cast(1 as double)";
     case java.sql.Types.DOUBLE:
       return "cast(1 as double)";
     case java.sql.Types.DECIMAL:
@@ -315,13 +314,13 @@ public class HyperSQLAdapter extends DatabaseAdapter {
     case java.sql.Types.NVARCHAR:
       return "cast('a' as varchar(1))";
     case java.sql.Types.LONGVARCHAR:
-      return "cast('a' as clob) as clob";
+      return "cast('a' as clob)";
     case java.sql.Types.LONGNVARCHAR:
-      return "cast('a' as clob) as clob";
+      return "cast('a' as clob)";
     case java.sql.Types.CLOB:
-      return "cast('a' as clob) as clob";
+      return "cast('a' as clob)";
     case java.sql.Types.NCLOB:
-      return "cast('a' as clob) as clob";
+      return "cast('a' as clob)";
 
     case java.sql.Types.DATE:
       return "date '2001-10-05'";

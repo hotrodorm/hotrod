@@ -4,7 +4,7 @@ package app5.persistence.primitives;
 
 import java.io.Serializable;
 
-public abstract class AbstractCheapProductVOVO implements Serializable {
+public abstract class AbstractCheapProductVO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

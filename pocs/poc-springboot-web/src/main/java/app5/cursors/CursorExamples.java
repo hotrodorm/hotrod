@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import app5.persistence.CheapProductVOVO;
+import app5.persistence.CheapProductVO;
 import app5.persistence.ProductInterface;
 import app5.persistence.ProductVO;
 import app5.persistence.primitives.ProductDAO;
@@ -74,27 +74,9 @@ public class CursorExamples {
 
   @Transactional
   public void findCheapProductsCursor() {
-    for (CheapProductVOVO p : this.productsManager.getCheapProducts()) {
+    for (CheapProductVO p : this.productsManager.getCheapProducts()) {
       System.out.println(" - local: " + p);
     }
-
-    Cursor<CheapProductVOVO> base = this.productsManager.getCheapProducts();
-
-    Cursor<CheapProductVOVO> c = new Cursor() {
-
-      @Override
-      public void close() throws IOException {
-        base.close();
-      }
-
-      @Override
-      public Iterator iterator() {
-        // TODO Auto-generated method stub
-        return null;
-      }
-
-    };
-
   }
 
 }

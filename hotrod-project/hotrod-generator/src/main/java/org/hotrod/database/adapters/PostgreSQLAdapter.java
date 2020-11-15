@@ -350,12 +350,12 @@ public class PostgreSQLAdapter extends DatabaseAdapter {
       return "1::int";
     case java.sql.Types.BIGINT:
       return "1::bigint";
-    case java.sql.Types.FLOAT:
-      return "1.0::real";
-    case java.sql.Types.DOUBLE:
-      return "1.0::double precision";
     case java.sql.Types.REAL:
       return "1.0::float";
+    case java.sql.Types.FLOAT: // JDBC equivalent to DOUBLE PRECISION
+      return "1.0::double precision";
+    case java.sql.Types.DOUBLE:
+      return "1.0::double precision";
     case java.sql.Types.DECIMAL:
       return "1.0::decimal";
     case java.sql.Types.NUMERIC:

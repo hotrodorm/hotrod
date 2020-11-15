@@ -303,11 +303,11 @@ public class MySQLAdapter extends DatabaseAdapter {
       return "1";
     case java.sql.Types.BIGINT:
       return "1";
-    case java.sql.Types.FLOAT:
+    case java.sql.Types.REAL:
+      return "1.2";
+    case java.sql.Types.FLOAT: // JDBC equivalent to DOUBLE PRECISION
       return "1.2";
     case java.sql.Types.DOUBLE:
-      return "1.2";
-    case java.sql.Types.REAL:
       return "1.2";
     case java.sql.Types.DECIMAL:
       return "1.2";

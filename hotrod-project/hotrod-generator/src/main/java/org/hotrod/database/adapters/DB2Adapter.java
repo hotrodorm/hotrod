@@ -278,12 +278,12 @@ public class DB2Adapter extends DatabaseAdapter {
       return "cast(1 as int)";
     case java.sql.Types.BIGINT:
       return "cast(1 as bigint)";
-    case java.sql.Types.FLOAT:
-      return "cast(1 as real)";
-    case java.sql.Types.DOUBLE:
-      return "cast(1 as double)";
     case java.sql.Types.REAL:
       return "cast(1 as real)";
+    case java.sql.Types.FLOAT: // JDBC equivalent to DOUBLE PRECISION
+      return "cast(1 as double)";
+    case java.sql.Types.DOUBLE:
+      return "cast(1 as double)";
     case java.sql.Types.DECIMAL:
       return "cast(1 as decimal(10))";
     case java.sql.Types.NUMERIC:
