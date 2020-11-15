@@ -100,4 +100,15 @@ create table types_other (
   ran4 tsrange,
   ran5 tstzrange,
   ran6 daterange
-);  
+);
+
+-- @delimiter // solo
+
+create procedure close_account (in account_id integer, inout remaining_balance integer)
+as $bodytag$
+begin
+  update account set active = 0 where id = account_id;
+  remaining_balance := 123456;
+end;
+$bodytag$ language plpgsql;
+//

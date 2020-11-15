@@ -27,7 +27,8 @@
 #{when,jdbcType=VARCHAR}
  as kind
       from product
-      where price > #{minPrice,jdbcType=NUMERIC}
+      where price > 
+#{minPrice,jdbcType=NUMERIC}
   </select>
 
   <!-- select method: findCheapestProducts -->

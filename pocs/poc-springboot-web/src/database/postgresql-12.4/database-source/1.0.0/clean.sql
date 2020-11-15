@@ -12,5 +12,5 @@ drop table account;
 drop table historic_price;
 drop table product;
 
-
+drop procedure close_account;
 

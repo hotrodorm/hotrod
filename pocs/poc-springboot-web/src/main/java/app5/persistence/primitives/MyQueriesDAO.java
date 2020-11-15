@@ -65,7 +65,7 @@ public class MyQueriesDAO implements Serializable, ApplicationContextAware {
       
       select name, price, #{when} as kind
       from product
-      
+      where price > #{minPrice}
     
 
   */

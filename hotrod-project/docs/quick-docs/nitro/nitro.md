@@ -1,6 +1,7 @@
 # Nitro Queries
 
-The HotRod Nitro Enhancement allows the developer to run high performance, configuration-assisted queries.
+
+Nitro Queries are one of the flagship modules that HotRod offers. They allows the developer to run high performance, configuration-assisted queries.
 
 The developer can add tailored queries to execute any custom build SQL query with or without native features. Apart from simple flat queries HotRod can also add a new dimension of hierarchical data and automated SQL rendering to solve common problems.
 
@@ -36,7 +37,7 @@ For example, a typical DML query could look like:
 
 Nevertheless, any valid query can be used. For example:
 
-    <query method="prepareDailyTransactions">
+    <query method="initializeDailyTransactions">
       truncate daily_transactions_tbl
     </query>
 
@@ -44,7 +45,7 @@ The above two queries return the number of affected rows and are exposed to the 
 
     public int closeFullyPaidInvoices() { ... }
     
-    public int prepareDailyTransactions() { ... }
+    public int initializeDailyTransactions() { ... }
 
 They can include the full native SQL language available on the database, as well as hints and non-standard features. They can also accept parameters.
 
@@ -67,7 +68,7 @@ For example:
 The above query returns a list value object and is exposed to the developer as the Java method:
 
     public List<AccountClientVO> findActiveAccountsWithClient(Integer regionId) { ... }
- 
+
 ## Structured Selects -- The `&lt;select>` Tag, Again
 
 A [Structured Select Query](nitro-structured-selects.md) executes a `SELECT` statement and models the resulting rows not as a flat tabular structure, but as a hierarchical tree of value objects.

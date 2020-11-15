@@ -50,7 +50,6 @@
   <table name="types_binary" />
   <table name="types_other" />
 
-
   <dao name="MyQueries">
 
     <!-- For new "result-set" strategy
@@ -74,7 +73,7 @@
       </complement>
     </select>
     -->
-  
+
     <select method="findCheapestProducts">
       select
       <columns>
