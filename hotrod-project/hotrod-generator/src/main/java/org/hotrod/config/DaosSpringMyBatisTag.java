@@ -58,6 +58,8 @@ public class DaosSpringMyBatisTag extends DaosTag {
   private ClassPackage daoPackage;
   private ClassPackage primitivesTailPackage;
 
+  private NitroTag nitro;
+
   // Constructor
 
   public DaosSpringMyBatisTag() {
@@ -119,6 +121,12 @@ public class DaosSpringMyBatisTag extends DaosTag {
   @XmlAttribute(name = "primitives-suffix")
   public void setPrimitivesSuffix(final String primitivesSuffix) {
     this.primitivesSuffix = primitivesSuffix;
+  }
+
+  // Setters
+
+  public void setNitroTag(final NitroTag nitroTag) {
+    this.nitro = nitroTag;
   }
 
   // Behavior
@@ -301,7 +309,7 @@ public class DaosSpringMyBatisTag extends DaosTag {
 
   }
 
-  // Behavior
+  // Entity DAOs, VOs, and AbstractVOs
 
   public String generateVOName(final ObjectId id) {
     // if (id.wasJavaNameSpecified()) {
@@ -345,6 +353,41 @@ public class DaosSpringMyBatisTag extends DaosTag {
 
   public String generateAbstractVOName(final String voName) {
     return this.abstractVoPrefix + voName + this.abstractVoSuffix;
+  }
+
+  // Nitro DAOs, VOs, and AbstractVOs
+
+  public String generateNitroVOName(final ObjectId id) {
+    return this.nitro.getVoPrefix() + id.getJavaClassName() + this.nitro.getVoSuffix();
+  }
+
+  public String generateNitroVOName(final String name) {
+    String voc = this.nitro.getVoPrefix() + name + this.nitro.getVoSuffix();
+    return voc;
+  }
+
+  public String generateNitroDAOName(final ObjectId id) {
+    if (id.wasJavaNameSpecified()) {
+      if (id.isRelatedToDatabase()) { // database object
+        return this.nitro.getDaoPrefix() + id.getJavaClassName() + this.nitro.getDaoSuffix();
+      } else { // executor
+        return id.getJavaClassName();
+      }
+    } else {
+      return this.nitro.getDaoPrefix() + id.getJavaClassName() + this.nitro.getDaoSuffix();
+    }
+  }
+
+  public String generateNitroDAOName(final String name) {
+    return this.nitro.getDaoPrefix() + name + this.nitro.getDaoSuffix();
+  }
+
+  public String generateNitroAbstractVOName(final ObjectId id) {
+    return this.nitro.getAbstractVoPrefix() + id.getJavaClassName() + this.nitro.getAbstractVoSuffix();
+  }
+
+  public String generateNitroAbstractVOName(final String voName) {
+    return this.nitro.getAbstractVoPrefix() + voName + this.nitro.getAbstractVoSuffix();
   }
 
   // Getters

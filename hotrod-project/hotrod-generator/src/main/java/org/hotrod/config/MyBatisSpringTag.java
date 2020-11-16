@@ -38,6 +38,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   // Properties
 
   private DaosSpringMyBatisTag daos = null;
+  private NitroTag nitro = null;
   private MappersTag mappers = null;
   private TemplateTag template = null;
   private SelectGenerationTag selectGeneration = null;
@@ -62,6 +63,15 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
           "Duplicate <daos> tag; the generator can only have a single <dao> tag");
     }
     this.daos = daos;
+  }
+
+  @XmlElement(name = "nitro")
+  public void setNitro(final NitroTag nitro) throws InvalidConfigurationFileException {
+    if (this.nitro != null) {
+      throw new InvalidConfigurationFileException(this,
+          "Duplicate <nitro> tag; the generator can only have a single <nitro> tag");
+    }
+    this.nitro = nitro;
   }
 
   @XmlElement
@@ -139,6 +149,16 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
       this.template.validate(basedir, parentDir);
     }
     this.selectGeneration.validate(basedir);
+
+    // nitro
+
+    if (this.nitro != null) {
+      this.nitro.validate();
+    } else {
+      this.nitro = new NitroTag();
+    }
+    
+    this.daos.setNitroTag(this.nitro);
 
     // Properties
 
