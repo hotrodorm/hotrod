@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import app5.persistence.CheapProductVO;
-import app5.persistence.ProductInterface;
 import app5.persistence.ProductVO;
 import app5.persistence.primitives.MyQueriesDAO;
 import app5.persistence.primitives.ProductDAO;

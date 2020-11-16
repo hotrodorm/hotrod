@@ -1,4 +1,4 @@
-package app5.persistence;
+package app5.cursors;
 
 public interface ProductInterface {
 

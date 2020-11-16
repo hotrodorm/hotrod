@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import app5.persistence.ProductInterface;
+import app5.cursors.ProductInterface;
 import app5.persistence.primitives.ProductDAO;
 
 @RequestMapping("/product")

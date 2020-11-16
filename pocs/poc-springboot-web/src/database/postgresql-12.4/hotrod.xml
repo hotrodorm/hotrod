@@ -5,8 +5,11 @@
 
   <generators>
     <mybatis-spring>
-      <daos package="app5.persistence" vo-prefix="" vo-suffix="VO" abstract-vo-prefix="Abstract"
-        abstract-vo-suffix="VO" dao-prefix="" dao-suffix="DAO" />
+      <daos package="app5.persistence" 
+        vo-prefix=""                vo-suffix="VO" 
+        abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" 
+        dao-prefix="" dao-suffix="DAO" 
+      />
       <mappers dir="mappers" />
       <classic-fk-navigation />
       <select-generation strategy="result-set" />
@@ -73,6 +76,19 @@
       </complement>
     </select>
     -->
+
+    <select method="findProductsWithPrices">
+      select
+      <columns>
+        <vo table="product" extended-vo="ProductWithPrices" alias="p">
+          <collection table="historic_price" property="prices" alias="h" />
+        </vo>
+      </columns>
+      from product p
+      join historic_price h on h.product_id = p.id
+      where p.price between 0 and 10
+    </select>
+
 
     <select method="findCheapestProducts">
       select
