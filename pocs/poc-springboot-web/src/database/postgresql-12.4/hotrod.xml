@@ -8,8 +8,41 @@
       <daos package="app5.persistence" 
         vo-prefix=""                vo-suffix="VO" 
         abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" 
-        dao-prefix="" dao-suffix="DAO" 
+        dao-prefix="" dao-suffix="DAO"
+        ndao-prefix="" ndao-suffix="" nvo-prefix="" nvo-suffix="" nabstract-vo-prefix="Abstract" nabstract-vo-suffix="" 
       />
+      
+<!-- 
+                  DAO             VO              Abstract VO
+                  prefix  suffix  prefix  suffix  prefix      suffix
+
+ <table>, <view>  ""      "DAO"   ""      "VO"    "Abstract"  "VO"
+ <dao>            ""      "DAO"  
+ <select> VO                      ""      "VO"    "Abstract"  "VO"
+
+-->     
+      
+<!--
+
+      <nitro dao-prefix="" dao-suffix="DAO" vo-prefix="" vo-suffix="VO" abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" /> 
+    
+      <java base-dir="" package="" primitives-package="">
+        <entity-dao prefix="" suffix="" />
+        <entity-vo prefix="" suffix="" abstract-prefix="" abstract-suffix="" />
+        <dao prefix="" suffix="" />
+        <select-vo prefix="" suffix="" abstract-prefix="" abstract-suffix="" />
+      </java>
+      
+      <java base-dir="" package="" primitives-package="">
+        <entity-dao prefix="" suffix="" />
+        <entity-vo prefix="" suffix="" />
+        <abstract-entity-vo prefix="" suffix="" />
+        <dao prefix="" suffix="" />
+        <select-vo prefix="" suffix="" />
+        <abstract-select-vo prefix="" suffix="" />
+      </java>
+-->
+
       <mappers dir="mappers" />
       <classic-fk-navigation />
       <select-generation strategy="result-set" />
@@ -42,6 +75,7 @@
      -->
   </type-solver>
 
+<!-- 
   <table name="product" />
   <table name="historic_price" />
   
@@ -52,7 +86,8 @@
   <table name="federal_branch" />
   <table name="types_binary" />
   <table name="types_other" />
-
+ -->
+ 
   <dao name="MyQueries">
 
     <!-- For new "result-set" strategy
@@ -77,6 +112,7 @@
     </select>
     -->
 
+<!-- 
     <select method="findProductsWithPrices">
       select
       <columns>
@@ -98,7 +134,7 @@
       from product p
       where p.price between 0 and 3
     </select>
-
+ -->
   </dao>
 
 </hotrod>
