@@ -77,7 +77,6 @@
     <xsd:sequence>
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
         <xsd:element name="daos" type="daos-mybatis-spring-type" />
-        <xsd:element name="nitro" type="nitro-type" />
         <xsd:element name="mappers" type="mappers-type" />
         <xsd:element name="mybatis-configuration-template" type="mybatis-configuration-template-type" />
         <xsd:element name="select-generation" type="select-generation-type" />
@@ -91,12 +90,21 @@
     <xsd:attribute name="base-dir" type="xsd:string" />
     <xsd:attribute name="package" type="xsd:string" use="required" />
     <xsd:attribute name="primitives-package" type="xsd:string" />
+
+    <xsd:attribute name="dao-prefix" type="xsd:string" />
+    <xsd:attribute name="dao-suffix" type="xsd:string" />
     <xsd:attribute name="vo-prefix" type="xsd:string" />
     <xsd:attribute name="vo-suffix" type="xsd:string" />
     <xsd:attribute name="abstract-vo-prefix" type="xsd:string" />
     <xsd:attribute name="abstract-vo-suffix" type="xsd:string" />
-    <xsd:attribute name="dao-prefix" type="xsd:string" />
-    <xsd:attribute name="dao-suffix" type="xsd:string" />
+    
+    <xsd:attribute name="ndao-prefix" type="xsd:string" />
+    <xsd:attribute name="ndao-suffix" type="xsd:string" />
+    <xsd:attribute name="nvo-prefix" type="xsd:string" />
+    <xsd:attribute name="nvo-suffix" type="xsd:string" />
+    <xsd:attribute name="nabstract-vo-prefix" type="xsd:string" />
+    <xsd:attribute name="nabstract-vo-suffix" type="xsd:string" />
+    
     <xsd:attribute name="primitives-prefix" type="xsd:string" />
     <xsd:attribute name="primitives-suffix" type="xsd:string" />
   </xsd:complexType>
@@ -113,15 +121,6 @@
     <xsd:attribute name="dao-suffix" type="xsd:string" />
     <xsd:attribute name="primitives-prefix" type="xsd:string" />
     <xsd:attribute name="primitives-suffix" type="xsd:string" />
-  </xsd:complexType>
-
-  <xsd:complexType name="nitro-type">
-    <xsd:attribute name="dao-prefix" type="xsd:string" />
-    <xsd:attribute name="dao-suffix" type="xsd:string" />
-    <xsd:attribute name="vo-prefix" type="xsd:string" />
-    <xsd:attribute name="vo-suffix" type="xsd:string" />
-    <xsd:attribute name="abstract-vo-prefix" type="xsd:string" />
-    <xsd:attribute name="abstract-vo-suffix" type="xsd:string" />
   </xsd:complexType>
 
   <xsd:complexType name="mappers-type">
