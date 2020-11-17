@@ -27,12 +27,19 @@ public class DaosSpringMyBatisTag extends DaosTag {
 
   private static final String DEFAULT_BASE_DIR = "src/main/java";
 
+  private static final String DEFAULT_DAO_PREFIX = "";
+  private static final String DEFAULT_DAO_SUFFIX = "DAO";
   private static final String DEFAULT_VO_PREFIX = "";
   private static final String DEFAULT_VO_SUFFIX = "VO";
   private static final String DEFAULT_ABSTRACT_VO_PREFIX = "";
   private static final String DEFAULT_ABSTRACT_VO_SUFFIX = "";
-  private static final String DEFAULT_DAO_PREFIX = "";
-  private static final String DEFAULT_DAO_SUFFIX = "DAO";
+
+  private static final String DEFAULT_NDAO_PREFIX = "";
+  private static final String DEFAULT_NDAO_SUFFIX = "";
+  private static final String DEFAULT_NVO_PREFIX = "";
+  private static final String DEFAULT_NVO_SUFFIX = "";
+  private static final String DEFAULT_NABSTRACT_VO_PREFIX = "Abstract";
+  private static final String DEFAULT_NABSTRACT_VO_SUFFIX = "";
 
   private static final String DEFAULT_PRIMITIVES_PREFIX = "";
   private static final String DEFAULT_PRIMITIVES_SUFFIX = "Primitives";
@@ -45,20 +52,26 @@ public class DaosSpringMyBatisTag extends DaosTag {
   private String sPackage = null;
   private String sPrimitivesPackage = null;
 
+  private String daoPrefix = null;
+  private String daoSuffix = null;
   private String voPrefix = null;
   private String voSuffix = null;
   private String abstractVoPrefix = null;
   private String abstractVoSuffix = null;
-  private String daoPrefix = null;
-  private String daoSuffix = null;
+
   private String primitivesPrefix = null;
   private String primitivesSuffix = null;
+
+  private String ndaoPrefix = null;
+  private String ndaoSuffix = null;
+  private String nvoPrefix = null;
+  private String nvoSuffix = null;
+  private String nabstractVoPrefix = null;
+  private String nabstractVoSuffix = null;
 
   private File baseDir;
   private ClassPackage daoPackage;
   private ClassPackage primitivesTailPackage;
-
-  private NitroTag nitro;
 
   // Constructor
 
@@ -83,6 +96,16 @@ public class DaosSpringMyBatisTag extends DaosTag {
     this.sPrimitivesPackage = sPrimitivesPackage;
   }
 
+  @XmlAttribute(name = "dao-prefix")
+  public void setDaoPrefix(final String daoPrefix) {
+    this.daoPrefix = daoPrefix;
+  }
+
+  @XmlAttribute(name = "dao-suffix")
+  public void setDaoSuffix(final String daoSuffix) {
+    this.daoSuffix = daoSuffix;
+  }
+
   @XmlAttribute(name = "vo-prefix")
   public void setVoPrefix(final String voPrefix) {
     this.voPrefix = voPrefix;
@@ -103,16 +126,6 @@ public class DaosSpringMyBatisTag extends DaosTag {
     this.abstractVoSuffix = abstractVoSuffix;
   }
 
-  @XmlAttribute(name = "dao-prefix")
-  public void setDaoPrefix(final String daoPrefix) {
-    this.daoPrefix = daoPrefix;
-  }
-
-  @XmlAttribute(name = "dao-suffix")
-  public void setDaoSuffix(final String daoSuffix) {
-    this.daoSuffix = daoSuffix;
-  }
-
   @XmlAttribute(name = "java-class-name")
   public void setPrimitivesPrefix(final String primitivesPrefix) {
     this.primitivesPrefix = primitivesPrefix;
@@ -123,10 +136,34 @@ public class DaosSpringMyBatisTag extends DaosTag {
     this.primitivesSuffix = primitivesSuffix;
   }
 
-  // Setters
+  @XmlAttribute(name = "ndao-prefix")
+  public void setNdaoPrefix(String ndaoPrefix) {
+    this.ndaoPrefix = ndaoPrefix;
+  }
 
-  public void setNitroTag(final NitroTag nitroTag) {
-    this.nitro = nitroTag;
+  @XmlAttribute(name = "ndao-suffix")
+  public void setNdaoSuffix(String ndaoSuffix) {
+    this.ndaoSuffix = ndaoSuffix;
+  }
+
+  @XmlAttribute(name = "nvo-prefix")
+  public void setNvoPrefix(String nvoPrefix) {
+    this.nvoPrefix = nvoPrefix;
+  }
+
+  @XmlAttribute(name = "nvo-suffix")
+  public void setNvoSuffix(String nvoSuffix) {
+    this.nvoSuffix = nvoSuffix;
+  }
+
+  @XmlAttribute(name = "nabstract-vo-prefix")
+  public void setNabstractVoPrefix(String nabstractVoPrefix) {
+    this.nabstractVoPrefix = nabstractVoPrefix;
+  }
+
+  @XmlAttribute(name = "nabstract-vo-suffix")
+  public void setNabstractVoSuffix(String nabstractVoSuffix) {
+    this.nabstractVoSuffix = nabstractVoSuffix;
   }
 
   // Behavior
@@ -191,7 +228,33 @@ public class DaosSpringMyBatisTag extends DaosTag {
       }
     }
 
-    // =========================================================================
+    // dao-prefix
+
+    if (this.daoPrefix == null) {
+      this.daoPrefix = DEFAULT_DAO_PREFIX;
+    } else {
+      if (!this.daoPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid dao-prefix value '" + this.daoPrefix
+                + "': when specified, it can only include one or more letters, digits, or underscores", //
+            "Invalid dao-prefix value '" + this.daoPrefix
+                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+      }
+    }
+
+    // dao-suffix
+
+    if (this.daoSuffix == null) {
+      this.daoSuffix = DEFAULT_DAO_SUFFIX;
+    } else {
+      if (!this.daoSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
+        throw new InvalidConfigurationFileException(this, //
+            "Invalid dao-suffix value '" + this.daoSuffix
+                + "': when specified, it can only include one or more letters, digits, or underscores", //
+            "Invalid dao-suffix value '" + this.daoSuffix
+                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+      }
+    }
 
     // vo-prefix
 
@@ -249,33 +312,69 @@ public class DaosSpringMyBatisTag extends DaosTag {
       }
     }
 
-    // =========================================================================
+    // ndao-prefix
 
-    // dao-prefix
-
-    if (this.daoPrefix == null) {
-      this.daoPrefix = DEFAULT_DAO_PREFIX;
+    if (this.ndaoPrefix == null) {
+      this.ndaoPrefix = DEFAULT_NDAO_PREFIX;
     } else {
-      if (!this.daoPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid dao-prefix value '" + this.daoPrefix
-                + "': when specified, it can only include one or more letters, digits, or underscores", //
-            "Invalid dao-prefix value '" + this.daoPrefix
-                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+      if (!this.ndaoPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
+        throw new InvalidConfigurationFileException(this, "Invalid ndao-prefix value '" + this.ndaoPrefix
+            + "': when specified, it can only include one or more letters, digits, or underscores");
       }
     }
 
-    // dao-suffix
+    // ndao-suffix
 
-    if (this.daoSuffix == null) {
-      this.daoSuffix = DEFAULT_DAO_SUFFIX;
+    if (this.ndaoSuffix == null) {
+      this.ndaoSuffix = DEFAULT_NDAO_SUFFIX;
     } else {
-      if (!this.daoSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid dao-suffix value '" + this.daoSuffix
-                + "': when specified, it can only include one or more letters, digits, or underscores", //
-            "Invalid dao-suffix value '" + this.daoSuffix
-                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+      if (!this.ndaoSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
+        throw new InvalidConfigurationFileException(this, "Invalid ndao-suffix value '" + this.ndaoSuffix
+            + "': when specified, it can only include one or more letters, digits, or underscores");
+      }
+    }
+
+    // nvo-prefix
+
+    if (this.nvoPrefix == null) {
+      this.nvoPrefix = DEFAULT_NVO_PREFIX;
+    } else {
+      if (!this.nvoPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
+        throw new InvalidConfigurationFileException(this, "Invalid nvo-prefix value '" + this.voPrefix
+            + "': when specified, it can only include one or more letters, digits, or underscores");
+      }
+    }
+
+    // nvo-suffix
+
+    if (this.nvoSuffix == null) {
+      this.nvoSuffix = DEFAULT_NVO_SUFFIX;
+    } else {
+      if (!this.nvoSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
+        throw new InvalidConfigurationFileException(this, "Invalid nvo-suffix value '" + this.daoSuffix
+            + "': when specified, it can only include one or more letters, digits, or underscores");
+      }
+    }
+
+    // nabstract-vo-prefix
+
+    if (this.nabstractVoPrefix == null) {
+      this.nabstractVoPrefix = DEFAULT_NABSTRACT_VO_PREFIX;
+    } else {
+      if (!this.nabstractVoPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
+        throw new InvalidConfigurationFileException(this, "Invalid nabstract-vo-prefix value '" + this.voPrefix
+            + "': when specified, it can only include one or more letters, digits, or underscores");
+      }
+    }
+
+    // nabstract-vo-suffix
+
+    if (this.nabstractVoSuffix == null) {
+      this.nabstractVoSuffix = DEFAULT_NABSTRACT_VO_SUFFIX;
+    } else {
+      if (!this.nabstractVoSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
+        throw new InvalidConfigurationFileException(this, "Invalid nabstract-vo-suffix value '" + this.daoSuffix
+            + "': when specified, it can only include one or more letters, digits, or underscores");
       }
     }
 
@@ -358,36 +457,36 @@ public class DaosSpringMyBatisTag extends DaosTag {
   // Nitro DAOs, VOs, and AbstractVOs
 
   public String generateNitroVOName(final ObjectId id) {
-    return this.nitro.getVoPrefix() + id.getJavaClassName() + this.nitro.getVoSuffix();
+    return this.nvoPrefix + id.getJavaClassName() + this.nvoSuffix;
   }
 
   public String generateNitroVOName(final String name) {
-    String voc = this.nitro.getVoPrefix() + name + this.nitro.getVoSuffix();
+    String voc = this.nvoPrefix + name + this.nvoSuffix;
     return voc;
   }
 
   public String generateNitroDAOName(final ObjectId id) {
     if (id.wasJavaNameSpecified()) {
       if (id.isRelatedToDatabase()) { // database object
-        return this.nitro.getDaoPrefix() + id.getJavaClassName() + this.nitro.getDaoSuffix();
+        return this.ndaoPrefix + id.getJavaClassName() + this.ndaoSuffix;
       } else { // executor
         return id.getJavaClassName();
       }
     } else {
-      return this.nitro.getDaoPrefix() + id.getJavaClassName() + this.nitro.getDaoSuffix();
+      return this.ndaoPrefix + id.getJavaClassName() + this.ndaoSuffix;
     }
   }
 
   public String generateNitroDAOName(final String name) {
-    return this.nitro.getDaoPrefix() + name + this.nitro.getDaoSuffix();
+    return this.ndaoPrefix + name + this.ndaoSuffix;
   }
 
   public String generateNitroAbstractVOName(final ObjectId id) {
-    return this.nitro.getAbstractVoPrefix() + id.getJavaClassName() + this.nitro.getAbstractVoSuffix();
+    return this.nabstractVoPrefix + id.getJavaClassName() + this.nabstractVoSuffix;
   }
 
   public String generateNitroAbstractVOName(final String voName) {
-    return this.nitro.getAbstractVoPrefix() + voName + this.nitro.getAbstractVoSuffix();
+    return this.nabstractVoPrefix + voName + this.nabstractVoSuffix;
   }
 
   // Getters
