@@ -17,6 +17,7 @@ import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
@@ -259,6 +260,105 @@ public class HyperSQLAdapter extends DatabaseAdapter {
   @Override
   public UnescapedSQLCase getUnescapedSQLCase() {
     return UnescapedSQLCase.UPPER_CASE;
+  }
+
+  @Override
+  public String provideSampleValueFor(final JDBCType jdbcType) {
+
+//    select
+//    cast(1 as tinyint) as tinyint,
+//    cast(1 as smallint) as smallint,
+//    cast(1 as int) as int,
+//    cast(1 as bigint) as bigint,
+//    cast(1 as float) as real,
+//    cast(1 as double) as double,
+//    cast(1 as decimal) as decimal,
+//    cast(1 as numeric) as numeric,
+//    cast('a' as char) as char,
+//    cast('a' as varchar(1)) as varchar,
+//    cast('a' as clob) as clob,
+//    date '2001-10-05' as date, 
+//    time '04:05:06' as time,
+//    timestamp '2004-10-19 10:23:54' as timestamp,
+//    x'01' as b1,
+//    true as xboolean
+//    from (values 1) x;
+
+    switch (jdbcType.getCode()) {
+
+    case java.sql.Types.TINYINT:
+      return "cast(1 as tinyint)";
+    case java.sql.Types.SMALLINT:
+      return "cast(1 as smallint)";
+    case java.sql.Types.INTEGER:
+      return "cast(1 as int)";
+    case java.sql.Types.BIGINT:
+      return "cast(1 as bigint)";
+    case java.sql.Types.REAL:
+      return "cast(1 as double)";
+    case java.sql.Types.FLOAT: // JDBC equivalent to DOUBLE PRECISION
+      return "cast(1 as double)";
+    case java.sql.Types.DOUBLE:
+      return "cast(1 as double)";
+    case java.sql.Types.DECIMAL:
+      return "cast(1 as decimal)";
+    case java.sql.Types.NUMERIC:
+      return "cast(1 as numeric)";
+
+    case java.sql.Types.CHAR:
+      return "cast('a' as char)";
+    case java.sql.Types.NCHAR:
+      return "cast('a' as char)";
+    case java.sql.Types.VARCHAR:
+      return "cast('a' as varchar(1))";
+    case java.sql.Types.NVARCHAR:
+      return "cast('a' as varchar(1))";
+    case java.sql.Types.LONGVARCHAR:
+      return "cast('a' as clob)";
+    case java.sql.Types.LONGNVARCHAR:
+      return "cast('a' as clob)";
+    case java.sql.Types.CLOB:
+      return "cast('a' as clob)";
+    case java.sql.Types.NCLOB:
+      return "cast('a' as clob)";
+
+    case java.sql.Types.DATE:
+      return "date '2001-10-05'";
+    case java.sql.Types.TIME:
+      return "time '04:05:06'";
+    case java.sql.Types.TIMESTAMP:
+      return "timestamp '2004-10-19 10:23:54'";
+
+    case java.sql.Types.BLOB:
+      return "x'01'";
+    case java.sql.Types.BINARY:
+      return "x'01'";
+    case java.sql.Types.VARBINARY:
+      return "x'01'";
+    case java.sql.Types.LONGVARBINARY:
+      return "x'01'";
+
+    case java.sql.Types.BOOLEAN:
+      return "true";
+
+//    case java.sql.Types.TIMESTAMP_WITH_TIMEZONE
+//    case java.sql.Types.SQLXML
+//    case java.sql.Types.TIME_WITH_TIMEZONE -- should be removed from the SQL Standard
+//    case java.sql.Types.ARRAY
+//    case java.sql.Types.BIT
+//    case java.sql.Types.DATALINK
+//    case java.sql.Types.DISTINCT
+//    case java.sql.Types.JAVA_OBJECT
+//    case java.sql.Types.NULL
+//    case java.sql.Types.OTHER
+//    case java.sql.Types.REF
+//    case java.sql.Types.REF_CURSOR
+//    case java.sql.Types.ROWID
+//    case java.sql.Types.STRUCT
+
+    }
+
+    return null;
   }
 
 }

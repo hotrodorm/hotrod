@@ -90,6 +90,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   private String voClassName;
   private String abstractVoClassName;
+
   private ResultSetMode mode;
   protected ParameterDefinitions parameters = null;
   protected List<ColumnTag> columns = null;
@@ -151,7 +152,7 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
@@ -257,8 +258,8 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
                 + "and continue with letters, digits, and/or underscores.");
       }
 
-      this.voClassName = daosTag.generateVOName(this.vo);
-      this.abstractVoClassName = daosTag.generateAbstractVOName(this.vo);
+      this.voClassName = daosTag.generateNitroVOName(this.vo);
+      this.abstractVoClassName = daosTag.generateNitroAbstractVOName(this.vo);
 
     }
 

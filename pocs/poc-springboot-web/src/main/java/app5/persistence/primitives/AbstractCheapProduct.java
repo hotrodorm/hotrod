@@ -4,7 +4,7 @@ package app5.persistence.primitives;
 
 import java.io.Serializable;
 
-public abstract class AbstractCheapProductVOVO implements Serializable {
+public abstract class AbstractCheapProduct implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -12,7 +12,7 @@ public abstract class AbstractCheapProductVOVO implements Serializable {
 
   protected java.lang.String name = null;
   protected java.lang.Integer price = null;
-  protected java.lang.String kind = null; // it's a LOB type
+  protected java.lang.String kind = null;
 
   // getters & setters
 

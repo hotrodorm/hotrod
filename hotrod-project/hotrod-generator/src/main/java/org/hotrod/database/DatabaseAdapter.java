@@ -155,9 +155,7 @@ public abstract class DatabaseAdapter implements Serializable {
 
   public abstract UnescapedSQLCase getUnescapedSQLCase();
 
-  public String provideSampleValueFor(JDBCType jdbcType) {
-    return "?";
-  }
+  public abstract String provideSampleValueFor(JDBCType jdbcType);
 
   // Sorting
 

@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+      <daos package="app5.persistence" vo-prefix="" vo-suffix="VO" abstract-vo-prefix="Abstract"
+        abstract-vo-suffix="VO" dao-prefix="" dao-suffix="DAO" />
+      <mappers dir="mappers" />
+      <select-generation strategy="result-set" temp-view-base-name="tmp2" />
+      <classic-fk-navigation />
+    </mybatis-spring>
+  </generators>
+
+  <name-solver>
+    <name value="^PTY_(.+)$" replace="$1" scope="table, column" />
+    <name value="^PER_(.+)$" replace="$1" scope="column" />
+  </name-solver>
+
+<!-- 
+  <name-solver>
+    <name value="^sk(.+)$" replace="prop2$1" scope="column" />
+    <name value="^CLI_(.+)$" replace="$1" scope="column" />
+    <name value="^(.+)_TBL$" replace="$1" scope="table, view " />
+    <name value="^(.+)_tbl$" replace="$1" scope="table, view " />
+    <name value="^\w{3,3}_(\w+)_CLI$" replace="$1" scope="table, column" />
+    <name value="^CLI_(\w.+)_(\w+)_\w{2,3}$" replace="$1$2" scope="table , column , view" />
+  </name-solver>
+ -->
+ 
+  <type-solver>
+  <!-- 
+    <when test="name == 'price'" java-type="java.lang.Double" />
+     -->
+  </type-solver>
+
+<!-- 
+  <table name="product" />
+  <table name="historic_price" />
+  
+  <table name="client_tbl" />
+
+  <table name="account" />
+  <table name="item" />
+  <table name="island" />
+  <table name="transaction" />
+  <table name="federal_branch" />
+  <table name="types_binary" />
+  <table name="types_other" />
+-->
+
+  <table name="PTY_PERSONA" java-name="Persona">
+    <column name="PER_FECHA_NAC" java-name="fechaNacimiento" />
+  </table>
+  
+  <dao name="MyQueries">
+
+    <select method="findCheapestProducts" vo="Prod1">
+      select *
+      from pty_persona
+    </select>
+
+  </dao>  
+  
+</hotrod>

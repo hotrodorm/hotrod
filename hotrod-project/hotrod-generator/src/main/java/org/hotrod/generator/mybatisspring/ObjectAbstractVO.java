@@ -16,7 +16,6 @@ import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.GeneratableObject;
-import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.runtime.spring.LazyParentClassLoading;

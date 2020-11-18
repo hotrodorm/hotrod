@@ -1,8 +1,6 @@
 drop table types_other;
 drop type complex;
 
-drop table client_tbl;
-
 drop table types_binary;
 drop table transaction;
 drop table federal_branch;
@@ -14,5 +12,5 @@ drop table account;
 drop table historic_price;
 drop table product;
 
-
+drop procedure close_account;
 

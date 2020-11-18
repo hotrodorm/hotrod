@@ -28,11 +28,11 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.JdbcTypes.JDBCType;
+import org.hotrod.utils.SQLUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
-import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class CreateViewColumnsRetriever implements ColumnsRetriever {
 
@@ -62,26 +62,26 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
     this.conn2 = null;
   }
 
-  // TODO: Just a marker for phase 1
-
   private class CreateViewParameterRenderer implements ParameterRenderer {
 
     private List<JDBCType> parameterJDBCTypes = new ArrayList<JDBCType>();
 
     @Override
     public String render(final SQLParameter parameter) {
-      log.info("prepare view 0.1 -- parameter=" + parameter.getDefinition());
+      log.debug("prepare view 0.1 -- parameter=" + parameter.getDefinition());
       parameterJDBCTypes.add(parameter.getDefinition().getJDBCType());
       return "#{" + parameter.getName() + "}";
     }
 
   }
 
+  // TODO: Flat <select> (just a marker)
+
   @Override
   public void phase1Flat(final String key, final SelectMethodTag tag, final SelectMethodMetadata sm)
       throws InvalidSQLException {
 
-    log.info("prepare view 0");
+    log.debug("prepare view 0");
 
     RetrievalContext ctx = new RetrievalContext(tag, sm);
     this.contexts.put(key, ctx);
@@ -90,66 +90,7 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
 
     CreateViewParameterRenderer pr = new CreateViewParameterRenderer();
     String foundation = tag.renderSQLSentence(pr);
-    ctx.setCleanedUpFoundation(cleanUpSQL(foundation));
-    ctx.setTempViewName(this.selectGenerationTag.getNextTempViewName());
-    String createView = this.adapter.createOrReplaceView(ctx.getTempViewName(), ctx.getCleanedUpFoundation());
-    String dropView = this.adapter.dropView(ctx.getTempViewName());
-
-    // 1. Drop (if exists) the view.
-
-    log.debug("prepare view - will drop view: " + dropView);
-
-    {
-      PreparedStatement ps = null;
-      try {
-        ps = this.conn.prepareStatement(dropView);
-        log.debug("prepare view - will execute drop view");
-        ps.execute();
-        log.debug("prepare view - view dropped");
-
-      } catch (Exception e) {
-        log.debug("prepare view - exception while dropping view", e);
-        // Ignore this exception
-      } finally {
-        JdbcUtil.closeDbResources(ps);
-      }
-    }
-
-    // 2. Create or replace the view.
-
-    log.info("prepare view - will create view: " + createView);
-
-    {
-      PreparedStatement ps = null;
-      try {
-        ps = this.conn.prepareStatement(createView);
-        log.info("prepare view - will execute create view");
-        ps.execute();
-        log.debug("prepare view - view created");
-
-      } catch (SQLException e) {
-        throw new InvalidSQLException(createView, e);
-      } finally {
-        log.debug("prepare view - will close resources");
-        JdbcUtil.closeDbResources(ps);
-      }
-    }
-
-  }
-
-  @Override
-  public void phase1Structured(final String key, final SelectMethodTag selectTag, final ColumnsProvider columnsProvider,
-      final SelectMethodMetadata sm) throws InvalidSQLException {
-
-    log.debug("prepare view 0");
-
-    RetrievalContext ctx = new RetrievalContext(selectTag, sm);
-    this.contexts.put(key, ctx);
-
-    log.debug("prepare view 1");
-    CreateViewParameterRenderer pr = new CreateViewParameterRenderer();
-    String foundation = selectTag.renderSQLAngle(pr, columnsProvider, this.adapter);
-    ctx.setCleanedUpFoundation(cleanUpSQL(foundation));
+    ctx.setCleanedUpFoundation(SQLUtil.cleanUpSQL(foundation));
     ctx.setTempViewName(this.selectGenerationTag.getNextTempViewName());
     String createView = this.adapter.createOrReplaceView(ctx.getTempViewName(), ctx.getCleanedUpFoundation());
     String dropView = this.adapter.dropView(ctx.getTempViewName());
@@ -187,7 +128,6 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
         log.debug("prepare view - view created");
 
       } catch (SQLException e) {
-        log.debug("prepare view - exception while creating view", e);
         throw new InvalidSQLException(createView, e);
       } finally {
         log.debug("prepare view - will close resources");
@@ -196,8 +136,6 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
     }
 
   }
-
-  // TODO: Just a marker for phase 2
 
   @Override
   public List<ColumnMetadata> phase2Flat(final String key)
@@ -249,10 +187,67 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
     return nonStructuredColumns;
   }
 
-  private void produceExtraConnection() throws SQLException {
-    if (this.conn2 == null) {
-      this.conn2 = this.dloc.getConnection();
+  // TODO: Structured <select> (just a marker)
+
+  @Override
+  public void phase1Structured(final String key, final SelectMethodTag selectTag, final String aliasPrefix,
+      final String entityPrefix, final ColumnsProvider columnsProvider, final SelectMethodMetadata sm)
+      throws InvalidSQLException {
+
+    log.debug("prepare view 0");
+
+    RetrievalContext ctx = new RetrievalContext(selectTag, sm);
+    this.contexts.put(key, ctx);
+
+    log.debug("prepare view 1");
+    CreateViewParameterRenderer pr = new CreateViewParameterRenderer();
+    String foundation = selectTag.renderSQLAngle(pr, columnsProvider, this.adapter);
+    ctx.setCleanedUpFoundation(SQLUtil.cleanUpSQL(foundation));
+    ctx.setTempViewName(this.selectGenerationTag.getNextTempViewName());
+    String createView = this.adapter.createOrReplaceView(ctx.getTempViewName(), ctx.getCleanedUpFoundation());
+    String dropView = this.adapter.dropView(ctx.getTempViewName());
+
+    // 1. Drop (if exists) the view.
+
+    log.debug("prepare view - will drop view: " + dropView);
+
+    {
+      PreparedStatement ps = null;
+      try {
+        ps = this.conn.prepareStatement(dropView);
+        log.debug("prepare view - will execute drop view");
+        ps.execute();
+        log.debug("prepare view - view dropped");
+
+      } catch (Exception e) {
+        log.debug("prepare view - exception while dropping view", e);
+        // Ignore this exception
+      } finally {
+        JdbcUtil.closeDbResources(ps);
+      }
     }
+
+    // 2. Create or replace the view.
+
+    log.debug("prepare view - will create view: " + createView);
+
+    {
+      PreparedStatement ps = null;
+      try {
+        ps = this.conn.prepareStatement(createView);
+        log.debug("prepare view - will execute create view");
+        ps.execute();
+        log.debug("prepare view - view created");
+
+      } catch (SQLException e) {
+        log.debug("prepare view - exception while creating view", e);
+        throw new InvalidSQLException(createView, e);
+      } finally {
+        log.debug("prepare view - will close resources");
+        JdbcUtil.closeDbResources(ps);
+      }
+    }
+
   }
 
   @Override
@@ -333,60 +328,19 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
 
   }
 
-  // TODO: Just a marker for end phase 2
+  // TODO: End of structured <select> (just a marker)
+
+  private void produceExtraConnection() throws SQLException {
+    if (this.conn2 == null) {
+      this.conn2 = this.dloc.getConnection();
+    }
+  }
 
   @Override
   public void close() throws Exception {
     if (this.conn2 != null) {
       this.conn2.close();
     }
-  }
-
-  // Classes
-
-  public class AnalysableSelect {
-
-    private String sql;
-    private List<JDBCType> parameterJDBCTypes;
-
-    public AnalysableSelect(final String sql, final List<JDBCType> parameterJDBCTypes) {
-      this.sql = sql;
-      this.parameterJDBCTypes = parameterJDBCTypes;
-    }
-
-    public String getSql() {
-      return sql;
-    }
-
-    public List<JDBCType> getParameterJDBCTypes() {
-      return parameterJDBCTypes;
-    }
-
-  }
-
-  // Utils
-
-  private String cleanUpSQL(final String select) {
-    ListWriter lw = new ListWriter("\n");
-    String[] lines = select.split("\n");
-
-    // Trim lines and remove empty ones
-
-    for (String line : lines) {
-      String trimmed = line.trim();
-      if (!trimmed.isEmpty()) {
-        lw.add(line);
-      }
-    }
-
-    // Remove trailing semicolons
-
-    String reassembled = lw.toString();
-    while (reassembled.endsWith(";")) {
-      reassembled = reassembled.substring(0, reassembled.length() - 1);
-    }
-
-    return reassembled;
   }
 
 }

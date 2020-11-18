@@ -26,8 +26,9 @@ public interface ColumnsRetriever extends AutoCloseable {
   void phase1Flat(String key, SelectMethodTag tag, SelectMethodMetadata sm)
       throws InvalidSQLException, InvalidConfigurationFileException;
 
-  void phase1Structured(String key, SelectMethodTag selectTag, ColumnsProvider columnsProvider, SelectMethodMetadata sm)
-      throws InvalidSQLException;
+  void phase1Structured(String key, SelectMethodTag selectTag, String aliasPrefix, String entityPrefix,
+      ColumnsProvider columnsProvider, SelectMethodMetadata sm)
+      throws InvalidSQLException, InvalidConfigurationFileException;
 
   List<ColumnMetadata> phase2Flat(String key)
       throws SQLException, UnresolvableDataTypeException, InvalidIdentifierException;

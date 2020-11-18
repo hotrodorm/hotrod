@@ -37,7 +37,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassException;
 import org.hotrod.generator.DAONamespace.DuplicateDAOClassMethodException;
-import org.hotrod.generator.mybatis.DataSetLayout;
+import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadataFactory;
 import org.hotrod.metadata.EnumDataSetMetadata;

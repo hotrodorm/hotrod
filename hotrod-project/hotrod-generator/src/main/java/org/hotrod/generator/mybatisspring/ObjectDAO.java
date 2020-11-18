@@ -36,7 +36,6 @@ import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
 import org.hotrod.generator.GeneratableObject;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.generator.mybatis.DataSetLayout;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;

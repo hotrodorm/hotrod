@@ -23,7 +23,7 @@ import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.SelectMetadataCache;
-import org.hotrod.generator.mybatis.DataSetLayout;
+import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.identifiers.Id;
 import org.hotrod.utils.identifiers.ObjectId;

@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
-import org.hotrod.config.DaosTag;
+import org.hotrod.config.DaosSpringMyBatisTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.structuredcolumns.AssociationTag;
 import org.hotrod.config.structuredcolumns.CollectionTag;
@@ -15,7 +15,7 @@ import org.hotrod.config.structuredcolumns.Expressions;
 import org.hotrod.config.structuredcolumns.VOTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.generator.mybatis.DataSetLayout;
+import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
@@ -60,7 +60,7 @@ public class VOMetadata implements Serializable {
   // Constructors
 
   public VOMetadata(final VOTag tag, final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig,
-      final DaosTag daosTag) throws InvalidConfigurationFileException {
+      final DaosSpringMyBatisTag daosTag) throws InvalidConfigurationFileException {
     log.debug("init");
 
     this.tag = tag;
@@ -107,8 +107,8 @@ public class VOMetadata implements Serializable {
 
     if (tag.getExtendedVO() != null) { // extended VO from a table or view
       this.classPackage = getVOClassPackage(layout, fragmentConfig);
-      this.name = daosTag.generateVOName(tag.getExtendedVO());
-      this.abstractName = daosTag.generateAbstractVOName(tag.getExtendedVO());
+      this.name = daosTag.generateNitroVOName(tag.getExtendedVO());
+      this.abstractName = daosTag.generateNitroAbstractVOName(tag.getExtendedVO());
       this.entityVOSuperClass = tag.getGenerator().getVORegistry()
           .findEntityVOClass(this.tableMetadata != null ? this.tableMetadata : this.viewMetadata);
       if (this.entityVOSuperClass == null) {

@@ -16,7 +16,7 @@
 
   <!-- select method: findExpensiveProducts -->
 
-  <resultMap id="result_map_select_findExpensiveProducts" type="app5.persistence.CheapProductVOVO">
+  <resultMap id="result_map_select_findExpensiveProducts" type="app5.persistence.CheapProduct">
     <result property="name" column="name" />
     <result property="price" column="price" />
     <result property="kind" column="kind" />
@@ -24,7 +24,7 @@
 
   <select id="select_findExpensiveProducts" resultMap="result_map_select_findExpensiveProducts">
       select name, price, 
-#{title,jdbcType=VARCHAR}
+#{when,jdbcType=VARCHAR}
  as kind
       from product
       where price > 
@@ -37,9 +37,9 @@
     <id property="id" column="ns0_id" />
     <result property="name" column="ns0_name" />
     <result property="price" column="ns0_price" />
-    <result property="prop2u" column="ns0_sku" />
-    <result property="rank" column="ns0_xyz_rank_CLI" />
-    <result property="first_name_ab" column="ns0_CLI_first_name_ab" />
+    <result property="sku" column="ns0_sku" />
+    <result property="xyzRankCli" column="ns0_xyz_rank_CLI" />
+    <result property="cliFirstNameAb" column="ns0_CLI_first_name_ab" />
   </resultMap>
 
   <select id="select_findCheapestProducts" resultMap="result_map_select_findCheapestProducts">
@@ -52,6 +52,42 @@
         p."CLI_first_name_ab" as ns0_CLI_first_name_ab
       from product p
       where p.price between 0 and 3
+  </select>
+
+  <!-- select method: findProductsWithPrices -->
+
+  <resultMap id="result_map_select_findProductsWithPrices" type="app5.persistence.ProductWithPrices">
+    <id property="id" column="ns0_id" />
+    <result property="name" column="ns0_name" />
+    <result property="price" column="ns0_price" />
+    <result property="sku" column="ns0_sku" />
+    <result property="xyzRankCli" column="ns0_xyz_rank_CLI" />
+    <result property="cliFirstNameAb" column="ns0_CLI_first_name_ab" />
+    <collection property="prices" ofType="app5.persistence.HPriceWithScore">
+      <id property="productId" column="ns1_product_id" />
+      <id property="fromDate" column="ns1_from_date" />
+      <result property="price" column="ns1_price" />
+      <result property="sku" column="ns1_sku" />
+      <result property="score" column="ns2_expr_0" />
+    </collection>
+  </resultMap>
+
+  <select id="select_findProductsWithPrices" resultMap="result_map_select_findProductsWithPrices">
+      select
+        p.id as ns0_id,
+        p.name as ns0_name,
+        p.price as ns0_price,
+        p.sku as ns0_sku,
+        p."xyz_rank_CLI" as ns0_xyz_rank_CLI,
+        p."CLI_first_name_ab" as ns0_CLI_first_name_ab,
+        h.product_id as ns1_product_id,
+        h.from_date as ns1_from_date,
+        h.price as ns1_price,
+        h.sku as ns1_sku,
+        1 as ns2_expr_0
+      from product p
+      join historic_price h on h.product_id = p.id
+      where p.price between 0 and 10
   </select>
 
 </mapper>

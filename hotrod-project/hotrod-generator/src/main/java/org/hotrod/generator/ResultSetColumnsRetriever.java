@@ -2,12 +2,9 @@ package org.hotrod.generator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,25 +27,24 @@ import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.JdbcTypes.JDBCType;
+import org.hotrod.utils.SQLUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
-import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
-import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
-import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class ResultSetColumnsRetriever implements ColumnsRetriever {
 
   private static final Logger log = LogManager.getLogger(ResultSetColumnsRetriever.class);
 
   private HotRodConfigTag config;
+  @SuppressWarnings("unused")
   private DatabaseLocation dloc;
+  @SuppressWarnings("unused")
   private SelectGenerationTag selectGenerationTag;
   private DatabaseAdapter adapter;
+  @SuppressWarnings("unused")
   private JdbcDatabase db;
   private Connection conn;
   private Map<String, RetrievalContext> contexts;
-
-  private Connection conn2;
 
   public ResultSetColumnsRetriever(final HotRodConfigTag config, final DatabaseLocation dloc,
       final SelectGenerationTag selectGenerationTag, final DatabaseAdapter adapter, final JdbcDatabase db,
@@ -60,11 +56,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     this.db = db;
     this.conn = conn;
     this.contexts = new HashMap<String, RetrievalContext>();
-
-    this.conn2 = null;
   }
-
-  // TODO: Just a marker for phase 1
 
   private class ResultSetParameterRenderer implements ParameterRenderer {
 
@@ -84,6 +76,8 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
 
   }
 
+  // TODO: Flat <select> (just a marker)
+
   @Override
   public void phase1Flat(final String key, final SelectMethodTag tag, final SelectMethodMetadata sm)
       throws InvalidSQLException, InvalidConfigurationFileException {
@@ -96,10 +90,10 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     log.debug("flat 1 -- this.conn=" + this.conn);
 
     ResultSetParameterRenderer pr = new ResultSetParameterRenderer();
-    String foundation = cleanUpSQL(ctx.getTag().renderSQLSentence(pr));
+    String foundation = SQLUtil.cleanUpSQL(ctx.getTag().renderSQLSentence(pr));
 
-    List<ColumnMetadata> nonStructuredColumns = new ArrayList<ColumnMetadata>();
-    ctx.setColumnsMetadata(nonStructuredColumns);
+    List<ColumnMetadata> flatColumns = new ArrayList<ColumnMetadata>();
+    ctx.setFlatColumnsMetadata(flatColumns);
 
     log.debug("flat 2 -- method=" + sm.getMethod() + " sql=" + foundation);
 
@@ -125,7 +119,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
           String msg = "Invalid retrieved column name: " + e.getMessage();
           throw new InvalidConfigurationFileException(ctx.getTag(), msg, msg);
         }
-        nonStructuredColumns.add(cm);
+        flatColumns.add(cm);
       }
     } catch (SQLException e) {
       throw new InvalidSQLException("could not retrieve metadata.", e);
@@ -134,8 +128,18 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
   }
 
   @Override
-  public void phase1Structured(final String key, final SelectMethodTag selectTag, final ColumnsProvider columnsProvider,
-      final SelectMethodMetadata sm) throws InvalidSQLException {
+  public List<ColumnMetadata> phase2Flat(final String key) {
+    log.debug("flat 4 -- columns retrieved.");
+    RetrievalContext ctx = this.contexts.get(key);
+    return ctx.getColumnsMetadata();
+  }
+
+  // TODO: Structured <select> (just a marker)
+
+  @Override
+  public void phase1Structured(final String key, final SelectMethodTag selectTag, final String aliasPrefix,
+      final String entityPrefix, final ColumnsProvider columnsProvider, final SelectMethodMetadata sm)
+      throws InvalidSQLException, InvalidConfigurationFileException {
 
     log.debug("prepare view 0");
 
@@ -144,179 +148,62 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
 
     log.debug("prepare view 1");
     ResultSetParameterRenderer pr = new ResultSetParameterRenderer();
-    String foundation = selectTag.renderSQLAngle(pr, columnsProvider, this.adapter);
-    ctx.setCleanedUpFoundation(cleanUpSQL(foundation));
-    ctx.setTempViewName(this.selectGenerationTag.getNextTempViewName());
-    String createView = this.adapter.createOrReplaceView(ctx.getTempViewName(), ctx.getCleanedUpFoundation());
-    String dropView = this.adapter.dropView(ctx.getTempViewName());
+    String foundation = SQLUtil.cleanUpSQL(selectTag.renderSQLAngle(pr, columnsProvider, this.adapter));
 
-    // 1. Drop (if exists) the view.
+    List<StructuredColumnMetadata> structuredColumnMetadata = new ArrayList<StructuredColumnMetadata>();
+    ctx.setStructuredColumnMetadata(structuredColumnMetadata);
 
-    log.debug("prepare view - will drop view: " + dropView);
+    try (PreparedStatement ps = this.conn.prepareStatement(foundation)) {
 
-    {
-      PreparedStatement ps = null;
-      try {
-        ps = this.conn.prepareStatement(dropView);
-        log.debug("prepare view - will execute drop view");
-        ps.execute();
-        log.debug("prepare view - view dropped");
+      log.debug("flat 2.1");
 
-      } catch (Exception e) {
-        log.debug("prepare view - exception while dropping view", e);
-        // Ignore this exception
-      } finally {
-        JdbcUtil.closeDbResources(ps);
+      ResultSetMetaData rm = ps.getMetaData();
+      int columns = rm.getColumnCount();
+      for (int i = 1; i <= columns; i++) {
+        String label = rm.getColumnLabel(i);
+        ColumnTag columnTag = ctx.getTag().findColumnTag(label, this.adapter);
+        log.debug("prepare view 3 -- column=" + label);
+        ColumnMetadata cm;
+        try {
+          cm = new ColumnMetadata(ctx.getSm(), rm, i, ctx.getTag().getMethod(), this.adapter, columnTag, false, false,
+              this.config.getTypeSolverTag());
+
+          String alias = aliasPrefix + cm.getColumnName();
+          StructuredColumnMetadata scm = new StructuredColumnMetadata(cm, entityPrefix, alias, false, null,
+              columnsProvider);
+          structuredColumnMetadata.add(scm);
+
+        } catch (UnresolvableDataTypeException e) {
+          String msg = "Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
+              + ">: could not find suitable Java type for column '" + e.getColumnName() + "' ";
+          throw new InvalidConfigurationFileException(ctx.getTag(), msg, msg);
+        } catch (InvalidIdentifierException e) {
+          String msg = "Invalid retrieved column name: " + e.getMessage();
+          throw new InvalidConfigurationFileException(ctx.getTag(), msg, msg);
+        }
       }
+    } catch (SQLException e) {
+      throw new InvalidSQLException("could not retrieve metadata.", e);
     }
 
-    // 2. Create or replace the view.
-
-    log.debug("prepare view - will create view: " + createView);
-
-    {
-      PreparedStatement ps = null;
-      try {
-        ps = this.conn.prepareStatement(createView);
-        log.debug("prepare view - will execute create view");
-        ps.execute();
-        log.debug("prepare view - view created");
-
-      } catch (SQLException e) {
-        log.debug("prepare view - exception while creating view", e);
-        throw new InvalidSQLException(createView, e);
-      } finally {
-        log.debug("prepare view - will close resources");
-        JdbcUtil.closeDbResources(ps);
-      }
-    }
-
-  }
-
-  // TODO: Just a marker for phase 2
-
-  @Override
-  public List<ColumnMetadata> phase2Flat(final String key) {
-    log.debug("flat 4 -- columns retrieved.");
-    RetrievalContext ctx = this.contexts.get(key);
-    return ctx.getColumnsMetadata();
-  }
-
-  @Deprecated
-  private void produceExtraConnection() throws SQLException {
-    if (this.conn2 == null) {
-      this.conn2 = this.dloc.getConnection();
-    }
   }
 
   @Override
   public List<StructuredColumnMetadata> phase2Structured(final String key, final SelectMethodTag selectTag,
       final String aliasPrefix, final String entityPrefix, final ColumnsProvider columnsProvider)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException, UncontrolledException {
-
+    log.debug("flat 4 -- columns retrieved.");
     RetrievalContext ctx = this.contexts.get(key);
-
-    // 1. Get the secondary connection if it's not ready yet
-
-    try {
-      produceExtraConnection();
-    } catch (SQLException e) {
-      throw new UncontrolledException("Could not retrieve database metadata", e);
-    }
-
-    String dropViewSQL = this.adapter.dropView(ctx.getTempViewName());
-
-    List<StructuredColumnMetadata> columns = new ArrayList<StructuredColumnMetadata>();
-
-    {
-      PreparedStatement ps = null;
-      ResultSet rs = null;
-
-      try {
-
-        // 1. Retrieve the view meta data
-
-        String viewJdbcName = this.adapter.formatJdbcTableName(ctx.getTempViewName());
-
-        rs = this.conn2.getMetaData().getColumns(this.dloc.getDefaultCatalog(), this.dloc.getDefaultSchema(),
-            viewJdbcName, null);
-        while (rs.next()) {
-          JdbcColumn c = this.db.retrieveSelectColumn(rs);
-          ColumnMetadata cm;
-          try {
-            cm = new ColumnMetadata(null, c, ctx.getTag().getMethod(), this.adapter, null, false, false,
-                this.config.getTypeSolverTag());
-          } catch (InvalidIdentifierException e) {
-            String msg = "Invalid identifier for column '" + c.getName() + "': " + e.getMessage();
-            throw new InvalidConfigurationFileException(ctx.getTag(), msg, msg);
-          }
-
-          String alias = aliasPrefix + cm.getColumnName();
-          StructuredColumnMetadata scm = new StructuredColumnMetadata(cm, entityPrefix, alias, false, null,
-              columnsProvider);
-          columns.add(scm);
-        }
-
-      } catch (SQLException e) {
-        throw new UncontrolledException("Could not retrieve database metadata", e);
-      } finally {
-        JdbcUtil.closeDbResources(ps, rs);
-      }
-    }
-
-    // 2. Drop the view.
-
-    {
-      PreparedStatement ps = null;
-
-      try {
-
-        ps = conn2.prepareStatement(dropViewSQL);
-        ps.execute();
-
-      } catch (SQLException e) {
-        throw new UncontrolledException("Could not retrieve database metadata", e);
-      } finally {
-        JdbcUtil.closeDbResources(ps);
-      }
-    }
-
-    // 3. Return the meta data
-
-    return columns;
-
+    return ctx.getStructuredColumnMetadata();
   }
 
-  // TODO: Just a marker for end phase 2
+  // TODO: End of structured <select> (just a marker)
 
   @Override
   public void close() throws Exception {
-    if (this.conn2 != null) {
-      this.conn2.close();
-    }
   }
 
   // Classes
-
-  public class AnalysableSelect {
-
-    private String sql;
-    private List<JDBCType> parameterJDBCTypes;
-
-    public AnalysableSelect(final String sql, final List<JDBCType> parameterJDBCTypes) {
-      this.sql = sql;
-      this.parameterJDBCTypes = parameterJDBCTypes;
-    }
-
-    public String getSql() {
-      return sql;
-    }
-
-    public List<JDBCType> getParameterJDBCTypes() {
-      return parameterJDBCTypes;
-    }
-
-  }
 
   public static class RetrievalContext {
 
@@ -324,7 +211,8 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     private SelectMethodMetadata sm;
     private String cleanedUpFoundation;
     private String tempViewName;
-    private List<ColumnMetadata> columnsMetadata;
+    private List<ColumnMetadata> flatColumnsMetadata;
+    private List<StructuredColumnMetadata> structuredColumnMetadata;
 
     public RetrievalContext(final SelectMethodTag tag, final SelectMethodMetadata sm) {
       this.tag = tag;
@@ -356,38 +244,21 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     }
 
     public List<ColumnMetadata> getColumnsMetadata() {
-      return columnsMetadata;
+      return flatColumnsMetadata;
     }
 
-    public void setColumnsMetadata(List<ColumnMetadata> columnsMetadata) {
-      this.columnsMetadata = columnsMetadata;
+    public void setFlatColumnsMetadata(final List<ColumnMetadata> flatColumnsMetadata) {
+      this.flatColumnsMetadata = flatColumnsMetadata;
     }
 
-  }
-
-  // Utils
-
-  private String cleanUpSQL(final String select) {
-    ListWriter lw = new ListWriter("\n");
-    String[] lines = select.split("\n");
-
-    // Trim lines and remove empty ones
-
-    for (String line : lines) {
-      String trimmed = line.trim();
-      if (!trimmed.isEmpty()) {
-        lw.add(line);
-      }
+    public List<StructuredColumnMetadata> getStructuredColumnMetadata() {
+      return structuredColumnMetadata;
     }
 
-    // Remove trailing semicolons
-
-    String reassembled = lw.toString();
-    while (reassembled.endsWith(";")) {
-      reassembled = reassembled.substring(0, reassembled.length() - 1);
+    public void setStructuredColumnMetadata(final List<StructuredColumnMetadata> structuredColumnMetadata) {
+      this.structuredColumnMetadata = structuredColumnMetadata;
     }
 
-    return reassembled;
   }
 
 }

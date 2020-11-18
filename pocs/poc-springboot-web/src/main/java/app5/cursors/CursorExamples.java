@@ -1,17 +1,14 @@
 package app5.cursors;
 
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import app5.persistence.CheapProductVOVO;
+import app5.persistence.CheapProduct;
 import app5.persistence.ProductVO;
 import app5.persistence.primitives.ProductDAO;
 import app5.persistence.primitives.ProductDAO.ProductTable;
@@ -42,7 +39,7 @@ public class CursorExamples {
   public int computeAvgPriceProductsCriteria() {
     int total = 0;
     int count = 0;
-    for (ProductVO p : this.productsManager.getProductsCriteria()) {
+    for (ProductInterface p : this.productsManager.getProductsCriteria()) {
       if (p.getPrice() != null) {
         total = total + p.getPrice();
         count++;
@@ -73,27 +70,9 @@ public class CursorExamples {
 
   @Transactional
   public void findCheapProductsCursor() {
-    for (CheapProductVOVO p : this.productsManager.getCheapProducts()) {
+    for (CheapProduct p : this.productsManager.getCheapProducts()) {
       System.out.println(" - local: " + p);
     }
-
-    Cursor<CheapProductVOVO> base = this.productsManager.getCheapProducts();
-
-    Cursor<CheapProductVOVO> c = new Cursor() {
-
-      @Override
-      public void close() throws IOException {
-        base.close();
-      }
-
-      @Override
-      public Iterator iterator() {
-        // TODO Auto-generated method stub
-        return null;
-      }
-
-    };
-
   }
 
 }

@@ -24,7 +24,7 @@
     <id property="productId" column="product_id" />
     <id property="fromDate" column="from_date" />
     <result property="price" column="price" />
-    <result property="prop2u" column="sku" />
+    <result property="sku" column="sku" />
   </resultMap>
 
   <!-- select by PK -->
@@ -65,10 +65,10 @@
       <if test="p.price == null and p.propertiesChangeLog.priceWasSet">
         and price is null
       </if>
-      <if test="p.prop2u != null ">
-        and sku = #{p.prop2u,jdbcType=BIGINT}
+      <if test="p.sku != null ">
+        and sku = #{p.sku,jdbcType=BIGINT}
       </if>
-      <if test="p.prop2u == null and p.propertiesChangeLog.prop2uWasSet">
+      <if test="p.sku == null and p.propertiesChangeLog.skuWasSet">
         and sku is null
       </if>
     </trim>
@@ -98,7 +98,7 @@
         <if test="true">, #{productId,jdbcType=INTEGER}</if>
         <if test="true">, #{fromDate,jdbcType=DATE}</if>
         <if test="true">, #{price,jdbcType=INTEGER}</if>
-        <if test="true">, #{prop2u,jdbcType=BIGINT}</if>
+        <if test="true">, #{sku,jdbcType=BIGINT}</if>
       </trim>
       )
   </insert>
@@ -108,7 +108,7 @@
   <update id="updateByPK">
     update historic_price set
       price = #{price,jdbcType=INTEGER},
-      sku = #{prop2u,jdbcType=BIGINT}
+      sku = #{sku,jdbcType=BIGINT}
      where
       product_id = #{productId,jdbcType=INTEGER}
       and from_date = #{fromDate,jdbcType=DATE}
@@ -131,7 +131,7 @@
       <if test="values.propertiesChangeLog.productIdWasSet">product_id = #{values.productId,jdbcType=INTEGER},</if>
       <if test="values.propertiesChangeLog.fromDateWasSet">from_date = #{values.fromDate,jdbcType=DATE},</if>
       <if test="values.propertiesChangeLog.priceWasSet">price = #{values.price,jdbcType=INTEGER},</if>
-      <if test="values.propertiesChangeLog.prop2uWasSet">sku = #{values.prop2u,jdbcType=BIGINT},</if>
+      <if test="values.propertiesChangeLog.skuWasSet">sku = #{values.sku,jdbcType=BIGINT},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.productId != null ">
@@ -152,10 +152,10 @@
       <if test="filter.price == null and filter.propertiesChangeLog.priceWasSet">
         and price is null
       </if>
-      <if test="filter.prop2u != null ">
-        and sku = #{filter.prop2u,jdbcType=BIGINT}
+      <if test="filter.sku != null ">
+        and sku = #{filter.sku,jdbcType=BIGINT}
       </if>
-      <if test="filter.prop2u == null and filter.propertiesChangeLog.prop2uWasSet">
+      <if test="filter.sku == null and filter.propertiesChangeLog.skuWasSet">
         and sku is null
       </if>
     </trim>
@@ -184,10 +184,10 @@
       <if test="price == null and propertiesChangeLog.priceWasSet">
         and price is null
       </if>
-      <if test="prop2u != null ">
-        and sku = #{prop2u,jdbcType=BIGINT}
+      <if test="sku != null ">
+        and sku = #{sku,jdbcType=BIGINT}
       </if>
-      <if test="prop2u == null and propertiesChangeLog.prop2uWasSet">
+      <if test="sku == null and propertiesChangeLog.skuWasSet">
         and sku is null
       </if>
     </trim>

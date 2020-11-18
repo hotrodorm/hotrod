@@ -14,7 +14,7 @@ public class AbstractHistoricPriceVO implements Serializable {
   protected java.lang.Integer productId = null;
   protected java.sql.Date fromDate = null;
   protected java.lang.Integer price = null;
-  protected java.lang.Long prop2u = null;
+  protected java.lang.Long sku = null;
 
   // getters & setters
 
@@ -45,13 +45,13 @@ public class AbstractHistoricPriceVO implements Serializable {
     this.getPropertiesChangeLog().priceWasSet = true;
   }
 
-  public java.lang.Long getProp2u() {
-    return this.prop2u;
+  public java.lang.Long getSku() {
+    return this.sku;
   }
 
-  public void setProp2u(final java.lang.Long prop2u) {
-    this.prop2u = prop2u;
-    this.getPropertiesChangeLog().prop2uWasSet = true;
+  public void setSku(final java.lang.Long sku) {
+    this.sku = sku;
+    this.getPropertiesChangeLog().skuWasSet = true;
   }
 
   // to string
@@ -62,7 +62,7 @@ public class AbstractHistoricPriceVO implements Serializable {
     sb.append("- productId=" + this.productId + "\n");
     sb.append("- fromDate=" + this.fromDate + "\n");
     sb.append("- price=" + this.price + "\n");
-    sb.append("- prop2u=" + this.prop2u);
+    sb.append("- sku=" + this.sku);
     return sb.toString();
   }
 
@@ -73,7 +73,7 @@ public class AbstractHistoricPriceVO implements Serializable {
     obj.addProperty("productId", this.productId);
     obj.addProperty("fromDate", this.fromDate);
     obj.addProperty("price", this.price);
-    obj.addProperty("prop2u", this.prop2u);
+    obj.addProperty("sku", this.sku);
     return obj.render();
   }
 
@@ -89,7 +89,7 @@ public class AbstractHistoricPriceVO implements Serializable {
     public boolean productIdWasSet = false;
     public boolean fromDateWasSet = false;
     public boolean priceWasSet = false;
-    public boolean prop2uWasSet = false;
+    public boolean skuWasSet = false;
   }
 
 }

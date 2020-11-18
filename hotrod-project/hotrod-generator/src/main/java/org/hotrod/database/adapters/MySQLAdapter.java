@@ -19,6 +19,7 @@ import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
@@ -277,4 +278,94 @@ public class MySQLAdapter extends DatabaseAdapter {
     return UnescapedSQLCase.ANY_CASE;
   }
 
+
+  @Override
+  public String provideSampleValueFor(final JDBCType jdbcType) {
+
+//    select
+//    1 as xbigint,
+//    1.2 as xdecimal,
+//    --
+//    'a' as xvarchar,
+//    date '2001-01-01' as xdate,
+//    time '12:34:56' as xtime,  
+//    timestamp '2001-01-01 12:34:56' as xtimestamp,
+//    --
+//    b'01' as xblob
+
+    switch (jdbcType.getCode()) {
+
+    case java.sql.Types.TINYINT:
+      return "1";
+    case java.sql.Types.SMALLINT:
+      return "1";
+    case java.sql.Types.INTEGER:
+      return "1";
+    case java.sql.Types.BIGINT:
+      return "1";
+    case java.sql.Types.REAL:
+      return "1.2";
+    case java.sql.Types.FLOAT: // JDBC equivalent to DOUBLE PRECISION
+      return "1.2";
+    case java.sql.Types.DOUBLE:
+      return "1.2";
+    case java.sql.Types.DECIMAL:
+      return "1.2";
+    case java.sql.Types.NUMERIC:
+      return "1.2";
+
+    case java.sql.Types.CHAR:
+      return "'a'";
+    case java.sql.Types.NCHAR:
+      return "'a'";
+    case java.sql.Types.VARCHAR:
+      return "'a'";
+    case java.sql.Types.NVARCHAR:
+      return "'a'";
+    case java.sql.Types.LONGVARCHAR:
+      return "'a'";
+    case java.sql.Types.LONGNVARCHAR:
+      return "'a'";
+    case java.sql.Types.CLOB:
+      return "'a'";
+    case java.sql.Types.NCLOB:
+      return "'a'";
+
+    case java.sql.Types.DATE:
+      return "date '2001-01-01'";
+    case java.sql.Types.TIME:
+      return "time '12:34:56'";
+    case java.sql.Types.TIMESTAMP:
+      return "timestamp '2001-01-01 12:34:56'";
+
+    case java.sql.Types.BLOB:
+      return "b'01'";
+    case java.sql.Types.BINARY:
+      return "b'01'";
+    case java.sql.Types.VARBINARY:
+      return "b'01'";
+    case java.sql.Types.LONGVARBINARY:
+      return "b'01'";
+
+//    case java.sql.Types.BOOLEAN:
+//    case java.sql.Types.SQLXML:
+//    case java.sql.Types.TIMESTAMP_WITH_TIMEZONE
+//    case java.sql.Types.TIME_WITH_TIMEZONE -- should be removed from the SQL Standard
+//    case java.sql.Types.ARRAY
+//    case java.sql.Types.BIT
+//    case java.sql.Types.DATALINK
+//    case java.sql.Types.DISTINCT
+//    case java.sql.Types.JAVA_OBJECT
+//    case java.sql.Types.NULL
+//    case java.sql.Types.OTHER
+//    case java.sql.Types.REF
+//    case java.sql.Types.REF_CURSOR
+//    case java.sql.Types.ROWID
+//    case java.sql.Types.STRUCT
+
+    }
+
+    return null;
+  }
+  
 }

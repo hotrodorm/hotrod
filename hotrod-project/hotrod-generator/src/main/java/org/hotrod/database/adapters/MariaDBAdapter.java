@@ -13,6 +13,7 @@ import org.hotrod.exceptions.SequencesNotSupportedException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
+import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 
@@ -152,6 +153,11 @@ public class MariaDBAdapter extends DatabaseAdapter {
   @Override
   public UnescapedSQLCase getUnescapedSQLCase() {
     return this.mysqlAdaper.getUnescapedSQLCase();
+  }
+
+  @Override
+  public String provideSampleValueFor(final JDBCType jdbcType) {
+    return this.mysqlAdaper.provideSampleValueFor(jdbcType);
   }
 
 }

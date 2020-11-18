@@ -1,6 +1,5 @@
 package org.hotrod.config.structuredcolumns;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
+import org.hotrod.config.DaosSpringMyBatisTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
@@ -25,7 +25,6 @@ import org.hotrod.config.Patterns;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
 import org.hotrod.config.TableTag;
-import org.hotrod.config.TypeSolverTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -35,7 +34,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.Generator;
-import org.hotrod.generator.mybatis.DataSetLayout;
+import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata.IdColumnNotFoundException;
@@ -475,7 +474,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   @Override
   public void gatherMetadataPhase1(final SelectMethodTag selectTag, final SelectGenerationTag selectGenerationTag,
-      final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr) throws InvalidSQLException {
+      final ColumnsPrefixGenerator columnsPrefixGenerator, final ColumnsRetriever cr)
+      throws InvalidSQLException, InvalidConfigurationFileException {
 
     // body
 
@@ -917,7 +917,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
   }
 
   public VOMetadata getMetadata(final DataSetLayout layout, final HotRodFragmentConfigTag fragmentConfig,
-      final DaosTag daosTag) throws InvalidConfigurationFileException {
+      final DaosSpringMyBatisTag daosTag) throws InvalidConfigurationFileException {
     return new VOMetadata(this, layout, fragmentConfig, daosTag);
   }
 

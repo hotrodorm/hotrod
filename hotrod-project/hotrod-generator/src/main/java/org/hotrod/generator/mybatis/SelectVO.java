@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.generator.NamePackageResolver;
 import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
@@ -56,13 +57,8 @@ public class SelectVO {
 
         w.write("package " + this.classPackage.getPackage() + ";\n\n");
 
-        w.write("import " + this.abstractVO.getFullClassName() + ";\n");
-        w.write("import org.springframework.stereotype.Component;\n");
-        w.write("import org.springframework.beans.factory.config.ConfigurableBeanFactory;\n");
-        w.write("import org.springframework.context.annotation.Scope;\n\n");
+        w.write("import " + this.abstractVO.getFullClassName() + ";\n\n");
 
-        w.write("@Component\n");
-        w.write("@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)\n");
         w.write("public class " + this.className + " extends " + this.abstractVO.getName() + " {\n\n");
 
         w.write("  private static final long serialVersionUID = 1L;\n\n");

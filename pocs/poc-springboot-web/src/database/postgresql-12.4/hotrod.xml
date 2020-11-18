@@ -5,14 +5,62 @@
 
   <generators>
     <mybatis-spring>
-      <daos package="app5.persistence" vo-prefix="" vo-suffix="VO" abstract-vo-prefix="Abstract"
-        abstract-vo-suffix="VO" dao-prefix="" dao-suffix="DAO" />
+      <daos package="app5.persistence" 
+        vo-prefix=""                vo-suffix="VO" 
+        abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" 
+        dao-prefix="" dao-suffix="DAO"
+      />
+      
+<!-- 
+        ndao-prefix="" ndao-suffix="" nvo-prefix="" nvo-suffix="" nabstract-vo-prefix="Abstract" nabstract-vo-suffix="" 
+
+
+                  DAO             VO              Abstract VO
+                  prefix  suffix  prefix  suffix  prefix      suffix
+
+ <table>, <view>  ""      "DAO"   ""      "VO"    "Abstract"  "VO"
+ <dao>            ""      "DAO"  
+ <select> VO                      ""      "VO"    "Abstract"  "VO"
+
+-->     
+      
+<!--
+
+      <nitro dao-prefix="" dao-suffix="DAO" vo-prefix="" vo-suffix="VO" abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" /> 
+    
+      <java base-dir="" package="" primitives-package="">
+        <entity-dao prefix="" suffix="" />
+        <entity-vo prefix="" suffix="" abstract-prefix="" abstract-suffix="" />
+        <dao prefix="" suffix="" />
+        <select-vo prefix="" suffix="" abstract-prefix="" abstract-suffix="" />
+      </java>
+      
+      <java base-dir="" package="" primitives-package="">
+        <entity-dao prefix="" suffix="" />
+        <entity-vo prefix="" suffix="" />
+        <abstract-entity-vo prefix="" suffix="" />
+        <dao prefix="" suffix="" />
+        <select-vo prefix="" suffix="" />
+        <abstract-select-vo prefix="" suffix="" />
+      </java>
+-->
+
       <mappers dir="mappers" />
-      <select-generation strategy="result-set" temp-view-base-name="tmp2" />
       <classic-fk-navigation />
+      <select-generation strategy="result-set" />
+      <!-- 
+      <select-generation strategy="create-view" />
+      <select-generation strategy="result-set" />
+       -->
     </mybatis-spring>
   </generators>
 
+  <name-solver>
+    <name value="^PTY_(.+)$" replace="$1" scope="table, column" />
+    <name value="^PER_(.+)$" replace="$1" scope="column" />
+  </name-solver>
+
+<!-- 
   <name-solver>
     <name value="^sk(.+)$" replace="prop2$1" scope="column" />
     <name value="^CLI_(.+)$" replace="$1" scope="column" />
@@ -21,7 +69,8 @@
     <name value="^\w{3,3}_(\w+)_CLI$" replace="$1" scope="table, column" />
     <name value="^CLI_(\w.+)_(\w+)_\w{2,3}$" replace="$1$2" scope="table , column , view" />
   </name-solver>
-
+ -->
+ 
   <type-solver>
   <!-- 
     <when test="name == 'price'" java-type="java.lang.Double" />
@@ -30,9 +79,9 @@
 
   <table name="product" />
   <table name="historic_price" />
+<!-- 
   
-  <table name="client_tbl" />
-
+ -->
   <table name="account" />
   <table name="item" />
   <table name="island" />
@@ -40,17 +89,30 @@
   <table name="federal_branch" />
   <table name="types_binary" />
   <table name="types_other" />
+ 
+  <dao name="MyQueriesDAO">
 
-
-  <dao name="MyQueries">
-
-    <select method="findExpensiveProducts" vo="CheapProductVO" mode="cursor">
-      <parameter name="minPrice" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-      <parameter name="title" java-type="java.lang.String" jdbc-type="VARCHAR" />
-      select name, price, #{title} as kind
+    <!-- For new "result-set" strategy
+    -->
+    <select method="findExpensiveProducts" vo="CheapProduct" mode="cursor">
+      <parameter name="minPrice" java-type="Integer" jdbc-type="NUMERIC" />
+      <parameter name="when" java-type="String" />
+      select name, price, #{when} as kind
       from product
       where price > #{minPrice}
     </select>
+
+    <!-- For old "create-view" strategy 
+    <select method="findExpensiveProducts" vo="CheapProductVO" mode="cursor">
+      <parameter name="minPrice" java-type="Integer" jdbc-type="NUMERIC" />
+      <parameter name="when" java-type="String" />
+      select name, price, 1 as kind
+      from product
+      <complement>
+      where price > #{minPrice}
+      </complement>
+    </select>
+    -->
 
     <select method="findCheapestProducts">
       select
@@ -61,6 +123,22 @@
       where p.price between 0 and 3
     </select>
 
+<!-- 
+ -->
+    <select method="findProductsWithPrices">
+      select
+      <columns>
+        <vo table="product" extended-vo="ProductWithPrices" alias="p">
+          <collection table="historic_price" property="prices" extended-vo="HPriceWithScore"  alias="h" >
+            <expression property="score">1</expression>
+          </collection>
+        </vo>
+      </columns>
+      from product p
+      join historic_price h on h.product_id = p.id
+      where p.price between 0 and 10
+    </select>
+ 
   </dao>
 
 </hotrod>

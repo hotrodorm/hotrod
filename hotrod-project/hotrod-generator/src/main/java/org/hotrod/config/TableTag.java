@@ -170,7 +170,7 @@ public class TableTag extends AbstractEntityDAOTag {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
@@ -295,12 +295,12 @@ public class TableTag extends AbstractEntityDAOTag {
     } else {
       String replacedName = null;
       try {
-        log.info("### this.name=" + this.name);
+        log.debug("### this.name=" + this.name);
         replacedName = config.getNameSolverTag().resolveName(this.name, Scope.TABLE);
-        log.info("### replacedName=" + replacedName);
+        log.debug("### replacedName=" + replacedName);
         if (replacedName != null) {
           this.javaClassName = Id.fromCanonicalSQL(replacedName, adapter).getJavaClassName();
-          log.info(" done.");
+          log.debug(" done.");
         }
       } catch (CouldNotResolveNameException e) {
         throw new InvalidConfigurationFileException(this,

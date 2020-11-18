@@ -66,7 +66,7 @@ public class ExportColumnsToTXTMojo extends AbstractMojo {
   public void execute() throws MojoExecutionException {
     log.debug("init");
 
-    log.info("this.txtexportfile=" + this.txtexportfile);
+    log.debug("this.txtexportfile=" + this.txtexportfile);
 
     ExportColumnsToTXTOperation op = new ExportColumnsToTXTOperation(this.project.getBasedir(), this.configfile,
         this.generator, this.localproperties, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword,

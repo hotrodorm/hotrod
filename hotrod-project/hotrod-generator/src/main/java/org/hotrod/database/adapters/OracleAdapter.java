@@ -315,4 +315,103 @@ public class OracleAdapter extends DatabaseAdapter {
     return UnescapedSQLCase.UPPER_CASE;
   }
 
+
+  @Override
+  public String provideSampleValueFor(final JDBCType jdbcType) {
+
+//    select
+//    cast(1 as number(2)) as xtinyint,
+//    cast(1 as number(4)) as ssmallint,
+//    cast(1 as number(9)) as xint,
+//    cast(1 as number(18)) as xbigint,
+//    cast(1 as float) as xfloat,
+//    cast(1 as real) as xreal,
+//    cast(1 as double precision) as xdouble,
+//    cast(1 as decimal(10)) as xdecimal,
+//    cast(1 as numeric(10)) as xnumeric,
+//    --
+//    cast('a' as char(1)) as xchar,
+//    cast(N'a' as nchar(1)) as xnchar,
+//    cast('a' as varchar2(1)) as xvarchar,
+//    cast(N'a' as nvarchar2(1)) as xnvarchar,
+//    empty_clob() as xclob,
+//    --
+//    date '2001-01-01' as xtimestamp,
+//    timestamp '2001-01-01 12:34:56' as xtimestamp,
+//    timestamp '2001-01-01 12:34:56 -08:00' xtimestamptz,
+//    --
+//    empty_blob() as xblob
+//  from dual;
+
+
+    switch (jdbcType.getCode()) {
+
+    case java.sql.Types.TINYINT:
+      return "cast(1 as number(2))";
+    case java.sql.Types.SMALLINT:
+      return "cast(1 as number(4))";
+    case java.sql.Types.INTEGER:
+      return "cast(1 as number(9))";
+    case java.sql.Types.BIGINT:
+      return "cast(1 as number(18))";
+    case java.sql.Types.REAL:
+      return "cast(1 as real)";
+    case java.sql.Types.FLOAT: // JDBC equivalent to DOUBLE PRECISION
+      return "cast(1 as double precision)";
+    case java.sql.Types.DOUBLE:
+      return "cast(1 as double precision)";
+    case java.sql.Types.DECIMAL:
+      return "cast(1 as decimal(10))";
+    case java.sql.Types.NUMERIC:
+      return "cast(1 as numeric(10))";
+
+    case java.sql.Types.CHAR:
+      return "cast('a' as char(1))";
+    case java.sql.Types.NCHAR:
+      return "cast(N'a' as nchar(1))";
+    case java.sql.Types.VARCHAR:
+      return "cast('a' as varchar2(1))";
+    case java.sql.Types.NVARCHAR:
+      return "cast(N'a' as nvarchar2(1))";
+    case java.sql.Types.CLOB:
+      return "empty_clob()";
+
+    case java.sql.Types.DATE:
+      return "date '2001-01-01'";
+    case java.sql.Types.TIMESTAMP:
+      return "timestamp '2001-01-01 12:34:56'";
+    case java.sql.Types.TIMESTAMP_WITH_TIMEZONE:
+      return "timestamp '2001-01-01 12:34:56 -08:00'";
+
+    case java.sql.Types.BLOB:
+      return "empty_blob()";
+
+//    case java.sql.Types.BINARY:
+//    case java.sql.Types.VARBINARY:
+//    case java.sql.Types.LONGVARBINARY:
+//    case java.sql.Types.TIME
+//    case java.sql.Types.LONGVARCHAR
+//    case java.sql.Types.LONGNVARCHAR
+//    case java.sql.Types.NCLOB
+//    case java.sql.Types.BOOLEAN
+//    case java.sql.Types.SQLXML
+//    case java.sql.Types.TIME_WITH_TIMEZONE -- should be removed from the SQL Standard
+//    case java.sql.Types.ARRAY
+//    case java.sql.Types.BIT
+//    case java.sql.Types.DATALINK
+//    case java.sql.Types.DISTINCT
+//    case java.sql.Types.JAVA_OBJECT
+//    case java.sql.Types.NULL
+//    case java.sql.Types.OTHER
+//    case java.sql.Types.REF
+//    case java.sql.Types.REF_CURSOR
+//    case java.sql.Types.ROWID
+//    case java.sql.Types.STRUCT
+
+    }
+
+    return null;
+  }
+
+  
 }

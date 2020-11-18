@@ -111,7 +111,7 @@ public class SQLParameter implements SQLSegment {
   }
 
   public String getJdbcType() {
-    return this.definition.getJDBCTypeName();
+    return this.definition.getJDBCType().getShortTypeName();
   }
 
   // Behavior

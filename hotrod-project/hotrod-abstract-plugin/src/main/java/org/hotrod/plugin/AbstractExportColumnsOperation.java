@@ -61,7 +61,7 @@ public abstract class AbstractExportColumnsOperation {
       final String localproperties, final String jdbcdriverclass, final String jdbcurl, final String jdbcusername,
       final String jdbcpassword, final String jdbccatalog, final String jdbcschema, final String facets,
       final String display, final String exportfilename) {
-    log.info("exportfilename=" + exportfilename);
+    log.debug("exportfilename=" + exportfilename);
     this.baseDir = baseDir;
     this.configfilename = configfilename;
     this.generator = generator;
