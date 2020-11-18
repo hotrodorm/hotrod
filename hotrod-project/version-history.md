@@ -63,11 +63,12 @@
 - New <name-solver> tag, automatically names tables, views, and columns according to regex naming rules.
 - LiveSQL function infrastructure: developers can now add built-in and also user-defined functions to LiveSQL queries.
 - LiveSQL dialect can be designated at runtime using application.properties, with fallback to discovery mode.
-- LiveSQL fully typed CASE and OVER clauses.
+- LiveSQL fully typed SQL CASE and OVER clauses.
 - LiveSQL RANGE window frame implemented for numbers (date/time are not yet supported since we don't model intervals yet).
 - Fully independent Spring MyBatis generator.
 - REST metrics implemented (experimental).
 - Added "force-jdbc-type-on-write" attribute to <type-solver> functionality.
+- Added extra prefixes and suffixes for Nitro daos and vos.
 
  
  
