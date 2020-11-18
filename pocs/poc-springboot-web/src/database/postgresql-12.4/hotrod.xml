@@ -9,6 +9,7 @@
         vo-prefix=""                vo-suffix="VO" 
         abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" 
         dao-prefix="" dao-suffix="DAO"
+        ndao-prefix="" ndao-suffix="" nvo-prefix="" nvo-suffix="" nabstract-vo-prefix="Abstract" nabstract-vo-suffix="" 
       />
       
 <!-- 
