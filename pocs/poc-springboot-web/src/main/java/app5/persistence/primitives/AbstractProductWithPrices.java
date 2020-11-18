@@ -5,23 +5,23 @@ package app5.persistence.primitives;
 import app5.persistence.ProductVO;
 import java.util.List;
 
-import app5.persistence.HistoricPriceVO;
+import app5.persistence.HPriceWithScore;
 
-public abstract class AbstractProductWithPricesVO extends ProductVO {
+public abstract class AbstractProductWithPrices extends ProductVO {
 
   private static final long serialVersionUID = 1L;
 
   // Collection properties
 
-  protected List<HistoricPriceVO> prices = null;
+  protected List<HPriceWithScore> prices = null;
 
   // getters & setters
 
-  public final List<app5.persistence.HistoricPriceVO> getPrices() {
+  public final List<app5.persistence.HPriceWithScore> getPrices() {
     return this.prices;
   }
 
-  public final void setPrices(final List<app5.persistence.HistoricPriceVO> prices) {
+  public final void setPrices(final List<app5.persistence.HPriceWithScore> prices) {
     this.prices = prices;
   }
 

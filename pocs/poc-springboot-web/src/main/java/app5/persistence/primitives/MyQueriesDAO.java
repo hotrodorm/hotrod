@@ -14,9 +14,9 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.Selectable;
 
 
-import app5.persistence.CheapProductVO;
-import app5.persistence.ProductWithPricesVO;
+import app5.persistence.CheapProduct;
 import app5.persistence.ProductVO;
+import app5.persistence.ProductWithPrices;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
@@ -77,31 +77,11 @@ public class MyQueriesDAO implements Serializable, ApplicationContextAware {
     String when;
   }
 
-  public Cursor<CheapProductVO> findExpensiveProducts(final Integer minPrice, final String when) {
+  public Cursor<CheapProduct> findExpensiveProducts(final Integer minPrice, final String when) {
     ParamFindExpensiveProducts param0 = new ParamFindExpensiveProducts();
     param0.minPrice = minPrice;
     param0.when = when;
-    return     new MyBatisCursor<CheapProductVO>(this.sqlSession.selectCursor("app5.persistence.primitives.myQueriesDAO.select_findExpensiveProducts", param0));
-  }
-
-  // select method: findProductsWithPrices
-
-  /*
-  * The SQL statement for this method is:
-
-
-      select
-      ... structured columns here...
-      from product p
-      join historic_price h on h.product_id = p.id
-      where p.price between 0 and 10
-    
-
-  */
-
-
-  public List<ProductWithPricesVO> findProductsWithPrices() {
-    return this.sqlSession.selectList("app5.persistence.primitives.myQueriesDAO.select_findProductsWithPrices");
+    return     new MyBatisCursor<CheapProduct>(this.sqlSession.selectCursor("app5.persistence.primitives.myQueriesDAO.select_findExpensiveProducts", param0));
   }
 
   // select method: findCheapestProducts
@@ -121,6 +101,26 @@ public class MyQueriesDAO implements Serializable, ApplicationContextAware {
 
   public List<ProductVO> findCheapestProducts() {
     return this.sqlSession.selectList("app5.persistence.primitives.myQueriesDAO.select_findCheapestProducts");
+  }
+
+  // select method: findProductsWithPrices
+
+  /*
+  * The SQL statement for this method is:
+
+
+      select
+      ... structured columns here...
+      from product p
+      join historic_price h on h.product_id = p.id
+      where p.price between 0 and 10
+    
+
+  */
+
+
+  public List<ProductWithPrices> findProductsWithPrices() {
+    return this.sqlSession.selectList("app5.persistence.primitives.myQueriesDAO.select_findProductsWithPrices");
   }
 
 }

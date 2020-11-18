@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import app5.cursors.ProductInterface;
+import app5.persistence.ProductVO;
 import app5.persistence.primitives.ProductDAO;
 
 @RequestMapping("/product")
@@ -25,7 +26,9 @@ public class ProductRestController {
     System.out.println("Retrieving product " + id + "...");
     try {
       Long iid = Long.parseLong(id);
-      return this.productDAO.selectByPK(iid);
+      ProductVO product = this.productDAO.selectByPK(iid);
+      ProductInterface pi = product;
+      return pi;
     } catch (NumberFormatException e) {
       return null;
     }

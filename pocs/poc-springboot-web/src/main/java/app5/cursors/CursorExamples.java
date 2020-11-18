@@ -1,17 +1,14 @@
 package app5.cursors;
 
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import app5.persistence.CheapProductVO;
+import app5.persistence.CheapProduct;
 import app5.persistence.ProductVO;
 import app5.persistence.primitives.ProductDAO;
 import app5.persistence.primitives.ProductDAO.ProductTable;
@@ -73,7 +70,7 @@ public class CursorExamples {
 
   @Transactional
   public void findCheapProductsCursor() {
-    for (CheapProductVO p : this.productsManager.getCheapProducts()) {
+    for (CheapProduct p : this.productsManager.getCheapProducts()) {
       System.out.println(" - local: " + p);
     }
   }
