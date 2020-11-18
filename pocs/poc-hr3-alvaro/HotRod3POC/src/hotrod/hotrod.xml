@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod>
+
+<hotrod>
+	<generators>
+		<mybatis-spring>
+			<daos package="hr3.springboot.poc.hotrod" vo-prefix=""
+				vo-suffix="Impl" abstract-vo-prefix="" abstract-vo-suffix="VO"
+				dao-prefix="" dao-suffix="DAO" />
+			<mappers dir="mappers" />
+			<select-generation strategy="result-set" />
+			<classic-fk-navigation />
+		</mybatis-spring>
+	</generators>
+
+	<!-- Name solver: para conversion masiva de nombres de tablas, campos y 
+		vistas a partir del nombre en la base de datos antes de su cnversión al equivalente 
+		Java. Es útil para eliminación de prefijos/sufijos en el nombre generado, 
+		evitando, por ejemplo tener que especificar el nombre Java para cada una 
+		de las columnas en el tag <table>. -->
+	<name-solver>
+		<name value="^PTY_(.+)$" replace="$1" scope="table, column" />
+		<name value="^PER_(.+)$" replace="$1" scope="column" />
+		<name value="^TRX_(.+)$" replace="$1" scope="table" />
+		<name value="^REQ_(.+)$" replace="$1" scope="column" />
+		<name value="^STOCK_(.+)$" replace="$1" scope="table" />
+	</name-solver>
+
+	<!-- Type solver: para conversion masiva de tipos de datos JDBC a Java -->
+	<type-solver>
+		<when test="scale > 0 and typeName.equals('DECIMAL')"
+			java-type="java.math.BigDecimal" />
+	</type-solver>
+
+	<!-- Type solver: para conversion ad-hoc de tipos de datos JDBC a Java -->
+	<converter name="articulo_type_converter"
+		java-type="hr3.springboot.poc.model.EnumArticuloType"
+		class="hr3.springboot.poc.etc.ArticuloTypeConverter"
+		java-intermediate-type="java.lang.Integer" />
+
+	<table name="PTY_PERSONA" />
+
+	<!--
+	 <table name="PTY_PERSONA" java-name="Persona">
+		<column name="PER_ID" java-name="id" />
+		<column name="PER_NOMBRE" java-name="nombre" />
+		<column name="PER_APELLIDO" java-name="apellido" />
+		<column name="PER_FECHA_NAC" java-name="fechaNacimiento" />
+	</table>
+	-->
+
+	<table name="TRX_REQUEST" java-name="Pedido" >
+		<column name="REQ_DESC" java-name="descripcion" />
+		<column name="PER_ID" java-name="idPersona" />
+	</table>
+
+	<!-- 
+	<table name="TRX_REQUEST" java-name="Pedido">
+		<column name="REQ_ID" java-name="id" />
+		<column name="REQ_TIMESTAMP" java-name="timestamp" />
+		<column name="REQ_DESC" java-name="descripcion" />
+		<column name="PER_ID" java-name="idPersona" />
+	</table>
+	-->
+
+	<table name="STOCK_ARTICULO">
+		<column name="ART_TYPE" java-name="tipo"
+			converter="articulo_type_converter" />
+	</table>
+
+	<!-- 
+	<table name="STOCK_ARTICULO" java-name="Articulo">
+		<column name="ART_ID" java-name="id" />
+		<column name="ART_DESC" java-name="descripcion" />
+		<column name="ART_TYPE" java-name="tipo"
+			converter="articulo_type_converter" />
+	</table>
+	-->
+
+	<table name="TRX_REQUEST_ITEM">
+		<column name="REQ_ID" java-name="idPedido" />
+		<column name="ART_ID" java-name="idArticulo" />
+		<column name="ITEM_QTY" java-name="cantidad" />
+	</table>
+
+	<!-- 
+	<table name="TRX_REQUEST_ITEM" java-name="RequestItem">
+		<column name="REQ_ID" java-name="idPedido" />
+		<column name="ART_ID" java-name="idArticulo" />
+		<column name="ITEM_QTY" java-name="cantidad" />
+	</table>
+	-->
+
+<!-- 
+	PTY_PERSONA-(1,1)- - -(0,n)-TRX_REQUEST-(1,1)- - -(0,n)-TRX_REQUEST_ITEM-(0,n)- - -(1,1)-STOCK_ARTICULO
+ -->
+
+<!-- classical:deprecated
+	<select java-class-name="ExtendedRequestSelect">
+		<parameter name="pedidoId" java-type="Long"
+			jdbc-type="NUMERIC" />
+		select p.PER_ID, p.PER_NOMBRE, p.PER_APELLIDO
+		from TRX_REQUEST r
+			join PTY_PERSONA p ON p.PER_ID = r.PER_ID
+			join TRX_REQUEST_ITEM i ON i.REQ_ID = r.REQ_ID
+			join STOCK_ARTICULO a ON a.ART_ID = i.ART_ID
+		where r.REQ_ID = #{pedidoId}
+	</select>
+ -->
+ 
+<!-- new. Single DAO, multiple VOs -->
+	<dao name="PedidoCustom">
+		<select method="selectExtendedRequest" vo="ExtendedPedido">
+			<parameter name="pedidoId" java-type="Long"
+				jdbc-type="NUMERIC" />
+			select p.PER_NOMBRE, r.*, a.*, i.ITEM_QTY
+			from TRX_REQUEST r
+				join PTY_PERSONA p ON p.PER_ID = r.PER_ID
+				join TRX_REQUEST_ITEM i ON i.REQ_ID = r.REQ_ID
+				join STOCK_ARTICULO a ON a.ART_ID = i.ART_ID
+			where r.REQ_ID = #{pedidoId}
+			order by r.REQ_ID
+		</select>
+
+	</dao>
+</hotrod>
