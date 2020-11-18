@@ -35,10 +35,10 @@ public class DaosSpringMyBatisTag extends DaosTag {
   private static final String DEFAULT_ABSTRACT_VO_SUFFIX = "";
 
   private static final String DEFAULT_NDAO_PREFIX = "";
-  private static final String DEFAULT_NDAO_SUFFIX = "";
+  private static final String DEFAULT_NDAO_SUFFIX = "DAO";
   private static final String DEFAULT_NVO_PREFIX = "";
-  private static final String DEFAULT_NVO_SUFFIX = "";
-  private static final String DEFAULT_NABSTRACT_VO_PREFIX = "Abstract";
+  private static final String DEFAULT_NVO_SUFFIX = "VO";
+  private static final String DEFAULT_NABSTRACT_VO_PREFIX = "";
   private static final String DEFAULT_NABSTRACT_VO_SUFFIX = "";
 
   private static final String DEFAULT_PRIMITIVES_PREFIX = "";
