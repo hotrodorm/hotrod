@@ -116,7 +116,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
     if (!this.structuredSelect) {
 
-      // Unstructured columns
+      // Flat columns
 
       try {
         this.cr.phase1Flat(getSelectKey(), this.tag, this);
@@ -166,7 +166,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
     if (!this.structuredSelect) {
 
-      // Non-structured columns
+      // Flat columns
 
       try {
         this.nonStructuredColumns = this.cr.phase2Flat(getSelectKey());
@@ -225,7 +225,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       // Structured columns
 
       try {
-        log.debug("Phase 2");
+        log.debug("Structured columns - Phase 2");
         this.tag.getStructuredColumns().gatherMetadataPhase2();
         this.structuredColumns = this.tag.getStructuredColumns().getMetadata();
         this.structuredColumns.registerVOs(this.classPackage, voRegistry);

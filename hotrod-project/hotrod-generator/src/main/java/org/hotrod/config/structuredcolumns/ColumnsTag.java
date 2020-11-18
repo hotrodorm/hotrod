@@ -1,6 +1,5 @@
 package org.hotrod.config.structuredcolumns;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
+import org.hotrod.config.DaosSpringMyBatisTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnhancedSQLPart;
 import org.hotrod.config.HotRodConfigTag;
@@ -20,7 +20,6 @@ import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.Patterns;
 import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SelectMethodTag;
-import org.hotrod.config.TypeSolverTag;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
@@ -54,7 +53,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   // Properties
 
-  private DaosTag daosTag;
+  private DaosSpringMyBatisTag daosTag;
   private DataSetLayout layout;
   private HotRodFragmentConfigTag fragmentConfig;
 
@@ -111,7 +110,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   // ========================
 
   @Override
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, ParameterDefinitions parameters, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 

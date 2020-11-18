@@ -121,7 +121,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   // Behavior
 
   protected void validateCommon(final HotRodConfigTag config, final File file, final FileRegistry fileRegistry,
-      final File parentFile, final DaosTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
+      final File parentFile, final DaosSpringMyBatisTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
       final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException, FacetNotFoundException {
 

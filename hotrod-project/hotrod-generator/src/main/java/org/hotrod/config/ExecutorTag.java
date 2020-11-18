@@ -62,7 +62,7 @@ public class ExecutorTag extends AbstractDAOTag {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
@@ -90,7 +90,7 @@ public class ExecutorTag extends AbstractDAOTag {
               + this.name + "'. " + "Valid java class names start with an uppercase letter and continue with "
               + "letters, digits, dollar signs, and/or underscores.");
     }
-    this.javaClassName = daosTag.generateDAOName(this.name);
+    this.javaClassName = daosTag.generateNitroDAOName(this.name);
 
     // sequences, queries, selects
 

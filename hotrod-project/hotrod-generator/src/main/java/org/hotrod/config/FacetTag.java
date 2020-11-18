@@ -72,7 +72,7 @@ public class FacetTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate(final HotRodConfigTag config, final DaosTag daosTag,
+  public void validate(final HotRodConfigTag config, final DaosSpringMyBatisTag daosTag,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 

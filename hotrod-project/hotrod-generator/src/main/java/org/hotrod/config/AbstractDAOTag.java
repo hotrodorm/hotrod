@@ -85,7 +85,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
   // Behavior
 
-  protected void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  protected void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
