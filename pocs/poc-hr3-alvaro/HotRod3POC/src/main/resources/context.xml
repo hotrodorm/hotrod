@@ -18,7 +18,7 @@
         <property name="dataSource" ref="dataSource" />
     </bean>
 
-	<!-- H2 IN-MEMORY -->
+	<!-- H2 IN-MEMORY
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<property name="jdbcUrl" value="jdbc:h2:mem:sample;MODE=PostgreSQL" />
 		<property name="autoCommit" value="true" />
@@ -33,7 +33,7 @@
 			location="classpath:db/create_database_h2_ddl.sql" />
 		<jdbc:script location="classpath:db/params-data.sql" />
 	</jdbc:initialize-database>
-
+ -->
 	<!-- END Database configuration -->
 
 </beans>
