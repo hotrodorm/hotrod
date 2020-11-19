@@ -40,6 +40,7 @@ public class CursorExamples {
     int total = 0;
     int count = 0;
     for (ProductInterface p : this.productsManager.getProductsCriteria()) {
+      System.out.println(" * p=" + p);
       if (p.getPrice() != null) {
         total = total + p.getPrice();
         count++;

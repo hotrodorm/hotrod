@@ -16,7 +16,6 @@ import org.hotrod.runtime.interfaces.Selectable;
 
 import app5.persistence.CheapProduct;
 import app5.persistence.ProductVO;
-import app5.persistence.ProductWithPrices;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
@@ -101,26 +100,6 @@ public class MyQueriesDAO implements Serializable, ApplicationContextAware {
 
   public List<ProductVO> findCheapestProducts() {
     return this.sqlSession.selectList("app5.persistence.primitives.myQueriesDAO.select_findCheapestProducts");
-  }
-
-  // select method: findProductsWithPrices
-
-  /*
-  * The SQL statement for this method is:
-
-
-      select
-      ... structured columns here...
-      from product p
-      join historic_price h on h.product_id = p.id
-      where p.price between 0 and 10
-    
-
-  */
-
-
-  public List<ProductWithPrices> findProductsWithPrices() {
-    return this.sqlSession.selectList("app5.persistence.primitives.myQueriesDAO.select_findProductsWithPrices");
   }
 
 }

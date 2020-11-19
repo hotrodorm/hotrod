@@ -59,6 +59,9 @@
   <name-solver>
     <name value="^PTY_(.+)$" replace="$1" scope="table, column" />
     <name value="^PER_(.+)$" replace="$1" scope="column" />
+  <!-- 
+    <name value="^(.+)_id$" replace="$1" scope="column" />
+ -->    
   </name-solver>
 
 <!-- 
@@ -71,6 +74,7 @@
     <name value="^CLI_(\w.+)_(\w+)_\w{2,3}$" replace="$1$2" scope="table , column , view" />
   </name-solver>
  -->
+
  
   <type-solver>
   <!-- 
@@ -80,9 +84,7 @@
 
   <table name="product" />
   <table name="historic_price" />
-<!-- 
-  
- -->
+
   <table name="account" />
   <table name="item" />
   <table name="island" />
@@ -90,6 +92,9 @@
   <table name="federal_branch" />
   <table name="types_binary" />
   <table name="types_other" />
+
+<!-- 
+ -->
  
   <dao name="MyQueriesDAO">
 
@@ -124,8 +129,9 @@
       where p.price between 0 and 3
     </select>
 
+
 <!-- 
- -->
+
     <select method="findProductsWithPrices">
       select
       <columns>
@@ -139,6 +145,7 @@
       join historic_price h on h.product_id = p.id
       where p.price between 0 and 10
     </select>
+ -->
  
   </dao>
 

@@ -295,9 +295,8 @@ public class TableTag extends AbstractEntityDAOTag {
     } else {
       String replacedName = null;
       try {
-        log.debug("### this.name=" + this.name);
         replacedName = config.getNameSolverTag().resolveName(this.name, Scope.TABLE);
-        log.debug("### replacedName=" + replacedName);
+        log.debug("### this.name=" + this.name + " -> replacedName=" + replacedName);
         if (replacedName != null) {
           this.javaClassName = Id.fromCanonicalSQL(replacedName, adapter).getJavaClassName();
           log.debug(" done.");
@@ -317,6 +316,7 @@ public class TableTag extends AbstractEntityDAOTag {
     try {
       nameId = this.javaClassName == null ? Id.fromTypedSQL(this.name, adapter)
           : Id.fromTypedSQLAndJavaClass(this.name, adapter, this.javaClassName);
+      log.debug(">>> nameId=" + nameId.getCanonicalSQLName() + " / " + nameId.getJavaClassName());
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid table name '" + this.name + "': " + e.getMessage();
       throw new InvalidConfigurationFileException(this, msg, msg);

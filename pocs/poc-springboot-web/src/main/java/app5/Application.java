@@ -67,8 +67,8 @@ public class Application {
       log.info("Starting INFO"); // should be shown
 
 //      dao();
-//      foreignKeys();
-      cursors();
+      foreignKeys();
+//      cursors();
 //      customFunctions();
 //      liveSQLExamples();
 
@@ -96,6 +96,9 @@ public class Application {
     List<HistoricPriceVO> hprices = this.productDAO.selectChildrenHistoricPriceOf(p).fromId()
         .toProductId(HistoricPriceOrderBy.FROM_DATE);
     log.info("Total of " + hprices.size() + " historic prices for product " + id + ".");
+    for (HistoricPriceVO h : hprices) {
+      log.info("h=" + h);
+    }
 
     // Retrieving parent using FK
     // Enable classic FK navigation by adding the tag <classic-fk-navigation /> in
