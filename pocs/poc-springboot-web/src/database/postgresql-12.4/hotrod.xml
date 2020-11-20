@@ -6,10 +6,8 @@
   <generators>
     <mybatis-spring>
       <daos package="app5.persistence" 
-        vo-prefix=""                vo-suffix="VO" 
-        abstract-vo-prefix="Abstract" abstract-vo-suffix="VO" 
-        dao-prefix="" dao-suffix="DAO"
-        ndao-prefix="" ndao-suffix="" nvo-prefix="" nvo-suffix="" nabstract-vo-prefix="Abstract" nabstract-vo-suffix="" 
+        dao-prefix=""  dao-suffix="DAO" vo-prefix=""  vo-suffix="VO" abstract-vo-prefix="Abstract"  abstract-vo-suffix="VO" 
+        ndao-prefix="" ndao-suffix="DAO"   nvo-prefix="" nvo-suffix="VO"  nabstract-vo-prefix="Abstract" nabstract-vo-suffix="VO" 
       />
       
 <!-- 
@@ -96,7 +94,7 @@
 <!-- 
  -->
  
-  <dao name="MyQueriesDAO">
+  <dao name="MyQueries">
 
     <!-- For new "result-set" strategy
     -->

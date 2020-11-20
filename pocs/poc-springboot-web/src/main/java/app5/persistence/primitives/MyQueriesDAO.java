@@ -14,7 +14,7 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.Selectable;
 
 
-import app5.persistence.CheapProduct;
+import app5.persistence.CheapProductVO;
 import app5.persistence.ProductVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -76,11 +76,11 @@ public class MyQueriesDAO implements Serializable, ApplicationContextAware {
     String when;
   }
 
-  public Cursor<CheapProduct> findExpensiveProducts(final Integer minPrice, final String when) {
+  public Cursor<CheapProductVO> findExpensiveProducts(final Integer minPrice, final String when) {
     ParamFindExpensiveProducts param0 = new ParamFindExpensiveProducts();
     param0.minPrice = minPrice;
     param0.when = when;
-    return     new MyBatisCursor<CheapProduct>(this.sqlSession.selectCursor("app5.persistence.primitives.myQueriesDAO.select_findExpensiveProducts", param0));
+    return     new MyBatisCursor<CheapProductVO>(this.sqlSession.selectCursor("app5.persistence.primitives.myQueriesDAO.select_findExpensiveProducts", param0));
   }
 
   // select method: findCheapestProducts
