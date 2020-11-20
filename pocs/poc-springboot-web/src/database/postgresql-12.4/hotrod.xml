@@ -7,7 +7,7 @@
     <mybatis-spring>
       <daos package="app5.persistence" 
         dao-prefix=""  dao-suffix="DAO" vo-prefix=""  vo-suffix="VO" abstract-vo-prefix="Abstract"  abstract-vo-suffix="VO" 
-        ndao-prefix="" ndao-suffix="DAO"   nvo-prefix="" nvo-suffix="VO"  nabstract-vo-prefix="Abstract" nabstract-vo-suffix="VO" 
+        ndao-prefix="" ndao-suffix=""   nvo-prefix="" nvo-suffix=""  nabstract-vo-prefix="Abstract" nabstract-vo-suffix="" 
       />
       
 <!-- 
@@ -94,11 +94,11 @@
 <!-- 
  -->
  
-  <dao name="MyQueries">
+  <dao name="MyQueriesDAO">
 
     <!-- For new "result-set" strategy
     -->
-    <select method="findExpensiveProducts" vo="CheapProduct" mode="cursor">
+    <select method="findExpensiveProducts" vo="ExpensiveProductVO" mode="cursor">
       <parameter name="minPrice" java-type="Integer" jdbc-type="NUMERIC" />
       <parameter name="when" java-type="String" />
       select name, price, #{when} as kind

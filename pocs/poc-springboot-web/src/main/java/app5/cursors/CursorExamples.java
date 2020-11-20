@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import app5.persistence.CheapProduct;
+import app5.persistence.ExpensiveProductVO;
 import app5.persistence.ProductVO;
 import app5.persistence.primitives.ProductDAO;
 import app5.persistence.primitives.ProductDAO.ProductTable;
@@ -70,8 +70,8 @@ public class CursorExamples {
   }
 
   @Transactional
-  public void findCheapProductsCursor() {
-    for (CheapProduct p : this.productsManager.getCheapProducts()) {
+  public void findExpensiveProductsCursor() {
+    for (ExpensiveProductVO p : this.productsManager.getExpensiveProducts()) {
       System.out.println(" - local: " + p);
     }
   }
