@@ -1020,31 +1020,8 @@ public class ObjectDAO extends GeneratableObject {
                 // TODO: fix remote seam
 
                 fkm2.getRemote().getTableMetadata();
-
-                String toMethod = "to" + fkm2.getRemote().toCamelCase(dao.layout.getColumnSeam());
-
-                println("    public List<" + vo.getClassName() + "> " + toMethod + "(final "
-                    + vo.getJavaClassIdentifier() + "OrderBy... orderBies) {");
-                println("      " + vo.getClassName() + " example = new " + vo.getClassName() + "();");
-
-                Iterator<ColumnMetadata> lit = fkm2.getLocal().getColumns().iterator();
-                Iterator<ColumnMetadata> rit = fkm2.getRemote().getColumns().iterator();
-
-                while (lit.hasNext() && rit.hasNext()) {
-                  ColumnMetadata lcm = lit.next();
-                  ColumnMetadata rcm = rit.next();
-                  try {
-                    println("      example.set" + rcm.getId().getJavaClassName() + "("
-                        + renderCast("this.vo.get" + lcm.getId().getJavaClassName() + "()", lcm, rcm) + ");");
-                  } catch (CannotConvertTypeException e) {
-                    throw new ControlledException(e.getMessage());
-                  }
-                }
-                String memberPrefix = dao.getClassName().equals(currentDAO.getClassName()) ? ""
-                    : (dao.getMemberName() + ".");
-                println("      return " + memberPrefix + "selectByExample(example, orderBies);");
-                println("    }");
-                println();
+                writeFKChildrenToMethod(currentDAO, vo, dao, fkm2, false);
+                writeFKChildrenToMethod(currentDAO, vo, dao, fkm2, true);
 
               }
             }
@@ -1058,6 +1035,35 @@ public class ObjectDAO extends GeneratableObject {
 
     }
 
+  }
+
+  private void writeFKChildrenToMethod(final ObjectDAO currentDAO, final ObjectVO vo, final ObjectDAO dao,
+      final ForeignKeyMetadata fkm2, final boolean useCursor) throws IOException, ControlledException {
+    String toMethod = (useCursor ? "cursorTo" : "to") + fkm2.getRemote().toCamelCase(dao.layout.getColumnSeam());
+
+    String returnType = (useCursor ? "Cursor" : "List") + "<" + vo.getClassName() + ">";
+    println("    public " + returnType + " " + toMethod + "(final " + vo.getJavaClassIdentifier()
+        + "OrderBy... orderBies) {");
+    println("      " + vo.getClassName() + " example = new " + vo.getClassName() + "();");
+
+    Iterator<ColumnMetadata> lit = fkm2.getLocal().getColumns().iterator();
+    Iterator<ColumnMetadata> rit = fkm2.getRemote().getColumns().iterator();
+
+    while (lit.hasNext() && rit.hasNext()) {
+      ColumnMetadata lcm = lit.next();
+      ColumnMetadata rcm = rit.next();
+      try {
+        println("      example.set" + rcm.getId().getJavaClassName() + "("
+            + renderCast("this.vo.get" + lcm.getId().getJavaClassName() + "()", lcm, rcm) + ");");
+      } catch (CannotConvertTypeException e) {
+        throw new ControlledException(e.getMessage());
+      }
+    }
+    String memberPrefix = dao.getClassName().equals(currentDAO.getClassName()) ? "" : (dao.getMemberName() + ".");
+    String selectMethod = useCursor ? "selectByExampleCursor" : "selectByExample";
+    println("      return " + memberPrefix + selectMethod + "(example, orderBies);");
+    println("    }");
+    println();
   }
 
 //  private String getChildrenSelectorClass(final ObjectVO dao) {

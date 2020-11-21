@@ -139,6 +139,12 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
       return transactionDAO.selectByExample(example, orderBies);
     }
 
+    public Cursor<TransactionVO> cursorToAccountId(final TransactionOrderBy... orderBies) {
+      TransactionVO example = new TransactionVO();
+      example.setAccountId(this.vo.getId());
+      return transactionDAO.selectByExampleCursor(example, orderBies);
+    }
+
   }
 
   // insert
