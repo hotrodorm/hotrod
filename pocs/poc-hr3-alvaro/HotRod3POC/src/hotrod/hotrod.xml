@@ -2,22 +2,25 @@
 <!DOCTYPE hotrod>
 
 <hotrod>
-	<generators>
-		<mybatis-spring>
+	<generators >
+ 		<mybatis-spring>
 			<daos package="hr3.springboot.poc.hotrod" vo-prefix=""
 				vo-suffix="Impl" abstract-vo-prefix="" abstract-vo-suffix="VO"
-				dao-prefix="" dao-suffix="DAO" />
+				dao-prefix="" dao-suffix="DAO"
+				ndao-prefix="" ndao-suffix="DAO" 
+				nvo-prefix="" nvo-suffix="Impl" 
+				nabstract-vo-prefix="" nabstract-vo-suffix="VO" />
 			<mappers dir="mappers" />
 			<select-generation strategy="result-set" />
 			<classic-fk-navigation />
 		</mybatis-spring>
 	</generators>
 
-	<!-- Name solver: para conversion masiva de nombres de tablas, campos y 
-		vistas a partir del nombre en la base de datos antes de su cnversión al equivalente 
-		Java. Es útil para eliminación de prefijos/sufijos en el nombre generado, 
-		evitando, por ejemplo tener que especificar el nombre Java para cada una 
-		de las columnas en el tag <table>. -->
+	<!-- Name solver: para conversión masiva de nombres de tablas, campos y 
+		vistas a partir del nombre en la base de datos antes de su conversión al 
+		equivalente Java. Es útil para eliminación de prefijos/sufijos en el nombre 
+		generado, evitando, por ejemplo tener que especificar el nombre Java para 
+		cada una de las columnas en el tag <table>. -->
 	<name-solver>
 		<name value="^PTY_(.+)$" replace="$1" scope="table, column" />
 		<name value="^PER_(.+)$" replace="$1" scope="column" />
@@ -36,7 +39,7 @@
 	<converter name="articulo_type_converter"
 		java-type="hr3.springboot.poc.model.EnumArticuloType"
 		class="hr3.springboot.poc.etc.ArticuloTypeConverter"
-		java-intermediate-type="java.lang.Integer" />
+		java-intermediate-type="java.lang.String" />
 
 	<table name="PTY_PERSONA" />
 

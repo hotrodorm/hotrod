@@ -1,21 +1,28 @@
 package hr3.springboot.poc.model;
 
 public enum EnumArticuloType {
-	ROPA(1001), ELECTRODOMESTICO(1002), ALIMENTO(1003);
+	ROPA('r'), ELECTRODOMESTICO('e'), ALIMENTO('a'), OTRO('x');
 
-	EnumArticuloType(int i) {
+	private char i;
+
+	EnumArticuloType(char i) {
+		this.i = i;
 	}
 
-	public static EnumArticuloType getEnum(Integer dbValue) {
+	public char getValue() {
+		return i;
+	}
+
+	public static EnumArticuloType getEnum(Character dbValue) {
 		switch (dbValue) {
-		case 1001:
-			return ROPA;
-		case 1002:
-			return ROPA;
-		case 1003:
+		case 'e':
+			return ELECTRODOMESTICO;
+		case 'a':
+			return ALIMENTO;
+		case 'r':
 			return ROPA;
 		default:
-			return null;
+			return OTRO;
 		}
 	}
 }

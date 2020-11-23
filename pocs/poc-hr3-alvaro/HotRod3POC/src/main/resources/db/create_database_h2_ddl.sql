@@ -48,3 +48,4 @@ alter table TRX_REQUEST_ITEM
    add constraint IF NOT EXISTS FK_ARTICULO foreign key (ART_ID)
       references STOCK_ARTICULO (ART_ID)
       on delete restrict on update restrict;
+

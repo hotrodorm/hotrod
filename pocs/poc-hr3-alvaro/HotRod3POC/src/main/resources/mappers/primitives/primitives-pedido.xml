@@ -7,15 +7,15 @@
   <!-- columns -->
 
   <sql id="columns">
-    id,
-    timestamp,
+    req_id,
+    req_timestamp,
     req_desc,
     per_id
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}.id,
-    ${alias}.timestamp,
+    ${alias}.req_id,
+    ${alias}.req_timestamp,
     ${alias}.req_desc,
     ${alias}.per_id
   </sql>
@@ -34,7 +34,7 @@
       <include refid="columns" />
      from trx_request
      where
-      id = #{id,jdbcType=BIGINT}
+      req_id = #{id,jdbcType=BIGINT}
   </select>
 
   <!-- no select by unique indexes since there are no UI (besides the PK) -->
@@ -47,16 +47,16 @@
      from trx_request
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null ">
-        and id = #{p.id,jdbcType=BIGINT}
+        and req_id = #{p.id,jdbcType=BIGINT}
       </if>
       <if test="p.id == null and p.propertiesChangeLog.idWasSet">
-        and id is null
+        and req_id is null
       </if>
       <if test="p.timestamp != null ">
-        and timestamp = #{p.timestamp,jdbcType=TIMESTAMP}
+        and req_timestamp = #{p.timestamp,jdbcType=TIMESTAMP}
       </if>
       <if test="p.timestamp == null and p.propertiesChangeLog.timestampWasSet">
-        and timestamp is null
+        and req_timestamp is null
       </if>
       <if test="p.descripcion != null ">
         and req_desc = #{p.descripcion,jdbcType=VARCHAR}
@@ -84,11 +84,11 @@
 
   <!-- insert (does not integrate sequences, and integrates identities) -->
 
-  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="req_id">
     insert into trx_request (
       <trim prefixOverrides=", ">
-        <if test="id != null">, id</if>
-        <if test="true">, timestamp</if>
+        <if test="id != null">, req_id</if>
+        <if test="true">, req_timestamp</if>
         <if test="true">, req_desc</if>
         <if test="true">, per_id</if>
       </trim>
@@ -106,11 +106,11 @@
 
   <update id="updateByPK">
     update trx_request set
-      timestamp = #{timestamp,jdbcType=TIMESTAMP},
+      req_timestamp = #{timestamp,jdbcType=TIMESTAMP},
       req_desc = #{descripcion,jdbcType=VARCHAR},
       per_id = #{idPersona,jdbcType=BIGINT}
      where
-      id = #{id,jdbcType=BIGINT}
+      req_id = #{id,jdbcType=BIGINT}
   </update>
 
   <!-- delete by PK -->
@@ -118,7 +118,7 @@
   <delete id="deleteByPK">
     delete from trx_request
      where
-      id = #{id,jdbcType=BIGINT}
+      req_id = #{id,jdbcType=BIGINT}
   </delete>
 
   <!-- update by example -->
@@ -126,23 +126,23 @@
   <update id="updateByExample">
     update trx_request
     <set>
-      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=BIGINT},</if>
-      <if test="values.propertiesChangeLog.timestampWasSet">timestamp = #{values.timestamp,jdbcType=TIMESTAMP},</if>
+      <if test="values.propertiesChangeLog.idWasSet">req_id = #{values.id,jdbcType=BIGINT},</if>
+      <if test="values.propertiesChangeLog.timestampWasSet">req_timestamp = #{values.timestamp,jdbcType=TIMESTAMP},</if>
       <if test="values.propertiesChangeLog.descripcionWasSet">req_desc = #{values.descripcion,jdbcType=VARCHAR},</if>
       <if test="values.propertiesChangeLog.idPersonaWasSet">per_id = #{values.idPersona,jdbcType=BIGINT},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null ">
-        and id = #{filter.id,jdbcType=BIGINT}
+        and req_id = #{filter.id,jdbcType=BIGINT}
       </if>
       <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
-        and id is null
+        and req_id is null
       </if>
       <if test="filter.timestamp != null ">
-        and timestamp = #{filter.timestamp,jdbcType=TIMESTAMP}
+        and req_timestamp = #{filter.timestamp,jdbcType=TIMESTAMP}
       </if>
       <if test="filter.timestamp == null and filter.propertiesChangeLog.timestampWasSet">
-        and timestamp is null
+        and req_timestamp is null
       </if>
       <if test="filter.descripcion != null ">
         and req_desc = #{filter.descripcion,jdbcType=VARCHAR}
@@ -165,16 +165,16 @@
     delete from trx_request
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null ">
-        and id = #{id,jdbcType=BIGINT}
+        and req_id = #{id,jdbcType=BIGINT}
       </if>
       <if test="id == null and propertiesChangeLog.idWasSet">
-        and id is null
+        and req_id is null
       </if>
       <if test="timestamp != null ">
-        and timestamp = #{timestamp,jdbcType=TIMESTAMP}
+        and req_timestamp = #{timestamp,jdbcType=TIMESTAMP}
       </if>
       <if test="timestamp == null and propertiesChangeLog.timestampWasSet">
-        and timestamp is null
+        and req_timestamp is null
       </if>
       <if test="descripcion != null ">
         and req_desc = #{descripcion,jdbcType=VARCHAR}

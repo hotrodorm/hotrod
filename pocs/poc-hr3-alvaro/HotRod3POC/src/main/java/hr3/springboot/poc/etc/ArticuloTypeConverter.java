@@ -4,17 +4,16 @@ import org.hotrod.runtime.converter.TypeConverter;
 
 import hr3.springboot.poc.model.EnumArticuloType;
 
-public class ArticuloTypeConverter implements TypeConverter<Integer, EnumArticuloType> {
+public class ArticuloTypeConverter implements TypeConverter<String, EnumArticuloType> {
 
 	@Override
-	public EnumArticuloType decode(Integer dbValue) {
-		return (dbValue != null) ? EnumArticuloType.getEnum(dbValue) : null;
+	public EnumArticuloType decode(String dbValue) {
+		return (dbValue != null) ? EnumArticuloType.getEnum(dbValue.charAt(0)) : null;
 	}
 
 	@Override
-	public Integer encode(EnumArticuloType arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public String encode(EnumArticuloType arg0) {
+		return String.valueOf(arg0.getValue());
 	}
 
 }

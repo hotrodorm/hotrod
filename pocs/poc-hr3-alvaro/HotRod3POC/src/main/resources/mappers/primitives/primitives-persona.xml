@@ -7,17 +7,17 @@
   <!-- columns -->
 
   <sql id="columns">
-    id,
-    nombre,
-    apellido,
-    fecha_nacimiento
+    per_id,
+    per_nombre,
+    per_apellido,
+    per_fecha_nacimiento
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}.id,
-    ${alias}.nombre,
-    ${alias}.apellido,
-    ${alias}.fecha_nacimiento
+    ${alias}.per_id,
+    ${alias}.per_nombre,
+    ${alias}.per_apellido,
+    ${alias}.per_fecha_nacimiento
   </sql>
 
   <resultMap id="allColumns" type="hr3.springboot.poc.hotrod.PersonaImpl">
@@ -34,7 +34,7 @@
       <include refid="columns" />
      from pty_persona
      where
-      id = #{id,jdbcType=BIGINT}
+      per_id = #{id,jdbcType=BIGINT}
   </select>
 
   <!-- no select by unique indexes since there are no UI (besides the PK) -->
@@ -47,28 +47,28 @@
      from pty_persona
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null ">
-        and id = #{p.id,jdbcType=BIGINT}
+        and per_id = #{p.id,jdbcType=BIGINT}
       </if>
       <if test="p.id == null and p.propertiesChangeLog.idWasSet">
-        and id is null
+        and per_id is null
       </if>
       <if test="p.nombre != null ">
-        and nombre = #{p.nombre,jdbcType=VARCHAR}
+        and per_nombre = #{p.nombre,jdbcType=VARCHAR}
       </if>
       <if test="p.nombre == null and p.propertiesChangeLog.nombreWasSet">
-        and nombre is null
+        and per_nombre is null
       </if>
       <if test="p.apellido != null ">
-        and apellido = #{p.apellido,jdbcType=VARCHAR}
+        and per_apellido = #{p.apellido,jdbcType=VARCHAR}
       </if>
       <if test="p.apellido == null and p.propertiesChangeLog.apellidoWasSet">
-        and apellido is null
+        and per_apellido is null
       </if>
       <if test="p.fechaNacimiento != null ">
-        and fecha_nacimiento = #{p.fechaNacimiento,jdbcType=DATE}
+        and per_fecha_nacimiento = #{p.fechaNacimiento,jdbcType=DATE}
       </if>
       <if test="p.fechaNacimiento == null and p.propertiesChangeLog.fechaNacimientoWasSet">
-        and fecha_nacimiento is null
+        and per_fecha_nacimiento is null
       </if>
     </trim>
     <if test="o != null">
@@ -84,13 +84,13 @@
 
   <!-- insert (does not integrate sequences, and integrates identities) -->
 
-  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="per_id">
     insert into pty_persona (
       <trim prefixOverrides=", ">
-        <if test="id != null">, id</if>
-        <if test="true">, nombre</if>
-        <if test="true">, apellido</if>
-        <if test="true">, fecha_nacimiento</if>
+        <if test="id != null">, per_id</if>
+        <if test="true">, per_nombre</if>
+        <if test="true">, per_apellido</if>
+        <if test="true">, per_fecha_nacimiento</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
@@ -106,11 +106,11 @@
 
   <update id="updateByPK">
     update pty_persona set
-      nombre = #{nombre,jdbcType=VARCHAR},
-      apellido = #{apellido,jdbcType=VARCHAR},
-      fecha_nacimiento = #{fechaNacimiento,jdbcType=DATE}
+      per_nombre = #{nombre,jdbcType=VARCHAR},
+      per_apellido = #{apellido,jdbcType=VARCHAR},
+      per_fecha_nacimiento = #{fechaNacimiento,jdbcType=DATE}
      where
-      id = #{id,jdbcType=BIGINT}
+      per_id = #{id,jdbcType=BIGINT}
   </update>
 
   <!-- delete by PK -->
@@ -118,7 +118,7 @@
   <delete id="deleteByPK">
     delete from pty_persona
      where
-      id = #{id,jdbcType=BIGINT}
+      per_id = #{id,jdbcType=BIGINT}
   </delete>
 
   <!-- update by example -->
@@ -126,35 +126,35 @@
   <update id="updateByExample">
     update pty_persona
     <set>
-      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=BIGINT},</if>
-      <if test="values.propertiesChangeLog.nombreWasSet">nombre = #{values.nombre,jdbcType=VARCHAR},</if>
-      <if test="values.propertiesChangeLog.apellidoWasSet">apellido = #{values.apellido,jdbcType=VARCHAR},</if>
-      <if test="values.propertiesChangeLog.fechaNacimientoWasSet">fecha_nacimiento = #{values.fechaNacimiento,jdbcType=DATE},</if>
+      <if test="values.propertiesChangeLog.idWasSet">per_id = #{values.id,jdbcType=BIGINT},</if>
+      <if test="values.propertiesChangeLog.nombreWasSet">per_nombre = #{values.nombre,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.apellidoWasSet">per_apellido = #{values.apellido,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.fechaNacimientoWasSet">per_fecha_nacimiento = #{values.fechaNacimiento,jdbcType=DATE},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null ">
-        and id = #{filter.id,jdbcType=BIGINT}
+        and per_id = #{filter.id,jdbcType=BIGINT}
       </if>
       <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
-        and id is null
+        and per_id is null
       </if>
       <if test="filter.nombre != null ">
-        and nombre = #{filter.nombre,jdbcType=VARCHAR}
+        and per_nombre = #{filter.nombre,jdbcType=VARCHAR}
       </if>
       <if test="filter.nombre == null and filter.propertiesChangeLog.nombreWasSet">
-        and nombre is null
+        and per_nombre is null
       </if>
       <if test="filter.apellido != null ">
-        and apellido = #{filter.apellido,jdbcType=VARCHAR}
+        and per_apellido = #{filter.apellido,jdbcType=VARCHAR}
       </if>
       <if test="filter.apellido == null and filter.propertiesChangeLog.apellidoWasSet">
-        and apellido is null
+        and per_apellido is null
       </if>
       <if test="filter.fechaNacimiento != null ">
-        and fecha_nacimiento = #{filter.fechaNacimiento,jdbcType=DATE}
+        and per_fecha_nacimiento = #{filter.fechaNacimiento,jdbcType=DATE}
       </if>
       <if test="filter.fechaNacimiento == null and filter.propertiesChangeLog.fechaNacimientoWasSet">
-        and fecha_nacimiento is null
+        and per_fecha_nacimiento is null
       </if>
     </trim>
   </update>
@@ -165,28 +165,28 @@
     delete from pty_persona
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null ">
-        and id = #{id,jdbcType=BIGINT}
+        and per_id = #{id,jdbcType=BIGINT}
       </if>
       <if test="id == null and propertiesChangeLog.idWasSet">
-        and id is null
+        and per_id is null
       </if>
       <if test="nombre != null ">
-        and nombre = #{nombre,jdbcType=VARCHAR}
+        and per_nombre = #{nombre,jdbcType=VARCHAR}
       </if>
       <if test="nombre == null and propertiesChangeLog.nombreWasSet">
-        and nombre is null
+        and per_nombre is null
       </if>
       <if test="apellido != null ">
-        and apellido = #{apellido,jdbcType=VARCHAR}
+        and per_apellido = #{apellido,jdbcType=VARCHAR}
       </if>
       <if test="apellido == null and propertiesChangeLog.apellidoWasSet">
-        and apellido is null
+        and per_apellido is null
       </if>
       <if test="fechaNacimiento != null ">
-        and fecha_nacimiento = #{fechaNacimiento,jdbcType=DATE}
+        and per_fecha_nacimiento = #{fechaNacimiento,jdbcType=DATE}
       </if>
       <if test="fechaNacimiento == null and propertiesChangeLog.fechaNacimientoWasSet">
-        and fecha_nacimiento is null
+        and per_fecha_nacimiento is null
       </if>
     </trim>
   </delete>
