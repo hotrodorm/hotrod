@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import app5.persistence.CheapProduct;
+import app5.persistence.ExpensiveProductVO;
 import app5.persistence.ProductVO;
 import app5.persistence.primitives.MyQueriesDAO;
 import app5.persistence.primitives.ProductDAO;
@@ -101,7 +101,7 @@ public class ProductsManager {
 //  }
 
   @Transactional
-  public Cursor<CheapProduct> getCheapProducts() {
+  public Cursor<ExpensiveProductVO> getExpensiveProducts() {
     this.myQueriesDAO.findCheapestProducts();
     return this.myQueriesDAO.findExpensiveProducts(20, "Lease");
   }

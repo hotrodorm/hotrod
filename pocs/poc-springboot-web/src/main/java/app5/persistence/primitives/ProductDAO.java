@@ -143,6 +143,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       return historicPriceDAO.selectByExample(example, orderBies);
     }
 
+    public Cursor<HistoricPriceVO> cursorToProductId(final HistoricPriceOrderBy... orderBies) {
+      HistoricPriceVO example = new HistoricPriceVO();
+      example.setProductId((this.vo.getId() == null) ? null : new Integer(this.vo.getId().intValue()));
+      return historicPriceDAO.selectByExampleCursor(example, orderBies);
+    }
+
   }
 
   public class SelectChildrenHistoricPriceFromSkuPhase {
@@ -157,6 +163,12 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
       HistoricPriceVO example = new HistoricPriceVO();
       example.setSku(this.vo.getSku());
       return historicPriceDAO.selectByExample(example, orderBies);
+    }
+
+    public Cursor<HistoricPriceVO> cursorToSku(final HistoricPriceOrderBy... orderBies) {
+      HistoricPriceVO example = new HistoricPriceVO();
+      example.setSku(this.vo.getSku());
+      return historicPriceDAO.selectByExampleCursor(example, orderBies);
     }
 
   }

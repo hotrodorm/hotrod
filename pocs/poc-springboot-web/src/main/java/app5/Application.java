@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrodorm.hotrod.utils.Separator;
 import org.mybatis.spring.annotation.MapperScan;
@@ -67,8 +68,8 @@ public class Application {
       log.info("Starting INFO"); // should be shown
 
 //      dao();
-      foreignKeys();
-//      cursors();
+//      foreignKeys();
+      cursors();
 //      customFunctions();
 //      liveSQLExamples();
 
@@ -108,6 +109,7 @@ public class Application {
     HistoricPriceVO h = hprices.get(0);
     ProductVO product = this.historicPriceDAO.selectParentProductOf(h).fromProductId().toId();
     log.info("Parent historic price is: " + product.getName());
+
   }
 
   private void cursors() {
@@ -118,16 +120,19 @@ public class Application {
 //    int avgPrice = this.cursorExamples.computeAvgPriceProducts();
 //    log.info("Average price: " + avgPrice);
 //
-    log.info("* CURSOR - Select by criteria...");
-    int avgPriceC = this.cursorExamples.computeAvgPriceProductsCriteria();
-    log.info("Average priceC: " + avgPriceC);
+//    log.info("* CURSOR - Select by criteria...");
+//    int avgPriceC = this.cursorExamples.computeAvgPriceProductsCriteria();
+//    log.info("Average priceC: " + avgPriceC);
 //
 //    log.info("* LiveSQL List...");
 //    int avgPriceLL = this.cursorExamples.computeAvgPriceProductsLiveSQL();
 //    log.info("Average priceLL: " + avgPriceLL);
-
+//
 //    log.info("* <select mode='cursor'>...");
-//    this.cursorExamples.findCheapProductsCursor();
+//    this.cursorExamples.findExpensiveProductsCursor();
+    
+    log.info("* selectChildrenFKCursor()");
+    this.cursorExamples.selectChildrenFKCursor();
 
   }
 

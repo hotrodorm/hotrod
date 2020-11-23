@@ -34,13 +34,6 @@ public class DaosSpringMyBatisTag extends DaosTag {
   private static final String DEFAULT_ABSTRACT_VO_PREFIX = "";
   private static final String DEFAULT_ABSTRACT_VO_SUFFIX = "";
 
-  private static final String DEFAULT_NDAO_PREFIX = "";
-  private static final String DEFAULT_NDAO_SUFFIX = "DAO";
-  private static final String DEFAULT_NVO_PREFIX = "";
-  private static final String DEFAULT_NVO_SUFFIX = "VO";
-  private static final String DEFAULT_NABSTRACT_VO_PREFIX = "";
-  private static final String DEFAULT_NABSTRACT_VO_SUFFIX = "";
-
   private static final String DEFAULT_PRIMITIVES_PREFIX = "";
   private static final String DEFAULT_PRIMITIVES_SUFFIX = "Primitives";
 
@@ -315,7 +308,7 @@ public class DaosSpringMyBatisTag extends DaosTag {
     // ndao-prefix
 
     if (this.ndaoPrefix == null) {
-      this.ndaoPrefix = DEFAULT_NDAO_PREFIX;
+      this.ndaoPrefix = this.daoPrefix;
     } else {
       if (!this.ndaoPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
         throw new InvalidConfigurationFileException(this, "Invalid ndao-prefix value '" + this.ndaoPrefix
@@ -326,7 +319,7 @@ public class DaosSpringMyBatisTag extends DaosTag {
     // ndao-suffix
 
     if (this.ndaoSuffix == null) {
-      this.ndaoSuffix = DEFAULT_NDAO_SUFFIX;
+      this.ndaoSuffix = this.daoSuffix;
     } else {
       if (!this.ndaoSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
         throw new InvalidConfigurationFileException(this, "Invalid ndao-suffix value '" + this.ndaoSuffix
@@ -337,7 +330,7 @@ public class DaosSpringMyBatisTag extends DaosTag {
     // nvo-prefix
 
     if (this.nvoPrefix == null) {
-      this.nvoPrefix = DEFAULT_NVO_PREFIX;
+      this.nvoPrefix = this.voPrefix;
     } else {
       if (!this.nvoPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
         throw new InvalidConfigurationFileException(this, "Invalid nvo-prefix value '" + this.voPrefix
@@ -348,7 +341,7 @@ public class DaosSpringMyBatisTag extends DaosTag {
     // nvo-suffix
 
     if (this.nvoSuffix == null) {
-      this.nvoSuffix = DEFAULT_NVO_SUFFIX;
+      this.nvoSuffix = this.voSuffix;
     } else {
       if (!this.nvoSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
         throw new InvalidConfigurationFileException(this, "Invalid nvo-suffix value '" + this.daoSuffix
@@ -359,7 +352,7 @@ public class DaosSpringMyBatisTag extends DaosTag {
     // nabstract-vo-prefix
 
     if (this.nabstractVoPrefix == null) {
-      this.nabstractVoPrefix = DEFAULT_NABSTRACT_VO_PREFIX;
+      this.nabstractVoPrefix = this.abstractVoPrefix;
     } else {
       if (!this.nabstractVoPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
         throw new InvalidConfigurationFileException(this, "Invalid nabstract-vo-prefix value '" + this.voPrefix
@@ -370,7 +363,7 @@ public class DaosSpringMyBatisTag extends DaosTag {
     // nabstract-vo-suffix
 
     if (this.nabstractVoSuffix == null) {
-      this.nabstractVoSuffix = DEFAULT_NABSTRACT_VO_SUFFIX;
+      this.nabstractVoSuffix = this.abstractVoSuffix;
     } else {
       if (!this.nabstractVoSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
         throw new InvalidConfigurationFileException(this, "Invalid nabstract-vo-suffix value '" + this.daoSuffix
