@@ -131,6 +131,12 @@ public class PersonaDAO implements Serializable, ApplicationContextAware {
       return pedidoDAO.selectByExample(example, orderBies);
     }
 
+    public Cursor<PedidoImpl> cursorToIdPersona(final PedidoOrderBy... orderBies) {
+      PedidoImpl example = new PedidoImpl();
+      example.setIdPersona(this.vo.getId());
+      return pedidoDAO.selectByExampleCursor(example, orderBies);
+    }
+
   }
 
   // insert

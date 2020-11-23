@@ -168,6 +168,12 @@ public class PedidoDAO implements Serializable, ApplicationContextAware {
       return requestItemDAO.selectByExample(example, orderBies);
     }
 
+    public Cursor<RequestItemImpl> cursorToIdPedido(final RequestItemOrderBy... orderBies) {
+      RequestItemImpl example = new RequestItemImpl();
+      example.setIdPedido(this.vo.getId());
+      return requestItemDAO.selectByExampleCursor(example, orderBies);
+    }
+
   }
 
   // insert

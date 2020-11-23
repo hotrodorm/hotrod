@@ -139,6 +139,12 @@ public class ArticuloDAO implements Serializable, ApplicationContextAware {
       return requestItemDAO.selectByExample(example, orderBies);
     }
 
+    public Cursor<RequestItemImpl> cursorToIdArticulo(final RequestItemOrderBy... orderBies) {
+      RequestItemImpl example = new RequestItemImpl();
+      example.setIdArticulo(this.vo.getArtId());
+      return requestItemDAO.selectByExampleCursor(example, orderBies);
+    }
+
   }
 
   // insert
