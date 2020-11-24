@@ -139,6 +139,12 @@ public class ArticuloDAO implements Serializable, ApplicationContextAware {
       return requestItemDAO.selectByExample(example, orderBies);
     }
 
+    public Cursor<RequestItemImpl> cursorToIdArticulo(final RequestItemOrderBy... orderBies) {
+      RequestItemImpl example = new RequestItemImpl();
+      example.setIdArticulo(this.vo.getArtId());
+      return requestItemDAO.selectByExampleCursor(example, orderBies);
+    }
+
   }
 
   // insert
@@ -181,11 +187,11 @@ public class ArticuloDAO implements Serializable, ApplicationContextAware {
 
   public static class TipoTypeHandler implements TypeHandler<hr3.springboot.poc.model.EnumArticuloType> {
 
-    private static TypeConverter<java.lang.Integer, hr3.springboot.poc.model.EnumArticuloType> CONVERTER = new hr3.springboot.poc.etc.ArticuloTypeConverter();
+    private static TypeConverter<java.lang.String, hr3.springboot.poc.model.EnumArticuloType> CONVERTER = new hr3.springboot.poc.etc.ArticuloTypeConverter();
 
     @Override
     public hr3.springboot.poc.model.EnumArticuloType getResult(final ResultSet rs, final String columnName) throws SQLException {
-      java.lang.Integer value = rs.getInt(columnName);
+      java.lang.String value = rs.getString(columnName);
       if (rs.wasNull()) {
         value = null;
       }
@@ -194,7 +200,7 @@ public class ArticuloDAO implements Serializable, ApplicationContextAware {
 
     @Override
     public hr3.springboot.poc.model.EnumArticuloType getResult(final ResultSet rs, final int columnIndex) throws SQLException {
-      java.lang.Integer value = rs.getInt(columnIndex);
+      java.lang.String value = rs.getString(columnIndex);
       if (rs.wasNull()) {
         value = null;
       }
@@ -203,7 +209,7 @@ public class ArticuloDAO implements Serializable, ApplicationContextAware {
 
     @Override
     public hr3.springboot.poc.model.EnumArticuloType getResult(final CallableStatement cs, final int columnIndex) throws SQLException {
-      java.lang.Integer value = cs.getInt(columnIndex);
+      java.lang.String value = cs.getString(columnIndex);
       if (cs.wasNull()) {
         value = null;
       }
@@ -213,11 +219,11 @@ public class ArticuloDAO implements Serializable, ApplicationContextAware {
     @Override
     public void setParameter(final PreparedStatement ps, final int columnIndex, final hr3.springboot.poc.model.EnumArticuloType v, final JdbcType jdbcType)
         throws SQLException {
-      java.lang.Integer value = CONVERTER.encode(v);
+      java.lang.String value = CONVERTER.encode(v);
       if (value == null) {
         ps.setNull(columnIndex, jdbcType.TYPE_CODE);
       } else {
-        ps.setInt(columnIndex, value);
+        ps.setString(columnIndex, value);
       }
     }
 

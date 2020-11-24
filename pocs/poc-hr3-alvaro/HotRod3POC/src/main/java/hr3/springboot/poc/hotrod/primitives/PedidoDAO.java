@@ -168,6 +168,12 @@ public class PedidoDAO implements Serializable, ApplicationContextAware {
       return requestItemDAO.selectByExample(example, orderBies);
     }
 
+    public Cursor<RequestItemImpl> cursorToIdPedido(final RequestItemOrderBy... orderBies) {
+      RequestItemImpl example = new RequestItemImpl();
+      example.setIdPedido(this.vo.getId());
+      return requestItemDAO.selectByExampleCursor(example, orderBies);
+    }
+
   }
 
   // insert
@@ -210,10 +216,10 @@ public class PedidoDAO implements Serializable, ApplicationContextAware {
 
   public enum PedidoOrderBy implements OrderBy {
 
-    ID("trx_request", "id", true), //
-    ID$DESC("trx_request", "id", false), //
-    TIMESTAMP("trx_request", "timestamp", true), //
-    TIMESTAMP$DESC("trx_request", "timestamp", false), //
+    ID("trx_request", "req_id", true), //
+    ID$DESC("trx_request", "req_id", false), //
+    TIMESTAMP("trx_request", "req_timestamp", true), //
+    TIMESTAMP$DESC("trx_request", "req_timestamp", false), //
     DESCRIPCION("trx_request", "req_desc", true), //
     DESCRIPCION$DESC("trx_request", "req_desc", false), //
     DESCRIPCION$CASEINSENSITIVE("trx_request", "lower(req_desc)", true), //
@@ -284,8 +290,8 @@ public class PedidoDAO implements Serializable, ApplicationContextAware {
     // Initialization
 
     private void initialize() {
-      this.id = new NumberColumn(this, "ID", "id");
-      this.timestamp = new DateTimeColumn(this, "TIMESTAMP", "timestamp");
+      this.id = new NumberColumn(this, "REQ_ID", "id");
+      this.timestamp = new DateTimeColumn(this, "REQ_TIMESTAMP", "timestamp");
       this.descripcion = new StringColumn(this, "REQ_DESC", "descripcion");
       this.idPersona = new NumberColumn(this, "PER_ID", "idPersona");
     }

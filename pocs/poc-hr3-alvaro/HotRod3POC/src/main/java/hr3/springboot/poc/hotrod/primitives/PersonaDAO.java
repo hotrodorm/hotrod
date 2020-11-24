@@ -131,6 +131,12 @@ public class PersonaDAO implements Serializable, ApplicationContextAware {
       return pedidoDAO.selectByExample(example, orderBies);
     }
 
+    public Cursor<PedidoImpl> cursorToIdPersona(final PedidoOrderBy... orderBies) {
+      PedidoImpl example = new PedidoImpl();
+      example.setIdPersona(this.vo.getId());
+      return pedidoDAO.selectByExampleCursor(example, orderBies);
+    }
+
   }
 
   // insert
@@ -173,26 +179,26 @@ public class PersonaDAO implements Serializable, ApplicationContextAware {
 
   public enum PersonaOrderBy implements OrderBy {
 
-    ID("pty_persona", "id", true), //
-    ID$DESC("pty_persona", "id", false), //
-    NOMBRE("pty_persona", "nombre", true), //
-    NOMBRE$DESC("pty_persona", "nombre", false), //
-    NOMBRE$CASEINSENSITIVE("pty_persona", "lower(nombre)", true), //
-    NOMBRE$CASEINSENSITIVE_STABLE_FORWARD("pty_persona", "lower(nombre), nombre", true), //
-    NOMBRE$CASEINSENSITIVE_STABLE_REVERSE("pty_persona", "lower(nombre), nombre", false), //
-    NOMBRE$DESC_CASEINSENSITIVE("pty_persona", "lower(nombre)", false), //
-    NOMBRE$DESC_CASEINSENSITIVE_STABLE_FORWARD("pty_persona", "lower(nombre), nombre", false), //
-    NOMBRE$DESC_CASEINSENSITIVE_STABLE_REVERSE("pty_persona", "lower(nombre), nombre", true), //
-    APELLIDO("pty_persona", "apellido", true), //
-    APELLIDO$DESC("pty_persona", "apellido", false), //
-    APELLIDO$CASEINSENSITIVE("pty_persona", "lower(apellido)", true), //
-    APELLIDO$CASEINSENSITIVE_STABLE_FORWARD("pty_persona", "lower(apellido), apellido", true), //
-    APELLIDO$CASEINSENSITIVE_STABLE_REVERSE("pty_persona", "lower(apellido), apellido", false), //
-    APELLIDO$DESC_CASEINSENSITIVE("pty_persona", "lower(apellido)", false), //
-    APELLIDO$DESC_CASEINSENSITIVE_STABLE_FORWARD("pty_persona", "lower(apellido), apellido", false), //
-    APELLIDO$DESC_CASEINSENSITIVE_STABLE_REVERSE("pty_persona", "lower(apellido), apellido", true), //
-    FECHA_NACIMIENTO("pty_persona", "fecha_nacimiento", true), //
-    FECHA_NACIMIENTO$DESC("pty_persona", "fecha_nacimiento", false);
+    ID("pty_persona", "per_id", true), //
+    ID$DESC("pty_persona", "per_id", false), //
+    NOMBRE("pty_persona", "per_nombre", true), //
+    NOMBRE$DESC("pty_persona", "per_nombre", false), //
+    NOMBRE$CASEINSENSITIVE("pty_persona", "lower(per_nombre)", true), //
+    NOMBRE$CASEINSENSITIVE_STABLE_FORWARD("pty_persona", "lower(per_nombre), per_nombre", true), //
+    NOMBRE$CASEINSENSITIVE_STABLE_REVERSE("pty_persona", "lower(per_nombre), per_nombre", false), //
+    NOMBRE$DESC_CASEINSENSITIVE("pty_persona", "lower(per_nombre)", false), //
+    NOMBRE$DESC_CASEINSENSITIVE_STABLE_FORWARD("pty_persona", "lower(per_nombre), per_nombre", false), //
+    NOMBRE$DESC_CASEINSENSITIVE_STABLE_REVERSE("pty_persona", "lower(per_nombre), per_nombre", true), //
+    APELLIDO("pty_persona", "per_apellido", true), //
+    APELLIDO$DESC("pty_persona", "per_apellido", false), //
+    APELLIDO$CASEINSENSITIVE("pty_persona", "lower(per_apellido)", true), //
+    APELLIDO$CASEINSENSITIVE_STABLE_FORWARD("pty_persona", "lower(per_apellido), per_apellido", true), //
+    APELLIDO$CASEINSENSITIVE_STABLE_REVERSE("pty_persona", "lower(per_apellido), per_apellido", false), //
+    APELLIDO$DESC_CASEINSENSITIVE("pty_persona", "lower(per_apellido)", false), //
+    APELLIDO$DESC_CASEINSENSITIVE_STABLE_FORWARD("pty_persona", "lower(per_apellido), per_apellido", false), //
+    APELLIDO$DESC_CASEINSENSITIVE_STABLE_REVERSE("pty_persona", "lower(per_apellido), per_apellido", true), //
+    FECHA_NACIMIENTO("pty_persona", "per_fecha_nacimiento", true), //
+    FECHA_NACIMIENTO$DESC("pty_persona", "per_fecha_nacimiento", false);
 
     private PersonaOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -253,10 +259,10 @@ public class PersonaDAO implements Serializable, ApplicationContextAware {
     // Initialization
 
     private void initialize() {
-      this.id = new NumberColumn(this, "ID", "id");
-      this.nombre = new StringColumn(this, "NOMBRE", "nombre");
-      this.apellido = new StringColumn(this, "APELLIDO", "apellido");
-      this.fechaNacimiento = new DateTimeColumn(this, "FECHA_NACIMIENTO", "fechaNacimiento");
+      this.id = new NumberColumn(this, "PER_ID", "id");
+      this.nombre = new StringColumn(this, "PER_NOMBRE", "nombre");
+      this.apellido = new StringColumn(this, "PER_APELLIDO", "apellido");
+      this.fechaNacimiento = new DateTimeColumn(this, "PER_FECHA_NACIMIENTO", "fechaNacimiento");
     }
 
   }
