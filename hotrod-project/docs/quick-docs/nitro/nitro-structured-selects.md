@@ -292,7 +292,7 @@ You can combine collections, associations, expressions, with nested collections,
 A combined typical example:
 
     <select method="selectChannels">
-      <parameter name="vendorId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+      <parameter name="vendorId" java-type="Integer" />
       select
         <columns>
           <vo table="channel" extended-vo="ExtendedChannel" alias="h">
