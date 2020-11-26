@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="hr3.springboot.poc.hotrod.primitives.pedidoCustomDAO">
+<mapper namespace="ns.hr3.springboot.poc.hotrod.primitives.pedidoCustomDAO">
 
   <!-- columns -->
 

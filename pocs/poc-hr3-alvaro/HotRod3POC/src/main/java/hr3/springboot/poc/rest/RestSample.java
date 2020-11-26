@@ -9,9 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import hr3.springboot.poc.hotrod.ExtendedPedidoImpl;
 import hr3.springboot.poc.impl.PocBuilder;
 import hr3.springboot.poc.impl.PocFinder;
+import hr3.springboot.poc.model.Pedido;
 import hr3.springboot.poc.model.Persona;
+import hr3.springboot.poc.model.RequestItem;
 
 // invoca los servicios en orden 1), 2) y 3)   ...as usual ;)
 @RestController
@@ -42,6 +45,20 @@ public class RestSample {
 
 		for (Persona p : f.findAllPersona())
 			System.out.println(p);
+
+		System.out.println();
+
+//		i,j = id-artículo, cantidad
+		Pedido r = b.makeNewRequest(alejandro, new long[][] { { 1, 20 }, { 2, 20 }, { 3, 40 }, { 4, 25 } });
+
+		for (ExtendedPedidoImpl er : f.findExtendedPedido(r.getId()))
+			System.out.println(er);
+
+		System.out.println();
+
+		
+		for (RequestItem ri: r.obtainRequestItemCursor())
+			System.out.println(ri.getArticulo());
 
 		return "The matter";
 	}

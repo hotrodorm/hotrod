@@ -77,10 +77,10 @@ public class PedidoCustomDAO implements Serializable, ApplicationContextAware {
     Long pedidoId;
   }
 
-  public List<ExtendedPedidoImpl> selectExtendedRequest(final Long pedidoId) {
+  public Cursor<ExtendedPedidoImpl> selectExtendedRequest(final Long pedidoId) {
     ParamSelectExtendedRequest param0 = new ParamSelectExtendedRequest();
     param0.pedidoId = pedidoId;
-    return this.sqlSession.selectList("hr3.springboot.poc.hotrod.primitives.pedidoCustomDAO.select_selectExtendedRequest", param0);
+    return     new MyBatisCursor<ExtendedPedidoImpl>(this.sqlSession.selectCursor("ns.hr3.springboot.poc.hotrod.primitives.pedidoCustomDAO.select_selectExtendedRequest", param0));
   }
 
 }

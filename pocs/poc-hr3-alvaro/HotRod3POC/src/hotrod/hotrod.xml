@@ -113,7 +113,7 @@
  
 <!-- new. Single DAO, multiple VOs -->
 	<dao name="PedidoCustom">
-		<select method="selectExtendedRequest" vo="ExtendedPedido">
+		<select method="selectExtendedRequest" vo="ExtendedPedido" mode="cursor">
 			<parameter name="pedidoId" java-type="Long"
 				jdbc-type="NUMERIC" />
 			select p.PER_NOMBRE, r.*, a.*, i.ITEM_QTY

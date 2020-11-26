@@ -1,5 +1,5 @@
 package hr3.springboot.poc.model;
 
-public interface Persona {
+public interface Persona extends PersonaBean {
 
 }

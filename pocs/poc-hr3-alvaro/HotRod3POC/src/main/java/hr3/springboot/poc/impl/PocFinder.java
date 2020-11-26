@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import hr3.springboot.poc.etc.CursorGenericAdapter;
+import hr3.springboot.poc.hotrod.ExtendedPedidoImpl;
 import hr3.springboot.poc.hotrod.PersonaImpl;
+import hr3.springboot.poc.hotrod.primitives.PedidoCustomDAO;
 import hr3.springboot.poc.hotrod.primitives.PersonaDAO;
 import hr3.springboot.poc.model.Persona;
 
@@ -25,5 +27,12 @@ public class PocFinder {
 		Cursor<Persona> cc = new CursorGenericAdapter<Persona, PersonaImpl>(c);
 
 		return cc;
+	}
+
+	@Autowired
+	private PedidoCustomDAO pedidoCustomDAO;
+
+	public Cursor<ExtendedPedidoImpl> findExtendedPedido(long pedidoId) {
+		return pedidoCustomDAO.selectExtendedRequest(pedidoId);
 	}
 }
