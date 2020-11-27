@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hr3.springboot.poc.hotrod.primitives.requestItem">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    req_id,
+    art_id,
+    item_qty
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.req_id,
+    ${alias}.art_id,
+    ${alias}.item_qty
+  </sql>
+
+  <resultMap id="allColumns" type="hr3.springboot.poc.hotrod.RequestItemImpl">
+    <id property="idPedido" column="REQ_ID" />
+    <id property="idArticulo" column="ART_ID" />
+    <result property="cantidad" column="ITEM_QTY" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from trx_request_item
+     where
+      req_id = #{idPedido,jdbcType=BIGINT}
+      and art_id = #{idArticulo,jdbcType=BIGINT}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from trx_request_item
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.idPedido != null ">
+        and req_id = #{p.idPedido,jdbcType=BIGINT}
+      </if>
+      <if test="p.idPedido == null and p.propertiesChangeLog.idPedidoWasSet">
+        and req_id is null
+      </if>
+      <if test="p.idArticulo != null ">
+        and art_id = #{p.idArticulo,jdbcType=BIGINT}
+      </if>
+      <if test="p.idArticulo == null and p.propertiesChangeLog.idArticuloWasSet">
+        and art_id is null
+      </if>
+      <if test="p.cantidad != null ">
+        and item_qty = #{p.cantidad,jdbcType=DECIMAL}
+      </if>
+      <if test="p.cantidad == null and p.propertiesChangeLog.cantidadWasSet">
+        and item_qty is null
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into trx_request_item (
+      <trim prefixOverrides=", ">
+        <if test="true">, req_id</if>
+        <if test="true">, art_id</if>
+        <if test="true">, item_qty</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{idPedido,jdbcType=BIGINT}</if>
+        <if test="true">, #{idArticulo,jdbcType=BIGINT}</if>
+        <if test="true">, #{cantidad,jdbcType=DECIMAL}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update trx_request_item set
+      item_qty = #{cantidad,jdbcType=DECIMAL}
+     where
+      req_id = #{idPedido,jdbcType=BIGINT}
+      and art_id = #{idArticulo,jdbcType=BIGINT}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from trx_request_item
+     where
+      req_id = #{idPedido,jdbcType=BIGINT}
+      and art_id = #{idArticulo,jdbcType=BIGINT}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update trx_request_item
+    <set>
+      <if test="values.propertiesChangeLog.idPedidoWasSet">req_id = #{values.idPedido,jdbcType=BIGINT},</if>
+      <if test="values.propertiesChangeLog.idArticuloWasSet">art_id = #{values.idArticulo,jdbcType=BIGINT},</if>
+      <if test="values.propertiesChangeLog.cantidadWasSet">item_qty = #{values.cantidad,jdbcType=DECIMAL},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.idPedido != null ">
+        and req_id = #{filter.idPedido,jdbcType=BIGINT}
+      </if>
+      <if test="filter.idPedido == null and filter.propertiesChangeLog.idPedidoWasSet">
+        and req_id is null
+      </if>
+      <if test="filter.idArticulo != null ">
+        and art_id = #{filter.idArticulo,jdbcType=BIGINT}
+      </if>
+      <if test="filter.idArticulo == null and filter.propertiesChangeLog.idArticuloWasSet">
+        and art_id is null
+      </if>
+      <if test="filter.cantidad != null ">
+        and item_qty = #{filter.cantidad,jdbcType=DECIMAL}
+      </if>
+      <if test="filter.cantidad == null and filter.propertiesChangeLog.cantidadWasSet">
+        and item_qty is null
+      </if>
+    </trim>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from trx_request_item
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="idPedido != null ">
+        and req_id = #{idPedido,jdbcType=BIGINT}
+      </if>
+      <if test="idPedido == null and propertiesChangeLog.idPedidoWasSet">
+        and req_id is null
+      </if>
+      <if test="idArticulo != null ">
+        and art_id = #{idArticulo,jdbcType=BIGINT}
+      </if>
+      <if test="idArticulo == null and propertiesChangeLog.idArticuloWasSet">
+        and art_id is null
+      </if>
+      <if test="cantidad != null ">
+        and item_qty = #{cantidad,jdbcType=DECIMAL}
+      </if>
+      <if test="cantidad == null and propertiesChangeLog.cantidadWasSet">
+        and item_qty is null
+      </if>
+    </trim>
+  </delete>
+
+</mapper>

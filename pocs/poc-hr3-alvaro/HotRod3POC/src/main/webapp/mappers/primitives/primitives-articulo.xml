@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hr3.springboot.poc.hotrod.primitives.articulo">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    art_id,
+    art_desc,
+    art_type
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.art_id,
+    ${alias}.art_desc,
+    ${alias}.art_type
+  </sql>
+
+  <resultMap id="allColumns" type="hr3.springboot.poc.hotrod.ArticuloImpl">
+    <id property="artId" column="ART_ID" />
+    <result property="artDesc" column="ART_DESC" />
+    <result property="tipo" column="ART_TYPE" typeHandler="hr3.springboot.poc.hotrod.primitives.ArticuloDAO$TipoTypeHandler" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from stock_articulo
+     where
+      art_id = #{artId,jdbcType=BIGINT}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from stock_articulo
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.artId != null ">
+        and art_id = #{p.artId,jdbcType=BIGINT}
+      </if>
+      <if test="p.artId == null and p.propertiesChangeLog.artIdWasSet">
+        and art_id is null
+      </if>
+      <if test="p.artDesc != null ">
+        and art_desc = #{p.artDesc,jdbcType=VARCHAR}
+      </if>
+      <if test="p.artDesc == null and p.propertiesChangeLog.artDescWasSet">
+        and art_desc is null
+      </if>
+      <if test="p.tipo != null ">
+        and art_type = #{p.tipo,jdbcType=CHAR,typeHandler=hr3.springboot.poc.hotrod.primitives.ArticuloDAO$TipoTypeHandler}
+      </if>
+      <if test="p.tipo == null and p.propertiesChangeLog.tipoWasSet">
+        and art_type is null
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (does not integrate sequences, and integrates identities) -->
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="artId" keyColumn="art_id">
+    insert into stock_articulo (
+      <trim prefixOverrides=", ">
+        <if test="artId != null">, art_id</if>
+        <if test="true">, art_desc</if>
+        <if test="true">, art_type</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="artId != null">, #{artId,jdbcType=BIGINT}</if>
+        <if test="true">, #{artDesc,jdbcType=VARCHAR}</if>
+        <if test="true">, #{tipo,jdbcType=CHAR,typeHandler=hr3.springboot.poc.hotrod.primitives.ArticuloDAO$TipoTypeHandler}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update stock_articulo set
+      art_desc = #{artDesc,jdbcType=VARCHAR},
+      art_type = #{tipo,jdbcType=CHAR,typeHandler=hr3.springboot.poc.hotrod.primitives.ArticuloDAO$TipoTypeHandler}
+     where
+      art_id = #{artId,jdbcType=BIGINT}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from stock_articulo
+     where
+      art_id = #{artId,jdbcType=BIGINT}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update stock_articulo
+    <set>
+      <if test="values.propertiesChangeLog.artIdWasSet">art_id = #{values.artId,jdbcType=BIGINT},</if>
+      <if test="values.propertiesChangeLog.artDescWasSet">art_desc = #{values.artDesc,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.tipoWasSet">art_type = #{values.tipo,jdbcType=CHAR,typeHandler=hr3.springboot.poc.hotrod.primitives.ArticuloDAO$TipoTypeHandler},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.artId != null ">
+        and art_id = #{filter.artId,jdbcType=BIGINT}
+      </if>
+      <if test="filter.artId == null and filter.propertiesChangeLog.artIdWasSet">
+        and art_id is null
+      </if>
+      <if test="filter.artDesc != null ">
+        and art_desc = #{filter.artDesc,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.artDesc == null and filter.propertiesChangeLog.artDescWasSet">
+        and art_desc is null
+      </if>
+      <if test="filter.tipo != null ">
+        and art_type = #{filter.tipo,jdbcType=CHAR,typeHandler=hr3.springboot.poc.hotrod.primitives.ArticuloDAO$TipoTypeHandler}
+      </if>
+      <if test="filter.tipo == null and filter.propertiesChangeLog.tipoWasSet">
+        and art_type is null
+      </if>
+    </trim>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from stock_articulo
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="artId != null ">
+        and art_id = #{artId,jdbcType=BIGINT}
+      </if>
+      <if test="artId == null and propertiesChangeLog.artIdWasSet">
+        and art_id is null
+      </if>
+      <if test="artDesc != null ">
+        and art_desc = #{artDesc,jdbcType=VARCHAR}
+      </if>
+      <if test="artDesc == null and propertiesChangeLog.artDescWasSet">
+        and art_desc is null
+      </if>
+      <if test="tipo != null ">
+        and art_type = #{tipo,jdbcType=CHAR,typeHandler=hr3.springboot.poc.hotrod.primitives.ArticuloDAO$TipoTypeHandler}
+      </if>
+      <if test="tipo == null and propertiesChangeLog.tipoWasSet">
+        and art_type is null
+      </if>
+    </trim>
+  </delete>
+
+</mapper>

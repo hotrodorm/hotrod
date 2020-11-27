@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+  <settings>
+    <setting name="logImpl" value="LOG4J2" />
+  </settings>
+
+  <mappers>
+    <mapper resource="mappers/primitives/primitives-articulo.xml" />  <!-- in facet -->
+    <mapper resource="mappers/primitives/primitives-pedido-custom-dao.xml" />  <!-- in facet -->
+    <mapper resource="mappers/primitives/primitives-pedido.xml" />  <!-- in facet -->
+    <mapper resource="mappers/primitives/primitives-persona.xml" />  <!-- in facet -->
+    <mapper resource="mappers/primitives/primitives-request-item.xml" />  <!-- in facet -->
+  </mappers>
+
+</configuration>
