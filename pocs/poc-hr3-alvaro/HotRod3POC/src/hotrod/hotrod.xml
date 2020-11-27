@@ -13,6 +13,7 @@
 			<mappers dir="mappers" />
 			<select-generation strategy="result-set" />
 			<classic-fk-navigation />
+			<mybatis-configuration-template file="mybatis-template.xml" />
 		</mybatis-spring>
 	</generators>
 
