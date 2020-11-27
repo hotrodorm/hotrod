@@ -35,7 +35,6 @@ import org.hotrodorm.hotrod.utils.Separator;
  *
  * </pre>
  * 
- * @param <T> The type of the evaluated expression
  */
 
 public class WindowExpression {
