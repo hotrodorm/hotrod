@@ -56,11 +56,11 @@
 ## 3.3.3
 - Implemented classic FK navigation (globally enabled or disabled).
 
-## 3.3.4
+## 3.4.0
 - Classic FK navigation can now be enabled on a per-table basis.
 - Cursors implemented for LiveSQL, Nitro Selects, selectByExample(), and selectByCriteria().
-- New <select> tag processor "result-set" offers many benefits compared to traditional "create view" processor.
-- New <name-solver> tag, automatically names tables, views, and columns according to regex naming rules.
+- New &lt;select> tag processor "result-set" offers many benefits compared to traditional "create view" processor.
+- New &lt;name-solver> tag, automatically names tables, views, and columns according to regex naming rules.
 - LiveSQL function infrastructure: developers can now add built-in and also user-defined functions to LiveSQL queries.
 - LiveSQL dialect can be designated at runtime using application.properties, with fallback to discovery mode.
 - LiveSQL fully typed SQL CASE and OVER clauses.
@@ -70,5 +70,10 @@
 - Added "force-jdbc-type-on-write" attribute to <type-solver> functionality.
 - Added extra prefixes and suffixes for Nitro daos and vos.
 
- 
+## 3.4.1
+- Improving select tag messaging for SQL errors.
+- Fixing default catalog/schema for nitro module.
+- Adding generation output and summary line.
+
+
  
