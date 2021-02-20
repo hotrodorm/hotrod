@@ -2,6 +2,7 @@ package org.hotrod.database.adapters;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -18,8 +19,11 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.JdbcTypes.JDBCType;
+import org.hotrod.utils.JdbcUtils;
 import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
+import org.nocrala.tools.database.tartarus.exception.CatalogNotSupportedException;
+import org.nocrala.tools.database.tartarus.exception.InvalidSchemaException;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class OracleAdapter extends DatabaseAdapter {
@@ -315,7 +319,6 @@ public class OracleAdapter extends DatabaseAdapter {
     return UnescapedSQLCase.UPPER_CASE;
   }
 
-
   @Override
   public String provideSampleValueFor(final JDBCType jdbcType) {
 
@@ -342,7 +345,6 @@ public class OracleAdapter extends DatabaseAdapter {
 //    --
 //    empty_blob() as xblob
 //  from dual;
-
 
     switch (jdbcType.getCode()) {
 
@@ -413,5 +415,17 @@ public class OracleAdapter extends DatabaseAdapter {
     return null;
   }
 
-  
+  @Override
+  public void setCurrentCatalogSchema(final Connection conn, final String catalog, final String schema)
+      throws CatalogNotSupportedException, InvalidSchemaException, SQLException {
+    if (catalog != null) {
+      throw new CatalogNotSupportedException();
+    }
+    if (schema == null) {
+      throw new InvalidSchemaException(JdbcUtils.getSchemas(conn.getMetaData(), catalog));
+    } else {
+      JdbcUtils.runSQLStatement(conn, "alter session set current_schema = " + schema);
+    }
+  }
+
 }

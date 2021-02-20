@@ -1,5 +1,6 @@
 package org.hotrod.database.adapters;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.List;
@@ -14,8 +15,13 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.JdbcTypes.JDBCType;
+import org.hotrod.utils.JdbcUtils;
 import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
+import org.nocrala.tools.database.tartarus.exception.CatalogNotSupportedException;
+import org.nocrala.tools.database.tartarus.exception.InvalidCatalogException;
+import org.nocrala.tools.database.tartarus.exception.InvalidSchemaException;
+import org.nocrala.tools.database.tartarus.exception.SchemaNotSupportedException;
 
 public class MariaDBAdapter extends DatabaseAdapter {
 
@@ -158,6 +164,19 @@ public class MariaDBAdapter extends DatabaseAdapter {
   @Override
   public String provideSampleValueFor(final JDBCType jdbcType) {
     return this.mysqlAdaper.provideSampleValueFor(jdbcType);
+  }
+
+  @Override
+  public void setCurrentCatalogSchema(final Connection conn, final String catalog, final String schema)
+      throws CatalogNotSupportedException, InvalidSchemaException, SQLException, InvalidCatalogException,
+      SchemaNotSupportedException {
+    if (catalog == null) {
+      throw new InvalidCatalogException(JdbcUtils.getCatalogs(conn.getMetaData()));
+    }
+    if (schema != null) {
+      throw new SchemaNotSupportedException();
+    }
+    JdbcUtils.runSQLStatement(conn, "use " + catalog);
   }
 
 }

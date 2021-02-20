@@ -2,6 +2,7 @@ package org.hotrod.database.adapters;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -20,8 +21,13 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.JdbcTypes.JDBCType;
+import org.hotrod.utils.JdbcUtils;
 import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
+import org.nocrala.tools.database.tartarus.exception.CatalogNotSupportedException;
+import org.nocrala.tools.database.tartarus.exception.InvalidCatalogException;
+import org.nocrala.tools.database.tartarus.exception.InvalidSchemaException;
+import org.nocrala.tools.database.tartarus.exception.SchemaNotSupportedException;
 
 public class MySQLAdapter extends DatabaseAdapter {
 
@@ -278,7 +284,6 @@ public class MySQLAdapter extends DatabaseAdapter {
     return UnescapedSQLCase.ANY_CASE;
   }
 
-
   @Override
   public String provideSampleValueFor(final JDBCType jdbcType) {
 
@@ -367,5 +372,18 @@ public class MySQLAdapter extends DatabaseAdapter {
 
     return null;
   }
-  
+
+  @Override
+  public void setCurrentCatalogSchema(final Connection conn, final String catalog, final String schema)
+      throws CatalogNotSupportedException, InvalidSchemaException, SQLException, InvalidCatalogException,
+      SchemaNotSupportedException {
+    if (catalog == null) {
+      throw new InvalidCatalogException(JdbcUtils.getCatalogs(conn.getMetaData()));
+    }
+    if (schema != null) {
+      throw new SchemaNotSupportedException();
+    }
+    JdbcUtils.runSQLStatement(conn, "use " + catalog);
+  }
+
 }

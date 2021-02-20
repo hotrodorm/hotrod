@@ -2,6 +2,7 @@ package org.hotrod.database.adapters;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -20,6 +21,7 @@ import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
+import org.nocrala.tools.database.tartarus.exception.SchemaNotSupportedException;
 
 public class SQLiteAdapter extends DatabaseAdapter {
 
@@ -272,6 +274,12 @@ public class SQLiteAdapter extends DatabaseAdapter {
   @Override
   public String provideSampleValueFor(final JDBCType jdbcType) {
     return "?";
+  }
+
+  @Override
+  public void setCurrentCatalogSchema(final Connection conn, final String catalog, final String schema)
+      throws SchemaNotSupportedException {
+    throw new SchemaNotSupportedException();
   }
 
 }

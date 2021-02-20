@@ -1,6 +1,7 @@
 package org.hotrod.database;
 
 import java.io.Serializable;
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,6 +20,10 @@ import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
+import org.nocrala.tools.database.tartarus.exception.CatalogNotSupportedException;
+import org.nocrala.tools.database.tartarus.exception.InvalidCatalogException;
+import org.nocrala.tools.database.tartarus.exception.InvalidSchemaException;
+import org.nocrala.tools.database.tartarus.exception.SchemaNotSupportedException;
 import org.nocrala.tools.database.tartarus.utils.JdbcUtil;
 
 public abstract class DatabaseAdapter implements Serializable {
@@ -156,6 +161,10 @@ public abstract class DatabaseAdapter implements Serializable {
   public abstract UnescapedSQLCase getUnescapedSQLCase();
 
   public abstract String provideSampleValueFor(JDBCType jdbcType);
+
+  public abstract void setCurrentCatalogSchema(final Connection conn, final String catalog, final String schema)
+      throws CatalogNotSupportedException, InvalidSchemaException, SQLException, InvalidCatalogException,
+      SchemaNotSupportedException;
 
   // Sorting
 

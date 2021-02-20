@@ -60,7 +60,7 @@ public class MyQueriesDAO implements Serializable, ApplicationContextAware {
   * The SQL statement for this method is:
 
 
-      select * from user1.x
+      select * from x
     
 
   */

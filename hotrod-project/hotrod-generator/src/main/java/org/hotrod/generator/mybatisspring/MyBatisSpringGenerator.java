@@ -257,6 +257,8 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
           this.db = new JdbcDatabase(this.dloc, tables, views);
         }
 
+        this.adapter.setCurrentCatalogSchema(conn, this.dloc.getDefaultCatalog(), this.dloc.getDefaultSchema());
+
       } catch (ReaderException e) {
         throw new ControlledException(e.getMessage());
       } catch (SQLException e) {

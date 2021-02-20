@@ -1,6 +1,7 @@
 package org.hotrod.utils;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +10,8 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -382,6 +385,40 @@ public final class JdbcUtils {
 
   public static String standarizeIdentifier(final String ident) {
     return ident.trim();
+  }
+
+  public static Set<String> getCatalogs(final DatabaseMetaData dm) throws SQLException {
+    Set<String> catalogs = new LinkedHashSet<>();
+    try (ResultSet rs = dm.getCatalogs()) {
+      while (rs.next()) {
+        catalogs.add(getString(rs, 1));
+      }
+    }
+    return catalogs;
+  }
+
+  public static Set<String> getSchemas(final DatabaseMetaData dm, final String catalog) throws SQLException {
+    Set<String> schemas = new LinkedHashSet<>();
+    if (catalog == null) {
+      try (ResultSet rs = dm.getSchemas()) {
+        while (rs.next()) {
+          schemas.add(getString(rs, 1));
+        }
+      }
+    } else {
+      try (ResultSet rs = dm.getSchemas(catalog, null)) {
+        while (rs.next()) {
+          schemas.add(getString(rs, 1));
+        }
+      }
+    }
+    return schemas;
+  }
+
+  public static void runSQLStatement(final Connection conn, final String sql) throws SQLException {
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.execute();
+    }
   }
 
 }
