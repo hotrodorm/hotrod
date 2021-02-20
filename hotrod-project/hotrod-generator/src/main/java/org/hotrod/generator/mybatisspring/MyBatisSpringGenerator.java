@@ -26,6 +26,9 @@ import org.hotrod.config.ExecutorTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.MyBatisSpringTag;
+import org.hotrod.config.QueryMethodTag;
+import org.hotrod.config.SelectClassTag;
+import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -45,8 +48,6 @@ import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.generator.SelectMetadataCache;
-import org.hotrod.generator.mybatisspring.SelectAbstractVO;
-import org.hotrod.generator.mybatisspring.SelectVO;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.DataSetMetadataFactory;
@@ -84,6 +85,7 @@ import org.nocrala.tools.database.tartarus.exception.InvalidCatalogException;
 import org.nocrala.tools.database.tartarus.exception.InvalidSchemaException;
 import org.nocrala.tools.database.tartarus.exception.ReaderException;
 import org.nocrala.tools.database.tartarus.exception.SchemaNotSupportedException;
+import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
@@ -667,6 +669,8 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
     logm("Metadata initialized.");
 
+    displayGenerationMetadata(config);
+
     // logSelectMethodMetadata(); // keep for debugging purposes only
 
   }
@@ -1210,6 +1214,127 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
   @Override
   public DatabaseLocation getLoc() {
     return this.dloc;
+  }
+
+  private void displayGenerationMetadata(final HotRodConfigTag config) {
+
+    int sequences = 0;
+    int queries = 0;
+    int selectMethods = 0;
+
+    if (config.getFacetNames().isEmpty()) {
+      display("Generating all facets.");
+    } else {
+      ListWriter lw = new ListWriter(", ");
+      for (String facetName : config.getFacetNames()) {
+        lw.add(facetName);
+      }
+      display("Generating facet" + (config.getFacetNames().size() == 1 ? "" : "s") + ": " + lw.toString());
+    }
+    display("");
+
+    if (this.displayMode == DisplayMode.LIST) {
+
+      // tables
+
+      for (TableDataSetMetadata t : this.tables) {
+        display("Table " + t.getId().getCanonicalSQLName() + " included.");
+        for (SequenceMethodTag s : t.getSequences()) {
+          sequences++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Sequence " + s.getSequenceId().getRenderedSQLName() + " included.");
+          }
+        }
+        for (QueryMethodTag q : t.getQueries()) {
+          queries++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Query " + q.getMethod() + " included.");
+          }
+        }
+        for (SelectMethodMetadata s : t.getSelectsMetadata()) {
+          selectMethods++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Select " + s.getMethod() + " included.");
+          }
+        }
+      }
+
+      // views
+
+      for (TableDataSetMetadata v : this.views) {
+        display("View " + v.getId().getCanonicalSQLName() + " included.");
+        for (SequenceMethodTag s : v.getSequences()) {
+          sequences++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Sequence " + s.getSequenceId().getRenderedSQLName() + " included.");
+          }
+        }
+        for (QueryMethodTag q : v.getQueries()) {
+          queries++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Query " + q.getMethod() + " included.");
+          }
+        }
+        for (SelectMethodMetadata s : v.getSelectsMetadata()) {
+          selectMethods++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Select " + s.getMethod() + " included.");
+          }
+        }
+      }
+
+      // enums
+
+      for (EnumDataSetMetadata e : this.enums) {
+        display("Enum " + e.getJdbcName() + " included.");
+      }
+
+      // daos
+
+      for (ExecutorDAOMetadata d : this.executors) {
+        if (this.displayMode == DisplayMode.LIST) {
+          display("DAO " + d.getJavaClassName() + " included.");
+        }
+        for (SequenceMethodTag s : d.getSequences()) {
+          sequences++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Sequence " + s.getSequenceId().getRenderedSQLName() + " included.");
+          }
+        }
+        for (QueryMethodTag q : d.getQueries()) {
+          queries++;
+          if (this.displayMode == DisplayMode.LIST) {
+            display(" - Query " + q.getMethod() + " included.");
+          }
+        }
+        for (SelectMethodMetadata s : d.getSelectsMetadata()) {
+          selectMethods++;
+          if (this.displayMode == DisplayMode.LIST) {
+            log.debug("s=" + s);
+            display(" - Select " + s.getMethod() + " included.");
+          }
+        }
+      }
+
+    }
+
+    display("");
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("Total of: ");
+    sb.append(this.db.getTables().size() + " " + (this.db.getTables().size() == 1 ? "table" : "tables") + ", ");
+    sb.append(this.db.getViews().size() + " " + (this.db.getViews().size() == 1 ? "view" : "views") + ", ");
+    sb.append(this.enums.size() + " " + (this.enums.size() == 1 ? "enum" : "enums") + ", ");
+    sb.append(
+        this.config.getFacetExecutors().size() + " " + (this.config.getFacetExecutors().size() == 1 ? "DAO" : "DAOs") //
+            + ", and ");
+
+    sb.append(sequences + " sequence" + (sequences == 1 ? "" : "s") + " -- including ");
+    sb.append(selectMethods + " " + (selectMethods == 1 ? "select method" : "select methods") + ", ");
+    sb.append("and " + queries + " " + (queries == 1 ? "query method" : "querie methods") + ".");
+
+    display(sb.toString());
+
   }
 
 }
