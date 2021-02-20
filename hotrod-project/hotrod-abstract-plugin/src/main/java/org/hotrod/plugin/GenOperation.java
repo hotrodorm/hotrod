@@ -134,8 +134,8 @@ public class GenOperation {
 
     try {
       CachedMetadata cachedMetadata = new CachedMetadata();
-      Generator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
-          config, enabledFKs, this.displayMode, false, adapter, feedback);
+      Generator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc, config,
+          enabledFKs, this.displayMode, false, adapter, feedback);
       log.debug("Generator instantiated.");
 
       try {

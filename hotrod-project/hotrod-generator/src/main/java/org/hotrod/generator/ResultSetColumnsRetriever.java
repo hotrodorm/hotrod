@@ -122,7 +122,10 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
         flatColumns.add(cm);
       }
     } catch (SQLException e) {
-      throw new InvalidSQLException("could not retrieve metadata.", e);
+      String em = e.getMessage() == null ? "" : e.getMessage().trim();
+      String msg = "Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
+          + "> tag: invalid SQL SELECT statement: " + em + "\n---\n" + foundation + "\n---";
+      throw new InvalidConfigurationFileException(ctx.getTag(), msg);
     }
 
   }

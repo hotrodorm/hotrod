@@ -24,7 +24,7 @@ public class SQLUtil {
       reassembled = reassembled.substring(0, reassembled.length() - 1);
     }
 
-    return reassembled;
+    return reassembled.trim();
   }
 
 }

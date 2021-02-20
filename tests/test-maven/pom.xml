@@ -107,13 +107,13 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>3.2.3-SNAPSHOT</version>
+      <version>3.4.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>3.2.3-SNAPSHOT</version>
+      <version>3.4.1-SNAPSHOT</version>
     </dependency>
 
     <!-- 4. Log4j 2 -->
@@ -185,6 +185,36 @@
   </build>
 
   <profiles>
+
+    <!-- Oracle 12.1 generation -->
+
+    <profile>
+      <id>oracle-12.1</id>
+      <build>
+        <plugins>
+
+          <!-- HotRod Generation -->
+
+          <plugin>
+            <groupId>org.hotrodorm.hotrod</groupId>
+            <artifactId>hotrod-maven-plugin</artifactId>
+            <version>3.4.1-SNAPSHOT</version>
+            <configuration>
+              <localproperties>testdata/oracle-12.1/dev.properties</localproperties>
+              <txtexportfile>./testdata/oracle-12.1/export-columns.txt</txtexportfile>
+              <xlsxexportfile>./testdata/oracle-12.1/export-columns.xlsx</xlsxexportfile>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>com.oracle.ojdbc</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>19.3.0.0</version>
+              </dependency>            
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
 
     <!-- PostgreSQL 12.4 generation -->
 

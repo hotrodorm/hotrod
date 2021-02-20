@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+      <daos package="app5.persistence" 
+        dao-prefix=""  dao-suffix="DAO" vo-prefix=""  vo-suffix="VO" abstract-vo-prefix="Abstract"  abstract-vo-suffix="VO" 
+        ndao-prefix="" ndao-suffix=""   nvo-prefix="" nvo-suffix=""  nabstract-vo-prefix="Abstract" nabstract-vo-suffix="" 
+      />
+      <mappers dir="mappers" />
+      <classic-fk-navigation />
+      <select-generation strategy="result-set" />
+    </mybatis-spring>
+  </generators>
+
+  <table name="abc" />
+  <table name="types" />
+  <table name="x" />
+
+  <dao name="MyQueriesDAO">
+
+    <select method="findX" vo="X1VO">
+      select * from x
+    </select>
+
+  </dao>
+
+</hotrod>
