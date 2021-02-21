@@ -53,7 +53,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   private boolean structuredSelect;
 
-  private transient Generator generator;
+  private transient HotRodMetadata metadata;
   private ColumnsRetriever cr;
   private transient DataSetLayout layout;
   private transient JdbcDatabase db;
@@ -80,17 +80,17 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   // Constructor
 
-  public SelectMethodMetadata(final Generator generator, final ColumnsRetriever cr, final SelectMethodTag tag,
+  public SelectMethodMetadata(final HotRodMetadata metadata, final ColumnsRetriever cr, final SelectMethodTag tag,
       final HotRodConfigTag config, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final DataSetLayout layout)
       throws InvalidIdentifierException, InvalidConfigurationFileException {
-    this.generator = generator;
+    this.metadata = metadata;
     this.cr = cr;
     this.layout = layout;
-    this.db = generator.getJdbcDatabase();
+    this.db = metadata.getJdbcDatabase();
     this.config = config;
-    this.adapter = generator.getAdapter();
-    this.loc = generator.getLoc();
+    this.adapter = metadata.getAdapter();
+    this.loc = metadata.getLoc();
     this.tag = tag;
     this.id = new ObjectId(null, null, Id.fromJavaMember(tag.getMethod()), adapter);
     this.selectGenerationTag = selectGenerationTag;
@@ -430,9 +430,9 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     throw new UnsupportedOperationException("This operation should not be used.");
   }
 
-  public Generator getGenerator() {
-    return generator;
-  }
+//  public Generator getGenerator() {
+//    return metadata;
+//  }
 
   public SelectMethodReturnType getReturnType(final ClassPackage voClassPackage) {
     return this.selectMethodReturnType;

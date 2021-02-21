@@ -43,6 +43,7 @@ import org.hotrod.metadata.DataSetMetadataFactory;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.ExecutorDAOMetadata;
 import org.hotrod.metadata.ForeignKeyMetadata;
+import org.hotrod.metadata.HotRodMetadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -98,7 +99,7 @@ public abstract class FormerGenerator implements Generator {
 
   private Long lastLog = null;
 
-  public FormerGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation dloc, final HotRodConfigTag config,
+  public FormerGenerator(final JdbcDatabase db, final HotRodMetadata metadata, final DatabaseLocation dloc, final HotRodConfigTag config,
       final DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter,
       final Feedback feedback) throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
 
@@ -495,53 +496,53 @@ public abstract class FormerGenerator implements Generator {
 
       ColumnsRetriever cr = ColumnsRetriever.getInstance(this.config, this.dloc, this.adapter, this.db, conn);
 
-      for (TableDataSetMetadata tm : this.tables) {
-        boolean retrieving;
-        try {
-          retrieving = tm.gatherSelectsMetadataPhase1(this, cr, layout);
-        } catch (InvalidConfigurationFileException e) {
-          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
-        }
-        if (retrieving) {
-          retrieveSelectMetadata = true;
-        }
-      }
-
-      for (TableDataSetMetadata vm : this.views) {
-        boolean retrieving;
-        try {
-          retrieving = vm.gatherSelectsMetadataPhase1(this, cr, layout);
-        } catch (InvalidConfigurationFileException e) {
-          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
-        }
-        if (retrieving) {
-          retrieveSelectMetadata = true;
-        }
-      }
-
-      for (TableDataSetMetadata em : this.enums) {
-        boolean retrieving;
-        try {
-          retrieving = em.gatherSelectsMetadataPhase1(this, cr, layout);
-        } catch (InvalidConfigurationFileException e) {
-          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
-        }
-        if (retrieving) {
-          retrieveSelectMetadata = true;
-        }
-      }
-
-      for (ExecutorDAOMetadata dm : this.executors) {
-        boolean retrieving;
-        try {
-          retrieving = dm.gatherSelectsMetadataPhase1(this, cr, layout);
-        } catch (InvalidConfigurationFileException e) {
-          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
-        }
-        if (retrieving) {
-          retrieveSelectMetadata = true;
-        }
-      }
+//      for (TableDataSetMetadata tm : this.tables) {
+//        boolean retrieving;
+//        try {
+//          retrieving = tm.gatherSelectsMetadataPhase1(this, cr, layout);
+//        } catch (InvalidConfigurationFileException e) {
+//          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
+//        }
+//        if (retrieving) {
+//          retrieveSelectMetadata = true;
+//        }
+//      }
+//
+//      for (TableDataSetMetadata vm : this.views) {
+//        boolean retrieving;
+//        try {
+//          retrieving = vm.gatherSelectsMetadataPhase1(this, cr, layout);
+//        } catch (InvalidConfigurationFileException e) {
+//          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
+//        }
+//        if (retrieving) {
+//          retrieveSelectMetadata = true;
+//        }
+//      }
+//
+//      for (TableDataSetMetadata em : this.enums) {
+//        boolean retrieving;
+//        try {
+//          retrieving = em.gatherSelectsMetadataPhase1(this, cr, layout);
+//        } catch (InvalidConfigurationFileException e) {
+//          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
+//        }
+//        if (retrieving) {
+//          retrieveSelectMetadata = true;
+//        }
+//      }
+//
+//      for (ExecutorDAOMetadata dm : this.executors) {
+//        boolean retrieving;
+//        try {
+//          retrieving = dm.gatherSelectsMetadataPhase1(this, cr, layout);
+//        } catch (InvalidConfigurationFileException e) {
+//          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
+//        }
+//        if (retrieving) {
+//          retrieveSelectMetadata = true;
+//        }
+//      }
 
       // Prepare <select> DAOs meta data - phase 1
 

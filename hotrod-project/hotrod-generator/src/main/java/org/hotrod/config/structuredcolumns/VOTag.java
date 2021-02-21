@@ -33,13 +33,14 @@ import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
-import org.hotrod.generator.Generator;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.metadata.ColumnMetadata;
+import org.hotrod.metadata.MetadataRepository;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata.IdColumnNotFoundException;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.metadata.VOMetadata;
+import org.hotrod.metadata.VORegistry;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.Compare;
@@ -96,7 +97,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   private Expressions expressions = new Expressions();
 
-  private transient Generator generator;
+  private transient MetadataRepository metadata;
 
   private String compiledBody;
   private boolean useAllColumns;
@@ -426,11 +427,11 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     log.debug("Validation complete.");
   }
 
-  public void validateAgainstDatabase(final Generator generator) throws InvalidConfigurationFileException {
-    this.generator = generator;
+  public void validateAgainstDatabase(final MetadataRepository metadata) throws InvalidConfigurationFileException {
+    this.metadata = metadata;
     log.debug("*** this.table=" + this.table + " this.view=" + this.view);
     if (this.table != null) {
-      this.tableMetadata = generator.findTableMetadata(this.objectId);
+      this.tableMetadata = metadata.findTableMetadata(this.objectId);
       log.debug("this.tableMetadata=" + this.tableMetadata);
       if (this.tableMetadata == null) {
         throw new InvalidConfigurationFileException(this, //
@@ -441,7 +442,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       }
       this.viewMetadata = null;
     } else {
-      this.viewMetadata = generator.findViewMetadata(this.objectId);
+      this.viewMetadata = metadata.findViewMetadata(this.objectId);
       if (this.viewMetadata == null) {
         throw new InvalidConfigurationFileException(this, //
             "Could not find <" + new ViewTag().getTagName() + "> tag in the configuration file for the view '"
@@ -455,18 +456,18 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     // collections
 
     for (CollectionTag c : this.collections) {
-      c.validateAgainstDatabase(generator);
+      c.validateAgainstDatabase(metadata);
     }
 
     // associations
 
     for (AssociationTag a : this.associations) {
-      a.validateAgainstDatabase(generator);
+      a.validateAgainstDatabase(metadata);
     }
 
     // expressions
 
-    this.expressions.validateAgainstDatabase(generator, this.tableMetadata);
+    this.expressions.validateAgainstDatabase(metadata, this.tableMetadata);
 
   }
 
@@ -487,10 +488,9 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
         this.cmr = null;
         this.aliasPrefix = columnsPrefixGenerator.next();
       } else { // specific columns
-        log.debug("this.generator=" + this.generator);
-        this.cmr = new ColumnsMetadataRetriever(selectTag, this.generator.getAdapter(),
-            this.generator.getJdbcDatabase(), this.generator.getLoc(), selectGenerationTag, this, this.alias,
-            columnsPrefixGenerator, cr);
+        log.debug("this.generator=" + this.metadata);
+        this.cmr = new ColumnsMetadataRetriever(selectTag, this.metadata.getAdapter(), this.metadata.getJdbcDatabase(),
+            this.metadata.getLoc(), selectGenerationTag, this, this.alias, columnsPrefixGenerator, cr);
         this.cmr.prepareRetrieval();
       }
     }
@@ -841,8 +841,8 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   // Getters
 
-  public Generator getGenerator() {
-    return generator;
+  public VORegistry getVORegistry() {
+    return this.metadata.getVORegistry();
   }
 
   public String getTable() {
@@ -994,7 +994,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       this.collections = f.collections;
       this.associations = f.associations;
       this.expressions = f.expressions;
-      this.generator = f.generator;
+      this.metadata = f.metadata;
       this.compiledBody = f.compiledBody;
       this.useAllColumns = f.useAllColumns;
       this.cmr = f.cmr;

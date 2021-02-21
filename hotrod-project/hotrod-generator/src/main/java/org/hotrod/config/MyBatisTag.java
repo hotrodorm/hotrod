@@ -11,18 +11,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
+import org.hotrod.generator.HotRodContext;
 import org.hotrod.generator.NamePackageResolver;
-import org.hotrod.generator.mybatis.MyBatisGenerator;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
-import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 @XmlRootElement(name = "mybatis")
 public class MyBatisTag extends AbstractGeneratorTag implements NamePackageResolver {
@@ -149,11 +146,11 @@ public class MyBatisTag extends AbstractGeneratorTag implements NamePackageResol
   }
 
   @Override
-  public Generator instantiateGenerator(final CachedMetadata cachedMetadata, DatabaseLocation loc,
-      HotRodConfigTag config, EnabledFKs enabledFKs, DisplayMode displayMode, final boolean incrementalMode,
-      final DatabaseAdapter adapter, final Feedback feedback)
+  public Generator instantiateGenerator(final HotRodContext hc, final EnabledFKs enabledFKs,
+      final DisplayMode displayMode, final boolean incrementalMode, final Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
-    return new MyBatisGenerator(cachedMetadata, loc, config, displayMode, incrementalMode, adapter, feedback);
+//    return new MyBatisGenerator(db, metadata, loc, config, displayMode, incrementalMode, adapter, feedback);
+    return null;
   }
 
   // Merging logic

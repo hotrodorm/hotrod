@@ -42,7 +42,7 @@ public class SpringJDBCGenerator extends FormerGenerator {
   public SpringJDBCGenerator(final DatabaseLocation loc, final HotRodConfigTag config, final DisplayMode displayMode,
       final DatabaseAdapter adapter, final Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
-    super(null, loc, config, displayMode, false, adapter, feedback);
+    super(null, null, loc, config, displayMode, false, adapter, feedback);
   }
 
   @Override

@@ -39,60 +39,10 @@ public final class DatabaseAdapterFactory {
       } catch (SQLException e) {
         throw new UncontrolledException("Could not connect to database at URL: " + loc.getUrl(), e);
       }
-      DatabaseMetaData dm;
-      try {
-        dm = conn.getMetaData();
-      } catch (SQLException e) {
-        throw new UncontrolledException("Could not retrieve database information from the JDBC driver.", e);
-      }
-
-      String name;
-      try {
-        name = dm.getDatabaseProductName();
-      } catch (SQLException e) {
-        throw new UncontrolledException("Could not retrieve the database product name from the JDBC driver.", e);
-      }
-
-      if (name == null) {
-        throw new UnrecognizedDatabaseException("Could not resolve the database adapter. "
-            + "The JDBC driver did not provide " + "the database product name.");
-      }
-
-      String uName = name.toUpperCase();
-
-      if (name.equalsIgnoreCase("ORACLE")) {
-        return new OracleAdapter(dm);
-      } else if (uName.startsWith("HSQL")) {
-        return new HyperSQLAdapter(dm);
-      } else if (uName.startsWith("H2")) {
-        return new H2Adapter(dm);
-      } else if (uName.startsWith("MYSQL")) {
-        String productVersion = dm.getDatabaseProductVersion().toLowerCase();
-        if (productVersion != null && productVersion.contains("mariadb")) {
-          return new MariaDBAdapter(dm);
-        } else {
-          return new MySQLAdapter(dm);
-        }
-      } else if (uName.startsWith("ADAPTIVE SERVER ENTERPRISE")) {
-        return new SAPASEAdapter(dm);
-      } else if (uName.startsWith("DB2")) {
-        return new DB2Adapter(dm);
-      } else if (uName.startsWith("POSTGRESQL")) {
-        return new PostgreSQLAdapter(dm);
-      } else if (name.startsWith("Microsoft SQL Server")) {
-        return new SQLServerAdapter(dm);
-      } else if (uName.startsWith("APACHE DERBY")) {
-        return new ApacheDerbyAdapter(dm);
-      } else if (name.startsWith("SQLite")) {
-        return new SQLiteAdapter(dm);
-      } else {
-        throw new UnrecognizedDatabaseException(
-            "Could not resolve the database adapter. " + "The product name reported by the JDBC driver '" + name
-                + "' is not supported by " + Constants.TOOL_NAME + ".");
-      }
+      return getAdapter(conn);
 
     } catch (SQLException e) {
-      throw new UncontrolledException("Could not retrieve meta data from database at URL: " + loc.getUrl(), e);
+      throw new UncontrolledException("Could not retrieve metadata from database at URL: " + loc.getUrl(), e);
 
     } finally {
       if (conn != null) {
@@ -102,6 +52,61 @@ public final class DatabaseAdapterFactory {
           throw new UncontrolledException("Could not close connection to database at URL: " + loc.getUrl(), e);
         }
       }
+    }
+  }
+
+  public static DatabaseAdapter getAdapter(final Connection conn)
+      throws UncontrolledException, UnrecognizedDatabaseException, SQLException {
+    DatabaseMetaData dm;
+    try {
+      dm = conn.getMetaData();
+    } catch (SQLException e) {
+      throw new UncontrolledException("Could not retrieve database information from the JDBC driver.", e);
+    }
+
+    String name;
+    try {
+      name = dm.getDatabaseProductName();
+    } catch (SQLException e) {
+      throw new UncontrolledException("Could not retrieve the database product name from the JDBC driver.", e);
+    }
+
+    if (name == null) {
+      throw new UnrecognizedDatabaseException("Could not resolve the database adapter. "
+          + "The JDBC driver did not provide " + "the database product name.");
+    }
+
+    String uName = name.toUpperCase();
+
+    if (name.equalsIgnoreCase("ORACLE")) {
+      return new OracleAdapter(dm);
+    } else if (uName.startsWith("HSQL")) {
+      return new HyperSQLAdapter(dm);
+    } else if (uName.startsWith("H2")) {
+      return new H2Adapter(dm);
+    } else if (uName.startsWith("MYSQL")) {
+      String productVersion = dm.getDatabaseProductVersion().toLowerCase();
+      if (productVersion != null && productVersion.contains("mariadb")) {
+        return new MariaDBAdapter(dm);
+      } else {
+        return new MySQLAdapter(dm);
+      }
+    } else if (uName.startsWith("ADAPTIVE SERVER ENTERPRISE")) {
+      return new SAPASEAdapter(dm);
+    } else if (uName.startsWith("DB2")) {
+      return new DB2Adapter(dm);
+    } else if (uName.startsWith("POSTGRESQL")) {
+      return new PostgreSQLAdapter(dm);
+    } else if (name.startsWith("Microsoft SQL Server")) {
+      return new SQLServerAdapter(dm);
+    } else if (uName.startsWith("APACHE DERBY")) {
+      return new ApacheDerbyAdapter(dm);
+    } else if (name.startsWith("SQLite")) {
+      return new SQLiteAdapter(dm);
+    } else {
+      throw new UnrecognizedDatabaseException(
+          "Could not resolve the database adapter. " + "The product name reported by the JDBC driver '" + name
+              + "' is not supported by " + Constants.TOOL_NAME + ".");
     }
   }
 

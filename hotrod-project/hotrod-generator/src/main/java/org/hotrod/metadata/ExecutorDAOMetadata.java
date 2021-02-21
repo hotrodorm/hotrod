@@ -20,7 +20,6 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.ColumnsRetriever;
-import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.SelectMetadataCache;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
@@ -56,6 +55,17 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   // Constructor
 
   public ExecutorDAOMetadata(final ExecutorTag tag, final DatabaseAdapter adapter, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig) throws InvalidIdentifierException {
+    initialize(tag, adapter, config, fragmentConfig, new SelectMetadataCache());
+  }
+
+  public ExecutorDAOMetadata(final ExecutorTag tag, final DatabaseAdapter adapter, final HotRodConfigTag config,
+      final HotRodFragmentConfigTag fragmentConfig, final SelectMetadataCache selectMetadataCache)
+      throws InvalidIdentifierException {
+    initialize(tag, adapter, config, fragmentConfig, selectMetadataCache);
+  }
+
+  private void initialize(final ExecutorTag tag, final DatabaseAdapter adapter, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final SelectMetadataCache selectMetadataCache)
       throws InvalidIdentifierException {
     log.debug("init");
@@ -78,7 +88,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   // Select Methods meta data gathering
 
   @SuppressWarnings("unused")
-  public boolean gatherSelectsMetadataPhase1(final Generator generator, final ColumnsRetriever cr,
+  public boolean gatherSelectsMetadataPhase1(final HotRodMetadata metadata, final ColumnsRetriever cr,
       final DataSetLayout layout) throws InvalidConfigurationFileException {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     boolean needsToRetrieveMetadata = false;
@@ -109,7 +119,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
         ColumnsPrefixGenerator columnsPrefixGenerator = new ColumnsPrefixGenerator(this.adapter.getUnescapedSQLCase());
         SelectMethodMetadata sm;
         try {
-          sm = new SelectMethodMetadata(generator, cr, selectTag, this.config, selectGenerationTag,
+          sm = new SelectMethodMetadata(metadata, cr, selectTag, this.config, selectGenerationTag,
               columnsPrefixGenerator, layout);
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();

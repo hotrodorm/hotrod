@@ -198,7 +198,7 @@
           <plugin>
             <groupId>org.hotrodorm.hotrod</groupId>
             <artifactId>hotrod-maven-plugin</artifactId>
-            <version>3.4.1-SNAPSHOT</version>
+            <version>3.4.1</version>
             <configuration>
               <localproperties>testdata/oracle-12.1/dev.properties</localproperties>
               <txtexportfile>./testdata/oracle-12.1/export-columns.txt</txtexportfile>
@@ -254,7 +254,7 @@
           <plugin>
             <groupId>org.hotrodorm.hotrod</groupId>
             <artifactId>hotrod-maven-plugin</artifactId>
-            <version>3.2.2-SNAPSHOT</version>
+            <version>3.4.2-SNAPSHOT</version>
             <configuration>
               <localproperties>testdata/postgresql-12.4/testing.properties</localproperties>
               <txtexportfile>./testdata/postgresql-12.4/export-columns.txt</txtexportfile>

@@ -9,8 +9,8 @@ import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.metadata.MetadataRepository;
 import org.hotrod.runtime.dynamicsql.expressions.CollectionExpression;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
@@ -86,7 +86,7 @@ public class SequenceOfParts extends EnhancedSQLPart {
   }
 
   @Override
-  public void validateAgainstDatabase(Generator generator) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(MetadataRepository metadata) throws InvalidConfigurationFileException {
     // Nothing to do
   }
 

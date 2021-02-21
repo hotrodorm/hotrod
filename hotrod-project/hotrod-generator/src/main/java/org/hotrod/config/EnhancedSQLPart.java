@@ -9,8 +9,8 @@ import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
 import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.metadata.MetadataRepository;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.utils.Compare;
@@ -41,7 +41,7 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
       final HotRodFragmentConfigTag fragmentConfig, final ParameterDefinitions parameters,
       final DatabaseAdapter adapter) throws InvalidConfigurationFileException;
 
-  public abstract void validateAgainstDatabase(final Generator generator)
+  public abstract void validateAgainstDatabase(final MetadataRepository metadata)
       throws InvalidConfigurationFileException;
 
   // Render SQL Angle

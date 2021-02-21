@@ -109,7 +109,7 @@ public class VOMetadata implements Serializable {
       this.classPackage = getVOClassPackage(layout, fragmentConfig);
       this.name = daosTag.generateNitroVOName(tag.getExtendedVO());
       this.abstractName = daosTag.generateNitroAbstractVOName(tag.getExtendedVO());
-      this.entityVOSuperClass = tag.getGenerator().getVORegistry()
+      this.entityVOSuperClass = tag.getVORegistry()
           .findEntityVOClass(this.tableMetadata != null ? this.tableMetadata : this.viewMetadata);
       if (this.entityVOSuperClass == null) {
         throw new InvalidConfigurationFileException(tag, //

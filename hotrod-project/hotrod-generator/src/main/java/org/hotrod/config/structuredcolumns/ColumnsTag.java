@@ -30,6 +30,7 @@ import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
+import org.hotrod.metadata.MetadataRepository;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
@@ -66,7 +67,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   private Expressions expressions = new Expressions();
 
   @SuppressWarnings("unused")
-  private transient Generator generator;
+  private transient MetadataRepository metadatarep;
 
   private boolean connectedVOResult;
 
@@ -124,21 +125,21 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   }
 
   @Override
-  public void validateAgainstDatabase(final Generator generator) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final MetadataRepository metadata) throws InvalidConfigurationFileException {
 
-    log.debug("### generator=" + generator);
+    log.debug("### metadata=" + metadata);
 
-    this.generator = generator;
+    this.metadatarep = metadata;
 
     // vos
 
     for (VOTag vo : this.vos) {
-      vo.validateAgainstDatabase(generator);
+      vo.validateAgainstDatabase(metadata);
     }
 
     // expressions
 
-    this.expressions.validateAgainstDatabase(generator, null);
+    this.expressions.validateAgainstDatabase(metadata, null);
 
   }
 

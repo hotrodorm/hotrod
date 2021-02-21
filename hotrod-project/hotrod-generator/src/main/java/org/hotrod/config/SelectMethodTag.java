@@ -20,8 +20,8 @@ import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.config.structuredcolumns.ColumnsTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
+import org.hotrod.metadata.MetadataRepository;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
@@ -313,9 +313,9 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     log.debug("columns=" + this.columns.size());
   }
 
-  public void validateAgainstDatabase(final Generator generator) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final MetadataRepository matedata) throws InvalidConfigurationFileException {
     for (EnhancedSQLPart p : this.parts) {
-      p.validateAgainstDatabase(generator);
+      p.validateAgainstDatabase(matedata);
     }
   }
 

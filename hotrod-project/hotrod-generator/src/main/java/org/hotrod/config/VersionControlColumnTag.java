@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.generator.Generator;
+import org.hotrod.metadata.MetadataRepository;
 import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -59,14 +59,14 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
 
   }
 
-  public void validateAgainstDatabase(final Generator generator, final String canonicalSQLName, final JdbcTable t)
+  public void validateAgainstDatabase(final MetadataRepository metadata, final String canonicalSQLName, final JdbcTable t)
       throws InvalidConfigurationFileException {
 
     this.jdbcTable = t;
 
     // Check the optimistic locking column exists
 
-    this.jdbcColumn = generator.findJdbcColumn(this.jdbcTable, this.name);
+    this.jdbcColumn = metadata.findJdbcColumn(this.jdbcTable, this.name);
     if (this.jdbcColumn == null) {
       throw new InvalidConfigurationFileException(this, //
           "Could not find database column '" + this.name + "'", //
@@ -81,7 +81,7 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
     // log.info("generator.getAdapter().isSerial(this.jdbcColumn)=" +
     // generator.getAdapter().isSerial(this.jdbcColumn));
 
-    if (!generator.getAdapter().isSerial(this.jdbcColumn)) {
+    if (!metadata.getAdapter().isSerial(this.jdbcColumn)) {
       throw new InvalidConfigurationFileException(this, //
           "Invalid type for version control columm '" + this.name + "' on table '" + canonicalSQLName
               + ". ' A version control column must be of an integer-like number type", //

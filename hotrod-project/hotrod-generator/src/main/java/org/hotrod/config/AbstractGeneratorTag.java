@@ -2,14 +2,12 @@ package org.hotrod.config;
 
 import java.io.File;
 
-import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
-import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
+import org.hotrod.generator.HotRodContext;
 
 public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
 
@@ -31,9 +29,8 @@ public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
 
   public abstract SelectGenerationTag getSelectGeneration();
 
-  public abstract Generator instantiateGenerator(CachedMetadata cachedMetadata, DatabaseLocation loc,
-      HotRodConfigTag config, EnabledFKs enabledFKs, DisplayMode displayMode, boolean incrementalMode,
-      DatabaseAdapter adapter, Feedback feedback)
+  public abstract Generator instantiateGenerator(HotRodContext hc, EnabledFKs enabledFKs, DisplayMode displayMode,
+      boolean incrementalMode, Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException;
 
 }

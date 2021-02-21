@@ -24,8 +24,8 @@ import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
-import org.hotrod.generator.Generator;
 import org.hotrod.metadata.ColumnMetadata;
+import org.hotrod.metadata.MetadataRepository;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.ValueTypeFactory;
@@ -280,12 +280,12 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   }
 
-  public void validateAgainstDatabase(final Generator generator, final Connection conn, final DatabaseAdapter adapter)
+  public void validateAgainstDatabase(final MetadataRepository metadata, final Connection conn, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
     // Validate the table existence
 
-    this.table = generator.findJdbcTable(this.id.getCanonicalSQLName());
+    this.table = metadata.findJdbcTable(this.id.getCanonicalSQLName());
     if (this.table == null) {
       throw new InvalidConfigurationFileException(this, //
           "Could not find database table '" + this.id.getRenderedSQLName() + "'", //
@@ -297,7 +297,7 @@ public class EnumTag extends AbstractEntityDAOTag {
     this.extraColumns = new LinkedHashMap<JdbcColumn, EnumColumn>();
 
     for (JdbcColumn c : this.table.getColumns()) {
-      ValueTypeManager<?> m = resolveValueTypeManager(c, generator.getAdapter());
+      ValueTypeManager<?> m = resolveValueTypeManager(c, metadata.getAdapter());
       try {
         this.extraColumns.put(c, new EnumColumn(c, m, adapter));
       } catch (InvalidIdentifierException e) {
@@ -331,7 +331,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     // Validate the name column
 
-    JdbcColumn nameCol = generator.findJdbcColumn(this.table, this.nameCol);
+    JdbcColumn nameCol = metadata.findJdbcColumn(this.table, this.nameCol);
     if (nameCol == null) {
       throw new InvalidConfigurationFileException(this, //
           "Could not find column '" + this.nameCol + "' on table '" + this.id.getRenderedSQLName() + "'", //
@@ -344,7 +344,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
     // Retrieve values
 
-    this.retrieveTableValues(generator.getJdbcDatabase(), conn);
+    this.retrieveTableValues(metadata.getJdbcDatabase(), conn);
 
     // Retrieve non-persistent values
 
@@ -384,7 +384,7 @@ public class EnumTag extends AbstractEntityDAOTag {
     }
 
     for (SelectMethodTag s : this.getSelects()) {
-      s.validateAgainstDatabase(generator);
+      s.validateAgainstDatabase(metadata);
     }
 
   }

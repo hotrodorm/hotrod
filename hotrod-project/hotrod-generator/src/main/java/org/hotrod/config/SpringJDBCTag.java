@@ -7,16 +7,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
+import org.hotrod.generator.HotRodContext;
 import org.hotrod.generator.springjdbc.SpringJDBCGenerator;
 import org.hotrod.utils.Compare;
-import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 @XmlRootElement(name = "spring-jdbc")
 public class SpringJDBCTag extends AbstractGeneratorTag {
@@ -82,13 +80,13 @@ public class SpringJDBCTag extends AbstractGeneratorTag {
   // Produce Generator Instance
 
   @Override
-  public Generator instantiateGenerator(final CachedMetadata cachedMetadata, final DatabaseLocation loc,
-      final HotRodConfigTag config, final EnabledFKs enabledFKs, final DisplayMode displayMode,
-      final boolean incrementalMode, final DatabaseAdapter adapter, final Feedback feedback)
+  public Generator instantiateGenerator(final HotRodContext hc, final EnabledFKs enabledFKs,
+      final DisplayMode displayMode, final boolean incrementalMode, final Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
     // Ignore cachedMetadata & selectedTags (for now)
     config.markGenerate();
-    return new SpringJDBCGenerator(loc, config, displayMode, adapter, feedback);
+//    return new SpringJDBCGenerator(null, config, displayMode, adapter, feedback);
+    return null;
   }
 
   @Override

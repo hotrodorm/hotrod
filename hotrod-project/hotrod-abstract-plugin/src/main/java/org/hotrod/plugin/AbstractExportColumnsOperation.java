@@ -10,24 +10,16 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DisplayMode;
-import org.hotrod.config.EnabledFKs;
-import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.database.DatabaseAdapterFactory;
 import org.hotrod.exceptions.ControlledException;
-import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.exceptions.UnrecognizedDatabaseException;
-import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
+import org.hotrod.generator.HotRodContext;
 import org.hotrod.runtime.BuildInformation;
 import org.hotrodorm.hotrod.utils.SUtil;
-import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.utils.XUtil;
 
 public abstract class AbstractExportColumnsOperation {
@@ -36,7 +28,7 @@ public abstract class AbstractExportColumnsOperation {
 
   protected File baseDir;
   protected String configfilename = null;
-  protected String generator = null;
+  protected String generatorName = null;
   protected String localproperties = null;
 
   protected String jdbcdriverclass = null;
@@ -57,14 +49,14 @@ public abstract class AbstractExportColumnsOperation {
 
   private LinkedHashSet<String> facetNames = null;
 
-  protected AbstractExportColumnsOperation(final File baseDir, final String configfilename, final String generator,
+  protected AbstractExportColumnsOperation(final File baseDir, final String configfilename, final String generatorName,
       final String localproperties, final String jdbcdriverclass, final String jdbcurl, final String jdbcusername,
       final String jdbcpassword, final String jdbccatalog, final String jdbcschema, final String facets,
       final String display, final String exportfilename) {
     log.debug("exportfilename=" + exportfilename);
     this.baseDir = baseDir;
     this.configfilename = configfilename;
-    this.generator = generator;
+    this.generatorName = generatorName;
     this.localproperties = localproperties;
     this.jdbcdriverclass = jdbcdriverclass;
     this.jdbcurl = jdbcurl;
@@ -85,59 +77,13 @@ public abstract class AbstractExportColumnsOperation {
 
     validateParameters(feedback);
 
-    feedback.info(" ");
-    feedback.info("Configuration File: " + this.configFile);
-
-    DatabaseLocation loc = new DatabaseLocation(this.jdbcdriverclass, this.jdbcurl, this.jdbcusername,
-        this.jdbcpassword, this.jdbccatalog, this.jdbcschema, null);
-
-    DatabaseAdapter adapter;
-    try {
-      adapter = DatabaseAdapterFactory.getAdapter(loc);
-      feedback.info("HotRod Database Adapter: " + adapter.getName());
-    } catch (UnrecognizedDatabaseException e) {
-      throw new Exception("Could not recognize database type at JDBC URL " + loc.getUrl() + " - " + e.getMessage());
-    } catch (UncontrolledException e) {
-      Throwable cause = e.getCause();
-      throw new Exception(e.getMessage() + (cause == null ? "" : ": " + cause.getMessage()));
-    } catch (Throwable e) {
-      throw new Exception("Could not connect to database: " + XUtil.abridge(e));
-    }
-
-    log.debug("Adapter loaded.");
-
-    HotRodConfigTag config = null;
-    try {
-      config = ConfigurationLoader.loadPrimary(this.baseDir, this.configFile, this.generator, adapter,
-          new LinkedHashSet<String>());
-    } catch (ControlledException e) {
-      if (e.getLocation() != null) {
-        throw new Exception("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
-      } else {
-        throw new Exception("\n" + e.getMessage());
-      }
-    } catch (UncontrolledException e) {
-      feedback.error("Technical error found: " + XUtil.abridge(e));
-      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
-    } catch (FacetNotFoundException e) {
-      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code: " + "facet '"
-          + e.getMessage() + "' not found.");
-    } catch (Throwable e) {
-      feedback.error("Technical error found: " + XUtil.abridge(e));
-      log.error("Technical error found", e);
-      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
-    }
-
-    log.debug("Main Configuration loaded.");
-
-    EnabledFKs enabledFKs = EnabledFKs.loadIfPresent(this.baseDir);
-    
-    log.debug("FKs Definition loaded.");
+    HotRodContext hc = new HotRodContext(configFile, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, jdbccatalog,
+        jdbcschema, generatorName, baseDir, facetNames, feedback);
 
     try {
-      CachedMetadata cachedMetadata = new CachedMetadata();
-      Generator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc,
-          config, enabledFKs, this.displayMode, false, adapter, feedback);
+
+      Generator g = hc.getConfig().getGenerators().getSelectedGeneratorTag().instantiateGenerator(hc, null,
+          this.displayMode, false, feedback);
       log.debug("Generator instantiated.");
 
       g.prepareGeneration();
@@ -218,7 +164,7 @@ public abstract class AbstractExportColumnsOperation {
       // 1.b Override default values
 
       this.configfilename = props.getProperty("configfile", this.configfilename);
-      this.generator = props.getProperty("generator", this.generator);
+      this.generatorName = props.getProperty("generator", this.generatorName);
       this.jdbcdriverclass = props.getProperty("jdbcdriverclass", this.jdbcdriverclass);
 
       this.jdbcurl = props.getProperty("jdbcurl");
@@ -249,7 +195,7 @@ public abstract class AbstractExportColumnsOperation {
 
     // generator
 
-    if (SUtil.isEmpty(this.generator)) {
+    if (SUtil.isEmpty(this.generatorName)) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "The attribute 'generator' must be specified.");
     }
 

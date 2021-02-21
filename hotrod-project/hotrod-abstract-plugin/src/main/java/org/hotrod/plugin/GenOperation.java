@@ -10,27 +10,19 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DisplayMode;
-import org.hotrod.config.EnabledFKs;
-import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.database.DatabaseAdapter;
-import org.hotrod.database.DatabaseAdapterFactory;
 import org.hotrod.exceptions.ControlledException;
-import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.exceptions.UnrecognizedDatabaseException;
-import org.hotrod.generator.CachedMetadata;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.Generator;
+import org.hotrod.generator.HotRodContext;
 import org.hotrod.generator.LiveGenerator;
 import org.hotrod.runtime.BuildInformation;
 import org.hotrod.utils.LocalFileGenerator;
 import org.hotrodorm.hotrod.utils.SUtil;
-import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.utils.XUtil;
 
 public class GenOperation {
@@ -39,7 +31,7 @@ public class GenOperation {
 
   private File baseDir;
   private String configfilename = null;
-  private String generator = null;
+  private String generatorName = null;
   private String localproperties = null;
 
   private String jdbcdriverclass = null;
@@ -58,13 +50,13 @@ public class GenOperation {
 
   private LinkedHashSet<String> facetNames = null;
 
-  public GenOperation(final File baseDir, final String configfilename, final String generator,
+  public GenOperation(final File baseDir, final String configfilename, final String generatorName,
       final String localproperties, final String jdbcdriverclass, final String jdbcurl, final String jdbcusername,
       final String jdbcpassword, final String jdbccatalog, final String jdbcschema, final String facets,
       final String display) {
     this.baseDir = baseDir;
     this.configfilename = configfilename;
-    this.generator = generator;
+    this.generatorName = generatorName;
     this.localproperties = localproperties;
     this.jdbcdriverclass = jdbcdriverclass;
     this.jdbcurl = jdbcurl;
@@ -84,58 +76,174 @@ public class GenOperation {
 
     validateParameters();
 
-    feedback.info("");
-    feedback.info("Configuration File: " + this.configFile);
-
-    DatabaseLocation loc = new DatabaseLocation(this.jdbcdriverclass, this.jdbcurl, this.jdbcusername,
-        this.jdbcpassword, this.jdbccatalog, this.jdbcschema, null);
-
-    DatabaseAdapter adapter;
+//    feedback.info("");
+//    feedback.info("Configuration File: " + this.configFile);
+//
+//    DatabaseLocation loc = new DatabaseLocation(this.jdbcdriverclass, this.jdbcurl, this.jdbcusername,
+//        this.jdbcpassword, this.jdbccatalog, this.jdbcschema, null);
+//
+//    feedback.info("Database URL: " + loc.getUrl());
+//
+//    EnabledFKs enabledFKs = EnabledFKs.loadIfPresent(this.baseDir);
+//
+//    log.debug("FKs Definition loaded.");
+//
+//    // Retrieve metadata
+//
+//    Connection conn = null;
     try {
-      adapter = DatabaseAdapterFactory.getAdapter(loc);
-      feedback.info("HotRod Database Adapter: " + adapter.getName());
-    } catch (UnrecognizedDatabaseException e) {
-      throw new Exception("Could not recognize database type at JDBC URL " + loc.getUrl() + " - " + e.getMessage());
-    } catch (UncontrolledException e) {
-      Throwable cause = e.getCause();
-      throw new Exception(e.getMessage() + (cause == null ? "" : ": " + cause.getMessage()));
-    } catch (Throwable e) {
-      throw new Exception("Could not connect to database: " + XUtil.abridge(e));
-    }
+//
+//      conn = loc.getConnection();
+//      log.debug("Connection open.");
+//
+//      // Database Version
+//
+//      DatabaseConnectionVersion cv;
+//      try {
+//        log.debug("Getting initial metadata.");
+//        cv = new DatabaseConnectionVersion(conn.getMetaData());
+//        log.debug("Metadata retrieval complete.");
+//
+//      } catch (SQLException e) {
+//        throw new UncontrolledException("Could not retrieve database metadata.", e);
+//      }
+//      feedback.info("Database Name: " + cv.renderDatabaseName());
+//      feedback.info("JDBC Driver: " + cv.renderJDBCDriverName() + " - implements JDBC Specification "
+//          + cv.renderJDBCSpecification());
+//
+//      // Adapter
+//
+//      DatabaseAdapter adapter;
+//      try {
+//        adapter = DatabaseAdapterFactory.getAdapter(conn);
+//        feedback.info("Database Adapter: " + adapter.getName());
+//      } catch (UnrecognizedDatabaseException e) {
+//        throw new Exception("Could not recognize database type at JDBC URL " + loc.getUrl() + " - " + e.getMessage());
+//      } catch (UncontrolledException e) {
+//        Throwable cause = e.getCause();
+//        throw new Exception(e.getMessage() + (cause == null ? "" : ": " + cause.getMessage()));
+//      } catch (Throwable e) {
+//        throw new Exception("Could not connect to database: " + XUtil.abridge(e));
+//      }
+//      log.debug("Adapter loaded.");
+//
+//      // Current Catalog & Schema
+//
+//      feedback.info("");
+//      if (adapter.supportsCatalog()) {
+//        feedback.info("Current Catalog: " + (loc.getDefaultCatalog() == null ? "" : loc.getDefaultCatalog()));
+//      }
+//      if (adapter.supportsSchema()) {
+//        feedback.info("Current Schema: " + (loc.getDefaultSchema() == null ? "" : loc.getDefaultSchema()));
+//      }
+//      feedback.info("");
+//
+//      // Configuration
+//
+//      HotRodConfigTag config = null;
+//      try {
+//        config = ConfigurationLoader.loadPrimary(this.baseDir, this.configFile, this.generatorName, adapter,
+//            this.facetNames);
+//      } catch (ControlledException e) {
+//        if (e.getLocation() != null) {
+//          throw new Exception("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
+//        } else {
+//          throw new Exception("\n" + e.getMessage());
+//        }
+//      } catch (UncontrolledException e) {
+//        feedback.error("Technical error found: " + XUtil.abridge(e));
+//        throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
+//      } catch (FacetNotFoundException e) {
+//        throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code: " + "facet '"
+//            + e.getMessage() + "' not found.");
+//      } catch (Throwable e) {
+//        feedback.error("Technical error found: " + XUtil.abridge(e));
+//        log.error("Technical error found", e);
+//        throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
+//      }
+//      log.debug("Main Configuration loaded.");
+//
+//      // Database Object Scope
+//
+//      Set<DatabaseObject> tables = new HashSet<DatabaseObject>();
+//      for (TableTag t : config.getFacetTables()) {
+//        tables.add(t.getDatabaseObjectId());
+//      }
+//      for (EnumTag e : config.getFacetEnums()) {
+//        tables.add(e.getDatabaseObjectId());
+//      }
+//
+//      Set<DatabaseObject> views = new HashSet<DatabaseObject>();
+//      for (ViewTag v : config.getFacetViews()) {
+//        views.add(v.getDatabaseObjectId());
+//      }
+//
+//      JdbcDatabase db = null;
+//
+//      try {
+//
+//        db = new JdbcDatabase(loc, tables, views);
+//        adapter.setCurrentCatalogSchema(conn, loc.getDefaultCatalog(), loc.getDefaultSchema());
+//
+//      } catch (ReaderException e) {
+//        throw new ControlledException(e.getMessage());
+//      } catch (SQLException e) {
+//        throw new UncontrolledException("Could not retrieve database metadata.", e);
+//      } catch (CatalogNotSupportedException e) {
+//        throw new ControlledException("This database does not support catalogs through the JDBC driver. "
+//            + "Please specify an empty value for the default catalog property instead of '" + loc.getDefaultCatalog()
+//            + "'.");
+//      } catch (InvalidCatalogException e) {
+//        StringBuilder sb = new StringBuilder();
+//        if (loc.getDefaultCatalog() == null) {
+//          sb.append("Please specify a default catalog.\n\n");
+//        } else {
+//          sb.append(
+//              "The specified default catalog '" + loc.getDefaultCatalog() + "' does not exist in this database.\n\n");
+//        }
+//        sb.append("The available catalogs are:\n");
+//        for (String c : e.getExistingCatalogs()) {
+//          sb.append("  " + c + "\n");
+//        }
+//        throw new ControlledException(sb.toString());
+//      } catch (SchemaNotSupportedException e) {
+//        throw new ControlledException("This database does not support schemas through the JDBC driver. "
+//            + "Please specify an empty value for the default schema property instead of '" + loc.getDefaultCatalog()
+//            + "'.");
+//      } catch (InvalidSchemaException e) {
+//        StringBuilder sb = new StringBuilder();
+//        if (loc.getDefaultSchema() == null) {
+//          sb.append("Please specify a default schema.\n\n");
+//        } else {
+//          sb.append(
+//              "The specified default schema '" + loc.getDefaultSchema() + "' does not exist in this database.\n\n");
+//        }
+//        sb.append("The available schemas are:\n");
+//        for (String s : e.getExistingSchemas()) {
+//          sb.append("  " + s + "\n");
+//        }
+//        throw new ControlledException(sb.toString());
+//      } catch (UnsupportedDatabaseException e) {
+//        throw new ControlledException("This database is not currently supported by " + Constants.TOOL_NAME);
+//      } catch (DatabaseObjectNotFoundException e) {
+//        throw new ControlledException(
+//            "Database object not found. Please check this is the correct database, catalog, and schema: "
+//                + e.getMessage());
+//      } catch (RuntimeException e) {
+//        e.printStackTrace();
+//        throw new UncontrolledException("Could not retrieve database metadata using JDBC URL " + loc.getUrl(), e);
+//      }
+//
+//      HotRodMetadata metadata = new HotRodMetadata(db, adapter, loc);
+//      metadata.load(config, loc, conn);
 
-    log.debug("Adapter loaded.");
+      HotRodContext hc = new HotRodContext(configFile, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword,
+          jdbccatalog, jdbcschema, generatorName, baseDir, facetNames, feedback);
 
-    HotRodConfigTag config = null;
-    try {
-      config = ConfigurationLoader.loadPrimary(this.baseDir, this.configFile, this.generator, adapter, this.facetNames);
-    } catch (ControlledException e) {
-      if (e.getLocation() != null) {
-        throw new Exception("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
-      } else {
-        throw new Exception("\n" + e.getMessage());
-      }
-    } catch (UncontrolledException e) {
-      feedback.error("Technical error found: " + XUtil.abridge(e));
-      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
-    } catch (FacetNotFoundException e) {
-      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code: " + "facet '"
-          + e.getMessage() + "' not found.");
-    } catch (Throwable e) {
-      feedback.error("Technical error found: " + XUtil.abridge(e));
-      log.error("Technical error found", e);
-      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
-    }
+      // Generate
 
-    log.debug("Main Configuration loaded.");
-
-    EnabledFKs enabledFKs = EnabledFKs.loadIfPresent(this.baseDir);
-
-    log.debug("FKs Definition loaded.");
-
-    try {
-      CachedMetadata cachedMetadata = new CachedMetadata();
-      Generator g = config.getGenerators().getSelectedGeneratorTag().instantiateGenerator(cachedMetadata, loc, config,
-          enabledFKs, this.displayMode, false, adapter, feedback);
+      Generator g = hc.getConfig().getGenerators().getSelectedGeneratorTag().instantiateGenerator(hc, null,
+          this.displayMode, false, feedback);
       log.debug("Generator instantiated.");
 
       try {
@@ -227,7 +335,7 @@ public class GenOperation {
       // 1.b Override default values
 
       this.configfilename = props.getProperty("configfile", this.configfilename);
-      this.generator = props.getProperty("generator", this.generator);
+      this.generatorName = props.getProperty("generator", this.generatorName);
       this.jdbcdriverclass = props.getProperty("jdbcdriverclass", this.jdbcdriverclass);
 
       this.jdbcurl = props.getProperty("jdbcurl");
@@ -256,7 +364,7 @@ public class GenOperation {
 
     // generator
 
-    if (SUtil.isEmpty(this.generator)) {
+    if (SUtil.isEmpty(this.generatorName)) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "The attribute 'generator' must be specified.");
     }
 

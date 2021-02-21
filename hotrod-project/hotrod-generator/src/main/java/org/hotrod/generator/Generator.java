@@ -1,41 +1,20 @@
 package org.hotrod.generator;
 
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.metadata.TableDataSetMetadata;
+import org.hotrod.metadata.MetadataRepository;
 import org.hotrod.metadata.VORegistry;
-import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
-import org.nocrala.tools.database.tartarus.core.JdbcColumn;
-import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
-import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
-public interface Generator {
-
-  TableDataSetMetadata findTableMetadata(ObjectId id);
-
-  JdbcTable findJdbcTable(String name);
-
-  JdbcTable findJdbcView(String name);
-
-  JdbcColumn findJdbcColumn(JdbcTable t, String name);
-
-  TableDataSetMetadata findViewMetadata(ObjectId id);
+public interface Generator extends MetadataRepository {
 
   void display(String txt);
 
   VORegistry getVORegistry();
 
-  DatabaseAdapter getAdapter();
-
   HotRodConfigTag getConfig();
-
-  JdbcDatabase getJdbcDatabase();
-
-  DatabaseLocation getLoc();
 
   /**
    * Gathers all extra metadata for the specific generator.

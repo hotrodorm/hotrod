@@ -22,8 +22,8 @@ import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
-import org.hotrod.generator.Generator;
 import org.hotrod.metadata.ColumnMetadata;
+import org.hotrod.metadata.MetadataRepository;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.utils.ColumnsMetadataRetriever;
@@ -44,14 +44,14 @@ public class Expressions implements ColumnsProvider, Serializable {
   private List<ExpressionTag> expressions;
 
   protected transient ColumnsMetadataRetriever columnsRetriever;
-  private transient Generator generator;
+  private transient MetadataRepository metadata;
 
   // Constructor
 
   public Expressions() {
     this.expressions = new ArrayList<ExpressionTag>();
     this.columnsRetriever = null;
-    this.generator = null;
+    this.metadata = null;
   }
 
   // Behavior
@@ -72,9 +72,9 @@ public class Expressions implements ColumnsProvider, Serializable {
     }
   }
 
-  public void validateAgainstDatabase(final Generator generator, final TableDataSetMetadata tableMetadata)
+  public void validateAgainstDatabase(final MetadataRepository metadata, final TableDataSetMetadata tableMetadata)
       throws InvalidConfigurationFileException {
-    this.generator = generator;
+    this.metadata = metadata;
     this.tableMetadata = tableMetadata;
   }
 
@@ -86,8 +86,8 @@ public class Expressions implements ColumnsProvider, Serializable {
     if (this.expressions.isEmpty()) {
       this.columnsRetriever = null;
     } else {
-      this.columnsRetriever = new ColumnsMetadataRetriever(selectTag, this.generator.getAdapter(),
-          this.generator.getJdbcDatabase(), this.generator.getLoc(), selectGenerationTag, this, null,
+      this.columnsRetriever = new ColumnsMetadataRetriever(selectTag, this.metadata.getAdapter(),
+          this.metadata.getJdbcDatabase(), this.metadata.getLoc(), selectGenerationTag, this, null,
           columnsPrefixGenerator, cr);
       this.columnsRetriever.prepareRetrieval();
     }
@@ -98,7 +98,7 @@ public class Expressions implements ColumnsProvider, Serializable {
   @Override
   public String renderColumns() {
     this.expressionsByAlias = new HashMap<String, ExpressionTag>();
-    String aliasPrefix = this.generator.getAdapter().getUnescapedSQLCase() == UnescapedSQLCase.UPPER_CASE ? "EXPR_"
+    String aliasPrefix = this.metadata.getAdapter().getUnescapedSQLCase() == UnescapedSQLCase.UPPER_CASE ? "EXPR_"
         : "expr_";
     ListWriter w = new ListWriter("      ", "", ",\n");
     int n = 0;
@@ -135,7 +135,7 @@ public class Expressions implements ColumnsProvider, Serializable {
         }
         log.debug("******** java-name=" + ct.getJavaName() + " java-type=" + ct.getJavaType());
         try {
-          cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag, this.generator.getAdapter());
+          cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag, this.metadata.getAdapter());
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid name for column '" + cm.getColumnName() + tag.getClassName() + "': " + e.getMessage();
           throw new InvalidConfigurationFileException(tag, msg, msg);

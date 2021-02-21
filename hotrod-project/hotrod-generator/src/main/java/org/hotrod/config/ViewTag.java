@@ -16,7 +16,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.generator.Generator;
+import org.hotrod.metadata.MetadataRepository;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.identifiers.Id;
@@ -224,9 +224,9 @@ public class ViewTag extends AbstractEntityDAOTag {
 
   }
 
-  public void validateAgainstDatabase(final Generator generator) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final MetadataRepository metadata) throws InvalidConfigurationFileException {
 
-    JdbcTable v = generator.findJdbcView(this.id.getCanonicalSQLName());
+    JdbcTable v = metadata.findJdbcView(this.id.getCanonicalSQLName());
     if (v == null) {
       throw new InvalidConfigurationFileException(this, //
           "Could not find database view '" + this.id.getRenderedSQLName() + "'", //
@@ -238,7 +238,7 @@ public class ViewTag extends AbstractEntityDAOTag {
     }
 
     for (ColumnTag c : this.columns) {
-      JdbcColumn jc = generator.findJdbcColumn(v, c.getName());
+      JdbcColumn jc = metadata.findJdbcColumn(v, c.getName());
       if (jc == null) {
         throw new InvalidConfigurationFileException(this, //
             "Could not find column '" + c.getName() + "' on view", //
@@ -248,7 +248,7 @@ public class ViewTag extends AbstractEntityDAOTag {
     }
 
     for (SelectMethodTag s : this.getSelects()) {
-      s.validateAgainstDatabase(generator);
+      s.validateAgainstDatabase(metadata);
     }
 
   }

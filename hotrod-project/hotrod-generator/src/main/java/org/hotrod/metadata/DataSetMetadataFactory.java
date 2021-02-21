@@ -22,12 +22,23 @@ public abstract class DataSetMetadataFactory {
   private static final Logger log = LogManager.getLogger(DataSetMetadataFactory.class);
 
   public static TableDataSetMetadata getMetadata(final JdbcTable t, final DatabaseAdapter adapter,
+      final HotRodConfigTag config, final DataSetLayout layout)
+      throws UnresolvableDataTypeException, InvalidConfigurationFileException {
+    return getMetadata(t, adapter, config, layout, null);
+  }
+
+  public static TableDataSetMetadata getMetadata(final JdbcTable t, final DatabaseAdapter adapter,
       final HotRodConfigTag config, final DataSetLayout layout, final CachedMetadata cachedMetadata)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
 
-    JdbcDatabase cachedDB = cachedMetadata.getCachedDatabase();
-    HotRodConfigTag cachedConfig = cachedMetadata.getConfig();
-    SelectMetadataCache selectMetadataCache = cachedMetadata.getSelectMetadataCache();
+    JdbcDatabase cachedDB = null;
+    HotRodConfigTag cachedConfig = null;
+    SelectMetadataCache selectMetadataCache = null;
+    if (cachedMetadata != null) {
+      cachedDB = cachedMetadata.getCachedDatabase();
+      cachedConfig = cachedMetadata.getConfig();
+      selectMetadataCache = cachedMetadata.getSelectMetadataCache();
+    }
 
     // Table
 

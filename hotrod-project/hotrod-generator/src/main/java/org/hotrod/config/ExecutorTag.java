@@ -7,7 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.generator.Generator;
+import org.hotrod.metadata.MetadataRepository;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
@@ -98,10 +98,10 @@ public class ExecutorTag extends AbstractDAOTag {
 
   }
 
-  public void validateAgainstDatabase(final Generator generator) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final MetadataRepository metadata) throws InvalidConfigurationFileException {
 
     for (SelectMethodTag s : this.getSelects()) {
-      s.validateAgainstDatabase(generator);
+      s.validateAgainstDatabase(metadata);
     }
 
   }
