@@ -23,8 +23,6 @@
 
   <xsd:complexType name="generators-type">
     <xsd:all>
-      <xsd:element name="mybatis" type="mybatis-type" minOccurs="0" />
-      <xsd:element name="spring-jdbc" type="spring-jdbc-type" minOccurs="0" />
       <xsd:element name="mybatis-spring" type="mybatis-spring-type" minOccurs="0" />
     </xsd:all>
   </xsd:complexType>
@@ -52,25 +50,6 @@
     <xsd:attribute name="java-type" type="xsd:string" />
     <xsd:attribute name="force-jdbc-type-on-write" type="xsd:string" />
     <xsd:attribute name="converter" type="xsd:string" />
-  </xsd:complexType>
-
-  <xsd:complexType name="mybatis-type">
-    <xsd:sequence>
-      <xsd:element name="daos" type="daos-type" />
-      <xsd:element name="mappers" type="mappers-type" />
-      <xsd:element name="mybatis-configuration-template" type="mybatis-configuration-template-type" />
-      <xsd:element name="session-factory" type="session-factory-type" />
-      <xsd:element name="select-generation" type="select-generation-type" />
-      <xsd:element name="property" type="property-type" minOccurs="0" maxOccurs="unbounded" />
-    </xsd:sequence>
-  </xsd:complexType>
-
-  <xsd:complexType name="spring-jdbc-type">
-    <xsd:sequence>
-      <xsd:element name="daos" type="daos-type" />
-      <xsd:element name="config" type="config-type" />
-      <xsd:element name="select-generation" type="select-generation-type" />
-    </xsd:sequence>
   </xsd:complexType>
 
   <xsd:complexType name="mybatis-spring-type">
@@ -108,21 +87,7 @@
     <xsd:attribute name="primitives-prefix" type="xsd:string" />
     <xsd:attribute name="primitives-suffix" type="xsd:string" />
   </xsd:complexType>
-
-  <xsd:complexType name="daos-type">
-    <xsd:attribute name="base-dir" type="xsd:string" />
-    <xsd:attribute name="package" type="xsd:string" use="required" />
-    <xsd:attribute name="primitives-package" type="xsd:string" />
-    <xsd:attribute name="vo-prefix" type="xsd:string" />
-    <xsd:attribute name="vo-suffix" type="xsd:string" />
-    <xsd:attribute name="abstract-vo-prefix" type="xsd:string" />
-    <xsd:attribute name="abstract-vo-suffix" type="xsd:string" />
-    <xsd:attribute name="dao-prefix" type="xsd:string" />
-    <xsd:attribute name="dao-suffix" type="xsd:string" />
-    <xsd:attribute name="primitives-prefix" type="xsd:string" />
-    <xsd:attribute name="primitives-suffix" type="xsd:string" />
-  </xsd:complexType>
-
+ 
   <xsd:complexType name="mappers-type">
     <xsd:attribute name="base-dir" type="xsd:string" />
     <xsd:attribute name="dir" type="xsd:string" use="required" />
@@ -131,11 +96,7 @@
   <xsd:complexType name="mybatis-configuration-template-type">
     <xsd:attribute name="file" type="xsd:string" use="required" />
   </xsd:complexType>
-
-  <xsd:complexType name="session-factory-type">
-    <xsd:attribute name="singleton-full-class-name" type="xsd:string" use="required" />
-  </xsd:complexType>
-
+ 
   <xsd:complexType name="select-generation-type">
     <xsd:attribute name="temp-view-base-name" type="xsd:string" />
     <xsd:attribute name="strategy" type="xsd:string" />
@@ -146,12 +107,6 @@
   <xsd:complexType name="property-type">
     <xsd:attribute name="name" type="xsd:string" use="required" />
     <xsd:attribute name="value" type="xsd:string" use="required" />
-  </xsd:complexType>
-
-  <xsd:complexType name="config-type">
-    <xsd:attribute name="gen-base-dir" type="xsd:string" use="required" />
-    <xsd:attribute name="relative-dir" type="xsd:string" use="required" />
-    <xsd:attribute name="prefix" type="xsd:string" use="required" />
   </xsd:complexType>
 
 </xsd:schema>

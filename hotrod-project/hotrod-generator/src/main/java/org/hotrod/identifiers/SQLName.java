@@ -1,4 +1,4 @@
-package org.hotrod.utils.identifiers;
+package org.hotrod.identifiers;
 
 import java.util.ArrayList;
 import java.util.List;

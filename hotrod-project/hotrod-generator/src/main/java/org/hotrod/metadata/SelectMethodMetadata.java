@@ -27,6 +27,8 @@ import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
+import org.hotrod.identifiers.Id;
+import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.VOMetadata.DuplicatePropertyNameException;
 import org.hotrod.metadata.VOMetadata.VOMember;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
@@ -36,8 +38,6 @@ import org.hotrod.metadata.VORegistry.VOProperty;
 import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
-import org.hotrod.utils.identifiers.Id;
-import org.hotrod.utils.identifiers.ObjectId;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 

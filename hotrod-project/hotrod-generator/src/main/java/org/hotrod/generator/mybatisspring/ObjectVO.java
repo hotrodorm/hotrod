@@ -10,12 +10,12 @@ import org.hotrod.config.MyBatisSpringTag;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
+import org.hotrod.identifiers.ObjectId;
 import org.hotrod.generator.GeneratableObject;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ImportsRenderer;
-import org.hotrod.utils.identifiers.ObjectId;
 
 public class ObjectVO extends GeneratableObject {
 

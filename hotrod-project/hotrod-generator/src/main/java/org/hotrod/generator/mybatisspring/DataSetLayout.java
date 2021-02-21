@@ -7,7 +7,6 @@ import org.hotrod.config.DaosTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.MappersTag;
 import org.hotrod.config.MyBatisSpringTag;
-import org.hotrod.config.MyBatisTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.utils.ClassPackage;
 
@@ -17,7 +16,7 @@ public class DataSetLayout implements Serializable {
 
   private HotRodConfigTag config;
   private String columnSeam;
-  private String sessionFactoryGetter;
+//  private String sessixxonFactoryGetter;
 
   private DaosTag daos;
   private MappersTag mappers;
@@ -36,15 +35,15 @@ public class DataSetLayout implements Serializable {
     this.config = config;
 
     try {
-      MyBatisTag mybatis = (MyBatisTag) this.config.getGenerators().getSelectedGeneratorTag();
-      this.daos = mybatis.getDaos();
-      this.mappers = mybatis.getMappers();
-      this.sessionFactoryGetter = mybatis.getSessionFactory().getSessionFactoryGetter();
+      MyBatisSpringTag gtag = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
+      this.daos = gtag.getDaos();
+      this.mappers = gtag.getMappers();
+//      this.sessionFactoryGetter = mybatis.getSessionFactory().getSessionFactoryGetter();
     } catch (ClassCastException e) {
       MyBatisSpringTag mybatis = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
       this.daos = mybatis.getDaos();
       this.mappers = mybatis.getMappers();
-      this.sessionFactoryGetter = null;
+//      this.sessionFactoryGetter = null;
     }
 
   }
@@ -77,9 +76,9 @@ public class DataSetLayout implements Serializable {
     return columnSeam;
   }
 
-  public String getSessionFactoryGetter() {
-    return sessionFactoryGetter;
-  }
+//  public String getSessionFactoryGetter() {
+//    return sessionFactoryGetter;
+//  }
 
   // VOs
 

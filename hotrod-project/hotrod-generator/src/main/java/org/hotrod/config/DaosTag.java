@@ -9,9 +9,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidPackageException;
+import org.hotrod.identifiers.ObjectId;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
-import org.hotrod.utils.identifiers.ObjectId;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "daos")

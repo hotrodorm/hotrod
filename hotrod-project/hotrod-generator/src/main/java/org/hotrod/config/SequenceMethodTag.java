@@ -8,9 +8,9 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
+import org.hotrod.identifiers.Id;
+import org.hotrod.identifiers.ObjectId;
 import org.hotrod.utils.Compare;
-import org.hotrod.utils.identifiers.Id;
-import org.hotrod.utils.identifiers.ObjectId;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "sequence")

@@ -10,10 +10,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
+import org.hotrod.identifiers.Id;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.JdbcTypes.JDBCType;
-import org.hotrod.utils.identifiers.Id;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "parameter")

@@ -16,6 +16,7 @@ import org.hotrod.config.structuredcolumns.VOTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
+import org.hotrod.identifiers.Id;
 import org.hotrod.metadata.VORegistry.EntityVOClass;
 import org.hotrod.metadata.VORegistry.SelectVOClass;
 import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
@@ -23,7 +24,6 @@ import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOProperty;
 import org.hotrod.metadata.VORegistry.VOProperty.EnclosingTagType;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.identifiers.Id;
 
 public class VOMetadata implements Serializable {
 

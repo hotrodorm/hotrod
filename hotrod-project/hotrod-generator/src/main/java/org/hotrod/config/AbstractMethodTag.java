@@ -3,7 +3,7 @@ package org.hotrod.config;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.utils.identifiers.Id;
+import org.hotrod.identifiers.Id;
 
 public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends AbstractConfigurationTag
     implements GenerationUnit<AbstractMethodTag<M>> {

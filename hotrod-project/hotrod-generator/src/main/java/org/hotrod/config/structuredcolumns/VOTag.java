@@ -34,6 +34,8 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
+import org.hotrod.identifiers.Id;
+import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -45,8 +47,6 @@ import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsPrefixGenerator;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.JdbcTypes;
-import org.hotrod.utils.identifiers.Id;
-import org.hotrod.utils.identifiers.ObjectId;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 

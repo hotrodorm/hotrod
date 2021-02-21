@@ -37,16 +37,6 @@ public class GeneratorsTag extends AbstractConfigurationTag {
 
   // JAXB Setters
 
-  @XmlElement(name = "mybatis")
-  public void setMyBatis(final MyBatisTag g) {
-    this.generators.add(g);
-  }
-
-  @XmlElement(name = "spring-jdbc")
-  public void setSpringJdbc(final SpringJDBCTag g) {
-    this.generators.add(g);
-  }
-
   @XmlElement(name = "mybatis-spring")
   public void setMyBatisSpring(final MyBatisSpringTag g) {
     this.generators.add(g);

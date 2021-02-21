@@ -1,10 +1,10 @@
-package org.hotrod.utils.identifiers;
+package org.hotrod.identifiers;
 
 import java.util.List;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.utils.identifiers.Id.NamePart;
+import org.hotrod.identifiers.Id.NamePart;
 
 public class ObjectId implements Comparable<ObjectId> {
 

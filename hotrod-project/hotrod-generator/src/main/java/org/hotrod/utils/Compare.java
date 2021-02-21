@@ -11,8 +11,8 @@ import org.hotrod.config.ConverterTag;
 import org.hotrod.config.ParameterTag;
 import org.hotrod.config.SelectGenerationTag.SelectStrategy;
 import org.hotrod.config.dynamicsql.DynamicSQLPart.ParameterDefinitions;
-import org.hotrod.utils.identifiers.Id;
-import org.hotrod.utils.identifiers.ObjectId;
+import org.hotrod.identifiers.Id;
+import org.hotrod.identifiers.ObjectId;
 
 public class Compare {
 
