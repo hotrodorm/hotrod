@@ -158,7 +158,7 @@ public class ObjectDAO extends GeneratableObject {
 
     File dir = this.layout.getDaoPrimitivePackageDir(this.fragmentPackage);
     File f = new File(dir, className);
-    log.info("f=" + f);
+    log.debug("f=" + f);
 
     this.w = null;
 

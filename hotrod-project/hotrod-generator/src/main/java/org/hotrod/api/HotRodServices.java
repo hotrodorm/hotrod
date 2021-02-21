@@ -74,7 +74,7 @@ public class HotRodServices {
         LiveGenerator liveGenerator = (LiveGenerator) g;
 
         // a live generator
-        log.info("live generator");
+        log.debug("live generator");
 
         g.prepareGeneration();
         FileGenerator fg = new LocalFileGenerator();
@@ -83,7 +83,7 @@ public class HotRodServices {
       } catch (ClassCastException e) {
 
         // a batch generator
-        log.info("batch generator");
+        log.debug("batch generator");
 
         g.prepareGeneration();
         g.generate();
