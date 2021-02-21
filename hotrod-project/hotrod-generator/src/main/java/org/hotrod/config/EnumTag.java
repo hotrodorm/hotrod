@@ -25,7 +25,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.metadata.MetadataRepository;
+import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.ValueTypeFactory;
@@ -280,7 +280,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   }
 
-  public void validateAgainstDatabase(final MetadataRepository metadata, final Connection conn, final DatabaseAdapter adapter)
+  public void validateAgainstDatabase(final Metadata metadata, final Connection conn, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
     // Validate the table existence

@@ -1049,8 +1049,8 @@ public class Mapper extends GeneratableObject {
     println("  <!-- select sequence " + seq.getSequenceId().getRenderedSQLName() + " -->");
     println();
     println("  <select id=\"" + this.getMapperSelectSequence(seq) + "\" " + "resultType=\"java.lang.Long\">");
-    String sentence = this.generator.getAdapter().renderSelectSequence(seq.getSequenceId());
-    println("    " + SUtil.escapeXmlBody(sentence));
+//    String sentence = this.generator.getAdapter().renderSelectSequence(seq.getSequenceId());
+//    println("    " + SUtil.escapeXmlBody(sentence));
     println("  </select>");
     println();
   }

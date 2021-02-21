@@ -16,7 +16,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.metadata.MetadataRepository;
+import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.identifiers.Id;
@@ -224,7 +224,7 @@ public class ViewTag extends AbstractEntityDAOTag {
 
   }
 
-  public void validateAgainstDatabase(final MetadataRepository metadata) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final Metadata metadata) throws InvalidConfigurationFileException {
 
     JdbcTable v = metadata.findJdbcView(this.id.getCanonicalSQLName());
     if (v == null) {

@@ -53,7 +53,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   private boolean structuredSelect;
 
-  private transient HotRodMetadata metadata;
+  private transient Metadata metadata;
   private ColumnsRetriever cr;
   private transient DataSetLayout layout;
   private transient JdbcDatabase db;
@@ -80,7 +80,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   // Constructor
 
-  public SelectMethodMetadata(final HotRodMetadata metadata, final ColumnsRetriever cr, final SelectMethodTag tag,
+  public SelectMethodMetadata(final Metadata metadata, final ColumnsRetriever cr, final SelectMethodTag tag,
       final HotRodConfigTag config, final SelectGenerationTag selectGenerationTag,
       final ColumnsPrefixGenerator columnsPrefixGenerator, final DataSetLayout layout)
       throws InvalidIdentifierException, InvalidConfigurationFileException {

@@ -42,9 +42,9 @@ import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
-public class HotRodMetadata implements MetadataRepository {
+public class Metadata {
 
-  private static final Logger log = LogManager.getLogger(HotRodMetadata.class);
+  private static final Logger log = LogManager.getLogger(Metadata.class);
 
   private JdbcDatabase db;
   private DatabaseAdapter adapter;
@@ -56,7 +56,7 @@ public class HotRodMetadata implements MetadataRepository {
   private LinkedHashSet<ExecutorDAOMetadata> executors = null;
   private VORegistry voRegistry = null;
 
-  public HotRodMetadata(final JdbcDatabase db, final DatabaseAdapter adapter, final DatabaseLocation dloc) {
+  public Metadata(final JdbcDatabase db, final DatabaseAdapter adapter, final DatabaseLocation dloc) {
     this.db = db;
     this.adapter = adapter;
     this.dloc = dloc;
@@ -433,14 +433,12 @@ public class HotRodMetadata implements MetadataRepository {
     return executors;
   }
 
-  @Override
   public VORegistry getVORegistry() {
     return voRegistry;
   }
 
   // implements MetadataRepository
 
-  @Override
   public TableDataSetMetadata findTableMetadata(final ObjectId id) {
     for (TableDataSetMetadata tm : this.tables) {
       if (tm.getId().equals(id)) {
@@ -450,7 +448,6 @@ public class HotRodMetadata implements MetadataRepository {
     return null;
   }
 
-  @Override
   public JdbcTable findJdbcTable(final String name) {
     for (JdbcTable t : this.db.getTables()) {
       if (this.adapter.isTableIdentifier(t.getName(), name)) {
@@ -460,7 +457,6 @@ public class HotRodMetadata implements MetadataRepository {
     return null;
   }
 
-  @Override
   public JdbcTable findJdbcView(final String name) {
     for (JdbcTable t : this.db.getViews()) {
       if (this.adapter.isTableIdentifier(t.getName(), name)) {
@@ -470,7 +466,6 @@ public class HotRodMetadata implements MetadataRepository {
     return null;
   }
 
-  @Override
   public JdbcColumn findJdbcColumn(final JdbcTable t, final String name) {
     for (JdbcColumn c : t.getColumns()) {
       if (this.adapter.isColumnIdentifier(c.getName(), name)) {
@@ -480,7 +475,6 @@ public class HotRodMetadata implements MetadataRepository {
     return null;
   }
 
-  @Override
   public TableDataSetMetadata findViewMetadata(final ObjectId id) {
     for (TableDataSetMetadata tm : this.views) {
       if (tm.getId().equals(id)) {
@@ -490,17 +484,14 @@ public class HotRodMetadata implements MetadataRepository {
     return null;
   }
 
-  @Override
   public DatabaseAdapter getAdapter() {
     return this.adapter;
   }
 
-  @Override
   public JdbcDatabase getJdbcDatabase() {
     return this.db;
   }
 
-  @Override
   public DatabaseLocation getLoc() {
     return this.dloc;
   }

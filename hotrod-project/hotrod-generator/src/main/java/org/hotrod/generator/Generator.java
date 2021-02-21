@@ -4,11 +4,9 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.metadata.MetadataRepository;
 import org.hotrod.metadata.VORegistry;
-import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
-public interface Generator extends MetadataRepository {
+public interface Generator {
 
   void display(String txt);
 

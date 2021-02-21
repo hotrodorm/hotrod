@@ -1153,9 +1153,9 @@ public class ObjectDAO extends GeneratableObject {
       }
     }
 
-    boolean integratesSequences = this.generator.getAdapter().getInsertIntegration().integratesSequences();
-    boolean integratesIdentities = this.generator.getAdapter().getInsertIntegration().integratesIdentities();
-    boolean integratesDefaults = this.generator.getAdapter().getInsertIntegration().integratesDefaults();
+    boolean integratesSequences = true; // this.generator.getAdapter().getInsertIntegration().integratesSequences();
+    boolean integratesIdentities = true; // this.generator.getAdapter().getInsertIntegration().integratesIdentities();
+    boolean integratesDefaults = true; // this.generator.getAdapter().getInsertIntegration().integratesDefaults();
 
     boolean extraInsert = integratesSequences && integratesDefaults && defaults != 0;
 
@@ -1287,7 +1287,7 @@ public class ObjectDAO extends GeneratableObject {
 
   private void writeInsertIntegrated(final boolean integratesSequences, final boolean integratesIdentities,
       final boolean extraInsert) throws IOException {
-    if (this.generator.getAdapter().integratesUsingQuery()) {
+    if (true) {
       println("    " + this.vo.getClassName() + " values = sqlSession.selectOne(id, vo);");
       println("    int rows = 1;");
       for (ColumnMetadata cm : this.metadata.getColumns()) {
@@ -2114,7 +2114,7 @@ public class ObjectDAO extends GeneratableObject {
 
     println("  // sequence " + tag.getSequenceId().getRenderedSQLName());
     println();
-    println(ObjectDAO.renderJavaComment(this.generator.getAdapter().renderSelectSequence(tag.getSequenceId())));
+    println(ObjectDAO.renderJavaComment(null));
     println();
 
     println("  public static long " + tag.getMethod() + "()");

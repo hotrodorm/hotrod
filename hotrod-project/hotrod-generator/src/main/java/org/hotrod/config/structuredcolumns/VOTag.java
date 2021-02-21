@@ -35,7 +35,7 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.metadata.MetadataRepository;
+import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata.IdColumnNotFoundException;
 import org.hotrod.metadata.TableDataSetMetadata;
@@ -97,7 +97,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
 
   private Expressions expressions = new Expressions();
 
-  private transient MetadataRepository metadata;
+  private transient Metadata metadata;
 
   private String compiledBody;
   private boolean useAllColumns;
@@ -427,7 +427,7 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
     log.debug("Validation complete.");
   }
 
-  public void validateAgainstDatabase(final MetadataRepository metadata) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final Metadata metadata) throws InvalidConfigurationFileException {
     this.metadata = metadata;
     log.debug("*** this.table=" + this.table + " this.view=" + this.view);
     if (this.table != null) {

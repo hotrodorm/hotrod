@@ -26,7 +26,7 @@ import org.hotrod.config.structuredcolumns.ColumnsProvider;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
-import org.hotrod.metadata.MetadataRepository;
+import org.hotrod.metadata.Metadata;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.utils.Compare;
@@ -99,7 +99,7 @@ public class ComplementTag extends EnhancedSQLPart {
   }
 
   @Override
-  public void validateAgainstDatabase(final MetadataRepository metadata) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final Metadata metadata) throws InvalidConfigurationFileException {
     // Nothing to do
   }
 

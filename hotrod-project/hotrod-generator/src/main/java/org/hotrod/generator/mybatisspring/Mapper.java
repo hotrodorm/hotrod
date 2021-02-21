@@ -81,15 +81,15 @@ public class Mapper extends GeneratableObject {
     initialize(metadata, layout, generator, type, adapter, vo);
   }
 
-  public Mapper(final SelectClassTag selectTag, final DataSetMetadata metadata, final DataSetLayout layout,
-      final MyBatisSpringGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo) {
-    super();
-    log.debug("init");
-    this.compositeTag = null;
-    this.selectTag = selectTag;
-    this.entityDAORegistry = null;
-    initialize(metadata, layout, generator, type, adapter, vo);
-  }
+//  public Mapper(final SelectClassTag selectTag, final DataSetMetadata metadata, final DataSetLayout layout,
+//      final MyBatisSpringGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo) {
+//    super();
+//    log.debug("init");
+//    this.compositeTag = null;
+//    this.selectTag = selectTag;
+//    this.entityDAORegistry = null;
+//    initialize(metadata, layout, generator, type, adapter, vo);
+//  }
 
   private void initialize(final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisSpringGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo) {
@@ -1064,7 +1064,7 @@ public class Mapper extends GeneratableObject {
     println("  <!-- select sequence " + seq.getSequenceId().getRenderedSQLName() + " -->");
     println();
     println("  <select id=\"" + this.getMapperSelectSequence(seq) + "\" " + "resultType=\"java.lang.Long\">");
-    String sentence = this.generator.getAdapter().renderSelectSequence(seq.getSequenceId());
+    String sentence = this.adapter.renderSelectSequence(seq.getSequenceId());
     println("    " + SUtil.escapeXmlBody(sentence));
     println("  </select>");
     println();

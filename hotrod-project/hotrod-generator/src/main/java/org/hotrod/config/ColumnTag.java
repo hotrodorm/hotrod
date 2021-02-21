@@ -9,7 +9,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
-import org.hotrod.metadata.MetadataRepository;
+import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.identifiers.Id;
@@ -370,12 +370,11 @@ public class ColumnTag extends AbstractConfigurationTag {
 
   }
 
-  void populateJdbcElements(final MetadataRepository metadata, final JdbcTable t)
-      throws InvalidConfigurationFileException {
+  void populateJdbcElements(final Metadata metadata, final JdbcTable t) throws InvalidConfigurationFileException {
     this.column = metadata.findJdbcColumn(t, this.name);
   }
 
-  public void validateAgainstDatabase(final MetadataRepository metadata) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final Metadata metadata) throws InvalidConfigurationFileException {
     if (this.sequence != null) {
       if (this.column.getAutogenerationType() != null && this.column.getAutogenerationType().isIdentity()) {
         throw new InvalidConfigurationFileException(this, //

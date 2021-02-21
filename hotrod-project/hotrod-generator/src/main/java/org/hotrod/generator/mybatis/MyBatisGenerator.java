@@ -26,7 +26,7 @@ import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.ExecutorDAOMetadata;
-import org.hotrod.metadata.HotRodMetadata;
+import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.SelectMethodMetadata.SelectMethodReturnType;
 import org.hotrod.metadata.TableDataSetMetadata;
@@ -53,7 +53,7 @@ public class MyBatisGenerator extends FormerGenerator implements LiveGenerator {
 
   private EntityDAORegistry entityDAORegistry = new EntityDAORegistry();
 
-  public MyBatisGenerator(final JdbcDatabase db, final HotRodMetadata metadata, final DatabaseLocation loc, final HotRodConfigTag config,
+  public MyBatisGenerator(final JdbcDatabase db, final Metadata metadata, final DatabaseLocation loc, final HotRodConfigTag config,
       final DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter,
       final Feedback feedback) throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
     super(db, metadata, loc, config, displayMode, incrementalMode, adapter, feedback);

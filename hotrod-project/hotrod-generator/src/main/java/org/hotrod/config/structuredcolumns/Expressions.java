@@ -23,7 +23,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
 import org.hotrod.metadata.ColumnMetadata;
-import org.hotrod.metadata.MetadataRepository;
+import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.utils.ColumnsMetadataRetriever;
@@ -44,7 +44,7 @@ public class Expressions implements ColumnsProvider, Serializable {
   private List<ExpressionTag> expressions;
 
   protected transient ColumnsMetadataRetriever columnsRetriever;
-  private transient MetadataRepository metadata;
+  private transient Metadata metadata;
 
   // Constructor
 
@@ -72,7 +72,7 @@ public class Expressions implements ColumnsProvider, Serializable {
     }
   }
 
-  public void validateAgainstDatabase(final MetadataRepository metadata, final TableDataSetMetadata tableMetadata)
+  public void validateAgainstDatabase(final Metadata metadata, final TableDataSetMetadata tableMetadata)
       throws InvalidConfigurationFileException {
     this.metadata = metadata;
     this.tableMetadata = tableMetadata;

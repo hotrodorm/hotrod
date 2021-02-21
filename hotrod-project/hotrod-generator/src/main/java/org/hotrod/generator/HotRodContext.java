@@ -22,7 +22,7 @@ import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
-import org.hotrod.metadata.HotRodMetadata;
+import org.hotrod.metadata.Metadata;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.nocrala.tools.database.tartarus.connectors.DatabaseConnectorFactory.UnsupportedDatabaseException;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
@@ -45,7 +45,7 @@ public class HotRodContext {
   private DatabaseAdapter adapter;
   private HotRodConfigTag config;
   private JdbcDatabase db;
-  private HotRodMetadata metadata;
+  private Metadata metadata;
 
   public HotRodContext(final File configFile, final String jdbcdriverclass, final String jdbcurl,
       final String jdbcusername, final String jdbcpassword, final String jdbccatalog, final String jdbcschema,
@@ -55,8 +55,8 @@ public class HotRodContext {
     feedback.info("");
     feedback.info("Configuration File: " + configFile);
 
-    DatabaseLocation loc = new DatabaseLocation(jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, jdbccatalog,
-        jdbcschema, null);
+    this.loc = new DatabaseLocation(jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, jdbccatalog, jdbcschema,
+        null);
 
     feedback.info("Database URL: " + loc.getUrl());
 
@@ -64,7 +64,7 @@ public class HotRodContext {
     try {
 
       try {
-        conn = loc.getConnection();
+        conn = this.loc.getConnection();
         log.debug("Connection open.");
       } catch (SQLException e) {
         throw new ControlledException("Could not connect to the database: " + XUtil.abridge(e));
@@ -87,9 +87,8 @@ public class HotRodContext {
 
       // Adapter
 
-      DatabaseAdapter adapter;
       try {
-        adapter = DatabaseAdapterFactory.getAdapter(conn);
+        this.adapter = DatabaseAdapterFactory.getAdapter(conn);
         feedback.info("Database Adapter: " + adapter.getName());
       } catch (UnrecognizedDatabaseException e) {
         throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + e.getMessage());
@@ -116,9 +115,8 @@ public class HotRodContext {
 
       // Configuration
 
-      HotRodConfigTag config = null;
       try {
-        config = ConfigurationLoader.loadPrimary(baseDir, configFile, generatorName, adapter, facetNames);
+        this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, generatorName, adapter, facetNames);
       } catch (ControlledException e) {
         if (e.getLocation() != null) {
           throw new ControlledException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
@@ -150,8 +148,6 @@ public class HotRodContext {
       for (ViewTag v : config.getFacetViews()) {
         views.add(v.getDatabaseObjectId());
       }
-
-      JdbcDatabase db = null;
 
       try {
 
@@ -206,7 +202,7 @@ public class HotRodContext {
         throw new ControlledException("Could not retrieve database metadata" + XUtil.abridge(e.getCause()));
       }
 
-      HotRodMetadata metadata = new HotRodMetadata(db, adapter, loc);
+      this.metadata = new Metadata(db, adapter, loc);
       try {
         metadata.load(config, loc, conn);
       } catch (InvalidConfigurationFileException e) {
@@ -251,7 +247,7 @@ public class HotRodContext {
     return db;
   }
 
-  public HotRodMetadata getMetadata() {
+  public Metadata getMetadata() {
     return metadata;
   }
 

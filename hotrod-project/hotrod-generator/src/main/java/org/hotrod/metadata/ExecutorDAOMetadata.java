@@ -88,7 +88,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
   // Select Methods meta data gathering
 
   @SuppressWarnings("unused")
-  public boolean gatherSelectsMetadataPhase1(final HotRodMetadata metadata, final ColumnsRetriever cr,
+  public boolean gatherSelectsMetadataPhase1(final Metadata metadata, final ColumnsRetriever cr,
       final DataSetLayout layout) throws InvalidConfigurationFileException {
     this.selectsMetadata = new ArrayList<SelectMethodMetadata>();
     boolean needsToRetrieveMetadata = false;

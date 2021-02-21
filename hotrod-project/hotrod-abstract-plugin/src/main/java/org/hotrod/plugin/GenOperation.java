@@ -240,6 +240,12 @@ public class GenOperation {
       HotRodContext hc = new HotRodContext(configFile, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword,
           jdbccatalog, jdbcschema, generatorName, baseDir, facetNames, feedback);
 
+      log.info("loc=" + hc.getLoc());
+      log.info("adapter=" + hc.getAdapter());
+      log.info("config=" + hc.getConfig());
+      log.info("db=" + hc.getDb());
+      log.info("metadata=" + hc.getMetadata());
+
       // Generate
 
       Generator g = hc.getConfig().getGenerators().getSelectedGeneratorTag().instantiateGenerator(hc, null,
@@ -251,6 +257,7 @@ public class GenOperation {
         LiveGenerator liveGenerator = (LiveGenerator) g;
 
         // a live generator
+        log.info("live generator");
 
         g.prepareGeneration();
         FileGenerator fg = new LocalFileGenerator();
@@ -259,6 +266,7 @@ public class GenOperation {
       } catch (ClassCastException e) {
 
         // a batch generator
+        log.info("batch generator");
 
         g.prepareGeneration();
         g.generate();

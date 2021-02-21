@@ -25,6 +25,7 @@ import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectMethodTag.ResultSetMode;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.database.PropertyType;
 import org.hotrod.database.PropertyType.ValueRange;
 import org.hotrod.exceptions.ControlledException;
@@ -81,6 +82,8 @@ public class ObjectDAO extends GeneratableObject {
   private MyBatisSpringGenerator generator;
   private DAOType daoType;
   private MyBatisSpringTag myBatisTag;
+  private DatabaseAdapter adapter;
+
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
 
@@ -99,8 +102,8 @@ public class ObjectDAO extends GeneratableObject {
   // Constructors
 
   public ObjectDAO(final AbstractDAOTag tag, final DataSetMetadata metadata, final DataSetLayout layout,
-      final MyBatisSpringGenerator generator, final DAOType type, final MyBatisSpringTag myBatisTag, final ObjectVO vo,
-      final Mapper mapper) {
+      final MyBatisSpringGenerator generator, final DAOType type, final MyBatisSpringTag myBatisTag,
+      final DatabaseAdapter adapter, final ObjectVO vo, final Mapper mapper) {
     super();
     log.debug("init");
     this.tag = tag;
@@ -113,6 +116,8 @@ public class ObjectDAO extends GeneratableObject {
     metadata.getDaoTag().addGeneratableObject(this);
     this.daoType = type;
     this.myBatisTag = myBatisTag;
+    this.adapter = adapter;
+
     this.vo = vo;
     this.mapper = mapper;
 
@@ -153,6 +158,7 @@ public class ObjectDAO extends GeneratableObject {
 
     File dir = this.layout.getDaoPrimitivePackageDir(this.fragmentPackage);
     File f = new File(dir, className);
+    log.info("f=" + f);
 
     this.w = null;
 
@@ -1089,9 +1095,9 @@ public class ObjectDAO extends GeneratableObject {
       }
     }
 
-    boolean integratesSequences = this.generator.getAdapter().getInsertIntegration().integratesSequences();
-    boolean integratesIdentities = this.generator.getAdapter().getInsertIntegration().integratesIdentities();
-    boolean integratesDefaults = this.generator.getAdapter().getInsertIntegration().integratesDefaults();
+    boolean integratesSequences = this.adapter.getInsertIntegration().integratesSequences();
+    boolean integratesIdentities = this.adapter.getInsertIntegration().integratesIdentities();
+    boolean integratesDefaults = this.adapter.getInsertIntegration().integratesDefaults();
 
     boolean extraInsert = integratesSequences && integratesDefaults && defaults != 0;
 
@@ -1193,7 +1199,7 @@ public class ObjectDAO extends GeneratableObject {
 
   private void writeInsertIntegrated(final boolean integratesSequences, final boolean integratesIdentities,
       final boolean extraInsert) throws IOException {
-    if (this.generator.getAdapter().integratesUsingQuery()) {
+    if (this.adapter.integratesUsingQuery()) {
       String voClassName = this.vo.getFullClassName();
       println("    " + voClassName + " values = this.sqlSession.selectOne(id, vo);");
       println("    int rows = 1;");
@@ -1777,7 +1783,7 @@ public class ObjectDAO extends GeneratableObject {
 
     println("  // sequence " + tag.getSequenceId().getRenderedSQLName());
     println();
-    println(ObjectDAO.renderJavaComment(this.generator.getAdapter().renderSelectSequence(tag.getSequenceId())));
+    println(ObjectDAO.renderJavaComment(this.adapter.renderSelectSequence(tag.getSequenceId())));
     println();
 
     println("  public long " + tag.getMethod() + "() {");

@@ -25,7 +25,6 @@ import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.QueryMethodTag;
 import org.hotrod.config.SQLParameter;
 import org.hotrod.config.SelectClassTag;
-import org.hotrod.config.SelectGenerationTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
@@ -43,7 +42,7 @@ import org.hotrod.metadata.DataSetMetadataFactory;
 import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.ExecutorDAOMetadata;
 import org.hotrod.metadata.ForeignKeyMetadata;
-import org.hotrod.metadata.HotRodMetadata;
+import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
@@ -61,7 +60,6 @@ import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.connectors.DatabaseConnectorFactory.UnsupportedDatabaseException;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
-import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase.DatabaseConnectionVersion;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
@@ -99,9 +97,10 @@ public abstract class FormerGenerator implements Generator {
 
   private Long lastLog = null;
 
-  public FormerGenerator(final JdbcDatabase db, final HotRodMetadata metadata, final DatabaseLocation dloc, final HotRodConfigTag config,
-      final DisplayMode displayMode, final boolean incrementalMode, final DatabaseAdapter adapter,
-      final Feedback feedback) throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
+  public FormerGenerator(final JdbcDatabase db, final Metadata metadata, final DatabaseLocation dloc,
+      final HotRodConfigTag config, final DisplayMode displayMode, final boolean incrementalMode,
+      final DatabaseAdapter adapter, final Feedback feedback)
+      throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
 
     log.debug(">>> HG 1 cachedMetadata=" + cachedMetadata);
     log.debug(">>> HG 1 cachedMetadata.getSelectMetadataCache()=" + cachedMetadata.getSelectMetadataCache());
@@ -486,7 +485,7 @@ public abstract class FormerGenerator implements Generator {
       // TODO: make sure the cache includes enum values from table rows.
       // if (retrieveFreshDatabaseObjects) {
       try {
-        this.config.validateAgainstDatabase(this, conn, adapter);
+        this.config.validateAgainstDatabase(null, conn, adapter);
       } catch (InvalidConfigurationFileException e) {
         throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
       }
@@ -1019,56 +1018,6 @@ public abstract class FormerGenerator implements Generator {
     SQLNames.add(id.getCanonicalSQLName());
   }
 
-  @Override
-  public TableDataSetMetadata findTableMetadata(final ObjectId id) {
-    for (TableDataSetMetadata tm : this.tables) {
-      if (tm.getId().equals(id)) {
-        return tm;
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public JdbcTable findJdbcTable(final String name) {
-    for (JdbcTable t : this.db.getTables()) {
-      if (this.adapter.isTableIdentifier(t.getName(), name)) {
-        return t;
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public JdbcTable findJdbcView(final String name) {
-    for (JdbcTable t : this.db.getViews()) {
-      if (this.adapter.isTableIdentifier(t.getName(), name)) {
-        return t;
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public JdbcColumn findJdbcColumn(final JdbcTable t, final String name) {
-    for (JdbcColumn c : t.getColumns()) {
-      if (this.adapter.isColumnIdentifier(c.getName(), name)) {
-        return c;
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public TableDataSetMetadata findViewMetadata(final ObjectId id) {
-    for (TableDataSetMetadata tm : this.views) {
-      if (tm.getId().equals(id)) {
-        return tm;
-      }
-    }
-    return null;
-  }
-
   private ColumnMetadata findColumnMetadata(final String name, final SelectDataSetMetadata ds) {
     for (ColumnMetadata cm : ds.getColumns()) {
       if (this.adapter.isColumnIdentifier(cm.getColumnName(), name)) {
@@ -1095,23 +1044,8 @@ public abstract class FormerGenerator implements Generator {
   // Getters
 
   @Override
-  public DatabaseAdapter getAdapter() {
-    return this.adapter;
-  }
-
-  @Override
   public HotRodConfigTag getConfig() {
     return this.config;
-  }
-
-  @Override
-  public JdbcDatabase getJdbcDatabase() {
-    return this.db;
-  }
-
-  @Override
-  public DatabaseLocation getLoc() {
-    return this.dloc;
   }
 
   // Abstract methods
