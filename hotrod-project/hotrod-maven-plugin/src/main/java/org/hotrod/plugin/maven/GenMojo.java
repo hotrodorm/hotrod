@@ -65,11 +65,10 @@ public class GenMojo extends AbstractMojo {
 
     log.debug("this.localproperties=" + this.localproperties);
 
-    GenOperation op = new GenOperation(this.project.getBasedir(), this.configfile, this.generator, this.localproperties,
-        this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema,
-        this.facets, this.display);
-
     try {
+      GenOperation op = new GenOperation(this.project.getBasedir(), this.configfile, this.generator,
+          this.localproperties, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword,
+          this.jdbccatalog, this.jdbcschema, this.facets, this.display);
       op.execute(new MojoFeedback(this));
     } catch (Exception e) {
       throw new MojoExecutionException(e.getMessage(), e.getCause());

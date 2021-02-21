@@ -29,11 +29,10 @@ public class GenAntTask extends Task {
   public void execute() {
     log.debug("init");
 
-    GenOperation op = new GenOperation(new File("."), this.configfile, this.generator, this.localproperties,
-        this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema,
-        this.facets, this.display);
-
     try {
+      GenOperation op = new GenOperation(new File("."), this.configfile, this.generator, this.localproperties,
+          this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema,
+          this.facets, this.display);
       op.execute(new AntFeedback(this));
     } catch (Exception e) {
       throw new BuildException(e.getMessage(), e.getCause());
