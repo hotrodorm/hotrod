@@ -3,6 +3,8 @@ package com.myapp1;
 import java.sql.SQLException;
 import java.util.Arrays;
 
+import org.hotrod.runtime.livesql.LiveSQL;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,13 +16,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.ImportResource;
 
 import com.myapp1.aopsqlmetrics.SQLMetricsAspect.SQLMetrics;
 
+//@Configuration
+//@ComponentScan
+//@ImportResource({ "spring-configuration.xml" })
+//
+//@SpringBootApplication
+//@EnableAspectJAutoProxy(proxyTargetClass = true)
+
 @Configuration
-@ComponentScan
-@ImportResource({ "spring-configuration.xml" })
+@ComponentScan(basePackageClasses = Application.class)
+@ComponentScan(basePackageClasses = LiveSQL.class)
+@MapperScan(basePackageClasses = LiveSQL.class)
 
 @SpringBootApplication
 @EnableAspectJAutoProxy(proxyTargetClass = true)

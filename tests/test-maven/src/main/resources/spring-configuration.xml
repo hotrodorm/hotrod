@@ -42,10 +42,11 @@
     <constructor-arg index="0" ref="sqlSessionFactory" />
   </bean>
 
+<!-- 
   <bean id="sqlDialectFactory" class="org.hotrod.runtime.livesql.dialects.SQLDialectFactory">
     <property name="dataSource" ref="dataSource" />
   </bean>
-
+ -->
 
 
 <!--
