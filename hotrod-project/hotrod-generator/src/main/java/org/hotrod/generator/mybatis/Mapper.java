@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.QueryMethodTag;
-import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
@@ -23,8 +22,8 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.generator.GeneratableObject;
+import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
@@ -53,8 +52,6 @@ public class Mapper extends GeneratableObject {
   private ClassPackage fragmentPackage;
 
   private AbstractDAOTag compositeTag;
-  @SuppressWarnings("unused")
-  private SelectClassTag selectTag;
 
   private MyBatisGenerator generator;
 
@@ -76,19 +73,17 @@ public class Mapper extends GeneratableObject {
       final EntityDAORegistry daoRegistry) {
     log.debug("init");
     this.compositeTag = compositeTag;
-    this.selectTag = null;
     this.entityDAORegistry = daoRegistry;
     initialize(metadata, layout, generator, type, adapter, vo);
   }
 
-  public Mapper(final SelectClassTag selectTag, final DataSetMetadata metadata, final DataSetLayout layout,
-      final MyBatisGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo) {
-    log.debug("init");
-    this.compositeTag = null;
-    this.selectTag = selectTag;
-    this.entityDAORegistry = null;
-    initialize(metadata, layout, generator, type, adapter, vo);
-  }
+//  public Mapper(final DataSetMetadata metadata, final DataSetLayout layout,
+//      final MyBatisGenerator generator, final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo) {
+//    log.debug("init");
+//    this.compositeTag = null;
+//    this.entityDAORegistry = null;
+//    initialize(metadata, layout, generator, type, adapter, vo);
+//  }
 
   private void initialize(final DataSetMetadata metadata, final DataSetLayout layout, final MyBatisGenerator generator,
       final DAOType type, final DatabaseAdapter adapter, final ObjectVO vo) {

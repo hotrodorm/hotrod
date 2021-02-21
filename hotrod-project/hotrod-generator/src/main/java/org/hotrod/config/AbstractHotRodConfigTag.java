@@ -50,7 +50,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   private List<ViewTag> views = new ArrayList<ViewTag>();
   private List<EnumTag> enums = new ArrayList<EnumTag>();
   private List<ExecutorTag> executors = new ArrayList<ExecutorTag>();
-  private List<SelectClassTag> selects = new ArrayList<SelectClassTag>();
   private List<FragmentTag> fragments = new ArrayList<FragmentTag>();
   private List<FacetTag> facets = new ArrayList<FacetTag>();
   private Map<String, FacetTag> assembledFacets = new HashMap<String, FacetTag>();
@@ -86,11 +85,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   @XmlElement(name = "dao")
   public void setExecutor(final ExecutorTag executor) {
     this.executors.add(executor);
-  }
-
-  @XmlElement
-  public void setSelect(final SelectClassTag select) {
-    this.selects.add(select);
   }
 
   @XmlElement
@@ -178,17 +172,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     });
     super.addChildren(this.executors);
 
-    for (SelectClassTag s : this.selects) {
-      s.validate(daosTag, config, fragmentConfig, adapter);
-    }
-    Collections.sort(this.selects, new Comparator<SelectClassTag>() {
-      @Override
-      public int compare(final SelectClassTag a, final SelectClassTag b) {
-        return a.getJavaClassName().compareTo(b.getJavaClassName());
-      }
-    });
-    super.addChildren(this.selects);
-
     for (FacetTag f : this.facets) {
       f.validate(config, daosTag, fragmentConfig, adapter);
     }
@@ -205,8 +188,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     // Assemble facets
 
     this.allFacets = new FacetTag();
-
-    this.allFacets.mergeOther(this.tables, this.views, this.enums, this.executors, this.selects);
+    this.allFacets.mergeOther(this.tables, this.views, this.enums, this.executors);
 
     for (FacetTag f : this.facets) {
       FacetTag af = this.assembledFacets.get(f.getName());
@@ -263,22 +245,18 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
       log.debug(" - daos: " + dao.getJavaClassName());
     }
 
-    for (SelectClassTag s : f.getSelects()) {
-      log.debug(" - select '" + s.getJavaClassName() + "'");
-    }
   }
 
   private void mergeFragment(final AbstractHotRodConfigTag other) {
     this.tables.addAll(other.tables);
     this.views.addAll(other.views);
     this.enums.addAll(other.enums);
-    this.selects.addAll(other.selects);
     this.executors.addAll(other.executors);
     this.facets.addAll(other.facets);
   }
 
-  public void validateAgainstDatabase(final Metadata metadata, final Connection conn,
-      final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
+  public void validateAgainstDatabase(final Metadata metadata, final Connection conn, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
 
     for (TableTag t : this.getFacetTables()) {
       t.validateAgainstDatabase(metadata);
@@ -411,22 +389,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
   public List<ExecutorTag> getAllExecutors() {
     return this.allFacets.getExecutors();
-  }
-
-  public List<SelectClassTag> getFacetSelects() {
-    if (this.chosenFacets.isEmpty()) {
-      return this.allFacets.getSelects();
-    } else {
-      List<SelectClassTag> subset = new ArrayList<SelectClassTag>();
-      for (FacetTag f : this.chosenFacets) {
-        subset.addAll(f.getSelects());
-      }
-      return subset;
-    }
-  }
-
-  public List<SelectClassTag> getAllSelects() {
-    return this.allFacets.getSelects();
   }
 
   public List<FacetTag> getFacets() {
@@ -644,7 +606,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
       this.views = f.views;
       this.enums = f.enums;
       this.executors = f.executors;
-      this.selects = f.selects;
       this.fragments = f.fragments;
       this.facets = f.facets;
       this.assembledFacets = f.assembledFacets;

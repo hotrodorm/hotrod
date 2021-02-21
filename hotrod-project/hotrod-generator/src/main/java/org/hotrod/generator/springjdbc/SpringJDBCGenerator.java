@@ -15,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.config.ConfigTag;
 import org.hotrod.config.DisplayMode;
 import org.hotrod.config.HotRodConfigTag;
-import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SpringJDBCTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -26,7 +25,6 @@ import org.hotrod.generator.DAOType;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.FormerGenerator;
 import org.hotrod.metadata.DataSetMetadata;
-import org.hotrod.metadata.SelectDataSetMetadata;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 
 public class SpringJDBCGenerator extends FormerGenerator {
@@ -58,9 +56,9 @@ public class SpringJDBCGenerator extends FormerGenerator {
 
     // Add selects
 
-    for (SelectDataSetMetadata sm : this.selects) {
-      addDaosAndMapper(sm, DAOType.SELECT);
-    }
+//    for (SelectDataSetMetadata sm : this.selects) {
+//      addDaosAndMapper(sm, DAOType.SELECT);
+//    }
 
     // // Add custom DAOs
     //

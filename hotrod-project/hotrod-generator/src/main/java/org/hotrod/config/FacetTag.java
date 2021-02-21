@@ -30,12 +30,12 @@ public class FacetTag extends AbstractConfigurationTag {
   private List<ViewTag> views = new ArrayList<ViewTag>();
   private List<EnumTag> enums = new ArrayList<EnumTag>();
   private List<ExecutorTag> daos = new ArrayList<ExecutorTag>();
-  private List<SelectClassTag> selects = new ArrayList<SelectClassTag>();
 
   // Constructor
 
   public FacetTag() {
     super("facet");
+    log.debug("init");
   }
 
   // JAXB Setters
@@ -63,11 +63,6 @@ public class FacetTag extends AbstractConfigurationTag {
   @XmlElement
   public void setDao(final ExecutorTag dao) {
     this.daos.add(dao);
-  }
-
-  @XmlElement
-  public void setSelect(final SelectClassTag select) {
-    this.selects.add(select);
   }
 
   // Behavior
@@ -102,10 +97,6 @@ public class FacetTag extends AbstractConfigurationTag {
       dao.validate(daosTag, config, fragmentConfig, adapter);
     }
 
-    for (SelectClassTag s : this.selects) {
-      s.validate(daosTag, config, fragmentConfig, adapter);
-    }
-
   }
 
   // Merge
@@ -115,22 +106,14 @@ public class FacetTag extends AbstractConfigurationTag {
     this.views.addAll(other.views);
     this.enums.addAll(other.enums);
     this.daos.addAll(other.daos);
-
-    this.selects.addAll(other.selects);
-    log.debug("----> SELECTS (facet: " + this.name + ")");
-    for (SelectClassTag s : this.selects) {
-      log.debug("----> select " + s.getJavaClassName());
-    }
-    log.debug("----> ---");
   }
 
   public void mergeOther(final List<TableTag> tables, final List<ViewTag> views, final List<EnumTag> enums,
-      final List<ExecutorTag> daos, final List<SelectClassTag> selects) {
+      final List<ExecutorTag> daos) {
     this.tables.addAll(tables);
     this.views.addAll(views);
     this.enums.addAll(enums);
     this.daos.addAll(daos);
-    this.selects.addAll(selects);
   }
 
   // Getters
@@ -153,10 +136,6 @@ public class FacetTag extends AbstractConfigurationTag {
 
   public List<ExecutorTag> getExecutors() {
     return daos;
-  }
-
-  public List<SelectClassTag> getSelects() {
-    return selects;
   }
 
   // ToString
@@ -214,7 +193,6 @@ public class FacetTag extends AbstractConfigurationTag {
       this.views = f.views;
       this.enums = f.enums;
       this.daos = f.daos;
-      this.selects = f.selects;
 
       return different;
     } catch (ClassCastException e) {
@@ -230,8 +208,7 @@ public class FacetTag extends AbstractConfigurationTag {
       Compare.same(this.tables, f.tables) && //
           Compare.same(this.views, f.views) && //
           Compare.same(this.enums, f.enums) && //
-          Compare.same(this.daos, f.daos) && //
-          Compare.same(this.selects, f.selects);
+          Compare.same(this.daos, f.daos);
     } catch (ClassCastException e) {
       return false;
     }

@@ -6,12 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.hotrod.config.ConverterTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
-import org.hotrod.config.ParameterTag;
 import org.hotrod.database.PropertyType;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.UncontrolledException;
@@ -20,7 +18,6 @@ import org.hotrod.generator.DAOType;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.KeyMetadata;
-import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.utils.ClassPackage;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn.AutogenerationType;
 import org.nocrala.tools.database.tartarus.core.JdbcKey;
@@ -139,43 +136,43 @@ public class DAOPrimitives {
   }
 
   private void writeSelectMethods() throws IOException, UnresolvableDataTypeException {
-    SelectDataSetMetadata sm = (SelectDataSetMetadata) this.ds;
-    println("  // ===================");
-    println("  // Persistence methods");
-    println("  // ===================");
-    println();
-    String springBeanName = this.ds.getId().getJavaMemberName() + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
-    String springBeanClassName = this.ds.getId().getJavaClassName() + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
-
-    String params = null;
-    List<ParameterTag> pl = sm.getSelectTag().getParameterDefinitions();
-    if (pl != null && pl.size() > 0) {
-      ListWriter lw = new ListWriter(", ");
-      for (ParameterTag p : pl) {
-        lw.add("final " + p.getJavaType() + " " + p.getName());
-
-      }
-      params = lw.toString();
-    }
-
-    // SELECT by Plain SQL
-    println("  // select by plain SQL with optional ordering (always available)");
-    println();
-    println("  public static List<" + this.dao.getClassName() + "> select(" + (params != null ? params + ", " : "")
-        + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
-    println(
-        "    " + springBeanClassName + " " + springBeanName + " = ApplicationContextProvider.getApplicationContext()");
-    println("        .getBean(\"" + springBeanName + "\", " + springBeanClassName + ".class);");
-    println("    Map<String,Object> params = new HashMap<String,Object>();");
-    if (pl != null && pl.size() > 0) {
-      for (ParameterTag p : pl) {
-        println("    params.put(\"" + p.getName() + "\", " + p.getName() + ");");
-      }
-    }
-    println("    return " + springBeanName + ".selectCustom(params, orderBies);");
-    println("  }");
-
-    println();
+//    SelectDataSetMetadata sm = (SelectDataSetMetadata) this.ds;
+//    println("  // ===================");
+//    println("  // Persistence methods");
+//    println("  // ===================");
+//    println();
+//    String springBeanName = this.ds.getId().getJavaMemberName() + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
+//    String springBeanClassName = this.ds.getId().getJavaClassName() + CodeGenerationHelper.SPRING_BEAN_SUFFIX;
+//
+//    String params = null;
+//    List<ParameterTag> pl = sm.getSelectTag().getParameterDefinitions();
+//    if (pl != null && pl.size() > 0) {
+//      ListWriter lw = new ListWriter(", ");
+//      for (ParameterTag p : pl) {
+//        lw.add("final " + p.getJavaType() + " " + p.getName());
+//
+//      }
+//      params = lw.toString();
+//    }
+//
+//    // SELECT by Plain SQL
+//    println("  // select by plain SQL with optional ordering (always available)");
+//    println();
+//    println("  public static List<" + this.dao.getClassName() + "> select(" + (params != null ? params + ", " : "")
+//        + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
+//    println(
+//        "    " + springBeanClassName + " " + springBeanName + " = ApplicationContextProvider.getApplicationContext()");
+//    println("        .getBean(\"" + springBeanName + "\", " + springBeanClassName + ".class);");
+//    println("    Map<String,Object> params = new HashMap<String,Object>();");
+//    if (pl != null && pl.size() > 0) {
+//      for (ParameterTag p : pl) {
+//        println("    params.put(\"" + p.getName() + "\", " + p.getName() + ");");
+//      }
+//    }
+//    println("    return " + springBeanName + ".selectCustom(params, orderBies);");
+//    println("  }");
+//
+//    println();
 
   }
 
@@ -743,19 +740,19 @@ public class DAOPrimitives {
   }
 
   private void writeCustomSelect() throws IOException {
-    SelectDataSetMetadata sm = (SelectDataSetMetadata) this.ds;
-    println();
-    // TODO improve: duplicated code
-    println("    public List<" + this.dao.getClassName() + "> selectCustom(Map<String,Object> params, "
-        + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
-    String sentence = sm.getSelectTag().renderSQLSentence(new SpringParameterRenderer()).replaceAll("\n",
-        "\" +\n      \"");
-    println("      String sql = \"" + sentence + "\"\n      + OrderByRenderer.render(orderBies);");
-    println();
-    println("      return this.namedParameterJdbcTemplate.query(sql, params, new " + this.ds.getId().getJavaClassName()
-        + "Mapper());");
-    println("    }");
-    println();
+//    SelectDataSetMetadata sm = (SelectDataSetMetadata) this.ds;
+//    println();
+//    // TODO improve: duplicated code
+//    println("    public List<" + this.dao.getClassName() + "> selectCustom(Map<String,Object> params, "
+//        + this.ds.getId().getJavaClassName() + "OrderBy... orderBies) {");
+//    String sentence = sm.getSelectTag().renderSQLSentence(new SpringParameterRenderer()).replaceAll("\n",
+//        "\" +\n      \"");
+//    println("      String sql = \"" + sentence + "\"\n      + OrderByRenderer.render(orderBies);");
+//    println();
+//    println("      return this.namedParameterJdbcTemplate.query(sql, params, new " + this.ds.getId().getJavaClassName()
+//        + "Mapper());");
+//    println("    }");
+//    println();
 
   }
 

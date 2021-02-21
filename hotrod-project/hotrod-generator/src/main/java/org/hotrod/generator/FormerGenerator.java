@@ -14,7 +14,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.AbstractEntityDAOTag;
-import org.hotrod.config.ColumnTag;
 import org.hotrod.config.Constants;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.DisplayMode;
@@ -23,8 +22,6 @@ import org.hotrod.config.EnumTag.EnumConstant;
 import org.hotrod.config.ExecutorTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.QueryMethodTag;
-import org.hotrod.config.SQLParameter;
-import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
@@ -43,7 +40,6 @@ import org.hotrod.metadata.EnumDataSetMetadata;
 import org.hotrod.metadata.ExecutorDAOMetadata;
 import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.metadata.Metadata;
-import org.hotrod.metadata.SelectDataSetMetadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
 import org.hotrod.metadata.StructuredColumnsMetadata;
@@ -90,7 +86,6 @@ public abstract class FormerGenerator implements Generator {
   protected LinkedHashSet<TableDataSetMetadata> tables = null;
   protected LinkedHashSet<TableDataSetMetadata> views = null;
   protected LinkedHashSet<EnumDataSetMetadata> enums = null;
-  protected LinkedHashSet<SelectDataSetMetadata> selects = null; // obsolete
   protected LinkedHashSet<ExecutorDAOMetadata> executors = null;
 
   private VORegistry voRegistry = new VORegistry();
@@ -546,50 +541,50 @@ public abstract class FormerGenerator implements Generator {
       // Prepare <select> DAOs meta data - phase 1
 
       logm("Prepare selects metadata - phase 1.");
-
-      if (!this.config.getFacetSelects().isEmpty()) {
-        retrieveSelectMetadata = true;
-      }
-
-      this.selects = new LinkedHashSet<SelectDataSetMetadata>();
-      if (!this.config.getFacetSelects().isEmpty()) {
-
-        SelectClassTag current = null;
-        SelectDataSetMetadata sm = null;
-
-        for (SelectClassTag s : this.config.getFacetSelects()) {
-          log.debug("::: select '" + s.getJavaClassName() + "': " + s.renderSQLSentence(new ParameterRenderer() {
-            @Override
-            public String render(SQLParameter parameter) {
-              return "?";
-            }
-          }));
-          current = s;
-          String tempViewName = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
-              .getNextTempViewName();
-          try {
-            sm = new SelectDataSetMetadata(this.db, this.adapter, this.dloc, s, tempViewName, this.config);
-          } catch (InvalidIdentifierException e) {
-            throw new ControlledException(s.getSourceLocation(),
-                "Invalid identifier for <" + new SelectClassTag().getTagName() + "> query '"
-                    + current.getJavaClassName() + "': " + e.getMessage());
-          }
-          this.selects.add(sm);
-          log.debug("prepareView() will be called...");
-          try {
-            sm.prepareViews(conn);
-          } catch (SQLException e) {
-            throw new ControlledException(s.getSourceLocation(),
-                "Failed to retrieve metadata for <" + new SelectClassTag().getTagName() + "> query '"
-                    + current.getJavaClassName() + "' while creating a temporary SQL view for it.\n" + "[ "
-                    + e.getMessage() + " ]\n" + "* Do all resulting columns have different and valid names?\n"
-                    + "* Is the trimmed create view SQL code below valid?\n" + "--- begin SQL ---\n"
-                    + sm.getCreateView() + "\n--- end SQL ---");
-          }
-          log.debug("prepareView() complete.");
-        }
-
-      }
+//
+//      if (!this.config.getFacetSelects().isEmpty()) {
+//        retrieveSelectMetadata = true;
+//      }
+//
+//      this.selects = new LinkedHashSet<SelectDataSetMetadata>();
+//      if (!this.config.getFacetSelects().isEmpty()) {
+//
+//        SelectClassTag current = null;
+//        SelectDataSetMetadata sm = null;
+//
+//        for (SelectClassTag s : this.config.getFacetSelects()) {
+//          log.debug("::: select '" + s.getJavaClassName() + "': " + s.renderSQLSentence(new ParameterRenderer() {
+//            @Override
+//            public String render(SQLParameter parameter) {
+//              return "?";
+//            }
+//          }));
+//          current = s;
+//          String tempViewName = this.config.getGenerators().getSelectedGeneratorTag().getSelectGeneration()
+//              .getNextTempViewName();
+//          try {
+//            sm = new SelectDataSetMetadata(this.db, this.adapter, this.dloc, s, tempViewName, this.config);
+//          } catch (InvalidIdentifierException e) {
+//            throw new ControlledException(s.getSourceLocation(),
+//                "Invalid identifier for <" + new SelectClassTag().getTagName() + "> query '"
+//                    + current.getJavaClassName() + "': " + e.getMessage());
+//          }
+//          this.selects.add(sm);
+//          log.debug("prepareView() will be called...");
+//          try {
+//            sm.prepareViews(conn);
+//          } catch (SQLException e) {
+//            throw new ControlledException(s.getSourceLocation(),
+//                "Failed to retrieve metadata for <" + new SelectClassTag().getTagName() + "> query '"
+//                    + current.getJavaClassName() + "' while creating a temporary SQL view for it.\n" + "[ "
+//                    + e.getMessage() + " ]\n" + "* Do all resulting columns have different and valid names?\n"
+//                    + "* Is the trimmed create view SQL code below valid?\n" + "--- begin SQL ---\n"
+//                    + sm.getCreateView() + "\n--- end SQL ---");
+//          }
+//          log.debug("prepareView() complete.");
+//        }
+//
+//      }
 
     } catch (SQLException e) {
       throw new UncontrolledException("Could not retrieve database metadata.", e);
@@ -617,7 +612,7 @@ public abstract class FormerGenerator implements Generator {
 
       logm("Prepare selects metadata - phase 2.");
 
-      SelectDataSetMetadata currDs = null;
+//      SelectDataSetMetadata currDs = null;
 
       Connection conn2 = null;
       try {
@@ -649,27 +644,26 @@ public abstract class FormerGenerator implements Generator {
           addSelectsMetaData(xm.getDaoTag().getJavaClassName(), xm.getSelectsMetadata(), selectMetadataCache);
         }
 
-        for (SelectDataSetMetadata ds : this.selects) {
-          currDs = ds;
-          ds.retrieveColumnsMetadata(conn2);
-
-          for (ColumnTag ct : ds.getSelectTag().getColumns()) {
-            ColumnMetadata cm = this.findColumnMetadata(ct.getName(), ds);
-            log.debug("cm=" + (cm == null ? "null" : cm.toString()));
-            if (cm == null) {
-              throw new ControlledException("Could not find database column '" + ct.getName()
-                  + "' as specified in <column> tag, on the <select> tag '" + ds.getSelectTag().getJavaClassName()
-                  + "'. Make sure the resulting SQL select statement return a column with this name.");
-            }
-          }
-
-        }
+//        for (SelectDataSetMetadata ds : this.selects) {
+//          currDs = ds;
+//          ds.retrieveColumnsMetadata(conn2);
+//
+//          for (ColumnTag ct : ds.getSelectTag().getColumns()) {
+//            ColumnMetadata cm = this.findColumnMetadata(ct.getName(), ds);
+//            log.debug("cm=" + (cm == null ? "null" : cm.toString()));
+//            if (cm == null) {
+//              throw new ControlledException("Could not find database column '" + ct.getName()
+//                  + "' as specified in <column> tag, on the <select> tag '" + ds.getSelectTag().getJavaClassName()
+//                  + "'. Make sure the resulting SQL select statement return a column with this name.");
+//            }
+//          }
+//
+//        }
 
       } catch (SQLException e) {
-        throw new UncontrolledException("Failed to retrieve metadata for <" + new SelectClassTag().getTagName()
-            + "> query with name '" + currDs.getId().getCanonicalSQLName() + "'.", e);
-      } catch (UnresolvableDataTypeException e) {
-        throw new ControlledException(e.getMessage());
+        throw new UncontrolledException("Failed to retrieve metadata for <.", e);
+//      } catch (UnresolvableDataTypeException e) {
+//        throw new ControlledException(e.getMessage());
       } catch (InvalidConfigurationFileException e) {
         throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
       } finally {
@@ -948,9 +942,9 @@ public abstract class FormerGenerator implements Generator {
 
       // selects
 
-      for (SelectClassTag q : config.getFacetSelects()) {
-        display("Select " + q.getJavaClassName() + " included.");
-      }
+//      for (SelectClassTag q : config.getFacetSelects()) {
+//        display("Select " + q.getJavaClassName() + " included.");
+//      }
 
     }
 
@@ -990,9 +984,9 @@ public abstract class FormerGenerator implements Generator {
         ns.registerDAOTag(v.getDaoTag(), "view", v.getId().getCanonicalSQLName());
       }
 
-      for (SelectClassTag s : config.getFacetSelects()) {
-        ns.registerDAOTag(s, "select", s.getJavaClassName());
-      }
+//      for (SelectClassTag s : config.getFacetSelects()) {
+//        ns.registerDAOTag(s, "select", s.getJavaClassName());
+//      }
 
       for (ExecutorTag c : config.getFacetExecutors()) {
         ns.registerDAOTag(c, "dao", c.getJavaClassName());
@@ -1018,14 +1012,14 @@ public abstract class FormerGenerator implements Generator {
     SQLNames.add(id.getCanonicalSQLName());
   }
 
-  private ColumnMetadata findColumnMetadata(final String name, final SelectDataSetMetadata ds) {
-    for (ColumnMetadata cm : ds.getColumns()) {
-      if (this.adapter.isColumnIdentifier(cm.getColumnName(), name)) {
-        return cm;
-      }
-    }
-    return null;
-  }
+//  private ColumnMetadata findColumnMetadata(final String name, final SelectDataSetMetadata ds) {
+//    for (ColumnMetadata cm : ds.getColumns()) {
+//      if (this.adapter.isColumnIdentifier(cm.getColumnName(), name)) {
+//        return cm;
+//      }
+//    }
+//    return null;
+//  }
 
   // Utilities
 

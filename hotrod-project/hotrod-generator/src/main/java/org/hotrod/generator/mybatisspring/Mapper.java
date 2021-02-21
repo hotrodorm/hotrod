@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.config.AbstractDAOTag;
 import org.hotrod.config.HotRodFragmentConfigTag;
 import org.hotrod.config.QueryMethodTag;
-import org.hotrod.config.SelectClassTag;
 import org.hotrod.config.SequenceMethodTag;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
@@ -52,8 +51,6 @@ public class Mapper extends GeneratableObject {
   private ClassPackage fragmentPackage;
 
   private AbstractDAOTag compositeTag;
-  @SuppressWarnings("unused")
-  private SelectClassTag selectTag;
 
   private MyBatisSpringGenerator generator;
 
@@ -76,7 +73,6 @@ public class Mapper extends GeneratableObject {
     super();
     log.debug("init");
     this.compositeTag = compositeTag;
-    this.selectTag = null;
     this.entityDAORegistry = daoRegistry;
     initialize(metadata, layout, generator, type, adapter, vo);
   }

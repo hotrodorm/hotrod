@@ -107,12 +107,12 @@ public class MyBatisGenerator extends FormerGenerator implements LiveGenerator {
 
     // Add selects
 
-    if (!super.selects.isEmpty()) {
-      SourceLocation loc = super.selects.iterator().next().getDaoTag().getSourceLocation();
-      throw new ControlledException("Invalid configuration in " + loc.render() + ":\n"
-          + "The MyBatis generator does not support first-level <select> tags. "
-          + "Include any <select> tag inside another <table>, <view>, or <dao> tag.");
-    }
+//    if (!super.selects.isEmpty()) {
+//      SourceLocation loc = super.selects.iterator().next().getDaoTag().getSourceLocation();
+//      throw new ControlledException("Invalid configuration in " + loc.render() + ":\n"
+//          + "The MyBatis generator does not support first-level <select> tags. "
+//          + "Include any <select> tag inside another <table>, <view>, or <dao> tag.");
+//    }
 
     // Add plain DAOs
 
