@@ -26,9 +26,13 @@ public class ColumnsMetadataRetriever {
   // Properties
 
   private SelectMethodTag selectTag;
+  @SuppressWarnings("unused")
   private DatabaseAdapter adapter;
+  @SuppressWarnings("unused")
   private JdbcDatabase db;
+  @SuppressWarnings("unused")
   private DatabaseLocation loc;
+  @SuppressWarnings("unused")
   private SelectGenerationTag selectGenerationTag;
   private ColumnsProvider columnsProvider;
   private String entityPrefix;

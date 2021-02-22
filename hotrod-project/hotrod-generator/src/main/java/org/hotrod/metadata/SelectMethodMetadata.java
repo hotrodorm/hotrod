@@ -1,7 +1,6 @@
 package org.hotrod.metadata;
 
 import java.io.Serializable;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,6 @@ import org.hotrod.exceptions.InvalidSQLException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.ColumnsRetriever;
-import org.hotrod.generator.Generator;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.generator.mybatisspring.DataSetLayout;
 import org.hotrod.identifiers.Id;
@@ -53,12 +51,15 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
   private boolean structuredSelect;
 
+  @SuppressWarnings("unused")
   private transient Metadata metadata;
   private ColumnsRetriever cr;
   private transient DataSetLayout layout;
+  @SuppressWarnings("unused")
   private transient JdbcDatabase db;
   private HotRodConfigTag config;
   private transient DatabaseAdapter adapter;
+  @SuppressWarnings("unused")
   private transient DatabaseLocation loc;
   private SelectMethodTag tag;
   private transient SelectGenerationTag selectGenerationTag;
@@ -68,8 +69,6 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
   private List<ColumnMetadata> nonStructuredColumns;
   private StructuredColumnsMetadata structuredColumns;
 
-  private transient String cleanedUpFoundation;
-  private transient String tempViewName;
   private transient String createView;
 
   private ObjectId id;

@@ -73,22 +73,22 @@ public class GenUtils {
       return "(" + var + " == null) ? null : " + var + ".toBigInteger()";
     }
     if (LONG.equals(targetClass) || S_LONG.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Long(" + var + ".longValue())";
+      return "(" + var + " == null) ? null : Long.valueOf(" + var + ".longValue())";
     }
     if (INTEGER.equals(targetClass) || S_INTEGER.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Integer(" + var + ".intValue())";
+      return "(" + var + " == null) ? null : Integer.valueOf(" + var + ".intValue())";
     }
     if (SHORT.equals(targetClass) || S_SHORT.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Short(" + var + ".shortValue())";
+      return "(" + var + " == null) ? null : Short.valueOf(" + var + ".shortValue())";
     }
     if (BYTE.equals(targetClass) || S_BYTE.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Byte(" + var + ".byteValue())";
+      return "(" + var + " == null) ? null : Byte.valueOf(" + var + ".byteValue())";
     }
     if (DOUBLE.equals(targetClass) || S_DOUBLE.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Double(" + var + ".doubleValue())";
+      return "(" + var + " == null) ? null : Double.valueOf(" + var + ".doubleValue())";
     }
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Float(" + var + ".floatValue())";
+      return "(" + var + " == null) ? null : Float.valueOf(" + var + ".floatValue())";
     }
     throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'BigDecimal' to '" + targetClass + "'.");
@@ -102,22 +102,22 @@ public class GenUtils {
       return var;
     }
     if (LONG.equals(targetClass) || S_LONG.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Long(" + var + ".longValue())";
+      return "(" + var + " == null) ? null : Long.valueOf(" + var + ".longValue())";
     }
     if (INTEGER.equals(targetClass) || S_INTEGER.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Integer(" + var + ".intValue())";
+      return "(" + var + " == null) ? null : Integer.valueOf(" + var + ".intValue())";
     }
     if (SHORT.equals(targetClass) || S_SHORT.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Short(" + var + ".shortValue())";
+      return "(" + var + " == null) ? null : Short.valueOf(" + var + ".shortValue())";
     }
     if (BYTE.equals(targetClass) || S_BYTE.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Byte(" + var + ".byteValue())";
+      return "(" + var + " == null) ? null : Byte.valueOf(" + var + ".byteValue())";
     }
     if (DOUBLE.equals(targetClass) || S_DOUBLE.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Double(" + var + ".doubleValue())";
+      return "(" + var + " == null) ? null : Double.valueOf(" + var + ".doubleValue())";
     }
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Float(" + var + ".floatValue())";
+      return "(" + var + " == null) ? null : Float.valueOf(" + var + ".floatValue())";
     }
     throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'BigDecimal' to '" + targetClass + "'.");
@@ -134,19 +134,19 @@ public class GenUtils {
       return var;
     }
     if (INTEGER.equals(targetClass) || S_INTEGER.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Integer(" + var + ".intValue())";
+      return "(" + var + " == null) ? null : Integer.valueOf(" + var + ".intValue())";
     }
     if (SHORT.equals(targetClass) || S_SHORT.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Short(" + var + ".shortValue())";
+      return "(" + var + " == null) ? null : Short.valueOf(" + var + ".shortValue())";
     }
     if (BYTE.equals(targetClass) || S_BYTE.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Byte(" + var + ".byteValue())";
+      return "(" + var + " == null) ? null : Byte.valueOf(" + var + ".byteValue())";
     }
     if (DOUBLE.equals(targetClass) || S_DOUBLE.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Double(" + var + ".doubleValue())";
+      return "(" + var + " == null) ? null : Double.valueOf(" + var + ".doubleValue())";
     }
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Float(" + var + ".floatValue())";
+      return "(" + var + " == null) ? null : Float.valueOf(" + var + ".floatValue())";
     }
     throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'Long' to '" + targetClass + "'.");
@@ -160,22 +160,22 @@ public class GenUtils {
       return "(" + var + " == null) ? null : new java.math.BigInteger(" + var + ".toString())";
     }
     if (LONG.equals(targetClass) || S_LONG.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Long(" + var + ".longValue())";
+      return "(" + var + " == null) ? null : Long.valueOf(" + var + ".longValue())";
     }
     if (INTEGER.equals(targetClass) || S_INTEGER.equals(targetClass)) {
       return var;
     }
     if (SHORT.equals(targetClass) || S_SHORT.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Short(" + var + ".shortValue())";
+      return "(" + var + " == null) ? null : Short.valueOf(" + var + ".shortValue())";
     }
     if (BYTE.equals(targetClass) || S_BYTE.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Byte(" + var + ".byteValue())";
+      return "(" + var + " == null) ? null : Byte.valueOf(" + var + ".byteValue())";
     }
     if (DOUBLE.equals(targetClass) || S_DOUBLE.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Double(" + var + ".doubleValue())";
+      return "(" + var + " == null) ? null : Double.valueOf(" + var + ".doubleValue())";
     }
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Float(" + var + ".floatValue())";
+      return "(" + var + " == null) ? null : Float.valueOf(" + var + ".floatValue())";
     }
     throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'Long' to '" + targetClass + "'.");
@@ -189,22 +189,22 @@ public class GenUtils {
       return "(" + var + " == null) ? null : new java.math.BigInteger(" + var + ".toString())";
     }
     if (LONG.equals(targetClass) || S_LONG.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Long(" + var + ".longValue())";
+      return "(" + var + " == null) ? null : Long.valueOf(" + var + ".longValue())";
     }
     if (INTEGER.equals(targetClass) || S_INTEGER.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Integer(" + var + ".intValue())";
+      return "(" + var + " == null) ? null : Integer.valueOf(" + var + ".intValue())";
     }
     if (SHORT.equals(targetClass) || S_SHORT.equals(targetClass)) {
       return var;
     }
     if (BYTE.equals(targetClass) || S_BYTE.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Byte(" + var + ".byteValue())";
+      return "(" + var + " == null) ? null : Byte.valueOf(" + var + ".byteValue())";
     }
     if (DOUBLE.equals(targetClass) || S_DOUBLE.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Double(" + var + ".doubleValue())";
+      return "(" + var + " == null) ? null : Double.valueOf(" + var + ".doubleValue())";
     }
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Float(" + var + ".floatValue())";
+      return "(" + var + " == null) ? null : Float.valueOf(" + var + ".floatValue())";
     }
     throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'Long' to '" + targetClass + "'.");
@@ -218,22 +218,22 @@ public class GenUtils {
       return "(" + var + " == null) ? null : new java.math.BigInteger(" + var + ".toString())";
     }
     if (LONG.equals(targetClass) || S_LONG.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Long(" + var + ".longValue())";
+      return "(" + var + " == null) ? null : Long.valueOf(" + var + ".longValue())";
     }
     if (INTEGER.equals(targetClass) || S_INTEGER.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Integer(" + var + ".intValue())";
+      return "(" + var + " == null) ? null : Integer.valueOf(" + var + ".intValue())";
     }
     if (SHORT.equals(targetClass) || S_SHORT.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Short(" + var + ".shortValue())";
+      return "(" + var + " == null) ? null : Short.valueOf(" + var + ".shortValue())";
     }
     if (BYTE.equals(targetClass) || S_BYTE.equals(targetClass)) {
       return var;
     }
     if (DOUBLE.equals(targetClass) || S_DOUBLE.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Double(" + var + ".doubleValue())";
+      return "(" + var + " == null) ? null : Double.valueOf(" + var + ".doubleValue())";
     }
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Float(" + var + ".floatValue())";
+      return "(" + var + " == null) ? null : Float.valueOf(" + var + ".floatValue())";
     }
     throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'Long' to '" + targetClass + "'.");
@@ -247,22 +247,22 @@ public class GenUtils {
       return "(" + var + " == null) ? null : new java.math.BigInteger(" + var + ".toString())";
     }
     if (LONG.equals(targetClass) || S_LONG.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Long(" + var + ".longValue())";
+      return "(" + var + " == null) ? null : Long.valueOf(" + var + ".longValue())";
     }
     if (INTEGER.equals(targetClass) || S_INTEGER.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Integer(" + var + ".intValue())";
+      return "(" + var + " == null) ? null : Integer.valueOf(" + var + ".intValue())";
     }
     if (SHORT.equals(targetClass) || S_SHORT.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Short(" + var + ".shortValue())";
+      return "(" + var + " == null) ? null : Short.valueOf(" + var + ".shortValue())";
     }
     if (BYTE.equals(targetClass) || S_BYTE.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Byte(" + var + ".byteValue())";
+      return "(" + var + " == null) ? null : Byte.valueOf(" + var + ".byteValue())";
     }
     if (DOUBLE.equals(targetClass) || S_DOUBLE.equals(targetClass)) {
       return var;
     }
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Float(" + var + ".floatValue())";
+      return "(" + var + " == null) ? null : Float.valueOf(" + var + ".floatValue())";
     }
     throw new ControlledException("Unrecognized FK data conversion: " + Constants.TOOL_NAME
         + " cannot convert from 'Long' to '" + targetClass + "'.");
@@ -288,19 +288,19 @@ public class GenUtils {
       return "(" + var + " == null) ? null : new java.math.BigInteger(" + var + ".toString())";
     }
     if (LONG.equals(targetClass) || S_LONG.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Long(" + var + ".longValue())";
+      return "(" + var + " == null) ? null : Long.valueOf(" + var + ".longValue())";
     }
     if (INTEGER.equals(targetClass) || S_INTEGER.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Integer(" + var + ".intValue())";
+      return "(" + var + " == null) ? null : Integer.valueOf(" + var + ".intValue())";
     }
     if (SHORT.equals(targetClass) || S_SHORT.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Short(" + var + ".shortValue())";
+      return "(" + var + " == null) ? null : Short.valueOf(" + var + ".shortValue())";
     }
     if (BYTE.equals(targetClass) || S_BYTE.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Byte(" + var + ".byteValue())";
+      return "(" + var + " == null) ? null : Byte.valueOf(" + var + ".byteValue())";
     }
     if (DOUBLE.equals(targetClass) || S_DOUBLE.equals(targetClass)) {
-      return "(" + var + " == null) ? null : new Double(" + var + ".doubleValue())";
+      return "(" + var + " == null) ? null : Double.valueOf(" + var + ".doubleValue())";
     }
     if (FLOAT.equals(targetClass) || S_FLOAT.equals(targetClass)) {
       return var;
