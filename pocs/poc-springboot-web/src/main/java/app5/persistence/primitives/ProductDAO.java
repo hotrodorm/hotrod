@@ -139,13 +139,13 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
     public List<HistoricPriceVO> toProductId(final HistoricPriceOrderBy... orderBies) {
       HistoricPriceVO example = new HistoricPriceVO();
-      example.setProductId((this.vo.getId() == null) ? null : new Integer(this.vo.getId().intValue()));
+      example.setProductId((this.vo.getId() == null) ? null : Integer.valueOf(this.vo.getId().intValue()));
       return historicPriceDAO.selectByExample(example, orderBies);
     }
 
     public Cursor<HistoricPriceVO> cursorToProductId(final HistoricPriceOrderBy... orderBies) {
       HistoricPriceVO example = new HistoricPriceVO();
-      example.setProductId((this.vo.getId() == null) ? null : new Integer(this.vo.getId().intValue()));
+      example.setProductId((this.vo.getId() == null) ? null : Integer.valueOf(this.vo.getId().intValue()));
       return historicPriceDAO.selectByExampleCursor(example, orderBies);
     }
 

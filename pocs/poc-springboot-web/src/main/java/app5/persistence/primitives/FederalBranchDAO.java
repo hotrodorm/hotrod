@@ -127,13 +127,13 @@ public class FederalBranchDAO implements Serializable, ApplicationContextAware {
 
     public List<TransactionVO> toFedBranchId(final TransactionOrderBy... orderBies) {
       TransactionVO example = new TransactionVO();
-      example.setFedBranchId((this.vo.getId() == null) ? null : new Long(this.vo.getId().longValue()));
+      example.setFedBranchId((this.vo.getId() == null) ? null : Long.valueOf(this.vo.getId().longValue()));
       return transactionDAO.selectByExample(example, orderBies);
     }
 
     public Cursor<TransactionVO> cursorToFedBranchId(final TransactionOrderBy... orderBies) {
       TransactionVO example = new TransactionVO();
-      example.setFedBranchId((this.vo.getId() == null) ? null : new Long(this.vo.getId().longValue()));
+      example.setFedBranchId((this.vo.getId() == null) ? null : Long.valueOf(this.vo.getId().longValue()));
       return transactionDAO.selectByExampleCursor(example, orderBies);
     }
 

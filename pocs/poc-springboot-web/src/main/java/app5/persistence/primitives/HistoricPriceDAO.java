@@ -130,7 +130,7 @@ public class HistoricPriceDAO implements Serializable, ApplicationContextAware {
     }
 
     public ProductVO toId() {
-      return productDAO.selectByPK((this.vo.productId == null) ? null : new Long(this.vo.productId.longValue()));
+      return productDAO.selectByPK((this.vo.productId == null) ? null : Long.valueOf(this.vo.productId.longValue()));
     }
 
   }
