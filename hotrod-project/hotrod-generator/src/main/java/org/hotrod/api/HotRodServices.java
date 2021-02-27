@@ -104,9 +104,8 @@ public class HotRodServices {
     } catch (InvalidConfigurationFileException e) {
       throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code. Invalid configuration in "
           + e.getTag().getSourceLocation().render() + ":\n" + e.getMessage());
-    } catch (Throwable t) {
-      t.printStackTrace();
-      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.");
+    } catch (Throwable e) {
+      throw new Exception(Constants.TOOL_NAME + " could not generate the persistence code.", e);
     }
 
   }

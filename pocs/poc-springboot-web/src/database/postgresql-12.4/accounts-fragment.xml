@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod-fragment>
+
+<hotrod-fragment package="accounts">
+
+  <dao name="AccountsDAO">
+    <select method="findAccountWithPersonFlat" vo="AccountPersonFlatVO">
+      select * from account
+    </select>
+  </dao>
+
+</hotrod-fragment>

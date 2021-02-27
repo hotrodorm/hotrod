@@ -10,6 +10,14 @@
         ndao-prefix="" ndao-suffix=""   nvo-prefix="" nvo-suffix=""  nabstract-vo-prefix="Abstract" nabstract-vo-suffix="" 
       />
       
+      <!--
+      <classes basedir="" package="" />
+        <dao package="" prefix="" suffix="" nitro-prefix="" nitro-suffix="" />
+        <vo package="" prefix="" suffix="" nitro-prefix="" nitro-suffix="" />
+        <abstract-vo package="" prefix="" suffix="" nitro-prefix="" nitro-suffix="" />
+      </classes>
+      <mapper basedir="" dir="" />
+       -->
 <!-- 
         ndao-prefix="" ndao-suffix="" nvo-prefix="" nvo-suffix="" nabstract-vo-prefix="Abstract" nabstract-vo-suffix="" 
 
@@ -46,6 +54,8 @@
 
       <mappers dir="mappers" />
       <classic-fk-navigation />
+      <!-- 
+       -->
       <select-generation strategy="result-set" />
       <!-- 
       <select-generation strategy="create-view" />
@@ -93,6 +103,7 @@
 
 <!-- 
  -->
+  <fragment file="accounts-fragment.xml" />
  
   <dao name="MyQueriesDAO">
 

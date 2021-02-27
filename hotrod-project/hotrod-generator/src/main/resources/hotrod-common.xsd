@@ -36,6 +36,8 @@
     <xsd:attribute name="column-seam" type="xsd:string" />
   </xsd:complexType>
 
+  <xsd:complexType name="classic-fk-navigation-type" />
+
   <!-- dao -->
   
   <xsd:complexType name="dao-type">

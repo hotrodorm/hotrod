@@ -102,8 +102,6 @@
     <xsd:attribute name="strategy" type="xsd:string" />
   </xsd:complexType>
 
-  <xsd:complexType name="classic-fk-navigation-type" />
-
   <xsd:complexType name="property-type">
     <xsd:attribute name="name" type="xsd:string" use="required" />
     <xsd:attribute name="value" type="xsd:string" use="required" />
