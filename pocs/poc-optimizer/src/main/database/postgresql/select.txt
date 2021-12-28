@@ -1,0 +1,151 @@
+PostgreSQL Optimizer Results
+============================
+
+PostgreSQL's optimizer seems to work like this:
+ * The join order is based on cost (uses a Cost-based Optimizer).
+ * For the optimizer to have better estimates on the join order cost, the statistics
+   need to be up to date for each table.
+ * Of course, the existence of an index speeds up the execution.
+ * The index was not used when using LIKE 'JO%' filter; a full table scan was used, even
+   when the selectivity was quite low (0.0028). The documentation says it should use an 
+   index range scan but couldn't make it work so far.
+ * [PENDING] No tests to change the join order were performed.
+
+1. Optimizer use of index equality
+----------------------------------
+
+The optimizer DOES EXECUTE an "Index Range Scan" as shown below.
+
+explain verbose
+select * from "order" o 
+  where o.id between 22501 and 22704 -- selectivity = 204 / 50000 = 0.004
+
+Index Scan using order_pkey on public."order" o  (cost=0.29..13.35 rows=203 width=20)
+  Output: id, customer_id, placed, shipment_id, status_code
+  Index Cond: ((o.id >= 22501) AND (o.id <= 22704))
+
+2. Optimizer use of index range
+-------------------------------
+
+The optimizer PERFORMS an "Index Range Scan" as shown below.
+
+explain verbose
+select * from "order" o 
+  where o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+
+Bitmap Heap Scan on public."order" o  (cost=44.49..365.61 rows=2090 width=20)
+  Output: id, customer_id, placed, shipment_id, status_code
+  Recheck Cond: (o.placed > '2017-11-15'::date)
+  ->  Bitmap Index Scan on ix_order_placed  (cost=0.00..43.96 rows=2090 width=0)
+        Index Cond: (o.placed > '2017-11-15'::date)
+
+3. Dual index usage
+-------------------
+
+The optimizer PERFORMS two "Index Range Scan"s, followed by a "BitMapOr". 
+
+explain verbose
+select * from "order" o 
+  where o.placed > '2018-02-01' -- selectivity =  82 / 50000 = 0.0016
+    or o.placed < '2012-10-21'  -- selectivity = 176 / 50000 = 0.0035
+    -- total selectivity = 0.0016 + 0.0035 = 0.0051 
+
+Bitmap Heap Scan on public."order" o  (cost=10.71..314.75 rows=266 width=20)
+  Output: id, customer_id, placed, shipment_id, status_code
+  Recheck Cond: ((o.placed > '2018-02-01'::date) OR (o.placed < '2012-10-21'::date))
+  ->  BitmapOr  (cost=10.71..10.71 rows=266 width=0)
+        ->  Bitmap Index Scan on ix_order_placed  (cost=0.00..4.81 rows=69 width=0)
+              Index Cond: (o.placed > '2018-02-01'::date)
+        ->  Bitmap Index Scan on ix_order_placed  (cost=0.00..5.77 rows=197 width=0)
+              Index Cond: (o.placed < '2012-10-21'::date)
+    
+4. Use index for like operator
+------------------------------
+
+The optimizer DOES NOT PERFORM an "Index Range Scan". It uses a full table scan.
+
+explain verbose
+select * from customer 
+  where first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    -- estimated selectivity = 0.053 * 0.052 = 0.0028
+    -- real selectivity      = 84 / 3000 = 0.0028
+
+Seq Scan on public.customer  (cost=0.00..681.00 rows=78 width=32)
+  Output: id, first_name, last_name, phone_number, address_id
+  Filter: (((customer.first_name)::text ~~ 'JO%'::text) AND ((customer.last_name)::text ~~ 'CO%'::text))
+
+5. Full Test of the Join order
+------------------------------
+
+The optimizer did not choose the best join order.
+
+ * The chosen join order does not seem to be optimal or close to optimal. It uses:
+     -> (tbscan + hash) customer -> (ixscan) order -> code (oc) -> shipment -> address -> order_item -> code(ic) -> product
+   Cost: ... 
+   
+   Note: The plan is not horrible, but it's decent. There's improvement to be made in the join order.
+         The optimizer should have chosen first "order_item" instead of "code(oc)".
+   
+ * The best join path appears to be:
+      -> customer -> order -> code(oc) -> order_item -> code(ic) -> product -> shipment -> address
+   Cost: 84        + 3      + 9         + 10          + 10        + 6        + 6         + 6 = 134 rows read.
+
+explain
+select
+    c.phone_number, c.first_name, c.last_name, c.address_id,
+    a.id, a.line1, a.line2, a.city, a.state, a.zip_code,
+    i.deferred_shipment_date, i.quantity, ic.caption, oc.caption,
+    p.description, s.shipped_on
+  from
+    "order" o
+    join order_item i on i.order_id = o.id
+    left join product p on i.product_id = p.id
+    join customer c on c.id = o.customer_id
+    left join shipment s on s.id = o.shipment_id
+    left join address a on a.id = s.address_id
+    join code oc on oc.id = o.status_code
+    join code ic on ic.id = i.status_code
+  where
+        c.first_name like 'JO%' -- selectivity = 1589 / 30000 = 0.053
+    and c.last_name like 'CO%'  -- selectivity = 1550 / 30000 = 0.052
+    and oc.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and ic.type = 'CLOSED'      -- selectivity = 4 / 8 = 0.5
+    and o.placed > '2017-11-15' -- selectivity = 2038 / 50000 = 0.041
+  order by
+    c.id, o.id desc, s.id, i.id
+
+The join order is read by higher depth first; at same depth, use the latter first.
+
+->  Hash Join  (cost=728.73..1065.37 rows=4 width=123)
+      Hash Cond: (i.status_code = ic.id)
+      ->  Nested Loop  (cost=727.58..1064.15 rows=8 width=118)
+            ->  Nested Loop Left Join  (cost=727.16..1058.11 rows=2 width=98)
+                  ->  Nested Loop Left Join  (cost=726.88..1057.49 rows=2 width=57)
+                        ->  Nested Loop  (cost=726.60..1056.33 rows=2 width=49)
+                              ->  Hash Join  (cost=726.46..1055.47 rows=5 width=44)
+                                    Hash Cond: (o.customer_id = c.id)
+                                    ->  Bitmap Heap Scan on "order" o  (cost=44.49..365.61 rows=2090 width=16)
+                                          Recheck Cond: (placed > '2017-11-15'::date)
+                                          ->  Bitmap Index Scan on ix_order_placed  (cost=0.00..43.96 rows=2090 width=0)
+                                                Index Cond: (placed > '2017-11-15'::date)
+                                    ->  Hash  (cost=681.00..681.00 rows=78 width=32)
+                                          ->  Seq Scan on customer c  (cost=0.00..681.00 rows=78 width=32)
+                                                Filter: (((first_name)::text ~~ 'JO%'::text) AND ((last_name)::text ~~ 'CO%'::text))
+                              ->  Index Scan using code_pkey on code oc  (cost=0.13..0.16 rows=1 width=13)
+                                    Index Cond: (id = o.status_code)
+                                    Filter: ((type)::text = 'CLOSED'::text)
+                        ->  Index Scan using shipment_pkey on shipment s  (cost=0.29..0.57 rows=1 width=12)
+                              Index Cond: (id = o.shipment_id)
+                  ->  Index Scan using address_pkey on address a  (cost=0.28..0.30 rows=1 width=45)
+                        Index Cond: (id = s.address_id)
+            ->  Index Scan using ix_order_id_status on order_item i  (cost=0.42..2.99 rows=3 width=24)
+                  Index Cond: (order_id = o.id)
+      ->  Hash  (cost=1.10..1.10 rows=4 width=13)
+            ->  Seq Scan on code ic  (cost=0.00..1.10 rows=4 width=13)
+                  Filter: ((type)::text = 'CLOSED'::text)
+->  Index Scan using product_pkey on product p  (cost=0.28..0.30 rows=1 width=23)
+      Index Cond: (i.product_id = id)
+
+
+    

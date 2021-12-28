@@ -1,0 +1,20 @@
+You can populate the database using:
+
+  java -cp target/classes:<jdbc-driver-jar> research.optimizer.DataPopulator <url> <user> <pass>
+
+PostgreSQL example (~12 mins):
+
+  java -cp target/classes:/home/valarcon/apps/jdbc-drivers/postgresql-42.2.5.jar research.optimizer.DataPopulator org.postgresql.Driver jdbc:postgresql://192.168.56.214:5432/hotrod user1 pass1
+
+It inserts:
+
+table         rows
+----------  ------
+order_item  149507
+order        50000
+customer     30000
+shipment     19000
+product       4300
+address       1800
+code             8  
+  

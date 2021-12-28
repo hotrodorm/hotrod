@@ -1,0 +1,51 @@
+HotRod ORM
+"It's all about performance"
+
+* Introduction
+
+* Hello World
+
+[TBD]
+
+* Entity Model
+* CRUD Module
+  - Select by Primary Key
+  - Select by Unique Index
+  - Select by Foreign Key
+  - Select by Example
+    - Matching Nulls Extension
+  - Select by Criteria
+  - Insert
+    - Identity Columns
+    - Sequences
+    - Default column values
+  - Delete
+  - Update
+  - CRUD on views
+  - Optimistic Locking
+* LiveSQL Module
+  - Generic Select
+  - Basic Subqueries
+  - Custom LiveSQL Functions
+* Nitro Module
+  - General Purpose Queries
+  - Flat Selects
+    - Parameters
+    - Property Names & Name Solver
+    - Property Types & Type Solver  
+    - Dynamic SQL
+    - Fetch Modes
+  - Structured Selects
+    - Preserving Behavior
+    - Extra Expressions
+    - Collections
+    - Nested Collections
+    - Associations
+* Transactions
+
+** Reference
+* Configuration
+* Maven Integration
+* Default types
+* 
+

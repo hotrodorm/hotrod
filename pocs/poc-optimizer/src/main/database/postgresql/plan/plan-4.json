@@ -1,0 +1,30 @@
+[
+	{
+		"Plan": {
+			"Plans": [
+				{
+					"Alias": "order_item",
+					"Node Type": "Seq Scan",
+					"Plan Rows": 149507,
+					"Plan Width": 8,
+					"Total Cost": 2368.07,
+					"Startup Cost": 0.00,
+					"Relation Name": "order_item",
+					"Parallel Aware": false,
+					"Parent Relationship": "Outer"
+				}
+			],
+			"Strategy": "Hashed",
+			"Group Key": [
+				"order_id"
+			],
+			"Node Type": "Aggregate",
+			"Plan Rows": 43208,
+			"Plan Width": 8,
+			"Total Cost": 3547.68,
+			"Partial Mode": "Simple",
+			"Startup Cost": 3115.60,
+			"Parallel Aware": false
+		}
+	}
+]

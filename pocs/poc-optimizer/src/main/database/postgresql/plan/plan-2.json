@@ -1,0 +1,17 @@
+[
+	{
+		"Plan": {
+			"Alias": "order_item",
+			"Node Type": "Index Scan",
+			"Plan Rows": 1,
+			"Index Cond": "((order_id = 4321) AND (status_code = 2))",
+			"Index Name": "ix_order_id_status",
+			"Plan Width": 24,
+			"Total Cost": 6.19,
+			"Startup Cost": 0.42,
+			"Relation Name": "order_item",
+			"Parallel Aware": false,
+			"Scan Direction": "Forward"
+		}
+	}
+]

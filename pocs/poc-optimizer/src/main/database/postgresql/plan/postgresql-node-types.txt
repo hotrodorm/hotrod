@@ -1,0 +1,84 @@
+-- This list comes from the source code: https://github.com/postgres/postgres/blob/master/src/backend/commands/explain.c#L1162
+
+-- CUD
+Insert
+Update
+Delete
+
+-- Joining ---         Index   Index      Heap    Heap       Mat-Index  Mat-Index  Mat-Table  Mat-Table  Other      Custom  Foreign
+                       Access  Filtering  Access  Filtering  Access     Filtering  Access     Filtering  Filtering  Access  Access
+                       ------  ---------  ------  ---------  ---------  ---------  ---------  ---------  ---------  ------  -------
+Nested Loop            -       -          -       -          -          -          -          -          Y?         -       -
+Merge                  -       -          -       -          -          -          -          -          Y?         -       -
+Hash                   Y       Y?         Y       Y          -          -          -          -          -          -       -
+
+-- Combining
+Result
+ProjectSet
+Recursive Union
+BitmapAnd
+BitmapOr
+SetOp
+
+-- Processing ---      Index   Index      Heap    Heap       Mat-Index  Mat-Index  Mat-Table  Mat-Table  Other      Custom  Foreign
+                       Access  Filtering  Access  Filtering  Access     Filtering  Access     Filtering  Filtering  Access  Access
+                       ------  ---------  ------  ---------  ---------  ---------  ---------  ---------  ---------  ------  -------
+Materialize
+Result Cache
+Sort
+Incremental Sort
+HashSetOp
+
+-- Access ---          Index   Index      Heap    Heap       Mat-Index  Mat-Index  Mat-Table  Mat-Table  Other      Custom  Foreign
+                       Access  Filtering  Access  Filtering  Access     Filtering  Access     Filtering  Filtering  Access  Access
+                       ------  ---------  ------  ---------  ---------  ---------  ---------  ---------  ---------  ------  -------
+Seq Scan               -       -          Y       Y          -          -          -          -          -          -       -
+Tid Scan               -       -          Y       Y          -          -          -          -          -          -       -
+Tid Range Scan         -       -          Y       Y          -          -          -          -          -          -       -
+Sample Scan            -       -          Y       -          -          -          -          -          -          -       -
+Index Scan             Y       -          Y       Y          -          -          -          -          -          -       -
+Index Only Scan        Y       Y          -       -          -          -          -          -          -          -       -
+Bitmap Heap Scan       -       -          Y       Y          -          -          -          -          -          -       -
+Bitmap Index Scan      -       -          -       -          Y          Y          -          -          -          -       -
+Subquery Scan          -       -          -       -          -          -          -          -          Y          -       -
+Table Function Scan    -       -          -       -          -          -          -          -          Y          -       -
+Values Scan            -       -          -       -          -          -          Y          Y          -          -       -
+CTE Scan               -       -          -       -          -          -          Y          Y          -          -       -
+Named Tuplestore Scan  -       -          -       -          -          -          Y          Y          -          -       -
+"Custom Scan " CustomScan Name -          -       -          -          -          -          -          -          Y       -
+Custom Scan            -       -          -       -          -          -          -          -          -          Y       -
+Function Scan          -       -          -       -          -          -          -          -          Y          -       -
+WorkTable Scan         -       -          -       -          -          -          Y          Y          -          -       -
+
+-- Foreign ---         Index   Index      Heap    Heap       Mat-Index  Mat-Index  Mat-Table  Mat-Table  Other      Custom  Foreign
+                       Access  Filtering  Access  Filtering  Access     Filtering  Access     Filtering  Filtering  Access  Access
+                       ------  ---------  ------  ---------  ---------  ---------  ---------  ---------  ---------  ------  -------
+Foreign Scan           -       -          -       -          -          -          -          -          -          -       Y
+Foreign Insert         -       -          -       -          -          -          -          -          -          -       -
+Foreign Update         -       -          -       -          -          -          -          -          -          -       Y
+Foreign Delete         -       -          -       -          -          -          -          -          -          -       Y
+
+-- Other
+LockRows
+Limit
+
+-- ?
+Gather
+Gather Merge
+Append
+Merge Append
+"Partial " pname
+"Finalize " pname
+Unique
+
+-- Aggregation
+Group
+Aggregate
+GroupAggregate
+HashAggregate
+MixedAggregate
+WindowAgg
+
+
+
+

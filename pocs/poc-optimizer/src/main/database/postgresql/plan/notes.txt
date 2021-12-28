@@ -1,0 +1,23 @@
+Access & Filters:
+ *1 Filter: sum(quantity) > 2
+ *2i [I] Access - Index backwards: order_item_pkey
+     - On: order_item (id)
+     - Access Predicate: (id >= 5050) AND (id <= 5380)
+     - [F] Filter Predicate: quantity > 0
+ *2h [H] Heap Fetch:
+     - [F] Filter Predicate: amount > 100
+Notes:
+
+
+==================================================
+
+
+Access & Filters:
+ *2 🅸 Access: (id >= 5050) AND (id <= 5380)
+     • Reading index: order_item_pkey (backwards)
+     • Index Def: order_item (id)
+     • 🅵 Filter: quantity > 0
+    🅷 🅵 Heap Filter: amount > 100
+    
+    
+

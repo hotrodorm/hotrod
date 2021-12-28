@@ -1,0 +1,55 @@
+
+      <java basedir="src/main/java" package="" />
+        <dao package="daos" prefix="" suffix="DAO" nitro-prefix="" nitro-suffix="" />
+        <row package="rows" prefix="Abstract" suffix="Row" nitro-prefix="Abstract" nitro-suffix="" />
+        <vo package="vos" prefix="" suffix="VO" nitro-prefix="" nitro-suffix="" />
+      </java>
+      <mapper basedir="src/main/resources" dir="mappers" />
+      
+
+DAO + Row + VO
+      ---
+
+ProductDAO
+AbstractProductRow
+ProductVO
+
+structure **
+model **
+map **
+
+row **
+
+layout **
+
+reflection *
+mapping *
+
+clone *
+mirror *
+image *
+blueprint *
+skeleton *
+replica *
+
+sketch
+draft
+
+prototype
+archetype
+
+outline
+abstract
+
+frame
+shape
+
+body
+
+scaffolding
+
+scheme
+
+shell
+
+copy

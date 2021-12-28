@@ -1,0 +1,34 @@
+[
+	{
+		"Plan": {
+			"Node Type": "Aggregate",
+			"Strategy": "Hashed",
+			"Partial Mode": "Simple",
+			"Parallel Aware": false,
+			"Startup Cost": 18.77,
+			"Total Cost": 18.82,
+			"Plan Rows": 1,
+			"Plan Width": 8,
+			"Group Key": [
+				"status_code"
+			],
+			"Filter": "(sum(quantity) > 2)",
+			"Plans": [
+				{
+					"Node Type": "Index Scan",
+					"Parent Relationship": "Outer",
+					"Parallel Aware": false,
+					"Scan Direction": "Forward",
+					"Index Name": "order_item_pkey",
+					"Relation Name": "order_item",
+					"Alias": "order_item",
+					"Startup Cost": 0.42,
+					"Total Cost": 16.22,
+					"Plan Rows": 340,
+					"Plan Width": 12,
+					"Index Cond": "((id >= 5050) AND (id <= 5380))"
+				}
+			]
+		}
+	}
+]

@@ -28,6 +28,7 @@ public class ProductRestController {
     try {
       Long iid = Long.parseLong(id);
       ProductVO product = this.productDAO.selectByPK(iid);
+      product.setName(product.getName()+"+tail...");
       ProductInterface pi = product;
       return pi;
     } catch (NumberFormatException e) {
