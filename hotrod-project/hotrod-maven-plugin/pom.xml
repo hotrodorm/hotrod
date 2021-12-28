@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.hotrodorm.hotrod</groupId>
     <artifactId>hotrod-project</artifactId>
-    <version>3.4.3-SNAPSHOT</version>
+    <version>3.4.4-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -26,7 +26,7 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-abstract-plugin</artifactId>
-      <version>3.4.3-SNAPSHOT</version>
+      <version>3.4.4-SNAPSHOT</version>
     </dependency>
 
     <!-- Maven 3 -->
