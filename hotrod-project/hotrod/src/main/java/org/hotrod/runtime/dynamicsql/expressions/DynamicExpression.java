@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
@@ -13,8 +11,6 @@ import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
 public abstract class DynamicExpression {
-
-  private static final Logger log = LogManager.getLogger(DynamicExpression.class);
 
   private static final int JEXL_CACHE_MAX_EXPRESSIONS = 200;
 
@@ -25,7 +21,6 @@ public abstract class DynamicExpression {
       throws DynamicSQLEvaluationException;
 
   public final String evaluate(final DynamicSQLParameters variables) throws DynamicSQLEvaluationException {
-    log.debug("init");
     try {
       StringBuilder sb = new StringBuilder();
       this.evaluate(sb, variables);

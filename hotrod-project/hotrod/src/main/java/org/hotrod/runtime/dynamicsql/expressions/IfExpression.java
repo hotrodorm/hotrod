@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlExpression;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
@@ -15,13 +13,10 @@ import org.hotrod.runtime.exceptions.InvalidJexlExpressionException;
 
 public class IfExpression extends DynamicExpression {
 
-  private static final Logger log = LogManager.getLogger(IfExpression.class);
-
   private JexlExpression test;
   private DynamicExpression[] expressions;
 
   public IfExpression(final String test, final DynamicExpression... expressions) {
-    log.debug("init");
     try {
       this.test = JEXL_ENGINE.createExpression(test);
     } catch (JexlException e) {

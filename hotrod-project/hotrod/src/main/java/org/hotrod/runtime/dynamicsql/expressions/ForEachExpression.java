@@ -7,8 +7,6 @@ import java.util.Map;
 
 import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlExpression;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.runtime.dynamicsql.DynamicSQLEvaluationException;
 import org.hotrod.runtime.dynamicsql.DynamicSQLParameters;
 import org.hotrod.runtime.dynamicsql.EvaluationFeedback;
@@ -18,8 +16,6 @@ import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 public class ForEachExpression extends DynamicExpression {
 
   // Constants
-
-  private static final Logger log = LogManager.getLogger(ForEachExpression.class);
 
   // Properties
 
@@ -33,7 +29,6 @@ public class ForEachExpression extends DynamicExpression {
 
   public ForEachExpression(final String item, final String index, final String collection, final String open,
       final String separator, final String close, final DynamicExpression... expressions) {
-    log.debug("init");
     this.item = item;
     this.index = index;
     try {
@@ -138,7 +133,6 @@ public class ForEachExpression extends DynamicExpression {
       throws DynamicSQLEvaluationException {
     StringBuilder sb = new StringBuilder();
     for (DynamicExpression expr : this.expressions) {
-      log.info("expr=" + expr);
       expr.evaluate(sb, variables);
     }
     lw.add(sb.toString());
