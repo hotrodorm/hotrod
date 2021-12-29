@@ -3,8 +3,6 @@ package org.hotrod.runtime.livesql.expressions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.runtime.livesql.expressions.asymmetric.EqAll;
 import org.hotrod.runtime.livesql.expressions.asymmetric.EqAny;
 import org.hotrod.runtime.livesql.expressions.asymmetric.GeAll;
@@ -32,7 +30,7 @@ import org.hotrodorm.hotrod.utils.SUtil;
 
 public abstract class Expression implements ResultSetColumn {
 
-  private static final Logger log = LogManager.getLogger(Expression.class);
+//  private static final Logger log = LogManager.getLogger(Expression.class);
 
   public static final int PRECEDENCE_LITERAL = 1;
   public static final int PRECEDENCE_COLUMN = 1;
@@ -84,7 +82,6 @@ public abstract class Expression implements ResultSetColumn {
   private int precedence;
 
   protected void setPrecedence(final int precedence) {
-    log.debug("setPrecedence=" + precedence);
     this.precedence = precedence;
   }
 

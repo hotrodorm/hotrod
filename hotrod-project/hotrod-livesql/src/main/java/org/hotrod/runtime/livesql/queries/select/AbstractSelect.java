@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.ibatis.session.SqlSession;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
@@ -30,7 +28,7 @@ import org.hotrodorm.hotrod.utils.Separator;
 
 public abstract class AbstractSelect<R> extends Query {
 
-  private static final Logger log = LogManager.getLogger(AbstractSelect.class);
+//  private static final Logger log = LogManager.getLogger(AbstractSelect.class);
 
   private boolean distinct;
   private TableOrView baseTable = null;
@@ -285,9 +283,6 @@ public abstract class AbstractSelect<R> extends Query {
   public List<R> execute() {
 
     LiveSQLStructure q = this.prepareQuery();
-    if (log.isInfoEnabled()) {
-      log.info(q.render());
-    }
 
     if (this.mapperStatement == null) {
       return executeLiveSQL(q);
@@ -299,9 +294,6 @@ public abstract class AbstractSelect<R> extends Query {
 
   public Cursor<R> executeCursor() {
     LiveSQLStructure q = this.prepareQuery();
-    if (log.isDebugEnabled()) {
-      log.debug(q.render());
-    }
     if (this.mapperStatement == null) {
       return executeLiveSQLCursor(q);
     } else {
