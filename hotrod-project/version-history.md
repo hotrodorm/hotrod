@@ -75,5 +75,8 @@
 - Fixing default catalog/schema for nitro module.
 - Adding generation output and summary line.
 
+## 3.4.4
+- Removing Log4j from runtimes (hotrod-jar and hotrod-livesql.jar).
+
 
  
