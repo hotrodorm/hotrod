@@ -56,7 +56,7 @@ Now, if the &lt;columns> tag includes a single VO, then there's no need to creat
       <select method="retrieveActiveAccounts">
         select
           <columns>
-            <vo table="account" property="account" alias="a" />
+            <vo table="account" alias="a" />
           </columns>
         from account a
         where a.active = 1
