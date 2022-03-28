@@ -15,11 +15,14 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <spring.boot.version>2.3.4.RELEASE</spring.boot.version>
     <hotrod.version>3.4.5-SNAPSHOT</hotrod.version>
+    <mybatis.spring.version>2.1.3</mybatis.spring.version>
+    <database.builder.version>1.2.2</database.builder.version>
+    <sentinel.version>1.1.8</sentinel.version>
   </properties>
 
   <dependencies>
 
-    <!-- 1. Spring Boot -->
+    <!-- Spring Boot -->
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -27,7 +30,7 @@
       <version>${spring.boot.version}</version>
     </dependency>
 
-    <!-- 1.c Spring AOP -->
+    <!-- Spring AOP -->
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -35,15 +38,15 @@
       <version>${spring.boot.version}</version>
     </dependency>
  
-    <!-- 2. MyBatis Spring -->
+    <!-- MyBatis Spring -->
 
     <dependency>
       <groupId>org.mybatis.spring.boot</groupId>
       <artifactId>mybatis-spring-boot-starter</artifactId>
-      <version>2.1.3</version>
+      <version>${mybatis.spring.version}</version>
     </dependency>
 
-    <!-- 3. HotRod -->
+    <!-- HotRod -->
 
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
@@ -67,6 +70,14 @@
       <type>${jdbcdrivertype}</type>
 #end
     </dependency>
+
+    <!-- Sentinel -->
+
+    <dependency>
+      <groupId>org.nocrala.tools.database.sentinel</groupId>
+      <artifactId>sentinel</artifactId>
+      <version>${sentinel.version}</version>
+    </dependency>    
 
     <!-- Integrating springdoc-openapi With Spring WebFlux -->
 
@@ -103,22 +114,20 @@
       <plugin>
         <groupId>org.nocrala.tools.database.builder</groupId>
         <artifactId>database-builder-maven-plugin</artifactId>
-        <version>1.2.2</version>
+        <version>${database.builder.version}</version>
         <configuration>
-          <sourcedir>src/database/postgresql-12.4/database-source</sourcedir>
+          <sourcedir>src/main/database</sourcedir>
           <targetversion>1.0.0</targetversion>
-          <layeredbuild>true</layeredbuild>
-          <layeredscenario>false</layeredscenario>
-          <onbuilderror>stop</onbuilderror>
-          <oncleanerror>continue</oncleanerror>
-          <localproperties>src/database/postgresql-12.4/dev.properties</localproperties>
+          <localproperties>src/main/database/sandbox.properties</localproperties>
         </configuration>
         <dependencies>
           <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.2.5.jre6</version>
-            <type>jar</type>
+            <groupId>${jdbcdrivergroupid}</groupId>
+            <artifactId>${jdbcdriverartifactid}</artifactId>
+            <version>${jdbcdriverversion}</version>
+#if( ${jdbcdrivertype} != "@@NO@@VALUE@@" )
+            <type>${jdbcdrivertype}</type>
+#end
           </dependency>
         </dependencies>
       </plugin>
@@ -133,7 +142,6 @@
           <configfile>src/main/hotrod/hotrod.xml</configfile>
           <generator>MyBatis-Spring</generator>
           <localproperties>src/main/hotrod/hotrod-local.properties</localproperties>
-          <txtexportfile>columns-report.txt</txtexportfile>
         </configuration>
         <dependencies>
           <dependency>
@@ -149,7 +157,6 @@
 
     </plugins>
   </build>
-
 
   <profiles>
 

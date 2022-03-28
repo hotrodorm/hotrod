@@ -43,8 +43,9 @@ public class App {
   }
 
   private void runExamples() {
-    EmployeeVO e = this.employeeDAO.selectByPK(123);
-    System.out.println("> Employee Name: " + e.getName());
+    Integer id = 123;
+    EmployeeVO e = this.employeeDAO.selectByPK(id);
+    System.out.println("> Employee #" + id + " Name: " + e.getName());
   }
 
 }

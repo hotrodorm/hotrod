@@ -5,7 +5,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="hotrod-jar-application">
 
   <requiredProperties>
-
+  
     <requiredProperty key="package">
       <defaultValue />
       <validationRegex />
@@ -60,20 +60,8 @@
   </requiredProperties>
 
   <fileSets>
-    <fileSet filtered="true" packaged="true">
-      <directory>src/main/java</directory>
-    </fileSet>
     <fileSet filtered="true">
-      <directory>src/main/hotrod</directory>
-    </fileSet>
-    <fileSet filtered="true">
-      <directory>src/main/resources</directory>
-    </fileSet>
-    <fileSet filtered="true" packaged="true">
-      <directory>src/test/java</directory>
-    </fileSet>
-    <fileSet filtered="true">
-      <directory>sample-data</directory>
+      <directory>src/main</directory>
     </fileSet>
   </fileSets>
 
