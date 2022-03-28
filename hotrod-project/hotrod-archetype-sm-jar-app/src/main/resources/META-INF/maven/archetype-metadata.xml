@@ -60,8 +60,17 @@
   </requiredProperties>
 
   <fileSets>
+    <fileSet filtered="true" packaged="true">
+      <directory>src/main/java</directory>
+    </fileSet>
     <fileSet filtered="true">
-      <directory>src/main</directory>
+      <directory>src/main/database</directory>
+    </fileSet>
+    <fileSet filtered="true">
+      <directory>src/main/hotrod</directory>
+    </fileSet>
+    <fileSet filtered="true">
+      <directory>src/main/resources</directory>
     </fileSet>
   </fileSets>
 

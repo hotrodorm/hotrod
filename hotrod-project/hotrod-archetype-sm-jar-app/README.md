@@ -73,5 +73,19 @@ The application will start, will connect to the database, will retrieve employee
 [ Example complete ]
 ```
 
+#### Take Sentinel Database Snapshot ####
 
+    mvn -P sentinel sentinel:take-snapshot@take
+    
+Then, enable the DatabaseVerifier in the App.java class to check it at runtime.
+
+Other Sentinel commands:
+
+```
+mvn -P sentinel -pl persistence sentinel:show-database@show-db
+mvn -P sentinel -pl persistence sentinel:take-snapshot@take
+mvn -P sentinel -pl persistence sentinel:show-snapshot@show-sn
+mvn -P sentinel -pl persistence sentinel:verify-database@verify
+mvn -P sentinel -pl persistence sentinel:compare-snapshots@compare    
+```
 

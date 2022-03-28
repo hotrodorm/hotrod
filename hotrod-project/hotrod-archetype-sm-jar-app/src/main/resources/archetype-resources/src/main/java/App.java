@@ -25,6 +25,9 @@ import com.myapp.persistence.EmployeeVO;
 @SpringBootApplication
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class App {
+  
+  @Autowired
+  private DatabaseVerifier databaseVerifier;
 
   @Autowired
   private EmployeeDAO employeeDAO;
@@ -36,6 +39,10 @@ public class App {
   @Bean
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
+      
+      // To enable the database verifier, first 1) take a database snapshot, and 2) uncomment the line below
+      // this.databaseVerifier.verify();
+      
       System.out.println("[ Starting example ]");
       runExamples();
       System.out.println("[ Example complete ]");

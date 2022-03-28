@@ -154,11 +154,116 @@
           </dependency>
         </dependencies>
       </plugin>
-
+      
     </plugins>
   </build>
 
   <profiles>
+
+    <profile>
+      <id>sentinel</id>
+
+      <build>
+        <plugins>
+
+          <!-- Sentinel -->
+
+          <plugin>
+            <groupId>org.nocrala.tools.database.sentinel</groupId>
+            <artifactId>sentinel-maven-plugin</artifactId>
+            <version>${sentinel.version}</version>
+            <executions>
+
+              <execution>
+                <id>show-db</id>
+                <configuration>
+                  <localconfiguration>src/main/database/sandbox.properties</localconfiguration>
+                </configuration>
+                <goals>
+                  <goal>show-database</goal>
+                </goals>
+              </execution>
+
+              <execution>
+                <id>take</id>
+                <configuration>
+                  <snapshotfile>src/main/resources/database-snapshot.sentinel</snapshotfile>
+                  <localconfiguration>src/main/database/sandbox.properties</localconfiguration>
+                </configuration>
+                <goals>
+                  <goal>take-snapshot</goal>
+                </goals>
+              </execution>
+
+              <execution>
+                <id>show-sn</id>
+                <configuration>
+                  <snapshotfile>src/main/resources/database-snapshot.sentinel</snapshotfile>
+                  <localconfiguration>src/main/database/sandbox.properties</localconfiguration>
+                </configuration>
+                <goals>
+                  <goal>show-snapshot</goal>
+                </goals>
+              </execution>
+
+              <execution>
+                <id>verify</id>
+                <configuration>
+                  <snapshotfile>src/main/resources/database-snapshot.sentinel</snapshotfile>
+                  <localconfiguration>src/main/database/sandbox.properties</localconfiguration>
+                </configuration>
+                <goals>
+                  <goal>verify-database</goal>
+                </goals>
+              </execution>
+
+              <execution>
+                <id>compare</id>
+                <configuration>
+                  <localconfiguration>src/main/database/sandbox.properties</localconfiguration>
+                </configuration>
+                <goals>
+                  <goal>compare-snapshots</goal>
+                </goals>
+              </execution>
+
+              <execution>
+                <id>dev</id>
+                <configuration>
+                  <localconfiguration>src/main/database/dev.properties</localconfiguration>
+                  <snapshotalias>DEV</snapshotalias>
+                  <snapshotfile>src/main/database/dev-snapshot-${timestamp}.sentinel</snapshotfile>
+                </configuration>
+              </execution>
+
+              <execution>
+                <id>prod</id>
+                <configuration>
+                  <localconfiguration>src/main/database/prod.properties</localconfiguration>
+                  <snapshotalias>PROD</snapshotalias>
+                  <snapshotfile>src/main/database/prod-snapshot-${timestamp}.sentinel</snapshotfile>
+                </configuration>
+              </execution>
+
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>${jdbcdrivergroupid}</groupId>
+                <artifactId>${jdbcdriverartifactid}</artifactId>
+                <version>${jdbcdriverversion}</version>
+#if( ${jdbcdrivertype} != "@@NO@@VALUE@@" )
+                <type>${jdbcdrivertype}</type>
+#end
+              </dependency>
+            </dependencies>
+          </plugin>
+      
+        </plugins>
+        
+      </build>
+        
+    </profile>
+
 
     <profile>
       <id>genopenapi</id>
