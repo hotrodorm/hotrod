@@ -72,6 +72,9 @@
     <fileSet filtered="true" packaged="true">
       <directory>src/test/java</directory>
     </fileSet>
+    <fileSet filtered="true">
+      <directory>sample-data</directory>
+    </fileSet>
   </fileSets>
 
 </archetype-descriptor>

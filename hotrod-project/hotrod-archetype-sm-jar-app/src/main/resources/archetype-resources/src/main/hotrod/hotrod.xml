@@ -5,9 +5,16 @@
 
   <generators>
     <mybatis-spring>
-      <daos package="${package}.${persistencepackage}" />
+      <daos package="${package}.${persistencepackage}" 
+        dao-prefix=""  dao-suffix="DAO" vo-prefix=""  vo-suffix="VO" abstract-vo-prefix="Abstract"  abstract-vo-suffix="VO" 
+        ndao-prefix="" ndao-suffix=""   nvo-prefix="" nvo-suffix=""  nabstract-vo-prefix="Abstract" nabstract-vo-suffix=""
+      />
       <mappers dir="mappers" />
+      <classic-fk-navigation />
+      <select-generation strategy="result-set" />          
     </mybatis-spring>
   </generators>
+  
+  <table name="employee" />
 
 </hotrod>
