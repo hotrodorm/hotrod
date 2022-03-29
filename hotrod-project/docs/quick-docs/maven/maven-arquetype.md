@@ -138,11 +138,11 @@ The app configuration specifies basic initial parameters for the new app:
 
 The librares selection section indicates the spefici versions of each library you want to be used in the brand new app:
 
-- `springbootversion`: The Spring Boot version.
-- `hotrodversion`: The HotRod version.
-- `mybatisspringversion`: MyBatis-Spring version.
-- `dbbuilderversion`: Automated database creation/lifecycle tool.
-- `sentinelversion`: Database verifier tool.
+- `springbootversion`: The Spring Boot version for your brand new project.
+- `hotrodversion`: The HotRod version for your brand new project.
+- `mybatisspringversion`: MyBatis-Spring version for your brand new project.
+- `dbbuilderversion`: Automated database creation/lifecycle tool for your brand new project.
+- `sentinelversion`: Database verifier tool for your brand new project.
 
 ##### JDBC Driver Selection
 
