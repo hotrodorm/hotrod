@@ -64,14 +64,21 @@ Now, you can enter the newly created directory `app1` (that corresponds to the `
 
 #### Populate the Database ####
 
-Edit the files `src/main/database/1.0.0/build.sql` and `src/main/database/1.0.0/clean.sql` to 
+Edit the files `src/main/database/1.0.0/build.sql` (and optionally `src/main/database/1.0.0/clean.sql`) to 
 define a few tables that you want to create/drop with the DB lifecycle tasks. Then run:
 
+```
+mvn db:build
+```
+
+Now, your database has the table `employee` as defined by the `build.sql` file above. We are ready to run HotRod.
+
+**Note**: As a side note, the commands to manage the database are:
 - `mvn db:build`: to populate the database schema.
 - `mvn db:clean`: to clean the database schema.
 - `mvn db:rebuild`: to clean and build the database schema.
 
-**Note**: The DB lifecycle tasks are suitable for the sandbox environment only. You don't want to drop tables in the 
+These DB lifecycle tasks are suitable for the sandbox environment only. You don't want to drop tables in the 
 production environment, just by running `mvn db:clean`.
 
 #### Generate the HotRod Persistence ####
@@ -80,7 +87,7 @@ Then, generate all classes and files for the HotRod persistence. Run:
 
     mvn hotrod:gen
 
-This will generate all necessary DAO and VO Java classes.
+This will generate all files, DAO, and VO Java classes necessary for the automated persistence.
 
 #### Run the Application ####
 
@@ -96,13 +103,13 @@ The application will start, will connect to the database, will retrieve employee
 [ Example complete ]
 ```
 
-You can call the REST services implemented in the example as:
+You can call the REST services implemented in the example as. On a separate terminal use `wget` or `curl` to call some REST services:
 
 ```
-$ wget -nv -O- localhost:8080/employee/123
+wget -nv -O- localhost:8080/employee/123
 {"id":123,"name":"Alice"}
 
-$ wget -nv -O- localhost:8080/employee/search/Anne
+wget -nv -O- localhost:8080/employee/search/Anne
 [{"ID":45,"NAME":"Anne"}]
 ```
 
@@ -119,7 +126,7 @@ The JSON file is now available at `target/openapi.json`, ready for distribution.
 **Note 1**: Make sure the application is not running while issuing this command. Maven will start and stop the service to retrieve the OpenAPI file.
 
 **Note 2**: To generate the OpenAPI the `genopenapijson` profile needs to be enabled temporarily. It's disabled by default since you probably
-don't want to generate the API on every build.
+don't want to generate the API on every single build.
 
 #### Generate the OpenAPI YAML file ####
 
@@ -134,7 +141,7 @@ The YAML file is now available at `target/openapi.yaml`, ready for distribution.
 **Note 1**: Make sure the application is not running while issuing this command. Maven will start and stop the service to retrieve the OpenAPI file.
 
 **Note 2**: To generate the OpenAPI the `genopenapiyaml` profile needs to be enabled temporarily. It's disabled by default since you probably
-don't want to generate the API on every build.
+don't want to generate the API on every single build.
           
 
 #### Take a Database Structure Snapshot and Verify it Later ####
