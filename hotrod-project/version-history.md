@@ -22,7 +22,7 @@
 
 ## 3.1.0
 - Maven Plugin released.
-- Full &lt;type-solver> implemented with OGNL logic.
+- Full `<type-solver>` implemented with OGNL logic.
 - TXT column export implemented.
 - XLSX column export implemented.
 - HotRod PURGE operation implemented to remove residual temporary views.
@@ -59,16 +59,16 @@
 ## 3.4.0
 - Classic FK navigation can now be enabled on a per-table basis.
 - Cursors implemented for LiveSQL, Nitro Selects, selectByExample(), and selectByCriteria().
-- New &lt;select> tag processor "result-set" offers many benefits compared to traditional "create view" processor.
-- New &lt;name-solver> tag, automatically names tables, views, and columns according to regex naming rules.
+- New `<select>` tag processor "result-set" offers many benefits compared to traditional "create view" processor.
+- New `<name-solver>` tag, automatically names tables, views, and columns according to regex naming rules.
 - LiveSQL function infrastructure: developers can now add built-in and also user-defined functions to LiveSQL queries.
 - LiveSQL dialect can be designated at runtime using application.properties, with fallback to discovery mode.
 - LiveSQL fully typed SQL CASE and OVER clauses.
 - LiveSQL RANGE window frame implemented for numbers (date/time are not yet supported since we don't model intervals yet).
 - Fully independent Spring MyBatis generator.
 - REST metrics implemented (experimental).
-- Added "force-jdbc-type-on-write" attribute to <type-solver> functionality.
-- Added extra prefixes and suffixes for Nitro daos and vos.
+- Added "force-jdbc-type-on-write" attribute to `<type-solver>` functionality.
+- Added extra prefixes and suffixes for Nitro DAOs and VOs.
 
 ## 3.4.1
 - Improving select tag messaging for SQL errors.
@@ -78,7 +78,7 @@
 ## 3.4.2
 - Fixing fragment processing.
 - Adding HotRod Services infrastructure to facilitate future plugins.
-- Removed deprecated first-level <select> tag.
+- Removed deprecated first-level `<select>` tag.
 - Removed old generators.
 - Significant refactoring by separating metadata from generator.
 - Code clean up.
@@ -87,14 +87,14 @@
 - Log4J upgraded to 2.17.1.
 
 ## 3.4.4
-- Removing Log4j from runtimes (hotrod-jar and hotrod-livesql.jar).
+- Log4j fully removed from runtimes (hotrod-jar and hotrod-livesql.jar). Now Log4j is only used in the generator.
 
 ## 3.2.3
-- Log4J upgraded to 2.17.1
-- Removing Log4j from runtimes (hotrod-jar and hotrod-livesql.jar).
+- Log4J upgraded to 2.17.1 in the generator.
+- Log4j fully removed from runtimes (hotrod-jar and hotrod-livesql.jar). Now Log4j is only used in the generator.
 
 ## 3.4.5
-- Added Maven Archetype. It generates a running full-blown project with single command line, that includes
-  SpringBoot, HotRod, DB lifecycle, DB connectivity, REST Controllers, OpenAPI3, and Sentinel. 
-  
+- New Spring Boot archetype! It generates a running full-blown project with a single command line: Includes
+  SpringBoot, HotRod, DB lifecycle, DB connectivity, REST Controllers, OpenAPI3, and Sentinel.
+- Fixing `<enum>` tag error.
 
