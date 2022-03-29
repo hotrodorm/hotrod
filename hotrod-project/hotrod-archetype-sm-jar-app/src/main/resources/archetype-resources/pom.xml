@@ -66,7 +66,7 @@
       <groupId>${jdbcdrivergroupid}</groupId>
       <artifactId>${jdbcdriverartifactid}</artifactId>
       <version>${jdbcdriverversion}</version>
-#if( ${jdbcdrivertype} != "@@NO@@VALUE@@" )
+#if( ${jdbcdrivertype} != "__NO_VALUE_SPECIFIED__" )
       <type>${jdbcdrivertype}</type>
 #end
     </dependency>
@@ -125,7 +125,7 @@
             <groupId>${jdbcdrivergroupid}</groupId>
             <artifactId>${jdbcdriverartifactid}</artifactId>
             <version>${jdbcdriverversion}</version>
-#if( ${jdbcdrivertype} != "@@NO@@VALUE@@" )
+#if( ${jdbcdrivertype} != "__NO_VALUE_SPECIFIED__" )
             <type>${jdbcdrivertype}</type>
 #end
           </dependency>
@@ -148,7 +148,7 @@
             <groupId>${jdbcdrivergroupid}</groupId>
             <artifactId>${jdbcdriverartifactid}</artifactId>
             <version>${jdbcdriverversion}</version>
-#if( ${jdbcdrivertype} != "@@NO@@VALUE@@" )
+#if( ${jdbcdrivertype} != "__NO_VALUE_SPECIFIED__" )
             <type>${jdbcdrivertype}</type>
 #end
           </dependency>
@@ -251,7 +251,7 @@
                 <groupId>${jdbcdrivergroupid}</groupId>
                 <artifactId>${jdbcdriverartifactid}</artifactId>
                 <version>${jdbcdriverversion}</version>
-#if( ${jdbcdrivertype} != "@@NO@@VALUE@@" )
+#if( ${jdbcdrivertype} != "__NO_VALUE_SPECIFIED__" )
                 <type>${jdbcdrivertype}</type>
 #end
               </dependency>
@@ -266,11 +266,8 @@
 
 
     <profile>
-      <id>genopenapi</id>
-  
-      <!-- Run as: mvn -P genopenapi clean verify -->
-      <!-- Generates: target/openapi.yaml -->
-          
+      <id>genopenapijson</id>
+
       <!-- Open API service -->
 
       <dependencies>
@@ -321,16 +318,9 @@
               </execution>
             </executions>
             <configuration>
-              <!-- To get the API in YAML format -->
-              <apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
-              <outputFileName>openapi.yaml</outputFileName>
-              <outputDir>${project.build.directory}</outputDir>
-              <!-- To get the API in JSON format -->
-              <!--
               <apiDocsUrl>http://localhost:8080/v3/api-docs</apiDocsUrl>
               <outputFileName>openapi.json</outputFileName>
               <outputDir>${project.build.directory}</outputDir>
-              -->
             </configuration>
           </plugin>
 
@@ -339,6 +329,71 @@
       </build>
 
     </profile>
+    
+    <profile>
+      <id>genopenapiyaml</id>
+  
+      <!-- Open API service -->
+
+      <dependencies>
+        <dependency>
+          <groupId>org.springdoc</groupId>
+          <artifactId>springdoc-openapi-ui</artifactId>
+          <version>1.2.32</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+
+          <!-- Spring Boot plugin - starts/stops the OpenAPI server -->
+
+          <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>${spring.boot.version}</version>
+            <executions>
+              <execution>
+                <id>pre-integration-test</id>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>post-integration-test</id>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- Generating OpenAPI docs -->
+
+          <plugin>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-maven-plugin</artifactId>
+            <version>0.2</version>
+            <executions>
+              <execution>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
+              <outputFileName>openapi.yaml</outputFileName>
+              <outputDir>${project.build.directory}</outputDir>
+            </configuration>
+          </plugin>
+
+        </plugins>
+
+      </build>
+
+    </profile>    
 
   </profiles>
 

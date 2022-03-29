@@ -2,18 +2,30 @@
 
 HotRod includes a Maven arquetype that creates a full blown project using a single command line.
 
+#### Table of Contents
+1. [Create the Project Automatically](#create-the-project-automatically)
+2. [Populate the Database](#populate-the-database)
+3. [Generate the HotRod Persistence](#generate-the-hotrod-persistence)
+4. [Run the Application](#run-the-application)
+5. [Generate the OpenAPI JSON file](#generate-the-openapi-json-file)
+6. [Generate the OpenAPI YAML file](#generate-the-openapi-yaml-file)
+7. [Take a Database Structure Snapshot and Verify it Later - Optional](#take-a-database-structure-snapshot-and-verify-it-later)
+8. [Parameters Reference](#parameters-reference)
+
+
 #### Create the Project Automatically ####
 
 You'll need to change the parameters according to:
 
 - Your project details: Group, Artifact, Version, Packages.
 - Library versions: SpringBoot, HotRod, MyBatis-Spring, Database Lifecycle, Sentinel.
-- Sandbox database: JDBC Driver details, URL, username, password, default catalog and/or schema.
+- JDBC Driver details: artifact identification and driver class name.
+- Sandbox database: URL, username, password, default catalog and/or schema.
 
 **Note**: The Sandbox database is a database or schema that you use to develop the application and that you can 
 populate and clean at any time without disrupting any other team member's work. It's a database schema for rapid development.
 
-This is an example with Oracle database. Change parameters as needed for another database.
+This is an example with Oracle database. Change parameters as needed for another database. See [parameters reference](#parameters-reference) at the end of this page for details.
 
 ```
 mvn archetype:generate                                    \
@@ -43,7 +55,7 @@ mvn archetype:generate                                    \
   -Djdbcusername=user1                                    \
   -Djdbcpassword=pass1                                    \
   -Djdbccatalog=""                                        \
-  -Djdbcschema=USER1                                      \
+  -Djdbcschema=USER1
 ```
 
 Now, you can enter the newly created directory `app1` (that corresponds to the `artifactid` parameter above):
@@ -94,9 +106,45 @@ $ wget -nv -O- localhost:8080/employee/search/Anne
 [{"ID":45,"NAME":"Anne"}]
 ```
 
-#### Take Sentinel a Database Snapshot and Verify it Later (Optional) ####
+#### Generate the OpenAPI JSON file ####
 
-If you want to enable the Sentinal database verifier (disabled by default) you must take a snapshot of the database structure when the database reaches a stable structure, by doing:
+To generate the OpenAPI JSON file type:
+
+```
+mvn -P genopenapijson clean verify
+```
+
+The JSON file is now available at `target/openapi.json`, ready for distribution.
+
+**Note 1**: Make sure the application is not running while issuing this command. Maven will start and stop the service to retrieve the OpenAPI file.
+
+**Note 2**: To generate the OpenAPI the `genopenapijson` profile needs to be enabled temporarily. It's disabled by default since you probably
+don't want to generate the API on every build.
+
+#### Generate the OpenAPI YAML file ####
+
+To generate the OpenAPI YAML file type:
+
+```
+mvn -P genopenapiyaml clean verify
+```
+
+The YAML file is now available at `target/openapi.yaml`, ready for distribution.
+
+**Note 1**: Make sure the application is not running while issuing this command. Maven will start and stop the service to retrieve the OpenAPI file.
+
+**Note 2**: To generate the OpenAPI the `genopenapiyaml` profile needs to be enabled temporarily. It's disabled by default since you probably
+don't want to generate the API on every build.
+          
+
+#### Take a Database Structure Snapshot and Verify it Later ####
+
+This feature is disabled by default and can be removed altogether from the project.
+
+This is an optional feature that can help validate a schema structure if you cannot access the environment. This can be useful if you can't get access
+to the production environment, but you still want to make sure all tables, views, column, their definitions, and indexes are created and up to date in it.
+
+If you want to enable the Sentinel database verifier (disabled by default) you must take a snapshot of the database structure when the database reaches a stable structure, by doing:
 
     mvn -P sentinel sentinel:take-snapshot@take
     
@@ -114,15 +162,15 @@ Notice that all of them include `-P sentinel` that enables the "sentinel" Maven 
 
 #### Parameters Reference
 
-The automated project creation requires parameters grouped in several categories:
+The automated project creation requires parameters that fall into several categories:
 
 ##### Arquetype Selection
 
-The arquetype seletion tells Maven which specific template to use when creating a project:
+The arquetype selection tells Maven which specific template to use when creating a project:
 
 - `archetypeArtifactId`: This is the specific arquetype to use. Currently the only arquetype available is `hotrod-archetype-sm-jar-app` that produces
 a ready-to-run project with SpringBoot, REST services, HotRod, MyBatis, Database Lifecycle, Sentinel, and OpenAPI 3.
-- `DarchetypeVersion`: The version of the maven arquetype. Choose at least `3.4.5`.
+- `archetypeVersion`: The version of the maven arquetype. Choose at least `3.4.5`.
 
 ##### App Configuration
 
@@ -136,7 +184,7 @@ The app configuration specifies basic initial parameters for the new app:
 
 ##### Libraries Selection
 
-The librares selection section indicates the spefici versions of each library you want to be used in the brand new app:
+The librares selection section indicates the specific versions of each library you want to use in the brand new app:
 
 - `springbootversion`: The Spring Boot version for your brand new project.
 - `hotrodversion`: The HotRod version for your brand new project.
@@ -146,17 +194,21 @@ The librares selection section indicates the spefici versions of each library yo
 
 ##### JDBC Driver Selection
 
-This section defined the spefiid JDDB driver to use. These values reference the Maven Central Repository. Search for groupid, artifactid, and version in the official repositories:
+This section defines the specific JDBC driver to use. These values reference the Maven Central Repository. Search for groupid, artifactid, and version in the official repositories:
 
 - `jdbcdrivergroupid`: the JDBC driver groupid.
 - `jdbcdriverartifactid`: the the JDBC driver artifactid.
 - `jdbcdriverversion`: The JDBC driver version.
+- `jdbcdrivertype`: (Optional) The JDBC driver classifier. Defaults to `jar`.
 - `jdbcdriverclassname`: The JDBC driver's driver class name.
 
 ##### Sandbox Database Selection
 
-This section identifies the database sandbox. This is a database or schema that you use to develop the application and that you can 
-populate and clean at any time without disrupting any other team member's work. It's a database schema for rapid development:
+This section identifies the database sandbox that you will use to develop, debug, and run the application. 
+HotRod retrieves the database structure from it.
+This is a database or schema that you use to develop the application and that you can 
+populate and clean at any time without disrupting any other team member's work. 
+It's a database schema for rapid development:
 
 - `jdbcurl`: The JDBC URL for the sandbox database.
 - `jdbcusername`: The JDBC username for the sandbox database.
@@ -164,7 +216,7 @@ populate and clean at any time without disrupting any other team member's work. 
 - `jdbccatalog`: The JDBC catalog (if supported) for the sandbox database.
 - `jdbcschema`: The JDBC schema (if supported) for the sandbox database.
 
-Typically databases support a schema, or a catalog, or a combination of both. See list below:
+Typically databases support a schema, or a catalog, or both. As a general reference, see table below:
 
 ```
 Database          Supports Catalog  Supports Schema 

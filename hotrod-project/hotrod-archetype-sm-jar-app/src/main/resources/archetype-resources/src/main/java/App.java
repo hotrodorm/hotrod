@@ -40,7 +40,7 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       
-      // To enable the database verifier, first 1) take a database snapshot, and 2) uncomment the line below
+      // (Optional) To enable the database verifier, first 1) take a database snapshot, and 2) uncomment the line below
       // this.databaseVerifier.verify();
       
       System.out.println("[ Starting example ]");
