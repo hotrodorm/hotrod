@@ -146,7 +146,7 @@ public class EnumTag extends AbstractEntityDAOTag {
 
   // Behavior
 
-  public void validate(final DaosTag daosTag, final HotRodConfigTag config,
+  public void validate(final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
       final HotRodFragmentConfigTag fragmentConfig, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException {
 
@@ -217,7 +217,7 @@ public class EnumTag extends AbstractEntityDAOTag {
     }
 
     // Assemble object id
-
+    
     Id nameId;
     try {
       nameId = this.javaClassName == null ? Id.fromTypedSQL(this.name, adapter)
