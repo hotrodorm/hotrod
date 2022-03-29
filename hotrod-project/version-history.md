@@ -75,8 +75,26 @@
 - Fixing default catalog/schema for nitro module.
 - Adding generation output and summary line.
 
+## 3.4.2
+- Fixing fragment processing.
+- Adding HotRod Services infrastructure to facilitate future plugins.
+- Removed deprecated first-level <select> tag.
+- Removed old generators.
+- Significant refactoring by separating metadata from generator.
+- Code clean up.
+
+## 3.4.3
+- Log4J upgraded to 2.17.1.
+
 ## 3.4.4
 - Removing Log4j from runtimes (hotrod-jar and hotrod-livesql.jar).
 
+## 3.2.3
+- Log4J upgraded to 2.17.1
+- Removing Log4j from runtimes (hotrod-jar and hotrod-livesql.jar).
 
- 
+## 3.4.5
+- Added Maven Archetype. It generates a running full-blown project with single command line, that includes
+  SpringBoot, HotRod, DB lifecycle, DB connectivity, REST Controllers, OpenAPI3, and Sentinel. 
+  
+

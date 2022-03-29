@@ -15,45 +15,66 @@
       <validationRegex />
     </requiredProperty>
 
-    <requiredProperty key="jdbcdriverclassname">
-      <defaultValue>com.database.jdbc.Driver</defaultValue>
+    <requiredProperty key="springbootversion">
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
-    <requiredProperty key="jdbcurl">
-      <defaultValue>jdbc:database:@12.34.56.78:1234:db</defaultValue>
+    <requiredProperty key="hotrodversion">
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
-    <requiredProperty key="jdbcusername">
-      <defaultValue>username</defaultValue>
+    <requiredProperty key="mybatisspringversion">
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
-    <requiredProperty key="jdbcpassword">
-      <defaultValue>password</defaultValue>
+    <requiredProperty key="dbbuilderversion">
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
-    <requiredProperty key="jdbccatalog">
-      <defaultValue>@@CATALOG@@DOES@@NOT@@APPLY@@</defaultValue>
-      <validationRegex />
-    </requiredProperty>
-    <requiredProperty key="jdbcschema">
-      <defaultValue>@@SCHEMA@@DOES@@NOT@@APPLY@@</defaultValue>
+    <requiredProperty key="sentinelversion">
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
 
     <requiredProperty key="jdbcdrivergroupid">
-      <defaultValue>@@NO@@VALUE@@</defaultValue>
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
     <requiredProperty key="jdbcdriverartifactid">
-      <defaultValue>@@NO@@VALUE@@</defaultValue>
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
     <requiredProperty key="jdbcdriverversion">
-      <defaultValue>@@NO@@VALUE@@</defaultValue>
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
     <requiredProperty key="jdbcdrivertype">
-      <defaultValue>@@NO@@VALUE@@</defaultValue>
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+    <requiredProperty key="jdbcdriverclassname">
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+
+    <requiredProperty key="jdbcurl">
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+    <requiredProperty key="jdbcusername">
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+    <requiredProperty key="jdbcpassword">
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+    <requiredProperty key="jdbccatalog">
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
+      <validationRegex />
+    </requiredProperty>
+    <requiredProperty key="jdbcschema">
+      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
 
