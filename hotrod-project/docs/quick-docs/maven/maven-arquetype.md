@@ -159,7 +159,7 @@ Then, enable the DatabaseVerifier in the App.java class to check it at runtime, 
 
 Other Sentinel commands:
 
-- `mvn -P sentinel sentinel:show-database@show-db`: displays the database structure of live database.
+- `mvn -P sentinel sentinel:show-database@show-db`: displays the database structure of a live database.
 - `mvn -P sentinel sentinel:take-snapshot@take`: takes a snapshot of the structure of a live database and saves it into a file.
 - `mvn -P sentinel sentinel:show-snapshot@show-sn`: displays the content of a saved snapshot.
 - `mvn -P sentinel sentinel:verify-database@verify`: verify the structure of a live database against a saved snapshot.
