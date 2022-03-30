@@ -209,6 +209,8 @@ This section defines the specific JDBC driver to use. These values reference the
 - `jdbcdrivertype`: (Optional) The JDBC driver classifier. Defaults to `jar`.
 - `jdbcdriverclassname`: The JDBC driver's driver class name.
 
+**Note**: You can find common values to set up these drivers at [Sample of JDBC Drivers in Maven Central](#sample-of-jdbc-drivers-in-maven-central).
+
 ##### Sandbox Database Selection
 
 This section identifies the database sandbox that you will use to develop, debug, and run the application. 
@@ -241,16 +243,22 @@ Apache Derby      --                Yes
 ```
 
 
+#### Sample of JDBC Drivers in Maven Central ####
 
+This is a sample of a few JDBC database drivers available in Maven Central as of March 2022.
+Please update the version and/or artifactid as needed to get the latest version of each one:
 
-
-
-
-
-
-
-
-
-
-
+```
+database   jdbcdrivergroupid       jdbcdriverartifactid jdbcdriverversion jdbcdriverclassname                          
+---------- ----------------------- -------------------- ----------------- -------------------------------------------- 
+Oracle     com.oracle.ojdbc        ojdbc8               19.3.0.0          oracle.jdbc.driver.OracleDriver              
+DB2        com.ibm.db2             jcc                  11.5.7.0          com.ibm.db2.jcc.DB2Driver                    
+PostgreSQL org.postgresql          postgresql           42.3.3            org.postgresql.Driver                        
+SQL Server com.microsoft.sqlserver mssql-jdbc           10.2.0.jre8       com.microsoft.sqlserver.jdbc.SQLServerDriver 
+MariaDB    org.mariadb.jdbc        mariadb-java-client  3.0.4             org.mariadb.jdbc.Driver                      
+MySQL      mysql                   mysql-connector-java 8.0.28            com.mysql.cj.jdbc.Driver                     
+H2         com.h2database          h2                   2.1.210           org.h2.Driver                                
+HyperSQL   org.hsqldb              hsqldb               2.6.1             org.hsqldb.jdbc.JDBCDriver                   
+Derby      org.apache.derby        derby                10.15.2.0         org.apache.derby.jdbc.ClientDriver           
+```
 
