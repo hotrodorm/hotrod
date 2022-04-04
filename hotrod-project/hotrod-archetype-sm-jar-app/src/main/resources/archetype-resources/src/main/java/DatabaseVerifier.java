@@ -11,12 +11,18 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+#if( ${sentinelversion} != "_UNDEFINED_" )
+
 import org.nocrala.tools.database.sentinel.Snapshot;
 import org.nocrala.tools.database.sentinel.SnapshotComparator;
 import org.nocrala.tools.database.tartarus.exception.ReaderException;
 
+#end
+
 @Component
 public class DatabaseVerifier {
+
+#if( ${sentinelversion} != "_UNDEFINED_" )
 
   private static final String SENTINEL_SNAPSHOT_RESOURCE = "/database-snapshot.sentinel";
 
@@ -114,5 +120,7 @@ public class DatabaseVerifier {
     }
 
   }
+
+#end
 
 }

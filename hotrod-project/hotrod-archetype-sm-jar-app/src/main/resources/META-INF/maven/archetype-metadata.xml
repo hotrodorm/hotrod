@@ -16,65 +16,55 @@
     </requiredProperty>
 
     <requiredProperty key="springbootversion">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
     <requiredProperty key="hotrodversion">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
     <requiredProperty key="mybatisspringversion">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
-    <requiredProperty key="dbbuilderversion">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
+    <requiredProperty key="debbieversion">
+      <defaultValue>_UNDEFINED_</defaultValue>
       <validationRegex />
     </requiredProperty>
     <requiredProperty key="sentinelversion">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
+      <defaultValue>_UNDEFINED_</defaultValue>
       <validationRegex />
     </requiredProperty>
 
     <requiredProperty key="jdbcdrivergroupid">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
     <requiredProperty key="jdbcdriverartifactid">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
     <requiredProperty key="jdbcdriverversion">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
     <requiredProperty key="jdbcdrivertype">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
+      <defaultValue>_UNDEFINED_</defaultValue>
       <validationRegex />
     </requiredProperty>
     <requiredProperty key="jdbcdriverclassname">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
 
     <requiredProperty key="jdbcurl">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
     <requiredProperty key="jdbcusername">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
     <requiredProperty key="jdbcpassword">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
       <validationRegex />
     </requiredProperty>
     <requiredProperty key="jdbccatalog">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
+      <defaultValue>_UNDEFINED_</defaultValue>
       <validationRegex />
     </requiredProperty>
     <requiredProperty key="jdbcschema">
-      <defaultValue>__NO_VALUE_SPECIFIED__</defaultValue>
+      <defaultValue>_UNDEFINED_</defaultValue>
       <validationRegex />
     </requiredProperty>
 
