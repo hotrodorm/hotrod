@@ -45,7 +45,7 @@ mvn archetype:generate                                    \
   -Dspringbootversion=2.3.4.RELEASE                       \
   -Dhotrodversion=3.4.5                                   \
   -Dmybatisspringversion=2.1.3                            \
-  -Ddebbieversion=1.2.2                                   \
+  -Ddebbieversion=1.3.1                                   \
   -Dsentinelversion=1.1.8                                 \
   \
   -Djdbcdrivergroupid=com.oracle.ojdbc                    \
