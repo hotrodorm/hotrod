@@ -81,15 +81,7 @@ insert into employee (id, name) values (123, 'Alice');
 insert into employee (id, name) values (6097, 'Steve');
 ```
 
-Now, your database has the table `employee` We are ready to run HotRod.
-
-**Note**: As a side note, the commands to manage the database are:
-- `mvn db:build`: to populate the database schema.
-- `mvn db:clean`: to clean the database schema.
-- `mvn db:rebuild`: to clean and build the database schema.
-
-These DB lifecycle tasks are suitable for the sandbox environment only. You don't want to drop tables in the 
-production environment, just by running `mvn db:clean`.
+Now, your database has the table `employee`. We are ready to run HotRod.
 
 ## Generate the HotRod Persistence
 
@@ -217,7 +209,7 @@ The arquetype selection tells Maven which specific template to use when creating
 
 - `archetypeArtifactId`: This is the specific arquetype to use. Currently the only arquetype available is `hotrod-archetype-sm-jar-app` that produces
 a ready-to-run project with SpringBoot, REST services, HotRod, MyBatis, Database Lifecycle, Sentinel, and OpenAPI 3.
-- `archetypeVersion`: The version of the maven arquetype. Choose at least `3.4.5`.
+- `archetypeVersion`: The version of the maven arquetype. Choose at least `3.4.6`.
 
 #### App Configuration
 
@@ -236,8 +228,8 @@ The librares selection section indicates the specific versions of each library y
 - `springbootversion`: The Spring Boot version for your brand new project.
 - `hotrodversion`: The HotRod version for your brand new project.
 - `mybatisspringversion`: MyBatis-Spring version for your brand new project.
-- `dbbuilderversion`: Automated database creation/lifecycle tool for your brand new project.
-- `sentinelversion`: Database verifier tool for your brand new project.
+- `debbieversion`: Version of Debbie (automated database preparation). Leave blank to exclude Debbie from the project.
+- `sentinelversion`: Version of Sentinel database verifier. Leave blank to exclude Sentinel from the project.
 
 #### JDBC Driver Selection
 
