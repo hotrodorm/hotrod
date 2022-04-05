@@ -156,18 +156,20 @@ Edit the files `src/main/database/1.0.0/build.sql` (and optionally `src/main/dat
 define a few tables that you want to create/drop with the DB lifecycle tasks. Then run:
 
 ```bash
-mvn db:build
+mvn debbie:build
 ```
 
-Now, your database has the table `employee` as defined by the `build.sql` file above. We are ready to run HotRod.
+Now, your database has the table `employee` as defined by the `build.sql` file above.
 
-**Note**: As a side note, the commands to manage the database are:
-- `mvn db:build`: to populate the database schema.
-- `mvn db:clean`: to clean the database schema.
-- `mvn db:rebuild`: to clean and build the database schema.
+See [Debbie Project](https://github.com/justtheimpaler/debbie#readme) for more details on how to use it. 
+In a nutshell, the commands to manage the database are:
 
-These DB lifecycle tasks are suitable for the sandbox environment only. You don't want to drop tables in the 
-production environment, just by running `mvn db:clean`.
+- `mvn debbie:build`: to populate the database schema.
+- `mvn debbie:clean`: to clean the database schema.
+- `mvn debbie:rebuild`: to clean and build the database schema in one go.
+
+Debbie tasks are suitable for the sandbox environment only. You don't want to drop tables in the 
+production environment, because you ran `mvn debbie:clean` by mistake.
           
 
 ### Take a Database Structure Snapshot and Verify it Later
