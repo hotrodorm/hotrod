@@ -4,7 +4,7 @@ HotRod includes a Maven arquetype that creates a full blown project using a sing
 
 ### Table of Contents
 
-- [Create the Project with 1 command](#create-the-project-with-one-command)
+- [Create the Project](#create-the-project-with-one-command)
 - [Populate the Database](#populate-the-database)
 - [Generate the HotRod Persistence](#generate-the-hotrod-persistence)
 - [Run the Application](#run-the-application)
@@ -12,17 +12,17 @@ HotRod includes a Maven arquetype that creates a full blown project using a sing
     - [Generate the OpenAPI JSON file](#generate-the-openapi-json-file)
     - [Generate the OpenAPI YAML file](#generate-the-openapi-yaml-file)
     - [Re-populate the Database](#re-populate-the-database)
-    - [Take a Database Structure Snapshot and Verify it Later - Optional](#take-a-database-structure-snapshot-and-verify-it-later)
-    - [Parameters Reference](#parameters-reference)
+    - [Take a Database Structure Snapshot and Verify it Later](#take-a-database-structure-snapshot-and-verify-it-later)
+- [Parameters Reference](#parameters-reference)
 
 ## Create the Project with One Command
 
 You'll need to change the parameters according to:
 
-- Your project details: Group, Artifact, Version, Packages.
-- Library versions: SpringBoot, HotRod, MyBatis-Spring, Database Lifecycle, Sentinel.
-- JDBC Driver details: artifact identification and driver class name.
-- Sandbox database: URL, username, password, default catalog and/or schema.
+- **The project details**: Group, Artifact, Version, Packages.
+- **Library versions**: SpringBoot, HotRod, MyBatis-Spring, Database Lifecycle, Sentinel.
+- **JDBC Driver** details: artifact identification and driver class name.
+- **Sandbox database**: URL, username, password, default catalog and/or schema.
 
 **Note**: The Sandbox database is a database or schema that you use to develop the application and that you can 
 populate and clean at any time without disrupting any other team member's work. It's a database schema for rapid development.
