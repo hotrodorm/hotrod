@@ -19,15 +19,16 @@ HotRod includes a Maven arquetype that creates a full blown project using a sing
 
 You'll need to change the parameters according to:
 
-- **The project details**: Group, Artifact, Version, Packages.
-- **Library versions**: SpringBoot, HotRod, MyBatis-Spring, Database Lifecycle, Sentinel.
-- **JDBC Driver details**: artifact identification and driver class name.
-- **Sandbox database**: URL, username, password, default catalog and/or schema.
+- **The Project Details**: Group, Artifact, Version, Packages.
+- **Library Versions**: SpringBoot, HotRod, MyBatis-Spring, Debbie (optional), Sentinel (optional).
+- **JDBC Driver Details**: artifact identification and driver class name.
+- **Sandbox Database**: URL, username, password, default catalog and/or schema.
 
 **Note**: The Sandbox database is a database or schema that you use to develop the application and that you can 
 populate and clean at any time without disrupting any other team member's work. It's a database schema for rapid development.
 
-This is an example with Oracle database. Change parameters as needed for another database. See [parameters reference](#parameters-reference) at the end of this page for details.
+This is an example with Oracle database. Change parameters as needed to switch to a different database engine and to
+point to your local database database. See [parameters reference](#parameters-reference) at the end of this page for more details.
 
 ```bash
 mvn archetype:generate                                    \
@@ -208,7 +209,7 @@ The automated project creation requires parameters that fall into several catego
 The arquetype selection tells Maven which specific template to use when creating a project:
 
 - `archetypeArtifactId`: This is the specific arquetype to use. Currently the only arquetype available is `hotrod-archetype-sm-jar-app` that produces
-a ready-to-run project with SpringBoot, REST services, HotRod, MyBatis, Database Lifecycle, Sentinel, and OpenAPI 3.
+a ready-to-run project with SpringBoot, REST services, HotRod, MyBatis, Debbie, Sentinel, and OpenAPI 3.
 - `archetypeVersion`: The version of the maven arquetype. Choose at least `3.4.6`.
 
 #### App Configuration
@@ -229,7 +230,7 @@ The librares selection section indicates the specific versions of each library y
 - `hotrodversion`: The HotRod version for your brand new project.
 - `mybatisspringversion`: MyBatis-Spring version for your brand new project.
 - `debbieversion`: Version of Debbie (automated database preparation). Leave blank to exclude Debbie from the project.
-- `sentinelversion`: Version of Sentinel database verifier. Leave blank to exclude Sentinel from the project.
+- `sentinelversion`: Version of Sentinel (database structure verifier). Leave blank to exclude Sentinel from the project.
 
 #### JDBC Driver Selection
 
@@ -241,13 +242,13 @@ This section defines the specific JDBC driver to use. These values reference the
 - `jdbcdrivertype`: (Optional) The JDBC driver classifier. Defaults to `jar`.
 - `jdbcdriverclassname`: The JDBC driver's driver class name.
 
-The following table includes a sample of JDBC drivers available in Maven Central as of March 2022, so you can take it as a
-baseline for use; update the version and/or artifactid as needed to get the latest version of each one:
+The following table includes a sample of JDBC drivers available in Maven Central as of March 2022 that you can use as a
+baseline; update the version and/or artifactid as needed to get the latest version of each one:
 
 | Database   | jdbcdrivergroupid       | jdbcdriverartifactid | jdbcdriverversion | jdbcdriverclassname                          |
 | ---------- | ----------------------- | -------------------- | ----------------- | -------------------------------------------- | 
 | Oracle     | com.oracle.ojdbc        | ojdbc8               | 19.3.0.0          | oracle.jdbc.driver.OracleDriver              | 
-| DB2        | com.ibm.db2             | jcc                  | 11.5.7.0          | com.ibm.db2.jcc.DB2Driver                    | 
+| DB2 LUW    | com.ibm.db2             | jcc                  | 11.5.7.0          | com.ibm.db2.jcc.DB2Driver                    | 
 | PostgreSQL | org.postgresql          | postgresql           | 42.3.3            | org.postgresql.Driver                        | 
 | SQL Server | com.microsoft.sqlserver | mssql-jdbc           | 10.2.0.jre8       | com.microsoft.sqlserver.jdbc.SQLServerDriver | 
 | MariaDB    | org.mariadb.jdbc        | mariadb-java-client  | 3.0.4             | org.mariadb.jdbc.Driver                      | 
