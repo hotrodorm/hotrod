@@ -13,7 +13,7 @@ HotRod includes a Maven arquetype that creates a full blown project using a sing
     - [Generate the OpenAPI YAML file](#generate-the-openapi-yaml-file)
     - [Restore the Database Baseline with Debbie](#restore-the-database-baseline-with-debbie)
     - [Verify the Database Structure with Sentinel](#verify-the-database-structure-with-sentinel)
-- [Parameters Reference](#parameters-reference)
+- [Parameters Reference](#parameters-reference) 
 
 ## Create the Project with One Command
 
