@@ -21,7 +21,7 @@ You'll need to change the parameters according to:
 
 - **The project details**: Group, Artifact, Version, Packages.
 - **Library versions**: SpringBoot, HotRod, MyBatis-Spring, Database Lifecycle, Sentinel.
-- **JDBC Driver** details: artifact identification and driver class name.
+- **JDBC Driver details**: artifact identification and driver class name.
 - **Sandbox database**: URL, username, password, default catalog and/or schema.
 
 **Note**: The Sandbox database is a database or schema that you use to develop the application and that you can 
@@ -101,7 +101,7 @@ Finally, fire up the ready-to-run application:
 mvn spring-boot:run
 ```
 
-The application will start, will connect to the database, will retrieve employee #123, and will display its name:
+The application will start, will connect to the database, will retrieve employee #123, and will display their name:
 
 ```bash
 [ Starting example ]
