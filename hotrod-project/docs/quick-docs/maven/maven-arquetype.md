@@ -174,12 +174,12 @@ production environment, because you ran `mvn debbie:clean` by mistake.
 
 ### Verify the Database Structure with Sentinel
 
-Sentinel can help validating a schema structure in command line or at runtime. This can be useful if you can't get access
-to the production environment but you still want to make sure all tables, views, column, their definitions, and indexes are
-created and up to date in it.
+Sentinel can help validating a schema structure from the command line or at runtime in your SpringBoot application. 
+This can be useful if you can't get access to the production environment but you still want to make sure all tables, 
+views, column, their definitions, and indexes in this live database are created and are up to date in it.
 
 To use Sentinel you need to take a database baseline snapshot first and then compare it with the target one (that typically
-is the live database). Sentinel can also compare two snapshots.
+is the live database).
 
 Take a snapshot of the sandbox database structure:
 
@@ -187,7 +187,8 @@ Take a snapshot of the sandbox database structure:
 mvn -P sentinel sentinel:take-snapshot@take
 ```
     
-Then, to check the schema structure at runtime, uncomment the DatabaseVerifier call in the App.java class. This will display any found differences in the logs.
+Then, to check the schema structure at runtime, uncomment the `DatabaseVerifier` method call in the `App.java` class. 
+At runtime this will searchf or and display any differences in the log file.
 
 Other Sentinel commands:
 
@@ -197,18 +198,18 @@ Other Sentinel commands:
 - `mvn -P sentinel sentinel:verify-database@verify`: verify the structure of a live database against a saved snapshot.
 - `mvn -P sentinel sentinel:compare-snapshots@compare`: compares two saved snapshots for differences.
 
-Sentinel can help finding unnoticed differences between different environments (dev, test and prod databases). Also, if developers have local
-databases it can also help finding differences between them. 
+Sentinel can help finding unnoticed differences between different environments (dev, test and prod databases). Also, if developers have a myriad of local
+databases it can also help pinpointing differences between them.
 
-**Note**: The Oracle database is particularly slow at producing schema metadata. You'll notice the Sentinel can take up to a minute connecting to it. 
-If this is slowing down your app start up cycle too much, you can comment out Sentinel. Alternatively you can perform the validation once a day or so.
+**Note**: The Oracle database is particularly slow at producing schema metadata. You'll notice the Sentinel can take a minute or more connecting to it. 
+If this is slowing down your app start up cycle too much, you can comment out Sentinel. Alternatively you can perform the validation less often -- maybe only once a day.
 
 
-### Parameters Reference
+## Parameters Reference
 
 The automated project creation requires parameters that fall into several categories:
 
-#### Arquetype Selection
+### Arquetype Selection
 
 The arquetype selection tells Maven which specific template to use when creating a project:
 
@@ -216,7 +217,7 @@ The arquetype selection tells Maven which specific template to use when creating
 a ready-to-run project with SpringBoot, REST services, HotRod, MyBatis, Debbie, Sentinel, and OpenAPI 3.
 - `archetypeVersion`: The version of the maven arquetype. Choose at least `3.4.6`.
 
-#### App Configuration
+### App Configuration
 
 The app configuration specifies basic initial parameters for your new app:
 
@@ -226,7 +227,7 @@ The app configuration specifies basic initial parameters for your new app:
 - `package`: the base package of the app classes.
 - `persistencepackage`: the relative package of the persistence classes; typically you would choose something like `persistence`.
 
-#### Libraries Selection
+### Libraries Selection
 
 The librares selection section indicates the specific versions of each library you want to use in the brand new app:
 
@@ -236,7 +237,7 @@ The librares selection section indicates the specific versions of each library y
 - `debbieversion`: Version of Debbie (automated database preparation). Leave blank to exclude Debbie from the project.
 - `sentinelversion`: Version of Sentinel (database structure verifier). Leave blank to exclude Sentinel from the project.
 
-#### JDBC Driver Selection
+### JDBC Driver Selection
 
 This section defines the specific JDBC driver to use. These values reference the Maven Central Repository. Search for groupid, artifactid, and version in the official repositories:
 
@@ -262,7 +263,7 @@ baseline; update the version and/or artifactid as needed to get the latest versi
 | Derby      | org.apache.derby        | derby                | 10.15.2.0         | org.apache.derby.jdbc.ClientDriver           |       
 
 
-#### Sandbox Database Selection
+### Sandbox Database Selection
 
 This section identifies the database sandbox that you will use to develop, debug, and run the application. 
 HotRod retrieves the database structure from it.
