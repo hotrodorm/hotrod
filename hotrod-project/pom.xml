@@ -5,7 +5,7 @@
 
   <groupId>org.hotrodorm.hotrod</groupId>
   <artifactId>hotrod-project</artifactId>
-  <version>3.4.6-SNAPSHOT</version>
+  <version>3.4.6</version>
   <packaging>pom</packaging>
 
   <name>hotrod-project</name>
