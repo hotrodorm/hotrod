@@ -132,10 +132,8 @@ mvn -P genopenapijson clean verify
 
 The JSON file is now available at `target/openapi.json`, ready for distribution.
 
-**Note 1**: Make sure the application is not running while issuing this command. Maven will start and stop the service to retrieve the OpenAPI file.
+**Note**: Make sure the application is not running while issuing this command. Maven will start and stop the service to retrieve the OpenAPI file.
 
-**Note 2**: To generate the OpenAPI the `genopenapijson` profile needs to be enabled temporarily. It's disabled by default since you probably
-don't want to generate the API on every single build.
 
 ### Generate the OpenAPI YAML file
 
@@ -147,10 +145,7 @@ mvn -P genopenapiyaml clean verify
 
 The YAML file is now available at `target/openapi.yaml`, ready for distribution.
 
-**Note 1**: Make sure the application is not running while issuing this command. Maven will start and stop the service to retrieve the OpenAPI file.
-
-**Note 2**: To generate the OpenAPI the `genopenapiyaml` profile needs to be enabled temporarily. It's disabled by default since you probably
-don't want to generate the API on every single build.
+**Note**: Make sure the application is not running while issuing this command. Maven will start and stop the service to retrieve the OpenAPI file.
   
 
 ### Re-populate the Database
@@ -214,7 +209,7 @@ a ready-to-run project with SpringBoot, REST services, HotRod, MyBatis, Debbie, 
 
 #### App Configuration
 
-The app configuration specifies basic initial parameters for the new app:
+The app configuration specifies basic initial parameters for your new app:
 
 - `groupId`: the groupid of your brand new app.
 - `artifactId`: the artifactid of your brand new app.
@@ -269,11 +264,10 @@ It's a database schema for rapid development:
 - `jdbcurl`: The JDBC URL for the sandbox database.
 - `jdbcusername`: The JDBC username for the sandbox database.
 - `jdbcpassword`: The JDBC password for the sandbox database.
-- `jdbccatalog`: The JDBC catalog (if supported) for the sandbox database.
-- `jdbcschema`: The JDBC schema (if supported) for the sandbox database.
+- `jdbccatalog`: The JDBC catalog in the sandbox database. Leave blank if not supported.
+- `jdbcschema`: The JDBC schema in the sandbox database. Leave blank if not supported.
 
-Typically databases support a schema, or a catalog, or both. As a general reference, see table below:
-
+Typically databases support a schema, a catalog, or both. The table shown below is a sample of databases and what each one supports:
 
 
 | Database          | Supports Catalog  | Supports Schema |  
