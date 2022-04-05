@@ -11,8 +11,8 @@ HotRod includes a Maven arquetype that creates a full blown project using a sing
 - [What To Do Next](#what-to-do-next)
     - [Generate the OpenAPI JSON file](#generate-the-openapi-json-file)
     - [Generate the OpenAPI YAML file](#generate-the-openapi-yaml-file)
-    - [Re-populate the Database](#re-populate-the-database)
-    - [Take a Database Structure Snapshot and Verify it Later](#take-a-database-structure-snapshot-and-verify-it-later)
+    - [Restore the Database Baseline with Debbie](#restore-the-database-baseline-with-debbie)
+    - [Verify the Database Structure with Sentinel](#verify-the-database-structure-with-sentinel)
 - [Parameters Reference](#parameters-reference)
 
 ## Create the Project with One Command
@@ -35,7 +35,7 @@ mvn archetype:generate                                    \
   -DinteractiveMode=false                                 \
   -DarchetypeGroupId=org.hotrodorm.hotrod                 \
   -DarchetypeArtifactId=hotrod-archetype-sm-jar-app       \
-  -DarchetypeVersion=3.4.5                                \
+  -DarchetypeVersion=3.4.6                                \
   \
   -DgroupId=com.app1                                      \
   -DartifactId=app1                                       \
@@ -148,7 +148,7 @@ The YAML file is now available at `target/openapi.yaml`, ready for distribution.
 **Note**: Make sure the application is not running while issuing this command. Maven will start and stop the service to retrieve the OpenAPI file.
   
 
-### Re-populate the Database
+### Restore the Database Baseline with Debbie
 
 Instead of connecting to the database and run SQL statements one by one, you can use Debbie to run them for you.
 
@@ -172,20 +172,22 @@ Debbie tasks are suitable for the sandbox environment only. You don't want to dr
 production environment, because you ran `mvn debbie:clean` by mistake.
           
 
-### Take a Database Structure Snapshot and Verify it Later
+### Verify the Database Structure with Sentinel
 
-This feature is disabled by default and can be removed altogether from the project.
+Sentinel can help validating a schema structure in command line or at runtime. This can be useful if you can't get access
+to the production environment but you still want to make sure all tables, views, column, their definitions, and indexes are
+created and up to date in it.
 
-This is an optional feature that can help validate a schema structure if you cannot access the environment. This can be useful if you can't get access
-to the production environment, but you still want to make sure all tables, views, column, their definitions, and indexes are created and up to date in it.
+To use Sentinel you need to take a database baseline snapshot first and then compare it with the target one (that typically
+is the live database). Sentinel can also compare two snapshots.
 
-If you want to enable the Sentinel database verifier (disabled by default) you must take a snapshot of the database structure when the database reaches a stable structure, by doing:
+Take a snapshot of the sandbox database structure:
 
 ```bash
 mvn -P sentinel sentinel:take-snapshot@take
 ```
     
-Then, enable the DatabaseVerifier in the App.java class to check it at runtime, and display differences in the log file.
+Then, to check the schema structure at runtime, uncomment the DatabaseVerifier call in the App.java class. This will display any found differences in the logs.
 
 Other Sentinel commands:
 
@@ -195,7 +197,12 @@ Other Sentinel commands:
 - `mvn -P sentinel sentinel:verify-database@verify`: verify the structure of a live database against a saved snapshot.
 - `mvn -P sentinel sentinel:compare-snapshots@compare`: compares two saved snapshots for differences.
 
-Notice that all of them include `-P sentinel` that enables the "sentinel" Maven profile. You don't want to run these commands by default on every single build.
+Sentinel can help finding unnoticed differences between different environments (dev, test and prod databases). Also, if developers have local
+databases it can also help finding differences between them. 
+
+**Note**: The Oracle database is particularly slow at producing schema metadata. You'll notice the Sentinel can take up to a minute connecting to it. 
+If this is slowing down your app start up cycle too much, you can comment out Sentinel. Alternatively you can perform the validation once a day or so.
+
 
 ### Parameters Reference
 
