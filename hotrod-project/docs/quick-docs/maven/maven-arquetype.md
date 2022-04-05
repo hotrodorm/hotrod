@@ -188,7 +188,7 @@ mvn -P sentinel sentinel:take-snapshot@take
 ```
     
 Then, to check the schema structure at runtime, uncomment the `DatabaseVerifier` method call in the `App.java` class. 
-At runtime this will searchf or and display any differences in the log file.
+At runtime this will search for and display any differences in the log file.
 
 Other Sentinel commands:
 
