@@ -95,6 +95,10 @@
 
 ## 3.4.5
 - New Spring Boot archetype! It generates a running full-blown project with a single command line: Includes
-  SpringBoot, HotRod, DB lifecycle, DB connectivity, REST Controllers, OpenAPI3, and Sentinel.
+  SpringBoot, HotRod, REST Controllers, OpenAPI3, Debbie, and Sentinel.
 - Fixing `<enum>` tag error.
+
+## 3.4.6
+- Migration to GitHub.
+- Improved SpringBoot Archetype.
 
