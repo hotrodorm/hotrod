@@ -386,6 +386,7 @@ public class ObjectDAO extends GeneratableObject {
 
     imports.add("org.springframework.stereotype.Component");
     imports.add("org.springframework.beans.BeansException");
+    imports.add("org.springframework.context.annotation.Lazy");
     imports.add("org.springframework.beans.factory.annotation.Autowired");
     imports.add("org.springframework.beans.factory.annotation.Value");
     imports.add("org.springframework.context.ApplicationContext");
@@ -440,6 +441,7 @@ public class ObjectDAO extends GeneratableObject {
     for (String className : daoMembers.keySet()) {
       String memberName = daoMembers.get(className);
       if (!className.equals(this.getClassName())) {
+        println("  @Lazy");
         println("  @Autowired");
         println("  private " + className + " " + memberName + ";");
         println();
