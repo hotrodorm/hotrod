@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.hotrodorm.hotrod</groupId>
     <artifactId>hotrod-project</artifactId>
-    <version>3.4.7</version>
+    <version>3.4.8-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -26,7 +26,7 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-abstract-plugin</artifactId>
-      <version>3.4.7</version>
+      <version>3.4.8-SNAPSHOT</version>
     </dependency>
 
     <!-- Ant 1.10 -->
