@@ -102,3 +102,6 @@
 - Migration to GitHub.
 - Improved SpringBoot Archetype.
 
+## 3.4.7
+- DAO references to other DAO are now marked as @Lazy to deal with circular references (parent-children). SpringBoot prototypes don't like them when eager-loaded.
+
