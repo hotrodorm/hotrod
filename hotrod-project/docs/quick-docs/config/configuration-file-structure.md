@@ -19,32 +19,33 @@ The configuration file takes the form:
     
     <hotrod>
     
-      <generators>
-      <name-solver>
-      <type-solver>
+      <generators />
+      <name-solver />
+      <type-solver />
       
-      <table>
-      <view>
-      <enum>
-      <dao>
-      <converter>
+      <table />
+      <view />
+      <enum />
+      <dao />
+      <converter />
       
-      <facet>
+      <facet />
       
-      <fragment>
+      <fragment />
       
     </hotrod>
 
 The general structure follow the rules below:
 
-- The tags `<generators>`, `<name-solver>` (optional), `<type-solver>` (optional) can only be included in the main configuration file, in the order shown above.
+- The persistence-wide tags can only be included in the main configuration file. These are: `<generators>`, `<name-solver>` (optional), and `<type-solver>` (optional).
 
-- Then, there can be zero or more of the `<table>`, `<view>`, `<enum>`, `<dao>`, `<converter>`, `<facet>`, and `<fragment>` tags; 
-they can be intermixed and included in any order between them.
+- Then, there can be zero or more `<table>`, `<view>`, `<enum>`, `<dao>`, `<converter>`, `<facet>`, and/or `<fragment>` tags; 
+they can be mixed and included in any order.
 
-- A `<facet>` tag must be named and can include zero or more `<table>`, `<view>`, `<enum>`, `<dao>` tags, that belong to the facet.
+- `<facet>` tags must be named and can include zero or more `<table>`, `<view>`, `<enum>`, `<dao>` tags. The included tags will be considered part of the facet.
 
-- A `<fragment>` tag must reference the file where extra configuration is included.
+- `<fragment>` tags must reference a fragment file where extra configuration is specified. Fragments can include other fragments, but the same fragment cannot be included multiple times.
+
 
 ## The Fragment File Structure
 
@@ -55,6 +56,8 @@ fragments is to separate the configuration into multiple files in order to reduc
 modifying the configuration simultaneously. This usually happens when using [Nitro Queries](../nitro/nitro-queries.md) that need to be tweaked, expanded, 
 and/or added frequently.
 
+It's a common practice to separate fragments by application module and/or by the UI. Queries that are expected to suffer constant changes or improvements should be separated from more stable ones, or from the main configuration.
+
 A fragment configuration file takes the form:
 
     <?xml version="1.0"?>
@@ -62,13 +65,13 @@ A fragment configuration file takes the form:
     
     <hotrod-fragment>
     
-      <table>
-      <view>
-      <enum>
-      <dao>
-      <converter>
-      <facet>
-      <fragment>
+      <table />
+      <view />
+      <enum />
+      <dao />
+      <converter />
+      <facet />
+      <fragment />
     
     </hotrod-fragment>
 
@@ -79,101 +82,99 @@ The comprehensive structure of HotRod's main configuration file is:
 * [`<hotrod>`](hotrod.md)
     * [`<generators>`](generators.md)
         * [`<mybatis-spring>`](mybatis-spring.md)
-            * [<daos>](daos.md)
-            * [<mappers>](mapper.md)
-            * [<select-generation>](select-generation.md)
-            * [<classic-fk-navigation>](classic-fk-navigation-mybatis-spring.md)
-            * [<property>](property.md)
-            * *&lt;mybatis-configuration-template>* (obsolete)
-        * `<mybatis>` * (obsolete)
-        * `<spring-jdbc>` * (obsolete)
-    * [<name-solver>](name-solver.md)
-        * [<name>](name.md)
-    * [<type-solver>](type-solver.md)
-        * [<when>](when-type-solver.md)
-    * [<table>](table.md)
-        * [<column>](column.md)
-        * [<select>](select.md)
-            * [<parameter>](parameter.md)
-            * [<column>](column.md)
-            * [<columns>](columns.md)
-                * [<vo>](vo.md)
-                   * [<association>](association.md)
-                     * &lt;association>
-                     * [<collection>](collection.md)
+            * [`<daos>`](daos.md)
+            * [`<mappers>`](mapper.md)
+            * [`<select-generation>`](select-generation.md)
+            * [`<classic-fk-navigation>`](classic-fk-navigation-mybatis-spring.md)
+            * [`<property>`](property.md)
+        * `<mybatis>` (obsolete)
+        * `<spring-jdbc>` (obsolete)
+    * [`<name-solver>`](name-solver.md)
+        * [`<name>`](name.md)
+    * [`<type-solver>`](type-solver.md)
+        * [`<when>`](when-type-solver.md)
+    * [`<table>`](table.md)
+        * [`<column>`](column.md)
+        * [`<select>`](select.md)
+            * [`<parameter>`](parameter.md)
+            * [`<column>`](column.md)
+            * [`<columns>`](columns.md)
+                * [`<vo>`](vo.md)
+                   * [`<association>`](association.md)
+                     * `<association>
+                     * `<collection>`
                      * [<expression>](expression.md)
-                   * &lt;collection>
-                        * &lt;association>
-                        * &lt;collection>
-                        * &lt;expression>
-                   * &lt;expression>
-                * &lt;association>
-                * &lt;expression>
-            * [<complement>](complement.md)
-                * [<if>](id.md)
-                   * Any number of &lt;if>, &lt;choose>, &lt;where>, &lt;set>, &lt;trim>, &lt;foreach>, &lt;bind>
-                * [<choose>](choose.md)
-                    * [<when>](when-choose.md)
-                      * Any number of &lt;if>, &lt;choose>, &lt;where>, &lt;set>, &lt;trim>, &lt;foreach>, &lt;bind>
-                    * [<otherwise>](otherwise.md)
-                      * Any number of &lt;if>, &lt;choose>, &lt;where>, &lt;set>, &lt;trim>, &lt;foreach>, &lt;bind>
-                * [<where>](where.md)
-                      * Any number of &lt;if>, &lt;choose>, &lt;where>, &lt;set>, &lt;trim>, &lt;foreach>, &lt;bind>
-                * [<set>](set.md)
-                      * Any number of &lt;if>, &lt;choose>, &lt;where>, &lt;set>, &lt;trim>, &lt;foreach>, &lt;bind>
-                * [<trim>](trim.md)
-                      * Any number of &lt;if>, &lt;choose>, &lt;where>, &lt;set>, &lt;trim>, &lt;foreach>, &lt;bind>
-                * [<foreach>](foreach.md)
-                * [<bind>](bind.md)
-        * [<query>](query.md)
-            * &lt;parameter>
-            * &lt;if>
-            * &lt;choose>
-            * &lt;where>
-            * &lt;set>
-            * &lt;trim>
-            * &lt;foreach>
-            * &lt;bind>
-        * [<sequence>](sequence.md)
-        * [<classic-fk-navigation>](classic-fk-navigation-table.md)
-        * [<auto-generated-column>](auto-generated-column.md)
-        * [<version-control-column>](version-control-column.md)
-    * [<enum>](enum.md)
-        * [<non-persistent>](non-persistent.md)
-    * [<view>](view.md)
-        * &lt;column>
-        * &lt;select>
-        * &lt;query>
-        * &lt;sequence>
-    * [<dao>](dao.md)
-        * &lt;select>
-        * &lt;query>
-        * &lt;sequence>
-    * [<fragment>](fragment.md)
-    * [<facet>](facet.md)
-        * &lt;table>
-        * &lt;enum>
-        * &lt;view>
-        * &lt;dao>
-    * [<converter>](converter.md)
+                   * [`<collection>`](collection.md)
+                        * `<association>`
+                        * `<collection>`
+                        * `<expression>`
+                   * `<expression>`
+                * `<association>`
+                * `<expression>`
+            * [`<complement>`](complement.md)
+                * [`<if>`](id.md)
+                   * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
+                * [`<choose>`](choose.md)
+                    * [`<when>`](when-choose.md)
+                      * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
+                    * [`<otherwise>`](otherwise.md)
+                      * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
+                * [`<where>`](where.md)
+                      * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
+                * [`<set>`](set.md)
+                      * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
+                * [`<trim>`](trim.md)
+                      * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
+                * [`<foreach>`](foreach.md)
+                * [`<bind>`](bind.md)
+        * [`<query>`](query.md)
+            * `<parameter>`
+            * `<if>`
+            * `<choose>`
+            * `<where>`
+            * `<set>`
+            * `<trim>`
+            * `<foreach>`
+            * `<bind>`
+        * [`<sequence>`](sequence.md)
+        * [`<classic-fk-navigation>`](classic-fk-navigation-table.md)
+        * [`<auto-generated-column>`](auto-generated-column.md)
+        * [`<version-control-column>`](version-control-column.md)
+    * [`<enum>`](enum.md)
+        * [`<non-persistent>`](non-persistent.md)
+    * [`<view>`](view.md)
+        * `<column>`
+        * `<select>`
+        * `<query>`
+        * `<sequence>`
+    * [`<dao>`](dao.md)
+        * `<select>`
+        * `<query>`
+        * `<sequence>`
+    * [`<fragment>`](fragment.md)
+    * [`<facet>`](facet.md)
+        * `<table>`
+        * `<enum>`
+        * `<view>`
+        * `<dao>`
+    * [`<converter>`](converter.md)
 
 The structure of a HotRod's fragment configuration file is:
 
  * [<hotrod-fragment>](hotrod-fragment.md)
-    * &lt;table>
-    * &lt;enum>
-    * &lt;view>
-    * &lt;dao>
-    * &lt;fragment>
-    * &lt;facet>
-    * &lt;converter>
-
+    * `<table>`
+    * `<enum>`
+    * `<view>`
+    * `<dao>`
+    * `<fragment>`
+    * `<facet>`
+    * `<converter>`
 
 
 ## See Also
 
-- [<name-solver>](name-solver.md) tag
-- [<type-solver>](type-solver.md) tag
+- [`<name-solver>`](name-solver.md) tag
+- [`<type-solver>`](type-solver.md) tag
 - [Nitro Queries](../nitro/nitro-queries.md)
  
  
