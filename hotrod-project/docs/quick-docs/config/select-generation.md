@@ -26,9 +26,9 @@ When using the traditional `create-view` processor, the additional `temp-view-ba
 ## The `create-view` Processor
 
 The `create-view` Processor is the traditional processor implemented in HotRod and it analyzes SQL queries by creating a temporary views in 
-the database. 
+the sandbox database. 
 
-In order to create views this processor requires the connecting user to have CREATE privileges in the database schema.
+In order to create views this processor requires the connecting user to have `CREATE` privileges in the database schema.
 
 This processor accepts parameters in the `WHERE` clause of the main query or any subquery. However, the location where the developer
 can place parameters using this processor is somewhat limited compared to the new `result-set` processor. It also requires all parameters to be enclosed in
@@ -41,7 +41,7 @@ This processor is enabled by default. It can also be explicitly set using the `<
 ## The `result-set` Processor
 
 The `result-set` processor analyzes queries by preparing JDBC Result Sets. It does not create views in the database schema, and
-the connecting user only needs read-only access to the database schema.
+the connecting user only needs read-only access to the sandbox database.
 
 Parameters can be placed anywhere in the SQL query and do not need to be enclosed in `<complement>` tags.
 
@@ -49,22 +49,25 @@ To enable this processor you need to explicitly include the `<select-generation>
 
     <select-generation strategy="result-set" />
 
+The `<complement>` tag is still needed when Dynamic SQL tags are included in Nitro queries.
+
 ## Side-by-side Query Processor Comparison
 
 The following table compares both Query Processors:
 
-| Aspect  | `create-view`* | `result-set` |
+| Aspect  | `create-view`*1 | `result-set` |
 |----------------|-------|---|
-| Database Privileges  | Needs the CREATE VIEW privilege in the sandbox database | Read-only access
+| Database Privileges  | Needs the CREATE VIEW privilege in the sandbox database | Read-only access in the sandbox database
 | Parameter Location   | Only in WHERE clause | Anywhere allowed by JDBC. Inline parameters
-| Database Connections | Needs 2 database connections | Single connection, single pass
-| Performance          | Slow on some databases** | Fast
+| Database Connections | Needs 2 database connections. Two passes that may interfere with data load in the JDBC URL | Single connection, single pass
+| Performance          | Slow on some databases*2 | Fast
 | Drawbacks            | May leave dangling views | May not work on very old databases
 | `<complement>` tag | Needed for parameters and Dynamic SQL | Needed only for Dynamic SQL
 
-* This is the default processor.
 
-** It has been observed that Oracle database seems to be particular slow to retrieve database metadata; opening two connections
+*1 This is the default processor.
+
+*2 It has been observed that Oracle database seems to be particular slow to retrieve database metadata; opening two connections
 makes it even slower.
 
  
