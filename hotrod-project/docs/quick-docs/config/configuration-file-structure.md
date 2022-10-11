@@ -1,20 +1,20 @@
 # Configuration File Structure
 
-HotRod generates code according to the metadata retrieved from a live existing database, typically 
-in the DEV environment.
+HotRod generates code according to the metadata retrieved from a live existing database (a *sandbox* database) that 
+typically resides in the development environment.
 
-Although the database engines provide an abundant amount of metadata for the database objects, some 
-extra business level metadata is still needed for the generation, as well as some extra configuration to tailor the 
+Although the database engines provide an abundant amount of metadata for the tables and other database objects, some
+external metadata is still needed for the generation, as well as some extra configuration to tailor the
 resulting persistence to each specific application. These extra details fall into the following categories:
 
-- **Extra Metadata**: sequences to use with each table, extra schemas to inspect, metadata inspection strategies, enums, etc.
+- **Extra Metadata**: metadata inspection strategies, enums, sequences to use with each table, extra schemas to inspect, etc.
 - **Generation Details**: base directories, package structure, object naming strategies, data type rules, foreign key generation, optimistic locking details, custom columns, data converters, etc.
 - **Nitro Queries**: flat queries, general purpose queries, structured queries.
 - **Project Structure**: Configuration fragments, generation facets.
 
 ## The Configuration File
 
-The configuration file takes the form:
+The configuration file takes the general form:
 
     <?xml version="1.0"?>
     <!DOCTYPE hotrod SYSTEM "hotrod.dtd">
@@ -60,7 +60,7 @@ and/or added frequently.
 
 It's a common practice to separate fragments by application module and/or by the UI. Queries that are expected to suffer constant changes or improvements should be separated from more stable ones, or from the main configuration.
 
-A fragment configuration file takes the form:
+A fragment configuration file takes the general form:
 
     <?xml version="1.0"?>
     <!DOCTYPE hotrod-fragment>
