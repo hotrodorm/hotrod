@@ -16,8 +16,8 @@ HotRod implements two SQL Processors:
 
 | SQL Processor  | Notes | Benefits & Drawbacks |
 |----------------|-------|---|
-| `create-view` | Compatible with all databases. Very old databases may only support this processor. | Great Compatibility. Parameters need the `<complement>` tag. Need to create temp views in the sandbox database |
-| `result-set` | New processor, virtually supported by all databases nowadays. | Simplicity. Inline Parameters. Faster, single pass, no need to create temp views |
+| `create-view` | Compatible with all databases. Very old databases may only support this processor. | Great Compatibility. More cumbersome, since parameters need the `<complement>` tag and needs to create temp views in the sandbox database |
+| `result-set` | New processor, virtually supported by all databases nowadays. | Faster, inline Parameters, single pass, no need for temp views |
 
 By default HotRod uses the traditional `create-view` processor, but the developer can select the new one by using this configuration tag.
 
@@ -67,7 +67,7 @@ The following table compares both Query Processors:
 
 *1 This is the default, old processor.
 
-*2 It has been observed that Oracle database seems to be particularly slow to retrieve database metadata; opening two connections
+*2 It has been observed that Oracle database seems to be particularly slow when retrieving database metadata; opening two connections
 makes it even slower.
 
  
