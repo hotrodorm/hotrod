@@ -64,7 +64,7 @@ A fragment configuration file takes the form:
     
       [config](./config.md)
     
-      <table> [<config>](./config.md)
+      <table2> [<config>](./config.md)
       <view> [config](./config.md)
       <enum>
       <dao>
