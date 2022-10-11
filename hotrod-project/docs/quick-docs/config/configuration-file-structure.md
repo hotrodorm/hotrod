@@ -3,7 +3,7 @@
 HotRod generates code according to the metadata retrieved from a live existing database (a *sandbox* database) that 
 typically resides in the development environment.
 
-Although the database engines provide an abundant amount of metadata for the tables and other database objects, some
+Although database engines provide an copious amount of metadata for the tables and other database objects, some
 external metadata is still needed for the generation, as well as some extra configuration to tailor the
 resulting persistence to each specific application. These extra details fall into the following categories:
 
