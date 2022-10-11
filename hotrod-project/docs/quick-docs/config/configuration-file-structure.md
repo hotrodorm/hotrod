@@ -3,10 +3,12 @@
 HotRod generates code according to the metadata retrieved from a live existing database, typically 
 in the DEV environment.
 
-Apart from the database metadata some extra details are needed to fully produce the persistence logic. These details fall into different categories:
+Although the database engines provide an abundant amount of metadata for the database objects, some 
+extra *business level* metadata is needed for the generation, as well as some extra configuration to tailor the 
+resulting persistence to each specific application. These extra details fall into the following categories:
 
-- **Extra Metadata**: object naming strategies, sequences to use with each table, extra schemas to inspect, metadata inspection strategies, enums, custom columns, data converters, etc.
-- **Generation Details**: base directories, package structure, class naming rules, data type rules, foreign key generation, optimistic locking details, etc.
+- **Extra Metadata**: sequences to use with each table, extra schemas to inspect, metadata inspection strategies, enums, etc.
+- **Generation Details**: base directories, package structure, object naming strategies, data type rules, foreign key generation, optimistic locking details, custom columns, data converters, etc.
 - **Nitro Queries**: flat queries, general purpose queries, structured queries.
 - **Project Structure**: Configuration fragments, generation facets.
 
