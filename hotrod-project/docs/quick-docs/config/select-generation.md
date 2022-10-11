@@ -17,7 +17,7 @@ HotRod implements two SQL Processors:
 | SQL Processor  | Notes | Benefits & Drawbacks |
 |----------------|-------|---|
 | `create-view` | Compatible with all databases. Very old databases may only support this processor. | Great Compatibility. More cumbersome, since parameters need the `<complement>` tag and needs to create temp views in the sandbox database |
-| `result-set` | New processor, virtually supported by all databases nowadays. | Faster, inline Parameters, single pass, no need for temp views |
+| `result-set` | New processor, virtually supported by all databases nowadays. | Faster, inline parameters, single pass, no need for temp views |
 
 By default HotRod uses the traditional `create-view` processor, but the developer can select the new one by using this configuration tag.
 
@@ -55,7 +55,7 @@ The `<complement>` tag is still needed when Dynamic SQL tags are included in Nit
 
 The following table compares both Query Processors:
 
-| Aspect  | `create-view` *1 | `result-set` |
+| Comparing  | `create-view` *1 | `result-set` |
 |----------------|-------|---|
 | Database Privileges  | Needs the CREATE VIEW privilege in the sandbox database | Read-only access in the sandbox database |
 | Parameters   | Only in WHERE clause, enclosed in a `<complement>` tag | Inline, anywhere allowed by JDBC |
