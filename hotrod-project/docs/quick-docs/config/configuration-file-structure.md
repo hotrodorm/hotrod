@@ -62,10 +62,8 @@ A fragment configuration file takes the form:
     
     <hotrod-fragment>
     
-      [config](./config.md)
-    
-      <table2> [<config>](./config.md)
-      <view> [config](./config.md)
+      <table>
+      <view>
       <enum>
       <dao>
       <converter>
@@ -78,17 +76,17 @@ A fragment configuration file takes the form:
 
 The comprehensive structure of HotRod's main configuration file is:
 
- * [<hotrod>](hotrod.md)
-    * [<generators>](generators.md)
-        * [<mybatis-spring>](mybatis-spring.md)
+* [`<hotrod>`](hotrod.md)
+    * [`<generators>`](generators.md)
+        * [`<mybatis-spring>`](mybatis-spring.md)
             * [<daos>](daos.md)
             * [<mappers>](mapper.md)
             * [<select-generation>](select-generation.md)
             * [<classic-fk-navigation>](classic-fk-navigation-mybatis-spring.md)
             * [<property>](property.md)
             * *&lt;mybatis-configuration-template>* (obsolete)
-        * *&lt;mybatis>* (obsolete)
-        * *&lt;spring-jdbc>* (obsolete)
+        * `<mybatis>` * (obsolete)
+        * `<spring-jdbc>` * (obsolete)
     * [<name-solver>](name-solver.md)
         * [<name>](name.md)
     * [<type-solver>](type-solver.md)
