@@ -77,7 +77,7 @@ A fragment configuration file takes the form:
 
 ## General Structure
 
-The comprehensive structure of HotRod's main configuration file is:
+The complete structure of HotRod's main configuration file is shown below:
 
 * [`<hotrod>`](hotrod.md)
     * [`<generators>`](generators.md)
@@ -87,8 +87,8 @@ The comprehensive structure of HotRod's main configuration file is:
             * [`<select-generation>`](select-generation.md)
             * [`<classic-fk-navigation>`](classic-fk-navigation-mybatis-spring.md)
             * [`<property>`](property.md)
-        * `<mybatis>` (obsolete)
-        * `<spring-jdbc>` (obsolete)
+        * `<mybatis>` **obsolete**
+        * `<spring-jdbc>` **obsolete**
     * [`<name-solver>`](name-solver.md)
         * [`<name>`](name.md)
     * [`<type-solver>`](type-solver.md)
@@ -155,7 +155,7 @@ The comprehensive structure of HotRod's main configuration file is:
 
 The structure of a HotRod's fragment configuration file is:
 
- * [<hotrod-fragment>](hotrod-fragment.md)
+ * [`<hotrod-fragment>`](hotrod-fragment.md)
     * `<table>`
     * `<enum>`
     * `<view>`
