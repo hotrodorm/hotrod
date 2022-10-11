@@ -58,7 +58,7 @@ The following table compares both Query Processors:
 | Aspect  | `create-view` *1 | `result-set` |
 |----------------|-------|---|
 | Database Privileges  | Needs the CREATE VIEW privilege in the sandbox database | Read-only access in the sandbox database |
-| Parameters   | Only in WHERE clause | Inline (no `<complement>` tag, anywhere allowed by JDBC |
+| Parameters   | Only in WHERE clause, enclosed in a `<complement>` tag | Inline, anywhere allowed by JDBC |
 | Database Connections | Needs 2 database connections. Two passes that may interfere with data load when specified in the JDBC URL | Single connection, single pass |
 | Performance          | Slow on some databases *2 | Fast |
 | Drawbacks            | May leave dangling views under error conditions | May not work on very old databases |
