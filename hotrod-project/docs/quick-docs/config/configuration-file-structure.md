@@ -3,16 +3,16 @@
 HotRod generates code according to the metadata retrieved from a live existing database, typically 
 in the DEV environment.
 
-Apart from the database metadata some extra details are needed to fully produce the code. These fall into:
+Apart from the database metadata some extra details are needed to fully produce the persistence logic. These details fall into different categories:
 
-- Extra database details, such as sequences to use for each table, extra schemas to inspect, metadata inspection strategies, tables to treat as enums, etc.
+- Extra metadata such as sequences to use with each table, extra schemas to inspect, metadata inspection strategies, enums, etc.
 - Generation details: base directories, package structure, class naming rules, data type rules, foreign key generation, optimistic locking details, etc.
-- Nitro Queries: general purpose, flat, and structured queries.
-- Configuration Facets & Fragments.
+- Nitro Queries: flat queries, general purpose queries, and structured queries.
+- Configuration fragments & generation facets.
 
 ## The Configuration File
 
-Although it can have any name, typically the main configuration file is called `hotrod.xml`. It takes the form:
+The configuration file takes the form:
 
     <?xml version="1.0"?>
     <!DOCTYPE hotrod SYSTEM "hotrod.dtd">
@@ -62,8 +62,10 @@ A fragment configuration file takes the form:
     
     <hotrod-fragment>
     
-      <table>
-      <view>
+      [config](./config.md)
+    
+      <table> [<config>](./config.md)
+      <view> [config](./config.md)
       <enum>
       <dao>
       <converter>
