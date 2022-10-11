@@ -55,19 +55,19 @@ The `<complement>` tag is still needed when Dynamic SQL tags are included in Nit
 
 The following table compares both Query Processors:
 
-| Aspect  | `create-view`*1 | `result-set` |
+| Aspect  | `create-view` *1 | `result-set` |
 |----------------|-------|---|
-| Database Privileges  | Needs the CREATE VIEW privilege in the sandbox database | Read-only access in the sandbox database
-| Parameter Location   | Only in WHERE clause | Anywhere allowed by JDBC. Inline parameters
-| Database Connections | Needs 2 database connections. Two passes that may interfere with data load in the JDBC URL | Single connection, single pass
-| Performance          | Slow on some databases*2 | Fast
-| Drawbacks            | May leave dangling views | May not work on very old databases
-| `<complement>` tag | Needed for parameters and Dynamic SQL | Needed only for Dynamic SQL
+| Database Privileges  | Needs the CREATE VIEW privilege in the sandbox database | Read-only access in the sandbox database |
+| Parameters   | Only in WHERE clause | Inline (no `<complement>` tag, anywhere allowed by JDBC |
+| Database Connections | Needs 2 database connections. Two passes that may interfere with data load when specified in the JDBC URL | Single connection, single pass |
+| Performance          | Slow on some databases *2 | Fast |
+| Drawbacks            | May leave dangling views under error conditions | May not work on very old databases |
+| `<complement>` tag | Needed for parameters and for Dynamic SQL | Needed only for Dynamic SQL |
 
 
-*1 This is the default processor.
+*1 This is the default, old processor.
 
-*2 It has been observed that Oracle database seems to be particular slow to retrieve database metadata; opening two connections
+*2 It has been observed that Oracle database seems to be particularly slow to retrieve database metadata; opening two connections
 makes it even slower.
 
  
