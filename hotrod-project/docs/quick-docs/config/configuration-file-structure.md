@@ -3,7 +3,7 @@
 HotRod generates code according to the metadata retrieved from a live existing database (a *sandbox* database) that 
 typically resides in the development environment.
 
-Although database engines provide an copious amount of metadata for the tables and other database objects, some
+Although database engines provide a copious amount of metadata for tables and other database objects, some
 external metadata is still needed for the generation, as well as some extra configuration to tailor the
 resulting persistence to each specific application. These extra details fall into the following categories:
 
@@ -30,9 +30,7 @@ The configuration file takes the general form:
       <enum />
       <dao />
       <converter />
-      
       <facet />
-      
       <fragment />
       
     </hotrod>
@@ -44,18 +42,19 @@ The general structure follow the rules below:
 - Then, there can be zero or more `<table>`, `<view>`, `<enum>`, `<dao>`, `<converter>`, `<facet>`, and/or `<fragment>` tags; 
 they can be mixed and included in any order.
 
-- `<facet>` tags must be named and can include zero or more `<table>`, `<view>`, `<enum>`, `<dao>` tags. The included tags will be considered part of the facet.
+- `<facet>` tags must be named and can include zero or more `<table>`, `<view>`, `<enum>`, `<dao>` tags. All included tags will be considered part of the facet.
 
-- `<fragment>` tags must reference a fragment file where extra configuration is specified. Fragments can include other fragments, but the same fragment cannot be included multiple times.
+- `<fragment>` tags must reference a fragment file where extra configuration is specified. Fragments can include other fragments. In any case, any given fragment 
+can only be included once in the configuration tree.
 
 
 ## The Fragment File Structure
 
-A configuration fragment is a separate file that include sections of the configuration, and in turn can include more fragments.
+A configuration fragment is a separate file that includes sections of the configuration, and in turn can include more fragments.
 
 A fragment can include zero or more `<table>`, `<view>`, `<enum>`, `<dao>`, `<converter>`, `<facet>` and `<fragment>` tags. The main purpose of 
 fragments is to separate the configuration into multiple files in order to reduce source code collisions when multiple developers are 
-modifying the configuration simultaneously. This usually happens when using [Nitro Queries](../nitro/nitro-queries.md) that need to be tweaked, expanded, 
+modifying the configuration simultaneously. This mosst commonly happens to [Nitro Queries](../nitro/nitro-queries.md) that need to be tweaked, expanded, 
 and/or added frequently.
 
 It's a common practice to separate fragments by application module and/or by the UI. Queries that are expected to suffer constant changes or improvements should be separated from more stable ones, or from the main configuration.
