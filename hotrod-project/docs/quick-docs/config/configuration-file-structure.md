@@ -5,10 +5,10 @@ in the DEV environment.
 
 Apart from the database metadata some extra details are needed to fully produce the persistence logic. These details fall into different categories:
 
-- **Extra metadata**: sequences to use with each table, extra schemas to inspect, metadata inspection strategies, enums, etc.
-- **Generation details**: base directories, package structure, class naming rules, data type rules, foreign key generation, optimistic locking details, etc.
-- **Nitro Queries**: flat queries, general purpose queries, and structured queries.
-- **Project Structure**: Configuration fragments & generation facets.
+- **Extra Metadata**: object naming strategies, sequences to use with each table, extra schemas to inspect, metadata inspection strategies, enums, custom columns, data converters, etc.
+- **Generation Details**: base directories, package structure, class naming rules, data type rules, foreign key generation, optimistic locking details, etc.
+- **Nitro Queries**: flat queries, general purpose queries, structured queries.
+- **Project Structure**: Configuration fragments, generation facets.
 
 ## The Configuration File
 
