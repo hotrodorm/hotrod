@@ -4,7 +4,7 @@ HotRod generates code according to the metadata retrieved from a live existing d
 in the DEV environment.
 
 Although the database engines provide an abundant amount of metadata for the database objects, some 
-extra *business level* metadata is needed for the generation, as well as some extra configuration to tailor the 
+extra business level metadata is still needed for the generation, as well as some extra configuration to tailor the 
 resulting persistence to each specific application. These extra details fall into the following categories:
 
 - **Extra Metadata**: sequences to use with each table, extra schemas to inspect, metadata inspection strategies, enums, etc.
