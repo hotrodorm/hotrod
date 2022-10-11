@@ -101,9 +101,9 @@ The comprehensive structure of HotRod's main configuration file is:
             * [`<columns>`](columns.md)
                 * [`<vo>`](vo.md)
                    * [`<association>`](association.md)
-                     * `<association>
+                     * `<association>`
                      * `<collection>`
-                     * [<expression>](expression.md)
+                     * [`<expression>`](expression.md)
                    * [`<collection>`](collection.md)
                         * `<association>`
                         * `<collection>`
@@ -120,11 +120,11 @@ The comprehensive structure of HotRod's main configuration file is:
                     * [`<otherwise>`](otherwise.md)
                       * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
                 * [`<where>`](where.md)
-                      * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
+                    * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
                 * [`<set>`](set.md)
-                      * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
+                    * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
                 * [`<trim>`](trim.md)
-                      * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
+                    * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
                 * [`<foreach>`](foreach.md)
                 * [`<bind>`](bind.md)
         * [`<query>`](query.md)
