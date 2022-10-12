@@ -16,24 +16,26 @@ resulting persistence to each specific application. These extra details fall int
 
 The configuration file takes the general form:
 
-    <?xml version="1.0"?>
-    <!DOCTYPE hotrod SYSTEM "hotrod.dtd">
-    
-    <hotrod>
-    
-      <generators />
-      <name-solver />
-      <type-solver />
-      
-      <table />
-      <view />
-      <enum />
-      <dao />
-      <converter />
-      <facet />
-      <fragment />
-      
-    </hotrod>
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<hotrod>
+
+  <generators />
+  <name-solver />
+  <type-solver />
+  
+  <table />
+  <view />
+  <enum />
+  <dao />
+  <converter />
+  <facet />
+  <fragment />
+  
+</hotrod>
+```
 
 The general structure follow the rules below:
 
@@ -54,27 +56,29 @@ A configuration fragment is a separate file that includes sections of the config
 
 A fragment can include zero or more `<table>`, `<view>`, `<enum>`, `<dao>`, `<converter>`, `<facet>` and `<fragment>` tags. The main purpose of 
 fragments is to separate the configuration into multiple files in order to reduce source code collisions when multiple developers are 
-modifying the configuration simultaneously. This mosst commonly happens to [Nitro Queries](../nitro/nitro-queries.md) that need to be tweaked, expanded, 
+modifying the configuration simultaneously. This most commonly happens to [Nitro Queries](../nitro/nitro-queries.md) that need to be tweaked, expanded, 
 and/or added frequently.
 
 It's a common practice to separate fragments by application module and/or by the UI. Queries that are expected to suffer constant changes or improvements should be separated from more stable ones, or from the main configuration.
 
 A fragment configuration file takes the general form:
 
-    <?xml version="1.0"?>
-    <!DOCTYPE hotrod-fragment>
-    
-    <hotrod-fragment>
-    
-      <table />
-      <view />
-      <enum />
-      <dao />
-      <converter />
-      <facet />
-      <fragment />
-    
-    </hotrod-fragment>
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE hotrod-fragment>
+
+<hotrod-fragment>
+
+  <table />
+  <view />
+  <enum />
+  <dao />
+  <converter />
+  <facet />
+  <fragment />
+
+</hotrod-fragment>
+```
 
 ## General Structure
 
