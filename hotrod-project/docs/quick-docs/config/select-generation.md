@@ -6,11 +6,13 @@ The `<select-generation>` tag allows the developer to choose a SQL processor and
 
 The `<select-generation>` tag. This tag is optional and defaults to the old processor. It must be included in the `<mybatis-spring>` tag, as in:
 
-    <mybatis-spring>
-      ...
-      <select-generation strategy="result-set" />
-      ...
-    </mybatis-spring>
+```xml
+<mybatis-spring>
+  ...
+  <select-generation strategy="result-set" />
+  ...
+</mybatis-spring>
+```
 
 HotRod implements two SQL Processors:
 
@@ -36,7 +38,9 @@ can place parameters using this processor is somewhat limited compared to the ne
 
 This processor is enabled by default. It can also be explicitly set using the `<select-generation>` tag, as in:
 
-    <select-generation strategy="create-view" />
+```xml
+  <select-generation strategy="create-view" />
+```
 
 ## The `result-set` Processor
 
@@ -47,11 +51,13 @@ Parameters can be placed anywhere in the SQL query and do not need to be enclose
 
 To enable this processor you need to explicitly include the `<select-generation>` tag, as in:
 
-    <select-generation strategy="result-set" />
+```xml
+  <select-generation strategy="result-set" />
+```
 
 The `<complement>` tag is still needed when Dynamic SQL tags are included in Nitro queries.
 
-## Side-by-side Query Processor Comparison
+## Comparison
 
 The following table compares both Query Processors:
 
