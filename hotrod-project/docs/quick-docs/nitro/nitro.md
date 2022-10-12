@@ -21,7 +21,7 @@ They can be added inside any of:
 
 Finally, they can include any number of parameters, and can also use [Dynamic SQL](nitro-dynamic-sql.md) features. 
 
-## General Purpose Queries -- The `&lt;query>` Tag
+## General Purpose Queries -- The `<query>` Tag
 
 A [General Purpose Query](nitro-general-purpose.md) does not return a result set and is implemented using `<query>` tag. It may return optional count of rows.
 
@@ -29,72 +29,88 @@ They are commonly used to perform changes in the database -- by running tailored
 
 For example, a typical DML query could look like:
 
-    <query method="closeFullyPaidInvoices">
-      update invoice
-      set outstanding = 0
-      where amount_paid >= amount_receivable
-    </query>
+```xml
+<query method="closeFullyPaidInvoices">
+  update invoice
+  set outstanding = 0
+  where amount_paid >= amount_receivable
+</query>
+```
 
 Nevertheless, any valid query can be used. For example:
 
-    <query method="initializeDailyTransactions">
-      truncate daily_transactions_tbl
-    </query>
+```xml
+<query method="initializeDailyTransactions">
+  truncate daily_transactions_tbl
+</query>
+```
 
 The above two queries return the number of affected rows and are exposed to the developer as Java methods:
 
+```java
     public int closeFullyPaidInvoices() { ... }
     
     public int initializeDailyTransactions() { ... }
+```
 
 They can include the full native SQL language available on the database, as well as hints and non-standard features. They can also accept parameters.
 
 General queries are exposed as Java methods with parameters in the DAO where they are defined. 
 
-## Flat Selects -- The `&lt;select>` Tag
+## Flat Selects -- The `<select>` Tag
 
 A [Flat Select Query](nitro-flat-selects.md) executes a SQL `SELECT` statement and models the resulting rows as value objects with fully defined property names and property types. The execution of a flat select typically returns a `java.util.List` of these value objects.
 
 For example:
 
-    <select method="findActiveAccountsWithClient" vo="AccountClientVO">
-      <parameter name="regionId" java-type="Integer" />
-      select a.*, c.name, c.type as "client_type"
-      from account a
-      join client c on c.id = a.client_id
-      where a.active = 1 and c.region_id = #{regionId}
-    </select>
+```xml
+<select method="findActiveAccountsWithClient" vo="AccountClientVO">
+  <parameter name="regionId" java-type="Integer" />
+  select a.*, c.name, c.type as "client_type"
+  from account a
+  join client c on c.id = a.client_id
+  where a.active = 1 and c.region_id = #{regionId}
+</select>
+```
 
 The above query returns a list value object and is exposed to the developer as the Java method:
 
-    public List<AccountClientVO> findActiveAccountsWithClient(Integer regionId) { ... }
+```java
+public List<AccountClientVO> findActiveAccountsWithClient(Integer regionId) { ... }
+```
 
-## Structured Selects -- The `&lt;select>` Tag, Again
+## Structured Selects -- The `<select>` Tag, Again
 
-A [Structured Select Query](nitro-structured-selects.md) executes a `SELECT` statement and models the resulting rows not as a flat tabular structure, but as a hierarchical tree of value objects.
+A Structured Select Query executes a `SELECT` statement and models the resulting rows not as a flat tabular structure, but as tuples of objects or as trees of objects.
 
-The difference between a Flat Select and a Structured Select is that instead of a flat list of columns in the `SELECT` clause, the Structured Select includes a `<columns>` tag that defines the hierarchical data structure using `<collection>` and `<association>` tags. These tags can be nested in multiple levels.
+Structured Selects can take several forms, depending on the data structure you want to model out of a `SELECT` query. See [Structured Select Query](nitro-structured-selects.md) for details on each one. 
+
+The difference between a Flat Select and a Structured Select is that instead of a flat list of columns in the `SELECT` clause, the Structured Select 
+includes a `<columns>` tag that defines the hierarchical data structure using `<collection>` and `<association>` tags. These tags can be nested in multiple levels.
 
 For example:
 
-    <select method="retrieveOrderProducts">
-      <parameter name="categoryId" java-type="Integer" />
-      select
-        <columns>
-          <vo table="orders" extended-vo="OrderWithProductsVO" alias="o">
-            <collection table="product" property="products" alias="p" />
-            <association table="region" property="region" alias="r" />
-          </vo>
-        </columns>
-      from orders o
-      join region r on o.region_id = r.id
-      join order_product op on op.order_id = o.id
-      join product p on p.product_id = op.product_id
-      where p.category_id = #{categoryId}
-      order by o.id
-    </select>
+```xml
+<select method="retrieveOrderProducts">
+  <parameter name="categoryId" java-type="Integer" />
+  select
+    <columns>
+      <vo table="orders" extended-vo="OrderWithProductsVO" alias="o">
+        <collection table="product" property="products" alias="p" />
+        <association table="region" property="region" alias="r" />
+      </vo>
+    </columns>
+  from orders o
+  join region r on o.region_id = r.id
+  join order_product op on op.order_id = o.id
+  join product p on p.product_id = op.product_id
+  where p.category_id = #{categoryId}
+  order by o.id
+</select>
+```
 
 The above query returns a list of a newly created value object `OrderWithProductsVO`. This value object itself properties that reuse already existing value objects to gather data as `List<ProductVO>` and a `RegionVO`. The Java method generated by this query looks like:
 
-    public List<OrderWithProductsVO> retrieveOrderProducts(Integer categoryId) { ... }
-
+```java
+public List<OrderWithProductsVO> retrieveOrderProducts(Integer categoryId) { ... }
+```

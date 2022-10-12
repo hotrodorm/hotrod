@@ -55,19 +55,19 @@ The `<complement>` tag is still needed when Dynamic SQL tags are included in Nit
 
 The following table compares both Query Processors:
 
-| Comparing  | `create-view` *1 | `result-set` |
+| Comparing  | `create-view` [^1] | `result-set` |
 |----------------|-------|---|
 | Database Privileges  | Needs the CREATE VIEW privilege in the sandbox database | Read-only access in the sandbox database |
 | Parameters   | Only in WHERE clause, enclosed in a `<complement>` tag | Inline, anywhere allowed by JDBC |
 | Database Connections | Needs 2 database connections. Two passes that may interfere with data load when specified in the JDBC URL | Single pass |
-| Performance          | Slow on some databases *2 | Fast |
+| Performance          | Slow on some databases [^1] | Fast |
 | Drawbacks            | May leave dangling views under error conditions | May not work on very old databases |
 | `<complement>` tag | Needed for parameters and for Dynamic SQL | Only for Dynamic SQL |
 
 
-*1 This is the default, old processor.
+[^1]: This is the default, old processor.
 
-*2 It has been observed that Oracle database seems to be particularly slow when retrieving database metadata; opening two connections
+[^1]: It has been observed that Oracle database seems to be particularly slow when retrieving database metadata; opening two connections
 makes it even slower.
 
  
