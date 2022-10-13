@@ -106,7 +106,7 @@ The complete structure of HotRod's main configuration file is shown below:
         * [`<version-control-column>`](version-control-column.md)
         * [`<query>`](query.md)
             * `<parameter>`
-            * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
+            * Dynamic SQL: Any number of [`<if>`](id.md), [`<choose>`](choose.md), [`<where>`](where.md), [`<set>`](set.md), [`<trim>`](trim.md), [`<foreach>`](foreach.md), [`<bind>`](bind.md)
         * [`<select>`](select.md)
             * [`<parameter>`](parameter.md)
             * [`<column>`](column.md)
@@ -124,21 +124,7 @@ The complete structure of HotRod's main configuration file is shown below:
                 * `<association>`
                 * `<expression>`
             * [`<complement>`](complement.md)
-                * [`<if>`](id.md)
-                   * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
-                * [`<choose>`](choose.md)
-                    * [`<when>`](when-choose.md)
-                      * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
-                    * [`<otherwise>`](otherwise.md)
-                      * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
-                * [`<where>`](where.md)
-                    * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
-                * [`<set>`](set.md)
-                    * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
-                * [`<trim>`](trim.md)
-                    * Any number of `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
-                * [`<foreach>`](foreach.md)
-                * [`<bind>`](bind.md)
+                * *Dynamic SQL*
     * [`<enum>`](enum.md)
         * [`<non-persistent>`](non-persistent.md)
     * [`<view>`](view.md)
