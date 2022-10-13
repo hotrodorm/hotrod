@@ -1,21 +1,23 @@
 # The Name Solver
 
-HotRod's configuration can include a rule based *Name Solver* that can produce modified names for database tables, views, 
+HotRod's configuration can include a rule based *Name Solver* that can produce tailored names for database tables, views, 
 and columns according to rules defined by the developer.
 
 It can serve as a centralized point for naming rules, for applications that have a somewhat standard strategy to name
-database objects, but the developer wants to simplify these names as seen by the application.
+database objects, and where the developer wants to modify or simplify these names when seen by the application.
 
 In order to add a Name Solver the developer can add the `<name-solver>` tag as shown below:
 
-    <name-solver>
-      <name value="^sk(.+)$" replace="prop2$1" scope="column" />
-      <name value="^CLI_(.+)$" replace="$1" scope="column" />
-      <name value="^(.+)_TBL$" replace="$1" scope="table, view " />
-      <name value="^(.+)_GEN$" replace="$1" />
-      <name value="^\w{3,3}_(\w+)_CLI$" replace="$1" scope="table, column" />
-      <name value="^CLI_(\w.+)_(\w+)_\w{2,3}$" replace="$1$2" scope="table , column , view" />
-    </name-solver>
+```xml
+<name-solver>
+  <name value="^sk(.+)$" replace="prop2$1" scope="column" />
+  <name value="^CLI_(.+)$" replace="$1" scope="column" />
+  <name value="^(.+)_TBL$" replace="$1" scope="table, view " />
+  <name value="^(.+)_GEN$" replace="$1" />
+  <name value="^\w{3,3}_(\w+)_CLI$" replace="$1" scope="table, column" />
+  <name value="^CLI_(\w.+)_(\w+)_\w{2,3}$" replace="$1$2" scope="table , column , view" />
+</name-solver>
+```
 
 ## Location
 
@@ -28,8 +30,7 @@ When HotRod encounters a table, view, or column its name is produced according t
 1. If a `java-name` attribute is specified in the corresponding `<table>`, `<enum>`, `<view>`, or `<column>` tag this name
 is selected and the Name Solver is not used.
 
-2. Otherwise, if a rule in the Name Solver matches the database object, the object name is replaced according to this rule.
-**Note**: Rules are evaluated in the order they are defined; once one rule matches the name is considered resolved and the rest of the rules are ignored.
+2. Otherwise, if a rule in the Name Solver matches the database object, the object name is replaced according to this rule. Rules are evaluated in the order they are defined; once one rule matches the name is considered resolved and the rest of the rules are ignored.
 
 3. Finally, the original or replaced name is used by HotRod to generate a camel case Java identifier for the database object.
 
@@ -48,9 +49,9 @@ Rules are evaluated in order. If a rule matches, it's selected and no further ru
 - The replaced name is considered a **database name** in the same category as the original object name. This means the replaced name takes the place of the original name, and is
 converted to the target language (such as Java) according to the language rules. For example, if:
 
-    - The original column name `ACC_VIP_CLIENT_NBR`,
-    - Was converted to `VIP_CLIENT` by stripping the prefix and suffix,
-    - HotRod will convert it to camel case as the Java property `vipClient`.
+- The original column name `ACC_VIP_CLIENT_NBR`,
+- Was converted to `VIP_CLIENT` by stripping the prefix and suffix,
+- HotRod will convert it to camel case as the Java property `vipClient`.
 
 ## Examples
 
