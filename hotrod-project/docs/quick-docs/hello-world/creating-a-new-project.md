@@ -15,12 +15,14 @@ database you are using.
 
 In this part we create the Maven project, we lay out its structure, we and add all the necessary libraries and plugins to it.
 
-### 1. Setting Up a Maven Project
+### Setting Up a Maven Project
 
-Use your favorite tool to generate a blank Maven project or copy a basic pom.xml file from another project. Then add the 
-Spring or Spring Boot dependency (the latter in this example) and the JDBC driver dependency according to your specific database.
+Use your favorite tool to generate a blank Maven project or copy a basic pom.xml file from another project. Then:
+- Add the Spring or Spring Boot dependency (the latter in this example) and the JDBC driver dependency according to your specific database.
+- Then, add the HotRod and MyBatis Libraries. 
+- Finally, add the HotRod Generator Plugin to it.
 
-The `pom.xml` file should look like:
+With these additions the `pom.xml` file should look like:
 
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -53,6 +55,24 @@ The `pom.xml` file should look like:
       <version>42.2.5</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod</artifactId>
+      <version>${hotrod.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod-livesql</artifactId>
+      <version>${hotrod.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+      <version>${mybatis.version}</version>
+    </dependency>    
+
   </dependencies>
 
   <build>
@@ -72,47 +92,6 @@ The `pom.xml` file should look like:
         </executions>
       </plugin>
 
-    </plugins>
-
-  </build>
-
-</project>
-```
-
-**Note**: Don't forget to change JDBC driver according the database you are using.
-
-
-### 2. Adding the HotRod and MyBatis Libraries
-
-Include the following dependencies to the `<dependencies>` tag:
-
-```xml
-    <dependency>
-      <groupId>org.hotrodorm.hotrod</groupId>
-      <artifactId>hotrod</artifactId>
-      <version>${hotrod.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hotrodorm.hotrod</groupId>
-      <artifactId>hotrod-livesql</artifactId>
-      <version>${hotrod.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mybatis.spring.boot</groupId>
-      <artifactId>mybatis-spring-boot-starter</artifactId>
-      <version>${mybatis.version}</version>
-    </dependency>
-```
-
-### 3. Preparing the Maven Plugin
-
-HotRod's Maven plugin inspects the database details and generate (or updates) the persistence code.
-
-Inside the `</plugins>` tag add the segment:
-
-```xml
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
@@ -129,18 +108,23 @@ Inside the `</plugins>` tag add the segment:
           </dependency>
         </dependencies>
       </plugin>
+
+    </plugins>
+
+  </build>
+
+</project>
 ```
 
-**Note**: Again, change the JDBC driver dependency according to the database you are using.
+**Note**: Don't forget to change JDBC driver (in two places) according the database you are using.
 
 Run Maven once, using `mvn clean` to make sure the `pom.xml` file is correctly formed.
 
-## Part 2 &mdash; Writing the Application
+## Part 2 &mdash; Create a Table and Generate the Persistence Code
 
-In this section we create a table in the database, we generate the persistence code for Spring/Spring Boot. We then
-write a simple app and we run it.
+In this section we create a table in the database, we generate the persistence code for Spring/Spring Boot. 
 
-### 4. Creating a Table in the Database
+### Creating a Table in the Database
 
 At this point we'll need a database. We'll assume the database, schema, and permissions are ready to be used, and that we
 know the connection details to it.
@@ -160,7 +144,7 @@ insert into employee (id, name) values (6097, 'Steve');
 
 Great. We now have a table in the database with three rows of data in it.
 
-### 5. Generating the Persistence Code
+### Generating the Persistence Code
 
 Tell HotRod how you want the generation to work. Create the file `hotrod.xml` (in the folder of
 your choosing and with any name) and add:
@@ -224,7 +208,9 @@ latest/current database structure.
 
 Now all the persistence code is ready to be used.
 
-### 6. Writing the Application
+## Part 3 &mdash; Writing the Application and Running It
+
+### Writing the Application
 
 Let's write a simple application that perform two searches in the table we created before. Create the application class `src/main/java/com/myapp/app.java` as:
 
@@ -290,6 +276,8 @@ public class App {
 
 }
 ```
+
+### Run the Application
 
 Now, let's run the application. Type:
 
