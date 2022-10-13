@@ -1,8 +1,9 @@
 # Creating a New Project from Scratch
 
 To start a Maven project that uses HotRod's persistence you'll need to set up a typical Maven 
-project for Spring or Spring Boot and then add the HotRod Generator Plugin and runtime libraries. This example
-is for a Spring Boot project.
+project for Spring or Spring Boot and then add the HotRod Generator Plugin and runtime libraries.
+
+This example is for a Spring Boot project and will use a PostgreSQL database.
 
 Then, you can create a table in a database and use the generator to generate the persistence code from it. With
 the persistence code available, you can write your application and use all HotRod's features to simplify reading
@@ -18,11 +19,12 @@ In this part we create the Maven project, we lay out its structure, we and add a
 ### Setting Up a Maven Project
 
 Use your favorite tool to generate a blank Maven project or copy a basic pom.xml file from another project. Then:
-- Add the Spring or Spring Boot dependency (the latter in this example) and the JDBC driver dependency according to your specific database.
-- Then, add the HotRod and MyBatis Libraries. 
-- Finally, add the HotRod Generator Plugin to it.
+- Add the Spring Boot Starter dependency and the Spring Boot Plugin.
+- Add the JDBC driver dependency according to your specific database.
+- Add the HotRod, HotRod LiveSQL, and MyBatis Libraries. 
+- Add the HotRod Generator Plugin to it.
 
-With these additions the `pom.xml` file should look like:
+With all these additions the complete `pom.xml` file will look like:
 
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -122,7 +124,7 @@ Run Maven once, using `mvn clean` to make sure the `pom.xml` file is correctly f
 
 ## Part 2 &mdash; Create a Table and Generate the Persistence Code
 
-In this section we create a table in the database, we generate the persistence code for Spring/Spring Boot. 
+In this section we create a table in the database and we generate the persistence code for Spring Boot.
 
 ### Creating a Table in the Database
 
@@ -192,6 +194,9 @@ display=
 ```
 
 Change the URL, username, password, and schema as needed to match your current database.
+
+**Note**: The connection details included in this file are used for persistence generation purposes only. It typically points to a sandbox database in the 
+development environment. When running in the production environment HotRod will pick up the connection details from the `datasource` Spring bean.
 
 Now, let's use HotRod to generate the persistence code. Type:
 
@@ -278,6 +283,26 @@ public class App {
 ```
 
 ### Run the Application
+
+Specify the database connection details in the Spring Boot configuration. The connection details included here are the runtime settings; they are not to
+generate code but to run the application. In short, this is the configuration that the application will use when running in production (or any environment).
+
+Create the `src/main/resources/application.properties` file as:
+
+```properties
+# 1. Specify search path for the XML mappers.
+mybatis.mapper-locations=mappers/**/*.xml
+
+# 2. Specify the database connection properties
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.url=jdbc:postgresql://192.168.56.214:5432/mydatabase
+spring.datasource.username=myusername
+spring.datasource.password=mypassword
+
+# 3. Specify the logging levels (enable for debugging purposes)
+logging.level.root=INFO
+#logging.level.sample.mybatis.mapper=DEBUG
+```
 
 Now, let's run the application. Type:
 
