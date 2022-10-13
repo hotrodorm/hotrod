@@ -206,7 +206,7 @@ HotRod will connect to the database schema, will retrieve the table details, and
 **Note**: Since the `EmployeeImpl.java` may contain custom code, it's never overwritten. The other files are always overwritten to adhere with the
 latest/current database structure.
 
-Now all the persistence code is ready to be used.
+At this ponit all the persistence code is ready to be used.
 
 ## Part 3 &mdash; Writing the Application and Running It
 
@@ -256,12 +256,12 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       System.out.println("[ Starting example ]");
-      runExamples();
+      searching();
       System.out.println("[ Example complete ]");
     };
   }
 
-  private void runExamples() {
+  private void searching() {
 
     // Use CRUD to search for employee #123
 
