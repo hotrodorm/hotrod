@@ -46,7 +46,7 @@ Rules are evaluated in order. If a rule matches, it's selected and no further ru
 
 - The replaced name is computed using the `replace` attribute. This pattern can use up to 9 pattern captures (from `$1` to `$9`) captured by the `value` pattern. For an explanation on captures see [Pattern Groups and Capturing](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html#cg).
 
-- The replaced name is considered a **database name** in the same category as the original object name. This means the replaced name takes the place of the original name, and is
+- The replaced name is considered a *database name* in the same category as the original object name. This means the replaced name takes the place of the original name, and is
 converted to the target language (such as Java) according to the language rules. For example, if:
 
 - The original column name `ACC_VIP_CLIENT_NBR`,
@@ -57,11 +57,11 @@ converted to the target language (such as Java) according to the language rules.
 
 The following cases show combinations of regex `value` and `replace` patterns applied to database column names: 
 
-| `value`  | `replace` | Database Name | Replaced Column Name | Java Property |
+| `value`  | `replace` | Database Object Name | Replaced Column Name | Java Property |
 |--------|---------|-------------|----------------------|---------------|
-| ^CLI_(\w.+)_(\w+)_\w{2,3}$ | $1$2 | CLI_first_name_ATT | firstname | firstname |
-| ^CLI_(\w.+)_(\w+)_\w{2,3}$ | $1_$2 | CLI_first_name_ATT | first_name | firstName |
-| ^CLI_(\w.+)_(\w+)_\w{2,3}$ | $2 | CLI_first_name_ATT | name | name |
-| ^CLI_(\w.+)_(\w+)_\w{2,3}$ | $1_$2 | CLI_first_name_A | first_name_A | firstNameA |
+| `^CLI_(\w.+)_(\w+)_\w{2,3}$` | `$1$2` | CLI_first_name_ATT | firstname | firstname |
+| `^CLI_(\w.+)_(\w+)_\w{2,3}$` | `$1_$2` | CLI_first_name_ATT | first_name | firstName |
+| `^CLI_(\w.+)_(\w+)_\w{2,3}$` | `$2` | CLI_first_name_ATT | name | name |
+| `^CLI_(\w.+)_(\w+)_\w{2,3}$` | `$1_$2` | CLI_first_name_A | first_name_A | firstNameA |
 
 
