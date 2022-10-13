@@ -106,7 +106,7 @@ The complete structure of HotRod's main configuration file is shown below:
         * [`<sequence>`](sequence.md)
         * [`<query>`](query.md)
             * `<parameter>`
-            * *Dynamic SQL*: Any number of flat or nested [`<if>`](id.md), [`<choose>`](choose.md), [`<where>`](where.md), [`<set>`](set.md), [`<trim>`](trim.md), [`<foreach>`](foreach.md), [`<bind>`](bind.md)
+            * *Dynamic SQL*: Any number of flat or nested [`<if>`](id.md), [`<choose>`](choose.md), [`<where>`](where.md), [`<set>`](set.md), [`<trim>`](trim.md), [`<foreach>`](foreach.md), and/or [`<bind>`](bind.md)
         * [`<select>`](select.md)
             * [`<parameter>`](parameter.md)
             * [`<column>`](column.md)
@@ -124,7 +124,7 @@ The complete structure of HotRod's main configuration file is shown below:
                 * `<association>`
                 * `<expression>`
             * [`<complement>`](complement.md)
-                * *Dynamic SQL*
+                * *Dynamic SQL*: Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, and/or `<bind>`
     * [`<enum>`](enum.md)
         * [`<non-persistent>`](non-persistent.md)
     * [`<view>`](view.md)
