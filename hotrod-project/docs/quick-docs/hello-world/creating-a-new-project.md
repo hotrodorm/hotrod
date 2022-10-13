@@ -148,7 +148,7 @@ Great. We now have a table in the database with three rows of data in it.
 
 ### Generate the Persistence Code
 
-#### HotRod Configuration File
+#### The HotRod Configuration File
 
 Tell HotRod how you want the generation to work. Create the file `hotrod.xml` (in the folder of
 your choosing and with any name) and add:
