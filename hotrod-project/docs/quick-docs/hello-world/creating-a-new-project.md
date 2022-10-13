@@ -109,7 +109,7 @@ Include the following dependencies to the `<dependencies>` tag:
 
 HotRod's Maven plugin inspects the database details and generate (or updates) the persistence code.
 
-After the `</dependencies>` tag add the segment:
+Inside the `</plugins>` tag add the segment:
 
 ```xml
       <plugin>
@@ -136,8 +136,8 @@ Run Maven once, using `mvn clean` to make sure the `pom.xml` file is correctly f
 
 ## Part 2 &mdash; Writing the Application
 
-In this section we create a table in the database, we generate the persistence code for Spring/Spring Boot, and then
-we write a simple app.
+In this section we create a table in the database, we generate the persistence code for Spring/Spring Boot. We then
+write a simple app and we run it.
 
 ### Creating a Table in the Database
 
@@ -157,7 +157,7 @@ insert into employee (id, name) values (123, 'Alice');
 insert into employee (id, name) values (6097, 'Steve');
 ```
 
-Great. We now have a table in the database with a three rows of data in it.
+Great. We now have a table in the database with three rows of data in it.
 
 ### Generating the Persistence Code
 
@@ -191,9 +191,9 @@ In the file above:
 - We can change the package name of the daos according to the specific project, and we can change the DAOs 
 and VOs prefixes and suffixes as needed. We can also change the mappers directory, to generate them to a different folder.
 - It's recommended to keep the `<classic-fk-navigation />` and `<select-generation strategy="result-set" />` tags to enable modern features.
-- Finally, it's the list of tables we want to inspect. In this case it only includes a single table: `employee`.
+- Finally, we see the list of tables we want to inspect. In this case this list only includes a single table: `employee`.
 
-Now, let's create the configuration file `dev.properties` (as specified in the pom.xml) with the database connection details. Create this file with the following content:
+Now, let's create the configuration file `dev.properties` (referenced by the `pom.xml`) with the database connection details. Create this file with the following content:
 
 ```properties
 jdbcdriverclass=org.postgresql.Driver
@@ -206,22 +206,22 @@ facets=
 display=
 ```
 
-Change the URL, username, and password as needed to match your current database.
+Change the URL, username, password, and schema as needed to match your current database.
 
-With the configuration ready, let's use the HorRod Generator Maven Plugin to inspect the database and produce the persistence code. Type:
+Now, let's use HotRod to generate the persistence code. Type:
 
 `mvn hotrod:gen`
 
-HotRod will connect to the database schema, will retrieve the table details, and will produce the code. It will generate or update the following files:
+HotRod will connect to the database schema, will retrieve the table details, and will produce the code. It will create or update the following files:
 * `src/main/java/com/myapp/primitives/EmployeeDAO.java`
 * `src/main/java/com/myapp/primitives/EmployeeVO.java`
 * `src/main/java/com/myapp/EmployeeImpl.java`
 * `mappers/primitives-employee.xml`
 
-**Note**: Since the `EmployeeImpl.java` may contain custom code it is never overwritten. The other files are always overwritten to adhere with the
+**Note**: Since the `EmployeeImpl.java` may contain custom code, it's never overwritten. The other files are always overwritten to adhere with the
 latest/current database structure.
 
-Now we have all the persistence code ready to be used.
+Now all the persistence code is ready to be used.
 
 ### Writing the Application
 
