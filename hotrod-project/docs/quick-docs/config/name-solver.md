@@ -57,43 +57,11 @@ converted to the target language (such as Java) according to the language rules.
 
 The following cases show combinations of regex `value` and `replace` patterns applied to database column names: 
 
-<table style="border: 1px solid red; border-collapse: collapse; text-align: left;">
-  <tr style="border: 1px solid red;">
-    <th style="border: 1px solid red;padding: 5px;">value</th>
-    <th style="border: 1px solid red;padding: 5px;">replace</th>
-    <th style="border: 1px solid red;padding: 5px;">Column Name</th>
-    <th style="border: 1px solid red;padding: 5px;">Replaced Column Name</th>
-    <th style="border: 1px solid red;padding: 5px;">Java Property</th>
-  </tr>
-  <tr style="border: 1px solid red;">
-    <td style="border: 1px solid red;padding: 5px;">^CLI_(\w.+)_(\w+)_\w{2,3}$</td>
-    <td style="border: 1px solid red;padding: 5px;">$1$2</td>
-    <td style="border: 1px solid red;padding: 5px;">CLI_first_name_ATT</td>
-    <td style="border: 1px solid red;padding: 5px;">firstname</td>
-    <td style="border: 1px solid red;padding: 5px;">firstname</td>
-  </tr>
-  <tr style="border: 1px solid red;">
-    <td style="border: 1px solid red;padding: 5px;">^CLI_(\w.+)_(\w+)_\w{2,3}$</td>
-    <td style="border: 1px solid red;padding: 5px;">$1_$2</td>
-    <td style="border: 1px solid red;padding: 5px;">CLI_first_name_ATT</td>
-    <td style="border: 1px solid red;padding: 5px;">first_name</td>
-    <td style="border: 1px solid red;padding: 5px;">firstName</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid red;padding: 5px;">^CLI_(\w.+)_(\w+)_\w{2,3}$</td>
-    <td style="border: 1px solid red;padding: 5px;">$2</td>
-    <td style="border: 1px solid red;padding: 5px;">CLI_first_name_ATT</td>
-    <td style="border: 1px solid red;padding: 5px;">name</td>
-    <td style="border: 1px solid red;padding: 5px;">name</td>
-  </tr>
-  <tr>
-    <td style="border: 1px solid red;padding: 5px;">^CLI_(\w.+)_(\w+)_\w{2,3}$</td>
-    <td style="border: 1px solid red;padding: 5px;">$1_$2</td>
-    <td style="border: 1px solid red;padding: 5px;">CLI_first_name_A</td>
-    <td style="border: 1px solid red;padding: 5px;">first_name_A</td>
-    <td style="border: 1px solid red;padding: 5px;">firstNameA</td>
-  </tr>
-</table>
+| `value`  | `replace` | Database Name | Replaced Column Name | Java Property |
+|--------|---------|-------------|----------------------|---------------|
+| ^CLI_(\w.+)_(\w+)_\w{2,3}$ | $1$2 | CLI_first_name_ATT | firstname | firstname |
+| ^CLI_(\w.+)_(\w+)_\w{2,3}$ | $1_$2 | CLI_first_name_ATT | first_name | firstName |
+| ^CLI_(\w.+)_(\w+)_\w{2,3}$ | $2 | CLI_first_name_ATT | name | name |
+| ^CLI_(\w.+)_(\w+)_\w{2,3}$ | $1_$2 | CLI_first_name_A | first_name_A | firstNameA |
 
 
-  
