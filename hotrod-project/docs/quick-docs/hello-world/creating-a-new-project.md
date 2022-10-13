@@ -1,7 +1,8 @@
 # Creating a New Project from Scratch
 
 To start a Maven project that uses HotRod's persistence you'll need to set up a typical Maven 
-project for Spring or Spring Boot and then add the HotRod Generator Plugin and runtime libraries.
+project for Spring or Spring Boot and then add the HotRod Generator Plugin and runtime libraries. This example
+is for a Spring Boot project.
 
 Then, you can create a table in a database and use the generator to generate the persistence code from it. With
 the persistence code available, you can write your application and use all HotRod's features to simplify reading
@@ -14,7 +15,7 @@ database you are using.
 
 In this part we create the Maven project, we lay out its structure, we and add all the necessary libraries and plugins to it.
 
-### Setting Up a Maven Project
+### 1. Setting Up a Maven Project
 
 Use your favorite tool to generate a blank Maven project or copy a basic pom.xml file from another project. Then add the 
 Spring or Spring Boot dependency (the latter in this example) and the JDBC driver dependency according to your specific database.
@@ -81,7 +82,7 @@ The `pom.xml` file should look like:
 **Note**: Don't forget to change JDBC driver according the database you are using.
 
 
-### Adding the HotRod and MyBatis Libraries
+### 2. Adding the HotRod and MyBatis Libraries
 
 Include the following dependencies to the `<dependencies>` tag:
 
@@ -105,7 +106,7 @@ Include the following dependencies to the `<dependencies>` tag:
     </dependency>
 ```
 
-### Preparing the Maven Plugin
+### 3. Preparing the Maven Plugin
 
 HotRod's Maven plugin inspects the database details and generate (or updates) the persistence code.
 
@@ -139,7 +140,7 @@ Run Maven once, using `mvn clean` to make sure the `pom.xml` file is correctly f
 In this section we create a table in the database, we generate the persistence code for Spring/Spring Boot. We then
 write a simple app and we run it.
 
-### Creating a Table in the Database
+### 4. Creating a Table in the Database
 
 At this point we'll need a database. We'll assume the database, schema, and permissions are ready to be used, and that we
 know the connection details to it.
@@ -159,7 +160,7 @@ insert into employee (id, name) values (6097, 'Steve');
 
 Great. We now have a table in the database with three rows of data in it.
 
-### Generating the Persistence Code
+### 5. Generating the Persistence Code
 
 Tell HotRod how you want the generation to work. Create the file `hotrod.xml` (in the folder of
 your choosing and with any name) and add:
@@ -223,7 +224,7 @@ latest/current database structure.
 
 Now all the persistence code is ready to be used.
 
-### Writing the Application
+### 6. Writing the Application
 
 Let's write a simple application that perform two searches in the table we created before. Create the application class `src/main/java/com/myapp/app.java` as:
 
