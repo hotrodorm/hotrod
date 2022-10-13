@@ -148,6 +148,8 @@ Great. We now have a table in the database with three rows of data in it.
 
 ### Generate the Persistence Code
 
+#### HotRod Configuration File
+
 Tell HotRod how you want the generation to work. Create the file `hotrod.xml` (in the folder of
 your choosing and with any name) and add:
 
@@ -180,6 +182,8 @@ and VOs prefixes and suffixes as needed. We can also change the mappers director
 - It's recommended to keep the `<classic-fk-navigation />` and `<select-generation strategy="result-set" />` tags to enable modern features.
 - Finally, we see the list of tables we want to inspect. In this case this list only includes a single table: `employee`.
 
+#### The Local Properties File
+
 Now, let's create the configuration file `dev.properties` (referenced by the `pom.xml`) with the database connection details. Create this file with the following content:
 
 ```properties
@@ -197,6 +201,10 @@ Change the URL, username, password, and schema as needed to match your current d
 
 **Note**: The connection details included in this file are used for persistence generation purposes only. It typically points to a sandbox database in the 
 development environment. When running in the production environment HotRod will pick up the connection details from the `datasource` Spring bean.
+
+**Note**: Typically this file won't be committed to the source code repository. Different developers may use their own local databases, so each one may use slightly different values in this file, that are not to be shared with other developers.
+
+#### Generate the Persistence Code
 
 Now, let's use HotRod to generate the persistence code. Type:
 
