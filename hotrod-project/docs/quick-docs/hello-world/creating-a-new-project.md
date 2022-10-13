@@ -219,7 +219,7 @@ HotRod will connect to the database schema, will retrieve the table details, and
 **Note**: Since the `EmployeeImpl.java` may contain custom code, it's never overwritten. The other files are always overwritten to adhere with the
 latest/current database structure.
 
-At this ponit all the persistence code is ready to be used.
+At this point all the persistence code is ready to be used.
 
 ## Part 3 &mdash; Writing the Application and Running It
 
@@ -318,7 +318,7 @@ Now, let's run the application. Type:
 mvn spring-boot:run
 ```
 
-The Spring Boot application starts, connects to the database and run both queries. We will the result:
+The Spring Boot application starts, connects to the database and run both queries. We see the result shown below:
 
 ```log
 [ Starting example ]
