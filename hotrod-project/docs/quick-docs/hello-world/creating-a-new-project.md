@@ -16,7 +16,7 @@ database you are using.
 
 In this part we create the Maven project, we lay out its structure, we and add all the necessary libraries and plugins to it.
 
-### Setting Up a Maven Project
+### Set Up a Maven Project
 
 Use your favorite tool to generate a blank Maven project or copy a basic pom.xml file from another project. Then:
 - Add the Spring Boot Starter dependency and the Spring Boot Plugin.
@@ -122,11 +122,11 @@ With all these additions the complete `pom.xml` file will look like:
 
 Run Maven once, using `mvn clean` to make sure the `pom.xml` file is correctly formed.
 
-## Part 2 &mdash; Create a Table and Generate the Persistence Code
+## Part 2 &mdash; Creating a Table and Generating the Persistence Code
 
 In this section we create a table in the database and we generate the persistence code for Spring Boot.
 
-### Creating a Table in the Database
+### Create a Table in the Database
 
 At this point we'll need a database. We'll assume the database, schema, and permissions are ready to be used, and that we
 know the connection details to it.
@@ -146,7 +146,7 @@ insert into employee (id, name) values (6097, 'Steve');
 
 Great. We now have a table in the database with three rows of data in it.
 
-### Generating the Persistence Code
+### Generate the Persistence Code
 
 Tell HotRod how you want the generation to work. Create the file `hotrod.xml` (in the folder of
 your choosing and with any name) and add:
@@ -215,7 +215,7 @@ At this ponit all the persistence code is ready to be used.
 
 ## Part 3 &mdash; Writing the Application and Running It
 
-### Writing the Application
+### Write the Java Application
 
 Let's write a simple application that perform two searches in the table we created before. Create the application class `src/main/java/com/myapp/app.java` as:
 
@@ -284,8 +284,8 @@ public class App {
 
 ### Run the Application
 
-Specify the database connection details in the Spring Boot configuration. The connection details included here are the runtime settings; they are not to
-generate code but to run the application. In short, this is the configuration that the application will use when running in production (or any environment).
+Specify the database connection details in the Spring Boot configuration. The connection details included here correspond to the runtime settings.
+They are not to used generate code, but to run the application. In short, this is the configuration that the application will use when running in production (or any environment).
 
 Create the `src/main/resources/application.properties` file as:
 
