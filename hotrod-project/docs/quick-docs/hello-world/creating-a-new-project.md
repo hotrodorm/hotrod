@@ -10,17 +10,19 @@ You'll need:
 
 This guide sets up the Maven project, creates a table in the database, generates the HotRod persistence from it, and then runs a simple application using it.
 
-For reference, after following all the steps below our main project folder will include the files shown below. For simplicity, this guide creates them in 
-the main folder of the project, but you can later change their locations to organize the project in your preferred way:
+For reference, after following all the steps of this guide our main project folder will include the files and folders shown below:
 
 ```bash
 pom.xml                    # The Maven project file
-hotrod.xml                 # The HotRod Configuration
-hotrod.properties          # The HotRod Local Properties
+hotrod.xml                 # The HotRod configuration file
+hotrod.properties          # The HotRod Local properties
 src/main/java              # The Java source code, including the generated DAOs and VOs
 src/main/resources         # All resources, including the generated mappers and embedded properties
 application.properties     # The runtime properties, typically for production deployment
 ```
+
+For simplicity, this guide creates these files in the main folder of the project. You can later change their locations to organize the project 
+in your preferred way.
 
 ## Part 1 &mdash; Setting Up the Project
 
