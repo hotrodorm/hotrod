@@ -12,6 +12,18 @@ and writing to the database.
 **Note**: The example below uses a PostgreSQL database to create a table and then to use it. Change the JDBC driver according to the specific
 database you are using.
 
+This example was fully tested with simple tools: the vi editor and Maven command line. It will also work with a full blown IDE such as Eclipse.
+
+After following all the steps below our working folder will include the following files:
+
+```bash
+dev.properties
+hotrod.xml
+pom.xml
+src/main/java
+src/main/resources
+```
+
 ## Part 1 &mdash; Setting Up the Project
 
 In this part we create the Maven project, we lay out its structure, we and add all the necessary libraries and plugins to it.
@@ -38,7 +50,9 @@ With all these additions the complete `pom.xml` file will look like:
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <springboot.version>2.3.4-RELEASE</springboot.version>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+    <springboot.version>2.3.4.RELEASE</springboot.version>
     <hotrod.version>3.4.7</hotrod.version>
     <mybatis.version>2.1.3</mybatis.version>
   </properties>
@@ -120,7 +134,16 @@ With all these additions the complete `pom.xml` file will look like:
 
 **Note**: Don't forget to change JDBC driver (in two places) according the database you are using.
 
-Run Maven once, using `mvn clean` to make sure the `pom.xml` file is correctly formed.
+Create the Java source folders. In linux you can do:
+
+```bash
+mkdir -p src/main/java
+mkdir -p src/main/resources
+```
+
+Change the commands above accordingly for Windows or other OS as needed.
+
+Finally, run Maven once, using `mvn clean` to make sure the `pom.xml` file is correctly formed.
 
 ## Part 2 &mdash; Creating a Table and Generating the Persistence Code
 
@@ -187,6 +210,8 @@ and VOs prefixes and suffixes as needed. We can also change the mappers director
 Now, let's create the configuration file `dev.properties` (referenced by the `pom.xml`) with the database connection details. Create this file with the following content:
 
 ```properties
+configfile=./hotrod.xml
+generator=MyBatis-Spring
 jdbcdriverclass=org.postgresql.Driver
 jdbcurl=jdbc:postgresql://192.168.56.214:5432/mydatabase
 jdbcusername=myusername
@@ -211,10 +236,10 @@ Now, let's use HotRod to generate the persistence code. Type:
 `mvn hotrod:gen`
 
 HotRod will connect to the database schema, will retrieve the table details, and will produce the code. It will create or update the following files:
+* `src/main/java/com/myapp/EmployeeImpl.java`
 * `src/main/java/com/myapp/primitives/EmployeeDAO.java`
 * `src/main/java/com/myapp/primitives/EmployeeVO.java`
-* `src/main/java/com/myapp/EmployeeImpl.java`
-* `mappers/primitives-employee.xml`
+* `src/main/resources/mappers/primitives-employee.xml`
 
 **Note**: Since the `EmployeeImpl.java` may contain custom code, it's never overwritten. The other files are always overwritten to adhere with the
 latest/current database structure.
@@ -225,7 +250,8 @@ At this point all the persistence code is ready to be used.
 
 ### Write the Java Application
 
-Let's write a simple application that perform two searches in the table we created before. Create the application class `src/main/java/com/myapp/app.java` as:
+Let's write a simple application that perform two searches in the table we created before. Create the application 
+class `src/main/java/com/myapp/App.java` as:
 
 ```java
 package com.myapp;
