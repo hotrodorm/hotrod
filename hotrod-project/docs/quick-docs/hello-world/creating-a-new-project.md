@@ -14,12 +14,12 @@ For reference, after following all the steps below our working folder will inclu
 the main folder of the project, but you can later change their locations to organize the project in a better way:
 
 ```bash
-application.properties
-hotrod.properties
-hotrod.xml
-pom.xml
-src/main/java
-src/main/resources
+pom.xml                    # The Maven project file
+hotrod.xml                 # The HotRod Configuration
+hotrod.properties          # The HotRod Local Properties
+src/main/java              # The Java source code, including the generated DAOs and VOs
+src/main/resources         # All resources, including the generated mappers and embedded properties
+application.properties     # The runtime properties, typically for production deployment
 ```
 
 ## Part 1 &mdash; Setting Up the Project
