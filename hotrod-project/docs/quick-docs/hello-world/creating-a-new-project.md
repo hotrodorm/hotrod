@@ -210,7 +210,7 @@ and VOs prefixes and suffixes as needed. We can also change the mappers director
 - It's recommended to keep the `<classic-fk-navigation />` and `<select-generation strategy="result-set" />` tags to enable modern features.
 - Finally, we see the list of tables we want to inspect. In this case this list only includes a single table: `employee`.
 
-#### The Local Properties File
+#### The HotRod Properties File
 
 Now, let's create the configuration file `hotrod.properties` (referenced by the `pom.xml`) so the HotRod Generator can connect to the sandbox database. Create this file with the following content:
 
@@ -229,10 +229,11 @@ display=
 
 Change the URL, username, password, and schema as needed to match your current database.
 
-**Note**: The connection details included in this file are used for persistence generation purposes only. It typically points to a sandbox database in the 
-development environment. When running in the production environment HotRod will pick up the connection details from the `datasource` Spring bean.
+**Note**: The connection details included in this file are used for persistence generation purposes only. They typically point to a sandbox database in the 
+development environment. When running in the production environment HotRod will pick up the connection details from the `datasource` Spring bean, typically
+configured in the `application.properties` file of the application.
 
-**Note**: Typically this file won't be committed to the source code repository. Different developers may use their own local databases, so each one may use slightly different values in this file, that are not to be shared with other developers.
+**Note**: Most likely, this file won't be committed to the source code repository. Different developers may use their own local databases, so each one may use slightly different values in this file, that are not to be shared with other developers.
 
 #### Generate the Persistence Code
 
@@ -319,7 +320,10 @@ public class App {
 
     EmployeeTable e = EmployeeDAO.newTable();
 
-    List<Map<String, Object>> l = sql.select().from(e).where(e.name.like("A%")).execute();
+    List<Map<String, Object>> l = sql.select()
+      .from(e)
+      .where(e.name.like("A%"))
+      .execute();
 
     System.out.println("Employees with names that start with 'A':");
     for (Map<String, Object> r: l) {
