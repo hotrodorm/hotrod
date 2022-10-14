@@ -434,23 +434,15 @@ DevOps can tweak these properties in production, if you need extra information f
 Now, that the application is tested we can package it for a production deployment. Run:
 
 ```bash
-mvm clean package
+mvn clean package
 ```
 
 Maven builds the applications and produces a single jar file at `target/myapp-1.0.0-SNAPSHOT.jar`. The name is assembled
 with the values in the `<artifactId>` and `<version>` tags. The jar file contains the entire application.
 
-When deploying to production this file should be placed along with an `application.properties` file that the DevOps or Operation
-team will set up with the corresponding production details of the database. For example this file will look like:
+When deploying to production this file should be placed along with an `application.properties` described above that the DevOpswill set up.
 
-```properties
-spring.datasource.driver-class-name=org.postgresql.Driver
-spring.datasource.url=jdbc:postgresql://192.168.56.214:5432/mydatabase
-spring.datasource.username=myusername
-spring.datasource.password=mypassword
-```
-
-To run this *packaged* version of the application run:
+Run the *packaged* version of the application. Type:
 
 ```bash
 java -jar myapp-1.0.0-SNAPSHOT.jar
