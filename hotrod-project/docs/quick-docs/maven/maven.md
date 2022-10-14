@@ -78,17 +78,17 @@ explicitly defined. The full list of parameters is:
 
 | Parameter | Description |
 |---|---|
-| localproperties | Defines an external properties file that will be read to load these properties |
-| configfile | Specifies the HotRod Main configuration file location. This is the main configuration file that lays out all the details of the generation such as packages, folders, naming conventions, and converters are defined, as well as the full list tables and Nitro queries. |
-| generator | The generator to use. Currently only one generator is supported: `MyBatis-Spring`  |
-| jdbcdriverclass | The JDBC driver class name |
-| jdbcurl | The JDBC connection URL |
-| jdbcusername | The JDBC connection username |
-| jdbcpassword | The JDBC connection password |
-| jdbccatalog | The JDBC catalog of the schema (optional) |
-| jdbcschema | The JDBC schema name (optional) |
-| facets | Comma-separated list of facets to generate. Leave empty to activate them all |
-| display | The console display type. Valid values are `list` and `summary`. Defaults to `list`.  |
+| `localproperties` | Defines an external properties file that will be read to load these properties |
+| `configfile` | Specifies the HotRod Main configuration file location. This is the main configuration file that lays out all the details of the generation such as packages, folders, naming conventions, and converters are defined, as well as the full list tables and Nitro queries. |
+| `generator` | The generator to use. Currently only one generator is supported: `MyBatis-Spring`  |
+| `jdbcdriverclass` | The JDBC driver class name |
+| `jdbcurl` | The JDBC connection URL |
+| `jdbcusername` | The JDBC connection username |
+| `jdbcpassword` | The JDBC connection password |
+| `jdbccatalog` | The JDBC catalog of the schema (optional) |
+| `jdbcschema` | The JDBC schema name (optional) |
+| `facets` | Comma-separated list of facets to generate. Leave empty to activate them all |
+| `display | The console display type. Valid values are `list` and `summary`. Defaults to `list`.  |
 
 The first parameter `<localproperties>` is an optional parameter that can be used to extract all the parameters from the `pom.xml` file into a separate
 file of our choosing. This can be handy if we want to avoid placing database credentials in the main `pom.xml` file. If omitted, parameters can be set up 
@@ -103,70 +103,70 @@ All configuration is done in the `pom.xml` file. The `<localproperties>` tag is 
 
 - The `pom.xml` includes all needed parameters:
 
-```xml
-      <plugin>
-        <groupId>org.hotrodorm.hotrod</groupId>
-        <artifactId>hotrod-maven-plugin</artifactId>
-        <version>3.4.7</version>
-        <configuration>
-          <configfile>src/main/database/hotrod.xml</configfile>
-          <generator>MyBatis-Spring</generator>
-          <jdbcdriverclass></jdbcdriverclass>
-          <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
-          <jdbcurl>jdbc:postgresql://192.168.56.214:5432/mydatabase</jdbcurl>
-          <jdbcusername>myusername</jdbcusername>
-          <jdbcpassword>mypassword</jdbcpassword>
-          <jdbccatalog></jdbccatalog>
-          <jdbcschema>public</jdbcschema>
-          <facets></facets>
-          <display>list</display>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.2.5</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-```
+    ```xml
+        <plugin>
+            <groupId>org.hotrodorm.hotrod</groupId>
+            <artifactId>hotrod-maven-plugin</artifactId>
+            <version>3.4.7</version>
+            <configuration>
+            <configfile>src/main/database/hotrod.xml</configfile>
+            <generator>MyBatis-Spring</generator>
+            <jdbcdriverclass></jdbcdriverclass>
+            <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
+            <jdbcurl>jdbc:postgresql://192.168.56.214:5432/mydatabase</jdbcurl>
+            <jdbcusername>myusername</jdbcusername>
+            <jdbcpassword>mypassword</jdbcpassword>
+            <jdbccatalog></jdbccatalog>
+            <jdbcschema>public</jdbcschema>
+            <facets></facets>
+            <display>list</display>
+            </configuration>
+            <dependencies>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.2.5</version>
+            </dependency>
+            </dependencies>
+        </plugin>
+    ```
 
 All configuration is done in the properties file. Only the `<localproperties>` tag is included:
 
 - The `pom.xml` only defines the `<localproperties>` parameter. All parameter values are externalized:
 
-```xml
-      <plugin>
-        <groupId>org.hotrodorm.hotrod</groupId>
-        <artifactId>hotrod-maven-plugin</artifactId>
-        <version>3.4.7</version>
-        <configuration>
-          <localproperties>hotrod.properties</localproperties>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.2.5</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-```
+    ```xml
+        <plugin>
+            <groupId>org.hotrodorm.hotrod</groupId>
+            <artifactId>hotrod-maven-plugin</artifactId>
+            <version>3.4.7</version>
+            <configuration>
+            <localproperties>hotrod.properties</localproperties>
+            </configuration>
+            <dependencies>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.2.5</version>
+            </dependency>
+            </dependencies>
+        </plugin>
+    ```
 
 - The external properties file `hotrod.properties` includes:
 
-```properties
-configfile=./hotrod.xml
-generator=MyBatis-Spring
-jdbcdriverclass=org.postgresql.Driver
-jdbcurl=jdbc:postgresql://192.168.56.214:5432/mydatabase
-jdbcusername=myusername
-jdbcpassword=mypassword
-jdbccatalog=
-jdbcschema=public
-facets=
-display=
-```
+    ```properties
+    configfile=./hotrod.xml
+    generator=MyBatis-Spring
+    jdbcdriverclass=org.postgresql.Driver
+    jdbcurl=jdbc:postgresql://192.168.56.214:5432/mydatabase
+    jdbcusername=myusername
+    jdbcpassword=mypassword
+    jdbccatalog=
+    jdbcschema=public
+    facets=
+    display=
+    ```
 
 The configuration is fully (or partially) defined in the `pom.xml` and some values from the properties file supersedes the `pom.xml` file.
 
@@ -199,12 +199,12 @@ The configuration is fully (or partially) defined in the `pom.xml` and some valu
 
 - The external properties file `hotrod.properties` include some properties as well:
 
-```properties
+    ```properties
     jdbcurl=jdbc:postgresql://192.168.56.214:5432/mydatabase
     jdbcusername=myusername
     jdbcpassword=mypassword
     display=summary
-```
+    ```
 
 In this case the JDBC URL, username, and password are excluded from the `pom.xml` file. The `display` property is included in both; the value `sumamary`
 from the properties file will be used, since it supersedes the `pom.xml` file.
