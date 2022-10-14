@@ -445,5 +445,5 @@ When deploying to production this file should be placed along with an `applicati
 Run the *packaged* version of the application. Type:
 
 ```bash
-java -jar myapp-1.0.0-SNAPSHOT.jar
+java -jar target/myapp-1.0.0-SNAPSHOT.jar
 ```
