@@ -365,6 +365,8 @@ spring.datasource.username=myusername
 spring.datasource.password=mypassword
 ```
 
+**Note**: Change the values above according to your specific database.
+
 This file defines any number of properties used to tweak the application behavior. In the dev environment you will set them up and when
 deploying to production DevOps will create or modify this file.
 
