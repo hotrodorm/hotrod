@@ -230,7 +230,8 @@ Change the URL, username, password, and schema as needed to match your current d
 development environment. When running in the production environment HotRod will pick up the connection details from the `datasource` Spring bean, typically
 configured in the `application.properties` file of the application.
 
-**Note**: Most likely, this file won't be committed to the source code repository. Different developers may use their own local databases, so each one may use slightly different values in this file, that are not to be shared with other developers.
+**Note**: Also, in some project the developers do not commit the `hotrod.properties` in the repository, specially when each one of them uses a local, independent
+sandbox database that has a different URL or credentials. If they all use the same sandbox database, then this file can have the same values, and may be safely commited to the source code repository.
 
 #### Generate the Persistence Code
 
