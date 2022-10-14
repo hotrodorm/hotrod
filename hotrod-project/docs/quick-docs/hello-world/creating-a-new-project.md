@@ -252,7 +252,7 @@ At this point all the persistence code is ready to be used.
 
 ## Part 3 &mdash; Writing the Application and Running It
 
-### Write the Java Application
+### A Simple Spring Boot Application
 
 Let's write a simple application that perform two searches in the table we created before. Create the application 
 class `src/main/java/com/myapp/App.java` as:
@@ -400,12 +400,14 @@ and append the following properties to it:
 
 ```properties
 logging.level.com.myapp.daos.primitives.employee.selectByPK=DEBUG
-logging.level.com.myapp.daos.primitives.employee.selectByExample=DEBUG
+logging.level.org.hotrod.runtime.livesql.LiveSQLMapper=DEBUG
 ```
 
-These properties activate the SQL log for the `selectByPK()` and `selectByExample()` methods of the EmployeeDAO. A `DEBUG` level shows
+These properties activate the SQL log for the `selectByPK()` method of the EmployeeDAO and for all LiveSQL queries. A `DEBUG` level shows
 the SQL statement and the applied parameters, while a `TRACE` level will also include all the selected data; use the latter with caution
 since it can add a massive amount of logging to your log files.
+
+**Note**: while there are separated loggers for each CRUD method, there's a single logger for all LiveSQL queries.
 
 Let's run the application again. Type:
 
@@ -417,10 +419,13 @@ The Spring Boot application starts, connects to the database and run both querie
 
 ```log
 [ Starting example ]
-2022-10-14 11:34:12.816 DEBUG 14632 --- [           main] c.m.daos.primitives.employee.selectByPK  : ==>  Preparing: select id, name from employee where id = ?
-2022-10-14 11:34:12.827 DEBUG 14632 --- [           main] c.m.daos.primitives.employee.selectByPK  : ==> Parameters: 123(Integer)
-2022-10-14 11:34:12.839 DEBUG 14632 --- [           main] c.m.daos.primitives.employee.selectByPK  : <==      Total: 1
+2022-10-14 12:29:44.930 DEBUG 16766 --- [           main] c.m.daos.primitives.employee.selectByPK  : ==>  Preparing: select id, name from employee where id = ?
+2022-10-14 12:29:44.942 DEBUG 16766 --- [           main] c.m.daos.primitives.employee.selectByPK  : ==> Parameters: 123(Integer)
+2022-10-14 12:29:44.954 DEBUG 16766 --- [           main] c.m.daos.primitives.employee.selectByPK  : <==      Total: 1
 Employee #123 Name: Alice
+2022-10-14 12:29:44.969 DEBUG 16766 --- [           main] o.h.r.livesql.LiveSQLMapper.select       : ==>  Preparing: SELECT * FROM employee WHERE name like 'A%'
+2022-10-14 12:29:44.970 DEBUG 16766 --- [           main] o.h.r.livesql.LiveSQLMapper.select       : ==> Parameters: 
+2022-10-14 12:29:44.972 DEBUG 16766 --- [           main] o.h.r.livesql.LiveSQLMapper.select       : <==      Total: 2
 Employees with names that start with 'A':
 {name=Anne, id=45}
 {name=Alice, id=123}
