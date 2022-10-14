@@ -124,7 +124,6 @@ With all these additions the complete `pom.xml` file will look like:
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.2.5</version>
-            <type>jar</type>
           </dependency>
         </dependencies>
       </plugin>
