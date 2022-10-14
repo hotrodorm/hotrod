@@ -10,7 +10,7 @@ Finally, HotRod includes a Maven Arquetype that can create a full running Spring
 
 ## Maven Dependencies
 
-All HotRod modules can be found as dependencies in the Maven Central Repository at [https://search.maven.org/search?q=g:org.hotrodorm.hotrod](org.hotrodorm.hotrod).
+All HotRod modules can be found as dependencies in the Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
 A Spring or Spring Boot project needs to declare two main libraries and a third one for MyBatis support. The typical dependency declaration in a `pom.xml` file  takes the form:
 
@@ -36,11 +36,25 @@ A Spring or Spring Boot project needs to declare two main libraries and a third 
 
 ## Maven Plugin
 
-The Maven Plugin implements four Maven goals. Namely:
-- `gen` to generate persistence code.
-- ``
+The Maven Plugin implements four Maven goals.
 
-To use the Maven Plugin declare it in the `pom.xml` file under the section `<projects><build><plugins>`. In its simplest
+| Maven Goal | Description |
+|---|---|
+| `gen` | Generates persistence code |
+| `purge` | Drops any dangling temporary view that could have resulted from a previous HotRod crash |
+| `export-columns-txt` | Dumps all the details of columns of a database schema to a TXT file |
+| `export-columns-xlsx` | Dumps all the details of columns of a database schema to a XLSX file |
+
+Each command, its parameters, and extra configuration is described in [`gen`](gen-goal.md), [`purge`](purge-goal.md),
+[`export-columns-txt`](export-columns-txt-goal.md), and [`export-columns-xlsx`](export-columns-xlsx.md).
+
+The standard Maven way of executing a goal is with the form `<plugin-name>`:`goal-name`. For example, to run the `gen` goal you can type:
+
+```bash
+mvn hotrod:gen
+```
+
+To configure the Maven Plugin declare it in the `pom.xml` file under the section `<projects><build><plugins>`. In its simplest
 form the plugin can look like:
 
 ```xml
@@ -76,19 +90,21 @@ To configure the Maven Plugin we can set its parameters in two ways.
 First, we can add one tag per parameter inside the `<configuration>` tag. The example above includes the parameter `<localproperties>`
 explicitly defined. The full list of parameters is:
 
-| Parameter | Description |
-|---|---|
-| `localproperties` | Defines an external properties file that will be read to load these properties |
-| `configfile` | Specifies the HotRod Main configuration file location. This is the main configuration file that lays out all the details of the generation such as packages, folders, naming conventions, and converters are defined, as well as the full list tables and Nitro queries. |
-| `generator` | The generator to use. Currently only one generator is supported: `MyBatis-Spring`  |
-| `jdbcdriverclass` | The JDBC driver class name |
-| `jdbcurl` | The JDBC connection URL |
-| `jdbcusername` | The JDBC connection username |
-| `jdbcpassword` | The JDBC connection password |
-| `jdbccatalog` | The JDBC catalog of the schema (optional) |
-| `jdbcschema` | The JDBC schema name (optional) |
-| `facets` | Comma-separated list of facets to generate. Leave empty to activate them all |
-| `display` | The console display type. Valid values are `list` and `summary`. Defaults to `list`.  |
+| Parameter | Description | Goals |
+|---|---|---|
+| `localproperties` | Defines an external properties file that will be read to load these properties | All |
+| `configfile` | Specifies the HotRod Main configuration file location. This is the main configuration file that lays out all the details of the generation such as packages, folders, naming conventions, and converters are defined, as well as the full list tables and Nitro queries | All |
+| `generator` | The generator to use. Currently only one generator is supported: `MyBatis-Spring`  | `gen`, `purge` |
+| `jdbcdriverclass` | The JDBC driver class name | All |
+| `jdbcurl` | The JDBC connection URL | All |
+| `jdbcusername` | The JDBC connection username | All |
+| `jdbcpassword` | The JDBC connection password | All |
+| `jdbccatalog` | The default JDBC catalog to search for database objects (optional) | All |
+| `jdbcschema` | The default JDBC schema to search for database objects (optional) | All |
+| `facets` | Comma-separated list of facets to generate. Leave empty to activate them all | All |
+| `display` | The console display type. Valid values are `list` and `summary`. Defaults to `list`  | All |
+| `txtexportfile` | The TXT file to export all tables and column details | `export-columns-txt` |
+| `xlsxexportfile` | The XLSX file to export all tables and column details | `export-columns-xlsx` |
 
 The first parameter `<localproperties>` is an optional parameter that can be used to extract all the parameters from the `pom.xml` file into a separate
 file of our choosing. This can be handy if we want to avoid placing database credentials in the main `pom.xml` file. If omitted, parameters can be set up 
@@ -210,5 +226,5 @@ The configuration is fully (or partially) defined in the `pom.xml` and some valu
     display=summary
     ```
 
-In this case the JDBC URL, username, and password are excluded from the `pom.xml` file. The `display` property is included in both; the value `sumamary`
+In this case the JDBC URL, username, and password are excluded from the `pom.xml` file. The `display` property is included in both; the value `summary`
 from the properties file will be used, since it supersedes the `pom.xml` file.
