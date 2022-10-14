@@ -30,11 +30,15 @@ In this part we create the Maven project, we lay out its structure, we and add a
 
 ### Set Up a Maven Project
 
-Use your favorite tool to generate a blank Maven project or copy a basic pom.xml file from another project. Then:
-- Add the Spring Boot Starter dependency and the Spring Boot Plugin.
-- Add the JDBC driver dependency according to your specific database.
-- Add the HotRod, HotRod LiveSQL, and MyBatis Libraries. 
-- Add the HotRod Generator Plugin to it.
+If you are using a plain text editor (such as Notepad) you can create an empty folder and add the files as decribed in the steps below.
+
+Alternatively, you can use your favorite IDE to create a blank Maven project.
+
+The `pom.xml` will include:
+- The Spring Boot Starter dependency and the Spring Boot Plugin.
+- The JDBC driver dependency according to your specific database.
+- The HotRod, HotRod LiveSQL, and MyBatis Libraries. 
+- The HotRod Generator Plugin to it.
 
 With all these additions the complete `pom.xml` file will look like:
 
@@ -134,14 +138,14 @@ With all these additions the complete `pom.xml` file will look like:
 
 **Note**: Don't forget to change JDBC driver (in two places) according the database you are using.
 
-Create the Java source folders. In linux you can do:
+Create the empty source folders, if they are not yet created. In linux you can do:
 
 ```bash
 mkdir -p src/main/java
 mkdir -p src/main/resources
 ```
 
-Change the commands above accordingly for Windows or other OS as needed.
+Change the commands above accordingly for Windows or other OS as needed, or use your IDE to create them.
 
 Finally, run Maven once, using `mvn clean` to make sure the `pom.xml` file is correctly formed.
 
@@ -184,7 +188,7 @@ your choosing and with any name) and add:
 
   <generators>
     <mybatis-spring>
-      <daos package="com.myapp" 
+      <daos package="com.myapp.daos" 
         dao-prefix=""  dao-suffix="DAO" vo-prefix=""  vo-suffix="Impl" abstract-vo-prefix=""  abstract-vo-suffix="VO" 
         ndao-prefix="" ndao-suffix=""   nvo-prefix="" nvo-suffix=""  nabstract-vo-prefix="" nabstract-vo-suffix=""
       />
@@ -236,13 +240,12 @@ Now, let's use HotRod to generate the persistence code. Type:
 `mvn hotrod:gen`
 
 HotRod will connect to the database schema, will retrieve the table details, and will produce the code. It will create or update the following files:
-* `src/main/java/com/myapp/EmployeeImpl.java`
-* `src/main/java/com/myapp/primitives/EmployeeDAO.java`
-* `src/main/java/com/myapp/primitives/EmployeeVO.java`
+* `src/main/java/com/myapp/daos/EmployeeImpl.java`
+* `src/main/java/com/myapp/daos/primitives/EmployeeDAO.java`
+* `src/main/java/com/myapp/daos/primitives/EmployeeVO.java`
 * `src/main/resources/mappers/primitives-employee.xml`
 
-**Note**: Since the `EmployeeImpl.java` may contain custom code, it's never overwritten. The other files are always overwritten to adhere with the
-latest/current database structure.
+**Note**: Since the `EmployeeImpl.java` may contain custom code, it's created but never overwritten. The other files are always overwritten to keep them current with the latest database structure.
 
 At this point all the persistence code is ready to be used.
 
@@ -258,6 +261,7 @@ package com.myapp;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.mybatis.spring.annotation.MapperScan;
@@ -271,8 +275,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-import com.myapp.persistence.primitives.EmployeeDAO;
-import com.myapp.persistence.EmployeeVO;
+import com.myapp.daos.primitives.EmployeeDAO;
+import com.myapp.daos.primitives.EmployeeDAO.EmployeeTable;
+import com.myapp.daos.primitives.EmployeeVO;
+import com.myapp.daos.EmployeeImpl;
 
 @Configuration
 @ComponentScan(basePackageClasses = App.class)
@@ -280,7 +286,7 @@ import com.myapp.persistence.EmployeeVO;
 @MapperScan(basePackageClasses = LiveSQL.class)
 @SpringBootApplication
 public class App {
-  
+
   @Autowired
   private EmployeeDAO employeeDAO;
 
@@ -305,15 +311,21 @@ public class App {
     // Use CRUD to search for employee #123
 
     Integer id = 123;
-    EmployeeVO e = this.employeeDAO.selectByPK(id);
-    System.out.println("> Employee #" + id + " Name: " + e.getName());
+    EmployeeVO vo = this.employeeDAO.selectByPK(id);
+    System.out.println("Employee #" + id + " Name: " + vo.getName());
 
     // Use LiveSQL to search for employees whose name starts with 'A'
 
-    this.sql.
-  }
+    EmployeeTable e = EmployeeDAO.newTable();
 
-}
+    List<Map<String, Object>> l = sql.select().from(e).where(e.name.like("A%")).execute();
+
+    System.out.println("Employees with names that start with 'A':");
+    for (Map<String, Object> r: l) {
+      System.out.println(r);
+    }
+
+  }
 ```
 
 ### Run the Application
@@ -348,6 +360,9 @@ The Spring Boot application starts, connects to the database and run both querie
 
 ```log
 [ Starting example ]
-> Employee #123 Name: Alice
+Employee #123 Name: Alice
+Employees with names that start with 'A':
+{name=Anne, id=45}
+{name=Alice, id=123}
 [ Example complete ]
 ```
