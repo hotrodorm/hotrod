@@ -258,21 +258,7 @@ This section defines the specific JDBC driver to use. These values reference the
 - `jdbcdrivertype`: (Optional) The JDBC driver classifier. Defaults to `jar`.
 - `jdbcdriverclassname`: The JDBC driver's driver class name.
 
-The following table includes a sample of JDBC drivers available in Maven Central as of March 2022 that you can use as a
-baseline; update the version and/or artifactid as needed to get the latest version of each one:
-
-| Database   | jdbcdrivergroupid       | jdbcdriverartifactid | jdbcdriverversion | jdbcdriverclassname                          |
-| ---------- | ----------------------- | -------------------- | ----------------- | -------------------------------------------- | 
-| Oracle     | com.oracle.ojdbc        | ojdbc8               | 19.3.0.0          | oracle.jdbc.driver.OracleDriver              | 
-| DB2 LUW    | com.ibm.db2             | jcc                  | 11.5.7.0          | com.ibm.db2.jcc.DB2Driver                    | 
-| PostgreSQL | org.postgresql          | postgresql           | 42.3.3            | org.postgresql.Driver                        | 
-| SQL Server | com.microsoft.sqlserver | mssql-jdbc           | 10.2.0.jre8       | com.microsoft.sqlserver.jdbc.SQLServerDriver | 
-| MariaDB    | org.mariadb.jdbc        | mariadb-java-client  | 3.0.4             | org.mariadb.jdbc.Driver                      | 
-| MySQL      | mysql                   | mysql-connector-java | 8.0.28            | com.mysql.cj.jdbc.Driver                     | 
-| H2         | com.h2database          | h2                   | 2.1.210           | org.h2.Driver                                | 
-| HyperSQL   | org.hsqldb              | hsqldb               | 2.6.1             | org.hsqldb.jdbc.JDBCDriver                   | 
-| Derby      | org.apache.derby        | derby                | 10.15.2.0         | org.apache.derby.jdbc.ClientDriver           |       
-
+For a quick list of JDBC drivers available as a Maven dependency see [JDBC Drivers Examples](jdbc-drivers-examples.md).
 
 ### Sandbox Database Selection
 
@@ -288,21 +274,7 @@ It's a database schema for rapid development:
 - `jdbccatalog`: The JDBC catalog in the sandbox database. Leave blank if not supported.
 - `jdbcschema`: The JDBC schema in the sandbox database. Leave blank if not supported.
 
-Typically databases support a schema, a catalog, or both. The table shown below is a sample of databases and what each one supports:
-
-
-| Database          | Supports Catalog  | Supports Schema |  
-| ----------------  | ----------------  | --------------- | 
-| Oracle            | --                | Yes             | 
-| DB2               | --                | Yes             | 
-| PostgreSQL        | --                | Yes             | 
-| SQL Server        | Yes               | Yes             | 
-| MariaDB           | Yes               | --              | 
-| MySQL             | Yes               | --              | 
-| SAP ASE (Sybase)  | Yes               | Yes             | 
-| H2                | --                | Yes             | 
-| HyperSQL          | --                | Yes             | 
-| Apache Derby      | --                | Yes             | 
+Typically databases support a schema, a catalog, or both. For details see [JDBC Catalogs &amp; Schemas](jdbc-catalogs-and-schemas.md).
 
 
 
