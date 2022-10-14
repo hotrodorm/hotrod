@@ -45,8 +45,8 @@ The Maven Plugin implements four Maven goals.
 | `export-columns-txt` | Dumps all the details of columns of a database schema to a TXT file |
 | `export-columns-xlsx` | Dumps all the details of columns of a database schema to a XLSX file |
 
-Each command, its parameters, and extra configuration is described in [`gen`](gen-goal.md), [`purge`](purge-goal.md),
-[`export-columns-txt`](export-columns-txt-goal.md), and [`export-columns-xlsx`](export-columns-xlsx.md).
+Each command, its parameters, and extra configuration is described in [`gen`](goal-gen.md), [`purge`](goal-purge.md),
+[`export-columns-txt`](goal-export-columns-txt.md), and [`export-columns-xlsx`](goal-export-columns-xlsx.md).
 
 The standard Maven way of executing a goal is with the form `<plugin-name>`:`<goal-name>`. For example, to run the `gen` goal you can type:
 

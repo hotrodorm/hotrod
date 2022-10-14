@@ -1,4 +1,4 @@
-# TXT Column Metadata Export
+# Exporting Column Metadata to TXT file
 
 The database exposes a set of properties for each column. These properties can be
 used to assemble rules in the &lt;type-solver> tag that may help to greatly reduce the configuration effort.
