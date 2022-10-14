@@ -337,13 +337,13 @@ public class App {
 }
 ```
 
-Now, let's prepare the properties files. Spring properties are divided in two groups:
-- Embedded properties that will be included in the jar application.
-- External properties set up by DevOps when deploying the application in production.
+Now, let's prepare the properties files. Spring properties are divided in two groups (at least):
+- Embedded properties that will be included as part of the jar application to be deployed.
+- External properties set up by DevOps (as a separate file) when deploying the application in production or any environment.
 
 ### Prepare the Embedded Properties File
 
-Embeded properties define the default values for Spring, and they will be included in the jar file when building. 
+Embeded properties define the default values for Spring, and they will be included in the jar file when building it. 
 Create the file `src/main/resources/application.properties` as:
 
 ```properties
@@ -360,7 +360,7 @@ depends on the specifics of the project.
 External properties are meant for the DevOps team to tweak, since they will need to provide specific production details to the application.
 In particular, DevOps will need to set up the database connection details. Place here any other details that will need to be managed by DevOps.
 
-Create the file `application.properties` (same name as before but in the main dir) as:
+Create the file `application.properties` (same name as before but this time in the main dir) as:
 
 ```properties
 spring.datasource.driver-class-name=org.postgresql.Driver
