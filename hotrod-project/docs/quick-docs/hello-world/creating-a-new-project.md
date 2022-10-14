@@ -403,9 +403,9 @@ logging.level.com.myapp.daos.primitives.employee.selectByPK=DEBUG
 logging.level.org.hotrod.runtime.livesql.LiveSQLMapper=DEBUG
 ```
 
-These properties activate the SQL log for the `selectByPK()` method of the EmployeeDAO and for all LiveSQL queries. A `DEBUG` level shows
-the SQL statement and the applied parameters, while a `TRACE` level will also include all the selected data; use the latter with caution
-since it can add a massive amount of logging to your log files.
+The first property activates the SQL log for the `selectByPK()` method of the `EmployeeDAO`. The second property activates the SQL log for all LiveSQL
+queries. A `DEBUG` level shows the SQL statement and the applied parameters, while a `TRACE` level will also include all the selected data; use 
+the `TRACE` level with caution since it can add a massive amount of logging to your log files.
 
 **Note**: while there are separated loggers for each CRUD method, there's a single logger for all LiveSQL queries.
 
