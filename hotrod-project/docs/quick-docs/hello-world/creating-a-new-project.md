@@ -332,6 +332,8 @@ public class App {
     }
 
   }
+
+}
 ```
 
 Now, let's prepare the properties files. Spring properties are divided in two groups:
