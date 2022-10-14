@@ -402,7 +402,7 @@ logging.level.com.myapp.daos.primitives.employee.selectByExample=DEBUG
 ```
 
 These properties activate the SQL log for the `selectByPK()` and `selectByExample()` methods of the EmployeeDAO. A `DEBUG` level shows
-the SQL statement and the applied parameters, while a `TRACE` level will also include the returned rows returned; use the latter with caution
+the SQL statement and the applied parameters, while a `TRACE` level will also include all the selected data; use the latter with caution
 since it can add a massive amount of logging to your log files.
 
 Let's run the application again. Type:
