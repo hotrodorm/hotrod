@@ -250,7 +250,7 @@ HotRod will connect to the database schema, will retrieve the table details, and
 
 At this point all the persistence code is ready to be used.
 
-## Part 3 &mdash; Writing the Application and Running It
+## Part 3 &mdash; The Application
 
 ### A Simple Spring Boot Application
 
@@ -369,12 +369,7 @@ spring.datasource.password=mypassword
 
 **Note**: Change the values above according to your specific database.
 
-This file defines any number of properties used to tweak the application behavior. In the dev environment you will set them up and when
-deploying to production DevOps will create or modify this file.
-
-In this example the properties specify the database connection details.
-
-### Running the Application
+### Run the Application
 
 Now, let's run the application. Type:
 
