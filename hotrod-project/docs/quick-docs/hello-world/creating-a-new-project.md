@@ -433,10 +433,10 @@ Employees with names that start with 'A':
 ```
 
 This time we see:
-- The CRUD SQL statement `select id, name from employee where id = ?` with the applied parameter `123`.
-- The LiveSQL SQL statement `SELECT * FROM employee WHERE name like 'A%'`.
+- The CRUD SQL statement `select id, name from employee where id = ?`, the applied parameter `123`, and the number of returned rows `1`.
+- The LiveSQL SQL statement `SELECT * FROM employee WHERE name like 'A%'` and the number of returned rows `2`.
 
-DevOps can tweak the logging properties (or any other property) in production, if we need extra information for the actual queries being run.
+DevOps can tweak the logging properties (or any other property) in production, if we need extra information about the actual queries being run.
 
 ### Packaging the Application for Deployment into Production
 
