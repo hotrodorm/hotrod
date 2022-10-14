@@ -427,7 +427,7 @@ Employees with names that start with 'A':
 
 This time we see the SQL statement that was run (`select id, name from employee where id = ?`) and the applied parameters (`123`) to it.
 
-DevOps can tweak these properties in production, if you need extra information for specific queries.
+DevOps can tweak these properties in production, if we need extra information for specific queries.
 
 ### Packaging the Application for Deployment into Production
 
