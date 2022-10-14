@@ -432,7 +432,9 @@ Employees with names that start with 'A':
 [ Example complete ]
 ```
 
-This time we see the SQL statement that was run (`select id, name from employee where id = ?`) and the applied parameters (`123`) to it.
+This time we see:
+- The CRUD SQL statement `select id, name from employee where id = ?` with the applied parameter `123`.
+- The LiveSQL SQL statement `SELECT * FROM employee WHERE name like 'A%'`.
 
 DevOps can tweak these properties in production, if we need extra information for specific queries.
 
