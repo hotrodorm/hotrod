@@ -1,18 +1,14 @@
 # Creating a New Project from Scratch
 
-To start a Maven project that uses HotRod's persistence you'll need to set up a typical Maven 
-project for Spring or Spring Boot and then add the HotRod Generator Plugin and runtime libraries.
+This guide creates and runs a Spring Boot project with HotRod persistence.
 
-This example is for a Spring Boot project and will use a PostgreSQL database.
+You'll need:
+- Java
+- Maven
+- A text editor (Notepad will do), or a good IDE such as Eclipse.
+- A running database. This example uses PostgreSQL, but can be easily changed to another database.
 
-Then, you can create a table in a database and use the generator to generate the persistence code from it. With
-the persistence code available, you can write your application and use all HotRod's features to simplify reading
-and writing to the database.
-
-**Note**: The example below uses a PostgreSQL database to create a table and then to use it. Change the JDBC driver according to the specific
-database you are using.
-
-This example was fully tested with simple tools: the vi editor and Maven command line. It will also work with a full blown IDE such as Eclipse.
+This guide sets up the Maven project, creates a table in the database, generates the HotRod persistence from it, and then runs a simple application using it.
 
 After following all the steps below our working folder will include the following files:
 
