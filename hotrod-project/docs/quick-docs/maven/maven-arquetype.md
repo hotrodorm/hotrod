@@ -1,6 +1,17 @@
 # Maven Arquetype
 
-HotRod includes a Maven arquetype that creates a full blown project using a single command line.
+HotRod includes a Maven arquetype that creates a full blown project using a single command line. 
+
+The Maven arquetype automates the creation of a project that includes:
+- Full Maven structure.
+- Fully configured HotRod for the database of your choice.
+- Configurable versions of HotRod and other libraries.
+- Database populated by Debbie (optional).
+- Database monitored by Sentinel (optional).
+- A REST service.
+- OpenAPI generation in JSON format for an API Gateway.
+- OpenAPI generation in YAML format for an API Gateway.
+- Runnable basic application with example code.
 
 ### Table of Contents
 

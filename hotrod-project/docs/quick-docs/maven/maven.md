@@ -59,19 +59,19 @@ form the plugin can look like:
 
 ```xml
 <plugin>
-<groupId>org.hotrodorm.hotrod</groupId>
-<artifactId>hotrod-maven-plugin</artifactId>
-<version>3.4.7</version>
-<configuration>
-  <localproperties>hotrod.properties</localproperties>
-</configuration>
-<dependencies>
-  <dependency>
-  <groupId>org.postgresql</groupId>
-  <artifactId>postgresql</artifactId>
-  <version>42.2.5</version>
-  </dependency>
-</dependencies>
+  <groupId>org.hotrodorm.hotrod</groupId>
+  <artifactId>hotrod-maven-plugin</artifactId>
+  <version>3.4.7</version>
+  <configuration>
+    <localproperties>hotrod.properties</localproperties>
+  </configuration>
+  <dependencies>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.2.5</version>
+    </dependency>
+  </dependencies>
 </plugin>
 ```
 
@@ -125,24 +125,24 @@ All configuration is done in the `pom.xml` file. The `<localproperties>` tag is 
       <artifactId>hotrod-maven-plugin</artifactId>
       <version>3.4.7</version>
       <configuration>
-      <configfile>src/main/database/hotrod.xml</configfile>
-      <generator>MyBatis-Spring</generator>
-      <jdbcdriverclass></jdbcdriverclass>
-      <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
-      <jdbcurl>jdbc:postgresql://192.168.56.214:5432/mydatabase</jdbcurl>
-      <jdbcusername>myusername</jdbcusername>
-      <jdbcpassword>mypassword</jdbcpassword>
-      <jdbccatalog></jdbccatalog>
-      <jdbcschema>public</jdbcschema>
-      <facets></facets>
-      <display>list</display>
+        <configfile>src/main/database/hotrod.xml</configfile>
+        <generator>MyBatis-Spring</generator>
+        <jdbcdriverclass></jdbcdriverclass>
+        <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
+        <jdbcurl>jdbc:postgresql://192.168.56.214:5432/mydatabase</jdbcurl>
+        <jdbcusername>myusername</jdbcusername>
+        <jdbcpassword>mypassword</jdbcpassword>
+        <jdbccatalog></jdbccatalog>
+        <jdbcschema>public</jdbcschema>
+        <facets></facets>
+        <display>list</display>
       </configuration>
       <dependencies>
-      <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>42.2.5</version>
-      </dependency>
+        <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>42.2.5</version>
+        </dependency>
       </dependencies>
     </plugin>
     ```
@@ -159,14 +159,14 @@ All configuration is done in the properties file. Only the `<localproperties>` t
       <artifactId>hotrod-maven-plugin</artifactId>
       <version>3.4.7</version>
       <configuration>
-      <localproperties>hotrod.properties</localproperties>
+        <localproperties>hotrod.properties</localproperties>
       </configuration>
       <dependencies>
-      <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>42.2.5</version>
-      </dependency>
+        <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>42.2.5</version>
+        </dependency>
       </dependencies>
     </plugin>
     ```
@@ -198,21 +198,21 @@ The configuration is fully (or partially) defined in the `pom.xml` and some valu
       <artifactId>hotrod-maven-plugin</artifactId>
       <version>3.4.7</version>
       <configuration>
-      <configfile>src/main/database/hotrod.xml</configfile>
-      <generator>MyBatis-Spring</generator>
-      <jdbcdriverclass></jdbcdriverclass>
-      <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
-      <jdbccatalog></jdbccatalog>
-      <jdbcschema>public</jdbcschema>
-      <facets></facets>
-      <display>list</display>
+        <configfile>src/main/database/hotrod.xml</configfile>
+        <generator>MyBatis-Spring</generator>
+        <jdbcdriverclass></jdbcdriverclass>
+        <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
+        <jdbccatalog></jdbccatalog>
+        <jdbcschema>public</jdbcschema>
+        <facets></facets>
+        <display>list</display>
       </configuration>
       <dependencies>
-      <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>42.2.5</version>
-      </dependency>
+        <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>42.2.5</version>
+        </dependency>
       </dependencies>
     </plugin>
     ```
@@ -228,3 +228,29 @@ The configuration is fully (or partially) defined in the `pom.xml` and some valu
 
 In this case the JDBC URL, username, and password are excluded from the `pom.xml` file. The `display` property is included in both; the value `summary`
 from the properties file will be used, since it supersedes the `pom.xml` file.
+
+## Maven Arquetype
+
+The HotRod Maven Arquetype is a simple way of automating a Maven Spring Boot project creation.
+
+A single well-crafted command line can produce a fully running project with several features that includes:
+- Full Maven structure.
+- Fully configured HotRod for the database of your choice.
+- Configurable versions of HotRod and other libraries.
+- Database populated by Debbie (optional).
+- Database monitored by Sentinel (optional).
+- A REST service.
+- OpenAPI generation in JSON format for an API Gateway.
+- OpenAPI generation in YAML format for an API Gateway.
+- Runnable basic application with example code.
+
+For details see  [Maven Arquetype](maven-arquetype.md).
+
+
+
+
+
+
+
+
+
