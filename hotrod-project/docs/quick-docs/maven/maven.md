@@ -88,7 +88,7 @@ explicitly defined. The full list of parameters is:
 | `jdbccatalog` | The JDBC catalog of the schema (optional) |
 | `jdbcschema` | The JDBC schema name (optional) |
 | `facets` | Comma-separated list of facets to generate. Leave empty to activate them all |
-| `display | The console display type. Valid values are `list` and `summary`. Defaults to `list`.  |
+| `display` | The console display type. Valid values are `list` and `summary`. Defaults to `list`.  |
 
 The first parameter `<localproperties>` is an optional parameter that can be used to extract all the parameters from the `pom.xml` file into a separate
 file of our choosing. This can be handy if we want to avoid placing database credentials in the main `pom.xml` file. If omitted, parameters can be set up 
@@ -97,7 +97,7 @@ in the `pom.xml`.
 Parameters in the external local file defined in the `<localproperties>` tag can coexist with parameters directly included in the `pom.xml` file. In case 
 a parameter is defined in both places, the one in the properties file supersedes the one in the `pom.xml`.
 
-#### Examples
+#### Configuration Example #1
 
 All configuration is done in the `pom.xml` file. The `<localproperties>` tag is omitted:
 
@@ -130,6 +130,8 @@ All configuration is done in the `pom.xml` file. The `<localproperties>` tag is 
             </dependencies>
         </plugin>
     ```
+
+#### Configuration Example #2
 
 All configuration is done in the properties file. Only the `<localproperties>` tag is included:
 
@@ -167,6 +169,8 @@ All configuration is done in the properties file. Only the `<localproperties>` t
     facets=
     display=
     ```
+
+#### Configuration Example #3
 
 The configuration is fully (or partially) defined in the `pom.xml` and some values from the properties file supersedes the `pom.xml` file.
 
