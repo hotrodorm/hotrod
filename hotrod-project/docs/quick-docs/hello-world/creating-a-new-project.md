@@ -320,7 +320,8 @@ public class App {
 
     EmployeeTable e = EmployeeDAO.newTable();
 
-    List<Map<String, Object>> l = sql.select()
+    List<Map<String, Object>> l = this.sql
+      .select()
       .from(e)
       .where(e.name.like("A%"))
       .execute();
