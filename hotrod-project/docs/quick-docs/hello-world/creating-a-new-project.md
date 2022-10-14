@@ -440,7 +440,7 @@ DevOps can tweak the logging properties (or any other property) in production, i
 
 ### Packaging the Application for Deployment into Production
 
-Now, that the application is tested we can package it for a production deployment. Run:
+Now that the application is tested we can package it for a production deployment. Run:
 
 ```bash
 mvn clean package
@@ -449,10 +449,12 @@ mvn clean package
 Maven builds the applications and produces a single jar file at `target/myapp-1.0.0-SNAPSHOT.jar`. The name is assembled
 with the values in the `<artifactId>` and `<version>` tags. The jar file contains the entire application.
 
-When deploying to production this file should be placed along with an `application.properties` described above that the DevOpswill set up.
+When deploying to production this file should be placed along with an `application.properties` described above that the DevOps will set up.
 
 Run the *packaged* version of the application. Type:
 
 ```bash
 java -jar target/myapp-1.0.0-SNAPSHOT.jar
 ```
+
+You will see same execution details in the log file.
