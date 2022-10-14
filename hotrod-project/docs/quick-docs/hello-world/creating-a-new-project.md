@@ -3,14 +3,15 @@
 This guide creates and runs a Spring Boot project with HotRod persistence.
 
 You'll need:
-- Java
-- Maven
+- Java.
+- Maven.
 - A text editor (Notepad will do), or a good IDE such as Eclipse.
 - A running database. This example uses PostgreSQL, but can be easily changed to another database.
 
 This guide sets up the Maven project, creates a table in the database, generates the HotRod persistence from it, and then runs a simple application using it.
 
-After following all the steps below our working folder will include the following files:
+For reference, after following all the steps below our working folder will include the files shown below. This guide will create them in the main folder,
+but you can change the location of them to your preferred locations:
 
 ```bash
 application.properties
@@ -357,12 +358,11 @@ In particular, DevOps will need to set up the database connection details. Place
 
 Create the file `application.properties` (same name as before but in the main dir) as:
 
-```
+```properties
 spring.datasource.driver-class-name=org.postgresql.Driver
-spring.datasource.url=jdbc:postgresql://192.168.56.214:5432/hotrod
-spring.datasource.username=user1
-spring.datasource.password=pass1
-
+spring.datasource.url=jdbc:postgresql://192.168.56.214:5432/mydatabase
+spring.datasource.username=myusername
+spring.datasource.password=mypassword
 ```
 
 This file defines any number of properties used to tweak the application behavior. In the dev environment you will set them up and when
