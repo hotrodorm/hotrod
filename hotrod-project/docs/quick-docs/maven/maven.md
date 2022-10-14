@@ -15,23 +15,23 @@ All HotRod modules can be found as dependencies in the Maven Central Repository 
 A Spring or Spring Boot project needs to declare two main libraries and a third one for MyBatis support. The typical dependency declaration in a `pom.xml` file  takes the form:
 
 ```xml
-    <dependency>
-      <groupId>org.hotrodorm.hotrod</groupId>
-      <artifactId>hotrod</artifactId>
-      <version>3.4.7</version>
-    </dependency>
+<dependency>
+    <groupId>org.hotrodorm.hotrod</groupId>
+    <artifactId>hotrod</artifactId>
+    <version>3.4.7</version>
+</dependency>
 
-    <dependency>
-      <groupId>org.hotrodorm.hotrod</groupId>
-      <artifactId>hotrod-livesql</artifactId>
-      <version>3.4.7</version>
-    </dependency>
+<dependency>
+    <groupId>org.hotrodorm.hotrod</groupId>
+    <artifactId>hotrod-livesql</artifactId>
+    <version>3.4.7</version>
+</dependency>
 
-    <dependency>
-      <groupId>org.mybatis.spring.boot</groupId>
-      <artifactId>mybatis-spring-boot-starter</artifactId>
-      <version>2.1.3</version>
-    </dependency>  
+<dependency>
+    <groupId>org.mybatis.spring.boot</groupId>
+    <artifactId>mybatis-spring-boot-starter</artifactId>
+    <version>2.1.3</version>
+</dependency>  
 ```
 
 ## Maven Plugin
@@ -48,7 +48,7 @@ The Maven Plugin implements four Maven goals.
 Each command, its parameters, and extra configuration is described in [`gen`](gen-goal.md), [`purge`](purge-goal.md),
 [`export-columns-txt`](export-columns-txt-goal.md), and [`export-columns-xlsx`](export-columns-xlsx.md).
 
-The standard Maven way of executing a goal is with the form `<plugin-name>`:`goal-name`. For example, to run the `gen` goal you can type:
+The standard Maven way of executing a goal is with the form `<plugin-name>`:`<goal-name>`. For example, to run the `gen` goal you can type:
 
 ```bash
 mvn hotrod:gen
@@ -58,21 +58,21 @@ To configure the Maven Plugin declare it in the `pom.xml` file under the section
 form the plugin can look like:
 
 ```xml
-      <plugin>
-        <groupId>org.hotrodorm.hotrod</groupId>
-        <artifactId>hotrod-maven-plugin</artifactId>
-        <version>3.4.7</version>
-        <configuration>
-          <localproperties>hotrod.properties</localproperties>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.2.5</version>
-          </dependency>
-        </dependencies>
-      </plugin>
+    <plugin>
+    <groupId>org.hotrodorm.hotrod</groupId>
+    <artifactId>hotrod-maven-plugin</artifactId>
+    <version>3.4.7</version>
+    <configuration>
+        <localproperties>hotrod.properties</localproperties>
+    </configuration>
+    <dependencies>
+        <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.2.5</version>
+        </dependency>
+    </dependencies>
+    </plugin>
 ```
 
 In this declaration the tags `<groupId>`, `<artifactId>`, and `<version>` define the HotRod Maven Plugin and its specific version.
@@ -120,31 +120,31 @@ All configuration is done in the `pom.xml` file. The `<localproperties>` tag is 
 - The `pom.xml` includes all needed parameters:
 
     ```xml
-        <plugin>
-            <groupId>org.hotrodorm.hotrod</groupId>
-            <artifactId>hotrod-maven-plugin</artifactId>
-            <version>3.4.7</version>
-            <configuration>
-            <configfile>src/main/database/hotrod.xml</configfile>
-            <generator>MyBatis-Spring</generator>
-            <jdbcdriverclass></jdbcdriverclass>
-            <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
-            <jdbcurl>jdbc:postgresql://192.168.56.214:5432/mydatabase</jdbcurl>
-            <jdbcusername>myusername</jdbcusername>
-            <jdbcpassword>mypassword</jdbcpassword>
-            <jdbccatalog></jdbccatalog>
-            <jdbcschema>public</jdbcschema>
-            <facets></facets>
-            <display>list</display>
-            </configuration>
-            <dependencies>
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>42.2.5</version>
-            </dependency>
-            </dependencies>
-        </plugin>
+    <plugin>
+        <groupId>org.hotrodorm.hotrod</groupId>
+        <artifactId>hotrod-maven-plugin</artifactId>
+        <version>3.4.7</version>
+        <configuration>
+        <configfile>src/main/database/hotrod.xml</configfile>
+        <generator>MyBatis-Spring</generator>
+        <jdbcdriverclass></jdbcdriverclass>
+        <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
+        <jdbcurl>jdbc:postgresql://192.168.56.214:5432/mydatabase</jdbcurl>
+        <jdbcusername>myusername</jdbcusername>
+        <jdbcpassword>mypassword</jdbcpassword>
+        <jdbccatalog></jdbccatalog>
+        <jdbcschema>public</jdbcschema>
+        <facets></facets>
+        <display>list</display>
+        </configuration>
+        <dependencies>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.5</version>
+        </dependency>
+        </dependencies>
+    </plugin>
     ```
 
 #### Configuration Example #2
@@ -154,21 +154,21 @@ All configuration is done in the properties file. Only the `<localproperties>` t
 - The `pom.xml` only defines the `<localproperties>` parameter. All parameter values are externalized:
 
     ```xml
-        <plugin>
-            <groupId>org.hotrodorm.hotrod</groupId>
-            <artifactId>hotrod-maven-plugin</artifactId>
-            <version>3.4.7</version>
-            <configuration>
-            <localproperties>hotrod.properties</localproperties>
-            </configuration>
-            <dependencies>
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>42.2.5</version>
-            </dependency>
-            </dependencies>
-        </plugin>
+    <plugin>
+        <groupId>org.hotrodorm.hotrod</groupId>
+        <artifactId>hotrod-maven-plugin</artifactId>
+        <version>3.4.7</version>
+        <configuration>
+        <localproperties>hotrod.properties</localproperties>
+        </configuration>
+        <dependencies>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.5</version>
+        </dependency>
+        </dependencies>
+    </plugin>
     ```
 
 - The external properties file `hotrod.properties` includes:
@@ -193,28 +193,28 @@ The configuration is fully (or partially) defined in the `pom.xml` and some valu
 - The `pom.xml` include some parameters:
 
     ```xml
-        <plugin>
-            <groupId>org.hotrodorm.hotrod</groupId>
-            <artifactId>hotrod-maven-plugin</artifactId>
-            <version>3.4.7</version>
-            <configuration>
-            <configfile>src/main/database/hotrod.xml</configfile>
-            <generator>MyBatis-Spring</generator>
-            <jdbcdriverclass></jdbcdriverclass>
-            <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
-            <jdbccatalog></jdbccatalog>
-            <jdbcschema>public</jdbcschema>
-            <facets></facets>
-            <display>list</display>
-            </configuration>
-            <dependencies>
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>42.2.5</version>
-            </dependency>
-            </dependencies>
-        </plugin>
+    <plugin>
+        <groupId>org.hotrodorm.hotrod</groupId>
+        <artifactId>hotrod-maven-plugin</artifactId>
+        <version>3.4.7</version>
+        <configuration>
+        <configfile>src/main/database/hotrod.xml</configfile>
+        <generator>MyBatis-Spring</generator>
+        <jdbcdriverclass></jdbcdriverclass>
+        <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
+        <jdbccatalog></jdbccatalog>
+        <jdbcschema>public</jdbcschema>
+        <facets></facets>
+        <display>list</display>
+        </configuration>
+        <dependencies>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.5</version>
+        </dependency>
+        </dependencies>
+    </plugin>
     ```
 
 - The external properties file `hotrod.properties` include some properties as well:
