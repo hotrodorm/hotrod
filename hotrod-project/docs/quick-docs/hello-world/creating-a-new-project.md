@@ -419,13 +419,13 @@ The Spring Boot application starts, connects to the database and run both querie
 
 ```log
 [ Starting example ]
-2022-10-14 12:29:44.930 DEBUG 16766 --- [           main] c.m.daos.primitives.employee.selectByPK  : ==>  Preparing: select id, name from employee where id = ?
-2022-10-14 12:29:44.942 DEBUG 16766 --- [           main] c.m.daos.primitives.employee.selectByPK  : ==> Parameters: 123(Integer)
-2022-10-14 12:29:44.954 DEBUG 16766 --- [           main] c.m.daos.primitives.employee.selectByPK  : <==      Total: 1
+DEBUG --- [main] c.m.daos.primitives.employee.selectByPK  : ==>  Preparing: select id, name from employee where id = ?
+DEBUG --- [main] c.m.daos.primitives.employee.selectByPK  : ==> Parameters: 123(Integer)
+DEBUG --- [main] c.m.daos.primitives.employee.selectByPK  : <==      Total: 1
 Employee #123 Name: Alice
-2022-10-14 12:29:44.969 DEBUG 16766 --- [           main] o.h.r.livesql.LiveSQLMapper.select       : ==>  Preparing: SELECT * FROM employee WHERE name like 'A%'
-2022-10-14 12:29:44.970 DEBUG 16766 --- [           main] o.h.r.livesql.LiveSQLMapper.select       : ==> Parameters: 
-2022-10-14 12:29:44.972 DEBUG 16766 --- [           main] o.h.r.livesql.LiveSQLMapper.select       : <==      Total: 2
+DEBUG --- [main] o.h.r.livesql.LiveSQLMapper.select       : ==>  Preparing: SELECT * FROM employee WHERE name like 'A%'
+DEBUG --- [main] o.h.r.livesql.LiveSQLMapper.select       : ==> Parameters: 
+DEBUG --- [main] o.h.r.livesql.LiveSQLMapper.select       : <==      Total: 2
 Employees with names that start with 'A':
 {name=Anne, id=45}
 {name=Alice, id=123}
