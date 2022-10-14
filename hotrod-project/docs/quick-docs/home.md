@@ -9,8 +9,9 @@ This guide includes:
     - [Nitro](./nitro/nitro.md)
     - [LiveSQL](module-livesql.md)
     - [Torcs](module-torcs.md)
-- Quick Tips.
+- Quick Tips:
     - [Setting Up A Maven Project Manually](./hello-world/creating-a-new-project.md).
     - [Creating a Running Project with 1 Command](maven/maven-arquetype.md).
     - [Type Solver](config/type-solver.md).
-    - [Custom LiveSQL Functions](livesql/custom-database-functions.md).
+    - [Name Solver](config/name-solver.md).
+    - [Extending LiveSQL Functions](livesql/custom-database-functions.md).
