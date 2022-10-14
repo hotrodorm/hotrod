@@ -17,7 +17,8 @@ This example was fully tested with simple tools: the vi editor and Maven command
 After following all the steps below our working folder will include the following files:
 
 ```bash
-dev.properties
+application.properties
+hotrod.properties
 hotrod.xml
 pom.xml
 src/main/java
@@ -117,7 +118,7 @@ With all these additions the complete `pom.xml` file will look like:
         <artifactId>hotrod-maven-plugin</artifactId>
         <version>${hotrod.version}</version>
         <configuration>
-          <localproperties>dev.properties</localproperties>
+          <localproperties>hotrod.properties</localproperties>
         </configuration>
         <dependencies>
           <dependency>
@@ -211,7 +212,7 @@ and VOs prefixes and suffixes as needed. We can also change the mappers director
 
 #### The Local Properties File
 
-Now, let's create the configuration file `dev.properties` (referenced by the `pom.xml`) with the database connection details. Create this file with the following content:
+Now, let's create the configuration file `hotrod.properties` (referenced by the `pom.xml`) so the HotRod Generator can connect to the sandbox database. Create this file with the following content:
 
 ```properties
 configfile=./hotrod.xml
@@ -328,27 +329,45 @@ public class App {
   }
 ```
 
-### Run the Application
+Now, let's prepare the properties files. Spring properties are divided in two groups:
+- Embedded properties that will be included in the jar application.
+- External properties set up by DevOps when deploying the application in production.
 
-Specify the database connection details in the Spring Boot configuration. The connection details included here correspond to the runtime settings.
-They are not to used generate code, but to run the application. In short, this is the configuration that the application will use when running in production (or any environment).
+### Prepare the Embedded Properties File
 
-Create the `src/main/resources/application.properties` file as:
+Embeded properties define the default values for Spring, and they will be included in the jar file when building. 
+Create the file `src/main/resources/application.properties` as:
 
 ```properties
-# 1. Specify search path for the XML mappers.
 mybatis.mapper-locations=mappers/**/*.xml
-
-# 2. Specify the database connection properties
-spring.datasource.driver-class-name=org.postgresql.Driver
-spring.datasource.url=jdbc:postgresql://192.168.56.214:5432/mydatabase
-spring.datasource.username=myusername
-spring.datasource.password=mypassword
-
-# 3. Specify the logging levels (enable for debugging purposes)
 logging.level.root=INFO
-#logging.level.sample.mybatis.mapper=DEBUG
 ```
+
+The first property tells Spring about the location of the mappers. Change accordingly if you change the `hotrod.xml` configuration file.
+The second property sets up the default level of logging. There are a myriad of other Spring properties that can be set up here, and that 
+depends on the specifics of the project.
+
+### Prepare the External Properties File
+
+External properties are meant for the DevOps team to tweak, since they will need to provide specific production details to the application.
+In particular, DevOps will need to set up the database connection details. Place here any other details that will need to be managed by DevOps.
+
+Create the file `application.properties` (same name as before but in the main dir) as:
+
+```
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.url=jdbc:postgresql://192.168.56.214:5432/hotrod
+spring.datasource.username=user1
+spring.datasource.password=pass1
+
+```
+
+This file defines any number of properties used to tweak the application behavior. In the dev environment you will set them up and when
+deploying to production DevOps will create or modify this file.
+
+In this example the properties specify the database connection details.
+
+### Running the Application
 
 Now, let's run the application. Type:
 
@@ -366,6 +385,44 @@ Employees with names that start with 'A':
 {name=Alice, id=123}
 [ Example complete ]
 ```
+
+### Run the Application with SQL Debugging Active
+
+If you want to see the exact SQL queries that are run in the database you can activate the logging for it. Edit the `application.properties` file 
+and append the following properties to it:
+
+```properties
+logging.level.com.myapp.daos.primitives.employee.selectByPK=DEBUG
+logging.level.com.myapp.daos.primitives.employee.selectByExample=DEBUG
+```
+
+These properties activate the SQL log for the `selectByPK()` and `selectByExample()` methods of the EmployeeDAO. A `DEBUG` level shows
+the SQL statement and the applied parameters, while a `TRACE` level will also include the returned rows returned; use the latter with caution
+since it can add a massive amount of logging to your log files.
+
+Let's run the application again. Type:
+
+```bash
+mvn spring-boot:run
+```
+
+The Spring Boot application starts, connects to the database and run both queries. We see the result shown below:
+
+```log
+[ Starting example ]
+2022-10-14 11:34:12.816 DEBUG 14632 --- [           main] c.m.daos.primitives.employee.selectByPK  : ==>  Preparing: select id, name from employee where id = ?
+2022-10-14 11:34:12.827 DEBUG 14632 --- [           main] c.m.daos.primitives.employee.selectByPK  : ==> Parameters: 123(Integer)
+2022-10-14 11:34:12.839 DEBUG 14632 --- [           main] c.m.daos.primitives.employee.selectByPK  : <==      Total: 1
+Employee #123 Name: Alice
+Employees with names that start with 'A':
+{name=Anne, id=45}
+{name=Alice, id=123}
+[ Example complete ]
+```
+
+This time we see the SQL statement that was run (`select id, name from employee where id = ?`) and the applied parameters (`123`) to it.
+
+DevOps can tweak these properties in production, if you need extra information for specific queries.
 
 ### Packaging the Application for Deployment into Production
 
@@ -388,7 +445,7 @@ spring.datasource.username=myusername
 spring.datasource.password=mypassword
 ```
 
-To run this *pacakged* version of the application run:
+To run this *packaged* version of the application run:
 
 ```bash
 java -jar myapp-1.0.0-SNAPSHOT.jar
