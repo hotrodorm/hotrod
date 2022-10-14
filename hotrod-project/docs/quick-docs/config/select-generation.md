@@ -2,7 +2,7 @@
 
 The `<select-generation>` tag allows the developer to choose a SQL processor and to configure it. 
 
-**Note**: Use the newer `result-set` processor that is currently supported by virtually all databases. This processor is scheduled to be the default processor in version 4.
+**Note**: Use the newer `result-set` processor that is currently supported by virtually all databases. This processor will be the default processor in the next  version of HotRod.
 
 The `<select-generation>` tag. This tag is optional and defaults to the old processor. It must be included in the `<mybatis-spring>` tag, as in:
 
