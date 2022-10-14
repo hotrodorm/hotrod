@@ -10,8 +10,8 @@ You'll need:
 
 This guide sets up the Maven project, creates a table in the database, generates the HotRod persistence from it, and then runs a simple application using it.
 
-For reference, after following all the steps below our working folder will include the files shown below. This guide will create them in the main folder,
-but you can change the location of them to your preferred locations:
+For reference, after following all the steps below our working folder will include the files shown below. for simplicity, this guide creates them in 
+the main folder of the project, but you can later change their locations to organize the project in a better way:
 
 ```bash
 application.properties
