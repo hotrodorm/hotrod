@@ -7,8 +7,8 @@ The CRUD and LiveSQL modules provide quick out-of-the-box persistence that can b
 HotRod includes:
 - [HotRod CRUD](module-crud.md). Quick and simple persistence to start prototyping in no time.
 - [HotRod LiveSQL](module-livesql.md). Flexible querying from Java.
-- [HotRod Nitro](./nitro/nitro.md). Add high performance and complex queries.
-- [HotRod Torcs](module-torcs.md). Find slow queries at run time and analyse them.
+- [HotRod Nitro](./nitro/nitro.md). Advanced queries with high performance.
+- [HotRod Torcs](module-torcs.md). Find slow queries at run time and analyze them.
 
 Reference:
 - [Maven Integration](./maven/maven.md).
