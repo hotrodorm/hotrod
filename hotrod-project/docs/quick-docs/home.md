@@ -5,8 +5,8 @@ This guide includes:
 - [Maven Integration](./maven/maven.md).
 - [HotRod Configuration File Reference](./config/configuration-file-structure.md).
 - HotRod includes the following modules:
-    - [HotRod CRUD](module-crud.md). For out-of-the-box quick prototyping.
-    - [HotRod Nitro](./nitro/nitro.md). High performance and complex queries.
+    - [HotRod CRUD](module-crud.md). Quick and simple persistence to start prototyping in no time.
+    - [HotRod Nitro](./nitro/nitro.md). Add high performance and complex queries.
     - [HotRod LiveSQL](module-livesql.md). Flexible querying from Java.
     - [HotRod Torcs](module-torcs.md). Find slow queries at run time and analyse them.
 - Quick Tips:
