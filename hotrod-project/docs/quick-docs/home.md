@@ -20,6 +20,6 @@ Reference:
 How to Guides:
 - [Starting A Maven Project from Scratch](./hello-world/creating-a-new-project.md).
 - [Creating a Running Project in One Command](maven/maven-arquetype.md).
-- [Flexible Type Solving](config/type-solver.md).
-- [Smart Naming of Database Objects](config/name-solver.md).
+- [Translating Database Types](config/type-solver.md).
+- [Translating Database Names](config/name-solver.md).
 - [Extending LiveSQL](livesql/custom-database-functions.md).
