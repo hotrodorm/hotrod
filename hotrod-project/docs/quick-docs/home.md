@@ -16,8 +16,8 @@ Reference:
 - [Database Support]().
 
 How to Guides:
-- [Setting Up A Maven Project Manually](./hello-world/creating-a-new-project.md).
-- [Creating a Running Project with 1 Command](maven/maven-arquetype.md).
-- [Type Solver](config/type-solver.md).
-- [Name Solver](config/name-solver.md).
-- [Extending LiveSQL Functions](livesql/custom-database-functions.md).
+- [Starting A Maven Project from Scratch](./hello-world/creating-a-new-project.md).
+- [Creating a Running Project in One Command](maven/maven-arquetype.md).
+- [Flexible Type Solving](config/type-solver.md).
+- [Smart Naming of Database Objects](config/name-solver.md).
+- [Extending LiveSQL](livesql/custom-database-functions.md).
