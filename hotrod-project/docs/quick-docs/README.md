@@ -1,0 +1,34 @@
+# HotRod
+
+HotRod is an ORM for Spring and Spring Boot focused on high performance database persistence for relational databases.
+
+The CRUD and LiveSQL modules provide quick out-of-the-box persistence that can be used in minutes. The Nitro and Torcs modules tackle complex or high performance queries with some extra configuration.
+
+HotRod follows the *Database First* approach. It assumes the database already exists with all tables ready. HotRod inspects the database
+and produces all classes along with a persistence layer in no time. Later, when the database experiences changes HotRod
+retrieves and applies these changes to the persistence layer seamlessly.
+
+Overview:
+- [The Basics]().
+- [Features](features.md).
+- [Supported Databases](config/supported-databases.md).
+- [Retrieving and Applying Database Changes]().
+
+HotRod includes four modules:
+- [HotRod CRUD](crud/crud.md). Quick and simple persistence to start prototyping immediately.
+- [HotRod LiveSQL](livesql/livesql.md). Flexible querying from Java.
+- [HotRod Nitro](nitro/nitro.md). Advanced queries with high performance.
+- [HotRod Torcs](torcs/torcs.md). Detects slow queries at run time and analyze them.
+
+Reference:
+- [Configuration File Reference](config/configuration-file-structure.md).
+- [Maven Integration](maven/maven.md).
+- [Ant Integration](ant/ant.md).
+- [Default Data Types](config/default-data-types.md).
+
+Quick Guides:
+- [Starting a Maven Project from Scratch](guides/starting-a-maven-project-from-scratch.md).
+- [Creating a Running Project in One Command](maven/maven-arquetype.md).
+- [Mapping Database Data Types](config/type-solver.md).
+- [Mapping Database Names](config/name-solver.md).
+- [Extending LiveSQL](livesql/custom-database-functions.md).
