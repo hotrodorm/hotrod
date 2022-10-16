@@ -24,6 +24,7 @@ application.properties     # The runtime properties, typically for production de
 For simplicity, this guide creates these files in the main folder of the project. You can later change their locations to organize the project 
 in your preferred way.
 
+
 ## Part 1 &mdash; Setting Up the Project
 
 In this part we create the Maven project, we lay out its structure, we and add all the necessary libraries and plugins to it.
@@ -39,6 +40,8 @@ The `pom.xml` will include:
 - The JDBC driver dependency according to your specific database.
 - The HotRod, HotRod LiveSQL, and MyBatis Libraries. 
 - The HotRod Generator Plugin to it.
+
+For more details on how to configure the Maven dependencies and how to configure the HotRod generator plugin see [Maven Integration](maven/maven.md).
 
 With all these additions the complete `pom.xml` file will look like:
 
