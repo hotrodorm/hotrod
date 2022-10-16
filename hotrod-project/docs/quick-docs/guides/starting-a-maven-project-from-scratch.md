@@ -1,11 +1,11 @@
-# Creating a New Project from Scratch
+# Starting a Maven Project from Scratch
 
-This guide creates a Spring Boot project with HotRod persistence from scratch and then runs it.
+This guide creates a Spring Boot Maven project with HotRod persistence from scratch. Then, it runs it.
 
 You'll need:
 - Java.
 - Maven.
-- A text editor (Notepad will do), or a good IDE such as Eclipse.
+- A text editor. `Notepad` or `vi` will do, but you can use your favorite IDE if you prefer.
 - A running database. This example uses PostgreSQL, but this can be easily changed to another database.
 
 This guide sets up the Maven project, creates a table in the database, generates the HotRod persistence from it, and then runs a simple application using it.
