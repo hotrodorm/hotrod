@@ -42,5 +42,5 @@ In some cases the concrete class for a Java type may be different from the abstr
 
 [^2] It may be possible to read/write from/to these columns using a `<converter>`. This needs to be tested for each specific case separately.
 
-To override the default Java type see the [Configuration File Reference](../configuration-file-structure.md). You can add a `<column>` tag to a `<table>`, `<view>`, or `<select>` definition. Alternatively you can define a `<type-solver>` rule or implement a `<converter>`.
+To override the default Java type see the [Configuration File Reference](../configuration-file-structure.md). You can add a `<column>` tag to a `<table>`, `<view>`, or `<select>` definition. Alternatively, you can define a `<type-solver>` rule or implement a `<converter>`.
 
