@@ -19,7 +19,7 @@ In some cases the concrete class for a Java type may be different from the abstr
 | `LONG` | No default java type [^2] |
 | `RAW(n)`,<br/>`LONG RAW` | `byte[]` |
 | `BLOB` | `byte[]` [^1] |
-| `CLOB`,<br/>`NCLOB` | `java.lang.String [^1] |
+| `CLOB`,<br/>`NCLOB` | `java.lang.String` [^1] |
 | `LONG` | No default java type [^2] |
 | `RAW(n)`,<br/>`LONG RAW` | `byte[]` |
 | `BLOB` | `byte[]` [^1] |
@@ -38,8 +38,9 @@ In some cases the concrete class for a Java type may be different from the abstr
 | `STRUCT` | `java.lang.Object` (`oracle.sql.STRUCT`) |
 | `REF` | `java.lang.Object` |
 
-[^1] LOB types are by default read all at once into memory as byte arrays. They can also be read/written using streaming instead of loading them all at once. To do this you’ll need to write a custom MyBatis TypeHandler.
+[^1] LOB types are by default read all at once into memory as byte arrays. They can also be read/written using streaming instead of loading them all at once. To do this you’ll need to write a `<converter>`.
 
-[^2] It may be possible to read/write from/to these columns using a MyBatis custom TypeHandler. This is, however, not an out-of-the-box solution.
+[^2] It may be possible to read/write from/to these columns using a `<converter>`. This needs to be tested for each specific case separately.
 
-To override the default Java type see the reference section for the tables, views, and selects. To override the default type add a `<column>` tag in a `<table>`, `<view>`, or `<select>` definition. Alternatively, use a `<type-solver>` rule, or a `<converter>`.
+To override the default Java type see the [Configuration File Reference](config/configuration-file-structure.md) for the tables, views, and selects. To override the default type add a `<column>` tag in a `<table>`, `<view>`, or `<select>` definition. Alternatively, use a `<type-solver>` rule, or a `<converter>`.
+
