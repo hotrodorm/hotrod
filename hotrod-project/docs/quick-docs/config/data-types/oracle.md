@@ -15,8 +15,8 @@ In some cases the concrete class for a Java type may be different from the abstr
 | `BINARY_FLOAT` | `java.lang.Float` |
 | `BINARY_DOUBLE` | `java.lang.Double` |
 | `CHAR(n)`,<br/>`VARCHAR(n)`,<br/>`VARCHAR2(n)`,<br/>`NCHAR(n)`,<br/>`NVARCHAR2(n)` | `java.lang.String` |
-| `CLOB`,<br/>`NCLOB` | `java.lang.String` [^1] |
-| `LONG` | No default java type [^2] |
+| `CLOB`,<br/>`NCLOB` | `java.lang.String`[^1] |
+| `LONG` | No default java type[^2] |
 | `RAW(n)`,<br/>`LONG RAW` | `byte[]` |
 | `BLOB` | `byte[]` [^1] |
 | `CLOB`,<br/>`NCLOB` | `java.lang.String` [^1] |
