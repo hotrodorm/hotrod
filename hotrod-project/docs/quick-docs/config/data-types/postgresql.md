@@ -11,7 +11,6 @@ In some cases the concrete class for a Java type may be different from the abstr
 
 | PostgreSQL Column Type | Default Java Type |
 | -- | -- |
-
 | `SMALLINT`,<br/>`INT2`,<br/>`SMALLSERIAL` | `java.lang.Short` |
 | `INTEGER`,<br/>`INT`,<br/>`INT4`,<br/>`SERIAL` | `java.lang.Integer` |
 | `BIGINT`,<br/>`INT8`,<br/>`BIGSERIAL` | `java.lang.Long` |
