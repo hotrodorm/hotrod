@@ -24,7 +24,7 @@ If a custom Java type is not specified HotRod will use the following rules to de
 | `DATETIME`,<br/>`SMALLDATETIME` | `java.util.Date` |
 | `DATETIME2(n)`,<br/>`DATETIMEOFFSET(n)` | `java.sql.Timestamp` |
 | `TIME(n)` | If n is not specified, i.e. `TIME(7)`:<br/>- `java.sql.Timestamp`<br/>If n is specified:<br/>- If n <=3: `java.sql.Time`<br/>- If n >=4: `java.sql.Timestamp` |
-| `BINARY(n)`,<br/>`VARBINARY(n|MAX)`,<br/>`IMAGE` | `byte[]` [^1] |
+| `BINARY(n)`,<br/>`VARBINARY(n\|MAX)`,<br/>`IMAGE` | `byte[]` [^1] |
 | `HIERARCHYID` | `byte[]` |
 | `ROWVERSION` | `java.lang.Object`. Cannot insert, nor update by PK. Selects and deletes work normally. Rows can be "updated by example" when excluding this column. |
 | `UNIQUEIDENTIFIER` | `java.lang.String` |
