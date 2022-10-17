@@ -38,9 +38,9 @@ In some cases the concrete class for a Java type may be different from the abstr
 | `STRUCT` | `java.lang.Object` (`oracle.sql.STRUCT`) |
 | `REF` | `java.lang.Object` |
 
-[^1] LOB types are by default read all at once into memory as byte arrays. They can also be read/written using streaming instead of loading them all at once. To do this you’ll need to write a `<converter>`.
+[^1]: LOB types are by default read all at once into memory as byte arrays. They can also be read/written using streaming instead of loading them all at once. To do this you’ll need to write a `<converter>`.
 
-[^2] It may be possible to read/write from/to these columns using a `<converter>`. This needs to be tested for each specific case separately.
+[^2]: It may be possible to read/write from/to these columns using a `<converter>`. This needs to be tested for each specific case separately.
 
 To override the default Java type see the [Configuration File Reference](../configuration-file-structure.md). You can add a `<column>` tag to a `<table>`, `<view>`, or `<select>` definition. Alternatively, you can define a `<type-solver>` rule or implement a `<converter>`.
 
