@@ -1,13 +1,12 @@
-# Support for PostgreSQL database
+# Support for PostgreSQL Database
 
-The HotRod PostgreSQL adapter automatically maps known database column types to Java types. In most of the cases this default Java type is well suited to handle the database values, but it can be tailored by the developer.
+The HotRod PostgreSQL adapter automatically maps known database column types to Java types. In most cases this default Java type is well suited to handle the database values, but it can be changed as needed by the developer.
 
 ## Default Java Types
 
-If a custom Java type is not specified HotRod will use the following rules to decide which Java type to use for each Oracle type.
-In some cases the concrete class for a Java type may be different from the abstract class presented by the value object. The actual type is shown in parenthesis, if different.
+If a custom Java type is not specified HotRod will use the following rules to decide which Java type to use for each database type.
 
-**Note**: The Java types for the Oracle columns may vary depending on the specific version and variant of the RDBMS, the operating system where the database engine is running, and the JDBC driver version.
+**Note**: The Java types may vary depending on the specific version and variant of the database engine, the operating system where the database engine is running, and the JDBC driver version.
 
 | PostgreSQL Column Type | Default Java Type |
 | -- | -- |
@@ -44,7 +43,7 @@ In some cases the concrete class for a Java type may be different from the abstr
 
 [^3]: In the special case of a precision of zero, a  java.sql.Time type would be enough to store any time of the day without fractional seconds. However, since the majority of cases will have a different precision this type defaults to java.sql.Timestamp in all cases; this type can handle up to 9 decimal places.
 
-[^4]: Even though, the java.util.UUID type is able to save a value into the database, apparently it cannot read from the database into a Java program. Therefore, the java.lang.Object type is safer, but you'll need to cast it after retrieving a value.
+[^4]: Even though, the java.util.UUID type is able to save a value into the database, apparently it cannot read from the database into a Java program. Therefore, the java.lang.Object type is safer, but you'll need to cast it after retrieving a value. Alternatively, you can use a `<converter>`.
 
 To override the default Java type see the [Configuration File Reference](../configuration-file-structure.md). You can add a `<column>` tag to a `<table>`, `<view>`, or `<select>` definition. Alternatively, you can define a `<type-solver>` rule or implement a `<converter>`.
 

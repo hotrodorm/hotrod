@@ -1,9 +1,12 @@
-# DB2 LUW Data Types
+# Support for DB2 LUW Database
 
-If a custom Java type is not specified HotRod will use the following rules to decide which Java type to use for each DB2 LUW type.
-In some cases the concrete class for a Java type may be different from the abstract class presented by the value object. The actual type is shown in parenthesis, if different.
+The HotRod DB2-LUW adapter automatically maps known database column types to Java types. In most cases this default Java type is well suited to handle the database values, but it can be changed as needed by the developer.
 
-**Note**: The Java types for the DB2 LUW columns may vary depending on the specific version and variant of the RDBMS, the operating system where the database engine is running, and the JDBC driver version.
+## Default Java Types
+
+If a custom Java type is not specified HotRod will use the following rules to decide which Java type to use for each database type.
+
+**Note**: The Java types may vary depending on the specific version and variant of the database engine, the operating system where the database engine is running, and the JDBC driver version.
 
 | DB2 LUW Column Type | Default Java Type |
 | -- | -- |

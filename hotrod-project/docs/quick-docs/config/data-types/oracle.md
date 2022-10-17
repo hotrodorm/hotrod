@@ -1,9 +1,13 @@
-# Oracle Data Types
+# Support for Oracle Database
 
-If a custom Java type is not specified HotRod will use the following rules to decide which Java type to use for each Oracle type.
+The HotRod Oracle adapter automatically maps known database column types to Java types. In most cases this default Java type is well suited to handle the database values, but it can be changed as needed by the developer.
+
+## Default Java Types
+
+If a custom Java type is not specified HotRod will use the following rules to decide which Java type to use for each database type.
 In some cases the concrete class for a Java type may be different from the abstract class presented by the value object. The actual type is shown in parenthesis, if different.
 
-**Note**: The Java types for the Oracle columns may vary depending on the specific version and variant of the RDBMS, the operating system where the database engine is running, and the JDBC driver version.
+**Note**: The Java types may vary depending on the specific version and variant of the database engine, the operating system where the database engine is running, and the JDBC driver version.
 
 | Oracle Column Type | Default Java Type |
 | -- | -- |
