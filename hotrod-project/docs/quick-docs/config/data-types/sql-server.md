@@ -19,7 +19,7 @@ If a custom Java type is not specified HotRod will use the following rules to de
 | `MONEY`,<br/>`SMALLMONEY` | `java.math.BigDecimal` |
 | `FLOAT(n)` | If n is not specified, i.e. a `FLOAT(53)`:<br/>- `java.lang.Double`<br/>if n is specified:<br/>- if n <= 24: `java.lang.Float`<br/>- if n >= 25: `java.lang.Double` |
 | `REAL` | `java.lang.Float`<br/>**Note**: `REAL` is equivalent to `FLOAT(24)`. |
-| `CHAR(n)`,<br/>`CHARACTER(n)`,<br/>`VARCHAR(n  MAX)`,<br/>`CHARVARYING(n MAX)`,<br/>`CHARACTERVARYING(n MAX)`,<br/>`NCHAR(n)`,<br/>`NATIONAL CHAR(n)`,<br/>`NATIONAL CHARACTER(n)`,<br/>`NVARCHAR(n MAX)`,<br/>`NATIONAL CHAR VARYING(n MAX)`,<br/>`NATIONAL CHARACTER VARYING(n MAX)`,<br/>`TEXT`,<br/>`NTEXT` | `java.lang.String` [^1] |
+| `CHAR(n)`,<br/>`CHARACTER(n)`,<br/>`VARCHAR(n\|MAX)`,<br/>`CHARVARYING(n MAX)`,<br/>`CHARACTERVARYING(n MAX)`,<br/>`NCHAR(n)`,<br/>`NATIONAL CHAR(n)`,<br/>`NATIONAL CHARACTER(n)`,<br/>`NVARCHAR(n MAX)`,<br/>`NATIONAL CHAR VARYING(n MAX)`,<br/>`NATIONAL CHARACTER VARYING(n MAX)`,<br/>`TEXT`,<br/>`NTEXT` | `java.lang.String` [^1] |
 | `DATE` | `java.sql.Date` |
 | `DATETIME`,<br/>`SMALLDATETIME` | `java.util.Date` |
 | `DATETIME2(n)`,<br/>`DATETIMEOFFSET(n)` | `java.sql.Timestamp` |
