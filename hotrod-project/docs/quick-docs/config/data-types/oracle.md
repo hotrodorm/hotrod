@@ -1,8 +1,7 @@
 # Oracle Data Types
 
-If a custom Java type is not specified HotRod will use the following rules to decide which Java type to use for each Oracle column.
-
-**Note**: In parenthesis the actual object type returned by the Oracle JDBC driver that, on occasions, may be different.
+If a custom Java type is not specified HotRod will use the following rules to decide which Java type to use for each Oracle type.
+In some cases the concrete class for a Java type may be different from the abstract class presented by the value object. The actual type is shown in parenthesis, if different.
 
 **Note**: The Java types for the Oracle columns may vary depending on the specific version and variant of the RDBMS, the operating system where the database engine is running, and the JDBC driver version.
 
