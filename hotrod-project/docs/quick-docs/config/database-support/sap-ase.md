@@ -31,7 +31,7 @@ If a custom Java type is not specified HotRod will use the following rules to de
 
 [^1]: LOB types are by default read all at once into memory as byte arrays. They can also be read/written using streaming instead of loading them all at once. To do this you’ll need to write a `<converter>`.
 
-[^2]: The SAP ASE JDBC driver does not provide information to differentiate `TINYINT` from `UNSIGNED TINYINT`. If you happen to have an `UNSIGNED TINYINT` column you may want to use the custom type java.lang.Short for it, instead of the default type java.lang.Byte. Or, try to avoid using the `UNSIGNED TINYINT` type altogether, if possible.
+[^2]: The SAP ASE JDBC driver does not provide information to differentiate `TINYINT` from `UNSIGNED TINYINT`. If you happen to have an `UNSIGNED TINYINT` column you may want to use the custom type `java.lang.Short` for it, instead of the default type `java.lang.Byte`. Or, try to avoid using the `UNSIGNED TINYINT` type altogether, if possible.
 
 [^3]: The SAP ASE JDBC driver does not provide information to differentiate float of different precisions. FLOAT with precision 15 or less could be treated as a Java java.lang.Float. However, since there’s no way to find out the precision of the FLOAT the default type is, regardless of their precision, java.lang.Double.
 
