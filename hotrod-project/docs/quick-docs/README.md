@@ -11,7 +11,6 @@ retrieves and applies these changes to the persistence layer seamlessly.
 Overview:
 - [The Basics]().
 - [Features](features.md).
-- [Supported Databases](config/supported-databases.md).
 - [Retrieving and Applying Database Changes]().
 
 HotRod includes four modules:
@@ -24,7 +23,7 @@ Reference:
 - [Configuration File Reference](config/configuration-file-structure.md).
 - [Maven Integration](maven/maven.md).
 - [Ant Integration](ant/ant.md).
-- [Default Data Types](config/default-data-types.md).
+- [Supported Databases and Default Data Types](config/databases.md).
 
 Quick Guides:
 - [Starting a Maven Project from Scratch](guides/starting-a-maven-project-from-scratch.md).
