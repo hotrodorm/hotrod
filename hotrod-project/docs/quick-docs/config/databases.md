@@ -28,7 +28,7 @@ and writing to the database.
 The default data type for each column depends on the specific database. See sections below:
 
 - [Oracle Database Default Data Types](data-types/oracle.md).
-- [DB2 Database Default Data Types](data-types/db2.md).
+- [DB2 Database Default Data Types](data-types/db2-luw.md).
 - [PostgreSQL Database Default Data Types](data-types/postgresql.md).
 - [SQL Server Database Default Data Types](data-types/sql-server.md).
 - [MariaDB Database Default Data Types](data-types/mariadb.md).
