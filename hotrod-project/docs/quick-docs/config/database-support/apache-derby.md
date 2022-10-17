@@ -18,7 +18,7 @@ If a custom Java type is not specified HotRod will use the following rules to de
 | `FLOAT(n)` | If n <= 23: `java.lang.Float`<br/>If n >= 24: `java.lang.Double`<br/>**Note**: When n is not specified it's equivalent to `FLOAT(53)` |
 | `DOUBLE`,<br/>`DOUBLE PRECISION`, | `java.lang.Double` |
 | `CHAR(n)`,<br/>`CHARACTER(n)` | `java.lang.String` |
-| `VARCHAR(n)`,<br/>`CHAR VARYING(n)`,<br/>`CHARACTER VARYING(n)`, `LONGVARCHAR`,<br/>`CLOB` | `java.lang.String` [^1] |
+| `VARCHAR(n)`,<br/>`CHAR VARYING(n)`,<br/>`CHARACTER VARYING(n)`,<br/>`LONGVARCHAR`,<br/>`CLOB` | `java.lang.String` [^1] |
 | `CLOB(n)`,<br/>`NCLOB(n)`,<br/>`TINYTEXT(n)`,<br/>`TEXT(n)`,<br/>`MEDIUMTEXT(n)`,<br/>`LONGTEXT(n)`,<br/>`NTEXT(n)` | `java.lang.String` [^1] |
 | `DATE` | `java.sql.Date` |
 | `TIME` | `java.sql.Time` |
