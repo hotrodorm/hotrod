@@ -8,7 +8,7 @@ If a custom Java type is not specified HotRod will use the following rules to de
 
 **Note**: The Java types may vary depending on the specific version and variant of the database engine, the operating system where the database engine is running, and the JDBC driver version.
 
-| PostgreSQL Column Type | Default Java Type |
+| MySQL Column Type | Default Java Type |
 | -- | -- |
 | `TINYINT`,<br/>`INT1` | `java.lang.Byte` |
 | `TINYINT UNSIGNED`,<br/>`INT1 UNSIGNED` | `java.lang.Short` |
