@@ -25,7 +25,7 @@ know how to handle by default.
 For more complex cases a `<converter>` can manipulate data with tailored Java logic when reading from 
 and writing to the database.
 
-The default data type for each column depends on the specific database as shown below:
+The default data type for each column depends on the specific database. See sections below:
 
 - [Oracle Database Default Data Types](data-types/oracle.md).
 - [DB2 Database Default Data Types](data-types/db2.md).
