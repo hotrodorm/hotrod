@@ -27,15 +27,15 @@ and writing to the database.
 
 The default data type for each column depends on the specific database. See sections below:
 
-- [Oracle Database Default Data Types](data-types/oracle.md).
-- [DB2 Database Default Data Types](data-types/db2-luw.md).
-- [PostgreSQL Database Default Data Types](data-types/postgresql.md).
-- [SQL Server Database Default Data Types](data-types/sql-server.md).
-- [MariaDB Database Default Data Types](data-types/mariadb.md).
-- [MySQL Database Default Data Types](data-types/mysql.md).
-- [SAP ASE Database Default Data Types](data-types/sap-ase.md).
-- [H2 Database Default Data Types](data-types/h2.md).
-- [HyperSQL Database Default Data Types](data-types/hypersql.md).
-- [Apache Derby Database Default Data Types](data-types/apache-derby.md).
+- [Support for Oracle Database](./database-support/oracle.md).
+- [Support for DB2 LUW Database](./database-support/db2-luw.md).
+- [Support for PostgreSQL Database](./database-support/postgresql.md).
+- [Support for SQL Server Database](./database-support/sql-server.md).
+- [Support for MariaDB Database](./database-support/mariadb.md).
+- [Support for MySQL Database](./database-support/mysql.md).
+- [Support for SAP ASE (ex-Sybase) Database](./database-support/sap-ase.md).
+- [Support for H2 Database](./database-support/h2.md).
+- [Support for HyperSQL Database](./database-support/hypersql.md).
+- [Support for Apache Derby Database](./database-support/apache-derby.md).
 
 
