@@ -10,7 +10,6 @@ If a custom Java type is not specified HotRod will use the following rules to de
 
 | PostgreSQL Column Type | Default Java Type |
 | -- | -- |
-
 | `TINYINT`,<br/>`INT1` | `java.lang.Byte` |
 | `TINYINT UNSIGNED`,<br/>`INT1 UNSIGNED` | `java.lang.Short` |
 | `SMALLINT`,<br/>`INT2` | `java.lang.Short` |
