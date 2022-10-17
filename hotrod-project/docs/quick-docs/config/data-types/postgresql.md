@@ -43,7 +43,7 @@ If a custom Java type is not specified HotRod will use the following rules to de
 
 [^3]: In the special case of a precision of zero, a  java.sql.Time type would be enough to store any time of the day without fractional seconds. However, since the majority of cases will have a different precision this type defaults to java.sql.Timestamp in all cases; this type can handle up to 9 decimal places.
 
-[^4]: Even though, the java.util.UUID type is able to save a value into the database, apparently it cannot read from the database into a Java program. Therefore, the java.lang.Object type is safer, but you'll need to cast it after retrieving a value. Alternatively, you can use a `<converter>`.
+[^4]: Even though, the `java.util.UUID` type is able to save a value into the database, apparently it cannot read from the database into a Java program. Therefore, the java.lang.Object type is safer, but you'll need to cast it after retrieving a value. Alternatively, you can use a `<converter>`.
 
 To override the default Java type see the [Configuration File Reference](../configuration-file-structure.md). You can add a `<column>` tag to a `<table>`, `<view>`, or `<select>` definition. Alternatively, you can define a `<type-solver>` rule or implement a `<converter>`.
 
