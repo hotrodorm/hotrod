@@ -23,7 +23,7 @@ Reference:
 - [Configuration File Reference](config/configuration-file-structure.md).
 - [Maven Integration](maven/maven.md).
 - [Ant Integration](ant/ant.md).
-- [Supported Databases and Default Data Types](config/databases.md).
+- [Supported Databases and Default Data Types](config/supported-databases.md).
 
 Quick Guides:
 - [Starting a Maven Project from Scratch](guides/starting-a-maven-project-from-scratch.md).
