@@ -35,7 +35,7 @@ The default data type for each column depends on the specific database. See sect
 - [Support for MySQL Database](./database-support/mysql.md).
 - [Support for SAP ASE (ex-Sybase) Database](./database-support/sap-ase.md).
 - [Support for H2 Database](./database-support/h2.md).
-- [Support for HSQLSQL Database](./database-support/hsqldb.md).
+- [Support for HSQLDB Database](./database-support/hsqldb.md).
 - [Support for Apache Derby Database](./database-support/apache-derby.md).
 
 
