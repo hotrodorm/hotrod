@@ -1,4 +1,4 @@
 # Support for MariaDB Database
 
-Please refer to the section Support for [MySQL](./mysql.md) database.
+Please refer to the [Support for MySQL Database](./mysql.md).
 
