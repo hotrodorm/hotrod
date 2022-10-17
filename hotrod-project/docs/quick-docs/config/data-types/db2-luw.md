@@ -10,7 +10,6 @@ In some cases the concrete class for a Java type may be different from the abstr
 | `SMALLINT` | `java.lang.Short` |
 | `INTEGER`,<br/>`INT` | `java.lang.Integer` |
 | `BIGINT` | `java.lang.Long` |
-
 | `DECIMAL(p,s)`,<br/>`DEC(p,s)`,<br/>`NUMERIC(p,s)`,<br/>`NUM(p,s)` | If s is specified and different from zero the Java type is:<br/>- `java.math.BigDecimal`<br/>if s is not specified or it's zero:<br/>- if p <= 2: `java.lang.Byte`<br/>- if 2 < p <= 4: `java.lang.Short`<br/>- if 4 < p <= 9: `java.lang.Integer`<br/>- if 8 < p <= 18: `java.lang.Long`<br/>- if p > 18: `java.math.BigInteger` |
 | `DECFLOAT` | `java.math.BigDecimal` |
 | `REAL` | `java.lang.Float` |
