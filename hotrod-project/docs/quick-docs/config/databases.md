@@ -19,7 +19,7 @@ HotRod maps the data type of each database column with a default Java type.
 The default Java type can be superseded by the user defined data type, specified by a `<column>` tag in
 the `<table>`, `<view>`, or `<select>` query or, alternatively, by a `<type-solver>` rule. 
 
-An explicit type, or a rule is sometimes needed if the database uses an exotic type that HotRod doesn't 
+Explicit types or rules are sometimes needed if the database uses an exotic type that HotRod doesn't 
 know how to handle by default.
 
 For more complex cases a `<converter>` can manipulate data with tailored Java logic when reading from 
