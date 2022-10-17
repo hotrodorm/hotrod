@@ -10,7 +10,6 @@ If a custom Java type is not specified HotRod will use the following rules to de
 
 | SAP ASE Column Type | Default Java Type |
 | -- | -- |
-
 | `BIT` | `java.lang.Byte` |
 | `TINYINT` | `java.lang.Byte` |
 | `UNSIGNED TINYINT` | `java.lang.Byte` [^2] |
