@@ -28,7 +28,7 @@ If a custom Java type is not specified HotRod will use the following rules to de
 | `HIERARCHYID` | `byte[]` |
 | `ROWVERSION` | `java.lang.Object`. Cannot insert, nor update by PK. Selects and deletes work normally. Rows can be "updated by example" when excluding this column. |
 | `UNIQUEIDENTIFIER` | `java.lang.String` |
-| `SQL_VARIANT` | This type is not supported by the JDBC driver 4.0 provided by SQL Server. A workaround, at least to read it, is to cast this column to a different supported type (maybe using a view or a select) as in th expression: CAST(<column> AS <type>) |
+| `SQL_VARIANT` | This type is not supported by the JDBC driver 4.0 provided by SQL Server. A workaround, at least to read it, is to cast this column to a different supported type (maybe using a view or a select) as in th expression: `CAST(<column> AS <type>)` |
 | `XML` | `java.lang.String` [^3] |
 | `GEOGRAPHY` | `byte[]` [^4] |
 | `GEOMETRY` | `byte[]` [^4] |
