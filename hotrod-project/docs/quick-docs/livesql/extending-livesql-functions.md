@@ -167,9 +167,9 @@ while other ones use keywords; most have parenthesis, some don't; there are also
   This example demonstrate that any pattern can be used, even without parenthesis.
 
     ```java
-public DateTimeFunction localtimestamp() {
-  return Function.returnsDateTime("localtimestamp");
-};
+    public DateTimeFunction localtimestamp() {
+      return Function.returnsDateTime("localtimestamp");
+    };
     ```
 
 - **Example #2:** Function `random()` with no parameters.
@@ -177,9 +177,9 @@ public DateTimeFunction localtimestamp() {
   As well as in the previous example, this function does not have any parameters, but needs the parenthesis in its rendering.
 
     ```java
-  public NumberFunction random() {
-    return Function.returnsNumber("random()");
-  }
+    public NumberFunction random() {
+      return Function.returnsNumber("random()");
+    }
     ```
 
 - **Example #3:** Function `sin(x)` with a single parameter. 
