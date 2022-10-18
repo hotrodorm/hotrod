@@ -119,10 +119,10 @@ You can look into each tag to get details of it:
             * [`<property>`](tags/property.md)
         * `<mybatis>` *obsolete*
         * `<spring-jdbc>` *obsolete*
-    * [`<name-solver>`](name-solver.md)
-        * [`<name>`](name.md)
-    * [`<type-solver>`](type-solver.md)
-        * [`<when>`](when.md)
+    * [`<name-solver>`](tags/name-solver.md)
+        * `<name>`
+    * [`<type-solver>`](tags/type-solver.md)
+        * `<when>`
     * [`<table>`](table.md)
         * [`<column>`](column.md)
         * [`<classic-fk-navigation>`](classic-fk-navigation-table.md)
