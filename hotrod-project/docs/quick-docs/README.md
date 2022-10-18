@@ -14,8 +14,8 @@ Overview:
 - [Version History](./version-history.md).
 - [Retrieving and Applying Database Changes]().
 
-HotRod includes four modules:
-- [HotRod CRUD](crud/crud.md) &mdash; Quick and simple persistence to start prototyping immediately.
+HotRod includes:
+- [HotRod CRUD](crud/crud.md) &mdash; Quick and simple persistence for rapid prototyping.
 - [HotRod LiveSQL](livesql/livesql.md) &mdash; Flexible querying from Java.
 - [HotRod Nitro](nitro/nitro.md) &mdash; Advanced queries with high performance.
 - `HotRod Torcs` &mdash; Detect slow queries at runtime and analyze them.
