@@ -1,4 +1,4 @@
-# The Name Solver
+# The `<name-solver>` Tag
 
 HotRod's configuration can include a rule based *Name Solver* that can produce tailored names for database tables, views, 
 and columns according to rules defined by the developer.

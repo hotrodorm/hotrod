@@ -1,4 +1,4 @@
-# The Type Solver
+# The `<type-solver>` Tag
 
 HotRod's configuration can include a rule based type solver that can assign types or converters to VO properties according 
 to custom logic specified by the developer.
