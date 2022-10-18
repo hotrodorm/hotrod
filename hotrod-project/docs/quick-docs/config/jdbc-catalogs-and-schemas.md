@@ -11,7 +11,7 @@ the support they have on each of database:
 | SQL Server        | Yes               | Yes             | 
 | MariaDB           | Yes               | --              | 
 | MySQL             | Yes               | --              | 
-| SAP ASE (Sybase)  | Yes               | Yes             | 
+| SAP ASE (ex-Sybase)  | Yes               | Yes             | 
 | H2                | --                | Yes             | 
 | HyperSQL          | --                | Yes             | 
 | Apache Derby      | --                | Yes             | 
