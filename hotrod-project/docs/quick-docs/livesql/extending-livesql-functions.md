@@ -5,21 +5,21 @@ LiveSQL includes the infrastructure to add custom database functions. These can 
 To add new functions, create a `@Component` that include methods for each function. For example:
 
 ```java
-  @Component
-  public class PostgreSQL12Functions {
-  
-    public NumberFunction random() {
-      return Function.returnsNumber("random()");
-    }
-    
+@Component
+public class PostgreSQL12Functions {
+
+  public NumberFunction random() {
+    return Function.returnsNumber("random()");
   }
+  
+}
 ```
 
 Then, add it to your class:
 
 ```java
-  @Autowired
-  private PostgreSQL12Functions pg;
+@Autowired
+private PostgreSQL12Functions pg;
 ```
 
 And use it:
@@ -36,7 +36,7 @@ LiveSQL groups all SQL parameters into six broad types: numbers, strings, date/t
 
 Therefore, you can use any of the six factory methods available in the `Function` class to create a function with the corresponding LiveSQL return type:
 
-- ```java Function.returnsNumber(String pattern, Expression... parameters)``` -- to produce a `NumberFunction`
+- `Function.returnsNumber(String pattern, Expression... parameters)` -- to produce a `NumberFunction`
 - `Function.returnsString(String pattern, Expression... parameters)` -- to produce a `StringFunction`
 - `Function.returnsDateTime(String pattern, Expression... parameters)` -- to produce a `DateTimeFunction`
 - `Function.returnsBoolean(String pattern, Expression... parameters)` -- to produce a `BooleanFunction`
@@ -76,13 +76,13 @@ need to be promoted to `Expression` to be used in a LiveSQL query. You can do th
  - by offering multiple constructors in the custom function definition and then boxing simple parameters as `Expression` using `BoxUtil.box(x)`, as shown in the `sin()` function below:
 
 ```java
-    public NumberFunction sin(NumberExpression x) { // already an Expression parameter
-      return Function.returnsNumber("sin(#{})", x);
-    }
-  
-    public NumberFunction sin(Number x) { // accepts any java.lang.Number
-      return sin(BoxUtil.box(x));
-    }
+public NumberFunction sin(NumberExpression x) { // already an Expression parameter
+  return Function.returnsNumber("sin(#{})", x);
+}
+
+public NumberFunction sin(Number x) { // accepts any java.lang.Number
+  return sin(BoxUtil.box(x));
+}
 ```
 
 This way, the above function can be called with an Expression as in `sin(a.angle)`, or with a primitive value as in `sin(123)`.
@@ -118,12 +118,12 @@ As well as built-in functions, the developer can also include user defined funct
 For example, if the developer created the following function in a PostgreSQL database:
 
 ```sql
-  create function addone(in a integer) returns integer
-  as $bodytag$
-  begin
-    return a + 1;
-  end;
-  $bodytag$ language plpgsql;
+create function addone(in a integer) returns integer
+as $bodytag$
+begin
+  return a + 1;
+end;
+$bodytag$ language plpgsql;
 //
 ```
 
@@ -167,9 +167,9 @@ while other ones use keywords; most have parenthesis, some don't; there are also
   This example demonstrate that any pattern can be used, even without parenthesis.
 
     ```java
-    public DateTimeFunction localtimestamp() {
-      return Function.returnsDateTime("localtimestamp");
-    };
+public DateTimeFunction localtimestamp() {
+  return Function.returnsDateTime("localtimestamp");
+};
     ```
 
 - **Example #2:** Function `random()` with no parameters.
@@ -177,9 +177,9 @@ while other ones use keywords; most have parenthesis, some don't; there are also
   As well as in the previous example, this function does not have any parameters, but needs the parenthesis in its rendering.
 
     ```java
-    public NumberFunction random() {
-      return Function.returnsNumber("random()");
-    }
+  public NumberFunction random() {
+    return Function.returnsNumber("random()");
+  }
     ```
 
 - **Example #3:** Function `sin(x)` with a single parameter. 
