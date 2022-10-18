@@ -1,4 +1,4 @@
-# Creating Custom Functions
+# Extending LiveSQL Functions
 
 LiveSQL includes the infrastructure to add custom database functions. These can be built-in database functions, or user-defined functions available in the database.
 

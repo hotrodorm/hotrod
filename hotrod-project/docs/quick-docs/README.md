@@ -31,4 +31,4 @@ Quick Guides:
 - [Creating a Running Project in One Command](maven/maven-arquetype.md).
 - [Mapping Database Data Types](config/type-solver.md).
 - [Mapping Database Names](config/name-solver.md).
-- [Extending LiveSQL](livesql/extending-livesql-functions.md).
+- [Extending LiveSQL Functions](livesql/extending-livesql-functions.md).
