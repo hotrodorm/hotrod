@@ -12,6 +12,8 @@ Finally, HotRod includes a Maven Arquetype that can create a full running Spring
 
 All HotRod modules can be found as dependencies in the Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+For details on the libraries to use see [Libraries](../config/libraries.md).
+
 A Spring or Spring Boot project needs to declare two main libraries and a third one for MyBatis support. The typical dependency declaration in a `pom.xml` file  takes the form:
 
 ```xml
@@ -77,7 +79,8 @@ form the plugin can look like:
 
 In this declaration the tags `<groupId>`, `<artifactId>`, and `<version>` define the HotRod Maven Plugin and its specific version.
 Then the `<configuration>` tags includes a series of optional configuration parameters for this plugin. Finally, the `<dependencies>`
-tag can be used to specify the JDBC library (or any other library) that the plugin requires.
+tag can be used to specify the JDBC library (or any other library) that the plugin requires. See
+[JDBC Drivers](../config/jdbc-drivers-examples.md) (a list that may not be updated) for examples.
 
 ### Configuration Properties
 
@@ -95,11 +98,11 @@ explicitly defined. The full list of parameters is:
 | `localproperties` | Defines an external properties file that will be read to load these properties | All |
 | `configfile` | Specifies the HotRod Main configuration file location. This is the main configuration file that lays out all the details of the generation such as packages, folders, naming conventions, and converters are defined, as well as the full list tables and Nitro queries | All |
 | `generator` | The generator to use. Currently only one generator is supported: `MyBatis-Spring`  | `gen`, `purge` |
-| `jdbcdriverclass` | The JDBC driver class name | All |
+| `jdbcdriverclass` | The JDBC driver class name. See [JDBC Drivers](../config/jdbc-drivers-examples.md) for examples | All |
 | `jdbcurl` | The JDBC connection URL | All |
 | `jdbcusername` | The JDBC connection username | All |
 | `jdbcpassword` | The JDBC connection password | All |
-| `jdbccatalog` | The default JDBC catalog to search for database objects (optional) | All |
+| `jdbccatalog` | The default JDBC catalog to search for database objects (optional). See [JDBC Catalogs & Schemas](../config/jdbc-catalogs-and-schemas.md) for examples | All |
 | `jdbcschema` | The default JDBC schema to search for database objects (optional) | All |
 | `facets` | Comma-separated list of facets to generate. Leave empty to activate them all | All |
 | `display` | The console display type. Valid values are `list` and `summary`. Defaults to `list`  | All |
