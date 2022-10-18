@@ -4,7 +4,7 @@ Typically databases support a schema, a catalog, or both. The table shown below 
 the support they have on each of database:
 
 | Database          | Supports Catalog  | Supports Schema |  
-| ----------------  | :--------------:  |:--------------:| 
+| ----------------  | :--------------:  | :-------------: | 
 | Oracle            | --                | Yes             | 
 | DB2               | --                | Yes             | 
 | PostgreSQL        | --                | Yes             | 
