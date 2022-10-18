@@ -24,7 +24,6 @@ Reference:
 - [Configuration File Reference](config/configuration-file-structure.md).
 - [Libraries](config/libraries.md).
 - [Maven Integration](maven/maven.md).
-- [Ant Integration](ant/ant.md).
 - `Eclipse Integration`.
 - [Supported Databases and Default Data Types](config/supported-databases.md).
 
