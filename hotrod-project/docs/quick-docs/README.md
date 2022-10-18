@@ -21,6 +21,7 @@ HotRod includes four modules:
 
 Reference:
 - [Configuration File Reference](config/configuration-file-structure.md).
+- [Libraries](config/libraries.md).
 - [Maven Integration](maven/maven.md).
 - [Ant Integration](ant/ant.md).
 - `Eclipse Integration`.
