@@ -1,6 +1,26 @@
-# Configuration File Structure
+# Configuration File Reference
 
-HotRod generates code according to the metadata retrieved from a live existing database (a *sandbox* database) that 
+The Configuration File of HotRod defines the details on how to generate the persistence code. It offers default for
+the configuration parameters to offer a simple usage, but they can also be tweaked to tailor the code generation to
+specific needs.
+
+The configuration includes:
+
+- The desired folder structure of the persistence code.
+- The desired naming convention of the generated DAOs and VOs.
+- Custom post-processing of tables and column names (`<name-solver>`).
+- Custom rules to decide on data types for columns (`<type-solver>`).
+- Converters to read and write complex types (`<converter>`).
+- List of tables (and enums), views, and sequences to inspect in default and non-default schemas.
+- Custom DAOs to gather related sets of queries.
+- Combinable facets to enable quick, partial code refresh.
+
+The configuration file can be broken into separate *fragments* to facilitate parallel development and to
+segregate DAOs per groups (modules, development teams, etc.). Each fragment produces a separate Java package.
+
+## Database Metadata 
+
+HotRod generates the persistence code by inspecting the metadata retrieved from a live existing database (a *sandbox* database) that 
 typically resides in the development environment.
 
 Although database engines provide a copious amount of metadata for tables and other database objects, some
@@ -42,12 +62,12 @@ The general structure follow the rules below:
 - The persistence-wide tags can only be included in the main configuration file. These are: `<generators>`, `<name-solver>` (optional), and `<type-solver>` (optional).
 
 - Then, there can be zero or more `<table>`, `<view>`, `<enum>`, `<dao>`, `<converter>`, `<facet>`, and/or `<fragment>` tags; 
-they can be mixed and included in any order.
+there can be any number of each one and they can be included in any order, even intermixed.
 
 - `<facet>` tags must be named and can include zero or more `<table>`, `<view>`, `<enum>`, `<dao>` tags. All included tags will be considered part of the facet.
 
-- `<fragment>` tags must reference a fragment file where extra configuration is specified. Fragments can include other fragments. In any case, any given fragment 
-can only be included once in the configuration tree.
+- `<fragment>` tags must reference a fragment file where extra configuration is specified. Fragments can also include other fragments, but any given 
+fragment can only be included once in the configuration tree.
 
 
 ## The Fragment File Structure
@@ -80,24 +100,29 @@ A fragment configuration file takes the general form:
 </hotrod-fragment>
 ```
 
-## General Structure
+A fragment can include any number of each one of these tags, and they can be placed in any ordering, even intermixed.
 
-The complete structure of HotRod's main configuration file is shown below:
 
-* [`<hotrod>`](hotrod.md)
-    * [`<generators>`](generators.md)
-        * [`<mybatis-spring>`](mybatis-spring.md)
-            * [`<daos>`](daos.md)
-            * [`<mappers>`](mapper.md)
-            * [`<select-generation>`](select-generation.md)
-            * [`<classic-fk-navigation>`](classic-fk-navigation-mybatis-spring.md)
-            * [`<property>`](property.md)
+## Complete Structure of the Configuration File
+
+The complete structure of HotRod's main configuration file is shown below. 
+
+You can look into each tag to get details of it:
+
+* [`<hotrod>`](tags/hotrod.md)
+    * [`<generators>`](tags/generators.md)
+        * [`<mybatis-spring>`](tags/mybatis-spring.md)
+            * [`<daos>`](tags/daos.md)
+            * [`<mappers>`](tags/mapper.md)
+            * [`<select-generation>`](tags/select-generation.md)
+            * [`<classic-fk-navigation>`](tags/classic-fk-navigation.md)
+            * [`<property>`](tags/property.md)
         * `<mybatis>` *obsolete*
         * `<spring-jdbc>` *obsolete*
     * [`<name-solver>`](name-solver.md)
         * [`<name>`](name.md)
     * [`<type-solver>`](type-solver.md)
-        * [`<when>`](when-type-solver.md)
+        * [`<when>`](when.md)
     * [`<table>`](table.md)
         * [`<column>`](column.md)
         * [`<classic-fk-navigation>`](classic-fk-navigation-table.md)
