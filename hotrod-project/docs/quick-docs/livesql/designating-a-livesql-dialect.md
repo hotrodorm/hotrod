@@ -47,7 +47,7 @@ Depending on the specific database and version this query can be rendered in dif
     select top 15 * from t
     ```
 
-# Forcing the LiveSQL Dialect
+## Forcing the LiveSQL Dialect
 
 Some teams use one database for prototyping and a different one for production. Sometimes the difference is only minor, such as minor versions difference of the same database engine, or in other cases they can use different engines altogether. In cases like this, the developer may want to override the autodetection
 capabilities of LiveSQL and designate the dialect directly instead.
