@@ -21,13 +21,13 @@ Depending on the specific database and version this query can be rendered in dif
 
 - In Oracle 10g:
 
-```sql
+    ```sql
     select *
     from (
     select *, rownum as rn from t 
     ) x
     where rn <= 15
-```
+    ```
 
 - In Oracle 12c:
 
@@ -37,15 +37,15 @@ Depending on the specific database and version this query can be rendered in dif
 
 - In MySQL:
 
-```sql
-select * from t limit 15
-```
+    ```sql
+    select * from t limit 15
+    ```
 
 - In SQL Server:
 
-```sql
-select top 15 * from t
-```
+    ```sql
+    select top 15 * from t
+    ```
 
 # Forcing the LiveSQL Dialect
 
