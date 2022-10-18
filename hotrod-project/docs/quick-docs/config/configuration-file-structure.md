@@ -113,7 +113,7 @@ You can look into each tag to get details of it:
     * [`<generators>`](tags/generators.md)
         * [`<mybatis-spring>`](tags/mybatis-spring.md)
             * [`<daos>`](tags/daos.md)
-            * [`<mappers>`](tags/mapper.md)
+            * [`<mappers>`](tags/mappers.md)
             * [`<select-generation>`](tags/select-generation.md)
             * [`<classic-fk-navigation>`](tags/classic-fk-navigation.md)
             * [`<property>`](tags/property.md)
