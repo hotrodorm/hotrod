@@ -30,3 +30,7 @@ its details are embedded there. See:
 - [Maven Integration](../maven/maven.md#maven-plugin).
 - [Ant Integration](../ant/ant.md#ant-plugin).
 - `Eclipse Integration`.
+
+## Version Features 
+
+For a list of version changes and added features see [Version History](../version-history.md).
