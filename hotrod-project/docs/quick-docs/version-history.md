@@ -3,15 +3,15 @@
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
 ## 3.4.7
-- DAO references to other DAO are now marked as @Lazy to deal with circular references (parent-children). SpringBoot prototypes don't like them when eager-loaded.
+- DAO references to other DAO are now marked as `@Lazy` to deal with circular references (parent-children). Spring Boot prototypes don't like them when eager-loaded.
 
 ## 3.4.6
 - Migration to GitHub.
-- Improved SpringBoot Archetype.
+- Improved Spring Boot Archetype.
 
 ## 3.4.5
 - New Spring Boot archetype! It generates a running full-blown project with a single command line: Includes
-  SpringBoot, HotRod, REST Controllers, OpenAPI3, Debbie, and Sentinel.
+  Spring Boot, HotRod, REST Controllers, OpenAPI3, Debbie, and Sentinel.
 - Fixing `<enum>` tag error.
 
 ## 3.4.4
