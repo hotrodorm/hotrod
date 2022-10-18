@@ -11,6 +11,7 @@ retrieves and applies these changes to the persistence layer seamlessly.
 Overview:
 - [The Basics]().
 - [Features](features.md).
+- [Version History](./version-history.md).
 - [Retrieving and Applying Database Changes]().
 
 HotRod includes four modules:
