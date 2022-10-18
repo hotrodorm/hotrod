@@ -6,6 +6,6 @@ It has the following attributes:
 
 | Attribute | Description | Defaults to |
 | --- | --- | --- |
-| base-dir | The base dir where to generate the mapper files | `src/main/resources` |
-| dir | The relative dir (relative to the base dir) where to generate the mapper files | N/A and required |
+| `base-dir` | The base dir where to generate the mapper files | `src/main/resources` |
+| `dir` | The relative dir (relative to the base dir) where to generate the mapper files | N/A and required |
 
