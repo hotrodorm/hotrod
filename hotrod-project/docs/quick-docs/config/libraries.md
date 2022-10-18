@@ -27,6 +27,6 @@ Currently, the only supported Generator is for MyBatis persistence. Therefore, t
 When generating the persistence code only one library is required. This comes packaged in the corresponding plugin, so 
 its details are embedded there. See:
 
-- [Maven Integration](maven/maven.md#maven-plugin).
-- [Ant Integration](ant/ant.md#ant-plugin).
+- [Maven Integration](../maven/maven.md#maven-plugin).
+- [Ant Integration](../ant/ant.md#ant-plugin).
 - `Eclipse Integration`.
