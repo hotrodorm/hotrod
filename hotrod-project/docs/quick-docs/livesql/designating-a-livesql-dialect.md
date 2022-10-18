@@ -22,26 +22,26 @@ Depending on the specific database and version this query can be rendered in dif
 - In Oracle 10g:
 
 ```sql
-select *
-from (
-  select *, rownum as rn from t 
-) x
-where rn <= 15
+    select *
+    from (
+    select *, rownum as rn from t 
+    ) x
+    where rn <= 15
 ```
 
 - In Oracle 12c:
 
-```sql
-select * from t fetch next 15 rows only
-```
+    ```sql
+    select * from t fetch next 15 rows only
+    ```
 
-In MySQL:
+- In MySQL:
 
 ```sql
 select * from t limit 15
 ```
 
-In SQL Server:
+- In SQL Server:
 
 ```sql
 select top 15 * from t
@@ -49,9 +49,8 @@ select top 15 * from t
 
 # Forcing the LiveSQL Dialect
 
-Some teams use one database for prototyping and a different one for production. They can differ in minor versions of the application,
-or in other cases they can use different engines altogether. In cases like this, the developer may want to override the autodetection
-capabilities of LiveSQL and designate the dialect directly.
+Some teams use one database for prototyping and a different one for production. Sometimes the difference is only minor, such as minor versions difference of the same database engine, or in other cases they can use different engines altogether. In cases like this, the developer may want to override the autodetection
+capabilities of LiveSQL and designate the dialect directly instead.
 
 To do this the developer can add the following properties to the `application.properties` file that is used at runtime:
 
@@ -63,5 +62,6 @@ livesql.dialect.majorVersion=1
 livesql.dialect.minorVersion=4
 ```
 
-The main one if the fist one. In some cases (such as Oracle) the version numbers are also meaninful.
+The most important property is the fist one. The rest can be useful in cases where the SQL support has changed considerably over time; for example, Oracle 12c improved SQL considerable and it's important for LiveSQL to learn if the version is prior to this one or not.
+
 
