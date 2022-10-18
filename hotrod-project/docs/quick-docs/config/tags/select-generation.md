@@ -1,4 +1,4 @@
-# The Select Generation
+# The `<select-generation>` Tag
 
 The `<select-generation>` tag allows the developer to choose a SQL processor and to configure it. 
 
