@@ -1,5 +1,7 @@
 # Hotrod Version History
 
+Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
+
 ## 3.4.7
 - DAO references to other DAO are now marked as @Lazy to deal with circular references (parent-children). SpringBoot prototypes don't like them when eager-loaded.
 
