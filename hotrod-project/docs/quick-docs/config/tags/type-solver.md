@@ -8,7 +8,7 @@ In order to do this the developer can add the `<type-solver>` tag. For example:
 ```xml
 <type-solver>
     <when test="scale > 0" java-type="java.math.BigDecimal" />
-    <when test="name.matches('.*_IMAGE') && size > 10000" converter="ByteArrayConverter" />
+    <when test="name.matches('.*_IMAGE') &amp;&&amp; size > 10000" converter="ByteArrayConverter" />
     <when ... />
 </type-solver>
 ```
