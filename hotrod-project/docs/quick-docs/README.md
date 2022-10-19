@@ -30,6 +30,6 @@ Reference:
 Quick Guides:
 - [Starting a Maven Project from Scratch](guides/starting-a-maven-project-from-scratch.md).
 - [Creating a Running Project in One Command](maven/maven-arquetype.md).
-- [Mapping Column Types](config/type-solver.md).
-- [Mapping Table and Column Names](config/name-solver.md).
+- [Mapping Column Types](guides/mapping-column-types.md).
+- [Mapping Table and Column Names](guides/mapping-table-and-column-names.md).
 - [Extending LiveSQL Functions](livesql/extending-livesql-functions.md).
