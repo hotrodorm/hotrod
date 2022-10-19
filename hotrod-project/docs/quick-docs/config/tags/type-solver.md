@@ -5,20 +5,22 @@ to custom logic specified by the developer.
 
 In order to do this the developer can add the `<type-solver>` tag. For example:
 
-    <type-solver>
-      <when test="scale > 0" java-type="java.math.BigDecimal" />
-      <when test="name.matches('.*_IMAGE') && size > 10000" converter="ByteArrayConverter" />
-      <when ... />
-    </type-solver>
+```xml
+<type-solver>
+    <when test="scale > 0" java-type="java.math.BigDecimal" />
+    <when test="name.matches('.*_IMAGE') && size > 10000" converter="ByteArrayConverter" />
+    <when ... />
+</type-solver>
+```
 
 For each column the rules are checked in order. If any of them is evaluated as `true` then it's used to determine the type of 
 the property, and no further rules are evaluated. 
 
-See the full list of available properties of a column at [Column Metadata](../maven/command-export-columns-txt.md#properties).
+See the full list of available properties of a column at [Column Metadata](../../maven/command-export-columns-txt.md#properties).
 
 ## Location
 
-See [Configuration File Structure](configuration-file-structure.md) for the correct location of this tag in the configuration file.
+See [Configuration File Structure](../configuration-file-structure.md) for the correct location of this tag in the configuration file.
 
 ## Precedence
 
@@ -39,7 +41,7 @@ of [Apache Commons OGNL](https://commons.apache.org/proper/commons-ognl/language
 
 Most of the time the `test` attribute includes a simple predicate; however, the full power of OGNL syntax can be used to implement complex rules, as needed.  
 
-The available properties for the column metadata are described in [TXT Column Metadata](../maven/command-export-columns-txt.md). *Standard properties* 
+The available properties for the column metadata are described in [TXT Column Metadata](../../maven/command-export-columns-txt.md). *Standard properties* 
 are available across all databases, while *native properties* enhance the column metadata, but depend on each specific database.
 
 ## Resulting Type

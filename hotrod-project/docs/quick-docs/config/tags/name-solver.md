@@ -1,7 +1,8 @@
 # The `<name-solver>` Tag
 
-HotRod's configuration can include a rule based *Name Solver* that can produce tailored names for database tables, views, 
-and columns according to rules defined by the developer.
+This tag controls adds rules to tailor the generation of classes and properties in the persistence layer.
+
+The `<name-solver>` tag has not attributes and can include one or more `<name>` tags.
 
 It can serve as a centralized point for naming rules, for applications that have a somewhat standard strategy to name
 database objects, and where the developer wants to modify or simplify these names when seen by the application.
@@ -21,11 +22,11 @@ In order to add a Name Solver the developer can add the `<name-solver>` tag as s
 
 ## Location
 
-See [Configuration File Structure](configuration-file-structure.md) for the correct location of this tag in the configuration file.
+See [Configuration File Structure](../configuration-file-structure.md) for the correct location of this tag in the configuration file.
 
 ## Precedence
 
-When HotRod encounters a table, view, or column its name is produced according to the following precedence:
+When a table, view, or column is inpected its persistence layer name is produced according to the following precedence:
 
 1. If a `java-name` attribute is specified in the corresponding `<table>`, `<enum>`, `<view>`, or `<column>` tag this name
 is selected and the Name Solver is not used.
@@ -63,5 +64,4 @@ The following cases show combinations of regex `value` and `replace` patterns ap
 | `^CLI_(\w.+)_(\w+)_\w{2,3}$` | `$1_$2` | CLI_first_name_ATT | first_name | firstName |
 | `^CLI_(\w.+)_(\w+)_\w{2,3}$` | `$2` | CLI_first_name_ATT | name | name |
 | `^CLI_(\w.+)_(\w+)_\w{2,3}$` | `$1_$2` | CLI_first_name_A | first_name_A | firstNameA |
-
 
