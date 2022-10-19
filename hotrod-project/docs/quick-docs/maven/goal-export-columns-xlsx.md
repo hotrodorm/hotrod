@@ -1,4 +1,4 @@
-# Export Column Metadata To XLSX
+# Exporting Column Metadata To an XLSX File
 
 The `export-columns-xlsx` generates an XLSX Column Metadata Report for tables and views in the
 database schema. The properties shown in this report can be essential to write custom logic in 
