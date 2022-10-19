@@ -1,6 +1,11 @@
 # The `<name-solver>` Tag
 
+<<<<<<< HEAD
+HotRod's configuration can include a rule based *Name Solver* that can produce tailored names for database tables, views, 
+and columns according to rules defined by the developer. 
+=======
 This tag controls adds rules to tailor the generation of classes and properties in the persistence layer.
+>>>>>>> f3b425bb943f793247308dc8d84df8c5d38140c4
 
 The `<name-solver>` tag has not attributes and can include one or more `<name>` tags.
 
