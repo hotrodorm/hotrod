@@ -17,7 +17,7 @@ Overview:
 HotRod includes:
 - [HotRod CRUD](crud/crud.md) &mdash; Quick and simple persistence for rapid prototyping.
 - [HotRod LiveSQL](livesql/livesql.md) &mdash; Flexible querying from Java.
-- [HotRod Nitro](nitro/nitro.md) &mdash; Advanced &amp; Structured queries.
+- [HotRod Nitro](nitro/nitro.md) &mdash; Advanced queries.
 - `HotRod Torcs` &mdash; Detect slow queries at runtime and analyze them.
 
 Reference:
