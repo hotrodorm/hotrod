@@ -8,7 +8,7 @@ In order to do this the developer can add the `<type-solver>` tag. For example:
 ```xml
 <type-solver>
     <when test="scale > 0" java-type="java.math.BigDecimal" />
-    <when test="name.matches('.*_IMAGE') || size > 10000" converter="ByteArrayConverter" />
+    <when test="name.matches('.*_IMAGE') &amp;&amp; size > 10000" converter="ByteArrayConverter" />
     <when ... />
 </type-solver>
 ```
@@ -16,7 +16,7 @@ In order to do this the developer can add the `<type-solver>` tag. For example:
 For each column the rules are checked in order. If any of them is evaluated as `true` then it's used to determine the type of 
 the property, and no further rules are evaluated. 
 
-The avalable properties (such as `name` and `size` above) depend on each specific database. To find the full list of available
+The avalable properties (such as `scale`, `name`, and `size` above) depend on each specific database. To find the full list of available
 properties on your specific database schema get the column metadata using the [Export Columns](../../maven/goal-export-columns-txt.md) 
 command (in TXT or XLSX format).
 
