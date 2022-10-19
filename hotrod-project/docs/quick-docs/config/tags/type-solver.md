@@ -17,7 +17,7 @@ For each column the rules are checked in order. If any of them is evaluated as `
 the property, and no further rules are evaluated. 
 
 The avalable properties (such as `name` and `size` above) depend on each specific database. To find the full list of available
-properties on your specific database schema get the column metadata using the [Export Columns](../../maven/command-export-columns-txt.md#properties) 
+properties on your specific database schema get the column metadata using the [Export Columns](../../maven/goal-export-columns-txt.md) 
 command (in TXT or XLSX format).
 
 ## Location
