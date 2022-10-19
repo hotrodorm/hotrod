@@ -16,11 +16,13 @@ In order to do this the developer can add the `<type-solver>` tag. For example:
 For each column the rules are checked in order. If any of them is evaluated as `true` then it's used to determine the type of 
 the property, and no further rules are evaluated. 
 
-See the full list of available properties of a column at [Column Metadata](../../maven/command-export-columns-txt.md#properties).
+The avalable properties (such as `name` and `size` above) depend on each specific database. To find the full list of available
+properties on your specific database schema get the column metadata using the [Export Columns](../../maven/command-export-columns-txt.md#properties) 
+command (in TXT or XLSX format).
 
 ## Location
 
-See [Configuration File Structure](../configuration-file-structure.md) for the correct location of this tag in the configuration file.
+See [Configuration File Structure](../configuration-file-structure.md) for the location of this tag in the configuration file.
 
 ## Precedence
 
