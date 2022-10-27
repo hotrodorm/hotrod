@@ -28,11 +28,12 @@ See [Configuration File Structure](../configuration-file-structure.md) for the l
 
 When a table or view column produces a VO property, the property type is assigned according to the following precedence:
 
-1. If there's a &lt;column> tag for the column that specifies its type or a converter, this type or converter is used with no further processing.
+1. If there's a `<column>` tag for the column with a  type or converter, then this type or converter is used. The rest of the rules are ignored.
 
-2. If there's rule in the type solver that matches the column, then this rule specifies the type for the VO property, with no further processing.
+2. If there's rule in the `<type-solver>` that matches the column, then this rule specifies the type for the VO property. The rest of the rules are ignored.
 
-3. If none of the rules above is matched, then the database adapter for the specific database provides a default type for the column.
+3. If none of the rules above is matched, then the database adapter for the specific database provides a default type for the column. 
+See [Default Types](../supported-databases.md) for details of the default types for each database.
 
 ## The `test` Expression
 
