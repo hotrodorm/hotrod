@@ -13,7 +13,7 @@ The tag can also include more modifiers that can be useful in special cases. See
 
 | Attribute | Description | Defaults to |
 | --- | --- | --- |
-| `name` | The name of the table in natural typing | N/A. Required |
+| `name` | The name of the table in natural typing | Required |
 | `catalog` | The catalog of the table, if different from the default one | The current catalog, specified in the runtime properties file |
 | `schema` | The schema of the table, if different from the default one | The current schema, specified in the runtime properties file |
 | `java-name` | Sets the Java class name base for the DAO and VO | Camel-case identifier based on the database identifier |
