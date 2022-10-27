@@ -15,7 +15,7 @@ If a custom Java type is not specified HotRod will use the following rules to de
 | `BIGINT` | `java.lang.Long` |
 | `NUMERIC(p,s)` | If neither p or s are specified:<br/>&nbsp;&nbsp;&bull; `java.math.BigInteger`<br/>If s is specified and different from zero the Java type is:<br/>&nbsp;&nbsp;&bull; `java.math.BigDecimal`<br/>if s is not specified or specified with a value of zero:<br/>&nbsp;&nbsp;&bull; if p <= 2: `java.lang.Byte`<br/>&nbsp;&nbsp;&bull; if 2 < p <= 4: `java.lang.Short`<br/>&nbsp;&nbsp;&bull; if 4 < p <= 9: `java.lang.Integer`<br/>&nbsp;&nbsp;&bull; if 8 < p <= 18: `java.lang.Long`<br/>&nbsp;&nbsp;&bull; if p > 18: `java.math.BigInteger` |
 | `REAL` | `java.lang.Float` |
-| `FLOAT(n)` | If n is not specified, i.e. a `FLOAT(53)`:<br/>&nbsp;&nbsp;&bull; `java.lang.Double`<br/>If n is specified:<br/>&nbsp;&nbsp;&bull; If n <= 23: `java.lang.Float`<br/>&nbsp;&nbsp;&bull; If n >= 24: `java.lang.Double` |
+| `FLOAT(n)` | If n is not specified (i.e. a `FLOAT(53)`):<br/>&nbsp;&nbsp;&bull; `java.lang.Double`<br/>If n is specified:<br/>&nbsp;&nbsp;&bull; If n <= 23: `java.lang.Float`<br/>&nbsp;&nbsp;&bull; If n >= 24: `java.lang.Double` |
 | `DOUBLE`,<br/>`DOUBLE PRECISION`, | `java.lang.Double` |
 | `CHAR(n)`,<br/>`CHARACTER(n)` | `java.lang.String` |
 | `VARCHAR(n)`,<br/>`CHAR VARYING(n)`,<br/>`CHARACTER VARYING(n)`,<br/>`LONGVARCHAR`,<br/>`CLOB` | `java.lang.String` [^1] |
