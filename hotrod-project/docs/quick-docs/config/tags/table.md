@@ -21,7 +21,7 @@ The tag can also include more modifiers that can be useful in special cases. See
 
 ## Natural Typing Identifiers
 
-See [](../natural-typing-identifiers.md).
+See [Natural Typing Identifiers](../natural-typing-identifiers.md).
 
 
 
