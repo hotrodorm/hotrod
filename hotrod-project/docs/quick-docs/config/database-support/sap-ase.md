@@ -19,7 +19,7 @@ If a custom Java type is not specified HotRod will use the following rules to de
 | `UNSIGNED INT`,<br/>`UNSIGNED INTEGER` | `java.lang.Long` |
 | `BIGINT` | `java.lang.Long` |
 | `UNSIGNED BIGINT` | `java.math.BigInteger` |
-| `DECIMAL(p,s)`,<br/>`NUMERIC(p,s)` | If neither p or s are specified, i.e. `DECIMAL(18,0)`:<br/>- `java.lang.Long`<br/>If s is specified and different from zero the Java type is:<br/>- `java.math.BigDecimal`<br/>if s is not specified or it's zero:<br/>- if p <= 2: `java.lang.Byte`<br/>- if 2 < p <= 4: `java.lang.Short`<br/>- if 4 < p <= 9: `java.lang.Integer`<br/>- if 8 < p <= 18: `java.lang.Long`<br/>- if p > 18: `java.math.BigInteger` |
+| `DECIMAL(p,s)`,<br/>`NUMERIC(p,s)` | If neither p or s are specified, i.e. `DECIMAL(18,0)`:<br/>&nbsp;&nbsp;&bull; `java.lang.Long`<br/>If s is specified and different from zero the Java type is:<br/>&nbsp;&nbsp;&bull; `java.math.BigDecimal`<br/>if s is not specified or it's zero:<br/>&nbsp;&nbsp;&bull; if p <= 2: `java.lang.Byte`<br/>&nbsp;&nbsp;&bull; if 2 < p <= 4: `java.lang.Short`<br/>&nbsp;&nbsp;&bull; if 4 < p <= 9: `java.lang.Integer`<br/>&nbsp;&nbsp;&bull; if 8 < p <= 18: `java.lang.Long`<br/>&nbsp;&nbsp;&bull; if p > 18: `java.math.BigInteger` |
 | `MONEY`,<br/>`SMALLMONEY` | `java.math.BigDecimal` |
 | `FLOAT(n)`,<br/>`REAL`,<br/>`DOUBLE PRECISION` | `java.lang.Double` [^3] |
 | `CHAR(n)`,<br/>`VARCHAR(n)`,<br/>`UNICHAR(n)`,<br/>`UNIVARCHAR(n)`,<br/>`NCHAR(n)`,<br/>`NVARCHAR(n)`,<br/>`TEXT`,<br/>`UNITEXT`,<br/>`SYSNAME`,<br/>`LONGSYSNAME` | `java.lang.String` [^1] |
