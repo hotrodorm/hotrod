@@ -15,15 +15,15 @@ If a custom Java type is not specified HotRod will use the following rules to de
 | `SMALLINT` | `java.lang.Short` |
 | `INT` | `java.lang.Integer` |
 | `BIGINT` | `java.lang.Long` |
-| `DECIMAL(p,s)`,<br/>`DEC(p,s)`,<br/>`NUMERIC(p,s)` | If neither p or s are specified, i.e. `DECIMAL(18,0)`:<br/>  &bull; `java.lang.Long`<br/>If s is specified and different from zero the Java type is:<br/>&nbsp;&nbsp;&bull; `java.math.BigDecimal`<br/>if s is not specified or it's zero:<br/> &nbsp;&bull; if p <= 2: `java.lang.Byte`<br/>&nbsp;&nbsp;&bull; if 2 < p <= 4: `java.lang.Short`<br/>&nbsp;&nbsp;&bull; if 4 < p <= 9: `java.lang.Integer`<br/>   &bull; if 8 < p <= 18: `java.lang.Long`<br/>- if p > 18: `java.math.BigInteger` |
+| `DECIMAL(p,s)`,<br/>`DEC(p,s)`,<br/>`NUMERIC(p,s)` | If neither p or s are specified, i.e. `DECIMAL(18,0)`:<br/>&nbsp;&nbsp;&bull; `java.lang.Long`<br/>If s is specified and different from zero the Java type is:<br/>&nbsp;&nbsp;&bull; `java.math.BigDecimal`<br/>if s is not specified or it's zero:<br/>&nbsp;&nbsp;&bull; if p <= 2: `java.lang.Byte`<br/>&nbsp;&nbsp;&bull; if 2 < p <= 4: `java.lang.Short`<br/>&nbsp;&nbsp;&bull; if 4 < p <= 9: `java.lang.Integer`<br/>&nbsp;&nbsp;&bull; if 8 < p <= 18: `java.lang.Long`<br/>- if p > 18: `java.math.BigInteger` |
 | `MONEY`,<br/>`SMALLMONEY` | `java.math.BigDecimal` |
-| `FLOAT(n)` | If n is not specified, i.e. a `FLOAT(53)`:<br/>- `java.lang.Double`<br/>if n is specified:<br/>- if n <= 24: `java.lang.Float`<br/>- if n >= 25: `java.lang.Double` |
+| `FLOAT(n)` | If n is not specified, i.e. a `FLOAT(53)`:<br/>&nbsp;&nbsp;&bull; `java.lang.Double`<br/>if n is specified:<br/>&nbsp;&nbsp;&bull; if n <= 24: `java.lang.Float`<br/>&nbsp;&nbsp;&bull; if n >= 25: `java.lang.Double` |
 | `REAL` | `java.lang.Float`<br/>**Note**: `REAL` is equivalent to `FLOAT(24)`. |
 | `CHAR(n)`,<br/>`CHARACTER(n)`,<br/>`VARCHAR(n\|MAX)`,<br/>`CHARVARYING(n\|MAX)`,<br/>`CHARACTERVARYING(n\|MAX)`,<br/>`NCHAR(n)`,<br/>`NATIONAL CHAR(n)`,<br/>`NATIONAL CHARACTER(n)`,<br/>`NVARCHAR(n\|MAX)`,<br/>`NATIONAL CHAR VARYING(n\|MAX)`,<br/>`NATIONAL CHARACTER VARYING(n\|MAX)`,<br/>`TEXT`,<br/>`NTEXT` | `java.lang.String` [^1] |
 | `DATE` | `java.sql.Date` |
 | `DATETIME`,<br/>`SMALLDATETIME` | `java.util.Date` |
 | `DATETIME2(n)`,<br/>`DATETIMEOFFSET(n)` | `java.sql.Timestamp` |
-| `TIME(n)` | If n is not specified, i.e. `TIME(7)`:<br/>- `java.sql.Timestamp`<br/>If n is specified:<br/>- If n <=3: `java.sql.Time`<br/>- If n >=4: `java.sql.Timestamp` |
+| `TIME(n)` | If n is not specified, i.e. `TIME(7)`:<br/>&nbsp;&nbsp;&bull; `java.sql.Timestamp`<br/>If n is specified:<br/>&nbsp;&nbsp;&bull; If n <=3: `java.sql.Time`<br/>&nbsp;&nbsp;&bull; If n >=4: `java.sql.Timestamp` |
 | `BINARY(n)`,<br/>`VARBINARY(n\|MAX)`,<br/>`IMAGE` | `byte[]` [^1] |
 | `HIERARCHYID` | `byte[]` |
 | `ROWVERSION` | `java.lang.Object`. Cannot insert, nor update by PK. Selects and deletes work normally. Rows can be "updated by example" when excluding this column. |
