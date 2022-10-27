@@ -11,6 +11,8 @@ HotRod supports the following Databases:
 - H2
 - HyperSQL
 - Apache Derby
+- `Aurora/PostgreSQL` (not yet supported)
+- `Aurora/MySQL` (not yet supported)
 
 ## Default Data Types
 
