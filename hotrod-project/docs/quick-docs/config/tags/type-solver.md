@@ -33,7 +33,7 @@ When a table or view column produces a VO property, the property type is assigne
 2. If there's rule in the `<type-solver>` that matches the column, then this rule specifies the type for the VO property. The rest of the rules are ignored.
 
 3. If none of the rules above is matched, then the database adapter for the specific database provides a default type for the column. 
-See [Default Types](../supported-databases.md) for details of the default types for each database.
+See [Default Types](../supported-databases.md) for each database.
 
 ## The `test` Expression
 
