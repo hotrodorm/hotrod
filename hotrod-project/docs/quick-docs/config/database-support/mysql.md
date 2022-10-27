@@ -20,8 +20,8 @@ If a custom Java type is not specified HotRod will use the following rules to de
 | `INTEGER UNSIGNED`,<br/>`INT4 UNSIGNED` | `java.lang.Long` |
 | `BIGINT`,<br/>`INT8` | `java.lang.Long` |
 | `BIGINT UNSIGNED`,<br/>`INT8 UNSIGNED` | `java.math.BigInteger` |
-| `DECIMAL(p,s)`,<br/>`NUMERIC(p,s)` | If neither p or s are specified:<br/>- `java.lang.Long`<br/>If s is specified and different from zero the Java type is:<br/>- `java.math.BigDecimal`<br/>if s is not specified or specified with a value of zero:<br/>- if p <= 2: `java.lang.Byte`<br/>- if 2 < p <= 4: `java.lang.Short`<br/>- if 4 < p <= 9: `java.lang.Integer`<br/>- if 9 < p <= 18: `java.lang.Long`<br/>- if p > 18: `java.math.BigInteger` |
-| `FLOAT(n)`,<br/>`FLOAT4(n)`,<br/>`FLOAT(n) UNSIGNED`,<br/>`FLOAT4(n) UNSIGNED` | If n is not specified:<br/>- `java.lang.Float`<br/>If n is specified:<br/>- if n <= 24: `java.lang.Float`<br/>- if n >= 25: `java.lang.Double` |
+| `DECIMAL(p,s)`,<br/>`NUMERIC(p,s)` | If neither p or s are specified:<br/>&nbsp;&nbsp;&bull; `java.lang.Long`<br/>If s is specified and different from zero the Java type is:<br/>&nbsp;&nbsp;&bull; `java.math.BigDecimal`<br/>if s is not specified or specified with a value of zero:<br/>&nbsp;&nbsp;&bull; if p <= 2: `java.lang.Byte`<br/>&nbsp;&nbsp;&bull; if 2 < p <= 4: `java.lang.Short`<br/>&nbsp;&nbsp;&bull; if 4 < p <= 9: `java.lang.Integer`<br/>&nbsp;&nbsp;&bull; if 9 < p <= 18: `java.lang.Long`<br/>&nbsp;&nbsp;&bull; if p > 18: `java.math.BigInteger` |
+| `FLOAT(n)`,<br/>`FLOAT4(n)`,<br/>`FLOAT(n) UNSIGNED`,<br/>`FLOAT4(n) UNSIGNED` | If n is not specified:<br/>&nbsp;&nbsp;&bull; `java.lang.Float`<br/>If n is specified:<br/>&nbsp;&nbsp;&bull; if n <= 24: `java.lang.Float`<br/>&nbsp;&nbsp;&bull; if n >= 25: `java.lang.Double` |
 | `DOUBLE`,<br/>`DOUBLE PRECISION`,<br/>`REAL`,<br/>`FLOAT8`,<br/>`DOUBLE UNSIGNED`,<br/>`DOUBLE PRECISION UNSIGNED`,<br/>`REAL UNSIGNED`,<br/>`FLOAT8 UNSIGNED` | `java.lang.Double` |
 | `CHAR(n)`,<br/>`VARCHAR(n)`,<br/>`TINYTEXT`,<br/>`TEXT`,<br/>`MEDIUMTEXT`,<br/>`LONGTEXT` | `java.lang.String` [^1] |
 | `DATE`,<br/>`YEAR` | `java.sql.Date` |
