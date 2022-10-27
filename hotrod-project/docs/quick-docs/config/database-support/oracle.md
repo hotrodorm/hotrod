@@ -11,7 +11,7 @@ In some cases the concrete class for a Java type may be different from the abstr
 
 | Oracle Column Type | Default Java Type |
 | -- | -- |
-| `NUMBER(p,s)`,<br/>`DECIMAL(p,s)`,<br/>`DEC(p,s)`,<br/>`NUMERIC(p,s)`,<br/>`NUM(p,s)` | If neither p or s are specified:<br/>- `java.math.BigDecimal`<br/>If both are specified and s is different from zero the Java type is:<br/>- `java.math.BigDecimal`<br/>if p is specified and s is not specified or specified with a value of zero:<br/>- if p <= 2: `java.lang.Byte`<br/>- if 2 < p <= 4: `java.lang.Short`<br/>- if 4 < p <= 9: `java.lang.Integer`<br/>- if 8 < p <= 18: `java.lang.Long`<br/>- if p > 18: `java.math.BigInteger` |
+| `NUMBER(p,s)`,<br/>`DECIMAL(p,s)`,<br/>`DEC(p,s)`,<br/>`NUMERIC(p,s)`,<br/>`NUM(p,s)` | If neither p or s are specified:<br/>&bull; `java.math.BigDecimal`<br/>If both are specified and s is different from zero the Java type is:<br/>- `java.math.BigDecimal`<br/>if p is specified and s is not specified or specified with a value of zero:<br/>- if p <= 2: `java.lang.Byte`<br/>- if 2 < p <= 4: `java.lang.Short`<br/>- if 4 < p <= 9: `java.lang.Integer`<br/>- if 8 < p <= 18: `java.lang.Long`<br/>- if p > 18: `java.math.BigInteger` |
 | `SMALLINT`,<br/>`INTEGER`,<br/>`INT` | `java.math.BigInteger`<br/>**Note**: In Oracle `SMALLINT`, `INTEGER`, and `INT` are equivalent to `NUMBER(38)`. |
 | `FLOAT(p)` | if p is not specified (i.e. a 126-bit float):<br/>- `java.math.BigDecimal`<br/>if p is specified:<br/>- if p <= 23: `java.lang.Float`<br/>- if 24 <= p <= 52: `java.lang.Double`<br/>- if p >=53: `java.math.BigDecimal`<br/> |
 | `REAL` | `java.math.BigDecimal`<br/>**Note**: `REAL` is equivalent to `FLOAT(63)`. |
