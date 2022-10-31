@@ -184,7 +184,7 @@ You can use your favorite JDBC client tool to connect to it. Here we'll use the 
 terminal window, go to the project dir, and type:
 
 ```bash
-java -cp h2*.jar org.h2.tools.Console
+java -cp h2-2.1.214.jar org.h2.tools.Console
 ```
 
 Your browser will open. Use the following values:
@@ -250,9 +250,6 @@ and VOs prefixes and suffixes as needed. We can also change the mappers director
 #### The HotRod Properties File
 
 Now, let's create the configuration file `hotrod.properties` (referenced by the `pom.xml`) so the HotRod Generator can connect to the sandbox database. Create this file with the following content:
-
-- Driver Class: `org.h2.Driver`
-- JDBC URL: `jdbc:h2:tcp://localhost/~/data/test1`
 
 ```properties
 configfile=./hotrod.xml
