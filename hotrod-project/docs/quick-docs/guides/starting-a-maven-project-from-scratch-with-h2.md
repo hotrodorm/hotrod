@@ -1,4 +1,4 @@
-# Starting a Maven Project from Scratch
+# Starting a Maven Project from Scratch with H2 Database
 
 This guide creates a Spring Boot Maven project with HotRod persistence from scratch. Then, it runs it.
 
@@ -79,9 +79,9 @@ With all these additions the complete `pom.xml` file will look like:
     </dependency>  
 
     <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.2.5</version>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <version>2.1.214</version>
     </dependency>
 
     <dependency>

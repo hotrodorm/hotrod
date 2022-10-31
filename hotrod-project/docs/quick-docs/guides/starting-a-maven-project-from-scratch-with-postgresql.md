@@ -1,4 +1,4 @@
-# Starting a Maven Project from Scratch
+# Starting a Maven Project from Scratch with PostgreSQL Database
 
 This guide creates a Spring Boot Maven project with HotRod persistence from scratch. Then, it runs it.
 
