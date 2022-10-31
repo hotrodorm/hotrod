@@ -132,9 +132,9 @@ With all these additions the complete `pom.xml` file will look like:
         </configuration>
         <dependencies>
           <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.2.5</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.1.214</version>
           </dependency>
         </dependencies>
       </plugin>
