@@ -192,7 +192,7 @@ Your browser will open. Use the following values:
 - Driver Class: `org.h2.Driver`
 - JDBC URL: `jdbc:h2:tcp://localhost/~/data/test1`
 - Username: `sa`
-- Password: `sa`
+- Password: (empty string)
 
 
 Let's create a simple table in the database. Use your favorite database client and run the following SQL statements:
@@ -257,7 +257,7 @@ generator=MyBatis-Spring
 jdbcdriverclass=org.h2.Driver
 jdbcurl=jdbc:h2:tcp://localhost/~/data/test1
 jdbcusername=sa
-jdbcpassword=sa
+jdbcpassword=
 jdbccatalog=
 jdbcschema=public
 facets=
