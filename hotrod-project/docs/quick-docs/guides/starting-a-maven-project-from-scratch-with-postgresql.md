@@ -41,7 +41,13 @@ The `pom.xml` will include:
 - The HotRod, HotRod LiveSQL, and MyBatis Libraries. 
 - The HotRod Generator Plugin to it.
 
-For more details on how to configure the Maven dependencies and how to configure the HotRod generator plugin see [Maven Integration](../maven/maven.md).
+For more details on how to configure the Maven dependencies and how to configure the HotRod generator plugin see [Maven Integration](../maven/maven.md). In short, the required libraries are:
+
+| Library | Description |
+| -- | -- |
+| `org.hotrodorm.hotrod:hotrod` | The core library needed at runtime |
+| `org.hotrodorm.hotrod:livesql` | Implements LiveSQL |
+| `org.mybatis.spring.boot:mybatis-spring-boot-starter` | MyBatis database connectivity layer |
 
 With all these additions the complete `pom.xml` file will look like:
 
