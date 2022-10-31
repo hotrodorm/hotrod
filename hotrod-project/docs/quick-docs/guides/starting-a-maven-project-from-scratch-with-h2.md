@@ -190,7 +190,7 @@ java -cp h2-2.1.214.jar org.h2.tools.Console
 Your browser will open. Use the following values:
 
 - Driver Class: `org.h2.Driver`
-- JDBC URL: `jdbc:h2:tcp://localhost/~/data/test1`
+- JDBC URL: `jdbc:h2:tcp://localhost/./data/test1`
 - Username: `sa`
 - Password: (empty string)
 
@@ -255,7 +255,7 @@ Now, let's create the configuration file `hotrod.properties` (referenced by the 
 configfile=./hotrod.xml
 generator=MyBatis-Spring
 jdbcdriverclass=org.h2.Driver
-jdbcurl=jdbc:h2:tcp://localhost/~/data/test1
+jdbcurl=jdbc:h2:tcp://localhost/./data/test1
 jdbcusername=sa
 jdbcpassword=
 jdbccatalog=
