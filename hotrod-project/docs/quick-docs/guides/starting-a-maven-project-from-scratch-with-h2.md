@@ -6,6 +6,7 @@ You'll need:
 - Java.
 - Maven.
 - A text editor. `Notepad` or `vi` will do, but you can use your favorite IDE if you prefer.
+- No database installation necessary. Maven will download the H2 database engine.
 
 This guide sets up the Maven project, creates a table in the database, generates the HotRod persistence from it, and then runs a simple application using it.
 
@@ -13,6 +14,7 @@ For reference, after following all the steps of this guide our main project fold
 
 ```bash
 pom.xml                    # The Maven project file
+h2-2.1.214.jar             # The H2 Database engine and driver
 hotrod.xml                 # The HotRod configuration file
 hotrod.properties          # The HotRod Local properties
 src/main/java              # The Java source code, including the generated DAOs and VOs
@@ -79,9 +81,9 @@ With all these additions the complete `pom.xml` file will look like:
     </dependency>  
 
     <dependency>
-    <groupId>com.h2database</groupId>
-    <artifactId>h2</artifactId>
-    <version>2.1.214</version>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>2.1.214</version>
     </dependency>
 
     <dependency>
@@ -155,7 +157,14 @@ mkdir -p src/main/resources
 
 Change the commands above accordingly for Windows or other OS as needed, or use your IDE to create them.
 
-Finally, run Maven once, using `mvn clean` to make sure the `pom.xml` file is correctly formed.
+Finally, run Maven once, using `mvn clean compile` to make sure the `pom.xml` file is correctly formed. 
+
+Additionally, the Maven `compile` phase above will download the H2 library to `<USER_HOME>/.m2/repository/com/h2database/h2/2.1.214/h2-2.1.214.jar`. Copy it to your main directory:
+
+```bash
+cp ~/.m2/repository/com/h2database/h2/2.1.214/h2-2.1.214.jar .
+```
+
 
 ## Part 2 &mdash; Creating a Table and Generating the Persistence Code
 
@@ -163,8 +172,28 @@ In this section we create a table in the database and we generate the persistenc
 
 ### Create a Table in the Database
 
-At this point we'll need a database. We'll assume the database, schema, and permissions are ready to be used, and that we
-know the connection details to it.
+At this point we'll need the H2 database running. Open a terminal window, go to the project dir, and start it:
+
+```bash
+java -cp h2-2.1.214.jar org.h2.tools.Server -tcp -ifNotExists
+```
+
+The database is now running and listening to connections on port 9092 in this computer with any username and password. 
+
+You can use your favorite JDBC client tool to connect to it. Here we'll use the H2 Console available through the browser. Open another
+terminal window, go to the project dir, and type:
+
+```bash
+java -cp h2*.jar org.h2.tools.Console
+```
+
+Your browser will open. Use the following values:
+
+- Driver Class: `org.h2.Driver`
+- JDBC URL: `jdbc:h2:tcp://localhost/~/data/test1`
+- Username: `sa`
+- Password: `sa`
+
 
 Let's create a simple table in the database. Use your favorite database client and run the following SQL statements:
 
@@ -179,7 +208,8 @@ insert into employee (id, name) values (123, 'Alice');
 insert into employee (id, name) values (6097, 'Steve');
 ```
 
-Great. We now have a table in the database with three rows of data in it.
+Great. We now have a table in the database with three rows of data in it. You can run: `select * from employee;` to see all three of them.
+
 
 ### Generate the Persistence Code
 
@@ -221,13 +251,16 @@ and VOs prefixes and suffixes as needed. We can also change the mappers director
 
 Now, let's create the configuration file `hotrod.properties` (referenced by the `pom.xml`) so the HotRod Generator can connect to the sandbox database. Create this file with the following content:
 
+- Driver Class: `org.h2.Driver`
+- JDBC URL: `jdbc:h2:tcp://localhost/~/data/test1`
+
 ```properties
 configfile=./hotrod.xml
 generator=MyBatis-Spring
-jdbcdriverclass=org.postgresql.Driver
-jdbcurl=jdbc:postgresql://192.168.56.214:5432/mydatabase
-jdbcusername=myusername
-jdbcpassword=mypassword
+jdbcdriverclass=org.h2.Driver
+jdbcurl=jdbc:h2:tcp://localhost/~/data/test1
+jdbcusername=sa
+jdbcpassword=sa
 jdbccatalog=
 jdbcschema=public
 facets=
