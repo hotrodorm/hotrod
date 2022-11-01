@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import app5.persistence.ExpensiveProductVO;
 import app5.persistence.HistoricPriceVO;
 import app5.persistence.ProductVO;
-import app5.persistence.primitives.ProductDAO;
 import app5.persistence.primitives.HistoricPriceDAO.HistoricPriceOrderBy;
+import app5.persistence.primitives.ProductDAO;
 import app5.persistence.primitives.ProductDAO.ProductTable;
 
 @Component
@@ -80,6 +80,16 @@ public class CursorExamples {
     for (ExpensiveProductVO p : this.productsManager.getExpensiveProducts()) {
       System.out.println(" - local: " + p);
     }
+  }
+
+  @Transactional
+  public void find2ExpensiveProductsCursor() {
+    ProductTable p = ProductDAO.newTable("p");
+    Cursor<Map<String, Object>> c = sql.select().from(p).where(p.name.like("A%")).executeCursor();
+    for (Map<String, Object> row: c) {
+      System.out.println(row);
+    }
+
   }
 
   @Transactional

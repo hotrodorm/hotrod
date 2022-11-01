@@ -151,8 +151,11 @@ public class HotRodContext {
 
       try {
 
+        log.debug("gen 1");
         db = new JdbcDatabase(loc, tables, views);
+        log.debug("gen 2");
         adapter.setCurrentCatalogSchema(conn, loc.getDefaultCatalog(), loc.getDefaultSchema());
+        log.debug("gen 3");
 
       } catch (ReaderException e) {
         throw new ControlledException(e.getMessage());

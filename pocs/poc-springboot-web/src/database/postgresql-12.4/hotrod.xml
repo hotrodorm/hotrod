@@ -91,7 +91,9 @@
   </type-solver>
 
   <table name="product" />
+  <!-- 
   <table name="historic_price" />
+   -->
 
   <table name="account" />
   <table name="item" />
@@ -106,6 +108,8 @@
   <fragment file="accounts-fragment.xml" />
  
   <dao name="MyQueriesDAO">
+  
+    <sequence method="nextHouse" name="seq_house" /> 
 
     <!-- For new "result-set" strategy
     -->

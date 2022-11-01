@@ -19,10 +19,11 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.StructuredColumnMetadata;
-import org.hotrod.utils.JdbcUtils;
 import org.hotrod.utils.JdbcTypes.JDBCType;
+import org.hotrod.utils.JdbcUtils;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.exception.CatalogNotSupportedException;
+import org.nocrala.tools.database.tartarus.exception.InvalidCatalogException;
 import org.nocrala.tools.database.tartarus.exception.InvalidSchemaException;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
@@ -32,13 +33,16 @@ public class H2Adapter extends DatabaseAdapter {
 
   private static final Logger log = LogManager.getLogger(H2Adapter.class);
 
+  private boolean supportsCatalog;
+
   public H2Adapter(final DatabaseMetaData dm) throws SQLException {
     super(dm);
+    this.supportsCatalog = dm.getJDBCMajorVersion() > 1;
   }
 
   @Override
   public boolean supportsCatalog() {
-    return true;
+    return this.supportsCatalog;
   }
 
   @Override
@@ -381,15 +385,25 @@ public class H2Adapter extends DatabaseAdapter {
 
   @Override
   public void setCurrentCatalogSchema(final Connection conn, final String catalog, final String schema)
-      throws CatalogNotSupportedException, InvalidSchemaException, SQLException {
-    if (catalog != null) {
-      throw new CatalogNotSupportedException();
+      throws CatalogNotSupportedException, InvalidSchemaException, SQLException, InvalidCatalogException {
+
+    if (this.supportsCatalog) { // H2 version 2.x
+      if (catalog == null) {
+        throw new InvalidCatalogException(JdbcUtils.getCatalogs(conn.getMetaData()));
+      }
+      JdbcUtils.runSQLStatement(conn, "set catalog " + catalog);
+    } else { // H2 version 1.x
+      if (catalog != null) {
+        throw new CatalogNotSupportedException();
+      }
     }
+
     if (schema == null) {
       throw new InvalidSchemaException(JdbcUtils.getSchemas(conn.getMetaData(), catalog));
     } else {
       JdbcUtils.runSQLStatement(conn, "set schema " + schema);
     }
+
   }
 
 }

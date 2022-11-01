@@ -1,0 +1,35 @@
+
+1. Documentar HotRod - Páginas Básicas.
+  -> Álvaro ¿Puedes hacer el índice/tabla de contenidos?
+
+2. Implementar módulo Torcs.
+  -> Mantener como biblioteca separada.
+
+3. LiveSQL: Agregar "CASE <expr> WHEN".
+
+4. Upgrade de los tipos de dato por defecto. Usar las classes de java.time.* (LocalDate, LocalTime, LocalTimestamp, ZonedDateTime, OffsetDatetTime, OffsetTime, Duration) en vez de las clases antiguas (java.sql.Timestamp, java.util.Date, java.sql.Time).
+
+5. Implementar LiveSQL especializado.
+ -> Comenzar con PostgreSQL 14?
+
+-------------------------------------------------
+
+=== Documentación ===
+
+1. Configuración Básica: 
+* Estructura de pom y comando.
+* Anotaciones necesarias.
+  Ejemplo: @ComponentScan(basePackagesClass = LiveSQL.class)
+* Properties
+
+2. Ejemplo de quitar prefijos y otras características que se pueden configurar en el archivo hotrod.xml
+
+3. Query Custom.
+
+
+
+
+
+
+
+

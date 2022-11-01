@@ -1,27 +1,27 @@
 # Nitro Queries
 
 
-Nitro Queries are one of the flagship modules that HotRod offers. They allows the developer to run high performance, configuration-assisted queries.
+Nitro Queries are one of the flagship modules that HotRod offers. They allows the developer to run high performance, configuration-assisted queries. In short:
 
-The developer can add tailored queries to execute any custom build SQL query with or without native features. Apart from simple flat queries HotRod can also add a new dimension of hierarchical data and automated SQL rendering to solve common problems.
+- The queries can reach high performance by accessing the whole range of the database features, and can also squeeze performance by the use of particular non-standard engine-specific extensions.
 
-Custom queries can typically access the whole range of the database features, and can also squeeze performance by the use of particular non-standard engine-specific singularities.
+- The configuration is assisted, since with a few tags the query can be build and all table properties are automatically filled it according to the database tables' structure. Value objects are automatically created to receive the tuples or trees of data defined by the query.
 
 Nitro queries can be grouped into three categories:
 
-- General Purpose Queries that return no data
-- Flat Selects
-- Structured Selects
+- General Purpose Queries that return no data.
+- Flat Selects.
+- Structured Selects.
 
 They can be added inside any of:
 
-- &lt;table> tag,
-- &lt;view> tag, or
-- &lt;dao> tag
+- `<table>` tag.
+- `<view>` tag.
+- `<dao>` tag.
 
 Finally, they can include any number of parameters, and can also use [Dynamic SQL](nitro-dynamic-sql.md) features. 
 
-## General Purpose Queries -- The `<query>` Tag
+## General Purpose Queries &mdash; The `<query>` Tag
 
 A [General Purpose Query](nitro-general-purpose.md) does not return a result set and is implemented using `<query>` tag. It may return optional count of rows.
 
@@ -57,7 +57,7 @@ They can include the full native SQL language available on the database, as well
 
 General queries are exposed as Java methods with parameters in the DAO where they are defined. 
 
-## Flat Selects -- The `<select>` Tag
+## Flat Selects &mdash; The `<select>` Tag
 
 A [Flat Select Query](nitro-flat-selects.md) executes a SQL `SELECT` statement and models the resulting rows as value objects with fully defined property names and property types. The execution of a flat select typically returns a `java.util.List` of these value objects.
 
@@ -79,7 +79,7 @@ The above query returns a list value object and is exposed to the developer as t
 public List<AccountClientVO> findActiveAccountsWithClient(Integer regionId) { ... }
 ```
 
-## Structured Selects -- The `<select>` Tag, Again
+## Structured Selects &mdash; The `<select>` Tag, Again
 
 A Structured Select Query executes a `SELECT` statement and models the resulting rows not as a flat tabular structure, but as tuples of objects or as trees of objects.
 

@@ -9,6 +9,8 @@ drop table island;
 drop table item;
 drop table account;
 
+drop table order_item;
+
 drop table historic_price;
 drop table product;
 
