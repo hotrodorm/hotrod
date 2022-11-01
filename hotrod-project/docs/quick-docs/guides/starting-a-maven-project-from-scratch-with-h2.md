@@ -190,10 +190,10 @@ java -cp h2-2.1.214.jar org.h2.tools.Console
 
 Your browser will open. Use the following values:
 
-- Driver Class: `org.h2.Driver`
-- JDBC URL: `jdbc:h2:tcp://localhost/./data/test1`
-- Username: `sa`
-- Password: *(empty string)*
+- **Driver Class**: `org.h2.Driver`
+- **JDBC URL**: `jdbc:h2:tcp://localhost/./data/test1`
+- **Username**: `sa`
+- **Password**: *(empty string)*
 
 Now, let's create a table with three rows. Copy the following SQL code and run it.
 
@@ -264,15 +264,9 @@ facets=
 display=
 ```
 
-Change the URL, username, password, and schema as needed to match your current database.
-
 **Note**: The connection details included in this file are used for persistence generation purposes only. They typically point to a sandbox database in the 
 development environment. When running in the production environment HotRod will pick up the connection details from the `datasource` Spring bean, typically
-configured in the `application.properties` file of the application.
-
-**Note**: Also, depending on the project organization, developers may not commit the `hotrod.properties` to the repository. This is typically the case
-for distributed teams where each one of the developers uses a local independent sandbox database with a different URL or credentials. In the case of 
-centralized teams where all developers use the same sandbox database, then this file can have the same values, and may be safely commited to the source code repository.
+configured in the `application.properties` file of the application, retrieved from the runtime environment.
 
 #### Generate the Persistence Code
 
