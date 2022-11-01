@@ -274,13 +274,47 @@ Now, let's use HotRod to generate the persistence code. Type:
 
 `mvn hotrod:gen`
 
-HotRod will connect to the database schema, will retrieve the table details, and will produce the code. It will create or update the following files:
+We see the code generation details:
+
+```bash
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.myapp:myapp >---------------------------
+[INFO] Building myapp 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- hotrod-maven-plugin:3.4.8-SNAPSHOT:gen (default-cli) @ myapp ---
+[INFO] HotRod version 3.4.8 (build 20221101-172137) - Generate
+[INFO] 
+[INFO] Configuration File: ~/example/./hotrod.xml
+[INFO] Database URL: jdbc:h2:tcp://localhost/./data/test1
+[INFO] Database Name: H2 - version 2.1 (2.1.214 (2022-06-13))
+[INFO] JDBC Driver: H2 JDBC Driver - version 2.1 (2.1.214 (2022-06-13)) - implements JDBC Specification 4.2
+[INFO] Database Adapter: H2 Adapter
+[INFO] 
+[INFO] Current Catalog: TEST1
+[INFO] Current Schema: PUBLIC
+[INFO] 
+[INFO] Generating all facets.
+[INFO]  
+[INFO] Table EMPLOYEE included.
+[INFO]  
+[INFO] Total of: 1 table, 0 views, 0 enums, 0 DAOs, and 0 sequences -- including 0 select methods, and 0 query methods.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.730 s
+[INFO] Finished at: 2022-11-01T14:01:48-04:00
+[INFO] ------------------------------------------------------------------------
+```
+
+HotRod connected to the database schema, will retrieve the table details, and will produce the code. It will create or update the following files:
 * `src/main/java/com/myapp/daos/EmployeeImpl.java`
 * `src/main/java/com/myapp/daos/primitives/EmployeeDAO.java`
 * `src/main/java/com/myapp/daos/primitives/EmployeeVO.java`
 * `src/main/resources/mappers/primitives-employee.xml`
 
-**Note**: Since the `EmployeeImpl.java` may contain custom code, it's created but never overwritten. The other files are always overwritten to keep them current with the latest database structure.
+Note that since the `EmployeeImpl.java` may contain custom code, it's created the first time but never overwritten afterwards. The other files are always overwritten to keep them current with the latest database structure.
 
 At this point all the persistence code is ready to be used.
 
@@ -392,13 +426,13 @@ depends on the specifics of the project.
 External properties are meant for the DevOps team to tweak, since they will need to provide specific production details to the application.
 In particular, DevOps will need to set up the database connection details. Place here any other details that will need to be managed by DevOps.
 
-Create the file `application.properties` (same name as before but this time in the main dir) as:
+Create the file `./application.properties` (same name as before but this time in the main dir) as:
 
 ```properties
-spring.datasource.driver-class-name=org.postgresql.Driver
-spring.datasource.url=jdbc:postgresql://192.168.56.214:5432/mydatabase
-spring.datasource.username=myusername
-spring.datasource.password=mypassword
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.url=jdbc:h2:tcp://localhost/./data/test1
+spring.datasource.username=sa
+spring.datasource.password=
 ```
 
 **Note**: Change the values above according to your specific database.
