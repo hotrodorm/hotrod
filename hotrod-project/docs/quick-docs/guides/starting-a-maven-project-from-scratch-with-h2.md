@@ -74,31 +74,31 @@ With all these additions the complete `pom.xml` file will look like:
 
   <dependencies>
 
-    <dependency>
+    <dependency> <!-- You can use Spring Boot, plain Spring, or other similar one -->
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <version>${springboot.version}</version>
     </dependency>  
 
-    <dependency>
+    <dependency> <!-- Your app requires the JDBC driver to connect to the database (could be provided at runtime) -->
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>2.1.214</version>
     </dependency>
 
-    <dependency>
+    <dependency> <!-- Required. The main HotRod library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
       <version>${hotrod.version}</version>
     </dependency>
 
-    <dependency>
+    <dependency> <!-- Required. HotRod's LiveSQL library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
       <version>${hotrod.version}</version>
     </dependency>
 
-    <dependency>
+    <dependency> <!-- Required. The generator uses MyBatis for database connectivity -->
       <groupId>org.mybatis.spring.boot</groupId>
       <artifactId>mybatis-spring-boot-starter</artifactId>
       <version>${mybatis.version}</version>
