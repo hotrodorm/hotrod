@@ -184,6 +184,7 @@ You can use your favorite JDBC client tool to connect to it. Here we'll use the 
 terminal window, go to the project dir, and type:
 
 ```bash
+cd <PROJECT_DIR>
 java -cp h2-2.1.214.jar org.h2.tools.Console
 ```
 
@@ -192,10 +193,9 @@ Your browser will open. Use the following values:
 - Driver Class: `org.h2.Driver`
 - JDBC URL: `jdbc:h2:tcp://localhost/./data/test1`
 - Username: `sa`
-- Password: (empty string)
+- Password: *(empty string)*
 
-
-Let's create a simple table in the database. Use your favorite database client and run the following SQL statements:
+Now, let's create a table with three rows. Copy the following SQL code and run it.
 
 ```sql
 create table employee (
@@ -258,8 +258,8 @@ jdbcdriverclass=org.h2.Driver
 jdbcurl=jdbc:h2:tcp://localhost/./data/test1
 jdbcusername=sa
 jdbcpassword=
-jdbccatalog=
-jdbcschema=public
+jdbccatalog=TEST1
+jdbcschema=PUBLIC
 facets=
 display=
 ```
