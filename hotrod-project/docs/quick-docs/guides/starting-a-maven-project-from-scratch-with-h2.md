@@ -20,7 +20,7 @@ hotrod.properties          # The HotRod Local properties
 src/main/java              # The Java source code, including the generated DAOs and VOs
 src/main/resources         # All resources including the generated mappers
 src/main/resources/application.properties # Embedded Properties, configured by the developer
-application.properties     # Runtime Properties, configured by DevOps in the production environment.
+application.properties     # Runtime Properties, configured by DevOps in the production environment
 ```
 
 The Runtime Properties can override the Embedded Properties.
