@@ -80,7 +80,7 @@ With all these additions the complete `pom.xml` file will look like:
       <version>${springboot.version}</version>
     </dependency>  
 
-    <dependency> <!-- Your app requires the JDBC driver to connect to the database (could be provided at runtime) -->
+    <dependency> <!-- Your app needs the JDBC driver to connect to the database. It could be also provided at runtime -->
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>2.1.214</version>
