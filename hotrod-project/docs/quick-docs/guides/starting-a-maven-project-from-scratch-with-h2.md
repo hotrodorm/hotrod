@@ -38,9 +38,9 @@ Alternatively, you can use your favorite IDE to create a blank Maven project.
 
 The `pom.xml` will include:
 - The Spring Boot Starter dependency and the Spring Boot Plugin.
-- The JDBC driver dependency according to your specific database.
+- The JDBC driver dependency according to your specific database. This is optional and can be provided at runtime.
 - The HotRod, HotRod LiveSQL, and MyBatis Libraries. 
-- The HotRod Generator Plugin to it.
+- The HotRod Generator Plugin.
 
 For more details on how to configure the Maven dependencies and how to configure the HotRod generator plugin see [Maven Integration](../maven/maven.md). In short, the required libraries are:
 
