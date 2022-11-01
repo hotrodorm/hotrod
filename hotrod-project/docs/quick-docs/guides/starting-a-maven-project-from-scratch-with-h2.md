@@ -501,6 +501,7 @@ This time we see:
 
 DevOps can tweak the logging properties (or any other property) in production, if we need extra information about the actual queries being run.
 
+
 ### Packaging the Application for Deployment into Production
 
 Now that the application is tested we can package it for a production deployment. Run:
@@ -521,3 +522,10 @@ java -jar target/myapp-1.0.0-SNAPSHOT.jar
 ```
 
 You will see same execution details in the log file.
+
+
+### Shut Down the Database
+
+Since your H2 database is still running in the other console, don't forget to stop it. Go there and type `Ctrl-C` to stop it.
+
+
