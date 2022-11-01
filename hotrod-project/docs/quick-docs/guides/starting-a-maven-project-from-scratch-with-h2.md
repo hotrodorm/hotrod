@@ -19,9 +19,11 @@ hotrod.xml                 # The HotRod configuration file
 hotrod.properties          # The HotRod Local properties
 src/main/java              # The Java source code, including the generated DAOs and VOs
 src/main/resources         # All resources including the generated mappers
-src/main/resources/application.properties # Embedded properties, configured by the developer
-application.properties     # The runtime properties, configured by DevOps in the production deployment. They override the embedded properties
+src/main/resources/application.properties # Embedded Properties, configured by the developer
+application.properties     # Runtime Properties, configured by DevOps in the production environment.
 ```
+
+The Runtime Properties can override the Embedded Properties.
 
 For simplicity, this guide creates these files in the main folder of the project. You can later change their locations to organize the project 
 in your preferred way.
