@@ -10,6 +10,9 @@ You'll need:
 
 This guide sets up the Maven project, creates a table in the database, generates the HotRod persistence from it, and then runs a simple application using it.
 
+For the sake of simplicity this example combines settings in fewer files. For a production-like set up see
+[using H2 persistent](./starting-a-maven-project-from-scratch-with-h2.md) or [using PostgreSQL](./starting-a-maven-project-from-scratch-with-postgresql.md) that separate the developer and DevOps roles more clearly.
+
 For reference, after following all the steps of this guide our main project folder will include the files and folders shown below:
 
 ```bash
@@ -35,9 +38,8 @@ In this part we create the Maven project, we lay out its structure, we and add a
 
 ### Set Up a Maven Project
 
-If you are using a plain text editor (such as Notepad) you can create an empty folder and add the files as decribed in the steps below.
-
-Alternatively, you can use your favorite IDE to create a blank Maven project.
+If you are using a plain text editor (such as Notepad) you can create an empty folder and add the files as decribed in the 
+steps below. Alternatively, you can use your favorite IDE to create a blank Maven project.
 
 The `pom.xml` will include:
 - The Spring Boot Starter dependency and the Spring Boot Plugin.
@@ -46,13 +48,6 @@ The `pom.xml` will include:
 - The HotRod Generator Plugin.
 
 For more details on how to configure the Maven dependencies and how to configure the HotRod generator plugin see [Maven Integration](../maven/maven.md). In short, the required libraries are:
-
-| Library | Description |
-| -- | -- |
-| `org.hotrodorm.hotrod:hotrod` | The core library needed at runtime |
-| `org.hotrodorm.hotrod:livesql` | Implements LiveSQL |
-| `org.mybatis.spring.boot:mybatis-spring-boot-starter` | MyBatis database connectivity layer |
-
 
 With all these additions the complete `pom.xml` file will look like:
 
@@ -70,9 +65,6 @@ With all these additions the complete `pom.xml` file will look like:
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
-    <springboot.version>2.3.4.RELEASE</springboot.version>
-    <hotrod.version>3.4.8</hotrod.version>
-    <mybatis.version>2.1.3</mybatis.version>
   </properties>
 
   <dependencies>
@@ -80,7 +72,7 @@ With all these additions the complete `pom.xml` file will look like:
     <dependency> <!-- You can use Spring Boot, plain Spring, or other similar one -->
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <version>${springboot.version}</version>
+      <version>2.3.4.RELEASE</version>
     </dependency>  
 
     <dependency> <!-- Your app needs the JDBC driver to connect to the database. It could be also provided at runtime -->
@@ -92,19 +84,19 @@ With all these additions the complete `pom.xml` file will look like:
     <dependency> <!-- Required. The main HotRod library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>${hotrod.version}</version>
+      <version>3.4.8</version>
     </dependency>
 
     <dependency> <!-- Required. HotRod's LiveSQL library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>${hotrod.version}</version>
+      <version>3.4.8</version>
     </dependency>
 
     <dependency> <!-- Required. The generator uses MyBatis for database connectivity -->
       <groupId>org.mybatis.spring.boot</groupId>
       <artifactId>mybatis-spring-boot-starter</artifactId>
-      <version>${mybatis.version}</version>
+      <version>2.1.3</version>
     </dependency>    
 
   </dependencies>
@@ -116,7 +108,7 @@ With all these additions the complete `pom.xml` file will look like:
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${springboot.version}</version>
+        <version>2.3.4.RELEASE</version>
         <executions>
           <execution>
             <goals>
@@ -129,7 +121,7 @@ With all these additions the complete `pom.xml` file will look like:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>${hotrod.version}</version>
+        <version>3.4.8</version>
         <configuration>
           <localproperties>hotrod.properties</localproperties>
         </configuration>
@@ -148,8 +140,6 @@ With all these additions the complete `pom.xml` file will look like:
 
 </project>
 ```
-
-**Note**: Don't forget to change JDBC driver (in two places) according the database you are using.
 
 Create the empty source folders, if they are not yet created. In linux you can do:
 
@@ -214,11 +204,6 @@ your choosing and with any name) and add:
 </hotrod>
 ```
 
-In the file above:
-- We can change the package name of the daos according to the specific project, and we can change the DAOs 
-and VOs prefixes and suffixes as needed. We can also change the mappers directory, to generate them to a different folder.
-- It's recommended to keep the `<classic-fk-navigation />` and `<select-generation strategy="result-set" />` tags to enable modern features.
-- Finally, we see the list of tables we want to inspect. In this case this list only includes a single table: `employee`.
 
 #### The HotRod Properties File
 
@@ -237,9 +222,6 @@ facets=
 display=
 ```
 
-**Note**: The connection details included in this file are used for persistence generation purposes only. They typically point to a sandbox database in the 
-development environment. When running in the production environment HotRod will pick up the connection details from the `datasource` Spring bean, typically
-configured in the `application.properties` file of the application, retrieved from the runtime environment.
 
 #### Generate the Persistence Code
 
@@ -289,7 +271,6 @@ HotRod connected to the database schema, will retrieve the table details, and wi
 
 Note that since the `EmployeeImpl.java` may contain custom code, it's created the first time but never overwritten afterwards. The other files are always overwritten to keep them current with the latest database structure.
 
-At this point all the persistence code is ready to be used.
 
 ## Part 3 &mdash; The Application
 
@@ -380,7 +361,7 @@ Now, let's prepare the properties files. Spring properties are divided in two gr
 - Embedded properties that will be included as part of the jar application to be deployed.
 - External properties set up by DevOps (as a separate file) when deploying the application in production or any environment.
 
-### Prepare the Embedded Properties File
+### Prepare the Properties File
 
 Embeded properties define the default values for Spring, and they will be included in the jar file when building it. 
 Create the file `src/main/resources/application.properties` as:
@@ -388,27 +369,12 @@ Create the file `src/main/resources/application.properties` as:
 ```properties
 mybatis.mapper-locations=mappers/**/*.xml
 logging.level.root=INFO
-```
-
-The first property tells Spring about the location of the mappers. Change accordingly if you change the `hotrod.xml` configuration file.
-The second property sets up the default level of logging. There are a myriad of other Spring properties that can be set up here, and that 
-depends on the specifics of the project.
-
-### Prepare the External Properties File
-
-External properties are meant for the DevOps team to tweak, since they will need to provide specific production details to the application.
-In particular, DevOps will need to set up the database connection details. Place here any other details that will need to be managed by DevOps.
-
-Create the file `./application.properties` (same name as before but this time in the main dir) as:
-
-```properties
 spring.datasource.driver-class-name=org.h2.Driver
 spring.datasource.url=jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './create-db.sql';DB_CLOSE_DELAY=-1
 spring.datasource.username=sa
 spring.datasource.password=
 ```
 
-**Note**: Change the values above according to your specific database.
 
 ### Run the Application
 
@@ -428,77 +394,4 @@ Employees with names that start with 'A':
 {name=Alice, id=123}
 [ Example complete ]
 ```
-
-### Run the Application with SQL Debugging Active
-
-If you want to see the exact SQL queries that are run in the database you can activate the logging for it. Edit the `application.properties` file 
-and append the following properties to it:
-
-```properties
-logging.level.com.myapp.daos.primitives.employee.selectByPK=DEBUG
-logging.level.org.hotrod.runtime.livesql.LiveSQLMapper=DEBUG
-```
-
-The first property activates the SQL log for the `selectByPK()` method of the `EmployeeDAO`. The second property activates the SQL log for all LiveSQL
-queries. A `DEBUG` level shows the SQL statement and the applied parameters, while a `TRACE` level will also include all the selected data; use 
-the `TRACE` level with caution since it can add a massive amount of logging to your log files.
-
-**Note**: while there are separated loggers for each CRUD method, there's a single logger for all LiveSQL queries.
-
-Let's run the application again. Type:
-
-```bash
-mvn spring-boot:run
-```
-
-The Spring Boot application starts, connects to the database and run both queries. We see the result shown below:
-
-```log
-[ Starting example ]
-DEBUG --- [main] c.m.daos.primitives.employee.selectByPK  : ==>  Preparing: select id, name from employee where id = ?
-DEBUG --- [main] c.m.daos.primitives.employee.selectByPK  : ==> Parameters: 123(Integer)
-DEBUG --- [main] c.m.daos.primitives.employee.selectByPK  : <==      Total: 1
-Employee #123 Name: Alice
-DEBUG --- [main] o.h.r.livesql.LiveSQLMapper.select       : ==>  Preparing: SELECT * FROM employee WHERE name like 'A%'
-DEBUG --- [main] o.h.r.livesql.LiveSQLMapper.select       : ==> Parameters: 
-DEBUG --- [main] o.h.r.livesql.LiveSQLMapper.select       : <==      Total: 2
-Employees with names that start with 'A':
-{name=Anne, id=45}
-{name=Alice, id=123}
-[ Example complete ]
-```
-
-This time we see:
-- The CRUD SQL statement `select id, name from employee where id = ?`, the applied parameter `123`, and the number of returned rows `1`.
-- The LiveSQL SQL statement `SELECT * FROM employee WHERE name like 'A%'` and the number of returned rows `2`.
-
-DevOps can tweak the logging properties (or any other property) in production, if we need extra information about the actual queries being run.
-
-
-### Packaging the Application for Deployment into Production
-
-Now that the application is tested we can package it for a production deployment. Run:
-
-```bash
-mvn clean package
-```
-
-Maven builds the applications and produces a single jar file at `target/myapp-1.0.0-SNAPSHOT.jar`. The name is assembled
-with the values in the `<artifactId>` and `<version>` tags. The jar file contains the entire application.
-
-When deploying to production this file should be placed along with an `application.properties` described above that the DevOps will set up.
-
-Run the *packaged* version of the application. Type:
-
-```bash
-java -jar target/myapp-1.0.0-SNAPSHOT.jar
-```
-
-You will see same execution details in the log file.
-
-
-### Shut Down the Database
-
-Since your H2 database is still running in the other console, don't forget to stop it. Go there and type `Ctrl-C` to stop it.
-
 
