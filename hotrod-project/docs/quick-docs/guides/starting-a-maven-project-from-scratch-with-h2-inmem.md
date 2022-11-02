@@ -21,7 +21,7 @@ create-db.sql              # A SQL script that creates a table and data for this
 hotrod.xml                 # The HotRod configuration file
 src/main/java              # The Java source code, including the generated DAOs and VOs
 src/main/resources         # All resources including the generated mappers
-src/main/resources/application.properties # Ruintime properties
+src/main/resources/application.properties # Runtime properties
 ```
 
 The Runtime Properties can override the Embedded Properties.
