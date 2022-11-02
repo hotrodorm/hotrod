@@ -166,7 +166,7 @@ mvn clean compile
 
 In this part we create an in-memory table in H2 database and we generate the persistence code from it.
 
-### Create a Table in the Database
+### Prepare the Database Script that Creates the Database
 
 Create the file `create-db.sql` with the following SQL content:
 
