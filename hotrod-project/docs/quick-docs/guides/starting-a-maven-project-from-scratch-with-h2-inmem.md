@@ -262,7 +262,7 @@ Note that since the `EmployeeImpl.java` may contain custom code, it's created th
 
 ## Part 3 &mdash; The Application
 
-In this part we write a simple app that uses the CRUD functionality and the LiveSQL functionality to read the database.
+In this part we write a simple app that uses the CRUD and LiveSQL functionalities to read the database.
 
 ### A Simple Spring Boot Application
 
