@@ -381,6 +381,6 @@ Employees with names that start with 'A':
 ```
 
 We can see:
-- The CRUD SQL statement `select id, name from employee where id = ?` was run and returned 1 row.
+- The CRUD SQL statement `select id, name from employee where id = 123` was run and returned 1 row.
 - The LiveSQL SQL statement `SELECT * FROM employee WHERE name like 'A%'` was run and returned 2 rows.
 
