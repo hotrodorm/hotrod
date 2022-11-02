@@ -28,7 +28,8 @@ Reference:
 - [Supported Databases and Default Data Types](config/supported-databases.md).
 
 Quick Guides:
-- Starting a Maven Project from Scratch [using H2 in-memory](guides/starting-a-maven-project-from-scratch-with-h2-in-memory.md), [using H2 persistent](guides/starting-a-maven-project-from-scratch-with-h2.md), or [using PostgreSQL](guides/starting-a-maven-project-from-scratch-with-postgresql.md).
+- [Hello World!](./guides/hello-world.md).
+- Starting a Maven Project from Scratch [using H2](guides/starting-a-maven-project-from-scratch-with-h2.md), or [using PostgreSQL](guides/starting-a-maven-project-from-scratch-with-postgresql.md).
 - [Creating a Running Project in One Command](maven/maven-arquetype.md).
 - [Mapping Column Types](guides/mapping-column-types.md).
 - [Mapping Table and Column Names](guides/mapping-table-and-column-names.md).
