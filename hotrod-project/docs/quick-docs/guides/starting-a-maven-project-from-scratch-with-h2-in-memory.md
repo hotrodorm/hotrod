@@ -267,7 +267,7 @@ In this part we write a simple app that uses the CRUD and LiveSQL functionalitie
 
 ### A Simple Spring Boot Application
 
-Let's write a simple application that perform two searches in the table we created before. Create the application 
+Let's write a simple application that performs two searches in the table. Create the application 
 class `src/main/java/com/myapp/App.java` as:
 
 ```java
