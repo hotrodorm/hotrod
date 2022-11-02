@@ -195,7 +195,7 @@ your choosing and with any name) and add:
 
   <generators>
     <mybatis-spring>
-      <daos package="com.myapp.daos" />
+     <daos package="com.myapp.daos" dao-suffix="DAO" vo-suffix="Impl" />
       <mappers dir="mappers" />
       <classic-fk-navigation />
       <select-generation strategy="result-set" />          
