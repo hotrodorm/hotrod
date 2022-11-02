@@ -126,7 +126,7 @@ With all these additions the complete `pom.xml` file will look like:
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './create-db.sql';DB_CLOSE_DELAY=-1</jdbcurl>
           <jdbcusername>sa</jdbcusername>
-          <jdbcpassword></jdbcpassword>
+          <jdbcpassword>""</jdbcpassword>
           <jdbccatalog>EXAMPLEDB</jdbccatalog>
           <jdbcschema>PUBLIC</jdbcschema>
           <facets></facets>
