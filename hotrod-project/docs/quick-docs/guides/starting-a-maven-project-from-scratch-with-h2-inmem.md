@@ -347,7 +347,7 @@ public class App {
 
 ### Prepare the Runtime Properties File
 
-The runtime properties are used when running the application. Create the file `./application.properties` as:
+The runtime properties are used when running the application. Create the file `application.properties` as:
 
 ```properties
 mybatis.mapper-locations=mappers/**/*.xml
