@@ -71,7 +71,7 @@ With all these additions the complete `pom.xml` file will look like:
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
     <springboot.version>2.3.4.RELEASE</springboot.version>
-    <hotrod.version>3.4.8</hotrod.version>
+    <hotrod.version>3.4.9</hotrod.version>
     <mybatis.version>2.1.3</mybatis.version>
   </properties>
 
@@ -172,6 +172,8 @@ In this section we create an in-memory table in H2 database and we generate the 
 Create the file `create-db.sql` with the following SQL content:
 
 ```sql
+drop table if exists employee;
+
 create table employee (
   id int primary key not null,
   name varchar(20) not null
@@ -229,7 +231,7 @@ jdbcdriverclass=org.h2.Driver
 jdbcurl=jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './create-db.sql';DB_CLOSE_DELAY=-1
 jdbcusername=sa
 jdbcpassword=
-jdbccatalog=TEST1
+jdbccatalog=EXAMPLEDB
 jdbcschema=PUBLIC
 facets=
 display=
@@ -254,16 +256,16 @@ We see the code generation details:
 [INFO] Building myapp 1.0.0-SNAPSHOT
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO] 
-[INFO] --- hotrod-maven-plugin:3.4.8-SNAPSHOT:gen (default-cli) @ myapp ---
-[INFO] HotRod version 3.4.8 (build 20221101-172137) - Generate
+[INFO] --- hotrod-maven-plugin:3.4.9 (default-cli) @ myapp ---
+[INFO] HotRod version 3.4.9 (build 20221102-152614) - Generate
 [INFO] 
-[INFO] Configuration File: ~/example/./hotrod.xml
-[INFO] Database URL: jdbc:h2:tcp://localhost/./data/test1
+[INFO] Configuration File: /home/valarcon/tmp/hot2/./hotrod.xml
+[INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './create-db.sql';DB_CLOSE_DELAY=-1
 [INFO] Database Name: H2 - version 2.1 (2.1.214 (2022-06-13))
 [INFO] JDBC Driver: H2 JDBC Driver - version 2.1 (2.1.214 (2022-06-13)) - implements JDBC Specification 4.2
 [INFO] Database Adapter: H2 Adapter
 [INFO] 
-[INFO] Current Catalog: TEST1
+[INFO] Current Catalog: EXAMPLEDB
 [INFO] Current Schema: PUBLIC
 [INFO] 
 [INFO] Generating all facets.
@@ -274,8 +276,8 @@ We see the code generation details:
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  1.730 s
-[INFO] Finished at: 2022-11-01T14:01:48-04:00
+[INFO] Total time:  1.826 s
+[INFO] Finished at: 2022-11-02T11:54:34-04:00
 [INFO] ------------------------------------------------------------------------
 ```
 
@@ -401,7 +403,7 @@ Create the file `./application.properties` (same name as before but this time in
 
 ```properties
 spring.datasource.driver-class-name=org.h2.Driver
-spring.datasource.url=jdbc:h2:tcp://localhost/./data/test1
+spring.datasource.url=jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './create-db.sql';DB_CLOSE_DELAY=-1
 spring.datasource.username=sa
 spring.datasource.password=
 ```
