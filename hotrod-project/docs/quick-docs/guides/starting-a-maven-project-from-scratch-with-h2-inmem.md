@@ -214,7 +214,9 @@ your choosing and with any name) and add:
 
 Now, let's use HotRod to generate the persistence code. Type:
 
-`mvn hotrod:gen`
+```bash
+mvn hotrod:gen
+```
 
 We see the code generation details:
 
@@ -377,4 +379,8 @@ Employees with names that start with 'A':
 {name=Alice, id=123}
 [ Example complete ]
 ```
+
+We can see:
+- The CRUD SQL statement `select id, name from employee where id = ?` was run and returned 1 row.
+- The LiveSQL SQL statement `SELECT * FROM employee WHERE name like 'A%'` was run and returned 2 rows.
 
