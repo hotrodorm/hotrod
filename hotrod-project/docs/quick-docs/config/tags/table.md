@@ -72,7 +72,9 @@ See [`<version-control-column>`](version-control-column.md) for details.
 
 ## Extra Persistence Methods
 
-HotRod can add extra methods that could be related to the table by the use of the 
+HotRod can add extra methods that could be related to the table to retrieve sequences, running general purpose queries, and Nitro queries.
+
+See [`<sequence>`](sequence.md), [`<query>`](query.md), and [`<select>`](select.md).
 
 
 
