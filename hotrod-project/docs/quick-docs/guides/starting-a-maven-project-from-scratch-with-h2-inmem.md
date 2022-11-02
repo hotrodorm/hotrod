@@ -21,7 +21,7 @@ create-db.sql              # A SQL script that creates a table and data for this
 hotrod.xml                 # The HotRod configuration file
 src/main/java              # The Java source code, including the generated DAOs and VOs
 src/main/resources         # All resources including the generated mappers
-src/main/resources/application.properties # Runtime properties
+application.properties     # The runtime properties
 ```
 
 The Runtime Properties can override the Embedded Properties.
@@ -347,7 +347,7 @@ public class App {
 
 ### Prepare the Runtime Properties File
 
-The runtime properties are used when running the application. Create the file `src/main/resources/application.properties` as:
+The runtime properties are used when running the application. Create the file `./application.properties` as:
 
 ```properties
 mybatis.mapper-locations=mappers/**/*.xml
