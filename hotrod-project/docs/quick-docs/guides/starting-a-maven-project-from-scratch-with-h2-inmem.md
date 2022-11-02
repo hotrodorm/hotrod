@@ -19,11 +19,9 @@ For reference, after following all the steps of this guide our main project fold
 pom.xml                    # The Maven project file
 create-db.sql              # A SQL script that creates a table and data for this example
 hotrod.xml                 # The HotRod configuration file
-hotrod.properties          # The HotRod Local properties
 src/main/java              # The Java source code, including the generated DAOs and VOs
 src/main/resources         # All resources including the generated mappers
-src/main/resources/application.properties # Embedded Properties, configured by the developer
-application.properties     # Runtime Properties, configured by DevOps in the production environment
+src/main/resources/application.properties # Ruintime properties
 ```
 
 The Runtime Properties can override the Embedded Properties.
@@ -123,7 +121,16 @@ With all these additions the complete `pom.xml` file will look like:
         <artifactId>hotrod-maven-plugin</artifactId>
         <version>3.4.8</version>
         <configuration>
-          <localproperties>hotrod.properties</localproperties>
+          <configfile>./hotrod.xml</configfile>
+          <generator>MyBatis-Spring</generator>
+          <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
+          <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './create-db.sql';DB_CLOSE_DELAY=-1</jdbcurl>
+          <jdbcusername>sa</jdbcusername>
+          <jdbcpassword></jdbcpassword>
+          <jdbccatalog>EXAMPLEDB</jdbccatalog>
+          <jdbcschema>PUBLIC</jdbcschema>
+          <facets></facets>
+          <display></display>
         </configuration>
         <dependencies>
           <dependency>
@@ -174,9 +181,8 @@ insert into employee (id, name) values (123, 'Alice');
 insert into employee (id, name) values (6097, 'Steve');
 ```
 
-### Generate the Persistence Code
 
-#### The HotRod Configuration File
+### Create the HotRod Configuration File
 
 Tell HotRod how you want the generation to work. Create the file `hotrod.xml` (in the folder of
 your choosing and with any name) and add:
@@ -204,26 +210,7 @@ your choosing and with any name) and add:
 </hotrod>
 ```
 
-
-#### The HotRod Properties File
-
-Now, let's create the configuration file `hotrod.properties` (referenced by the `pom.xml`) so the HotRod Generator can connect to the sandbox database. Create this file with the following content:
-
-```properties
-configfile=./hotrod.xml
-generator=MyBatis-Spring
-jdbcdriverclass=org.h2.Driver
-jdbcurl=jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './create-db.sql';DB_CLOSE_DELAY=-1
-jdbcusername=sa
-jdbcpassword=
-jdbccatalog=EXAMPLEDB
-jdbcschema=PUBLIC
-facets=
-display=
-```
-
-
-#### Generate the Persistence Code
+### Generate the Persistence Code
 
 Now, let's use HotRod to generate the persistence code. Type:
 
@@ -361,10 +348,9 @@ Now, let's prepare the properties files. Spring properties are divided in two gr
 - Embedded properties that will be included as part of the jar application to be deployed.
 - External properties set up by DevOps (as a separate file) when deploying the application in production or any environment.
 
-### Prepare the Properties File
+### Prepare the Runtime Properties File
 
-Embeded properties define the default values for Spring, and they will be included in the jar file when building it. 
-Create the file `src/main/resources/application.properties` as:
+The runtime properties are used when running the application. Create the file `src/main/resources/application.properties` as:
 
 ```properties
 mybatis.mapper-locations=mappers/**/*.xml
