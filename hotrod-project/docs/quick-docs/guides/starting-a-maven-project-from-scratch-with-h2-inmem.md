@@ -18,13 +18,11 @@ For reference, after following all the steps of this guide our main project fold
 ```bash
 pom.xml                    # The Maven project file
 create-db.sql              # A SQL script that creates a table and data for this example
-hotrod.xml                 # The HotRod configuration file
-src/main/java              # The Java source code, including the generated DAOs and VOs
-src/main/resources         # All resources including the generated mappers
+hotrod.xml                 # Tells HotRod how you want the persistent code
+src/main/java              # Your Java app and the generated DAOs and VOs
+src/main/resources         # All resources, including the generated mappers
 application.properties     # The runtime properties
 ```
-
-The Runtime Properties can override the Embedded Properties.
 
 For simplicity, this guide creates these files in the main folder of the project. You can later change their locations to organize the project 
 in your preferred way.
@@ -36,7 +34,7 @@ In this part we create the Maven project, we lay out its structure, we and add a
 
 ### Set Up a Maven Project
 
-If you are using a plain text editor (such as Notepad) you can create an empty folder and add the files as decribed in the 
+If you are using a plain text editor (such as Notepad) you can create an empty folder and add the files as described in the 
 steps below. Alternatively, you can use your favorite IDE to create a blank Maven project.
 
 The `pom.xml` will include:
@@ -47,7 +45,7 @@ The `pom.xml` will include:
 
 For more details on how to configure the Maven dependencies and how to configure the HotRod generator plugin see [Maven Integration](../maven/maven.md). In short, the required libraries are:
 
-With all these additions the complete `pom.xml` file will look like:
+The complete `pom.xml` file will look like:
 
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -148,7 +146,7 @@ With all these additions the complete `pom.xml` file will look like:
 </project>
 ```
 
-Create the empty source folders, if they are not yet created. In linux you can do:
+Also, create the empty source folders, if they are not yet created. In linux you can do:
 
 ```bash
 mkdir -p src/main/java
@@ -157,12 +155,16 @@ mkdir -p src/main/resources
 
 Change the commands above accordingly for Windows or other OS as needed, or use your IDE to create them.
 
-Finally, run Maven once, using `mvn clean compile` to make sure the `pom.xml` file is correctly formed. 
+To check the `pom.xml` file is correct, run Maven once using:
+
+```bash
+mvn clean compile
+```
 
 
 ## Part 2 &mdash; Creating a Table and Generating the Persistence Code
 
-In this section we create an in-memory table in H2 database and we generate the persistence code from it.
+In this part we create an in-memory table in H2 database and we generate the persistence code from it.
 
 ### Create a Table in the Database
 
@@ -259,6 +261,8 @@ Note that since the `EmployeeImpl.java` may contain custom code, it's created th
 
 
 ## Part 3 &mdash; The Application
+
+In this part we write a simple app that uses the CRUD functionality and the LiveSQL functionality to read the database.
 
 ### A Simple Spring Boot Application
 

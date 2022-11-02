@@ -35,7 +35,7 @@ In this part we create the Maven project, we lay out its structure, we and add a
 
 ### Set Up a Maven Project
 
-If you are using a plain text editor (such as Notepad) you can create an empty folder and add the files as decribed in the steps below.
+If you are using a plain text editor (such as Notepad) you can create an empty folder and add the files as described in the steps below.
 
 Alternatively, you can use your favorite IDE to create a blank Maven project.
 
