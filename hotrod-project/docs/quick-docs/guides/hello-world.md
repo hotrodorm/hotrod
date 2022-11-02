@@ -1,6 +1,6 @@
-# Starting a Maven Project from Scratch with H2 In-Memory Database
+# Hello World HotRod!
 
-This guide creates a Spring Boot Maven project with HotRod persistence from scratch. Then, it runs it.
+This guide runs a Spring Boot project with Maven and H2 in-memory database. It shows the basic idea of how HotRod works.
 
 You'll need:
 - Java.
@@ -10,10 +10,7 @@ You'll need:
 
 This guide sets up the Maven project, creates a table in the database, generates the HotRod persistence from it, and then runs a simple application using it.
 
-For the sake of simplicity this example combines settings in fewer files. For a production-like set up see
-[using H2 persistent](./starting-a-maven-project-from-scratch-with-h2.md) or [using PostgreSQL](./starting-a-maven-project-from-scratch-with-postgresql.md) that separate the developer and DevOps roles more clearly.
-
-For reference, after following all the steps of this guide our main project folder will include the files and folders shown below:
+After following all the steps of this guide our main project folder will include the files and folders shown below:
 
 ```bash
 pom.xml                    # The Maven project file
@@ -23,9 +20,6 @@ src/main/java              # Your Java app and the generated DAOs and VOs
 src/main/resources         # All resources, including the generated mappers
 application.properties     # The runtime properties
 ```
-
-For simplicity, this guide creates these files in the main folder of the project. You can later change their locations to organize the project 
-in your preferred way.
 
 
 ## Part 1 &mdash; Setting Up the Project
@@ -39,11 +33,9 @@ steps below. Alternatively, you can use your favorite IDE to create a blank Mave
 
 The `pom.xml` will include:
 - The Spring Boot Starter dependency and the Spring Boot Plugin.
-- The JDBC driver dependency according to your specific database. This is optional and can be provided at runtime.
+- The JDBC driver dependency according to your specific database.
 - The HotRod, HotRod LiveSQL, and MyBatis Libraries. 
 - The HotRod Generator Plugin.
-
-For more details on how to configure the Maven dependencies and how to configure the HotRod generator plugin see [Maven Integration](../maven/maven.md). In short, the required libraries are:
 
 The complete `pom.xml` file will look like:
 
