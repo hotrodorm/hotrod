@@ -71,7 +71,7 @@ With all these additions the complete `pom.xml` file will look like:
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
     <springboot.version>2.3.4.RELEASE</springboot.version>
-    <hotrod.version>3.4.9</hotrod.version>
+    <hotrod.version>3.4.8</hotrod.version>
     <mybatis.version>2.1.3</mybatis.version>
   </properties>
 
