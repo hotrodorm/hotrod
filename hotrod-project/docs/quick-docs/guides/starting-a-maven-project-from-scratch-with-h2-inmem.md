@@ -344,9 +344,6 @@ public class App {
 }
 ```
 
-Now, let's prepare the properties files. Spring properties are divided in two groups (at least):
-- Embedded properties that will be included as part of the jar application to be deployed.
-- External properties set up by DevOps (as a separate file) when deploying the application in production or any environment.
 
 ### Prepare the Runtime Properties File
 
