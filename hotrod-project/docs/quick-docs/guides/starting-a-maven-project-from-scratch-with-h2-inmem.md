@@ -256,10 +256,10 @@ We see the code generation details:
 [INFO] Building myapp 1.0.0-SNAPSHOT
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO] 
-[INFO] --- hotrod-maven-plugin:3.4.9 (default-cli) @ myapp ---
-[INFO] HotRod version 3.4.9 (build 20221102-152614) - Generate
+[INFO] --- hotrod-maven-plugin:3.4.8 (default-cli) @ myapp ---
+[INFO] HotRod version 3.4.8 (build 20221102-152614) - Generate
 [INFO] 
-[INFO] Configuration File: /home/valarcon/tmp/hot2/./hotrod.xml
+[INFO] Configuration File: ~/example/./hotrod.xml
 [INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './create-db.sql';DB_CLOSE_DELAY=-1
 [INFO] Database Name: H2 - version 2.1 (2.1.214 (2022-06-13))
 [INFO] JDBC Driver: H2 JDBC Driver - version 2.1 (2.1.214 (2022-06-13)) - implements JDBC Specification 4.2
