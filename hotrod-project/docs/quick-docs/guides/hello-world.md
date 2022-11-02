@@ -178,8 +178,7 @@ insert into employee (id, name) values (6097, 'Steve');
 
 ### Create the HotRod Configuration File
 
-Tell HotRod how you want the generation to work. Create the file `hotrod.xml` (in the folder of
-your choosing and with any name) and add:
+Tell HotRod how you want the generation to work. Create the file `hotrod.xml` and add:
 
 ```xml
 <?xml version="1.0"?>
@@ -255,7 +254,7 @@ overwritten afterwards. The other files are always overwritten to keep them curr
 
 ## Part 3 &mdash; The Application
 
-In this part we write a simple app that uses the CRUD and LiveSQL functionalities to read the database.
+In this part we write a simple app that uses the CRUD and LiveSQL functionalities to read from the database.
 
 ### A Simple Spring Boot Application
 
