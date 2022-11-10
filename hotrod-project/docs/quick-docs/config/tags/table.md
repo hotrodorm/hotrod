@@ -5,13 +5,14 @@ to the persistence layer.
 
 ## Attributes
 
-In its simplest form this tag only specifies the table name. Table columns are inspected and all DAO and VO
-classes are produced according to the default logic. Names are produced in camel-case according to the
-table and column names and can be customized by the [`<name-solver>`](./name-solver.md) rules. Data types are produced
-according to the [default types for each database](../supported-databases.md) and can be customized by 
-the [`<type-solver>`](./type-solver.md) rules.
+In its simplest form this tag only specifies the table name. All table columns are inspected automatically and all DAO and VO
+classes are generated according to the default settings. Names are produced in camel-case and property types are generated
+according to the [default types for each database](../supported-databases.md).
 
-The tag can also include more modifiers that can be useful in special cases, as shown below:
+The default rules for table and column names can be customized with [`<name-solver>`](./name-solver.md) rules. Data types
+can also be customized with [`<type-solver>`](./type-solver.md) rules.
+
+The `<table>` tag can include modifiers that can be useful in special cases, as shown below:
 
 | Attribute | Description | Defaults to |
 | --- | --- | --- |
