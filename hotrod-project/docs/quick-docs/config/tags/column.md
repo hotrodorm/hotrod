@@ -1,7 +1,10 @@
 
 # The `<column>` Tag
 
-This tag customizes how HotRod maps a database column into a Java property. In short, it customizes its name and type.
+This tag can be used to override the default name and/or type of a property related to a database column.
+
+It can also be used to specify the use of a sequence to generate values for the column, or to specify the cycling 
+values for a version column used for optimistic locking.
 
 ## Attributes
 
@@ -18,9 +21,10 @@ It can include the following attributes:
 | catalog | The catalog of the sequence (if any) | N/A |
 | schema | The schema of the sequence (if any) | N/A |
 | is-lob  | Influences the reading and writing strategies of a LOB | N/A |
-| initial-value | | |
-| min-value | | |
-| max-value | | |
+| initial-value | Overrides initial value for [`<version-control-column>`](optimistic locking) | According to the database type |
+| min-value | Overrides minimum value for [`<version-control-column>`](optimistic locking) | According to the database type |
+| max-value | Overrides maximum value for [`<version-control-column>`](optimistic locking) | According to the database type |
+
 
 ## Custom Name &amp; Type
 
