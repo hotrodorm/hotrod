@@ -5,7 +5,7 @@ Sometimes modeling a database column *as is* is not convenient for the applicati
 It may be something as simple as the database not implementing boolean types natively or that 
 the application needing to model statuses as Java enums rather than plain Strings.
 
-In other cases the reason can be more technical rather than conceptual. Sometimes is much faster to read BLOBs or CLOBs as
+In other cases the reason can be technical rather than conceptual. Sometimes is much faster to read BLOBs or CLOBs as
 `java.io.InputStream`s that could potentially be opened (or not at all to avoid cost when not needed) rather than reading 
 the whole LOBs every time for every single row. In other cases the database or driver may use one way of reading a value but a different way to 
 write it. 
