@@ -81,10 +81,14 @@ name and type.
 
 By specifying names and tags this way the resulting VO will include the following properties.
 
+This: <span style="color:red;">changed</span>
+
+Or: <span style="color:red;">*changed*</span>
+
 | Database Column | VO Property | VO Type |
 | -- | -- | -- |
 | `ID` | `id` | `Integer` |
-| `CREATED_AT` | `createdAt` | `java.time.LocalDateTime` <span style="color:red;">*changed*</span> |
+| `CREATED_AT` | `createdAt` | `java.time.LocalDateTime` <span style="color:red;">changed</span> |
 | `TAX_PCT` | `taxPercent` <span color="red">changed</span> | `java.math.BigDecimal` |
 | `UX_TOT_TAX_AMT` | `totalAmount` *changed* | `Double` *changed* |
 | `STATUS` | `status` | (now uses a converter) *changed* |
