@@ -45,11 +45,11 @@ it can be used for optimistic locking. Each time the row is changed this timesta
 of this strategy is that no extra column is required. The downsides of it is that the
 column may have been intended for a different goal (not low level updates), and also the granularity of the timestamp
 value could be insufficient on highly updated rows that can occur more than once a second (or millisecond).
-- **Full Row Check**: (Not supported by HotRod) This strategy remembers the entire row and check it while
-updating or deleting. The upside is that is doesn't require an extra column. The downside is that it needs to compare
-all the columns of the table before updating, and this could place extra load in the database. This could be significant
-when comparing LOB types or other heavy values that need to be sent back and forth over the network and then fully 
-compared before performing update operations.
+- **Full Row Check**: (Not supported by HotRod) This strategy remembers the entire row and checks it while
+updating or deleting it. The upside is that is doesn't require an extra column. The downside is that it needs to compare
+all the columns of the table before updating, and this could place extra load in the database. This extra load could be 
+significant when comparing LOB types or other heavy values that need to be sent back and forth over the network and then 
+fully compared before performing update operations.
 
 
 
