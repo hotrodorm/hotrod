@@ -23,7 +23,7 @@ column type. It can also be customized with the `<column>` tag's attributes `ini
 
 ## Optimistic Locking 
 
-Optimistic Locking can be used to control concurrent updates on a table. These update operation
+Optimistic locking can be used to control concurrent updates on a table. These update operation
 can take the form of an `UPDATE` or `DELETE` SQL statement that follows a `SELECT` SQL statement. 
 
 When updating or deleting the row HotRod will craft the SQL statement to validate the row hasn't been changed since

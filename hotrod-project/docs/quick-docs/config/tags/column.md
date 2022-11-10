@@ -9,7 +9,7 @@ values for a version column used for optimistic locking.
 
 ## Attributes
 
-It can include the following attributes:
+This tag can include the following attributes:
 
 | Attribute | Description | Defaults to |
 | -- | -- | -- |
@@ -28,13 +28,13 @@ It can include the following attributes:
 
 [^1]: This is a requirement of the JDBC spec where each nulls needs to be typed when applied as a query parameter. See [java.sql.Types](https://docs.oracle.com/javase/8/docs/api/java/sql/Types.html) for a list of valid types.
 
-## Custom Name &amp; Type
+## Applying a Custom Name &amp; or a Custom Type
 
 As described before the naming of the column properties and their types follow rules specified by the `<name-solver>` and `<type-solver>` and,
 in the absence of these, follow default rules that depend on each database.
 
-Nonetheless, if the name or type of the column produced by the rules above is not suitable for one or more columns, you can add a `<column>` tag
-that can set its name or type directly.
+Nonetheless, if the name or type of the column produced by the rules above is not suitable for for the application, it's possible to change them by 
+adding one or more `<column>` tags in the `<table>` declaration.
 
 For example, if the following table is created (PostgreSQL) as:
 
@@ -52,11 +52,11 @@ By default HotRod will generate the following columns and types:
 
 | Database Column | VO Property | VO Type |
 | -- | -- | -- |
-| ID | id | Integer |
-| CREATED_AT | createdAt | java.sql.Timestamp |
-| TAX_PCT | taxPercent | java.math.BigDecimal |
-| UX_TOT_TAX_AMT | uxTotTaxAmt | java.math.BigDecimal |
-| STATUS | status | String |
+| `ID` | `id` | `Integer` |
+| `CREATED_AT` | `createdAt` | `java.sql.Timestamp` |
+| `TAX_PCT` | `taxPct` | `java.math.BigDecimal` |
+| `UX_TOT_TAX_AMT` | `uxTotTaxAmt` | `java.math.BigDecimal` |
+| `STATUS` | `status | `String` |
 
 If we wanted to override these names and types and decided for:
 - `CREATED_AT` as `java.time.LocalDateTime`.
@@ -79,9 +79,20 @@ The columns that are not mentioned are not affected and their names and types us
 also, that changes can be combined in the same tag, as shown for the column `UX_TOT_TAX_AMT` that sets its
 name and type.
 
-The `jdbc-type` is rarely used, but can become handy for exotic types or when using old JDBC drivers that do
-not know how to deal with these uncommon column types. For example, when trying to insert a GEOMETRY value with an old
-driver or when inserting an UUID value that needs to use the `BINARY`.
+By specifying names and tags this way the resulting VO will include the following properties.
+
+| Database Column | VO Property | VO Type |
+| -- | -- | -- |
+| `ID` | `id` | `Integer` |
+| `CREATED_AT` | `createdAt` | `java.time.LocalDateTime` *changed* |
+| `TAX_PCT` | `taxPercent` *changed* | `java.math.BigDecimal` |
+| `UX_TOT_TAX_AMT` | `totalAmount` *changed* | `Double` *changed* |
+| `STATUS` | `status` | (now uses a converter) *changed* |
+
+
+Finally, the `jdbc-type` is rarely used, but can become handy for exotic types or when using old JDBC drivers that do
+not know how to deal with these uncommon or new column types. For example, when trying to insert a GEOMETRY value with an old
+driver or when inserting an UUID value that needs to use the `BINARY` when inserting but the default type `OBJECT` when reading.
 
 
 
