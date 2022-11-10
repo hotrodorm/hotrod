@@ -103,12 +103,12 @@ driver or when inserting an UUID value that needs to use the `BINARY` when inser
 
 Sometimes modeling a database column *as is* may not be convenient for the application. It may be that the database does not 
 implement boolean types natively but the table has as number (0 and 1) instead, or that the application could benefit from modeling
-statuses as Java enums rather than Strings, or a more technical reason.
+statuses as Java enums rather than Strings, or other more technical reason.
 
-In cases like these a Converter can be applied to the column, to implement a custom conversion of the values on the fly while reading
+In cases like these a converter can be applied to the column, to implement a custom conversion of the values on the fly while reading
 them or while writing them back to the database. 
 
-To use a converter for a column, the converted needs to be defined in the configuration file using the [`<converter>`])(./converter.md) tag. 
+To use a converter for a column, the converter needs to be defined in the configuration file using the [`<converter>`](./converter.md) tag. 
 Then the converter can be used by one or more columns of the database by using the `converter` attribute on each one of them.
 
 
