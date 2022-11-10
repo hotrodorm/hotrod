@@ -115,7 +115,7 @@ public class ShortBooleanConverter implements TypeConverter<Short, Boolean> {
 This converter can be defined in the configuration file with the `<converter>` tag as in:
 
 ```xml
-  <converter name="boolean_stored_as_smallint"
+  <converter name="boolean_stored_as_decimal"
     java-type="java.lang.Boolean"
     java-intermediate-type="java.lang.Short"
     class="com.ctac.converters.ShortBooleanConverter"
@@ -126,7 +126,7 @@ Once this converter is defined, it can be used in the `<column>`tag as:
 
 ```xml
   <table name="patient">
-    <column name="active" converter="boolean_stored_as_smallint" />
+    <column name="active" converter="boolean_stored_as_decimal" />
   </table>
 ```
 
