@@ -147,6 +147,7 @@ You can look into each tag to get details of it:
                    * [`<expression>`](expression.md)
                 * `<association>`
                 * `<expression>`
+            * *Dynamic SQL*: Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
             * [`<complement>`](complement.md)
                 * *Dynamic SQL*: Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
     * [`<enum>`](enum.md)
