@@ -84,8 +84,8 @@ By specifying names and tags this way the resulting VO will include the followin
 | Database Column | VO Property | VO Type |
 | -- | -- | -- |
 | `ID` | `id` | `Integer` |
-| `CREATED_AT` | `createdAt` | `java.time.LocalDateTime` *changed* |
-| `TAX_PCT` | `taxPercent` *changed* | `java.math.BigDecimal` |
+| `CREATED_AT` | `createdAt` | `java.time.LocalDateTime` $${\color{red}changed}$$ |
+| `TAX_PCT` | `taxPercent` $${\color{red}*changed*}$$ | `java.math.BigDecimal` |
 | `UX_TOT_TAX_AMT` | `totalAmount` *changed* | `Double` *changed* |
 | `STATUS` | `status` | (now uses a converter) *changed* |
 
