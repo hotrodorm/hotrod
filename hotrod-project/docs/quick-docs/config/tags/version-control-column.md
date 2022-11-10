@@ -6,16 +6,19 @@ this tag must indicate the column that will be used as a *versioning column*.
 
 ## Attributes
 
-It can include the following attributes:
+It includes the following attributes:
 
 | Attribute | Description | Defaults to |
 | -- | -- | -- |
 | name | The column name to use for versionining. Must be an integer-like type | Required |
 
-The version column values are considered cyclic. They have a starting value and a set range of
-values. When reaching the maximum values they fall back to the minimum value. The initial value, the minimum
-value, and the maximum value are set by default buy HotRod according to the default logic of each database
-column type but can also be configured by the `<column>` tag's attributes `initial-value`, `min-value`, and `max-value`.
+
+## Cycling Values
+
+The version column values are considered cyclic. They have a starting value that falls within a range of
+possible values. When reaching the maximum value the column falls back to the minimum value. The initial value and 
+valid range are set by default by HotRod according to the default logic of each database
+column type. It can also be customized with the `<column>` tag's attributes `initial-value`, `min-value`, and `max-value`.
 
 
 ## Optimistic Locking 
