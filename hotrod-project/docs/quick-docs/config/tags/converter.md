@@ -117,8 +117,9 @@ This converter can be defined in the configuration file with the `<converter>` t
 ```xml
   <converter name="boolean_stored_as_smallint"
     java-type="java.lang.Boolean"
+    java-intermediate-type="java.lang.Short"
     class="com.ctac.converters.ShortBooleanConverter"
-    java-intermediate-type="java.lang.Short" />
+  />
 ```
 
 Once this converter is defined, it can be used in the `<column>`tag as:
