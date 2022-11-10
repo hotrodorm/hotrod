@@ -57,8 +57,9 @@ public interface TypeConverter<T, A> {
 
 ## Example
 
-Let's consider the case of an Oracle database column `DECIMAL(4)` is used to represent a boolean value, a type that Oracle does not support.
-The column considers the numeric values zero (0) as `false` and one (1) as `true`. The table could be created as:
+Let's consider the case of an Oracle database column `DECIMAL(4)` that is used to represent a boolean value &mdash; a type that 
+Oracle does not support. The column considers the numeric values zero (0) as `false` and one (1) as `true`. The table could be 
+created as:
 
 ```sql
 create table patient (
