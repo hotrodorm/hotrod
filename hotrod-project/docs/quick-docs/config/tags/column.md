@@ -29,7 +29,7 @@ This tag can include the following attributes:
 [^1]: This is a requirement of the JDBC spec where each nulls needs to have a type when applied as a query parameter. See [java.sql.Types](https://docs.oracle.com/javase/8/docs/api/java/sql/Types.html) for a list of valid types.
 
 
-## Applying a Custom Name and/or a Custom Type
+## Applying a Custom Name or Type
 
 By default, VO properties' names and types are automatically assigned according by HotRod:
 
