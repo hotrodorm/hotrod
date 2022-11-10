@@ -21,9 +21,9 @@ It can include the following attributes:
 | catalog | The catalog of the sequence (if any) | N/A |
 | schema | The schema of the sequence (if any) | N/A |
 | is-lob  | Influences the reading and writing strategies of a LOB | N/A |
-| initial-value | Overrides initial value for [`<version-control-column>`](./version-control-column.md) | According to the database type |
-| min-value | Overrides minimum value for [`<version-control-column>`](./version-control-column.md) | According to the database type |
-| max-value | Overrides maximum value for [`<version-control-column>`](./version-control-column.md) | According to the database type |
+| initial-value | Overrides initial value for [optimistic locking](./version-control-column.md) | According to the database type |
+| min-value | Overrides minimum value for [optimistic locking](./version-control-column.md) | According to the database type |
+| max-value | Overrides maximum value for [optimistic locking](./version-control-column.md) | According to the database type |
 
 
 ## Custom Name &amp; Type
