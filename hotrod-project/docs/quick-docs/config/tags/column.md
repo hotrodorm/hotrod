@@ -50,7 +50,7 @@ create table invoice (
 
 By default HotRod will generate the following columns and types:
 
-| Database Column | VO Property | VO Type |
+| Database Column | VO Property | VO Property Type |
 | -- | -- | -- |
 | `ID` | `id` | `Integer` |
 | `CREATED_AT` | `createdAt` | `java.sql.Timestamp` |
@@ -81,7 +81,7 @@ name and type.
 
 By specifying names and tags this way the resulting VO will include the following properties.
 
-| Database Column | VO Property | VO Type |
+| Database Column | VO Property | VO Property Type |
 | -- | -- | -- |
 | `ID` | `id` | `Integer` |
 | `CREATED_AT` | `createdAt` | `java.time.LocalDateTime` *changed* |
