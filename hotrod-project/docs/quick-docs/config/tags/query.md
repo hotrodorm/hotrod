@@ -24,7 +24,7 @@ This tag includes the following attribute:
 
 ## General Structure
 
-This tag can include one or more `<parameter>` tags to specify parameters for the query.
+This tag can include one or more [`<parameter>`](./parameter.md) tags to specify parameters for the query.
 
 The body of this tag includes the SQL statement to be executed decorated with Dynamic SQL tags, parameter 
 definition, parameter application, and parameter injection.
