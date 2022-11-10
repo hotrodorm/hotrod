@@ -57,14 +57,14 @@ public interface TypeConverter<T, A> {
 
 ## Example
 
-For example, an Oracle database column `DECIMAL(4)` can be used to represent a boolean value, that Oracle does not support natively.
-It will consider the numeric values zero (0) as false and one (1) as true. 
+Let's consider the case of an Oracle database column `DECIMAL(4)` is used to represent a boolean value, a type that Oracle does not support.
+The column considers the numeric values zero (0) as `false` and one (1) as `true`.
 
-Now, when reading this database column the converter reads it first as a `java.lang.Short`. Then, it converts into a 
+Now, when reading this database column the converter reads it first as the raw type `java.lang.Short`. Then, it converts into a 
 `java.lang.Boolean`. In this case:
 
 - `DECIMAL(4)`: the database column type.
-- `java.lang.Short`: the raw type for the intermediate value. This value is used briefly and on the fly during the conversion and
+- `java.lang.Short`: the raw type for the intermediate value. This value is used briefly during the conversion and
 is not available to the application.
 - `java.lang.Boolean`: the property type in the application. This is the value that the application sees.
 
