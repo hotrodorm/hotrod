@@ -80,14 +80,14 @@ Injecting a parameter value means to directly *concatenate* its value into the S
 simple way of assembling SQL statement at first, and it actually is. However, the downside of it &mdash; and it's a big one
 &mdash; is that SQL Injection can modify the whole SQL statement. If the parameter is not controlled by the application and
 comes unfiltered from the application UI or other external source it can represent a big security hole in the application and
-can lead to severe losses in the business.
+can lead to severe losses to the business.
 
-In this case, the parameter `rows` is injected. If the value always comes from inside the application then there's no 
+In this particular example, the parameter `rows` is injected. If the value always comes from inside the application then there's no 
 security vulnerability in using it. However, if the parameter were a `String` coming from a browser, a security hack could replace
 it with something like `1 rows only; delete from invoices; select 1 + 1 fetch next 1 `. This would open the application to a 
 hacker that could delete the entire database.
 
-Use SQL Injection with care.
+Use SQL Injection with care only when there's no other solution. Most of the time Dynamic SQL can provide similar functionality.
 
 
 
