@@ -87,7 +87,8 @@ security vulnerability in using it. However, if the parameter were a `String` co
 it with something like `1 rows only; delete from invoices; select 1 + 1 fetch next 1 `. This would open the application to a 
 hacker that could delete the entire database.
 
-Use SQL Injection with care only when there's no other solution. Most of the time Dynamic SQL can provide similar functionality.
+Use SQL Injection with care only when there's no other solution. Most of the time Dynamic SQL can provide similar functionality, 
+and it's completely safe.
 
 
 
