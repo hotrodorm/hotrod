@@ -1,7 +1,8 @@
 
 # The `<column>` Tag
 
-This tag can be used to override the default name and/or type of a property related to a database column.
+This tag can be used to override the default name and/or type of a property related to a database column, 
+or to specify a type converter for it.
 
 It can also be used to specify the use of a sequence to generate values for the column, or to specify the cycling 
 values for a version column used for optimistic locking.
