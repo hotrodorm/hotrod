@@ -3,15 +3,15 @@
 Sometimes modeling a database column *as is* is not convenient for the application.
 
 It may be something as simple as the database not implementing boolean types natively or that 
-the application could benefit from modeling statuses as Java enums rather than plain Strings.
+the application needing to model statuses as Java enums rather than plain Strings.
 
-In other cases the reason can be more technical. Sometimes is much faster to read BLOBs or CLOBs as `java.io.InputStream`s that could potentially
-be opened (or not at all to avoid cost when not needed) rather than reading the whole LOB every time. In other cases the database or driver may
-use one way of reading a value but a different one to write it. There reasons vary but the key aspect is that the data is stored in the database 
-and the application sees it differently.
+In other cases the reason can be more technical rather than conceptual. Sometimes is much faster to read BLOBs or CLOBs as
+`java.io.InputStream`s that could potentially be opened (or not at all to avoid cost when not needed) rather than reading 
+the whole LOBs every time for every single row. In other cases the database or driver may use one way of reading a value but a different way to 
+write it. 
 
-In cases like the ones above, a Converter can resolve the problem. In short, a converter reads from a database value and converts
-it on the fly to another one. For example, the VARCHAR status column with values `'CRE'`, `'ACC'`, `'REJ'` can be modeled as a Java enum with
+In cases like the ones above, a converter can resolve the problem. In short, a converter reads a database value and converts
+it on the fly to another type. For example, the `VARCHAR` status column with values `'CRE'`, `'ACC'`, `'REJ'` can be modeled as a Java enum with
 values `{CREATED, ACCEPTED, REJECTED}` instead of a simple String. This can simplify the coding, debugging, and testing activities.
 
 
@@ -35,7 +35,7 @@ database (to *decode*) and to write values to the database (to *encode*).
 Once a converter has been defined, it can be applied to one or more database column to read and write values. It's applied by using the
 [`<column>`](./column.md) tag.
 
-A converter can be applied to any column read or write to the database. It can be applied to columns of views and also to columns of Nitro queries.
+A converter can be applied to any column read or write to the database. It can be applied to columns of views and also to column of Nitro queries
 
 
 ## Java Converter Class
