@@ -26,7 +26,7 @@ It can include the following attributes:
 | `min-value` | Overrides minimum value for [optimistic locking](./version-control-column.md) | According to the database type |
 | `max-value` | Overrides maximum value for [optimistic locking](./version-control-column.md) | According to the database type |
 
-[^1] This is a requirement of the JDBC spec where each nulls needs to be specifying when applied as a query parameter.
+[^1]: This is a requirement of the JDBC spec where each nulls needs to be specifying when applied as a query parameter.
 
 ## Custom Name &amp; Type
 
