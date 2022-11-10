@@ -81,17 +81,13 @@ name and type.
 
 By specifying names and tags this way the resulting VO will include the following properties.
 
-This: <span style="color:red;">changed</span>
-
-Or: <span style="color:red;">*changed*</span>
-
 | Database Column | VO Property | VO Type |
 | -- | -- | -- |
 | `ID` | `id` | `Integer` |
-| `CREATED_AT` | `createdAt` | `java.time.LocalDateTime` <span style="color:red;">changed</span> |
-| `TAX_PCT` | `taxPercent` <span color="red">changed</span> | `java.math.BigDecimal` |
+| `CREATED_AT` | `createdAt` | `java.time.LocalDateTime` *changed* |
+| `TAX_PCT` | `taxPercent` *changed* | `java.math.BigDecimal` |
 | `UX_TOT_TAX_AMT` | `totalAmount` *changed* | `Double` *changed* |
-| `STATUS` | `status` | (now uses a converter) *changed* |
+| `STATUS` | `status` | (now uses the `invoiceStatusConverter` converter) *changed* |
 
 
 Finally, the `jdbc-type` is rarely used, but can become handy for exotic types or when using old JDBC drivers that do
