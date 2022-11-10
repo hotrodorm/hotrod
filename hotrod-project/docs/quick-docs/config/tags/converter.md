@@ -35,7 +35,8 @@ database (to *decode*) and to write values to the database (to *encode*).
 Once a converter has been defined, it can be applied to one or more database column to read and write values. It's applied by using the
 [`<column>`](./column.md) tag.
 
-A converter can be applied to any column read or write to the database. It can be applied to columns of views and also to column of Nitro queries
+A converter can be applied to any column that is read or written to the database. Apart from tables, it can also be applied to columns of views 
+and also to column of Nitro queries.
 
 
 ## Java Converter Class
