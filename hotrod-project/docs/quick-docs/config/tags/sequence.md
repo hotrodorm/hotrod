@@ -14,6 +14,6 @@ This tag can include the following attributes:
 | `name` | The sequence name | Required |
 | `catalog` | The catalog of the sequence, if different from the detault one | N/A |
 | `schema` | The schema of the sequence, if different from the detault one | N/A |
-| `method` | The Java method for this sequence | Required |
+| `method` | The Java method that will retrieve a value from the sequence | Required |
 
 
