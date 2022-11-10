@@ -24,7 +24,7 @@ This tag includes the following attribute:
 
 ## General Structure
 
-This tag can include one or more `<parameter>` to specify parameters for the query.
+This tag can include one or more `<parameter>` tags to specify parameters for the query.
 
 The body of this tag includes the SQL statement to be executed decorated with Dynamic SQL tags, parameter 
 definition, parameter application, and parameter injection.
@@ -71,10 +71,10 @@ In the example above we can see:
 - The parameter `rows` is **injected** into the query using the `${}` construct. This is the only way of using this
 parameter since DB2's JDBC does not allow to apply parameters to the `FECHT NEXT` clause.
 - Dynamic SQL is used to filter rows by `branch_id` if the parameter `branchId` has a non-null value. If the parameter
-is null, the section `and branch_id = #{branchId}` is not included in the SQL statement.
+is null, the section `and branch_id = #{branchId}` is not included in the SQL statement at all.
 
 
-## A Note on Injecting Parameter Values
+## A Note on SQL Injection
 
 Injecting a parameter value means to directly *concatenate* its value into the SQL statement. This can be seen as a
 simple way of assembling SQL statement at first, and it actually is. However, the downside of it &mdash; and it's a big one
