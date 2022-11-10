@@ -58,7 +58,15 @@ public interface TypeConverter<T, A> {
 ## Example
 
 Let's consider the case of an Oracle database column `DECIMAL(4)` is used to represent a boolean value, a type that Oracle does not support.
-The column considers the numeric values zero (0) as `false` and one (1) as `true`.
+The column considers the numeric values zero (0) as `false` and one (1) as `true`. The table could be created as:
+
+```sql
+create table patient (
+  id decimal(15) primary key not null,
+  name varchar2(20),
+  active DECIMAL(4) not null check (active = 0 or active = 1)
+)
+```
 
 Now, when reading this database column the converter reads it first as the raw type `java.lang.Short`. Then, it converts into a 
 `java.lang.Boolean`. In this case:
@@ -71,12 +79,16 @@ is not available to the application.
 In this example the converter Java class can look like:
 
 ```java
+package com.ctac.converters
+
 import org.hotrod.runtime.converter.TypeConverter;
 
 public class ShortBooleanConverter implements TypeConverter<Short, Boolean> {
 
   private static final Short FALSE = 0;
   private static final Short TRUE = 1;
+
+  // Decoding is used when reading from the database
 
   @Override
   public Boolean decode(Short value) {
@@ -85,6 +97,8 @@ public class ShortBooleanConverter implements TypeConverter<Short, Boolean> {
     }
     return !FALSE.equals(value); // Anything read that is different from zero is considered true
   }
+
+  // Encoding is used when writing to the database
 
   @Override
   public Short encode(Boolean value) {
@@ -96,4 +110,22 @@ public class ShortBooleanConverter implements TypeConverter<Short, Boolean> {
 
 }
 ```
+
+This converter can be defined in the configuration file with the `<converter>` tag as in:
+
+```xml
+  <converter name="boolean_stored_as_smallint"
+    java-type="java.lang.Boolean"
+    class="com.ctac.converters.ShortBooleanConverter"
+    java-intermediate-type="java.lang.Short" />
+```
+
+Once this converter is defined, it can be used in the `<column>`tag as:
+
+```xml
+  <table name="patient">
+    <column name="active" converter="boolean_stored_as_smallint" />
+  </table>
+```
+
 
