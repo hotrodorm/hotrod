@@ -167,7 +167,7 @@ You can look into each tag to get details of it:
         * `<enum>`
         * `<view>`
         * `<dao>`
-    * [`<converter>`](converter.md)
+    * [`<converter>`](./tags/converter.md)
 
 The structure of a HotRod's fragment configuration file is:
 
