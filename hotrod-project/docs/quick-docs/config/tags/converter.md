@@ -129,7 +129,7 @@ Once this converter is defined, it can be used in the `<column>`tag as:
   </table>
 ```
 
-When we generate the persistence code we can see the VO property is available as a `Boolean` type,
+When look at the generated persistence code we can see the VO property is available as a `Boolean` type,
 not as the database numeric type:
 
 ```java
