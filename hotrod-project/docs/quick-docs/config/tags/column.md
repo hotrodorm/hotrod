@@ -26,14 +26,18 @@ This tag can include the following attributes:
 | `min-value` | Overrides minimum value for [optimistic locking](./version-control-column.md) | According to the database type |
 | `max-value` | Overrides maximum value for [optimistic locking](./version-control-column.md) | According to the database type |
 
-[^1]: This is a requirement of the JDBC spec where each nulls needs to be typed when applied as a query parameter. See [java.sql.Types](https://docs.oracle.com/javase/8/docs/api/java/sql/Types.html) for a list of valid types.
+[^1]: This is a requirement of the JDBC spec where each nulls needs to have a type when applied as a query parameter. See [java.sql.Types](https://docs.oracle.com/javase/8/docs/api/java/sql/Types.html) for a list of valid types.
 
-## Applying a Custom Name &amp; or a Custom Type
 
-As described before the naming of the column properties and their types follow rules specified by the `<name-solver>` and `<type-solver>` and,
-in the absence of these, follow default rules that depend on each database.
+## Applying a Custom Name and/or a Custom Type
 
-Nonetheless, if the name or type of the column produced by the rules above is not suitable for for the application, it's possible to change them by 
+By default, VO properties' names and types are automatically assigned according by HotRod:
+
+- Property names take the form of a camel-case based on the database name. They can be changed according to extra rules speficied by the [Name Solver](./name-solver.md).
+- Property types are generated according to the specific database (See [Supported Databases](../supported-databases.md)). They can be changed by rules specified
+by the [Type Solver](./type-solver.md).
+
+Nonetheless, if the name or type of the VO property produced by the rules above is not suitable for the application, it's possible to change either of them by 
 adding one or more `<column>` tags in the `<table>` declaration.
 
 For example, if the following table is created (PostgreSQL) as:
