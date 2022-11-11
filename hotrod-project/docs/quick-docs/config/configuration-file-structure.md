@@ -70,44 +70,9 @@ there can be any number of each one and they can be included in any order, even 
 fragment can only be included once in the configuration tree.
 
 
-## The Fragment File Structure
-
-A configuration fragment is a separate file that includes sections of the configuration, and in turn can include more fragments.
-
-A fragment can include zero or more `<table>`, `<view>`, `<enum>`, `<dao>`, `<converter>`, `<facet>` and `<fragment>` tags. The main purpose of 
-fragments is to separate the configuration into multiple files in order to reduce source code collisions when multiple developers are 
-modifying the configuration simultaneously. This most commonly happens to [Nitro Queries](../nitro/nitro-queries.md) that need to be tweaked, expanded, 
-and/or added frequently.
-
-It's a common practice to separate fragments by application module and/or by the UI. Queries that are expected to suffer constant changes or improvements should be separated from more stable ones, or from the main configuration.
-
-A fragment configuration file takes the general form:
-
-```xml
-<?xml version="1.0"?>
-<!DOCTYPE hotrod-fragment>
-
-<hotrod-fragment>
-
-  <table />
-  <view />
-  <enum />
-  <dao />
-  <converter />
-  <facet />
-  <fragment />
-
-</hotrod-fragment>
-```
-
-A fragment can include any number of each one of these tags, and they can be placed in any ordering, even intermixed.
-
-
 ## Complete Structure of the Configuration File
 
-The complete structure of HotRod's main configuration file is shown below. 
-
-You can look into each tag to get details of it:
+The general structure of HotRod's main configuration file is shown below:
 
 * [`<hotrod>`](tags/hotrod.md)
     * [`<generators>`](tags/generators.md)
@@ -170,15 +135,3 @@ You can look into each tag to get details of it:
         * `<view>`
         * `<dao>`
     * [`<converter>`](./tags/converter.md)
-
-The structure of a HotRod's fragment configuration file is:
-
- * [`<hotrod-fragment>`](hotrod-fragment.md)
-    * `<table>`
-    * `<enum>`
-    * `<view>`
-    * `<dao>`
-    * `<fragment>`
-    * `<facet>`
-    * `<converter>`
-
