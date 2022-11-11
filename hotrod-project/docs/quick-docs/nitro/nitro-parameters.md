@@ -1,30 +1,36 @@
 # Parameters
 
-Most likely your query will need parameters for its execution. You can add parameters using the &lt;parameter> tag that takes the form:
+Most likely your query will need parameters for its execution. You can add parameters using the `<parameter>` tag that takes the form:
 
-    <parameter name="clientId" java-type="Integer" />
+```xml
+<parameter name="clientId" java-type="Integer" />
+```
 
 As in:
 
-    <select method="findClientsActiveAccounts" vo="ActiveAccountVO">
-      <parameter name="clientId" java-type="Integer" />
-      select *
-      from account a
-      where a.id = #{clientId} and a.active = 1 
-    </select>
+```xml
+<select method="findClientsActiveAccounts" vo="ActiveAccountVO">
+  <parameter name="clientId" java-type="Integer" />
+  select *
+  from account a
+  where a.id = #{clientId} and a.active = 1 
+</select>
+```
 
-The &lt;parameter> tag above specifies:
+The `<parameter>` tag above specifies:
 
  - There will be a Java parameter called `clientId` in the method.
  - This parameter will be of type `java.lang.Integer`.
  
-The &lt;select> tag can include multiple &lt;parameter> tags, and each parameter can be applied multiple times in a query.
+The `<select>` tag can include multiple `<parameter>` tags, and each parameter can be applied multiple times in a query.
 
-The resulting Java method for the &lt;select> tag above will be:
+The resulting Java method for the `<select>` tag above will be:
 
-    public List<ActiveAccountVO> findClientsActiveAccounts(Integer clientId) {
-      ...
-    }
+```java
+public List<ActiveAccountVO> findClientsActiveAccounts(Integer clientId) {
+  ...
+}
+```
 
 For analysis purposes, during the code generation, HotRod replaces each parameter with a sample SQL value of the corresponding type. This 
 sample value depends on the corresponding JDBC type of the parameter and the specific database engine.
@@ -38,16 +44,16 @@ Parameters can be used in any place of the SQL statement. This includes:
  - In subqueries
  - In any other place the specific JDBC driver and the database engine allows it. Please note the engine usually limits the location of JDBC parameters.
 
-## The &lt;complement> Tag
+## The `<complement>` Tag
 
-The &lt;complement> tag usage depends on the SQL processor used:
+The `<complement>` tag usage depends on the SQL processor used:
 
- - When using the traditional `create-view` processor the &lt;complement> tag is used to enclose sections of `WHERE` clauses with
+ - When using the traditional `create-view` processor the `<complement>` tag is used to enclose sections of `WHERE` clauses with
    parameters. It's also used to enclose Dynamic SQL tags.
- - When using the modern `result-set` processor there's no need to enclose parameters anymore. The &lt;complement> tag is still used 
+ - When using the modern `result-set` processor there's no need to enclose parameters anymore. The `<complement>` tag is still used 
    to enclose Dynamic SQL tags.
 
-To select a query processor see [Select Generation](../config/select-generation.md) configuration.
+To select a query processor see [Select Generation](../config/tags/select-generation.md) configuration.
 
 **Note**: Unlike `<select>` queries general purpose queries, that use the tag `<query>`, do no require the use of the `<complement>` tag, at all.
 
@@ -56,35 +62,39 @@ To select a query processor see [Select Generation](../config/select-generation.
 In addition to its Java type HotRod needs to determine the its JDBC type; usually the JDBC type of a parameter is inferred from the `java-type` 
 attribute. It can also be explicitly indicated using the `jdbc-type` attribute in the &lt;parameter tag, as in:
 
-    <parameter name="clientId" java-type="Integer" jdbc-type="INTEGER" />
+```xml
+<parameter name="clientId" java-type="Integer" jdbc-type="INTEGER" />
+```
 
 For the full list of JDBC types see the [java.sql.Types](https://docs.oracle.com/javase/8/docs/api/java/sql/Types.html) class documentation.
 
 For parameters with typical Java types it's not necessary to include the `jdbc-type` attribute. HotRod assigns it according to the following table:
 
-    java-type                    jdbc-type               
-    ---------------------------- ----------------------- 
-    Byte or java.lang.Byte       TINYINT                 
-    Short or java.lang.Short     SMALLINT                
-    Integer or java.lang.Integer INTEGER                 
-    Long or java.lang.Long       BIGINT                  
-    Float or java.lang.Float     REAL                    
-    Double or java.lang.Double   DOUBLE                  
-    java.math.BigInteger         DECIMAL                 
-    java.math.BigDecimal         DECIMAL                 
-    Char or java.lang.Char       CHAR                    
-    String or java.lang.String   VARCHAR                 
-    java.util.Date               TIMESTAMP               
-    java.sql.Date                DATE                    
-    java.sql.Timestamp           TIMESTAMP               
-    java.sql.Time                TIME                    
-    java.time.LocalDateTime      TIMESTAMP               
-    java.time.OffsetDateTime     TIMESTAMP_WITH_TIMEZONE 
-    java.time.ZonedDateTime      TIMESTAMP_WITH_TIMEZONE 
-    java.time.LocalDate          DATE                    
-    java.time.LocalTime          TIME                    
-    Boolean or java.lang.Boolean BOOLEAN                 
-    byte[]                       BLOB                    
+```
+| java-type | jdbc-type |
+| -- | -- | -- |
+| `Byte` or `java.lang.Byte`       | TINYINT                 | 
+| `Short` or `java.lang.Short`     | SMALLINT                | 
+| `Integer` or `java.lang.Integer` | INTEGER                 | 
+| `Long` or `java.lang.Long`       | BIGINT                  | 
+| `Float` or `java.lang.Float`    | REAL                    | 
+| `Double` or `java.lang.Double`   | DOUBLE                  | 
+| `java.math.BigInteger`         | DECIMAL                 |  
+| `java.math.BigDecimal`         | DECIMAL                 | 
+| `Char` or `java.lang.Char`       | CHAR                    | 
+| `String` or `java.lang.String`   | VARCHAR                 | 
+| `java.util.Date`               | TIMESTAMP               | 
+| `java.sql.Date`                | DATE                    | 
+| `java.sql.Timestamp`           | TIMESTAMP               | 
+| `java.sql.Time`                | TIME                    | 
+| `java.time.LocalDateTime`      | TIMESTAMP               | 
+| `java.time.OffsetDateTime`     | TIMESTAMP_WITH_TIMEZONE | 
+| `java.time.ZonedDateTime`      | TIMESTAMP_WITH_TIMEZONE | 
+| `java.time.LocalDate`          | DATE                    | 
+| `java.time.LocalTime`          | TIME                    | 
+| `Boolean` or `java.lang.Boolean` | BOOLEAN                 |
+| `byte[]`                       | BLOB                    | 
+
 
 If the `java-type` of a parameter is not covered in this table, the developer needs to specify the `jdbc-type` explicitly. Typically this attribute is
 used only for uncommon or exotic parameter types such as UUIDs, geometry types, arrays, Objects, etc.
