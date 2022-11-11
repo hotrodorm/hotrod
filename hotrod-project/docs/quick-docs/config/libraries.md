@@ -28,7 +28,6 @@ When generating the persistence code only one library is required. This comes pa
 its details are embedded there. See:
 
 - [Maven Integration](../maven/maven.md#maven-plugin).
-- [Ant Integration](../ant/ant.md#ant-plugin).
 - `Eclipse Integration`.
 
 ## Version Features 
