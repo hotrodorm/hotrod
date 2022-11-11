@@ -130,9 +130,11 @@ You can look into each tag to get details of it:
         * [`<sequence>`](tags/sequence.md)
         * [`<query>`](tags/query.md)
             * [`<parameter>`](tags/parameter.md)
-            * *Dynamic SQL*: Any number of flat or nested [`<if>`](id.md), [`<choose>`](choose.md), [`<where>`](where.md), [`<set>`](set.md), [`<trim>`](trim.md), [`<foreach>`](foreach.md), [`<bind>`](bind.md)
+            * *SQL query*
+            * [Dynamic SQL](../nitro/nitro-dynamic-sql.md): Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
         * [`<select>`](select.md)
             * `<parameter>`
+            * *SQL query*
             * [`<column>`](column.md)
             * [`<columns>`](columns.md)
                 * [`<vo>`](vo.md)
@@ -147,8 +149,9 @@ You can look into each tag to get details of it:
                    * [`<expression>`](expression.md)
                 * `<association>`
                 * `<expression>`
+            * Dynamic SQL: Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
             * [`<complement>`](complement.md)
-                * *Dynamic SQL*: Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
+                * Dynamic SQL: Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
     * [`<enum>`](enum.md)
         * [`<non-persistent>`](non-persistent.md)
     * [`<view>`](view.md)
