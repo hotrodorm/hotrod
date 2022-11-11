@@ -39,10 +39,10 @@ query must return a result set.
 
 Each included [`<parameter>`](./parameter.md) tag specify parameters for the query.
 
-A parameter can be applied one or more times with the form `#{name}`, where `name` is the parameter name defined in
-a `<parameter>` tag.
+A parameter can be applied one or more times with using `#{name}` in the query, where `name` is the parameter name defined in
+a `<parameter>` tag. Applying a parameter value is a safe and fully-typed way of parameterizing a query.
 
-A parameter can be injected one or more times with the form `${name}`, where `name` is the parameter name defined in
+Also, a parameter can be injected one or more times with using `${name}` in the query, where `name` is the parameter name defined in
 a `<parameter>` tag. See [A Note on SQL Injection](#a-note-on-sql-injection) for the security concerns about SQL Injection.
 
 Each included [`<column>`](./column.md) tag changes the default behavior of how a column is retrieved. It can 
