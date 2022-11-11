@@ -176,7 +176,7 @@ Notwithstanding their benefits, the usage of SQL extensions can limit the possib
 
 ## Parameters 
 
-Flat Selects accept parameters by adding the `<parameter>` tag.
+Flat Selects accept parameters by adding the `<parameter>`   tag.
 
 For example, a Flat Select that includes two parameters can look like:
 

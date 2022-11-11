@@ -70,7 +70,6 @@ For the full list of JDBC types see the [java.sql.Types](https://docs.oracle.com
 
 For parameters with typical Java types it's not necessary to include the `jdbc-type` attribute. HotRod assigns it according to the following table:
 
-```
 | java-type | jdbc-type |
 | -- | -- | -- |
 | `Byte` or `java.lang.Byte`       | TINYINT                 | 
