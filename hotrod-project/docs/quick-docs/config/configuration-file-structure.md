@@ -135,18 +135,18 @@ You can look into each tag to get details of it:
         * [`<select>`](select.md)
             * `<parameter>`
             * *SQL query*
-            * [`<column>`](column.md)
-            * [`<columns>`](columns.md)
-                * [`<vo>`](vo.md)
-                   * [`<association>`](association.md)
+            * [`<column>`](tags/column.md)
+            * [`<columns>`](tags/columns.md)
+                * [`<vo>`](tags/vo.md)
+                   * [`<association>`](tags/association.md)
                      * `<association>`
                      * `<collection>`
                      * `<expression>`
-                   * [`<collection>`](collection.md)
+                   * [`<collection>`](tags/collection.md)
                         * `<association>`
                         * `<collection>`
                         * `<expression>`
-                   * [`<expression>`](expression.md)
+                   * [`<expression>`](tags/expression.md)
                 * `<association>`
                 * `<expression>`
             * Dynamic SQL: Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
