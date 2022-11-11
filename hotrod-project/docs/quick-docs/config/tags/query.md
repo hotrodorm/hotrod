@@ -44,7 +44,7 @@ implemented with the `TRUNCATE` statement as:
 </query>
 ```
 
-The following example &mdash; for DB2 &mdash; includes Dynamic SQL and parameter application and injection:
+The following example &mdash; for DB2 &mdash; includes Dynamic SQL, parameter applying, and parameter injection:
 
 ```xml
 <query method="closeSales">
@@ -69,7 +69,7 @@ In the example above we can see:
 - The SQL statement is an UPDATE that does not return any rows.
 - The parameter `soldOn` is **applied** to the query using the `#{}` construct.
 - The parameter `rows` is **injected** into the query using the `${}` construct. This is the only way of using this
-parameter since DB2's JDBC does not allow to apply parameters to the `FECHT NEXT` clause.
+parameter since DB2 does not allow to *apply* parameters to the `FECHT NEXT` clause.
 - Dynamic SQL is used to filter rows by `branch_id` if the parameter `branchId` has a non-null value. If the parameter
 is null, the section `and branch_id = #{branchId}` is not included in the SQL statement at all.
 
@@ -88,7 +88,7 @@ it with something like `1 rows only; delete from invoices; select 1 + 1 fetch ne
 hacker that could delete the entire database.
 
 Use SQL Injection with care only when there's no other solution. Most of the time Dynamic SQL can provide similar functionality, 
-and it's completely safe.
+and it's totally safe.
 
 
 
