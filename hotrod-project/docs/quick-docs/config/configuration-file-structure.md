@@ -159,7 +159,7 @@ You can look into each tag to get details of it:
         * `<sequence>`
         * `<query>`
         * `<select>`
-    * [`<dao>`](dao.md)
+    * [`<dao>`](tags/dao.md)
         * `<sequence>`
         * `<query>`
         * `<select>`
