@@ -24,13 +24,19 @@ This tag includes the following attribute:
 
 ## General Structure
 
-This tag can include one or more [`<parameter>`](./parameter.md) tags to specify parameters for the query.
-
 The body of this tag includes the SQL statement to be executed decorated with Dynamic SQL tags, parameter 
 definition, parameter applying, and parameter injection.
 
 Any valid database query can be executed using this tag, including DDL (e.g. table creation), DML (e.g.
 inserting or selecting), DCL (e.g. granting access), and TCL (transaction control). 
+
+Each included [`<parameter>`](./parameter.md) tag specify parameters for the query.
+
+A parameter can be applied one or more times with using `#{name}` in the query, where `name` is the parameter name defined in
+a `<parameter>` tag. Applying a parameter value is a safe and fully-typed way of parameterizing a query.
+
+Also, a parameter can be injected one or more times with using `${name}` in the query, where `name` is the parameter name defined in
+a `<parameter>` tag. See [A Note on SQL Injection](#a-note-on-sql-injection) for the security concerns about SQL Injection.
 
 
 ## Examples
