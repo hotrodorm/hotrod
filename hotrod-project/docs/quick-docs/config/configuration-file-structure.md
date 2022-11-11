@@ -182,12 +182,3 @@ The structure of a HotRod's fragment configuration file is:
     * `<facet>`
     * `<converter>`
 
-
-## See Also
-
-- [`<name-solver>`](name-solver.md) tag
-- [`<type-solver>`](type-solver.md) tag
-- [Nitro Queries](../nitro/nitro-queries.md)
- 
- 
- 
