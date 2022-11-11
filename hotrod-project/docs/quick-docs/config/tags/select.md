@@ -48,9 +48,9 @@ a `<parameter>` tag. See [A Note on SQL Injection](#a-note-on-sql-injection) for
 Each included [`<column>`](./column.md) tag changes the default behavior of how a column is retrieved. It can 
 change the resulting property name, its type, or can be used to apply a converter to it.
 
-Alternatively, a single `<columns>` tag can be used to enable Structured queries. Structured queries are an advanced feature that
-post-processed the received result set and produces trees of Java VOs instead of flat rows. They can be useful to retrieve
-complex data structures with a query few tags. See [Structured Queries](../../nitro/nitro-structured-selects.md) for details.
+Alternatively, a single `<columns>` tag can be used to enable [Structured Queries](../../nitro/nitro-structured-selects.md).
+Structured queries are an advanced feature that post-processed the received result set and produces trees of Java VOs instead
+of flat rows. They can be useful to enhance a query with a few tags, and automatically generate VOs to retrieve complex data structures.
 
 The `<complement>` is used to enclose [Dynamic SQL](./dynamic-sql.md) sections of the query in order to make the query parseable.
 Parameter applying (`#{name}`) and injection (`${name}`) do not need to be enclosed by this tag and can be included as is.
