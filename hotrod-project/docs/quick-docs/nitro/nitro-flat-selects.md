@@ -5,16 +5,18 @@ objects. The execution typically returns a `java.util.List` of these value objec
 
 For example:
 
-    <dao name="WebQueriesDAO">
-    
-      <select method="findActiveAccountsWithClient" vo="AccountClientVO">
-        select a.*, c.name, c.type as "client_type"
-        from account a
-        join client c on c.id = a.client_id
-        where a.active = 1
-      </select>
-      
-    </dao>
+```xml
+<dao name="WebQueriesDAO">
+
+  <select method="findActiveAccountsWithClient" vo="AccountClientVO">
+    select a.*, c.name, c.type as "client_type"
+    from account a
+    join client c on c.id = a.client_id
+    where a.active = 1
+  </select>
+  
+</dao>
+```
 
 This select specifies that:
 
@@ -29,30 +31,34 @@ As an example, the &lt;select> tag above could produce the value objects:
 
 ![flat](images/nitro-flat-select.png)    
 
-    public class AbstractAccountClientVO {
-      protected Integer id = null;
-      protected Long amount = null;
-      protected Integer clientId = null;
-      protected String name = null;
-      protected Short clientType = null;
-      // getters and setters omitted
-    }
-    
-    @Component
-    public class AccountClientVO extends AbstractAccountClientVO {
-      // Add custom properties and behavior here
-    } 
+```java
+public class AbstractAccountClientVO {
+  protected Integer id = null;
+  protected Long amount = null;
+  protected Integer clientId = null;
+  protected String name = null;
+  protected Short clientType = null;
+  // getters and setters omitted
+}
+
+@Component
+public class AccountClientVO extends AbstractAccountClientVO {
+  // Add custom properties and behavior here
+} 
+```
 
 Additionally, the generated DAO class that will expose the specified method could look like:
 
-    @Component
-    public class WebQueriesDAO implements Serializable, ApplicationContextAware {
-    
-      public List<AccountClientVO> findActiveAccountsWithClient() {
-        ...
-      }
-      
-    }
+```java
+@Component
+public class WebQueriesDAO implements Serializable, ApplicationContextAware {
+
+  public List<AccountClientVO> findActiveAccountsWithClient() {
+    ...
+  }
+  
+}
+```
 
 ## Query Fetch Mode
 
@@ -69,22 +75,27 @@ to the caller.
 
 Example:
 
-    <select method="findOldAccounts" vo="OldAccountVO">
-      ...
-    </select>
+```xml
+<select method="findOldAccounts" vo="OldAccountVO">
+  ...
+</select>
+```
 
 Equivalent to:
 
-    <select method="findOldAccounts" vo="OldAccountVO" mode="list">
-      ...
-    </select>
+```xml
+<select method="findOldAccounts" vo="OldAccountVO" mode="list">
+  ...
+</select>
+```
 
 This example produces a Java method like:
-    
-    public List<OldAccountVO> findOldAccounts() {
-      ...
-    }
-    
+
+```java
+public List<OldAccountVO> findOldAccounts() {
+  ...
+}
+```
 
 ### The `cursor` mode
 
@@ -100,15 +111,19 @@ into a `List` (or other `Collection`-like) data structure that will hold all the
 
 Example:
 
-    <select method="findOldAccounts" vo="OldAccountVO" mode="cursor">
-      ...
-    </select>
+```xml
+<select method="findOldAccounts" vo="OldAccountVO" mode="cursor">
+  ...
+</select>
+```
 
 This example produces a Java method like:
 
-    public Cursor<OldAccountVO> findOldAccounts() {
-      ...
-    }
+```java
+public Cursor<OldAccountVO> findOldAccounts() {
+  ...
+}
+```
 
 ### The `single-row` mode
 
@@ -122,15 +137,19 @@ It assumes the query returns zero or one row at most.
 
 Example:
 
-    <select method="getHighestPayedEmployee" vo="EmployeeVO" mode="single-row">
-      select * from employee order by salary desc limit 1
-    </select>
+```xml
+<select method="getHighestPayedEmployee" vo="EmployeeVO" mode="single-row">
+  select * from employee order by salary desc limit 1
+</select>
+```
 
 This example produces a Java method like:
 
-    public EmployeeVO getHighestPayedEmployee() {
-      ...
-    }
+```java
+public EmployeeVO getHighestPayedEmployee() {
+  ...
+}
+```
     
 ## Native SQL
 
@@ -138,14 +157,16 @@ Since the beginning Flat Selects were geared towards using all bells & whistles 
 
 For example, DB2 enhances parameterized filtering predicates with the `SELECTIVITY` clause as shown below:
 
-    <select method="getHighestPayedEmployee" vo="EmployeeVO" mode="single-row">
-      <parameter name="minPrice" java-type="Double" />
-      <parameter name="maxPrice" java-type="Double" />
-      <parameter name="packagingType" java-type="String" />
-      select * from widget
-      where packaging_type = #{packagingType} selectivity 0.07
-        and price between #{minPrice} and #{maxPrice} selectivity 0.00002
-    </select>
+```xml
+<select method="getHighestPayedEmployee" vo="EmployeeVO" mode="single-row">
+  <parameter name="minPrice" java-type="Double" />
+  <parameter name="maxPrice" java-type="Double" />
+  <parameter name="packagingType" java-type="String" />
+  select * from widget
+  where packaging_type = #{packagingType} selectivity 0.07
+    and price between #{minPrice} and #{maxPrice} selectivity 0.00002
+</select>
+```
 
 By using the `SELECTIVITY` clause the developer is informing the DB2 optimizer that the second filtering predicate `price between #{minPrice} and #{maxPrice}` has a much better selectivity than the first one `packaging_type = #{packagingType}`, something that can seem counterintuitive; when performance comes in play this can be crucial for optimization purposes since the database engine may guess it incorrectly just by analyzing the query and the table histogram, and may end up using the wrong index.
 
@@ -155,28 +176,31 @@ Notwithstanding their benefits, the usage of SQL extensions can limit the possib
 
 ## Parameters 
 
-Flat Selects accept parameters by adding the &lt;parameter> tag.
+Flat Selects accept parameters by adding the `<parameter>` tag.
 
 For example, a Flat Select that includes two parameters can look like:
 
-    <select method="findSoldCars" vo="CarVO">
-      <parameter name="branchId" java-type="Integer" />
-      <parameter name="fromDate" java-type="java.util.Date" />
-      select * from car where branch_id = #{branchId} and sold_date >= #{fromDate}
-    </select>
+```xml
+<select method="findSoldCars" vo="CarVO">
+  <parameter name="branchId" java-type="Integer" />
+  <parameter name="fromDate" java-type="java.util.Date" />
+  select * from car where branch_id = #{branchId} and sold_date >= #{fromDate}
+</select>
+```
 
 This Flat Select produces a Java method like:
 
-    public List<CarVO> findSoldCars(Integer branchId, java.util.Date fromDate) {
-      ...
-    }
-
+```java
+public List<CarVO> findSoldCars(Integer branchId, java.util.Date fromDate) {
+  ...
+}
+```
 
 See [Nitro Parameters](nitro-parameters.md) for details and examples.  
 
 ## Property Names
 
-The resulting value object will include one property for each column of the result set. The property names are automatically produced by HotRod, but can also be affected by the global [Name Solver](../config/name-solver.md), or by a `<column>` tag added to the query. They are processed in order:
+The resulting value object will include one property for each column of the result set. The property names are automatically produced by HotRod, but can also be affected by the global [Name Solver](../config/tags/name-solver.md), or by a `<column>` tag added to the query. They are processed in order:
 
 1. If a `<column>` tag includes a `java-name` property, this one decides the property name, and no further processing is performed.
 2. If a `<name-solver>` rule matches the column, then it modifies the column name.
@@ -184,7 +208,7 @@ The resulting value object will include one property for each column of the resu
 
 ## Property Types
 
-The resulting value object will include one property for each column of the result set. The property types are automatically produced by HotRod based on the specifics of each database. Nevertheless, they can be affected by the global [Type Solver](../config/type-solver), or by a `<column>` tag added to the query. They are processed in order:
+The resulting value object will include one property for each column of the result set. The property types are automatically produced by HotRod based on the specifics of each database. Nevertheless, they can be affected by the global [Type Solver](../config/tags/type-solver.md), or by a `<column>` tag added to the query. They are processed in order:
 
 1. If a `<column>` tag includes a `java-type` property, this one decides the property type, and no further processing is performed.
 2. If a `<column>` tag includes a `converter` property, this one produces the property type according to its rules, and no further processing is performed.
@@ -197,25 +221,29 @@ Flat Selects can include optional SQL Fragments that are included or excluded ac
 
 For example, a Flat Select that includes Dynamic SQL can look like:
 
-    <select method="searchOrders" vo="OrderVO">
-      <parameter name="minPrice" java-type="Double" />
-      <parameter name="maxPrice" java-type="Double" />
-      <parameter name="fromDate" java-type="java.util.Date" />
-      <parameter name="toDate" java-type="java.util.Date" />
-      select * from orders
-      <where>
-        <if test="minPrice != null">and order_price >= #{minPrice}</if>
-        <if test="maxPrice != null">and order_price &lt;= #{maxPrice}</if>
-        <if test="fromDate != null">and order_date >= #{fromDate}</if>
-        <if test="toDate != null">and order_date &lt;= #{toDate}</if>
-      </where>      
-    </select>
+```xml
+<select method="searchOrders" vo="OrderVO">
+  <parameter name="minPrice" java-type="Double" />
+  <parameter name="maxPrice" java-type="Double" />
+  <parameter name="fromDate" java-type="java.util.Date" />
+  <parameter name="toDate" java-type="java.util.Date" />
+  select * from orders
+  <where>
+    <if test="minPrice != null">and order_price >= #{minPrice}</if>
+    <if test="maxPrice != null">and order_price &lt;= #{maxPrice}</if>
+    <if test="fromDate != null">and order_date >= #{fromDate}</if>
+    <if test="toDate != null">and order_date &lt;= #{toDate}</if>
+  </where>      
+</select>
+```
 
 This Flat Select produces a Java method like:
 
-    public List<OrderVO> searchOrders(Double minPrice, Double maxPrice, java.util.Date fromDate, java.util.Date toDate) {
-      ...
-    }
+```java
+public List<OrderVO> searchOrders(Double minPrice, Double maxPrice, java.util.Date fromDate, java.util.Date toDate) {
+  ...
+}
+```
 
 The `<where>` tag shown above will produce a SQL `WHERE` clause that includes the inner `<if>` tags conditionally according to the `test` conditions evaluated at runtime, and according to the parameters of each call. The `test` attributes uses `OGNL` syntax (See [Apache OGNL](https://commons.apache.org/proper/commons-ognl/language-guide.html)).
 
@@ -223,7 +251,7 @@ Notice the `<where>` tag will automatically remove the `and` prefix of the first
 
 Dynamic SQL can be included anywhere in the SQL statement, not just in the `WHERE` clause. However, HotRod requires that the resulting query produced at runtime always return the same columns.
 
-See [Dynamic SQL](dynamic-sql.md) for details and examples.  
+See [Dynamic SQL](../nitro/nitro-dynamic-sql.md) for details and examples.  
 
 
  
