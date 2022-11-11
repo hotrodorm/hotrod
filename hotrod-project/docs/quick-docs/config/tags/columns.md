@@ -1,6 +1,6 @@
 # The `<columns>` Tag
 
-This tags can be used in a `<select>` query tag and designates the query as a Structured Select rather
+This tag can be used in a `<select>` query tag and designates the query as a Structured Select rather
 than a Flat Select.
 
 

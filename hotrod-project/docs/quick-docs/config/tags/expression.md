@@ -1,6 +1,6 @@
 # The `<expression>` Tag
 
-This tags can be used inside a Structured Select (`<select>` tag) and specifies the inclusion of an
+This tag can be used inside a Structured Select (`<select>` tag) and specifies the inclusion of an
 extra computes expression in the SELECT list.
 
 An expression is by definition external to the represented entities and needs to be modeled as an extra 

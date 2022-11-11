@@ -1,6 +1,6 @@
 # The `<collection>` Tag
 
-This tags can be used inside a Structured Select (`<select>` tag) and specifies the inclusion of a joined 
+This tag can be used inside a Structured Select (`<select>` tag) and specifies the inclusion of a joined 
 collection table or view in the query.
 
 A collection represents a joined table or view that can produce zero, one, or more related elements. As such,

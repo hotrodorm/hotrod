@@ -1,6 +1,6 @@
 # The `<vo>` Tag
 
-This tags can be used inside a Structured Select (`<select>` tag) and specifies the columns of an entity that will be retrieved by the 
+This tag can be used inside a Structured Select (`<select>` tag) and specifies the columns of an entity that will be retrieved by the 
 structures select.
 
 
