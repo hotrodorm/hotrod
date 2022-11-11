@@ -1,4 +1,4 @@
-# Parameters
+# Nitro Parameters
 
 Most likely your query will need parameters for its execution. You can add parameters using the `<parameter>` tag that takes the form:
 
