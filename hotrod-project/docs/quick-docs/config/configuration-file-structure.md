@@ -154,7 +154,7 @@ You can look into each tag to get details of it:
                 * Dynamic SQL: Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
     * [`<enum>`](tags/enum.md)
         * `<non-persistent>`
-    * [`<view>`](view.md)
+    * [`<view>`](tags/view.md)
         * `<column>`
         * `<sequence>`
         * `<query>`
