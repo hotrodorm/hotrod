@@ -52,7 +52,7 @@ Alternatively, a single `<columns>` tag can be used to enable [Structured Querie
 Structured queries are an advanced feature that post-processed the received result set and produces trees of Java VOs instead
 of flat rows. They can be useful to enhance a query with a few tags, and automatically generate VOs to retrieve complex data structures.
 
-The `<complement>` is used to enclose [Dynamic SQL](./dynamic-sql.md) sections of the query in order to make the query parseable.
+The `<complement>` is used to enclose [Dynamic SQL](../../nitro/nitro-dynamic-sql.md) sections of the query in order to make the query parseable.
 Parameter applying (`#{name}`) and injection (`${name}`) do not need to be enclosed by this tag and can be included as is.
 Dynamic SQL sections need to be enclosed because when HotRod parses the query to retrieve its final result set structure,
 it needs to make sure the SQL query is a valid one; the `<complement>` tag and all its content is excluded from this phase,
@@ -61,43 +61,43 @@ so it can be used to hide Dynamic SQL and thus, make the query valid for parsing
 
 ## Examples
 
-A query (with no parameters) that deletes all the rows of the table `TEMP_INVOICE` can be 
-implemented with the `TRUNCATE` statement as:
+A SELECT query (with no parameters) that retrieves all the pending sales orders from the table `SALES` can be implemented as:
 
 ```xml
-<query method="cleanTempInvoices">
-  truncate temp_invoice
-</query>
+<select method="getPendingSales" vo="PendingSale">
+  select * from sales where status = 'PENDING`
+</select>
 ```
 
-The following example &mdash; for DB2 &mdash; includes Dynamic SQL, parameter applying, and parameter injection:
+The above `<select>` query tag will add the following method to the DAO in the persistence layer:
+
+```java
+public List<PendingSale> getPendingSales() { ... }
+```
+
+If we wanted to get the pending sales for a specific branch, sorted by an ordinal column, then we 
+could define a couple of parameters for it. The following example (for PostgreSQL) applies the first
+parameter and injects the second one:
 
 ```xml
-<query method="closeSales">
-  <parameter name="soldOn" java-type="java.time.LocalDateTime" jdbc-type="TIMESTAMP" />
+<select method="getPendingSalesOfBranch" vo="BranchPendingSale">
   <parameter name="branchId" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-  <parameter name="rows" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
-  update sales
-  set status = 'COMPLETED'
-  where sold_on = #{soldOn}
-    and status = 'ACCEPTED'
-    <if test="branchId != null">
-      and branch_id = #{branchId}
-    </if>
-    and fulfilled = 1
-  order by fulfilled_on
-  fetch next ${rows} rows only
-</query>
+  <parameter name="orderColumn" java-type="java.lang.Integer" jdbc-type="NUMERIC" />
+  select * 
+  from sales 
+  where status = 'PENDING` and branch_id = #{branchId}
+  order by ${orderColumn}
+</select>
 ```
 
-In the example above we can see:
-- It defines three parameters.
-- The SQL statement is an UPDATE that does not return any rows.
-- The parameter `soldOn` is **applied** to the query using the `#{}` construct.
-- The parameter `rows` is **injected** into the query using the `${}` construct. This is the only way of using this
-parameter since DB2 does not allow to *apply* parameters to the `FECHT NEXT` clause.
-- Dynamic SQL is used to filter rows by `branch_id` if the parameter `branchId` has a non-null value. If the parameter
-is null, the section `and branch_id = #{branchId}` is not included in the SQL statement at all.
+The above `<select>` query tag will add the following method to the DAO in the persistence layer:
+
+```java
+public List<BranchPendingSale> getPendingSales(Integer branchId, Integer orderColumn) { ... }
+```
+
+There are multiple variations for SELECT queries, each one enhancing different aspects of it. See
+[Nitro Queries](../../nitro/nitro.md) for an explanation of all of these variations.
 
 
 ## A Note on SQL Injection
