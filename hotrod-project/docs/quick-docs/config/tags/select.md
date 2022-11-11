@@ -1,11 +1,11 @@
-# The `<query>` Tag
+# The `<select>` Tag
 
-This tags defines a Nitro query in the DAO.
+This tags defines a Nitro SELECT query in the DAO.
 
-A `<query>` is intended to execute queries that do not return a result set. This means, it's not intended to execute
-a `SELECT` SQL statement. To run a `SELECT` and return a result set use the `<select>` tag instead.
+A `<select>` query is intended to execute queries that return a result set. To run
+a typical query that does not return a result set use the `<query>` tag instead.
 
-`<query>` tags can be added to any `<table>`, `<view>`, or `<dao>` tag.
+`<select>` tags can be added to any `<table>`, `<view>`, or `<dao>` tag.
 
 Nitro queries allow the developer to include fully parameterized native queries in the application. These queries 
 can combine Dynamic SQL logic with structured generation queries, and with Native SQL. This is a more 
@@ -20,17 +20,43 @@ This tag includes the following attribute:
 | Attribute | Description | Defaults to |
 | -- | -- | -- |
 | `method` | The Java method that will execute this query | Required |
+| `vo` | The VO class that will be generated to represent result set rows of the query | Optional [^2] |
+| `mode` | The fecthing mode that defines how the query result will be represented in Java. Valid options are: `list`, `cursor`, `single-row` [^1] | `list` |
+
+[^1]: When using the `list` option the method will return a `List<Row>`. When using the `cursor` option the method will return a `Cursor<Row>`. When using
+`single-row` the method will return `Row`.
+[^2]: See [Nitro Queries](../../nitro/nitro.md) for exact usage.
 
 
 ## General Structure
 
-This tag can include one or more [`<parameter>`](./parameter.md) tags to specify parameters for the query.
-
 The body of this tag includes the SQL statement to be executed decorated with Dynamic SQL tags, parameter 
-definition, parameter applying, and parameter injection.
+definition, parameter applying, and parameter injection. It can also include one or more `<column>` tags, 
+a `<columns>` tag, and one or more `<complement>` tags.
 
-Any valid database query can be executed using this tag, including DDL (e.g. table creation), DML (e.g.
-inserting or selecting), DCL (e.g. granting access), and TCL (transaction control). 
+Only `SELECT` queries (or other equivalent statement such as `VALUES`) can be executed using this tag. The 
+query must return a result set.
+
+Each included [`<parameter>`](./parameter.md) tag specify parameters for the query.
+
+A parameter can be applied one or more times with the form `#{name}`, where `name` is the parameter name defined in
+a `<parameter>` tag.
+
+A parameter can be injected one or more times with the form `${name}`, where `name` is the parameter name defined in
+a `<parameter>` tag. See [A Note on SQL Injection](#a-note-on-sql-injection) for the security concerns about SQL Injection.
+
+Each included [`<column>`](./column.md) tag changes the default behavior of how a column is retrieved. It can 
+change the resulting property name, its type, or can be used to apply a converter to it.
+
+Alternatively, a single `<columns>` tag can be used to enable Structured queries. Structured queries are an advanced feature that
+post-processed the received result set and produces trees of Java VOs instead of flat rows. They can be useful to retrieve
+complex data structures with a query few tags. See [Structured Queries](../../nitro/nitro-structured-selects.md) for details.
+
+The `<complement>` is used to enclose [Dynamic SQL](./dynamic-sql.md) sections of the query in order to make the query parseable.
+Parameter applying (`#{name}`) and injection (`${name}`) do not need to be enclosed by this tag and can be included as is.
+Dynamic SQL sections need to be enclosed because when HotRod parses the query to retrieve its final result set structure,
+it needs to make sure the SQL query is a valid one; the `<complement>` tag and all its content is excluded from this phase,
+so it can be used to hide Dynamic SQL and thus, make the query valid for parsing purposes.
 
 
 ## Examples
