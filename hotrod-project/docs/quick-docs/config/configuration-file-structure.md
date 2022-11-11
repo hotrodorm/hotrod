@@ -128,8 +128,8 @@ The general structure of HotRod's main configuration file is shown below:
         * `<sequence>`
         * `<query>`
         * `<select>`
-    * [`<fragment>`](fragment.md)
-    * [`<facet>`](facet.md)
+    * [`<fragment>`](tags/fragment.md)
+    * [`<facet>`](tags/facet.md)
         * `<table>`
         * `<enum>`
         * `<view>`
