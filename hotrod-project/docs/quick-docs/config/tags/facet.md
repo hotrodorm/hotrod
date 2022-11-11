@@ -1,14 +1,15 @@
 # The `<facet>` Tag
 
-A facet enclosed a subset of the elements of the configuration file, that could be generated separately.
+A facet encloses a subset of the elements of the configuration file, to refresh parts of the persistence
+layer layer only.
 
-If the configuration file includes a significant number of Nitro queries refreshing the persistence layer
-can take a long time. In such cases if could be convenient to refresh only the changing part of the 
-persistence layer and not its entirety. 
+If the configuration file includes a vast number of tables, views, or Nitro queries refreshing the
+persistence layer can take a long time. In such cases it may be convenient to refresh only the changing 
+parts of it instead of its entirety.
 
-Typically one or more facets with the latest changes can be defined and then their names can be provided to 
-HotRod (as a comma-sepatated list of names). The HotRod Generator will read the entire configuration, but 
-will refresh only the section included in the facet(s).
+Typically, facets identify the entries affected by the latest changes. Their names are provided to 
+the HotRod Generator, as a comma-sepatated list of facet names. The HotRod Generator reads the entire 
+configuration, but refreshes only the sections included in the facets.
 
 
 ## Attributes
