@@ -30,9 +30,9 @@ This tag includes the following attribute:
 
 ## General Structure
 
-The body of this tag includes the SQL statement to be executed decorated with Dynamic SQL tags, parameter 
-definition, parameter applying, and parameter injection. It can also include one or more `<column>` tags, 
-a `<columns>` tag, and one or more `<complement>` tags.
+The body of this tag includes the SQL statement to be executed decorated with parameter definition, parameter applying,
+parameter injection, and Dynamic SQL . It can also include one or more `<column>` tags, a `<columns>` tag, and one or
+more `<complement>` tags.
 
 Only `SELECT` queries (or other equivalent statement such as `VALUES`) can be executed using this tag. The 
 query must return a result set.
@@ -44,6 +44,9 @@ a `<parameter>` tag. Applying a parameter value is a safe and fully-typed way of
 
 Also, a parameter can be injected one or more times with using `${name}` in the query, where `name` is the parameter name defined in
 a `<parameter>` tag. See [A Note on SQL Injection](#a-note-on-sql-injection) for the security concerns about SQL Injection.
+
+[Dynamic SQL](../../nitro/nitro-dynamic-sql.md) can be added to include or exclude fragments of the SQL query at runtime according 
+to the parameter values.
 
 Each included [`<column>`](./column.md) tag changes the default behavior of how a column is retrieved. It can 
 change the resulting property name, its type, or can be used to apply a converter to it.

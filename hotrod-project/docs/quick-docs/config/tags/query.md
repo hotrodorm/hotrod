@@ -24,8 +24,8 @@ This tag includes the following attribute:
 
 ## General Structure
 
-The body of this tag includes the SQL statement to be executed decorated with Dynamic SQL tags, parameter 
-definition, parameter applying, and parameter injection.
+The body of this tag includes the SQL statement to be executed decorated with parameter definition, parameter 
+applying, parameter injection, and Dynamic SQL.
 
 Any valid database query can be executed using this tag, including DDL (e.g. table creation), DML (e.g.
 inserting or selecting), DCL (e.g. granting access), and TCL (transaction control). 
@@ -37,6 +37,9 @@ a `<parameter>` tag. Applying a parameter value is a safe and fully-typed way of
 
 Also, a parameter can be injected one or more times with using `${name}` in the query, where `name` is the parameter name defined in
 a `<parameter>` tag. See [A Note on SQL Injection](#a-note-on-sql-injection) for the security concerns about SQL Injection.
+
+[Dynamic SQL](../../nitro/nitro-dynamic-sql.md) can be added to include or exclude fragments of the SQL query at runtime according 
+to the parameter values.
 
 
 ## Examples
