@@ -150,7 +150,7 @@ You can look into each tag to get details of it:
                 * `<association>`
                 * `<expression>`
             * Dynamic SQL: Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
-            * [`<complement>`](complement.md)
+            * [`<complement>`](tags/complement.md)
                 * Dynamic SQL: Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
     * [`<enum>`](enum.md)
         * [`<non-persistent>`](non-persistent.md)
