@@ -18,6 +18,7 @@ This tag includes the following attribute:
 | `jdbc-type` | The JDBC type [^1] | Required |
 | `sample-sql-value` | A sample value. Used by the generator when assembling the whole SQL statement. This is rarely needed if at all, and it's for exotic database types only. The value provided replaces the parameter in the query and must ensure the whole query ends up being a valid query | Internally produced value |
 
+See [Nitro Parameters](../../nitro/nitro-parameters.md) for examples.
 
 [^1]: This is a requirement of the JDBC spec where each nulls needs to have a type when applied as a query parameter. See [java.sql.Types](https://docs.oracle.com/javase/8/docs/api/java/sql/Types.html) for a list of valid types.
 
