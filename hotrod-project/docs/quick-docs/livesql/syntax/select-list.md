@@ -7,7 +7,7 @@ A SELECT query starts with the SELECT List. This section specifies the columns t
 LiveSQL includes variations to specify all or a subset of the columns and also to qualify the query for DISTINCT rows only. See the variations below.
 
 
-### Select All Columns
+### 1. Select All Columns
 
 To select all columns of the table(s) start the query with:
 
@@ -21,7 +21,7 @@ The resulting SQL statement starts with:
 select *
 ```
 
-### Select Specific Columns
+### 2. Select Specific Columns
 
 To select a subset of the columns of the table(s) start the query with:
 
@@ -38,7 +38,7 @@ select a.name, a.price * a.qty as total, a.status
 The query can name the specific list of columns to produce. This list can also include expressions that the database can 
 compute using functions or operators. 
 
-### Select Distinct Rows
+### 3. Select Distinct Rows
 
 The query can indicate that only distinct rows should be generated, as shown below:
 
@@ -52,9 +52,9 @@ Produces:
 select distinct *
 ```
 
-### Select Distinct Rows
+### 4. Select Distinct Rows with Specific Columns
 
-The DISTINCT qualifier can also be combined with specific columns:
+The `DISTINCT` qualifier can also be combined with specific columns:
 
 ```java
 this.sql.selectDistinct(a.name, a.price.mult(a.qty).as("total"), a.status)
@@ -65,3 +65,5 @@ Produces:
 ```sql
 select distinct a.name, a.price * a.qty as total, a.status
 ```
+
+Next: [FROM]()

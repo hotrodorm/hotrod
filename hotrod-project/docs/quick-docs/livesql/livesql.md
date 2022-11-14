@@ -43,13 +43,13 @@ to avoid materializing the whole result set at once and read rows one at a time.
 Each sections of a `SELECT` statement has variations, and they are discussed below:
 
 - [The SELECT List](./syntax/select-list.md).
-- [FROM and JOINs]().
-- [The WHERE Clause]().
-- [The GROUP BY Clause]().
-- [The HAVING Clause]().
-- [The ORDER BY Clause]().
-- [The OFFSET Clause]().
-- [The LIMIT Clause]().
+- [FROM and JOINs](./syntax/from-and-joins.md).
+- [The WHERE Clause](./syntax/where.md).
+- [The GROUP BY Clause](./syntax/group-by.md).
+- [The HAVING Clause](./syntax/having.md).
+- [The ORDER BY Clause](./syntax/order-by.md).
+- [The OFFSET Clause](./syntax/offset.md).
+- [The LIMIT Clause](./syntax/limit.md).
 
 Assembling expressions:
 
