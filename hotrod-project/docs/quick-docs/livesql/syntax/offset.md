@@ -3,7 +3,7 @@
 The `OFFSET` clause defines how many initial rows of the result set of a `SELECT` statement 
 need to be excluded from it.
 
-It has a single form where it accepts an integer number of rows.
+It has a single form where it accepts an integer number as a parameter.
 
 
 ## OFFSET and ORDER BY

@@ -4,7 +4,7 @@ The `LIMIT` clause defines how many rows of the result set of a `SELECT` stateme
 at the most. In the presence of an `OFFSET` clause this number of rows starts counting after
 all rows have been discarded by the `OFFSET` clause.
 
-It has a single form where it accepts an integer number of rows.
+It has a single form where it accepts an integer number as a parameter.
 
 
 ## LIMIT and ORDER BY
