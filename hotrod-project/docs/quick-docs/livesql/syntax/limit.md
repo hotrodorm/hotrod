@@ -14,7 +14,7 @@ databases do not have inherent ordering an `ORDER BY` clause ensures the rows wi
 in the same order every time and, thus, the limit will make sense.
 
 Otherwise, subsequent executions of the same query can return the same or different rows 
-*at random* and may not make too much sense.
+*at random* and the result of the query may not make too much sense.
 
 Without an `ORDER BY` clause the `OFFSET` clause can still make sense in a reduced number of cases
 when the query needs to return a few rows &mdash; **any rows** &mdash; from a query or a table.
@@ -39,7 +39,7 @@ The resulting query is:
 
 ```sql
 SELECT *
-FROM employee
+FROM employee e
 ORDER BY salary DESC
 LIMIT 10
 ```
