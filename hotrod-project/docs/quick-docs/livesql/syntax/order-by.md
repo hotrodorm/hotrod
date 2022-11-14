@@ -62,7 +62,8 @@ by virtually any expression computed on the fly. See [Expressions](./expressions
 When the query is aggregated the sorting expressions need to be aggregated as well. In the presence of
 a `GROUP BY` clause non-aggregated expressions are out of the SQL scope for the `ORDER BY` clause.
 
-The following query finds unpaid payments, groups them by client, and finally sorts each client by minimum due date:
+The following query finds unpaid payments, groups them by client, and finally sorts each client by 
+oldest due date:
 
 
 ```java
