@@ -4,9 +4,10 @@ A SELECT query starts with the SELECT List. This section specifies the columns t
 
 ## Variations
 
-The following variations are implemented:
+LiveSQL includes variations to specify all or a subset of the columns and also to qualify the query for DISTINCT rows only. See the variations below.
 
-### Select All Columns:
+
+### Select All Columns
 
 To select all columns of the table(s) start the query with:
 
@@ -20,26 +21,47 @@ The resulting SQL statement starts with:
 select *
 ```
 
-### Select Distinct Rows:
+### Select Specific Columns
 
-    ```java
-    this.sql.selectDistinct()
-    ```
+To select a subset of the columns of the table(s) start the query with:
 
-    Produces:
+```java
+this.sql.select(a.name, a.price.mult(a.qty).as("total"), a.status)
+```
 
-    ```sql
-    select distinct *
-    ```
+Produces:
 
-### Select Specific Columns:
+```sql
+select a.name, a.price * a.qty as total, a.status
+```
 
-    ```java
-    this.sql.select(a.name, a.status)
-    ```
+The query can name the specific list of columns to produce. This list can also include expressions that the database can 
+compute using functions or operators. 
 
-    Produces:
+### Select Distinct Rows
 
-    ```sql
-    select a.name, a.status
-    ```
+The query can indicate that only distinct rows should be generated, as shown below:
+
+```java
+this.sql.selectDistinct()
+```
+
+Produces:
+
+```sql
+select distinct *
+```
+
+### Select Distinct Rows
+
+The DISTINCT qualifier can also be combined with specific columns:
+
+```java
+this.sql.selectDistinct(a.name, a.price.mult(a.qty).as("total"), a.status)
+```
+
+Produces:
+
+```sql
+select distinct a.name, a.price * a.qty as total, a.status
+```
