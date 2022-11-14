@@ -8,9 +8,13 @@ expression is a typical LiveSQL expression that is decorated with extra ordering
 
 ## Ordering Features
 
-The ordering of rows can be specified with virtually any LiveSQL expression qualified with an 
-ordering. Additionally each expressioncan specify the behavior of nulls. In short these ordering
+The ordering of rows can be specified with virtually [^1] any LiveSQL expression qualified with an 
+ordering. Additionally each expression can specify the behavior of nulls. In short these ordering
 expressions include:
+
+[^1]: Technically not all expressions can be used for sorting. Different databases impose restrictions
+on these. The most common restrictions is for values that do not have inherent ordering such as images, 
+UUIDs, arrays, etc., or for values that are too large and impractical for this purpose.
 
 - Ascending or descending ordering (required).
 - Location of nulls in the ordering domain (optional).
