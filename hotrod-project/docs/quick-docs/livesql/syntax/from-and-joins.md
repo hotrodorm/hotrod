@@ -1,22 +1,25 @@
 # The FROM and JOIN Clauses
 
-The `FROM` and `JOIN` clauses specify the tables and views where the data comes from.
+The `FROM` and `JOIN` clauses specify the tables and views where the data of a SELECT query comes from.
+
+A LiveSQL query can join multiple tables and views in a SELECT query.
+
 
 ## Example
 
-Multiple tables and views can be combined into a query to join them and produce the desired result. The following
+ The following
 query joins two tables and a view.
 
 ```java
 AccountTable a = AccountDAO.newTable("a");
 TransactionTable t = TransactionDAO.newTable("t");
-BigAccountsView ba = BigAccountsDAO.newTable("ba");
+BigAccountsView ba = BigAccountsDAO.newView("ba");
 
 List<Map<String, Object>> rows = this.sql 
     .select() 
     .from(a) 
-    .join(t, t.accountId.equals(a.id))
-    .join(ba, ba.accountId.equals(t.accountId))
+    .join(t, t.accountId.eq(a.id))
+    .join(ba, ba.accountId.eq(t.accountId))
     .execute();
 ```
 
@@ -49,7 +52,7 @@ If a query includes the same table or view more than once &mdash; as in self-ref
 then it's mandatory to define aliases for each instance. This ensures the appropriate columns are used from each table instance 
 when writing the join predicates.
 
-The followin example illustrate a self-referencing join:
+The following example illustrate a self-referencing join:
 
 
 ```java
@@ -59,7 +62,7 @@ EmployeeTable m = EmployeeDAO.newTable("m"); // same table with alias "m" for "m
 List<Map<String, Object>> rows = this.sql 
     .select(e.name, m.name.as("manager_name")) 
     .from(e) 
-    .leftJoin(m, m.id.equals(e.managerId))
+    .leftJoin(m, m.id.eq(e.managerId))
     .execute();
 ```
 
