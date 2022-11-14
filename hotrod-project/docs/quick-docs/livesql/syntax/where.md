@@ -32,4 +32,5 @@ WHERE status = 'ACT'
 In this example the predicate in the `WHERE` clause is very simple.
 
 A predicate can be much more complex to accomodate arithmetic, boolean logic, parenthesis, subqueries, etc. 
-See[Boolean Expressions](./boolean-expressions.md) for more details and examples.
+See [Boolean Expressions](./boolean-expressions.md) for more details and examples.
+
