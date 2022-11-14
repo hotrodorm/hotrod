@@ -44,7 +44,7 @@ ORDER BY salary DESC
 LIMIT 10
 ```
 
-The limit value is a numeric value that can be computed in the client application and does not 
+The limit value is a numeric value that can be computed by the client application and does not 
 need to be a constant value.
 
 

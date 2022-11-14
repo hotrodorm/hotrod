@@ -43,5 +43,5 @@ ORDER BY name
 OFFSET 100
 ```
 
-The offset value is a numeric value that can be computed in the client application and does not 
+The offset value is a numeric value that can be computed by the client application and does not 
 need to be a constant value.
