@@ -1,6 +1,6 @@
 # LiveSQL
 
-LiveSQL is a HotRod module that allows the developer to write flexible SQL `SELECT` queries using Java programming only.
+LiveSQL is a HotRod module that allows the developer to write flexible SQL `SELECT` queries using only Java programming code.
 
 The generator produces Java classes that represent tables, views, and columns and they can be used to assemble and run a `SELECT` query.
 
