@@ -86,7 +86,7 @@ expressions as join predicates: that's the general form of a join called *theta 
 LiveSQL implements the most common join types:
 
 | Join Type | Variation | LiveSQL code | SQL Syntax |
-| -- | -- | -- |
+| -- | -- | -- | -- |
 | INNER JOIN | *theta-join* | `join(t, predicate)` | `JOIN t ON predicate` |
 | INNER JOIN | USING | `join(t, column...)` | `JOIN t USING (column...)` |
 | INNER JOIN | NATURAL | `naturalJoin(t)` | `NATURAL JOIN t` |
@@ -102,9 +102,10 @@ LiveSQL implements the most common join types:
 | CROSS JOIN | -- | `crossJoin(t)` | `CROSS JOIN t` |
 | UNION JOIN | -- | `unionJoin(t)` | `UNION JOIN t` |
 
+
 **Note**: Literal table expression, table functions, lateral joins, and aliasing table expression are not yet supported.
 
-**Note**: The equivalent SQL Syntax may vary from database to database, and LiveSQL adapts it automatically.
+**Note**: The equivalent SQL Syntax may vary from database to database, and LiveSQL adapts it accordingly behind the scenes.
 
 
 
