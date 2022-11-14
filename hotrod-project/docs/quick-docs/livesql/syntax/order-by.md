@@ -13,8 +13,8 @@ ordering. Additionally each expression can specify the behavior of nulls. In sho
 expressions include:
 
 [^1]: Technically not all expressions can be used for sorting. Different databases impose restrictions
-on these. The most common restrictions is for values that do not have inherent ordering such as images, 
-UUIDs, arrays, etc., or for values that are too large and impractical for this purpose.
+on them. The most common restrictions affect values that do not have inherent ordering such as images, 
+UUIDs, arrays, etc., or values that are too large and impractical for this purpose.
 
 - Ascending or descending ordering (required).
 - Location of nulls in the ordering domain (optional).
