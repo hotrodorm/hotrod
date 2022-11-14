@@ -9,7 +9,7 @@ It has a single form where it accepts an integer number as a parameter.
 
 ## LIMIT and ORDER BY
 
-The `LIMIT` clause should go along with an `ORDER BY` clause. Since table rows in relational
+Most of the time the `LIMIT` clause should go along with an `ORDER BY` clause. Since table rows in relational
 databases do not have inherent ordering an `ORDER BY` clause ensures the rows will be processed
 in the same order every time and, thus, the limit will make sense.
 
