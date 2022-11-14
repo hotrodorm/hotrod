@@ -8,8 +8,9 @@ expression is a typical LiveSQL expression that is decorated with extra ordering
 
 ## Ordering Features
 
-The ordering of rows can be specified with expressions that need to indicate an ascending or descending
-ordering. Additionally they can specify the behavior of nulls. In short they include:
+The ordering of rows can be specified with virtually any LiveSQL expression qualified with an 
+ordering. Additionally each expressioncan specify the behavior of nulls. In short these ordering
+expressions include:
 
 - Ascending or descending ordering (required).
 - Location of nulls in the ordering domain (optional).
