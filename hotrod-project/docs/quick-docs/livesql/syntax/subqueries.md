@@ -44,7 +44,7 @@ List<Map<String, Object>> rows = this.sql
     .select()
     .from(e) 
     .where(this.sql.notExists(
-      this.sql.select(sql.val(1)).from(c).where(c.active.eq(1).and(c.type.eq.e.type))
+      this.sql.select().from(c).where(c.active.eq(1).and(c.type.eq.e.type))
     ))
     .execute();
 ```
@@ -55,7 +55,7 @@ The resulting query is:
 SELECT *
 FROM employee e
 WHERE NOT EXISTS (
-  select 1 from codes c where c.active = 1 and c.type = e.type
+  select * from codes c where c.active = 1 and c.type = e.type
 )
 ```
 
