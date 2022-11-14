@@ -42,7 +42,7 @@ to avoid materializing the whole result set at once and read rows one at a time.
 
 Each sections of a `SELECT` statement has variations, and they are discussed below:
 
-- [The SELECT List]().
+- [The SELECT List](./syntax/select-list.md).
 - [FROM and JOINs]().
 - [The WHERE Clause]().
 - [The GROUP BY Clause]().
@@ -66,8 +66,7 @@ Assembling expressions:
 Other:
 
 - [Previewing the SQL Statement]().
-- [CRUD &amp LiveSQL &mdash; SelectByCriteria()]().
-- []().
+- [CRUD &amp; LiveSQL &mdash; SelectByCriteria()]().
 
 
 ## See also:
