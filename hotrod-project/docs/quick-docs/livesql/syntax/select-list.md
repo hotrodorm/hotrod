@@ -2,12 +2,10 @@
 
 A SELECT query starts with the SELECT List. This section specifies the columns that are to be retrieved as well as the modifiers for them.
 
-## Variations
-
 LiveSQL includes variations to specify all or a subset of the columns and also to qualify the query for DISTINCT rows only. See the variations below.
 
 
-### Selecting All Columns
+## Selecting All Columns
 
 To select all columns of the table(s) start the query with `select()`. For example
 
@@ -28,7 +26,7 @@ FROM employee e
 ```
 
 
-### Selecting Specific Columns
+## Selecting Specific Columns
 
 To select a subset of the columns of the table(s) start the query with:
 
@@ -67,11 +65,11 @@ The resulting query is:
 SELECT 7, 15 * 3, getdate()
 ```
 
-### Aliasing Columns
+## Aliasing Columns
 
 Most of the time SELECT queries preserve the names of the columns they are retrieving. However, naming or renaming columns
-can be useful to convey more clearly what the value corresponds to. This is specially useful when an expression is included in the 
-select list where each engine will generate a *cryptic* name for it, or when joining tables where multiple columns can end up 
+can be useful to convey more clearly the meaning of a column value. This is specially useful when an expression is included in the 
+select list where each engine typically generates a *cryptic* or random name for it, or when joining tables where multiple columns can end up 
 having the same name.
 
 To alias a column append the `.as(<string>)` method to it.
@@ -96,7 +94,7 @@ FROM product p
 ```
 
 
-### Selecting Distinct Rows
+## Selecting Distinct Rows
 
 By default a SELECT query produce rows as found in the database and this could include duplicate rows: i.e. it returns a *multiset*.
 However, in some circumstances we may need the query to remove duplicate rows: i.e. to return a *set*. Removing duplicate
@@ -119,7 +117,7 @@ SELECT DISTINCT *
 FROM vehicle v
 ```
 
-### Selecting Distinct Rows with Specific Columns
+## Selecting Distinct Rows with Specific Columns
 
 The `DISTINCT` qualifier can also be combined with a specific list of columns:
 
