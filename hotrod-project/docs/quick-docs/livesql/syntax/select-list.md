@@ -141,4 +141,4 @@ SELECT DISTINCT v.brand, v.region
 FROM vehicle v
 ```
 
-Next: [FROM and JOINs](./from-and-joins.md)
+Next: [The FROM and JOIN Clauses](./from-and-joins.md)
