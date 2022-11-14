@@ -105,7 +105,7 @@ LiveSQL implements the most common join types:
 
 Joining literal table expressions, table functions, aliasing table expression, and lateral joins are not yet supported.
 
-**Note**: The equivalent SQL Syntax may vary from database to database, and LiveSQL adapts it accordingly behind the scenes.
+**Note**: The equivalent SQL Syntax may vary from database to database. LiveSQL adapts it accordingly behind the scenes.
 
 
 
