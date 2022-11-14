@@ -50,9 +50,9 @@ of them follow the standard semantics of the SQL Standard
 
 ## Self-Referencing Joins
 
-If a query includes the same table or view more than once &mdash; as in self-referencing joins (parent and child table are the same one),
-then it's mandatory to define aliases for each instance. This ensures the appropriate columns are used from each table instance 
-when writing the join predicates.
+If a query includes the same table or view more than once &mdash; as in self-referencing joins (parent and child table 
+are the same one) &mdash; then it's mandatory to define aliases for each instance. This ensures the appropriate columns
+are used from each table instance when writing the join predicates.
 
 The following example illustrate a self-referencing join:
 
