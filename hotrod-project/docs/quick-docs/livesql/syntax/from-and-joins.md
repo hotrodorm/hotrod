@@ -103,7 +103,7 @@ LiveSQL implements the most common join types:
 | UNION JOIN | -- | `unionJoin(t)` | `UNION JOIN t` |
 
 
-**Note**: Literal table expression, table functions, lateral joins, and aliasing table expression are not yet supported.
+Joining literal table expressions, table functions, aliasing table expression, and lateral joins are not yet supported.
 
 **Note**: The equivalent SQL Syntax may vary from database to database, and LiveSQL adapts it accordingly behind the scenes.
 
