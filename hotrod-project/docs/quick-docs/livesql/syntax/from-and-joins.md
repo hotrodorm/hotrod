@@ -40,9 +40,8 @@ Tables and view are added right after the select-list using a `from()` clause.
 
 ## Joining
 
-If the query include more than a single table or view it will include *join* clauses to join them. There are several variation of these clauses
-
-**Note**: Most join clauses are implemented by LiveSQL, except for lateral joins.
+If the query include more than a single table or view it will include one or more *join* clauses for them. The semantics 
+of them follow the standard semantics of the SQL Standard
 
 ## Self-Referencing Joins
 
@@ -75,7 +74,7 @@ LEFT JOIN employee m ON m.id = e.manager_id
 
 ## Join Predicates
 
-The join predicate is the second parameter of a join and can be any expression that evaluates to a boolean. In LiveSQL a *boolean expression*
+The join predicate is the second parameter of a theta join and can be any expression that evaluates to a boolean. In LiveSQL a *boolean expression*
 is equivalent to a *predicate*.
 
 Most of the time join predicates are equalities: this leads to a special kind of joins called *equi-joins*. We less often see other more complex 
@@ -102,6 +101,8 @@ LiveSQL implements the most common join types:
 | FULL JOIN | NATURAL | `naturalFullJoin(t)` |
 | CROSS JOIN | -- | `crossJoin(t)` |
 | UNION JOIN | -- | `unionJoin(t)` |
+
+**Note**: Lateral joins are not yet implemented.
 
 
 
