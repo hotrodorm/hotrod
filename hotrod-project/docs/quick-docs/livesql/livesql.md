@@ -61,19 +61,16 @@ The Expression Language:
     - [Boolean](./syntax/boolean-expressions.md).
     - [Binary](./syntax/binary-expressions.md).
     - [Object](./syntax/object-expressions.md).
+- [Aggregate Functions](./syntax/aggregate-functions.md).
 - [Window Functions](./syntax/window-functions.md).
 - [Subqueries](./syntax/subqueries.md).
+- [Extending LiveSQL Functions](./extending-livesql-functions.md).
 
 
 ## Odds &amp; Ends
 
 - [Previewing the SQL Statement](./previewing-the-sql-statement.md).
 - [CRUD &amp; LiveSQL &mdash; SelectByCriteria()](./livesql-and-crud.md).
-
-
-## See also:
-
 - [Designating a LiveSQL Dialect](designating-a-livesql-dialect.md).
-- [Extending LiveSQL Functions](./extending-livesql-functions.md).
 
 
