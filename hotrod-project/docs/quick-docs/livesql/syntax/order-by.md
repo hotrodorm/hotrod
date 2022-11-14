@@ -2,17 +2,16 @@
 
 The `ORDER BY` clause defines a criteria to sort rows in the result set of a `SELECT` statement.
 
-It has a single form where it accepts a list of ordering expressions as parameters. An *ordering
-expression* is a typical expression that is decorated with extra ordering features.
+It has a single form where it accepts a list of *ordering expressions* as parameters. An ordering
+expression is a typical LiveSQL expression that is decorated with extra ordering features.
 
 
 ## Ordering Features
 
-The ordering of rows can be tailored using typical LiveSQL expressions. These expressions can include two
-extra features related to the ordering:
+The ordering of rows can be specified with expressions that can include two extra features related to the ordering:
 
 - Ascending or descending ordering.
-- Location of nulls in the ordering space.
+- Location of nulls in the ordering domain.
 
 To use an expression to sort in ascending order decorate it with `.asc`. If a descending order is needed then the 
 expression needs to be qualified with the `.desc()` method. This tells LiveSQL that the expression should be
