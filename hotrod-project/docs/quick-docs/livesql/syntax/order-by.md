@@ -8,18 +8,20 @@ expression is a typical LiveSQL expression that is decorated with extra ordering
 
 ## Ordering Features
 
-The ordering of rows can be specified with expressions that can include two extra features related to the ordering:
+The ordering of rows can be specified with expressions that need to indicate an ascending or descending
+ordering. Additionally they can specify the behavior of nulls. In short they include:
 
-- Ascending or descending ordering.
-- Location of nulls in the ordering domain.
+- Ascending or descending ordering (required).
+- Location of nulls in the ordering domain (optional).
 
-To use an expression to sort in ascending order decorate it with `.asc`. If a descending order is needed then the 
-expression needs to be qualified with the `.desc()` method. This tells LiveSQL that the expression should be
+To sort in ascending order qualify the expression with `.asc()`. If a descending order is needed then the 
+expression needs to be qualified with the `.desc()`. This tells LiveSQL that the expression should be
 sorted in reverse order.
 
 Nulls, on the other hand, are treated in special ways; they can be considered below or above any value in the
-database. Unfortunately, each database implements the sorting of nulls in a different way. In case this is
-needed LiveSQL adds the methods `nullsFirst()` and `nullsLast()` to clearly establish this ordering.
+database. Unfortunately, each database implements the sorting of nulls in a different way, and this behavior 
+may not correspond to the requirements of the query. In case it doesn't LiveSQL adds the methods
+`nullsFirst()` and `nullsLast()` to clearly establish this ordering.
 
 
 ## Example
