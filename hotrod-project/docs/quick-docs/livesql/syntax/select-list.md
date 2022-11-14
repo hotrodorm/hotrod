@@ -49,6 +49,9 @@ FROM product p
 The query can name the specific list of columns to produce. This list can also include expressions that the database can 
 compute using functions or operators. 
 
+
+## Selecting without a FROM Clause
+
 Most of the database engines require a `FROM` clause in a `SELECT` statement. Some engines such as
 PostgreSQL, MySQL, MariaDB, and SQL Server can execute a `SELECT` without a `FROM` clause if using literals in the select list, or
 if the values can be computed directly without using any table. For example, the following query is valid in SQL Server:
