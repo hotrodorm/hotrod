@@ -87,16 +87,16 @@ LiveSQL implements the most common join types:
 
 | Join Type | Variation | LiveSQL code |
 | -- | -- | -- |
-| INNER JOIN | *&lt;predicate>* | `join(t, <predicate>)` |
+| INNER JOIN | *&lt;theta-join>* | `join(t, <predicate>)` |
 | INNER JOIN | USING | `join(t, <column>...)` |
 | INNER JOIN | NATURAL | `naturalJoin(t)` |
-| LEFT JOIN | *&lt;predicate>* | `leftJoin(t, <predicate>)` |
+| LEFT JOIN | *&lt;theta-join>* | `leftJoin(t, <predicate>)` |
 | LEFT JOIN | USING | `leftJoin(t, <column>...)` |
 | LEFT JOIN | NATURAL | `naturalLeftJoin(t)` |
-| RIGHT JOIN | *&lt;predicate>* | `rightJoin(t, <predicate>)` |
+| RIGHT JOIN | *&lt;theta-join>* | `rightJoin(t, <predicate>)` |
 | RIGHT JOIN | USING | `rightJoin(t, <column>...)` |
 | RIGHT JOIN | NATURAL | `naturalRightJoin(t)` |
-| FULL JOIN | *&lt;predicate>* | `fullJoin(t, <predicate>)` |
+| FULL JOIN | *&lt;theta-join>* | `fullJoin(t, <predicate>)` |
 | FULL JOIN | USING | `fullJoin(t, <column>...)` |
 | FULL JOIN | NATURAL | `naturalFullJoin(t)` |
 | CROSS JOIN | -- | `crossJoin(t)` |
