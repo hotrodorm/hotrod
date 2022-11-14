@@ -51,23 +51,24 @@ Each sections of a `SELECT` statement has variations, and they are discussed bel
 - [The OFFSET Clause](./syntax/offset.md).
 - [The LIMIT Clause](./syntax/limit.md).
 
-Assembling expressions:
+The Expression Language:
 
-- [Expressions]().
-- [Operators &amp; Functions]().
-    - [Numeric]().
-    - [String]().
-    - [Date &amp; Time]().
-    - [Boolean]().
-    - [Binary]().
-    - [Object]().
-- [Window Functions]().
+- [Expressions](./syntax/expressions.md).
+- [Operators &amp; Functions](./syntax/operators-and-functions.md).
+    - [Numeric](./syntax/numeric-expressions.md).
+    - [String](./syntax/string-expressions.md).
+    - [Date &amp; Time](./syntax/datetime-expressions).
+    - [Boolean](./syntax/boolean-expressions.md).
+    - [Binary](./syntax/binary-expressions.md).
+    - [Object](./syntax/object-expressions.md).
+- [Window Functions](./syntax/window-functions.md).
 - [Subqueries](./syntax/subqueries.md).
 
-Other:
 
-- [Previewing the SQL Statement]().
-- [CRUD &amp; LiveSQL &mdash; SelectByCriteria()]().
+## Odds &amp; Ends
+
+- [Previewing the SQL Statement](./previewing-the-sql-statement.md).
+- [CRUD &amp; LiveSQL &mdash; SelectByCriteria()](./livesql-and-crud.md).
 
 
 ## See also:
