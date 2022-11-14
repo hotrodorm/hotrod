@@ -19,8 +19,7 @@ can return the same or different rows *at random*. Nevertheless, LiveSQL allows 
 
 ## Example
 
-The following query returns all branches sorted by name, except the first 100 ones, from north
-region:
+The following query returns all branches from the north region, sorted by name, except the first 100 ones:
 
 ```java
 BranchTable b = BranchDAO.newTable("b");
