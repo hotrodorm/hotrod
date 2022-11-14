@@ -79,8 +79,10 @@ LEFT JOIN employee m ON m.id = e.manager_id
 
 ## Join Predicates
 
-The join predicate is the second parameter of a theta join and can be any expression that evaluates to a boolean. In LiveSQL a *boolean expression*
-is equivalent to a *predicate*.
+The join predicate is the second parameter of a traditional join with an `ON` clause. The join predicate can be any expression that
+evaluates to a boolean.
+
+**Note**: In the LiveSQL docs a *boolean expression* is equivalent to a *predicate*. They are used interchangeably.
 
 Most of the time join predicates are equalities: this leads to a special kind of joins called *equi-joins*. We less often see other more complex 
 expressions as join predicates: that's the general form of a join called *theta joins*.
