@@ -13,7 +13,7 @@ available anymore in this SQL scope.
 
 ## Example
 
-The following query selects all widgets that are active.
+The following query selects all lottery games with added prizes over 1 million:
 
 
 ```java

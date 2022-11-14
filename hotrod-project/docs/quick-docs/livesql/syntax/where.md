@@ -8,7 +8,7 @@ expression can be as simple or as complex as needed and it must evaluate to a bo
 
 ## Example
 
-The following query selects all widgets that are active.
+The following query selects all widgets that are active:
 
 
 ```java
