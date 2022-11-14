@@ -55,7 +55,11 @@ if the values can be computed directly without using any table. For example, the
 
 ```java
 List<Map<String, Object>> rows = this.sql
-    .select(sql.val(7), sql.val(15).mult(sql.val(3)), sql.currentDate())
+    .select(
+      sql.val(7),
+      sql.val(15).mult(sql.val(3)), 
+      sql.currentDate()
+    )
     .execute();
 ```
 
