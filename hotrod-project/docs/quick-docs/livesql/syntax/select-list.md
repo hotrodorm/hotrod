@@ -7,63 +7,136 @@ A SELECT query starts with the SELECT List. This section specifies the columns t
 LiveSQL includes variations to specify all or a subset of the columns and also to qualify the query for DISTINCT rows only. See the variations below.
 
 
-### 1. Select All Columns
+### Selecting All Columns
 
-To select all columns of the table(s) start the query with:
+To select all columns of the table(s) start the query with `select()`. For example
 
 ```java
-this.sql.select()
+EmployeeTable e = EmployeeDAO.newTable("e");
+
+List<Map<String, Object>> rows = this.sql
+    .select()
+    .from(e) 
+    .execute();
 ```
 
-The resulting SQL statement starts with:
+The resulting query is:
 
 ```sql
-select *
+SELECT *
+FROM employee e
 ```
 
-### 2. Select Specific Columns
+
+### Selecting Specific Columns
 
 To select a subset of the columns of the table(s) start the query with:
 
 ```java
-this.sql.select(a.name, a.price.mult(a.qty).as("total"), a.status)
+ProductTable p = ProductDAO.newTable("p");
+
+List<Map<String, Object>> rows = this.sql
+    .select(p.name, p.price.mult(p.qty), a.status)
+    .from(p) 
+    .execute();
 ```
 
 Produces:
 
 ```sql
-select a.name, a.price * a.qty as total, a.status
+SELECT p.name, p.price * p.qty, p.status
+FROM product p
 ```
 
 The query can name the specific list of columns to produce. This list can also include expressions that the database can 
 compute using functions or operators. 
 
-### 3. Select Distinct Rows
-
-The query can indicate that only distinct rows should be generated, as shown below:
+Most of the database engines require a `FROM` clause in a `SELECT` statement. Some engines such as
+PostgreSQL, MySQL, MariaDB, and SQL Server can execute a `SELECT` without a `FROM` clause if using literals in the select list, or
+if the values can be computed directly without using any table. For example, the following query is valid in SQL Server:
 
 ```java
-this.sql.selectDistinct()
+List<Map<String, Object>> rows = this.sql
+    .select(sql.val(7), sql.val(15).mult(sql.val(3)), sql.currentDate())
+    .execute();
+```
+
+The resulting query is:
+
+```sql
+SELECT 7, 15 * 3, getdate()
+```
+
+### Aliasing Columns
+
+Most of the time SELECT queries preserve the names of the columns they are retrieving. However, naming or renaming columns
+can be useful to convey more clearly what the value corresponds to. This is specially useful when an expression is included in the 
+select list where each engine will generate a *cryptic* name for it, or when joining tables where multiple columns can end up 
+having the same name.
+
+To alias a column append the `.as(<string>)` method to it.
+
+For example, if the query is adding the base price with the tax for the purchase, it looks much clearer to name the new
+column as `total_price`, as shown below:
+
+```java
+ProductTable p = ProductDAO.newTable("p");
+
+List<Map<String, Object>> rows = this.sql
+    .select(p.name, p.price.plus(p.tax).as("total_price"))
+    .from(p) 
+    .execute();
+```
+
+Produces a second column with a clear name:
+
+```sql
+SELECT p.name, p.price + p.qty as total_price
+FROM product p
+```
+
+
+### Selecting Distinct Rows
+
+By default a SELECT query produce rows as found in the database and this could include duplicate rows: i.e. it returns a *multiset*.
+However, in some circumstances we may need the query to remove duplicate rows: i.e. to return a *set*. Removing duplicate
+rows is an extra effort the engine needs to do, and we indicate this by prepending the `DISTINCT` clause to the select list,
+as shown below:
+
+```java
+VehicleTable v = VehicleDAO.newTable("v");
+
+List<Map<String, Object>> rows = this.sql
+    .selectDistinct()
+    .from(v) 
+    .execute();
 ```
 
 Produces:
 
 ```sql
-select distinct *
+SELECT DISTINCT *
+FROM vehicle v
 ```
 
-### 4. Select Distinct Rows with Specific Columns
+### Selecting Distinct Rows with Specific Columns
 
-The `DISTINCT` qualifier can also be combined with specific columns:
+The `DISTINCT` qualifier can also be combined with a specific list of columns:
 
 ```java
-this.sql.selectDistinct(a.name, a.price.mult(a.qty).as("total"), a.status)
+VehicleTable v = VehicleDAO.newTable("v");
+
+List<Map<String, Object>> rows = this.sql
+    .selectDistinct(v.brand, v.region)
+    .from(v) 
+    .execute();
 ```
 
 Produces:
 
 ```sql
-select distinct a.name, a.price * a.qty as total, a.status
+SELECT DISTINCT v.brand, v.region
+FROM vehicle v
 ```
 
 Next: [FROM and JOINs](./from-and-joins.md)
