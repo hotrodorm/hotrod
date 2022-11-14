@@ -42,7 +42,7 @@ to avoid materializing the whole result set at once and read rows one at a time.
 
 Each sections of a `SELECT` statement has variations, and they are discussed below:
 
-- [The SELECT List](./syntax/select-list.md).
+- [The SELECT Clause](./syntax/select.md).
 - [The FROM and JOIN Clauses](./syntax/from-and-joins.md).
 - [The WHERE Clause](./syntax/where.md).
 - [The GROUP BY Clause](./syntax/group-by.md).

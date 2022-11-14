@@ -1,4 +1,4 @@
-# The SELECT List
+# The SELECT Clause 
 
 A SELECT query starts with the SELECT List. This section specifies the columns that are to be retrieved as well as the modifiers for them.
 
