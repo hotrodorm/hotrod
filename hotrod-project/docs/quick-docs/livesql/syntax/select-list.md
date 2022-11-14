@@ -6,14 +6,37 @@ A SELECT query starts with the SELECT List. This section specifies the columns t
 
 The following variations are implemented:
 
-- `SELECT *`
+- Select All Columns:
 
-```java
+    ```java
     this.sql.select()
-```
+    ```
+Produces:
 
-- `SELECT distinct *`
+    ```sql
+    select *
+    ```
+
+- `SELECT distinct *`:
 
     ```java
     this.sql.selectDistinct()
+    ```
+
+Produces:
+
+    ```sql
+    select distinct *
+    ```
+
+- Select Specific Columns:
+
+    ```java
+    this.sql.select(a.name, a.status)
+    ```
+
+Produces:
+
+    ```sql
+    select a.name, a.status
     ```
