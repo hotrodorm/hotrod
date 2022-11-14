@@ -63,7 +63,7 @@ When the query is aggregated the sorting expressions need to be aggregated as we
 a `GROUP BY` clause non-aggregated expressions are out of the SQL scope for the `ORDER BY` clause.
 
 The following query finds unpaid payments, groups them by client, and finally sorts each client by 
-oldest due date:
+oldest due date in descending order:
 
 
 ```java
