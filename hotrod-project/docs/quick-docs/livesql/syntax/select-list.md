@@ -11,7 +11,7 @@ The following variations are implemented:
     ```java
     this.sql.select()
     ```
-Produces:
+    Produces:
 
     ```sql
     select *
@@ -23,7 +23,7 @@ Produces:
     this.sql.selectDistinct()
     ```
 
-Produces:
+    Produces:
 
     ```sql
     select distinct *
@@ -35,7 +35,7 @@ Produces:
     this.sql.select(a.name, a.status)
     ```
 
-Produces:
+    Produces:
 
     ```sql
     select a.name, a.status
