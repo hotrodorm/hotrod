@@ -66,4 +66,4 @@ Produces:
 select distinct a.name, a.price * a.qty as total, a.status
 ```
 
-Next: [FROM]()
+Next: [FROM and JOINs](./from-and-joins.md)
