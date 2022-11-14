@@ -85,25 +85,26 @@ expressions as join predicates: that's the general form of a join called *theta 
 
 LiveSQL implements the most common join types:
 
-| Join Type | Variation | LiveSQL code |
+| Join Type | Variation | LiveSQL code | SQL Syntax |
 | -- | -- | -- |
-| INNER JOIN | *theta-join* | `join(t, <predicate>)` |
-| INNER JOIN | USING | `join(t, <column>...)` |
-| INNER JOIN | NATURAL | `naturalJoin(t)` |
-| LEFT JOIN | *theta-join* | `leftJoin(t, <predicate>)` |
-| LEFT JOIN | USING | `leftJoin(t, <column>...)` |
-| LEFT JOIN | NATURAL | `naturalLeftJoin(t)` |
-| RIGHT JOIN | *theta-join* | `rightJoin(t, <predicate>)` |
-| RIGHT JOIN | USING | `rightJoin(t, <column>...)` |
-| RIGHT JOIN | NATURAL | `naturalRightJoin(t)` |
-| FULL JOIN | *theta-join* | `fullJoin(t, <predicate>)` |
-| FULL JOIN | USING | `fullJoin(t, <column>...)` |
-| FULL JOIN | NATURAL | `naturalFullJoin(t)` |
-| CROSS JOIN | -- | `crossJoin(t)` |
-| UNION JOIN | -- | `unionJoin(t)` |
+| INNER JOIN | *theta-join* | `join(t, predicate)` | `JOIN t ON predicate` |
+| INNER JOIN | USING | `join(t, column...)` | `JOIN t USING (column...)` |
+| INNER JOIN | NATURAL | `naturalJoin(t)` | `NATURAL JOIN t` |
+| LEFT JOIN | *theta-join* | `leftJoin(t, predicate)` | `LEFT JOIN t ON predicate` |
+| LEFT JOIN | USING | `leftJoin(t, column...)` | `JOIN t USING (column...)` |
+| LEFT JOIN | NATURAL | `naturalLeftJoin(t)` | `NATURAL LEFT JOIN t` |
+| RIGHT JOIN | *theta-join* | `rightJoin(t, predicate)` | `RIGHT JOIN t ON predicate` |
+| RIGHT JOIN | USING | `rightJoin(t, column...)` | `JOIN t USING (column...)` |
+| RIGHT JOIN | NATURAL | `naturalRightJoin(t)` | `NATURAL RIGHT JOIN t` |
+| FULL JOIN | *theta-join* | `fullJoin(t, predicate)` | `FULL JOIN t ON predicate` |
+| FULL JOIN | USING | `fullJoin(t, column...)` | `JOIN t USING (column...)` |
+| FULL JOIN | NATURAL | `naturalFullJoin(t)` | `NATURAL FULL JOIN t` |
+| CROSS JOIN | -- | `crossJoin(t)` | `CROSS JOIN t` |
+| UNION JOIN | -- | `unionJoin(t)` | `UNION JOIN t` |
 
-**Note**: Lateral joins are not yet implemented.
+**Note**: Literal table expression, table functions, lateral joins, and aliasing table expression are not yet supported.
 
+**Note**: The equivalent SQL Syntax may vary from database to database, and LiveSQL adapts it automatically.
 
 
 
