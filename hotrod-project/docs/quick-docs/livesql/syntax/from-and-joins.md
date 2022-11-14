@@ -15,8 +15,8 @@ BigAccountsView ba = BigAccountsDAO.newTable("ba");
 List<Map<String, Object>> rows = this.sql //
     .select() //
     .from(a) //
-    .join(t, t.accountId.equals(a.id)
-    .join(ba, ba.accountId.equals(t.accountId)
+    .join(t, t.accountId.equals(a.id))
+    .join(ba, ba.accountId.equals(t.accountId))
     .execute();
 ```
 
@@ -49,6 +49,28 @@ If the query include more than a single table or view it will include *join* cla
 If a query includes the same table or view more than once &mdash; as in self-referencing joins (parent and child table are the same one),
 then it's mandatory to define aliases for each instance. This ensures the appropriate columns are used from each table instance 
 when writing the join predicates.
+
+The followin example illustrate a self-referencing join:
+
+
+```java
+EmployeeTable e = EmployeeDAO.newTable("e");
+EmployeeTable m = EmployeeDAO.newTable("m"); // same table with alias "m" for "manager"
+
+List<Map<String, Object>> rows = this.sql //
+    .select(e.name, m.name.as("manager_name")) //
+    .from(e) //
+    .leftJoin(m, m.id.equals(e.managerId))
+    .execute();
+```
+
+The resulting query is:
+
+```sql
+SELECT e.name, m.name as "manager_name"
+FROM employee e
+LEFT JOIN employee m ON m.id = e.manager_id
+```
 
 
 ## Join Predicates
