@@ -62,6 +62,7 @@ Assembling expressions:
     - [Binary]().
     - [Object]().
 - [Window Functions]().
+- [Subqueries](./syntax/subqueries.md).
 
 Other:
 
