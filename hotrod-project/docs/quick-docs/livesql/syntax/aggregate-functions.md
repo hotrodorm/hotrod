@@ -2,11 +2,10 @@
 
 Aggregate functions aggregate values from multiple rows to compute a single result.
 
-In the traditional form aggregations reduce the number of rows according to each group 
-being aggregated. Alternatively, used as window functions aggregations can peek at other
-rows and compute aggregated values without for each row without compacting the result set.
+Traditional aggregate functions consolidate rows into fewer rows according to the grouping
+criteria. However, in SQL:2003 the SQL Standard introduced *window functions*; although they
+still compute values from multiple rows, they do not consolidate rows.
 
-Aggregate functions can be divided in several types.
 
 ## Traditional Aggregation
 
@@ -15,7 +14,7 @@ These functions consolidate rows according to the grouping criteria:
 | Aggregate Function | In LiveSQL |
 | -- | -- |
 | COUNT(*) | sql.count() |
-| COUNT(<expression>) | *not yet implemented* |
+| COUNT(<expression>) | *not implemented* |
 | SUM(<expression>) | sql.sum(<expression>) |
 | MIN(<expression>) | sql.min(<expression>) |
 | MAX(<expression>) | sql.max(<expression>) |
@@ -26,10 +25,18 @@ These functions consolidate rows according to the grouping criteria:
 | AVG(DISTINCT <expression>) | sql.avgDistinct(<expression>) |
 | GROUP_CONCAT(DISTINCT <expression>, <sep>, <ordering>) | sql.groupConcatDistinct(<expression>, <sep>, <ordering>) |
 
+
 ## Window Functions
 
-The following aggregate expressions can also operate as window functions. They do not
-consolidate rows, but only compute values from multiple rows.
+Window functions do not consolidate rows, but only compute values from multiple rows and do not require
+a `GROUP BY` clause. Some traditional aggregate functions have been enhanced to also work as window functions.
+
+They can be divided in three groups, according to their semantics: enhanced, analytical, and positional analytical functions.
+
+
+### Enhanced Window Functions
+
+These are the traditional aggregate functions, enhanced to work as window functions:
 
 | Aggregate Function | In LiveSQL |
 | -- | -- |
@@ -38,6 +45,32 @@ consolidate rows, but only compute values from multiple rows.
 | MAX(<expression>) OVER(...) | sql.max(<expression>).over(...) |
 | AVG(<expression>) OVER(...) | sql.avg(<expression>).over(...) |
 | GROUP_CONCAT(<expression>, <sep>, <ordering>) OVER(...) | sql.groupConcat(<expression>, <sep>, <ordering>).over(...) |
+
+
+### Analytical Functions
+
+These functions rank rows according to their values and produce a result in a different domain of values.
+
+| Aggregate Function | In LiveSQL |
+| -- | -- |
+| ROW_NUMBER() OVER(...) | sql.rowNumber().over(...) |
+| RANK(<expression>) OVER(...) | sql.rank(<expression>).over(...) |
+| DENSE_RANK(<expression>) OVER(...) | sql.denseRank(<expression>).over(...) |
+| NTILE(<expression>) OVER(...) | sql.ntile(<expression>).over(...) |
+
+
+### Positional Analytical Functions
+
+Positional analytical functions peek at other rows of the table, view or result set to retrieve a value. They
+can be useful to find changes in values over time or to differentiate different groups of data according to custom
+logic.
+
+| Aggregate Function | In LiveSQL |
+| -- | -- |
+| LEAD(<expression>) OVER(...) | sql.lead(<expression>).over(...) |
+| LAG(<expression>) OVER(...) sql.lead(<expression>).over(...) |
+
+
 
 
 
