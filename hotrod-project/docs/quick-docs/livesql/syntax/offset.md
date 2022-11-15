@@ -6,7 +6,7 @@ need to be excluded from it.
 It has a single form where it accepts an integer number as a parameter.
 
 
-## OFFSET and ORDER BY
+## About OFFSET and ORDER BY
 
 The `OFFSET` clause should go along with an `ORDER BY` clause. Since table rows in relational
 databases do not have inherent ordering an `ORDER BY` clause ensures the rows will be processed
