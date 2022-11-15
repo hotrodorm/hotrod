@@ -61,9 +61,9 @@ OFFSET 200
 LIMIT 50
 ```
 
-## Previewing Criteria Searches
+## Previewing SQL
 
-Since these searches are processed by the LiveSQL engine, they the generated native queries can be previewed as in any LiveSQL
-query. See [Previewing LiveSQL](previewing-livesql.md) for details.
+Since `selectByCriteria()` are implemented by the LiveSQL engine, the generated native SQL queries can be previewed
+in the same way other LiveSQL queries are. See [Previewing LiveSQL](previewing-livesql.md) for details.
 
 
