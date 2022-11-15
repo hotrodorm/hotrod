@@ -1,13 +1,13 @@
 # The LIMIT Clause
 
-The `LIMIT` clause defines how many rows of the result set of a `SELECT` statement will return
-at the most. In the presence of an `OFFSET` clause this number of rows starts counting after
-all rows have been discarded by the `OFFSET` clause.
+The `LIMIT` clause limits how many rows a `SELECT` statement will return.
+In the presence of an `OFFSET` clause this number of rows starts counting after
+all rows have been discarded by this `OFFSET` clause.
 
 It has a single form where it accepts an integer number as a parameter.
 
 
-## LIMIT and ORDER BY
+## About LIMIT and ORDER BY
 
 Most of the time the `LIMIT` clause should go along with an `ORDER BY` clause. Since table rows in relational
 databases do not have inherent ordering an `ORDER BY` clause ensures the rows will be processed
