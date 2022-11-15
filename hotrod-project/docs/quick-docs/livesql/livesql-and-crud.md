@@ -12,14 +12,14 @@ Both searches return typed domain VOs but `selectByCriteria()` adds the followin
 
 ## Example
 
-The following query searches for accounts with a more elaborated filter:
+The following query searches for accounts with a more elaborated condition:
 
 ```java
 AccountTable a = AccountDAO.newTable();
 
-List<AccountVO> accounts = this.accountDAO.selectByCriteria(a, 
-    a.active.eq(1).or(a.type.eq("CHK").andNot(a.currentBalance.lt(100))))
-    .execute();
+List<AccountVO> accounts = this.accountDAO
+  .selectByCriteria(a, a.active.eq(1).or(a.type.eq("CHK").andNot(a.currentBalance.lt(100))))
+  .execute();
 ```
 
 The resulting query is:
@@ -29,5 +29,37 @@ SELECT *
 FROM account
 WHERE active = 1 OR (type = 'CHK' AND NOT current_balance < 100)
 ```
+
+## Adding Custom Ordering, Offset, Limit, and Cursor
+
+The following example depicts the usage of a custom ordering, offset, limit, and processing VOs with
+a cursor:
+
+```java
+AccountTable a = AccountDAO.newTable();
+
+Cursor<AccountVO> accounts = this.accountDAO
+  .selectByCriteria(a, a.name.like("CHK%"))
+  .orderBy(sql.caseWhen(a.type.eq("VIP"), 1).when(a.currentBalance.ge(10_000), 2).elseValue(3).end().asc(), a.id.desc())
+  .offset(200)
+  .limit(50)
+  .executeCursor();
+```
+
+The resulting query is:
+
+```sql
+SELECT *
+FROM account a
+WHERE a.name like 'CHK%'
+ORDER BY CASE WHEN a.type = 'VIP' THEN 1 
+              WHEN a.current_balance >= 10000 THEN 2
+              ELSE 3
+         END ASC,
+         a.id DESC
+OFFSET 200
+LIMIT 50
+```
+
 
 
