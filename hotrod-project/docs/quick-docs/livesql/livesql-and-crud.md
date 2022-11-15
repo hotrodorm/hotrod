@@ -32,7 +32,7 @@ WHERE active = 1 OR (type = 'CHK' AND NOT current_balance < 100)
 
 ## Adding Custom Ordering, Offset, Limit, and Reading with a Cursor
 
-The following example depicts the usage of a custom ordering, offset, limit, and processing VOs with
+The following example depicts the usage of a custom ordering, offset, limit, and reading VOs with
 a cursor:
 
 ```java
