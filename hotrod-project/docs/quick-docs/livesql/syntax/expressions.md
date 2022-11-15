@@ -36,8 +36,8 @@ In the table shown below `<a>` and `<b>` represents LiveSQL expressions.
 | a / b | Division | `<a>.div(<b>)` |
 | a mod b | Modulus | `<a>.remainder(<b>)` |
 | log(a, b) | Logarithm of a in base b | `<a>.log(<b>)` |
-| a ^ b | Exponentiation | `<a>.pow(<b>)` |
-| \|a\| | Absolute value | `<a>.abs()` |
+| power(a, b) | Exponentiation | `<a>.pow(<b>)` |
+| abs(a) | Absolute value | `<a>.abs()` |
 | - a | Nagation | `<a>.neg()` |
 | signum(a) | Signum | `<a>.signum()` |
 
@@ -46,7 +46,7 @@ In the table shown below `<a>` and `<b>` represents LiveSQL expressions.
 
 | SQL Operator | Description | In LiveSQL |
 | -- | -- | -- |
-| a || b || c | String concatenation | `<a>.concat(<b>).concat(<c>))` |
+| a \|\| b \|\| c | String concatenation | `<a>.concat(<b>).concat(<c>))` |
 | length(a) | String length | `<a>.length()` |
 | locate(a, b, f) | String search | `<a>.locate(<b>, <f>)` |
 | substring(a, b, c) | Substring | `<a>.substring(<a>, <b>)` |
