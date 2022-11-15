@@ -70,7 +70,7 @@ The Expression Language:
 ## Odds &amp; Ends
 
 - [Previewing LiveSQL](./previewing-livesql.md).
-- [CRUD &amp; LiveSQL &mdash; SelectByCriteria()](./livesql-and-crud.md).
+- [LiveSQL and CRUD](./livesql-and-crud.md).
 - [Designating a LiveSQL Dialect](designating-a-livesql-dialect.md).
 
 
