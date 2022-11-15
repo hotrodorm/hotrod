@@ -1,25 +1,23 @@
 # Nitro Queries
 
+Nitro Queries are one of the flagship modules that HotRod includes.
 
-Nitro Queries are one of the flagship modules that HotRod offers. They allows the developer to run high performance, configuration-assisted queries. In short:
-
-- The queries can reach high performance by accessing the whole range of the database features, and can also squeeze performance by the use of particular non-standard engine-specific extensions.
-
-- The configuration is assisted, since with a few tags the query can be build and all table properties are automatically filled it according to the database tables' structure. Value objects are automatically created to receive the tuples or trees of data defined by the query.
-
+These are custom queries that are added to any DAO in the persistence layer and that are exposed as Java methods in them. 
 Nitro queries can be grouped into three categories:
 
 - General Purpose Queries that return no data.
 - Flat Selects.
 - Structured Selects.
 
-They can be added inside any of:
+Nitro queries' goal is to provide an option to gain access to native database performance all the while simplifying the coding.
 
-- `<table>` tag.
-- `<view>` tag.
-- `<dao>` tag.
+The main features of Nitro queries are:
 
-Finally, they can include any number of parameters, and can also use [Dynamic SQL](nitro-dynamic-sql.md) features. 
+- **High Performance**: By using all native extensions of the SQL dialect that the database implements, a developer with knowledge of SQL
+optimization can create queries that can achieve high performance.
+- **Simplified Data Structures**: Nitro include configuration-assisted Structures queries that can load database data into non-trivial data structures.
+- **Dynamic SQL**: Dynamic SQL allows queries to enable or disable sections of the query based on runtime parameters. See [Dynamic SQL](nitro-dynamic-sql.md). 
+
 
 ## General Purpose Queries &mdash; The `<query>` Tag
 
