@@ -34,7 +34,7 @@ JOIN big_accounts ba ON ba.account_id = t.account_id
 
 ## Table and View Instances
 
-Notice that first all table and view instances are instantiated. Then, they can be used in the LiveSQL query.
+Notice that first of all, all table and view instances are instantiated. Once this is done, they can be used in the LiveSQL query.
 
 In the example above, the table and view instances such as `a`, `t`, and `ba` are created using the DAO methods
 `createTable()` and `createView()` respectively. They can include an optional alias parameter (recommended) 
