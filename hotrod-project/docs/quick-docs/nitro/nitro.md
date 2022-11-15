@@ -81,9 +81,10 @@ public List<AccountClientVO> findActiveAccountsWithClient(Integer regionId) { ..
 
 ## Structured Selects &mdash; The `<select>` Tag, Again
 
-A Structured Select Query executes a `SELECT` statement and models the resulting rows not as a flat tabular structure, but as tuples of objects or as trees of objects.
+A [Structured Select Query](nitro-structured-selects.md) executes a `SELECT` statement and models the resulting rows not as a 
+traditional flat tabular structure, but as tuples of objects or as trees of objects.
 
-Structured Selects can take several forms, depending on the data structure you want to model out of a `SELECT` query. See [Structured Select Query](nitro-structured-selects.md) for details on each one. 
+Structured Selects can take several forms, depending on the data structure you want to model out of a `SELECT` query.
 
 The difference between a Flat Select and a Structured Select is that instead of a flat list of columns in the `SELECT` clause, the Structured Select 
 includes a `<columns>` tag that defines the hierarchical data structure using `<collection>` and `<association>` tags. These tags can be nested in multiple levels.
