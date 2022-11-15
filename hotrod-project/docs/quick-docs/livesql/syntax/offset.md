@@ -10,10 +10,10 @@ It has a single form where it accepts an integer number as a parameter.
 
 The `OFFSET` clause should go along with an `ORDER BY` clause. Since table rows in relational
 databases do not have inherent ordering an `ORDER BY` clause ensures the rows will be processed
-in the same order every time and, thus, the offset will make sense.
+in the same order every time and, thus, the offset will be based on the same sequence of rows.
 
 Otherwise, subsequent executions of the same query with the same or different offset values
-can return the same or different rows *at random*. Nevertheless, LiveSQL allows the use of 
+can return the same or different rows somewhat *at random*. Nevertheless, LiveSQL allows the use of 
 `OFFSET` without an accompanying `ORDER BY` clause.
 
 
