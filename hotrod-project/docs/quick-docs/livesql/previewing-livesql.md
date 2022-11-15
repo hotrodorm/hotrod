@@ -27,7 +27,7 @@ System.out.println(query.getPreview());
 List<Map<String, Object>> rows = query.execute();
 ```
 
-This code will display the resulting SQL statement as:
+This code will display the native SQL statement as:
 
 ```sql
 SELECT d.balance
