@@ -53,14 +53,7 @@ Each sections of a `SELECT` statement has variations, and they are discussed bel
 
 The Expression Language:
 
-- [Expressions](./syntax/expressions.md).
-- [Operators &amp; Functions](./syntax/operators-and-functions.md).
-    - [Numeric](./syntax/numeric-expressions.md).
-    - [String](./syntax/string-expressions.md).
-    - [Date &amp; Time](./syntax/datetime-expressions).
-    - [Boolean](./syntax/boolean-expressions.md).
-    - [Binary](./syntax/binary-expressions.md).
-    - [Object](./syntax/object-expressions.md).
+- [Expressions, Operators &amp; Functions](./syntax/expressions.md).
 - [Aggregate Functions](./syntax/aggregate-functions.md).
 - [Window Functions](./syntax/window-functions.md).
 - [Subqueries](./syntax/subqueries.md).
