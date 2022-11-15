@@ -6,7 +6,7 @@ It has a single form where it accepts a list of expressions as parameters. This 
 include one or more expressions and each one can be as simple or as complex as needed.
 
 
-## Grouping By Direct Values
+## Grouping By Plain Values
 
 The following query computes the total balance of the checking accounts by region and type:
 
@@ -40,8 +40,12 @@ used in aggregate queries. See [Aggregate Functions](./aggregate-functions.md) f
 
 ## Grouping By Complex Expressions
 
-In any case, any expression can be used to aggregate rows. See [Expressions](./expressions.md) 
+Not only plain values can be used to aggregate rows. Virtually any expression can be used for it [^1]. See [Expressions](./expressions.md) 
 for more details on expressions.
+
+[^1]: Technically not all expressions can be used for aggregating. Different databases impose different restrictions on them. The most 
+common restrictions affect values that do not have inherent ordering such as images, UUIDs, arrays, etc., or values that are too large 
+and impractical for this purpose.
 
 The following query aggregates rows by a more complex expression:
 
