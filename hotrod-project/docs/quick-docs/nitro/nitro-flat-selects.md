@@ -196,7 +196,7 @@ public List<CarVO> findSoldCars(Integer branchId, java.util.Date fromDate) {
 }
 ```
 
-See [Nitro Parameters](nitro-parameters.md) for details and examples.  
+See [Query Parameters](nitro-parameters.md) for details and examples.  
 
 ## Property Names
 
