@@ -64,6 +64,22 @@ LIMIT 50
 ## Previewing SQL
 
 Since `selectByCriteria()` searches are implemented by the LiveSQL engine, the generated native SQL queries can be previewed
-in the same way other LiveSQL queries are. See [Previewing LiveSQL](previewing-livesql.md) for details.
+in the same way other LiveSQL queries are. 
 
+The example above can make use of the previewing functionality by changing it to:
 
+```java
+AccountTable a = AccountDAO.newTable();
+
+ExecutableSelect<AccountVO> query = this.accountDAO
+  .selectByCriteria(a, a.name.like("CHK%"))
+  .orderBy(sql.caseWhen(a.type.eq("VIP"), 1).when(a.currentBalance.ge(10_000), 2).elseValue(3).end().asc(), a.id.desc())
+  .offset(200)
+  .limit(50);
+
+System.out.println(query.getPreview());
+
+Cursor<AccountVO> accounts = query.executeCursor();
+```
+
+See [Previewing LiveSQL](previewing-livesql.md) for details.
