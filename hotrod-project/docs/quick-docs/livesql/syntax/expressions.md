@@ -65,7 +65,7 @@ In the table shown below `<a>` and `<b>` represents LiveSQL expressions.
 | DATETIME d t | Assemble timestamp | `sql.datetime(<d>, <t>)` |
 | DATE a | Extract date | `<a>.date()` |
 | TIME a | Extract time | `<a>.time()` |
-| EXTRACT a f | Extract dateTime field | `<a>.extract(<f>)` |
+| EXTRACT a f | Extract timestamp field | `<a>.extract(<f>)` |
 
 
 ### Boolean Operators
