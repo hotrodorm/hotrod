@@ -31,9 +31,8 @@ implements a different subset of data types.
 
 ## Operators
 
-LiveSQL implements the following arithmetic operators.
-
-In the table shown below `<a>` and `<b>` represents LiveSQL expressions.
+LiveSQL implements a significant subset of the most common SQL operators. The tables below are classified 
+by operator type.
 
 
 ### Boxing Scalars
