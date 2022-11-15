@@ -1,29 +1,38 @@
 ## Nitro Structured Selects
 
-Nitro Structured Selects enhance the flat select model by adding a structure to the result set. Instead of a List of VOs, these queries can return fully named, fully typed compounded VOs and/or tree-like structures of VOs using collections and association tags.
+Nitro Structured Selects enhance the flat select model by adding a structure to the result set. Instead of
+a List of VOs, these queries can return fully named, fully typed compounded VOs and/or tree-like structures 
+of VOs using collections and association tags.
 
-This strategy can be very effective to resolve the "N + 1" problem when accessing data. It does have drawbacks so care needs to be take to make the most of this strategy.
+This strategy can be very effective to resolve the "N + 1" problem when accessing data. It does have drawbacks 
+so care needs to be take to make the most of this strategy.
 
 ## Preserving Behavior by Returning Multiple VOs per Row
 
-Typically, the developer will enhance the behavior of the value objects, maybe adding properties, maybe adding methods. However, the VOs produced by a flat SELECT don't include these additional properties or behavior; a flat SELECT includes all the columns of the query, but produces a whole different VO that is unrelated to the main VO of the table.
+Typically, the developer will enhance the behavior of the value objects, maybe adding properties, maybe adding 
+methods. However, the VOs produced by a flat SELECT don't include these additional properties or behavior; a 
+flat SELECT includes all the columns of the query, but produces a whole different VO that is unrelated to the 
+main VO of the table.
 
-Structured SELECTs can capture the columns of a SELECT statement in one or more table (or view) VOs. For example, the query below:
+Structured SELECTs can capture the columns of a SELECT statement in one or more table (or view) VOs. For example, 
+the query below:
 
-    <dao name="NightlyQueriesDAO">
-    
-      <select method="retrieveAccountsClient">
-        select
-          <columns vo="AcctClientVO">
-            <vo table="account" property="account" alias="a" />
-            <vo table="client" property="client" />c.name, c.type</vo>
-          </columns>
-        from account a
-        join client c on c.id = a.client_id
-        where a.active = 1
-      </select>
-      
-    </dao>
+```xml
+<dao name="NightlyQueriesDAO">
+
+  <select method="retrieveAccountsClient">
+    select
+      <columns vo="AcctClientVO">
+        <vo table="account" property="account" alias="a" />
+        <vo table="client" property="client" />c.name, c.type</vo>
+      </columns>
+    from account a
+    join client c on c.id = a.client_id
+    where a.active = 1
+  </select>
+  
+</dao>
+```
 
 This select specifies:
 
@@ -51,18 +60,20 @@ In terms of parameters, Structured SELECTs follow the same rules as Flat SELECTs
 
 Now, if the &lt;columns> tag includes a single VO, then there's no need to create an artificial enclosing VO and all columns can be returned under this existing VO. For example:
 
-    <dao name="NightlyQueriesDAO">
-    
-      <select method="retrieveActiveAccounts">
-        select
-          <columns>
-            <vo table="account" alias="a" />
-          </columns>
-        from account a
-        where a.active = 1
-      </select>
-      
-    </dao>
+```xml
+<dao name="NightlyQueriesDAO">
+
+  <select method="retrieveActiveAccounts">
+    select
+      <columns>
+        <vo table="account" alias="a" />
+      </columns>
+    from account a
+    where a.active = 1
+  </select>
+  
+</dao>
+```
 
 The method `retrieveActiveAccounts` does not define new VOs, but reuses the existing VO and returns a `List<AccountVO>`. This VO includes all custom behavior the developer may have added.
 
@@ -78,21 +89,23 @@ Unlike Flat Selects, Structured Selects can only use the `list` mode.
 
 Computed columns can be added to the structured columns using the &lt;expression> tag. These columns are added to the enclosing VO, that must be included in this case. For example:
 
-    <dao name="NightlyQueriesDAO">
-    
-      <select method="retrieveActiveAccounts">
-        select
-          <columns vo="AppraisedAccountVO">
-            <vo table="account" property="account" alias="a" />
-            <expression property="score">
-              balance / 3000 + credit / 200
-            </expression>
-          </columns>
-        from account a
-        where a.active = 1
-      </select>
-      
-    </dao>
+```xml
+<dao name="NightlyQueriesDAO">
+
+  <select method="retrieveActiveAccounts">
+    select
+      <columns vo="AppraisedAccountVO">
+        <vo table="account" property="account" alias="a" />
+        <expression property="score">
+          balance / 3000 + credit / 200
+        </expression>
+      </columns>
+    from account a
+    where a.active = 1
+  </select>
+  
+</dao>
+```
  
 This example:
 
@@ -111,22 +124,24 @@ A `<collection>` tag is a special kind of `<vo>` tag. Its represents a `<vo>` ta
 
 For example:
 
-    <dao name="NightlyQueriesDAO">
-    
-      <select method="retrieveWithAccountsTransactions">
-        select
-          <columns>
-            <vo table="account" extended-vo="EnhancedAccountVO">
-              a.*
-              <collection table="transaction" property="txs" alias="t" />
-            </vo>
-          </columns>
-        from account a
-        join transaction t on t.account_id = a.id
-        order by a.id
-      </select>
-      
-    </dao>
+```xml
+<dao name="NightlyQueriesDAO">
+
+  <select method="retrieveWithAccountsTransactions">
+    select
+      <columns>
+        <vo table="account" extended-vo="EnhancedAccountVO">
+          a.*
+          <collection table="transaction" property="txs" alias="t" />
+        </vo>
+      </columns>
+    from account a
+    join transaction t on t.account_id = a.id
+    order by a.id
+  </select>
+  
+</dao>
+```
 
 In this example:
 
@@ -156,23 +171,25 @@ The description above should be extended for more that two levels of VOs.
 
 Now, the 1:N relationship in the result set does not actually represents a 1:N the data model itself: it's only for the result set purposes. For example consider a N:M relationship between two tables. The result set of a query can consider the data having a 1:N relationship and that's suitable enough for HotRod to retrieve it as a 1:N VO structure. For example:
 
-    <dao name="NightlyQueriesDAO">
-    
-      <select method="getProductInvoices">
-        select
-          <columns>
-            <vo table="product" extended-vo="ProductOnInvoicesVO">
-              p.*
-              <collection table="invoice" property="invoices" alias="i" />
-            </vo>
-          </columns>
-        from invoice i
-        join invoice_product ip on ip.invoice_id = i.id
-        join product p on p.id = ip.product_id
-        order by p.id
-      </select>
-      
-    </dao>
+```xml
+<dao name="NightlyQueriesDAO">
+
+  <select method="getProductInvoices">
+    select
+      <columns>
+        <vo table="product" extended-vo="ProductOnInvoicesVO">
+          p.*
+          <collection table="invoice" property="invoices" alias="i" />
+        </vo>
+      </columns>
+    from invoice i
+    join invoice_product ip on ip.invoice_id = i.id
+    join product p on p.id = ip.product_id
+    order by p.id
+  </select>
+  
+</dao>
+```
 
 The model does not have a 1:N relationship between `product` and `invoice` but the query assembles it that way. The `<collection>` tag picks it up and generates:
 
@@ -188,26 +205,28 @@ A `<collection>` tag can also be included inside another `<collection>` tag when
 
 For example:
 
-    <dao name="NightlyQueriesDAO">
-    
-      <select method="retrieveWithAccountsTransactions">
-        select
-          <columns>
-            <vo table="client" extended-vo="EnhancedClientVO">
-              c.*
-              <collection table="account" property="accounts" extended-vo="EnhancedAccountVO">
-                a.*
-                <collection table="transaction" property="txs" alias="t" />
-              </collection>
-            </vo>
-          </columns>
-        from client c
-        join account a a.client_id = c.id
-        join transaction t on t.account_id = a.id
-        order by c.id, a.id
-      </select>
-      
-    </dao>
+```xml
+<dao name="NightlyQueriesDAO">
+
+  <select method="retrieveWithAccountsTransactions">
+    select
+      <columns>
+        <vo table="client" extended-vo="EnhancedClientVO">
+          c.*
+          <collection table="account" property="accounts" extended-vo="EnhancedAccountVO">
+            a.*
+            <collection table="transaction" property="txs" alias="t" />
+          </collection>
+        </vo>
+      </columns>
+    from client c
+    join account a a.client_id = c.id
+    join transaction t on t.account_id = a.id
+    order by c.id, a.id
+  </select>
+  
+</dao>
+```
  
 In this example:
 
@@ -233,21 +252,23 @@ The use of an `<association>` tag does not require any particular order in the r
 
 Example:
 
-    <dao name="NightlyQueriesDAO">
-    
-      <select method="findCarsWithOwners">
-        select
-          <columns>
-            <vo table="car" extended-vo="CarWithOwnerVO">
-              p.*
-              <association table="owner" property="carOwner" alias="o" />
-            </vo>
-          </columns>
-        from car c
-        left join owner o on c.owner_id = o.id
-      </select>
-      
-    </dao>
+```xml
+<dao name="NightlyQueriesDAO">
+
+  <select method="findCarsWithOwners">
+    select
+      <columns>
+        <vo table="car" extended-vo="CarWithOwnerVO">
+          p.*
+          <association table="owner" property="carOwner" alias="o" />
+        </vo>
+      </columns>
+    from car c
+    left join owner o on c.owner_id = o.id
+  </select>
+  
+</dao>
+```
 
 In this example:
 
@@ -269,17 +290,19 @@ When a collection is included, the developer needs to ensure the `ORDER BY` clau
 
 Use the `id` attribute to decide which columns act as a VO key.
 
-    <select method="findSingleExpandedAccount" multiple-rows="false">
-      select
-      <columns>
-        <vo table="log" id="recorded_by, recorded_at" extended-vo="LogWithOfficeVO">
-          l.*
-          <association view="view_office" id="office_id" property="office" alias="o" />
-        </vo>
-      </columns>
-      from log l
-      left join view_office o on l.office_id = o.id
-    </select>
+```xml
+<select method="findSingleExpandedAccount" multiple-rows="false">
+  select
+  <columns>
+    <vo table="log" id="recorded_by, recorded_at" extended-vo="LogWithOfficeVO">
+      l.*
+      <association view="view_office" id="office_id" property="office" alias="o" />
+    </vo>
+  </columns>
+  from log l
+  left join view_office o on l.office_id = o.id
+</select>
+```
 
 When you want to use multiple columns as an artificial key, use a comma-separated value as shown in the exmaple.
 
@@ -291,23 +314,29 @@ You can combine collections, associations, expressions, with nested collections,
 
 A combined typical example:
 
-    <select method="selectChannels">
-      <parameter name="vendorId" java-type="Integer" />
-      select
-        <columns>
-          <vo table="channel" extended-vo="ExtendedChannel" alias="h">
-            <association table="client" property="client" alias="c" />
-            <association table="service" property="service" alias="s" />
-            <collection table="prefix" property="prefixes" alias="p" />
-            <expression property="vip">
-              case when h.type in ('T1', 'F', 'G') then 1 else 0 end
-            </expression>
-          </vo>
-        </columns>
-        from channel h
-        join client c on c.id = h.client_id
-        join service s on s.id = h.service_id
-        join prefix p on p.channel_id = h.id
-        where h.vendor_id = #{vendorId}
-    </select>
-    
+```xml
+<select method="selectChannels">
+  <parameter name="vendorId" java-type="Integer" />
+  select
+    <columns>
+      <vo table="channel" extended-vo="ExtendedChannel" alias="h">
+        <association table="client" property="client" alias="c" />
+        <association table="service" property="service" alias="s" />
+        <collection table="prefix" property="prefixes" alias="p" />
+        <expression property="vip">
+          case when h.type in ('T1', 'F', 'G') then 1 else 0 end
+        </expression>
+      </vo>
+    </columns>
+    from channel h
+    join client c on c.id = h.client_id
+    join service s on s.id = h.service_id
+    join prefix p on p.channel_id = h.id
+    where h.vendor_id = #{vendorId}
+</select>
+```
+
+
+
+
+
