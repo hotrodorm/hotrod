@@ -1,7 +1,7 @@
 # Previewing LiveSQL
 
-LiveSQL statements are assembled into native SQL statements and then are sent to the database 
-for execution.
+When executed a LiveSQL statement is first assembled into native SQL statement and then is sent 
+to the database engine for execution.
 
 For debugging purposes this native SQL statement can be previewed using the `getPreview()` method of LiveSQL.
 
