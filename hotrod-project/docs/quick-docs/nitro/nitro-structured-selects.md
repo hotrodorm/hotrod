@@ -56,7 +56,7 @@ Also consider:
  
 In terms of parameters, Structured SELECTs follow the same rules as Flat SELECTs: they use the `<parameter>` and `<complement>` tags in the same way.
  
-## Single VO Return - No Need for New Enclosing VO
+## Single VO Return - No Need for a New Enclosing VO
 
 Now, if the `<columns>` tag includes a single VO, then there's no need to create an artificial enclosing VO and all columns can be returned under this existing VO. For example:
 
