@@ -4,12 +4,47 @@ The SQL Standard SQL:2003 defined window functions. Window functions do not cons
 values from multiple rows and do not require a `GROUP BY` clause. Some traditional aggregate functions have 
 been enhanced to also work as window functions.
 
-They can be divided in three groups: enhanced, analytical, and positional analytical functions.
+
+
+## Example
+
+The following query computes the `total_depositos_to_date` column that doesn't exist in the table by adding up
+the `amount` column according to a subgroup and ordering.
+
+| account_id | deposit_date | amount | total_deposits_to_date (computed on the fly) |
+| -- | -- |
+| 51 | 2022-10-05 | 100 | 100 |
+| 51 | 2022-10-25 | 50 | 150 |
+| 64 | 2022-10-02 | 20 | 20 |
+| 64 | 2022-10-15 | 40 | 60 |
+| 64 | 2022-10-17 | 70 | 130 |
+
+
+```java
+DepositTable d = depositDAO.newTable("d");
+
+List<Map<String, Object>> rows = this.sql
+    .select(d.accountId, d.depositDate, d.amount,
+      sql.sum(d.amount).over().partitionBy(d.accountId).orderBy(d.depositDate.asc()).end().as("total_deposits_to_date")
+    )
+    .from(d) 
+    .execute();
+```
+
+The resulting query is:
+
+```sql
+SELECT d.account_id, d.deposit_date, d.amount,
+  SUM(d.amount) OVER(PARTITION BY d.account_id ORDER BY d.deposit_date) as total_deposits_to_date
+FROM deposit d
+```
+
+Window functions can be divided in three groups: enhanced, analytical, and positional analytical functions.
 
 
 ## Enhanced Window Functions
 
-These are the traditional aggregate functions, enhanced to work as window functions:
+These are the traditional [Aggregate Functions](./aggregate-functions.md), now enhanced to work as window functions:
 
 | Aggregate Function | In LiveSQL |
 | -- | -- |
