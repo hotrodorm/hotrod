@@ -2,7 +2,8 @@
 
 HotRod is an open source ORM for Spring and Spring Boot geared towards high performance persistence for relational databases.
 
-The CRUD and LiveSQL modules provide quick out-of-the-box persistence that can be used in minutes. The Nitro and Torcs modules tackle complex or high performance queries with some extra configuration.
+The CRUD and LiveSQL modules provide quick out-of-the-box persistence that can be used in minutes. The Nitro and Torcs
+modules tackle more complex or high performance queries with some extra configuration.
 
 HotRod follows the *Database First* approach. It assumes the database already exists with all tables ready. HotRod inspects the database
 and produces a Java persistence layer in seconds. Later, when the database experiences changes HotRod
