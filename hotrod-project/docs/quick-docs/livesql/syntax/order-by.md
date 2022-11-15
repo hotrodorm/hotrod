@@ -31,7 +31,7 @@ may not correspond to the requirements of your specific query. In case it doesn'
 
 ## Example
 
-The following query returns the unpaid payments, sorted by client, in descending due date:
+The following query returns the unpaid payments, sorted by client name, and in descending due date:
 
 ```java
 PaymentTable p = PaymentDAO.newTable("p");
@@ -59,7 +59,7 @@ by virtually any expression computed on the fly. See [Expressions](./expressions
 
 ## Combining Aggregations and Sorting
 
-When the query is aggregated the sorting expressions need to be aggregated as well. In the presence of
+When the query is aggregated the sorting expressions need to be aggregated as well. This is becuase in the presence of
 a `GROUP BY` clause non-aggregated expressions are out of the SQL scope for the `ORDER BY` clause.
 
 The following query finds unpaid payments, groups them by client, and finally sorts each client by 
