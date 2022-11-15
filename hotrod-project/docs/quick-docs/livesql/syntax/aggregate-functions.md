@@ -13,17 +13,17 @@ These functions consolidate rows according to the grouping criteria:
 
 | Aggregate Function | In LiveSQL |
 | -- | -- |
-| COUNT(*) | sql.count() |
+| COUNT(*) | `sql.count()` |
 | COUNT(<expression>) | *not implemented* |
-| SUM(<expression>) | sql.sum(<expression>) |
-| MIN(<expression>) | sql.min(<expression>) |
-| MAX(<expression>) | sql.max(<expression>) |
-| AVG(<expression>) | sql.avg(<expression>) |
-| GROUP_CONCAT(<expression>, <sep>, <ordering>) | sql.groupConcat(<expression>, <sep>, <ordering>) |
-| COUNT(DISTINCT <expression>) | sql.countDistinct(<expression>) |
-| SUM(DISTINCT <expression>) | sql.sumDistinct(<expression>) |
-| AVG(DISTINCT <expression>) | sql.avgDistinct(<expression>) |
-| GROUP_CONCAT(DISTINCT <expression>, <sep>, <ordering>) | sql.groupConcatDistinct(<expression>, <sep>, <ordering>) |
+| SUM(<expression>) | `sql.sum(<expression>)` |
+| MIN(<expression>) | `sql.min(<expression>)` |
+| MAX(<expression>) | `sql.max(<expression>)` |
+| AVG(<expression>) | `sql.avg(<expression>)` |
+| GROUP_CONCAT(<expression>, <sep>, <ordering>) | `sql.groupConcat(<expression>, <sep>, <ordering>)` |
+| COUNT(DISTINCT <expression>) | `sql.countDistinct(<expression>)` |
+| SUM(DISTINCT <expression>) | `sql.sumDistinct(<expression>)` |
+| AVG(DISTINCT <expression>) | `sql.avgDistinct(<expression>)` |
+| GROUP_CONCAT(DISTINCT <expression>, <sep>, <ordering>) | `sql.groupConcatDistinct(<expression>, <sep>, <ordering>)` |
 
 
 ## Window Functions
@@ -40,11 +40,11 @@ These are the traditional aggregate functions, enhanced to work as window functi
 
 | Aggregate Function | In LiveSQL |
 | -- | -- |
-| SUM(<expression>) OVER(...) | sql.sum(<expression>).over(...) |
-| MIN(<expression>) OVER(...) | sql.min(<expression>).over(...) |
-| MAX(<expression>) OVER(...) | sql.max(<expression>).over(...) |
-| AVG(<expression>) OVER(...) | sql.avg(<expression>).over(...) |
-| GROUP_CONCAT(<expression>, <sep>, <ordering>) OVER(...) | sql.groupConcat(<expression>, <sep>, <ordering>).over(...) |
+| SUM(<expression>) OVER(...) | `sql.sum(<expression>).over(...)` |
+| MIN(<expression>) OVER(...) | `sql.min(<expression>).over(...)` |
+| MAX(<expression>) OVER(...) | `sql.max(<expression>).over(...)` |
+| AVG(<expression>) OVER(...) | `sql.avg(<expression>).over(...)` |
+| GROUP_CONCAT(<expression>, <sep>, <ordering>) OVER(...) | `sql.groupConcat(<expression>, <sep>, <ordering>).over(...)` |
 
 
 ### Analytical Functions
@@ -53,10 +53,10 @@ These functions rank rows according to their values and produce a result in a di
 
 | Aggregate Function | In LiveSQL |
 | -- | -- |
-| ROW_NUMBER() OVER(...) | sql.rowNumber().over(...) |
-| RANK(<expression>) OVER(...) | sql.rank(<expression>).over(...) |
-| DENSE_RANK(<expression>) OVER(...) | sql.denseRank(<expression>).over(...) |
-| NTILE(<expression>) OVER(...) | sql.ntile(<expression>).over(...) |
+| ROW_NUMBER() OVER(...) | `sql.rowNumber().over(...)` |
+| RANK(<expression>) OVER(...) | `sql.rank(<expression>).over(...)` |
+| DENSE_RANK(<expression>) OVER(...) | `sql.denseRank(<expression>).over(...)` |
+| NTILE(<expression>) OVER(...) | `sql.ntile(<expression>).over(...)` |
 
 
 ### Positional Analytical Functions
@@ -67,8 +67,8 @@ logic.
 
 | Aggregate Function | In LiveSQL |
 | -- | -- |
-| LEAD(<expression>) OVER(...) | sql.lead(<expression>).over(...) |
-| LAG(<expression>) OVER(...) sql.lead(<expression>).over(...) |
+| LEAD(<expression>) OVER(...) | `sql.lead(<expression>).over(...)` |
+| LAG(<expression>) OVER(...) `sql.lead(<expression>).over(...)` |
 
 
 
