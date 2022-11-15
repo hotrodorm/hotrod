@@ -251,7 +251,7 @@ Notice the `<where>` tag will automatically remove the `and` prefix of the first
 
 Dynamic SQL can be included anywhere in the SQL statement, not just in the `WHERE` clause. However, HotRod requires that the resulting query produced at runtime always return the same columns.
 
-See [Dynamic SQL](../nitro/nitro-dynamic-sql.md) for details and examples.  
+See [Dynamic SQL](../nitro/nitro-dynamic-sql.md) for more details.  
 
 
  
