@@ -306,7 +306,7 @@ Use the `id` attribute to decide which columns act as a VO key.
 
 When you want to use multiple columns as an artificial key, use a comma-separated value as shown in the exmaple.
 
-## Putting it all together
+## Putting It All Together
 
 Well... all those concepts can be put together in a single `<select>` tag.
 
