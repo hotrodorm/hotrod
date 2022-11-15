@@ -35,7 +35,6 @@ In the table shown below `<a>` and `<b>` represents LiveSQL expressions.
 | a * b | Multiplication | `<a>.mult(<b>)` |
 | a / b | Division | `<a>.div(<b>)` |
 | a mod b | Modulus | `<a>.remainder(<b>)` |
-
 | log(a, b) | Logarithm of a in base b | `<a>.log(<b>)` |
 | a ^ b | Exponentiation | `<a>.pow(<b>)` |
 | \|a\| | Absolute value | `<a>.abs()` |
