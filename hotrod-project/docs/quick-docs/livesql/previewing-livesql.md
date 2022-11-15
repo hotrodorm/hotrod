@@ -1,6 +1,6 @@
 # Previewing LiveSQL
 
-When a LiveSQL statement is executed it's first rendered as a native SQL statement. Then, this native 
+When a LiveSQL statement is executed it is first rendered as a native SQL statement. Then, this native 
 SQL statement is sent to the database engine for its actual execution.
 
 For debugging purposes this native SQL statement can be previewed using the `getPreview()` method of LiveSQL.
