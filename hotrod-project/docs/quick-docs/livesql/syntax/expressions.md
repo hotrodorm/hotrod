@@ -68,7 +68,7 @@ In the table shown below `<a>` and `<b>` represents LiveSQL expressions.
 | EXTRACT a f | Extract timestamp field | `<a>.extract(<f>)` |
 
 
-### Boolean Operators
+### Comparison and Boolean Operators
 
 | SQL Operator | Description | In LiveSQL |
 | -- | -- | -- |
