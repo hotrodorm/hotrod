@@ -12,7 +12,7 @@ The following query computes the `total_depositos_to_date` column that doesn't e
 the `amount` column according to a subgroup and ordering.
 
 | account_id | deposit_date | amount | total_deposits_to_date (computed on the fly) |
-| -- | -- |
+| -- | -- | -- | -- |
 | 51 | 2022-10-05 | 100 | 100 |
 | 51 | 2022-10-25 | 50 | 150 |
 | 64 | 2022-10-02 | 20 | 20 |
