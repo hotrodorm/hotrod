@@ -8,7 +8,7 @@ expression is a typical LiveSQL expression that is decorated with extra ordering
 
 ## Ordering Features
 
-The ordering of rows can be specified with virtually [^1] any LiveSQL expression qualified with an 
+The ordering of rows can be specified with virtually any [^1] LiveSQL expression qualified with an 
 ordering. Additionally each expression can specify the behavior of nulls. In short these ordering
 expressions include:
 
@@ -25,13 +25,13 @@ sorted in reverse order.
 
 Nulls, on the other hand, are treated in special ways; they can be considered below or above any value in the
 database. Unfortunately, each database implements the sorting of nulls in a different way, and this behavior 
-may not correspond to the requirements of the query. In case it doesn't LiveSQL adds the methods
+may not correspond to the requirements of your specific query. In case it doesn't, LiveSQL implements the methods
 `nullsFirst()` and `nullsLast()` to clearly establish this ordering.
 
 
 ## Example
 
-The following query returns the unpaid payments, sorted by client and in descending due date:
+The following query returns the unpaid payments, sorted by client, in descending due date:
 
 ```java
 PaymentTable p = PaymentDAO.newTable("p");
