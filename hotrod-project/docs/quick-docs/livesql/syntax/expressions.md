@@ -92,27 +92,27 @@ In the table shown below `<a>` and `<b>` represents LiveSQL expressions.
 | a NOT LIKE b | NOT LIKE | `<a>.notLike(<b>)` |
 | a BETWEEN b AND c | BETWEEN | `<a>.between(<b>, <c>)` |
 | a NOT BETWEEN b AND c | NOT BETWEEN | `<a>.notBetween(<b>, <c>)` |
-| coalesce(a, b, c, ...) | COALESCE() | `sql.coalesce(<a>, <b>, <c>, ...)` |
+| COALESCE(a, b, c, ...) | COALESCE() | `sql.coalesce(<a>, <b>, <c>, ...)` |
 | (a, b, c, ...) | tuple | `sql.tuple(<a>, <b>, <c>, ...)` |
 | a [^1] IN (a, b, c, ...) | IN (list) | `<a>.in(<a>, <b>, <c>, ...)` |
-| a IN (<subquery>) | IN (subquery) | `<a>.in(sql.select()...)` |
+| a IN (subquery) | IN (subquery) | `<a>.in(sql.select()...)` |
 | a NOT IN (a, b, c, ...) | NOT IN (list) | `<a>.notIn(<a>, <b>, <c>, ...)` |
-| a NOT IN (<subquery>) | NOT IN (subquery) | `<a>.notIn(sql.select()...)` |
-| a = ANY (<subquery>) | a = ANY (subquery) | `<a>.eqAny(sql.select()...)` |
-| a <> ANY (<subquery>) | a <> ANY (subquery) | `<a>.neAny(sql.select()...)` |
-| a < ANY (<subquery>) | a < ANY (subquery) | `<a>.ltAny(sql.select()...)` |
-| a > ANY (<subquery>) | a > ANY (subquery) | `<a>.gtAny(sql.select()...)` |
-| a <= ANY (<subquery>) | a <= ANY (subquery) | `<a>.leAny(sql.select()...)` |
-| a >= ANY (<subquery>) | a >= ANY (subquery) | `<a>.geAny(sql.select()...)` |
-| a = ALL (<subquery>) | a = ALL (subquery) | `<a>.eqAll(sql.select()...)` |
-| a <> ALL (<subquery>) | a <> ALL (subquery) | `<a>.neAll(sql.select()...)` |
-| a < ALL (<subquery>) | a < ALL (subquery) | `<a>.ltAll(sql.select()...)` |
-| a > ALL (<subquery>) | a > ALL (subquery) | `<a>.gtAll(sql.select()...)` |
-| a <= ALL (<subquery>) | a <= ALL (subquery) | `<a>.leAll(sql.select()...)` |
-| a >= ALL (<subquery>) | a >= ALL (subquery) | `<a>.geAll(sql.select()...)` |
-| EXISTS (<subquery>) | EXISTS (subquery) | `sql.exists(sql.select()...)` |
-| NOT EXISTS (<subquery>) | NOT EXISTS (subquery) | `sql.exists(sql.select()...)` |
-| CASE WHEN <a> THEN <b> WHEN <c> THEN <d> ELSE <e> END | CASE | `sql.caseWhen(<a>, <b>).when(<c>, <d>).elseValue(e).end()` |
+| a NOT IN (subquery) | NOT IN (subquery) | `<a>.notIn(sql.select()...)` |
+| a = ANY (subquery) | a = ANY (subquery) | `<a>.eqAny(sql.select()...)` |
+| a <> ANY (subquery) | a <> ANY (subquery) | `<a>.neAny(sql.select()...)` |
+| a < ANY (subquery) | a < ANY (subquery) | `<a>.ltAny(sql.select()...)` |
+| a > ANY (subquery) | a > ANY (subquery) | `<a>.gtAny(sql.select()...)` |
+| a <= ANY (subquery) | a <= ANY (subquery) | `<a>.leAny(sql.select()...)` |
+| a >= ANY (subquery) | a >= ANY (subquery) | `<a>.geAny(sql.select()...)` |
+| a = ALL (subquery) | a = ALL (subquery) | `<a>.eqAll(sql.select()...)` |
+| a <> ALL (subquery) | a <> ALL (subquery) | `<a>.neAll(sql.select()...)` |
+| a < ALL (subquery) | a < ALL (subquery) | `<a>.ltAll(sql.select()...)` |
+| a > ALL (subquery) | a > ALL (subquery) | `<a>.gtAll(sql.select()...)` |
+| a <= ALL (subquery) | a <= ALL (subquery) | `<a>.leAll(sql.select()...)` |
+| a >= ALL (subquery) | a >= ALL (subquery) | `<a>.geAll(sql.select()...)` |
+| EXISTS (subquery) | EXISTS (subquery) | `sql.exists(sql.select()...)` |
+| NOT EXISTS (subquery>) | NOT EXISTS (subquery) | `sql.exists(sql.select()...)` |
+| CASE WHEN a THEN b WHEN c THEN d ELSE e END | CASE | `sql.caseWhen(<a>, <b>).when(<c>, <d>).elseValue(e).end()` |
 
 ### Aggregate Expressions and Window Functions
 
