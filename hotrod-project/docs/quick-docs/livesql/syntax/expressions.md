@@ -56,6 +56,8 @@ hand, will be processed in the Java application and only the result will be sent
 | abs(a) | Absolute value | `<a>.abs()` |
 | - a | Nagation | `<a>.neg()` |
 | signum(a) | Signum | `<a>.signum()` |
+| round(a, n) | Rounding | `<a>.round(<b>)` |
+| trunc(a, n) | Truncating | `<a>.trunc(<b>)` |
 
 
 ### String Operators
@@ -111,8 +113,16 @@ hand, will be processed in the Java application and only the result will be sent
 | COALESCE(a, b, c, ...) | COALESCE() | `sql.coalesce(<a>, <b>, <c>, ...)` |
 | (a, b, c, ...) | tuple | `sql.tuple(<a>, <b>, <c>, ...)` |
 | a [^1] IN (a, b, c, ...) | IN (list) | `<a>.in(<a>, <b>, <c>, ...)` |
+| a [^1] NOT IN (a, b, c, ...) | NOT IN (list) | `<a>.notIn(<a>, <b>, <c>, ...)` |
+| EXISTS (subquery) | EXISTS (subquery) | `sql.exists(sql.select()...)` |
+| NOT EXISTS (subquery>) | NOT EXISTS (subquery) | `sql.exists(sql.select()...)` |
+| CASE WHEN a THEN b WHEN c THEN d ELSE e END | CASE | `sql.caseWhen(<a>, <b>).when(<c>, <d>).elseValue(e).end()` |
+
+**Asymmetric Operators**
+
+| SQL Operator | Description | In LiveSQL |
+| -- | -- | -- |
 | a IN (subquery) | IN (subquery) | `<a>.in(sql.select()...)` |
-| a NOT IN (a, b, c, ...) | NOT IN (list) | `<a>.notIn(<a>, <b>, <c>, ...)` |
 | a NOT IN (subquery) | NOT IN (subquery) | `<a>.notIn(sql.select()...)` |
 | a = ANY (subquery) | a = ANY (subquery) | `<a>.eqAny(sql.select()...)` |
 | a <> ANY (subquery) | a <> ANY (subquery) | `<a>.neAny(sql.select()...)` |
@@ -126,9 +136,6 @@ hand, will be processed in the Java application and only the result will be sent
 | a > ALL (subquery) | a > ALL (subquery) | `<a>.gtAll(sql.select()...)` |
 | a <= ALL (subquery) | a <= ALL (subquery) | `<a>.leAll(sql.select()...)` |
 | a >= ALL (subquery) | a >= ALL (subquery) | `<a>.geAll(sql.select()...)` |
-| EXISTS (subquery) | EXISTS (subquery) | `sql.exists(sql.select()...)` |
-| NOT EXISTS (subquery>) | NOT EXISTS (subquery) | `sql.exists(sql.select()...)` |
-| CASE WHEN a THEN b WHEN c THEN d ELSE e END | CASE | `sql.caseWhen(<a>, <b>).when(<c>, <d>).elseValue(e).end()` |
 
 ### Aggregate Expressions and Window Functions
 
