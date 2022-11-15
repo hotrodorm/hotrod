@@ -15,8 +15,10 @@ The main features of Nitro queries are:
 
 - **High Performance**: By using all native extensions of the SQL dialect that the database implements, a developer with knowledge of SQL
 optimization can create queries that can achieve high performance.
-- **Simplified Data Structures**: Nitro include configuration-assisted Structures queries that can load database data into non-trivial data structures.
-- **Dynamic SQL**: Dynamic SQL allows queries to enable or disable sections of the query based on runtime parameters. See [Dynamic SQL](nitro-dynamic-sql.md). 
+- **Simplified Data Structures**: The Nitro module includes configuration-assisted Structures queries that can load database data 
+into non-trivial data structures.
+- **Dynamic SQL**: Dynamic SQL allows queries to enable or disable sections of the query based on runtime parameters. 
+See [Dynamic SQL](nitro-dynamic-sql.md). 
 
 
 ## General Purpose Queries &mdash; The `<query>` Tag
