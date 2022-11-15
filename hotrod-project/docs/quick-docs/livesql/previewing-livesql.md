@@ -20,8 +20,7 @@ ExecutableSelect<Map<String, Object>> query = this.sql
     .select(d.balance)
     .from(d) 
     .where(d.accountId.eq(10014874).and(d.status.ne("PENDING")))
-    .orderBy(d.transactionDate.desc())
-    .execute();
+    .orderBy(d.transactionDate.desc());
 
 System.out.println(query.getPreview());
 
