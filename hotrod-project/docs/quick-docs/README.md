@@ -1,6 +1,6 @@
 # HotRod
 
-HotRod is an ORM for Spring and Spring Boot focused on high performance persistence for relational databases.
+HotRod is an open source ORM for Spring and Spring Boot geared towards high performance persistence for relational databases.
 
 The CRUD and LiveSQL modules provide quick out-of-the-box persistence that can be used in minutes. The Nitro and Torcs modules tackle complex or high performance queries with some extra configuration.
 
