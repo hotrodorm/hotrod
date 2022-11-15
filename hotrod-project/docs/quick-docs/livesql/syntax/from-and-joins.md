@@ -93,7 +93,7 @@ expressions as join predicates: that's the general form of a join called *theta 
 
 ## Join Types
 
-LiveSQL implements the most common join types:
+LiveSQL implements the most common types of join:
 
 | Join Type | Variation | in LiveSQL | Resulting SQL Syntax |
 | -- | -- | -- | -- |
