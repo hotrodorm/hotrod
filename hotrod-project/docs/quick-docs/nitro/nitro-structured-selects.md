@@ -57,10 +57,10 @@ Also consider:
 
 ## Parameters
 
-In terms of parameters, Structured SELECTs follow the same rules as Flat SELECTs: they use the `<parameter>` and `<complement>` tags in the same way. 
+Structured Selects follow the same rules as flat Selects. They use the `<parameter>` and `<complement>` tags in the same way. 
 See [Query Parameters](nitro-parameters.md) for details and examples.  
 
- 
+
 ## Single VO Return - No Need for a New Enclosing VO
 
 Now, if the `<columns>` tag includes a single VO, then there's no need to create an artificial enclosing VO and all columns can be returned under this existing VO. For example:
