@@ -46,7 +46,10 @@ Tables and views are added to the query with the `from()` and `join()` clauses (
 ## Joining
 
 If the query includes more than a single table or view it will include one or more *join* clauses for them. The semantics 
-of them follow the standard semantics of the SQL Standard
+of them follow the standard semantics of the SQL Standard.
+
+The first table or view is included in the `FROM` clause and the rest is included using `JOIN` clauses.
+
 
 ## Self-Referencing Joins
 
@@ -54,7 +57,7 @@ If a query includes the same table or view more than once &mdash; as in self-ref
 are the same one) &mdash; then it's mandatory to define aliases for each instance. This ensures the appropriate columns
 are used from each table instance when writing the join predicates.
 
-The following example illustrate a self-referencing join:
+The following example illustrates a self-referencing join:
 
 
 ```java
@@ -79,7 +82,7 @@ LEFT JOIN employee m ON m.id = e.manager_id
 
 ## Join Predicates
 
-The join predicate is the second parameter of a traditional join with an `ON` clause. The join predicate can be any expression that
+The join predicate is used to match rows in a traditional join with an `ON` clause. The join predicate must be any expression that
 evaluates to a boolean.
 
 **Note**: In the LiveSQL docs a *boolean expression* is equivalent to a *predicate*. They are used interchangeably.
@@ -92,7 +95,7 @@ expressions as join predicates: that's the general form of a join called *theta 
 
 LiveSQL implements the most common join types:
 
-| Join Type | Variation | LiveSQL code | SQL Syntax |
+| Join Type | Variation | in LiveSQL | Resulting SQL Syntax |
 | -- | -- | -- | -- |
 | INNER JOIN | *theta-join* | `join(t, predicate)` | `JOIN t ON predicate` |
 | INNER JOIN | USING | `join(t, column...)` | `JOIN t USING (column...)` |
