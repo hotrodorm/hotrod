@@ -6,7 +6,7 @@ SQL statement is sent to the database engine for its actual execution.
 For debugging purposes this native SQL statement can be previewed using the `getPreview()` method of LiveSQL.
 
 Rendering in SQL for previewing does have a marginal cost due to translation according to the specific
-database available features. Therefore, previewing a SQL statement should be done with this cost in mind
+database version features. Previewing a SQL statement should be done with this cost in mind
 for high volume LiveSQL statements.
 
 ## Example
