@@ -63,7 +63,7 @@ LIMIT 50
 
 ## Previewing SQL
 
-Since `selectByCriteria()` are implemented by the LiveSQL engine, the generated native SQL queries can be previewed
+Since `selectByCriteria()` searches are implemented by the LiveSQL engine, the generated native SQL queries can be previewed
 in the same way other LiveSQL queries are. See [Previewing LiveSQL](previewing-livesql.md) for details.
 
 
