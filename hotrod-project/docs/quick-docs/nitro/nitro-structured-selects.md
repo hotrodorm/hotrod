@@ -310,7 +310,7 @@ When you want to use multiple columns as an artificial key, use a comma-separate
 
 Well... all those concepts can be put together in a single `<select>` tag.
 
-You can combine collections, associations, expressions, with nested collections, associations, expressions, artificial keys, and parameters in a single complex SELECT.
+You can combine collections, associations, expressions, with nested collections, associations, expressions, artificial keys, and parameters in a single complex `SELECT`.
 
 A combined typical example:
 
