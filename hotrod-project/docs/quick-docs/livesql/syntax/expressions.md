@@ -34,7 +34,7 @@ hand, will be processed in the Java application and only the result will be sent
 
 | SQL Example | Description | In LiveSQL |
 | -- | -- | -- |
-| 123 | Literal numeric value | `sql.val(123)` |
+| 123.45 | Literal numeric value | `sql.val(123.45)` |
 | 'abc' | Literal string value | `sql.val("abc")` |
 | TIMESTAMP '2022-10-15 12:34:56' | Literal Timestamp value | `sql.val(<java.sql.Date>)` |
 | true | Literal boolean value | `sql.val(true)` |
