@@ -1,4 +1,4 @@
-# LiveSQL &amp; CRUD
+# LiveSQL and CRUD
 
 LiveSQL enhances the `selectByExample()` CRUD simple searches with `selectByCriteria()` searches.
 Both searches return typed lists of domain VOs but the second one offers more options. 
