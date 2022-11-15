@@ -3,7 +3,7 @@
 Expressions in LiveSQL are used in many places of a SQL statement and they express how 
 a value is computed.
 
-LiveSQL Expression are typically used in the select list, the `WHERE` clause, `GROUP BY`, `ORDER BY`, etc.
+LiveSQL Expression are typically used in the select list, the `WHERE`, `GROUP BY`, `ORDER BY` and many other clauses.
 
 An expression can be as simple as a scalar value or a column name, or arithmetic
 computation. It can also include complex logic (such `CASE`), casting values
