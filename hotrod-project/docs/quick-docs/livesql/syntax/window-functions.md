@@ -1,9 +1,10 @@
 # Window Functions
 
-Window functions do not consolidate rows, but only compute values from multiple rows and do not require
-a `GROUP BY` clause. Some traditional aggregate functions have been enhanced to also work as window functions.
+The SQL Standard SQL:2003 defined window functions. Window functions do not consolidate rows, but only compute
+values from multiple rows and do not require a `GROUP BY` clause. Some traditional aggregate functions have 
+been enhanced to also work as window functions.
 
-They can be divided in three groups, according to their semantics: enhanced, analytical, and positional analytical functions.
+They can be divided in three groups: enhanced, analytical, and positional analytical functions.
 
 
 ## Enhanced Window Functions
