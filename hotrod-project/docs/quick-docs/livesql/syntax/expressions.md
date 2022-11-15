@@ -12,13 +12,21 @@ between types, boolean logic, or any other SQL logic.
 
 ## Expression Types
 
-In LiveSQL expressions fall into 6 different types. Namely:
-- Numeric Expressions, representing integer, bit, floating point, fixed point decimal, etc.
-- Strings Expressions, representing char, varchar, CLOB, texts, etc.
-- Date-Time Expressions, representing dates, times, datetimes, timestamps, etc.
-- Boolean Expressions (predicates), representing the values true and false.
-- Binary Expressions, representing binary data, BLOBs, bit varying, etc.
-- Object Expressions, representing all other types such as arrays, records, cursors, UUIDs, etc.
+In LiveSQL expressions fall into 6 different types.
+
+Namely:
+
+| Expression Type | Represented SQL Data Types [^2]|
+| -- | -- |
+| Numeric Expressions |  `INTEGER`, `SMALLINT`, `DECIMAL`, `DOUBLE`, `REAL`, `FLOAT` |
+| Strings Expressions | `VARCHAR`, `CHAR`, `CLOB`, `TEXT` |
+| Date-Time Expressions | `DATE`, `TIME`, `TIMESTAMP`, `TIMESTAMP WITH TIME ZONE` |
+| Boolean Expressions (predicates) | `BOOLEAN`, `BIT` |
+| Binary Expressions | `BLOB`, `VARCHAR FOR BIT DATA` |
+| Object Expressions | `OBJECT`, `RECORD`, `ARRAY` |
+
+[^2]: The list of types is not meant to be exhaustive but to give a good idea of the represented types. Each database
+implements a different subset of data types.
 
 
 ## Operators
