@@ -8,8 +8,8 @@ been enhanced to also work as window functions.
 
 ## Example
 
-The following query computes the `total_depositos_to_date` column that doesn't exist in the table by adding up
-the `amount` column according to a subgroup and ordering.
+The following query computes the `total_depositos_to_date` column &mdash; that doesn't exist in the table &mdash;
+by adding up the `amount` column according to a subgroup and ordering.
 
 | account_id | deposit_date | amount | total_deposits_to_date (computed on the fly) |
 | -- | -- | -- | -- |
@@ -21,7 +21,7 @@ the `amount` column according to a subgroup and ordering.
 
 
 ```java
-DepositTable d = depositDAO.newTable("d");
+DepositTable d = DepositDAO.newTable("d");
 
 List<Map<String, Object>> rows = this.sql
     .select(d.accountId, d.depositDate, d.amount,
