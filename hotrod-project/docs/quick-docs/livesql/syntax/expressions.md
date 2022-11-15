@@ -116,7 +116,7 @@ hand, will be processed in the Java application and only the result will be sent
 | a [^1] NOT IN (a, b, c, ...) | NOT IN (list) | `<a>.notIn(<a>, <b>, <c>, ...)` |
 | EXISTS (subquery) | EXISTS (subquery) | `sql.exists(sql.select()...)` |
 | NOT EXISTS (subquery) | NOT EXISTS (subquery) | `sql.exists(sql.select()...)` |
-| CASE WHEN a THEN b END<br/><br/>CASE WHEN a THEN b ELSE e END<br/><br/>CASE WHEN a THEN b WHEN c THEN d ELSE e END | CASE | `sql.caseWhen(<a>, <b>).end()`<br/><br/>`sql.caseWhen(<a>, <b>).elseValue(e).end()`<br/><br/>`sql.caseWhen(<a>, <b>).when(<c>, <d>).elseValue(e).end()` |
+| CASE WHEN a THEN b END<br/>CASE WHEN a THEN b ELSE e END<br/>CASE WHEN a THEN b WHEN c THEN d ELSE e END | CASE | `sql.caseWhen(<a>, <b>).end()`<br/>`sql.caseWhen(<a>, <b>).elseValue(e).end()`<br/>`sql.caseWhen(<a>, <b>).when(<c>, <d>).elseValue(e).end()` |
 
 **Asymmetric Operators**
 
