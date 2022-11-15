@@ -26,6 +26,22 @@ LiveSQL implements the following arithmetic operators.
 In the table shown below `<a>` and `<b>` represents LiveSQL expressions.
 
 
+### Boxing Scalars
+
+Scalars can be boxed to access all LiveSQL operators and functions. These operators and functions
+are then transferred to the database and they are executed there. Unboxed scalars, on the other
+hand, will be processed in the Java application and only the result will be sent to the database.
+
+| SQL Example | Description | In LiveSQL |
+| -- | -- | -- |
+| 123 | Literal numeric value | `sql.val(123)` |
+| 'abc' | Literal string value | `sql.val("abc")` |
+| TIMESTAMP '2022-10-15 12:34:56' | Literal Timestamp value | `sql.val(<java.sql.Date>)` |
+| true | Literal boolean value | `sql.val(true)` |
+| &lt;binary> | Literal binary value | `sql.val(byte[])` |
+| OBJECT | Literal object value | `sql.val(<object>)` |
+
+
 ### Numeric Operators
 
 | SQL Operator | Description | In LiveSQL |
