@@ -1,4 +1,4 @@
-# Hello World HotRod!
+# Hello World!
 
 This guide runs a Spring Boot project with Maven and H2 in-memory database. It shows the basic idea of how HotRod works.
 
