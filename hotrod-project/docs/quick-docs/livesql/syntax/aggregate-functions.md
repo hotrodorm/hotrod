@@ -33,5 +33,5 @@ Window functions compute values from multiple rows but do not consolidate rows.
 Some traditional aggregate functions have been enhanced to operate as window functions as well. Namely: `SUM()`,
 `MIN()`, `MAX()`, `AVG()`, `GROUP_CONCAT()`.
 
-See[Window Functions](./window-functions.md) for more details.
+See [Window Functions](./window-functions.md) for more details.
 
