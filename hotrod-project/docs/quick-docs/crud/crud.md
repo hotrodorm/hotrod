@@ -62,8 +62,8 @@ with the [Name Solver](../config/tags/name-solver.md) and [Type Solver](../confi
 ## Optimistic Locking
 
 CRUD can be configured, on a per table basis, to implement optimistic locking. If this is enabled, then CRUD `SELECT` queries
-get automatically related to CRUD data modification queries (`UPDATE` and `DELETE`) using the VO values. If changes
-produced by other threads of processed are detected in the row then the data modification query is aborted and an
+on the specific table get automatically related to CRUD data modification queries (`UPDATE` and `DELETE`) using the VO values. 
+If changes produced by other threads of processed are detected in the row then the data modification query is aborted and an
 exception is thrown, with the aim of aborting the transaction.
 
 See [Version Control](../config/tags/version-control-column.md) for details on how to activate this feature.
