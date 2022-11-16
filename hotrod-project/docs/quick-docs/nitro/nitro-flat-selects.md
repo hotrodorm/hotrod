@@ -14,7 +14,7 @@ VOs, or a single VO for queries with cardinality equal to 1.
 The following query returns rows with values from two tables that are joined. A new VO is automatically 
 created to receive the values of the rows:
 
-```xml
+```xml,sql
 <dao name="WebQueriesDAO">
 
   <select method="findActiveAccountsWithClient" vo="AccountClientVO">
@@ -168,7 +168,7 @@ Flat Selects accept parameters by adding the `<parameter>`   tag.
 
 For example, a Flat Select that includes two parameters can look like:
 
-```xml
+```xml sql
 <select method="findSoldCars" vo="CarVO">
   <parameter name="branchId" java-type="Integer" />
   <parameter name="fromDate" java-type="java.util.Date" />
