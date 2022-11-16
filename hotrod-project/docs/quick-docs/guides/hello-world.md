@@ -378,5 +378,5 @@ We can see:
 - The LiveSQL SQL statement `SELECT * FROM employee WHERE name like 'A%'` was run and returned 2 rows.
 
 That's it! You just generated the persistence code from the database and ran an app using it. Later on, when the
-database suffers changes (it will), you can just rerun the generation for HotRod to apply the changes of columns, tables,
+database suffers changes (it will), you can just rerun the generation step to apply the changes of columns, tables,
 views, etc. to the persistence code automatically.
