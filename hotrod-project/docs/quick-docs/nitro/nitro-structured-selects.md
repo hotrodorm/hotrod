@@ -1,4 +1,4 @@
-## Nitro Structured Selects
+## Structured Selects
 
 Nitro Structured Selects enhance the flat select model by adding a structure to the result set. Instead of
 a List of VOs, these queries can return fully named, fully typed compounded VOs and/or tree-like structures 

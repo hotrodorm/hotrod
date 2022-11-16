@@ -1,4 +1,4 @@
-## Nitro Flat SELECTs
+## Flat Selects
 
 A Nitro Flat Select executes a SQL `SELECT` statement and models the resulting rows as value objects with 
 fully defined property names and property types.

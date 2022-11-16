@@ -1,4 +1,4 @@
-# General Purpose Nitro Queries
+# General Purpose Queries
 
 A General Purpose query does not return a result set and is implemented using `<query>` tag. Its
 only return may be an optional count of affected rows.
