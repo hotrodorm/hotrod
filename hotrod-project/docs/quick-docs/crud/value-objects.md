@@ -6,10 +6,33 @@ All tables and views mentioned in the [Configuration File](../config/configurati
 for details of their columns. Each table and view results in one class and each column of them results in
 one property of the corresponding class.
 
+
+## Naming of Value Objects and Their Properties
+
 The naming of value objects is configured in the [Generator](../config/tags/mybatis-spring.md) as well as by
-the [Name Solver](../config/tags/name-solver.md) rules. The types of the properties are decided by the 
-[Type Solver](../config/tags/type-solver.md) rules, and in the absence of it, by default rules according to 
-each specific database.
+the [Name Solver](../config/tags/name-solver.md) rules.
+
+
+## Types of the Properties
+
+The types of the properties are decided by the [Type Solver](../config/tags/type-solver.md) rules, and in the
+absence of it, by default rules according to each specific database. [Converters](../config/tags/converter.md) 
+can also be configured to perform automatic conversion of data types while retrieving or saving data to 
+the database.
+
+
+## Customization Rules
+
+Value objects can be customized by overriding the default genration rules using the 
+[`<table>`](../config/tags/table.md) and [`<view>`](../config/tags/view.md) tags. Names, types, primary key
+generation, and converters can supersede the default modeling rules.
+
+
+## Enums
+
+Static *dimension* tables can be modeled as Java enums if they are relatively small and if their data does not
+change during the normal operation of the application (can change on every release). This may improve query
+performance since it avoid joining the table each time. See [Enums](../config/tags/enum.md) for details.
 
 
 ## Value Object Modeling

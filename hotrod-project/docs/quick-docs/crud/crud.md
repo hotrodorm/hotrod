@@ -36,6 +36,20 @@ These include:
 - [Delete by Primary Key]().
 - [Delete by Example]().
 
+DAO names are configured with the [Generator](../config/tags/mybatis-spring.md) tag.
+
+
+## Views
+
+CRUD does not make a string differentiation between tables and views. The view metadata does not typical include 
+information to decide if a view is updatable, so CRUD adds data modification to all views. It's up to the developer
+to decide if these methods can actually be used on each view. 
+
+By and large database consider a view updatable if it does have a 1:1 relationship with the underlying *driving*
+table and the primary key of this table is available in the result set of the view. This is not written in stone,
+however, so it's crucial to consult the specific database documentation to decide on this.
+
+
 
 ## Optimistic Locking
 
