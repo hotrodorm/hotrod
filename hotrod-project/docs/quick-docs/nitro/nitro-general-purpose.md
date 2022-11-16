@@ -42,8 +42,6 @@ public int closeFullyPaidInvoices() { ... }
 public int prepareDailyTransactions() { ... }
 ```
 
-General purpose queries can include native SQL and Dynamic SQL.
-
 
 ## Parameters
 
@@ -72,9 +70,22 @@ public int closeClientsPaidInvoices(Integer clientId) { ... }
 See [Query Parameters](nitro-parameters.md) for more details on parameters.
 
 
+## Value Object Modeling
+
+HotRod models VOs using two classes to allow the developer to add custom behavior to the value
+objects while allowing automatic structure updates at the same time. See 
+[Value Object Modeling](../crud/value-object-modeling.md) for details.
+
+
+## Native SQL
+
+All native SQL statements are supported to take full advantage of the database dialect features.
+
+
 ## Dynamic SQL
 
-General pupose queries can be enhanced with Dynamic SQL. Dynamic allows the query to include or exclude fragments of the SQL statement at runtime, based on the values of the supplied parameters.
+General purpose queries can be enhanced with [Dynamic SQL](nitro-dynamic-sql.md). Dynamic SQL allows the query to include or
+exclude fragments of the SQL statement at runtime, based on the values of the supplied parameters.
 
 For example:
 

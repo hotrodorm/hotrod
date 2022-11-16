@@ -160,7 +160,14 @@ public EmployeeVO getHighestPayedEmployee() {
   ...
 }
 ```
-    
+
+## Value Object Modeling
+
+HotRod models VOs using two classes to allow the developer to add custom behavior to the value
+objects while allowing automatic structure updates at the same time. See 
+[Value Object Modeling](../crud/value-object-modeling.md) for details.
+
+  
 ## Native SQL
 
 Since the beginning Flat Selects were geared towards using all bells &amp; whistles a database engine has to offer. HotRod
@@ -210,6 +217,7 @@ public List<CarVO> findSoldCars(Integer branchId, java.util.Date fromDate) {
 
 See [Query Parameters](nitro-parameters.md) for details and examples.  
 
+
 ## Property Names
 
 The resulting value object will include one property for each column of the result set. The property names are automatically produced by HotRod, but can also be affected by the global [Name Solver](../config/tags/name-solver.md), or by a `<column>` tag added to the query. They are processed in order:
@@ -217,6 +225,7 @@ The resulting value object will include one property for each column of the resu
 1. If a `<column>` tag includes a `java-name` property, this one decides the property name, and no further processing is performed.
 2. If a `<name-solver>` rule matches the column, then it modifies the column name.
 3. Finally, HotRod produces a property name based on the original or modified column name.
+
 
 ## Property Types
 
@@ -226,6 +235,7 @@ The resulting value object will include one property for each column of the resu
 2. If a `<column>` tag includes a `converter` property, this one produces the property type according to its rules, and no further processing is performed.
 3. If a `<type-solver>` rule matches the column, then it decides the property type, and o further processing is performed.
 4. Finally, if none of the above rules decides the property type, HotRod produces a property type based on the column type and the specific database engine.
+
 
 ## Dynamic SQL
 
