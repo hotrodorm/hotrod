@@ -1,10 +1,8 @@
 # Dynamic SQL
 
 Dynamic SQL allows the developer to apply rules to fragments of the SQL query to be included or excluded
-at runtime based on the parameter values.
-
-Dynamic SQL can be added to general purpose queries, flat selects, and structured select queries. All `<select>` 
-and `<query>` tags can include Dynamic SQL.
+at runtime based on the parameter values. Dynamic SQL can be added to general purpose queries, flat selects,
+and structured select queries. In short, all `<select>` and `<query>` tags can include Dynamic SQL.
 
 Dynamic SQL can alter the fragments as well, by applying or injecting parameter values, by trimming sections 
 of them, or by replicating them with iterators.
