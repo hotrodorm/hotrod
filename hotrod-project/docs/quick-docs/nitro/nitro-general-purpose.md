@@ -1,15 +1,22 @@
-# General Purpose Queries using &lt;query>
+# General Purpose Nitro Queries
 
-A General Purpose Query does not return a result set and is implemented using `<query>` tag. It may return optional count of rows.
+A General Purpose query does not return a result set and is implemented using `<query>` tag. Its
+only return may be an optional count of affected rows.
 
-Typically these correspond to `UPDATE`, `DELETE` SQL statements, but can actually include any valid SQL statement in the specific database such as `INSERT`, `CREATE`, `ALTER`, etc.
+Typically these correspond to `UPDATE`, `DELETE` SQL statements, but can actually include any valid 
+SQL statement in the specific database such as `INSERT`, `CREATE`, `ALTER`, etc.
 
-Each `<query>` tag must included in a `<table>`, `<view>`, or `<dao>` tag. The corresponding DAO class exposes the `<query>` as a Java method.
+A `<query>` will be modeled as a DAO method and, therefore, must be included in a `<table>`, `<view>`, or `<dao>` 
+tag. The corresponding DAO class exposes the `<query>` as a Java method.
 
-They are commonly used to perform changes in the database &mdash; by running tailored `UPDATE` or `DELETE` statements &mdash; but can actually 
-run any valid SQL statement, including DML statements and stored procedures calls.
+They are commonly used to perform changes in the database &mdash; by running tailored `UPDATE` or `DELETE` 
+statements &mdash; but can actually run any valid SQL statement, including DML statements and stored 
+procedures calls.
 
-For example, a typical DML query could look like:
+
+## Examples
+
+A typical DML query could look like:
 
 ```xml
 <query method="closeFullyPaidInvoices">
@@ -18,7 +25,8 @@ For example, a typical DML query could look like:
   where amount_paid >= amount_receivable
 </query>
 ```
-Nevertheless, any valid query can be used. For example:
+
+Nevertheless, any valid native query can be used. For example:
 
 ```xml
 <query method="prepareDailyTransactions">
@@ -34,14 +42,14 @@ public int closeFullyPaidInvoices() { ... }
 public int prepareDailyTransactions() { ... }
 ```
 
-They can include the full native SQL language available on the database, such as hints and any non-standard features.
+Apart from native SQL according to the database dialect, all general purpose queries accept Dynamic SQL.
 
 
 ## Parameters
 
-Parameters can be also be added by using the &lt;parameter> tag, paired with the `#{x}` parameter insertions points to enhance the query.
+General purpose queries can be parameterized by using the `<parameter>` tag.
 
-**Note**: General queries do no require the use of the `<complement>` tag, at all.
+**Note**: General queries do no require the use of the old `<complement>` tag, at all.
 
 For example:
 
@@ -62,6 +70,7 @@ public int closeClientsPaidInvoices(Integer clientId) { ... }
 ```
 
 See [Query Parameters](nitro-parameters.md) for more details on parameters.
+
 
 ## Dynamic SQL
 

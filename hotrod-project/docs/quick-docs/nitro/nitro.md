@@ -25,6 +25,38 @@ can retrieve data into non-trivial data structures.
 See [Dynamic SQL](nitro-dynamic-sql.md). 
 
 
+## Example
+
+The following query (a Flat Select) uses native DB2 features and Dynamic SQL:
+
+```xml
+<select method="findActiveAccountsWithClient" vo="AccountClientVO">
+  <parameter name="regionId" java-type="Integer" />
+  select a.*, c.name, c.type as "client_type"
+  from account a
+  join client c on c.id = a.client_id
+  where a.balance >= 1000.00 SELECTIVITY 0.0013 
+  <if test="regionId != null">
+    and c.region_id = #{regionId} SELECTIVITY 0.07
+  </if>
+</select>
+```
+
+Depending on the value of the `regionId` parameter the query changes shape. The `SELECTIVITY` clauses are a part of the DB2 dialect
+that allows the developer to tune query perfomance.
+
+
+## Nitro Features
+
+There are three types of Nitro queries:
+
+- [General Purpose Queries](nitro-general-purpose.md).
+- [Flat Select Queries](nitro-flat-selects.md).
+- [Structured Select Queries](nitro-structured-selects.md).
+
+
+
+
 ## General Purpose Queries &mdash; The `<query>` Tag
 
 A [General Purpose Query](nitro-general-purpose.md) does not return a result set and is implemented using `<query>` tag. It may return optional count of rows.
