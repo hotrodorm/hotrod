@@ -1,13 +1,13 @@
 # Dynamic SQL
 
 Dynamic SQL allows the developer to apply rules to fragments of the SQL query to be included or excluded
-at runtime based on the specific parameter values.
-
-Dynamic SQL can alter the fragments as well, by applying or injecting parameter values, by trimming sections 
-of them, or by replicating them with iterators.
+at runtime based on the parameter values.
 
 Dynamic SQL can be added to general purpose queries, flat selects, and structured select queries. All `<select>` 
 and `<query>` tags can include Dynamic SQL.
+
+Dynamic SQL can alter the fragments as well, by applying or injecting parameter values, by trimming sections 
+of them, or by replicating them with iterators.
 
 The design of the Dynamic SQL tags was influenced by the MyBatis framework
 (see [MyBatis Dynamic SQL](https://mybatis.org/mybatis-3/dynamic-sql.html)) but HotRod models it independently,
