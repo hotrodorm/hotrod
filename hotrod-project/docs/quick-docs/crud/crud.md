@@ -51,12 +51,12 @@ however, so it's crucial to consult the specific database documentation to decid
 
 ## Selection and Configuration
 
-The VOs and DAOs are configure in the [Configuration File](../config/configuration-file-structure.md). Each table
-and view mentioned in it adds one VO and one DAO to the persistence layer.
+CRUD does not inspect the entire database for tables and views. Each table and view mentioned in the
+[Configuration File](../config/configuration-file-structure.md) adds one VO and one DAO to the persistence layer.
 
-VOs and DAOs are configured with the [Generator](../config/tags/mybatis-spring.md) tag. VOs can be further customized
-with the [Table](../config/tags/table.md) and [View](../config/tags/view.md) tags as well as with the
-[Name Solver](../config/tags/name-solver.md) and [Type Solver](../config/tags/type-solver.md) tags.
+Once selected, VOs and DAOs are configured with the [Generator](../config/tags/mybatis-spring.md) tag. VOs can be
+further customized with the [Table](../config/tags/table.md) and [View](../config/tags/view.md) tags as well as 
+with the [Name Solver](../config/tags/name-solver.md) and [Type Solver](../config/tags/type-solver.md) tags.
 
 
 ## Optimistic Locking
