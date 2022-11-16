@@ -7,7 +7,7 @@ Typically these correspond to `UPDATE`, `DELETE` SQL statements, but can actuall
 SQL statement in the specific database such as `INSERT`, `CREATE`, `ALTER`, etc.
 
 A `<query>` will be modeled as a DAO method and, therefore, must be included in a `<table>`, `<view>`, or `<dao>` 
-tag. The corresponding DAO class exposes the `<query>` as a Java method.
+tag. See [Configuration File Structure](../config/configuration-file-structure.md) for details.
 
 They are commonly used to perform changes in the database &mdash; by running tailored `UPDATE` or `DELETE` 
 statements &mdash; but can actually run any valid SQL statement, including DML statements and stored 
