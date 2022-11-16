@@ -161,6 +161,32 @@ public EmployeeVO getHighestPayedEmployee() {
 }
 ```
 
+
+## Parameters 
+
+Flat Selects accept parameters by adding the `<parameter>`   tag.
+
+For example, a Flat Select that includes two parameters can look like:
+
+```xml
+<select method="findSoldCars" vo="CarVO">
+  <parameter name="branchId" java-type="Integer" />
+  <parameter name="fromDate" java-type="java.util.Date" />
+  select * from car where branch_id = #{branchId} and sold_date >= #{fromDate}
+</select>
+```
+
+This Flat Select produces a Java method like:
+
+```java
+public List<CarVO> findSoldCars(Integer branchId, java.util.Date fromDate) {
+  ...
+}
+```
+
+See [Query Parameters](nitro-parameters.md) for details and examples.  
+
+
 ## Value Object Modeling
 
 HotRod models VOs using two classes to allow the developer to add custom behavior to the value
@@ -192,49 +218,6 @@ By using the `SELECTIVITY` clause the developer is informing the DB2 optimizer t
 Typically database engines support the most important definitions and clauses specified by the SQL Standard and purposedly neglect the more obscure ones; no database engine implements the SQL Standard in its entirety. On the flip side, engines implement enhanced *non-standard* features that can be very useful in specific scenarios. These extensions should not be seen as a deterioration of the SQL language, but as non-standard *enrichment* of its available features. These features that can be very useful for developers in the present, and some of them may become part of the SQL Standard in the future.
 
 Notwithstanding their benefits, the usage of SQL extensions can limit the possibilities of migrating to a different database engine should the application owner decide to pursue this avenue in the future. 
-
-## Parameters 
-
-Flat Selects accept parameters by adding the `<parameter>`   tag.
-
-For example, a Flat Select that includes two parameters can look like:
-
-```xml
-<select method="findSoldCars" vo="CarVO">
-  <parameter name="branchId" java-type="Integer" />
-  <parameter name="fromDate" java-type="java.util.Date" />
-  select * from car where branch_id = #{branchId} and sold_date >= #{fromDate}
-</select>
-```
-
-This Flat Select produces a Java method like:
-
-```java
-public List<CarVO> findSoldCars(Integer branchId, java.util.Date fromDate) {
-  ...
-}
-```
-
-See [Query Parameters](nitro-parameters.md) for details and examples.  
-
-
-## Property Names
-
-The resulting value object will include one property for each column of the result set. The property names are automatically produced by HotRod, but can also be affected by the global [Name Solver](../config/tags/name-solver.md), or by a `<column>` tag added to the query. They are processed in order:
-
-1. If a `<column>` tag includes a `java-name` property, this one decides the property name, and no further processing is performed.
-2. If a `<name-solver>` rule matches the column, then it modifies the column name.
-3. Finally, HotRod produces a property name based on the original or modified column name.
-
-
-## Property Types
-
-The resulting value object will include one property for each column of the result set. The property types are automatically produced by HotRod based on the specifics of each database. Nevertheless, they can be affected by the global [Type Solver](../config/tags/type-solver.md), or by a `<column>` tag added to the query. They are processed in order:
-
-1. If a `<column>` tag includes a `java-type` property, this one decides the property type, and no further processing is performed.
-2. If a `<column>` tag includes a `converter` property, this one produces the property type according to its rules, and no further processing is performed.
-3. If a `<type-solver>` rule matches the column, then it decides the property type, and o further processing is performed.
-4. Finally, if none of the above rules decides the property type, HotRod produces a property type based on the column type and the specific database engine.
 
 
 ## Dynamic SQL
@@ -276,7 +259,25 @@ Dynamic SQL can be included anywhere in the SQL statement, not just in the `WHER
 See [Dynamic SQL](../nitro/nitro-dynamic-sql.md) for more details.  
 
 
- 
+## Property Names
+
+The resulting value object will include one property for each column of the result set. The property names are automatically produced by HotRod, but can also be affected by the global [Name Solver](../config/tags/name-solver.md), or by a `<column>` tag added to the query. They are processed in order:
+
+1. If a `<column>` tag includes a `java-name` property, this one decides the property name, and no further processing is performed.
+2. If a `<name-solver>` rule matches the column, then it modifies the column name.
+3. Finally, HotRod produces a property name based on the original or modified column name.
+
+
+## Property Types
+
+The resulting value object will include one property for each column of the result set. The property types are automatically produced by HotRod based on the specifics of each database. Nevertheless, they can be affected by the global [Type Solver](../config/tags/type-solver.md), or by a `<column>` tag added to the query. They are processed in order:
+
+1. If a `<column>` tag includes a `java-type` property, this one decides the property type, and no further processing is performed.
+2. If a `<column>` tag includes a `converter` property, this one produces the property type according to its rules, and no further processing is performed.
+3. If a `<type-solver>` rule matches the column, then it decides the property type, and o further processing is performed.
+4. Finally, if none of the above rules decides the property type, HotRod produces a property type based on the column type and the specific database engine.
+
+
 
 
 
