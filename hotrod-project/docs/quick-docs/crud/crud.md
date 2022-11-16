@@ -3,7 +3,7 @@
 The CRUD module models tables, views, and their columns as classes with properties. It also adds methods
 for persistence operations for basic `SELECT`, `INSERT`, `UPDATE`, and `DELETE`.
 
-Tables and view are modeled as value objects (VOs) and their columns are modeled as properties of these VOs. 
+Tables and views are modeled as value objects (VOs) and their columns are modeled as properties of these VOs. 
 The persistence methods to retrieve and update data are modeled in separate Data Access Objects (DAOs) with
 methods for each one.
 
