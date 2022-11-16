@@ -38,7 +38,7 @@ These include:
 For more advanced or custom queries see the [Nitro Module](../nitro/nitro.md).
 
 
-## Views
+## Table and Views
 
 CRUD does not make a strong differentiation between tables and views. Typically databases do not inform if a view is
 updatable or not, so CRUD adds data modification methods to all view DAOs. It's up to the developer to decide if these
