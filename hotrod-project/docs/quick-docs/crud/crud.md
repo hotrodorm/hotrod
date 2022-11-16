@@ -1,23 +1,50 @@
 # The CRUD Module
 
-The CRUD module is the foundation infrastructure for all HotRod modules. CRUD inspects the database and generates a persistent
-layer that mimics the database structure.
+The CRUD module models tables, views, and their columns as classes with properties. It also adds methods
+for persistence operations such as basic `SELECT`s, `INSERT`s, `UPDATE`s, and `DELETE`s.
 
-Apart from including a layer of value objects (VOs) that represent tables and views, the CRUD module also generates data access 
-objects (DAOs) with the basic persistence operations, such as `SELECT`, `INSERT`, `UPDATE`, and `DELETE`.
+Tables and view are modeled as value objects (VOs) and their columns are modeled as properties of these VOs. 
+The persistence methods to retrieve and update data are modeled in separate Data Access Objects (DAOs) with
+methods for each case. CRUD takes a few seconds to inspect the database and generate all classes according to it.
 
-The main goal of the CRUD module is to provide the developer with a fully functional persistence layer that can be used in minutes
-to start prototyping an application. The developer needs to provide minimal configuration for HotRod to inspect the database and
-generate fully functional DAOs and VOs.
-
-Finally, the DAOs and VOs provides the basic data model that is used by the LiveSQL and Nitro modules.
+CRUD model is used by LiveSQL queries and by the structured selects of the Nitro module.
 
 
 ## The Value Objects
 
+All table and views mentioned in the [Configuration File](../config/configuration-file-structure.md) are
+modeled by CRUD as Java classes with properties representing their columns. Essentially they hold all
+data being retrieved from and sent to the database.
+
+See [Value Objects](./value-objects.md).
+
 
 ## The DAOs
 
+CRUD generates data access objects (DAOs) with basic persistence methods to `SELECT`, `INSERT`, `UPDATE`, and `DELETE`.
+These include:
+
+- [Select by Primary Key]().
+- [Select by Unique Indexes]().
+- [Select by Example]().
+- [Select by Criteria]().
+- [Select Parent by Foreign Key]().
+- [Select Children by Foreign Key]().
+- [Insert]().
+- [Update By Primary Key]().
+- [Update by Example]().
+- [Delete by Primary Key]().
+- [Delete by Example]().
+
+
+## Optimistic Locking
+
+CRUD can be configured, on a per table basis, to implement optimistic locking. If this is enabled, then CRUD `SELECT` queries
+get automatically related to CRUD data modification queries (`UPDATE` and `DELETE`) using the VO values. If changes
+produced by other threads of processed are detected in the row then the data modification query is aborted and an
+exception is thrown, with the aim of aborting the transaction.
+
+See [Version Control](../config/tags/version-control-column.md) for details on how to activate this feature.
 
 
 
