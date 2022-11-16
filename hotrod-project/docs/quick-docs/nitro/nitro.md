@@ -1,23 +1,27 @@
-# Nitro Queries
+# Nitro
 
-Nitro Queries are one of the flagship modules that HotRod includes.
+The Nitro module assists the developer on writing custom configuration-assisted queries.
 
-These are custom queries that are added to any DAO in the persistence layer and that are exposed as Java methods in them. 
+Nitro goes beyond the CRUD functionality and allows the developer to execute native queries in the database.
+These queries can be plain native queries or configuration-assisted queries that take advantage of the knowledge
+the CRUD module has on the database to simplify their writing. These queries are added to the DAOs in the
+persistence layer and are exposed as Java methods.
+
 Nitro queries can be grouped into three categories:
 
-- General Purpose Queries that return no data.
-- Flat Selects.
-- Structured Selects.
+- **General Purpose Queries**: Queries that return no data.
+- **Flat Selects**: Traditional SELECTs that allow native SQL and Dynamic SQL.
+- **Structured Selects**: Advanced SELECTs that return graphs of objects. Native SQL and Dynamic SQL are also fully supported.
 
 Nitro queries' goal is to provide an option to gain access to native database performance all the while simplifying the coding.
 
 The main features of Nitro queries are:
 
-- **High Performance**: By using all native extensions of the SQL dialect that the database implements, a developer with knowledge of SQL
+- Reaching for High Performance: By using all native extensions of the SQL dialect that the database implements, a developer with knowledge of SQL
 optimization can create queries that can achieve high performance.
-- **Simplified Data Structures**: The Nitro module includes configuration-assisted structured queries that can load database data 
-into non-trivial data structures.
-- **Dynamic SQL**: Dynamic SQL allows queries to enable or disable sections of the query based on runtime parameters. 
+- Make the most of the CRUD model: Nitro queries make use of the CRUD model to allow configuration-assisted  queries that
+can retrieve data into non-trivial data structures.
+- Dynamic SQL: Dynamic SQL allows queries to enable or disable sections of the query based on runtime parameters. 
 See [Dynamic SQL](nitro-dynamic-sql.md). 
 
 
