@@ -40,9 +40,9 @@ For more advanced or custom queries see the [Nitro Module](../nitro/nitro.md).
 
 ## Views
 
-CRUD does not make a string differentiation between tables and views. The view metadata does not typical include 
-information to decide if a view is updatable, so CRUD adds data modification to all views. It's up to the developer
-to decide if these methods can actually be used on each view. 
+CRUD does not make a strong differentiation between tables and views. Typically databases do not inform if a view is
+updatable or not, so CRUD adds data modification methods to all view DAOs. It's up to the developer to decide if these
+methods can actually be used on each view or not.
 
 By and large database consider a view updatable if it does have a 1:1 relationship with the underlying *driving*
 table and the primary key of this table is available in the result set of the view. This is not written in stone,
