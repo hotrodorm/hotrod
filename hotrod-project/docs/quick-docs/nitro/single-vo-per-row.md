@@ -33,5 +33,5 @@ a `List<AccountVO>`. This VO includes all custom behavior the developer may have
 The same rules shown in the previous case apply. Not all columns need to be retrieved, and parameters can be applied.
 
 The "Single VO return" must be read as "columns belonging to a single VO", not as "returning a single row". 
-Structured Selects are assumed to return multiple rows in a List structure.
+Structured Selects are assumed to return multiple rows in a list structure.
 
