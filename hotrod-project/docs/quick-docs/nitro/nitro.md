@@ -1,4 +1,4 @@
-# Nitro
+# The Nitro Module
 
 The Nitro module assists the developer on writing custom configuration-assisted queries.
 

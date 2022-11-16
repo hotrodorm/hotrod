@@ -1,4 +1,4 @@
-# LiveSQL
+# The LiveSQL Module
 
 The LiveSQL module allows the developer to write flexible SQL `SELECT` queries from Java programming code only.
 
