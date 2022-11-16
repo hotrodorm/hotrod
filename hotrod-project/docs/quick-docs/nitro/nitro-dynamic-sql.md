@@ -203,7 +203,7 @@ For example:
   <parameter name="partialName" java-type="String" />
   <bind name="namePattern" value="'%' || partialName || '%'" />
   select * from client
-  where name like = #{namePattern}
+  where name like #{namePattern}
 </select> 
 ```
 
@@ -211,7 +211,7 @@ If the supplied parameters at runtime are (partialName = `"smith"`) the query wi
 
 ```sql
 select * from client
-where name like = '%smith%'
+where name like '%smith%'
 ```
 
 
