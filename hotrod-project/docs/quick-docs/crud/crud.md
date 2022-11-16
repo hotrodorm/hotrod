@@ -46,7 +46,7 @@ CRUD does not make a strong differentiation between tables and views. Typically 
 updatable or not, so CRUD adds data modification methods to all view DAOs. It's up to the developer to decide if these
 methods can actually be used on each view or not.
 
-By and large database consider a view updatable if it does have a 1:1 relationship with the underlying *driving*
+By and large databases consider a view updatable if it does have a 1:1 relationship with the underlying *driving*
 table and the primary key of this table is available in the result set of the view. This is not written in stone,
 however, so it's crucial to consult the specific database documentation to decide on this.
 
