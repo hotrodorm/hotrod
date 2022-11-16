@@ -12,11 +12,8 @@ CRUD model is used by LiveSQL queries and by the structured selects of the Nitro
 
 ## The Value Objects
 
-All table and views mentioned in the [Configuration File](../config/configuration-file-structure.md) are
-modeled by CRUD as Java classes with properties representing their columns. Essentially they hold all
-data being retrieved from and sent to the database.
-
-See [Value Objects](./value-objects.md).
+VOs hold all data being retrieved from and sent to the database. They include one property for each database column
+they represent. See [Value Objects](./value-objects.md) for details.
 
 
 ## The DAOs
@@ -36,8 +33,6 @@ These include:
 - [Delete by Primary Key]().
 - [Delete by Example]().
 
-DAO names are configured with the [Generator](../config/tags/mybatis-spring.md) tag.
-
 
 ## Views
 
@@ -49,6 +44,15 @@ By and large database consider a view updatable if it does have a 1:1 relationsh
 table and the primary key of this table is available in the result set of the view. This is not written in stone,
 however, so it's crucial to consult the specific database documentation to decide on this.
 
+
+## Selection and Configuration
+
+The VOs and DAOs are configure in the [Configuration File](../config/configuration-file-structure.md). Each table
+and view mentioned in it adds one VO and one DAO to the persistence layer.
+
+VOs and DAOs are configured with the [Generator](../config/tags/mybatis-spring.md) tag. VOs can be further customized
+with the [Table](../config/tags/table.md) and [View](../config/tags/view.md) tags as well as with the
+[Name Solver](../config/tags/name-solver.md) and [Type Solver](../config/tags/type-solver.md) tags.
 
 
 ## Optimistic Locking
