@@ -9,7 +9,7 @@ of them, or by replicating them with iterators.
 
 The design of the Dynamic SQL tags was influenced by the MyBatis framework
 (see [MyBatis Dynamic SQL](https://mybatis.org/mybatis-3/dynamic-sql.html)) but HotRod models it independently,
-so any generator can use it.
+so any generator or underlying JDBC technology can use it.
 
 
 ## OGNL - The Ogonal Engine
