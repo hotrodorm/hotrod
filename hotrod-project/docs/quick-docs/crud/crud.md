@@ -20,8 +20,11 @@ they represent. See [Value Objects](./value-objects.md) for details.
 
 ## The DAOs
 
-CRUD generates data access objects (DAOs) with basic persistence methods to `SELECT`, `INSERT`, `UPDATE`, and `DELETE`.
-These include:
+DAOs are classes that collect all persistence methods related to a table or view. CRUD automatically generates one DAOs
+for each included table and view. Each DAO includes basic persistence methods to `SELECT`, `INSERT`, `UPDATE`, and `DELETE`
+on the database.
+
+The automatically generated methods are:
 
 - [Select by Primary Key](./select-by-primary-key.md).
 - [Select by Unique Index](./select-by-unique-index.md).
@@ -37,7 +40,7 @@ These include:
 
 See [CRUD Cheat Sheet](./crud-cheat-sheet.md) for a quick overview of the all persistence methods.
 
-For more advanced or custom queries see the [Nitro Module](../nitro/nitro.md).
+Custom queries can be added to the DAOS using the [Nitro](../nitro/nitro.md) engine.
 
 
 ## Table and Views
