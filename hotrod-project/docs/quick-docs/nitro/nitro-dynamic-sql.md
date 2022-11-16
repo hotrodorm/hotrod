@@ -14,7 +14,7 @@ so any generator or underlying JDBC technology can use it.
 
 ## OGNL - The Ogonal Engine
 
-Dynamic SQL decides to include or exclude SQL fragments based on boolean logic evaluated at runtime according to the supplied parameters. This boolean logic is expressed in OGNL scripting from [The OGNL Engine](https://commons.apache.org/proper/commons-ognl/language-guide.html).
+Dynamic SQL decides to include or exclude SQL fragments based on boolean logic evaluated at runtime according to the supplied parameters. This boolean logic is expressed in OGNL scripting from [the OGNL Engine](https://commons.apache.org/proper/commons-ognl/language-guide.html).
 
 For example, the following expressions are valid ones in OGNL:
 
