@@ -1,7 +1,7 @@
 ## Structured Selects
 
 Nitro Structured Selects enhance the flat select model by adding a structure to the result set. Instead of
-a List of VOs, these queries can return fully named, fully typed tuples of VOs and also graphs of VOs.
+a list of VOs, these queries can return fully named, fully typed tuples of VOs and also graphs of VOs.
 
 The resulting data structure depends on the tags used to model the select list of the query.
 
