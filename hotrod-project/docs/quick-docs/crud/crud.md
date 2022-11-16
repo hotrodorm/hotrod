@@ -35,7 +35,7 @@ These include:
 - [Delete by Primary Key](./delete-by-primary-key.md).
 - [Delete by Example](./delete-by-example.md).
 
-See [CRUD Cheat Sheet](./crud-cheat-sheet.md) for a CRUD cheat sheet.
+See [CRUD Cheat Sheet](./crud-cheat-sheet.md) for a quick overview of the all persistence methods.
 
 For more advanced or custom queries see the [Nitro Module](../nitro/nitro.md).
 
