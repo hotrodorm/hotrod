@@ -1,9 +1,18 @@
 ## Nitro Flat SELECTs
 
-A Nitro Flat SELECT is the simplest and probably the most useful and common form of the &lt;select> tag. It models the resulting rows as fully named, fully typed value 
-objects. The execution typically returns a `java.util.List` of these value objects, though it can also return a cursor or even a single object.
+A Nitro Flat Select executes a SQL `SELECT` statement and models the resulting rows as value objects with 
+fully defined property names and property types.
 
-For example:
+Flat selects can be parameterized, can include native SQL and also Dynamic SQL.
+
+Each row returned by the flat select is modeled as a VO. The result can return a list of VOs, a cursor with
+VOs, or a single VO for queries with cardinality equal to 1.
+
+
+## Example
+
+The following query returns rows with values from two tables that are joined. A new VO is automatically 
+created to receive the values of the rows:
 
 ```xml
 <dao name="WebQueriesDAO">
@@ -18,16 +27,17 @@ For example:
 </dao>
 ```
 
-This select specifies that:
+In this example we can see:
 
  - A new `WebQueriesDAO` class will be generated.
- - This DAO will include the method `findActiveAccountsWithClient` to execute this query.
- - The method will return a `List&lt;AccountClientVO>`.
+ - The DAO includes the method `findActiveAccountsWithClient()` to execute this query.
+ - A new VO `AccountClientVO` is created and populated automatically for this query.
+ - The method returns a `List<AccountClientVO>`.
  - The abstract value object `AbstractAccountClientVO` will be generated. It will include all columns of the result set as fully 
  typed Java, fully named Java properties. 
  - A concrete value object will be also generated, so the developer can add custom properties and behavior. **Important**: this concrete value object is never updated when/if the HotRod generation is executed again and again; in other words, any custom change written by the developer is safe here.
 
-As an example, the &lt;select> tag above could produce the value objects:
+As an example, the `<select>` tag above could produce the value objects:
 
 ![flat](images/nitro-flat-select.png)    
 
@@ -38,7 +48,7 @@ public class AbstractAccountClientVO {
   protected Integer clientId = null;
   protected String name = null;
   protected Short clientType = null;
-  // getters and setters omitted
+  // getters and setters omitted for brevity
 }
 
 @Component
@@ -153,7 +163,9 @@ public EmployeeVO getHighestPayedEmployee() {
     
 ## Native SQL
 
-Since the beginning Flat Selects were geared towards using all bells & whistles a database engine has to offer. HotRod allows the developer to include the full SQL syntax the database accepts so the query can benefit from database-specific tricks. This includes any special addition, such as hints, extra clauses, quirky syntax, etc.
+Since the beginning Flat Selects were geared towards using all bells &amp; whistles a database engine has to offer. HotRod
+allows the developer to include the full SQL syntax the database accepts so the query can benefit from database-specific 
+tricks. This includes any special addition, such as hints, extra clauses, quirky syntax, etc.
 
 For example, DB2 enhances parameterized filtering predicates with the `SELECTIVITY` clause as shown below:
 

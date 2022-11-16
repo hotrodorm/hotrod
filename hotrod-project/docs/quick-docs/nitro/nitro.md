@@ -46,7 +46,7 @@ Depending on the value of the `regionId` parameter the query changes shape. The 
 that allows the developer to tune query perfomance.
 
 
-## Nitro Features
+## Nitro Queries
 
 There are three types of Nitro queries:
 
@@ -54,66 +54,6 @@ There are three types of Nitro queries:
 - [Flat Select Queries](nitro-flat-selects.md).
 - [Structured Select Queries](nitro-structured-selects.md).
 
-
-
-
-## General Purpose Queries &mdash; The `<query>` Tag
-
-A [General Purpose Query](nitro-general-purpose.md) does not return a result set and is implemented using `<query>` tag. It may return optional count of rows.
-
-They are commonly used to perform changes in the database -- by running tailored UPDATE or DELETE statements -- but can actually run any SQL statement, including DML statements and stored procedures calls.
-
-For example, a typical DML query could look like:
-
-```xml
-<query method="closeFullyPaidInvoices">
-  update invoice
-  set outstanding = 0
-  where amount_paid >= amount_receivable
-</query>
-```
-
-Nevertheless, any valid query can be used. For example:
-
-```xml
-<query method="initializeDailyTransactions">
-  truncate daily_transactions_tbl
-</query>
-```
-
-The above two queries return the number of affected rows and are exposed to the developer as Java methods:
-
-```java
-    public int closeFullyPaidInvoices() { ... }
-    
-    public int initializeDailyTransactions() { ... }
-```
-
-They can include the full native SQL language available on the database, as well as hints and non-standard features. They can also accept parameters.
-
-General queries are exposed as Java methods with parameters in the DAO where they are defined. 
-
-## Flat Selects &mdash; The `<select>` Tag
-
-A [Flat Select Query](nitro-flat-selects.md) executes a SQL `SELECT` statement and models the resulting rows as value objects with fully defined property names and property types. The execution of a flat select typically returns a `java.util.List` of these value objects.
-
-For example:
-
-```xml
-<select method="findActiveAccountsWithClient" vo="AccountClientVO">
-  <parameter name="regionId" java-type="Integer" />
-  select a.*, c.name, c.type as "client_type"
-  from account a
-  join client c on c.id = a.client_id
-  where a.active = 1 and c.region_id = #{regionId}
-</select>
-```
-
-The above query returns a list value object and is exposed to the developer as the Java method:
-
-```java
-public List<AccountClientVO> findActiveAccountsWithClient(Integer regionId) { ... }
-```
 
 ## Structured Selects &mdash; The `<select>` Tag, Again
 
