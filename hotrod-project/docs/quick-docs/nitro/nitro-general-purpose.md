@@ -49,7 +49,7 @@ Apart from using native SQL features available in the database, all general purp
 
 General purpose queries can be parameterized by using the `<parameter>` tag.
 
-**Note**: General queries do no require the use of the traditional `<complement>` tag, at all.
+**Note**: General queries do no require the use of the traditional `<complement>` tag.
 
 For example:
 
