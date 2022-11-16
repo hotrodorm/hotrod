@@ -1,6 +1,6 @@
 # The Nitro Module
 
-The Nitro module assists the developer on writing custom configuration-assisted queries.
+The Nitro module assists the developer on writing native queries and configuration-assisted queries.
 
 Nitro goes beyond the CRUD functionality and allows the developer to execute native queries in the database.
 These queries can be plain native queries or configuration-assisted queries that take advantage of the knowledge
