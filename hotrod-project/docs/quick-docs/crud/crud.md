@@ -12,7 +12,7 @@ The CRUD generator inpects the database and takes a few seconds to generate all 
 The CRUD model is used by LiveSQL queries and by the structured selects of the Nitro module.
 
 
-## The Value Objects
+## The VOs
 
 VOs hold all data being retrieved from and sent to the database. They include one property for each database column
 they represent. See [Value Objects](./value-objects.md) for details.
