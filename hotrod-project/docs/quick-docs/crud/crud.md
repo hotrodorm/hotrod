@@ -35,6 +35,8 @@ These include:
 - [Delete by Primary Key]().
 - [Delete by Example]().
 
+For more advanced or custom queries see the [Nitro Module](../nitro/nitro.md).
+
 
 ## Views
 
