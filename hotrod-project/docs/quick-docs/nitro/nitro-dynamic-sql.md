@@ -1,13 +1,20 @@
 # Dynamic SQL
 
-`<select>` and `<query>` tags can include Dynamic SQL. The Dynamic SQL tags are evaluated at runtime and can include or exclude entire fragments a SQL statement according to the runtime parameters.
+Dynamic SQL allows the developer to apply rules to fragments of the SQL query to be included or excluded
+at runtime based on the specific parameter values.
 
-Dynamic SQL can be added to general purpose queries, flat selects, and structured select queries.
+Dynamic SQL can alter the fragments as well, by applying or injecting parameter values, by trimming sections 
+of them, or by replicating them with iterators.
 
-The design of the Dynamic SQL tags was heavily based on the MyBatis framework (see [MyBatis Dynamic SQL](https://mybatis.org/mybatis-3/dynamic-sql.html)). The implementation, however, is generic. It can work on any HotRod Generator implementation.
+Dynamic SQL can be added to general purpose queries, flat selects, and structured select queries. All `<select>` 
+and `<query>` tags can include Dynamic SQL.
+
+The design of the Dynamic SQL tags was influenced by the MyBatis framework
+(see [MyBatis Dynamic SQL](https://mybatis.org/mybatis-3/dynamic-sql.html)) but HotRod models it independently,
+so any generator can use it.
 
 
-## OGNL - The "Ogonal" engine
+## OGNL - The Ogonal Engine
 
 Dynamic SQL decides to include or exclude SQL fragments based on boolean logic evaluated at runtime according to the supplied parameters. This boolean logic is expressed in OGNL scripting from [The OGNL Engine](https://commons.apache.org/proper/commons-ognl/language-guide.html).
 
