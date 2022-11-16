@@ -42,7 +42,7 @@ public int closeFullyPaidInvoices() { ... }
 public int prepareDailyTransactions() { ... }
 ```
 
-Apart from using native SQL features available in the database, all general purpose queries also accept Dynamic SQL.
+General purpose queries can include native SQL and Dynamic SQL.
 
 
 ## Parameters
