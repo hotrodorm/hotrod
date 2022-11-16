@@ -5,9 +5,11 @@ for persistence operations for basic `SELECT`, `INSERT`, `UPDATE`, and `DELETE`.
 
 Tables and view are modeled as value objects (VOs) and their columns are modeled as properties of these VOs. 
 The persistence methods to retrieve and update data are modeled in separate Data Access Objects (DAOs) with
-methods for each case. CRUD takes a few seconds to inspect the database and generate all classes according to it.
+methods for each one.
 
-CRUD model is used by LiveSQL queries and by the structured selects of the Nitro module.
+The CRUD generator inpects the database and takes a few seconds to generate all these classes.
+
+The CRUD model is used by LiveSQL queries and by the structured selects of the Nitro module.
 
 
 ## The Value Objects
