@@ -47,6 +47,6 @@ There are three types of Nitro queries:
 
 - [General Purpose Queries](nitro-general-purpose.md) &mdash; Queries that return no data.
 - [Flat Select Queries](nitro-flat-selects.md) &mdash; Traditional selects enhanced with native SQL and Dynamic SQL.
-- [Structured Select Queries](nitro-structured-selects.md) &mdash; Advanced SELECTs that return graphs of objects.
+- [Structured Select Queries](nitro-structured-selects.md) &mdash; Advanced selects that return graphs of objects.
 
 
