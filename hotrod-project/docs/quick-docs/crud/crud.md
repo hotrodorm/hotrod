@@ -49,7 +49,7 @@ table and the primary key of this table is available in the result set of the vi
 however, so it's crucial to consult the specific database documentation to decide on this.
 
 
-## Selection and Configuration
+## Configuration
 
 CRUD does not inspect the entire database for tables and views. Each table and view mentioned in the
 [Configuration File](../config/configuration-file-structure.md) adds one VO and one DAO to the persistence layer.
