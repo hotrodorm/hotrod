@@ -23,17 +23,17 @@ they represent. See [Value Objects](./value-objects.md) for details.
 CRUD generates data access objects (DAOs) with basic persistence methods to `SELECT`, `INSERT`, `UPDATE`, and `DELETE`.
 These include:
 
-- [Select by Primary Key]().
-- [Select by Unique Indexes]().
-- [Select by Example]().
-- [Select by Criteria]().
-- [Select Parent by Foreign Key]().
-- [Select Children by Foreign Key]().
-- [Insert]().
-- [Update By Primary Key]().
-- [Update by Example]().
-- [Delete by Primary Key]().
-- [Delete by Example]().
+- [Select by Primary Key](./select-by-primary-key.md).
+- [Select by Unique Index](./select-by-unique-index.md).
+- [Select by Example](./select-by-example.md).
+- [Select by Criteria](./select-by-criteria.md).
+- [Select Parent by Foreign Key](./select-parent-by-foreign-key.md).
+- [Select Children by Foreign Key](./select-children-by-foreign-key.md).
+- [Insert](./insert.md).
+- [Update By Primary Key](./update-by-primary-key.md).
+- [Update by Example](./update-by-example.md).
+- [Delete by Primary Key](./delete-by-primary-key.md).
+- [Delete by Example](./delete-by-example.md).
 
 For more advanced or custom queries see the [Nitro Module](../nitro/nitro.md).
 
