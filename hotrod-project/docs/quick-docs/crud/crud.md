@@ -24,9 +24,9 @@ DAOs are classes that collect all persistence methods related to a table or view
 for each included table and view. Each DAO includes basic persistence methods to `SELECT`, `INSERT`, `UPDATE`, and `DELETE`
 on the database.
 
-The generated methods are:
+The generated methods differ between a table and a view:
 
-| DAO Method | In a Table | In a View |
+| DAO Method | Table | View |
 | -- | :--: | :--: |
 | [Select by Primary Key](./select-by-primary-key.md) | :heavy_check_mark: | &mdash; |
 | [Select by Unique Index](./select-by-unique-index.md) | :heavy_check_mark: | &mdash; |
