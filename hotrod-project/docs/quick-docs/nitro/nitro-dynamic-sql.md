@@ -39,7 +39,7 @@ For example:
 </select> 
 ```
 
-The above query searches for pending orders. If the supplied parameter `minPrice` is not null, the query adds the extra condition `and order_price >= #{minPrice}` to the search predicate, that otherwise won't be included.
+The above query searches for pending orders. If the supplied parameter `minPrice` is not null, the query adds the extra condition `and order_price >= #{minPrice}` to the search predicate that, otherwise, won't be included.
 
 
 ## The `<choose>`, `<when>`, and `<otherwise>` Tags
