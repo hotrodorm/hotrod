@@ -1,12 +1,12 @@
 # Select by Unique Index
 
-`selectByUI...()` methods are implemented in DAOs related to a table that has one or more unique indexes.
+The `selectByUI...()` methods are implemented in DAOs related to tables when this table for each unique index on it.
 
 Each DAO method receives as parameters the values for the members of the index and returns a VO with the selected row.
 Keep in mind that unique constraints also generate unique indexes. These indexes are considered as any other unique index and are 
 included in the DAO.
 
-The resulting unique index produced by the primary key is covered by the [Select By Primary Key](./select-by-primary-key.md) 
+The resulting unique index produced by the primary key is already covered by the [Select By Primary Key](./select-by-primary-key.md) 
 method and, therefore, is not implemented as a separate unique index method.
 
 
