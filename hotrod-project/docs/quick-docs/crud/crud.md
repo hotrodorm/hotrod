@@ -47,7 +47,7 @@ Custom queries can be added to the DAOS using the [Nitro](../nitro/nitro.md) eng
 
 ## Table and Views
 
-CRUD does not make a strong differentiation between tables and views. Typically databases do not inform if a view is
+When it comes to methods to change data CRUD does not make a strong differentiation between tables and views. Typically databases do not inform if a view is
 updatable or not, so CRUD adds data modification methods to all view DAOs. It's up to the developer to decide if these
 methods can actually be used on each view or not.
 
