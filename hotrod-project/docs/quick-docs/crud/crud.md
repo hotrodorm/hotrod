@@ -28,7 +28,7 @@ The generated methods are:
 
 | DAO Method | In a Table | In a View |
 | -- | -- | -- |
-| [Select by Primary Key](./select-by-primary-key.md) | &check; | &cross; |
+| [Select by Primary Key](./select-by-primary-key.md) | :heavy_check_mark: | :x: |
 | [Select by Unique Index](./select-by-unique-index.md) | &check; | &cross; |
 | [Select by Example](./select-by-example.md) | &check; | &cross; |
 | [Select by Criteria](./select-by-criteria.md) | &check; | &cross; |
