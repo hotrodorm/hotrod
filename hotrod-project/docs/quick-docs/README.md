@@ -16,10 +16,10 @@ Overview:
 - [Retrieving and Applying Database Changes]().
 
 HotRod includes four modules:
-- [HotRod CRUD](crud/crud.md) &mdash; Quick and simple persistence for rapid prototyping.
-- [HotRod LiveSQL](livesql/livesql.md) &mdash; Flexible querying from Java.
-- [HotRod Nitro](nitro/nitro.md) &mdash; Advanced queries.
-- `HotRod Torcs` &mdash; Detect slow queries at runtime and analyze them.
+- [CRUD](crud/crud.md) &mdash; Quick and simple persistence for rapid prototyping.
+- [LiveSQL](livesql/livesql.md) &mdash; Flexible querying from Java.
+- [Nitro](nitro/nitro.md) &mdash; Advanced queries.
+- `Torcs` &mdash; Detect slow queries at runtime and analyze them.
 
 Reference:
 - [Configuration File Reference](config/configuration-file-structure.md).
