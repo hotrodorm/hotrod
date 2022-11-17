@@ -10,12 +10,22 @@ behavior.
 - An initially empty *child class* where extra properties and methods can be added.
 
 ```mermaid
-flowchart LR
-
-A[Hard] -->|Text| B(Round)
-B --> C{Decision}
-C -->|One| D[Result 1]
-C -->|Two| E[Result 2]
+classDiagram
+Class09 --|> Class07
+class ParentVO {
+  <<prototype>>
+  property1
+  property2
+  ...
+  selectByPK()
+}
+class VO {
+  <<custom>>
+  extraProperty1
+  extraProperty2
+  ...
+  myExtraMethod()
+}
 ```
 
 All custom logic is concentrated in the child class, while the parent represents the database structure. 
