@@ -26,7 +26,7 @@ on the database.
 
 The generated methods differ between a table and a view:
 
-| DAO Method | Table | View |
+| Persistence Method | Table | View |
 | -- | :--: | :--: |
 | [Select by Primary Key](./select-by-primary-key.md) | :heavy_check_mark: | &mdash; |
 | [Select by Unique Index](./select-by-unique-index.md) | :heavy_check_mark: | &mdash; |
