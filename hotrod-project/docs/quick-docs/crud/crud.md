@@ -34,7 +34,7 @@ The generated methods differ between a table and a view:
 | [Select by Criteria](./select-by-criteria.md) | :heavy_check_mark: | :heavy_check_mark: |
 | [Select Parent by Foreign Key](./select-parent-by-foreign-key.md) | :heavy_check_mark: | &mdash; |
 | [Select Children by Foreign Key](./select-children-by-foreign-key.md) | :heavy_check_mark: | &mdash; |
-| [Insert](./insert.md) | :heavy_check_mark: | :white_check_mark: |
+| [Insert](./insert.md) | :heavy_check_mark: | :heavy_check_mark: |
 | [Update By Primary Key](./update-by-prima-key.md) | :heavy_check_mark: | :heavy_check_mark: |
 | [Update by Example](./update-by-example.md) | :heavy_check_mark: | :heavy_check_mark: |
 | [Delete by Primary Key](./delete-by-primary-key.md) | :heavy_check_mark: | :heavy_check_mark: |
