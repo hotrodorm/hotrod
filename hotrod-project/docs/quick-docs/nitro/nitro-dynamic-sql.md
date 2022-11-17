@@ -181,7 +181,7 @@ For example:
 </select> 
 ```
 
-If the supplied parameters at runtime are `branchId` = `475`, `types` is a List with the String elements `"F"`, `"V"`, and `"C2"`, the 
+If the supplied parameters at runtime are `branchId` (with a value of `475`) and `types` (as a List of three String elements `"F"`, `"V"`, and `"C2"`), the 
 query will be assembled as:
 
 ```sql
