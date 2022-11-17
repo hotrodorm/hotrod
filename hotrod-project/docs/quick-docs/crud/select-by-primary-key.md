@@ -30,7 +30,7 @@ create table audit_log (
 ```
 
 CRUD will produce one DAOs for each table:
-- `PhoneDAO` will implement the method `selectByPK(Long id)`.
-- `RecipeIngredientDAO` will implement the method `selectByPK(Integer recipeId, String ingredientId)`.
+- `PhoneDAO` will implement the method `PhoneVO selectByPK(Long id)`.
+- `RecipeIngredientDAO` will implement the method `RecipeIngredientVO selectByPK(Integer recipeId, String ingredientId)`.
 - `AuditLogDAO` will not include a `selectByPK()` method.
 
