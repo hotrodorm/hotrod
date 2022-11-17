@@ -1,8 +1,7 @@
 # Dynamic SQL
 
-Dynamic SQL allows the developer to apply rules to fragments of the SQL query to be included or excluded
-at runtime based on the parameter values. Dynamic SQL can be added to general purpose queries, flat selects,
-and structured select queries. In short, all `<select>` and `<query>` tags can include Dynamic SQL.
+Dynamic SQL can be used in all [Nitro](./nitro.md) queries to include or exclude fragments of the SQL query 
+at runtime based on the parameter values. In short, all `<select>` and `<query>` tags can include Dynamic SQL.
 
 Dynamic SQL can alter the SQL fragments by applying or injecting parameter values, by trimming sections 
 of them, or by replicating them with iterators.
@@ -187,7 +186,7 @@ If the supplied parameters at runtime are (branchId = `475`, types has three Str
 ```sql
 select * from client
 where branch_id = 475
-  and client_type in ("F", "V", "C2")
+  and client_type in ('F', 'V', 'C2')
 ```
 
 There's of course a performance penalty when using large collections or arrays. Also, in the case of large collections or arrays, some database engines and/or JDBC drivers place a limit in the size of the SQL statement. Most database engines will accept 1000-character long SQL statements, but may reject 10000-character long SQL statements.
