@@ -516,7 +516,8 @@ mvn clean package
 Maven builds the applications and produces a single jar file at `target/myapp-1.0.0-SNAPSHOT.jar`. The name is assembled
 with the values in the `<artifactId>` and `<version>` tags. The jar file contains the entire application.
 
-When deploying to production this file should be placed along with an `application.properties` described above that the DevOps will set up.
+When deploying to production this file should be placed along with an `application.properties` described above that the DevOps 
+team will set up.
 
 Run the *packaged* version of the application. Type:
 
