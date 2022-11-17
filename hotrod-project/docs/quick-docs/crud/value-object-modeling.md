@@ -11,7 +11,7 @@ behavior.
 
 ```mermaid
 classDiagram
-Class09 --|> Class07
+ParentVO --|> VO
 class ParentVO {
   <<prototype>>
   property1
