@@ -3,6 +3,7 @@
 A `<table>` tag tells the HotRod generator to include a table in the code generation. Each `<table>` tag adds one table
 to the persistence layer.
 
+
 ## Attributes
 
 In its simplest form this tag only specifies the table name. All table columns are inspected automatically and all DAO and VO
@@ -20,11 +21,13 @@ The `<table>` tag can include modifiers that can be useful in special cases, as 
 | `catalog` | The catalog of the table, if different from the default one | The current catalog, specified in the runtime properties file |
 | `schema` | The schema of the table, if different from the default one | The current schema, specified in the runtime properties file |
 | `java-name` | Sets the base Java name for the DAO and VO classes | Camel-case identifier based on the database identifier |
-| `column-seam` | Separator string to glue parts when producing a Java identifier from multiple columns | *empty-string* |
+| `column-seam` | Used by CRUD to produce Java method names from multiple columns. See [Select by Unique Index](../../crud/select-by-unique-index.md), [Select Children By Foregin Key](../../crud/select-children-by-foreign-key.md), and [Select Parent By Foreign Key](../../crud/select-parent-by-foreign-key.md) | *empty-string* |
+
 
 ## Natural Typing Identifiers
 
 See [Natural Typing Identifiers](../natural-typing-identifiers.md).
+
 
 ## Included Tags
 
