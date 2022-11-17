@@ -6,8 +6,8 @@ Each DAO method receives as parameters the values for the members of the index a
 Keep in mind that unique constraints also generate unique indexes. These indexes are considered as any other unique index and are 
 included in the DAO.
 
-The primary key index is covered by the [Select By Primary Key](./select-by-primary-key.md) method and, therefore, is 
-not implemented as a unique index method.
+The resulting unique index produced by the primary key is covered by the [Select By Primary Key](./select-by-primary-key.md) 
+method and, therefore, is not implemented as a separate unique index method.
 
 
 ## Example
