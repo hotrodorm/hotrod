@@ -1,15 +1,15 @@
 # The CRUD Module
 
-The CRUD module models tables, views, and their columns as classes with properties. It also adds methods
-for persistence operations for basic `SELECT`, `INSERT`, `UPDATE`, and `DELETE`.
+The CRUD module models tables, views, and their columns as classes with properties.
+
+It also adds methods for persistence operations for basic `SELECT`, `INSERT`, `UPDATE`, and `DELETE`
+by inpecting the database metadata.
 
 Tables and views are modeled as value objects (VOs) and their columns are modeled as properties of these VOs. 
 The persistence methods to retrieve and update data are modeled in separate Data Access Objects (DAOs) with
 methods for each one.
 
-The CRUD generator inpects the database and takes a few seconds to generate all these classes.
-
-The CRUD model is used by LiveSQL queries and by the structured selects of the Nitro module.
+The CRUD model is also used by LiveSQL queries and by Nitro's structured selects.
 
 
 ## The VOs
@@ -34,26 +34,22 @@ The generated methods differ between a table and a view:
 | [Select by Criteria](./select-by-criteria.md) | :heavy_check_mark: | :heavy_check_mark: |
 | [Select Parent by Foreign Key](./select-parent-by-foreign-key.md) | :heavy_check_mark: | &mdash; |
 | [Select Children by Foreign Key](./select-children-by-foreign-key.md) | :heavy_check_mark: | &mdash; |
-| [Insert](./insert.md) | :heavy_check_mark: | :heavy_check_mark: |
-| [Update By Primary Key](./update-by-prima-key.md) | :heavy_check_mark: | :heavy_check_mark: |
-| [Update by Example](./update-by-example.md) | :heavy_check_mark: | :heavy_check_mark: |
-| [Delete by Primary Key](./delete-by-primary-key.md) | :heavy_check_mark: | :heavy_check_mark: |
-| [Delete by Example](./delete-by-example.md) | :heavy_check_mark: | :heavy_check_mark: |
+| [Insert](./insert.md) | :heavy_check_mark: | :heavy_check_mark: [^1] |
+| [Update By Primary Key](./update-by-prima-key.md) | :heavy_check_mark: | :heavy_check_mark: [^1] |
+| [Update by Example](./update-by-example.md) | :heavy_check_mark: | :heavy_check_mark: [^1] |
+| [Delete by Primary Key](./delete-by-primary-key.md) | :heavy_check_mark: | :heavy_check_mark: [^1] |
+| [Delete by Example](./delete-by-example.md) | :heavy_check_mark: | :heavy_check_mark: [^1] |
+
+[^1]: CRUD does not make a strong differentiation between tables and views. Typically databases do not inform 
+if a view is updatable or not, so CRUD adds data modification methods to all view DAOs. It's up to the developer
+to decide if these methods can actually be used on each view or not. By and large databases consider a view 
+updatable if it does have a 1:1 relationship with the underlying *driving* table and the primary key of this 
+table is available in the result set of the view. This is not written in stone, however, so it's crucial to 
+consult the specific database documentation to decide on this.
 
 See [CRUD Cheat Sheet](./crud-cheat-sheet.md) for a quick overview of the all persistence methods.
 
-Custom queries can be added to the DAOS using the [Nitro](../nitro/nitro.md) engine.
-
-
-## Table and Views
-
-When it comes to methods to change data CRUD does not make a strong differentiation between tables and views. Typically databases do not inform if a view is
-updatable or not, so CRUD adds data modification methods to all view DAOs. It's up to the developer to decide if these
-methods can actually be used on each view or not.
-
-By and large databases consider a view updatable if it does have a 1:1 relationship with the underlying *driving*
-table and the primary key of this table is available in the result set of the view. This is not written in stone,
-however, so it's crucial to consult the specific database documentation to decide on this.
+Extra queries can be added to these DAOS as methods, using the [Nitro](../nitro/nitro.md) engine.
 
 
 ## Configuration
