@@ -85,8 +85,8 @@ By default CRUD would generate the invalid *identical* methods and, as a result,
 - `ClothingVO selectByUIBrandPartType()` method for the first index `ix1`.
 - `ClothingVO selectByUIBrandPartType()` method for the second index `ix2`.
 
-To resolve the name collision we can define a `column-seam`. If we define an underscore (`_`) as a column seam
-the DAO will now have two methods with different names:
+To resolve the name collision we can define a `column-seam` in this table. If we define an underscore (`_`)
+as a column seam the DAO will now have two methods with different names:
 - `ClothingVO selectByUIBrand_PartType()` for the first index `ix1`.
 - `ClothingVO selectByUIBrandPart_Type()` for the second index `ix2`.
 
