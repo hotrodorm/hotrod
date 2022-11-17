@@ -9,6 +9,15 @@ CRUD models a value object as two separate classes:
 behavior.
 - An initially empty *child class* where extra properties and methods can be added.
 
+```mermaid
+flowchart LR
+
+A[Hard] -->|Text| B(Round)
+B --> C{Decision}
+C -->|One| D[Result 1]
+C -->|Two| E[Result 2]
+```
+
 All custom logic is concentrated in the child class, while the parent represents the database structure. 
 
 When run for the first time CRUD generates both classes. Later on, when database changes happen CRUD always
