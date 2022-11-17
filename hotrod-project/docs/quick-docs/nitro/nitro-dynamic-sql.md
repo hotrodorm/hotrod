@@ -181,7 +181,8 @@ For example:
 </select> 
 ```
 
-If the supplied parameters at runtime are (branchId = `475`, types has three String elements such as `"F"`, `"V"`, and `"C2"`) the query will be assembled as:
+If the supplied parameters at runtime are `branchId` = `475`, `types` is a List with the String elements `"F"`, `"V"`, and `"C2"`, the 
+query will be assembled as:
 
 ```sql
 select * from client
@@ -189,7 +190,10 @@ where branch_id = 475
   and client_type in ('F', 'V', 'C2')
 ```
 
-There's of course a performance penalty when using large collections or arrays. Also, in the case of large collections or arrays, some database engines and/or JDBC drivers place a limit in the size of the SQL statement. Most database engines will accept 1000-character long SQL statements, but may reject 10000-character long SQL statements.
+There's, of course, a performance penalty when using large collections or arrays. Also, in the case of large collections or arrays,
+some database engines and/or JDBC drivers place a limit in the size of the SQL statement. Most database engines will accept 
+1000-character long SQL statements, but may reject 10000-character long SQL statements.
+
 
 ## The `<bind>` Tag
 
