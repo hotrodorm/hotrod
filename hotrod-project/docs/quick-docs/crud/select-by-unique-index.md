@@ -81,12 +81,12 @@ create unique index ix1 on clothing (brand, part_type);
 create unique index ix2 on clothing (brand_part, type);
 ```
 
-By default CRUD would generate the invalid methods:
+By default CRUD would generate the invalid *identical* methods:
 - `selectByUIBrandPartType()` for the first index `ix1`.
 - `selectByUIBrandPartType()` for the second index `ix2`.
 
-To resolve the name collision we can define a `column-seam` in the table as `_`. If we do so the DAO will
-now have the following methods:
+To resolve the name collision we can define a `column-seam` in the table configuration with the value `_`. If we
+do so the DAO will now have the following methods:
 - `selectByUIBrand_PartType()` for the first index `ix1`.
 - `selectByUIBrandPart_Type()` for the second index `ix2`.
 This is perflectly valid and the DAO can operate normally.
