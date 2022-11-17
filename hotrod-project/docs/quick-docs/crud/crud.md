@@ -27,18 +27,18 @@ on the database.
 The generated methods are:
 
 | DAO Method | In a Table | In a View |
-| -- | -- | -- |
-| [Select by Primary Key](./select-by-primary-key.md) | :heavy_check_mark: | :x: |
+| -- | :--: | :--: |
+| [Select by Primary Key](./select-by-primary-key.md) | :heavy_check_mark: | &mdash; |
 | [Select by Unique Index](./select-by-unique-index.md) | :heavy_check_mark: | &mdash; |
-| [Select by Example](./select-by-example.md) | &check; | &cross; |
-| [Select by Criteria](./select-by-criteria.md) | &check; | &cross; |
-| [Select Parent by Foreign Key](./select-parent-by-foreign-key.md) | &check; | &cross; |
-| [Select Children by Foreign Key](./select-children-by-foreign-key.md) | &check; | &cross; |
-| [Insert](./insert.md) | &check; | &cross; |
-| [Update By Primary Key](./update-by-prima-key.md) | &check; | &cross; |
-| [Update by Example](./update-by-example.md) | &check; | &cross; |
-| [Delete by Primary Key](./delete-by-primary-key.md) | &check; | &cross; |
-| [Delete by Example](./delete-by-example.md) | &check; | &cross; |
+| [Select by Example](./select-by-example.md) | :heavy_check_mark: | :heavy_check_mark: |
+| [Select by Criteria](./select-by-criteria.md) | :heavy_check_mark: | :heavy_check_mark: |
+| [Select Parent by Foreign Key](./select-parent-by-foreign-key.md) | :heavy_check_mark: | &mdash; |
+| [Select Children by Foreign Key](./select-children-by-foreign-key.md) | :heavy_check_mark: | &mdash; |
+| [Insert](./insert.md) | :heavy_check_mark: | :heavy_check_mark: |
+| [Update By Primary Key](./update-by-prima-key.md) | :heavy_check_mark: | :heavy_check_mark: |
+| [Update by Example](./update-by-example.md) | :heavy_check_mark: | :heavy_check_mark: |
+| [Delete by Primary Key](./delete-by-primary-key.md) | :heavy_check_mark: | :heavy_check_mark: |
+| [Delete by Example](./delete-by-example.md) | :heavy_check_mark: | :heavy_check_mark: |
 
 See [CRUD Cheat Sheet](./crud-cheat-sheet.md) for a quick overview of the all persistence methods.
 
