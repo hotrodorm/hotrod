@@ -24,19 +24,21 @@ DAOs are classes that collect all persistence methods related to a table or view
 for each included table and view. Each DAO includes basic persistence methods to `SELECT`, `INSERT`, `UPDATE`, and `DELETE`
 on the database.
 
-The automatically generated methods are:
+The generated methods are:
 
-- [Select by Primary Key](./select-by-primary-key.md).
-- [Select by Unique Index](./select-by-unique-index.md).
-- [Select by Example](./select-by-example.md).
-- [Select by Criteria](./select-by-criteria.md).
-- [Select Parent by Foreign Key](./select-parent-by-foreign-key.md).
-- [Select Children by Foreign Key](./select-children-by-foreign-key.md).
-- [Insert](./insert.md).
-- [Update By Primary Key](./update-by-primary-key.md).
-- [Update by Example](./update-by-example.md).
-- [Delete by Primary Key](./delete-by-primary-key.md).
-- [Delete by Example](./delete-by-example.md).
+| DAO Method | In a Table | In a View |
+| -- | -- | -- |
+| [Select by Primary Key](./select-by-primary-key.md) | &check; | &cross; |
+| [Select by Unique Index](./select-by-unique-index.md) | &check; | &cross; |
+| [Select by Example](./select-by-example.md) | &check; | &cross; |
+| [Select by Criteria](./select-by-criteria.md) | &check; | &cross; |
+| [Select Parent by Foreign Key](./select-parent-by-foreign-key.md) | &check; | &cross; |
+| [Select Children by Foreign Key](./select-children-by-foreign-key.md) | &check; | &cross; |
+| [Insert](./insert.md) | &check; | &cross; |
+| [Update By Primary Key](./update-by-prima-key.md) | &check; | &cross; |
+| [Update by Example](./update-by-example.md) | &check; | &cross; |
+| [Delete by Primary Key](./delete-by-primary-key.md) | &check; | &cross; |
+| [Delete by Example](./delete-by-example.md) | &check; | &cross; |
 
 See [CRUD Cheat Sheet](./crud-cheat-sheet.md) for a quick overview of the all persistence methods.
 
