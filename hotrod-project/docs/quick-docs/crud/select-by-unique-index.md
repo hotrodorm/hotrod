@@ -2,7 +2,7 @@
 
 `selectByUI...()` methods are implemented in DAOs related to a table that has one or more unique indexes.
 
-Each DAO method receives the values for the members of the index as parameters and returns a VO with the selected row.
+Each DAO method receives as parameters the values for the members of the index and returns a VO with the selected row.
 Keep in mind that unique constraints also generate unique indexes. These indexes are considered as any other unique index and are 
 included in the DAO.
 
