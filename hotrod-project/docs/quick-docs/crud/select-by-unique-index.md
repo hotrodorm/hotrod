@@ -60,7 +60,7 @@ cases the resulting names may end up being exactly identical for multiple method
 anymore since it two or more `selectByUI...()` methods may end up having the exact same signature and that is
 not valid in the Java language.
 
-In these cases it's possible to define a * column seam* string that glues columns together, to help making a difference.
+In these cases it's possible to define a *column seam* string that glues columns together, to help making a difference.
 By default this seam is an empty string, but may be configured to have a different value. 
 See [Table](../config/tags/table.md) for details on how to specify it.
 
@@ -82,13 +82,14 @@ create unique index ix2 on clothing (brand_part, type);
 ```
 
 By default CRUD would generate the invalid *identical* methods:
-- `selectByUIBrandPartType()` for the first index `ix1`.
-- `selectByUIBrandPartType()` for the second index `ix2`.
+- `ClothingVO selectByUIBrandPartType()` for the first index `ix1`.
+- `ClothingVO selectByUIBrandPartType()` for the second index `ix2`.
 
 To resolve the name collision we can define a `column-seam` in the table configuration with the value `_`. If we
 do so the DAO will now have the following methods:
-- `selectByUIBrand_PartType()` for the first index `ix1`.
-- `selectByUIBrandPart_Type()` for the second index `ix2`.
+- `ClothingVO selectByUIBrand_PartType()` for the first index `ix1`.
+- `ClothingVO selectByUIBrandPart_Type()` for the second index `ix2`.
+
 This is perflectly valid and the DAO can operate normally.
 
 
