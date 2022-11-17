@@ -191,7 +191,7 @@ where branch_id = 475
 ```
 
 There's, of course, a performance penalty when using large collections or arrays. Also, in the case of large collections or arrays,
-some database engines and/or JDBC drivers place a limit in the size of the SQL statement. Most database engines will accept 
+some database engines and JDBC drivers may place a limit in the size of the SQL statement. Most database engines will accept 
 1000-character long SQL statements, but may reject 10000-character long SQL statements.
 
 
