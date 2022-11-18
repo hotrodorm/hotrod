@@ -74,7 +74,7 @@ FooVO f = new FooVO();
 // Notice that setId() must not be used
 f.setName("Moby Dick");
 this.fooDAO.insert(f);
-// The newly generated value is available in the VO at this point
+// The newly generated value for "id" is available in the VO at this point
 
 BarVO b = new BarVO();
 b.setPartId(34005);
@@ -84,7 +84,7 @@ this.barDAO.insert(b);
 BarVO b2 = new BarVO();
 b2.setId(101);
 b2.setPartId(34012);
-this.barDAO.insert(b);
+this.barDAO.insert(b2);
 // The database does not produce any value for the "id" column and uses the provided 101 value instead
 
 BazVO z = new BazVO();
