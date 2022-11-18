@@ -9,7 +9,7 @@ in the VO.
 
 ## Example
 
-The following table adds $100 to the balance of the account.
+The following example adds $100 to the balance of the account.
 
 ```sql
 create table prepaid_account (
@@ -34,11 +34,11 @@ this.prepaidAccountDAO.updateByPK(acc);
 
 Optimistic locking can detect if a row has been modified between it's read and it's updated.
 This can be useful to detect race conditions and act accordingly when multiple processes are 
-modifying the same row simultaneously. See
+modifying or deleting the same row simultaneously. See
 [Optimistic Locking](../config/tags/version-control-column.md#optimistic-locking) for configuration
 details.
 
-The example above has been enhanced by adding a new column `row_version` and enabling optimistic
+The example above has been enhanced by adding a new column `row_version` and by enabling optimistic
 locking in the table using the `<version-control-column>` tag. It now detects changes in the row:
 
 ```sql
