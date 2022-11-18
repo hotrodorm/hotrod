@@ -33,13 +33,13 @@ this.prepaidAccountDAO.updateByPK(acc);
 ## Optimistic Locking
 
 Optimistic loking can detect if a row has been modified between it's read and updated.
-This can be useful to detect race conditions and act accordingly when multiple processes are 
+This can be useful to detect race conditions and act accordingly when multiple processes could be 
 modifying the same row simultaneously. See
 [Optimistic Locking](../config/tags/version-control-column.md#optimistic-locking) for configuration
 details.
 
 The example above has been enhanced by adding a column `row_version` and enabling optimistic
-locking in the table using the `<version-control-column>` tag. It not detects changes in the row:
+locking in the table using the `<version-control-column>` tag. It now detects changes in the row:
 
 ```sql
 create table prepaid_account (
