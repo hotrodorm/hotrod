@@ -27,6 +27,17 @@ InvoiceVO i = InvoiceDAO.selectByPK(58640);
 this.invoiceDAO.deleteByPK(i);
 ```
 
+If we want to just delete the row without selecting it first we can do:
+
+```java
+InvoiceVO i = new InvoiceVO();
+i.setId(58640);
+this.invoiceDAO.deleteByPK(i);
+```
+
+If optimistic locking is enabled it's not possible to just delete a row. It
+needs to be read first, and then deleted.
+
 
 ## Optimistic Locking
 
