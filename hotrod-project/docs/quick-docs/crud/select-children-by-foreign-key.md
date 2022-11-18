@@ -2,6 +2,19 @@
 
 CRUD implements methods to navigate by foreign keys.
 
+Each foreign key constraint that includes the table &mdash; either as a parent
+or a child table &mdash; produces a new variation in the methods to navigate foreign
+keys. If the table does not participate in any foreign key constraint the navigation methods
+are not generated.
+
+The code generation logic is carefully crafted to support all variations of foreign keys.
+It considers:
+
+- Navigating to parent and to children tables.
+- Simple and composite foreign keys.
+- Reflexive foreign keys (navigable in both directions).
+- Multiple foreign keys between each pair of table.
+
 
 ## Example
 
@@ -25,8 +38,7 @@ create table historic_price (
 The following app excerpt finds one product and then retrieves all historic prices of it:
 
 ```java
-Integer productId = 123;
-ProductVO p = this.productDAO.selectByPK(productId);
+ProductVO p = this.productDAO.selectByPK(123);
 
 List<HistoricPriceVO> h = this.productDAO.selectChildrenHistoricPriceOf(p).fromId().toProductId();
 ```

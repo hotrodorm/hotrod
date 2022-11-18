@@ -1,6 +1,19 @@
 # Select Parent by Foreign Key
 
-CRUD implements methods to navigate by foreign keys.
+CRUD implements methods to navigate by foreign keys. 
+
+Each foreign key constraint that includes the table &mdash; either as a parent
+or a child table &mdash; produces a new variation in the methods to navigate foreign
+keys. If the table does not participate in any foreign key constraint the navigation methods
+are not generated.
+
+The code generation logic is carefully crafted to support all variations of foreign keys.
+It considers:
+
+- Navigating to parent and to children tables.
+- Simple and composite foreign keys.
+- Reflexive foreign keys (navigable in both directions).
+- Multiple foreign keys between each pair of table.
 
 
 ## Example
@@ -25,9 +38,7 @@ create table historic_price (
 The following app excerpt finds a product price and then retrieves the related parent product of it:
 
 ```java
-Integer productId = 123;
-LocalDate priceDate = LocalDate.parse("2022-11-15");
-HistoricPriceVO h = this.historicPriceDAO.selectByPK(productId, priceDate);
+HistoricPriceVO h = this.historicPriceDAO.selectByPK(123, LocalDate.parse("2022-11-15"));
 
 ProductVO p = this.historicPriceDAO.selectParentProductOf(h).fromProductId().toId();
 ```
