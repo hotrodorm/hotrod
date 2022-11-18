@@ -70,6 +70,10 @@ If changes produced by other threads or processes are detected in the row then t
 exception is thrown, with the aim of aborting the transaction.
 
 See [Version Control](../config/tags/version-control-column.md) for details on how to activate this feature.
+See [Update by Primary Key](./update-by-primary-key.md) and [Delete by Primary Key](./delete-by-primary-key.md) for details
+on how this functionality affects these operations.
+
+
 
 
 
