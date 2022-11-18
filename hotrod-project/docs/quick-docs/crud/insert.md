@@ -35,7 +35,7 @@ the value provided by the VO is not null this value is used as an insertion valu
 
 ## Example
 
-The example shown below (in Oracle 12c) includes two tables with identity columns and one that uses a sequence:
+The example shown below (for Oracle 12c1 and newer) includes two tables with identity columns and one that uses a sequence:
 
 ```sql
 create table foo (
