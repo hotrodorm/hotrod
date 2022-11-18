@@ -51,7 +51,7 @@ It finds (rows in any order):
 | 3 | HK Jeans | CLOTH | true | 79 |
 | 4 | Blue Socks | CLOTH | true | 5 |
 
-If we want to sort the rows by prices, highest first the search can be changed to:
+If we want to sort the rows by price the search can be changed to:
 
 ```java
 List<ProductVO> l = this.productDAO.selectByExample(filter, AccountOrderBy.PRICE);
@@ -64,11 +64,20 @@ It now returns:
 | 4 | Blue Socks | CLOTH | true | 5 |
 | 3 | HK Jeans | CLOTH | true | 79 |
 
-It's also possible to sort in descending order. The search changes to:
+It's also possible to sort by price in descending order. The search changes to:
 
 ```java
 List<ProductVO> l = this.productDAO.selectByExample(filter, AccountOrderBy.PRICE$DESC);
 ```
 
-It's possible to sort by multiple columns by adding more ordering columns in the parameter list.
+It now returns:
+
+| id | name | type | active | price |
+| -- | -- | -- | :--: | --: |
+| 3 | HK Jeans | CLOTH | true | 79 |
+| 4 | Blue Socks | CLOTH | true | 5 |
+
+It's also possible to sort by multiple columns by adding more ordering columns to the 
+parameter list.
+
 
