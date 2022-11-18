@@ -68,5 +68,5 @@ In the case shown above the logic detects the row change (maybe someone deposite
 money) and the update fails. Typically, the business logic will wait a short while and then 
 would read the fresh row (again) and retry the update for a number of times.
 
-Notice the the new `row_version` column is used silently in the application and does not 
+Notice that the new `row_version` column is used silently in the application and does not 
 pollute the source code.
