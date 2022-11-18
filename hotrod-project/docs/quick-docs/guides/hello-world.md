@@ -57,13 +57,13 @@ The complete `pom.xml` file will look like:
 
   <dependencies>
 
-    <dependency> <!-- You can use Spring Boot, plain Spring, or other similar one -->
+    <dependency> <!-- You can use Spring Boot, plain Spring, or other -->
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <version>2.3.4.RELEASE</version>
     </dependency>  
 
-    <dependency> <!-- Your app needs the JDBC driver to connect to the database. It could be also provided at runtime -->
+    <dependency> <!-- Your app needs the JDBC driver to connect to the database. Can be provided at runtime -->
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>2.1.214</version>
