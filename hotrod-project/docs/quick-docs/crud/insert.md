@@ -73,12 +73,12 @@ private BazDAO bazDAO;
 FooVO f = new FooVO();
 f.setName("Moby Dick");
 this.fooDAO.insert(f);
-// Notice setId() cannot be used. The newly generated value is available in the VO now
+// Notice setId() cannot be used. The newly generated value is available in the VO at this point
 
 BarVO b = new BarVO();
 b.setPartId(34005);
 this.barDAO.insert(b);
-// The "id" was not set and the database generated a value for it. This value is available in the VO now
+// The "id" was not set and the database generated a value for it. This value is available in the VO at this point
 
 BarVO b2 = new BarVO();
 b2.setId(101);
