@@ -1,101 +1,75 @@
 # Select by Example
 
-The table and view DAOs include a `selectByExample()` method that helps with simple row selections. 
+The table and view DAOs include a `selectByExample()` method that helps with simple row selections.
 
-This method receives a VO that is used as a pattern for the search. All its non-null properties make up the 
-search criteria.
+This CRUD method provides simple out-of-the-box searching capabilities:
+- **Filtering**: This method receives a VO that is used as a pattern for the search. All its non-null 
+properties make up the search criteria.
+- **Sorting**: The rows returned can also be sorted in ascending or descending order by adding an 
+optional list of sorting columns to the parameter list. If not specified, rows are returned in any
+order, and this order may change over time without notice.
+
+For more advanced search criteria and sorting it's possible to combine LiveSQL features by using the
+[Select By Criteria](./select-by-criteria.md) method. For full control over the search query see
+[Nitro Queries](../nitro/nitro.md).
 
 
 ## Example
 
-Consider the table `employee` with the following data:
+Consider the table `product` with the following data:
 
+| id | name | type | active | price |
+| -- | -- | -- | :--: | --: |
+| 1 | TV | ELECT | true | 499 |
+| 2 | Mill Tie | CLOTH | false | 29 | 
+| 3 | HK Jeans | CLOTH | true | 79 |
+| 4 | Blue Socks | CLOTH | true | 5 |
+| 5 | Lipstick 305 | COSME | true | 8 |
+| 6 | Sofa | HOME | false | 299 |
+| 7 | Golf Clubs | SPORT | true | 450 |
+| 8 | Tennis Shoes | SPORT | false | 99 |
 
+The following app searches for products with type `CLOTH` that are active:
 
-In the example shown below the first table has a unique index, the second table
-has three indexes (two being unique), and the third one doesn't have a unique index:
+```java
+@Autowired
+private ProductDAO productDAO;
 
-```sql
-create table widget (
-  widget_id int primary key not null,
-  code char(6)
-  name varchar(60)
-);
+...
 
-create unique index widget_ix1 on widget (code);
+ProductVO p = new ProductVO();
+p.setType("CLOTH");
+p.setActive(true);
 
-create table car (
-  id int primary key not null,
-  brand_id int,
-  type char(4),
-  vin char(20) unique,
-  region decimal(8),
-  engine_number varchar(24)
-);
-
-create index car_ix1 on car (brand_id, type);
-
-create unique index car_ix2 on car (region, engine_number);
-
-create table medication (
-  med_id int primary key not null,
-  patient_id int,
-  fequency number(8)
-);
-
-create index med_ix1 on medication (patient_id);
+List<ProductVO> l = this.productDAO.selectByExample(p);
+List<ProductVO> l = this.productDAO.selectByExample(p, AccountOrderBy.CURRENT_BALANCE);
 ```
 
-CRUD will produce one DAOs for each table:
-- `WidgetDAO` will implement the method `WidgetVO selectByUICode(String code)`.
-- `CarDAO` will implement the methods `CarVO selectByUIVin(String vin)` and `CarVO selectByUIRegionEngineNumber(Integer region, String engineNumber)`.
-- `MedicationDAO` will not include any `selectByUI...()` method since it doesn't have any unique index (besides 
-the primary key).
+It finds (rows in any order):
 
+| id | name | type | active | price |
+| -- | -- | -- | :--: | --: |
+| 3 | HK Jeans | CLOTH | true | 79 |
+| 4 | Blue Socks | CLOTH | true | 5 |
 
-## Column Seam
+If we want to sort the rows by prices, highest first the search can be changed to:
 
-You have seen that to differentiate multiple `selectByUI...()` methods the name of each method includes the names of the 
-index members in it. In very special cases the resulting names may end up being exactly identical for multiple methods. 
-The DAO won't be valid anymore since it two or more `selectByUI...()` methods may end up having the exact same signature 
-and that is not valid in the Java language.
-
-In these cases it's possible to define a *column seam* string that glues columns together, to help making a difference.
-By default this seam is an empty string, but may be configured to have a different value. 
-See [Table](../config/tags/table.md) for details on how to specify it.
-
-Whe the column seam it defaults to an empty string. The following carefully-crafted table will produce a name collision
-when generating `selectByUI...()` methods:
-
-```sql
-create table clothing (
-  id int primary key not null,
-  brand int,
-  part_type int,
-  brand_part int,
-  type int
-);
-
-create unique index ix1 on clothing (brand, part_type);
-
-create unique index ix2 on clothing (brand_part, type);
+```java
+List<ProductVO> l = this.productDAO.selectByExample(p, AccountOrderBy.PRICE);
 ```
 
-By default CRUD would generate the invalid *identical* methods and, as a result, an invalid Java DAO class:
-- `ClothingVO selectByUIBrandPartType()` method for the first index `ix1`.
-- `ClothingVO selectByUIBrandPartType()` method for the second index `ix2`.
+It now returns:
 
-To resolve the name collision we can define a `column-seam` in this table. If we define an underscore (`_`)
-as a column seam the DAO will now have two methods with different names:
-- `ClothingVO selectByUIBrand_PartType()` for the first index `ix1`.
-- `ClothingVO selectByUIBrandPart_Type()` for the second index `ix2`.
+| id | name | type | active | price |
+| -- | -- | -- | :--: | --: |
+| 4 | Blue Socks | CLOTH | true | 5 |
+| 3 | HK Jeans | CLOTH | true | 79 |
 
-Now, this is a perflectly valid Java class and the DAO can work normally.
+It's also possible to sort in descending order. The search changes to:
 
+```java
+List<ProductVO> l = this.productDAO.selectByExample(p, AccountOrderBy.PRICE$DESC);
+```
 
-
-
-
-
-
+It's possible to sort by multiple columns by adding more ordering columns in the parameter list.
 
