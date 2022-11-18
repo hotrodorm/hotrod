@@ -38,8 +38,8 @@ modifying the same row simultaneously. See
 [Optimistic Locking](../config/tags/version-control-column.md#optimistic-locking) for configuration
 details.
 
-The example above has been enhanced by adding a column `row_version` and enabling optimistic
-locking in the table using the `<version-control-column>` tag. It not detects changes in the row:
+The example above has been enhanced by adding a new column `row_version` and enabling optimistic
+locking in the table using the `<version-control-column>` tag. It now detects changes in the row:
 
 ```sql
 create table prepaid_account (
