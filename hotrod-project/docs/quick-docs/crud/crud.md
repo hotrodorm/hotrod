@@ -26,7 +26,7 @@ on the database.
 
 The generated methods differ between a table and a view:
 
-| Persistence Method | Table | View | Enhanced by Optimistic Locking |
+| Persistence Method | Table | View | Optimistic Locking |
 | -- | :--: | :--: | :--: |
 | [Select by Primary Key](./select-by-primary-key.md) | :heavy_check_mark: | &mdash; | &mdash; |
 | [Select by Unique Index](./select-by-unique-index.md) | :heavy_check_mark: | &mdash; | &mdash; |
