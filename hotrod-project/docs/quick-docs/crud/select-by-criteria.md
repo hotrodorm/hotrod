@@ -76,6 +76,7 @@ List<ProductVO> cheapNonSportsProducts = this.productDAO
 To avoid loading the entire result set in memory the result set can be iterated over (only once) using
 a cursor. The search can be changed to:
 
+```java
 Cursor<ProductVO> cheapNonSportsProducts = this.productDAO
   .selectByCriteria(p, p.price.le(100).andNot(p.type.eq("SPORT")).and(p.active))
   .orderBy(a.price.asc())
