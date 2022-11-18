@@ -37,11 +37,11 @@ private ProductDAO productDAO;
 
 ...
 
-ProductVO p = new ProductVO();
-p.setType("CLOTH");
-p.setActive(true);
+ProductVO filter = new ProductVO();
+filter.setType("CLOTH");
+filter.setActive(true);
 
-List<ProductVO> l = this.productDAO.selectByExample(p);
+List<ProductVO> l = this.productDAO.selectByExample(filter);
 ```
 
 It finds (rows in any order):
@@ -54,7 +54,7 @@ It finds (rows in any order):
 If we want to sort the rows by prices, highest first the search can be changed to:
 
 ```java
-List<ProductVO> l = this.productDAO.selectByExample(p, AccountOrderBy.PRICE);
+List<ProductVO> l = this.productDAO.selectByExample(filter, AccountOrderBy.PRICE);
 ```
 
 It now returns:
@@ -67,7 +67,7 @@ It now returns:
 It's also possible to sort in descending order. The search changes to:
 
 ```java
-List<ProductVO> l = this.productDAO.selectByExample(p, AccountOrderBy.PRICE$DESC);
+List<ProductVO> l = this.productDAO.selectByExample(filter, AccountOrderBy.PRICE$DESC);
 ```
 
 It's possible to sort by multiple columns by adding more ordering columns in the parameter list.
