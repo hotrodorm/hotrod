@@ -49,7 +49,7 @@ consult the specific database documentation to decide on this.
 
 See [CRUD Cheat Sheet](./crud-cheat-sheet.md) for a quick overview of the all persistence methods.
 
-Extra queries can be added to these DAOS as methods combining [Nitro](../nitro/nitro.md) functionality into 
+Extra queries can be added to these DAOS as methods by combining [Nitro](../nitro/nitro.md) functionality into 
 CRUD DAOs.
 
 
