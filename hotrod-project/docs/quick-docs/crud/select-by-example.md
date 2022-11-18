@@ -81,7 +81,7 @@ It now returns:
 | 2 | Beach Shorts | CLOTH | true | 49 |
 | 5 | Blue Socks | CLOTH | true | 5 |
 
-It's also possible to sort by multiple columns by adding more ordering columns to the 
+Finally, it's also possible to sort by multiple columns by adding more ordering columns to the 
 parameter list.
 
 
