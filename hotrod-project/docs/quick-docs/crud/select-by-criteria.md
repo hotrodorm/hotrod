@@ -82,7 +82,7 @@ Cursor<ProductVO> cheapNonSportsProducts = this.productDAO
   .orderBy(a.price.asc())
   -offset(80)
   .limit(20)
-  .executeCursoe();
+  .executeCursor();
 ```
 
 
