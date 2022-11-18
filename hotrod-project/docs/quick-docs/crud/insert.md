@@ -71,7 +71,7 @@ private BazDAO bazDAO;
 ...
 
 FooVO f = new FooVO();
-// Notice that setId() should not be used
+// Notice that setId() must not be used
 f.setName("Moby Dick");
 this.fooDAO.insert(f);
 // The newly generated value is available in the VO at this point
