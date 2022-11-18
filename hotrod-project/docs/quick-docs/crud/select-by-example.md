@@ -21,13 +21,14 @@ Consider the table `product` with the following data:
 | id | name | type | active | price |
 | -- | -- | -- | :--: | --: |
 | 1 | TV | ELECT | true | 499 |
-| 2 | Mill Tie | CLOTH | false | 29 | 
-| 3 | HK Jeans | CLOTH | true | 79 |
-| 4 | Blue Socks | CLOTH | true | 5 |
-| 5 | Lipstick 305 | COSME | true | 8 |
-| 6 | Sofa | HOME | false | 299 |
-| 7 | Golf Clubs | SPORT | true | 450 |
-| 8 | Tennis Shoes | SPORT | false | 99 |
+| 2 | Beach Shorts | CLOTH | true | 49 |
+| 3 | Mill Tie | CLOTH | false | 29 | 
+| 4 | HK Jeans | CLOTH | true | 79 |
+| 5 | Blue Socks | CLOTH | true | 5 |
+| 6 | Lipstick 305 | COSME | true | 8 |
+| 7 | Sofa | HOME | false | 299 |
+| 8 | Golf Clubs | SPORT | true | 450 |
+| 9 | Tennis Shoes | SPORT | false | 99 |
 
 The following app searches for products with type `CLOTH` that are active:
 
@@ -48,8 +49,9 @@ It finds (rows in any order):
 
 | id | name | type | active | price |
 | -- | -- | -- | :--: | --: |
-| 3 | HK Jeans | CLOTH | true | 79 |
-| 4 | Blue Socks | CLOTH | true | 5 |
+| 2 | Beach Shorts | CLOTH | true | 49 |
+| 4 | HK Jeans | CLOTH | true | 79 |
+| 5 | Blue Socks | CLOTH | true | 5 |
 
 If we want to sort the rows by price the search can be changed to:
 
@@ -61,8 +63,9 @@ It now returns:
 
 | id | name | type | active | price |
 | -- | -- | -- | :--: | --: |
-| 4 | Blue Socks | CLOTH | true | 5 |
-| 3 | HK Jeans | CLOTH | true | 79 |
+| 5 | Blue Socks | CLOTH | true | 5 |
+| 2 | Beach Shorts | CLOTH | true | 49 |
+| 4 | HK Jeans | CLOTH | true | 79 |
 
 It's also possible to sort by price in descending order. The search changes to:
 
@@ -74,8 +77,9 @@ It now returns:
 
 | id | name | type | active | price |
 | -- | -- | -- | :--: | --: |
-| 3 | HK Jeans | CLOTH | true | 79 |
-| 4 | Blue Socks | CLOTH | true | 5 |
+| 4 | HK Jeans | CLOTH | true | 79 |
+| 2 | Beach Shorts | CLOTH | true | 49 |
+| 5 | Blue Socks | CLOTH | true | 5 |
 
 It's also possible to sort by multiple columns by adding more ordering columns to the 
 parameter list.
