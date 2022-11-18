@@ -29,6 +29,7 @@ Consider the table `product` with the following data:
 | 7 | Sofa | HOME | false | 299 |
 | 8 | Golf Clubs | SPORT | true | 450 |
 | 9 | Tennis Shoes | SPORT | false | 99 |
+| 10 | HP Socks | SPORT | true | 34 |
 
 The following app searches for products with type `CLOTH` that are active:
 
