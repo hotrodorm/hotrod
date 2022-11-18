@@ -26,19 +26,19 @@ on the database.
 
 The generated methods differ between a table and a view:
 
-| Persistence Method | Table | View |
-| -- | :--: | :--: |
-| [Select by Primary Key](./select-by-primary-key.md) | :heavy_check_mark: | &mdash; |
-| [Select by Unique Index](./select-by-unique-index.md) | :heavy_check_mark: | &mdash; |
-| [Select by Example](./select-by-example.md) | :heavy_check_mark: | :heavy_check_mark: |
-| [Select by Criteria](./select-by-criteria.md) | :heavy_check_mark: | :heavy_check_mark: |
-| [Select Parent by Foreign Key](./select-parent-by-foreign-key.md) | :heavy_check_mark: | &mdash; |
-| [Select Children by Foreign Key](./select-children-by-foreign-key.md) | :heavy_check_mark: | &mdash; |
-| [Insert](./insert.md) | :heavy_check_mark: | :heavy_check_mark: [^1] |
-| [Update By Primary Key](./update-by-prima-key.md) | :heavy_check_mark: | :heavy_check_mark: [^1] |
-| [Update by Example](./update-by-example.md) | :heavy_check_mark: | :heavy_check_mark: [^1] |
-| [Delete by Primary Key](./delete-by-primary-key.md) | :heavy_check_mark: | :heavy_check_mark: [^1] |
-| [Delete by Example](./delete-by-example.md) | :heavy_check_mark: | :heavy_check_mark: [^1] |
+| Persistence Method | Table | View | Enhanced by Optimistic Locking |
+| -- | :--: | :--: | :--: |
+| [Select by Primary Key](./select-by-primary-key.md) | :heavy_check_mark: | &mdash; | &mdash; |
+| [Select by Unique Index](./select-by-unique-index.md) | :heavy_check_mark: | &mdash; | &mdash; |
+| [Select by Example](./select-by-example.md) | :heavy_check_mark: | :heavy_check_mark: | &mdash; |
+| [Select by Criteria](./select-by-criteria.md) | :heavy_check_mark: | :heavy_check_mark: | &mdash; |
+| [Select Parent by Foreign Key](./select-parent-by-foreign-key.md) | :heavy_check_mark: | &mdash; | &mdash; |
+| [Select Children by Foreign Key](./select-children-by-foreign-key.md) | :heavy_check_mark: | &mdash; | &mdash; |
+| [Insert](./insert.md) | :heavy_check_mark: | :heavy_check_mark: [^1] | &mdash; |
+| [Update By Primary Key](./update-by-prima-key.md) | :heavy_check_mark: | :heavy_check_mark: [^1] | :heavy_check_mark: |
+| [Update by Example](./update-by-example.md) | :heavy_check_mark: | :heavy_check_mark: [^1] | &mdash; |
+| [Delete by Primary Key](./delete-by-primary-key.md) | :heavy_check_mark: | :heavy_check_mark: [^1] | :heavy_check_mark: |
+| [Delete by Example](./delete-by-example.md) | :heavy_check_mark: | :heavy_check_mark: [^1] | &mdash; |
 
 [^1]: CRUD does not make a strong differentiation between tables and views. Typically databases do not inform 
 if a view is updatable or not, so CRUD adds data modification methods to all view DAOs. It's up to the developer
