@@ -42,7 +42,6 @@ p.setType("CLOTH");
 p.setActive(true);
 
 List<ProductVO> l = this.productDAO.selectByExample(p);
-List<ProductVO> l = this.productDAO.selectByExample(p, AccountOrderBy.CURRENT_BALANCE);
 ```
 
 It finds (rows in any order):
