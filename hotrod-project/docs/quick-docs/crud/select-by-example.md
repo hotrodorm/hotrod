@@ -56,7 +56,7 @@ It finds (rows in any order):
 If we want to sort the rows by price the search can be changed to:
 
 ```java
-List<ProductVO> l = this.productDAO.selectByExample(filter, AccountOrderBy.PRICE);
+List<ProductVO> l = this.productDAO.selectByExample(filter, ProductOrderBy.PRICE);
 ```
 
 It now returns:
@@ -70,7 +70,7 @@ It now returns:
 It's also possible to sort by price in descending order. The search changes to:
 
 ```java
-List<ProductVO> l = this.productDAO.selectByExample(filter, AccountOrderBy.PRICE$DESC);
+List<ProductVO> l = this.productDAO.selectByExample(filter, ProductOrderBy.PRICE$DESC);
 ```
 
 It now returns:
