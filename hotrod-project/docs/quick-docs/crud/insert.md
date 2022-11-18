@@ -35,3 +35,8 @@ the value provided by the VO is not null this value is used as an insertion valu
 
 ## Example
 
+The example shown below includes two tables with Identity columns and one that uses a sequence:
+
+```sql
+```
+
