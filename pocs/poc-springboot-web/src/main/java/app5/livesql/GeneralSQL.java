@@ -1,5 +1,6 @@
 package app5.livesql;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -8,14 +9,29 @@ import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import app5.persistence.AccountVO;
+import app5.persistence.HistoricPriceVO;
+import app5.persistence.ProductVO;
 import app5.persistence.primitives.AccountDAO;
+import app5.persistence.primitives.AccountDAO.AccountOrderBy;
 import app5.persistence.primitives.AccountDAO.AccountTable;
+import app5.persistence.primitives.HistoricPriceDAO;
+import app5.persistence.primitives.ProductDAO;
 
 @Component("generalSQLExamples")
 public class GeneralSQL {
 
   @Autowired
   private LiveSQL sql;
+
+  @Autowired
+  private AccountDAO accountDAO;
+
+  @Autowired
+  private HistoricPriceDAO historicPriceDAO;
+
+  @Autowired
+  private ProductDAO productDAO;
 
   public void select() {
 
@@ -90,16 +106,21 @@ public class GeneralSQL {
     // SELECT distinct *
     // FROM account a
 
-    AccountTable a = AccountDAO.newTable("a");
+    AccountVO a = new AccountVO();
+    a.setType("ELECT");
 
-    List<Map<String, Object>> rows = sql //
-        .selectDistinct() //
-        .from(a) //
-        .execute();
-
-    for (Map<String, Object> r : rows) {
-      System.out.println("row: " + r);
-    }
+    List<AccountVO> accounts = this.accountDAO.selectByExample(a, AccountOrderBy.CURRENT_BALANCE);
+//
+//    AccountTable a = AccountDAO.newTable("a");
+//
+//    List<Map<String, Object>> rows = sql //
+//        .selectDistinct() //
+//        .from(a) //
+//        .execute();
+//
+//    for (Map<String, Object> r : rows) {
+//      System.out.println("row: " + r);
+//    }
 
   }
 
@@ -107,17 +128,29 @@ public class GeneralSQL {
 
     // SELECT a.name, a.created_on
     // FROM account a
+    {
+      long productId = 123;
+      ProductVO p = this.productDAO.selectByPK(productId);
 
-    AccountTable a = AccountDAO.newTable("a");
-
-    List<Map<String, Object>> rows = sql //
-        .select(a.name, a.createdOn) //
-        .from(a) //
-        .execute();
-
-    for (Map<String, Object> r : rows) {
-      System.out.println("row: " + r);
+      List<HistoricPriceVO> h = this.productDAO.selectChildrenHistoricPriceOf(p).fromId().toProductId();
     }
+    {
+      Integer productId = 123;
+      LocalDate priceDate= LocalDate.parse("2022-11-15");
+      
+      HistoricPriceVO h = this.historicPriceDAO.selectByPK(productId, priceDate);
+    }
+//    AccountTable a = AccountDAO.newTable("a");
+//    List<Map<String, Object>> rows = sql //
+//        .select(sql.val(7), sql.val(15).mult(sql.val(3)), sql.currentDate(),
+//           a.type.eq("A").andNot(a.id.eq(123)).and(p)
+//            sql.caseWhen(a.type.in("CHK", "INV"), "DISP").elseValue("N/A").end()) //
+//        .from(a) //
+//        .groupBy(a.active).offset(10).limit(5).execute();
+//
+//    for (Map<String, Object> r : rows) {
+//      System.out.println("row: " + r);
+//    }
 
   }
 

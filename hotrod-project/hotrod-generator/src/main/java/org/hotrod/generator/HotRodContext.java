@@ -25,6 +25,7 @@ import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.nocrala.tools.database.tartarus.connectors.DatabaseConnectorFactory.UnsupportedDatabaseException;
+import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
@@ -152,7 +153,7 @@ public class HotRodContext {
       try {
 
         log.debug("gen 1");
-        db = new JdbcDatabase(loc, tables, views);
+        db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views);
         log.debug("gen 2");
         adapter.setCurrentCatalogSchema(conn, loc.getDefaultCatalog(), loc.getDefaultSchema());
         log.debug("gen 3");

@@ -14,7 +14,8 @@ It considers:
 - Simple and composite foreign keys.
 - Reflexive foreign keys (navigable in both directions).
 - Multiple foreign keys between each pair of table.
-
+- Duplicate foreign key contraints.
+- Column naming collisions, resolved with seams.
 
 ## Example
 
