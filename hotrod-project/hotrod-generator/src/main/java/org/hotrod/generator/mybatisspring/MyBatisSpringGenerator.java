@@ -84,8 +84,6 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       final boolean incrementalMode, final Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
 
-    log.debug("starting...");
-
     this.hc = hc;
 
     this.dloc = this.hc.getLoc();
@@ -851,8 +849,6 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
   private LinkedHashSet<SelectVO> selectVOs = new LinkedHashSet<SelectVO>();
 
   private void addSelectVOs(final SelectMethodMetadata sm) throws ControlledException {
-    
-    log.debug("addSelectVOs");
 
     // DataSetLayout layout = new DataSetLayout(this.config);
     HotRodFragmentConfigTag fragmentConfig = sm.getFragmentConfig();
