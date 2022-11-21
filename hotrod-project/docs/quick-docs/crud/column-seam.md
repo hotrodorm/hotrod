@@ -1,18 +1,26 @@
 # Column Seam
 
-Since CRUD generates the DAO methods automatically from the tables metadata, it
+The column seam can be configured at the table level and is used very rarely.
+
+Since CRUD generates the DAO methods automatically from the tables' metadata, it
 may be possible in some rare ocassions that two or more generated methods can end up
 having the exact same name.
 
-Since this produces an invalid Java class, CRUD includes a *column seam* that can
-forces a differentiation between them. By default this seam is an empty string, but 
+Since this produces an invalid DAO Java class, CRUD includes a *column seam* that can
+force a differentiation between them. By default this seam is an empty string, but 
 may be configured to have a different value. See [Table](../config/tags/table.md) for 
 details on how to configure it.
 
-Name collissions can theoretically affect the following CRUD methods in DAOs:
+Name collissions can affect the CRUD methods that add multiple columns to their names.
+These persistence methods are:
 - [Select by Unique Index](./select-by-unique-index.md)
 - [Select Parent by Foreign Key](./select-parent-by-foreign-key.md)
 - [Select Children by Foreign Key](./select-children-by-foreign-key.md)
+
+In short, if a table has an index `(ab, c)`, by default CRUD produces the same
+method `selectByUIABC()` than for a totally different index `(a, bc)`. If a column
+seam with an underscore is specified these methods are generated as `selectByUIAB_C()`
+and `selectByUIA_BC()` respectively.
 
 
 ## Example
