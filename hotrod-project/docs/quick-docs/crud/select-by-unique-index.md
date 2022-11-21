@@ -55,9 +55,9 @@ the primary key).
 
 ## Column Seam
 
-In rare occasions DAO method names may produce name collisions. This happens when two or more methods
-end up having the exact same name for different functionalities. In these cases it's possible to
-differentiate them by defining an explicit [Column Seam](./column-seam.md) to resolve the name collision.
+In rare occasions multiple DAO method may end up having the exact same name, a *name collision* that may result in
+an invalid DAO class. In these cases it's possible to differentiate them by defining an explicit
+[Column Seam](./column-seam.md) to resolve the name collision.
 
 
 
