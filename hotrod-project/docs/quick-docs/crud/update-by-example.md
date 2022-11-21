@@ -54,7 +54,7 @@ The resulting SQL stement is:
 ```sql
 UPDATE product
 SET active = true
-WHERE type = 'CLOTH' and active = true
+WHERE type = 'CLOTH' and active = false
 ```
 
 ## The Row Count
