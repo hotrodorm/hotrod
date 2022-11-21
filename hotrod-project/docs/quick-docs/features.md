@@ -6,7 +6,7 @@ the LiveSQL module offers simple yet flexible querying from the Java
 language and the Nitro module offerts all the power of complex relational
 performance.
 
-HotRod's features can be listed as:
+In a nutshell HotRod's features are:
 
 - Automated CRUD persistence layer for quick prototyping.
 - Default and configurable data types.
