@@ -41,6 +41,9 @@ The generated methods differ between a table and a view:
 | [Delete by Primary Key](./delete-by-primary-key.md) | :heavy_check_mark: | :heavy_check_mark: [^1] | :heavy_check_mark: |
 | [Delete by Example](./delete-by-example.md) | :heavy_check_mark: | :heavy_check_mark: [^1] | &mdash; |
 
+**Note**: Implement "NoIndex" to selectChildren() when there's no index in the exported key.
+
+
 [^1]: CRUD does not make a strong differentiation between tables and views. Typically databases do not inform 
 if a view is updatable or not, so CRUD adds data modification methods to all view DAOs. It's up to the developer
 to decide if these methods can actually be used on each view or not. By and large databases consider a view 
