@@ -8,8 +8,8 @@ way the [Select By Example](./select-by-example.md) method does. Then it uses th
 to update the selected rows; only non-null values in the latter are used, so it's possible
 to perform partial updates.
 
-This basic functionality can be useful in many cases, but it cannot perform more complex
-changes. For more complext updates use
+This basic functionality can be useful in many cases, but it's not suitable for complex
+updates. In these cases use
 [Nitro General Purpose Queries](../nitro/nitro-general-purpose.md) instead.
 
 
