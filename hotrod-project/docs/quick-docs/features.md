@@ -35,6 +35,6 @@ plain list of rows.
 - Fully integrated with Maven builds, Maven persistence layer generation, and Maven arquetype.
 - Tailored for Spring and String Boot projects to gain access to all their 
 features such as transaction management and AOP.
-- Open source project (Apache 2.0) officially available at Maven Central Repository.
+- Built using the open source license Apache 2.0 and officially available at Maven Central Repository.
 
 
