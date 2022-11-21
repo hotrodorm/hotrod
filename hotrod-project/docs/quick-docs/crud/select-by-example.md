@@ -1,6 +1,6 @@
 # Select by Example
 
-The table and view DAOs include a `selectByExample()` method that helps with simple row selections.
+All table and view DAOs include a `selectByExample()` method that helps with simple row search.
 
 This CRUD method provides simple out-of-the-box searching capabilities:
 - **Filtering**: This method receives a VO that is used as a pattern for the search. All its non-null 
