@@ -17,10 +17,10 @@ These persistence methods are:
 - [Select Parent by Foreign Key](./select-parent-by-foreign-key.md)
 - [Select Children by Foreign Key](./select-children-by-foreign-key.md)
 
-In short, if a table has an index `(ab, c)`, by default CRUD produces the same
-method `selectByUIABC()` than for a totally different index `(a, bc)`. If a column
-seam with an underscore is specified these methods are generated as `selectByUIAB_C()`
-and `selectByUIA_BC()` respectively.
+In short, if a table has an index `(ab, c)` by default CRUD produces the same
+method `selectByUIABC()` than for a totally different index `(a, bc)`. However, if a column
+seam with an underscore is specified for the table these methods are generated now
+as `selectByUIAB_C()` and `selectByUIA_BC()` instead.
 
 
 ## Example
