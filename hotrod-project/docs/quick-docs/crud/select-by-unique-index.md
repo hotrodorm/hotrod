@@ -60,8 +60,7 @@ index members (columns) in it. In very special cases the resulting names may end
 multiple methods. The DAO won't be valid anymore since it two or more `selectByUI...()` methods may end up 
 having the exact same signature and that is not valid in the Java language.
 
-In these cases it's possible to define a [column seam](./column-seam.md) to resolve the name collision
-.
+In these cases it's possible to define a [Column Seam](./column-seam.md) to resolve the name collision.
 
 
 

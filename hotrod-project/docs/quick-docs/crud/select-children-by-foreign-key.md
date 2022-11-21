@@ -57,6 +57,4 @@ method ensures it's using the right foreign key by clearly stating:
 
 In rare cases DAO method names may produce name collisions. This happens when two or more methods
 end up having the exact same name for different functionalities. In these cases it's possible to
-differentiate them by defining an explicit column seam. See [Column Seam](./select-by-unique-index.md#column-seam) and
-[Table](../config/tags/table.md).
-
+differentiate them by defining an explicit [Column Seam](./column-seam.md) to resolve the name collision.
