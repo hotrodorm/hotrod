@@ -27,7 +27,7 @@ Reference:
 - [Maven Integration](maven/maven.md).
 - `Eclipse Integration`.
 - [Supported Databases and Default Data Types](config/supported-databases.md).
-- [Chear Sheet](./cheat-sheet.md).
+- [Cheat Sheet](./cheat-sheet.md).
 
 Quick Guides:
 - [Hello World!](./guides/hello-world.md)
