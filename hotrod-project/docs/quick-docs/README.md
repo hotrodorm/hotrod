@@ -11,7 +11,7 @@ retrieves and applies these changes to the persistence layer seamlessly.
 
 Overview:
 - [The Basics]().
-- [Features](features.md).
+- [Features](./features.md).
 - [Version History](./version-history.md).
 - [Retrieving and Applying Database Changes]().
 
