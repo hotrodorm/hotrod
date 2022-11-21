@@ -19,9 +19,9 @@ without every losing custom changes.
 - Powerful Dynamic SQL for more demanding needs.
 - Implements Optimistic Locking as needed.
 - Full access to Native SQL when needed.
-- Structured queries. Load data in tree data structures.
+- Structured queries automatically load data in tree data structures.
 - Extensible LiveSQL functions.
-- Fully integrated with Maven builds, persistence layer generation and Maven arquetype.
+- Fully integrated with Maven builds, Maven persistence layer generation, and Maven arquetype.
 - Tailored for Spring and String Boot projects to gain access to all their 
 features such as transaction management and AOP.
 - Open source project (Apache 2.0) officially available at Maven Central Repository.
