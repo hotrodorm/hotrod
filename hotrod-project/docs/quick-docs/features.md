@@ -28,7 +28,7 @@ In a nutshell HotRod's features are:
 - With minimal configuration structured queries automatically load data in data structures trees rather than
 plain list of rows.
 - Implements cursors to process queries with minimal memory usage.
-- Implements *enum* dimension-like tables to reduce joins and database effort.
+- Implements *enum* dimension-like tables to reduce joins and database query cost.
 - Works seamlessly with database views.
 - Implements converters for a richer modeling of the data.
 - Extensible LiveSQL functions.
