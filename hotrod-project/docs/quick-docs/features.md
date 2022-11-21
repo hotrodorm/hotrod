@@ -13,7 +13,7 @@ In a nutshell HotRod's features are:
 - Default and configurable object names.
 - Support for major relational databases.
 - Flexible querying from Java using LiveSQL.
-- Takes into account the database structure and indexes. They are important.
+- Indexes shape the persistence layer. Adding or removing them have consequences.
 - Capable of seamlessly apply database changes to the data model when they happen,
 without every losing custom changes.
 - Powerful Dynamic SQL for more demanding needs.
