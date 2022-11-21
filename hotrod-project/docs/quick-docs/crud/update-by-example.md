@@ -15,7 +15,6 @@ updates. In these cases use
 
 ## Example
 
-
 Consider the table `product` with the following data:
 
 | id | name | type | active | price |
