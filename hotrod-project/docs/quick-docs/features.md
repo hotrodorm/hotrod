@@ -23,9 +23,9 @@ In a nutshell HotRod's features are:
 - Domain objects can be extended with custom properties and custom methods.
 - Seamlessly applies database changes to the data model, without losing custom properties or methods.
 - Includes powerful Dynamic SQL for more demanding needs.
-- Implements Optimistic Locking on a per-table basis.
+- Implements Optimistic Locking for concurrency control on a per-table basis.
 - Full access to Native SQL when needed.
-- With minimal configuration structured queries automatically load data in data structures trees rathen than
+- With minimal configuration structured queries automatically load data in data structures trees rather than
 plain list of rows.
 - Implements cursors to process queries with minimal memory usage.
 - Implements *enum* dimension-like tables to reduce joins and database effort.
