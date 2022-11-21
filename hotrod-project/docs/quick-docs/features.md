@@ -1,10 +1,13 @@
 # Features
 
-Similar to other ORMs HotRod offers traditional CRUD functionality
-to save and retrieve data to and from the database. In addition to it
-the LiveSQL module offers simple yet flexible querying from the Java
-language and the Nitro module offerts all the power of complex relational
-performance.
+HotRod is an ORM for Spring and Spring Boot applications that has a focus on performance relational persistence.
+
+The CRUD and LiveSQL modules provide quick out-of-the-box persistence that can be used in minutes. The Nitro and Torcs
+modules tackle more complex or high performance queries with some extra configuration.
+
+HotRod follows the *Database First* approach. It assumes the database already exists with all tables ready. HotRod inspects the database
+and produces a Java persistence layer in seconds. Later, when the database experiences changes HotRod
+retrieves and applies these changes to the persistence layer seamlessly.
 
 In a nutshell HotRod's features are:
 
