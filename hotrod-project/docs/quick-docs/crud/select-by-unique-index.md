@@ -55,43 +55,13 @@ the primary key).
 
 ## Column Seam
 
-You have seen that to differentiate multiple `selectByUI...()` methods the name of each method includes the names of the 
-index members in it. In very special cases the resulting names may end up being exactly identical for multiple methods. 
-The DAO won't be valid anymore since it two or more `selectByUI...()` methods may end up having the exact same signature 
-and that is not valid in the Java language.
+To differentiate multiple `selectByUI...()` methods the name of each method includes the names of the 
+index members (columns) in it. In very special cases the resulting names may end up being exactly identical for 
+multiple methods. The DAO won't be valid anymore since it two or more `selectByUI...()` methods may end up 
+having the exact same signature and that is not valid in the Java language.
 
-In these cases it's possible to define a *column seam* string that glues columns together, to help making a difference.
-By default this seam is an empty string, but may be configured to have a different value. 
-See [Table](../config/tags/table.md) for details on how to specify it.
-
-Whe the column seam it defaults to an empty string. The following carefully-crafted table will produce a name collision
-when generating `selectByUI...()` methods:
-
-```sql
-create table clothing (
-  id int primary key not null,
-  brand int,
-  part_type int,
-  brand_part int,
-  type int
-);
-
-create unique index ix1 on clothing (brand, part_type);
-
-create unique index ix2 on clothing (brand_part, type);
-```
-
-By default CRUD would generate the invalid *identical* methods and, as a result, an invalid Java DAO class:
-- `ClothingVO selectByUIBrandPartType()` method for the first index `ix1`.
-- `ClothingVO selectByUIBrandPartType()` method for the second index `ix2`.
-
-To resolve the name collision we can define a `column-seam` in this table. If we define an underscore (`_`)
-as a column seam the DAO will now have two methods with different names:
-- `ClothingVO selectByUIBrand_PartType()` for the first index `ix1`.
-- `ClothingVO selectByUIBrandPart_Type()` for the second index `ix2`.
-
-Now, this is a perflectly valid Java class and the DAO can work normally.
-
+In these cases it's possible to define a [column seam](./column-seam.md) to resolve the name collision
+.
 
 
 
