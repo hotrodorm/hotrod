@@ -1,3 +1,3 @@
 # Cheat Sheet
 
-![HotRod Cheat Sheet](./HotRod%20Cheat%20Sheet.png)
+![HotRod Cheat Sheet](./Cheat%20Sheet%20No%20Nitro.png)
