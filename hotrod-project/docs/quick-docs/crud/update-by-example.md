@@ -59,8 +59,9 @@ WHERE type = 'CLOTH' and active = false
 
 ## The Row Count
 
-The Update By Example method returns the row count of affected rows. In the
-example above it will return `2` since two rows where updated (id = 3 and id = 5).
+The Update By Example method returns the row count of affected rows. 
+
+In the example above it will return `2` since two rows where updated (id = `3` and id = `5`).
 
 
 
