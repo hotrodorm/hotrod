@@ -55,12 +55,9 @@ the primary key).
 
 ## Column Seam
 
-To differentiate multiple `selectByUI...()` methods the name of each method includes the names of the 
-index members (columns) in it. In very special cases the resulting names may end up being exactly identical for 
-multiple methods. The DAO won't be valid anymore since it two or more `selectByUI...()` methods may end up 
-having the exact same signature and that is not valid in the Java language.
-
-In these cases it's possible to define a [Column Seam](./column-seam.md) to resolve the name collision.
+In rare occasions DAO method names may produce name collisions. This happens when two or more methods
+end up having the exact same name for different functionalities. In these cases it's possible to
+differentiate them by defining an explicit [Column Seam](./column-seam.md) to resolve the name collision.
 
 
 

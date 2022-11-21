@@ -54,7 +54,7 @@ method ensures it's using the right foreign key by clearly stating:
 
 ## Column Seam
 
-In rare cases DAO method names may produce name collisions. This happens when two or more methods
+In rare occasions DAO method names may produce name collisions. This happens when two or more methods
 end up having the exact same name for different functionalities. In these cases it's possible to
 differentiate them by defining an explicit [Column Seam](./column-seam.md) to resolve the name collision.
 
