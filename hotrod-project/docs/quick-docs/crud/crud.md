@@ -30,6 +30,7 @@ The generated methods differ between a table and a view:
 | -- | :--: | :--: | :--: |
 | [Select by Primary Key](./select-by-primary-key.md) | :heavy_check_mark: | &mdash; | &mdash; |
 | [Select by Unique Index](./select-by-unique-index.md) | :heavy_check_mark: | &mdash; | &mdash; |
+| `Select by Index Range` | :heavy_check_mark: | :heavy_check_mark: | &mdash; |
 | [Select by Example](./select-by-example.md) | :heavy_check_mark: | :heavy_check_mark: | &mdash; |
 | [Select by Criteria](./select-by-criteria.md) | :heavy_check_mark: | :heavy_check_mark: | &mdash; |
 | [Select Parent by Foreign Key](./select-parent-by-foreign-key.md) | :heavy_check_mark: | &mdash; | &mdash; |
