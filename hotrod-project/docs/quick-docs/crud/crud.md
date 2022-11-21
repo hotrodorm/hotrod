@@ -41,7 +41,8 @@ The generated methods differ between a table and a view:
 | [Delete by Primary Key](./delete-by-primary-key.md) | :heavy_check_mark: | :heavy_check_mark: [^1] | :heavy_check_mark: |
 | [Delete by Example](./delete-by-example.md) | :heavy_check_mark: | :heavy_check_mark: [^1] | &mdash; |
 
-**Note**: Implement "NoIndex" to selectChildren() when there's no index in the exported key.
+**Note**: Prepend "\_NoIndex\_" to selectChildren() when there's no index in the exported key. Alternatively,
+mark the method as "Deprecated".
 
 
 [^1]: CRUD does not make a strong differentiation between tables and views. Typically databases do not inform 
