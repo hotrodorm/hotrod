@@ -21,8 +21,10 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import app5.cursors.CursorExamples;
 import app5.functions.CustomFunctionsExamples;
 import app5.livesql.LiveSQLExamples;
+import app5.persistence.ActiveClientVO;
 import app5.persistence.HistoricPriceVO;
 import app5.persistence.ProductVO;
+import app5.persistence.primitives.ActiveClientDAO;
 import app5.persistence.primitives.HistoricPriceDAO;
 import app5.persistence.primitives.HistoricPriceDAO.HistoricPriceOrderBy;
 import app5.persistence.primitives.ProductDAO;
@@ -51,6 +53,9 @@ public class Application {
   private CustomFunctionsExamples customFunctionsExamples;
 
   @Autowired
+  private ActiveClientDAO activeClientDAO;
+
+  @Autowired
   private LiveSQLExamples liveSQLExamples;
 
   public static void main(String[] args) {
@@ -69,9 +74,10 @@ public class Application {
 
 //      dao();
 //      foreignKeys();
-      cursors();
+//      cursors();
 //      customFunctions();
 //      liveSQLExamples();
+      this.insertByExample();
 
       log.info("* End of example");
 
@@ -112,6 +118,18 @@ public class Application {
 
   }
 
+  
+  public void insertByExample() {
+
+    ActiveClientVO c = new ActiveClientVO();
+    c.setId(123);
+    c.setName("Julie Andrews");
+    c.setActive(false);
+    this.activeClientDAO.insertByExample(c);
+
+
+  }
+  
   private void cursors() {
 
     // Compute average price of products

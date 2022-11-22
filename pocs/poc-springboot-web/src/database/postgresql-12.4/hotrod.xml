@@ -91,9 +91,12 @@
   </type-solver>
 
   <table name="product" />
-  <!-- 
   <table name="historic_price" />
+  <!-- 
    -->
+
+  <table name="client" />
+  <view name="active_client" />
 
   <table name="account" />
   <table name="item" />

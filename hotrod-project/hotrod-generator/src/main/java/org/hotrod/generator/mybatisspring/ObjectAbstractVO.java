@@ -90,7 +90,8 @@ public class ObjectAbstractVO extends GeneratableObject {
 
       writeToJSON();
 
-      writePropertiesChangeLog();
+// propertiesChangeLog is now obsolete      
+//      writePropertiesChangeLog();
 
       writeClassFooter();
 
@@ -289,8 +290,9 @@ public class ObjectAbstractVO extends GeneratableObject {
     String setter = cm.getId().getJavaSetter();
     println("  public void " + setter + "(final " + javaType + " " + m + ") {");
     println("    this." + m + " = " + m + ";");
-    String name = cm.getId().getJavaMemberName() + "WasSet";
-    println("    this.getPropertiesChangeLog()." + name + " = true;");
+//    propertiesChangeLog is now obsolete    
+//    String name = cm.getId().getJavaMemberName() + "WasSet";
+//    println("    this.getPropertiesChangeLog()." + name + " = true;");
     println("  }");
     println();
   }
@@ -392,6 +394,7 @@ public class ObjectAbstractVO extends GeneratableObject {
    * 
    * @throws IOException
    */
+  @SuppressWarnings("unused")
   private void writePropertiesChangeLog() throws IOException {
     println("  // Properties change log");
     println();

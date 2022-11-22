@@ -27,7 +27,6 @@ public class AbstractItemVO implements Serializable {
 
   public void setId(final java.lang.Integer id) {
     this.id = id;
-    this.getPropertiesChangeLog().idWasSet = true;
   }
 
   public java.lang.String getDescription() {
@@ -36,7 +35,6 @@ public class AbstractItemVO implements Serializable {
 
   public void setDescription(final java.lang.String description) {
     this.description = description;
-    this.getPropertiesChangeLog().descriptionWasSet = true;
   }
 
   public java.math.BigDecimal getPrice() {
@@ -45,7 +43,6 @@ public class AbstractItemVO implements Serializable {
 
   public void setPrice(final java.math.BigDecimal price) {
     this.price = price;
-    this.getPropertiesChangeLog().priceWasSet = true;
   }
 
   public java.sql.Timestamp getCreatedOn() {
@@ -54,7 +51,6 @@ public class AbstractItemVO implements Serializable {
 
   public void setCreatedOn(final java.sql.Timestamp createdOn) {
     this.createdOn = createdOn;
-    this.getPropertiesChangeLog().createdOnWasSet = true;
   }
 
   public java.lang.Boolean getActive() {
@@ -63,7 +59,6 @@ public class AbstractItemVO implements Serializable {
 
   public void setActive(final java.lang.Boolean active) {
     this.active = active;
-    this.getPropertiesChangeLog().activeWasSet = true;
   }
 
   public byte[] getIcon() {
@@ -72,7 +67,6 @@ public class AbstractItemVO implements Serializable {
 
   public void setIcon(final byte[] icon) {
     this.icon = icon;
-    this.getPropertiesChangeLog().iconWasSet = true;
   }
 
   public java.lang.Object getStoreCode() {
@@ -81,7 +75,6 @@ public class AbstractItemVO implements Serializable {
 
   public void setStoreCode(final java.lang.Object storeCode) {
     this.storeCode = storeCode;
-    this.getPropertiesChangeLog().storeCodeWasSet = true;
   }
 
   // to string
@@ -111,24 +104,6 @@ public class AbstractItemVO implements Serializable {
     obj.addProperty("icon", this.icon);
     obj.addProperty("storeCode", this.storeCode);
     return obj.render();
-  }
-
-  // Properties change log
-
-  private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();
-
-  protected PropertiesChangeLog getPropertiesChangeLog() {
-    return propertiesChangeLog;
-  }
-
-  protected class PropertiesChangeLog {
-    public boolean idWasSet = false;
-    public boolean descriptionWasSet = false;
-    public boolean priceWasSet = false;
-    public boolean createdOnWasSet = false;
-    public boolean activeWasSet = false;
-    public boolean iconWasSet = false;
-    public boolean storeCodeWasSet = false;
   }
 
 }

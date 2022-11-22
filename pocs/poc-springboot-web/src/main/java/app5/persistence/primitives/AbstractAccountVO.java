@@ -26,7 +26,6 @@ public class AbstractAccountVO implements Serializable {
 
   public void setId(final java.lang.Integer id) {
     this.id = id;
-    this.getPropertiesChangeLog().idWasSet = true;
   }
 
   public java.lang.String getName() {
@@ -35,7 +34,6 @@ public class AbstractAccountVO implements Serializable {
 
   public void setName(final java.lang.String name) {
     this.name = name;
-    this.getPropertiesChangeLog().nameWasSet = true;
   }
 
   public java.lang.String getType() {
@@ -44,7 +42,6 @@ public class AbstractAccountVO implements Serializable {
 
   public void setType(final java.lang.String type) {
     this.type = type;
-    this.getPropertiesChangeLog().typeWasSet = true;
   }
 
   public java.lang.Integer getCurrentBalance() {
@@ -53,7 +50,6 @@ public class AbstractAccountVO implements Serializable {
 
   public void setCurrentBalance(final java.lang.Integer currentBalance) {
     this.currentBalance = currentBalance;
-    this.getPropertiesChangeLog().currentBalanceWasSet = true;
   }
 
   public java.sql.Timestamp getCreatedOn() {
@@ -62,7 +58,6 @@ public class AbstractAccountVO implements Serializable {
 
   public void setCreatedOn(final java.sql.Timestamp createdOn) {
     this.createdOn = createdOn;
-    this.getPropertiesChangeLog().createdOnWasSet = true;
   }
 
   public java.lang.Integer getActive() {
@@ -71,7 +66,6 @@ public class AbstractAccountVO implements Serializable {
 
   public void setActive(final java.lang.Integer active) {
     this.active = active;
-    this.getPropertiesChangeLog().activeWasSet = true;
   }
 
   // to string
@@ -99,23 +93,6 @@ public class AbstractAccountVO implements Serializable {
     obj.addProperty("createdOn", this.createdOn);
     obj.addProperty("active", this.active);
     return obj.render();
-  }
-
-  // Properties change log
-
-  private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();
-
-  protected PropertiesChangeLog getPropertiesChangeLog() {
-    return propertiesChangeLog;
-  }
-
-  protected class PropertiesChangeLog {
-    public boolean idWasSet = false;
-    public boolean nameWasSet = false;
-    public boolean typeWasSet = false;
-    public boolean currentBalanceWasSet = false;
-    public boolean createdOnWasSet = false;
-    public boolean activeWasSet = false;
   }
 
 }

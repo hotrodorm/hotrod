@@ -5,14 +5,15 @@ package app5.persistence.primitives;
 import java.io.Serializable;
 import org.hotrod.runtime.json.*;
 
-public class AbstractFederalBranchVO implements Serializable {
+public class AbstractActiveClientVO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  // VO Properties (table columns)
+  // VO Properties (view columns)
 
   protected java.lang.Integer id = null;
   protected java.lang.String name = null;
+  protected java.lang.Boolean active = null;
 
   // getters & setters
 
@@ -32,13 +33,22 @@ public class AbstractFederalBranchVO implements Serializable {
     this.name = name;
   }
 
+  public java.lang.Boolean getActive() {
+    return this.active;
+  }
+
+  public void setActive(final java.lang.Boolean active) {
+    this.active = active;
+  }
+
   // to string
 
   public String toString() {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
-    sb.append("- name=" + this.name);
+    sb.append("- name=" + this.name + "\n");
+    sb.append("- active=" + this.active);
     return sb.toString();
   }
 
@@ -48,6 +58,7 @@ public class AbstractFederalBranchVO implements Serializable {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
     obj.addProperty("name", this.name);
+    obj.addProperty("active", this.active);
     return obj.render();
   }
 

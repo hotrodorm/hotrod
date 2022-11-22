@@ -26,7 +26,6 @@ public class AbstractProductVO implements Serializable {
 
   public void setId(final java.lang.Long id) {
     this.id = id;
-    this.getPropertiesChangeLog().idWasSet = true;
   }
 
   public java.lang.String getName() {
@@ -35,7 +34,6 @@ public class AbstractProductVO implements Serializable {
 
   public void setName(final java.lang.String name) {
     this.name = name;
-    this.getPropertiesChangeLog().nameWasSet = true;
   }
 
   public java.lang.Integer getPrice() {
@@ -44,7 +42,6 @@ public class AbstractProductVO implements Serializable {
 
   public void setPrice(final java.lang.Integer price) {
     this.price = price;
-    this.getPropertiesChangeLog().priceWasSet = true;
   }
 
   public java.lang.Long getSku() {
@@ -53,7 +50,6 @@ public class AbstractProductVO implements Serializable {
 
   public void setSku(final java.lang.Long sku) {
     this.sku = sku;
-    this.getPropertiesChangeLog().skuWasSet = true;
   }
 
   public java.lang.Integer getXyzRankCli() {
@@ -62,7 +58,6 @@ public class AbstractProductVO implements Serializable {
 
   public void setXyzRankCli(final java.lang.Integer xyzRankCli) {
     this.xyzRankCli = xyzRankCli;
-    this.getPropertiesChangeLog().xyzRankCliWasSet = true;
   }
 
   public java.lang.String getCliFirstNameAb() {
@@ -71,7 +66,6 @@ public class AbstractProductVO implements Serializable {
 
   public void setCliFirstNameAb(final java.lang.String cliFirstNameAb) {
     this.cliFirstNameAb = cliFirstNameAb;
-    this.getPropertiesChangeLog().cliFirstNameAbWasSet = true;
   }
 
   // to string
@@ -99,23 +93,6 @@ public class AbstractProductVO implements Serializable {
     obj.addProperty("xyzRankCli", this.xyzRankCli);
     obj.addProperty("cliFirstNameAb", this.cliFirstNameAb);
     return obj.render();
-  }
-
-  // Properties change log
-
-  private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();
-
-  protected PropertiesChangeLog getPropertiesChangeLog() {
-    return propertiesChangeLog;
-  }
-
-  protected class PropertiesChangeLog {
-    public boolean idWasSet = false;
-    public boolean nameWasSet = false;
-    public boolean priceWasSet = false;
-    public boolean skuWasSet = false;
-    public boolean xyzRankCliWasSet = false;
-    public boolean cliFirstNameAbWasSet = false;
   }
 
 }

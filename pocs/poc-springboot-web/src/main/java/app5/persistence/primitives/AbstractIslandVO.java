@@ -25,7 +25,6 @@ public class AbstractIslandVO implements Serializable {
 
   public void setId(final java.lang.Integer id) {
     this.id = id;
-    this.getPropertiesChangeLog().idWasSet = true;
   }
 
   public java.lang.Integer getSegment() {
@@ -34,7 +33,6 @@ public class AbstractIslandVO implements Serializable {
 
   public void setSegment(final java.lang.Integer segment) {
     this.segment = segment;
-    this.getPropertiesChangeLog().segmentWasSet = true;
   }
 
   public java.lang.Integer getXStart() {
@@ -43,7 +41,6 @@ public class AbstractIslandVO implements Serializable {
 
   public void setXStart(final java.lang.Integer xStart) {
     this.xStart = xStart;
-    this.getPropertiesChangeLog().xStartWasSet = true;
   }
 
   public java.lang.Integer getXEnd() {
@@ -52,7 +49,6 @@ public class AbstractIslandVO implements Serializable {
 
   public void setXEnd(final java.lang.Integer xEnd) {
     this.xEnd = xEnd;
-    this.getPropertiesChangeLog().xEndWasSet = true;
   }
 
   public java.lang.Integer getHeight() {
@@ -61,7 +57,6 @@ public class AbstractIslandVO implements Serializable {
 
   public void setHeight(final java.lang.Integer height) {
     this.height = height;
-    this.getPropertiesChangeLog().heightWasSet = true;
   }
 
   // to string
@@ -87,22 +82,6 @@ public class AbstractIslandVO implements Serializable {
     obj.addProperty("xEnd", this.xEnd);
     obj.addProperty("height", this.height);
     return obj.render();
-  }
-
-  // Properties change log
-
-  private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();
-
-  protected PropertiesChangeLog getPropertiesChangeLog() {
-    return propertiesChangeLog;
-  }
-
-  protected class PropertiesChangeLog {
-    public boolean idWasSet = false;
-    public boolean segmentWasSet = false;
-    public boolean xStartWasSet = false;
-    public boolean xEndWasSet = false;
-    public boolean heightWasSet = false;
   }
 
 }

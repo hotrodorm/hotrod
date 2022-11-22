@@ -2,49 +2,43 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="app5.persistence.primitives.federalBranch">
+<mapper namespace="app5.persistence.primitives.activeClient">
 
   <!-- columns -->
 
   <sql id="columns">
     id,
-    name
+    name,
+    active
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
-    ${alias}.name
+    ${alias}.name,
+    ${alias}.active
   </sql>
 
-  <resultMap id="allColumns" type="app5.persistence.FederalBranchVO">
-    <id property="id" column="id" />
+  <resultMap id="allColumns" type="app5.persistence.ActiveClientVO">
+    <result property="id" column="id" />
     <result property="name" column="name" />
+    <result property="active" column="active" />
   </resultMap>
-
-  <!-- select by PK -->
-
-  <select id="selectByPK" resultMap="allColumns">
-    select
-      <include refid="columns" />
-     from federal_branch
-     where
-      id = #{id,jdbcType=INTEGER}
-  </select>
-
-  <!-- no select by unique indexes since there are no UI (besides the PK) -->
 
   <!-- select by example -->
 
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from federal_branch
+     from active_client
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null ">
         and id = #{p.id,jdbcType=INTEGER}
       </if>
       <if test="p.name != null ">
         and name = #{p.name,jdbcType=VARCHAR}
+      </if>
+      <if test="p.active != null ">
+        and active = #{p.active,jdbcType=BIT}
       </if>
     </trim>
     <if test="o != null">
@@ -58,46 +52,32 @@
     ${sql}
   </select>
 
-  <!-- insert (no auto-generated columns) -->
+  <!-- insert by example (no auto-generated columns) -->
 
-  <insert id="insert">
-    insert into federal_branch (
+  <insert id="insertByExample">
+    insert into active_client (
       <trim prefixOverrides=", ">
-        <if test="true">, id</if>
-        <if test="true">, name</if>
+        <if test="id != null">, id</if>
+        <if test="name != null">, name</if>
+        <if test="active != null">, active</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{id,jdbcType=INTEGER}</if>
-        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+        <if test="id != null">, #{id,jdbcType=INTEGER}</if>
+        <if test="name != null">, #{name,jdbcType=VARCHAR}</if>
+        <if test="active != null">, #{active,jdbcType=BIT}</if>
       </trim>
       )
   </insert>
 
-  <!-- update by PK -->
-
-  <update id="updateByPK">
-    update federal_branch set
-      name = #{name,jdbcType=VARCHAR}
-     where
-      id = #{id,jdbcType=INTEGER}
-  </update>
-
-  <!-- delete by PK -->
-
-  <delete id="deleteByPK">
-    delete from federal_branch
-     where
-      id = #{id,jdbcType=INTEGER}
-  </delete>
-
   <!-- update by example -->
 
   <update id="updateByExample">
-    update federal_branch
+    update active_client
     <set>
       <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
       <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.activeWasSet">active = #{values.active,jdbcType=BIT},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null ">
@@ -106,19 +86,25 @@
       <if test="filter.name != null ">
         and name = #{filter.name,jdbcType=VARCHAR}
       </if>
+      <if test="filter.active != null ">
+        and active = #{filter.active,jdbcType=BIT}
+      </if>
     </trim>
   </update>
 
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from federal_branch
+    delete from active_client
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null ">
         and id = #{id,jdbcType=INTEGER}
       </if>
       <if test="name != null ">
         and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="active != null ">
+        and active = #{active,jdbcType=BIT}
       </if>
     </trim>
   </delete>
