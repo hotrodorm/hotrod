@@ -45,6 +45,8 @@ c.setActive(true);
 this.activeClientDAO.insertByExample(c);
 ```
 
+The new row is now inserted in the `client` table trough the `active_client` view.
+
 
 
 
