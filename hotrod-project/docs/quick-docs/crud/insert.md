@@ -2,9 +2,6 @@
 
 The `insert()` method receives a VO with the properties of the row to be inserted in a table.
 
-This method can also be used in a view, depending on the database specific rules and the
-details of the view definition.
-
 
 ## Auto-Generated Columns, Identity Columns &amp; Sequences
 
