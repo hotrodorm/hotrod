@@ -29,5 +29,5 @@ Quick Guides:
 - [Mapping Column Types](guides/mapping-column-types.md).
 - [Mapping Table and Column Names](guides/mapping-table-and-column-names.md).
 - [Extending LiveSQL Functions](livesql/extending-livesql-functions.md).
-- [Enabling SQL Debugging](./guides/enabling-sql-debug.md).
+- [Enabling SQL Debugging](./guides/enabling-sql-debugging.md).
 
