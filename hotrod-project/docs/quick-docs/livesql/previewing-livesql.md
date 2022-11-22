@@ -4,11 +4,11 @@ When a LiveSQL statement is executed it is first rendered as a native SQL statem
 SQL statement is sent to the database engine for its actual execution.
 
 Notice that previewing a SQL statement is different from 
-[Enabling SQL Logging](../guides/enabling-sql-debugging.md). When previewing the code is actively
-retrieving the SQL form of a LiveSQL statement. When activating the loggingm the engine logs the SQL details
-and its execution details automatically with a few configuration lines.
+[Enabling SQL Logging](../guides/enabling-sql-debugging.md). When previewing, the application code is actively
+retrieving the SQL form of a LiveSQL statement. When activating the logging the engine logs the SQL statement
+details and its execution details automatically with a few configuration lines.
 
-For debugging purposes this native SQL statement can be previewed using the `getPreview()` method of LiveSQL.
+A LiveSQL statement can be previewed using the `getPreview()` method.
 
 Rendering in SQL for previewing does have a marginal cost due to translation according to the specific SQL 
 dialect implemented in the database and/or version of it. Previewing a SQL statement should be done with this cost in mind
