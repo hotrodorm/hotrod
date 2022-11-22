@@ -14,9 +14,6 @@ database. The most common rules database impose to do this have to do with two a
 must be valid according to it.
 - The underlying driving table should not implement primary key auto-generation logic such as `IDENTITY`.
 
-The rules to decide if it's possible vary from database to database so it's important to read the 
-database documentation for each specific case.
-
 
 ## Example
 
