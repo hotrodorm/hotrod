@@ -4,7 +4,7 @@ When a LiveSQL statement is executed it is first rendered as a native SQL statem
 SQL statement is sent to the database engine for its actual execution.
 
 Notice that previewing a SQL statement is different from 
-[Enabling SQL Logging](../guides/enabling-sql-debugging.md). When previewing, the application code is actively
+[Enabling SQL Logging](../guides/enabling-sql-logging.md). When previewing, the application code is actively
 retrieving the SQL form of a LiveSQL statement. When activating the logging the engine logs the SQL statement
 details and its execution details automatically with a few configuration lines.
 

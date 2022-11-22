@@ -1,4 +1,4 @@
-# Enabling SQL Debugging
+# Enabling SQL Logging
 
 To see the exact SQL queries that are run in the database you can activate the logging for
 it.
@@ -31,7 +31,7 @@ logging.level.org.hotrod.runtime.livesql.LiveSQLMapper=DEBUG
 
 ## Example
 
-When the application is run with logging enabled the application will produce loggin lines such as:
+When the application is run with logging enabled the application will produce logging lines such as:
 
 ```log
 DEBUG --- [main] c.m.daos.primitives.account.selectByPK  : ==>  Preparing: select id, name from account where id = ?
@@ -51,6 +51,6 @@ tweaked by overriding these values using an external `application.properties` fi
 in the same folder as the application, Spring Boot will automatically read it and their values will override
 the default values.
 
-This way the DevOps team can activate or deactivate the level of logging by using a separate file and without 
+This way the DevOps team can activate or deactivate the level of logging on a per-DAO basis without 
 changing the application itself.
 
