@@ -16,8 +16,8 @@ In a nutshell HotRod's features are:
 
 - Developed under the open source license Apache 2.0 and officially available at Maven Central Repository.
 - Straightforward CRUD persistence layer for quick prototyping.
-- Default, custom and rule-based data types.
-- Default, custom and rule-based object names.
+- Default, custom, and rule-based data types.
+- Default, custom, and rule-based object names.
 - Support for major relational databases.
 - Flexible querying from Java using LiveSQL.
 - Index-aware persistence layer. Indexes shape the persistence functionality.
