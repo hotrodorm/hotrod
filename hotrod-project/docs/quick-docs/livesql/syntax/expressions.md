@@ -63,7 +63,7 @@ hand, will be processed in the Java application and only the result will be sent
 | log(a, b) | Logarithm of a in base b | `<a>.log(<b>)` |
 | power(a, b) | Exponentiation | `<a>.pow(<b>)` |
 | abs(a) | Absolute value | `<a>.abs()` |
-| - a | Nagation | `<a>.neg()` |
+| - a | Negation | `<a>.neg()` |
 | signum(a) | Signum | `<a>.signum()` |
 | round(a, n) | Rounding | `<a>.round(<b>)` |
 | trunc(a, n) | Truncating | `<a>.trunc(<b>)` |
