@@ -44,8 +44,8 @@ public class IngredientDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private SqlSession sqlSession;
 
-  @Autowired
-  private SQLDialect sqlDialect;
+//  @Autowired
+//  private SQLDialect sqlDialect;
 
   private ApplicationContext applicationContext;
 
@@ -86,7 +86,7 @@ public class IngredientDAO implements Serializable, ApplicationContextAware {
 
   public CriteriaWherePhase<com.app.mysql.IngredientImpl> selectByCriteria(final IngredientDAO.IngredientTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<com.app.mysql.IngredientImpl>(from, this.sqlDialect, this.sqlSession,
+    return new CriteriaWherePhase<com.app.mysql.IngredientImpl>(from, null, this.sqlSession,
         predicate, "com.app.mysql.primitives.ingredient.selectByCriteria");
   }
 

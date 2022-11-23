@@ -1,0 +1,145 @@
+package com.app;
+
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.hotrod.runtime.livesql.LiveSQL;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.mapper.MapperFactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+
+import com.zaxxer.hikari.HikariDataSource;
+
+@MapperScan(basePackages = "mapper.mysql", sqlSessionFactoryRef = "sqlSessionFactory1")
+
+@Configuration
+@ComponentScan(basePackageClasses = App.class)
+@ComponentScan(basePackageClasses = LiveSQL.class)
+@MapperScan(basePackageClasses = LiveSQL.class)
+@SpringBootApplication
+public class App {
+
+  @Autowired
+  private DataSource datasource1;
+
+//  @Autowired
+//  private DataSource datasource2;
+
+//  @Autowired
+//  private IngredientDAO ingredientDAO;
+
+//  @Autowired
+//  private LiveSQL sql;
+
+  public static void main(String[] args) {
+    System.out.println("=== App Starting ===");
+    SpringApplication.run(App.class, args);
+    System.out.println("=== App Complete ===");
+  }
+  
+  // datasource1
+  // Hikari1
+  // Factory1
+
+  @Bean
+//  @ConfigurationProperties(prefix = "datasource.db1")
+  @ConfigurationProperties(prefix = "app1.datasource")
+  public HikariDataSource dataSource1() {
+    System.out.println("> datasource 1 - start");
+    HikariDataSource ds = DataSourceBuilder.create().type(HikariDataSource.class).build();
+
+    try {
+      System.out.println("Datasource #1 database: " + ds.getConnection().getMetaData().getDatabaseProductName());
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    System.out.println("> datasource 1 - end");
+    return ds;
+  }
+
+  @Bean
+  public SqlSessionFactory sqlSessionFactory1() throws Exception {
+
+    MapperFactoryBean b;
+
+    final SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+    sqlSessionFactoryBean.setDataSource(this.datasource1);
+
+//    Resource mapperLocations = new InputStreamResource(
+//        this.getClass().getClassLoader().getResourceAsStream("./mappers/mysql/primitives/primitives-ingredient.xml"));
+//  Resource mapperLocations = new InputStreamResource(
+//  this.getClass().getClassLoader().getResourceAsStream("mappers/mysql/primitives/primitives-ingredient.xml"));
+//    Resource mapperLocations = new InputStreamResource(
+//        this.getClass().getClassLoader().getResourceAsStream("./src/main/resources/mappers/mysql/primitives/primitives-ingredient.xml"));
+//    Resource mapperLocations = new InputStreamResource(
+//        this.getClass().getClassLoader().getResourceAsStream("src/main/resources/mappers/mysql/primitives/primitives-ingredient.xml"));
+
+//    Resource mapperLocations = new UrlResource("jar", "mappers/mysql/primitives/primitives-ingredient.xml");
+//    Resource mapperLocations = new UrlResource("file", "./src/main/resources/mappers/mysql/primitives/primitives-ingredient.xml");
+//    Resource mapperLocations = new UrlResource("file", "mappers/mysql/primitives/primitives-ingredient.xml");
+//    sqlSessionFactoryBean.setMapperLocations(mapperLocations);
+
+//    SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
+//    sqlSessionFactory.getConfiguration().addMapper(OneMapper.class);
+    // Various other SqlSessionFactory settings
+    return sqlSessionFactoryBean.getObject();
+  }
+
+//  @Bean
+//  @ConfigurationProperties(prefix = "datasource.db2")
+//  public DataSource dataSource2() {
+//    System.out.println("> datasource 2 - start");
+//    DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
+//    DataSource ds = dataSourceBuilder.build();
+//    System.out.println("> datasource 2 - end");
+//    return ds;
+//  }
+
+  @Bean
+  public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+    return args -> {
+      System.out.println("[ Starting example ]");
+      searching();
+      System.out.println("[ Example complete ]");
+    };
+  }
+
+  private void searching() {
+
+    // Search database 1 for the ingredient "Cabbage"
+
+//    IngredientImpl example = new IngredientImpl();
+//    example.setName("Cabbage");
+//    List<IngredientImpl> ingredients = this.ingredientDAO.selectByExample(example);
+//    for (IngredientImpl i : ingredients) {
+//      System.out.println("Ingredient Name: " + i.getName() + " (id: " + i.getId() + ")");
+//    }
+//
+//    // Search database 2 for invoices for $1000 or more
+//
+//    InvoiceTable i = InvoiceDAO.newTable();
+//
+//    List<Map<String, Object>> l = this.sql.select().from(i).where(i.amount.ge(1000)).execute();
+//
+//    System.out.println("Invoices for $1000 or more:");
+//    for (Map<String, Object> r : l) {
+//      System.out.println(r);
+//    }
+
+  }
+
+}

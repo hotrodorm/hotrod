@@ -22,7 +22,13 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <version>${springboot.version}</version>
-    </dependency>  
+    </dependency>
+
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.28</version>
+    </dependency>
 
     <dependency>
       <groupId>org.postgresql</groupId>
@@ -46,7 +52,7 @@
       <groupId>org.mybatis.spring.boot</groupId>
       <artifactId>mybatis-spring-boot-starter</artifactId>
       <version>${mybatis.version}</version>
-    </dependency>    
+    </dependency>
 
   </dependencies>
 
