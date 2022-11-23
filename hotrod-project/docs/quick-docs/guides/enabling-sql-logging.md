@@ -18,8 +18,9 @@ the first line above can be separated as:
 - `com.myapp.daos.primitives.employee`: the specific logger for a DAO. This is the DAO mapper
 namespace that can be found in the first lines of the mapper XML file corresponding to each DAO.
 - `.selectByPK`: the specific DAO method (optional). If this section is included this configuration
-applied to a single DAO method. If absent the whole DAO is affected.
-- `=TRACE`: The debugging level. A `DEBUG` level shows the SQL statement and the applied parameters,
+applies to a single DAO method. If not included all the DAO methods are affected.
+- `=TRACE`: The debugging level. A `DEBUG` level shows the SQL statement, the applied parameters,
+and the number or rows returned, 
 while a `TRACE` level will also include all the selected data; use the `TRACE` level with caution 
 since it can add a massive amount of logging to your log files.
 
