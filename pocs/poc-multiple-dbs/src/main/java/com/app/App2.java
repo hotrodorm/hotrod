@@ -16,6 +16,8 @@ import org.springframework.context.annotation.Configuration;
 
 import com.app.mysql.primitives.IngredientDAO;
 import com.app.mysql.primitives.IngredientVO;
+import com.app.postgresql.primitives.InvoiceDAO;
+import com.app.postgresql.primitives.InvoiceVO;
 
 @Configuration
 @ComponentScan(basePackageClasses = App2.class)
@@ -32,6 +34,9 @@ public class App2 {
 
   @Autowired
   private IngredientDAO ingredientDAO;
+
+  @Autowired
+  private InvoiceDAO invoiceDAO;
 
   public static void main(String[] args) {
     System.out.println("=== App Starting ===");
@@ -53,8 +58,13 @@ public class App2 {
         "Searching... this.datasource1=" + this.datasource1.getConnection().getMetaData().getDatabaseProductName());
     System.out.println(
         "Searching... this.datasource2=" + this.datasource2.getConnection().getMetaData().getDatabaseProductName());
+
     IngredientVO ig = this.ingredientDAO.selectByPK(123);
     System.out.println("Ingredient #123: " + ig);
+
+    InvoiceVO i = this.invoiceDAO.selectByPK(1015);
+    System.out.println("Invoice #1015: " + i);
+
   }
 
 }

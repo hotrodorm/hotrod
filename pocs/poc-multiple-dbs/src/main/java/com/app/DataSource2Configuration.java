@@ -10,41 +10,39 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration(proxyBeanMethods = false)
-public class MyDataSourcesConfiguration {
+public class DataSource2Configuration {
 
   @Bean
-  @Primary
-  @ConfigurationProperties("datasource1")
-  public HikariDataSource dataSource1() {
+  @ConfigurationProperties("datasource2")
+  public HikariDataSource dataSource2() {
     return DataSourceBuilder.create().type(HikariDataSource.class).build();
   }
 
   @Bean
-  public SqlSessionFactory sqlSessionFactory1(@Qualifier("dataSource1") DataSource dataSource1) throws Exception {
+  public SqlSessionFactory sqlSessionFactory2(@Qualifier("dataSource2") DataSource dataSource2) throws Exception {
 
-    System.out.println("MySQL: Loading mapper (datasource: "
-        + dataSource1.getConnection().getMetaData().getDatabaseProductName() + ")");
+    System.out.println(
+        "PG: Loading mapper (datasource: " + dataSource2.getConnection().getMetaData().getDatabaseProductName() + ")");
 
     SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-    factoryBean.setDataSource(dataSource1);
+    factoryBean.setDataSource(dataSource2);
 
     Resource mapperLocations = new UrlResource("file",
-        "src/main/resources/mappers/mysql/primitives/primitives-ingredient.xml");
+        "src/main/resources/mappers/postgresql/primitives/primitives-invoice.xml");
     factoryBean.setMapperLocations(mapperLocations);
 
     return factoryBean.getObject();
   }
 
   @Bean
-  public SqlSessionTemplate sqlSession1(SqlSessionFactory sqlSessionFactory1) throws Exception {
-    SqlSessionTemplate sqlSession = new SqlSessionTemplate(sqlSessionFactory1);
+  public SqlSessionTemplate sqlSession2(SqlSessionFactory sqlSessionFactory2) throws Exception {
+    SqlSessionTemplate sqlSession = new SqlSessionTemplate(sqlSessionFactory2);
     return sqlSession;
   }
 
