@@ -14,6 +14,18 @@ HotRod supports the following Databases:
 - `Aurora/PostgreSQL` *not yet supported*
 - `Aurora/MySQL` *not yet supported*
 
+
+## Example of JDBC Drivers
+
+For a list of example JDBC Drivers for each database see [JDBC Drivers Examples](./jdbc-drivers-examples.md).
+
+
+## Catalogs &amp; Schemas
+
+Each database organizes database objects using schemas and catalogs. See [JDBC Catalogs &amp; Schemas](./jdbc-catalogs-and-schemas.md)
+for details on which ones are supported by each database.
+
+
 ## Default Data Types
 
 HotRod maps the data type of each database column with a default Java type.
