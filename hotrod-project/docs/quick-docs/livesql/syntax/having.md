@@ -39,5 +39,5 @@ HAVING sum(prize) > 1000000
 In this example the predicate in the `HAVING` clause is quite simple.
 
 A predicate can be more complex to accomodate arithmetic, boolean logic, parenthesis, subqueries, etc. 
-See [Boolean Expressions](./boolean-expressions.md) for more details and examples.
+See [Expressions](./expressions.md) for more details and examples.
 
