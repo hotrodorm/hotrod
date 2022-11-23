@@ -14,9 +14,10 @@ these changes to the persistence layer seamlessly.
 
 In a nutshell HotRod's features are:
 
-- Automated CRUD persistence layer for quick prototyping.
-- Default and configurable data types.
-- Default and configurable object names.
+- Developed under the open source license Apache 2.0 and officially available at Maven Central Repository.
+- Straightforward CRUD persistence layer for quick prototyping, uses default data types and properties.
+- Custom and rule-based data types.
+- Custom and rule-based object names.
 - Support for major relational databases.
 - Flexible querying from Java using LiveSQL.
 - Index-aware persistence layer. Indexes shape the persistence functionality.
@@ -34,6 +35,5 @@ In a nutshell HotRod's features are:
 - Fully integrated with Maven builds, Maven persistence layer generation, and Maven arquetype.
 - Tailored for Spring and String Boot projects to gain access to all their 
 features such as transaction management and AOP.
-- Developed under the open source license Apache 2.0 and officially available at Maven Central Repository.
 
 
