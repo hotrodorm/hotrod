@@ -32,9 +32,6 @@ public class DataSourcesConfiguration {
   @Bean
   public SqlSessionFactory sqlSessionFactory1(@Qualifier("dataSource1") DataSource dataSource1) throws Exception {
 
-    System.out.println("MySQL: Loading mapper (datasource: "
-        + dataSource1.getConnection().getMetaData().getDatabaseProductName() + ")");
-
     SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
     factoryBean.setDataSource(dataSource1);
 
@@ -63,9 +60,6 @@ public class DataSourcesConfiguration {
 
   @Bean
   public SqlSessionFactory sqlSessionFactory2(@Qualifier("dataSource2") DataSource dataSource2) throws Exception {
-
-    System.out.println(
-        "PG: Loading mapper (datasource: " + dataSource2.getConnection().getMetaData().getDatabaseProductName() + ")");
 
     SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
     factoryBean.setDataSource(dataSource2);

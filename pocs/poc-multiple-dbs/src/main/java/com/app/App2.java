@@ -54,10 +54,6 @@ public class App2 {
   }
 
   private void searching() throws SQLException {
-    System.out.println(
-        "Searching... this.datasource1=" + this.datasource1.getConnection().getMetaData().getDatabaseProductName());
-    System.out.println(
-        "Searching... this.datasource2=" + this.datasource2.getConnection().getMetaData().getDatabaseProductName());
 
     IngredientVO ig = this.ingredientDAO.selectByPK(123);
     System.out.println("Ingredient #123: " + ig);
