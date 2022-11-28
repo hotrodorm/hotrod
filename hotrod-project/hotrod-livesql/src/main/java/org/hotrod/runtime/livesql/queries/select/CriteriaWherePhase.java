@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
-import org.hotrod.runtime.livesql.dialects.SQLDialect;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
@@ -14,7 +14,7 @@ public class CriteriaWherePhase<T> {
 
   private AbstractSelect<T> select;
 
-  public CriteriaWherePhase(final TableOrView baseTable, final SQLDialect sqlDialect, final SqlSession sqlSession,
+  public CriteriaWherePhase(final TableOrView baseTable, final LiveSQLDialect sqlDialect, final SqlSession sqlSession,
       final Predicate whereCondition, final String mapperStatement) {
     this.select = new Select<T>(sqlDialect, false, sqlSession, mapperStatement);
     this.select.setBaseTable(baseTable);

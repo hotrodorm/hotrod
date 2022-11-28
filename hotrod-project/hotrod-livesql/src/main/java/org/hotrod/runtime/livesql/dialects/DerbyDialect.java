@@ -23,11 +23,11 @@ import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
 import org.hotrodorm.hotrod.utils.Separator;
 
-public class DerbyDialect extends SQLDialect {
+public class DerbyDialect extends LiveSQLDialect {
 
-  public DerbyDialect(final String productName, final String productVersion, final int majorVersion,
-      final int minorVersion) {
-    super(productName, productVersion, majorVersion, minorVersion);
+  public DerbyDialect(final boolean discovered, final String productName, final String productVersion,
+      final int majorVersion, final int minorVersion) {
+    super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
   // Identifier rendering

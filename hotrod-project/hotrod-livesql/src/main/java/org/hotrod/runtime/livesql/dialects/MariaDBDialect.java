@@ -16,11 +16,11 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
 
-public class MariaDBDialect extends SQLDialect {
+public class MariaDBDialect extends LiveSQLDialect {
 
-  public MariaDBDialect(final String productName, final String productVersion, final int majorVersion,
-      final int minorVersion) {
-    super(productName, productVersion, majorVersion, minorVersion);
+  public MariaDBDialect(final boolean discovered, final String productName, final String productVersion,
+      final int majorVersion, final int minorVersion) {
+    super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
   // Identifier rendering

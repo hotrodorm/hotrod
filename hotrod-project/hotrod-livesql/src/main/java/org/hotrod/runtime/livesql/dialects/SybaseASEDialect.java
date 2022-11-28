@@ -23,11 +23,11 @@ import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
 import org.hotrodorm.hotrod.utils.Separator;
 
-public class SybaseASEDialect extends SQLDialect {
+public class SybaseASEDialect extends LiveSQLDialect {
 
-  public SybaseASEDialect(final String productName, final String productVersion, final int majorVersion,
-      final int minorVersion) {
-    super(productName, productVersion, majorVersion, minorVersion);
+  public SybaseASEDialect(final boolean discovered, final String productName, final String productVersion,
+      final int majorVersion, final int minorVersion) {
+    super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
   // Identifier rendering

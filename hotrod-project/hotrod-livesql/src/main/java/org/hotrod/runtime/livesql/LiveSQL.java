@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
-import org.hotrod.runtime.livesql.dialects.SQLDialect;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.expressions.aggregations.Avg;
@@ -73,31 +73,38 @@ import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class LiveSQL {
 
   // Properties
 
-  @Autowired
+//  @Autowired
   private SqlSession sqlSession;
 
-  @Autowired
-  private SQLDialect sqlDialect;
+//  @Autowired
+  private LiveSQLDialect sqlDialect;
 
-  @Autowired
+//  @Autowired
   private LiveSQLMapper liveSQLMapper;
 
   // Setters
 
   public void setSqlSession(final SqlSession sqlSession) {
     this.sqlSession = sqlSession;
+    this.sqlSession.getConfiguration();
   }
 
-  public void setSqlDialect(final SQLDialect sqlDialect) {
+  public void setSqlDialect(final LiveSQLDialect sqlDialect) {
     this.sqlDialect = sqlDialect;
+  }
+
+  public void setLiveSQLMapper(final LiveSQLMapper liveSQLMapper) {
+    this.liveSQLMapper = liveSQLMapper;
   }
 
   // Select

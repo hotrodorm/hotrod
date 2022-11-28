@@ -10,7 +10,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.PaginationRenderer.PaginationType;
-import org.hotrod.runtime.livesql.dialects.SQLDialect;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.dialects.SetOperationRenderer.SetOperation;
 import org.hotrod.runtime.livesql.exceptions.InvalidLiveSQLStatementException;
 import org.hotrod.runtime.livesql.exceptions.UnsupportedLiveSQLFeatureException;
@@ -49,7 +49,7 @@ public abstract class AbstractSelect<R> extends Query {
   private String mapperStatement;
   private LiveSQLMapper liveSQLMapper;
 
-  AbstractSelect(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
+  AbstractSelect(final LiveSQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
       final String mapperStatement, final LiveSQLMapper liveSQLMapper) {
     super(sqlDialect);
     this.distinct = distinct;

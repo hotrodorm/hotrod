@@ -3,14 +3,14 @@ package org.hotrod.runtime.livesql.queries.select;
 import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.hotrod.runtime.livesql.dialects.SQLDialect;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.Expression;
 
 public class QueryWriter {
 
   private static final String INDENT = "  "; // two spaces to indent each level
 
-  private SQLDialect sqlDialect;
+  private LiveSQLDialect sqlDialect;
 
   private AtomicLong n;
   private StringBuilder sb;
@@ -18,7 +18,7 @@ public class QueryWriter {
   private int level;
   private int col;
 
-  public QueryWriter(final SQLDialect sqlDialect) {
+  public QueryWriter(final LiveSQLDialect sqlDialect) {
     this.sqlDialect = sqlDialect;
     this.n = new AtomicLong();
     this.sb = new StringBuilder();
@@ -78,7 +78,7 @@ public class QueryWriter {
     }
   }
 
-  public SQLDialect getSqlDialect() {
+  public LiveSQLDialect getSqlDialect() {
     return sqlDialect;
   }
 

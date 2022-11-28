@@ -1,18 +1,24 @@
 package org.hotrod.runtime.livesql.dialects;
 
-public abstract class SQLDialect {
+public abstract class LiveSQLDialect {
 
+  private boolean discovered; // discovered or designated
   private String databaseName;
   private String databaseVersion;
   private int databaseMajorVersion;
   private int databaseMinorVersion;
 
-  protected SQLDialect(final String databaseName, final String databaseVersion, final int databaseMajorVersion,
-      final int databaseMinorVersion) {
+  protected LiveSQLDialect(final boolean discovered, final String databaseName, final String databaseVersion,
+      final int databaseMajorVersion, final int databaseMinorVersion) {
+    this.discovered = discovered;
     this.databaseName = databaseName;
     this.databaseVersion = databaseVersion;
     this.databaseMajorVersion = databaseMajorVersion;
     this.databaseMinorVersion = databaseMinorVersion;
+  }
+
+  public boolean getDiscovered() {
+    return discovered;
   }
 
   public String getProductName() {

@@ -16,7 +16,7 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import com.app.mysql.IngredientImpl;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.dialects.SQLDialect;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.DateTimeColumn;

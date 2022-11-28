@@ -18,11 +18,11 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
 
-public class HyperSQLDialect extends SQLDialect {
+public class HyperSQLDialect extends LiveSQLDialect {
 
-  public HyperSQLDialect(final String productName, final String productVersion, final int majorVersion,
-      final int minorVersion) {
-    super(productName, productVersion, majorVersion, minorVersion);
+  public HyperSQLDialect(final boolean discovered, final String productName, final String productVersion,
+      final int majorVersion, final int minorVersion) {
+    super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
   // Identifier rendering

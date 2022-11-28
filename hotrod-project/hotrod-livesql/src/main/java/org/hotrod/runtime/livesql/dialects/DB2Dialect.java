@@ -21,11 +21,11 @@ import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
 import org.hotrodorm.hotrod.utils.Separator;
 
-public class DB2Dialect extends SQLDialect {
+public class DB2Dialect extends LiveSQLDialect {
 
-  public DB2Dialect(final String productName, final String productVersion, final int majorVersion,
-      final int minorVersion) {
-    super(productName, productVersion, majorVersion, minorVersion);
+  public DB2Dialect(final boolean discovered, final String productName, final String productVersion,
+      final int majorVersion, final int minorVersion) {
+    super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
   // Identifier rendering

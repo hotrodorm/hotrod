@@ -22,11 +22,11 @@ import org.hotrod.runtime.livesql.queries.select.RightOuterJoin;
 import org.hotrod.runtime.livesql.queries.select.UnionJoin;
 import org.hotrodorm.hotrod.utils.Separator;
 
-public class OracleDialect extends SQLDialect {
+public class OracleDialect extends LiveSQLDialect {
 
-  public OracleDialect(final String productName, final String productVersion, final int majorVersion,
-      final int minorVersion) {
-    super(productName, productVersion, majorVersion, minorVersion);
+  public OracleDialect(final boolean discovered, final String productName, final String productVersion,
+      final int majorVersion, final int minorVersion) {
+    super(discovered, productName, productVersion, majorVersion, minorVersion);
   }
 
   // Identifier rendering

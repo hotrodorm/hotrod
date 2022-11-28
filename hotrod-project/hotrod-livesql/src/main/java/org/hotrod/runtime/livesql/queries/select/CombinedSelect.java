@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
-import org.hotrod.runtime.livesql.dialects.SQLDialect;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrodorm.hotrod.utils.Separator;
@@ -13,12 +13,12 @@ class CombinedSelect<T> extends AbstractSelect<T> {
 
   private List<ResultSetColumn> resultSetColumns = null;
 
-  CombinedSelect(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
+  CombinedSelect(final LiveSQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
       final LiveSQLMapper liveSQLMapper) {
     super(sqlDialect, distinct, sqlSession, null, liveSQLMapper);
   }
 
-  CombinedSelect(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
+  CombinedSelect(final LiveSQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
       final String mapperStatement) {
     super(sqlDialect, distinct, sqlSession, mapperStatement, null);
   }
