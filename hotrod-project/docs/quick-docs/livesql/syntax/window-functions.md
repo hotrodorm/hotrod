@@ -144,7 +144,7 @@ If the upper bound can be customized it can be set as:
 
 A frame can also be based on a range of rows. The range does not limit by a number of rows, but by a difference in value
 instead. For example, it can limit by values between -15.00 and +45.00. Ranges are only suitable for numeric and date-time 
-domains, where arithmetic addition and substracion is possible.
+data types, where arithmetic addition and subtraction are possible.
 
 Their lower and upper bounds can be customized with a similar logic as shown above for rows.
 
