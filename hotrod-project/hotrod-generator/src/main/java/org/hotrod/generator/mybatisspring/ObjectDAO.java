@@ -371,7 +371,7 @@ public class ObjectDAO extends GeneratableObject {
 
     imports.add("org.hotrod.runtime.livesql.expressions.ResultSetColumn");
 
-    imports.add("org.hotrod.runtime.livesql.dialects.SQLDialect");
+    imports.add("org.hotrod.runtime.livesql.dialects.LiveSQLDialect");
     imports.add("org.hotrod.runtime.livesql.metadata.NumberColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.StringColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.DateTimeColumn");
@@ -391,6 +391,10 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("org.springframework.beans.factory.annotation.Value");
     imports.add("org.springframework.context.ApplicationContext");
     imports.add("org.springframework.context.ApplicationContextAware");
+    if (!SUtil.isEmpty(this.layout.getSqlSessionBeanQualifier())) {
+      imports.add("org.springframework.beans.factory.annotation.Qualifier");
+    }
+
     imports.newLine();
 
     if (this.getBundle().getParent() != null) {
@@ -419,6 +423,9 @@ public class ObjectDAO extends GeneratableObject {
     // Spring properties
 
     println("  @Autowired");
+    if (!SUtil.isEmpty(this.layout.getSqlSessionBeanQualifier())) {
+      println("  @Qualifier(\"" + this.layout.getSqlSessionBeanQualifier() + "\")");
+    }
     println("  private SqlSession sqlSession;");
     println();
 
@@ -449,7 +456,10 @@ public class ObjectDAO extends GeneratableObject {
     }
 
     println("  @Autowired");
-    println("  private SQLDialect sqlDialect;");
+    if (!SUtil.isEmpty(this.layout.getLiveSQLDialectBeanQualifier())) {
+      println("  @Qualifier(\"" + this.layout.getLiveSQLDialectBeanQualifier() + "\")");
+    }
+    println("  private LiveSQLDialect liveSQLDialect;");
     println();
     println("  private ApplicationContext applicationContext;");
     println();
@@ -671,7 +681,7 @@ public class ObjectDAO extends GeneratableObject {
     println("  public CriteriaWherePhase<" + voFullClassName + "> selectByCriteria(final " + daoClassName + "."
         + this.metadataClassName + " from,");
     println("      final Predicate predicate) {");
-    println("    return new CriteriaWherePhase<" + voFullClassName + ">(from, this.sqlDialect, this.sqlSession,");
+    println("    return new CriteriaWherePhase<" + voFullClassName + ">(from, this.liveSQLDialect, this.sqlSession,");
     println("        predicate, \"" + mapperName + "\");");
     println("  }");
 

@@ -76,6 +76,14 @@ public class DataSetLayout implements Serializable {
     return columnSeam;
   }
 
+  public String getSqlSessionBeanQualifier() {
+    return this.daos.getSqlSessionBeanQualifier();
+  }
+
+  public String getLiveSQLDialectBeanQualifier() {
+    return this.daos.getLiveSQLDialectBeanQualifier();
+  }
+
 //  public String getSessionFactoryGetter() {
 //    return sessionFactoryGetter;
 //  }

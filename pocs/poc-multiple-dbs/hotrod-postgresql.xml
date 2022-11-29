@@ -10,6 +10,7 @@
       <daos package="com.app.postgresql" 
         dao-prefix=""  dao-suffix="DAO" vo-prefix=""  vo-suffix="Impl" abstract-vo-prefix=""  abstract-vo-suffix="VO" 
         ndao-prefix="" ndao-suffix=""   nvo-prefix="" nvo-suffix=""  nabstract-vo-prefix="" nabstract-vo-suffix=""
+        sql-session-bean-qualifier="sqlSession2" live-sql-dialect-bean-qualifier="liveSQLDialect2"
       />
       <mappers dir="mappers/postgresql" />
       <classic-fk-navigation />

@@ -32,10 +32,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.beans.BeansException;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @Component
 public class IngredientDAO implements Serializable, ApplicationContextAware {
@@ -46,8 +46,9 @@ public class IngredientDAO implements Serializable, ApplicationContextAware {
   @Qualifier("sqlSession1")
   private SqlSession sqlSession;
 
-//  @Autowired
-//  private SQLDialect sqlDialect;
+  @Autowired
+  @Qualifier("liveSQLDialect1")
+  private LiveSQLDialect liveSQLDialect;
 
   private ApplicationContext applicationContext;
 
@@ -88,7 +89,7 @@ public class IngredientDAO implements Serializable, ApplicationContextAware {
 
   public CriteriaWherePhase<com.app.mysql.IngredientImpl> selectByCriteria(final IngredientDAO.IngredientTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<com.app.mysql.IngredientImpl>(from, null, this.sqlSession,
+    return new CriteriaWherePhase<com.app.mysql.IngredientImpl>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "com.app.mysql.primitives.ingredient.selectByCriteria");
   }
 

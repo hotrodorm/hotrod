@@ -10,10 +10,11 @@
       <daos package="com.app.mysql" 
         dao-prefix=""  dao-suffix="DAO" vo-prefix=""  vo-suffix="Impl" abstract-vo-prefix=""  abstract-vo-suffix="VO" 
         ndao-prefix="" ndao-suffix=""   nvo-prefix="" nvo-suffix=""  nabstract-vo-prefix="" nabstract-vo-suffix=""
+        sql-session-bean-qualifier="sqlSession1" live-sql-dialect-bean-qualifier="liveSQLDialect1"
       />
       <mappers dir="mappers/mysql" />
       <classic-fk-navigation />
-      <select-generation strategy="result-set" />          
+      <select-generation strategy="result-set" />
     </mybatis-spring>
   </generators>
   

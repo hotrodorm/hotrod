@@ -86,6 +86,9 @@
     
     <xsd:attribute name="primitives-prefix" type="xsd:string" />
     <xsd:attribute name="primitives-suffix" type="xsd:string" />
+
+    <xsd:attribute name="sql-session-bean-qualifier" type="xsd:string" />
+    <xsd:attribute name="live-sql-dialect-bean-qualifier" type="xsd:string" />
   </xsd:complexType>
  
   <xsd:complexType name="mappers-type">

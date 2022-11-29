@@ -7,21 +7,35 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
+import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
+
 import org.hotrod.runtime.interfaces.DaoWithOrder;
-import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.interfaces.OrderBy;
+
+import com.app.postgresql.InvoiceImpl;
+
+import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
+import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
+import org.hotrod.runtime.livesql.metadata.BooleanColumn;
+import org.hotrod.runtime.livesql.metadata.ByteArrayColumn;
+import org.hotrod.runtime.livesql.metadata.ObjectColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
-import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
+import org.hotrod.runtime.livesql.metadata.View;
+
+import org.springframework.stereotype.Component;
 import org.springframework.beans.BeansException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @Component
 public class InvoiceDAO implements Serializable, ApplicationContextAware {
@@ -31,6 +45,10 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   @Autowired
   @Qualifier("sqlSession2")
   private SqlSession sqlSession;
+
+  @Autowired
+  @Qualifier("liveSQLDialect2")
+  private LiveSQLDialect liveSQLDialect;
 
   private ApplicationContext applicationContext;
 
@@ -53,27 +71,26 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<com.app.postgresql.InvoiceImpl> selectByExample(final com.app.postgresql.InvoiceImpl example,
-      final InvoiceOrderBy... orderBies) {
+  public List<com.app.postgresql.InvoiceImpl> selectByExample(final com.app.postgresql.InvoiceImpl example, final InvoiceOrderBy... orderBies)
+      {
     DaoWithOrder<com.app.postgresql.InvoiceImpl, InvoiceOrderBy> dwo = //
         new DaoWithOrder<com.app.postgresql.InvoiceImpl, InvoiceOrderBy>(example, orderBies);
     return this.sqlSession.selectList("com.app.postgresql.primitives.invoice.selectByExample", dwo);
   }
 
-  public Cursor<com.app.postgresql.InvoiceImpl> selectByExampleCursor(final com.app.postgresql.InvoiceImpl example,
-      final InvoiceOrderBy... orderBies) {
+  public Cursor<com.app.postgresql.InvoiceImpl> selectByExampleCursor(final com.app.postgresql.InvoiceImpl example, final InvoiceOrderBy... orderBies)
+      {
     DaoWithOrder<com.app.postgresql.InvoiceImpl, InvoiceOrderBy> dwo = //
         new DaoWithOrder<com.app.postgresql.InvoiceImpl, InvoiceOrderBy>(example, orderBies);
-    return new MyBatisCursor<com.app.postgresql.InvoiceImpl>(
-        this.sqlSession.selectCursor("com.app.postgresql.primitives.invoice.selectByExample", dwo));
+    return new MyBatisCursor<com.app.postgresql.InvoiceImpl>(this.sqlSession.selectCursor("com.app.postgresql.primitives.invoice.selectByExample", dwo));
   }
 
   // select by criteria
 
   public CriteriaWherePhase<com.app.postgresql.InvoiceImpl> selectByCriteria(final InvoiceDAO.InvoiceTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<com.app.postgresql.InvoiceImpl>(from, null, this.sqlSession, predicate,
-        "com.app.postgresql.primitives.invoice.selectByCriteria");
+    return new CriteriaWherePhase<com.app.postgresql.InvoiceImpl>(from, this.liveSQLDialect, this.sqlSession,
+        predicate, "com.app.postgresql.primitives.invoice.selectByCriteria");
   }
 
   // select parent(s) by FKs: no imported keys found -- skipped
@@ -90,25 +107,22 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
   // update by PK
 
   public int update(final com.app.postgresql.InvoiceImpl vo) {
-    if (vo.id == null)
-      return 0;
+    if (vo.id == null) return 0;
     return this.sqlSession.update("com.app.postgresql.primitives.invoice.updateByPK", vo);
   }
 
   // delete by PK
 
   public int delete(final com.app.postgresql.InvoiceImpl vo) {
-    if (vo.id == null)
-      return 0;
+    if (vo.id == null) return 0;
     return this.sqlSession.delete("com.app.postgresql.primitives.invoice.deleteByPK", vo);
   }
 
   // update by example
 
-  public int updateByExample(final com.app.postgresql.InvoiceImpl example,
-      final com.app.postgresql.InvoiceImpl updateValues) {
+  public int updateByExample(final com.app.postgresql.InvoiceImpl example, final com.app.postgresql.InvoiceImpl updateValues) {
     UpdateByExampleDao<com.app.postgresql.InvoiceImpl> fvd = //
-        new UpdateByExampleDao<com.app.postgresql.InvoiceImpl>(example, updateValues);
+      new UpdateByExampleDao<com.app.postgresql.InvoiceImpl>(example, updateValues);
     return this.sqlSession.update("com.app.postgresql.primitives.invoice.updateByExample", fvd);
   }
 
@@ -135,7 +149,8 @@ public class InvoiceDAO implements Serializable, ApplicationContextAware {
     AMOUNT("invoice", "amount", true), //
     AMOUNT$DESC("invoice", "amount", false);
 
-    private InvoiceOrderBy(final String tableName, final String columnName, boolean ascending) {
+    private InvoiceOrderBy(final String tableName, final String columnName,
+        boolean ascending) {
       this.tableName = tableName;
       this.columnName = columnName;
       this.ascending = ascending;

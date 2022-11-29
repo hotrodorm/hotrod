@@ -40,6 +40,8 @@ The attributes of the `<daos>` tag are described in the following table:
 | `nvo-suffix` | Nitro module: The suffix to add to the VO names | (empty string) |
 | `nabstract-vo-prefix` | Nitro module: The prefix to add to the parent VO names | (empty string) |
 | `nabstract-vo-suffix` | Nitro module: The suffix to add to the parent VO names | (empty string) |
+| `sql-session-bean-qualifier` | Specifies the Spring bean @Qualifier to differentiate DAOs from this datasource from other datasources, when multiple databases are used in the same application | N/A. No qualifier needed when there's a single database in the application |
+| `live-sql-dialect-bean-qualifier` | Specifies the Spring bean @Qualifier to differentiate LiveSQL dialect from this datasource from other datasources, when multiple databases are used in the same application | N/A. No qualifier needed when there's a single database in the application |
 | `primitives-prefix` | *Deprecated* | N/A |
 | `primitives-suffix` | *Deprecated* | N/A |
 

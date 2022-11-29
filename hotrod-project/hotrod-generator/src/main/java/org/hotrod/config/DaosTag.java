@@ -54,6 +54,9 @@ public class DaosTag extends AbstractConfigurationTag {
   private String primitivesPrefix = null;
   private String primitivesSuffix = null;
 
+  private String sqlSessionBeanQualifier = null;
+  private String liveSQLDialectBeanQualifier = null;
+
   private File baseDir;
   private ClassPackage daoPackage;
   private ClassPackage primitivesTailPackage;
@@ -119,6 +122,16 @@ public class DaosTag extends AbstractConfigurationTag {
   @XmlAttribute(name = "primitives-suffix")
   public void setPrimitivesSuffix(final String primitivesSuffix) {
     this.primitivesSuffix = primitivesSuffix;
+  }
+
+  @XmlAttribute(name = "sql-session-bean-qualifier")
+  public void setSQLSessionBeanQualifier(final String sqlSessionBeanQualifier) {
+    this.sqlSessionBeanQualifier = sqlSessionBeanQualifier;
+  }
+
+  @XmlAttribute(name = "live-sql-dialect-bean-qualifier")
+  public void setLiveSQLDialectBeanQualifier(final String liveSQLDialectBeanQualifier) {
+    this.liveSQLDialectBeanQualifier = liveSQLDialectBeanQualifier;
   }
 
   // Behavior
@@ -411,6 +424,14 @@ public class DaosTag extends AbstractConfigurationTag {
 
   public ClassPackage getPrimitivesVOPackage(final ClassPackage p) {
     return p.append(this.primitivesTailPackage);
+  }
+
+  public String getSqlSessionBeanQualifier() {
+    return sqlSessionBeanQualifier;
+  }
+
+  public String getLiveSQLDialectBeanQualifier() {
+    return liveSQLDialectBeanQualifier;
   }
 
   /**
