@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<!-- MySQL 8 -->
+
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+      <daos package="com.app.mysql" 
+        dao-prefix=""  dao-suffix="DAO" vo-prefix=""  vo-suffix="Impl" abstract-vo-prefix=""  abstract-vo-suffix="VO" 
+        ndao-prefix="" ndao-suffix=""   nvo-prefix="" nvo-suffix=""  nabstract-vo-prefix="" nabstract-vo-suffix=""
+      />
+      <mappers dir="mappers/mysql" />
+      <classic-fk-navigation />
+      <select-generation strategy="result-set" />
+    </mybatis-spring>
+  </generators>
+  
+  <table name="ingredient" />
+
+</hotrod>
