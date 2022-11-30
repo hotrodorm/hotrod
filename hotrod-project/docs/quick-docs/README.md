@@ -10,15 +10,15 @@ Overview:
 - [Version History](./version-history.md).
 
 HotRod includes four modules:
-- [CRUD](crud/crud.md) &mdash; Quick and simple persistence for rapid prototyping.
-- [LiveSQL](livesql/livesql.md) &mdash; Flexible querying from Java.
-- [Nitro](nitro/nitro.md) &mdash; Combine native SQL with dynamic SQL and structured queries.
+- [CRUD](crud/README.md) &mdash; Quick and simple persistence for rapid prototyping.
+- [LiveSQL](livesql/README.md) &mdash; Flexible querying from Java.
+- [Nitro](nitro/README.md) &mdash; Combine native SQL with dynamic SQL and structured queries.
 - `Torcs` &mdash; Detect slow queries at runtime and analyze them.
 
 Reference:
-- [Configuration File Reference](config/configuration-file-structure.md).
+- [Configuration File Reference](config/README.md).
 - [Libraries](config/libraries.md).
-- [Maven Integration](maven/maven.md).
+- [Maven Integration](maven/README.md).
 - `Eclipse Integration`.
 - [Supported Databases and Default Data Types](config/supported-databases.md).
 - [Cheat Sheet](./cheat-sheet.md).
