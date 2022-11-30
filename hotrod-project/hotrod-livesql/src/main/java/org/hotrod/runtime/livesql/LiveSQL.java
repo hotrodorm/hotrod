@@ -73,12 +73,10 @@ import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class LiveSQL {
 
   // Properties
@@ -91,7 +89,8 @@ public class LiveSQL {
 
   // Setters
 
-  public LiveSQL(final SqlSession sqlSession, final LiveSQLDialect sqlDialect, final LiveSQLMapper liveSQLMapper) {
+  public LiveSQL(final SqlSession sqlSession, final @Qualifier("liveSQLDialect") LiveSQLDialect sqlDialect,
+      final LiveSQLMapper liveSQLMapper) {
     this.sqlSession = sqlSession;
     this.sqlDialect = sqlDialect;
     this.liveSQLMapper = liveSQLMapper;

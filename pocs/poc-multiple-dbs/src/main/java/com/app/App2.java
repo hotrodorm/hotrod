@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
@@ -26,10 +25,6 @@ import com.app.postgresql.primitives.InvoiceVO;
 @Configuration
 @SpringBootApplication
 @ComponentScan(basePackageClasses = App2.class)
-
-//@ComponentScan(basePackageClasses = LiveSQL.class)
-//@MapperScan(basePackageClasses = LiveSQL.class)
-
 public class App2 {
 
   @Autowired

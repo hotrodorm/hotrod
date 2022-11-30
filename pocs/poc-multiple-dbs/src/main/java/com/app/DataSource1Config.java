@@ -64,11 +64,9 @@ public class DataSource1Config {
   @Bean
   public LiveSQLDialect liveSQLDialect1(@Qualifier("dataSource1") DataSource dataSource1,
       @Qualifier("sqlSession1") SqlSessionTemplate sqlSession1) throws Exception {
-    System.out.println("@@@1 liveSQLDialect...");
     LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource1, this.liveSQLDialectName,
         this.liveSQLDialectVDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,
         this.liveSQLDialectMinorVersion);
-//    System.out.println("@@@2 liveSQLDialect=" + liveSQLDialect);
     return liveSQLDialect;
   }
 
@@ -86,12 +84,6 @@ public class DataSource1Config {
       @Qualifier("liveSQLMapper1") LiveSQLMapper liveSQLMapper1 //
   ) throws Exception {
     LiveSQL ls = new LiveSQL(sqlSession1, liveSQLDialect1, liveSQLMapper1);
-//    ls.setSqlSession(sqlSession1);
-//    ls.setSqlDialect(liveSQLDialect1);
-//    ls.setLiveSQLMapper(liveSQLMapper1);
-//    System.out.println(">> sqlSession1=" + sqlSession1);
-//    System.out.println(">> liveSQLDialect1=" + liveSQLDialect1);
-//    System.out.println(">> liveSQLMapper1=" + liveSQLMapper1);
     return ls;
   }
 

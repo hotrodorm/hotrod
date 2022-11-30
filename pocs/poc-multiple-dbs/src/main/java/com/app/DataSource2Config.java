@@ -65,7 +65,6 @@ public class DataSource2Config {
     LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource2, this.liveSQLDialectName,
         this.liveSQLDialectVDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,
         this.liveSQLDialectMinorVersion);
-//    System.out.println(">> liveSQLDialect=" + liveSQLDialect);
     return liveSQLDialect;
   }
 
@@ -83,9 +82,6 @@ public class DataSource2Config {
       @Qualifier("liveSQLMapper2") LiveSQLMapper liveSQLMapper2 //
   ) throws Exception {
     LiveSQL ls = new LiveSQL(sqlSession2, liveSQLDialect2, liveSQLMapper2);
-//    System.out.println(">>>2 sqlSession2=" + sqlSession2);
-//    System.out.println(">>>2 liveSQLDialect2=" + liveSQLDialect2);
-//    System.out.println(">>>2 liveSQLMapper2=" + liveSQLMapper2);
     return ls;
   }
 
