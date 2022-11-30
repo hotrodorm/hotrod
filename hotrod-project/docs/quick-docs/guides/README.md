@@ -1,6 +1,6 @@
 # Quick Guides
 
-The guides included in this section can help to enable specific features or functionality 
+The guides included in this section are for the [HotRod ORM](../README.md). They can help to enable specific features or functionality 
 or can help to resolve specific issues.
 
 - [Hello World!](./hello-world.md)

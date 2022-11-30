@@ -1,5 +1,7 @@
 # The CRUD Module
 
+This is the CRUD Module of the [HotRod ORM](../README.md).
+
 The CRUD module models tables, views, and their columns as classes with properties.
 
 It also adds methods for persistence operations for basic `SELECT`, `INSERT`, `UPDATE`, and `DELETE`

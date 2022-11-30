@@ -1,6 +1,6 @@
-# Maven
+# Maven Integration
 
-HotRod includes Maven support since version 3.
+This is Maven Integration details for the [HotRod ORM](../README.md).
 
 First, HotRod is available as a dependency at the official Maven repository and its mirrors.
 

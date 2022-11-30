@@ -1,5 +1,7 @@
 # The LiveSQL Module
 
+This is the LiveSQL Module of the [HotRod ORM](../README.md).
+
 The LiveSQL module allows the developer to write flexible SQL `SELECT` queries from Java programming code only.
 
 LiveSQL uses tables, views, and columns &mdash; modeled by the CRUD module &mdash; to assemble and run `SELECT` queries.

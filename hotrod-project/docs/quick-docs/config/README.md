@@ -1,8 +1,10 @@
 # Configuration File Reference
 
-The Configuration File of HotRod defines the details on how to generate the persistence code. It offers default for
-the configuration parameters to offer a simple usage, but they can also be tweaked to tailor the code generation to
-specific needs.
+This is the Configuration File Reference of the [HotRod ORM](../README.md).
+
+The configuration file defines the details on how to generate the persistence code. It offers default 
+for the configuration parameters to offer a simple usage, but they can also be tweaked to tailor the code
+generation to specific needs.
 
 The configuration includes:
 
