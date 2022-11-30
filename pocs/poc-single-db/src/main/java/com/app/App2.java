@@ -23,26 +23,26 @@ import api.L;
 import cfg.LConfig;
 
 @Configuration
-@ComponentScan(basePackageClasses = LiveSQL.class)
+@SpringBootApplication
 @ComponentScan(basePackageClasses = App2.class)
 
-@ComponentScan(basePackageClasses = L.class) // activates default datasource
-@ComponentScan(basePackageClasses = LConfig.class) // adds extra datasources
+@ComponentScan(basePackageClasses = LiveSQL.class)
+//@ComponentScan(basePackageClasses = L.class) // activates default datasource
+//@ComponentScan(basePackageClasses = LConfig.class) // adds extra datasources
 //@MapperScan("mappers")
 
-@SpringBootApplication
 public class App2 {
 
-  @Autowired
-  private LiveSQL sql1;
-
-  @Autowired
-  @Qualifier("l")
-  private L l2;
-
-  @Autowired
-  @Qualifier("l3")
-  private L l3;
+//  @Autowired
+//  private LiveSQL sql1;
+//
+//  @Autowired
+//  @Qualifier("l")
+//  private L l2;
+//
+//  @Autowired
+//  @Qualifier("l3")
+//  private L l3;
 
 
 //  @Autowired
@@ -85,10 +85,10 @@ public class App2 {
 
   private void searching() throws SQLException {
 
-    System.out.println("l2  :" + System.identityHashCode(l2));
-    System.out.println("l2.d:" + System.identityHashCode(l2.d));
-    System.out.println("l3  :" + System.identityHashCode(l3));
-    System.out.println("l3.d:" + System.identityHashCode(l3.d));
+//    System.out.println("l2  :" + System.identityHashCode(l2));
+//    System.out.println("l2.d:" + System.identityHashCode(l2.d));
+//    System.out.println("l3  :" + System.identityHashCode(l3));
+//    System.out.println("l3.d:" + System.identityHashCode(l3.d));
 
 //    System.out.println("l2=" + System.identityHashCode(l2));
 //

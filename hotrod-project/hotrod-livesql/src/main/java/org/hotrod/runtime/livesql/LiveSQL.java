@@ -83,13 +83,10 @@ public class LiveSQL {
 
   // Properties
 
-//  @Autowired
   private SqlSession sqlSession;
 
-//  @Autowired
   private LiveSQLDialect sqlDialect;
 
-//  @Autowired
   private LiveSQLMapper liveSQLMapper;
 
   // Setters

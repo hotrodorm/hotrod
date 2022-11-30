@@ -23,7 +23,6 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration(proxyBeanMethods = false)
 public class DataSource2Config {
 
-  //
   @Bean
   @ConfigurationProperties("datasource2")
   public HikariDataSource dataSource2() {
@@ -66,7 +65,7 @@ public class DataSource2Config {
     LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource2, this.liveSQLDialectName,
         this.liveSQLDialectVDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,
         this.liveSQLDialectMinorVersion);
-    System.out.println(">> liveSQLDialect=" + liveSQLDialect);
+//    System.out.println(">> liveSQLDialect=" + liveSQLDialect);
     return liveSQLDialect;
   }
 
@@ -87,9 +86,9 @@ public class DataSource2Config {
     ls.setSqlSession(sqlSession2);
     ls.setSqlDialect(liveSQLDialect2);
     ls.setLiveSQLMapper(liveSQLMapper2);
-    System.out.println(">>> sqlSession2=" + sqlSession2);
-    System.out.println(">>> liveSQLDialect2=" + liveSQLDialect2);
-    System.out.println(">>> liveSQLMapper2=" + liveSQLMapper2);
+//    System.out.println(">>>2 sqlSession2=" + sqlSession2);
+//    System.out.println(">>>2 liveSQLDialect2=" + liveSQLDialect2);
+//    System.out.println(">>>2 liveSQLMapper2=" + liveSQLMapper2);
     return ls;
   }
 
