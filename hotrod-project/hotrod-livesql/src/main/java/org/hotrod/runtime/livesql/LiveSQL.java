@@ -91,16 +91,9 @@ public class LiveSQL {
 
   // Setters
 
-  public void setSqlSession(final SqlSession sqlSession) {
+  public LiveSQL(final SqlSession sqlSession, final LiveSQLDialect sqlDialect, final LiveSQLMapper liveSQLMapper) {
     this.sqlSession = sqlSession;
-    this.sqlSession.getConfiguration();
-  }
-
-  public void setSqlDialect(final LiveSQLDialect sqlDialect) {
     this.sqlDialect = sqlDialect;
-  }
-
-  public void setLiveSQLMapper(final LiveSQLMapper liveSQLMapper) {
     this.liveSQLMapper = liveSQLMapper;
   }
 

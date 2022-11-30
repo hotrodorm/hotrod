@@ -1,10 +1,12 @@
 package com.app;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,27 +16,25 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import com.app.mysql.primitives.IngredientDAO;
+import com.app.mysql.primitives.IngredientDAO.IngredientTable;
 import com.app.mysql.primitives.IngredientVO;
 //import com.app.postgresql.primitives.InvoiceDAO;
 //import com.app.postgresql.primitives.InvoiceDAO.InvoiceTable;
 //import com.app.postgresql.primitives.InvoiceVO;
 
-import api.L;
-import cfg.LConfig;
-
 @Configuration
 @SpringBootApplication
-@ComponentScan(basePackageClasses = App2.class)
+@ComponentScan(basePackageClasses = App1.class)
 
 @ComponentScan(basePackageClasses = LiveSQL.class)
+@MapperScan(basePackageClasses = LiveSQL.class)
+
 //@ComponentScan(basePackageClasses = L.class) // activates default datasource
 //@ComponentScan(basePackageClasses = LConfig.class) // adds extra datasources
-//@MapperScan("mappers")
+public class App1 {
 
-public class App2 {
-
-//  @Autowired
-//  private LiveSQL sql1;
+  @Autowired
+  private LiveSQL sql;
 //
 //  @Autowired
 //  @Qualifier("l")
@@ -43,7 +43,6 @@ public class App2 {
 //  @Autowired
 //  @Qualifier("l3")
 //  private L l3;
-
 
 //  @Autowired
 //  @Qualifier("l3")
@@ -70,7 +69,7 @@ public class App2 {
 
   public static void main(String[] args) {
     System.out.println("=== App Starting ===");
-    SpringApplication.run(App2.class, args);
+    SpringApplication.run(App1.class, args);
     System.out.println("=== App Complete ===");
   }
 
@@ -109,15 +108,15 @@ public class App2 {
 //      System.out.println("Invoice #1015: " + i);
 //    }
 
-//    // LiveSQL1
-//    {
-//      IngredientTable e = IngredientDAO.newTable();
-//      List<Map<String, Object>> l = this.sql1.select().from(e).where(e.name.like("%bb%")).execute();
-//      System.out.println("Ingredients with two 'b':");
-//      for (Map<String, Object> r : l) {
-//        System.out.println(r);
-//      }
-//    }
+    // LiveSQL1
+    {
+      IngredientTable e = IngredientDAO.newTable();
+      List<Map<String, Object>> l = this.sql.select().from(e).where(e.name.like("%bb%")).execute();
+      System.out.println("Ingredients with two 'b':");
+      for (Map<String, Object> r : l) {
+        System.out.println(r);
+      }
+    }
 
 //    // LiveSQL2
 //    {

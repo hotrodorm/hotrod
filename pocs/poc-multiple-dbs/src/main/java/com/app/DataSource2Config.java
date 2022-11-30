@@ -82,10 +82,7 @@ public class DataSource2Config {
       @Qualifier("liveSQLDialect2") LiveSQLDialect liveSQLDialect2, //
       @Qualifier("liveSQLMapper2") LiveSQLMapper liveSQLMapper2 //
   ) throws Exception {
-    LiveSQL ls = new LiveSQL();
-    ls.setSqlSession(sqlSession2);
-    ls.setSqlDialect(liveSQLDialect2);
-    ls.setLiveSQLMapper(liveSQLMapper2);
+    LiveSQL ls = new LiveSQL(sqlSession2, liveSQLDialect2, liveSQLMapper2);
 //    System.out.println(">>>2 sqlSession2=" + sqlSession2);
 //    System.out.println(">>>2 liveSQLDialect2=" + liveSQLDialect2);
 //    System.out.println(">>>2 liveSQLMapper2=" + liveSQLMapper2);
