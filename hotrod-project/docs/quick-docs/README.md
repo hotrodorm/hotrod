@@ -32,4 +32,4 @@ Quick Guides:
 - [Extending LiveSQL Functions](livesql/extending-livesql-functions.md).
 - [Previewing LiveSQL](./livesql/previewing-livesql.md).
 - [Enabling SQL Logging](./guides/enabling-sql-logging.md).
-
+- [Using Multiple DataSources](./guides/using-multiple-datasources.md).

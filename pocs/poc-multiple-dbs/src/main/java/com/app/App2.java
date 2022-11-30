@@ -24,7 +24,7 @@ import com.app.postgresql.primitives.InvoiceVO;
 
 @Configuration
 @SpringBootApplication
-@ComponentScan(basePackageClasses = App2.class)
+@ComponentScan
 public class App2 {
 
   @Autowired
