@@ -160,9 +160,15 @@ mkdir -p src/main/resources
 
 Change the commands above accordingly for Windows or other OS as needed, or use your IDE to create them.
 
-Finally, run Maven once, using `mvn clean compile` to make sure the `pom.xml` file is correctly formed. 
+Finally, to make sure the `pom.xml` file is correctly formed run:
 
-Additionally, the Maven `compile` phase above will download the H2 library to `<USER_HOME>/.m2/repository/com/h2database/h2/2.1.214/h2-2.1.214.jar`. Copy it to your main directory:
+```bash
+mvn clean compile
+```
+
+It should report `BUILD SUCCESS` at the end.
+
+The Maven `compile` phase above will download the H2 library to `<USER_HOME>/.m2/repository/com/h2database/h2/2.1.214/h2-2.1.214.jar`. Copy it to your main directory:
 
 ```bash
 cp ~/.m2/repository/com/h2database/h2/2.1.214/h2-2.1.214.jar .
@@ -172,6 +178,7 @@ cp ~/.m2/repository/com/h2database/h2/2.1.214/h2-2.1.214.jar .
 ## Part 2 &mdash; Creating a Table and Generating the Persistence Code
 
 In this section we create a table in the database and we generate the persistence code for Spring Boot.
+
 
 ### Create a Table in the Database
 
@@ -321,7 +328,9 @@ Note that since the `EmployeeImpl.java` may contain custom code, it's created th
 
 At this point all the persistence code is ready to be used.
 
+
 ## Part 3 &mdash; The Application
+
 
 ### A Simple Spring Boot Application
 
@@ -353,10 +362,10 @@ import com.myapp.daos.primitives.EmployeeVO;
 import com.myapp.daos.EmployeeImpl;
 
 @Configuration
-@ComponentScan(basePackageClasses = App.class)
+@SpringBootApplication
+@ComponentScan
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
-@SpringBootApplication
 public class App {
 
   @Autowired
@@ -410,6 +419,7 @@ Now, let's prepare the properties files. Spring properties are divided in two gr
 - Embedded properties that will be included as part of the jar application to be deployed.
 - External properties set up by DevOps (as a separate file) when deploying the application in production or any environment.
 
+
 ### Prepare the Embedded Properties File
 
 Embeded properties define the default values for Spring, and they will be included in the jar file when building it. 
@@ -423,6 +433,7 @@ logging.level.root=INFO
 The first property tells Spring about the location of the mappers. Change accordingly if you change the `hotrod.xml` configuration file.
 The second property sets up the default level of logging. There are a myriad of other Spring properties that can be set up here, and that 
 depends on the specifics of the project.
+
 
 ### Prepare the External Properties File
 

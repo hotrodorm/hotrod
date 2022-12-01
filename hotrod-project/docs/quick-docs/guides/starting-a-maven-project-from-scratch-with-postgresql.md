@@ -32,6 +32,7 @@ in your preferred way.
 
 In this part we create the Maven project, we lay out its structure, we and add all the necessary libraries and plugins to it.
 
+
 ### Set Up a Maven Project
 
 If you are using a plain text editor (such as Notepad) you can create an empty folder and add the files as described in the steps below.
@@ -158,11 +159,19 @@ mkdir -p src/main/resources
 
 Change the commands above accordingly for Windows or other OS as needed, or use your IDE to create them.
 
-Finally, run Maven once, using `mvn clean` to make sure the `pom.xml` file is correctly formed.
+Finally, to make sure the `pom.xml` file is correctly formed run:
+
+```bash
+mvn clean compile
+```
+
+It should report `BUILD SUCCESS` at the end.
+
 
 ## Part 2 &mdash; Creating a Table and Generating the Persistence Code
 
 In this section we create a table in the database and we generate the persistence code for Spring Boot.
+
 
 ### Create a Table in the Database
 
@@ -220,6 +229,7 @@ and VOs prefixes and suffixes as needed. We can also change the mappers director
 - It's recommended to keep the `<classic-fk-navigation />` and `<select-generation strategy="result-set" />` tags to enable modern features.
 - Finally, we see the list of tables we want to inspect. In this case this list only includes a single table: `employee`.
 
+
 #### The HotRod Properties File
 
 Now, let's create the configuration file `hotrod.properties` (referenced by the `pom.xml`) so the HotRod Generator can connect to the sandbox database. Create this file with the following content:
@@ -247,6 +257,7 @@ configured in the `application.properties` file of the application.
 for distributed teams where each one of the developers uses a local independent sandbox database with a different URL or credentials. In the case of 
 centralized teams where all developers use the same sandbox database, then this file can have the same values, and may be safely commited to the source code repository.
 
+
 #### Generate the Persistence Code
 
 Now, let's use HotRod to generate the persistence code. Type:
@@ -263,7 +274,9 @@ HotRod will connect to the database schema, will retrieve the table details, and
 
 At this point all the persistence code is ready to be used.
 
+
 ## Part 3 &mdash; The Application
+
 
 ### A Simple Spring Boot Application
 
@@ -295,10 +308,10 @@ import com.myapp.daos.primitives.EmployeeVO;
 import com.myapp.daos.EmployeeImpl;
 
 @Configuration
-@ComponentScan(basePackageClasses = App.class)
+@SpringBootApplication
+@ComponentScan
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
-@SpringBootApplication
 public class App {
 
   @Autowired
@@ -352,6 +365,7 @@ Now, let's prepare the properties files. Spring properties are divided in two gr
 - Embedded properties that will be included as part of the jar application to be deployed.
 - External properties set up by DevOps (as a separate file) when deploying the application in production or any environment.
 
+
 ### Prepare the Embedded Properties File
 
 Embeded properties define the default values for Spring, and they will be included in the jar file when building it. 
@@ -365,6 +379,7 @@ logging.level.root=INFO
 The first property tells Spring about the location of the mappers. Change accordingly if you change the `hotrod.xml` configuration file.
 The second property sets up the default level of logging. There are a myriad of other Spring properties that can be set up here, and that 
 depends on the specifics of the project.
+
 
 ### Prepare the External Properties File
 
@@ -381,6 +396,7 @@ spring.datasource.password=mypassword
 ```
 
 **Note**: Change the values above according to your specific database.
+
 
 ### Run the Application
 
