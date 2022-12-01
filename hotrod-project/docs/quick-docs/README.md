@@ -25,8 +25,8 @@ Reference:
 
 Quick Guides:
 - [Hello World!](./guides/hello-world.md)
-- [Starting a Maven Project from Scratch using PostgreSQL](guides/starting-a-maven-project-from-scratch-with-postgresql.md).
-- [Creating a Running Project in One Command](maven/maven-arquetype.md).
+- [Starting a Spring Boot Project from Scratch using PostgreSQL](guides/starting-a-maven-project-from-scratch-with-postgresql.md).
+- [Automate Project Creation with One Command](maven/maven-arquetype.md).
 - [Mapping Column Types](guides/mapping-column-types.md).
 - [Mapping Table and Column Names](guides/mapping-table-and-column-names.md).
 - [Extending LiveSQL Functions](livesql/extending-livesql-functions.md).
