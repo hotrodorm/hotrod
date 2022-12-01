@@ -39,7 +39,7 @@ This select specifies that:
  by the `<table>` and/or `<view>` tags).
  - The `AccountVO` and `ClientVO` will reuse any custom properties or behavior added by the developer.
  
-![](images/structured-select1.png)
+![](images/graph-select1.png)
  
 Consider that:
  

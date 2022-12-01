@@ -1,7 +1,7 @@
 # The `<columns>` Tag
 
-This tag can be used in a `<select>` query tag and designates the query as a Structured Select rather
-than a Flat Select.
+This tag can be used in a `<select>` query tag and designates the query as a graph select rather
+than a flat select. See the [Nitro Module](../../nitro/README.md).
 
 
 ## Attributes

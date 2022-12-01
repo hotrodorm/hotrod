@@ -39,4 +39,4 @@ In this example:
 
 Notice the `ORDER BY` clause ensures the grandparent, parent, and child values are sorted correcly.
 
-![](images/structured-select5.png)
+![](images/graph-select5.png)

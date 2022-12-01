@@ -33,4 +33,4 @@ This example:
  - The type of the property `score` is automatically discovered, but can be specified using the optional `<expression>` attributes `class` or `converter`. 
  - Any number of `<vo>` tags can be included with any number of extra `<expression>` tags as long as their names do not collide with other expressions, or with the properties for each `<vo>` tag.
  
-![](images/structured-select2.png)
+![](images/graph-select2.png)

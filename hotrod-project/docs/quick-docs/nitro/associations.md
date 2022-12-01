@@ -41,4 +41,4 @@ In this example:
  - The `carOwner` property of the class `CarWithOwnerVO` is of type `OwnerVO`.
  - Since the query uses a `LEFT JOIN` this will include cars without owner. That means the property `carOwner` may be null for some rows.
 
-![](images/structured-select6.png)
+![](images/graph-select6.png)

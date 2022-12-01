@@ -34,7 +34,7 @@ In this example:
  - Apart from all the properties from `AccountVO`, the `EnhancedAccountVO` includes an extra one: `txs`.
  - The `txs` property is a `List<TransactionVO>`, where `TransactionVO` is an existing type with any custom behavior.
 
-![](images/structured-select3.png)
+![](images/graph-select3.png)
 
 It's crucial that the result set is returned in order, so the `ORDER BY a.id` clause included in the example above is essential. The engine considers a new `AccountVO` needs to be produced when the value of its primary key changes. Therefore if rows of the same `AccountVO` show up separated in the result set, the resulting `List<EnhancedAccountVO>` will include multiple, separated instances of the same `AccountVO`, producing a probably undesired data structure.
 
@@ -83,5 +83,5 @@ The model does not have a 1:N relationship between `product` and `invoice` but t
  - The return type of the method is `List<ProductOnInvoicesVO>`.
  - `ProductOnInvoicesVO` extends `ProductVO` to include the property `invoices` of type `List<Invoices>`.
  
-![](images/structured-select4.png)
+![](images/graph-select4.png)
  
