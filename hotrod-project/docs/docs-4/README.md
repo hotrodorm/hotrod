@@ -1,4 +1,4 @@
-# HotRod
+# HotRod 4
 
 HotRod is an open source ORM for Spring and Spring Boot geared towards high performance persistence for relational databases.
 
