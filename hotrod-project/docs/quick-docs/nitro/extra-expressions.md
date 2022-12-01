@@ -1,6 +1,6 @@
 # Extra Expressions  
 
-Computed columns can also be added to the structured columns using the `<expression>` tag.
+Computed columns can also be added to graph selects using the `<expression>` tag.
 
 These columns are added to the enclosing VO, that must be included in this case.
 

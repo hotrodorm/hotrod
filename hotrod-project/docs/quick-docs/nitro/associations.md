@@ -1,6 +1,6 @@
 # Associations
 
-An `<association>` tag is a special kind of `<vo>` tag. Its represents a `<vo>` tag that has a 1:1 relationship with its external `<vo>` tag. Thus, it does not require a property of type `List<VO>`, but only of type `VO`. 
+An `<association>` tag is a special kind of `<vo>` tag. Its represents a `<vo>` tag that has a 1:1 relationship with its parent `<vo>` tag. Thus, it does not require a property of type `List<VO>`, but only of type `VO`. 
 
 It's not required for the *associated* values to be present. An outer join may produce no values related to the driving row. In this case the whole associated VO is null.
 

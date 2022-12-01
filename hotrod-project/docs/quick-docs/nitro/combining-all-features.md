@@ -1,11 +1,12 @@
 # Combining All Features
 
-All features can be put together in a single structured select.
+All features can be put together in a single graph select.
+
 
 ## Example
 
-The follwing example combines collections, associations, expressions, with nested collections, associations, 
-expressions, artificial keys, and parameters in a single rather more complex query:
+The following example combines collections, associations, expressions, with nested collections, associations, 
+expressions, artificial keys, and parameters in a single graph query:
 
 ```xml
 <select method="selectChannels">

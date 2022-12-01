@@ -9,16 +9,13 @@ These queries can be plain native queries or configuration-assisted queries that
 the CRUD module has on the database to simplify their writing. These queries are added to the DAOs in the
 persistence layer and are exposed as Java methods.
 
-Nitro queries' goal is to provide an option to gain access to native database performance all the while
-simplifying the coding.
-
 The main features of Nitro queries are:
 
 - Reaching for High Performance: By using all native extensions of the SQL dialect that the database implements,
 a developer with knowledge of SQL optimization can create queries that can achieve high performance.
 - Make the most of the CRUD model: Nitro queries make use of the CRUD model to allow configuration-assisted
 queries that can retrieve data into non-trivial data structures.
-- Dynamic SQL: Dynamic SQL allows queries to change their behavior by enabling or disabling sections of the
+- Dynamic SQL: Dynamic SQL allows queries to change their form by enabling, disabling, or rendering sections of the
 query based on runtime parameters. See [Dynamic SQL](nitro-dynamic-sql.md). 
 
 
@@ -45,10 +42,10 @@ that allows the developer to tune query perfomance.
 
 ## Nitro Queries
 
-There are three types of Nitro queries:
+There are three types of Nitro queries. All of them can include Native and Dynamic SQL:
 
 - [General Purpose Queries](nitro-general-purpose.md) &mdash; Queries that return no data.
 - [Flat Select Queries](nitro-flat-selects.md) &mdash; Traditional selects enhanced with native SQL and Dynamic SQL.
-- [Structured Select Queries](nitro-structured-selects.md) &mdash; Advanced selects that return graphs of objects.
+- [Graph Queries](nitro-graph-selects.md) &mdash; Selects that return graphs of objects.
 
 

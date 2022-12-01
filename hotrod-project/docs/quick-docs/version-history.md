@@ -88,7 +88,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - HotRod PURGE operation implemented to remove residual temporary views.
 
 ## 3.0.5
-- Fixing structured VOs prefixes and suffixes.
+- Fixing graph queries VOs prefixes and suffixes.
 
 ## 3.0.4
 - Fixing prefixes and suffixes for abstract VOs.

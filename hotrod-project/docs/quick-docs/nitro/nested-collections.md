@@ -2,6 +2,7 @@
 
 A `<collection>` tag can also be included inside another `<collection>` tag when multiple nesting levels are needed.
 
+
 ## Example
 
 The following query retrieves client VOs, where each client VO includes a list of account VOs. Each account VO in its 

@@ -12,7 +12,7 @@ Overview:
 HotRod includes four modules:
 - [CRUD](crud/README.md) &mdash; Quick and simple persistence for rapid prototyping.
 - [LiveSQL](livesql/README.md) &mdash; Flexible querying from Java.
-- [Nitro](nitro/README.md) &mdash; Combine native SQL with dynamic SQL and structured queries.
+- [Nitro](nitro/README.md) &mdash; Combine Native SQL with Dynamic SQL and Graph Queries.
 - `Torcs` &mdash; Detect slow queries at runtime and analyze them.
 
 Reference:
