@@ -72,13 +72,13 @@ The complete `pom.xml` file will look like:
     <dependency> <!-- Required. The main HotRod library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>4.0.0-SNAPSHOT</version>
+      <version>4.0.0</version>
     </dependency>
 
     <dependency> <!-- Required. HotRod's LiveSQL library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>4.0.0-SNAPSHOT</version>
+      <version>4.0.0</version>
     </dependency>
 
     <dependency> <!-- Required. The generator uses MyBatis for database connectivity -->
@@ -109,7 +109,7 @@ The complete `pom.xml` file will look like:
       <plugin>
         <groupId>org.hotrodorm.hotrod</groupId>
         <artifactId>hotrod-maven-plugin</artifactId>
-        <version>3.4.8</version>
+        <version>4.0.0</version>
         <configuration>
           <configfile>./hotrod.xml</configfile>
           <generator>MyBatis-Spring</generator>
