@@ -4,7 +4,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 
 ## 4.0.0 (alpha, unreleased)
 - Support for multiple datasources.
-- LiveSQL now returns `List<Row>` or `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
+- LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
 - `propertiesChangeLog` is now removed from VOs to facilitate quick Spring Prototyping.
 
 ## 3.4.8
