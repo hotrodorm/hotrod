@@ -25,7 +25,7 @@ Reference:
 
 Quick Guides:
 - [Hello World!](./guides/hello-world.md)
-- Starting a Maven Project from Scratch [using H2](guides/starting-a-maven-project-from-scratch-with-h2.md), or [using PostgreSQL](guides/starting-a-maven-project-from-scratch-with-postgresql.md).
+- [Starting a Maven Project from Scratch using PostgreSQL](guides/starting-a-maven-project-from-scratch-with-postgresql.md).
 - [Creating a Running Project in One Command](maven/maven-arquetype.md).
 - [Mapping Column Types](guides/mapping-column-types.md).
 - [Mapping Table and Column Names](guides/mapping-table-and-column-names.md).
