@@ -37,7 +37,7 @@ The following query (a Flat Select) uses native DB2 features and Dynamic SQL:
 ```
 
 Depending on the value of the `regionId` parameter the query changes shape. The `SELECTIVITY` clauses are a part of the DB2 dialect
-that allows the developer to tune query perfomance.
+that allows the developer to tune query performance.
 
 
 ## Nitro Queries
