@@ -2,6 +2,11 @@
 
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
+## 4.0.0 (alpha, unreleased)
+- Support for multiple datasources.
+- LiveSQL now returns List<Row> or Cursor<Row> instead of List<Map<String, Object>> and Cursor<Map<String, Object>>.
+- `propertiesChangeLog` is now removed from VOs to facilitate quick Spring Prototyping.
+
 ## 3.4.8
 - Adding support for H2 version 2.x.
 
