@@ -325,14 +325,14 @@ public class App {
 
     EmployeeTable e = EmployeeDAO.newTable();
 
-    List<Row> l = this.sql
+    List<Row> rows = this.sql
       .select()
       .from(e)
       .where(e.name.like("A%"))
       .execute();
 
     System.out.println("Employees with names that start with 'A':");
-    for (Row r: l) {
+    for (Row r: rows) {
       System.out.println(r);
     }
 
