@@ -153,10 +153,13 @@ To check the `pom.xml` file is correct, run Maven once using:
 mvn clean compile
 ```
 
+It should report `BUILD SUCCESS` at the end.
+
 
 ## Part 2 &mdash; Creating a Table and Generating the Persistence Code
 
 In this part we create an in-memory table in H2 database and we generate the persistence code from it.
+
 
 ### Prepare the Database Script that Creates the Database
 
@@ -286,10 +289,10 @@ import com.myapp.daos.primitives.EmployeeVO;
 import com.myapp.daos.EmployeeImpl;
 
 @Configuration
-@ComponentScan(basePackageClasses = App.class)
+@SpringBootApplication
+@ComponentScan
 @ComponentScan(basePackageClasses = LiveSQL.class)
 @MapperScan(basePackageClasses = LiveSQL.class)
-@SpringBootApplication
 public class App {
 
   @Autowired
@@ -345,12 +348,17 @@ public class App {
 The runtime properties are used when running the application. Create the file `application.properties` as:
 
 ```properties
-mybatis.mapper-locations=mappers/**/*.xml
+# General configuration of the app
+
 logging.level.root=INFO
+
+# Default datasource configuration
+
 spring.datasource.driver-class-name=org.h2.Driver
 spring.datasource.url=jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './create-db.sql';DB_CLOSE_DELAY=-1
 spring.datasource.username=sa
 spring.datasource.password=
+mybatis.mapper-locations=mappers/**/*.xml
 ```
 
 
