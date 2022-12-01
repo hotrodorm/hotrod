@@ -20,6 +20,7 @@ The configuration includes:
 The configuration file can be broken into separate *fragments* to facilitate parallel development and to
 segregate DAOs per groups (modules, development teams, etc.). Each fragment produces a separate Java package.
 
+
 ## Database Metadata 
 
 HotRod generates the persistence code by inspecting the metadata retrieved from a live existing database (a *sandbox* database) that 
@@ -31,8 +32,9 @@ resulting persistence to each specific application. These extra details fall int
 
 - **Extra Metadata**: metadata inspection strategies, enums, sequences to use with each table, extra schemas to inspect, etc.
 - **Generation Details**: base directories, package structure, object naming strategies, data type rules, foreign key generation, optimistic locking details, custom columns, data converters, etc.
-- **Nitro Queries**: flat queries, general purpose queries, structured queries.
+- **Nitro Queries**: flat queries, general purpose queries, and graph queries.
 - **Project Structure**: Configuration fragments, generation facets.
+
 
 ## The Configuration File
 

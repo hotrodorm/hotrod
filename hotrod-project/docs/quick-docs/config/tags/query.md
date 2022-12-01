@@ -1,16 +1,15 @@
 # The `<query>` Tag
 
-This tags defines a Nitro query in the DAO.
+This tags defines a Nitro General Purpose query in the DAO.
 
 A `<query>` is intended to execute queries that do not return a result set. This means, it's not intended to execute
 a `SELECT` SQL statement. To run a `SELECT` and return a result set use the `<select>` tag instead.
 
 `<query>` tags can be added to any `<table>`, `<view>`, or `<dao>` tag.
 
-Nitro queries allow the developer to include fully parameterized native queries in the application. These queries 
-can combine Dynamic SQL logic with structured generation queries, and with Native SQL. This is a more 
-advanced topic that can be used reduce complex generation logic to a few tags. Nitro queries are also geared 
-towards high performance SQL and query optimization. For more details see [Nitro Queries](../../nitro/nitro.md).
+General purpose queries allow the developer to include parameterized queries that can include native and 
+SQL in the application. Used appropriately, general purpose query can be tailored for high performance SQL and
+query optimization. For more details see [Nitro Queries](../../nitro/nitro.md).
 
 
 ## Attributes

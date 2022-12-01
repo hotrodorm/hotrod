@@ -8,7 +8,7 @@ Each member of the data structure has fully named and fully typed properties. Th
 structure is configured by a tag structure defined in the query.
 
 The main difference between a Flat Select and a Graph Select is that instead of a flat list of columns 
-in the `SELECT` clause, the Structured Select includes a `<columns>` tag that defines an enhanced data 
+in the `SELECT` clause, the graph select includes a `<columns>` tag that defines an enhanced data 
 structure.
 
 
@@ -73,7 +73,7 @@ All native SQL statements are supported to take full advantage of the database d
 
 ## Dynamic SQL
 
-Structured selects can be enhanced with [Dynamic SQL](nitro-dynamic-sql.md). Dynamic SQL allows the query to 
+Graph selects can be enhanced with [Dynamic SQL](nitro-dynamic-sql.md). Dynamic SQL allows the query to 
 include, exclude, or render fragments of the SQL statement at runtime based on the values of the runtime
 parameters.
 

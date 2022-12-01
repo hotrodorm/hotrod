@@ -1,7 +1,7 @@
 # The `<expression>` Tag
 
-This tag can be used inside a Structured Select (`<select>` tag) and specifies the inclusion of an
-extra computes expression in the SELECT list.
+This tag can be used inside a Graph Select (`<select>` tag) and specifies the inclusion of an
+extra computed expression in the SELECT list.
 
 An expression is by definition external to the represented entities and needs to be modeled as an extra 
 separated property in the parent VO.

@@ -1,16 +1,16 @@
 # The `<select>` Tag
 
-This tags defines a Nitro SELECT query in the DAO.
+This tags defines a Nitro select query in the DAO.
 
 A `<select>` query is intended to execute queries that return a result set. To run
 a typical query that does not return a result set use the `<query>` tag instead.
 
 `<select>` tags can be added to any `<table>`, `<view>`, or `<dao>` tag.
 
-Nitro queries allow the developer to include fully parameterized native queries in the application. These queries 
-can combine Dynamic SQL logic with structured generation queries, and with Native SQL. This is a more 
-advanced topic that can be used reduce complex generation logic to a few tags. Nitro queries are also geared 
-towards high performance SQL and query optimization. For more details see [Nitro Queries](../../nitro/nitro.md).
+Nitro selects allow the developer to combine parameterized queries with native and dynamic SQL. These queries
+fall into two types: Flat Select and Graph Selects. Both of them can be used assemble complex queries with a 
+few tags. Used appropriately these queries can execute with high performance. For more details see
+[Nitro Queries](../../nitro/nitro.md).
 
 
 ## Attributes
@@ -51,9 +51,10 @@ to the parameter values.
 Each included [`<column>`](./column.md) tag changes the default behavior of how a column is retrieved. It can 
 change the resulting property name, its type, or can be used to apply a converter to it.
 
-Alternatively, a single `<columns>` tag can be used to enable [Structured Queries](../../nitro/nitro-structured-selects.md).
-Structured queries are an advanced feature that post-processed the received result set and produces trees of Java VOs instead
-of flat rows. They can be useful to enhance a query with a few tags, and automatically generate VOs to retrieve complex data structures.
+Alternatively, a single `<columns>` tag can be used to enable [Graph Queries](../../nitro/nitro-graph-selects.md).
+Graph selects are an advanced feature that post-processes the received result set and produces trees of VOs instead
+of flat rows. They can be useful to enhance a query with a few tags, and automatically generate VOs to retrieve complex 
+data structures. They can also reuse existing VOs preserving all their custom properties and behavior.
 
 The `<complement>` is used to enclose [Dynamic SQL](../../nitro/nitro-dynamic-sql.md) sections of the query in order to make the query parseable.
 Parameter applying (`#{name}`) and injection (`${name}`) do not need to be enclosed by this tag and can be included as is.
@@ -64,7 +65,7 @@ so it can be used to hide Dynamic SQL and thus, make the query valid for parsing
 
 ## Examples
 
-A SELECT query (with no parameters) that retrieves all the pending sales orders from the table `SALES` can be implemented as:
+A select query (with no parameters) that retrieves all the pending sales orders from the table `SALES` can be implemented as:
 
 ```xml
 <select method="getPendingSales" vo="PendingSale">

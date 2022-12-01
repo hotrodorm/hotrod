@@ -19,7 +19,7 @@ same time the VO model can be constantly kept up to date.
 
 ## Nitro
 
-Nitro flat selects and structured selects produce value objects as well. Even when having a more fleeting nature
+Nitro flat selects and graph selects produce value objects as well. Even when having a more fleeting nature
 these value objects still follow the same strategy of parent-child relationship. Extra properties and behavior
 can be added to them as needed.
 

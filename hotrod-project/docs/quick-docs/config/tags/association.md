@@ -1,6 +1,6 @@
 # The `<association>` Tag
 
-This tag can be used inside a Structured Select (`<select>` tag) and specifies the inclusion of a joined 
+This tag can be used inside a graph select (`<select>` tag) and specifies the inclusion of a joined 
 association table or view in the query.
 
 An association represents a joined table or view that can produce a single related element at the most. As such,
