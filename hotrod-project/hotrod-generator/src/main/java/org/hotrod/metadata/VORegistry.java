@@ -18,7 +18,7 @@ import org.hotrod.utils.ClassPackage;
  * 
  * - table                                        -->  EntityVOClass
  * - view                                         -->  EntityVOClass
- * - select - non-structured vo ::= solo VO       -->  SelectVOClass
+ * - select - non-graph vo      ::= solo VO       -->  SelectVOClass
  * - select - columns vo        ::= solo VO       -->  SelectVOClass
  * - select - inner vo          ::= connected VO  -->  SelectVOClass
  * 
@@ -126,7 +126,7 @@ public class VORegistry {
     }
 
     public void addVO(final SelectVOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
-      log.debug("[structured] fragment=" + this.classPackage.getPackage() + " voClass="
+      log.debug("[graph] fragment=" + this.classPackage.getPackage() + " voClass="
           + voClass.getClassPackage().getPackage() + " / " + voClass.getName() + " "
           + this.vosByName.containsKey(voClass.getName()) + "/"
           + this.structuredVOsByName.containsKey(voClass.getName()));

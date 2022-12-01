@@ -132,7 +132,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
     } else {
 
-      // Structured columns
+      // Graph columns
 
       try {
         log.debug("Phase 1 - method=" + this.getMethod());
@@ -221,10 +221,10 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
     } else {
 
-      // Structured columns
+      // Graph columns
 
       try {
-        log.debug("Structured columns - Phase 2");
+        log.debug("Graph columns - Phase 2");
         this.tag.getStructuredColumns().gatherMetadataPhase2();
         this.structuredColumns = this.tag.getStructuredColumns().getMetadata();
         this.structuredColumns.registerVOs(this.classPackage, voRegistry);
@@ -456,7 +456,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
     public SelectMethodReturnType(final SelectMethodMetadata sm, final ClassPackage voClassPackage,
         final AbstractConfigurationTag tag, final DataSetLayout layout) throws InvalidConfigurationFileException {
 
-      if (sm.isStructured()) { // structured columns
+      if (sm.isStructured()) { // graph columns
 
         StructuredColumnsMetadata structCols = sm.getStructuredColumns();
         if (structCols.getSoloVOClass() == null) { // it's a connected VO
@@ -483,7 +483,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
           this.connectedVO = null;
         }
 
-      } else { // solo VO from non-structured columns
+      } else { // solo VO from non-graph columns
         log.trace(">>> solo VO (3)");
 
         List<VOProperty> properties = new ArrayList<VOProperty>();

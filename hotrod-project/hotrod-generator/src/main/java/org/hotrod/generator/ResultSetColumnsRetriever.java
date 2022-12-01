@@ -137,7 +137,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     return ctx.getColumnsMetadata();
   }
 
-  // TODO: Structured <select> (just a marker)
+  // TODO: Graph <select> (just a marker)
 
   @Override
   public void phase1Structured(final String key, final SelectMethodTag selectTag, final String aliasPrefix,
@@ -200,7 +200,7 @@ public class ResultSetColumnsRetriever implements ColumnsRetriever {
     return ctx.getStructuredColumnMetadata();
   }
 
-  // TODO: End of structured <select> (just a marker)
+  // TODO: End of graph <select> (just a marker)
 
   @Override
   public void close() throws Exception {

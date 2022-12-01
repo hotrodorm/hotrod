@@ -187,7 +187,7 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
     return nonStructuredColumns;
   }
 
-  // TODO: Structured <select> (just a marker)
+  // TODO: Graph <select> (just a marker)
 
   @Override
   public void phase1Structured(final String key, final SelectMethodTag selectTag, final String aliasPrefix,
@@ -328,7 +328,7 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
 
   }
 
-  // TODO: End of structured <select> (just a marker)
+  // TODO: End of graph <select> (just a marker)
 
   private void produceExtraConnection() throws SQLException {
     if (this.conn2 == null) {

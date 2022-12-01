@@ -149,7 +149,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
   @Override
   public String renderStatic(final ParameterRenderer parameterRenderer) {
-    return "... structured columns here...";
+    return "... graph columns here...";
   }
 
   @Override

@@ -277,12 +277,12 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
       }
     }
 
-    log.debug("sMode=" + this.sMode + " this.structuredColumns=" + this.structuredColumns + " mode=" + this.mode);
+    log.debug("sMode=" + this.sMode + " this.graphColumns=" + this.structuredColumns + " mode=" + this.mode);
 
-    if (this.structuredColumns != null) { // structured <select> can only use mode LIST
+    if (this.structuredColumns != null) { // graph <select> can only use mode LIST
       if (this.mode != ResultSetMode.LIST) {
         throw new InvalidConfigurationFileException(this, //
-            "Invalid mode '" + this.mode.getCaption() + "' in <select> tag; structured selects can only use mode '"
+            "Invalid mode '" + this.mode.getCaption() + "' in <select> tag; graph selects can only use mode '"
                 + ResultSetMode.LIST.getCaption() + "'.");
       }
     }
