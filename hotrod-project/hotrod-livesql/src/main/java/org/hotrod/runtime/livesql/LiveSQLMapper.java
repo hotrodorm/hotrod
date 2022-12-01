@@ -11,9 +11,9 @@ import org.apache.ibatis.cursor.Cursor;
 public interface LiveSQLMapper {
 
   @Select("${sql}")
-  public List<Map<String, Object>> select(Map<String, Object> parameters);
+  public List<Row> select(Map<String, Object> parameters);
 
   @Select("${sql}")
-  public Cursor<Map<String, Object>> selectCursor(Map<String, Object> parameters);
+  public Cursor<Row> selectCursor(Map<String, Object> parameters);
 
 }

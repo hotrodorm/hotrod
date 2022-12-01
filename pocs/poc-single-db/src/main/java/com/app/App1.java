@@ -3,6 +3,7 @@ package com.app;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import org.hotrod.runtime.livesql.Row;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.mybatis.spring.annotation.MapperScan;
@@ -59,7 +60,7 @@ public class App1 {
     // LiveSQL
     {
       IngredientTable e = IngredientDAO.newTable();
-      List<Map<String, Object>> l = this.sql.select().from(e).where(e.name.like("%bb%")).execute();
+      List<Row> l = this.sql.select().from(e).where(e.name.like("%bb%")).execute();
       System.out.println("Ingredients with two 'b':");
       for (Map<String, Object> r : l) {
         System.out.println(r);

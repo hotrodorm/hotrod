@@ -2,7 +2,6 @@ package org.hotrod.runtime.livesql;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
@@ -98,22 +97,20 @@ public class LiveSQL {
 
   // Select
 
-  public SelectColumnsPhase<Map<String, Object>> select() {
-    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false);
+  public SelectColumnsPhase<Row> select() {
+    return new SelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false);
   }
 
-  public SelectColumnsPhase<Map<String, Object>> selectDistinct() {
-    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true);
+  public SelectColumnsPhase<Row> selectDistinct() {
+    return new SelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true);
   }
 
-  public SelectColumnsPhase<Map<String, Object>> select(final ResultSetColumn... resultSetColumns) {
-    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false,
-        resultSetColumns);
+  public SelectColumnsPhase<Row> select(final ResultSetColumn... resultSetColumns) {
+    return new SelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, false, resultSetColumns);
   }
 
-  public SelectColumnsPhase<Map<String, Object>> selectDistinct(final ResultSetColumn... resultSetColumns) {
-    return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true,
-        resultSetColumns);
+  public SelectColumnsPhase<Row> selectDistinct(final ResultSetColumn... resultSetColumns) {
+    return new SelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true, resultSetColumns);
   }
 
   // Tuples

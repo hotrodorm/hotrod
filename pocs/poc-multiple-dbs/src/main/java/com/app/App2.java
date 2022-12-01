@@ -2,9 +2,9 @@ package com.app;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
@@ -73,9 +73,9 @@ public class App2 {
     // LiveSQL1
     {
       IngredientTable e = IngredientDAO.newTable();
-      List<Map<String, Object>> l = this.sql1.select().from(e).where(e.name.like("%bb%")).execute();
+      List<Row> l = this.sql1.select().from(e).where(e.name.like("%bb%")).execute();
       System.out.println("Ingredients with two 'b':");
-      for (Map<String, Object> r : l) {
+      for (Row r : l) {
         System.out.println(r);
       }
     }
@@ -83,9 +83,9 @@ public class App2 {
     // LiveSQL2
     {
       InvoiceTable i = InvoiceDAO.newTable();
-      List<Map<String, Object>> l = this.sql2.select().from(i).where(i.amount.ge(1000)).execute();
+      List<Row> l = this.sql2.select().from(i).where(i.amount.ge(1000)).execute();
       System.out.println("Invoices for more than $1000:");
-      for (Map<String, Object> r : l) {
+      for (Row r : l) {
         System.out.println(r);
       }
     }
