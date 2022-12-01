@@ -45,7 +45,7 @@ that allows the developer to tune query performance.
 There are three types of Nitro queries. All of them can include Native and Dynamic SQL:
 
 - [General Purpose Queries](nitro-general-purpose.md) &mdash; Queries that return no data.
-- [Flat Selects](nitro-flat-selects.md) &mdash; Traditional selects enhanced with native SQL and Dynamic SQL.
+- [Flat Selects](nitro-flat-selects.md) &mdash; Traditional selects that automate names and property types.
 - [Graph Selects](nitro-graph-selects.md) &mdash; Selects that return graphs of objects.
 
 
