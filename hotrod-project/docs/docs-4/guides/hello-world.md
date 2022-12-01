@@ -72,13 +72,13 @@ The complete `pom.xml` file will look like:
     <dependency> <!-- Required. The main HotRod library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
-      <version>3.4.8</version>
+      <version>4.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency> <!-- Required. HotRod's LiveSQL library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-livesql</artifactId>
-      <version>3.4.8</version>
+      <version>4.0.0-SNAPSHOT</version>
     </dependency>
 
     <dependency> <!-- Required. The generator uses MyBatis for database connectivity -->
@@ -193,8 +193,6 @@ Tell HotRod how you want the generation to work. Create the file `hotrod.xml` an
     <mybatis-spring>
       <daos package="com.myapp.daos" dao-suffix="DAO" vo-suffix="Impl" abstract-vo-prefix="" abstract-vo-suffix="VO" />
       <mappers dir="mappers" />
-      <classic-fk-navigation />
-      <select-generation strategy="result-set" />          
     </mybatis-spring>
   </generators>
   
