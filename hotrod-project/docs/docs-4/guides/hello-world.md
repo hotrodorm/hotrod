@@ -270,6 +270,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.Row;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -324,14 +325,14 @@ public class App {
 
     EmployeeTable e = EmployeeDAO.newTable();
 
-    List<Map<String, Object>> l = this.sql
+    List<Row> l = this.sql
       .select()
       .from(e)
       .where(e.name.like("A%"))
       .execute();
 
     System.out.println("Employees with names that start with 'A':");
-    for (Map<String, Object> r: l) {
+    for (Row r: l) {
       System.out.println(r);
     }
 
