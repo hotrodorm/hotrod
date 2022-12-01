@@ -1,0 +1,17 @@
+
+
+
+For 3.x:
+- Rename Structured Queries to Graph Queries.
+- Clean annotations in the Hello World and the Projects from Scratch.
+
+Then:
+- Create two copies of the documentation: one for 3.4 and the other for 4.x (upcoming).
+- Fork version 3.4.9-SNAPSHOT, so 4.0.0-alpha1-SNAPSHOT will become master.
+
+For 4.0:
+- Remove the "create-view" engine.
+- Simplify the configuration file, specially the <daos> tag.
+- Remove the "generator" property. It's not useful.
+- Document the dialects for single and multiple datasources.
+
