@@ -7,7 +7,7 @@ prototyping an application.
 
 Overview:
 - [Features](./features.md).
-- [Version History](./version-history.md).
+- [Version History](../../../version-history.md).
 
 HotRod includes four modules:
 - [CRUD](crud/README.md) &mdash; Quick and simple persistence for rapid prototyping.
