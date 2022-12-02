@@ -11,5 +11,7 @@ HotRod includes four modules:
 - Nitro &mdash; Combine Native SQL with Dynamic SQL and Graph Queries.
 - `Torcs` &mdash; Detect slow queries at runtime and analyze them.
 
+## Documentation
+
 See documentation at [HotRod 3.4](./hotrod-project/docs/docs-3.4/README.md) and [HotRod 4](./hotrod-project/docs/docs-4/README.md).
 
