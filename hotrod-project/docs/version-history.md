@@ -6,6 +6,9 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - Support for multiple datasources.
 - LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
 - `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping.
+- Configuration property `generator` removed.
+- Nitro defaults to `result-set` generation now. Tag can be omitted by default.
+- Classic FK Navigation is now enabled by default. Connfiguration tag can be omitted now.
 
 ## 3.4.8
 - Adding support for H2 version 2.x.
