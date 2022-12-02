@@ -19,7 +19,7 @@ private LiveSQL sql;
 private void searching() {
   EmployeeTable e = EmployeeDAO.newTable();
 
-  List<Map<String, Object>> l = this.sql
+  List<Row> rows = this.sql
     .select()
     .from(e)
     .where(e.name.like("A%"))
