@@ -47,7 +47,8 @@ Depending on the specific database and version this query can be rendered in dif
     select top 15 * from t
     ```
 
-## Forcing the LiveSQL Dialect
+
+## Designating the LiveSQL Dialect
 
 Some teams use one database for prototyping and a different one for production. Sometimes the difference is only minor, such as minor versions difference of the same database engine, or in other cases they can use different engines altogether. In cases like this, the developer may want to override the autodetection
 capabilities of LiveSQL and designate the dialect directly instead.
@@ -55,13 +56,59 @@ capabilities of LiveSQL and designate the dialect directly instead.
 To do this the developer can add the following properties to the `application.properties` file that is used at runtime:
 
 ```properties
-livesql.dialect.name=H2
-livesql.dialect.databaseName=H2
-livesql.dialect.versionString="1.4.197 (2018-03-18)"
-livesql.dialect.majorVersion=1
-livesql.dialect.minorVersion=4
+livesql.livesqldialectname=MYSQL
+livesql.livesqldialectdatabaseName=MariaDB
+livesql.livesqldialectversionString="10.5"
+livesql.livesqldialectmajorVersion=10
+livesql.livesqldialectminorVersion=5
 ```
 
 The most important property is the fist one. The rest can be useful in cases where the SQL support has changed considerably over time; for example, Oracle 12c improved SQL support considerably and it's important for LiveSQL to know how the target version of the database to render the SQL statements appropriately.
+
+
+## Designating the LiveSQL Dialect for Multiple DataSources
+
+When an application uses multiple datasources &ndash; either different databases or the several instances of the same database &ndash; 
+the defaul datasource configuration cannot be used, but each datasource needs to be specified separately, including their dialects.
+See [Using Multiple DataSources](../guides/using-multiple-datasources.md) for an example on how to define multiple datasources.
+
+The `application.properties` file can take the form:
+
+```properties
+# General configuration of the app
+
+logging.level.root=INFO
+
+# First datasource configuration
+
+datasource1.driver-class-name=com.mysql.cj.jdbc.Driver
+datasource1.jdbc-url=jdbc:mysql://192.168.56.29:3306/database1
+datasource1.username=user1
+datasource1.password=pass1
+datasource1.mappers=mappers/mysql
+
+datasource1.livesqldialectname=MYSQL
+datasource1.livesqldialectdatabaseName=MariaDB
+datasource1.livesqldialectversionString="10.6"
+datasource1.livesqldialectmajorVersion=10
+datasource1.livesqldialectminorVersion=6
+
+# Second datasouce configuration
+
+datasource2.driver-class-name=org.postgresql.Driver
+datasource2.jdbc-url=jdbc:postgresql://192.168.56.214:5432/database2
+datasource2.username=user1
+datasource2.password=pass1
+datasource2.mappers=mappers/postgresql
+
+datasource2.livesqldialectname=POSTGRESQL
+datasource2.livesqldialectdatabaseName="PostgreSQL 12"
+datasource2.livesqldialectversionString="12.4 (Linux)"
+datasource2.livesqldialectmajorVersion=12
+datasource2.livesqldialectminorVersion=4
+```
+
+Notice that the properties' prefixes can be changed to any string, as configured by the `@Configuration` classes.
+
 
 
