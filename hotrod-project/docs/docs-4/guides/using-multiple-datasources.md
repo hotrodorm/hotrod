@@ -41,7 +41,7 @@ The `pom.xml` file will look like:
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
-    <hotrod.version>3.4.8</hotrod.version>
+    <hotrod.version>4.0.0</hotrod.version>
   </properties>
 
   <dependencies>
@@ -111,15 +111,12 @@ The `pom.xml` file will look like:
             <version>${hotrod.version}</version>
             <configuration>
               <configfile>./first.xml</configfile>
-              <generator>MyBatis-Spring</generator>
               <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
               <jdbcurl>jdbc:h2:mem:FIRSTDB;INIT=runscript from './first.sql';DB_CLOSE_DELAY=-1</jdbcurl>
               <jdbcusername>sa</jdbcusername>
               <jdbcpassword>""</jdbcpassword>
               <jdbccatalog>FIRSTDB</jdbccatalog>
               <jdbcschema>PUBLIC</jdbcschema>
-              <facets></facets>
-              <display></display>
             </configuration>
             <dependencies>
               <dependency>
@@ -143,15 +140,12 @@ The `pom.xml` file will look like:
             <version>${hotrod.version}</version>
             <configuration>
               <configfile>./second.xml</configfile>
-              <generator>MyBatis-Spring</generator>
               <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
               <jdbcurl>jdbc:h2:mem:SECONDDB;INIT=runscript from './second.sql';DB_CLOSE_DELAY=-1</jdbcurl>
               <jdbcusername>sa</jdbcusername>
               <jdbcpassword>""</jdbcpassword>
               <jdbccatalog>SECONDDB</jdbccatalog>
               <jdbcschema>PUBLIC</jdbcschema>
-              <facets></facets>
-              <display></display>
             </configuration>
             <dependencies>
               <dependency>
@@ -239,11 +233,10 @@ Tell HotRod how you want the generation to work for each database. Create the fi
 
   <generators>
     <mybatis-spring>
-      <daos package="com.app.first.daos" dao-suffix="DAO" vo-suffix="Impl" abstract-vo-prefix="" abstract-vo-suffix="VO"
+      <daos package="com.app.first.daos"
+        dao-suffix="DAO" vo-suffix="Impl" abstract-vo-prefix="" abstract-vo-suffix="VO"
         sql-session-bean-qualifier="sqlSession1" live-sql-dialect-bean-qualifier="liveSQLDialect1" />
       <mappers dir="mappers/first" />
-      <classic-fk-navigation />
-      <select-generation strategy="result-set" />
     </mybatis-spring>
   </generators>
 
@@ -262,11 +255,10 @@ Then, create the file `second.xml` for the second database:
 
   <generators>
     <mybatis-spring>
-      <daos package="com.app.second.daos" dao-suffix="DAO" vo-suffix="Impl" abstract-vo-prefix="" abstract-vo-suffix="VO"
+      <daos package="com.app.second.daos"
+        dao-suffix="DAO" vo-suffix="Impl" abstract-vo-prefix="" abstract-vo-suffix="VO"
         sql-session-bean-qualifier="sqlSession2" live-sql-dialect-bean-qualifier="liveSQLDialect2" />
       <mappers dir="mappers/second" />
-      <classic-fk-navigation />
-      <select-generation strategy="result-set" />
     </mybatis-spring>
   </generators>
 
@@ -315,6 +307,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.Row;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -386,9 +379,9 @@ public class App {
     // Use LiveSQL to search in datasource #1
     {
       AccountTable a = AccountDAO.newTable();
-      List<Map<String, Object>> l = this.sql1.select().from(a).where(a.owner.like("%m%")).execute();
+      List<Row> rows = this.sql1.select().from(a).where(a.owner.like("%m%")).execute();
       System.out.println("Account which owner names' have an 'm':");
-      for (Map<String, Object> r : l) {
+      for (Row r : rows) {
         System.out.println(r);
       }
     }
@@ -396,9 +389,9 @@ public class App {
     // Use LiveSQL to search in datasource #2
     {
       InvoiceTable i = InvoiceDAO.newTable();
-      List<Map<String, Object>> l = this.sql2.select().from(i).where(i.amount.ge(300)).execute();
+      List<Row> rows = this.sql2.select().from(i).where(i.amount.ge(300)).execute();
       System.out.println("Invoices for more than $300:");
-      for (Map<String, Object> r : l) {
+      for (Row r : rows) {
         System.out.println(r);
       }
     }
