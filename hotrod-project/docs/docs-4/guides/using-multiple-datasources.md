@@ -378,9 +378,9 @@ public class App {
     // Use LiveSQL to search in datasource #1
     {
       AccountTable a = AccountDAO.newTable();
-      List<Map<String, Object>> l = this.sql1.select().from(a).where(a.owner.like("%m%")).execute();
+      List<Row> rows = this.sql1.select().from(a).where(a.owner.like("%m%")).execute();
       System.out.println("Account which owner names' have an 'm':");
-      for (Map<String, Object> r : l) {
+      for (Row r : rows) {
         System.out.println(r);
       }
     }
@@ -388,9 +388,9 @@ public class App {
     // Use LiveSQL to search in datasource #2
     {
       InvoiceTable i = InvoiceDAO.newTable();
-      List<Map<String, Object>> l = this.sql2.select().from(i).where(i.amount.ge(300)).execute();
+      List<Row> rows = this.sql2.select().from(i).where(i.amount.ge(300)).execute();
       System.out.println("Invoices for more than $300:");
-      for (Map<String, Object> r : l) {
+      for (Row r : rows) {
         System.out.println(r);
       }
     }
