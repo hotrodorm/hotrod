@@ -10,11 +10,11 @@ and version of it.
 The following example shows a LiveSQL query that limits the number of rows a query returns:
 
 ```java
-    List<Map<String, Object>> rows = sql
-        .select()
-        .from(t)
-        .limit(15)
-        .execute();
+List<Row> rows = sql
+    .select()
+    .from(t)
+    .limit(15)
+    .execute();
 ```
 
 Depending on the specific database and version this query can be rendered in different ways. For example:
