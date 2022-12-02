@@ -9,6 +9,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - Configuration property `generator` removed.
 - Nitro defaults to `result-set` generation now. The `<select-generation>` tag can be omitted by default.
 - Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
+- Adding default value for the `<mappers>` tag. It can be now omitted in the configuration file.
 
 ## 3.4.8
 - Adding support for H2 version 2.x.
