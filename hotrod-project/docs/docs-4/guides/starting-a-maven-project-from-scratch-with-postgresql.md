@@ -212,7 +212,6 @@ your choosing and with any name) and add:
         dao-prefix=""  dao-suffix="DAO" vo-prefix=""  vo-suffix="Impl" abstract-vo-prefix=""  abstract-vo-suffix="VO" 
         ndao-prefix="" ndao-suffix=""   nvo-prefix="" nvo-suffix=""  nabstract-vo-prefix="" nabstract-vo-suffix=""
       />
-      <mappers dir="mappers" />
     </mybatis-spring>
   </generators>
   

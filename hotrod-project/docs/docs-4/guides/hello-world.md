@@ -190,7 +190,6 @@ Tell HotRod how you want the generation to work. Create the file `hotrod.xml` an
     <mybatis-spring>
       <daos package="com.myapp.daos" dao-suffix="DAO" vo-suffix="Impl" 
             abstract-vo-prefix="" abstract-vo-suffix="VO" />
-      <mappers dir="mappers" />
     </mybatis-spring>
   </generators>
   
