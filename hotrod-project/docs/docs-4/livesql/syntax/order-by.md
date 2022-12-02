@@ -36,7 +36,7 @@ The following query returns the unpaid payments, sorted by client name, and in d
 ```java
 PaymentTable p = PaymentDAO.newTable("p");
 
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .select()
     .from(p) 
     .where(p.status.eq("UNPAID"))
@@ -69,7 +69,7 @@ oldest due date in descending order:
 ```java
 PaymentTable p = PaymentDAO.newTable("p");
 
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .select(p.clientName, sql.min(p.dueDate), sql.max(p.dueDate))
     .from(p) 
     .where(p.status.eq("UNPAID"))

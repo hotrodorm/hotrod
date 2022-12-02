@@ -213,8 +213,6 @@ your choosing and with any name) and add:
         ndao-prefix="" ndao-suffix=""   nvo-prefix="" nvo-suffix=""  nabstract-vo-prefix="" nabstract-vo-suffix=""
       />
       <mappers dir="mappers" />
-      <classic-fk-navigation />
-      <select-generation strategy="result-set" />          
     </mybatis-spring>
   </generators>
   
@@ -345,14 +343,14 @@ public class App {
 
     EmployeeTable e = EmployeeDAO.newTable();
 
-    List<Map<String, Object>> l = this.sql
+    List<Row> rows = this.sql
       .select()
       .from(e)
       .where(e.name.like("A%"))
       .execute();
 
     System.out.println("Employees with names that start with 'A':");
-    for (Map<String, Object> r: l) {
+    for (Row r: rows) {
       System.out.println(r);
     }
 

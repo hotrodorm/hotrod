@@ -24,7 +24,7 @@ The following query returns all branches from the north region, sorted by name, 
 ```java
 BranchTable b = BranchDAO.newTable("b");
 
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .select()
     .from(b) 
     .where(b.region.eq("NORTH"))

@@ -14,7 +14,7 @@ The following query computes the total balance of the checking accounts by regio
 ```java
 AccountTable a = AccountDAO.newTable("a");
 
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .select(a.region, a.type, sql.sum(a.balance))
     .from(a) 
     .where(w.type.eq("CHK"))
@@ -53,7 +53,7 @@ The following query aggregates rows by a more complex expression:
 ```java
 AccountTable a = AccountDAO.newTable("a");
 
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .select(
       a.region,
       sql.caseWhen(a.type.in("CHK", "INV"), "DISP").elseValue("N/A").end(),

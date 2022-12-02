@@ -23,7 +23,7 @@ by adding up the `amount` column according to a subgroup and ordering.
 ```java
 DepositTable d = DepositDAO.newTable("d");
 
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .select(d.accountId, d.depositDate, d.amount,
       sql.sum(d.amount).over().partitionBy(d.accountId).orderBy(d.depositDate.asc()).end().as("total_deposits_to_date")
     )

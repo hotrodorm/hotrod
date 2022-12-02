@@ -14,7 +14,7 @@ The following query selects all widgets that are active:
 ```java
 WidgetTable w = WidgetDAO.newTable("w");
 
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .select()
     .from(w) 
     .where(w.status.eq("ACT"))

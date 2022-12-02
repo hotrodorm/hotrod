@@ -19,7 +19,7 @@ The following query selects all lottery games with added prizes over 1 million:
 ```java
 LotteryPrizesTable lp = LotteryPrizesDAO.newTable();
 
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .select(lp.game_id, sql.sum(prize))
     .from(lp) 
     .groupBy(lp.gameId)

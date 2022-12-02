@@ -21,7 +21,7 @@ The following example previews a `SELECT` statement before executing it:
 ```java
 DepositTable d = DepositDAO.newTable("d");
 
-ExecutableSelect<Map<String, Object>> query = this.sql
+ExecutableSelect<Row> query = this.sql
     .select(d.balance)
     .from(d) 
     .where(d.accountId.eq(10014874).and(d.status.ne("PENDING")))
@@ -29,7 +29,7 @@ ExecutableSelect<Map<String, Object>> query = this.sql
 
 System.out.println(query.getPreview());
 
-List<Map<String, Object>> rows = query.execute();
+List<Row> rows = query.execute();
 ```
 
 The code above displays the actual SQL statement being executed as:

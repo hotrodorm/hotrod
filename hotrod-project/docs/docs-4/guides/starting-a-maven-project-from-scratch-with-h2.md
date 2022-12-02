@@ -241,8 +241,6 @@ your choosing and with any name) and add:
         ndao-prefix="" ndao-suffix=""   nvo-prefix="" nvo-suffix=""  nabstract-vo-prefix="" nabstract-vo-suffix=""
       />
       <mappers dir="mappers" />
-      <classic-fk-navigation />
-      <select-generation strategy="result-set" />          
     </mybatis-spring>
   </generators>
   
@@ -293,8 +291,8 @@ We see the code generation details:
 [INFO] Building myapp 1.0.0-SNAPSHOT
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO] 
-[INFO] --- hotrod-maven-plugin:3.4.8-SNAPSHOT:gen (default-cli) @ myapp ---
-[INFO] HotRod version 3.4.8 (build 20221101-172137) - Generate
+[INFO] --- hotrod-maven-plugin:4.0.0:gen (default-cli) @ myapp ---
+[INFO] HotRod version 4.0.0 (build 20221101-172137) - Generate
 [INFO] 
 [INFO] Configuration File: ~/example/./hotrod.xml
 [INFO] Database URL: jdbc:h2:tcp://localhost/./data/test1
@@ -399,14 +397,14 @@ public class App {
 
     EmployeeTable e = EmployeeDAO.newTable();
 
-    List<Map<String, Object>> l = this.sql
+    List<Row> rows = this.sql
       .select()
       .from(e)
       .where(e.name.like("A%"))
       .execute();
 
     System.out.println("Employees with names that start with 'A':");
-    for (Map<String, Object> r: l) {
+    for (Row r: rows) {
       System.out.println(r);
     }
 

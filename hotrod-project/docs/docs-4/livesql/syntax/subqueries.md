@@ -12,7 +12,7 @@ The following query uses a subquery in the `IN` operator:
 EmployeeTable e = EmployeeDAO.newTable("e");
 CodesTable c = CodesDAO.newTable("c");
 
-List<Map<String, Object>> rows = this.sql 
+List<Row> rows = this.sql 
     .select()
     .from(e) 
     .where(e.type.notIn(
@@ -40,7 +40,7 @@ to the query above. [^1]
 EmployeeTable e = EmployeeDAO.newTable("e");
 CodesTable c = CodesDAO.newTable("c");
 
-List<Map<String, Object>> rows = this.sql 
+List<Row> rows = this.sql 
     .select()
     .from(e) 
     .where(this.sql.notExists(
@@ -72,7 +72,7 @@ comparing more than one column. For example:
 EmployeeTable e = EmployeeDAO.newTable("e");
 CodesTable c = CodesDAO.newTable("c");
 
-List<Map<String, Object>> rows = this.sql 
+List<Row> rows = this.sql 
     .select()
     .from(e) 
     .where(e.tuple(e.type, e.region).notIn(

@@ -15,7 +15,7 @@ AccountTable a = AccountDAO.newTable("a");
 TransactionTable t = TransactionDAO.newTable("t");
 BigAccountsView ba = BigAccountsDAO.newView("ba");
 
-List<Map<String, Object>> rows = this.sql 
+List<Row> rows = this.sql 
     .select() 
     .from(a) 
     .join(t, t.accountId.eq(a.id))
@@ -64,7 +64,7 @@ The following example illustrates a self-referencing join:
 EmployeeTable e = EmployeeDAO.newTable("e");
 EmployeeTable m = EmployeeDAO.newTable("m"); // same table with alias "m" for "manager"
 
-List<Map<String, Object>> rows = this.sql 
+List<Row> rows = this.sql 
     .select(e.name, m.name.as("manager_name")) 
     .from(e) 
     .leftJoin(m, m.id.eq(e.managerId))

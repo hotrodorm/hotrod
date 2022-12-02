@@ -12,7 +12,7 @@ To select all columns of the table(s) start the query with `select()`. For examp
 ```java
 EmployeeTable e = EmployeeDAO.newTable("e");
 
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .select()
     .from(e) 
     .execute();
@@ -33,7 +33,7 @@ To select a subset of the columns of the table(s) start the query with:
 ```java
 ProductTable p = ProductDAO.newTable("p");
 
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .select(p.name, p.price.mult(p.qty), a.status)
     .from(p) 
     .execute();
@@ -57,7 +57,7 @@ PostgreSQL, MySQL, MariaDB, and SQL Server can execute a `SELECT` without a `FRO
 if the values can be computed directly without using any table. For example, the following query is valid in SQL Server:
 
 ```java
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .select(
       sql.val(7),
       sql.val(15).mult(sql.val(3)), 
@@ -87,7 +87,7 @@ column as `total_price`, as shown below:
 ```java
 ProductTable p = ProductDAO.newTable("p");
 
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .select(p.name, p.price.plus(p.tax).as("total_price"))
     .from(p) 
     .execute();
@@ -111,7 +111,7 @@ as shown below:
 ```java
 VehicleTable v = VehicleDAO.newTable("v");
 
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .selectDistinct()
     .from(v) 
     .execute();
@@ -131,7 +131,7 @@ The `DISTINCT` qualifier can also be combined with a specific list of columns:
 ```java
 VehicleTable v = VehicleDAO.newTable("v");
 
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .selectDistinct(v.brand, v.region)
     .from(v) 
     .execute();

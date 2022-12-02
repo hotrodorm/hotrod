@@ -216,8 +216,8 @@ We see the code generation details:
 [INFO] Building myapp 1.0.0-SNAPSHOT
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO] 
-[INFO] --- hotrod-maven-plugin:3.4.8 (default-cli) @ myapp ---
-[INFO] HotRod version 3.4.8 (build 20221102-152614) - Generate
+[INFO] --- hotrod-maven-plugin:4.0.0 (default-cli) @ myapp ---
+[INFO] HotRod version 4.0.0 (build 20221102-152614) - Generate
 [INFO] 
 [INFO] Configuration File: ~/example/./hotrod.xml
 [INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './create-db.sql';DB_CLOSE_DELAY=-1

@@ -27,7 +27,7 @@ The following query returns the top 10 employees with the highest salary:
 ```java
 EmployeeTable e = EmployeeDAO.newTable("e");
 
-List<Map<String, Object>> rows = this.sql
+List<Row> rows = this.sql
     .select()
     .from(e) 
     .orderBy(e.salary.desc())
