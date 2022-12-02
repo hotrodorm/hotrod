@@ -41,7 +41,6 @@ public class PurgeOperation {
 
   private File baseDir;
   private String configfilename = null;
-  private String generator = null;
   private String localproperties = null;
 
   private String jdbcdriverclass = null;
@@ -55,12 +54,11 @@ public class PurgeOperation {
 
   private File configFile;
 
-  public PurgeOperation(final File baseDir, final String configfilename, final String generator,
-      final String localproperties, final String jdbcdriverclass, final String jdbcurl, final String jdbcusername,
-      final String jdbcpassword, final String jdbccatalog, final String jdbcschema) {
+  public PurgeOperation(final File baseDir, final String configfilename, final String localproperties,
+      final String jdbcdriverclass, final String jdbcurl, final String jdbcusername, final String jdbcpassword,
+      final String jdbccatalog, final String jdbcschema) {
     this.baseDir = baseDir;
     this.configfilename = configfilename;
-    this.generator = generator;
     this.localproperties = localproperties;
     this.jdbcdriverclass = jdbcdriverclass;
     this.jdbcurl = jdbcurl;
@@ -102,8 +100,7 @@ public class PurgeOperation {
 
     HotRodConfigTag config = null;
     try {
-      config = ConfigurationLoader.loadPrimary(this.baseDir, this.configFile, this.generator, adapter,
-          new LinkedHashSet<String>());
+      config = ConfigurationLoader.loadPrimary(this.baseDir, this.configFile, adapter, new LinkedHashSet<String>());
     } catch (ControlledException e) {
       if (e.getLocation() != null) {
         throw new OperationException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());
@@ -210,7 +207,6 @@ public class PurgeOperation {
       // 1.b Override default values
 
       this.configfilename = props.getProperty("configfile", this.configfilename);
-      this.generator = props.getProperty("generator", this.generator);
       this.jdbcdriverclass = props.getProperty("jdbcdriverclass", this.jdbcdriverclass);
 
       this.jdbcurl = props.getProperty("jdbcurl");
@@ -234,13 +230,6 @@ public class PurgeOperation {
     if (!this.configFile.exists()) {
       throw new OperationException(
           Constants.TOOL_NAME + " parameter: " + "configfile does not exist: " + this.configfilename);
-    }
-
-    // generator
-
-    if (SUtil.isEmpty(this.generator)) {
-      throw new OperationException(
-          Constants.TOOL_NAME + " parameter: " + "The attribute 'generator' must be specified.");
     }
 
     // driverclass

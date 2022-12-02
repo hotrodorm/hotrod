@@ -39,7 +39,7 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   private MappersTag mappers = null;
   private TemplateTag template = null;
   private SelectGenerationTag selectGeneration = null;
-  private ClassicFKNavigationTag classicFKNavigation = null;
+  private ClassicFKNavigationTag classicFKNavigation = new ClassicFKNavigationTag();
   private List<PropertyTag> propertyTags = new ArrayList<PropertyTag>();
 
   private MyBatisProperties properties = new MyBatisProperties();

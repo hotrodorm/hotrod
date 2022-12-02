@@ -13,7 +13,6 @@ public class PurgeAntTask extends Task {
   private static transient final Logger log = LogManager.getLogger(PurgeAntTask.class);
 
   private String configfile = null;
-  private String generator = null;
   private String localproperties = null;
 
   private String jdbcdriverclass = null;
@@ -27,8 +26,8 @@ public class PurgeAntTask extends Task {
   public void execute() {
     log.debug("init");
 
-    PurgeOperation op = new PurgeOperation(new File("."), this.configfile, this.generator, this.localproperties,
-        this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema);
+    PurgeOperation op = new PurgeOperation(new File("."), this.configfile, this.localproperties, this.jdbcdriverclass,
+        this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema);
 
     try {
       op.execute(new AntFeedback(this));
@@ -42,10 +41,6 @@ public class PurgeAntTask extends Task {
 
   public void setConfigfile(final String configfile) {
     this.configfile = configfile;
-  }
-
-  public void setGenerator(final String generator) {
-    this.generator = generator;
   }
 
   public void setLocalproperties(String localproperties) {

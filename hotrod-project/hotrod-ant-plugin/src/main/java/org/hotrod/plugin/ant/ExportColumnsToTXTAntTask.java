@@ -13,7 +13,6 @@ public class ExportColumnsToTXTAntTask extends Task {
   private static transient final Logger log = LogManager.getLogger(ExportColumnsToTXTAntTask.class);
 
   private String configfile = null;
-  private String generator = null;
   private String localproperties = null;
 
   private String jdbcdriverclass = null;
@@ -31,7 +30,7 @@ public class ExportColumnsToTXTAntTask extends Task {
   public void execute() {
     log.debug("init");
 
-    ExportColumnsToTXTOperation op = new ExportColumnsToTXTOperation(new File("."), this.configfile, this.generator,
+    ExportColumnsToTXTOperation op = new ExportColumnsToTXTOperation(new File("."), this.configfile,
         this.localproperties, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword,
         this.jdbccatalog, this.jdbcschema, this.display, this.facets, this.exportfilename);
 
@@ -47,10 +46,6 @@ public class ExportColumnsToTXTAntTask extends Task {
 
   public void setConfigfile(final String configfile) {
     this.configfile = configfile;
-  }
-
-  public void setGenerator(final String generator) {
-    this.generator = generator;
   }
 
   public void setLocalproperties(String localproperties) {

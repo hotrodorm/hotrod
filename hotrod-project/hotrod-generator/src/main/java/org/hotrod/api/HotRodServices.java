@@ -24,7 +24,6 @@ public class HotRodServices {
   private static final Logger log = LogManager.getLogger(HotRodServices.class);
 
   private File baseDir;
-  private String generatorName;
   private String jdbcdriverclass;
   private String jdbcurl;
   private String jdbcusername;
@@ -35,12 +34,11 @@ public class HotRodServices {
   private DisplayMode displayMode;
   private LinkedHashSet<String> facetNames;
 
-  public HotRodServices(File baseDir, String generatorName, String jdbcdriverclass, String jdbcurl, String jdbcusername,
+  public HotRodServices(File baseDir, String jdbcdriverclass, String jdbcurl, String jdbcusername,
       String jdbcpassword, String jdbccatalog, String jdbcschema, File configFile, DisplayMode displayMode,
       LinkedHashSet<String> facetNames) {
     super();
     this.baseDir = baseDir;
-    this.generatorName = generatorName;
     this.jdbcdriverclass = jdbcdriverclass;
     this.jdbcurl = jdbcurl;
     this.jdbcusername = jdbcusername;
@@ -61,7 +59,7 @@ public class HotRodServices {
     try {
 
       HotRodContext hc = new HotRodContext(configFile, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword,
-          jdbccatalog, jdbcschema, generatorName, baseDir, facetNames, feedback);
+          jdbccatalog, jdbcschema, baseDir, facetNames, feedback);
 
       // Generate
 

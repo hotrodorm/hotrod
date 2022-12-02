@@ -49,8 +49,7 @@ public class HotRodContext {
 
   public HotRodContext(final File configFile, final String jdbcdriverclass, final String jdbcurl,
       final String jdbcusername, final String jdbcpassword, final String jdbccatalog, final String jdbcschema,
-      final String generatorName, final File baseDir, final LinkedHashSet<String> facetNames, final Feedback feedback)
-      throws ControlledException {
+      final File baseDir, final LinkedHashSet<String> facetNames, final Feedback feedback) throws ControlledException {
 
     feedback.info("");
     feedback.info("Configuration File: " + configFile);
@@ -116,7 +115,7 @@ public class HotRodContext {
       // Configuration
 
       try {
-        this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, generatorName, adapter, facetNames);
+        this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, adapter, facetNames);
       } catch (ControlledException e) {
         if (e.getLocation() != null) {
           throw new ControlledException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());

@@ -1,7 +1,7 @@
 package org.hotrod.runtime.livesql.dialects;
 
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialectFactory;
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,8 +21,8 @@ public class DialectConfiguration {
   private String liveSQLDialectMinorVersion;
 
   @Bean
-  public LiveSQLDialect liveSQLDialect() throws Exception {
-    LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(null, this.liveSQLDialectName,
+  public LiveSQLDialect liveSQLDialect(DataSource dataSource) throws Exception {
+    LiveSQLDialect liveSQLDialect = LiveSQLDialectFactory.getLiveSQLDialect(dataSource, this.liveSQLDialectName,
         this.liveSQLDialectDatabaseName, this.liveSQLDialectVersionString, this.liveSQLDialectMajorVersion,
         this.liveSQLDialectMinorVersion);
     System.out.println("[auto-config] liveSQLDialect=" + liveSQLDialect);

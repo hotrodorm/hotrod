@@ -44,20 +44,15 @@ public class GeneratorsTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate(final File basedir, final File parentDir, final String generatorName)
+  public void validate(final File basedir, final File parentDir)
       throws InvalidConfigurationFileException, GeneratorNotFoundException {
     for (AbstractGeneratorTag g : this.generators) {
-      log.debug("g.getName()=" + g.getName() + " / generatorName=" + generatorName + " g=" + g);
-      if (g.getName().equals(generatorName)) {
-        this.selectedGeneratorTag = g;
-        g.validate(basedir, parentDir);
-        return;
-      }
+      this.selectedGeneratorTag = g;
+      g.validate(basedir, parentDir);
+      return;
     }
     if (this.selectedGeneratorTag == null) {
-      throw new GeneratorNotFoundException("No HotRod generator found with name '" + generatorName + "'. "
-          + "This name was specified in the environment "
-          + "but it was not declared inside the <generators> tag of the configuration file.");
+      throw new GeneratorNotFoundException("No HotRod generator found.");
     }
   }
 

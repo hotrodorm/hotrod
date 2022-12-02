@@ -13,7 +13,6 @@ public class GenAntTask extends Task {
   private static transient final Logger log = LogManager.getLogger(GenAntTask.class);
 
   private String configfile = null;
-  private String generator = null;
   private String localproperties = null;
 
   private String jdbcdriverclass = null;
@@ -30,9 +29,9 @@ public class GenAntTask extends Task {
     log.debug("init");
 
     try {
-      GenOperation op = new GenOperation(new File("."), this.configfile, this.generator, this.localproperties,
-          this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema,
-          this.facets, this.display);
+      GenOperation op = new GenOperation(new File("."), this.configfile, this.localproperties, this.jdbcdriverclass,
+          this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema, this.facets,
+          this.display);
       op.execute(new AntFeedback(this));
     } catch (Exception e) {
       throw new BuildException(e.getMessage(), e.getCause());
@@ -44,10 +43,6 @@ public class GenAntTask extends Task {
 
   public void setConfigfile(final String configfile) {
     this.configfile = configfile;
-  }
-
-  public void setGenerator(final String generator) {
-    this.generator = generator;
   }
 
   public void setLocalproperties(String localproperties) {

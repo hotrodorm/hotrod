@@ -12,8 +12,6 @@
         ndao-prefix="" ndao-suffix=""   nvo-prefix="" nvo-suffix=""  nabstract-vo-prefix="" nabstract-vo-suffix=""
       />
       <mappers dir="mappers/mysql" />
-      <classic-fk-navigation />
-      <select-generation strategy="result-set" />
     </mybatis-spring>
   </generators>
   

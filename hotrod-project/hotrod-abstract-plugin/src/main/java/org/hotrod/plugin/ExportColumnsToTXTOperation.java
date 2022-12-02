@@ -26,12 +26,12 @@ public class ExportColumnsToTXTOperation extends AbstractExportColumnsOperation 
 
   private static final int PAGE_SIZE = 40;
 
-  public ExportColumnsToTXTOperation(final File baseDir, final String configfilename, final String generator,
-      final String localproperties, final String jdbcdriverclass, final String jdbcurl, final String jdbcusername,
-      final String jdbcpassword, final String jdbccatalog, final String jdbcschema, final String facets,
-      final String display, final String exportfilename) {
-    super(baseDir, configfilename, generator, localproperties, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword,
-        jdbccatalog, jdbcschema, facets, display, exportfilename);
+  public ExportColumnsToTXTOperation(final File baseDir, final String configfilename, final String localproperties,
+      final String jdbcdriverclass, final String jdbcurl, final String jdbcusername, final String jdbcpassword,
+      final String jdbccatalog, final String jdbcschema, final String facets, final String display,
+      final String exportfilename) {
+    super(baseDir, configfilename, localproperties, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, jdbccatalog,
+        jdbcschema, facets, display, exportfilename);
     log.debug("init");
   }
 

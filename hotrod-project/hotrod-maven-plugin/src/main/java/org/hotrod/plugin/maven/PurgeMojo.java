@@ -21,9 +21,6 @@ public class PurgeMojo extends AbstractMojo {
   @Parameter(property = "configfile")
   private String configfile = null;
 
-  @Parameter(property = "generator")
-  private String generator = null;
-
   @Parameter(property = "localproperties")
   private String localproperties = null;
 
@@ -57,9 +54,8 @@ public class PurgeMojo extends AbstractMojo {
   public void execute() throws MojoExecutionException {
     log.debug("init");
 
-    PurgeOperation op = new PurgeOperation(this.project.getBasedir(), this.configfile, this.generator,
-        this.localproperties, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword,
-        this.jdbccatalog, this.jdbcschema);
+    PurgeOperation op = new PurgeOperation(this.project.getBasedir(), this.configfile, this.localproperties,
+        this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema);
 
     try {
       op.execute(new MojoFeedback(this));

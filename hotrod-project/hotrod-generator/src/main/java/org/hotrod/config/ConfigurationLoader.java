@@ -63,7 +63,7 @@ public class ConfigurationLoader {
 
   // Behavior
 
-  public static HotRodConfigTag loadPrimary(final File projectBaseDir, final File f, final String generatorName,
+  public static HotRodConfigTag loadPrimary(final File projectBaseDir, final File f, 
       final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames)
       throws ControlledException, UncontrolledException, FacetNotFoundException {
 
@@ -135,7 +135,7 @@ public class ConfigurationLoader {
       log.debug("parentFile=" + parentDir + " :: " + parentDir.getAbsolutePath());
 
       log.debug("Will validate semantics.");
-      config.validate(projectBaseDir, parentDir, f, generatorName);
+      config.validate(projectBaseDir, parentDir, f);
       log.debug("Semantics validation #1 successful.");
 
       // Validation (common)

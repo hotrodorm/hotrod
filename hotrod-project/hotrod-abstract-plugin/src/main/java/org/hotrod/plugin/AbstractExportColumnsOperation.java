@@ -28,7 +28,6 @@ public abstract class AbstractExportColumnsOperation {
 
   protected File baseDir;
   protected String configfilename = null;
-  protected String generatorName = null;
   protected String localproperties = null;
 
   protected String jdbcdriverclass = null;
@@ -49,14 +48,13 @@ public abstract class AbstractExportColumnsOperation {
 
   private LinkedHashSet<String> facetNames = null;
 
-  protected AbstractExportColumnsOperation(final File baseDir, final String configfilename, final String generatorName,
+  protected AbstractExportColumnsOperation(final File baseDir, final String configfilename,
       final String localproperties, final String jdbcdriverclass, final String jdbcurl, final String jdbcusername,
       final String jdbcpassword, final String jdbccatalog, final String jdbcschema, final String facets,
       final String display, final String exportfilename) {
     log.debug("exportfilename=" + exportfilename);
     this.baseDir = baseDir;
     this.configfilename = configfilename;
-    this.generatorName = generatorName;
     this.localproperties = localproperties;
     this.jdbcdriverclass = jdbcdriverclass;
     this.jdbcurl = jdbcurl;
@@ -78,7 +76,7 @@ public abstract class AbstractExportColumnsOperation {
     validateParameters(feedback);
 
     HotRodContext hc = new HotRodContext(configFile, jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, jdbccatalog,
-        jdbcschema, generatorName, baseDir, facetNames, feedback);
+        jdbcschema, baseDir, facetNames, feedback);
 
     try {
 
@@ -164,7 +162,6 @@ public abstract class AbstractExportColumnsOperation {
       // 1.b Override default values
 
       this.configfilename = props.getProperty("configfile", this.configfilename);
-      this.generatorName = props.getProperty("generator", this.generatorName);
       this.jdbcdriverclass = props.getProperty("jdbcdriverclass", this.jdbcdriverclass);
 
       this.jdbcurl = props.getProperty("jdbcurl");
@@ -191,12 +188,6 @@ public abstract class AbstractExportColumnsOperation {
     this.configFile = new File(this.baseDir, this.configfilename);
     if (!this.configFile.exists()) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile does not exist: " + this.configfilename);
-    }
-
-    // generator
-
-    if (SUtil.isEmpty(this.generatorName)) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "The attribute 'generator' must be specified.");
     }
 
     // driverclass

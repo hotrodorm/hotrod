@@ -21,9 +21,6 @@ public class ExportColumnsToTXTMojo extends AbstractMojo {
   @Parameter(property = "configfile")
   private String configfile = null;
 
-  @Parameter(property = "generator")
-  private String generator = null;
-
   @Parameter(property = "localproperties")
   private String localproperties = null;
 
@@ -69,7 +66,7 @@ public class ExportColumnsToTXTMojo extends AbstractMojo {
     log.debug("this.txtexportfile=" + this.txtexportfile);
 
     ExportColumnsToTXTOperation op = new ExportColumnsToTXTOperation(this.project.getBasedir(), this.configfile,
-        this.generator, this.localproperties, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword,
+        this.localproperties, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername, this.jdbcpassword,
         this.jdbccatalog, this.jdbcschema, this.facets, this.display, this.txtexportfile);
 
     try {

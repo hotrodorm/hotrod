@@ -22,7 +22,6 @@ public class GenOperation {
 
   private File baseDir;
   private String configfilename = null;
-  private String generatorName = null;
   private String localproperties = null;
 
   private String jdbcdriverclass = null;
@@ -41,13 +40,11 @@ public class GenOperation {
 
   private LinkedHashSet<String> facetNames = null;
 
-  public GenOperation(final File baseDir, final String configfilename, final String generatorName,
-      final String localproperties, final String jdbcdriverclass, final String jdbcurl, final String jdbcusername,
-      final String jdbcpassword, final String jdbccatalog, final String jdbcschema, final String facets,
-      final String display) throws Exception {
+  public GenOperation(final File baseDir, final String configfilename, final String localproperties,
+      final String jdbcdriverclass, final String jdbcurl, final String jdbcusername, final String jdbcpassword,
+      final String jdbccatalog, final String jdbcschema, final String facets, final String display) throws Exception {
     this.baseDir = baseDir;
     this.configfilename = configfilename;
-    this.generatorName = generatorName;
     this.localproperties = localproperties;
     this.jdbcdriverclass = jdbcdriverclass;
     this.jdbcurl = jdbcurl;
@@ -63,9 +60,8 @@ public class GenOperation {
   public void execute(final Feedback feedback) throws Exception {
     log.debug("init");
 
-    HotRodServices hs = new HotRodServices(this.baseDir, this.generatorName, this.jdbcdriverclass, this.jdbcurl,
-        this.jdbcusername, this.jdbcpassword, this.jdbccatalog, this.jdbcschema, this.configFile, this.displayMode,
-        this.facetNames);
+    HotRodServices hs = new HotRodServices(this.baseDir, this.jdbcdriverclass, this.jdbcurl, this.jdbcusername,
+        this.jdbcpassword, this.jdbccatalog, this.jdbcschema, this.configFile, this.displayMode, this.facetNames);
     hs.generate(feedback);
 
   }
@@ -119,7 +115,6 @@ public class GenOperation {
       // 1.b Override default values
 
       this.configfilename = props.getProperty("configfile", this.configfilename);
-      this.generatorName = props.getProperty("generator", this.generatorName);
       this.jdbcdriverclass = props.getProperty("jdbcdriverclass", this.jdbcdriverclass);
 
       this.jdbcurl = props.getProperty("jdbcurl");
@@ -144,12 +139,6 @@ public class GenOperation {
     this.configFile = new File(this.baseDir, this.configfilename);
     if (!this.configFile.exists()) {
       throw new Exception(Constants.TOOL_NAME + " parameter: " + "configfile does not exist: " + this.configfilename);
-    }
-
-    // generator
-
-    if (SUtil.isEmpty(this.generatorName)) {
-      throw new Exception(Constants.TOOL_NAME + " parameter: " + "The attribute 'generator' must be specified.");
     }
 
     // driverclass
