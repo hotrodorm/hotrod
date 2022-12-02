@@ -6,6 +6,7 @@ generators have been deprecated.
 It can optionally include any of the following tags, in the order shown below:
 
 - A `<daos>` tag to configure the details of the generated Java classes, such as base dir, packages, prefixed, and suffixes.
-- An optional `<mappers>` tag to configure the location of the generated mapper files.
-- An optional `<select-generation>` tag to configure the SQL Processor for Nitro queries.
+- A `<mappers>` tag to configure the details of the generated mapper files, such as base dir and folder.
+- A `<select-generation>` tag to configure the SQL Processor for Nitro queries. It's recommended to include this tag.
+- A `<classic-fk-generation>` tag to activate the CRUD foreign key navigation methods. It's recommended to include this tag.
 - One or more `<property>` tags to set up internal details of the generator engine.
