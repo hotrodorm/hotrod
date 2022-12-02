@@ -13,5 +13,5 @@ HotRod includes four modules:
 
 ## Documentation
 
-See documentation at [HotRod 3.4](./hotrod-project/docs/docs-3.4/README.md) and [HotRod 4](./hotrod-project/docs/docs-4/README.md).
+See documentation at [HotRod 3.4](./hotrod-project/docs/docs-3.4/README.md) and [HotRod 4](./hotrod-project/docs/docs-4/README.md) (unreleased).
 
