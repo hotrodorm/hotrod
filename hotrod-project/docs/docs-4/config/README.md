@@ -84,7 +84,6 @@ The general structure of HotRod's main configuration file is shown below:
             * [`<daos>`](tags/daos.md)
             * [`<mappers>`](tags/mappers.md)
             * [`<select-generation>`](tags/select-generation.md)
-            * [`<classic-fk-navigation>`](tags/classic-fk-navigation.md)
             * [`<property>`](tags/property.md)
         * `<mybatis>` *obsolete*
         * `<spring-jdbc>` *obsolete*
