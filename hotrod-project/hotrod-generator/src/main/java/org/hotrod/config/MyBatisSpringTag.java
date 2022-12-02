@@ -122,6 +122,12 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
       this.template.setTemplateFile(TemplateTag.DEFAULT_TEMPLATE_FILE);
     }
 
+    // Mappers
+
+    if (this.mappers == null) {
+      this.mappers = MappersTag.DEFAULT_MAPPERS_TAG;
+    }
+
     // select-generation
 
     if (this.selectGeneration == null) {

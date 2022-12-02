@@ -22,9 +22,16 @@ public class MappersTag extends AbstractConfigurationTag {
   private static final Logger log = LogManager.getLogger(MappersTag.class);
 
   private static final String DEFAULT_BASE_DIR = "src/main/resources";
+  private static final String DEFAULT_DIR = "mappers";
 
   private static final String PRIMITIVES_MAPPERS_DIR = "primitives";
   private static final String CUSTOM_MAPPERS_DIR = "custom";
+
+  public static final MappersTag DEFAULT_MAPPERS_TAG = new MappersTag();
+  static {
+    DEFAULT_MAPPERS_TAG.sBaseDir = DEFAULT_BASE_DIR;
+    DEFAULT_MAPPERS_TAG.sDir = DEFAULT_DIR;
+  }
 
   // Properties
 
