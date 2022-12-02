@@ -63,12 +63,6 @@ The complete `pom.xml` file will look like:
       <version>2.3.4.RELEASE</version>
     </dependency>  
 
-    <dependency> <!-- Your app needs the JDBC driver to connect to the database. Can be provided at runtime -->
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>2.1.214</version>
-    </dependency>
-
     <dependency> <!-- Required. The main HotRod library -->
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod</artifactId>
@@ -86,6 +80,12 @@ The complete `pom.xml` file will look like:
       <artifactId>mybatis-spring-boot-starter</artifactId>
       <version>2.1.3</version>
     </dependency>    
+
+    <dependency> <!-- Your app needs the JDBC driver to connect to the database. Can be provided at runtime -->
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>2.1.214</version>
+    </dependency>
 
   </dependencies>
 
@@ -112,15 +112,12 @@ The complete `pom.xml` file will look like:
         <version>4.0.0</version>
         <configuration>
           <configfile>./hotrod.xml</configfile>
-          <generator>MyBatis-Spring</generator>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
           <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './create-db.sql';DB_CLOSE_DELAY=-1</jdbcurl>
           <jdbcusername>sa</jdbcusername>
           <jdbcpassword>""</jdbcpassword>
           <jdbccatalog>EXAMPLEDB</jdbccatalog>
           <jdbcschema>PUBLIC</jdbcschema>
-          <facets></facets>
-          <display></display>
         </configuration>
         <dependencies>
           <dependency>
@@ -191,7 +188,8 @@ Tell HotRod how you want the generation to work. Create the file `hotrod.xml` an
 
   <generators>
     <mybatis-spring>
-      <daos package="com.myapp.daos" dao-suffix="DAO" vo-suffix="Impl" abstract-vo-prefix="" abstract-vo-suffix="VO" />
+      <daos package="com.myapp.daos" dao-suffix="DAO" vo-suffix="Impl" 
+            abstract-vo-prefix="" abstract-vo-suffix="VO" />
       <mappers dir="mappers" />
     </mybatis-spring>
   </generators>
@@ -256,6 +254,7 @@ overwritten afterwards. The other files are always overwritten to keep them curr
 ## Part 3 &mdash; The Application
 
 In this part we write a simple app that uses the CRUD and LiveSQL functionalities to read from the database.
+
 
 ### A Simple Spring Boot Application
 
