@@ -24,7 +24,7 @@ Depending on the specific database and version this query can be rendered in dif
     ```sql
     select *
     from (
-    select *, rownum as rn from t 
+      select *, rownum as rn from t 
     ) x
     where rn <= 15
     ```
