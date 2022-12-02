@@ -13,18 +13,18 @@ If the database includes a table `EMPLOYEE` with a few columns, the related DAO 
 as shown in the example code below:
 
 ```java
-  @Autowired
-  private LiveSQL sql;
+@Autowired
+private LiveSQL sql;
 
-  private void searching() {
-    EmployeeTable e = EmployeeDAO.newTable();
+private void searching() {
+  EmployeeTable e = EmployeeDAO.newTable();
 
-    List<Map<String, Object>> l = this.sql
-      .select()
-      .from(e)
-      .where(e.name.like("A%"))
-      .execute();
-  }
+  List<Map<String, Object>> l = this.sql
+    .select()
+    .from(e)
+    .where(e.name.like("A%"))
+    .execute();
+}
 ```
 
 The DAO is used to create one instance of the table (aliased `e` in this case) for the `FROM` clause of the table. More instances of the same 
@@ -45,14 +45,14 @@ to avoid materializing the whole result set at once and read rows one at a time.
 
 Each sections of a `SELECT` statement has variations, and they are discussed below:
 
-- [The SELECT Clause](./syntax/select.md).
-- [The FROM and JOIN Clauses](./syntax/from-and-joins.md).
-- [The WHERE Clause](./syntax/where.md).
-- [The GROUP BY Clause](./syntax/group-by.md).
-- [The HAVING Clause](./syntax/having.md).
-- [The ORDER BY Clause](./syntax/order-by.md).
-- [The OFFSET Clause](./syntax/offset.md).
-- [The LIMIT Clause](./syntax/limit.md).
+- [The SELECT Statement](./syntax/select.md).
+    - [The FROM and JOIN Clauses](./syntax/from-and-joins.md).
+    - [The WHERE Clause](./syntax/where.md).
+    - [The GROUP BY Clause](./syntax/group-by.md).
+    - [The HAVING Clause](./syntax/having.md).
+    - [The ORDER BY Clause](./syntax/order-by.md).
+    - [The OFFSET Clause](./syntax/offset.md).
+    - [The LIMIT Clause](./syntax/limit.md).
 
 The Expression Language:
 

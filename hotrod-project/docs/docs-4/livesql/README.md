@@ -13,18 +13,18 @@ If the database includes a table `EMPLOYEE` with a few columns, the related DAO 
 as shown in the example code below:
 
 ```java
-  @Autowired
-  private LiveSQL sql;
+@Autowired
+private LiveSQL sql;
 
-  private void searching() {
-    EmployeeTable e = EmployeeDAO.newTable();
+private void searching() {
+  EmployeeTable e = EmployeeDAO.newTable();
 
-    List<Map<String, Object>> l = this.sql
-      .select()
-      .from(e)
-      .where(e.name.like("A%"))
-      .execute();
-  }
+  List<Map<String, Object>> l = this.sql
+    .select()
+    .from(e)
+    .where(e.name.like("A%"))
+    .execute();
+}
 ```
 
 The DAO is used to create one instance of the table (aliased `e` in this case) for the `FROM` clause of the table. More instances of the same 
