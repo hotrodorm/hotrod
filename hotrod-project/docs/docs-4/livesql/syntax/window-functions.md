@@ -25,7 +25,8 @@ DepositTable d = DepositDAO.newTable("d");
 
 List<Row> rows = this.sql
     .select(d.accountId, d.depositDate, d.amount,
-      sql.sum(d.amount).over().partitionBy(d.accountId).orderBy(d.depositDate.asc()).end().as("total_deposits_to_date")
+      sql.sum(d.amount).over().partitionBy(d.accountId).orderBy(d.depositDate.asc()).end()
+        .as("total_deposits_to_date")
     )
     .from(d) 
     .execute();

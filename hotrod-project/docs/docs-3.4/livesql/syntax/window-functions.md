@@ -5,7 +5,6 @@ values from multiple rows and do not require a `GROUP BY` clause. Some tradition
 been enhanced to also work as window functions.
 
 
-
 ## Example
 
 The following query computes on the fly the column `total_deposits_to_date` &mdash; that doesn't exist in the table &mdash;
@@ -25,7 +24,8 @@ DepositTable d = DepositDAO.newTable("d");
 
 List<Map<String, Object>> rows = this.sql
     .select(d.accountId, d.depositDate, d.amount,
-      sql.sum(d.amount).over().partitionBy(d.accountId).orderBy(d.depositDate.asc()).end().as("total_deposits_to_date")
+      sql.sum(d.amount).over().partitionBy(d.accountId).orderBy(d.depositDate.asc()).end()
+        .as("total_deposits_to_date")
     )
     .from(d) 
     .execute();
