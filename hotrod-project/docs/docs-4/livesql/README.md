@@ -37,8 +37,34 @@ Behind the scenes LiveSQL will assemble and run the query as:
 SELECT * FROM employee WHERE name like 'A%'
 ```
 
-Finally the `execute()` method runs the query and returns the result. A variant of this method called `executeCursor()` can be used instead,
-to avoid materializing the whole result set at once and read rows one at a time.
+Finally the `execute()` method runs the query and returns the result.
+
+
+## Using Cursors
+
+Instead of using the method `execute()` it's also possible to use the method `executeCursor()`. This method avoids 
+materializing the whole result set at once into a `java.util.List` and uses buffering to read rows one at a time. This
+option can reduce drastically the memory consumption of the application. 
+
+The example above using a cursor takes the form:
+
+```java
+@Autowired
+private LiveSQL sql;
+
+private void searching() {
+  EmployeeTable e = EmployeeDAO.newTable();
+
+  Cursor<Row> rows = this.sql
+    .select()
+    .from(e)
+    .where(e.name.like("A%"))
+    .executeCursor();
+}
+```
+
+Consider that cursors only live between the boundaries of a database transaction &ndash; that is, methods annotated with the 
+`@Transactional` annotation &ndash; and that they are automatically closed when the transaction ends.
 
 
 ## LiveSQL Syntax
