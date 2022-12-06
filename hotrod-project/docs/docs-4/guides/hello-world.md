@@ -14,7 +14,7 @@ After following all the steps of this guide our main project folder will include
 
 ```bash
 pom.xml                    # The Maven project file
-create-db.sql              # A SQL script that creates a table and data for this example
+schema.sql                 # A SQL script that creates a table and data for this example
 hotrod.xml                 # Tells HotRod how you want the persistent code
 src/main/java              # Your Java app and the generated DAOs and VOs
 src/main/resources         # All resources, including the generated mappers
@@ -113,7 +113,7 @@ The complete `pom.xml` file will look like:
         <configuration>
           <configfile>./hotrod.xml</configfile>
           <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
-          <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './create-db.sql';DB_CLOSE_DELAY=-1</jdbcurl>
+          <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1</jdbcurl>
           <jdbcusername>sa</jdbcusername>
           <jdbcpassword>""</jdbcpassword>
           <jdbccatalog>EXAMPLEDB</jdbccatalog>
@@ -160,10 +160,10 @@ In this part we create an in-memory table in H2 database and we generate the per
 
 ### Prepare the Database Script that Creates the Database
 
-Create the file `create-db.sql` with the following SQL content:
+Create the file `schema.sql` with the following SQL content:
 
 ```sql
-drop table if exists employee;
+drop table if exists employee; 
 
 create table employee (
   id int primary key not null,
@@ -219,7 +219,7 @@ We see the code generation details:
 [INFO] HotRod version 4.0.0 (build 20221102-152614) - Generate
 [INFO] 
 [INFO] Configuration File: ~/example/./hotrod.xml
-[INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './create-db.sql';DB_CLOSE_DELAY=-1
+[INFO] Database URL: jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
 [INFO] Database Name: H2 - version 2.1 (2.1.214 (2022-06-13))
 [INFO] JDBC Driver: H2 JDBC Driver - version 2.1 (2.1.214 (2022-06-13)) - implements JDBC Specification 4.2
 [INFO] Database Adapter: H2 Adapter
@@ -352,7 +352,7 @@ logging.level.root=INFO
 # Default datasource configuration
 
 spring.datasource.driver-class-name=org.h2.Driver
-spring.datasource.url=jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './create-db.sql';DB_CLOSE_DELAY=-1
+spring.datasource.url=jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema.sql';DB_CLOSE_DELAY=-1
 spring.datasource.username=sa
 spring.datasource.password=
 mybatis.mapper-locations=mappers/**/*.xml
