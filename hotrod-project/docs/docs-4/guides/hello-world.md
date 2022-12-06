@@ -163,6 +163,8 @@ In this part we create an in-memory table in H2 database and we generate the per
 Create the file `schema.sql` with the following SQL content:
 
 ```sql
+drop table if exists employee; 
+
 create table employee (
   id int primary key not null,
   name varchar(20) not null
