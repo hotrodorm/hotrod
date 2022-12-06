@@ -10,6 +10,8 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - Nitro defaults to `result-set` generation now. The `<select-generation>` tag can be omitted by default.
 - Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
 - Default values for the `<mappers>` tag. It can be now omitted in the configuration file.
+- Reusing JDBC connection when using result-set processor. In short, H2 does not need to drop tables at the beginning of the SQL script.
+
 
 ## 3.4.8
 - Adding support for H2 version 2.x.

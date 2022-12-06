@@ -13,6 +13,8 @@ import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.Constants;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.config.MyBatisSpringTag;
+import org.hotrod.config.SelectGenerationTag.SelectStrategy;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -112,7 +114,7 @@ public class HotRodContext {
       }
       feedback.info("");
 
-      // Configuration
+      // Loading Configuration
 
       try {
         this.config = ConfigurationLoader.loadPrimary(baseDir, configFile, adapter, facetNames);
@@ -151,7 +153,15 @@ public class HotRodContext {
       try {
 
         log.debug("gen 1");
-        db = new JdbcDatabase(loc, tables, views);
+
+        MyBatisSpringTag mst = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
+
+        if (mst.getSelectGeneration().getStrategy() == SelectStrategy.RESULT_SET) {
+          db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views);
+        } else {
+          db = new JdbcDatabase(loc, tables, views);
+        }
+
         log.debug("gen 2");
         adapter.setCurrentCatalogSchema(conn, loc.getDefaultCatalog(), loc.getDefaultSchema());
         log.debug("gen 3");
