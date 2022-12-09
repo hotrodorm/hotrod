@@ -15,3 +15,6 @@ For 4.0:
 - Remove the "generator" property. It's not useful.
 - Document the dialects for single and multiple datasources.
 
+- Table/View auto-discovery
+- Default types to java.time
+- Zero Configuration.
