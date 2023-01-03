@@ -7,7 +7,12 @@ This feature can also be enabled in the `<mybatis-spring>` tag to combine the au
 of tables and views.
 
 
-## Example #1 - Auto-Discovery Enabled Automatically
+## Examples
+
+The example below show the most common cases of auto-discovery.
+
+
+### Example #1 - Auto-Discovery Enabled Automatically
 
 The configuration shown below does not include any table, view or DAO:
 
@@ -27,7 +32,7 @@ The configuration shown below does not include any table, view or DAO:
 Auto-discovery is activated by default, and all tables and view in the default schema are included in the persistence layer.
 
 
-## Example #2 - Auto-Discovery Disabled Automatically
+### Example #2 - Auto-Discovery Disabled Automatically
 
 The configuration shown below does include one table table, view or DAO:
 
@@ -53,7 +58,7 @@ The configuration shown below does include one table table, view or DAO:
 Auto-discovery is disabled since at least one table, view or DAO are specified in the configuration. Only these tables, views and DAOs are included in the persistence layer.
 
 
-## Example #3 - Combining auto-discovery with explicitly configured tables or views
+### Example #3 - Combining auto-discovery with explicitly configured tables or views
 
 The configuration shown below does not include any table, view or DAO:
 
@@ -77,8 +82,7 @@ Auto-discovery is explicitly enabled in the configuration. All tables and view i
 layer. The extra configuration details for tables and views are honored and used in the persistence layer.
 
 
-
-## Example #4 - Excluding Tables or Views from Auto-Discovery
+### Example #4 - Excluding Tables or Views from Auto-Discovery
 
 The configuration shown below does not include any table, view or DAO:
 
