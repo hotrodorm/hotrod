@@ -1,9 +1,8 @@
 # The `<exclude>` Tag
 
-Each `<exclude>` tag added to the configuration informs the HotRod generator to exclude tables or views from the persistence layer.
+Each `<exclude>` tag added to the configuration informs the HotRod generator to exclude tables or views from the auto-discovery feature.
 
-This tag only affects the auto-discovery feature of HotRod. If a table or view is directly included with a `<table>` or `<view>` tags, the `<exclude>` tag
-does not exclude it.
+**Note**: if a table or view is explicitly included by a `<table>` or `<view>` tags, the `<exclude>` tag does not exclude it.
 
 
 ## Attributes
