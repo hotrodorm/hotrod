@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<hotrod>
+
+  <generators>
+    <mybatis-spring >
+      <daos package="com.myapp.daos" dao-suffix="DAO" vo-suffix="Impl" 
+            abstract-vo-prefix="" abstract-vo-suffix="VO" />
+    </mybatis-spring>
+  </generators>
+ 
+<!-- 
+  <table name="client" />
+-->
+
+  <exclude name="vip_client" catalog="EXAMPLEDB" schema="PUBLIC" />
+  <exclude name="EMPLOYEE" catalog="EXAMPLEDB" schema="PUBLIC" />
+
+</hotrod>
