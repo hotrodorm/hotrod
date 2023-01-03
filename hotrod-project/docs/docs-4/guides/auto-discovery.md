@@ -112,7 +112,7 @@ Any tables or views in the default schema are included in the persistence layer,
 ## See also
 
 For details see:
-- The [`<mybatis-spring>`](../tags/mybatis-spring.md) tag
-- The [`<exclude>`](../tags/exclude.md) tag
+- The [`<mybatis-spring>`](tags/mybatis-spring.md) tag
+- The [`<exclude>`](tags/exclude.md) tag
 
 
