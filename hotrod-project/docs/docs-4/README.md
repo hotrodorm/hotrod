@@ -25,7 +25,7 @@ Reference:
 
 Quick Guides:
 - [Hello World!](./guides/hello-world.md)
-- [Auto-Discovering Tables and Views](guides/auto-discovery.md)
+- [Schema Auto-Discovery](guides/auto-discovery.md)
 - [Starting a Spring Boot Project from Scratch using PostgreSQL](guides/starting-a-maven-project-from-scratch-with-postgresql.md).
 - [Automate Project Creation with One Command](maven/maven-arquetype.md).
 - [Custom Column Types](guides/mapping-column-types.md).

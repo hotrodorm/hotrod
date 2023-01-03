@@ -3,11 +3,11 @@
 HotRod discovers tables and views and adds them to the persistent layer automatically when no `<table>`, `<view>`, or `<dao>` tags are 
 present in the configuration.
 
-This feature can also be enabled if any of these tags are present to combine auto-discovery with tables and views 
-configured in an explicit way.
+This feature can also be enabled in the `<mybatis-spring>` tag to combine the auto-discovery with explicit configuration
+of tables and views.
 
 
-## Example #1 - Auto-discovery enabled automatically
+## Example #1 - Auto-Discovery Enabled Automatically
 
 The configuration shown below does not include any table, view or DAO:
 
@@ -27,9 +27,9 @@ The configuration shown below does not include any table, view or DAO:
 Auto-discovery is activated by default, and all tables and view in the default schema are included in the persistence layer.
 
 
-## Example #2 - Auto-discovery disabled automatically
+## Example #2 - Auto-Discovery Disabled Automatically
 
-The configuration shown below does not include any table, view or DAO:
+The configuration shown below does include one table table, view or DAO:
 
 ```xml
 <hotrod>
@@ -43,11 +43,14 @@ The configuration shown below does not include any table, view or DAO:
 
   <table name="client" />
   <view name="outstanding_payments" />
+  <dao name="ProcessesDAO">
+    <query method="cleanUpTempData">truncate table temp_data</query>
+  </dao>
 
 </hotrod>
 ```
 
-Auto-discovery is disabled since at least one table or view are specified in the configuration. Only these tables and views are included in the persistence layer.
+Auto-discovery is disabled since at least one table, view or DAO are specified in the configuration. Only these tables, views and DAOs are included in the persistence layer.
 
 
 ## Example #3 - Combining auto-discovery with explicitly configured tables or views
@@ -98,7 +101,8 @@ The configuration shown below does not include any table, view or DAO:
 </hotrod>
 ```
 
-Tables and views can be excluded from the auto-discovery feature by using the `exclude` tag.  
+Tables and views can be excluded from the auto-discovery feature by using the `exclude` tag. Any tables or views in the default schema
+are included in the persistence layer, except for `invoice_bkp_tab` and `accounting_old_view`.
 
 
 ## See also
