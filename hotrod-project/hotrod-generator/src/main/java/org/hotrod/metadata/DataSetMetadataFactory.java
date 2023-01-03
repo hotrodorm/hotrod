@@ -21,15 +21,15 @@ public abstract class DataSetMetadataFactory {
 
   private static final Logger log = LogManager.getLogger(DataSetMetadataFactory.class);
 
-  public static TableDataSetMetadata getMetadata(final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config, final DataSetLayout layout)
+  public static TableDataSetMetadata getMetadata(final JdbcTable t, final boolean isTable, final boolean autoDiscovery,
+      final DatabaseAdapter adapter, final HotRodConfigTag config, final DataSetLayout layout)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
-    return getMetadata(t, adapter, config, layout, null);
+    return getMetadata(t, isTable, autoDiscovery, adapter, config, layout, null);
   }
 
-  public static TableDataSetMetadata getMetadata(final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config, final DataSetLayout layout, final CachedMetadata cachedMetadata)
-      throws UnresolvableDataTypeException, InvalidConfigurationFileException {
+  private static TableDataSetMetadata getMetadata(final JdbcTable t, final boolean isTable, final boolean autoDiscovery,
+      final DatabaseAdapter adapter, final HotRodConfigTag config, final DataSetLayout layout,
+      final CachedMetadata cachedMetadata) throws UnresolvableDataTypeException, InvalidConfigurationFileException {
 
     JdbcDatabase cachedDB = null;
     HotRodConfigTag cachedConfig = null;
@@ -102,8 +102,31 @@ public abstract class DataSetMetadataFactory {
       return new TableDataSetMetadata(viewTag, t, adapter, config, layout, selectMetadataCache);
     }
 
-    String msg = "Could not find table, enum, or view with name '" + t.getName() + "'.";
-    throw new InvalidConfigurationFileException(config, msg, msg);
+    // Not a declared table or view
+
+    if (autoDiscovery) {
+
+      if (isTable) {
+        tableTag = new TableTag();
+        tableTag.setCatalog(t.getCatalog());
+        tableTag.setSchema(t.getSchema());
+        tableTag.setName(t.getName());
+        tableTag.validate(null, config, null, adapter);
+        return new TableDataSetMetadata(tableTag, t, tableTag.getExtendsTag(), tableTag.getExtendsJdbcTable(), adapter,
+            config, layout, selectMetadataCache);
+      } else {
+        viewTag = new ViewTag();
+        viewTag.setCatalog(t.getCatalog());
+        viewTag.setSchema(t.getSchema());
+        viewTag.setName(t.getName());
+        viewTag.validate(null, config, null, adapter);
+        return new TableDataSetMetadata(viewTag, t, adapter, config, layout, selectMetadataCache);
+      }
+
+    } else {
+      String msg = "Could not find table, enum, or view with name '" + t.getName() + "'.";
+      throw new InvalidConfigurationFileException(config, msg, msg);
+    }
 
   }
 

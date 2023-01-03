@@ -12,6 +12,7 @@
           <xsd:element name="fragment" type="fragment-type" />
           <xsd:element name="facet" type="facet-type" />
           <xsd:element name="converter" type="converter-type" />
+          <xsd:element name="exclude" type="exclude-type" />
         </xsd:choice>
       <xsd:attribute name="package" type="xsd:string" />
     </xsd:complexType>

@@ -16,6 +16,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.FileRegistry;
 import org.hotrodorm.hotrod.utils.SUtil;
+import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 @XmlRootElement(name = "fragment")
 public class FragmentTag extends AbstractConfigurationTag implements GenerationUnit<FragmentTag> {
@@ -50,7 +51,7 @@ public class FragmentTag extends AbstractConfigurationTag implements GenerationU
 
   public void validate(final HotRodConfigTag primaryConfig, final File parentDir, final FileRegistry fileRegistry,
       final File parentFile, final DaosSpringMyBatisTag daosTag, final DatabaseAdapter adapter,
-      final LinkedHashSet<String> facetNames)
+      final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException, FacetNotFoundException {
 
     log.debug("Will load fragment: this.filename=" + this.filename);
@@ -79,19 +80,19 @@ public class FragmentTag extends AbstractConfigurationTag implements GenerationU
               + "'. Must be a normal file, not a directory or other special file.");
     }
 
-    load(primaryConfig, fileRegistry, daosTag, adapter, facetNames);
+    load(primaryConfig, fileRegistry, daosTag, adapter, facetNames, currentCS);
 
     log.debug("Fragment loaded.");
 
   }
 
-  public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry, final DaosSpringMyBatisTag daosTag,
-      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames)
-      throws UncontrolledException, ControlledException, FacetNotFoundException {
+  public void load(final HotRodConfigTag primaryConfig, final FileRegistry fileRegistry,
+      final DaosSpringMyBatisTag daosTag, final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames,
+      final CatalogSchema currentCS) throws UncontrolledException, ControlledException, FacetNotFoundException {
     log.debug("@@@ Will load fragment '" + this.f.getName() + "' -- at " + this.getSourceLocation());
     super.clearChildren();
     this.fragmentConfig = ConfigurationLoader.loadFragment(primaryConfig, this.f, fileRegistry, daosTag, this, adapter,
-        facetNames);
+        facetNames, currentCS);
     log.debug("Fragment loaded.");
     super.addChildren(this.fragmentConfig.getSubTags());
   }

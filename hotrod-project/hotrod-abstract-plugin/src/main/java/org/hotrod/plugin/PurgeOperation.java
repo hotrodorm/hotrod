@@ -100,7 +100,8 @@ public class PurgeOperation {
 
     HotRodConfigTag config = null;
     try {
-      config = ConfigurationLoader.loadPrimary(this.baseDir, this.configFile, adapter, new LinkedHashSet<String>());
+      config = ConfigurationLoader.loadPrimary(this.baseDir, this.configFile, adapter, new LinkedHashSet<String>(),
+          loc.getCatalogSchema());
     } catch (ControlledException e) {
       if (e.getLocation() != null) {
         throw new OperationException("\n" + e.getMessage() + "\n  in " + e.getLocation().render());

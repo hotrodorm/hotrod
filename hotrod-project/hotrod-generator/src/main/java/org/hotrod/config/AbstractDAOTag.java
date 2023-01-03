@@ -93,9 +93,6 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
     Set<ObjectId> seqNames = new HashSet<ObjectId>();
 
-    log.debug(
-        "Validating sequences[" + this.sequences.toList().size() + "] now for '" + daosTag.getInternalCaption() + "':");
-
     for (SequenceMethodTag s : this.sequences) {
       s.validate(daosTag, config, fragmentConfig, adapter);
       super.addChild(s);

@@ -16,6 +16,7 @@
           <xsd:element name="fragment" type="fragment-type" />
           <xsd:element name="facet" type="facet-type" />
           <xsd:element name="converter" type="converter-type" />
+          <xsd:element name="exclude" type="exclude-type" />
         </xsd:choice>
       </xsd:sequence>
     </xsd:complexType>
@@ -63,6 +64,7 @@
         <xsd:element name="property" type="property-type" />
       </xsd:choice>
     </xsd:sequence>
+    <xsd:attribute name="auto-discovery" type="xsd:string" />
   </xsd:complexType>
 
   <xsd:complexType name="daos-mybatis-spring-type">

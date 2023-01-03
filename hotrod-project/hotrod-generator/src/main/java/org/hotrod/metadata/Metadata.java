@@ -17,6 +17,7 @@ import org.hotrod.config.EnumTag;
 import org.hotrod.config.EnumTag.EnumConstant;
 import org.hotrod.config.ExecutorTag;
 import org.hotrod.config.HotRodConfigTag;
+import org.hotrod.config.MyBatisSpringTag;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
 import org.hotrod.database.DatabaseAdapter;
@@ -71,6 +72,9 @@ public class Metadata {
 
     ColumnsRetriever cr = null;
 
+    MyBatisSpringTag mst = (MyBatisSpringTag) config.getGenerators().getSelectedGeneratorTag();
+    boolean autoDiscovery = mst.isAutoDiscoveryEnabled(config);
+
     try {
 
       // Prepare tables meta data
@@ -82,7 +86,8 @@ public class Metadata {
       for (JdbcTable t : this.db.getTables()) {
         try {
           log.debug("t.getName()=" + t.getName());
-          TableDataSetMetadata tm = DataSetMetadataFactory.getMetadata(t, this.adapter, config, layout);
+          TableDataSetMetadata tm = DataSetMetadataFactory.getMetadata(t, true, autoDiscovery, this.adapter, config,
+              layout);
           log.debug("*** tm=" + tm);
 
           this.tables.add(tm);
@@ -204,7 +209,7 @@ public class Metadata {
       for (JdbcTable v : this.db.getViews()) {
         try {
 
-          vmd = DataSetMetadataFactory.getMetadata(v, this.adapter, config, layout);
+          vmd = DataSetMetadataFactory.getMetadata(v, false, autoDiscovery, this.adapter, config, layout);
           this.views.add(vmd);
 
           ClassPackage fragmentPackage = vmd.getFragmentConfig() != null

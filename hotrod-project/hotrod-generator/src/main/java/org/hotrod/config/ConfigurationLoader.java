@@ -35,6 +35,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.FileRegistry;
 import org.hotrod.utils.FileRegistry.FileAlreadyRegisteredException;
+import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
@@ -63,8 +64,8 @@ public class ConfigurationLoader {
 
   // Behavior
 
-  public static HotRodConfigTag loadPrimary(final File projectBaseDir, final File f, 
-      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames)
+  public static HotRodConfigTag loadPrimary(final File projectBaseDir, final File f, final DatabaseAdapter adapter,
+      final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws ControlledException, UncontrolledException, FacetNotFoundException {
 
     log.debug("loading file: " + f);
@@ -143,7 +144,7 @@ public class ConfigurationLoader {
       DaosSpringMyBatisTag daosTag = (DaosSpringMyBatisTag) config.getGenerators().getSelectedGeneratorTag().getDaos();
       FileRegistry fileRegistry = new FileRegistry(f);
 
-      config.validateCommon(config, f, fileRegistry, f, daosTag, null, adapter, facetNames);
+      config.validateCommon(config, f, fileRegistry, f, daosTag, null, adapter, facetNames, currentCS);
       log.debug("Semantics validation #2 successful.");
 
       config.addConverterTags();
@@ -188,7 +189,7 @@ public class ConfigurationLoader {
 
   public static HotRodFragmentConfigTag loadFragment(final HotRodConfigTag primaryConfig, final File f,
       final FileRegistry fileRegistry, final DaosSpringMyBatisTag daosTag, final FragmentTag fragmentTag,
-      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames)
+      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws UncontrolledException, ControlledException, FacetNotFoundException {
 
     // Basic file validation
@@ -262,7 +263,8 @@ public class ConfigurationLoader {
       log.debug("  --     tag: " + fragmentTag.getSourceLocation());
       fileRegistry.add(fragmentTag, f);
       log.debug("----2> fileRegistry=" + fileRegistry);
-      fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, daosTag, fragmentConfig, adapter, facetNames);
+      fragmentConfig.validateCommon(primaryConfig, f, fileRegistry, f, daosTag, fragmentConfig, adapter, facetNames,
+          currentCS);
 
       // Complete
 

@@ -1,0 +1,21 @@
+1. Auto-discovery options
+
+Scenario        Table/Views declared  DAOs declared  auto-discovery  default
+--------------  --------------------  -------------  --------------  ----------------
+1. No XML file  --                    --             yes             ENABLED_WHEN_NO_OBJECTS_DECLARED
+2. Empty XML    --                    --             yes             ENABLED_WHEN_NO_OBJECTS_DECLARED
+3. XML w/tv     Yes                   --             no              ENABLED_WHEN_NO_OBJECTS_DECLARED
+4. XML w/daos   --                    Yes            no              ENABLED_WHEN_NO_OBJECTS_DECLARED
+5. XML w/tvd    Yes                   Yes            no              ENABLED_WHEN_NO_OBJECTS_DECLARED
+
+Values for "auto-discovery":
+ - ENABLED
+ - DISABLED
+ - ENABLED_WHEN_NO_OBJECTS_DECLARED
+
+2. Add exclusions:
+
+  <exclude name="table" />
+  <exclude name="view" />
+
+3. use auto-discovery to generate XML.

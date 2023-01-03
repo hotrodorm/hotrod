@@ -2,10 +2,12 @@ package org.hotrod.config;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -21,6 +23,7 @@ import org.hotrod.generator.NamePackageResolver;
 import org.hotrod.generator.mybatisspring.MyBatisSpringGenerator;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
+import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 
 @XmlRootElement(name = "mybatis-spring")
 public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackageResolver {
@@ -32,8 +35,11 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   private static final Logger log = LogManager.getLogger(MyBatisSpringTag.class);
 
   public static final String GENERATOR_NAME = "MyBatis-Spring";
+  private static final AutoDiscovery DEFAULT_AUTO_DISCOVERY = AutoDiscovery.ENABLED_WHEN_NO_OBJECTS_DECLARED;
 
   // Properties
+
+  private String sAutoDiscovery = null;
 
   private DaosSpringMyBatisTag daos = null;
   private MappersTag mappers = null;
@@ -42,7 +48,37 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   private ClassicFKNavigationTag classicFKNavigation = new ClassicFKNavigationTag();
   private List<PropertyTag> propertyTags = new ArrayList<PropertyTag>();
 
+  private AutoDiscovery autoDiscovery;
   private MyBatisProperties properties = new MyBatisProperties();
+
+  // enums
+
+  public enum AutoDiscovery {
+    ENABLED("enabled"), DISABLED("disabled"), ENABLED_WHEN_NO_OBJECTS_DECLARED("enabled_when_no_objects_declared");
+
+    private String caption;
+
+    private AutoDiscovery(final String caption) {
+      this.caption = caption;
+    }
+
+    public String getCaption() {
+      return caption;
+    }
+
+  }
+
+  public boolean isAutoDiscoveryEnabled(final HotRodConfigTag config) {
+    if (this.autoDiscovery == AutoDiscovery.ENABLED) {
+      return true;
+    }
+    if (this.autoDiscovery == AutoDiscovery.DISABLED) {
+      return false;
+    }
+    boolean declaredObjects = !config.getAllTables().isEmpty() || !config.getAllEnums().isEmpty()
+        || !config.getAllViews().isEmpty() || !config.getAllExecutors().isEmpty();
+    return !declaredObjects;
+  }
 
   // Constructor
 
@@ -52,6 +88,11 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   }
 
   // JAXB Setters
+
+  @XmlAttribute(name = "auto-discovery")
+  public void setSAutoDiscovery(final String autoDiscovery) {
+    this.sAutoDiscovery = autoDiscovery;
+  }
 
   @XmlElement(name = "daos")
   public void setDaos(final DaosSpringMyBatisTag daos) throws InvalidConfigurationFileException {
@@ -116,6 +157,26 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   @Override
   public void validate(final File basedir, final File parentDir) throws InvalidConfigurationFileException {
 
+    // auto-discovery
+
+    if (this.sAutoDiscovery == null) {
+      this.autoDiscovery = DEFAULT_AUTO_DISCOVERY;
+    } else {
+      AutoDiscovery.values();
+      this.autoDiscovery = null;
+      for (AutoDiscovery ad : AutoDiscovery.values()) {
+        if (this.sAutoDiscovery.equals(ad.getCaption())) {
+          this.autoDiscovery = ad;
+        }
+      }
+      if (this.autoDiscovery == null) {
+        String msg = "Invalid value '" + this.sAutoDiscovery + "' for 'auto-discovery' attribute. Valid values are: "
+            + Arrays.stream(AutoDiscovery.values()).map(d -> d.getCaption())
+                .collect(ListCollector.joining(", ", ", and "));
+        throw new InvalidConfigurationFileException(this, msg, msg);
+      }
+    }
+
     // mybatis-configuration-template
 
     if (this.template != null && this.template.getTemplateFile() == null) {
@@ -161,6 +222,10 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   }
 
   // Getters
+
+  public AutoDiscovery getAutoDiscovery() {
+    return autoDiscovery;
+  }
 
   public DaosSpringMyBatisTag getDaos() {
     return daos;

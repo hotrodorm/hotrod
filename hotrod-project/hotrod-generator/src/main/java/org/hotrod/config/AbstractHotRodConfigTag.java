@@ -33,6 +33,7 @@ import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.Correlator;
 import org.hotrod.utils.Correlator.CorrelatedEntry;
 import org.hotrod.utils.FileRegistry;
+import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
@@ -50,6 +51,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   private List<ViewTag> views = new ArrayList<ViewTag>();
   private List<EnumTag> enums = new ArrayList<EnumTag>();
   private List<ExecutorTag> executors = new ArrayList<ExecutorTag>();
+  private List<ExcludeTag> excludes = new ArrayList<ExcludeTag>();
   private List<FragmentTag> fragments = new ArrayList<FragmentTag>();
   private List<FacetTag> facets = new ArrayList<FacetTag>();
   private Map<String, FacetTag> assembledFacets = new HashMap<String, FacetTag>();
@@ -88,6 +90,11 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   }
 
   @XmlElement
+  public void setExclude(final ExcludeTag e) {
+    this.excludes.add(e);
+  }
+
+  @XmlElement
   public void setFragment(final FragmentTag fragment) {
     this.fragments.add(fragment);
   }
@@ -115,7 +122,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
   protected void validateCommon(final HotRodConfigTag config, final File file, final FileRegistry fileRegistry,
       final File parentFile, final DaosSpringMyBatisTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
-      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames)
+      final DatabaseAdapter adapter, final LinkedHashSet<String> facetNames, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException, ControlledException, UncontrolledException, FacetNotFoundException {
 
     log.debug("validateCommon");
@@ -172,6 +179,10 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     });
     super.addChildren(this.executors);
 
+    for (ExcludeTag e : this.excludes) {
+      e.validate(adapter, currentCS);
+    }
+
     for (FacetTag f : this.facets) {
       f.validate(config, daosTag, fragmentConfig, adapter);
     }
@@ -180,7 +191,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     // Fragments
 
     for (FragmentTag f : this.fragments) {
-      f.validate(config, parentDir, fileRegistry, parentFile, daosTag, adapter, facetNames);
+      f.validate(config, parentDir, fileRegistry, parentFile, daosTag, adapter, facetNames, currentCS);
       this.mergeFragment(f.getFragmentConfig());
       super.addChild(f);
     }
@@ -252,6 +263,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     this.views.addAll(other.views);
     this.enums.addAll(other.enums);
     this.executors.addAll(other.executors);
+    this.excludes.addAll(other.excludes);
     this.facets.addAll(other.facets);
   }
 
@@ -389,6 +401,10 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
   public List<ExecutorTag> getAllExecutors() {
     return this.allFacets.getExecutors();
+  }
+
+  public List<ExcludeTag> getExcludes() {
+    return this.excludes;
   }
 
   public List<FacetTag> getFacets() {

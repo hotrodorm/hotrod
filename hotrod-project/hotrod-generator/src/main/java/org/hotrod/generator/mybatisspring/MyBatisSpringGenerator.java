@@ -218,8 +218,11 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
     case TABLE:
       TableTag ttag = this.config.findFacetTable(metadata, this.adapter);
       if (ttag == null) {
-        throw new ControlledException(
-            "Could not find table tag for table '" + metadata.getId().getCanonicalSQLName() + "'.");
+        ttag = (TableTag) metadata.getDaoTag();
+        if (ttag == null) {
+          throw new ControlledException(
+              "Could not find table tag for table '" + metadata.getId().getCanonicalSQLName() + "'.");
+        }
       }
       layout = new DataSetLayout(this.config, ttag);
 
@@ -242,8 +245,11 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
     case VIEW:
       ViewTag vtag = this.config.findFacetView(metadata, this.adapter);
       if (vtag == null) {
-        throw new ControlledException(
-            "Could not find view tag for table '" + metadata.getId().getCanonicalSQLName() + "'.");
+        vtag = (ViewTag) metadata.getDaoTag();
+        if (vtag == null) {
+          throw new ControlledException(
+              "Could not find view tag for table '" + metadata.getId().getCanonicalSQLName() + "'.");
+        }
       }
       layout = new DataSetLayout(this.config);
 
