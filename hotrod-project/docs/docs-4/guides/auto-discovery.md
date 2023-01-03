@@ -34,7 +34,7 @@ Auto-discovery is activated by default, and all tables and view in the default s
 
 ### Example #2 - Auto-Discovery Disabled Automatically
 
-The configuration shown below does include one table table, view or DAO:
+The configuration shown below **does include** one table table, view or DAO:
 
 ```xml
 <hotrod>
@@ -60,7 +60,7 @@ Auto-discovery is disabled since at least one table, view or DAO are specified i
 
 ### Example #3 - Combining auto-discovery with explicitly configured tables or views
 
-The configuration shown below does not include any table, view or DAO:
+The configuration shown below **does include** a table, view or DAO, and auto-discovery is also explicitly enabled:
 
 ```xml
 <hotrod>
@@ -84,7 +84,7 @@ layer. The extra configuration details for tables and views are honored and used
 
 ### Example #4 - Excluding Tables or Views from Auto-Discovery
 
-The configuration shown below does not include any table, view or DAO:
+The configuration shown below speficies tables or views to exclide from the auto-discovery:
 
 ```xml
 <hotrod>
@@ -105,8 +105,8 @@ The configuration shown below does not include any table, view or DAO:
 </hotrod>
 ```
 
-Tables and views can be excluded from the auto-discovery feature by using the `exclude` tag. Any tables or views in the default schema
-are included in the persistence layer, except for `invoice_bkp_tab` and `accounting_old_view`.
+Any tables or views in the default schema are included in the persistence layer, except for `invoice_bkp_tab` and `accounting_old_view`.
+`client_tab` and `outst_payments` are included with non-default configuration details.
 
 
 ## See also
