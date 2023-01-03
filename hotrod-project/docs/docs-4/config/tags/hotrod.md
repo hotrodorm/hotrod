@@ -14,6 +14,7 @@ It then includes an unordered list of:
 - `<view>` tag to include views in the code generation.
 - `<enum>` tag to include a enum-type tables in the code generation.
 - `<dao>` tag to define DAOs that will group related queries.
+- `<exclude>` tag to exclude a table or view from the auto-discovery of tables and views. See [auto-discovery])(./mybatis-spring.md).
 - `<converter>` tag to define converters for complex data types. These converters can be used in any table, view, or DAOs.
 - `<facet>` tag to to enable partial code generation.
 - `<fragment>` tag to divide the configuration file into multiple files.

@@ -21,6 +21,7 @@ A fragment configuration file takes the general form:
   <enum />
   <view />
   <dao />
+  <exclude />
   <fragment />
   <facet />
   <converter />
@@ -71,6 +72,7 @@ The general structure of a HotRod's configuration file fragment is shown below:
         * `<sequence>`
         * `<query>`
         * `<select>`
+    * [`<exclude>`](tags/exclude.md)
     * [`<fragment>`](tags/fragment.md)
     * [`<facet>`](tags/facet.md)
         * `<table>`
