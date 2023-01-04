@@ -17,11 +17,11 @@ HotRod includes four modules:
 
 Reference:
 - [Configuration File Reference](config/README.md).
+- [Cheat Sheet](./cheat-sheet.md).
 - [Libraries](config/libraries.md).
 - [Maven Integration](maven/README.md).
 - `Eclipse Integration`.
 - [Supported Databases and Default Data Types](config/supported-databases.md).
-- [Cheat Sheet](./cheat-sheet.md).
 
 Quick Guides:
 - [Hello World!](./guides/hello-world.md)
