@@ -22,14 +22,17 @@ public abstract class DataSetMetadataFactory {
   private static final Logger log = LogManager.getLogger(DataSetMetadataFactory.class);
 
   public static TableDataSetMetadata getMetadata(final JdbcTable t, final boolean isTable, final boolean autoDiscovery,
-      final DatabaseAdapter adapter, final HotRodConfigTag config, final DataSetLayout layout)
+      final DatabaseAdapter adapter, final HotRodConfigTag config, final DataSetLayout layout,
+      final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
-    return getMetadata(t, isTable, autoDiscovery, adapter, config, layout, null);
+    return getMetadata(t, isTable, autoDiscovery, adapter, config, layout, null, isFromCurrentCatalog,
+        isFromCurrentSchema);
   }
 
   private static TableDataSetMetadata getMetadata(final JdbcTable t, final boolean isTable, final boolean autoDiscovery,
       final DatabaseAdapter adapter, final HotRodConfigTag config, final DataSetLayout layout,
-      final CachedMetadata cachedMetadata) throws UnresolvableDataTypeException, InvalidConfigurationFileException {
+      final CachedMetadata cachedMetadata, final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
+      throws UnresolvableDataTypeException, InvalidConfigurationFileException {
 
     JdbcDatabase cachedDB = null;
     HotRodConfigTag cachedConfig = null;
@@ -55,7 +58,8 @@ public abstract class DataSetMetadataFactory {
         }
       }
       TableDataSetMetadata tm = new TableDataSetMetadata(tableTag, t, tableTag.getExtendsTag(),
-          tableTag.getExtendsJdbcTable(), adapter, config, layout, selectMetadataCache);
+          tableTag.getExtendsJdbcTable(), adapter, config, layout, selectMetadataCache, isFromCurrentCatalog,
+          isFromCurrentSchema);
       log.debug("cachedConfig=" + cachedConfig);
       if (cachedConfig != null) {
         log.debug("cachedConfig.findEnum(tm, adapter)=" + cachedConfig.findFacetEnum(tm, adapter));
@@ -79,7 +83,8 @@ public abstract class DataSetMetadataFactory {
           enumTag.markGenerate();
         }
       }
-      EnumDataSetMetadata em = new EnumDataSetMetadata(enumTag, t, adapter, config, layout, selectMetadataCache);
+      EnumDataSetMetadata em = new EnumDataSetMetadata(enumTag, t, adapter, config, layout, selectMetadataCache,
+          isFromCurrentCatalog, isFromCurrentSchema);
       if (cachedConfig != null && cachedConfig.findFacetEnum(em, adapter) != null) {
         // changed from table to enum - generate related tables
         markGenerateRelatedEntities(em);
@@ -99,7 +104,8 @@ public abstract class DataSetMetadataFactory {
           viewTag.markGenerate();
         }
       }
-      return new TableDataSetMetadata(viewTag, t, adapter, config, layout, selectMetadataCache);
+      return new TableDataSetMetadata(viewTag, t, adapter, config, layout, selectMetadataCache, isFromCurrentCatalog,
+          isFromCurrentSchema);
     }
 
     // Not a declared table or view
@@ -113,14 +119,15 @@ public abstract class DataSetMetadataFactory {
         tableTag.setName(t.getName());
         tableTag.validate(null, config, null, adapter);
         return new TableDataSetMetadata(tableTag, t, tableTag.getExtendsTag(), tableTag.getExtendsJdbcTable(), adapter,
-            config, layout, selectMetadataCache);
+            config, layout, selectMetadataCache, isFromCurrentCatalog, isFromCurrentSchema);
       } else {
         viewTag = new ViewTag();
         viewTag.setCatalog(t.getCatalog());
         viewTag.setSchema(t.getSchema());
         viewTag.setName(t.getName());
         viewTag.validate(null, config, null, adapter);
-        return new TableDataSetMetadata(viewTag, t, adapter, config, layout, selectMetadataCache);
+        return new TableDataSetMetadata(viewTag, t, adapter, config, layout, selectMetadataCache, isFromCurrentCatalog,
+            isFromCurrentSchema);
       }
 
     } else {

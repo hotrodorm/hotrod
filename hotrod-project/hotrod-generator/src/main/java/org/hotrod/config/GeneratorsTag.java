@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
@@ -44,11 +45,11 @@ public class GeneratorsTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate(final File basedir, final File parentDir)
+  public void validate(final File basedir, final File parentDir, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException, GeneratorNotFoundException {
     for (AbstractGeneratorTag g : this.generators) {
       this.selectedGeneratorTag = g;
-      g.validate(basedir, parentDir);
+      g.validate(basedir, parentDir, adapter);
       return;
     }
     if (this.selectedGeneratorTag == null) {

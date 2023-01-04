@@ -35,6 +35,7 @@ import org.nocrala.tools.database.tartarus.core.JdbcDatabase.DatabaseConnectionV
 import org.nocrala.tools.database.tartarus.exception.CatalogNotSupportedException;
 import org.nocrala.tools.database.tartarus.exception.DatabaseObjectNotFoundException;
 import org.nocrala.tools.database.tartarus.exception.InvalidCatalogException;
+import org.nocrala.tools.database.tartarus.exception.InvalidCatalogSchemaException;
 import org.nocrala.tools.database.tartarus.exception.InvalidSchemaException;
 import org.nocrala.tools.database.tartarus.exception.ReaderException;
 import org.nocrala.tools.database.tartarus.exception.SchemaNotSupportedException;
@@ -169,8 +170,11 @@ public class HotRodContext {
                 .collect(Collectors.toSet());
 //            log.info("excludeIds: " + excludeIds.size());
 //            excludeIds.forEach(e -> System.out.println("- Exclude: "+e.renderFullName()));
-
-            db = new JdbcDatabase(conn, loc.getCatalogSchema(), excludeIds);
+            try {
+              db = new JdbcDatabase(conn, loc.getCatalogSchema(), mst.getOtherSchemas(), excludeIds);
+            } catch (InvalidCatalogSchemaException e1) {
+              throw new ControlledException(e1.getMessage());
+            }
           } else {
             db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views);
           }

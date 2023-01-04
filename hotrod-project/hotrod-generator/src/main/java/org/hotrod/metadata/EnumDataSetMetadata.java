@@ -27,9 +27,10 @@ public class EnumDataSetMetadata extends TableDataSetMetadata {
   // Constructor
 
   public EnumDataSetMetadata(final EnumTag tag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config, final DataSetLayout layout, final SelectMetadataCache selectMetadataCache)
+      final HotRodConfigTag config, final DataSetLayout layout, final SelectMetadataCache selectMetadataCache,
+      final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
-    super(tag, t, adapter, config, layout, selectMetadataCache);
+    super(tag, t, adapter, config, layout, selectMetadataCache, isFromCurrentCatalog, isFromCurrentSchema);
     log.debug("init");
     this.tag = tag;
   }

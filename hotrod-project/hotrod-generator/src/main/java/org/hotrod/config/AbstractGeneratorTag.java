@@ -2,6 +2,7 @@ package org.hotrod.config;
 
 import java.io.File;
 
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
@@ -23,7 +24,8 @@ public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
 
   public abstract String getName();
 
-  public abstract void validate(File basedir, File parentDir) throws InvalidConfigurationFileException;
+  public abstract void validate(File basedir, File parentDir, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException;
 
   public abstract DaosTag getDaos();
 

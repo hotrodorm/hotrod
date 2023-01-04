@@ -92,14 +92,14 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     return this.convertersByName.get(name);
   }
 
-  public void validate(final File basedir, final File parentDir, final File f)
+  public void validate(final File basedir, final File parentDir, final File f, final DatabaseAdapter adapter)
       throws InvalidConfigurationFileException, GeneratorNotFoundException {
 
     this.f = f;
 
     // Generators
 
-    this.generatorsTag.validate(basedir, parentDir);
+    this.generatorsTag.validate(basedir, parentDir, adapter);
     super.addChild(this.generatorsTag);
 
     // Name Solver

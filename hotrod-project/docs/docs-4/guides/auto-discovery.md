@@ -66,7 +66,7 @@ The configuration shown below **does include** a table, view or DAO, and auto-di
 <hotrod>
 
   <generators>
-    <mybatis-spring auto-discovery="enabled">
+    <mybatis-spring discovery="enabled" schemas="">
       <daos package="com.myapp.daos" dao-suffix="DAO" vo-suffix="Impl" 
             abstract-vo-prefix="" abstract-vo-suffix="VO" />
     </mybatis-spring>

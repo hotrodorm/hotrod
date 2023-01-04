@@ -13,16 +13,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
+import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
 import org.hotrod.generator.NamePackageResolver;
 import org.hotrod.generator.mybatisspring.MyBatisSpringGenerator;
+import org.hotrod.identifiers.Id;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.Compare;
+import org.nocrala.tools.database.tartarus.core.CatalogSchema;
+import org.nocrala.tools.database.tartarus.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 
 @XmlRootElement(name = "mybatis-spring")
@@ -35,11 +40,12 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   private static final Logger log = LogManager.getLogger(MyBatisSpringTag.class);
 
   public static final String GENERATOR_NAME = "MyBatis-Spring";
-  private static final AutoDiscovery DEFAULT_AUTO_DISCOVERY = AutoDiscovery.ENABLED_WHEN_NO_OBJECTS_DECLARED;
+  private static final Discovery DEFAULT_DISCOVERY = Discovery.ENABLED_WHEN_NO_OBJECTS_DECLARED;
 
   // Properties
 
-  private String sAutoDiscovery = null;
+  private String sDiscovery = null;
+  private String sSchemas = null;
 
   private DaosSpringMyBatisTag daos = null;
   private MappersTag mappers = null;
@@ -48,17 +54,18 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   private ClassicFKNavigationTag classicFKNavigation = new ClassicFKNavigationTag();
   private List<PropertyTag> propertyTags = new ArrayList<PropertyTag>();
 
-  private AutoDiscovery autoDiscovery;
+  private Discovery discovery;
+  private List<CatalogSchema> otherSchemas;
   private MyBatisProperties properties = new MyBatisProperties();
 
   // enums
 
-  public enum AutoDiscovery {
+  public enum Discovery {
     ENABLED("enabled"), DISABLED("disabled"), ENABLED_WHEN_NO_OBJECTS_DECLARED("enabled_when_no_objects_declared");
 
     private String caption;
 
-    private AutoDiscovery(final String caption) {
+    private Discovery(final String caption) {
       this.caption = caption;
     }
 
@@ -69,10 +76,10 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   }
 
   public boolean isAutoDiscoveryEnabled(final HotRodConfigTag config) {
-    if (this.autoDiscovery == AutoDiscovery.ENABLED) {
+    if (this.discovery == Discovery.ENABLED) {
       return true;
     }
-    if (this.autoDiscovery == AutoDiscovery.DISABLED) {
+    if (this.discovery == Discovery.DISABLED) {
       return false;
     }
     boolean declaredObjects = !config.getAllTables().isEmpty() || !config.getAllEnums().isEmpty()
@@ -89,9 +96,14 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   // JAXB Setters
 
-  @XmlAttribute(name = "auto-discovery")
-  public void setSAutoDiscovery(final String autoDiscovery) {
-    this.sAutoDiscovery = autoDiscovery;
+  @XmlAttribute(name = "discovery")
+  public void setSDiscovery(final String autoDiscovery) {
+    this.sDiscovery = autoDiscovery;
+  }
+
+  @XmlAttribute(name = "other-schemas")
+  public void setSSchemas(final String s) {
+    this.sSchemas = s;
   }
 
   @XmlElement(name = "daos")
@@ -155,25 +167,76 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
   // Validate
 
   @Override
-  public void validate(final File basedir, final File parentDir) throws InvalidConfigurationFileException {
+  public void validate(final File basedir, final File parentDir, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
 
-    // auto-discovery
+    // discovery
 
-    if (this.sAutoDiscovery == null) {
-      this.autoDiscovery = DEFAULT_AUTO_DISCOVERY;
+    if (this.sDiscovery == null) {
+      this.discovery = DEFAULT_DISCOVERY;
     } else {
-      AutoDiscovery.values();
-      this.autoDiscovery = null;
-      for (AutoDiscovery ad : AutoDiscovery.values()) {
-        if (this.sAutoDiscovery.equals(ad.getCaption())) {
-          this.autoDiscovery = ad;
+      Discovery.values();
+      this.discovery = null;
+      for (Discovery ad : Discovery.values()) {
+        if (this.sDiscovery.equals(ad.getCaption())) {
+          this.discovery = ad;
         }
       }
-      if (this.autoDiscovery == null) {
-        String msg = "Invalid value '" + this.sAutoDiscovery + "' for 'auto-discovery' attribute. Valid values are: "
-            + Arrays.stream(AutoDiscovery.values()).map(d -> d.getCaption())
-                .collect(ListCollector.joining(", ", ", and "));
+      if (this.discovery == null) {
+        String msg = "Invalid value '" + this.sDiscovery + "' for 'discovery' attribute. Valid values are: "
+            + Arrays.stream(Discovery.values()).map(d -> d.getCaption()).collect(ListCollector.joining(", ", ", and "));
         throw new InvalidConfigurationFileException(this, msg, msg);
+      }
+    }
+
+    // schemas
+
+    this.otherSchemas = new ArrayList<>();
+//    log.info("--> otherSchemas: " + this.otherSchemas);
+    if (!SUtil.isEmpty(this.sSchemas)) {
+      for (String s : this.sSchemas.split(",")) {
+        int p = s.indexOf(".");
+        String cat = null;
+        String sche = null;
+        if (p == -1) {
+          sche = s;
+        } else {
+          cat = s.substring(0, p);
+          sche = p + 1 >= s.length() ? null : s.substring(p + 1);
+        }
+        if (cat != null && SUtil.isEmpty(cat)) {
+          String msg = "Invalid empty catalog name found in section '" + s
+              + "' of the 'other-schemas' attribute of the <mybatis-spring> tag. "
+              + "Please include a comma-separated list of '[catalog.]schema' values.";
+          throw new InvalidConfigurationFileException(this, msg, msg);
+        }
+        if (sche != null && SUtil.isEmpty(sche)) {
+          String msg = "Invalid empty schema name found in section '" + s
+              + "' of the 'other-schemas' attribute of the <mybatis-spring> tag. "
+              + "Please include a comma-separated list of '[catalog.]schema' values.";
+          throw new InvalidConfigurationFileException(this, msg, msg);
+        }
+        String catalog;
+        try {
+          catalog = cat == null ? null : Id.fromTypedSQL(cat, adapter).getCanonicalSQLName();
+        } catch (InvalidIdentifierException e) {
+          String msg = "Invalid catalog name name '" + cat
+              + "' found in the 'schemas' attribute of the <mybatis-spring> tag. "
+              + "It's not a valid catalog name in this database.";
+          throw new InvalidConfigurationFileException(this, msg, msg);
+        }
+        String schema;
+        try {
+          schema = sche == null ? null : Id.fromTypedSQL(sche, adapter).getCanonicalSQLName();
+        } catch (InvalidIdentifierException e) {
+          String msg = "Invalid schema name name '" + sche
+              + "' found in the 'schemas' attribute of the <mybatis-spring> tag. "
+              + "It's not a valid catalog name in this database.";
+          throw new InvalidConfigurationFileException(this, msg, msg);
+        }
+        CatalogSchema cs = new CatalogSchema(catalog, schema);
+//        log.info("--> Added other schema: " + cs.toString());
+        this.otherSchemas.add(cs);
       }
     }
 
@@ -223,8 +286,12 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   // Getters
 
-  public AutoDiscovery getAutoDiscovery() {
-    return autoDiscovery;
+  public Discovery getDiscovery() {
+    return discovery;
+  }
+
+  public List<CatalogSchema> getOtherSchemas() {
+    return otherSchemas;
   }
 
   public DaosSpringMyBatisTag getDaos() {

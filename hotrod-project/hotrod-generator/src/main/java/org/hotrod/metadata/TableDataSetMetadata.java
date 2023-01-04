@@ -83,12 +83,15 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   @SuppressWarnings("unused")
   private ClassPackage classPackage;
 
+  private boolean isFromCurrentCatalog;
+  private boolean isFromCurrentSchema;
+
   // Table constructor
 
   protected TableDataSetMetadata(final TableTag tableTag, final JdbcTable t, final TableTag parentTag,
       final JdbcTable parentJdbcTable, final DatabaseAdapter adapter, final HotRodConfigTag config,
-      final DataSetLayout layout, final SelectMetadataCache selectMetadataCache)
-      throws UnresolvableDataTypeException, InvalidConfigurationFileException {
+      final DataSetLayout layout, final SelectMetadataCache selectMetadataCache, final boolean isFromCurrentCatalog,
+      final boolean isFromCurrentSchema) throws UnresolvableDataTypeException, InvalidConfigurationFileException {
     this.t = t;
     this.config = config;
     this.adapter = adapter;
@@ -103,6 +106,9 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     this.classicFKNavigation = tableTag.getClassicFKNavigation();
 
     this.selectMetadataCache = selectMetadataCache;
+
+    this.isFromCurrentCatalog = isFromCurrentCatalog;
+    this.isFromCurrentSchema = isFromCurrentSchema;
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage()
@@ -198,7 +204,8 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   // Enum Constructor
 
   protected TableDataSetMetadata(final EnumTag enumTag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config, final DataSetLayout layout, final SelectMetadataCache selectMetadataCache)
+      final HotRodConfigTag config, final DataSetLayout layout, final SelectMetadataCache selectMetadataCache,
+      final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
     this.t = t;
     this.config = config;
@@ -214,6 +221,9 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     this.classicFKNavigation = null;
 
     this.selectMetadataCache = selectMetadataCache;
+
+    this.isFromCurrentCatalog = isFromCurrentCatalog;
+    this.isFromCurrentSchema = isFromCurrentSchema;
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage()
@@ -242,7 +252,8 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   // View Constructor
 
   protected TableDataSetMetadata(final ViewTag viewTag, final JdbcTable t, final DatabaseAdapter adapter,
-      final HotRodConfigTag config, final DataSetLayout layout, final SelectMetadataCache selectMetadataCache)
+      final HotRodConfigTag config, final DataSetLayout layout, final SelectMetadataCache selectMetadataCache,
+      final boolean isFromCurrentCatalog, final boolean isFromCurrentSchema)
       throws UnresolvableDataTypeException, InvalidConfigurationFileException {
 
     this.t = t;
@@ -259,6 +270,9 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
     this.classicFKNavigation = null;
 
     this.selectMetadataCache = selectMetadataCache;
+
+    this.isFromCurrentCatalog = isFromCurrentCatalog;
+    this.isFromCurrentSchema = isFromCurrentSchema;
 
     ClassPackage fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
         ? this.fragmentConfig.getFragmentPackage()
@@ -734,6 +748,14 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
   @Override
   public HotRodFragmentConfigTag getFragmentConfig() {
     return this.fragmentConfig;
+  }
+
+  public boolean isFromCurrentCatalog() {
+    return isFromCurrentCatalog;
+  }
+
+  public boolean isFromCurrentSchema() {
+    return isFromCurrentSchema;
   }
 
 }

@@ -38,6 +38,7 @@ import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.JdbcTypes;
+import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
@@ -86,8 +87,14 @@ public class Metadata {
       for (JdbcTable t : this.db.getTables()) {
         try {
           log.debug("t.getName()=" + t.getName());
+
+          boolean isFromCurrentCatalog = t.getCatalog() == null
+              || t.getCatalog().equals(this.dloc.getCatalogSchema().getCatalog());
+          boolean isFromCurrentSchema = t.getSchema() == null
+              || t.getSchema().equals(this.dloc.getCatalogSchema().getSchema());
+
           TableDataSetMetadata tm = DataSetMetadataFactory.getMetadata(t, true, autoDiscovery, this.adapter, config,
-              layout);
+              layout, isFromCurrentCatalog, isFromCurrentSchema);
           log.debug("*** tm=" + tm);
 
           this.tables.add(tm);
@@ -209,7 +216,13 @@ public class Metadata {
       for (JdbcTable v : this.db.getViews()) {
         try {
 
-          vmd = DataSetMetadataFactory.getMetadata(v, false, autoDiscovery, this.adapter, config, layout);
+          boolean isFromCurrentCatalog = v.getCatalog() == null
+              || v.getCatalog().equals(this.dloc.getCatalogSchema().getCatalog());
+          boolean isFromCurrentSchema = v.getSchema() == null
+              || v.getSchema().equals(this.dloc.getCatalogSchema().getSchema());
+
+          vmd = DataSetMetadataFactory.getMetadata(v, false, autoDiscovery, this.adapter, config, layout,
+              isFromCurrentCatalog, isFromCurrentSchema);
           this.views.add(vmd);
 
           ClassPackage fragmentPackage = vmd.getFragmentConfig() != null

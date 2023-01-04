@@ -550,7 +550,8 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       // tables
 
       for (TableDataSetMetadata t : this.md.getTables()) {
-        display("Table " + t.getId().getCanonicalSQLName() + " included.");
+        String ns = getNS(t);
+        display("Table " + getNS(t) + t.getId().getCanonicalSQLName() + " included.");
         for (SequenceMethodTag s : t.getSequences()) {
           sequences++;
           if (this.displayMode == DisplayMode.LIST) {
@@ -574,7 +575,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       // views
 
       for (TableDataSetMetadata v : this.md.getViews()) {
-        display("View " + v.getId().getCanonicalSQLName() + " included.");
+        display("View " + getNS(v) + v.getId().getCanonicalSQLName() + " included.");
         for (SequenceMethodTag s : v.getSequences()) {
           sequences++;
           if (this.displayMode == DisplayMode.LIST) {
@@ -598,7 +599,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       // enums
 
       for (EnumDataSetMetadata e : this.md.getEnums()) {
-        display("Enum " + e.getJdbcName() + " included.");
+        display("Enum " + getNS(e) + e.getJdbcName() + " included.");
       }
 
       // daos
@@ -647,6 +648,16 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
 
     display(sb.toString());
 
+  }
+
+  private String getNS(final TableDataSetMetadata t) {
+    String cat = t.getId().getCatalog() == null ? null : t.getId().getCatalog().getCanonicalSQLName();
+    String sche = t.getId().getSchema() == null ? null : t.getId().getSchema().getCanonicalSQLName();
+    if (!t.isFromCurrentCatalog()) {
+      return t.isFromCurrentSchema() ? cat + "." : cat + "." + sche + ".";
+    } else {
+      return t.isFromCurrentSchema() ? "" : sche + ".";
+    }
   }
 
 }

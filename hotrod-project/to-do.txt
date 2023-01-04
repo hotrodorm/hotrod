@@ -18,3 +18,7 @@ For 4.0:
 - Table/View auto-discovery
 - Default types to java.time
 - Zero Configuration.
+
+- Add methods with extra parameter "VO Class".
+
+- Combine docs/to-do.txt
