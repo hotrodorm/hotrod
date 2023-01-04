@@ -11,6 +11,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
 - Default values for the `<mappers>` tag. It can be now omitted in the configuration file.
 - Reusing JDBC connection when using result-set processor.
+- Schema auto-discovery implemented.
 
 
 ## 3.4.8
