@@ -43,8 +43,8 @@ The database will create a table `order_line`. Each database will register the n
 | Apache Derby | `ORDER_LINE` |
 
 [^1]: The default settings of SQL Server don't differentiate between lower and upper case identifiers. This behavior can be changed
-by changing the database encoding with one which names ends with `_CS` (case sensitive). This change has other side effects, so it's
-not recommended unless you have time to test these side effects.
+by changing the database encoding with one which names ends with `_CS` (case sensitive). This change has multiple side effects, so it's
+not recommended to do it unless you have a lot time to test them thoroughly.
 
 
 
