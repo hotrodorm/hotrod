@@ -28,6 +28,7 @@ create table order_line (
 The database will create a table `order_line`. Each database will register the name in a different way:
 
 | Database | Canonical Name |
+| -- | -- |
 | Oracle | `ORDER_LINE` |
 | DB2 | `ORDER_LINE` |
 | PostgreSQL | `order_line` |
