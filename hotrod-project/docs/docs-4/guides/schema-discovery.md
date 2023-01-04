@@ -62,7 +62,7 @@ All tables and views in the current schema are discovered and added to the persi
 for CRUD and LiveSQL.
 
 
-### Example #3 - Discovery and Declared Tables or Views
+### Example #3 - Discovery with Declared Tables and Views
 
 Discovery is enabled. The configuration declares a table, a view, and a DAO.
 
@@ -88,10 +88,10 @@ Discovery is enabled. The configuration declares a table, a view, and a DAO.
 Since discovery is enabled, all tables and views in the current schema are included in the persistence
 layer. The custom configuration details for the declared tables and views are honored.
 
-Tables and view &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
+All tables and view &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
 
 
-### Example #4 - Excluding Tables or Views from Discovery
+### Example #4 - Excluding Tables and Views from Discovery
 
 The configuration specifies tables and views that we want to exclude from the discovery:
 
@@ -118,10 +118,12 @@ Any tables or views in the default schema are included in the persistence layer,
 `accounting_old_view`. The declared table and view (`client_tab` and `outst_payments`) are included in the
 persistence layer.
 
+All tables and view &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
+
 
 ### Example #5 - Discovering Multiple Schemas
 
-The configuration includes a list of comma-separated schemas to be discovered:
+The configuration includes a comma-separated list of schemas to be discovered:
 
 ```xml
 <hotrod>
@@ -141,6 +143,8 @@ The configuration includes a list of comma-separated schemas to be discovered:
 
 Any tables or views in the schemas `accounting` and `billing` are included in the persistence layer. The declared
 table and view (`client_tab` and `outst_payments`) are also included in the persistence layer.
+
+All tables and view &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
 
 
 ### Example #6 - Excluding Tables and View from Multiple Schemas
@@ -171,10 +175,13 @@ Any tables or views in the schemas `accounting` and `billing` are included in th
 for `accounting.invoice_bkp_tab` and `billing.accounting_old_view`. The declared table and view
 (`client_tab` and `outst_payments`) are also included in the persistence layer.
 
+All tables and view &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
+
 
 ### Example #7 - Catalogs and Schemas
 
-In databases that implement catalogs and schemas (SQL Server and Sybase), these can be included using dot notation.
+In databases that implement catalogs and schemas &ndash; SQL Server and Sybase &ndash; these can be included 
+using dot notation.
 
 ```xml
 <hotrod>
@@ -199,6 +206,7 @@ Any tables or views in the schemas `master.accounting` and `clients.billing` are
 for `master.accounting.invoice_bkp_tab` and `clients.billing.accounting_old_view`. The declared table and view
 (`client_tab` and `outst_payments`) are also included in the persistence layer.
 
+All tables and view &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
 
 
 ## See also
