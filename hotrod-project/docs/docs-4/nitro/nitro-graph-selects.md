@@ -87,7 +87,7 @@ Unlike Flat Selects, Graph selects only return lists of graphs. The return mode 
 
 By assembling different inner tags the `<columns>` tag can produce different variations for graph selects:
 
-- [Single VOs per Row](./single-vo-per-row.md).
+- [Single VO per Row](./single-vo-per-row.md).
 - [Multiple VOs per Row](./multiple-vos-per-row.md).
 - [Extra Expressions](./extra-expressions.md).
 - [Collections](./collections.md).
