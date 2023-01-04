@@ -1,15 +1,15 @@
 # Auto-Discovering Tables &amp; Views
 
-HotRod discovers tables and views and adds them to the persistent layer automatically when no `<table>`, `<view>`, or `<dao>` tags are 
+HotRod includes a mechanism to discover tables and views in the current schema. It adds them to the persistent layer automatically when no `<table>`, `<view>`, or `<dao>` tags are 
 present in the configuration.
 
-This feature can also be enabled in the `<mybatis-spring>` tag to combine the auto-discovery with explicit configuration
-of tables and views.
+This feature can also be enabled in the `<mybatis-spring>` tag to combine the auto-discovery
+with explicit configuration of tables and views.
 
 
 ## Examples
 
-The example below show the most common cases of auto-discovery.
+The examples below show different cases of auto-discovery.
 
 
 ### Example #1 - Auto-Discovery Enabled Automatically
@@ -29,7 +29,7 @@ The configuration shown below does not include any table, view or DAO:
 </hotrod>
 ```
 
-Auto-discovery is activated by default, and all tables and view in the default schema are included in the persistence layer.
+Auto-discovery is activated by default. All tables and views in the default schema are included in the persistence layer.
 
 
 ### Example #2 - Auto-Discovery Disabled Automatically
@@ -79,12 +79,12 @@ The configuration shown below **does include** a table, view or DAO, and auto-di
 ```
 
 Auto-discovery is explicitly enabled in the configuration. All tables and view in the default schema are included in the persistence
-layer. The extra configuration details for tables and views are honored and used in the persistence layer.
+layer. The custom configuration details for tables and views are honored and are used in the persistence layer.
 
 
 ### Example #4 - Excluding Tables or Views from Auto-Discovery
 
-The configuration shown below speficies tables or views to exclide from the auto-discovery:
+The configuration shown below specifies tables or views that we want to exclude from the auto-discovery:
 
 ```xml
 <hotrod>
@@ -106,7 +106,7 @@ The configuration shown below speficies tables or views to exclide from the auto
 ```
 
 Any tables or views in the default schema are included in the persistence layer, except for `invoice_bkp_tab` and `accounting_old_view`.
-`client_tab` and `outst_payments` are included with non-default configuration details.
+`client_tab` and `outst_payments` are included with their custom configuration.
 
 
 ## See also
