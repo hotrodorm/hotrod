@@ -2,23 +2,26 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.myapp.daos.primitives.client">
+<mapper namespace="com.myapp.daos.primitives.task">
 
   <!-- columns -->
 
   <sql id="columns">
+    id,
     name,
-    vip
+    due
   </sql>
 
   <sql id="columnsWithAlias">
+    ${alias}.id,
     ${alias}.name,
-    ${alias}.vip
+    ${alias}.due
   </sql>
 
-  <resultMap id="allColumns" type="com.myapp.daos.ClientImpl">
+  <resultMap id="allColumns" type="com.myapp.daos.TaskImpl">
+    <result property="id" column="ID" />
     <result property="name" column="NAME" />
-    <result property="vip" column="VIP" />
+    <result property="due" column="DUE" />
   </resultMap>
 
   <!-- select by PK: no mapping generated, since the table does not have a PK -->
@@ -30,13 +33,16 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from exampledb.public.client
+     from exampledb.schema3.task
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
       <if test="p.name != null ">
         and name = #{p.name,jdbcType=VARCHAR}
       </if>
-      <if test="p.vip != null ">
-        and vip = #{p.vip,jdbcType=INTEGER}
+      <if test="p.due != null ">
+        and due = #{p.due,jdbcType=DATE}
       </if>
     </trim>
     <if test="o != null">
@@ -53,15 +59,17 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into exampledb.public.client (
+    insert into exampledb.schema3.task (
       <trim prefixOverrides=", ">
+        <if test="true">, id</if>
         <if test="true">, name</if>
-        <if test="true">, vip</if>
+        <if test="true">, due</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
         <if test="true">, #{name,jdbcType=VARCHAR}</if>
-        <if test="true">, #{vip,jdbcType=INTEGER}</if>
+        <if test="true">, #{due,jdbcType=DATE}</if>
       </trim>
       )
   </insert>
@@ -73,17 +81,21 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update exampledb.public.client
+    update exampledb.schema3.task
     <set>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
       <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
-      <if test="values.propertiesChangeLog.vipWasSet">vip = #{values.vip,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.dueWasSet">due = #{values.due,jdbcType=DATE},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
       <if test="filter.name != null ">
         and name = #{filter.name,jdbcType=VARCHAR}
       </if>
-      <if test="filter.vip != null ">
-        and vip = #{filter.vip,jdbcType=INTEGER}
+      <if test="filter.due != null ">
+        and due = #{filter.due,jdbcType=DATE}
       </if>
     </trim>
   </update>
@@ -91,13 +103,16 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from exampledb.public.client
+    delete from exampledb.schema3.task
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
       <if test="name != null ">
         and name = #{name,jdbcType=VARCHAR}
       </if>
-      <if test="vip != null ">
-        and vip = #{vip,jdbcType=INTEGER}
+      <if test="due != null ">
+        and due = #{due,jdbcType=DATE}
       </if>
     </trim>
   </delete>

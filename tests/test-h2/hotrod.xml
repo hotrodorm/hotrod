@@ -4,7 +4,7 @@
 <hotrod>
 
   <generators>
-    <mybatis-spring >
+    <mybatis-spring discovery="enabled" other-schemas="schema2,schema3">
       <daos package="com.myapp.daos" dao-suffix="DAO" vo-suffix="Impl" 
             abstract-vo-prefix="" abstract-vo-suffix="VO" />
     </mybatis-spring>

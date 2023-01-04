@@ -115,16 +115,16 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
 
   public enum ClientOrderBy implements OrderBy {
 
-    NAME("client", "name", true), //
-    NAME$DESC("client", "name", false), //
-    NAME$CASEINSENSITIVE("client", "lower(name)", true), //
-    NAME$CASEINSENSITIVE_STABLE_FORWARD("client", "lower(name), name", true), //
-    NAME$CASEINSENSITIVE_STABLE_REVERSE("client", "lower(name), name", false), //
-    NAME$DESC_CASEINSENSITIVE("client", "lower(name)", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("client", "lower(name), name", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("client", "lower(name), name", true), //
-    VIP("client", "vip", true), //
-    VIP$DESC("client", "vip", false);
+    NAME("exampledb.public.client", "name", true), //
+    NAME$DESC("exampledb.public.client", "name", false), //
+    NAME$CASEINSENSITIVE("exampledb.public.client", "lower(name)", true), //
+    NAME$CASEINSENSITIVE_STABLE_FORWARD("exampledb.public.client", "lower(name), name", true), //
+    NAME$CASEINSENSITIVE_STABLE_REVERSE("exampledb.public.client", "lower(name), name", false), //
+    NAME$DESC_CASEINSENSITIVE("exampledb.public.client", "lower(name)", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("exampledb.public.client", "lower(name), name", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("exampledb.public.client", "lower(name), name", true), //
+    VIP("exampledb.public.client", "vip", true), //
+    VIP$DESC("exampledb.public.client", "vip", false);
 
     private ClientOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -171,12 +171,12 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     ClientTable() {
-      super(null, null, "CLIENT", "Table", null);
+      super("EXAMPLEDB", "PUBLIC", "CLIENT", "Table", null);
       initialize();
     }
 
     ClientTable(final String alias) {
-      super(null, null, "CLIENT", "Table", alias);
+      super("EXAMPLEDB", "PUBLIC", "CLIENT", "Table", alias);
       initialize();
     }
 

@@ -2,23 +2,23 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.myapp.daos.primitives.client">
+<mapper namespace="com.myapp.daos.primitives.account">
 
   <!-- columns -->
 
   <sql id="columns">
-    name,
-    vip
+    id,
+    balance
   </sql>
 
   <sql id="columnsWithAlias">
-    ${alias}.name,
-    ${alias}.vip
+    ${alias}.id,
+    ${alias}.balance
   </sql>
 
-  <resultMap id="allColumns" type="com.myapp.daos.ClientImpl">
-    <result property="name" column="NAME" />
-    <result property="vip" column="VIP" />
+  <resultMap id="allColumns" type="com.myapp.daos.AccountImpl">
+    <result property="id" column="ID" />
+    <result property="balance" column="BALANCE" />
   </resultMap>
 
   <!-- select by PK: no mapping generated, since the table does not have a PK -->
@@ -30,13 +30,13 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from exampledb.public.client
+     from exampledb.schema2.account
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="p.name != null ">
-        and name = #{p.name,jdbcType=VARCHAR}
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
       </if>
-      <if test="p.vip != null ">
-        and vip = #{p.vip,jdbcType=INTEGER}
+      <if test="p.balance != null ">
+        and balance = #{p.balance,jdbcType=INTEGER}
       </if>
     </trim>
     <if test="o != null">
@@ -53,15 +53,15 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into exampledb.public.client (
+    insert into exampledb.schema2.account (
       <trim prefixOverrides=", ">
-        <if test="true">, name</if>
-        <if test="true">, vip</if>
+        <if test="true">, id</if>
+        <if test="true">, balance</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{name,jdbcType=VARCHAR}</if>
-        <if test="true">, #{vip,jdbcType=INTEGER}</if>
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{balance,jdbcType=INTEGER}</if>
       </trim>
       )
   </insert>
@@ -73,17 +73,17 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update exampledb.public.client
+    update exampledb.schema2.account
     <set>
-      <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
-      <if test="values.propertiesChangeLog.vipWasSet">vip = #{values.vip,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.balanceWasSet">balance = #{values.balance,jdbcType=INTEGER},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="filter.name != null ">
-        and name = #{filter.name,jdbcType=VARCHAR}
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
       </if>
-      <if test="filter.vip != null ">
-        and vip = #{filter.vip,jdbcType=INTEGER}
+      <if test="filter.balance != null ">
+        and balance = #{filter.balance,jdbcType=INTEGER}
       </if>
     </trim>
   </update>
@@ -91,13 +91,13 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from exampledb.public.client
+    delete from exampledb.schema2.account
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
-      <if test="name != null ">
-        and name = #{name,jdbcType=VARCHAR}
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
       </if>
-      <if test="vip != null ">
-        and vip = #{vip,jdbcType=INTEGER}
+      <if test="balance != null ">
+        and balance = #{balance,jdbcType=INTEGER}
       </if>
     </trim>
   </delete>

@@ -15,3 +15,17 @@ create table client (name varchar(10), vip int);
 
 create view vip_client as select * from client where vip = 1;
 
+-- SCHEMA2 ---------------------------------------
+
+create schema schema2;
+
+create table schema2.account (id int, balance int);
+
+-- SCHEMA3 ---------------------------------------
+
+create schema schema3;
+
+create table schema3.task (id int, name varchar(10), due date);
+
+create view schema3.overdue_task as select * from schema3.task where due < current_date();
+
