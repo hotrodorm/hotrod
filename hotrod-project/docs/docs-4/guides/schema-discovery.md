@@ -217,7 +217,7 @@ All tables and views in the schema `reporting` of the current catalog are in inc
 Also, all tables and views of the schemas `master.accounting` and `clients.billing` are included in the persistence 
 layer except for `master.accounting.invoice_bkp_tab` and `clients.billing.accounting_old_view`. 
 
-The declared table and view (`master.accounting.client_tab` and `outst_payments` in the current schema) are also
+The declared table `master.accounting.client_tab` and the view `outst_payments` in the current schema are also
 included in the persistence layer with their custom settings.
 
 All tables and views &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
