@@ -204,7 +204,7 @@ using dot notation.
 ```
 
 - Option #B:
-```xml
+    ```xml
     <hotrod>
 
       <generators>
@@ -225,7 +225,7 @@ using dot notation.
       <view name="outst_payments" java-name="OutstandingPayment" />
 
     </hotrod>
-```
+    ```
 
 Any tables or views in the schemas `master.accounting` and `clients.billing` are included in the persistence layer except
 for `master.accounting.invoice_bkp_tab` and `clients.billing.accounting_old_view`. The declared table and view
