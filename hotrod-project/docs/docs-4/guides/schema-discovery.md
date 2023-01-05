@@ -43,8 +43,8 @@ takes place.
 
 ### Example #2 - Discovery Enabled for the Current Schema
 
-Discovery is enabled. The configuration does not declare any table, view, or DAO, so all tables and views
-in the current schema will be discovered and added to the persistence layer.
+Discovery is enabled. All tables and views in the current schema will be discovered and added to 
+the persistence layer.
 
 ```xml
 <hotrod>
@@ -63,6 +63,25 @@ in the current schema will be discovered and added to the persistence layer.
 
 All tables and views in the current schema are discovered and added to the persistence layer. They are available
 for CRUD and LiveSQL.
+
+An empty `<discovery/>` tag includes the current schema by default. In this case, the example above is equivalent to:
+
+```xml
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+
+      <discovery>
+        <current-schema />
+      </discovery>
+
+      <daos package="app.persistence" />
+    </mybatis-spring>
+  </generators>
+
+</hotrod>
+```
 
 
 ### Example #3 - Discovery with Declared Tables and Views
