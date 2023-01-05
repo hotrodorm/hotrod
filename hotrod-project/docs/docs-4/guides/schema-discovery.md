@@ -183,7 +183,8 @@ All tables and view &ndash; either discovered or declared &ndash; are available 
 In databases that implement catalogs and schemas &ndash; SQL Server and Sybase &ndash; these can be included 
 using dot notation.
 
-- Option #A:
+**Option #A**:
+
 ```xml
 <hotrod>
 
@@ -203,29 +204,30 @@ using dot notation.
 </hotrod>
 ```
 
-- Option #B:
-    ```xml
-    <hotrod>
+**Option #B**:
 
-      <generators>
-        <mybatis-spring>
-          <discovery schemas="master.accounting, clients.billing">
-            <schema catalog="master" schema="accounting">
-              <exclude table="invoice_bkp_tab" />
-            </schema>
-            <schema catalog="clients" schema="billing">
-              <exclude view="accounting_old_view" />
-            </schema>
-          </discovery>
-          <daos package="app.persistence" />
-        </mybatis-spring>
-      </generators>
+```xml
+<hotrod>
 
-      <table name="client_tab" sequence="seq_client" />
-      <view name="outst_payments" java-name="OutstandingPayment" />
+  <generators>
+    <mybatis-spring>
+      <discovery schemas="master.accounting, clients.billing">
+        <schema catalog="master" schema="accounting">
+          <exclude table="invoice_bkp_tab" />
+        </schema>
+        <schema catalog="clients" schema="billing">
+          <exclude view="accounting_old_view" />
+        </schema>
+      </discovery>
+      <daos package="app.persistence" />
+    </mybatis-spring>
+  </generators>
 
-    </hotrod>
-    ```
+  <table name="client_tab" sequence="seq_client" />
+  <view name="outst_payments" java-name="OutstandingPayment" />
+
+</hotrod>
+```
 
 Any tables or views in the schemas `master.accounting` and `clients.billing` are included in the persistence layer except
 for `master.accounting.invoice_bkp_tab` and `clients.billing.accounting_old_view`. The declared table and view
