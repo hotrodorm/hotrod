@@ -211,7 +211,8 @@ using dot notation.
 
   <generators>
     <mybatis-spring>
-      <discovery schemas="master.accounting, clients.billing">
+      <discovery>
+        <schema schema="reporting" />
         <schema catalog="master" schema="accounting">
           <exclude table="invoice_bkp_tab" />
         </schema>
