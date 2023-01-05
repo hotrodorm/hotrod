@@ -190,10 +190,12 @@ using dot notation.
 
   <generators>
     <mybatis-spring>
-      <discovery schemas="master.accounting, clients.billing">
+
+      <discovery schemas="reporting, master.accounting, clients.billing">
         <exclude catalog="master" schema="accounting" name="invoice_bkp_tab" />
         <exclude catalog="clients" schema="billing" name="accounting_old_view" />
       </discovery>
+      
       <daos package="app.persistence" />
     </mybatis-spring>
   </generators>
@@ -221,7 +223,7 @@ using dot notation.
           <exclude view="accounting_old_view" />
         </schema>
       </discovery>
-      
+
       <daos package="app.persistence" />
     </mybatis-spring>
   </generators>
