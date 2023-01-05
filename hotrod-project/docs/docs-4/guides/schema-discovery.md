@@ -211,6 +211,7 @@ using dot notation.
 
   <generators>
     <mybatis-spring>
+
       <discovery>
         <schema schema="reporting" />
         <schema catalog="master" schema="accounting">
@@ -220,6 +221,7 @@ using dot notation.
           <exclude view="accounting_old_view" />
         </schema>
       </discovery>
+      
       <daos package="app.persistence" />
     </mybatis-spring>
   </generators>
