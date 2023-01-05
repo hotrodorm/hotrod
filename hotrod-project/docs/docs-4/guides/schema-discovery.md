@@ -37,7 +37,8 @@ Discovery is disabled by default. The configuration declares a table, a view, an
 ```
 
 Only the table `client`, the view `outstanding_payments`, and the DAO `ProcessesDAO` are included in
-the persistence layer. No discovery of tables or views takes place.
+the persistence layer. Since the tag `<discovery>` is not included, no discovery of tables or views 
+takes place.
 
 
 ### Example #2 - Discovery Enabled for the Current Schema
@@ -50,7 +51,9 @@ in the current schema will be discovered and added to the persistence layer.
 
   <generators>
     <mybatis-spring>
+
       <discovery />
+
       <daos package="app.persistence" />
     </mybatis-spring>
   </generators>
@@ -71,7 +74,9 @@ Discovery is enabled. The configuration declares a table, a view, and a DAO.
 
   <generators>
     <mybatis-spring>
+
       <discovery />
+
       <daos package="app.persistence" />
     </mybatis-spring>
   </generators>
@@ -86,12 +91,58 @@ Discovery is enabled. The configuration declares a table, a view, and a DAO.
 ```
 
 Since discovery is enabled, all tables and views in the current schema are included in the persistence
-layer. The custom configuration details for the declared tables and views are honored.
+layer. The custom configuration details for the declared tables and views supersedes the discovery 
+functionality.
 
-All tables and view &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
+All tables and views &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
 
 
-### Example #4 - Excluding Tables and Views from Discovery
+### Example #4 - Specifying Schemas to Discover
+
+The configuration indicates that the current schema, as well as two extra ones will be discovered.
+There are also declared tables, views, and DAOs:
+
+```xml
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+
+      <discovery>
+        <current-schema />
+        <schema name="sales" />
+        <schema name="payments" />
+      </discovery>
+
+      <daos package="app.persistence" />
+    </mybatis-spring>
+  </generators>
+
+  <table name="client_tab" sequence="seq_client" />
+  <view name="outst_payments" java-name="OutstandingPayment" />
+  <dao name="ProcessesDAO">
+    <query method="cleanUpTempData">truncate table temp_data</query>
+  </dao>
+
+</hotrod>
+```
+
+All tables and views in the current schema are included in the persistence layer. The declared table and
+view (`client_tab` and `outst_payments`) are included in the persistence layer with their custom
+configuration.
+
+All tables in the `sales` and `payments` schemas are also included in the persistence layer.
+
+**Note**: When the `<discovery>` tag is empty and no schema is declared, then the current schema is
+included by default; the current schema is the schema specified by the `catalog` and `schema` runtime
+properties that are configured in the external configuration, and not in the main configuration file.
+If schemas are added using `<schema>` tags, then the current schema is not included by default anymore.
+If you want to include it nevertheless, add the `<current-schema>` tag.
+
+All tables and views &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
+
+
+### Example #5 - Excluding Tables and Views from Discovery
 
 The configuration specifies tables and views that we want to exclude from the discovery:
 
@@ -100,126 +151,13 @@ The configuration specifies tables and views that we want to exclude from the di
 
   <generators>
     <mybatis-spring>
-      <discovery>
-        <exclude name="invoice_bkp_tab" />
-        <exclude name="accounting_old_view" />
-      </discovery>
-      <daos package="app.persistence" />
-    </mybatis-spring>
-  </generators>
-
-  <table name="client_tab" sequence="seq_client" />
-  <view name="outst_payments" java-name="OutstandingPayment" />
-
-</hotrod>
-```
-
-Any tables or views in the default schema are included in the persistence layer, except for `invoice_bkp_tab` and
-`accounting_old_view`. The declared table and view (`client_tab` and `outst_payments`) are included in the
-persistence layer.
-
-All tables and view &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
-
-
-### Example #5 - Discovering Multiple Schemas
-
-The configuration includes a comma-separated list of schemas to be discovered:
-
-```xml
-<hotrod>
-
-  <generators>
-    <mybatis-spring>
-      <discovery schemas="accounting, billing" />
-      <daos package="app.persistence" />
-    </mybatis-spring>
-  </generators>
-
-  <table name="client_tab" sequence="seq_client" />
-  <view name="outst_payments" java-name="OutstandingPayment" />
-
-</hotrod>
-```
-
-Any tables or views in the schemas `accounting` and `billing` are included in the persistence layer. The declared
-table and view (`client_tab` and `outst_payments`) are also included in the persistence layer.
-
-All tables and view &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
-
-
-### Example #6 - Excluding Tables and View from Multiple Schemas
-
-The configuration includes a list of comma-separated schemas to be discovered and also some tables or views
-to be excluded from discovery.
-
-```xml
-<hotrod>
-
-  <generators>
-    <mybatis-spring>
-      <discovery schemas="accounting, billing">
-        <exclude schema="accounting" name="invoice_bkp_tab" />
-        <exclude schema="billing" name="accounting_old_view" />
-      </discovery>
-      <daos package="app.persistence" />
-    </mybatis-spring>
-  </generators>
-
-  <table name="client_tab" sequence="seq_client" />
-  <view name="outst_payments" java-name="OutstandingPayment" />
-
-</hotrod>
-```
-
-Any tables or views in the schemas `accounting` and `billing` are included in the persistence layer except
-for `accounting.invoice_bkp_tab` and `billing.accounting_old_view`. The declared table and view
-(`client_tab` and `outst_payments`) are also included in the persistence layer.
-
-All tables and view &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
-
-
-### Example #7 - Catalogs and Schemas
-
-In databases that implement catalogs and schemas &ndash; SQL Server and Sybase &ndash; these can be included 
-using dot notation.
-
-**Option #A**:
-
-```xml
-<hotrod>
-
-  <generators>
-    <mybatis-spring>
-
-      <discovery schemas="reporting, master.accounting, clients.billing">
-        <exclude catalog="master" schema="accounting" name="invoice_bkp_tab" />
-        <exclude catalog="clients" schema="billing" name="accounting_old_view" />
-      </discovery>
-      
-      <daos package="app.persistence" />
-    </mybatis-spring>
-  </generators>
-
-  <table name="client_tab" sequence="seq_client" />
-  <view name="outst_payments" java-name="OutstandingPayment" />
-
-</hotrod>
-```
-
-**Option #B**:
-
-```xml
-<hotrod>
-
-  <generators>
-    <mybatis-spring>
 
       <discovery>
-        <schema schema="reporting" />
-        <schema catalog="master" schema="accounting">
+        <current-schema>
           <exclude table="invoice_bkp_tab" />
-        </schema>
-        <schema catalog="clients" schema="billing">
+          <exclude view="past_due_invoice_3" />
+        </current-schema>
+        <schema name="accounting">
           <exclude view="accounting_old_view" />
         </schema>
       </discovery>
@@ -234,11 +172,55 @@ using dot notation.
 </hotrod>
 ```
 
-Any tables or views in the schemas `master.accounting` and `clients.billing` are included in the persistence layer except
-for `master.accounting.invoice_bkp_tab` and `clients.billing.accounting_old_view`. The declared table and view
-(`client_tab` and `outst_payments`) are also included in the persistence layer.
+All tables and views in the current schema are included in the persistence layer, except for the table
+`invoice_bkp_tab` and the view `past_due_invoice_3`. All tables and views in the schema `accounting` 
+are also included in the persistence layer, except for the view `accounting_old_view`.
 
-All tables and view &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
+The declared table and view (`client_tab` and `outst_payments`) are included in the persistence layer
+with their custom settings.
+
+All tables and views &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
+
+
+### Example #6 - Catalogs and Schemas
+
+In databases that implement catalogs and schemas &ndash; e.g. SQL Server and Sybase &ndash; these can 
+be included by adding the `catalog` attribute when necessary.
+
+```xml
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+
+      <discovery>
+        <schema name="reporting" />
+        <schema catalog="master" name="accounting">
+          <exclude table="invoice_bkp_tab" />
+        </schema>
+        <schema catalog="clients" name="billing">
+          <exclude view="accounting_old_view" />
+        </schema>
+      </discovery>
+
+      <daos package="app.persistence" />
+    </mybatis-spring>
+  </generators>
+
+  <table catalog="master" schema="accounting" name="client_tab" sequence="seq_client" />
+  <view name="outst_payments" java-name="OutstandingPayment" />
+
+</hotrod>
+```
+
+All tables and views in the schema `reporting` of the current catalog are in include in the persistence layer.
+Also, all tables and views of the schemas `master.accounting` and `clients.billing` are included in the persistence 
+layer except for `master.accounting.invoice_bkp_tab` and `clients.billing.accounting_old_view`. 
+
+The declared table and view (`master.accounting.client_tab` and `outst_payments` in the current schema) are also
+included in the persistence layer with their custom settings.
+
+All tables and views &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
 
 
 ## See also
