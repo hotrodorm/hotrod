@@ -129,8 +129,9 @@ public class HotRodContext {
       } catch (FacetNotFoundException e) {
         throw new ControlledException("facet '" + e.getMessage() + "' not found.");
       } catch (RuntimeException e) {
+        e.printStackTrace();
         throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage() + ": "
-            + XUtil.abridge(e.getCause()));
+            + XUtil.abridge(e.getCause() == null ? e : e.getCause()));
       }
       log.debug("Main Configuration loaded.");
 
