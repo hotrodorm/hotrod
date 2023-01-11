@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test.persistence.primitives.queriesDAODAO">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    
+  </sql>
+
+  <sql id="columnsWithAlias">
+    
+  </sql>
+
+  <!-- select method: selectAllProducts -->
+
+  <resultMap id="result_map_select_selectAllProducts" type="test.persistence.ProductAllVOVO">
+    <result property="id" column="id" />
+    <result property="name" column="name" />
+  </resultMap>
+
+  <select id="select_selectAllProducts" resultMap="result_map_select_selectAllProducts">
+      select * from product
+  </select>
+
+</mapper>

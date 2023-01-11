@@ -167,7 +167,7 @@ public class SelectAbstractVO {
 
     String hierarchy = this.superClassName == null ? " implements Serializable" : " extends " + this.superClassName;
 
-    println("public abstract class " + this.getName() + hierarchy + " {");
+    println("public class " + this.getName() + hierarchy + " {");
     println();
 
     // Serial Version UID

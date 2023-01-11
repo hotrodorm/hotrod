@@ -80,6 +80,14 @@
   <table name="employee" />
 
   <table name="house" />
+  
+  <dao name="QueriesDAO">
+
+    <select method="selectAllProducts" vo="ProductAllVO">
+      select * from product
+    </select>
+    
+  </dao>
 
 </hotrod>
   
