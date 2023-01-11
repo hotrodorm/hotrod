@@ -88,16 +88,9 @@
         <artifactId>hotrod-maven-plugin</artifactId>
         <version>${hotrod.version}</version>
         <configuration>
-          <configfile>./hotrod.xml</configfile>
+          <configfile>src/main/hotrod/hotrod.xml</configfile>
           <localproperties>./db.properties</localproperties>
           <jdbcdriverclass>${jdbcdriverclass}</jdbcdriverclass>
-          <!--
-          <jdbcurl>jdbc:postgresql://192.168.56.214:5432/hotrod</jdbcurl>
-          <jdbcusername>user1</jdbcusername>
-          <jdbcpassword>pass1</jdbcpassword>
-          <jdbccatalog></jdbccatalog>
-          <jdbcschema>public</jdbcschema>
-           -->
         </configuration>
         <dependencies>
           <dependency>
