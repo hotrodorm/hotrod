@@ -46,6 +46,12 @@
       <version>2.1.3</version>
     </dependency>
 
+    <dependency>
+      <groupId>${jdbcdrivergroupid}</groupId>
+      <artifactId>${jdbcdriverartifactid}</artifactId>
+      <version>${jdbcdriverversion}</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -72,6 +78,7 @@
         <configuration>
           <sourcedir>src/main/database</sourcedir>
           <targetversion>1.0.0</targetversion>
+          <datascenario>dev</datascenario>
           <localproperties>./db.properties</localproperties>
         </configuration>
         <dependencies>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test.persistence.primitives.testSequence1">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id1,
+    name
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id1,
+    ${alias}.name
+  </sql>
+
+  <resultMap id="allColumns" type="test.persistence.TestSequence1VO">
+    <result property="id1" column="id1" />
+    <result property="name" column="name" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from test_sequence1
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id1 != null ">
+        and id1 = #{p.id1,jdbcType=INTEGER}
+      </if>
+      <if test="p.id1 == null and p.propertiesChangeLog.id1WasSet">
+        and id1 is null
+      </if>
+      <if test="p.name != null ">
+        and name = #{p.name,jdbcType=VARCHAR}
+      </if>
+      <if test="p.name == null and p.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into test_sequence1 (
+      <trim prefixOverrides=", ">
+        <if test="true">, id1</if>
+        <if test="true">, name</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id1,jdbcType=INTEGER}</if>
+        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update test_sequence1
+    <set>
+      <if test="values.propertiesChangeLog.id1WasSet">id1 = #{values.id1,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id1 != null ">
+        and id1 = #{filter.id1,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id1 == null and filter.propertiesChangeLog.id1WasSet">
+        and id1 is null
+      </if>
+      <if test="filter.name != null ">
+        and name = #{filter.name,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.name == null and filter.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+    </trim>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from test_sequence1
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id1 != null ">
+        and id1 = #{id1,jdbcType=INTEGER}
+      </if>
+      <if test="id1 == null and propertiesChangeLog.id1WasSet">
+        and id1 is null
+      </if>
+      <if test="name != null ">
+        and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="name == null and propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+    </trim>
+  </delete>
+
+</mapper>

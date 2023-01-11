@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test.persistence.primitives.testIdentity2">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    id2,
+    name
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.id2,
+    ${alias}.name
+  </sql>
+
+  <resultMap id="allColumns" type="test.persistence.TestIdentity2VO">
+    <result property="id" column="id" />
+    <result property="id2" column="id2" />
+    <result property="name" column="name" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from test_identity2
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id != null ">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="p.id2 != null ">
+        and id2 = #{p.id2,jdbcType=INTEGER}
+      </if>
+      <if test="p.id2 == null and p.propertiesChangeLog.id2WasSet">
+        and id2 is null
+      </if>
+      <if test="p.name != null ">
+        and name = #{p.name,jdbcType=VARCHAR}
+      </if>
+      <if test="p.name == null and p.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (does not integrate sequences, and integrates identities) -->
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id,id2" keyColumn="id,id2">
+    insert into test_identity2 (
+      <trim prefixOverrides=", ">
+        <if test="id != null">, id</if>
+        <if test="id2 != null">, id2</if>
+        <if test="true">, name</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="id != null">, #{id,jdbcType=INTEGER}</if>
+        <if test="id2 != null">, #{id2,jdbcType=INTEGER}</if>
+        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update test_identity2
+    <set>
+      <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.id2WasSet">id2 = #{values.id2,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id != null ">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="filter.id2 != null ">
+        and id2 = #{filter.id2,jdbcType=INTEGER}
+      </if>
+      <if test="filter.id2 == null and filter.propertiesChangeLog.id2WasSet">
+        and id2 is null
+      </if>
+      <if test="filter.name != null ">
+        and name = #{filter.name,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.name == null and filter.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+    </trim>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from test_identity2
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id != null ">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="id == null and propertiesChangeLog.idWasSet">
+        and id is null
+      </if>
+      <if test="id2 != null ">
+        and id2 = #{id2,jdbcType=INTEGER}
+      </if>
+      <if test="id2 == null and propertiesChangeLog.id2WasSet">
+        and id2 is null
+      </if>
+      <if test="name != null ">
+        and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="name == null and propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+    </trim>
+  </delete>
+
+</mapper>

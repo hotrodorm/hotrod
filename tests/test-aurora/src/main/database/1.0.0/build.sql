@@ -293,8 +293,7 @@ create table cursor_example1 (
 
 create table product (
   id bigint not null primary key,
-  name varchar(20) not null,
-  "Name" varchar(20) not null
+  name varchar(20) not null
 );
 
 -- =========

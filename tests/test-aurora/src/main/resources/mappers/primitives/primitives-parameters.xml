@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test.persistence.primitives.parameters">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    system,
+    level,
+    name,
+    value
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.system,
+    ${alias}.level,
+    ${alias}.name,
+    ${alias}.value
+  </sql>
+
+  <resultMap id="allColumns" type="test.persistence.ParametersVO">
+    <result property="system" column="system" />
+    <result property="level" column="level" />
+    <result property="name" column="name" />
+    <result property="value" column="value" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from parameters
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.system != null ">
+        and system = #{p.system,jdbcType=INTEGER}
+      </if>
+      <if test="p.system == null and p.propertiesChangeLog.systemWasSet">
+        and system is null
+      </if>
+      <if test="p.level != null ">
+        and level = #{p.level,jdbcType=NUMERIC}
+      </if>
+      <if test="p.level == null and p.propertiesChangeLog.levelWasSet">
+        and level is null
+      </if>
+      <if test="p.name != null ">
+        and name = #{p.name,jdbcType=VARCHAR}
+      </if>
+      <if test="p.name == null and p.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="p.value != null ">
+        and value = #{p.value,jdbcType=VARCHAR}
+      </if>
+      <if test="p.value == null and p.propertiesChangeLog.valueWasSet">
+        and value is null
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into parameters (
+      <trim prefixOverrides=", ">
+        <if test="true">, system</if>
+        <if test="true">, level</if>
+        <if test="true">, name</if>
+        <if test="true">, value</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{system,jdbcType=INTEGER}</if>
+        <if test="true">, #{level,jdbcType=NUMERIC}</if>
+        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+        <if test="true">, #{value,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update parameters
+    <set>
+      <if test="values.propertiesChangeLog.systemWasSet">system = #{values.system,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.levelWasSet">level = #{values.level,jdbcType=NUMERIC},</if>
+      <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.valueWasSet">value = #{values.value,jdbcType=VARCHAR},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.system != null ">
+        and system = #{filter.system,jdbcType=INTEGER}
+      </if>
+      <if test="filter.system == null and filter.propertiesChangeLog.systemWasSet">
+        and system is null
+      </if>
+      <if test="filter.level != null ">
+        and level = #{filter.level,jdbcType=NUMERIC}
+      </if>
+      <if test="filter.level == null and filter.propertiesChangeLog.levelWasSet">
+        and level is null
+      </if>
+      <if test="filter.name != null ">
+        and name = #{filter.name,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.name == null and filter.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="filter.value != null ">
+        and value = #{filter.value,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.value == null and filter.propertiesChangeLog.valueWasSet">
+        and value is null
+      </if>
+    </trim>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from parameters
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="system != null ">
+        and system = #{system,jdbcType=INTEGER}
+      </if>
+      <if test="system == null and propertiesChangeLog.systemWasSet">
+        and system is null
+      </if>
+      <if test="level != null ">
+        and level = #{level,jdbcType=NUMERIC}
+      </if>
+      <if test="level == null and propertiesChangeLog.levelWasSet">
+        and level is null
+      </if>
+      <if test="name != null ">
+        and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="name == null and propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="value != null ">
+        and value = #{value,jdbcType=VARCHAR}
+      </if>
+      <if test="value == null and propertiesChangeLog.valueWasSet">
+        and value is null
+      </if>
+    </trim>
+  </delete>
+
+</mapper>

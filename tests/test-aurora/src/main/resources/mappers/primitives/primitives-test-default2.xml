@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test.persistence.primitives.testDefault2">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    name,
+    price,
+    branch_id
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.name,
+    ${alias}.price,
+    ${alias}.branch_id
+  </sql>
+
+  <resultMap id="allColumns" type="test.persistence.TestDefault2VO">
+    <result property="name" column="name" />
+    <result property="price" column="price" />
+    <result property="branchId" column="branch_id" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from test_default2
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.name != null ">
+        and name = #{p.name,jdbcType=VARCHAR}
+      </if>
+      <if test="p.name == null and p.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="p.price != null ">
+        and price = #{p.price,jdbcType=INTEGER}
+      </if>
+      <if test="p.price == null and p.propertiesChangeLog.priceWasSet">
+        and price is null
+      </if>
+      <if test="p.branchId != null ">
+        and branch_id = #{p.branchId,jdbcType=INTEGER}
+      </if>
+      <if test="p.branchId == null and p.propertiesChangeLog.branchIdWasSet">
+        and branch_id is null
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into test_default2 (
+      <trim prefixOverrides=", ">
+        <if test="true">, name</if>
+        <if test="propertiesChangeLog.priceWasSet">, price</if>
+        <if test="propertiesChangeLog.branchIdWasSet">, branch_id</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+        <if test="propertiesChangeLog.priceWasSet">, #{price,jdbcType=INTEGER}</if>
+        <if test="propertiesChangeLog.branchIdWasSet">, #{branchId,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update test_default2
+    <set>
+      <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.priceWasSet">price = #{values.price,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.branchIdWasSet">branch_id = #{values.branchId,jdbcType=INTEGER},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.name != null ">
+        and name = #{filter.name,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.name == null and filter.propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="filter.price != null ">
+        and price = #{filter.price,jdbcType=INTEGER}
+      </if>
+      <if test="filter.price == null and filter.propertiesChangeLog.priceWasSet">
+        and price is null
+      </if>
+      <if test="filter.branchId != null ">
+        and branch_id = #{filter.branchId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.branchId == null and filter.propertiesChangeLog.branchIdWasSet">
+        and branch_id is null
+      </if>
+    </trim>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from test_default2
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="name != null ">
+        and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="name == null and propertiesChangeLog.nameWasSet">
+        and name is null
+      </if>
+      <if test="price != null ">
+        and price = #{price,jdbcType=INTEGER}
+      </if>
+      <if test="price == null and propertiesChangeLog.priceWasSet">
+        and price is null
+      </if>
+      <if test="branchId != null ">
+        and branch_id = #{branchId,jdbcType=INTEGER}
+      </if>
+      <if test="branchId == null and propertiesChangeLog.branchIdWasSet">
+        and branch_id is null
+      </if>
+    </trim>
+  </delete>
+
+</mapper>
