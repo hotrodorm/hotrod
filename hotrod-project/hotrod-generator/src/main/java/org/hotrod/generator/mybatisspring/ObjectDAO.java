@@ -1095,15 +1095,16 @@ public class ObjectDAO extends GeneratableObject {
     println();
 
     String voClassName = this.avo.getFullClassName();
+    String moClassName = this.vo.getFullClassName();
     if (extraInsert) {
-      print("  public int insert(final " + voClassName + " vo) ");
+      print("  public " + moClassName + " insert(final " + voClassName + " vo) ");
       println("{");
       println("    return insert(vo, false);");
       println("  }");
       println();
     }
 
-    print("  public int insert(final " + voClassName + " vo");
+    print("  public " + moClassName  + " insert(final " + voClassName + " vo");
     if (extraInsert) {
       print(", final boolean retrieveDefaults");
     }
@@ -1132,40 +1133,52 @@ public class ObjectDAO extends GeneratableObject {
 
     if (identities == 0) {
       if (sequences == 0) { // no sequences, no identities
-        println("    return this.sqlSession.insert(id, vo);");
+        println("    this.sqlSession.insert(id, vo);");
+        this.writeVOToModel();
+        println("    return mo;");
       } else { // sequences only
         if (integratesSequences) {
           writeInsertIntegrated(true, false, extraInsert);
-          println("    return rows;");
+          this.writeVOToModel();
+          println("    return mo;");
         } else {
-          println("    return this.sqlSession.insert(id, vo);");
+          println("    this.sqlSession.insert(id, vo);");
+          this.writeVOToModel();
+          println("    return mo;");
         }
       }
     } else {
       if (sequences == 0) { // identities only
         if (integratesIdentities) {
           writeInsertIntegrated(false, true, extraInsert);
-          println("    return rows;");
+          this.writeVOToModel();
+          println("    return mo;");
         } else {
-          println("    return this.sqlSession.insert(id, vo);");
+          println("    this.sqlSession.insert(id, vo);");
+          this.writeVOToModel();
+          println("    return mo;");
         }
       } else { // sequences & identities
         if (integratesSequences && integratesIdentities) {
           writeInsertIntegrated(true, true, extraInsert);
-          println("    return rows;");
+          this.writeVOToModel();
+          println("    return mo;");
         } else if (integratesIdentities) {
           writeSequencesPreFetch();
           writeInsertIntegrated(false, true, extraInsert);
-          println("    return rows;");
+          this.writeVOToModel();
+          println("    return mo;");
         } else if (integratesSequences) {
           writeInsertIntegrated(true, false, extraInsert);
           writeIdentitiesPostFetch();
-          println("    return rows;");
+          this.writeVOToModel();
+          println("    return mo;");
         } else {
           writeSequencesPreFetch();
           println("    int rows = this.sqlSession.insert(id, vo);");
           writeIdentitiesPostFetch();
-          println("    return rows;");
+          this.writeVOToModel();
+          println("    return mo;");
         }
 
       }
@@ -1174,6 +1187,14 @@ public class ObjectDAO extends GeneratableObject {
     println("  }");
     println();
 
+  }
+
+  private void writeVOToModel() throws IOException {
+    String moClassName = this.vo.getFullClassName();
+    println("    " + moClassName + " mo = new " + moClassName + "();");
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      println("    mo." + cm.getId().getJavaSetter() + "(vo." + cm.getId().getJavaGetter() + "());");
+    }
   }
 
   private void writeInsertIntegrated(final boolean integratesSequences, final boolean integratesIdentities,
