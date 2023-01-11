@@ -89,6 +89,7 @@ public class ObjectDAO extends GeneratableObject {
 
   private ClassPackage classPackage;
 
+  private ObjectAbstractVO avo = null;
   private ObjectVO vo = null;
   private Mapper mapper = null;
 
@@ -103,7 +104,7 @@ public class ObjectDAO extends GeneratableObject {
 
   public ObjectDAO(final AbstractDAOTag tag, final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisSpringGenerator generator, final DAOType type, final MyBatisSpringTag myBatisTag,
-      final DatabaseAdapter adapter, final ObjectVO vo, final Mapper mapper) {
+      final DatabaseAdapter adapter, final ObjectAbstractVO avo, final ObjectVO vo, final Mapper mapper) {
     super();
     log.debug("init");
     this.tag = tag;
@@ -118,6 +119,7 @@ public class ObjectDAO extends GeneratableObject {
     this.myBatisTag = myBatisTag;
     this.adapter = adapter;
 
+    this.avo = avo;
     this.vo = vo;
     this.mapper = mapper;
 
@@ -300,6 +302,9 @@ public class ObjectDAO extends GeneratableObject {
 
     imports.newLine();
 
+    if (this.avo != null) {
+      imports.add(this.avo.getFullClassName());
+    }
     if (this.vo != null) {
       imports.add(this.vo.getFullClassName());
     }
@@ -459,36 +464,6 @@ public class ObjectDAO extends GeneratableObject {
     println("  }");
     println();
 
-    // println(" // Bean setters");
-    // println();
-    // println(" public void setSqlSession(final SqlSession sqlSession) {");
-    // println(" this.sqlSession = sqlSession;");
-    // println(" }");
-    // println();
-    // println(" public void setSqlDialect(final SQLDialect sqlDialect) {");
-    // println(" this.sqlDialect = sqlDialect;");
-    // println(" }");
-    // println();
-
-    // Live SQL
-
-    // println(" // Live SQL");
-    // println("");
-    // println(" public SelectColumnsPhase<Map<String, Object>> createSelect()
-    // {");
-    // println(" return new SelectColumnsPhase<Map<String,
-    // Object>>(this.sqlDialect, this.sqlSession, false);");
-    // println(" }");
-    // println("");
-    // println(
-    // " public SelectColumnsPhase<Map<String, Object>> createSelect(final
-    // ResultSetColumn... resultSetColumns) {");
-    // println(
-    // " return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect,
-    // this.sqlSession, false, resultSetColumns);");
-    // println(" }");
-    // println("");
-
   }
 
   private static final String SELECT_BY_PK_METHOD = "selectByPK";
@@ -508,6 +483,7 @@ public class ObjectDAO extends GeneratableObject {
   private void selectByUniqueKey(final MyBatisSpringGenerator mg, final KeyMetadata key, final String method,
       final String mapperQuery) throws UnresolvableDataTypeException, IOException {
     String paramsSignature = toParametersSignature(key, mg);
+    String avoc = this.avo.getFullClassName();
     String voc = this.vo.getFullClassName();
 
     print("  public " + voc + " " + method + "(");
@@ -623,24 +599,25 @@ public class ObjectDAO extends GeneratableObject {
     println("  // select by example");
     println();
 
+    String avoClassName = this.avo.getFullClassName();
     String voClassName = this.vo.getFullClassName();
 
-    println("  public List<" + voClassName + "> selectByExample(final " + voClassName + " example, final "
+    println("  public List<" + voClassName + "> selectByExample(final " + avoClassName + " example, final "
         + this.getOrderByClassName() + "... orderBies)");
     print("      ");
     println("{");
-    println("    DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + "> dwo = //");
-    println("        new DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + ">(example, orderBies);");
+    println("    DaoWithOrder<" + avoClassName + ", " + this.getOrderByClassName() + "> dwo = //");
+    println("        new DaoWithOrder<>(example, orderBies);");
     println("    return this.sqlSession.selectList(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo);");
     println("  }");
     println();
 
-    println("  public Cursor<" + voClassName + "> selectByExampleCursor(final " + voClassName + " example, final "
+    println("  public Cursor<" + voClassName + "> selectByExampleCursor(final " + avoClassName + " example, final "
         + this.getOrderByClassName() + "... orderBies)");
     print("      ");
     println("{");
-    println("    DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + "> dwo = //");
-    println("        new DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + ">(example, orderBies);");
+    println("    DaoWithOrder<" + avoClassName + ", " + this.getOrderByClassName() + "> dwo = //");
+    println("        new DaoWithOrder<>(example, orderBies);");
     println("    return new " + MyBatisCursor.class.getSimpleName() + "<" + voClassName
         + ">(this.sqlSession.selectCursor(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo));");
     println("  }");
@@ -1117,7 +1094,7 @@ public class ObjectDAO extends GeneratableObject {
     println("  // insert");
     println();
 
-    String voClassName = this.vo.getFullClassName();
+    String voClassName = this.avo.getFullClassName();
     if (extraInsert) {
       print("  public int insert(final " + voClassName + " vo) ");
       println("{");
@@ -1318,7 +1295,7 @@ public class ObjectDAO extends GeneratableObject {
   private void writeInsertByExample() throws IOException {
     println("  // insert by example");
     println();
-    String voClassName = this.vo.getFullClassName();
+    String voClassName = this.avo.getFullClassName();
     print("  public int insertByExample(final " + voClassName + " example) ");
     println("{");
     println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExample() + "\", example);");
@@ -1330,7 +1307,7 @@ public class ObjectDAO extends GeneratableObject {
   private void writeUpdateByExample() throws IOException {
     println("  // update by example");
     println();
-    String voClassName = this.vo.getFullClassName();
+    String voClassName = this.avo.getFullClassName();
     println(
         "  public int updateByExample(final " + voClassName + " example, final " + voClassName + " updateValues) {");
     println("    UpdateByExampleDao<" + voClassName + "> fvd = //");
@@ -1384,7 +1361,7 @@ public class ObjectDAO extends GeneratableObject {
   private void writeDeleteByExample() throws IOException {
     println("  // delete by example");
     println();
-    String voClassName = this.vo.getFullClassName();
+    String voClassName = this.avo.getFullClassName();
     println("  public int deleteByExample(final " + voClassName + " example) {");
     println("    return this.sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByExample() + "\", example);");
     println("  }");
