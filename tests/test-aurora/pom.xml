@@ -1,0 +1,115 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>test</groupId>
+  <artifactId>test-aurora</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+    <hotrod.version>3.4.9</hotrod.version>
+    <mybatis.spring.version>2.1.3</mybatis.spring.version>
+    <debbie.version>1.3.2</debbie.version>
+    <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
+    <jdbcdrivergroupid>org.postgresql</jdbcdrivergroupid>
+    <jdbcdriverartifactid>postgresql</jdbcdriverartifactid>
+    <jdbcdriverversion>42.3.3</jdbcdriverversion>
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <version>2.3.4.RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod</artifactId>
+      <version>${hotrod.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod-livesql</artifactId>
+      <version>${hotrod.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+      <version>2.1.3</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>2.3.4.RELEASE</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.nocrala.tools.database.debbie</groupId>
+        <artifactId>debbie-maven-plugin</artifactId>
+        <version>${debbie.version}</version>
+        <configuration>
+          <sourcedir>src/main/database</sourcedir>
+          <targetversion>1.0.0</targetversion>
+          <localproperties>./db.properties</localproperties>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>${jdbcdrivergroupid}</groupId>
+            <artifactId>${jdbcdriverartifactid}</artifactId>
+            <version>${jdbcdriverversion}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.hotrodorm.hotrod</groupId>
+        <artifactId>hotrod-maven-plugin</artifactId>
+        <version>${hotrod.version}</version>
+        <configuration>
+          <configfile>./hotrod.xml</configfile>
+          <localproperties>./db.properties</localproperties>
+          <jdbcdriverclass>${jdbcdriverclass}</jdbcdriverclass>
+          <!--
+          <jdbcurl>jdbc:postgresql://192.168.56.214:5432/hotrod</jdbcurl>
+          <jdbcusername>user1</jdbcusername>
+          <jdbcpassword>pass1</jdbcpassword>
+          <jdbccatalog></jdbccatalog>
+          <jdbcschema>public</jdbcschema>
+           -->
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>${jdbcdrivergroupid}</groupId>
+            <artifactId>${jdbcdriverartifactid}</artifactId>
+            <version>${jdbcdriverversion}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+</project>
