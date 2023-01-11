@@ -17,6 +17,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import test.persistence.EmployeeVO;
+import test.persistence.TypesBinaryVO;
+import test.persistence.TypesCharVO;
 import test.persistence.TypesNumericVO;
 import test.persistence.primitives.EmployeeDAO;
 import test.persistence.primitives.EmployeeDAO.EmployeeTable;
@@ -99,7 +101,7 @@ public class App {
 
     tn.setDec1(BigDecimal.TEN);
     tn.setDec2(BigDecimal.TEN);
-    tn.setDec3((byte) 124);
+    tn.setDec3((byte) 24);
     tn.setDec4((short) 125);
     tn.setDec5(12346);
     tn.setDec6(4455L);
@@ -112,6 +114,35 @@ public class App {
 
     for (TypesNumericVO n : this.typesNumericDAO.selectByExample(new TypesNumericVO())) {
       System.out.println("n=" + n);
+    }
+
+    // Inserting in types_char
+
+    TypesCharVO tc = new TypesCharVO();
+
+    tc.setCha1("Hello");
+    tc.setCha2("World");
+    tc.setCha3("Fun");
+
+    this.typesCharDAO.insert(tc);
+
+    for (TypesCharVO c : this.typesCharDAO.selectByExample(new TypesCharVO())) {
+      System.out.println("c=" + c);
+    }
+
+    // Inserting in types_binary
+
+    TypesBinaryVO tb = new TypesBinaryVO();
+
+    byte[] v = new byte[] { 12, 34, 56, 78 };
+    tb.setBin1(v);
+    tb.setBol1(true);
+
+    this.typesBinaryDAO.insert(tb);
+
+    for (TypesBinaryVO c : this.typesBinaryDAO.selectByExample(new TypesBinaryVO())) {
+      System.out.println("b=" + tb);
+      System.out.println("bin1=" + tb.getBin1()[0] + tb.getBin1()[1] + tb.getBin1()[2] + tb.getBin1()[3]);
     }
 
   }
