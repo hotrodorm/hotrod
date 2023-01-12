@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.TypesOther;
 import test.persistence.TypesOtherVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class TypesOtherDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.TypesOtherVO> selectByExample(final test.persistence.TypesOtherVO example, final TypesOtherOrderBy... orderBies)
+  public List<test.persistence.TypesOtherVO> selectByExample(final test.persistence.primitives.TypesOther example, final TypesOtherOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TypesOtherVO, TypesOtherOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TypesOtherVO, TypesOtherOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TypesOther, TypesOtherOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.typesOther.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.TypesOtherVO> selectByExampleCursor(final test.persistence.TypesOtherVO example, final TypesOtherOrderBy... orderBies)
+  public Cursor<test.persistence.TypesOtherVO> selectByExampleCursor(final test.persistence.primitives.TypesOther example, final TypesOtherOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TypesOtherVO, TypesOtherOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TypesOtherVO, TypesOtherOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TypesOther, TypesOtherOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.TypesOtherVO>(this.sqlSession.selectCursor("test.persistence.primitives.typesOther.selectByExample", dwo));
   }
 
@@ -88,9 +89,34 @@ public class TypesOtherDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.TypesOtherVO vo) {
+  public test.persistence.TypesOtherVO insert(final test.persistence.primitives.TypesOther vo) {
     String id = "test.persistence.primitives.typesOther.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.TypesOtherVO mo = new test.persistence.TypesOtherVO();
+    mo.setGeo1(vo.getGeo1());
+    mo.setGeo2(vo.getGeo2());
+    mo.setGeo3(vo.getGeo3());
+    mo.setGeo4(vo.getGeo4());
+    mo.setGeo5(vo.getGeo5());
+    mo.setGeo6(vo.getGeo6());
+    mo.setGeo7(vo.getGeo7());
+    mo.setNet1(vo.getNet1());
+    mo.setNet2(vo.getNet2());
+    mo.setNet3(vo.getNet3());
+    mo.setUui1(vo.getUui1());
+    mo.setJso1(vo.getJso1());
+    mo.setJso2(vo.getJso2());
+    mo.setArr1(vo.getArr1());
+    mo.setArr2(vo.getArr2());
+    mo.setArr3(vo.getArr3());
+    mo.setCom1(vo.getCom1());
+    mo.setRan1(vo.getRan1());
+    mo.setRan2(vo.getRan2());
+    mo.setRan3(vo.getRan3());
+    mo.setRan4(vo.getRan4());
+    mo.setRan5(vo.getRan5());
+    mo.setRan6(vo.getRan6());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -99,15 +125,15 @@ public class TypesOtherDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.TypesOtherVO example, final test.persistence.TypesOtherVO updateValues) {
-    UpdateByExampleDao<test.persistence.TypesOtherVO> fvd = //
-      new UpdateByExampleDao<test.persistence.TypesOtherVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.TypesOther example, final test.persistence.primitives.TypesOther updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.TypesOther> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.TypesOther>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.typesOther.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.TypesOtherVO example) {
+  public int deleteByExample(final test.persistence.primitives.TypesOther example) {
     return this.sqlSession.delete("test.persistence.primitives.typesOther.deleteByExample", example);
   }
 

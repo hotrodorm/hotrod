@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.Employee;
 import test.persistence.EmployeeVO;
 import test.persistence.EmployeeStateVO;
 import test.persistence.primitives.EmployeeStateDAO;
@@ -74,17 +75,17 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.EmployeeVO> selectByExample(final test.persistence.EmployeeVO example, final EmployeeOrderBy... orderBies)
+  public List<test.persistence.EmployeeVO> selectByExample(final test.persistence.primitives.Employee example, final EmployeeOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.EmployeeVO, EmployeeOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.EmployeeVO, EmployeeOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Employee, EmployeeOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.employee.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.EmployeeVO> selectByExampleCursor(final test.persistence.EmployeeVO example, final EmployeeOrderBy... orderBies)
+  public Cursor<test.persistence.EmployeeVO> selectByExampleCursor(final test.persistence.primitives.Employee example, final EmployeeOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.EmployeeVO, EmployeeOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.EmployeeVO, EmployeeOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Employee, EmployeeOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.EmployeeVO>(this.sqlSession.selectCursor("test.persistence.primitives.employee.selectByExample", dwo));
   }
 
@@ -134,9 +135,15 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.EmployeeVO vo) {
+  public test.persistence.EmployeeVO insert(final test.persistence.primitives.Employee vo) {
     String id = "test.persistence.primitives.employee.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.EmployeeVO mo = new test.persistence.EmployeeVO();
+    mo.setId(vo.getId());
+    mo.setName(vo.getName());
+    mo.setStateId(vo.getStateId());
+    mo.setHiredOn(vo.getHiredOn());
+    return mo;
   }
 
   // update by PK
@@ -155,15 +162,15 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.EmployeeVO example, final test.persistence.EmployeeVO updateValues) {
-    UpdateByExampleDao<test.persistence.EmployeeVO> fvd = //
-      new UpdateByExampleDao<test.persistence.EmployeeVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.Employee example, final test.persistence.primitives.Employee updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.Employee> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.Employee>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.employee.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.EmployeeVO example) {
+  public int deleteByExample(final test.persistence.primitives.Employee example) {
     return this.sqlSession.delete("test.persistence.primitives.employee.deleteByExample", example);
   }
 

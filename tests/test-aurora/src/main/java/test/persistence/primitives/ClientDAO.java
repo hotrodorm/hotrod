@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.Client;
 import test.persistence.ClientVO;
 import test.persistence.FederalBranchVO;
 import test.persistence.primitives.FederalBranchDAO;
@@ -109,17 +110,17 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.ClientVO> selectByExample(final test.persistence.ClientVO example, final ClientOrderBy... orderBies)
+  public List<test.persistence.ClientVO> selectByExample(final test.persistence.primitives.Client example, final ClientOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.ClientVO, ClientOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.ClientVO, ClientOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Client, ClientOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.client.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.ClientVO> selectByExampleCursor(final test.persistence.ClientVO example, final ClientOrderBy... orderBies)
+  public Cursor<test.persistence.ClientVO> selectByExampleCursor(final test.persistence.primitives.Client example, final ClientOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.ClientVO, ClientOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.ClientVO, ClientOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Client, ClientOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.ClientVO>(this.sqlSession.selectCursor("test.persistence.primitives.client.selectByExample", dwo));
   }
 
@@ -421,9 +422,19 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.ClientVO vo) {
+  public test.persistence.ClientVO insert(final test.persistence.primitives.Client vo) {
     String id = "test.persistence.primitives.client.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.ClientVO mo = new test.persistence.ClientVO();
+    mo.setId(vo.getId());
+    mo.setNationalId(vo.getNationalId());
+    mo.setName(vo.getName());
+    mo.setPropName(vo.getPropName());
+    mo.setReferrerId(vo.getReferrerId());
+    mo.setFriendId(vo.getFriendId());
+    mo.setGroupAccountId(vo.getGroupAccountId());
+    mo.setBranchId(vo.getBranchId());
+    return mo;
   }
 
   // update by PK
@@ -442,15 +453,15 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.ClientVO example, final test.persistence.ClientVO updateValues) {
-    UpdateByExampleDao<test.persistence.ClientVO> fvd = //
-      new UpdateByExampleDao<test.persistence.ClientVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.Client example, final test.persistence.primitives.Client updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.Client> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.Client>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.client.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.ClientVO example) {
+  public int deleteByExample(final test.persistence.primitives.Client example) {
     return this.sqlSession.delete("test.persistence.primitives.client.deleteByExample", example);
   }
 

@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.Event;
 import test.persistence.EventVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -68,17 +69,17 @@ public class EventDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.EventVO> selectByExample(final test.persistence.EventVO example, final EventOrderBy... orderBies)
+  public List<test.persistence.EventVO> selectByExample(final test.persistence.primitives.Event example, final EventOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.EventVO, EventOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.EventVO, EventOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Event, EventOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.event.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.EventVO> selectByExampleCursor(final test.persistence.EventVO example, final EventOrderBy... orderBies)
+  public Cursor<test.persistence.EventVO> selectByExampleCursor(final test.persistence.primitives.Event example, final EventOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.EventVO, EventOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.EventVO, EventOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Event, EventOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.EventVO>(this.sqlSession.selectCursor("test.persistence.primitives.event.selectByExample", dwo));
   }
 
@@ -96,9 +97,14 @@ public class EventDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.EventVO vo) {
+  public test.persistence.EventVO insert(final test.persistence.primitives.Event vo) {
     String id = "test.persistence.primitives.event.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.EventVO mo = new test.persistence.EventVO();
+    mo.setId(vo.getId());
+    mo.setName(vo.getName());
+    mo.setStatus(vo.getStatus());
+    return mo;
   }
 
   // update by PK
@@ -117,15 +123,15 @@ public class EventDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.EventVO example, final test.persistence.EventVO updateValues) {
-    UpdateByExampleDao<test.persistence.EventVO> fvd = //
-      new UpdateByExampleDao<test.persistence.EventVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.Event example, final test.persistence.primitives.Event updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.Event> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.Event>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.event.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.EventVO example) {
+  public int deleteByExample(final test.persistence.primitives.Event example) {
     return this.sqlSession.delete("test.persistence.primitives.event.deleteByExample", example);
   }
 

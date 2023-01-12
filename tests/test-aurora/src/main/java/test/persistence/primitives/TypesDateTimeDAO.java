@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.TypesDateTime;
 import test.persistence.TypesDateTimeVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -68,17 +69,17 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.TypesDateTimeVO> selectByExample(final test.persistence.TypesDateTimeVO example, final TypesDateTimeOrderBy... orderBies)
+  public List<test.persistence.TypesDateTimeVO> selectByExample(final test.persistence.primitives.TypesDateTime example, final TypesDateTimeOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TypesDateTimeVO, TypesDateTimeOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TypesDateTimeVO, TypesDateTimeOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TypesDateTime, TypesDateTimeOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.typesDateTime.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.TypesDateTimeVO> selectByExampleCursor(final test.persistence.TypesDateTimeVO example, final TypesDateTimeOrderBy... orderBies)
+  public Cursor<test.persistence.TypesDateTimeVO> selectByExampleCursor(final test.persistence.primitives.TypesDateTime example, final TypesDateTimeOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TypesDateTimeVO, TypesDateTimeOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TypesDateTimeVO, TypesDateTimeOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TypesDateTime, TypesDateTimeOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.TypesDateTimeVO>(this.sqlSession.selectCursor("test.persistence.primitives.typesDateTime.selectByExample", dwo));
   }
 
@@ -96,9 +97,40 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.TypesDateTimeVO vo) {
+  public test.persistence.TypesDateTimeVO insert(final test.persistence.primitives.TypesDateTime vo) {
     String id = "test.persistence.primitives.typesDateTime.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.TypesDateTimeVO mo = new test.persistence.TypesDateTimeVO();
+    mo.setId(vo.getId());
+    mo.setDat1(vo.getDat1());
+    mo.setTs1(vo.getTs1());
+    mo.setTs2(vo.getTs2());
+    mo.setTs3(vo.getTs3());
+    mo.setTs4(vo.getTs4());
+    mo.setTs5(vo.getTs5());
+    mo.setTim1(vo.getTim1());
+    mo.setTim2(vo.getTim2());
+    mo.setTim3(vo.getTim3());
+    mo.setTim4(vo.getTim4());
+    mo.setTim5(vo.getTim5());
+    mo.setIvt1(vo.getIvt1());
+    mo.setIvt2(vo.getIvt2());
+    mo.setIvt3(vo.getIvt3());
+    mo.setIvt4(vo.getIvt4());
+    mo.setIvt5(vo.getIvt5());
+    mo.setIvt6(vo.getIvt6());
+    mo.setIvt7(vo.getIvt7());
+    mo.setIvt8(vo.getIvt8());
+    mo.setIvt9(vo.getIvt9());
+    mo.setIvt10(vo.getIvt10());
+    mo.setIvt11(vo.getIvt11());
+    mo.setIvt12(vo.getIvt12());
+    mo.setIvt13(vo.getIvt13());
+    mo.setIvt14(vo.getIvt14());
+    mo.setIvt15(vo.getIvt15());
+    mo.setIvt16(vo.getIvt16());
+    mo.setIvt17(vo.getIvt17());
+    return mo;
   }
 
   // update by PK
@@ -117,15 +149,15 @@ public class TypesDateTimeDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.TypesDateTimeVO example, final test.persistence.TypesDateTimeVO updateValues) {
-    UpdateByExampleDao<test.persistence.TypesDateTimeVO> fvd = //
-      new UpdateByExampleDao<test.persistence.TypesDateTimeVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.TypesDateTime example, final test.persistence.primitives.TypesDateTime updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.TypesDateTime> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.TypesDateTime>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.typesDateTime.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.TypesDateTimeVO example) {
+  public int deleteByExample(final test.persistence.primitives.TypesDateTime example) {
     return this.sqlSession.delete("test.persistence.primitives.typesDateTime.deleteByExample", example);
   }
 

@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.Log;
 import test.persistence.LogVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class LogDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.LogVO> selectByExample(final test.persistence.LogVO example, final LogOrderBy... orderBies)
+  public List<test.persistence.LogVO> selectByExample(final test.persistence.primitives.Log example, final LogOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.LogVO, LogOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.LogVO, LogOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Log, LogOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.log.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.LogVO> selectByExampleCursor(final test.persistence.LogVO example, final LogOrderBy... orderBies)
+  public Cursor<test.persistence.LogVO> selectByExampleCursor(final test.persistence.primitives.Log example, final LogOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.LogVO, LogOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.LogVO, LogOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Log, LogOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.LogVO>(this.sqlSession.selectCursor("test.persistence.primitives.log.selectByExample", dwo));
   }
 
@@ -88,9 +89,13 @@ public class LogDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.LogVO vo) {
+  public test.persistence.LogVO insert(final test.persistence.primitives.Log vo) {
     String id = "test.persistence.primitives.log.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.LogVO mo = new test.persistence.LogVO();
+    mo.setRecordedAt(vo.getRecordedAt());
+    mo.setNotes(vo.getNotes());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -99,15 +104,15 @@ public class LogDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.LogVO example, final test.persistence.LogVO updateValues) {
-    UpdateByExampleDao<test.persistence.LogVO> fvd = //
-      new UpdateByExampleDao<test.persistence.LogVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.Log example, final test.persistence.primitives.Log updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.Log> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.Log>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.log.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.LogVO example) {
+  public int deleteByExample(final test.persistence.primitives.Log example) {
     return this.sqlSession.delete("test.persistence.primitives.log.deleteByExample", example);
   }
 

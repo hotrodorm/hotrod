@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.Island;
 import test.persistence.IslandVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class IslandDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.IslandVO> selectByExample(final test.persistence.IslandVO example, final IslandOrderBy... orderBies)
+  public List<test.persistence.IslandVO> selectByExample(final test.persistence.primitives.Island example, final IslandOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.IslandVO, IslandOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.IslandVO, IslandOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Island, IslandOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.island.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.IslandVO> selectByExampleCursor(final test.persistence.IslandVO example, final IslandOrderBy... orderBies)
+  public Cursor<test.persistence.IslandVO> selectByExampleCursor(final test.persistence.primitives.Island example, final IslandOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.IslandVO, IslandOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.IslandVO, IslandOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Island, IslandOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.IslandVO>(this.sqlSession.selectCursor("test.persistence.primitives.island.selectByExample", dwo));
   }
 
@@ -88,9 +89,16 @@ public class IslandDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.IslandVO vo) {
+  public test.persistence.IslandVO insert(final test.persistence.primitives.Island vo) {
     String id = "test.persistence.primitives.island.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.IslandVO mo = new test.persistence.IslandVO();
+    mo.setId(vo.getId());
+    mo.setSegment(vo.getSegment());
+    mo.setXStart(vo.getXStart());
+    mo.setXEnd(vo.getXEnd());
+    mo.setHeight(vo.getHeight());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -99,15 +107,15 @@ public class IslandDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.IslandVO example, final test.persistence.IslandVO updateValues) {
-    UpdateByExampleDao<test.persistence.IslandVO> fvd = //
-      new UpdateByExampleDao<test.persistence.IslandVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.Island example, final test.persistence.primitives.Island updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.Island> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.Island>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.island.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.IslandVO example) {
+  public int deleteByExample(final test.persistence.primitives.Island example) {
     return this.sqlSession.delete("test.persistence.primitives.island.deleteByExample", example);
   }
 

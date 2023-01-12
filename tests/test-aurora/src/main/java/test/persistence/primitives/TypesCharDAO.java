@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.TypesChar;
 import test.persistence.TypesCharVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.TypesCharVO> selectByExample(final test.persistence.TypesCharVO example, final TypesCharOrderBy... orderBies)
+  public List<test.persistence.TypesCharVO> selectByExample(final test.persistence.primitives.TypesChar example, final TypesCharOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TypesCharVO, TypesCharOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TypesCharVO, TypesCharOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TypesChar, TypesCharOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.typesChar.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.TypesCharVO> selectByExampleCursor(final test.persistence.TypesCharVO example, final TypesCharOrderBy... orderBies)
+  public Cursor<test.persistence.TypesCharVO> selectByExampleCursor(final test.persistence.primitives.TypesChar example, final TypesCharOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TypesCharVO, TypesCharOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TypesCharVO, TypesCharOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TypesChar, TypesCharOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.TypesCharVO>(this.sqlSession.selectCursor("test.persistence.primitives.typesChar.selectByExample", dwo));
   }
 
@@ -88,9 +89,14 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.TypesCharVO vo) {
+  public test.persistence.TypesCharVO insert(final test.persistence.primitives.TypesChar vo) {
     String id = "test.persistence.primitives.typesChar.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.TypesCharVO mo = new test.persistence.TypesCharVO();
+    mo.setCha1(vo.getCha1());
+    mo.setCha2(vo.getCha2());
+    mo.setCha3(vo.getCha3());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -99,15 +105,15 @@ public class TypesCharDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.TypesCharVO example, final test.persistence.TypesCharVO updateValues) {
-    UpdateByExampleDao<test.persistence.TypesCharVO> fvd = //
-      new UpdateByExampleDao<test.persistence.TypesCharVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.TypesChar example, final test.persistence.primitives.TypesChar updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.TypesChar> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.TypesChar>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.typesChar.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.TypesCharVO example) {
+  public int deleteByExample(final test.persistence.primitives.TypesChar example) {
     return this.sqlSession.delete("test.persistence.primitives.typesChar.deleteByExample", example);
   }
 

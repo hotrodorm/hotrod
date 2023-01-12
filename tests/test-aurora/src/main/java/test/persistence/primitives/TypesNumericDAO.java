@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.TypesNumeric;
 import test.persistence.TypesNumericVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class TypesNumericDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.TypesNumericVO> selectByExample(final test.persistence.TypesNumericVO example, final TypesNumericOrderBy... orderBies)
+  public List<test.persistence.TypesNumericVO> selectByExample(final test.persistence.primitives.TypesNumeric example, final TypesNumericOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TypesNumericVO, TypesNumericOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TypesNumericVO, TypesNumericOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TypesNumeric, TypesNumericOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.typesNumeric.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.TypesNumericVO> selectByExampleCursor(final test.persistence.TypesNumericVO example, final TypesNumericOrderBy... orderBies)
+  public Cursor<test.persistence.TypesNumericVO> selectByExampleCursor(final test.persistence.primitives.TypesNumeric example, final TypesNumericOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TypesNumericVO, TypesNumericOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TypesNumericVO, TypesNumericOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TypesNumeric, TypesNumericOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.TypesNumericVO>(this.sqlSession.selectCursor("test.persistence.primitives.typesNumeric.selectByExample", dwo));
   }
 
@@ -88,14 +89,30 @@ public class TypesNumericDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.TypesNumericVO vo) {
+  public test.persistence.TypesNumericVO insert(final test.persistence.primitives.TypesNumeric vo) {
     return insert(vo, false);
   }
 
-  public int insert(final test.persistence.TypesNumericVO vo, final boolean retrieveDefaults) {
+  public test.persistence.TypesNumericVO insert(final test.persistence.primitives.TypesNumeric vo, final boolean retrieveDefaults) {
     String id = retrieveDefaults ? "test.persistence.primitives.typesNumeric.insertRetrievingDefaults" : "test.persistence.primitives.typesNumeric.insert";
     int rows = this.sqlSession.insert(id, vo);
-    return rows;
+    test.persistence.TypesNumericVO mo = new test.persistence.TypesNumericVO();
+    mo.setInt1(vo.getInt1());
+    mo.setInt2(vo.getInt2());
+    mo.setInt3(vo.getInt3());
+    mo.setInt4(vo.getInt4());
+    mo.setInt5(vo.getInt5());
+    mo.setInt6(vo.getInt6());
+    mo.setDec1(vo.getDec1());
+    mo.setDec2(vo.getDec2());
+    mo.setDec3(vo.getDec3());
+    mo.setDec4(vo.getDec4());
+    mo.setDec5(vo.getDec5());
+    mo.setDec6(vo.getDec6());
+    mo.setDec7(vo.getDec7());
+    mo.setFlo1(vo.getFlo1());
+    mo.setFlo2(vo.getFlo2());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -104,15 +121,15 @@ public class TypesNumericDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.TypesNumericVO example, final test.persistence.TypesNumericVO updateValues) {
-    UpdateByExampleDao<test.persistence.TypesNumericVO> fvd = //
-      new UpdateByExampleDao<test.persistence.TypesNumericVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.TypesNumeric example, final test.persistence.primitives.TypesNumeric updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.TypesNumeric> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.TypesNumeric>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.typesNumeric.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.TypesNumericVO example) {
+  public int deleteByExample(final test.persistence.primitives.TypesNumeric example) {
     return this.sqlSession.delete("test.persistence.primitives.typesNumeric.deleteByExample", example);
   }
 

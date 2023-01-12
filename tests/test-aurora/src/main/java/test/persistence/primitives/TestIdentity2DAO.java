@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.TestIdentity2;
 import test.persistence.TestIdentity2VO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class TestIdentity2DAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.TestIdentity2VO> selectByExample(final test.persistence.TestIdentity2VO example, final TestIdentity2OrderBy... orderBies)
+  public List<test.persistence.TestIdentity2VO> selectByExample(final test.persistence.primitives.TestIdentity2 example, final TestIdentity2OrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TestIdentity2VO, TestIdentity2OrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TestIdentity2VO, TestIdentity2OrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TestIdentity2, TestIdentity2OrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.testIdentity2.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.TestIdentity2VO> selectByExampleCursor(final test.persistence.TestIdentity2VO example, final TestIdentity2OrderBy... orderBies)
+  public Cursor<test.persistence.TestIdentity2VO> selectByExampleCursor(final test.persistence.primitives.TestIdentity2 example, final TestIdentity2OrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TestIdentity2VO, TestIdentity2OrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TestIdentity2VO, TestIdentity2OrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TestIdentity2, TestIdentity2OrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.TestIdentity2VO>(this.sqlSession.selectCursor("test.persistence.primitives.testIdentity2.selectByExample", dwo));
   }
 
@@ -88,14 +89,18 @@ public class TestIdentity2DAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.TestIdentity2VO vo) {
+  public test.persistence.TestIdentity2VO insert(final test.persistence.primitives.TestIdentity2 vo) {
     return insert(vo, false);
   }
 
-  public int insert(final test.persistence.TestIdentity2VO vo, final boolean retrieveDefaults) {
+  public test.persistence.TestIdentity2VO insert(final test.persistence.primitives.TestIdentity2 vo, final boolean retrieveDefaults) {
     String id = retrieveDefaults ? "test.persistence.primitives.testIdentity2.insertRetrievingDefaults" : "test.persistence.primitives.testIdentity2.insert";
     int rows = this.sqlSession.insert(id, vo);
-    return rows;
+    test.persistence.TestIdentity2VO mo = new test.persistence.TestIdentity2VO();
+    mo.setId(vo.getId());
+    mo.setId2(vo.getId2());
+    mo.setName(vo.getName());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -104,15 +109,15 @@ public class TestIdentity2DAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.TestIdentity2VO example, final test.persistence.TestIdentity2VO updateValues) {
-    UpdateByExampleDao<test.persistence.TestIdentity2VO> fvd = //
-      new UpdateByExampleDao<test.persistence.TestIdentity2VO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.TestIdentity2 example, final test.persistence.primitives.TestIdentity2 updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.TestIdentity2> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.TestIdentity2>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.testIdentity2.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.TestIdentity2VO example) {
+  public int deleteByExample(final test.persistence.primitives.TestIdentity2 example) {
     return this.sqlSession.delete("test.persistence.primitives.testIdentity2.deleteByExample", example);
   }
 

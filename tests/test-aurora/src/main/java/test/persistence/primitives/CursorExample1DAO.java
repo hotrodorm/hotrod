@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.CursorExample1;
 import test.persistence.CursorExample1VO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class CursorExample1DAO implements Serializable, ApplicationContextAware 
 
   // select by example
 
-  public List<test.persistence.CursorExample1VO> selectByExample(final test.persistence.CursorExample1VO example, final CursorExample1OrderBy... orderBies)
+  public List<test.persistence.CursorExample1VO> selectByExample(final test.persistence.primitives.CursorExample1 example, final CursorExample1OrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.CursorExample1VO, CursorExample1OrderBy> dwo = //
-        new DaoWithOrder<test.persistence.CursorExample1VO, CursorExample1OrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.CursorExample1, CursorExample1OrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.cursorExample1.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.CursorExample1VO> selectByExampleCursor(final test.persistence.CursorExample1VO example, final CursorExample1OrderBy... orderBies)
+  public Cursor<test.persistence.CursorExample1VO> selectByExampleCursor(final test.persistence.primitives.CursorExample1 example, final CursorExample1OrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.CursorExample1VO, CursorExample1OrderBy> dwo = //
-        new DaoWithOrder<test.persistence.CursorExample1VO, CursorExample1OrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.CursorExample1, CursorExample1OrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.CursorExample1VO>(this.sqlSession.selectCursor("test.persistence.primitives.cursorExample1.selectByExample", dwo));
   }
 
@@ -88,9 +89,13 @@ public class CursorExample1DAO implements Serializable, ApplicationContextAware 
 
   // insert
 
-  public int insert(final test.persistence.CursorExample1VO vo) {
+  public test.persistence.CursorExample1VO insert(final test.persistence.primitives.CursorExample1 vo) {
     String id = "test.persistence.primitives.cursorExample1.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.CursorExample1VO mo = new test.persistence.CursorExample1VO();
+    mo.setId(vo.getId());
+    mo.setData(vo.getData());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -99,15 +104,15 @@ public class CursorExample1DAO implements Serializable, ApplicationContextAware 
 
   // update by example
 
-  public int updateByExample(final test.persistence.CursorExample1VO example, final test.persistence.CursorExample1VO updateValues) {
-    UpdateByExampleDao<test.persistence.CursorExample1VO> fvd = //
-      new UpdateByExampleDao<test.persistence.CursorExample1VO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.CursorExample1 example, final test.persistence.primitives.CursorExample1 updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.CursorExample1> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.CursorExample1>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.cursorExample1.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.CursorExample1VO example) {
+  public int deleteByExample(final test.persistence.primitives.CursorExample1 example) {
     return this.sqlSession.delete("test.persistence.primitives.cursorExample1.deleteByExample", example);
   }
 

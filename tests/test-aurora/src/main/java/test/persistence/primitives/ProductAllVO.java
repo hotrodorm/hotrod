@@ -4,7 +4,7 @@ package test.persistence.primitives;
 
 import java.io.Serializable;
 
-public abstract class ProductAllVO implements Serializable {
+public class ProductAllVO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

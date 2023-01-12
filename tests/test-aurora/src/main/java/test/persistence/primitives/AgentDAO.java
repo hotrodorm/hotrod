@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.Agent;
 import test.persistence.AgentVO;
 import test.persistence.ClientVO;
 import test.persistence.primitives.ClientDAO;
@@ -74,17 +75,17 @@ public class AgentDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.AgentVO> selectByExample(final test.persistence.AgentVO example, final AgentOrderBy... orderBies)
+  public List<test.persistence.AgentVO> selectByExample(final test.persistence.primitives.Agent example, final AgentOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.AgentVO, AgentOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.AgentVO, AgentOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Agent, AgentOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.agent.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.AgentVO> selectByExampleCursor(final test.persistence.AgentVO example, final AgentOrderBy... orderBies)
+  public Cursor<test.persistence.AgentVO> selectByExampleCursor(final test.persistence.primitives.Agent example, final AgentOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.AgentVO, AgentOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.AgentVO, AgentOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Agent, AgentOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.AgentVO>(this.sqlSession.selectCursor("test.persistence.primitives.agent.selectByExample", dwo));
   }
 
@@ -134,10 +135,14 @@ public class AgentDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.AgentVO vo) {
+  public test.persistence.AgentVO insert(final test.persistence.primitives.Agent vo) {
     String id = "test.persistence.primitives.agent.insert";
     int rows = this.sqlSession.insert(id, vo);
-    return rows;
+    test.persistence.AgentVO mo = new test.persistence.AgentVO();
+    mo.setId(vo.getId());
+    mo.setName(vo.getName());
+    mo.setClientId(vo.getClientId());
+    return mo;
   }
 
   // update by PK
@@ -156,15 +161,15 @@ public class AgentDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.AgentVO example, final test.persistence.AgentVO updateValues) {
-    UpdateByExampleDao<test.persistence.AgentVO> fvd = //
-      new UpdateByExampleDao<test.persistence.AgentVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.Agent example, final test.persistence.primitives.Agent updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.Agent> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.Agent>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.agent.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.AgentVO example) {
+  public int deleteByExample(final test.persistence.primitives.Agent example) {
     return this.sqlSession.delete("test.persistence.primitives.agent.deleteByExample", example);
   }
 

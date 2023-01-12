@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.ApplicationConfig;
 import test.persistence.ApplicationConfigVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class ApplicationConfigDAO implements Serializable, ApplicationContextAwa
 
   // select by example
 
-  public List<test.persistence.ApplicationConfigVO> selectByExample(final test.persistence.ApplicationConfigVO example, final ApplicationConfigOrderBy... orderBies)
+  public List<test.persistence.ApplicationConfigVO> selectByExample(final test.persistence.primitives.ApplicationConfig example, final ApplicationConfigOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.ApplicationConfigVO, ApplicationConfigOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.ApplicationConfigVO, ApplicationConfigOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.ApplicationConfig, ApplicationConfigOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.applicationConfig.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.ApplicationConfigVO> selectByExampleCursor(final test.persistence.ApplicationConfigVO example, final ApplicationConfigOrderBy... orderBies)
+  public Cursor<test.persistence.ApplicationConfigVO> selectByExampleCursor(final test.persistence.primitives.ApplicationConfig example, final ApplicationConfigOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.ApplicationConfigVO, ApplicationConfigOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.ApplicationConfigVO, ApplicationConfigOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.ApplicationConfig, ApplicationConfigOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.ApplicationConfigVO>(this.sqlSession.selectCursor("test.persistence.primitives.applicationConfig.selectByExample", dwo));
   }
 
@@ -88,9 +89,14 @@ public class ApplicationConfigDAO implements Serializable, ApplicationContextAwa
 
   // insert
 
-  public int insert(final test.persistence.ApplicationConfigVO vo) {
+  public test.persistence.ApplicationConfigVO insert(final test.persistence.primitives.ApplicationConfig vo) {
     String id = "test.persistence.primitives.applicationConfig.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.ApplicationConfigVO mo = new test.persistence.ApplicationConfigVO();
+    mo.setConfigId(vo.getConfigId());
+    mo.setConfigName(vo.getConfigName());
+    mo.setConfigValue(vo.getConfigValue());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -99,15 +105,15 @@ public class ApplicationConfigDAO implements Serializable, ApplicationContextAwa
 
   // update by example
 
-  public int updateByExample(final test.persistence.ApplicationConfigVO example, final test.persistence.ApplicationConfigVO updateValues) {
-    UpdateByExampleDao<test.persistence.ApplicationConfigVO> fvd = //
-      new UpdateByExampleDao<test.persistence.ApplicationConfigVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.ApplicationConfig example, final test.persistence.primitives.ApplicationConfig updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.ApplicationConfig> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.ApplicationConfig>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.applicationConfig.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.ApplicationConfigVO example) {
+  public int deleteByExample(final test.persistence.primitives.ApplicationConfig example) {
     return this.sqlSession.delete("test.persistence.primitives.applicationConfig.deleteByExample", example);
   }
 

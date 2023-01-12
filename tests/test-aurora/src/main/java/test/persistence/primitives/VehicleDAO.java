@@ -15,6 +15,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.Vehicle;
 import test.persistence.VehicleVO;
 import test.persistence.primitives.VehicleType;
 
@@ -79,17 +80,17 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.VehicleVO> selectByExample(final test.persistence.VehicleVO example, final VehicleOrderBy... orderBies)
+  public List<test.persistence.VehicleVO> selectByExample(final test.persistence.primitives.Vehicle example, final VehicleOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.VehicleVO, VehicleOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.VehicleVO, VehicleOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Vehicle, VehicleOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.vehicle.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.VehicleVO> selectByExampleCursor(final test.persistence.VehicleVO example, final VehicleOrderBy... orderBies)
+  public Cursor<test.persistence.VehicleVO> selectByExampleCursor(final test.persistence.primitives.Vehicle example, final VehicleOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.VehicleVO, VehicleOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.VehicleVO, VehicleOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Vehicle, VehicleOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.VehicleVO>(this.sqlSession.selectCursor("test.persistence.primitives.vehicle.selectByExample", dwo));
   }
 
@@ -109,15 +110,21 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.VehicleVO vo) {
+  public test.persistence.VehicleVO insert(final test.persistence.primitives.Vehicle vo) {
     return insert(vo, false);
   }
 
-  public int insert(final test.persistence.VehicleVO vo, final boolean retrieveDefaults) {
+  public test.persistence.VehicleVO insert(final test.persistence.primitives.Vehicle vo, final boolean retrieveDefaults) {
     vo.versionNumber = (short) 4;
     String id = retrieveDefaults ? "test.persistence.primitives.vehicle.insertRetrievingDefaults" : "test.persistence.primitives.vehicle.insert";
     int rows = this.sqlSession.insert(id, vo);
-    return rows;
+    test.persistence.VehicleVO mo = new test.persistence.VehicleVO();
+    mo.setId(vo.getId());
+    mo.setName(vo.getName());
+    mo.setMileage(vo.getMileage());
+    mo.setVersionNumber(vo.getVersionNumber());
+    mo.setVtype(vo.getVtype());
+    return mo;
   }
 
   // update by PK
@@ -147,15 +154,15 @@ public class VehicleDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.VehicleVO example, final test.persistence.VehicleVO updateValues) {
-    UpdateByExampleDao<test.persistence.VehicleVO> fvd = //
-      new UpdateByExampleDao<test.persistence.VehicleVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.Vehicle example, final test.persistence.primitives.Vehicle updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.Vehicle> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.Vehicle>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.vehicle.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.VehicleVO example) {
+  public int deleteByExample(final test.persistence.primitives.Vehicle example) {
     return this.sqlSession.delete("test.persistence.primitives.vehicle.deleteByExample", example);
   }
 

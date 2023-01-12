@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.Transaction;
 import test.persistence.TransactionVO;
 import test.persistence.AccountVO;
 import test.persistence.primitives.AccountDAO;
@@ -91,17 +92,17 @@ public class TransactionDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.TransactionVO> selectByExample(final test.persistence.TransactionVO example, final TransactionOrderBy... orderBies)
+  public List<test.persistence.TransactionVO> selectByExample(final test.persistence.primitives.Transaction example, final TransactionOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TransactionVO, TransactionOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TransactionVO, TransactionOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Transaction, TransactionOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.transaction.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.TransactionVO> selectByExampleCursor(final test.persistence.TransactionVO example, final TransactionOrderBy... orderBies)
+  public Cursor<test.persistence.TransactionVO> selectByExampleCursor(final test.persistence.primitives.Transaction example, final TransactionOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TransactionVO, TransactionOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TransactionVO, TransactionOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Transaction, TransactionOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.TransactionVO>(this.sqlSession.selectCursor("test.persistence.primitives.transaction.selectByExample", dwo));
   }
 
@@ -183,14 +184,20 @@ public class TransactionDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.TransactionVO vo) {
+  public test.persistence.TransactionVO insert(final test.persistence.primitives.Transaction vo) {
     return insert(vo, false);
   }
 
-  public int insert(final test.persistence.TransactionVO vo, final boolean retrieveDefaults) {
+  public test.persistence.TransactionVO insert(final test.persistence.primitives.Transaction vo, final boolean retrieveDefaults) {
     String id = retrieveDefaults ? "test.persistence.primitives.transaction.insertRetrievingDefaults" : "test.persistence.primitives.transaction.insert";
     int rows = this.sqlSession.insert(id, vo);
-    return rows;
+    test.persistence.TransactionVO mo = new test.persistence.TransactionVO();
+    mo.setAccountId(vo.getAccountId());
+    mo.setSeqId(vo.getSeqId());
+    mo.setTime(vo.getTime());
+    mo.setAmount(vo.getAmount());
+    mo.setFedBranchId(vo.getFedBranchId());
+    return mo;
   }
 
   // update by PK
@@ -209,15 +216,15 @@ public class TransactionDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.TransactionVO example, final test.persistence.TransactionVO updateValues) {
-    UpdateByExampleDao<test.persistence.TransactionVO> fvd = //
-      new UpdateByExampleDao<test.persistence.TransactionVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.Transaction example, final test.persistence.primitives.Transaction updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.Transaction> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.Transaction>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.transaction.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.TransactionVO example) {
+  public int deleteByExample(final test.persistence.primitives.Transaction example) {
     return this.sqlSession.delete("test.persistence.primitives.transaction.deleteByExample", example);
   }
 

@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.House;
 import test.persistence.HouseVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class HouseDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.HouseVO> selectByExample(final test.persistence.HouseVO example, final HouseOrderBy... orderBies)
+  public List<test.persistence.HouseVO> selectByExample(final test.persistence.primitives.House example, final HouseOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.HouseVO, HouseOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.HouseVO, HouseOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.House, HouseOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.house.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.HouseVO> selectByExampleCursor(final test.persistence.HouseVO example, final HouseOrderBy... orderBies)
+  public Cursor<test.persistence.HouseVO> selectByExampleCursor(final test.persistence.primitives.House example, final HouseOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.HouseVO, HouseOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.HouseVO, HouseOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.House, HouseOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.HouseVO>(this.sqlSession.selectCursor("test.persistence.primitives.house.selectByExample", dwo));
   }
 
@@ -88,9 +89,13 @@ public class HouseDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.HouseVO vo) {
+  public test.persistence.HouseVO insert(final test.persistence.primitives.House vo) {
     String id = "test.persistence.primitives.house.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.HouseVO mo = new test.persistence.HouseVO();
+    mo.setAddress(vo.getAddress());
+    mo.setPrice(vo.getPrice());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -99,15 +104,15 @@ public class HouseDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.HouseVO example, final test.persistence.HouseVO updateValues) {
-    UpdateByExampleDao<test.persistence.HouseVO> fvd = //
-      new UpdateByExampleDao<test.persistence.HouseVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.House example, final test.persistence.primitives.House updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.House> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.House>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.house.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.HouseVO example) {
+  public int deleteByExample(final test.persistence.primitives.House example) {
     return this.sqlSession.delete("test.persistence.primitives.house.deleteByExample", example);
   }
 

@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.Quadrant;
 import test.persistence.QuadrantVO;
 import test.persistence.CodesVO;
 import test.persistence.primitives.CodesDAO.CodesOrderBy;
@@ -78,17 +79,17 @@ public class QuadrantDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.QuadrantVO> selectByExample(final test.persistence.QuadrantVO example, final QuadrantOrderBy... orderBies)
+  public List<test.persistence.QuadrantVO> selectByExample(final test.persistence.primitives.Quadrant example, final QuadrantOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.QuadrantVO, QuadrantOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.QuadrantVO, QuadrantOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Quadrant, QuadrantOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.quadrant.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.QuadrantVO> selectByExampleCursor(final test.persistence.QuadrantVO example, final QuadrantOrderBy... orderBies)
+  public Cursor<test.persistence.QuadrantVO> selectByExampleCursor(final test.persistence.primitives.Quadrant example, final QuadrantOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.QuadrantVO, QuadrantOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.QuadrantVO, QuadrantOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Quadrant, QuadrantOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.QuadrantVO>(this.sqlSession.selectCursor("test.persistence.primitives.quadrant.selectByExample", dwo));
   }
 
@@ -162,9 +163,14 @@ public class QuadrantDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.QuadrantVO vo) {
+  public test.persistence.QuadrantVO insert(final test.persistence.primitives.Quadrant vo) {
     String id = "test.persistence.primitives.quadrant.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.QuadrantVO mo = new test.persistence.QuadrantVO();
+    mo.setRegion(vo.getRegion());
+    mo.setArea(vo.getArea());
+    mo.setCaption(vo.getCaption());
+    return mo;
   }
 
   // update by PK
@@ -185,15 +191,15 @@ public class QuadrantDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.QuadrantVO example, final test.persistence.QuadrantVO updateValues) {
-    UpdateByExampleDao<test.persistence.QuadrantVO> fvd = //
-      new UpdateByExampleDao<test.persistence.QuadrantVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.Quadrant example, final test.persistence.primitives.Quadrant updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.Quadrant> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.Quadrant>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.quadrant.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.QuadrantVO example) {
+  public int deleteByExample(final test.persistence.primitives.Quadrant example) {
     return this.sqlSession.delete("test.persistence.primitives.quadrant.deleteByExample", example);
   }
 

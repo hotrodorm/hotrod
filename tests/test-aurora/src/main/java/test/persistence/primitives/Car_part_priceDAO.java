@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.Car_part_price;
 import test.persistence.Car_part_priceVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class Car_part_priceDAO implements Serializable, ApplicationContextAware 
 
   // select by example
 
-  public List<test.persistence.Car_part_priceVO> selectByExample(final test.persistence.Car_part_priceVO example, final Car_part_priceOrderBy... orderBies)
+  public List<test.persistence.Car_part_priceVO> selectByExample(final test.persistence.primitives.Car_part_price example, final Car_part_priceOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.Car_part_priceVO, Car_part_priceOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.Car_part_priceVO, Car_part_priceOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Car_part_price, Car_part_priceOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.car_part_price.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.Car_part_priceVO> selectByExampleCursor(final test.persistence.Car_part_priceVO example, final Car_part_priceOrderBy... orderBies)
+  public Cursor<test.persistence.Car_part_priceVO> selectByExampleCursor(final test.persistence.primitives.Car_part_price example, final Car_part_priceOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.Car_part_priceVO, Car_part_priceOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.Car_part_priceVO, Car_part_priceOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Car_part_price, Car_part_priceOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.Car_part_priceVO>(this.sqlSession.selectCursor("test.persistence.primitives.car_part_price.selectByExample", dwo));
   }
 
@@ -88,9 +89,14 @@ public class Car_part_priceDAO implements Serializable, ApplicationContextAware 
 
   // insert
 
-  public int insert(final test.persistence.Car_part_priceVO vo) {
+  public test.persistence.Car_part_priceVO insert(final test.persistence.primitives.Car_part_price vo) {
     String id = "test.persistence.primitives.car_part_price.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.Car_part_priceVO mo = new test.persistence.Car_part_priceVO();
+    mo.setPart_(vo.getPart_());
+    mo.setPrice_dollar(vo.getPrice_dollar());
+    mo.set_discount(vo.get_discount());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -99,15 +105,15 @@ public class Car_part_priceDAO implements Serializable, ApplicationContextAware 
 
   // update by example
 
-  public int updateByExample(final test.persistence.Car_part_priceVO example, final test.persistence.Car_part_priceVO updateValues) {
-    UpdateByExampleDao<test.persistence.Car_part_priceVO> fvd = //
-      new UpdateByExampleDao<test.persistence.Car_part_priceVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.Car_part_price example, final test.persistence.primitives.Car_part_price updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.Car_part_price> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.Car_part_price>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.car_part_price.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.Car_part_priceVO example) {
+  public int deleteByExample(final test.persistence.primitives.Car_part_price example) {
     return this.sqlSession.delete("test.persistence.primitives.car_part_price.deleteByExample", example);
   }
 

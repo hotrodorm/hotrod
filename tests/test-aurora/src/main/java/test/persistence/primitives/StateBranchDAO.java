@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.StateBranch;
 import test.persistence.StateBranchVO;
 import test.persistence.ClientVO;
 import test.persistence.primitives.ClientDAO.ClientOrderBy;
@@ -75,17 +76,17 @@ public class StateBranchDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.StateBranchVO> selectByExample(final test.persistence.StateBranchVO example, final StateBranchOrderBy... orderBies)
+  public List<test.persistence.StateBranchVO> selectByExample(final test.persistence.primitives.StateBranch example, final StateBranchOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.StateBranchVO, StateBranchOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.StateBranchVO, StateBranchOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.StateBranch, StateBranchOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.stateBranch.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.StateBranchVO> selectByExampleCursor(final test.persistence.StateBranchVO example, final StateBranchOrderBy... orderBies)
+  public Cursor<test.persistence.StateBranchVO> selectByExampleCursor(final test.persistence.primitives.StateBranch example, final StateBranchOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.StateBranchVO, StateBranchOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.StateBranchVO, StateBranchOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.StateBranch, StateBranchOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.StateBranchVO>(this.sqlSession.selectCursor("test.persistence.primitives.stateBranch.selectByExample", dwo));
   }
 
@@ -143,9 +144,13 @@ public class StateBranchDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.StateBranchVO vo) {
+  public test.persistence.StateBranchVO insert(final test.persistence.primitives.StateBranch vo) {
     String id = "test.persistence.primitives.stateBranch.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.StateBranchVO mo = new test.persistence.StateBranchVO();
+    mo.setId(vo.getId());
+    mo.setName(vo.getName());
+    return mo;
   }
 
   // update by PK
@@ -164,15 +169,15 @@ public class StateBranchDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.StateBranchVO example, final test.persistence.StateBranchVO updateValues) {
-    UpdateByExampleDao<test.persistence.StateBranchVO> fvd = //
-      new UpdateByExampleDao<test.persistence.StateBranchVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.StateBranch example, final test.persistence.primitives.StateBranch updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.StateBranch> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.StateBranch>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.stateBranch.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.StateBranchVO example) {
+  public int deleteByExample(final test.persistence.primitives.StateBranch example) {
     return this.sqlSession.delete("test.persistence.primitives.stateBranch.deleteByExample", example);
   }
 

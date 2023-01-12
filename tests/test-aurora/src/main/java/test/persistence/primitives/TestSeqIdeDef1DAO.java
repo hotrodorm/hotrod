@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.TestSeqIdeDef1;
 import test.persistence.TestSeqIdeDef1VO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class TestSeqIdeDef1DAO implements Serializable, ApplicationContextAware 
 
   // select by example
 
-  public List<test.persistence.TestSeqIdeDef1VO> selectByExample(final test.persistence.TestSeqIdeDef1VO example, final TestSeqIdeDef1OrderBy... orderBies)
+  public List<test.persistence.TestSeqIdeDef1VO> selectByExample(final test.persistence.primitives.TestSeqIdeDef1 example, final TestSeqIdeDef1OrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TestSeqIdeDef1VO, TestSeqIdeDef1OrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TestSeqIdeDef1VO, TestSeqIdeDef1OrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TestSeqIdeDef1, TestSeqIdeDef1OrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.testSeqIdeDef1.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.TestSeqIdeDef1VO> selectByExampleCursor(final test.persistence.TestSeqIdeDef1VO example, final TestSeqIdeDef1OrderBy... orderBies)
+  public Cursor<test.persistence.TestSeqIdeDef1VO> selectByExampleCursor(final test.persistence.primitives.TestSeqIdeDef1 example, final TestSeqIdeDef1OrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TestSeqIdeDef1VO, TestSeqIdeDef1OrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TestSeqIdeDef1VO, TestSeqIdeDef1OrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TestSeqIdeDef1, TestSeqIdeDef1OrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.TestSeqIdeDef1VO>(this.sqlSession.selectCursor("test.persistence.primitives.testSeqIdeDef1.selectByExample", dwo));
   }
 
@@ -88,14 +89,21 @@ public class TestSeqIdeDef1DAO implements Serializable, ApplicationContextAware 
 
   // insert
 
-  public int insert(final test.persistence.TestSeqIdeDef1VO vo) {
+  public test.persistence.TestSeqIdeDef1VO insert(final test.persistence.primitives.TestSeqIdeDef1 vo) {
     return insert(vo, false);
   }
 
-  public int insert(final test.persistence.TestSeqIdeDef1VO vo, final boolean retrieveDefaults) {
+  public test.persistence.TestSeqIdeDef1VO insert(final test.persistence.primitives.TestSeqIdeDef1 vo, final boolean retrieveDefaults) {
     String id = retrieveDefaults ? "test.persistence.primitives.testSeqIdeDef1.insertRetrievingDefaults" : "test.persistence.primitives.testSeqIdeDef1.insert";
     int rows = this.sqlSession.insert(id, vo);
-    return rows;
+    test.persistence.TestSeqIdeDef1VO mo = new test.persistence.TestSeqIdeDef1VO();
+    mo.setId(vo.getId());
+    mo.setName(vo.getName());
+    mo.setExtraId1(vo.getExtraId1());
+    mo.setExtraId2(vo.getExtraId2());
+    mo.setPrice(vo.getPrice());
+    mo.setBranchId(vo.getBranchId());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -104,15 +112,15 @@ public class TestSeqIdeDef1DAO implements Serializable, ApplicationContextAware 
 
   // update by example
 
-  public int updateByExample(final test.persistence.TestSeqIdeDef1VO example, final test.persistence.TestSeqIdeDef1VO updateValues) {
-    UpdateByExampleDao<test.persistence.TestSeqIdeDef1VO> fvd = //
-      new UpdateByExampleDao<test.persistence.TestSeqIdeDef1VO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.TestSeqIdeDef1 example, final test.persistence.primitives.TestSeqIdeDef1 updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.TestSeqIdeDef1> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.TestSeqIdeDef1>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.testSeqIdeDef1.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.TestSeqIdeDef1VO example) {
+  public int deleteByExample(final test.persistence.primitives.TestSeqIdeDef1 example) {
     return this.sqlSession.delete("test.persistence.primitives.testSeqIdeDef1.deleteByExample", example);
   }
 

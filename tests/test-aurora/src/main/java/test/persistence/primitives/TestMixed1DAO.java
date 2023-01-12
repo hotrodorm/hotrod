@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.TestMixed1;
 import test.persistence.TestMixed1VO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class TestMixed1DAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.TestMixed1VO> selectByExample(final test.persistence.TestMixed1VO example, final TestMixed1OrderBy... orderBies)
+  public List<test.persistence.TestMixed1VO> selectByExample(final test.persistence.primitives.TestMixed1 example, final TestMixed1OrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TestMixed1VO, TestMixed1OrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TestMixed1VO, TestMixed1OrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TestMixed1, TestMixed1OrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.testMixed1.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.TestMixed1VO> selectByExampleCursor(final test.persistence.TestMixed1VO example, final TestMixed1OrderBy... orderBies)
+  public Cursor<test.persistence.TestMixed1VO> selectByExampleCursor(final test.persistence.primitives.TestMixed1 example, final TestMixed1OrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TestMixed1VO, TestMixed1OrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TestMixed1VO, TestMixed1OrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TestMixed1, TestMixed1OrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.TestMixed1VO>(this.sqlSession.selectCursor("test.persistence.primitives.testMixed1.selectByExample", dwo));
   }
 
@@ -88,14 +89,19 @@ public class TestMixed1DAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.TestMixed1VO vo) {
+  public test.persistence.TestMixed1VO insert(final test.persistence.primitives.TestMixed1 vo) {
     return insert(vo, false);
   }
 
-  public int insert(final test.persistence.TestMixed1VO vo, final boolean retrieveDefaults) {
+  public test.persistence.TestMixed1VO insert(final test.persistence.primitives.TestMixed1 vo, final boolean retrieveDefaults) {
     String id = retrieveDefaults ? "test.persistence.primitives.testMixed1.insertRetrievingDefaults" : "test.persistence.primitives.testMixed1.insert";
     int rows = this.sqlSession.insert(id, vo);
-    return rows;
+    test.persistence.TestMixed1VO mo = new test.persistence.TestMixed1VO();
+    mo.setId(vo.getId());
+    mo.setName(vo.getName());
+    mo.setExtraId1(vo.getExtraId1());
+    mo.setExtraId2(vo.getExtraId2());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -104,15 +110,15 @@ public class TestMixed1DAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.TestMixed1VO example, final test.persistence.TestMixed1VO updateValues) {
-    UpdateByExampleDao<test.persistence.TestMixed1VO> fvd = //
-      new UpdateByExampleDao<test.persistence.TestMixed1VO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.TestMixed1 example, final test.persistence.primitives.TestMixed1 updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.TestMixed1> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.TestMixed1>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.testMixed1.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.TestMixed1VO example) {
+  public int deleteByExample(final test.persistence.primitives.TestMixed1 example) {
     return this.sqlSession.delete("test.persistence.primitives.testMixed1.deleteByExample", example);
   }
 

@@ -14,6 +14,7 @@ import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 import org.hotrod.runtime.interfaces.Selectable;
 
+import test.persistence.primitives.TxBranch;
 import test.persistence.TxBranchVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -57,17 +58,17 @@ public class TxBranchDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.TxBranchVO> selectByExample(final test.persistence.TxBranchVO example, final TxBranchOrderBy... orderBies)
+  public List<test.persistence.TxBranchVO> selectByExample(final test.persistence.primitives.TxBranch example, final TxBranchOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TxBranchVO, TxBranchOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TxBranchVO, TxBranchOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TxBranch, TxBranchOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.txBranch.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.TxBranchVO> selectByExampleCursor(final test.persistence.TxBranchVO example, final TxBranchOrderBy... orderBies)
+  public Cursor<test.persistence.TxBranchVO> selectByExampleCursor(final test.persistence.primitives.TxBranch example, final TxBranchOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TxBranchVO, TxBranchOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TxBranchVO, TxBranchOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TxBranch, TxBranchOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.TxBranchVO>(this.sqlSession.selectCursor("test.persistence.primitives.txBranch.selectByExample", dwo));
   }
 
@@ -81,21 +82,21 @@ public class TxBranchDAO implements Serializable, ApplicationContextAware {
 
   // insert by example
 
-  public int insertByExample(final test.persistence.TxBranchVO example) {
+  public int insertByExample(final test.persistence.primitives.TxBranch example) {
     return sqlSession.insert("test.persistence.primitives.txBranch.insertByExample", example);
   }
 
   // update by example
 
-  public int updateByExample(final test.persistence.TxBranchVO example, final test.persistence.TxBranchVO updateValues) {
-    UpdateByExampleDao<test.persistence.TxBranchVO> fvd = //
-      new UpdateByExampleDao<test.persistence.TxBranchVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.TxBranch example, final test.persistence.primitives.TxBranch updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.TxBranch> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.TxBranch>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.txBranch.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.TxBranchVO example) {
+  public int deleteByExample(final test.persistence.primitives.TxBranch example) {
     return this.sqlSession.delete("test.persistence.primitives.txBranch.deleteByExample", example);
   }
 

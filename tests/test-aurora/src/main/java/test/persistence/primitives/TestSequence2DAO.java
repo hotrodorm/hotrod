@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.TestSequence2;
 import test.persistence.TestSequence2VO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class TestSequence2DAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.TestSequence2VO> selectByExample(final test.persistence.TestSequence2VO example, final TestSequence2OrderBy... orderBies)
+  public List<test.persistence.TestSequence2VO> selectByExample(final test.persistence.primitives.TestSequence2 example, final TestSequence2OrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TestSequence2VO, TestSequence2OrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TestSequence2VO, TestSequence2OrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TestSequence2, TestSequence2OrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.testSequence2.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.TestSequence2VO> selectByExampleCursor(final test.persistence.TestSequence2VO example, final TestSequence2OrderBy... orderBies)
+  public Cursor<test.persistence.TestSequence2VO> selectByExampleCursor(final test.persistence.primitives.TestSequence2 example, final TestSequence2OrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TestSequence2VO, TestSequence2OrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TestSequence2VO, TestSequence2OrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TestSequence2, TestSequence2OrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.TestSequence2VO>(this.sqlSession.selectCursor("test.persistence.primitives.testSequence2.selectByExample", dwo));
   }
 
@@ -88,9 +89,14 @@ public class TestSequence2DAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.TestSequence2VO vo) {
+  public test.persistence.TestSequence2VO insert(final test.persistence.primitives.TestSequence2 vo) {
     String id = "test.persistence.primitives.testSequence2.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.TestSequence2VO mo = new test.persistence.TestSequence2VO();
+    mo.setId1(vo.getId1());
+    mo.setId2(vo.getId2());
+    mo.setName(vo.getName());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -99,15 +105,15 @@ public class TestSequence2DAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.TestSequence2VO example, final test.persistence.TestSequence2VO updateValues) {
-    UpdateByExampleDao<test.persistence.TestSequence2VO> fvd = //
-      new UpdateByExampleDao<test.persistence.TestSequence2VO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.TestSequence2 example, final test.persistence.primitives.TestSequence2 updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.TestSequence2> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.TestSequence2>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.testSequence2.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.TestSequence2VO example) {
+  public int deleteByExample(final test.persistence.primitives.TestSequence2 example) {
     return this.sqlSession.delete("test.persistence.primitives.testSequence2.deleteByExample", example);
   }
 

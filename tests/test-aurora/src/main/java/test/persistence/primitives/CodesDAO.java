@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.Codes;
 import test.persistence.CodesVO;
 import test.persistence.QuadrantVO;
 import test.persistence.primitives.QuadrantDAO;
@@ -88,17 +89,17 @@ public class CodesDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.CodesVO> selectByExample(final test.persistence.CodesVO example, final CodesOrderBy... orderBies)
+  public List<test.persistence.CodesVO> selectByExample(final test.persistence.primitives.Codes example, final CodesOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.CodesVO, CodesOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.CodesVO, CodesOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Codes, CodesOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.codes.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.CodesVO> selectByExampleCursor(final test.persistence.CodesVO example, final CodesOrderBy... orderBies)
+  public Cursor<test.persistence.CodesVO> selectByExampleCursor(final test.persistence.primitives.Codes example, final CodesOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.CodesVO, CodesOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.CodesVO, CodesOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Codes, CodesOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.CodesVO>(this.sqlSession.selectCursor("test.persistence.primitives.codes.selectByExample", dwo));
   }
 
@@ -166,14 +167,20 @@ public class CodesDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.CodesVO vo) {
+  public test.persistence.CodesVO insert(final test.persistence.primitives.Codes vo) {
     return insert(vo, false);
   }
 
-  public int insert(final test.persistence.CodesVO vo, final boolean retrieveDefaults) {
+  public test.persistence.CodesVO insert(final test.persistence.primitives.Codes vo, final boolean retrieveDefaults) {
     String id = retrieveDefaults ? "test.persistence.primitives.codes.insertRetrievingDefaults" : "test.persistence.primitives.codes.insert";
     int rows = this.sqlSession.insert(id, vo);
-    return rows;
+    test.persistence.CodesVO mo = new test.persistence.CodesVO();
+    mo.setId(vo.getId());
+    mo.setAccount(vo.getAccount());
+    mo.setVersionName(vo.getVersionName());
+    mo.setAccountVersion(vo.getAccountVersion());
+    mo.setName(vo.getName());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -182,15 +189,15 @@ public class CodesDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.CodesVO example, final test.persistence.CodesVO updateValues) {
-    UpdateByExampleDao<test.persistence.CodesVO> fvd = //
-      new UpdateByExampleDao<test.persistence.CodesVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.Codes example, final test.persistence.primitives.Codes updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.Codes> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.Codes>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.codes.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.CodesVO example) {
+  public int deleteByExample(final test.persistence.primitives.Codes example) {
     return this.sqlSession.delete("test.persistence.primitives.codes.deleteByExample", example);
   }
 

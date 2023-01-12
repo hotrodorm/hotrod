@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.Properties;
 import test.persistence.PropertiesVO;
 import test.persistence.ClientVO;
 import test.persistence.primitives.ClientDAO.ClientOrderBy;
@@ -75,17 +76,17 @@ public class PropertiesDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.PropertiesVO> selectByExample(final test.persistence.PropertiesVO example, final PropertiesOrderBy... orderBies)
+  public List<test.persistence.PropertiesVO> selectByExample(final test.persistence.primitives.Properties example, final PropertiesOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.PropertiesVO, PropertiesOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.PropertiesVO, PropertiesOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Properties, PropertiesOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.properties.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.PropertiesVO> selectByExampleCursor(final test.persistence.PropertiesVO example, final PropertiesOrderBy... orderBies)
+  public Cursor<test.persistence.PropertiesVO> selectByExampleCursor(final test.persistence.primitives.Properties example, final PropertiesOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.PropertiesVO, PropertiesOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.PropertiesVO, PropertiesOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Properties, PropertiesOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.PropertiesVO>(this.sqlSession.selectCursor("test.persistence.primitives.properties.selectByExample", dwo));
   }
 
@@ -143,9 +144,14 @@ public class PropertiesDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.PropertiesVO vo) {
+  public test.persistence.PropertiesVO insert(final test.persistence.primitives.Properties vo) {
     String id = "test.persistence.primitives.properties.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.PropertiesVO mo = new test.persistence.PropertiesVO();
+    mo.setApplication(vo.getApplication());
+    mo.setName(vo.getName());
+    mo.setPropValue(vo.getPropValue());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -154,15 +160,15 @@ public class PropertiesDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.PropertiesVO example, final test.persistence.PropertiesVO updateValues) {
-    UpdateByExampleDao<test.persistence.PropertiesVO> fvd = //
-      new UpdateByExampleDao<test.persistence.PropertiesVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.Properties example, final test.persistence.primitives.Properties updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.Properties> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.Properties>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.properties.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.PropertiesVO example) {
+  public int deleteByExample(final test.persistence.primitives.Properties example) {
     return this.sqlSession.delete("test.persistence.primitives.properties.deleteByExample", example);
   }
 

@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.Parameters;
 import test.persistence.ParametersVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class ParametersDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.ParametersVO> selectByExample(final test.persistence.ParametersVO example, final ParametersOrderBy... orderBies)
+  public List<test.persistence.ParametersVO> selectByExample(final test.persistence.primitives.Parameters example, final ParametersOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.ParametersVO, ParametersOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.ParametersVO, ParametersOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Parameters, ParametersOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.parameters.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.ParametersVO> selectByExampleCursor(final test.persistence.ParametersVO example, final ParametersOrderBy... orderBies)
+  public Cursor<test.persistence.ParametersVO> selectByExampleCursor(final test.persistence.primitives.Parameters example, final ParametersOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.ParametersVO, ParametersOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.ParametersVO, ParametersOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.Parameters, ParametersOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.ParametersVO>(this.sqlSession.selectCursor("test.persistence.primitives.parameters.selectByExample", dwo));
   }
 
@@ -88,9 +89,15 @@ public class ParametersDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.ParametersVO vo) {
+  public test.persistence.ParametersVO insert(final test.persistence.primitives.Parameters vo) {
     String id = "test.persistence.primitives.parameters.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.ParametersVO mo = new test.persistence.ParametersVO();
+    mo.setSystem(vo.getSystem());
+    mo.setLevel(vo.getLevel());
+    mo.setName(vo.getName());
+    mo.setValue(vo.getValue());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -99,15 +106,15 @@ public class ParametersDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.ParametersVO example, final test.persistence.ParametersVO updateValues) {
-    UpdateByExampleDao<test.persistence.ParametersVO> fvd = //
-      new UpdateByExampleDao<test.persistence.ParametersVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.Parameters example, final test.persistence.primitives.Parameters updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.Parameters> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.Parameters>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.parameters.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.ParametersVO example) {
+  public int deleteByExample(final test.persistence.primitives.Parameters example) {
     return this.sqlSession.delete("test.persistence.primitives.parameters.deleteByExample", example);
   }
 

@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import test.persistence.primitives.TypesBinary;
 import test.persistence.TypesBinaryVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -60,17 +61,17 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<test.persistence.TypesBinaryVO> selectByExample(final test.persistence.TypesBinaryVO example, final TypesBinaryOrderBy... orderBies)
+  public List<test.persistence.TypesBinaryVO> selectByExample(final test.persistence.primitives.TypesBinary example, final TypesBinaryOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TypesBinaryVO, TypesBinaryOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TypesBinaryVO, TypesBinaryOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TypesBinary, TypesBinaryOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("test.persistence.primitives.typesBinary.selectByExample", dwo);
   }
 
-  public Cursor<test.persistence.TypesBinaryVO> selectByExampleCursor(final test.persistence.TypesBinaryVO example, final TypesBinaryOrderBy... orderBies)
+  public Cursor<test.persistence.TypesBinaryVO> selectByExampleCursor(final test.persistence.primitives.TypesBinary example, final TypesBinaryOrderBy... orderBies)
       {
-    DaoWithOrder<test.persistence.TypesBinaryVO, TypesBinaryOrderBy> dwo = //
-        new DaoWithOrder<test.persistence.TypesBinaryVO, TypesBinaryOrderBy>(example, orderBies);
+    DaoWithOrder<test.persistence.primitives.TypesBinary, TypesBinaryOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<test.persistence.TypesBinaryVO>(this.sqlSession.selectCursor("test.persistence.primitives.typesBinary.selectByExample", dwo));
   }
 
@@ -88,9 +89,13 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final test.persistence.TypesBinaryVO vo) {
+  public test.persistence.TypesBinaryVO insert(final test.persistence.primitives.TypesBinary vo) {
     String id = "test.persistence.primitives.typesBinary.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    test.persistence.TypesBinaryVO mo = new test.persistence.TypesBinaryVO();
+    mo.setBin1(vo.getBin1());
+    mo.setBol1(vo.getBol1());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -99,15 +104,15 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final test.persistence.TypesBinaryVO example, final test.persistence.TypesBinaryVO updateValues) {
-    UpdateByExampleDao<test.persistence.TypesBinaryVO> fvd = //
-      new UpdateByExampleDao<test.persistence.TypesBinaryVO>(example, updateValues);
+  public int updateByExample(final test.persistence.primitives.TypesBinary example, final test.persistence.primitives.TypesBinary updateValues) {
+    UpdateByExampleDao<test.persistence.primitives.TypesBinary> fvd = //
+      new UpdateByExampleDao<test.persistence.primitives.TypesBinary>(example, updateValues);
     return this.sqlSession.update("test.persistence.primitives.typesBinary.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final test.persistence.TypesBinaryVO example) {
+  public int deleteByExample(final test.persistence.primitives.TypesBinary example) {
     return this.sqlSession.delete("test.persistence.primitives.typesBinary.deleteByExample", example);
   }
 
