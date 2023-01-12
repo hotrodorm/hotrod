@@ -4,6 +4,7 @@ package app5.persistence.primitives;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
@@ -60,6 +61,19 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+  }
+
+  // Row Parser
+
+  public static app5.persistence.AccountVO parseRow(Map<String, Object> m) {
+    app5.persistence.AccountVO mo = new app5.persistence.AccountVO();
+    mo.setId((java.lang.Integer) m.get("id"));
+    mo.setName((java.lang.String) m.get("name"));
+    mo.setType((java.lang.String) m.get("type"));
+    mo.setCurrentBalance((java.lang.Integer) m.get("currentBalance"));
+    mo.setCreatedOn((java.sql.Timestamp) m.get("createdOn"));
+    mo.setActive((java.lang.Integer) m.get("active"));
+    return mo;
   }
 
   // select by primary key

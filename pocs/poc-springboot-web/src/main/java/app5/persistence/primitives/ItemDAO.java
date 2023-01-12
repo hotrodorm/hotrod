@@ -4,6 +4,7 @@ package app5.persistence.primitives;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
@@ -53,6 +54,20 @@ public class ItemDAO implements Serializable, ApplicationContextAware {
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+  }
+
+  // Row Parser
+
+  public static app5.persistence.ItemVO parseRow(Map<String, Object> m) {
+    app5.persistence.ItemVO mo = new app5.persistence.ItemVO();
+    mo.setId((java.lang.Integer) m.get("id"));
+    mo.setDescription((java.lang.String) m.get("description"));
+    mo.setPrice((java.math.BigDecimal) m.get("price"));
+    mo.setCreatedOn((java.sql.Timestamp) m.get("createdOn"));
+    mo.setActive((java.lang.Boolean) m.get("active"));
+    mo.setIcon((byte[]) m.get("icon"));
+    mo.setStoreCode((java.lang.Object) m.get("storeCode"));
+    return mo;
   }
 
   // no select by PK generated, since the table does not have a PK.

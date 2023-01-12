@@ -4,6 +4,7 @@ package app5.persistence.primitives;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
@@ -53,6 +54,18 @@ public class IslandDAO implements Serializable, ApplicationContextAware {
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+  }
+
+  // Row Parser
+
+  public static app5.persistence.IslandVO parseRow(Map<String, Object> m) {
+    app5.persistence.IslandVO mo = new app5.persistence.IslandVO();
+    mo.setId((java.lang.Integer) m.get("id"));
+    mo.setSegment((java.lang.Integer) m.get("segment"));
+    mo.setXStart((java.lang.Integer) m.get("xStart"));
+    mo.setXEnd((java.lang.Integer) m.get("xEnd"));
+    mo.setHeight((java.lang.Integer) m.get("height"));
+    return mo;
   }
 
   // no select by PK generated, since the table does not have a PK.

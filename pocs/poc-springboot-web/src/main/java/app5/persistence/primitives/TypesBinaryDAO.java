@@ -4,6 +4,7 @@ package app5.persistence.primitives;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
@@ -53,6 +54,15 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+  }
+
+  // Row Parser
+
+  public static app5.persistence.TypesBinaryVO parseRow(Map<String, Object> m) {
+    app5.persistence.TypesBinaryVO mo = new app5.persistence.TypesBinaryVO();
+    mo.setBin1((byte[]) m.get("bin1"));
+    mo.setBol1((java.lang.Boolean) m.get("bol1"));
+    return mo;
   }
 
   // no select by PK generated, since the table does not have a PK.

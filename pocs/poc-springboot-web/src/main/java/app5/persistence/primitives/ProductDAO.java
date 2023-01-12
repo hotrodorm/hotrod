@@ -4,6 +4,7 @@ package app5.persistence.primitives;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
@@ -60,6 +61,19 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+  }
+
+  // Row Parser
+
+  public static app5.persistence.ProductVO parseRow(Map<String, Object> m) {
+    app5.persistence.ProductVO mo = new app5.persistence.ProductVO();
+    mo.setId((java.lang.Long) m.get("id"));
+    mo.setName((java.lang.String) m.get("name"));
+    mo.setPrice((java.lang.Integer) m.get("price"));
+    mo.setSku((java.lang.Long) m.get("sku"));
+    mo.setXyzRankCli((java.lang.Integer) m.get("xyzRankCli"));
+    mo.setCliFirstNameAb((java.lang.String) m.get("cliFirstNameAb"));
+    return mo;
   }
 
   // select by primary key

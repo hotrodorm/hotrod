@@ -4,6 +4,7 @@ package app5.persistence.primitives;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
@@ -53,6 +54,36 @@ public class TypesOtherDAO implements Serializable, ApplicationContextAware {
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+  }
+
+  // Row Parser
+
+  public static app5.persistence.TypesOtherVO parseRow(Map<String, Object> m) {
+    app5.persistence.TypesOtherVO mo = new app5.persistence.TypesOtherVO();
+    mo.setGeo1((java.lang.Object) m.get("geo1"));
+    mo.setGeo2((java.lang.Object) m.get("geo2"));
+    mo.setGeo3((java.lang.Object) m.get("geo3"));
+    mo.setGeo4((java.lang.Object) m.get("geo4"));
+    mo.setGeo5((java.lang.Object) m.get("geo5"));
+    mo.setGeo6((java.lang.Object) m.get("geo6"));
+    mo.setGeo7((java.lang.Object) m.get("geo7"));
+    mo.setNet1((java.lang.Object) m.get("net1"));
+    mo.setNet2((java.lang.Object) m.get("net2"));
+    mo.setNet3((java.lang.Object) m.get("net3"));
+    mo.setUui1((java.lang.Object) m.get("uui1"));
+    mo.setJso1((java.lang.Object) m.get("jso1"));
+    mo.setJso2((java.lang.Object) m.get("jso2"));
+    mo.setArr1((java.lang.Object) m.get("arr1"));
+    mo.setArr2((java.lang.Object) m.get("arr2"));
+    mo.setArr3((java.lang.Object) m.get("arr3"));
+    mo.setCom1((java.lang.Object) m.get("com1"));
+    mo.setRan1((java.lang.Object) m.get("ran1"));
+    mo.setRan2((java.lang.Object) m.get("ran2"));
+    mo.setRan3((java.lang.Object) m.get("ran3"));
+    mo.setRan4((java.lang.Object) m.get("ran4"));
+    mo.setRan5((java.lang.Object) m.get("ran5"));
+    mo.setRan6((java.lang.Object) m.get("ran6"));
+    return mo;
   }
 
   // no select by PK generated, since the table does not have a PK.

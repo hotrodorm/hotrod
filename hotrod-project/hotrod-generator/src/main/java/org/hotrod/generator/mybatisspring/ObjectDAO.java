@@ -171,6 +171,8 @@ public class ObjectDAO extends GeneratableObject {
 
       if (!this.isExecutor()) {
 
+        writeRowParser();
+
         if (this.isTable()) {
           writeSelectByPK(mg); // done
           writeSelectByUI(mg); // done
@@ -281,6 +283,7 @@ public class ObjectDAO extends GeneratableObject {
 
     imports.add("java.io.Serializable");
     imports.add("java.util.List");
+    imports.add("java.util.Map");
     imports.newLine();
     imports.add("org.apache.ibatis.session.SqlSession");
     imports.add(Cursor.class);
@@ -592,6 +595,35 @@ public class ObjectDAO extends GeneratableObject {
       }
       return true;
     }
+
+  }
+
+  private void writeRowParser() throws IOException {
+    String voClassName = this.vo.getFullClassName();
+    println("  // Row Parser");
+    println();
+    println("  public static " + voClassName + " parseRow(Map<String, Object> m) {");
+    println("    " + voClassName + " mo = new " + voClassName + "();");
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      String javaType = resolveType(cm);
+      String property = cm.getId().getJavaMemberName();
+      println("    mo." + cm.getId().getJavaSetter() + "((" + javaType + ") m.get(\""
+          + JUtils.escapeJavaString(property) + "\"));");
+    }
+
+//    for (ColumnMetadata cm : this.metadata.getColumns()) {
+//      String javaType = resolveType(cm);
+//      String liveSQLColumnType = toLiveSQLType(javaType);
+//      String javaMembername = cm.getId().getJavaMemberName();
+//      String colName = cm.getId().getCanonicalSQLName();
+//      String property = cm.getId().getJavaMemberName();
+//      println("      this." + javaMembername + " = new " + liveSQLColumnType + "(this, \""
+//          + JUtils.escapeJavaString(colName) + "\", \"" + JUtils.escapeJavaString(property) + "\");");
+//    }
+
+    println("    return mo;");
+    println("  }");
+    println();
 
   }
 
@@ -1104,7 +1136,7 @@ public class ObjectDAO extends GeneratableObject {
       println();
     }
 
-    print("  public " + moClassName  + " insert(final " + voClassName + " vo");
+    print("  public " + moClassName + " insert(final " + voClassName + " vo");
     if (extraInsert) {
       print(", final boolean retrieveDefaults");
     }

@@ -4,6 +4,7 @@ package app5.persistence.primitives;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
@@ -65,6 +66,18 @@ public class TransactionDAO implements Serializable, ApplicationContextAware {
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+  }
+
+  // Row Parser
+
+  public static app5.persistence.TransactionVO parseRow(Map<String, Object> m) {
+    app5.persistence.TransactionVO mo = new app5.persistence.TransactionVO();
+    mo.setAccountId((java.lang.Integer) m.get("accountId"));
+    mo.setSeqId((java.lang.Integer) m.get("seqId"));
+    mo.setTime((java.lang.String) m.get("time"));
+    mo.setAmount((java.lang.Integer) m.get("amount"));
+    mo.setFedBranchId((java.lang.Long) m.get("fedBranchId"));
+    return mo;
   }
 
   // select by primary key

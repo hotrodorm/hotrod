@@ -4,6 +4,7 @@ package app5.persistence.primitives;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
@@ -59,6 +60,17 @@ public class HistoricPriceDAO implements Serializable, ApplicationContextAware {
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+  }
+
+  // Row Parser
+
+  public static app5.persistence.HistoricPriceVO parseRow(Map<String, Object> m) {
+    app5.persistence.HistoricPriceVO mo = new app5.persistence.HistoricPriceVO();
+    mo.setProductId((java.lang.Integer) m.get("productId"));
+    mo.setFromDate((java.sql.Date) m.get("fromDate"));
+    mo.setPrice((java.lang.Integer) m.get("price"));
+    mo.setSku((java.lang.Long) m.get("sku"));
+    return mo;
   }
 
   // select by primary key
