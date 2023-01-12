@@ -89,6 +89,7 @@ public class ObjectDAO extends GeneratableObject {
 
   private ClassPackage classPackage;
 
+  private ObjectAbstractVO avo = null;
   private ObjectVO vo = null;
   private Mapper mapper = null;
 
@@ -103,7 +104,7 @@ public class ObjectDAO extends GeneratableObject {
 
   public ObjectDAO(final AbstractDAOTag tag, final DataSetMetadata metadata, final DataSetLayout layout,
       final MyBatisSpringGenerator generator, final DAOType type, final MyBatisSpringTag myBatisTag,
-      final DatabaseAdapter adapter, final ObjectVO vo, final Mapper mapper) {
+      final DatabaseAdapter adapter, final ObjectAbstractVO avo, final ObjectVO vo, final Mapper mapper) {
     super();
     log.debug("init");
     this.tag = tag;
@@ -118,6 +119,7 @@ public class ObjectDAO extends GeneratableObject {
     this.myBatisTag = myBatisTag;
     this.adapter = adapter;
 
+    this.avo = avo;
     this.vo = vo;
     this.mapper = mapper;
 
@@ -300,6 +302,9 @@ public class ObjectDAO extends GeneratableObject {
 
     imports.newLine();
 
+    if (this.avo != null) {
+      imports.add(this.avo.getFullClassName());
+    }
     if (this.vo != null) {
       imports.add(this.vo.getFullClassName());
     }
@@ -469,36 +474,6 @@ public class ObjectDAO extends GeneratableObject {
     println("  }");
     println();
 
-    // println(" // Bean setters");
-    // println();
-    // println(" public void setSqlSession(final SqlSession sqlSession) {");
-    // println(" this.sqlSession = sqlSession;");
-    // println(" }");
-    // println();
-    // println(" public void setSqlDialect(final SQLDialect sqlDialect) {");
-    // println(" this.sqlDialect = sqlDialect;");
-    // println(" }");
-    // println();
-
-    // Live SQL
-
-    // println(" // Live SQL");
-    // println("");
-    // println(" public SelectColumnsPhase<Map<String, Object>> createSelect()
-    // {");
-    // println(" return new SelectColumnsPhase<Map<String,
-    // Object>>(this.sqlDialect, this.sqlSession, false);");
-    // println(" }");
-    // println("");
-    // println(
-    // " public SelectColumnsPhase<Map<String, Object>> createSelect(final
-    // ResultSetColumn... resultSetColumns) {");
-    // println(
-    // " return new SelectColumnsPhase<Map<String, Object>>(this.sqlDialect,
-    // this.sqlSession, false, resultSetColumns);");
-    // println(" }");
-    // println("");
-
   }
 
   private static final String SELECT_BY_PK_METHOD = "selectByPK";
@@ -518,6 +493,7 @@ public class ObjectDAO extends GeneratableObject {
   private void selectByUniqueKey(final MyBatisSpringGenerator mg, final KeyMetadata key, final String method,
       final String mapperQuery) throws UnresolvableDataTypeException, IOException {
     String paramsSignature = toParametersSignature(key, mg);
+    String avoc = this.avo.getFullClassName();
     String voc = this.vo.getFullClassName();
 
     print("  public " + voc + " " + method + "(");
@@ -546,7 +522,7 @@ public class ObjectDAO extends GeneratableObject {
     boolean first = true;
 
     // Remove duplicated unique indexes/constraints that may be registered in
-    // the database. This behavior/bug has been observed in PostgreSQL.
+    // the database. This behavior has been observed in PostgreSQL.
 
     Set<KeyMetadata> distinctConstraints = new LinkedHashSet<KeyMetadata>();
     for (KeyMetadata ui : this.metadata.getUniqueIndexes()) {
@@ -633,24 +609,25 @@ public class ObjectDAO extends GeneratableObject {
     println("  // select by example");
     println();
 
+    String avoClassName = this.avo.getFullClassName();
     String voClassName = this.vo.getFullClassName();
 
-    println("  public List<" + voClassName + "> selectByExample(final " + voClassName + " example, final "
+    println("  public List<" + voClassName + "> selectByExample(final " + avoClassName + " example, final "
         + this.getOrderByClassName() + "... orderBies)");
     print("      ");
     println("{");
-    println("    DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + "> dwo = //");
-    println("        new DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + ">(example, orderBies);");
+    println("    DaoWithOrder<" + avoClassName + ", " + this.getOrderByClassName() + "> dwo = //");
+    println("        new DaoWithOrder<>(example, orderBies);");
     println("    return this.sqlSession.selectList(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo);");
     println("  }");
     println();
 
-    println("  public Cursor<" + voClassName + "> selectByExampleCursor(final " + voClassName + " example, final "
+    println("  public Cursor<" + voClassName + "> selectByExampleCursor(final " + avoClassName + " example, final "
         + this.getOrderByClassName() + "... orderBies)");
     print("      ");
     println("{");
-    println("    DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + "> dwo = //");
-    println("        new DaoWithOrder<" + voClassName + ", " + this.getOrderByClassName() + ">(example, orderBies);");
+    println("    DaoWithOrder<" + avoClassName + ", " + this.getOrderByClassName() + "> dwo = //");
+    println("        new DaoWithOrder<>(example, orderBies);");
     println("    return new " + MyBatisCursor.class.getSimpleName() + "<" + voClassName
         + ">(this.sqlSession.selectCursor(\"" + this.mapper.getFullMapperIdSelectByExample() + "\", dwo));");
     println("  }");
@@ -681,7 +658,7 @@ public class ObjectDAO extends GeneratableObject {
     println("  public CriteriaWherePhase<" + voFullClassName + "> selectByCriteria(final " + daoClassName + "."
         + this.metadataClassName + " from,");
     println("      final Predicate predicate) {");
-    println("    return new CriteriaWherePhase<" + voFullClassName + ">(from, this.liveSQLDialect, this.sqlSession,");
+    println("    return new CriteriaWherePhase<" + voFullClassName + ">(from, this.sqlDialect, this.sqlSession,");
     println("        predicate, \"" + mapperName + "\");");
     println("  }");
 
@@ -725,7 +702,7 @@ public class ObjectDAO extends GeneratableObject {
       // Group by remote table.
 
       // Also, get distinct foreign keys only, since multiple identical foreign
-      // keys can be registered in the database. This behavior/bug has been
+      // keys can be registered in the database. This behavior has been
       // observed in PostgreSQL.
 
       log.debug("DAO: " + this.getClassName() + " -- this.metadata.getImportedFKs().size()="
@@ -1127,16 +1104,17 @@ public class ObjectDAO extends GeneratableObject {
     println("  // insert");
     println();
 
-    String voClassName = this.vo.getFullClassName();
+    String voClassName = this.avo.getFullClassName();
+    String moClassName = this.vo.getFullClassName();
     if (extraInsert) {
-      print("  public int insert(final " + voClassName + " vo) ");
+      print("  public " + moClassName + " insert(final " + voClassName + " vo) ");
       println("{");
       println("    return insert(vo, false);");
       println("  }");
       println();
     }
 
-    print("  public int insert(final " + voClassName + " vo");
+    print("  public " + moClassName  + " insert(final " + voClassName + " vo");
     if (extraInsert) {
       print(", final boolean retrieveDefaults");
     }
@@ -1165,40 +1143,52 @@ public class ObjectDAO extends GeneratableObject {
 
     if (identities == 0) {
       if (sequences == 0) { // no sequences, no identities
-        println("    return this.sqlSession.insert(id, vo);");
+        println("    this.sqlSession.insert(id, vo);");
+        this.writeVOToModel();
+        println("    return mo;");
       } else { // sequences only
         if (integratesSequences) {
           writeInsertIntegrated(true, false, extraInsert);
-          println("    return rows;");
+          this.writeVOToModel();
+          println("    return mo;");
         } else {
-          println("    return this.sqlSession.insert(id, vo);");
+          println("    this.sqlSession.insert(id, vo);");
+          this.writeVOToModel();
+          println("    return mo;");
         }
       }
     } else {
       if (sequences == 0) { // identities only
         if (integratesIdentities) {
           writeInsertIntegrated(false, true, extraInsert);
-          println("    return rows;");
+          this.writeVOToModel();
+          println("    return mo;");
         } else {
-          println("    return this.sqlSession.insert(id, vo);");
+          println("    this.sqlSession.insert(id, vo);");
+          this.writeVOToModel();
+          println("    return mo;");
         }
       } else { // sequences & identities
         if (integratesSequences && integratesIdentities) {
           writeInsertIntegrated(true, true, extraInsert);
-          println("    return rows;");
+          this.writeVOToModel();
+          println("    return mo;");
         } else if (integratesIdentities) {
           writeSequencesPreFetch();
           writeInsertIntegrated(false, true, extraInsert);
-          println("    return rows;");
+          this.writeVOToModel();
+          println("    return mo;");
         } else if (integratesSequences) {
           writeInsertIntegrated(true, false, extraInsert);
           writeIdentitiesPostFetch();
-          println("    return rows;");
+          this.writeVOToModel();
+          println("    return mo;");
         } else {
           writeSequencesPreFetch();
           println("    int rows = this.sqlSession.insert(id, vo);");
           writeIdentitiesPostFetch();
-          println("    return rows;");
+          this.writeVOToModel();
+          println("    return mo;");
         }
 
       }
@@ -1207,6 +1197,14 @@ public class ObjectDAO extends GeneratableObject {
     println("  }");
     println();
 
+  }
+
+  private void writeVOToModel() throws IOException {
+    String moClassName = this.vo.getFullClassName();
+    println("    " + moClassName + " mo = new " + moClassName + "();");
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      println("    mo." + cm.getId().getJavaSetter() + "(vo." + cm.getId().getJavaGetter() + "());");
+    }
   }
 
   private void writeInsertIntegrated(final boolean integratesSequences, final boolean integratesIdentities,
@@ -1328,7 +1326,7 @@ public class ObjectDAO extends GeneratableObject {
   private void writeInsertByExample() throws IOException {
     println("  // insert by example");
     println();
-    String voClassName = this.vo.getFullClassName();
+    String voClassName = this.avo.getFullClassName();
     print("  public int insertByExample(final " + voClassName + " example) ");
     println("{");
     println("    return sqlSession.insert(\"" + this.mapper.getFullMapperIdInsertByExample() + "\", example);");
@@ -1340,7 +1338,7 @@ public class ObjectDAO extends GeneratableObject {
   private void writeUpdateByExample() throws IOException {
     println("  // update by example");
     println();
-    String voClassName = this.vo.getFullClassName();
+    String voClassName = this.avo.getFullClassName();
     println(
         "  public int updateByExample(final " + voClassName + " example, final " + voClassName + " updateValues) {");
     println("    UpdateByExampleDao<" + voClassName + "> fvd = //");
@@ -1394,7 +1392,7 @@ public class ObjectDAO extends GeneratableObject {
   private void writeDeleteByExample() throws IOException {
     println("  // delete by example");
     println();
-    String voClassName = this.vo.getFullClassName();
+    String voClassName = this.avo.getFullClassName();
     println("  public int deleteByExample(final " + voClassName + " example) {");
     println("    return this.sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByExample() + "\", example);");
     println("  }");

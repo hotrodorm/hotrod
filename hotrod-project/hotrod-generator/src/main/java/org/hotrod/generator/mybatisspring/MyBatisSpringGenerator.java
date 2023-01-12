@@ -230,7 +230,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       this.tableAbstractVOs.add(abstractVO);
       vo = new ObjectVO(metadata, layout, this, abstractVO, myBatisTag);
       mapper = new Mapper(ttag, metadata, layout, this, type, this.adapter, vo, this.entityDAORegistry);
-      dao = new ObjectDAO(ttag, metadata, layout, this, type, myBatisTag, this.adapter, vo, mapper);
+      dao = new ObjectDAO(ttag, metadata, layout, this, type, myBatisTag, this.adapter, abstractVO, vo, mapper);
       this.entityDAORegistry.add(vo.getFullClassName(), dao);
       mapper.setDao(dao);
 
@@ -256,7 +256,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       abstractVO = new ObjectAbstractVO(metadata, layout, this, DAOType.VIEW, myBatisTag);
       vo = new ObjectVO(metadata, layout, this, abstractVO, myBatisTag);
       mapper = new Mapper(vtag, metadata, layout, this, type, this.adapter, vo, this.entityDAORegistry);
-      dao = new ObjectDAO(vtag, metadata, layout, this, type, myBatisTag, this.adapter, vo, mapper);
+      dao = new ObjectDAO(vtag, metadata, layout, this, type, myBatisTag, this.adapter, abstractVO, vo, mapper);
       this.entityDAORegistry.add(vo.getFullClassName(), dao);
       mapper.setDao(dao);
 
@@ -275,7 +275,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       vo = null;
 
       mapper = new Mapper(tag, metadata, layout, this, type, this.adapter, vo, this.entityDAORegistry);
-      dao = new ObjectDAO(tag, metadata, layout, this, type, myBatisTag, this.adapter, vo, mapper);
+      dao = new ObjectDAO(tag, metadata, layout, this, type, myBatisTag, this.adapter, abstractVO, vo, mapper);
       mapper.setDao(dao);
 
       bundle = new Bundle(abstractVO, vo, dao, mapper);
