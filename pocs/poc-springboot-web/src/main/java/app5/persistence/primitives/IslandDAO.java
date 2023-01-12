@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import app5.persistence.primitives.AbstractIslandVO;
 import app5.persistence.IslandVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -30,6 +31,7 @@ import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
 import org.springframework.beans.BeansException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -59,17 +61,17 @@ public class IslandDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app5.persistence.IslandVO> selectByExample(final app5.persistence.IslandVO example, final IslandOrderBy... orderBies)
+  public List<app5.persistence.IslandVO> selectByExample(final app5.persistence.primitives.AbstractIslandVO example, final IslandOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.IslandVO, IslandOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.IslandVO, IslandOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractIslandVO, IslandOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app5.persistence.primitives.island.selectByExample", dwo);
   }
 
-  public Cursor<app5.persistence.IslandVO> selectByExampleCursor(final app5.persistence.IslandVO example, final IslandOrderBy... orderBies)
+  public Cursor<app5.persistence.IslandVO> selectByExampleCursor(final app5.persistence.primitives.AbstractIslandVO example, final IslandOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.IslandVO, IslandOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.IslandVO, IslandOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractIslandVO, IslandOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<app5.persistence.IslandVO>(this.sqlSession.selectCursor("app5.persistence.primitives.island.selectByExample", dwo));
   }
 
@@ -87,9 +89,16 @@ public class IslandDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final app5.persistence.IslandVO vo) {
+  public app5.persistence.IslandVO insert(final app5.persistence.primitives.AbstractIslandVO vo) {
     String id = "app5.persistence.primitives.island.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    app5.persistence.IslandVO mo = new app5.persistence.IslandVO();
+    mo.setId(vo.getId());
+    mo.setSegment(vo.getSegment());
+    mo.setXStart(vo.getXStart());
+    mo.setXEnd(vo.getXEnd());
+    mo.setHeight(vo.getHeight());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -98,15 +107,15 @@ public class IslandDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app5.persistence.IslandVO example, final app5.persistence.IslandVO updateValues) {
-    UpdateByExampleDao<app5.persistence.IslandVO> fvd = //
-      new UpdateByExampleDao<app5.persistence.IslandVO>(example, updateValues);
+  public int updateByExample(final app5.persistence.primitives.AbstractIslandVO example, final app5.persistence.primitives.AbstractIslandVO updateValues) {
+    UpdateByExampleDao<app5.persistence.primitives.AbstractIslandVO> fvd = //
+      new UpdateByExampleDao<app5.persistence.primitives.AbstractIslandVO>(example, updateValues);
     return this.sqlSession.update("app5.persistence.primitives.island.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final app5.persistence.IslandVO example) {
+  public int deleteByExample(final app5.persistence.primitives.AbstractIslandVO example) {
     return this.sqlSession.delete("app5.persistence.primitives.island.deleteByExample", example);
   }
 

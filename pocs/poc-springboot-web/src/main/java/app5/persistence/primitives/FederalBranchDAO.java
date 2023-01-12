@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import app5.persistence.primitives.AbstractFederalBranchVO;
 import app5.persistence.FederalBranchVO;
 import app5.persistence.TransactionVO;
 import app5.persistence.primitives.TransactionDAO.TransactionOrderBy;
@@ -33,6 +34,7 @@ import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
 import org.springframework.beans.BeansException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -46,6 +48,7 @@ public class FederalBranchDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private SqlSession sqlSession;
 
+  @Lazy
   @Autowired
   private TransactionDAO transactionDAO;
 
@@ -73,17 +76,17 @@ public class FederalBranchDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app5.persistence.FederalBranchVO> selectByExample(final app5.persistence.FederalBranchVO example, final FederalBranchOrderBy... orderBies)
+  public List<app5.persistence.FederalBranchVO> selectByExample(final app5.persistence.primitives.AbstractFederalBranchVO example, final FederalBranchOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.FederalBranchVO, FederalBranchOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.FederalBranchVO, FederalBranchOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractFederalBranchVO, FederalBranchOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app5.persistence.primitives.federalBranch.selectByExample", dwo);
   }
 
-  public Cursor<app5.persistence.FederalBranchVO> selectByExampleCursor(final app5.persistence.FederalBranchVO example, final FederalBranchOrderBy... orderBies)
+  public Cursor<app5.persistence.FederalBranchVO> selectByExampleCursor(final app5.persistence.primitives.AbstractFederalBranchVO example, final FederalBranchOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.FederalBranchVO, FederalBranchOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.FederalBranchVO, FederalBranchOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractFederalBranchVO, FederalBranchOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<app5.persistence.FederalBranchVO>(this.sqlSession.selectCursor("app5.persistence.primitives.federalBranch.selectByExample", dwo));
   }
 
@@ -141,9 +144,13 @@ public class FederalBranchDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final app5.persistence.FederalBranchVO vo) {
+  public app5.persistence.FederalBranchVO insert(final app5.persistence.primitives.AbstractFederalBranchVO vo) {
     String id = "app5.persistence.primitives.federalBranch.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    app5.persistence.FederalBranchVO mo = new app5.persistence.FederalBranchVO();
+    mo.setId(vo.getId());
+    mo.setName(vo.getName());
+    return mo;
   }
 
   // update by PK
@@ -162,15 +169,15 @@ public class FederalBranchDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app5.persistence.FederalBranchVO example, final app5.persistence.FederalBranchVO updateValues) {
-    UpdateByExampleDao<app5.persistence.FederalBranchVO> fvd = //
-      new UpdateByExampleDao<app5.persistence.FederalBranchVO>(example, updateValues);
+  public int updateByExample(final app5.persistence.primitives.AbstractFederalBranchVO example, final app5.persistence.primitives.AbstractFederalBranchVO updateValues) {
+    UpdateByExampleDao<app5.persistence.primitives.AbstractFederalBranchVO> fvd = //
+      new UpdateByExampleDao<app5.persistence.primitives.AbstractFederalBranchVO>(example, updateValues);
     return this.sqlSession.update("app5.persistence.primitives.federalBranch.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final app5.persistence.FederalBranchVO example) {
+  public int deleteByExample(final app5.persistence.primitives.AbstractFederalBranchVO example) {
     return this.sqlSession.delete("app5.persistence.primitives.federalBranch.deleteByExample", example);
   }
 

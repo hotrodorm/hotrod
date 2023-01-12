@@ -25,7 +25,6 @@ public class AbstractTransactionVO implements Serializable {
 
   public void setAccountId(final java.lang.Integer accountId) {
     this.accountId = accountId;
-    this.getPropertiesChangeLog().accountIdWasSet = true;
   }
 
   public java.lang.Integer getSeqId() {
@@ -34,7 +33,6 @@ public class AbstractTransactionVO implements Serializable {
 
   public void setSeqId(final java.lang.Integer seqId) {
     this.seqId = seqId;
-    this.getPropertiesChangeLog().seqIdWasSet = true;
   }
 
   public java.lang.String getTime() {
@@ -43,7 +41,6 @@ public class AbstractTransactionVO implements Serializable {
 
   public void setTime(final java.lang.String time) {
     this.time = time;
-    this.getPropertiesChangeLog().timeWasSet = true;
   }
 
   public java.lang.Integer getAmount() {
@@ -52,7 +49,6 @@ public class AbstractTransactionVO implements Serializable {
 
   public void setAmount(final java.lang.Integer amount) {
     this.amount = amount;
-    this.getPropertiesChangeLog().amountWasSet = true;
   }
 
   public java.lang.Long getFedBranchId() {
@@ -61,7 +57,6 @@ public class AbstractTransactionVO implements Serializable {
 
   public void setFedBranchId(final java.lang.Long fedBranchId) {
     this.fedBranchId = fedBranchId;
-    this.getPropertiesChangeLog().fedBranchIdWasSet = true;
   }
 
   // to string
@@ -87,22 +82,6 @@ public class AbstractTransactionVO implements Serializable {
     obj.addProperty("amount", this.amount);
     obj.addProperty("fedBranchId", this.fedBranchId);
     return obj.render();
-  }
-
-  // Properties change log
-
-  private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();
-
-  protected PropertiesChangeLog getPropertiesChangeLog() {
-    return propertiesChangeLog;
-  }
-
-  protected class PropertiesChangeLog {
-    public boolean accountIdWasSet = false;
-    public boolean seqIdWasSet = false;
-    public boolean timeWasSet = false;
-    public boolean amountWasSet = false;
-    public boolean fedBranchIdWasSet = false;
   }
 
 }

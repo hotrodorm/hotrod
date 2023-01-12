@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import app5.persistence.primitives.AbstractAccountVO;
 import app5.persistence.AccountVO;
 import app5.persistence.TransactionVO;
 import app5.persistence.primitives.TransactionDAO.TransactionOrderBy;
@@ -33,6 +34,7 @@ import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
 import org.springframework.beans.BeansException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -46,6 +48,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private SqlSession sqlSession;
 
+  @Lazy
   @Autowired
   private TransactionDAO transactionDAO;
 
@@ -81,17 +84,17 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app5.persistence.AccountVO> selectByExample(final app5.persistence.AccountVO example, final AccountOrderBy... orderBies)
+  public List<app5.persistence.AccountVO> selectByExample(final app5.persistence.primitives.AbstractAccountVO example, final AccountOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.AccountVO, AccountOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.AccountVO, AccountOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractAccountVO, AccountOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app5.persistence.primitives.account.selectByExample", dwo);
   }
 
-  public Cursor<app5.persistence.AccountVO> selectByExampleCursor(final app5.persistence.AccountVO example, final AccountOrderBy... orderBies)
+  public Cursor<app5.persistence.AccountVO> selectByExampleCursor(final app5.persistence.primitives.AbstractAccountVO example, final AccountOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.AccountVO, AccountOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.AccountVO, AccountOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractAccountVO, AccountOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<app5.persistence.AccountVO>(this.sqlSession.selectCursor("app5.persistence.primitives.account.selectByExample", dwo));
   }
 
@@ -149,14 +152,21 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final app5.persistence.AccountVO vo) {
+  public app5.persistence.AccountVO insert(final app5.persistence.primitives.AbstractAccountVO vo) {
     return insert(vo, false);
   }
 
-  public int insert(final app5.persistence.AccountVO vo, final boolean retrieveDefaults) {
+  public app5.persistence.AccountVO insert(final app5.persistence.primitives.AbstractAccountVO vo, final boolean retrieveDefaults) {
     String id = retrieveDefaults ? "app5.persistence.primitives.account.insertRetrievingDefaults" : "app5.persistence.primitives.account.insert";
     int rows = this.sqlSession.insert(id, vo);
-    return rows;
+    app5.persistence.AccountVO mo = new app5.persistence.AccountVO();
+    mo.setId(vo.getId());
+    mo.setName(vo.getName());
+    mo.setType(vo.getType());
+    mo.setCurrentBalance(vo.getCurrentBalance());
+    mo.setCreatedOn(vo.getCreatedOn());
+    mo.setActive(vo.getActive());
+    return mo;
   }
 
   // update by PK
@@ -175,15 +185,15 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app5.persistence.AccountVO example, final app5.persistence.AccountVO updateValues) {
-    UpdateByExampleDao<app5.persistence.AccountVO> fvd = //
-      new UpdateByExampleDao<app5.persistence.AccountVO>(example, updateValues);
+  public int updateByExample(final app5.persistence.primitives.AbstractAccountVO example, final app5.persistence.primitives.AbstractAccountVO updateValues) {
+    UpdateByExampleDao<app5.persistence.primitives.AbstractAccountVO> fvd = //
+      new UpdateByExampleDao<app5.persistence.primitives.AbstractAccountVO>(example, updateValues);
     return this.sqlSession.update("app5.persistence.primitives.account.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final app5.persistence.AccountVO example) {
+  public int deleteByExample(final app5.persistence.primitives.AbstractAccountVO example) {
     return this.sqlSession.delete("app5.persistence.primitives.account.deleteByExample", example);
   }
 

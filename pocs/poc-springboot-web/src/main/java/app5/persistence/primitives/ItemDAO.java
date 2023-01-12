@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import app5.persistence.primitives.AbstractItemVO;
 import app5.persistence.ItemVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -30,6 +31,7 @@ import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
 import org.springframework.beans.BeansException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -59,17 +61,17 @@ public class ItemDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app5.persistence.ItemVO> selectByExample(final app5.persistence.ItemVO example, final ItemOrderBy... orderBies)
+  public List<app5.persistence.ItemVO> selectByExample(final app5.persistence.primitives.AbstractItemVO example, final ItemOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.ItemVO, ItemOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.ItemVO, ItemOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractItemVO, ItemOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app5.persistence.primitives.item.selectByExample", dwo);
   }
 
-  public Cursor<app5.persistence.ItemVO> selectByExampleCursor(final app5.persistence.ItemVO example, final ItemOrderBy... orderBies)
+  public Cursor<app5.persistence.ItemVO> selectByExampleCursor(final app5.persistence.primitives.AbstractItemVO example, final ItemOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.ItemVO, ItemOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.ItemVO, ItemOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractItemVO, ItemOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<app5.persistence.ItemVO>(this.sqlSession.selectCursor("app5.persistence.primitives.item.selectByExample", dwo));
   }
 
@@ -87,9 +89,18 @@ public class ItemDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final app5.persistence.ItemVO vo) {
+  public app5.persistence.ItemVO insert(final app5.persistence.primitives.AbstractItemVO vo) {
     String id = "app5.persistence.primitives.item.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    app5.persistence.ItemVO mo = new app5.persistence.ItemVO();
+    mo.setId(vo.getId());
+    mo.setDescription(vo.getDescription());
+    mo.setPrice(vo.getPrice());
+    mo.setCreatedOn(vo.getCreatedOn());
+    mo.setActive(vo.getActive());
+    mo.setIcon(vo.getIcon());
+    mo.setStoreCode(vo.getStoreCode());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -98,15 +109,15 @@ public class ItemDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app5.persistence.ItemVO example, final app5.persistence.ItemVO updateValues) {
-    UpdateByExampleDao<app5.persistence.ItemVO> fvd = //
-      new UpdateByExampleDao<app5.persistence.ItemVO>(example, updateValues);
+  public int updateByExample(final app5.persistence.primitives.AbstractItemVO example, final app5.persistence.primitives.AbstractItemVO updateValues) {
+    UpdateByExampleDao<app5.persistence.primitives.AbstractItemVO> fvd = //
+      new UpdateByExampleDao<app5.persistence.primitives.AbstractItemVO>(example, updateValues);
     return this.sqlSession.update("app5.persistence.primitives.item.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final app5.persistence.ItemVO example) {
+  public int deleteByExample(final app5.persistence.primitives.AbstractItemVO example) {
     return this.sqlSession.delete("app5.persistence.primitives.item.deleteByExample", example);
   }
 

@@ -130,7 +130,7 @@ public class Application {
 //
 //    log.info("* <select mode='cursor'>...");
 //    this.cursorExamples.findExpensiveProductsCursor();
-    
+
     log.info("* selectChildrenFKCursor()");
     this.cursorExamples.selectChildrenFKCursor();
 

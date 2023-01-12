@@ -91,9 +91,7 @@
   </type-solver>
 
   <table name="product" />
-  <!-- 
   <table name="historic_price" />
-   -->
 
   <table name="account" />
   <table name="item" />

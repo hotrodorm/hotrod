@@ -4,7 +4,7 @@ package app5.persistence.accounts.primitives;
 
 import java.io.Serializable;
 
-public abstract class AbstractAccountPersonFlatVO implements Serializable {
+public class AbstractAccountPersonFlatVO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 

@@ -90,8 +90,6 @@ public class ObjectAbstractVO extends GeneratableObject {
 
       writeToJSON();
 
-      writePropertiesChangeLog();
-
       writeClassFooter();
 
       super.markGenerated();
@@ -289,8 +287,6 @@ public class ObjectAbstractVO extends GeneratableObject {
     String setter = cm.getId().getJavaSetter();
     println("  public void " + setter + "(final " + javaType + " " + m + ") {");
     println("    this." + m + " = " + m + ";");
-    String name = cm.getId().getJavaMemberName() + "WasSet";
-    println("    this.getPropertiesChangeLog()." + name + " = true;");
     println("  }");
     println();
   }
@@ -373,44 +369,6 @@ public class ObjectAbstractVO extends GeneratableObject {
     println("    return obj.render();");
     println("  }");
     println();
-  }
-
-  /**
-   * <pre>
-   * // Properties change log
-   * 
-   * private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();
-   * 
-   * public class PropertiesChangeLog {
-   *   boolean idWasSet = false;
-   *   boolean nameWasSet = false;
-   *   boolean typeWasSet = false;
-   *   boolean currentBalanceWasSet = false;
-   *   boolean createdOnWasSet = false;
-   * }
-   * </pre>
-   * 
-   * @throws IOException
-   */
-  private void writePropertiesChangeLog() throws IOException {
-    println("  // Properties change log");
-    println();
-    println("  private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();");
-    println();
-    println("  protected PropertiesChangeLog getPropertiesChangeLog() {");
-    println("    return propertiesChangeLog;");
-    println("  }");
-    println();
-    println("  protected class PropertiesChangeLog {");
-
-    for (ColumnMetadata cm : this.metadata.getColumns()) {
-      String name = cm.getId().getJavaMemberName() + "WasSet";
-      println("    public boolean " + name + " = false;");
-    }
-
-    println("  }");
-    println();
-
   }
 
   private void writeClassFooter() throws IOException {

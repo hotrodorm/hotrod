@@ -43,14 +43,8 @@
       <if test="p.id != null ">
         and id = #{p.id,jdbcType=INTEGER}
       </if>
-      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
-        and id is null
-      </if>
       <if test="p.name != null ">
         and name = #{p.name,jdbcType=VARCHAR}
-      </if>
-      <if test="p.name == null and p.propertiesChangeLog.nameWasSet">
-        and name is null
       </if>
     </trim>
     <if test="o != null">
@@ -109,14 +103,8 @@
       <if test="filter.id != null ">
         and id = #{filter.id,jdbcType=INTEGER}
       </if>
-      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
-        and id is null
-      </if>
       <if test="filter.name != null ">
         and name = #{filter.name,jdbcType=VARCHAR}
-      </if>
-      <if test="filter.name == null and filter.propertiesChangeLog.nameWasSet">
-        and name is null
       </if>
     </trim>
   </update>
@@ -129,14 +117,8 @@
       <if test="id != null ">
         and id = #{id,jdbcType=INTEGER}
       </if>
-      <if test="id == null and propertiesChangeLog.idWasSet">
-        and id is null
-      </if>
       <if test="name != null ">
         and name = #{name,jdbcType=VARCHAR}
-      </if>
-      <if test="name == null and propertiesChangeLog.nameWasSet">
-        and name is null
       </if>
     </trim>
   </delete>

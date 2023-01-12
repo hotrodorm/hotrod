@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import app5.persistence.primitives.AbstractTypesBinaryVO;
 import app5.persistence.TypesBinaryVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
@@ -30,6 +31,7 @@ import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
 import org.springframework.beans.BeansException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -59,17 +61,17 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app5.persistence.TypesBinaryVO> selectByExample(final app5.persistence.TypesBinaryVO example, final TypesBinaryOrderBy... orderBies)
+  public List<app5.persistence.TypesBinaryVO> selectByExample(final app5.persistence.primitives.AbstractTypesBinaryVO example, final TypesBinaryOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.TypesBinaryVO, TypesBinaryOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.TypesBinaryVO, TypesBinaryOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractTypesBinaryVO, TypesBinaryOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app5.persistence.primitives.typesBinary.selectByExample", dwo);
   }
 
-  public Cursor<app5.persistence.TypesBinaryVO> selectByExampleCursor(final app5.persistence.TypesBinaryVO example, final TypesBinaryOrderBy... orderBies)
+  public Cursor<app5.persistence.TypesBinaryVO> selectByExampleCursor(final app5.persistence.primitives.AbstractTypesBinaryVO example, final TypesBinaryOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.TypesBinaryVO, TypesBinaryOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.TypesBinaryVO, TypesBinaryOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractTypesBinaryVO, TypesBinaryOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<app5.persistence.TypesBinaryVO>(this.sqlSession.selectCursor("app5.persistence.primitives.typesBinary.selectByExample", dwo));
   }
 
@@ -87,9 +89,13 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final app5.persistence.TypesBinaryVO vo) {
+  public app5.persistence.TypesBinaryVO insert(final app5.persistence.primitives.AbstractTypesBinaryVO vo) {
     String id = "app5.persistence.primitives.typesBinary.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    app5.persistence.TypesBinaryVO mo = new app5.persistence.TypesBinaryVO();
+    mo.setBin1(vo.getBin1());
+    mo.setBol1(vo.getBol1());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -98,15 +104,15 @@ public class TypesBinaryDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app5.persistence.TypesBinaryVO example, final app5.persistence.TypesBinaryVO updateValues) {
-    UpdateByExampleDao<app5.persistence.TypesBinaryVO> fvd = //
-      new UpdateByExampleDao<app5.persistence.TypesBinaryVO>(example, updateValues);
+  public int updateByExample(final app5.persistence.primitives.AbstractTypesBinaryVO example, final app5.persistence.primitives.AbstractTypesBinaryVO updateValues) {
+    UpdateByExampleDao<app5.persistence.primitives.AbstractTypesBinaryVO> fvd = //
+      new UpdateByExampleDao<app5.persistence.primitives.AbstractTypesBinaryVO>(example, updateValues);
     return this.sqlSession.update("app5.persistence.primitives.typesBinary.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final app5.persistence.TypesBinaryVO example) {
+  public int deleteByExample(final app5.persistence.primitives.AbstractTypesBinaryVO example) {
     return this.sqlSession.delete("app5.persistence.primitives.typesBinary.deleteByExample", example);
   }
 

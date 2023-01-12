@@ -35,14 +35,8 @@
       <if test="p.bin1 != null ">
         and bin1 = #{p.bin1,jdbcType=BINARY}
       </if>
-      <if test="p.bin1 == null and p.propertiesChangeLog.bin1WasSet">
-        and bin1 is null
-      </if>
       <if test="p.bol1 != null ">
         and bol1 = #{p.bol1,jdbcType=BIT}
-      </if>
-      <if test="p.bol1 == null and p.propertiesChangeLog.bol1WasSet">
-        and bol1 is null
       </if>
     </trim>
     <if test="o != null">
@@ -88,14 +82,8 @@
       <if test="filter.bin1 != null ">
         and bin1 = #{filter.bin1,jdbcType=BINARY}
       </if>
-      <if test="filter.bin1 == null and filter.propertiesChangeLog.bin1WasSet">
-        and bin1 is null
-      </if>
       <if test="filter.bol1 != null ">
         and bol1 = #{filter.bol1,jdbcType=BIT}
-      </if>
-      <if test="filter.bol1 == null and filter.propertiesChangeLog.bol1WasSet">
-        and bol1 is null
       </if>
     </trim>
   </update>
@@ -108,14 +96,8 @@
       <if test="bin1 != null ">
         and bin1 = #{bin1,jdbcType=BINARY}
       </if>
-      <if test="bin1 == null and propertiesChangeLog.bin1WasSet">
-        and bin1 is null
-      </if>
       <if test="bol1 != null ">
         and bol1 = #{bol1,jdbcType=BIT}
-      </if>
-      <if test="bol1 == null and propertiesChangeLog.bol1WasSet">
-        and bol1 is null
       </if>
     </trim>
   </delete>

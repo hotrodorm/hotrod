@@ -50,44 +50,23 @@
       <if test="p.id != null ">
         and id = #{p.id,jdbcType=INTEGER}
       </if>
-      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
-        and id is null
-      </if>
       <if test="p.description != null ">
         and description = #{p.description,jdbcType=VARCHAR}
-      </if>
-      <if test="p.description == null and p.propertiesChangeLog.descriptionWasSet">
-        and description is null
       </if>
       <if test="p.price != null ">
         and price = #{p.price,jdbcType=NUMERIC}
       </if>
-      <if test="p.price == null and p.propertiesChangeLog.priceWasSet">
-        and price is null
-      </if>
       <if test="p.createdOn != null ">
         and created_on = #{p.createdOn,jdbcType=TIMESTAMP}
-      </if>
-      <if test="p.createdOn == null and p.propertiesChangeLog.createdOnWasSet">
-        and created_on is null
       </if>
       <if test="p.active != null ">
         and active = #{p.active,jdbcType=BIT}
       </if>
-      <if test="p.active == null and p.propertiesChangeLog.activeWasSet">
-        and active is null
-      </if>
       <if test="p.icon != null ">
         and icon = #{p.icon,jdbcType=BINARY}
       </if>
-      <if test="p.icon == null and p.propertiesChangeLog.iconWasSet">
-        and icon is null
-      </if>
       <if test="p.storeCode != null ">
         and store_code = #{p.storeCode,jdbcType=OTHER}
-      </if>
-      <if test="p.storeCode == null and p.propertiesChangeLog.storeCodeWasSet">
-        and store_code is null
       </if>
     </trim>
     <if test="o != null">
@@ -148,44 +127,23 @@
       <if test="filter.id != null ">
         and id = #{filter.id,jdbcType=INTEGER}
       </if>
-      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
-        and id is null
-      </if>
       <if test="filter.description != null ">
         and description = #{filter.description,jdbcType=VARCHAR}
-      </if>
-      <if test="filter.description == null and filter.propertiesChangeLog.descriptionWasSet">
-        and description is null
       </if>
       <if test="filter.price != null ">
         and price = #{filter.price,jdbcType=NUMERIC}
       </if>
-      <if test="filter.price == null and filter.propertiesChangeLog.priceWasSet">
-        and price is null
-      </if>
       <if test="filter.createdOn != null ">
         and created_on = #{filter.createdOn,jdbcType=TIMESTAMP}
-      </if>
-      <if test="filter.createdOn == null and filter.propertiesChangeLog.createdOnWasSet">
-        and created_on is null
       </if>
       <if test="filter.active != null ">
         and active = #{filter.active,jdbcType=BIT}
       </if>
-      <if test="filter.active == null and filter.propertiesChangeLog.activeWasSet">
-        and active is null
-      </if>
       <if test="filter.icon != null ">
         and icon = #{filter.icon,jdbcType=BINARY}
       </if>
-      <if test="filter.icon == null and filter.propertiesChangeLog.iconWasSet">
-        and icon is null
-      </if>
       <if test="filter.storeCode != null ">
         and store_code = #{filter.storeCode,jdbcType=OTHER}
-      </if>
-      <if test="filter.storeCode == null and filter.propertiesChangeLog.storeCodeWasSet">
-        and store_code is null
       </if>
     </trim>
   </update>
@@ -198,44 +156,23 @@
       <if test="id != null ">
         and id = #{id,jdbcType=INTEGER}
       </if>
-      <if test="id == null and propertiesChangeLog.idWasSet">
-        and id is null
-      </if>
       <if test="description != null ">
         and description = #{description,jdbcType=VARCHAR}
-      </if>
-      <if test="description == null and propertiesChangeLog.descriptionWasSet">
-        and description is null
       </if>
       <if test="price != null ">
         and price = #{price,jdbcType=NUMERIC}
       </if>
-      <if test="price == null and propertiesChangeLog.priceWasSet">
-        and price is null
-      </if>
       <if test="createdOn != null ">
         and created_on = #{createdOn,jdbcType=TIMESTAMP}
-      </if>
-      <if test="createdOn == null and propertiesChangeLog.createdOnWasSet">
-        and created_on is null
       </if>
       <if test="active != null ">
         and active = #{active,jdbcType=BIT}
       </if>
-      <if test="active == null and propertiesChangeLog.activeWasSet">
-        and active is null
-      </if>
       <if test="icon != null ">
         and icon = #{icon,jdbcType=BINARY}
       </if>
-      <if test="icon == null and propertiesChangeLog.iconWasSet">
-        and icon is null
-      </if>
       <if test="storeCode != null ">
         and store_code = #{storeCode,jdbcType=OTHER}
-      </if>
-      <if test="storeCode == null and propertiesChangeLog.storeCodeWasSet">
-        and store_code is null
       </if>
     </trim>
   </delete>

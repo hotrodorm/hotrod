@@ -43,7 +43,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setGeo1(final java.lang.Object geo1) {
     this.geo1 = geo1;
-    this.getPropertiesChangeLog().geo1WasSet = true;
   }
 
   public java.lang.Object getGeo2() {
@@ -52,7 +51,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setGeo2(final java.lang.Object geo2) {
     this.geo2 = geo2;
-    this.getPropertiesChangeLog().geo2WasSet = true;
   }
 
   public java.lang.Object getGeo3() {
@@ -61,7 +59,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setGeo3(final java.lang.Object geo3) {
     this.geo3 = geo3;
-    this.getPropertiesChangeLog().geo3WasSet = true;
   }
 
   public java.lang.Object getGeo4() {
@@ -70,7 +67,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setGeo4(final java.lang.Object geo4) {
     this.geo4 = geo4;
-    this.getPropertiesChangeLog().geo4WasSet = true;
   }
 
   public java.lang.Object getGeo5() {
@@ -79,7 +75,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setGeo5(final java.lang.Object geo5) {
     this.geo5 = geo5;
-    this.getPropertiesChangeLog().geo5WasSet = true;
   }
 
   public java.lang.Object getGeo6() {
@@ -88,7 +83,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setGeo6(final java.lang.Object geo6) {
     this.geo6 = geo6;
-    this.getPropertiesChangeLog().geo6WasSet = true;
   }
 
   public java.lang.Object getGeo7() {
@@ -97,7 +91,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setGeo7(final java.lang.Object geo7) {
     this.geo7 = geo7;
-    this.getPropertiesChangeLog().geo7WasSet = true;
   }
 
   public java.lang.Object getNet1() {
@@ -106,7 +99,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setNet1(final java.lang.Object net1) {
     this.net1 = net1;
-    this.getPropertiesChangeLog().net1WasSet = true;
   }
 
   public java.lang.Object getNet2() {
@@ -115,7 +107,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setNet2(final java.lang.Object net2) {
     this.net2 = net2;
-    this.getPropertiesChangeLog().net2WasSet = true;
   }
 
   public java.lang.Object getNet3() {
@@ -124,7 +115,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setNet3(final java.lang.Object net3) {
     this.net3 = net3;
-    this.getPropertiesChangeLog().net3WasSet = true;
   }
 
   public java.lang.Object getUui1() {
@@ -133,7 +123,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setUui1(final java.lang.Object uui1) {
     this.uui1 = uui1;
-    this.getPropertiesChangeLog().uui1WasSet = true;
   }
 
   public java.lang.Object getJso1() {
@@ -142,7 +131,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setJso1(final java.lang.Object jso1) {
     this.jso1 = jso1;
-    this.getPropertiesChangeLog().jso1WasSet = true;
   }
 
   public java.lang.Object getJso2() {
@@ -151,7 +139,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setJso2(final java.lang.Object jso2) {
     this.jso2 = jso2;
-    this.getPropertiesChangeLog().jso2WasSet = true;
   }
 
   public java.lang.Object getArr1() {
@@ -160,7 +147,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setArr1(final java.lang.Object arr1) {
     this.arr1 = arr1;
-    this.getPropertiesChangeLog().arr1WasSet = true;
   }
 
   public java.lang.Object getArr2() {
@@ -169,7 +155,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setArr2(final java.lang.Object arr2) {
     this.arr2 = arr2;
-    this.getPropertiesChangeLog().arr2WasSet = true;
   }
 
   public java.lang.Object getArr3() {
@@ -178,7 +163,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setArr3(final java.lang.Object arr3) {
     this.arr3 = arr3;
-    this.getPropertiesChangeLog().arr3WasSet = true;
   }
 
   public java.lang.Object getCom1() {
@@ -187,7 +171,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setCom1(final java.lang.Object com1) {
     this.com1 = com1;
-    this.getPropertiesChangeLog().com1WasSet = true;
   }
 
   public java.lang.Object getRan1() {
@@ -196,7 +179,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setRan1(final java.lang.Object ran1) {
     this.ran1 = ran1;
-    this.getPropertiesChangeLog().ran1WasSet = true;
   }
 
   public java.lang.Object getRan2() {
@@ -205,7 +187,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setRan2(final java.lang.Object ran2) {
     this.ran2 = ran2;
-    this.getPropertiesChangeLog().ran2WasSet = true;
   }
 
   public java.lang.Object getRan3() {
@@ -214,7 +195,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setRan3(final java.lang.Object ran3) {
     this.ran3 = ran3;
-    this.getPropertiesChangeLog().ran3WasSet = true;
   }
 
   public java.lang.Object getRan4() {
@@ -223,7 +203,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setRan4(final java.lang.Object ran4) {
     this.ran4 = ran4;
-    this.getPropertiesChangeLog().ran4WasSet = true;
   }
 
   public java.lang.Object getRan5() {
@@ -232,7 +211,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setRan5(final java.lang.Object ran5) {
     this.ran5 = ran5;
-    this.getPropertiesChangeLog().ran5WasSet = true;
   }
 
   public java.lang.Object getRan6() {
@@ -241,7 +219,6 @@ public class AbstractTypesOtherVO implements Serializable {
 
   public void setRan6(final java.lang.Object ran6) {
     this.ran6 = ran6;
-    this.getPropertiesChangeLog().ran6WasSet = true;
   }
 
   // to string
@@ -303,40 +280,6 @@ public class AbstractTypesOtherVO implements Serializable {
     obj.addProperty("ran5", this.ran5);
     obj.addProperty("ran6", this.ran6);
     return obj.render();
-  }
-
-  // Properties change log
-
-  private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();
-
-  protected PropertiesChangeLog getPropertiesChangeLog() {
-    return propertiesChangeLog;
-  }
-
-  protected class PropertiesChangeLog {
-    public boolean geo1WasSet = false;
-    public boolean geo2WasSet = false;
-    public boolean geo3WasSet = false;
-    public boolean geo4WasSet = false;
-    public boolean geo5WasSet = false;
-    public boolean geo6WasSet = false;
-    public boolean geo7WasSet = false;
-    public boolean net1WasSet = false;
-    public boolean net2WasSet = false;
-    public boolean net3WasSet = false;
-    public boolean uui1WasSet = false;
-    public boolean jso1WasSet = false;
-    public boolean jso2WasSet = false;
-    public boolean arr1WasSet = false;
-    public boolean arr2WasSet = false;
-    public boolean arr3WasSet = false;
-    public boolean com1WasSet = false;
-    public boolean ran1WasSet = false;
-    public boolean ran2WasSet = false;
-    public boolean ran3WasSet = false;
-    public boolean ran4WasSet = false;
-    public boolean ran5WasSet = false;
-    public boolean ran6WasSet = false;
   }
 
 }

@@ -22,7 +22,6 @@ public class AbstractTypesBinaryVO implements Serializable {
 
   public void setBin1(final byte[] bin1) {
     this.bin1 = bin1;
-    this.getPropertiesChangeLog().bin1WasSet = true;
   }
 
   public java.lang.Boolean getBol1() {
@@ -31,7 +30,6 @@ public class AbstractTypesBinaryVO implements Serializable {
 
   public void setBol1(final java.lang.Boolean bol1) {
     this.bol1 = bol1;
-    this.getPropertiesChangeLog().bol1WasSet = true;
   }
 
   // to string
@@ -51,19 +49,6 @@ public class AbstractTypesBinaryVO implements Serializable {
     obj.addProperty("bin1", this.bin1);
     obj.addProperty("bol1", this.bol1);
     return obj.render();
-  }
-
-  // Properties change log
-
-  private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();
-
-  protected PropertiesChangeLog getPropertiesChangeLog() {
-    return propertiesChangeLog;
-  }
-
-  protected class PropertiesChangeLog {
-    public boolean bin1WasSet = false;
-    public boolean bol1WasSet = false;
   }
 
 }

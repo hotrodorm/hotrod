@@ -24,7 +24,6 @@ public class AbstractHistoricPriceVO implements Serializable {
 
   public void setProductId(final java.lang.Integer productId) {
     this.productId = productId;
-    this.getPropertiesChangeLog().productIdWasSet = true;
   }
 
   public java.sql.Date getFromDate() {
@@ -33,7 +32,6 @@ public class AbstractHistoricPriceVO implements Serializable {
 
   public void setFromDate(final java.sql.Date fromDate) {
     this.fromDate = fromDate;
-    this.getPropertiesChangeLog().fromDateWasSet = true;
   }
 
   public java.lang.Integer getPrice() {
@@ -42,7 +40,6 @@ public class AbstractHistoricPriceVO implements Serializable {
 
   public void setPrice(final java.lang.Integer price) {
     this.price = price;
-    this.getPropertiesChangeLog().priceWasSet = true;
   }
 
   public java.lang.Long getSku() {
@@ -51,7 +48,6 @@ public class AbstractHistoricPriceVO implements Serializable {
 
   public void setSku(final java.lang.Long sku) {
     this.sku = sku;
-    this.getPropertiesChangeLog().skuWasSet = true;
   }
 
   // to string
@@ -75,21 +71,6 @@ public class AbstractHistoricPriceVO implements Serializable {
     obj.addProperty("price", this.price);
     obj.addProperty("sku", this.sku);
     return obj.render();
-  }
-
-  // Properties change log
-
-  private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();
-
-  protected PropertiesChangeLog getPropertiesChangeLog() {
-    return propertiesChangeLog;
-  }
-
-  protected class PropertiesChangeLog {
-    public boolean productIdWasSet = false;
-    public boolean fromDateWasSet = false;
-    public boolean priceWasSet = false;
-    public boolean skuWasSet = false;
   }
 
 }

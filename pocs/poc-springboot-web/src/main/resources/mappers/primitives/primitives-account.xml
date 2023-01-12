@@ -63,38 +63,20 @@
       <if test="p.id != null ">
         and id = #{p.id,jdbcType=INTEGER}
       </if>
-      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
-        and id is null
-      </if>
       <if test="p.name != null ">
         and name = #{p.name,jdbcType=VARCHAR}
-      </if>
-      <if test="p.name == null and p.propertiesChangeLog.nameWasSet">
-        and name is null
       </if>
       <if test="p.type != null ">
         and type = #{p.type,jdbcType=VARCHAR}
       </if>
-      <if test="p.type == null and p.propertiesChangeLog.typeWasSet">
-        and type is null
-      </if>
       <if test="p.currentBalance != null ">
         and current_balance = #{p.currentBalance,jdbcType=INTEGER}
-      </if>
-      <if test="p.currentBalance == null and p.propertiesChangeLog.currentBalanceWasSet">
-        and current_balance is null
       </if>
       <if test="p.createdOn != null ">
         and created_on = #{p.createdOn,jdbcType=TIMESTAMP}
       </if>
-      <if test="p.createdOn == null and p.propertiesChangeLog.createdOnWasSet">
-        and created_on is null
-      </if>
       <if test="p.active != null ">
         and active = #{p.active,jdbcType=INTEGER}
-      </if>
-      <if test="p.active == null and p.propertiesChangeLog.activeWasSet">
-        and active is null
       </if>
     </trim>
     <if test="o != null">
@@ -169,38 +151,20 @@
       <if test="filter.id != null ">
         and id = #{filter.id,jdbcType=INTEGER}
       </if>
-      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
-        and id is null
-      </if>
       <if test="filter.name != null ">
         and name = #{filter.name,jdbcType=VARCHAR}
-      </if>
-      <if test="filter.name == null and filter.propertiesChangeLog.nameWasSet">
-        and name is null
       </if>
       <if test="filter.type != null ">
         and type = #{filter.type,jdbcType=VARCHAR}
       </if>
-      <if test="filter.type == null and filter.propertiesChangeLog.typeWasSet">
-        and type is null
-      </if>
       <if test="filter.currentBalance != null ">
         and current_balance = #{filter.currentBalance,jdbcType=INTEGER}
-      </if>
-      <if test="filter.currentBalance == null and filter.propertiesChangeLog.currentBalanceWasSet">
-        and current_balance is null
       </if>
       <if test="filter.createdOn != null ">
         and created_on = #{filter.createdOn,jdbcType=TIMESTAMP}
       </if>
-      <if test="filter.createdOn == null and filter.propertiesChangeLog.createdOnWasSet">
-        and created_on is null
-      </if>
       <if test="filter.active != null ">
         and active = #{filter.active,jdbcType=INTEGER}
-      </if>
-      <if test="filter.active == null and filter.propertiesChangeLog.activeWasSet">
-        and active is null
       </if>
     </trim>
   </update>
@@ -213,38 +177,20 @@
       <if test="id != null ">
         and id = #{id,jdbcType=INTEGER}
       </if>
-      <if test="id == null and propertiesChangeLog.idWasSet">
-        and id is null
-      </if>
       <if test="name != null ">
         and name = #{name,jdbcType=VARCHAR}
-      </if>
-      <if test="name == null and propertiesChangeLog.nameWasSet">
-        and name is null
       </if>
       <if test="type != null ">
         and type = #{type,jdbcType=VARCHAR}
       </if>
-      <if test="type == null and propertiesChangeLog.typeWasSet">
-        and type is null
-      </if>
       <if test="currentBalance != null ">
         and current_balance = #{currentBalance,jdbcType=INTEGER}
-      </if>
-      <if test="currentBalance == null and propertiesChangeLog.currentBalanceWasSet">
-        and current_balance is null
       </if>
       <if test="createdOn != null ">
         and created_on = #{createdOn,jdbcType=TIMESTAMP}
       </if>
-      <if test="createdOn == null and propertiesChangeLog.createdOnWasSet">
-        and created_on is null
-      </if>
       <if test="active != null ">
         and active = #{active,jdbcType=INTEGER}
-      </if>
-      <if test="active == null and propertiesChangeLog.activeWasSet">
-        and active is null
       </if>
     </trim>
   </delete>

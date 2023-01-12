@@ -50,26 +50,14 @@
       <if test="p.productId != null ">
         and product_id = #{p.productId,jdbcType=INTEGER}
       </if>
-      <if test="p.productId == null and p.propertiesChangeLog.productIdWasSet">
-        and product_id is null
-      </if>
       <if test="p.fromDate != null ">
         and from_date = #{p.fromDate,jdbcType=DATE}
-      </if>
-      <if test="p.fromDate == null and p.propertiesChangeLog.fromDateWasSet">
-        and from_date is null
       </if>
       <if test="p.price != null ">
         and price = #{p.price,jdbcType=INTEGER}
       </if>
-      <if test="p.price == null and p.propertiesChangeLog.priceWasSet">
-        and price is null
-      </if>
       <if test="p.sku != null ">
         and sku = #{p.sku,jdbcType=BIGINT}
-      </if>
-      <if test="p.sku == null and p.propertiesChangeLog.skuWasSet">
-        and sku is null
       </if>
     </trim>
     <if test="o != null">
@@ -137,26 +125,14 @@
       <if test="filter.productId != null ">
         and product_id = #{filter.productId,jdbcType=INTEGER}
       </if>
-      <if test="filter.productId == null and filter.propertiesChangeLog.productIdWasSet">
-        and product_id is null
-      </if>
       <if test="filter.fromDate != null ">
         and from_date = #{filter.fromDate,jdbcType=DATE}
-      </if>
-      <if test="filter.fromDate == null and filter.propertiesChangeLog.fromDateWasSet">
-        and from_date is null
       </if>
       <if test="filter.price != null ">
         and price = #{filter.price,jdbcType=INTEGER}
       </if>
-      <if test="filter.price == null and filter.propertiesChangeLog.priceWasSet">
-        and price is null
-      </if>
       <if test="filter.sku != null ">
         and sku = #{filter.sku,jdbcType=BIGINT}
-      </if>
-      <if test="filter.sku == null and filter.propertiesChangeLog.skuWasSet">
-        and sku is null
       </if>
     </trim>
   </update>
@@ -169,26 +145,14 @@
       <if test="productId != null ">
         and product_id = #{productId,jdbcType=INTEGER}
       </if>
-      <if test="productId == null and propertiesChangeLog.productIdWasSet">
-        and product_id is null
-      </if>
       <if test="fromDate != null ">
         and from_date = #{fromDate,jdbcType=DATE}
-      </if>
-      <if test="fromDate == null and propertiesChangeLog.fromDateWasSet">
-        and from_date is null
       </if>
       <if test="price != null ">
         and price = #{price,jdbcType=INTEGER}
       </if>
-      <if test="price == null and propertiesChangeLog.priceWasSet">
-        and price is null
-      </if>
       <if test="sku != null ">
         and sku = #{sku,jdbcType=BIGINT}
-      </if>
-      <if test="sku == null and propertiesChangeLog.skuWasSet">
-        and sku is null
       </if>
     </trim>
   </delete>

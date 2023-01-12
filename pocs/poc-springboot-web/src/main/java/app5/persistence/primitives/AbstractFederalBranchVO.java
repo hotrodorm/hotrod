@@ -22,7 +22,6 @@ public class AbstractFederalBranchVO implements Serializable {
 
   public void setId(final java.lang.Integer id) {
     this.id = id;
-    this.getPropertiesChangeLog().idWasSet = true;
   }
 
   public java.lang.String getName() {
@@ -31,7 +30,6 @@ public class AbstractFederalBranchVO implements Serializable {
 
   public void setName(final java.lang.String name) {
     this.name = name;
-    this.getPropertiesChangeLog().nameWasSet = true;
   }
 
   // to string
@@ -51,19 +49,6 @@ public class AbstractFederalBranchVO implements Serializable {
     obj.addProperty("id", this.id);
     obj.addProperty("name", this.name);
     return obj.render();
-  }
-
-  // Properties change log
-
-  private PropertiesChangeLog propertiesChangeLog = new PropertiesChangeLog();
-
-  protected PropertiesChangeLog getPropertiesChangeLog() {
-    return propertiesChangeLog;
-  }
-
-  protected class PropertiesChangeLog {
-    public boolean idWasSet = false;
-    public boolean nameWasSet = false;
   }
 
 }

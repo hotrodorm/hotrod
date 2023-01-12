@@ -22,8 +22,8 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.identifiers.ObjectId;
 import org.hotrod.generator.GeneratableObject;
+import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
@@ -553,9 +553,9 @@ public class Mapper extends GeneratableObject {
       final ColumnMetadata cm) {
     if (byExample || cm.getColumnDefault() != null) {
       String prop = cm.getId().getJavaMemberName();
-      columns.add("<if test=\"propertiesChangeLog." + prop + "WasSet\">, "
-          + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
-      values.add("<if test=\"propertiesChangeLog." + prop + "WasSet\">, " + renderParameterColumn(cm) + "</if>");
+      columns
+          .add("<if test=\"" + prop + " != null\">, " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
+      values.add("<if test=\"" + prop + " != null\">, " + renderParameterColumn(cm) + "</if>");
     } else {
       columns.add("<if test=\"true\">, " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
       values.add("<if test=\"true\">, " + renderParameterColumn(cm) + "</if>");
@@ -931,17 +931,11 @@ public class Mapper extends GeneratableObject {
     for (ColumnMetadata cm : this.metadata.getColumns()) {
       String prompt = prefix != null ? (prefix + ".") : "";
       String prop = prompt + cm.getId().getJavaMemberName();
-      String propWasSet = prompt + "propertiesChangeLog." + cm.getId().getJavaMemberName() + "WasSet";
 
       sb.append("      <if test=\"" + prop + " != null \">\n");
       sb.append("        and " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + " = "
           + renderParameterColumn(cm, prefix) + "\n");
       sb.append("      </if>\n");
-
-      sb.append("      <if test=\"" + prop + " == null and " + propWasSet + "\">\n");
-      sb.append("        and " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + " is null\n");
-      sb.append("      </if>\n");
-
     }
     // sb.append(" </where>\n");
     sb.append("    </trim>\n");

@@ -32,6 +32,7 @@ import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
 import org.springframework.beans.BeansException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -53,6 +54,21 @@ public class MyQueriesDAO implements Serializable, ApplicationContextAware {
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+  }
+
+  // sequence seq_house
+
+  /*
+  * The SQL statement for this method is:
+
+select nextval('seq_house')
+
+  */
+
+
+  public long nextHouse() {
+    return (Long) sqlSession.selectOne(
+      "app5.persistence.primitives.myQueriesDAO.selectSequenceNextHouse");
   }
 
   // select method: findExpensiveProducts

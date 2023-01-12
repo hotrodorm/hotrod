@@ -44,32 +44,17 @@
       <if test="p.id != null ">
         and id = #{p.id,jdbcType=INTEGER}
       </if>
-      <if test="p.id == null and p.propertiesChangeLog.idWasSet">
-        and id is null
-      </if>
       <if test="p.segment != null ">
         and segment = #{p.segment,jdbcType=INTEGER}
-      </if>
-      <if test="p.segment == null and p.propertiesChangeLog.segmentWasSet">
-        and segment is null
       </if>
       <if test="p.xStart != null ">
         and x_start = #{p.xStart,jdbcType=INTEGER}
       </if>
-      <if test="p.xStart == null and p.propertiesChangeLog.xStartWasSet">
-        and x_start is null
-      </if>
       <if test="p.xEnd != null ">
         and x_end = #{p.xEnd,jdbcType=INTEGER}
       </if>
-      <if test="p.xEnd == null and p.propertiesChangeLog.xEndWasSet">
-        and x_end is null
-      </if>
       <if test="p.height != null ">
         and height = #{p.height,jdbcType=INTEGER}
-      </if>
-      <if test="p.height == null and p.propertiesChangeLog.heightWasSet">
-        and height is null
       </if>
     </trim>
     <if test="o != null">
@@ -124,32 +109,17 @@
       <if test="filter.id != null ">
         and id = #{filter.id,jdbcType=INTEGER}
       </if>
-      <if test="filter.id == null and filter.propertiesChangeLog.idWasSet">
-        and id is null
-      </if>
       <if test="filter.segment != null ">
         and segment = #{filter.segment,jdbcType=INTEGER}
-      </if>
-      <if test="filter.segment == null and filter.propertiesChangeLog.segmentWasSet">
-        and segment is null
       </if>
       <if test="filter.xStart != null ">
         and x_start = #{filter.xStart,jdbcType=INTEGER}
       </if>
-      <if test="filter.xStart == null and filter.propertiesChangeLog.xStartWasSet">
-        and x_start is null
-      </if>
       <if test="filter.xEnd != null ">
         and x_end = #{filter.xEnd,jdbcType=INTEGER}
       </if>
-      <if test="filter.xEnd == null and filter.propertiesChangeLog.xEndWasSet">
-        and x_end is null
-      </if>
       <if test="filter.height != null ">
         and height = #{filter.height,jdbcType=INTEGER}
-      </if>
-      <if test="filter.height == null and filter.propertiesChangeLog.heightWasSet">
-        and height is null
       </if>
     </trim>
   </update>
@@ -162,32 +132,17 @@
       <if test="id != null ">
         and id = #{id,jdbcType=INTEGER}
       </if>
-      <if test="id == null and propertiesChangeLog.idWasSet">
-        and id is null
-      </if>
       <if test="segment != null ">
         and segment = #{segment,jdbcType=INTEGER}
-      </if>
-      <if test="segment == null and propertiesChangeLog.segmentWasSet">
-        and segment is null
       </if>
       <if test="xStart != null ">
         and x_start = #{xStart,jdbcType=INTEGER}
       </if>
-      <if test="xStart == null and propertiesChangeLog.xStartWasSet">
-        and x_start is null
-      </if>
       <if test="xEnd != null ">
         and x_end = #{xEnd,jdbcType=INTEGER}
       </if>
-      <if test="xEnd == null and propertiesChangeLog.xEndWasSet">
-        and x_end is null
-      </if>
       <if test="height != null ">
         and height = #{height,jdbcType=INTEGER}
-      </if>
-      <if test="height == null and propertiesChangeLog.heightWasSet">
-        and height is null
       </if>
     </trim>
   </delete>

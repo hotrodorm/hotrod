@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import app5.persistence.primitives.AbstractProductVO;
 import app5.persistence.ProductVO;
 import app5.persistence.HistoricPriceVO;
 import app5.persistence.primitives.HistoricPriceDAO.HistoricPriceOrderBy;
@@ -33,6 +34,7 @@ import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
 import org.springframework.beans.BeansException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -46,6 +48,7 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private SqlSession sqlSession;
 
+  @Lazy
   @Autowired
   private HistoricPriceDAO historicPriceDAO;
 
@@ -81,17 +84,17 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app5.persistence.ProductVO> selectByExample(final app5.persistence.ProductVO example, final ProductOrderBy... orderBies)
+  public List<app5.persistence.ProductVO> selectByExample(final app5.persistence.primitives.AbstractProductVO example, final ProductOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.ProductVO, ProductOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.ProductVO, ProductOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractProductVO, ProductOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app5.persistence.primitives.product.selectByExample", dwo);
   }
 
-  public Cursor<app5.persistence.ProductVO> selectByExampleCursor(final app5.persistence.ProductVO example, final ProductOrderBy... orderBies)
+  public Cursor<app5.persistence.ProductVO> selectByExampleCursor(final app5.persistence.primitives.AbstractProductVO example, final ProductOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.ProductVO, ProductOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.ProductVO, ProductOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractProductVO, ProductOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<app5.persistence.ProductVO>(this.sqlSession.selectCursor("app5.persistence.primitives.product.selectByExample", dwo));
   }
 
@@ -175,13 +178,21 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final app5.persistence.ProductVO vo) {
+  public app5.persistence.ProductVO insert(final app5.persistence.primitives.AbstractProductVO vo) {
     return insert(vo, false);
   }
 
-  public int insert(final app5.persistence.ProductVO vo, final boolean retrieveDefaults) {
+  public app5.persistence.ProductVO insert(final app5.persistence.primitives.AbstractProductVO vo, final boolean retrieveDefaults) {
     String id = retrieveDefaults ? "app5.persistence.primitives.product.insertRetrievingDefaults" : "app5.persistence.primitives.product.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    app5.persistence.ProductVO mo = new app5.persistence.ProductVO();
+    mo.setId(vo.getId());
+    mo.setName(vo.getName());
+    mo.setPrice(vo.getPrice());
+    mo.setSku(vo.getSku());
+    mo.setXyzRankCli(vo.getXyzRankCli());
+    mo.setCliFirstNameAb(vo.getCliFirstNameAb());
+    return mo;
   }
 
   // update by PK
@@ -200,15 +211,15 @@ public class ProductDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app5.persistence.ProductVO example, final app5.persistence.ProductVO updateValues) {
-    UpdateByExampleDao<app5.persistence.ProductVO> fvd = //
-      new UpdateByExampleDao<app5.persistence.ProductVO>(example, updateValues);
+  public int updateByExample(final app5.persistence.primitives.AbstractProductVO example, final app5.persistence.primitives.AbstractProductVO updateValues) {
+    UpdateByExampleDao<app5.persistence.primitives.AbstractProductVO> fvd = //
+      new UpdateByExampleDao<app5.persistence.primitives.AbstractProductVO>(example, updateValues);
     return this.sqlSession.update("app5.persistence.primitives.product.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final app5.persistence.ProductVO example) {
+  public int deleteByExample(final app5.persistence.primitives.AbstractProductVO example) {
     return this.sqlSession.delete("app5.persistence.primitives.product.deleteByExample", example);
   }
 

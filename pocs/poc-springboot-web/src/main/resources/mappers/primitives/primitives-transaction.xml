@@ -61,32 +61,17 @@
       <if test="p.accountId != null ">
         and account_id = #{p.accountId,jdbcType=INTEGER}
       </if>
-      <if test="p.accountId == null and p.propertiesChangeLog.accountIdWasSet">
-        and account_id is null
-      </if>
       <if test="p.seqId != null ">
         and seq_id = #{p.seqId,jdbcType=INTEGER}
-      </if>
-      <if test="p.seqId == null and p.propertiesChangeLog.seqIdWasSet">
-        and seq_id is null
       </if>
       <if test="p.time != null ">
         and time = #{p.time,jdbcType=VARCHAR}
       </if>
-      <if test="p.time == null and p.propertiesChangeLog.timeWasSet">
-        and time is null
-      </if>
       <if test="p.amount != null ">
         and amount = #{p.amount,jdbcType=INTEGER}
       </if>
-      <if test="p.amount == null and p.propertiesChangeLog.amountWasSet">
-        and amount is null
-      </if>
       <if test="p.fedBranchId != null ">
         and fed_branch_id = #{p.fedBranchId,jdbcType=BIGINT}
-      </if>
-      <if test="p.fedBranchId == null and p.propertiesChangeLog.fedBranchIdWasSet">
-        and fed_branch_id is null
       </if>
     </trim>
     <if test="o != null">
@@ -157,32 +142,17 @@
       <if test="filter.accountId != null ">
         and account_id = #{filter.accountId,jdbcType=INTEGER}
       </if>
-      <if test="filter.accountId == null and filter.propertiesChangeLog.accountIdWasSet">
-        and account_id is null
-      </if>
       <if test="filter.seqId != null ">
         and seq_id = #{filter.seqId,jdbcType=INTEGER}
-      </if>
-      <if test="filter.seqId == null and filter.propertiesChangeLog.seqIdWasSet">
-        and seq_id is null
       </if>
       <if test="filter.time != null ">
         and time = #{filter.time,jdbcType=VARCHAR}
       </if>
-      <if test="filter.time == null and filter.propertiesChangeLog.timeWasSet">
-        and time is null
-      </if>
       <if test="filter.amount != null ">
         and amount = #{filter.amount,jdbcType=INTEGER}
       </if>
-      <if test="filter.amount == null and filter.propertiesChangeLog.amountWasSet">
-        and amount is null
-      </if>
       <if test="filter.fedBranchId != null ">
         and fed_branch_id = #{filter.fedBranchId,jdbcType=BIGINT}
-      </if>
-      <if test="filter.fedBranchId == null and filter.propertiesChangeLog.fedBranchIdWasSet">
-        and fed_branch_id is null
       </if>
     </trim>
   </update>
@@ -195,32 +165,17 @@
       <if test="accountId != null ">
         and account_id = #{accountId,jdbcType=INTEGER}
       </if>
-      <if test="accountId == null and propertiesChangeLog.accountIdWasSet">
-        and account_id is null
-      </if>
       <if test="seqId != null ">
         and seq_id = #{seqId,jdbcType=INTEGER}
-      </if>
-      <if test="seqId == null and propertiesChangeLog.seqIdWasSet">
-        and seq_id is null
       </if>
       <if test="time != null ">
         and time = #{time,jdbcType=VARCHAR}
       </if>
-      <if test="time == null and propertiesChangeLog.timeWasSet">
-        and time is null
-      </if>
       <if test="amount != null ">
         and amount = #{amount,jdbcType=INTEGER}
       </if>
-      <if test="amount == null and propertiesChangeLog.amountWasSet">
-        and amount is null
-      </if>
       <if test="fedBranchId != null ">
         and fed_branch_id = #{fedBranchId,jdbcType=BIGINT}
-      </if>
-      <if test="fedBranchId == null and propertiesChangeLog.fedBranchIdWasSet">
-        and fed_branch_id is null
       </if>
     </trim>
   </delete>
