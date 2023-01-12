@@ -18,7 +18,7 @@ import app5.persistence.ExpensiveProductVO;
 import app5.persistence.ProductVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.dialects.SQLDialect;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
@@ -47,7 +47,7 @@ public class MyQueriesDAO implements Serializable, ApplicationContextAware {
   private SqlSession sqlSession;
 
   @Autowired
-  private SQLDialect sqlDialect;
+  private LiveSQLDialect liveSQLDialect;
 
   private ApplicationContext applicationContext;
 
@@ -81,7 +81,7 @@ select nextval('seq_house')
       
       select name, price, #{when} as kind
       from product
-      where price > #{minPrice}
+      
     
 
   */
@@ -106,7 +106,7 @@ select nextval('seq_house')
 
 
       select
-      ... structured columns here...
+      ... graph columns here...
       from product p
       where p.price between 0 and 3
     

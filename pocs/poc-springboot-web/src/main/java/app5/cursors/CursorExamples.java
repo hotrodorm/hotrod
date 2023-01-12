@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.hotrod.runtime.cursors.Cursor;
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +61,7 @@ public class CursorExamples {
     ProductTable p = ProductDAO.newTable("p");
     ProductTable q = ProductDAO.newTable("q");
 
-    List<Map<String, Object>> rows = sql.select().from(p).join(q, q.id.eq(p.id))
+    List<Row> rows = sql.select().from(p).join(q, q.id.eq(p.id))
         .where(p.price.ge(0).or(p.name.like("%"))).execute();
 
     int total = 0;
@@ -85,7 +86,7 @@ public class CursorExamples {
   @Transactional
   public void find2ExpensiveProductsCursor() {
     ProductTable p = ProductDAO.newTable("p");
-    Cursor<Map<String, Object>> c = sql.select().from(p).where(p.name.like("A%")).executeCursor();
+    Cursor<Row> c = sql.select().from(p).where(p.name.like("A%")).executeCursor();
     for (Map<String, Object> row: c) {
       System.out.println(row);
     }

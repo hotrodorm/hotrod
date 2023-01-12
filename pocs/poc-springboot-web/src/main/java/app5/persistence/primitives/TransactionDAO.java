@@ -13,6 +13,7 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import app5.persistence.primitives.AbstractTransactionVO;
 import app5.persistence.TransactionVO;
 import app5.persistence.AccountVO;
 import app5.persistence.primitives.AccountDAO;
@@ -20,7 +21,7 @@ import app5.persistence.FederalBranchVO;
 import app5.persistence.primitives.FederalBranchDAO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.dialects.SQLDialect;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
@@ -57,7 +58,7 @@ public class TransactionDAO implements Serializable, ApplicationContextAware {
   private AccountDAO accountDAO;
 
   @Autowired
-  private SQLDialect sqlDialect;
+  private LiveSQLDialect liveSQLDialect;
 
   private ApplicationContext applicationContext;
 
@@ -91,17 +92,17 @@ public class TransactionDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app5.persistence.TransactionVO> selectByExample(final app5.persistence.TransactionVO example, final TransactionOrderBy... orderBies)
+  public List<app5.persistence.TransactionVO> selectByExample(final app5.persistence.primitives.AbstractTransactionVO example, final TransactionOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.TransactionVO, TransactionOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.TransactionVO, TransactionOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractTransactionVO, TransactionOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app5.persistence.primitives.transaction.selectByExample", dwo);
   }
 
-  public Cursor<app5.persistence.TransactionVO> selectByExampleCursor(final app5.persistence.TransactionVO example, final TransactionOrderBy... orderBies)
+  public Cursor<app5.persistence.TransactionVO> selectByExampleCursor(final app5.persistence.primitives.AbstractTransactionVO example, final TransactionOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.TransactionVO, TransactionOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.TransactionVO, TransactionOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractTransactionVO, TransactionOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<app5.persistence.TransactionVO>(this.sqlSession.selectCursor("app5.persistence.primitives.transaction.selectByExample", dwo));
   }
 
@@ -109,7 +110,7 @@ public class TransactionDAO implements Serializable, ApplicationContextAware {
 
   public CriteriaWherePhase<app5.persistence.TransactionVO> selectByCriteria(final TransactionDAO.TransactionTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app5.persistence.TransactionVO>(from, this.sqlDialect, this.sqlSession,
+    return new CriteriaWherePhase<app5.persistence.TransactionVO>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "app5.persistence.primitives.transaction.selectByCriteria");
   }
 
@@ -183,14 +184,20 @@ public class TransactionDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final app5.persistence.TransactionVO vo) {
+  public app5.persistence.TransactionVO insert(final app5.persistence.primitives.AbstractTransactionVO vo) {
     return insert(vo, false);
   }
 
-  public int insert(final app5.persistence.TransactionVO vo, final boolean retrieveDefaults) {
+  public app5.persistence.TransactionVO insert(final app5.persistence.primitives.AbstractTransactionVO vo, final boolean retrieveDefaults) {
     String id = retrieveDefaults ? "app5.persistence.primitives.transaction.insertRetrievingDefaults" : "app5.persistence.primitives.transaction.insert";
     int rows = this.sqlSession.insert(id, vo);
-    return rows;
+    app5.persistence.TransactionVO mo = new app5.persistence.TransactionVO();
+    mo.setAccountId(vo.getAccountId());
+    mo.setSeqId(vo.getSeqId());
+    mo.setTime(vo.getTime());
+    mo.setAmount(vo.getAmount());
+    mo.setFedBranchId(vo.getFedBranchId());
+    return mo;
   }
 
   // update by PK
@@ -209,15 +216,15 @@ public class TransactionDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app5.persistence.TransactionVO example, final app5.persistence.TransactionVO updateValues) {
-    UpdateByExampleDao<app5.persistence.TransactionVO> fvd = //
-      new UpdateByExampleDao<app5.persistence.TransactionVO>(example, updateValues);
+  public int updateByExample(final app5.persistence.primitives.AbstractTransactionVO example, final app5.persistence.primitives.AbstractTransactionVO updateValues) {
+    UpdateByExampleDao<app5.persistence.primitives.AbstractTransactionVO> fvd = //
+      new UpdateByExampleDao<app5.persistence.primitives.AbstractTransactionVO>(example, updateValues);
     return this.sqlSession.update("app5.persistence.primitives.transaction.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final app5.persistence.TransactionVO example) {
+  public int deleteByExample(final app5.persistence.primitives.AbstractTransactionVO example) {
     return this.sqlSession.delete("app5.persistence.primitives.transaction.deleteByExample", example);
   }
 

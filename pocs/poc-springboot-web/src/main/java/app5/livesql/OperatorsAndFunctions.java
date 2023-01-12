@@ -1,9 +1,9 @@
 package app5.livesql;
 
 import java.util.List;
-import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.expressions.datetime.DateTimeFieldExpression.DateTimeField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -61,12 +61,12 @@ public class OperatorsAndFunctions {
     // SELECT coalesce(coalesce(a.name, a.type), 'no name')
     // FROM account a
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.name.coalesce(a.type).coalesce("no name")) //
         .from(a) //
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -82,13 +82,13 @@ public class OperatorsAndFunctions {
     // FROM account a
     // WHERE ((a.current_balance + 10.2 - 0.75) * (a.id - 4) / 1.10) < 1.20
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.currentBalance.mult(1.17).as("projectedBalance")) //
         .from(a) //
         .where(a.currentBalance.plus(10.2).minus(0.75).mult(a.id.minus(4)).div(1.10).le(1.20)) //
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -104,13 +104,13 @@ public class OperatorsAndFunctions {
     // FROM account a
     // WHERE abs(power(-a.id, 2.5)) > 10
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select() //
         .from(a) //
         .where(a.id.neg().pow(2.5).abs().ge(10)) //
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -126,13 +126,13 @@ public class OperatorsAndFunctions {
     // FROM account a
     // WHERE substr(a.name, 10, 5) like a.type || '%'
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select() //
         .from(a) //
         .where(a.name.substr(10, 5).like(a.type.concat("%"))) //
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -149,13 +149,13 @@ public class OperatorsAndFunctions {
     // FROM account a
     // WHERE extract(day from a.created_on) > 25
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select() //
         .from(a) //
         .where(a.createdOn.extract(DateTimeField.DAY).gt(25)) //
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 

@@ -1,9 +1,9 @@
 package app5.livesql;
 
 import java.util.List;
-import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +32,7 @@ public class Joins {
     TransactionTable t = TransactionDAO.newTable("t");
     FederalBranchTable b = FederalBranchDAO.newTable("b");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, a.name.as("accountName"), t.amount, b.name.as("branchName")) //
         .from(a) //
         .join(t, t.accountId.eq(a.id)) //
@@ -40,7 +40,7 @@ public class Joins {
         .where(a.type.eq("CHK")) // ... and rest of SQL
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -56,14 +56,14 @@ public class Joins {
     AccountTable a = AccountDAO.newTable("a");
     FederalBranchTable b = FederalBranchDAO.newTable("b");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, a.name.as("accountName"), b.name.as("branchName")) //
         .from(a) //
         .join(b, b.id) //
         .where(a.type.eq("CHK")) // ... and rest of SQL
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -78,14 +78,14 @@ public class Joins {
     AccountTable a = AccountDAO.newTable("a");
     TransactionTable t = TransactionDAO.newTable("t");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, t.amount) //
         .from(a) //
         .leftJoin(t, t.accountId.eq(a.id)) //
         // rest of SELECT here: where(), groupBy(), etc.
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -101,14 +101,14 @@ public class Joins {
     AccountTable a = AccountDAO.newTable("a");
     FederalBranchTable b = FederalBranchDAO.newTable("b");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, a.name.as("accountName"), b.name.as("branchName")) //
         .from(a) //
         .leftJoin(b, b.id) //
         .where(a.type.eq("CHK")) // ... and rest of SQL
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -123,14 +123,14 @@ public class Joins {
     AccountTable a = AccountDAO.newTable("a");
     TransactionTable t = TransactionDAO.newTable("t");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, t.amount) //
         .from(t) //
         .rightJoin(a, t.accountId.eq(a.id)) //
         // rest of SELECT here: where(), groupBy(), etc.
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -146,14 +146,14 @@ public class Joins {
     AccountTable a = AccountDAO.newTable("a");
     FederalBranchTable b = FederalBranchDAO.newTable("b");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, a.name.as("accountName"), b.name.as("branchName")) //
         .from(a) //
         .rightJoin(b, b.id) //
         .where(a.type.eq("CHK")) // ... and rest of SQL
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -168,14 +168,14 @@ public class Joins {
     AccountTable a = AccountDAO.newTable("a");
     TransactionTable t = TransactionDAO.newTable("t");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, t.amount) //
         .from(a) //
         .fullJoin(t, t.accountId.eq(a.id)) //
         // rest of SELECT here: where(), groupBy(), etc.
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -191,14 +191,14 @@ public class Joins {
     AccountTable a = AccountDAO.newTable("a");
     FederalBranchTable b = FederalBranchDAO.newTable("b");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, a.name.as("accountName"), b.name.as("branchName")) //
         .from(a) //
         .fullJoin(b, b.id) //
         .where(a.type.eq("CHK")) // ... and rest of SQL
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -213,14 +213,14 @@ public class Joins {
     AccountTable a = AccountDAO.newTable("a");
     TransactionTable t = TransactionDAO.newTable("t");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, t.amount) //
         .from(a) //
         .crossJoin(t) //
         // rest of SELECT here: where(), groupBy(), etc.
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -235,14 +235,14 @@ public class Joins {
     AccountTable a = AccountDAO.newTable("a");
     TransactionTable t = TransactionDAO.newTable("t");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, t.amount) //
         .from(a) //
         .naturalJoin(t) //
         // rest of SELECT here: where(), groupBy(), etc.
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -257,14 +257,14 @@ public class Joins {
     AccountTable a = AccountDAO.newTable("a");
     TransactionTable t = TransactionDAO.newTable("t");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, t.amount) //
         .from(a) //
         .naturalLeftJoin(t) //
         // rest of SELECT here: where(), groupBy(), etc.
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -279,14 +279,14 @@ public class Joins {
     AccountTable a = AccountDAO.newTable("a");
     TransactionTable t = TransactionDAO.newTable("t");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, t.amount) //
         .from(a) //
         .naturalRightJoin(t) //
         // rest of SELECT here: where(), groupBy(), etc.
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -301,14 +301,14 @@ public class Joins {
     AccountTable a = AccountDAO.newTable("a");
     TransactionTable t = TransactionDAO.newTable("t");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, t.amount) //
         .from(a) //
         .naturalFullJoin(t) //
         // rest of SELECT here: where(), groupBy(), etc.
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -327,14 +327,14 @@ public class Joins {
     AccountTable a = AccountDAO.newTable("a");
     TransactionTable t = TransactionDAO.newTable("t");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, t.amount) //
         .from(a) //
         .unionJoin(t) //
         // rest of SELECT here: where(), groupBy(), etc.
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 

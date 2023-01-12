@@ -4,9 +4,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.select.SelectFromPhase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,7 +39,7 @@ public class WindowFunctions {
 
     boolean active = true;
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select( //
             i.id, //
             i.storeCode, //
@@ -66,7 +66,7 @@ public class WindowFunctions {
         // ) // ... and rest of SQL
         .orderBy(i.price.asc(), i.createdOn.desc()).execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -76,17 +76,17 @@ public class WindowFunctions {
 
     IslandTable i = IslandDAO.newTable("i");
 
-    SelectFromPhase<Map<String, Object>> query = sql //
+    SelectFromPhase<Row> query = sql //
         .select(i.id, i.segment, i.xStart, i.xEnd, i.height, //
             sql.max(i.xEnd).over().partitionBy(i.segment).orderBy(i.xStart.asc(), i.id.asc()).rows()
                 .betweenUnboundedPreceding().andPreceding(1).excludeNoOthers().end().as("prevEnd")) //
         .from(i);
     System.out.println(query.getPreview());
 
-    List<Map<String, Object>> rows = query //
+    List<Row> rows = query //
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 

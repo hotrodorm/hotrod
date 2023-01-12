@@ -12,8 +12,13 @@ public class AbstractClientVO implements Serializable {
   // VO Properties (table columns)
 
   protected java.lang.Integer id = null;
+  protected java.lang.Integer nationalId = null;
   protected java.lang.String name = null;
-  protected java.lang.Boolean active = null;
+  protected java.lang.String propName = null;
+  protected java.lang.Integer referrerId = null;
+  protected java.lang.Integer friendId = null;
+  protected java.lang.Integer groupAccountId = null;
+  protected java.lang.Integer branchId = null;
 
   // getters & setters
 
@@ -25,6 +30,14 @@ public class AbstractClientVO implements Serializable {
     this.id = id;
   }
 
+  public java.lang.Integer getNationalId() {
+    return this.nationalId;
+  }
+
+  public void setNationalId(final java.lang.Integer nationalId) {
+    this.nationalId = nationalId;
+  }
+
   public java.lang.String getName() {
     return this.name;
   }
@@ -33,12 +46,44 @@ public class AbstractClientVO implements Serializable {
     this.name = name;
   }
 
-  public java.lang.Boolean getActive() {
-    return this.active;
+  public java.lang.String getPropName() {
+    return this.propName;
   }
 
-  public void setActive(final java.lang.Boolean active) {
-    this.active = active;
+  public void setPropName(final java.lang.String propName) {
+    this.propName = propName;
+  }
+
+  public java.lang.Integer getReferrerId() {
+    return this.referrerId;
+  }
+
+  public void setReferrerId(final java.lang.Integer referrerId) {
+    this.referrerId = referrerId;
+  }
+
+  public java.lang.Integer getFriendId() {
+    return this.friendId;
+  }
+
+  public void setFriendId(final java.lang.Integer friendId) {
+    this.friendId = friendId;
+  }
+
+  public java.lang.Integer getGroupAccountId() {
+    return this.groupAccountId;
+  }
+
+  public void setGroupAccountId(final java.lang.Integer groupAccountId) {
+    this.groupAccountId = groupAccountId;
+  }
+
+  public java.lang.Integer getBranchId() {
+    return this.branchId;
+  }
+
+  public void setBranchId(final java.lang.Integer branchId) {
+    this.branchId = branchId;
   }
 
   // to string
@@ -47,8 +92,13 @@ public class AbstractClientVO implements Serializable {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
+    sb.append("- nationalId=" + this.nationalId + "\n");
     sb.append("- name=" + this.name + "\n");
-    sb.append("- active=" + this.active);
+    sb.append("- propName=" + this.propName + "\n");
+    sb.append("- referrerId=" + this.referrerId + "\n");
+    sb.append("- friendId=" + this.friendId + "\n");
+    sb.append("- groupAccountId=" + this.groupAccountId + "\n");
+    sb.append("- branchId=" + this.branchId);
     return sb.toString();
   }
 
@@ -57,8 +107,13 @@ public class AbstractClientVO implements Serializable {
   public String toJSON() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
+    obj.addProperty("nationalId", this.nationalId);
     obj.addProperty("name", this.name);
-    obj.addProperty("active", this.active);
+    obj.addProperty("propName", this.propName);
+    obj.addProperty("referrerId", this.referrerId);
+    obj.addProperty("friendId", this.friendId);
+    obj.addProperty("groupAccountId", this.groupAccountId);
+    obj.addProperty("branchId", this.branchId);
     return obj.render();
   }
 

@@ -13,12 +13,13 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import app5.persistence.primitives.AbstractHistoricPriceVO;
 import app5.persistence.HistoricPriceVO;
 import app5.persistence.ProductVO;
 import app5.persistence.primitives.ProductDAO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.dialects.SQLDialect;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
@@ -51,7 +52,7 @@ public class HistoricPriceDAO implements Serializable, ApplicationContextAware {
   private ProductDAO productDAO;
 
   @Autowired
-  private SQLDialect sqlDialect;
+  private LiveSQLDialect liveSQLDialect;
 
   private ApplicationContext applicationContext;
 
@@ -77,17 +78,17 @@ public class HistoricPriceDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app5.persistence.HistoricPriceVO> selectByExample(final app5.persistence.HistoricPriceVO example, final HistoricPriceOrderBy... orderBies)
+  public List<app5.persistence.HistoricPriceVO> selectByExample(final app5.persistence.primitives.AbstractHistoricPriceVO example, final HistoricPriceOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.HistoricPriceVO, HistoricPriceOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.HistoricPriceVO, HistoricPriceOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractHistoricPriceVO, HistoricPriceOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app5.persistence.primitives.historicPrice.selectByExample", dwo);
   }
 
-  public Cursor<app5.persistence.HistoricPriceVO> selectByExampleCursor(final app5.persistence.HistoricPriceVO example, final HistoricPriceOrderBy... orderBies)
+  public Cursor<app5.persistence.HistoricPriceVO> selectByExampleCursor(final app5.persistence.primitives.AbstractHistoricPriceVO example, final HistoricPriceOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.HistoricPriceVO, HistoricPriceOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.HistoricPriceVO, HistoricPriceOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractHistoricPriceVO, HistoricPriceOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<app5.persistence.HistoricPriceVO>(this.sqlSession.selectCursor("app5.persistence.primitives.historicPrice.selectByExample", dwo));
   }
 
@@ -95,7 +96,7 @@ public class HistoricPriceDAO implements Serializable, ApplicationContextAware {
 
   public CriteriaWherePhase<app5.persistence.HistoricPriceVO> selectByCriteria(final HistoricPriceDAO.HistoricPriceTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app5.persistence.HistoricPriceVO>(from, this.sqlDialect, this.sqlSession,
+    return new CriteriaWherePhase<app5.persistence.HistoricPriceVO>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "app5.persistence.primitives.historicPrice.selectByCriteria");
   }
 
@@ -155,9 +156,15 @@ public class HistoricPriceDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final app5.persistence.HistoricPriceVO vo) {
+  public app5.persistence.HistoricPriceVO insert(final app5.persistence.primitives.AbstractHistoricPriceVO vo) {
     String id = "app5.persistence.primitives.historicPrice.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    app5.persistence.HistoricPriceVO mo = new app5.persistence.HistoricPriceVO();
+    mo.setProductId(vo.getProductId());
+    mo.setFromDate(vo.getFromDate());
+    mo.setPrice(vo.getPrice());
+    mo.setSku(vo.getSku());
+    return mo;
   }
 
   // update by PK
@@ -178,15 +185,15 @@ public class HistoricPriceDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app5.persistence.HistoricPriceVO example, final app5.persistence.HistoricPriceVO updateValues) {
-    UpdateByExampleDao<app5.persistence.HistoricPriceVO> fvd = //
-      new UpdateByExampleDao<app5.persistence.HistoricPriceVO>(example, updateValues);
+  public int updateByExample(final app5.persistence.primitives.AbstractHistoricPriceVO example, final app5.persistence.primitives.AbstractHistoricPriceVO updateValues) {
+    UpdateByExampleDao<app5.persistence.primitives.AbstractHistoricPriceVO> fvd = //
+      new UpdateByExampleDao<app5.persistence.primitives.AbstractHistoricPriceVO>(example, updateValues);
     return this.sqlSession.update("app5.persistence.primitives.historicPrice.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final app5.persistence.HistoricPriceVO example) {
+  public int deleteByExample(final app5.persistence.primitives.AbstractHistoricPriceVO example) {
     return this.sqlSession.delete("app5.persistence.primitives.historicPrice.deleteByExample", example);
   }
 

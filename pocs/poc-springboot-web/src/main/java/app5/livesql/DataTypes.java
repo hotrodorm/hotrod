@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.Row;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,7 @@ public class DataTypes {
 
     boolean active = true;
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select() //
         .from(i) //
         .where( //

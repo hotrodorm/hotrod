@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.Row;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class GeneralSQL {
 
     // SELECT 123, 'Chicago'
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(sql.val(123), sql.val("Chicago")) //
         .execute() //
     ;
@@ -35,7 +36,7 @@ public class GeneralSQL {
   public void showSQLStatement() {
 
     // 1. Assemble the SQL statement
-    ExecutableSelect<Map<String, Object>> ps = sql //
+    ExecutableSelect<Row> ps = sql //
         .select( //
             sql.val(123).as("balance"), //
             sql.val(456.78).as("deposit"), //
@@ -56,7 +57,7 @@ public class GeneralSQL {
     // ------------------
 
     // 3. Run the SQL statement
-    List<Map<String, Object>> rows = ps.execute();
+    List<Row> rows = ps.execute();
 
     // 4. Display the result set
     for (Map<String, Object> r : rows) {
@@ -74,7 +75,7 @@ public class GeneralSQL {
 
     AccountTable a = AccountDAO.newTable("a");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select() //
         .from(a) //
         .execute();
@@ -92,7 +93,7 @@ public class GeneralSQL {
 
     AccountTable a = AccountDAO.newTable("a");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .selectDistinct() //
         .from(a) //
         .execute();
@@ -110,7 +111,7 @@ public class GeneralSQL {
 
     AccountTable a = AccountDAO.newTable("a");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.name, a.createdOn) //
         .from(a) //
         .execute();
@@ -129,12 +130,12 @@ public class GeneralSQL {
 
     AccountTable a = AccountDAO.newTable("a");
 
-    ExecutableSelect<Map<String, Object>> st = sql //
+    ExecutableSelect<Row> st = sql //
         .select() //
         .from(a) //
         .where(a.currentBalance.ge(150.0).and(a.active.eq(1)));
 
-    List<Map<String, Object>> rows = st.execute();
+    List<Row> rows = st.execute();
 
     for (Map<String, Object> r : rows) {
       System.out.println("row: " + r);
@@ -151,7 +152,7 @@ public class GeneralSQL {
 
     AccountTable a = AccountDAO.newTable("a");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.type, sql.sum(a.currentBalance).as("totalBalance")) //
         .from(a) //
         .where(a.currentBalance.ge(150.0).and(a.active.eq(1))) //
@@ -174,7 +175,7 @@ public class GeneralSQL {
 
     AccountTable a = AccountDAO.newTable("a");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.type, sql.sum(a.currentBalance).as("totalBalance")) //
         .from(a) //
         .where(a.currentBalance.ge(150.0).and(a.active.eq(1))) //
@@ -199,7 +200,7 @@ public class GeneralSQL {
 
     AccountTable a = AccountDAO.newTable("a");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.type, sql.sum(a.currentBalance).as("totalBalance")) //
         .from(a) //
         .where(a.currentBalance.ge(150.0).and(a.active.eq(1))) //
@@ -208,7 +209,7 @@ public class GeneralSQL {
         .orderBy(a.type.asc()) //
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -226,7 +227,7 @@ public class GeneralSQL {
 
     AccountTable a = AccountDAO.newTable("a");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.type, sql.sum(a.currentBalance).as("totalBalance")) //
         .from(a) //
         .where(a.currentBalance.ge(150.0).and(a.active.eq(1))) //
@@ -236,7 +237,7 @@ public class GeneralSQL {
         .offset(300) //
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -255,7 +256,7 @@ public class GeneralSQL {
 
     AccountTable a = AccountDAO.newTable("a");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.type, sql.sum(a.currentBalance).as("totalBalance")) //
         .from(a) //
         .where(a.currentBalance.ge(150.0).and(a.active.eq(1))) //
@@ -266,7 +267,7 @@ public class GeneralSQL {
         .limit(50) //
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 
@@ -287,7 +288,7 @@ public class GeneralSQL {
 
     AccountTable a = AccountDAO.newTable("a");
 
-    List<Map<String, Object>> rows = sql //
+    List<Row> rows = sql //
         .select(a.id, //
             sql.caseWhen(a.type.eq("CHK"), 3.5).elseValue(1.0).end(), //
             sql.caseWhen(a.type.eq("CHK"), 3.5).elseValue(1.0).end().plus(1) //
@@ -297,7 +298,7 @@ public class GeneralSQL {
             a.currentBalance.asc()) //
         .execute();
 
-    for (Map<String, Object> r : rows) {
+    for (Row r : rows) {
       System.out.println("row: " + r);
     }
 

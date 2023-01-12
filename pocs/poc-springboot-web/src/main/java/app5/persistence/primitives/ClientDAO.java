@@ -13,10 +13,13 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import app5.persistence.primitives.AbstractClientVO;
 import app5.persistence.ClientVO;
+import app5.persistence.primitives.ClientDAO;
+import app5.persistence.primitives.ClientDAO.ClientOrderBy;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.dialects.SQLDialect;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
@@ -45,7 +48,7 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
   private SqlSession sqlSession;
 
   @Autowired
-  private SQLDialect sqlDialect;
+  private LiveSQLDialect liveSQLDialect;
 
   private ApplicationContext applicationContext;
 
@@ -64,21 +67,29 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
     return this.sqlSession.selectOne("app5.persistence.primitives.client.selectByPK", vo);
   }
 
-  // select by unique indexes: no unique indexes found (besides the PK) -- skipped
+  // select by unique indexes
+
+  public app5.persistence.ClientVO selectByUINationalId(final java.lang.Integer nationalId) {
+    if (nationalId == null)
+      return null;
+    app5.persistence.ClientVO vo = new app5.persistence.ClientVO();
+    vo.setNationalId(nationalId);
+    return this.sqlSession.selectOne("app5.persistence.primitives.client.selectByUINationalId", vo);
+  }
 
   // select by example
 
-  public List<app5.persistence.ClientVO> selectByExample(final app5.persistence.ClientVO example, final ClientOrderBy... orderBies)
+  public List<app5.persistence.ClientVO> selectByExample(final app5.persistence.primitives.AbstractClientVO example, final ClientOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.ClientVO, ClientOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.ClientVO, ClientOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractClientVO, ClientOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app5.persistence.primitives.client.selectByExample", dwo);
   }
 
-  public Cursor<app5.persistence.ClientVO> selectByExampleCursor(final app5.persistence.ClientVO example, final ClientOrderBy... orderBies)
+  public Cursor<app5.persistence.ClientVO> selectByExampleCursor(final app5.persistence.primitives.AbstractClientVO example, final ClientOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.ClientVO, ClientOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.ClientVO, ClientOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractClientVO, ClientOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<app5.persistence.ClientVO>(this.sqlSession.selectCursor("app5.persistence.primitives.client.selectByExample", dwo));
   }
 
@@ -86,19 +97,145 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
 
   public CriteriaWherePhase<app5.persistence.ClientVO> selectByCriteria(final ClientDAO.ClientTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app5.persistence.ClientVO>(from, this.sqlDialect, this.sqlSession,
+    return new CriteriaWherePhase<app5.persistence.ClientVO>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "app5.persistence.primitives.client.selectByCriteria");
   }
 
-  // select parent(s) by FKs: no imported keys found -- skipped
+  // select parent(s) by FKs
 
-  // select children by FKs: no exported FKs found -- skipped
+  public SelectParentClientPhase selectParentClientOf(final ClientVO vo) {
+    return new SelectParentClientPhase(vo);
+  }
+
+  public class SelectParentClientPhase {
+
+    private ClientVO vo;
+
+    SelectParentClientPhase(final ClientVO vo) {
+      this.vo = vo;
+    }
+
+    public SelectParentClientFromReferrerIdPhase fromReferrerId() {
+      return new SelectParentClientFromReferrerIdPhase(this.vo);
+    }
+
+    public SelectParentClientFromFriendIdPhase fromFriendId() {
+      return new SelectParentClientFromFriendIdPhase(this.vo);
+    }
+
+  }
+
+  public class SelectParentClientFromReferrerIdPhase {
+
+    private ClientVO vo;
+
+    SelectParentClientFromReferrerIdPhase(final ClientVO vo) {
+      this.vo = vo;
+    }
+
+    public ClientVO toId() {
+      return selectByPK(this.vo.referrerId);
+    }
+
+  }
+
+  public class SelectParentClientFromFriendIdPhase {
+
+    private ClientVO vo;
+
+    SelectParentClientFromFriendIdPhase(final ClientVO vo) {
+      this.vo = vo;
+    }
+
+    public ClientVO toNationalId() {
+      return selectByUINationalId(this.vo.friendId);
+    }
+
+  }
+
+  // select children by FKs
+
+  public SelectChildrenClientPhase selectChildrenClientOf(final ClientVO vo) {
+    return new SelectChildrenClientPhase(vo);
+  }
+
+  public class SelectChildrenClientPhase {
+
+    private ClientVO vo;
+
+    SelectChildrenClientPhase(final ClientVO vo) {
+      this.vo = vo;
+    }
+
+    public SelectChildrenClientFromNationalIdPhase fromNationalId() {
+      return new SelectChildrenClientFromNationalIdPhase(this.vo);
+    }
+
+    public SelectChildrenClientFromIdPhase fromId() {
+      return new SelectChildrenClientFromIdPhase(this.vo);
+    }
+
+  }
+
+  public class SelectChildrenClientFromNationalIdPhase {
+
+    private ClientVO vo;
+
+    SelectChildrenClientFromNationalIdPhase(final ClientVO vo) {
+      this.vo = vo;
+    }
+
+    public List<ClientVO> toFriendId(final ClientOrderBy... orderBies) {
+      ClientVO example = new ClientVO();
+      example.setFriendId(this.vo.getNationalId());
+      return selectByExample(example, orderBies);
+    }
+
+    public Cursor<ClientVO> cursorToFriendId(final ClientOrderBy... orderBies) {
+      ClientVO example = new ClientVO();
+      example.setFriendId(this.vo.getNationalId());
+      return selectByExampleCursor(example, orderBies);
+    }
+
+  }
+
+  public class SelectChildrenClientFromIdPhase {
+
+    private ClientVO vo;
+
+    SelectChildrenClientFromIdPhase(final ClientVO vo) {
+      this.vo = vo;
+    }
+
+    public List<ClientVO> toReferrerId(final ClientOrderBy... orderBies) {
+      ClientVO example = new ClientVO();
+      example.setReferrerId(this.vo.getId());
+      return selectByExample(example, orderBies);
+    }
+
+    public Cursor<ClientVO> cursorToReferrerId(final ClientOrderBy... orderBies) {
+      ClientVO example = new ClientVO();
+      example.setReferrerId(this.vo.getId());
+      return selectByExampleCursor(example, orderBies);
+    }
+
+  }
 
   // insert
 
-  public int insert(final app5.persistence.ClientVO vo) {
+  public app5.persistence.ClientVO insert(final app5.persistence.primitives.AbstractClientVO vo) {
     String id = "app5.persistence.primitives.client.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    app5.persistence.ClientVO mo = new app5.persistence.ClientVO();
+    mo.setId(vo.getId());
+    mo.setNationalId(vo.getNationalId());
+    mo.setName(vo.getName());
+    mo.setPropName(vo.getPropName());
+    mo.setReferrerId(vo.getReferrerId());
+    mo.setFriendId(vo.getFriendId());
+    mo.setGroupAccountId(vo.getGroupAccountId());
+    mo.setBranchId(vo.getBranchId());
+    return mo;
   }
 
   // update by PK
@@ -117,15 +254,15 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app5.persistence.ClientVO example, final app5.persistence.ClientVO updateValues) {
-    UpdateByExampleDao<app5.persistence.ClientVO> fvd = //
-      new UpdateByExampleDao<app5.persistence.ClientVO>(example, updateValues);
+  public int updateByExample(final app5.persistence.primitives.AbstractClientVO example, final app5.persistence.primitives.AbstractClientVO updateValues) {
+    UpdateByExampleDao<app5.persistence.primitives.AbstractClientVO> fvd = //
+      new UpdateByExampleDao<app5.persistence.primitives.AbstractClientVO>(example, updateValues);
     return this.sqlSession.update("app5.persistence.primitives.client.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final app5.persistence.ClientVO example) {
+  public int deleteByExample(final app5.persistence.primitives.AbstractClientVO example) {
     return this.sqlSession.delete("app5.persistence.primitives.client.deleteByExample", example);
   }
 
@@ -135,6 +272,8 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
 
     ID("client", "id", true), //
     ID$DESC("client", "id", false), //
+    NATIONAL_ID("client", "national_id", true), //
+    NATIONAL_ID$DESC("client", "national_id", false), //
     NAME("client", "name", true), //
     NAME$DESC("client", "name", false), //
     NAME$CASEINSENSITIVE("client", "lower(name)", true), //
@@ -143,8 +282,22 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
     NAME$DESC_CASEINSENSITIVE("client", "lower(name)", false), //
     NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("client", "lower(name), name", false), //
     NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("client", "lower(name), name", true), //
-    ACTIVE("client", "active", true), //
-    ACTIVE$DESC("client", "active", false);
+    PROP_NAME("client", "prop_name", true), //
+    PROP_NAME$DESC("client", "prop_name", false), //
+    PROP_NAME$CASEINSENSITIVE("client", "lower(prop_name)", true), //
+    PROP_NAME$CASEINSENSITIVE_STABLE_FORWARD("client", "lower(prop_name), prop_name", true), //
+    PROP_NAME$CASEINSENSITIVE_STABLE_REVERSE("client", "lower(prop_name), prop_name", false), //
+    PROP_NAME$DESC_CASEINSENSITIVE("client", "lower(prop_name)", false), //
+    PROP_NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("client", "lower(prop_name), prop_name", false), //
+    PROP_NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("client", "lower(prop_name), prop_name", true), //
+    REFERRER_ID("client", "referrer_id", true), //
+    REFERRER_ID$DESC("client", "referrer_id", false), //
+    FRIEND_ID("client", "friend_id", true), //
+    FRIEND_ID$DESC("client", "friend_id", false), //
+    GROUP_ACCOUNT_ID("client", "group_account_id", true), //
+    GROUP_ACCOUNT_ID$DESC("client", "group_account_id", false), //
+    BRANCH_ID("client", "branch_id", true), //
+    BRANCH_ID$DESC("client", "branch_id", false);
 
     private ClientOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -186,8 +339,13 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
     // Properties
 
     public NumberColumn id;
+    public NumberColumn nationalId;
     public StringColumn name;
-    public BooleanColumn active;
+    public StringColumn propName;
+    public NumberColumn referrerId;
+    public NumberColumn friendId;
+    public NumberColumn groupAccountId;
+    public NumberColumn branchId;
 
     // Constructors
 
@@ -205,8 +363,13 @@ public class ClientDAO implements Serializable, ApplicationContextAware {
 
     private void initialize() {
       this.id = new NumberColumn(this, "id", "id");
+      this.nationalId = new NumberColumn(this, "national_id", "nationalId");
       this.name = new StringColumn(this, "name", "name");
-      this.active = new BooleanColumn(this, "active", "active");
+      this.propName = new StringColumn(this, "prop_name", "propName");
+      this.referrerId = new NumberColumn(this, "referrer_id", "referrerId");
+      this.friendId = new NumberColumn(this, "friend_id", "friendId");
+      this.groupAccountId = new NumberColumn(this, "group_account_id", "groupAccountId");
+      this.branchId = new NumberColumn(this, "branch_id", "branchId");
     }
 
   }

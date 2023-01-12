@@ -13,10 +13,11 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
+import app5.persistence.primitives.AbstractTypesOtherVO;
 import app5.persistence.TypesOtherVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.dialects.SQLDialect;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
@@ -45,7 +46,7 @@ public class TypesOtherDAO implements Serializable, ApplicationContextAware {
   private SqlSession sqlSession;
 
   @Autowired
-  private SQLDialect sqlDialect;
+  private LiveSQLDialect liveSQLDialect;
 
   private ApplicationContext applicationContext;
 
@@ -60,17 +61,17 @@ public class TypesOtherDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app5.persistence.TypesOtherVO> selectByExample(final app5.persistence.TypesOtherVO example, final TypesOtherOrderBy... orderBies)
+  public List<app5.persistence.TypesOtherVO> selectByExample(final app5.persistence.primitives.AbstractTypesOtherVO example, final TypesOtherOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.TypesOtherVO, TypesOtherOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.TypesOtherVO, TypesOtherOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractTypesOtherVO, TypesOtherOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app5.persistence.primitives.typesOther.selectByExample", dwo);
   }
 
-  public Cursor<app5.persistence.TypesOtherVO> selectByExampleCursor(final app5.persistence.TypesOtherVO example, final TypesOtherOrderBy... orderBies)
+  public Cursor<app5.persistence.TypesOtherVO> selectByExampleCursor(final app5.persistence.primitives.AbstractTypesOtherVO example, final TypesOtherOrderBy... orderBies)
       {
-    DaoWithOrder<app5.persistence.TypesOtherVO, TypesOtherOrderBy> dwo = //
-        new DaoWithOrder<app5.persistence.TypesOtherVO, TypesOtherOrderBy>(example, orderBies);
+    DaoWithOrder<app5.persistence.primitives.AbstractTypesOtherVO, TypesOtherOrderBy> dwo = //
+        new DaoWithOrder<>(example, orderBies);
     return new MyBatisCursor<app5.persistence.TypesOtherVO>(this.sqlSession.selectCursor("app5.persistence.primitives.typesOther.selectByExample", dwo));
   }
 
@@ -78,7 +79,7 @@ public class TypesOtherDAO implements Serializable, ApplicationContextAware {
 
   public CriteriaWherePhase<app5.persistence.TypesOtherVO> selectByCriteria(final TypesOtherDAO.TypesOtherTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app5.persistence.TypesOtherVO>(from, this.sqlDialect, this.sqlSession,
+    return new CriteriaWherePhase<app5.persistence.TypesOtherVO>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "app5.persistence.primitives.typesOther.selectByCriteria");
   }
 
@@ -88,9 +89,34 @@ public class TypesOtherDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public int insert(final app5.persistence.TypesOtherVO vo) {
+  public app5.persistence.TypesOtherVO insert(final app5.persistence.primitives.AbstractTypesOtherVO vo) {
     String id = "app5.persistence.primitives.typesOther.insert";
-    return this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
+    app5.persistence.TypesOtherVO mo = new app5.persistence.TypesOtherVO();
+    mo.setGeo1(vo.getGeo1());
+    mo.setGeo2(vo.getGeo2());
+    mo.setGeo3(vo.getGeo3());
+    mo.setGeo4(vo.getGeo4());
+    mo.setGeo5(vo.getGeo5());
+    mo.setGeo6(vo.getGeo6());
+    mo.setGeo7(vo.getGeo7());
+    mo.setNet1(vo.getNet1());
+    mo.setNet2(vo.getNet2());
+    mo.setNet3(vo.getNet3());
+    mo.setUui1(vo.getUui1());
+    mo.setJso1(vo.getJso1());
+    mo.setJso2(vo.getJso2());
+    mo.setArr1(vo.getArr1());
+    mo.setArr2(vo.getArr2());
+    mo.setArr3(vo.getArr3());
+    mo.setCom1(vo.getCom1());
+    mo.setRan1(vo.getRan1());
+    mo.setRan2(vo.getRan2());
+    mo.setRan3(vo.getRan3());
+    mo.setRan4(vo.getRan4());
+    mo.setRan5(vo.getRan5());
+    mo.setRan6(vo.getRan6());
+    return mo;
   }
 
   // no update by PK generated, since the table does not have a PK.
@@ -99,15 +125,15 @@ public class TypesOtherDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app5.persistence.TypesOtherVO example, final app5.persistence.TypesOtherVO updateValues) {
-    UpdateByExampleDao<app5.persistence.TypesOtherVO> fvd = //
-      new UpdateByExampleDao<app5.persistence.TypesOtherVO>(example, updateValues);
+  public int updateByExample(final app5.persistence.primitives.AbstractTypesOtherVO example, final app5.persistence.primitives.AbstractTypesOtherVO updateValues) {
+    UpdateByExampleDao<app5.persistence.primitives.AbstractTypesOtherVO> fvd = //
+      new UpdateByExampleDao<app5.persistence.primitives.AbstractTypesOtherVO>(example, updateValues);
     return this.sqlSession.update("app5.persistence.primitives.typesOther.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final app5.persistence.TypesOtherVO example) {
+  public int deleteByExample(final app5.persistence.primitives.AbstractTypesOtherVO example) {
     return this.sqlSession.delete("app5.persistence.primitives.typesOther.deleteByExample", example);
   }
 

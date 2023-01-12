@@ -52,15 +52,6 @@
       </java>
 -->
 
-      <mappers dir="mappers" />
-      <classic-fk-navigation />
-      <!-- 
-       -->
-      <select-generation strategy="result-set" />
-      <!-- 
-      <select-generation strategy="create-view" />
-      <select-generation strategy="result-set" />
-       -->
     </mybatis-spring>
   </generators>
 
@@ -96,7 +87,6 @@
    -->
 
   <table name="client" />
-  <view name="active_client" />
 
   <table name="account" />
   <table name="item" />
@@ -121,7 +111,11 @@
       <parameter name="when" java-type="String" />
       select name, price, #{when} as kind
       from product
-      where price > #{minPrice}
+      <complement>
+        <if test="minPrice != null">
+        where price > #{minPrice}
+        </if>
+      </complement>
     </select>
 
     <!-- For old "create-view" strategy 

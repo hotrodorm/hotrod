@@ -7,35 +7,22 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
-import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
-
 import org.hotrod.runtime.interfaces.DaoWithOrder;
-import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
-import org.hotrod.runtime.interfaces.Selectable;
-
-import app5.persistence.ActiveClientVO;
-
-import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.dialects.SQLDialect;
+import org.hotrod.runtime.interfaces.UpdateByExampleDao;
+import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.metadata.BooleanColumn;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
-import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
-import org.hotrod.runtime.livesql.metadata.BooleanColumn;
-import org.hotrod.runtime.livesql.metadata.ByteArrayColumn;
-import org.hotrod.runtime.livesql.metadata.ObjectColumn;
-import org.hotrod.runtime.livesql.metadata.Table;
-import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
-import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.metadata.View;
-
-import org.springframework.stereotype.Component;
+import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.select.MyBatisCursor;
 import org.springframework.beans.BeansException;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ActiveClientDAO implements Serializable, ApplicationContextAware {
@@ -46,7 +33,7 @@ public class ActiveClientDAO implements Serializable, ApplicationContextAware {
   private SqlSession sqlSession;
 
   @Autowired
-  private SQLDialect sqlDialect;
+  private LiveSQLDialect sqlDialect;
 
   private ApplicationContext applicationContext;
 

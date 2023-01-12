@@ -8,20 +8,35 @@
 
   <sql id="columns">
     id,
+    national_id,
     name,
-    active
+    prop_name,
+    referrer_id,
+    friend_id,
+    group_account_id,
+    branch_id
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
+    ${alias}.national_id,
     ${alias}.name,
-    ${alias}.active
+    ${alias}.prop_name,
+    ${alias}.referrer_id,
+    ${alias}.friend_id,
+    ${alias}.group_account_id,
+    ${alias}.branch_id
   </sql>
 
   <resultMap id="allColumns" type="app5.persistence.ClientVO">
     <id property="id" column="id" />
+    <result property="nationalId" column="national_id" />
     <result property="name" column="name" />
-    <result property="active" column="active" />
+    <result property="propName" column="prop_name" />
+    <result property="referrerId" column="referrer_id" />
+    <result property="friendId" column="friend_id" />
+    <result property="groupAccountId" column="group_account_id" />
+    <result property="branchId" column="branch_id" />
   </resultMap>
 
   <!-- select by PK -->
@@ -34,7 +49,15 @@
       id = #{id,jdbcType=INTEGER}
   </select>
 
-  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+  <!-- select by unique indexes -->
+
+  <select id="selectByUINationalId" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from client
+     where
+      national_id = #{nationalId,jdbcType=INTEGER}
+  </select>
 
   <!-- select by example -->
 
@@ -46,11 +69,26 @@
       <if test="p.id != null ">
         and id = #{p.id,jdbcType=INTEGER}
       </if>
+      <if test="p.nationalId != null ">
+        and national_id = #{p.nationalId,jdbcType=INTEGER}
+      </if>
       <if test="p.name != null ">
         and name = #{p.name,jdbcType=VARCHAR}
       </if>
-      <if test="p.active != null ">
-        and active = #{p.active,jdbcType=BIT}
+      <if test="p.propName != null ">
+        and prop_name = #{p.propName,jdbcType=VARCHAR}
+      </if>
+      <if test="p.referrerId != null ">
+        and referrer_id = #{p.referrerId,jdbcType=INTEGER}
+      </if>
+      <if test="p.friendId != null ">
+        and friend_id = #{p.friendId,jdbcType=INTEGER}
+      </if>
+      <if test="p.groupAccountId != null ">
+        and group_account_id = #{p.groupAccountId,jdbcType=INTEGER}
+      </if>
+      <if test="p.branchId != null ">
+        and branch_id = #{p.branchId,jdbcType=INTEGER}
       </if>
     </trim>
     <if test="o != null">
@@ -70,14 +108,24 @@
     insert into client (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
+        <if test="true">, national_id</if>
         <if test="true">, name</if>
-        <if test="true">, active</if>
+        <if test="true">, prop_name</if>
+        <if test="true">, referrer_id</if>
+        <if test="true">, friend_id</if>
+        <if test="true">, group_account_id</if>
+        <if test="true">, branch_id</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
         <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{nationalId,jdbcType=INTEGER}</if>
         <if test="true">, #{name,jdbcType=VARCHAR}</if>
-        <if test="true">, #{active,jdbcType=BIT}</if>
+        <if test="true">, #{propName,jdbcType=VARCHAR}</if>
+        <if test="true">, #{referrerId,jdbcType=INTEGER}</if>
+        <if test="true">, #{friendId,jdbcType=INTEGER}</if>
+        <if test="true">, #{groupAccountId,jdbcType=INTEGER}</if>
+        <if test="true">, #{branchId,jdbcType=INTEGER}</if>
       </trim>
       )
   </insert>
@@ -86,8 +134,13 @@
 
   <update id="updateByPK">
     update client set
+      national_id = #{nationalId,jdbcType=INTEGER},
       name = #{name,jdbcType=VARCHAR},
-      active = #{active,jdbcType=BIT}
+      prop_name = #{propName,jdbcType=VARCHAR},
+      referrer_id = #{referrerId,jdbcType=INTEGER},
+      friend_id = #{friendId,jdbcType=INTEGER},
+      group_account_id = #{groupAccountId,jdbcType=INTEGER},
+      branch_id = #{branchId,jdbcType=INTEGER}
      where
       id = #{id,jdbcType=INTEGER}
   </update>
@@ -106,18 +159,38 @@
     update client
     <set>
       <if test="values.propertiesChangeLog.idWasSet">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.nationalIdWasSet">national_id = #{values.nationalId,jdbcType=INTEGER},</if>
       <if test="values.propertiesChangeLog.nameWasSet">name = #{values.name,jdbcType=VARCHAR},</if>
-      <if test="values.propertiesChangeLog.activeWasSet">active = #{values.active,jdbcType=BIT},</if>
+      <if test="values.propertiesChangeLog.propNameWasSet">prop_name = #{values.propName,jdbcType=VARCHAR},</if>
+      <if test="values.propertiesChangeLog.referrerIdWasSet">referrer_id = #{values.referrerId,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.friendIdWasSet">friend_id = #{values.friendId,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.groupAccountIdWasSet">group_account_id = #{values.groupAccountId,jdbcType=INTEGER},</if>
+      <if test="values.propertiesChangeLog.branchIdWasSet">branch_id = #{values.branchId,jdbcType=INTEGER},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null ">
         and id = #{filter.id,jdbcType=INTEGER}
       </if>
+      <if test="filter.nationalId != null ">
+        and national_id = #{filter.nationalId,jdbcType=INTEGER}
+      </if>
       <if test="filter.name != null ">
         and name = #{filter.name,jdbcType=VARCHAR}
       </if>
-      <if test="filter.active != null ">
-        and active = #{filter.active,jdbcType=BIT}
+      <if test="filter.propName != null ">
+        and prop_name = #{filter.propName,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.referrerId != null ">
+        and referrer_id = #{filter.referrerId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.friendId != null ">
+        and friend_id = #{filter.friendId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.groupAccountId != null ">
+        and group_account_id = #{filter.groupAccountId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.branchId != null ">
+        and branch_id = #{filter.branchId,jdbcType=INTEGER}
       </if>
     </trim>
   </update>
@@ -130,11 +203,26 @@
       <if test="id != null ">
         and id = #{id,jdbcType=INTEGER}
       </if>
+      <if test="nationalId != null ">
+        and national_id = #{nationalId,jdbcType=INTEGER}
+      </if>
       <if test="name != null ">
         and name = #{name,jdbcType=VARCHAR}
       </if>
-      <if test="active != null ">
-        and active = #{active,jdbcType=BIT}
+      <if test="propName != null ">
+        and prop_name = #{propName,jdbcType=VARCHAR}
+      </if>
+      <if test="referrerId != null ">
+        and referrer_id = #{referrerId,jdbcType=INTEGER}
+      </if>
+      <if test="friendId != null ">
+        and friend_id = #{friendId,jdbcType=INTEGER}
+      </if>
+      <if test="groupAccountId != null ">
+        and group_account_id = #{groupAccountId,jdbcType=INTEGER}
+      </if>
+      <if test="branchId != null ">
+        and branch_id = #{branchId,jdbcType=INTEGER}
       </if>
     </trim>
   </delete>

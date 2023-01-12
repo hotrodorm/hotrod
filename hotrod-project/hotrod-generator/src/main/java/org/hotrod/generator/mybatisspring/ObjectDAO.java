@@ -658,7 +658,7 @@ public class ObjectDAO extends GeneratableObject {
     println("  public CriteriaWherePhase<" + voFullClassName + "> selectByCriteria(final " + daoClassName + "."
         + this.metadataClassName + " from,");
     println("      final Predicate predicate) {");
-    println("    return new CriteriaWherePhase<" + voFullClassName + ">(from, this.sqlDialect, this.sqlSession,");
+    println("    return new CriteriaWherePhase<" + voFullClassName + ">(from, this.liveSQLDialect, this.sqlSession,");
     println("        predicate, \"" + mapperName + "\");");
     println("  }");
 
