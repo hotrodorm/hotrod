@@ -65,8 +65,8 @@ hand, will be processed in the Java application and only the result will be sent
 | abs(a) | Absolute value | `<a>.abs()` |
 | - a | Negation | `<a>.neg()` |
 | signum(a) | Signum | `<a>.signum()` |
-| round(a, n) | Rounding | `<a>.round(<b>)` |
-| trunc(a, n) | Truncating | `<a>.trunc(<b>)` |
+| round(a, n) | Rounding | `<a>.round(<n>)` |
+| trunc(a, n) | Truncating | `<a>.trunc(<n>)` |
 
 
 ### String Operators
@@ -101,8 +101,8 @@ hand, will be processed in the Java application and only the result will be sent
 | -- | -- | -- |
 | a = b | Equality | `<a>.eq(<b>)` |
 | a <> b | Inequality | `<a>.ne(<b>)` |
-| a < b | Greather Than | `<a>.gt(<b>)` |
-| a > b | Less Than | `<a>.lt(<b>)` |
+| a > b | Greather Than | `<a>.gt(<b>)` |
+| a < b | Less Than | `<a>.lt(<b>)` |
 | a >= b | Greather or Equal to | `<a>.ge(<b>)` |
 | a <= b | Less or Equal to | `<a>.le(<b>)` |
 | a AND b | Boolean AND | `<a>.and(<b>)` |
@@ -123,8 +123,8 @@ hand, will be processed in the Java application and only the result will be sent
 | (a, b, c, ...) | tuple | `sql.tuple(<a>, <b>, <c>, ...)` |
 | a [^1] IN (a, b, c, ...) | IN (list) | `<a>.in(<a>, <b>, <c>, ...)` |
 | a [^1] NOT IN (a, b, c, ...) | NOT IN (list) | `<a>.notIn(<a>, <b>, <c>, ...)` |
-| EXISTS (subquery) | EXISTS (subquery) | `sql.exists(sql.select()...)` |
-| NOT EXISTS (subquery>) | NOT EXISTS (subquery) | `sql.exists(sql.select()...)` |
+| EXISTS (*subquery*) | EXISTS (subquery) | `sql.exists(sql.select()...)` |
+| NOT EXISTS (*subquery*) | NOT EXISTS (subquery) | `sql.exists(sql.select()...)` |
 | CASE WHEN a THEN b END | CASE | `sql.caseWhen(<a>, <b>).end()` |
 | CASE WHEN a THEN b ELSE e END | CASE | `sql.caseWhen(<a>, <b>).elseValue(e).end()` |
 | CASE WHEN a THEN b WHEN c THEN d ELSE e END | CASE | `sql.caseWhen(<a>, <b>).when(<c>, <d>).elseValue(e).end()` |
@@ -134,19 +134,19 @@ hand, will be processed in the Java application and only the result will be sent
 | SQL Operator | Description | In LiveSQL |
 | -- | -- | -- |
 | a IN (subquery) | IN (subquery) | `<a>.in(sql.select()...)` |
-| a NOT IN (subquery) | NOT IN (subquery) | `<a>.notIn(sql.select()...)` |
-| a = ANY (subquery) | a = ANY (subquery) | `<a>.eqAny(sql.select()...)` |
-| a <> ANY (subquery) | a <> ANY (subquery) | `<a>.neAny(sql.select()...)` |
-| a < ANY (subquery) | a < ANY (subquery) | `<a>.ltAny(sql.select()...)` |
-| a > ANY (subquery) | a > ANY (subquery) | `<a>.gtAny(sql.select()...)` |
-| a <= ANY (subquery) | a <= ANY (subquery) | `<a>.leAny(sql.select()...)` |
-| a >= ANY (subquery) | a >= ANY (subquery) | `<a>.geAny(sql.select()...)` |
-| a = ALL (subquery) | a = ALL (subquery) | `<a>.eqAll(sql.select()...)` |
-| a <> ALL (subquery) | a <> ALL (subquery) | `<a>.neAll(sql.select()...)` |
-| a < ALL (subquery) | a < ALL (subquery) | `<a>.ltAll(sql.select()...)` |
-| a > ALL (subquery) | a > ALL (subquery) | `<a>.gtAll(sql.select()...)` |
-| a <= ALL (subquery) | a <= ALL (subquery) | `<a>.leAll(sql.select()...)` |
-| a >= ALL (subquery) | a >= ALL (subquery) | `<a>.geAll(sql.select()...)` |
+| a NOT IN (*subquery*) | NOT IN (*subquery*) | `<a>.notIn(sql.select()...)` |
+| a = ANY (*subquery*) | a = ANY (*subquery*) | `<a>.eqAny(sql.select()...)` |
+| a <> ANY (*subquery*) | a <> ANY (*subquery*) | `<a>.neAny(sql.select()...)` |
+| a < ANY (*subquery*) | a < ANY (*subquery*) | `<a>.ltAny(sql.select()...)` |
+| a > ANY (*subquery*) | a > ANY (*subquery*) | `<a>.gtAny(sql.select()...)` |
+| a <= ANY (*subquery*) | a <= ANY (*subquery*) | `<a>.leAny(sql.select()...)` |
+| a >= ANY (*subquery*) | a >= ANY (*subquery*) | `<a>.geAny(sql.select()...)` |
+| a = ALL (*subquery*) | a = ALL (*subquery*) | `<a>.eqAll(sql.select()...)` |
+| a <> ALL (*subquery*) | a <> ALL (*subquery*) | `<a>.neAll(sql.select()...)` |
+| a < ALL (*subquery*) | a < ALL (*subquery*) | `<a>.ltAll(sql.select()...)` |
+| a > ALL (*subquery*) | a > ALL (*subquery*) | `<a>.gtAll(sql.select()...)` |
+| a <= ALL (*subquery*) | a <= ALL (*subquery*) | `<a>.leAll(sql.select()...)` |
+| a >= ALL (*subquery*) | a >= ALL (*subquery*) | `<a>.geAll(sql.select()...)` |
 
 ### Aggregate Expressions and Window Functions
 
