@@ -40,7 +40,7 @@ List<Row> rows = this.sql
     .select()
     .from(p) 
     .where(p.status.eq("UNPAID"))
-    .orderBy(p.clientName, p.dueDate.desc())
+    .orderBy(p.clientName.asc(), p.dueDate.desc())
     .execute();
 ```
 
