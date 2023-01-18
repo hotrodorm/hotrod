@@ -1,35 +1,21 @@
+1. Finish discovery.
 
-1. Documentar HotRod - Páginas Básicas.
-  -> Álvaro ¿Puedes hacer el índice/tabla de contenidos?
+2. Delete all old branches.
 
-2. Implementar módulo Torcs.
-  -> Mantener como biblioteca separada.
+3. Rethink DAOs, VOs, Model. Include config refactoring.
 
-3. LiveSQL: Agregar "CASE <expr> WHEN".
+4. Normalize CRUD methods. (Maybe add checks for not null PK when deleting/updating?) 
 
-4. Upgrade de los tipos de dato por defecto. Usar las classes de java.time.* (LocalDate, LocalTime, LocalTimestamp, ZonedDateTime, OffsetDatetTime, OffsetTime, Duration) en vez de las clases antiguas (java.sql.Timestamp, java.util.Date, java.sql.Time).
+5. LiveSQL: Agregar "CASE <expr> WHEN".
 
-5. Implementar LiveSQL especializado.
- -> Comenzar con PostgreSQL 14?
+6. Remove methods sameKey(), etc. from config.
 
--------------------------------------------------
+7. Upgrade Date/Time data types. Use java.time.* (LocalDate, LocalTime, LocalTimestamp, ZonedDateTime, 
+OffsetDateTime, OffsetTime, Duration) instead of the old (java.sql.Timestamp, java.util.Date, java.sql.Time).
 
-=== Documentación ===
+8. Implementar módulo Torcs.
 
-1. Configuración Básica: 
-* Estructura de pom y comando.
-* Anotaciones necesarias.
-  Ejemplo: @ComponentScan(basePackagesClass = LiveSQL.class)
-* Properties
+9. Implement LiveSQL specialized. Start with PostgreSQL 14?
 
-2. Ejemplo de quitar prefijos y otras características que se pueden configurar en el archivo hotrod.xml
-
-3. Query Custom.
-
-
-
-
-
-
-
+* Zero Configuration.
 
