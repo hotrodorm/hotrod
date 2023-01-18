@@ -553,7 +553,8 @@ public class Mapper extends GeneratableObject {
       final ColumnMetadata cm) {
     if (byExample || cm.getColumnDefault() != null) {
       String prop = cm.getId().getJavaMemberName();
-      columns.add("<if test=\"" + prop + " != null\">, " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
+      columns
+          .add("<if test=\"" + prop + " != null\">, " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
       values.add("<if test=\"" + prop + " != null\">, " + renderParameterColumn(cm) + "</if>");
     } else {
       columns.add("<if test=\"true\">, " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + "</if>");
@@ -931,7 +932,7 @@ public class Mapper extends GeneratableObject {
       String prompt = prefix != null ? (prefix + ".") : "";
       String prop = prompt + cm.getId().getJavaMemberName();
 
-      sb.append("      <if test=\"" + prop + " != null \">\n");
+      sb.append("      <if test=\"" + prop + " != null\">\n");
       sb.append("        and " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + " = "
           + renderParameterColumn(cm, prefix) + "\n");
       sb.append("      </if>\n");
@@ -978,13 +979,13 @@ public class Mapper extends GeneratableObject {
 
     println("    <set>");
     for (ColumnMetadata cm : this.metadata.getColumns()) {
-      String propWasSet = "propertiesChangeLog." + cm.getId().getJavaMemberName() + "WasSet";
       if (cm.isVersionControlColumn()) {
         println("      " + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + " = "
             + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + " + 1,");
       } else {
-        println("      <if test=\"values." + propWasSet + "\">" + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName())
-            + " = " + renderParameterColumn(cm, "values") + ",</if>");
+        println("      <if test=\"values." + cm.getId().getJavaMemberName() + " != null\">"
+            + SUtil.escapeXmlBody(cm.getId().getRenderedSQLName()) + " = " + renderParameterColumn(cm, "values")
+            + ",</if>");
       }
     }
     println("    </set>");
