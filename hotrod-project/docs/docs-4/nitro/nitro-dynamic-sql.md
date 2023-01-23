@@ -175,7 +175,7 @@ For example:
     <complement>
       and client_type in 
       <foreach item="t" collection="types" open="(" separator=", " close=")">
-        '#{t}'
+        '${t}'
       </foreach>
     </complement>
 </select> 
