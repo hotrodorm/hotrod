@@ -9,6 +9,7 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.Feedback;
 import org.hotrod.generator.Generator;
 import org.hotrod.generator.HotRodContext;
+import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
 
@@ -24,7 +25,7 @@ public abstract class AbstractGeneratorTag extends AbstractConfigurationTag {
 
   public abstract String getName();
 
-  public abstract void validate(File basedir, File parentDir, final DatabaseAdapter adapter)
+  public abstract void validate(File basedir, File parentDir, final DatabaseAdapter adapter, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException;
 
   public abstract DaosTag getDaos();

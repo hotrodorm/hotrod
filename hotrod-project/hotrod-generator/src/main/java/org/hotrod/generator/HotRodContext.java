@@ -138,7 +138,7 @@ public class HotRodContext {
       log.debug("Main Configuration loaded.");
 
       MyBatisSpringTag mst = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
-      boolean autoDiscovery = mst.isAutoDiscoveryEnabled(config);
+      boolean autoDiscovery = mst.isDiscoverEnabled(config);
       feedback.info("Auto-discovery of tables and views " + (autoDiscovery ? "enabled." : "disabled."));
       feedback.info(" ");
 
@@ -172,6 +172,11 @@ public class HotRodContext {
 //            excludeIds.forEach(e -> System.out.println("- Exclude: "+e.renderFullName()));
             try {
               db = new JdbcDatabase(conn, loc.getCatalogSchema(), mst.getOtherSchemas(), excludeIds);
+              
+              db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views, discoverSchemas, excludeIds);
+
+              
+              
             } catch (InvalidCatalogSchemaException e1) {
               throw new ControlledException(e1.getMessage());
             }

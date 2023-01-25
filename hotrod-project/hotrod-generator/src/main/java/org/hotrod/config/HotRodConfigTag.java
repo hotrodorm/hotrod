@@ -20,6 +20,7 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
 import org.hotrod.utils.Correlator;
 import org.hotrod.utils.Correlator.CorrelatedEntry;
+import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 @XmlRootElement(name = "hotrod")
 public class HotRodConfigTag extends AbstractHotRodConfigTag {
@@ -92,14 +93,14 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     return this.convertersByName.get(name);
   }
 
-  public void validate(final File basedir, final File parentDir, final File f, final DatabaseAdapter adapter)
-      throws InvalidConfigurationFileException, GeneratorNotFoundException {
+  public void validate(final File basedir, final File parentDir, final File f, final DatabaseAdapter adapter,
+      final CatalogSchema currentCS) throws InvalidConfigurationFileException, GeneratorNotFoundException {
 
     this.f = f;
 
     // Generators
 
-    this.generatorsTag.validate(basedir, parentDir, adapter);
+    this.generatorsTag.validate(basedir, parentDir, adapter, currentCS);
     super.addChild(this.generatorsTag);
 
     // Name Solver

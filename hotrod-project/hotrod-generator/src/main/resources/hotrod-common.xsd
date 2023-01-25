@@ -58,14 +58,6 @@
     <xsd:attribute name="method" type="xsd:string" />
   </xsd:complexType>
 
-  <!-- exclude -->
-
-  <xsd:complexType name="exclude-type">
-    <xsd:attribute name="name" type="xsd:string" use="required" />
-    <xsd:attribute name="catalog" type="xsd:string" />
-    <xsd:attribute name="schema" type="xsd:string" />
-  </xsd:complexType>
-
   <!-- parameter -->
 
   <xsd:complexType name="parameter-type">

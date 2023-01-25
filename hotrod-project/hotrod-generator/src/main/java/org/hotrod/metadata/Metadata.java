@@ -74,7 +74,7 @@ public class Metadata {
     ColumnsRetriever cr = null;
 
     MyBatisSpringTag mst = (MyBatisSpringTag) config.getGenerators().getSelectedGeneratorTag();
-    boolean autoDiscovery = mst.isAutoDiscoveryEnabled(config);
+    boolean autoDiscovery = mst.isDiscoverEnabled(config);
 
     try {
 

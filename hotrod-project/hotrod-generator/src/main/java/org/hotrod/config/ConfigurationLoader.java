@@ -136,7 +136,7 @@ public class ConfigurationLoader {
       log.debug("parentFile=" + parentDir + " :: " + parentDir.getAbsolutePath());
 
       log.debug("Will validate semantics.");
-      config.validate(projectBaseDir, parentDir, f, adapter);
+      config.validate(projectBaseDir, parentDir, f, adapter, currentCS);
       log.debug("Semantics validation #1 successful.");
 
       // Validation (common)

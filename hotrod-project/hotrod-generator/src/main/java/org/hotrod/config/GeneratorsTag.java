@@ -13,6 +13,7 @@ import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.utils.Compare;
+import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 @XmlRootElement(name = "generators")
 public class GeneratorsTag extends AbstractConfigurationTag {
@@ -45,11 +46,11 @@ public class GeneratorsTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate(final File basedir, final File parentDir, final DatabaseAdapter adapter)
-      throws InvalidConfigurationFileException, GeneratorNotFoundException {
+  public void validate(final File basedir, final File parentDir, final DatabaseAdapter adapter,
+      final CatalogSchema currentCS) throws InvalidConfigurationFileException, GeneratorNotFoundException {
     for (AbstractGeneratorTag g : this.generators) {
       this.selectedGeneratorTag = g;
-      g.validate(basedir, parentDir, adapter);
+      g.validate(basedir, parentDir, adapter, currentCS);
       return;
     }
     if (this.selectedGeneratorTag == null) {

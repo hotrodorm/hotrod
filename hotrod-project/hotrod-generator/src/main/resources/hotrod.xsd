@@ -16,7 +16,6 @@
           <xsd:element name="fragment" type="fragment-type" />
           <xsd:element name="facet" type="facet-type" />
           <xsd:element name="converter" type="converter-type" />
-          <xsd:element name="exclude" type="exclude-type" />
         </xsd:choice>
       </xsd:sequence>
     </xsd:complexType>
@@ -54,6 +53,7 @@
   </xsd:complexType>
 
   <xsd:complexType name="mybatis-spring-type">
+    <xsd:element name="discover" type="discover-type" minOccurs="0" maxOccurs="1" />
     <xsd:sequence>
       <xsd:choice minOccurs="0" maxOccurs="unbounded">
         <xsd:element name="daos" type="daos-mybatis-spring-type" />
@@ -64,8 +64,25 @@
         <xsd:element name="property" type="property-type" />
       </xsd:choice>
     </xsd:sequence>
-    <xsd:attribute name="discovery" type="xsd:string" />
-    <xsd:attribute name="other-schemas" type="xsd:string" />
+  </xsd:complexType>
+
+  <xsd:complexType name="discover-type">
+    <xsd:element name="current-schema" type="discover-schema-type" minOccurs="0" maxOccurs="1" />
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="schema" type="discover-schema-type" />
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:complexType name="discover-schema-type">
+    <xsd:attribute name="name" type="xsd:string" />
+    <xsd:attribute name="catalog" type="xsd:string" />
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element name="exclude" type="discover-exclude-type" />
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:complexType name="discover-exclude-type">
+    <xsd:attribute name="name" type="xsd:string" use="required" />
   </xsd:complexType>
 
   <xsd:complexType name="daos-mybatis-spring-type">
