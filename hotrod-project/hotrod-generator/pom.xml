@@ -40,7 +40,7 @@
     <dependency>
       <groupId>org.nocrala.tools.database</groupId>
       <artifactId>tartarus</artifactId>
-      <version>3.1.13-SNAPSHOT</version>
+      <version>3.1.14</version>
     </dependency>
 
     <!-- Log4j 2 -->
@@ -85,15 +85,6 @@
       <groupId>ognl</groupId>
       <artifactId>ognl</artifactId>
       <version>3.2.14</version>
-    </dependency>
-
-    <!-- Unit Testing -->
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
     </dependency>
 
   </dependencies>
