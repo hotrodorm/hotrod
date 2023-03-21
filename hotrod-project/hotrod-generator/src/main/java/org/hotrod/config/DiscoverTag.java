@@ -64,14 +64,6 @@ public class DiscoverTag extends AbstractConfigurationTag {
 
   // Getters
 
-//  public SchemaTag getCurrentSchema() {
-//    return currentSchema;
-//  }
-//
-//  public List<SchemaTag> getSchemas() {
-//    return schemas;
-//  }
-
   public List<SchemaTag> getAllSchemaTags() {
     List<SchemaTag> all = new ArrayList<>();
     if (this.currentSchema != null) {
@@ -79,23 +71,6 @@ public class DiscoverTag extends AbstractConfigurationTag {
     }
     all.addAll(this.schemas);
     return all;
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    return true;
   }
 
   // Simple Caption

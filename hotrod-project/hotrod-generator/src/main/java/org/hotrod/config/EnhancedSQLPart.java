@@ -13,7 +13,6 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
-import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
@@ -97,40 +96,6 @@ public abstract class EnhancedSQLPart extends AbstractConfigurationTag {
       return w.toString();
     }
 
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      EnhancedSQLPart f = (EnhancedSQLPart) fresh;
-      boolean different = !same(fresh);
-
-      this.eparts = f.eparts;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      EnhancedSQLPart f = (EnhancedSQLPart) fresh;
-      boolean same = Compare.same(this.eparts, f.eparts);
-      log.debug("[" + this.getTagName() + "[" + (this.eparts == null ? "null" : "" + this.eparts.size()) + "] ] same="
-          + same);
-      return same;
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
 }

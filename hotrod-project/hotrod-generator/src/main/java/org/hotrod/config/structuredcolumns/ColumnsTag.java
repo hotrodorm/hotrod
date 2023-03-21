@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.config.DaosSpringMyBatisTag;
 import org.hotrod.config.DaosTag;
 import org.hotrod.config.EnhancedSQLPart;
@@ -38,7 +37,6 @@ import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.ColumnsPrefixGenerator;
-import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
@@ -315,50 +313,6 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
   @Override
   public String renderColumns() {
     return null;
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    try {
-      @SuppressWarnings("unused")
-      ColumnsTag f = (ColumnsTag) fresh;
-      return true;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      ColumnsTag f = (ColumnsTag) fresh;
-      boolean different = !same(fresh);
-
-      this.vo = f.vo;
-      this.id = f.id;
-      this.vos = f.vos;
-      this.expressions = f.expressions;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      ColumnsTag f = (ColumnsTag) fresh;
-      boolean same = Compare.same(this.vo, f.vo) && //
-          Compare.same(this.id, f.id) && //
-          Compare.same(this.vos, f.vos) && //
-          Compare.same(this.expressions.getExpressionTags(), f.expressions.getExpressionTags());
-      return same;
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

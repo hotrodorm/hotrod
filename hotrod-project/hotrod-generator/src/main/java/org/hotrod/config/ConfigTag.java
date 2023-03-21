@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "config")
@@ -101,41 +100,6 @@ public class ConfigTag extends AbstractConfigurationTag {
 
   public String getPrefix() {
     return prefix;
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      ConfigTag f = (ConfigTag) fresh;
-      boolean different = !same(fresh);
-      this.sGenBaseDir = f.sGenBaseDir;
-      this.relativeDir = f.relativeDir;
-      this.prefix = f.prefix;
-      this.genBaseDir = f.genBaseDir;
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      ConfigTag f = (ConfigTag) fresh;
-      return //
-      Compare.same(this.sGenBaseDir, f.sGenBaseDir) && //
-          Compare.same(this.relativeDir, f.relativeDir) && //
-          Compare.same(this.prefix, f.prefix);
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

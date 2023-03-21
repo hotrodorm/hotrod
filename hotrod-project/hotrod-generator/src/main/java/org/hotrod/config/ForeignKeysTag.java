@@ -51,25 +51,6 @@ public class ForeignKeysTag extends AbstractConfigurationTag {
     return fks;
   }
 
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    ForeignKeysTag f = (ForeignKeysTag) fresh;
-    this.fks = f.fks;
-    return false;
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
   @Override
   public String getInternalCaption() {
     return TAG_NAME;

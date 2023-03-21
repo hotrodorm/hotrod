@@ -10,7 +10,6 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.TrimExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
-import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "trim")
 public class TrimTag extends DynamicSQLPart {
@@ -116,22 +115,6 @@ public class TrimTag extends DynamicSQLPart {
           "Could not produce Java expression for tag <trim>: " + e.getMessage());
     }
 
-  }
-
-  // Merging logic
-
-  @Override
-  protected boolean sameProperties(final DynamicSQLPart fresh) {
-    try {
-      TrimTag f = (TrimTag) fresh;
-      return //
-      Compare.same(this.prefix, f.prefix) && //
-          Compare.same(this.prefixOverrides, f.prefixOverrides) && //
-          Compare.same(this.suffix, f.suffix) && //
-          Compare.same(this.suffixOverrides, f.suffixOverrides);
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
 }

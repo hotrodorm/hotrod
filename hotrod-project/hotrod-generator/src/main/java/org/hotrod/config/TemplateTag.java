@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "mybatis-configuration-template")
@@ -73,38 +72,6 @@ public class TemplateTag extends AbstractConfigurationTag {
 
   public File getFile() {
     return file;
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      TemplateTag f = (TemplateTag) fresh;
-      boolean different = !same(fresh);
-
-      this.sFile = f.sFile;
-      this.file = f.file;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      TemplateTag f = (TemplateTag) fresh;
-      return Compare.same(this.sFile, f.sFile);
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

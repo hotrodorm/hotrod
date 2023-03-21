@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "foreign-key")
@@ -114,48 +113,6 @@ public class ForeignKeyTag extends AbstractConfigurationTag {
 
   public String getGetChildrenMethod() {
     return getChildrenMethod;
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    try {
-      ForeignKeyTag f = (ForeignKeyTag) fresh;
-      return this.parent.equals(f.parent) && this.children.equals(f.children);
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      ForeignKeyTag f = (ForeignKeyTag) fresh;
-      boolean different = !same(fresh);
-
-      this.getParentMethod = f.getParentMethod;
-      this.getChildrenMethod = f.getChildrenMethod;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      ForeignKeyTag f = (ForeignKeyTag) fresh;
-      return //
-      Compare.same(this.parent, f.parent) && //
-          Compare.same(this.children, f.children) && //
-          Compare.same(this.getParentMethod, f.getParentMethod) && //
-          Compare.same(this.getChildrenMethod, f.getChildrenMethod) //
-      ;
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

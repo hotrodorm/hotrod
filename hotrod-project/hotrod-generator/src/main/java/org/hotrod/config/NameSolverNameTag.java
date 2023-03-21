@@ -16,7 +16,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.CouldNotResolveNameException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "name")
@@ -167,44 +166,6 @@ public class NameSolverNameTag extends AbstractConfigurationTag {
   }
 
   // Getters
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    NameSolverNameTag f = (NameSolverNameTag) fresh;
-    return Compare.same(this.value, f.value);
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      NameSolverNameTag f = (NameSolverNameTag) fresh;
-      boolean different = !same(fresh);
-      this.replace = f.replace;
-      this.scope = f.scope;
-      this.matchesTables = f.matchesTables;
-      this.matchesViews = f.matchesViews;
-      this.matchesColumns = f.matchesColumns;
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    // TODO: needs to be properly implemented
-    try {
-      NameSolverNameTag f = (NameSolverNameTag) fresh;
-      return //
-      Compare.same(this.value, f.value) && //
-          Compare.same(this.replace, f.replace) && //
-          Compare.same(this.scope, f.scope);
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
 
   // Simple Caption
 

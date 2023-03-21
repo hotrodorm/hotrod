@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "facet")
@@ -168,49 +167,6 @@ public class FacetTag extends AbstractConfigurationTag {
     } else if (!name.equals(other.name))
       return false;
     return true;
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    try {
-      FacetTag f = (FacetTag) fresh;
-      return this.name.equals(f.name);
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      FacetTag f = (FacetTag) fresh;
-      boolean different = !same(fresh);
-
-      this.tables = f.tables;
-      this.views = f.views;
-      this.enums = f.enums;
-      this.daos = f.daos;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      FacetTag f = (FacetTag) fresh;
-      return //
-      Compare.same(this.tables, f.tables) && //
-          Compare.same(this.views, f.views) && //
-          Compare.same(this.enums, f.enums) && //
-          Compare.same(this.daos, f.daos);
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

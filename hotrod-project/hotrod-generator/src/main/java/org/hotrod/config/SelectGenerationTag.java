@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "select-generation")
@@ -141,38 +140,6 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
 
   public String getTempViewBaseName() {
     return this.tempViewBaseName;
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      SelectGenerationTag f = (SelectGenerationTag) fresh;
-      boolean different = !same(fresh);
-
-      this.strategy = f.strategy;
-      this.tempViewBaseName = f.tempViewBaseName;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      SelectGenerationTag f = (SelectGenerationTag) fresh;
-      return Compare.same(this.strategy, f.strategy) && Compare.same(this.tempViewBaseName, f.tempViewBaseName);
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

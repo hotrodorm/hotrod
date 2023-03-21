@@ -17,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.Compare;
 import org.hotrod.utils.Correlator;
 import org.hotrod.utils.Correlator.CorrelatedEntry;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
@@ -156,46 +155,6 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
   // }
   //
   // }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    return super.commonSameKey(fresh) && true;
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    log.debug("copying... " + this.getInternalCaption() + " fresh=" + fresh);
-    try {
-      HotRodConfigTag f = (HotRodConfigTag) fresh;
-      boolean different = !super.commonSame(fresh) || !same(fresh);
-
-      super.commonCopyNonKeyProperties(fresh);
-      this.generatorsTag = f.generatorsTag;
-      this.converters = f.converters;
-      this.convertersByName = f.convertersByName;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      HotRodConfigTag f = (HotRodConfigTag) fresh;
-      return //
-      super.commonSame(fresh) && //
-          Compare.same(this.generatorsTag, f.generatorsTag) && //
-          Compare.same(this.converters, f.converters) && //
-          Compare.same(this.convertersByName, f.convertersByName) //
-      ;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
 
   // Update generated cache
 

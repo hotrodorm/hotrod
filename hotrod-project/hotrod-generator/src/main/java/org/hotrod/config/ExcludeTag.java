@@ -43,23 +43,6 @@ public class ExcludeTag extends AbstractConfigurationTag {
     return this.name;
   }
 
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
   // Simple Caption
 
   @Override

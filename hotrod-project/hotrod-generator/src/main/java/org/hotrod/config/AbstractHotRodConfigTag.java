@@ -591,45 +591,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     return null;
   }
 
-  // Merging logic
-
-  protected boolean commonSameKey(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
-  protected boolean commonCopyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      AbstractHotRodConfigTag f = (AbstractHotRodConfigTag) fresh;
-      boolean different = !same(fresh);
-
-      super.coreCopyNonKeyProperties(fresh);
-      this.tables = f.tables;
-      this.views = f.views;
-      this.enums = f.enums;
-      this.executors = f.executors;
-      this.fragments = f.fragments;
-      this.facets = f.facets;
-      this.assembledFacets = f.assembledFacets;
-      this.allFacets = f.allFacets;
-      this.facetNames = f.facetNames;
-      this.chosenFacets = f.chosenFacets;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  protected boolean commonSame(final AbstractConfigurationTag fresh) {
-    try {
-      @SuppressWarnings("unused")
-      AbstractHotRodConfigTag f = (AbstractHotRodConfigTag) fresh;
-      return true;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
   // Update generated cache
 
   public boolean commonConcludeGeneration(final AbstractConfigurationTag unitCache, final DatabaseAdapter adapter) {

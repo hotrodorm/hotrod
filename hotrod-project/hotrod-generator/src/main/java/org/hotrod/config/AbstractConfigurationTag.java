@@ -12,7 +12,7 @@ import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.utils.ErrorMessage;
 import org.hotrodorm.hotrod.utils.SUtil;
 
-public abstract class AbstractConfigurationTag implements Comparable<AbstractConfigurationTag>, Serializable {
+public abstract class AbstractConfigurationTag implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -301,25 +301,25 @@ public abstract class AbstractConfigurationTag implements Comparable<AbstractCon
 
   // Comparable
 
-  @Override
-  public int compareTo(final AbstractConfigurationTag o) {
-    if (this.same(o)) {
-      return 0;
-    }
-    int v = this.tagName.compareTo(o.tagName);
-    return v == 0 ? -1 : v;
-  }
+//  @Override
+//  public int compareTo(final AbstractConfigurationTag o) {
+//    if (this.same(o)) {
+//      return 0;
+//    }
+//    int v = this.tagName.compareTo(o.tagName);
+//    return v == 0 ? -1 : v;
+//  }
 
   // Abstract methods for computing item changes
 
-  // Checks if it has the same KEY properties
-  public abstract boolean sameKey(AbstractConfigurationTag fresh);
-
-  // Checks if it has the same properties. Computed properties are not compared.
-  public abstract boolean same(AbstractConfigurationTag fresh);
-
-  // Copy non-KEY properties; informs if there were any changes.
-  public abstract boolean copyNonKeyProperties(AbstractConfigurationTag fresh);
+//  // Checks if it has the same KEY properties
+//  public abstract boolean sameKey(AbstractConfigurationTag fresh);
+//
+//  // Checks if it has the same properties. Computed properties are not compared.
+//  public abstract boolean same(AbstractConfigurationTag fresh);
+//
+//  // Copy non-KEY properties; informs if there were any changes.
+//  public abstract boolean copyNonKeyProperties(AbstractConfigurationTag fresh);
 
   // Display
 

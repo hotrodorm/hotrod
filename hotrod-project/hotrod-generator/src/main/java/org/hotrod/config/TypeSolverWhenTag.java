@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.Compare;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrod.utils.JdbcTypes.JDBCType;
 import org.hotrod.utils.OgnlExpression;
@@ -162,44 +161,6 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
 
   public OgnlExpression getTestExpression() {
     return this.testExpression;
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    // TODO: needs to be properly implemented
-    return false;
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    // TODO: needs to be properly implemented
-    try {
-      TypeSolverWhenTag f = (TypeSolverWhenTag) fresh;
-      boolean different = !same(fresh);
-      this.javaType = f.javaType;
-      this.converter = f.converter;
-      this.forceJDBCTypeOnWrite = f.forceJDBCTypeOnWrite;
-      this.converterTag = f.converterTag;
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    // TODO: needs to be properly implemented
-    try {
-      TypeSolverWhenTag f = (TypeSolverWhenTag) fresh;
-      return //
-      Compare.same(this.javaType, f.javaType) && //
-          Compare.same(this.converter, f.converter) && //
-          Compare.same(this.forceJDBCTypeOnWrite, f.forceJDBCTypeOnWrite);
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

@@ -65,11 +65,4 @@ public class OtherwiseTag extends DynamicSQLPart {
 
   }
 
-  // Merging logic
-
-  @Override
-  protected boolean sameProperties(final DynamicSQLPart fresh) {
-    return true;
-  }
-
 }

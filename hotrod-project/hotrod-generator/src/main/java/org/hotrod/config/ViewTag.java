@@ -20,7 +20,6 @@ import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -285,50 +284,6 @@ public class ViewTag extends AbstractEntityDAOTag {
   @Override
   public String getJavaClassName() {
     return this.id.getJavaClassName();
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    try {
-      ViewTag f = (ViewTag) fresh;
-      return this.id.equals(f.id);
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      ViewTag f = (ViewTag) fresh;
-      boolean different = !same(fresh);
-
-      this.javaClassName = f.javaClassName;
-      this.columns = f.columns;
-      this.daosTag = f.daosTag;
-      this.fragmentConfig = f.fragmentConfig;
-      this.fragmentPackage = f.fragmentPackage;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      ViewTag f = (ViewTag) fresh;
-      return //
-      Compare.same(this.id, f.id) && //
-          Compare.same(this.javaClassName, f.javaClassName) && //
-          Compare.same(this.columns, f.columns) //
-      ;
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

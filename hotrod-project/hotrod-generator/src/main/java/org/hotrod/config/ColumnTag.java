@@ -12,7 +12,6 @@ import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.Metadata;
-import org.hotrod.utils.Compare;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
@@ -427,62 +426,6 @@ public class ColumnTag extends AbstractConfigurationTag {
     return "name=" + name + " javaName=" + this.javaName + " javaType=" + this.javaType + ", converter="
         + this.converter + " jdbcType=" + this.jdbcType + " sequence=" + this.sequence + ", sInitialValue="
         + this.sInitialValue + " sMinValue=" + this.sMinValue + " sMaxValue=" + this.sMaxValue;
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    try {
-      ColumnTag f = (ColumnTag) fresh;
-      return this.name.equals(f.name);
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      ColumnTag f = (ColumnTag) fresh;
-      boolean different = !same(fresh);
-      this.javaName = f.javaName;
-      this.javaType = f.javaType;
-      this.converter = f.converter;
-      this.jdbcType = f.jdbcType;
-      this.sequence = f.sequence;
-      this.sInitialValue = f.sInitialValue;
-      this.sMinValue = f.sMinValue;
-      this.sMaxValue = f.sMaxValue;
-      this.sIsLOB = f.sIsLOB;
-      this.column = f.column;
-      this.isLOB = f.isLOB;
-      this.valueRange = f.valueRange;
-      this.converterTag = f.converterTag;
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      ColumnTag f = (ColumnTag) fresh;
-      return //
-      Compare.same(this.name, f.name) && //
-          Compare.same(this.javaName, f.javaName) && //
-          Compare.same(this.javaType, f.javaType) && //
-          Compare.same(this.converter, f.converter) && //
-          Compare.same(this.jdbcType, f.jdbcType) && //
-          Compare.same(this.sequence, f.sequence) && //
-          Compare.same(this.sInitialValue, f.sInitialValue) && //
-          Compare.same(this.sMinValue, f.sMinValue) && //
-          Compare.same(this.sMaxValue, f.sMaxValue) && //
-          Compare.same(this.sIsLOB, f.sIsLOB);
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

@@ -118,26 +118,6 @@ public class TypeSolverTag extends AbstractConfigurationTag {
     return null;
   }
 
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    // TODO: needs to be properly implemented
-    return false;
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    // TODO: needs to be properly implemented
-    return true;
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    // TODO: needs to be properly implemented
-    return true;
-  }
-
   // Simple Caption
 
   @Override

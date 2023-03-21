@@ -45,7 +45,6 @@ import org.hotrod.metadata.VOMetadata;
 import org.hotrod.metadata.VORegistry;
 import org.hotrod.utils.ColumnsMetadataRetriever;
 import org.hotrod.utils.ColumnsPrefixGenerator;
-import org.hotrod.utils.Compare;
 import org.hotrod.utils.JdbcTypes;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
@@ -886,84 +885,6 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       return w.toString();
     } else { // specified columns only
       return this.compiledBody;
-    }
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    try {
-      VOTag f = (VOTag) fresh;
-      return Compare.same(this.table, f.table) && Compare.same(this.view, f.view);
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      VOTag f = (VOTag) fresh;
-      boolean different = !same(fresh);
-
-      this.table = f.table;
-      this.view = f.view;
-      this.id = f.id;
-      this.property = f.property;
-      this.alias = f.alias;
-      this.extendedVO = f.extendedVO;
-      this.body = f.body;
-      this.idNames = f.idNames;
-      this.tableMetadata = f.tableMetadata;
-      this.viewMetadata = f.viewMetadata;
-      this.collections = f.collections;
-      this.associations = f.associations;
-      this.expressions = f.expressions;
-      this.metadata = f.metadata;
-      this.compiledBody = f.compiledBody;
-      this.useAllColumns = f.useAllColumns;
-      this.cmr = f.cmr;
-      this.aliasPrefix = f.aliasPrefix;
-      this.inheritedColumns = f.inheritedColumns;
-      this.declaredColumns = f.declaredColumns;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      VOTag f = (VOTag) fresh;
-      log.debug("*** >>> will compare body...");
-      boolean sameBody = Compare.same(this.body, f.body);
-      log.debug("*** >>> Compare.same(this.body, f.body)=" + sameBody);
-      boolean sameExtendedVO = Compare.same(this.extendedVO, f.extendedVO);
-      boolean sameAlias = Compare.same(this.alias, f.alias);
-      boolean sameProperty = Compare.same(this.property, f.property);
-      boolean sameId = Compare.same(this.id, f.id);
-      boolean sameView = Compare.same(this.view, f.view);
-      boolean sameTable = Compare.same(this.table, f.table);
-      boolean same = sameTable && //
-          sameView && //
-          sameId && //
-          sameProperty && //
-          sameAlias && //
-          sameExtendedVO && //
-          sameBody;
-      log.debug("*** # Compare.same(this.table, f.table)=" + sameTable);
-      log.debug("*** # Compare.same(this.view, f.view)=" + sameView);
-      log.debug("*** # Compare.same(this.id, f.id)=" + sameId);
-      log.debug("*** # Compare.same(this.property, f.property)=" + sameProperty);
-      log.debug("*** # Compare.same(this.alias, f.alias)=" + sameAlias);
-      log.debug("*** # Compare.same(this.extendedVO, f.extendedVO)=" + sameExtendedVO);
-      log.debug("***** same=" + same);
-      return same;
-    } catch (ClassCastException e) {
-      return false;
     }
   }
 

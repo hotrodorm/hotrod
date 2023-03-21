@@ -12,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.GeneratorNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.Compare;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 @XmlRootElement(name = "generators")
@@ -63,37 +62,6 @@ public class GeneratorsTag extends AbstractConfigurationTag {
   public AbstractGeneratorTag getSelectedGeneratorTag() {
     log.debug("this.selectedGeneratorTag=" + this.selectedGeneratorTag);
     return this.selectedGeneratorTag;
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      GeneratorsTag f = (GeneratorsTag) fresh;
-      boolean different = !same(fresh);
-
-      this.generators = f.generators;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      GeneratorsTag f = (GeneratorsTag) fresh;
-      return Compare.same(this.generators, f.generators);
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

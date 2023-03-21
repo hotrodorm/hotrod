@@ -10,7 +10,6 @@ import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.InvalidIdentifierException;
 import org.hotrod.identifiers.Id;
 import org.hotrod.identifiers.ObjectId;
-import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 @XmlRootElement(name = "sequence")
@@ -144,47 +143,6 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
 
   public ObjectId getSequenceId() {
     return sequenceId;
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    try {
-      SequenceMethodTag f = (SequenceMethodTag) fresh;
-      return this.sequenceId.equals(f.getSequenceId());
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      SequenceMethodTag f = (SequenceMethodTag) fresh;
-      boolean different = !same(fresh);
-
-      this.method = f.method;
-      this.catalog = f.catalog;
-      this.schema = f.schema;
-      this.sequenceId = f.sequenceId;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      SequenceMethodTag f = (SequenceMethodTag) fresh;
-      return //
-      this.sequenceId.equals(f.getSequenceId()) && //
-          Compare.same(this.method, f.method);
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

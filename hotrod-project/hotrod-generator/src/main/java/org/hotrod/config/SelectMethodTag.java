@@ -25,7 +25,6 @@ import org.hotrod.metadata.Metadata;
 import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
-import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 
@@ -408,68 +407,6 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
       return new HashSet<TableDataSetMetadata>();
     } else {
       return this.structuredColumns.getReferencedEntities();
-    }
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    try {
-      SelectMethodTag f = (SelectMethodTag) fresh;
-      return this.method.equals(f.method);
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      SelectMethodTag f = (SelectMethodTag) fresh;
-      boolean different = !same(fresh);
-
-      this.vo = f.vo;
-      this.sMode = f.sMode;
-      this.metadata = f.metadata;
-      this.voClassName = f.voClassName;
-      this.mode = f.mode;
-      this.parameters = f.parameters;
-      this.columns = f.columns;
-      this.parts = f.parts;
-      this.aggregatedPart = f.aggregatedPart;
-      this.structuredColumns = f.structuredColumns;
-      this.fragmentConfig = f.fragmentConfig;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      SelectMethodTag f = (SelectMethodTag) fresh;
-
-      log.debug("--------------- Will compare -----------------------");
-      boolean comp = Compare.same(this.parts, f.parts);
-      log.debug("--------------- Compared same= " + comp + " ------------------");
-
-      boolean same = Compare.same(this.method, f.method) && //
-          Compare.same(this.vo, f.vo) && //
-          Compare.same(this.sMode, f.sMode) && //
-          Compare.same(this.parameters, f.parameters) && //
-          Compare.same(this.columns, f.columns) && //
-          Compare.same(this.parts, f.parts) && //
-          Compare.same(this.aggregatedPart, f.aggregatedPart) && //
-          Compare.same(this.structuredColumns, f.structuredColumns) && //
-          Compare.same(this.fragmentConfig, f.fragmentConfig);
-      log.debug("<select> '" + this.method + "' same=" + same);
-      return same;
-    } catch (ClassCastException e) {
-      log.debug("<select> '" + this.method + "' same=" + "false");
-      return false;
     }
   }
 

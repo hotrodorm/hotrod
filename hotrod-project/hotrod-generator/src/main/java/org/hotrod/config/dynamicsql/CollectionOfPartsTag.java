@@ -68,11 +68,4 @@ public class CollectionOfPartsTag extends DynamicSQLPart {
 
   }
 
-  // Merging logic
-
-  @Override
-  protected boolean sameProperties(final DynamicSQLPart fresh) {
-    return true;
-  }
-
 }

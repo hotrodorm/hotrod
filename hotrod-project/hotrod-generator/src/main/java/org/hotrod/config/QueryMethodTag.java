@@ -26,7 +26,6 @@ import org.hotrod.config.dynamicsql.WhereTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.identifiers.Id;
-import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "query")
 public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
@@ -163,46 +162,6 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
 
   public List<ParameterTag> getParameterDefinitions() {
     return this.parameters.getDefinitions();
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    try {
-      QueryMethodTag f = (QueryMethodTag) fresh;
-      return this.method.equals(f.method);
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      QueryMethodTag f = (QueryMethodTag) fresh;
-      boolean different = !same(fresh);
-      this.content = f.content;
-      this.parts = f.parts;
-      this.parameters = f.parameters;
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      QueryMethodTag f = (QueryMethodTag) fresh;
-      return //
-      Compare.same(this.method, f.method) && //
-          Compare.same(this.parts, f.parts) && //
-          Compare.same(this.parameters, f.parameters) //
-      ;
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

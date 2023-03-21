@@ -2,14 +2,12 @@ package org.hotrod.config.dynamicsql;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hotrod.config.AbstractConfigurationTag;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.LiteralExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
-import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 
 public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
@@ -96,31 +94,6 @@ public class LiteralTextPart extends DynamicSQLPart implements SQLSegment {
   @Override
   public boolean isEmpty() {
     return this.text == null || this.text.trim().isEmpty();
-  }
-
-  // Merging logic
-
-  @Override
-  protected boolean sameProperties(final DynamicSQLPart fresh) {
-    try {
-      LiteralTextPart f = (LiteralTextPart) fresh;
-      return Compare.same(this.text, f.text);
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      LiteralTextPart f = (LiteralTextPart) fresh;
-      boolean equals = SUtil.equals(this.text, f.text);
-      // log.info("[LITERAL] equals=" + equals);
-      // log.info("this.text=" + this.text);
-      // log.info("othe.text=" + f.text);
-      return equals;
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
 }

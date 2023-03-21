@@ -21,7 +21,6 @@ import org.hotrod.generator.HotRodContext;
 import org.hotrod.generator.NamePackageResolver;
 import org.hotrod.generator.mybatisspring.MyBatisSpringGenerator;
 import org.hotrod.utils.ClassPackage;
-import org.hotrod.utils.Compare;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 @XmlRootElement(name = "mybatis-spring")
@@ -216,48 +215,6 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
       final DisplayMode displayMode, final boolean incrementalMode, final Feedback feedback)
       throws UncontrolledException, ControlledException, InvalidConfigurationFileException {
     return new MyBatisSpringGenerator(hc, enabledFKs, displayMode, incrementalMode, feedback);
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      MyBatisSpringTag f = (MyBatisSpringTag) fresh;
-      boolean different = !same(fresh);
-
-      this.daos = f.daos;
-      this.mappers = f.mappers;
-      this.template = f.template;
-      this.selectGeneration = f.selectGeneration;
-      this.propertyTags = f.propertyTags;
-      this.properties = f.properties;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      MyBatisSpringTag f = (MyBatisSpringTag) fresh;
-      return //
-      Compare.same(this.daos, f.daos) && //
-          Compare.same(this.mappers, f.mappers) && //
-          Compare.same(this.template, f.template) && //
-          Compare.same(this.selectGeneration, f.selectGeneration) && //
-          Compare.same(this.propertyTags, f.propertyTags) //
-      ;
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

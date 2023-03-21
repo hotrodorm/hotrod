@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.metadata.Metadata;
-import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcKeyColumn;
@@ -107,41 +106,6 @@ public class VersionControlColumnTag extends AbstractConfigurationTag {
 
   public String getName() {
     return name;
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    try {
-      VersionControlColumnTag f = (VersionControlColumnTag) fresh;
-      return this.name.equals(f.name);
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      @SuppressWarnings("unused")
-      VersionControlColumnTag f = (VersionControlColumnTag) fresh;
-      boolean different = !same(fresh);
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      VersionControlColumnTag f = (VersionControlColumnTag) fresh;
-      return Compare.same(this.name, f.name);
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

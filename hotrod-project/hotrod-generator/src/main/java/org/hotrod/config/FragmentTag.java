@@ -13,7 +13,6 @@ import org.hotrod.exceptions.ControlledException;
 import org.hotrod.exceptions.FacetNotFoundException;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrod.exceptions.UncontrolledException;
-import org.hotrod.utils.Compare;
 import org.hotrod.utils.FileRegistry;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
@@ -103,44 +102,6 @@ public class FragmentTag extends AbstractConfigurationTag implements GenerationU
 
   public File getFile() {
     return this.f;
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    try {
-      FragmentTag f = (FragmentTag) fresh;
-      return this.filename.equals(f.filename);
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      FragmentTag f = (FragmentTag) fresh;
-      boolean different = !same(fresh);
-
-      this.filename = f.filename;
-      this.f = f.f;
-      this.fragmentConfig = f.fragmentConfig;
-
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      FragmentTag f = (FragmentTag) fresh;
-      return Compare.same(this.filename, f.filename);
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption

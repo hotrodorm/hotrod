@@ -10,7 +10,6 @@ import org.hotrod.generator.ParameterRenderer;
 import org.hotrod.runtime.dynamicsql.expressions.DynamicExpression;
 import org.hotrod.runtime.dynamicsql.expressions.WhenExpression;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
-import org.hotrod.utils.Compare;
 
 @XmlRootElement(name = "when")
 public class WhenTag extends DynamicSQLPart {
@@ -82,18 +81,6 @@ public class WhenTag extends DynamicSQLPart {
           "Could not produce Java expression for tag <when> on file '" + this.getSourceLocation().getFile().getPath()
               + "' at line " + this.getSourceLocation().getLineNumber() + ", col "
               + this.getSourceLocation().getColumnNumber() + ": " + e.getMessage());
-    }
-  }
-
-  // Merging logic
-
-  @Override
-  protected boolean sameProperties(final DynamicSQLPart fresh) {
-    try {
-      WhenTag f = (WhenTag) fresh;
-      return Compare.same(this.test, f.test);
-    } catch (ClassCastException e) {
-      return false;
     }
   }
 

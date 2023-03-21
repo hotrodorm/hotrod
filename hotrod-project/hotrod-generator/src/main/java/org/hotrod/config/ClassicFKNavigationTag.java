@@ -35,23 +35,6 @@ public class ClassicFKNavigationTag extends AbstractConfigurationTag {
 
   // Getters
 
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    return false;
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    return true;
-  }
-
   // Simple Caption
 
   @Override

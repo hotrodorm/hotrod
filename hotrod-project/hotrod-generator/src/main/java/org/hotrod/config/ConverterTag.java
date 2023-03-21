@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrod.utils.Compare;
 import org.hotrodorm.hotrod.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListWriter;
 
@@ -205,49 +204,6 @@ public class ConverterTag extends AbstractConfigurationTag {
 
   public String getJdbcSetterMethod() {
     return jdbcSetterMethod;
-  }
-
-  // Merging logic
-
-  @Override
-  public boolean sameKey(final AbstractConfigurationTag fresh) {
-    try {
-      ConverterTag f = (ConverterTag) fresh;
-      return this.name.equals(f.name);
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean copyNonKeyProperties(final AbstractConfigurationTag fresh) {
-    try {
-      ConverterTag f = (ConverterTag) fresh;
-      boolean different = !same(fresh);
-      this.javaType = f.javaType;
-      this.javaIntermediateType = f.javaIntermediateType;
-      this.javaClass = f.javaClass;
-      this.jdbcGetterMethod = f.jdbcGetterMethod;
-      this.jdbcSetterMethod = f.jdbcSetterMethod;
-      return different;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean same(final AbstractConfigurationTag fresh) {
-    try {
-      ConverterTag f = (ConverterTag) fresh;
-      return //
-      Compare.same(this.name, f.name) && //
-          Compare.same(this.javaType, f.javaType) && //
-          Compare.same(this.javaIntermediateType, f.javaIntermediateType) && //
-          Compare.same(this.javaClass, f.javaClass) //
-      ;
-    } catch (ClassCastException e) {
-      return false;
-    }
   }
 
   // Simple Caption
