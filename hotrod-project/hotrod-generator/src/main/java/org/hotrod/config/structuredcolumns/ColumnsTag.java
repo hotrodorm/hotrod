@@ -190,27 +190,18 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
     if (this.vo != null) {
       if (includesSingleVO) {
-        throw new InvalidConfigurationFileException(this, //
-            "This 'vo' attribute cannot be specified "
-                + "when the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags (this case)", //
-            "Invalid 'vo' attribute on the <" + this.getTagName() + "> tag. "
-                + "This attribute should not be specified "
-                + "when the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags (this case).");
+        throw new InvalidConfigurationFileException(this, "Invalid 'vo' attribute on the <" + this.getTagName()
+            + "> tag. " + "This attribute should not be specified "
+            + "when the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags (this case).");
       }
       if (!this.vo.matches(Patterns.VALID_JAVA_CLASS)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid Java class '" + this.vo
-                + "' specified in the 'vo' attribute. When specified, the vo-class must start with an upper case letter, "
-                + "and continue with any combination of letters, digits, or underscores", //
-            "Invalid Java class '" + this.vo
-                + "' specified in the 'vo' attribute. When specified, the vo-class must start with an upper case letter, "
-                + "and continue with any combination of letters, digits, or underscores.");
+        throw new InvalidConfigurationFileException(this, "Invalid Java class '" + this.vo
+            + "' specified in the 'vo' attribute. When specified, the vo-class must start with an upper case letter, "
+            + "and continue with any combination of letters, digits, or underscores.");
       }
       if (!this.expressions.isEmpty()) {
         if (this.id == null) {
-          throw new InvalidConfigurationFileException(this, //
-              "The 1 'id' attribute must be specified when the 'vo' attribute is specified and <expression> tags are included. "
-                  + "It includes the comma-separated list of properties that identify a row", //
+          throw new InvalidConfigurationFileException(this,
               "The 2 'id' attribute must be specified when the 'vo' attribute is specified and <expression> tags are included. "
                   + "It includes the comma-separated list of properties that identify a row.");
         }
@@ -220,10 +211,7 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
           }
         }
         if (this.idNames.isEmpty()) {
-          throw new InvalidConfigurationFileException(this, //
-              "The 3 'id' attribute should not be empty. "
-                  + "It must be specified when the 'vo' attribute is specified; "
-                  + "it includes the comma-separated list of properties that identify a row", //
+          throw new InvalidConfigurationFileException(this,
               "The 4 'id' attribute should not be empty. "
                   + "It must be specified when the 'vo' attribute is specified; "
                   + "it includes the comma-separated list of properties that identify a row.");
@@ -231,17 +219,12 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
       }
     } else { // vo == null
       if (!includesSingleVO) {
-        throw new InvalidConfigurationFileException(this, //
-            "Missing 'vo' attribute in the <" + this.getTagName() + "> tag. "
-                + "This attribute can only be omitted when "
-                + "the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags", //
-            "Missing 'vo' attribute in the <" + this.getTagName() + "> tag. "
-                + "This attribute can only be omitted when "
-                + "the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags.");
+        throw new InvalidConfigurationFileException(this, "Missing 'vo' attribute in the <" + this.getTagName()
+            + "> tag. " + "This attribute can only be omitted when "
+            + "the <columns> tag includes a single <vo> tag and no <expressions>, <association>, or <collection> tags.");
       }
       if (this.id != null) {
-        throw new InvalidConfigurationFileException(this, //
-            "The 'id' attribute cannot be specified when the 'vo' attribute is not specified", //
+        throw new InvalidConfigurationFileException(this,
             "The 'id' attribute cannot be specified when the 'vo' attribute is not specified.");
       }
     }
@@ -258,11 +241,8 @@ public class ColumnsTag extends EnhancedSQLPart implements ColumnsProvider {
 
     this.expressions.validate(daosTag, config, fragmentConfig, connectedVOResult, ids);
     if (!ids.isEmpty()) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid id property '" + ids.iterator().next()
-              + "'. Could not find any <expression> tag with this property name", //
-          "Invalid id property '" + ids.iterator().next()
-              + "'. Could not find any <expression> tag with this property name.");
+      throw new InvalidConfigurationFileException(this, "Invalid id property '" + ids.iterator().next()
+          + "'. Could not find any <expression> tag with this property name.");
     }
 
   }

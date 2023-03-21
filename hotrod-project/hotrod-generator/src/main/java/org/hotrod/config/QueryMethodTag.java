@@ -123,10 +123,8 @@ public class QueryMethodTag extends AbstractMethodTag<QueryMethodTag> {
             this.parts.add(p);
             super.addChild(p);
           } catch (ClassCastException e3) {
-            throw new InvalidConfigurationFileException(this, //
-                "The body of the tag <" + super.getTagName() + "> has an invalid tag: " + obj.getClass().getName(), //
-                "The body of the tag <" + super.getTagName() + "> has an invalid tag (of class '"
-                    + obj.getClass().getName() + "').");
+            throw new InvalidConfigurationFileException(this, "The body of the tag <" + super.getTagName()
+                + "> has an invalid tag (of class '" + obj.getClass().getName() + "').");
           }
         }
       }

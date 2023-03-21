@@ -138,7 +138,7 @@ public class Expressions implements ColumnsProvider, Serializable {
           cm = StructuredColumnMetadata.applyColumnTag(cm, ct, tag, this.metadata.getAdapter());
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid name for column '" + cm.getColumnName() + tag.getClassName() + "': " + e.getMessage();
-          throw new InvalidConfigurationFileException(tag, msg, msg);
+          throw new InvalidConfigurationFileException(tag, msg);
         }
 
         boolean isId = false;

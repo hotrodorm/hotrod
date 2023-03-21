@@ -193,10 +193,8 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
                 this.parts.add(p);
                 super.addChild(p);
               } catch (ClassCastException e5) {
-                throw new InvalidConfigurationFileException(this, //
-                    "Invalid tag (" + obj.getClass().getName() + ") in body of <" + super.getTagName() + "> tag", //
-                    "The body of the tag <" + super.getTagName() + "> has an invalid tag (of class '"
-                        + obj.getClass().getName() + "').");
+                throw new InvalidConfigurationFileException(this, "The body of the tag <" + super.getTagName()
+                    + "> has an invalid tag (of class '" + obj.getClass().getName() + "').");
               }
             }
           }
@@ -213,15 +211,11 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     // method
 
     if (SUtil.isEmpty(this.method)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'method cannot be empty", //
-          "Attribute 'method' of tag <" + getTagName() + "> cannot be empty. "
-              + "A unique Java method name was expected for the DAO class.");
+      throw new InvalidConfigurationFileException(this, "Attribute 'method' of tag <" + getTagName()
+          + "> cannot be empty. " + "A unique Java method name was expected for the DAO class.");
     }
     if (!this.method.matches(Patterns.VALID_JAVA_METHOD)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid method name '" + this.method + "'. " + "A Java method name must start with a lower case letter, "
-              + "and continue with letters, digits, and/or underscores", //
+      throw new InvalidConfigurationFileException(this,
           "Invalid method name '" + this.method + "' on tag <" + super.getTagName()
               + ">. A Java method name must start with a lower case letter, "
               + "and continue with letters, digits, and/or underscores.");
@@ -231,28 +225,19 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
     if (this.vo == null) {
       if (this.structuredColumns == null) {
-        throw new InvalidConfigurationFileException(this, //
-            "Missing 'vo' attribute in the <" + this.getTagName() + "> tag", //
-            "Missing 'vo' attribute in the <" + this.getTagName()
-                + "> tag. The 'vo' attribute must be specified when no inner <columns> tag is present.");
+        throw new InvalidConfigurationFileException(this, "Missing 'vo' attribute in the <" + this.getTagName()
+            + "> tag. The 'vo' attribute must be specified when no inner <columns> tag is present.");
       }
     } else {
       if (this.structuredColumns != null) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid 'vo' attribute. " + "When the 'vo' attribute is specified no inner <columns> tag can be used", //
-            "Invalid 'vo' attribute. "
-                + "When the 'vo' attribute is specified no inner <columns> tag can be used. Use one or the other but not both.");
+        throw new InvalidConfigurationFileException(this, "Invalid 'vo' attribute. "
+            + "When the 'vo' attribute is specified no inner <columns> tag can be used. Use one or the other but not both.");
       }
       if (SUtil.isEmpty(this.vo)) {
-        throw new InvalidConfigurationFileException(this, //
-            "When specified, the 'vo' attribute cannot be empty", //
-            "When specified, the 'vo' attribute cannot be empty.");
+        throw new InvalidConfigurationFileException(this, "When specified, the 'vo' attribute cannot be empty.");
       }
       if (!this.vo.matches(Patterns.VALID_JAVA_CLASS)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid 'vo' attribute with value '" + this.vo + "'. "
-                + "A Java class name must start with an upper case letter, "
-                + "and continue with letters, digits, and/or underscores", //
+        throw new InvalidConfigurationFileException(this,
             "Invalid 'vo' attribute with value '" + this.vo + "' in the tag <" + super.getTagName()
                 + ">. A Java class name must start with an upper case letter, "
                 + "and continue with letters, digits, and/or underscores.");
@@ -293,10 +278,8 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
     for (ColumnTag c : this.columns) {
       c.validate(config, adapter);
       if (cols.contains(c)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Duplicate <" + new ColumnTag().getTagName() + "> tag for column '" + c.getName() + "'", //
-            "Multiple <" + new ColumnTag().getTagName() + "> tags for the same column '" + c.getName() + "' on tag <"
-                + getTagName() + ">.");
+        throw new InvalidConfigurationFileException(this, "Multiple <" + new ColumnTag().getTagName()
+            + "> tags for the same column '" + c.getName() + "' on tag <" + getTagName() + ">.");
       }
       cols.add(c);
     }

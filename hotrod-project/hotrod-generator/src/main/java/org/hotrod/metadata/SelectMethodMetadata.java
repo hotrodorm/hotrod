@@ -120,10 +120,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       try {
         this.cr.phase1Flat(getSelectKey(), this.tag, this);
       } catch (InvalidSQLException e) {
-        throw new InvalidConfigurationFileException(this.tag, //
-            "Could not retrieve metadata for <select> tag while creating a temporary SQL view for it.\n" + "* "
-                + e.getCause().getMessage() + "\n" + "* Is the create view SQL code below valid?\n"
-                + "--- begin SQL ---\n" + e.getInvalidSQL() + "\n--- end SQL ---", //
+        throw new InvalidConfigurationFileException(this.tag,
             "Error in " + this.tag.getSourceLocation().render() + ":\n"
                 + "Could not retrieve metadata for <select> tag while creating a temporary SQL view for it.\n" + "* "
                 + e.getCause().getMessage() + "\n" + "* Is the create view SQL code below valid?\n"
@@ -139,11 +136,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         this.tag.getStructuredColumns().gatherMetadataPhase1(this.tag, this.selectGenerationTag,
             this.columnsPrefixGenerator, this.cr);
       } catch (InvalidSQLException e) {
-        throw new InvalidConfigurationFileException(this.tag, //
-            "Could not retrieve metadata for <" + this.tag.getTagName()
-                + "> tag while creating the temporary SQL view for it.\n" + "* " + e.getCause().getMessage() + "\n"
-                + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
-                + "\n--- end SQL ---", //
+        throw new InvalidConfigurationFileException(this.tag,
             "Error in " + this.tag.getSourceLocation().render() + ":\n" + "Could not retrieve metadata for <"
                 + this.tag.getTagName() + "> tag while creating the temporary SQL view for it.\n" + "* "
                 + e.getCause().getMessage() + "\n" + "* Is the create view SQL code below valid?\n"
@@ -176,10 +169,10 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
       } catch (UnresolvableDataTypeException e) {
         String msg = "Could not retrieve metadata for <" + new SelectMethodTag().getTagName()
             + ">: could not find suitable Java type for column '" + e.getColumnName() + "' ";
-        throw new InvalidConfigurationFileException(this.tag, msg, msg);
+        throw new InvalidConfigurationFileException(this.tag, msg);
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid retrieved column name: " + e.getMessage();
-        throw new InvalidConfigurationFileException(this.tag, msg, msg);
+        throw new InvalidConfigurationFileException(this.tag, msg);
       }
 
       List<VOProperty> properties = new ArrayList<VOProperty>();
@@ -200,23 +193,17 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         log.debug("--> Adding VO: " + vo);
         voRegistry.addVO(vo);
       } catch (VOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(this.tag, //
-            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
+        throw new InvalidConfigurationFileException(this.tag,
             "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
                 + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
                 + ".");
       } catch (StructuredVOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(this.tag, //
-            "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
+        throw new InvalidConfigurationFileException(this.tag,
             "Duplicate VO name '" + vo.getName() + "' in package '" + vo.getClassPackage().getPackage()
                 + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
                 + ".");
       } catch (DuplicatePropertyNameException e) {
-        throw new InvalidConfigurationFileException(e.getInitial().getTag(), //
-            e.renderMessage(), //
-            e.renderMessage());
+        throw new InvalidConfigurationFileException(e.getInitial().getTag(), e.renderMessage());
       }
 
     } else {
@@ -234,29 +221,23 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
             + "* Do all resulting columns have different and valid names?\n"
             + "* Is the create view SQL code below valid?\n" + "--- begin SQL ---\n" + e.getInvalidSQL()
             + "\n--- end SQL ---";
-        throw new InvalidConfigurationFileException(this.tag, msg, msg);
+        throw new InvalidConfigurationFileException(this.tag, msg);
       } catch (UnresolvableDataTypeException e) {
         String msg = "Could not retrieve metadata: could not find suitable Java type for column '" + e.getColumnName()
             + "' ";
-        throw new InvalidConfigurationFileException(this.tag, msg, msg);
+        throw new InvalidConfigurationFileException(this.tag, msg);
       } catch (VOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(e.getTag(), //
-            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
+        throw new InvalidConfigurationFileException(e.getTag(),
             "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
                 + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
                 + ".");
       } catch (StructuredVOAlreadyExistsException e) {
-        throw new InvalidConfigurationFileException(e.getThisTag(), //
-            "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
-                + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render(), //
+        throw new InvalidConfigurationFileException(e.getThisTag(),
             "Duplicate VO name '" + e.getThisName() + "' in package '" + e.getThisPackage().getPackage()
                 + "'. This VO name is already being used in " + e.getOtherOne().getTag().getSourceLocation().render()
                 + ".");
       } catch (DuplicatePropertyNameException e) {
-        throw new InvalidConfigurationFileException(e.getDuplicate().getTag(), //
-            e.renderMessage(), //
-            e.renderMessage());
+        throw new InvalidConfigurationFileException(e.getDuplicate().getTag(), e.renderMessage());
       }
 
     }
@@ -475,7 +456,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
               m = new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName(), vo.getTag());
             } catch (InvalidIdentifierException e) {
               String msg = "Invalid property '" + vo.getProperty() + "':" + e.getMessage();
-              throw new InvalidConfigurationFileException(tag, msg, msg);
+              throw new InvalidConfigurationFileException(tag, msg);
             }
             associations.add(m);
           }

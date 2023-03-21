@@ -59,25 +59,19 @@ public class FragmentTag extends AbstractConfigurationTag implements GenerationU
     // file
 
     if (SUtil.isEmpty(this.filename)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'file' cannot be empty: must specify a (relative) file name", //
-          "Attribute 'file' of tag <" + super.getTagName() + "> cannot be empty. "
-              + "Must specify a (relative) file name.");
+      throw new InvalidConfigurationFileException(this, "Attribute 'file' of tag <" + super.getTagName()
+          + "> cannot be empty. " + "Must specify a (relative) file name.");
     }
     this.f = new File(parentDir, this.filename);
     if (!this.f.exists()) {
       // log.info("Stack: " + LogUtil.renderStack());
-      InvalidConfigurationFileException e1 = new InvalidConfigurationFileException(this, //
-          "Could not find fragment file '" + this.f.getPath() + "'", //
+      InvalidConfigurationFileException e1 = new InvalidConfigurationFileException(this,
           "Could not find fragment file '" + this.f.getPath() + "'.");
       throw e1;
     }
     if (!this.f.isFile()) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid fragment file '" + this.f.getPath()
-              + "': must be a normal file, not a directory or other special type", //
-          "Invalid fragment file '" + this.f.getPath()
-              + "'. Must be a normal file, not a directory or other special file.");
+      throw new InvalidConfigurationFileException(this, "Invalid fragment file '" + this.f.getPath()
+          + "'. Must be a normal file, not a directory or other special file.");
     }
 
     load(primaryConfig, fileRegistry, daosTag, adapter, facetNames, currentCS);

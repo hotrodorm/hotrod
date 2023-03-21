@@ -73,16 +73,13 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
     // test
 
     if (SUtil.isEmpty(this.test)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'test' cannot be empty: must be a boolean expression", //
+      throw new InvalidConfigurationFileException(this,
           "Attribute 'test' cannot be empty: must be a boolean expression");
     }
     try {
       this.testExpression = new OgnlExpression(this.test);
     } catch (OgnlException e) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid OGNL expression: " + this.test, //
-          "Invalid OGNL expression: " + this.test);
+      throw new InvalidConfigurationFileException(this, "Invalid OGNL expression: " + this.test);
     }
     log.debug("this.testExpression=" + this.testExpression);
 
@@ -90,8 +87,7 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
 
     if (this.javaType != null) {
       if (SUtil.isEmpty(this.javaType)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Attribute 'java-type' cannot be empty: must specify a full java class name for the database column", //
+        throw new InvalidConfigurationFileException(this,
             "Attribute 'java-type' of tag <" + super.getTagName() + "> cannot be empty. " + "When specified, "
                 + "this attribute must specify a full java class name for the database column.");
       }
@@ -101,22 +97,17 @@ public class TypeSolverWhenTag extends AbstractConfigurationTag {
 
     if (this.converter != null) {
       if (this.javaType != null) {
-        throw new InvalidConfigurationFileException(this, //
-            "'java-type' and 'converter' are mutually exclusive", //
-            "Invalid attributes 'java-type' and 'converter' of tag <" + super.getTagName() + ">: "
-                + "these attributes are mutually exclusive, so only one of them can be specified in a column definition.");
+        throw new InvalidConfigurationFileException(this, "Invalid attributes 'java-type' and 'converter' of tag <"
+            + super.getTagName() + ">: "
+            + "these attributes are mutually exclusive, so only one of them can be specified in a column definition.");
       }
       if (SUtil.isEmpty(this.converter)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Attribute 'converter' cannot be empty: must specify a valid converter name", //
-            "Attribute 'converter' of tag <" + super.getTagName() + "> cannot be empty. "
-                + "Must specify a valid converter name.");
+        throw new InvalidConfigurationFileException(this, "Attribute 'converter' of tag <" + super.getTagName()
+            + "> cannot be empty. " + "Must specify a valid converter name.");
       }
       this.converterTag = config.getConverterTagByName(this.converter);
       if (this.converterTag == null) {
-        throw new InvalidConfigurationFileException(this, //
-            "Converter '" + this.converter + "' not found", //
-            "Converter '" + this.converter + "' not found.");
+        throw new InvalidConfigurationFileException(this, "Converter '" + this.converter + "' not found.");
       }
     } else {
       this.converterTag = null;

@@ -98,44 +98,31 @@ public class ExpressionTag extends AbstractConfigurationTag {
           }
         }
       } catch (ClassCastException e1) {
-        throw new InvalidConfigurationFileException(this, //
-            "The body of the tag <" + super.getTagName() + "> has an invalid tag of class " + obj.getClass().getName(), //
-            "The body of the tag <" + super.getTagName() + "> has an invalid tag of class " + obj.getClass().getName()
-                + ".");
+        throw new InvalidConfigurationFileException(this, "The body of the tag <" + super.getTagName()
+            + "> has an invalid tag of class " + obj.getClass().getName() + ".");
       }
     }
 
     // body
 
     if (this.body == null) {
-      throw new InvalidConfigurationFileException(this, //
-          "Missing SQL expression in <" + super.getTagName() + "> tag. " + "An <" + super.getTagName()
-              + "> tag must include a body with the SQL expression in it", //
-          "Missing SQL expression in <" + super.getTagName() + "> tag. " + "An <" + super.getTagName()
-              + "> tag must include a body with the SQL expression in it.");
+      throw new InvalidConfigurationFileException(this, "Missing SQL expression in <" + super.getTagName() + "> tag. "
+          + "An <" + super.getTagName() + "> tag must include a body with the SQL expression in it.");
     }
     cleanBody();
     if (SUtil.isEmpty(this.body)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid empty <" + super.getTagName() + "> tag. " + "An <" + super.getTagName()
-              + "> tag must include a non-empty body with the SQL expression in it", //
-          "Invalid empty <" + super.getTagName() + "> tag. " + "An <" + super.getTagName()
-              + "> tag must include a non-empty body with the SQL expression in it.");
+      throw new InvalidConfigurationFileException(this, "Invalid empty <" + super.getTagName() + "> tag. " + "An <"
+          + super.getTagName() + "> tag must include a non-empty body with the SQL expression in it.");
     }
 
     // property
 
     if (this.property == null) {
-      throw new InvalidConfigurationFileException(this, //
-          "Missing 'property' attribute in <" + super.getTagName() + "> tag", //
-          "Missing 'property' attribute in <" + super.getTagName() + "> tag. " + "An <" + super.getTagName()
-              + "> must specify the 'property' attribute.");
+      throw new InvalidConfigurationFileException(this, "Missing 'property' attribute in <" + super.getTagName()
+          + "> tag. " + "An <" + super.getTagName() + "> must specify the 'property' attribute.");
     }
     if (!this.property.matches(Patterns.VALID_JAVA_PROPERTY)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid property name '" + this.property + "' in the <" + super.getTagName()
-              + "> tag. A Java property name must start with a lower case letter, "
-              + "and continue with letters, digits, and/or underscores", //
+      throw new InvalidConfigurationFileException(this,
           "Invalid property name '" + this.property + "' in the <" + super.getTagName()
               + "> tag. A Java property name must start with a lower case letter, "
               + "and continue with letters, digits, and/or underscores.");
@@ -148,10 +135,7 @@ public class ExpressionTag extends AbstractConfigurationTag {
 
     if (this.className != null) {
       if (!this.className.matches(Patterns.VALID_JAVA_TYPE)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid class name '" + this.className + "' in the <" + super.getTagName()
-                + "> tag. A Java class name must start with an upper case letter, "
-                + "and continue with letters, digits, and/or underscores", //
+        throw new InvalidConfigurationFileException(this,
             "Invalid class name '" + this.className + "' in the <" + super.getTagName()
                 + "> tag. A Java class name must start with an upper case letter, "
                 + "and continue with letters, digits, and/or underscores.");
@@ -162,24 +146,18 @@ public class ExpressionTag extends AbstractConfigurationTag {
 
     if (this.converter != null) {
       if (this.className != null) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid attribute 'class' of tag <" + super.getTagName() + ">: "
-                + "the 'class' and 'converter' attributes are mutually exclusive", //
-            "Invalid attribute 'class' of tag <" + super.getTagName() + ">: "
-                + "the 'class' and 'converter' attributes are mutually exclusive, so only one of them can be specified in an <"
-                + super.getTagName() + "> definition.");
+        throw new InvalidConfigurationFileException(this, "Invalid attribute 'class' of tag <" + super.getTagName()
+            + ">: "
+            + "the 'class' and 'converter' attributes are mutually exclusive, so only one of them can be specified in an <"
+            + super.getTagName() + "> definition.");
       }
       if (SUtil.isEmpty(this.converter)) {
-        throw new InvalidConfigurationFileException(this, //
-            "When specified, the attribute 'converter' of tag <" + super.getTagName() + "> cannot be empty", //
-            "When specified, the attribute 'converter' of tag <" + super.getTagName() + "> cannot be empty. "
-                + "Must specify a valid converter name.");
+        throw new InvalidConfigurationFileException(this, "When specified, the attribute 'converter' of tag <"
+            + super.getTagName() + "> cannot be empty. " + "Must specify a valid converter name.");
       }
       this.converterTag = config.getConverterTagByName(this.converter);
       if (this.converterTag == null) {
-        throw new InvalidConfigurationFileException(this, //
-            "Converter '" + this.converter + "' not found", //
-            "Converter '" + this.converter + "' not found.");
+        throw new InvalidConfigurationFileException(this, "Converter '" + this.converter + "' not found.");
       }
     } else {
       this.converterTag = null;

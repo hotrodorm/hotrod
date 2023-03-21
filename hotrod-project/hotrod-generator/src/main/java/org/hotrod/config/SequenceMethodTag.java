@@ -87,8 +87,7 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
     // name
 
     if (SUtil.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'name' cannot be empty", //
+      throw new InvalidConfigurationFileException(this,
           "Attribute 'name' of tag <" + TAG_NAME + "> cannot be empty. " + "You must specify a sequence name.");
     }
 
@@ -100,7 +99,7 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid catalog name '" + this.catalog + "' on tag <" + super.getTagName() + "> for the table '"
           + this.name + "': " + e.getMessage();
-      throw new InvalidConfigurationFileException(this, msg, msg);
+      throw new InvalidConfigurationFileException(this, msg);
     }
 
     // schema
@@ -111,7 +110,7 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid schema name '" + this.schema + "' on tag <" + super.getTagName() + "> for the table '"
           + this.name + "': " + e.getMessage();
-      throw new InvalidConfigurationFileException(this, msg, msg);
+      throw new InvalidConfigurationFileException(this, msg);
     }
 
     // Assemble object id
@@ -121,14 +120,14 @@ public class SequenceMethodTag extends AbstractMethodTag<SequenceMethodTag> {
       nameId = Id.fromTypedSQL(this.name, adapter);
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid table name '" + this.name + "': " + e.getMessage();
-      throw new InvalidConfigurationFileException(this, msg, msg);
+      throw new InvalidConfigurationFileException(this, msg);
     }
 
     try {
       this.sequenceId = new ObjectId(catalogId, schemaId, nameId, adapter);
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid table object name: " + e.getMessage();
-      throw new InvalidConfigurationFileException(this, msg, msg);
+      throw new InvalidConfigurationFileException(this, msg);
     }
 
   }

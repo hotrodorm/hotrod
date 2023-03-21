@@ -77,15 +77,11 @@ public class ExecutorTag extends AbstractDAOTag {
     // name
 
     if (SUtil.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'name' cannot be empty", //
+      throw new InvalidConfigurationFileException(this,
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. " + "You must specify a dao name.");
     }
     if (!this.name.matches(Patterns.VALID_JAVA_CLASS)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid attribute 'class' with value '" + this.name
-              + "': mut start with an uppercase letter and continue with "
-              + "letters, digits, dollar signs, and/or underscores", //
+      throw new InvalidConfigurationFileException(this,
           "Attribute 'class' of tag <" + super.getTagName() + "> must be a valid java class name, but found '"
               + this.name + "'. " + "Valid java class names start with an uppercase letter and continue with "
               + "letters, digits, dollar signs, and/or underscores.");

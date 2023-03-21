@@ -83,10 +83,8 @@ public class ForEachTag extends DynamicSQLPart {
 
     if (this.item != null) {
       if (parameterDefinitions.find(this.item) != null) {
-        throw new InvalidConfigurationFileException(this, //
-            "The 'item' attribute specifies a parameter or variable that is already defined", //
-            "Invalid <foreach> tag. "
-                + "The 'item' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
+        throw new InvalidConfigurationFileException(this, "Invalid <foreach> tag. "
+            + "The 'item' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
       }
     } else {
       this.itemParameter = null;
@@ -94,10 +92,8 @@ public class ForEachTag extends DynamicSQLPart {
 
     if (this.index != null) {
       if (parameterDefinitions.find(this.index) != null) {
-        throw new InvalidConfigurationFileException(this, //
-            "The 'index' attribute specifies a parameter or variable that is already defined", //
-            "Invalid <foreach> tag. "
-                + "The 'index' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
+        throw new InvalidConfigurationFileException(this, "Invalid <foreach> tag. "
+            + "The 'index' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
       }
     } else {
       this.indexParameter = null;

@@ -176,7 +176,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
             this.config.getNameSolverTag());
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid identifier name for column '" + agct.getJdbcColumn().getName() + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(agct, msg, msg);
+        throw new InvalidConfigurationFileException(agct, msg);
       }
     }
 
@@ -188,7 +188,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
       if (vcm == null) {
         String msg = "Could not find version control column with name '" + vct.getName() + "' on table '" + t.getName()
             + "'.";
-        throw new InvalidConfigurationFileException(vct, msg, msg);
+        throw new InvalidConfigurationFileException(vct, msg);
       }
       log.debug("### VERSION CONTROL COLUMN SETTING: c=" + vcm.getColumnName() + " c=" + System.identityHashCode(vcm));
       vcm.setVersionControlColumn(true);
@@ -442,7 +442,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
               columnsPrefixGenerator, layout);
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
-          throw new InvalidConfigurationFileException(selectTag, msg, msg);
+          throw new InvalidConfigurationFileException(selectTag, msg);
         }
         this.selectsMetadata.add(sm);
         sm.gatherMetadataPhase1();
@@ -487,7 +487,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
             this.config.getNameSolverTag()));
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid identifier name for column '" + c.getName() + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(tableTag, msg, msg);
+        throw new InvalidConfigurationFileException(tableTag, msg);
       }
     }
     return lcm;
@@ -504,7 +504,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
             this.config.getNameSolverTag()));
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid identifier name for column '" + c.getName() + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(enumTag, msg, msg);
+        throw new InvalidConfigurationFileException(enumTag, msg);
       }
     }
     return lcm;
@@ -520,7 +520,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
             this.config.getNameSolverTag()));
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid identifier name for column '" + c.getName() + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(viewTag, msg, msg);
+        throw new InvalidConfigurationFileException(viewTag, msg);
       }
     }
     return lcm;
@@ -540,7 +540,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
               this.config.getTypeSolverTag(), this.config.getNameSolverTag()));
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid identifier name for column '" + c.getColumn().getName() + "': " + e.getMessage();
-          throw new InvalidConfigurationFileException(tableTag, msg, msg);
+          throw new InvalidConfigurationFileException(tableTag, msg);
         }
       }
       return new KeyMetadata(this, lcm);
@@ -561,7 +561,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
               this.config.getTypeSolverTag(), this.config.getNameSolverTag()));
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid identifier name for column '" + c.getColumn().getName() + "': " + e.getMessage();
-          throw new InvalidConfigurationFileException(enumTag, msg, msg);
+          throw new InvalidConfigurationFileException(enumTag, msg);
         }
       }
       return new KeyMetadata(this, lcm);
@@ -581,7 +581,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
               this.config.getTypeSolverTag(), this.config.getNameSolverTag()));
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid identifier name for column '" + c.getColumn().getName() + "': " + e.getMessage();
-          throw new InvalidConfigurationFileException(viewTag, msg, msg);
+          throw new InvalidConfigurationFileException(viewTag, msg);
         }
       }
       return new KeyMetadata(this, lcm);

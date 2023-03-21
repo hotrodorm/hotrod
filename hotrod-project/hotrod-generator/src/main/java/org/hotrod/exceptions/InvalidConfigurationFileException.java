@@ -11,37 +11,19 @@ public class InvalidConfigurationFileException extends Exception {
   private static final Logger log = LogManager.getLogger(InvalidConfigurationFileException.class);
 
   private AbstractConfigurationTag tag;
-  private String interactiveMessage;
 
-  public InvalidConfigurationFileException(final AbstractConfigurationTag tag, final String batchMessage) {
-    super(batchMessage);
-    intialize(tag, batchMessage);
+  public InvalidConfigurationFileException(final AbstractConfigurationTag tag, final String message) {
+    super(message);
+    log.debug("init");
+    intialize(tag);
   }
 
-  public InvalidConfigurationFileException(final AbstractConfigurationTag tag, final String interactiveMessage,
-      final String batchMessage) {
-    super(batchMessage);
-    log.trace("init");
-    intialize(tag, interactiveMessage);
-  }
-
-  private void intialize(final AbstractConfigurationTag tag, final String interactiveMessage) {
-//    if (tag == null) {
-//      throw new IllegalArgumentException("tag cannot be null");
-//    }
-//    log.debug("  interactiveMessage=" + interactiveMessage + "\n  loc=" + tag.getSourceLocation().render());
-//    log.debug("  parent=" + tag.getParent());
-//    tag.setErrorMessage(interactiveMessage);
-    this.interactiveMessage = interactiveMessage;
+  private void intialize(final AbstractConfigurationTag tag) {
     this.tag = tag;
   }
 
   public AbstractConfigurationTag getTag() {
     return this.tag;
-  }
-
-  public String getInteractiveMessage() {
-    return this.interactiveMessage;
   }
 
 }

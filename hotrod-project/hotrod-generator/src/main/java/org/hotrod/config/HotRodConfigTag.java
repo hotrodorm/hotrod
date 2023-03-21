@@ -118,8 +118,7 @@ public class HotRodConfigTag extends AbstractHotRodConfigTag {
     for (ConverterTag c : this.converters) {
       c.validate();
       if (this.convertersByName.containsKey(c.getName())) {
-        throw new InvalidConfigurationFileException(this, //
-            "Multiple converters with name '" + c.getName() + "'", //
+        throw new InvalidConfigurationFileException(this,
             "Duplicate converter name. There are multiple <converter> tags with the same name: '" + c.getName() + "'.");
       }
       this.convertersByName.put(c.getName(), c);

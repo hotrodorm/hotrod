@@ -51,14 +51,10 @@ public class BindTag extends DynamicSQLPart {
       throws InvalidConfigurationFileException {
 
     if (this.name == null) {
-      throw new InvalidConfigurationFileException(this, //
-          "The 'name' attribute must be specified", //
-          "Invalid <bind> tag. The 'name' attribute must be specified.");
+      throw new InvalidConfigurationFileException(this, "Invalid <bind> tag. The 'name' attribute must be specified.");
     }
     if (!this.name.matches(NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException(this, //
-          "The 'name' attribute must start with a letter "
-              + "and continue with alphanumeric caracters and/or underscores", //
+      throw new InvalidConfigurationFileException(this,
           "Invalid <bind> tag. The 'name' attribute must start with a letter "
               + "and continue with alphanumeric caracters and/or underscores but found '" + this.name + "'");
     }

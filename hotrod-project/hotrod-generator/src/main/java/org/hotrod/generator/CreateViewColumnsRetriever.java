@@ -289,7 +289,7 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
                 this.config.getTypeSolverTag());
           } catch (InvalidIdentifierException e) {
             String msg = "Invalid identifier for column '" + c.getName() + "': " + e.getMessage();
-            throw new InvalidConfigurationFileException(ctx.getTag(), msg, msg);
+            throw new InvalidConfigurationFileException(ctx.getTag(), msg);
           }
 
           String alias = aliasPrefix + cm.getColumnName();

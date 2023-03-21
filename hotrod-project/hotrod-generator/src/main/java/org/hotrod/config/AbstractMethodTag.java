@@ -36,8 +36,7 @@ public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends 
     // method
 
     if (this.method == null) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'method' cannot be empty", //
+      throw new InvalidConfigurationFileException(this,
           "Attribute 'method' of tag <" + getTagName() + "> cannot be empty. " + "Must specify a unique name.");
     }
 
@@ -45,7 +44,7 @@ public abstract class AbstractMethodTag<M extends AbstractMethodTag<M>> extends 
       this.id = Id.fromJavaMember(this.method);
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid Java method name '" + this.method + "': " + e.getMessage();
-      throw new InvalidConfigurationFileException(this, msg, msg);
+      throw new InvalidConfigurationFileException(this, msg);
     }
 
   }

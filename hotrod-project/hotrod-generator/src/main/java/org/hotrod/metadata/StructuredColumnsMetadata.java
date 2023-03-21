@@ -69,7 +69,7 @@ public class StructuredColumnsMetadata implements Serializable {
           associations.add(new VOMember(vo.getProperty(), vo.getClassPackage(), vo.getName(), vo.getTag()));
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid property name '" + vo.getProperty() + "': " + e.getMessage();
-          throw new InvalidConfigurationFileException(this.tag, msg, msg);
+          throw new InvalidConfigurationFileException(this.tag, msg);
         }
       }
 

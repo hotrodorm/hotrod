@@ -183,10 +183,8 @@ public class TableTag extends AbstractEntityDAOTag {
     // name
 
     if (SUtil.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'name' cannot be empty", //
-          "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
-              + "Must specify a database table name.");
+      throw new InvalidConfigurationFileException(this, "Attribute 'name' of tag <" + super.getTagName()
+          + "> cannot be empty. " + "Must specify a database table name.");
     }
 
     // catalog
@@ -197,7 +195,7 @@ public class TableTag extends AbstractEntityDAOTag {
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid catalog name '" + this.catalog + "' on tag <" + super.getTagName() + "> for the table '"
           + this.name + "': " + e.getMessage();
-      throw new InvalidConfigurationFileException(this, msg, msg);
+      throw new InvalidConfigurationFileException(this, msg);
     }
 
     // schema
@@ -208,7 +206,7 @@ public class TableTag extends AbstractEntityDAOTag {
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid schema name '" + this.schema + "' on tag <" + super.getTagName() + "> for the table '"
           + this.name + "': " + e.getMessage();
-      throw new InvalidConfigurationFileException(this, msg, msg);
+      throw new InvalidConfigurationFileException(this, msg);
     }
 
     // extends
@@ -216,13 +214,11 @@ public class TableTag extends AbstractEntityDAOTag {
     if (this.extendsTable == null) {
 
       if (this.extendsCatalog != null) {
-        throw new InvalidConfigurationFileException(this, //
-            "Attribute 'extends-catalog' cannot only specified if the 'extends' attribute is present", //
+        throw new InvalidConfigurationFileException(this,
             "Attribute 'extends-catalog' cannot only specified if the 'extends' attribute is present");
       }
       if (this.extendsSchema != null) {
-        throw new InvalidConfigurationFileException(this, //
-            "Attribute 'extends-schema' cannot only specified if the 'extends' attribute is present", //
+        throw new InvalidConfigurationFileException(this,
             "Attribute 'extends-schema' cannot only specified if the 'extends' attribute is present");
       }
       this.extendsId = null;
@@ -236,7 +232,7 @@ public class TableTag extends AbstractEntityDAOTag {
         extendsTableId = Id.fromTypedSQL(this.extendsTable, adapter);
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid value '" + this.extendsTable + "' on 'extends' attribute: " + e.getMessage();
-        throw new InvalidConfigurationFileException(this, msg, msg);
+        throw new InvalidConfigurationFileException(this, msg);
       }
 
       // extends-catalog
@@ -247,7 +243,7 @@ public class TableTag extends AbstractEntityDAOTag {
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid extends-catalog name '" + this.catalog + "' on tag <" + super.getTagName()
             + "> for the table '" + this.name + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(this, msg, msg);
+        throw new InvalidConfigurationFileException(this, msg);
       }
 
       // extends-schema
@@ -258,7 +254,7 @@ public class TableTag extends AbstractEntityDAOTag {
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid extends-schema name '" + this.schema + "' on tag <" + super.getTagName()
             + "> for the table '" + this.name + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(this, msg, msg);
+        throw new InvalidConfigurationFileException(this, msg);
       }
 
       // Assemble extendsId
@@ -267,7 +263,7 @@ public class TableTag extends AbstractEntityDAOTag {
         this.extendsId = new ObjectId(extendsCatalogId, extendsSchemaId, extendsTableId, adapter);
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid 'extends' table object name: " + e.getMessage();
-        throw new InvalidConfigurationFileException(this, msg, msg);
+        throw new InvalidConfigurationFileException(this, msg);
       }
 
     }
@@ -277,15 +273,11 @@ public class TableTag extends AbstractEntityDAOTag {
     if (this.javaClassName != null) {
       this.javaClassName = this.javaClassName.trim();
       if (SUtil.isEmpty(this.javaClassName)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Attribute 'java-name' cannot be empty", //
-            "Invalid 'java-name' attribute value of tag <" + super.getTagName() + "> for the table '" + this.name
-                + "'. When specified, the value cannot be empty.");
+        throw new InvalidConfigurationFileException(this, "Invalid 'java-name' attribute value of tag <"
+            + super.getTagName() + "> for the table '" + this.name + "'. When specified, the value cannot be empty.");
       }
       if (!this.javaClassName.matches(Patterns.VALID_JAVA_CLASS)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid 'java-name' attribute value '" + this.javaClassName + "': must start with an upper case letter, "
-                + "and continue with any combination of letters, digits, underscores, or dollar signs", //
+        throw new InvalidConfigurationFileException(this,
             "Invalid 'java-name' attribute value '" + this.javaClassName + "' of tag <" + super.getTagName()
                 + ">. When specified, the java-name must start with an upper case letter, "
                 + "and continue with any combination of letters, digits, underscores, or dollar signs.");
@@ -317,14 +309,14 @@ public class TableTag extends AbstractEntityDAOTag {
       log.debug(">>> nameId=" + nameId.getCanonicalSQLName() + " / " + nameId.getJavaClassName());
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid table name '" + this.name + "': " + e.getMessage();
-      throw new InvalidConfigurationFileException(this, msg, msg);
+      throw new InvalidConfigurationFileException(this, msg);
     }
 
     try {
       this.id = new ObjectId(catalogId, schemaId, nameId, adapter);
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid table object name: " + e.getMessage();
-      throw new InvalidConfigurationFileException(this, msg, msg);
+      throw new InvalidConfigurationFileException(this, msg);
     }
 
     // column-seam: no validation necessary
@@ -347,8 +339,7 @@ public class TableTag extends AbstractEntityDAOTag {
     for (ColumnTag c : this.columns) {
       c.validate(config, adapter);
       if (cols.contains(c)) {
-        throw new InvalidConfigurationFileException(c, //
-            "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name", //
+        throw new InvalidConfigurationFileException(c,
             "Multiple <" + new ColumnTag().getTagName() + "> tags with the same name on tag <" + super.getTagName()
                 + "> for table '" + this.id.getCanonicalSQLName() + "'. You cannot specify the same column name "
                 + "multiple times on a same table.");
@@ -452,20 +443,17 @@ public class TableTag extends AbstractEntityDAOTag {
     JdbcTable jt = metadata.findJdbcTable(this.id.getCanonicalSQLName());
 
     if (jt == null) {
-      throw new InvalidConfigurationFileException(this, //
-          "Could not find database table '" + this.id.getCanonicalSQLName() + "'", //
-          "Could not find database table '" + this.id.getCanonicalSQLName()
-              + "' as specified in the <table> tag of the configuration file. "
-              + "\n\nPlease verify the specified database catalog and schema names are correct according to this database. "
-              + "You can try leaving the catalog/schema values empty, so " + Constants.TOOL_NAME
-              + " will list all available values.");
+      throw new InvalidConfigurationFileException(this, "Could not find database table '"
+          + this.id.getCanonicalSQLName() + "' as specified in the <table> tag of the configuration file. "
+          + "\n\nPlease verify the specified database catalog and schema names are correct according to this database. "
+          + "You can try leaving the catalog/schema values empty, so " + Constants.TOOL_NAME
+          + " will list all available values.");
     }
 
     for (ColumnTag ct : this.columns) {
       ct.populateJdbcElements(metadata, jt);
       if (ct.getJdbcColumn() == null) {
-        throw new InvalidConfigurationFileException(ct, //
-            "Could not find database column '" + ct.getName() + "'", //
+        throw new InvalidConfigurationFileException(ct,
             "Could not find column '" + ct.getName() + "' on database table '" + this.id.getCanonicalSQLName()
                 + "', as specified in the <column> tag of the configuration file. ");
       }

@@ -38,7 +38,6 @@ import org.hotrod.metadata.VORegistry.StructuredVOAlreadyExistsException;
 import org.hotrod.metadata.VORegistry.VOAlreadyExistsException;
 import org.hotrod.utils.ClassPackage;
 import org.hotrod.utils.JdbcTypes;
-import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.JdbcColumn;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
@@ -280,7 +279,7 @@ public class Metadata {
         try {
           tm.gatherSelectsMetadataPhase1(this, cr, layout);
         } catch (InvalidConfigurationFileException e) {
-          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
+          throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
         }
       }
 
@@ -288,7 +287,7 @@ public class Metadata {
         try {
           vm.gatherSelectsMetadataPhase1(this, cr, layout);
         } catch (InvalidConfigurationFileException e) {
-          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
+          throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
         }
       }
 
@@ -296,7 +295,7 @@ public class Metadata {
         try {
           em.gatherSelectsMetadataPhase1(this, cr, layout);
         } catch (InvalidConfigurationFileException e) {
-          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
+          throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
         }
       }
 
@@ -304,7 +303,7 @@ public class Metadata {
         try {
           dm.gatherSelectsMetadataPhase1(this, cr, layout);
         } catch (InvalidConfigurationFileException e) {
-          throw new ControlledException(e.getTag().getSourceLocation(), e.getInteractiveMessage(), e.getMessage());
+          throw new ControlledException(e.getTag().getSourceLocation(), e.getMessage());
         }
       }
 

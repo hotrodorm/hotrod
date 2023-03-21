@@ -132,7 +132,7 @@ public abstract class DataSetMetadataFactory {
 
     } else {
       String msg = "Could not find table, enum, or view with name '" + t.getName() + "'.";
-      throw new InvalidConfigurationFileException(config, msg, msg);
+      throw new InvalidConfigurationFileException(config, msg);
     }
 
   }

@@ -73,49 +73,39 @@ public class ParameterTag extends AbstractConfigurationTag {
     // name
 
     if (this.name == null) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'name' must be specified", //
+      throw new InvalidConfigurationFileException(this,
           "Invalid <parameter> tag -- the 'name' attribute must be specified.");
     }
     if (SUtil.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'name' cannot be empty or blank", //
+      throw new InvalidConfigurationFileException(this,
           "Invalid <parameter> tag -- the 'name' attribute cannot be blank.");
     }
     if (!this.name.matches(Patterns.VALID_JAVA_VARIABLE)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid Java parameter name '" + this.name
-              + "': must start with a lower case letter and continue with letters, digits, and/or underscores", //
-          "Invalid Java parameter name '" + this.name
-              + "'. The 'name' attribute must start with a lower case letter and continue with letters, digits, and/or underscores.");
+      throw new InvalidConfigurationFileException(this, "Invalid Java parameter name '" + this.name
+          + "'. The 'name' attribute must start with a lower case letter and continue with letters, digits, and/or underscores.");
     }
 
     try {
       this.id = Id.fromJavaMember(this.name);
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid name '" + this.name + "' for a Java parameter: " + e.getMessage();
-      throw new InvalidConfigurationFileException(this, msg, msg);
+      throw new InvalidConfigurationFileException(this, msg);
     }
 
     // java-type
 
     if (this.javaType == null) {
-      throw new InvalidConfigurationFileException(this, //
-          "The 'java-type' attribute cannot be empty", //
+      throw new InvalidConfigurationFileException(this,
           "invalid <parameter> tag -- the 'java-type' attribute cannot be empty.");
     }
     if (SUtil.isEmpty(this.javaType)) {
-      throw new InvalidConfigurationFileException(this, //
-          "The 'java-type' attribute cannot be blank", //
+      throw new InvalidConfigurationFileException(this,
           "invalid <parameter> tag -- the 'java-type' attribute cannot be blank.");
     }
     if (!this.javaType.matches(Patterns.VALID_JAVA_TYPE)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid 'java-type' attribute with value '" + this.javaType
-              + "':  must start with a letter and continue with letters, digits, and/or underscores", //
-          "invalid <parameter> tag -- "
-              + "the 'java-type' attribute must start with a letter and continue with letters, digits, and/or underscores, but found '"
-              + this.javaType + "'.");
+      throw new InvalidConfigurationFileException(this, "invalid <parameter> tag -- "
+          + "the 'java-type' attribute must start with a letter and continue with letters, digits, and/or underscores, but found '"
+          + this.javaType + "'.");
     }
 
     // jdbc-type

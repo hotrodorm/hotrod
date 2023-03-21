@@ -67,42 +67,33 @@ public class ConverterTag extends AbstractConfigurationTag {
     // name
 
     if (SUtil.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'name' cannot be empty", //
-          "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
-              + "You must specify a converter name.");
+      throw new InvalidConfigurationFileException(this, "Attribute 'name' of tag <" + super.getTagName()
+          + "> cannot be empty. " + "You must specify a converter name.");
     }
     if (!this.name.matches(NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid attribute 'name': must be a valid alpahnumeric name", //
-          "Attribute 'name' of tag <" + super.getTagName()
-              + "> must be a valid name. An alphanumeric name was expected but '" + this.name + "' was specified.");
+      throw new InvalidConfigurationFileException(this, "Attribute 'name' of tag <" + super.getTagName()
+          + "> must be a valid name. An alphanumeric name was expected but '" + this.name + "' was specified.");
     }
 
     // java-type
 
     if (SUtil.isEmpty(this.javaType)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'java-type' cannot be empty", //
+      throw new InvalidConfigurationFileException(this,
           "Attribute 'java-type' of tag <" + super.getTagName() + "> with name '" + this.name + "' cannot be empty.");
     }
     if (!this.javaType.matches(FULL_CLASS_NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid attribute 'java-type': must be a valid java full class name (including packages)", //
-          "Attribute 'java-type' of tag <" + super.getTagName() + "> must be a valid java full class name, but '"
-              + this.javaType + "' was specified.");
+      throw new InvalidConfigurationFileException(this, "Attribute 'java-type' of tag <" + super.getTagName()
+          + "> must be a valid java full class name, but '" + this.javaType + "' was specified.");
     }
 
     // java-intermediate-type
 
     if (SUtil.isEmpty(this.javaIntermediateType)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'java-intermediate-type' cannot be empty", //
+      throw new InvalidConfigurationFileException(this,
           "Attribute 'java-intermediate-type' of tag <" + super.getTagName() + "> cannot be empty.");
     }
     if (!this.javaIntermediateType.matches(FULL_CLASS_NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'java-intermediate-type' must be a valid java full class name", //
+      throw new InvalidConfigurationFileException(this,
           "Attribute 'java-intermediate-type' of tag <" + super.getTagName()
               + "> must be a valid java full class name, but '" + this.javaIntermediateType + "' was specified.");
     }
@@ -110,9 +101,7 @@ public class ConverterTag extends AbstractConfigurationTag {
     if (gs == null) {
 
       String types = ListWriter.render(new ArrayList<String>(ACCESSORS.keySet()), "", " - ", "\n", "", "", "");
-      throw new InvalidConfigurationFileException(this, //
-          "Unsupported java-intermediate-type '" + this.javaIntermediateType
-              + "': could not find a simple JDBC getter and setter for this type. See documentation for allowed types", //
+      throw new InvalidConfigurationFileException(this,
           "Unsupported java-intermediate-type '" + this.javaIntermediateType + "' on tag <" + super.getTagName()
               + ">. No simple JDBC getter and setter found for this type. " + "The supported types are:\n" + types);
     }
@@ -122,15 +111,12 @@ public class ConverterTag extends AbstractConfigurationTag {
     // class
 
     if (SUtil.isEmpty(this.javaClass)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'class'  cannot be empty", //
+      throw new InvalidConfigurationFileException(this,
           "Attribute 'class' of tag <" + super.getTagName() + "> cannot be empty.");
     }
     if (!this.javaClass.matches(FULL_CLASS_NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid attribute 'java-class': must be a valid java full class name", //
-          "Attribute 'java-class' of tag <" + super.getTagName() + "> must be a valid java full class name, but '"
-              + this.javaType + "' was specified.");
+      throw new InvalidConfigurationFileException(this, "Attribute 'java-class' of tag <" + super.getTagName()
+          + "> must be a valid java full class name, but '" + this.javaType + "' was specified.");
     }
 
   }

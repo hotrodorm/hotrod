@@ -93,8 +93,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
           p = (DynamicSQLPart) obj;
           p.retrievePartsAndValidate(parameterDefinitions);
         } catch (ClassCastException e2) {
-          throw new InvalidConfigurationFileException(this, //
-              "Invalid inner tag of class " + obj.getClass().getName(), //
+          throw new InvalidConfigurationFileException(this,
               "Malformed content of the <query> tag. Invalid inner tag of class " + obj.getClass().getName());
         }
       }
@@ -143,8 +142,7 @@ public abstract class DynamicSQLPart extends AbstractConfigurationTag {
       this.params.add(p);
 
       if (this.definitions.containsKey(p.getName())) {
-        throw new InvalidConfigurationFileException(p, //
-            "Duplicate parameter name '" + p.getName() + "'", //
+        throw new InvalidConfigurationFileException(p,
             "Duplicate parameter name '" + p.getName() + "'. Please specify a different name for each parameter.");
       }
       this.definitions.put(p.getName(), p);

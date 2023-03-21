@@ -51,7 +51,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   private List<ViewTag> views = new ArrayList<ViewTag>();
   private List<EnumTag> enums = new ArrayList<EnumTag>();
   private List<ExecutorTag> executors = new ArrayList<ExecutorTag>();
-  private List<ExcludeTag> excludes = new ArrayList<ExcludeTag>();
   private List<FragmentTag> fragments = new ArrayList<FragmentTag>();
   private List<FacetTag> facets = new ArrayList<FacetTag>();
   private Map<String, FacetTag> assembledFacets = new HashMap<String, FacetTag>();
@@ -87,11 +86,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   @XmlElement(name = "dao")
   public void setExecutor(final ExecutorTag executor) {
     this.executors.add(executor);
-  }
-
-  @XmlElement
-  public void setExclude(final ExcludeTag e) {
-    this.excludes.add(e);
   }
 
   @XmlElement
@@ -179,10 +173,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     });
     super.addChildren(this.executors);
 
-    for (ExcludeTag e : this.excludes) {
-      e.validate(adapter, currentCS);
-    }
-
     for (FacetTag f : this.facets) {
       f.validate(config, daosTag, fragmentConfig, adapter);
     }
@@ -263,7 +253,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
     this.views.addAll(other.views);
     this.enums.addAll(other.enums);
     this.executors.addAll(other.executors);
-    this.excludes.addAll(other.excludes);
     this.facets.addAll(other.facets);
   }
 
@@ -401,10 +390,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
 
   public List<ExecutorTag> getAllExecutors() {
     return this.allFacets.getExecutors();
-  }
-
-  public List<ExcludeTag> getExcludes() {
-    return this.excludes;
   }
 
   public List<FacetTag> getFacets() {

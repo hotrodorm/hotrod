@@ -109,17 +109,14 @@ public class SelectGenerationTag extends AbstractConfigurationTag {
       this.tempViewBaseName = DEFAULT_TEMP_VIEW_NAME;
     } else {
       if (SUtil.isEmpty(this.tempViewBaseName)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Attribute '" + ATT_NAME + "' of tag <" + super.getTagName() + "> cannot be empty", //
+        throw new InvalidConfigurationFileException(this,
             "Attribute '" + ATT_NAME + "' of tag <" + super.getTagName() + "> cannot be empty. "
                 + "Must specify a temporary view name, " + "a name that is NOT used by any existing table, "
                 + "view or any other database object on this database. "
                 + "A view with this name may be created and dropped " + "several times during the DAO generation.");
       }
       if (!this.tempViewBaseName.matches(VIEW_NAME_PATTERN)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid attribute '" + ATT_NAME + "': when specified it must start with a letter, "
-                + "and continue with one or more " + "letters, or digits", //
+        throw new InvalidConfigurationFileException(this,
             "Attribute '" + ATT_NAME + "' of tag <" + super.getTagName()
                 + "> must be a valid view name. Specified value is '" + this.tempViewBaseName
                 + "' but must start with a letter, " + "and continue with one or more " + "letters, or digits.");

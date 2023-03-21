@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrodorm.hotrod.utils.SUtil;
-import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 
 @XmlRootElement(name = "exclude")
 public class ExcludeTag extends AbstractConfigurationTag {
@@ -32,24 +31,16 @@ public class ExcludeTag extends AbstractConfigurationTag {
 
   // Behavior
 
-  public void validate(final DatabaseAdapter adapter, final CatalogSchema currentCS)
-      throws InvalidConfigurationFileException {
-
-    // name
-
+  public void validate(final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
     if (SUtil.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'name' cannot be empty", //
-          "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. "
-              + "It must specify a table or view.");
+      throw new InvalidConfigurationFileException(this, "The attribute 'name' of the tag <exclude> must be specified");
     }
-
   }
 
   // Getters
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   // Merging logic

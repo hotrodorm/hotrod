@@ -31,8 +31,7 @@ public class MyBatisProperties implements Serializable {
       } else if (FALSE.equals(p.getValue())) {
         this.checkedPersistenceException = false;
       } else {
-        throw new InvalidConfigurationFileException(tag, //
-            "Invalid value '" + p.getValue() + "' for property '" + p.getName() + "'. Valid values are: true, false", //
+        throw new InvalidConfigurationFileException(tag,
             "Invalid value '" + p.getValue() + "' for property '" + p.getName() + "'. Valid values are: true, false");
       }
     } else if (PROPERTY_MULTILINE_TOSTRING.equals(p.getName())) {
@@ -41,13 +40,11 @@ public class MyBatisProperties implements Serializable {
       } else if (FALSE.equals(p.getValue())) {
         this.multilineTostring = false;
       } else {
-        throw new InvalidConfigurationFileException(tag, //
-            "Invalid value '" + p.getValue() + "' for property '" + p.getName() + "'. Valid values are: true, false", //
+        throw new InvalidConfigurationFileException(tag,
             "Invalid value '" + p.getValue() + "' for property '" + p.getName() + "'. Valid values are: true, false");
       }
     } else {
-      throw new InvalidConfigurationFileException(tag, //
-          "Invalid property name '" + p.getName() + "'. Valid property names are: " + getAllPropertyNames(), //
+      throw new InvalidConfigurationFileException(tag,
           "Invalid property name '" + p.getName() + "'. Valid property names are: " + getAllPropertyNames());
     }
 

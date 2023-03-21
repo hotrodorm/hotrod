@@ -123,7 +123,7 @@ public class ExecutorDAOMetadata implements DataSetMetadata, Serializable {
               columnsPrefixGenerator, layout);
         } catch (InvalidIdentifierException e) {
           String msg = "Invalid method name '" + selectTag.getMethod() + "': " + e.getMessage();
-          throw new InvalidConfigurationFileException(selectTag, msg, msg);
+          throw new InvalidConfigurationFileException(selectTag, msg);
         }
         this.selectsMetadata.add(sm);
         sm.gatherMetadataPhase1();

@@ -98,14 +98,11 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
       super.addChild(s);
       if (seqNames.contains(s.getSequenceId())) {
         String msg = "Duplicate sequence " + s.getSequenceId().getRenderedSQLName();
-        throw new InvalidConfigurationFileException(this, //
-            msg, msg);
+        throw new InvalidConfigurationFileException(this, msg);
       }
       String method = s.getMethod();
       if (this.declaredMethodNames.contains(method)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Duplicate sequence method-name '" + method + "'", //
-            "Duplicate sequence method-name '" + method + "'.");
+        throw new InvalidConfigurationFileException(this, "Duplicate sequence method-name '" + method + "'");
       }
       seqNames.add(s.getSequenceId());
       this.declaredMethodNames.add(method);
@@ -118,10 +115,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
       q.validate(daosTag, config, fragmentConfig);
       super.addChild(q);
       if (this.declaredMethodNames.contains(q.getMethod())) {
-        throw new InvalidConfigurationFileException(this, //
-            "Duplicate java-method-name '" + q.getMethod()
-                + "'. cannot add multiple queries or sequences with identical 'java-method-name' "
-                + "(specified or implied), even if they have different parameters (different signature)", //
+        throw new InvalidConfigurationFileException(this,
             "Duplicate java-method-name '" + q.getMethod()
                 + "'. cannot add multiple queries or sequences with identical java-method-name "
                 + "(specified or implied) in the same <dao> tag. " + "For <query> tags they cannot have the same name, "
@@ -140,8 +134,7 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
       super.addChild(s);
 
       if (methodNames.contains(s.getMethod())) {
-        throw new InvalidConfigurationFileException(s, //
-            "Duplicate method name '" + s.getMethod() + "'", //
+        throw new InvalidConfigurationFileException(s,
             "Duplicate method name '" + s.getMethod() + "' on <" + s.getTagName() + "> tag.");
       }
       methodNames.add(s.getMethod());

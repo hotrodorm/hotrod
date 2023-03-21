@@ -83,7 +83,7 @@ public class VOMetadata implements Serializable {
         m = new VOMember(a.getProperty(), am.getClassPackage(), am.getName(), a);
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid property name '" + a.getProperty() + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(tag, msg, msg);
+        throw new InvalidConfigurationFileException(tag, msg);
       }
       this.associationMembers.add(m);
     }
@@ -98,7 +98,7 @@ public class VOMetadata implements Serializable {
         m = new VOMember(c.getProperty(), com.getClassPackage(), com.getName(), c);
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid property name '" + c.getProperty() + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(tag, msg, msg);
+        throw new InvalidConfigurationFileException(tag, msg);
       }
       this.collectionMembers.add(m);
     }
@@ -112,11 +112,8 @@ public class VOMetadata implements Serializable {
       this.entityVOSuperClass = tag.getVORegistry()
           .findEntityVOClass(this.tableMetadata != null ? this.tableMetadata : this.viewMetadata);
       if (this.entityVOSuperClass == null) {
-        throw new InvalidConfigurationFileException(tag, //
-            "Invalid 'extended-vo' attribute with value '" + tag.getExtendedVO()
-                + "'. There's no table or view VO with that name", //
-            "Invalid 'extended-vo' attribute with value '" + tag.getExtendedVO()
-                + "'. There's no table or view VO with that name.");
+        throw new InvalidConfigurationFileException(tag, "Invalid 'extended-vo' attribute with value '"
+            + tag.getExtendedVO() + "'. There's no table or view VO with that name.");
       }
     } else { // it's a table or view VO
       this.entityVOSuperClass = null;

@@ -74,8 +74,7 @@ public class FacetTag extends AbstractConfigurationTag {
     // name
 
     if (SUtil.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'name' cannot be empty", //
+      throw new InvalidConfigurationFileException(this,
           "Attribute 'name' of tag <" + super.getTagName() + "> cannot be empty. " + "You must specify a facet name.");
     }
 

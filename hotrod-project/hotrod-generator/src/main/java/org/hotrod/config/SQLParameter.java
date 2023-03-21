@@ -56,18 +56,15 @@ public class SQLParameter implements SQLSegment {
     // name
 
     if (!this.name.matches(VALID_NAME_PATTERN)) {
-      throw new InvalidConfigurationFileException(tag, //
-          "Invalid parameter name '" + this.name + "'. Must start with a letter and "
-              + "continue with letters, digits, and/or underscores", //
-          "Invalid parameter name '" + this.name + "'. Must start with a letter and "
-              + "continue with letters, digits, and/or underscores.");
+      throw new InvalidConfigurationFileException(tag, "Invalid parameter name '" + this.name
+          + "'. Must start with a letter and " + "continue with letters, digits, and/or underscores.");
     }
 
     try {
       this.id = Id.fromJavaMember(this.name);
     } catch (InvalidIdentifierException e) {
       String msg = "Invalid parameter name '" + this.name + "': " + e.getMessage();
-      throw new InvalidConfigurationFileException(tag, msg, msg);
+      throw new InvalidConfigurationFileException(tag, msg);
     }
 
   }

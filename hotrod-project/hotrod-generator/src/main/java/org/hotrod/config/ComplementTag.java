@@ -86,10 +86,8 @@ public class ComplementTag extends EnhancedSQLPart {
           p = (DynamicSQLPart) obj; // dynamic sql part
           p.retrievePartsAndValidate(parameters);
         } catch (ClassCastException e2) {
-          throw new InvalidConfigurationFileException(this, //
-              "Malformed content: invalid inner tag of class " + obj.getClass().getName(), //
-              "Malformed content of the <" + this.getTagName() + "> tag. Invalid inner tag of class "
-                  + obj.getClass().getName());
+          throw new InvalidConfigurationFileException(this, "Malformed content of the <" + this.getTagName()
+              + "> tag. Invalid inner tag of class " + obj.getClass().getName());
         }
       }
       this.parts.add(p);

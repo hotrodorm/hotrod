@@ -166,10 +166,9 @@ public class ConfigurationLoader {
       SourceLocation loc = e.getTag().getSourceLocation();
       log.debug("loc=" + loc);
       if (loc == null) {
-        throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage(),
-            e.getInteractiveMessage());
+        throw new ControlledException("Invalid configuration file '" + f.getPath() + "': " + e.getMessage());
       } else {
-        throw new ControlledException(loc, e.getMessage(), e.getInteractiveMessage());
+        throw new ControlledException(loc, e.getMessage());
       }
 
     } catch (GeneratorNotFoundException e) {

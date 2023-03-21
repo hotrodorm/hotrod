@@ -42,8 +42,7 @@ public class SetTag extends DynamicSQLPart {
       try {
         ParameterisableTextPart text = (ParameterisableTextPart) p;
         if (!text.isEmpty()) {
-          throw new InvalidConfigurationFileException(this, //
-              "A <set> tag can only include other tags, but no free text content in it", //
+          throw new InvalidConfigurationFileException(this,
               "Invalid <set> tag. " + "A <set> tag can only include other tags, but no free text content in it.");
         }
         // it.remove();

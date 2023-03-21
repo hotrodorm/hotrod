@@ -52,8 +52,7 @@ public class WhereTag extends DynamicSQLPart {
       try {
         ParameterisableTextPart text = (ParameterisableTextPart) p;
         if (!text.isEmpty()) {
-          throw new InvalidConfigurationFileException(this, //
-              "A <where> tag can only include other tags, but no free text content in it", //
+          throw new InvalidConfigurationFileException(this,
               "Invalid <where> tag. " + "A <where> tag can only include other tags, but no free text content in it.");
         }
         // it.remove();

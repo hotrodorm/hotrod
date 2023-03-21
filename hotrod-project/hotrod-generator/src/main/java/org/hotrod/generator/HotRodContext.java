@@ -3,18 +3,21 @@ package org.hotrod.generator;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.Constants;
 import org.hotrod.config.EnumTag;
+import org.hotrod.config.ExcludeTag;
 import org.hotrod.config.HotRodConfigTag;
 import org.hotrod.config.MyBatisSpringTag;
+import org.hotrod.config.SchemaTag;
 import org.hotrod.config.SelectGenerationTag.SelectStrategy;
 import org.hotrod.config.TableTag;
 import org.hotrod.config.ViewTag;
@@ -28,6 +31,7 @@ import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
 import org.nocrala.tools.database.tartarus.connectors.DatabaseConnectorFactory.UnsupportedDatabaseException;
+import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
@@ -52,14 +56,15 @@ public class HotRodContext {
   private Metadata metadata;
 
   public HotRodContext(final File configFile, final String jdbcdriverclass, final String jdbcurl,
-      final String jdbcusername, final String jdbcpassword, final String jdbccatalog, final String jdbcschema,
-      final File baseDir, final LinkedHashSet<String> facetNames, final Feedback feedback) throws ControlledException {
+      final String jdbcusername, final String jdbcpassword, final String currentJDBCCatalog,
+      final String currentJDBCSchema, final File baseDir, final LinkedHashSet<String> facetNames,
+      final Feedback feedback) throws ControlledException {
 
     feedback.info("");
     feedback.info("Configuration File: " + configFile);
 
-    this.loc = new DatabaseLocation(jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, jdbccatalog, jdbcschema,
-        null);
+    this.loc = new DatabaseLocation(jdbcdriverclass, jdbcurl, jdbcusername, jdbcpassword, currentJDBCCatalog,
+        currentJDBCSchema, null);
 
     feedback.info("Database URL: " + loc.getUrl());
 
@@ -138,8 +143,8 @@ public class HotRodContext {
       log.debug("Main Configuration loaded.");
 
       MyBatisSpringTag mst = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
-      boolean autoDiscovery = mst.isDiscoverEnabled(config);
-      feedback.info("Auto-discovery of tables and views " + (autoDiscovery ? "enabled." : "disabled."));
+      boolean discover = mst.isDiscoverEnabled(config);
+      feedback.info("Discover " + (discover ? "enabled." : "disabled."));
       feedback.info(" ");
 
       // Database Object Scope
@@ -161,30 +166,29 @@ public class HotRodContext {
 
         log.debug("gen 1");
         if (mst.getSelectGeneration().getStrategy() == SelectStrategy.RESULT_SET) {
-          if (autoDiscovery) {
-            Set<DatabaseObject> excludeIds = config.getExcludes().stream()
-                .map(e -> new DatabaseObject(
-                    e.getObjectId().getCatalog() == null ? null : e.getObjectId().getCatalog().getCanonicalSQLName(),
-                    e.getObjectId().getSchema() == null ? null : e.getObjectId().getSchema().getCanonicalSQLName(),
-                    e.getObjectId().getCanonicalSQLName()))
-                .collect(Collectors.toSet());
-//            log.info("excludeIds: " + excludeIds.size());
-//            excludeIds.forEach(e -> System.out.println("- Exclude: "+e.renderFullName()));
-            try {
-              db = new JdbcDatabase(conn, loc.getCatalogSchema(), mst.getOtherSchemas(), excludeIds);
-              
-              db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views, discoverSchemas, excludeIds);
+          if (discover) {
 
-              
-              
-            } catch (InvalidCatalogSchemaException e1) {
-              throw new ControlledException(e1.getMessage());
+            List<CatalogSchema> discoverCS = new ArrayList<>();
+            Set<DatabaseObject> excludeIds = new HashSet<>();
+
+            for (SchemaTag s : mst.getDiscover().getAllSchemaTags()) {
+              discoverCS.add(new CatalogSchema(s.getCatalog(), s.getName()));
+              for (ExcludeTag ex : s.getExcludes()) {
+                excludeIds.add(new DatabaseObject(s.getCatalog(), s.getName(), ex.getName()));
+              }
             }
+
+            this.db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views, discoverCS, excludeIds);
+
           } else {
-            db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views);
+
+            this.db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views);
+
           }
         } else {
-          db = new JdbcDatabase(loc, tables, views);
+
+          this.db = new JdbcDatabase(loc, tables, views);
+
         }
 
         log.debug("gen 2");
@@ -196,6 +200,9 @@ public class HotRodContext {
       } catch (SQLException e) {
         e.printStackTrace();
         throw new ControlledException("Could not retrieve database metadata - " + XUtil.abridge(e));
+      } catch (InvalidCatalogSchemaException e) {
+        String msg = "Invalid catalog/schema: " + e.getMessage();
+        throw new ControlledException(msg);
       } catch (CatalogNotSupportedException e) {
         throw new ControlledException("This database does not support catalogs through the JDBC driver. "
             + "Please specify an empty value for the default catalog property instead of '" + loc.getDefaultCatalog()

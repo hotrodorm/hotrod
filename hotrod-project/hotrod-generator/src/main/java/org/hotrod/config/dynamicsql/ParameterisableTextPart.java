@@ -72,31 +72,22 @@ public class ParameterisableTextPart extends DynamicSQLPart {
 
       suffix = this.txt.indexOf(SQLParameter.SUFFIX, prefix + SQLParameter.PREFIX.length());
       if (suffix == -1) {
-        throw new InvalidConfigurationFileException(tag, //
-            "Unmatched parameter delimiters; found an '" + SQLParameter.PREFIX + "' but not an '" + SQLParameter.SUFFIX
-                + "'", //
-            "Unmatched parameter delimiters; found an '" + SQLParameter.PREFIX + "' but not an '" + SQLParameter.SUFFIX
-                + "'.");
+        throw new InvalidConfigurationFileException(tag, "Unmatched parameter delimiters; found an '"
+            + SQLParameter.PREFIX + "' but not an '" + SQLParameter.SUFFIX + "'.");
       }
 
       String name = this.txt.substring(prefix + SQLParameter.PREFIX.length(), suffix);
 
       if (!name.matches(VALID_NAME_PATTERN)) {
         if (name.indexOf(',') != -1) {
-          throw new InvalidConfigurationFileException(tag, //
-              "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
-                  + " in the body of the tag. " + "The parameter must include a single alphanumeric name", //
-              "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
-                  + " in the body of the tag. " + "The parameter must include a single alphanumeric name. "
-                  + "\n - Note: Extra sections such as 'javaType' or 'jdbcType' are now obsolete and should be removed. You should use <parameter> tags instead.");
+          throw new InvalidConfigurationFileException(tag, "Invalid parameter reference " + SQLParameter.PREFIX + name
+              + SQLParameter.SUFFIX + " in the body of the tag. "
+              + "The parameter must include a single alphanumeric name. "
+              + "\n - Note: Extra sections such as 'javaType' or 'jdbcType' are now obsolete and should be removed. You should use <parameter> tags instead.");
         } else {
-          throw new InvalidConfigurationFileException(tag, //
-              "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
-                  + " in the body of the tag. "
-                  + "\nA parameter name must start with a letter and continue with letters, digits, and/or underscores", //
-              "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
-                  + " in the body of the tag. "
-                  + "\nA parameter name must start with a letter and continue with letters, digits, and/or underscores.");
+          throw new InvalidConfigurationFileException(tag, "Invalid parameter reference " + SQLParameter.PREFIX + name
+              + SQLParameter.SUFFIX + " in the body of the tag. "
+              + "\nA parameter name must start with a letter and continue with letters, digits, and/or underscores.");
         }
       }
 
@@ -107,11 +98,8 @@ public class ParameterisableTextPart extends DynamicSQLPart {
         p.setDefinition(definition);
         this.segments.add(p);
       } else {
-        throw new InvalidConfigurationFileException(tag, //
-            "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
-                + " in the body of the tag: no parameter with that name", //
-            "Invalid parameter reference " + SQLParameter.PREFIX + name + SQLParameter.SUFFIX
-                + " in the body of the tag. There's no parameter with that name.");
+        throw new InvalidConfigurationFileException(tag, "Invalid parameter reference " + SQLParameter.PREFIX + name
+            + SQLParameter.SUFFIX + " in the body of the tag. There's no parameter with that name.");
       }
 
       pos = suffix + SQLParameter.SUFFIX.length();

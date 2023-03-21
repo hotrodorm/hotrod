@@ -169,24 +169,18 @@ public class DaosSpringMyBatisTag extends DaosTag {
       this.sBaseDir = DEFAULT_BASE_DIR;
     }
     if (SUtil.isEmpty(this.sBaseDir)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'gen-base-dir' cannot be empty", //
-          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> cannot be empty. "
-              + "Must specify the base dir to generate the DAO classes.");
+      throw new InvalidConfigurationFileException(this, "Attribute 'gen-base-dir' of tag <" + super.getTagName()
+          + "> cannot be empty. " + "Must specify the base dir to generate the DAO classes.");
     }
     this.baseDir = new File(basedir, this.sBaseDir);
     log.debug("this.baseDir=" + this.baseDir + " , " + this.baseDir.getAbsolutePath());
     if (!this.baseDir.exists()) {
-      throw new InvalidConfigurationFileException(this, //
-          "'gen-base-dir' points to a non-existing directory:\n  " + this.baseDir.getPath(), //
-          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> with value '" + this.sBaseDir
-              + "' must point to an existing dir.");
+      throw new InvalidConfigurationFileException(this, "Attribute 'gen-base-dir' of tag <" + super.getTagName()
+          + "> with value '" + this.sBaseDir + "' must point to an existing dir.");
     }
     if (!this.baseDir.isDirectory()) {
-      throw new InvalidConfigurationFileException(this, //
-          "'gen-base-dir' must be a directory but point to other type of file:\n  " + this.baseDir.getPath(), //
-          "Attribute 'gen-base-dir' of tag <" + super.getTagName() + "> with value '" + this.sBaseDir
-              + "' is not a directory.");
+      throw new InvalidConfigurationFileException(this, "Attribute 'gen-base-dir' of tag <" + super.getTagName()
+          + "> with value '" + this.sBaseDir + "' is not a directory.");
     }
 
     // dao-package
@@ -194,10 +188,8 @@ public class DaosSpringMyBatisTag extends DaosTag {
     try {
       this.daoPackage = new ClassPackage(this.sPackage);
     } catch (InvalidPackageException e) {
-      throw new InvalidConfigurationFileException(this, //
-          "Invalid package '" + this.sPackage + "'", //
-          "Invalid package '" + this.sPackage + "' on attribute 'dao-package' of tag <" + super.getTagName() + ">: "
-              + e.getMessage());
+      throw new InvalidConfigurationFileException(this, "Invalid package '" + this.sPackage
+          + "' on attribute 'dao-package' of tag <" + super.getTagName() + ">: " + e.getMessage());
     }
 
     // primitives-package
@@ -206,18 +198,15 @@ public class DaosSpringMyBatisTag extends DaosTag {
       try {
         this.primitivesTailPackage = new ClassPackage(DEFAULT_PRIMITIVES_RELATIVE_PACKAGE);
       } catch (InvalidPackageException e) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid 'primitives-package': " + e.getMessage(), //
+        throw new InvalidConfigurationFileException(this,
             "Invalid 'primitives-package' attribute value on tag <" + super.getTagName() + ">: " + e.getMessage());
       }
     } else {
       try {
         this.primitivesTailPackage = new ClassPackage(this.sPrimitivesPackage);
       } catch (InvalidPackageException e) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid package '" + this.sPrimitivesPackage + "': " + e.getMessage(), //
-            "Invalid package '" + this.sPrimitivesPackage + "' on attribute 'primitives-package' of tag <"
-                + super.getTagName() + ">: " + e.getMessage());
+        throw new InvalidConfigurationFileException(this, "Invalid package '" + this.sPrimitivesPackage
+            + "' on attribute 'primitives-package' of tag <" + super.getTagName() + ">: " + e.getMessage());
       }
     }
 
@@ -227,11 +216,8 @@ public class DaosSpringMyBatisTag extends DaosTag {
       this.daoPrefix = DEFAULT_DAO_PREFIX;
     } else {
       if (!this.daoPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid dao-prefix value '" + this.daoPrefix
-                + "': when specified, it can only include one or more letters, digits, or underscores", //
-            "Invalid dao-prefix value '" + this.daoPrefix
-                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+        throw new InvalidConfigurationFileException(this, "Invalid dao-prefix value '" + this.daoPrefix
+            + "'. When specified, it can only include one or more letters, digits, or underscores.");
       }
     }
 
@@ -241,11 +227,8 @@ public class DaosSpringMyBatisTag extends DaosTag {
       this.daoSuffix = DEFAULT_DAO_SUFFIX;
     } else {
       if (!this.daoSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid dao-suffix value '" + this.daoSuffix
-                + "': when specified, it can only include one or more letters, digits, or underscores", //
-            "Invalid dao-suffix value '" + this.daoSuffix
-                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+        throw new InvalidConfigurationFileException(this, "Invalid dao-suffix value '" + this.daoSuffix
+            + "'. When specified, it can only include one or more letters, digits, or underscores.");
       }
     }
 
@@ -255,11 +238,8 @@ public class DaosSpringMyBatisTag extends DaosTag {
       this.voPrefix = DEFAULT_VO_PREFIX;
     } else {
       if (!this.voPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid vo-prefix value '" + this.voPrefix
-                + "': when specified, it can only include one or more letters, digits, or underscores", //
-            "Invalid vo-prefix value '" + this.voPrefix
-                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+        throw new InvalidConfigurationFileException(this, "Invalid vo-prefix value '" + this.voPrefix
+            + "'. When specified, it can only include one or more letters, digits, or underscores.");
       }
     }
 
@@ -269,11 +249,8 @@ public class DaosSpringMyBatisTag extends DaosTag {
       this.voSuffix = DEFAULT_VO_SUFFIX;
     } else {
       if (!this.voSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid vo-suffix value '" + this.daoSuffix
-                + "': when specified, it can only include one or more letters, digits, or underscores", //
-            "Invalid vo-suffix value '" + this.daoSuffix
-                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+        throw new InvalidConfigurationFileException(this, "Invalid vo-suffix value '" + this.daoSuffix
+            + "'. When specified, it can only include one or more letters, digits, or underscores.");
       }
     }
 
@@ -283,11 +260,8 @@ public class DaosSpringMyBatisTag extends DaosTag {
       this.abstractVoPrefix = DEFAULT_ABSTRACT_VO_PREFIX;
     } else {
       if (!this.abstractVoPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid abstract-vo-prefix value '" + this.voPrefix
-                + "': when specified, it can only include one or more letters, digits, or underscores", //
-            "Invalid abstract-vo-prefix value '" + this.voPrefix
-                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+        throw new InvalidConfigurationFileException(this, "Invalid abstract-vo-prefix value '" + this.voPrefix
+            + "'. When specified, it can only include one or more letters, digits, or underscores.");
       }
     }
 
@@ -297,11 +271,8 @@ public class DaosSpringMyBatisTag extends DaosTag {
       this.abstractVoSuffix = DEFAULT_ABSTRACT_VO_SUFFIX;
     } else {
       if (!this.abstractVoSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid abstract-vo-suffix value '" + this.daoSuffix
-                + "': when specified, it can only include one or more letters, digits, or underscores", //
-            "Invalid abstract-vo-suffix value '" + this.daoSuffix
-                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+        throw new InvalidConfigurationFileException(this, "Invalid abstract-vo-suffix value '" + this.daoSuffix
+            + "'. When specified, it can only include one or more letters, digits, or underscores.");
       }
     }
 
@@ -377,11 +348,8 @@ public class DaosSpringMyBatisTag extends DaosTag {
       this.primitivesPrefix = DEFAULT_PRIMITIVES_PREFIX;
     } else {
       if (!this.primitivesPrefix.matches(PREFIX_SUFFIX_PATTERN)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid primitives-prefix value '" + this.primitivesPrefix
-                + "': when specified, it can only include one or more letters, digits, or underscores", //
-            "Invalid primitives-prefix value '" + this.primitivesPrefix
-                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+        throw new InvalidConfigurationFileException(this, "Invalid primitives-prefix value '" + this.primitivesPrefix
+            + "'. When specified, it can only include one or more letters, digits, or underscores.");
       }
     }
 
@@ -391,11 +359,8 @@ public class DaosSpringMyBatisTag extends DaosTag {
       this.primitivesSuffix = DEFAULT_PRIMITIVES_SUFFIX;
     } else {
       if (!this.primitivesSuffix.matches(PREFIX_SUFFIX_PATTERN)) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid primitives-suffix value '" + this.primitivesSuffix
-                + "': when specified, it can only include one or more letters, digits, or underscores", //
-            "Invalid primitives-suffix value '" + this.primitivesSuffix
-                + "'. When specified, it can only include one or more letters, digits, or underscores.");
+        throw new InvalidConfigurationFileException(this, "Invalid primitives-suffix value '" + this.primitivesSuffix
+            + "'. When specified, it can only include one or more letters, digits, or underscores.");
       }
     }
 

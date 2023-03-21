@@ -170,10 +170,8 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
     for (PropertyTag p : this.propertyTags) {
       p.validate();
       if (names.contains(p.getName())) {
-        throw new InvalidConfigurationFileException(this, //
-            "Duplicate property '" + p.getName() + "'", //
-            "Property with name '" + p.getName()
-                + "' cannot be specified more than once, but multiple occurrences found.");
+        throw new InvalidConfigurationFileException(this, "Property with name '" + p.getName()
+            + "' cannot be specified more than once, but multiple occurrences found.");
       }
       this.properties.set(this, p);
     }

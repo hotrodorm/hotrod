@@ -64,6 +64,23 @@ public class DiscoverTag extends AbstractConfigurationTag {
 
   // Getters
 
+//  public SchemaTag getCurrentSchema() {
+//    return currentSchema;
+//  }
+//
+//  public List<SchemaTag> getSchemas() {
+//    return schemas;
+//  }
+
+  public List<SchemaTag> getAllSchemaTags() {
+    List<SchemaTag> all = new ArrayList<>();
+    if (this.currentSchema != null) {
+      all.add(this.currentSchema);
+    }
+    all.addAll(this.schemas);
+    return all;
+  }
+
   // Merging logic
 
   @Override

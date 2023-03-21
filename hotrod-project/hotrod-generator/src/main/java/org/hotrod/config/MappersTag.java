@@ -73,48 +73,34 @@ public class MappersTag extends AbstractConfigurationTag {
       this.sBaseDir = DEFAULT_BASE_DIR;
     }
     if (SUtil.isEmpty(this.sBaseDir)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'base-dir' of tag <" + super.getTagName() + "> cannot be empty", //
-          "Attribute 'base-dir' of tag <" + super.getTagName() + "> cannot be empty. "
-              + "Must specify the base dir to generate the MyBatis mapper files.");
+      throw new InvalidConfigurationFileException(this, "Attribute 'base-dir' of tag <" + super.getTagName()
+          + "> cannot be empty. " + "Must specify the base dir to generate the MyBatis mapper files.");
     }
     this.baseDir = new File(basedir, this.sBaseDir);
     if (!this.baseDir.exists()) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'base-dir' points to a non existent directory:\n  " + this.baseDir.getPath(), //
-          "Attribute 'base-dir' of tag <" + super.getTagName() + "> with value '" + this.sBaseDir
-              + "' points to a non existent directory.");
+      throw new InvalidConfigurationFileException(this, "Attribute 'base-dir' of tag <" + super.getTagName()
+          + "> with value '" + this.sBaseDir + "' points to a non existent directory.");
     }
     if (!this.baseDir.isDirectory()) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'base-dir' must point to a directory but found other type of file:\n  " + this.baseDir.getPath(), //
-          "Attribute 'base-dir' of tag <" + super.getTagName() + "> with value '" + this.sBaseDir
-              + "' points to a file that is not a directory. ");
+      throw new InvalidConfigurationFileException(this, "Attribute 'base-dir' of tag <" + super.getTagName()
+          + "> with value '" + this.sBaseDir + "' points to a file that is not a directory. ");
     }
 
     // dir
 
     if (SUtil.isEmpty(this.sDir)) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'dir' cannot be empty", //
-          "Attribute 'dir' of tag <" + super.getTagName() + "> cannot be empty. "
-              + "Must specify the base dir to generate the MyBatis mapper files.");
+      throw new InvalidConfigurationFileException(this, "Attribute 'dir' of tag <" + super.getTagName()
+          + "> cannot be empty. " + "Must specify the base dir to generate the MyBatis mapper files.");
     }
     this.fullRelativeDir = new File(this.baseDir, this.sDir);
     if (!this.fullRelativeDir.exists()) {
       if (!this.fullRelativeDir.mkdirs()) {
-        throw new InvalidConfigurationFileException(this, //
-            "Could not create mappers dir '" + this.fullRelativeDir.getPath() + "' specified in tag <"
-                + super.getTagName() + ">.",
-            "Could not create mappers dir '" + this.fullRelativeDir.getPath() + "' specified in tag <"
-                + super.getTagName() + ">.");
+        throw new InvalidConfigurationFileException(this, "Could not create mappers dir '"
+            + this.fullRelativeDir.getPath() + "' specified in tag <" + super.getTagName() + ">.");
       }
     } else if (!this.fullRelativeDir.isDirectory()) {
-      throw new InvalidConfigurationFileException(this, //
-          "Attribute 'dir' must point to a directory but found other type of file:\n  "
-              + this.fullRelativeDir.getPath(), //
-          "Attribute 'dir' of tag <" + super.getTagName() + "> with value '" + this.sDir
-              + "' points to an file system entry " + "that is not a directory. ");
+      throw new InvalidConfigurationFileException(this, "Attribute 'dir' of tag <" + super.getTagName()
+          + "> with value '" + this.sDir + "' points to an file system entry " + "that is not a directory. ");
     }
 
     this.customDir = new File(this.fullRelativeDir, CUSTOM_MAPPERS_DIR);

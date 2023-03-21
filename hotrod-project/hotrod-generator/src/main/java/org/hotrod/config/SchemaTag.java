@@ -74,7 +74,7 @@ public class SchemaTag extends AbstractConfigurationTag {
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid catalog name '" + this.catalog + "' on tag <" + super.getTagName() + "> for the table '"
             + this.name + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(this, msg, msg);
+        throw new InvalidConfigurationFileException(this, msg);
       }
 
       // schema
@@ -86,7 +86,7 @@ public class SchemaTag extends AbstractConfigurationTag {
       } catch (InvalidIdentifierException e) {
         String msg = "Invalid schema name '" + this.name + "' on tag <" + super.getTagName() + "> for the table '"
             + this.name + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(this, msg, msg);
+        throw new InvalidConfigurationFileException(this, msg);
       }
 
       this.cs = new CatalogSchema(this.catalog, this.name);
@@ -95,12 +95,24 @@ public class SchemaTag extends AbstractConfigurationTag {
     // excludes
 
     for (ExcludeTag e : this.excludes) {
-      e.validate(adapter, currentCS);
+      e.validate(adapter);
     }
 
   }
 
   // Getters
+
+  public List<ExcludeTag> getExcludes() {
+    return excludes;
+  }
+
+  public String getCatalog() {
+    return catalog;
+  }
+
+  public String getName() {
+    return name;
+  }
 
   // Merging logic
 
