@@ -173,11 +173,11 @@ The configuration specifies tables and views that we want to exclude from the di
 
       <discovery>
         <current-schema>
-          <exclude table="invoice_bkp_tab" />
-          <exclude view="past_due_invoice_3" />
+          <exclude name="invoice_bkp_tab" />
+          <exclude name="past_due_invoice_3" />
         </current-schema>
         <schema name="accounting">
-          <exclude view="accounting_old_view" />
+          <exclude name="accounting_old_view" />
         </schema>
       </discovery>
 
@@ -191,9 +191,9 @@ The configuration specifies tables and views that we want to exclude from the di
 </hotrod>
 ```
 
-All tables and views in the current schema are included in the persistence layer, except for the table
-`invoice_bkp_tab` and the view `past_due_invoice_3`. All tables and views in the schema `accounting` 
-are also included in the persistence layer, except for the view `accounting_old_view`.
+All tables and views in the current schema are included in the persistence layer, except for the tables (or views)
+that match the names `invoice_bkp_tab` and `past_due_invoice_3`. All tables and views in the schema `accounting` 
+are also included in the persistence layer, except for `accounting_old_view`.
 
 The declared table and view (`client_tab` and `outst_payments`) are included in the persistence layer
 with their custom settings.
@@ -215,10 +215,10 @@ be included by adding the `catalog` attribute when necessary.
       <discovery>
         <schema name="reporting" />
         <schema catalog="master" name="accounting">
-          <exclude table="invoice_bkp_tab" />
+          <exclude name="invoice_bkp_tab" />
         </schema>
         <schema catalog="clients" name="billing">
-          <exclude view="accounting_old_view" />
+          <exclude name="accounting_old_view" />
         </schema>
       </discovery>
 
