@@ -81,7 +81,7 @@ The general structure of HotRod's main configuration file is shown below:
 * [`<hotrod>`](tags/hotrod.md)
     * [`<generators>`](tags/generators.md)
         * [`<mybatis-spring>`](tags/mybatis-spring.md)
-            * [`<discovery>`](tags/discovery.md)
+            * [`<discover>`](tags/discover.md)
             * [`<daos>`](tags/daos.md)
             * [`<mappers>`](tags/mappers.md)
             * [`<select-generation>`](tags/select-generation.md)
