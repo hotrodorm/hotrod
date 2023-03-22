@@ -11,6 +11,8 @@ Typically, `<facet>` tags identify the entries affected by the recent changes. T
 the HotRod Generator as a comma-sepatated list of facet names. The HotRod Generator reads the entire 
 configuration file(s), but refreshes only the sections included in the facets.
 
+Facets are mutually exclusive with schema discovery. If you want to use discovery you cannot define facets, and vice versa.
+
 
 ## Attributes
 
