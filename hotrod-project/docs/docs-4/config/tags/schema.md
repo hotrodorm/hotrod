@@ -13,3 +13,7 @@ This tag can include the following attributes:
 | `catalog` | The catalog where this schema resides  | Optional |
 
 
+## Included Tags
+
+One or more [`<exclude>`](./exclude.md) tags can be added to this tag to specify tables or views that should be excluded from discovery
+
