@@ -6,7 +6,7 @@ The persistence layer can be generated with a minimal configuration and the CRUD
 prototyping an application.
 
 Overview:
-- [Features](./features.md)
+- [Features](./features.md) and [What's New](./whats-new.md)
 - [Version History](../version-history.md)
 
 HotRod includes four modules:
