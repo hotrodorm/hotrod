@@ -13,7 +13,7 @@ The DAO and VO names of discovered object follow the default rules using camel-c
 
 The data types of columns in discovered tables and views follow the default rules using for each database, and optionally tailored with the use of a `<type-solver>` tag.
 
-For examples and use cases see [Schema Discovery](../guides/schema-discovery.md).
+For examples and use cases see [Schema Discovery](../../guides/schema-discovery.md).
 
 
 
