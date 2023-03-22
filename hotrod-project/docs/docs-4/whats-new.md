@@ -1,8 +1,8 @@
-# What's New in 4.0
+# What's New in HotRod 4
 
 HotRod 4.0 includes several major features as well as a myriad of minot improvements.
 
-## New Features
+## New Features in 4.0
 
 - Schema discovery.
 - Support for multiple datasources.
