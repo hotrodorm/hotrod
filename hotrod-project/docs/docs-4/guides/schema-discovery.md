@@ -3,7 +3,9 @@
 HotRod includes a mechanism to discover tables and views in schemas of the database. These discovered tables and views 
 are added to the persistent layer automatically.
 
-Discovery is enabled by adding the `<discovery>` tag inside the `<mybatis-spring>` tag.
+Discovery is enabled by adding the `<discover>` tag inside the `<mybatis-spring>` tag.
+
+Discovery is mutually exclusive with facets. If you want to use discovery you cannot define facets, and vice versa.
 
 It's also possible to combine discovery with declared tables and views. The persistence layer generation honors the
 details of declared tables and views.
@@ -37,7 +39,7 @@ Discovery is disabled by default. The configuration declares a table, a view, an
 ```
 
 Only the table `client`, the view `outstanding_payments`, and the DAO `ProcessesDAO` are included in
-the persistence layer. Since the tag `<discovery>` is not included, no discovery of tables or views 
+the persistence layer. Since the tag `<discover>` is not included, no discovery of tables or views 
 takes place.
 
 
@@ -52,7 +54,7 @@ the persistence layer.
   <generators>
     <mybatis-spring>
 
-      <discovery />
+      <discover />
 
       <daos package="app.persistence" />
     </mybatis-spring>
@@ -64,7 +66,7 @@ the persistence layer.
 All tables and views in the current schema are discovered and added to the persistence layer. They are available
 for CRUD and LiveSQL.
 
-An empty `<discovery/>` tag includes the current schema by default. In this case, the example above is equivalent to:
+An empty `<discover/>` tag includes the current schema by default. In this case, the example above is equivalent to:
 
 ```xml
 <hotrod>
@@ -72,9 +74,9 @@ An empty `<discovery/>` tag includes the current schema by default. In this case
   <generators>
     <mybatis-spring>
 
-      <discovery>
+      <discover>
         <current-schema />
-      </discovery>
+      </discover>
 
       <daos package="app.persistence" />
     </mybatis-spring>
@@ -94,7 +96,7 @@ Discovery is enabled. The configuration declares a table, a view, and a DAO.
   <generators>
     <mybatis-spring>
 
-      <discovery />
+      <discover />
 
       <daos package="app.persistence" />
     </mybatis-spring>
@@ -127,11 +129,11 @@ There are also declared tables, views, and DAOs:
   <generators>
     <mybatis-spring>
 
-      <discovery>
+      <discover>
         <current-schema />
         <schema name="sales" />
         <schema name="payments" />
-      </discovery>
+      </discover>
 
       <daos package="app.persistence" />
     </mybatis-spring>
@@ -152,7 +154,7 @@ configuration.
 
 All tables in the `sales` and `payments` schemas are also included in the persistence layer.
 
-**Note**: When the `<discovery>` tag is empty and no schema is declared, then the current schema is
+**Note**: When the `<discover>` tag is empty and no schema is declared, then the current schema is
 included by default; the current schema is the schema specified by the `catalog` and `schema` runtime
 properties that are configured in the external configuration, and not in the main configuration file.
 If schemas are added using `<schema>` tags, then the current schema is not included by default anymore.
@@ -171,7 +173,7 @@ The configuration specifies tables and views that we want to exclude from the di
   <generators>
     <mybatis-spring>
 
-      <discovery>
+      <discover>
         <current-schema>
           <exclude name="invoice_bkp_tab" />
           <exclude name="past_due_invoice_3" />
@@ -179,7 +181,7 @@ The configuration specifies tables and views that we want to exclude from the di
         <schema name="accounting">
           <exclude name="accounting_old_view" />
         </schema>
-      </discovery>
+      </discover>
 
       <daos package="app.persistence" />
     </mybatis-spring>
@@ -212,7 +214,7 @@ be included by adding the `catalog` attribute when necessary.
   <generators>
     <mybatis-spring>
 
-      <discovery>
+      <discover>
         <schema name="reporting" />
         <schema catalog="master" name="accounting">
           <exclude name="invoice_bkp_tab" />
@@ -220,7 +222,7 @@ be included by adding the `catalog` attribute when necessary.
         <schema catalog="clients" name="billing">
           <exclude name="accounting_old_view" />
         </schema>
-      </discovery>
+      </discover>
 
       <daos package="app.persistence" />
     </mybatis-spring>
