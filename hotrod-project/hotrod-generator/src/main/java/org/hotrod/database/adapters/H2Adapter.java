@@ -37,7 +37,7 @@ public class H2Adapter extends DatabaseAdapter {
 
   public H2Adapter(final DatabaseMetaData dm) throws SQLException {
     super(dm);
-    this.supportsCatalog = dm.getJDBCMajorVersion() > 1;
+    this.supportsCatalog = false;
   }
 
   @Override
@@ -387,15 +387,8 @@ public class H2Adapter extends DatabaseAdapter {
   public void setCurrentCatalogSchema(final Connection conn, final String catalog, final String schema)
       throws CatalogNotSupportedException, InvalidSchemaException, SQLException, InvalidCatalogException {
 
-    if (this.supportsCatalog) { // H2 version 2.x
-      if (catalog == null) {
-        throw new InvalidCatalogException(JdbcUtils.getCatalogs(conn.getMetaData()));
-      }
-      JdbcUtils.runSQLStatement(conn, "set catalog " + catalog);
-    } else { // H2 version 1.x
-      if (catalog != null) {
-        throw new CatalogNotSupportedException();
-      }
+    if (catalog != null) {
+      throw new CatalogNotSupportedException();
     }
 
     if (schema == null) {

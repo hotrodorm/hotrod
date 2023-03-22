@@ -1,5 +1,6 @@
 package org.hotrodorm.hotrod.utils;
 
+import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -7,10 +8,13 @@ import java.util.stream.StreamSupport;
 
 public class XUtil {
 
-  public static String renderThrowable(final Throwable e) {
-    return stream(e)
-        .map(c -> (c.getClass().equals(ClassNotFoundException.class) ? "Class not found: " : "") + c.getMessage())
-        .collect(Collectors.joining(": "));
+  public static String trim(final Throwable e) {
+    return stream(e).map(c -> renderMessage(c)).collect(Collectors.joining(": "));
+  }
+
+  private static String renderMessage(final Throwable e) {
+    return (e.getClass().equals(ClassNotFoundException.class) ? "Class not found: "
+        : (e.getClass().equals(FileNotFoundException.class) ? "File not found: " : "")) + e.getMessage();
   }
 
   public static Stream<Throwable> stream(final Throwable e) {
@@ -23,9 +27,6 @@ public class XUtil {
     private Throwable e;
 
     public IterableThrowable(final Throwable e) {
-      if (e == null) {
-        throw new IllegalArgumentException("Cannot iterate over a null exception");
-      }
       this.e = e;
     }
 

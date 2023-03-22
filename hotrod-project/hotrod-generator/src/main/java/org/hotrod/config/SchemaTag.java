@@ -46,8 +46,12 @@ public class SchemaTag extends AbstractConfigurationTag {
   }
 
   @XmlElement(name = "exclude")
-  public void addExclude(final ExcludeTag exclude) {
+  public void setExclude(final ExcludeTag exclude) {
     this.excludes.add(exclude);
+  }
+
+  public ExcludeTag getExclude() {
+    return null;
   }
 
   public void setCurrent() {
@@ -62,6 +66,8 @@ public class SchemaTag extends AbstractConfigurationTag {
     if (this.isCurrentCS) {
 
       this.cs = currentCS;
+      this.catalog = currentCS.getCatalog();
+      this.name = currentCS.getSchema();
 
     } else {
 
@@ -102,15 +108,15 @@ public class SchemaTag extends AbstractConfigurationTag {
 
   // Getters
 
-  public List<ExcludeTag> getExcludes() {
+  public List<ExcludeTag> getExcludeList() {
     return excludes;
   }
 
-  public String getCatalog() {
+  public String getCatalogName() {
     return catalog;
   }
 
-  public String getName() {
+  public String getSchemaName() {
     return name;
   }
 

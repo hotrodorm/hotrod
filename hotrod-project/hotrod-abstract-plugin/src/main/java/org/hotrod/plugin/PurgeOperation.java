@@ -93,7 +93,7 @@ public class PurgeOperation {
       Throwable cause = e.getCause();
       throw new OperationException(e.getMessage() + (cause == null ? "" : ": " + cause.getMessage()));
     } catch (Throwable e) {
-      throw new OperationException("Could not connect to database: " + XUtil.renderThrowable(e));
+      throw new OperationException("Could not connect to database: " + XUtil.trim(e));
     }
 
     log.debug("Adapter loaded.");
@@ -109,10 +109,10 @@ public class PurgeOperation {
         throw new OperationException("\n" + e.getMessage());
       }
     } catch (UncontrolledException e) {
-      feedback.error("Technical error found: " + XUtil.renderThrowable(e));
+      feedback.error("Technical error found: " + XUtil.trim(e));
       throw new OperationException(Constants.TOOL_NAME + " could not generate the persistence code.");
     } catch (Throwable e) {
-      feedback.error("Technical error found: " + XUtil.renderThrowable(e));
+      feedback.error("Technical error found: " + XUtil.trim(e));
       log.error("Technical error found", e);
       throw new OperationException(Constants.TOOL_NAME + " could not generate the persistence code.");
     }
@@ -126,7 +126,7 @@ public class PurgeOperation {
         db = new JdbcDatabase(conn, loc.getCatalogSchema(), new HashSet<DatabaseObject>(),
             new HashSet<DatabaseObject>());
       } catch (ReaderException | UnsupportedDatabaseException | DatabaseObjectNotFoundException e) {
-        throw new OperationException("Could 1 not retrieve the list of temp views:" + XUtil.renderThrowable(e));
+        throw new OperationException("Could 1 not retrieve the list of temp views:" + XUtil.trim(e));
       }
 
       IdentifierAdapter identifierAdapter = db.getDatabaseConnector().getIdentifierAdapter();
@@ -136,7 +136,7 @@ public class PurgeOperation {
       try {
         tempViews = db.findViews(baseName + "%");
       } catch (SQLException e) {
-        throw new OperationException("Could 2 not retrieve the list of temp views:" + XUtil.renderThrowable(e));
+        throw new OperationException("Could 2 not retrieve the list of temp views:" + XUtil.trim(e));
       }
       if (tempViews.isEmpty()) {
         feedback.info("No temp views found. Nothing to drop.");
@@ -149,12 +149,12 @@ public class PurgeOperation {
           db.dropView(v);
           feedback.info(" - View " + identifierAdapter.renderSQL(v) + " dropped.");
         } catch (SQLException e) {
-          feedback.info(" - Could not drop view " + identifierAdapter.renderSQL(v) + ": " + XUtil.renderThrowable(e));
+          feedback.info(" - Could not drop view " + identifierAdapter.renderSQL(v) + ": " + XUtil.trim(e));
         }
       }
 
     } catch (SQLException e) {
-      throw new OperationException("Could not connect to database: " + XUtil.renderThrowable(e));
+      throw new OperationException("Could not connect to database: " + XUtil.trim(e));
     }
 
   }

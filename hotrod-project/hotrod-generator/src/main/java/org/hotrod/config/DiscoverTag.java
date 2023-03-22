@@ -18,7 +18,7 @@ public class DiscoverTag extends AbstractConfigurationTag {
   // Properties
 
   private SchemaTag currentSchema = null;
-  private List<SchemaTag> schemas = new ArrayList<SchemaTag>();
+  private List<SchemaTag> schemas = new ArrayList<>();
 
   // Constructor
 
@@ -34,7 +34,7 @@ public class DiscoverTag extends AbstractConfigurationTag {
   }
 
   @XmlElement(name = "schema")
-  public void addSchema(final SchemaTag schema) {
+  public void setSchema(final SchemaTag schema) {
     this.schemas.add(schema);
   }
 
@@ -45,7 +45,7 @@ public class DiscoverTag extends AbstractConfigurationTag {
 
     // Set defaults
 
-    if (this.currentSchema != null) {
+    if (this.currentSchema == null) {
       this.currentSchema = new SchemaTag();
     }
     this.currentSchema.setCurrent();
@@ -71,6 +71,14 @@ public class DiscoverTag extends AbstractConfigurationTag {
     }
     all.addAll(this.schemas);
     return all;
+  }
+
+  public SchemaTag getCurrentSchema() {
+    return null;
+  }
+
+  public SchemaTag getSchema() {
+    return null;
   }
 
   // Simple Caption

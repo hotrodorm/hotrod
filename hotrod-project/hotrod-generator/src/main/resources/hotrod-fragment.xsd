@@ -1,22 +1,21 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
- 
-  <xsd:include schemaLocation="hotrod-common.xsd" /> 
+
+  <xsd:include schemaLocation="hotrod-common.xsd" />
 
   <xsd:element name="hotrod-fragment">
     <xsd:complexType>
-        <xsd:choice minOccurs="0" maxOccurs="unbounded">
-          <xsd:element name="table" type="table-type" />
-          <xsd:element name="dao" type="dao-type" />
-          <xsd:element name="view" type="view-type" />
-          <xsd:element name="enum" type="enum-type" />
-          <xsd:element name="fragment" type="fragment-type" />
-          <xsd:element name="facet" type="facet-type" />
-          <xsd:element name="converter" type="converter-type" />
-          <xsd:element name="exclude" type="exclude-type" />
-        </xsd:choice>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="table" type="table-type" />
+        <xsd:element name="dao" type="dao-type" />
+        <xsd:element name="view" type="view-type" />
+        <xsd:element name="enum" type="enum-type" />
+        <xsd:element name="fragment" type="fragment-type" />
+        <xsd:element name="facet" type="facet-type" />
+        <xsd:element name="converter" type="converter-type" />
+      </xsd:choice>
       <xsd:attribute name="package" type="xsd:string" />
     </xsd:complexType>
   </xsd:element>
- 
+
 </xsd:schema>
   

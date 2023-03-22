@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -92,6 +93,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
       final JdbcTable parentJdbcTable, final DatabaseAdapter adapter, final HotRodConfigTag config,
       final DataSetLayout layout, final SelectMetadataCache selectMetadataCache, final boolean isFromCurrentCatalog,
       final boolean isFromCurrentSchema) throws UnresolvableDataTypeException, InvalidConfigurationFileException {
+    log.debug("init t=" + t.getName());
     this.t = t;
     this.config = config;
     this.adapter = adapter;
@@ -125,6 +127,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
     this.importedFKs = new ArrayList<ForeignKeyMetadata>();
     for (JdbcForeignKey fk : this.t.getImportedFks()) {
+      log.debug("imported FK: " + renderFK(t, fk));
       KeyMetadata ikm;
       TableTag remoteTableTag = this.config.getTableTag(fk.getRemoteTable());
       if (remoteTableTag != null) {
@@ -144,8 +147,10 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
     this.exportedFKs = new ArrayList<ForeignKeyMetadata>();
     for (JdbcForeignKey fk : this.t.getExportedFks()) {
+      log.debug("exported FK: " + renderExportedFK(t, fk));
       KeyMetadata ekm;
       TableTag remoteTableTag = this.config.getTableTag(fk.getRemoteTable());
+      log.debug("remoteTableTag=" + remoteTableTag);
       if (remoteTableTag != null) {
         ekm = getKeyMetadata(fk.getRemoteKey(), remoteTableTag);
       } else {
@@ -154,7 +159,7 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
           ekm = getKeyMetadata(fk.getRemoteKey(), remoteEnumTag);
         } else {
           throw new RuntimeException(
-              "Could not find the remote table or enum for the imported FK on table=" + t.getName());
+              "Could not find the remote table or enum for the exported FK on table=" + t.getName());
         }
       }
       this.exportedFKs.add(new ForeignKeyMetadata(getKeyMetadata(fk.getLocalKey(), tableTag), ekm, fk.pointsToPk(),
@@ -756,6 +761,22 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   public boolean isFromCurrentSchema() {
     return isFromCurrentSchema;
+  }
+
+  // Utils
+
+  private String renderFK(JdbcTable t, JdbcForeignKey fk) {
+    return t.getName() + " (" + renderKey(fk.getLocalKey()) + ") references " + fk.getRemoteTable().getName() + " ("
+        + renderKey(fk.getRemoteKey()) + ")";
+  }
+
+  private String renderExportedFK(JdbcTable t, JdbcForeignKey fk) {
+    return t.getName() + " (" + renderKey(fk.getLocalKey()) + ") referenced by " + fk.getRemoteTable().getName() + " ("
+        + renderKey(fk.getRemoteKey()) + ")";
+  }
+
+  private String renderKey(JdbcKey k) {
+    return k.getKeyColumns().stream().map(c -> c.getColumn().getName()).collect(Collectors.joining(", "));
   }
 
 }

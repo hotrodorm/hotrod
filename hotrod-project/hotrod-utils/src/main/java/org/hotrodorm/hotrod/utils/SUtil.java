@@ -258,4 +258,8 @@ public class SUtil {
     return slices;
   }
 
+  public static String coalesce(final String s, final String def) {
+    return s == null ? def : s;
+  }
+
 }

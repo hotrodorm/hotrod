@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hotrod.config.ConfigurationLoader;
 import org.hotrod.config.Constants;
+import org.hotrod.config.DaosSpringMyBatisTag;
 import org.hotrod.config.EnumTag;
 import org.hotrod.config.ExcludeTag;
 import org.hotrod.config.HotRodConfigTag;
@@ -30,12 +31,14 @@ import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.exceptions.UnrecognizedDatabaseException;
 import org.hotrod.metadata.Metadata;
 import org.hotrod.runtime.dynamicsql.SourceLocation;
+import org.hotrodorm.hotrod.utils.XUtil;
 import org.nocrala.tools.database.tartarus.connectors.DatabaseConnectorFactory.UnsupportedDatabaseException;
 import org.nocrala.tools.database.tartarus.core.CatalogSchema;
 import org.nocrala.tools.database.tartarus.core.DatabaseLocation;
 import org.nocrala.tools.database.tartarus.core.DatabaseObject;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase;
 import org.nocrala.tools.database.tartarus.core.JdbcDatabase.DatabaseConnectionVersion;
+import org.nocrala.tools.database.tartarus.core.JdbcTable;
 import org.nocrala.tools.database.tartarus.exception.CatalogNotSupportedException;
 import org.nocrala.tools.database.tartarus.exception.DatabaseObjectNotFoundException;
 import org.nocrala.tools.database.tartarus.exception.InvalidCatalogException;
@@ -43,7 +46,6 @@ import org.nocrala.tools.database.tartarus.exception.InvalidCatalogSchemaExcepti
 import org.nocrala.tools.database.tartarus.exception.InvalidSchemaException;
 import org.nocrala.tools.database.tartarus.exception.ReaderException;
 import org.nocrala.tools.database.tartarus.exception.SchemaNotSupportedException;
-import org.nocrala.tools.database.tartarus.utils.XUtil;
 
 public class HotRodContext {
 
@@ -75,7 +77,7 @@ public class HotRodContext {
         conn = this.loc.getConnection();
         log.debug("Connection open.");
       } catch (SQLException e) {
-        throw new ControlledException("Could not connect to the database: " + XUtil.abridge(e));
+        throw new ControlledException("Could not connect to the database: " + XUtil.trim(e));
       }
 
       // Database Version
@@ -87,7 +89,7 @@ public class HotRodContext {
         log.debug("Metadata retrieval complete.");
 
       } catch (SQLException e) {
-        throw new ControlledException("Could not retrieve database metadata: " + XUtil.abridge(e));
+        throw new ControlledException("Could not retrieve database metadata: " + XUtil.trim(e));
       }
       feedback.info("Database Name: " + cv.renderDatabaseName());
       feedback.info("JDBC Driver: " + cv.renderJDBCDriverName() + " - implements JDBC Specification "
@@ -102,11 +104,11 @@ public class HotRodContext {
         throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + e.getMessage());
       } catch (UncontrolledException e) {
         throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + e.getMessage()
-            + ": " + XUtil.abridge(e.getCause()));
+            + ": " + XUtil.trim(e.getCause()));
       } catch (RuntimeException e) {
-        throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + XUtil.abridge(e));
+        throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + XUtil.trim(e));
       } catch (SQLException e) {
-        throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + XUtil.abridge(e));
+        throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + XUtil.trim(e));
       }
       log.debug("Adapter loaded.");
 
@@ -133,17 +135,17 @@ public class HotRodContext {
         }
       } catch (UncontrolledException e) {
         throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage() + ": "
-            + XUtil.abridge(e.getCause()));
+            + XUtil.trim(e.getCause()));
       } catch (FacetNotFoundException e) {
         throw new ControlledException("facet '" + e.getMessage() + "' not found.");
       } catch (RuntimeException e) {
         throw new ControlledException("Could not load configuration file " + configFile + " - " + e.getMessage() + ": "
-            + XUtil.abridge(e.getCause()));
+            + XUtil.trim(e.getCause()));
       }
       log.debug("Main Configuration loaded.");
 
       MyBatisSpringTag mst = (MyBatisSpringTag) this.config.getGenerators().getSelectedGeneratorTag();
-      boolean discover = mst.isDiscoverEnabled(config);
+      boolean discover = mst.getDiscover() != null;
       feedback.info("Discover " + (discover ? "enabled." : "disabled."));
       feedback.info(" ");
 
@@ -172,34 +174,53 @@ public class HotRodContext {
             Set<DatabaseObject> excludeIds = new HashSet<>();
 
             for (SchemaTag s : mst.getDiscover().getAllSchemaTags()) {
-              discoverCS.add(new CatalogSchema(s.getCatalog(), s.getName()));
-              for (ExcludeTag ex : s.getExcludes()) {
-                excludeIds.add(new DatabaseObject(s.getCatalog(), s.getName(), ex.getName()));
+              discoverCS.add(new CatalogSchema(s.getCatalogName(), s.getSchemaName()));
+              for (ExcludeTag ex : s.getExcludeList()) {
+                excludeIds.add(new DatabaseObject(s.getCatalogName(), s.getSchemaName(), ex.getName()));
               }
             }
 
+            log.debug("gen 2");
             this.db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views, discoverCS, excludeIds);
+            log.debug("gen 3");
+
+            DaosSpringMyBatisTag daosTag = mst.getDaos();
+            try {
+              for (JdbcTable t : this.db.getTables()) {
+                config.includeInAllFacets(t, false, daosTag, config, adapter);
+              }
+              for (JdbcTable v : this.db.getViews()) {
+                config.includeInAllFacets(v, true, daosTag, config, adapter);
+              }
+            } catch (InvalidConfigurationFileException e) {
+              throw new ControlledException(
+                  "Could not use a discovered table or view because of its peculiar name. " + e.getMessage());
+            }
 
           } else {
 
+            log.debug("gen 4");
             this.db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views);
+            log.debug("gen 5");
 
           }
         } else {
 
+          log.debug("gen 6");
           this.db = new JdbcDatabase(loc, tables, views);
+          log.debug("gen 7");
 
         }
 
-        log.debug("gen 2");
+        log.debug("gen 8");
         adapter.setCurrentCatalogSchema(conn, loc.getDefaultCatalog(), loc.getDefaultSchema());
-        log.debug("gen 3");
+        log.debug("gen 9");
 
       } catch (ReaderException e) {
         throw new ControlledException(e.getMessage());
       } catch (SQLException e) {
         e.printStackTrace();
-        throw new ControlledException("Could not retrieve database metadata - " + XUtil.abridge(e));
+        throw new ControlledException("Could not retrieve database metadata - " + XUtil.trim(e));
       } catch (InvalidCatalogSchemaException e) {
         String msg = "Invalid catalog/schema: " + e.getMessage();
         throw new ControlledException(msg);
@@ -208,6 +229,7 @@ public class HotRodContext {
             + "Please specify an empty value for the default catalog property instead of '" + loc.getDefaultCatalog()
             + "'.");
       } catch (InvalidCatalogException e) {
+        e.printStackTrace();
         StringBuilder sb = new StringBuilder();
         if (loc.getDefaultCatalog() == null) {
           sb.append("Please specify a default catalog.\n\n");
@@ -244,14 +266,18 @@ public class HotRodContext {
             "Database object not found. Please check this is the correct database, catalog, and schema: "
                 + e.getMessage());
       } catch (RuntimeException e) {
-        throw new ControlledException("Could not retrieve database metadata"
-            + (e.getCause() != null ? XUtil.abridge(e.getCause()) : XUtil.abridge(e)));
+        throw new ControlledException(
+            "Could not retrieve database metadata" + (e.getCause() != null ? XUtil.trim(e.getCause()) : XUtil.trim(e)));
       }
 
+      log.debug("gen 10");
       this.metadata = new Metadata(db, adapter, loc);
+      log.debug("gen 11");
       try {
         metadata.load(config, loc, conn);
+        log.debug("gen 12");
       } catch (InvalidConfigurationFileException e) {
+        log.debug("gen 13");
         SourceLocation sl = e.getTag() == null ? null : e.getTag().getSourceLocation();
         if (sl != null) {
           throw new ControlledException("\n" + e.getMessage() + "\n  in " + sl.render());
@@ -259,9 +285,16 @@ public class HotRodContext {
           throw new ControlledException("\n" + e.getMessage());
         }
       } catch (UncontrolledException e) {
+        log.debug("gen 14");
         throw new ControlledException(
-            "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.abridge(e.getCause()));
+            "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
+      } catch (Throwable e) {
+        log.debug("gen 15");
+        e.printStackTrace();
+        throw new ControlledException(
+            "Could not retrieve database metadata  - " + e.getMessage() + ": " + XUtil.trim(e.getCause()));
       }
+      log.debug("gen 16");
 
     } finally {
       if (conn != null) {

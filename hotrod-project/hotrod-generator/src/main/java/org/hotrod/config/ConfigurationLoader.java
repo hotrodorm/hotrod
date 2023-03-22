@@ -85,6 +85,8 @@ public class ConfigurationLoader {
 
     // Prepare the parser
 
+    log.debug("loading file 2");
+
     Unmarshaller unmarshaller = null;
     XMLStreamReader xsr = null;
     StrictValidationEventHandler validationHandler = new StrictValidationEventHandler();
@@ -106,12 +108,16 @@ public class ConfigurationLoader {
       log.debug("XML loaded.");
 
     } catch (SAXException e) {
+      e.printStackTrace();
       throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
     } catch (JAXBException e) {
+      e.printStackTrace();
       throw new UncontrolledException("Could not load configuration file [internal XML parser error]", e);
     } catch (FileNotFoundException e) {
+      e.printStackTrace();
       throw new ControlledException(Constants.TOOL_NAME + " configuration file not found: " + f.getPath());
     } catch (XMLStreamException e) {
+      e.printStackTrace();
       String message = (e.getLocation() == null ? ""
           : "[line " + e.getLocation().getLineNumber() + ", col " + e.getLocation().getColumnNumber() + "] ")
           + e.getMessage();
@@ -149,6 +155,13 @@ public class ConfigurationLoader {
 
       config.addConverterTags();
 
+      MyBatisSpringTag mst = (MyBatisSpringTag) config.getGenerators().getSelectedGeneratorTag();
+      if (mst.getDiscover() != null && !config.getFacets().isEmpty()) {
+        throw new ControlledException(config.getSourceLocation(),
+            "The <discover> tag is mutually exclusive with <facet> tags. "
+                + "If you want to use discover you cannot use facets, and vice versa.");
+      }
+
       // Prepare transient values
 
       config.activate();
@@ -160,9 +173,11 @@ public class ConfigurationLoader {
       return config;
 
     } catch (JAXBException e) {
+      log.debug("JAXBException", e);
       throw assembleControlledException(f, validationHandler, e);
 
     } catch (InvalidConfigurationFileException e) {
+      log.debug("InvalidConfigurationFileException", e);
       SourceLocation loc = e.getTag().getSourceLocation();
       log.debug("loc=" + loc);
       if (loc == null) {
@@ -172,6 +187,11 @@ public class ConfigurationLoader {
       }
 
     } catch (GeneratorNotFoundException e) {
+      log.debug("GeneratorNotFoundException.", e);
+      throw new ControlledException(e.getMessage());
+
+    } catch (Throwable e) {
+      log.debug("Throwable detected.", e);
       throw new ControlledException(e.getMessage());
 
     } finally {
@@ -357,6 +377,7 @@ public class ConfigurationLoader {
         log.debug("[Load #5] primarySchema =" + primarySchema);
 
       } catch (SAXException e) {
+//        e.printStackTrace();
         log.error("Failed to load", e);
         throw e;
       } catch (RuntimeException e) {

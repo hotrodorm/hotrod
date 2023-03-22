@@ -202,6 +202,9 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
       this.allFacets.mergeOther(f);
     }
 
+    // TODO add discover
+    log.info("add discovered objects");
+
     this.setChosenFacets(facetNames);
 
     // Validate extends (across all facets)
@@ -278,8 +281,10 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   }
 
   public TableTag getTableTag(final JdbcTable t) {
+    log.debug("facet tables: " + this.getFacetTables().size());
     for (TableTag tag : this.getFacetTables()) {
-      log.debug("Comparing table '" + t.getName() + "' -- tag=" + tag.getId().getCanonicalSQLName());
+      log.debug("Comparing table '" + t.getName() + "' -- tag=" + tag.getId().getCanonicalSQLName() + " --> equal="
+          + tag.getId().getCanonicalSQLName().equals(t.getName()));
       // TODO: this comparison fails to include the catalog/schema. Fix!
       if (tag.getId().getCanonicalSQLName().equals(t.getName())) {
         return tag;
@@ -330,6 +335,7 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
   public List<TableTag> getFacetTables() {
     log.debug("this.chosenFacets=" + this.chosenFacets.stream().map(f -> f.getName()).collect(Collectors.joining(",")));
     if (this.chosenFacets.isEmpty()) {
+      log.debug("all facets -- total tables=" + this.allFacets.getTables().size());
       return this.allFacets.getTables();
     } else {
       List<TableTag> subset = new ArrayList<TableTag>();
@@ -337,6 +343,15 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
         subset.addAll(f.getTables());
       }
       return subset;
+    }
+  }
+
+  public void includeInAllFacets(JdbcTable t, boolean isView, final DaosSpringMyBatisTag daosTag,
+      final HotRodConfigTag config, final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
+    if (isView) {
+      this.allFacets.includeView(t, daosTag, config, adapter);
+    } else {
+      this.allFacets.includeTable(t, daosTag, config, adapter);
     }
   }
 

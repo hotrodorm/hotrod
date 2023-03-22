@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
 import org.hotrodorm.hotrod.utils.SUtil;
+import org.nocrala.tools.database.tartarus.core.JdbcTable;
 
 @XmlRootElement(name = "facet")
 public class FacetTag extends AbstractConfigurationTag {
@@ -112,6 +113,18 @@ public class FacetTag extends AbstractConfigurationTag {
     this.views.addAll(views);
     this.enums.addAll(enums);
     this.daos.addAll(daos);
+  }
+
+  public void includeTable(final JdbcTable t, final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
+      final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
+    TableTag tt = new TableTag(t, daosTag, null, config, adapter);
+    this.tables.add(tt);
+  }
+
+  public void includeView(final JdbcTable t, final DaosSpringMyBatisTag daosTag, final HotRodConfigTag config,
+      final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
+    ViewTag vt = new ViewTag(t, daosTag, null, config, adapter);
+    this.views.add(vt);
   }
 
   // Getters

@@ -47,10 +47,6 @@ public class MyBatisSpringTag extends AbstractGeneratorTag implements NamePackag
 
   private MyBatisProperties properties = new MyBatisProperties();
 
-  public boolean isDiscoverEnabled(final HotRodConfigTag config) {
-    return this.discover != null;
-  }
-
   // Constructor
 
   public MyBatisSpringTag() {

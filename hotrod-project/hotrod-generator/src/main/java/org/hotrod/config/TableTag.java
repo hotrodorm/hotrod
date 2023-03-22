@@ -65,10 +65,54 @@ public class TableTag extends AbstractEntityDAOTag {
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
 
-  // Constructor
+  // Constructor for XML config
 
   public TableTag() {
     super("table");
+  }
+
+  // Constructor for Discover
+
+  public TableTag(final JdbcTable t, final DaosSpringMyBatisTag daosTag, final HotRodFragmentConfigTag fragmentConfig,
+      final HotRodConfigTag config, final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
+    super("table");
+
+    this.daosTag = daosTag;
+    this.fragmentConfig = fragmentConfig;
+    this.fragmentPackage = this.fragmentConfig != null && this.fragmentConfig.getFragmentPackage() != null
+        ? this.fragmentConfig.getFragmentPackage()
+        : null;
+    this.javaClassName = resolveJavaName(config, adapter);
+
+    try {
+
+      Id catalogId = t.getCatalog() == null ? null : Id.fromCanonicalSQL(t.getCatalog(), adapter);
+      Id schemaId = t.getSchema() == null ? null : Id.fromCanonicalSQL(t.getSchema(), adapter);
+      Id nameId = Id.fromCanonicalSQL(t.getName(), adapter);
+
+      this.id = new ObjectId(catalogId, schemaId, nameId, adapter);
+    } catch (InvalidIdentifierException e) {
+      String msg = "Cannot generate discovered table with the name: catalog:" + SUtil.coalesce(t.getCatalog(), "N/A")
+          + " shema:" + SUtil.coalesce(t.getSchema(), "N/A") + " object_name:" + t.getName() + " " + e.getMessage()
+          + ". Use a <table> to specify a regular name.";
+      throw new InvalidConfigurationFileException(this, msg);
+    }
+  }
+
+  private String resolveJavaName(final HotRodConfigTag config, final DatabaseAdapter adapter)
+      throws InvalidConfigurationFileException {
+    String replacedName = null;
+    try {
+      replacedName = config.getNameSolverTag().resolveName(this.name, Scope.TABLE);
+      log.debug("### this.name=" + this.name + " -> replacedName=" + replacedName);
+      return replacedName == null ? null : Id.fromCanonicalSQL(replacedName, adapter).getJavaClassName();
+    } catch (CouldNotResolveNameException e) {
+      throw new InvalidConfigurationFileException(this,
+          "Could not resolve java class name for table '" + this.name + "': " + e.getMessage());
+    } catch (InvalidIdentifierException e) {
+      throw new InvalidConfigurationFileException(this,
+          "Could not resolve java class name for table '" + this.name + "': " + e.getMessage());
+    }
   }
 
   // Duplicate
