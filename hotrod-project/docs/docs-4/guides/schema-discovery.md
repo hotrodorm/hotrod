@@ -10,6 +10,8 @@ Discovery is mutually exclusive with facets. If you want to use discovery you ca
 It's also possible to combine discovery with declared tables and views. The persistence layer generation honors the
 details of declared tables and views.
 
+For a technical description see [`<discover>`](../config/tags/discover.md), [`<current-schema>`](../config/tags/current-schema.md), [`<schema>`](../config/tags/schema.md), [`<exlude>`](../config/tags/exclude.md), and the [Configuration File Reference](../config/README.md).
+
 
 ## Examples
 
