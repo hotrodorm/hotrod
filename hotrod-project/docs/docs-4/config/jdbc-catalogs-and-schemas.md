@@ -12,9 +12,6 @@ the support they have on each of database:
 | MariaDB           | Yes               | --              | 
 | MySQL             | Yes               | --              | 
 | SAP ASE (ex-Sybase)  | Yes               | Yes             | 
-| H2                | Yes/No[^1]                | Yes             | 
+| H2                | --                | Yes             | 
 | HyperSQL          | --                | Yes             | 
 | Apache Derby      | --                | Yes             | 
-
-[^1]: H2 sometimes requires the catalog name when searching for tables. When required, the catalog
-corresponds to the database name.

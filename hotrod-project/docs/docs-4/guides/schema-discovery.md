@@ -10,7 +10,7 @@ Discovery is mutually exclusive with facets. If you want to use discovery you ca
 It's also possible to combine discovery with declared tables and views. The persistence layer generation honors the
 details of declared tables and views.
 
-For a technical description see [`<discover>`](../config/tags/discover.md), [`<current-schema>`](../config/tags/current-schema.md), [`<schema>`](../config/tags/schema.md), [`<exlude>`](../config/tags/exclude.md), and the [Configuration File Reference](../config/README.md).
+For a technical description see [`<discover>`](../config/tags/discover.md), [`<current-schema>`](../config/tags/current-schema.md), [`<schema>`](../config/tags/schema.md), [`<exclude>`](../config/tags/exclude.md), and the [Configuration File Reference](../config/README.md).
 
 
 ## Examples
@@ -242,6 +242,41 @@ layer except for `master.accounting.invoice_bkp_tab` and `clients.billing.accoun
 
 The declared table `master.accounting.client_tab` and the view `outst_payments` in the current schema are also
 included in the persistence layer with their custom settings.
+
+All tables and views &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
+
+
+### Example #7 - Catalogs Without Schemas
+
+In databases that implement catalogs but do not implement schemas &ndash; e.g. MariaDB and MySQL &ndash; these can 
+be discovered by using the `catalog` attribute. Catalogs are typìcally knowns as *databases* by theses engines.
+
+```xml
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+
+      <discover>
+        <schema catalog="marketing" />
+        <schema catalog="insurance">
+          <exclude name="mortality_table" />
+        </schema>
+        <schema catalog="sales">
+          <exclude name="report_bkp" />
+        </schema>
+      </discover>
+
+      <daos package="app.persistence" />
+    </mybatis-spring>
+  </generators>
+
+</hotrod>
+```
+
+All tables and views in the catalog/database `marketing` are in included in the persistence layer.
+Also, all tables and views of the catalog/database `insurance` and `sales` are included in the persistence 
+layer except for `insurance.mortality_table` and `sales.report_bkp`.
 
 All tables and views &ndash; either discovered or declared &ndash; are available for CRUD and LiveSQL.
 

@@ -1,9 +1,9 @@
 # Supported Databases
 
 HotRod supports the following Databases:
-- Oracle Database
+- Oracle
 - Db2 LUW
-- PostgreSQL
+- PostgreSQL &amp; Aurora/PostgreSQL
 - SQL Server
 - MariaDB
 - MySQL
@@ -11,8 +11,6 @@ HotRod supports the following Databases:
 - H2
 - HyperSQL
 - Apache Derby
-- `Aurora/PostgreSQL` *not yet supported*
-- `Aurora/MySQL` *not yet supported*
 
 
 ## Example of JDBC Drivers

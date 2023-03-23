@@ -22,7 +22,7 @@ The following query select a car VO, where each car VO includes a single owner V
     select
       <columns>
         <vo table="car" extended-vo="CarWithOwnerVO">
-          p.*
+          c.*
           <association table="owner" property="carOwner" alias="o" />
         </vo>
       </columns>
