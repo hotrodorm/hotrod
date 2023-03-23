@@ -1,7 +1,7 @@
 # Supported Databases
 
 HotRod supports the following Databases:
-- Oracle Database
+- Oracle
 - Db2 LUW
 - PostgreSQL &amp; Aurora/PostgreSQL
 - SQL Server
