@@ -99,7 +99,7 @@ public class HotRodContext {
 
       try {
         this.adapter = DatabaseAdapterFactory.getAdapter(conn);
-        feedback.info("Database Adapter: " + adapter.getName());
+        feedback.info("HotRod Adapter: " + adapter.getName());
       } catch (UnrecognizedDatabaseException e) {
         throw new ControlledException("Could not identify database at URL " + loc.getUrl() + " - " + e.getMessage());
       } catch (UncontrolledException e) {
@@ -170,18 +170,20 @@ public class HotRodContext {
         if (mst.getSelectGeneration().getStrategy() == SelectStrategy.RESULT_SET) {
           if (discover) {
 
-            List<CatalogSchema> discoverCS = new ArrayList<>();
+            List<CatalogSchema> discoverCSs = new ArrayList<>();
             Set<DatabaseObject> excludeIds = new HashSet<>();
 
             for (SchemaTag s : mst.getDiscover().getAllSchemaTags()) {
-              discoverCS.add(new CatalogSchema(s.getCatalogName(), s.getSchemaName()));
+              discoverCSs.add(new CatalogSchema(s.getCanonicalCatalog(), s.getCanonicalSchema()));
               for (ExcludeTag ex : s.getExcludeList()) {
-                excludeIds.add(new DatabaseObject(s.getCatalogName(), s.getSchemaName(), ex.getName()));
+                DatabaseObject id = new DatabaseObject(s.getCanonicalCatalog(), s.getCanonicalSchema(), ex.getCanonicalName());
+                log.debug("-----> exclude: " + id);
+                excludeIds.add(id);
               }
             }
 
             log.debug("gen 2");
-            this.db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views, discoverCS, excludeIds);
+            this.db = new JdbcDatabase(conn, loc.getCatalogSchema(), tables, views, discoverCSs, excludeIds);
             log.debug("gen 3");
 
             DaosSpringMyBatisTag daosTag = mst.getDaos();

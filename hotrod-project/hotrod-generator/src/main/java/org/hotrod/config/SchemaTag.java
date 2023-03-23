@@ -25,6 +25,10 @@ public class SchemaTag extends AbstractConfigurationTag {
   private String catalog = null;
   private List<ExcludeTag> excludes = new ArrayList<>();
 
+  private String canonicalCatalog = null;
+  private String canonicalSchema = null;
+
+  @SuppressWarnings("unused")
   private CatalogSchema cs;
 
   // Constructor
@@ -69,33 +73,91 @@ public class SchemaTag extends AbstractConfigurationTag {
       this.catalog = currentCS.getCatalog();
       this.name = currentCS.getSchema();
 
-    } else {
-
       // catalog
 
-      Id catalogId;
-      try {
-        catalogId = this.catalog == null ? Id.fromTypedSQL(currentCS.getCatalog(), adapter)
-            : Id.fromTypedSQL(this.catalog, adapter);
-      } catch (InvalidIdentifierException e) {
-        String msg = "Invalid catalog name '" + this.catalog + "' on tag <" + super.getTagName() + "> for the table '"
-            + this.name + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(this, msg);
+      if (adapter.supportsCatalog()) {
+        if (this.catalog != null) {
+          try {
+            this.canonicalCatalog = Id.fromTypedSQL(this.catalog, adapter).getCanonicalSQLName();
+          } catch (InvalidIdentifierException e) {
+            String msg = "Invalid current catalog name '" + this.catalog + "' specified in the runtime configuration: "
+                + e.getMessage();
+            throw new InvalidConfigurationFileException(this, msg);
+          }
+        }
+      } else {
+        if (this.catalog != null) {
+          throw new InvalidConfigurationFileException(this,
+              "Invalid current catalog name '" + this.catalog
+                  + "' specified in the runtime configuration. This database does not support catalogs. "
+                  + "Please remove it from the runtime configuration.");
+        }
       }
 
       // schema
 
-      Id schemaId;
-      try {
-        schemaId = this.name == null ? Id.fromTypedSQL(currentCS.getSchema(), adapter)
-            : Id.fromTypedSQL(this.name, adapter);
-      } catch (InvalidIdentifierException e) {
-        String msg = "Invalid schema name '" + this.name + "' on tag <" + super.getTagName() + "> for the table '"
-            + this.name + "': " + e.getMessage();
-        throw new InvalidConfigurationFileException(this, msg);
+      if (adapter.supportsSchema()) {
+        if (this.name != null) {
+          try {
+            this.canonicalSchema = Id.fromTypedSQL(this.name, adapter).getCanonicalSQLName();
+          } catch (InvalidIdentifierException e) {
+            String msg = "Invalid current schema '" + this.name + "' specified in the runtime configuration: "
+                + e.getMessage();
+            throw new InvalidConfigurationFileException(this, msg);
+          }
+        }
+      } else {
+        if (this.name != null) {
+          throw new InvalidConfigurationFileException(this,
+              "Invalid current schema name '" + this.name
+                  + "' specified in the runtime configuration. This database does not support schemas. "
+                  + "Please remove it from the runtime configuration.");
+        }
       }
 
-      this.cs = new CatalogSchema(this.catalog, this.name);
+    } else {
+
+      // catalog
+
+      if (adapter.supportsCatalog()) {
+        if (this.catalog != null) {
+          try {
+            this.canonicalCatalog = Id.fromTypedSQL(this.catalog, adapter).getCanonicalSQLName();
+          } catch (InvalidIdentifierException e) {
+            String msg = "Invalid catalog name '" + this.catalog + "' in tag <" + super.getTagName() + ">: "
+                + e.getMessage();
+            throw new InvalidConfigurationFileException(this, msg);
+          }
+        }
+      } else {
+        if (this.catalog != null) {
+          throw new InvalidConfigurationFileException(this, "The <schema> tag specifies the catalog '" + this.catalog
+              + "', but this database does not support catalogs. Please remove it.");
+        }
+      }
+
+      // schema
+
+      if (adapter.supportsSchema()) {
+        if (this.name != null) {
+          try {
+            this.canonicalSchema = Id.fromTypedSQL(this.name, adapter).getCanonicalSQLName();
+          } catch (InvalidIdentifierException e) {
+            String msg = "Invalid schema name '" + this.name + "' in tag <" + super.getTagName() + ">: "
+                + e.getMessage();
+            throw new InvalidConfigurationFileException(this, msg);
+          }
+        }
+      } else {
+        if (this.name != null) {
+          throw new InvalidConfigurationFileException(this,
+              "The <schema> tag includes the attribute 'name' with value '" + this.catalog
+                  + "' to indicate a schema, but this database does not support schemas. Please remove it.");
+        }
+      }
+
+      this.cs = new CatalogSchema(this.canonicalCatalog, this.canonicalSchema);
+
     }
 
     // excludes
@@ -112,12 +174,12 @@ public class SchemaTag extends AbstractConfigurationTag {
     return excludes;
   }
 
-  public String getCatalogName() {
-    return catalog;
+  public String getCanonicalCatalog() {
+    return this.canonicalCatalog;
   }
 
-  public String getSchemaName() {
-    return name;
+  public String getCanonicalSchema() {
+    return this.canonicalSchema;
   }
 
   // Simple Caption

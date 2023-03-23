@@ -31,6 +31,7 @@ public class DiscoverTag extends AbstractConfigurationTag {
   @XmlElement(name = "current-schema")
   public void setCurrentSchema(final SchemaTag currentSchema) {
     this.currentSchema = currentSchema;
+    this.currentSchema.setCurrent();
   }
 
   @XmlElement(name = "schema")
@@ -43,16 +44,11 @@ public class DiscoverTag extends AbstractConfigurationTag {
   public void validate(final DatabaseAdapter adapter, final CatalogSchema currentCS)
       throws InvalidConfigurationFileException {
 
-    // Set defaults
-
-    if (this.currentSchema == null) {
-      this.currentSchema = new SchemaTag();
-    }
-    this.currentSchema.setCurrent();
-
     // 1. Validate the current schema
 
-    this.currentSchema.validate(adapter, currentCS);
+    if (this.currentSchema != null) {
+      this.currentSchema.validate(adapter, currentCS);
+    }
 
     // 2. Validate other schemas
 

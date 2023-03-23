@@ -5,7 +5,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hotrod.database.DatabaseAdapter;
 import org.hotrod.exceptions.InvalidConfigurationFileException;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.hotrod.exceptions.InvalidIdentifierException;
+import org.hotrod.identifiers.Id;
 
 @XmlRootElement(name = "exclude")
 public class ExcludeTag extends AbstractConfigurationTag {
@@ -15,6 +16,7 @@ public class ExcludeTag extends AbstractConfigurationTag {
   // Properties
 
   private String name = null;
+  private String canonicalName = null;
 
   // Constructor
 
@@ -32,15 +34,28 @@ public class ExcludeTag extends AbstractConfigurationTag {
   // Behavior
 
   public void validate(final DatabaseAdapter adapter) throws InvalidConfigurationFileException {
-    if (SUtil.isEmpty(this.name)) {
-      throw new InvalidConfigurationFileException(this, "The attribute 'name' of the tag <exclude> must be specified");
+    if (this.name == null) {
+      throw new InvalidConfigurationFileException(this, "The attribute 'name' of the tag <exclude> must be specified. "
+          + "It will exclude the table or view with that name.");
+    } else {
+      try {
+        this.canonicalName = Id.fromTypedSQL(this.name, adapter).getCanonicalSQLName();
+      } catch (InvalidIdentifierException e) {
+        String msg = "Invalid database object name '" + this.name + "' in tag <" + super.getTagName() + ">: "
+            + e.getMessage();
+        throw new InvalidConfigurationFileException(this, msg);
+      }
     }
   }
 
   // Getters
 
-  public String getName() {
+  public String getTypedName() {
     return this.name;
+  }
+
+  public String getCanonicalName() {
+    return canonicalName;
   }
 
   // Simple Caption
