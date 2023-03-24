@@ -11,16 +11,16 @@
 
   <Loggers>
 
+    
+    <!-- 
     <Logger name="org.hotrod.metadata.TableDataSetMetadata" level="debug" />
     <Logger name="org.hotrod.generator.HotRodContext" level="debug" />
     <Logger name="org.hotrod.config.AbstractHotRodConfigTag" level="debug" />
 
     <Logger name="org.nocrala.tools.database.tartarus.connectors.DatabaseConnector" level="debug" />
     <Logger name="org.nocrala.tools.database.tartarus.core.JdbcDatabase" level="debug" />
-    
-    <!-- 
+
     <Logger name="org.hotrod.config.ConfigurationLoader" level="debug" />
-    
     -->
 
     <!-- Logging MyBatis persistence -->

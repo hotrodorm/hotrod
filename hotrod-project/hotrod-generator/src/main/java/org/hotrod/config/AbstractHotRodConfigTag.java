@@ -202,9 +202,6 @@ public abstract class AbstractHotRodConfigTag extends AbstractConfigurationTag
       this.allFacets.mergeOther(f);
     }
 
-    // TODO add discover
-    log.info("add discovered objects");
-
     this.setChosenFacets(facetNames);
 
     // Validate extends (across all facets)
