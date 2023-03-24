@@ -155,7 +155,7 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
 
     try {
       String viewJdbcName = this.adapter.formatJdbcTableName(ctx.getTempViewName());
-      rs = conn2.getMetaData().getColumns(this.dloc.getDefaultCatalog(), this.dloc.getDefaultSchema(), viewJdbcName,
+      rs = conn2.getMetaData().getColumns(this.dloc.getCurrentCatalog(), this.dloc.getCurrentSchema(), viewJdbcName,
           null);
       while (rs.next()) {
         JdbcColumn c = this.db.retrieveSelectColumn(rs);
@@ -279,7 +279,7 @@ public class CreateViewColumnsRetriever implements ColumnsRetriever {
 
         String viewJdbcName = this.adapter.formatJdbcTableName(ctx.getTempViewName());
 
-        rs = this.conn2.getMetaData().getColumns(this.dloc.getDefaultCatalog(), this.dloc.getDefaultSchema(),
+        rs = this.conn2.getMetaData().getColumns(this.dloc.getCurrentCatalog(), this.dloc.getCurrentSchema(),
             viewJdbcName, null);
         while (rs.next()) {
           JdbcColumn c = this.db.retrieveSelectColumn(rs);

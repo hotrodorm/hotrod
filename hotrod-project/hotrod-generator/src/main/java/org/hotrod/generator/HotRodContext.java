@@ -116,10 +116,10 @@ public class HotRodContext {
 
       feedback.info("");
       if (adapter.supportsCatalog()) {
-        feedback.info("Current Catalog: " + (loc.getDefaultCatalog() == null ? "" : loc.getDefaultCatalog()));
+        feedback.info("Current Catalog: " + (loc.getCurrentCatalog() == null ? "" : loc.getCurrentCatalog()));
       }
       if (adapter.supportsSchema()) {
-        feedback.info("Current Schema: " + (loc.getDefaultSchema() == null ? "" : loc.getDefaultSchema()));
+        feedback.info("Current Schema: " + (loc.getCurrentSchema() == null ? "" : loc.getCurrentSchema()));
       }
       feedback.info("");
 
@@ -215,7 +215,7 @@ public class HotRodContext {
         }
 
         log.debug("gen 8");
-        adapter.setCurrentCatalogSchema(conn, loc.getDefaultCatalog(), loc.getDefaultSchema());
+        adapter.setCurrentCatalogSchema(conn, loc.getCurrentCatalog(), loc.getCurrentSchema());
         log.debug("gen 9");
 
       } catch (ReaderException e) {
@@ -228,16 +228,16 @@ public class HotRodContext {
         throw new ControlledException(msg);
       } catch (CatalogNotSupportedException e) {
         throw new ControlledException("This database does not support catalogs through the JDBC driver. "
-            + "Please specify an empty value for the default catalog property instead of '" + loc.getDefaultCatalog()
+            + "Please specify an empty value for the current catalog property instead of '" + loc.getCurrentCatalog()
             + "'.");
       } catch (InvalidCatalogException e) {
         e.printStackTrace();
         StringBuilder sb = new StringBuilder();
-        if (loc.getDefaultCatalog() == null) {
-          sb.append("Please specify a default catalog.\n\n");
+        if (loc.getCurrentCatalog() == null) {
+          sb.append("Please specify a current catalog.\n\n");
         } else {
           sb.append(
-              "The specified default catalog '" + loc.getDefaultCatalog() + "' does not exist in this database.\n\n");
+              "The specified current catalog '" + loc.getCurrentCatalog() + "' does not exist in this database.\n\n");
         }
         sb.append("The available catalogs are:\n");
         for (String c : e.getExistingCatalogs()) {
@@ -246,15 +246,15 @@ public class HotRodContext {
         throw new ControlledException(sb.toString());
       } catch (SchemaNotSupportedException e) {
         throw new ControlledException("This database does not support schemas through the JDBC driver. "
-            + "Please specify an empty value for the default schema property instead of '" + loc.getDefaultCatalog()
+            + "Please specify an empty value for the current schema property instead of '" + loc.getCurrentCatalog()
             + "'.");
       } catch (InvalidSchemaException e) {
         StringBuilder sb = new StringBuilder();
-        if (loc.getDefaultSchema() == null) {
-          sb.append("Please specify a default schema.\n\n");
+        if (loc.getCurrentSchema() == null) {
+          sb.append("Please specify a current schema.\n\n");
         } else {
           sb.append(
-              "The specified default schema '" + loc.getDefaultSchema() + "' does not exist in this database.\n\n");
+              "The specified current schema '" + loc.getCurrentSchema() + "' does not exist in this database.\n\n");
         }
         sb.append("The available schemas are:\n");
         for (String s : e.getExistingSchemas()) {
