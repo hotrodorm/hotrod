@@ -69,7 +69,11 @@ import org.hotrod.runtime.livesql.expressions.predicates.NotExists;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.strings.StringConstant;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
+import org.hotrod.runtime.livesql.queries.DeleteFromPhase;
+import org.hotrod.runtime.livesql.queries.InsertIntoPhase;
+import org.hotrod.runtime.livesql.queries.UpdateTablePhase;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -111,6 +115,24 @@ public class LiveSQL {
 
   public SelectColumnsPhase<Row> selectDistinct(final ResultSetColumn... resultSetColumns) {
     return new SelectColumnsPhase<Row>(this.sqlDialect, this.sqlSession, this.liveSQLMapper, true, resultSetColumns);
+  }
+
+  // Delete
+
+  public DeleteFromPhase delete(final TableOrView from) {
+    return new DeleteFromPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, from);
+  }
+
+  // Update
+
+  public UpdateTablePhase update(final TableOrView tableOrView) {
+    return new UpdateTablePhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, tableOrView);
+  }
+
+  // Insert
+
+  public InsertIntoPhase insert(final TableOrView into) {
+    return new InsertIntoPhase(this.sqlDialect, this.sqlSession, this.liveSQLMapper, into);
   }
 
   // Tuples

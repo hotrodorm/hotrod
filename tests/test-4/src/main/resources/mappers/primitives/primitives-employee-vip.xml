@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="app.daos.primitives.employeeVip">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    full_name
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.full_name
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.EmployeeVipVO">
+    <id property="id" column="ID" />
+    <result property="fullName" column="FULL_NAME" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.employee_vip
+     where
+      id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.employee_vip
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id != null">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.fullName != null">
+        and full_name = #{p.fullName,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into public.employee_vip (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+        <if test="true">, full_name</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{fullName,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update public.employee_vip set
+      full_name = #{fullName,jdbcType=VARCHAR}
+     where
+      id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from public.employee_vip
+     where
+      id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update public.employee_vip
+    <set>
+      <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.fullName != null">full_name = #{values.fullName,jdbcType=VARCHAR},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id != null">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.fullName != null">
+        and full_name = #{filter.fullName,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from public.employee_vip
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id != null">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="fullName != null">
+        and full_name = #{fullName,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </delete>
+
+</mapper>
