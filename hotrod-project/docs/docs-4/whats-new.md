@@ -6,6 +6,8 @@ HotRod 4.0 includes several major features as well as a myriad of minot improvem
 
 - Schema discovery.
 - Support for multiple datasources.
+- LiveSQL now implements INSERT, UPDATE, and DELETE statements on top of SELECT.
+- LiveSQL can use the DUAL (Oracle) and SYSIBM.SYSDUMMY1 system tables.
 - LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
 - Nitro defaults to result-set generation now. The `<select-generation>` tag can be omitted by default.
 - Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
