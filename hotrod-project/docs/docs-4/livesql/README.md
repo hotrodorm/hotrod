@@ -79,6 +79,26 @@ Each sections of a `SELECT` statement has variations, and they are discussed bel
     - [The ORDER BY Clause](./syntax/order-by.md).
     - [The OFFSET Clause](./syntax/offset.md).
     - [The LIMIT Clause](./syntax/limit.md).
+    - [DUAL (Oracle) &amp; SYSDUMMY1 (DB2)](./syntax/systables.md).
+
+The INSERT statement:
+
+- [The INSERT Statement](./syntax/insert.md).
+    - [Specifying column names](./syntax/insert-columns.md).
+    - [VALUES clause](./syntax/insert-values.md).
+    - [Inserting from a SELECT](./syntax/insert-select.md).
+
+The UPDATE statement:
+
+- [The UPDATE Statement](./syntax/update.md).
+    - [SET clause](./syntax/update-set.md).
+    - [WHERE clause](./syntax/update-where.md).
+
+The DELETE statement:
+
+- [The DELETE Statement](./syntax/delete.md).
+    - [WHERE clause](./syntax/delete-where.md).
+
 
 The Expression Language:
 
