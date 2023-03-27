@@ -85,8 +85,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class LiveSQL {
 
-  public static final Table DUAL = new DualTable();
-  public static final Table SYSDUMMY1 = new SysDummy1Table();
+  public final Table DUAL = new DualTable();
+  public final Table SYSDUMMY1 = new SysDummy1Table();
 
   // Properties
 
