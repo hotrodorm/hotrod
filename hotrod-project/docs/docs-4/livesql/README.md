@@ -69,7 +69,7 @@ Consider that cursors only live between the boundaries of a database transaction
 
 ## LiveSQL Syntax
 
-Each sections of a `SELECT` statement has variations, and they are discussed below:
+Each section of a `SELECT` statement has variations, and they are discussed below:
 
 - [The SELECT Statement](./syntax/select.md).
     - [The FROM and JOIN Clauses](./syntax/from-and-joins.md).
@@ -79,6 +79,25 @@ Each sections of a `SELECT` statement has variations, and they are discussed bel
     - [The ORDER BY Clause](./syntax/order-by.md).
     - [The OFFSET Clause](./syntax/offset.md).
     - [The LIMIT Clause](./syntax/limit.md).
+    - [The DUAL &amp; SYSDUMMY1 Tables](./syntax/systables.md).
+
+The INSERT statement has two main variations &ndash; using `VALUES` or using `SELECT`:
+
+- [The INSERT Statement](./syntax/insert.md).
+    - [Specifying column names](./syntax/insert-columns.md).
+    - [The VALUES clause](./syntax/insert-values.md).
+    - [Inserting from a SELECT](./syntax/insert-select.md).
+
+The UPDATE statement has a single variation and can use subqueries:
+
+- [The UPDATE Statement](./syntax/update.md).
+    - [The SET clause](./syntax/update-set.md).
+    - [The WHERE clause](./syntax/update-where.md).
+
+The DELETE statement also has a single variation and can use subqueries:
+
+- [The DELETE Statement](./syntax/delete.md).
+    - [The WHERE clause](./syntax/delete-where.md).
 
 The Expression Language:
 
