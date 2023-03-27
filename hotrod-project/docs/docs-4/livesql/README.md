@@ -85,19 +85,19 @@ The INSERT statement has two main variations &ndash; using `VALUES` or using `SE
 
 - [The INSERT Statement](./syntax/insert.md).
     - [Specifying column names](./syntax/insert-columns.md).
-    - [VALUES clause](./syntax/insert-values.md).
+    - [The VALUES clause](./syntax/insert-values.md).
     - [Inserting from a SELECT](./syntax/insert-select.md).
 
 The UPDATE statement has a single variation and can use subqueries:
 
 - [The UPDATE Statement](./syntax/update.md).
-    - [SET clause](./syntax/update-set.md).
-    - [WHERE clause](./syntax/update-where.md).
+    - [The SET clause](./syntax/update-set.md).
+    - [The WHERE clause](./syntax/update-where.md).
 
 The DELETE statement also has a single variation and can use subqueries:
 
 - [The DELETE Statement](./syntax/delete.md).
-    - [WHERE clause](./syntax/delete-where.md).
+    - [The WHERE clause](./syntax/delete-where.md).
 
 The Expression Language:
 
