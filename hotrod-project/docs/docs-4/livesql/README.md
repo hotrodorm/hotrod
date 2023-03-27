@@ -79,7 +79,7 @@ Each section of a `SELECT` statement has variations, and they are discussed belo
     - [The ORDER BY Clause](./syntax/order-by.md).
     - [The OFFSET Clause](./syntax/offset.md).
     - [The LIMIT Clause](./syntax/limit.md).
-    - [The DUAL &amp; SYSDUMMY1 Tables in Oracle and DB2 respectively](./syntax/systables.md).
+    - [The DUAL &amp; SYSDUMMY1 Tables In Oracle And DB2 Respectively](./syntax/systables.md).
 
 The INSERT statement has two main variations &ndash; using `VALUES` or using `SELECT`:
 
