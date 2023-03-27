@@ -69,6 +69,7 @@ import org.hotrod.runtime.livesql.expressions.predicates.NotExists;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.expressions.strings.StringConstant;
 import org.hotrod.runtime.livesql.expressions.strings.StringExpression;
+import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.metadata.TableOrView;
 import org.hotrod.runtime.livesql.ordering.OrderingTerm;
 import org.hotrod.runtime.livesql.queries.DeleteFromPhase;
@@ -76,11 +77,16 @@ import org.hotrod.runtime.livesql.queries.InsertIntoPhase;
 import org.hotrod.runtime.livesql.queries.UpdateTablePhase;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.hotrod.runtime.livesql.queries.select.SelectColumnsPhase;
+import org.hotrod.runtime.livesql.sysobjects.DualTable;
+import org.hotrod.runtime.livesql.sysobjects.SysDummy1Table;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 public class LiveSQL {
+
+  public static final Table DUAL = new DualTable();
+  public static final Table SYSDUMMY1 = new SysDummy1Table();
 
   // Properties
 

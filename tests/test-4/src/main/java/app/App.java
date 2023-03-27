@@ -98,6 +98,8 @@ public class App {
     EmployeeVipTable ev = EmployeeVipDAO.newTable();
     this.sql.insert(ev).values(sql.val(7), sql.val("James")).execute();
 
+    this.sql.insert(ev).select(sql.select(sql.val(86), sql.val("Super A")).from(sql.DUAL)).execute();
+
     // Insert into VIP employees using SELECT
 
     InsertSelectPhase is = this.sql.insert(ev).select(sql.select(e.id, e.name).from(e).where(e.name.like("%A%")));
