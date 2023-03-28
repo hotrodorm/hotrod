@@ -105,7 +105,7 @@ The general structure of HotRod's main configuration file is shown below:
             * [`<parameter>`](tags/parameter.md)
             * *SQL query*
             * [Dynamic SQL](../nitro/nitro-dynamic-sql.md): Any number of flat or nested `<if>`, `<choose>`, `<where>`, `<set>`, `<trim>`, `<foreach>`, `<bind>`
-        * [`<select>`](select.md)
+        * [`<select>`](tags/select.md)
             * `<parameter>`
             * *SQL query*
             * [`<column>`](tags/column.md)
