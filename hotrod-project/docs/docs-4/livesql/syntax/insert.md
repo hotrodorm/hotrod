@@ -87,7 +87,7 @@ sql.insert(p)
 
 Note, however, that not all views can be used to insert rows in the underlying tables. Each database engine imposes different
 rules and limitations on insertion through views. Consult your database documentation to learn if the engine allows it for 
-each specific view. The general rules seem to be:
+each specific view. The general rules across many database engines seem to be:
 - A view must have a *driving table*. This driving table produces 1 row at most in the view.
 - The primary key of the driving table should be available in the view.
 - The rows being inserted through the view must be valid according to the filtering predicate of the view definition. In the case
