@@ -73,10 +73,10 @@ hand, will be processed in the Java application and only the result will be sent
 
 | SQL Operator | Description | In LiveSQL |
 | -- | -- | -- |
-| a \|\| b \|\| c | String concatenation | `<a>.concat(<b>).concat(<c>))` |
+| a \|\| b \|\| c | String concatenation | `<a>.concat(<b>).concat(<c>)` |
 | length(a) | String length | `<a>.length()` |
 | locate(a, b, f) | String search | `<a>.locate(<b>, <f>)` |
-| substring(a, b, c) | Substring | `<a>.substring(<a>, <b>)` |
+| substring(a, b, c) | Substring | `<a>.substring(<b>, <c>)` |
 | lower(a) | Lower case transformation | `<a>.lower()` |
 | upper(a) | Upper case transformation | `<a>.upper()` |
 | trim(a) | Trimming blanks at both ends | `<a>.trim()` |
@@ -121,8 +121,8 @@ hand, will be processed in the Java application and only the result will be sent
 | a NOT BETWEEN b AND c | NOT BETWEEN | `<a>.notBetween(<b>, <c>)` |
 | COALESCE(a, b, c, ...) | COALESCE() | `sql.coalesce(<a>, <b>, <c>, ...)` |
 | (a, b, c, ...) | tuple | `sql.tuple(<a>, <b>, <c>, ...)` |
-| a [^1] IN (a, b, c, ...) | IN (list) | `<a>.in(<a>, <b>, <c>, ...)` |
-| a [^1] NOT IN (a, b, c, ...) | NOT IN (list) | `<a>.notIn(<a>, <b>, <c>, ...)` |
+| a [^1] IN (b, c, d, ...) | IN (list) | `<a>.in(<b>, <c>, <d>, ...)` |
+| a [^1] NOT IN (b, c, d, ...) | NOT IN (list) | `<a>.notIn(<b>, <c>, <d>, ...)` |
 | EXISTS (*subquery*) | EXISTS (subquery) | `sql.exists(sql.select()...)` |
 | NOT EXISTS (*subquery*) | NOT EXISTS (subquery) | `sql.exists(sql.select()...)` |
 | CASE WHEN a THEN b END | CASE | `sql.caseWhen(<a>, <b>).end()` |
