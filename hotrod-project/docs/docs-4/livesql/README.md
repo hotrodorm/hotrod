@@ -109,7 +109,7 @@ The Expression Language:
 - [Extending LiveSQL Functions](./extending-livesql-functions.md)
 
 
-## Odds &amp; Ends
+## Extra Functionality
 
 - [Previewing LiveSQL](./previewing-livesql.md)
 - [LiveSQL and CRUD](./livesql-and-crud.md)
