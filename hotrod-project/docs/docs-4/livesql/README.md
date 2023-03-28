@@ -72,47 +72,47 @@ Consider that cursors only live between the boundaries of a database transaction
 
 Each section of a SELECT statement has variations, and they are discussed below:
 
-- [The SELECT Statement](./syntax/select.md).
-    - [The FROM and JOIN Clauses](./syntax/from-and-joins.md).
-    - [The WHERE Clause](./syntax/where.md).
-    - [The GROUP BY Clause](./syntax/group-by.md).
-    - [The HAVING Clause](./syntax/having.md).
-    - [The ORDER BY Clause](./syntax/order-by.md).
-    - [The OFFSET Clause](./syntax/offset.md).
-    - [The LIMIT Clause](./syntax/limit.md).
-    - [The DUAL &amp; SYSDUMMY1 Tables](./syntax/systables.md).
+- [The SELECT Statement](./syntax/select.md)
+    - [The FROM and JOIN Clauses](./syntax/from-and-joins.md)
+    - [The WHERE Clause](./syntax/where.md)
+    - [The GROUP BY Clause](./syntax/group-by.md)
+    - [The HAVING Clause](./syntax/having.md)
+    - [The ORDER BY Clause](./syntax/order-by.md)
+    - [The OFFSET Clause](./syntax/offset.md)
+    - [The LIMIT Clause](./syntax/limit.md)
+    - [The DUAL &amp; SYSDUMMY1 Tables](./syntax/systables.md)
 
 The INSERT statement has two main variations &ndash; using `VALUES` or from a `SELECT`:
 
-- [The INSERT Statement](./syntax/insert.md).
-    - [Specifying column names](./syntax/insert-columns.md).
-    - [The VALUES clause](./syntax/insert-values.md).
-    - [Inserting from a SELECT](./syntax/insert-select.md).
+- [The INSERT Statement](./syntax/insert.md)
+    - [Specifying column names](./syntax/insert-columns.md)
+    - [The VALUES clause](./syntax/insert-values.md)
+    - [Inserting from a SELECT](./syntax/insert-select.md)
 
 The UPDATE statement has a single variation:
 
-- [The UPDATE Statement](./syntax/update.md).
-    - [The SET clause](./syntax/update-set.md).
-    - [The WHERE clause](./syntax/update-where.md).
+- [The UPDATE Statement](./syntax/update.md)
+    - [The SET clause](./syntax/update-set.md)
+    - [The WHERE clause](./syntax/update-where.md)
 
 The DELETE statement also has a single variation:
 
-- [The DELETE Statement](./syntax/delete.md).
-    - [The WHERE clause](./syntax/delete-where.md).
+- [The DELETE Statement](./syntax/delete.md)
+    - [The WHERE clause](./syntax/delete-where.md)
 
 The Expression Language:
 
-- [Expressions, Operators &amp; Functions](./syntax/expressions.md).
-- [Aggregate Functions](./syntax/aggregate-functions.md).
-- [Window Functions](./syntax/window-functions.md).
-- [Subqueries](./syntax/subqueries.md).
-- [Extending LiveSQL Functions](./extending-livesql-functions.md).
+- [Expressions, Operators &amp; Functions](./syntax/expressions.md)
+- [Aggregate Functions](./syntax/aggregate-functions.md)
+- [Window Functions](./syntax/window-functions.md)
+- [Subqueries](./syntax/subqueries.md)
+- [Extending LiveSQL Functions](./extending-livesql-functions.md)
 
 
 ## Odds &amp; Ends
 
-- [Previewing LiveSQL](./previewing-livesql.md).
-- [LiveSQL and CRUD](./livesql-and-crud.md).
-- [Designating a LiveSQL Dialect](designating-a-livesql-dialect.md).
+- [Previewing LiveSQL](./previewing-livesql.md)
+- [LiveSQL and CRUD](./livesql-and-crud.md)
+- [Designating a LiveSQL Dialect](designating-a-livesql-dialect.md)
 
 
