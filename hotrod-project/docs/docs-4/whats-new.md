@@ -1,6 +1,6 @@
 # What's New in HotRod 4
 
-HotRod 4.0 includes several major features as well as a myriad of minot improvements.
+HotRod 4.0 includes several major features as well as a many of minor improvements.
 
 ## New Features in 4.0
 
