@@ -2,12 +2,14 @@
 
 UPDATE statements update existing data in a table. They can specify the entirety of columns and/or rows to be modified or just subsets of them.
 
-The first query below updates a few columns in all rows of the table, while the second one updates only a subset of the rows:
+The first query below updates one columns in all rows of the table, while the second one updates several columns in a subset of the rows:
 
 ```sql
 update product
 set price = price * 1.15;
+```
 
+```sql
 update product
 set promotion = 'BOGO', sale_price = price * 0.90, sales_code = 704
 where catalog_id = 1015 and type <> 'VIP';
