@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.hotrodorm.hotrod</groupId>
     <artifactId>hotrod-project</artifactId>
-    <version>3.4.15-SNAPSHOT</version>
+    <version>3.5.0-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -27,7 +27,7 @@
     <dependency>
       <groupId>org.hotrodorm.hotrod</groupId>
       <artifactId>hotrod-generator</artifactId>
-      <version>3.4.15-SNAPSHOT</version>
+      <version>3.5.0-SNAPSHOT</version>
     </dependency>
     
     <!-- Text Tables Formatting -->
