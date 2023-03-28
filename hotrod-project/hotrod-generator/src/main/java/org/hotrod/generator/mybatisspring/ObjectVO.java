@@ -112,13 +112,8 @@ public class ObjectVO extends GeneratableObject {
 
         w.write("  private static final long serialVersionUID = 1L;\n\n");
 
-        w.write("public class " + this.getClassName() + " extends " + this.abstractVO.getClassName());
-
-        if (this.metadata.getDaoTag().getImplementsClasses() != null) {
-          w.write(" implements " + this.metadata.getDaoTag().getImplementsClasses());
-        }
-
-        w.write(" {\n\n");
+        w.write("  @Autowired\n");
+        w.write("  private " + this.dao.getClassName() + " " + this.dao.getMemberName() + ";\n\n");
 
         w.write("  // Add custom code below.\n\n");
 
