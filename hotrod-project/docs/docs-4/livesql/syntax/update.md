@@ -7,7 +7,7 @@ They can specify the entirety of columns and/or rows to be modified or just subs
 
 ## Examples
 
-For example, the query below updates one columns in all rows of the table:
+The query shown below updates one columns in all rows of the table:
 
 ```sql
 update product

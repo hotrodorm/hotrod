@@ -8,7 +8,7 @@ rows from non-fact tables or from temporary ones.
 
 ## Examples
 
-The query below deletes **all the rows** (use with caution) from a temporary table:
+The query shown below deletes **all the rows** (use with caution) from a temporary table:
 
 ```sql
 delete from daily_summary;
