@@ -63,16 +63,20 @@ full expression language.
 LiveSQL can also insert rows through views. From the point of view of LiveSQL there's no difference between inserting directly
 into a table or through a view.
 
+Let's consider the following view and an insertion on it:
+
 ```sql
 create view vip_product as
-select id, name, price, product_type from product where product_type = 'VIP'
+select id, name, price, product_type from product where product_type = 'VIP';
+
+insert into vip_product (id, name, price, product_type) values (2514, 'Tohoku AB', 14.50, 'VIP');
 ```
 
 In LiveSQL the insertion could take the form:
 
 ```java
 VipProductView p = VipProductDAO.newView();
-sql.insert(p).columns(p.id, p.name, p.price).values(
+sql.insert(p).columns(p.id, p.name, p.price, p.product_type).values(
   sql.val(2514), sql.val("Tohoku AB"), sql.val(14.50), sql.val("VIP")
 ).execute();
 ```
@@ -84,6 +88,26 @@ each specific view. The general rules seem to be:
 - The primary key of the driving table should be available in the view.
 - The rows being inserted through the view must be valid according to the filtering predicate of the view definition. In the case
 above, this means the row being inserted should evaluate the predicate `product_type = 'VIP'` as `true`.
+
+Finally, it's also possible to insert into view using SELECT queries, as in:
+
+```sql
+insert into vip_product (id, name, price, product_type) 
+select id, name, price, product_type from new_catalog where stock > 0;
+```
+
+In LiveSQL the insertion could take the form:
+
+```java
+VipProductView p = VipProductDAO.newView();
+NewCatalogTable c = NewCatalogDAO.newTable();
+sql.insert(p)
+   .columns(p.id, p.name, p.price, p.product_type)
+   .select(sql.select(c.id, c.name, c.price, c.product_type).from(c).where(c.stock.gt(0)))
+   .execute();
+```
+
+Consider that the insertion rules above do matter. All the rows that are being inserted should match the predicate `product_type = 'VIP'`.
 
 
 ## Column Names
