@@ -1,9 +1,11 @@
 # The DUAL &amp; SYSDUMMY1 Tables
 
-Most databases don't need a `FROM` clause in a SELECT query. For example, in MySQL you can run:
+Most databases don't need a `FROM` clause in a SELECT query. For example, in MySQL you can run the
+following queries:
 
 ```sql
-select concat('Hello', ' ', 'World'), 3 * 7, date_add(curdate(), interval 1 day) as tomorrow;
+select 3 * 7;
+select concat('Hello', ' ', 'World'), 1 + 1, curdate(), date_add(curdate(), interval 1 day) as tomorrow;
 ```
 
 Queries like the above can compute scalar values or retrieve system information that is unrelated
@@ -13,7 +15,7 @@ However, the Oracle and DB2 databases do require a `FROM` clause in each SELECT 
 queries without a bona fide table Oracle includes the `DUAL` table and DB2 includes the 
 `SYSIBM.SYSDUMMY1` table. Both of them are read-only tables and have a single column and a single row.
 
-In Oracle and DB2 simple queries can take the form:
+In Oracle and DB2 the first query can take the form:
 
 ```sql
 select 3 * 7 from dual; -- Oracle
