@@ -135,7 +135,7 @@ sql.insert(p)
    .execute();
 ```
 
-It's also possible &ndah; but not recommended &ndah; to omit these columns, as in:
+It's also possible &ndash; but not recommended &ndash; to omit these columns, as in:
 
 ```java
 ProductTable p = ProductDAO.newTable();
