@@ -93,7 +93,6 @@ The UPDATE statement has a single variation:
 The DELETE statement also has a single variation:
 
 - [The DELETE Statement](./syntax/delete.md)
-    - [The WHERE clause](./syntax/delete-where.md)
 
 The Expression Language:
 

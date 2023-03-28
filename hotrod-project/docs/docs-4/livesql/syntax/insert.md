@@ -1,6 +1,6 @@
 # The INSERT Statement
 
-INSERT statements insert new data into a table from literal values included in the statement itself or from a select query.
+INSERT statements insert new data into a table or view from literal values included in the statement itself or from a select query.
 
 The following examples illustrate both cases:
 
