@@ -11,10 +11,17 @@ insert into product (id, name, price)
 select id, name, price from new_catalog where stock > 0
 ```
 
-## Inserting Using Literal `VALUES`
+## Inserting Using VALUES
 
-LiveSQL can insert a single row using the `VALUES` variation of the INSERT statement. For example, the query above can be
-written as:
+LiveSQL can insert a single row using the `VALUES` variation of the INSERT statement. 
+
+The follwowing INSERT:
+
+```sql
+insert into product (id, name, price) values (1007, 'Seiko KL-101', 399.95);
+```
+
+Can be written in LiveSQL as:
 
 ```java
 ProductTable p = ProductDAO.newTable();
@@ -23,6 +30,7 @@ sql.insert(p).columns(p.id, p.name, p.price).values(sql.val(1007), sql.val("Seik
 
 Not all columns of the may participate in the INSERT. In that case the columns that are not mentioned will be inserted as nulls
 or will use a DEFAULT value, as specified by the table constraints
+
 
 ## Inserting Through Views
 
