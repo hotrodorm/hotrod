@@ -89,8 +89,6 @@ The INSERT statement has two main variations &ndash; using `VALUES` or from a `S
 The UPDATE statement has a single variation:
 
 - [The UPDATE Statement](./syntax/update.md)
-    - [The SET clause](./syntax/update-set.md)
-    - [The WHERE clause](./syntax/update-where.md)
 
 The DELETE statement also has a single variation:
 
