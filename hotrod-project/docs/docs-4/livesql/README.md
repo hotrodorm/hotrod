@@ -85,9 +85,6 @@ Each section of a SELECT statement has variations, and they are discussed below:
 The INSERT statement has two main variations &ndash; using `VALUES` or from a `SELECT`:
 
 - [The INSERT Statement](./syntax/insert.md)
-    - [Specifying column names](./syntax/insert-columns.md)
-    - [The VALUES clause](./syntax/insert-values.md)
-    - [Inserting from a SELECT](./syntax/insert-select.md)
 
 The UPDATE statement has a single variation:
 
