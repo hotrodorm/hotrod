@@ -195,7 +195,7 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
 
       SelectVOClass vo = null;
       try {
-        vo = new SelectVOClass(this.classPackage, this.tag.getVOClassName(), null, properties, associations,
+        vo = new SelectVOClass(this.classPackage, this.tag.getVOClassName(), null, null, properties, associations,
             collections, this.tag);
         log.debug("--> Adding VO: " + vo);
         voRegistry.addVO(vo);
@@ -496,9 +496,9 @@ public class SelectMethodMetadata implements DataSetMetadata, Serializable {
         List<VOMember> associations = new ArrayList<VOMember>();
         List<VOMember> collections = new ArrayList<VOMember>();
         try {
-          this.soloVO = new SelectVOClass(voClassPackage, sm.getVOClassName(), null, properties, associations,
+          this.soloVO = new SelectVOClass(voClassPackage, sm.getVOClassName(), null, sm.tag.getImplementsClasses(), properties, associations,
               collections, tag);
-          this.abstractSoloVO = new SelectVOClass(voClassPackage, sm.getAbstractVOClassName(), null, properties,
+          this.abstractSoloVO = new SelectVOClass(voClassPackage, sm.getAbstractVOClassName(), null, null, properties,
               associations, collections, tag);
         } catch (DuplicatePropertyNameException e) {
           // swallow this exception

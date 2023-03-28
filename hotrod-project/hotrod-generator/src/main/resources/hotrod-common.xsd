@@ -34,6 +34,7 @@
     <xsd:attribute name="extends-schema" type="xsd:string" />
     <xsd:attribute name="java-name" type="xsd:string" />
     <xsd:attribute name="column-seam" type="xsd:string" />
+    <xsd:attribute name="implements" type="xsd:string" />
   </xsd:complexType>
 
   <xsd:complexType name="classic-fk-navigation-type" />
@@ -123,6 +124,7 @@
     <xsd:attribute name="catalog" type="xsd:string" />
     <xsd:attribute name="schema" type="xsd:string" />
     <xsd:attribute name="java-name" type="xsd:string" />
+    <xsd:attribute name="implements" type="xsd:string" />
   </xsd:complexType>
 
   <!-- enum -->
@@ -163,6 +165,7 @@
     <xsd:attribute name="method" type="xsd:string" use="required" />
     <xsd:attribute name="vo" type="xsd:string" />
     <xsd:attribute name="mode" type="xsd:string" />
+    <xsd:attribute name="implements" type="xsd:string" />
   </xsd:complexType>
 
   <!-- select method - columns -->

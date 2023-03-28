@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import org.apache.logging.log4j.LogManager;
@@ -24,13 +25,13 @@ import org.hotrod.utils.Correlator.CorrelatedEntry;
 /**
  * <pre>
  *
- *     AbstractConfigurationTag *------------------------------------+
- *      ^                                                            |
- *      |                                                            |
- *     AbstractDAOTag *------------. . . . . . .             AbstractMethodTag *-----------+
- *      ^                         ^            .                ^         ^                |
- *      |                         |            .                |         |                |
- *     AbstractEntityDAOTag  ExecutorDAOTag  SelectTag  QueryMethodTag  SelectMethodTag  SequenceMethodTag
+ *     AbstractConfigurationTag *---------------------------+
+ *      ^                                                   |
+ *      |                                                   |
+ *     AbstractDAOTag *-----------+                 AbstractMethodTag *-----------+
+ *      ^                         |                    ^         ^                |
+ *      |                         |                    |         |                |
+ *     AbstractEntityDAOTag  ExecutorDAOTag    QueryMethodTag  SelectMethodTag  SequenceMethodTag
  *      ^       ^        ^      
  *      |       |        |      
  *   TableTag  ViewTag  EnumTag
@@ -54,6 +55,8 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
   protected LinkedHashSet<String> declaredMethodNames = new LinkedHashSet<String>();
 
+  private String implementsClasses = null;
+
   // Constructor
 
   protected AbstractDAOTag(final String tagName) {
@@ -75,6 +78,11 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
   @XmlElement
   public final void setSelect(final SelectMethodTag select) {
     this.selects.add(select);
+  }
+
+  @XmlAttribute(name = "implements")
+  public void setImplements(final String implementsClasses) {
+    this.implementsClasses = implementsClasses;
   }
 
   // Duplication
@@ -165,6 +173,10 @@ public abstract class AbstractDAOTag extends AbstractConfigurationTag implements
 
   public final List<SequenceMethodTag> getSequences() {
     return sequences.toList();
+  }
+
+  public String getImplementsClasses() {
+    return implementsClasses;
   }
 
   public final List<QueryMethodTag> getQueries() {

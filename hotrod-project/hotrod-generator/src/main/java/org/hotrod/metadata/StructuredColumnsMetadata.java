@@ -75,7 +75,7 @@ public class StructuredColumnsMetadata implements Serializable {
 
       List<VOMember> collections = new ArrayList<VOMember>();
 
-      this.soloVOClass = new SelectVOClass(classPackage, this.vo, null, properties, associations, collections,
+      this.soloVOClass = new SelectVOClass(classPackage, this.vo, null, null, properties, associations, collections,
           this.tag);
       voRegistry.addVO(this.soloVOClass);
 

@@ -26,7 +26,7 @@ import org.hotrod.metadata.SelectMethodMetadata;
 import org.hotrod.metadata.TableDataSetMetadata;
 import org.hotrod.runtime.exceptions.InvalidJavaExpressionException;
 import org.hotrod.utils.Compare;
-import org.hotrodorm.hotrod.utils.SUtil;
+import org.nocrala.tools.database.tartarus.utils.SUtil;
 import org.nocrala.tools.lang.collector.listcollector.ListCollector;
 
 @XmlRootElement(name = "select")
@@ -92,6 +92,8 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
   private String abstractVoClassName;
 
   private ResultSetMode mode;
+  private String implementsClasses = null;
+
   protected ParameterDefinitions parameters = null;
   protected List<ColumnTag> columns = null;
   protected List<EnhancedSQLPart> parts = null;
@@ -148,6 +150,11 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
   @XmlAttribute(name = "mode")
   public void setMode(final String m) {
     this.sMode = m;
+  }
+
+  @XmlAttribute(name = "implements")
+  public void setImplements(final String implementsClasses) {
+    this.implementsClasses = implementsClasses;
   }
 
   // Behavior
@@ -287,6 +294,8 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
       }
     }
 
+    // implements: no validation necessary
+
     // <column> tags
 
     Set<ColumnTag> cols = new HashSet<ColumnTag>();
@@ -340,6 +349,10 @@ public class SelectMethodTag extends AbstractMethodTag<SelectMethodTag> {
 
   public ResultSetMode getResultSetMode() {
     return this.mode;
+  }
+
+  public String getImplementsClasses() {
+    return implementsClasses;
   }
 
   public ParameterDefinitions getParameters() {

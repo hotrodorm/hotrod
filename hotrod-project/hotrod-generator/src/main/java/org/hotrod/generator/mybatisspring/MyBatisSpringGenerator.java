@@ -90,7 +90,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
     this.adapter = this.hc.getAdapter();
     this.config = this.hc.getConfig();
     this.db = this.hc.getDb();
-    this.md = hc.getMetadata();
+    this.md = this.hc.getMetadata();
 
     this.displayMode = displayMode;
     this.feedback = feedback;
@@ -742,6 +742,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       vo = new ObjectVO(metadata, layout, this, abstractVO, myBatisTag);
       mapper = new Mapper(ttag, metadata, layout, this, type, this.adapter, vo, this.entityDAORegistry);
       dao = new ObjectDAO(ttag, metadata, layout, this, type, myBatisTag, this.adapter, abstractVO, vo, mapper);
+      vo.setDAO(dao);
       this.entityDAORegistry.add(vo.getFullClassName(), dao);
       mapper.setDao(dao);
 
@@ -765,6 +766,7 @@ public class MyBatisSpringGenerator implements Generator, LiveGenerator {
       vo = new ObjectVO(metadata, layout, this, abstractVO, myBatisTag);
       mapper = new Mapper(vtag, metadata, layout, this, type, this.adapter, vo, this.entityDAORegistry);
       dao = new ObjectDAO(vtag, metadata, layout, this, type, myBatisTag, this.adapter, abstractVO, vo, mapper);
+      vo.setDAO(dao);
       this.entityDAORegistry.add(vo.getFullClassName(), dao);
       mapper.setDao(dao);
 
