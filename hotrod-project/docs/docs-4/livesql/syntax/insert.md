@@ -29,7 +29,33 @@ sql.insert(p).columns(p.id, p.name, p.price).values(sql.val(1007), sql.val("Seik
 ```
 
 Not all columns of the may participate in the INSERT. In that case the columns that are not mentioned will be inserted as nulls
-or will use a DEFAULT value, as specified by the table constraints
+or will use a DEFAULT value, as specified by the table constraints.
+
+
+## Inserting From a SELECT
+
+LiveSQL can also execute inserts combined with a SELECT statement. 
+
+The following SQL statement:
+
+```sql
+insert into product (id, name, price) 
+select id, name, price from new_catalog where stock > 0
+```
+
+Can be written in LiveSQL as:
+
+```java
+ProductTable p = ProductDAO.newTable();
+NewCatalogTable c = NewCatalogDAO.newTable();
+sql.insert(p)
+   .columns(p.id, p.name, p.price)
+   .select(sql.select(c.id, c.name, c.price).from(c).where(c.stock.gt(0)))
+   .execute();
+```
+
+The SELECT statement is a general SQL select that can take any complexity as needed including joins, search predicates and the 
+full expression language.
 
 
 ## Inserting Through Views
@@ -58,32 +84,6 @@ each specific view. The general rules seem to be:
 - The primary key of the driving table should be available in the view.
 - The rows being inserted through the view must be valid according to the filtering predicate of the view definition. In the case
 above, this means the row being inserted should evaluate the predicate `product_type = 'VIP'` as `true`.
-
-
-## Inserting From a SELECT
-
-LiveSQL can also execute inserts combined with a SELECT statement. 
-
-The following SQL statement:
-
-```sql
-insert into product (id, name, price) 
-select id, name, price from new_catalog where stock > 0
-```
-
-Can be written in LiveSQL as:
-
-```java
-ProductTable p = ProductDAO.newTable();
-NewCatalogTable c = NewCatalogDAO.newTable();
-sql.insert(p)
-   .columns(p.id, p.name, p.price)
-   .select(sql.select(c.id, c.name, c.price).from(c).where(c.stock.gt(0)))
-   .execute();
-```
-
-The SELECT statement is a general SQL select that can take any complexity as needed including joins, search predicates and the 
-full expression language.
 
 
 ## Column Names
