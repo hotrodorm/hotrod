@@ -22,7 +22,7 @@ The `<table>` tag can include modifiers that can be useful in special cases, as 
 | `schema` | The schema of the table, if different from the default one | The current schema, specified in the runtime properties file |
 | `java-name` | Sets the base Java name for the DAO and VO classes | Camel-case identifier based on the database identifier |
 | `column-seam` | Rarely used. CRUD can used it to produce Java method names from multiple columns. See [Select by Unique Index](../../crud/select-by-unique-index.md), [Select Children By Foregin Key](../../crud/select-children-by-foreign-key.md), and [Select Parent By Foreign Key](../../crud/select-parent-by-foreign-key.md) | *empty-string* |
-| `implements` | A comma-separated list of fully-qualified classes that will be added to the value object definition | N/A |
+| `implements` | A comma-separated list of fully-qualified classes that will be added to the value object definition using the `implements` java clause | N/A |
 
 
 ## Natural Typing Identifiers
