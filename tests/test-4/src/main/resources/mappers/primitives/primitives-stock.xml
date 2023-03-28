@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="app.daos.primitives.stock">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    sku,
+    name,
+    quantity
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.sku,
+    ${alias}.name,
+    ${alias}.quantity
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.StockVO">
+    <result property="sku" column="SKU" />
+    <result property="name" column="NAME" />
+    <result property="quantity" column="QUANTITY" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.stock
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.sku != null">
+        and sku = #{p.sku,jdbcType=VARCHAR}
+      </if>
+      <if test="p.name != null">
+        and name = #{p.name,jdbcType=VARCHAR}
+      </if>
+      <if test="p.quantity != null">
+        and quantity = #{p.quantity,jdbcType=INTEGER}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into public.stock (
+      <trim prefixOverrides=", ">
+        <if test="true">, sku</if>
+        <if test="true">, name</if>
+        <if test="true">, quantity</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{sku,jdbcType=VARCHAR}</if>
+        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+        <if test="true">, #{quantity,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update public.stock
+    <set>
+      <if test="values.sku != null">sku = #{values.sku,jdbcType=VARCHAR},</if>
+      <if test="values.name != null">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.quantity != null">quantity = #{values.quantity,jdbcType=INTEGER},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.sku != null">
+        and sku = #{filter.sku,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.name != null">
+        and name = #{filter.name,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.quantity != null">
+        and quantity = #{filter.quantity,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from public.stock
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="sku != null">
+        and sku = #{sku,jdbcType=VARCHAR}
+      </if>
+      <if test="name != null">
+        and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="quantity != null">
+        and quantity = #{quantity,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </delete>
+
+</mapper>

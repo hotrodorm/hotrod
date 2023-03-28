@@ -1,3 +1,6 @@
+drop table stock if exists;
+drop table batch if exists;
+
 drop table if exists employee_vip;
 
 drop schema if exists schema2 cascade;
@@ -69,5 +72,17 @@ insert into schema3.code (id, name) values (41, 'Code 41');
 insert into schema3.code (id, name) values (42, 'Code 42');
 
 create view v3 as select * from schema3.code;
+
+create table stock (
+  sku varchar(10),
+  name varchar(40),
+  quantity int
+);
+
+create table batch (
+  sku_code varchar(10),
+  item_name varchar(40)
+);  
+
 
 

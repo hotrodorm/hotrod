@@ -1,5 +1,6 @@
 package app;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.hotrod.runtime.livesql.LiveSQL;
@@ -24,6 +25,8 @@ import app.daos.primitives.EmployeeDAO;
 import app.daos.primitives.EmployeeDAO.EmployeeTable;
 import app.daos.primitives.EmployeeVipDAO;
 import app.daos.primitives.EmployeeVipDAO.EmployeeVipTable;
+import app.daos.primitives.StockDAO;
+import app.daos.primitives.StockDAO.StockTable;
 
 @Configuration
 @SpringBootApplication
@@ -92,6 +95,8 @@ public class App {
     EmployeeTable e = EmployeeDAO.newTable();
 
     this.sql.update(e).set(e.name, sql.val("OK - ").concat(e.name)).execute();
+    
+    sql.update(e).set(e.name, e.getName()).set(e.name, "b").where(e.name.like("A")).execute();
 
     // insert VIP employees using VALUES
 
@@ -106,6 +111,7 @@ public class App {
     System.out.println("Preview INSERT: " + is.getPreview());
     is.execute();
 
+    java.sql.Date.valueOf(LocalDate.of(2015, 01, 01));
     // Show all VIP employees
 
     System.out.println("--- Show all VIP employees:");
@@ -116,6 +122,13 @@ public class App {
 //    this.sql.delete(EmployeeDAO.newTable()).execute();   
 //    System.out.println("Show no employees:");
 //    this.sql.select().from(EmployeeDAO.newTable()).execute().forEach(r -> System.out.println(r));
+
+  }
+
+  private void searching2() {
+
+    StockTable s = StockDAO.newTable();
+    this.sql.insert(s).values(sql.val("FL-5077"), sql.val("TV"), sql.val(20));
 
   }
 
