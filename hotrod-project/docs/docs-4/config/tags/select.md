@@ -22,6 +22,7 @@ This tag includes the following attribute:
 | `method` | The Java method that will execute this query | Required |
 | `vo` | The VO class that will be generated to represent result set rows of the query | Optional [^2] |
 | `mode` | The fecthing mode that defines how the query result will be represented in Java. Valid options are: `list`, `cursor`, `single-row` [^1] | `list` |
+| `implements` | A comma-separated list of fully-qualified classes that will be added to the value object definition | N/A |
 
 [^1]: When using the `list` option the method will return a `List<Row>`. When using the `cursor` option the method will return a `Cursor<Row>`. When using
 `single-row` the method will return `Row`.
