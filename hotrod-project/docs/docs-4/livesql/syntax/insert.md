@@ -25,7 +25,10 @@ Can be written in LiveSQL as:
 
 ```java
 ProductTable p = ProductDAO.newTable();
-sql.insert(p).columns(p.id, p.name, p.price).values(sql.val(1007), sql.val("Seiko KL-101"), sql.val(399.95)).execute();
+sql.insert(p)
+   .columns(p.id, p.name, p.price)
+   .values(sql.val(1007), sql.val("Seiko KL-101"), sql.val(399.95))
+   .execute();
 ```
 
 Not all columns of the may participate in the INSERT. In that case the columns that are not mentioned will be inserted as nulls
@@ -76,9 +79,10 @@ In LiveSQL the insertion could take the form:
 
 ```java
 VipProductView p = VipProductDAO.newView();
-sql.insert(p).columns(p.id, p.name, p.price, p.product_type).values(
-  sql.val(2514), sql.val("Tohoku AB"), sql.val(14.50), sql.val("VIP")
-).execute();
+sql.insert(p)
+   .columns(p.id, p.name, p.price, p.product_type)
+   .values(sql.val(2514), sql.val("Tohoku AB"), sql.val(14.50), sql.val("VIP"))
+   .execute();
 ```
 
 Note, however, that not all views can be used to insert rows in the underlying tables. Each database engine imposes different
@@ -125,13 +129,18 @@ In short, an INSERT should include all the column names that participate in it, 
 
 ```java
 ProductTable p = ProductDAO.newTable();
-sql.insert(p).columns(p.id, p.name, p.price).values(sql.val(1007), sql.val("Seiko KL-101"), sql.val(399.95)).execute();
+sql.insert(p)
+   .columns(p.id, p.name, p.price)
+   .values(sql.val(1007), sql.val("Seiko KL-101"), sql.val(399.95))
+   .execute();
 ```
 
 It's also possible &ndah; but not recommended &ndah; to omit these columns, as in:
 
 ```java
 ProductTable p = ProductDAO.newTable();
-sql.insert(p).values(sql.val(1007), sql.val("Seiko KL-101"), sql.val(399.95)).execute();
+sql.insert(p)
+   .values(sql.val(1007), sql.val("Seiko KL-101"), sql.val(399.95))
+   .execute();
 ```
 
