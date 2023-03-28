@@ -1,6 +1,6 @@
 # The UPDATE Statement
 
-UPDATE statements update existing data in a table. 
+UPDATE statements update existing data in a table. They can operate directly on a table and also through a database view.
 
 They can specify the entirety of columns and/or rows to be modified or just subsets of them.
 
@@ -46,5 +46,14 @@ sql.update(p)
 Note that the second parameter of the `set()` method accepts typed LiveSQL Expressions such as `p.price.mult(0.90)` (of type `NumberExpression`) or Java literals such as `704` (an Integer). The type of the second parameter is bound according to the type of the first parameter.
 
 The filtering predicate in the WHERE clause can be as simple or as complex as needed according to the Expression Language.
+
+
+## Updating Through a View
+
+From the LiveSQL perspective there's no difference in syntax to update rows through a view instead of directly on a table.
+
+Nevertheless, each database engine imposes different rules about updating rows through a view. Depending on each the view 
+definition, some views may be appropriate to update rows through them while others may not be. Consult your database 
+documentation to find out if each one can be used for this functionality.
 
 

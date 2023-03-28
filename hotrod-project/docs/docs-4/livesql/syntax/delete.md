@@ -40,3 +40,11 @@ sql.delete(p)
 The filtering predicate in the WHERE clause can be as simple or as complex as needed according to the Expression Language.
 
 
+## Deleting Through a View
+
+From the LiveSQL perspective there's no difference in syntax to delete rows through a view instead of directly from a table.
+
+Nevertheless, each database engine imposes different rules about deleting rows through a view. Depending on each the view 
+definition, some views may be appropriate to delete rows through them while others may not be. Consult your database 
+documentation to find out if each one can be used for this functionality.
+
