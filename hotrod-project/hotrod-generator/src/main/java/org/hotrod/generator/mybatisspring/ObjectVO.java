@@ -10,8 +10,8 @@ import org.hotrod.config.MyBatisSpringTag;
 import org.hotrod.exceptions.UncontrolledException;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.identifiers.ObjectId;
 import org.hotrod.generator.GeneratableObject;
+import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.ForeignKeyMetadata;
 import org.hotrod.utils.ClassPackage;
@@ -26,6 +26,8 @@ public class ObjectVO extends GeneratableObject {
   private MyBatisSpringGenerator generator;
   private ObjectAbstractVO abstractVO;
   private MyBatisSpringTag myBatisTag;
+
+  private ObjectDAO dao;
 
   private HotRodFragmentConfigTag fragmentConfig;
   private ClassPackage fragmentPackage;
@@ -50,6 +52,10 @@ public class ObjectVO extends GeneratableObject {
         : null;
 
     this.classPackage = this.layout.getDAOPackage(this.fragmentPackage);
+  }
+
+  public void setDAO(ObjectDAO dao) {
+    this.dao = dao;
   }
 
   public void generate(final FileGenerator fileGenerator) throws UncontrolledException {
@@ -88,15 +94,26 @@ public class ObjectVO extends GeneratableObject {
         imports.add("org.springframework.stereotype.Component");
         imports.add("org.springframework.beans.factory.config.ConfigurableBeanFactory");
         imports.add("org.springframework.context.annotation.Scope");
+        imports.add(this.dao.getFullClassName());
+        imports.add("org.springframework.beans.factory.annotation.Autowired");
         imports.newLine();
 
         w.write(imports.render());
 
         w.write("@Component\n");
         w.write("@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)\n");
-        w.write("public class " + this.getClassName() + " extends " + this.abstractVO.getClassName() + " {\n\n");
+        w.write("public class " + this.getClassName() + " extends " + this.abstractVO.getClassName());
+
+        if (this.metadata.getDaoTag().getImplementsClasses() != null) {
+          w.write(" implements " + this.metadata.getDaoTag().getImplementsClasses());
+        }
+
+        w.write(" {\n\n");
 
         w.write("  private static final long serialVersionUID = 1L;\n\n");
+
+        w.write("  @Autowired\n");
+        w.write("  private " + this.dao.getClassName() + " " + this.dao.getMemberName() + ";\n\n");
 
         w.write("  // Add custom code below.\n\n");
 

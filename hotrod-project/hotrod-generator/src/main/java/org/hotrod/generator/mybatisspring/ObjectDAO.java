@@ -2020,7 +2020,7 @@ public class ObjectDAO extends GeneratableObject {
     return this.myBatisTag.getDaos().generateDAOName(this.metadata.getId());
   }
 
-  private String getMemberName() {
+  public String getMemberName() {
     return SUtil.lowerFirst(this.getClassName());
   }
 

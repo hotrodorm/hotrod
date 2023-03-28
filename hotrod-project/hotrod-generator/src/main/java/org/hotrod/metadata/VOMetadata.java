@@ -184,7 +184,7 @@ public class VOMetadata implements Serializable {
         }
       }
 
-      SelectVOClass voClass = new SelectVOClass(classPackage, this.name, this.entityVOSuperClass, properties,
+      SelectVOClass voClass = new SelectVOClass(classPackage, this.name, this.entityVOSuperClass, null, properties,
           associationMembers, collectionMembers, this.tag);
       voRegistry.addVO(voClass);
 

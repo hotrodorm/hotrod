@@ -126,10 +126,10 @@ public class VORegistry {
     }
 
     public void addVO(final SelectVOClass voClass) throws VOAlreadyExistsException, StructuredVOAlreadyExistsException {
-      log.debug("[graph] fragment=" + this.classPackage.getPackage() + " voClass="
-          + voClass.getClassPackage().getPackage() + " / " + voClass.getName() + " "
-          + this.vosByName.containsKey(voClass.getName()) + "/"
-          + this.structuredVOsByName.containsKey(voClass.getName()));
+      log.debug(
+          "[graph] fragment=" + this.classPackage.getPackage() + " voClass=" + voClass.getClassPackage().getPackage()
+              + " / " + voClass.getName() + " " + this.vosByName.containsKey(voClass.getName()) + "/"
+              + this.structuredVOsByName.containsKey(voClass.getName()));
 
       {
         EntityVOClass other = this.vosByName.get(voClass.getName());
@@ -293,12 +293,13 @@ public class VORegistry {
     private List<VOMember> associations;
     private List<VOMember> collections;
     private AbstractConfigurationTag tag;
+    private String implementClasses;
 
     // Constructor
 
     public SelectVOClass(final ClassPackage classPackage, final String name, final EntityVOClass extendsEntityVO,
-        final List<VOProperty> properties, final List<VOMember> associations, final List<VOMember> collections,
-        final AbstractConfigurationTag tag) throws DuplicatePropertyNameException {
+        final String implementClasses, final List<VOProperty> properties, final List<VOMember> associations,
+        final List<VOMember> collections, final AbstractConfigurationTag tag) throws DuplicatePropertyNameException {
 
       this.tag = tag;
       if (this.tag == null) {
@@ -310,6 +311,7 @@ public class VORegistry {
       this.classPackage = classPackage;
       this.name = name;
       this.extendsEntityVO = extendsEntityVO;
+      this.implementClasses = implementClasses;
 
       this.columnsByName = new LinkedHashMap<String, StructuredColumnMetadata>();
       for (VOProperty p : properties) {
@@ -401,6 +403,10 @@ public class VORegistry {
 
     public EntityVOClass getExtendsEntityVO() {
       return extendsEntityVO;
+    }
+
+    public String getImplementClasses() {
+      return implementClasses;
     }
 
     public LinkedHashMap<String, StructuredColumnMetadata> getColumnsByName() {

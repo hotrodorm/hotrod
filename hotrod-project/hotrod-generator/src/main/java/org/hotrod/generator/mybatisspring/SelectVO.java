@@ -19,6 +19,7 @@ public class SelectVO {
 
   private DataSetLayout layout;
 
+  private SelectVOClass soloVO;
   private String className;
   private ClassPackage classPackage;
 
@@ -27,6 +28,7 @@ public class SelectVO {
   public SelectVO(final SelectVOClass soloVO, final SelectAbstractVO abstractVO, final DataSetLayout layout) {
     log.debug("init");
     this.layout = layout;
+    this.soloVO = soloVO;
     this.className = soloVO.getName();
     this.classPackage = soloVO.getClassPackage();
     this.abstractVO = abstractVO;
@@ -63,7 +65,13 @@ public class SelectVO {
 
         w.write("@Component\n");
         w.write("@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)\n");
-        w.write("public class " + this.className + " extends " + this.abstractVO.getName() + " {\n\n");
+        w.write("public class " + this.className + " extends " + this.abstractVO.getName());
+
+        if (this.soloVO.getImplementClasses() != null) {
+          w.write(" implements " + this.soloVO.getImplementClasses());
+        }
+
+        w.write(" {\n\n");
 
         w.write("  private static final long serialVersionUID = 1L;\n\n");
 
