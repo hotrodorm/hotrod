@@ -11,7 +11,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
-    <hotrod.version>4.0.0</hotrod.version>
+    <hotrod.version>4.0.0-SNAPSHOT</hotrod.version>
   </properties>
 
   <dependencies>

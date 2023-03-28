@@ -96,7 +96,7 @@ public class App {
 
     this.sql.update(e).set(e.name, sql.val("OK - ").concat(e.name)).execute();
     
-    sql.update(e).set(e.name, e.getName()).set(e.name, "b").where(e.name.like("A")).execute();
+    sql.update(e).set(e.name, "a").set(e.name, "b").where(e.name.like("A")).execute();
 
     // insert VIP employees using VALUES
 
