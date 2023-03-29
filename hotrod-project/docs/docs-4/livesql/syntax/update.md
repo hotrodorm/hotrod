@@ -54,11 +54,11 @@ For each of the six main data types the `set()` method of the builder accepts tw
 as an expressions, as in:
 
 ```java
-   .set(c.address, p.location)
+   .set(c.address, c.location)
    .set(c.fullName, c.firstName.concat(" ").concat(c.lastName))
 ```
 
-or as a Java string literal:
+or as a Java String literal:
 
 ```java
    .set(c.address, "Oak Street 1450")
@@ -74,7 +74,7 @@ However, setting a literal null can be problematic since the Java compiler won't
 To set a null you need to add a type to it. The code above should be written as:
 
 ```java
-   .set(c.address, (String) null) // Valid
+   .set(c.address, (String) null) // Works!
 ```
 
 The same rule applies to set nulls for numeric columns, date/time, boolean, binary, and object ones.
