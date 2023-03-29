@@ -50,15 +50,15 @@ The filtering predicate in the WHERE clause can be as simple or as complex as ne
 
 ## Setting Nulls
 
-For each of the six main data types the `set()` method of the builder accepts two variations. For example to set a String value you can set the value
-as an expressions, as in:
+For each of the six main data types the `set()` method of the builder accepts two variations. For example, to set a String value you can set the value
+as an expression (variation #1), as in:
 
 ```java
    .set(c.address, c.location)
    .set(c.fullName, c.firstName.concat(" ").concat(c.lastName))
 ```
 
-or as a Java String literal:
+or as a Java String literal (variation #2):
 
 ```java
    .set(c.address, "Oak Street 1450")
