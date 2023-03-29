@@ -48,6 +48,38 @@ Note that the second parameter of the `set()` method accepts typed LiveSQL Expre
 The filtering predicate in the WHERE clause can be as simple or as complex as needed according to the Expression Language.
 
 
+## Setting Nulls
+
+For each of the six main data types the `set()` method of the builder accepts two variations. For example to set a String value you can set the value
+as an expressions, as in:
+
+```java
+   .set(c.address, p.location)
+   .set(c.fullName, c.firstName.concat(" ").concat(c.lastName))
+```
+
+or as a Java string literal:
+
+```java
+   .set(c.address, "Oak Street 1450")
+   .set(c.fullName, "Julia Smith")
+```
+
+However, setting a literal null can be problematic since the Java compiler won't know which variation of the method you are trying to use:
+
+```java
+   .set(c.address, null) // Invalid -- does not compile
+```
+
+To set a null you need to add a type to it. The code above should be written as:
+
+```java
+   .set(c.address, (String) null) // Valid
+```
+
+The same rule applies to set nulls for numeric columns, date/time, boolean, binary, and object ones.
+
+
 ## Updating Through a View
 
 From the LiveSQL perspective there's no difference in syntax to update rows through a view instead of directly on a table.
