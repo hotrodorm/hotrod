@@ -74,7 +74,7 @@ However, setting a literal null can be problematic since the Java compiler won't
 To set a null you need to add a type to it. The code above should be written as:
 
 ```java
-   .set(c.address, (String) null) // Works
+   .set(c.address, (String) null) // Valid
 ```
 
 The same rule applies to set nulls for numeric columns, date/time, boolean, binary, and object ones.
