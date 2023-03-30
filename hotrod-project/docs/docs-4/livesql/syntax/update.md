@@ -37,9 +37,9 @@ It can be written as:
 ProductTable p = ProductDAO.newTable();
 sql.update(p)
    .set(p.promotion, "BOGO")
-   .set(p.sale_price, p.price.mult(0.90))
-   .set(p.sales_code, 704)
-   .where(p.catalog.eq(1015).and(p.type.ne("VIP")))
+   .set(p.salePrice, p.price.mult(0.90))
+   .set(p.salesCode, 704)
+   .where(p.catalogId.eq(1015).and(p.type.ne("VIP")))
    .execute();
 ```
 
