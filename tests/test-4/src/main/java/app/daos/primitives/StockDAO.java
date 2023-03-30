@@ -26,6 +26,7 @@ import org.hotrod.runtime.livesql.metadata.ByteArrayColumn;
 import org.hotrod.runtime.livesql.metadata.ObjectColumn;
 import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
+import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.hotrod.runtime.livesql.metadata.View;
 
@@ -182,6 +183,12 @@ public class StockDAO implements Serializable, ApplicationContextAware {
     public StringColumn sku;
     public StringColumn name;
     public NumberColumn quantity;
+
+    // Getters
+
+    public AllColumns star() {
+      return new AllColumns(this);
+    }
 
     // Constructors
 

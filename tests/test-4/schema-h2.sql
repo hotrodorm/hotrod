@@ -84,5 +84,10 @@ create table batch (
   item_name varchar(40)
 );  
 
+insert into batch (sku_code, item_name) values ('SKU1', 'Acme 2');
+insert into batch (sku_code, item_name) values ('SKU2', 'Billboard 3');
+insert into batch (sku_code, item_name) values ('SKU3', 'Steve');
+insert into batch (sku_code, item_name) values ('SKU4', 'Alice');
+
 
 

@@ -18,4 +18,8 @@
     </mybatis-spring>
   </generators>
 
+<!--
+  <table name="branch" />
+-->
+
 </hotrod>
