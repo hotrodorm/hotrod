@@ -1,0 +1,185 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>test</groupId>
+  <artifactId>test-3</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+    <hotrod.version>3.5.0-SNAPSHOT</hotrod.version>
+  </properties>
+
+  <dependencies>
+
+    <dependency> <!-- You can use Spring Boot, plain Spring, or other -->
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <version>2.3.4.RELEASE</version>
+    </dependency>  
+
+    <dependency> <!-- Required. The main HotRod library -->
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod</artifactId>
+      <version>${hotrod.version}</version>
+    </dependency>
+
+    <dependency> <!-- Required. HotRod's LiveSQL library -->
+      <groupId>org.hotrodorm.hotrod</groupId>
+      <artifactId>hotrod-livesql</artifactId>
+      <version>${hotrod.version}</version>
+    </dependency>
+
+    <dependency> <!-- Required. The generator uses MyBatis for database connectivity -->
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+      <version>2.1.3</version>
+    </dependency>    
+
+  </dependencies>
+
+  <build>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>2.3.4.RELEASE</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+
+      <id>h2</id>
+
+      <dependencies>
+        <dependency>
+          <groupId>com.h2database</groupId>
+          <artifactId>h2</artifactId>
+          <version>2.1.214</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.hotrodorm.hotrod</groupId>
+            <artifactId>hotrod-maven-plugin</artifactId>
+            <version>${hotrod.version}</version>
+            <configuration>
+              <generator>MyBatis-Spring</generator>
+              <configfile>./hotrod-h2.xml</configfile>
+              <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
+              <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema-h2.sql';DB_CLOSE_DELAY=-1</jdbcurl>
+              <jdbcusername>sa</jdbcusername>
+              <jdbcpassword>""</jdbcpassword>
+              <jdbccatalog>EXAMPLEDB</jdbccatalog>
+              <jdbcschema>PUBLIC</jdbcschema>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>2.1.214</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+
+    </profile>
+
+    <profile>
+      <id>postgresql</id>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>42.3.3</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.hotrodorm.hotrod</groupId>
+            <artifactId>hotrod-maven-plugin</artifactId>
+            <version>${hotrod.version}</version>
+            <configuration>
+              <configfile>./hotrod-postgresql.xml</configfile>
+              <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
+              <jdbcurl>jdbc:postgresql://192.168.56.214:5432/hotrod</jdbcurl>
+              <jdbcusername>user1</jdbcusername>
+              <jdbcpassword>pass1</jdbcpassword>
+              <jdbcschema>PUBLIC</jdbcschema>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.3.3</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+
+    </profile>
+
+    <profile>
+      <id>mysql</id>
+
+      <dependencies>
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>8.0.28</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.hotrodorm.hotrod</groupId>
+            <artifactId>hotrod-maven-plugin</artifactId>
+            <version>${hotrod.version}</version>
+            <configuration>
+              <configfile>./hotrod-mysql.xml</configfile>
+              <jdbcdriverclass>com.mysql.cj.jdbc.Driver</jdbcdriverclass>
+              <jdbcurl>jdbc:mysql://192.168.56.29:3306/hotrod?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;useSSL=false</jdbcurl>
+              <jdbcusername>user1</jdbcusername>
+              <jdbcpassword>pass1</jdbcpassword>
+              <jdbccatalog>catalog2</jdbccatalog>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>8.0.28</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+
+    </profile>
+
+  </profiles>
+
+</project>
