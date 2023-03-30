@@ -37,9 +37,9 @@ It can be written as:
 ProductTable p = ProductDAO.newTable();
 sql.update(p)
    .set(p.promotion, "BOGO")
-   .set(p.sale_price, p.price.mult(0.90))
-   .set(p.sales_code, 704)
-   .where(p.catalog.eq(1015).and(p.type.ne("VIP")))
+   .set(p.salePrice, p.price.mult(0.90))
+   .set(p.salesCode, 704)
+   .where(p.catalogId.eq(1015).and(p.type.ne("VIP")))
    .execute();
 ```
 
@@ -74,7 +74,7 @@ However, setting a literal null can be problematic since the Java compiler won't
 To set a null you need to add a type to it. The code above should be written as:
 
 ```java
-   .set(c.address, (String) null) // Works
+   .set(c.address, (String) null) // Valid
 ```
 
 The same rule applies to set nulls for numeric columns, date/time, boolean, binary, and object ones.
