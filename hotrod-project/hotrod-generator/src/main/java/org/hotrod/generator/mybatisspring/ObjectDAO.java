@@ -385,6 +385,7 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("org.hotrod.runtime.livesql.metadata.ObjectColumn");
     imports.add("org.hotrod.runtime.livesql.metadata.Table");
     imports.add("org.hotrod.runtime.livesql.expressions.predicates.Predicate");
+    imports.add("org.hotrod.runtime.livesql.metadata.AllColumns");
     imports.add("org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase");
     imports.add("org.hotrod.runtime.livesql.metadata.View");
     imports.newLine();
@@ -1687,6 +1688,14 @@ public class ObjectDAO extends GeneratableObject {
       String javaMembername = cm.getId().getJavaMemberName();
       println("    public " + liveSQLColumnType + " " + javaMembername + ";");
     }
+    println();
+
+    println("    // Getters");
+    println();
+
+    println("    public AllColumns star() {");
+    println("      return new AllColumns(this);");
+    println("    }");
     println();
 
     println("    // Constructors");
