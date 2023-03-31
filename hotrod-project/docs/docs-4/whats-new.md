@@ -8,7 +8,7 @@ HotRod 4.0 includes several major features as well as a many of minor improvemen
 - Schema discovery.
 - Support for multiple datasources.
 - LiveSQL now implements INSERT, UPDATE, and DELETE statements in addition to SELECT.
-- LiveSQL can use the DUAL (Oracle) and SYSIBM.SYSDUMMY1 (DB2) system tables.
+- LiveSQL can use the DUAL (Oracle) and SYSIBM.SYSDUMMY1 (DB2 and Derby) system tables.
 - LiveSQL now returns `List<Row>` and `Cursor<Row>`.
 - LiveSQL supports the Wildcard `*` symbol, with filtering.
 - Nitro defaults to result-set generation now. The `<select-generation>` tag can be omitted by default.
