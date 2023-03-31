@@ -75,7 +75,7 @@ JOIN department d ON d.id = e.department_id
 
 ## Filtering Out * Wildcard Columns
 
-If you only want a subset of the columns of a table or view you can use the `.filter(<predicate>)` method to exclude 
+If we only want a subset of the columns of a table or view we can use the `.filter(<predicate>)` method to exclude 
 some of them. For example, to include only columns of type `INTEGER` or `DECIMAL` of the table `EMPLOYEE` we can do:
 
 ```java
