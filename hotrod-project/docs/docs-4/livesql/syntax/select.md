@@ -7,7 +7,7 @@ LiveSQL includes variations to specify all or a subset of the columns and also t
 
 ## Selecting All Columns
 
-To select all columns of the table(s) start the query with `select()`. For example
+To select all columns of the table(s) start the query with `select()`. For example:
 
 ```java
 EmployeeTable e = EmployeeDAO.newTable("e");
@@ -52,7 +52,7 @@ compute using functions or operators.
 
 ## Selecting All Columns From One Table &ndash; The * Wildcard
 
-To select all columns of the table(s) start the query with `select()`. For example
+To select all columns of the table(s) use the method `.star()`. For example:
 
 ```java
 EmployeeTable e = EmployeeDAO.newTable("e");
@@ -107,10 +107,19 @@ The following column properties can be used in the filtering predicate:
 | .getDecimalDigits() | The canonical (official) name of the column | `2` |
 | .getProperty() | The corresponding property name generated for Java | `currentBalance` |
 | .getCatalog() | The catalog (if any) of the table or view | `null` |
-| .getSchema() | The schema (if any) of the table or view | `PUBLIC` |
+| .getSchema() | The schema (if any) of the table or view | `CLIENT` |
 | .getObjectName() | The canonical (official) name of the column | `CHECKING_ACCOUNT` |
 | .getObjectInstance().getAlias() | The table or view alias in the query | `a` |
 | .getObjectInstance().getType() | The table or view canonical (official) type as informed by the database | `TABLE` |
+
+The example value above could correspond to the column `current_balance` in the table creation shown below. Details may vary from database to database:
+
+```sql
+create table client.checking_account (
+  id int primary key not null,
+  current_balance decimal(14, 2)
+);
+```
 
 
 ## Selecting without a FROM Clause
