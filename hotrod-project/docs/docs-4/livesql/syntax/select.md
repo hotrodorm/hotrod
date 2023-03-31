@@ -26,6 +26,30 @@ FROM employee e
 ```
 
 
+## Selecting Specific Columns
+
+To select a subset of the columns of the table(s) start the query with:
+
+```java
+ProductTable p = ProductDAO.newTable("p");
+
+List<Row> rows = this.sql
+    .select(p.name, p.price.mult(p.qty), a.status)
+    .from(p) 
+    .execute();
+```
+
+Produces:
+
+```sql
+SELECT p.name, p.price * p.qty, p.status
+FROM product p
+```
+
+The query can name the specific list of columns to produce. This list can also include expressions that the database can 
+compute using functions or operators. 
+
+
 ## Selecting All Columns From One Table &ndash; The * Wildcard
 
 To select all columns of the table(s) start the query with `select()`. For example
@@ -49,29 +73,44 @@ FROM employee e
 JOIN department d ON d.id = e.department_id
 ```
 
+## Filtering Out * Wildcard Columns
 
-## Selecting Specific Columns
-
-To select a subset of the columns of the table(s) start the query with:
+If you only want a subset of the columns of a table or view you can exclude some of them by specifying a filtering
+predicate. For example, to include only columns of type `INTEGER` of the `EMPLOYEE` table you can do:
 
 ```java
-ProductTable p = ProductDAO.newTable("p");
+EmployeeTable e = EmployeeDAO.newTable("e");
+DepartmentTable d = DepartmentDAO.newTable("d");
 
 List<Row> rows = this.sql
-    .select(p.name, p.price.mult(p.qty), a.status)
-    .from(p) 
+    .select(e.star().filter(c -> "INTEGER".equals(c.getType)), d.name)
+    .from(e)
+    .join(d, d.id.eq(e.departmentId)
     .execute();
 ```
 
-Produces:
+The resulting query is:
 
 ```sql
-SELECT p.name, p.price * p.qty, p.status
-FROM product p
+SELECT e.id, e.branch_id, d.name
+FROM employee e
+JOIN department d ON d.id = e.department_id
 ```
 
-The query can name the specific list of columns to produce. This list can also include expressions that the database can 
-compute using functions or operators. 
+The following column properties can be used in the filtering predicate:
+
+| Property Getter | Description | Example |
+| -- | -- | -- |
+| .getName() | Canonical (official) name of the column | `CURRENT_BALANCE` |
+| .getType() | Column type as informed by the database | `DECIMAL` |
+| .getColumnSize() | Width of the column | `14` |
+| .getDecimalDigits() | The canonical (official) name of the column | `2` |
+| .getProperty() | The corresponding property name generated for Java | `currentBalance` |
+| .getCatalog() | The catalog (if any) of the table or view | `null` |
+| .getSchema() | The schema (if any) of the table or view | `PUBLIC` |
+| .getObjectName() | The canonical (official) name of the column | `CHECKING_ACCOUNT` |
+| .getObjectInstance().getAlias() | The table or view alias in the query | `a` |
+| .getObjectInstance().getType() | The table or view canonical (official) type as informed by the database | `TABLE` |
 
 
 ## Selecting without a FROM Clause
