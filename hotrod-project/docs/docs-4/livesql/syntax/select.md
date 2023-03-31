@@ -26,7 +26,7 @@ FROM employee e
 ```
 
 
-## Selecting All Columns From One Table
+## Selecting All Columns From One Table &ndash; The * Wildcard
 
 To select all columns of the table(s) start the query with `select()`. For example
 
