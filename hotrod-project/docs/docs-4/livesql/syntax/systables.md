@@ -11,15 +11,16 @@ select concat('Hello', ' ', 'World'), 1 + 1, curdate(), date_add(curdate(), inte
 Queries like the above can compute scalar values or retrieve system information that is unrelated
 to any table.
 
-However, the Oracle and DB2 databases do require a `FROM` clause in each SELECT statement. To perform simple
-queries without a bona fide table Oracle includes the `DUAL` table and DB2 includes the 
-`SYSIBM.SYSDUMMY1` table. Both of them are read-only tables and have a single column and a single row.
+However, the Oracle, DB2, and Apache Derby databases do require a `FROM` clause in each SELECT statement. 
+To perform simple queries without a bona fide table Oracle includes the `DUAL` table and DB2 and Derby 
+include the `SYSIBM.SYSDUMMY1` table. Both of them are read-only tables and have a single column and a single row.
 
 In Oracle and DB2 the first query can take the form:
 
 ```sql
 select 3 * 7 from dual; -- Oracle
 select 3 * 7 from sysibm.sysdummy1; -- DB2
+select 3 * 7 from sysibm.sysdummy1; -- Apache Derby
 ```
 
 In LiveSQL these tables can be used as:
@@ -27,5 +28,6 @@ In LiveSQL these tables can be used as:
 ```java
 List<Row> rows = sql.select(sql.val(3).mult(7)).from(sql.DUAL).execute(); // Oracle
 List<Row> rows = sql.select(sql.val(3).mult(7)).from(sql.SYSDUMMY1).execute(); // DB2
+List<Row> rows = sql.select(sql.val(3).mult(7)).from(sql.SYSDUMMY1).execute(); // Apache Derby
 ```
 

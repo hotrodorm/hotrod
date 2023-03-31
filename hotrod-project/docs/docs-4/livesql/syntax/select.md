@@ -96,7 +96,7 @@ The resulting query is:
 SELECT 7, 15 * 3, getdate()
 ```
 
-**Note**: Oracle and DB2 cannot select without a `FROM` clause. In these databases you can use
+**Note**: Oracle, DB2, and Apache Derby cannot select without a `FROM` clause. In these databases you can use
 [the `DUAL` and `SYSDUMMY1` tables](./systables.md).
 
 
