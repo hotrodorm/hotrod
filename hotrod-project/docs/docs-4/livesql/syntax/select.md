@@ -7,7 +7,7 @@ LiveSQL includes variations to specify all or a subset of the columns and also t
 
 ## Selecting All Columns
 
-To select all columns of the table(s) start the query with `select()`. For example
+To select all columns of the table(s) start the query with `select()`. For example:
 
 ```java
 EmployeeTable e = EmployeeDAO.newTable("e");
@@ -50,6 +50,80 @@ The query can name the specific list of columns to produce. This list can also i
 compute using functions or operators. 
 
 
+## Selecting All Columns From One Table &ndash; The * Wildcard
+
+To select all columns of a table or view use the method `.star()`. For example:
+
+```java
+EmployeeTable e = EmployeeDAO.newTable("e");
+DepartmentTable d = DepartmentDAO.newTable("d");
+
+List<Row> rows = this.sql
+    .select(e.star(), d.name)
+    .from(e)
+    .join(d, d.id.eq(e.departmentId)
+    .execute();
+```
+
+The resulting query is:
+
+```sql
+SELECT e.*, d.name
+FROM employee e
+JOIN department d ON d.id = e.department_id
+```
+
+## Filtering Out * Wildcard Columns
+
+If we only want a subset of the columns referenced by a `*` symbol we can use the `.filter(<predicate>)` method to exclude 
+some of them. For example, to include only columns of type `INTEGER` or `DECIMAL` of the table `EMPLOYEE` we can do:
+
+```java
+EmployeeTable e = EmployeeDAO.newTable("e");
+DepartmentTable d = DepartmentDAO.newTable("d");
+
+List<Row> rows = this.sql
+    .select(e.star().filter(c -> "INTEGER".equals(c.getType()) || "DECIMAL".equals(c.getType())), d.name)
+    .from(e)
+    .join(d, d.id.eq(e.departmentId)
+    .execute();
+```
+
+The resulting query is:
+
+```sql
+SELECT
+  e.id, e.branch_id, -- only 'id' and 'branch_id' are of type INTEGER or DECIMAL in this table
+  d.name
+FROM employee e
+JOIN department d ON d.id = e.department_id
+```
+
+The following column properties can be used in the filtering predicate:
+
+| Property Getter | Description | Example |
+| -- | -- | -- |
+| .getName() | Canonical (official) name of the column | `CURRENT_BALANCE` |
+| .getType() | Column type as informed by the database | `DECIMAL` |
+| .getColumnSize() | Width of the column | `14` |
+| .getDecimalDigits() | The canonical (official) name of the column | `2` |
+| .getProperty() | The corresponding property name generated for Java | `currentBalance` |
+| .getCatalog() | The catalog (if any) of the table or view | `null` |
+| .getSchema() | The schema (if any) of the table or view | `CLIENT` |
+| .getObjectName() | The canonical (official) name of the column | `CHECKING_ACCOUNT` |
+| .getObjectInstance().getAlias() | The table or view alias in the query | `a` |
+| .getObjectInstance().getType() | The table or view canonical (official) type as informed by the database | `TABLE` |
+
+The example value above could correspond to the column `current_balance` in the table creation shown below. Details may vary from database to database:
+
+```sql
+create table client.checking_account (
+  id int primary key not null,
+  current_balance decimal(14, 2)
+);
+```
+
+
 ## Selecting without a FROM Clause
 
 Most of the database engines require a `FROM` clause in a `SELECT` statement. Some engines such as
@@ -71,6 +145,10 @@ The resulting query is:
 ```sql
 SELECT 7, 15 * 3, getdate()
 ```
+
+**Note**: Oracle, DB2, and Apache Derby cannot select without a `FROM` clause. In these databases you can use
+[the `DUAL` and `SYSDUMMY1` tables](./systables.md).
+
 
 ## Aliasing Columns
 
