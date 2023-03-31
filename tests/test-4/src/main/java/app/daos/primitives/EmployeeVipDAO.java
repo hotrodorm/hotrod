@@ -195,7 +195,7 @@ public class EmployeeVipDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this);
+      return new AllColumns(this, this.id, this.fullName);
     }
 
     // Constructors
@@ -213,8 +213,8 @@ public class EmployeeVipDAO implements Serializable, ApplicationContextAware {
     // Initialization
 
     private void initialize() {
-      this.id = new NumberColumn(this, "ID", "id");
-      this.fullName = new StringColumn(this, "FULL_NAME", "fullName");
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      this.fullName = new StringColumn(this, "FULL_NAME", "fullName", "CHARACTER VARYING", 20, 0);
     }
 
   }

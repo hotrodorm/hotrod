@@ -65,7 +65,16 @@ public class App {
     EmployeeTable e = EmployeeDAO.newTable();
 
     ExecutableSelect<Row> query = this.sql //
-        .select(b.star(), b.star(), e.name, e.star()) //
+        .select(e.star().filter(c -> {
+//          System.out
+//              .println(c.getName() + " " + c.getType() + "(" + c.getColumnSize() + ", " + c.getDecimalDigits() + ") <"
+//                  + c.getProperty() 
+//                  + "> {"
+//                  + c.getCatalog(), c.getSchema(), c.getObjectName(), c.getObjectInstance().getAlias(), c.getObjectInstance().getType()
+//                  + "}");
+          return "CHARACTER VARYING".equals(c.getType());
+//          return "INTEGER".contentEquals(c.getType());
+        }), b.star(), e.name, e.star()) //
         .from(b) //
         .join(e, e.name.eq(b.itemName));
 //        .where(b.itemName.like("A%"));

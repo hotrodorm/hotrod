@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -1115,7 +1116,7 @@ public class ObjectDAO extends GeneratableObject {
       println();
     }
 
-    print("  public " + moClassName  + " insert(final " + voClassName + " vo");
+    print("  public " + moClassName + " insert(final " + voClassName + " vo");
     if (extraInsert) {
       print(", final boolean retrieveDefaults");
     }
@@ -1694,7 +1695,8 @@ public class ObjectDAO extends GeneratableObject {
     println();
 
     println("    public AllColumns star() {");
-    println("      return new AllColumns(this);");
+    println("      return new AllColumns(this, " + this.metadata.getColumns().stream()
+        .map(c -> "this." + c.getId().getJavaMemberName()).collect(Collectors.joining(", ")) + ");");
     println("    }");
     println();
 
@@ -1724,8 +1726,13 @@ public class ObjectDAO extends GeneratableObject {
       String javaMembername = cm.getId().getJavaMemberName();
       String colName = cm.getId().getCanonicalSQLName();
       String property = cm.getId().getJavaMemberName();
-      println("      this." + javaMembername + " = new " + liveSQLColumnType + "(this, \""
-          + JUtils.escapeJavaString(colName) + "\", \"" + JUtils.escapeJavaString(property) + "\");");
+      println("      this." + javaMembername + " = new " + liveSQLColumnType + "(this" //
+          + ", \"" + JUtils.escapeJavaString(colName) + "\"" //
+          + ", \"" + JUtils.escapeJavaString(property) + "\"" //
+          + ", \"" + JUtils.escapeJavaString(cm.getTypeName()) + "\"" //
+          + ", " + cm.getColumnSize() + "" //
+          + ", " + cm.getDecimalDigits() + "" //
+          + ");");
     }
 
     println("    }");

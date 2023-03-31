@@ -183,7 +183,7 @@ public class BatchDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this);
+      return new AllColumns(this, this.skuCode, this.itemName);
     }
 
     // Constructors
@@ -201,8 +201,8 @@ public class BatchDAO implements Serializable, ApplicationContextAware {
     // Initialization
 
     private void initialize() {
-      this.skuCode = new StringColumn(this, "SKU_CODE", "skuCode");
-      this.itemName = new StringColumn(this, "ITEM_NAME", "itemName");
+      this.skuCode = new StringColumn(this, "SKU_CODE", "skuCode", "CHARACTER VARYING", 10, 0);
+      this.itemName = new StringColumn(this, "ITEM_NAME", "itemName", "CHARACTER VARYING", 40, 0);
     }
 
   }

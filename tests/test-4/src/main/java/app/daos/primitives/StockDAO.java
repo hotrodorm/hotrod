@@ -187,7 +187,7 @@ public class StockDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this);
+      return new AllColumns(this, this.sku, this.name, this.quantity);
     }
 
     // Constructors
@@ -205,9 +205,9 @@ public class StockDAO implements Serializable, ApplicationContextAware {
     // Initialization
 
     private void initialize() {
-      this.sku = new StringColumn(this, "SKU", "sku");
-      this.name = new StringColumn(this, "NAME", "name");
-      this.quantity = new NumberColumn(this, "QUANTITY", "quantity");
+      this.sku = new StringColumn(this, "SKU", "sku", "CHARACTER VARYING", 10, 0);
+      this.name = new StringColumn(this, "NAME", "name", "CHARACTER VARYING", 40, 0);
+      this.quantity = new NumberColumn(this, "QUANTITY", "quantity", "INTEGER", 32, 0);
     }
 
   }

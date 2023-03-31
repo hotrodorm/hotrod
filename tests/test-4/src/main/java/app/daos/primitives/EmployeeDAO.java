@@ -199,7 +199,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this);
+      return new AllColumns(this, this.id, this.name, this.branchId);
     }
 
     // Constructors
@@ -217,9 +217,9 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     // Initialization
 
     private void initialize() {
-      this.id = new NumberColumn(this, "ID", "id");
-      this.name = new StringColumn(this, "NAME", "name");
-      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId");
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      this.name = new StringColumn(this, "NAME", "name", "CHARACTER VARYING", 20, 0);
+      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0);
     }
 
   }

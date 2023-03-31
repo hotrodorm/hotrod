@@ -19,7 +19,7 @@ public class DualTable extends Table {
   // Initialization
 
   private void initialize() {
-    this.dummy = new StringColumn(this, "DUMMY", "dummy");
+    this.dummy = new StringColumn(this, "DUMMY", "dummy", "VARCHAR2", 1, 0);
   }
 
 }

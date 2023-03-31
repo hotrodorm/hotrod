@@ -21,11 +21,11 @@ public interface Column extends ReferenceableExpression {
 
   Integer getDecimalDigits();
 
-  boolean isNullable();
-
-  String getDefaultValue();
-
-  boolean isLob();
+//  boolean isNullable();
+//
+//  String getDefaultValue();
+//
+//  boolean isLob();
 
   String getProperty();
 

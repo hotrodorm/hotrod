@@ -195,7 +195,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this);
+      return new AllColumns(this, this.id, this.name);
     }
 
     // Constructors
@@ -213,8 +213,8 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
     // Initialization
 
     private void initialize() {
-      this.id = new NumberColumn(this, "ID", "id");
-      this.name = new StringColumn(this, "NAME", "name");
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      this.name = new StringColumn(this, "NAME", "name", "CHARACTER VARYING", 20, 0);
     }
 
   }
