@@ -52,7 +52,7 @@ compute using functions or operators.
 
 ## Selecting All Columns From One Table &ndash; The * Wildcard
 
-To select all columns of the table(s) use the method `.star()`. For example:
+To select all columns of a table or view use the method `.star()`. For example:
 
 ```java
 EmployeeTable e = EmployeeDAO.newTable("e");
