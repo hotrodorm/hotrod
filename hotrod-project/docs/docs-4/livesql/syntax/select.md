@@ -26,6 +26,30 @@ FROM employee e
 ```
 
 
+## Selecting All Columns From One Table
+
+To select all columns of the table(s) start the query with `select()`. For example
+
+```java
+EmployeeTable e = EmployeeDAO.newTable("e");
+DepartmentTable d = DepartmentDAO.newTable("d");
+
+List<Row> rows = this.sql
+    .select(e.star(), d.name)
+    .from(e)
+    .join(d, d.id.eq(e.departmentId)
+    .execute();
+```
+
+The resulting query is:
+
+```sql
+SELECT e.*, d.name
+FROM employee e
+JOIN department d ON d.id = e.department_id
+```
+
+
 ## Selecting Specific Columns
 
 To select a subset of the columns of the table(s) start the query with:
@@ -71,6 +95,10 @@ The resulting query is:
 ```sql
 SELECT 7, 15 * 3, getdate()
 ```
+
+**Note**: Oracle and DB2 cannot select without a `FROM` clause. In these databases you can use
+[the `DUAL` and `SYSDUMMY1` tables](./systables.md).
+
 
 ## Aliasing Columns
 
