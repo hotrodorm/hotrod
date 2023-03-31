@@ -83,7 +83,7 @@ EmployeeTable e = EmployeeDAO.newTable("e");
 DepartmentTable d = DepartmentDAO.newTable("d");
 
 List<Row> rows = this.sql
-    .select(e.star().filter(c -> "INTEGER".equals(c.getType)) || "DECIMAL".equals(c.getType)), d.name)
+    .select(e.star().filter(c -> "INTEGER".equals(c.getType) || "DECIMAL".equals(c.getType)), d.name)
     .from(e)
     .join(d, d.id.eq(e.departmentId)
     .execute();
