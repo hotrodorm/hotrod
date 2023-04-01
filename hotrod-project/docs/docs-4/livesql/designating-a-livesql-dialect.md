@@ -1,8 +1,7 @@
 # Designating a LiveSQL Dialect
 
-The generic version of LiveSQL automatically detects at runtime the specific SQL dialect of the database.
-
-Therefore, generic clauses or functions will be adapted according to the specific features available on the database engine
+LiveSQL automatically detects at runtime the specific SQL dialect of the database. Generic clauses or 
+functions are automatically adapted behind the scenes according to the specific features available on the database engine
 and version of it.
 
 ## Example
