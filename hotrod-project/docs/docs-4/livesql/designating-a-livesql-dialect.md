@@ -16,7 +16,7 @@ List<Row> rows = sql
     .execute();
 ```
 
-Depending on the specific database and version this query can be rendered in different ways. For example:
+Depending on the specific database and version LiveSQL renders this query in different ways. For example:
 
 - In Oracle 10g:
 
