@@ -37,7 +37,7 @@ The code above displays the actual SQL statement being executed as:
 ```sql
 SELECT d.balance
 FROM deposit d
-WHERE d.account_id = 10014874 AND d.status = 'PENDING'
+WHERE d.account_id = 10014874 AND d.status <> 'PENDING'
 ORDER BY d.transaction_date DESC
 ```
 
