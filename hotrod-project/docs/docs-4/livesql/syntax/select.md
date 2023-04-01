@@ -110,7 +110,7 @@ The following column properties can be used in the filtering predicate:
 | .getProperty() | The corresponding property name generated for Java | `currentBalance` |
 | .getCatalog() | The catalog (if any) of the table or view | `null` |
 | .getSchema() | The schema (if any) of the table or view | `CLIENT` |
-| .getObjectName() | The canonical (official) name of the column | `CHECKING_ACCOUNT` |
+| .getObjectName() | The canonical (official) name of the table or view | `CHECKING_ACCOUNT` |
 | .getObjectInstance().getAlias() | The table or view alias in the query | `a` |
 | .getObjectInstance().getType() | The table or view canonical (official) type as informed by the database | `TABLE` |
 
