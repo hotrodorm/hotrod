@@ -93,7 +93,7 @@ The resulting query is:
 
 ```sql
 SELECT
-  e.id, e.department_id, -- only 'id' and 'branch_id' are of type INTEGER or DECIMAL in this table
+  e.id, e.department_id, -- only 'id' and 'department_id' are of type INTEGER or DECIMAL in this table
   d.name
 FROM employee e
 JOIN department d ON d.id = e.department_id
