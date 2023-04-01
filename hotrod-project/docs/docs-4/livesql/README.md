@@ -43,17 +43,18 @@ Finally the `execute()` method runs the query and returns the result.
 
 ## LiveSQL Statements
 
-The SELECT statement retrieves data from the database. Due to all variations it provides its description is separated by clause:
+The SELECT statement retrieves data from the database. It has several sections that are described separately:
 
-- [The SELECT list](./syntax/select.md)
-- [The FROM and JOIN Clauses](./syntax/from-and-joins.md)
-- [The WHERE Clause](./syntax/where.md)
-- [The GROUP BY Clause](./syntax/group-by.md)
-- [The HAVING Clause](./syntax/having.md)
-- [The ORDER BY Clause](./syntax/order-by.md)
-- [The OFFSET Clause](./syntax/offset.md)
-- [The LIMIT Clause](./syntax/limit.md)
-- [The DUAL &amp; SYSDUMMY1 Tables](./syntax/systables.md)
+- The SELECT Statement:
+    - [The SELECT list](./syntax/select.md)
+    - [The FROM and JOIN Clauses](./syntax/from-and-joins.md)
+    - [The WHERE Clause](./syntax/where.md)
+    - [The GROUP BY Clause](./syntax/group-by.md)
+    - [The HAVING Clause](./syntax/having.md)
+    - [The ORDER BY Clause](./syntax/order-by.md)
+    - [The OFFSET Clause](./syntax/offset.md)
+    - [The LIMIT Clause](./syntax/limit.md)
+    - [The DUAL &amp; SYSDUMMY1 Tables](./syntax/systables.md)
 
 The INSERT statement has two main variations &ndash; using `VALUES` or from a `SELECT`:
 
