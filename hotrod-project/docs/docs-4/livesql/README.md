@@ -56,7 +56,7 @@ The SELECT statement has several sections that are described separately:
 - [The LIMIT Clause](./syntax/limit.md)
 - [The DUAL &amp; SYSDUMMY1 Tables](./syntax/systables.md)
 
-The INSERT statement has two main variations &ndash; using `VALUES` or from a `SELECT`:
+The INSERT statement has two main variations &ndash; using `VALUES` to provide the data or using a `SELECT` for it:
 
 - [The INSERT Statement](./syntax/insert.md)
 
