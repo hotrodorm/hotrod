@@ -73,7 +73,7 @@ FROM employee e
 JOIN department d ON d.id = e.department_id
 ```
 
-## Filtering Out * Wildcard Columns
+## Filtering * Wildcard Columns
 
 If we only want a subset of the columns referenced by a `*` symbol we can use the `.filter(<predicate>)` method to exclude 
 some of them. For example, to include only columns of type `INTEGER` or `DECIMAL` of the table `EMPLOYEE` we can do:
@@ -106,7 +106,7 @@ The following column properties can be used in the filtering predicate:
 | .getName() | Canonical (official) name of the column | `CURRENT_BALANCE` |
 | .getType() | Column type as informed by the database | `DECIMAL` |
 | .getColumnSize() | Width of the column | `14` |
-| .getDecimalDigits() | The canonical (official) name of the column | `2` |
+| .getDecimalDigits() | Decimal places (if any) | `2` |
 | .getProperty() | The corresponding property name generated for Java | `currentBalance` |
 | .getCatalog() | The catalog (if any) of the table or view | `null` |
 | .getSchema() | The schema (if any) of the table or view | `CLIENT` |
