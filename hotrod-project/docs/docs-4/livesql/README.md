@@ -69,7 +69,7 @@ The DELETE statement also has a single variation:
 - [The DELETE Statement](./syntax/delete.md)
 
 
-## The Expression Language:
+## The Expression Language
 
 The Expression Language enhances the functionality of LiveSQL by allowing complex expressions for numeric computations, date and time arithmetic, boolean logic for predicates, advanced SQL features, etc. Each section below explains a different aspect of it:
 
