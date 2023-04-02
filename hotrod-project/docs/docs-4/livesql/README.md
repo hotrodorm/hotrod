@@ -48,13 +48,13 @@ LiveSQL includes the four DML SQL statements: SELECT, INSERT, UPDATE, and DELETE
 The SELECT statement has several sections that are described separately:
 - [The SELECT list](./syntax/select.md)
 - [The FROM and JOIN Clauses](./syntax/from-and-joins.md)
+    - [The DUAL &amp; SYSDUMMY1 Tables](./syntax/systables.md)
 - [The WHERE Clause](./syntax/where.md)
 - [The GROUP BY Clause](./syntax/group-by.md)
 - [The HAVING Clause](./syntax/having.md)
 - [The ORDER BY Clause](./syntax/order-by.md)
 - [The OFFSET Clause](./syntax/offset.md)
 - [The LIMIT Clause](./syntax/limit.md)
-- [The DUAL &amp; SYSDUMMY1 Tables](./syntax/systables.md)
 
 The INSERT statement has two main variations &ndash; using `VALUES` to provide the data or using a `SELECT` for it:
 
