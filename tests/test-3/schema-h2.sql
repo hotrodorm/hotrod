@@ -18,6 +18,8 @@ insert into branch (branch_id, branch_name) values (103, 'East');
 create table employee (
   id int primary key auto_increment,
   name varchar(20) not null,
+  photo blob,
+  bio clob,
   branch_id int not null references branch (branch_id)
 );
 

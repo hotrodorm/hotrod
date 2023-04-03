@@ -61,7 +61,16 @@ public class App {
     EmployeeTable e = EmployeeDAO.newTable();
     BranchTable b = BranchDAO.newTable();
 
-    ExecutableSelect<Map<String, Object>> q = this.sql.select(e.star(), e.name, b.star(), b.star(), b.branchId).from(e).join(b, sql.val(1).eq(1)).where(e.name.like("A%"));
+    ExecutableSelect<Map<String, Object>> q = this.sql.select( //
+        e.star() //
+//            .filter(c -> !"BLOB".equals(c.getType())) //
+            .as(c -> "EMP_" + c.getName()), //
+//      e.star().filter(c -> !"BLOB".equals(c.getType()) && !"BLOB".equals(c.getType())).as(c -> "EMP_" + c.getName()), //
+        e.name, //
+        b.star().as(c -> "BRANCH_" + c.getName()), //
+        b.star(), //
+        b.branchId) //
+        .from(e).join(b, sql.val(1).eq(1)).where(e.name.like("A%"));
     System.out.println("q:" + q.getPreview());
     List<Map<String, Object>> rows = q.execute();
 
