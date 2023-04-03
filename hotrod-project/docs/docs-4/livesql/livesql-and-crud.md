@@ -4,8 +4,8 @@ LiveSQL enhances CRUD's `selectByExample()` simple searches with the more advanc
 
 Both searches return typed domain VOs but `selectByCriteria()` adds the following features:
 
-- Can specify a complex search criteria using [LiveSQL expressions](./syntax/expressions.md).
-- Can use LiveSQL expression to order rows.
+- Can specify a complex search criteria using LiveSQL's [Expression Language](./syntax/expressions.md).
+- Can specify a complex ordering criteria using LiveSQL's [Expression Language](./syntax/expressions.md).
 - Can add offset and limit functionality to the search.
 - Can return cursor of VOs instead of a list, to optimize the processing of large result sets.
 

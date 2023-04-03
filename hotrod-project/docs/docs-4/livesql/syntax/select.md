@@ -73,7 +73,7 @@ FROM employee e
 JOIN department d ON d.id = e.department_id
 ```
 
-## Filtering Out * Wildcard Columns
+## Filtering * Wildcard Columns
 
 If we only want a subset of the columns referenced by a `*` symbol we can use the `.filter(<predicate>)` method to exclude 
 some of them. For example, to include only columns of type `INTEGER` or `DECIMAL` of the table `EMPLOYEE` we can do:
@@ -93,7 +93,7 @@ The resulting query is:
 
 ```sql
 SELECT
-  e.id, e.branch_id, -- only 'id' and 'branch_id' are of type INTEGER or DECIMAL in this table
+  e.id, e.department_id, -- only 'id' and 'department_id' are of type INTEGER or DECIMAL in this table
   d.name
 FROM employee e
 JOIN department d ON d.id = e.department_id
@@ -106,11 +106,11 @@ The following column properties can be used in the filtering predicate:
 | .getName() | Canonical (official) name of the column | `CURRENT_BALANCE` |
 | .getType() | Column type as informed by the database | `DECIMAL` |
 | .getColumnSize() | Width of the column | `14` |
-| .getDecimalDigits() | The canonical (official) name of the column | `2` |
+| .getDecimalDigits() | Decimal places (if any) | `2` |
 | .getProperty() | The corresponding property name generated for Java | `currentBalance` |
 | .getCatalog() | The catalog (if any) of the table or view | `null` |
 | .getSchema() | The schema (if any) of the table or view | `CLIENT` |
-| .getObjectName() | The canonical (official) name of the column | `CHECKING_ACCOUNT` |
+| .getObjectName() | The canonical (official) name of the table or view | `CHECKING_ACCOUNT` |
 | .getObjectInstance().getAlias() | The table or view alias in the query | `a` |
 | .getObjectInstance().getType() | The table or view canonical (official) type as informed by the database | `TABLE` |
 
@@ -126,8 +126,8 @@ create table client.checking_account (
 
 ## Selecting without a FROM Clause
 
-Most of the database engines require a `FROM` clause in a `SELECT` statement. Some engines such as
-PostgreSQL, MySQL, MariaDB, and SQL Server can execute a `SELECT` without a `FROM` clause if using literals in the select list, or
+Some database engines require a `FROM` clause in a `SELECT` statement. Other ones, such as
+PostgreSQL, MySQL, MariaDB, and SQL Server, can execute a `SELECT` without a `FROM` clause if using literals in the select list, or
 if the values can be computed directly without using any table. For example, the following query is valid in SQL Server:
 
 ```java

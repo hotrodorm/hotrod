@@ -41,6 +41,45 @@ SELECT * FROM employee WHERE name like 'A%'
 Finally the `execute()` method runs the query and returns the result.
 
 
+## LiveSQL Statements
+
+LiveSQL includes the four DML SQL statements: SELECT, INSERT, UPDATE, and DELETE. 
+
+The SELECT statement has several sections that are described separately:
+- [The SELECT list](./syntax/select.md)
+- [The FROM and JOIN Clauses](./syntax/from-and-joins.md)
+    - [The DUAL &amp; SYSDUMMY1 Tables](./syntax/systables.md)
+- [The WHERE Clause](./syntax/where.md)
+- [The GROUP BY Clause](./syntax/group-by.md)
+- [The HAVING Clause](./syntax/having.md)
+- [The ORDER BY Clause](./syntax/order-by.md)
+- [The OFFSET Clause](./syntax/offset.md)
+- [The LIMIT Clause](./syntax/limit.md)
+
+The INSERT statement has two main variations &ndash; using `VALUES` to provide the data or using a `SELECT` for it:
+
+- [The INSERT Statement](./syntax/insert.md)
+
+The UPDATE statement has a single variation:
+
+- [The UPDATE Statement](./syntax/update.md)
+
+The DELETE statement also has a single variation:
+
+- [The DELETE Statement](./syntax/delete.md)
+
+
+## The Expression Language
+
+The Expression Language enhances the functionality of LiveSQL by allowing complex expressions for numeric computations, date and time arithmetic, boolean logic for predicates, advanced SQL features, etc. Each section below explains a different aspect of it:
+
+- [Expressions, Operators &amp; Functions](./syntax/expressions.md)
+- [Aggregate Functions](./syntax/aggregate-functions.md)
+- [Window Functions](./syntax/window-functions.md)
+- [Subqueries](./syntax/subqueries.md)
+- [Extending LiveSQL Functions](./extending-livesql-functions.md)
+
+
 ## Using Cursors
 
 Instead of using the method `execute()` it's also possible to use the method `executeCursor()`. This method avoids 
@@ -66,41 +105,6 @@ private void searching() {
 
 Consider that cursors only live between the boundaries of a database transaction &ndash; that is, methods annotated with the 
 `@Transactional` annotation &ndash; and that they are automatically closed when the transaction ends.
-
-
-## LiveSQL Syntax
-
-Each section of a SELECT statement has variations, and they are discussed below:
-
-- [The SELECT Statement](./syntax/select.md)
-    - [The FROM and JOIN Clauses](./syntax/from-and-joins.md)
-    - [The WHERE Clause](./syntax/where.md)
-    - [The GROUP BY Clause](./syntax/group-by.md)
-    - [The HAVING Clause](./syntax/having.md)
-    - [The ORDER BY Clause](./syntax/order-by.md)
-    - [The OFFSET Clause](./syntax/offset.md)
-    - [The LIMIT Clause](./syntax/limit.md)
-    - [The DUAL &amp; SYSDUMMY1 Tables](./syntax/systables.md)
-
-The INSERT statement has two main variations &ndash; using `VALUES` or from a `SELECT`:
-
-- [The INSERT Statement](./syntax/insert.md)
-
-The UPDATE statement has a single variation:
-
-- [The UPDATE Statement](./syntax/update.md)
-
-The DELETE statement also has a single variation:
-
-- [The DELETE Statement](./syntax/delete.md)
-
-The Expression Language:
-
-- [Expressions, Operators &amp; Functions](./syntax/expressions.md)
-- [Aggregate Functions](./syntax/aggregate-functions.md)
-- [Window Functions](./syntax/window-functions.md)
-- [Subqueries](./syntax/subqueries.md)
-- [Extending LiveSQL Functions](./extending-livesql-functions.md)
 
 
 ## Extra Functionality
