@@ -15,7 +15,11 @@ public class MyBatisParameterRenderer implements ParameterRenderer {
    */
   @Override
   public String render(final SQLParameter parameter) {
-    return "#{" + parameter.getId().getJavaMemberName() + ",jdbcType=" + parameter.getJdbcType() + "}";
+    if (parameter.isInternal()) { // foreach, bind declare internal parameters
+      return "#{" + parameter.getName() + "}";
+    } else {
+      return "#{" + parameter.getId().getJavaMemberName() + ",jdbcType=" + parameter.getJdbcType() + "}";
+    }
   }
 
 }
