@@ -11,7 +11,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
-    <hotrod.version>4.0.0-SNAPSHOT</hotrod.version>
+    <hotrod.version>3.5.1-SNAPSHOT</hotrod.version>
   </properties>
 
   <dependencies>
@@ -83,10 +83,12 @@
             <version>${hotrod.version}</version>
             <configuration>
               <configfile>./hotrod-h2.xml</configfile>
+              <generator>MyBatis-Spring</generator>
               <jdbcdriverclass>org.h2.Driver</jdbcdriverclass>
               <jdbcurl>jdbc:h2:mem:EXAMPLEDB;INIT=runscript from './schema-h2.sql';DB_CLOSE_DELAY=-1</jdbcurl>
               <jdbcusername>sa</jdbcusername>
               <jdbcpassword>""</jdbcpassword>
+              <jdbccatalog>EXAMPLEDB</jdbccatalog>
               <jdbcschema>PUBLIC</jdbcschema>
             </configuration>
             <dependencies>

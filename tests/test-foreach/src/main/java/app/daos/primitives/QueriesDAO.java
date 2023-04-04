@@ -4,6 +4,7 @@ package app.daos.primitives;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
@@ -17,7 +18,7 @@ import org.hotrod.runtime.interfaces.Selectable;
 import app.daos.EVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
@@ -47,7 +48,7 @@ public class QueriesDAO implements Serializable, ApplicationContextAware {
   private SqlSession sqlSession;
 
   @Autowired
-  private LiveSQLDialect liveSQLDialect;
+  private SQLDialect sqlDialect;
 
   private ApplicationContext applicationContext;
 

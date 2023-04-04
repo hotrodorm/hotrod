@@ -4,6 +4,7 @@ package app.daos.primitives;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.cursors.Cursor;
@@ -15,9 +16,11 @@ import org.hotrod.runtime.interfaces.OrderBy;
 
 import app.daos.primitives.AbstractEmployeeVO;
 import app.daos.EmployeeVO;
+import app.daos.BranchVO;
+import app.daos.primitives.BranchDAO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
-import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
+import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
 import org.hotrod.runtime.livesql.metadata.StringColumn;
 import org.hotrod.runtime.livesql.metadata.DateTimeColumn;
@@ -46,14 +49,28 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private SqlSession sqlSession;
 
+  @Lazy
   @Autowired
-  private LiveSQLDialect liveSQLDialect;
+  private BranchDAO branchDAO;
+
+  @Autowired
+  private SQLDialect sqlDialect;
 
   private ApplicationContext applicationContext;
 
   @Override
   public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+  }
+
+  // Row Parser
+
+  public static app.daos.EmployeeVO parseRow(Map<String, Object> m) {
+    app.daos.EmployeeVO mo = new app.daos.EmployeeVO();
+    mo.setId((java.lang.Integer) m.get("id"));
+    mo.setName((java.lang.String) m.get("name"));
+    mo.setBranchId((java.lang.Integer) m.get("branchId"));
+    return mo;
   }
 
   // select by primary key
@@ -88,11 +105,43 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   public CriteriaWherePhase<app.daos.EmployeeVO> selectByCriteria(final EmployeeDAO.EmployeeTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app.daos.EmployeeVO>(from, this.liveSQLDialect, this.sqlSession,
+    return new CriteriaWherePhase<app.daos.EmployeeVO>(from, this.sqlDialect, this.sqlSession,
         predicate, "app.daos.primitives.employee.selectByCriteria");
   }
 
-  // select parent(s) by FKs: no imported keys found -- skipped
+  // select parent(s) by FKs
+
+  public SelectParentBranchPhase selectParentBranchOf(final EmployeeVO vo) {
+    return new SelectParentBranchPhase(vo);
+  }
+
+  public class SelectParentBranchPhase {
+
+    private EmployeeVO vo;
+
+    SelectParentBranchPhase(final EmployeeVO vo) {
+      this.vo = vo;
+    }
+
+    public SelectParentBranchFromBranchIdPhase fromBranchId() {
+      return new SelectParentBranchFromBranchIdPhase(this.vo);
+    }
+
+  }
+
+  public class SelectParentBranchFromBranchIdPhase {
+
+    private EmployeeVO vo;
+
+    SelectParentBranchFromBranchIdPhase(final EmployeeVO vo) {
+      this.vo = vo;
+    }
+
+    public BranchVO toBranchId() {
+      return branchDAO.selectByPK(this.vo.branchId);
+    }
+
+  }
 
   // select children by FKs: no exported FKs found -- skipped
 
