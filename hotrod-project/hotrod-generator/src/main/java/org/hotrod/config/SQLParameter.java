@@ -110,6 +110,10 @@ public class SQLParameter implements SQLSegment {
   public String getJdbcType() {
     return this.definition.getJDBCType().getShortTypeName();
   }
+  
+  public boolean isInternal() {
+    return this.getDefinition().isInternal();
+  }
 
   // Behavior
 

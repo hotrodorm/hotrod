@@ -33,6 +33,8 @@ public class ParameterTag extends AbstractConfigurationTag {
   private String jdbcTypeName = null;
   private String sampleSQLValue = null;
 
+  private boolean internal = false;
+
   private Id id = null;
   private JDBCType jdbcType;
 
@@ -65,6 +67,10 @@ public class ParameterTag extends AbstractConfigurationTag {
     this.sampleSQLValue = s;
   }
 
+  public void setInternal() {
+    this.internal = true;
+  }
+
   // Behavior
 
   public void validate() throws InvalidConfigurationFileException {
@@ -91,57 +97,61 @@ public class ParameterTag extends AbstractConfigurationTag {
       throw new InvalidConfigurationFileException(this, msg);
     }
 
-    // java-type
+    if (!this.internal) {
 
-    if (this.javaType == null) {
-      throw new InvalidConfigurationFileException(this,
-          "invalid <parameter> tag -- the 'java-type' attribute cannot be empty.");
-    }
-    if (SUtil.isEmpty(this.javaType)) {
-      throw new InvalidConfigurationFileException(this,
-          "invalid <parameter> tag -- the 'java-type' attribute cannot be blank.");
-    }
-    if (!this.javaType.matches(Patterns.VALID_JAVA_TYPE)) {
-      throw new InvalidConfigurationFileException(this, "invalid <parameter> tag -- "
-          + "the 'java-type' attribute must start with a letter and continue with letters, digits, and/or underscores, but found '"
-          + this.javaType + "'.");
-    }
+      // java-type
 
-    // jdbc-type
-
-    if (this.jdbcTypeName == null) {
-      this.jdbcType = getDefaultJDBCType(this.javaType);
-      log.debug("this.jdbcType=" + this.jdbcType);
-      if (this.jdbcType == null) {
+      if (this.javaType == null) {
         throw new InvalidConfigurationFileException(this,
-            "Could not guess the JDBC type for the parameter based on its java type '" + this.javaType
-                + "'. Please include the 'jdbc-type' attribute to specify it; "
-                + "must be a valid JDBC type name from java.sql.Types. Valid type names are: "
-                + Stream.of(JDBCType.values()).map(t -> t.getShortTypeName()).collect(Collectors.joining(", ")));
+            "invalid <parameter> tag -- the 'java-type' attribute cannot be empty.");
       }
-    } else {
-      if (SUtil.isEmpty(this.jdbcTypeName)) {
-        throw new InvalidConfigurationFileException(this, //
-            "When specified, the 'jdbc-type' attribute cannot be blank; "
-                + "must be a valid JDBC type name from java.sql.Types. Valid type names are: "
-                + Stream.of(JDBCType.values()).map(t -> t.getShortTypeName()).collect(Collectors.joining(", ")));
-      }
-      this.jdbcType = JdbcTypes.nameToType(this.jdbcTypeName);
-      if (this.jdbcType == null) {
-        throw new InvalidConfigurationFileException(this, //
-            "Invalid 'jdbc-type' attribute with value '" + this.jdbcTypeName
-                + "': must be a valid JDBC type name from java.sql.Types. Valid type names are: "
-                + Stream.of(JDBCType.values()).map(t -> t.name()).collect(Collectors.joining(", ")));
-      }
-    }
-
-    // sample-sql-value
-
-    if (this.sampleSQLValue != null) {
-      if (this.sampleSQLValue.length() == 0) {
+      if (SUtil.isEmpty(this.javaType)) {
         throw new InvalidConfigurationFileException(this,
-            "Invalid 'sample-sql-value' attribute; when specified it cannot be empty");
+            "invalid <parameter> tag -- the 'java-type' attribute cannot be blank.");
       }
+      if (!this.javaType.matches(Patterns.VALID_JAVA_TYPE)) {
+        throw new InvalidConfigurationFileException(this, "invalid <parameter> tag -- "
+            + "the 'java-type' attribute must start with a letter and continue with letters, digits, and/or underscores, but found '"
+            + this.javaType + "'.");
+      }
+
+      // jdbc-type
+
+      if (this.jdbcTypeName == null) {
+        this.jdbcType = getDefaultJDBCType(this.javaType);
+        log.debug("this.jdbcType=" + this.jdbcType);
+        if (this.jdbcType == null) {
+          throw new InvalidConfigurationFileException(this,
+              "Could not guess the JDBC type for the parameter based on its java type '" + this.javaType
+                  + "'. Please include the 'jdbc-type' attribute to specify it; "
+                  + "must be a valid JDBC type name from java.sql.Types. Valid type names are: "
+                  + Stream.of(JDBCType.values()).map(t -> t.getShortTypeName()).collect(Collectors.joining(", ")));
+        }
+      } else {
+        if (SUtil.isEmpty(this.jdbcTypeName)) {
+          throw new InvalidConfigurationFileException(this, //
+              "When specified, the 'jdbc-type' attribute cannot be blank; "
+                  + "must be a valid JDBC type name from java.sql.Types. Valid type names are: "
+                  + Stream.of(JDBCType.values()).map(t -> t.getShortTypeName()).collect(Collectors.joining(", ")));
+        }
+        this.jdbcType = JdbcTypes.nameToType(this.jdbcTypeName);
+        if (this.jdbcType == null) {
+          throw new InvalidConfigurationFileException(this, //
+              "Invalid 'jdbc-type' attribute with value '" + this.jdbcTypeName
+                  + "': must be a valid JDBC type name from java.sql.Types. Valid type names are: "
+                  + Stream.of(JDBCType.values()).map(t -> t.name()).collect(Collectors.joining(", ")));
+        }
+      }
+
+      // sample-sql-value
+
+      if (this.sampleSQLValue != null) {
+        if (this.sampleSQLValue.length() == 0) {
+          throw new InvalidConfigurationFileException(this,
+              "Invalid 'sample-sql-value' attribute; when specified it cannot be empty");
+        }
+      }
+
     }
 
   }
@@ -166,6 +176,10 @@ public class ParameterTag extends AbstractConfigurationTag {
 
   public Id getId() {
     return this.id;
+  }
+
+  public boolean isInternal() {
+    return this.internal;
   }
 
   @Override

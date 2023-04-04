@@ -85,6 +85,10 @@ public class ForEachTag extends DynamicSQLPart {
         throw new InvalidConfigurationFileException(this, "Invalid <foreach> tag. "
             + "The 'item' attribute specifies a parameter or variable that is already defined. Try using a different variable name.");
       }
+      ParameterTag p = new ParameterTag();
+      p.setName(this.item);
+      p.setInternal();
+      parameterDefinitions.add(p);
     } else {
       this.itemParameter = null;
     }

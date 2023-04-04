@@ -1944,11 +1944,13 @@ public class ObjectDAO extends GeneratableObject {
     String methodName = sm.getMethod();
 
     ListWriter pdef = new ListWriter(", ");
-    ListWriter pcall = new ListWriter(", ");
+//    ListWriter pcall = new ListWriter(", ");
     for (SelectParameterMetadata p : sm.getParameterDefinitions()) {
       String name = p.getParameter().getName();
-      pdef.add("final " + p.getParameter().getJavaType() + " " + name);
-      pcall.add(name);
+      if (!p.getParameter().isInternal()) {
+        pdef.add("final " + p.getParameter().getJavaType() + " " + name);
+//        pcall.add(name);
+      }
     }
     String paramDef = pdef.toString();
 
@@ -1957,7 +1959,9 @@ public class ObjectDAO extends GeneratableObject {
     if (!sm.getParameterDefinitions().isEmpty()) {
       println("  public static class " + this.getParamClassName(sm) + " {");
       for (SelectParameterMetadata p : sm.getParameterDefinitions()) {
-        println("    " + p.getParameter().getJavaType() + " " + p.getParameter().getName() + ";");
+        if (!p.getParameter().isInternal()) {
+          println("    " + p.getParameter().getJavaType() + " " + p.getParameter().getName() + ";");
+        }
       }
       println("  }");
       println();
@@ -1975,7 +1979,9 @@ public class ObjectDAO extends GeneratableObject {
       objName = provideParamObjectName(sm.getParameterDefinitions());
       println("    " + this.getParamClassName(sm) + " " + objName + " = new " + this.getParamClassName(sm) + "();");
       for (SelectParameterMetadata p : sm.getParameterDefinitions()) {
-        println("    " + objName + "." + p.getParameter().getName() + " = " + p.getParameter().getName() + ";");
+        if (!p.getParameter().isInternal()) {
+          println("    " + objName + "." + p.getParameter().getName() + " = " + p.getParameter().getName() + ";");
+        }
       }
     }
 
