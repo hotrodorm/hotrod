@@ -14,19 +14,20 @@ public class StringColumn extends StringExpression implements Column {
   private String type;
   private Integer columnSize;
   private Integer decimalDigits;
-  private boolean nullable;
-  private String defaultValue;
-  private boolean lob;
 
   private String property;
 
   // Constructor
 
-  public StringColumn(final TableOrView objectInstance, final String name, final String property) {
+  public StringColumn(final TableOrView objectInstance, final String name, final String property, final String type,
+      final Integer columnSize, final Integer decimalDigits) {
     super(Expression.PRECEDENCE_COLUMN);
     this.objectInstance = objectInstance;
     this.name = name;
     this.property = property;
+    this.type = type;
+    this.columnSize = columnSize;
+    this.decimalDigits = decimalDigits;
   }
 
   // Rendering
@@ -85,21 +86,6 @@ public class StringColumn extends StringExpression implements Column {
   @Override
   public final Integer getDecimalDigits() {
     return decimalDigits;
-  }
-
-  @Override
-  public final boolean isNullable() {
-    return nullable;
-  }
-
-  @Override
-  public final String getDefaultValue() {
-    return defaultValue;
-  }
-
-  @Override
-  public final boolean isLob() {
-    return lob;
   }
 
   @Override

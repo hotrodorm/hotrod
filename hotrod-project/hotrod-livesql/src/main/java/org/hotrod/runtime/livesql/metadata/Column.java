@@ -21,12 +21,6 @@ public interface Column extends ReferenceableExpression {
 
   Integer getDecimalDigits();
 
-  boolean isNullable();
-
-  String getDefaultValue();
-
-  boolean isLob();
-
   String getProperty();
 
   void renderSimpleNameTo(QueryWriter w);

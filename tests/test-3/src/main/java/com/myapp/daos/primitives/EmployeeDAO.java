@@ -69,6 +69,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     com.myapp.daos.EmployeeMODEL mo = new com.myapp.daos.EmployeeMODEL();
     mo.setId((java.lang.Integer) m.get("id"));
     mo.setName((java.lang.String) m.get("name"));
+    mo.setPhoto((byte[]) m.get("photo"));
+    mo.setBio((java.lang.String) m.get("bio"));
     mo.setBranchId((java.lang.Integer) m.get("branchId"));
     return mo;
   }
@@ -153,6 +155,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     com.myapp.daos.EmployeeMODEL mo = new com.myapp.daos.EmployeeMODEL();
     mo.setId(vo.getId());
     mo.setName(vo.getName());
+    mo.setPhoto(vo.getPhoto());
+    mo.setBio(vo.getBio());
     mo.setBranchId(vo.getBranchId());
     return mo;
   }
@@ -199,6 +203,16 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     NAME$DESC_CASEINSENSITIVE("employee", "lower(name)", false), //
     NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("employee", "lower(name), name", false), //
     NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("employee", "lower(name), name", true), //
+    PHOTO("employee", "photo", true), //
+    PHOTO$DESC("employee", "photo", false), //
+    BIO("employee", "bio", true), //
+    BIO$DESC("employee", "bio", false), //
+    BIO$CASEINSENSITIVE("employee", "lower(bio)", true), //
+    BIO$CASEINSENSITIVE_STABLE_FORWARD("employee", "lower(bio), bio", true), //
+    BIO$CASEINSENSITIVE_STABLE_REVERSE("employee", "lower(bio), bio", false), //
+    BIO$DESC_CASEINSENSITIVE("employee", "lower(bio)", false), //
+    BIO$DESC_CASEINSENSITIVE_STABLE_FORWARD("employee", "lower(bio), bio", false), //
+    BIO$DESC_CASEINSENSITIVE_STABLE_REVERSE("employee", "lower(bio), bio", true), //
     BRANCH_ID("employee", "branch_id", true), //
     BRANCH_ID$DESC("employee", "branch_id", false);
 
@@ -243,12 +257,14 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
     public NumberColumn id;
     public StringColumn name;
+    public ByteArrayColumn photo;
+    public StringColumn bio;
     public NumberColumn branchId;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this);
+      return new AllColumns(this, this.id, this.name, this.photo, this.bio, this.branchId);
     }
 
     // Constructors
@@ -266,9 +282,11 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     // Initialization
 
     private void initialize() {
-      this.id = new NumberColumn(this, "ID", "id");
-      this.name = new StringColumn(this, "NAME", "name");
-      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId");
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      this.name = new StringColumn(this, "NAME", "name", "CHARACTER VARYING", 20, 0);
+      this.photo = new ByteArrayColumn(this, "PHOTO", "photo", "BINARY LARGE OBJECT", 2147483647, 0);
+      this.bio = new StringColumn(this, "BIO", "bio", "CHARACTER LARGE OBJECT", 2147483647, 0);
+      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0);
     }
 
   }

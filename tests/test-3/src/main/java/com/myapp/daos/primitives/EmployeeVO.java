@@ -13,6 +13,8 @@ public class EmployeeVO implements Serializable {
 
   protected java.lang.Integer id = null;
   protected java.lang.String name = null;
+  protected byte[] photo = null;
+  protected java.lang.String bio = null;
   protected java.lang.Integer branchId = null;
 
   // getters & setters
@@ -33,6 +35,22 @@ public class EmployeeVO implements Serializable {
     this.name = name;
   }
 
+  public byte[] getPhoto() {
+    return this.photo;
+  }
+
+  public void setPhoto(final byte[] photo) {
+    this.photo = photo;
+  }
+
+  public java.lang.String getBio() {
+    return this.bio;
+  }
+
+  public void setBio(final java.lang.String bio) {
+    this.bio = bio;
+  }
+
   public java.lang.Integer getBranchId() {
     return this.branchId;
   }
@@ -48,6 +66,8 @@ public class EmployeeVO implements Serializable {
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- name=" + this.name + "\n");
+    sb.append("- photo=" + this.photo + "\n");
+    sb.append("- bio=" + this.bio + "\n");
     sb.append("- branchId=" + this.branchId);
     return sb.toString();
   }
@@ -58,6 +78,8 @@ public class EmployeeVO implements Serializable {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
     obj.addProperty("name", this.name);
+    obj.addProperty("photo", this.photo);
+    obj.addProperty("bio", this.bio);
     obj.addProperty("branchId", this.branchId);
     return obj.render();
   }

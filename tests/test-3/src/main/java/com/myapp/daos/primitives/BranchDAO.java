@@ -252,7 +252,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this);
+      return new AllColumns(this, this.branchId, this.branchName);
     }
 
     // Constructors
@@ -270,8 +270,8 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
     // Initialization
 
     private void initialize() {
-      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId");
-      this.branchName = new StringColumn(this, "BRANCH_NAME", "branchName");
+      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0);
+      this.branchName = new StringColumn(this, "BRANCH_NAME", "branchName", "CHARACTER VARYING", 20, 0);
     }
 
   }

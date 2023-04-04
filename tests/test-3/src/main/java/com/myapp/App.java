@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.metadata.AllColumns.Alias;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,16 +59,17 @@ public class App {
 
     // Use LiveSQL to search for employees whose name starts with 'A'
 
-    EmployeeTable e = EmployeeDAO.newTable();
-    BranchTable b = BranchDAO.newTable();
+    EmployeeTable e = EmployeeDAO.newTable("e");
+    BranchTable b = BranchDAO.newTable("b");
 
     ExecutableSelect<Map<String, Object>> q = this.sql.select( //
         e.star() //
-//            .filter(c -> !"BLOB".equals(c.getType())) //
-            .as(c -> "EMP_" + c.getName()), //
-//      e.star().filter(c -> !"BLOB".equals(c.getType()) && !"BLOB".equals(c.getType())).as(c -> "EMP_" + c.getName()), //
+            .filter(c -> !"BINARY LARGE OBJECT".equals(c.getType()) && !"CHARACTER LARGE OBJECT".equals(c.getType())) //
+            .as(c -> {
+              return Alias.property("emp", c.getProperty());
+            }), //
         e.name, //
-        b.star().as(c -> "BRANCH_" + c.getName()), //
+        b.star().as(c -> Alias.literal(("bra_" + c.getName()).toLowerCase())), //
         b.star(), //
         b.branchId) //
         .from(e).join(b, sql.val(1).eq(1)).where(e.name.like("A%"));

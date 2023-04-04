@@ -175,7 +175,7 @@ public class V2DAO implements Serializable, ApplicationContextAware {
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this);
+      return new AllColumns(this, this.id, this.name, this.branchCode);
     }
 
     // Constructors
@@ -193,9 +193,9 @@ public class V2DAO implements Serializable, ApplicationContextAware {
     // Initialization
 
     private void initialize() {
-      this.id = new NumberColumn(this, "ID", "id");
-      this.name = new StringColumn(this, "NAME", "name");
-      this.branchCode = new NumberColumn(this, "BRANCH_CODE", "branchCode");
+      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
+      this.name = new StringColumn(this, "NAME", "name", "CHARACTER VARYING", 10, 0);
+      this.branchCode = new NumberColumn(this, "BRANCH_CODE", "branchCode", "INTEGER", 32, 0);
     }
 
   }

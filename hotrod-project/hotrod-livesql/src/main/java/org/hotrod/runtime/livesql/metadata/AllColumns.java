@@ -9,6 +9,7 @@ import org.hotrod.runtime.livesql.expressions.AliasedExpression;
 import org.hotrod.runtime.livesql.expressions.Expression;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.queries.select.QueryWriter;
+import org.hotrodorm.hotrod.utils.SUtil;
 
 public class AllColumns implements ResultSetColumn {
 
@@ -25,13 +26,51 @@ public class AllColumns implements ResultSetColumn {
     return new ColumnSubset(Arrays.stream(this.columns).filter(predicate).collect(Collectors.toList()));
   }
 
+  public static class Alias {
+    private String alias;
+
+    protected Alias(final String alias) {
+      this.alias = alias;
+    }
+
+    protected Alias(final String... propertyParts) {
+      StringBuilder sb = new StringBuilder();
+      boolean first = true;
+      for (String p : propertyParts) {
+        if (first) {
+          first = false;
+          sb.append(p.toLowerCase());
+        } else {
+          sb.append(SUtil.upperFirst(p));
+        }
+      }
+      this.alias = sb.toString();
+    }
+
+    public static Alias literal(final String alias) {
+      return new Alias(alias);
+    }
+
+    public static Alias property(final String... alias) {
+      return new Alias(alias);
+    }
+
+    public String getAlias() {
+      return alias;
+    }
+
+  }
+
   public static interface ColumnRenamer {
-    String rename(Column c);
+    Alias rename(Column c);
   }
 
   public ColumnAliased as(final ColumnRenamer renamer) {
     return new ColumnAliased(Arrays.stream(this.columns) //
-        .map(c -> new AliasedExpression((Expression) c, renamer.rename(c))) //
+        .map(c -> {
+          Alias a = renamer.rename(c);
+          return new AliasedExpression((Expression) c, a.alias, true);
+        }) //
         .collect(Collectors.toList()));
   }
 
@@ -44,7 +83,11 @@ public class AllColumns implements ResultSetColumn {
     w.write("*");
   }
 
-  public static class ColumnSubset implements ResultSetColumn {
+  public static interface ColumnList extends ResultSetColumn {
+    boolean isEmpty();
+  }
+
+  public static class ColumnSubset implements ColumnList {
 
     private List<Column> columns;
 
@@ -58,7 +101,10 @@ public class AllColumns implements ResultSetColumn {
 
     public ColumnAliased as(final ColumnRenamer renamer) {
       return new ColumnAliased(this.columns.stream() //
-          .map(c -> new AliasedExpression((Expression) c, renamer.rename(c))) //
+          .map(c -> {
+            Alias a = renamer.rename(c);
+            return new AliasedExpression((Expression) c, a.alias, true);
+          }) //
           .collect(Collectors.toList()));
     }
 
@@ -78,7 +124,7 @@ public class AllColumns implements ResultSetColumn {
 
   }
 
-  public static class ColumnAliased implements ResultSetColumn {
+  public static class ColumnAliased implements ColumnList {
 
     private List<ResultSetColumn> columns;
 

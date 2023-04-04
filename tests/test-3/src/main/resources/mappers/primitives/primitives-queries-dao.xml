@@ -19,6 +19,8 @@
   <resultMap id="result_map_select_findEmployees" type="com.myapp.daos.EMODEL">
     <result property="id" column="ID" />
     <result property="name" column="NAME" />
+    <result property="photo" column="PHOTO" />
+    <result property="bio" column="BIO" />
     <result property="branchId" column="BRANCH_ID" />
   </resultMap>
 

@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.hotrod.runtime.livesql.LiveSQLMapper;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
+import org.hotrod.runtime.livesql.metadata.AllColumns.ColumnList;
 import org.hotrod.runtime.livesql.metadata.Column;
 import org.hotrodorm.hotrod.utils.Separator;
 
@@ -13,7 +14,8 @@ class Select<R> extends AbstractSelect<R> {
 
   private List<ResultSetColumn> resultSetColumns = null;
 
-  Select(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession, final LiveSQLMapper liveSQLMapper) {
+  Select(final SQLDialect sqlDialect, final boolean distinct, final SqlSession sqlSession,
+      final LiveSQLMapper liveSQLMapper) {
     super(sqlDialect, distinct, sqlSession, null, liveSQLMapper);
   }
 
@@ -37,16 +39,26 @@ class Select<R> extends AbstractSelect<R> {
     } else {
       Separator sep = new Separator();
       for (ResultSetColumn c : this.resultSetColumns) {
-        w.write(sep.render());
-        w.write("\n  ");
-        c.renderTo(w);
 
+        boolean empty = false;
         try {
-          Column col = (Column) c;
-          w.write(" as ");
-          w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(col.getProperty()));
+          empty = ((ColumnList) c).isEmpty();
         } catch (ClassCastException e) {
-          // Not a property -- no need to alias it
+          // Ignore
+        }
+
+        if (!empty) {
+          w.write(sep.render());
+          w.write("\n  ");
+          c.renderTo(w);
+
+          try {
+            Column col = (Column) c;
+            w.write(" as ");
+            w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(col.getProperty()));
+          } catch (ClassCastException e) {
+            // Not a property -- no need to alias it
+          }
         }
 
       }

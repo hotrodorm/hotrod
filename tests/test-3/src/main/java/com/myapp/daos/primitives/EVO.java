@@ -12,6 +12,8 @@ public class EVO implements Serializable {
 
   protected java.lang.Integer id = null;
   protected java.lang.String name = null;
+  protected byte[] photo = null; // it's a LOB type
+  protected java.lang.String bio = null; // it's a LOB type
   protected java.lang.Integer branchId = null;
 
   // getters & setters
@@ -34,6 +36,24 @@ public class EVO implements Serializable {
     this.propertiesChangeLog.nameWasSet = true;
   }
 
+  public final byte[] getPhoto() {
+    return this.photo;
+  }
+
+  public final void setPhoto(final byte[] photo) {
+    this.photo = photo;
+    this.propertiesChangeLog.photoWasSet = true;
+  }
+
+  public final java.lang.String getBio() {
+    return this.bio;
+  }
+
+  public final void setBio(final java.lang.String bio) {
+    this.bio = bio;
+    this.propertiesChangeLog.bioWasSet = true;
+  }
+
   public final java.lang.Integer getBranchId() {
     return this.branchId;
   }
@@ -50,6 +70,8 @@ public class EVO implements Serializable {
     sb.append(super.toString() + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- name=" + this.name + "\n");
+    sb.append("- photo=" + this.photo + "\n");
+    sb.append("- bio=" + this.bio + "\n");
     sb.append("- branchId=" + this.branchId);
     return sb.toString();
   }
@@ -61,6 +83,8 @@ public class EVO implements Serializable {
   public class PropertiesChangeLog {
     public boolean idWasSet = false;
     public boolean nameWasSet = false;
+    public boolean photoWasSet = false;
+    public boolean bioWasSet = false;
     public boolean branchIdWasSet = false;
   }
 
