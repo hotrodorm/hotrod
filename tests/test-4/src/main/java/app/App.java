@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.Row;
+import org.hotrod.runtime.livesql.metadata.AllColumns.Alias;
 import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,22 +65,18 @@ public class App {
     BatchTable b = BatchDAO.newTable();
     EmployeeTable e = EmployeeDAO.newTable();
 
-    ExecutableSelect<Row> query = this.sql //
-        .select(e.star().filter(c -> {
-//          System.out
-//              .println(c.getName() + " " + c.getType() + "(" + c.getColumnSize() + ", " + c.getDecimalDigits() + ") <"
-//                  + c.getProperty() 
-//                  + "> {"
-//                  + c.getCatalog(), c.getSchema(), c.getObjectName(), c.getObjectInstance().getAlias(), c.getObjectInstance().getType()
-//                  + "}");
-          return "CHARACTER VARYING".equals(c.getType());
-//          return "INTEGER".contentEquals(c.getType());
-        }), b.star(), e.name, e.star()) //
-        .from(b) //
-        .join(e, e.name.eq(b.itemName));
-//        .where(b.itemName.like("A%"));
-    System.out.println("PREVIEW: " + query.getPreview());
-    List<Row> rows = query.execute();
+    ExecutableSelect<Row> q = this.sql.select( //
+        e.star() //
+            .filter(c -> !"BINARY LARGE OBJECT".equals(c.getType()) && !"CHARACTER LARGE OBJECT".equals(c.getType())) //
+            .as(c -> {
+              return Alias.property("emp", c.getProperty());
+            }), //
+        b.star().as(c -> Alias.literal(("bc_" + c.getName()).toLowerCase()))) //
+        .from(e) //
+        .join(b, b.itemName.eq(e.name)) //
+        .where(e.name.like("A%"));
+    System.out.println("PREVIEW: " + q.getPreview());
+    List<Row> rows = q.execute();
 
     System.out.println("Batches with names that start with 'A':");
     for (Row r : rows) {
