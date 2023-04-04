@@ -68,11 +68,9 @@ public class App {
             .as(c -> {
               return Alias.property("emp", c.getProperty());
             }), //
-        e.name, //
-        b.star().as(c -> Alias.literal(("bra_" + c.getName()).toLowerCase())), //
-        b.star(), //
-        b.branchId) //
-        .from(e).join(b, sql.val(1).eq(1)).where(e.name.like("A%"));
+        b.star().as(c -> Alias.literal(("bc_" + c.getName()).toLowerCase()))) //
+        .from(e).join(b, b.branchId.eq(e.branchId)).where(e.name.like("A%"));
+
     System.out.println("q:" + q.getPreview());
     List<Map<String, Object>> rows = q.execute();
 
