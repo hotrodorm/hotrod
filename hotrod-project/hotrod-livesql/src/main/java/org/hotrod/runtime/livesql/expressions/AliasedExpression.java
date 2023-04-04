@@ -7,17 +7,29 @@ public class AliasedExpression implements ReferenceableExpression {
 
   private Expression expression;
   private String alias;
+  private boolean verbatim;
 
   public AliasedExpression(final Expression expression, final String alias) {
     this.expression = expression;
     this.alias = alias;
+    this.verbatim = false;
+  }
+
+  public AliasedExpression(final Expression expression, final String alias, final boolean verbatim) {
+    this.expression = expression;
+    this.alias = alias;
+    this.verbatim = verbatim;
   }
 
   @Override
   public void renderTo(final QueryWriter w) {
     this.expression.renderTo(w);
     w.write(" as ");
-    w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(this.alias));
+    if (this.verbatim) {
+      w.write(w.getSqlDialect().getIdentifierRenderer().renderVerbatimName(this.alias));
+    } else {
+      w.write(w.getSqlDialect().getIdentifierRenderer().renderSQLName(this.alias));
+    }
   }
 
 }

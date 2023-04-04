@@ -28,6 +28,11 @@ public class IdentifierRenderer {
         + (this.quoteSuffix == null ? "" : this.quoteSuffix);
   }
 
+  public final String renderVerbatimName(final String quotedName) {
+    return (this.quotePrefix == null ? "" : this.quotePrefix) + quotedName
+        + (this.quoteSuffix == null ? "" : this.quoteSuffix);
+  }
+
   public String renderSQLObjectName(final DatabaseObject databaseObject) {
     if (databaseObject == null) {
       return null;
