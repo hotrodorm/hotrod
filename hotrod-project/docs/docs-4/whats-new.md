@@ -22,9 +22,9 @@ HotRod 4.0 includes several major features as well as a many of minor improvemen
 ### LiveSQL
 
 - LiveSQL now implements INSERT, UPDATE, and DELETE statements in addition to SELECT.
+- LiveSQL supports the wildcard `*` symbol with filtering and aliasing.
 - LiveSQL can use the DUAL (Oracle) and SYSIBM.SYSDUMMY1 (DB2 and Derby) system tables.
 - LiveSQL now returns `List<Row>` and `Cursor<Row>`.
-- LiveSQL supports the Wildcard `*` symbol with filtering and aliasing.
 
 
 
