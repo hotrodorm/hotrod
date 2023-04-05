@@ -9,6 +9,13 @@ HotRod 4.0 includes several major features as well as a many of minor improvemen
 
 - Schema discovery.
 - Support for multiple datasources.
+- Configuration property generator removed.
+- Default values for the `<mappers>` tag. It can be now omitted in the configuration file.
+- Reusing JDBC connection when using result-set processor.
+
+### CRUD
+
+- `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping.
 - Nitro defaults to result-set generation now. The `<select-generation>` tag can be omitted by default.
 - Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
 
@@ -20,10 +27,4 @@ HotRod 4.0 includes several major features as well as a many of minor improvemen
 - LiveSQL supports the Wildcard `*` symbol with filtering and aliasing.
 
 
-## Other Improvements
-
-- `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping.
-- Configuration property generator removed.
-- Default values for the `<mappers>` tag. It can be now omitted in the configuration file.
-- Reusing JDBC connection when using result-set processor.
 
