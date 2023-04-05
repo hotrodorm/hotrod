@@ -22,8 +22,8 @@ import org.hotrod.exceptions.UnresolvableDataTypeException;
 import org.hotrod.generator.DAOType;
 import org.hotrod.generator.FileGenerator;
 import org.hotrod.generator.FileGenerator.TextWriter;
-import org.hotrod.identifiers.ObjectId;
 import org.hotrod.generator.GeneratableObject;
+import org.hotrod.identifiers.ObjectId;
 import org.hotrod.metadata.ColumnMetadata;
 import org.hotrod.metadata.DataSetMetadata;
 import org.hotrod.metadata.EnumDataSetMetadata;
@@ -167,7 +167,10 @@ public class Mapper extends GeneratableObject {
           writeInsertByExample();
         }
         writeUpdateByExample();
+        writeUpdateByCriteria();
+
         writeDeleteByExample();
+        writeDeleteByCriteria();
 
       }
 
@@ -996,6 +999,17 @@ public class Mapper extends GeneratableObject {
     println();
   }
 
+  // update by criteria
+
+  private void writeUpdateByCriteria() throws IOException {
+    println("  <!-- update by criteria -->");
+    println();
+    println("  <select id=\"updateByCriteria\">");
+    println("    ${sql}");
+    println("  </select>");
+    println();
+  }
+
   /**
    * <pre>
    *   <delete id="deleteAbc">
@@ -1040,6 +1054,17 @@ public class Mapper extends GeneratableObject {
     println("    delete from " + SUtil.escapeXmlBody(this.metadata.getId().getRenderedSQLName()));
     print(getWhereByExample());
     println("  </delete>");
+    println();
+  }
+
+  // delete by criteria
+
+  private void writeDeleteByCriteria() throws IOException {
+    println("  <!-- delete by criteria -->");
+    println();
+    println("  <select id=\"deleteByCriteria\">");
+    println("    ${sql}");
+    println("  </select>");
     println();
   }
 
@@ -1293,6 +1318,22 @@ public class Mapper extends GeneratableObject {
 
   public String getFullMapperIdSelectByCriteria() {
     return this.namespace + "." + getMapperIdSelectByCriteria();
+  }
+
+  public String getMapperIdDeleteByCriteria() {
+    return "deleteByCriteria";
+  }
+
+  public String getFullMapperIdDeleteByCriteria() {
+    return this.namespace + "." + getMapperIdDeleteByCriteria();
+  }
+
+  public String getMapperIdUpdateByCriteria() {
+    return "updateByCriteria";
+  }
+
+  public String getFullMapperIdUpdateByCriteria() {
+    return this.namespace + "." + getMapperIdUpdateByCriteria();
   }
 
   public String getMapperIdSelectParameterized() {

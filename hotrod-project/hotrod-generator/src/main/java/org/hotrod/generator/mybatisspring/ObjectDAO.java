@@ -165,6 +165,21 @@ public class ObjectDAO extends GeneratableObject {
 
     this.w = null;
 
+//    MiObjetoModel select(Long pk); // selectByPK
+//    List<MiObjetoModel> select(MiObjetoVO pattern); // selectByExample
+//                        selectCursor()
+//    List<MiObjetoModel> select(TableOrView t, Predicate p); // selectByCriteria ... I guess 'MiObjetoTable' is already in DAO context
+//
+//        String paramsSignature = toParametersSignature(key, mg);
+//
+//    int delete(Long pk);
+//    int delete(MiObjetoVO pattern); // dangerous. check empty pattern
+//    int delete([TableOrView t,] Predicate p);  // dangerous too
+//
+//    int update(MiObjetoModel vo); //byPK
+//    int update(MiObjetoVO values, MiObjetoVO example); // dangerous. check empty pattern
+//    int update(MiObjetoVO values, [TableOrView t,] Predicate p);
+
     try {
       this.w = fileGenerator.createWriter(f);
 
@@ -173,32 +188,36 @@ public class ObjectDAO extends GeneratableObject {
       if (!this.isExecutor()) {
 
         if (this.isTable()) {
-          writeSelectByPK(mg); // done
-          writeSelectByUI(mg); // done
+          writeSelectByPK(mg);
+          writeSelectByUI(mg);
         }
 
-        writeSelectByExample(); // done
-        writeSelectByCriteria(); // done
+        writeSelectByExample();
+        writeSelectByCriteria();
 
         if (this.isTable()) {
           if (this.generator.isClassicFKNavigationEnabled() || this.isClassicFKNavigationEnabled()) {
-            writeSelectParentByFK(); // done
-            writeSelectChildrenByFK(); // done
+            writeSelectParentByFK();
+            writeSelectChildrenByFK();
           }
 
-          writeInsert(); // done
+          writeInsert();
 
-          writeUpdateByPK(); // done
-          writeDeleteByPK(); // done
+          writeUpdateByPK(mg);
+
+          writeDeleteByPK(mg);
         }
 
         if (this.isView()) {
-          writeInsertByExample(); // done
+          writeInsertByExample();
         }
 
         if (this.isTable() || this.isView()) {
-          writeUpdateByExample(); // done
-          writeDeleteByExample(); // done
+          writeUpdateByExample();
+          writeUpdateByCriteria();
+
+          writeDeleteByExample();
+          writeDeleteByCriteria();
         }
 
         writeEnumTypeHandlers();
@@ -375,6 +394,10 @@ public class ObjectDAO extends GeneratableObject {
       imports.newLine();
     }
 
+    imports.add(Map.class);
+    imports.add(HashMap.class);
+    imports.newLine();
+
     imports.add("org.hotrod.runtime.livesql.expressions.ResultSetColumn");
 
     imports.add("org.hotrod.runtime.livesql.dialects.LiveSQLDialect");
@@ -388,6 +411,9 @@ public class ObjectDAO extends GeneratableObject {
     imports.add("org.hotrod.runtime.livesql.expressions.predicates.Predicate");
     imports.add("org.hotrod.runtime.livesql.metadata.AllColumns");
     imports.add("org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase");
+    imports.add("org.hotrod.runtime.livesql.queries.DeleteWherePhase");
+    imports.add("org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase");
+
     imports.add("org.hotrod.runtime.livesql.metadata.View");
     imports.newLine();
 
@@ -478,7 +504,7 @@ public class ObjectDAO extends GeneratableObject {
 
   }
 
-  private static final String SELECT_BY_PK_METHOD = "selectByPK";
+  private static final String SELECT_BY_PK_METHOD = "select";
 
   private void writeSelectByPK(final MyBatisSpringGenerator mg) throws IOException, UnresolvableDataTypeException {
     if (this.metadata.getPK() == null) {
@@ -614,7 +640,7 @@ public class ObjectDAO extends GeneratableObject {
     String avoClassName = this.avo.getFullClassName();
     String voClassName = this.vo.getFullClassName();
 
-    println("  public List<" + voClassName + "> selectByExample(final " + avoClassName + " example, final "
+    println("  public List<" + voClassName + "> select(final " + avoClassName + " example, final "
         + this.getOrderByClassName() + "... orderBies)");
     print("      ");
     println("{");
@@ -624,7 +650,7 @@ public class ObjectDAO extends GeneratableObject {
     println("  }");
     println();
 
-    println("  public Cursor<" + voClassName + "> selectByExampleCursor(final " + avoClassName + " example, final "
+    println("  public Cursor<" + voClassName + "> selectCursor(final " + avoClassName + " example, final "
         + this.getOrderByClassName() + "... orderBies)");
     print("      ");
     println("{");
@@ -641,23 +667,10 @@ public class ObjectDAO extends GeneratableObject {
     println();
 
     String daoClassName = this.getClassName();
-//    String voClassName = this.vo.getClassName();
     String voFullClassName = this.vo.getFullClassName();
     String mapperName = this.mapper.getFullMapperIdSelectByCriteria();
-//    String constructor = this.isTable() ? "newTable" : "newView";
 
-    // println(" public CriteriaWherePhase<" + voFullClassName + ">
-    // selectByCriteria(final Predicate predicate) {");
-    // println(" " + daoClassName + "." + this.metadataClassName + " baseTable =
-    // " + daoClassName + "." + constructor
-    // + "();");
-    // println(" return new CriteriaWherePhase<" + voFullClassName +
-    // ">(baseTable, this.sqlDialect, this.sqlSession,");
-    // println(" predicate, \"" + mapperName + "\");");
-    // println(" }");
-    // println();
-
-    println("  public CriteriaWherePhase<" + voFullClassName + "> selectByCriteria(final " + daoClassName + "."
+    println("  public CriteriaWherePhase<" + voFullClassName + "> select(final " + daoClassName + "."
         + this.metadataClassName + " from,");
     println("      final Predicate predicate) {");
     println("    return new CriteriaWherePhase<" + voFullClassName + ">(from, this.liveSQLDialect, this.sqlSession,");
@@ -1275,7 +1288,7 @@ public class ObjectDAO extends GeneratableObject {
 
   private static final String UPDATE_BY_PK_METHOD = "update";
 
-  private void writeUpdateByPK() throws IOException, UnresolvableDataTypeException {
+  private void writeUpdateByPK(final MyBatisSpringGenerator mg) throws IOException, UnresolvableDataTypeException {
     if (this.metadata.getPK() == null) {
       println("  // no update by PK generated, since the table does not have a PK.");
       println();
@@ -1341,20 +1354,57 @@ public class ObjectDAO extends GeneratableObject {
     println("  // update by example");
     println();
     String voClassName = this.avo.getFullClassName();
-    println(
-        "  public int updateByExample(final " + voClassName + " example, final " + voClassName + " updateValues) {");
+    println("  public int update(final " + voClassName + " example, final " + voClassName + " updateValues) {");
     println("    UpdateByExampleDao<" + voClassName + "> fvd = //");
     println("      new UpdateByExampleDao<" + voClassName + ">(example, updateValues);");
     println("    return this.sqlSession.update(\"" + this.mapper.getFullMapperIdUpdateByExample() + "\", fvd);");
     println("  }");
     println();
+  }
 
+  private void writeUpdateByCriteria() throws IOException {
+    println("  // update by criteria");
+    println();
+    String voClassName = this.avo.getFullClassName();
+    String mapperName = this.mapper.getFullMapperIdUpdateByCriteria();
+
+    writeUpdateByCriteriaVariation(false, voClassName, mapperName);
+    writeUpdateByCriteriaVariation(true, voClassName, mapperName);
+
+    println();
+  }
+
+  private void writeUpdateByCriteriaVariation(final boolean useEntity, final String voClassName,
+      final String mapperName) throws IOException {
+    print("  public UpdateSetCompletePhase update(final " + voClassName + " updateValues, ");
+    if (useEntity) {
+      print("final " + this.getClassName() + "." + this.metadataClassName + " tableOrView, ");
+    }
+    println("final Predicate predicate) {");
+
+    println("    Map<String, Object> values = new HashMap<>();");
+    for (ColumnMetadata cm : this.metadata.getColumns()) {
+      println("    if (updateValues." + cm.getId().getJavaGetter() + "() != null) values.put(\""
+          + cm.getId().getRenderedSQLName() + "\", updateValues." + cm.getId().getJavaGetter() + "());");
+    }
+
+    print("    return new UpdateSetCompletePhase(");
+    if (useEntity) {
+      print("tableOrView, ");
+    } else {
+      print(this.getClassName() + (this.isTable() ? ".newTable()" : ".newView()") + ", ");
+    }
+    println("this.liveSQLDialect, this.sqlSession,");
+    println("      \"" + mapperName + "\", predicate, values);");
+    println("  }");
+    println();
   }
 
   private static final String DELETE_BY_PK_METHOD = "delete";
 
-  private void writeDeleteByPK() throws IOException, UnresolvableDataTypeException {
-    if (this.metadata.getPK() == null) {
+  private void writeDeleteByPK(final MyBatisSpringGenerator mg) throws IOException, UnresolvableDataTypeException {
+    KeyMetadata pk = this.metadata.getPK();
+    if (pk == null) {
       println("  // no delete by PK generated, since the table does not have a PK.");
       println();
     } else {
@@ -1365,28 +1415,43 @@ public class ObjectDAO extends GeneratableObject {
       println();
 
       String voClassName = this.vo.getFullClassName();
+
+      String paramsSignature = toParametersSignature(pk, mg);
+      print("  public int " + DELETE_BY_PK_METHOD + "(" + paramsSignature + ") ");
+      println("{");
+
+      String voc = this.vo.getFullClassName();
+      for (ColumnMetadata cm : pk.getColumns()) {
+        String m = cm.getId().getJavaMemberName();
+        println("    if (" + m + " == null) return 0;");
+      }
+      println("    " + voc + " vo = new " + voc + "();");
+      for (ColumnMetadata cm : pk.getColumns()) {
+        String m = cm.getId().getJavaMemberName();
+        String setter = cm.getId().getJavaSetter();
+        println("    vo." + setter + "(" + m + ");");
+      }
+
       if (useVersionControl) {
         VersionControlMetadata vcm = this.metadata.getVersionControlMetadata();
-        ColumnMetadata cm = vcm.getColumnMetadata();
-        print("  public int " + DELETE_BY_PK_METHOD + "(final " + voClassName + " vo) ");
-        println("{");
+        ColumnMetadata vccm = vcm.getColumnMetadata();
         println("    int rows = this.sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByPK() + "\", vo);");
         println("    if (rows != 1) {");
         println("      throw new StaleDataException(\"Could not delete row on table "
-            + this.metadata.getId().getCanonicalSQLName() + " with version \" + vo." + cm.getId().getJavaMemberName());
+            + this.metadata.getId().getCanonicalSQLName() + " with version \" + vo."
+            + vccm.getId().getJavaMemberName());
         println("          + \" since it had already been updated or deleted by another process.\");");
         println("    }");
         println("    return rows;");
         println("  }");
       } else {
-        print("  public int " + DELETE_BY_PK_METHOD + "(final " + voClassName + " vo) ");
-        println("{");
-        for (ColumnMetadata cm : this.metadata.getPK().getColumns()) {
+        for (ColumnMetadata cm : pk.getColumns()) {
           println("    if (vo." + cm.getId().getJavaMemberName() + " == null) return 0;");
         }
         println("    return this.sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByPK() + "\", vo);");
         println("  }");
       }
+
       println();
     }
   }
@@ -1395,8 +1460,38 @@ public class ObjectDAO extends GeneratableObject {
     println("  // delete by example");
     println();
     String voClassName = this.avo.getFullClassName();
-    println("  public int deleteByExample(final " + voClassName + " example) {");
+    println("  public int delete(final " + voClassName + " example) {");
     println("    return this.sqlSession.delete(\"" + this.mapper.getFullMapperIdDeleteByExample() + "\", example);");
+    println("  }");
+    println();
+  }
+
+  private void writeDeleteByCriteria() throws IOException {
+    println("  // delete by criteria");
+    println();
+
+    String daoClassName = this.getClassName();
+    String mapperName = this.mapper.getFullMapperIdDeleteByCriteria();
+
+    writeDeleteByCriteriaVariation(false, daoClassName, mapperName);
+    writeDeleteByCriteriaVariation(true, daoClassName, mapperName);
+  }
+
+  private void writeDeleteByCriteriaVariation(final boolean useFrom, final String daoClassName, final String mapperName)
+      throws IOException {
+    print("  public DeleteWherePhase delete(");
+    if (useFrom) {
+      print("final " + daoClassName + "." + this.metadataClassName + " from, ");
+    }
+    println("final Predicate predicate) {");
+    print("    return new DeleteWherePhase(");
+    if (useFrom) {
+      print("from, ");
+    } else {
+      print(daoClassName + (this.isTable() ? ".newTable()" : ".newView()") + ", ");
+    }
+    println("this.liveSQLDialect, this.sqlSession,");
+    println("      \"" + mapperName + "\", predicate);");
     println("  }");
     println();
   }

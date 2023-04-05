@@ -13,9 +13,9 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter.LiveSQLStructure;
 public class Delete {
 
   private LiveSQLDialect sqlDialect;
-  @SuppressWarnings("unused")
   private SqlSession sqlSession;
-  private LiveSQLMapper liveSQLMapper;
+  private String mapperStatement; // DAO.delete(t, predicate)
+  private LiveSQLMapper liveSQLMapper; // LiveSQL.delete()
 
   private TableOrView from;
   private Predicate wherePredicate;
@@ -23,7 +23,15 @@ public class Delete {
   Delete(final LiveSQLDialect sqlDialect, final SqlSession sqlSession, final LiveSQLMapper liveSQLMapper) {
     this.sqlDialect = sqlDialect;
     this.sqlSession = sqlSession;
+    this.mapperStatement = null;
     this.liveSQLMapper = liveSQLMapper;
+  }
+
+  Delete(final LiveSQLDialect sqlDialect, final SqlSession sqlSession, final String mapperStatement) {
+    this.sqlDialect = sqlDialect;
+    this.sqlSession = sqlSession;
+    this.mapperStatement = mapperStatement;
+    this.liveSQLMapper = null;
   }
 
   void setFrom(final TableOrView from) {
@@ -43,7 +51,11 @@ public class Delete {
     LiveSQLStructure q = this.prepareQuery();
     LinkedHashMap<String, Object> parameters = q.getParameters();
     parameters.put("sql", q.getSQL());
-    this.liveSQLMapper.delete(parameters);
+    if (this.mapperStatement != null) {
+      this.sqlSession.delete(this.mapperStatement, q.getConsolidatedParameters());
+    } else {
+      this.liveSQLMapper.delete(parameters);
+    }
   }
 
   private LiveSQLStructure prepareQuery() {
