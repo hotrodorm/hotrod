@@ -185,8 +185,7 @@ For example:
 </select>
 ```
 
-If the supplied parameters at runtime are `branchId` (with a value of `475`) and `types` (as a List of three String elements `"F"`, `"V"`, and `"C2"`), the 
-query will be assembled as:
+Depending on the specific parameters the query will change. If the first list has three values and the second one two, the query will be assembled as:
 
 ```sql
 select * from employee
