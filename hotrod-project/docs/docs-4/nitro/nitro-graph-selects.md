@@ -1,4 +1,4 @@
-## Graph Selects
+# Nitro Graph Selects
 
 Graph Selects enhance the flat select model by adding a structure to the result set. Instead of
 a list of VOs, these queries can return more complex data structures such as tuples of VOs or

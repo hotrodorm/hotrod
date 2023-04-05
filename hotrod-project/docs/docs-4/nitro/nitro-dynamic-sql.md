@@ -190,7 +190,7 @@ Depending on the specific parameters the query will change. If the first list ha
 ```sql
 select * from employee
 where branch_id in (?, ?, ?)
-  and client_type in (?, ?)
+  and name in (?, ?)
 ```
 
 The parameters that will be *applied* to the query could in this case be:
