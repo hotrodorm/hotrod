@@ -50,6 +50,35 @@ The query can name the specific list of columns to produce. This list can also i
 compute using functions or operators. 
 
 
+## Aliasing Columns
+
+Most of the time SELECT queries preserve the names of the columns they are retrieving. However, naming or renaming columns
+can be useful to convey more clearly the meaning of a column value. This is specially useful when an expression is included in the 
+select list where each engine typically generates a *cryptic* or random name for it, or when joining tables where multiple columns can end up 
+having the same name.
+
+To alias a column append the `.as(<string>)` method to it.
+
+For example, if the query is adding the base price with the tax for the purchase, it looks much clearer to name the new
+column as `total_price`, as shown below:
+
+```java
+ProductTable p = ProductDAO.newTable("p");
+
+List<Row> rows = this.sql
+    .select(p.name, p.price.plus(p.tax).as("total_price"))
+    .from(p) 
+    .execute();
+```
+
+Produces a second column with a clear name:
+
+```sql
+SELECT p.name, p.price + p.qty as total_price
+FROM product p
+```
+
+
 ## Selecting All Columns From One Table &ndash; The * Wildcard
 
 To select all columns of a table or view use the method `.star()`. For example:
@@ -83,7 +112,11 @@ EmployeeTable e = EmployeeDAO.newTable("e");
 DepartmentTable d = DepartmentDAO.newTable("d");
 
 List<Row> rows = this.sql
-    .select(e.star().filter(c -> "INTEGER".equals(c.getType()) || "DECIMAL".equals(c.getType())), d.name)
+    .select(
+      e.star()
+        .filter(c -> "INTEGER".equals(c.getType()) || "DECIMAL".equals(c.getType())),
+      d.name
+    )
     .from(e)
     .join(d, d.id.eq(e.departmentId)
     .execute();
@@ -123,6 +156,64 @@ create table client.checking_account (
 );
 ```
 
+## Aliasing * Wildcard Columns
+
+In some queries it can be useful to change the name of the column from one table to differentiate
+from the columns of another one, specially when joined tables have columns with the same name.
+
+If we use the function `.star()` to select all the columns of one table we can alias them by using 
+the `.as()` method on them. For example:
+
+```java
+BatchTable b = BatchDAO.newTable("b");
+EmployeeTable e = EmployeeDAO.newTable("e");
+
+List<Row> rows = this.sql
+    .select(
+      e.star().as(c -> Alias.property("emp", c.getProperty())),
+      b.star().as(c -> Alias.literal(("bc_" + c.getName()).toLowerCase()))
+    )
+    .from(e) //
+    .join(b, b.itemName.eq(e.name)) //
+    .where(e.name.like("A%"));
+```
+
+Produces the query:
+
+```sql
+SELECT
+  e.id as "empId", e.name as "empName", e.branch_id as "empBranchId", 
+  b.sku_code as "bc_sku_code", b.item_name as "bc_item_name"
+FROM public.employee e
+JOIN public.batch b ON b.item_name = e.name
+WHERE e.name like 'A%'
+```
+
+The LiveSQL query above renamed the columns from both tables. It did apply a different
+strategy to rename them, however:
+
+- In the first one, it used the method `Alias.property()` to generate a property-like column name. It prepended `emp` to the property names:
+`branchId` became `empBranchId`.
+- In the second case, it used the method `Alias.literal()` to generate a column name as a verbatim string. In this case it prepender `bc_`
+to the column name and converted it to lower case.
+
+Note that more complex logic can be used. All properties mentioned in the table above are available to write more complex functions.
+
+
+## Column Filtering and Aliasing
+
+Finally, aliasing columns can be combined with filtering. For example, the select list can take the form:
+
+```sql
+    .select(
+      e.star()
+       .filter(c -> !"BLOB".equals(c.getType()))
+       .as(c -> Alias.property("emp", c.getProperty())),
+    )
+```
+
+In this case, the filter removes the BLOB columns. The remaining columns are aliased.
+
 
 ## Selecting without a FROM Clause
 
@@ -148,35 +239,6 @@ SELECT 7, 15 * 3, getdate()
 
 **Note**: Oracle, DB2, and Apache Derby cannot select without a `FROM` clause. In these databases you can use
 [the `DUAL` and `SYSDUMMY1` tables](./systables.md).
-
-
-## Aliasing Columns
-
-Most of the time SELECT queries preserve the names of the columns they are retrieving. However, naming or renaming columns
-can be useful to convey more clearly the meaning of a column value. This is specially useful when an expression is included in the 
-select list where each engine typically generates a *cryptic* or random name for it, or when joining tables where multiple columns can end up 
-having the same name.
-
-To alias a column append the `.as(<string>)` method to it.
-
-For example, if the query is adding the base price with the tax for the purchase, it looks much clearer to name the new
-column as `total_price`, as shown below:
-
-```java
-ProductTable p = ProductDAO.newTable("p");
-
-List<Row> rows = this.sql
-    .select(p.name, p.price.plus(p.tax).as("total_price"))
-    .from(p) 
-    .execute();
-```
-
-Produces a second column with a clear name:
-
-```sql
-SELECT p.name, p.price + p.qty as total_price
-FROM product p
-```
 
 
 ## Selecting Distinct Rows
