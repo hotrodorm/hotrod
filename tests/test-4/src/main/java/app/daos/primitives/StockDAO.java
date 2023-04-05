@@ -16,6 +16,9 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import app.daos.primitives.AbstractStockVO;
 import app.daos.StockVO;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
@@ -28,6 +31,8 @@ import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
@@ -62,14 +67,14 @@ public class StockDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app.daos.StockVO> selectByExample(final app.daos.primitives.AbstractStockVO example, final StockOrderBy... orderBies)
+  public List<app.daos.StockVO> select(final app.daos.primitives.AbstractStockVO example, final StockOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractStockVO, StockOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app.daos.primitives.stock.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.StockVO> selectByExampleCursor(final app.daos.primitives.AbstractStockVO example, final StockOrderBy... orderBies)
+  public Cursor<app.daos.StockVO> selectCursor(final app.daos.primitives.AbstractStockVO example, final StockOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractStockVO, StockOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
@@ -78,7 +83,7 @@ public class StockDAO implements Serializable, ApplicationContextAware {
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.StockVO> selectByCriteria(final StockDAO.StockTable from,
+  public CriteriaWherePhase<app.daos.StockVO> select(final StockDAO.StockTable from,
       final Predicate predicate) {
     return new CriteriaWherePhase<app.daos.StockVO>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "app.daos.primitives.stock.selectByCriteria");
@@ -106,16 +111,49 @@ public class StockDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app.daos.primitives.AbstractStockVO example, final app.daos.primitives.AbstractStockVO updateValues) {
+  public int update(final app.daos.primitives.AbstractStockVO example, final app.daos.primitives.AbstractStockVO updateValues) {
     UpdateByExampleDao<app.daos.primitives.AbstractStockVO> fvd = //
       new UpdateByExampleDao<app.daos.primitives.AbstractStockVO>(example, updateValues);
     return this.sqlSession.update("app.daos.primitives.stock.updateByExample", fvd);
   }
 
+  // update by criteria
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractStockVO updateValues, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getSku() != null) values.put("sku", updateValues.getSku());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    if (updateValues.getQuantity() != null) values.put("quantity", updateValues.getQuantity());
+    return new UpdateSetCompletePhase(StockDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.stock.updateByCriteria", predicate, values);
+  }
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractStockVO updateValues, final StockDAO.StockTable tableOrView, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getSku() != null) values.put("sku", updateValues.getSku());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    if (updateValues.getQuantity() != null) values.put("quantity", updateValues.getQuantity());
+    return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.stock.updateByCriteria", predicate, values);
+  }
+
+
   // delete by example
 
-  public int deleteByExample(final app.daos.primitives.AbstractStockVO example) {
+  public int delete(final app.daos.primitives.AbstractStockVO example) {
     return this.sqlSession.delete("app.daos.primitives.stock.deleteByExample", example);
+  }
+
+  // delete by criteria
+
+  public DeleteWherePhase delete(final Predicate predicate) {
+    return new DeleteWherePhase(StockDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.stock.deleteByCriteria", predicate);
+  }
+
+  public DeleteWherePhase delete(final StockDAO.StockTable from, final Predicate predicate) {
+    return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.stock.deleteByCriteria", predicate);
   }
 
   // DAO ordering

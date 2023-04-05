@@ -16,6 +16,9 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import app.daos.primitives.AbstractCompanyVO;
 import app.daos.CompanyVO;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
@@ -28,6 +31,8 @@ import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
@@ -58,7 +63,7 @@ public class CompanyDAO implements Serializable, ApplicationContextAware {
 
   // select by primary key
 
-  public app.daos.CompanyVO selectByPK(final java.lang.Integer id) {
+  public app.daos.CompanyVO select(final java.lang.Integer id) {
     if (id == null)
       return null;
     app.daos.CompanyVO vo = new app.daos.CompanyVO();
@@ -70,14 +75,14 @@ public class CompanyDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app.daos.CompanyVO> selectByExample(final app.daos.primitives.AbstractCompanyVO example, final CompanyOrderBy... orderBies)
+  public List<app.daos.CompanyVO> select(final app.daos.primitives.AbstractCompanyVO example, final CompanyOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractCompanyVO, CompanyOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app.daos.primitives.company.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.CompanyVO> selectByExampleCursor(final app.daos.primitives.AbstractCompanyVO example, final CompanyOrderBy... orderBies)
+  public Cursor<app.daos.CompanyVO> selectCursor(final app.daos.primitives.AbstractCompanyVO example, final CompanyOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractCompanyVO, CompanyOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
@@ -86,7 +91,7 @@ public class CompanyDAO implements Serializable, ApplicationContextAware {
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.CompanyVO> selectByCriteria(final CompanyDAO.CompanyTable from,
+  public CriteriaWherePhase<app.daos.CompanyVO> select(final CompanyDAO.CompanyTable from,
       final Predicate predicate) {
     return new CriteriaWherePhase<app.daos.CompanyVO>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "app.daos.primitives.company.selectByCriteria");
@@ -116,23 +121,57 @@ public class CompanyDAO implements Serializable, ApplicationContextAware {
 
   // delete by PK
 
-  public int delete(final app.daos.CompanyVO vo) {
+  public int delete(final java.lang.Integer id) {
+    if (id == null) return 0;
+    app.daos.CompanyVO vo = new app.daos.CompanyVO();
+    vo.setId(id);
     if (vo.id == null) return 0;
     return this.sqlSession.delete("app.daos.primitives.company.deleteByPK", vo);
   }
 
   // update by example
 
-  public int updateByExample(final app.daos.primitives.AbstractCompanyVO example, final app.daos.primitives.AbstractCompanyVO updateValues) {
+  public int update(final app.daos.primitives.AbstractCompanyVO example, final app.daos.primitives.AbstractCompanyVO updateValues) {
     UpdateByExampleDao<app.daos.primitives.AbstractCompanyVO> fvd = //
       new UpdateByExampleDao<app.daos.primitives.AbstractCompanyVO>(example, updateValues);
     return this.sqlSession.update("app.daos.primitives.company.updateByExample", fvd);
   }
 
+  // update by criteria
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractCompanyVO updateValues, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    return new UpdateSetCompletePhase(CompanyDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.company.updateByCriteria", predicate, values);
+  }
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractCompanyVO updateValues, final CompanyDAO.CompanyTable tableOrView, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.company.updateByCriteria", predicate, values);
+  }
+
+
   // delete by example
 
-  public int deleteByExample(final app.daos.primitives.AbstractCompanyVO example) {
+  public int delete(final app.daos.primitives.AbstractCompanyVO example) {
     return this.sqlSession.delete("app.daos.primitives.company.deleteByExample", example);
+  }
+
+  // delete by criteria
+
+  public DeleteWherePhase delete(final Predicate predicate) {
+    return new DeleteWherePhase(CompanyDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.company.deleteByCriteria", predicate);
+  }
+
+  public DeleteWherePhase delete(final CompanyDAO.CompanyTable from, final Predicate predicate) {
+    return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.company.deleteByCriteria", predicate);
   }
 
   // DAO ordering

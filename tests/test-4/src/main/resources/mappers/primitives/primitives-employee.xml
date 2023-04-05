@@ -122,6 +122,12 @@
     </trim>
   </update>
 
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
+
   <!-- delete by example -->
 
   <delete id="deleteByExample">
@@ -138,5 +144,11 @@
       </if>
     </trim>
   </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
 
 </mapper>

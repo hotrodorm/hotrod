@@ -16,6 +16,9 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import app.daos.primitives.AbstractEmployeeVipVO;
 import app.daos.EmployeeVipVO;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
@@ -28,6 +31,8 @@ import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
@@ -58,7 +63,7 @@ public class EmployeeVipDAO implements Serializable, ApplicationContextAware {
 
   // select by primary key
 
-  public app.daos.EmployeeVipVO selectByPK(final java.lang.Integer id) {
+  public app.daos.EmployeeVipVO select(final java.lang.Integer id) {
     if (id == null)
       return null;
     app.daos.EmployeeVipVO vo = new app.daos.EmployeeVipVO();
@@ -70,14 +75,14 @@ public class EmployeeVipDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app.daos.EmployeeVipVO> selectByExample(final app.daos.primitives.AbstractEmployeeVipVO example, final EmployeeVipOrderBy... orderBies)
+  public List<app.daos.EmployeeVipVO> select(final app.daos.primitives.AbstractEmployeeVipVO example, final EmployeeVipOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractEmployeeVipVO, EmployeeVipOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app.daos.primitives.employeeVip.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.EmployeeVipVO> selectByExampleCursor(final app.daos.primitives.AbstractEmployeeVipVO example, final EmployeeVipOrderBy... orderBies)
+  public Cursor<app.daos.EmployeeVipVO> selectCursor(final app.daos.primitives.AbstractEmployeeVipVO example, final EmployeeVipOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractEmployeeVipVO, EmployeeVipOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
@@ -86,7 +91,7 @@ public class EmployeeVipDAO implements Serializable, ApplicationContextAware {
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.EmployeeVipVO> selectByCriteria(final EmployeeVipDAO.EmployeeVipTable from,
+  public CriteriaWherePhase<app.daos.EmployeeVipVO> select(final EmployeeVipDAO.EmployeeVipTable from,
       final Predicate predicate) {
     return new CriteriaWherePhase<app.daos.EmployeeVipVO>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "app.daos.primitives.employeeVip.selectByCriteria");
@@ -116,23 +121,57 @@ public class EmployeeVipDAO implements Serializable, ApplicationContextAware {
 
   // delete by PK
 
-  public int delete(final app.daos.EmployeeVipVO vo) {
+  public int delete(final java.lang.Integer id) {
+    if (id == null) return 0;
+    app.daos.EmployeeVipVO vo = new app.daos.EmployeeVipVO();
+    vo.setId(id);
     if (vo.id == null) return 0;
     return this.sqlSession.delete("app.daos.primitives.employeeVip.deleteByPK", vo);
   }
 
   // update by example
 
-  public int updateByExample(final app.daos.primitives.AbstractEmployeeVipVO example, final app.daos.primitives.AbstractEmployeeVipVO updateValues) {
+  public int update(final app.daos.primitives.AbstractEmployeeVipVO example, final app.daos.primitives.AbstractEmployeeVipVO updateValues) {
     UpdateByExampleDao<app.daos.primitives.AbstractEmployeeVipVO> fvd = //
       new UpdateByExampleDao<app.daos.primitives.AbstractEmployeeVipVO>(example, updateValues);
     return this.sqlSession.update("app.daos.primitives.employeeVip.updateByExample", fvd);
   }
 
+  // update by criteria
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractEmployeeVipVO updateValues, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getFullName() != null) values.put("full_name", updateValues.getFullName());
+    return new UpdateSetCompletePhase(EmployeeVipDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.employeeVip.updateByCriteria", predicate, values);
+  }
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractEmployeeVipVO updateValues, final EmployeeVipDAO.EmployeeVipTable tableOrView, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getFullName() != null) values.put("full_name", updateValues.getFullName());
+    return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.employeeVip.updateByCriteria", predicate, values);
+  }
+
+
   // delete by example
 
-  public int deleteByExample(final app.daos.primitives.AbstractEmployeeVipVO example) {
+  public int delete(final app.daos.primitives.AbstractEmployeeVipVO example) {
     return this.sqlSession.delete("app.daos.primitives.employeeVip.deleteByExample", example);
+  }
+
+  // delete by criteria
+
+  public DeleteWherePhase delete(final Predicate predicate) {
+    return new DeleteWherePhase(EmployeeVipDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.employeeVip.deleteByCriteria", predicate);
+  }
+
+  public DeleteWherePhase delete(final EmployeeVipDAO.EmployeeVipTable from, final Predicate predicate) {
+    return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.employeeVip.deleteByCriteria", predicate);
   }
 
   // DAO ordering

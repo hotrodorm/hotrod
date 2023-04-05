@@ -4,12 +4,17 @@ import app.daos.primitives.AbstractEmployeeVipVO;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import app.daos.primitives.EmployeeVipDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class EmployeeVipVO extends AbstractEmployeeVipVO {
 
   private static final long serialVersionUID = 1L;
+
+  @Autowired
+  private EmployeeVipDAO employeeVipDAO;
 
   // Add custom code below.
 

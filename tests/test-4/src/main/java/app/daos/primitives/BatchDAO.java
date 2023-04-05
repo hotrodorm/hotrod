@@ -16,6 +16,9 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import app.daos.primitives.AbstractBatchVO;
 import app.daos.BatchVO;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
@@ -28,6 +31,8 @@ import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
@@ -62,14 +67,14 @@ public class BatchDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app.daos.BatchVO> selectByExample(final app.daos.primitives.AbstractBatchVO example, final BatchOrderBy... orderBies)
+  public List<app.daos.BatchVO> select(final app.daos.primitives.AbstractBatchVO example, final BatchOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractBatchVO, BatchOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app.daos.primitives.batch.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.BatchVO> selectByExampleCursor(final app.daos.primitives.AbstractBatchVO example, final BatchOrderBy... orderBies)
+  public Cursor<app.daos.BatchVO> selectCursor(final app.daos.primitives.AbstractBatchVO example, final BatchOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractBatchVO, BatchOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
@@ -78,7 +83,7 @@ public class BatchDAO implements Serializable, ApplicationContextAware {
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.BatchVO> selectByCriteria(final BatchDAO.BatchTable from,
+  public CriteriaWherePhase<app.daos.BatchVO> select(final BatchDAO.BatchTable from,
       final Predicate predicate) {
     return new CriteriaWherePhase<app.daos.BatchVO>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "app.daos.primitives.batch.selectByCriteria");
@@ -105,16 +110,47 @@ public class BatchDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app.daos.primitives.AbstractBatchVO example, final app.daos.primitives.AbstractBatchVO updateValues) {
+  public int update(final app.daos.primitives.AbstractBatchVO example, final app.daos.primitives.AbstractBatchVO updateValues) {
     UpdateByExampleDao<app.daos.primitives.AbstractBatchVO> fvd = //
       new UpdateByExampleDao<app.daos.primitives.AbstractBatchVO>(example, updateValues);
     return this.sqlSession.update("app.daos.primitives.batch.updateByExample", fvd);
   }
 
+  // update by criteria
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBatchVO updateValues, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getSkuCode() != null) values.put("sku_code", updateValues.getSkuCode());
+    if (updateValues.getItemName() != null) values.put("item_name", updateValues.getItemName());
+    return new UpdateSetCompletePhase(BatchDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.batch.updateByCriteria", predicate, values);
+  }
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBatchVO updateValues, final BatchDAO.BatchTable tableOrView, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getSkuCode() != null) values.put("sku_code", updateValues.getSkuCode());
+    if (updateValues.getItemName() != null) values.put("item_name", updateValues.getItemName());
+    return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.batch.updateByCriteria", predicate, values);
+  }
+
+
   // delete by example
 
-  public int deleteByExample(final app.daos.primitives.AbstractBatchVO example) {
+  public int delete(final app.daos.primitives.AbstractBatchVO example) {
     return this.sqlSession.delete("app.daos.primitives.batch.deleteByExample", example);
+  }
+
+  // delete by criteria
+
+  public DeleteWherePhase delete(final Predicate predicate) {
+    return new DeleteWherePhase(BatchDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.batch.deleteByCriteria", predicate);
+  }
+
+  public DeleteWherePhase delete(final BatchDAO.BatchTable from, final Predicate predicate) {
+    return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.batch.deleteByCriteria", predicate);
   }
 
   // DAO ordering

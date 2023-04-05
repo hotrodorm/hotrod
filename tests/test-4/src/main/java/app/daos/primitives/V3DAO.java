@@ -17,6 +17,9 @@ import org.hotrod.runtime.interfaces.Selectable;
 import app.daos.primitives.AbstractV3VO;
 import app.daos.V3VO;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
@@ -29,6 +32,8 @@ import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
@@ -59,14 +64,14 @@ public class V3DAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app.daos.V3VO> selectByExample(final app.daos.primitives.AbstractV3VO example, final V3OrderBy... orderBies)
+  public List<app.daos.V3VO> select(final app.daos.primitives.AbstractV3VO example, final V3OrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractV3VO, V3OrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app.daos.primitives.v3.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.V3VO> selectByExampleCursor(final app.daos.primitives.AbstractV3VO example, final V3OrderBy... orderBies)
+  public Cursor<app.daos.V3VO> selectCursor(final app.daos.primitives.AbstractV3VO example, final V3OrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractV3VO, V3OrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
@@ -75,7 +80,7 @@ public class V3DAO implements Serializable, ApplicationContextAware {
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.V3VO> selectByCriteria(final V3DAO.V3View from,
+  public CriteriaWherePhase<app.daos.V3VO> select(final V3DAO.V3View from,
       final Predicate predicate) {
     return new CriteriaWherePhase<app.daos.V3VO>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "app.daos.primitives.v3.selectByCriteria");
@@ -89,16 +94,47 @@ public class V3DAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app.daos.primitives.AbstractV3VO example, final app.daos.primitives.AbstractV3VO updateValues) {
+  public int update(final app.daos.primitives.AbstractV3VO example, final app.daos.primitives.AbstractV3VO updateValues) {
     UpdateByExampleDao<app.daos.primitives.AbstractV3VO> fvd = //
       new UpdateByExampleDao<app.daos.primitives.AbstractV3VO>(example, updateValues);
     return this.sqlSession.update("app.daos.primitives.v3.updateByExample", fvd);
   }
 
+  // update by criteria
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractV3VO updateValues, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    return new UpdateSetCompletePhase(V3DAO.newView(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.v3.updateByCriteria", predicate, values);
+  }
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractV3VO updateValues, final V3DAO.V3View tableOrView, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.v3.updateByCriteria", predicate, values);
+  }
+
+
   // delete by example
 
-  public int deleteByExample(final app.daos.primitives.AbstractV3VO example) {
+  public int delete(final app.daos.primitives.AbstractV3VO example) {
     return this.sqlSession.delete("app.daos.primitives.v3.deleteByExample", example);
+  }
+
+  // delete by criteria
+
+  public DeleteWherePhase delete(final Predicate predicate) {
+    return new DeleteWherePhase(V3DAO.newView(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.v3.deleteByCriteria", predicate);
+  }
+
+  public DeleteWherePhase delete(final V3DAO.V3View from, final Predicate predicate) {
+    return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.v3.deleteByCriteria", predicate);
   }
 
   // DAO ordering

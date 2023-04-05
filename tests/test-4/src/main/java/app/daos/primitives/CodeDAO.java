@@ -16,6 +16,9 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import app.daos.primitives.AbstractCodeVO;
 import app.daos.CodeVO;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
@@ -28,6 +31,8 @@ import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
@@ -58,7 +63,7 @@ public class CodeDAO implements Serializable, ApplicationContextAware {
 
   // select by primary key
 
-  public app.daos.CodeVO selectByPK(final java.lang.Integer id) {
+  public app.daos.CodeVO select(final java.lang.Integer id) {
     if (id == null)
       return null;
     app.daos.CodeVO vo = new app.daos.CodeVO();
@@ -70,14 +75,14 @@ public class CodeDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app.daos.CodeVO> selectByExample(final app.daos.primitives.AbstractCodeVO example, final CodeOrderBy... orderBies)
+  public List<app.daos.CodeVO> select(final app.daos.primitives.AbstractCodeVO example, final CodeOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractCodeVO, CodeOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app.daos.primitives.code.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.CodeVO> selectByExampleCursor(final app.daos.primitives.AbstractCodeVO example, final CodeOrderBy... orderBies)
+  public Cursor<app.daos.CodeVO> selectCursor(final app.daos.primitives.AbstractCodeVO example, final CodeOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractCodeVO, CodeOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
@@ -86,7 +91,7 @@ public class CodeDAO implements Serializable, ApplicationContextAware {
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.CodeVO> selectByCriteria(final CodeDAO.CodeTable from,
+  public CriteriaWherePhase<app.daos.CodeVO> select(final CodeDAO.CodeTable from,
       final Predicate predicate) {
     return new CriteriaWherePhase<app.daos.CodeVO>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "app.daos.primitives.code.selectByCriteria");
@@ -116,23 +121,57 @@ public class CodeDAO implements Serializable, ApplicationContextAware {
 
   // delete by PK
 
-  public int delete(final app.daos.CodeVO vo) {
+  public int delete(final java.lang.Integer id) {
+    if (id == null) return 0;
+    app.daos.CodeVO vo = new app.daos.CodeVO();
+    vo.setId(id);
     if (vo.id == null) return 0;
     return this.sqlSession.delete("app.daos.primitives.code.deleteByPK", vo);
   }
 
   // update by example
 
-  public int updateByExample(final app.daos.primitives.AbstractCodeVO example, final app.daos.primitives.AbstractCodeVO updateValues) {
+  public int update(final app.daos.primitives.AbstractCodeVO example, final app.daos.primitives.AbstractCodeVO updateValues) {
     UpdateByExampleDao<app.daos.primitives.AbstractCodeVO> fvd = //
       new UpdateByExampleDao<app.daos.primitives.AbstractCodeVO>(example, updateValues);
     return this.sqlSession.update("app.daos.primitives.code.updateByExample", fvd);
   }
 
+  // update by criteria
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractCodeVO updateValues, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    return new UpdateSetCompletePhase(CodeDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.code.updateByCriteria", predicate, values);
+  }
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractCodeVO updateValues, final CodeDAO.CodeTable tableOrView, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.code.updateByCriteria", predicate, values);
+  }
+
+
   // delete by example
 
-  public int deleteByExample(final app.daos.primitives.AbstractCodeVO example) {
+  public int delete(final app.daos.primitives.AbstractCodeVO example) {
     return this.sqlSession.delete("app.daos.primitives.code.deleteByExample", example);
+  }
+
+  // delete by criteria
+
+  public DeleteWherePhase delete(final Predicate predicate) {
+    return new DeleteWherePhase(CodeDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.code.deleteByCriteria", predicate);
+  }
+
+  public DeleteWherePhase delete(final CodeDAO.CodeTable from, final Predicate predicate) {
+    return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.code.deleteByCriteria", predicate);
   }
 
   // DAO ordering

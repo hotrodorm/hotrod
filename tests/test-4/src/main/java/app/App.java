@@ -1,11 +1,7 @@
 package app;
 
-import java.util.List;
-
 import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.runtime.livesql.Row;
-import org.hotrod.runtime.livesql.metadata.AllColumns.Alias;
-import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
+import org.hotrod.runtime.livesql.queries.ExecutableQuery;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -18,10 +14,7 @@ import org.springframework.context.annotation.Configuration;
 
 import app.daos.AccountVO;
 import app.daos.primitives.AccountDAO;
-import app.daos.primitives.BatchDAO;
-import app.daos.primitives.BatchDAO.BatchTable;
-import app.daos.primitives.EmployeeDAO;
-import app.daos.primitives.EmployeeDAO.EmployeeTable;
+import app.daos.primitives.AccountDAO.AccountTable;
 import app.daos.primitives.StockDAO;
 import app.daos.primitives.StockDAO.StockTable;
 
@@ -54,34 +47,47 @@ public class App {
 
   private void searching() {
 
+    // Use CRUD to delete account #123
+
+    AccountTable at = AccountDAO.newTable();
+    AccountVO updateValues = new AccountVO();
+    updateValues.setName("Brand NEW name!");
+    ExecutableQuery q = this.accountDAO.update(updateValues, at.id.eq(123));
+    System.out.println("PREVIEW: " + q.getPreview());
+    q.execute();
+
     // Use CRUD to search for account #123
 
     Integer id = 123;
-    AccountVO a = this.accountDAO.selectByPK(id);
-    System.out.println("Account #" + id + " Name: " + a.getName());
+    AccountVO a = this.accountDAO.select(id);
+    if (a != null) {
+      System.out.println("Account #" + id + " Name: " + a.getName());
+    } else {
+      System.out.println("Account #" + id + " not found.");
+    }
 
     // Use LiveSQL to search for companies which name start with 'A'
 
-    BatchTable b = BatchDAO.newTable();
-    EmployeeTable e = EmployeeDAO.newTable();
-
-    ExecutableSelect<Row> q = this.sql.select( //
-        e.star() //
-            .filter(c -> !"BINARY LARGE OBJECT".equals(c.getType()) && !"CHARACTER LARGE OBJECT".equals(c.getType())) //
-            .as(c -> {
-              return Alias.property("emp", c.getProperty());
-            }), //
-        b.star().as(c -> Alias.literal(("bc_" + c.getName()).toLowerCase()))) //
-        .from(e) //
-        .join(b, b.itemName.eq(e.name)) //
-        .where(e.name.like("A%"));
-    System.out.println("PREVIEW: " + q.getPreview());
-    List<Row> rows = q.execute();
-
-    System.out.println("Batches with names that start with 'A':");
-    for (Row r : rows) {
-      System.out.println(r);
-    }
+//    BatchTable b = BatchDAO.newTable();
+//    EmployeeTable e = EmployeeDAO.newTable();
+//
+//    ExecutableSelect<Row> q = this.sql.select( //
+//        e.star() //
+//            .filter(c -> !"BINARY LARGE OBJECT".equals(c.getType()) && !"CHARACTER LARGE OBJECT".equals(c.getType())) //
+//            .as(c -> {
+//              return Alias.property("emp", c.getProperty());
+//            }), //
+//        b.star().as(c -> Alias.literal(("bc_" + c.getName()).toLowerCase()))) //
+//        .from(e) //
+//        .join(b, b.itemName.eq(e.name)) //
+//        .where(e.name.like("A%"));
+//    System.out.println("PREVIEW: " + q.getPreview());
+//    List<Row> rows = q.execute();
+//
+//    System.out.println("Batches with names that start with 'A':");
+//    for (Row r : rows) {
+//      System.out.println(r);
+//    }
 
 //    CompanyTable c = CompanyDAO.newTable();
 //

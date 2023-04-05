@@ -16,6 +16,9 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import app.daos.primitives.AbstractBranchVO;
 import app.daos.BranchVO;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
@@ -28,6 +31,8 @@ import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
@@ -58,7 +63,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // select by primary key
 
-  public app.daos.BranchVO selectByPK(final java.lang.Integer branchId) {
+  public app.daos.BranchVO select(final java.lang.Integer branchId) {
     if (branchId == null)
       return null;
     app.daos.BranchVO vo = new app.daos.BranchVO();
@@ -70,14 +75,14 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app.daos.BranchVO> selectByExample(final app.daos.primitives.AbstractBranchVO example, final BranchOrderBy... orderBies)
+  public List<app.daos.BranchVO> select(final app.daos.primitives.AbstractBranchVO example, final BranchOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractBranchVO, BranchOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app.daos.primitives.branch.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.BranchVO> selectByExampleCursor(final app.daos.primitives.AbstractBranchVO example, final BranchOrderBy... orderBies)
+  public Cursor<app.daos.BranchVO> selectCursor(final app.daos.primitives.AbstractBranchVO example, final BranchOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractBranchVO, BranchOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
@@ -86,7 +91,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.BranchVO> selectByCriteria(final BranchDAO.BranchTable from,
+  public CriteriaWherePhase<app.daos.BranchVO> select(final BranchDAO.BranchTable from,
       final Predicate predicate) {
     return new CriteriaWherePhase<app.daos.BranchVO>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "app.daos.primitives.branch.selectByCriteria");
@@ -116,23 +121,57 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   // delete by PK
 
-  public int delete(final app.daos.BranchVO vo) {
+  public int delete(final java.lang.Integer branchId) {
+    if (branchId == null) return 0;
+    app.daos.BranchVO vo = new app.daos.BranchVO();
+    vo.setBranchId(branchId);
     if (vo.branchId == null) return 0;
     return this.sqlSession.delete("app.daos.primitives.branch.deleteByPK", vo);
   }
 
   // update by example
 
-  public int updateByExample(final app.daos.primitives.AbstractBranchVO example, final app.daos.primitives.AbstractBranchVO updateValues) {
+  public int update(final app.daos.primitives.AbstractBranchVO example, final app.daos.primitives.AbstractBranchVO updateValues) {
     UpdateByExampleDao<app.daos.primitives.AbstractBranchVO> fvd = //
       new UpdateByExampleDao<app.daos.primitives.AbstractBranchVO>(example, updateValues);
     return this.sqlSession.update("app.daos.primitives.branch.updateByExample", fvd);
   }
 
+  // update by criteria
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBranchVO updateValues, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getBranchId() != null) values.put("branch_id", updateValues.getBranchId());
+    if (updateValues.getBranchName() != null) values.put("branch_name", updateValues.getBranchName());
+    return new UpdateSetCompletePhase(BranchDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.branch.updateByCriteria", predicate, values);
+  }
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractBranchVO updateValues, final BranchDAO.BranchTable tableOrView, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getBranchId() != null) values.put("branch_id", updateValues.getBranchId());
+    if (updateValues.getBranchName() != null) values.put("branch_name", updateValues.getBranchName());
+    return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.branch.updateByCriteria", predicate, values);
+  }
+
+
   // delete by example
 
-  public int deleteByExample(final app.daos.primitives.AbstractBranchVO example) {
+  public int delete(final app.daos.primitives.AbstractBranchVO example) {
     return this.sqlSession.delete("app.daos.primitives.branch.deleteByExample", example);
+  }
+
+  // delete by criteria
+
+  public DeleteWherePhase delete(final Predicate predicate) {
+    return new DeleteWherePhase(BranchDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.branch.deleteByCriteria", predicate);
+  }
+
+  public DeleteWherePhase delete(final BranchDAO.BranchTable from, final Predicate predicate) {
+    return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.branch.deleteByCriteria", predicate);
   }
 
   // DAO ordering

@@ -17,6 +17,9 @@ import org.hotrod.runtime.interfaces.Selectable;
 import app.daos.primitives.AbstractV2VO;
 import app.daos.V2VO;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
@@ -29,6 +32,8 @@ import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
@@ -59,14 +64,14 @@ public class V2DAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app.daos.V2VO> selectByExample(final app.daos.primitives.AbstractV2VO example, final V2OrderBy... orderBies)
+  public List<app.daos.V2VO> select(final app.daos.primitives.AbstractV2VO example, final V2OrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractV2VO, V2OrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app.daos.primitives.v2.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.V2VO> selectByExampleCursor(final app.daos.primitives.AbstractV2VO example, final V2OrderBy... orderBies)
+  public Cursor<app.daos.V2VO> selectCursor(final app.daos.primitives.AbstractV2VO example, final V2OrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractV2VO, V2OrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
@@ -75,7 +80,7 @@ public class V2DAO implements Serializable, ApplicationContextAware {
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.V2VO> selectByCriteria(final V2DAO.V2View from,
+  public CriteriaWherePhase<app.daos.V2VO> select(final V2DAO.V2View from,
       final Predicate predicate) {
     return new CriteriaWherePhase<app.daos.V2VO>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "app.daos.primitives.v2.selectByCriteria");
@@ -89,16 +94,47 @@ public class V2DAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int updateByExample(final app.daos.primitives.AbstractV2VO example, final app.daos.primitives.AbstractV2VO updateValues) {
+  public int update(final app.daos.primitives.AbstractV2VO example, final app.daos.primitives.AbstractV2VO updateValues) {
     UpdateByExampleDao<app.daos.primitives.AbstractV2VO> fvd = //
       new UpdateByExampleDao<app.daos.primitives.AbstractV2VO>(example, updateValues);
     return this.sqlSession.update("app.daos.primitives.v2.updateByExample", fvd);
   }
 
+  // update by criteria
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractV2VO updateValues, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    return new UpdateSetCompletePhase(V2DAO.newView(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.v2.updateByCriteria", predicate, values);
+  }
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractV2VO updateValues, final V2DAO.V2View tableOrView, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.v2.updateByCriteria", predicate, values);
+  }
+
+
   // delete by example
 
-  public int deleteByExample(final app.daos.primitives.AbstractV2VO example) {
+  public int delete(final app.daos.primitives.AbstractV2VO example) {
     return this.sqlSession.delete("app.daos.primitives.v2.deleteByExample", example);
+  }
+
+  // delete by criteria
+
+  public DeleteWherePhase delete(final Predicate predicate) {
+    return new DeleteWherePhase(V2DAO.newView(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.v2.deleteByCriteria", predicate);
+  }
+
+  public DeleteWherePhase delete(final V2DAO.V2View from, final Predicate predicate) {
+    return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.v2.deleteByCriteria", predicate);
   }
 
   // DAO ordering

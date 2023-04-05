@@ -16,6 +16,9 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import app.daos.primitives.AbstractAccountVO;
 import app.daos.AccountVO;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
@@ -28,6 +31,8 @@ import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
@@ -58,7 +63,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // select by primary key
 
-  public app.daos.AccountVO selectByPK(final java.lang.Integer id) {
+  public app.daos.AccountVO select(final java.lang.Integer id) {
     if (id == null)
       return null;
     app.daos.AccountVO vo = new app.daos.AccountVO();
@@ -70,14 +75,14 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app.daos.AccountVO> selectByExample(final app.daos.primitives.AbstractAccountVO example, final AccountOrderBy... orderBies)
+  public List<app.daos.AccountVO> select(final app.daos.primitives.AbstractAccountVO example, final AccountOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractAccountVO, AccountOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("app.daos.primitives.account.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.AccountVO> selectByExampleCursor(final app.daos.primitives.AbstractAccountVO example, final AccountOrderBy... orderBies)
+  public Cursor<app.daos.AccountVO> selectCursor(final app.daos.primitives.AbstractAccountVO example, final AccountOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractAccountVO, AccountOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
@@ -86,7 +91,7 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.AccountVO> selectByCriteria(final AccountDAO.AccountTable from,
+  public CriteriaWherePhase<app.daos.AccountVO> select(final AccountDAO.AccountTable from,
       final Predicate predicate) {
     return new CriteriaWherePhase<app.daos.AccountVO>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "app.daos.primitives.account.selectByCriteria");
@@ -116,23 +121,57 @@ public class AccountDAO implements Serializable, ApplicationContextAware {
 
   // delete by PK
 
-  public int delete(final app.daos.AccountVO vo) {
+  public int delete(final java.lang.Integer id) {
+    if (id == null) return 0;
+    app.daos.AccountVO vo = new app.daos.AccountVO();
+    vo.setId(id);
     if (vo.id == null) return 0;
     return this.sqlSession.delete("app.daos.primitives.account.deleteByPK", vo);
   }
 
   // update by example
 
-  public int updateByExample(final app.daos.primitives.AbstractAccountVO example, final app.daos.primitives.AbstractAccountVO updateValues) {
+  public int update(final app.daos.primitives.AbstractAccountVO example, final app.daos.primitives.AbstractAccountVO updateValues) {
     UpdateByExampleDao<app.daos.primitives.AbstractAccountVO> fvd = //
       new UpdateByExampleDao<app.daos.primitives.AbstractAccountVO>(example, updateValues);
     return this.sqlSession.update("app.daos.primitives.account.updateByExample", fvd);
   }
 
+  // update by criteria
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractAccountVO updateValues, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    return new UpdateSetCompletePhase(AccountDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.account.updateByCriteria", predicate, values);
+  }
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractAccountVO updateValues, final AccountDAO.AccountTable tableOrView, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.account.updateByCriteria", predicate, values);
+  }
+
+
   // delete by example
 
-  public int deleteByExample(final app.daos.primitives.AbstractAccountVO example) {
+  public int delete(final app.daos.primitives.AbstractAccountVO example) {
     return this.sqlSession.delete("app.daos.primitives.account.deleteByExample", example);
+  }
+
+  // delete by criteria
+
+  public DeleteWherePhase delete(final Predicate predicate) {
+    return new DeleteWherePhase(AccountDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.account.deleteByCriteria", predicate);
+  }
+
+  public DeleteWherePhase delete(final AccountDAO.AccountTable from, final Predicate predicate) {
+    return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
+      "app.daos.primitives.account.deleteByCriteria", predicate);
   }
 
   // DAO ordering
