@@ -167,30 +167,42 @@ The `<foreach>` tag iterated over a `java.util.Collection` or an array and inclu
 For example:
 
 ```xml
-<select method="findBranchClients" vo="ClientVO">
-  <parameter name="branchId" java-type="Long" />
-  <parameter name="types" java-type="java.util.List<String>" />
-  select * from client
-  where branch_id = #{branchId}
-    <complement>
-      and client_type in 
-      <foreach item="t" collection="types" open="(" separator=", " close=")">
-        '${t}'
-      </foreach>
-    </complement>
-</select> 
+<select method="findEmployees" vo="EmployeeVO">
+  <parameter name="ids" java-type="java.util.List&lt;Integer>" jdbc-type="NUMERIC" />
+  <parameter name="names" java-type="java.util.List&lt;String>" jdbc-type="VARCHAR" />
+  select *
+  from employee
+  <complement>
+    where branch_id in
+    <foreach item="id" collection="ids" open="(" separator=", " close=")">
+      #{id}
+    </foreach>
+    or name in
+    <foreach item="name" collection="names" open="(" separator=", " close=")">
+      #{name}
+    </foreach>
+  </complement>
+</select>
 ```
 
 If the supplied parameters at runtime are `branchId` (with a value of `475`) and `types` (as a List of three String elements `"F"`, `"V"`, and `"C2"`), the 
 query will be assembled as:
 
 ```sql
-select * from client
-where branch_id = 475
-  and client_type in ('F', 'V', 'C2')
+select * from employee
+where branch_id in (?, ?, ?)
+  and client_type in (?, ?)
 ```
 
-There's, of course, a performance penalty when using large collections or arrays. Also, in the case of large collections or arrays,
+The parameters that will be *applied* to the query could in this case be:
+
+```
+101 (Integer), 102 (Integer), 200 (Integer), Alice (String), Steve (String)
+```
+
+These case be displayed by enabling the DEBUG level in the logging of the query.
+
+Finally, there's of course a performance penalty when using large collections or arrays. Also, in the case of large collections or arrays,
 some database engines and JDBC drivers may place a limit in the size of the SQL statement. Most database engines will accept 
 1000-character long SQL statements, but may reject 10000-character long SQL statements.
 
