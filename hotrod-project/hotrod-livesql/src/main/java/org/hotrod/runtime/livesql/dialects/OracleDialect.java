@@ -228,6 +228,15 @@ public class OracleDialect extends SQLDialect {
 
       // Arithmetic functions
 
+      @Override
+      public void remainder(final QueryWriter w, final NumberExpression a, final NumberExpression b) {
+        w.write("mod(");
+        a.renderTo(w);
+        w.write(", ");
+        b.renderTo(w);
+        w.write(")");
+      }
+
       // String functions
 
       @Override

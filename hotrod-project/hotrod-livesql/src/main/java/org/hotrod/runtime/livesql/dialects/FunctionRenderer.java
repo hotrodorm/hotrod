@@ -58,6 +58,10 @@ public abstract class FunctionRenderer {
     }
   }
 
+  public void remainder(final QueryWriter w, final NumberExpression a, final NumberExpression b) {
+    this.write(w, "%", a, b);
+  }
+
   public void round(final QueryWriter w, final NumberExpression x, final NumberExpression places) {
     if (places == null) {
       this.write(w, "round", x);
@@ -171,6 +175,12 @@ public abstract class FunctionRenderer {
       expr.renderTo(w);
     }
     w.write(")");
+  }
+
+  protected void write(final QueryWriter w, final String operator, final Expression a, final Expression b) {
+    a.renderTo(w);
+    w.write(" % ");
+    b.renderTo(w);
   }
 
   protected <T extends Expression> void write(final QueryWriter w, final String function, final List<T> x) {
