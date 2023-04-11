@@ -105,11 +105,11 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   public app.daos.EmployeeVO insert(final app.daos.primitives.AbstractEmployeeVO vo) {
     String id = "app.daos.primitives.employee.insert";
-    int rows = this.sqlSession.insert(id, vo);
+    this.sqlSession.insert(id, vo);
     app.daos.EmployeeVO mo = new app.daos.EmployeeVO();
     mo.setId(vo.getId());
     mo.setName(vo.getName());
-    mo.setBranchId(vo.getBranchId());
+    mo.setSalary(vo.getSalary());
     return mo;
   }
 
@@ -144,7 +144,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
     if (updateValues.getName() != null) values.put("name", updateValues.getName());
-    if (updateValues.getBranchId() != null) values.put("branch_id", updateValues.getBranchId());
+    if (updateValues.getSalary() != null) values.put("salary", updateValues.getSalary());
     return new UpdateSetCompletePhase(EmployeeDAO.newTable(), this.liveSQLDialect, this.sqlSession,
       "app.daos.primitives.employee.updateByCriteria", predicate, values);
   }
@@ -153,7 +153,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
     if (updateValues.getName() != null) values.put("name", updateValues.getName());
-    if (updateValues.getBranchId() != null) values.put("branch_id", updateValues.getBranchId());
+    if (updateValues.getSalary() != null) values.put("salary", updateValues.getSalary());
     return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
       "app.daos.primitives.employee.updateByCriteria", predicate, values);
   }
@@ -181,18 +181,18 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   public enum EmployeeOrderBy implements OrderBy {
 
-    ID("public.employee", "id", true), //
-    ID$DESC("public.employee", "id", false), //
-    NAME("public.employee", "name", true), //
-    NAME$DESC("public.employee", "name", false), //
-    NAME$CASEINSENSITIVE("public.employee", "lower(name)", true), //
-    NAME$CASEINSENSITIVE_STABLE_FORWARD("public.employee", "lower(name), name", true), //
-    NAME$CASEINSENSITIVE_STABLE_REVERSE("public.employee", "lower(name), name", false), //
-    NAME$DESC_CASEINSENSITIVE("public.employee", "lower(name)", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("public.employee", "lower(name), name", false), //
-    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("public.employee", "lower(name), name", true), //
-    BRANCH_ID("public.employee", "branch_id", true), //
-    BRANCH_ID$DESC("public.employee", "branch_id", false);
+    ID("employee", "id", true), //
+    ID$DESC("employee", "id", false), //
+    NAME("employee", "name", true), //
+    NAME$DESC("employee", "name", false), //
+    NAME$CASEINSENSITIVE("employee", "lower(name)", true), //
+    NAME$CASEINSENSITIVE_STABLE_FORWARD("employee", "lower(name), name", true), //
+    NAME$CASEINSENSITIVE_STABLE_REVERSE("employee", "lower(name), name", false), //
+    NAME$DESC_CASEINSENSITIVE("employee", "lower(name)", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("employee", "lower(name), name", false), //
+    NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("employee", "lower(name), name", true), //
+    SALARY("employee", "salary", true), //
+    SALARY$DESC("employee", "salary", false);
 
     private EmployeeOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -235,32 +235,32 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
     public NumberColumn id;
     public StringColumn name;
-    public NumberColumn branchId;
+    public NumberColumn salary;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id, this.name, this.branchId);
+      return new AllColumns(this, this.id, this.name, this.salary);
     }
 
     // Constructors
 
     EmployeeTable() {
-      super(null, "PUBLIC", "EMPLOYEE", "Table", null);
+      super(null, null, "EMPLOYEE", "Table", null);
       initialize();
     }
 
     EmployeeTable(final String alias) {
-      super(null, "PUBLIC", "EMPLOYEE", "Table", alias);
+      super(null, null, "EMPLOYEE", "Table", alias);
       initialize();
     }
 
     // Initialization
 
     private void initialize() {
-      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
-      this.name = new StringColumn(this, "NAME", "name", "CHARACTER VARYING", 20, 0);
-      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0);
+      this.id = new NumberColumn(this, "ID", "id", "NUMBER", 6, 0);
+      this.name = new StringColumn(this, "NAME", "name", "VARCHAR2", 20, null);
+      this.salary = new NumberColumn(this, "SALARY", "salary", "NUMBER", 8, 0);
     }
 
   }

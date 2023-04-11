@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+    
+    <!-- 
+      <discover>
+        <current-schema />
+        <schema name="schema2" />
+        <schema name="schema3" />
+      </discover>
+       -->
+      <daos package="app.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract"
+        abstract-vo-suffix="VO" />
+      <mappers dir="mappers" />
+    </mybatis-spring>
+  </generators>
+
+  <table name="employee" />
+
+</hotrod>

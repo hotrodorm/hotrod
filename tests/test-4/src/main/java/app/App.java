@@ -1,7 +1,10 @@
 package app;
 
+import java.util.List;
+
 import org.hotrod.runtime.livesql.LiveSQL;
-import org.hotrod.runtime.livesql.queries.ExecutableQuery;
+import org.hotrod.runtime.livesql.Row;
+import org.hotrod.runtime.livesql.queries.select.ExecutableSelect;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,9 +15,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import app.daos.AccountVO;
-import app.daos.primitives.AccountDAO;
-import app.daos.primitives.AccountDAO.AccountTable;
+import app.daos.primitives.EmployeeDAO;
+import app.daos.primitives.EmployeeDAO.EmployeeTable;
 import app.daos.primitives.StockDAO;
 import app.daos.primitives.StockDAO.StockTable;
 
@@ -26,7 +28,7 @@ import app.daos.primitives.StockDAO.StockTable;
 public class App {
 
   @Autowired
-  private AccountDAO accountDAO;
+  private EmployeeDAO employeeDAO;
 
   @Autowired
   private LiveSQL sql;
@@ -47,23 +49,37 @@ public class App {
 
   private void searching() {
 
-    // Use CRUD to delete account #123
+//    // Use CRUD to delete account #123
+//
+//    AccountTable at = AccountDAO.newTable();
+//    AccountVO updateValues = new AccountVO();
+//    updateValues.setName("Brand NEW name!");
+//    ExecutableQuery q = this.accountDAO.update(updateValues, at.id.eq(123));
+//    System.out.println("PREVIEW: " + q.getPreview());
+//    q.execute();
+//
+//    // Use CRUD to search for account #123
+//
+//    Integer id = 123;
+//    AccountVO a = this.accountDAO.select(id);
+//    if (a != null) {
+//      System.out.println("Account #" + id + " Name: " + a.getName());
+//    } else {
+//      System.out.println("Account #" + id + " not found.");
+//    }
 
-    AccountTable at = AccountDAO.newTable();
-    AccountVO updateValues = new AccountVO();
-    updateValues.setName("Brand NEW name!");
-    ExecutableQuery q = this.accountDAO.update(updateValues, at.id.eq(123));
+    EmployeeTable e = this.employeeDAO.newTable("e");
+
+    ExecutableSelect<Row> q = this.sql //
+        .select(e.star(), sql.val(13).remainder(5).as("rem")) //
+        .from(e) //
+    ;
     System.out.println("PREVIEW: " + q.getPreview());
-    q.execute();
+    List<Row> rows = q.execute();
 
-    // Use CRUD to search for account #123
-
-    Integer id = 123;
-    AccountVO a = this.accountDAO.select(id);
-    if (a != null) {
-      System.out.println("Account #" + id + " Name: " + a.getName());
-    } else {
-      System.out.println("Account #" + id + " not found.");
+    System.out.println("Batches with names that start with 'A':");
+    for (Row r : rows) {
+      System.out.println(r);
     }
 
     // Use LiveSQL to search for companies which name start with 'A'
