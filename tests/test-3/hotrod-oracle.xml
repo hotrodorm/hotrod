@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
+
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+      <daos package="com.myapp.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract"
+        abstract-vo-suffix="VO" />
+      <mappers dir="mappers" />
+    </mybatis-spring>
+  </generators>
+
+  <table name="employee" />
+
+</hotrod>

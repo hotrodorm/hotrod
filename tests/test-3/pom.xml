@@ -122,6 +122,7 @@
             <artifactId>hotrod-maven-plugin</artifactId>
             <version>${hotrod.version}</version>
             <configuration>
+              <generator>MyBatis-Spring</generator>
               <configfile>./hotrod-postgresql.xml</configfile>
               <jdbcdriverclass>org.postgresql.Driver</jdbcdriverclass>
               <jdbcurl>jdbc:postgresql://192.168.56.214:5432/hotrod</jdbcurl>
@@ -160,6 +161,7 @@
             <artifactId>hotrod-maven-plugin</artifactId>
             <version>${hotrod.version}</version>
             <configuration>
+              <generator>MyBatis-Spring</generator>
               <configfile>./hotrod-mysql.xml</configfile>
               <jdbcdriverclass>com.mysql.cj.jdbc.Driver</jdbcdriverclass>
               <jdbcurl>jdbc:mysql://192.168.56.29:3306/hotrod?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;useSSL=false</jdbcurl>
@@ -172,6 +174,45 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>8.0.28</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+
+    </profile>
+
+    <profile>
+      <id>oracle</id>
+
+      <dependencies>
+        <dependency>
+          <groupId>com.oracle.ojdbc</groupId>
+          <artifactId>ojdbc8</artifactId>
+          <version>19.3.0.0</version>
+        </dependency>
+      </dependencies>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.hotrodorm.hotrod</groupId>
+            <artifactId>hotrod-maven-plugin</artifactId>
+            <version>${hotrod.version}</version>
+            <configuration>
+              <generator>MyBatis-Spring</generator>
+              <configfile>./hotrod-oracle.xml</configfile>
+              <jdbcdriverclass>oracle.jdbc.driver.OracleDriver</jdbcdriverclass>
+              <jdbcurl>jdbc:oracle:thin:@192.168.56.95:1521:orcl</jdbcurl>
+              <jdbcusername>user1</jdbcusername>
+              <jdbcpassword>pass1</jdbcpassword>
+              <jdbcschema>USER1</jdbcschema>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>com.oracle.ojdbc</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>19.3.0.0</version>
               </dependency>
             </dependencies>
           </plugin>

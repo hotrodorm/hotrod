@@ -14,10 +14,8 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
-import com.myapp.daos.primitives.EmployeeVO;
-import com.myapp.daos.EmployeeMODEL;
-import com.myapp.daos.BranchMODEL;
-import com.myapp.daos.primitives.BranchDAO;
+import com.myapp.daos.primitives.AbstractEmployeeVO;
+import com.myapp.daos.EmployeeVO;
 
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.SQLDialect;
@@ -49,10 +47,6 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   @Autowired
   private SqlSession sqlSession;
 
-  @Lazy
-  @Autowired
-  private BranchDAO branchDAO;
-
   @Autowired
   private SQLDialect sqlDialect;
 
@@ -65,22 +59,20 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   // Row Parser
 
-  public static com.myapp.daos.EmployeeMODEL parseRow(Map<String, Object> m) {
-    com.myapp.daos.EmployeeMODEL mo = new com.myapp.daos.EmployeeMODEL();
+  public static com.myapp.daos.EmployeeVO parseRow(Map<String, Object> m) {
+    com.myapp.daos.EmployeeVO mo = new com.myapp.daos.EmployeeVO();
     mo.setId((java.lang.Integer) m.get("id"));
     mo.setName((java.lang.String) m.get("name"));
-    mo.setPhoto((byte[]) m.get("photo"));
-    mo.setBio((java.lang.String) m.get("bio"));
-    mo.setBranchId((java.lang.Integer) m.get("branchId"));
+    mo.setSalary((java.lang.Integer) m.get("salary"));
     return mo;
   }
 
   // select by primary key
 
-  public com.myapp.daos.EmployeeMODEL selectByPK(final java.lang.Integer id) {
+  public com.myapp.daos.EmployeeVO selectByPK(final java.lang.Integer id) {
     if (id == null)
       return null;
-    com.myapp.daos.EmployeeMODEL vo = new com.myapp.daos.EmployeeMODEL();
+    com.myapp.daos.EmployeeVO vo = new com.myapp.daos.EmployeeVO();
     vo.setId(id);
     return this.sqlSession.selectOne("com.myapp.daos.primitives.employee.selectByPK", vo);
   }
@@ -89,103 +81,65 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<com.myapp.daos.EmployeeMODEL> selectByExample(final com.myapp.daos.primitives.EmployeeVO example, final EmployeeOrderBy... orderBies)
+  public List<com.myapp.daos.EmployeeVO> selectByExample(final com.myapp.daos.primitives.AbstractEmployeeVO example, final EmployeeOrderBy... orderBies)
       {
-    DaoWithOrder<com.myapp.daos.primitives.EmployeeVO, EmployeeOrderBy> dwo = //
+    DaoWithOrder<com.myapp.daos.primitives.AbstractEmployeeVO, EmployeeOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("com.myapp.daos.primitives.employee.selectByExample", dwo);
   }
 
-  public Cursor<com.myapp.daos.EmployeeMODEL> selectByExampleCursor(final com.myapp.daos.primitives.EmployeeVO example, final EmployeeOrderBy... orderBies)
+  public Cursor<com.myapp.daos.EmployeeVO> selectByExampleCursor(final com.myapp.daos.primitives.AbstractEmployeeVO example, final EmployeeOrderBy... orderBies)
       {
-    DaoWithOrder<com.myapp.daos.primitives.EmployeeVO, EmployeeOrderBy> dwo = //
+    DaoWithOrder<com.myapp.daos.primitives.AbstractEmployeeVO, EmployeeOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return new MyBatisCursor<com.myapp.daos.EmployeeMODEL>(this.sqlSession.selectCursor("com.myapp.daos.primitives.employee.selectByExample", dwo));
+    return new MyBatisCursor<com.myapp.daos.EmployeeVO>(this.sqlSession.selectCursor("com.myapp.daos.primitives.employee.selectByExample", dwo));
   }
 
   // select by criteria
 
-  public CriteriaWherePhase<com.myapp.daos.EmployeeMODEL> selectByCriteria(final EmployeeDAO.EmployeeTable from,
+  public CriteriaWherePhase<com.myapp.daos.EmployeeVO> selectByCriteria(final EmployeeDAO.EmployeeTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<com.myapp.daos.EmployeeMODEL>(from, this.sqlDialect, this.sqlSession,
+    return new CriteriaWherePhase<com.myapp.daos.EmployeeVO>(from, this.sqlDialect, this.sqlSession,
         predicate, "com.myapp.daos.primitives.employee.selectByCriteria");
   }
 
-  // select parent(s) by FKs
-
-  public SelectParentBranchPhase selectParentBranchOf(final EmployeeMODEL vo) {
-    return new SelectParentBranchPhase(vo);
-  }
-
-  public class SelectParentBranchPhase {
-
-    private EmployeeMODEL vo;
-
-    SelectParentBranchPhase(final EmployeeMODEL vo) {
-      this.vo = vo;
-    }
-
-    public SelectParentBranchFromBranchIdPhase fromBranchId() {
-      return new SelectParentBranchFromBranchIdPhase(this.vo);
-    }
-
-  }
-
-  public class SelectParentBranchFromBranchIdPhase {
-
-    private EmployeeMODEL vo;
-
-    SelectParentBranchFromBranchIdPhase(final EmployeeMODEL vo) {
-      this.vo = vo;
-    }
-
-    public BranchMODEL toBranchId() {
-      return branchDAO.selectByPK(this.vo.branchId);
-    }
-
-  }
-
-  // select children by FKs: no exported FKs found -- skipped
-
   // insert
 
-  public com.myapp.daos.EmployeeMODEL insert(final com.myapp.daos.primitives.EmployeeVO vo) {
+  public com.myapp.daos.EmployeeVO insert(final com.myapp.daos.primitives.AbstractEmployeeVO vo) {
     String id = "com.myapp.daos.primitives.employee.insert";
-    int rows = this.sqlSession.insert(id, vo);
-    com.myapp.daos.EmployeeMODEL mo = new com.myapp.daos.EmployeeMODEL();
+    this.sqlSession.insert(id, vo);
+    com.myapp.daos.EmployeeVO mo = new com.myapp.daos.EmployeeVO();
     mo.setId(vo.getId());
     mo.setName(vo.getName());
-    mo.setPhoto(vo.getPhoto());
-    mo.setBio(vo.getBio());
-    mo.setBranchId(vo.getBranchId());
+    mo.setSalary(vo.getSalary());
     return mo;
   }
 
   // update by PK
 
-  public int update(final com.myapp.daos.EmployeeMODEL vo) {
+  public int update(final com.myapp.daos.EmployeeVO vo) {
     if (vo.id == null) return 0;
     return this.sqlSession.update("com.myapp.daos.primitives.employee.updateByPK", vo);
   }
 
   // delete by PK
 
-  public int delete(final com.myapp.daos.EmployeeMODEL vo) {
+  public int delete(final com.myapp.daos.EmployeeVO vo) {
     if (vo.id == null) return 0;
     return this.sqlSession.delete("com.myapp.daos.primitives.employee.deleteByPK", vo);
   }
 
   // update by example
 
-  public int updateByExample(final com.myapp.daos.primitives.EmployeeVO example, final com.myapp.daos.primitives.EmployeeVO updateValues) {
-    UpdateByExampleDao<com.myapp.daos.primitives.EmployeeVO> fvd = //
-      new UpdateByExampleDao<com.myapp.daos.primitives.EmployeeVO>(example, updateValues);
+  public int updateByExample(final com.myapp.daos.primitives.AbstractEmployeeVO example, final com.myapp.daos.primitives.AbstractEmployeeVO updateValues) {
+    UpdateByExampleDao<com.myapp.daos.primitives.AbstractEmployeeVO> fvd = //
+      new UpdateByExampleDao<com.myapp.daos.primitives.AbstractEmployeeVO>(example, updateValues);
     return this.sqlSession.update("com.myapp.daos.primitives.employee.updateByExample", fvd);
   }
 
   // delete by example
 
-  public int deleteByExample(final com.myapp.daos.primitives.EmployeeVO example) {
+  public int deleteByExample(final com.myapp.daos.primitives.AbstractEmployeeVO example) {
     return this.sqlSession.delete("com.myapp.daos.primitives.employee.deleteByExample", example);
   }
 
@@ -203,18 +157,8 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     NAME$DESC_CASEINSENSITIVE("employee", "lower(name)", false), //
     NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("employee", "lower(name), name", false), //
     NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("employee", "lower(name), name", true), //
-    PHOTO("employee", "photo", true), //
-    PHOTO$DESC("employee", "photo", false), //
-    BIO("employee", "bio", true), //
-    BIO$DESC("employee", "bio", false), //
-    BIO$CASEINSENSITIVE("employee", "lower(bio)", true), //
-    BIO$CASEINSENSITIVE_STABLE_FORWARD("employee", "lower(bio), bio", true), //
-    BIO$CASEINSENSITIVE_STABLE_REVERSE("employee", "lower(bio), bio", false), //
-    BIO$DESC_CASEINSENSITIVE("employee", "lower(bio)", false), //
-    BIO$DESC_CASEINSENSITIVE_STABLE_FORWARD("employee", "lower(bio), bio", false), //
-    BIO$DESC_CASEINSENSITIVE_STABLE_REVERSE("employee", "lower(bio), bio", true), //
-    BRANCH_ID("employee", "branch_id", true), //
-    BRANCH_ID$DESC("employee", "branch_id", false);
+    SALARY("employee", "salary", true), //
+    SALARY$DESC("employee", "salary", false);
 
     private EmployeeOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -257,14 +201,12 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
     public NumberColumn id;
     public StringColumn name;
-    public ByteArrayColumn photo;
-    public StringColumn bio;
-    public NumberColumn branchId;
+    public NumberColumn salary;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id, this.name, this.photo, this.bio, this.branchId);
+      return new AllColumns(this, this.id, this.name, this.salary);
     }
 
     // Constructors
@@ -282,11 +224,9 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     // Initialization
 
     private void initialize() {
-      this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
-      this.name = new StringColumn(this, "NAME", "name", "CHARACTER VARYING", 20, 0);
-      this.photo = new ByteArrayColumn(this, "PHOTO", "photo", "BINARY LARGE OBJECT", 2147483647, 0);
-      this.bio = new StringColumn(this, "BIO", "bio", "CHARACTER LARGE OBJECT", 2147483647, 0);
-      this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0);
+      this.id = new NumberColumn(this, "ID", "id", "NUMBER", 6, 0);
+      this.name = new StringColumn(this, "NAME", "name", "VARCHAR2", 20, null);
+      this.salary = new NumberColumn(this, "SALARY", "salary", "NUMBER", 8, 0);
     }
 
   }
