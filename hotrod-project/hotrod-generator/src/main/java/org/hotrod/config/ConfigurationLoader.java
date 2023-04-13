@@ -101,6 +101,9 @@ public class ConfigurationLoader {
       unmarshaller.setSchema(schema);
 
       XMLInputFactory xif = XMLInputFactory.newFactory();
+      xif.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      xif.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+
       FileInputStream xml = new FileInputStream(f);
       xsr = xif.createXMLStreamReader(xml);
       LocationListener locationListener = new LocationListener(f, xsr);
@@ -232,6 +235,9 @@ public class ConfigurationLoader {
       unmarshaller.setSchema(schema);
 
       XMLInputFactory xif = XMLInputFactory.newFactory();
+      xif.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      xif.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+
       FileInputStream xml = new FileInputStream(f);
       xsr = xif.createXMLStreamReader(xml);
       LocationListener locationListener = new LocationListener(f, xsr);
@@ -253,8 +259,6 @@ public class ConfigurationLoader {
     }
 
     // Parse the configuration file
-
-    Reader reader = null;
 
     try {
 
@@ -294,14 +298,6 @@ public class ConfigurationLoader {
       log.debug("********** exception in tag: " + e.getContainerTag().getSourceLocation());
       throw new ControlledException(e.getContainerTag().getSourceLocation(),
           "Invalid configuration file '" + f.getPath() + "': this fragment file has already been loaded once.");
-    } finally {
-      if (reader != null) {
-        try {
-          reader.close();
-        } catch (IOException e) {
-          throw new UncontrolledException("Could not close configuration file.", e);
-        }
-      }
     }
 
   }

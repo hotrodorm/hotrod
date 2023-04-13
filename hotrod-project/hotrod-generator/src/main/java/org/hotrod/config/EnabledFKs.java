@@ -84,6 +84,9 @@ public class EnabledFKs {
       unmarshaller.setSchema(schema);
 
       XMLInputFactory xif = XMLInputFactory.newFactory();
+      xif.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      xif.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+
       FileInputStream xml = new FileInputStream(f);
       xsr = xif.createXMLStreamReader(xml);
       LocationListener locationListener = new LocationListener(f, xsr);
