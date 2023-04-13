@@ -182,8 +182,6 @@ Tell HotRod how you want the generation to work. Create the file `hotrod.xml` an
 
 ```xml
 <?xml version="1.0"?>
-<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
-
 <hotrod>
 
   <generators>
