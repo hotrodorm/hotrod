@@ -14,7 +14,7 @@ public class ClassPackage implements Serializable {
 
   private static final Logger log = LogManager.getLogger(ClassPackage.class);
 
-  private static final String CHUNK_PATTERN = "[a-zA-Z][a-zA-Z$_0-9]*";
+  private static final String CHUNK_PATTERN = "[a-zA-Z][a-zA-Z$_0-9]*+";
   private static final String PACKAGE_PATTERN = CHUNK_PATTERN + "(\\." + CHUNK_PATTERN + ")*";
 
   private String pkg;
