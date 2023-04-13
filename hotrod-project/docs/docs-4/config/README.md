@@ -42,8 +42,6 @@ The configuration file takes the general form:
 
 ```xml
 <?xml version="1.0"?>
-<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
-
 <hotrod>
 
   <generators />

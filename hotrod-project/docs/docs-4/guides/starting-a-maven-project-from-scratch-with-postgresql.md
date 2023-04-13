@@ -202,8 +202,6 @@ your choosing and with any name) and add:
 
 ```xml
 <?xml version="1.0"?>
-<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
-
 <hotrod>
 
   <generators>

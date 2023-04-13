@@ -227,8 +227,6 @@ Tell HotRod how you want the generation to work for each database. Create the fi
 
 ```xml
 <?xml version="1.0"?>
-<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
-
 <hotrod>
 
   <generators>
@@ -249,8 +247,6 @@ Then, create the file `second.xml` for the second database:
 
 ```xml
 <?xml version="1.0"?>
-<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
-
 <hotrod>
 
   <generators>

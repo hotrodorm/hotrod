@@ -13,8 +13,6 @@ A fragment configuration file takes the general form:
 
 ```xml
 <?xml version="1.0"?>
-<!DOCTYPE hotrod-fragment>
-
 <hotrod-fragment>
 
   <table />
