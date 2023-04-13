@@ -5,7 +5,7 @@ import org.hotrod.runtime.livesql.queries.select.QueryWriter;
 
 public class StringConstant extends StringExpression {
 
-  private static final int MAX_LITERAL_STRING_LENGTH = 250;
+  private static final int MAX_LITERAL_STRING_LENGTH = 100;
 
   private static final String PRINTABLE_ASCII_PATTERN = "[ -~]*";
 
