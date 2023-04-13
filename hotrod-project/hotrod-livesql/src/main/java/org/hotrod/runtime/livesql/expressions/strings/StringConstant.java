@@ -7,12 +7,7 @@ public class StringConstant extends StringExpression {
 
   private static final int MAX_LITERAL_STRING_LENGTH = 250;
 
-  // Control characters (x01 - x1f)
-  // Single quotes
-  // Delete (x7f)
-  // Control characters (x80 - x9f)
-  // Double quotes
-  private static final String SQL_INJECTION_PATTERN = ".*[\\x01-\\x1f'\\x7f-\\x9f\"].*";
+  private static final String PRINTABLE_ASCII_PATTERN = "[ -~]*";
 
   // Properties
 
@@ -26,7 +21,7 @@ public class StringConstant extends StringExpression {
     if (value.length() > MAX_LITERAL_STRING_LENGTH) {
       this.parameterize = true;
     } else {
-      this.parameterize = value.matches(SQL_INJECTION_PATTERN);
+      this.parameterize = !value.matches(PRINTABLE_ASCII_PATTERN);
     }
     this.value = value;
   }
