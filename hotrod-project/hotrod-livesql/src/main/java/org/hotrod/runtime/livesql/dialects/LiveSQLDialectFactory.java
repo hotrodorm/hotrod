@@ -43,8 +43,8 @@ public class LiveSQLDialectFactory {
                   + liveSQLDialectMinorVersion);
         }
 
-        LiveSQLDialect sqlDialect = DesignatedLiveSQLDialect.resolveDesignatedDialect(liveSQLDialectName, liveSQLDialectVDatabaseName,
-            liveSQLDialectVersionString, majorVersion, minorVersion);
+        LiveSQLDialect sqlDialect = DesignatedLiveSQLDialect.resolveDesignatedDialect(liveSQLDialectName,
+            liveSQLDialectVDatabaseName, liveSQLDialectVersionString, majorVersion, minorVersion);
         return sqlDialect;
       } else {
         try {
@@ -114,42 +114,44 @@ public class LiveSQLDialectFactory {
   // Utilities
 
   private static LiveSQLDialect discoverFromDatasource(final DataSource dataSource) throws SQLException {
-    Connection conn = dataSource.getConnection();
-    DatabaseMetaData dm = conn.getMetaData();
+    try (Connection conn = dataSource.getConnection()) {
+      DatabaseMetaData dm = conn.getMetaData();
 
-    String name = dm.getDatabaseProductName();
-    String version = dm.getDatabaseProductVersion();
-    int majorVersion = dm.getDatabaseMajorVersion();
-    int minorVersion = dm.getDatabaseMinorVersion();
+      String name = dm.getDatabaseProductName();
+      String version = dm.getDatabaseProductVersion();
+      int majorVersion = dm.getDatabaseMajorVersion();
+      int minorVersion = dm.getDatabaseMinorVersion();
 
-    String uName = name.toUpperCase();
+      String uName = name.toUpperCase();
 
-    if (name.equalsIgnoreCase("ORACLE")) {
-      return new OracleDialect(true, name, version, majorVersion, minorVersion);
-    } else if (uName.startsWith("HSQL")) {
-      return new HyperSQLDialect(true, name, version, majorVersion, minorVersion);
-    } else if (uName.startsWith("H2")) {
-      return new H2Dialect(true, name, version, majorVersion, minorVersion);
-    } else if (uName.startsWith("MYSQL")) {
-      String productVersion = dm.getDatabaseProductVersion().toLowerCase();
-      if (productVersion != null && productVersion.contains("mariadb")) {
-        return new MariaDBDialect(true, name, version, majorVersion, minorVersion);
+      if (name.equalsIgnoreCase("ORACLE")) {
+        return new OracleDialect(true, name, version, majorVersion, minorVersion);
+      } else if (uName.startsWith("HSQL")) {
+        return new HyperSQLDialect(true, name, version, majorVersion, minorVersion);
+      } else if (uName.startsWith("H2")) {
+        return new H2Dialect(true, name, version, majorVersion, minorVersion);
+      } else if (uName.startsWith("MYSQL")) {
+        String productVersion = dm.getDatabaseProductVersion().toLowerCase();
+        if (productVersion != null && productVersion.contains("mariadb")) {
+          return new MariaDBDialect(true, name, version, majorVersion, minorVersion);
+        } else {
+          return new MySQLDialect(true, name, version, majorVersion, minorVersion);
+        }
+      } else if (uName.startsWith("ADAPTIVE SERVER ENTERPRISE")) {
+        return new SybaseASEDialect(true, name, version, majorVersion, minorVersion);
+      } else if (uName.startsWith("DB2")) {
+        return new DB2Dialect(true, name, version, majorVersion, minorVersion);
+      } else if (uName.startsWith("POSTGRESQL")) {
+        return new PostgreSQLDialect(true, name, version, majorVersion, minorVersion);
+      } else if (name.startsWith("Microsoft SQL Server")) {
+        return new SQLServerDialect(true, name, version, majorVersion, minorVersion);
+      } else if (uName.startsWith("APACHE DERBY")) {
+        return new DerbyDialect(true, name, version, majorVersion, minorVersion);
       } else {
-        return new MySQLDialect(true, name, version, majorVersion, minorVersion);
+        throw new SQLException(
+            "[" + LiveSQLDialectFactory.class.getSimpleName() + "] Could not resolve the SQL dialect. "
+                + "The database product reported by the JDBC driver '" + name + "' is not supported.");
       }
-    } else if (uName.startsWith("ADAPTIVE SERVER ENTERPRISE")) {
-      return new SybaseASEDialect(true, name, version, majorVersion, minorVersion);
-    } else if (uName.startsWith("DB2")) {
-      return new DB2Dialect(true, name, version, majorVersion, minorVersion);
-    } else if (uName.startsWith("POSTGRESQL")) {
-      return new PostgreSQLDialect(true, name, version, majorVersion, minorVersion);
-    } else if (name.startsWith("Microsoft SQL Server")) {
-      return new SQLServerDialect(true, name, version, majorVersion, minorVersion);
-    } else if (uName.startsWith("APACHE DERBY")) {
-      return new DerbyDialect(true, name, version, majorVersion, minorVersion);
-    } else {
-      throw new SQLException("[" + LiveSQLDialectFactory.class.getSimpleName() + "] Could not resolve the SQL dialect. "
-          + "The database product reported by the JDBC driver '" + name + "' is not supported.");
     }
   }
 

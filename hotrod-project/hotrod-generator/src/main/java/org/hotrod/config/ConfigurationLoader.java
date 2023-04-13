@@ -127,8 +127,6 @@ public class ConfigurationLoader {
 
     // Parse the configuration file
 
-    Reader reader = null;
-
     try {
 
       log.debug("[ Will parse ]");
@@ -194,14 +192,6 @@ public class ConfigurationLoader {
       log.debug("Throwable detected.", e);
       throw new ControlledException(e.getMessage());
 
-    } finally {
-      if (reader != null) {
-        try {
-          reader.close();
-        } catch (IOException e) {
-          throw new UncontrolledException("Could not close configuration file.", e);
-        }
-      }
     }
 
   }

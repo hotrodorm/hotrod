@@ -186,7 +186,7 @@ public final class JdbcUtils {
     if (rs.wasNull()) {
       throw new SQLException("Not null value expected on column " + col + ".");
     } else {
-      return stringToBoolean(value).booleanValue();
+      return "T".equals(value);
     }
   }
 

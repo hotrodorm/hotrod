@@ -81,11 +81,11 @@ public class TypeSolverTag extends AbstractConfigurationTag {
       Object result = null;
       try {
         result = w.getTestExpression().getValue(this.context, rc);
-        Boolean test = (Boolean) result;
-        if (test == null) {
+        if (result == null) {
           throw new UnresolvableDataTypeException(cm, "Could not evaluate <when> tag's test expression '" + w.getTest()
               + "': must return a boolean value but returned null");
         }
+        Boolean test = (Boolean) result;
         if (test) {
           if ("price".equals(cm.getColumnName()) && "product".equals(cm.getTableName())) {
             log.debug("w.getJDBCTypeOnWrite()=" + w.getJDBCTypeOnWrite());

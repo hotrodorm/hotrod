@@ -488,10 +488,12 @@ public class Id implements Comparable<Id> {
     StringBuilder sb = new StringBuilder();
     for (NamePart p : canonicalParts) {
       String st = sanitizeJava(p.getToken());
-      if (p.isAcronym()) {
-        sb.append(st.toUpperCase());
-      } else {
-        sb.append(SUtil.sentenceFormat(st.toLowerCase()));
+      if (st != null) {
+        if (p.isAcronym()) {
+          sb.append(st.toUpperCase());
+        } else {
+          sb.append(SUtil.sentenceFormat(st.toLowerCase()));
+        }
       }
     }
     String n = sb.toString();
@@ -506,16 +508,18 @@ public class Id implements Comparable<Id> {
     boolean first = true;
     for (NamePart p : canonicalParts) {
       String st = sanitizeJava(p.getToken());
-      if (first) {
-        sb.append(st.toLowerCase());
-      } else {
-        if (p.isAcronym()) {
-          sb.append(st.toUpperCase());
+      if (st != null) {
+        if (first) {
+          sb.append(st.toLowerCase());
         } else {
-          sb.append(SUtil.sentenceFormat(st.toLowerCase()));
+          if (p.isAcronym()) {
+            sb.append(st.toUpperCase());
+          } else {
+            sb.append(SUtil.sentenceFormat(st.toLowerCase()));
+          }
         }
+        first = false;
       }
-      first = false;
     }
     String n = sb.toString();
     if (!n.matches("[A-Za-z_].*")) {
@@ -529,11 +533,13 @@ public class Id implements Comparable<Id> {
     boolean first = true;
     for (NamePart p : canonicalParts) {
       String st = sanitizeJava(p.getToken());
-      if (!first) {
-        sb.append("_");
+      if (st != null) {
+        if (!first) {
+          sb.append("_");
+        }
+        sb.append(st.toUpperCase());
+        first = false;
       }
-      sb.append(st.toUpperCase());
-      first = false;
     }
     String n = sb.toString();
     if (!n.matches("[A-Za-z_].*")) {
@@ -547,11 +553,13 @@ public class Id implements Comparable<Id> {
     boolean first = true;
     for (NamePart p : canonicalParts) {
       String st = sanitizeJava(p.getToken());
-      if (!first) {
-        sb.append("-");
+      if (st != null) {
+        if (!first) {
+          sb.append("-");
+        }
+        sb.append(st.toLowerCase());
+        first = false;
       }
-      sb.append(st.toLowerCase());
-      first = false;
     }
     return sb.toString();
   }
@@ -671,12 +679,22 @@ public class Id implements Comparable<Id> {
     // equals
 
     @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + (acronym ? 1231 : 1237);
+      result = prime * result + ((token == null) ? 0 : token.hashCode());
+      return result;
+    }
+
+    @Override
     public boolean equals(final Object obj) {
-      log("NamePart.equals() 1");
-      if (obj == null) {
+      if (this == obj)
+        return true;
+      if (obj == null)
         return false;
-      }
-      log("NamePart.equals() 2");
+      if (getClass() != obj.getClass())
+        return false;
       // As a NamePart
       try {
         NamePart p = (NamePart) obj;

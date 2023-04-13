@@ -49,7 +49,7 @@ public final class DatabaseAdapterFactory {
         try {
           conn.close();
         } catch (SQLException e) {
-          throw new UncontrolledException("Could not close connection to database at URL: " + loc.getUrl(), e);
+          log.warn("Could not close connection to database at URL: " + loc.getUrl(), e);
         }
       }
     }

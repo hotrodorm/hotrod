@@ -105,8 +105,6 @@ public class EnabledFKs {
 
     // Parse the configuration file
 
-    Reader reader = null;
-
     try {
 
       log.debug("[ Will parse ]");
@@ -137,14 +135,6 @@ public class EnabledFKs {
         throw new ControlledException(loc, e.getMessage());
       }
 
-    } finally {
-      if (reader != null) {
-        try {
-          reader.close();
-        } catch (IOException e) {
-          throw new UncontrolledException("Could not close configuration file.", e);
-        }
-      }
     }
 
   }

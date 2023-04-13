@@ -32,7 +32,7 @@ public class HyperSQLAdapter extends DatabaseAdapter {
 
   private static final Logger log = LogManager.getLogger(HyperSQLAdapter.class);
 
-  private static final long MAX_VARCHAR_LENGTH = 64 * 1024;
+  private static final long MAX_VARCHAR_LENGTH = 64L * 1024;
 
   public HyperSQLAdapter(final DatabaseMetaData dm) throws SQLException {
     super(dm);

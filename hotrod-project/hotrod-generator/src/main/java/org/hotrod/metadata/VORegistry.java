@@ -199,7 +199,17 @@ public class VORegistry {
 
     // Behavior
 
-    public boolean equals(final EntityVOClass o) {
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((classPackage == null) ? 0 : classPackage.hashCode());
+      result = prime * result + ((columnsByName == null) ? 0 : columnsByName.hashCode());
+      result = prime * result + ((name == null) ? 0 : name.hashCode());
+      return result;
+    }
+
+    public boolean equals(final Object o) {
       if (o == null) {
         return false;
       }
@@ -336,10 +346,22 @@ public class VORegistry {
 
     // Behavior
 
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((classPackage == null) ? 0 : classPackage.hashCode());
+      result = prime * result + ((columnsByName == null) ? 0 : columnsByName.hashCode());
+      result = prime * result + ((extendsEntityVO == null) ? 0 : extendsEntityVO.hashCode());
+      result = prime * result + ((name == null) ? 0 : name.hashCode());
+      return result;
+    }
+
     public boolean equals(final Object o) {
-      if (o == null) {
+      if (o == null)
         return false;
-      }
+      if (this.getClass() != o.getClass())
+        return false;
       SelectVOClass other;
       try {
         other = (SelectVOClass) o;

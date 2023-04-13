@@ -97,13 +97,13 @@ public class MySQLAdapter extends DatabaseAdapter {
 
     case java.sql.Types.INTEGER:
       if (m.getTypeName().toUpperCase().equals("MEDIUMINT")) {
-        return new PropertyType(Integer.class, m, false, new ValueRange(0, -128 * 256 * 256, 128 * 256 * 256 - 1));
+        return new PropertyType(Integer.class, m, false, new ValueRange(0L, -128L * 256 * 256, 128 * 256 * 256 - 1));
       } else if (m.getTypeName().toUpperCase().equals("MEDIUMINT UNSIGNED")) {
-        return new PropertyType(Integer.class, m, false, new ValueRange(0, 0, 256 * 256 * 256 - 1));
+        return new PropertyType(Integer.class, m, false, new ValueRange(0L, 0L, 256L * 256 * 256 - 1));
       } else if (m.getTypeName().toUpperCase().equals("INT")) {
         return new PropertyType(Integer.class, m, false, ValueRange.INTEGER_RANGE);
       } else if (m.getTypeName().toUpperCase().equals("INT UNSIGNED")) {
-        return new PropertyType(Long.class, m, false, new ValueRange(0, 0, 256L * 256L * 256L * 256L - 1));
+        return new PropertyType(Long.class, m, false, new ValueRange(0L, 0L, 256L * 256L * 256L * 256L - 1));
       }
 
     case java.sql.Types.BIGINT:

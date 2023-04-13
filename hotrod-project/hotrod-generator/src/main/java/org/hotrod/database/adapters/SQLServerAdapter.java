@@ -34,7 +34,7 @@ public class SQLServerAdapter extends DatabaseAdapter {
 
   private static final Logger log = LogManager.getLogger(SQLServerAdapter.class);
 
-  private static final long MAX_VARCHAR_LENGTH = 64 * 1024;
+  private static final long MAX_VARCHAR_LENGTH = 64L * 1024;
 
   public SQLServerAdapter(final DatabaseMetaData dm) throws SQLException {
     super(dm);

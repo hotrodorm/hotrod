@@ -280,49 +280,20 @@ public class SelectAbstractVO {
     println("  public String toString() {");
     println("    java.lang.StringBuilder sb = new java.lang.StringBuilder();");
 
-    boolean multiLine = true;
-    // boolean multiLine =
-    // this.myBatisTag.getProperties().isMultilineTostring();
-    if (multiLine) {
-      println("    sb.append(super.toString() + \"\\n\");");
-      // println(" sb.append( getClass().getName() + '@' +
-      // Integer.toHexString(hashCode()) + \"\\n\");");
-
-      if (!this.columns.isEmpty()) {
-        String prefix = "";
-        String elemPrefix = "    sb.append(";
-        String elemSuffix = "";
-        String separator = " + \"\\n\");\n";
-        String lastSeparator = separator;
-        String suffix = ");";
-        ListWriter lw = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
-        for (ColumnMetadata cm : this.columns) {
-          String prop = cm.getId().getJavaMemberName();
-          lw.add("\"- " + prop + "=\" + this." + prop);
-        }
-        println(lw.toString());
+    println("    sb.append(super.toString() + \"\\n\");");
+    if (!this.columns.isEmpty()) {
+      String prefix = "";
+      String elemPrefix = "    sb.append(";
+      String elemSuffix = "";
+      String separator = " + \"\\n\");\n";
+      String lastSeparator = separator;
+      String suffix = ");";
+      ListWriter lw = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
+      for (ColumnMetadata cm : this.columns) {
+        String prop = cm.getId().getJavaMemberName();
+        lw.add("\"- " + prop + "=\" + this." + prop);
       }
-
-    } else {
-      println("    sb.append(super.toString() + \"\\n\");");
-      println("    sb.append(\"[\");");
-
-      if (!this.columns.isEmpty()) {
-        String prefix = "";
-        String elemPrefix = "    sb.append(";
-        String elemSuffix = "";
-        String separator = " + \", \");\n";
-        String lastSeparator = separator;
-        String suffix = ");";
-        ListWriter lw = new ListWriter(prefix, elemPrefix, elemSuffix, separator, lastSeparator, suffix);
-        for (ColumnMetadata cm : this.columns) {
-          String prop = cm.getId().getJavaMemberName();
-          lw.add("\"" + prop + "=\" + this." + prop);
-        }
-        println(lw.toString());
-      }
-
-      println("    sb.append(\"]\");");
+      println(lw.toString());
     }
 
     println("    return sb.toString();");

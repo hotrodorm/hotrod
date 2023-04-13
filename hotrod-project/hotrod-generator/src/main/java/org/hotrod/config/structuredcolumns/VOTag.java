@@ -584,21 +584,9 @@ public class VOTag extends AbstractConfigurationTag implements ColumnsProvider {
       } else { // 2. Specific columns
 
         if (this.tableMetadata != null) { // 2.a Based on a table
-
-          if (this.tableMetadata.getPK() != null) { // 2.a.1 Table with a PK
-
-            this.inheritedColumns = retrieveSpecificColumns(this.tableMetadata, requiresIds);
-
-          } else { // 2.a.2 Table without a PK
-
-            this.inheritedColumns = retrieveSpecificColumns(this.tableMetadata, requiresIds);
-
-          }
-
+          this.inheritedColumns = retrieveSpecificColumns(this.tableMetadata, requiresIds);
         } else { // 2.b Based on a view
-
           this.inheritedColumns = retrieveSpecificColumns(this.viewMetadata, requiresIds);
-
         }
 
       }

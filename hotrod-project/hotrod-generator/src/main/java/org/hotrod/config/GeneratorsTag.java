@@ -47,14 +47,11 @@ public class GeneratorsTag extends AbstractConfigurationTag {
 
   public void validate(final File basedir, final File parentDir, final DatabaseAdapter adapter,
       final CatalogSchema currentCS) throws InvalidConfigurationFileException, GeneratorNotFoundException {
-    for (AbstractGeneratorTag g : this.generators) {
-      this.selectedGeneratorTag = g;
-      g.validate(basedir, parentDir, adapter, currentCS);
-      return;
-    }
-    if (this.selectedGeneratorTag == null) {
+    if (this.generators.isEmpty()) {
       throw new GeneratorNotFoundException("No HotRod generator found.");
     }
+    this.selectedGeneratorTag = this.generators.get(0);
+    this.selectedGeneratorTag.validate(basedir, parentDir, adapter, currentCS);
   }
 
   // Getters

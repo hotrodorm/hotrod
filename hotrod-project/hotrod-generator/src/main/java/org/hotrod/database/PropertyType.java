@@ -29,9 +29,9 @@ public class PropertyType implements Serializable {
     public static ValueRange INTEGER_RANGE = new ValueRange(0, Integer.MIN_VALUE, Integer.MAX_VALUE);
     public static ValueRange LONG_RANGE = new ValueRange(0, Long.MIN_VALUE, Long.MAX_VALUE);
 
-    public static ValueRange UNSIGNED_BYTE_RANGE = new ValueRange(0, 0, 2 * Byte.MAX_VALUE + 1);
-    public static ValueRange UNSIGNED_SHORT_RANGE = new ValueRange(0, 0, 2 * Short.MAX_VALUE + 1);
-    public static ValueRange UNSIGNED_INTEGER_RANGE = new ValueRange(0, 0, 2L * Integer.MAX_VALUE + 1L);
+    public static ValueRange UNSIGNED_BYTE_RANGE = new ValueRange(0, 0, 2L * Byte.MAX_VALUE + 1);
+    public static ValueRange UNSIGNED_SHORT_RANGE = new ValueRange(0, 0, 2L * Short.MAX_VALUE + 1);
+    public static ValueRange UNSIGNED_INTEGER_RANGE = new ValueRange(0, 0, 2L * Integer.MAX_VALUE + 1);
 
     private long initialValue;
     private long minValue;

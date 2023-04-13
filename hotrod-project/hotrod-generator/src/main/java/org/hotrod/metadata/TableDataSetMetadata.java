@@ -624,6 +624,10 @@ public class TableDataSetMetadata implements DataSetMetadata, Serializable {
 
   @Override
   public boolean equals(Object obj) {
+    if (obj == null)
+      return false;
+    if (this.getClass() != obj.getClass())
+      return false;
     try {
       TableDataSetMetadata other = (TableDataSetMetadata) obj;
       return this.getDatabaseObjectId().equals(other.getDatabaseObjectId());

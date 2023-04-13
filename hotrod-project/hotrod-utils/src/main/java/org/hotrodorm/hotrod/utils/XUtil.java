@@ -2,6 +2,7 @@ package org.hotrodorm.hotrod.utils;
 
 import java.io.FileNotFoundException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -41,6 +42,9 @@ public class XUtil {
 
         @Override
         public Throwable next() {
+          if (e == null) {
+            throw new NoSuchElementException();
+          }
           Throwable aux = e;
           e = e.getCause();
           return aux;
