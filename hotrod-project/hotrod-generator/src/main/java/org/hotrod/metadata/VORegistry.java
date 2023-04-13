@@ -213,6 +213,8 @@ public class VORegistry {
       if (o == null) {
         return false;
       }
+      if (this.getClass() != o.getClass())
+        return false;
       EntityVOClass other;
       try {
         other = (EntityVOClass) o;
