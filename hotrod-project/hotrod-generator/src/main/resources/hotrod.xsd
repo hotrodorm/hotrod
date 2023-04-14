@@ -91,6 +91,7 @@
   <xsd:complexType name="mappers-type">
     <xsd:attribute name="base-dir" type="xsd:string" />
     <xsd:attribute name="dir" type="xsd:string" use="required" />
+    <xsd:attribute name="namespace" type="xsd:string" />
   </xsd:complexType>
 
   <xsd:complexType name="mybatis-configuration-template-type">
