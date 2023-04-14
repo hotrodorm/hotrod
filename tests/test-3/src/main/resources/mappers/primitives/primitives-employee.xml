@@ -2,26 +2,32 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.myapp.daos.primitives.employee">
+<mapper namespace="bc.employee">
 
   <!-- columns -->
 
   <sql id="columns">
     id,
     name,
-    salary
+    photo,
+    bio,
+    branch_id
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
     ${alias}.name,
-    ${alias}.salary
+    ${alias}.photo,
+    ${alias}.bio,
+    ${alias}.branch_id
   </sql>
 
-  <resultMap id="allColumns" type="com.myapp.daos.EmployeeVO">
+  <resultMap id="allColumns" type="com.myapp.daos.EmployeeMODEL">
     <id property="id" column="ID" />
     <result property="name" column="NAME" />
-    <result property="salary" column="SALARY" />
+    <result property="photo" column="PHOTO" />
+    <result property="bio" column="BIO" />
+    <result property="branchId" column="BRANCH_ID" />
   </resultMap>
 
   <!-- select by PK -->
@@ -31,7 +37,7 @@
       <include refid="columns" />
      from employee
      where
-      id = #{id,jdbcType=NUMERIC}
+      id = #{id,jdbcType=INTEGER}
   </select>
 
   <!-- no select by unique indexes since there are no UI (besides the PK) -->
@@ -44,13 +50,19 @@
      from employee
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
-        and id = #{p.id,jdbcType=NUMERIC}
+        and id = #{p.id,jdbcType=INTEGER}
       </if>
       <if test="p.name != null">
         and name = #{p.name,jdbcType=VARCHAR}
       </if>
-      <if test="p.salary != null">
-        and salary = #{p.salary,jdbcType=NUMERIC}
+      <if test="p.photo != null">
+        and photo = #{p.photo,jdbcType=BLOB}
+      </if>
+      <if test="p.bio != null">
+        and bio = #{p.bio,jdbcType=CLOB}
+      </if>
+      <if test="p.branchId != null">
+        and branch_id = #{p.branchId,jdbcType=INTEGER}
       </if>
     </trim>
     <if test="o != null">
@@ -64,20 +76,24 @@
     ${sql}
   </select>
 
-  <!-- insert (no auto-generated columns) -->
+  <!-- insert (does not integrate sequences, and integrates identities) -->
 
-  <insert id="insert">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into employee (
       <trim prefixOverrides=", ">
-        <if test="true">, id</if>
+        <if test="id != null">, id</if>
         <if test="true">, name</if>
-        <if test="true">, salary</if>
+        <if test="true">, photo</if>
+        <if test="true">, bio</if>
+        <if test="true">, branch_id</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{id,jdbcType=NUMERIC}</if>
+        <if test="id != null">, #{id,jdbcType=INTEGER}</if>
         <if test="true">, #{name,jdbcType=VARCHAR}</if>
-        <if test="true">, #{salary,jdbcType=NUMERIC}</if>
+        <if test="true">, #{photo,jdbcType=BLOB}</if>
+        <if test="true">, #{bio,jdbcType=CLOB}</if>
+        <if test="true">, #{branchId,jdbcType=INTEGER}</if>
       </trim>
       )
   </insert>
@@ -87,9 +103,11 @@
   <update id="updateByPK">
     update employee set
       name = #{name,jdbcType=VARCHAR},
-      salary = #{salary,jdbcType=NUMERIC}
+      photo = #{photo,jdbcType=BLOB},
+      bio = #{bio,jdbcType=CLOB},
+      branch_id = #{branchId,jdbcType=INTEGER}
      where
-      id = #{id,jdbcType=NUMERIC}
+      id = #{id,jdbcType=INTEGER}
   </update>
 
   <!-- delete by PK -->
@@ -97,7 +115,7 @@
   <delete id="deleteByPK">
     delete from employee
      where
-      id = #{id,jdbcType=NUMERIC}
+      id = #{id,jdbcType=INTEGER}
   </delete>
 
   <!-- update by example -->
@@ -105,19 +123,27 @@
   <update id="updateByExample">
     update employee
     <set>
-      <if test="values.id != null">id = #{values.id,jdbcType=NUMERIC},</if>
+      <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
       <if test="values.name != null">name = #{values.name,jdbcType=VARCHAR},</if>
-      <if test="values.salary != null">salary = #{values.salary,jdbcType=NUMERIC},</if>
+      <if test="values.photo != null">photo = #{values.photo,jdbcType=BLOB},</if>
+      <if test="values.bio != null">bio = #{values.bio,jdbcType=CLOB},</if>
+      <if test="values.branchId != null">branch_id = #{values.branchId,jdbcType=INTEGER},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
-        and id = #{filter.id,jdbcType=NUMERIC}
+        and id = #{filter.id,jdbcType=INTEGER}
       </if>
       <if test="filter.name != null">
         and name = #{filter.name,jdbcType=VARCHAR}
       </if>
-      <if test="filter.salary != null">
-        and salary = #{filter.salary,jdbcType=NUMERIC}
+      <if test="filter.photo != null">
+        and photo = #{filter.photo,jdbcType=BLOB}
+      </if>
+      <if test="filter.bio != null">
+        and bio = #{filter.bio,jdbcType=CLOB}
+      </if>
+      <if test="filter.branchId != null">
+        and branch_id = #{filter.branchId,jdbcType=INTEGER}
       </if>
     </trim>
   </update>
@@ -128,13 +154,19 @@
     delete from employee
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
-        and id = #{id,jdbcType=NUMERIC}
+        and id = #{id,jdbcType=INTEGER}
       </if>
       <if test="name != null">
         and name = #{name,jdbcType=VARCHAR}
       </if>
-      <if test="salary != null">
-        and salary = #{salary,jdbcType=NUMERIC}
+      <if test="photo != null">
+        and photo = #{photo,jdbcType=BLOB}
+      </if>
+      <if test="bio != null">
+        and bio = #{bio,jdbcType=CLOB}
+      </if>
+      <if test="branchId != null">
+        and branch_id = #{branchId,jdbcType=INTEGER}
       </if>
     </trim>
   </delete>

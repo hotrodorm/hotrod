@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.myapp.daos.primitives.EmployeeDAO;
 import com.myapp.daos.primitives.EmployeeDAO.EmployeeTable;
+import com.myapp.daos.primitives.EmployeeVO;
 
 @Configuration
 @SpringBootApplication
@@ -46,20 +47,24 @@ public class App {
   }
 
   private void searching() {
+//
+//    EmployeeTable e = EmployeeDAO.newTable("e");
+//
+//    ExecutableSelect<Map<String, Object>> q = this.sql //
+//        .select(e.star(), e.branchId.remainder(10).as("rem")) //
+//        .from(e) //
+//    ;
+//    System.out.println("PREVIEW: " + q.getPreview());
+//    List<Map<String, Object>> rows = q.execute();
+//
+//    System.out.println("Batches with names that start with 'A':");
+//    for (Map<String, Object> r : rows) {
+//      System.out.println(r);
+//    }
+//
+    EmployeeVO em = this.employeeDAO.selectByPK(123);
+    System.out.println("Employee #123: " + em);
 
-    EmployeeTable e = EmployeeDAO.newTable("e");
-
-    ExecutableSelect<Map<String, Object>> q = this.sql //
-        .select(e.star(), e.salary.remainder(10).as("rem")) //
-        .from(e) //
-    ;
-    System.out.println("PREVIEW: " + q.getPreview());
-    List<Map<String, Object>> rows = q.execute();
-
-    System.out.println("Batches with names that start with 'A':");
-    for (Map<String, Object> r : rows) {
-      System.out.println(r);
-    }
 //
 //    // Use LiveSQL to search for employees whose name starts with 'A'
 //

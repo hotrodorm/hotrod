@@ -6,24 +6,9 @@
   <generators>
     <mybatis-spring>
 
-<!--
-      <discover>
-        <current-schema>
-          <exclude name="employee" />
-        </current-schema>
-        <schema name="schema2" />
-        <schema name="schema3">
-          <exclude name="code" />
-        </schema>
-        <current-schema />
-      </discover>
--->
-
       <daos package="com.myapp.daos" dao-suffix="DAO" vo-suffix="MODEL" abstract-vo-prefix=""
         abstract-vo-suffix="VO" />
-      <mappers dir="mappers" />
-<!--
--->
+      <mappers dir="mappers" namespace="bc"/>
       <classic-fk-navigation />
       <select-generation strategy="result-set" />
     </mybatis-spring>
@@ -43,11 +28,11 @@
       <complement>
         where branch_id in
         <foreach item="id" collection="ids" open="(" separator=", " close=")">
-          ${id}
+          #{id}
         </foreach>
         or name in
         <foreach item="name" collection="names" open="(" separator=", " close=")">
-          '${name}'
+          #{name}
         </foreach>
       </complement>
     </select>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bc.branch">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    branch_id,
+    branch_name
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.branch_id,
+    ${alias}.branch_name
+  </sql>
+
+  <resultMap id="allColumns" type="com.myapp.daos.BranchMODEL">
+    <id property="branchId" column="BRANCH_ID" />
+    <result property="branchName" column="BRANCH_NAME" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from branch
+     where
+      branch_id = #{branchId,jdbcType=INTEGER}
+  </select>
+
+  <!-- no select by unique indexes since there are no UI (besides the PK) -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from branch
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.branchId != null">
+        and branch_id = #{p.branchId,jdbcType=INTEGER}
+      </if>
+      <if test="p.branchName != null">
+        and branch_name = #{p.branchName,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (does not integrate sequences, and integrates identities) -->
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="branchId" keyColumn="branch_id">
+    insert into branch (
+      <trim prefixOverrides=", ">
+        <if test="branchId != null">, branch_id</if>
+        <if test="true">, branch_name</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="branchId != null">, #{branchId,jdbcType=INTEGER}</if>
+        <if test="true">, #{branchName,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update branch set
+      branch_name = #{branchName,jdbcType=VARCHAR}
+     where
+      branch_id = #{branchId,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from branch
+     where
+      branch_id = #{branchId,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update branch
+    <set>
+      <if test="values.branchId != null">branch_id = #{values.branchId,jdbcType=INTEGER},</if>
+      <if test="values.branchName != null">branch_name = #{values.branchName,jdbcType=VARCHAR},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.branchId != null">
+        and branch_id = #{filter.branchId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.branchName != null">
+        and branch_name = #{filter.branchName,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </update>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from branch
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="branchId != null">
+        and branch_id = #{branchId,jdbcType=INTEGER}
+      </if>
+      <if test="branchName != null">
+        and branch_name = #{branchName,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </delete>
+
+</mapper>

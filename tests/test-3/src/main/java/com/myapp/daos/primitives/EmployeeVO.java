@@ -5,7 +5,7 @@ package com.myapp.daos.primitives;
 import java.io.Serializable;
 import org.hotrod.runtime.json.*;
 
-public class AbstractEmployeeVO implements Serializable {
+public class EmployeeVO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -13,7 +13,9 @@ public class AbstractEmployeeVO implements Serializable {
 
   protected java.lang.Integer id = null;
   protected java.lang.String name = null;
-  protected java.lang.Integer salary = null;
+  protected byte[] photo = null;
+  protected java.lang.String bio = null;
+  protected java.lang.Integer branchId = null;
 
   // getters & setters
 
@@ -33,12 +35,28 @@ public class AbstractEmployeeVO implements Serializable {
     this.name = name;
   }
 
-  public java.lang.Integer getSalary() {
-    return this.salary;
+  public byte[] getPhoto() {
+    return this.photo;
   }
 
-  public void setSalary(final java.lang.Integer salary) {
-    this.salary = salary;
+  public void setPhoto(final byte[] photo) {
+    this.photo = photo;
+  }
+
+  public java.lang.String getBio() {
+    return this.bio;
+  }
+
+  public void setBio(final java.lang.String bio) {
+    this.bio = bio;
+  }
+
+  public java.lang.Integer getBranchId() {
+    return this.branchId;
+  }
+
+  public void setBranchId(final java.lang.Integer branchId) {
+    this.branchId = branchId;
   }
 
   // to string
@@ -48,7 +66,9 @@ public class AbstractEmployeeVO implements Serializable {
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- name=" + this.name + "\n");
-    sb.append("- salary=" + this.salary);
+    sb.append("- photo=" + this.photo + "\n");
+    sb.append("- bio=" + this.bio + "\n");
+    sb.append("- branchId=" + this.branchId);
     return sb.toString();
   }
 
@@ -58,7 +78,9 @@ public class AbstractEmployeeVO implements Serializable {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
     obj.addProperty("name", this.name);
-    obj.addProperty("salary", this.salary);
+    obj.addProperty("photo", this.photo);
+    obj.addProperty("bio", this.bio);
+    obj.addProperty("branchId", this.branchId);
     return obj.render();
   }
 
