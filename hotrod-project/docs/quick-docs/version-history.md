@@ -1,5 +1,8 @@
 # Hotrod Version History
 
+## 3.5.1
+- Adding namespace configuration in mappers.
+
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
 ## 3.4.7
