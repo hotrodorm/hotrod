@@ -72,6 +72,10 @@ public class DataSetLayout implements Serializable {
     return this.mappers.getRuntimeDir(fragmentPackage);
   }
 
+  public String getMapperNamespace() {
+    return this.mappers.getNamespace();
+  }
+
   public String getColumnSeam() {
     return columnSeam;
   }

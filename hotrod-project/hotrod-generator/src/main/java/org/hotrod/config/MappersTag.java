@@ -26,6 +26,9 @@ public class MappersTag extends AbstractConfigurationTag {
   private static final String PRIMITIVES_MAPPERS_DIR = "primitives";
   private static final String CUSTOM_MAPPERS_DIR = "custom";
 
+  private static final String VALID_NAMESPACE_PATTERN = "[a-z0-9][a-z0-9_]*";
+  private static final String DEFAULT_NAMESPACE = "mappers";
+
   public static final MappersTag DEFAULT_MAPPERS_TAG = new MappersTag();
   static {
     DEFAULT_MAPPERS_TAG.sBaseDir = DEFAULT_BASE_DIR;
@@ -36,6 +39,7 @@ public class MappersTag extends AbstractConfigurationTag {
 
   private String sBaseDir = null;
   private String sDir = null;
+  private String namespace = null;
 
   private File baseDir;
   private File fullRelativeDir;
@@ -60,6 +64,11 @@ public class MappersTag extends AbstractConfigurationTag {
   @XmlAttribute(name = "dir")
   public void setDir(final String sDir) {
     this.sDir = sDir;
+  }
+
+  @XmlAttribute(name = "namespace")
+  public void setNamespace(final String namespace) {
+    this.namespace = namespace;
   }
 
   // Behavior
@@ -104,9 +113,25 @@ public class MappersTag extends AbstractConfigurationTag {
 
     this.customDir = new File(this.fullRelativeDir, CUSTOM_MAPPERS_DIR);
 
+    // namespace
+
+    if (this.namespace == null) {
+      this.namespace = DEFAULT_NAMESPACE;
+    } else {
+      if (!this.namespace.matches(VALID_NAMESPACE_PATTERN)) {
+        String msg = "Invalid attribute 'namespace' with value '" + this.namespace
+            + "'. Must be a lower case alphanumeric value.";
+        throw new InvalidConfigurationFileException(this, msg);
+      }
+    }
+
   }
 
   // Getters
+
+  public String getNamespace() {
+    return namespace;
+  }
 
   public File getPrimitivesDir() {
     return getPrimitivesDir(null);

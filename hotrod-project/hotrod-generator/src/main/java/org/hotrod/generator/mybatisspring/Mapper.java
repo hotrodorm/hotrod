@@ -108,8 +108,7 @@ public class Mapper extends GeneratableObject {
     this.adapter = adapter;
     this.vo = vo;
 
-    this.namespace = this.layout.getDAOPrimitivePackage(this.fragmentPackage).getPackage() + "."
-        + this.metadata.getId().getJavaMemberName();
+    this.namespace = this.layout.getMapperNamespace() + "." + this.metadata.getId().getJavaMemberName();
   }
 
   public void setDao(ObjectDAO dao) {
