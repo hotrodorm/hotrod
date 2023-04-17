@@ -52,14 +52,14 @@ where branch_id = 10;
 
 ## Summary
 
-| Database   | Form 1 | Form 2    | Form 3 |
-| --         | --     | --        | --     |
-| Oracle     | Yes    | --        | Yes    |
-| DB2        | Yes    | Yes (SM)  | Yes    |
-| PostgreSQL | Yes    | Yes       | Yes    |
-| SQL Server | Yes    | Yes       | --     |
-| MySQL      | Yes    | Yes       | --     |
-| MariaDB    | Yes    | Yes       | --     |
+| Database   | Form 1 | Form 2    | Form 3   |
+| --         | --     | --        | --       |
+| Oracle     | Yes    | --        | Yes (SM) |
+| DB2        | Yes    | Yes (SM)  | Yes (SM) |
+| PostgreSQL | Yes    | Yes       | Yes (SM) |
+| SQL Server | Yes    | Yes       | --       |
+| MySQL      | Yes    | Yes       | --       |
+| MariaDB    | Yes    | Yes       | --       |
 
 SM: Single Match Enforced. If more than a single value is found for an update row an error is thrown.
  
