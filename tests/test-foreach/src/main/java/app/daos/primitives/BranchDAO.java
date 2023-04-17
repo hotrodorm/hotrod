@@ -80,7 +80,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       return null;
     app.daos.BranchVO vo = new app.daos.BranchVO();
     vo.setBranchId(branchId);
-    return this.sqlSession.selectOne("app.daos.primitives.branch.selectByPK", vo);
+    return this.sqlSession.selectOne("mappers.branch.selectByPK", vo);
   }
 
   // select by unique indexes: no unique indexes found (besides the PK) -- skipped
@@ -91,14 +91,14 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
       {
     DaoWithOrder<app.daos.primitives.AbstractBranchVO, BranchOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return this.sqlSession.selectList("app.daos.primitives.branch.selectByExample", dwo);
+    return this.sqlSession.selectList("mappers.branch.selectByExample", dwo);
   }
 
   public Cursor<app.daos.BranchVO> selectByExampleCursor(final app.daos.primitives.AbstractBranchVO example, final BranchOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractBranchVO, BranchOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return new MyBatisCursor<app.daos.BranchVO>(this.sqlSession.selectCursor("app.daos.primitives.branch.selectByExample", dwo));
+    return new MyBatisCursor<app.daos.BranchVO>(this.sqlSession.selectCursor("mappers.branch.selectByExample", dwo));
   }
 
   // select by criteria
@@ -106,7 +106,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   public CriteriaWherePhase<app.daos.BranchVO> selectByCriteria(final BranchDAO.BranchTable from,
       final Predicate predicate) {
     return new CriteriaWherePhase<app.daos.BranchVO>(from, this.sqlDialect, this.sqlSession,
-        predicate, "app.daos.primitives.branch.selectByCriteria");
+        predicate, "mappers.branch.selectByCriteria");
   }
 
   // select parent(s) by FKs: no imported keys found -- skipped
@@ -156,7 +156,7 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   // insert
 
   public app.daos.BranchVO insert(final app.daos.primitives.AbstractBranchVO vo) {
-    String id = "app.daos.primitives.branch.insert";
+    String id = "mappers.branch.insert";
     int rows = this.sqlSession.insert(id, vo);
     app.daos.BranchVO mo = new app.daos.BranchVO();
     mo.setBranchId(vo.getBranchId());
@@ -168,14 +168,14 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
 
   public int update(final app.daos.BranchVO vo) {
     if (vo.branchId == null) return 0;
-    return this.sqlSession.update("app.daos.primitives.branch.updateByPK", vo);
+    return this.sqlSession.update("mappers.branch.updateByPK", vo);
   }
 
   // delete by PK
 
   public int delete(final app.daos.BranchVO vo) {
     if (vo.branchId == null) return 0;
-    return this.sqlSession.delete("app.daos.primitives.branch.deleteByPK", vo);
+    return this.sqlSession.delete("mappers.branch.deleteByPK", vo);
   }
 
   // update by example
@@ -183,13 +183,13 @@ public class BranchDAO implements Serializable, ApplicationContextAware {
   public int updateByExample(final app.daos.primitives.AbstractBranchVO example, final app.daos.primitives.AbstractBranchVO updateValues) {
     UpdateByExampleDao<app.daos.primitives.AbstractBranchVO> fvd = //
       new UpdateByExampleDao<app.daos.primitives.AbstractBranchVO>(example, updateValues);
-    return this.sqlSession.update("app.daos.primitives.branch.updateByExample", fvd);
+    return this.sqlSession.update("mappers.branch.updateByExample", fvd);
   }
 
   // delete by example
 
   public int deleteByExample(final app.daos.primitives.AbstractBranchVO example) {
-    return this.sqlSession.delete("app.daos.primitives.branch.deleteByExample", example);
+    return this.sqlSession.delete("mappers.branch.deleteByExample", example);
   }
 
   // DAO ordering

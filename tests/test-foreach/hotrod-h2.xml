@@ -19,7 +19,7 @@
 
   <dao name="Queries">
     <select method="findEmployees" vo="E">
-      <parameter name="ids" java-type="java.util.List&lt;Integer>" jdbc-type="NUMERIC" />
+      <parameter name="ids" java-type="java.util.List&lt;Short>" jdbc-type="NUMERIC" />
       <parameter name="names" java-type="java.util.List&lt;String>" jdbc-type="VARCHAR" />
       select *
       from employee

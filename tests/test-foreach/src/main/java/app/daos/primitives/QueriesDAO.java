@@ -74,15 +74,15 @@ public class QueriesDAO implements Serializable, ApplicationContextAware {
 
 
   public static class ParamFindEmployees {
-    java.util.List<Integer> ids;
+    java.util.List<Short> ids;
     java.util.List<String> names;
   }
 
-  public List<EVO> findEmployees(final java.util.List<Integer> ids, final java.util.List<String> names) {
+  public List<EVO> findEmployees(final java.util.List<Short> ids, final java.util.List<String> names) {
     ParamFindEmployees param0 = new ParamFindEmployees();
     param0.ids = ids;
     param0.names = names;
-    return this.sqlSession.selectList("app.daos.primitives.queriesDAO.select_findEmployees", param0);
+    return this.sqlSession.selectList("mappers.queriesDAO.select_findEmployees", param0);
   }
 
 }

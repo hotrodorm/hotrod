@@ -46,7 +46,7 @@ public class App {
 
   private void searching() {
 
-    List<Integer> ids = Arrays.asList(101, 102, 200);
+    List<Short> ids = Arrays.asList((short)101, (short)102, (short)200);
     List<String> names = Arrays.asList("Alice", "Steve");
 
     List<EVO> evos = this.queriesDAO.findEmployees(ids, names);

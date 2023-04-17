@@ -80,7 +80,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       return null;
     app.daos.EmployeeVO vo = new app.daos.EmployeeVO();
     vo.setId(id);
-    return this.sqlSession.selectOne("app.daos.primitives.employee.selectByPK", vo);
+    return this.sqlSession.selectOne("mappers.employee.selectByPK", vo);
   }
 
   // select by unique indexes: no unique indexes found (besides the PK) -- skipped
@@ -91,14 +91,14 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       {
     DaoWithOrder<app.daos.primitives.AbstractEmployeeVO, EmployeeOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return this.sqlSession.selectList("app.daos.primitives.employee.selectByExample", dwo);
+    return this.sqlSession.selectList("mappers.employee.selectByExample", dwo);
   }
 
   public Cursor<app.daos.EmployeeVO> selectByExampleCursor(final app.daos.primitives.AbstractEmployeeVO example, final EmployeeOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractEmployeeVO, EmployeeOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return new MyBatisCursor<app.daos.EmployeeVO>(this.sqlSession.selectCursor("app.daos.primitives.employee.selectByExample", dwo));
+    return new MyBatisCursor<app.daos.EmployeeVO>(this.sqlSession.selectCursor("mappers.employee.selectByExample", dwo));
   }
 
   // select by criteria
@@ -106,7 +106,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   public CriteriaWherePhase<app.daos.EmployeeVO> selectByCriteria(final EmployeeDAO.EmployeeTable from,
       final Predicate predicate) {
     return new CriteriaWherePhase<app.daos.EmployeeVO>(from, this.sqlDialect, this.sqlSession,
-        predicate, "app.daos.primitives.employee.selectByCriteria");
+        predicate, "mappers.employee.selectByCriteria");
   }
 
   // select parent(s) by FKs
@@ -148,7 +148,7 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   // insert
 
   public app.daos.EmployeeVO insert(final app.daos.primitives.AbstractEmployeeVO vo) {
-    String id = "app.daos.primitives.employee.insert";
+    String id = "mappers.employee.insert";
     int rows = this.sqlSession.insert(id, vo);
     app.daos.EmployeeVO mo = new app.daos.EmployeeVO();
     mo.setId(vo.getId());
@@ -161,14 +161,14 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   public int update(final app.daos.EmployeeVO vo) {
     if (vo.id == null) return 0;
-    return this.sqlSession.update("app.daos.primitives.employee.updateByPK", vo);
+    return this.sqlSession.update("mappers.employee.updateByPK", vo);
   }
 
   // delete by PK
 
   public int delete(final app.daos.EmployeeVO vo) {
     if (vo.id == null) return 0;
-    return this.sqlSession.delete("app.daos.primitives.employee.deleteByPK", vo);
+    return this.sqlSession.delete("mappers.employee.deleteByPK", vo);
   }
 
   // update by example
@@ -176,13 +176,13 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   public int updateByExample(final app.daos.primitives.AbstractEmployeeVO example, final app.daos.primitives.AbstractEmployeeVO updateValues) {
     UpdateByExampleDao<app.daos.primitives.AbstractEmployeeVO> fvd = //
       new UpdateByExampleDao<app.daos.primitives.AbstractEmployeeVO>(example, updateValues);
-    return this.sqlSession.update("app.daos.primitives.employee.updateByExample", fvd);
+    return this.sqlSession.update("mappers.employee.updateByExample", fvd);
   }
 
   // delete by example
 
   public int deleteByExample(final app.daos.primitives.AbstractEmployeeVO example) {
-    return this.sqlSession.delete("app.daos.primitives.employee.deleteByExample", example);
+    return this.sqlSession.delete("mappers.employee.deleteByExample", example);
   }
 
   // DAO ordering
