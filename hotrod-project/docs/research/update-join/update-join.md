@@ -20,7 +20,8 @@ UPDATE t SET a = 1, b = (select d from u where u.id = t.id) WHERE c > 10;
 This is a form that joins one or more tables with the table being updated, and values can
 be set from the joined tables to update the main one. For example:
 
-```sqlUPDATE t
+```sql
+UPDATE t
 SET t.a = u.e + v.f, t.b = u.d
 FROM u -- some dbs require the first joined table to use FROM
 LEFT JOIN v on ...
@@ -41,7 +42,8 @@ This is the most advanced form and can use complex subqueries to retrieve the re
 Unlike the second form, this form requires the subquery to have a max cardinalty of 1 for each
 row of the table being updated (quite nice!). For example:
 
-```sqlupdate invoice i
+```sql
+update invoice i
 set (tax_rule_name, tax_law, tax_pct) = (
   select name, law, pct
   from tax_rule r
@@ -101,7 +103,7 @@ insert into tax_rule (id, name, law, pct) values
 
 ### Oracle Form #2
 
-Not Supported in Oracle.
+Not Supported.
 
 
 ### Oracle Form #3 (fiddle: https://dbfiddle.uk/qfRzqY5k)
