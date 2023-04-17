@@ -199,7 +199,7 @@ The parameters that will be *applied* to the query could in this case be:
 101 (Integer), 102 (Integer), 200 (Integer), Alice (String), Steve (String)
 ```
 
-These case be displayed by enabling the DEBUG level in the logging of the query.
+These parameter values can be displayed by enabling the DEBUG level in the logging of the query.
 
 Finally, there's of course a performance penalty when using large collections or arrays. Also, in the case of large collections or arrays,
 some database engines and JDBC drivers may place a limit in the size of the SQL statement. Most database engines will accept 
