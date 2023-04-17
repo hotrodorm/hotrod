@@ -3,9 +3,9 @@
 The UPDATE statement can take three main different forms. Each database -- particularly high end ones includes several extra
 variations for very specific cases, that are not included here:
 
-## Main UPDATE Variations
+## Main Variations
 
-### 1. Plain UPDATE
+### 1. SQL-92 UPDATE
 
 This can be a simple UPDATE from SQL-92 with or without subqueries. This is supported by all databases. For example:
 
@@ -15,7 +15,7 @@ UPDATE t SET a = 1, b = 2 WHERE c > 10;
 UPDATE t SET a = 1, b = (select d from u where u.id = t.id) WHERE c > 10;
 ```
 
-### 2. UPDATE with Join
+### 2. Update with Join
 
 This is a form that joins one or more tables with the table being updated, and values can
 be set from the joined tables to update the main one. For example:
@@ -35,7 +35,7 @@ WHERE u.id = t.id
   AND t.c > 10;
 ```
 
-### 3. UPDATE with subqueries
+### 3. Update with Subqueries
 
 This is the most advanced form and can use complex subqueries to retrieve the related values. 
 Unlike the second form, this form requires the subquery to have a max cardinalty of 1 for each
