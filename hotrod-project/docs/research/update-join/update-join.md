@@ -280,7 +280,7 @@ insert into tax_rule (id, name, law, pct) values
 ### SQL Server Form #2 (fiddle: https://dbfiddle.uk/uJHyUEFr)
 
 ```sql
-update i
+update i -- only alias here
 set tax_rule_name = r.name, tax_law = r.law, tax_pct = r.pct
 from invoice i
 join tax_rule r on r.id = i.tax_rule_id -- inner or left joins
@@ -289,7 +289,7 @@ where branch_id = 10;
 
 Notes:
 - Multiple matches are **allowed** per updated row (with unpredictable results).
-- Update rows with no matches are **not modified**.
+- Update rows with no matches are **not modified**. Use LEFT JOIN to set nulls.
 
 
 ### SQL Server Form #3
@@ -334,7 +334,7 @@ insert into tax_rule (id, name, law, pct) values
 ```sql
 update invoice i, tax_rule r -- all table references
 set i.tax_rule_name = r.name, i.tax_law = r.law, i.tax_pct = r.pct
-where r.id = i.tax_rule_id
+where r.id = i.tax_rule_id -- join predicates
   and branch_id = 10;
 ```
 
