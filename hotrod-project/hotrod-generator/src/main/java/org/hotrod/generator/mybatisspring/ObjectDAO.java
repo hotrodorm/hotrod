@@ -222,8 +222,6 @@ public class ObjectDAO extends GeneratableObject {
 
         writeEnumTypeHandlers();
 
-        writeConverters();
-
         writeOrderingEnum();
 
         writeMetadata();
@@ -234,21 +232,23 @@ public class ObjectDAO extends GeneratableObject {
 
       }
 
+      writeConverters();
+
       if (this.tag != null) {
 
         log.debug("SQL NAME=" + this.metadata.getId().getCanonicalSQLName() + " this.tag=" + this.tag);
         for (SequenceMethodTag s : this.tag.getSequences()) {
           log.debug("s.getName()=" + s.getSequenceId().getRenderedSQLName());
-          writeSelectSequence(s); // done
+          writeSelectSequence(s);
         }
 
         for (QueryMethodTag q : this.tag.getQueries()) {
           log.debug("q.getJavaMethodName()=" + q.getMethod());
-          writeQuery(q); // done
+          writeQuery(q);
         }
 
         for (SelectMethodMetadata s : this.metadata.getSelectsMetadata()) {
-          writeSelect(s); // done
+          writeSelect(s);
         }
 
       }
@@ -1616,8 +1616,6 @@ public class ObjectDAO extends GeneratableObject {
 
     // Select columns converters
 
-    log.debug("DAO=" + this.getClassName() + " select converters=" + this.selectTypeHandlerNames.size());
-
     for (Map<ColumnMetadata, String> selectTypeHandlers : this.selectTypeHandlers.values()) {
       for (ColumnMetadata cm : selectTypeHandlers.keySet()) {
         String thName = selectTypeHandlers.get(cm);
@@ -2088,8 +2086,6 @@ public class ObjectDAO extends GeneratableObject {
     } else {
       myBatisSelectMethod = "selectOne";
     }
-
-    // new MyBatisCursor<LocalProductVOVO>(
 
     log.debug("--> mode=" + sm.getResultSetMode() + ", method=" + myBatisSelectMethod);
 
