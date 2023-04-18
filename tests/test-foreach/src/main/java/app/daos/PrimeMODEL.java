@@ -1,20 +1,20 @@
 package app.daos;
 
-import app.daos.primitives.AbstractBranchVO;
+import app.daos.primitives.PrimeVO;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import app.daos.primitives.BranchDAO;
+import app.daos.primitives.PrimeDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class BranchVO extends AbstractBranchVO {
+public class PrimeMODEL extends PrimeVO {
 
   private static final long serialVersionUID = 1L;
 
   @Autowired
-  private BranchDAO branchDAO;
+  private PrimeDAO primeDAO;
 
   // Add custom code below.
 

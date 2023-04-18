@@ -1,13 +1,13 @@
 package app.daos;
 
-import app.daos.primitives.AbstractEVO;
+import app.daos.primitives.NumVO;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class EVO extends AbstractEVO {
+public class NumMODEL extends NumVO {
 
   private static final long serialVersionUID = 1L;
 

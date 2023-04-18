@@ -5,15 +5,15 @@ package app.daos.primitives;
 import java.io.Serializable;
 import org.hotrod.runtime.json.*;
 
-public class AbstractEmployeeVO implements Serializable {
+public class PrimeVO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   // VO Properties (table columns)
 
   protected java.lang.Integer id = null;
-  protected java.lang.String name = null;
-  protected java.lang.Integer branchId = null;
+  protected java.lang.Double amount = null;
+  protected java.lang.Object n = null;
 
   // getters & setters
 
@@ -25,20 +25,20 @@ public class AbstractEmployeeVO implements Serializable {
     this.id = id;
   }
 
-  public java.lang.String getName() {
-    return this.name;
+  public java.lang.Double getAmount() {
+    return this.amount;
   }
 
-  public void setName(final java.lang.String name) {
-    this.name = name;
+  public void setAmount(final java.lang.Double amount) {
+    this.amount = amount;
   }
 
-  public java.lang.Integer getBranchId() {
-    return this.branchId;
+  public java.lang.Object getN() {
+    return this.n;
   }
 
-  public void setBranchId(final java.lang.Integer branchId) {
-    this.branchId = branchId;
+  public void setN(final java.lang.Object n) {
+    this.n = n;
   }
 
   // to string
@@ -47,8 +47,8 @@ public class AbstractEmployeeVO implements Serializable {
     java.lang.StringBuilder sb = new java.lang.StringBuilder();
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
-    sb.append("- name=" + this.name + "\n");
-    sb.append("- branchId=" + this.branchId);
+    sb.append("- amount=" + this.amount + "\n");
+    sb.append("- n=" + this.n);
     return sb.toString();
   }
 
@@ -57,8 +57,8 @@ public class AbstractEmployeeVO implements Serializable {
   public String toJSON() {
     JSONObject obj = new JSONObject();
     obj.addProperty("id", this.id);
-    obj.addProperty("name", this.name);
-    obj.addProperty("branchId", this.branchId);
+    obj.addProperty("amount", this.amount);
+    obj.addProperty("n", this.n);
     return obj.render();
   }
 

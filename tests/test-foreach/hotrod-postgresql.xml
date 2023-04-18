@@ -6,6 +6,7 @@
   <generators>
     <mybatis-spring>
 
+<!-- 
       <discover>
         <current-schema>
           <exclude name="employee" />
@@ -16,12 +17,10 @@
         <schema name="schema3">
           <exclude name="code" />
         </schema>
-<!--
-        <current-schema />
--->
       </discover>
+-->
 
-      <daos package="com.myapp.daos" dao-suffix="DAO" vo-suffix="MODEL" abstract-vo-prefix=""
+      <daos package="app.daos" dao-suffix="DAO" vo-suffix="MODEL" abstract-vo-prefix=""
         abstract-vo-suffix="VO" />
       <mappers dir="mappers" />
 <!--
@@ -31,9 +30,41 @@
     </mybatis-spring>
   </generators>
 
+  <converter name="array_converter"
+    java-type="java.lang.Integer[]"
+    java-intermediate-type="java.sql.Array"
+    class="app.converters.ArrayConverter"
+  />
+
+  <converter name="double_converter"
+    java-type="java.lang.Double"
+    java-intermediate-type="java.lang.Double"
+    class="app.converters.DoubleConverter"
+  />
+
+<!-- 
+      <column name="nums" converter="array_converter" jdbc-type="ARRAY" />
+
+ -->
+  <dao name="Queries2">
+    <select method="findNumbers" vo="Num">
+      <column name="total" converter="double_converter" jdbc-type="NUMERIC" />
+      <column name="nmbs" converter="array_converter" jdbc-type="ARRAY" />
+      select sum(n) as total,
+             array_agg(1+2*n) as nmbs
+      from generate_series(1, 5) x(n);
+    </select>
+  </dao>
+
+  <table name="prime" >
+    <column name="amount" converter="double_converter" />
+  <!-- 
+     -->
+  </table>
+
 <!--
   <table name="branch" />
-  <table name="employee" />
+
 
   <dao name="Queries">
     <select method="findEmployees" vo="E">

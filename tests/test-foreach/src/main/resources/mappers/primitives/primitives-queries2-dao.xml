@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.queries2DAO">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    
+  </sql>
+
+  <sql id="columnsWithAlias">
+    
+  </sql>
+
+  <!-- select method: findNumbers -->
+
+  <resultMap id="result_map_select_findNumbers" type="app.daos.NumMODEL">
+    <result property="total" column="total" typeHandler="app.daos.primitives.Queries2DAO$findNumbers_TotalTypeHandler" />
+    <result property="nmbs" column="nmbs" typeHandler="app.daos.primitives.Queries2DAO$findNumbers_NmbsTypeHandler" />
+  </resultMap>
+
+  <select id="select_findNumbers" resultMap="result_map_select_findNumbers">
+      select sum(n) as total,
+             array_agg(1+2*n) as nmbs
+      from generate_series(1, 5) x(n);
+  </select>
+
+</mapper>
