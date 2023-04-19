@@ -1,6 +1,3 @@
-<?xml version="1.0"?>
-<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
-
 <hotrod>
 
   <generators>
@@ -12,8 +9,16 @@
     </mybatis-spring>
   </generators>
 
+  <converter name="double_converter"
+    java-type="java.lang.Double"
+    java-raw-type="java.lang.Integer"
+    class="app.DoubleConverter"
+  />
+  
   <table name="branch" />
-  <table name="employee" />
+  <table name="employee">
+    <column name="salary" converter="double_converter" />
+  </table>
 
   <dao name="Queries">
     <select method="findEmployees" vo="E">

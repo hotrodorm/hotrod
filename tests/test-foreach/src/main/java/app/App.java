@@ -15,6 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import app.daos.EVO;
+import app.daos.primitives.EmployeeDAO;
 import app.daos.primitives.QueriesDAO;
 
 @Configuration
@@ -28,6 +29,9 @@ public class App {
   private QueriesDAO queriesDAO;
 
   @Autowired
+  private EmployeeDAO employeeDAO;
+
+  @Autowired
   private LiveSQL sql;
 
   public static void main(String[] args) {
@@ -38,13 +42,17 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       System.out.println("[ Starting example ]");
-
-      searching();
+      converter();
+//      forEach();
       System.out.println("[ Example complete ]");
     };
   }
 
-  private void searching() {
+  private void converter() {
+    System.out.println("Employee:" + this.employeeDAO.select(123));
+  }
+
+  private void forEach() {
 
     List<Integer> ids = Arrays.asList(101, 102, 200);
     List<String> names = Arrays.asList("Alice", "Steve");

@@ -13,6 +13,7 @@ public class AbstractEVO implements Serializable {
   protected java.lang.Integer id = null;
   protected java.lang.String name = null;
   protected java.lang.Integer branchId = null;
+  protected java.lang.Integer salary = null;
 
   // getters & setters
 
@@ -43,6 +44,15 @@ public class AbstractEVO implements Serializable {
     this.propertiesChangeLog.branchIdWasSet = true;
   }
 
+  public final java.lang.Integer getSalary() {
+    return this.salary;
+  }
+
+  public final void setSalary(final java.lang.Integer salary) {
+    this.salary = salary;
+    this.propertiesChangeLog.salaryWasSet = true;
+  }
+
   // to string
 
   public String toString() {
@@ -50,7 +60,8 @@ public class AbstractEVO implements Serializable {
     sb.append(super.toString() + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- name=" + this.name + "\n");
-    sb.append("- branchId=" + this.branchId);
+    sb.append("- branchId=" + this.branchId + "\n");
+    sb.append("- salary=" + this.salary);
     return sb.toString();
   }
 
@@ -62,6 +73,7 @@ public class AbstractEVO implements Serializable {
     public boolean idWasSet = false;
     public boolean nameWasSet = false;
     public boolean branchIdWasSet = false;
+    public boolean salaryWasSet = false;
   }
 
 }

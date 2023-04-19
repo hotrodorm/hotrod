@@ -1,5 +1,7 @@
 package org.hotrod.runtime.converter;
 
+import java.sql.Connection;
+
 /**
  * 
  * @author Vladimir Alarcon
@@ -38,15 +40,13 @@ package org.hotrod.runtime.converter;
  *         property of this type.</li>
  *         </ul>
  *
- * @param <T>
- *          The transitional type.
- * @param <A>
- *          The application type.
+ * @param <R> The raw type read/written to the database.
+ * @param <A> The application type.
  */
-public interface TypeConverter<T, A> {
+public interface TypeConverter<R, A> {
 
-  A decode(T intermediateValue);
+  A decode(R raw, Connection conn);
 
-  T encode(A applicationValue);
+  R encode(A value, Connection conn);
 
 }

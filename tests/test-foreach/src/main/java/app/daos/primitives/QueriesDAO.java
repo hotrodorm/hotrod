@@ -16,6 +16,9 @@ import org.hotrod.runtime.interfaces.Selectable;
 
 import app.daos.EVO;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
@@ -28,6 +31,8 @@ import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
@@ -81,7 +86,7 @@ public class QueriesDAO implements Serializable, ApplicationContextAware {
     ParamFindEmployees param0 = new ParamFindEmployees();
     param0.ids = ids;
     param0.names = names;
-    return this.sqlSession.selectList("app.daos.primitives.queriesDAO.select_findEmployees", param0);
+    return this.sqlSession.selectList("mappers.queriesDAO.select_findEmployees", param0);
   }
 
 }

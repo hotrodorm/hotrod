@@ -14,6 +14,7 @@ public class AbstractEmployeeVO implements Serializable {
   protected java.lang.Integer id = null;
   protected java.lang.String name = null;
   protected java.lang.Integer branchId = null;
+  protected java.lang.Double salary = null;
 
   // getters & setters
 
@@ -41,6 +42,14 @@ public class AbstractEmployeeVO implements Serializable {
     this.branchId = branchId;
   }
 
+  public java.lang.Double getSalary() {
+    return this.salary;
+  }
+
+  public void setSalary(final java.lang.Double salary) {
+    this.salary = salary;
+  }
+
   // to string
 
   public String toString() {
@@ -48,7 +57,8 @@ public class AbstractEmployeeVO implements Serializable {
     sb.append( getClass().getName() + '@' + Integer.toHexString(hashCode()) + "\n");
     sb.append("- id=" + this.id + "\n");
     sb.append("- name=" + this.name + "\n");
-    sb.append("- branchId=" + this.branchId);
+    sb.append("- branchId=" + this.branchId + "\n");
+    sb.append("- salary=" + this.salary);
     return sb.toString();
   }
 
@@ -59,6 +69,7 @@ public class AbstractEmployeeVO implements Serializable {
     obj.addProperty("id", this.id);
     obj.addProperty("name", this.name);
     obj.addProperty("branchId", this.branchId);
+    obj.addProperty("salary", this.salary);
     return obj.render();
   }
 

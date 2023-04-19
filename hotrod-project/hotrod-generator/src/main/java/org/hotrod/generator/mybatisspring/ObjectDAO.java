@@ -1628,7 +1628,7 @@ public class ObjectDAO extends GeneratableObject {
 
   private void writeTypeHandler(final String property, final ColumnMetadata cm, final String typeHandlerClassName)
       throws IOException {
-    String interType = cm.getConverter().getJavaIntermediateType();
+    String interType = cm.getConverter().getJavaRawType();
     String type = cm.getConverter().getJavaType();
     String setter = cm.getConverter().getJdbcSetterMethod();
     String getter = cm.getConverter().getJdbcGetterMethod();
@@ -1643,41 +1643,41 @@ public class ObjectDAO extends GeneratableObject {
     println();
     println("    @Override");
     println("    public " + type + " getResult(final ResultSet rs, final String columnName) throws SQLException {");
-    println("      " + interType + " value = rs." + getter + "(columnName);");
+    println("      " + interType + " raw = rs." + getter + "(columnName);");
     println("      if (rs.wasNull()) {");
-    println("        value = null;");
+    println("        raw = null;");
     println("      }");
-    println("      return CONVERTER.decode(value);");
+    println("      return CONVERTER.decode(raw, rs.getStatement().getConnection());");
     println("    }");
     println();
     println("    @Override");
     println("    public " + type + " getResult(final ResultSet rs, final int columnIndex) throws SQLException {");
-    println("      " + interType + " value = rs." + getter + "(columnIndex);");
+    println("      " + interType + " raw = rs." + getter + "(columnIndex);");
     println("      if (rs.wasNull()) {");
-    println("        value = null;");
+    println("        raw = null;");
     println("      }");
-    println("      return CONVERTER.decode(value);");
+    println("      return CONVERTER.decode(raw, rs.getStatement().getConnection());");
     println("    }");
     println();
     println("    @Override");
     println(
         "    public " + type + " getResult(final CallableStatement cs, final int columnIndex) throws SQLException {");
-    println("      " + interType + " value = cs." + getter + "(columnIndex);");
+    println("      " + interType + " raw = cs." + getter + "(columnIndex);");
     println("      if (cs.wasNull()) {");
-    println("        value = null;");
+    println("        raw = null;");
     println("      }");
-    println("      return CONVERTER.decode(value);");
+    println("      return CONVERTER.decode(raw, cs.getConnection());");
     println("    }");
     println();
     println("    @Override");
     println("    public void setParameter(final PreparedStatement ps, final int columnIndex, final " + type
-        + " v, final JdbcType jdbcType)");
+        + " value, final JdbcType jdbcType)");
     println("        throws SQLException {");
-    println("      " + interType + " value = CONVERTER.encode(v);");
-    println("      if (value == null) {");
+    println("      " + interType + " raw = CONVERTER.encode(value, ps.getConnection());");
+    println("      if (raw == null) {");
     println("        ps.setNull(columnIndex, jdbcType.TYPE_CODE);");
     println("      } else {");
-    println("        ps." + setter + "(columnIndex, value);");
+    println("        ps." + setter + "(columnIndex, raw);");
     println("      }");
     println("    }");
     println();

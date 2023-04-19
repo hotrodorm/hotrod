@@ -261,7 +261,7 @@
   <xsd:complexType name="converter-type">
     <xsd:attribute name="name" type="xsd:string" use="required" />
     <xsd:attribute name="java-type" type="xsd:string" use="required" />
-    <xsd:attribute name="java-intermediate-type" type="xsd:string" use="required" />
+    <xsd:attribute name="java-raw-type" type="xsd:string" use="required"  />
     <xsd:attribute name="class" type="xsd:string" use="required" />
   </xsd:complexType>
 

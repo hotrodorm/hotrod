@@ -25,14 +25,15 @@ insert into branch (branch_id, branch_name) values (103, 'East');
 create table employee (
   id int primary key auto_increment,
   name varchar(20) not null,
-  branch_id int not null references branch (branch_id)
+  branch_id int not null references branch (branch_id),
+  salary int
 );
 
-insert into employee (id, name, branch_id) values (45, 'Anne', 100);
-insert into employee (id, name, branch_id) values (123, 'Alice', 102);
-insert into employee (id, name, branch_id) values (6097, 'Steve', 100);
-insert into employee (id, name, branch_id) values (599, 'Mary', 101);
-insert into employee (id, name, branch_id) values (6098, 'John', 103);
+insert into employee (id, name, branch_id, salary) values (45, 'Anne', 100, 500);
+insert into employee (id, name, branch_id, salary) values (123, 'Alice', 102, 600);
+insert into employee (id, name, branch_id, salary) values (6097, 'Steve', 100, 700);
+insert into employee (id, name, branch_id, salary) values (599, 'Mary', 101, 400);
+insert into employee (id, name, branch_id, salary) values (6098, 'John', 103, 550);
 
 
 create table schema2.account (

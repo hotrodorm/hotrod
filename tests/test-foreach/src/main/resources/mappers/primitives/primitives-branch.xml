@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="app.daos.primitives.branch">
+<mapper namespace="mappers.branch">
 
   <!-- columns -->
 
@@ -109,6 +109,12 @@
     </trim>
   </update>
 
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
+
   <!-- delete by example -->
 
   <delete id="deleteByExample">
@@ -122,5 +128,11 @@
       </if>
     </trim>
   </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
 
 </mapper>

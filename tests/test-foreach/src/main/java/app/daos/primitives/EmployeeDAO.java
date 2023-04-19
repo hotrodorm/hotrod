@@ -16,6 +16,17 @@ import org.hotrod.runtime.interfaces.OrderBy;
 import app.daos.primitives.AbstractEmployeeVO;
 import app.daos.EmployeeVO;
 
+import java.sql.SQLException;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
+import org.hotrod.runtime.converter.TypeConverter;
+
+import java.util.Map;
+import java.util.HashMap;
+
 import org.hotrod.runtime.livesql.expressions.ResultSetColumn;
 import org.hotrod.runtime.livesql.dialects.LiveSQLDialect;
 import org.hotrod.runtime.livesql.metadata.NumberColumn;
@@ -28,6 +39,8 @@ import org.hotrod.runtime.livesql.metadata.Table;
 import org.hotrod.runtime.livesql.expressions.predicates.Predicate;
 import org.hotrod.runtime.livesql.metadata.AllColumns;
 import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.hotrod.runtime.livesql.metadata.View;
 
 import org.springframework.stereotype.Component;
@@ -58,38 +71,38 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   // select by primary key
 
-  public app.daos.EmployeeVO selectByPK(final java.lang.Integer id) {
+  public app.daos.EmployeeVO select(final java.lang.Integer id) {
     if (id == null)
       return null;
     app.daos.EmployeeVO vo = new app.daos.EmployeeVO();
     vo.setId(id);
-    return this.sqlSession.selectOne("app.daos.primitives.employee.selectByPK", vo);
+    return this.sqlSession.selectOne("mappers.employee.selectByPK", vo);
   }
 
   // select by unique indexes: no unique indexes found (besides the PK) -- skipped
 
   // select by example
 
-  public List<app.daos.EmployeeVO> selectByExample(final app.daos.primitives.AbstractEmployeeVO example, final EmployeeOrderBy... orderBies)
+  public List<app.daos.EmployeeVO> select(final app.daos.primitives.AbstractEmployeeVO example, final EmployeeOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractEmployeeVO, EmployeeOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return this.sqlSession.selectList("app.daos.primitives.employee.selectByExample", dwo);
+    return this.sqlSession.selectList("mappers.employee.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.EmployeeVO> selectByExampleCursor(final app.daos.primitives.AbstractEmployeeVO example, final EmployeeOrderBy... orderBies)
+  public Cursor<app.daos.EmployeeVO> selectCursor(final app.daos.primitives.AbstractEmployeeVO example, final EmployeeOrderBy... orderBies)
       {
     DaoWithOrder<app.daos.primitives.AbstractEmployeeVO, EmployeeOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return new MyBatisCursor<app.daos.EmployeeVO>(this.sqlSession.selectCursor("app.daos.primitives.employee.selectByExample", dwo));
+    return new MyBatisCursor<app.daos.EmployeeVO>(this.sqlSession.selectCursor("mappers.employee.selectByExample", dwo));
   }
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.EmployeeVO> selectByCriteria(final EmployeeDAO.EmployeeTable from,
+  public CriteriaWherePhase<app.daos.EmployeeVO> select(final EmployeeDAO.EmployeeTable from,
       final Predicate predicate) {
     return new CriteriaWherePhase<app.daos.EmployeeVO>(from, this.liveSQLDialect, this.sqlSession,
-        predicate, "app.daos.primitives.employee.selectByCriteria");
+        predicate, "mappers.employee.selectByCriteria");
   }
 
   // select parent(s) by FKs: no imported keys found -- skipped
@@ -99,12 +112,13 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
   // insert
 
   public app.daos.EmployeeVO insert(final app.daos.primitives.AbstractEmployeeVO vo) {
-    String id = "app.daos.primitives.employee.insert";
+    String id = "mappers.employee.insert";
     int rows = this.sqlSession.insert(id, vo);
     app.daos.EmployeeVO mo = new app.daos.EmployeeVO();
     mo.setId(vo.getId());
     mo.setName(vo.getName());
     mo.setBranchId(vo.getBranchId());
+    mo.setSalary(vo.getSalary());
     return mo;
   }
 
@@ -112,28 +126,66 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
 
   public int update(final app.daos.EmployeeVO vo) {
     if (vo.id == null) return 0;
-    return this.sqlSession.update("app.daos.primitives.employee.updateByPK", vo);
+    return this.sqlSession.update("mappers.employee.updateByPK", vo);
   }
 
   // delete by PK
 
-  public int delete(final app.daos.EmployeeVO vo) {
+  public int delete(final java.lang.Integer id) {
+    if (id == null) return 0;
+    app.daos.EmployeeVO vo = new app.daos.EmployeeVO();
+    vo.setId(id);
     if (vo.id == null) return 0;
-    return this.sqlSession.delete("app.daos.primitives.employee.deleteByPK", vo);
+    return this.sqlSession.delete("mappers.employee.deleteByPK", vo);
   }
 
   // update by example
 
-  public int updateByExample(final app.daos.primitives.AbstractEmployeeVO example, final app.daos.primitives.AbstractEmployeeVO updateValues) {
+  public int update(final app.daos.primitives.AbstractEmployeeVO example, final app.daos.primitives.AbstractEmployeeVO updateValues) {
     UpdateByExampleDao<app.daos.primitives.AbstractEmployeeVO> fvd = //
       new UpdateByExampleDao<app.daos.primitives.AbstractEmployeeVO>(example, updateValues);
-    return this.sqlSession.update("app.daos.primitives.employee.updateByExample", fvd);
+    return this.sqlSession.update("mappers.employee.updateByExample", fvd);
   }
+
+  // update by criteria
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractEmployeeVO updateValues, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    if (updateValues.getBranchId() != null) values.put("branch_id", updateValues.getBranchId());
+    if (updateValues.getSalary() != null) values.put("salary", updateValues.getSalary());
+    return new UpdateSetCompletePhase(EmployeeDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "mappers.employee.updateByCriteria", predicate, values);
+  }
+
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractEmployeeVO updateValues, final EmployeeDAO.EmployeeTable tableOrView, final Predicate predicate) {
+    Map<String, Object> values = new HashMap<>();
+    if (updateValues.getId() != null) values.put("id", updateValues.getId());
+    if (updateValues.getName() != null) values.put("name", updateValues.getName());
+    if (updateValues.getBranchId() != null) values.put("branch_id", updateValues.getBranchId());
+    if (updateValues.getSalary() != null) values.put("salary", updateValues.getSalary());
+    return new UpdateSetCompletePhase(tableOrView, this.liveSQLDialect, this.sqlSession,
+      "mappers.employee.updateByCriteria", predicate, values);
+  }
+
 
   // delete by example
 
-  public int deleteByExample(final app.daos.primitives.AbstractEmployeeVO example) {
-    return this.sqlSession.delete("app.daos.primitives.employee.deleteByExample", example);
+  public int delete(final app.daos.primitives.AbstractEmployeeVO example) {
+    return this.sqlSession.delete("mappers.employee.deleteByExample", example);
+  }
+
+  // delete by criteria
+
+  public DeleteWherePhase delete(final Predicate predicate) {
+    return new DeleteWherePhase(EmployeeDAO.newTable(), this.liveSQLDialect, this.sqlSession,
+      "mappers.employee.deleteByCriteria", predicate);
+  }
+
+  public DeleteWherePhase delete(final EmployeeDAO.EmployeeTable from, final Predicate predicate) {
+    return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
+      "mappers.employee.deleteByCriteria", predicate);
   }
 
   // DAO ordering
@@ -151,7 +203,9 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     NAME$DESC_CASEINSENSITIVE_STABLE_FORWARD("employee", "lower(name), name", false), //
     NAME$DESC_CASEINSENSITIVE_STABLE_REVERSE("employee", "lower(name), name", true), //
     BRANCH_ID("employee", "branch_id", true), //
-    BRANCH_ID$DESC("employee", "branch_id", false);
+    BRANCH_ID$DESC("employee", "branch_id", false), //
+    SALARY("employee", "salary", true), //
+    SALARY$DESC("employee", "salary", false);
 
     private EmployeeOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -195,11 +249,12 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
     public NumberColumn id;
     public StringColumn name;
     public NumberColumn branchId;
+    public NumberColumn salary;
 
     // Getters
 
     public AllColumns star() {
-      return new AllColumns(this, this.id, this.name, this.branchId);
+      return new AllColumns(this, this.id, this.name, this.branchId, this.salary);
     }
 
     // Constructors
@@ -220,6 +275,53 @@ public class EmployeeDAO implements Serializable, ApplicationContextAware {
       this.id = new NumberColumn(this, "ID", "id", "INTEGER", 32, 0);
       this.name = new StringColumn(this, "NAME", "name", "CHARACTER VARYING", 20, 0);
       this.branchId = new NumberColumn(this, "BRANCH_ID", "branchId", "INTEGER", 32, 0);
+      this.salary = new NumberColumn(this, "SALARY", "salary", "INTEGER", 32, 0);
+    }
+
+  }
+
+  // TypeHandler for column SALARY using Converter app.DoubleConverter.
+
+  public static class SalaryTypeHandler implements TypeHandler<java.lang.Double> {
+
+    private static TypeConverter<java.lang.Integer, java.lang.Double> CONVERTER = new app.DoubleConverter();
+
+    @Override
+    public java.lang.Double getResult(final ResultSet rs, final String columnName) throws SQLException {
+      java.lang.Integer raw = rs.getInt(columnName);
+      if (rs.wasNull()) {
+        raw = null;
+      }
+      return CONVERTER.decode(raw, rs.getStatement().getConnection());
+    }
+
+    @Override
+    public java.lang.Double getResult(final ResultSet rs, final int columnIndex) throws SQLException {
+      java.lang.Integer raw = rs.getInt(columnIndex);
+      if (rs.wasNull()) {
+        raw = null;
+      }
+      return CONVERTER.decode(raw, rs.getStatement().getConnection());
+    }
+
+    @Override
+    public java.lang.Double getResult(final CallableStatement cs, final int columnIndex) throws SQLException {
+      java.lang.Integer raw = cs.getInt(columnIndex);
+      if (cs.wasNull()) {
+        raw = null;
+      }
+      return CONVERTER.decode(raw, cs.getConnection());
+    }
+
+    @Override
+    public void setParameter(final PreparedStatement ps, final int columnIndex, final java.lang.Double value, final JdbcType jdbcType)
+        throws SQLException {
+      java.lang.Integer raw = CONVERTER.encode(value, ps.getConnection());
+      if (raw == null) {
+        ps.setNull(columnIndex, jdbcType.TYPE_CODE);
+      } else {
+        ps.setInt(columnIndex, raw);
+      }
     }
 
   }

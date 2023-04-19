@@ -28,7 +28,7 @@ public class EntityColumnConverter {
   // Behavior
 
   public void write() throws IOException {
-    String interType = this.cm.getConverter().getJavaIntermediateType();
+    String interType = this.cm.getConverter().getJavaRawType();
     String type = this.cm.getConverter().getJavaType();
     String setter = this.cm.getConverter().getJdbcSetterMethod();
     String getter = this.cm.getConverter().getJdbcGetterMethod();

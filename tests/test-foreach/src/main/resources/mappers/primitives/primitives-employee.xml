@@ -2,26 +2,29 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="app.daos.primitives.employee">
+<mapper namespace="mappers.employee">
 
   <!-- columns -->
 
   <sql id="columns">
     id,
     name,
-    branch_id
+    branch_id,
+    salary
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
     ${alias}.name,
-    ${alias}.branch_id
+    ${alias}.branch_id,
+    ${alias}.salary
   </sql>
 
   <resultMap id="allColumns" type="app.daos.EmployeeVO">
     <id property="id" column="ID" />
     <result property="name" column="NAME" />
     <result property="branchId" column="BRANCH_ID" />
+    <result property="salary" column="SALARY" typeHandler="app.daos.primitives.EmployeeDAO$SalaryTypeHandler" />
   </resultMap>
 
   <!-- select by PK -->
@@ -52,6 +55,9 @@
       <if test="p.branchId != null">
         and branch_id = #{p.branchId,jdbcType=INTEGER}
       </if>
+      <if test="p.salary != null">
+        and salary = #{p.salary,jdbcType=INTEGER,typeHandler=app.daos.primitives.EmployeeDAO$SalaryTypeHandler}
+      </if>
     </trim>
     <if test="o != null">
       order by ${o}
@@ -72,12 +78,14 @@
         <if test="id != null">, id</if>
         <if test="true">, name</if>
         <if test="true">, branch_id</if>
+        <if test="true">, salary</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
         <if test="id != null">, #{id,jdbcType=INTEGER}</if>
         <if test="true">, #{name,jdbcType=VARCHAR}</if>
         <if test="true">, #{branchId,jdbcType=INTEGER}</if>
+        <if test="true">, #{salary,jdbcType=INTEGER,typeHandler=app.daos.primitives.EmployeeDAO$SalaryTypeHandler}</if>
       </trim>
       )
   </insert>
@@ -87,7 +95,8 @@
   <update id="updateByPK">
     update employee set
       name = #{name,jdbcType=VARCHAR},
-      branch_id = #{branchId,jdbcType=INTEGER}
+      branch_id = #{branchId,jdbcType=INTEGER},
+      salary = #{salary,jdbcType=INTEGER,typeHandler=app.daos.primitives.EmployeeDAO$SalaryTypeHandler}
      where
       id = #{id,jdbcType=INTEGER}
   </update>
@@ -108,6 +117,7 @@
       <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
       <if test="values.name != null">name = #{values.name,jdbcType=VARCHAR},</if>
       <if test="values.branchId != null">branch_id = #{values.branchId,jdbcType=INTEGER},</if>
+      <if test="values.salary != null">salary = #{values.salary,jdbcType=INTEGER,typeHandler=app.daos.primitives.EmployeeDAO$SalaryTypeHandler},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
@@ -119,8 +129,17 @@
       <if test="filter.branchId != null">
         and branch_id = #{filter.branchId,jdbcType=INTEGER}
       </if>
+      <if test="filter.salary != null">
+        and salary = #{filter.salary,jdbcType=INTEGER,typeHandler=app.daos.primitives.EmployeeDAO$SalaryTypeHandler}
+      </if>
     </trim>
   </update>
+
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
 
   <!-- delete by example -->
 
@@ -136,7 +155,16 @@
       <if test="branchId != null">
         and branch_id = #{branchId,jdbcType=INTEGER}
       </if>
+      <if test="salary != null">
+        and salary = #{salary,jdbcType=INTEGER,typeHandler=app.daos.primitives.EmployeeDAO$SalaryTypeHandler}
+      </if>
     </trim>
   </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
 
 </mapper>

@@ -25,7 +25,7 @@ public class ConverterTag extends AbstractConfigurationTag {
 
   private String name = null;
   private String javaType = null;
-  private String javaIntermediateType = null;
+  private String javaRawType = null;
   private String javaClass = null;
 
   private String jdbcGetterMethod;
@@ -49,9 +49,9 @@ public class ConverterTag extends AbstractConfigurationTag {
     this.javaType = javaType;
   }
 
-  @XmlAttribute(name = "java-intermediate-type")
-  public void setJavaIntermediateType(final String javaIntermediateType) {
-    this.javaIntermediateType = javaIntermediateType;
+  @XmlAttribute(name = "java-raw-type")
+  public void setJavaRawType(final String javaRawType) {
+    this.javaRawType = javaRawType;
   }
 
   @XmlAttribute(name = "class")
@@ -85,23 +85,23 @@ public class ConverterTag extends AbstractConfigurationTag {
           + "> must be a valid java full class name, but '" + this.javaType + "' was specified.");
     }
 
-    // java-intermediate-type
+    // java-raw-type
 
-    if (SUtil.isEmpty(this.javaIntermediateType)) {
+    if (SUtil.isEmpty(this.javaRawType)) {
       throw new InvalidConfigurationFileException(this,
-          "Attribute 'java-intermediate-type' of tag <" + super.getTagName() + "> cannot be empty.");
+          "Attribute 'java-raw-type' of tag <" + super.getTagName() + "> cannot be empty.");
     }
-    if (!this.javaIntermediateType.matches(FULL_CLASS_NAME_PATTERN)) {
+    if (!this.javaRawType.matches(FULL_CLASS_NAME_PATTERN)) {
       throw new InvalidConfigurationFileException(this,
-          "Attribute 'java-intermediate-type' of tag <" + super.getTagName()
-              + "> must be a valid java full class name, but '" + this.javaIntermediateType + "' was specified.");
+          "Attribute 'java-raw-type' of tag <" + super.getTagName()
+              + "> must be a valid java full class name, but '" + this.javaRawType + "' was specified.");
     }
-    Accessors gs = ACCESSORS.get(this.javaIntermediateType);
+    Accessors gs = ACCESSORS.get(this.javaRawType);
     if (gs == null) {
 
       String types = ListWriter.render(new ArrayList<String>(ACCESSORS.keySet()), "", " - ", "\n", "", "", "");
       throw new InvalidConfigurationFileException(this,
-          "Unsupported java-intermediate-type '" + this.javaIntermediateType + "' on tag <" + super.getTagName()
+          "Unsupported java-raw-type '" + this.javaRawType + "' on tag <" + super.getTagName()
               + ">. No simple JDBC getter and setter found for this type. " + "The supported types are:\n" + types);
     }
     this.jdbcGetterMethod = gs.getGetter();
@@ -190,8 +190,8 @@ public class ConverterTag extends AbstractConfigurationTag {
     return javaType;
   }
 
-  public String getJavaIntermediateType() {
-    return javaIntermediateType;
+  public String getJavaRawType() {
+    return javaRawType;
   }
 
   public String getJavaClass() {
