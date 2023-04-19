@@ -23,8 +23,16 @@ This tag can include the following attributes:
 | -- | -- | -- |
 | `name` | The converter name. It's used to reference a converter | Required |
 | `java-type` | The application property type that VOs have. This is the converted value | Required |
-| `java-intermediate-type` | The unconverted raw Java type used by the converter class to read or write values to and from the database | Required |
+| `java-raw-type` | The unconverted raw Java type used by the converter class to read or write values to and from the database | Required |
 | `class` | The full Java class name that implements the converter logic | Required |
+
+
+## Changes in Version 4
+
+Version 4 includes a couple of changes in the converter. Namely:
+
+- The attribute `java-intermediate-type` was renamed to `java-raw-type`.
+- The `decode()` and `encode()` methods now include the extra parameter `Connection conn`. This is necessary for some JDBC drivers that require the connection information to process values coming and going to the database. For example, PostgreSQL requires it when sending data to a column of type array.
 
 
 ## Usage
@@ -41,15 +49,14 @@ and also to column of Nitro queries.
 
 ## Java Converter Class
 
-The Java converter class is a POJO that implements the `org.hotrod.runtime.converter.TypeConverter<T, A>` interface. This is a very 
-simple interface, shown below:
+The Java converter class is a POJO that implements the `org.hotrod.runtime.converter.TypeConverter<R, A>` interface. This interface is shown below:
 
 ```java
-public interface TypeConverter<T, A> {
+public interface TypeConverter<R, A> {
 
-  A decode(T intermediateValue);
+  A decode(R raw, Connection conn);
 
-  T encode(A applicationValue);
+  R encode(A value, Connection conn);
 
 }
 ```
@@ -83,6 +90,7 @@ In this example the converter Java class can look like:
 ```java
 package com.ctac.converters;
 
+import java.sql.Connection;
 import org.hotrod.runtime.converter.TypeConverter;
 
 public class ShortBooleanConverter implements TypeConverter<Short, Boolean> {
@@ -93,17 +101,17 @@ public class ShortBooleanConverter implements TypeConverter<Short, Boolean> {
   // Decoding is used when reading from the database
 
   @Override
-  public Boolean decode(Short value) {
-    if (value == null) {
+  public Boolean decode(Short raw, Connection conn) {
+    if (raw == null) {
       return null;
     }
-    return !FALSE.equals(value); // Anything read that is different from zero is considered true
+    return !FALSE.equals(raw); // Anything read that is different from zero is considered true
   }
 
   // Encoding is used when writing to the database
 
   @Override
-  public Short encode(Boolean value) {
+  public Short encode(Boolean value, Connection conn) {
     if (value == null) {
       return null;
     }
@@ -118,7 +126,7 @@ This converter can be defined in the configuration file with the `<converter>` t
 ```xml
   <converter name="boolean_stored_as_decimal"
     java-type="java.lang.Boolean"
-    java-intermediate-type="java.lang.Short"
+    java-raw-type="java.lang.Short"
     class="com.ctac.converters.ShortBooleanConverter"
   />
 ```
