@@ -140,9 +140,8 @@ Once this converter is defined, it can be used in the `<column>`tag as:
   </table>
 ```
 
-**Note**: For a general approach of applying the converter to multiple columns, it can be more scalable to 
-use a `<type-solver>` that can automatically apply converters to columns according to the logic the developer
-defines.
+**Note**: Instead of defining the converter for each column, a more general approach is to use `<type-solver>`. Type Solvers 
+can automatically apply converters to columns according to the logic defined by the developer.
 
 When look at the generated persistence code we can see the configured VO properties are available
  as a `Boolean` type, not as numeric anymore:
@@ -223,9 +222,8 @@ Once this converter is defined, it can be used in the `<column>`tag as:
   </table>
 ```
 
-**Note**: For a general approach of applying the converter to multiple columns, it can be more scalable to 
-use a `<type-solver>` that can automatically apply converters to columns according to the logic the developer
-defines.
+**Note**: Instead of defining the converter for each column, a more general approach is to use `<type-solver>`. Type Solvers 
+can automatically apply converters to columns according to the logic defined by the developer.
 
 Then, retriving and saving data to the database using the property `cards` in the PlayerVO is trivial, since it's 
 a traditional `java.lang.Integer[]`. For example, the application code could look like:
