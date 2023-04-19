@@ -62,7 +62,7 @@ public interface TypeConverter<R, A> {
 ```
 
 
-## Example 1 &ndash; Boolean stored as a Number
+## Example 1 &ndash; Boolean Stored as a Number
 
 Let's consider the case of an Oracle database column `DECIMAL(4)` that is used to represent a boolean value &mdash; a type that 
 Oracle does not support. The column considers the numeric values zero (0) as `false` and one (1) as `true`. The table could be 
@@ -139,6 +139,10 @@ Once this converter is defined, it can be used in the `<column>`tag as:
     <column name="recurring" converter="boolean_stored_as_decimal" />
   </table>
 ```
+
+**Note**: For a general approach of applying the converter to multiple columns, it can be more scalable to 
+use a `<type-solver>` that can automatically apply converters to columns according to the logic the developer
+defines.
 
 When look at the generated persistence code we can see the configured VO properties are available
  as a `Boolean` type, not as numeric anymore:
@@ -218,6 +222,10 @@ Once this converter is defined, it can be used in the `<column>`tag as:
     <column name="cards" converter="integer_array_converter" />
   </table>
 ```
+
+**Note**: For a general approach of applying the converter to multiple columns, it can be more scalable to 
+use a `<type-solver>` that can automatically apply converters to columns according to the logic the developer
+defines.
 
 Then, retriving and saving data to the database using the property `cards` in the PlayerVO is trivial, since it's 
 a traditional `java.lang.Integer[]`. For example, the application code could look like:
