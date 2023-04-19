@@ -2,6 +2,8 @@ package app;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.mybatis.spring.annotation.MapperScan;
@@ -15,7 +17,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import app.daos.EVO;
+import app.daos.PlayerMODEL;
 import app.daos.primitives.EmployeeDAO;
+import app.daos.primitives.PlayerDAO;
 import app.daos.primitives.QueriesDAO;
 
 @Configuration
@@ -32,6 +36,9 @@ public class App {
   private EmployeeDAO employeeDAO;
 
   @Autowired
+  private PlayerDAO playerDAO;
+
+  @Autowired
   private LiveSQL sql;
 
   public static void main(String[] args) {
@@ -42,10 +49,20 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       System.out.println("[ Starting example ]");
-      converter();
+      converterPGArray();
+//      converter();
 //      forEach();
       System.out.println("[ Example complete ]");
     };
+  }
+
+  private void converterPGArray() {
+    PlayerMODEL p = this.playerDAO.select(101);
+    System.out.println("> Player:" + p.getId() + " cards="
+        + Stream.of(p.getCards()).map(c -> "" + c).collect(Collectors.joining("|")));
+    p.setCards(new Integer[] { 7, 8, 8, 9 });
+    this.playerDAO.update(p);
+    System.out.println("> Player updated.");
   }
 
   private void converter() {

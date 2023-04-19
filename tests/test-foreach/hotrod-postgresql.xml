@@ -1,11 +1,9 @@
-<?xml version="1.0"?>
-<!DOCTYPE hotrod SYSTEM "hotrod.dtd">
-
 <hotrod>
 
   <generators>
     <mybatis-spring>
 
+<!--
       <discover>
         <current-schema>
           <exclude name="employee" />
@@ -16,12 +14,10 @@
         <schema name="schema3">
           <exclude name="code" />
         </schema>
-<!--
-        <current-schema />
--->
       </discover>
+-->
 
-      <daos package="com.myapp.daos" dao-suffix="DAO" vo-suffix="MODEL" abstract-vo-prefix=""
+      <daos package="app.daos" dao-suffix="DAO" vo-suffix="MODEL" abstract-vo-prefix=""
         abstract-vo-suffix="VO" />
       <mappers dir="mappers" />
 <!--
@@ -30,6 +26,16 @@
 -->
     </mybatis-spring>
   </generators>
+
+  <converter name="integer_array_converter"
+    java-type="Integer[]"
+    java-raw-type="java.sql.Array"
+    class="app.IntegerArrayConverter"
+  />
+
+  <table name="player">
+    <column name="cards" converter="integer_array_converter" />
+  </table>
 
 <!--
   <table name="branch" />
