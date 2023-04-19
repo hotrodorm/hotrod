@@ -54,15 +54,15 @@ The Java converter class is a POJO that implements the `org.hotrod.runtime.conve
 ```java
 public interface TypeConverter<R, A> {
 
-  A decode(R raw, Connection conn);
+  A decode(R raw, Connection conn) throws SQLException; // used when reading from the database
 
-  R encode(A value, Connection conn);
+  R encode(A value, Connection conn) throws SQLException; // used when writing to the database
 
 }
 ```
 
 
-## Example
+## Example 1 &ndash; Boolean stored as a Number
 
 Let's consider the case of an Oracle database column `DECIMAL(4)` that is used to represent a boolean value &mdash; a type that 
 Oracle does not support. The column considers the numeric values zero (0) as `false` and one (1) as `true`. The table could be 
@@ -159,6 +159,78 @@ public class PatientVO implements Serializable {
 
 }
 ```
+
+
+## Example 2 &ndash; Using an Array of Integers in PostgreSQL
+
+Let's consider the case of a PostgreSQL database column `INT[]` that is used to represent the list of cards each player holds.
+The table could be created as:
+
+```sql
+create table player (
+  id int primary key not null,
+  cards int[]
+);
+```
+
+In this example the converter Java class can look like:
+
+```java
+package app;
+
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import org.hotrod.runtime.converter.TypeConverter;
+
+public class IntegerArrayConverter implements TypeConverter<java.sql.Array, Integer[]> {
+
+  @Override
+  public Integer[] decode(Array raw, Connection conn) throws SQLException {
+    if (raw == null)
+      return null;
+    return (Integer[]) raw.getArray();
+  }
+
+  @Override
+  public Array encode(Integer[] value, Connection conn) throws SQLException {
+    return conn.createArrayOf("integer", value);
+  }
+
+}
+```
+
+This converter can be defined in the configuration file with the `<converter>` tag as in:
+
+```xml
+  <converter name="integer_array_converter"
+    java-type="Integer[]"
+    java-raw-type="java.sql.Array"
+    class="app.IntegerArrayConverter"
+  />
+```
+
+Once this converter is defined, it can be used in the `<column>`tag as:
+
+```xml
+  <table name="player">
+    <column name="cards" converter="integer_array_converter" />
+  </table>
+```
+
+Then, retriving and saving data to the database using the property `cards` in the PlayerVO is trivial, since it's 
+a traditional `java.lang.Integer[]`. For example, the application code could look like:
+
+```java
+  PlayerVO p = this.playerDAO.select(101);
+  Integer[] cards = p.getCards();
+  p.setCards(new Integer[] { 7, 8, 8, 9 });
+  this.playerDAO.update(p);
+```
+
+
+
 
 
 
