@@ -1,6 +1,7 @@
 package org.hotrod.runtime.converter;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * 
@@ -45,8 +46,8 @@ import java.sql.Connection;
  */
 public interface TypeConverter<R, A> {
 
-  A decode(R raw, Connection conn);
+  A decode(R raw, Connection conn) throws SQLException;
 
-  R encode(A value, Connection conn);
+  R encode(A value, Connection conn) throws SQLException;
 
 }

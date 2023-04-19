@@ -1639,7 +1639,7 @@ public class ObjectDAO extends GeneratableObject {
     println();
     println("  public static class " + typeHandlerClassName + " implements TypeHandler<" + type + "> {");
     println();
-    println("    private static TypeConverter<" + interType + ", " + type + "> CONVERTER = new " + converter + "();");
+    println("    private static final TypeConverter<" + interType + ", " + type + "> CONVERTER = new " + converter + "();");
     println();
     println("    @Override");
     println("    public " + type + " getResult(final ResultSet rs, final String columnName) throws SQLException {");
