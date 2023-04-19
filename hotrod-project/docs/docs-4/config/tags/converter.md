@@ -140,7 +140,7 @@ Once this converter is defined, it can be used in the `<column>`tag as:
   </table>
 ```
 
-**Note**: Instead of defining the converter for each column, a more general approach is to use `<type-solver>`. Type Solvers 
+**Note**: Instead of defining the converter for each column, a more general approach is to use `<type-solver>`s. Type Solvers 
 can automatically apply converters to columns according to the logic defined by the developer.
 
 When look at the generated persistence code we can see the configured VO properties are available
@@ -222,7 +222,7 @@ Once this converter is defined, it can be used in the `<column>`tag as:
   </table>
 ```
 
-**Note**: Instead of defining the converter for each column, a more general approach is to use `<type-solver>`. Type Solvers 
+**Note**: Instead of defining the converter for each column, a more general approach is to use `<type-solver>`s. Type Solvers 
 can automatically apply converters to columns according to the logic defined by the developer.
 
 Then, retriving and saving data to the database using the property `cards` in the PlayerVO is trivial, since it's 
