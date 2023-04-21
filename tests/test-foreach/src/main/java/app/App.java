@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import org.hotrod.runtime.livesql.LiveSQL;
 import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
 import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
+import org.hotrod.runtime.livesql.queries.select.CriteriaWherePhase;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -100,7 +101,9 @@ public class App {
     System.out.println("Delete SQL:" + d.getPreview());
     d.execute();
 
-    for (Car_part_priceVO vo : this.cppDAO.select(p, p.part_.eq(p.part_)).execute()) {
+    CriteriaWherePhase<Car_part_priceVO> s2 = this.cppDAO.select(p, p.part_.eq(p.part_));
+    System.out.println("Select SQL:" + s2.getPreview());
+    for (Car_part_priceVO vo : s2.execute()) {
       System.out.println("> CPP=" + vo);
     }
 
