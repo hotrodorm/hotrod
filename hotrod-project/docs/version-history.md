@@ -5,7 +5,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 ## 4.0.0 (alpha, unreleased)
 - Core: Support for multiple datasources.
 - LiveSQL: LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
-- `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping.
+- CRUD: `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping.
 - Config: Configuration property `generator` removed.
 - Nitro: Nitro defaults to `result-set` generation now. The `<select-generation>` tag can be omitted by default.
 - CRUD: Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
@@ -13,6 +13,7 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - Core: Reusing JDBC connection when using result-set processor.
 - Core: Schema auto-discovery implemented.
 - Core: Converters enhanced with Connection details.
+- Core: Converters fixed in `<dao>` tags.
 - Config: DTD declarations are now removed from config files.
 - LiveSQL: Oracle MOD() function fixed.
 - DynamicSQL: `<foreach>` fixed.
@@ -30,26 +31,26 @@ Libraries for these versions can be downloaded from any Maven Repository mirror.
 - Config: backport of default values for the `<mappers>` tag. It can be now omitted in the configuration file.
 
 ## 3.5.0
-- Backport of "implements" and DAO wiring for VOs.
-- Backport of method wildcard `*`; method star().
+- CRUD: Backport of "implements" and DAO wiring for VOs.
+- LiveSQL: Backport of method wildcard `*`; method star().
 
 ## 3.4.14
-- Adding support for tables with identical names in different schemas.
+- Core: Adding support for tables with identical names in different schemas.
 
 ## 3.4.13
-- Fixing treatment of identical Oracle metadata in multiple schemas. In this case the DBA copied a schema as a backup and 
+- Core: Fixing treatment of identical Oracle metadata in multiple schemas. In this case the DBA copied a schema as a backup and 
 this created confusion in HotRod's metadata. 
 
 ## 3.4.12
-- Removing `propertiesChangeLog` in VOs.
-- Adding row parser.
-- Fixing `updateByExample()`.
+- CRUD: Removing `propertiesChangeLog` in VOs.
+- LiveSQL: Adding row parser.
+- CRUD: Fixing `updateByExample()`.
 
 ## 3.4.11
-- Fixing CRUD insert.
+- CRUD: Fixing CRUD insert.
 
 ## 3.4.10
-- Removing `abstract` from model VOs.
+- CRUD: Removing `abstract` from model VOs.
 
 ## 3.4.9
 - Full documentation for version 3 and 4 in the GitHub repo/pages.
