@@ -3,16 +3,56 @@
 Libraries for these versions can be downloaded from any Maven Repository mirror. For example, they can be found in Maven Central Repository at [org.hotrodorm.hotrod](https://search.maven.org/search?q=g:org.hotrodorm.hotrod).
 
 ## 4.0.0 (alpha, unreleased)
-- Support for multiple datasources.
-- LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
+- Core: Support for multiple datasources.
+- LiveSQL: LiveSQL now returns `List<Row>` and `Cursor<Row>` instead of `List<Map<String, Object>>` and `Cursor<Map<String, Object>>`.
 - `propertiesChangeLog` is now removed from VOs to facilitate quick Spring prototyping.
-- Configuration property `generator` removed.
-- Nitro defaults to `result-set` generation now. The `<select-generation>` tag can be omitted by default.
-- Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
-- Default values for the `<mappers>` tag. It can be now omitted in the configuration file.
-- Reusing JDBC connection when using result-set processor.
-- Schema auto-discovery implemented.
+- Config: Configuration property `generator` removed.
+- Nitro: Nitro defaults to `result-set` generation now. The `<select-generation>` tag can be omitted by default.
+- CRUD: Classic FK Navigation is now enabled by default. The `<classic-fk-navigation>` tag can be omitted now.
+- Config: Default values for the `<mappers>` tag. It can be now omitted in the configuration file.
+- Core: Reusing JDBC connection when using result-set processor.
+- Core: Schema auto-discovery implemented.
+- Core: Converters enhanced with Connection details.
+- Config: DTD declarations are now removed from config files.
+- LiveSQL: Oracle MOD() function fixed.
+- DynamicSQL: `<foreach>` fixed.
+- LiveSQL: column wildcard `*` implemented including filtering and aliasing.
+- CRUD: Added "implements" for DAO classes.
+- CRUD: Methods renamed.
+- LiveSQL: Implemented basic versions of INSERT, UPDATE, and DELETE.
+- LiveSQL: Added DUAL and SYSDUMMY1 for queries without tables.
+- LiveSQL: Adding row parser. 
 
+## 3.5.1-SNAPSHOT
+- LiveSQL: backport of filtering and aliasing for the star() method.
+- LiveSQL: backport Oracle MOD() function bugfix.
+- DynamicSQL: backport of `<foreach>` bugfix.
+- Config: backport of default values for the `<mappers>` tag. It can be now omitted in the configuration file.
+
+## 3.5.0
+- Backport of "implements" and DAO wiring for VOs.
+- Backport of method wildcard `*`; method star().
+
+## 3.4.14
+- Adding support for tables with identical names in different schemas.
+
+## 3.4.13
+- Fixing treatment of identical Oracle metadata in multiple schemas. In this case the DBA copied a schema as a backup and 
+this created confusion in HotRod's metadata. 
+
+## 3.4.12
+- Removing `propertiesChangeLog` in VOs.
+- Adding row parser.
+- Fixing `updateByExample()`.
+
+## 3.4.11
+- Fixing CRUD insert.
+
+## 3.4.10
+- Removing `abstract` from model VOs.
+
+## 3.4.9
+- Full documentation for version 3 and 4 in the GitHub repo/pages.
 
 ## 3.4.8
 - Adding support for H2 version 2.x.
