@@ -1,0 +1,47 @@
+<hotrod>
+
+  <generators>
+    <mybatis-spring>
+      <discover>
+        <schema name="schema2">
+          <exclude name="x" />
+          <exclude name="y" />
+        </schema>
+      </discover>
+      <daos package="app.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract"
+        abstract-vo-suffix="VO" />
+      <mappers dir="mappers" />
+    </mybatis-spring>
+  </generators>
+
+  <table name="x_house" />
+
+
+<!--
+ -->
+ 
+<!--
+  <table name="branch" />
+  <table name="employee" />
+
+  <dao name="Queries">
+    <select method="findEmployees" vo="E">
+      <parameter name="ids" java-type="java.util.List&lt;Integer>" jdbc-type="NUMERIC" />
+      <parameter name="names" java-type="java.util.List&lt;String>" jdbc-type="VARCHAR" />
+      select *
+      from employee
+      <complement>
+        where branch_id in
+        <foreach item="id" collection="ids" open="(" separator=", " close=")">
+          ${id}
+        </foreach>
+        or name in
+        <foreach item="name" collection="names" open="(" separator=", " close=")">
+          '${name}'
+        </foreach>
+      </complement>
+    </select>
+  </dao>
+-->
+
+</hotrod>
