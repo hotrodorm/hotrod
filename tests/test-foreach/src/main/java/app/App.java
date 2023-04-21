@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.hotrod.runtime.livesql.LiveSQL;
+import org.hotrod.runtime.livesql.queries.DeleteWherePhase;
+import org.hotrod.runtime.livesql.queries.UpdateSetCompletePhase;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -16,11 +18,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import app.daos.EVO;
-import app.daos.PlayerMODEL;
-import app.daos.primitives.EmployeeDAO;
+import app.daos.Car_part_priceVO;
+import app.daos.PlayerVO;
+import app.daos.primitives.Car_part_priceDAO;
+import app.daos.primitives.Car_part_priceDAO.Car_part_priceTable;
 import app.daos.primitives.PlayerDAO;
-import app.daos.primitives.QueriesDAO;
 
 @Configuration
 @SpringBootApplication
@@ -29,14 +31,17 @@ import app.daos.primitives.QueriesDAO;
 @MapperScan(basePackageClasses = LiveSQL.class)
 public class App {
 
-  @Autowired
-  private QueriesDAO queriesDAO;
-
-  @Autowired
-  private EmployeeDAO employeeDAO;
+//  @Autowired
+//  private QueriesDAO queriesDAO;
+//
+//  @Autowired
+//  private EmployeeDAO employeeDAO;
 
   @Autowired
   private PlayerDAO playerDAO;
+
+  @Autowired
+  private Car_part_priceDAO cppDAO;
 
   @Autowired
   private LiveSQL sql;
@@ -49,7 +54,9 @@ public class App {
   public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
     return args -> {
       System.out.println("[ Starting example ]");
-      converterPGArray();
+//      converterPGArray();
+//      updateByCriteria();
+      deleteByCriteria();
 //      converter();
 //      forEach();
       System.out.println("[ Example complete ]");
@@ -57,7 +64,7 @@ public class App {
   }
 
   private void converterPGArray() {
-    PlayerMODEL p = this.playerDAO.select(101);
+    PlayerVO p = this.playerDAO.select(101);
     System.out.println("> Player:" + p.getId() + " cards="
         + Stream.of(p.getCards()).map(c -> "" + c).collect(Collectors.joining("|")));
     p.setCards(new Integer[] { 7, 8, 8, 9 });
@@ -65,8 +72,42 @@ public class App {
     System.out.println("> Player updated.");
   }
 
+  private void updateByCriteria() {
+    System.out.println("> updateByCriteria()");
+    Car_part_priceTable p = Car_part_priceDAO.newTable("p");
+
+    Car_part_priceVO updateValues = new Car_part_priceVO();
+    updateValues.set_discount(250);
+    updateValues.setPrice_dollar(150);
+    UpdateSetCompletePhase u = this.cppDAO.update(updateValues, p, p.part_.eq(1));
+    System.out.println("Update SQL:" + u.getPreview());
+    u.execute();
+
+    for (Car_part_priceVO vo : this.cppDAO.select(p, p.part_.eq(p.part_)).execute()) {
+      System.out.println("> CPP=" + vo);
+    }
+
+  }
+
+  private void deleteByCriteria() {
+    System.out.println("> deleteByCriteria()");
+    Car_part_priceTable p = Car_part_priceDAO.newTable("p");
+
+    Car_part_priceVO updateValues = new Car_part_priceVO();
+    updateValues.set_discount(250);
+    updateValues.setPrice_dollar(150);
+    DeleteWherePhase d = this.cppDAO.delete(p, p.part_.eq(2));
+    System.out.println("Delete SQL:" + d.getPreview());
+    d.execute();
+
+    for (Car_part_priceVO vo : this.cppDAO.select(p, p.part_.eq(p.part_)).execute()) {
+      System.out.println("> CPP=" + vo);
+    }
+
+  }
+
   private void converter() {
-    System.out.println("Employee:" + this.employeeDAO.select(123));
+//    System.out.println("Employee:" + this.employeeDAO.select(123));
   }
 
   private void forEach() {
@@ -74,11 +115,11 @@ public class App {
     List<Integer> ids = Arrays.asList(101, 102, 200);
     List<String> names = Arrays.asList("Alice", "Steve");
 
-    List<EVO> evos = this.queriesDAO.findEmployees(ids, names);
-    System.out.println("EVOs:");
-    for (EVO evo : evos) {
-      System.out.println(evo);
-    }
+//    List<EVO> evos = this.queriesDAO.findEmployees(ids, names);
+//    System.out.println("EVOs:");
+//    for (EVO evo : evos) {
+//      System.out.println(evo);
+//    }
 
   }
 

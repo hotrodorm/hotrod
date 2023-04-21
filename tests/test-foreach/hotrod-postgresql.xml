@@ -3,21 +3,21 @@
   <generators>
     <mybatis-spring>
 
-<!--
       <discover>
         <current-schema>
           <exclude name="employee" />
         </current-schema>
+      </discover>
+<!--
         <schema name="schema2">
           <exclude name="prices" />
         </schema>
         <schema name="schema3">
           <exclude name="code" />
         </schema>
-      </discover>
 -->
 
-      <daos package="app.daos" dao-suffix="DAO" vo-suffix="MODEL" abstract-vo-prefix=""
+      <daos package="app.daos" dao-suffix="DAO" vo-suffix="VO" abstract-vo-prefix="Abstract"
         abstract-vo-suffix="VO" />
       <mappers dir="mappers" />
 <!--
@@ -33,10 +33,15 @@
     class="app.IntegerArrayConverter"
   />
 
+  <table name="codes" column-seam="_" />
+
   <table name="player">
     <column name="cards" converter="integer_array_converter" />
   </table>
 
+<!--
+ -->
+ 
 <!--
   <table name="branch" />
   <table name="employee" />

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.island">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    segment,
+    x_start,
+    x_end,
+    height
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.segment,
+    ${alias}.x_start,
+    ${alias}.x_end,
+    ${alias}.height
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.IslandVO">
+    <result property="id" column="id" />
+    <result property="segment" column="segment" />
+    <result property="xStart" column="x_start" />
+    <result property="xEnd" column="x_end" />
+    <result property="height" column="height" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.island
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id != null">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.segment != null">
+        and segment = #{p.segment,jdbcType=INTEGER}
+      </if>
+      <if test="p.xStart != null">
+        and x_start = #{p.xStart,jdbcType=INTEGER}
+      </if>
+      <if test="p.xEnd != null">
+        and x_end = #{p.xEnd,jdbcType=INTEGER}
+      </if>
+      <if test="p.height != null">
+        and height = #{p.height,jdbcType=INTEGER}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into public.island (
+      <trim prefixOverrides=", ">
+        <if test="true">, id</if>
+        <if test="true">, segment</if>
+        <if test="true">, x_start</if>
+        <if test="true">, x_end</if>
+        <if test="true">, height</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{segment,jdbcType=INTEGER}</if>
+        <if test="true">, #{xStart,jdbcType=INTEGER}</if>
+        <if test="true">, #{xEnd,jdbcType=INTEGER}</if>
+        <if test="true">, #{height,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update public.island
+    <set>
+      <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.segment != null">segment = #{values.segment,jdbcType=INTEGER},</if>
+      <if test="values.xStart != null">x_start = #{values.xStart,jdbcType=INTEGER},</if>
+      <if test="values.xEnd != null">x_end = #{values.xEnd,jdbcType=INTEGER},</if>
+      <if test="values.height != null">height = #{values.height,jdbcType=INTEGER},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id != null">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.segment != null">
+        and segment = #{filter.segment,jdbcType=INTEGER}
+      </if>
+      <if test="filter.xStart != null">
+        and x_start = #{filter.xStart,jdbcType=INTEGER}
+      </if>
+      <if test="filter.xEnd != null">
+        and x_end = #{filter.xEnd,jdbcType=INTEGER}
+      </if>
+      <if test="filter.height != null">
+        and height = #{filter.height,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </update>
+
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from public.island
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id != null">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="segment != null">
+        and segment = #{segment,jdbcType=INTEGER}
+      </if>
+      <if test="xStart != null">
+        and x_start = #{xStart,jdbcType=INTEGER}
+      </if>
+      <if test="xEnd != null">
+        and x_end = #{xEnd,jdbcType=INTEGER}
+      </if>
+      <if test="height != null">
+        and height = #{height,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
+
+</mapper>

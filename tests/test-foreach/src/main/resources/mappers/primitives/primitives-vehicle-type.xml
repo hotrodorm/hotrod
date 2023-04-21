@@ -2,23 +2,23 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mappers.player">
+<mapper namespace="mappers.vehicleType">
 
   <!-- columns -->
 
   <sql id="columns">
     id,
-    cards
+    description
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
-    ${alias}.cards
+    ${alias}.description
   </sql>
 
-  <resultMap id="allColumns" type="app.daos.PlayerVO">
+  <resultMap id="allColumns" type="app.daos.VehicleTypeVO">
     <id property="id" column="id" />
-    <result property="cards" column="cards" typeHandler="app.daos.primitives.PlayerDAO$CardsTypeHandler" />
+    <result property="description" column="description" />
   </resultMap>
 
   <!-- select by PK -->
@@ -26,7 +26,7 @@
   <select id="selectByPK" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.player
+     from public.vehicle_type
      where
       id = #{id,jdbcType=INTEGER}
   </select>
@@ -38,13 +38,13 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.player
+     from public.vehicle_type
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
         and id = #{p.id,jdbcType=INTEGER}
       </if>
-      <if test="p.cards != null">
-        and cards = #{p.cards,jdbcType=ARRAY,typeHandler=app.daos.primitives.PlayerDAO$CardsTypeHandler}
+      <if test="p.description != null">
+        and description = #{p.description,jdbcType=VARCHAR}
       </if>
     </trim>
     <if test="o != null">
@@ -61,15 +61,15 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into public.player (
+    insert into public.vehicle_type (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
-        <if test="true">, cards</if>
+        <if test="true">, description</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
         <if test="true">, #{id,jdbcType=INTEGER}</if>
-        <if test="true">, #{cards,jdbcType=ARRAY,typeHandler=app.daos.primitives.PlayerDAO$CardsTypeHandler}</if>
+        <if test="true">, #{description,jdbcType=VARCHAR}</if>
       </trim>
       )
   </insert>
@@ -77,8 +77,8 @@
   <!-- update by PK -->
 
   <update id="updateByPK">
-    update public.player set
-      cards = #{cards,jdbcType=ARRAY,typeHandler=app.daos.primitives.PlayerDAO$CardsTypeHandler}
+    update public.vehicle_type set
+      description = #{description,jdbcType=VARCHAR}
      where
       id = #{id,jdbcType=INTEGER}
   </update>
@@ -86,7 +86,7 @@
   <!-- delete by PK -->
 
   <delete id="deleteByPK">
-    delete from public.player
+    delete from public.vehicle_type
      where
       id = #{id,jdbcType=INTEGER}
   </delete>
@@ -94,17 +94,17 @@
   <!-- update by example -->
 
   <update id="updateByExample">
-    update public.player
+    update public.vehicle_type
     <set>
       <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
-      <if test="values.cards != null">cards = #{values.cards,jdbcType=ARRAY,typeHandler=app.daos.primitives.PlayerDAO$CardsTypeHandler},</if>
+      <if test="values.description != null">description = #{values.description,jdbcType=VARCHAR},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
         and id = #{filter.id,jdbcType=INTEGER}
       </if>
-      <if test="filter.cards != null">
-        and cards = #{filter.cards,jdbcType=ARRAY,typeHandler=app.daos.primitives.PlayerDAO$CardsTypeHandler}
+      <if test="filter.description != null">
+        and description = #{filter.description,jdbcType=VARCHAR}
       </if>
     </trim>
   </update>
@@ -118,13 +118,13 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from public.player
+    delete from public.vehicle_type
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
         and id = #{id,jdbcType=INTEGER}
       </if>
-      <if test="cards != null">
-        and cards = #{cards,jdbcType=ARRAY,typeHandler=app.daos.primitives.PlayerDAO$CardsTypeHandler}
+      <if test="description != null">
+        and description = #{description,jdbcType=VARCHAR}
       </if>
     </trim>
   </delete>

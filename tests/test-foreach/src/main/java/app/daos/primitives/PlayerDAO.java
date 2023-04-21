@@ -13,8 +13,8 @@ import org.hotrod.runtime.interfaces.DaoWithOrder;
 import org.hotrod.runtime.interfaces.UpdateByExampleDao;
 import org.hotrod.runtime.interfaces.OrderBy;
 
-import app.daos.primitives.PlayerVO;
-import app.daos.PlayerMODEL;
+import app.daos.primitives.AbstractPlayerVO;
+import app.daos.PlayerVO;
 
 import java.sql.SQLException;
 import java.sql.CallableStatement;
@@ -71,10 +71,10 @@ public class PlayerDAO implements Serializable, ApplicationContextAware {
 
   // select by primary key
 
-  public app.daos.PlayerMODEL select(final java.lang.Integer id) {
+  public app.daos.PlayerVO select(final java.lang.Integer id) {
     if (id == null)
       return null;
-    app.daos.PlayerMODEL vo = new app.daos.PlayerMODEL();
+    app.daos.PlayerVO vo = new app.daos.PlayerVO();
     vo.setId(id);
     return this.sqlSession.selectOne("mappers.player.selectByPK", vo);
   }
@@ -83,25 +83,25 @@ public class PlayerDAO implements Serializable, ApplicationContextAware {
 
   // select by example
 
-  public List<app.daos.PlayerMODEL> select(final app.daos.primitives.PlayerVO example, final PlayerOrderBy... orderBies)
+  public List<app.daos.PlayerVO> select(final app.daos.primitives.AbstractPlayerVO example, final PlayerOrderBy... orderBies)
       {
-    DaoWithOrder<app.daos.primitives.PlayerVO, PlayerOrderBy> dwo = //
+    DaoWithOrder<app.daos.primitives.AbstractPlayerVO, PlayerOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
     return this.sqlSession.selectList("mappers.player.selectByExample", dwo);
   }
 
-  public Cursor<app.daos.PlayerMODEL> selectCursor(final app.daos.primitives.PlayerVO example, final PlayerOrderBy... orderBies)
+  public Cursor<app.daos.PlayerVO> selectCursor(final app.daos.primitives.AbstractPlayerVO example, final PlayerOrderBy... orderBies)
       {
-    DaoWithOrder<app.daos.primitives.PlayerVO, PlayerOrderBy> dwo = //
+    DaoWithOrder<app.daos.primitives.AbstractPlayerVO, PlayerOrderBy> dwo = //
         new DaoWithOrder<>(example, orderBies);
-    return new MyBatisCursor<app.daos.PlayerMODEL>(this.sqlSession.selectCursor("mappers.player.selectByExample", dwo));
+    return new MyBatisCursor<app.daos.PlayerVO>(this.sqlSession.selectCursor("mappers.player.selectByExample", dwo));
   }
 
   // select by criteria
 
-  public CriteriaWherePhase<app.daos.PlayerMODEL> select(final PlayerDAO.PlayerTable from,
+  public CriteriaWherePhase<app.daos.PlayerVO> select(final PlayerDAO.PlayerTable from,
       final Predicate predicate) {
-    return new CriteriaWherePhase<app.daos.PlayerMODEL>(from, this.liveSQLDialect, this.sqlSession,
+    return new CriteriaWherePhase<app.daos.PlayerVO>(from, this.liveSQLDialect, this.sqlSession,
         predicate, "mappers.player.selectByCriteria");
   }
 
@@ -111,10 +111,10 @@ public class PlayerDAO implements Serializable, ApplicationContextAware {
 
   // insert
 
-  public app.daos.PlayerMODEL insert(final app.daos.primitives.PlayerVO vo) {
+  public app.daos.PlayerVO insert(final app.daos.primitives.AbstractPlayerVO vo) {
     String id = "mappers.player.insert";
     this.sqlSession.insert(id, vo);
-    app.daos.PlayerMODEL mo = new app.daos.PlayerMODEL();
+    app.daos.PlayerVO mo = new app.daos.PlayerVO();
     mo.setId(vo.getId());
     mo.setCards(vo.getCards());
     return mo;
@@ -122,7 +122,7 @@ public class PlayerDAO implements Serializable, ApplicationContextAware {
 
   // update by PK
 
-  public int update(final app.daos.PlayerMODEL vo) {
+  public int update(final app.daos.PlayerVO vo) {
     if (vo.id == null) return 0;
     return this.sqlSession.update("mappers.player.updateByPK", vo);
   }
@@ -131,7 +131,7 @@ public class PlayerDAO implements Serializable, ApplicationContextAware {
 
   public int delete(final java.lang.Integer id) {
     if (id == null) return 0;
-    app.daos.PlayerMODEL vo = new app.daos.PlayerMODEL();
+    app.daos.PlayerVO vo = new app.daos.PlayerVO();
     vo.setId(id);
     if (vo.id == null) return 0;
     return this.sqlSession.delete("mappers.player.deleteByPK", vo);
@@ -139,23 +139,15 @@ public class PlayerDAO implements Serializable, ApplicationContextAware {
 
   // update by example
 
-  public int update(final app.daos.primitives.PlayerVO example, final app.daos.primitives.PlayerVO updateValues) {
-    UpdateByExampleDao<app.daos.primitives.PlayerVO> fvd = //
-      new UpdateByExampleDao<app.daos.primitives.PlayerVO>(example, updateValues);
+  public int update(final app.daos.primitives.AbstractPlayerVO example, final app.daos.primitives.AbstractPlayerVO updateValues) {
+    UpdateByExampleDao<app.daos.primitives.AbstractPlayerVO> fvd = //
+      new UpdateByExampleDao<app.daos.primitives.AbstractPlayerVO>(example, updateValues);
     return this.sqlSession.update("mappers.player.updateByExample", fvd);
   }
 
   // update by criteria
 
-  public UpdateSetCompletePhase update(final app.daos.primitives.PlayerVO updateValues, final Predicate predicate) {
-    Map<String, Object> values = new HashMap<>();
-    if (updateValues.getId() != null) values.put("id", updateValues.getId());
-    if (updateValues.getCards() != null) values.put("cards", updateValues.getCards());
-    return new UpdateSetCompletePhase(PlayerDAO.newTable(), this.liveSQLDialect, this.sqlSession,
-      "mappers.player.updateByCriteria", predicate, values);
-  }
-
-  public UpdateSetCompletePhase update(final app.daos.primitives.PlayerVO updateValues, final PlayerDAO.PlayerTable tableOrView, final Predicate predicate) {
+  public UpdateSetCompletePhase update(final app.daos.primitives.AbstractPlayerVO updateValues, final PlayerDAO.PlayerTable tableOrView, final Predicate predicate) {
     Map<String, Object> values = new HashMap<>();
     if (updateValues.getId() != null) values.put("id", updateValues.getId());
     if (updateValues.getCards() != null) values.put("cards", updateValues.getCards());
@@ -166,16 +158,11 @@ public class PlayerDAO implements Serializable, ApplicationContextAware {
 
   // delete by example
 
-  public int delete(final app.daos.primitives.PlayerVO example) {
+  public int delete(final app.daos.primitives.AbstractPlayerVO example) {
     return this.sqlSession.delete("mappers.player.deleteByExample", example);
   }
 
   // delete by criteria
-
-  public DeleteWherePhase delete(final Predicate predicate) {
-    return new DeleteWherePhase(PlayerDAO.newTable(), this.liveSQLDialect, this.sqlSession,
-      "mappers.player.deleteByCriteria", predicate);
-  }
 
   public DeleteWherePhase delete(final PlayerDAO.PlayerTable from, final Predicate predicate) {
     return new DeleteWherePhase(from, this.liveSQLDialect, this.sqlSession,
@@ -186,10 +173,10 @@ public class PlayerDAO implements Serializable, ApplicationContextAware {
 
   public enum PlayerOrderBy implements OrderBy {
 
-    ID("player", "id", true), //
-    ID$DESC("player", "id", false), //
-    CARDS("player", "cards", true), //
-    CARDS$DESC("player", "cards", false);
+    ID("public.player", "id", true), //
+    ID$DESC("public.player", "id", false), //
+    CARDS("public.player", "cards", true), //
+    CARDS$DESC("public.player", "cards", false);
 
     private PlayerOrderBy(final String tableName, final String columnName,
         boolean ascending) {
@@ -242,12 +229,12 @@ public class PlayerDAO implements Serializable, ApplicationContextAware {
     // Constructors
 
     PlayerTable() {
-      super(null, null, "player", "Table", null);
+      super(null, "public", "player", "Table", null);
       initialize();
     }
 
     PlayerTable(final String alias) {
-      super(null, null, "player", "Table", alias);
+      super(null, "public", "player", "Table", alias);
       initialize();
     }
 

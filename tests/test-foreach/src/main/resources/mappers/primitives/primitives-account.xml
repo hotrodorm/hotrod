@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.account">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    id,
+    name,
+    type,
+    current_balance,
+    created_on,
+    active
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.id,
+    ${alias}.name,
+    ${alias}.type,
+    ${alias}.current_balance,
+    ${alias}.created_on,
+    ${alias}.active
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.AccountVO">
+    <id property="id" column="id" />
+    <result property="name" column="name" />
+    <result property="type" column="type" />
+    <result property="currentBalance" column="current_balance" />
+    <result property="createdOn" column="created_on" />
+    <result property="active" column="active" />
+  </resultMap>
+
+  <!-- select by PK -->
+
+  <select id="selectByPK" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.account
+     where
+      id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- select by unique indexes -->
+
+  <select id="selectByUIName" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.account
+     where
+      name = #{name,jdbcType=VARCHAR}
+  </select>
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.account
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.id != null">
+        and id = #{p.id,jdbcType=INTEGER}
+      </if>
+      <if test="p.name != null">
+        and name = #{p.name,jdbcType=VARCHAR}
+      </if>
+      <if test="p.type != null">
+        and type = #{p.type,jdbcType=VARCHAR}
+      </if>
+      <if test="p.currentBalance != null">
+        and current_balance = #{p.currentBalance,jdbcType=INTEGER}
+      </if>
+      <if test="p.createdOn != null">
+        and created_on = #{p.createdOn,jdbcType=TIMESTAMP}
+      </if>
+      <if test="p.active != null">
+        and active = #{p.active,jdbcType=INTEGER}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (does not integrate sequences, and integrates identities) -->
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into public.account (
+      <trim prefixOverrides=", ">
+        <if test="id != null">, id</if>
+        <if test="true">, name</if>
+        <if test="true">, type</if>
+        <if test="true">, current_balance</if>
+        <if test="true">, created_on</if>
+        <if test="true">, active</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="id != null">, #{id,jdbcType=INTEGER}</if>
+        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+        <if test="true">, #{type,jdbcType=VARCHAR}</if>
+        <if test="true">, #{currentBalance,jdbcType=INTEGER}</if>
+        <if test="true">, #{createdOn,jdbcType=TIMESTAMP}</if>
+        <if test="true">, #{active,jdbcType=INTEGER}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK -->
+
+  <update id="updateByPK">
+    update public.account set
+      name = #{name,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      current_balance = #{currentBalance,jdbcType=INTEGER},
+      created_on = #{createdOn,jdbcType=TIMESTAMP},
+      active = #{active,jdbcType=INTEGER}
+     where
+      id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- delete by PK -->
+
+  <delete id="deleteByPK">
+    delete from public.account
+     where
+      id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update public.account
+    <set>
+      <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
+      <if test="values.name != null">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.type != null">type = #{values.type,jdbcType=VARCHAR},</if>
+      <if test="values.currentBalance != null">current_balance = #{values.currentBalance,jdbcType=INTEGER},</if>
+      <if test="values.createdOn != null">created_on = #{values.createdOn,jdbcType=TIMESTAMP},</if>
+      <if test="values.active != null">active = #{values.active,jdbcType=INTEGER},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.id != null">
+        and id = #{filter.id,jdbcType=INTEGER}
+      </if>
+      <if test="filter.name != null">
+        and name = #{filter.name,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.type != null">
+        and type = #{filter.type,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.currentBalance != null">
+        and current_balance = #{filter.currentBalance,jdbcType=INTEGER}
+      </if>
+      <if test="filter.createdOn != null">
+        and created_on = #{filter.createdOn,jdbcType=TIMESTAMP}
+      </if>
+      <if test="filter.active != null">
+        and active = #{filter.active,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </update>
+
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from public.account
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="id != null">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="name != null">
+        and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="type != null">
+        and type = #{type,jdbcType=VARCHAR}
+      </if>
+      <if test="currentBalance != null">
+        and current_balance = #{currentBalance,jdbcType=INTEGER}
+      </if>
+      <if test="createdOn != null">
+        and created_on = #{createdOn,jdbcType=TIMESTAMP}
+      </if>
+      <if test="active != null">
+        and active = #{active,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
+
+</mapper>

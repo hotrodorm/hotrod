@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.applicationConfig">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    config_id,
+    config_name,
+    config_value
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.config_id,
+    ${alias}.config_name,
+    ${alias}.config_value
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.ApplicationConfigVO">
+    <result property="configId" column="config_id" />
+    <result property="configName" column="config_name" />
+    <result property="configValue" column="config_value" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes: no mappings generated, since the table does not have UIs -->
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.application_config
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.configId != null">
+        and config_id = #{p.configId,jdbcType=INTEGER}
+      </if>
+      <if test="p.configName != null">
+        and config_name = #{p.configName,jdbcType=VARCHAR}
+      </if>
+      <if test="p.configValue != null">
+        and config_value = #{p.configValue,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into public.application_config (
+      <trim prefixOverrides=", ">
+        <if test="true">, config_id</if>
+        <if test="true">, config_name</if>
+        <if test="true">, config_value</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{configId,jdbcType=INTEGER}</if>
+        <if test="true">, #{configName,jdbcType=VARCHAR}</if>
+        <if test="true">, #{configValue,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update public.application_config
+    <set>
+      <if test="values.configId != null">config_id = #{values.configId,jdbcType=INTEGER},</if>
+      <if test="values.configName != null">config_name = #{values.configName,jdbcType=VARCHAR},</if>
+      <if test="values.configValue != null">config_value = #{values.configValue,jdbcType=VARCHAR},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.configId != null">
+        and config_id = #{filter.configId,jdbcType=INTEGER}
+      </if>
+      <if test="filter.configName != null">
+        and config_name = #{filter.configName,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.configValue != null">
+        and config_value = #{filter.configValue,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </update>
+
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from public.application_config
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="configId != null">
+        and config_id = #{configId,jdbcType=INTEGER}
+      </if>
+      <if test="configName != null">
+        and config_name = #{configName,jdbcType=VARCHAR}
+      </if>
+      <if test="configValue != null">
+        and config_value = #{configValue,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
+
+</mapper>

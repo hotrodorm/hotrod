@@ -2,23 +2,26 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mappers.player">
+<mapper namespace="mappers.event">
 
   <!-- columns -->
 
   <sql id="columns">
     id,
-    cards
+    name,
+    status
   </sql>
 
   <sql id="columnsWithAlias">
     ${alias}.id,
-    ${alias}.cards
+    ${alias}.name,
+    ${alias}.status
   </sql>
 
-  <resultMap id="allColumns" type="app.daos.PlayerVO">
+  <resultMap id="allColumns" type="app.daos.EventVO">
     <id property="id" column="id" />
-    <result property="cards" column="cards" typeHandler="app.daos.primitives.PlayerDAO$CardsTypeHandler" />
+    <result property="name" column="name" />
+    <result property="status" column="status" />
   </resultMap>
 
   <!-- select by PK -->
@@ -26,9 +29,9 @@
   <select id="selectByPK" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.player
+     from public.event
      where
-      id = #{id,jdbcType=INTEGER}
+      id = #{id,jdbcType=BIGINT}
   </select>
 
   <!-- no select by unique indexes since there are no UI (besides the PK) -->
@@ -38,13 +41,16 @@
   <select id="selectByExample" resultMap="allColumns">
     select
       <include refid="columns" />
-     from public.player
+     from public.event
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="p.id != null">
-        and id = #{p.id,jdbcType=INTEGER}
+        and id = #{p.id,jdbcType=BIGINT}
       </if>
-      <if test="p.cards != null">
-        and cards = #{p.cards,jdbcType=ARRAY,typeHandler=app.daos.primitives.PlayerDAO$CardsTypeHandler}
+      <if test="p.name != null">
+        and name = #{p.name,jdbcType=VARCHAR}
+      </if>
+      <if test="p.status != null">
+        and status = #{p.status,jdbcType=INTEGER}
       </if>
     </trim>
     <if test="o != null">
@@ -61,15 +67,17 @@
   <!-- insert (no auto-generated columns) -->
 
   <insert id="insert">
-    insert into public.player (
+    insert into public.event (
       <trim prefixOverrides=", ">
         <if test="true">, id</if>
-        <if test="true">, cards</if>
+        <if test="true">, name</if>
+        <if test="true">, status</if>
       </trim>
       ) values (
       <trim prefixOverrides=", ">
-        <if test="true">, #{id,jdbcType=INTEGER}</if>
-        <if test="true">, #{cards,jdbcType=ARRAY,typeHandler=app.daos.primitives.PlayerDAO$CardsTypeHandler}</if>
+        <if test="true">, #{id,jdbcType=BIGINT}</if>
+        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+        <if test="true">, #{status,jdbcType=INTEGER}</if>
       </trim>
       )
   </insert>
@@ -77,34 +85,39 @@
   <!-- update by PK -->
 
   <update id="updateByPK">
-    update public.player set
-      cards = #{cards,jdbcType=ARRAY,typeHandler=app.daos.primitives.PlayerDAO$CardsTypeHandler}
+    update public.event set
+      name = #{name,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
      where
-      id = #{id,jdbcType=INTEGER}
+      id = #{id,jdbcType=BIGINT}
   </update>
 
   <!-- delete by PK -->
 
   <delete id="deleteByPK">
-    delete from public.player
+    delete from public.event
      where
-      id = #{id,jdbcType=INTEGER}
+      id = #{id,jdbcType=BIGINT}
   </delete>
 
   <!-- update by example -->
 
   <update id="updateByExample">
-    update public.player
+    update public.event
     <set>
-      <if test="values.id != null">id = #{values.id,jdbcType=INTEGER},</if>
-      <if test="values.cards != null">cards = #{values.cards,jdbcType=ARRAY,typeHandler=app.daos.primitives.PlayerDAO$CardsTypeHandler},</if>
+      <if test="values.id != null">id = #{values.id,jdbcType=BIGINT},</if>
+      <if test="values.name != null">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.status != null">status = #{values.status,jdbcType=INTEGER},</if>
     </set>
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="filter.id != null">
-        and id = #{filter.id,jdbcType=INTEGER}
+        and id = #{filter.id,jdbcType=BIGINT}
       </if>
-      <if test="filter.cards != null">
-        and cards = #{filter.cards,jdbcType=ARRAY,typeHandler=app.daos.primitives.PlayerDAO$CardsTypeHandler}
+      <if test="filter.name != null">
+        and name = #{filter.name,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.status != null">
+        and status = #{filter.status,jdbcType=INTEGER}
       </if>
     </trim>
   </update>
@@ -118,13 +131,16 @@
   <!-- delete by example -->
 
   <delete id="deleteByExample">
-    delete from public.player
+    delete from public.event
     <trim prefix="where&#xA;" prefixOverrides="and |or ">
       <if test="id != null">
-        and id = #{id,jdbcType=INTEGER}
+        and id = #{id,jdbcType=BIGINT}
       </if>
-      <if test="cards != null">
-        and cards = #{cards,jdbcType=ARRAY,typeHandler=app.daos.primitives.PlayerDAO$CardsTypeHandler}
+      <if test="name != null">
+        and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null">
+        and status = #{status,jdbcType=INTEGER}
       </if>
     </trim>
   </delete>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.properties">
+
+  <!-- columns -->
+
+  <sql id="columns">
+    application,
+    name,
+    prop_value
+  </sql>
+
+  <sql id="columnsWithAlias">
+    ${alias}.application,
+    ${alias}.name,
+    ${alias}.prop_value
+  </sql>
+
+  <resultMap id="allColumns" type="app.daos.PropertiesVO">
+    <result property="application" column="application" />
+    <result property="name" column="name" />
+    <result property="propValue" column="prop_value" />
+  </resultMap>
+
+  <!-- select by PK: no mapping generated, since the table does not have a PK -->
+
+  <!-- select by unique indexes -->
+
+  <select id="selectByUIName" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.properties
+     where
+      name = #{name,jdbcType=VARCHAR}
+  </select>
+
+  <!-- select by example -->
+
+  <select id="selectByExample" resultMap="allColumns">
+    select
+      <include refid="columns" />
+     from public.properties
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="p.application != null">
+        and application = #{p.application,jdbcType=VARCHAR}
+      </if>
+      <if test="p.name != null">
+        and name = #{p.name,jdbcType=VARCHAR}
+      </if>
+      <if test="p.propValue != null">
+        and prop_value = #{p.propValue,jdbcType=VARCHAR}
+      </if>
+    </trim>
+    <if test="o != null">
+      order by ${o}
+    </if>
+  </select>
+
+  <!-- select by criteria -->
+
+  <select id="selectByCriteria" resultMap="allColumns">
+    ${sql}
+  </select>
+
+  <!-- insert (no auto-generated columns) -->
+
+  <insert id="insert">
+    insert into public.properties (
+      <trim prefixOverrides=", ">
+        <if test="true">, application</if>
+        <if test="true">, name</if>
+        <if test="true">, prop_value</if>
+      </trim>
+      ) values (
+      <trim prefixOverrides=", ">
+        <if test="true">, #{application,jdbcType=VARCHAR}</if>
+        <if test="true">, #{name,jdbcType=VARCHAR}</if>
+        <if test="true">, #{propValue,jdbcType=VARCHAR}</if>
+      </trim>
+      )
+  </insert>
+
+  <!-- update by PK: no update mapping generated, since the table does not have a PK -->
+
+  <!-- delete by PK: no delete mapping generated, since the table does not have a PK -->
+
+  <!-- update by example -->
+
+  <update id="updateByExample">
+    update public.properties
+    <set>
+      <if test="values.application != null">application = #{values.application,jdbcType=VARCHAR},</if>
+      <if test="values.name != null">name = #{values.name,jdbcType=VARCHAR},</if>
+      <if test="values.propValue != null">prop_value = #{values.propValue,jdbcType=VARCHAR},</if>
+    </set>
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="filter.application != null">
+        and application = #{filter.application,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.name != null">
+        and name = #{filter.name,jdbcType=VARCHAR}
+      </if>
+      <if test="filter.propValue != null">
+        and prop_value = #{filter.propValue,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </update>
+
+  <!-- update by criteria -->
+
+  <select id="updateByCriteria">
+    ${sql}
+  </select>
+
+  <!-- delete by example -->
+
+  <delete id="deleteByExample">
+    delete from public.properties
+    <trim prefix="where&#xA;" prefixOverrides="and |or ">
+      <if test="application != null">
+        and application = #{application,jdbcType=VARCHAR}
+      </if>
+      <if test="name != null">
+        and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="propValue != null">
+        and prop_value = #{propValue,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </delete>
+
+  <!-- delete by criteria -->
+
+  <select id="deleteByCriteria">
+    ${sql}
+  </select>
+
+</mapper>
